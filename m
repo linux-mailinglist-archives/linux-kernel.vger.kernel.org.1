@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378D22F0565
+	by mail.lfdr.de (Postfix) with ESMTP id A41502F0566
 	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 06:38:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbhAJFiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 00:38:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41090 "EHLO
+        id S1726531AbhAJFiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 00:38:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726447AbhAJFiJ (ORCPT
+        with ESMTP id S1726447AbhAJFiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 00:38:09 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBE8C06179F
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 21:37:29 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id j13so8495142pjz.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 21:37:29 -0800 (PST)
+        Sun, 10 Jan 2021 00:38:13 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A5FC0617A2
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 21:37:32 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id s15so7789397plr.9
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 21:37:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bcYNk7Z0JDeHH9RGSjZ2lY+BP3JT2nwQaLEzMSlfTuc=;
-        b=UW7b/j7lwth15/RAsdrPHf3N0hoMp1d1sDqNJGtve9//iSX6O1e5tS3L4EaROezvQ4
-         SLNT7xo/pFeUx9F3XpMn7S8ZR04WYHKIwFw4jTKas6rW2d2Kps227vNzrq49mlpNsfhO
-         Hpzr4/Icl2cEHQVDPnzDPBmskjKZkhUEFn0idmn/kK5NL372vaqac+5tZLI/Tv6HeEBn
-         HUNx+vL+sFLgLMTJc2X2jUbF58Z2yFzsNQBqI7r5kEF8U32ep8cx70vaMFIRpoN+BNvz
-         Y3mNnKwOfaLVnws1oKew7svDiVxlTbD8Ww5jRc/HW9mVznbkkoWlxwwjzpn33981wuvL
-         WyXw==
+        bh=3I/CL8Jla53b7d11LKJ+4S2e8QSsZLZtH4O2WL7MyxQ=;
+        b=J8H1r9zb83GPmaYa1HkjTuIcIO1g0aq90jxvx2XAeuLZoE6rc1wF8bhferTQCKKUm/
+         fWPGSgGYLy97jDpcpkaXuSKR8rky6RG9cS43vdI+rC1VuWmOE6EnphR9BS5FMOCi/A59
+         gr6014A3DFbb8jq/y49xBkwA1bdYFSw9HgLWleZMG3MZ7+xFvlxUtM1eH+qGL64Si8xb
+         AP5r7RPE+A6KbX5cp+VDk/RQo83vAMmxGrFW83u9FvWcUnJF8nODlppkZOkXAq1/fe0z
+         /bn+HiQp303JtxkmYspysnWYBt4LfgrPT9WYvQXBGuisNs+8Q1brUVIisIb41r1FBdct
+         kQdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bcYNk7Z0JDeHH9RGSjZ2lY+BP3JT2nwQaLEzMSlfTuc=;
-        b=A9P+AA61PyXvW8ieObGjBC+I7iRk/yz3uVuIMYs7ORbSVNM+E3+GxSMArScj0xfa/s
-         bCPoB9bx53vid5qMIKVEf6BF5l4DOGraKPKC4w0ncHYTuHAiifLf+kcV/kXVISn2W7Yr
-         8mom79qVr8gZc+ImHEU+AY/fX8POlOlFxYiyfQ1HOdrf7wkd/0vke+TOxauRDdDmXzMt
-         u12ZFbApequ8J4fQaiH9Jt+sk3DskHtJV+di7v1jV0/sCrdU6Sd2h2fHklpq7uDPxbRp
-         Xg6AtxJStMZanoFiNIB7UlE8KORJ1gS3gCFjYvCbIjxUylJKhVIpJ7YBBnUeb9GjrO+4
-         aLRg==
-X-Gm-Message-State: AOAM5302GyGZRKcQPLgCTRk9m/xXKQAzn9Yp2JNhuN2eVpAEeSfXFwCT
-        d+CBWSdPSmkovtJwNJgu3Gwp7Q==
-X-Google-Smtp-Source: ABdhPJwTIAoFvTFN8eG6/bwAVX+h7V5okbCcGaavwgeCpcfKZMGB6uXejI2+CA9PXSYu//+8TwJmqg==
-X-Received: by 2002:a17:902:d202:b029:da:d86b:78be with SMTP id t2-20020a170902d202b02900dad86b78bemr14396045ply.0.1610257049098;
-        Sat, 09 Jan 2021 21:37:29 -0800 (PST)
+        bh=3I/CL8Jla53b7d11LKJ+4S2e8QSsZLZtH4O2WL7MyxQ=;
+        b=DSNPhQrihy0TPKZp1wk/hxQ8faUWzFsUS7ILEP/MrWNqQwYhFFm8utIQugnEAxOS9S
+         IWjcFsJSGXfhx5+48EGAlWDw4tfYkYUBSZ3PNMHvWVUXkPNFEvBgtNgXpgIAYsPnFFYx
+         frCEvKpT/3I8XBbp1eP99cNTdH22Vovml/199puYmtENlrAK3cEYDqotRjz+Jweo7+uR
+         sJXK6+t4u0ylQ/0Kaj0zCotPRhp+BTBBXvkknuEvidk9D1WbFq3p2XRRglP24KRJmYBq
+         eKzuir+sJV4jjpJXxNQMpGd2/sXuxNsfDwnK3rUl8mAw53K0EJzFFCaKuFifQtaynCVH
+         YEUg==
+X-Gm-Message-State: AOAM531zLrGf4/5krPvXfpf2xXH5KPXMw9Wy8i7H9VJDf60Dwzk88LfA
+        G7XN51rVgqKPrzaNuJ+3Fmf6OQ==
+X-Google-Smtp-Source: ABdhPJz6HBCX2l4Z0qe7iSea5XOLs3zF2OGQOqF7ltEyrFvLjQJwhYpg0dxdsvzopi+HB8sO9kXJPg==
+X-Received: by 2002:a17:902:ec03:b029:dc:f27:dd4a with SMTP id l3-20020a170902ec03b02900dc0f27dd4amr11168478pld.9.1610257052116;
+        Sat, 09 Jan 2021 21:37:32 -0800 (PST)
 Received: from always-libai.bytedance.net ([61.120.150.71])
-        by smtp.gmail.com with ESMTPSA id q15sm14474013pgk.11.2021.01.09.21.37.26
+        by smtp.gmail.com with ESMTPSA id q15sm14474013pgk.11.2021.01.09.21.37.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Jan 2021 21:37:28 -0800 (PST)
+        Sat, 09 Jan 2021 21:37:31 -0800 (PST)
 From:   zhenwei pi <pizhenwei@bytedance.com>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     pbonzini@redhat.com, linux-kernel@vger.kernel.org,
         pizhenwei@bytedance.com
-Subject: [PATCH v4 1/2] misc: pvpanic: introduce device capability
-Date:   Sun, 10 Jan 2021 13:37:18 +0800
-Message-Id: <20210110053719.3038348-2-pizhenwei@bytedance.com>
+Subject: [PATCH v4 2/2] misc: pvpanic: introduce events device attribue
+Date:   Sun, 10 Jan 2021 13:37:19 +0800
+Message-Id: <20210110053719.3038348-3-pizhenwei@bytedance.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210110053719.3038348-1-pizhenwei@bytedance.com>
 References: <20210110053719.3038348-1-pizhenwei@bytedance.com>
@@ -64,110 +64,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to pvpanic spec:
-https://git.qemu.org/?p=qemu.git;a=blob_plain;f=docs/specs/pvpanic.txt
+Suggested by Paolo & Greg, add 'events' device attribute that can be
+used to limit which capabilities the driver uses.
 
-The guest should determine pvpanic capability by RDPT, so initialize
-capability during device probing. There is no need to register panic
-notifier callback function if no events supported.
-
-Before sending event to host side, check capability firstly.
-
-Suggested by Greg KH, use sysfs to expose capability to user space,
-also add new sysfs attribute in document.
+Finally, the pvpanic guest driver works by the limitation of both
+device capability and user setting.
 
 Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
 ---
- .../ABI/testing/sysfs-bus-pci-devices-pvpanic |  7 ++++
- drivers/misc/pvpanic.c                        | 33 ++++++++++++++++---
- 2 files changed, 35 insertions(+), 5 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
+ .../ABI/testing/sysfs-bus-pci-devices-pvpanic |  7 +++++
+ drivers/misc/pvpanic.c                        | 26 ++++++++++++++++++-
+ 2 files changed, 32 insertions(+), 1 deletion(-)
 
 diff --git a/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic b/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
-new file mode 100644
-index 000000000000..57d014a2c339
---- /dev/null
+index 57d014a2c339..4750cfa0af2b 100644
+--- a/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
 +++ b/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
-@@ -0,0 +1,7 @@
-+What:		/sys/devices/pci0000:00/*/QEMU0001:00/capability
-+Date:		Jan 2021
-+Contact:	zhenwei pi <pizhenwei@bytedance.com>
+@@ -5,3 +5,10 @@ Description:
+ 		Read-only attribute. Capabilities of pvpanic device
+ 		which are supported by QEMU.
+ 		Format: %s.
++
++What:          /sys/devices/pci0000:00/*/QEMU0001:00/events
++Date:          Jan 2021
++Contact:       zhenwei pi <pizhenwei@bytedance.com>
 +Description:
-+		Read-only attribute. Capabilities of pvpanic device
-+		which are supported by QEMU.
-+		Format: %s.
++               RW attribute. Set/get which features in-use.
++               Format: %x.
 diff --git a/drivers/misc/pvpanic.c b/drivers/misc/pvpanic.c
-index 951b37da5e3c..c2f6a9e866b3 100644
+index c2f6a9e866b3..07a008e15bd2 100644
 --- a/drivers/misc/pvpanic.c
 +++ b/drivers/misc/pvpanic.c
-@@ -19,6 +19,22 @@
+@@ -19,8 +19,31 @@
  #include <uapi/misc/pvpanic.h>
  
  static void __iomem *base;
-+static unsigned int capability = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
-+
-+static ssize_t capability_show(struct device *dev,
-+			       struct device_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "%s%s",
-+		capability & PVPANIC_PANICKED ? "PANICKED[BIT 0]\n" : "",
-+		capability & PVPANIC_CRASH_LOADED ? "CRASH_LOADED[BIT 1]\n" : "");
-+}
-+static DEVICE_ATTR_RO(capability);
-+
-+static struct attribute *pvpanic_dev_attrs[] = {
-+	&dev_attr_capability.attr,
-+	NULL
-+};
-+ATTRIBUTE_GROUPS(pvpanic_dev);
++static unsigned int events = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
+ static unsigned int capability = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
  
- MODULE_AUTHOR("Hu Tao <hutao@cn.fujitsu.com>");
- MODULE_DESCRIPTION("pvpanic device driver");
-@@ -27,7 +43,8 @@ MODULE_LICENSE("GPL");
++static ssize_t events_show(struct device *dev,  struct device_attribute *attr, char *buf)
++{
++	return sprintf(buf, "%x\n", events);
++}
++
++static ssize_t events_store(struct device *dev,  struct device_attribute *attr,
++			    const char *buf, size_t count)
++{
++	unsigned int tmp;
++	int err;
++
++	err = kstrtouint(buf, 16, &tmp);
++	if (err)
++		return err;
++
++	events = tmp;
++
++	return count;
++
++}
++static DEVICE_ATTR_RW(events);
++
+ static ssize_t capability_show(struct device *dev,
+ 			       struct device_attribute *attr, char *buf)
+ {
+@@ -32,6 +55,7 @@ static DEVICE_ATTR_RO(capability);
+ 
+ static struct attribute *pvpanic_dev_attrs[] = {
+ 	&dev_attr_capability.attr,
++	&dev_attr_events.attr,
+ 	NULL
+ };
+ ATTRIBUTE_GROUPS(pvpanic_dev);
+@@ -43,7 +67,7 @@ MODULE_LICENSE("GPL");
  static void
  pvpanic_send_event(unsigned int event)
  {
--	iowrite8(event, base);
-+	if (event & capability)
-+		iowrite8(event, base);
+-	if (event & capability)
++	if (event & capability & events)
+ 		iowrite8(event, base);
  }
  
- static int
-@@ -62,8 +79,12 @@ static int pvpanic_mmio_probe(struct platform_device *pdev)
- 	if (IS_ERR(base))
- 		return PTR_ERR(base);
- 
--	atomic_notifier_chain_register(&panic_notifier_list,
--				       &pvpanic_panic_nb);
-+	/* initlize capability by RDPT */
-+	capability &= ioread8(base);
-+
-+	if (capability)
-+		atomic_notifier_chain_register(&panic_notifier_list,
-+					       &pvpanic_panic_nb);
- 
- 	return 0;
- }
-@@ -71,8 +92,9 @@ static int pvpanic_mmio_probe(struct platform_device *pdev)
- static int pvpanic_mmio_remove(struct platform_device *pdev)
- {
- 
--	atomic_notifier_chain_unregister(&panic_notifier_list,
--					 &pvpanic_panic_nb);
-+	if (capability)
-+		atomic_notifier_chain_unregister(&panic_notifier_list,
-+						 &pvpanic_panic_nb);
- 
- 	return 0;
- }
-@@ -93,6 +115,7 @@ static struct platform_driver pvpanic_mmio_driver = {
- 		.name = "pvpanic-mmio",
- 		.of_match_table = pvpanic_mmio_match,
- 		.acpi_match_table = pvpanic_device_ids,
-+		.dev_groups = pvpanic_dev_groups,
- 	},
- 	.probe = pvpanic_mmio_probe,
- 	.remove = pvpanic_mmio_remove,
 -- 
 2.25.1
 
