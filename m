@@ -2,60 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 779472F09DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 22:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8D22F09E2
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 22:32:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726957AbhAJV1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 16:27:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbhAJV1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 16:27:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6E2FC22AAB;
-        Sun, 10 Jan 2021 21:26:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610313980;
-        bh=mln3FfAAd5WBUYr9Umnz24wIoPoEvWPJrWDHXSW8TSA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=r4QeSQrgmTcRxQuArLi4fXI7APJu7uhc0jYrcd82w/afOhEJbws/9cD5RWWGvpIiK
-         JM9GhqhehsIh67COng+4XnN2gs+KlHTnB8lNb60SuVSu7yrvjN2I2Y9jveHDSOOhdz
-         RJqCxKzGqc4TN7K2jShkBZHNzKFZz/KkjSTHOfMuXa6iNFekKdonA4Bn2srYI/kR3i
-         UlXjAFIr+LJ0en6V11mosHmy45qx8oUa1ylhNZGqTMt0PS+EQA5U+7AYLarLhPmwNi
-         GAkkUAv0Y6tjo4mxtLqaBF482ZoN+rd56VGfz/ib2TsqV0uHXM61YPPdpr/OO0Lzg5
-         PHa070mLRRZJA==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 5AD4460140;
-        Sun, 10 Jan 2021 21:26:20 +0000 (UTC)
-Subject: Re: [GIT PULL] Kbuild fixes for v5.11-rc3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAK7LNAR6zJnAo7KwdeghJZk8x8BivXWb2F5Gpxb90LDgP9D4dg@mail.gmail.com>
-References: <CAK7LNAR6zJnAo7KwdeghJZk8x8BivXWb2F5Gpxb90LDgP9D4dg@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAK7LNAR6zJnAo7KwdeghJZk8x8BivXWb2F5Gpxb90LDgP9D4dg@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.11
-X-PR-Tracked-Commit-Id: 5625dcfbbcf892e40e8d60abbb5f56701a1d031c
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 20210a98463e2abac31676ee141459fc23252927
-Message-Id: <161031398029.31317.18317995013715136211.pr-tracker-bot@kernel.org>
-Date:   Sun, 10 Jan 2021 21:26:20 +0000
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        id S1726720AbhAJVcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 16:32:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726394AbhAJVcb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 16:32:31 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B996C061786;
+        Sun, 10 Jan 2021 13:31:50 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DDVQp2QYrz9sWC;
+        Mon, 11 Jan 2021 08:31:46 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610314306;
+        bh=Pbaq9lo+XfvR1YVfTGoujyY3dnSQT8kupntgi6qpiH8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=URn0EV6Of0FX6ZV3wT1KXdK/iVWop97b2dwFV1Bui5xao+T+mTxP2JjBZs61rKuV5
+         BQxbgiHDiLdmFUkDQUWJFKRwuoF8MAexFlL+0WAyA0p33G1i6N7NpLnD1yHHXMiJhx
+         DPiHU9pa4n2d5jQmdUb584h9TeB/nP33jc9Q2v40ZYzQCQIo0/gSiGkoKh/aBWkruW
+         vXxdhxEbMS+0+lJIIh//HMo+PYK/+ntJZk+ilf+zevxKacrtTqPI9bfluqQaXKt0xX
+         lGBpi1unrd8gcwDH3ScqLvSYptiiOuOjw78qfgAwFAh10CquNjZN4CvG4XKBxDoTju
+         qL8sN0TDgeiBg==
+Date:   Mon, 11 Jan 2021 08:31:45 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the scsi-fixes tree
+Message-ID: <20210111083145.523d4ca8@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/z2GPRudiTG2ojiDC.vmefTv";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 11 Jan 2021 05:29:30 +0900:
+--Sig_/z2GPRudiTG2ojiDC.vmefTv
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.11
+Hi all,
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/20210a98463e2abac31676ee141459fc23252927
+After merging the scsi-fixes tree, today's linux-next build (KCONFIG_NAME)
+produced this warning:
 
-Thank you!
+Documentation/ABI/testing/sysfs-driver-ufs:915: WARNING: Malformed table.
+Text in column margin in table line 15.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+0   UFS device will stay active, UIC link will
+    stay active
+1   UFS device will stay active, UIC link will
+    hibernate
+2   UFS device will be moved to sleep, UIC link will
+    stay active
+3   UFS device will be moved to sleep, UIC link will
+    hibernate
+4   UFS device will be powered off, UIC link will
+    hibernate
+5   UFS device will be powered off, UIC link will
+    be powered off
+6   UFS device will be moved to deep sleep, UIC link
+will be powered off. Note, deep sleep might not be
+supported in which case this value will not be accepted
+=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+Documentation/ABI/testing/sysfs-driver-ufs:956: WARNING: Malformed table.
+Text in column margin in table line 15.
+
+=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+0   UFS device will stay active, UIC link will
+    stay active
+1   UFS device will stay active, UIC link will
+    hibernate
+2   UFS device will be moved to sleep, UIC link will
+    stay active
+3   UFS device will be moved to sleep, UIC link will
+    hibernate
+4   UFS device will be powered off, UIC link will
+    hibernate
+5   UFS device will be powered off, UIC link will
+    be powered off
+6   UFS device will be moved to deep sleep, UIC link
+will be powered off. Note, deep sleep might not be
+supported in which case this value will not be accepted
+=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+
+Introduced by commit
+
+  0b2894cd0fdf ("scsi: docs: ABI: sysfs-driver-ufs: Add DeepSleep power mod=
+e")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/z2GPRudiTG2ojiDC.vmefTv
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/7ckEACgkQAVBC80lX
+0GxDpQf9Fd3VDgJ4Zi6/2x5q/bgrs/dIzJ6nZ4kRiiKiq7Br+QaMiwf5rZ8cVs7x
+5PlSfM/STTzL5Xd6zkImmP6qTEtl9+Zl90oRD0c2+9GTnUh3REEWSXqDIhMzbCsb
+/xvQ7G9NXro+KCu5wDSW4fD8gbvmrpVrfNJaO8ZWr10u+1JzPt+At2anOofOdR9W
+hYkxjRsoOvibHZmBLgiC3uGKTL9EbvcYaQhDaSj6heYqJGE84VPV+r/JJ6cxUsyc
+FVptUw+EKFZ2Q2q4LmSsJK/FVNrA2OgINdnHEqqHJe2BSuzxvV3LRLL8rkZwfA55
+TiGQLOqxkglS2o//jinFMavobs1k4Q==
+=+j4T
+-----END PGP SIGNATURE-----
+
+--Sig_/z2GPRudiTG2ojiDC.vmefTv--
