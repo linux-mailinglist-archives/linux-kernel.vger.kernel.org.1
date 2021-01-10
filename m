@@ -2,59 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1829B2F052D
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 05:58:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6F902F0531
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 06:15:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbhAJE6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 23:58:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40890 "EHLO mail.kernel.org"
+        id S1725988AbhAJFPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 00:15:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726253AbhAJE6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 23:58:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5B4322BE8;
-        Sun, 10 Jan 2021 04:57:15 +0000 (UTC)
+        id S1725267AbhAJFPm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 00:15:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C01D224D3;
+        Sun, 10 Jan 2021 05:15:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610254640;
-        bh=IK3/xjM0zzN9SHLfPqLtfCKulyiYUQsXb1D9pfwab1s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KEW1tb0oJLHB+Hh4qPKu/yrGiu0Fi5DWUwkkQvUcpriz2HTlJ5CMBMvMQCB4lLD/P
-         qyzAud18YYmw6XIHpikjcOuEFvDYlItWq0db48UnlAGcndyOhD6LgKXk02qMZxdYFv
-         K4h/TI1+2tpYoH5FeeYT8Mj1LEeM1jLI3UAMlDjV3eBSoVbITvh28lx0tWQngxXPIz
-         k24GWL057ZO1f7OFM76byP4dsU0lMGrcLvpNjvJF6mcyKRo0eJ0x9bz20a9Zt45h3V
-         7Z9Gpua3dvlX4Qy7S0EnezYfKrXoJeiu5kxuT3cCZPUZ4Ajisxx7q0qXARk8TajIfu
-         ArkviRWIbbUnA==
-Date:   Sun, 10 Jan 2021 06:57:10 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v2 0/5] Enable root to update the blacklist keyring
-Message-ID: <X/qJJsVe7+nP+gR6@kernel.org>
-References: <20201211190330.2586116-1-mic@digikod.net>
- <67945fa6-2796-bfcd-5541-d54662e9802a@digikod.net>
+        s=k20201202; t=1610255702;
+        bh=de2wN2ZtKGX7Z823FLuUzJFPl1ptPjvYfdxkZir4YbM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=HUtOTIeYIiigfB911h2KCAfxR7NakIcKPST+fvPDFTOSZUAJyfCep3F5dUmj5IEhM
+         QzhbsoVkYuzdJd/oWDWdsAx1i/7HV9jYBHzHOTlaqHR9CSBC45qw+0lJ1tpwDk0Q5W
+         rDCSyEC0xvCXhAiTuBUL41tnXLkoWF9K3+hWz26ef/Hj4yzFQ+Pl8tXNulqdwZ/Lca
+         cxvHQ9VlXl28Icm1oSwU9uYiyIgZ9QexGF6jfWzx3v8LWE1vmbP1TurZqbwFHZwORX
+         RRfIpvW+1eNDPAIehDS6VP57gHokoR0Y6exdhcNW5K5CINfGlH9F0oerFkMhVha0JI
+         4+cpFFiHGFhqQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 283723521B79; Sat,  9 Jan 2021 21:15:02 -0800 (PST)
+Date:   Sat, 9 Jan 2021 21:15:02 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the rcu tree
+Message-ID: <20210110051502.GX2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210110132432.7eccaaac@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <67945fa6-2796-bfcd-5541-d54662e9802a@digikod.net>
+In-Reply-To: <20210110132432.7eccaaac@canb.auug.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 11:12:57AM +0100, Mickaël Salaün wrote:
-> Jarkko, David, what is the status of this patch series? Do you need help
-> to test it?
+On Sun, Jan 10, 2021 at 01:24:32PM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Commit
+> 
+>   cffdc9c7c24c ("EXP sched: Print list of runnable tasks in the current rq")
+> 
+> is missing a Signed-off-by from its author.
+> 
+> Paul, remember the rules for -next:
+> 
+> You will need to ensure that the patches/commits in your tree/series have
+> been:
+>      * submitted under GPL v2 (or later) and include the Contributor's
+>         Signed-off-by,
+>      * posted to the relevant mailing list,
+>      * reviewed by you (or another maintainer of your subsystem tree),
+>      * successfully unit tested, and 
+>      * destined for the current or next Linux merge window.
+> 
+> Basically, this should be just what you would send to Linus (or ask him
+> to fetch).  It is allowed to be rebased if you deem it necessary.
 
-Hi, a leave/vacation and the holiday period badly mixed my schedules.
+Please accept my apologies for my messing this up.
 
-I'm testing this upcoming week.
+Valentin, may I apply your Signed-off-by?  Otherwise, I am liable to
+again get it into -next where it is not yet ready to go.  But without it,
+rcutorture gets noise from 12e08bc4d ("sched/hotplug: Consolidate task
+migration on CPU unplug") that is otherwise difficult to diagnose.  :-/
 
-/Jarkko
+							Thanx, Paul
