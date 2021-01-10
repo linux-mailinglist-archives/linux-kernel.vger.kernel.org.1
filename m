@@ -2,79 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FB42F0605
+	by mail.lfdr.de (Postfix) with ESMTP id DF62B2F0606
 	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 09:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbhAJIjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 03:39:31 -0500
-Received: from correo.us.es ([193.147.175.20]:38742 "EHLO mail.us.es"
+        id S1726641AbhAJIkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 03:40:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725807AbhAJIja (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 03:39:30 -0500
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 22F5DD2AE8
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 09:38:07 +0100 (CET)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 15F88DA78E
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 09:38:07 +0100 (CET)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 03743DA798; Sun, 10 Jan 2021 09:38:07 +0100 (CET)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WELCOMELIST,USER_IN_WHITELIST autolearn=disabled
-        version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id A38F6DA730;
-        Sun, 10 Jan 2021 09:38:04 +0100 (CET)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Sun, 10 Jan 2021 09:38:04 +0100 (CET)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 74006426CC84;
-        Sun, 10 Jan 2021 09:38:04 +0100 (CET)
-Date:   Sun, 10 Jan 2021 09:38:46 +0100
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     20210104110723.43564-1-yiche@redhat.com
-Cc:     Chen Yi <yiche@redhat.com>, Shuah Khan <shuah@kernel.org>,
-        Florian Westphal <fw@strlen.de>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Leo <liuhangbin@gmail.com>
-Subject: Re: [PATCH] selftests: netfilter: Pass family parameter "-f" to
- conntrack tool
-Message-ID: <20210110083846.GA28611@salvia>
-References: <20210105153120.42710-1-yiche@redhat.com>
+        id S1726228AbhAJIkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 03:40:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D0AF23108;
+        Sun, 10 Jan 2021 08:39:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610267981;
+        bh=7IwDG2usy/oykAkzEN3CCqnxLOEYuGGq8AomKeUOZZo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d1GaD7vZV6SdGUOFJ8jaTAoXOka4aWfVLd7NG+dwwm7rdYEnF/CXtTf2JMziAyX1V
+         9MsynHj80OO7XEJyhHiqI1exTGqVQ3mMPzk/iu4F7D3wlPDevFG9RCq2wv2MQixpld
+         yKPSZgr+/lNjQ231+LDKqa/bZJzAYnnHpbi0fI+k=
+Date:   Sun, 10 Jan 2021 09:39:37 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     zhenwei pi <pizhenwei@bytedance.com>
+Cc:     arnd@arndb.de, pbonzini@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] misc: pvpanic: introduce device capability
+Message-ID: <X/q9SQllBgySgDd2@kroah.com>
+References: <20210110053719.3038348-1-pizhenwei@bytedance.com>
+ <20210110053719.3038348-2-pizhenwei@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210105153120.42710-1-yiche@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+In-Reply-To: <20210110053719.3038348-2-pizhenwei@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 11:31:20PM +0800, Chen Yi wrote:
-> Fix nft_conntrack_helper.sh false fail report:
+On Sun, Jan 10, 2021 at 01:37:18PM +0800, zhenwei pi wrote:
+> According to pvpanic spec:
+> https://git.qemu.org/?p=qemu.git;a=blob_plain;f=docs/specs/pvpanic.txt
 > 
-> 1) Conntrack tool need "-f ipv6" parameter to show out ipv6 traffic items.
+> The guest should determine pvpanic capability by RDPT, so initialize
+> capability during device probing. There is no need to register panic
+> notifier callback function if no events supported.
 > 
-> 2) Sleep 1 second after background nc send packet, to make sure check
-> is after this statement executed.
+> Before sending event to host side, check capability firstly.
 > 
-> False report:
-> FAIL: ns1-lkjUemYw did not show attached helper ip set via ruleset
-> PASS: ns1-lkjUemYw connection on port 2121 has ftp helper attached
-> ...
+> Suggested by Greg KH, use sysfs to expose capability to user space,
+> also add new sysfs attribute in document.
 > 
-> After fix:
-> PASS: ns1-2hUniwU2 connection on port 2121 has ftp helper attached
-> PASS: ns2-2hUniwU2 connection on port 2121 has ftp helper attached
-> ...
+> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+> ---
+>  .../ABI/testing/sysfs-bus-pci-devices-pvpanic |  7 ++++
+>  drivers/misc/pvpanic.c                        | 33 ++++++++++++++++---
+>  2 files changed, 35 insertions(+), 5 deletions(-)
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic b/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
+> new file mode 100644
+> index 000000000000..57d014a2c339
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
+> @@ -0,0 +1,7 @@
+> +What:		/sys/devices/pci0000:00/*/QEMU0001:00/capability
+> +Date:		Jan 2021
+> +Contact:	zhenwei pi <pizhenwei@bytedance.com>
+> +Description:
+> +		Read-only attribute. Capabilities of pvpanic device
+> +		which are supported by QEMU.
+> +		Format: %s.
 
-Applied.
+Again, you are not saying exactly what the %s is, shouldn't you?  And
+this does NOT match with the code below :(
+
+> diff --git a/drivers/misc/pvpanic.c b/drivers/misc/pvpanic.c
+> index 951b37da5e3c..c2f6a9e866b3 100644
+> --- a/drivers/misc/pvpanic.c
+> +++ b/drivers/misc/pvpanic.c
+> @@ -19,6 +19,22 @@
+>  #include <uapi/misc/pvpanic.h>
+>  
+>  static void __iomem *base;
+> +static unsigned int capability = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
+> +
+> +static ssize_t capability_show(struct device *dev,
+> +			       struct device_attribute *attr, char *buf)
+> +{
+> +	return sprintf(buf, "%s%s",
+> +		capability & PVPANIC_PANICKED ? "PANICKED[BIT 0]\n" : "",
+> +		capability & PVPANIC_CRASH_LOADED ? "CRASH_LOADED[BIT 1]\n" : "");
+
+Why do you have "BIT X" in here?  Why would userspace care?
+
+The rule for sysfs is "one value per file".  You just printed out
+multiple lines.  Not good, and totally not allowed.
+
+Also please use sysfs_emit().
+
+thanks,
+
+greg k-h
