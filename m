@@ -2,41 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729322F1750
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6186A2F1790
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:09:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730222AbhAKOE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:04:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50872 "EHLO mail.kernel.org"
+        id S1730008AbhAKNDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:03:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727240AbhAKNEe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:04:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D61F225AC;
-        Mon, 11 Jan 2021 13:04:18 +0000 (UTC)
+        id S1729821AbhAKND2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:03:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2764722AAB;
+        Mon, 11 Jan 2021 13:02:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370258;
-        bh=wgeo/9ZxwN7eV7fX8EbVut2OEmo91pKsRnd8cwzn0nU=;
+        s=korg; t=1610370162;
+        bh=Dq0z0O5AmeE8bFMXWQl6BMHvcoiZexzW3UgJHn+oMvg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uEpjuaNwag6mtUel4trfCFoSnirfJAam+DQIrAbJ6BMVGHN5N/GT+2vbcGOjNPJpR
-         N3trf9f4UBOV0L2/vT3iMKecuS9ZP0xh9Ph5GjnVQ51yhp5OaZY5JYc18clE2EGXUo
-         S9h4oxHHt/3aIFhggNFE08mUvMvUDvdW7v5Rixyc=
+        b=bdBfYPPlCG5ZAjeEF0dab2izXO+GbcXEAmGSV8kLTCIxgWwHxWbIymMGZ70E51rB7
+         xONTkkeqQv+cKZo1WuI9GG2MxCWzLGj/f7XQ/rHxyJ4NRSvfFlL6PRaCEDQRtL6nV7
+         u8ulvvZCU5lYkkBPjZ6gL4tbPNqb4UqvQKDVRK4I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leonard Crestez <leonard.crestez@nxp.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Kieran Bingham <kieran@ksquared.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 18/45] scripts/gdb: lx-dmesg: cast log_buf to void* for addr fetch
-Date:   Mon, 11 Jan 2021 14:00:56 +0100
-Message-Id: <20210111130034.536509884@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 4.4 26/38] usb: gadget: select CONFIG_CRC32
+Date:   Mon, 11 Jan 2021 14:00:58 +0100
+Message-Id: <20210111130033.718515323@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130033.676306636@linuxfoundation.org>
-References: <20210111130033.676306636@linuxfoundation.org>
+In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
+References: <20210111130032.469630231@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,50 +38,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leonard Crestez <leonard.crestez@nxp.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit c454756f47277b651ad41a5a163499294529e35d upstream
+commit d7889c2020e08caab0d7e36e947f642d91015bd0 upstream.
 
-In some cases it is possible for the str() conversion here to throw
-encoding errors because log_buf might not point to valid ascii.  For
-example:
+Without crc32 support, this driver fails to link:
 
-  (gdb) python print str(gdb.parse_and_eval("log_buf"))
-  Traceback (most recent call last):
-    File "<string>", line 1, in <module>
-  UnicodeEncodeError: 'ascii' codec can't encode character u'\u0303' in
-  	position 24: ordinal not in range(128)
+arm-linux-gnueabi-ld: drivers/usb/gadget/function/f_eem.o: in function `eem_unwrap':
+f_eem.c:(.text+0x11cc): undefined reference to `crc32_le'
+arm-linux-gnueabi-ld: drivers/usb/gadget/function/f_ncm.o:f_ncm.c:(.text+0x1e40):
+more undefined references to `crc32_le' follow
 
-Avoid this by explicitly casting to (void *) inside the gdb expression.
+Fixes: 6d3865f9d41f ("usb: gadget: NCM: Add transmit multi-frame.")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210103214224.1996535-1-arnd@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Link: http://lkml.kernel.org/r/ba6f85dbb02ca980ebd0e2399b0649423399b565.1498481469.git.leonard.crestez@nxp.com
-Signed-off-by: Leonard Crestez <leonard.crestez@nxp.com>
-Reviewed-by: Jan Kiszka <jan.kiszka@siemens.com>
-Cc: Jason Wessel <jason.wessel@windriver.com>
-Cc: Kieran Bingham <kieran@ksquared.org.uk>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/gdb/linux/dmesg.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/gadget/Kconfig |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/scripts/gdb/linux/dmesg.py b/scripts/gdb/linux/dmesg.py
-index 5afd1098e33a1..f5a030333dfd8 100644
---- a/scripts/gdb/linux/dmesg.py
-+++ b/scripts/gdb/linux/dmesg.py
-@@ -24,7 +24,7 @@ class LxDmesg(gdb.Command):
- 
-     def invoke(self, arg, from_tty):
-         log_buf_addr = int(str(gdb.parse_and_eval(
--            "'printk.c'::log_buf")).split()[0], 16)
-+            "(void *)'printk.c'::log_buf")).split()[0], 16)
-         log_first_idx = int(gdb.parse_and_eval("'printk.c'::log_first_idx"))
-         log_next_idx = int(gdb.parse_and_eval("'printk.c'::log_next_idx"))
-         log_buf_len = int(gdb.parse_and_eval("'printk.c'::log_buf_len"))
--- 
-2.27.0
-
+--- a/drivers/usb/gadget/Kconfig
++++ b/drivers/usb/gadget/Kconfig
+@@ -267,6 +267,7 @@ config USB_CONFIGFS_NCM
+ 	depends on NET
+ 	select USB_U_ETHER
+ 	select USB_F_NCM
++	select CRC32
+ 	help
+ 	  NCM is an advanced protocol for Ethernet encapsulation, allows
+ 	  grouping of several ethernet frames into one USB transfer and
+@@ -316,6 +317,7 @@ config USB_CONFIGFS_EEM
+ 	depends on NET
+ 	select USB_U_ETHER
+ 	select USB_F_EEM
++	select CRC32
+ 	help
+ 	  CDC EEM is a newer USB standard that is somewhat simpler than CDC ECM
+ 	  and therefore can be supported by more hardware.  Technically ECM and
 
 
