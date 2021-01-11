@@ -2,107 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 823262F11F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:55:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E98F2F11F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:57:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729867AbhAKLyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:54:46 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17734 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729758AbhAKLyq (ORCPT
+        id S1729278AbhAKL4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:56:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727143AbhAKL4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:54:46 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10BBabIh196079;
-        Mon, 11 Jan 2021 06:54:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : in-reply-to : references : date : message-id :
- mime-version : content-type; s=pp1;
- bh=or+DMSFNahJXJOExLmpU8igAXrlWM7Vrz+hgQRMPi0s=;
- b=B0OTdrdgnYcqT7pzlRP0wsSlPvzL2tnndw+5b+IH5vhdSddu/X0F6jYNNa4fzl0a2cmi
- immmVVwbDID2anUeBPM2a7U3Dt7sgXbq2emRfoiBO6TnwM2Eimszoi1lpAD4lHdOZawp
- 150hIr9yfAx1nROdEntPAyh0ZPovLwczw4vsDgio4nypG78NxdfFsyasns2coK7/2aDB
- XUBpd9A7Cve4gxscoLqzghWOnw/NFda8ZlSm1gbcQiiKyGGMoNyZl0c8dJpwVmzMgt6w
- DS6UWDRDQ+0HwPwgAAUjtx+v+eV5HaLJB2X5VQhnVUAyE7rERto1YjUt59VqhGxwG6xg Fg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 360mr4ja2p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Jan 2021 06:54:03 -0500
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10BBdVb7014162;
-        Mon, 11 Jan 2021 06:54:02 -0500
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 360mr4ja22-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Jan 2021 06:54:02 -0500
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10BBm38O024180;
-        Mon, 11 Jan 2021 11:54:01 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma02fra.de.ibm.com with ESMTP id 35y448h4uv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Jan 2021 11:54:00 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10BBrw2U31195456
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Jan 2021 11:53:58 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9A87C4C04A;
-        Mon, 11 Jan 2021 11:53:58 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5E64F4C040;
-        Mon, 11 Jan 2021 11:53:58 +0000 (GMT)
-Received: from oc8242746057.ibm.com (unknown [9.171.88.27])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon, 11 Jan 2021 11:53:58 +0000 (GMT)
-From:   Alexander Egorenkov <egorenar@linux.ibm.com>
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Mike Galbraith <efault@gmx.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: regression: 9a56493f6942 "uts: Use generic ns_common::count"
- broke makedumpfile 1.6.7
-In-Reply-To: <6933cde2-7d43-7d7e-066c-1c4a13c752dd@virtuozzo.com>
-In-Reply-To: 
-References: <7b13506084a015d0256222cdd278fe461cdd4a74.camel@gmx.de>
- <6933cde2-7d43-7d7e-066c-1c4a13c752dd@virtuozzo.com>
-Date:   Mon, 11 Jan 2021 12:53:57 +0100
-Message-ID: <87im83u1t6.fsf@oc8242746057.ibm.com>
+        Mon, 11 Jan 2021 06:56:45 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB818C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 03:56:04 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id q5so18030742ilc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 03:56:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uA3TKz8uECHG3k4yaFsUscxG5WEGEfU+DDgmBoAkS/o=;
+        b=cIvAbCgayxCKoOYNityjL7wT9stWwPvV5eiCz7X38vD43GczvDqDpmuctteU9QyQ+e
+         Km9UDE+qcaQ+wrWWNECGFkMSGJXhz5AW0uKH50716CeXLrfWfAe0i4OFHhFv79uQxpSy
+         gnOsEH9u8HNzIAWUO1mhanlP45jDlmTwtKBbU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uA3TKz8uECHG3k4yaFsUscxG5WEGEfU+DDgmBoAkS/o=;
+        b=cIJasr2Nm0a5JrXWULyX8A1FsnUPWXg0MR/Pb6c5zeT7uALDGnTQBxhoHu/g4W2V6O
+         9VNSTamIjlP108Hfzfrsc5fnCOoDv2ZXtqN+3ACGi27/tMBYVeFCXpfN6Ehf1Til4qxi
+         2B/F+M2i197OuG24sS9ue+JbD/t65VbUhL1JpAd6aZ504kno3WnASlJwEHYBbqN7ZS1h
+         JYoGbQsjFFA+G8x1Nf++B0f3gBGpDx3bf1KQnXih/mg050ClmGNefzmiiKXsPcBSSmSg
+         rWouxkjWoj5VA/DNsvCjB5/26TZF13kPuZMjGCjm0IMi5bILMkiNAVQ8XPCs0tKX4jTH
+         TSxw==
+X-Gm-Message-State: AOAM530JfKYKIIhs4qHpj8i39XKWsIvmVgs8gS8jCPPSizZ0pAm3DW4E
+        MCtitAGXawT38bUUhHvtRKvoluHyl5EM6g==
+X-Google-Smtp-Source: ABdhPJwK/DmSe3X7odTISfhg7HH0/L5LEtNtlfVmnRHbOFWmzATu3FL+sgBQyMG92vC1o/wU3F9h9w==
+X-Received: by 2002:a92:4906:: with SMTP id w6mr15014286ila.234.1610366164109;
+        Mon, 11 Jan 2021 03:56:04 -0800 (PST)
+Received: from mail-io1-f43.google.com (mail-io1-f43.google.com. [209.85.166.43])
+        by smtp.gmail.com with ESMTPSA id z4sm10404277ioj.55.2021.01.11.03.56.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 03:56:03 -0800 (PST)
+Received: by mail-io1-f43.google.com with SMTP id q1so3078606ion.8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 03:56:03 -0800 (PST)
+X-Received: by 2002:a02:c042:: with SMTP id u2mr13813149jam.32.1610366162852;
+ Mon, 11 Jan 2021 03:56:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-11_23:2021-01-11,2021-01-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- spamscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0 clxscore=1011
- priorityscore=1501 adultscore=0 mlxscore=0 mlxlogscore=886 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101110069
+References: <20210111113529.45488-1-ribalda@chromium.org> <ef218bf2bd948961079237686b58a00ca1b125bf.camel@collabora.com>
+In-Reply-To: <ef218bf2bd948961079237686b58a00ca1b125bf.camel@collabora.com>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Mon, 11 Jan 2021 12:55:52 +0100
+X-Gmail-Original-Message-ID: <CANiDSCsX3k7xeC7Sr2T2SxHqspay+i054rAuv-NYCQpFRNuGeg@mail.gmail.com>
+Message-ID: <CANiDSCsX3k7xeC7Sr2T2SxHqspay+i054rAuv-NYCQpFRNuGeg@mail.gmail.com>
+Subject: Re: [PATCH] hantro: Format IOCTLs compliance fixes
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-rockchip@lists.infradead.org, devel@driverdev.osuosl.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kirill Tkhai <ktkhai@virtuozzo.com> writes:
+Hi Ezequiel
 
-> Hi, Alexander,
+On Mon, Jan 11, 2021 at 12:48 PM Ezequiel Garcia <ezequiel@collabora.com> wrote:
 >
-> On 16.12.2020 14:02, Mike Galbraith wrote:
->> Greetings,
->> 
->> With this commit, bisected and confirmed, kdump stops working here,
->> makedumpfile saying "check_release: Can't get the kernel version".
+> Hi Ricardo,
 >
-> hasn't your commit 55d9e11398a4 "kdump: append uts_namespace.name offset to VMCOREINFO"
-> fixed this issue?
+> On Mon, 2021-01-11 at 12:35 +0100, Ricardo Ribalda wrote:
+> > Clear the reserved fields.
+> >
+> > Fixes:
+> >   fail: v4l2-test-formats.cpp(482): pix_mp.plane_fmt[0].reserved not zeroed
+> > test VIDIOC_TRY_FMT: FAIL
+> >   fail: v4l2-test-formats.cpp(482): pix_mp.plane_fmt[0].reserved not zeroed
+> > test VIDIOC_S_FMT: FAIL
+> >
+> > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> > ---
+> >  drivers/staging/media/hantro/hantro_v4l2.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/drivers/staging/media/hantro/hantro_v4l2.c b/drivers/staging/media/hantro/hantro_v4l2.c
+> > index b668a82d40ad..9b384fbffc93 100644
+> > --- a/drivers/staging/media/hantro/hantro_v4l2.c
+> > +++ b/drivers/staging/media/hantro/hantro_v4l2.c
+> > @@ -239,6 +239,7 @@ static int hantro_try_fmt(const struct hantro_ctx *ctx,
+> >         const struct hantro_fmt *fmt, *vpu_fmt;
+> >         bool capture = V4L2_TYPE_IS_CAPTURE(type);
+> >         bool coded;
+> > +       int i;
+> >
+> >         coded = capture == ctx->is_encoder;
+> >
+> > @@ -293,6 +294,10 @@ static int hantro_try_fmt(const struct hantro_ctx *ctx,
+> >                         pix_mp->width * pix_mp->height * fmt->max_depth;
+> >         }
+> >
+> > +       for (i = 0; i < pix_mp->num_planes; i++)
+> > +               memset(pix_mp->plane_fmt[i].reserved, 0,
+> > +                      sizeof(pix_mp->plane_fmt[i].reserved));
+> > +
 >
-> What problem with offset we meet here in case of uts_namespace is even marked with __randomize_layout?
->
-> Kirill
+> This looks like something that should be handled at the core,
+> probably in drivers/media/v4l2-core/v4l2-ioctl.c::v4l_try_fmt().
 
-Hi Kirill,
+The core does clear the reserved field from v4l2_pix_format_mplane,
+but not the reserved field for every plane. I can try to add it to the
+core as well. At least these drivers have code duplication:
 
-the makedumpfile fix has been applied on Dec 17 2020.
-makedumpfile complains about linux kernel version with newer ones but it should still work.
+git grep reserved | grep memset | grep plane_fmt
+drivers/media/pci/intel/ipu3/ipu3-cio2.c:
+memset(mpix->plane_fmt[0].reserved, 0,
+drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c:
+memset(pix_mp->plane_fmt[i].reserved, 0,
+drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c:
+memset(&(pix_fmt_mp->plane_fmt[i].reserved[0]), 0x0,
+drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c:
+memset(&(pix_fmt_mp->plane_fmt[i].reserved[0]), 0x0,
+drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c:
+memset(&(pix->plane_fmt[i].reserved[0]), 0x0,
+drivers/media/platform/rcar_fdp1.c:
+memset(pix->plane_fmt[i].reserved, 0,
+drivers/media/platform/rcar_fdp1.c:
+memset(pix->plane_fmt[2].reserved, 0,
+drivers/media/platform/rcar_jpu.c:
+memset(pix->plane_fmt[0].reserved, 0,
+drivers/media/platform/rcar_jpu.c:
+memset(pix->plane_fmt[i].reserved, 0,
+drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c:
+memset(pix->plane_fmt[i].reserved, 0,
+drivers/media/platform/ti-vpe/vpe.c:
+memset(plane_fmt->reserved, 0, sizeof(plane_fmt->reserved));
+drivers/media/test-drivers/vicodec/vicodec-core.c:
+memset(pix_mp->plane_fmt[0].reserved, 0,
+drivers/staging/media/hantro/hantro_v4l2.c:
+memset(pix_mp->plane_fmt[i].reserved, 0,
+drivers/staging/media/ipu3/ipu3-v4l2.c: memset(pixm->plane_fmt[0].reserved, 0,
 
-Regards
-Alex
+>
+> Thanks,
+> Ezequiel
+>
+
+
+-- 
+Ricardo Ribalda
