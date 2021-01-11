@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F28D2F1651
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:52:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE4E2F167E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:53:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730746AbhAKNJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:09:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55254 "EHLO mail.kernel.org"
+        id S1731124AbhAKNxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:53:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730758AbhAKNIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:08:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2188D2250F;
-        Mon, 11 Jan 2021 13:07:52 +0000 (UTC)
+        id S1729317AbhAKNIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:08:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 710722251F;
+        Mon, 11 Jan 2021 13:07:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370473;
-        bh=fMvEGgNJiH3fN5VWU5fVlLjxkoXawqbWiqvbbcugPIQ=;
+        s=korg; t=1610370475;
+        bh=03QIzvnRplZlJC1D4Z2elr/xFNXfVFUhnrgchIP0d/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ql5JlvLA/sHVyUVyzUi9NTeO89qNjtWXzSuDV6g62FVFCDNd8cd7LBvwxuumYR4gW
-         DiUxFGK+KJAf0BCG/OG4mSd4invoEcfP2b1fPQhx4I/s4Kq9TxY44uTkdJCh9wG/FW
-         ayOsSjxaf2ISzCqlE//ccoYxKYV0LqPh2cQFN+bQ=
+        b=IlXgZpGhzxprCfEiLmHvPgwkEYTsH86Admq9CWHrXCDzsTJMh3SfL2G3z013Xvgbn
+         qVq1iY02DlF6H5sQ0/jxY7SNOASmbTxUq55OvsYFz5G75ccEX/Fq/rfJesfWjxnfm+
+         Iz58b8MT8VpqQ++YwokOf7aPxEJZ2m49dsMm9pLs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 38/77] net: systemport: set dev->max_mtu to UMAC_MAX_MTU_SIZE
-Date:   Mon, 11 Jan 2021 14:01:47 +0100
-Message-Id: <20210111130038.242053796@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH 4.19 39/77] Bluetooth: revert: hci_h5: close serdev device and free hu in h5_close
+Date:   Mon, 11 Jan 2021 14:01:48 +0100
+Message-Id: <20210111130038.290994079@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
 References: <20210111130036.414620026@linuxfoundation.org>
@@ -40,32 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 54ddbdb024882e226055cc4c3c246592ddde2ee5 ]
+commit 5c3b5796866f85354a5ce76a28f8ffba0dcefc7e upstream.
 
-The driver is already allocating receive buffers of 2KiB and the
-Ethernet MAC is configured to accept frames up to UMAC_MAX_MTU_SIZE.
+There have been multiple revisions of the patch fix the h5->rx_skb
+leak. Accidentally the first revision (which is buggy) and v5 have
+both been merged:
 
-Fixes: bfcb813203e6 ("net: dsa: configure the MTU for switch ports")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-Link: https://lore.kernel.org/r/20201218173843.141046-1-f.fainelli@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+v1 commit 70f259a3f427 ("Bluetooth: hci_h5: close serdev device and free
+hu in h5_close");
+v5 commit 855af2d74c87 ("Bluetooth: hci_h5: fix memory leak in h5_close")
+
+The correct v5 makes changes slightly higher up in the h5_close()
+function, which allowed both versions to get merged without conflict.
+
+The changes from v1 unconditionally frees the h5 data struct, this
+is wrong because in the serdev enumeration case the memory is
+allocated in h5_serdev_probe() like this:
+
+        h5 = devm_kzalloc(dev, sizeof(*h5), GFP_KERNEL);
+
+So its lifetime is tied to the lifetime of the driver being bound
+to the serdev and it is automatically freed when the driver gets
+unbound. In the serdev case the same h5 struct is re-used over
+h5_close() and h5_open() calls and thus MUST not be free-ed in
+h5_close().
+
+The serdev_device_close() added to h5_close() is incorrect in the
+same way, serdev_device_close() is called on driver unbound too and
+also MUST no be called from h5_close().
+
+This reverts the changes made by merging v1 of the patch, so that
+just the changes of the correct v5 remain.
+
+Cc: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/broadcom/bcmsysport.c |    1 +
- 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/broadcom/bcmsysport.c
-+++ b/drivers/net/ethernet/broadcom/bcmsysport.c
-@@ -2507,6 +2507,7 @@ static int bcm_sysport_probe(struct plat
- 	/* HW supported features, none enabled by default */
- 	dev->hw_features |= NETIF_F_RXCSUM | NETIF_F_HIGHDMA |
- 				NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM;
-+	dev->max_mtu = UMAC_MAX_MTU_SIZE;
+---
+ drivers/bluetooth/hci_h5.c |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+--- a/drivers/bluetooth/hci_h5.c
++++ b/drivers/bluetooth/hci_h5.c
+@@ -263,12 +263,8 @@ static int h5_close(struct hci_uart *hu)
+ 	if (h5->vnd && h5->vnd->close)
+ 		h5->vnd->close(h5);
  
- 	/* Request the WOL interrupt and advertise suspend if available */
- 	priv->wol_irq_disabled = 1;
+-	if (hu->serdev)
+-		serdev_device_close(hu->serdev);
+-
+-	kfree_skb(h5->rx_skb);
+-	kfree(h5);
+-	h5 = NULL;
++	if (!hu->serdev)
++		kfree(h5);
+ 
+ 	return 0;
+ }
 
 
