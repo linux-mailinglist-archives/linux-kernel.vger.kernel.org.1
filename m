@@ -2,120 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B04B02F20AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5202F20B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:24:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404211AbhAKUYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 15:24:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390366AbhAKUYB (ORCPT
+        id S2404239AbhAKUYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 15:24:39 -0500
+Received: from mail-oi1-f180.google.com ([209.85.167.180]:42287 "EHLO
+        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403977AbhAKUY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:24:01 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0D1C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 12:23:21 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id qw4so162293ejb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 12:23:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bztGlj0aKk1h/1eIfyJjVJW7vahRd8KxmYcTiDCcm3U=;
-        b=SQFbpF1X4gjqkNoz6KSst5u0RFk2UjYwj0lYYHBRSDBA+uUDlzbZ4jfbJLM1w4zPXr
-         llmGtJAmxqx8cRU1RsXlyuqDnNTdzX8TkMiRG6Mz3ENqTNdvotNB5Ue44LALDuoi+qBm
-         mSYvaLvBh+249E4073uXJTxkKVYxGdZ5mQWKSYV/p8NfaOM9o5iK7Us8fGPZ3Ulh4jmB
-         Ke0PnahKwsVGmEhfzFWFFl8XHa/rTibjbKicJOk8+StKitixnjgJvPFC8DRRDJ0p5Pko
-         orT2xNwwqJlp0xNTFwgdM7A8fg9h9w/NVHLywbtbcOuTdjD1nJ3czTeFp5OlBarfLKKG
-         CdCQ==
+        Mon, 11 Jan 2021 15:24:27 -0500
+Received: by mail-oi1-f180.google.com with SMTP id l200so667997oig.9;
+        Mon, 11 Jan 2021 12:24:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bztGlj0aKk1h/1eIfyJjVJW7vahRd8KxmYcTiDCcm3U=;
-        b=edsEQLepQtL9CO0B80l0qL6LoBqkWZWz0hjnnQMg1IVM9JjK9jl1bWkWGlmqpvU1wh
-         YDKpIchEJ07xd9f8Tuxtg1h9pBjdjMmEWq2QpKF7gxq74BY/JyL6R9GXj2GjRRxH5ozh
-         1kp5ScdzfGdg9Lg/kfeRZtznI4exNHEeFNAMY1rLrkMCkDwb69mmhgQH04KXQXdhksV9
-         2JxTSPUpckDEhR6PPfYibdqvWtZUkXdiiaKB/U8R/rybeXRhvKWRawP6+j/aYXazyqU9
-         XLMLdWnhftNEw7PYk9KkrmGaRvvlderA7x7ZV+zPTZ73FqgRC2TU1JTWYdJ1dHDqKKTd
-         iDNw==
-X-Gm-Message-State: AOAM5306HTO/GkLTQiBs+WCHVRo0HjLgfXqWrBJwdVJdVI7tGxw2fkMY
-        0vm4bfiqIg9Qe4imcpovPwvr3GulXknhTcoFH5Mg
-X-Google-Smtp-Source: ABdhPJyss7irrpvrcZKKEGeiutRfKqSI+AnHG3Lnd3FnhacwysvNmvK1KutY85D6zkc62M+ly/fB0OrNHC7Etz3+Fhc=
-X-Received: by 2002:a17:906:b002:: with SMTP id v2mr784732ejy.531.1610396599813;
- Mon, 11 Jan 2021 12:23:19 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=N+l7oEoC2Gtdd3tsUSXfbCD3VNBOdwhPR2for7AGSP0=;
+        b=BfeH9dnmszit+bA8pGswZrF7E/0dltNYlKrH7qRsb9tK8JYOlhSOZgcA3jaQY9IUJK
+         8GdZYRW0bCFRk2lCdstkkAUZf6RbpSb05/VpxBfr9soFUnYCAG1HNttS7AWVJFvmstgi
+         /klIi7UG2VoEfpNzfFrbJ3cYCvKBw4rD0Ngt+oJpqxT2SMiQKWGzRWMe6FrsIXLlEVnr
+         my3QBk6LnzX1KrSFs5jqdPmdXcBAdspNmOIEIYy0+Teo6QeUg62MM5LDNxzmp2/bNykG
+         96y5lnGH78/t0WNPXsY0fdgW2JfPZDpnpuYbEWTly+0fNESMhd4Obck/tNz0FAwh7tS2
+         r2BQ==
+X-Gm-Message-State: AOAM531UHItUO4sNLoEl2TBX++V3yfSbE9kzAxKT80ODd2e0aD5ooibM
+        GHmNRvYku2HofybdZb16LQ==
+X-Google-Smtp-Source: ABdhPJwWxknOlQUQyjNGUH3P7COKkSvblU0b4yZxPrYfjVei7f813EPmKrrInAQ0BrcWWGXpSQEl5g==
+X-Received: by 2002:a05:6808:8f0:: with SMTP id d16mr344964oic.47.1610396626307;
+        Mon, 11 Jan 2021 12:23:46 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v4sm171269otk.50.2021.01.11.12.23.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 12:23:45 -0800 (PST)
+Received: (nullmailer pid 3005685 invoked by uid 1000);
+        Mon, 11 Jan 2021 20:23:44 -0000
+Date:   Mon, 11 Jan 2021 14:23:44 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Hector Yuan <hector.yuan@mediatek.com>
+Cc:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wsd_upstream@mediatek.com
+Subject: Re: [PATCH v10 2/2] dt-bindings: cpufreq: add bindings for MediaTek
+ cpufreq HW
+Message-ID: <20210111202344.GA2999777@robh.at.kernel.org>
+References: <1609222629-2979-1-git-send-email-hector.yuan@mediatek.com>
+ <1609222629-2979-3-git-send-email-hector.yuan@mediatek.com>
 MIME-Version: 1.0
-References: <20210111081821.3041587-1-morbo@google.com> <20210111201224.l5r2zxuyd7ayszke@google.com>
-In-Reply-To: <20210111201224.l5r2zxuyd7ayszke@google.com>
-From:   Bill Wendling <morbo@google.com>
-Date:   Mon, 11 Jan 2021 12:23:08 -0800
-Message-ID: <CAGG=3QWo5_wwTMHtif4BzFssByaW1ScvpaEH1p1nZ6ymVggLjA@mail.gmail.com>
-Subject: Re: [PATCH] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Fangrui Song <maskray@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1609222629-2979-3-git-send-email-hector.yuan@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 12:12 PM Fangrui Song <maskray@google.com> wrote:
->
-> On 2021-01-11, 'Bill Wendling' via Clang Built Linux wrote:
-> >From: Sami Tolvanen <samitolvanen@google.com>
-> >
-> >Enable the use of clang's Profile-Guided Optimization[1]. To generate a
-> >profile, the kernel is instrumented with PGO counters, a representative
-> >workload is run, and the raw profile data is collected from
-> >/sys/kernel/debug/pgo/profraw.
-> >
-> >The raw profile data must be processed by clang's "llvm-profdata" tool before
-> >it can be used during recompilation:
-> >
-> >  $ cp /sys/kernel/debug/pgo/profraw vmlinux.profraw
-> >  $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
-> >
-> >Multiple raw profiles may be merged during this step.
-> >
-> >The data can be used either by the compiler if LTO isn't enabled:
-> >
-> >    ... -fprofile-use=vmlinux.profdata ...
-> >
-> >or by LLD if LTO is enabled:
-> >
-> >    ... -lto-cs-profile-file=vmlinux.profdata ...
->
-> This LLD option does not exist.
-> LLD does have some `--lto-*` options but the `-lto-*` form is not supported
-> (it clashes with -l) https://reviews.llvm.org/D79371
->
-That's strange. I've been using that option for years now. :-) Is this
-a recent change?
+On Tue, Dec 29, 2020 at 02:17:09PM +0800, Hector Yuan wrote:
+> From: "Hector.Yuan" <hector.yuan@mediatek.com>
+> 
+> Add devicetree bindings for MediaTek HW driver.
+> 
+> Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
+> ---
+>  .../bindings/cpufreq/cpufreq-mediatek-hw.yaml      |  116 ++++++++++++++++++++
+>  1 file changed, 116 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> new file mode 100644
+> index 0000000..53e0eb3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
+> @@ -0,0 +1,116 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/cpufreq/cpufreq-mediatek-hw.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek's CPUFREQ Bindings
+> +
+> +maintainers:
+> +  - Hector Yuan <hector.yuan@mediatek.com>
+> +
+> +description:
+> +  CPUFREQ HW is a hardware engine used by MediaTek
+> +  SoCs to manage frequency in hardware. It is capable of controlling frequency
+> +  for multiple clusters.
+> +
+> +properties:
+> +  compatible:
+> +    const: mediatek,cpufreq-hw
+> +
+> +  reg:
+> +    minItems: 1
+> +    maxItems: 2
+> +    description: |
+> +      Addresses and sizes for the memory of the
+> +      HW bases in each frequency domain.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: true
 
-> (There is an earlier -fprofile-instr-generate which does
-> instrumentation in Clang, but the option does not have broad usage.
-> It is used more for code coverage, not for optimization.
-> Noticeably, it does not even implement the Kirchhoff's current law
-> optimization)
->
-Right. I've been told outside of this email that -fprofile-generate is
-the prefered flag to use.
+This is only correct on common bindings which are incomplete. You need 
+to define '#performance-domain-cells'.
 
-> -fprofile-use= is used by both regular PGO and context-sensitive PGO (CSPGO).
->
-> clang -flto=thin -fprofile-use= passes -plugin-opt=cs-profile-path= to the linker.
-> For regular PGO, this option is effectively a no-op (confirmed with CSPGO main developer).
->
-> So I think the "or by LLD if LTO is enabled:" part should be removed.
+And this is all dependent on performance-domains binding being accepted.
 
-But what if you specify the linking step explicitly? Linux doesn't
-call "clang" when linking, but "ld.lld".
-
--bw
+> +
+> +examples:
+> +  - |
+> +    cpus {
+> +            #address-cells = <1>;
+> +            #size-cells = <0>;
+> +
+> +            cpu0: cpu@0 {
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a55";
+> +                enable-method = "psci";
+> +                performance-domains = <&performance 0>;
+> +                reg = <0x000>;
+> +            };
+> +
+> +            cpu1: cpu@100 {
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a55";
+> +                enable-method = "psci";
+> +                performance-domains = <&performance 0>;
+> +                reg = <0x100>;
+> +            };
+> +
+> +            cpu2: cpu@200 {
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a55";
+> +                enable-method = "psci";
+> +                performance-domains = <&performance 0>;
+> +                reg = <0x200>;
+> +            };
+> +
+> +            cpu3: cpu@300 {
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a55";
+> +                enable-method = "psci";
+> +                performance-domains = <&performance 0>;
+> +                reg = <0x300>;
+> +            };
+> +
+> +            cpu4: cpu@400 {
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a55";
+> +                enable-method = "psci";
+> +                performance-domains = <&performance 1>;
+> +                reg = <0x400>;
+> +            };
+> +
+> +            cpu5: cpu@500 {
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a55";
+> +                enable-method = "psci";
+> +                performance-domains = <&performance 1>;
+> +                reg = <0x500>;
+> +            };
+> +
+> +            cpu6: cpu@600 {
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a75";
+> +                enable-method = "psci";
+> +                performance-domains = <&performance 1>;
+> +                reg = <0x600>;
+> +            };
+> +
+> +            cpu7: cpu@700 {
+> +                device_type = "cpu";
+> +                compatible = "arm,cortex-a75";
+> +                enable-method = "psci";
+> +                performance-domains = <&performance 1>;
+> +                reg = <0x700>;
+> +            };
+> +    };
+> +
+> +    /* ... */
+> +
+> +    soc {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        performance: performance-controller@11bc00 {
+> +            compatible = "mediatek,cpufreq-hw";
+> +            reg = <0 0x0011bc10 0 0x120>, <0 0x0011bd30 0 0x120>;
+> +            #performance-domain-cells = <1>;
+> +        };
+> +    };
+> -- 
+> 1.7.9.5
+> 
