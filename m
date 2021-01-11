@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515EC2F1373
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:09:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E84832F138A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:10:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730259AbhAKNI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:08:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55510 "EHLO mail.kernel.org"
+        id S1731215AbhAKNKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:10:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730717AbhAKNIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:08:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0674C2255F;
-        Mon, 11 Jan 2021 13:07:25 +0000 (UTC)
+        id S1730922AbhAKNJj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:09:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA4A222D2C;
+        Mon, 11 Jan 2021 13:08:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370446;
-        bh=xZ1KM2mAM+I8lha5zVNC04268JKBR9S4Re8rH9GztMM=;
+        s=korg; t=1610370539;
+        bh=2oF1xm8tCBpOayJ3t4YzHCy8Kx1yxxEBHrgYOTGnDiY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vc7NQRdegENR2RkN28IGtHh2wZn9ExL1+9GzSI/BpvkiDNxrJLj2hrPKB3tjV77I7
-         DAaEq5Sxynh/WdgLpZ45XeyDTCu7hQ8LfFT6xG6zt7JTfqrcBltIKGgHgxab0sqZ1/
-         majwUCN5LG5BwMfoRuo2ENArsqDx4WfM2GWg5lM4=
+        b=2qYyI5QK98vykrC9OLJIKt328/jf/vMfcBBM/wDZVPo86jVpgEVA4aeYG4nKdI7Ca
+         BG8zR2wuLgCugCSyZ+g1DvZt4/V2vL5uUDiXH4XlVOWmAdBYx6pqorKj3F4NsZN4KI
+         J5l0+nakrsXEq7wdzPEYU6MoeIqpnFA78erACDNU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Richard Cochran <richardcochran@gmail.com>,
+        stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 25/77] net: ethernet: ti: cpts: fix ethtool output when no ptp_clock registered
-Date:   Mon, 11 Jan 2021 14:01:34 +0100
-Message-Id: <20210111130037.616124873@linuxfoundation.org>
+Subject: [PATCH 4.19 26/77] tun: fix return value when the number of iovs exceeds MAX_SKB_FRAGS
+Date:   Mon, 11 Jan 2021 14:01:35 +0100
+Message-Id: <20210111130037.667158711@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
 References: <20210111130036.414620026@linuxfoundation.org>
@@ -41,46 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grygorii Strashko <grygorii.strashko@ti.com>
+From: Yunjian Wang <wangyunjian@huawei.com>
 
-[ Upstream commit 4614792eebcbf81c60ad3604c1aeeb2b0899cea4 ]
+[ Upstream commit 950271d7cc0b4546af3549d8143c4132d6e1f138 ]
 
-The CPTS driver registers PTP PHC clock when first netif is going up and
-unregister it when all netif are down. Now ethtool will show:
- - PTP PHC clock index 0 after boot until first netif is up;
- - the last assigned PTP PHC clock index even if PTP PHC clock is not
-registered any more after all netifs are down.
+Currently the tun_napi_alloc_frags() function returns -ENOMEM when the
+number of iovs exceeds MAX_SKB_FRAGS + 1. However this is inappropriate,
+we should use -EMSGSIZE instead of -ENOMEM.
 
-This patch ensures that -1 is returned by ethtool when PTP PHC clock is not
-registered any more.
+The following distinctions are matters:
+1. the caller need to drop the bad packet when -EMSGSIZE is returned,
+   which means meeting a persistent failure.
+2. the caller can try again when -ENOMEM is returned, which means
+   meeting a transient failure.
 
-Fixes: 8a2c9a5ab4b9 ("net: ethernet: ti: cpts: rework initialization/deinitialization")
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-Acked-by: Richard Cochran <richardcochran@gmail.com>
-Link: https://lore.kernel.org/r/20201224162405.28032-1-grygorii.strashko@ti.com
+Fixes: 90e33d459407 ("tun: enable napi_gro_frags() for TUN/TAP driver")
+Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
+Acked-by: Willem de Bruijn <willemb@google.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+Link: https://lore.kernel.org/r/1608864736-24332-1-git-send-email-wangyunjian@huawei.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ti/cpts.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/tun.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/ti/cpts.c
-+++ b/drivers/net/ethernet/ti/cpts.c
-@@ -476,6 +476,7 @@ void cpts_unregister(struct cpts *cpts)
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -1450,7 +1450,7 @@ static struct sk_buff *tun_napi_alloc_fr
+ 	int i;
  
- 	ptp_clock_unregister(cpts->clock);
- 	cpts->clock = NULL;
-+	cpts->phc_index = -1;
+ 	if (it->nr_segs > MAX_SKB_FRAGS + 1)
+-		return ERR_PTR(-ENOMEM);
++		return ERR_PTR(-EMSGSIZE);
  
- 	cpts_write32(cpts, 0, int_enable);
- 	cpts_write32(cpts, 0, control);
-@@ -577,6 +578,7 @@ struct cpts *cpts_create(struct device *
- 	cpts->cc.read = cpts_systim_read;
- 	cpts->cc.mask = CLOCKSOURCE_MASK(32);
- 	cpts->info = cpts_info;
-+	cpts->phc_index = -1;
- 
- 	cpts_calc_mult_shift(cpts);
- 	/* save cc.mult original value as it can be modified
+ 	local_bh_disable();
+ 	skb = napi_get_frags(&tfile->napi);
 
 
