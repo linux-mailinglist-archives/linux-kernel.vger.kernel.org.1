@@ -2,340 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52E2D2F21A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:19:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF6C2F21A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:19:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729926AbhAKVSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 16:18:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41186 "EHLO
+        id S1730167AbhAKVSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 16:18:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727150AbhAKVSn (ORCPT
+        with ESMTP id S1727150AbhAKVSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 16:18:43 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E43AC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:18:03 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id q20so38737pfu.8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:18:03 -0800 (PST)
+        Mon, 11 Jan 2021 16:18:45 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5F3C061795
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:18:04 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id w1so493242pjc.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:18:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nBq8cnegMcFqmX5hhT5dzI5AeLuMtKfjBG3sc44kchc=;
-        b=o3vluW07MzRqDzNyV8oTwXanP/FL26lBSakJTU8dEJFugHhAGb0TdhMd7lUGtWWiAY
-         0tK7qe4pKKW9JEpymaM9TG/t8UhWOzZeJcGuhX8XdF6z9FWJltRh5ad87vTnbWCiO8LE
-         7wzo7aGyJooeQ6UWlZHaefk0X5BaFNVBSaE/YfqeUh9gqMa+2q0no2bF8G05nHJd+scV
-         mu5VD+J4Hipb0v37sBLyI0RXupQ36XeSzyQdgzQssb1SDAZG/NCAmW1IQKJru9tRxnUH
-         pEfT8KPEz0u04csciiMET3eUX04B3mA7U/kVtQZQ5ul4R+903SQGuFdjB76T56dOPVaY
-         i5dw==
+         :cc;
+        bh=0qOSbOIoHdN2DZPTqNutcK6F4X/pENnDZjQfdlW5H0c=;
+        b=j2/sB7/RU5nL76Pa1L1dp1gCmPW9RtgnhlOkU9CiPL/vgEu0AzN3MnegQM25nqbFZO
+         GdzCzXY3KfqY40y9YoRy4JUZ/j60yRTN/7zwg7Uo3PdHlEJS7blWtkjbjnUjohiO+2i5
+         HxQ6qaRIV8v12rY/kSwUVK9q2Vd9+FdUTrxewc2nzJ0P1GV2EVo+ansDYxAFpMBtk14/
+         NwBf5ewSGbABgg5tXfSizs6Hsx00LlHf8+58gz3epX9LGeFudhkSvXxU59RoDpeIowwK
+         uKu61pD7h2broKNQKMpLvxQqdRr4+avLzxtK4epTmhvB//XOnXGXuNuwFI8WOewkw7hy
+         OLRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nBq8cnegMcFqmX5hhT5dzI5AeLuMtKfjBG3sc44kchc=;
-        b=mB/iX9vQBuypTLdSJ78HaRLkp8EzaRBRKlz6+jCqHAz5msbbJiD3jVC0iJl+L6qfQJ
-         zPD6uomqOTHWZ7G3wXTo2AxLLeOWXRJxivkBEmQqeFtu2nBxgf5xG4ZTSqMzjUc2fFOo
-         dyuC1lAArVr/qZR5Q2WidYBzvB94mgAfQPrg2c8540MeJLjE76s7HGHRNZ9f5aO9pA4O
-         xsnyjBzq1PWz2FrirNaTWgnheVQEJV0sF+0kpNzK0fkF+66UhBtquh6FNQNGTLkU9pLu
-         pMSVg61khf8YkBN4K3MVvjllPeUeWk6BZixvI7YE/zCaWeLTG5c5xfZl/wLLuPKZ87JQ
-         8OPA==
-X-Gm-Message-State: AOAM532ZRD7YGp/PEKRkbcx/DIwRHZHoFjJ1M/HBswmEO162dZwEbeo4
-        8boilyoDhvP+MxakX45p147h7LzIeObOpECqPGBXuQ==
-X-Google-Smtp-Source: ABdhPJwIWWBDk1mtHtGx04TaroddtBJHTnR+Hzohwjywe/lVErXoyoeOwRI3gUGkPYPMLCfch1z3AXkvCXHXe80ENNY=
-X-Received: by 2002:a63:1f21:: with SMTP id f33mr1387320pgf.31.1610399882598;
- Mon, 11 Jan 2021 13:18:02 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=0qOSbOIoHdN2DZPTqNutcK6F4X/pENnDZjQfdlW5H0c=;
+        b=GP0SybdcN4cmUG9scnmWc0z3VaraYGe433AJLK3EPxx9Ckto7iJxOGV2HTeVrvrDWw
+         dLw2N+vAGpJPpqbzBcff5713wOPsu2gHaJaBxlQ2OGeIIQYknPmxy1hyPoRu9d5+M+yz
+         Mw6TR8lEaqZGi+4AsUTZEWLKGiLOHl8Jp8J94316DFYZymQXV5JjqfDPw5QpYzJu9TK7
+         gvtYiHUpfcDMHLsdarKwjXh5RexPvl0KjSa8dhvTsSJWSSGHpxp+1iIcC6/29YSkROle
+         YQuuc4Myma34AKCsKxd319rRLhMWX3nwypNi6iJdb1b0ZWdYZ+fOdDh/Vqn2MOerqKzA
+         4yIw==
+X-Gm-Message-State: AOAM530S4OOazLWHERtFhmFxNHgwZ8u6SLViTwzmSmQv8d5TdtV2Vij7
+        hO/5vrxHqdudXSixFSdtt/YHezqRvChIZainoiB/6g==
+X-Google-Smtp-Source: ABdhPJyYZpgnU/gvEartMbBN+7Sn5P8XKvPTxtPvXdocg5hO3oXk45vtvgeULsI39ZYVL2M1L1TiMCvHdHZ/Z9j7/pg=
+X-Received: by 2002:a17:90a:cb0b:: with SMTP id z11mr786374pjt.101.1610399884135;
+ Mon, 11 Jan 2021 13:18:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20210106161233.GA44413@e120937-lin> <20210106212353.951807-1-jbhayana@google.com>
- <20210109190133.61051fab@archlinux> <CA+=V6c3f5Z4_JOr+KzvxpL9nOcPrNAZYmG_VpUF+QAW4=cfy=Q@mail.gmail.com>
- <20210111123338.00007c06@Huawei.com>
-In-Reply-To: <20210111123338.00007c06@Huawei.com>
-From:   Jyoti Bhayana <jbhayana@google.com>
-Date:   Mon, 11 Jan 2021 13:17:51 -0800
-Message-ID: <CA+=V6c1F1ViZRjdwZOC-YC4TryJ4dCcwpc=wvOZkb2HYMYGcmw@mail.gmail.com>
-Subject: Re: Reply to [RFC PATCH v2 0/1] Adding support for IIO SCMI based sensors
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Enrico Granata <egranata@google.com>,
-        Mikhail Golubev <mikhail.golubev@opensynergy.com>,
-        Igor Skalkin <Igor.Skalkin@opensynergy.com>,
-        Peter Hilber <Peter.hilber@opensynergy.com>,
-        Ankit Arora <ankitarora@google.com>
+References: <20210111081821.3041587-1-morbo@google.com> <20210111210418.GA3660906@ubuntu-m3-large-x86>
+In-Reply-To: <20210111210418.GA3660906@ubuntu-m3-large-x86>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 11 Jan 2021 13:17:52 -0800
+Message-ID: <CAKwvOdnssY=CV4daRQvGa659AzGvMT+Kb10g5-DDuZjqbp-J5A@mail.gmail.com>
+Subject: Re: [PATCH] pgo: add clang's Profile Guided Optimization infrastructure
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Bill Wendling <morbo@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sami Tolvanen <samitolvanen@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+On Mon, Jan 11, 2021 at 1:04 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> On Mon, Jan 11, 2021 at 12:18:21AM -0800, Bill Wendling wrote:
+> > From: Sami Tolvanen <samitolvanen@google.com>
+> >
+> > Enable the use of clang's Profile-Guided Optimization[1]. To generate a
+> > profile, the kernel is instrumented with PGO counters, a representative
+> > workload is run, and the raw profile data is collected from
+> > /sys/kernel/debug/pgo/profraw.
+> >
+> > The raw profile data must be processed by clang's "llvm-profdata" tool before
+> > it can be used during recompilation:
+> >
+> >   $ cp /sys/kernel/debug/pgo/profraw vmlinux.profraw
+> >   $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
+> >
+> > Multiple raw profiles may be merged during this step.
+> >
+> > The data can be used either by the compiler if LTO isn't enabled:
+> >
+> >     ... -fprofile-use=vmlinux.profdata ...
+> >
+> > or by LLD if LTO is enabled:
+> >
+> >     ... -lto-cs-profile-file=vmlinux.profdata ...
+> >
+> > This initial submission is restricted to x86, as that's the platform we know
+> > works. This restriction can be lifted once other platforms have been verified
+> > to work with PGO.
+> >
+> > Note that this method of profiling the kernel is clang-native and isn't
+> > compatible with clang's gcov support in kernel/gcov.
+> >
+> > [1] https://clang.llvm.org/docs/UsersManual.html#profile-guided-optimization
+> >
+> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > Co-developed-by: Bill Wendling <morbo@google.com>
+> > Signed-off-by: Bill Wendling <morbo@google.com>
+>
+> I took this for a spin against x86_64_defconfig and ran into two issues:
+>
+> 1. https://github.com/ClangBuiltLinux/linux/issues/1252
 
-I know it is a bit confusing. Let me try to explain it with some
-examples to hopefully clarify some things here.
-SCMI Platform talks to the native/actual sensor, gets the raw values
-from the native sensor and applies the scale and then sends those
-values to the SCMI agent and the SCMI IIO driver.
-Since the sensor readings which SCMI IIO driver gets are integer, to
-convert them to float , we need to apply scale to these sensor values
-which is the unit_exponent(power-of-10 multiplier in two=E2=80=99s-compleme=
-nt
-format) specified in the SCMI specification
+"Cannot split an edge from a CallBrInst"
+Looks like that should be fixed first, then we should gate this
+feature on clang-12.
 
-Native Sensor -> SCMI platform->SCMI Agent->SCMI IIO Driver
+>
+>    There is also one in drivers/gpu/drm/i915/i915_query.c. For the time
+>    being, I added PGO_PROFILE_... := n for those two files.
+>
+> 2. After doing that, I run into an undefined function error with ld.lld.
+>
+> How I tested:
+>
+> $ make -skj"$(nproc)" LLVM=1 defconfig
+>
+> $ scripts/config -e PGO_CLANG
+>
+> $ make -skj"$(nproc)" LLVM=1 olddefconfig vmlinux all
+> ld.lld: error: undefined symbol: __llvm_profile_instrument_memop
 
-So if Native Sensor gets the sensor value
-32767 and the scale the SCMI Platform is using is 0.002392.
-SCMI platform does the calculation of 32767 * 0.002392 =3D 78.378664
-and send the sensor value as 78378664 and the scale as .000001 to the
-SCMI agent and SCMI IIO driver
+Err...that seems like it should be implemented in
+kernel/pgo/instrument.c in this patch in a v2?
 
-so for SCMI IIO driver the sensor reading =3D 78378664 and scale =3D .00000=
-1
-and  the sensor value is sensor_reading * scale =3D 78378664 *  .000001
-=3D  78.378664
-and the resolution which the SCMI Platform sends to the SCMI agent is 0.002=
-392.
-In the SCMI IIO driver, scale which is .000001 is applied to the min
-range/max range and the actual sensor values.
-sensor resolution which is  0.002392 is just passed to the userspace
-layer so that they know the Native sensor resolution/scale
-being applied by the SCMI platform.
+> >>> referenced by head64.c
+> >>>               arch/x86/kernel/head64.o:(__early_make_pgtable)
+> >>> referenced by head64.c
+> >>>               arch/x86/kernel/head64.o:(x86_64_start_kernel)
+> >>> referenced by head64.c
+> >>>               arch/x86/kernel/head64.o:(copy_bootdata)
+> >>> referenced 2259 more times
+>
+> Local diff:
+>
+> diff --git a/drivers/char/Makefile b/drivers/char/Makefile
+> index ffce287ef415..4b2f238770b5 100644
+> --- a/drivers/char/Makefile
+> +++ b/drivers/char/Makefile
+> @@ -4,6 +4,7 @@
+>  #
+>
+>  obj-y                          += mem.o random.o
+> +PGO_PROFILE_random.o           := n
+>  obj-$(CONFIG_TTY_PRINTK)       += ttyprintk.o
+>  obj-y                          += misc.o
+>  obj-$(CONFIG_ATARI_DSP56K)     += dsp56k.o
+> diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
+> index e5574e506a5c..d83cacc79b1a 100644
+> --- a/drivers/gpu/drm/i915/Makefile
+> +++ b/drivers/gpu/drm/i915/Makefile
+> @@ -168,6 +168,7 @@ i915-y += \
+>           i915_vma.o \
+>           intel_region_lmem.o \
+>           intel_wopcm.o
+> +PGO_PROFILE_i915_query.o := n
+>
+>  # general-purpose microcontroller (GuC) support
+>  i915-y += gt/uc/intel_uc.o \
 
-Regarding your comments in the previous email, when you mentioned
-"what we actually
-need is non standard ABI for resolution"? Does that mean that it is ok
-to have sensor resolution
-as the IIO attribute shown below?
+I'd rather have these both sorted out before landing with PGO disabled
+on these files.
 
-static IIO_DEVICE_ATTR(sensor_resolution, 0444, scmi_iio_get_sensor_resolut=
-ion,
-                     NULL, 0);
-
-static struct attribute *scmi_iio_attributes[] =3D {
-       &iio_dev_attr_sensor_resolution.dev_attr.attr,
-       NULL,
-};
-
-and for the min/max range, I can use the read_avail callback?
-
-Also, for the min/max range, there were two options discussed in the
-email thread:
-option 1)  Add new IIO val Type IIO_VAL_INT_H32_L32, and modify the
-iio_format_value to format the 64 bit int properly for the userspace
-option 2) Ignore the H32 bits and use the existing IIO_VAL_INT as just
-L32 bits should be sufficient for current sensor values.
-
-Let me know which option you prefer for min/max range. and also please
-confirm if it is ok to have an IIO attribute for resolution like
-mentioned above.
-
-
+-- 
 Thanks,
-Jyoti
-
-Thank you so much
-
-Jyoti
-
-
-
-On Mon, Jan 11, 2021 at 4:34 AM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> On Sun, 10 Jan 2021 22:44:44 -0800
-> Jyoti Bhayana <jbhayana@google.com> wrote:
->
-> > Hi Jonathan,
-> >
-> > In section 4.7.2.5.1 of the specification, the following exponent is
-> > the scale value
-> >
-> > uint32 axis_attributes_high
-> > Bits[15:11] Exponent: The power-of-10 multiplier in two=E2=80=99s-compl=
-ement
-> > format that is applied to the sensor unit
-> > specified by the SensorType field.
-> >
-> > and the resolution is
-> >
-> > uint32 axis_resolution
-> > Bits[31:27] Exponent: The power-of-10 multiplier in two=E2=80=99s-compl=
-ement format
-> > that is applied to the Res field. Bits[26:0] Res: The resolution of
-> > the sensor axis.
-> >
-> > From code in scmi_protocol.h
-> > /**
-> >  * scmi_sensor_axis_info  - describes one sensor axes
-> >  * @id: The axes ID.
-> >  * @type: Axes type. Chosen amongst one of @enum scmi_sensor_class.
-> >  * @scale: Power-of-10 multiplier applied to the axis unit.
-> >  * @name: NULL-terminated string representing axes name as advertised b=
-y
-> >  *  SCMI platform.
-> >  * @extended_attrs: Flag to indicate the presence of additional extende=
-d
-> >  *    attributes for this axes.
-> >  * @resolution: Extended attribute representing the resolution of the a=
-xes.
-> >  * Set to 0 if not reported by this axes.
-> >  * @exponent: Extended attribute representing the power-of-10 multiplie=
-r that
-> >  *      is applied to the resolution field. Set to 0 if not reported by
-> >  *      this axes.
-> >  * @attrs: Extended attributes representing minimum and maximum values
-> >  *   measurable by this axes. Set to 0 if not reported by this sensor.
-> >  */
-> >
-> > struct scmi_sensor_axis_info {
-> > unsigned int id;
-> > unsigned int type;
-> > int scale; //This is the scale used for min/max range
-> > char name[SCMI_MAX_STR_SIZE];
-> > bool extended_attrs;
-> > unsigned int resolution;
-> > int exponent; // This is the scale used in resolution
-> > struct scmi_range_attrs attrs;
-> > };
-> >
-> > The scale above  is the Power-of-10 multiplier which is applied to the =
-min range
-> > and the max range value
-> > but the resolution is equal to resolution and multiplied by
-> > Power-of-10 multiplier
-> > of exponent in the above struct.
-> > So as can be seen above the value of the power of 10 multiplier used
-> > for min/max range
-> > can be different than the value of the power of 10 multiplier used for
-> > the resolution.
-> > Hence, if I have to use IIO_AVAIL_RANGE to specify min/max range and as=
- well
-> > as resolution, then I have to use the float format with the scale appli=
-ed.
-> >
-> > If there is another way which you know of and prefer, please let me kno=
-w.
-> I'll confess I've gotten a bit lost here.
->
-> So I think where we are is how to describe the range of the sensor and wh=
-y we can't
-> use in_accel_x_raw_available to provide the
->
-> Understood that the resolution can have different scaling.  That is presu=
-mably
-> to allow for the case where a device is reporting values at a finer scale=
- than
-> it's real resolution.  Resolution might take into account expected noise =
-for
-> example.  So it should be decoupled from the scaling of both the actual m=
-easurements
-> and the axis high / low limits.
->
-> However, I'd read that as saying the axis high / low limits and the actua=
-l sensor
-> readings should be scaled by the exponent in axis_attributes_high.
-> So I think we are fine for the range, but my earlier assumption that reso=
-lution
-> was equivalent to scale in IIO (real world value for 1LSB) may be complet=
-ely wrong
-> as resolution may be unconnected to how you convert to a real world value=
-?
->
-> If nothing else I'd like to suggest the spec needs to be tightened a bit =
-here
-> to say exactly how we convert a value coming in to real world units (mayb=
-e
-> I'm just missing it).
->
-> Anyhow, I suspect we've been looking at this the wrong way and what we ac=
-tually
-> need is non standard ABI for resolution.
->
-> Jonathan
->
->
->
->
-> >
-> > Thanks,
-> > Jyoti
-> >
-> >
-> >
-> >
-> > Thanks,
-> > Jyoti
-> >
-> > On Sat, Jan 9, 2021 at 11:01 AM Jonathan Cameron <jic23@kernel.org> wro=
-te:
-> > >
-> > > On Wed,  6 Jan 2021 21:23:53 +0000
-> > > Jyoti Bhayana <jbhayana@google.com> wrote:
-> > >
-> > > > Hi Jonathan,
-> > > >
-> > > > Instead of adding IIO_VAL_INT_H32_L32, I am thinking of adding IIO_=
-VAL_FRACTIONAL_LONG
-> > > > or IIO_VAL_FRACTIONAL_64 as the scale/exponent used for min/max ran=
-ge can be different
-> > > > than the one used in resolution according to specification.
-> > >
-> > > That's somewhat 'odd'.  Given min/max are inherently values the senso=
-r is supposed to
-> > > be able to return why give them different resolutions?  Can you point=
- me at a specific
-> > > section of the spec?  The axis_min_range_low etc fields don't seem to=
- have units specified
-> > > but I assumed they were in sensor units and so same scale factors?
-> > >
-> > > >
-> > > > I am planning to use read_avail for IIO_CHAN_INFO_PROCESSED using I=
-IO_AVAIL_RANGE
-> > > > and this new IIO_VAL_FRACTIONAL_64 for min range,max range and reso=
-lution.
-> > > > Instead of two values used in IIO_VAL_FRACTIONAL, IIO_VAL_FRACTIONA=
-L_64 will use 4 values
-> > > > val_high,val_low,and val2_high and val2_low.
-> > >
-> > > I'm not keen on the changing that internal kernel interface unless we=
- absolutely
-> > > have to.  read_avail() is called from consumer drivers and they won't=
- know anything
-> > > about this new variant.
-> > >
-> > > >
-> > > > Let me know if that is an acceptable solution.
-> > >
-> > > Hmm. It isn't a standard use of the ABI given the value in the buffer=
- is (I assume)
-> > > raw (needs scale applied).  However, it isn't excluded by the ABI doc=
-s.  Whether
-> > > a standard userspace is going to expect it is not clear to me.
-> > >
-> > > I don't want to end up in a position where we end up with available b=
-eing generally
-> > > added for processed when what most people care about is what the valu=
-e range they
-> > > might get from a polled read is (rather than via a buffer).
-> > >
-> > > So I'm not that keen on this solution but if we can find a way to avo=
-id it.
-> > >
-> > > Jonathan
-> > >
-> > >
-> > > >
-> > > >
-> > > > Thanks,
-> > > > Jyoti
-> > > >
-> > >
->
+~Nick Desaulniers
