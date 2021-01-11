@@ -2,187 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01E82F2267
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 677E62F226A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:07:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388713AbhAKWGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 17:06:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51506 "EHLO
+        id S2389230AbhAKWHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 17:07:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730511AbhAKWGH (ORCPT
+        with ESMTP id S1730511AbhAKWHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:06:07 -0500
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 984CFC061795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:05:26 -0800 (PST)
-Received: by mail-qt1-x833.google.com with SMTP id y15so387912qtv.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:05:26 -0800 (PST)
+        Mon, 11 Jan 2021 17:07:24 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4563C061786;
+        Mon, 11 Jan 2021 14:06:43 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id l7so128277qvt.4;
+        Mon, 11 Jan 2021 14:06:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4vVoFe3ab/Wam+wi8u1O6FD/EPWPv+oi1jIlO88avgU=;
-        b=Ulw33JYYiiazGRtSxRzagNgcW4YuP1s6T/H7RMPzhm3wA1ZRu0uCqM/bdeUgGNqu2M
-         e1BJeTCJKThLKIBruqpbKOlPF+5exWtFOwrQqgw//0bmV8gaabwvvI9tMncTLXdYmG8D
-         2H8lvUW/WzrWTDgu9ddvQ64iEVwvXHTg1B5Zc=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=x5xp/a8CRjkMEiQyy4fYTkZWqvHateorg5bsaZ3Wm30=;
+        b=P7Dv1RfEHdKBeiAvCa1vZTHIi0rg44zYplJR17Pa4tDbdG80nPYDvnrevTzM4m0fki
+         krHzvQ8/St9guGSPhHF5vAhwIemv2wsHSdMnwdbvHta8Xi9lHOsyZUcQ6kvkrbF/mXPO
+         AX7lr3HJbn7CYPsWm1C7/KpGWGhTaHwsfuJubt3VTVRZ07zbD02sHCdYG18fuWGNFJP1
+         OCVPgN/dEi57j/nAojcGwB7R7QMmDKE2AST5+JfKb+yDWu1Fy9g+ZOFb5OEapzYs2hzA
+         o83VZMv7dmz1efVJslfYTYztgIlWZ33DpgHkVIF2bISogU/0nIZHGx4WnjJL0FtKKs/o
+         pAwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4vVoFe3ab/Wam+wi8u1O6FD/EPWPv+oi1jIlO88avgU=;
-        b=SRWj53gwJ7Euzr6ay8BPXP0ice0PdeydTzEwUuILpO3g4yBtQh8/aYJH/4TGTOlIxo
-         r0UxrTfO9ZGrTs4ytucEk1/tSq95evvYs8R7QoeUzF4CrvWfv3Tmowv2focHyQQgMAaH
-         srdNKQVwqQSQf/5FLwJ5ea4854aIkbs7j3pN8bX0H1QWWBKd2yyvjQQUR9EtMM+EpAPB
-         +WSnTj1QvTnamS1Z4+YyZD1gTqeuSM9TfRGqCzZPcW1on26kfjOYD4jKIe4G3w0lKNpm
-         5Eba18H0wB+HXmQJBNDZNJd+Mqh5R6XFoPMWNs6fC4ade3P1v/xSFwvyMGevRz0Ze8UC
-         /+0Q==
-X-Gm-Message-State: AOAM533rw4NuRmaZK/NnJcPF9Gneh37M0pY8+KCvZoC+GPFcOenHpEH/
-        Z/lgmcqFbQeNwsO3d+f1/Xv79nObpVBfqw==
-X-Google-Smtp-Source: ABdhPJwuLpciSb4rAcPpq/n9ESBDo9Pw3Qve4rigt30f4fOquhqTzV+y96U6Nvy65nj3mHGSD+VPsw==
-X-Received: by 2002:ac8:4899:: with SMTP id i25mr1745210qtq.184.1610402725491;
-        Mon, 11 Jan 2021 14:05:25 -0800 (PST)
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
-        by smtp.gmail.com with ESMTPSA id y17sm575689qki.48.2021.01.11.14.05.24
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=x5xp/a8CRjkMEiQyy4fYTkZWqvHateorg5bsaZ3Wm30=;
+        b=oT/eioILfu2dzIjpQZIOJxRQ0dTpGayvcjGSV4Le6t9OqyKLwEAEPHDtgbeqtVm6C8
+         P0HwE0A0OPSRCnTVfTySafsD9FfCPHbkBJCc2U8QZ58+mhegRIVk8y5jCyj/gnCg5wG7
+         URiOHW/4fDAPCCcNDbqyerQBrN6n3A4Dk1g589VEORyGxFm9z1ZzekU5WqKTKb5AKg/O
+         L+T0VwrSkQnT3ko9rty0dwBj5+QL7eOJGQW5oatset0nnV9pcWKUpT+fSPnNqPF26rNw
+         AdqsRV124cl7ezSzckU0FH+zap/Uqz26Nll8E2JTazxeyF9d1/+vh0S2j5197i1HvcWp
+         9Abw==
+X-Gm-Message-State: AOAM5334oqYWWHS77wKfFPDeIj3S7gk3p1KIGs84+CuPJhIFrS7aUjV3
+        GEzX3axu+7NP/GWSqCiokJk=
+X-Google-Smtp-Source: ABdhPJzM5Xl+b6PfhkmzAQFSOE86h0AP5nocB8FO2Ljz4R4g/v8YJOvyvdErcxt248QpwR2igbu5fg==
+X-Received: by 2002:a05:6214:487:: with SMTP id ay7mr1418221qvb.37.1610402803134;
+        Mon, 11 Jan 2021 14:06:43 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id o30sm445864qtd.24.2021.01.11.14.06.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 14:05:24 -0800 (PST)
-Received: by mail-yb1-f180.google.com with SMTP id d37so273950ybi.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:05:24 -0800 (PST)
-X-Received: by 2002:a25:7a44:: with SMTP id v65mr2923320ybc.0.1610402723434;
- Mon, 11 Jan 2021 14:05:23 -0800 (PST)
+        Mon, 11 Jan 2021 14:06:42 -0800 (PST)
+Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
+ <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <23e16d20-36eb-87d9-4473-142504ad8a95@gmail.com>
+Date:   Mon, 11 Jan 2021 16:06:41 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210109072130.784-1-stanimir.varbanov@linaro.org>
-In-Reply-To: <20210109072130.784-1-stanimir.varbanov@linaro.org>
-From:   Fritz Koenig <frkoenig@chromium.org>
-Date:   Mon, 11 Jan 2021 14:05:12 -0800
-X-Gmail-Original-Message-ID: <CAMfZQbwmSCXVZN_9N=CrWsX9P-4xj029NoDsENBhUdX9pjkjZg@mail.gmail.com>
-Message-ID: <CAMfZQbwmSCXVZN_9N=CrWsX9P-4xj029NoDsENBhUdX9pjkjZg@mail.gmail.com>
-Subject: Re: [PATCH] venus: pm_helpers: Control core power domain manually
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Vikash Garodia <vgarodia@codeaurora.org>,
-        Dikshita Agarwal <dikshita@codeaurora.org>,
-        Mansur Alisha Shaik <mansur@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 11:23 PM Stanimir Varbanov
-<stanimir.varbanov@linaro.org> wrote:
->
-> Presently we use device_link to control core power domain. But this
-> leads to issues because the genpd doesn't guarantee synchronous on/off
-> for supplier devices. Switch to manually control by pmruntime calls.
->
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+On 1/8/21 2:41 AM, Viresh Kumar wrote:
+> Now that fdtoverlay is part of the kernel build, start using it to test
+> the unitest overlays we have by applying them statically.
+> 
+> The file overlay_base.dtb have symbols of its own and we need to apply
+> overlay.dtb to overlay_base.dtb alone first to make it work, which gives
+> us intermediate-overlay.dtb file.
+> 
+> The intermediate-overlay.dtb file along with all other overlays is them
+> applied to testcases.dtb to generate the master.dtb file.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+
+NACK to this specific patch, in its current form.
+
+There are restrictions on applying an overlay at runtime that do not apply
+to applying an overlay to an FDT that will be loaded by the kernel during
+early boot.  Thus the unittest overlays _must_ be applied using the kernel
+overlay loading methods to test the kernel runtime overlay loading feature.
+
+I agree that testing fdtoverlay is a good idea.  I have not looked at the
+parent project to see how much testing of fdtoverlay occurs there, but I
+would prefer that fdtoverlay tests reside in the parent project if practical
+and reasonable.  If there is some reason that some fdtoverlay tests are
+more practical in the Linux kernel repository then I am open to adding
+them to the Linux kernel tree.
+
+-Frank
+
+
+> 
 > ---
->  drivers/media/platform/qcom/venus/core.h      |  1 -
->  .../media/platform/qcom/venus/pm_helpers.c    | 36 ++++++++++---------
->  2 files changed, 19 insertions(+), 18 deletions(-)
->
-> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-> index dfc13b2f371f..74d9fd3d51cc 100644
-> --- a/drivers/media/platform/qcom/venus/core.h
-> +++ b/drivers/media/platform/qcom/venus/core.h
-> @@ -128,7 +128,6 @@ struct venus_core {
->         struct icc_path *cpucfg_path;
->         struct opp_table *opp_table;
->         bool has_opp_table;
-> -       struct device_link *pd_dl_venus;
-
-remove from comment at start of struct as well.
- * @pd_dl_venus: pmdomain device-link for venus domain
-
-The patch gives huge improvements in encoder stability!
-
-Tested-by: Fritz Koenig <frkoenig@chromium.org>
-
-
-
->         struct device *pmdomains[VIDC_PMDOMAINS_NUM_MAX];
->         struct device_link *opp_dl_venus;
->         struct device *opp_pmdomain;
-> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-> index 94219a3093cb..e0338932a720 100644
-> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
-> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-> @@ -774,13 +774,6 @@ static int vcodec_domains_get(struct device *dev)
->                 core->pmdomains[i] = pd;
->         }
->
-> -       core->pd_dl_venus = device_link_add(dev, core->pmdomains[0],
-> -                                           DL_FLAG_PM_RUNTIME |
-> -                                           DL_FLAG_STATELESS |
-> -                                           DL_FLAG_RPM_ACTIVE);
-> -       if (!core->pd_dl_venus)
-> -               return -ENODEV;
-> -
->  skip_pmdomains:
->         if (!core->has_opp_table)
->                 return 0;
-> @@ -807,14 +800,12 @@ static int vcodec_domains_get(struct device *dev)
->  opp_dl_add_err:
->         dev_pm_opp_detach_genpd(core->opp_table);
->  opp_attach_err:
-> -       if (core->pd_dl_venus) {
-> -               device_link_del(core->pd_dl_venus);
-> -               for (i = 0; i < res->vcodec_pmdomains_num; i++) {
-> -                       if (IS_ERR_OR_NULL(core->pmdomains[i]))
-> -                               continue;
-> -                       dev_pm_domain_detach(core->pmdomains[i], true);
-> -               }
-> +       for (i = 0; i < res->vcodec_pmdomains_num; i++) {
-> +               if (IS_ERR_OR_NULL(core->pmdomains[i]))
-> +                       continue;
-> +               dev_pm_domain_detach(core->pmdomains[i], true);
->         }
+> Depends on:
+> 
+> https://lore.kernel.org/lkml/be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org/
+> 
+> I have kept the .dtb naming for overlays for now, lets see how we do it
+> eventually.
+> 
+> Rob/Frank, this doesn't work properly right now. Maybe I missed how
+> these overlays must be applied or there is a bug in fdtoverlay.
+> 
+> The master.dtb doesn't include any nodes from overlay_base.dtb or
+> overlay.dtb probably because 'testcase-data-2' node isn't present in
+> testcases.dtb and fdtoverlay doesn't allow applying new nodes to the
+> root node, i.e. allows new sub-nodes once it gets phandle to the parent
+> but nothing can be added to the root node itself. Though I get a feel
+> that it works while applying the nodes dynamically and it is expected to
+> work here as well.
+> 
+> (And yeah, this is my first serious attempt at updating Makefiles, I am
+> sure there is a scope of improvement here :))
+> 
+> ---
+>  drivers/of/unittest-data/Makefile | 23 +++++++++++++++++++++++
+>  1 file changed, 23 insertions(+)
+> 
+> diff --git a/drivers/of/unittest-data/Makefile b/drivers/of/unittest-data/Makefile
+> index 009f4045c8e4..f17bce85f65f 100644
+> --- a/drivers/of/unittest-data/Makefile
+> +++ b/drivers/of/unittest-data/Makefile
+> @@ -38,3 +38,26 @@ DTC_FLAGS_testcases += -@
+>  
+>  # suppress warnings about intentional errors
+>  DTC_FLAGS_testcases += -Wno-interrupts_property
 > +
->         return ret;
->  }
->
-> @@ -827,9 +818,6 @@ static void vcodec_domains_put(struct device *dev)
->         if (!res->vcodec_pmdomains_num)
->                 goto skip_pmdomains;
->
-> -       if (core->pd_dl_venus)
-> -               device_link_del(core->pd_dl_venus);
-> -
->         for (i = 0; i < res->vcodec_pmdomains_num; i++) {
->                 if (IS_ERR_OR_NULL(core->pmdomains[i]))
->                         continue;
-> @@ -917,16 +905,30 @@ static void core_put_v4(struct device *dev)
->  static int core_power_v4(struct device *dev, int on)
->  {
->         struct venus_core *core = dev_get_drvdata(dev);
-> +       struct device *pmctrl = core->pmdomains[0];
->         int ret = 0;
->
->         if (on == POWER_ON) {
-> +               if (pmctrl) {
-> +                       ret = pm_runtime_get_sync(pmctrl);
-> +                       if (ret < 0) {
-> +                               pm_runtime_put_noidle(pmctrl);
-> +                               return ret;
-> +                       }
-> +               }
+> +# Apply overlays statically with fdtoverlay
+> +intermediate-overlay	:= overlay.dtb
+> +master			:= overlay_0.dtb overlay_1.dtb overlay_2.dtb \
+> +			   overlay_3.dtb overlay_4.dtb overlay_5.dtb \
+> +			   overlay_6.dtb overlay_7.dtb overlay_8.dtb \
+> +			   overlay_9.dtb overlay_10.dtb overlay_11.dtb \
+> +			   overlay_12.dtb overlay_13.dtb overlay_15.dtb \
+> +			   overlay_gpio_01.dtb overlay_gpio_02a.dtb \
+> +			   overlay_gpio_02b.dtb overlay_gpio_03.dtb \
+> +			   overlay_gpio_04a.dtb overlay_gpio_04b.dtb \
+> +			   intermediate-overlay.dtb
 > +
->                 ret = core_clks_enable(core);
-> +               if (ret < 0 && pmctrl)
-> +                       pm_runtime_put_sync(pmctrl);
->         } else {
->                 /* Drop the performance state vote */
->                 if (core->opp_pmdomain)
->                         dev_pm_opp_set_rate(dev, 0);
->
->                 core_clks_disable(core);
+> +quiet_cmd_fdtoverlay = fdtoverlay $@
+> +      cmd_fdtoverlay = $(objtree)/scripts/dtc/fdtoverlay -o $@ -i $^
 > +
-> +               if (pmctrl)
-> +                       pm_runtime_put_sync(pmctrl);
->         }
->
->         return ret;
-> --
-> 2.17.1
->
+> +$(obj)/intermediate-overlay.dtb: $(obj)/overlay_base.dtb $(addprefix $(obj)/,$(intermediate-overlay))
+> +	$(call if_changed,fdtoverlay)
+> +
+> +$(obj)/master.dtb: $(obj)/testcases.dtb $(addprefix $(obj)/,$(master))
+> +	$(call if_changed,fdtoverlay)
+> +
+> +always-$(CONFIG_OF_OVERLAY) += intermediate-overlay.dtb master.dtb
+> 
+
