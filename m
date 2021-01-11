@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6DE62F13EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D6A2F13F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732536AbhAKNRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:17:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35060 "EHLO mail.kernel.org"
+        id S1732611AbhAKNRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:17:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732489AbhAKNQr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:16:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D91A322CAE;
-        Mon, 11 Jan 2021 13:16:30 +0000 (UTC)
+        id S1732586AbhAKNRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:17:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15DC822515;
+        Mon, 11 Jan 2021 13:16:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370991;
-        bh=27eIFbX1I7PrBJaWxYzwZi1zfub80K7yPMyP+kG2urQ=;
+        s=korg; t=1610370993;
+        bh=k5tUJHFjMO2s79xpLs4QJPdGWhJciPZsye1o8rF3dAs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ljl6Ar4iPEFtozGvhVy0AGdZ7K2rBGuERlfbLwB9G7ynrODW4UYRlwr4+bZjK3vKO
-         i5KiVwZ/dpvQwvI4v/YzpsqZZRUcbBTm4hRoP+2rQf6kJ30hnmIQPmfbRz3cFUswXY
-         b0PbQEO/jdu+BXIqG4Jb3ZK6lJLmeOOC/t/HntSw=
+        b=NxT2X5oMwjU2p4pH29qhQN6UhdGHu0rqT3BCx31W90AM8M0QT34VilZXo/GfbdMw8
+         80nua09eiMexCQW6S9dyuqW3oLnwLC0QTAGXvYZF/cLe+sVbAGztH5ykusQp+AkEDI
+         5q5HH5tfF1qLWMQHtTy18TzfH2NNyyAawQqLJ4mo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Ming Lei <ming.lei@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Martin Kepplinger <martin.kepplinger@puri.sm>,
-        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
         Jens Axboe <axboe@kernel.dk>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 063/145] scsi: core: Only process PM requests if rpm_status != RPM_ACTIVE
-Date:   Mon, 11 Jan 2021 14:01:27 +0100
-Message-Id: <20210111130051.576653895@linuxfoundation.org>
+Subject: [PATCH 5.10 064/145] local64.h: make <asm/local64.h> mandatory
+Date:   Mon, 11 Jan 2021 14:01:28 +0100
+Message-Id: <20210111130051.625313507@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
 References: <20210111130048.499958175@linuxfoundation.org>
@@ -48,115 +49,289 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit e6044f714b256259df9611ff49af433e5411c5c8 ]
+[ Upstream commit 87dbc209ea04645fd2351981f09eff5d23f8e2e9 ]
 
-Instead of submitting all SCSI commands submitted with scsi_execute() to a
-SCSI device if rpm_status != RPM_ACTIVE, only submit RQF_PM (power
-management requests) if rpm_status != RPM_ACTIVE. This patch makes the SCSI
-core handle the runtime power management status (rpm_status) as it should
-be handled.
+Make <asm-generic/local64.h> mandatory in include/asm-generic/Kbuild and
+remove all arch/*/include/asm/local64.h arch-specific files since they
+only #include <asm-generic/local64.h>.
 
-Link: https://lore.kernel.org/r/20201209052951.16136-7-bvanassche@acm.org
-Cc: Can Guo <cang@codeaurora.org>
-Cc: Stanley Chu <stanley.chu@mediatek.com>
-Cc: Alan Stern <stern@rowland.harvard.edu>
-Cc: Ming Lei <ming.lei@redhat.com>
-Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: Martin Kepplinger <martin.kepplinger@puri.sm>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
-Reviewed-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+This fixes build errors on arch/c6x/ and arch/nios2/ for
+block/blk-iocost.c.
+
+Build-tested on 21 of 25 arch-es.  (tools problems on the others)
+
+Yes, we could even rename <asm-generic/local64.h> to
+<linux/local64.h> and change all #includes to use
+<linux/local64.h> instead.
+
+Link: https://lkml.kernel.org/r/20201227024446.17018-1-rdunlap@infradead.org
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Suggested-by: Christoph Hellwig <hch@infradead.org>
+Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Ley Foon Tan <ley.foon.tan@intel.com>
+Cc: Mark Salter <msalter@redhat.com>
+Cc: Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_lib.c | 27 ++++++++++++++-------------
- 1 file changed, 14 insertions(+), 13 deletions(-)
+ arch/alpha/include/asm/local64.h   | 1 -
+ arch/arc/include/asm/Kbuild        | 1 -
+ arch/arm/include/asm/Kbuild        | 1 -
+ arch/arm64/include/asm/Kbuild      | 1 -
+ arch/csky/include/asm/Kbuild       | 1 -
+ arch/h8300/include/asm/Kbuild      | 1 -
+ arch/hexagon/include/asm/Kbuild    | 1 -
+ arch/ia64/include/asm/local64.h    | 1 -
+ arch/m68k/include/asm/Kbuild       | 1 -
+ arch/microblaze/include/asm/Kbuild | 1 -
+ arch/mips/include/asm/Kbuild       | 1 -
+ arch/nds32/include/asm/Kbuild      | 1 -
+ arch/parisc/include/asm/Kbuild     | 1 -
+ arch/powerpc/include/asm/Kbuild    | 1 -
+ arch/riscv/include/asm/Kbuild      | 1 -
+ arch/s390/include/asm/Kbuild       | 1 -
+ arch/sh/include/asm/Kbuild         | 1 -
+ arch/sparc/include/asm/Kbuild      | 1 -
+ arch/x86/include/asm/local64.h     | 1 -
+ arch/xtensa/include/asm/Kbuild     | 1 -
+ include/asm-generic/Kbuild         | 1 +
+ 21 files changed, 1 insertion(+), 20 deletions(-)
+ delete mode 100644 arch/alpha/include/asm/local64.h
+ delete mode 100644 arch/ia64/include/asm/local64.h
+ delete mode 100644 arch/x86/include/asm/local64.h
 
-diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
-index 2d17137f8ff3b..31d7a6ddc9db7 100644
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -249,7 +249,8 @@ int __scsi_execute(struct scsi_device *sdev, const unsigned char *cmd,
+diff --git a/arch/alpha/include/asm/local64.h b/arch/alpha/include/asm/local64.h
+deleted file mode 100644
+index 36c93b5cc239b..0000000000000
+--- a/arch/alpha/include/asm/local64.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <asm-generic/local64.h>
+diff --git a/arch/arc/include/asm/Kbuild b/arch/arc/include/asm/Kbuild
+index 81f4edec0c2a9..3c1afa524b9c2 100644
+--- a/arch/arc/include/asm/Kbuild
++++ b/arch/arc/include/asm/Kbuild
+@@ -1,7 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ generic-y += extable.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += parport.h
+ generic-y += user.h
+diff --git a/arch/arm/include/asm/Kbuild b/arch/arm/include/asm/Kbuild
+index 383635b68763c..f1398b9267c08 100644
+--- a/arch/arm/include/asm/Kbuild
++++ b/arch/arm/include/asm/Kbuild
+@@ -2,7 +2,6 @@
+ generic-y += early_ioremap.h
+ generic-y += extable.h
+ generic-y += flat.h
+-generic-y += local64.h
+ generic-y += parport.h
+ generic-y += seccomp.h
  
- 	req = blk_get_request(sdev->request_queue,
- 			data_direction == DMA_TO_DEVICE ?
--			REQ_OP_SCSI_OUT : REQ_OP_SCSI_IN, BLK_MQ_REQ_PREEMPT);
-+			REQ_OP_SCSI_OUT : REQ_OP_SCSI_IN,
-+			rq_flags & RQF_PM ? BLK_MQ_REQ_PM : 0);
- 	if (IS_ERR(req))
- 		return ret;
- 	rq = scsi_req(req);
-@@ -1203,6 +1204,8 @@ static blk_status_t
- scsi_device_state_check(struct scsi_device *sdev, struct request *req)
- {
- 	switch (sdev->sdev_state) {
-+	case SDEV_CREATED:
-+		return BLK_STS_OK;
- 	case SDEV_OFFLINE:
- 	case SDEV_TRANSPORT_OFFLINE:
- 		/*
-@@ -1229,18 +1232,18 @@ scsi_device_state_check(struct scsi_device *sdev, struct request *req)
- 		return BLK_STS_RESOURCE;
- 	case SDEV_QUIESCE:
- 		/*
--		 * If the devices is blocked we defer normal commands.
-+		 * If the device is blocked we only accept power management
-+		 * commands.
- 		 */
--		if (req && !(req->rq_flags & RQF_PREEMPT))
-+		if (req && WARN_ON_ONCE(!(req->rq_flags & RQF_PM)))
- 			return BLK_STS_RESOURCE;
- 		return BLK_STS_OK;
- 	default:
- 		/*
- 		 * For any other not fully online state we only allow
--		 * special commands.  In particular any user initiated
--		 * command is not allowed.
-+		 * power management commands.
- 		 */
--		if (req && !(req->rq_flags & RQF_PREEMPT))
-+		if (req && !(req->rq_flags & RQF_PM))
- 			return BLK_STS_IOERR;
- 		return BLK_STS_OK;
- 	}
-@@ -2508,15 +2511,13 @@ void sdev_evt_send_simple(struct scsi_device *sdev,
- EXPORT_SYMBOL_GPL(sdev_evt_send_simple);
- 
- /**
-- *	scsi_device_quiesce - Block user issued commands.
-+ *	scsi_device_quiesce - Block all commands except power management.
-  *	@sdev:	scsi device to quiesce.
-  *
-  *	This works by trying to transition to the SDEV_QUIESCE state
-  *	(which must be a legal transition).  When the device is in this
-- *	state, only special requests will be accepted, all others will
-- *	be deferred.  Since special requests may also be requeued requests,
-- *	a successful return doesn't guarantee the device will be
-- *	totally quiescent.
-+ *	state, only power management requests will be accepted, all others will
-+ *	be deferred.
-  *
-  *	Must be called with user context, may sleep.
-  *
-@@ -2578,12 +2579,12 @@ void scsi_device_resume(struct scsi_device *sdev)
- 	 * device deleted during suspend)
- 	 */
- 	mutex_lock(&sdev->state_mutex);
-+	if (sdev->sdev_state == SDEV_QUIESCE)
-+		scsi_device_set_state(sdev, SDEV_RUNNING);
- 	if (sdev->quiesced_by) {
- 		sdev->quiesced_by = NULL;
- 		blk_clear_pm_only(sdev->request_queue);
- 	}
--	if (sdev->sdev_state == SDEV_QUIESCE)
--		scsi_device_set_state(sdev, SDEV_RUNNING);
- 	mutex_unlock(&sdev->state_mutex);
- }
- EXPORT_SYMBOL(scsi_device_resume);
+diff --git a/arch/arm64/include/asm/Kbuild b/arch/arm64/include/asm/Kbuild
+index ff9cbb6312128..07ac208edc894 100644
+--- a/arch/arm64/include/asm/Kbuild
++++ b/arch/arm64/include/asm/Kbuild
+@@ -1,6 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+ generic-y += early_ioremap.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += qrwlock.h
+ generic-y += qspinlock.h
+diff --git a/arch/csky/include/asm/Kbuild b/arch/csky/include/asm/Kbuild
+index 64876e59e2ef9..2a5a4d94fafad 100644
+--- a/arch/csky/include/asm/Kbuild
++++ b/arch/csky/include/asm/Kbuild
+@@ -2,7 +2,6 @@
+ generic-y += asm-offsets.h
+ generic-y += gpio.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += qrwlock.h
+ generic-y += seccomp.h
+ generic-y += user.h
+diff --git a/arch/h8300/include/asm/Kbuild b/arch/h8300/include/asm/Kbuild
+index ddf04f32b5467..60ee7f0d60a8f 100644
+--- a/arch/h8300/include/asm/Kbuild
++++ b/arch/h8300/include/asm/Kbuild
+@@ -2,7 +2,6 @@
+ generic-y += asm-offsets.h
+ generic-y += extable.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += parport.h
+ generic-y += spinlock.h
+diff --git a/arch/hexagon/include/asm/Kbuild b/arch/hexagon/include/asm/Kbuild
+index 373964bb177e4..3ece3c93fe086 100644
+--- a/arch/hexagon/include/asm/Kbuild
++++ b/arch/hexagon/include/asm/Kbuild
+@@ -2,5 +2,4 @@
+ generic-y += extable.h
+ generic-y += iomap.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+diff --git a/arch/ia64/include/asm/local64.h b/arch/ia64/include/asm/local64.h
+deleted file mode 100644
+index 36c93b5cc239b..0000000000000
+--- a/arch/ia64/include/asm/local64.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <asm-generic/local64.h>
+diff --git a/arch/m68k/include/asm/Kbuild b/arch/m68k/include/asm/Kbuild
+index 1bff55aa2d54e..0dbf9c5c6faeb 100644
+--- a/arch/m68k/include/asm/Kbuild
++++ b/arch/m68k/include/asm/Kbuild
+@@ -2,6 +2,5 @@
+ generated-y += syscall_table.h
+ generic-y += extable.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += spinlock.h
+diff --git a/arch/microblaze/include/asm/Kbuild b/arch/microblaze/include/asm/Kbuild
+index 63bce836b9f10..29b0e557aa7c5 100644
+--- a/arch/microblaze/include/asm/Kbuild
++++ b/arch/microblaze/include/asm/Kbuild
+@@ -2,7 +2,6 @@
+ generated-y += syscall_table.h
+ generic-y += extable.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += parport.h
+ generic-y += syscalls.h
+diff --git a/arch/mips/include/asm/Kbuild b/arch/mips/include/asm/Kbuild
+index 198b3bafdac97..95b4fa7bd0d1f 100644
+--- a/arch/mips/include/asm/Kbuild
++++ b/arch/mips/include/asm/Kbuild
+@@ -6,7 +6,6 @@ generated-y += syscall_table_64_n64.h
+ generated-y += syscall_table_64_o32.h
+ generic-y += export.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += parport.h
+ generic-y += qrwlock.h
+diff --git a/arch/nds32/include/asm/Kbuild b/arch/nds32/include/asm/Kbuild
+index ff1e94299317d..82a4453c9c2d5 100644
+--- a/arch/nds32/include/asm/Kbuild
++++ b/arch/nds32/include/asm/Kbuild
+@@ -4,6 +4,5 @@ generic-y += cmpxchg.h
+ generic-y += export.h
+ generic-y += gpio.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += parport.h
+ generic-y += user.h
+diff --git a/arch/parisc/include/asm/Kbuild b/arch/parisc/include/asm/Kbuild
+index e3ee5c0bfe80f..a1bd2adc63e3a 100644
+--- a/arch/parisc/include/asm/Kbuild
++++ b/arch/parisc/include/asm/Kbuild
+@@ -3,7 +3,6 @@ generated-y += syscall_table_32.h
+ generated-y += syscall_table_64.h
+ generated-y += syscall_table_c32.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += seccomp.h
+ generic-y += user.h
+diff --git a/arch/powerpc/include/asm/Kbuild b/arch/powerpc/include/asm/Kbuild
+index 90cd5c53af666..e1f9b4ea1c537 100644
+--- a/arch/powerpc/include/asm/Kbuild
++++ b/arch/powerpc/include/asm/Kbuild
+@@ -5,7 +5,6 @@ generated-y += syscall_table_c32.h
+ generated-y += syscall_table_spu.h
+ generic-y += export.h
+ generic-y += kvm_types.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += qrwlock.h
+ generic-y += vtime.h
+diff --git a/arch/riscv/include/asm/Kbuild b/arch/riscv/include/asm/Kbuild
+index 59dd7be550054..445ccc97305a5 100644
+--- a/arch/riscv/include/asm/Kbuild
++++ b/arch/riscv/include/asm/Kbuild
+@@ -3,6 +3,5 @@ generic-y += early_ioremap.h
+ generic-y += extable.h
+ generic-y += flat.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += user.h
+ generic-y += vmlinux.lds.h
+diff --git a/arch/s390/include/asm/Kbuild b/arch/s390/include/asm/Kbuild
+index 319efa0e6d024..1a18d7b82f86d 100644
+--- a/arch/s390/include/asm/Kbuild
++++ b/arch/s390/include/asm/Kbuild
+@@ -7,5 +7,4 @@ generated-y += unistd_nr.h
+ generic-y += asm-offsets.h
+ generic-y += export.h
+ generic-y += kvm_types.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+diff --git a/arch/sh/include/asm/Kbuild b/arch/sh/include/asm/Kbuild
+index 7435182ef8465..fc44d9c88b419 100644
+--- a/arch/sh/include/asm/Kbuild
++++ b/arch/sh/include/asm/Kbuild
+@@ -1,6 +1,5 @@
+ # SPDX-License-Identifier: GPL-2.0
+ generated-y += syscall_table.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += parport.h
+diff --git a/arch/sparc/include/asm/Kbuild b/arch/sparc/include/asm/Kbuild
+index 5269a704801fa..3688fdae50e45 100644
+--- a/arch/sparc/include/asm/Kbuild
++++ b/arch/sparc/include/asm/Kbuild
+@@ -6,5 +6,4 @@ generated-y += syscall_table_64.h
+ generated-y += syscall_table_c32.h
+ generic-y += export.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+diff --git a/arch/x86/include/asm/local64.h b/arch/x86/include/asm/local64.h
+deleted file mode 100644
+index 36c93b5cc239b..0000000000000
+--- a/arch/x86/include/asm/local64.h
++++ /dev/null
+@@ -1 +0,0 @@
+-#include <asm-generic/local64.h>
+diff --git a/arch/xtensa/include/asm/Kbuild b/arch/xtensa/include/asm/Kbuild
+index c59c42a1221a8..adefb1636f7ae 100644
+--- a/arch/xtensa/include/asm/Kbuild
++++ b/arch/xtensa/include/asm/Kbuild
+@@ -2,7 +2,6 @@
+ generated-y += syscall_table.h
+ generic-y += extable.h
+ generic-y += kvm_para.h
+-generic-y += local64.h
+ generic-y += mcs_spinlock.h
+ generic-y += param.h
+ generic-y += qrwlock.h
+diff --git a/include/asm-generic/Kbuild b/include/asm-generic/Kbuild
+index e78bbb9a07e90..d1300c6e0a471 100644
+--- a/include/asm-generic/Kbuild
++++ b/include/asm-generic/Kbuild
+@@ -34,6 +34,7 @@ mandatory-y += kmap_types.h
+ mandatory-y += kprobes.h
+ mandatory-y += linkage.h
+ mandatory-y += local.h
++mandatory-y += local64.h
+ mandatory-y += mm-arch-hooks.h
+ mandatory-y += mmiowb.h
+ mandatory-y += mmu.h
 -- 
 2.27.0
 
