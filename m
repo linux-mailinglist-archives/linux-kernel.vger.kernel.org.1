@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FCE02F1674
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 058982F16B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:57:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387665AbhAKNwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:52:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56216 "EHLO mail.kernel.org"
+        id S1730529AbhAKNHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:07:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731090AbhAKNIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:08:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 79A8E2250F;
-        Mon, 11 Jan 2021 13:08:13 +0000 (UTC)
+        id S1730440AbhAKNGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:06:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33A4A22515;
+        Mon, 11 Jan 2021 13:05:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370493;
-        bh=AOcWVqRsTQBPZZ3TihIRdXpFjpy8Z1a82lKrEooybQg=;
+        s=korg; t=1610370340;
+        bh=3e4T6+takvLVp8yclhmdAKFbBXersdPv2Br2au6RPMQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CTuKIBcC31L1svHh4ZJCNZJfBFpPyMTiNIZVaz4NcSdFvvaVA0k8X+2bTKFLBOtty
-         N+iQEBu92UM6obSFPMSJbggAB9SfPl0x4fOppXPWrhaVp1HP5E+4IFso8SqkbzC1sP
-         OLazswe6sUVD2EKmz8A9YPAfMT8BCwF3C+QPV1cQ=
+        b=oVWU9QUxn9wle3iBP3+9VZ+3gpJDf/VIkMxv2whznsQ3+O1O4Qy41DcMyPFniXG58
+         9+L/bnr07ZW9MrI5Yx5ICL/+psXxBEUimlFnxIy6E7/fFweelIx0yT6ZYH/w8iewu0
+         NXO7YtMTrQGlbouHvi5MmemF+Akk6ek8UQGPnppg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Subject: [PATCH 4.19 46/77] usb: dwc3: ulpi: Use VStsDone to detect PHY regs access completion
-Date:   Mon, 11 Jan 2021 14:01:55 +0100
-Message-Id: <20210111130038.621197514@linuxfoundation.org>
+        stable@vger.kernel.org, Daniel Palmer <daniel@0x0f.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 37/57] USB: serial: option: add LongSung M5710 module support
+Date:   Mon, 11 Jan 2021 14:01:56 +0100
+Message-Id: <20210111130035.523711960@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
+References: <20210111130033.715773309@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +39,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+From: Daniel Palmer <daniel@0x0f.com>
 
-commit ce722da66d3e9384aa2de9d33d584ee154e5e157 upstream.
+commit 0e2d6795e8dbe91c2f5473564c6b25d11df3778b upstream.
 
-In accordance with [1] the DWC_usb3 core sets the GUSB2PHYACCn.VStsDone
-bit when the PHY vendor control access is done and clears it when the
-application initiates a new transaction. The doc doesn't say anything
-about the GUSB2PHYACCn.VStsBsy flag serving for the same purpose. Moreover
-we've discovered that the VStsBsy flag can be cleared before the VStsDone
-bit. So using the former as a signal of the PHY control registers
-completion might be dangerous. Let's have the VStsDone flag utilized
-instead then.
+Add a device-id entry for the LongSung M5710 module.
 
-[1] Synopsys DesignWare Cores SuperSpeed USB 3.0 xHCI Host Controller
-    Databook, 2.70a, December 2013, p.388
+T:  Bus=01 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#=  2 Spd=480  MxCh= 0
+D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+P:  Vendor=2df3 ProdID=9d03 Rev= 1.00
+S:  Manufacturer=Marvell
+S:  Product=Mobile Composite Device Bus
+S:  SerialNumber=<snip>
+C:* #Ifs= 5 Cfg#= 1 Atr=c0 MxPwr=500mA
+A:  FirstIf#= 0 IfCount= 2 Cls=e0(wlcon) Sub=01 Prot=03
+I:* If#= 0 Alt= 0 #EPs= 1 Cls=e0(wlcon) Sub=01 Prot=03 Driver=rndis_host
+E:  Ad=87(I) Atr=03(Int.) MxPS=  64 Ivl=4096ms
+I:* If#= 1 Alt= 0 #EPs= 2 Cls=0a(data ) Sub=00 Prot=00 Driver=rndis_host
+E:  Ad=83(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=0c(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 2 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=0b(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+E:  Ad=89(I) Atr=03(Int.) MxPS=  64 Ivl=4096ms
+E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=0f(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+I:* If#= 5 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=option
+E:  Ad=88(I) Atr=03(Int.) MxPS=  64 Ivl=4096ms
+E:  Ad=81(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+E:  Ad=0a(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
 
-Fixes: 88bc9d194ff6 ("usb: dwc3: add ULPI interface support")
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Link: https://lore.kernel.org/r/20201210085008.13264-2-Sergey.Semin@baikalelectronics.ru
-Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Daniel Palmer <daniel@0x0f.com>
+https://lore.kernel.org/r/20201227031716.1343300-1-daniel@0x0f.com
+[ johan: drop id defines, only bind to vendor class ]
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/dwc3/core.h |    1 +
- drivers/usb/dwc3/ulpi.c |    2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/serial/option.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/dwc3/core.h
-+++ b/drivers/usb/dwc3/core.h
-@@ -272,6 +272,7 @@
- 
- /* Global USB2 PHY Vendor Control Register */
- #define DWC3_GUSB2PHYACC_NEWREGREQ	BIT(25)
-+#define DWC3_GUSB2PHYACC_DONE		BIT(24)
- #define DWC3_GUSB2PHYACC_BUSY		BIT(23)
- #define DWC3_GUSB2PHYACC_WRITE		BIT(22)
- #define DWC3_GUSB2PHYACC_ADDR(n)	(n << 16)
---- a/drivers/usb/dwc3/ulpi.c
-+++ b/drivers/usb/dwc3/ulpi.c
-@@ -24,7 +24,7 @@ static int dwc3_ulpi_busyloop(struct dwc
- 
- 	while (count--) {
- 		reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYACC(0));
--		if (!(reg & DWC3_GUSB2PHYACC_BUSY))
-+		if (reg & DWC3_GUSB2PHYACC_DONE)
- 			return 0;
- 		cpu_relax();
- 	}
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -2059,6 +2059,7 @@ static const struct usb_device_id option
+ 	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x0105, 0xff),			/* Fibocom NL678 series */
+ 	  .driver_info = RSVD(6) },
+ 	{ USB_DEVICE_INTERFACE_CLASS(0x2cb7, 0x01a0, 0xff) },			/* Fibocom NL668-AM/NL652-EU (laptop MBIM) */
++	{ USB_DEVICE_INTERFACE_CLASS(0x2df3, 0x9d03, 0xff) },			/* LongSung M5710 */
+ 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1404, 0xff) },			/* GosunCn GM500 RNDIS */
+ 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1405, 0xff) },			/* GosunCn GM500 MBIM */
+ 	{ USB_DEVICE_INTERFACE_CLASS(0x305a, 0x1406, 0xff) },			/* GosunCn GM500 ECM/NCM */
 
 
