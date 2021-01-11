@@ -2,101 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A6ED2F247C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C66A2F247E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391512AbhALAYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 19:24:49 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:59750 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403789AbhAKXGk (ORCPT
+        id S2391552AbhALAYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 19:24:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59501 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2403811AbhAKXKX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 18:06:40 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10BMx6fb141323;
-        Mon, 11 Jan 2021 23:04:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=dcOf8/3HyGRDDIM8oEls4ruaz1euZ2/0IkDYmsCtANM=;
- b=ReDIvZTb7bpsQ4oUVRI1HZ0VymQTV4eOSh8XVIno0+y/NGuWN25iriRfs4cfHoNsabw9
- Fi8eThoenuFojfPvDg6Cvop+TP4+njl8Wlf1mtUEl/BNo1M59uXZ/slfA++m4I+6NBVS
- qATQu6dkV6k7/2lL+fZrlEL65Q3tzptDoU78CJYX/oCCTXOZqCbmGDToVe4NOPSRl8lq
- zuVYXJNrysw7XYtlMnZLyGwxIIJG7LS0ecgH0Y2bbdCQhBKmSDp9+m2oNI08Z5YRg5x8
- +YHTLyqgSf3jP19R7arT1AgqxhBAX3p44w7Z5t+HLjdSy6R/XtECkpHQI6Cd+g4Cy3XX Zg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 360kvjumfw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 Jan 2021 23:04:48 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10BN0USs061107;
-        Mon, 11 Jan 2021 23:04:48 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 360kefvh2p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Jan 2021 23:04:48 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10BN4jZO016433;
-        Mon, 11 Jan 2021 23:04:45 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 11 Jan 2021 15:04:45 -0800
-Subject: Re: [PATCH v3 2/6] mm: hugetlbfs: fix cannot migrate the fallocated
- HugeTLB page
-To:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org
-Cc:     n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20210110124017.86750-1-songmuchun@bytedance.com>
- <20210110124017.86750-3-songmuchun@bytedance.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <3ee2bcf5-35cf-1062-433d-56b4c7f011a0@oracle.com>
-Date:   Mon, 11 Jan 2021 15:04:43 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Mon, 11 Jan 2021 18:10:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610406536;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XZDeRCQYJoezv5keDk7+o32vhu8r74OG0tRv9cLa8Bs=;
+        b=JVx7WjusI+in290KoptublzLF6olRuvf8ROzDF1b8KQjtwn1fep6By8H/OwZGMrKvXWyQX
+        0HM0B/ce3NpHo1cRTrbvLBq9JgeDeC8loWqdkoSHBhRCvXMPnxBm68dUEOzDHBBj1TZYVh
+        DSo6FBXxerfswEKcT8YWy5IecRZf2Ds=
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
+ [209.85.166.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-386-3knLXS93OISQnP1j2Y5SgQ-1; Mon, 11 Jan 2021 18:08:53 -0500
+X-MC-Unique: 3knLXS93OISQnP1j2Y5SgQ-1
+Received: by mail-il1-f198.google.com with SMTP id f19so763192ilk.8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 15:08:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XZDeRCQYJoezv5keDk7+o32vhu8r74OG0tRv9cLa8Bs=;
+        b=ieAg0FFqD3fwrZoh1WO5oQ539vLg4ZRmAExN39IdnSMy5QeAAFuCJCZegQDyc6+fE3
+         6qi/FULSSuqRsEA1Jgk5PCoMPGuwrFiGKHSg4Wo1JW+6/ylwIQuLEVWb2E8ZLsOclAnZ
+         7Ej7rq6T8Q7QxJDeoWDHTnzeUM2mNIoJ4E2nX7PS7vGX7OiZngj7o0tmmCCo4laHb1Nl
+         TkHCpfQ7G0RXZHLFS+IgzCeLysvDYLtlqX421AwwG/Q7jyoq2fKxKcjuB4ur7iXkDYGE
+         lKjdCDca/LS06QBFE/USmDIBW7r5TEBMtso7rRf83IZSBaXs7hTpS3XBxj8ZucOBKKVW
+         UwQQ==
+X-Gm-Message-State: AOAM530FxAv87lU0jTAgbtbZuOJkAcTzFV3pcjGZPH49A+vJtl/WaeOJ
+        icnjqUbIDXxSF7ass9tusDVDah+lQiFIEWF0Xlv/SKgCIvvEywWWNqjdh7x7TgqJRqGRBx4y+yT
+        BDIfpVyNqOI1k9fDmPrim7rYg
+X-Received: by 2002:a92:6f07:: with SMTP id k7mr1342461ilc.18.1610406532567;
+        Mon, 11 Jan 2021 15:08:52 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzi58bzqh6TdOv13kET/jPoSNAHx1PfMuqHIzilGW0nnoTifMrHyGHUJjjT4/c/z4CZPFG8BQ==
+X-Received: by 2002:a92:6f07:: with SMTP id k7mr1342424ilc.18.1610406532311;
+        Mon, 11 Jan 2021 15:08:52 -0800 (PST)
+Received: from xz-x1 ([142.126.83.202])
+        by smtp.gmail.com with ESMTPSA id l20sm669280ioh.49.2021.01.11.15.08.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 15:08:51 -0800 (PST)
+Date:   Mon, 11 Jan 2021 18:08:48 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [RFC PATCH 0/2] userfaultfd: handle minor faults, add
+ UFFDIO_CONTINUE
+Message-ID: <20210111230848.GA588752@xz-x1>
+References: <20210107190453.3051110-1-axelrasmussen@google.com>
+ <48f4f43f-eadd-f37d-bd8f-bddba03a7d39@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20210110124017.86750-3-songmuchun@bytedance.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 spamscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101110130
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
- clxscore=1015 impostorscore=0 spamscore=0 mlxscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101110130
+Content-Disposition: inline
+In-Reply-To: <48f4f43f-eadd-f37d-bd8f-bddba03a7d39@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/10/21 4:40 AM, Muchun Song wrote:
-> If a new hugetlb page is allocated during fallocate it will not be
-> marked as active (set_page_huge_active) which will result in a later
-> isolate_huge_page failure when the page migration code would like to
-> move that page. Such a failure would be unexpected and wrong.
+On Mon, Jan 11, 2021 at 02:42:48PM -0800, Mike Kravetz wrote:
+> On 1/7/21 11:04 AM, Axel Rasmussen wrote:
+> > Overview
+> > ========
+> > 
+> > This series adds a new userfaultfd registration mode,
+> > UFFDIO_REGISTER_MODE_MINOR. This allows userspace to intercept "minor" faults.
+> > By "minor" fault, I mean the following situation:
+> > 
+> > Let there exist two mappings (i.e., VMAs) to the same page(s) (shared memory).
+> > One of the mappings is registered with userfaultfd (in minor mode), and the
+> > other is not. Via the non-UFFD mapping, the underlying pages have already been
+> > allocated & filled with some contents. The UFFD mapping has not yet been
+> > faulted in; when it is touched for the first time, this results in what I'm
+> > calling a "minor" fault. As a concrete example, when working with hugetlbfs, we
+> > have huge_pte_none(), but find_lock_page() finds an existing page.
+> > 
+> > We also add a new ioctl to resolve such faults: UFFDIO_CONTINUE. The idea is,
+> > userspace resolves the fault by either a) doing nothing if the contents are
+> > already correct, or b) updating the underlying contents using the second,
+> > non-UFFD mapping (via memcpy/memset or similar, or something fancier like RDMA,
+> > or etc...). In either case, userspace issues UFFDIO_CONTINUE to tell the kernel
+> > "I have ensured the page contents are correct, carry on setting up the mapping".
+> > 
 > 
-> Only export set_page_huge_active, just leave clear_page_huge_active
-> as static. Because there are no external users.
+> One quick thought.
 > 
-> Fixes: 70c3547e36f5 (hugetlbfs: add hugetlbfs_fallocate())
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Cc: stable@vger.kernel.org
-> ---
->  fs/hugetlbfs/inode.c    | 3 ++-
->  include/linux/hugetlb.h | 2 ++
->  mm/hugetlb.c            | 2 +-
->  3 files changed, 5 insertions(+), 2 deletions(-)
+> This is not going to work as expected with hugetlbfs pmd sharing.  If you
+> are not familiar with hugetlbfs pmd sharing, you are not alone. :)
+> 
+> pmd sharing is enabled for x86 and arm64 architectures.  If there are multiple
+> shared mappings of the same underlying hugetlbfs file or shared memory segment
+> that are 'suitably aligned', then the PMD pages associated with those regions
+> are shared by all the mappings.  Suitably aligned means 'on a 1GB boundary'
+> and 1GB in size.
+> 
+> When pmds are shared, your mappings will never see a 'minor fault'.  This
+> is because the PMD (page table entries) is shared.
 
-Thanks.
+Thanks for raising this, Mike.
 
-Although page_huge_active is declared in page-flags.h, I much prefer the
-declaration of set_page_huge_active to be in hugetlb.c.
+I've got a few patches that plan to disable huge pmd sharing for uffd in
+general, e.g.:
 
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+https://github.com/xzpeter/linux/commit/f9123e803d9bdd91bf6ef23b028087676bed1540
+https://github.com/xzpeter/linux/commit/aa9aeb5c4222a2fdb48793cdbc22902288454a31
+
+I believe we don't want that for missing mode too, but it's just not extremely
+important for missing mode yet, because in missing mode we normally monitor all
+the processes that will be using the registered mm range.  For example, in QEMU
+postcopy migration with vhost-user hugetlbfs files as backends, we'll monitor
+both the QEMU process and the DPDK program, so that either of the programs will
+trigger a missing fault even if pmd shared between them.  However again I think
+it's not ideal since uffd (even if missing mode) is pgtable-based, so sharing
+could always be too tricky.
+
+They're not yet posted to public yet since that's part of uffd-wp support for
+hugetlbfs (along with shmem).  So just raise this up to avoid potential
+duplicated work before I post the patchset.
+
+(Will read into details soon; probably too many things piled up...)
+
+Thanks,
+
 -- 
-Mike Kravetz
+Peter Xu
+
