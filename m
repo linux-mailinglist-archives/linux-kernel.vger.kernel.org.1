@@ -2,168 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1865A2F213E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:00:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 357042F2142
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:00:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729412AbhAKU7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 15:59:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36956 "EHLO
+        id S1729941AbhAKU7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 15:59:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726840AbhAKU67 (ORCPT
+        with ESMTP id S1726840AbhAKU7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:58:59 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8574C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 12:58:18 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id v1so274866pjr.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 12:58:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4YnXT6/Dl7rfyU2s6Zv/oTTpfI/8RYAIA+FYqzJ/gss=;
-        b=ftxFX/RU6sx+57Iy3Ly4LXwZaOD8AvGuq25V19LzhVd+7g9N0puRkvVl4hdAebNO/+
-         YX16ahOt64sI4RPvo8sugoBuO2/78xAEBcF36UfBgbsStU6stsFpL70U388sOyssMHN6
-         pnn4WtgDwYH4YmAIQu+y0qAvpzNL3kRA7XgWOkE466ipu2X4Xf7sNUIwGhXelfG7+5PL
-         JMHzpMuJ8sGRjQyzJbAlPeC7noDFGZVxIcwSIW+VIB5lHS6btZaAJ6RCkoNBM6x9FSHB
-         F2Fyra7zv2LM+cTWyvj2ETS5nXOkncBtyxmQBzDsh6mPc2/lv/yFald52wUS6IVkDEvj
-         83Qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4YnXT6/Dl7rfyU2s6Zv/oTTpfI/8RYAIA+FYqzJ/gss=;
-        b=SAt9phFg00Joe4QGQDTd4NuvZUQZfmkCk7nEfGBbTjmhTWjMh1hCRyYyid1g00pgXR
-         Pc5EwUuJ9eb/H3072RKMVshfc81j4ZaIIYpWROuSfqksYgPO1id0ARFPH4RRW2ByqI8X
-         2CkXgiOlo0X/IUPfbmBgySNL79SQjGRwvozvr2Fn0BRMlYo4KYcbji37ndjoV/Jnht+Q
-         u2bcBZuxrEXX0EJDAakmo3icd6JNaoBr1nU5czrYEwnNAU4BmKtPmgFz27ViQnfSniFc
-         oz+p4Fow3vl4is46pFU5G46Zr4+A2GrorpViKQmkyxA75h3VTVBV4au7ZS7TgRvyv25K
-         SK9Q==
-X-Gm-Message-State: AOAM5335lcxioVdv8XR1/awlC476mcOkQEUixnn/Y8067hCwifkBWYDB
-        9fJ6yOh4iHYJyEoa3Aef48ve+g==
-X-Google-Smtp-Source: ABdhPJwVRkNPZLbjg+kM+D5BLH6uMcQGXVkzhKlyXiRgvoQI4Dti2PTuAYytu30HkdGBCUlHQLKRrA==
-X-Received: by 2002:a17:90a:c82:: with SMTP id v2mr706241pja.171.1610398698156;
-        Mon, 11 Jan 2021 12:58:18 -0800 (PST)
-Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
-        by smtp.gmail.com with ESMTPSA id y5sm579046pfp.45.2021.01.11.12.58.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 12:58:17 -0800 (PST)
-Date:   Mon, 11 Jan 2021 12:58:14 -0800
-From:   Fangrui Song <maskray@google.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v3] x86/entry: emit a symbol for register restoring thunk
-Message-ID: <20210111205814.m6bbvekdhqs7pnhr@google.com>
-References: <20210106015810.5p6crnh7jqtmjtv4@treble>
- <20210111203807.3547278-1-ndesaulniers@google.com>
+        Mon, 11 Jan 2021 15:59:12 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977CFC061794;
+        Mon, 11 Jan 2021 12:58:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Cv7VbZ5smu3P4Ii21Ehn0+Vp636YonNPeqjeeY7v9Jw=; b=tnAv4qWaCc85VIMfUWbl4cZRjE
+        lkskA4ziJMQruGVP3Hf8eCGWXc+uwGnSB8F1A/ddnjtWx8x5EGqkKCeyFM4lUE+qhXflJoypfMEJx
+        wmc1GoyYz9rmVqtGbQhIw4UaG5IvlpHfJGobpLqkXqMUgeGc+Pe7ii9GJZdWMFHp7QzJOQpKjyP5t
+        uMKCkXX7GsNhs0cUmj+ltn6Hx7Ewy92JvN+3OsOUrKzqWIY0xRKRF70SP59sfNEg4z5f9fY2oRhME
+        Tv2+5j+s7nukDUg4oDQwulFRcy4Wizovzg1K2EXURY7M3yki7Arordu9itjqWIOS1tlhiPePGG+NK
+        PsVIJ/Tw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1kz4GY-003r1a-Vv; Mon, 11 Jan 2021 20:58:23 +0000
+Date:   Mon, 11 Jan 2021 20:58:18 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] char_dev: replace cdev_map with an xarray
+Message-ID: <20210111205818.GJ35215@casper.infradead.org>
+References: <20210111170513.1526780-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210111203807.3547278-1-ndesaulniers@google.com>
+In-Reply-To: <20210111170513.1526780-1-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 11, 2021 at 06:05:13PM +0100, Christoph Hellwig wrote:
+> @@ -486,14 +491,22 @@ int cdev_add(struct cdev *p, dev_t dev, unsigned count)
+>  	if (WARN_ON(dev == WHITEOUT_DEV))
+>  		return -EBUSY;
+>  
+> -	error = kobj_map(cdev_map, dev, count, NULL,
+> -			 exact_match, exact_lock, p);
+> -	if (error)
+> -		return error;
+> +	mutex_lock(&chrdevs_lock);
+> +	for (i = 0; i < count; i++) {
+> +		error = xa_insert(&cdev_map, dev + i, p, GFP_KERNEL);
+> +		if (error)
+> +			goto out_unwind;
+> +	}
+> +	mutex_unlock(&chrdevs_lock);
 
-On 2021-01-11, Nick Desaulniers wrote:
->Arnd found a randconfig that produces the warning:
->
->arch/x86/entry/thunk_64.o: warning: objtool: missing symbol for insn at
->offset 0x3e
->
->when building with LLVM_IAS=1 (use Clang's integrated assembler). Josh
->notes:
->
->  With the LLVM assembler stripping the .text section symbol, objtool
->  has no way to reference this code when it generates ORC unwinder
->  entries, because this code is outside of any ELF function.
->
->Fangrui notes that this optimization is helpful for reducing images size
->when compiling with -ffunction-sections and -fdata-sections. I have
->observerd on the order of tens of thousands of symbols for the kernel
->images built with those flags. A patch has been authored against GNU
->binutils to match this behavior, with a new flag
->--generate-unused-section-symbols=[yes|no].
+Looking at some of the users ...
 
-https://sourceware.org/git/gitweb.cgi?p=binutils-gdb.git;h=d1bcae833b32f1408485ce69f844dcd7ded093a8
-has been committed. The patch should be included in binutils 2.37.
-The maintainers are welcome to the idea, but fixing all the arch-specific tests is tricky.
+#define BSG_MAX_DEVS            32768
+...
+        ret = cdev_add(&bsg_cdev, MKDEV(bsg_major, 0), BSG_MAX_DEVS);
 
-H.J. fixed the x86 tests and enabled this for x86. When binutils 2.37
-come out, some other architectures may follow as well.
+So this is going to allocate 32768 entries; at 8 bytes each, that's 256kB.
+With XArray overhead, it works out to 73 pages or 292kB.  While I don't
+have bsg loaded on my laptop, I imagine a lot of machines do.
 
->We can omit the .L prefix on a label to emit an entry into the symbol
->table for the label, with STB_LOCAL binding.  This enables objtool to
->generate proper unwind info here with LLVM_IAS=1.
+drivers/net/tap.c:#define TAP_NUM_DEVS (1U << MINORBITS)
+include/linux/kdev_t.h:#define MINORBITS        20
+drivers/net/tap.c:      err = cdev_add(tap_cdev, *tap_major, TAP_NUM_DEVS);
 
-Josh, I think objtool orc generate needs to synthesize STT_SECTION
-symbols even if they do not exist in object files.
+That's going to be even worse -- 8MB plus the overhead to be closer to 9MB.
 
-rg 'SYM_CODE.*\.L' reveals a few other .S files which may have similar problems.
-
->Cc: Fangrui Song <maskray@google.com>
->Link: https://github.com/ClangBuiltLinux/linux/issues/1209
->Link: https://reviews.llvm.org/D93783
->Link: https://sourceware.org/binutils/docs/as/Symbol-Names.html
->Link: https://sourceware.org/pipermail/binutils/2020-December/114671.html
->Reported-by: Arnd Bergmann <arnd@arndb.de>
->Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
->Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
->---
->Changes v2 -> v3:
->* rework to use STB_LOCAL rather than STB_GLOBAL by dropping .L prefix,
->  as per Josh.
->* rename oneline to drop STB_GLOBAL in commit message.
->* add link to GAS docs on .L prefix.
->* drop Josh's ack since patch changed.
->
->Changes v1 -> v2:
->* Pick up Josh's Ack.
->* Add commit message info about -ffunction-sections/-fdata-sections, and
->  link to binutils patch.
->
->
-> arch/x86/entry/thunk_64.S | 8 ++++----
-> 1 file changed, 4 insertions(+), 4 deletions(-)
->
->diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk_64.S
->index ccd32877a3c4..c9a9fbf1655f 100644
->--- a/arch/x86/entry/thunk_64.S
->+++ b/arch/x86/entry/thunk_64.S
->@@ -31,7 +31,7 @@ SYM_FUNC_START_NOALIGN(\name)
-> 	.endif
->
-> 	call \func
->-	jmp  .L_restore
->+	jmp  __thunk_restore
-> SYM_FUNC_END(\name)
-> 	_ASM_NOKPROBE(\name)
-> 	.endm
->@@ -44,7 +44,7 @@ SYM_FUNC_END(\name)
-> #endif
->
-> #ifdef CONFIG_PREEMPTION
->-SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
->+SYM_CODE_START_LOCAL_NOALIGN(__thunk_restore)
-> 	popq %r11
-> 	popq %r10
-> 	popq %r9
->@@ -56,6 +56,6 @@ SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
-> 	popq %rdi
-> 	popq %rbp
-> 	ret
->-	_ASM_NOKPROBE(.L_restore)
->-SYM_CODE_END(.L_restore)
->+	_ASM_NOKPROBE(__thunk_restore)
->+SYM_CODE_END(__thunk_restore)
-> #endif
->-- 
->2.30.0.284.gd98b1dd5eaa7-goog
->
+I think we do need to implement the 'store a range' option ;-(
