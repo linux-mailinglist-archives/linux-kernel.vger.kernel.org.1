@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFE12F167A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E603E2F1679
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387939AbhAKNxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:53:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56080 "EHLO mail.kernel.org"
+        id S2387917AbhAKNw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:52:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730593AbhAKNIl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:08:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F38E82253A;
-        Mon, 11 Jan 2021 13:07:59 +0000 (UTC)
+        id S1731058AbhAKNIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:08:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DE14229CA;
+        Mon, 11 Jan 2021 13:08:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370480;
-        bh=qUziF+x+vkE7l0Qc0ydsWSwZ/md35vyMtcMMyR3TadA=;
+        s=korg; t=1610370482;
+        bh=ttfLbzRxf3pvnLMW4/DiQ+BurW4Ng15oaml8wvHcWzo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GWvq5gxpartWd8v0X87xQT9Os6Wp4MqGtaKdcnW9b5J61K0xGi4wT7k+Ye0ZOZNPy
-         URTfsyUCxKaMZWpDBBRBlraiOoeSVpbNG2rli/ilSNHycmavW6RSJ7ro/OSsvS0wPK
-         UjPEZrjdtTlu2rm7SsQhKqcfJsKftt/yInUPJnh0=
+        b=Ma+tEnMl5DwIUp86beNCLcBsFncJdKo6zPYdA/YyyaOfRfTbsezOuiXB6Gx0emITi
+         wPqGrKsb+m+Yqx0B8g7jBHNrifUqBmBYkHSG3HblHa11Hn43QYK2AIV4AlDkekuw2+
+         KTLIzfN+qiFcPNZUaP/gP4ukRmqVlqVK3LswbPMo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Machek <pavel@denx.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 4.19 41/77] crypto: ecdh - avoid buffer overflow in ecdh_set_secret()
-Date:   Mon, 11 Jan 2021 14:01:50 +0100
-Message-Id: <20210111130038.382400278@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 4.19 42/77] staging: mt7621-dma: Fix a resource leak in an error handling path
+Date:   Mon, 11 Jan 2021 14:01:51 +0100
+Message-Id: <20210111130038.430332615@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
 References: <20210111130036.414620026@linuxfoundation.org>
@@ -40,41 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 0aa171e9b267ce7c52d3a3df7bc9c1fc0203dec5 upstream.
+commit d887d6104adeb94d1b926936ea21f07367f0ff9f upstream.
 
-Pavel reports that commit 17858b140bf4 ("crypto: ecdh - avoid unaligned
-accesses in ecdh_set_secret()") fixes one problem but introduces another:
-the unconditional memcpy() introduced by that commit may overflow the
-target buffer if the source data is invalid, which could be the result of
-intentional tampering.
+If an error occurs after calling 'mtk_hsdma_init()', it must be undone by
+a corresponding call to 'mtk_hsdma_uninit()' as already done in the
+remove function.
 
-So check params.key_size explicitly against the size of the target buffer
-before validating the key further.
-
-Fixes: 17858b140bf4 ("crypto: ecdh - avoid unaligned accesses in ecdh_set_secret()")
-Reported-by: Pavel Machek <pavel@denx.de>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 0853c7a53eb3 ("staging: mt7621-dma: ralink: add rt2880 dma engine")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201213153513.138723-1-christophe.jaillet@wanadoo.fr
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- crypto/ecdh.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/staging/mt7621-dma/mtk-hsdma.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/crypto/ecdh.c
-+++ b/crypto/ecdh.c
-@@ -43,7 +43,8 @@ static int ecdh_set_secret(struct crypto
- 	struct ecdh params;
- 	unsigned int ndigits;
+--- a/drivers/staging/mt7621-dma/mtk-hsdma.c
++++ b/drivers/staging/mt7621-dma/mtk-hsdma.c
+@@ -723,7 +723,7 @@ static int mtk_hsdma_probe(struct platfo
+ 	ret = dma_async_device_register(dd);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to register dma device\n");
+-		return ret;
++		goto err_uninit_hsdma;
+ 	}
  
--	if (crypto_ecdh_decode_key(buf, len, &params) < 0)
-+	if (crypto_ecdh_decode_key(buf, len, &params) < 0 ||
-+	    params.key_size > sizeof(ctx->private_key))
- 		return -EINVAL;
+ 	ret = of_dma_controller_register(pdev->dev.of_node,
+@@ -739,6 +739,8 @@ static int mtk_hsdma_probe(struct platfo
  
- 	ndigits = ecdh_supported_curve(params.curve_id);
+ err_unregister:
+ 	dma_async_device_unregister(dd);
++err_uninit_hsdma:
++	mtk_hsdma_uninit(hsdma);
+ 	return ret;
+ }
+ 
 
 
