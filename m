@@ -2,254 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA1A2F1F3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:25:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7162F1F44
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:27:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391063AbhAKTY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:24:56 -0500
-Received: from mail-ot1-f49.google.com ([209.85.210.49]:45693 "EHLO
-        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390986AbhAKTYx (ORCPT
+        id S2391113AbhAKT0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:26:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391030AbhAKT0i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:24:53 -0500
-Received: by mail-ot1-f49.google.com with SMTP id n42so736020ota.12;
-        Mon, 11 Jan 2021 11:24:37 -0800 (PST)
+        Mon, 11 Jan 2021 14:26:38 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D340C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:25:58 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id u25so1236995lfc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:25:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oKNFHHPFfD7wrwfuT7r81/lh6WrZWqpMnLmKMYRybYs=;
+        b=T4dW7LSW7T2wg9bacwMkeXXtLd4Ok0sO57tNlnjcAH8Ux7LmYSjZ0lozL/qlAFcVMW
+         /X7YR78gi7Ax/0lk70yZx3V9MQaMI7jS/gAfWwdp4tXVRSg+DjhZ8vv5aWsRaxJuwJRC
+         ABafPi7lpmnzPtXbWxsMbYU5IEhVTnlyC3SEM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lAthSiAq7J3RcLV6EaiwcZWNg7iBMPB+BIcB8NuQCQQ=;
-        b=KKVmIp86L7hI495LDmgPDxoDQFp9RM/3x0Mp1Z5meXnnPmmQC71+/BBvQizlJfNy3G
-         tXuaIKtzSZTmXX4moP1LO7/PZCf6IV6kDAvSqwt8DkNWDAd7la//0067k4zVsIPabnrb
-         M4n9kmT8v/XXbm51Aly55mry88quvw1OqgWyOPBhEbKSOu12snVU6eLlSb+/ge79QGno
-         9AEsN6EGlvMZJ0U6XAkfBC1UjOuSMa3sHzwvDPKsCeAUSeApoDOOErdafum9QC4Zq13j
-         o2ywNhOZyPvJN0v0CiYw9oYHt5Z61jd9OqY5kMQ+/Hl33V7XTDtewevJeoAmA7T9T7YW
-         H7ew==
-X-Gm-Message-State: AOAM532S+g4Iy2Wa0Wq/wYWp+ZvfOWuiSOUWye68kRWTnaJKYkKYNjYW
-        v7qn2RFNJie+0Zjr7ZnXOA==
-X-Google-Smtp-Source: ABdhPJxMj9HLfCnfHJ8XDV/zKpg0cfFnBYcX+UWn5fOjVCIsKjwQiF2ng1fDDxTOFgWHoSYUK5IxNA==
-X-Received: by 2002:a05:6830:12cf:: with SMTP id a15mr461586otq.217.1610393052159;
-        Mon, 11 Jan 2021 11:24:12 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z3sm136125ota.80.2021.01.11.11.24.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 11:24:11 -0800 (PST)
-Received: (nullmailer pid 2920901 invoked by uid 1000);
-        Mon, 11 Jan 2021 19:24:10 -0000
-Date:   Mon, 11 Jan 2021 13:24:10 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     mgross@linux.intel.com
-Cc:     markgross@kernel.org, arnd@arndb.de, bp@suse.de,
-        damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        leonard.crestez@nxp.com, palmerdabbelt@google.com,
-        paul.walmsley@sifive.com, peng.fan@nxp.com, shawnguo@kernel.org,
-        jassisinghbrar@gmail.com, linux-kernel@vger.kernel.org,
-        Paul Murphy <paul.j.murphy@intel.com>,
-        devicetree@vger.kernel.org,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Subject: Re: [PATCH v2 06/34] dt-bindings: Add bindings for Keem Bay VPU IPC
- driver
-Message-ID: <20210111192410.GA2906041@robh.at.kernel.org>
-References: <20210108212600.36850-1-mgross@linux.intel.com>
- <20210108212600.36850-7-mgross@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oKNFHHPFfD7wrwfuT7r81/lh6WrZWqpMnLmKMYRybYs=;
+        b=YKRvL/IyVpQWh8Y//CbgmetY5UshaXlVJD0MpqTHOtlqqxRkHSW6FC3L91tr7dlyo0
+         seasneBLxnWoDR+N2KUxSAersK1OUyUZAtRUbtulfJs/6I1GR8LBxy5nltse9rZE5QKT
+         RstH6rwMrNcErDOu2X+O8k1ZWcvMdGG6jgCo2fSQ9AGUvrHxZh4Zo6JdnEA+rIh/3D4o
+         V1oHyZM1HG42z923xTdtss2BBeru68caEovN1WSAc0R1Bv3vy251C7UvFip5dGsmLzYQ
+         U1bU87yfW+zIlsdDX8/xiC6OnyKRU740p40jxu/LdpQliUvwBT/bAPKg5eST6lAt7Udc
+         rmKA==
+X-Gm-Message-State: AOAM5324YWFgiAiDuRo7x4gX0xG6Houdgk4/2I8pBaELwVolfjWUWpqg
+        nVJmUnAPu4c9moea5gOOb44l0BbOJyIerw==
+X-Google-Smtp-Source: ABdhPJxlMUpXZilwq+VegR8U7oceCgdDRyRJCtuueQh5aMeSEcvjZiHA+ADYkEsH/eLwqUzuDW9UmA==
+X-Received: by 2002:a19:4c06:: with SMTP id z6mr502730lfa.284.1610393156097;
+        Mon, 11 Jan 2021 11:25:56 -0800 (PST)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id x18sm87255lfe.36.2021.01.11.11.25.54
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 11:25:54 -0800 (PST)
+Received: by mail-lj1-f180.google.com with SMTP id w26so165754ljo.4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:25:54 -0800 (PST)
+X-Received: by 2002:a2e:9b13:: with SMTP id u19mr420017lji.48.1610393153712;
+ Mon, 11 Jan 2021 11:25:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108212600.36850-7-mgross@linux.intel.com>
+References: <20210108171517.5290-1-will@kernel.org> <CAHk-=wg3UkUdiTbqWFx3zBLXv9VJHuNZAa5QyDvXiSmD4gX94A@mail.gmail.com>
+ <20210111142402.6euyktmcnpemanf7@box>
+In-Reply-To: <20210111142402.6euyktmcnpemanf7@box>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 11 Jan 2021 11:25:37 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whYs9XsO88iqJzN6NC=D-dp2m0oYXuOoZ=eWnvv=5OA+w@mail.gmail.com>
+Message-ID: <CAHk-=whYs9XsO88iqJzN6NC=D-dp2m0oYXuOoZ=eWnvv=5OA+w@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] Create 'old' ptes for faultaround mappings on
+ arm64 with hardware access flag
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Hugh Dickins <hughd@google.com>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 01:25:32PM -0800, mgross@linux.intel.com wrote:
-> From: Paul Murphy <paul.j.murphy@intel.com>
-> 
-> Add DT bindings documentation for the Keem Bay VPU IPC driver.
-> 
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: devicetree@vger.kernel.org
-> Reviewed-by: Mark Gross <mgross@linux.intel.com>
-> Signed-off-by: Paul Murphy <paul.j.murphy@intel.com>
-> Co-developed-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-> Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+On Mon, Jan 11, 2021 at 6:24 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
+>
+> I wonder if it would be acceptable to pass down to faultaround a copy
+> of vmf, so it mess with it without risking to corrupt the original one?
 
-Needs your Sob.
+I'd almost prefer to split vmf into two parts: the 'this is the fault
+info' part and the 'this is the fault handling state' part.
 
-> ---
->  .../soc/intel/intel,keembay-vpu-ipc.yaml      | 153 ++++++++++++++++++
+So the first one would be filled in by the actual page faulter (or
+GUP) - and then be 'const' during the lookup, while the second one
+would be set up by handle_mm_fault() and would contain that "this is
+the current state of my fault state machine" and contain things like
+that ->pte thing.
 
-This doesn't fit somewhere else?
+And then if somebody actually needs to pass in "modified fault state"
+(ie that whole "I'm doing fault-around, so I'll use multiple
+addresses") they'd never modify the address in the fault info, they'd
+just pass the address as an explicit argument (like most cases already
+do - the "change addr or flags in vmf" is actually already _fairly_
+rare).
 
->  1 file changed, 153 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml b/Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
-> new file mode 100644
-> index 000000000000..cd1c4abe8bc9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
-> @@ -0,0 +1,153 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright (c) Intel Corporation. All rights reserved.
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/soc/intel/intel,keembay-vpu-ipc.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Intel Keem Bay VPU IPC
-> +
-> +maintainers:
-> +  - Paul Murphy <paul.j.murphy@intel.com>
-> +
-> +description:
-> +  The VPU IPC driver facilitates loading of firmware, control, and communication
-> +  with the VPU over the IPC FIFO in the Intel Keem Bay SoC.
-
-VPU is never defined. 
-
-Bindings are for h/w blocks, not drivers.
-
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +        - const: intel,keembay-vpu-ipc
-> +
-> +  reg:
-> +    items:
-> +      - description: NCE WDT registers
-> +      - description: NCE TIM_GEN_CONFIG registers
-> +      - description: MSS WDT registers
-> +      - description: MSS TIM_GEN_CONFIG registers
-> +
-> +  reg-names:
-> +    items:
-> +      - const: nce_wdt
-> +      - const: nce_tim_cfg
-> +      - const: mss_wdt
-> +      - const: mss_tim_cfg
-> +
-> +  memory-region:
-> +    items:
-> +      - description: reference to the VPU reserved memory region
-> +      - description: reference to the X509 reserved memory region
-> +      - description: reference to the MSS IPC area
-> +
-> +  clocks:
-> +    items:
-> +      - description: cpu clock
-> +      - description: pll 0 out 0 rate
-> +      - description: pll 0 out 1 rate
-> +      - description: pll 0 out 2 rate
-> +      - description: pll 0 out 3 rate
-> +      - description: pll 1 out 0 rate
-> +      - description: pll 1 out 1 rate
-> +      - description: pll 1 out 2 rate
-> +      - description: pll 1 out 3 rate
-> +      - description: pll 2 out 0 rate
-> +      - description: pll 2 out 1 rate
-> +      - description: pll 2 out 2 rate
-> +      - description: pll 2 out 3 rate
-> +
-> +  clock-names:
-> +    items:
-> +      - const: cpu_clock
-> +      - const: pll_0_out_0
-> +      - const: pll_0_out_1
-> +      - const: pll_0_out_2
-> +      - const: pll_0_out_3
-> +      - const: pll_1_out_0
-> +      - const: pll_1_out_1
-> +      - const: pll_1_out_2
-> +      - const: pll_1_out_3
-> +      - const: pll_2_out_0
-> +      - const: pll_2_out_1
-> +      - const: pll_2_out_2
-> +      - const: pll_2_out_3
-> +
-> +  interrupts:
-> +    items:
-> +      - description: number of NCE sub-system WDT timeout IRQ
-> +      - description: number of MSS sub-system WDT timeout IRQ
-> +
-> +  interrupt-names:
-> +    items:
-> +      - const: nce_wdt
-> +      - const: mss_wdt
-> +
-> +  intel,keembay-vpu-ipc-nce-wdt-redirect:
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    description:
-> +      Number to which we will request that the NCE sub-system
-> +      re-directs it's WDT timeout IRQ
-> +
-> +  intel,keembay-vpu-ipc-mss-wdt-redirect:
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    description:
-> +      Number to which we will request that the MSS sub-system
-> +      re-directs it's WDT timeout IRQ
-
-These look like the same value as the interrupt numbers?
-
-> +
-> +  intel,keembay-vpu-ipc-imr:
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    description:
-> +      IMR (isolated memory region) number which we will request
-> +      the runtime service uses to protect the VPU memory region
-> +      before authentication
-> +
-> +  intel,keembay-vpu-ipc-id:
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    description: The VPU ID to be passed to the VPU firmware.
-> +
-> +additionalProperties: False
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    vpu-ipc@3f00209c {
-> +        compatible = "intel,keembay-vpu-ipc";
-> +        reg = <0x3f00209c 0x10>,
-> +              <0x3f003008 0x4>,
-> +              <0x2082009c 0x10>,
-> +              <0x20821008 0x4>;
-> +        reg-names = "nce_wdt",
-> +                    "nce_tim_cfg",
-> +                    "mss_wdt",
-> +                    "mss_tim_cfg";
-> +        memory-region = <&vpu_reserved>,
-> +                        <&vpu_x509_reserved>,
-> +                        <&mss_ipc_reserved>;
-> +        clocks = <&scmi_clk 0>,
-> +                 <&scmi_clk 0>,
-> +                 <&scmi_clk 1>,
-> +                 <&scmi_clk 2>,
-> +                 <&scmi_clk 3>,
-> +                 <&scmi_clk 4>,
-> +                 <&scmi_clk 5>,
-> +                 <&scmi_clk 6>,
-> +                 <&scmi_clk 7>,
-> +                 <&scmi_clk 8>,
-> +                 <&scmi_clk 9>,
-> +                 <&scmi_clk 10>,
-> +                 <&scmi_clk 11>;
-> +        clock-names = "cpu_clock",
-> +                      "pll_0_out_0", "pll_0_out_1",
-> +                      "pll_0_out_2", "pll_0_out_3",
-> +                      "pll_1_out_0", "pll_1_out_1",
-> +                      "pll_1_out_2", "pll_1_out_3",
-> +                      "pll_2_out_0", "pll_2_out_1",
-> +                      "pll_2_out_2", "pll_2_out_3";
-> +        interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>,
-> +                     <GIC_SPI 47 IRQ_TYPE_LEVEL_HIGH>;
-> +        interrupt-names = "nce_wdt", "mss_wdt";
-> +        intel,keembay-vpu-ipc-nce-wdt-redirect = <63>;
-> +        intel,keembay-vpu-ipc-mss-wdt-redirect = <47>;
-> +        intel,keembay-vpu-ipc-imr = <9>;
-> +        intel,keembay-vpu-ipc-id = <0>;
-> +    };
-> -- 
-> 2.17.1
-> 
+               Linus
