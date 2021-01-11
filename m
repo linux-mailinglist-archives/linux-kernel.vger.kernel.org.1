@@ -2,115 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6D42F21E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:38:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FEB32F21EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:40:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731121AbhAKVhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 16:37:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727984AbhAKVhL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 16:37:11 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 586D8C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:36:30 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id d13so240950wrc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:36:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i0xMi6BcZcyDu0fcZnUeC0nFD2sQudz3pvIy74Uu1Co=;
-        b=aoPFqdupBdo2m50fA72kLB51Y4eAj0rEvXhgPGXgU3pHawnWSdq+OOJo+x02/Ttmh/
-         GT/usW8NL+/oXIuxlc+SjB3GIpvrLO3AqRas0wNI6fpXwnN2njXJcx7tzXn1i2zmDr5V
-         4pBDPqMBoBGacxzqtY5h7ZOC/kYBQeqihZfBx17J4OKktz2sNwOPRv276CKNOAYKINlF
-         PzSZSUjORtpor/zgcG4uYxinJsR9F46Id/uhmHZyNxCLMdAMIW3p7iSIFaHG0yE02xYP
-         hiewwhR/TQ0wpE4tWLB/7LtTzmTpni+aGYOK1X+x2doEpCEgYjDdFfbtY8HmzStCeiRb
-         oylQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i0xMi6BcZcyDu0fcZnUeC0nFD2sQudz3pvIy74Uu1Co=;
-        b=ZYFa8LDcPvbL4zpb6rEgYwVVktwUBd5Qf7zQHh3VUm/ucPHNDKOsTBg5lwgH3yMEMH
-         NrlOJqsMQdiWHGUz9HN5W0egIYBmlj7bl43BSAjv+30azoHN8YuFQpyE5ig0CPeqbmkG
-         AfNJEW3ziKl3vnPwWm6UkAPiSZVLya0gx6wdp3Lh+pXuUrXyGK86JexNq6zdf739PNoU
-         N/+eXiFOUmFGayhPgTYe6ik6p+qcKcVlSpcK5D5auJK+e9bZuG3bJ3WQW2/Y9IFaJQy8
-         LzicURQbTJvWPEG4d/5TxdgmOcA9bGqgxYszla9g2LFHRhg+FHwMsTFX9+/gR/kslr1N
-         OSEg==
-X-Gm-Message-State: AOAM530PqZYy7jLnM27sen8mEE27TLKOQZP2STJcmCMGOy+FgD4Egipp
-        xyQv8DfEj/nHlTQ1vFijqlBGGRy9cTVLtcGTKCL0RQBGLDU=
-X-Google-Smtp-Source: ABdhPJwc4Tc/s46NcBJR4zTZePqRBiO7sGEbGyK0c71idGH77xhltZxnEMdsrKLPkDWH1LYE57mboh9Z32DxStHJfik=
-X-Received: by 2002:adf:ee4d:: with SMTP id w13mr1028748wro.216.1610400988919;
- Mon, 11 Jan 2021 13:36:28 -0800 (PST)
+        id S1731402AbhAKVjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 16:39:20 -0500
+Received: from relay.sw.ru ([185.231.240.75]:53800 "EHLO relay3.sw.ru"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727668AbhAKVjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 16:39:19 -0500
+Received: from [192.168.15.62]
+        by relay3.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1kz4sM-00GEoi-P1; Tue, 12 Jan 2021 00:37:22 +0300
+Subject: Re: [v3 PATCH 05/11] mm: vmscan: use a new flag to indicate shrinker
+ is registered
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Roman Gushchin <guro@fb.com>, Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210105225817.1036378-1-shy828301@gmail.com>
+ <20210105225817.1036378-6-shy828301@gmail.com>
+ <bdf650e0-6728-4481-3454-c865649bbdcf@virtuozzo.com>
+ <CAHbLzkqZ7Hmo7DSQijrgoKaDQDaOb3+tTGeJ2xU8drFKZ6jv4A@mail.gmail.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <ff0d1ed1-e2ae-3e0c-e780-e8d2287cc99b@virtuozzo.com>
+Date:   Tue, 12 Jan 2021 00:37:23 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210111154335.23388-1-marcorr@google.com> <dc6db6b4-88f1-4762-bd3b-edf3dd410366@arm.com>
- <CAA03e5HLN_iPzXRTJ_Dvx5h8KP-Qi+=6u+9mHnaoB9oBMMWs7Q@mail.gmail.com> <bbf6f07c-369b-e470-78ff-815cfb4dbf92@arm.com>
-In-Reply-To: <bbf6f07c-369b-e470-78ff-815cfb4dbf92@arm.com>
-From:   Marc Orr <marcorr@google.com>
-Date:   Mon, 11 Jan 2021 13:36:17 -0800
-Message-ID: <CAA03e5G6UohDjvA6P1mq4SdcPRQ_LFBvkhwUM9Uo6ztGU_9BQg@mail.gmail.com>
-Subject: Re: [PATCH] dma: mark unmapped DMA scatter/gather invalid
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     hch@lst.de, m.szyprowski@samsung.com,
-        Jianxiong Gao <jxgao@google.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHbLzkqZ7Hmo7DSQijrgoKaDQDaOb3+tTGeJ2xU8drFKZ6jv4A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >>> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
-> >>> index 0a4881e59aa7..3d9b17fe5771 100644
-> >>> --- a/kernel/dma/direct.c
-> >>> +++ b/kernel/dma/direct.c
-> >>> @@ -374,9 +374,11 @@ void dma_direct_unmap_sg(struct device *dev, struct scatterlist *sgl,
-> >>>        struct scatterlist *sg;
-> >>>        int i;
-> >>>
-> >>> -     for_each_sg(sgl, sg, nents, i)
-> >>> +     for_each_sg(sgl, sg, nents, i) {
-> >>>                dma_direct_unmap_page(dev, sg->dma_address, sg_dma_len(sg), dir,
-> >>>                             attrs);
-> >>> +             sg->dma_address = DMA_MAPPING_ERROR;
-> >>
-> >> There are more DMA API backends than just dma-direct, so while this
-> >> might help paper over bugs when SWIOTLB is in use, it's not going to
-> >> have any effect when those same bugs are hit under other circumstances.
-> >> Once again, the moral of the story is that effort is better spent just
-> >> fixing the bugs ;)
-> >
-> > Thanks for the quick feedback. What is the correct fix? I understand
-> > the first half. The NVMe driver should be updated to not call unmap on
-> > an address that has already been unmapped within the DMA direct code.
-> > Where I'm less certain is how to communicate to the NVMe driver that
-> > the mapping failed. In particular, the NVMe code explicitly checks if
-> > the first DMA address in the scatter/gather list is set to
-> > DMA_MAPPING_ERROR. Thus, don't we need to update the DMA direct code
-> > to propagate DMA_MAPPING_ERROR back up to the driver, via the
-> > scatter/gather struct?
->
-> Erm, you check the return value of dma_map_sg(). If it's zero, the
-> request failed; if it's nonzero, that's how many DMA segments you now
-> have to process. See Documentation/core-api/dma-api.rst.
->
-> The only guarantee offered about the state of the scatterlist itself is
-> that if it is successfully mapped, then the dma_address and dma_length
-> fields are valid for that many segments, and if that is fewer than the
-> total number of physical segments then the next one after the final DMA
-> segment will have a dma_length of 0. In particular there are no
-> guarantees at all about the state if the mapping was unsuccessful.
->
-> If a driver is failing to keep track of the success/failure status and
-> later down the line trying to guess what to do with a list that may or
-> may not have been mapped, then frankly that driver should be redesigned
-> because that is a terrible anti-pattern. At the very very least it
-> should explicitly encode its own "known bad" state upon failure that it
-> can then reliably recognise later.
+On 11.01.2021 21:17, Yang Shi wrote:
+> On Wed, Jan 6, 2021 at 2:22 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
+>>
+>> On 06.01.2021 01:58, Yang Shi wrote:
+>>> Currently registered shrinker is indicated by non-NULL shrinker->nr_deferred.
+>>> This approach is fine with nr_deferred at the shrinker level, but the following
+>>> patches will move MEMCG_AWARE shrinkers' nr_deferred to memcg level, so their
+>>> shrinker->nr_deferred would always be NULL.  This would prevent the shrinkers
+>>> from unregistering correctly.
+>>>
+>>> Signed-off-by: Yang Shi <shy828301@gmail.com>
+>>> ---
+>>>  include/linux/shrinker.h |  7 ++++---
+>>>  mm/vmscan.c              | 13 +++++++++----
+>>>  2 files changed, 13 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+>>> index 0f80123650e2..1eac79ce57d4 100644
+>>> --- a/include/linux/shrinker.h
+>>> +++ b/include/linux/shrinker.h
+>>> @@ -79,13 +79,14 @@ struct shrinker {
+>>>  #define DEFAULT_SEEKS 2 /* A good number if you don't know better. */
+>>>
+>>>  /* Flags */
+>>> -#define SHRINKER_NUMA_AWARE  (1 << 0)
+>>> -#define SHRINKER_MEMCG_AWARE (1 << 1)
+>>> +#define SHRINKER_REGISTERED  (1 << 0)
+>>> +#define SHRINKER_NUMA_AWARE  (1 << 1)
+>>> +#define SHRINKER_MEMCG_AWARE (1 << 2)
+>>>  /*
+>>>   * It just makes sense when the shrinker is also MEMCG_AWARE for now,
+>>>   * non-MEMCG_AWARE shrinker should not have this flag set.
+>>>   */
+>>> -#define SHRINKER_NONSLAB     (1 << 2)
+>>> +#define SHRINKER_NONSLAB     (1 << 3)
+>>>
+>>>  extern int prealloc_shrinker(struct shrinker *shrinker);
+>>>  extern void register_shrinker_prepared(struct shrinker *shrinker);
+>>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>>> index 8da765a85569..9761c7c27412 100644
+>>> --- a/mm/vmscan.c
+>>> +++ b/mm/vmscan.c
+>>> @@ -494,6 +494,7 @@ void register_shrinker_prepared(struct shrinker *shrinker)
+>>>       if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+>>>               idr_replace(&shrinker_idr, shrinker, shrinker->id);
+>>>  #endif
+>>> +     shrinker->flags |= SHRINKER_REGISTERED;
+>>
+>> In case of we introduce this new flag, we should kill old flag SHRINKER_REGISTERING,
+>> which are not needed anymore (we should you the new flag instead of that).
+> 
+> The only think that I'm confused with is the check in
+> shrink_slab_memcg, it does:
+> 
+> shrinker = idr_find(&shrinker_idr, i);
+> if (unlikely(!shrinker || shrinker == SHRINKER_REGISTERING)) {
+> 
+> When allocating idr, the shrinker is associated with
+> SHRINKER_REGISTERING. But, shrink_slab_memcg does acquire read
+> shrinker_rwsem, and idr_alloc is called with holding write
+> shrinker_rwsem, so I'm supposed shrink_slab_memcg should never see
+> shrinker is registering.
 
-Got it now. I'll get to work on a patch for the NVMe driver to fix the
-bug. Thanks for all of these pointers. They are immensely helpful.
+After prealloc_shrinker() shrinker is visible for shrink_slab_memcg().
+This is the moment shrink_slab_memcg() sees SHRINKER_REGISTERED.
 
-Thanks,
-Marc
+> If so it seems easy to remove
+> SHRINKER_REGISTERING.
+> 
+> We just need change that check to:
+> !shrinker || !(shrinker->flags & SHRINKER_REGISTERED)
+> 
+>>>       up_write(&shrinker_rwsem);
+>>>  }
+>>>
+>>> @@ -513,13 +514,17 @@ EXPORT_SYMBOL(register_shrinker);
+>>>   */
+>>>  void unregister_shrinker(struct shrinker *shrinker)
+>>>  {
+>>> -     if (!shrinker->nr_deferred)
+>>> -             return;
+>>> -     if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+>>> -             unregister_memcg_shrinker(shrinker);
+>>>       down_write(&shrinker_rwsem);
+>>
+>> I do not think there are some users which registration may race with unregistration.
+>> So, I think we should check SHRINKER_REGISTERED unlocked similar to we used to check
+>> shrinker->nr_deferred unlocked.
+> 
+> Yes, I agree.
+> 
+>>
+>>> +     if (!(shrinker->flags & SHRINKER_REGISTERED)) {
+>>> +             up_write(&shrinker_rwsem);
+>>> +             return;
+>>> +     }
+>>>       list_del(&shrinker->list);
+>>> +     shrinker->flags &= ~SHRINKER_REGISTERED;
+>>>       up_write(&shrinker_rwsem);
+>>> +
+>>> +     if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+>>> +             unregister_memcg_shrinker(shrinker);
+>>>       kfree(shrinker->nr_deferred);
+>>>       shrinker->nr_deferred = NULL;
+>>>  }
+>>>
+>>
+>>
+
