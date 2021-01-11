@@ -2,92 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17EF82F245C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 011592F2460
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726843AbhALAYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 19:24:37 -0500
-Received: from elvis.franken.de ([193.175.24.41]:44158 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390474AbhAKWoj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:44:39 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kz5uk-0007xs-00; Mon, 11 Jan 2021 23:43:54 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 015D2C0899; Mon, 11 Jan 2021 23:43:05 +0100 (CET)
-Date:   Mon, 11 Jan 2021 23:43:05 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Kees Cook <keescook@chromium.org>, Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Pei Huang <huangpei@loongson.cn>,
-        Fangrui Song <maskray@google.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, stable@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v5 mips-next 0/9] MIPS: vmlinux.lds.S sections fixes &
- cleanup
-Message-ID: <20210111224305.GA22825@alpha.franken.de>
-References: <20210110115245.30762-1-alobakin@pm.me>
- <202101111153.AE5123B6@keescook>
- <20210111205649.18263-1-alobakin@pm.me>
+        id S1729507AbhALAYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 19:24:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390735AbhAKWpV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 17:45:21 -0500
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F88C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:44:41 -0800 (PST)
+Received: by mail-yb1-xb2c.google.com with SMTP id f6so312540ybq.13
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:44:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jej4pdqNwkIg8l2QksDJDkT9k/833+xSgAcAFpQGffk=;
+        b=PiEI6b5OtvY8dkcx//LAo0oYqZg6id7i3f77D5Eczu0bzcdbKKBtvCZosqlx/WAML5
+         NsDtr0Ha/DBQlofcDa7aip67B6PoATqnnvVMqnqN7HqGFNGan4aq0uiO0p77QbAgMXAn
+         gAoBXeCTd7J8VEOMOefW56CkkJyaFNbe+gwuXJIiyQ0BjSZTgjvxHfZNmNOnDY+EpBNL
+         OvFdgU2neSq3RmSRGyy7yk0RzOsw7zE+ngElHJ9oBhQV4NzRk0D/g9hJOh+YoaT9Rs6j
+         DEWzRzfFKtA0/6ntedKrP7QuZxlh0hjgzkdwXqJl5jUXwiS6tngVCOED8XYwYz+/hIF8
+         9b8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jej4pdqNwkIg8l2QksDJDkT9k/833+xSgAcAFpQGffk=;
+        b=umjS4x0jBIKE07pyqmodD0U2/o17ImhBwSojsBYZXIk16yGxI97pL+TTW8YWZ63tCx
+         0ptCRIrh0/K3xP7G+S8/uidk9w2c2R2PkV2KuFjrxqAnIB2cmWxsRzu6ISjVlSOrvbC0
+         zcpp4x06gmzrLqp54xk3zihKVQHIHISSBBdvC8cdIeIr3L7r32AqITD5SpekYUbdrAQc
+         QdowEmZ2ENsb3aLdPBlUHfaKfwGmbfnyPW1XLzrrArL9+/CuMSfm6ZzZ99VtAtLhiwCK
+         2Zk2BI/i8f5LQeURbllfaPNLLaPXvZJu5x9eVy0Csu0WD9qeCAn3P3jH/SIEkaZu90Ei
+         4OQA==
+X-Gm-Message-State: AOAM5326jxey8k1IYBTYuLuTx3XFiBP7AfJZFJaT9Jigt0LwVFbPnt4G
+        wlddcLQuz5AaF3vYr7kMIctwx0HD9kcJ+l/LoW77dg==
+X-Google-Smtp-Source: ABdhPJx0p8EFm4tLVybKgINOrK+jAD6YmQvU5PsuPD6zByphBds22lrZnGoqGjjKr+mrSRJTnngGlRU6OzM2goOCKNw=
+X-Received: by 2002:a25:d295:: with SMTP id j143mr3054242ybg.20.1610405079945;
+ Mon, 11 Jan 2021 14:44:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111205649.18263-1-alobakin@pm.me>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <alpine.LSU.2.11.2101102010200.25762@eggly.anvils>
+ <X/xV7ZV5jzI7RvAe@ulmo> <CAJZ5v0iriRkEN8dVJ9gE3+Wyn_96=SNhav1QaQ59i9O0genTNQ@mail.gmail.com>
+ <X/x49o3EtrUh6vuO@ulmo> <CAJZ5v0hyvdcKsPJ7U5WioXb1c8Pg_F1BLC_dbKesFBLTUSiVaw@mail.gmail.com>
+In-Reply-To: <CAJZ5v0hyvdcKsPJ7U5WioXb1c8Pg_F1BLC_dbKesFBLTUSiVaw@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 11 Jan 2021 14:44:03 -0800
+Message-ID: <CAGETcx_odme9ufTps6tctOW+zfOox6iXgTx_9GAjoYn=+jy1BQ@mail.gmail.com>
+Subject: Re: 5.11-rc device reordering breaks ThinkPad rmi4 suspend
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Thierry Reding <treding@nvidia.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vincent Huang <vincent.huang@tw.synaptics.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andrew Duggan <aduggan@synaptics.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 08:57:25PM +0000, Alexander Lobakin wrote:
-> From: Kees Cook <keescook@chromium.org>
-> Date: Mon, 11 Jan 2021 11:53:39 -0800
-> 
-> > On Sun, Jan 10, 2021 at 11:53:50AM +0000, Alexander Lobakin wrote:
-> >> This series hunts the problems discovered after manual enabling of
-> >> ARCH_WANT_LD_ORPHAN_WARN. Notably:
-> >>  - adds the missing PAGE_ALIGNED_DATA() section affecting VDSO
-> >>    placement (marked for stable);
-> >>  - stops blind catching of orphan text sections with .text.*
-> >>    directive;
-> >>  - properly stops .eh_frame section generation.
-> >>
-> >> Compile and runtime tested on MIPS32R2 CPS board with no issues
-> >> using two different toolkits:
-> >>  - Binutils 2.35.1, GCC 10.2.1 (with Alpine patches);
-> >>  - LLVM stack: 11.0.0 and from latest Git snapshot.
-> >>
-> >> Since v4 [3]:
-> >>  - new: drop redundant .text.cps-vec creation and blind inclusion
-> >>    of orphan text sections via .text.* directive in vmlinux.lds.S;
-> >>  - don't assert SIZEOF(.rel.dyn) as it's reported that it may be not
-> >>    empty on certain machines and compilers (Thomas);
-> >>  - align GOT table like it's done for ARM64;
-> >>  - new: catch UBSAN's "unnamed data" sections in generic definitions
-> >>    when building with LD_DEAD_CODE_DATA_ELIMINATION;
-> >>  - collect Reviewed-bys (Kees, Nathan).
+On Mon, Jan 11, 2021 at 8:57 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Mon, Jan 11, 2021 at 5:12 PM Thierry Reding <treding@nvidia.com> wrote:
 > >
-> > Looks good; which tree will this land through?
-> 
-> linux-mips/mips-next I guess, since 7 of 9 patches are related only
-> to this architecture.
-> This might need Arnd's Acked-bys or Reviewed-by for the two that
-> refer include/asm-generic, let's see what Thomas think.
+> > On Mon, Jan 11, 2021 at 03:57:37PM +0100, Rafael J. Wysocki wrote:
+> > > On Mon, Jan 11, 2021 at 2:43 PM Thierry Reding <treding@nvidia.com> wrote:
+> > > >
+> > > > On Sun, Jan 10, 2021 at 08:44:13PM -0800, Hugh Dickins wrote:
+> > > > > Hi Rafael,
+> > > > >
+> > > > > Synaptics RMI4 SMBus touchpad on ThinkPad X1 Carbon (5th generation)
+> > > > > fails to suspend when running 5.11-rc kernels: bisected to
+> > > > > 5b6164d3465f ("driver core: Reorder devices on successful probe"),
+> > > > > and reverting that fixes it.  dmesg.xz attached, but go ahead and ask
+> > > > > me to switch on a debug option to extract further info if that may help.
+> > > >
+> > > > Hi Hugh,
+> > > >
+> > > > Quoting what I think are the relevant parts of that log:
+> > > >
+> > > > [   34.373742] printk: Suspending console(s) (use no_console_suspend to debug)
+> > > > [   34.429015] rmi4_physical rmi4-00: Failed to read irqs, code=-6
+> > > > [   34.474973] rmi4_f01 rmi4-00.fn01: Failed to write sleep mode: -6.
+> > > > [   34.474994] rmi4_f01 rmi4-00.fn01: Suspend failed with code -6.
+> > > > [   34.475001] rmi4_physical rmi4-00: Failed to suspend functions: -6
+> > > > [   34.475105] rmi4_smbus 6-002c: Failed to suspend device: -6
+> > > > [   34.475113] PM: dpm_run_callback(): rmi_smb_suspend+0x0/0x3c returns -6
+> > > > [   34.475130] PM: Device 6-002c failed to suspend: error -6
+> > > > [   34.475187] PM: Some devices failed to suspend, or early wake event detected
+> > > > [   34.480324] rmi4_f03 rmi4-00.fn03: rmi_f03_pt_write: Failed to write to F03 TX register (-6).
+> > > > [   34.480748] rmi4_f03 rmi4-00.fn03: rmi_f03_pt_write: Failed to write to F03 TX register (-6).
+> > > > [   34.481558] rmi4_physical rmi4-00: rmi_driver_clear_irq_bits: Failed to change enabled interrupts!
+> > > > [   34.487935] acpi LNXPOWER:02: Turning OFF
+> > > > [   34.488707] acpi LNXPOWER:01: Turning OFF
+> > > > [   34.489554] rmi4_physical rmi4-00: rmi_driver_set_irq_bits: Failed to change enabled interrupts!
+> > > > [   34.489669] psmouse: probe of serio2 failed with error -1
+> > > > [   34.489882] OOM killer enabled.
+> > > > [   34.489891] Restarting tasks ... done.
+> > > > [   34.589183] PM: suspend exit
+> > > > [   34.589839] PM: suspend entry (s2idle)
+> > > > [   34.605884] Filesystems sync: 0.017 seconds
+> > > > [   34.607594] Freezing user space processes ... (elapsed 0.006 seconds) done.
+> > > > [   34.613645] OOM killer disabled.
+> > > > [   34.613650] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+> > > > [   34.615482] printk: Suspending console(s) (use no_console_suspend to debug)
+> > > > [   34.653097] rmi4_f01 rmi4-00.fn01: Failed to write sleep mode: -6.
+> > > > [   34.653108] rmi4_f01 rmi4-00.fn01: Suspend failed with code -6.
+> > > > [   34.653115] rmi4_physical rmi4-00: Failed to suspend functions: -6
+> > > > [   34.653123] rmi4_smbus 6-002c: Failed to suspend device: -6
+> > > > [   34.653129] PM: dpm_run_callback(): rmi_smb_suspend+0x0/0x3c returns -6
+> > > > [   34.653160] PM: Device 6-002c failed to suspend: error -6
+> > > > [   34.653174] PM: Some devices failed to suspend, or early wake event detected
+> > > > [   34.660515] OOM killer enabled.
+> > > > [   34.660524] Restarting tasks ...
+> > > > [   34.661456] rmi4_physical rmi4-00: rmi_driver_set_irq_bits: Failed to change enabled interrupts!
+> > > > [   34.661591] psmouse: probe of serio2 failed with error -1
+> > > > [   34.669469] done.
+> > > > [   34.748386] PM: suspend exit
+> > > >
+> > > > I think what might be happening here is that the offending patch causes
+> > > > some devices to be reordered in a way different to how they were ordered
+> > > > originally and the rmi4 driver currently depends on that implicit order.
+> > >
+> > > Actually, the only possible case in which the commit in question can
+> > > introduce suspend failures like this is when some dependency
+> > > information is missing and so the reordering causes the ordering to
+> > > change from the (working) implicit one.
+> > >
+> > > > Interestingly one of the bugs that the offending patch fixes is similar
+> > > > in the failure mode but for the reverse reason: the implicit order
+> > > > causes suspend/resume to fail.
+> > >
+> > > And that happens because some dependency information is missing.
+> > >
+> > > So we have failing cases when dependency information is missing, so
+> > > instead of fixing those we have tried to make the core change the
+> > > ordering after every successful probe in the hope that this will take
+> > > care of the problem without introducing new breakage.
+> > >
+> > > However, it evidently has introduced new breakage and in order to fix
+> > > it we need to figure out what dependency information is missing in the
+> > > failing cases and put that information in, but we may as well do the
+> > > same for the cases that are failing without the offending change.
+> > >
+> > > So why don't we revert the commit in question and do just that?
+> >
+> > Unfortunately it isn't that easy. In fact, all the dependency
+> > information already exists in the case that I cited in 5b6164d3465f
+> > ("driver core: Reorder devices on successful probe"), but it's the
+> > driver core that suspends/resumes the devices in the wrong order.
+> >
+> > The reason is because the ACONNECT device depends on the BPMP device
+> > (via a power-domains property), but it's also instantiated before the
+> > BPMP device (because it is listed earlier in device tree, which is
+> > sorted by unit-address first, then alphabetically). BPMP being a CPU
+> > non-addressable device it doesn't have a unit-address and hence is
+> > listed very late in device tree (by convention). Normally this is would
+> > not be a problem because deferred probe would take care of it. But there
+> > is one corner-case which happens when the BPMP is built into the kernel
+> > (which it usually is, as it provides access to resources necessary for
+> > booting, such as clocks and resets) and ACONNECT is built as a loadable
+> > module. In that case, BPMP gets probed before ACONNECT and hence when
+> > ACONNECT does eventually get loaded, the BPMP is already there, meaning
+> > ACONNECT won't defer probe and hence the DPM suspend/resume order is not
+> > fixed up by the deferred probe code.
+>
+> What about using a device link to enforce the right ordering, then?
+>
+> Deferred probing is not a way to ensure the suitable suspend/resume ordering.
 
-Looks good from my side and I have it already sitting in branch for
-submission.
+Thierry,
 
-Arnd, are you ok with the changes in include/asm-generic ?
+Can you try booting with fw_devlink=on with this series? It's queued
+up for 5.12-rc1
+https://lore.kernel.org/lkml/20201218031703.3053753-1-saravanak@google.com/
 
-Thomas.
+It might solve your issue, but I think your patch still addresses a real issue.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> > And that's precisely what the offending commit addresses. However, the
+> > downside is, and we did discuss this during review, that it operates
+> > under the (somewhat optimistic) assumption that all the dependency
+> > information exists. This is because reordering on successful probe can
+> > potentially introduce regressions for dependencies that were previously
+> > implicit. So if a system has component B that depends on component A but
+> > doesn't model that dependency via some child/parent relationship or an
+> > explicit relationship that would be flagged by deferred probe,
+>
+> Again, deferred probing may not help here.
+>
+> > then this implicit dependency can break by the new reordering on successful probe.
+> >
+> > I very much suspect that that's exactly what's going on here. This RMI4
+> > device very likely implicitly depends on some other resource getting
+> > enabled but doesn't properly model that dependency. If we find out what
+> > that dependency is and return -EPROBE_DEFER when that dependency has not
+> > probed yet, then deferred probe will automatically take care of ordering
+> > everything correctly again (or, in fact, ordering by successful probe
+> > will take care of it already because RMI4 would initially fail with
+> > -EPROBE_DEFER).
+> >
+> > Adding Vincent, Jason, Andrew and Lucas (who have recently worked on
+> > this driver), perhaps they have some better understanding of what
+> > missing dependencies might be causing the above errors.
+>
+> IMV it is a mistake to believe that deferred probing can get
+> everything right for you in every case, with or without the offending
+> commit.  Sometimes you need to tell the core what the right ordering
+> is and that's what device links are for.
+
+IMHO, Thierry's patch is the right way to imply dependencies when
+device links aren't explicitly calling out dependencies. It's not
+really depending on deferred probe to imply dependency order. Rather,
+it's saying that the order in which devices probe is a better way to
+imply dependency than relying on the order in which devices are added.
+
+For Thierry's case, fw_devlink=on might solve his problem, but that's
+solving the problem by explicitly calling out the dependency (by
+getting it from DT where the dependency is explicitly called out). For
+implicit cases, we still need his patch. I wonder how
+
+> As it stands today, that commit doesn't improve the situation and it
+> adds overhead and complexity.
+
+I'm okay if we revert it for now, but that doesn't solve the
+overarching ordering issues though.
+
+I happen to have an X1 Carbon (different gen though) lying around and
+I poked at its /sys folders. None of the devices in the rmi4_smbus are
+considered the grandchildren of the i2c device. I think the real
+problem is rmi_register_transport_device() [1] not setting up the
+parent for any of the new devices it's adding.
+
+Hugh, can you try this patch?
+
+diff --git a/drivers/input/rmi4/rmi_bus.c b/drivers/input/rmi4/rmi_bus.c
+index 24f31a5c0e04..50a0134b6901 100644
+--- a/drivers/input/rmi4/rmi_bus.c
++++ b/drivers/input/rmi4/rmi_bus.c
+@@ -90,6 +90,7 @@ int rmi_register_transport_device(struct
+rmi_transport_dev *xport)
+
+        rmi_dev->dev.bus = &rmi_bus_type;
+        rmi_dev->dev.type = &rmi_device_type;
++       rmi_dev->dev.parent = xport->dev;
+
+        xport->rmi_dev = rmi_dev;
+
+-Saravana
+
+[1] - https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/input/rmi4/rmi_bus.c#n74
