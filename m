@@ -2,253 +2,454 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7CC2F2490
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 178CA2F2494
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404612AbhALAY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 19:24:56 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:55234 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2403889AbhAKXNZ (ORCPT
+        id S2404636AbhALAY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 19:24:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403926AbhAKXN5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 18:13:25 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10BN3Gmv039990;
-        Mon, 11 Jan 2021 18:12:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=NTQh5Mca0fUVUHflOLrQ8uuJoSPpDULjBgxVxWMPUSI=;
- b=NfrwnJb0lHkQgIJucUKtK2eC11XvShqxQewA68VZdiEL9USDSm3T1aPJwS3zKQNd+1qK
- 2rqbEPxPOz4HOfcAtQC7Mj/UkB8lpntVvFq6DzPz2N8gRp1mL83bWMgcz5G839VzAh5o
- Zh98nYbOjsik5q1IauGPJ7hd6RhEn+oqiKYlxa4gARWSTWSmr8pV9Q1W2D+/l+FvyMln
- +CSgzQMNzW8O3VIvRRv/J4ewVUn/EVq1bZTio28qKXW3NIdt0aKMXdXgMghNYWxnsm3e
- AQXB1KDCwqF+IL1bgQQafvTqUl26oSIymaCpQ1meEC4r8Uj2wJEFnGqArqcNR/lpGBv5 aQ== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 360xh4tnnj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Jan 2021 18:12:40 -0500
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10BN8Uwc022002;
-        Mon, 11 Jan 2021 23:12:39 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma04dal.us.ibm.com with ESMTP id 35y448xfj2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Jan 2021 23:12:39 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10BNCc5Q9830812
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Jan 2021 23:12:38 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 13ABC7805C;
-        Mon, 11 Jan 2021 23:12:38 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9CEA878060;
-        Mon, 11 Jan 2021 23:12:37 +0000 (GMT)
-Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 11 Jan 2021 23:12:37 +0000 (GMT)
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-To:     james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>
-Subject: [PATCH v4 21/21] ibmvfc: provide modules parameters for MQ settings
-Date:   Mon, 11 Jan 2021 17:12:25 -0600
-Message-Id: <20210111231225.105347-22-tyreld@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210111231225.105347-1-tyreld@linux.ibm.com>
-References: <20210111231225.105347-1-tyreld@linux.ibm.com>
+        Mon, 11 Jan 2021 18:13:57 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1972C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 15:13:15 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id s26so484768lfc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 15:13:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=Fqf+/a7LJ2TNHBRavbbePV+3oAWOSA8RuMRd1jeZWrA=;
+        b=ObSIRMYCNS87XVwdA0cVR/xqUTcpbbJaUZ0qnwyk6g20c58h8VLfZpWFuNER0L55dx
+         S5mo4KgV2FyIRmpx9BGPS9ToFKMblFA2B4QFndDJAnspWGBaNaeteiOrUTUYvGMpjRIn
+         qD6z+aPOrHNicuJs2M4usfecaelzDc6NviQcYdBX8LmaG/fcYYru0Ush7AysXHabKPdI
+         AfxdbNu1JDa9gScf2CMMmmb3dgGzZYxdk0XdTC7CJyh/m8a3Ov/9WW3xiFqWy3mFBW12
+         6Eu0Nf4cZbt7dPgHBFYcHE6WBwGHMXYguT8y88dn5eW2eifEBP4ylL0KTvaySQdp0tMh
+         n4zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Fqf+/a7LJ2TNHBRavbbePV+3oAWOSA8RuMRd1jeZWrA=;
+        b=aEgcPKp4nXxEVadLIAq0BMdBoGFR1bflCakBI0pxHx6I1/Q8GApxzrTM/4Ua0t6AD0
+         vfqJ6RC45amQmhyyIyRgRflivG8giRYNFAueJUZOTLxD5x5XdTdEZ0NpoMrQPBzG6rnw
+         f1H6pZDm40/O6osoUFmF9smY7w3w/uhUdbwvJCl9tqubuVUWzNl6OzqVZDPMcUBBjJnJ
+         cQhhmDx1ajOMybSrzDBP99ZHydU0REYxwbyI6+OOkEhmkaoHlsr7Zz2y8taHeT70ivgt
+         WWLxoc4HDZ8GOs24Ea6Ws8QFnDQTyFSwZ19x5ITyMM/zWmgIjXZnUtBZmRU0dGQ9UbPk
+         nnHA==
+X-Gm-Message-State: AOAM532todFjyRRZkAKShVa6gTw3qygQMVkH+/YfBOGpDtEG9IGKbFnq
+        AHqJsVfkzyLLfnjsOPn7dz72OO0FebDEm8N+7CtOoUaJ6apGwA==
+X-Google-Smtp-Source: ABdhPJyBScnzRL3Ahzoe0r3NdUZdeIx6ECgy6009Rgg6fTW6VwMByOK7IeNgsLmBVjmoOOvN+7cva3Rh/vhV3ZQq0Do=
+X-Received: by 2002:a19:8210:: with SMTP id e16mr713502lfd.69.1610406793804;
+ Mon, 11 Jan 2021 15:13:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-11_34:2021-01-11,2021-01-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- malwarescore=0 adultscore=0 mlxlogscore=999 bulkscore=0 impostorscore=0
- phishscore=0 spamscore=0 lowpriorityscore=0 clxscore=1015
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101110130
+From:   Jann Horn <jannh@google.com>
+Date:   Tue, 12 Jan 2021 00:12:47 +0100
+Message-ID: <CAG48ez2Qx5K1Cab-m8BdSibp6wLTip6ro4=-umR7BLsEgjEYzA@mail.gmail.com>
+Subject: SLUB: percpu partial object count is highly inaccurate, causing some
+ memory wastage and maybe also worse tail latencies?
+To:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Roman Gushchin <guro@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Minchan Kim <minchan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the various module parameter toggles for adjusting the MQ
-characteristics at boot/load time as well as a device attribute for
-changing the client scsi channel request amount.
+[This is not something I intend to work on myself. But since I
+stumbled over this issue, I figured I should at least document/report
+it, in case anyone is willing to pick it up.]
 
-Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
----
- drivers/scsi/ibmvscsi/ibmvfc.c | 75 ++++++++++++++++++++++++++++++----
- 1 file changed, 66 insertions(+), 9 deletions(-)
+Hi!
 
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index b413f5da71ce..6a64735d9652 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -40,6 +40,12 @@ static unsigned int disc_threads = IBMVFC_MAX_DISC_THREADS;
- static unsigned int ibmvfc_debug = IBMVFC_DEBUG;
- static unsigned int log_level = IBMVFC_DEFAULT_LOG_LEVEL;
- static unsigned int cls3_error = IBMVFC_CLS3_ERROR;
-+static unsigned int mq_enabled = IBMVFC_MQ;
-+static unsigned int nr_scsi_hw_queues = IBMVFC_SCSI_HW_QUEUES;
-+static unsigned int nr_scsi_channels = IBMVFC_SCSI_CHANNELS;
-+static unsigned int mig_channels_only = IBMVFC_MIG_NO_SUB_TO_CRQ;
-+static unsigned int mig_no_less_channels = IBMVFC_MIG_NO_N_TO_M;
-+
- static LIST_HEAD(ibmvfc_head);
- static DEFINE_SPINLOCK(ibmvfc_driver_lock);
- static struct scsi_transport_template *ibmvfc_transport_template;
-@@ -49,6 +55,22 @@ MODULE_AUTHOR("Brian King <brking@linux.vnet.ibm.com>");
- MODULE_LICENSE("GPL");
- MODULE_VERSION(IBMVFC_DRIVER_VERSION);
- 
-+module_param_named(mq, mq_enabled, uint, S_IRUGO);
-+MODULE_PARM_DESC(mq, "Enable multiqueue support. "
-+		 "[Default=" __stringify(IBMVFC_MQ) "]");
-+module_param_named(scsi_host_queues, nr_scsi_hw_queues, uint, S_IRUGO);
-+MODULE_PARM_DESC(scsi_host_queues, "Number of SCSI Host submission queues. "
-+		 "[Default=" __stringify(IBMVFC_SCSI_HW_QUEUES) "]");
-+module_param_named(scsi_hw_channels, nr_scsi_channels, uint, S_IRUGO);
-+MODULE_PARM_DESC(scsi_hw_channels, "Number of hw scsi channels to request. "
-+		 "[Default=" __stringify(IBMVFC_SCSI_CHANNELS) "]");
-+module_param_named(mig_channels_only, mig_channels_only, uint, S_IRUGO);
-+MODULE_PARM_DESC(mig_channels_only, "Prevent migration to non-channelized system. "
-+		 "[Default=" __stringify(IBMVFC_MIG_NO_SUB_TO_CRQ) "]");
-+module_param_named(mig_no_less_channels, mig_no_less_channels, uint, S_IRUGO);
-+MODULE_PARM_DESC(mig_no_less_channels, "Prevent migration to system with less channels. "
-+		 "[Default=" __stringify(IBMVFC_MIG_NO_N_TO_M) "]");
-+
- module_param_named(init_timeout, init_timeout, uint, S_IRUGO | S_IWUSR);
- MODULE_PARM_DESC(init_timeout, "Initialization timeout in seconds. "
- 		 "[Default=" __stringify(IBMVFC_INIT_TIMEOUT) "]");
-@@ -926,7 +948,7 @@ static int ibmvfc_reset_crq(struct ibmvfc_host *vhost)
- 	crq->cur = 0;
- 
- 	if (vhost->scsi_scrqs.scrqs) {
--		for (i = 0; i < IBMVFC_SCSI_HW_QUEUES; i++) {
-+		for (i = 0; i < nr_scsi_hw_queues; i++) {
- 			scrq = &vhost->scsi_scrqs.scrqs[i];
- 			spin_lock(scrq->q_lock);
- 			memset(scrq->msgs.scrq, 0, PAGE_SIZE);
-@@ -3394,6 +3416,37 @@ static ssize_t ibmvfc_store_log_level(struct device *dev,
- 	return strlen(buf);
- }
- 
-+static ssize_t ibmvfc_show_scsi_channels(struct device *dev,
-+					 struct device_attribute *attr, char *buf)
-+{
-+	struct Scsi_Host *shost = class_to_shost(dev);
-+	struct ibmvfc_host *vhost = shost_priv(shost);
-+	unsigned long flags = 0;
-+	int len;
-+
-+	spin_lock_irqsave(shost->host_lock, flags);
-+	len = snprintf(buf, PAGE_SIZE, "%d\n", vhost->client_scsi_channels);
-+	spin_unlock_irqrestore(shost->host_lock, flags);
-+	return len;
-+}
-+
-+static ssize_t ibmvfc_store_scsi_channels(struct device *dev,
-+					 struct device_attribute *attr,
-+					 const char *buf, size_t count)
-+{
-+	struct Scsi_Host *shost = class_to_shost(dev);
-+	struct ibmvfc_host *vhost = shost_priv(shost);
-+	unsigned long flags = 0;
-+	unsigned int channels;
-+
-+	spin_lock_irqsave(shost->host_lock, flags);
-+	channels = simple_strtoul(buf, NULL, 10);
-+	vhost->client_scsi_channels = min(channels, nr_scsi_hw_queues);
-+	ibmvfc_hard_reset_host(vhost);
-+	spin_unlock_irqrestore(shost->host_lock, flags);
-+	return strlen(buf);
-+}
-+
- static DEVICE_ATTR(partition_name, S_IRUGO, ibmvfc_show_host_partition_name, NULL);
- static DEVICE_ATTR(device_name, S_IRUGO, ibmvfc_show_host_device_name, NULL);
- static DEVICE_ATTR(port_loc_code, S_IRUGO, ibmvfc_show_host_loc_code, NULL);
-@@ -3402,6 +3455,8 @@ static DEVICE_ATTR(npiv_version, S_IRUGO, ibmvfc_show_host_npiv_version, NULL);
- static DEVICE_ATTR(capabilities, S_IRUGO, ibmvfc_show_host_capabilities, NULL);
- static DEVICE_ATTR(log_level, S_IRUGO | S_IWUSR,
- 		   ibmvfc_show_log_level, ibmvfc_store_log_level);
-+static DEVICE_ATTR(nr_scsi_channels, S_IRUGO | S_IWUSR,
-+		   ibmvfc_show_scsi_channels, ibmvfc_store_scsi_channels);
- 
- #ifdef CONFIG_SCSI_IBMVFC_TRACE
- /**
-@@ -3458,6 +3513,7 @@ static struct device_attribute *ibmvfc_attrs[] = {
- 	&dev_attr_npiv_version,
- 	&dev_attr_capabilities,
- 	&dev_attr_log_level,
-+	&dev_attr_nr_scsi_channels,
- 	NULL
- };
- 
-@@ -4863,9 +4919,9 @@ static void ibmvfc_channel_enquiry(struct ibmvfc_host *vhost)
- 	mad->common.opcode = cpu_to_be32(IBMVFC_CHANNEL_ENQUIRY);
- 	mad->common.length = cpu_to_be16(sizeof(*mad));
- 
--	if (IBMVFC_MIG_NO_SUB_TO_CRQ)
-+	if (mig_channels_only)
- 		mad->flags |= cpu_to_be32(IBMVFC_NO_CHANNELS_TO_CRQ_SUPPORT);
--	if (IBMVFC_MIG_NO_N_TO_M)
-+	if (mig_no_less_channels)
- 		mad->flags |= cpu_to_be32(IBMVFC_NO_N_TO_M_CHANNELS_SUPPORT);
- 
- 	ibmvfc_set_host_action(vhost, IBMVFC_HOST_ACTION_INIT_WAIT);
-@@ -5652,13 +5708,13 @@ static int ibmvfc_init_sub_crqs(struct ibmvfc_host *vhost)
- 
- 	ENTER;
- 
--	vhost->scsi_scrqs.scrqs = kcalloc(IBMVFC_SCSI_HW_QUEUES,
-+	vhost->scsi_scrqs.scrqs = kcalloc(nr_scsi_hw_queues,
- 					  sizeof(*vhost->scsi_scrqs.scrqs),
- 					  GFP_KERNEL);
- 	if (!vhost->scsi_scrqs.scrqs)
- 		return -1;
- 
--	for (i = 0; i < IBMVFC_SCSI_HW_QUEUES; i++) {
-+	for (i = 0; i < nr_scsi_hw_queues; i++) {
- 		if (ibmvfc_register_scsi_channel(vhost, i)) {
- 			for (j = i; j > 0; j--)
- 				ibmvfc_deregister_scsi_channel(vhost, j - 1);
-@@ -5682,7 +5738,7 @@ static void ibmvfc_release_sub_crqs(struct ibmvfc_host *vhost)
- 	if (!vhost->scsi_scrqs.scrqs)
- 		return;
- 
--	for (i = 0; i < IBMVFC_SCSI_HW_QUEUES; i++)
-+	for (i = 0; i < nr_scsi_hw_queues; i++)
- 		ibmvfc_deregister_scsi_channel(vhost, i);
- 
- 	kfree(vhost->scsi_scrqs.scrqs);
-@@ -5880,12 +5936,13 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
- 
- 	shost->transportt = ibmvfc_transport_template;
- 	shost->can_queue = max_requests;
-+	shost->can_queue = (max_requests / nr_scsi_hw_queues);
- 	shost->max_lun = max_lun;
- 	shost->max_id = max_targets;
- 	shost->max_sectors = IBMVFC_MAX_SECTORS;
- 	shost->max_cmd_len = IBMVFC_MAX_CDB_LEN;
- 	shost->unique_id = shost->host_no;
--	shost->nr_hw_queues = IBMVFC_MQ ? IBMVFC_SCSI_HW_QUEUES : 1;
-+	shost->nr_hw_queues = mq_enabled ? nr_scsi_hw_queues : 1;
- 
- 	vhost = shost_priv(shost);
- 	INIT_LIST_HEAD(&vhost->targets);
-@@ -5897,8 +5954,8 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
- 	vhost->log_level = log_level;
- 	vhost->task_set = 1;
- 
--	vhost->mq_enabled = IBMVFC_MQ;
--	vhost->client_scsi_channels = IBMVFC_SCSI_CHANNELS;
-+	vhost->mq_enabled = mq_enabled;
-+	vhost->client_scsi_channels = min(nr_scsi_hw_queues, nr_scsi_channels);
- 	vhost->using_channels = 0;
- 	vhost->do_enquiry = 1;
- 
--- 
-2.27.0
+I was poking around in SLUB internals and noticed that the estimate of
+how many free objects exist on a percpu partial list (tracked in
+page->pobjects of the first page on the list and exposed to userspace
+via /sys/kernel/slab/*/slabs_cpu_partial) is highly inaccurate.
 
+From a naive first look, it seems like SLUB tries to roughly keep up
+to cache->cpu_partial free objects per slab and CPU around.
+cache->cpu_partial depends on the object size; the maximum is 30 (for
+objects <256 bytes).
+
+However, the accounting of free objects into page->pobjects only
+happens when a page is added to the percpu partial list;
+page->pobjects is not updated when objects are freed to a page that is
+already on the percpu partial list. Pages can be added to the percpu
+partial list in two cases:
+
+1. When an object is freed from a page which previously had zero free
+objects (via __slab_free()), meaning the page was not previously on
+any list.
+2. When the percpu partial list was empty and get_partial_node(),
+after grabbing a partial page from the node, moves more partial pages
+onto the percpu partial list to make the percpu partial list contain
+around cache->cpu_partial/2 free objects.
+
+In case 1, pages will almost always be counted as having one free
+object, unless a race with a concurrent __slab_free() on the same page
+happens, because the code path specifically handles the case where the
+number of free objects just became 1.
+In case 2, pages will probably often be counted as having many free
+objects; however, this case doesn't appear to happen often in
+practice, likely partly because pages outside of percpu partial lists
+get freed immediately when they become empty.
+
+
+This means that in practice, SLUB actually ends up keeping as many
+**pages** on the percpu partial lists as it intends to keep **free
+objects** there. To see this, you can append the snippet at the end of
+this mail to mm/slub.c; that will add a debugfs entry that lets you
+accurately dump the percpu partial lists of all running CPUs (at the
+cost of an IPI storm when you read it).
+
+Especially after running some forkbombs multiple times on a VM with a
+bunch of CPUs, that will show you that some of the percpu lists look
+like this (just showing a single slab's percpu lists on three CPU
+cores here) - note the "inuse=0" everywhere:
+
+task_delay_info on 10:
+  page=fffff9e4444b9b00 base=ffff988bd2e6c000 order=0 partial_pages=24
+partial_objects=24 objects=51 inuse=0
+  page=fffff9e44469f800 base=ffff988bda7e0000 order=0 partial_pages=23
+partial_objects=23 objects=51 inuse=0
+  page=fffff9e444e01380 base=ffff988bf804e000 order=0 partial_pages=22
+partial_objects=22 objects=51 inuse=0
+  page=fffff9e444bdda40 base=ffff988bef769000 order=0 partial_pages=21
+partial_objects=21 objects=51 inuse=0
+  page=fffff9e444c59700 base=ffff988bf165c000 order=0 partial_pages=20
+partial_objects=20 objects=51 inuse=0
+  page=fffff9e44494d280 base=ffff988be534a000 order=0 partial_pages=19
+partial_objects=19 objects=51 inuse=0
+  page=fffff9e444fd2e80 base=ffff988bff4ba000 order=0 partial_pages=18
+partial_objects=18 objects=51 inuse=0
+  page=fffff9e444c47c80 base=ffff988bf11f2000 order=0 partial_pages=17
+partial_objects=17 objects=51 inuse=0
+  page=fffff9e4448ff780 base=ffff988be3fde000 order=0 partial_pages=16
+partial_objects=16 objects=51 inuse=0
+  page=fffff9e4443883c0 base=ffff988bce20f000 order=0 partial_pages=15
+partial_objects=15 objects=51 inuse=0
+  page=fffff9e444eede40 base=ffff988bfbb79000 order=0 partial_pages=14
+partial_objects=14 objects=51 inuse=0
+  page=fffff9e4442febc0 base=ffff988bcbfaf000 order=0 partial_pages=13
+partial_objects=13 objects=51 inuse=0
+  page=fffff9e444e44940 base=ffff988bf9125000 order=0 partial_pages=12
+partial_objects=12 objects=51 inuse=0
+  page=fffff9e4446f72c0 base=ffff988bdbdcb000 order=0 partial_pages=11
+partial_objects=11 objects=51 inuse=0
+  page=fffff9e444dba080 base=ffff988bf6e82000 order=0 partial_pages=10
+partial_objects=10 objects=51 inuse=0
+  page=fffff9e444a23c40 base=ffff988be88f1000 order=0 partial_pages=9
+partial_objects=9 objects=51 inuse=0
+  page=fffff9e444786cc0 base=ffff988bde1b3000 order=0 partial_pages=8
+partial_objects=8 objects=51 inuse=0
+  page=fffff9e444b2cf80 base=ffff988becb3e000 order=0 partial_pages=7
+partial_objects=7 objects=51 inuse=0
+  page=fffff9e444f19cc0 base=ffff988bfc673000 order=0 partial_pages=6
+partial_objects=6 objects=51 inuse=0
+  page=fffff9e444f08fc0 base=ffff988bfc23f000 order=0 partial_pages=5
+partial_objects=5 objects=51 inuse=0
+  page=fffff9e444a0e540 base=ffff988be8395000 order=0 partial_pages=4
+partial_objects=4 objects=51 inuse=0
+  page=fffff9e445127a00 base=ffff988c049e8000 order=0 partial_pages=3
+partial_objects=3 objects=51 inuse=0
+  page=fffff9e44468ae40 base=ffff988bda2b9000 order=0 partial_pages=2
+partial_objects=2 objects=51 inuse=0
+  page=fffff9e44452c9c0 base=ffff988bd4b27000 order=0 partial_pages=1
+partial_objects=1 objects=51 inuse=0
+task_delay_info on 11:
+  page=fffff9e444a90c40 base=ffff988bea431000 order=0 partial_pages=22
+partial_objects=22 objects=51 inuse=0
+  page=fffff9e444447040 base=ffff988bd11c1000 order=0 partial_pages=21
+partial_objects=21 objects=51 inuse=0
+  page=fffff9e446505b40 base=ffff988c5416d000 order=0 partial_pages=20
+partial_objects=20 objects=51 inuse=0
+  page=fffff9e444c02500 base=ffff988bf0094000 order=0 partial_pages=19
+partial_objects=19 objects=51 inuse=0
+  page=fffff9e4447ceec0 base=ffff988bdf3bb000 order=0 partial_pages=18
+partial_objects=18 objects=51 inuse=0
+  page=fffff9e444524a40 base=ffff988bd4929000 order=0 partial_pages=17
+partial_objects=17 objects=51 inuse=0
+  page=fffff9e444698700 base=ffff988bda61c000 order=0 partial_pages=16
+partial_objects=16 objects=51 inuse=0
+  page=fffff9e444d23240 base=ffff988bf48c9000 order=0 partial_pages=15
+partial_objects=15 objects=51 inuse=0
+  page=fffff9e4442ccac0 base=ffff988bcb32b000 order=0 partial_pages=14
+partial_objects=14 objects=51 inuse=0
+  page=fffff9e444a03500 base=ffff988be80d4000 order=0 partial_pages=13
+partial_objects=13 objects=51 inuse=0
+  page=fffff9e444582ec0 base=ffff988bd60bb000 order=0 partial_pages=12
+partial_objects=12 objects=51 inuse=0
+  page=fffff9e444e5a340 base=ffff988bf968d000 order=0 partial_pages=11
+partial_objects=11 objects=51 inuse=0
+  page=fffff9e4444bb680 base=ffff988bd2eda000 order=0 partial_pages=10
+partial_objects=10 objects=51 inuse=0
+  page=fffff9e444232100 base=ffff988bc8c84000 order=0 partial_pages=9
+partial_objects=9 objects=51 inuse=0
+  page=fffff9e444acb2c0 base=ffff988beb2cb000 order=0 partial_pages=8
+partial_objects=8 objects=51 inuse=0
+  page=fffff9e44512cdc0 base=ffff988c04b37000 order=0 partial_pages=7
+partial_objects=7 objects=51 inuse=0
+  page=fffff9e44474f040 base=ffff988bdd3c1000 order=0 partial_pages=6
+partial_objects=6 objects=51 inuse=0
+  page=fffff9e4446dee80 base=ffff988bdb7ba000 order=0 partial_pages=5
+partial_objects=5 objects=51 inuse=0
+  page=fffff9e444c19fc0 base=ffff988bf067f000 order=0 partial_pages=4
+partial_objects=4 objects=51 inuse=0
+  page=fffff9e444a07a80 base=ffff988be81ea000 order=0 partial_pages=3
+partial_objects=3 objects=51 inuse=0
+  page=fffff9e444e6ac80 base=ffff988bf9ab2000 order=0 partial_pages=2
+partial_objects=2 objects=51 inuse=0
+  page=fffff9e4442e5ec0 base=ffff988bcb97b000 order=0 partial_pages=1
+partial_objects=1 objects=51 inuse=0
+task_delay_info on 12:
+  page=fffff9e4446d0880 base=ffff988bdb422000 order=0 partial_pages=27
+partial_objects=27 objects=51 inuse=0
+  page=fffff9e44485f5c0 base=ffff988be17d7000 order=0 partial_pages=26
+partial_objects=26 objects=51 inuse=0
+  page=fffff9e444ff8180 base=ffff988bffe06000 order=0 partial_pages=25
+partial_objects=25 objects=51 inuse=0
+  page=fffff9e444727d00 base=ffff988bdc9f4000 order=0 partial_pages=24
+partial_objects=24 objects=51 inuse=0
+  page=fffff9e444dc7a80 base=ffff988bf71ea000 order=0 partial_pages=23
+partial_objects=23 objects=51 inuse=0
+  page=fffff9e4443c7600 base=ffff988bcf1d8000 order=0 partial_pages=22
+partial_objects=22 objects=51 inuse=0
+  page=fffff9e444d76580 base=ffff988bf5d96000 order=0 partial_pages=21
+partial_objects=21 objects=51 inuse=0
+  page=fffff9e4446d20c0 base=ffff988bdb483000 order=0 partial_pages=20
+partial_objects=20 objects=51 inuse=0
+  page=fffff9e4448b9c00 base=ffff988be2e70000 order=0 partial_pages=19
+partial_objects=19 objects=51 inuse=0
+  page=fffff9e444781900 base=ffff988bde064000 order=0 partial_pages=18
+partial_objects=18 objects=51 inuse=0
+  page=fffff9e4465dd4c0 base=ffff988c57753000 order=0 partial_pages=17
+partial_objects=17 objects=51 inuse=0
+  page=fffff9e4446f2340 base=ffff988bdbc8d000 order=0 partial_pages=16
+partial_objects=16 objects=51 inuse=0
+  page=fffff9e4449c4f40 base=ffff988be713d000 order=0 partial_pages=15
+partial_objects=15 objects=51 inuse=0
+  page=fffff9e445106b80 base=ffff988c041ae000 order=0 partial_pages=14
+partial_objects=14 objects=51 inuse=0
+  page=fffff9e444b7b9c0 base=ffff988bedee7000 order=0 partial_pages=13
+partial_objects=13 objects=51 inuse=0
+  page=fffff9e44422c400 base=ffff988bc8b10000 order=0 partial_pages=12
+partial_objects=12 objects=51 inuse=0
+  page=fffff9e444eb2240 base=ffff988bfac89000 order=0 partial_pages=11
+partial_objects=11 objects=51 inuse=0
+  page=fffff9e44455ce40 base=ffff988bd5739000 order=0 partial_pages=10
+partial_objects=10 objects=51 inuse=0
+  page=fffff9e44490f440 base=ffff988be43d1000 order=0 partial_pages=9
+partial_objects=9 objects=51 inuse=0
+  page=fffff9e444b640c0 base=ffff988bed903000 order=0 partial_pages=8
+partial_objects=8 objects=51 inuse=0
+  page=fffff9e444877c40 base=ffff988be1df1000 order=0 partial_pages=7
+partial_objects=7 objects=51 inuse=0
+  page=fffff9e444ef72c0 base=ffff988bfbdcb000 order=0 partial_pages=6
+partial_objects=6 objects=51 inuse=0
+  page=fffff9e444a6d040 base=ffff988be9b41000 order=0 partial_pages=5
+partial_objects=5 objects=51 inuse=0
+  page=fffff9e444503340 base=ffff988bd40cd000 order=0 partial_pages=4
+partial_objects=4 objects=51 inuse=0
+  page=fffff9e444e408c0 base=ffff988bf9023000 order=0 partial_pages=3
+partial_objects=3 objects=51 inuse=0
+  page=fffff9e445a55a80 base=ffff988c2956a000 order=0 partial_pages=2
+partial_objects=2 objects=51 inuse=0
+  page=fffff9e444486480 base=ffff988bd2192000 order=0 partial_pages=1
+partial_objects=1 objects=51 inuse=0
+
+Even on an old-ish Android phone (Pixel 2), with normal-ish usage, I
+see something like 1.5MiB of pages with zero inuse objects stuck in
+percpu lists.
+
+I suspect that this may have also contributed to the memory wastage
+problem with memory cgroups that was fixed in v5.9
+(https://lore.kernel.org/linux-mm/20200623174037.3951353-1-guro@fb.com/);
+meaning that servers with lots of CPU cores running pre-5.9 kernels
+with memcg and systemd (which tends to stick every service into its
+own memcg) might be even worse off.
+
+It also seems unsurprising to me that flushing ~30 pages out of the
+percpu partial caches at once with IRQs disabled would cause tail
+latency spikes (as noted by Joonsoo Kim and Christoph Lameter in
+commit 345c905d13a4e "slub: Make cpu partial slab support
+configurable").
+
+At first I thought that this wasn't a significant issue because SLUB
+has a reclaim path that can trim the percpu partial lists; but as it
+turns out, that reclaim path is not actually wired up to the page
+allocator's reclaim logic. The SLUB reclaim stuff is only triggered by
+(very rare) subsystem-specific calls into SLUB for specific slabs and
+by sysfs entries. So in userland processes will OOM even if SLUB still
+has megabytes of entirely unused pages lying around.
+
+It might be a good idea to figure out whether it is possible to
+efficiently keep track of a more accurate count of the free objects on
+percpu partial lists; and if not, maybe change the accounting to
+explicitly track the number of partial pages, and use limits that are
+more appropriate for that? And perhaps the page allocator reclaim path
+should also occasionally rip unused pages out of the percpu partial
+lists?
+
+If you want to manually try reaping memory from the percpu partial
+lists one time, you may want to try writing 1 into all
+/sys/kernel/slab/*/shrink and see what effect that has on memory
+usage, especially on the "Slab" line in /proc/meminfo. On my laptop
+(running some kernel older than 5.9) that caused Slab memory usage to
+drop from 652096 kB to 580780 kB, a relative 11% reduction in page
+usage by the slab allocator, and an absolute ~70 MiB reduction. On my
+(mostly idle) 56-core workstation (running the same kernel), it
+reduced slab memory usage by ~13% / ~1.35 GiB:
+
+# for i in {0..5}; do grep Slab /proc/meminfo; sleep 5; done; for file
+in /sys/kernel/slab/*/shrink; do echo 1 > $file; done; for i in
+{0..5}; do grep Slab /proc/meminfo; sleep 5; done
+Slab:           10902060 kB
+Slab:           10902528 kB
+Slab:           10902528 kB
+Slab:           10902728 kB
+Slab:           10902696 kB
+Slab:           10902712 kB
+Slab:            9485364 kB
+Slab:            9424864 kB
+Slab:            9429188 kB
+Slab:            9430656 kB
+Slab:            9431020 kB
+Slab:            9431764 kB
+
+
+=============================
+#ifdef CONFIG_SLUB_CPU_PARTIAL
+struct partial_dump_state {
+        int cache_idx;
+        struct kmem_cache *cache;
+        int cpu;
+};
+
+static void *partial_dump_start(struct seq_file *m, loff_t *pos)
+{
+        struct partial_dump_state *ds = m->private;
+
+        mutex_lock(&slab_mutex);
+        ds->cache = list_first_entry(&slab_caches, struct kmem_cache, list);
+        if (*pos == 0) {
+                ds->cache_idx = 0;
+                ds->cpu = cpumask_next(-1, cpu_possible_mask);
+        } else  {
+                int i;
+
+                for (i = 0; i < ds->cache_idx; i++) {
+                        if (list_is_last(&ds->cache->list, &slab_caches))
+                                return NULL;
+                        ds->cache = list_next_entry(ds->cache, list);
+                }
+
+        }
+        return (void*)1UL;
+}
+
+static void *partial_dump_next(struct seq_file *m, void *v, loff_t *pos)
+{
+        struct partial_dump_state *ds = m->private;
+
+        (*pos)++; /* meaningless but seq_file complains if we don't */
+        ds->cpu = cpumask_next(ds->cpu, cpu_possible_mask);
+        if (ds->cpu >= num_possible_cpus()) {
+                ds->cpu = cpumask_next(-1, cpu_possible_mask);
+
+                ds->cache_idx++;
+                if (list_is_last(&ds->cache->list, &slab_caches))
+                        return NULL;
+                ds->cache = list_next_entry(ds->cache, list);
+        }
+        return (void*)1UL;
+}
+
+static void empty_stop(struct seq_file *m, void *p) {
+        struct partial_dump_state *ds = m->private;
+
+        ds->cache = NULL;
+        mutex_unlock(&slab_mutex);
+}
+
+static void partial_dump_on_cpu(void *info)
+{
+        struct seq_file *m = info;
+        struct partial_dump_state *ds = m->private;
+        struct kmem_cache_cpu *c = per_cpu_ptr(ds->cache->cpu_slab, ds->cpu);
+        struct page *page;
+
+        if (WARN_ON(smp_processor_id() != ds->cpu))
+                return;
+
+        seq_printf(m, "%s on %d:\n", ds->cache->name, ds->cpu);
+        page = c->partial;
+        for (page = c->partial; page != NULL; page = page->next) {
+                seq_printf(m, "  page=%px base=%px order=%d
+partial_pages=%d partial_objects=%d objects=%u inuse=%u\n",
+                           page,
+                           page_address(page),
+                           compound_order(page),
+                           page->pages,
+                           page->pobjects,
+                           page->objects,
+                           page->inuse);
+        }
+}
+
+static int partial_dump_show(struct seq_file *m, void *p)
+{
+        struct partial_dump_state *ds = m->private;
+
+        if (smp_call_function_single(ds->cpu, partial_dump_on_cpu, m, 1))
+                seq_printf(m, "%s on %d: not online\n",
+ds->cache->name, ds->cpu);
+
+        return 0;
+}
+
+static const struct seq_operations partial_dump_seq_ops = {
+        .start = partial_dump_start,
+        .next = partial_dump_next,
+        .stop = empty_stop,
+        .show = partial_dump_show
+};
+
+static int partial_dump_open(struct inode *inode, struct file *file)
+{
+        return seq_open_private(file, &partial_dump_seq_ops,
+sizeof(struct partial_dump_state));
+}
+
+static const struct file_operations partial_dump_ops = {
+        .open = partial_dump_open,
+        .read = seq_read,
+        .llseek = seq_lseek,
+        .release = seq_release
+};
+#endif
+
+#include <linux/debugfs.h>
+static int __init slub_debugfs_init(void)
+{
+        struct dentry *dir = debugfs_create_dir("slub", NULL);
+
+#ifdef CONFIG_SLUB_CPU_PARTIAL
+        debugfs_create_file("partial_dump", 0400, dir, NULL, &partial_dump_ops);
+#endif
+
+        return 0;
+}
+late_initcall(slub_debugfs_init);
+=============================
