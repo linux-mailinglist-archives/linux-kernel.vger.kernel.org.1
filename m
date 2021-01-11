@@ -2,134 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C889C2F1047
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:42:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE00D2F1045
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729340AbhAKKlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:41:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26271 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729031AbhAKKlm (ORCPT
+        id S1729327AbhAKKlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:41:22 -0500
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:34125 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726594AbhAKKlV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:41:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610361615;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SXDYc0wJR1WVDdg07JHpUA2tSMEFWcqIlRZk9oZHqH8=;
-        b=i/utmrOoDDOXGuOArmq9H3VAEP+GWH/VcUSXCCAUSrHr2zH0aJlS83101GHQQcMjfqe4x1
-        ENeWeKQRDxRLGLd7MCNzDJWY6vuTrCcwmkw/cnFdrjB6Djk4WPRuqkFuynRl5dAMI653No
-        WzrFodKjRVzAMINKofi46arVM2qr4X8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-337-JoQK4F-oPEq0NI9cddKRPQ-1; Mon, 11 Jan 2021 05:40:11 -0500
-X-MC-Unique: JoQK4F-oPEq0NI9cddKRPQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75351190B2A0;
-        Mon, 11 Jan 2021 10:40:09 +0000 (UTC)
-Received: from [10.36.115.103] (ovpn-115-103.ams2.redhat.com [10.36.115.103])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0CA8A5C232;
-        Mon, 11 Jan 2021 10:40:06 +0000 (UTC)
-Subject: Re: [PATCH V2 3/3] s390/mm: Define arch_get_mappable_range()
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org, hca@linux.ibm.com,
-        catalin.marinas@arm.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <1608218912-28932-1-git-send-email-anshuman.khandual@arm.com>
- <1608218912-28932-4-git-send-email-anshuman.khandual@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <87ae0b7c-0e95-6068-900e-d813a53f2732@redhat.com>
-Date:   Mon, 11 Jan 2021 11:40:06 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 11 Jan 2021 05:41:21 -0500
+Received: by mail-ot1-f54.google.com with SMTP id a109so16470566otc.1;
+        Mon, 11 Jan 2021 02:41:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fQE92wGImoCuHGlTBsuRYfPJyJNJDeXQD1pa+O0heSQ=;
+        b=k3CagimkYb5qti0xPocP9KUUcWHcx57HTW4rxNTMiDtntcJOflk9XuQSFaKrsXryQG
+         VKFQdGQ2KtNcgl7UBf+xmXsHosyL7TgRxvXV/W0TL0t+bgrqheg0g8QdADQTlDAP8r0M
+         pfCEOlCGoVuP1L/Bv1BeAtzDrfOvNcqwYzkgI/+wZ7CoL3SdlFBAkzy5aA1zOivBcKN8
+         Z4n9bPH8RwZFO+OAdBhBrAJHbnSqKYIXPavjD9BNLEP6WGIQWcXdeZJjmi9Idv73TszC
+         vbn4RpeScyaseBMScBrAFfTWQ7jFRppq0mpLVy+Kge83L6SGNRHeYhAV4Sk9Dtlej9KV
+         qLAQ==
+X-Gm-Message-State: AOAM531zKhywTZpLSAwkmf4zJE32isxlh+FPfxtQJIef+UvJOYLRkd12
+        sBN18F/uIUWiUOCUO6/ndNC4KcpOItHbKJXTupE=
+X-Google-Smtp-Source: ABdhPJw0eeT3HhWAExbemNPOr5fFXG+x/OCUxkL5CeiTn4tO82WpZyRF9+zqWH7caDpH3OcHEW0fc+4bhYFaLcEtYtw=
+X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr10469024oth.250.1610361640322;
+ Mon, 11 Jan 2021 02:40:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1608218912-28932-4-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20201206214613.444124194@linutronix.de> <20201206220542.062910520@linutronix.de>
+ <CAMuHMdVB9XMAaMDnKrRzkqvhFugrDGmj=00Vh5sDQT-idnA7DA@mail.gmail.com> <87lfcz7pem.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87lfcz7pem.fsf@nanos.tec.linutronix.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 11 Jan 2021 11:40:29 +0100
+Message-ID: <CAMuHMdXQvPY_mYicjPKjDSCwdO_rP-9PJOvqD0J6=S3Opr1ycg@mail.gmail.com>
+Subject: Re: [patch 5/8] ntp: Make the RTC synchronization more reliable
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.12.20 16:28, Anshuman Khandual wrote:
-> This overrides arch_get_mappabble_range() on s390 platform which will be
-> used with recently added generic framework. It modifies the existing range
-> check in vmem_add_mapping() using arch_get_mappable_range(). It also adds a
-> VM_BUG_ON() check that would ensure that memhp_range_allowed() has already
-> been called on the hotplug path.
-> 
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: linux-s390@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Acked-by: Heiko Carstens <hca@linux.ibm.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/s390/mm/init.c |  1 +
->  arch/s390/mm/vmem.c | 15 ++++++++++++++-
->  2 files changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
-> index 77767850d0d0..e0e78234ae57 100644
-> --- a/arch/s390/mm/init.c
-> +++ b/arch/s390/mm/init.c
-> @@ -291,6 +291,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
->  	if (WARN_ON_ONCE(params->pgprot.pgprot != PAGE_KERNEL.pgprot))
->  		return -EINVAL;
->  
-> +	VM_BUG_ON(!memhp_range_allowed(start, size, 1));
+Hi Thomas,
 
-s/1/true/
+On Mon, Jan 11, 2021 at 11:12 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+> On Tue, Dec 29 2020 at 20:41, Geert Uytterhoeven wrote:
+> >> Reported-by: Miroslav Lichvar <mlichvar@redhat.com>
+> >> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> >
+> > Thanks for your patch, which is now commit c9e6189fb03123a7 ("ntp: Make
+> > the RTC synchronization more reliable").
+> >
+> > Since this commit, the I2C RTC on the R-Car M2-W Koelsch development
+> > board is accessed every two seconds.  Sticking a WARN() in the I2C
+> > activation path gives e.g.
+>
+> Huch? Every two seconds? The timer is armed with 11 * 60 * NSEC_PER_SEC,
+> which is 11 minutes. Confused....
 
->  	rc = vmem_add_mapping(start, size);
->  	if (rc)
->  		return rc;
-> diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
-> index b239f2ba93b0..e10e563ad2b4 100644
-> --- a/arch/s390/mm/vmem.c
-> +++ b/arch/s390/mm/vmem.c
-> @@ -4,6 +4,7 @@
->   *    Author(s): Heiko Carstens <heiko.carstens@de.ibm.com>
->   */
->  
-> +#include <linux/memory_hotplug.h>
->  #include <linux/memblock.h>
->  #include <linux/pfn.h>
->  #include <linux/mm.h>
-> @@ -532,11 +533,23 @@ void vmem_remove_mapping(unsigned long start, unsigned long size)
->  	mutex_unlock(&vmem_mutex);
->  }
->  
-> +struct range arch_get_mappable_range(void)
-> +{
-> +	struct range memhp_range;
-> +
-> +	memhp_range.start = 0;
-> +	memhp_range.end =  VMEM_MAX_PHYS;
+Thanks for the hint:
 
-s/  / /
+    #define SYNC_PERIOD_NS (11UL * 60 * NSEC_PER_SEC)
 
-IIRC, the range is inclusive? "VMEM_MAX_PHYS - 1" then, and adjust the
-check below.
+is truncated on 32-bit platforms.
 
-> +	return memhp_range;
-> +}
-> +
+Patch sent.
 
+Gr{oetje,eeting}s,
 
--- 
-Thanks,
+                        Geert
 
-David / dhildenb
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
