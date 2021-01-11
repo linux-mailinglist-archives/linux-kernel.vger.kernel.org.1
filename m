@@ -2,65 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCDD22F225E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:02:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 180BC2F2264
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:04:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389319AbhAKWB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 17:01:57 -0500
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:38145 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731436AbhAKWB4 (ORCPT
+        id S2389027AbhAKWEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 17:04:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727380AbhAKWEJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:01:56 -0500
-Received: by mail-oi1-f181.google.com with SMTP id x13so218283oic.5;
-        Mon, 11 Jan 2021 14:01:41 -0800 (PST)
+        Mon, 11 Jan 2021 17:04:09 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA3C6C061786;
+        Mon, 11 Jan 2021 14:03:28 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id 9so238301oiq.3;
+        Mon, 11 Jan 2021 14:03:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4pnAUu4MoWOWC8B526NUcSdK5Bv3Jv4STD3FiBRZNko=;
+        b=ZAdmY9NPZXL/ECXlxSJ2c8FFpNtjaCFLqMAKCkEmkltVV8schM/n9EZYDoWLKlMDtt
+         UecdLrjjCpJev2jxRovNPe6rSWncB7TqNUeDCluzeo7y/MIcW2zE9MXjVjQzfzTCSkkS
+         1eWO6Dg7ckcWW3xVe3MS1RMgDBHZSj+QlqCHqpsh48Bxd9/nup/Xye/mOuihB3R62ZUo
+         PeSv8LJE8gdJ7j5LanzKERrFATUxUw6bdFz4vy1T9MK29hSLmWk5b9pxOruAimP30EVb
+         VQ2RuQilL/zUkMW3LVimOvhdIoDsZn219LV0yOmeeGdi3taqcGY0loNSPihCJCSKFQ7Q
+         TqLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=swMeYjn7bXqKRG/eRayNFSOvBd+XVAGrQ+8GLln8aFU=;
-        b=CrcNrAVOwNysbiR4O01UCx3ro0JdS7IsL/o5jw8+y8OuMx5BQJgz+wOtqlGfkn2hz1
-         AI3rtEi2d+0ITp+XLg7qeYGmf2Mf/cBbNNRXSFLPKhYRYE700PTKDcfD7RM6VOLskycy
-         d32BIQ3y+fVRhrk5oFKXFQRjOH+9hD1MPGCnx/cM6ILKvM+WV4W94TCJU/MhZI9N4CZb
-         XWLV/9p0PWI0zsUuSSfOjfc4E9wVUN2YCLqAnPRZMbsxq0yP/luzcOroOS6DhKtVrFUS
-         Omp21aEN7J+EG3l1gHwLjsw9AW6h9xBCL5aEqdqKBDiMFuNhbzF8JM6Y+BArJotV83Y8
-         Px2w==
-X-Gm-Message-State: AOAM530OD+9dqv1cGOK6cPFUExOvzg4MNcVeqBkQeNb59n++dEa6JuIj
-        6Lh+zuVonXFQmPTvV7gq3A==
-X-Google-Smtp-Source: ABdhPJxFniA6qPNv3KBmaOx3/o/zHYRUuc8SweMVySqIHH9M/ZOASz+ccNp9qYW5Gxcyevxidi6b+g==
-X-Received: by 2002:aca:fc8d:: with SMTP id a135mr552787oii.87.1610402476055;
-        Mon, 11 Jan 2021 14:01:16 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q1sm247211oij.9.2021.01.11.14.01.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 14:01:15 -0800 (PST)
-Received: (nullmailer pid 3135296 invoked by uid 1000);
-        Mon, 11 Jan 2021 22:01:14 -0000
-Date:   Mon, 11 Jan 2021 16:01:14 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Bert Vermeulen <bert@biot.com>
-Cc:     linux-mips@vger.kernel.org, Sander Vanheule <sander@svanheule.net>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] dt-bindings: Add Cisco prefix to vendor list
-Message-ID: <20210111220114.GA3135243@robh.at.kernel.org>
-References: <20201230212205.2605383-1-bert@biot.com>
- <20201230212205.2605383-3-bert@biot.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4pnAUu4MoWOWC8B526NUcSdK5Bv3Jv4STD3FiBRZNko=;
+        b=eB5xvwE5SAULgga0Fbw6vgVyDBeVeiYcmb1H5P4e6UNFvbLRPUXi5Q+DpjMIZklvOs
+         2rLuZzaDMV4aHFelhhBUnSJD/m6/4Fdd/wVdfwhd3y4g3a8pPNjceOOPxApbyt/+0y05
+         ktjppgGNAQ4BLtiGbFuYT06LD2fvur2QV55Lq1F6Ut2FpqHmhxoFnz2SQU4sa+HpHjfs
+         bzzkylrirGd40KDvwbzMVyncld3bDfQUfZlLvY8ja0ErUsEfBqNAOZNSzVIPScyo7i2u
+         7lV+o6xbwN+Cauk87MvAM8qXIMk/eGbahw+q7fS5HqO6X4lRlZ8+VUj0os1GfBnBY+l7
+         Sd5A==
+X-Gm-Message-State: AOAM532pTP4sckuFlgcCNQuDjiNofeHXhxPh2rU7AYbRQgLuvfu1FG5/
+        DoJniktlp9Jo7hen+AR6qf8=
+X-Google-Smtp-Source: ABdhPJzbtZ/T0PKwNqkqEyPo0xB2G3hNodTikJ9l7qoKWKGX0T8rPAjQWNhZm7qjBvmZzNijkNO8Bg==
+X-Received: by 2002:aca:bc54:: with SMTP id m81mr414334oif.27.1610402608399;
+        Mon, 11 Jan 2021 14:03:28 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z3sm176111ooj.26.2021.01.11.14.03.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 11 Jan 2021 14:03:27 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 11 Jan 2021 14:03:26 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/144] 5.10.7-rc2 review
+Message-ID: <20210111220326.GF56906@roeck-us.net>
+References: <20210111161510.602817176@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201230212205.2605383-3-bert@biot.com>
+In-Reply-To: <20210111161510.602817176@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Dec 2020 22:22:04 +0100, Bert Vermeulen wrote:
-> Signed-off-by: Bert Vermeulen <bert@biot.com>
-> Signed-off-by: Sander Vanheule <sander@svanheule.net>
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
+On Mon, Jan 11, 2021 at 05:15:35PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.7 release.
+> There are 144 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 13 Jan 2021 16:14:43 +0000.
+> Anything received after that time might be too late.
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Build results:
+	total: 154 pass: 154 fail: 0
+Qemu test results:
+	total: 427 pass: 427 fail: 0
+
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
