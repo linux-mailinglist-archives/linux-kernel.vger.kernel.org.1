@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825552F130B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:03:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86EF82F1326
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:05:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729457AbhAKNCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:02:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49734 "EHLO mail.kernel.org"
+        id S1729629AbhAKNE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:04:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729393AbhAKNCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:02:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 359FE22515;
-        Mon, 11 Jan 2021 13:01:54 +0000 (UTC)
+        id S1730060AbhAKND6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:03:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 924DF22B51;
+        Mon, 11 Jan 2021 13:03:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370114;
-        bh=MoUO5H4SMERM/X57okUKuEQLnXWZ9k/cq0uOJUYMSoI=;
+        s=korg; t=1610370185;
+        bh=iFnS+GBYEsw4jWMBlBq7NIkQVxEv6AgCU7oCMZz5DfY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x5M8c6qYCMtG9QkkJ7P2cYjDlMYEzKz8HAqjfAUCHtUBeKgYz04Xq4HpJvQPKM2qq
-         /zXkS6Iy8+/hamJeSmIiBj/31WRGkN5yAx+JAoSS7nncGQ2VhhAF2SgsiRU/aLYG4b
-         CImJoq1DoCCXDFrZCpgsufg5K79NEzuu89d/bmtQ=
+        b=L7nnkirSbrjQF8D9p4LE6ZL33iPMeu5FHnH9M+ATtexl/qZ2NQhRL82uW48s+2P8i
+         HVjblLMhXDU9BEZk9gy/N69/QjY63EG+nN0+K7+7TzvuM00WzokhGQT4X0F2Dy9zMH
+         0T7ff/Dx92NSNEtzupiP/kMtOeXxymU20DujBZXY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>,
-        Xie He <xie.he.0141@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.4 09/38] net: hdlc_ppp: Fix issues when mod_timer is called while timer is running
+        stable@vger.kernel.org, Huang Shijie <sjhuang@iluvatar.ai>,
+        Shi Jiasheng <jiasheng.shi@iluvatar.ai>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 03/45] lib/genalloc: fix the overflow when size is too big
 Date:   Mon, 11 Jan 2021 14:00:41 +0100
-Message-Id: <20210111130032.917459630@linuxfoundation.org>
+Message-Id: <20210111130033.843385615@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
-References: <20210111130032.469630231@linuxfoundation.org>
+In-Reply-To: <20210111130033.676306636@linuxfoundation.org>
+References: <20210111130033.676306636@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +42,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Huang Shijie <sjhuang@iluvatar.ai>
 
-[ Upstream commit 1fef73597fa545c35fddc953979013882fbd4e55 ]
+[ Upstream commit 36845663843fc59c5d794e3dc0641472e3e572da ]
 
-ppp_cp_event is called directly or indirectly by ppp_rx with "ppp->lock"
-held. It may call mod_timer to add a new timer. However, at the same time
-ppp_timer may be already running and waiting for "ppp->lock". In this
-case, there's no need for ppp_timer to continue running and it can just
-exit.
+Some graphic card has very big memory on chip, such as 32G bytes.
 
-If we let ppp_timer continue running, it may call add_timer. This causes
-kernel panic because add_timer can't be called with a timer pending.
-This patch fixes this problem.
+In the following case, it will cause overflow:
 
-Fixes: e022c2f07ae5 ("WAN: new synchronous PPP implementation for generic HDLC.")
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    pool = gen_pool_create(PAGE_SHIFT, NUMA_NO_NODE);
+    ret = gen_pool_add(pool, 0x1000000, SZ_32G, NUMA_NO_NODE);
+
+    va = gen_pool_alloc(pool, SZ_4G);
+
+The overflow occurs in gen_pool_alloc_algo_owner():
+
+		....
+		size = nbits << order;
+		....
+
+The @nbits is "int" type, so it will overflow.
+Then the gen_pool_avail() will return the wrong value.
+
+This patch converts some "int" to "unsigned long", and
+changes the compare code in while.
+
+Link: https://lkml.kernel.org/r/20201229060657.3389-1-sjhuang@iluvatar.ai
+Signed-off-by: Huang Shijie <sjhuang@iluvatar.ai>
+Reported-by: Shi Jiasheng <jiasheng.shi@iluvatar.ai>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wan/hdlc_ppp.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ lib/genalloc.c | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
---- a/drivers/net/wan/hdlc_ppp.c
-+++ b/drivers/net/wan/hdlc_ppp.c
-@@ -572,6 +572,13 @@ static void ppp_timer(unsigned long arg)
- 	unsigned long flags;
+diff --git a/lib/genalloc.c b/lib/genalloc.c
+index 7e85d1e37a6ea..0b8ee173cf3a6 100644
+--- a/lib/genalloc.c
++++ b/lib/genalloc.c
+@@ -83,14 +83,14 @@ static int clear_bits_ll(unsigned long *addr, unsigned long mask_to_clear)
+  * users set the same bit, one user will return remain bits, otherwise
+  * return 0.
+  */
+-static int bitmap_set_ll(unsigned long *map, int start, int nr)
++static int bitmap_set_ll(unsigned long *map, unsigned long start, unsigned long nr)
+ {
+ 	unsigned long *p = map + BIT_WORD(start);
+-	const int size = start + nr;
++	const unsigned long size = start + nr;
+ 	int bits_to_set = BITS_PER_LONG - (start % BITS_PER_LONG);
+ 	unsigned long mask_to_set = BITMAP_FIRST_WORD_MASK(start);
  
- 	spin_lock_irqsave(&ppp->lock, flags);
-+	/* mod_timer could be called after we entered this function but
-+	 * before we got the lock.
-+	 */
-+	if (timer_pending(&proto->timer)) {
-+		spin_unlock_irqrestore(&ppp->lock, flags);
-+		return;
-+	}
- 	switch (proto->state) {
- 	case STOPPING:
- 	case REQ_SENT:
+-	while (nr - bits_to_set >= 0) {
++	while (nr >= bits_to_set) {
+ 		if (set_bits_ll(p, mask_to_set))
+ 			return nr;
+ 		nr -= bits_to_set;
+@@ -118,14 +118,15 @@ static int bitmap_set_ll(unsigned long *map, int start, int nr)
+  * users clear the same bit, one user will return remain bits,
+  * otherwise return 0.
+  */
+-static int bitmap_clear_ll(unsigned long *map, int start, int nr)
++static unsigned long
++bitmap_clear_ll(unsigned long *map, unsigned long start, unsigned long nr)
+ {
+ 	unsigned long *p = map + BIT_WORD(start);
+-	const int size = start + nr;
++	const unsigned long size = start + nr;
+ 	int bits_to_clear = BITS_PER_LONG - (start % BITS_PER_LONG);
+ 	unsigned long mask_to_clear = BITMAP_FIRST_WORD_MASK(start);
+ 
+-	while (nr - bits_to_clear >= 0) {
++	while (nr >= bits_to_clear) {
+ 		if (clear_bits_ll(p, mask_to_clear))
+ 			return nr;
+ 		nr -= bits_to_clear;
+@@ -184,8 +185,8 @@ int gen_pool_add_virt(struct gen_pool *pool, unsigned long virt, phys_addr_t phy
+ 		 size_t size, int nid)
+ {
+ 	struct gen_pool_chunk *chunk;
+-	int nbits = size >> pool->min_alloc_order;
+-	int nbytes = sizeof(struct gen_pool_chunk) +
++	unsigned long nbits = size >> pool->min_alloc_order;
++	unsigned long nbytes = sizeof(struct gen_pool_chunk) +
+ 				BITS_TO_LONGS(nbits) * sizeof(long);
+ 
+ 	chunk = vzalloc_node(nbytes, nid);
+@@ -242,7 +243,7 @@ void gen_pool_destroy(struct gen_pool *pool)
+ 	struct list_head *_chunk, *_next_chunk;
+ 	struct gen_pool_chunk *chunk;
+ 	int order = pool->min_alloc_order;
+-	int bit, end_bit;
++	unsigned long bit, end_bit;
+ 
+ 	list_for_each_safe(_chunk, _next_chunk, &pool->chunks) {
+ 		chunk = list_entry(_chunk, struct gen_pool_chunk, next_chunk);
+@@ -293,7 +294,7 @@ unsigned long gen_pool_alloc_algo(struct gen_pool *pool, size_t size,
+ 	struct gen_pool_chunk *chunk;
+ 	unsigned long addr = 0;
+ 	int order = pool->min_alloc_order;
+-	int nbits, start_bit, end_bit, remain;
++	unsigned long nbits, start_bit, end_bit, remain;
+ 
+ #ifndef CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	BUG_ON(in_nmi());
+@@ -376,7 +377,7 @@ void gen_pool_free(struct gen_pool *pool, unsigned long addr, size_t size)
+ {
+ 	struct gen_pool_chunk *chunk;
+ 	int order = pool->min_alloc_order;
+-	int start_bit, nbits, remain;
++	unsigned long start_bit, nbits, remain;
+ 
+ #ifndef CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	BUG_ON(in_nmi());
+@@ -638,7 +639,7 @@ unsigned long gen_pool_best_fit(unsigned long *map, unsigned long size,
+ 	index = bitmap_find_next_zero_area(map, size, start, nr, 0);
+ 
+ 	while (index < size) {
+-		int next_bit = find_next_bit(map, size, index + nr);
++		unsigned long next_bit = find_next_bit(map, size, index + nr);
+ 		if ((next_bit - index) < len) {
+ 			len = next_bit - index;
+ 			start_bit = index;
+-- 
+2.27.0
+
 
 
