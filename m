@@ -2,100 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C5E2F1034
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:37:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D75B42F1037
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:37:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729264AbhAKKfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:35:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728893AbhAKKfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:35:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FB97229C4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 10:35:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610361304;
-        bh=1jvppqObcU17oix81bFxLol1bIiIGDiIxxYc0SeMzd0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=XFwVHpq1zviVzktAOysLmRdCJoQ08eAqlJpjUZSh65lRn1FBlkgzBuLxRUMj7HE9V
-         wOWOgbYxcExe64U+q9YZY4eXKt3n6tQSSP1GU12aIp2lMzZVtKmr4W360e64XSXg1Y
-         a1eHNcQszfZSyLJKBqqlhg6NJ2XJozkIOxf7FmlI/aYn0xVKvAkJ6EpwurzuWO+U08
-         1OxkwLbVTFbTcoX3T6S/t5b3DQDCAcrdlTrvfdafdujPS8qRsnZRxjsL6DQDehRnUu
-         PLRr4+GdVCtwPDKRj7BYpYFbdnV/69H4128skR2C+rqZwAOATQCqD5mV2FwOKcJgX/
-         6ezZq+92zYRkg==
-Received: by mail-oi1-f176.google.com with SMTP id x13so19617903oic.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 02:35:04 -0800 (PST)
-X-Gm-Message-State: AOAM533m1X6K9gnp0eTxGMeRyN7rsKHuFRzY92cKp6zxj050dJnsTlLx
-        1YFgzfUlFTYxWCQGlwrTvw0HZXol032OARnXc5g=
-X-Google-Smtp-Source: ABdhPJy2anaAv/SzvNP4vXQr2AWpGIAK1ktuNadzheO05rdvHbZiMYB82cZo3ghSdHWVQUulh3j6bViMqR9leEJJbqQ=
-X-Received: by 2002:aca:44d:: with SMTP id 74mr9979507oie.4.1610361303387;
- Mon, 11 Jan 2021 02:35:03 -0800 (PST)
+        id S1729274AbhAKKgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:36:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43906 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729073AbhAKKgk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 05:36:40 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71BA1C061786;
+        Mon, 11 Jan 2021 02:36:00 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id b8so9307852plx.0;
+        Mon, 11 Jan 2021 02:36:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XCBsI/I9BYWRCcEQNc0hzhjykYA2RDPnLolTTqvRUro=;
+        b=MPjV6oL0bHVVKbxdVwr/jz80SnlkCEsrMAey2CrWpdbrPal895fdfNU/CtgL/xil09
+         kLqJ0T959MGMfYrmXp8WEi1jXqgxOraZFUVib284FouWguKSfbt/6i6pI18Q1hoxycvs
+         F5qgyl6/V7BDR1ggp9TAzoGVWYg2YNkVRd7C9iYh6SEU+yPJg7PESXkEiUaKoV57Z+UZ
+         +2WWjwKt4htE9mmTijUOuEB3/haaoi+OzngUv2D7fdb9uJTrlLu239bG9TPFlwvXwy7r
+         vCE64zRpNpll1biCJeTQ3sgr15fmOAYT2H4mp8jsB2HMZ7OO0hd8n0RwcZ0gv+d4MSs1
+         50nQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XCBsI/I9BYWRCcEQNc0hzhjykYA2RDPnLolTTqvRUro=;
+        b=IXqRYp8D5/2nkTH635sUxoP659JsGys6d0E/Go2JIhl0znsqJXrYpmowP0FYZ94aMg
+         6IWbi/mlxKrLi+QRAPY70pJALOXvq1MOsEasmH/tbdAT50qpKDiPTaPYmRV56DCITgbh
+         z3x0RUeAjQX/nAltK9wM1CHFSvtaDoieYG6I097aS4EuWZC89x/7fn5PqZAK1n4V7GCC
+         ci8AlfF1Gb4ehtJTy6fVSWliZeyVeQw41khILnXwhSwqQkS7rUka0dhYXqL4RffPQEVd
+         Lt8R1Fw10vXbJ1R2jzcGQCJKZjmZqJS9q5Cy2GheGHcP36A3F4d6KFUB0+Fq8hWn9WXp
+         ejxw==
+X-Gm-Message-State: AOAM533bVRWkiReDgXYU1xx5o09lZ/JDOp9sh7E207v8Y+t8Xs54LokI
+        n0hMCpXZqyz7ATiLhT3hOQFWOKY3+T41syQSl8s=
+X-Google-Smtp-Source: ABdhPJwHLPzfB64UnO08I/gYtDmYehJDMMwJx3zRFZ57yGxIofK41A/oSADE0gpjrn5nheJ0q9ZCIw+GKRx1DN8T43w=
+X-Received: by 2002:a17:902:e98c:b029:da:cb88:f11d with SMTP id
+ f12-20020a170902e98cb02900dacb88f11dmr15827839plb.17.1610361359970; Mon, 11
+ Jan 2021 02:35:59 -0800 (PST)
 MIME-Version: 1.0
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <CAMuHMdWiYkhN_S2t+hg0cDk84Qd950YE9-qGTgsdL_-2vPr1WQ@mail.gmail.com>
- <CAK8P3a3TNVj_Gw=GaEFELdF9Fo25XU_PFWS5N0+kb=R394KNVQ@mail.gmail.com> <20210111094022.GA5691@alpha.franken.de>
-In-Reply-To: <20210111094022.GA5691@alpha.franken.de>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 11 Jan 2021 11:34:46 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1puMTgrP+VZEYLSsLTDn4J8hkEYab-UhbDotYjqDjNKg@mail.gmail.com>
-Message-ID: <CAK8P3a1puMTgrP+VZEYLSsLTDn4J8hkEYab-UhbDotYjqDjNKg@mail.gmail.com>
-Subject: Re: Old platforms: bring out your dead
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
+References: <20201217180057.23786-1-rf@opensource.cirrus.com> <X/wnoJLEt0zQskDU@alley>
+In-Reply-To: <X/wnoJLEt0zQskDU@alley>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 11 Jan 2021 12:36:48 +0200
+Message-ID: <CAHp75VfeccM8D=DT-j4ApPAbDhDgV_M_FKOyXEMP8YBJZMed=g@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] lib: vsprintf: scanf: Negative number must have
+ field width > 1
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Richard Fitzgerald <rf@opensource.cirrus.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Mark Salter <msalter@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, patches@opensource.cirrus.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 10:40 AM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
+On Mon, Jan 11, 2021 at 12:28 PM Petr Mladek <pmladek@suse.com> wrote:
 >
-> On Mon, Jan 11, 2021 at 09:59:23AM +0100, Arnd Bergmann wrote:
-> > On Mon, Jan 11, 2021 at 9:19 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Fri, Jan 8, 2021 at 11:55 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > > > * MIPS R3000/TX39xx: 32-bit MIPS-II generation, mostly superseded by
-> > > >   64-bit MIPS-III (R4000 and higher) starting in 1991. arch/mips still
-> > > >   supports these in DECstation and Toshiba Txx9, but it appears that most
-> > > >   of those machines are of the 64-bit kind. Later MIPS32 such as 4Kc and
-> > > >   later are rather different and widely used.
-> > >
-> > > I have a (32-bit) RBTX4927 development board in my board farm, boot-test
-> > > every bi-weekly renesas-drivers release on it, and fix kernel issues
-> > > when they appear.
-> >
-> > Right, I was specifically thinking of the MIPS-II/R3000 ones here, I know
-> > there are users on multiple actively maintained MIPS-III platforms.
+> Sigh, I have just realized that Andy and Rasmus, the other
+> vsprintf maintainers and reviewers, were not in CC.
+> I am sorry for not noticing this earlier.
 >
-> Maciej still runs R3k based machines.
+> The patchset is ready for 5.12 from my POV.
 
-Ok, got it.
+Thanks, Petr!
 
-       Arnd
+I have one question, do we have a test case for that? If not, I prefer
+defer until a test case will be provided.
+
+-- 
+With Best Regards,
+Andy Shevchenko
