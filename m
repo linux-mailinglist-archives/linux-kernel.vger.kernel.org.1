@@ -2,36 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 829252F1364
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4812F146F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:25:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730669AbhAKNID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:08:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54252 "EHLO mail.kernel.org"
+        id S1732994AbhAKNYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:24:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730541AbhAKNHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:07:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E98B922795;
-        Mon, 11 Jan 2021 13:06:56 +0000 (UTC)
+        id S1732623AbhAKNRZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:17:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3622F225AC;
+        Mon, 11 Jan 2021 13:16:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370417;
-        bh=jjYAseWg2HOjRMlOeY2x4tbpR7/ZWjLk5Wb9MXxpk9M=;
+        s=korg; t=1610371004;
+        bh=0dOcWsGh9Z/V+w6PU/Ju3OjRV+n9m9dtFHHPjcms3l4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ixu6pT15al7YKaYeX/HEMrtCNdniWunOAwaAlUgIMBGi+2Tf+xKP2blYqC3Nc3TNh
-         OhxwyinwoYyF47MdtIcUp7DsB3LPKv7YzSHjI1kVyenhBTVImF271kVWmxjXwNRqoR
-         QC2yNNpLpofGRawS0ESaHVzaFBP49OQsmcB3YvDw=
+        b=TFcrg2fPwwH6Cs2Dzh4ZpFDlnz6AtSsIsoIj8cVPfgxSJTU7OuP77LjXNbbk7S3gO
+         hrXsJk51VAD8+cG8er7v9ZEPDS0fXV65QbDez4e4PhjK3ObFEIaEb5FWM42egsd0Bt
+         +SJq1drN2H1r6lqimXypMKUeS4m9zw48nAbTBBAE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liron Himi <lironh@marvell.com>,
-        Stefan Chulski <stefanc@marvell.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 13/77] net: mvpp2: prs: fix PPPoE with ipv6 packet parse
-Date:   Mon, 11 Jan 2021 14:01:22 +0100
-Message-Id: <20210111130037.053923594@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Can Guo <cang@codeaurora.org>, Christoph Hellwig <hch@lst.de>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 059/145] scsi: block: Introduce BLK_MQ_REQ_PM
+Date:   Mon, 11 Jan 2021 14:01:23 +0100
+Message-Id: <20210111130051.376062186@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +46,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit fec6079b2eeab319d9e3d074f54d3b6f623e9701 ]
+[ Upstream commit 0854bcdcdec26aecdc92c303816f349ee1fba2bc ]
 
-Current PPPoE+IPv6 entry is jumping to 'next-hdr'
-field and not to 'DIP' field as done for IPv4.
+Introduce the BLK_MQ_REQ_PM flag. This flag makes the request allocation
+functions set RQF_PM. This is the first step towards removing
+BLK_MQ_REQ_PREEMPT.
 
-Fixes: 3f518509dedc ("ethernet: Add new driver for Marvell Armada 375 network unit")
-Reported-by: Liron Himi <lironh@marvell.com>
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-Link: https://lore.kernel.org/r/1608230266-22111-1-git-send-email-stefanc@marvell.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20201209052951.16136-3-bvanassche@acm.org
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: Stanley Chu <stanley.chu@mediatek.com>
+Cc: Ming Lei <ming.lei@redhat.com>
+Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: Can Guo <cang@codeaurora.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Jens Axboe <axboe@kernel.dk>
+Reviewed-by: Can Guo <cang@codeaurora.org>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ block/blk-core.c       | 7 ++++---
+ block/blk-mq.c         | 2 ++
+ include/linux/blk-mq.h | 2 ++
+ 3 files changed, 8 insertions(+), 3 deletions(-)
 
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
-@@ -1680,8 +1680,9 @@ static int mvpp2_prs_pppoe_init(struct m
- 	mvpp2_prs_sram_next_lu_set(&pe, MVPP2_PRS_LU_IP6);
- 	mvpp2_prs_sram_ri_update(&pe, MVPP2_PRS_RI_L3_IP6,
- 				 MVPP2_PRS_RI_L3_PROTO_MASK);
--	/* Skip eth_type + 4 bytes of IPv6 header */
--	mvpp2_prs_sram_shift_set(&pe, MVPP2_ETH_TYPE_LEN + 4,
-+	/* Jump to DIP of IPV6 header */
-+	mvpp2_prs_sram_shift_set(&pe, MVPP2_ETH_TYPE_LEN + 8 +
-+				 MVPP2_MAX_L3_ADDR_SIZE,
- 				 MVPP2_PRS_SRAM_OP_SEL_SHIFT_ADD);
- 	/* Set L3 offset */
- 	mvpp2_prs_sram_offset_set(&pe, MVPP2_PRS_SRAM_UDF_TYPE_L3,
+diff --git a/block/blk-core.c b/block/blk-core.c
+index 2db8bda43b6e6..10696f9fb6ac6 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -424,11 +424,11 @@ EXPORT_SYMBOL(blk_cleanup_queue);
+ /**
+  * blk_queue_enter() - try to increase q->q_usage_counter
+  * @q: request queue pointer
+- * @flags: BLK_MQ_REQ_NOWAIT and/or BLK_MQ_REQ_PREEMPT
++ * @flags: BLK_MQ_REQ_NOWAIT, BLK_MQ_REQ_PM and/or BLK_MQ_REQ_PREEMPT
+  */
+ int blk_queue_enter(struct request_queue *q, blk_mq_req_flags_t flags)
+ {
+-	const bool pm = flags & BLK_MQ_REQ_PREEMPT;
++	const bool pm = flags & (BLK_MQ_REQ_PM | BLK_MQ_REQ_PREEMPT);
+ 
+ 	while (true) {
+ 		bool success = false;
+@@ -630,7 +630,8 @@ struct request *blk_get_request(struct request_queue *q, unsigned int op,
+ 	struct request *req;
+ 
+ 	WARN_ON_ONCE(op & REQ_NOWAIT);
+-	WARN_ON_ONCE(flags & ~(BLK_MQ_REQ_NOWAIT | BLK_MQ_REQ_PREEMPT));
++	WARN_ON_ONCE(flags & ~(BLK_MQ_REQ_NOWAIT | BLK_MQ_REQ_PM |
++			       BLK_MQ_REQ_PREEMPT));
+ 
+ 	req = blk_mq_alloc_request(q, op, flags);
+ 	if (!IS_ERR(req) && q->mq_ops->initialize_rq_fn)
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 55bcee5dc0320..0072ffa50b46e 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -292,6 +292,8 @@ static struct request *blk_mq_rq_ctx_init(struct blk_mq_alloc_data *data,
+ 	rq->mq_hctx = data->hctx;
+ 	rq->rq_flags = 0;
+ 	rq->cmd_flags = data->cmd_flags;
++	if (data->flags & BLK_MQ_REQ_PM)
++		rq->rq_flags |= RQF_PM;
+ 	if (data->flags & BLK_MQ_REQ_PREEMPT)
+ 		rq->rq_flags |= RQF_PREEMPT;
+ 	if (blk_queue_io_stat(data->q))
+diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
+index 794b2a33a2c36..c9ecfd8b03381 100644
+--- a/include/linux/blk-mq.h
++++ b/include/linux/blk-mq.h
+@@ -446,6 +446,8 @@ enum {
+ 	BLK_MQ_REQ_NOWAIT	= (__force blk_mq_req_flags_t)(1 << 0),
+ 	/* allocate from reserved pool */
+ 	BLK_MQ_REQ_RESERVED	= (__force blk_mq_req_flags_t)(1 << 1),
++	/* set RQF_PM */
++	BLK_MQ_REQ_PM		= (__force blk_mq_req_flags_t)(1 << 2),
+ 	/* set RQF_PREEMPT */
+ 	BLK_MQ_REQ_PREEMPT	= (__force blk_mq_req_flags_t)(1 << 3),
+ };
+-- 
+2.27.0
+
 
 
