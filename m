@@ -2,117 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F322F1F7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:32:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E5A2F1F85
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391269AbhAKTbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:31:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51852 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391107AbhAKTbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:31:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8147322A84;
-        Mon, 11 Jan 2021 19:31:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610393460;
-        bh=CzOgAbq/i/ABHtAiBRihLOwC5OEAFdAAMCCUKs67AEc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hFdsPvgoPadh+Rcv6wB5zxtOUOhZDKRXTw9/6yh73tGF2+Z3NLuyeQ42I3XM4aJBT
-         GaGFmOdms+8Gn6ljLTteqRsLQ9K1J+jWuDwU8xJkJnHiOQEW9FdK9g/LoXe1j/tLPi
-         WjWe8740igQdO0PC93VR8TdTorOkN9ylrL3EAZ76WCmrfUv2FCle7q9hYdlsnCGdbQ
-         zIya+9JHvbOxI+zinzsbyZRATmanJYnDfsE6t1GxW9tdfx5cDivxQnCh2NwjXDUaWv
-         yrvp3pJKtvlz+Hcf3A14Nb1dBnbmGJOrsTL4BD7aNWt5K0xwSq/OP3Fsc+sMJf2YLu
-         jvF4O0x1tn4mA==
-Date:   Mon, 11 Jan 2021 11:30:59 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     syzbot <syzbot+057884e2f453e8afebc8@syzkaller.appspotmail.com>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can@vger.kernel.org
-Cc:     davem@davemloft.net, glider@google.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: KMSAN: kernel-infoleak in move_addr_to_user (4)
-Message-ID: <20210111113059.42de599d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <00000000000019908405b8891f9d@google.com>
-References: <00000000000019908405b8891f9d@google.com>
+        id S2391312AbhAKTcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:32:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391301AbhAKTcD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 14:32:03 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6090C0617A2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:31:22 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id 81so772115ioc.13
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:31:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R2I4BbShbTu/yJpEZj0PNRRdCnuLwVEUr5DQ9wFpqcE=;
+        b=srZzPZyePcV1kAldudiypZ0rRVK8bt8lvJ2u9G/OM6L5wyUuvQJ6iiE7U54MXmR8LI
+         8v01ioV782Fz0JH5/1ojhhDjdU3OogkTVx5hoJmg/pcXWDg1H4kM/vPV6FiAKdGSTtfd
+         UzFfVK7HotL53AU5ROuFl/mbmJPrAkzBpOqRw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R2I4BbShbTu/yJpEZj0PNRRdCnuLwVEUr5DQ9wFpqcE=;
+        b=muSaLIXtXIiO1BROuNsSF+NyJsAS/Su2jKXRhc6rJi/Onb84gVaa32CMfhVda5C3L9
+         FcuUSjNsjSAHuxIhV2u5Te/QDeuV+0P9yC4U3e+qE4UbJaR8d3zfosG8RDh+ywDewW+l
+         Wz4yqwDEeXrsKAJcxxquF0fTeqPbuDXbG3kQpvUoiWCUo0FDJdTNrst8VwTZkDhCeUhl
+         PqKL/SH++Je0nsjxn8v4F86mPZHTNMtxZiLA2OMF7gwC/3kIc24VsoKcsp1ooWcyZnvY
+         12D8oOeN0S4bO2GIwuJJkKnjh7zyC05vagW7RqwPPb5Z4hem0r5MAZ3JsLp/g9NUYj+c
+         hASA==
+X-Gm-Message-State: AOAM533KRoYGk2ov+gcB7o9je+7MqwmXIMzZGpzYdYZw9Jsz0fHTTgrd
+        CMyTrMe7kNIVChZvGPkpBtA0Y2IBocmG0G5Llgz1
+X-Google-Smtp-Source: ABdhPJzhe7x3UfUvfOZk8hrT4czPh4HNfXiB6nfRWX8ysGPV0CWtXhWKQhiUlsD3i77pSSTTtW+at4ya/ydmJxPk2PA=
+X-Received: by 2002:a6b:b74e:: with SMTP id h75mr670195iof.0.1610393482014;
+ Mon, 11 Jan 2021 11:31:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CAOnJCULPCxhirYH8xCciKDNJ=zfWKwiOOfAoT8QQBOKqTuWuTA@mail.gmail.com>
+ <mhng-94c90991-c4e8-49fe-a225-854ae0343d8d@palmerdabbelt-glaptop>
+In-Reply-To: <mhng-94c90991-c4e8-49fe-a225-854ae0343d8d@palmerdabbelt-glaptop>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Mon, 11 Jan 2021 11:31:11 -0800
+Message-ID: <CAOnJCUJq5e7W1UXkFFMkKje_BTedekoUT=32ia6t+Sc4UVDhEQ@mail.gmail.com>
+Subject: Re: [PATCH v5 0/5] Unify NUMA implementation between ARM64 & RISC-V
+To:     Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "will@kernel.org" <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-arch@vger.kernel.org,
+        Zhengyuan Liu <liuzhengyuan@tj.kylinos.cn>,
+        Baoquan He <bhe@redhat.com>, Anup Patel <anup@brainfault.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Steven Price <steven.price@arm.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks like a AF_CAN socket:
+On Sat, Jan 9, 2021 at 12:51 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> On Sun, 13 Dec 2020 17:02:19 PST (-0800), atishp@atishpatra.org wrote:
+> > On Wed, Nov 18, 2020 at 4:39 PM Atish Patra <atish.patra@wdc.com> wrote:
+> >>
+> >> This series attempts to move the ARM64 numa implementation to common
+> >> code so that RISC-V can leverage that as well instead of reimplementing
+> >> it again.
+> >>
+> >> RISC-V specific bits are based on initial work done by Greentime Hu [1] but
+> >> modified to reuse the common implementation to avoid duplication.
+> >>
+> >> [1] https://lkml.org/lkml/2020/1/10/233
+> >>
+> >> This series has been tested on qemu with numa enabled for both RISC-V & ARM64.
+> >> It would be great if somebody can test it on numa capable ARM64 hardware platforms.
+> >> This patch series doesn't modify the maintainers list for the common code (arch_numa)
+> >> as I am not sure if somebody from ARM64 community or Greg should take up the
+> >> maintainership. Ganapatrao was the original author of the arm64 version.
+> >> I would be happy to update that in the next revision once it is decided.
+> >>
+> >> # numactl --hardware
+> >> available: 2 nodes (0-1)
+> >> node 0 cpus: 0 1 2 3
+> >> node 0 size: 486 MB
+> >> node 0 free: 470 MB
+> >> node 1 cpus: 4 5 6 7
+> >> node 1 size: 424 MB
+> >> node 1 free: 408 MB
+> >> node distances:
+> >> node   0   1
+> >>   0:  10  20
+> >>   1:  20  10
+> >> # numactl -show
+> >> policy: default
+> >> preferred node: current
+> >> physcpubind: 0 1 2 3 4 5 6 7
+> >> cpubind: 0 1
+> >> nodebind: 0 1
+> >> membind: 0 1
+> >>
+> >> The patches are also available at
+> >> https://github.com/atishp04/linux/tree/5.11_numa_unified_v5
+> >>
+> >> For RISC-V, the following qemu series is a pre-requisite(already available in upstream)
+> >> https://patchwork.kernel.org/project/qemu-devel/list/?series=303313
+> >>
+> >> Testing:
+> >> RISC-V:
+> >> Tested in Qemu and 2 socket OmniXtend FPGA.
+> >>
+> >> ARM64:
+> >> 2 socket kunpeng920 (4 nodes around 250G a node)
+> >> Tested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> >>
+> >> Changes from v4->v5:
+> >> 1. Added by Acked-by & Reviewed-by tags.
+> >> 2. Swapped patch 1 & 2 in v4 version.
+> >>
+> >> Changes from v3->v4:
+> >> 1. Removed redundant duplicate header.
+> >> 2. Added Reviewed-by tags.
+> >>
+> >> Changes from v2->v3:
+> >> 1. Added Acked-by/Reviewed-by tags.
+> >> 2. Replaced asm/acpi.h with linux/acpi.h
+> >> 3. Defined arch_acpi_numa_init as static.
+> >>
+> >> Changes from v1->v2:
+> >> 1. Replaced ARM64 specific compile time protection with ACPI specific ones.
+> >> 2. Dropped common pcibus_to_node changes. Added required changes in RISC-V.
+> >> 3. Fixed few typos.
+> >>
+> >> Atish Patra (4):
+> >> arm64, numa: Change the numa init functions name to be generic
+> >> numa: Move numa implementation to common code
+> >> riscv: Separate memory init from paging init
+> >> riscv: Add numa support for riscv64 platform
+> >>
+> >> Greentime Hu (1):
+> >> riscv: Add support pte_protnone and pmd_protnone if
+> >> CONFIG_NUMA_BALANCING
+> >>
+> >> arch/arm64/Kconfig                            |  1 +
+> >> arch/arm64/include/asm/numa.h                 | 48 +----------------
+> >> arch/arm64/kernel/acpi_numa.c                 | 12 -----
+> >> arch/arm64/mm/Makefile                        |  1 -
+> >> arch/arm64/mm/init.c                          |  4 +-
+> >> arch/riscv/Kconfig                            | 31 ++++++++++-
+> >> arch/riscv/include/asm/mmzone.h               | 13 +++++
+> >> arch/riscv/include/asm/numa.h                 |  8 +++
+> >> arch/riscv/include/asm/pci.h                  | 14 +++++
+> >> arch/riscv/include/asm/pgtable.h              | 21 ++++++++
+> >> arch/riscv/kernel/setup.c                     | 11 +++-
+> >> arch/riscv/kernel/smpboot.c                   | 12 ++++-
+> >> arch/riscv/mm/init.c                          | 10 +++-
+> >> drivers/base/Kconfig                          |  6 +++
+> >> drivers/base/Makefile                         |  1 +
+> >> .../mm/numa.c => drivers/base/arch_numa.c     | 27 ++++++++--
+> >> include/asm-generic/numa.h                    | 52 +++++++++++++++++++
+> >> 17 files changed, 200 insertions(+), 72 deletions(-)
+> >> create mode 100644 arch/riscv/include/asm/mmzone.h
+> >> create mode 100644 arch/riscv/include/asm/numa.h
+> >> rename arch/arm64/mm/numa.c => drivers/base/arch_numa.c (96%)
+> >> create mode 100644 include/asm-generic/numa.h
+> >>
+> >> --
+> >> 2.25.1
+> >>
+> >>
+> >> _______________________________________________
+> >> linux-riscv mailing list
+> >> linux-riscv@lists.infradead.org
+> >> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> >
+> > Hey Palmer,
+> > I did not see this series in for-next. Let me know if you need
+> > anything else to be done for this series.
+>
+> Sorry about that.  It's on for-next, with Randy's comment addressed.  There was
+> one merge conflict: we don't have resource_init() in for-next yet (which I
+> think means I missed something else).
 
-r0 = socket(0x1d, 0x2, 0x6)
-getsockname$packet(r0, &(0x7f0000000100)={0x11, 0x0, 0x0, 0x1, 0x0, 0x6, @broadcast}, &(0x7f0000000000)=0x14)
+resource_init is changed to init_resource and moved to setup.c in the
+following patch which was merged in 5.11 MW.
+00ab027a3b82 RISC-V: Add kernel image sections to the resource tree
+
+IDK if that's necessary for the NUMA
+> stuff, I just dropped it.  I haven't tested this yet.
 
 
-On Sun, 10 Jan 2021 02:19:15 -0800 syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    73d62e81 kmsan: random: prevent boot-time reports in _mix_..
-> git tree:       https://github.com/google/kmsan.git master
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15c8b8c7500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=2cdf4151c9653e32
-> dashboard link: https://syzkaller.appspot.com/bug?extid=057884e2f453e8afebc8
-> compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=101520c7500000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=100b8f4f500000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+057884e2f453e8afebc8@syzkaller.appspotmail.com
-> 
-> =====================================================
-> BUG: KMSAN: kernel-infoleak in kmsan_copy_to_user+0x9c/0xb0 mm/kmsan/kmsan_hooks.c:249
-> CPU: 0 PID: 8245 Comm: syz-executor868 Not tainted 5.10.0-rc4-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x21c/0x280 lib/dump_stack.c:118
->  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
->  kmsan_internal_check_memory+0x202/0x520 mm/kmsan/kmsan.c:402
->  kmsan_copy_to_user+0x9c/0xb0 mm/kmsan/kmsan_hooks.c:249
->  instrument_copy_to_user include/linux/instrumented.h:121 [inline]
->  _copy_to_user+0x1af/0x270 lib/usercopy.c:33
->  copy_to_user include/linux/uaccess.h:209 [inline]
->  move_addr_to_user+0x3a2/0x640 net/socket.c:237
->  __sys_getsockname+0x407/0x5d0 net/socket.c:1906
->  __do_sys_getsockname net/socket.c:1917 [inline]
->  __se_sys_getsockname+0x91/0xb0 net/socket.c:1914
->  __x64_sys_getsockname+0x4a/0x70 net/socket.c:1914
->  do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x441219
-> Code: e8 fc ab 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 1b 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-> RSP: 002b:00007ffe3c24eaf8 EFLAGS: 00000246 ORIG_RAX: 0000000000000033
-> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000441219
-> RDX: 0000000020000000 RSI: 0000000020000100 RDI: 0000000000000003
-> RBP: 00000000006cb018 R08: 00000000004002c8 R09: 00000000004002c8
-> R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000401fc0
-> R13: 0000000000402050 R14: 0000000000000000 R15: 0000000000000000
-> 
-> Local variable ----address@__sys_getsockname created at:
->  __sys_getsockname+0x91/0x5d0 net/socket.c:1891
->  __sys_getsockname+0x91/0x5d0 net/socket.c:1891
-> 
-> Bytes 2-3 of 20 are uninitialized
-> Memory access of size 20 starts at ffff888124bbbdf0
-> Data copied to user address 0000000020000100
-> =====================================================
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
 
+-- 
+Regards,
+Atish
