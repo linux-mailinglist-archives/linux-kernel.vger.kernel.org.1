@@ -2,20 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF31F2F1B42
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:43:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B702F1B45
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:43:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389020AbhAKQmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:42:36 -0500
-Received: from mail.thundersoft.com ([114.242.213.61]:36453 "EHLO
+        id S2389033AbhAKQmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:42:40 -0500
+Received: from mail.thundersoft.com ([114.242.213.61]:36452 "EHLO
         mail2.thundersoft.com" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1728302AbhAKQmg (ORCPT
+        with ESMTP id S1728302AbhAKQmj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:42:36 -0500
-X-Greylist: delayed 450 seconds by postgrey-1.27 at vger.kernel.org; Mon, 11 Jan 2021 11:42:34 EST
+        Mon, 11 Jan 2021 11:42:39 -0500
 Received: from localhost.localdomain (unknown [192.168.8.82])
-        by mail2.thundersoft.com (Postfix) with ESMTPSA id 7659AE608B9;
-        Tue, 12 Jan 2021 00:34:47 +0800 (CST)
+        by mail2.thundersoft.com (Postfix) with ESMTPSA id 28043E608BA;
+        Tue, 12 Jan 2021 00:34:50 +0800 (CST)
 From:   Wesley Zhao <zhaowei1102@thundersoft.com>
 To:     akpm@linux-foundation.org
 Cc:     andriy.shevchenko@linux.intel.com, keescook@chromium.org,
@@ -26,84 +25,49 @@ Cc:     andriy.shevchenko@linux.intel.com, keescook@chromium.org,
         linux-kernel@vger.kernel.org, david@redhat.com,
         dan.j.williams@intel.com, guohanjun@huawei.com,
         mchehab+huawei@kernel.org
-Subject: [PATCH 1/2] lib/cmdline: add new function get_option_ull()
-Date:   Mon, 11 Jan 2021 08:33:17 -0800
-Message-Id: <1610382798-4528-1-git-send-email-zhaowei1102@thundersoft.com>
+Subject: [PATCH 2/2] resource: Make it possible to reserve memory on 64bit platform
+Date:   Mon, 11 Jan 2021 08:33:18 -0800
+Message-Id: <1610382798-4528-2-git-send-email-zhaowei1102@thundersoft.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1610382798-4528-1-git-send-email-zhaowei1102@thundersoft.com>
+References: <1610382798-4528-1-git-send-email-zhaowei1102@thundersoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Wesley.Zhao" <zhaowei1102@thundersoft.com>
 
-In the future we would pass the unsigned long long parameter
-like(0x123456781234) in cmdline on the 64bit platform, so add a new
-option parse function get_option_ull()
+For now "reserve=" is limitied to 32bit,not available on 64bit
+platform,so we change the get_option() to get_option_ull(added in
+patch: commit 4b6bfe96265e ("lib/cmdline: add new function
+get_option_ull()"))
 
 Signed-off-by: Wesley.Zhao <zhaowei1102@thundersoft.com>
 ---
- include/linux/kernel.h |  1 +
- lib/cmdline.c          | 35 +++++++++++++++++++++++++++++++++++
- 2 files changed, 36 insertions(+)
+ kernel/resource.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-index f7902d8..5568133 100644
---- a/include/linux/kernel.h
-+++ b/include/linux/kernel.h
-@@ -348,6 +348,7 @@ extern __scanf(2, 0)
- int vsscanf(const char *, const char *, va_list);
+diff --git a/kernel/resource.c b/kernel/resource.c
+index 833394f..ee2a0e5 100644
+--- a/kernel/resource.c
++++ b/kernel/resource.c
+@@ -1567,13 +1567,13 @@ static int __init reserve_setup(char *str)
+ 	static struct resource reserve[MAXRESERVE];
  
- extern int get_option(char **str, int *pint);
-+extern int get_option_ull(char **str, unsigned long long *pull);
- extern char *get_options(const char *str, int nints, int *ints);
- extern unsigned long long memparse(const char *ptr, char **retptr);
- extern bool parse_option_str(const char *str, const char *option);
-diff --git a/lib/cmdline.c b/lib/cmdline.c
-index b390dd0..2d089a2 100644
---- a/lib/cmdline.c
-+++ b/lib/cmdline.c
-@@ -80,6 +80,41 @@ int get_option(char **str, int *pint)
- EXPORT_SYMBOL(get_option);
+ 	for (;;) {
+-		unsigned int io_start, io_num;
++		unsigned long long io_start, io_num;
+ 		int x = reserved;
+ 		struct resource *parent;
  
- /**
-+ *	get_option_ull - Parse unsigned long long from an option string
-+ *	@str: option string
-+ *	@pull: (output) unsigned long long value parsed from @str
-+ *
-+ *	Read an unsigned long long from an option string; if available accept a subsequent
-+ *	comma as well.
-+ *
-+ *	Return values:
-+ *	0 - no ull in string
-+ *	1 - ull found, no subsequent comma
-+ *	2 - ull found including a subsequent comma
-+ *	3 - hyphen found to denote a range
-+ */
-+
-+int get_option_ull(char **str, unsigned long long *pull)
-+{
-+	char *cur = *str;
-+
-+	if (!cur || !(*cur))
-+		return 0;
-+	*pull = simple_strtoull(cur, str, 0);
-+	if (cur == *str)
-+		return 0;
-+	if (**str == ',') {
-+		(*str)++;
-+		return 2;
-+	}
-+	if (**str == '-')
-+		return 3;
-+
-+	return 1;
-+}
-+EXPORT_SYMBOL(get_option_ull);
-+
-+/**
-  *	get_options - Parse a string into a list of integers
-  *	@str: String to be parsed
-  *	@nints: size of integer array
+-		if (get_option(&str, &io_start) != 2)
++		if (get_option_ull(&str, &io_start) != 2)
+ 			break;
+-		if (get_option(&str, &io_num) == 0)
++		if (get_option_ull(&str, &io_num) == 0)
+ 			break;
+ 		if (x < MAXRESERVE) {
+ 			struct resource *res = reserve + x;
 -- 
 2.7.4
 
