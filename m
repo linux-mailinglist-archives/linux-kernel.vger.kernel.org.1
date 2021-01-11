@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C44CD2F0A95
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 01:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 411C92F0A97
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 01:26:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727014AbhAKAX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 19:23:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41564 "EHLO mail.kernel.org"
+        id S1727055AbhAKA0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 19:26:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726151AbhAKAX4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 19:23:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1C8F22AAF;
-        Mon, 11 Jan 2021 00:23:12 +0000 (UTC)
+        id S1726525AbhAKA0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 19:26:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DDA122AAF;
+        Mon, 11 Jan 2021 00:25:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610324596;
-        bh=00AbescVqxNe0rvjXCxOXK5E9xt1nbaW0F5ybaKYVNo=;
+        s=k20201202; t=1610324736;
+        bh=YiolvVj0Oj06MeZfYfFnFfa1VQSCBHbzONJiZ8RUYJ0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uh8rs/5Fdk0yJXZHK+zdbcRDvzqN1Na09XRCdCh7S/g7kiHzU2GxZlgUdm6Ep7Yui
-         2JurVYg9XWMqk6tjhcCmjp+tSUFSw2/Bd2IR6SFholeczd8CfSjALAlNB11uKevQuI
-         Ei/pNyVgBHDnt9Tvapi7hoTgvCbOQVxSAPJlFz8PZ4Owz4n8IsN8QwDhCGNsEk0VR0
-         QQhLFfKWij2eY/ZPobCq1TnbInXqaxwVNp66+fEwfu7hP3d00m4jZcgi2NgDEXBz+v
-         PJT2csiOiYiiNcV3dILf7BkHGeQiMSHh4tTK973vNqziWNXfstNSxiPeJnvyPzH2t3
-         +C6ifWlRqhf8A==
-Date:   Mon, 11 Jan 2021 08:23:09 +0800
+        b=eE/WBLA3kC4awatr4XFtpL+PKzGJs9k33Fc8R1LfZdCc4JGYicUXtjR5LQd2U9SEu
+         KujHRJGJ91/ThIcdsQ3xdsstwKnhKJUvzJiKThlKaQGFCBg7wpWO0zY8QDT2KEsQ6R
+         YuQPoUahqOfYqgiRvk032y/9l6I0+lFpcejNDhx9xx1VsdPJ63u+CkhH8cFzmVtCBs
+         hVv4qchh3XJ9HR+Mln7Mm6fm9HrKq4VPh9ogJE1ewK3rF4CGntNdTq2doI/m3GEqS8
+         iqwa0sUbgSHesHD30UXMDWVoaz4fqjbn6yVaFIPPrdkg6dp1Jx0WgW4kDPle1O1M93
+         Gjr+NXsQj7u6A==
+Date:   Mon, 11 Jan 2021 08:25:30 +0800
 From:   Shawn Guo <shawnguo@kernel.org>
 To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
 Cc:     Rob Herring <robh+dt@kernel.org>,
@@ -31,51 +31,40 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Martin Kepplinger <martink@posteo.de>,
-        Angus Ainslie <angus@akkea.ca>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vinod Koul <vkoul@kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
         Anson Huang <Anson.Huang@nxp.com>,
-        Michael Walle <michael@walle.cc>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        phone-devel@vger.kernel.org
-Subject: Re: [PATCH v3 1/4] arm64: defconfig: Enable Librem 5 devkit
- components
-Message-ID: <20210111002308.GP28365@dragon>
-References: <cover.1610110514.git.agx@sigxcpu.org>
- <5636a3d6e3217475e2a479248250d5c0e0a50e26.1610110514.git.agx@sigxcpu.org>
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64: dts: imx8mq: Add clock parents for mipi dphy
+Message-ID: <20210111002530.GQ28365@dragon>
+References: <bc2da4ab8322d5e8a44018633e0220e08d70e72e.1610297714.git.agx@sigxcpu.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5636a3d6e3217475e2a479248250d5c0e0a50e26.1610110514.git.agx@sigxcpu.org>
+In-Reply-To: <bc2da4ab8322d5e8a44018633e0220e08d70e72e.1610297714.git.agx@sigxcpu.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 01:57:07PM +0100, Guido Günther wrote:
-> The Librem 5 devkit is based on NXP's i.MX8MQ. Schematics are at
-> https://source.puri.sm/Librem5/dvk-mx8m-bsb.
+On Sun, Jan 10, 2021 at 05:55:51PM +0100, Guido Günther wrote:
+> This makes sure the clock tree setup for the dphy is not dependent on
+> other components.
 > 
-> This enables drivers for the following hardware components that aren't
-> yet enabled in defconfig:
+> Without this change bringing up the display can fail like
 > 
-> - Goodix GT5688 touchscreen
-> - iMX8MQ's PWM for the LCD backlight
-> - TI BQ25896 charge controller
-> - NXP SGTL5000 audio codec
-> - Microcrystal RV-4162-C7 RTC
-> - magnetometer: CONFIG_IIO_ST_MAGN_3AXIS
-> - the SIMCom SIM7100E/A modem
-> - NXP PTN5110HQZ usb-c controller
+>   kernel: phy phy-30a00300.dphy.2: Invalid CM/CN/CO values: 165/217/1
+>   kernel: phy phy-30a00300.dphy.2: for hs_clk/ref_clk=451656000/593999998 ~ 165/217
+> 
+> if LCDIF doesn't set up that part of the clock tree first. This was
+> noticed when testing the Librem 5 devkit with defconfig. It doesn't
+> happen when modules are built in.
 > 
 > Signed-off-by: Guido Günther <agx@sigxcpu.org>
-> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 Applied, thanks.
