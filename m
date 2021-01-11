@@ -2,111 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF3232F0FC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:13:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D42EB2F0FC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:13:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728937AbhAKKM6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Jan 2021 05:12:58 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:44650 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728762AbhAKKM6 (ORCPT
+        id S1728901AbhAKKMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:12:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728762AbhAKKMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:12:58 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-68-LSP2TgUWPoW5OYymkm_RvQ-1; Mon, 11 Jan 2021 10:11:18 +0000
-X-MC-Unique: LSP2TgUWPoW5OYymkm_RvQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 11 Jan 2021 10:11:17 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 11 Jan 2021 10:11:17 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Matthew Wilcox' <willy@infradead.org>,
-        Mikulas Patocka <mpatocka@redhat.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Dave Jiang" <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Steven Whitehouse <swhiteho@redhat.com>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Wang Jianchao <jianchao.wan9@gmail.com>,
-        "Kani, Toshi" <toshi.kani@hpe.com>,
-        "Norton, Scott J" <scott.norton@hpe.com>,
-        "Tadakamadla, Rajesh" <rajesh.tadakamadla@hpe.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>
-Subject: RE: Expense of read_iter
-Thread-Topic: Expense of read_iter
-Thread-Index: AQHW5xgPc3YVJbtxFkyYJqwIgIdF7KoiMj8g
-Date:   Mon, 11 Jan 2021 10:11:17 +0000
-Message-ID: <647fe440ab4640038a6ccaf59ab99685@AcuMS.aculab.com>
-References: <alpine.LRH.2.02.2101061245100.30542@file01.intranet.prod.int.rdu2.redhat.com>
- <20210107151125.GB5270@casper.infradead.org>
- <alpine.LRH.2.02.2101071110080.30654@file01.intranet.prod.int.rdu2.redhat.com>
- <20210110061321.GC35215@casper.infradead.org>
-In-Reply-To: <20210110061321.GC35215@casper.infradead.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 11 Jan 2021 05:12:13 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87ED5C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 02:11:32 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id w1so23780309ejf.11
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 02:11:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DzSq10+w9uGbouK/0N/k/Vyq9HI+oX+c5Bfx1maAHnk=;
+        b=brKNTh29fweEfuS7wgq5tVU7Zox/66VxMuF0fPbTJ6B0iOTekE8JiQ0ChdjK165R8S
+         1Ku+FXvjag1mGTx5kLLtuq+6JZ+5VEKaReKXGtiYYwAoe69Tz3rkaq9Xn6R3zhEYMFkB
+         2JzuJJOQUU7LyUTdENSO6Pi3mkDQMGc/cpoD3r+bJo9Rx16iin6ZScdkBgRfnXTHuiWv
+         rIrEgzKkLKL98GGxdFiMri/U3KQmi49J700/znPeKpI1VIwD3Xu9idqOuYQAjHB78UtO
+         5FNRTglPy3U5YF/iFswc3yeMpRGPasK4Vb8vgdKF33I7Nf1Ie07zsDwCReqW58APyFOE
+         9uqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DzSq10+w9uGbouK/0N/k/Vyq9HI+oX+c5Bfx1maAHnk=;
+        b=s68yW957onZaAzH1yjvCI2/3Wc0vRjV4RvSXca7W5H+SE8iGCrZRT2jITwIUwBK0xY
+         XLBbDcGu2kWOvuGRvrYwDHPikZVk8Eo5R+rT0gFSamnV2EpgczntxOjSwpMx/sciUbjm
+         TnkhzWk/4zgheQT3Q1foVNX27VaXR1qZP0VKE/2gNbNSg7oWxKekrCfrSeGJO2gK7vJx
+         bF/DvvaF8e8mRgr7DUxm/jjPqtejzmgUKUeQ/+jYe0CtRg/fZnIMr8eLJixfghjc8pwg
+         8O+ZWs9j7Ex4Mm2H9hkLJzK5SO92xyR6kzXqPlL3wATXeA0aatu9AvLzBMHh4fvsHzTy
+         L3lQ==
+X-Gm-Message-State: AOAM531zG9yHPMSaTrj2bGLd65UNeryTuwebhMPGRG/1kvZKSmLpaYz0
+        saVJDNl2B2Wu0HkfRCkHiOFgwvWh8SBX7AW3o4NAng==
+X-Google-Smtp-Source: ABdhPJy6BAGaxo9ow37JgvNCEtTIWZ6DevYVOAPVrh5msYMf4oLqwqvTx+sKPHhMSvbD1Yo57et1/lMYJHV8uQwa0FY=
+X-Received: by 2002:a17:906:3513:: with SMTP id r19mr10055190eja.445.1610359891259;
+ Mon, 11 Jan 2021 02:11:31 -0800 (PST)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210108092334.19101-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20210108092334.19101-1-zhengyongjun3@huawei.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 11 Jan 2021 11:11:20 +0100
+Message-ID: <CAMpxmJV=k7bWC5xNNmk1rHXwCQUX=c1qEQ6gm6xU24zE70Hymg@mail.gmail.com>
+Subject: Re: [PATCH v2 -next] gpio: convert comma to semicolon
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox
-> Sent: 10 January 2021 06:13
-...
-> nvfs_rw_iter_locked() looks very complicated.  I suspect it can
-> be simplified.  Of course new_sync_read() needs to be improved too,
-> as do the other functions here, but fully a third of the difference
-> between read() and read_iter() is the difference between nvfs_read()
-> and nvfs_rw_iter_locked().
+On Fri, Jan 8, 2021 at 10:23 AM Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
+>
+> Replace a comma between expression statements by a semicolon.
+>
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  drivers/gpio/gpio-mc33880.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpio/gpio-mc33880.c b/drivers/gpio/gpio-mc33880.c
+> index f8194f7c6186..704cd4e6171f 100644
+> --- a/drivers/gpio/gpio-mc33880.c
+> +++ b/drivers/gpio/gpio-mc33880.c
+> @@ -99,7 +99,7 @@ static int mc33880_probe(struct spi_device *spi)
+>
+>         mc->spi = spi;
+>
+> -       mc->chip.label = DRIVER_NAME,
+> +       mc->chip.label = DRIVER_NAME;
+>         mc->chip.set = mc33880_set;
+>         mc->chip.base = pdata->base;
+>         mc->chip.ngpio = PIN_NUMBER;
+> --
+> 2.22.0
+>
 
-There is also the non-zero cost of import_iovec().
-I've got some slight speedups, but haven't measured an
-old kernel yet to see how much slower 5.11-rc1 made it.
+Why does the tag mention -next when this has been like this for a long
+time? The subject should also be: gpio: <driver name>: something
+something.
 
-Basic test is:
-	fd = open("/dev/null", O_RDWR);
-	for (1 = 0; 1 < 10000; i++) {
-		start = rdtsc();
-		writev(fd, iovec, count);
-		histogram[rdtsc() - start]++;
-	}
-
-This doesn't actually copy any data - the iovec
-isn't iterated.
-
-I'm seeing pretty stable counts for most of the 10000 iterations.
-But different program runs can give massively different timings.
-I'm quessing that depends on cache collisions due to the addresses
-(virtual of physical?) selected for some items.
-
-For 5.11-rc2 -mx32 is slightly faster than 64bit.
-Whereas -m32 has a much slower syscall entry/exit path,
-but the difference between gettid() and writev() is lower.
-The compat code for import_iovec() is actually faster.
-This isn't really surprising since copy_from_user() is
-absolutely horrid these days - especially with userspace hardening.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Bartosz
