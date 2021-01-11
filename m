@@ -2,81 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF3F2F0CF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 07:33:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF752F0CF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 07:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727477AbhAKGd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 01:33:29 -0500
-Received: from mga17.intel.com ([192.55.52.151]:40589 "EHLO mga17.intel.com"
+        id S1727341AbhAKGby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 01:31:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56750 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727388AbhAKGd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 01:33:28 -0500
-IronPort-SDR: q/vKTc7qEWegSa9Rb4NBFWPNMNsez7fgKolA1jh8fHboMMAJ5BAad6lVm5d5nDoWqeKlsVGRc+
- Wj6mzYzSiEUg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9860"; a="157591445"
-X-IronPort-AV: E=Sophos;i="5.79,337,1602572400"; 
-   d="scan'208";a="157591445"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2021 22:32:47 -0800
-IronPort-SDR: UHsN/HkFQIDRuJCmd5OAWm1AizJoHA+z47dtxtwsAdWyiisz+2X3rl2+b5h2FIUGM18L9i2KoI
- DWHwyLq2GCFA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,337,1602572400"; 
-   d="scan'208";a="498472968"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga004.jf.intel.com with ESMTP; 10 Jan 2021 22:32:44 -0800
-Date:   Mon, 11 Jan 2021 14:27:55 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com, yilun.xu@intel.com
-Subject: Re: [PATCH v5 0/2] UIO support for dfl devices
-Message-ID: <20210111062755.GB13963@yilunxu-OptiPlex-7050>
-References: <1609557182-20787-1-git-send-email-yilun.xu@intel.com>
- <X/tcdB0hwDLog1TW@archbook>
+        id S1727130AbhAKGbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 01:31:53 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F0864AB3E;
+        Mon, 11 Jan 2021 06:31:11 +0000 (UTC)
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, Richard Guenther <rguenther@suse.de>,
+        "H.J. Lu" <hjl.tools@gmail.com>
+From:   Jiri Slaby <jslaby@suse.cz>
+Subject: perf does not resolve plt symbols from libstdc++ right (.plt.sec
+ problem)
+Message-ID: <d6980662-bf74-1d48-831e-ca1d7209ca2f@suse.cz>
+Date:   Mon, 11 Jan 2021 07:31:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/tcdB0hwDLog1TW@archbook>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type:   text/plain; charset=US-ASCII;
+        format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 11:58:44AM -0800, Moritz Fischer wrote:
-> Hi Xu,
-> 
-> On Sat, Jan 02, 2021 at 11:13:00AM +0800, Xu Yilun wrote:
-> > This patchset supports some dfl device drivers written in userspace.
-> > 
-> > In the patchset v1, the "driver_override" interface should be used to bind
-> > the DFL UIO driver to DFL devices. But there is concern that the
-> > "driver_override" interface is not OK itself.
-> > 
-> > In v2, we use a new matching algorithem. The "driver_override" interface
-> > is abandoned, the DFL UIO driver matches any DFL device which could not be
-> > handled by other DFL drivers. So the DFL UIO driver could be used for new
-> > DFL devices which are not supported by kernel. The concern is the UIO may
-> > not be suitable as a default/generic driver for all dfl features, such as
-> > features with multiple interrupts.
-> > 
-> > In v4, we specify each matching device in the id_table of the UIO driver,
-> > just the same as other dfl drivers do. Now the UIO driver supports Ether
-> > Group feature. To support more DFL features, their feature ids should be
-> > added to the driver's id_table.
-> 
-> I think this is what you want, yes. Instead of doing a driver override
-> or such, add devices that should always be bound to UIO to a device id
-> table. For those you temporarily want to bind, make sure you can unbind
-> them and use 'new_id' or 'bind' in sysfs, similar to what sysfs does.
+Hi,
 
-"new_id" is not generic to all bus drivers, we need to add the attr in
-dfl bus driver like pci do, actually I think quite similar to
-"driver_override", How do you think?
+this e-mails is a follow-up of my report at:
+https://bugzilla.suse.com/show_bug.cgi?id=1180681
 
-I'm glad we restarted the discussion for the temporary binding of UIO
-driver.
+There is a problem with *@plt symbols in some libraries, they are 
+unresolved by perf (memcmp@plt in this case):
+ >     0.26%  main2    /usr/lib64/libstdc++.so.6.0.28            0xa51a0 
+            l [.] 0x00000000000a51a0
 
-Thanks,
-Yilun
+On the other hand, plt symbols in other libraries are fine (memset@plt 
+in this case):
+ >     0.17%  main2    /usr/lib64/libantlr4-runtime.so.4.8       0x4ed10 
+            l [.] memset@plt
+
+I dumped memcmp's .plt.rela entries in perf:
+/usr/lib64/libantlr4-runtime.so.4.8: 154th addr=4e9d0 plt_off=4e020 
+hdr=10 entry=10
+/usr/lib64/libstdc++.so.6.0.28: 772th addr=a1070 plt_off=9e020 hdr=10 
+entry=10
+
+The difference (offset) of stdc++'s memcmp is 0xa51a0 (correct) - 
+0xa1070 (perf's computed) = 0x4130.
+
+The problem is perf assumes nth entry of .plt.rela to correspond to nth 
+function in .plt, but memcmp is in .plt.sec in libstdc++.so:
+
+ > Relocation section '.rela.plt' at offset 0x97900 contains 1018 entries:
+ >     Offset             Info             Type               Symbol's 
+Value  Symbol's Name + Addend
+ > ...
+ > 00000000001dc838  0000007800000007 R_X86_64_JUMP_SLOT 
+0000000000000000 memcmp@GLIBC_2.2.5 + 0
+
+Perf does this with the rela entries:
+https://github.com/torvalds/linux/blob/f5e6c330254ae691f6d7befe61c786eb5056007e/tools/perf/util/symbol-elf.c#L385
+
+It takes a symbol index from sym.r_info. Then it resolves its name from 
+.dynsym, appending "@plt" to it. Then this name is added to perf's 
+symbol table along with address which is computed as .rela.plt index 
+multiplied by entry size (shdr_plt.sh_entsize) plus plt header 
+(shdr_plt.sh_entsize on x86_64 too).
+
+And from this comes (almost) the offset above:
+ > $ objdump -h /usr/lib64/libstdc++.so.6|grep -E ' .plt(\.sec)? '
+ >  12 .plt          00003fb0  000000000009e020  000000000009e020 
+0009e020  2**4
+ >  14 .plt.sec      00003fa0  00000000000a2160  00000000000a2160 
+000a2160  2**4
+
+0xa2160-0x9e020 = 0x4140. I assume the 0x10 difference is that perf adds 
+shdr_plt.sh_entsize (0x10) to the offset to skip the first .plt entry 
+(header).
+
+Richard writes:
+======
+.plt.sec is IIRC the "second" (sec) PLT entry - the one that will be 
+used on the second call (and on).  This is used / emitted for ELF object 
+instrumented for Intel CET.  The details escape me for the moment but I 
+hope the x86 ABI documents this (and the constraints) in detail.
+======
+
+How should perf find out whether to consider .plt or .plt.sec? Or 
+generally, how to properly find an address of *@plt symbols like 
+memcmp@plt above?
+
+thanks,
+-- 
+js
+suse labs
