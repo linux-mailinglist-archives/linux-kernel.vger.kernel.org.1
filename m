@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F922F12C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6F42F13C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727901AbhAKNAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:00:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48498 "EHLO mail.kernel.org"
+        id S1732109AbhAKNO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:14:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727847AbhAKNAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:00:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE7DE2251F;
-        Mon, 11 Jan 2021 13:00:08 +0000 (UTC)
+        id S1732016AbhAKNN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:13:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88576229CA;
+        Mon, 11 Jan 2021 13:13:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370009;
-        bh=8q5h240r0//eU8wdVDqG3rrKt+70xf4+EaErF+T3aSE=;
+        s=korg; t=1610370821;
+        bh=LcVMfTdn2Q2fIyc1vIt3jBWomYH56wkmbgHpg9yTPD4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nMX5e6XHsQBr+SzoAsh9bdV0We1Mvj9SGBfIAJZo3hVjoXsTcp6uGG+Y07I198sYy
-         J9FuZyFhB17+aaxoehXlClekpnoZsV82HAUOBq/7aRZwzTUMPNZ1c1t4SgZGdfmlhm
-         jntSsNYfOgGdym+g89x711o6JtavAbPCpq/tdMoQ=
+        b=jvvaNnkAO7gEQIR/fRlshmj27NEL2+jZ2RzO6hOG762IYnvqofyTG6D7UZCgWgxJo
+         ZDHFdSoHlZfYZLTUanfjzyhjtpstnU8Egoq2QCdIJUk2jOP6GjW6tmqFwUU1tdILiM
+         Ei47m4JDWUciw+X1ldjEDZqQuSQC6qMMHuo88XoM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
+        stable@vger.kernel.org, John Wang <wangzhiqiang.bj@bytedance.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.4 11/38] vhost_net: fix ubuf refcount incorrectly when sendmsg fails
+Subject: [PATCH 5.10 019/145] net/ncsi: Use real net-device for response handler
 Date:   Mon, 11 Jan 2021 14:00:43 +0100
-Message-Id: <20210111130033.012589871@linuxfoundation.org>
+Message-Id: <20210111130049.431918019@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
-References: <20210111130032.469630231@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunjian Wang <wangyunjian@huawei.com>
+From: John Wang <wangzhiqiang.bj@bytedance.com>
 
-[ Upstream commit 01e31bea7e622f1890c274f4aaaaf8bccd296aa5 ]
+[ Upstream commit 427c940558560bff2583d07fc119a21094675982 ]
 
-Currently the vhost_zerocopy_callback() maybe be called to decrease
-the refcount when sendmsg fails in tun. The error handling in vhost
-handle_tx_zerocopy() will try to decrease the same refcount again.
-This is wrong. To fix this issue, we only call vhost_net_ubuf_put()
-when vq->heads[nvq->desc].len == VHOST_DMA_IN_PROGRESS.
+When aggregating ncsi interfaces and dedicated interfaces to bond
+interfaces, the ncsi response handler will use the wrong net device to
+find ncsi_dev, so that the ncsi interface will not work properly.
+Here, we use the original net device to fix it.
 
-Fixes: bab632d69ee4 ("vhost: vhost TX zero-copy support")
-Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Link: https://lore.kernel.org/r/1609207308-20544-1-git-send-email-wangyunjian@huawei.com
+Fixes: 138635cc27c9 ("net/ncsi: NCSI response packet handler")
+Signed-off-by: John Wang <wangzhiqiang.bj@bytedance.com>
+Link: https://lore.kernel.org/r/20201223055523.2069-1-wangzhiqiang.bj@bytedance.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/vhost/net.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/ncsi/ncsi-rsp.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -313,6 +313,7 @@ static void handle_tx(struct vhost_net *
- 	size_t hdr_size;
- 	struct socket *sock;
- 	struct vhost_net_ubuf_ref *uninitialized_var(ubufs);
-+	struct ubuf_info *ubuf;
- 	bool zcopy, zcopy_used;
- 	int sent_pkts = 0;
+--- a/net/ncsi/ncsi-rsp.c
++++ b/net/ncsi/ncsi-rsp.c
+@@ -1120,7 +1120,7 @@ int ncsi_rcv_rsp(struct sk_buff *skb, st
+ 	int payload, i, ret;
  
-@@ -378,9 +379,7 @@ static void handle_tx(struct vhost_net *
- 
- 		/* use msg_control to pass vhost zerocopy ubuf info to skb */
- 		if (zcopy_used) {
--			struct ubuf_info *ubuf;
- 			ubuf = nvq->ubuf_info + nvq->upend_idx;
--
- 			vq->heads[nvq->upend_idx].id = cpu_to_vhost32(vq, head);
- 			vq->heads[nvq->upend_idx].len = VHOST_DMA_IN_PROGRESS;
- 			ubuf->callback = vhost_zerocopy_callback;
-@@ -399,7 +398,8 @@ static void handle_tx(struct vhost_net *
- 		err = sock->ops->sendmsg(sock, &msg, len);
- 		if (unlikely(err < 0)) {
- 			if (zcopy_used) {
--				vhost_net_ubuf_put(ubufs);
-+				if (vq->heads[ubuf->desc].len == VHOST_DMA_IN_PROGRESS)
-+					vhost_net_ubuf_put(ubufs);
- 				nvq->upend_idx = ((unsigned)nvq->upend_idx - 1)
- 					% UIO_MAXIOV;
- 			}
+ 	/* Find the NCSI device */
+-	nd = ncsi_find_dev(dev);
++	nd = ncsi_find_dev(orig_dev);
+ 	ndp = nd ? TO_NCSI_DEV_PRIV(nd) : NULL;
+ 	if (!ndp)
+ 		return -ENODEV;
 
 
