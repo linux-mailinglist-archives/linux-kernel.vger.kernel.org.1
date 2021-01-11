@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB4F2F1FDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:52:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 777132F1FDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391169AbhAKTvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:51:37 -0500
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:41280 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730166AbhAKTvg (ORCPT
+        id S2391156AbhAKTvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:51:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730166AbhAKTvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:51:36 -0500
-Received: by mail-oi1-f169.google.com with SMTP id 15so569434oix.8;
-        Mon, 11 Jan 2021 11:51:20 -0800 (PST)
+        Mon, 11 Jan 2021 14:51:32 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4928AC061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:50:52 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id p12so166456pju.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:50:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=n6ls+HCeSi/UAGSF82kmFOo5CUAwHtYihLvyPgL0mcE=;
+        b=H8QTkAzz/CeEF6/0Vl1CTWBMYc/3JUp0GGJBSpkbejf0BMipsZqtGfUzN7Jjgc7t18
+         1Jfhjcnv8nEpLFEsI85m5V2Do69agxrK4EKE81AEH2PDf69QwM/T+1ryVsFHN2OFFAQL
+         W3NnhhLBGonsRHVxbY4xVLnczBS7PwApeaLkQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SBH8vdEZw4wobGGWgNS/lc2kPCRJEwAz0dTT6ck4Rmg=;
-        b=GmS5TveI6di1Tsnky1gLf1UAnbzi0f+ZPyQn8ZC6bH32hIA+def6Hhqkf4Z0ZEGswg
-         bf4l6WVb0fWqh4ycixalx2cSM3oA4nC7Vo81HaQL9ypxcrtnVH05ifC5j8eAyBWtsPDz
-         s0baId64P8pjRlqJ2PkvYMhs+IlSrzAHvLoc2RbIkpsd2NKcXwkRO81hvVwbfIXJWRVv
-         KyCqPTNvfXHK8jMZhSwYZt8ZrsBckWnTwhY0sCTAqXHpjp9Wmc1o5Y0EKHoFKNUvypUT
-         HJgRAEg0hWggBrVgCQkS7zhS9Ix5FzHw199MxXbePQ0tZVHWTe21FLdIswFZEe0r2pwb
-         RAzA==
-X-Gm-Message-State: AOAM533oN78ziaeXRu/vJN6SQcOrSiUP+1xqrvB8Ijm9qlV8187CEQwH
-        YswkRULxbJHSlOjtHxcCi7CY/4D6LDbVV0GsEQc=
-X-Google-Smtp-Source: ABdhPJwGwAryPjBUePblwFBBrQdE7OAE/NKHxCygnLqPkc60x7YRiicxbM/qVaIM6xVBvrA6Gp0ryuFFiRy823Pr4sc=
-X-Received: by 2002:aca:4c1:: with SMTP id 184mr276436oie.157.1610394655441;
- Mon, 11 Jan 2021 11:50:55 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=n6ls+HCeSi/UAGSF82kmFOo5CUAwHtYihLvyPgL0mcE=;
+        b=lhr9fSoycDeMXxAResVty6GeKQ4hNj0EeDDbB5xLWX5gFwYks3G6X4QbsN8IwLH7v5
+         DuP+qhHCnW1ZGpNFvOGo5Km7SVVgssJb0/SrBWyTW1Ini9aQT4/kzbkDhaMFRVm1gH28
+         Y/thprEA4nYrE3tpKxHk9ImOlTGtgD5au4rlWgdQR07iJi3XVlf19EYEIc7kXlBFOIH3
+         dfdnF1maDSnF7x2Lr43HiipndyTLbAZ+c40/3NSFuTKXEIKAaPd7g9SVx5sj+AaAYcqs
+         CjSfT8R6l1UGmNOM2zlEIMWFL8Dn+0PTCxTdrri/YLiKBA7NuMjS6fbO7JdPuxjRRAoC
+         RMZQ==
+X-Gm-Message-State: AOAM532UaJyVcfPTKkIgOmP3Et7zRNoxtI8QaVPgrKId8neBFKJc0TiA
+        7+/iSAFlBD+TlRpMs02Qv5dLFg==
+X-Google-Smtp-Source: ABdhPJxKa7QP3e4sq1yJcAafKZZT/e+hen74xAJGxhKWlM/2If7MuvrSisNeNB/Dxb26DvWCKVgWEw==
+X-Received: by 2002:a17:902:d48c:b029:de:2fb:98a with SMTP id c12-20020a170902d48cb02900de02fb098amr859988plg.59.1610394651729;
+        Mon, 11 Jan 2021 11:50:51 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t135sm451741pfc.39.2021.01.11.11.50.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 11:50:50 -0800 (PST)
+Date:   Mon, 11 Jan 2021 11:50:49 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Xiaoming Ni <nixiaoming@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, mcgrof@kernel.org,
+        yzaikin@google.com, adobriyan@gmail.com,
+        linux-fsdevel@vger.kernel.org, vbabka@suse.cz, wangle6@huawei.com
+Subject: Re: [PATCH v2] proc_sysctl: fix oops caused by incorrect command
+ parameters.
+Message-ID: <202101111149.20A58E1@keescook>
+References: <20210108023339.55917-1-nixiaoming@huawei.com>
+ <20210108092145.GX13207@dhcp22.suse.cz>
+ <829bbba0-d3bb-a114-af81-df7390082958@huawei.com>
+ <20210108114718.GA13207@dhcp22.suse.cz>
+ <202101081152.0CB22390@keescook>
+ <20210108201025.GA17019@dhcp22.suse.cz>
+ <20210108175008.da3c60a6e402f5f1ddab2a65@linux-foundation.org>
+ <bc098af4-c0cd-212e-d09d-46d617d0acab@huawei.com>
+ <20210111142131.GA22493@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <20210108072348.34091-1-decui@microsoft.com> <CAHp75VfPsMNZxN-hA3Cytjpm0K9xGoQpcGY_FZR4hUrtyqMj=w@mail.gmail.com>
- <MWHPR21MB0798C62978C2E6F23FAB953EBFAD9@MWHPR21MB0798.namprd21.prod.outlook.com>
- <5464224.fTvfEN5hHQ@kreacher>
-In-Reply-To: <5464224.fTvfEN5hHQ@kreacher>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 11 Jan 2021 20:50:44 +0100
-Message-ID: <CAJZ5v0hT4STe8wyxUWLjYkzHYnn9FgJWaabqJFZtz=eyGtjinA@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: scan: Fix a Hyper-V Linux VM panic caused by buffer overflow
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "len.brown@intel.com" <len.brown@intel.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "rui.zhang@intel.com" <rui.zhang@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        "dwaipayanray1@gmail.com" <dwaipayanray1@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111142131.GA22493@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 6:08 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
->
-> On Saturday, January 9, 2021 10:37:41 AM CET Dexuan Cui wrote:
-> > > From: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > > Sent: Saturday, January 9, 2021 12:52 AM
-> > >>
-> > >> Hi Rafael, Len, and all,
-> > >> Can you please take a look at the v2 patch?
-> > >>
-> > >> The Linux mainline has been broken for several weeks when it
-> > >> runs as a guest on Hyper-V, so we'd like this to be fixed ASAP,
-> > >> as more people are being affected
-> > >
-> > > I would like to see a warning printed when the dupped
-> > > string violates the spec.
-> >
-> > Hi Andy,
-> > Do you want a simple strlen() check like the below, or a full
-> > check of the AAA#### or NNNN#### format?
->
-> It would be good to check the format too while at it.
->
-> > Can we have the v2 (https://lkml.org/lkml/2021/1/8/53) merged
-> > first, and then we can add another patch for the format checking?
->
-> Yes, we can.
->
-> I'm going to apply the v2 early next week.
+On Mon, Jan 11, 2021 at 03:21:31PM +0100, Michal Hocko wrote:
+> On Mon 11-01-21 11:48:19, Xiaoming Ni wrote:
+> [...]
+> > patch3:
+> > 	+++ b/fs/proc/proc_sysctl.c
+> > 	@@ -1770,6 +1770,9 @@ static int process_sysctl_arg(char *param, char *val,
+> > 							return 0;
+> > 			}
+> > 
+> > 	+       if (!val)
+> > 	+               return -EINVAL;
+> > 	+
+> > 			/*
+> > 			 * To set sysctl options, we use a temporary mount of proc, look up the
+> > 			 * respective sys/ file and write to it. To avoid mounting it when no
+> > 
+> > sysctl log for patch3:
+> > 	Setting sysctl args: `' invalid for parameter `hung_task_panic'
+> [...]
+> > When process_sysctl_arg() is called, the param parameter may not be the
+> > sysctl parameter.
+> > 
+> > Patch3 or patch4, which is better?
+> 
+> Patch3
 
-Applied now with a new subject ("ACPI: scan: Harden acpi_device_add()
-against device ID overflows") and slightly adjusted white space,
-thanks!
+Oh, I see the issue here -- I thought we were only calling
+process_sysctl_arg() with valid sysctl fields. It looks like we're not,
+which means it should silently ignore everything that isn't a sysctl
+field, and only return -EINVAL when it IS a sysctl but it lacks a value.
+
+-- 
+Kees Cook
