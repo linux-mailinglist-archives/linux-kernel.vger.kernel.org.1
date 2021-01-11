@@ -2,149 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1404B2F213A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5272F2140
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:00:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729271AbhAKU6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 15:58:21 -0500
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:45064 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728704AbhAKU6U (ORCPT
+        id S1729900AbhAKU7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 15:59:14 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59630 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727668AbhAKU7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:58:20 -0500
-Date:   Mon, 11 Jan 2021 20:57:25 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610398657; bh=423czqlXYO6cyt2pvAdEvcmUk4C4FxO/GExpCv7aBhM=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=dKDO7F+tdwzxF97ZxwMYSL4RZdRIfEJ7fdVw7R+H5Yl3BXfxLuchuMdWlPl0VrA4Q
-         ciraikiocq7nnzvIqgDtQra9docDLxlWfsWcj6sKaq54aIm+vLWd2BE39I2KTgOukm
-         cWVg03Mo1ReSb4qU0K9BNE0+PLK8cQBw4Fwmjpw6ARjhxZ/nvOOrhguyZ7Q2PAJXKM
-         6xp1bPRrf+o7skGbTZpnLBXSMRq+ideRn1t06+wSZtoLfjsCo4emJZ/uizqNCqUs1e
-         er8Fsgyp7Fk5VSQifGrHKodyJ9Ah4MohRFqP/cSWJ8P072GPm0npPBigwB7oOqkoKQ
-         cHpLCkjWkYyXA==
-To:     Kees Cook <keescook@chromium.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Pei Huang <huangpei@loongson.cn>,
-        Fangrui Song <maskray@google.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, stable@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH v5 mips-next 0/9] MIPS: vmlinux.lds.S sections fixes & cleanup
-Message-ID: <20210111205649.18263-1-alobakin@pm.me>
-In-Reply-To: <202101111153.AE5123B6@keescook>
-References: <20210110115245.30762-1-alobakin@pm.me> <202101111153.AE5123B6@keescook>
+        Mon, 11 Jan 2021 15:59:05 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10BKwExe103201;
+        Mon, 11 Jan 2021 14:58:14 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610398694;
+        bh=kLGnNWdilA4PhaFWEJD273Hb9spCPQiXzR3IJJI8xMc=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=gdRqziwMXwB190QvvFFePHNYfrRiTr32p04oSISQRe7fmG/fASxUKeTyR992YFcNr
+         +LL64RmjvNb2sBF1bxK9ZSuVpulutiuVBNQc4bO5p/z1NbZBDcOeDJ97IsNFIsxosR
+         4no/PMMvDNF/ZhOLBIfGL9RRDQvQhTtKqbD9wMNs=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10BKwEEp110191
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 Jan 2021 14:58:14 -0600
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 11
+ Jan 2021 14:58:13 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 11 Jan 2021 14:58:13 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10BKwDaH114717;
+        Mon, 11 Jan 2021 14:58:13 -0600
+Date:   Tue, 12 Jan 2021 02:28:12 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+CC:     Mark Brown <broonie@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>
+Subject: Re: linux-next: Fixes tag needs some work in the spi tree
+Message-ID: <20210111205810.tipt54yk2dljim3l@ti.com>
+References: <20210112073606.7cb02e42@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210112073606.7cb02e42@canb.auug.org.au>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
-Date: Mon, 11 Jan 2021 11:53:39 -0800
++Cc checkpatch.pl maintainers.
 
-> On Sun, Jan 10, 2021 at 11:53:50AM +0000, Alexander Lobakin wrote:
->> This series hunts the problems discovered after manual enabling of
->> ARCH_WANT_LD_ORPHAN_WARN. Notably:
->>  - adds the missing PAGE_ALIGNED_DATA() section affecting VDSO
->>    placement (marked for stable);
->>  - stops blind catching of orphan text sections with .text.*
->>    directive;
->>  - properly stops .eh_frame section generation.
->>
->> Compile and runtime tested on MIPS32R2 CPS board with no issues
->> using two different toolkits:
->>  - Binutils 2.35.1, GCC 10.2.1 (with Alpine patches);
->>  - LLVM stack: 11.0.0 and from latest Git snapshot.
->>
->> Since v4 [3]:
->>  - new: drop redundant .text.cps-vec creation and blind inclusion
->>    of orphan text sections via .text.* directive in vmlinux.lds.S;
->>  - don't assert SIZEOF(.rel.dyn) as it's reported that it may be not
->>    empty on certain machines and compilers (Thomas);
->>  - align GOT table like it's done for ARM64;
->>  - new: catch UBSAN's "unnamed data" sections in generic definitions
->>    when building with LD_DEAD_CODE_DATA_ELIMINATION;
->>  - collect Reviewed-bys (Kees, Nathan).
->
-> Looks good; which tree will this land through?
+On 12/01/21 07:36AM, Stephen Rothwell wrote:
+> Hi all,
+> 
+> In commit
+> 
+>   2ef0170e9039 ("spi: cadence-quadspi: Fix build warning on 32-bit platforms")
+> 
+> Fixes tag
+> 
+>   Fixes: f453f293979f ("spi: cadence-quadspi: Wait at least 500 ms for direct reads")
+> 
+> has these problem(s):
+> 
+>   - Subject does not match target commit subject
+>     Just use
+> 	git log -1 --format='Fixes: %h ("%s")'
+> 
+> Did yu mean
+> 
+> Fixes: f453f293979f ("spi: cadence-quadspi: Add DTR support")
+> 
+> or
+> 
+> Fixes: 0920a32cf6f2 ("spi: cadence-quadspi: Wait at least 500 ms for direct reads")
 
-linux-mips/mips-next I guess, since 7 of 9 patches are related only
-to this architecture.
-This might need Arnd's Acked-bys or Reviewed-by for the two that
-refer include/asm-generic, let's see what Thomas think.
+I meant this one. My mistake. Copied the wrong hash. Any way to fix this 
+now?
 
-> -Kees
->
->>
->> Since v3 [2]:
->>  - fix the third patch as GNU stack emits .rel.dyn into VDSO for
->>    some reason if .cfi_sections is specified.
->>
->> Since v2 [1]:
->>  - stop discarding .eh_frame and just prevent it from generating
->>    (Kees);
->>  - drop redundant sections assertions (Fangrui);
->>  - place GOT table in .text instead of asserting as it's not empty
->>    when building with LLVM (Nathan);
->>  - catch compound literals in generic definitions when building with
->>    LD_DEAD_CODE_DATA_ELIMINATION (Kees);
->>  - collect two Reviewed-bys (Kees).
->>
->> Since v1 [0]:
->>  - catch .got entries too as LLD may produce it (Nathan);
->>  - check for unwanted sections to be zero-sized instead of
->>    discarding (Fangrui).
->>
->> [0] https://lore.kernel.org/linux-mips/20210104121729.46981-1-alobakin@p=
-m.me
->> [1] https://lore.kernel.org/linux-mips/20210106200713.31840-1-alobakin@p=
-m.me
->> [2] https://lore.kernel.org/linux-mips/20210107115120.281008-1-alobakin@=
-pm.me
->> [3] https://lore.kernel.org/linux-mips/20210107123331.354075-1-alobakin@=
-pm.me
->>
->> Alexander Lobakin (9):
->>   MIPS: vmlinux.lds.S: add missing PAGE_ALIGNED_DATA() section
->>   MIPS: CPS: don't create redundant .text.cps-vec section
->>   MIPS: vmlinux.lds.S: add ".gnu.attributes" to DISCARDS
->>   MIPS: properly stop .eh_frame generation
->>   MIPS: vmlinux.lds.S: explicitly catch .rel.dyn symbols
->>   MIPS: vmlinux.lds.S: explicitly declare .got table
->>   vmlinux.lds.h: catch compound literals into data and BSS
->>   vmlinux.lds.h: catch UBSAN's "unnamed data" into data
->>   MIPS: select ARCH_WANT_LD_ORPHAN_WARN
->>
->>  arch/mips/Kconfig                 |  1 +
->>  arch/mips/include/asm/asm.h       | 18 ++++++++++++++++++
->>  arch/mips/kernel/cps-vec.S        |  1 -
->>  arch/mips/kernel/vmlinux.lds.S    | 11 +++++++++--
->>  include/asm-generic/vmlinux.lds.h |  6 +++---
->>  5 files changed, 31 insertions(+), 6 deletions(-)
->>
->> --
->> 2.30.0
->>
->>
->
-> --
-> Kees Cook
+This check should probably be added in checkpatch.pl so mistakes like 
+this can be avoided in the future.
 
-Al
-
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments India
