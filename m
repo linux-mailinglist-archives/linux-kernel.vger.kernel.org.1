@@ -2,93 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1CA2F1FD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB4F2F1FDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391096AbhAKTuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:50:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389440AbhAKTug (ORCPT
+        id S2391169AbhAKTvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:51:37 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:41280 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730166AbhAKTvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:50:36 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77517C061794;
-        Mon, 11 Jan 2021 11:49:56 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id u4so178761pjn.4;
-        Mon, 11 Jan 2021 11:49:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=741uIlaM+L6ylxc+uAOdXhR3kYtdAb4UvuQ94fHQepo=;
-        b=aP6A8sUWaXVFsDzILQMZ1aPTLFknhADj/0e2OOG6ryR+r22atiDU77YF2gRV5ndZUr
-         qwotiHS5pMecv/S5J5t7225T5IH9hsBf4HszIasLHLeNMqL0E/q21brtorbBrvED0UtP
-         PaCemmqtLPwUqynpWU2Y1DEo9qqUpOWcdT5KJTTAhh66Fqk4TrJEXf/uuaJ0VOF2Xcwb
-         rnSwB9/U/hBnTGiUpVp28n2p1AjKExYngyKw+yJEr3dUH3xR5Je2X8CnYDQ0Ca/JShQE
-         jBv0h6VuzNnCWU7lECznRJQLXBfXCfq8UylTJ5RrtVGsNe1c1KRfz7CQXByesKzDXzYU
-         QDIQ==
+        Mon, 11 Jan 2021 14:51:36 -0500
+Received: by mail-oi1-f169.google.com with SMTP id 15so569434oix.8;
+        Mon, 11 Jan 2021 11:51:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=741uIlaM+L6ylxc+uAOdXhR3kYtdAb4UvuQ94fHQepo=;
-        b=IUhd0CTv6725DXf9Si78MVGWj8lbBamSSaxZgPhPJWJmy+PJvTWQRzW3Zj3vNq9OAF
-         XRvTEBpwgjrCkh0J1itx44Cqy/ETHDtV3+mjLAywIAOh2bcTKhArAEoJjJQP6WItj/6X
-         4REDBW8szMgMce9zpMamjr14CuCF5LsR4aNOkZBcR/KpuyxLyWOQEVaGs0ZdYkxkCZ1j
-         N9iQSFv1XmsIVE2SBufGfveO46vzMeA32i51oMY8wvWN68cufQbya7UIS2cE7M9I1dlo
-         +IEBP8VnaJ+JbLB7z/RH7oCIoc6y3bOJf4auLbULCfCNiLZQOw0j/QIlyM6tOWucoAuE
-         ROSw==
-X-Gm-Message-State: AOAM533P+GUkTC/9ara9ZDaTDyW2MHO+/238uxGuzJ08RcHbzZepQrgv
-        AiLHaD5uuzI1nG7KGFJsHGY=
-X-Google-Smtp-Source: ABdhPJyfVK18/6yrrQ66nM2v8wGA4z6kjwfI8eTV8ur+CN039Vc3UYQZGBGlvS6aY5xntsYFXHXoAg==
-X-Received: by 2002:a17:902:42:b029:da:e72b:fe9e with SMTP id 60-20020a1709020042b02900dae72bfe9emr882551pla.31.1610394595901;
-        Mon, 11 Jan 2021 11:49:55 -0800 (PST)
-Received: from jordon-HP-15-Notebook-PC.domain.name ([122.179.121.136])
-        by smtp.gmail.com with ESMTPSA id f64sm420628pfb.146.2021.01.11.11.49.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 11 Jan 2021 11:49:54 -0800 (PST)
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-To:     linus.walleij@linaro.org, grandmaster@al2klimov.de,
-        zhengyongjun3@huawei.com
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Souptick Joarder <jrdr.linux@gmail.com>
-Subject: [PATCH] pinctrl: ti :iodelay: Fixed inconsistent indenting
-Date:   Tue, 12 Jan 2021 01:19:45 +0530
-Message-Id: <1610394585-4296-1-git-send-email-jrdr.linux@gmail.com>
-X-Mailer: git-send-email 1.9.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SBH8vdEZw4wobGGWgNS/lc2kPCRJEwAz0dTT6ck4Rmg=;
+        b=GmS5TveI6di1Tsnky1gLf1UAnbzi0f+ZPyQn8ZC6bH32hIA+def6Hhqkf4Z0ZEGswg
+         bf4l6WVb0fWqh4ycixalx2cSM3oA4nC7Vo81HaQL9ypxcrtnVH05ifC5j8eAyBWtsPDz
+         s0baId64P8pjRlqJ2PkvYMhs+IlSrzAHvLoc2RbIkpsd2NKcXwkRO81hvVwbfIXJWRVv
+         KyCqPTNvfXHK8jMZhSwYZt8ZrsBckWnTwhY0sCTAqXHpjp9Wmc1o5Y0EKHoFKNUvypUT
+         HJgRAEg0hWggBrVgCQkS7zhS9Ix5FzHw199MxXbePQ0tZVHWTe21FLdIswFZEe0r2pwb
+         RAzA==
+X-Gm-Message-State: AOAM533oN78ziaeXRu/vJN6SQcOrSiUP+1xqrvB8Ijm9qlV8187CEQwH
+        YswkRULxbJHSlOjtHxcCi7CY/4D6LDbVV0GsEQc=
+X-Google-Smtp-Source: ABdhPJwGwAryPjBUePblwFBBrQdE7OAE/NKHxCygnLqPkc60x7YRiicxbM/qVaIM6xVBvrA6Gp0ryuFFiRy823Pr4sc=
+X-Received: by 2002:aca:4c1:: with SMTP id 184mr276436oie.157.1610394655441;
+ Mon, 11 Jan 2021 11:50:55 -0800 (PST)
+MIME-Version: 1.0
+References: <20210108072348.34091-1-decui@microsoft.com> <CAHp75VfPsMNZxN-hA3Cytjpm0K9xGoQpcGY_FZR4hUrtyqMj=w@mail.gmail.com>
+ <MWHPR21MB0798C62978C2E6F23FAB953EBFAD9@MWHPR21MB0798.namprd21.prod.outlook.com>
+ <5464224.fTvfEN5hHQ@kreacher>
+In-Reply-To: <5464224.fTvfEN5hHQ@kreacher>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 11 Jan 2021 20:50:44 +0100
+Message-ID: <CAJZ5v0hT4STe8wyxUWLjYkzHYnn9FgJWaabqJFZtz=eyGtjinA@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: scan: Fix a Hyper-V Linux VM panic caused by buffer overflow
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "len.brown@intel.com" <len.brown@intel.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "rui.zhang@intel.com" <rui.zhang@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        "dwaipayanray1@gmail.com" <dwaipayanray1@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel test robot throws below warning ->
+On Sat, Jan 9, 2021 at 6:08 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+>
+> On Saturday, January 9, 2021 10:37:41 AM CET Dexuan Cui wrote:
+> > > From: Andy Shevchenko <andy.shevchenko@gmail.com>
+> > > Sent: Saturday, January 9, 2021 12:52 AM
+> > >>
+> > >> Hi Rafael, Len, and all,
+> > >> Can you please take a look at the v2 patch?
+> > >>
+> > >> The Linux mainline has been broken for several weeks when it
+> > >> runs as a guest on Hyper-V, so we'd like this to be fixed ASAP,
+> > >> as more people are being affected
+> > >
+> > > I would like to see a warning printed when the dupped
+> > > string violates the spec.
+> >
+> > Hi Andy,
+> > Do you want a simple strlen() check like the below, or a full
+> > check of the AAA#### or NNNN#### format?
+>
+> It would be good to check the format too while at it.
+>
+> > Can we have the v2 (https://lkml.org/lkml/2021/1/8/53) merged
+> > first, and then we can add another patch for the format checking?
+>
+> Yes, we can.
+>
+> I'm going to apply the v2 early next week.
 
-smatch warnings:
-drivers/pinctrl/ti/pinctrl-ti-iodelay.c:708
-ti_iodelay_pinconf_group_dbg_show() warn: inconsistent indenting
-
-Fixed the inconsistent indenting.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
----
- drivers/pinctrl/ti/pinctrl-ti-iodelay.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/pinctrl/ti/pinctrl-ti-iodelay.c b/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
-index ae91559..60a6713 100644
---- a/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
-+++ b/drivers/pinctrl/ti/pinctrl-ti-iodelay.c
-@@ -705,9 +705,8 @@ static void ti_iodelay_pinconf_group_dbg_show(struct pinctrl_dev *pctldev,
- 
- 		cfg = &group->cfg[i];
- 		regmap_read(iod->regmap, cfg->offset, &reg);
--			seq_printf(s, "\n\t0x%08x = 0x%08x (%3d, %3d)",
--				   cfg->offset, reg, cfg->a_delay,
--				   cfg->g_delay);
-+		seq_printf(s, "\n\t0x%08x = 0x%08x (%3d, %3d)",
-+			cfg->offset, reg, cfg->a_delay, cfg->g_delay);
- 	}
- }
- #endif
--- 
-1.9.1
-
+Applied now with a new subject ("ACPI: scan: Harden acpi_device_add()
+against device ID overflows") and slightly adjusted white space,
+thanks!
