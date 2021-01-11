@@ -2,139 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2ED92F1421
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:21:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56EFF2F1356
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:07:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732935AbhAKNUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:20:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37484 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733234AbhAKNTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:19:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E95E822795;
-        Mon, 11 Jan 2021 13:18:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610371108;
-        bh=CPgXb2Py6cXtuSYR4oqBN0OYgU3xOHVOl/Rd3RrIOig=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E6iblfflr/5inOaP/Fzuzm1eiQiXNcvl9yEdSK0SUcKRS9VZ5Zqwmp/neZQwgyLGI
-         TGSu57cE15/qvKpahxAoUA4C/xGGo365U/B9E5PpfHQmJJc2yKTYzjUvV+ribEKkLT
-         WwlDqH1OCfrVU2E7Kpnh55jcURSgcq6Qkpw9bDLQ=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+65be4277f3c489293939@syzkaller.appspotmail.com,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 5.10 145/145] rtlwifi: rise completion at the last step of firmware callback
-Date:   Mon, 11 Jan 2021 14:02:49 +0100
-Message-Id: <20210111130055.473163013@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1729102AbhAKNHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:07:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728605AbhAKNGd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:06:33 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E99FC061795
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 05:05:53 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id s75so20040422oih.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 05:05:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=32AMbD7JqvqTfJOA6mRlZcATxY9GlJ290keV9DKYi+U=;
+        b=vbavSgfTX5r4VBBQ1t8Rd07gUOcwgaEfa6MNLKd2ZpZVeAfq4hXNUIs04fPddsxEqf
+         xEbYuZp6cuiwyB791fKV0/6sXkfJZXML0shJduwRXmw6LzB3SQgYa7TPL5i8fWIXUZ4v
+         XKjic147rn8oinoh7mK2VVqxA5w/tpR1ZoUVSaf9OqHp7U4GOqyXT4TS/BXfOYLakJsA
+         B3JHPxwQZtJsr06gslGh7g0pyT4dy3KHzSXbSV+yor/Y7W9P0B5IZ5cwnTd17AuUtfL0
+         IniEfnbXREVDWK0mLq+BxhjdFpWdQYrPG9mPkXETHCsGPKscgIi6oPkzaeDoZRmiVonc
+         n8cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=32AMbD7JqvqTfJOA6mRlZcATxY9GlJ290keV9DKYi+U=;
+        b=VfwJVgNhzNIYtVoH8vgVCnonXixOzlj1d49ev9EHPuFIbvRgQ5jmotyySu5wIyTVdX
+         L4rF+lF0fG0kVPxuSQLBBznzFGejX4jG31LpduAMIcSJ30vZfvBw1D5EXfIfhjS76TcH
+         vlXNzyfo02PPO6Mdie/UCskv3MsX7Czcp6jrGMx4WjZD92/zL7uylYPY/6JYyO9g23Mj
+         K6ZeJeQ09CgN6N+qlalBsfzc3JNJCC7U9WsT8l20XvFuNTyAGWr+MePxv1OQ37zbAjAS
+         dhkcpraChZXAy7DWWIT2kpeWdsSvfzmvZe8inbn++pE3EDbVHQIGhi9ZVxsEjsi+EQIJ
+         JxcQ==
+X-Gm-Message-State: AOAM530PICQ46dsoj2awh5btPDlsGc+P+wW9LC4N3NpBw9dT3XKZcxYH
+        Mtr6MNP/FrfXyuILRN7LUBL+uggvMprLZSiJ9hA=
+X-Google-Smtp-Source: ABdhPJzguLowuko/yV4hNw+yFJ+Sm5NdnIJqP1kdJJLYyr1yI3lUtDVXhN6ed6MvPjHm53SEwGDFTuDWE4dv0PUO0aE=
+X-Received: by 2002:aca:c492:: with SMTP id u140mr9920851oif.51.1610370352601;
+ Mon, 11 Jan 2021 05:05:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210111123518.30438-1-matthias.bgg@kernel.org>
+In-Reply-To: <20210111123518.30438-1-matthias.bgg@kernel.org>
+From:   Gene Chen <gene.chen.richtek@gmail.com>
+Date:   Mon, 11 Jan 2021 21:05:41 +0800
+Message-ID: <CAE+NS35Br8jgLfii=VPjFx+m+9=a=EQKYyoQMAyd7Zdo0K6n+A@mail.gmail.com>
+Subject: Re: [PATCH] mfd: mt6360: Fix MFD cell names and compatibles
+To:     matthias.bgg@kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Gene Chen <gene_chen@richtek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Matthias Brugger <mbrugger@suse.com>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ping-Ke Shih <pkshih@realtek.com>
+Hi Lee,
 
-commit 4dfde294b9792dcf8615b55c58f093d544f472f0 upstream.
+This change exists in [PATCH v7 03/11] mfd: mt6360: Indicate sub-dev
+compatible name by using "-".
+Does patch v7 also merge together to mfd-next?
 
-request_firmware_nowait() which schedules another work is used to load
-firmware when USB is probing. If USB is unplugged before running the
-firmware work, it goes disconnect ops, and then causes use-after-free.
-Though we wait for completion of firmware work before freeing the hw,
-firmware callback rises completion too early. So I move it to the
-last step.
-
-usb 5-1: Direct firmware load for rtlwifi/rtl8192cufw.bin failed with error -2
-rtlwifi: Loading alternative firmware rtlwifi/rtl8192cufw.bin
-rtlwifi: Selected firmware is not available
-==================================================================
-BUG: KASAN: use-after-free in rtl_fw_do_work.cold+0x68/0x6a drivers/net/wireless/realtek/rtlwifi/core.c:93
-Write of size 4 at addr ffff8881454cff50 by task kworker/0:6/7379
-
-CPU: 0 PID: 7379 Comm: kworker/0:6 Not tainted 5.10.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events request_firmware_work_func
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0xae/0x4c8 mm/kasan/report.c:385
- __kasan_report mm/kasan/report.c:545 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
- rtl_fw_do_work.cold+0x68/0x6a drivers/net/wireless/realtek/rtlwifi/core.c:93
- request_firmware_work_func+0x12c/0x230 drivers/base/firmware_loader/main.c:1079
- process_one_work+0x933/0x1520 kernel/workqueue.c:2272
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
- kthread+0x38c/0x460 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-The buggy address belongs to the page:
-page:00000000f54435b3 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1454cf
-flags: 0x200000000000000()
-raw: 0200000000000000 0000000000000000 ffffea00051533c8 0000000000000000
-raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff8881454cfe00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff8881454cfe80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff8881454cff00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                                                 ^
- ffff8881454cff80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff8881454d0000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-
-Reported-by: syzbot+65be4277f3c489293939@syzkaller.appspotmail.com
-Signed-off-by: Ping-Ke Shih <pkshih@realtek.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20201214053106.7748-1-pkshih@realtek.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- drivers/net/wireless/realtek/rtlwifi/core.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
---- a/drivers/net/wireless/realtek/rtlwifi/core.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/core.c
-@@ -78,7 +78,6 @@ static void rtl_fw_do_work(const struct
- 
- 	rtl_dbg(rtlpriv, COMP_ERR, DBG_LOUD,
- 		"Firmware callback routine entered!\n");
--	complete(&rtlpriv->firmware_loading_complete);
- 	if (!firmware) {
- 		if (rtlpriv->cfg->alt_fw_name) {
- 			err = request_firmware(&firmware,
-@@ -91,13 +90,13 @@ static void rtl_fw_do_work(const struct
- 		}
- 		pr_err("Selected firmware is not available\n");
- 		rtlpriv->max_fw_size = 0;
--		return;
-+		goto exit;
- 	}
- found_alt:
- 	if (firmware->size > rtlpriv->max_fw_size) {
- 		pr_err("Firmware is too big!\n");
- 		release_firmware(firmware);
--		return;
-+		goto exit;
- 	}
- 	if (!is_wow) {
- 		memcpy(rtlpriv->rtlhal.pfirmware, firmware->data,
-@@ -109,6 +108,9 @@ found_alt:
- 		rtlpriv->rtlhal.wowlan_fwsize = firmware->size;
- 	}
- 	release_firmware(firmware);
-+
-+exit:
-+	complete(&rtlpriv->firmware_loading_complete);
- }
- 
- void rtl_fw_cb(const struct firmware *firmware, void *context)
-
-
+<matthias.bgg@kernel.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=8811=E6=97=A5 =E9=
+=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=888:35=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> From: Matthias Brugger <mbrugger@suse.com>
+>
+> MFD cell names and compatibles use '_' instead of '-', which is common
+> practice for names and the standard for DT compatibles.
+> This will also fix the probing for the drivers already implemented
+> (mt6360-adc and mt6360-tcpc).
+>
+> Fixes: 7edd363421da ("mfd: Add support for PMIC MT6360")
+> Fixes: 1f4877218f7e ("iio: adc: mt6360: Add ADC driver for MT6360")
+> Fixes: e1aefcdd394f ("usb typec: mt6360: Add support for mt6360 Type-C dr=
+iver")
+> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+>
+> ---
+>
+>  drivers/mfd/mt6360-core.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
+> index 4661c1b29a72..14e649ffe50f 100644
+> --- a/drivers/mfd/mt6360-core.c
+> +++ b/drivers/mfd/mt6360-core.c
+> @@ -292,18 +292,18 @@ static const struct resource mt6360_ldo_resources[]=
+ =3D {
+>  };
+>
+>  static const struct mfd_cell mt6360_devs[] =3D {
+> -       OF_MFD_CELL("mt6360_adc", mt6360_adc_resources,
+> -                   NULL, 0, 0, "mediatek,mt6360_adc"),
+> -       OF_MFD_CELL("mt6360_chg", mt6360_chg_resources,
+> -                   NULL, 0, 0, "mediatek,mt6360_chg"),
+> -       OF_MFD_CELL("mt6360_led", mt6360_led_resources,
+> -                   NULL, 0, 0, "mediatek,mt6360_led"),
+> -       OF_MFD_CELL("mt6360_pmic", mt6360_pmic_resources,
+> -                   NULL, 0, 0, "mediatek,mt6360_pmic"),
+> -       OF_MFD_CELL("mt6360_ldo", mt6360_ldo_resources,
+> -                   NULL, 0, 0, "mediatek,mt6360_ldo"),
+> -       OF_MFD_CELL("mt6360_tcpc", NULL,
+> -                   NULL, 0, 0, "mediatek,mt6360_tcpc"),
+> +       OF_MFD_CELL("mt6360-adc", mt6360_adc_resources,
+> +                   NULL, 0, 0, "mediatek,mt6360-adc"),
+> +       OF_MFD_CELL("mt6360-chg", mt6360_chg_resources,
+> +                   NULL, 0, 0, "mediatek,mt6360-chg"),
+> +       OF_MFD_CELL("mt6360-led", mt6360_led_resources,
+> +                   NULL, 0, 0, "mediatek,mt6360-led"),
+> +       OF_MFD_CELL("mt6360-pmic", mt6360_pmic_resources,
+> +                   NULL, 0, 0, "mediatek,mt6360-pmic"),
+> +       OF_MFD_CELL("mt6360-ldo", mt6360_ldo_resources,
+> +                   NULL, 0, 0, "mediatek,mt6360-ldo"),
+> +       OF_MFD_CELL("mt6360-tcpc", NULL,
+> +                   NULL, 0, 0, "mediatek,mt6360-tcpc"),
+>  };
+>
+>  static const unsigned short mt6360_slave_addr[MT6360_SLAVE_MAX] =3D {
+> --
+> 2.29.2
+>
