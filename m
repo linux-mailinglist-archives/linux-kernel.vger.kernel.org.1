@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3BD2F1374
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:09:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 148D02F1361
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729032AbhAKNI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:08:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54966 "EHLO mail.kernel.org"
+        id S1730628AbhAKNHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:07:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54726 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730713AbhAKNIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:08:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB2D422AAD;
-        Mon, 11 Jan 2021 13:07:50 +0000 (UTC)
+        id S1730525AbhAKNHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:07:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 977D82250F;
+        Mon, 11 Jan 2021 13:06:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370471;
-        bh=jzGQHfeDByFgMo6EFOsbrBwo6331JUoc89XKDcaV7h4=;
+        s=korg; t=1610370388;
+        bh=8WzSXwduy0Uvu1WM40O6odnKoUbQG7G5veNMCzM5ozw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qsH3nXaJ0hceGHyxfidbyz9/wFf9s1LtcDniJ2uUHkzpJ+/93XkpokX7QQo8FaQgE
-         Y0q5NHNWcR2gooheP9ov8Y1/9OOqRScAEoK6YoOzEH7UjwgLx+8w9MkmrvahgYIY2U
-         31DJ7UD0jVI8dsVVOstccBgN1wkdv3Y73KFpMLVg=
+        b=FcOv0DR9NPSSYCUMGDe7tzLYIXiB+79AD3QQX3KjFZ9QWEI0Ae/FH5GJfJqJoRfe6
+         FLLGpD++VDj87LlkMxPOyPuGHTpFjyPOHtrOA9vySdJPSG3At0ru95NKPYv/AoUzsp
+         JRmohGDfCb8qema5sc57N9SGp6Hq0UUM9u0HzHqc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Antoine Tenart <atenart@kernel.org>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 37/77] net-sysfs: take the rtnl lock when accessing xps_rxqs_map and num_tc
+        stable@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 27/57] video: hyperv_fb: Fix the mmap() regression for v5.4.y and older
 Date:   Mon, 11 Jan 2021 14:01:46 +0100
-Message-Id: <20210111130038.192159818@linuxfoundation.org>
+Message-Id: <20210111130035.031645003@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
+References: <20210111130033.715773309@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,78 +39,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antoine Tenart <atenart@kernel.org>
+From: Dexuan Cui <decui@microsoft.com>
 
-[ Upstream commit 4ae2bb81649dc03dfc95875f02126b14b773f7ab ]
+db49200b1dad is backported from the mainline commit
+5f1251a48c17 ("video: hyperv_fb: Fix the cache type when mapping the VRAM"),
+to v5.4.y and older stable branches, but unluckily db49200b1dad causes
+mmap() to fail for /dev/fb0 due to EINVAL:
 
-Accesses to dev->xps_rxqs_map (when using dev->num_tc) should be
-protected by the rtnl lock, like we do for netif_set_xps_queue. I didn't
-see an actual bug being triggered, but let's be safe here and take the
-rtnl lock while accessing the map in sysfs.
+[ 5797.049560] x86/PAT: a.out:1910 map pfn expected mapping type
+  uncached-minus for [mem 0xf8200000-0xf85cbfff], got write-back
 
-Fixes: 8af2c06ff4b1 ("net-sysfs: Add interface for Rx queue(s) map per Tx queue")
-Signed-off-by: Antoine Tenart <atenart@kernel.org>
-Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This means the v5.4.y kernel detects an incompatibility issue about the
+mapping type of the VRAM: db49200b1dad changes to use Write-Back when
+mapping the VRAM, while the mmap() syscall tries to use Uncached-minus.
+That’s to say, the kernel thinks Uncached-minus is incompatible with
+Write-Back: see drivers/video/fbdev/core/fbmem.c: fb_mmap() ->
+vm_iomap_memory() -> io_remap_pfn_range() -> ... -> track_pfn_remap() ->
+reserve_pfn_range().
+
+Note: any v5.5 and newer kernel doesn't have the issue, because they
+have commit
+d21987d709e8 ("video: hyperv: hyperv_fb: Support deferred IO for Hyper-V frame buffer driver")
+, and when the hyperv_fb driver has the deferred_io support,
+fb_deferred_io_init() overrides info->fbops->fb_mmap with
+fb_deferred_io_mmap(), which doesn’t check the mapping type
+incompatibility. Note: since it's VRAM here, the checking is not really
+necessary.
+
+Fix the regression by ioremap_wc(), which uses Write-combining. The kernel
+thinks it's compatible with Uncached-minus. The VRAM mappped by
+ioremap_wc() is slightly slower than mapped by ioremap_cache(), but is
+still significantly faster than by ioremap().
+
+Change the comment accordingly. Linux VM on ARM64 Hyper-V is still not
+working in the latest mainline yet, and when it works in future, the ARM64
+support is unlikely to be backported to v5.4 and older, so using
+ioremap_wc() in v5.4 and older should be ok.
+
+Note: this fix is only targeted at the stable branches:
+v5.4.y, v4.19.y, v4.14.y, v4.9.y and v4.4.y.
+
+Fixes: db49200b1dad ("video: hyperv_fb: Fix the cache type when mapping the VRAM")
+Signed-off-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/net-sysfs.c |   23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+ drivers/video/fbdev/hyperv_fb.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---- a/net/core/net-sysfs.c
-+++ b/net/core/net-sysfs.c
-@@ -1356,23 +1356,30 @@ static struct netdev_queue_attribute xps
- 
- static ssize_t xps_rxqs_show(struct netdev_queue *queue, char *buf)
- {
-+	int j, len, ret, num_tc = 1, tc = 0;
- 	struct net_device *dev = queue->dev;
- 	struct xps_dev_maps *dev_maps;
- 	unsigned long *mask, index;
--	int j, len, num_tc = 1, tc = 0;
- 
- 	index = get_netdev_queue_index(queue);
- 
-+	if (!rtnl_trylock())
-+		return restart_syscall();
-+
- 	if (dev->num_tc) {
- 		num_tc = dev->num_tc;
- 		tc = netdev_txq_to_tc(dev, index);
--		if (tc < 0)
--			return -EINVAL;
-+		if (tc < 0) {
-+			ret = -EINVAL;
-+			goto err_rtnl_unlock;
-+		}
+diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv_fb.c
+index f3938c5278832..6e680007cf6b0 100644
+--- a/drivers/video/fbdev/hyperv_fb.c
++++ b/drivers/video/fbdev/hyperv_fb.c
+@@ -713,11 +713,9 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
  	}
- 	mask = kcalloc(BITS_TO_LONGS(dev->num_rx_queues), sizeof(long),
- 		       GFP_KERNEL);
--	if (!mask)
--		return -ENOMEM;
-+	if (!mask) {
-+		ret = -ENOMEM;
-+		goto err_rtnl_unlock;
-+	}
  
- 	rcu_read_lock();
- 	dev_maps = rcu_dereference(dev->xps_rxqs_map);
-@@ -1398,10 +1405,16 @@ static ssize_t xps_rxqs_show(struct netd
- out_no_maps:
- 	rcu_read_unlock();
+ 	/*
+-	 * Map the VRAM cacheable for performance. This is also required for
+-	 * VM Connect to display properly for ARM64 Linux VM, as the host also
+-	 * maps the VRAM cacheable.
++	 * Map the VRAM cacheable for performance.
+ 	 */
+-	fb_virt = ioremap_cache(par->mem->start, screen_fb_size);
++	fb_virt = ioremap_wc(par->mem->start, screen_fb_size);
+ 	if (!fb_virt)
+ 		goto err2;
  
-+	rtnl_unlock();
-+
- 	len = bitmap_print_to_pagebuf(false, buf, mask, dev->num_rx_queues);
- 	kfree(mask);
- 
- 	return len < PAGE_SIZE ? len : -EINVAL;
-+
-+err_rtnl_unlock:
-+	rtnl_unlock();
-+	return ret;
- }
- 
- static ssize_t xps_rxqs_store(struct netdev_queue *queue, const char *buf,
+-- 
+2.27.0
+
 
 
