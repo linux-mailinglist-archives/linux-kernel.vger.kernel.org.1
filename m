@@ -2,128 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBAC2F0D8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 08:53:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3502F0D87
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 08:51:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727752AbhAKHvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 02:51:45 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:11376 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727723AbhAKHvp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 02:51:45 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DDm8C1WmFz7SfQ;
-        Mon, 11 Jan 2021 15:50:03 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 11 Jan 2021 15:50:52 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        <corbet@lwn.net>, Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH v4 5/5] f2fs: introduce sb_status sysfs node
-Date:   Mon, 11 Jan 2021 15:50:17 +0800
-Message-ID: <20210111075017.82370-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        id S1727716AbhAKHvV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Jan 2021 02:51:21 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:46496 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727652AbhAKHvV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 02:51:21 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1kyryE-0004Eb-3j; Mon, 11 Jan 2021 08:50:34 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Chen-Yu Tsai <wens@kernel.org>
+Cc:     Johan Jonker <jbx6244@gmail.com>, Chen-Yu Tsai <wens@kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 3/3] arm64: dts: rockchip: rk3328: Add Radxa ROCK Pi E
+Date:   Mon, 11 Jan 2021 08:50:33 +0100
+Message-ID: <2633022.BEx9A2HvPv@diego>
+In-Reply-To: <CAGb2v67h3v4DdEY68BmHy263=L1tB0DuJnf_exHrLi57SiRjUA@mail.gmail.com>
+References: <20210110035846.9155-1-wens@kernel.org> <2241380.NG923GbCHz@diego> <CAGb2v67h3v4DdEY68BmHy263=L1tB0DuJnf_exHrLi57SiRjUA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce /sys/fs/f2fs/<devname>/stat/sb_status to show superblock
-status in real time as a hexadecimal value.
+Am Montag, 11. Januar 2021, 04:27:47 CET schrieb Chen-Yu Tsai:
+> On Mon, Jan 11, 2021 at 4:06 AM Heiko Stübner <heiko@sntech.de> wrote:
+> >
+> > Hi,
+> >
+> > Am Sonntag, 10. Januar 2021, 16:37:15 CET schrieb Chen-Yu Tsai:
+> > > > > +     vcc_sd: sdmmc-regulator {
+> > > > > +             compatible = "regulator-fixed";
+> > > > > +             gpio = <&gpio0 RK_PD6 GPIO_ACTIVE_LOW>;
+> > > > > +             pinctrl-names = "default";
+> > > > > +             pinctrl-0 = <&sdmmc0m1_pin>;
+> > > >
+> > > > > +             regulator-boot-on;
+> > > > > +             regulator-name = "vcc_sd";
+> > > >
+> > > > regulator-name above other regulator properties
+> > >
+> > > That is actually what I was used to, but some other rockchip dts files
+> > > have all the properties sorted alphabetically. So I stuck with what I
+> > > saw.
+> >
+> > I try to keep it alphabetical except for the exceptions :-D .
+> >
+> > regulator-name is such an exception. Similar to compatibles, the
+> > regulator-name is an entry needed to see if you're at the right node,
+> > so I really like it being the topmost regulator-foo property - just makes
+> > reading easier.
+> >
+> > (same for the compatible first, then regs, interrupts parts, as well
+> > as "status-last")
+> >
+> > But oftentimes, I just fix the ordering when applying - but seem to have
+> > missed this somewhere in those "other Rockchip dts files" ;-) .
+> 
+> I was slightly confused. I looked again and yes regulator-name is always the
+> first regulator related property. What's off is that in some cases min/max
+> voltage comes before always-on/boot-on, and in others vice versa.
+> 
+> For example in the Rock64 and ROC-RK3328-CC device trees, in the fixed
+> regulators, always-on/boot-on come before min/max voltage, while in the
+> PMIC the other order is used.
 
-value           sb status macro                 description
+That's likely undecidednes on my part ;-)
 
-0x1             SBI_IS_DIRTY,                   /* dirty flag for checkpoint */
-0x2             SBI_IS_CLOSE,                   /* specify unmounting */
-0x4             SBI_NEED_FSCK,                  /* need fsck.f2fs to fix */
-0x8             SBI_POR_DOING,                  /* recovery is doing or not */
-0x10            SBI_NEED_SB_WRITE,              /* need to recover superblock */
-0x20            SBI_NEED_CP,                    /* need to checkpoint */
-0x40            SBI_IS_SHUTDOWN,                /* shutdown by ioctl */
-0x80            SBI_IS_RECOVERED,               /* recovered orphan/data */
-0x100           SBI_CP_DISABLED,                /* CP was disabled last mount */
-0x200           SBI_CP_DISABLED_QUICK,          /* CP was disabled quickly */
-0x400           SBI_QUOTA_NEED_FLUSH,           /* need to flush quota info in CP */
-0x800           SBI_QUOTA_SKIP_FLUSH,           /* skip flushing quota in current CP */
-0x1000          SBI_QUOTA_NEED_REPAIR,          /* quota file may be corrupted */
-0x2000          SBI_IS_RESIZEFS,                /* resizefs is in process */
+There could be an argument for a "name, voltages, flags" sorting, but on
+the other hand just keeping it alphabetical with the naming on top
+creates less special cases.
 
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
-v4:
-- fix linux-next build (htmldocs) warning:
-WARNING: Inline emphasis start-string without end-string.  
-- reformat to fit rendering in html.
- Documentation/ABI/testing/sysfs-fs-f2fs | 23 +++++++++++++++++++++++
- fs/f2fs/sysfs.c                         |  8 ++++++++
- 2 files changed, 31 insertions(+)
 
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index 3dfee94e0618..e5918c93f3bf 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -377,3 +377,26 @@ Description:	This gives a control to limit the bio size in f2fs.
- 		Default is zero, which will follow underlying block layer limit,
- 		whereas, if it has a certain bytes value, f2fs won't submit a
- 		bio larger than that size.
-+
-+What:		/sys/fs/f2fs/<disk>/stat/sb_status
-+Date:		December 2020
-+Contact:	"Chao Yu" <yuchao0@huawei.com>
-+Description:	Show status of f2fs superblock in real time.
-+
-+		=====  ===================== =================================
-+		value  sb status macro       description
-+		0x1    SBI_IS_DIRTY          dirty flag for checkpoint
-+		0x2    SBI_IS_CLOSE          specify unmounting
-+		0x4    SBI_NEED_FSCK         need fsck.f2fs to fix
-+		0x8    SBI_POR_DOING         recovery is doing or not
-+		0x10   SBI_NEED_SB_WRITE     need to recover superblock
-+		0x20   SBI_NEED_CP           need to checkpoint
-+		0x40   SBI_IS_SHUTDOWN       shutdown by ioctl
-+		0x80   SBI_IS_RECOVERED      recovered orphan/data
-+		0x100  SBI_CP_DISABLED       CP was disabled last mount
-+		0x200  SBI_CP_DISABLED_QUICK CP was disabled quickly
-+		0x400  SBI_QUOTA_NEED_FLUSH  need to flush quota info in CP
-+		0x800  SBI_QUOTA_SKIP_FLUSH  skip flushing quota in current CP
-+		0x1000 SBI_QUOTA_NEED_REPAIR quota file may be corrupted
-+		0x2000 SBI_IS_RESIZEFS       resizefs is in process
-+		====== ===================== =================================
-diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
-index bd1174ed2e6f..f39874d512ea 100644
---- a/fs/f2fs/sysfs.c
-+++ b/fs/f2fs/sysfs.c
-@@ -96,6 +96,12 @@ static ssize_t lifetime_write_kbytes_show(struct f2fs_attr *a,
- 				sbi->sectors_written_start) >> 1)));
- }
- 
-+static ssize_t sb_status_show(struct f2fs_attr *a,
-+		struct f2fs_sb_info *sbi, char *buf)
-+{
-+	return sprintf(buf, "%lx\n", sbi->s_flag);
-+}
-+
- static ssize_t features_show(struct f2fs_attr *a,
- 		struct f2fs_sb_info *sbi, char *buf)
- {
-@@ -702,7 +708,9 @@ static struct attribute *f2fs_feat_attrs[] = {
- };
- ATTRIBUTE_GROUPS(f2fs_feat);
- 
-+F2FS_GENERAL_RO_ATTR(sb_status);
- static struct attribute *f2fs_stat_attrs[] = {
-+	ATTR_LIST(sb_status),
- 	NULL,
- };
- ATTRIBUTE_GROUPS(f2fs_stat);
--- 
-2.29.2
+Heiko
+
 
