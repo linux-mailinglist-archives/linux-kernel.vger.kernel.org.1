@@ -2,91 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64FA32F10E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:17:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C11342F10EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729244AbhAKLPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:15:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728251AbhAKLPs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:15:48 -0500
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23453C061795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 03:15:08 -0800 (PST)
-Received: by mail-qv1-xf2f.google.com with SMTP id s6so7232136qvn.6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 03:15:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WhzjayrC+26z6DcD7za+9LxX5P6jZQRkbedPwq22Za4=;
-        b=i7jIJuQOetY7AqcjiQ2frvUYvNHYwpeQYK3C5p9b9uM+p/thMZqFgpdxCGMvte2738
-         Ujpipxvxxi1ZE0+WY4hEtccyWsSc25MtmN4wwM82IebigfFhFlhaC5PNL8xp4pTzj1q+
-         0JOGz8YVvozr0xNnMDdYMRHywb7a01OXhYM82g1QLjyzNMgBA9vObiptTJCPmG+b4cIV
-         WS+D8XH/Ycg/ArKEi1vxvXPBPJCY8Ix4i0eJq4R8bDeBcqyA7XWyUeihJIii+cQ/grcI
-         csFWME8nuY0Wp7iDBSFbG966WhqXchIKA0Rig/Tl22dD8N5o2675VXhwe6KlBr0cxXfq
-         6/SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WhzjayrC+26z6DcD7za+9LxX5P6jZQRkbedPwq22Za4=;
-        b=ZOwCtxzTXqR6Ttf5V///OX+DYli2RKOalqpc7axO7yVGZmCWj0qQieQrZoWH1dnikD
-         +WOgmqiSw38tVvgZ2I89oL5oYHNdddBMWeN32P/A5Ia71UsmBGxwAUlZhdM7/r5dHiAm
-         V00gbtk3MyJbJdGa1KLfcXEKqYi5Rkckm6DmZxzCYdbVRFKHb9W2SR/KO/GZ/oC0uhFP
-         aKhIkiVwWFFp+eRlnkKs6PUtbPUBb6Q1Epg//z9Ww5JDPrLQmPbLA5wRN/ulGXAsGljB
-         4O0hdTezRVaXRHMVCelA3tAwYxClPfqb7Z9uwIfonzJGb8P4Wkg7Ws9/3vIR6iY657AK
-         tNEw==
-X-Gm-Message-State: AOAM533J3N9cUDIcaT9ayJCDPD5gDuhXy0bbwZRXFf2KDzV80SwkpxeL
-        IGZnPVyxp4oVqQEFShSBajLNApFlrhQtUmNFVufPvg==
-X-Google-Smtp-Source: ABdhPJwaY/DZskeWJ/wgN51FKdecZhvZzj1LdP6oa+j7e6irK8NFeteAUbGt8m8Nm5D2XdcA72PzB3gj6cscE6+dvMQ=
-X-Received: by 2002:a0c:edab:: with SMTP id h11mr15064043qvr.23.1610363707075;
- Mon, 11 Jan 2021 03:15:07 -0800 (PST)
+        id S1729406AbhAKLPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:15:55 -0500
+Received: from mga14.intel.com ([192.55.52.115]:47306 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728511AbhAKLPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 06:15:54 -0500
+IronPort-SDR: MKpLopQDdwi0MHADgC3NQOl6pVuZrMDqYutGjrZ7BIFGN24jBi1l9O+PXnGORY2PNiY6HQmzk5
+ R2nuHKxfFoCQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9860"; a="177064952"
+X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
+   d="scan'208";a="177064952"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 03:14:06 -0800
+IronPort-SDR: iTcvsU/SDg8Uqm1mchUyA/qxuKcBDJ3k58vzplfAE9ZddYiDDFMt4ofikuflqwePinBkXyAdMF
+ PKYBjLiRFMVg==
+X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
+   d="scan'208";a="464131212"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 03:14:04 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kyvAA-00A8bW-2w; Mon, 11 Jan 2021 13:15:06 +0200
+Date:   Mon, 11 Jan 2021 13:15:06 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     Petr Mladek <pmladek@suse.com>, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, shuah@kernel.org,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v3 1/4] lib: vsprintf: scanf: Negative number must have
+ field width > 1
+Message-ID: <20210111111506.GX4077@smile.fi.intel.com>
+References: <20201217180057.23786-1-rf@opensource.cirrus.com>
+ <X/wnoJLEt0zQskDU@alley>
+ <6e390f96-b813-fcf8-f159-c22595b563a3@opensource.cirrus.com>
 MIME-Version: 1.0
-References: <000000000000b0bbc905b05ab8d5@google.com> <000000000000b4098905b872801e@google.com>
-In-Reply-To: <000000000000b4098905b872801e@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 11 Jan 2021 12:14:56 +0100
-Message-ID: <CACT4Y+YbY+jjvEppMwSKkt2gWh2qhHvFPzmbARxGe84RzBLWCg@mail.gmail.com>
-Subject: Re: BUG: unable to handle kernel NULL pointer dereference in __lookup_slow
-To:     syzbot <syzbot+3db80bbf66b88d68af9d@syzkaller.appspotmail.com>
-Cc:     Jan Kara <jack@suse.cz>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, rkovhaev@gmail.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6e390f96-b813-fcf8-f159-c22595b563a3@opensource.cirrus.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 8:20 AM syzbot
-<syzbot+3db80bbf66b88d68af9d@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit d24396c5290ba8ab04ba505176874c4e04a2d53c
-> Author: Rustam Kovhaev <rkovhaev@gmail.com>
-> Date:   Sun Nov 1 14:09:58 2020 +0000
->
->     reiserfs: add check for an invalid ih_entry_count
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=111480e7500000
-> start commit:   a68a0262 mm/madvise: remove racy mm ownership check
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=e597c2b53c984cd8
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3db80bbf66b88d68af9d
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1737b8a7500000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1697246b500000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: reiserfs: add check for an invalid ih_entry_count
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+On Mon, Jan 11, 2021 at 10:37:59AM +0000, Richard Fitzgerald wrote:
+> On 11/01/2021 10:25, Petr Mladek wrote:
+> > Sigh, I have just realized that Andy and Rasmus, the other
+> > vsprintf maintainers and reviewers, were not in CC.
+> 
+> Sorry, probably my fault. I sent to the maintainers and lists reported
+> by get_maintainers.sh. I guess I missed that "reviewers" should also
+> be directly mailed.
 
-Looks realistic.
+I usually use the following (not 100% guarantee, but quite close):
 
-#syz fix: reiserfs: add check for an invalid ih_entry_count
+  scripts/get_maintainer.pl --git --git-min-percent=67
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
