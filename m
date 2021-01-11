@@ -2,84 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E4F2F1B3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D83352F1B35
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:42:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388998AbhAKQmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:42:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728302AbhAKQmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:42:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33B7820B1F;
-        Mon, 11 Jan 2021 16:41:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610383310;
-        bh=pHdL6r7FXXGNXM3Ebqp+Wf6OKYp1jUSbChLOvGSj6Vs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vkwn0fuTvm7Tdoy3qtROvRL14dXnX6MebEsWVEc8u3sIzFAAGtuTcNUkdudrCV38h
-         kZGJxZsTBhcVU8jUGrt0IGsa3EZ3kTzV0FpbkXnvK/VuEVQz+gSzP1RuO9TqK3YtKF
-         vaV10TEeoZpHnka5OGoymIlillJ7/jCg1BWc7l7u4CO0y04KknnVCfIjkAD2VeeGrt
-         UFkoL+ljFOYIKtq4QBn4xrePx3hf0GOzBqIqnwBGzXrgqEYae0OM8+Xgxbq3F7g2E+
-         HKaELmSvaVkhkGTAlkbwvypKlTdW6uzyFF7GjUUZa8bH+y7Bk7yu86v1CM/oSTuOdh
-         UkjbiYcgej/Vw==
-Date:   Mon, 11 Jan 2021 16:41:18 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     matthias.bgg@kernel.org
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        Axel Lin <axel.lin@ingics.com>,
-        Chen Zhong <chen.zhong@mediatek.com>,
-        Gene Chen <gene_chen@richtek.com>,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matthias Brugger <mbrugger@suse.com>
-Subject: Re: [PATCH v2 1/3] regulator: mt6360: Add OF match table
-Message-ID: <20210111164118.GE4728@sirena.org.uk>
-References: <20210109112612.1221-1-matthias.bgg@kernel.org>
+        id S2388956AbhAKQmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:42:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388011AbhAKQmF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 11:42:05 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D11DC061786;
+        Mon, 11 Jan 2021 08:41:24 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id 11so258818pfu.4;
+        Mon, 11 Jan 2021 08:41:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Uv3Cf1Z5wDBVRjdkUzWejQCce+4ctj5gFpl4bvSWCYM=;
+        b=lSzVM9PqiSVbqlpmsAk+B0KR8WYTSZR5fmen2TSlqw8dlp+hDUKO2cHRz9ntaRoMD8
+         pSP9QJQLhbAd2r67lH6g/1rHdti5J6nn1r2Vbr54QxHsoqXvrVIZuCshybrRoGXuq9K/
+         IoEpUALVfcuwWo8Wz2TWSdRCgybSQIcZLRK3C1qEwdOHe+1VTmyGzD+SpGc0f8igLNEH
+         AbF+ISr3nn83B3X3+pJWW8tv95kB08FH6q+YkGM+1FpZMek2sIOSvf/tTK8AF58/6qaK
+         tPU9HBuLJ8E7KPIAgsa+FDAVLtFG9WApKnuiCCp5MXk4EB0IS/EEiIhTUNFriv3ot5eU
+         NFJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Uv3Cf1Z5wDBVRjdkUzWejQCce+4ctj5gFpl4bvSWCYM=;
+        b=gwq7aZG2I3djqau385UQpK/euEv2PVc/E1lZfQyGF5dvFUYbYr/FjgJkYZVbu6VR9W
+         RXZIcb5/mf9qptwZlFBZ2yw81ppsO/cde/I3hcSJdZv3e6FUUezjBzI/yYJRobvZxKgE
+         YJLovd1XroHIrIlJjSYLAhpl23jeRXn4hnGZU0KQ9pn67kgDMEZFpfiQ/EsaTSgxX49O
+         JJK1TTImaeV+3izl/DaGWRnFzwAGTcUfc6Sf5g7QZtzhZZD5OsHAQkVn1T2FI9ueTYTS
+         awSyI12Urw8ocw+F2P2hul0m68U+yYxJKF+P+j+dyBY9tPjvnyjhpR4OGrZCAzexuzJ8
+         Oebw==
+X-Gm-Message-State: AOAM5331B9uQGypKRPyzxt/8jN5ece+X1F0qKi2KNd6HV9PAcV24Awmy
+        d5RUzxHGMANK51fwPDWw6pfdKGm4mLA=
+X-Google-Smtp-Source: ABdhPJwLUgwTfr4fPF+ZuqJQLAiJ+/Qq+dY2MiT5laB75HvFlUy1kZmfWRR1q0B0a+lBlkh266EYgQ==
+X-Received: by 2002:a62:7a43:0:b029:19e:c33b:c498 with SMTP id v64-20020a627a430000b029019ec33bc498mr258787pfc.20.1610383283434;
+        Mon, 11 Jan 2021 08:41:23 -0800 (PST)
+Received: from [10.230.29.29] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id gm18sm15971pjb.55.2021.01.11.08.41.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 08:41:22 -0800 (PST)
+Subject: Re: [PATCH] spi: spi-bcm-qspi: style: Simplify bool comparison
+To:     Mark Brown <broonie@kernel.org>,
+        YANG LI <abaci-bugfix@linux.alibaba.com>, kdasu.kdev@gmail.com
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+References: <1610357189-60031-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+ <161038255869.32886.11006261963964555197.b4-ty@kernel.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <ec735a59-0fbd-3d4a-e997-895099a8e534@gmail.com>
+Date:   Mon, 11 Jan 2021 08:41:19 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="47eKBCiAZYFK5l32"
-Content-Disposition: inline
-In-Reply-To: <20210109112612.1221-1-matthias.bgg@kernel.org>
-X-Cookie: Too much is not enough.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <161038255869.32886.11006261963964555197.b4-ty@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---47eKBCiAZYFK5l32
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jan 09, 2021 at 12:26:09PM +0100, matthias.bgg@kernel.org wrote:
-> From: Matthias Brugger <mbrugger@suse.com>
->=20
-> Binding documentation mentions that a compatible is required for the
-> MT6360 device node, but the driver doesn't provide a OF match table.
+On 1/11/2021 8:29 AM, Mark Brown wrote:
+> On Mon, 11 Jan 2021 17:26:29 +0800, YANG LI wrote:
+>> Fix the following coccicheck warning:
+>> ./drivers/spi/spi-bcm-qspi.c:884:5-34: WARNING: Comparison to bool
+> 
+> Applied to
+> 
+>    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+> 
+> Thanks!
+> 
+> [1/1] spi: spi-bcm-qspi: style: Simplify bool comparison
+>       commit: 6650ab2a44268af8d24995d28ae199b57b2ebff8
 
-The binding should be fixed to remove the requirement for a compatible
-here, this is both redundant since we already know we have a mt6380 from
-the core MFD and encoding details of how Linux implements things into
-the DT bindings.
-
---47eKBCiAZYFK5l32
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/8f60ACgkQJNaLcl1U
-h9DuAwf9HMf6KGCC1zeqywtZhlKTB1cStvN7IwhVumnBs7s6MfljXhjvSeg0dwhu
-OuPqKnBkputwxVuLUcxVBeS8gOlcmNigypgGCWi4NgbJWnDtRGBEwbJ6Dz3UNQYN
-tnNzP/Jd5yk+wQlFS4FM0FMX8Q2Bpl/nLbGliTL9xnrfgBGRLevBTChBOahtLFxo
-de12GMYwf5pCOgSknPwmuGKXF1gGAbk3aE3XKO5HaRYgyQY3v4LN9i5kj7Z7Z8f2
-h4pF/HhZRm0EMuc1nhEv8bJgsC4A6TIyLbEA8xHP9SixXREANTyGaRg49kWlaeH5
-4lRvhhOfHOOXtgpMSdBLqK7MLac80g==
-=OgE8
------END PGP SIGNATURE-----
-
---47eKBCiAZYFK5l32--
+I don't think that "style: " is a subject prefix that is used commonly
+and it certainly should not belong in a commit subject. Mark can you
+please people at least 10-12 hours to review changes before applying
+them? This one is trivial except the commit subject does not match
+previous changes done to this file and it should have been fixed.
+-- 
+Florian
