@@ -2,124 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C712F1254
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDAEC2F1258
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:34:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbhAKMcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 07:32:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726661AbhAKMcB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 07:32:01 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5894C061795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 04:31:20 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id e7so18157169ile.7
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 04:31:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:in-reply-to:references:mime-version
-         :content-transfer-encoding:date:message-id;
-        bh=t1RBS+pz3TCSz9yaBXTL9npXBs6/Rl7TaNaQnPf6x90=;
-        b=a4aIM97BLiHH+eIdzKM287vOP5/KmTDYnPqKo9zViAmh8KaTs2MLUN6ldvqhH6PnWl
-         vL5iPZghsfWDJMo3uHOiFtm8qr4ZdsUAth9+G0ko+cEHdeDNQCXP1MqFsJaYv9o2lm/D
-         OYtBiJnn7Wy9QJp2PVisksSz5vo0DQ8reLRNxK3SBypIaQZZr4G/6QxFWE0RcCfeli5V
-         WTi5sgZgHTwbv6LZFBLGcBRakO1bHFDKyBHbg+C9KauFvMVSLXTx4BLKTKbe3ffpgo4Z
-         vU4CZbhmUEwfBPaSdpNfBANmMKMTrnxkfGeQDInW5nlbuXyOWpuXYiNJuZwnzILvCQe2
-         +OSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :mime-version:content-transfer-encoding:date:message-id;
-        bh=t1RBS+pz3TCSz9yaBXTL9npXBs6/Rl7TaNaQnPf6x90=;
-        b=Kiwm4sQ//exm93q0L9vh8DI2LHqE7yUbouV9KY0jQnXaUJ1yJggkHmKkvrpwH9MxLd
-         r2YbFBOe9B/XPXGOQCKcnErWkVhgPnZvf/EG0MVlcLNbDqwrvBCQkEqVN8Viq4fJbTe8
-         biD4f2wemsG7ds1AVzlk/QD0x7gx0N27bh09vz4Eunvbs6nBlxh8CA5H7ZKkI84CQuBe
-         qizIwhJjCKyknnJBuYKZEDSzffdmaTwTcuNvVta2sey/LWZFokHjOZirio/0FAb/UHbz
-         Bf5na4K4jp7hU5Ibo1tkijuViJKJwd4+6xA5Dh7ZJzvveFVbgZkUapWgk26PpEUGNNg8
-         0P8Q==
-X-Gm-Message-State: AOAM532/eO0SL2tPV2GNFBoHHlt9UjBvaXlnR6b9eFIzd35NLIA3gI88
-        hxPKhdeqU2ZFqV2cEUDKob3DXw==
-X-Google-Smtp-Source: ABdhPJxDH/MgjbUb9HPEP06bCJP/IFbuiDjqIGnJj17fLtJbvSVodrC6DP1EAUA/P0pYWPVKA5RAgA==
-X-Received: by 2002:a05:6e02:216f:: with SMTP id s15mr12281002ilv.81.1610368280182;
-        Mon, 11 Jan 2021 04:31:20 -0800 (PST)
-Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id a4sm13496774ild.5.2021.01.11.04.31.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 04:31:18 -0800 (PST)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
+        id S1726913AbhAKMd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 07:33:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726224AbhAKMd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 07:33:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89F0F22AAF
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 12:33:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610368395;
+        bh=yXKODVd5TEykAAHQEUTv6Lm1lMaSuUtCpmCOou3eymQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PnjnHhKW4LH8QVex919JalF9HdZb30dCk/UUEbYm5nMt0D0PflszGL2OytxaMu89k
+         KaxUpJGNWxI+90fOJE2C4Mg70ti7qMx4j/csMhJ2OkcpnlmR2bx9RDet/6paGPPUCc
+         S/Xi8S4zb6Yl4M5fLxkCvkJ8wLioDM2dRRMpsoWQ5128uwvM6lSD0L6Y9XAhUs5OKV
+         cL+qRkpGsXXpZiddHZKc5Ajpb6NBYrRGxMnUfXgquQH+RYjCIEgDgMr8QqHnX63opT
+         RQQVNId6AD1hvtqqh1coI9z+hO4x5HH1pTRJfDnd3QiXAUUMWyUYsKhxFGsM7tiPVn
+         KMK/iJgpzM2ag==
+Received: by mail-oi1-f170.google.com with SMTP id s2so19952873oij.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 04:33:15 -0800 (PST)
+X-Gm-Message-State: AOAM532K0VEKXsoAI/0H9gYKYedc8QbX014B0HUKoj1s94ctgEHrhpjy
+        K9jiGW+VCTpWudkTYz5wPKFZv1Qs0GGx47qO7l4=
+X-Google-Smtp-Source: ABdhPJwg0xCZhOMudD1jN7Qzr5yMYHVlTwVmqGCcjFEU/lh7xdcaeMJ07+Dk8nP/y61I2n4L4OA27cjMHbngG1WAzMI=
+X-Received: by 2002:aca:44d:: with SMTP id 74mr10251000oie.4.1610368394083;
+ Mon, 11 Jan 2021 04:33:14 -0800 (PST)
+MIME-Version: 1.0
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+ <67171E13-6786-4B44-A8C2-3302963B055F@gmail.com> <CAK8P3a0o=1KjPtp0Ah8Afe5vvG1b72+77HRFh4Z06HUGwN6+Ew@mail.gmail.com>
+ <1702853.1557dWfJA4@linux-e202.suse.de> <CACRpkdYaMASWWDTX7hTt+xQnVPA=WTWNFk2eDnTjKoJF=LA7LQ@mail.gmail.com>
+ <20210111003320.GQ1551@shell.armlinux.org.uk>
+In-Reply-To: <20210111003320.GQ1551@shell.armlinux.org.uk>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 11 Jan 2021 13:32:57 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3C0mWHm+7GvtK92Nw0unZ8NTViXUVd_QysYgot8tuM7A@mail.gmail.com>
+Message-ID: <CAK8P3a3C0mWHm+7GvtK92Nw0unZ8NTViXUVd_QysYgot8tuM7A@mail.gmail.com>
+Subject: Re: Old platforms: bring out your dead
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Fabian Vogt <fabian@ritter-vogt.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        Jamie Iles <jamie@jamieiles.com>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Alex Elder <elder@linaro.org>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH] gcc-plugins: fix gcc 11 indigestion with plugins...
-In-Reply-To: <CAMuHMdXR09QdSiziQQ_XuPcJPOca_+mK1jYYHj3VsP_eCu_KbA@mail.gmail.com>
-References: <82487.1609006918@turing-police> <160997457204.3687425.15622431721220616573.b4-ty@chromium.org> <CAMuHMdU1YSODgh_T5RxqUqorveAQiy_-gQbF_SwMEj7gvG25qw@mail.gmail.com> <122278.1610362619@turing-police>
- <CAMuHMdXR09QdSiziQQ_XuPcJPOca_+mK1jYYHj3VsP_eCu_KbA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1610368277_16026P";
-         micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 11 Jan 2021 07:31:17 -0500
-Message-ID: <128149.1610368277@turing-police>
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Mark Salter <msalter@redhat.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---==_Exmh_1610368277_16026P
-Content-Type: text/plain; charset=us-ascii
+On Mon, Jan 11, 2021 at 1:33 AM Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
+> On Sun, Jan 10, 2021 at 10:33:56PM +0100, Linus Walleij wrote:
+> > On Sun, Jan 10, 2021 at 7:16 PM Fabian Vogt <fabian@ritter-vogt.de> wrote:
+> > > Am Samstag, 9. Januar 2021, 23:20:48 CET schrieb Arnd Bergmann:
+> > > (https://lore.kernel.org/linux-arm-kernel/20190805085847.25554-1-linus.walleij@linaro.org)
+> > > was the biggest required change so far.
+> >
+> > What we're seeing here is actually a port that is:
+> > - Finished
+> > - Has a complete set of working drivers
+> > - Supported
+> > - Just works
+> >
+> > I.e. it doesn't see much patches because it is pretty much perfect.
+> >
+> > We are so unused to this situation that it can be mistaken for
+> > the device being abandoned.
+> >
+> > I think it was Russell who first pointed out that this is actually
+> > the case for a few machines.
+>
+> Yes indeed. I find it utterly rediculous that there is a perception
+> that you constantly need to be patching a bit of software for it to
+> not be seen as abandoned. If a piece of software works and does what
+> it needs to do, why does it need to be continually patched? It makes
+> no sense to me.
 
-On Mon, 11 Jan 2021 05:56:59 -0500, I said:
+I don't know where you got the impression that this is what I
+want to do. I used this as a first approximation because it reduced
+the number of platforms to look at from 71 to under 20, just by
+looking at what patches went into the kernel. I could further get the
+number down to the 14 platforms listed in this email by knowing
+some of the users of platforms that did not see a lot of updates but
+are well supported, like highbank or dove.
 
-> > It's probably related. I'm just having a hard time understanding why 4.9 and 5.4
-> > whine about the lack of a space, while 8.3 and 11 didn't complain...
+We have already confirmed axxia, digicolor, kona and nspire
+as platforms that we want to keep for now, and a new volunteer
+to maintain axxia, and I did not get the impression that any of
+the maintainers were overly stressed out by being sent an
+email inquiry five years after the last contact. I would prefer
+an occasional Tested-by tag for the cleanup patches that did make
+it in (yes, I counted those as activity), but I understand that
+everyone is busy and these are low-maintenance platforms.
 
-So after more digging, at least some clarity has surfaced.
+> I have my xf86-video-armada which I use on the Dove Cubox and iMX6
+> platforms. It does what I need it to, and I haven't updated the
+> userspace on these platforms for a while. Therefore, I've no reason
+> to patch that code, and no one has sent me patches. Does that mean
+> it's abandoned? Absolutely not.
 
-It looks like it's not a kernel source tree issue, it's a g++ issue fixed in g++ 6 and later.
+I listed the dove platform in the first table specifically because the
+plan back in 2014 was to completely remove the platform once that
+hardware is working with the modern mach-mvebu platform, and
+I hoped that the transition had finished by now.
 
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=69959
-
-And it looks like there was an intent to backport it to 4.9 and 5.4:
-https://gcc.gnu.org/legacy-ml/gcc-patches/2016-02/msg01409.html
-
-The bugtracker doesn't show an equivalent for 69959 being closed against 4.9.x or 5.[56],
-
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63254 has a patch for one of the
-gcc-supplied files that tosses the warning, but that way lies madness...
-
-Not sure what we want to do here - the main alternatives I see are:
-
-Tell people still using 4.9/5.4 to either live with the warning or upgrade to 6 or later
-
-Make the flag a variable and pass either -std=gnu++98 or -std=gnu++11
-depending on the output of 'g++ --version'
-
-What say the peanut gallery?
-
---==_Exmh_1610368277_16026P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.9.0 11/07/2018
-
-iQIVAwUBX/xFFAdmEQWDXROgAQLWmxAAm+/eycJLapNJYBLQxszzcM/PdssJs8bl
-9RoBqSLrTzdLeT6NNK+qTGACeFfc1eSJpMxw0tL4fg24nRBIEdr8IJuCi6ncukzR
-8w3HdgXMJ6w09+yTAoc2S1TzqVEyd91MaoAGWl7OIkuXdk/iVigAR5DDXKZalr8j
-15bCM951bSN7KGMKTSsWd1HtEAwi7YAuxJr1zhk0ijvXKCsnhMeAZALD2QdcDgBR
-8mY9UA+374z7rEtqRs42vEn7leS5m3GX1rEMPkkeFaGNIYEL6+zZGn2e/WHQWjfm
-RifQgKcE89BNMq1V9jlScTGhR/p8mk02bOMR9CoM7FXS3vUKn4CFjWlB8SdAUhaJ
-WMZ7W6d0MYfFnkkUrZ/SfOQy+4T8lXWvKjaQ6/9vpZzm3VhbkO+K7n7Xjvr7qZlC
-8VDjyQ60ojoNvJky46VFxSFgjnHHou38iPuuVfNhe4fcb2Ci8QX4fY4h6yEEi8n9
-lLrehATWLjDBahAVQLojei+xh498Z5m53WvxOfFZDlld45hAz7F7iTX3/OwUlD5f
-kZACnjH/ZC12ewCKetyQY6h9GTahgR0qkCgSyhoC4+0xYdIfIRK43lOKkkTx3QUN
-hsavEhfeD/en4kHAbqcNWZ+64oL3jkvsyhBOVNY7IqnW5qSwEcuOs9NOe2hso0TS
-ujJfklKBnY0=
-=mGP8
------END PGP SIGNATURE-----
-
---==_Exmh_1610368277_16026P--
+      Arnd
