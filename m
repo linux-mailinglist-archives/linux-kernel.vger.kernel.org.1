@@ -2,160 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C1D2F1DF1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 19:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E6772F1DF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 19:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390321AbhAKSYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 13:24:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390150AbhAKSYM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 13:24:12 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2E9C0617A2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 10:23:32 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id n42so554331ota.12
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 10:23:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oHRRLRP3syrNXRgtXLe4zDZLAZUIXTDNntM1178Onx4=;
-        b=Lp1keZgFL5eKc+p+U8+latPO0VrJ+THVD5+vETX/XbAZVYvwgTosayKSqfBl4lltLE
-         prnwYmDyDqZjjpkZG8T/fbfotQ6/9AZe9de6vzX2LvnCC9Nv+KSQ2x/qNvGSxDLKSTdF
-         amxHMiw4LqCC5QtpruCbAu3fVVPKQy91ziavo1befz2e23eqvTdKjqxycWNvOjrlUhcs
-         Xt52rjVidw91lPqNouCwIpaozGhne9OrdiRIYZQYe2bbEi6E5nR2aU4mFIYzr32uRMcj
-         RX10ysfFcmaxIWpq5Y+ZQjIklMACRFAa/bfh11s3Zf9e3cAaemVfkB5dWFn1RaHlh5O7
-         8sfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oHRRLRP3syrNXRgtXLe4zDZLAZUIXTDNntM1178Onx4=;
-        b=pC+fUG7imELkCzt/V9M/xR/oWRdcXGdthufUsbYZ2Fl+C3K1a06v4PxbWaSNK/WxL5
-         hK+u/ePkLSuOgu78Ga9i1mHL3+ncmEbUW7tgd3v6dwQiQHzfiIBJl4o7cg2fKcXRvHKx
-         ViOzXDJ8Ruk0fhFs3URuWidUgtJsXItq23nFEsO6i9KFrJJaEYXi3m62CgU5wmc6x0px
-         lXNdoL8ao+El1wOewzS2iGidpZgHMMDVEBW0zwzRuEfw5eMQQFxqRzBBBHAAzEkV5aOE
-         uob+AFAHRwmmajua8OcPQoHFxvATwzMteN70AVSQ8fDSGCU0JycZ0d7qiTubeOZdPDlT
-         OwAg==
-X-Gm-Message-State: AOAM533wN9Vg1rao+v4P0TNtWNsV7ppEojXLFHEPVkkIeHLtV+Ju0NAS
-        B+pvNl/C2k3gTTqksvPqx5lIVA==
-X-Google-Smtp-Source: ABdhPJwSQkESyJB6Kz1cjy5okZasf3ZxNpivGY61xq/DZzbGSNQ/13Qf+v159Mg5XngNF2QuTl/ANg==
-X-Received: by 2002:a9d:65d7:: with SMTP id z23mr309029oth.131.1610389411993;
-        Mon, 11 Jan 2021 10:23:31 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id f145sm58970oob.18.2021.01.11.10.23.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 10:23:31 -0800 (PST)
-Date:   Mon, 11 Jan 2021 12:23:29 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@kernel.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/7] arm64: dts: qcom: sdm845: Add gpi dma node
-Message-ID: <X/yXoY/3pqvvDpd6@builder.lan>
-References: <20210111151651.1616813-1-vkoul@kernel.org>
- <20210111151651.1616813-7-vkoul@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S2390407AbhAKSZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 13:25:01 -0500
+Received: from mail-dm6nam11on2137.outbound.protection.outlook.com ([40.107.223.137]:28680
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389992AbhAKSZA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 13:25:00 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FXyUvgOJLCt2mcx7AitqXzTDewHGvadyshvjuLrLLR8M0/RRrH1uoMyJc59qZahE/KCrO6Dq8o3cYUWUftxxh2RwtRj756S2XxYAxXwENF4SrL5Y7lZpsU7TN/1+4GTzuRl4ZfnuAB+tTK58i01jd/eb5Es2D20M/8mcaCIpN/vVhQ1eJkBMTHU/QL9doLq0iIMLv3N9ejczXPGDKqwB28j8PAIw3GpBppAOY1vLLNJxG0JfvGH9AgBj4fDe4J9iJLA+CsjfGDs/crudmGdc/tk+QPQLaiYFATwc3bB8pnyb73HjWWHh3RFlrts1AjliZ9XOdqnR0t5ys3kHpnu05g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hdPxlv6yCvB+JhkkFsWDxqL/GnBXdGx+PBxToNA2ask=;
+ b=K7nK2T/OEkzdqCKlU/4F5W0oKhlhkQGi6GzxNZVFQ4w2uCp0QJfV0lim2IwneDIbZDRwSD0OI5GDIWqATdtr0/Vwx7ia79exIDZrrBj5sBysphNZzPKvwp32BotNDm4242I9jdeA0mGRRrL8j4mTIamDwXQtPx1Y6/tp1r2o79FsruTqKSE0yFu/Sc+RTfFIeLfzgqvjT49y0fVHmNtmU8NfC3r4GhlbcWmy2Vn7UEATKCqydrkLaY2GzyogxALQthDmbTddyE8AQqQ2G0SqGe7uFhIgnbiaKZahDwb93spj+E3bKXHLnSJgXnqDyxvqZv6fseiegPc87RNxllRoWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amperecomputing.com; dmarc=pass action=none
+ header.from=amperecomputing.com; dkim=pass header.d=amperecomputing.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amperecomputing.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hdPxlv6yCvB+JhkkFsWDxqL/GnBXdGx+PBxToNA2ask=;
+ b=FCJ2C76lJN/NZlefhEJziNIz/5DN9vWin07FQeCF4pVxGYFYFndYSAE2k6HuQPly/1vUXIfHat6jmr7NfbFrnOIu3BlsD4DjFm1L+wgbBER3s/J2b8kIglXK+nK76IpovN2FNWaZmC1/3c0ivU07cWSvHmcje+CfvAB26F1fjJ0=
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none
+ header.from=amperecomputing.com;
+Received: from MW4PR01MB6276.prod.exchangelabs.com (2603:10b6:303:7d::20) by
+ MW4PR01MB6097.prod.exchangelabs.com (2603:10b6:303:7a::8) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3742.6; Mon, 11 Jan 2021 18:24:06 +0000
+Received: from MW4PR01MB6276.prod.exchangelabs.com
+ ([fe80::e458:ec66:9b0c:df0f]) by MW4PR01MB6276.prod.exchangelabs.com
+ ([fe80::e458:ec66:9b0c:df0f%5]) with mapi id 15.20.3742.012; Mon, 11 Jan 2021
+ 18:24:06 +0000
+Date:   Mon, 11 Jan 2021 10:24:03 -0800
+From:   Vanshi Konda <vkonda@amperecomputing.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Vanshidhar Konda <vanshikonda@os.amperecomputing.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        catalin.marinas@arm.com, patches@amperecomputing.com
+Subject: Re: [PATCH] arm64: Kconfig: Increase NR_CPUS default to 512
+Message-ID: <20210111182403.4tscmqc6yxceafkq@con01sys-r111.scc-lab.amperecomputing.com>
+References: <20210110053615.3594358-1-vanshikonda@os.amperecomputing.com>
+ <20210111105636.GA7071@willie-the-truck>
+ <20210111175741.ldifmv7uhdekbq5d@con01sys-r111.scc-lab.amperecomputing.com>
+ <fb9542df-19cf-4db7-d112-0917e5b65e9f@infradead.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210111151651.1616813-7-vkoul@kernel.org>
+In-Reply-To: <fb9542df-19cf-4db7-d112-0917e5b65e9f@infradead.org>
+X-Originating-IP: [4.28.12.214]
+X-ClientProxiedBy: CY1PR07CA0033.namprd07.prod.outlook.com
+ (2a01:111:e400:c60a::43) To MW4PR01MB6276.prod.exchangelabs.com
+ (2603:10b6:303:7d::20)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (4.28.12.214) by CY1PR07CA0033.namprd07.prod.outlook.com (2a01:111:e400:c60a::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Mon, 11 Jan 2021 18:24:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 057ad6c9-0f23-4f23-2acd-08d8b65e14ef
+X-MS-TrafficTypeDiagnostic: MW4PR01MB6097:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MW4PR01MB60979E1D449CE67EE5BA641BD2AB0@MW4PR01MB6097.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: swuOeUIVNyqPC4vaOtHzievGiGxOazmbtF2RhWZVZhUbipDBNYc952REWlNhCNvX3nBreDUcvvpQwMl7kphB895IEJqR6M5RmaZHUx4oQ+UXPvpTBl66XFYH2YYzLZZjeNJ6OBRTS1ky3IdxPq3xLsBkAerJ8gqYECVzBeM39pcKTt6B6DYh6tjhk5czz5Oz2yKdsxyIFqPwQqPp+tBE4HnamiJ1K09kUrwZHQ4Rtb8ih516RGIBNQb/nm+j9prROA9uk+sJNKxP2EFlzbfNH384p4VHmLZt586zEOkhJrSKt6iwDX4piVYkQHl5WpQs44NBsHVoY5xLc2e2VGHABt6jbuJj+fpw76SsbU4IIBo9Uu/TLrYESYobzxsO4u7fzBje8AF3IKSD+v0TC8gPfQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR01MB6276.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(346002)(136003)(39840400004)(186003)(4326008)(16526019)(52116002)(6486002)(2906002)(6496006)(66476007)(8676002)(1076003)(316002)(66946007)(54906003)(8936002)(6916009)(26005)(107886003)(66556008)(86362001)(83380400001)(956004)(478600001)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?hAnWkrpBR56eG9ufyp9cy2CnKaeCMTeUr8VxkDkfX/SpahzoCYbwRChpsKmw?=
+ =?us-ascii?Q?13/Z3UPupCmLhOlXJmDhhRSBr/n3IFmBhpoqcz5LLEmg6EpmiqPZFvMj7L70?=
+ =?us-ascii?Q?3q25LA+BFhNC9Rhtvlmb1s9dVTwBBtwsEy4110W7R6mn+ZXeTavGpGdyQEVG?=
+ =?us-ascii?Q?hXZrDcy+QufCU1qqRVZKDZYJgpOjVtQmmefndsyEh4qsmrUjHsY15x1u7Lqu?=
+ =?us-ascii?Q?nVOBZ3FBP+mlwuDbcMAxVXSDGkEIIplExPHMBsPKRhq8RLS8JN4HJ+UtRxTo?=
+ =?us-ascii?Q?bwVrYBxAOD0I5OxAeRme1sWZgtQhwrWZ+s63vGbVMTNbu/dIcpGvir1VCo12?=
+ =?us-ascii?Q?JzgbuNBu7tJyiEsmmfaWI1Oo0cZXxZ7LJvqSBSkarroWgbPPK4bgpPub66TR?=
+ =?us-ascii?Q?yAdfGxWYTs40OyNfOs9ABwFl7ij1utuRCHuQkX/qX5NOWlJEsRZr+RfgT7q1?=
+ =?us-ascii?Q?8NWMQ/Kd9AurrwmQYuEzkMZ84pR2090EUVuD35BcAqIDn/lRE0e5obYvoLvm?=
+ =?us-ascii?Q?DbYis8fQlQ/LaCtgyfXrtmUonwYUnVDR9S+S6C8obUftYugPOeZHstaOVIF8?=
+ =?us-ascii?Q?IatzBVYkm3lBCwj3m4NwxcnSLSrSzzr/1n/kfhkPyj+vHem3McK52AkKe4OI?=
+ =?us-ascii?Q?NKekZ8Mr4kvd7z9+Gmq/ZoLyQrCLGfKB4Jg1WwjpbiNUeg9zOoej3PpuCk0N?=
+ =?us-ascii?Q?LEIoGRIlATnFUt+Zp3DDpZ/uI2qhTPY0vO+Afv7w9/6zqcs5zHlurD+0FZJh?=
+ =?us-ascii?Q?6AucRLZ39UYUAMcMRgrGTgvV4CgiAo/q9pLmHtBqla7seF6INJYOgw7yXnta?=
+ =?us-ascii?Q?L/OIvGCBMVbkDHIw/TsAoq/8RhMdpqEYayGw2LllHa+F4nTVK/fdUe9EpeuT?=
+ =?us-ascii?Q?Sz4AqI69fNPLNlYglWlOGHDth4S50mYeszqEc6yfA7MzfZV+1geXXCDMcmOg?=
+ =?us-ascii?Q?cJTUv3PR6WxuctkMbAkiQ3wLpd15Vj6wtZfrqdHgW89EfqPLC0WZh+71IFDl?=
+ =?us-ascii?Q?mSL+?=
+X-OriginatorOrg: amperecomputing.com
+X-MS-Exchange-CrossTenant-AuthSource: MW4PR01MB6276.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2021 18:24:06.3342
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-Network-Message-Id: 057ad6c9-0f23-4f23-2acd-08d8b65e14ef
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3ljHjbcvkpnOVTlQxUZ2iI3us6k6vQ3XmJOq4ZgiP2hmX0Ky2P7vJRbKZTVjPbRFSzuqTKg4oZStvpAYRWbZnRlrKzFJ65BN12GmknMkolM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR01MB6097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 11 Jan 09:16 CST 2021, Vinod Koul wrote:
+On Mon, Jan 11, 2021 at 10:03:18AM -0800, Randy Dunlap wrote:
+>[EXTERNAL EMAIL NOTICE: This email originated from an external sender. Please be mindful of safe email handling and proprietary information protection practices.]
+>
+>
+>On 1/11/21 9:57 AM, Vanshidhar Konda wrote:
+>> On Mon, Jan 11, 2021 at 10:56:36AM +0000, Will Deacon wrote:
+>>> On Sat, Jan 09, 2021 at 09:36:15PM -0800, vanshikonda@os.amperecomputing.com wrote:
+>>>> From: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+>>>>
+>>>> Increase the default value of NR_CPUS to 512 from 256. This will
+>>>> enable the defconfig kernel to support platforms that have upto
+>>>> 512 cores.
+>>>
+>>> Do we already support such a platform, and what is it? I'm fine with bumping.
+>>> the number, it's just nice to be able to say specifically _why_ we're dong
+>>> it.
+>>
+>> I'm not aware of any publicly available systems that run into the 256
+>> core limitation. At Ampere we have internal systems that would benefit
+>> from this change as they support more than 256 cores.
+>
+>But what does that have to do with the default value?
+>Do you expect to run defconfig kernels?
+>I don't ever expect that.
 
-> This add the device node for gpi dma0 instances found in sdm845.
+Sorry. I should have been more clear in my earlier statement. We
+currently have systems in development internally, to be available
+publicly later, that support more than 256 cores. Given the time it
+takes for a kernel version to be adopted by distros it makes sense to
+change the defconfig now rather than later.
 
-I think the 0 in "dma0" should go?
 
-Apart from that, this looks good.
+Thanks,
+Vanshi
 
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->  arch/arm64/boot/dts/qcom/sdm845.dtsi | 46 ++++++++++++++++++++++++++++
->  1 file changed, 46 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> index bcf888381f14..c9a127bbd606 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> @@ -1114,6 +1114,29 @@ opp-128000000 {
->  			};
->  		};
->  
-> +		gpi_dma0: dma-controller@800000 {
-> +			#dma-cells = <3>;
-
-Nit. I know #dma-cells are important to you ;) but I would prefer to
-have the standard properties (e.g. compatible) first.
-
-Regards,
-Bjorn
-
-> +			compatible = "qcom,sdm845-gpi-dma";
-> +			reg = <0 0x00800000 0 0x60000>;
-> +			interrupts = <GIC_SPI 244 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 246 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 247 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 248 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 249 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 250 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 251 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 252 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 253 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 254 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH>;
-> +			dma-channels = <13>;
-> +			dma-channel-mask = <0xfa>;
-> +			iommus = <&apps_smmu 0x0016 0x0>;
-> +			status = "disabled";
-> +		};
-> +
->  		qupv3_id_0: geniqup@8c0000 {
->  			compatible = "qcom,geni-se-qup";
->  			reg = <0 0x008c0000 0 0x6000>;
-> @@ -1533,6 +1556,29 @@ uart7: serial@89c000 {
->  			};
->  		};
->  
-> +		gpi_dma1: dma-controller@0xa00000 {
-> +			#dma-cells = <3>;
-> +			compatible = "qcom,sdm845-gpi-dma";
-> +			reg = <0 0x00a00000 0 0x60000>;
-> +			interrupts = <GIC_SPI 279 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 280 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 281 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 293 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 294 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 295 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 296 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 297 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 298 IRQ_TYPE_LEVEL_HIGH>,
-> +				     <GIC_SPI 299 IRQ_TYPE_LEVEL_HIGH>;
-> +			dma-channels = <13>;
-> +			dma-channel-mask = <0xfa>;
-> +			iommus = <&apps_smmu 0x06d6 0x0>;
-> +			status = "disabled";
-> +		};
-> +
->  		qupv3_id_1: geniqup@ac0000 {
->  			compatible = "qcom,geni-se-qup";
->  			reg = <0 0x00ac0000 0 0x6000>;
-> -- 
-> 2.26.2
-> 
+>
+>--
+>~Randy
+>
