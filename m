@@ -2,31 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC87F2F161C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:49:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22ADB2F1671
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:53:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731113AbhAKNKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:10:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56240 "EHLO mail.kernel.org"
+        id S2387884AbhAKNw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:52:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730498AbhAKNI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:08:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B140121973;
-        Mon, 11 Jan 2021 13:08:15 +0000 (UTC)
+        id S1729560AbhAKNI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:08:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F175C22A84;
+        Mon, 11 Jan 2021 13:08:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370496;
-        bh=YJmB7XOQ96ih2KlqU63QE9fb6mMTVB5yzGHsfF2r9Cs=;
+        s=korg; t=1610370498;
+        bh=QKXLuUaCCXI73ignZAqMQUINge4y9Z+qWu71kvh39cw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M/wWASlA6oWLVfqM0Zi3ji/X6EXQmRxtA99LIFnIz8Z9EcrzPPWiKyL5BEGJUZSup
-         rbiq8HsoeBQGsI97cjE+yMRind4PbRqs6bMmd4NKLnxdPer5N5QrBlvQskvHayC178
-         lt0/q2A/uXf660fHPnZ8+vSctwG6tfFotVUG1oNE=
+        b=jlfJ+Lf7Msz4QjoJs4NBBccpV1lIgwOPLQgTJS9CDXIhJ6KDviXafgMQSFy15e2Er
+         tpvmP5khGd/f95JTHVY+O7IVa4rqvuWDfgEo/IeK2B9KnAKwZU2IMTeTaGLrtga9ay
+         k+1LGfso+mSk/v0eFzl9JNOohQcfrul00rzaMyhw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>
-Subject: [PATCH 4.19 47/77] usb: chipidea: ci_hdrc_imx: add missing put_device() call in usbmisc_get_init_data()
-Date:   Mon, 11 Jan 2021 14:01:56 +0100
-Message-Id: <20210111130038.672788214@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>
+Subject: [PATCH 4.19 48/77] USB: xhci: fix U1/U2 handling for hardware with XHCI_INTEL_HOST quirk set
+Date:   Mon, 11 Jan 2021 14:01:57 +0100
+Message-Id: <20210111130038.720695022@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
 References: <20210111130036.414620026@linuxfoundation.org>
@@ -38,40 +39,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yu Kuai <yukuai3@huawei.com>
+From: Michael Grzeschik <m.grzeschik@pengutronix.de>
 
-commit 83a43ff80a566de8718dfc6565545a0080ec1fb5 upstream.
+commit 5d5323a6f3625f101dbfa94ba3ef7706cce38760 upstream.
 
-if of_find_device_by_node() succeed, usbmisc_get_init_data() doesn't have
-a corresponding put_device(). Thus add put_device() to fix the exception
-handling for this function implementation.
+The commit 0472bf06c6fd ("xhci: Prevent U1/U2 link pm states if exit
+latency is too long") was constraining the xhci code not to allow U1/U2
+sleep states if the latency to wake up from the U-states reached the
+service interval of an periodic endpoint. This fix was not taking into
+account that in case the quirk XHCI_INTEL_HOST is set, the wakeup time
+will be calculated and configured differently.
 
-Fixes: ef12da914ed6 ("usb: chipidea: imx: properly check for usbmisc")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+It checks for u1_params.mel/u2_params.mel as a limit. But the code could
+decide to write another MEL into the hardware. This leads to broken
+cases where not enough bandwidth is available for other devices:
+
+usb 1-2: can't set config #1, error -28
+
+This patch is fixing that case by checking for timeout_ns after the
+wakeup time was calculated depending on the quirks.
+
+Fixes: 0472bf06c6fd ("xhci: Prevent U1/U2 link pm states if exit latency is too long")
+Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201117011430.642589-1-yukuai3@huawei.com
+Link: https://lore.kernel.org/r/20201215193147.11738-1-m.grzeschik@pengutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/chipidea/ci_hdrc_imx.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/usb/host/xhci.c |   24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
---- a/drivers/usb/chipidea/ci_hdrc_imx.c
-+++ b/drivers/usb/chipidea/ci_hdrc_imx.c
-@@ -128,9 +128,13 @@ static struct imx_usbmisc_data *usbmisc_
- 	misc_pdev = of_find_device_by_node(args.np);
- 	of_node_put(args.np);
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -4558,19 +4558,19 @@ static u16 xhci_calculate_u1_timeout(str
+ {
+ 	unsigned long long timeout_ns;
  
--	if (!misc_pdev || !platform_get_drvdata(misc_pdev))
-+	if (!misc_pdev)
- 		return ERR_PTR(-EPROBE_DEFER);
++	if (xhci->quirks & XHCI_INTEL_HOST)
++		timeout_ns = xhci_calculate_intel_u1_timeout(udev, desc);
++	else
++		timeout_ns = udev->u1_params.sel;
++
+ 	/* Prevent U1 if service interval is shorter than U1 exit latency */
+ 	if (usb_endpoint_xfer_int(desc) || usb_endpoint_xfer_isoc(desc)) {
+-		if (xhci_service_interval_to_ns(desc) <= udev->u1_params.mel) {
++		if (xhci_service_interval_to_ns(desc) <= timeout_ns) {
+ 			dev_dbg(&udev->dev, "Disable U1, ESIT shorter than exit latency\n");
+ 			return USB3_LPM_DISABLED;
+ 		}
+ 	}
  
-+	if (!platform_get_drvdata(misc_pdev)) {
-+		put_device(&misc_pdev->dev);
-+		return ERR_PTR(-EPROBE_DEFER);
-+	}
- 	data->dev = &misc_pdev->dev;
+-	if (xhci->quirks & XHCI_INTEL_HOST)
+-		timeout_ns = xhci_calculate_intel_u1_timeout(udev, desc);
+-	else
+-		timeout_ns = udev->u1_params.sel;
+-
+ 	/* The U1 timeout is encoded in 1us intervals.
+ 	 * Don't return a timeout of zero, because that's USB3_LPM_DISABLED.
+ 	 */
+@@ -4622,19 +4622,19 @@ static u16 xhci_calculate_u2_timeout(str
+ {
+ 	unsigned long long timeout_ns;
  
- 	if (of_find_property(np, "disable-over-current", NULL))
++	if (xhci->quirks & XHCI_INTEL_HOST)
++		timeout_ns = xhci_calculate_intel_u2_timeout(udev, desc);
++	else
++		timeout_ns = udev->u2_params.sel;
++
+ 	/* Prevent U2 if service interval is shorter than U2 exit latency */
+ 	if (usb_endpoint_xfer_int(desc) || usb_endpoint_xfer_isoc(desc)) {
+-		if (xhci_service_interval_to_ns(desc) <= udev->u2_params.mel) {
++		if (xhci_service_interval_to_ns(desc) <= timeout_ns) {
+ 			dev_dbg(&udev->dev, "Disable U2, ESIT shorter than exit latency\n");
+ 			return USB3_LPM_DISABLED;
+ 		}
+ 	}
+ 
+-	if (xhci->quirks & XHCI_INTEL_HOST)
+-		timeout_ns = xhci_calculate_intel_u2_timeout(udev, desc);
+-	else
+-		timeout_ns = udev->u2_params.sel;
+-
+ 	/* The U2 timeout is encoded in 256us intervals */
+ 	timeout_ns = DIV_ROUND_UP_ULL(timeout_ns, 256 * 1000);
+ 	/* If the necessary timeout value is bigger than what we can set in the
 
 
