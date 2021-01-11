@@ -2,170 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1152F19E1
+	by mail.lfdr.de (Postfix) with ESMTP id 8027F2F19E0
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731317AbhAKPln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:41:43 -0500
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:26853 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727917AbhAKPlm (ORCPT
+        id S1730621AbhAKPlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:41:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727826AbhAKPlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:41:42 -0500
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 10BFeiF9015872;
-        Tue, 12 Jan 2021 00:40:45 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 10BFeiF9015872
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1610379645;
-        bh=92u5oyvx07CgdmY35pNqgIKcY7bZ9dVnwxJcos9+FlA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BjMUV+PQBGXEZ8sKSUb2kxGeK7mJ2+jD5FeIelPp7Dl4shGUHf+Wl419kIlDaBXA2
-         530bEGn/NNVVughL90TaedYs1Qjfd/RJSV1Q3npGpdh6QxswUeEo2RggRxqj76kB+l
-         NZfCuxrAPIp5tn9dwOOUEq6MyBVAIW978UvRiyPpEuSYKRvl1gO/YX7RhUv07X8kdu
-         L+c2AaK4T4OAFdQRzgu9wCCj/lk9L8yuYVTCbqAnNH2gkYdDvl2SlUu8Q/tbOeFz1B
-         +WL9XEuvgGaQFTbOt9Ny06DAULXgIYtYB8/2X72mcJ8hzkp/WJ5+4Q75lA3bQfLw93
-         UrvlK5FuvCuZA==
-X-Nifty-SrcIP: [209.85.215.170]
-Received: by mail-pg1-f170.google.com with SMTP id p18so12709308pgm.11;
-        Mon, 11 Jan 2021 07:40:45 -0800 (PST)
-X-Gm-Message-State: AOAM531sYZoj0e+Yha0mctncBabapspR9teXqWy7Tfz2Ii7mCHH0rcQH
-        drhOsiBlt6ci5qvaE1t39oOfbREQq1qwUoI2nYM=
-X-Google-Smtp-Source: ABdhPJyMDvJbegafb3/FFMgw5BDoL6BTmVrEK60ISDDFR392feEkFRF3SFHH5UiXszjPTc9NGE9mJWXNeaUYCHfo6hQ=
-X-Received: by 2002:a62:820d:0:b029:1ad:d810:6805 with SMTP id
- w13-20020a62820d0000b02901add8106805mr17033953pfd.63.1610379644310; Mon, 11
- Jan 2021 07:40:44 -0800 (PST)
+        Mon, 11 Jan 2021 10:41:39 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D3EC0617A2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:40:58 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id l200so20492094oig.9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:40:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2NFLJAEhP/pWZ/3KNdvaDfsdnuyk831kAKh+5k94dVg=;
+        b=S5iwiv4PKXL8ewzh/rll9Sa3j2vexkhQ/+IVuul0kcR2xH5vr2wAtbeMWCArZyEinj
+         LUl8PD7TmeENRc7BQmmCfXY6h1NmTM4ROO8+K4aE2RslM7xJJU5XK69VEbbVOtxdbOMw
+         MJ2p+S+CWndN0O39bPTXy19+vOrobbMszcPJ6XZerhoWrpMMihWrSZ6qMJFi3LhY6/RF
+         r8dBPBBdP/H3dwsnsiRx7fExy1cr7otlHSsvePHK3VbCQcGwLZWKVSG4Fy0XA9qds9xW
+         SjBK/FClUenpamX4LugF2rKGKQlgkpwQIUg5b/I4uOJYz4Ce+UlNdy0joo1W5Mx8WuQt
+         QR1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2NFLJAEhP/pWZ/3KNdvaDfsdnuyk831kAKh+5k94dVg=;
+        b=mF/tbtPfv3PpLWlSc2u9jvFB0q9H/5YxCPlKT4qLGSpMkizmLlYmNJqB7dOTALpOqN
+         q2Tlin953iggfVGrkhuIVr4kI5WTMyRiI8I6aG2X5FTdZCT3JNkTBMyNw8XJ/vbJ4+dU
+         12rDMmcLL9NEBknzP4sBAHqH80kQib/Ioz7z8of9vWAzWN6PLwBc7IEtW48zogqQ8m/b
+         F42t7eNA1SHdWqpmqzRQAevGOuz9ONzXzVRlb2thxpCaLB+RWzYk2t7VAZ08OBc93yiX
+         W8M+PXoN+v19ngTisChasPG35oYcTYCMgxVBGZ+F8LnUukMLzHxbH4akzGvm4FrqoAYv
+         hfoA==
+X-Gm-Message-State: AOAM5317UH+5LihbAXqjT7fqG0Qep/dokwFPHfYDL3XF4CF+owTFhlnM
+        gJ4dDn2DJr/v7NFrxfRxpUfBlA==
+X-Google-Smtp-Source: ABdhPJzK7vYdXsN45YWQD0Il+kWkHfKqU7Inc4xU498GSQrcdRJIekYCAqeyYbE2EHzJ/jT10Cwp4w==
+X-Received: by 2002:aca:f594:: with SMTP id t142mr10185380oih.162.1610379658167;
+        Mon, 11 Jan 2021 07:40:58 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id o17sm22785otp.30.2021.01.11.07.40.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 07:40:57 -0800 (PST)
+Date:   Mon, 11 Jan 2021 09:40:55 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@kernel.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/7] soc: qcom: geni: Add support for gpi dma
+Message-ID: <X/xxh8ejwY6cHdC1@builder.lan>
+References: <20210111151651.1616813-1-vkoul@kernel.org>
+ <20210111151651.1616813-4-vkoul@kernel.org>
 MIME-Version: 1.0
-References: <cover.1609844956.git.viresh.kumar@linaro.org> <CAL_JsqJMr3vfz2B29vzvFALCt_5-J__eJv2TZHJ0sR9nM=xXaw@mail.gmail.com>
- <CAK7LNAR9fdjZ7iWKSWvJ9etGZkd+n87cmXKN-Hah8DBDYbuAwA@mail.gmail.com> <20210111111711.r2xesydzhq5js2nf@vireshk-i7>
-In-Reply-To: <20210111111711.r2xesydzhq5js2nf@vireshk-i7>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 12 Jan 2021 00:40:07 +0900
-X-Gmail-Original-Message-ID: <CAK7LNASViCOTGR7yDTfh0O+PAu+X-P2NwdY4oPMuXrr51awafA@mail.gmail.com>
-Message-ID: <CAK7LNASViCOTGR7yDTfh0O+PAu+X-P2NwdY4oPMuXrr51awafA@mail.gmail.com>
-Subject: Re: [RFC 0/2] kbuild: Add support to build overlays (%.dtbo)
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, tero.kristo@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111151651.1616813-4-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 8:17 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 07-01-21, 14:28, Masahiro Yamada wrote:
-> > Viresh's patch is not enough.
-> >
-> > We will need to change .gitignore
-> > and scripts/Makefile.dtbinst as well.
-> >
-> > In my understanding, the build rule is completely the same
-> > between .dtb and .dtbo
-> > As Rob mentioned, I am not sure if we really need/want
-> > a separate extension.
-> >
-> > A counter approach is to use an extension like '.ovl.dtb'
-> > It clarifies it is an overlay fragment without changing
-> > anything in our build system or the upstream DTC project.
->
-> By the time you gave feedback, I have already sent the dtbo change for
-> DTC to the device-tree-compiler list (based on Rob's suggestion).
->
-> And it got merged today by David:
->
-> https://github.com/dgibson/dtc/commit/163f0469bf2ed8b2fe5aa15bc796b93c70243ddc
->
-> Can we please finalize what we need to do with naming here and be done
-> with it, so I can rework my patches and get going ?
->
-> Thanks.
->
-> --
-> viresh
+On Mon 11 Jan 09:16 CST 2021, Vinod Koul wrote:
 
+> GPI DMA is one of the DMA modes supported on geni, this adds support to
+> enable that mode
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  drivers/soc/qcom/qcom-geni-se.c | 39 ++++++++++++++++++++++++++++++++-
+>  include/linux/qcom-geni-se.h    |  4 ++++
+>  2 files changed, 42 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/qcom/qcom-geni-se.c b/drivers/soc/qcom/qcom-geni-se.c
+> index a3868228ea05..db44dc32e049 100644
+> --- a/drivers/soc/qcom/qcom-geni-se.c
+> +++ b/drivers/soc/qcom/qcom-geni-se.c
+> @@ -310,6 +310,39 @@ static void geni_se_select_dma_mode(struct geni_se *se)
+>  		writel_relaxed(val, se->base + SE_GENI_DMA_MODE_EN);
+>  }
+>  
+> +static int geni_se_select_gpi_mode(struct geni_se *se)
 
+This doesn't return any information and the return value isn't looked
+at, please make it void.
 
-It is unfortunate to see such a patch merged
-before getting agreement about how it should work
-as a whole.
+> +{
+> +	unsigned int geni_dma_mode = 0;
+> +	unsigned int gpi_event_en = 0;
+> +	unsigned int common_geni_m_irq_en = 0;
+> +	unsigned int common_geni_s_irq_en = 0;
 
+These could certainly be given a shorter name.
 
+None of them needs to be initialized, first access in all cases are
+assignments.
 
+> +
+> +	common_geni_m_irq_en = readl_relaxed(se->base + SE_GENI_M_IRQ_EN);
+> +	common_geni_s_irq_en = readl_relaxed(se->base + SE_GENI_S_IRQ_EN);
+> +	common_geni_m_irq_en &=
+> +			~(M_CMD_DONE_EN | M_TX_FIFO_WATERMARK_EN |
+> +			M_RX_FIFO_WATERMARK_EN | M_RX_FIFO_LAST_EN);
+> +	common_geni_s_irq_en &= ~S_CMD_DONE_EN;
+> +	geni_dma_mode = readl_relaxed(se->base + SE_GENI_DMA_MODE_EN);
+> +	gpi_event_en = readl_relaxed(se->base + SE_GSI_EVENT_EN);
+> +
+> +	geni_dma_mode |= GENI_DMA_MODE_EN;
+> +	gpi_event_en |= (DMA_RX_EVENT_EN | DMA_TX_EVENT_EN |
+> +				GENI_M_EVENT_EN | GENI_S_EVENT_EN);
 
->+# enable creation of __symbols__ node
->+ifneq ($(dtbo-y),)
->+DTC_FLAGS += -@
->+endif
+Please reorder these so that you do
+	readl(m)
+	mask out bits of m
 
-I am not convinced with this code.
+	readl(s)
+	mask out bits of s
 
-A single user of the dtbo-y syntax gives -@ to all
-device trees in the same directory.
+	...
 
-This is not a solution since Rob already stated -@ should be
-given per board (or per platform, at least).
+> +
+> +	writel_relaxed(0, se->base + SE_IRQ_EN);
+> +	writel_relaxed(common_geni_s_irq_en, se->base + SE_GENI_S_IRQ_EN);
+> +	writel_relaxed(common_geni_m_irq_en, se->base + SE_GENI_M_IRQ_EN);
+> +	writel_relaxed(0xFFFFFFFF, se->base + SE_GENI_M_IRQ_CLEAR);
 
-I still do not understand why adding the new syntax dtbo-y
-is helpful.
+Lowercase hex digits please.
 
+> +	writel_relaxed(0xFFFFFFFF, se->base + SE_GENI_S_IRQ_CLEAR);
+> +	writel_relaxed(0xFFFFFFFF, se->base + SE_DMA_TX_IRQ_CLR);
+> +	writel_relaxed(0xFFFFFFFF, se->base + SE_DMA_RX_IRQ_CLR);
+> +	writel_relaxed(geni_dma_mode, se->base + SE_GENI_DMA_MODE_EN);
+> +	writel_relaxed(gpi_event_en, se->base + SE_GSI_EVENT_EN);
 
+Why is this driver using _relaxed accessors exclusively? Why are you
+using _relaxed versions?
 
+And wouldn't it be suitable to have a wmb() before the "dma mode enable"
+and "event enable" at least? (I.e. use writel() instead)
 
-Have we already decided to use separate ".dtb" and ".dtbo" for blobs?
+Regards,
+Bjorn
 
-Will we use ".dts" for all source files?
-Or, will we use ".dtso" for overlay source files?
-
-How should the build system determine the targets
-that should have -@ option?
-
-
-
-For consistency, will we need a patch like follows?
-
-
-diff --git a/dtc.c b/dtc.c
-index bdb3f59..474401e 100644
---- a/dtc.c
-+++ b/dtc.c
-@@ -120,6 +120,8 @@ static const char *guess_type_by_name(const char
-*fname, const char *fallback)
-                return fallback;
-        if (!strcasecmp(s, ".dts"))
-                return "dts";
-+       if (!strcasecmp(s, ".dtso"))
-+               return "dts";
-        if (!strcasecmp(s, ".yaml"))
-                return "yaml";
-        if (!strcasecmp(s, ".dtb"))
-@@ -349,6 +351,8 @@ int main(int argc, char *argv[])
-
-        if (streq(outform, "dts")) {
-                dt_to_source(outf, dti);
-+       else if (streq(outform, "dtso")) {
-+               dt_to_source(outf, dti);
- #ifndef NO_YAML
-        } else if (streq(outform, "yaml")) {
-                if (!streq(inform, "dts"))
-
-
-
-Overall solution looks unclear to me.
-
-
-Again, it is unfortunate that we did not take enough time
-(in spite of the RFC prefix) before proceeding.
-
-
--- 
-Best Regards
-Masahiro Yamada
+> +
+> +	return 0;
+> +}
+> +
+>  /**
+>   * geni_se_select_mode() - Select the serial engine transfer mode
+>   * @se:		Pointer to the concerned serial engine.
+> @@ -317,7 +350,8 @@ static void geni_se_select_dma_mode(struct geni_se *se)
+>   */
+>  void geni_se_select_mode(struct geni_se *se, enum geni_se_xfer_mode mode)
+>  {
+> -	WARN_ON(mode != GENI_SE_FIFO && mode != GENI_SE_DMA);
+> +	WARN_ON(mode != GENI_SE_FIFO && mode != GENI_SE_DMA &&
+> +		mode != GENI_GPI_DMA);
+>  
+>  	switch (mode) {
+>  	case GENI_SE_FIFO:
+> @@ -326,6 +360,9 @@ void geni_se_select_mode(struct geni_se *se, enum geni_se_xfer_mode mode)
+>  	case GENI_SE_DMA:
+>  		geni_se_select_dma_mode(se);
+>  		break;
+> +	case GENI_GPI_DMA:
+> +		geni_se_select_gpi_mode(se);
+> +		break;
+>  	case GENI_SE_INVALID:
+>  	default:
+>  		break;
+> diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
+> index cb4e40908f9f..12003a6cb133 100644
+> --- a/include/linux/qcom-geni-se.h
+> +++ b/include/linux/qcom-geni-se.h
+> @@ -12,6 +12,7 @@
+>  enum geni_se_xfer_mode {
+>  	GENI_SE_INVALID,
+>  	GENI_SE_FIFO,
+> +	GENI_GPI_DMA,
+>  	GENI_SE_DMA,
+>  };
+>  
+> @@ -123,6 +124,9 @@ struct geni_se {
+>  #define CLK_DIV_MSK			GENMASK(15, 4)
+>  #define CLK_DIV_SHFT			4
+>  
+> +/* GENI_IF_DISABLE_RO fields */
+> +#define FIFO_IF_DISABLE			(BIT(0))
+> +
+>  /* GENI_FW_REVISION_RO fields */
+>  #define FW_REV_PROTOCOL_MSK		GENMASK(15, 8)
+>  #define FW_REV_PROTOCOL_SHFT		8
+> -- 
+> 2.26.2
+> 
