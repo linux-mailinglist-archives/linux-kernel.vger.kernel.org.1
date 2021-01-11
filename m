@@ -2,44 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFFB2F1845
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:27:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 582872F1852
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:29:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388825AbhAKO1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:27:11 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:33328 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388178AbhAKO1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:27:05 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kyy9E-00HXcz-M6; Mon, 11 Jan 2021 15:26:20 +0100
-Date:   Mon, 11 Jan 2021 15:26:20 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Bjarni Jonasson <bjarni.jonasson@microchip.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH v1 1/2] net: phy: Add 100 base-x mode
-Message-ID: <X/xgDLptpbfgu9kB@lunn.ch>
-References: <20210111130657.10703-1-bjarni.jonasson@microchip.com>
- <20210111130657.10703-2-bjarni.jonasson@microchip.com>
+        id S2388933AbhAKO2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:28:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731825AbhAKO2G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 09:28:06 -0500
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3A3C061786;
+        Mon, 11 Jan 2021 06:27:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=L+JrZeQFviXuADS9yzDh+4MDUhWzTK6tO1mrS5qsi34=; b=o+Fs2ChgMgVFH9IFrdrBbZy06H
+        tVSGSeN+1qPy5AX5+WVZPFakBLQHeRz76zSjH4GBRY/JSlKmMdobhbbxpeFxbcmbZ3jPd5vOASo1Z
+        zYSWMc9pKGj/NpM721L8U52TB423Psp3J2sXuSFhBwhOLGpr0RtXmmj00sXWjM8jNNwQ4h72OK/Jp
+        LQyZgcx35wn56cFEfYyYl8lWggIukdpW9qAvuQZ8gA24S+5STIFm0ALNWq7HmXezUXU0A7nRPka0H
+        auJJmY8dVRes6K/oLFO0IK2sD2IlZAS+qGvx3qccGOnyed9/DZINai1yhdoyQAEBXfxhzgU/90xxt
+        M1OlArTA==;
+Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=toshino.localdomain)
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <mperttunen@nvidia.com>)
+        id 1kyyAF-0003Er-Qx; Mon, 11 Jan 2021 16:27:23 +0200
+From:   Mikko Perttunen <mperttunen@nvidia.com>
+To:     thierry.reding@gmail.com, jonathanh@nvidia.com
+Cc:     talho@nvidia.com, linux-i2c@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Muhammed Fazal <mfazale@nvidia.com>, stable@vger.kernel.org,
+        Mikko Perttunen <mperttunen@nvidia.com>
+Subject: [PATCH] i2c: tegra-bpmp: ignore DMA safe buffer flag
+Date:   Mon, 11 Jan 2021 16:27:13 +0200
+Message-Id: <20210111142713.3641208-1-mperttunen@nvidia.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111130657.10703-2-bjarni.jonasson@microchip.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 84.249.134.236
+X-SA-Exim-Mail-From: mperttunen@nvidia.com
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 02:06:56PM +0100, Bjarni Jonasson wrote:
-> Sparx-5 supports this mode and it is missing in the PHY core.
-> 
-> Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
+From: Muhammed Fazal <mfazale@nvidia.com>
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Ignore I2C_M_DMA_SAFE flag as it does not make a difference
+for bpmp-i2c, but causes -EINVAL to be returned for valid
+transactions.
 
-    Andrew
+Signed-off-by: Muhammed Fazal <mfazale@nvidia.com>
+Cc: stable@vger.kernel.org # v4.19+
+Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+---
+This fixes failures seen with PMIC probing tools on
+Tegra186+ boards.
+
+ drivers/i2c/busses/i2c-tegra-bpmp.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/i2c/busses/i2c-tegra-bpmp.c b/drivers/i2c/busses/i2c-tegra-bpmp.c
+index ec7a7e917edd..998d4b21fb59 100644
+--- a/drivers/i2c/busses/i2c-tegra-bpmp.c
++++ b/drivers/i2c/busses/i2c-tegra-bpmp.c
+@@ -80,6 +80,9 @@ static int tegra_bpmp_xlate_flags(u16 flags, u16 *out)
+ 		flags &= ~I2C_M_RECV_LEN;
+ 	}
+ 
++	if (flags & I2C_M_DMA_SAFE)
++		flags &= ~I2C_M_DMA_SAFE;
++
+ 	return (flags != 0) ? -EINVAL : 0;
+ }
+ 
+-- 
+2.30.0
+
