@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F9C2F1397
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:11:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 093AF2F14B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731421AbhAKNLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:11:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57856 "EHLO mail.kernel.org"
+        id S1732313AbhAKNQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:16:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729045AbhAKNKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:10:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEECE21973;
-        Mon, 11 Jan 2021 13:10:03 +0000 (UTC)
+        id S1731811AbhAKNPa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:15:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6F402229C;
+        Mon, 11 Jan 2021 13:15:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370604;
-        bh=GBnuyhv+xTOA/Q3+Ul00Wf4GB1SWcWwNZ5P9pjPKjQE=;
+        s=korg; t=1610370915;
+        bh=0gazlHiRwnOZOpwzqr5Yp5TzvlslYu9zih3AHPdaybU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=00T9dFR7YR20l+EkAShFROuMnMxADWWxwKFVGPQvLnO+Mo2fmVtIvTOg5OYuFDk/q
-         EWUzLjTmE0hESX6I4qaqMHDR1ZcUe+H7BE5hreC2KybdzG/HGc7K8YSaEmen9yaqi7
-         sOAN6A3FdIKjNhwlN3ZQFwUZsG9GIN99kfM+GdFM=
+        b=0dqMvn4/fg5H5gna+9q3HKOLd6/vDwW1Cv8nLXkqinGbPZm51q9aZdY1jngfWF2lm
+         84agzlDPj5otLEyTUY0ebKIngMyLOX1BmDv0Ckw935vgxtM1eTJibOplIjfAwh8IWV
+         /1nvwk9hct6VNAFcSrxN6vHxOlPEhxgf7hlPiwWk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marcin Wojtas <mw@semihalf.com>,
-        Stefan Chulski <stefanc@marvell.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 18/92] net: mvpp2: Fix GoP port 3 Networking Complex Control configurations
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 058/145] scsi: ufs-pci: Enable UFSHCD_CAP_RPM_AUTOSUSPEND for Intel controllers
 Date:   Mon, 11 Jan 2021 14:01:22 +0100
-Message-Id: <20210111130040.037429097@linuxfoundation.org>
+Message-Id: <20210111130051.326737408@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
-References: <20210111130039.165470698@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-[ Upstream commit 2575bc1aa9d52a62342b57a0b7d0a12146cf6aed ]
+[ Upstream commit dd78bdb6f810bdcb173b42379af558c676c8e0aa ]
 
-During GoP port 2 Networking Complex Control mode of operation configurations,
-also GoP port 3 mode of operation was wrongly set.
-Patch removes these configurations.
+Enable runtime PM auto-suspend by default for Intel host controllers.
 
-Fixes: f84bf386f395 ("net: mvpp2: initialize the GoP")
-Acked-by: Marcin Wojtas <mw@semihalf.com>
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-Link: https://lore.kernel.org/r/1608462149-1702-1-git-send-email-stefanc@marvell.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20201207083120.26732-5-adrian.hunter@intel.com
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/ufs/ufshcd-pci.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -1129,7 +1129,7 @@ static void mvpp22_gop_init_rgmii(struct
+diff --git a/drivers/scsi/ufs/ufshcd-pci.c b/drivers/scsi/ufs/ufshcd-pci.c
+index 888d8c9ca3a55..fadd566025b86 100644
+--- a/drivers/scsi/ufs/ufshcd-pci.c
++++ b/drivers/scsi/ufs/ufshcd-pci.c
+@@ -148,6 +148,8 @@ static int ufs_intel_common_init(struct ufs_hba *hba)
+ {
+ 	struct intel_host *host;
  
- 	regmap_read(priv->sysctrl_base, GENCONF_CTRL0, &val);
- 	if (port->gop_id == 2)
--		val |= GENCONF_CTRL0_PORT0_RGMII | GENCONF_CTRL0_PORT1_RGMII;
-+		val |= GENCONF_CTRL0_PORT0_RGMII;
- 	else if (port->gop_id == 3)
- 		val |= GENCONF_CTRL0_PORT1_RGMII_MII;
- 	regmap_write(priv->sysctrl_base, GENCONF_CTRL0, val);
++	hba->caps |= UFSHCD_CAP_RPM_AUTOSUSPEND;
++
+ 	host = devm_kzalloc(hba->dev, sizeof(*host), GFP_KERNEL);
+ 	if (!host)
+ 		return -ENOMEM;
+-- 
+2.27.0
+
 
 
