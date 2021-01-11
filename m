@@ -2,158 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 752C92F1A59
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C90242F1A5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:01:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732215AbhAKQAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:00:07 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:34231 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729200AbhAKQAG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:00:06 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610380785; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=KF3pDVrkGIwiIeNHkgBT0vpztBzizZGwHLuTfWBg/Lg=; b=wcLa5+7wAA749AjywpejH3DlNwZzDdqLWhwJtGP8F7ocyXQRhyTc9ebNstCFoHgKaoBjbClH
- M1dKsLP9FNPKcTJ9dr4hBbKZvekEjyqNe3Um6wOCv+HtzreUmhLtyqpNogWAmWal2001jl73
- hSV0Rb3MqIeyTYKDQx52cQwJpzE=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5ffc75cc415a6293c59068f7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 15:59:08
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 441F7C43465; Mon, 11 Jan 2021 15:59:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.75.31])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 21D5AC433C6;
-        Mon, 11 Jan 2021 15:59:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 21D5AC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
-Subject: Re: [PATCH v5 3/4] pinctrl: qcom: Properly clear "intr_ack_high"
- interrupts when unmasking
-To:     Douglas Anderson <dianders@chromium.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>, linux-gpio@vger.kernel.org,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210108093339.v5.1.I3ad184e3423d8e479bc3e86f5b393abb1704a1d1@changeid>
- <20210108093339.v5.3.I32d0f4e174d45363b49ab611a13c3da8f1e87d0f@changeid>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <029799d8-014c-6ad2-bbdd-d81ba355edba@codeaurora.org>
-Date:   Mon, 11 Jan 2021 21:29:00 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1733120AbhAKQBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:01:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39468 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729275AbhAKQBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 11:01:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1C57EB18B;
+        Mon, 11 Jan 2021 16:00:20 +0000 (UTC)
+Subject: Re: [PATCH] nvme: hwmon: fix crash on device teardown
+To:     Daniel Wagner <dwagner@suse.de>,
+        Enzo Matsumiya <ematsumiya@suse.de>
+Cc:     Sagi Grimberg <sagi@grimberg.me>, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, Jens Axboe <axboe@fb.com>,
+        Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>
+References: <20201209213228.5044-1-ematsumiya@suse.de>
+ <4ebb1b8c-4bb0-6ebf-3417-d4aee1bdd3a8@suse.de>
+ <20201230143805.2v4izgkzbnisssvr@beryllium.lan>
+ <20201230151653.ozlqlwef7f2tarwz@beryllium.lan>
+ <20201230153138.4f2jd2yd2vkqndby@beryllium.lan>
+ <20210104210610.hliiupywksawgei3@hyori>
+ <20210105094545.3tq7c6ev5yn3bhyi@beryllium.lan>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <412d45ef-40af-24c3-4aa2-042ecbba05cd@suse.de>
+Date:   Mon, 11 Jan 2021 17:00:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20210108093339.v5.3.I32d0f4e174d45363b49ab611a13c3da8f1e87d0f@changeid>
+In-Reply-To: <20210105094545.3tq7c6ev5yn3bhyi@beryllium.lan>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
+On 1/5/21 10:45 AM, Daniel Wagner wrote:
+> On Mon, Jan 04, 2021 at 06:06:10PM -0300, Enzo Matsumiya wrote:
+>> @Daniel maybe try tweaking your tests to use a smaller controller
+>> loss timeout (-l option)? I do this on my tests because the default
+>> value kicks in about 30min after hot-removal -- i.e. you
+>> have to actually wait for the timeout to expire to trigger the bug.
+> 
+> As far I can tell, the blktests test I am using will trigger the same
+> bug. The problem is that the lifetime of hwmon sysfs entry should be
+> aligned to the lifetime of the nvme sysfs entry. Currently, hwmon's
+> lifetime is bound to the lifetime of the ctl sysfs entry. When the nvme
+> entry goes away (and obviously also the underlying device), the hwmon
+> sysfs entry still references it.
+> 
+Yeah, using the controller node for devm allocations is quite dodgy.
+Does this one help?
 
-Reviewed-by: Maulik Shah <mkshah@codeaurora.org>
-Tested-by: Maulik Shah <mkshah@codeaurora.org>
 
-Thanks,
-Maulik
+diff --git a/drivers/nvme/host/hwmon.c b/drivers/nvme/host/hwmon.c
+index 6fdd07fb3001..7260af028cf7 100644
+--- a/drivers/nvme/host/hwmon.c
++++ b/drivers/nvme/host/hwmon.c
+@@ -226,7 +226,7 @@ static const struct hwmon_chip_info
 
-On 1/8/2021 11:05 PM, Douglas Anderson wrote:
-> In commit 4b7618fdc7e6 ("pinctrl: qcom: Add irq_enable callback for
-> msm gpio") we tried to Ack interrupts during unmask.  However, that
-> patch forgot to check "intr_ack_high" so, presumably, it only worked
-> for a certain subset of SoCs.
->
-> Let's add a small accessor so we don't need to open-code the logic in
-> both places.
->
-> This was found by code inspection.  I don't have any access to the
-> hardware in question nor software that needs the Ack during unmask.
->
-> Fixes: 4b7618fdc7e6 ("pinctrl: qcom: Add irq_enable callback for msm gpio")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
-> It should be noted that this code will be moved in the next patch.  In
-> theory this could be squashed into the next patch but it seems more
-> documenting to have this as a separate patch.
->
-> Changes in v5:
-> - ("pinctrl: qcom: Properly clear "intr_ack_high" interrupts...") new for v5.
->
->   drivers/pinctrl/qcom/pinctrl-msm.c | 14 ++++++++++----
->   1 file changed, 10 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
-> index 1787ada6bfab..a6b0c17e2f78 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
-> @@ -96,6 +96,14 @@ MSM_ACCESSOR(intr_cfg)
->   MSM_ACCESSOR(intr_status)
->   MSM_ACCESSOR(intr_target)
->   
-> +static void msm_ack_intr_status(struct msm_pinctrl *pctrl,
-> +				const struct msm_pingroup *g)
-> +{
-> +	u32 val = (g->intr_ack_high) ? BIT(g->intr_status_bit) : 0;
-> +
-> +	msm_writel_intr_status(val, pctrl, g);
-> +}
-> +
->   static int msm_get_groups_count(struct pinctrl_dev *pctldev)
->   {
->   	struct msm_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
-> @@ -798,7 +806,7 @@ static void msm_gpio_irq_clear_unmask(struct irq_data *d, bool status_clear)
->   	 * when the interrupt is not in use.
->   	 */
->   	if (status_clear)
-> -		msm_writel_intr_status(0, pctrl, g);
-> +		msm_ack_intr_status(pctrl, g);
->   
->   	val = msm_readl_intr_cfg(pctrl, g);
->   	val |= BIT(g->intr_raw_status_bit);
-> @@ -891,7 +899,6 @@ static void msm_gpio_irq_ack(struct irq_data *d)
->   	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
->   	const struct msm_pingroup *g;
->   	unsigned long flags;
-> -	u32 val;
->   
->   	if (test_bit(d->hwirq, pctrl->skip_wake_irqs)) {
->   		if (test_bit(d->hwirq, pctrl->dual_edge_irqs))
-> @@ -903,8 +910,7 @@ static void msm_gpio_irq_ack(struct irq_data *d)
->   
->   	raw_spin_lock_irqsave(&pctrl->lock, flags);
->   
-> -	val = (g->intr_ack_high) ? BIT(g->intr_status_bit) : 0;
-> -	msm_writel_intr_status(val, pctrl, g);
-> +	msm_ack_intr_status(pctrl, g);
->   
->   	if (test_bit(d->hwirq, pctrl->dual_edge_irqs))
->   		msm_gpio_update_dual_edge_pos(pctrl, g, d);
+  int nvme_hwmon_init(struct nvme_ctrl *ctrl)
+  {
+-       struct device *dev = ctrl->dev;
++       struct device *dev = ctrl->device;
+         struct nvme_hwmon_data *data;
+         struct device *hwmon;
+         int err;
+@@ -240,8 +240,7 @@ int nvme_hwmon_init(struct nvme_ctrl *ctrl)
 
+         err = nvme_hwmon_get_smart_log(data);
+         if (err) {
+-               dev_warn(ctrl->device,
+-                       "Failed to read smart log (error %d)\n", err);
++               dev_warn(dev, "Failed to read smart log (error %d)\n", err);
+                 devm_kfree(dev, data);
+                 return err;
+         }
+
+
+Cheers,
+
+Hannes
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
-
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
