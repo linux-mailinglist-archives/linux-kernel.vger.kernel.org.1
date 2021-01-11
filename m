@@ -2,143 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F542F1561
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:40:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F35AB2F1564
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:40:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731658AbhAKNjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:39:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731026AbhAKNMx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:12:53 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3B41C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 05:12:12 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id be12so9498657plb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 05:12:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1vxLxmNp00/ADs1BfRL7o4NMbtUvoFLTlYBIY2H+Ps4=;
-        b=zKB1IKhP7jxgQzFwIq4aDk8gaG/nxwrlnS4JSbAlUGvU6IezYhc7Suz4fS3aklhmoF
-         rhdN0vSLwQjB8DFbMAzZz3Ilt9wVw7FpvDdicjrNp148Nr26YeTAg2OiFqlKjyB8rVcY
-         bjccuChI3cxJf62jFBbtfy6uhIGkPajHXo8kmuLXe+FcHUTtQ6pqzFfQsNp/AUv9neIO
-         LEqvLumJ475zC/iQiXTBtqQy+svxsewEkLIbsI2PReWOfxF/Xsi/8KpIQ8i1g71moUjB
-         rOend+njerAn9v3fHa3fajiN21Yl6DGqbhwxGZEGWmz9TP+Hu+r1KwcmkHUncCDQtGeJ
-         CPYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1vxLxmNp00/ADs1BfRL7o4NMbtUvoFLTlYBIY2H+Ps4=;
-        b=POd5wZhyzT++hR1udmhAYcOm124Vkk2IG7ZLbBjge/YA09t/nPRBBRuadOjqHXrz6e
-         js8QJz7xosVEs2hXtvIgnARk+tQfEZ6sQcGOyE9C51HJ9kwinQtn4vJJtExs8xa74YEn
-         5W+V0haidhCkNpEWhpPEKjDLb6Hr4g6Pr5Ags5XlN3P/761wty8I3GGGpiQGysJhH6OC
-         RGzuYiMiOdsnibq1KqE19TSH0Md7QeSDiWJOcfcr0TRqkDhcpLpF1dY5IrXM53icfAar
-         0sNd/29jbscXhIQjli1sYTKDoO6zXkzgPMlxRB8NwBA6widNkv96xPtT9JG08k1Kt8O8
-         K+IQ==
-X-Gm-Message-State: AOAM533bH1QklIXTH5G5XGctYf8jPm32nbT26CNFPluDeea/ietKfMf1
-        KEpJn7YiwnKjf7Ch8Kb3G+RU8g==
-X-Google-Smtp-Source: ABdhPJzTYTldT9Zoofpj4KAlRo4sADwH6EDwRRQZu1318y0tBL6omOHEY+QqkArlA0iDE3jytgSsIQ==
-X-Received: by 2002:a17:90b:1901:: with SMTP id mp1mr18201678pjb.233.1610370731452;
-        Mon, 11 Jan 2021 05:12:11 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([64.120.119.108])
-        by smtp.gmail.com with ESMTPSA id b129sm20124237pgc.52.2021.01.11.05.12.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 05:12:10 -0800 (PST)
-Date:   Mon, 11 Jan 2021 21:12:05 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
+        id S1731780AbhAKNjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:39:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46328 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731665AbhAKNjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:39:17 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CBC51221EC;
+        Mon, 11 Jan 2021 13:38:36 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kyxFE-006gPD-3J; Mon, 11 Jan 2021 13:28:28 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <Daniel.Kiss@arm.com>,
-        Denis Nikitin <denik@chromium.org>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 4/7] perf cs-etm: Add PID format into metadata
-Message-ID: <20210111131205.GB222747@leoy-ThinkPad-X240s>
-References: <20210109074435.626855-1-leo.yan@linaro.org>
- <20210109074435.626855-5-leo.yan@linaro.org>
- <c9aa6c3b-9df5-31c7-9a57-3180d260c660@arm.com>
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kernel-team@android.com
+Subject: [PATCH v3 10/21] arm64: cpufeature: Use IDreg override in __read_sysreg_by_encoding()
+Date:   Mon, 11 Jan 2021 13:28:00 +0000
+Message-Id: <20210111132811.2455113-11-maz@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210111132811.2455113-1-maz@kernel.org>
+References: <20210111132811.2455113-1-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c9aa6c3b-9df5-31c7-9a57-3180d260c660@arm.com>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 09:45:12AM +0000, Suzuki Kuruppassery Poulose wrote:
-> Hi Leo,
-> 
-> On 1/9/21 7:44 AM, Leo Yan wrote:
-> > It's possible for CoreSight to trace PID in either CONTEXTIDR_EL1 or
-> > CONTEXTIDR_EL2, the PID format info is used to distinguish the PID
-> > is traced in which register.
-> > 
-> > This patch saves PID format into the metadata when record.
-> 
-> The patch looks good to me. One minor suggestion below
-> 
-> > 
-> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> > ---
-> >   tools/perf/arch/arm/util/cs-etm.c | 21 +++++++++++++++++++++
-> >   tools/perf/util/cs-etm.c          |  2 ++
-> >   tools/perf/util/cs-etm.h          |  2 ++
-> >   3 files changed, 25 insertions(+)
-> > 
-> > diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
-> > index fad7b6e13ccc..ee78df3b1b07 100644
-> > --- a/tools/perf/arch/arm/util/cs-etm.c
-> > +++ b/tools/perf/arch/arm/util/cs-etm.c
-> > @@ -613,6 +613,7 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
-> >   	struct cs_etm_recording *ptr =
-> >   			container_of(itr, struct cs_etm_recording, itr);
-> >   	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
-> > +	u64 pid_fmt;
-> >   	/* first see what kind of tracer this cpu is affined to */
-> >   	if (cs_etm_is_etmv4(itr, cpu)) {
-> > @@ -641,6 +642,16 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
-> >   				      metadata_etmv4_ro
-> >   				      [CS_ETMV4_TRCAUTHSTATUS]);
-> > +		/*
-> > +		 * The PID format will be used when decode the trace data;
-> > +		 * based on it the decoder will make decision for setting
-> > +		 * sample's PID as context_id or VMID.
-> > +		 */
-> > +		pid_fmt = perf_pmu__format_bits(&cs_etm_pmu->format, "pid");
-> > +		if (!pid_fmt)
-> > +			pid_fmt = 1ULL << ETM_OPT_CTXTID;
-> > +		info->priv[*offset + CS_ETMV4_PID_FMT] = pid_fmt;
-> > +
-> 
-> Given we do this same step twice here in this function and also in patch 2.
-> I am wondering if this could be made into a small helper function ?
-> 
-> static u64 cs_etm_pmu_format_pid(cs_etm_pm)
-> {
-> 	pid_fmt = perf_pmu__format_bits(&cs_etm_pmu->format, "pid");
-> 	/*
-> 	 * An older kernel doesn't expose this, so fall back to using
-> 	 * CTXTID.
-> 	 */
-> 	if (!pid_fmt)
-> 		pid_fmt = 1ULL << ETM_OPT_CTXTID;
-> 	return pid_fmt;
-> }
+__read_sysreg_by_encoding() is used by a bunch of cpufeature helpers,
+which should take the feature override into account. Let's do that.
 
-Agreed; will follow up this suggestion.
+For a good measure (and because we are likely to need to further
+down the line), make this helper available to the rest of the
+non-modular kernel.
 
-Thanks,
-Leo
+Code that needs to know the *real* features of a CPU can still
+use read_sysreg_s(), and find the bare, ugly truth.
+
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ arch/arm64/include/asm/cpufeature.h |  1 +
+ arch/arm64/kernel/cpufeature.c      | 15 +++++++++++++--
+ 2 files changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index 465d2cb63bfc..fe0130d6c0ff 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -602,6 +602,7 @@ void __init setup_cpu_features(void);
+ void check_local_cpu_capabilities(void);
+ 
+ u64 read_sanitised_ftr_reg(u32 id);
++u64 __read_sysreg_by_encoding(u32 sys_id);
+ 
+ static inline bool cpu_supports_mixed_endian_el0(void)
+ {
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 492321054bd5..1cc93a2324dc 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -1131,14 +1131,17 @@ u64 read_sanitised_ftr_reg(u32 id)
+ EXPORT_SYMBOL_GPL(read_sanitised_ftr_reg);
+ 
+ #define read_sysreg_case(r)	\
+-	case r:		return read_sysreg_s(r)
++	case r:		val = read_sysreg_s(r); break;
+ 
+ /*
+  * __read_sysreg_by_encoding() - Used by a STARTING cpu before cpuinfo is populated.
+  * Read the system register on the current CPU
+  */
+-static u64 __read_sysreg_by_encoding(u32 sys_id)
++u64 __read_sysreg_by_encoding(u32 sys_id)
+ {
++	struct arm64_ftr_reg *regp;
++	u64 val;
++
+ 	switch (sys_id) {
+ 	read_sysreg_case(SYS_ID_PFR0_EL1);
+ 	read_sysreg_case(SYS_ID_PFR1_EL1);
+@@ -1181,6 +1184,14 @@ static u64 __read_sysreg_by_encoding(u32 sys_id)
+ 		BUG();
+ 		return 0;
+ 	}
++
++	regp  = get_arm64_ftr_reg(sys_id);
++	if (regp && regp->override_mask && regp->override_val) {
++		val &= ~*regp->override_mask;
++		val |= (*regp->override_val & *regp->override_mask);
++	}
++
++	return val;
+ }
+ 
+ #include <linux/irqchip/arm-gic-v3.h>
+-- 
+2.29.2
+
