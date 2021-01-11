@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D415A2F1F29
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 284F12F1F0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:22:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390975AbhAKTVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:21:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43900 "EHLO
+        id S2390989AbhAKTVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:21:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390960AbhAKTVB (ORCPT
+        with ESMTP id S2390961AbhAKTVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Jan 2021 14:21:01 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91585C0617BF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:19:56 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id a6so247206wmc.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:19:56 -0800 (PST)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35DCC061381
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:19:57 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id g8so4848wme.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:19:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4f0FtZXp9xVs1vBA+TFZeeAO+I8q3YihV8u/Z7zvpoM=;
-        b=rjSyoFGbyoA6OFHvEnHL5eOuRnQB8feiOHf2dVoaV0cnhK1LHvbxXhQNf5fpny64TM
-         V0BurbwGgCi2pGIl+/muaxAZcbrIOwlZ4JSl5ynfsznPn24tPcngDhW/KzLsgB6AR+Tr
-         +TeysSR2e3qbwg+6JD8qJmHkbGLLrMCQkp1szP8svGFRnhZgaV2l3prirUlF1OwKdveK
-         0ll2Y080EHI//ECwaQRonRJZQnLWJcPnrXOB3Gz5yunY45AMBo6BgOPiChBAq3aPBADo
-         brVG2yU/r7JffymFfbfBhmMFDNZqQEyv4OKTQEnc1kycnmPkosze7rgJ9GIoGb+JCf3S
-         qSCQ==
+        bh=TNrmFPwKfzO7gGVeJXgh6mlXY4soyZtk9MOKSdUAh0g=;
+        b=A7rFEb0NpwwXT9gbSmNZG+K3fWQndZl2/WjJJtCYNRFqJ1Tv5oiN45STNYGV0hRA9g
+         sOTSZOBjf5f0sFct4xkHdaJqBcb+L5ebEfU9S3X2cSADcM9dOx+q0ykLSzrDKZJz6PB3
+         SXGFuaem8J5K8503YbkueSDTTd7ph6N07iJLZ4gvVUgqM3OPAb3n6xEu9KWELO9NeGdU
+         H4QHzJeYh4w1cOJa3XG2ETOO4PD12f+zG0x101YqSHrpfBShxMwd93DVVB9jJIpACTVg
+         MbZkNftYMcluX3P0MjIZoy6pKS9txIjbirf01A+kMk9jEVGao6Jp60mnhvm7S8BXPJWh
+         GYJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4f0FtZXp9xVs1vBA+TFZeeAO+I8q3YihV8u/Z7zvpoM=;
-        b=SIOnj5MfdafL7YpvsG9veyQ/t6DurQfnPzgSLDUQ+wxIwYmEHSjgL2ZFjR8RPpUGz5
-         0k6t/8adCfylIn22Ah+DpngRqHib1OsIdiVh/T/yM2K2s0M2rufGiBKY5j2wg74MnDYM
-         mg6SLY1z6JtmqXPhlt5luYuwIMMTQH46c8vYJ0XeHSOu1AxDDV16+lK6ub/ZSA850wwf
-         xCSFWZKSLr+YkkzmjwEwy6BptwShnCrBG2JjuMdpJMjOZHwTC+HRBt2bkAaI3trEPgJN
-         p2u9cm91tGGig4sgPlU2NI1luR4aHQP9apLBme+YqpvxylyyJLkGFo/TTfkgZt2j9/Vw
-         nXOQ==
-X-Gm-Message-State: AOAM532w9msjky72eYl0+pFOrl44jhj8P5FsmAYA+uKRxPg6Y4PzKgrh
-        sZF99O91BgpOKftnIHa2LDO/iA==
-X-Google-Smtp-Source: ABdhPJwsrKKzjTmqVmxK7QvuhGOgor8z+bzcpTnHbAd2oc0w0rYLmJaHlX9mCCYagUchfaHSjV+oPQ==
-X-Received: by 2002:a7b:cf30:: with SMTP id m16mr255039wmg.145.1610392795315;
-        Mon, 11 Jan 2021 11:19:55 -0800 (PST)
+        bh=TNrmFPwKfzO7gGVeJXgh6mlXY4soyZtk9MOKSdUAh0g=;
+        b=eyrAd8sPm3Nq2Yr46adr9cJzF5oIGcW5lQ4xZHDr6l6Ai908gz5xfMMlrBz/CmzyOw
+         cWV+8hEBsmMhuvVftF2O7xzv5mrNXxXdkNwqPxAkUXoFtQG3ZLYnkK2LRvMyl9/et2BL
+         hsD2E+2AqArLz1BmX4DWfc3303mgqUgiMY2G3q60790PM1VjynTNKaGLG09B1LNjvJ7t
+         bhJRWdHxGUq0jqkUbl1rVNUWQbBmhxTdxNq854E8vCwzm7q6fjvY1lb8xjWmGobonXgB
+         rV6bZTP/50c/nMD3zQPpPqG0KDmtAcm+lCP5nP8X2UOTOXsioeXRn3aGEVWQ3X0N743C
+         9h0A==
+X-Gm-Message-State: AOAM530mBlr1DP4J6XilVdXSCoHSzBaiyNdSSRZTmRnPdGK+u1KJkYa9
+        ESMFgf+A/nJ2kIpgG+/NZSbZ6Q==
+X-Google-Smtp-Source: ABdhPJwRmVyOvGf3salMx7JCs/5UCKN5ZGZgaFgk22fzZglVbO7FJ8zMwOMQg13lKdj2nH4jX4wJvA==
+X-Received: by 2002:a1c:6205:: with SMTP id w5mr306872wmb.26.1610392796639;
+        Mon, 11 Jan 2021 11:19:56 -0800 (PST)
 Received: from dell.default ([91.110.221.229])
-        by smtp.gmail.com with ESMTPSA id n3sm778090wrw.61.2021.01.11.11.19.54
+        by smtp.gmail.com with ESMTPSA id n3sm778090wrw.61.2021.01.11.11.19.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 11:19:54 -0800 (PST)
+        Mon, 11 Jan 2021 11:19:55 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -56,12 +56,13 @@ Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mauro Rossi <issor.oruam@gmail.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH 19/40] drm/amd/display/dc/dce/dce_opp: Remove duplicate entries causing 'field overwritten' issues
-Date:   Mon, 11 Jan 2021 19:19:05 +0000
-Message-Id: <20210111191926.3688443-20-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>, Aric Cyr <Aric.Cyr@amd.com>,
+        Anthony Koo <Anthony.Koo@amd.com>,
+        Tony Cheng <Tony.Cheng@amd.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 20/40] drm/amd/display/dc/dce110/dce110_timing_generator: Remove unused variable 'value_crtc_vtotal'
+Date:   Mon, 11 Jan 2021 19:19:06 +0000
+Message-Id: <20210111191926.3688443-21-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210111191926.3688443-1-lee.jones@linaro.org>
 References: <20210111191926.3688443-1-lee.jones@linaro.org>
@@ -74,26 +75,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:59:
- drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_11_2_sh_mask.h:10480:62: warning: initialized field overwritten [-Woverride-init]
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:96:16: note: in expansion of macro ‘FMT_BIT_DEPTH_CONTROL__FMT_TEMPORAL_DITHER_EN__SHIFT’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:114:2: note: in expansion of macro ‘OPP_SF’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:148:2: note: in expansion of macro ‘OPP_COMMON_MASK_SH_LIST_DCE_COMMON_BASE’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:321:2: note: in expansion of macro ‘OPP_COMMON_MASK_SH_LIST_DCE_112’
- drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_11_2_sh_mask.h:10480:62: note: (near initialization for ‘opp_shift.FMT_TEMPORAL_DITHER_EN’)
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:96:16: note: in expansion of macro ‘FMT_BIT_DEPTH_CONTROL__FMT_TEMPORAL_DITHER_EN__SHIFT’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:114:2: note: in expansion of macro ‘OPP_SF’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:148:2: note: in expansion of macro ‘OPP_COMMON_MASK_SH_LIST_DCE_COMMON_BASE’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:321:2: note: in expansion of macro ‘OPP_COMMON_MASK_SH_LIST_DCE_112’
- drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_11_2_sh_mask.h:10479:60: warning: initialized field overwritten [-Woverride-init]
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:96:16: note: in expansion of macro ‘FMT_BIT_DEPTH_CONTROL__FMT_TEMPORAL_DITHER_EN_MASK’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:114:2: note: in expansion of macro ‘OPP_SF’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:148:2: note: in expansion of macro ‘OPP_COMMON_MASK_SH_LIST_DCE_COMMON_BASE’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:325:2: note: in expansion of macro ‘OPP_COMMON_MASK_SH_LIST_DCE_112’
- drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_11_2_sh_mask.h:10479:60: note: (near initialization for ‘opp_mask.FMT_TEMPORAL_DITHER_EN’)
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:96:16: note: in expansion of macro ‘FMT_BIT_DEPTH_CONTROL__FMT_TEMPORAL_DITHER_EN_MASK’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:114:2: note: in expansion of macro ‘OPP_SF’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:148:2: note: in expansion of macro ‘OPP_COMMON_MASK_SH_LIST_DCE_COMMON_BASE’
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.c: In function ‘dce110_timing_generator_tear_down_global_swap_lock’:
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.c:1354:12: warning: variable ‘value_crtc_vtotal’ set but not used [-Wunused-but-set-variable]
 
 Cc: Harry Wentland <harry.wentland@amd.com>
 Cc: Leo Li <sunpeng.li@amd.com>
@@ -101,34 +84,32 @@ Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Mauro Rossi <issor.oruam@gmail.com>
+Cc: Aric Cyr <Aric.Cyr@amd.com>
+Cc: Anthony Koo <Anthony.Koo@amd.com>
+Cc: Tony Cheng <Tony.Cheng@amd.com>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/display/dc/dce/dce_opp.h | 2 --
- 1 file changed, 2 deletions(-)
+ .../gpu/drm/amd/display/dc/dce110/dce110_timing_generator.c  | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_opp.h b/drivers/gpu/drm/amd/display/dc/dce/dce_opp.h
-index 4d484ef60f357..bf1ffc3629c7f 100644
---- a/drivers/gpu/drm/amd/display/dc/dce/dce_opp.h
-+++ b/drivers/gpu/drm/amd/display/dc/dce/dce_opp.h
-@@ -111,7 +111,6 @@ enum dce110_opp_reg_type {
- 	OPP_SF(FMT_DITHER_RAND_R_SEED, FMT_RAND_R_SEED, mask_sh),\
- 	OPP_SF(FMT_DITHER_RAND_G_SEED, FMT_RAND_G_SEED, mask_sh),\
- 	OPP_SF(FMT_DITHER_RAND_B_SEED, FMT_RAND_B_SEED, mask_sh),\
--	OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_EN, mask_sh),\
- 	OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_RESET, mask_sh),\
- 	OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_OFFSET, mask_sh),\
- 	OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_DEPTH, mask_sh),\
-@@ -219,7 +218,6 @@ enum dce110_opp_reg_type {
- 	OPP_SF(FMT_DITHER_RAND_R_SEED, FMT_RAND_R_SEED, mask_sh),\
- 	OPP_SF(FMT_DITHER_RAND_G_SEED, FMT_RAND_G_SEED, mask_sh),\
- 	OPP_SF(FMT_DITHER_RAND_B_SEED, FMT_RAND_B_SEED, mask_sh),\
--	OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_EN, mask_sh),\
- 	OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_RESET, mask_sh),\
- 	OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_OFFSET, mask_sh),\
- 	OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_DEPTH, mask_sh),\
+diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_timing_generator.c b/drivers/gpu/drm/amd/display/dc/dce110/dce110_timing_generator.c
+index 1ea7db8eeb988..9a6c411bb7fe6 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_timing_generator.c
++++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_timing_generator.c
+@@ -1351,10 +1351,7 @@ void dce110_timing_generator_tear_down_global_swap_lock(
+ 
+ 	/* Restore DCP_GSL_PURPOSE_SURFACE_FLIP */
+ 	{
+-		uint32_t value_crtc_vtotal;
+-
+-		value_crtc_vtotal = dm_read_reg(tg->ctx,
+-				CRTC_REG(mmCRTC_V_TOTAL));
++		dm_read_reg(tg->ctx, CRTC_REG(mmCRTC_V_TOTAL));
+ 
+ 		set_reg_field_value(value,
+ 				0,
 -- 
 2.25.1
 
