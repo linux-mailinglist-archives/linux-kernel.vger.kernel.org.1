@@ -2,113 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF492F0D9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 09:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61ABD2F0D9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 09:08:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727776AbhAKIGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 03:06:02 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:37163 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725536AbhAKIGB (ORCPT
+        id S1727800AbhAKIGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 03:06:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbhAKIGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 03:06:01 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kysCV-003d9p-H0; Mon, 11 Jan 2021 09:05:19 +0100
-Received: from p5b13a61e.dip0.t-ipconnect.de ([91.19.166.30] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kysCU-001gTx-M3; Mon, 11 Jan 2021 09:05:19 +0100
-Subject: Re: Old platforms: bring out your dead
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Sparc kernel list <sparclinux@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
- <20210110214653.GA1693373@ravnborg.org>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <df42946e-5b1f-c433-fc6b-a2950f3d8dab@physik.fu-berlin.de>
-Date:   Mon, 11 Jan 2021 09:05:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 11 Jan 2021 03:06:30 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FBCC061786;
+        Mon, 11 Jan 2021 00:05:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=/462xsoiQ5s3oGp2fbaA+kjjbZ55BjDK0eDv97mG05A=; b=E3ao1TNNWj8lhdcseniY57FgDm
+        psn5Oo/Hh8p0p0HrnZ56ZZPpKQ05V9ti7WNEcnaMnQL675Lc6yEsykIDM4a3WCxYXIPr3/sBU2JTw
+        UWdhqc0AqYBlChLrus7ouaPT/R2zR0B+wivcSMmFACTzH0V+Vh06zjXwEU/im/5FZqHgmY9TtjOJa
+        xKpQ7be8neYQt4I8rXr8pPQ5q2sOCR16Nxh64KgE8LDpf3iFWAoIKcZ+SrrJo/cGnPJMXOvJy2Y+d
+        XIfQGtWBkO/958/LhE8zvg462raCfEiGMQ0Q5sT9R8UWXiGCm1KOByorBmed0Vm1/WCYzUcN/qVMV
+        zsdwDANQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1kysCl-002uzS-V9; Mon, 11 Jan 2021 08:05:40 +0000
+Date:   Mon, 11 Jan 2021 08:05:35 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+Subject: Re: [PATCH] mm/filemap: don't revert iter on -EIOCBQUEUED
+Message-ID: <20210111080535.GA693550@infradead.org>
+References: <f5247b60e7abbd2ff850cd108491f53a2e0c501a.1610207781.git.asml.silence@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210110214653.GA1693373@ravnborg.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.166.30
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f5247b60e7abbd2ff850cd108491f53a2e0c501a.1610207781.git.asml.silence@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Sat, Jan 09, 2021 at 04:00:32PM +0000, Pavel Begunkov wrote:
+> Currently, if I/O is enqueued for async execution direct paths of
+> generic_file_{read,write}_iter() will always revert the iter. There are
+> no users expecting that, and that is also costly. Leave iterators as is
+> on -EIOCBQUEUED.
 
-On 1/10/21 10:46 PM, Sam Ravnborg wrote:
->> I don't think this has reached any agreement yet. Multiple people want it to stay.
-> 
-> None of the people that replied have any real use of the sun4m port,
-> they only wanted it to stay because they had some machines or such.
-> In other words - people will be sad if we sunset sun4m, but it will not
-> hurt anyone as there are no users left.
-> 
-> I will include the above summary when I post v2 of the patch to sunset
-> sun4m and sun4d. Then we will see what we conclude in the end.
+Looks good,
 
-I'm not sure I understand the reasoning for doing this. The SPARC architecture
-isn't going to see any new hardware developments in the future after Oracle
-let go of most of the SPARC developers. So it's not that we need to make room
-for new hardware.
-
-And I also disagree with Arnd's stance that a port seems broken because it
-doesn't see frequent or recent changes. As pointed out by Thomas Bogendoerfer
-in this thread [1], missing updates don't necessarily mean that something
-is broken but it can also just mean the hardware is fully supported and
-working, so why fix something that isn't broken?
-
-On the other hand, there are really serious bugs in the kernel that easily
-allow crashing the whole machine (here on POWER [2] or here on SPARC [3])
-that never get addressed.
-
-We have a $10k IBM POWER server in Debian Ports which hosts a big-endian
-PowerKVM build server instance and regularly hard-crashes because of the
-bug in [2]. This bug has remained unfixed for almost a year now.
-
-On top of that, some of the tree-wide conversions like [4] have completely
-broken the Linux kernel on certain machines so that any larger ia64 servers
-are stuck on the 4.14 kernel with no fix in sight. Before that, the kernel
-worked perfectly fine on these machines.
-
-I understand that cleaning up code and modernizing things is important, but
-I think that the top priority should be to deliver something that is stable
-and usable by the enduser.
-
-But kernel development shouldn't be about scratching an itch which I sometimes
-have the impression is the main driver behind some changes in the kernel.
-
-I have personally invested a lot of time and effort in the past years to get
-Debian into shape on exotic and older architectures and I feel all this effort
-goes to waste when upstream projects just decide to kill of a certain platform
-in the kernel or toolchain like it already happened with PowerPCSPE in GCC.
-
-Adrian
-
-> [1] https://lore.kernel.org/lkml/20210108234430.GA17487@alpha.franken.de/
-> [2] https://bugzilla.kernel.org/show_bug.cgi?id=206669
-> [3] https://marc.info/?l=linux-sparc&m=160967865029609&w=2
-> [4] https://marc.info/?l=linux-ia64&m=156144480821712&w=2
-
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
