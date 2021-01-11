@@ -2,87 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6DCD2F1ABB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F58E2F1AB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:15:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388255AbhAKQQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:16:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57376 "EHLO mx2.suse.de"
+        id S2388666AbhAKQP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:15:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730472AbhAKQQf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:16:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610381748; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/MLcYm9FTPYiWOWaeOX0MRtpZVUJ/LO/iqAkq7nU3CY=;
-        b=sXOlN3lud62xh6d8BigmuKb+9U0y2dD+yQr4Q+H8DbazOec28y1mgWHeYDR0W5mzLVgghE
-        kMsg2m8cmZStxuq63nDLzg3IjBwQzHWfGwhsoJTlMknXKSyEzEoC6VRM51ZnHqYo4uHmVA
-        wfI/iL+JAeYDGdUPFnKMRYktUhyyhDQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AE32EAE89;
-        Mon, 11 Jan 2021 16:15:48 +0000 (UTC)
-Date:   Mon, 11 Jan 2021 17:15:47 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
-Message-ID: <20210111161547.GD22493@dhcp22.suse.cz>
-References: <20210110004435.26382-1-aarcange@redhat.com>
- <CAHk-=wghqNywtf=sRv_5FmG=+hPGqj=KWakw34tNeoZ1wPuaHg@mail.gmail.com>
- <CAHk-=wj5=1DKbQut1-21EwQbMSghNL3KOSd82rNrBhuG9+eekA@mail.gmail.com>
- <X/prosulFrEoNnoF@redhat.com>
- <CAHk-=wjZTMsv0_GOyQpLRk_5U1r5W8e21f8sV0jykK=z47hjGQ@mail.gmail.com>
- <CAHk-=wgi31FKc9AL6m87+pb2B79V2g_QjdhmtJNW8Pnq2ERQ-Q@mail.gmail.com>
- <45806a5a-65c2-67ce-fc92-dc8c2144d766@nvidia.com>
- <20210111160549.GN504133@ziepe.ca>
+        id S1730621AbhAKQP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 11:15:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8DFE2247F;
+        Mon, 11 Jan 2021 16:14:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610381688;
+        bh=vU6H120stfuOQ5pc95UICs91NrCA+KFQFAToskWyZpA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hoSh/oB7ljXzyLCi+dfAntUXnizW2+IZJheAzTKPcGNh23wFUFYgQUhq27SIW4LDx
+         OY+DaAU2Jf/Ag6O/o111G7gj+To6ZlXDCHNfiy9FXxnQIwrlhfXWQJ/7M6PxWi8m98
+         BNG+d/x4LtbzR9WHiAzpZNbY9j+SgRuaJV4Xaf3c=
+Date:   Mon, 11 Jan 2021 17:15:59 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Marc Orr <marcorr@google.com>
+Cc:     hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        jxgao@google.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] dma: mark unmapped DMA scatter/gather invalid
+Message-ID: <X/x5v4Gjretp4lii@kroah.com>
+References: <20210111154335.23388-1-marcorr@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210111160549.GN504133@ziepe.ca>
+In-Reply-To: <20210111154335.23388-1-marcorr@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 11-01-21 12:05:49, Jason Gunthorpe wrote:
-> On Sun, Jan 10, 2021 at 11:26:57PM -0800, John Hubbard wrote:
+On Mon, Jan 11, 2021 at 07:43:35AM -0800, Marc Orr wrote:
+> This patch updates dma_direct_unmap_sg() to mark each scatter/gather
+> entry invalid, after it's unmapped. This fixes two issues:
 > 
-> > So:
-> > 
-> > FOLL_PIN: would use DMA_PIN_COUNTING_BIAS to increment page refcount.
-> > These are long term pins for dma.
-> > 
-> > FOLL_GET: would use GUP_PIN_COUNTING_BIAS to increment page refcount.
-> > These are not long term pins.
+> 1. It makes the unmapping code able to tolerate a double unmap.
+> 2. It prevents the NVMe driver from erroneously treating an unmapped DMA
+> address as mapped.
 > 
-> Do we have any places yet that care about the long-term-ness?
+> The bug that motivated this patch was the following sequence, which
+> occurred within the NVMe driver, with the kernel flag `swiotlb=force`.
+> 
+> * NVMe driver calls dma_direct_map_sg()
+> * dma_direct_map_sg() fails part way through the scatter gather/list
+> * dma_direct_map_sg() calls dma_direct_unmap_sg() to unmap any entries
+>   succeeded.
+> * NVMe driver calls dma_direct_unmap_sg(), redundantly, leading to a
+>   double unmap, which is a bug.
+> 
+> With this patch, a hadoop workload running on a cluster of three AMD
+> SEV VMs, is able to succeed. Without the patch, the hadoop workload
+> suffers application-level and even VM-level failures.
+> 
+> Tested-by: Jianxiong Gao <jxgao@google.com>
+> Tested-by: Marc Orr <marcorr@google.com>
+> Reviewed-by: Jianxiong Gao <jxgao@google.com>
+> Signed-off-by: Marc Orr <marcorr@google.com>
+> ---
+>  kernel/dma/direct.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
-I was hoping to use that information to distinguish ephemeral migration
-failures due to page reference from long term pins. The later would be a
-hard failure for the migration.
+<formletter>
 
--- 
-Michal Hocko
-SUSE Labs
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
+
+</formletter>
