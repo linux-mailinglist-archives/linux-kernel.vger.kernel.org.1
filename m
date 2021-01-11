@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120B52F1055
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:47:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2392E2F1053
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729411AbhAKKpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:45:23 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:7008 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726734AbhAKKpW (ORCPT
+        id S1729407AbhAKKov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:44:51 -0500
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:36661 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729305AbhAKKou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:45:22 -0500
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10BAhIJT028734;
-        Mon, 11 Jan 2021 04:43:18 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : from : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=R2NyNxmDNBn2BvOFOrA6muYWwv5pqAnTc69UGv/oRpw=;
- b=qVviJ/Ezp9ybVKOpyfkQwDiJHkONuotJt+dXmRNiUz0KpTNKCg294SqiqwDt8HGM7jLh
- jVAzH2KvNcyD3Ux/WwhlHz7dhZGJCWycMkSQ/nMGfPYned0H6Bj4tKJlrwvjSW6ezwIs
- 9DlfcIyiPcyGd6uaRRpPlYxV+Jw2W76pT4PYmrcefbFLeKNbk0bycvcZFG1egRExDZpX
- iwolPh8L3t77kBMZI0rLaeyVGFsIajQ8ls2k7j6Le9jjaQGOrjnuxjgfnc4gyzL0LCXz
- ks9Z95lm83ldYj9e0IGLO3FNLI2D6NfugmURsPt+VAdCANNmXZgubSrelG7hoo/vbzOs dw== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 35yas722fc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 11 Jan 2021 04:43:18 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 11 Jan
- 2021 10:43:16 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Mon, 11 Jan 2021 10:43:16 +0000
-Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.3])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B0C8245;
-        Mon, 11 Jan 2021 10:43:15 +0000 (UTC)
-Subject: Re: [PATCH v3 1/4] lib: vsprintf: scanf: Negative number must have
- field width > 1
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Petr Mladek <pmladek@suse.com>
-CC:     Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, <patches@opensource.cirrus.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-References: <20201217180057.23786-1-rf@opensource.cirrus.com>
- <X/wnoJLEt0zQskDU@alley>
- <CAHp75VfeccM8D=DT-j4ApPAbDhDgV_M_FKOyXEMP8YBJZMed=g@mail.gmail.com>
- <f9aa8622-0c64-072b-dc44-e550460cf57f@opensource.cirrus.com>
-Message-ID: <395b37b8-d9b2-1825-8e57-9e1b74aa7502@opensource.cirrus.com>
-Date:   Mon, 11 Jan 2021 10:43:17 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 11 Jan 2021 05:44:50 -0500
+Received: by mail-ot1-f48.google.com with SMTP id d20so16480065otl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 02:44:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4fymldqGOkaY/X4BCR3dG+yWyFLPZhv3fozV8pGd9vo=;
+        b=S1kHnCAV3ZU19h64W3seHu+/rNGnN7Qyz6kFPYw8jsl8Nz47vCuFH/nDiJHS5fi8Z1
+         JD9pfkA3rgYCZIi+5Yu16BDqwpomM/ycE2E377TtR2RzmBZDUG0kHxCpXj8WTC9ML/iA
+         kGTglcNwh5i0fD1T+d3w0jKkElTNCDjlcqzO3NpioYP/5aA8a35b836FL+T2CKakj7y/
+         qY/2qeuJvILtvhfcmutcaP6P4h7HH3LUa4YVXMap6Sm5kcecfYvbCmburtffraNqQWe/
+         rHw9MrDufpALyXWmexNAar+PFujABU3KvJ9lwkM6C6n7jdg5jbnDn0RmvxVAcPrgXyY7
+         jppQ==
+X-Gm-Message-State: AOAM532wRexoSw6BvUZWqiufRDaettwvGxaZxJqydzHXCfoe00rOEqBe
+        WJ2zaEnvX43ZQUJbl6FT4pC3439Db3d35Rt8sWRLsGUjgPY=
+X-Google-Smtp-Source: ABdhPJzTU2LJmOP3WoA1NHl+ZSVivudIdUUh+05rYA5QPpwYm2msxc8AR1nIF5KUOT2s1cFIdIN58XLbP5cFYslBr0E=
+X-Received: by 2002:a9d:c01:: with SMTP id 1mr10382183otr.107.1610361849532;
+ Mon, 11 Jan 2021 02:44:09 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <f9aa8622-0c64-072b-dc44-e550460cf57f@opensource.cirrus.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 lowpriorityscore=0
- suspectscore=0 adultscore=0 impostorscore=0 mlxscore=0 bulkscore=0
- mlxlogscore=630 malwarescore=0 clxscore=1015 phishscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101110064
+References: <20210111103956.290378-1-geert+renesas@glider.be>
+In-Reply-To: <20210111103956.290378-1-geert+renesas@glider.be>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 11 Jan 2021 11:43:58 +0100
+Message-ID: <CAMuHMdVXdH+2tgS9rUNqwZwRsGjiecW1t1_sJJLJRhpTuzPxcQ@mail.gmail.com>
+Subject: Re: [PATCH] ntp: Fix RTC synchronization on 32-bit platforms
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/01/2021 10:39, Richard Fitzgerald wrote:
-> On 11/01/2021 10:36, Andy Shevchenko wrote:
->> On Mon, Jan 11, 2021 at 12:28 PM Petr Mladek <pmladek@suse.com> wrote:
->>>
->>> Sigh, I have just realized that Andy and Rasmus, the other
->>> vsprintf maintainers and reviewers, were not in CC.
->>> I am sorry for not noticing this earlier.
->>>
->>> The patchset is ready for 5.12 from my POV.
->>
->> Thanks, Petr!
->>
->> I have one question, do we have a test case for that? If not, I prefer
->> defer until a test case will be provided.
->>
-> 
-> See patch 3, numbers_prefix_overflow()
+On Mon, Jan 11, 2021 at 11:40 AM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+> Due to an integer overflow, RTC synchronization now happens every 2s
+> instead of the intended 11 minutes.  Fix this by forcing 64-bit
+> arithmetic for the sync period calculation.
+>
+> Fixes: c9e6189fb03123a7 ("ntp: Make the RTC synchronization more reliable")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  kernel/time/ntp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/time/ntp.c b/kernel/time/ntp.c
+> index 7404d38315276a96..54d52fab201d283e 100644
+> --- a/kernel/time/ntp.c
+> +++ b/kernel/time/ntp.c
+> @@ -498,7 +498,7 @@ int second_overflow(time64_t secs)
+>  static void sync_hw_clock(struct work_struct *work);
+>  static DECLARE_WORK(sync_work, sync_hw_clock);
+>  static struct hrtimer sync_hrtimer;
+> -#define SYNC_PERIOD_NS (11UL * 60 * NSEC_PER_SEC)
+> +#define SYNC_PERIOD_NS (11ULL * 60 * NSEC_PER_SEC)
+>
+>  static enum hrtimer_restart sync_timer_callback(struct hrtimer *timer)
+>  {
 
-Sorry, I missed you off the original mailing so you won't have
-seen the other patches.
-Patch 3 with the test cases is here:
-https://lore.kernel.org/lkml/X%2FwnoJLEt0zQskDU@alley/T/#mf2ffba20126e438bea7af171bc78fdbebdb40027
+While the line
+
+    exp = ktime_add_ns(exp, 2 * NSEC_PER_SEC - offset_nsec);
+
+is currently not an issue, it may be wise to change it to
+
+    exp = ktime_add_ns(exp, 2ULL * NSEC_PER_SEC - offset_nsec);
+
+in case someone wants to experiment with values larger then 4s?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
