@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6762F14A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:28:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8AC52F148A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:27:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732393AbhAKN1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:27:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34476 "EHLO mail.kernel.org"
+        id S1732057AbhAKN0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:26:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732402AbhAKNQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:16:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 464C322AAF;
-        Mon, 11 Jan 2021 13:16:11 +0000 (UTC)
+        id S1732516AbhAKNQz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:16:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81A8922B30;
+        Mon, 11 Jan 2021 13:16:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370971;
-        bh=FsuDOkHrxy651SKBoo84r3hTfRxp6uYKARxYY0rNnTE=;
+        s=korg; t=1610370974;
+        bh=esMnKU5U+VXw4VGIueJkIC0hPUSISWPK4SveVy8bHlQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c4A32IC+NFkNQ0LFhKpw4rzX5b2OTb0cvnfo77tXCGyRPepSNY2sWu8r05nHLRugb
-         9t7WOOZ1iINf7IaqewlvgRnEqTh6v412w6m4r6/TTsHoLgckcAoPrOwQesw9NDNiHt
-         Nyiy+zMRA8E/lqT+ubiTCIVQ7BZBv/UTRWiuVT1Q=
+        b=O00RpDnWLUCUkb7fbPDcN+aS2Zy6FcMwiSfg81MU5zQWHJltD46cRFHzek7ZpLOuK
+         HG30JnQJR4W74lWqX6JiF88nXO1LZun+3l4o/TuD2yhJYI6YGMNV9D+w7J9dJS/1fz
+         3xXFbBniXOyZwyf4wWYIzuwCKXDeTeg5Xs6jI9qA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Subject: [PATCH 5.10 084/145] usb: dwc3: gadget: Clear wait flag on dequeue
-Date:   Mon, 11 Jan 2021 14:01:48 +0100
-Message-Id: <20210111130052.566672513@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH 5.10 085/145] usb: dwc3: ulpi: Use VStsDone to detect PHY regs access completion
+Date:   Mon, 11 Jan 2021 14:01:49 +0100
+Message-Id: <20210111130052.614929828@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
 References: <20210111130048.499958175@linuxfoundation.org>
@@ -39,35 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-commit a5c7682aaaa10e42928d73de1c9e1e02d2b14c2e upstream.
+commit ce722da66d3e9384aa2de9d33d584ee154e5e157 upstream.
 
-If an active transfer is dequeued, then the endpoint is freed to start a
-new transfer. Make sure to clear the endpoint's transfer wait flag for
-this case.
+In accordance with [1] the DWC_usb3 core sets the GUSB2PHYACCn.VStsDone
+bit when the PHY vendor control access is done and clears it when the
+application initiates a new transaction. The doc doesn't say anything
+about the GUSB2PHYACCn.VStsBsy flag serving for the same purpose. Moreover
+we've discovered that the VStsBsy flag can be cleared before the VStsDone
+bit. So using the former as a signal of the PHY control registers
+completion might be dangerous. Let's have the VStsDone flag utilized
+instead then.
 
-Fixes: e0d19563eb6c ("usb: dwc3: gadget: Wait for transfer completion")
-Cc: stable@vger.kernel.org
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Link: https://lore.kernel.org/r/b81cd5b5281cfbfdadb002c4bcf5c9be7c017cfd.1609828485.git.Thinh.Nguyen@synopsys.com
+[1] Synopsys DesignWare Cores SuperSpeed USB 3.0 xHCI Host Controller
+    Databook, 2.70a, December 2013, p.388
+
+Fixes: 88bc9d194ff6 ("usb: dwc3: add ULPI interface support")
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Link: https://lore.kernel.org/r/20201210085008.13264-2-Sergey.Semin@baikalelectronics.ru
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/dwc3/gadget.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/dwc3/core.h |    1 +
+ drivers/usb/dwc3/ulpi.c |    2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1763,6 +1763,8 @@ static int dwc3_gadget_ep_dequeue(struct
- 			list_for_each_entry_safe(r, t, &dep->started_list, list)
- 				dwc3_gadget_move_cancelled_request(r);
+--- a/drivers/usb/dwc3/core.h
++++ b/drivers/usb/dwc3/core.h
+@@ -285,6 +285,7 @@
  
-+			dep->flags &= ~DWC3_EP_WAIT_TRANSFER_COMPLETE;
-+
- 			goto out;
- 		}
+ /* Global USB2 PHY Vendor Control Register */
+ #define DWC3_GUSB2PHYACC_NEWREGREQ	BIT(25)
++#define DWC3_GUSB2PHYACC_DONE		BIT(24)
+ #define DWC3_GUSB2PHYACC_BUSY		BIT(23)
+ #define DWC3_GUSB2PHYACC_WRITE		BIT(22)
+ #define DWC3_GUSB2PHYACC_ADDR(n)	(n << 16)
+--- a/drivers/usb/dwc3/ulpi.c
++++ b/drivers/usb/dwc3/ulpi.c
+@@ -24,7 +24,7 @@ static int dwc3_ulpi_busyloop(struct dwc
+ 
+ 	while (count--) {
+ 		reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYACC(0));
+-		if (!(reg & DWC3_GUSB2PHYACC_BUSY))
++		if (reg & DWC3_GUSB2PHYACC_DONE)
+ 			return 0;
+ 		cpu_relax();
  	}
 
 
