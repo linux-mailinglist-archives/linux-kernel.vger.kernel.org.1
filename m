@@ -2,116 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E042F0D18
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 08:07:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E5B2F0D1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 08:10:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727554AbhAKHHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 02:07:01 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:40489 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725536AbhAKHHB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 02:07:01 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DDl9d1xKXz9vBnG;
-        Mon, 11 Jan 2021 08:06:13 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id prXPXq5z2Ylb; Mon, 11 Jan 2021 08:06:13 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DDl9c3cZSz9vBnB;
-        Mon, 11 Jan 2021 08:06:12 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3D0D38B78A;
-        Mon, 11 Jan 2021 08:06:17 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id HC1KZHsRdfsP; Mon, 11 Jan 2021 08:06:17 +0100 (CET)
-Received: from [172.25.230.103] (po15451.idsi0.si.c-s.fr [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id EA1D08B75B;
-        Mon, 11 Jan 2021 08:06:16 +0100 (CET)
-Subject: Re: [PATCH v2] powerpc: fix alignment bug whithin the init sections
-To:     Ariel Marcovitch <arielmarcovitch@gmail.com>, mpe@ellerman.id.au
-Cc:     benh@kernel.crashing.org, paulus@samba.org, keescook@chromium.org,
-        dja@axtens.net, npiggin@gmail.com, naveen.n.rao@linux.vnet.ibm.com,
-        maskray@google.com, ariel.marcovitch@gmail.com, oss@buserror.net,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20210102201156.10805-1-ariel.marcovitch@gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <dacc0535-217d-1a35-fcfe-7ff730e32735@csgroup.eu>
-Date:   Mon, 11 Jan 2021 08:06:16 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1727589AbhAKHIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 02:08:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbhAKHIm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 02:08:42 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470A5C061786
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 23:08:02 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id x15so1562256ilk.3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 23:08:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=40oBNgDhCJIenRjP2UaWivQWND3op8oUN0q1ogQZ4H0=;
+        b=GLmVBWXOXItcO7uM97k3HHXx8aY/QJNuAxdyD+DgVkMhw0MRGaindsRrVN3/FJdy//
+         qZXrTYMigJiX3NPZwFjeedPF1Gbp5OKyv6EVuHxzjrMnObBLv0IqIWp+HtIUHEnYN9Xg
+         W4ZeiB5cJlyHBKHH016G28hh5zGwvMuVBgcCg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=40oBNgDhCJIenRjP2UaWivQWND3op8oUN0q1ogQZ4H0=;
+        b=cyNoWUOPJ0EwU6Ky/Shw15VOzz56vQcWXFEzilrJAp6yCynUpmpONMvgE43FPR3Q25
+         FXr/ZVOhFqy+OpKl3358kbFxy3Ng4P7luukbsgwxGtEJoPsRCVFcilQOVkvuE0FokK9I
+         z1QVWoOca1cFYOI9HE5EiQi1EKhz4P4EOkw3JfjahRljvGGKrv17jFvgwSIG5QAEVtg8
+         hTqUNF1RpsKK8r0BekvFdl5mitgSskd2mAAiHL4v6cfxl0b8rbuKiHk1cHfu+nunYhvE
+         Jf2yFx65urY4kRXq8zTER6NAnuabvTPpH535AtFM2We+eQK/mekutXHOfFWVfAw/rBAy
+         EynQ==
+X-Gm-Message-State: AOAM532+cCvXF+WeX0hHBncryULllM11Xi7IU+Vb01+/+jkshN4R3vpN
+        YG2wQG+DL69Qt7LexJlqQeFutPgfHdaDFqRqd3N3vg==
+X-Google-Smtp-Source: ABdhPJwmQZMxtcu5IkBAJPG1CtXM1CtU5UgOcE7BPBorIBdTTjWxavfJvhfu6+LtlLaYGy/6ZGS59+iVqwsN8RIQ+mY=
+X-Received: by 2002:a05:6e02:1a8e:: with SMTP id k14mr4398347ilv.308.1610348881564;
+ Sun, 10 Jan 2021 23:08:01 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210102201156.10805-1-ariel.marcovitch@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <1609757093-30618-1-git-send-email-weiyi.lu@mediatek.com> <1609757093-30618-2-git-send-email-weiyi.lu@mediatek.com>
+In-Reply-To: <1609757093-30618-2-git-send-email-weiyi.lu@mediatek.com>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Mon, 11 Jan 2021 15:07:35 +0800
+Message-ID: <CAJMQK-iUaRoYB8C6MmKA-TLD3gFj3XL4eX8MemeEWjh-9ZaTEw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] soc: mediatek: Add regulator control for MT8192 MFG
+ power domain
+To:     Weiyi Lu <weiyi.lu@mediatek.com>
+Cc:     Enric Balletbo Serra <eballetbo@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        srv_heupstream@mediatek.com, lkml <linux-kernel@vger.kernel.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 4, 2021 at 10:44 AM Weiyi Lu <weiyi.lu@mediatek.com> wrote:
+>
+> Add regulator control support and specific power domain name of
+> MT8192 MFG power domain for regulator lookup.
+> Also power domain name can fix the debugfs warning.
+> (e.g. debugfs: Directory 'power-domain' with parent 'pm_genpd'
+> already present!)
+> However, not every domain with name need to get the regulator,
+> if we just want to fix the debugfs warning log by adding names to
+> power domains. Considering this case, lookup regulator by
+> regulator_get_optional() instead of getting a dummy regulator from
+> regulator_get() to operate.
+>
+Hi,
 
+sorry I didn't notice this patch before. I sent out a similar patch
+for this problem here:
+https://patchwork.kernel.org/project/linux-mediatek/cover/20210107104915.2888408-1-hsinyi@chromium.org/
 
-Le 02/01/2021 à 21:11, Ariel Marcovitch a écrit :
-> This is a bug that causes early crashes in builds with a
-> .exit.text section smaller than a page and a .init.text section that
-> ends in the beginning of a physical page (this is kinda random, which
-> might explain why this wasn't really encountered before).
-> 
-> The init sections are ordered like this:
-> 	.init.text
-> 	.exit.text
-> 	.init.data
-> 
-> Currently, these sections aren't page aligned.
-> 
-> Because the init code might become read-only at runtime and because the
-> .init.text section can potentially reside on the same physical page as
-> .init.data, the beginning of .init.data might be mapped read-only along
-> with .init.text.
-> 
-> Then when the kernel tries to modify a variable in .init.data (like
-> kthreadd_done, used in kernel_init()) the kernel panics.
-> 
-> To avoid this, make _einittext page aligned and also align .exit.text
-> to make sure .init.data is always seperated from the text segments.
-> 
-> Fixes: 060ef9d89d18 ("powerpc32: PAGE_EXEC required for inittext")
-> Signed-off-by: Ariel Marcovitch <ariel.marcovitch@gmail.com>
+The difference is that
+1) we store the requirement for quirks in caps instead of name.
+2) regulators are under power-domain nodes instead of mfg devices in dts.
 
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-
+> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
 > ---
->   arch/powerpc/kernel/vmlinux.lds.S | 7 +++++++
->   1 file changed, 7 insertions(+)
-> 
-> diff --git a/arch/powerpc/kernel/vmlinux.lds.S b/arch/powerpc/kernel/vmlinux.lds.S
-> index 6db90cdf11da..b6c765d8e7ee 100644
-> --- a/arch/powerpc/kernel/vmlinux.lds.S
-> +++ b/arch/powerpc/kernel/vmlinux.lds.S
-> @@ -187,6 +187,11 @@ SECTIONS
->   	.init.text : AT(ADDR(.init.text) - LOAD_OFFSET) {
->   		_sinittext = .;
->   		INIT_TEXT
+>  drivers/soc/mediatek/mt8192-pm-domains.h |  1 +
+>  drivers/soc/mediatek/mtk-pm-domains.c    | 42 ++++++++++++++++++++++++++++++--
+>  drivers/soc/mediatek/mtk-pm-domains.h    |  2 ++
+>  3 files changed, 43 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/soc/mediatek/mt8192-pm-domains.h b/drivers/soc/mediatek/mt8192-pm-domains.h
+> index 0fdf6dc..7db0ad3 100644
+> --- a/drivers/soc/mediatek/mt8192-pm-domains.h
+> +++ b/drivers/soc/mediatek/mt8192-pm-domains.h
+> @@ -49,6 +49,7 @@
+>                 .ctl_offs = 0x0308,
+>                 .sram_pdn_bits = GENMASK(8, 8),
+>                 .sram_pdn_ack_bits = GENMASK(12, 12),
+> +               .name = "mfg",
+>         },
+>         [MT8192_POWER_DOMAIN_MFG1] = {
+>                 .sta_mask = BIT(3),
+> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
+> index fb70cb3..a160800 100644
+> --- a/drivers/soc/mediatek/mtk-pm-domains.c
+> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_domain.h>
+>  #include <linux/regmap.h>
+> +#include <linux/regulator/consumer.h>
+>  #include <linux/soc/mediatek/infracfg.h>
+>
+>  #include "mt8173-pm-domains.h"
+> @@ -40,6 +41,7 @@ struct scpsys_domain {
+>         struct clk_bulk_data *subsys_clks;
+>         struct regmap *infracfg;
+>         struct regmap *smi;
+> +       struct regulator *supply;
+>  };
+>
+>  struct scpsys {
+> @@ -187,6 +189,22 @@ static int scpsys_bus_protect_disable(struct scpsys_domain *pd)
+>         return _scpsys_bus_protect_disable(pd->data->bp_infracfg, pd->infracfg);
+>  }
+>
+> +static int scpsys_regulator_enable(struct scpsys_domain *pd)
+> +{
+> +       if (!pd->supply)
+> +               return 0;
 > +
-> +		/* .init.text might be RO so we must
-> +		* ensure this section ends in a page boundary.
-> +		*/
-> +		. = ALIGN(PAGE_SIZE);
->   		_einittext = .;
->   #ifdef CONFIG_PPC64
->   		*(.tramp.ftrace.init);
-> @@ -200,6 +205,8 @@ SECTIONS
->   		EXIT_TEXT
->   	}
->   
-> +	. = ALIGN(PAGE_SIZE);
+> +       return regulator_enable(pd->supply);
+> +}
 > +
->   	.init.data : AT(ADDR(.init.data) - LOAD_OFFSET) {
->   		INIT_DATA
->   	}
-> 
-> base-commit: 2c85ebc57b3e1817b6ce1a6b703928e113a90442
-> 
+> +static int scpsys_regulator_disable(struct scpsys_domain *pd)
+> +{
+> +       if (!pd->supply)
+> +               return 0;
+> +
+> +       return regulator_disable(pd->supply);
+> +}
+> +
+>  static int scpsys_power_on(struct generic_pm_domain *genpd)
+>  {
+>         struct scpsys_domain *pd = container_of(genpd, struct scpsys_domain, genpd);
+> @@ -194,9 +212,13 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+>         bool tmp;
+>         int ret;
+>
+> +       ret = scpsys_regulator_enable(pd);
+> +       if (ret < 0)
+> +               return ret;
+> +
+>         ret = clk_bulk_enable(pd->num_clks, pd->clks);
+>         if (ret)
+> -               return ret;
+> +               goto err_disable_regulator;
+>
+>         /* subsys power on */
+>         regmap_set_bits(scpsys->base, pd->data->ctl_offs, PWR_ON_BIT);
+> @@ -232,6 +254,8 @@ static int scpsys_power_on(struct generic_pm_domain *genpd)
+>         clk_bulk_disable(pd->num_subsys_clks, pd->subsys_clks);
+>  err_pwr_ack:
+>         clk_bulk_disable(pd->num_clks, pd->clks);
+> +err_disable_regulator:
+> +       scpsys_regulator_disable(pd);
+>         return ret;
+>  }
+>
+> @@ -267,6 +291,10 @@ static int scpsys_power_off(struct generic_pm_domain *genpd)
+>
+>         clk_bulk_disable(pd->num_clks, pd->clks);
+>
+> +       ret = scpsys_regulator_disable(pd);
+> +       if (ret < 0)
+> +               return ret;
+> +
+>         return 0;
+>  }
+>
+> @@ -315,6 +343,16 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+>         if (IS_ERR(pd->smi))
+>                 return ERR_CAST(pd->smi);
+>
+> +       if (pd->data->name) {
+> +               pd->supply = devm_regulator_get_optional(scpsys->dev, pd->data->name);
+> +               if (IS_ERR(pd->supply)) {
+> +                       if (PTR_ERR(pd->supply) == -ENODEV)
+> +                               pd->supply = NULL;
+> +                       else
+> +                               return ERR_CAST(pd->supply);
+> +               }
+> +       }
+> +
+>         num_clks = of_clk_get_parent_count(node);
+>         if (num_clks > 0) {
+>                 /* Calculate number of subsys_clks */
+> @@ -397,7 +435,7 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+>                 goto err_unprepare_subsys_clocks;
+>         }
+>
+> -       pd->genpd.name = node->name;
+> +       pd->genpd.name = pd->data->name ?: node->name;
+>         pd->genpd.power_off = scpsys_power_off;
+>         pd->genpd.power_on = scpsys_power_on;
+>
+> diff --git a/drivers/soc/mediatek/mtk-pm-domains.h b/drivers/soc/mediatek/mtk-pm-domains.h
+> index a2f4d8f..58d72fb 100644
+> --- a/drivers/soc/mediatek/mtk-pm-domains.h
+> +++ b/drivers/soc/mediatek/mtk-pm-domains.h
+> @@ -81,6 +81,7 @@ struct scpsys_bus_prot_data {
+>   * @caps: The flag for active wake-up action.
+>   * @bp_infracfg: bus protection for infracfg subsystem
+>   * @bp_smi: bus protection for smi subsystem
+> + * @name: specific power domain name for regulator lookup and debugfs
+>   */
+>  struct scpsys_domain_data {
+>         u32 sta_mask;
+> @@ -90,6 +91,7 @@ struct scpsys_domain_data {
+>         u8 caps;
+>         const struct scpsys_bus_prot_data bp_infracfg[SPM_MAX_BUS_PROT_DATA];
+>         const struct scpsys_bus_prot_data bp_smi[SPM_MAX_BUS_PROT_DATA];
+> +       char *name;
+>  };
+>
+>  struct scpsys_soc_data {
