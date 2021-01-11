@@ -2,69 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1516B2F1261
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:36:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EBBF2F1252
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:31:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbhAKMgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 07:36:17 -0500
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:25448 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726876AbhAKMgQ (ORCPT
+        id S1726653AbhAKMbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 07:31:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725858AbhAKMbk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 07:36:16 -0500
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Mon, 11 Jan 2021 04:18:54 -0800
-Received: from sc-dbc2115.eng.vmware.com (sc-dbc2115.eng.vmware.com [10.182.28.6])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 7652F209C4;
-        Mon, 11 Jan 2021 04:18:55 -0800 (PST)
-From:   Jorgen Hansen <jhansen@vmware.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>
-CC:     <gregkh@linuxfoundation.org>, <pv-drivers@vmware.com>,
-        Jorgen Hansen <jhansen@vmware.com>
-Subject: [PATCH] VMCI: Use set_page_dirty_lock() when unregistering guest memory
-Date:   Mon, 11 Jan 2021 04:18:55 -0800
-Message-ID: <1610367535-4463-3-git-send-email-jhansen@vmware.com>
-X-Mailer: git-send-email 2.6.2
-In-Reply-To: <1610367535-4463-1-git-send-email-jhansen@vmware.com>
-References: <1610367535-4463-1-git-send-email-jhansen@vmware.com>
+        Mon, 11 Jan 2021 07:31:40 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19DBDC061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 04:31:00 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id c132so12449841pga.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 04:31:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MQIcMMQr4fBdNn/n7xtKL3xisvfpOYXLZCgeqAib7vs=;
+        b=thTK+QwCItEq3I8wVJHTDhKVF+aeXltkSBKfOLzbv/D9m5QIAWwaKkaoKdiYTY4K8+
+         Y3RJUSTFLmCbcMvr5kUWy93Alha+ZQ4S1g57UWDQn1F1/FUwmsAGsUCwrDx2dZyKrWdq
+         mhPv8BFd8fXzpewT18pQ6PwOQyz7WQbLvos9upnGg588eT73+baNrkn6m+qgM6xQPQ9y
+         kvl71upblM+Bo1xCNtcNWXacB4adFJIe/fhrIcb5aGNv7EB46qKrCffuh0ZX9k0jQLCL
+         aFX1oUD9kdoTgG2xy2KBTyIksq2eFU77+uG3xz0Yu9/saEdjPVYnzDhc9uRKF6eikoTV
+         ZQvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MQIcMMQr4fBdNn/n7xtKL3xisvfpOYXLZCgeqAib7vs=;
+        b=bNW0E8WtMI3XAe9NmnFc5jfnOmp//39mWUC2+cgKJ0DA6avFJQT9FImXHQSzPemPTA
+         OZQWCvspJoCwDSOFtHdMpd57wcaUP/AgmYruVHEnYNbs/IqW35e5ExwH1Kt4NrX5oY+Q
+         Uu3k0dk1CdsZwOS1H5PLvIx+Rvnf9d+DDcZfd2iI3TCY527UCfhv/oeVuHiIbbjf3QB5
+         sBQIsgt9Gl0DRcjrguasI7rkhABwAqy7eVBd/B/yWQXMMNKt6yZPp9Lp/3Lk3wbvg4w3
+         ieCz32DiJISQ4gNbZr1nFGBq0fX3Oooye6BmQYqVU2RS41ylgYqsjJtDtbCeDaYVQGnK
+         znJA==
+X-Gm-Message-State: AOAM532e1PZHk0W1INFDS8qV8Adr7xJHYWZ+Vm/ggzhTXey9EygaDuYM
+        k7AzUIBsEOhzZTDCf0ZVSuD0ExlgeH0=
+X-Google-Smtp-Source: ABdhPJxy+MlzE0EMXskV1vPmdREUGxJMuIhI11lWSfTYkyn2ewh4mSqTwlafOO15NUQutvnsLBJYyA==
+X-Received: by 2002:a65:64ce:: with SMTP id t14mr19691144pgv.36.1610368259531;
+        Mon, 11 Jan 2021 04:30:59 -0800 (PST)
+Received: from localhost (g178.219-103-173.ppp.wakwak.ne.jp. [219.103.173.178])
+        by smtp.gmail.com with ESMTPSA id e5sm18420926pfc.76.2021.01.11.04.30.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 04:30:58 -0800 (PST)
+Date:   Mon, 11 Jan 2021 21:30:55 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        Mateusz Holenko <mholenko@antmicro.com>
+Subject: Re: drivers/soc/litex/litex_soc_ctrl.c:143:34: warning: unused
+ variable 'litex_soc_ctrl_of_match'
+Message-ID: <20210111123055.GA2002709@lianli.shorne-pla.net>
+References: <202101070445.8Kz6oJcS-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: jhansen@vmware.com does not
- designate permitted sender hosts)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202101070445.8Kz6oJcS-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the VMCI host support releases guest memory in the case where
-the VM was killed, the pinned guest pages aren't locked. Use
-set_page_dirty_lock() instead of set_page_dirty().
+On Thu, Jan 07, 2021 at 04:04:47AM +0800, kernel test robot wrote:
+> Hi Pawel,
+> 
+> FYI, the error/warning still remains.
+> 
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
+> commit: 22447a99c97e353bde8f90c2353873f27681d57c drivers/soc/litex: add LiteX SoC Controller driver
+> date:   8 weeks ago
+> config: x86_64-randconfig-a001-20210107 (attached as .config)
+> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 5c951623bc8965fa1e89660f2f5f4a2944e4981a)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install x86_64 cross compiling tool for clang build
+>         # apt-get install binutils-x86-64-linux-gnu
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=22447a99c97e353bde8f90c2353873f27681d57c
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 22447a99c97e353bde8f90c2353873f27681d57c
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> drivers/soc/litex/litex_soc_ctrl.c:143:34: warning: unused variable 'litex_soc_ctrl_of_match' [-Wunused-const-variable]
+>    static const struct of_device_id litex_soc_ctrl_of_match[] = {
+>                                     ^
+>    1 warning generated.
+> 
+> 
+> vim +/litex_soc_ctrl_of_match +143 drivers/soc/litex/litex_soc_ctrl.c
+> 
+>    142	
+>  > 143	static const struct of_device_id litex_soc_ctrl_of_match[] = {
+>    144		{.compatible = "litex,soc-controller"},
+>    145		{},
+>    146	};
+>    147	
+> 
 
-Testing done: Killed VM while having an active VMCI based vSocket
-connection and observed warning from ext4. With this fix, no
-warning was observed. Ran various vSocket tests without issues.
+I don't use clang but GCC, and I cannot reproduce this warning.
 
-Fixes: 06164d2b72aa ("VMCI: queue pairs implementation.")
-Reviewed-by: Vishnu Dasa <vdasa@vmware.com>
-Signed-off-by: Jorgen Hansen <jhansen@vmware.com>
----
- drivers/misc/vmw_vmci/vmci_queue_pair.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+$ make drivers/soc/litex/litex_soc_ctrl.o 
+  CALL    scripts/checksyscalls.sh
+  CALL    scripts/atomic/check-atomics.sh
+  DESCEND  objtool
+  CC      drivers/soc/litex/litex_soc_ctrl.o
 
-diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.c b/drivers/misc/vmw_vmci/vmci_queue_pair.c
-index a3691c1..525ef96 100644
---- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
-+++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
-@@ -630,7 +630,7 @@ static void qp_release_pages(struct page **pages,
- 
- 	for (i = 0; i < num_pages; i++) {
- 		if (dirty)
--			set_page_dirty(pages[i]);
-+			set_page_dirty_lock(pages[i]);
- 
- 		put_page(pages[i]);
- 		pages[i] = NULL;
--- 
-2.6.2
+Also, I can see litex_soc_ctrl_of_match is used.  I am not sure what is going on
+here.
 
+-Stafford
