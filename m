@@ -2,108 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE9B2F0A84
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 00:58:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97B1A2F0A89
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 01:03:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbhAJX5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 18:57:43 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:45677 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725936AbhAJX5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 18:57:43 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DDYfJ5RlWz9sVt;
-        Mon, 11 Jan 2021 10:56:55 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1610323021;
-        bh=cLG23pR3dbiQqeVfbzXt+mehia79QJ4+25O39jU3DO0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GmTi4eskViAXPBq8cuIDorojxyBEZO4dxh1/uVkcwv8MRMOV5H9L6p9XzFjiqdRSg
-         mUTb4Ss5ycca0u5oEg05w6xeLAjoT6Xu/PssV/8T7QWPktGL9oKbgABvUKa9Q48Jrq
-         RHDbA3H6kPWG3yxD1Bdyky/fVadSZ/FeOu42unX/w7D2KqdC+cjEMxyByZHYeCgBZz
-         7Pxpx0jGTldvKFlKQ4dPINJXvqAxKEwfaiKKdQq3nnI8CqzE1wz9Eh6NKrtQX9a8Yf
-         GrQ0QFjEzkkXlg0RWGOlf7Pijd1Nqgt52OLlXQiKr5I1XXVq2vr2jSQQH2KraQ9nWB
-         tVlqvXQIcALNg==
-Date:   Mon, 11 Jan 2021 10:56:54 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the drm tree
-Message-ID: <20210111105654.17e3aa76@canb.auug.org.au>
-In-Reply-To: <20210108122540.657501b2@canb.auug.org.au>
-References: <20210108115518.2b3fdf58@canb.auug.org.au>
-        <20210108122540.657501b2@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/VbNUJrqU8Z1uA+OMxwmXnXl";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1726846AbhAKAD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 19:03:27 -0500
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:36779 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725936AbhAKAD0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 19:03:26 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 3A5AB5C0066;
+        Sun, 10 Jan 2021 19:02:39 -0500 (EST)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Sun, 10 Jan 2021 19:02:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=YHDGpMsoVWO7Mu0PPN8KuDaFtz6Yykc
+        CQ780RW5/qxw=; b=ZaAILfvy5ecridk++cJ0nJ4K/Oni0M8gbBt8H5IDOnlfeNj
+        Mo8nq31+IJ6ROeQTNBMDqquGNuY+ixPvPF/EfCRvnYbi+StHMb5u4owS1IbLcwaJ
+        fGuGk6UTarTg8YOaqBC7OK8njZueBAATPZn/Gyy/IkKAKR6i1BztxNwh4uaR0kVm
+        3k+cccwP4SAMBs/Y8qD11DGqN7BN7OJVic/ai9BRuSvucrBpykivqaZOFos9k7pK
+        zX2TylMK/eIBVoJ34tdtJMQiUgeyMXIMTuXUX6mZs5bV1y1r699ghSY3Xqw8VaqL
+        vOFflD7nbINSIZWHwpJZotyTrA3elFBJrzie/XA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=YHDGpM
+        soVWO7Mu0PPN8KuDaFtz6YykcCQ780RW5/qxw=; b=pF4fPa/UWkHXKr5pNhdG9q
+        vBaanS0z8zTNwimmVCAM2By+ADYxx9v48FWNh7Fr/Rtgbug5jGsRqdaiRUWH7/jB
+        6I52/g8iDiUMS1yihvqSerhNlGvHsYF4+exRfoAAr7d09yjJ6WlDaFBEZ7Y0XSS6
+        xflDyUncnOYvA2k20kdwUKXVKPKO5+11/cNiRTI+59gTAfYM96auf0uLGmplIQxH
+        eTXKvAOMrB1bn1Xdn6Tg/DcHjiZughf2N5wi5bKhv0OogEjnboCcOSpyyZxYcOBn
+        55vSjGv+SzYB4a+48+TSXdPuZKRmcAqFGZkx1piqJGMpHhwp6VsUQ45bYfDREAmQ
+        ==
+X-ME-Sender: <xms:nJX7X0-vTH81zuNKvqIMJPtxcq9IN0WMIHhgscQ3qY7G-WaKCAzv1w>
+    <xme:nJX7X8u68X-9gWWX2O_IguwwioHT99hLFYB0D1zxpIJBU3qXRR7pRfTl4IvBPreiv
+    TY_f-eVW-AEjLdqgQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdehtddgudegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:nZX7X6BCQ9yklg5W8vmuA_Eq76fAZ8EZcbkMVa3AwaIzKtEkWHn5rg>
+    <xmx:nZX7X0eK4qbgMcgJz9T8-pH0nH1bPGM0A5lXwDgkgxnFSjxnDBmYhQ>
+    <xmx:nZX7X5NuaN6KlHOkhyqIsFOYmhrTo4B9dzRlXBkZFmDCgsDLGrqIyA>
+    <xmx:n5X7X8eNOxauqVlg4v-yio38sT6_ingLbCRm6UHN9NpRF0-O5_nNSw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id D610CE00BF; Sun, 10 Jan 2021 19:02:36 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-45-g4839256-fm-20210104.001-g48392560
+Mime-Version: 1.0
+Message-Id: <6f341a22-f5ce-4c38-9f42-358124468821@www.fastmail.com>
+In-Reply-To: <ff588027-0fbb-100e-05a9-4a804662d838@intel.com>
+References: <20201218035338.1130849-1-andrew@aj.id.au>
+ <20201218035338.1130849-5-andrew@aj.id.au>
+ <ff588027-0fbb-100e-05a9-4a804662d838@intel.com>
+Date:   Mon, 11 Jan 2021 10:32:15 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Adrian Hunter" <adrian.hunter@intel.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>
+Cc:     "Ulf Hansson" <ulf.hansson@linaro.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v6_4/6]_mmc:_sdhci-of-aspeed:_Add_KUnit_tests_for_p?=
+ =?UTF-8?Q?hase_calculations?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/VbNUJrqU8Z1uA+OMxwmXnXl
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-On Fri, 8 Jan 2021 12:25:40 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> On Fri, 8 Jan 2021 11:55:18 +1100 Stephen Rothwell <sfr@canb.auug.org.au>=
- wrote:
-> >
-> > After merging the drm tree, today's linux-next build (x86_64 allmodconf=
-ig)
-> > failed like this:
-> >=20
-> > error: the following would cause module name conflict:
-> >   drivers/video/fbdev/omap2/omapfb/displays/panel-dsi-cm.ko
-> >   drivers/gpu/drm/panel/panel-dsi-cm.ko
-> >=20
-> > Maybe caused by commit
-> >=20
-> >   cf64148abcfd ("drm/panel: Move OMAP's DSI command mode panel driver")
-> >=20
-> > I have used the drm tree from next-20210107 for today. =20
->=20
-> This has affected the drm-misc tree as well (since it merged in the drm
-> tree).
->=20
-> I have used the drm-misc tree from next-20210107 for today.
+On Wed, 6 Jan 2021, at 00:17, Adrian Hunter wrote:
+> On 18/12/20 5:53 am, Andrew Jeffery wrote:
+> > Converting degrees of phase to logic delays is irritating to test on
+> > hardware, so lets exercise the function using KUnit.
+> > 
+> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> > ---
+> >  drivers/mmc/host/Kconfig                |  14 ++++
+> >  drivers/mmc/host/Makefile               |   1 +
+> >  drivers/mmc/host/sdhci-of-aspeed-test.c | 100 ++++++++++++++++++++++++
+> >  3 files changed, 115 insertions(+)
+> >  create mode 100644 drivers/mmc/host/sdhci-of-aspeed-test.c
+> > 
+> > diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+> > index 596f32637315..d6f00d1d6251 100644
+> > --- a/drivers/mmc/host/Kconfig
+> > +++ b/drivers/mmc/host/Kconfig
+> > @@ -168,6 +168,20 @@ config MMC_SDHCI_OF_ASPEED
+> >  
+> >  	  If unsure, say N.
+> >  
+> > +config MMC_SDHCI_OF_ASPEED_TEST
+> > +	bool "Tests for the ASPEED SDHCI driver"
+> > +	depends on MMC_SDHCI_OF_ASPEED && KUNIT=y
+> > +	help
+> > +	  Enable KUnit tests for the ASPEED SDHCI driver. Select this
+> > +	  option only if you will boot the kernel for the purpose of running
+> > +	  unit tests (e.g. under UML or qemu).
+> > +
+> > +	  The KUnit tests generally exercise parts of the driver that do not
+> > +	  directly touch the hardware, for example, the phase correction
+> > +	  calculations.
+> > +
+> > +	  If unsure, say N.
+> > +
+> >  config MMC_SDHCI_OF_AT91
+> >  	tristate "SDHCI OF support for the Atmel SDMMC controller"
+> >  	depends on MMC_SDHCI_PLTFM
+> > diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
+> > index 451c25fc2c69..3ee59d5802cf 100644
+> > --- a/drivers/mmc/host/Makefile
+> > +++ b/drivers/mmc/host/Makefile
+> > @@ -90,6 +90,7 @@ obj-$(CONFIG_MMC_SDHCI_DOVE)		+= sdhci-dove.o
+> >  obj-$(CONFIG_MMC_SDHCI_TEGRA)		+= sdhci-tegra.o
+> >  obj-$(CONFIG_MMC_SDHCI_OF_ARASAN)	+= sdhci-of-arasan.o
+> >  obj-$(CONFIG_MMC_SDHCI_OF_ASPEED)	+= sdhci-of-aspeed.o
+> > +obj-$(CONFIG_MMC_SDHCI_OF_ASPEED_TEST)	+= sdhci-of-aspeed-test.o
+> >  obj-$(CONFIG_MMC_SDHCI_OF_AT91)		+= sdhci-of-at91.o
+> >  obj-$(CONFIG_MMC_SDHCI_OF_ESDHC)	+= sdhci-of-esdhc.o
+> >  obj-$(CONFIG_MMC_SDHCI_OF_HLWD)		+= sdhci-of-hlwd.o
+> > diff --git a/drivers/mmc/host/sdhci-of-aspeed-test.c b/drivers/mmc/host/sdhci-of-aspeed-test.c
+> > new file mode 100644
+> > index 000000000000..fb79b278fb81
+> > --- /dev/null
+> > +++ b/drivers/mmc/host/sdhci-of-aspeed-test.c
+> > @@ -0,0 +1,100 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/* Copyright (C) 2020 IBM Corp. */
+> > +
+> > +#include <kunit/test.h>
+> > +
+> > +#include "sdhci-of-aspeed.c"
+> 
+> I am not sure including like that is advisable.
 
-And now the drm-intel tree.
+Yeah I wasn't convinced by it either, but I was just running the tests under 
+qemu and they did what I expected.
 
-I have used the drm-intel tree from next-20210108 for today.
---=20
-Cheers,
-Stephen Rothwell
+> Did you consider instead
+> doing it the other way around i.e. adding an include to the bottom of
+> sdhci-of-aspeed.c?
 
---Sig_/VbNUJrqU8Z1uA+OMxwmXnXl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+No, I didn't. I'll switch to this approach.
 
------BEGIN PGP SIGNATURE-----
+Thanks!
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/7lEYACgkQAVBC80lX
-0Gy0/gf9G7vW66eTK+izMbymxovjz3qNZPdMKQMRJtVY+9BmywvLdhb2/rQ2Jg9j
-7tdZkmqxV9aILccdwl600Gv77n8pdxo6v0gxdRIh4EggINDYs+RyytyUWa9nT0vf
-ElPag0eHJWvwgrHAjj/11vjqoBvR6kR/5JWIrTZ3XZW+F/BpNShXHy8U94EFaqt9
-PIWejalakASQCEmUzX6n6WM87Nb7DoTiaQkfRPaAqnovFhhG5Q/jj9Y4fDki+Lca
-NObjHxJINksH9/RwNYCQELv8X3okxfbUHc/E8JKL6Ya8xFzNIoPT4qnVW4yqsctq
-6Z0bppzxFI29q0OJc1tJi4iMEU+XVg==
-=AZPL
------END PGP SIGNATURE-----
-
---Sig_/VbNUJrqU8Z1uA+OMxwmXnXl--
+Andrew
