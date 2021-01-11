@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5A82F14C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4341F2F14C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727824AbhAKNaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:30:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42418 "EHLO mail.kernel.org"
+        id S1731911AbhAKN3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:29:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732700AbhAKN3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:29:44 -0500
+        id S1732761AbhAKN3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:29:45 -0500
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 658672222B;
-        Mon, 11 Jan 2021 13:28:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1307C223E8;
+        Mon, 11 Jan 2021 13:28:29 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94)
         (envelope-from <maz@kernel.org>)
-        id 1kyxFC-006gPD-0r; Mon, 11 Jan 2021 13:28:26 +0000
+        id 1kyxFD-006gPD-CK; Mon, 11 Jan 2021 13:28:27 +0000
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         linux-kernel@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Julien Thierry <julien.thierry.kdev@gmail.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         kernel-team@android.com
-Subject: [PATCH v3 08/21] arm64: Move SCTLR_EL1 initialisation to EL-agnostic code
-Date:   Mon, 11 Jan 2021 13:27:58 +0000
-Message-Id: <20210111132811.2455113-9-maz@kernel.org>
+Subject: [PATCH v3 09/21] arm64: cpufeature: Add global feature override facility
+Date:   Mon, 11 Jan 2021 13:27:59 +0000
+Message-Id: <20210111132811.2455113-10-maz@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210111132811.2455113-1-maz@kernel.org>
 References: <20210111132811.2455113-1-maz@kernel.org>
@@ -54,45 +54,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can now move the initial SCTLR_EL1 setup to be used for both
-EL1 and EL2 setup.
+Add a facility to globally override a feature, no matter what
+the HW says. Yes, this is dangerous.
+
+Nothing uses this yet, so we are pretty safe. For now.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- arch/arm64/kernel/head.S | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ arch/arm64/include/asm/cpufeature.h |  2 ++
+ arch/arm64/kernel/cpufeature.c      | 26 +++++++++++++++++++++-----
+ 2 files changed, 23 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index 36212c05df42..b425d2587cdb 100644
---- a/arch/arm64/kernel/head.S
-+++ b/arch/arm64/kernel/head.S
-@@ -479,13 +479,14 @@ EXPORT_SYMBOL(kimage_vaddr)
-  * booted in EL1 or EL2 respectively.
-  */
- SYM_FUNC_START(init_kernel_el)
-+	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
-+	msr	sctlr_el1, x0
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index 9a555809b89c..465d2cb63bfc 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -75,6 +75,8 @@ struct arm64_ftr_reg {
+ 	u64				sys_val;
+ 	u64				user_val;
+ 	const struct arm64_ftr_bits	*ftr_bits;
++	u64				*override_val;
++	u64				*override_mask;
+ };
+ 
+ extern struct arm64_ftr_reg arm64_ftr_reg_ctrel0;
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index e99eddec0a46..492321054bd5 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -544,13 +544,17 @@ static const struct arm64_ftr_bits ftr_raz[] = {
+ 	ARM64_FTR_END,
+ };
+ 
+-#define ARM64_FTR_REG(id, table) {		\
+-	.sys_id = id,				\
+-	.reg = 	&(struct arm64_ftr_reg){	\
+-		.name = #id,			\
+-		.ftr_bits = &((table)[0]),	\
++#define ARM64_FTR_REG_OVERRIDE(id, table, v, m) {		\
++		.sys_id = id,					\
++		.reg = 	&(struct arm64_ftr_reg){		\
++			.name = #id,				\
++			.ftr_bits = &((table)[0]),		\
++			.override_val = v,			\
++			.override_mask = m,			\
+ 	}}
+ 
++#define ARM64_FTR_REG(id, table) ARM64_FTR_REG_OVERRIDE(id, table, NULL, NULL)
 +
- 	mrs	x0, CurrentEL
- 	cmp	x0, #CurrentEL_EL2
- 	b.eq	init_el2
+ static const struct __ftr_reg_entry {
+ 	u32			sys_id;
+ 	struct arm64_ftr_reg 	*reg;
+@@ -786,6 +790,18 @@ static void __init init_cpu_ftr_reg(u32 sys_reg, u64 new)
  
- SYM_INNER_LABEL(init_el1, SYM_L_LOCAL)
--	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
--	msr	sctlr_el1, x0
- 	isb
- 	mov_q	x0, INIT_PSTATE_EL1
- 	msr	spsr_el1, x0
-@@ -494,9 +495,6 @@ SYM_INNER_LABEL(init_el1, SYM_L_LOCAL)
- 	eret
+ 	val &= valid_mask;
  
- SYM_INNER_LABEL(init_el2, SYM_L_LOCAL)
--	mov_q	x0, INIT_SCTLR_EL1_MMU_OFF
--	msr	sctlr_el1, x0
--
- 	mov_q	x0, HCR_HOST_NVHE_FLAGS
- 	msr	hcr_el2, x0
- 	isb
++	if (reg->override_mask && reg->override_val) {
++		u64 override = val;
++		override &= ~*reg->override_mask;
++		override |= (*reg->override_val & *reg->override_mask);
++
++		if (val != override)
++			pr_warn("%s: forced from %016llx to %016llx\n",
++				reg->name, val, override);
++
++		val = override;
++	}
++
+ 	reg->sys_val = val;
+ 	reg->strict_mask = strict_mask;
+ 	reg->user_mask = user_mask;
 -- 
 2.29.2
 
