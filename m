@@ -2,109 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CBA52F1805
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:23:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 814D12F1819
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733026AbhAKOXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:23:09 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:46732 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732824AbhAKOXI (ORCPT
+        id S2388319AbhAKOYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:24:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26931 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388036AbhAKOYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:23:08 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10BEMPp4034887;
-        Mon, 11 Jan 2021 08:22:25 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1610374945;
-        bh=DME9XORExNjNrwApyDZ4ui75afAeH4B61CwZ4kIZ+po=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=myIpT0hvXZCQ+pjVHUShP0V6uLWvNnMGLwf4uLqhQLiMY9JU8tNrNtGGWZCuTgbO3
-         OrgaJ7svo2ISXqIiBBSgaFnLFW+aTfPF6GL1fXOXz7rWWZTu0OQSEHHBSy3aQ786J2
-         PHMuChmQavRsjXvdQH3lexXZd1Rq5QZnpaPm4v10=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10BEMPVI031018
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 11 Jan 2021 08:22:25 -0600
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 11
- Jan 2021 08:22:25 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 11 Jan 2021 08:22:25 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10BEMOMV019519;
-        Mon, 11 Jan 2021 08:22:25 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-CC:     Nishanth Menon <nm@ti.com>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 0/6] PCI: J7200/J721E PCIe bindings
-Date:   Mon, 11 Jan 2021 08:22:24 -0600
-Message-ID: <161037479685.21603.17479522264383929681.b4-ty@ti.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210105151421.23237-1-kishon@ti.com>
-References: <20210105151421.23237-1-kishon@ti.com>
+        Mon, 11 Jan 2021 09:24:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610374962;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gI8XHNu0lkd3sJIe8skJ03bmA6HUK+N9Xsm4VZa0VaE=;
+        b=H5w0Jssfe0dlcxeRjSLmR9HOxAypiF9sT53nptMk/pCi7uNJogXvouMq7TZwm6Pr8Jlc6M
+        hXwit46XOUq4PQn+2Xe0TmnbxXaH1LgXjenmf4jCshYmEy5600tgFYgYVFtjhL5WqhHXby
+        BRRz1gr47qRVY55yMqGn8xiBvki3kiw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-285-umpc9rAtNXqUC3wIZ2CICA-1; Mon, 11 Jan 2021 09:22:37 -0500
+X-MC-Unique: umpc9rAtNXqUC3wIZ2CICA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE147107AD3A;
+        Mon, 11 Jan 2021 14:22:32 +0000 (UTC)
+Received: from trippy.localdomain (ovpn-113-111.rdu2.redhat.com [10.10.113.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B5D555C224;
+        Mon, 11 Jan 2021 14:22:25 +0000 (UTC)
+Message-ID: <41dc7795afda9f776d8cd0d3075f776cf586e97c.camel@redhat.com>
+Subject: Re: Old platforms: bring out your dead
+From:   Mark Salter <msalter@redhat.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Date:   Mon, 11 Jan 2021 09:22:25 -0500
+In-Reply-To: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+Organization: Red Hat, Inc
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Jan 2021 20:44:15 +0530, Kishon Vijay Abraham I wrote:
-> Patch series adds DT nodes in order to get PCIe working in J7200.
-> Also includes couple of fixes for J721e.
-> 
-> v1 of the patch series can be found @ [1]
-> v2 of the patch series can be found @ [2]
-> v3 of the patch series can be found @ [3]
-> 
-> [...]
+On Fri, 2021-01-08 at 23:55 +0100, Arnd Bergmann wrote:
+> * c6x: Added in 2011, this has seen very few updates since, but
+>     Mark still Acks patches when they come. Like most other DSP platforms,
+>     the model of running Linux on a DSP appears to have been obsoleted
+>     by using Linux on ARM with on-chip DSP cores running bare-metal code.
 
-Hi Kishon Vijay Abraham I,
+Hi Arnd,
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+So this has been on my mind for a while now. I no longer have working hw
+for c6x and TI hasn't been forthcoming with replacements. I'm totally fine
+with removing it from mainline. In any case, I'm not really in a position
+to go forward as maintainer.
 
-[1/6] arm64: dts: ti: k3-j721e-main: Fix supported max outbound regions
-      commit: 0e3cfb868137cf7ced91d7dc709961000c0dae29
-[2/6] arm64: dts: ti: k3-j721e-main: Remove "syscon" nodes added for pcieX_ctrl
-      commit: edb96779f3bcbe348f82b458077de0fb96118233
-[3/6] arm64: dts: ti: k3-j7200-main: Add SERDES and WIZ device tree node
-      commit: 4c1b22a953d9f8af4d5c2f238fb74dc190d92f04
-[4/6] arm64: dts: ti: k3-j7200-main: Add PCIe device tree node
-      commit: 3276d9f53cf660f8ed60d98918170670d0ca6e54
-[5/6] arm64: dts: ti: k3-j7200-common-proc-board: Enable SERDES0
-      commit: 429c0259f17f4fdf9c0beb5423b0c8f6c2ea2e8c
-[6/6] arm64: dts: ti: k3-j7200-common-proc-board: Enable PCIe
-      commit: 3a6319df506f1a821abad2c71a580a2f7b78a304
+Mark
 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
