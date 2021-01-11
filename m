@@ -2,262 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD842F0D76
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 08:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A8B52F0D6C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 08:48:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727868AbhAKHpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 02:45:34 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:51743 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727850AbhAKHpb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 02:45:31 -0500
-X-UUID: 58659cfd7b844db080945c739d79cecb-20210111
-X-UUID: 58659cfd7b844db080945c739d79cecb-20210111
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 811508669; Mon, 11 Jan 2021 15:44:10 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 11 Jan 2021 15:44:09 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 11 Jan 2021 15:44:08 +0800
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Subject: [PATCH v3, 15/15] drm/mediatek: add support for mediatek SOC MT8192
-Date:   Mon, 11 Jan 2021 15:43:51 +0800
-Message-ID: <1610351031-21133-16-git-send-email-yongqiang.niu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1610351031-21133-1-git-send-email-yongqiang.niu@mediatek.com>
-References: <1610351031-21133-1-git-send-email-yongqiang.niu@mediatek.com>
+        id S1727788AbhAKHpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 02:45:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55024 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727741AbhAKHpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 02:45:05 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 00397AD6A;
+        Mon, 11 Jan 2021 07:44:22 +0000 (UTC)
+To:     KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     airlied@linux.ie, tommy_huang@aspeedtech.com,
+        jenmin_yuan@aspeedtech.com, airlied@redhat.com,
+        arc_sung@aspeedtech.com
+References: <20210111064320.72780-1-kuohsiang_chou@aspeedtech.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH] drm/ast: Disable fast reset after DRAM initial
+Message-ID: <88f197b6-4df8-76ca-ec31-7f8f739f161e@suse.de>
+Date:   Mon, 11 Jan 2021 08:44:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <20210111064320.72780-1-kuohsiang_chou@aspeedtech.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="VTXPfHnMJUypUAkRAZXoX0g4VffYM8VYU"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add support for mediatek SOC MT8192
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--VTXPfHnMJUypUAkRAZXoX0g4VffYM8VYU
+Content-Type: multipart/mixed; boundary="LBj3fJpi9mJIbX0X9L5LAn7kJSJPvNGKq";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc: airlied@linux.ie, tommy_huang@aspeedtech.com, jenmin_yuan@aspeedtech.com,
+ airlied@redhat.com, arc_sung@aspeedtech.com
+Message-ID: <88f197b6-4df8-76ca-ec31-7f8f739f161e@suse.de>
+Subject: Re: [PATCH] drm/ast: Disable fast reset after DRAM initial
+References: <20210111064320.72780-1-kuohsiang_chou@aspeedtech.com>
+In-Reply-To: <20210111064320.72780-1-kuohsiang_chou@aspeedtech.com>
 
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
----
- drivers/gpu/drm/mediatek/mtk_disp_ccorr.c    |  6 ++++
- drivers/gpu/drm/mediatek/mtk_disp_ovl.c      | 20 +++++++++++++
- drivers/gpu/drm/mediatek/mtk_disp_postmask.c |  1 +
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c     |  6 ++++
- drivers/gpu/drm/mediatek/mtk_drm_drv.c       | 42 ++++++++++++++++++++++++++++
- 5 files changed, 75 insertions(+)
+--LBj3fJpi9mJIbX0X9L5LAn7kJSJPvNGKq
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c b/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c
-index 755e75b..da3fd98 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ccorr.c
-@@ -221,9 +221,15 @@ static int mtk_disp_ccorr_remove(struct platform_device *pdev)
- 	.matrix_bits = CCORR_MATRIX_BITS,
- };
- 
-+static const struct mtk_disp_ccorr_data mt8192_ccorr_driver_data = {
-+	.matrix_bits = 13,
-+};
-+
- static const struct of_device_id mtk_disp_ccorr_driver_dt_match[] = {
- 	{ .compatible = "mediatek,mt8183-disp-ccorr",
- 	  .data = &mt8183_ccorr_driver_data},
-+	{ .compatible = "mediatek,mt8192-disp-ccorr",
-+	  .data = &mt8192_ccorr_driver_data},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_ccorr_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-index 8e7f494..4e6679e 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
-@@ -457,6 +457,22 @@ static int mtk_disp_ovl_remove(struct platform_device *pdev)
- 	.fmt_rgb565_is_0 = true,
- };
- 
-+static const struct mtk_disp_ovl_data mt8192_ovl_driver_data = {
-+	.addr = DISP_REG_OVL_ADDR_MT8173,
-+	.gmc_bits = 10,
-+	.layer_nr = 4,
-+	.fmt_rgb565_is_0 = true,
-+	.smi_id_en = true,
-+};
-+
-+static const struct mtk_disp_ovl_data mt8192_ovl_2l_driver_data = {
-+	.addr = DISP_REG_OVL_ADDR_MT8173,
-+	.gmc_bits = 10,
-+	.layer_nr = 2,
-+	.fmt_rgb565_is_0 = true,
-+	.smi_id_en = true,
-+};
-+
- static const struct of_device_id mtk_disp_ovl_driver_dt_match[] = {
- 	{ .compatible = "mediatek,mt2701-disp-ovl",
- 	  .data = &mt2701_ovl_driver_data},
-@@ -466,6 +482,10 @@ static int mtk_disp_ovl_remove(struct platform_device *pdev)
- 	  .data = &mt8183_ovl_driver_data},
- 	{ .compatible = "mediatek,mt8183-disp-ovl-2l",
- 	  .data = &mt8183_ovl_2l_driver_data},
-+	{ .compatible = "mediatek,mt8192-disp-ovl",
-+	  .data = &mt8192_ovl_driver_data},
-+	{ .compatible = "mediatek,mt8192-disp-ovl-2l",
-+	  .data = &mt8192_ovl_2l_driver_data},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_ovl_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_postmask.c b/drivers/gpu/drm/mediatek/mtk_disp_postmask.c
-index 736224c..3b38157 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_postmask.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_postmask.c
-@@ -145,6 +145,7 @@ static int mtk_disp_postmask_remove(struct platform_device *pdev)
- }
- 
- static const struct of_device_id mtk_disp_postmask_driver_dt_match[] = {
-+	{ .compatible = "mediatek,mt8192-disp-postmask"},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_postmask_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-index e914e3a..b160ebe 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-@@ -364,6 +364,10 @@ static int mtk_disp_rdma_remove(struct platform_device *pdev)
- 	.fifo_size = 5 * SZ_1K,
- };
- 
-+static const struct mtk_disp_rdma_data mt8192_rdma_driver_data = {
-+	.fifo_size = 5 * SZ_1K,
-+};
-+
- static const struct of_device_id mtk_disp_rdma_driver_dt_match[] = {
- 	{ .compatible = "mediatek,mt2701-disp-rdma",
- 	  .data = &mt2701_rdma_driver_data},
-@@ -371,6 +375,8 @@ static int mtk_disp_rdma_remove(struct platform_device *pdev)
- 	  .data = &mt8173_rdma_driver_data},
- 	{ .compatible = "mediatek,mt8183-disp-rdma",
- 	  .data = &mt8183_rdma_driver_data},
-+	{ .compatible = "mediatek,mt8192-disp-rdma",
-+	  .data = &mt8192_rdma_driver_data},
- 	{},
- };
- MODULE_DEVICE_TABLE(of, mtk_disp_rdma_driver_dt_match);
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index 79e86f7..24ce37c 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -149,6 +149,25 @@
- 	DDP_COMPONENT_DPI0,
- };
- 
-+static const enum mtk_ddp_comp_id mt8192_mtk_ddp_main[] = {
-+	DDP_COMPONENT_OVL0,
-+	DDP_COMPONENT_OVL_2L0,
-+	DDP_COMPONENT_RDMA0,
-+	DDP_COMPONENT_COLOR0,
-+	DDP_COMPONENT_CCORR,
-+	DDP_COMPONENT_AAL0,
-+	DDP_COMPONENT_GAMMA,
-+	DDP_COMPONENT_POSTMASK0,
-+	DDP_COMPONENT_DITHER,
-+	DDP_COMPONENT_DSI0,
-+};
-+
-+static const enum mtk_ddp_comp_id mt8192_mtk_ddp_ext[] = {
-+	DDP_COMPONENT_OVL_2L2,
-+	DDP_COMPONENT_RDMA4,
-+	DDP_COMPONENT_DPI0,
-+};
-+
- static const struct mtk_mmsys_driver_data mt2701_mmsys_driver_data = {
- 	.main_path = mt2701_mtk_ddp_main,
- 	.main_len = ARRAY_SIZE(mt2701_mtk_ddp_main),
-@@ -188,6 +207,13 @@
- 	.ext_len = ARRAY_SIZE(mt8183_mtk_ddp_ext),
- };
- 
-+static const struct mtk_mmsys_driver_data mt8192_mmsys_driver_data = {
-+	.main_path = mt8192_mtk_ddp_main,
-+	.main_len = ARRAY_SIZE(mt8192_mtk_ddp_main),
-+	.ext_path = mt8192_mtk_ddp_ext,
-+	.ext_len = ARRAY_SIZE(mt8192_mtk_ddp_ext),
-+};
-+
- static int mtk_drm_kms_init(struct drm_device *drm)
- {
- 	struct mtk_drm_private *private = drm->dev_private;
-@@ -406,22 +432,32 @@ static void mtk_drm_unbind(struct device *dev)
- 	  .data = (void *)MTK_DISP_OVL },
- 	{ .compatible = "mediatek,mt8183-disp-ovl-2l",
- 	  .data = (void *)MTK_DISP_OVL_2L },
-+	{ .compatible = "mediatek,mt8192-disp-ovl",
-+	  .data = (void *)MTK_DISP_OVL },
-+	{ .compatible = "mediatek,mt8192-disp-ovl-2l",
-+	  .data = (void *)MTK_DISP_OVL_2L },
- 	{ .compatible = "mediatek,mt2701-disp-rdma",
- 	  .data = (void *)MTK_DISP_RDMA },
- 	{ .compatible = "mediatek,mt8173-disp-rdma",
- 	  .data = (void *)MTK_DISP_RDMA },
- 	{ .compatible = "mediatek,mt8183-disp-rdma",
- 	  .data = (void *)MTK_DISP_RDMA },
-+	{ .compatible = "mediatek,mt8192-disp-rdma",
-+	  .data = (void *)MTK_DISP_RDMA },
- 	{ .compatible = "mediatek,mt8173-disp-wdma",
- 	  .data = (void *)MTK_DISP_WDMA },
- 	{ .compatible = "mediatek,mt8183-disp-ccorr",
- 	  .data = (void *)MTK_DISP_CCORR },
-+	{ .compatible = "mediatek,mt8192-disp-ccorr",
-+	  .data = (void *)MTK_DISP_CCORR },
- 	{ .compatible = "mediatek,mt2701-disp-color",
- 	  .data = (void *)MTK_DISP_COLOR },
- 	{ .compatible = "mediatek,mt8173-disp-color",
- 	  .data = (void *)MTK_DISP_COLOR },
- 	{ .compatible = "mediatek,mt8173-disp-aal",
- 	  .data = (void *)MTK_DISP_AAL},
-+	{ .compatible = "mediatek,mt8192-disp-aal",
-+	  .data = (void *)MTK_DISP_AAL},
- 	{ .compatible = "mediatek,mt8173-disp-gamma",
- 	  .data = (void *)MTK_DISP_GAMMA, },
- 	{ .compatible = "mediatek,mt8183-disp-gamma",
-@@ -450,12 +486,16 @@ static void mtk_drm_unbind(struct device *dev)
- 	  .data = (void *)MTK_DISP_MUTEX },
- 	{ .compatible = "mediatek,mt8183-disp-mutex",
- 	  .data = (void *)MTK_DISP_MUTEX },
-+	{ .compatible = "mediatek,mt8192-disp-mutex",
-+	  .data = (void *)MTK_DISP_MUTEX },
- 	{ .compatible = "mediatek,mt2701-disp-pwm",
- 	  .data = (void *)MTK_DISP_BLS },
- 	{ .compatible = "mediatek,mt8173-disp-pwm",
- 	  .data = (void *)MTK_DISP_PWM },
- 	{ .compatible = "mediatek,mt8173-disp-od",
- 	  .data = (void *)MTK_DISP_OD },
-+	{ .compatible = "mediatek,mt8192-disp-postmask",
-+	  .data = (void *)MTK_DISP_POSTMASK },
- 	{ }
- };
- 
-@@ -470,6 +510,8 @@ static void mtk_drm_unbind(struct device *dev)
- 	  .data = &mt8173_mmsys_driver_data},
- 	{ .compatible = "mediatek,mt8183-mmsys",
- 	  .data = &mt8183_mmsys_driver_data},
-+	{ .compatible = "mediatek,mt8192-mmsys",
-+	 .data = &mt8192_mmsys_driver_data},
- 	{ }
- };
- 
--- 
-1.8.1.1.dirty
+Hi
 
+Am 11.01.21 um 07:43 schrieb KuoHsiang Chou:
+> [Bug][AST2500]
+> When AST2500 acts as stand-alone VGA so that DRAM and DVO initializatio=
+n
+> have to be achieved by VGA driver with P2A (PCI to AHB) enabling.
+> However, HW suggests disable Fast reset mode after DRAM initializaton,
+> because fast reset mode is mainly designed for ARM ICE debugger.
+> Once Fast reset is checked as enabling, WDT (Watch Dog Timer) should be=
+
+> first enabled to avoid system deadlock before disable fast reset mode.
+>=20
+> Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+> ---
+>   drivers/gpu/drm/ast/ast_drv.h  |  1 +
+>   drivers/gpu/drm/ast/ast_main.c |  4 ++
+>   drivers/gpu/drm/ast/ast_post.c | 72 ++++++++++++++++++++++-----------=
+-
+>   3 files changed, 51 insertions(+), 26 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_dr=
+v.h
+> index da6dfb677540..8bdd1482370d 100644
+> --- a/drivers/gpu/drm/ast/ast_drv.h
+> +++ b/drivers/gpu/drm/ast/ast_drv.h
+> @@ -320,6 +320,7 @@ bool ast_is_vga_enabled(struct drm_device *dev);
+>   void ast_post_gpu(struct drm_device *dev);
+>   u32 ast_mindwm(struct ast_private *ast, u32 r);
+>   void ast_moutdwm(struct ast_private *ast, u32 r, u32 v);
+> +void patch_ahb_ast2500(struct ast_private *ast);
+
+The function name should be named ast_patch_ahb_2500() because it's not=20
+static.
+
+>   /* ast dp501 */
+>   void ast_set_dp501_video_output(struct drm_device *dev, u8 mode);
+>   bool ast_backup_fw(struct drm_device *dev, u8 *addr, u32 size);
+> diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_m=
+ain.c
+> index 3775fe26f792..3c072c6589a2 100644
+> --- a/drivers/gpu/drm/ast/ast_main.c
+> +++ b/drivers/gpu/drm/ast/ast_main.c
+> @@ -96,6 +96,10 @@ static void ast_detect_config_mode(struct drm_device=
+ *dev, u32 *scu_rev)
+>   	jregd0 =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff)=
+;
+>   	jregd1 =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd1, 0xff)=
+;
+>   	if (!(jregd0 & 0x80) || !(jregd1 & 0x10)) {
+> +		/* Patch AST2500 */
+> +		if (((dev->pdev->revision & 0xF0) =3D=3D 0x40) && ((jregd0 & 0xC0) =3D=
+=3D 0))
+
+The field dev->pdev is considered deprecated. Instead, you can get the=20
+CP device from dev->dev like this
+
+struct pci_dev *pdev =3D to_pci_dev(dev->dev);
+
+It's the same instance, but dev->pdev will removed soon.
+
+> +			patch_ahb_ast2500(ast);
+> +
+>   		/* Double check it's actually working */
+>   		data =3D ast_read32(ast, 0xf004);
+>   		if (data !=3D 0xFFFFFFFF) {
+> diff --git a/drivers/gpu/drm/ast/ast_post.c b/drivers/gpu/drm/ast/ast_p=
+ost.c
+> index 8902c2f84bf9..2d121c5b2233 100644
+> --- a/drivers/gpu/drm/ast/ast_post.c
+> +++ b/drivers/gpu/drm/ast/ast_post.c
+> @@ -2026,6 +2026,33 @@ static bool ast_dram_init_2500(struct ast_privat=
+e *ast)
+>   	return true;
+>   }
+>=20
+> +void patch_ahb_ast2500(struct ast_private *ast)
+> +{
+> +	u32	data;
+> +
+> +patch_ahb_lock:
+> +	/* Clear bus lock condition */
+> +	ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
+> +	ast_moutdwm(ast, 0x1e600084, 0x00010000);
+> +	ast_moutdwm(ast, 0x1e600088, 0x00000000);
+> +	ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
+> +	data =3D ast_mindwm(ast, 0x1e6e2070);
+> +	if (data & 0x08000000) {				/* check fast reset */
+> +
+> +		ast_moutdwm(ast, 0x1E785004, 0x00000010);
+> +		ast_moutdwm(ast, 0x1E785008, 0x00004755);
+> +		ast_moutdwm(ast, 0x1E78500c, 0x00000033);
+> +		udelay(1000);
+> +	}
+> +	ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
+> +	do {
+> +		data =3D ast_mindwm(ast, 0x1e6e2000);
+> +		if (data =3D=3D 0xffffffff)
+> +			goto patch_ahb_lock;
+> +	}	while (data !=3D 1);
+> +	ast_moutdwm(ast, 0x1e6e207c, 0x08000000);		/* clear fast reset */
+> +}
+> +
+>   void ast_post_chip_2500(struct drm_device *dev)
+>   {
+>   	struct ast_private *ast =3D to_ast_private(dev);
+> @@ -2033,39 +2060,32 @@ void ast_post_chip_2500(struct drm_device *dev)=
+
+>   	u8 reg;
+>=20
+>   	reg =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff);
+> -	if ((reg & 0x80) =3D=3D 0) {/* vga only */
+> +	if ((reg & 0xC0) =3D=3D 0) {/* vga only */
+>   		/* Clear bus lock condition */
+> -		ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
+> -		ast_moutdwm(ast, 0x1e600084, 0x00010000);
+> -		ast_moutdwm(ast, 0x1e600088, 0x00000000);
+> -		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
+> -		ast_write32(ast, 0xf004, 0x1e6e0000);
+> -		ast_write32(ast, 0xf000, 0x1);
+> -		ast_write32(ast, 0x12000, 0x1688a8a8);
+> -		while (ast_read32(ast, 0x12000) !=3D 0x1)
+> -			;
+> -
+> -		ast_write32(ast, 0x10000, 0xfc600309);
+> -		while (ast_read32(ast, 0x10000) !=3D 0x1)
+> -			;
+> +		patch_ahb_ast2500(ast);
+> +
+> +		/* Disable watchdog */
+> +		ast_moutdwm(ast, 0x1E78502C, 0x00000000);
+> +		ast_moutdwm(ast, 0x1E78504C, 0x00000000);
+> +		/* Reset USB port */
+> +		ast_moutdwm(ast, 0x1E6E2090, 0x20000000);		/* add at V1.2 */
+> +		ast_moutdwm(ast, 0x1E6E2094, 0x00004000);		/* add at V1.2 */
+> +		if (ast_mindwm(ast, 0x1E6E2070) & 0x00800000) {		/* add at V1.2 */
+> +			ast_moutdwm(ast, 0x1E6E207C, 0x00800000);	/* add at V1.2 */
+> +			mdelay(100);					/* add at V1.2 */
+> +			ast_moutdwm(ast, 0x1E6E2070, 0x00800000);	/* add at V1.2 */
+> +		}							/* add at V1.2 */
+> +		/* Modify eSPI reset pin */
+> +		temp =3D ast_mindwm(ast, 0x1E6E2070);			/* add at V1.3 */
+> +		if (temp & 0x02000000) {				/* add at V1.3 */
+> +			ast_moutdwm(ast, 0x1E6E207C, 0x00004000);	/* add at V1.3 */
+> +		}
+
+Do these v1.2 and v1.3 code paths not need a version check in the code?
+
+Best regards
+Thomas
+
+>=20
+>   		/* Slow down CPU/AHB CLK in VGA only mode */
+>   		temp =3D ast_read32(ast, 0x12008);
+>   		temp |=3D 0x73;
+>   		ast_write32(ast, 0x12008, temp);
+>=20
+> -		/* Reset USB port to patch USB unknown device issue */
+> -		ast_moutdwm(ast, 0x1e6e2090, 0x20000000);
+> -		temp  =3D ast_mindwm(ast, 0x1e6e2094);
+> -		temp |=3D 0x00004000;
+> -		ast_moutdwm(ast, 0x1e6e2094, temp);
+> -		temp  =3D ast_mindwm(ast, 0x1e6e2070);
+> -		if (temp & 0x00800000) {
+> -			ast_moutdwm(ast, 0x1e6e207c, 0x00800000);
+> -			mdelay(100);
+> -			ast_moutdwm(ast, 0x1e6e2070, 0x00800000);
+> -		}
+> -
+>   		if (!ast_dram_init_2500(ast))
+>   			drm_err(dev, "DRAM init failed !\n");
+>=20
+> --
+> 2.18.4
+>=20
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--LBj3fJpi9mJIbX0X9L5LAn7kJSJPvNGKq--
+
+--VTXPfHnMJUypUAkRAZXoX0g4VffYM8VYU
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAl/8AdUFAwAAAAAACgkQlh/E3EQov+AZ
+4g/9FKX4seEh3hmrKcOrt+iTyFpS01EDqbPoBrb7Jyuu5DPaKQtifWvalE58fA2OrUOMxLQNOlhM
+sjCd6NIbgPX5IU01vuOZuQ4nq0t9L0ZdBWtskFdF+ZJqnhP9kLuZ1kl1DcS5CzptAScQMY+cENxT
+XAfvze+o/5QXyq9u5E3VdkdsY2TQMdrO259C4tAWwyFLl+Ks6k5JAIvrLg9tAlp1BmZWif90evAF
+ikQ/7LHF3VHQFaoAOhuL1XkjolZu3SIIFDRfsMCLtk1Zuw8WSoAsO+OpMWdaQIQ7dxjvPTzqUTcM
+xjDtTODQKs83E2X1PrEhO6w7jUIWHHyEXWGjcWUgsCL/UbxlwyVxAufzl1zvWVADGSudPcEPQhso
+BGqN9tHoyp0QyPR/3wuIryXjwWCSeWAzSx9FZxRM9jIpJgduq9FVLbgxgaHnI9g536XLG/lA7Tq3
+5+iZZ3bYTFoyNNhI8Bdki99PEkHiXazg1VuXHA3TSGBLKWsYotpSYiqRIwRyw/AxbYi0jXEgG9iT
+tRsO7Exb9uehgTX15Hei5UNizOuOtAEED7BTiM+K+lHAfKw9FFyrOsFjddT9wNfUJv62Dc7R4ptD
+CBhVN4o4xGVDB5HQrLapx0gqVJVHCSccZ39J6qpLKFW3D9cMxLQqK/wIp1dDsj6RPjGwVkTK1LOI
+iB4=
+=xgqy
+-----END PGP SIGNATURE-----
+
+--VTXPfHnMJUypUAkRAZXoX0g4VffYM8VYU--
