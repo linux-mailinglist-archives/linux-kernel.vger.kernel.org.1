@@ -2,182 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E761A2F1B48
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:43:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF6B2F1B53
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389073AbhAKQnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:43:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389062AbhAKQnS (ORCPT
+        id S2389118AbhAKQox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:44:53 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35009 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732142AbhAKQow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:43:18 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8400EC06179F
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 08:42:37 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id e25so507477wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 08:42:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=pnjD2UilASpN7loOYOlKYs+Pbcte4indWOVKi/fCTJg=;
-        b=jZPGYifKJXu2wyCXuOOqiam6bYFwnCgZIld3hfdNBNiId3bEdbMCzQkxliyHesCEmS
-         x6cu7r3uREiid7Hb1dctzIY7498SE+zMrR8HPJDsEgnQILuGz6BIgIgvnrXyuJ0QUoq5
-         104uS8DvTxQ8Y4KlApoJiuN2YTQfJTFv1Ef1TZsjopplyIqu1lmKCV0yLutNAtD/+79D
-         RQT1/AUVzII+CqjH3dw0cPsE33XX2ktNEHM1jVNreiTO9MfHIKusni1KNxKGlAL8g40T
-         rWR6RXsOyXsTbJ7hyZV09aXGOaYCq/Be+Sl97sP7jLbTGEL55i2/RL3N2caecholkxQa
-         w1kw==
+        Mon, 11 Jan 2021 11:44:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610383405;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e/65f+ialXh4Oqh1VlU0K0i3Gq5vr/yiWp5Ivn7C86E=;
+        b=RFW2WAT8Uo4Ai0fHOBsaAIp4TpJKFGcxjf4lBw0BuzMSZ1ayRFWoFEwBQwHBf1HciHUp6R
+        EKTm8ZqiIkOXkfhX4Z2/dqWeTPEq73IRk95/1SfbuLwG2czNSWQmrDKxM8k9V2w+16oi8K
+        AnypZEcOErr9UUd96g8dlXQxPi+a+VM=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-326-1wA5IGSwMe-r6DLvRkHfzw-1; Mon, 11 Jan 2021 11:43:20 -0500
+X-MC-Unique: 1wA5IGSwMe-r6DLvRkHfzw-1
+Received: by mail-qt1-f198.google.com with SMTP id z43so174372qtb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 08:43:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=pnjD2UilASpN7loOYOlKYs+Pbcte4indWOVKi/fCTJg=;
-        b=A9TVxvwvZqYZq/ciNZUAEPvpYAhZpWJhW/lhGfXdbn4OokZzu8cheibOq/gf3ngwzI
-         Ra+gFeshbWpMG81aDDvLMQ4IIWOybWR/YePkONgGos0wN4VtdMzDKCho+RvAnAOmBq2d
-         HDtMiVe5HszU1PeTzp4LW9PiDuzBYlzbXkd/OlZ4qeWITVbYprXVfbpv3INRE6nKOhAI
-         0qwP86ueeaHamECUGkWp7T3DtnnvsjpZrVGvfYQve2NHf4mwhSMVpraZC7AXCXDPj/Jc
-         A7RijkiYdLRzXpEjQfZtbyMLgg1okmNn8o4t1hCjvm7qP53W2f2aeuUs5z757CANUDxs
-         rxfg==
-X-Gm-Message-State: AOAM531F+NUJiPgt2ZbRsEQz0QIGv4To7fxA3lHQLCPcLzwOXDPt5djR
-        MAxSRaCvH77ghKGh6lh8Yma//g==
-X-Google-Smtp-Source: ABdhPJzApE1wVaNIEk7OP7bPmtcjgsSpWlYwuKYrzBqby7CnQK7nLd4dwQgxpqSjJJiQ2SKJafc7Mw==
-X-Received: by 2002:a7b:c145:: with SMTP id z5mr509718wmi.164.1610383356061;
-        Mon, 11 Jan 2021 08:42:36 -0800 (PST)
-Received: from dell ([91.110.221.229])
-        by smtp.gmail.com with ESMTPSA id v1sm196393wrr.48.2021.01.11.08.42.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 08:42:35 -0800 (PST)
-Date:   Mon, 11 Jan 2021 16:42:28 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v7 4/7] pwm: ntxec: Add driver for PWM function in
- Netronix EC
-Message-ID: <20210111164228.GB3575260@dell>
-References: <20210109180220.121511-1-j.neuschaefer@gmx.net>
- <20210109180220.121511-5-j.neuschaefer@gmx.net>
- <X/xKZI04ipiQCUjd@ulmo>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=e/65f+ialXh4Oqh1VlU0K0i3Gq5vr/yiWp5Ivn7C86E=;
+        b=kfqLcNAlwbp69PobiZQCetFnOZZOkz3SzNQbt10jXtOwZI7BJZRoUS6L7Ra/SnHhXn
+         7Ub+bdcvLbN8ozGRn36LCFj9kXS7qWBk3Y/IARJAYCk/VFZVTKIJ/Sfg4MIfhhmMXv3x
+         ZaYwDVoM7XfaxnrHDpyy6AjrtD+PTgSvaJOu4wxI78lruvl/O3VvxzuonQXGlXxeYSww
+         C9DCtcg6pNZXy/Hvvc8K4ETAfnhaHwz50e3ptAItf9drvQRrqNHZYIQfSTlBWwbsENBU
+         tchnKaJtahIIrIvnDq8+0mnat4PqDukhyHI/m+Z6X+TCCH/1H+5PmK2dwNlOR74wWnnD
+         udrw==
+X-Gm-Message-State: AOAM533DEw9BUTcPja2/YNNS65IurEbDaHoN8MNA8ICSCulCjyAZRnKo
+        hutk4ZoZhMRa4SGW+WAudeVnnYFkN0RtkgtZV0sR0q//vDuErNThDDzVJirlPGPbFdQssc6T42j
+        er5rCmuPiKW9fgjchErqECaD5
+X-Received: by 2002:a37:9ecc:: with SMTP id h195mr165349qke.302.1610383398588;
+        Mon, 11 Jan 2021 08:43:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJybJwjoYPSaJ+4HrIVa7HsjxVDugBHXzIiM1E9WGAvsuQII6bArqWtLnMMZD2Asu82QfFiztg==
+X-Received: by 2002:a37:9ecc:: with SMTP id h195mr165324qke.302.1610383398343;
+        Mon, 11 Jan 2021 08:43:18 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 60sm57418qth.14.2021.01.11.08.43.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 08:43:17 -0800 (PST)
+Subject: Re: [PATCH 0/8] FPGA DFL Changes for 5.12
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Moritz Fischer <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, moritzf@google.com,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Russ Weight <russell.h.weight@intel.com>,
+        "Gerlach, Matthew" <matthew.gerlach@intel.com>,
+        Sonal Santan <sonal.santan@xilinx.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Richard Gong <richard.gong@intel.com>
+References: <20210107043714.991646-1-mdf@kernel.org>
+ <80b29715-aa0a-b2ac-03af-904fc8f8be98@redhat.com>
+ <e1d30642-ce85-b9b7-e8b2-5ad4fe6338e5@redhat.com> <X/sz6lDq8WFzrRUJ@archbook>
+ <95af46d6-d123-f610-2f21-6d6de6f248e9@redhat.com>
+ <X/v2xs5Rnfw9F18E@kroah.com>
+ <9bc01a73-726f-a979-1246-6ea048961670@redhat.com>
+ <X/xmi/jJmDHnV5/N@kroah.com>
+ <7923d9dc-c503-5318-6e4f-931f8c13c1be@redhat.com>
+ <X/x4QjGyP8ssYUDI@kroah.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <fe9739cf-abc9-c0c6-933e-8447a9d197a8@redhat.com>
+Date:   Mon, 11 Jan 2021 08:43:15 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <X/x4QjGyP8ssYUDI@kroah.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <X/xKZI04ipiQCUjd@ulmo>
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Jan 2021, Thierry Reding wrote:
 
-> On Sat, Jan 09, 2021 at 07:02:17PM +0100, Jonathan Neuschäfer wrote:
-> > The Netronix EC provides a PWM output which is used for the backlight
-> > on some ebook readers. This patches adds a driver for the PWM output.
-> > 
-> > The .get_state callback is not implemented, because the PWM state can't
-> > be read back from the hardware.
-> > 
-> > Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
-> > ---
-> > v7:
-> > - no changes
-> > 
-> > v6:
-> > - https://lore.kernel.org/lkml/20201208011000.3060239-5-j.neuschaefer@gmx.net/
-> > - Move period / duty cycle setting code to a function
-> > - Rename pwmchip_to_priv to ntxec_pwm_from_chip
-> > - Set period and duty cycle only before enabling the output
-> > - Mention that duty=0, enable=1 is assumed not to happen
-> > - Interleave writes to the period and duty cycle registers, to minimize the
-> >   window of time that an inconsistent state is configured
-> > 
-> > v5:
-> > - https://lore.kernel.org/lkml/20201201011513.1627028-5-j.neuschaefer@gmx.net/
-> > - Avoid truncation of period and duty cycle to 32 bits
-> > - Make ntxec_pwm_ops const
-> > - Use regmap_multi_reg_write
-> > - Add comment about get_state to ntxec_pwm_ops
-> > - Add comments about non-atomicity of (period, duty cycle) update
-> > 
-> > v4:
-> > - https://lore.kernel.org/lkml/20201122222739.1455132-5-j.neuschaefer@gmx.net/
-> > - Document hardware/driver limitations
-> > - Only accept normal polarity
-> > - Fix a typo ("zone" -> "zero")
-> > - change MAX_PERIOD_NS to 0xffff * 125
-> > - Clamp period to the maximum rather than returning an error
-> > - Rename private struct pointer to priv
-> > - Rearrage control flow in _probe to save a few lines and a temporary variable
-> > - Add missing MODULE_ALIAS line
-> > - Spell out ODM
-> > 
-> > v3:
-> > - https://lore.kernel.org/lkml/20200924192455.2484005-5-j.neuschaefer@gmx.net/
-> > - Relicense as GPLv2 or later
-> > - Add email address to copyright line
-> > - Remove OF compatible string and don't include linux/of_device.h
-> > - Fix bogus ?: in return line
-> > - Don't use a comma after sentinels
-> > - Avoid ret |= ... pattern
-> > - Move 8-bit register conversion to ntxec.h
-> > 
-> > v2:
-> > - https://lore.kernel.org/lkml/20200905133230.1014581-6-j.neuschaefer@gmx.net/
-> > - Various grammar and style improvements, as suggested by Uwe Kleine-König,
-> >   Lee Jones, and Alexandre Belloni
-> > - Switch to regmap
-> > - Prefix registers with NTXEC_REG_
-> > - Add help text to the Kconfig option
-> > - Use the .apply callback instead of the old API
-> > - Add a #define for the time base (125ns)
-> > - Don't change device state in .probe; this avoids multiple problems
-> > - Rework division and overflow check logic to perform divisions in 32 bits
-> > - Avoid setting duty cycle to zero, to work around a hardware quirk
-> > ---
-> >  drivers/pwm/Kconfig     |   8 ++
-> >  drivers/pwm/Makefile    |   1 +
-> >  drivers/pwm/pwm-ntxec.c | 182 ++++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 191 insertions(+)
-> >  create mode 100644 drivers/pwm/pwm-ntxec.c
-> 
-> Lee, I assume you'll want to pick the whole set up into the MFD tree? If
-> so:
+On 1/11/21 8:09 AM, Greg KH wrote:
+> On Mon, Jan 11, 2021 at 07:55:24AM -0800, Tom Rix wrote:
+>> On 1/11/21 6:54 AM, Greg KH wrote:
+>>> On Mon, Jan 11, 2021 at 06:40:24AM -0800, Tom Rix wrote:
+>>>> On 1/10/21 10:57 PM, Greg KH wrote:
+>>>>> On Sun, Jan 10, 2021 at 11:43:54AM -0800, Tom Rix wrote:
+>>>>>> On 1/10/21 9:05 AM, Moritz Fischer wrote:
+>>>>>>> Tom,
+>>>>>>>
+>>>>>>> On Sun, Jan 10, 2021 at 07:46:29AM -0800, Tom Rix wrote:
+>>>>>>>> On 1/7/21 8:09 AM, Tom Rix wrote:
+>>>>>>>>> On 1/6/21 8:37 PM, Moritz Fischer wrote:
+>>>>>>>>>> This is a resend of the previous (unfortunately late) patchset of
+>>>>>>>>>> changes for FPGA DFL.
+>>>>>>>>> Is there something I can do to help ?
+>>>>>>>>>
+>>>>>>>>> I am paid to look after linux-fpga, so i have plenty of time.
+>>>>>>>>>
+>>>>>>>>> Some ideas of what i am doing now privately i can do publicly.
+>>>>>>>>>
+>>>>>>>>> 1. keep linux-fpga sync-ed to greg's branch so linux-fpga is normally in a pullable state.
+>>>>>>> Is it not? It currently points to v5.11-rc1. If I start applying patches
+>>>>>>> that require the changes that went into Greg's branch I can merge.
+>>>>>> I mean the window between when we have staged patches and when they go into Greg's branch.
+>>>>>>
+>>>>>> We don't have any now, maybe those two trival ones.
+>>>>>>
+>>>>>> Since Greg's branch moves much faster than ours, our staging branch needs to be rebased regularly until its merge.
+>>>>> Ick, no!  NEVER rebase a public branch.  Why does it matter the speed of
+>>>>> my branch vs. anyone elses?  Git handles merges very well.
+>>>>>
+>>>>> Just like Linus's branches move much faster than mine, and I don't
+>>>>> rebase my branches, you shouldn't rebase yours.
+>>>>>
+>>>>> Becides, I'm only taking _PATCHES_ for fpga changes at the moment, no
+>>>>> git pulls, so why does it matter at all for any of this?
+>>>>>
+>>>>> What is the problem you are trying to solve here?
+>>>> This 5.12 fpga patchset not making it into 5.11.
+>>> Ok, but isn't it the responsibility of the submitter to make sure they
+>>> apply properly when sending them out?
+>>>
+>>>> At some point before the 5.11 window, I tried it on next and it failed to merge.
+>>>>
+>>>> This points to needing some c/i so it does not happen again.
+>>> "again"?  Merges and the like are a totally normal thing and happen all
+>>> the time, I still fail to understand what you are trying to "solve" for
+>>> here...
+>> What can I do to help make your merges as easy as possible ?
+> I have not had any problems with merges, I've only had "problems"
+> rejecting patches for their content.
+>
+> Try helping out with patch reviews if you want, finding and fixing
+> things before I review them is usually a good idea :)
+ok.
+>
+>> Does the patchwork infra Moritz was speaking of earlier need fixing help?
+> No idea, I don't use it.
+>
+>> Any other things ?
+> What problems are you trying to solve here?  What's wrong with how this
+> subsystem is working that you are feeling needs to be addressed?
 
-Yes, I'll pick this up once we have all the Acks.
+I do not believe the issue I raised in 5.10 has made any progress.
 
-The Arm parts usually go in separately.
+If you look at the content in 5.11 we have actually regressed.
 
-> Acked-by: Thierry Reding <thierry.reding@gmail.com>
+https://lore.kernel.org/linux-fpga/3295710c-5e82-7b97-43de-99b9870a8c8c@redhat.com/
 
-Thanks.
+Over the last two releases, I have shown i have the time and interest to maintain this subsystem.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+So I am asking for
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 11b38acb4c08..269cd08f4969 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6951,7 +6951,7 @@ F:        drivers/net/ethernet/nvidia/*
+ 
+ FPGA DFL DRIVERS
+ M:     Wu Hao <hao.wu@intel.com>
+-R:     Tom Rix <trix@redhat.com>
++M:     Tom Rix <trix@redhat.com>
+ L:     linux-fpga@vger.kernel.org
+ S:     Maintained
+ F:     Documentation/ABI/testing/sysfs-bus-dfl*
+@@ -6962,7 +6962,7 @@ F:        include/uapi/linux/fpga-dfl.h
+ 
+ FPGA MANAGER FRAMEWORK
+ M:     Moritz Fischer <mdf@kernel.org>
+-R:     Tom Rix <trix@redhat.com>
++M:     Tom Rix <trix@redhat.com>
+ L:     linux-fpga@vger.kernel.org
+ S:     Maintained
+ W:     http://www.rocketboards.org
+
+And to use/maintain my fpga-next and fpga-testing as official kernel.org branches.
+
+Tom
+
+>
+> confused,
+>
+> greg k-h
+>
+
