@@ -2,131 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C102F18FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9502F1901
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:59:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389015AbhAKO6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:58:30 -0500
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:42583 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728288AbhAKO63 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:58:29 -0500
-Received: by mail-ot1-f52.google.com with SMTP id 11so17100812oty.9;
-        Mon, 11 Jan 2021 06:58:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E7t35NkDKfW6AJAxopDvtvnjqNf+LDF0wYVO4JWwW3k=;
-        b=NBHbal7YLIXwkRZ+F0yBC0iXsf/VDxFTdWgROPpLJThgF2ENs0Hico0EoA6m+fBm9t
-         XGIE2Ra3mEv00iKyzwHM8QqCr+daWRzEKZQYSzwHVn1Gg6YnCX/4xhhtt/vdrAfbIQHW
-         gR3k2bCMRzus02qg2Sa+cGEsgcVx6ijbmUyirtQ7ON/vWp6l9Kx9O2EySlhStJN6XF/k
-         BJVwff6O9BXqIPrnbkLpt8tEn3tjri31Ne3qrlQcyT9gN58u8g16K6Xz1e6hS+c23Z5+
-         CR0aPGWEUbxIS9UsAnrzLn9ZfVGH7U0hb2rUTgrUacCgH+ZQ0TEx7ziE8DY49Mwy+Wf5
-         xJhA==
-X-Gm-Message-State: AOAM532YMe16C7EiQ5xP1QS55opgTRoyLQGeYWyqCZnZ9isAAGjLYKJk
-        6HpgPpex250TxQIBEa4FdcUpmGwSpWsJvvcyGHE=
-X-Google-Smtp-Source: ABdhPJzFuSTDnqMMfBrV+MaNHGkqEHhQbvoD7ET4N8z1jcqX9D14iVLIXpgXJsOUjHyh94OVxLMJuOQsdw7RRieQsWU=
-X-Received: by 2002:a9d:745a:: with SMTP id p26mr11525956otk.206.1610377068634;
- Mon, 11 Jan 2021 06:57:48 -0800 (PST)
+        id S1731421AbhAKO7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:59:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48134 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729688AbhAKO73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 09:59:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DCF822A84
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:58:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610377128;
+        bh=ww6Gpe7YL/eMYPGsKKGWwb+jWPe4WbloNUjLWHjxwYk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Wi2/Q+JcejnwuKtdPRBQWUIcp6yobEcGApM23Mf8vbO8LuPBGY4eRc8o9BnTBnvDN
+         NK9N/cP0M4pJVsAF65SkP4amh869Rg+H0pDWym5qOjX8ZGKGszfdSR38zsj5ISzbPL
+         isuIKBa0tF2wMiecjWQ5dra74mq8Uk+UR5FpHtYrr9g9KqwwUID1ye3Im0Awtqq1uX
+         H/OfmLNmAmnweu82+dlUh9Xg7olsIaKWRZloXXNhleVxuHimWdT1VsjzVWnL6+9cX5
+         Y+tnKViiId7AJSQzSuUGCeqYx2TpOnEAVzyY1uAztKS0i2K6pJIdj8wuElVK6sKwGt
+         p532U2wrcASwg==
+Received: by mail-oi1-f174.google.com with SMTP id p5so20359990oif.7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:58:48 -0800 (PST)
+X-Gm-Message-State: AOAM530ySwxTkCK56t7P3KSVVYmOOBE0/7k9J4i8brp6lGOBqBnqBqxN
+        OAciO3pq2nd8N0XGzU5m5P3EedlPJ80zxDsNvgk=
+X-Google-Smtp-Source: ABdhPJwnoMVjzWHgU9eYBAHjcmZ+WgwC0YDN8Vt3dB8+9tcVBxhzWKbJTXPT5UH1L3pOkWQuIfov+2eaox+znBCZsAg=
+X-Received: by 2002:aca:fd91:: with SMTP id b139mr9928356oii.67.1610377127714;
+ Mon, 11 Jan 2021 06:58:47 -0800 (PST)
 MIME-Version: 1.0
-References: <alpine.LSU.2.11.2101102010200.25762@eggly.anvils> <X/xV7ZV5jzI7RvAe@ulmo>
-In-Reply-To: <X/xV7ZV5jzI7RvAe@ulmo>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 11 Jan 2021 15:57:37 +0100
-Message-ID: <CAJZ5v0iriRkEN8dVJ9gE3+Wyn_96=SNhav1QaQ59i9O0genTNQ@mail.gmail.com>
-Subject: Re: 5.11-rc device reordering breaks ThinkPad rmi4 suspend
-To:     Thierry Reding <treding@nvidia.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+ <20210111174449.86c3848cb62b7aee6b94c42b@mail.ru>
+In-Reply-To: <20210111174449.86c3848cb62b7aee6b94c42b@mail.ru>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 11 Jan 2021 15:58:29 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3bFkpT3nkfc2nimmuxSA7gNUgXGdkBOKmD7_jv1+DfQw@mail.gmail.com>
+Message-ID: <CAK8P3a3bFkpT3nkfc2nimmuxSA7gNUgXGdkBOKmD7_jv1+DfQw@mail.gmail.com>
+Subject: Re: Old platforms: bring out your dead
+To:     Alexander Shiyan <shc_work@mail.ru>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Mark Salter <msalter@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 2:43 PM Thierry Reding <treding@nvidia.com> wrote:
->
-> On Sun, Jan 10, 2021 at 08:44:13PM -0800, Hugh Dickins wrote:
-> > Hi Rafael,
+On Mon, Jan 11, 2021 at 3:48 PM Alexander Shiyan <shc_work@mail.ru> wrote:
+> On Fri, 8 Jan 2021 23:55:06 +0100 Arnd Bergmann <arnd@kernel.org> wrote:
+> > Then there are ARM platforms that are old but have still seen some work
+> > in the past years. If I hear nothing, these will all stay, but if maintainers
+> > may want to drop them anyway, I can help with that:
 > >
-> > Synaptics RMI4 SMBus touchpad on ThinkPad X1 Carbon (5th generation)
-> > fails to suspend when running 5.11-rc kernels: bisected to
-> > 5b6164d3465f ("driver core: Reorder devices on successful probe"),
-> > and reverting that fixes it.  dmesg.xz attached, but go ahead and ask
-> > me to switch on a debug option to extract further info if that may help.
->
-> Hi Hugh,
->
-> Quoting what I think are the relevant parts of that log:
->
-> [   34.373742] printk: Suspending console(s) (use no_console_suspend to debug)
-> [   34.429015] rmi4_physical rmi4-00: Failed to read irqs, code=-6
-> [   34.474973] rmi4_f01 rmi4-00.fn01: Failed to write sleep mode: -6.
-> [   34.474994] rmi4_f01 rmi4-00.fn01: Suspend failed with code -6.
-> [   34.475001] rmi4_physical rmi4-00: Failed to suspend functions: -6
-> [   34.475105] rmi4_smbus 6-002c: Failed to suspend device: -6
-> [   34.475113] PM: dpm_run_callback(): rmi_smb_suspend+0x0/0x3c returns -6
-> [   34.475130] PM: Device 6-002c failed to suspend: error -6
-> [   34.475187] PM: Some devices failed to suspend, or early wake event detected
-> [   34.480324] rmi4_f03 rmi4-00.fn03: rmi_f03_pt_write: Failed to write to F03 TX register (-6).
-> [   34.480748] rmi4_f03 rmi4-00.fn03: rmi_f03_pt_write: Failed to write to F03 TX register (-6).
-> [   34.481558] rmi4_physical rmi4-00: rmi_driver_clear_irq_bits: Failed to change enabled interrupts!
-> [   34.487935] acpi LNXPOWER:02: Turning OFF
-> [   34.488707] acpi LNXPOWER:01: Turning OFF
-> [   34.489554] rmi4_physical rmi4-00: rmi_driver_set_irq_bits: Failed to change enabled interrupts!
-> [   34.489669] psmouse: probe of serio2 failed with error -1
-> [   34.489882] OOM killer enabled.
-> [   34.489891] Restarting tasks ... done.
-> [   34.589183] PM: suspend exit
-> [   34.589839] PM: suspend entry (s2idle)
-> [   34.605884] Filesystems sync: 0.017 seconds
-> [   34.607594] Freezing user space processes ... (elapsed 0.006 seconds) done.
-> [   34.613645] OOM killer disabled.
-> [   34.613650] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
-> [   34.615482] printk: Suspending console(s) (use no_console_suspend to debug)
-> [   34.653097] rmi4_f01 rmi4-00.fn01: Failed to write sleep mode: -6.
-> [   34.653108] rmi4_f01 rmi4-00.fn01: Suspend failed with code -6.
-> [   34.653115] rmi4_physical rmi4-00: Failed to suspend functions: -6
-> [   34.653123] rmi4_smbus 6-002c: Failed to suspend device: -6
-> [   34.653129] PM: dpm_run_callback(): rmi_smb_suspend+0x0/0x3c returns -6
-> [   34.653160] PM: Device 6-002c failed to suspend: error -6
-> [   34.653174] PM: Some devices failed to suspend, or early wake event detected
-> [   34.660515] OOM killer enabled.
-> [   34.660524] Restarting tasks ...
-> [   34.661456] rmi4_physical rmi4-00: rmi_driver_set_irq_bits: Failed to change enabled interrupts!
-> [   34.661591] psmouse: probe of serio2 failed with error -1
-> [   34.669469] done.
-> [   34.748386] PM: suspend exit
->
-> I think what might be happening here is that the offending patch causes
-> some devices to be reordered in a way different to how they were ordered
-> originally and the rmi4 driver currently depends on that implicit order.
+> > * clps711x -- prehistoric, converted to multiplatform+DT in 2016, no
+> > changes since
+> I still keep this architecture up and running (currently at 5.9.0).
 
-Actually, the only possible case in which the commit in question can
-introduce suspend failures like this is when some dependency
-information is missing and so the reordering causes the ordering to
-change from the (working) implicit one.
+Ok, great. Thanks for letting us know.
 
-> Interestingly one of the bugs that the offending patch fixes is similar
-> in the failure mode but for the reverse reason: the implicit order
-> causes suspend/resume to fail.
-
-And that happens because some dependency information is missing.
-
-So we have failing cases when dependency information is missing, so
-instead of fixing those we have tried to make the core change the
-ordering after every successful probe in the hope that this will take
-care of the problem without introducing new breakage.
-
-However, it evidently has introduced new breakage and in order to fix
-it we need to figure out what dependency information is missing in the
-failing cases and put that information in, but we may as well do the
-same for the cases that are failing without the offending change.
-
-So why don't we revert the commit in question and do just that?
+       Arnd
