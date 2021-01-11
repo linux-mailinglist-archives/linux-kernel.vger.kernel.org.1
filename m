@@ -2,165 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 677E62F226A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:07:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 623262F2277
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389230AbhAKWHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 17:07:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730511AbhAKWHY (ORCPT
+        id S2389416AbhAKWKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 17:10:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43663 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388713AbhAKWKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:07:24 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4563C061786;
-        Mon, 11 Jan 2021 14:06:43 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id l7so128277qvt.4;
-        Mon, 11 Jan 2021 14:06:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=x5xp/a8CRjkMEiQyy4fYTkZWqvHateorg5bsaZ3Wm30=;
-        b=P7Dv1RfEHdKBeiAvCa1vZTHIi0rg44zYplJR17Pa4tDbdG80nPYDvnrevTzM4m0fki
-         krHzvQ8/St9guGSPhHF5vAhwIemv2wsHSdMnwdbvHta8Xi9lHOsyZUcQ6kvkrbF/mXPO
-         AX7lr3HJbn7CYPsWm1C7/KpGWGhTaHwsfuJubt3VTVRZ07zbD02sHCdYG18fuWGNFJP1
-         OCVPgN/dEi57j/nAojcGwB7R7QMmDKE2AST5+JfKb+yDWu1Fy9g+ZOFb5OEapzYs2hzA
-         o83VZMv7dmz1efVJslfYTYztgIlWZ33DpgHkVIF2bISogU/0nIZHGx4WnjJL0FtKKs/o
-         pAwA==
+        Mon, 11 Jan 2021 17:10:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610402956;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wAtnYWwrlK7tpbrs/+tnNUH4YreR07+THJRUh9/6qM8=;
+        b=Fx71VGTsaYQj1tzMpI8V7d2w5tvT5cU9yD9ch22/F7HWc7/zJPP0nOF/L96znTT22Rqijx
+        S0SwtAzzDRlp8rw14ovBvbos1ZRB5FkuM3dgp6/im7SjEEiVvHpFOJQsuHBtPCq0NGbryS
+        LCPHxIXu/LeSUBz35b+1RVUmq+Y08kY=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-105-6DsG8wt8Mbeu8wzFHbuE9Q-1; Mon, 11 Jan 2021 17:09:12 -0500
+X-MC-Unique: 6DsG8wt8Mbeu8wzFHbuE9Q-1
+Received: by mail-io1-f70.google.com with SMTP id r16so231164ioa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:09:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=x5xp/a8CRjkMEiQyy4fYTkZWqvHateorg5bsaZ3Wm30=;
-        b=oT/eioILfu2dzIjpQZIOJxRQ0dTpGayvcjGSV4Le6t9OqyKLwEAEPHDtgbeqtVm6C8
-         P0HwE0A0OPSRCnTVfTySafsD9FfCPHbkBJCc2U8QZ58+mhegRIVk8y5jCyj/gnCg5wG7
-         URiOHW/4fDAPCCcNDbqyerQBrN6n3A4Dk1g589VEORyGxFm9z1ZzekU5WqKTKb5AKg/O
-         L+T0VwrSkQnT3ko9rty0dwBj5+QL7eOJGQW5oatset0nnV9pcWKUpT+fSPnNqPF26rNw
-         AdqsRV124cl7ezSzckU0FH+zap/Uqz26Nll8E2JTazxeyF9d1/+vh0S2j5197i1HvcWp
-         9Abw==
-X-Gm-Message-State: AOAM5334oqYWWHS77wKfFPDeIj3S7gk3p1KIGs84+CuPJhIFrS7aUjV3
-        GEzX3axu+7NP/GWSqCiokJk=
-X-Google-Smtp-Source: ABdhPJzM5Xl+b6PfhkmzAQFSOE86h0AP5nocB8FO2Ljz4R4g/v8YJOvyvdErcxt248QpwR2igbu5fg==
-X-Received: by 2002:a05:6214:487:: with SMTP id ay7mr1418221qvb.37.1610402803134;
-        Mon, 11 Jan 2021 14:06:43 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id o30sm445864qtd.24.2021.01.11.14.06.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 14:06:42 -0800 (PST)
-Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
- <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <23e16d20-36eb-87d9-4473-142504ad8a95@gmail.com>
-Date:   Mon, 11 Jan 2021 16:06:41 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=wAtnYWwrlK7tpbrs/+tnNUH4YreR07+THJRUh9/6qM8=;
+        b=F70QvlCeqpthvTt79n/LmyNn3WY5wQDCxjd/c4FyfWwqu0IKboERXwBgriMa8xK6Ye
+         4KpOm6Me7um/pK+pKmpCFTfcYbjcPXTd/aZOXRLN95M7mROxwrzP8L5r5qEWw7OdMgrR
+         savJ5wR+qDrcXdWZv+XcW+DNjwbQ/eVgPjDIGaKAwg71p1vQTAIF+kpKX9b9ozcsYMqV
+         FiykiHDVAVzZ0eqfvfgPozD5LNK/e7CazN3ky7weEiEalwnpmHRJRMjSXopbiOYbNYIM
+         wuq9/lSPiDEGCDqDDOTVj6r1AWmcfyWi4KZUK2NAUYZGiaQesUX3i9qwT1WgcmPloCIF
+         NAnA==
+X-Gm-Message-State: AOAM530xTEBA9MvtPpdqwdg8Rj6s96TGkDENnSVjpJ5T5e1l6XNRywFp
+        znbJQW4EdQ2GiUGlnROspS4zsZIRzSb0A69XX5HbBJMm2/SCb4ArP82qbCgoqSJo15PdYRw0+kf
+        bKU9ZFrliZIu+7+GTfkFjBXrL
+X-Received: by 2002:a02:bb99:: with SMTP id g25mr1555074jan.11.1610402951224;
+        Mon, 11 Jan 2021 14:09:11 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxswd5YF7Eo0k165Z8e6I3dQ4wtHbxizYkFRXv1FPhiW6/Y1lObuf/ddgaiWUlhPY/R/ftasg==
+X-Received: by 2002:a02:bb99:: with SMTP id g25mr1555056jan.11.1610402951001;
+        Mon, 11 Jan 2021 14:09:11 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id m15sm692170ilh.6.2021.01.11.14.09.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 14:09:10 -0800 (PST)
+From:   trix@redhat.com
+To:     johan@kernel.org, gregkh@linuxfoundation.org,
+        natechancellor@gmail.com, ndesaulniers@google.com
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, Tom Rix <trix@redhat.com>
+Subject: [PATCH] USB: serial: mos7720: improve handling of a kmalloc failure in read_mos_reg()
+Date:   Mon, 11 Jan 2021 14:09:04 -0800
+Message-Id: <20210111220904.1035957-1-trix@redhat.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/8/21 2:41 AM, Viresh Kumar wrote:
-> Now that fdtoverlay is part of the kernel build, start using it to test
-> the unitest overlays we have by applying them statically.
-> 
-> The file overlay_base.dtb have symbols of its own and we need to apply
-> overlay.dtb to overlay_base.dtb alone first to make it work, which gives
-> us intermediate-overlay.dtb file.
-> 
-> The intermediate-overlay.dtb file along with all other overlays is them
-> applied to testcases.dtb to generate the master.dtb file.
-> 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+From: Tom Rix <trix@redhat.com>
 
-NACK to this specific patch, in its current form.
+clang static analysis reports this problem
 
-There are restrictions on applying an overlay at runtime that do not apply
-to applying an overlay to an FDT that will be loaded by the kernel during
-early boot.  Thus the unittest overlays _must_ be applied using the kernel
-overlay loading methods to test the kernel runtime overlay loading feature.
+mos7720.c:352:2: warning: Undefined or garbage value returned to caller
+        return d;
+        ^~~~~~~~
 
-I agree that testing fdtoverlay is a good idea.  I have not looked at the
-parent project to see how much testing of fdtoverlay occurs there, but I
-would prefer that fdtoverlay tests reside in the parent project if practical
-and reasonable.  If there is some reason that some fdtoverlay tests are
-more practical in the Linux kernel repository then I am open to adding
-them to the Linux kernel tree.
+In the parport_mos7715_read_data()'s call to read_mos_reg(), 'd' is
+only set after the alloc block.
 
--Frank
+	buf = kmalloc(1, GFP_KERNEL);
+	if (!buf)
+		return -ENOMEM;
 
+Although the problem is reported in parport_most7715_read_data(),
+none of the callee's of read_mos_reg() check the return status.
 
-> 
-> ---
-> Depends on:
-> 
-> https://lore.kernel.org/lkml/be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org/
-> 
-> I have kept the .dtb naming for overlays for now, lets see how we do it
-> eventually.
-> 
-> Rob/Frank, this doesn't work properly right now. Maybe I missed how
-> these overlays must be applied or there is a bug in fdtoverlay.
-> 
-> The master.dtb doesn't include any nodes from overlay_base.dtb or
-> overlay.dtb probably because 'testcase-data-2' node isn't present in
-> testcases.dtb and fdtoverlay doesn't allow applying new nodes to the
-> root node, i.e. allows new sub-nodes once it gets phandle to the parent
-> but nothing can be added to the root node itself. Though I get a feel
-> that it works while applying the nodes dynamically and it is expected to
-> work here as well.
-> 
-> (And yeah, this is my first serious attempt at updating Makefiles, I am
-> sure there is a scope of improvement here :))
-> 
-> ---
->  drivers/of/unittest-data/Makefile | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
-> 
-> diff --git a/drivers/of/unittest-data/Makefile b/drivers/of/unittest-data/Makefile
-> index 009f4045c8e4..f17bce85f65f 100644
-> --- a/drivers/of/unittest-data/Makefile
-> +++ b/drivers/of/unittest-data/Makefile
-> @@ -38,3 +38,26 @@ DTC_FLAGS_testcases += -@
->  
->  # suppress warnings about intentional errors
->  DTC_FLAGS_testcases += -Wno-interrupts_property
-> +
-> +# Apply overlays statically with fdtoverlay
-> +intermediate-overlay	:= overlay.dtb
-> +master			:= overlay_0.dtb overlay_1.dtb overlay_2.dtb \
-> +			   overlay_3.dtb overlay_4.dtb overlay_5.dtb \
-> +			   overlay_6.dtb overlay_7.dtb overlay_8.dtb \
-> +			   overlay_9.dtb overlay_10.dtb overlay_11.dtb \
-> +			   overlay_12.dtb overlay_13.dtb overlay_15.dtb \
-> +			   overlay_gpio_01.dtb overlay_gpio_02a.dtb \
-> +			   overlay_gpio_02b.dtb overlay_gpio_03.dtb \
-> +			   overlay_gpio_04a.dtb overlay_gpio_04b.dtb \
-> +			   intermediate-overlay.dtb
-> +
-> +quiet_cmd_fdtoverlay = fdtoverlay $@
-> +      cmd_fdtoverlay = $(objtree)/scripts/dtc/fdtoverlay -o $@ -i $^
-> +
-> +$(obj)/intermediate-overlay.dtb: $(obj)/overlay_base.dtb $(addprefix $(obj)/,$(intermediate-overlay))
-> +	$(call if_changed,fdtoverlay)
-> +
-> +$(obj)/master.dtb: $(obj)/testcases.dtb $(addprefix $(obj)/,$(master))
-> +	$(call if_changed,fdtoverlay)
-> +
-> +always-$(CONFIG_OF_OVERLAY) += intermediate-overlay.dtb master.dtb
-> 
+So move the clearing of data to before the malloc.
+
+Fixes: 0d130367abf5 ("USB: serial: mos7720: fix control-message error handling")
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/usb/serial/mos7720.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/usb/serial/mos7720.c b/drivers/usb/serial/mos7720.c
+index 41ee2984a0df..23e8162c768b 100644
+--- a/drivers/usb/serial/mos7720.c
++++ b/drivers/usb/serial/mos7720.c
+@@ -214,6 +214,7 @@ static int read_mos_reg(struct usb_serial *serial, unsigned int serial_portnum,
+ 	u8 *buf;
+ 	int status;
+ 
++	*data = 0;
+ 	buf = kmalloc(1, GFP_KERNEL);
+ 	if (!buf)
+ 		return -ENOMEM;
+@@ -227,7 +228,6 @@ static int read_mos_reg(struct usb_serial *serial, unsigned int serial_portnum,
+ 			"mos7720: usb_control_msg() failed: %d\n", status);
+ 		if (status >= 0)
+ 			status = -EIO;
+-		*data = 0;
+ 	}
+ 
+ 	kfree(buf);
+-- 
+2.27.0
 
