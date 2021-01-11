@@ -2,265 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F96B2F2251
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:59:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD68D2F225A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:01:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389154AbhAKV7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 16:59:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbhAKV7U (ORCPT
+        id S2389276AbhAKWAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 17:00:05 -0500
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:41898 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727484AbhAKWAD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 16:59:20 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FAE2C061794;
-        Mon, 11 Jan 2021 13:58:40 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id b5so383480pjl.0;
-        Mon, 11 Jan 2021 13:58:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aBXnKLnbF5QBJWOxzxvZrwLpPgIU33au5TIuZ8DUciQ=;
-        b=hXw9N8PpOiOjWAjoV07v/RUpwNy0/XJkbGzeSzpQAbJPwdAi2dDUp+0Qy/IcTF5GBY
-         K/14xQzFM0saAW/lY/n3dFwfqy3nmV5zeexDIEfYov0FWX2+pJGwcvCF4SJ4+625Su/4
-         bFbGa1yGRWvpx/JYjMTM7fhYzeInWgAyOaw78MLWwOEAmByb5s/Q2fHUjO7TFAtJpgEO
-         anZDYlbIAT+aqWBe7JvVoAI3ci85MmKpLxnAnGG3iNSlro7huY8YbpAG2Tf4PrUU01x9
-         YrjxwyMBIvWl/qttZ4ruaMlwolyCmG3CyPh1EfY3XVCst+oK5pX2PfRC/afZmn4jzf2l
-         EUvw==
+        Mon, 11 Jan 2021 17:00:03 -0500
+Received: by mail-oi1-f178.google.com with SMTP id 15so193732oix.8;
+        Mon, 11 Jan 2021 13:59:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aBXnKLnbF5QBJWOxzxvZrwLpPgIU33au5TIuZ8DUciQ=;
-        b=nXzqkMZWJkeQABB9Ritnn1xGnczcyZ28i8Z+efDFYbLzs1JHJCFSkqVUERHE+wMJL1
-         Xk0ALeUKbBbjZxPEF9f5edWv91rxJ04rPyJuEJFJtnQuA272aRExccB17u+APqWptrmS
-         7cP1Ze5r90JyAL2RSHad+kPJ2kf391J4CNl8ApxptYm8D8yoOzBF6/M0gPuEstkVtxUs
-         CXsPdrTxWP9ex7RZ1TuaLcayT1f/kdkMJwdMo4JWoFaQuVnc44xFpX2A0PhSvKH01iXC
-         8u0pxnl3zvO2a0gR71kr3OcqibAP5cG0DpMGyBPYTB1wtsNMmejYY9M7rlPW+wlKb3bo
-         cGzQ==
-X-Gm-Message-State: AOAM531p31SUks7UMyeTPgEHjDs8DZt1fY7RiYl7E1O9m1hhw1q9NRYX
-        vhNwQkgw4VGdt4+hUaJohw==
-X-Google-Smtp-Source: ABdhPJzNvJaV0cppcJBUw6uYQ8HHuD4/i1AtZmQuYWaq6Px2L13/5EFZpta2iEX3baeuKfj6UztUFA==
-X-Received: by 2002:a17:90a:7842:: with SMTP id y2mr991134pjl.36.1610402319904;
-        Mon, 11 Jan 2021 13:58:39 -0800 (PST)
-Received: from localhost.localdomain ([216.52.21.4])
-        by smtp.gmail.com with ESMTPSA id z13sm403883pjz.42.2021.01.11.13.58.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 11 Jan 2021 13:58:39 -0800 (PST)
-From:   Praveen Chaudhary <praveen5582@gmail.com>
-X-Google-Original-From: Praveen Chaudhary <pchaudhary@linkedin.com>
-To:     davem@davemloft.net, kuba@kernel.org, corbet@lwn.net,
-        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Zhenggen Xu <zxu@linkedin.com>
-Subject: [PATCH v0 net-next 1/1] Allow user to set metric on default route learned via Router Advertisement.
-Date:   Mon, 11 Jan 2021 13:58:29 -0800
-Message-Id: <20210111215829.3774-2-pchaudhary@linkedin.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20210111215829.3774-1-pchaudhary@linkedin.com>
-References: <20210111215829.3774-1-pchaudhary@linkedin.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=neicyE0bmSE7XtEGiUy5qH5sWNhjeDoJxOGTdmqaB5g=;
+        b=A5rlfS88l+t/TslAWGH2LClpkIp4Z/7FlsZSUZhqTrG7SZqVLSg4r3XmpX+mLJ4cTx
+         BKPkZQWkQ114jd3o0QRoRG4WsZfGu9/7wSrlmlu1v77+uIMieUjlpqOorDmmanryzTm0
+         JYTvZalnmlpvEalJeSYIggPBHajn14ebtg5WRH1+8FGLoD0tuL5R2AzhC/YMnVo/Feqn
+         /5g9aesn6fB8ABFdJN4RTiTrBaYWqBriD8WDn1wkV4DDR8xVvx4Vti3zlylS4P9hQlHt
+         j35Qv9IwKJBxXJNp+XHmgEdJ9QqAopSptBWB+YKhg5hpEonYLQRq8pJY8/GscybINhlt
+         Dxug==
+X-Gm-Message-State: AOAM533MpUZm9PSg7oLbY3wfj8TcvdkdMCFQF/PkQ+uYSp9DUlbAWZXs
+        nJviF+NYopbkHFVM1qHx1Q==
+X-Google-Smtp-Source: ABdhPJzevo/CCNCRYdP94NcRED0kgTA26btwhv9nQvKZQhV5gp1VX1y6C2fHL6jbfju5LVVZpCFwjw==
+X-Received: by 2002:aca:b656:: with SMTP id g83mr559390oif.6.1610402362661;
+        Mon, 11 Jan 2021 13:59:22 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 73sm227750otv.26.2021.01.11.13.59.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 13:59:21 -0800 (PST)
+Received: (nullmailer pid 3132674 invoked by uid 1000);
+        Mon, 11 Jan 2021 21:59:20 -0000
+Date:   Mon, 11 Jan 2021 15:59:20 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sander Vanheule <sander@svanheule.net>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Birger Koblitz <mail@birger-koblitz.de>,
+        John Crispin <john@phrozen.org>
+Subject: Re: [PATCH v3 1/4] Add support for Realtek RTL838x/RTL839x switch
+ SoCs
+Message-ID: <20210111215920.GA3121911@robh.at.kernel.org>
+References: <20201230212205.2605383-1-bert@biot.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201230212205.2605383-1-bert@biot.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For IPv4, default route is learned via DHCPv4 and user is allowed to change
-metric using config etc/network/interfaces. But for IPv6, default route can
-be learned via RA, for which, currently a fixed metric value 1024 is used.
+On Wed, Dec 30, 2020 at 10:22:02PM +0100, Bert Vermeulen wrote:
+> The RTL838x/839x family of SoCs are Realtek switches with an embedded
+> MIPS core.
+> 
+> * RTL838x - 500MHz 4kce single core - 1Gbit ports and L2 features
+> * RTL839x - 700MHz 34Kc single core - 1Gbit ports and L2 features
+> 
+> These switches, depending on the exact part number, will have anywhere
+> between 8 and 50 ports. The MIPS core is wired to a switch cpu port which
+> has a tagging feature allowing us to make use of the DSA subsystem.
+> The SoCs are somewhat basic in certain areas, getting better with more
+> advanced features on newer series.
+> 
+> The switch functionality is MMIO-mapped via a large MFD region.
+> 
+> The SoCs have the following peripherals
+> * ethernet
+> * switch
+> * uart - ns16550a
+> * spi-flash interface
+> * gpio
+> * wdt
+> * led
+> 
+> The code was derived from various vendor SDKs based on Linux v2.6
+> kernels.
+> 
+> This patchset allows us to boot RTL838x/RTL839x units with basic support.
+> Most of the other drivers are already written and functional, and work to
+> get them upstream is already in progress.
+> 
+> Signed-off-by: Birger Koblitz <mail@birger-koblitz.de>
+> Signed-off-by: Bert Vermeulen <bert@biot.com>
+> Signed-off-by: John Crispin <john@phrozen.org>
+> Signed-off-by: Sander Vanheule <sander@svanheule.net>
+> ---
+>  .../devicetree/bindings/mips/realtek-rtl.yaml | 24 ++++++
 
-Ideally, user should be able to configure metric on default route for IPv6
-similar to IPv4. This fix adds sysctl for the same.
+Generally, this should be a separate patch.
 
-Signed-off-by: Praveen Chaudhary<pchaudhary@linkedin.com>
-Signed-off-by: Zhenggen Xu<zxu@linkedin.com>
----
- Documentation/networking/ip-sysctl.rst | 18 ++++++++++++++++++
- include/linux/ipv6.h                   |  1 +
- include/net/ip6_route.h                |  3 ++-
- include/uapi/linux/ipv6.h              |  1 +
- include/uapi/linux/sysctl.h            |  1 +
- net/ipv6/addrconf.c                    | 10 ++++++++++
- net/ipv6/ndisc.c                       | 12 +++++++++---
- net/ipv6/route.c                       |  5 +++--
- 8 files changed, 45 insertions(+), 6 deletions(-)
+>  arch/mips/boot/dts/Makefile                   |  1 +
+>  arch/mips/boot/dts/realtek/rtl838x.dtsi       | 21 +++++
+>  arch/mips/boot/dts/realtek/rtl839x.dtsi       | 21 +++++
+>  arch/mips/boot/dts/realtek/rtl83xx.dtsi       | 83 +++++++++++++++++++
+>  5 files changed, 150 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mips/realtek-rtl.yaml
+>  create mode 100644 arch/mips/boot/dts/realtek/rtl838x.dtsi
+>  create mode 100644 arch/mips/boot/dts/realtek/rtl839x.dtsi
+>  create mode 100644 arch/mips/boot/dts/realtek/rtl83xx.dtsi
+> 
+> diff --git a/Documentation/devicetree/bindings/mips/realtek-rtl.yaml b/Documentation/devicetree/bindings/mips/realtek-rtl.yaml
+> new file mode 100644
+> index 000000000000..aadff8ce0f49
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mips/realtek-rtl.yaml
+> @@ -0,0 +1,24 @@
+> +# SPDX-License-Identifier: GPL-2.0-or-later OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mips/realtek-rtl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Realtek RTL83xx/93xx SoC series device tree bindings
+> +
+> +maintainers:
+> +  - Bert Vermeulen <bert@biot.com>
+> +  - Sander Vanheule <sander@svanheule.net>
+> +
+> +properties:
+> +  $nodename:
+> +    const: "/"
+> +  compatible:
+> +    oneOf:
+> +      # RTL8382-based boards
+> +      - items:
+> +          - enum:
+> +              - cisco,sg220-26
+> +          - const: realtek,rtl8382-soc
+> +
+> +additionalProperties: true
+> diff --git a/arch/mips/boot/dts/Makefile b/arch/mips/boot/dts/Makefile
+> index 0259238d7a2e..60bd7d2a9ad8 100644
+> --- a/arch/mips/boot/dts/Makefile
+> +++ b/arch/mips/boot/dts/Makefile
+> @@ -14,6 +14,7 @@ subdir-$(CONFIG_FIT_IMAGE_FDT_NI169445)	+= ni
+>  subdir-$(CONFIG_MACH_PIC32)		+= pic32
+>  subdir-$(CONFIG_ATH79)			+= qca
+>  subdir-$(CONFIG_RALINK)			+= ralink
+> +subdir-$(CONFIG_MACH_REALTEK_RTL)	+= realtek
+>  subdir-$(CONFIG_FIT_IMAGE_FDT_XILFPGA)	+= xilfpga
+>  
+>  obj-$(CONFIG_BUILTIN_DTB)	:= $(addsuffix /, $(subdir-y))
+> diff --git a/arch/mips/boot/dts/realtek/rtl838x.dtsi b/arch/mips/boot/dts/realtek/rtl838x.dtsi
+> new file mode 100644
+> index 000000000000..6cc4ff5c0d19
+> --- /dev/null
+> +++ b/arch/mips/boot/dts/realtek/rtl838x.dtsi
+> @@ -0,0 +1,21 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR BSD-2-Clause
+> +
+> +/ {
+> +	cpus {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		cpu@0 {
+> +			compatible = "mips,mips4KEc";
+> +			reg = <0>;
+> +			clocks = <&baseclk 0>;
+> +			clock-names = "cpu";
+> +		};
+> +	};
+> +
+> +	baseclk: baseclk {
+> +		compatible = "fixed-clock";
+> +		#clock-cells = <0>;
+> +		clock-frequency = <500000000>;
+> +	};
+> +};
+> diff --git a/arch/mips/boot/dts/realtek/rtl839x.dtsi b/arch/mips/boot/dts/realtek/rtl839x.dtsi
+> new file mode 100644
+> index 000000000000..2b5bad8fcf2f
+> --- /dev/null
+> +++ b/arch/mips/boot/dts/realtek/rtl839x.dtsi
+> @@ -0,0 +1,21 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR BSD-2-Clause
+> +
+> +/ {
+> +	cpus {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		cpu@0 {
+> +			compatible = "mips,mips34Kc";
+> +			reg = <0>;
+> +			clocks = <&baseclk 0>;
+> +			clock-names = "cpu";
+> +		};
+> +	};
+> +
+> +	baseclk: baseclk {
+> +		compatible = "fixed-clock";
+> +		#clock-cells = <0>;
+> +		clock-frequency = <500000000>;
+> +	};
+> +};
+> diff --git a/arch/mips/boot/dts/realtek/rtl83xx.dtsi b/arch/mips/boot/dts/realtek/rtl83xx.dtsi
+> new file mode 100644
+> index 000000000000..17fa90002e00
+> --- /dev/null
+> +++ b/arch/mips/boot/dts/realtek/rtl83xx.dtsi
+> @@ -0,0 +1,83 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later OR BSD-2-Clause
+> +
+> +/ {
+> +	#address-cells = <1>;
+> +	#size-cells = <1>;
+> +
+> +	aliases {
+> +		serial0 = &uart0;
+> +		serial1 = &uart1;
+> +	};
+> +
+> +	cpuintc: cpuintc {
+> +		compatible = "mti,cpu-interrupt-controller";
+> +		#address-cells = <0>;
+> +		#interrupt-cells = <1>;
+> +		interrupt-controller;
+> +	};
+> +
+> +	soc {
+> +		compatible = "simple-bus";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges = <0x0 0xb8000000 0x10000>;
+> +
+> +		spi: spi@1200 {
+> +			compatible = "realtek,rtl-spi";
 
-diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/networking/ip-sysctl.rst
-index dd2b12a32b73..384159081d91 100644
---- a/Documentation/networking/ip-sysctl.rst
-+++ b/Documentation/networking/ip-sysctl.rst
-@@ -1871,6 +1871,24 @@ accept_ra_defrtr - BOOLEAN
- 		- enabled if accept_ra is enabled.
- 		- disabled if accept_ra is disabled.
- 
-+accept_ra_defrtr_metric - INTEGER
-+	Route metric for default route learned in Router Advertisement. This
-+	value will be assigned as metric for the route learned via IPv6 Router
-+	Advertisement.
-+
-+	Possible values are:
-+		0:
-+			Use default value i.e. IP6_RT_PRIO_USER	1024.
-+		0xFFFFFFFF to -1:
-+			-ve values represent high route metric, value will be treated as
-+			unsigned value. This behaviour is inline with current IPv4 metric
-+			shown with commands such as "route -n" or "ip route list".
-+		1 to 0x7FFFFFF:
-+			+ve values will be used as is for route metric.
-+
-+	Functional default: enabled if accept_ra_defrtr is enabled.
-+				disabled if accept_ra_defrtr is disabled.
-+
- accept_ra_from_local - BOOLEAN
- 	Accept RA with source-address that is found on local machine
- 	if the RA is otherwise proper and able to be accepted.
-diff --git a/include/linux/ipv6.h b/include/linux/ipv6.h
-index dda61d150a13..19af90c77200 100644
---- a/include/linux/ipv6.h
-+++ b/include/linux/ipv6.h
-@@ -31,6 +31,7 @@ struct ipv6_devconf {
- 	__s32		max_desync_factor;
- 	__s32		max_addresses;
- 	__s32		accept_ra_defrtr;
-+	__s32		accept_ra_defrtr_metric;
- 	__s32		accept_ra_min_hop_limit;
- 	__s32		accept_ra_pinfo;
- 	__s32		ignore_routes_with_linkdown;
-diff --git a/include/net/ip6_route.h b/include/net/ip6_route.h
-index 2a5277758379..a470bdab2420 100644
---- a/include/net/ip6_route.h
-+++ b/include/net/ip6_route.h
-@@ -174,7 +174,8 @@ struct fib6_info *rt6_get_dflt_router(struct net *net,
- 				     struct net_device *dev);
- struct fib6_info *rt6_add_dflt_router(struct net *net,
- 				     const struct in6_addr *gwaddr,
--				     struct net_device *dev, unsigned int pref);
-+				     struct net_device *dev, unsigned int pref,
-+				     unsigned int defrtr_usr_metric);
- 
- void rt6_purge_dflt_routers(struct net *net);
- 
-diff --git a/include/uapi/linux/ipv6.h b/include/uapi/linux/ipv6.h
-index 13e8751bf24a..945de5de5144 100644
---- a/include/uapi/linux/ipv6.h
-+++ b/include/uapi/linux/ipv6.h
-@@ -189,6 +189,7 @@ enum {
- 	DEVCONF_ACCEPT_RA_RT_INFO_MIN_PLEN,
- 	DEVCONF_NDISC_TCLASS,
- 	DEVCONF_RPL_SEG_ENABLED,
-+	DEVCONF_ACCEPT_RA_DEFRTR_METRIC,
- 	DEVCONF_MAX
- };
- 
-diff --git a/include/uapi/linux/sysctl.h b/include/uapi/linux/sysctl.h
-index 458179df9b27..5e79c196e33c 100644
---- a/include/uapi/linux/sysctl.h
-+++ b/include/uapi/linux/sysctl.h
-@@ -571,6 +571,7 @@ enum {
- 	NET_IPV6_ACCEPT_SOURCE_ROUTE=25,
- 	NET_IPV6_ACCEPT_RA_FROM_LOCAL=26,
- 	NET_IPV6_ACCEPT_RA_RT_INFO_MIN_PLEN=27,
-+	NET_IPV6_ACCEPT_RA_DEFRTR_METRIC=28,
- 	__NET_IPV6_MAX
- };
- 
-diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
-index eff2cacd5209..702ec4a33936 100644
---- a/net/ipv6/addrconf.c
-+++ b/net/ipv6/addrconf.c
-@@ -205,6 +205,7 @@ static struct ipv6_devconf ipv6_devconf __read_mostly = {
- 	.max_desync_factor	= MAX_DESYNC_FACTOR,
- 	.max_addresses		= IPV6_MAX_ADDRESSES,
- 	.accept_ra_defrtr	= 1,
-+	.accept_ra_defrtr_metric = 0,
- 	.accept_ra_from_local	= 0,
- 	.accept_ra_min_hop_limit= 1,
- 	.accept_ra_pinfo	= 1,
-@@ -260,6 +261,7 @@ static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
- 	.max_desync_factor	= MAX_DESYNC_FACTOR,
- 	.max_addresses		= IPV6_MAX_ADDRESSES,
- 	.accept_ra_defrtr	= 1,
-+	.accept_ra_defrtr_metric = 0,
- 	.accept_ra_from_local	= 0,
- 	.accept_ra_min_hop_limit= 1,
- 	.accept_ra_pinfo	= 1,
-@@ -5475,6 +5477,7 @@ static inline void ipv6_store_devconf(struct ipv6_devconf *cnf,
- 	array[DEVCONF_MAX_DESYNC_FACTOR] = cnf->max_desync_factor;
- 	array[DEVCONF_MAX_ADDRESSES] = cnf->max_addresses;
- 	array[DEVCONF_ACCEPT_RA_DEFRTR] = cnf->accept_ra_defrtr;
-+	array[DEVCONF_ACCEPT_RA_DEFRTR_METRIC] = cnf->accept_ra_defrtr_metric;
- 	array[DEVCONF_ACCEPT_RA_MIN_HOP_LIMIT] = cnf->accept_ra_min_hop_limit;
- 	array[DEVCONF_ACCEPT_RA_PINFO] = cnf->accept_ra_pinfo;
- #ifdef CONFIG_IPV6_ROUTER_PREF
-@@ -6667,6 +6670,13 @@ static const struct ctl_table addrconf_sysctl[] = {
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec,
- 	},
-+	{
-+		.procname	= "accept_ra_defrtr_metric",
-+		.data		= &ipv6_devconf.accept_ra_defrtr_metric,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec,
-+	},
- 	{
- 		.procname	= "accept_ra_min_hop_limit",
- 		.data		= &ipv6_devconf.accept_ra_min_hop_limit,
-diff --git a/net/ipv6/ndisc.c b/net/ipv6/ndisc.c
-index 76717478f173..955dde8aad22 100644
---- a/net/ipv6/ndisc.c
-+++ b/net/ipv6/ndisc.c
-@@ -1180,6 +1180,7 @@ static void ndisc_router_discovery(struct sk_buff *skb)
- 	unsigned int pref = 0;
- 	__u32 old_if_flags;
- 	bool send_ifinfo_notify = false;
-+	unsigned int defrtr_usr_metric = 0;
- 
- 	__u8 *opt = (__u8 *)(ra_msg + 1);
- 
-@@ -1303,13 +1304,18 @@ static void ndisc_router_discovery(struct sk_buff *skb)
- 			return;
- 		}
- 	}
--	if (rt && lifetime == 0) {
-+	/* Set default route metric if specified by user */
-+	defrtr_usr_metric = in6_dev->cnf.accept_ra_defrtr_metric;
-+	if (defrtr_usr_metric == 0)
-+		defrtr_usr_metric = IP6_RT_PRIO_USER;
-+	/* delete the route if lifetime is 0 or if metric needs change */
-+	if (rt && ((lifetime == 0) || (rt->fib6_metric != defrtr_usr_metric)))  {
- 		ip6_del_rt(net, rt, false);
- 		rt = NULL;
- 	}
- 
--	ND_PRINTK(3, info, "RA: rt: %p  lifetime: %d, for dev: %s\n",
--		  rt, lifetime, skb->dev->name);
-+	ND_PRINTK(3, info, "RA: rt: %p  lifetime: %d, metric: %d, for dev: %s\n",
-+		  rt, lifetime, defrtr_usr_metric, skb->dev->name);
- 	if (!rt && lifetime) {
- 		ND_PRINTK(3, info, "RA: adding default router\n");
- 
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 188e114b29b4..5f177ae97e42 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -4252,11 +4252,12 @@ struct fib6_info *rt6_get_dflt_router(struct net *net,
- struct fib6_info *rt6_add_dflt_router(struct net *net,
- 				     const struct in6_addr *gwaddr,
- 				     struct net_device *dev,
--				     unsigned int pref)
-+				     unsigned int pref,
-+				     unsigned int defrtr_usr_metric)
- {
- 	struct fib6_config cfg = {
- 		.fc_table	= l3mdev_fib_table(dev) ? : RT6_TABLE_DFLT,
--		.fc_metric	= IP6_RT_PRIO_USER,
-+		.fc_metric	= defrtr_usr_metric ? defrtr_usr_metric : IP6_RT_PRIO_USER,
- 		.fc_ifindex	= dev->ifindex,
- 		.fc_flags	= RTF_GATEWAY | RTF_ADDRCONF | RTF_DEFAULT |
- 				  RTF_UP | RTF_EXPIRES | RTF_PREF(pref),
--- 
-2.29.0
+Not documented. Needs to have an SoC specific compatible.
 
+> +			reg = <0x1200 0x100>;
+> +
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			status = "disabled";
+> +		};
+> +
+> +		uart0: uart@2000 {
+
+serial@2000
+
+Build the dtb with W=1 and run 'make dtbs_check' and fix any warnings. 
+The above issue should show up.
+
+> +			compatible = "ns16550a";
+
+No quirks for this? Best to have a more specific compatible in case you 
+do.
+
+> +			reg = <0x2000 0x100>;
+> +
+> +			clock-frequency = <200000000>;
+> +
+> +			interrupt-parent = <&intc>;
+> +			interrupts = <31>;
+> +
+> +			reg-io-width = <1>;
+> +			reg-shift = <2>;
+> +			fifo-size = <1>;
+> +			no-loopback-test;
+> +
+> +			status = "disabled";
+> +		};
+> +
+> +		uart1: uart@2100 {
+> +			compatible = "ns16550a";
+> +			reg = <0x2100 0x100>;
+> +
+> +			clock-frequency = <200000000>;
+> +
+> +			interrupt-parent = <&intc>;
+> +			interrupts = <30>;
+> +
+> +			reg-io-width = <1>;
+> +			reg-shift = <2>;
+> +			fifo-size = <1>;
+> +			no-loopback-test;
+> +
+> +			status = "disabled";
+> +		};
+> +
+> +		intc: interrupt-controller@3000 {
+> +			compatible = "realtek,rtl-intc";
+
+Not documented.
+
+> +			#interrupt-cells = <1>;
+> +			interrupt-controller;
+> +			reg = <0x3000 0x20>;
+> +		};
+> +	};
+> +
+> +	switch_bus: switch-bus@bb000000 {
+> +		compatible = "simple-bus";
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +		ranges = <0x0 0xbb000000 0x10000>;
+> +	};
+> +};
+> -- 
+> 2.25.1
+> 
