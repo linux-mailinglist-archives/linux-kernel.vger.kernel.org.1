@@ -2,221 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550182F1FA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:41:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C482F1FB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:44:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404018AbhAKTlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:41:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726211AbhAKTlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:41:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0222922CAF;
-        Mon, 11 Jan 2021 19:40:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610394037;
-        bh=QSSqxmMBYWOWvJ0gjPg24CkQDuQmjj5I8Cxdpfz7z78=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=snw6TIlWtpt0LTtlJWFZ0EyO6BYKcfUdhrdJVY/KLihtswohPUvOUGzZLhHoTO6w9
-         yycm607VeTmcWBBbHXJChTAoWbpj72WJll6divf4NoohfRdBqJPBIoE3PVDnFpJFkL
-         7FnnrZYAFMMf8vx0LZ9dvzrIGbstliX3DsZtfnSdkzXsOR+ha1D8tpi59dp3tnCkSv
-         fBgRHJIqZbVnb+JRy/L+FQ2aR+XipLreSEkwqTV10CnI3rLtupIB/tUogCD70EgWtT
-         0dfYyEY1s/Y1PQ8OjmrDzI3Ht/NDejo4QuOAWpbp5NS9Ul80i38WHbGdKXaGV3/Mg8
-         Ck5oIM3+bYIkg==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        David Hildenbrand <david@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, x86@kernel.org
-Subject: [PATCH v3 2/2] mm: fix initialization of struct page for holes in memory layout
-Date:   Mon, 11 Jan 2021 21:40:17 +0200
-Message-Id: <20210111194017.22696-3-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210111194017.22696-1-rppt@kernel.org>
-References: <20210111194017.22696-1-rppt@kernel.org>
+        id S2391087AbhAKTn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:43:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387724AbhAKTn4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 14:43:56 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B1FC061794;
+        Mon, 11 Jan 2021 11:43:16 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id jx16so21556ejb.10;
+        Mon, 11 Jan 2021 11:43:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=heazb9k/m8/zIdtN3jRoAAnqyK1a1wK3ts+R6742L6M=;
+        b=OUQ39xFQqtOehkimmfAf739cawBRIfUXq7buq8L9pTI+oTRJ3bvIXwHVcWE6jhQQjo
+         XurM1fh92irZV6l+GGdJL9SBg1OgBxukzfs0olW8S9FIvE1Kfv8i32Yh9J0Dvx5Bj//E
+         yN3ZmFAL92lFx4JciAQPbuQv5Rk79nG1RF8MDWIK80DMY8C6moQghyBcwOsszppodCVB
+         6TCLYY5/tHEvrxUEjBTWVRcxdcqH3UmGrYpKm17tZlq+ho8+RRbWffnTn066q+vYrNab
+         roHQf8XBbRSxDHgBWRexLFM//N0oOmsaEBMEIy48QTokon4+JtzLtt1sgWVgNcFV5VsR
+         Q1pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=heazb9k/m8/zIdtN3jRoAAnqyK1a1wK3ts+R6742L6M=;
+        b=PmeWmhYcJaiRQfhQb8a9TyWrPdMEkGL4BRSxEqu2xoNIiwTHUZKzoD0MTvGAu8Aj4E
+         Hh7VNjOoloT8IO1yE8+bT+lQAsho5X0Lor6HwaINzT1azvgigbaRgE2kZ1nHvOQKdVny
+         l/vgZDTzGBDCu6yQZcYEs+HB42Qq2DgZIpl+RtTVRkqBiP5aDcU6xJgM3pEm6MitnpKP
+         LJzD1TX/q4q8Gt8sOTaJXhdCzsdcR9qZ1NaEiTUtEfjX9kWaE+ukf8T2+oiBaf3oxZ7b
+         UgXgicfAZ+73ym2ZKyMuS7N5JVB19h2EouEF8CXcgiZz8+L7lja3nx1shZpzLeAQopuH
+         5a5A==
+X-Gm-Message-State: AOAM5313ModPfqbS33Y0JUHTsIw7H4i9zeKtF4dU/klJyQuL5XCULfdT
+        ViQMpkJwZ2OVAydF9N5pcwAZQ0Sc3x22ZmjQa0w=
+X-Google-Smtp-Source: ABdhPJxU1h3Fa4qWWsvhta1+jAtDt3hDvEy4bC1whizOT51BBn8be0SpuiWBBHYcXoccZ+wa/cKStF3Sn8sOozF3VDY=
+X-Received: by 2002:a17:907:20a4:: with SMTP id pw4mr677910ejb.499.1610394195084;
+ Mon, 11 Jan 2021 11:43:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210105225817.1036378-1-shy828301@gmail.com> <20210105225817.1036378-3-shy828301@gmail.com>
+ <20210107001351.GD1110904@carbon.dhcp.thefacebook.com> <CAHbLzkqnLKh7L5BWdSsoX5t-DjpOwYREwY5yBXgRUqAuubueQw@mail.gmail.com>
+ <20210111193740.GB1388856@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20210111193740.GB1388856@carbon.dhcp.thefacebook.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 11 Jan 2021 11:43:03 -0800
+Message-ID: <CAHbLzkoYhB1fPyTwBtNqyppbypWuihFWMPAwNVjX0Yk_t2EUGg@mail.gmail.com>
+Subject: Re: [v3 PATCH 02/11] mm: vmscan: consolidate shrinker_maps handling code
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On Mon, Jan 11, 2021 at 11:37 AM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Mon, Jan 11, 2021 at 11:00:17AM -0800, Yang Shi wrote:
+> > On Wed, Jan 6, 2021 at 4:14 PM Roman Gushchin <guro@fb.com> wrote:
+> > >
+> > > On Tue, Jan 05, 2021 at 02:58:08PM -0800, Yang Shi wrote:
+> > > > The shrinker map management is not really memcg specific, it's just allocation
+> > >
+> > > In the current form it doesn't look so, especially because each name
+> > > has a memcg_ prefix and each function takes a memcg argument.
+> > >
+> > > It begs for some refactorings (Kirill suggested some) and renamings.
+> >
+> > BTW, do you mean the suggestion about renaming memcg_shrinker_maps to
+> > shrinker_maps? I just saw his email today since gmail filtered his
+> > emails to SPAM :-(
+>
+> Yes.
 
-There could be struct pages that are not backed by actual physical memory.
-This can happen when the actual memory bank is not a multiple of
-SECTION_SIZE or when an architecture does not register memory holes
-reserved by the firmware as memblock.memory.
-
-Such pages are currently initialized using init_unavailable_mem() function
-that iterates through PFNs in holes in memblock.memory and if there is a
-struct page corresponding to a PFN, the fields if this page are set to
-default values and the page is marked as Reserved.
-
-init_unavailable_mem() does not take into account zone and node the page
-belongs to and sets both zone and node links in struct page to zero.
-
-On a system that has firmware reserved holes in a zone above ZONE_DMA, for
-instance in a configuration below:
-
-	# grep -A1 E820 /proc/iomem
-	7a17b000-7a216fff : Unknown E820 type
-	7a217000-7bffffff : System RAM
-
-unset zone link in struct page will trigger
-
-	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
-
-because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link in
-struct page) in the same pageblock.
-
-Update init_unavailable_mem() to use zone constraints defined by an
-architecture to properly setup the zone link and use node ID of the
-adjacent range in memblock.memory to set the node link.
-
-Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather that check each PFN")
-Reported-by: Andrea Arcangeli <aarcange@redhat.com>
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- mm/page_alloc.c | 84 +++++++++++++++++++++++++++++--------------------
- 1 file changed, 50 insertions(+), 34 deletions(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index bdbec4c98173..0b56c3ca354e 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -7077,23 +7077,26 @@ void __init free_area_init_memoryless_node(int nid)
-  * Initialize all valid struct pages in the range [spfn, epfn) and mark them
-  * PageReserved(). Return the number of struct pages that were initialized.
-  */
--static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn)
-+static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn,
-+					 int zone, int nid)
- {
--	unsigned long pfn;
-+	unsigned long pfn, zone_spfn, zone_epfn;
- 	u64 pgcnt = 0;
- 
-+	zone_spfn = arch_zone_lowest_possible_pfn[zone];
-+	zone_epfn = arch_zone_highest_possible_pfn[zone];
-+
-+	spfn = clamp(spfn, zone_spfn, zone_epfn);
-+	epfn = clamp(epfn, zone_spfn, zone_epfn);
-+
- 	for (pfn = spfn; pfn < epfn; pfn++) {
- 		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
- 			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
- 				+ pageblock_nr_pages - 1;
- 			continue;
- 		}
--		/*
--		 * Use a fake node/zone (0) for now. Some of these pages
--		 * (in memblock.reserved but not in memblock.memory) will
--		 * get re-initialized via reserve_bootmem_region() later.
--		 */
--		__init_single_page(pfn_to_page(pfn), pfn, 0, 0);
-+
-+		__init_single_page(pfn_to_page(pfn), pfn, zone, nid);
- 		__SetPageReserved(pfn_to_page(pfn));
- 		pgcnt++;
- 	}
-@@ -7102,51 +7105,64 @@ static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn)
- }
- 
- /*
-- * Only struct pages that are backed by physical memory are zeroed and
-- * initialized by going through __init_single_page(). But, there are some
-- * struct pages which are reserved in memblock allocator and their fields
-- * may be accessed (for example page_to_pfn() on some configuration accesses
-- * flags). We must explicitly initialize those struct pages.
-+ * Only struct pages that correspond to ranges defined by memblock.memory
-+ * are zeroed and initialized by going through __init_single_page() during
-+ * memmap_init().
-+ *
-+ * But, there could be struct pages that correspond to holes in
-+ * memblock.memory. This can happen because of the following reasons:
-+ * - phyiscal memory bank size is not necessarily the exact multiple of the
-+ *   arbitrary section size
-+ * - early reserved memory may not be listed in memblock.memory
-+ * - memory layouts defined with memmap= kernel parameter may not align
-+ *   nicely with memmap sections
-  *
-- * This function also addresses a similar issue where struct pages are left
-- * uninitialized because the physical address range is not covered by
-- * memblock.memory or memblock.reserved. That could happen when memblock
-- * layout is manually configured via memmap=, or when the highest physical
-- * address (max_pfn) does not end on a section boundary.
-+ * Explicitly initialize those struct pages so that:
-+ * - PG_Reserved is set
-+ * - zone link is set accorging to the architecture constrains
-+ * - node is set to node id of the next populated region except for the
-+ *   trailing hole where last node id is used
-  */
--static void __init init_unavailable_mem(void)
-+static void __init init_zone_unavailable_mem(int zone)
- {
--	phys_addr_t start, end;
--	u64 i, pgcnt;
--	phys_addr_t next = 0;
-+	unsigned long start, end;
-+	int i, nid;
-+	u64 pgcnt;
-+	unsigned long next = 0;
- 
- 	/*
--	 * Loop through unavailable ranges not covered by memblock.memory.
-+	 * Loop through holes in memblock.memory and initialize struct
-+	 * pages corresponding to these holes
- 	 */
- 	pgcnt = 0;
--	for_each_mem_range(i, &start, &end) {
-+	for_each_mem_pfn_range(i, MAX_NUMNODES, &start, &end, &nid) {
- 		if (next < start)
--			pgcnt += init_unavailable_range(PFN_DOWN(next),
--							PFN_UP(start));
-+			pgcnt += init_unavailable_range(next, start, zone, nid);
- 		next = end;
- 	}
- 
- 	/*
--	 * Early sections always have a fully populated memmap for the whole
--	 * section - see pfn_valid(). If the last section has holes at the
--	 * end and that section is marked "online", the memmap will be
--	 * considered initialized. Make sure that memmap has a well defined
--	 * state.
-+	 * Last section may surpass the actual end of memory (e.g. we can
-+	 * have 1Gb section and 512Mb of RAM pouplated).
-+	 * Make sure that memmap has a well defined state in this case.
- 	 */
--	pgcnt += init_unavailable_range(PFN_DOWN(next),
--					round_up(max_pfn, PAGES_PER_SECTION));
-+	end = round_up(max_pfn, PAGES_PER_SECTION);
-+	pgcnt += init_unavailable_range(next, end, zone, nid);
- 
- 	/*
- 	 * Struct pages that do not have backing memory. This could be because
- 	 * firmware is using some of this memory, or for some other reasons.
- 	 */
- 	if (pgcnt)
--		pr_info("Zeroed struct page in unavailable ranges: %lld pages", pgcnt);
-+		pr_info("Zone %s: zeroed struct page in unavailable ranges: %lld pages", zone_names[zone], pgcnt);
-+}
-+
-+static void __init init_unavailable_mem(void)
-+{
-+	int zone;
-+
-+	for (zone = 0; zone < ZONE_MOVABLE; zone++)
-+		init_zone_unavailable_mem(zone);
- }
- #else
- static inline void __init init_unavailable_mem(void)
--- 
-2.28.0
-
+Thanks for confirming, will do it in v4.
