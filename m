@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AAF92F13DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:15:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F132F137A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732276AbhAKNPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:15:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33442 "EHLO mail.kernel.org"
+        id S1730681AbhAKNJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:09:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731804AbhAKNPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:15:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7174E2246B;
-        Mon, 11 Jan 2021 13:14:58 +0000 (UTC)
+        id S1730945AbhAKNIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:08:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 592EC21534;
+        Mon, 11 Jan 2021 13:07:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370898;
-        bh=VoLbMH8dpj/kUif6dI+kfY6B54I14mpcwZXtcniup8A=;
+        s=korg; t=1610370459;
+        bh=H3Vg39PJBb8bU4b9uFjLwWenejDhGNvVdsLhkM1vwtU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yF2P9R3ABgZmCh/SiCkBe73suxX2J05bDJAondpvRqmkTbNN5tyqwamsGTogQBmsa
-         pZnyIpgGr1q9ZJ3JBl2UGtgyW0CxZaqzXkLxHFG4thAtKLUK+gTLZ6TqIgOGcNc5fw
-         QWaDaklA6BgQtLSg43cOqObA6h+9128yVfZk8/cg=
+        b=AMK9UKUjtwgqyV131Z7WPsha4VDX/tyLY5gX+GmDD5bI4zb2rH8zfK9WLG2OHH94A
+         1Z8GZ1/g2q37Q4ABsRM4EvTWyC0bhByZJi+sBfxhrE9A2CALmuJpP6KR0ceZqOR5/i
+         BXE0maBWW3tJi/gAeq2QXpEK2KOaKrNkmXFBqQXY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunfeng Ye <yeyunfeng@huawei.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 052/145] workqueue: Kick a worker based on the actual activation of delayed works
-Date:   Mon, 11 Jan 2021 14:01:16 +0100
-Message-Id: <20210111130051.026188697@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: [PATCH 4.19 08/77] depmod: handle the case of /sbin/depmod without /sbin in PATH
+Date:   Mon, 11 Jan 2021 14:01:17 +0100
+Message-Id: <20210111130036.807340350@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
+References: <20210111130036.414620026@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,66 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunfeng Ye <yeyunfeng@huawei.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 01341fbd0d8d4e717fc1231cdffe00343088ce0b ]
+[ Upstream commit cedd1862be7e666be87ec824dabc6a2b05618f36 ]
 
-In realtime scenario, We do not want to have interference on the
-isolated cpu cores. but when invoking alloc_workqueue() for percpu wq
-on the housekeeping cpu, it kick a kworker on the isolated cpu.
+Commit 436e980e2ed5 ("kbuild: don't hardcode depmod path") stopped
+hard-coding the path of depmod, but in the process caused trouble for
+distributions that had that /sbin location, but didn't have it in the
+PATH (generally because /sbin is limited to the super-user path).
 
-  alloc_workqueue
-    pwq_adjust_max_active
-      wake_up_worker
+Work around it for now by just adding /sbin to the end of PATH in the
+depmod.sh script.
 
-The comment in pwq_adjust_max_active() said:
-  "Need to kick a worker after thawed or an unbound wq's
-   max_active is bumped"
-
-So it is unnecessary to kick a kworker for percpu's wq when invoking
-alloc_workqueue(). this patch only kick a worker based on the actual
-activation of delayed works.
-
-Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
-Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
+Reported-and-tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/workqueue.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ scripts/depmod.sh | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 437935e7a1991..0695c7895c892 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -3728,17 +3728,24 @@ static void pwq_adjust_max_active(struct pool_workqueue *pwq)
- 	 * is updated and visible.
- 	 */
- 	if (!freezable || !workqueue_freezing) {
-+		bool kick = false;
-+
- 		pwq->max_active = wq->saved_max_active;
+diff --git a/scripts/depmod.sh b/scripts/depmod.sh
+index e083bcae343f3..3643b4f896ede 100755
+--- a/scripts/depmod.sh
++++ b/scripts/depmod.sh
+@@ -15,6 +15,8 @@ if ! test -r System.map ; then
+ 	exit 0
+ fi
  
- 		while (!list_empty(&pwq->delayed_works) &&
--		       pwq->nr_active < pwq->max_active)
-+		       pwq->nr_active < pwq->max_active) {
- 			pwq_activate_first_delayed(pwq);
-+			kick = true;
-+		}
- 
- 		/*
- 		 * Need to kick a worker after thawed or an unbound wq's
--		 * max_active is bumped.  It's a slow path.  Do it always.
-+		 * max_active is bumped. In realtime scenarios, always kicking a
-+		 * worker will cause interference on the isolated cpu cores, so
-+		 * let's kick iff work items were activated.
- 		 */
--		wake_up_worker(pwq->pool);
-+		if (kick)
-+			wake_up_worker(pwq->pool);
- 	} else {
- 		pwq->max_active = 0;
- 	}
++# legacy behavior: "depmod" in /sbin, no /sbin in PATH
++PATH="$PATH:/sbin"
+ if [ -z $(command -v $DEPMOD) ]; then
+ 	echo "Warning: 'make modules_install' requires $DEPMOD. Please install it." >&2
+ 	echo "This is probably in the kmod package." >&2
 -- 
 2.27.0
 
