@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85AC2F14D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BD32F1604
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:48:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731881AbhAKNPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:15:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33684 "EHLO mail.kernel.org"
+        id S2387566AbhAKNrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:47:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731773AbhAKNPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:15:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CE1E2229C;
-        Mon, 11 Jan 2021 13:14:31 +0000 (UTC)
+        id S1731169AbhAKNKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:10:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB25F22AAF;
+        Mon, 11 Jan 2021 13:09:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370871;
-        bh=/12LQ52/KgBNkpRjlM2nsi+WqfnZjXZznXhbhMlMZyQ=;
+        s=korg; t=1610370584;
+        bh=ZUPoPv1DrRYBjzg/5+aEgA4OUgxU5r7rYrliBWfzLgE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iT1Va3u8kqK97lBbc/eQcmPOLK8N7HFOP69VY3xXOW1OT721zSqHaj1UO3oT2n5Mg
-         C3OKCdWIuPkmwzOp6fU2hQzQDKAiE93YPIxHCQt3hjd7XzQj6PUtSgNUosn3OKk238
-         KyZdpgu3UwAW6cmbxNbwnv78arUqA/KHVlm2rS2E=
+        b=yo21lXNSFmADYwJ1wsAuj2G0w58HJ1w9ihDsvFtP6xXDNVzZc4emzEYs9AJjqYE1s
+         UsriDVLSrds0JrGHHu3n+uVO9CMQKDCQNzozDYEuYOIwePgg92ZZXU5MrfpLn/PBXi
+         C+ppe1bqWFTsB5Bx6afINnv2yiBAhcPO3xFolqos=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 041/145] vhost_net: fix ubuf refcount incorrectly when sendmsg fails
+        stable@vger.kernel.org, Yunfeng Ye <yeyunfeng@huawei.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 01/92] workqueue: Kick a worker based on the actual activation of delayed works
 Date:   Mon, 11 Jan 2021 14:01:05 +0100
-Message-Id: <20210111130050.494571461@linuxfoundation.org>
+Message-Id: <20210111130039.226222908@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,57 +42,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunjian Wang <wangyunjian@huawei.com>
+From: Yunfeng Ye <yeyunfeng@huawei.com>
 
-[ Upstream commit 01e31bea7e622f1890c274f4aaaaf8bccd296aa5 ]
+[ Upstream commit 01341fbd0d8d4e717fc1231cdffe00343088ce0b ]
 
-Currently the vhost_zerocopy_callback() maybe be called to decrease
-the refcount when sendmsg fails in tun. The error handling in vhost
-handle_tx_zerocopy() will try to decrease the same refcount again.
-This is wrong. To fix this issue, we only call vhost_net_ubuf_put()
-when vq->heads[nvq->desc].len == VHOST_DMA_IN_PROGRESS.
+In realtime scenario, We do not want to have interference on the
+isolated cpu cores. but when invoking alloc_workqueue() for percpu wq
+on the housekeeping cpu, it kick a kworker on the isolated cpu.
 
-Fixes: bab632d69ee4 ("vhost: vhost TX zero-copy support")
-Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Link: https://lore.kernel.org/r/1609207308-20544-1-git-send-email-wangyunjian@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  alloc_workqueue
+    pwq_adjust_max_active
+      wake_up_worker
+
+The comment in pwq_adjust_max_active() said:
+  "Need to kick a worker after thawed or an unbound wq's
+   max_active is bumped"
+
+So it is unnecessary to kick a kworker for percpu's wq when invoking
+alloc_workqueue(). this patch only kick a worker based on the actual
+activation of delayed works.
+
+Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vhost/net.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/workqueue.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -863,6 +863,7 @@ static void handle_tx_zerocopy(struct vh
- 	size_t len, total_len = 0;
- 	int err;
- 	struct vhost_net_ubuf_ref *ubufs;
-+	struct ubuf_info *ubuf;
- 	bool zcopy_used;
- 	int sent_pkts = 0;
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 4aa268582a225..28e52657e0930 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -3718,17 +3718,24 @@ static void pwq_adjust_max_active(struct pool_workqueue *pwq)
+ 	 * is updated and visible.
+ 	 */
+ 	if (!freezable || !workqueue_freezing) {
++		bool kick = false;
++
+ 		pwq->max_active = wq->saved_max_active;
  
-@@ -895,9 +896,7 @@ static void handle_tx_zerocopy(struct vh
+ 		while (!list_empty(&pwq->delayed_works) &&
+-		       pwq->nr_active < pwq->max_active)
++		       pwq->nr_active < pwq->max_active) {
+ 			pwq_activate_first_delayed(pwq);
++			kick = true;
++		}
  
- 		/* use msg_control to pass vhost zerocopy ubuf info to skb */
- 		if (zcopy_used) {
--			struct ubuf_info *ubuf;
- 			ubuf = nvq->ubuf_info + nvq->upend_idx;
--
- 			vq->heads[nvq->upend_idx].id = cpu_to_vhost32(vq, head);
- 			vq->heads[nvq->upend_idx].len = VHOST_DMA_IN_PROGRESS;
- 			ubuf->callback = vhost_zerocopy_callback;
-@@ -927,7 +926,8 @@ static void handle_tx_zerocopy(struct vh
- 		err = sock->ops->sendmsg(sock, &msg, len);
- 		if (unlikely(err < 0)) {
- 			if (zcopy_used) {
--				vhost_net_ubuf_put(ubufs);
-+				if (vq->heads[ubuf->desc].len == VHOST_DMA_IN_PROGRESS)
-+					vhost_net_ubuf_put(ubufs);
- 				nvq->upend_idx = ((unsigned)nvq->upend_idx - 1)
- 					% UIO_MAXIOV;
- 			}
+ 		/*
+ 		 * Need to kick a worker after thawed or an unbound wq's
+-		 * max_active is bumped.  It's a slow path.  Do it always.
++		 * max_active is bumped. In realtime scenarios, always kicking a
++		 * worker will cause interference on the isolated cpu cores, so
++		 * let's kick iff work items were activated.
+ 		 */
+-		wake_up_worker(pwq->pool);
++		if (kick)
++			wake_up_worker(pwq->pool);
+ 	} else {
+ 		pwq->max_active = 0;
+ 	}
+-- 
+2.27.0
+
 
 
