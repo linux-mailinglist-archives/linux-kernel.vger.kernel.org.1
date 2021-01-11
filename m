@@ -2,152 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0377C2F1300
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 796DB2F12FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:03:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729091AbhAKNCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:02:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729008AbhAKNCH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:02:07 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509FDC061381
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 05:01:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+W/goIrxj27oosZ7ycDNIVN/sr+eGHUpFYptkCE7da8=; b=KdDJ6B5I+PzWR7RCHgFetxMVvL
-        83SS8eSRs8vXN1Th3GSeM/BHEN1LpajzK8pmu6OuW9fGOqUpv0On9XmnXXwXkN5Yz+mvsC06n0bFc
-        uqSgCNgS6+MnYGl+RDgAKih9FAwNqsmfjlwxg2ohagZiQcSGCYIQCygXQAnJk7tjeFaqzBiSIBbdU
-        bDiLhrIDVNTDhw8OJ457xLeIAUcpqSFQOHO2P8a38J8QZI8u3wNop0tH4QCouxaA+0UQsHo9oA4fq
-        mY3haacOoYmT2gF7RGBGiWv067uRZYtrmdndpwQV93JO5fAqeJTvR4E6x7by7KpTdl6NOiA2KI4Mz
-        iIxmTboQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1kywoE-003F82-Uf; Mon, 11 Jan 2021 13:00:36 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 71D5D30015A;
-        Mon, 11 Jan 2021 14:00:33 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5D0022BB7DCD1; Mon, 11 Jan 2021 14:00:33 +0100 (CET)
-Date:   Mon, 11 Jan 2021 14:00:33 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steve Wahl <steve.wahl@hpe.com>
-Cc:     rja_direct@groups.int.hpe.com, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        "Liang, Kan" <kan.liang@intel.com>
-Subject: Re: [PATCH 2/2] perf/x86/intel/uncore: With > 8 nodes, get pci bus
- die id from NUMA info
-Message-ID: <X/xL8d8FXVJHkQUj@hirez.programming.kicks-ass.net>
-References: <20210108153549.108989-1-steve.wahl@hpe.com>
- <20210108153549.108989-3-steve.wahl@hpe.com>
+        id S1728945AbhAKNB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:01:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728285AbhAKNBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:01:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E87CE22795;
+        Mon, 11 Jan 2021 13:00:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610370027;
+        bh=rwD9k7bQQnO3THoOxfPHyhYKcGlat+o94zX7/ZLDhFU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=aGl27pIwm9/PVjI4xeCO6npNkvYwXq1/cWFcNZWtmMYIEkCh45xXEefj+Alk1AMJi
+         hgOAXpJ06pPpBm108gXEii14+5JdPR4cpyg0h2d7nnyux8AyQhRMm52zpjVVP5xY45
+         ZuhS99b6dF+VHlLGezBq2Y/M9wtI3WDaiq1iOQrQ=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Yunfeng Ye <yeyunfeng@huawei.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 02/38] workqueue: Kick a worker based on the actual activation of delayed works
+Date:   Mon, 11 Jan 2021 14:00:34 +0100
+Message-Id: <20210111130032.588245581@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
+References: <20210111130032.469630231@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108153549.108989-3-steve.wahl@hpe.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 09:35:49AM -0600, Steve Wahl wrote:
+From: Yunfeng Ye <yeyunfeng@huawei.com>
+
+[ Upstream commit 01341fbd0d8d4e717fc1231cdffe00343088ce0b ]
+
+In realtime scenario, We do not want to have interference on the
+isolated cpu cores. but when invoking alloc_workqueue() for percpu wq
+on the housekeeping cpu, it kick a kworker on the isolated cpu.
+
+  alloc_workqueue
+    pwq_adjust_max_active
+      wake_up_worker
+
+The comment in pwq_adjust_max_active() said:
+  "Need to kick a worker after thawed or an unbound wq's
+   max_active is bumped"
+
+So it is unnecessary to kick a kworker for percpu's wq when invoking
+alloc_workqueue(). this patch only kick a worker based on the actual
+activation of delayed works.
+
+Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ kernel/workqueue.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 3fb2d45c0b42f..6b293804cd734 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -3361,17 +3361,24 @@ static void pwq_adjust_max_active(struct pool_workqueue *pwq)
+ 	 * is updated and visible.
+ 	 */
+ 	if (!freezable || !workqueue_freezing) {
++		bool kick = false;
++
+ 		pwq->max_active = wq->saved_max_active;
+ 
+ 		while (!list_empty(&pwq->delayed_works) &&
+-		       pwq->nr_active < pwq->max_active)
++		       pwq->nr_active < pwq->max_active) {
+ 			pwq_activate_first_delayed(pwq);
++			kick = true;
++		}
+ 
+ 		/*
+ 		 * Need to kick a worker after thawed or an unbound wq's
+-		 * max_active is bumped.  It's a slow path.  Do it always.
++		 * max_active is bumped. In realtime scenarios, always kicking a
++		 * worker will cause interference on the isolated cpu cores, so
++		 * let's kick iff work items were activated.
+ 		 */
+-		wake_up_worker(pwq->pool);
++		if (kick)
++			wake_up_worker(pwq->pool);
+ 	} else {
+ 		pwq->max_active = 0;
+ 	}
+-- 
+2.27.0
 
 
-> +		/*
-> +		 * The nodeid and idmap registers only contain enough
-> +		 * information to handle 8 nodes.  On systems with more
-> +		 * than 8 nodes, we need to rely on NUMA information,
-> +		 * filled in from BIOS supplied information, to determine
-> +		 * the topology.
-> +		 */
 
-Egads.. do we realy have to trust BIOS data? BIOS crud tends to be
-bonghits qualitee :/
-
-> +		if (nr_node_ids <= 8) {
-> +			/* get the Node ID of the local register */
-> +			err = pci_read_config_dword(ubox_dev, nodeid_loc, &config);
-> +			if (err)
-> +				break;
-> +			nodeid = config & NODE_ID_MASK;
-> +			/* get the Node ID mapping */
-> +			err = pci_read_config_dword(ubox_dev, idmap_loc, &config);
-> +			if (err)
-> +				break;
->  
-> +			segment = pci_domain_nr(ubox_dev->bus);
-> +			raw_spin_lock(&pci2phy_map_lock);
-> +			map = __find_pci2phy_map(segment);
-> +			if (!map) {
-> +				raw_spin_unlock(&pci2phy_map_lock);
-> +				err = -ENOMEM;
-> +				break;
-> +			}
-> +
-> +			/*
-> +			 * every three bits in the Node ID mapping register maps
-> +			 * to a particular node.
-> +			 */
-> +			for (i = 0; i < 8; i++) {
-> +				if (nodeid == ((config >> (3 * i)) & 0x7)) {
-> +					if (topology_max_die_per_package() > 1)
-> +						die_id = i;
-> +					else
-> +						die_id = topology_phys_to_logical_pkg(i);
-> +					map->pbus_to_dieid[bus] = die_id;
-> +					break;
-> +				}
-> +			}
->  			raw_spin_unlock(&pci2phy_map_lock);
-> +		} else {
-> +			int node = pcibus_to_node(ubox_dev->bus);
-> +			int cpu;
-> +
-> +			segment = pci_domain_nr(ubox_dev->bus);
-> +			raw_spin_lock(&pci2phy_map_lock);
-> +			map = __find_pci2phy_map(segment);
-> +			if (!map) {
-> +				raw_spin_unlock(&pci2phy_map_lock);
-> +				err = -ENOMEM;
-> +				break;
-> +			}
-> +			die_id = -1;
-> +			for_each_cpu(cpu, cpumask_of_pcibus(ubox_dev->bus)) {
-> +				struct cpuinfo_x86 *c = &cpu_data(cpu);
-> +
-> +				if (c->initialized && cpu_to_node(cpu) == node) {
-> +					map->pbus_to_dieid[bus] = die_id = c->logical_die_id;
-> +					break;
-> +				}
-> +			}
-> +			raw_spin_unlock(&pci2phy_map_lock);
-> +
-> +			if (WARN_ON_ONCE(die_id == -1)) {
-> +				err = -EINVAL;
->  				break;
->  			}
-
-This seems to assume a single die per node; is that fundemantally
-correct?
-
-Did you consider malicious BIOS data? I think we're good, but I didn't
-look too hard.
-
->  		}
->  	}
->  
->  	if (!err) {
-> -- 
-> 2.26.2
-> 
