@@ -2,114 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347112F24AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE822F24AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404933AbhALAZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2404946AbhALAZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 11 Jan 2021 19:25:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35200 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:35380 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404157AbhAKXkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 18:40:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA7CC22D37;
-        Mon, 11 Jan 2021 23:40:00 +0000 (UTC)
+        id S2404160AbhAKXlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 18:41:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8821A22D00
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 23:40:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610408401;
-        bh=SUTe1YRrwFqH+vKzLDa3Og8DsDF1ZslKpsxpjuqS79Q=;
+        s=k20201202; t=1610408432;
+        bh=fwOr4/4Gkta7ccSR5AGFd1vU9Z/WchantQ67F+lxtCE=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=C4SRUzfgdqbPO9+4zUA34idzVN/yden/m5HsHWYfd+XTYEC++Ui3SBEj9nck9hOfE
-         liCL2d1S7L9webHpS/jmoyOYZmy8YXGdkpcwsluC+HdaXv1tARWHsI+obIHm43W25g
-         01vJ5Ja8Utn61uvTSuBj7VYppOyrWA5/YFeuZn/LY16G1cYgXAjC5K7iIeG6QA1gI1
-         sXRDVQ+Tr8x2KfPkY8zCHFu6Rq2a3Y+bhjlMM9mZN36UMh23iDBG2lqkni4bZkEzun
-         fWv/hmKidkno64/wf8cgGW1mU/9gbiUw4xrRlduZO+cQSAxU+qObUIgzyezXiW3O7f
-         s81LcVzYZWBNw==
-Received: by mail-ej1-f41.google.com with SMTP id q22so891406eja.2;
-        Mon, 11 Jan 2021 15:40:00 -0800 (PST)
-X-Gm-Message-State: AOAM531ts4hCkUxiVbLUc0/rkARl05fTI+plgDtapxjfCFbbTXGhKVL+
-        V8q8MfBW9WNmmgN6Awr5e8jUOLJ3PegV1PNyIg==
-X-Google-Smtp-Source: ABdhPJy3eFEmLOMrjiND05dS8vMTb4vPOL8mvRHpetE+fXbs9sEJc5/Jr5lXrVgBYYr+sVlxdWA4fZ74fE5DQFk/WR4=
-X-Received: by 2002:a17:906:3753:: with SMTP id e19mr1211701ejc.267.1610408399484;
- Mon, 11 Jan 2021 15:39:59 -0800 (PST)
+        b=NKRp0tWe7n0RTpEoa+4zHlRg6gTW+TuJLV8Q3VaaQIlN1CJc9pLaOGfdo1nYNhw6T
+         L7ydMuS2IPLN1zohZdl+JM7U0RRpyu1l9xVWP/XhOKoqZURbFNjgC+wLT06uKNA3At
+         ShTV4jIWscMK5KkC5/+jpo51i2V6oEF2DcJivEXswf7nWjv8k+EeUDTXobrkmaKmYP
+         5MjBb+KjAF/gKvlhX8Rp/vCbDoNUvwlxlsfngpiLZcDiLVe3DUXySTttWlJFPL0fbt
+         MAr13PmDUS4J3YnG8tegsq6qYsQSNbLLlpt/FVtPdbgiOyxGbPzQxn46396t9uo2I8
+         /kHiUwprunmTw==
+Received: by mail-ej1-f43.google.com with SMTP id lt17so894591ejb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 15:40:32 -0800 (PST)
+X-Gm-Message-State: AOAM533iiAdmJ8qYIOVtZRydofrnAk2s3wWLemXytr/k1gVx66ReooXi
+        UnPVuBVNRYvQfXpCil+QiibsrbCwJfh4pDkE/wfJ0w==
+X-Google-Smtp-Source: ABdhPJwgtdayx1MbPX+ct2UaJ9IVCWqIcr85bc6w36O/ZqpEBBYA0XKL0IdjobEX+DcNSEvYSU2mGrM1J50T7RF6AqA=
+X-Received: by 2002:a17:906:ae55:: with SMTP id lf21mr1203125ejb.101.1610408431143;
+ Mon, 11 Jan 2021 15:40:31 -0800 (PST)
 MIME-Version: 1.0
-References: <1610351031-21133-1-git-send-email-yongqiang.niu@mediatek.com> <1610351031-21133-3-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1610351031-21133-3-git-send-email-yongqiang.niu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 12 Jan 2021 07:39:48 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_91MUXgQg3zF=4Cjb4xAW+FKKXQKGSGE0YsTgO855_LiQ@mail.gmail.com>
-Message-ID: <CAAOTY_91MUXgQg3zF=4Cjb4xAW+FKKXQKGSGE0YsTgO855_LiQ@mail.gmail.com>
-Subject: Re: [PATCH v3, 02/15] dt-bindings: mediatek: add description for
- mt8192 display
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20210111200027.GH25645@zn.tnic> <E74AC970-CFCF-4CFD-A71F-F719F5BCE2DC@amacapital.net>
+In-Reply-To: <E74AC970-CFCF-4CFD-A71F-F719F5BCE2DC@amacapital.net>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 11 Jan 2021 15:40:19 -0800
+X-Gmail-Original-Message-ID: <CALCETrV=BpFwR-RU5ORioBCZj3RwK7nmD2Yz3VNd4gfFjukRAw@mail.gmail.com>
+Message-ID: <CALCETrV=BpFwR-RU5ORioBCZj3RwK7nmD2Yz3VNd4gfFjukRAw@mail.gmail.com>
+Subject: Re: gdbserver + fsgsbase kaputt
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>, tdevries@suse.com,
+        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongqiang:
-
-Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=
-=8811=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=883:48=E5=AF=AB=E9=81=93=
-=EF=BC=9A
+On Mon, Jan 11, 2021 at 1:06 PM Andy Lutomirski <luto@amacapital.net> wrote:
 >
-> add description for mt8192 display
-
-Applied to mediatek-drm-next [1], thanks.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
-
-Regards,
-Chun-Kuang.
-
 >
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> Acked-by: Rob Herring <robh@kernel.org>
-> ---
->  Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt | 2=
- +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > On Jan 11, 2021, at 12:00 PM, Borislav Petkov <bp@alien8.de> wrote:
+> >
 >
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
-disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp=
-.txt
-> index 9d9ab65..b47e1a0 100644
-> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
-t
-> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
-t
-> @@ -44,7 +44,7 @@ Required properties (all function blocks):
->         "mediatek,<chip>-dpi"                   - DPI controller, see med=
-iatek,dpi.txt
->         "mediatek,<chip>-disp-mutex"            - display mutex
->         "mediatek,<chip>-disp-od"               - overdrive
-> -  the supported chips are mt2701, mt7623, mt2712, mt8167, mt8173 and mt8=
-183.
-> +  the supported chips are mt2701, mt7623, mt2712, mt8167, mt8173, mt8183=
- and mt8192.
->  - reg: Physical base address and length of the function block register s=
-pace
->  - interrupts: The interrupt signal from the function block (required, ex=
-cept for
->    merge and split function blocks).
-> --
-> 1.8.1.1.dirty
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+>
+> > Or do you mean I should add "unsafe_fsgsbase" to grub cmdline and bisect
+> > with fsgsbase enabled in all test kernels?
+>
+> Yes. But I can also look myself in a bit.
+>
+
+Tom, if I reproduce it in an interactive gdb and play a bit, I get:
+
+Program received signal SIGSEGV, Segmentation fault.
+0xf7df2cb6 in init_cacheinfo () from target:/lib/libc.so.6
+(gdb) p $gs = $gs
+$1 = 99
+(gdb) si
+
+Program terminated with signal SIGSEGV, Segmentation fault.
+The program no longer exists.
+
+That's gdb itself crashing.  Any idea what's wrong?
