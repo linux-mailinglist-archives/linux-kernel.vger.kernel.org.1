@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EF82F1326
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B17AB2F12C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729629AbhAKNE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:04:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50850 "EHLO mail.kernel.org"
+        id S1727841AbhAKNAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:00:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730060AbhAKND6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:03:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 924DF22B51;
-        Mon, 11 Jan 2021 13:03:04 +0000 (UTC)
+        id S1726672AbhAKNAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:00:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE0B92250F;
+        Mon, 11 Jan 2021 13:00:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370185;
-        bh=iFnS+GBYEsw4jWMBlBq7NIkQVxEv6AgCU7oCMZz5DfY=;
+        s=korg; t=1610370007;
+        bh=GMWVMHhoh3yECIti5hAbdNTaqBInS03q2FX2KW9vo4U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L7nnkirSbrjQF8D9p4LE6ZL33iPMeu5FHnH9M+ATtexl/qZ2NQhRL82uW48s+2P8i
-         HVjblLMhXDU9BEZk9gy/N69/QjY63EG+nN0+K7+7TzvuM00WzokhGQT4X0F2Dy9zMH
-         0T7ff/Dx92NSNEtzupiP/kMtOeXxymU20DujBZXY=
+        b=DcHJUmaFuxS+czFsCGeaUEv8si/b8cjWPu4C0CL8MywLnsOikJ4uAZntXDUtnsIFQ
+         e9IxQaH/8rr1z1sApJz3MLBS1xHw5GU67Lz2+rBglfPrFB7jvKiar+A1Z3aR/b5KGt
+         ZNalegstwYUeiTlu6F+VgChZ0rGxtCyCxI6zj2PU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Huang Shijie <sjhuang@iluvatar.ai>,
-        Shi Jiasheng <jiasheng.shi@iluvatar.ai>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 03/45] lib/genalloc: fix the overflow when size is too big
-Date:   Mon, 11 Jan 2021 14:00:41 +0100
-Message-Id: <20210111130033.843385615@linuxfoundation.org>
+        stable@vger.kernel.org, Roland Dreier <roland@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.4 10/38] CDC-NCM: remove "connected" log message
+Date:   Mon, 11 Jan 2021 14:00:42 +0100
+Message-Id: <20210111130032.965314461@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130033.676306636@linuxfoundation.org>
-References: <20210111130033.676306636@linuxfoundation.org>
+In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
+References: <20210111130032.469630231@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,131 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huang Shijie <sjhuang@iluvatar.ai>
+From: Roland Dreier <roland@kernel.org>
 
-[ Upstream commit 36845663843fc59c5d794e3dc0641472e3e572da ]
+[ Upstream commit 59b4a8fa27f5a895582ada1ae5034af7c94a57b5 ]
 
-Some graphic card has very big memory on chip, such as 32G bytes.
+The cdc_ncm driver passes network connection notifications up to
+usbnet_link_change(), which is the right place for any logging.
+Remove the netdev_info() duplicating this from the driver itself.
 
-In the following case, it will cause overflow:
+This stops devices such as my "TRENDnet USB 10/100/1G/2.5G LAN"
+(ID 20f4:e02b) adapter from spamming the kernel log with
 
-    pool = gen_pool_create(PAGE_SHIFT, NUMA_NO_NODE);
-    ret = gen_pool_add(pool, 0x1000000, SZ_32G, NUMA_NO_NODE);
+    cdc_ncm 2-2:2.0 enp0s2u2c2: network connection: connected
 
-    va = gen_pool_alloc(pool, SZ_4G);
+messages every 60 msec or so.
 
-The overflow occurs in gen_pool_alloc_algo_owner():
-
-		....
-		size = nbits << order;
-		....
-
-The @nbits is "int" type, so it will overflow.
-Then the gen_pool_avail() will return the wrong value.
-
-This patch converts some "int" to "unsigned long", and
-changes the compare code in while.
-
-Link: https://lkml.kernel.org/r/20201229060657.3389-1-sjhuang@iluvatar.ai
-Signed-off-by: Huang Shijie <sjhuang@iluvatar.ai>
-Reported-by: Shi Jiasheng <jiasheng.shi@iluvatar.ai>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Roland Dreier <roland@kernel.org>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20201224032116.2453938-1-roland@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- lib/genalloc.c | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+ drivers/net/usb/cdc_ncm.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/lib/genalloc.c b/lib/genalloc.c
-index 7e85d1e37a6ea..0b8ee173cf3a6 100644
---- a/lib/genalloc.c
-+++ b/lib/genalloc.c
-@@ -83,14 +83,14 @@ static int clear_bits_ll(unsigned long *addr, unsigned long mask_to_clear)
-  * users set the same bit, one user will return remain bits, otherwise
-  * return 0.
-  */
--static int bitmap_set_ll(unsigned long *map, int start, int nr)
-+static int bitmap_set_ll(unsigned long *map, unsigned long start, unsigned long nr)
- {
- 	unsigned long *p = map + BIT_WORD(start);
--	const int size = start + nr;
-+	const unsigned long size = start + nr;
- 	int bits_to_set = BITS_PER_LONG - (start % BITS_PER_LONG);
- 	unsigned long mask_to_set = BITMAP_FIRST_WORD_MASK(start);
+--- a/drivers/net/usb/cdc_ncm.c
++++ b/drivers/net/usb/cdc_ncm.c
+@@ -1553,9 +1553,6 @@ static void cdc_ncm_status(struct usbnet
+ 		 * USB_CDC_NOTIFY_NETWORK_CONNECTION notification shall be
+ 		 * sent by device after USB_CDC_NOTIFY_SPEED_CHANGE.
+ 		 */
+-		netif_info(dev, link, dev->net,
+-			   "network connection: %sconnected\n",
+-			   !!event->wValue ? "" : "dis");
+ 		usbnet_link_change(dev, !!event->wValue, 0);
+ 		break;
  
--	while (nr - bits_to_set >= 0) {
-+	while (nr >= bits_to_set) {
- 		if (set_bits_ll(p, mask_to_set))
- 			return nr;
- 		nr -= bits_to_set;
-@@ -118,14 +118,15 @@ static int bitmap_set_ll(unsigned long *map, int start, int nr)
-  * users clear the same bit, one user will return remain bits,
-  * otherwise return 0.
-  */
--static int bitmap_clear_ll(unsigned long *map, int start, int nr)
-+static unsigned long
-+bitmap_clear_ll(unsigned long *map, unsigned long start, unsigned long nr)
- {
- 	unsigned long *p = map + BIT_WORD(start);
--	const int size = start + nr;
-+	const unsigned long size = start + nr;
- 	int bits_to_clear = BITS_PER_LONG - (start % BITS_PER_LONG);
- 	unsigned long mask_to_clear = BITMAP_FIRST_WORD_MASK(start);
- 
--	while (nr - bits_to_clear >= 0) {
-+	while (nr >= bits_to_clear) {
- 		if (clear_bits_ll(p, mask_to_clear))
- 			return nr;
- 		nr -= bits_to_clear;
-@@ -184,8 +185,8 @@ int gen_pool_add_virt(struct gen_pool *pool, unsigned long virt, phys_addr_t phy
- 		 size_t size, int nid)
- {
- 	struct gen_pool_chunk *chunk;
--	int nbits = size >> pool->min_alloc_order;
--	int nbytes = sizeof(struct gen_pool_chunk) +
-+	unsigned long nbits = size >> pool->min_alloc_order;
-+	unsigned long nbytes = sizeof(struct gen_pool_chunk) +
- 				BITS_TO_LONGS(nbits) * sizeof(long);
- 
- 	chunk = vzalloc_node(nbytes, nid);
-@@ -242,7 +243,7 @@ void gen_pool_destroy(struct gen_pool *pool)
- 	struct list_head *_chunk, *_next_chunk;
- 	struct gen_pool_chunk *chunk;
- 	int order = pool->min_alloc_order;
--	int bit, end_bit;
-+	unsigned long bit, end_bit;
- 
- 	list_for_each_safe(_chunk, _next_chunk, &pool->chunks) {
- 		chunk = list_entry(_chunk, struct gen_pool_chunk, next_chunk);
-@@ -293,7 +294,7 @@ unsigned long gen_pool_alloc_algo(struct gen_pool *pool, size_t size,
- 	struct gen_pool_chunk *chunk;
- 	unsigned long addr = 0;
- 	int order = pool->min_alloc_order;
--	int nbits, start_bit, end_bit, remain;
-+	unsigned long nbits, start_bit, end_bit, remain;
- 
- #ifndef CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG
- 	BUG_ON(in_nmi());
-@@ -376,7 +377,7 @@ void gen_pool_free(struct gen_pool *pool, unsigned long addr, size_t size)
- {
- 	struct gen_pool_chunk *chunk;
- 	int order = pool->min_alloc_order;
--	int start_bit, nbits, remain;
-+	unsigned long start_bit, nbits, remain;
- 
- #ifndef CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG
- 	BUG_ON(in_nmi());
-@@ -638,7 +639,7 @@ unsigned long gen_pool_best_fit(unsigned long *map, unsigned long size,
- 	index = bitmap_find_next_zero_area(map, size, start, nr, 0);
- 
- 	while (index < size) {
--		int next_bit = find_next_bit(map, size, index + nr);
-+		unsigned long next_bit = find_next_bit(map, size, index + nr);
- 		if ((next_bit - index) < len) {
- 			len = next_bit - index;
- 			start_bit = index;
--- 
-2.27.0
-
 
 
