@@ -2,33 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531DF2F14A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:28:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B25602F13EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:17:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731866AbhAKN1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:27:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35060 "EHLO mail.kernel.org"
+        id S1732498AbhAKNQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:16:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732410AbhAKNQ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:16:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40662229C4;
-        Mon, 11 Jan 2021 13:15:48 +0000 (UTC)
+        id S1732417AbhAKNQb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:16:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A078722515;
+        Mon, 11 Jan 2021 13:15:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370948;
-        bh=RfLQlTyNULtRNfApWZNyMWopevm4HQQaPo9K0UqTnXw=;
+        s=korg; t=1610370951;
+        bh=ZaV/Ja8sH5DD2IwrWhZrgope+BzFtJZ0ir6j4ghf5vs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P7gZrc+xqwqnLiObbohGwVD7MHfADtEOLUgLZc3klDtrXzABpTQrv7htW65l5rmJx
-         mcR6ZOZniXFYPHajMEflLkvYd1wTiNK7Xy6eQAu6+EOuycnHW9Sn7sIzObwnZ80QjH
-         Sf5IFey9k6RbDtW3K/XQEzDv2HCA0k8rXUMOLFuU=
+        b=NbUBgmOVlC9+ikbFgdTaMThkO9G/CTW1FWDlxO8YT3s0Ao3O6C/5MzWL7/qbbtLkR
+         0J6GfGrxBnpJ6QJZSFGjHWdGuJoorGtRbnHWVuaLer4e1Y5NGEJz4JuPyw4ilF7igv
+         5go32uFwU32gdl2PXEZaugstImu3DgrWW0FPmzbo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.10 075/145] powerpc: Handle .text.{hot,unlikely}.* in linker script
-Date:   Mon, 11 Jan 2021 14:01:39 +0100
-Message-Id: <20210111130052.133907316@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH 5.10 076/145] Staging: comedi: Return -EFAULT if copy_to_user() fails
+Date:   Mon, 11 Jan 2021 14:01:40 +0100
+Message-Id: <20210111130052.181337282@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
 References: <20210111130048.499958175@linuxfoundation.org>
@@ -40,57 +38,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit 3ce47d95b7346dcafd9bed3556a8d072cb2b8571 upstream.
+commit cab36da4bf1a35739b091b73714a39a1bbd02b05 upstream.
 
-Commit eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO input
-sections") added ".text.unlikely.*" and ".text.hot.*" due to an LLVM
-change [1].
+Return -EFAULT on error instead of the number of bytes remaining to be
+copied.
 
-After another LLVM change [2], these sections are seen in some PowerPC
-builds, where there is a orphan section warning then build failure:
-
-$ make -skj"$(nproc)" \
-       ARCH=powerpc CROSS_COMPILE=powerpc64le-linux-gnu- LLVM=1 O=out \
-       distclean powernv_defconfig zImage.epapr
-ld.lld: warning: kernel/built-in.a(panic.o):(.text.unlikely.) is being placed in '.text.unlikely.'
-...
-ld.lld: warning: address (0xc000000000009314) of section .text is not a multiple of alignment (256)
-...
-ERROR: start_text address is c000000000009400, should be c000000000008000
-ERROR: try to enable LD_HEAD_STUB_CATCH config option
-ERROR: see comments in arch/powerpc/tools/head_check.sh
-...
-
-Explicitly handle these sections like in the main linker script so
-there is no more build failure.
-
-[1]: https://reviews.llvm.org/D79600
-[2]: https://reviews.llvm.org/D92493
-
-Fixes: 83a092cf95f2 ("powerpc: Link warning for orphan sections")
-Cc: stable@vger.kernel.org
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1218
-Link: https://lore.kernel.org/r/20210104205952.1399409-1-natechancellor@gmail.com
+Fixes: bac42fb21259 ("comedi: get rid of compat_alloc_user_space() mess in COMEDI_CMD{,TEST} compat")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/X8c3pfwFy2jpy4BP@mwanda
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/kernel/vmlinux.lds.S |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/comedi/comedi_fops.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/powerpc/kernel/vmlinux.lds.S
-+++ b/arch/powerpc/kernel/vmlinux.lds.S
-@@ -85,7 +85,7 @@ SECTIONS
- 		ALIGN_FUNCTION();
- #endif
- 		/* careful! __ftr_alt_* sections need to be close to .text */
--		*(.text.hot TEXT_MAIN .text.fixup .text.unlikely .fixup __ftr_alt_* .ref.text);
-+		*(.text.hot .text.hot.* TEXT_MAIN .text.fixup .text.unlikely .text.unlikely.* .fixup __ftr_alt_* .ref.text);
- #ifdef CONFIG_PPC64
- 		*(.tramp.ftrace.text);
- #endif
+--- a/drivers/staging/comedi/comedi_fops.c
++++ b/drivers/staging/comedi/comedi_fops.c
+@@ -2987,7 +2987,9 @@ static int put_compat_cmd(struct comedi3
+ 	v32.chanlist_len = cmd->chanlist_len;
+ 	v32.data = ptr_to_compat(cmd->data);
+ 	v32.data_len = cmd->data_len;
+-	return copy_to_user(cmd32, &v32, sizeof(v32));
++	if (copy_to_user(cmd32, &v32, sizeof(v32)))
++		return -EFAULT;
++	return 0;
+ }
+ 
+ /* Handle 32-bit COMEDI_CMD ioctl. */
 
 
