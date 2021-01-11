@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E442F13D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:15:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B40DA2F1312
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731840AbhAKNPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:15:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33546 "EHLO mail.kernel.org"
+        id S1729729AbhAKNDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:03:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732220AbhAKNPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:15:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F17212250F;
-        Mon, 11 Jan 2021 13:14:21 +0000 (UTC)
+        id S1729176AbhAKNDJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:03:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BFF42250F;
+        Mon, 11 Jan 2021 13:02:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370862;
-        bh=V0YfpRdskoi1wo05n6BbXjnKr81nb/SjTlpJSVCI8tE=;
+        s=korg; t=1610370128;
+        bh=rwPYVE94HfNpJFsSt+E5hlbIoXRvehJRH/rC2WXnwAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GQfm0IJF3Oyn7+rPG+INCPc7IN/Zoak0I5mATVz9czKgHLI1WPKge+gUHvGw/O/9p
-         rdUvJ52f1vvz4G6Vy18dJBNIU2gD3M397KQpqgSK75z06iiCaYziODP0SF65UxgpQI
-         WydcYHH8tJkLbi6W73u9m+/biDHWXIbYId1I1lXg=
+        b=FnrA9S9fdFFP2VujjSvdmEGOkJvnmV0ZWThdCRlVZnFpsYrIkAjJBbqJY3Rawu3gt
+         fXOSyKiY9qUtBpdxaiFQWfHPbYl/1HFd2WEOmvzsXEIUZt34CdWn5se3sTD2w2ji3V
+         UQsBb5C6yMipqB9Xf/9h2a/NIh2Yj4O/VMSoOcZs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+f583ce3d4ddf9836b27a@syzkaller.appspotmail.com,
-        William Tu <u9012063@gmail.com>,
-        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 037/145] erspan: fix version 1 check in gre_parse_header()
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>
+Subject: [PATCH 4.4 29/38] USB: gadget: legacy: fix return error code in acm_ms_bind()
 Date:   Mon, 11 Jan 2021 14:01:01 +0100
-Message-Id: <20210111130050.303429522@linuxfoundation.org>
+Message-Id: <20210111130033.864180020@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
+References: <20210111130032.469630231@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cong Wang <cong.wang@bytedance.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 085c7c4e1c0e50d90b7d90f61a12e12b317a91e2 ]
+commit c91d3a6bcaa031f551ba29a496a8027b31289464 upstream.
 
-Both version 0 and version 1 use ETH_P_ERSPAN, but version 0 does not
-have an erspan header. So the check in gre_parse_header() is wrong,
-we have to distinguish version 1 from version 0.
+If usb_otg_descriptor_alloc() failed, it need return ENOMEM.
 
-We can just check the gre header length like is_erspan_type1().
-
-Fixes: cb73ee40b1b3 ("net: ip_gre: use erspan key field for tunnel lookup")
-Reported-by: syzbot+f583ce3d4ddf9836b27a@syzkaller.appspotmail.com
-Cc: William Tu <u9012063@gmail.com>
-Cc: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
-Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 578aa8a2b12c ("usb: gadget: acm_ms: allocate and init otg descriptor by otg capabilities")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201117092955.4102785-1-yangyingliang@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/ipv4/gre_demux.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ipv4/gre_demux.c
-+++ b/net/ipv4/gre_demux.c
-@@ -128,7 +128,7 @@ int gre_parse_header(struct sk_buff *skb
- 	 * to 0 and sets the configured key in the
- 	 * inner erspan header field
- 	 */
--	if (greh->protocol == htons(ETH_P_ERSPAN) ||
-+	if ((greh->protocol == htons(ETH_P_ERSPAN) && hdr_len != 4) ||
- 	    greh->protocol == htons(ETH_P_ERSPAN2)) {
- 		struct erspan_base_hdr *ershdr;
+---
+ drivers/usb/gadget/legacy/acm_ms.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- a/drivers/usb/gadget/legacy/acm_ms.c
++++ b/drivers/usb/gadget/legacy/acm_ms.c
+@@ -207,8 +207,10 @@ static int acm_ms_bind(struct usb_compos
+ 		struct usb_descriptor_header *usb_desc;
  
+ 		usb_desc = usb_otg_descriptor_alloc(gadget);
+-		if (!usb_desc)
++		if (!usb_desc) {
++			status = -ENOMEM;
+ 			goto fail_string_ids;
++		}
+ 		usb_otg_descriptor_init(gadget, usb_desc);
+ 		otg_desc[0] = usb_desc;
+ 		otg_desc[1] = NULL;
 
 
