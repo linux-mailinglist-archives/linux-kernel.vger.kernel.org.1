@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA6CF2F1B12
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E31E82F1B22
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:37:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388471AbhAKQgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:36:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42600 "EHLO mail.kernel.org"
+        id S2388810AbhAKQhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:37:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728591AbhAKQgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:36:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 74E41221FE;
-        Mon, 11 Jan 2021 16:35:36 +0000 (UTC)
+        id S1726997AbhAKQhE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 11:37:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A9F420B1F;
+        Mon, 11 Jan 2021 16:36:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610382936;
-        bh=RE1Md8cmppu1xKF0msv57vimbUhlP4+7Lx/7ygdMAPs=;
+        s=k20201202; t=1610382984;
+        bh=FJ6UYmcp9qZ1+F9nDoqN3eSCeXg5LWZGhO2qmO2UrgU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cBk+zJJGnYddOl/czcVfF2W4yAH8sy1jqATOCC+tCVJkOywQ7sdsMXZVwnwYbcBdZ
-         kR/su628sjS3ApqkD1RtF0xSpksd67XwENPgHCeE6XF7cB/IAhpeUGE+H9sNqBR9oH
-         tLgiGSW/OreqsjsafiCgguIaiHPDH+LAIjnjE5HxnwzP25oGf1SQyu9CgiiACIlKc5
-         rHWXhXdBrgpRXbmEnGaNDj0Qtof1RJVWfxLWArysRtc2Z1dI2OYX6Wuvj4YF6L8YPp
-         QhAwoMEwW/EmmUF13zHi99e8R9ofvHT0iNnCZIT3p2Qft4SFkwGK3fFTi7NBqwnqL5
-         aWM53dmIa2gTg==
-Date:   Mon, 11 Jan 2021 16:35:04 +0000
+        b=erEHoJgEokRZJPDaOfAepJ6+VEHuyp7HvfoJ+KEJ2EyWGzv0KVvCFc2J2gTDQM58v
+         rTjbHSoJHqMp9+g27xZk2GKBbGxnUHJ9eANnJjyKCoTFFccA/EA3LSyV5eCwcC3BqP
+         f8WW2UlhOhalPXGu0Iq/WpCI+nfy4NG28cFzJXv1GPA9RyWKpymG2G9rABQYCg8/G5
+         j+2IonqWPZXA5QpQMZKBOUMv9KSLxdRQKvXQHbyOjx4ZbTTvh4no/eT4oFQ4kSSz7c
+         f0zEwxhCMeSeszOrS2mlPq058PPIywzyL0oz4K/DXteje68hDf1F1JbjqAtyGRSkfu
+         1VuLM+o1Sigdg==
+Date:   Mon, 11 Jan 2021 16:35:51 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org,
+To:     Colin King <colin.king@canonical.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        =?utf-8?B?5pyx54G/54G/?= <zhucancan@vivo.com>,
+        alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/7] spi: spi-geni-qcom: Add support for GPI dma
-Message-ID: <20210111163504.GD4728@sirena.org.uk>
-References: <20210111151651.1616813-1-vkoul@kernel.org>
- <20210111151651.1616813-5-vkoul@kernel.org>
+Subject: Re: [PATCH][next] ASoC: soc-pcm: Fix uninitialised return value in
+ variable ret
+Message-ID: <20210111163551.GA33269@sirena.org.uk>
+References: <20210108123546.19601-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pQhZXvAqiZgbeUkD"
+        protocol="application/pgp-signature"; boundary="gBBFr7Ir9EOA20Yy"
 Content-Disposition: inline
-In-Reply-To: <20210111151651.1616813-5-vkoul@kernel.org>
-X-Cookie: Too much is not enough.
+In-Reply-To: <20210108123546.19601-1-colin.king@canonical.com>
+X-Cookie: Made with real ingredients.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---pQhZXvAqiZgbeUkD
+--gBBFr7Ir9EOA20Yy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 11, 2021 at 08:46:48PM +0530, Vinod Koul wrote:
+On Fri, Jan 08, 2021 at 12:35:46PM +0000, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+>=20
+> Currently when attempting to start the BE fails because the
+> FE is not started the error return variable ret is not initialized
+> and garbage is returned.  Fix this by setting it to 0 so the
 
-> +static int get_xfer_mode(struct spi_master *spi)
-> +{
-> +	struct spi_geni_master *mas = spi_master_get_devdata(spi);
-> +	struct geni_se *se = &mas->se;
-> +	int mode = GENI_SE_FIFO;
+This doesn't apply against current code, please check and resend.
 
-Why not use the core DMA mapping support?
-
---pQhZXvAqiZgbeUkD
+--gBBFr7Ir9EOA20Yy
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/8fjcACgkQJNaLcl1U
-h9Dg7wf6AiVIGMV8fdSxV/+rvHOKoT4lSj+DxPZgO4ziYL6vqk7upbg1Qm7+ipoi
-EDQ68FPLAKZky09U0ZK3AP/kMn4hAAezlBysnKqYyNGF6fTbzszOP/WZICjFcWG8
-w4ebN0qPW8o1UoC7CUDDdD0GxlFS+rugmEogvdsrhtNiOSodkhn8ibqL5QVYIzYZ
-ndVwlAAgW3+WuDNd/vV4nTT8HvKp7a0ZJeoOygXCpX70uzD1Lztd6mA/v0aWIeub
-xv5mZJb54rUmooaudUoRI14Zs2xhU4iyo+Zj/SQpDAa5uwdkRT4NxV1zWyvR1Lup
-Ro3frvVVNALn6RtdXWhw1oo3GVtJXg==
-=SIUq
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/8fmYACgkQJNaLcl1U
+h9Buowf/Z7C140455AraBh0sDuBCFIG9HvDvb3RUm0/Xt5lR91JwaVxdYRlBbjJ0
+dLSaYFh0GepPSHSAAn+AjVG5dN+26Lck2t/19LRscETOIZlqNwJ+YNY5f/FLJlau
+Fe7Z6qDaPUL/WgeDGaY1gqAsJpdVdfGP1ojKEXeqsKjyZnB35D7Ftt9Ouw/v5MPV
+V4z2ody8iK6SwNe/kIRIZndr8c2DOz3nodv0nBBuEn+18jdL1twh3CqqiL0eirCa
+nC9dqQWuy12SdRHWWv6w1M/lfWqVdZKhVO5/d/2jS2nGOr2bphnJ5/3Hy9ecbF5o
+TKGZIfArkmvxX+IAXxXeyPP85xKDBg==
+=RuRu
 -----END PGP SIGNATURE-----
 
---pQhZXvAqiZgbeUkD--
+--gBBFr7Ir9EOA20Yy--
