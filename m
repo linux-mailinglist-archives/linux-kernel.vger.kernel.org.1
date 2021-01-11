@@ -2,82 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F1B2F1BD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27AF72F1BD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:08:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389209AbhAKRHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 12:07:45 -0500
-Received: from netrider.rowland.org ([192.131.102.5]:55143 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S2388333AbhAKRHo (ORCPT
+        id S2389241AbhAKRIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 12:08:31 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:50186 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729405AbhAKRI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:07:44 -0500
-Received: (qmail 1201009 invoked by uid 1000); 11 Jan 2021 12:07:03 -0500
-Date:   Mon, 11 Jan 2021 12:07:03 -0500
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Longfang Liu <liulongfang@huawei.com>
-Cc:     gregkh@linuxfoundation.org, yisen.zhuang@huawei.com,
-        kong.kongxinwei@hisilicon.com, linux-usb@vger.kernel.org,
+        Mon, 11 Jan 2021 12:08:29 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kz0fS-0001uP-Rx; Mon, 11 Jan 2021 17:07:46 +0000
+Subject: Re: [PATCH][next] ASoC: soc-pcm: Fix uninitialised return value in
+ variable ret
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        =?UTF-8?B?5pyx54G/54G/?= <zhucancan@vivo.com>,
+        alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] USB:ehci:fix an interrupt calltrace error
-Message-ID: <20210111170703.GD1196682@rowland.harvard.edu>
-References: <1610364577-11617-1-git-send-email-liulongfang@huawei.com>
+References: <20210108123546.19601-1-colin.king@canonical.com>
+ <20210111163551.GA33269@sirena.org.uk>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <02666c81-5b0b-fe48-5d9d-63f2f007bfba@canonical.com>
+Date:   Mon, 11 Jan 2021 17:07:46 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610364577-11617-1-git-send-email-liulongfang@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210111163551.GA33269@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 07:29:37PM +0800, Longfang Liu wrote:
-> The system that use Synopsys USB host controllers goes to suspend
-> when using USB audio player. This causes the USB host controller
-> continuous send interrupt signal to system, When the number of
-> interrupts exceeds 100000, the system will forcibly close the
-> interrupts and output a calltrace error.
+On 11/01/2021 16:35, Mark Brown wrote:
+> On Fri, Jan 08, 2021 at 12:35:46PM +0000, Colin King wrote:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> Currently when attempting to start the BE fails because the
+>> FE is not started the error return variable ret is not initialized
+>> and garbage is returned.  Fix this by setting it to 0 so the
 > 
-> When the system goes to suspend, the last interrupt is reported to
-> the driver. At this time, the system has set the state to suspend.
-> This causes the last interrupt to not be processed by the system and
-> not clear the interrupt flag. This uncleared interrupt flag constantly
-> triggers new interrupt event. This causing the driver to receive more
-> than 100,000 interrupts, which causes the system to forcibly close the
-> interrupt report and report the calltrace error.
+> This doesn't apply against current code, please check and resend.
 > 
-> so, when the driver goes to sleep and changes the system state to
-> suspend, the interrupt flag needs to be cleared.
-> 
-> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+Just to double-check, which tree should I be working against?
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-
-> ---
-> 
-> Changes in v2:
-> - updated cleared registers
-> 
->  drivers/usb/host/ehci-hub.c | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/usb/host/ehci-hub.c b/drivers/usb/host/ehci-hub.c
-> index ce0eaf7..a99c1ac 100644
-> --- a/drivers/usb/host/ehci-hub.c
-> +++ b/drivers/usb/host/ehci-hub.c
-> @@ -346,8 +346,12 @@ static int ehci_bus_suspend (struct usb_hcd *hcd)
->  
->  	unlink_empty_async_suspended(ehci);
->  
-> +	/* Some Synopsys controllers mistakenly leave IAA turned on */
-> +	ehci_writel(ehci, STS_IAA, &ehci->regs->status);
-> +
->  	/* Any IAA cycle that started before the suspend is now invalid */
->  	end_iaa_cycle(ehci);
-> +
->  	ehci_handle_start_intr_unlinks(ehci);
->  	ehci_handle_intr_unlinks(ehci);
->  	end_free_itds(ehci);
-> -- 
-> 2.8.1
-> 
+Colin
