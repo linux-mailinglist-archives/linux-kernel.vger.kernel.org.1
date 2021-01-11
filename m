@@ -2,151 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC942F2122
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:50:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF2C2F20CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:31:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404093AbhAKUuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 15:50:08 -0500
-Received: from m13101.mail.163.com ([220.181.13.101]:43568 "EHLO
-        m13101.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728354AbhAKUuH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:50:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=oLvsT
-        gZemaYY5rCQ6nzdR9caKx5Vm6zBzOwg/h/AcMQ=; b=UJ6UEcsL2TXMGns8taCXz
-        6VPK7dBUX3/VuWTh7ul4R57y7MrPI/qoLKNkw3oc7zgALCo1BGRA+YrhrYhJMpuW
-        fmoV1MjSOYzV5yqpgsUVuX7mMYkdJE/IlOJ3jEDvb6HwTxhLSp83b5MPe6cTY98Z
-        DmcopHN47NnPUzkLHJzoGA=
-Received: from ultrachin$163.com ( [111.206.145.10] ) by
- ajax-webmail-wmsvr101 (Coremail) ; Mon, 11 Jan 2021 16:26:21 +0800 (CST)
-X-Originating-IP: [111.206.145.10]
-Date:   Mon, 11 Jan 2021 16:26:21 +0800 (CST)
-From:   chin <ultrachin@163.com>
-To:     "Vincent Guittot" <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        "Juri Lelli" <juri.lelli@redhat.com>,
-        "Dietmar Eggemann" <dietmar.eggemann@arm.com>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        "Ben Segall" <bsegall@google.com>, "Mel Gorman" <mgorman@suse.de>,
-        "Daniel Bristot de Oliveira" <bristot@redhat.com>,
-        heddchen@tencent.com,
-        =?GBK?Q?xiaoggchen=28=B3=C2=D0=A1=B9=E2=29?= 
-        <xiaoggchen@tencent.com>
-Subject: Re: [PATCH] sched: pull tasks when CPU is about to run SCHED_IDLE
- tasks
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20201118(ab4b390f)
- Copyright (c) 2002-2021 www.mailtech.cn 163com
-In-Reply-To: <CAKfTPtA9zdU76Q6AyjB8_gqvAm8SP_N0rJuydQdNFbDAKSb2jw@mail.gmail.com>
-References: <1608710968-31475-1-git-send-email-ultrachin@163.com>
- <CAKfTPtA9zdU76Q6AyjB8_gqvAm8SP_N0rJuydQdNFbDAKSb2jw@mail.gmail.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        id S1732896AbhAKUaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 15:30:18 -0500
+Received: from mga12.intel.com ([192.55.52.136]:38637 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728701AbhAKUaQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 15:30:16 -0500
+IronPort-SDR: NqykV0rOAJis/slsVNdbOni8rdhAa/+3pxBJ68WRpgL3m3H20bKPYWgVrHpQuREDvN/MuRbmsV
+ Srze6L0DuaOw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="157110597"
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="157110597"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 12:28:30 -0800
+IronPort-SDR: 9S9XolgBjucu9vRfXyakHknNVCatDK7ijQBmAYxPGl4PCVhsF/gfBoPH3c+Y7SViNUeBpfU+IB
+ T11ts5sM+UAw==
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="344995363"
+Received: from gkbech1x-mobl.amr.corp.intel.com (HELO [10.212.87.85]) ([10.212.87.85])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 12:28:29 -0800
+Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirks for DeeQ X5-Z8300
+To:     Chris Chiu <chiu@endlessos.org>, cezary.rojewski@intel.com,
+        yang.jie@linux.intel.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux@endlessos.org, Mark Brown <broonie@kernel.org>,
+        Takashi Iwai <tiwai@suse.de>,
+        Hans de Goede <hdegoede@redhat.com>
+References: <20201216041601.5993-1-chiu@endlessos.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <8d4f7c48-cb3e-a868-3d48-fe63a3113ea1@linux.intel.com>
+Date:   Mon, 11 Jan 2021 11:05:32 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-ID: <1fefea2e.70bf.176f08d9fae.Coremail.ultrachin@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: ZcGowADn75euC_xf_OEAAQ--.36308W
-X-CM-SenderInfo: xxow2thfkl0qqrwthudrp/1tbiNR4XWFrPahA0-gACsD
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+In-Reply-To: <20201216041601.5993-1-chiu@endlessos.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkF0IDIwMjAtMTItMjMgMTk6MzA6MjYsICJWaW5jZW50IEd1aXR0b3QiIDx2aW5jZW50Lmd1aXR0
-b3RAbGluYXJvLm9yZz4gd3JvdGU6Cj5PbiBXZWQsIDIzIERlYyAyMDIwIGF0IDA5OjMyLCA8dWx0
-cmFjaGluQDE2My5jb20+IHdyb3RlOgo+Pgo+PiBGcm9tOiBDaGVuIFhpYW9ndWFuZyA8eGlhb2dn
-Y2hlbkB0ZW5jZW50LmNvbT4KPj4KPj4gQmVmb3JlIGEgQ1BVIHN3aXRjaGVzIGZyb20gcnVubmlu
-ZyBTQ0hFRF9OT1JNQUwgdGFzayB0bwo+PiBTQ0hFRF9JRExFIHRhc2ssIHRyeWluZyB0byBwdWxs
-IFNDSEVEX05PUk1BTCB0YXNrcyBmcm9tIG90aGVyCj4KPkNvdWxkIHlvdSBleHBsYWluIG1vcmUg
-aW4gZGV0YWlsIHdoeSB5b3Ugb25seSBjYXJlIGFib3V0IHRoaXMgdXNlIGNhc2UKCj5pbiBwYXJ0
-aWN1bGFyIGFuZCBub3QgdGhlIGdlbmVyYWwgY2FzZT8KCgpXZSB3YW50IHRvIHJ1biBvbmxpbmUg
-dGFza3MgdXNpbmcgU0NIRURfTk9STUFMIHBvbGljeSBhbmQgb2ZmbGluZSB0YXNrcwp1c2luZyBT
-Q0hFRF9JRExFIHBvbGljeS4gVGhlIG9ubGluZSB0YXNrcyBhbmQgdGhlIG9mZmxpbmUgdGFza3Mg
-cnVuIGluCnRoZSBzYW1lIGNvbXB1dGVyIGluIG9yZGVyIHRvIHVzZSB0aGUgY29tcHV0ZXIgZWZm
-aWNpZW50bHkuClRoZSBvbmxpbmUgdGFza3MgYXJlIGluIHNsZWVwIGluIG1vc3QgdGltZXMgYnV0
-IHNob3VsZCByZXNwb25jZSBzb29uIG9uY2UKd2FrZSB1cC4gVGhlIG9mZmxpbmUgdGFza3MgYXJl
-IGluIGxvdyBwcmlvcml0eSBhbmQgd2lsbCBydW4gb25seSB3aGVuIG5vIG9ubGluZQp0YXNrcy4K
-ClRoZSBvbmxpbmUgdGFza3MgYXJlIG1vcmUgaW1wb3J0YW50IHRoYW4gdGhlIG9mZmxpbmUgdGFz
-a3MgYW5kIGFyZSBsYXRlbmN5CnNlbnNpdGl2ZSB3ZSBzaG91bGQgbWFrZSBzdXJlIHRoZSBvbmxp
-bmUgdGFza3MgcHJlZW1wdCB0aGUgb2ZmbGluZSB0YXNrcwphcyBzb29uIGFzIHBvc3NpbGJlIHdo
-aWxlIHRoZXJlIGFyZSBvbmxpbmUgdGFza3Mgd2FpdGluZyB0byBydW4uClNvIGluIG91ciBzaXR1
-YXRpb24gd2UgaG9wZSB0aGUgU0NIRURfTk9STUFMIHRvIHJ1biBpZiBoYXMgYW55LgoKTGV0J3Mg
-YXNzdW1lIHdlIGhhdmUgMiBDUFVzLApJbiBDUFUxIHdlIGdvdCAyIFNDSEVEX05PUk1BTCB0YXNr
-cy4KaW4gQ1BVMiB3ZSBnb3QgMSBTQ0hFRF9OT1JNQUwgdGFzayBhbmQgMiBTQ0hFRF9JRExFIHRh
-c2tzLgoKICAgICAgICAgICAgIENQVTEgICAgICAgICAgICAgICAgICAgICAgQ1BVMgogICAgICAg
-IGN1cnIgICAgICAgcnExICAgICAgICAgICAgY3VyciAgICAgICAgICBycTIKICAgICAgKy0tLS0t
-LSsgfCArLS0tLS0tKyAgICAgICArLS0tLS0tKyB8ICstLS0tKyArLS0tLSsKdDAgICAgfE5PUk1B
-THwgfCB8Tk9STUFMfCAgICAgICB8Tk9STUFMfCB8IHxJRExFfCB8SURMRXwKICAgICAgKy0tLS0t
-LSsgfCArLS0tLS0tKyAgICAgICArLS0tLS0tKyB8ICstLS0tKyArLS0tLSsKCiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIE5PUk1BTCBleGl0cyBvciBibG9ja2VkCiAgICAgICstLS0t
-LS0rIHwgKy0tLS0tLSsgICAgICAgICAgICAgICAgfCArLS0tLSsgKy0tLS0rCnQxICAgIHxOT1JN
-QUx8IHwgfE5PUk1BTHwgICAgICAgICAgICAgICAgfCB8SURMRXwgfElETEV8CiAgICAgICstLS0t
-LS0rIHwgKy0tLS0tLSsgICAgICAgICAgICAgICAgfCArLS0tLSsgKy0tLS0rCgogICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBwaWNrX25leHRfdGFza19mYWlyCiAgICAgICstLS0tLS0r
-IHwgKy0tLS0tLSsgICAgICAgICArLS0tLSsgfCArLS0tLSsKdDIgICAgfE5PUk1BTHwgfCB8Tk9S
-TUFMfCAgICAgICAgIHxJRExFfCB8IHxJRExFfAogICAgICArLS0tLS0tKyB8ICstLS0tLS0rICAg
-ICAgICAgKy0tLS0rIHwgKy0tLS0rCgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBT
-Q0hFRF9JRExFIHJ1bm5pbmcKdDMgICAgKy0tLS0tLSsgfCArLS0tLS0tKyAgICAgICAgKy0tLS0r
-ICB8ICstLS0tKwogICAgICB8Tk9STUFMfCB8IHxOT1JNQUx8ICAgICAgICB8SURMRXwgIHwgfElE
-TEV8CiAgICAgICstLS0tLS0rIHwgKy0tLS0tLSsgICAgICAgICstLS0tKyAgfCArLS0tLSsKICAg
-ICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcnVuX3JlYmFs
-YW5jZV9kb21haW5zCiAgICAgICstLS0tLS0rIHwgICAgICAgICAgICAgICAgKy0tLS0tLSsgfCAr
-LS0tLSsgKy0tLS0rCnQ0ICAgIHxOT1JNQUx8IHwgICAgICAgICAgICAgICAgfE5PUk1BTHwgfCB8
-SURMRXwgfElETEV8CiAgICAgICstLS0tLS0rIHwgICAgICAgICAgICAgICAgKy0tLS0tLSsgfCAr
-LS0tLSsgKy0tLS0rCgpBcyB3ZSBjYW4gc2VlCnQxOiBOT1JNQUwgdGFzayBpbiBDUFUyIGV4aXRz
-IG9yIGJsb2NrZWQKdDI6IENQVTIgcGlja19uZXh0X3Rhc2tfZmFpciB3b3VsZCBwaWNrIGEgU0NI
-RURfSURMRSB0byBydW4gd2hpbGUKYW5vdGhlciBTQ0hFRF9OT1JNQUwgaW4gcnExIGlzIHdhaXRp
-bmcuIAp0MzogU0NIRURfSURMRSBydW4gaW4gQ1BVMiB3aGlsZSBhIFNDSEVEX05PUk1BTCB3YWl0
-IGluIENQVTEuCnQ0OiBhZnRlciBhIHNob3J0IHRpbWUsIHBlcmlvZGljIGxvYWRfYmFsYW5jZSB0
-cmlnZ2VyZCBhbmQgcHVsbApTQ0hFRF9OT1JNQUwgaW4gcnExIHRvIHJxMiwgYW5kIFNDSEVEX05P
-Uk1BTCBsaWtlbHkgcHJlZW1wdHMgU0NIRURfSURMRS4KCkluIHRoaXMgc2NlbmFyaW8sIFNDSEVE
-X0lETEUgaXMgcnVubmluZyB3aGlsZSBTQ0hFRF9OT1JNQUwgaXMgd2FpdGluZyB0byBydW4uClRo
-ZSBsYXRlbmN5IG9mIHRoaXMgU0NIRURfTk9STUFMIHdpbGwgYmUgaGlnaCB3aGljaCBpcyBub3Qg
-YWNjZXB0YmxlLgoKRG8gYSBsb2FkX2JhbGFuY2UgYmVmb3JlIHJ1bm5pbmcgdGhlIFNDSEVEX0lE
-TEUgbWF5IGZpeCB0aGlzIHByb2JsZW0uCgpUaGlzIHBhdGNoIHdvcmtzIGFzIGJlbG93OgoKICAg
-ICAgICAgICAgIENQVTEgICAgICAgICAgICAgICAgICAgICAgQ1BVMgogICAgICAgIGN1cnIgICAg
-ICAgcnExICAgICAgICAgICAgY3VyciAgICAgICAgICBycTIKICAgICAgKy0tLS0tLSsgfCArLS0t
-LS0tKyAgICAgICArLS0tLS0tKyB8ICstLS0tKyArLS0tLSsKdDAgICAgfE5PUk1BTHwgfCB8Tk9S
-TUFMfCAgICAgICB8Tk9STUFMfCB8IHxJRExFfCB8SURMRXwKICAgICAgKy0tLS0tLSsgfCArLS0t
-LS0tKyAgICAgICArLS0tLS0tKyB8ICstLS0tKyArLS0tLSsKCiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIE5PUk1BTCBleGl0cyBvciBibG9ja2VkCiAgICAgICstLS0tLS0rIHwgKy0t
-LS0tLSsgICAgICAgICAgICAgICAgfCArLS0tLSsgKy0tLS0rCnQxICAgIHxOT1JNQUx8IHwgfE5P
-Uk1BTHwgICAgICAgICAgICAgICAgfCB8SURMRXwgfElETEV8CiAgICAgICstLS0tLS0rIHwgKy0t
-LS0tLSsgICAgICAgICAgICAgICAgfCArLS0tLSsgKy0tLS0rCgp0MiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBwaWNrX25leHRfdGFza19mYWlyIChhbGwgc2UgYXJlIFNDSEVEX0lETEUpCgog
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBuZXdpZGxlX2JhbGFuY2UKICAgICAgKy0t
-LS0tLSsgfCAgICAgICAgICAgICAgICAgKy0tLS0tLSsgfCArLS0tLSsgKy0tLS0rCnQzICAgIHxO
-T1JNQUx8IHwgICAgICAgICAgICAgICAgIHxOT1JNQUx8IHwgfElETEV8IHxJRExFfAogICAgICAr
-LS0tLS0tKyB8ICAgICAgICAgICAgICAgICArLS0tLS0tKyB8ICstLS0tKyArLS0tLSsKCgp0MTog
-Tk9STUFMIHRhc2sgaW4gQ1BVMiBleGl0cyBvciBibG9ja2VkCnQyOiBwaWNrX25leHRfdGFza19m
-YWlyIGNoZWNrIGFsbCBzZSBpbiByYnRyZWUgYXJlIFNDSEVEX0lETEUgYW5kIGNhbGxzCm5ld2lk
-bGVfYmFsYW5jZSB3aG8gdHJpZXMgdG8gcHVsbCBhIFNDSEVEX05PUk1BTChpZiBoYXMpLgp0Mzog
-cGlja19uZXh0X3Rhc2tfZmFpciB3b3VsZCBwaWNrIGEgU0NIRURfTk9STUFMIHRvIHJ1biBpbnN0
-ZWFkIG9mClNDSEVEX0lETEUobGlrZWx5KS4KCj4KPj4gQ1BVIGJ5IGRvaW5nIGxvYWRfYmFsYW5j
-ZSBmaXJzdC4KPj4KPj4gU2lnbmVkLW9mZi1ieTogQ2hlbiBYaWFvZ3VhbmcgPHhpYW9nZ2NoZW5A
-dGVuY2VudC5jb20+Cj4+IFNpZ25lZC1vZmYtYnk6IENoZW4gSGUgPGhlZGRjaGVuQHRlbmNlbnQu
-Y29tPgo+PiAtLS0KPj4gIGtlcm5lbC9zY2hlZC9mYWlyLmMgfCA1ICsrKysrCj4+ICAxIGZpbGUg
-Y2hhbmdlZCwgNSBpbnNlcnRpb25zKCspCj4+Cj4+IGRpZmYgLS1naXQgYS9rZXJuZWwvc2NoZWQv
-ZmFpci5jIGIva2VybmVsL3NjaGVkL2ZhaXIuYwo+PiBpbmRleCBhZTdjZWJhLi4wYTI2MTMyIDEw
-MDY0NAo+PiAtLS0gYS9rZXJuZWwvc2NoZWQvZmFpci5jCj4+ICsrKyBiL2tlcm5lbC9zY2hlZC9m
-YWlyLmMKPj4gQEAgLTcwMDQsNiArNzAwNCwxMSBAQCBzdHJ1Y3QgdGFza19zdHJ1Y3QgKgo+PiAg
-ICAgICAgIHN0cnVjdCB0YXNrX3N0cnVjdCAqcDsKPj4gICAgICAgICBpbnQgbmV3X3Rhc2tzOwo+
-Pgo+PiArICAgICAgIGlmIChwcmV2ICYmCj4+ICsgICAgICAgICAgIGZhaXJfcG9saWN5KHByZXYt
-PnBvbGljeSkgJiYKPgo+V2h5IGRvIHlvdSBuZWVkIGEgcHJldiBhbmQgZmFpciB0YXNrICA/IFlv
-dSBzZWVtIHRvIHRhcmdldCB0aGUgc3BlY2lhbAo+Y2FzZSBvZiBwaWNrX25leHRfdGFzayAgYnV0
-IGluIHRoaXMgY2FzZSB3aHkgbm90IG9ubHkgdGVzdGluZyByZiE9bnVsbAo+IHRvIG1ha2Ugc3Vy
-ZSB0byBub3QgcmV0dXJuIGltbWVkaWF0ZWx5IGFmdGVyIGp1bXBpbmcgdG8gdGhlIGlkbGUKCj5s
-YWJlbD8KV2UganVzdCB3YW50IHRvIGRvIGxvYWRfYmFsYW5jZSBvbmx5IHdoZW4gQ1BVIHN3aXRj
-aGVzIGZyb20gU0NIRURfTk9STUFMCnRvIFNDSEVEX0lETEUuCklmIG5vdCBjaGVjayBwcmV2LCB3
-aGVuIHRoZSBydW5uaW5nIHRhc2tzIGFyZSBhbGwgU0NIRURfSURMRSwgd2Ugd291bGQKZG8gbmV3
-aWRsZV9iYWxhbmNlIGV2ZXJ5dGltZSBpbiBwaWNrX25leHRfdGFza19mYWlyLCBpdCBtYWtlcyBu
-byBzZW5zZQphbmQga2luZCBvZiB3YXN0aW5nLgoKPgoKPkFsc28gd2h5IG5vdCBkb2luZyB0aGF0
-IGZvciBkZWZhdWx0IGNhc2UgdG9vID8gaS5lLiBiYWxhbmNlX2ZhaXIoKSA/CllvdSBhcmUgcmln
-aHQsIGlmIHlvdSB0aGluayB0aGlzIHNjZW5hcmlvIG1ha2VzIHNlbnNlLCB3ZSB3aWxsIHNlbmQg
-YQpyZWZpbmVkIHBhdGNoIHNvb24gOi0pCgo+Cj4+ICsgICAgICAgICAgIHNjaGVkX2lkbGVfY3B1
-KHJxLT5jcHUpKQo+PiArICAgICAgICAgICAgICAgZ290byBpZGxlOwo+PiArCj4+ICBhZ2FpbjoK
-Pj4gICAgICAgICBpZiAoIXNjaGVkX2ZhaXJfcnVubmFibGUocnEpKQo+PiAgICAgICAgICAgICAg
-ICAgZ290byBpZGxlOwo+PiAtLQo+PiAxLjguMy4xCj4+Cj4+Cg==
+
+
+On 12/15/20 10:16 PM, Chris Chiu wrote:
+> DeeQ X5-Z8300 is a laptop empowered by Intel Atom Cherry Trail. Add
+> quirks to select the correct input map, jack-detect options to enable
+> jack sensing and internal/headset microphones.
+> 
+> Signed-off-by: Chris Chiu <chiu@endlessos.org>
+
+You probably need to re-send and CC: maintainers (Mark Brown, Takashi 
+Iwai) and Hans de Goede who's been supporting all those quirks.
+
+I don't think the changes below are fully correct, most quirks start with		
+.driver_data = (void *)(BYT_RT5651_DEFAULT_QUIRKS |
+
+which e.g. enables the MCLK and overcurrent handling.
+
+I wonder if what you need is
+
+.driver_data = (void *)(BYT_RT5651_DEFAULT_QUIRKS | BYT_RT5651_IN1_IN2_MAP)
+
+> ---
+>   sound/soc/intel/boards/bytcr_rt5651.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+> index 688b5e0a49e3..9df09e26b05a 100644
+> --- a/sound/soc/intel/boards/bytcr_rt5651.c
+> +++ b/sound/soc/intel/boards/bytcr_rt5651.c
+> @@ -507,6 +507,14 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
+>   					BYT_RT5651_SSP0_AIF1 |
+>   					BYT_RT5651_MONO_SPEAKER),
+>   	},
+> +	{
+> +		.callback = byt_rt5651_quirk_cb,
+> +		.matches = {
+> +			DMI_MATCH(DMI_SYS_VENDOR, "DeeQ"),
+> +			DMI_MATCH(DMI_PRODUCT_NAME, "X5-Z8300"),
+> +		},
+> +		.driver_data = (void *)(BYT_RT5651_IN1_IN2_MAP | BYT_RT5651_JD1_1),
+> +	},
+>   	{}
+>   };
+>   
+> 
