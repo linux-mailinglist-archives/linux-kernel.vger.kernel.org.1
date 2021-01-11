@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE4E2F167E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E932F16C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:57:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731124AbhAKNxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:53:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56032 "EHLO mail.kernel.org"
+        id S2387829AbhAKN4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:56:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729317AbhAKNIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:08:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 710722251F;
-        Mon, 11 Jan 2021 13:07:55 +0000 (UTC)
+        id S1730551AbhAKNHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:07:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 39CFD22A85;
+        Mon, 11 Jan 2021 13:06:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370475;
-        bh=03QIzvnRplZlJC1D4Z2elr/xFNXfVFUhnrgchIP0d/Q=;
+        s=korg; t=1610370394;
+        bh=OzF4GEV4r3pJjABym4dxY+cjvR9HNA8PaiX5fxQNmAs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IlXgZpGhzxprCfEiLmHvPgwkEYTsH86Admq9CWHrXCDzsTJMh3SfL2G3z013Xvgbn
-         qVq1iY02DlF6H5sQ0/jxY7SNOASmbTxUq55OvsYFz5G75ccEX/Fq/rfJesfWjxnfm+
-         Iz58b8MT8VpqQ++YwokOf7aPxEJZ2m49dsMm9pLs=
+        b=gKoGTVdwb3SiodGntIrLkjIS+PhiTEUqurUormR4g31nDVMElsDRp+eCEGYLhJlZJ
+         61GWuUpY2eMiR15T7WQEeZV5dOqas7hoQGNcWZYhvbN94ONrvAdGcv97X44HUqMeAv
+         bMbTKH/0TTsMWo/YKnp4htow7qiHksykWtlrpR2s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 4.19 39/77] Bluetooth: revert: hci_h5: close serdev device and free hu in h5_close
-Date:   Mon, 11 Jan 2021 14:01:48 +0100
-Message-Id: <20210111130038.290994079@linuxfoundation.org>
+        Georgi Bakalski <georgi.bakalski@gmail.com>,
+        Sean Young <sean@mess.org>, Oliver Neukum <oneukum@suse.com>
+Subject: [PATCH 4.14 30/57] USB: cdc-acm: blacklist another IR Droid device
+Date:   Mon, 11 Jan 2021 14:01:49 +0100
+Message-Id: <20210111130035.182124092@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
+References: <20210111130033.715773309@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Sean Young <sean@mess.org>
 
-commit 5c3b5796866f85354a5ce76a28f8ffba0dcefc7e upstream.
+commit 0ffc76539e6e8d28114f95ac25c167c37b5191b3 upstream.
 
-There have been multiple revisions of the patch fix the h5->rx_skb
-leak. Accidentally the first revision (which is buggy) and v5 have
-both been merged:
+This device is supported by the IR Toy driver.
 
-v1 commit 70f259a3f427 ("Bluetooth: hci_h5: close serdev device and free
-hu in h5_close");
-v5 commit 855af2d74c87 ("Bluetooth: hci_h5: fix memory leak in h5_close")
-
-The correct v5 makes changes slightly higher up in the h5_close()
-function, which allowed both versions to get merged without conflict.
-
-The changes from v1 unconditionally frees the h5 data struct, this
-is wrong because in the serdev enumeration case the memory is
-allocated in h5_serdev_probe() like this:
-
-        h5 = devm_kzalloc(dev, sizeof(*h5), GFP_KERNEL);
-
-So its lifetime is tied to the lifetime of the driver being bound
-to the serdev and it is automatically freed when the driver gets
-unbound. In the serdev case the same h5 struct is re-used over
-h5_close() and h5_open() calls and thus MUST not be free-ed in
-h5_close().
-
-The serdev_device_close() added to h5_close() is incorrect in the
-same way, serdev_device_close() is called on driver unbound too and
-also MUST no be called from h5_close().
-
-This reverts the changes made by merging v1 of the patch, so that
-just the changes of the correct v5 remain.
-
-Cc: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Reported-by: Georgi Bakalski <georgi.bakalski@gmail.com>
+Signed-off-by: Sean Young <sean@mess.org>
+Acked-by: Oliver Neukum <oneukum@suse.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201227134502.4548-2-sean@mess.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/bluetooth/hci_h5.c |    8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/usb/class/cdc-acm.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/bluetooth/hci_h5.c
-+++ b/drivers/bluetooth/hci_h5.c
-@@ -263,12 +263,8 @@ static int h5_close(struct hci_uart *hu)
- 	if (h5->vnd && h5->vnd->close)
- 		h5->vnd->close(h5);
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -1952,6 +1952,10 @@ static const struct usb_device_id acm_id
+ 	{ USB_DEVICE(0x04d8, 0x0083),	/* Bootloader mode */
+ 	.driver_info = IGNORE_DEVICE,
+ 	},
++
++	{ USB_DEVICE(0x04d8, 0xf58b),
++	.driver_info = IGNORE_DEVICE,
++	},
+ #endif
  
--	if (hu->serdev)
--		serdev_device_close(hu->serdev);
--
--	kfree_skb(h5->rx_skb);
--	kfree(h5);
--	h5 = NULL;
-+	if (!hu->serdev)
-+		kfree(h5);
- 
- 	return 0;
- }
+ 	/*Samsung phone in firmware update mode */
 
 
