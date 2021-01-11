@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA3B92F16A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:56:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0662F15BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387897AbhAKNzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:55:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54614 "EHLO mail.kernel.org"
+        id S1730724AbhAKNLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:11:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729106AbhAKNHV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:07:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB6D4227C3;
-        Mon, 11 Jan 2021 13:07:05 +0000 (UTC)
+        id S1731295AbhAKNK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:10:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72838229C4;
+        Mon, 11 Jan 2021 13:10:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370426;
-        bh=rKXza5oLpiNJOwF26kjCTzS1RfXAa6fmSg4lfwpQjeU=;
+        s=korg; t=1610370617;
+        bh=+Kd3aqHT+ZRR+qTRRaanrxlV7+HyLHkYUaBKHsKdhvU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qa0NpytAtVZUVVNoOjA/BPVqBPaRkv+O2+BblXZ3ASrTn+CajGbW+nWDBD9E7aCf9
-         1SFzyOcVtswCBfy6qcE1YCr0DlHBSmSt9G2bluVqa4/p0Sfvuj3BBGcCCzJ0m/4J+Q
-         /CLZ8aLu23dj8JfUm+Wv61WZJ5Z84RH5+wnRHKqM=
+        b=1X1Fnnkn3vL7n5W3A73tCn3bb46QgdZU/7ScOtL4ysiSyRPWgqyJXGa+WdE0CyN8h
+         SJLk4ywS+1GbfYK6LHNg0s4/wX0cwd/RxmeL+b1MwQCT2tS/8i0fSVp+PjnBgiDMbY
+         Ttj7Kp9d1WrbKE22oRe7AeOAtpk1REIuUVQTvoNo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marcin Wojtas <mw@semihalf.com>,
-        Stefan Chulski <stefanc@marvell.com>,
+        stable@vger.kernel.org, Petr Machata <me@pmachata.org>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 17/77] net: mvpp2: Fix GoP port 3 Networking Complex Control configurations
-Date:   Mon, 11 Jan 2021 14:01:26 +0100
-Message-Id: <20210111130037.245720640@linuxfoundation.org>
+Subject: [PATCH 5.4 23/92] net: dcb: Validate netlink message in DCB handler
+Date:   Mon, 11 Jan 2021 14:01:27 +0100
+Message-Id: <20210111130040.262222131@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+From: Petr Machata <me@pmachata.org>
 
-[ Upstream commit 2575bc1aa9d52a62342b57a0b7d0a12146cf6aed ]
+[ Upstream commit 826f328e2b7e8854dd42ea44e6519cd75018e7b1 ]
 
-During GoP port 2 Networking Complex Control mode of operation configurations,
-also GoP port 3 mode of operation was wrongly set.
-Patch removes these configurations.
+DCB uses the same handler function for both RTM_GETDCB and RTM_SETDCB
+messages. dcb_doit() bounces RTM_SETDCB mesasges if the user does not have
+the CAP_NET_ADMIN capability.
 
-Fixes: f84bf386f395 ("net: mvpp2: initialize the GoP")
-Acked-by: Marcin Wojtas <mw@semihalf.com>
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-Link: https://lore.kernel.org/r/1608462149-1702-1-git-send-email-stefanc@marvell.com
+However, the operation to be performed is not decided from the DCB message
+type, but from the DCB command. Thus DCB_CMD_*_GET commands are used for
+reading DCB objects, the corresponding SET and DEL commands are used for
+manipulation.
+
+The assumption is that set-like commands will be sent via an RTM_SETDCB
+message, and get-like ones via RTM_GETDCB. However, this assumption is not
+enforced.
+
+It is therefore possible to manipulate DCB objects without CAP_NET_ADMIN
+capability by sending the corresponding command in an RTM_GETDCB message.
+That is a bug. Fix it by validating the type of the request message against
+the type used for the response.
+
+Fixes: 2f90b8657ec9 ("ixgbe: this patch adds support for DCB to the kernel and ixgbe driver")
+Signed-off-by: Petr Machata <me@pmachata.org>
+Link: https://lore.kernel.org/r/a2a9b88418f3a58ef211b718f2970128ef9e3793.1608673640.git.me@pmachata.org
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/dcb/dcbnl.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -954,7 +954,7 @@ static void mvpp22_gop_init_rgmii(struct
+--- a/net/dcb/dcbnl.c
++++ b/net/dcb/dcbnl.c
+@@ -1765,6 +1765,8 @@ static int dcb_doit(struct sk_buff *skb,
+ 	fn = &reply_funcs[dcb->cmd];
+ 	if (!fn->cb)
+ 		return -EOPNOTSUPP;
++	if (fn->type != nlh->nlmsg_type)
++		return -EPERM;
  
- 	regmap_read(priv->sysctrl_base, GENCONF_CTRL0, &val);
- 	if (port->gop_id == 2)
--		val |= GENCONF_CTRL0_PORT0_RGMII | GENCONF_CTRL0_PORT1_RGMII;
-+		val |= GENCONF_CTRL0_PORT0_RGMII;
- 	else if (port->gop_id == 3)
- 		val |= GENCONF_CTRL0_PORT1_RGMII_MII;
- 	regmap_write(priv->sysctrl_base, GENCONF_CTRL0, val);
+ 	if (!tb[DCB_ATTR_IFNAME])
+ 		return -EINVAL;
 
 
