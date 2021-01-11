@@ -2,55 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4A32F0F3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:39:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA60B2F0F41
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728527AbhAKJhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 04:37:51 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:44550 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728062AbhAKJhr (ORCPT
+        id S1728537AbhAKJjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 04:39:24 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:11377 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728042AbhAKJjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 04:37:47 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R671e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0ULL1QpG_1610357816;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0ULL1QpG_1610357816)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 11 Jan 2021 17:37:02 +0800
-From:   YANG LI <abaci-bugfix@linux.alibaba.com>
-To:     axboe@kernel.dk
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        YANG LI <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] ata: style: Simplify bool comparison
-Date:   Mon, 11 Jan 2021 17:36:55 +0800
-Message-Id: <1610357815-69958-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 11 Jan 2021 04:39:24 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DDpXQ17Hlz6vGV;
+        Mon, 11 Jan 2021 17:37:42 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 11 Jan 2021 17:38:39 +0800
+Subject: Re: [PATCH] USB:ehci:fix an interrupt calltrace error
+From:   liulongfang <liulongfang@huawei.com>
+To:     Alan Stern <stern@rowland.harvard.edu>
+CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1606361673-573-1-git-send-email-liulongfang@huawei.com>
+ <20201126160830.GA827745@rowland.harvard.edu>
+ <96b4d366-c94c-9708-da12-5693bf16b716@huawei.com>
+ <20201127154718.GA861473@rowland.harvard.edu>
+ <3c2366c8-4b3e-dac0-48ad-6b33b6eed10e@huawei.com>
+Message-ID: <0f747f03-72e8-84de-c1c1-297398ca516c@huawei.com>
+Date:   Mon, 11 Jan 2021 17:38:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <3c2366c8-4b3e-dac0-48ad-6b33b6eed10e@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.102.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
-./include/linux/ata.h:621:5-25: WARNING: Comparison of 0/1 to bool
-variable
-
-Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
-Reported-by: Abaci Robot<abaci@linux.alibaba.com>
----
- include/linux/ata.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/ata.h b/include/linux/ata.h
-index 6e67ade..89245f3 100644
---- a/include/linux/ata.h
-+++ b/include/linux/ata.h
-@@ -618,7 +618,7 @@ static inline bool ata_id_has_flush(const u16 *id)
- 
- static inline bool ata_id_flush_enabled(const u16 *id)
- {
--	if (ata_id_has_flush(id) == 0)
-+	if (!ata_id_has_flush(id))
- 		return false;
- 	if ((id[ATA_ID_CSF_DEFAULT] & 0xC000) != 0x4000)
- 		return false;
--- 
-1.8.3.1
-
+On 2020/11/28 11:22, liulongfang Wrote:
+> On 2020/11/27 23:47, Alan Stern Wrote:
+>> On Fri, Nov 27, 2020 at 10:29:03AM +0800, liulongfang wrote:
+>>> On 2020/11/27 0:08, Alan Stern Wrote:
+>>>> On Thu, Nov 26, 2020 at 11:34:33AM +0800, Longfang Liu wrote:
+>>>>> The system goes to suspend when using USB audio player. This causes
+>>>>> the USB device continuous send interrupt signal to system, When the
+>>>>> number of interrupts exceeds 100000, the system will forcibly close
+>>>>> the interrupts and output a calltrace error.
+>>>>
+>>>> This description is very confusing.  USB devices do not send interrupt 
+>>>> signals to the host.  Do you mean that the device sends a wakeup 
+>>>> request?  Or do you mean something else?
+>>> The irq type is IRQ_NONE，It's counted in the note_interrupt function.
+>>> From the analysis of the driver code, that are indeed  interrupt signals.
+>>
+>> Above you wrote: "the USB device continuous send interrupt signal to 
+>> system".  But that's not correct.  The interrupt signals are sent by the 
+>> USB host controller, not by the USB audio device.
+>>
+> OK, I will modify the description in the next patch.
+>> The patch description should mention that this happens only with some 
+>> Synopsys host controllers.
+>>
+>>>>> When the system goes to suspend, the last interrupt is reported to
+>>>>> the driver. At this time, the system has set the state to suspend.
+>>>>> This causes the last interrupt to not be processed by the system and
+>>>>> not clear the interrupt state flag. This uncleared interrupt flag
+>>>>> constantly triggers new interrupt event. This causing the driver to
+>>>>> receive more than 100,000 interrupts, which causes the system to
+>>>>> forcibly close the interrupt report and report the calltrace error.
+>>>>
+>>>> If the driver receives an interrupt, it is supposed to process the event 
+>>>> even if the host controller is suspended.  And when ehci_irq() runs, it 
+>>>> clears the bits that are set in the USBSYS register.
+>>> When the host controller is suspended, the ehci_suspend() will clear
+>>> the HCD_FLAG_HW_ACCESSIBLE, and then usb_hcd_irq() will return IRQ_NONE
+>>> directly without calling ehci_irq().
+>>
+>> Yes.  But ehci_bus_suspend() runs _before_ the host controller is 
+>> suspended.  While ehci_bus_suspend() is running, usb_hcd_irq() _will_ 
+>> call ehci_irq(), and ehci_irq() _will_ clear the status bits.
+>>
+>> After the host controller is suspended it is not supposed to generate 
+>> any interrupt signals at all, because ehci_suspend() writes 0 to the 
+>> USBINTR register, and it does this _before_ clearing 
+>> HCD_FLAG_HW_ACCESSIBLE.
+>>
+> According to this process, there should be no interruption storm problem,
+> but the current fact is that the problem has occurred, so the actual
+> execution process did not follow the correct process above.
+> 
+>>>> Why is your system getting interrupts?  That is, which bits are set in 
+>>>> the USBSTS register?
+>>> BIT(5) and BIT(3) are setted, STS_IAA and STS_FLR.
+>>
+>> STS_FLR is not set in the USBINTR register, but STS_IAA is.  So that's 
+>> the one which matters.
+>>
+>>>>> so, when the driver goes to sleep and changes the system state to
+>>>>> suspend, the interrupt flag needs to be cleared.
+>>>>>
+>>>>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+>>>>> ---
+>>>>>  drivers/usb/host/ehci-hub.c | 5 +++++
+>>>>>  1 file changed, 5 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/usb/host/ehci-hub.c b/drivers/usb/host/ehci-hub.c
+>>>>> index ce0eaf7..5b13825 100644
+>>>>> --- a/drivers/usb/host/ehci-hub.c
+>>>>> +++ b/drivers/usb/host/ehci-hub.c
+>>>>> @@ -348,6 +348,11 @@ static int ehci_bus_suspend (struct usb_hcd *hcd)
+>>>>>  
+>>>>>  	/* Any IAA cycle that started before the suspend is now invalid */
+>>>>>  	end_iaa_cycle(ehci);
+>>>>> +
+>>>>> +	/* clear interrupt status */
+>>>>> +	if (ehci->has_synopsys_hc_bug)
+>>>>> +		ehci_writel(ehci, INTR_MASK | STS_FLR, &ehci->regs->status);
+>>>>
+>>>> This is a very strange place to add your new code -- right in the middle 
+>>>> of the IAA and unlink handling.  Why not put it in a more reasonable 
+>>>> place?After the IAA is processed, clear the STS_IAA interrupt state flag.
+>>>>
+>>>> Also, the patch description does not mention has_synopsys_hc_bug.  The 
+>>>> meaning of this flag has no connection with the interrupt status 
+>>>> register, so why do you use it here?
+>>> Because of our USB IP comes from Synopsys, and the uncleared flage is also caused by
+>>> special hardware design, in addition, we have not tested other manufacturers' USB
+>>> controllers.We don’t know if other manufacturers’ designs have this problem,
+>>> so this modification is only limited to this kind of design.
+>>
+>> Clearing the STS_IAA flag won't hurt, no matter who manufactured the 
+>> controller.  So your patch should look more like this:
+>>
+>> +	/* Some Synopsys controllers mistakenly leave IAA turned on */
+>> +	ehci_writel(ehci, STS_IAA, &ehci->regs->status);
+>>
+>> And these lines should come before the "Any IAA cycle..." comment line.
+>> Does that fix the problem?
+> I will conduct a round of testing based on this modification
+> and provide the test results.
+>>
+>> Alan Stern
+>> .
+>>
+> Thanks.
+> Longfang Liu
+> .
+> 
+After continuous sleep and wake-up operation stress tests,
+this problem can be solved by using a solution that
+only cleans up STS_IAA
+Thanks.
+Longfang Liu
