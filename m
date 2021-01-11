@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705342F1389
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:10:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1042F1490
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:27:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731201AbhAKNKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:10:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56814 "EHLO mail.kernel.org"
+        id S1731400AbhAKN0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:26:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730911AbhAKNJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:09:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60F0522AAD;
-        Mon, 11 Jan 2021 13:08:54 +0000 (UTC)
+        id S1732464AbhAKNQl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:16:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC09E223E8;
+        Mon, 11 Jan 2021 13:15:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370534;
-        bh=BhMwMykViZJMHect5OL1Dy4stvtRtfcWtDel32CXr3k=;
+        s=korg; t=1610370960;
+        bh=m9Zozzx66UecvdAdPiVpUZ6KeMaXZZMdFoYrHZcjSh4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g+Uo2vzStGqvPxRpfszre28dFuZYcFeUo+u3BI2uABoCPmOGbVvV5vzOqRz16OE/M
-         +mM3sEiprf2lpOpvm5NMn3cRWBKwuc18aSlyeUlTG7XhFQLVe9N8rUmyajoFvHce3J
-         kBJp+VSvUh30YT1vHGBtpZtW8F5RY4lIdQywdqxY=
+        b=Gdk0xytlDuzqVDjSRPt14nLTC/TPQyWvZ6Le74eKSzOCL863cz3MtRwk4sbs2JBS5
+         FRClF4T2RcIczoKgZ4mVf5NOs4fvhy6hncjjt19I4aYnd43Y5KuGSZy4a8+A1BoZrv
+         F1J0JfmZaBmoEx/wI0OwOjvhr6CBPuqWTkRnm3tw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 34/77] vhost_net: fix ubuf refcount incorrectly when sendmsg fails
+        stable@vger.kernel.org,
+        Georgi Bakalski <georgi.bakalski@gmail.com>,
+        Sean Young <sean@mess.org>, Oliver Neukum <oneukum@suse.com>
+Subject: [PATCH 5.10 079/145] USB: cdc-acm: blacklist another IR Droid device
 Date:   Mon, 11 Jan 2021 14:01:43 +0100
-Message-Id: <20210111130038.039221236@linuxfoundation.org>
+Message-Id: <20210111130052.323688392@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunjian Wang <wangyunjian@huawei.com>
+From: Sean Young <sean@mess.org>
 
-[ Upstream commit 01e31bea7e622f1890c274f4aaaaf8bccd296aa5 ]
+commit 0ffc76539e6e8d28114f95ac25c167c37b5191b3 upstream.
 
-Currently the vhost_zerocopy_callback() maybe be called to decrease
-the refcount when sendmsg fails in tun. The error handling in vhost
-handle_tx_zerocopy() will try to decrease the same refcount again.
-This is wrong. To fix this issue, we only call vhost_net_ubuf_put()
-when vq->heads[nvq->desc].len == VHOST_DMA_IN_PROGRESS.
+This device is supported by the IR Toy driver.
 
-Fixes: bab632d69ee4 ("vhost: vhost TX zero-copy support")
-Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Link: https://lore.kernel.org/r/1609207308-20544-1-git-send-email-wangyunjian@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reported-by: Georgi Bakalski <georgi.bakalski@gmail.com>
+Signed-off-by: Sean Young <sean@mess.org>
+Acked-by: Oliver Neukum <oneukum@suse.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201227134502.4548-2-sean@mess.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/vhost/net.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -613,6 +613,7 @@ static void handle_tx_zerocopy(struct vh
- 	size_t len, total_len = 0;
- 	int err;
- 	struct vhost_net_ubuf_ref *uninitialized_var(ubufs);
-+	struct ubuf_info *ubuf;
- 	bool zcopy_used;
- 	int sent_pkts = 0;
+---
+ drivers/usb/class/cdc-acm.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -1895,6 +1895,10 @@ static const struct usb_device_id acm_id
+ 	{ USB_DEVICE(0x04d8, 0xfd08),
+ 	.driver_info = IGNORE_DEVICE,
+ 	},
++
++	{ USB_DEVICE(0x04d8, 0xf58b),
++	.driver_info = IGNORE_DEVICE,
++	},
+ #endif
  
-@@ -645,9 +646,7 @@ static void handle_tx_zerocopy(struct vh
- 
- 		/* use msg_control to pass vhost zerocopy ubuf info to skb */
- 		if (zcopy_used) {
--			struct ubuf_info *ubuf;
- 			ubuf = nvq->ubuf_info + nvq->upend_idx;
--
- 			vq->heads[nvq->upend_idx].id = cpu_to_vhost32(vq, head);
- 			vq->heads[nvq->upend_idx].len = VHOST_DMA_IN_PROGRESS;
- 			ubuf->callback = vhost_zerocopy_callback;
-@@ -675,7 +674,8 @@ static void handle_tx_zerocopy(struct vh
- 		err = sock->ops->sendmsg(sock, &msg, len);
- 		if (unlikely(err < 0)) {
- 			if (zcopy_used) {
--				vhost_net_ubuf_put(ubufs);
-+				if (vq->heads[ubuf->desc].len == VHOST_DMA_IN_PROGRESS)
-+					vhost_net_ubuf_put(ubufs);
- 				nvq->upend_idx = ((unsigned)nvq->upend_idx - 1)
- 					% UIO_MAXIOV;
- 			}
+ 	/*Samsung phone in firmware update mode */
 
 
