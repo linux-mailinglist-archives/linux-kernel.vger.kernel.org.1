@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1406B2F13A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:13:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3BD2F1374
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:09:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730863AbhAKNMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:12:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58124 "EHLO mail.kernel.org"
+        id S1729032AbhAKNI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:08:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731348AbhAKNLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:11:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DCA8122A84;
-        Mon, 11 Jan 2021 13:10:57 +0000 (UTC)
+        id S1730713AbhAKNIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:08:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB2D422AAD;
+        Mon, 11 Jan 2021 13:07:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370658;
-        bh=79QgIaz5hQOVT38E+6hDFFvVP9pJhD7hMhgf+oJ8Hc8=;
+        s=korg; t=1610370471;
+        bh=jzGQHfeDByFgMo6EFOsbrBwo6331JUoc89XKDcaV7h4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l+dXCCWZQjQ3UH1zZ4M3UgYHNawkq/EerZqvtON3jyYDc1Ba2Vj78v3sb2Q/dpFz+
-         bcj65+mTPIFg3TEwiHL60R5cuQPKw4e1+FmPLpGeZiTyJNK7ddpbLRYqnC/Xl6Z6Rr
-         j9570xlulVdHI24n7XDc7TbpnqL4DsHgIzFTxkxU=
+        b=qsH3nXaJ0hceGHyxfidbyz9/wFf9s1LtcDniJ2uUHkzpJ+/93XkpokX7QQo8FaQgE
+         Y0q5NHNWcR2gooheP9ov8Y1/9OOqRScAEoK6YoOzEH7UjwgLx+8w9MkmrvahgYIY2U
+         31DJ7UD0jVI8dsVVOstccBgN1wkdv3Y73KFpMLVg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        stable@vger.kernel.org, Antoine Tenart <atenart@kernel.org>,
+        Alexander Duyck <alexanderduyck@fb.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 42/92] net: usb: qmi_wwan: add Quectel EM160R-GL
+Subject: [PATCH 4.19 37/77] net-sysfs: take the rtnl lock when accessing xps_rxqs_map and num_tc
 Date:   Mon, 11 Jan 2021 14:01:46 +0100
-Message-Id: <20210111130041.170353687@linuxfoundation.org>
+Message-Id: <20210111130038.192159818@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
-References: <20210111130039.165470698@linuxfoundation.org>
+In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
+References: <20210111130036.414620026@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +40,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Bjørn Mork" <bjorn@mork.no>
+From: Antoine Tenart <atenart@kernel.org>
 
-[ Upstream commit cfd82dfc9799c53ef109343a23af006a0f6860a9 ]
+[ Upstream commit 4ae2bb81649dc03dfc95875f02126b14b773f7ab ]
 
-New modem using ff/ff/30 for QCDM, ff/00/00 for  AT and NMEA,
-and ff/ff/ff for RMNET/QMI.
+Accesses to dev->xps_rxqs_map (when using dev->num_tc) should be
+protected by the rtnl lock, like we do for netif_set_xps_queue. I didn't
+see an actual bug being triggered, but let's be safe here and take the
+rtnl lock while accessing the map in sysfs.
 
-T: Bus=02 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 2 Spd=5000 MxCh= 0
-D: Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs= 1
-P: Vendor=2c7c ProdID=0620 Rev= 4.09
-S: Manufacturer=Quectel
-S: Product=EM160R-GL
-S: SerialNumber=e31cedc1
-C:* #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=896mA
-I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=(none)
-E: Ad=81(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E: Ad=01(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-E: Ad=83(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
-E: Ad=82(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E: Ad=02(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-E: Ad=85(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
-E: Ad=84(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E: Ad=03(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-E: Ad=87(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
-E: Ad=86(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E: Ad=04(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:* If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
-E: Ad=88(I) Atr=03(Int.) MxPS= 8 Ivl=32ms
-E: Ad=8e(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E: Ad=0f(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-
-Signed-off-by: BjÃ¸rn Mork <bjorn@mork.no>
-Link: https://lore.kernel.org/r/20201230152451.245271-1-bjorn@mork.no
+Fixes: 8af2c06ff4b1 ("net-sysfs: Add interface for Rx queue(s) map per Tx queue")
+Signed-off-by: Antoine Tenart <atenart@kernel.org>
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/usb/qmi_wwan.c |    1 +
- 1 file changed, 1 insertion(+)
+ net/core/net-sysfs.c |   23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -1058,6 +1058,7 @@ static const struct usb_device_id produc
- 	{QMI_MATCH_FF_FF_FF(0x2c7c, 0x0125)},	/* Quectel EC25, EC20 R2.0  Mini PCIe */
- 	{QMI_MATCH_FF_FF_FF(0x2c7c, 0x0306)},	/* Quectel EP06/EG06/EM06 */
- 	{QMI_MATCH_FF_FF_FF(0x2c7c, 0x0512)},	/* Quectel EG12/EM12 */
-+	{QMI_MATCH_FF_FF_FF(0x2c7c, 0x0620)},	/* Quectel EM160R-GL */
- 	{QMI_MATCH_FF_FF_FF(0x2c7c, 0x0800)},	/* Quectel RM500Q-GL */
+--- a/net/core/net-sysfs.c
++++ b/net/core/net-sysfs.c
+@@ -1356,23 +1356,30 @@ static struct netdev_queue_attribute xps
  
- 	/* 3. Combined interface devices matching on interface number */
+ static ssize_t xps_rxqs_show(struct netdev_queue *queue, char *buf)
+ {
++	int j, len, ret, num_tc = 1, tc = 0;
+ 	struct net_device *dev = queue->dev;
+ 	struct xps_dev_maps *dev_maps;
+ 	unsigned long *mask, index;
+-	int j, len, num_tc = 1, tc = 0;
+ 
+ 	index = get_netdev_queue_index(queue);
+ 
++	if (!rtnl_trylock())
++		return restart_syscall();
++
+ 	if (dev->num_tc) {
+ 		num_tc = dev->num_tc;
+ 		tc = netdev_txq_to_tc(dev, index);
+-		if (tc < 0)
+-			return -EINVAL;
++		if (tc < 0) {
++			ret = -EINVAL;
++			goto err_rtnl_unlock;
++		}
+ 	}
+ 	mask = kcalloc(BITS_TO_LONGS(dev->num_rx_queues), sizeof(long),
+ 		       GFP_KERNEL);
+-	if (!mask)
+-		return -ENOMEM;
++	if (!mask) {
++		ret = -ENOMEM;
++		goto err_rtnl_unlock;
++	}
+ 
+ 	rcu_read_lock();
+ 	dev_maps = rcu_dereference(dev->xps_rxqs_map);
+@@ -1398,10 +1405,16 @@ static ssize_t xps_rxqs_show(struct netd
+ out_no_maps:
+ 	rcu_read_unlock();
+ 
++	rtnl_unlock();
++
+ 	len = bitmap_print_to_pagebuf(false, buf, mask, dev->num_rx_queues);
+ 	kfree(mask);
+ 
+ 	return len < PAGE_SIZE ? len : -EINVAL;
++
++err_rtnl_unlock:
++	rtnl_unlock();
++	return ret;
+ }
+ 
+ static ssize_t xps_rxqs_store(struct netdev_queue *queue, const char *buf,
 
 
