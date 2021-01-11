@@ -2,96 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9CD32F1C2E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E5C2F1C2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389427AbhAKRVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 12:21:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389122AbhAKRVl (ORCPT
+        id S2389438AbhAKRVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 12:21:44 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:50331 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389421AbhAKRVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:21:41 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2C9C061795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:20:55 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id l207so97628oib.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:20:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=fdV0VW8YWN7jAg9JebTxlrGwTE2iDZU0jMTnkLks5R8=;
-        b=JptZiE/BzILMv2edPkEWpTCiZDWqqUiaoiUj6VwDJX4FtOt7SHW4BaUrdj1iadpmmH
-         oH7UncA1jzlSQ0DNhUKBhCw2dBAE4yLK13IClTXDIsEBBQ61eAigKNvE8eR5HxFLSEt5
-         B6L2gAn3ARU3Mi1FbOC2dNgmASqtMIf7zMHah52QueN5wWrp1B2xQxTNERaMPAEZMnl0
-         qMDOaYb93yqpSItXumjhux39nifB94ZY3XjEo5OUdlWGHgFQD/v6Hq0MSTw46A130FjZ
-         SAKU4I6jHaBNbCmR5NzsPtYvuaoEp/3e+hH2M/35D8hrDf/WQVUaiABMK12yCj0NNeJr
-         AQ3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=fdV0VW8YWN7jAg9JebTxlrGwTE2iDZU0jMTnkLks5R8=;
-        b=bg+Db4niSjF26/kQD+2OR7f9jKtnlTQxHKiTJgwkQomWEc1Q18nsdT7cE3XaFp3lAZ
-         jwZ4FDlslZ6mB9I+tSwXp4uCzObDWoyi/0WVw8S0eB6eNLgyVlPUSrpVmzVaowvOwkBf
-         SK8F3WTpmjbH6/4DVcJ+haj8lQWy/ILYQFxOLFynzn73vs8hgJrsCLBeSfewn2kfsWb7
-         FtW5R6EIg+dvGdOO8KnD6s8udyeVvgdX9zy9DyHlOiLrH/EY5tVrQIhxqaHhukSFUmHZ
-         CsYGCXiczAC+a3AfEN0sTqRee7Rxg+/CYnjHHvhUTisXDdoKXGIWzgWB6z6bKNFJbqSF
-         MIRQ==
-X-Gm-Message-State: AOAM530SVdegAmm2pPljwjlq2AUO4aE+hrOTbdZsBiRi0YYdXMn1/fRM
-        8+r0bkaRIrOgO7TAv/5kU5tNjg==
-X-Google-Smtp-Source: ABdhPJyYjPqVhMs1IGXL3i/+aSzZl7jL8FLkb4dcnzw/G7iPRUa7mUsCtdiFrZJkxyaSW0Rso7PrIQ==
-X-Received: by 2002:a05:6808:2cb:: with SMTP id a11mr255356oid.93.1610385654570;
-        Mon, 11 Jan 2021 09:20:54 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id n13sm72203otk.58.2021.01.11.09.20.53
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 11 Jan 2021 09:20:54 -0800 (PST)
-Date:   Mon, 11 Jan 2021 09:20:37 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-cc:     Hugh Dickins <hughd@google.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Subject: Re: 5.11-rc device reordering breaks ThinkPad rmi4 suspend
-In-Reply-To: <CAJZ5v0gUQApODPUuHkfmHUw30XhX3U-5zYDu5JrgehzVrtyJQw@mail.gmail.com>
-Message-ID: <alpine.LSU.2.11.2101110908170.1561@eggly.anvils>
-References: <alpine.LSU.2.11.2101102010200.25762@eggly.anvils> <CAJZ5v0gUQApODPUuHkfmHUw30XhX3U-5zYDu5JrgehzVrtyJQw@mail.gmail.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Mon, 11 Jan 2021 12:21:43 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 71C3A580A41;
+        Mon, 11 Jan 2021 12:20:56 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 11 Jan 2021 12:20:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=i4XX+K3NCCasnwy3kE4LR14yrBS
+        4sQC0N/rn+i2cx68=; b=IrCHguv7glVthg8oI16lnZnbCbUmaIJLZ9GA79NVBSG
+        T5YyE6d8aUflCJTw0rx4QIM4TTxfIjwPKYlF7iPeW4RHnbJnexiebCU+MFeoCNSG
+        xcGfpNA/ftklD1QzSBdpGYdLb1ybMxumWp5OUpXAczDCtgbhdXTl//9Xn4Jn6toR
+        qqX0A0cRGMQDReac9p/o5Rg6cpCw3pGdFChY5E48KDnxluVdao/9GyOaKum5GVKn
+        0RvTlagymJiAF+l5qkuek9eG+PvlWHaZhCW8Yb8n6x6dFn9HUD6RkYLyH1L7Um4Y
+        3962VAc8aQ4A/3AuT4UETklA5E5LAl5toFZjI3qKoBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=i4XX+K
+        3NCCasnwy3kE4LR14yrBS4sQC0N/rn+i2cx68=; b=DZwUysumJVUtYuArJn0xWc
+        J2A2iv8lI4Xp8q/giLNeQAEkSgkYYPGFK1ltJYitiYJcSJq7dSbrGU40OEsSbk10
+        SPjwMB9XD6nf4i7RJtqLprGkvnMSfT+LM8P9Z+xhSOBEs88Cosikt/uwPLGUPJ1M
+        +LffB1oC3s/q6okKOkcSxQqXZwkppNkgwg7C4C5cawI9k50zGrRCCvaAb3nD1w+P
+        +k7cTDkF4Z3JRiPmBgrk7cl5y3SklvXt1Msq/Dsi29mQac/0mB75yPe4DmODEURr
+        qzqlU1ajTd+gBHpoWW2ObQGcBnWvwYtcB6GsAgVxOifODOzkQNX3wJjFZmc0qZ8A
+        ==
+X-ME-Sender: <xms:9oj8X43ijKqRGe16eCpKjv5cu2qdTX77joql3F7_BsRtZ7PuY87ATA>
+    <xme:9oj8X8vWFy2HCXid3WcsYA3ECctdq0g8H2-X8nkStSYRB3zAa8YQ5yYjC7NtqMKCq
+    H-BN56P97yDRaMziHo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdehuddguddttdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdej
+    vdfgveenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:94j8Xw7OFl0a7PKynZEkKfbX8uslVapxoqh6O1UiKjdGLrHBSsKM6A>
+    <xmx:94j8X1JYPG23AGc1i7tju9463_pwmS61uh5Qvw9ebquomltIye2XTQ>
+    <xmx:94j8X47KbSpUSQFebjg4jYaHeUSmb-IbChBV_WqbuiD0Yt6-8XZ9Dw>
+    <xmx:-Ij8X3UPpv2zkz7nGbGZNQ8jD3fRyIo91GQRDVtkvN9IVMtvoKtUMw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id BFDD524005A;
+        Mon, 11 Jan 2021 12:20:54 -0500 (EST)
+Date:   Mon, 11 Jan 2021 18:20:52 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     Marjan Pascolo <marjan.pascolo@trexom.it>, wens@csie.org,
+        daniel@ffwll.ch, airlied@linux.ie, treding@nvidia.com,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Giulio Benetti <giulio.benetti@micronovasrl.com>
+Subject: Re: [PATCH v2 2/2] drm/sun4i: tcon: improve DCLK polarity handling
+Message-ID: <20210111172052.7v522xam74xkq6se@gilmour>
+References: <3685133.SLcexNTYsu@kista>
+ <20210107023032.560182-1-giulio.benetti@benettiengineering.com>
+ <20210107023032.560182-3-giulio.benetti@benettiengineering.com>
+ <20210108092355.7p5uakxt7lpdu3bn@gilmour>
+ <35622307-5e88-a2ed-bdf9-fca6554efefc@benettiengineering.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="dwnwa7aczjwiyrub"
+Content-Disposition: inline
+In-Reply-To: <35622307-5e88-a2ed-bdf9-fca6554efefc@benettiengineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Jan 2021, Rafael J. Wysocki wrote:
-> On Mon, Jan 11, 2021 at 5:44 AM Hugh Dickins <hughd@google.com> wrote:
-> >
-> > Hi Rafael,
-> >
-> > Synaptics RMI4 SMBus touchpad on ThinkPad X1 Carbon (5th generation)
-> > fails to suspend when running 5.11-rc kernels: bisected to
-> > 5b6164d3465f ("driver core: Reorder devices on successful probe"),
-> > and reverting that fixes it.  dmesg.xz attached, but go ahead and ask
-> > me to switch on a debug option to extract further info if that may help.
-> 
-> Does the driver abort the suspend transition by returning an error or
-> does something else happen?
 
-Both.  Thierry has pointed to the lines showing failed suspend transition;
-and I forgot to mention that the touchpad is unresponsive from then on
-(I might not have noticed the failed suspend without that).  But I don't
-suppose that unresponsiveness is worth worrying about: things went wrong
-in suspend, so it's not surprising if the driver does not recover well.
+--dwnwa7aczjwiyrub
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thank you both for getting on to this so quickly - but don't worry about
-getting my touchpad working: I'm glad to see you discussing the wider
-issues of ordering that this has brought up.
+On Fri, Jan 08, 2021 at 03:34:52PM +0100, Giulio Benetti wrote:
+> Hi,
+>=20
+> On 1/8/21 10:23 AM, Maxime Ripard wrote:
+> > Hi,
+> >=20
+> > Thanks for those patches
+> >=20
+> > On Thu, Jan 07, 2021 at 03:30:32AM +0100, Giulio Benetti wrote:
+> > > From: Giulio Benetti <giulio.benetti@micronovasrl.com>
+> > >=20
+> > > It turned out(Maxime suggestion) that bit 26 of SUN4I_TCON0_IO_POL_RE=
+G is
+> > > dedicated to invert DCLK polarity and this makes thing really easier =
+than
+> > > before. So let's handle DCLK polarity by adding
+> > > SUN4I_TCON0_IO_POL_DCLK_POSITIVE as bit 26 and activating according to
+> > > bus_flags the same way is done for all the other signals.
+> > >=20
+> > > Cc: Maxime Ripard <maxime@cerno.tech>
+> >=20
+> > Suggested-by would be nice here :)
+>=20
+> Ok, didn't know about this tag
+>=20
+> > > Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
+> > > ---
+> > >   drivers/gpu/drm/sun4i/sun4i_tcon.c | 20 +-------------------
+> > >   drivers/gpu/drm/sun4i/sun4i_tcon.h |  1 +
+> > >   2 files changed, 2 insertions(+), 19 deletions(-)
+> > >=20
+> > > diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun=
+4i/sun4i_tcon.c
+> > > index 52598bb0fb0b..30171ccd87e5 100644
+> > > --- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> > > +++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+> > > @@ -569,26 +569,8 @@ static void sun4i_tcon0_mode_set_rgb(struct sun4=
+i_tcon *tcon,
+> > >   	if (info->bus_flags & DRM_BUS_FLAG_DE_LOW)
+> > >   		val |=3D SUN4I_TCON0_IO_POL_DE_NEGATIVE;
+> > > -	/*
+> > > -	 * On A20 and similar SoCs, the only way to achieve Positive Edge
+> > > -	 * (Rising Edge), is setting dclk clock phase to 2/3(240=B0).
+> > > -	 * By default TCON works in Negative Edge(Falling Edge),
+> > > -	 * this is why phase is set to 0 in that case.
+> > > -	 * Unfortunately there's no way to logically invert dclk through
+> > > -	 * IO_POL register.
+> > > -	 * The only acceptable way to work, triple checked with scope,
+> > > -	 * is using clock phase set to 0=B0 for Negative Edge and set to 24=
+0=B0
+> > > -	 * for Positive Edge.
+> > > -	 * On A33 and similar SoCs there would be a 90=B0 phase option,
+> > > -	 * but it divides also dclk by 2.
+> > > -	 * Following code is a way to avoid quirks all around TCON
+> > > -	 * and DOTCLOCK drivers.
+> > > -	 */
+> > >   	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE)
+> > > -		clk_set_phase(tcon->dclk, 0);
+> > > -
+> > > -	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
+> > > -		clk_set_phase(tcon->dclk, 240);
+> > > +		val |=3D SUN4I_TCON0_IO_POL_DCLK_POSITIVE;
+> >=20
+> > I'm not really sure why we need the first patch of this series here?
+>=20
+> The idea was to have 2 for testing, 1st one is already applicable, while =
+the
+> other must be tested, but I can send only one with no problem.
+>=20
+> > That patch only seem to undo what you did in patch 1
+>=20
+> No, it doesn't, the 2nd one change the way it achieve the same thing,
+> because the 1st swap DCLK phase, while the 2nd uses the IO_POL bit to set=
+ IO
+> polarity according to bus_flags.
 
-Hugh
+It makes sense for testing, but I'm not sure we want to carry it into
+the history. Can you squash them both into the same patch?
+
+Thanks!
+Maxime
+
+--dwnwa7aczjwiyrub
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX/yI9AAKCRDj7w1vZxhR
+xR/2AP9kLTtexnMjE/Qc9M6rou7TFet4B43BNcl8buWCDksPIwD/YuPWjrzXk1ea
+ecUkdN8mM/sZ5S935kS2xTTNa0sGMAU=
+=1raS
+-----END PGP SIGNATURE-----
+
+--dwnwa7aczjwiyrub--
