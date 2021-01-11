@@ -2,156 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931F62F1204
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 140A42F1207
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:01:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729741AbhAKMAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 07:00:05 -0500
-Received: from mail-am6eur05on2099.outbound.protection.outlook.com ([40.107.22.99]:4791
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729401AbhAKMAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 07:00:04 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l2Qp9vOsTBzohU4J+qLmWgJKjAbOenCQUKGUqmGLLCrOiXcYsqAbe7as3ER+gSSdAr/zVEJub/fUOrWH/Lu/3bDysklnAZ3nGZpY5PbPlOjtoyIBnsUOQ9UTkZcxA8Bftp7K3bDfABKQByWv8aZ5KJ332WMO3vOwE4ePpzkqbuHlNvQlQEnH2lA/1AGcqZxATIiTZPjxsU9fvBkS4ppR66Osc+XHQh16K8ESBjYO+8bbGUHIcwrh7IBZEDtgdMHgyr2t3avuOQNCQC9Xv66o+rblDxx+o54HQMFs5VwHQ3PT9HZXOAfDBp6O8IU5iQCrbuMevk39naXme2XapPi+5Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DGD+rzCRrhGhpldb+70nTPAlI9uB71mjbB+qkI1Rx5c=;
- b=TVmb279gv6wmVrJi56YBwGDDQdC8QaxgvM74C0scpZ8dDr1/YTsZ3cZ06fr0xlGIIOxHUP2oqNEtDawM7osLX+fSpsJUdFypKJ2M7sNTFZ3Vp/tE0rE7thoBFdMY4LDmKSD0DSsoYu5SomzBnZUSjcu2S804iiv8mPjfGxvcLH6Ue1dOUGRgjxdS1og4tLN9uNvPrHuP0emcIYqUP/zYIjAcwQjYpWC5SyNod6IKPu+u2AYx/+E0E5EwcHxIlCcsQs0ybOhz9Cf55S9nqn82ct+hK3o2m6i4QStd3LK+rwkbHZmHOy8EBri52nTIS/YoQzhvhCdq4brRMFTk7rT4Vg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
- dkim=pass header.d=nokia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DGD+rzCRrhGhpldb+70nTPAlI9uB71mjbB+qkI1Rx5c=;
- b=HQ69/MyGd5S5/6yfX3MLRZA9rx9tK+R0UU9Gy8S0Wp6lNU+ZweYBh4CdzCUIOIhf/cWQKTe4Lha6xolQlDSVRrmNfArJ2qy7sQJOce3MuZ3p9+7bN5/MdnrPJBPiosLOSuuWy72O92A+R6XlFeDjT6RGupn/8mBj28a8FC5UxU4=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nokia.com;
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com (2603:10a6:208:6e::15)
- by AM4PR07MB3092.eurprd07.prod.outlook.com (2603:10a6:205:7::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.8; Mon, 11 Jan
- 2021 11:59:12 +0000
-Received: from AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::e965:2884:260b:b29a]) by AM0PR07MB4531.eurprd07.prod.outlook.com
- ([fe80::e965:2884:260b:b29a%3]) with mapi id 15.20.3763.009; Mon, 11 Jan 2021
- 11:59:12 +0000
-Subject: Re: [PATCH] MIPS: OCTEON: fix unreachable code in octeon_irq_init_ciu
-To:     menglong8.dong@gmail.com, paulburton@kernel.org
-Cc:     tsbogend@alpha.franken.de, dong.menglong@zte.com.cn,
-        colin.king@canonical.com, gustavo@embeddedor.com,
-        ralf@linux-mips.org, peter.swain@cavium.com,
-        aleksey.makarov@auriga.com, lrosenboim@caviumnetworks.com,
-        david.daney@cavium.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210111113605.3863-1-dong.menglong@zte.com.cn>
-From:   Alexander Sverdlin <alexander.sverdlin@nokia.com>
-Message-ID: <d2ed48b2-2043-a9f1-ea7a-2fb5c4027c57@nokia.com>
-Date:   Mon, 11 Jan 2021 12:59:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-In-Reply-To: <20210111113605.3863-1-dong.menglong@zte.com.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [131.228.32.169]
-X-ClientProxiedBy: AM0PR08CA0019.eurprd08.prod.outlook.com
- (2603:10a6:208:d2::32) To AM0PR07MB4531.eurprd07.prod.outlook.com
- (2603:10a6:208:6e::15)
+        id S1729875AbhAKMBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 07:01:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729804AbhAKMA7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 07:00:59 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE23C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 04:00:19 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id qw4so24233805ejb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 04:00:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OW8w9+OK+kpGhqgXSAht9uVN2nF9YMGSL1tUgT2Bs9Q=;
+        b=EsRDrUhPpM9Is+P0DCnamaarnKSYq4o/vGbyGa2dwsoNGwSuZQv+XKTDZG4dMbpNB4
+         037pSOoUXYDTFHieNWTc5SA+PnkRZSgzQNjC86cOdGvWWFQVQBPKNd9rn76m8UjnVM5k
+         45nJNTd2h52DJShEnava1+XA+8GCGkdhI2NfjtAx+F8xxEMJR7r4ieiIU1hY6dowbo+m
+         FjE2stb5DY8wAUTk5o2GIxTE5/6z6k6I42efmjz3QD0DWS36+1w/Ut4ejRlRM2KDNCU1
+         SGP5oQSeJmT94MqKq9sGjaGGJZIKTYaGO6ESRhVUenOvRdqpXhebaCFktULZpX4W0FXV
+         R3Uw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OW8w9+OK+kpGhqgXSAht9uVN2nF9YMGSL1tUgT2Bs9Q=;
+        b=PcV3LoOW7uboiQG8iLTzzdkcrK3MxY+IzS9W8BnjmdzzEkuItRBiGOKMmBVyaj8unl
+         U49eE94LVYuqxSQJjWpUj/WFL5BTFLs/qKzB1iUtSbKmTCPOwS0AG1DqyLA2Wslg8rK6
+         MTzOAwQQ/iUUcwYqAtL+ktstZ8YtNxSRUmh8jgbzsGek0j6P/TztjxMY9Suu5Uzg+9RI
+         t3PVg7imLu4bRMNa0NLebTmffAL8KvpDMVv3KnTTmTNhSo5ohKm1u/dLzB9KM2fkw0c0
+         7QEiXhAOLlMXfF94xutT07FU/2h1r1Uiy5/XuUq303WF7U8/iH1q9VWXF+yLOE6Wi211
+         su7Q==
+X-Gm-Message-State: AOAM5300kERuXHL3pDPZve8/zEZVJm2n09cYy8kkJo6DPPhmnyXgyXOO
+        EtUOZWcyc+0Z9iLTKNd++0boNQ==
+X-Google-Smtp-Source: ABdhPJw8sahUMcOxodYfKP6KQePGGZK0sOT4LELPBVUvL0IWKI6ubgbWuu7t0cSieKXrj3kUtPrfXw==
+X-Received: by 2002:a17:906:3883:: with SMTP id q3mr10475752ejd.160.1610366417997;
+        Mon, 11 Jan 2021 04:00:17 -0800 (PST)
+Received: from localhost.localdomain ([2a02:2450:102f:d6a:fe7e:1742:34f2:8721])
+        by smtp.gmail.com with ESMTPSA id t15sm7680427eds.38.2021.01.11.04.00.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 04:00:17 -0800 (PST)
+From:   Robert Foss <robert.foss@linaro.org>
+To:     dongchun.zhu@mediatek.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dongchun Zhu <Dongchun.Zhu@mediatek.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@linux.intel.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>
+Cc:     Tomasz Figa <tfiga@google.com>,
+        Robert Foss <robert.foss@linaro.org>
+Subject: [PATCH v2] media: ov8856: Configure sensor for GRBG Bayer for all modes
+Date:   Mon, 11 Jan 2021 12:59:30 +0100
+Message-Id: <20210111115930.117393-1-robert.foss@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ulegcpsvhp1.emea.nsn-net.net (131.228.32.169) by AM0PR08CA0019.eurprd08.prod.outlook.com (2603:10a6:208:d2::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Mon, 11 Jan 2021 11:59:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: f3c7cfd3-71ef-4063-e83c-08d8b6284fab
-X-MS-TrafficTypeDiagnostic: AM4PR07MB3092:
-X-Microsoft-Antispam-PRVS: <AM4PR07MB30925AB8D083C9CAE5B448D288AB0@AM4PR07MB3092.eurprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1265;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: efyIdkykFg9eB4c4gpNyG9K3Lyd3/rEpFEStmQ0tahlp50Jldhmu/xyfOBIF1ej4dFPQsM05PkZDueLnH2BdMf5H8QkLQ3kTBy9p0TieIGmNSC3eWUt9RXHpkSGpWO3+sSaLkVaMpAewct/KPQlr1wR2xHI15v+lSDKRKOFNG2NrHY1CHNCwfjFnZ43CvKL4wM2SoTi3ZXOV/YlBWZ2VgNKNOeN/HnJQ7S3WAYvyWKyEcje8QTnFUSRkoKTorw92Qd/qlCCqdu2YyI5LzAooAFUyi3JgPySgdAkuQigBfziM/hUqgGiTWsZaSYeEhDn28OEBZOcSl8H5LYEVoitIdyxGSJlc1TK0nRAgWkmXDCiDonkh/yyFfrWmuUjdBwdptQC+Y2kjJLIvv+LCpKxPtxLkg127nVS5Vgc1YpYjPJoqofZV0KBwVl0p9P3NT7RDw+R8RlRlXmUOEg67QZLGBI4lqgqiS0CT+DYvHMSgaLo=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR07MB4531.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(366004)(39860400002)(376002)(136003)(4326008)(66556008)(44832011)(66476007)(31696002)(478600001)(52116002)(186003)(26005)(66946007)(8676002)(6506007)(31686004)(53546011)(16526019)(2616005)(8936002)(83380400001)(6486002)(316002)(7416002)(6512007)(86362001)(5660300002)(956004)(2906002)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?SGhFbVB0ZXBEYUxZMDlrNGQvM05pOVF1U2NpcUNKSk83SGxheG1iUW5YRndl?=
- =?utf-8?B?a2ZHRXREdzI4SmpRSFlHRUNYUUFHYzhCcnpGR2orKzYyanM1L05zSi9DdTJw?=
- =?utf-8?B?UnZaRWorUXVsN1BUUy9aaE1UWU9CU3cxNHNld0RxdkpacFllS0xVT3ZVeEsx?=
- =?utf-8?B?ZTVmdGZOYjBCc2dmTWZDV3pxV1poN2ZBb2hkVC85L29CSW9Bb0R6M3hUYUxS?=
- =?utf-8?B?ZVVKSjRkTTJDbHFrZ0o5Vllaa1cybnhzdEY5R0lHM3NWTTVmcGN0WlFKM2xT?=
- =?utf-8?B?OTkrZ2hhbzF0d2QzZWc3MzA1ZEtyTm13MjNkRzIxZHM0WXArTXgwTVNHNXRX?=
- =?utf-8?B?Ym1LSTdnVFMxaWVsVGppQmpSekxTUXF0Nm1TYXNpRmpEVUZGVjZqWk5ad2Nr?=
- =?utf-8?B?WlRpSDNnSWpwV1hhVENBUFNIdFBISGdra2JJN2JrZHRONnk4UVFLVUg0V1k2?=
- =?utf-8?B?TmtyVXpEUDdzRStnRHB4NGRwOSs3M0pZdHNrNHN2R2k3Qkc2NXYralFFZDZj?=
- =?utf-8?B?Z29JUERGZ1NNV2VyVEFyWWNseDZWbEhRd1VubmswNHVCNzM3dUdreXp3WFpz?=
- =?utf-8?B?b2VhblhMSm5weWdVVEI2N1JLZ1JyVFdFMkxQY3o1YUQ3N3R6aEtWL0hhZnhG?=
- =?utf-8?B?N0QvblNuSTN0Vlc1N2UyUG82Wmk1RkdmdnJNamlwMER6QnB3N2g0RVJ4ajlX?=
- =?utf-8?B?OFRwZjBESGE5QmJXQWZFbFRuSTVEaDU4b0pMZ1ZnRTFkUGl4bk50akVaUmtw?=
- =?utf-8?B?VURGbUY5V2dBY1VSVzVoNGpXNlQxOUt3S3lvazA4bktqUExGODhFTWlJWWll?=
- =?utf-8?B?Y2dNVjhjcU1XdUtuamIxUC92VnhnUnozZ0t6TWtHeThTbEprV3cyVjk4NUlC?=
- =?utf-8?B?NjhZbjl3cWFXWnJvMlJFbTBPV3NXNGVDTTBLTkwrVjdKeDQxcUVKR3hiYUc5?=
- =?utf-8?B?NkR3ejdLaVdSK3ZDNzlXaFRRRU9oT0l4TXJ6T2pCLzRBZ1puamhlajgxUWlE?=
- =?utf-8?B?V21NMndzbmZ2cmdPMUxwdW93RXMySm01SEw4TFc4c1NJWlBPck5KTHZBdHFs?=
- =?utf-8?B?TDM5cWdVdmhSRVAxaVphOUNGUHFldXpMNUYzanJzdXFpL2JjVTRobHNnMWlT?=
- =?utf-8?B?REtlSnp5Q2dTU0pvWWorMFBqMkQ4eEdXdEtDaFF0Q0Znc1dzRnZUMEhMRnov?=
- =?utf-8?B?WjZwcjM5VUJHZ2lMTHlFMlpoTlZNMk9DR0JBTis5UTUxZjMxN3IzN3MySnlv?=
- =?utf-8?B?ckVFVnZRL0htdS9ZamxiL2g1V1lZaW16clhqRlVDVSsxR2FFRGdObkJnbDdR?=
- =?utf-8?Q?GXQlrXUBJpKZjJXjhKUbU/vg4sHRy7Pxiu?=
-X-OriginatorOrg: nokia.com
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR07MB4531.eurprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2021 11:59:12.3618
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5d471751-9675-428d-917b-70f44f9630b0
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3c7cfd3-71ef-4063-e83c-08d8b6284fab
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9/fDSG0VjoTOuBMd2osr+1e+6Vd3lnB/cPA0+uOJSmKuLRpFNOFv82RKVcSinOn2BZ86CecKLi633byX1RLuqRIyottAXfspqqQkvYkFsqE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM4PR07MB3092
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Menglong!
+The previously added modes 3264x2448 & 1632x1224 are actually
+configuring the sensor for BGGR mode, this is an issue since
+the mode that is exposed through V4L incorrectly is set as GRBG.
 
-Thank you for the fix! A small correction below:
+This patch fixes the issue by configuring the sensor to always
+output GRBG Bayer formatted frames.
 
-On 11/01/2021 12:36, menglong8.dong@gmail.com wrote:
-> From: Menglong Dong <dong.menglong@zte.com.cn>
-> 
-> The type of 'r' in octeon_irq_init_ciu is 'unsigned int', so 'r < 0'
-> can't be true.
-> 
-> Fix this by change the type of 'r' and 'i' from 'unsigned int'
-> to 'int'. As 'i' won't be negative, this change works.
-> 
-> Fixes: 64b139f97c01("MIPS: OCTEON: irq: add CIB and other fixes")
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+Suggested-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+---
 
-The patch actually fixes my commit 99fbc70f8547
-("MIPS: Octeon: irq: Alloc desc before configuring IRQ").
-With "Fixes:" tag corrected, you can put my
 
-Reviewed-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Changes since v1:
+ - Sakari: Added mode information to ov8856_mode struct
+ - Sakari: enum_mbus_code updated
 
-> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
-> ---
->  arch/mips/cavium-octeon/octeon-irq.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/mips/cavium-octeon/octeon-irq.c b/arch/mips/cavium-octeon/octeon-irq.c
-> index bd47e15d02c7..be5d4afcd30f 100644
-> --- a/arch/mips/cavium-octeon/octeon-irq.c
-> +++ b/arch/mips/cavium-octeon/octeon-irq.c
-> @@ -1444,7 +1444,7 @@ static void octeon_irq_setup_secondary_ciu2(void)
->  static int __init octeon_irq_init_ciu(
->  	struct device_node *ciu_node, struct device_node *parent)
->  {
-> -	unsigned int i, r;
-> +	int i, r;
->  	struct irq_chip *chip;
->  	struct irq_chip *chip_edge;
->  	struct irq_chip *chip_mbox;
-> 
+Changes since v2:
+ - Andrey: Switched approach to changing the sensor configuration
+   to yield identical Bayer modes for all modes
 
+
+ drivers/media/i2c/ov8856.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+index 2f4ceaa80593..8a355135c7db 100644
+--- a/drivers/media/i2c/ov8856.c
++++ b/drivers/media/i2c/ov8856.c
+@@ -428,7 +428,7 @@ static const struct ov8856_reg mode_3264x2448_regs[] = {
+ 	{0x3810, 0x00},
+ 	{0x3811, 0x04},
+ 	{0x3812, 0x00},
+-	{0x3813, 0x02},
++	{0x3813, 0x01},
+ 	{0x3814, 0x01},
+ 	{0x3815, 0x01},
+ 	{0x3816, 0x00},
+@@ -821,7 +821,7 @@ static const struct ov8856_reg mode_1632x1224_regs[] = {
+ 	{0x3810, 0x00},
+ 	{0x3811, 0x02},
+ 	{0x3812, 0x00},
+-	{0x3813, 0x02},
++	{0x3813, 0x01},
+ 	{0x3814, 0x03},
+ 	{0x3815, 0x01},
+ 	{0x3816, 0x00},
 -- 
-Best regards,
-Alexander Sverdlin.
+2.27.0
+
