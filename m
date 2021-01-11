@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4933A2F1656
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 008CE2F16E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:59:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387932AbhAKNvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:51:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56602 "EHLO mail.kernel.org"
+        id S2388060AbhAKN6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:58:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730763AbhAKNJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:09:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA095227C3;
-        Mon, 11 Jan 2021 13:08:33 +0000 (UTC)
+        id S1728199AbhAKNGo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:06:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DBCE2225AC;
+        Mon, 11 Jan 2021 13:06:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370514;
-        bh=34WK/JO9EGofM1VPONr95EJPWXbjCgz42fnwczCGMRg=;
+        s=korg; t=1610370363;
+        bh=gUtW2hs3cQfjq3jLCaO0K0UfyvlU2IVIVjgIyOmwL7E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZUhzVEzD0oltTdrtVhYlKF7Isu+gNm45acZVMinpTUne/OZzO/tdDFi35O6DjyuMg
-         ryXkxcUw5YoUKu1iOCkDacxMvMsusprS2MQArKjugYl0np6tNqQZdB8fJCsKYkJllv
-         /oO3qO/DItMucsVCem5BnwcLggyHG4Kxv/JYs2JU=
+        b=as97cqfboCxKVEG2s2JNi0jnBMlOEOimKCZ10UDC1xI7d87YTr0hvrSQXGvfg7tBW
+         bLUiepPZDZ6izZTTWQPs9De68/rCKP4SxMHFfz93Wn5DsjmaErqx0jLwT1/VVbYXFl
+         onqvWttfAkD5rBi9epsGq7GkFbRpT/YGhTAwci6Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 55/77] USB: usblp: fix DMA to stack
-Date:   Mon, 11 Jan 2021 14:02:04 +0100
-Message-Id: <20210111130039.065429390@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
+        Sriharsha Allenki <sallenki@codeaurora.org>
+Subject: [PATCH 4.14 46/57] usb: gadget: Fix spinlock lockup on usb_function_deactivate
+Date:   Mon, 11 Jan 2021 14:02:05 +0100
+Message-Id: <20210111130035.951405553@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
+References: <20210111130033.715773309@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,58 +39,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Sriharsha Allenki <sallenki@codeaurora.org>
 
-commit 020a1f453449294926ca548d8d5ca970926e8dfd upstream.
+commit 5cc35c224a80aa5a5a539510ef049faf0d6ed181 upstream.
 
-Stack-allocated buffers cannot be used for DMA (on all architectures).
+There is a spinlock lockup as part of composite_disconnect
+when it tries to acquire cdev->lock as part of usb_gadget_deactivate.
+This is because the usb_gadget_deactivate is called from
+usb_function_deactivate with the same spinlock held.
 
-Replace the HP-channel macro with a helper function that allocates a
-dedicated transfer buffer so that it can continue to be used with
-arguments from the stack.
+This would result in the below call stack and leads to stall.
 
-Note that the buffer is cleared on allocation as usblp_ctrl_msg()
-returns success also on short transfers (the buffer is only used for
-debugging).
+rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
+rcu:     3-...0: (1 GPs behind) idle=162/1/0x4000000000000000
+softirq=10819/10819 fqs=2356
+ (detected by 2, t=5252 jiffies, g=20129, q=3770)
+ Task dump for CPU 3:
+ task:uvc-gadget_wlhe state:R  running task     stack:    0 pid:  674 ppid:
+ 636 flags:0x00000202
+ Call trace:
+  __switch_to+0xc0/0x170
+  _raw_spin_lock_irqsave+0x84/0xb0
+  composite_disconnect+0x28/0x78
+  configfs_composite_disconnect+0x68/0x70
+  usb_gadget_disconnect+0x10c/0x128
+  usb_gadget_deactivate+0xd4/0x108
+  usb_function_deactivate+0x6c/0x80
+  uvc_function_disconnect+0x20/0x58
+  uvc_v4l2_release+0x30/0x88
+  v4l2_release+0xbc/0xf0
+  __fput+0x7c/0x230
+  ____fput+0x14/0x20
+  task_work_run+0x88/0x140
+  do_notify_resume+0x240/0x6f0
+  work_pending+0x8/0x200
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210104145302.2087-1-johan@kernel.org
+Fix this by doing an unlock on cdev->lock before the usb_gadget_deactivate
+call from usb_function_deactivate.
+
+The same lockup can happen in the usb_gadget_activate path. Fix that path
+as well.
+
+Reported-by: Peter Chen <peter.chen@nxp.com>
+Link: https://lore.kernel.org/linux-usb/20201102094936.GA29581@b29397-desktop/
+Tested-by: Peter Chen <peter.chen@nxp.com>
+Signed-off-by: Sriharsha Allenki <sallenki@codeaurora.org>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201202130220.24926-1-sallenki@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/class/usblp.c |   21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/composite.c |   10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/class/usblp.c
-+++ b/drivers/usb/class/usblp.c
-@@ -274,8 +274,25 @@ static int usblp_ctrl_msg(struct usblp *
- #define usblp_reset(usblp)\
- 	usblp_ctrl_msg(usblp, USBLP_REQ_RESET, USB_TYPE_CLASS, USB_DIR_OUT, USB_RECIP_OTHER, 0, NULL, 0)
+--- a/drivers/usb/gadget/composite.c
++++ b/drivers/usb/gadget/composite.c
+@@ -395,8 +395,11 @@ int usb_function_deactivate(struct usb_f
  
--#define usblp_hp_channel_change_request(usblp, channel, buffer) \
--	usblp_ctrl_msg(usblp, USBLP_REQ_HP_CHANNEL_CHANGE_REQUEST, USB_TYPE_VENDOR, USB_DIR_IN, USB_RECIP_INTERFACE, channel, buffer, 1)
-+static int usblp_hp_channel_change_request(struct usblp *usblp, int channel, u8 *new_channel)
-+{
-+	u8 *buf;
-+	int ret;
-+
-+	buf = kzalloc(1, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	ret = usblp_ctrl_msg(usblp, USBLP_REQ_HP_CHANNEL_CHANGE_REQUEST,
-+			USB_TYPE_VENDOR, USB_DIR_IN, USB_RECIP_INTERFACE,
-+			channel, buf, 1);
-+	if (ret == 0)
-+		*new_channel = buf[0];
-+
-+	kfree(buf);
-+
-+	return ret;
-+}
+ 	spin_lock_irqsave(&cdev->lock, flags);
  
- /*
-  * See the description for usblp_select_alts() below for the usage
+-	if (cdev->deactivations == 0)
++	if (cdev->deactivations == 0) {
++		spin_unlock_irqrestore(&cdev->lock, flags);
+ 		status = usb_gadget_deactivate(cdev->gadget);
++		spin_lock_irqsave(&cdev->lock, flags);
++	}
+ 	if (status == 0)
+ 		cdev->deactivations++;
+ 
+@@ -427,8 +430,11 @@ int usb_function_activate(struct usb_fun
+ 		status = -EINVAL;
+ 	else {
+ 		cdev->deactivations--;
+-		if (cdev->deactivations == 0)
++		if (cdev->deactivations == 0) {
++			spin_unlock_irqrestore(&cdev->lock, flags);
+ 			status = usb_gadget_activate(cdev->gadget);
++			spin_lock_irqsave(&cdev->lock, flags);
++		}
+ 	}
+ 
+ 	spin_unlock_irqrestore(&cdev->lock, flags);
 
 
