@@ -2,106 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4B22F1FA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F9C2F1FA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:41:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403853AbhAKTj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:39:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53562 "EHLO mail.kernel.org"
+        id S2403937AbhAKTlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:41:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726405AbhAKTj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:39:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BAD8E22BEF;
-        Mon, 11 Jan 2021 19:39:17 +0000 (UTC)
+        id S1726211AbhAKTlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 14:41:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF23522BF3;
+        Mon, 11 Jan 2021 19:40:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610393958;
-        bh=KZ1tcssLWBKHdqy7Whf+ZpeaQJYSP4Yx5gwpkCQHCh4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DKgWgrLdvinyaTUIkOWxcm/2XBCS3ibBdprg4hD4FVi7CWts9lw1Idn2UQZ4b4WDu
-         CqI7ygwTUft+3/7hg1rjyccxk+eMpzjs3wF48QZtDXQgcUqpZSXJUjBGo7hWWFkbQN
-         6auwz5JhDd0PmGKG62OAZTD97pN+bB66wJefWEGlnbzZUeLsYKcsMqP5lLS1kz4Rp6
-         r1vmWa7j7GzY6/Pf7/an9ic4TJesMRlVdZE13KhtNmDGe7fjZug4NKERsRXozWU+Ld
-         sRgwFiz98KH1do3Sqq4FSN771axpq/39ElCeFV3eL08DTzaks3gXZynqqd1ztzpIjx
-         riBSGS+b1A2YA==
-Date:   Mon, 11 Jan 2021 11:39:16 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: Re: Malicious fs images was Re: ext4 regression in v5.9-rc2 from
- e7bfb5c9bb3d on ro fs with overlapped bitmaps
-Message-ID: <X/ypZFpMMCnHZtd4@sol.localdomain>
-References: <20201006050306.GA8098@localhost>
- <20201006133533.GC5797@mit.edu>
- <20201007080304.GB1112@localhost>
- <20201007143211.GA235506@mit.edu>
- <20201007201424.GB15049@localhost>
- <20201008021017.GD235506@mit.edu>
- <20201008222259.GA45658@localhost>
- <20201009143732.GJ235506@mit.edu>
- <20210110184101.GA4625@amd>
- <20210111185120.GA1164237@magnolia>
+        s=k20201202; t=1610394027;
+        bh=wMhR+nnU1eezFDf6iB1XZoqyfaXAGSf1irT3FkxVVjI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pQjOSIJk6BNqRFvzbbWQxJWtYYQgM/1Teuad/NVOg/V7SEr6hIyhLTe5klps2lYF6
+         ACRHW8/YFDzJaPvnqKf3nFr/mgg4aeUALUq/0nBk3KdiqOvqblCJLMT4dMZuJ0KKuw
+         zV73aDaE9w6EOE+U4O8Fv1LqbMtK+M4Ezna7cSE/bVEYHw3Fd9e8IvR187Co19EFFv
+         btoJrImUrD23SSJlPNSx8bMWRjt6b+uw7g+8IEjegpgNSveHHS7Jc96u1i9wzGSI8b
+         deq7HDEZWflnLsMn72f4uJ84+x/n88ZuYMKoe/AmR3qQZG6NCr6DVyt2m50zf1M1bi
+         8wYlYLaIGrgtQ==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        David Hildenbrand <david@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, x86@kernel.org
+Subject: [PATCH v3 0/2] mm: fix initialization of struct page for holes in  memory layout
+Date:   Mon, 11 Jan 2021 21:40:15 +0200
+Message-Id: <20210111194017.22696-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111185120.GA1164237@magnolia>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 10:51:20AM -0800, Darrick J. Wong wrote:
-> On Sun, Jan 10, 2021 at 07:41:02PM +0100, Pavel Machek wrote:
-> > Hi!
-> > 
-> > On Fri 2020-10-09 10:37:32, Theodore Y. Ts'o wrote:
-> > > On Thu, Oct 08, 2020 at 03:22:59PM -0700, Josh Triplett wrote:
-> > > > 
-> > > > I wasn't trying to make a *new* general principle or policy. I was under
-> > > > the impression that this *was* the policy, because it never occurred to
-> > > > me that it could be otherwise. It seemed like a natural aspect of the
-> > > > kernel/userspace boundary, to the point that the idea of it *not* being
-> > > > part of the kernel's stability guarantees didn't cross my mind. 
-> > > 
-> > > >From our perspective (and Darrick and I discussed this on this week's
-> > > ext4 video conference, so it represents the ext4 and xfs maintainer's
-> > > position) is that the file system format is different.  First, the
-> > > on-disk format is not an ABI, and it is several orders more complex
-> > > than a system call interface.  Second, we make no guarantees about
-> > > what the file system created by malicious tools will do.  For example,
-> > > XFS developers reject bug reports from file system fuzzers, because
-> 
-> My recollection of this is quite different -- sybot was sending multiple
-> zeroday exploits per week to the public xfs list, and nobody at Google
-> was helping us to /fix/ those bugs.Each report took hours of developer
-> time to extract the malicious image (because Dmitry couldn't figure out
-> how to add that ability to syzbot) and syscall sequence from the
-> reproducer program, plus whatever time it took to craft a patch, test
-> it, and push it through review.
-> 
-> Dave and I complained to Dmitry about how the community had zero input
-> into the rate at which syzbot was allowed to look for xfs bugs.  Nobody
-> at Google would commit to helping fix any of the XFS bugs, and Dmitry
-> would not give us better choices than (a) Google AI continuing to create
-> zerodays and leaving the community to clean up the mess, or (b) shutting
-> off syzbot entirely.  At the time I said I would accept letting syzbot
-> run against xfs until it finds something, and turning it off until we
-> resolve the issue.  That wasn't acceptable, because (I guess) nobody at
-> Google wants to put /any/ staff time into XFS at all.
-> 
-> TLDR: XFS /does/ accept bug reports about fuzzed and broken images.
-> What we don't want is make-work Google AIs spraying zeroday code in
-> public places and the community developers having to clean up the mess.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-syzkaller is an open source project that implements a coverage-guided fuzzer for
-multiple operating system kernels; it's not "Google AI".
+Hi,
 
-Anyone can run syzkaller (either by itself, or as part of a syzbot instance) and
-find the same bugs.
+Commit 73a6e474cb37 ("mm: memmap_init: iterate over
+memblock regions rather that check each PFN") exposed several issues with
+the memory map initialization and these patches fix those issues.
 
-- Eric
+Initially there were crashes during compaction that Qian Cai reported back
+in April [1]. It seemed back then that the problem was fixed, but a few
+weeks ago Andrea Arcangeli hit the same bug [2] and there was an additional
+discussion at [3].
+
+v3: 
+* use architectural zone constraints to set zone links for struct pages
+  corresponding to the holes
+* drop implicit update of memblock.memory
+* add a patch that sets pfn 0 to E820_TYPE_RAM on x86
+
+v2: https://lore.kernel.org/lkml/20201209214304.6812-1-rppt@kernel.org/):
+* added patch that adds all regions in memblock.reserved that do not
+overlap with memblock.memory to memblock.memory in the beginning of
+free_area_init()
+
+[1] https://lore.kernel.org/lkml/8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw
+[2] https://lore.kernel.org/lkml/20201121194506.13464-1-aarcange@redhat.com
+[3] https://lore.kernel.org/mm-commits/20201206005401.qKuAVgOXr%akpm@linux-foundation.org
+
+Mike Rapoport (2):
+  x86/setup: don't remove E820_TYPE_RAM for pfn 0
+  mm: fix initialization of struct page for holes in memory layout
+
+ arch/x86/kernel/setup.c | 20 +++++-----
+ mm/page_alloc.c         | 84 ++++++++++++++++++++++++-----------------
+ 2 files changed, 59 insertions(+), 45 deletions(-)
+
+-- 
+2.28.0
+
