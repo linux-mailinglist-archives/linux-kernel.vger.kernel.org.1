@@ -2,33 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA5FA2F131B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:03:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7FF2F1324
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729941AbhAKNDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:03:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50194 "EHLO mail.kernel.org"
+        id S1729571AbhAKNEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:04:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729822AbhAKND2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:03:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDB0D22A83;
-        Mon, 11 Jan 2021 13:02:39 +0000 (UTC)
+        id S1728173AbhAKNDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:03:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66DFB2251F;
+        Mon, 11 Jan 2021 13:02:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370160;
-        bh=BQa/xllUUOdjW/BVOtJzQMzlH/X+84S7At6ck3ZZkGg=;
+        s=korg; t=1610370164;
+        bh=69FRb86U0lkthIViw6BofrHtE23XAqp4RBNfmMOLtTs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y7d5noy8dXEoBtP22VmZ35rOeRQOH2gyusk7Z34dNqRbLa9KoMY9OzZycQMi8JDIM
-         8J2Ysj2M65wumsqLwg5dU5DRzLYL4Yk5uY0Y9S/YPwIOQ7B9+jOV9WtB9TGLBAegdS
-         7fNF1UReOtf0jYczj9yJwwgbC6VH9L0xKAMhQ2ME=
+        b=AiavzTP89gbuE3Eou0+stsc1S3jAKajW5Wo4H6QG+PccIRh0zt7ZekJEn1gYgxrOV
+         T96IrI8MrB7eSB7/Truwh2rYtllVhkP+Kk2+lkiKZxuoAu7KkCbtRnGch6J4ohwwFU
+         I5s7JYs6JnOf2e85FXTRuxKmSCsu99b/uxuA7za4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.4 25/38] ALSA: usb-audio: Fix UBSAN warnings for MIDI jacks
-Date:   Mon, 11 Jan 2021 14:00:57 +0100
-Message-Id: <20210111130033.673998227@linuxfoundation.org>
+        stable@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
+Subject: [PATCH 4.4 27/38] usb: gadget: f_uac2: reset wMaxPacketSize
+Date:   Mon, 11 Jan 2021 14:00:59 +0100
+Message-Id: <20210111130033.765431926@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
 References: <20210111130032.469630231@linuxfoundation.org>
@@ -40,46 +38,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Jerome Brunet <jbrunet@baylibre.com>
 
-commit c06ccf3ebb7503706ea49fd248e709287ef385a3 upstream.
+commit 9389044f27081d6ec77730c36d5bf9a1288bcda2 upstream.
 
-The calculation of in_cables and out_cables bitmaps are done with the
-bit shift by the value from the descriptor, which is an arbitrary
-value, and can lead to UBSAN shift-out-of-bounds warnings.
+With commit 913e4a90b6f9 ("usb: gadget: f_uac2: finalize wMaxPacketSize according to bandwidth")
+wMaxPacketSize is computed dynamically but the value is never reset.
 
-Fix it by filtering the bad descriptor values with the check of the
-upper bound 0x10 (the cable bitmaps are 16 bits).
+Because of this, the actual maximum packet size can only decrease each time
+the audio gadget is instantiated.
 
-Reported-by: syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201223174557.10249-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Reset the endpoint maximum packet size and mark wMaxPacketSize as dynamic
+to solve the problem.
+
+Fixes: 913e4a90b6f9 ("usb: gadget: f_uac2: finalize wMaxPacketSize according to bandwidth")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201221173531.215169-2-jbrunet@baylibre.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/usb/midi.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/usb/gadget/function/f_uac2.c |   69 +++++++++++++++++++++++++++--------
+ 1 file changed, 55 insertions(+), 14 deletions(-)
 
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -1865,6 +1865,8 @@ static int snd_usbmidi_get_ms_info(struc
- 		ms_ep = find_usb_ms_endpoint_descriptor(hostep);
- 		if (!ms_ep)
- 			continue;
-+		if (ms_ep->bNumEmbMIDIJack > 0x10)
-+			continue;
- 		if (usb_endpoint_dir_out(ep)) {
- 			if (endpoints[epidx].out_ep) {
- 				if (++epidx >= MIDI_MAX_ENDPOINTS) {
-@@ -2117,6 +2119,8 @@ static int snd_usbmidi_detect_roland(str
- 		    cs_desc[1] == USB_DT_CS_INTERFACE &&
- 		    cs_desc[2] == 0xf1 &&
- 		    cs_desc[3] == 0x02) {
-+			if (cs_desc[4] > 0x10 || cs_desc[5] > 0x10)
-+				continue;
- 			endpoint->in_cables  = (1 << cs_desc[4]) - 1;
- 			endpoint->out_cables = (1 << cs_desc[5]) - 1;
- 			return snd_usbmidi_detect_endpoints(umidi, endpoint, 1);
+--- a/drivers/usb/gadget/function/f_uac2.c
++++ b/drivers/usb/gadget/function/f_uac2.c
+@@ -766,7 +766,7 @@ static struct usb_endpoint_descriptor fs
+ 
+ 	.bEndpointAddress = USB_DIR_OUT,
+ 	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC,
+-	.wMaxPacketSize = cpu_to_le16(1023),
++	/* .wMaxPacketSize = DYNAMIC */
+ 	.bInterval = 1,
+ };
+ 
+@@ -775,7 +775,7 @@ static struct usb_endpoint_descriptor hs
+ 	.bDescriptorType = USB_DT_ENDPOINT,
+ 
+ 	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC,
+-	.wMaxPacketSize = cpu_to_le16(1024),
++	/* .wMaxPacketSize = DYNAMIC */
+ 	.bInterval = 4,
+ };
+ 
+@@ -843,7 +843,7 @@ static struct usb_endpoint_descriptor fs
+ 
+ 	.bEndpointAddress = USB_DIR_IN,
+ 	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC,
+-	.wMaxPacketSize = cpu_to_le16(1023),
++	/* .wMaxPacketSize = DYNAMIC */
+ 	.bInterval = 1,
+ };
+ 
+@@ -852,7 +852,7 @@ static struct usb_endpoint_descriptor hs
+ 	.bDescriptorType = USB_DT_ENDPOINT,
+ 
+ 	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC,
+-	.wMaxPacketSize = cpu_to_le16(1024),
++	/* .wMaxPacketSize = DYNAMIC */
+ 	.bInterval = 4,
+ };
+ 
+@@ -963,12 +963,28 @@ free_ep(struct uac2_rtd_params *prm, str
+ 			"%s:%d Error!\n", __func__, __LINE__);
+ }
+ 
+-static void set_ep_max_packet_size(const struct f_uac2_opts *uac2_opts,
++static int set_ep_max_packet_size(const struct f_uac2_opts *uac2_opts,
+ 	struct usb_endpoint_descriptor *ep_desc,
+-	unsigned int factor, bool is_playback)
++	enum usb_device_speed speed, bool is_playback)
+ {
+ 	int chmask, srate, ssize;
+-	u16 max_packet_size;
++	u16 max_size_bw, max_size_ep;
++	unsigned int factor;
++
++	switch (speed) {
++	case USB_SPEED_FULL:
++		max_size_ep = 1023;
++		factor = 1000;
++		break;
++
++	case USB_SPEED_HIGH:
++		max_size_ep = 1024;
++		factor = 8000;
++		break;
++
++	default:
++		return -EINVAL;
++	}
+ 
+ 	if (is_playback) {
+ 		chmask = uac2_opts->p_chmask;
+@@ -980,10 +996,12 @@ static void set_ep_max_packet_size(const
+ 		ssize = uac2_opts->c_ssize;
+ 	}
+ 
+-	max_packet_size = num_channels(chmask) * ssize *
++	max_size_bw = num_channels(chmask) * ssize *
+ 		DIV_ROUND_UP(srate, factor / (1 << (ep_desc->bInterval - 1)));
+-	ep_desc->wMaxPacketSize = cpu_to_le16(min_t(u16, max_packet_size,
+-				le16_to_cpu(ep_desc->wMaxPacketSize)));
++	ep_desc->wMaxPacketSize = cpu_to_le16(min_t(u16, max_size_bw,
++						    max_size_ep));
++
++	return 0;
+ }
+ 
+ static int
+@@ -1082,10 +1100,33 @@ afunc_bind(struct usb_configuration *cfg
+ 	uac2->c_prm.uac2 = uac2;
+ 
+ 	/* Calculate wMaxPacketSize according to audio bandwidth */
+-	set_ep_max_packet_size(uac2_opts, &fs_epin_desc, 1000, true);
+-	set_ep_max_packet_size(uac2_opts, &fs_epout_desc, 1000, false);
+-	set_ep_max_packet_size(uac2_opts, &hs_epin_desc, 8000, true);
+-	set_ep_max_packet_size(uac2_opts, &hs_epout_desc, 8000, false);
++	ret = set_ep_max_packet_size(uac2_opts, &fs_epin_desc, USB_SPEED_FULL,
++				     true);
++	if (ret < 0) {
++		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
++		return ret;
++	}
++
++	ret = set_ep_max_packet_size(uac2_opts, &fs_epout_desc, USB_SPEED_FULL,
++				     false);
++	if (ret < 0) {
++		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
++		return ret;
++	}
++
++	ret = set_ep_max_packet_size(uac2_opts, &hs_epin_desc, USB_SPEED_HIGH,
++				     true);
++	if (ret < 0) {
++		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
++		return ret;
++	}
++
++	ret = set_ep_max_packet_size(uac2_opts, &hs_epout_desc, USB_SPEED_HIGH,
++				     false);
++	if (ret < 0) {
++		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
++		return ret;
++	}
+ 
+ 	hs_epout_desc.bEndpointAddress = fs_epout_desc.bEndpointAddress;
+ 	hs_epin_desc.bEndpointAddress = fs_epin_desc.bEndpointAddress;
 
 
