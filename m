@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B822F1773
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0E8F2F179D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:09:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388446AbhAKOGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:06:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50820 "EHLO mail.kernel.org"
+        id S2388019AbhAKOIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:08:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728492AbhAKNDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:03:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2233722AAD;
-        Mon, 11 Jan 2021 13:02:50 +0000 (UTC)
+        id S1729900AbhAKNDf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:03:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D377822BED;
+        Mon, 11 Jan 2021 13:03:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370171;
-        bh=EiqiSi/7X41k0XusjMohbecQeF/YDvZoNeJhw/wmuCQ=;
+        s=korg; t=1610370187;
+        bh=gWKgDk65pk4N3a3WPjK1gyEft3PaJi9n7dDh+HCNjlY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OVCZA7u0peDfj3iWY3oLCbGGXZo7nZq84Kxll/Biixg1O0HOcwQ3XibWckJOBsjpD
-         jYtmLxOK+n6k0SlxTJ/LT8BV29fyMNgwbkfwtLaBpn2CVdPZxtXC8YBExuUNrdyd0q
-         fac63AoDWF0H+ylYT8GWUMdu2h0uywRsSRhtR9qg=
+        b=F7qPUF1h780eePLvdtBJpg2qc042srl05wcG+SXkcWQnXabDsqD7jtfnh6WY/Kf3I
+         GilPv/3a2GVdrI+IzGLU0IBxIMFJdwEMPr/QhLH4AqXU/SM9RYp0H0urGugv7gg1bb
+         IerohrwLbIdMBA1mTYrTNZlMX2Os5proz7p2fYeU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH 4.9 01/45] kbuild: dont hardcode depmod path
-Date:   Mon, 11 Jan 2021 14:00:39 +0100
-Message-Id: <20210111130033.744578084@linuxfoundation.org>
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: [PATCH 4.9 04/45] depmod: handle the case of /sbin/depmod without /sbin in PATH
+Date:   Mon, 11 Jan 2021 14:00:42 +0100
+Message-Id: <20210111130033.894454623@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130033.676306636@linuxfoundation.org>
 References: <20210111130033.676306636@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,31 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dominique Martinet <asmadeus@codewreck.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-commit 436e980e2ed526832de822cbf13c317a458b78e1 upstream.
+[ Upstream commit cedd1862be7e666be87ec824dabc6a2b05618f36 ]
 
-depmod is not guaranteed to be in /sbin, just let make look for
-it in the path like all the other invoked programs
+Commit 436e980e2ed5 ("kbuild: don't hardcode depmod path") stopped
+hard-coding the path of depmod, but in the process caused trouble for
+distributions that had that /sbin location, but didn't have it in the
+PATH (generally because /sbin is limited to the super-user path).
 
-Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Work around it for now by just adding /sbin to the end of PATH in the
+depmod.sh script.
 
+Reported-and-tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/depmod.sh | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/Makefile
-+++ b/Makefile
-@@ -349,7 +349,7 @@ OBJDUMP		= $(CROSS_COMPILE)objdump
- AWK		= awk
- GENKSYMS	= scripts/genksyms/genksyms
- INSTALLKERNEL  := installkernel
--DEPMOD		= /sbin/depmod
-+DEPMOD		= depmod
- PERL		= perl
- PYTHON		= python
- CHECK		= sparse
+diff --git a/scripts/depmod.sh b/scripts/depmod.sh
+index baedaef53ca05..b0cb89e73bc56 100755
+--- a/scripts/depmod.sh
++++ b/scripts/depmod.sh
+@@ -14,6 +14,8 @@ if ! test -r System.map ; then
+ 	exit 0
+ fi
+ 
++# legacy behavior: "depmod" in /sbin, no /sbin in PATH
++PATH="$PATH:/sbin"
+ if [ -z $(command -v $DEPMOD) ]; then
+ 	echo "Warning: 'make modules_install' requires $DEPMOD. Please install it." >&2
+ 	echo "This is probably in the kmod package." >&2
+-- 
+2.27.0
+
 
 
