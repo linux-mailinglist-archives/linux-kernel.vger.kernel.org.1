@@ -2,119 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A62B2F2224
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:49:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 569722F2222
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:49:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388810AbhAKVse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 16:48:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726234AbhAKVsc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 16:48:32 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75594C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:47:52 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id f6so186461ybq.13
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:47:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SS1JDoBxWO0P2GKLy8M+dKtC5ZVoKBwYfwO8muPlSTA=;
-        b=OdbgjKmRzS1uGe2MBtr0tQZ6emWPzWL5mdaIMWszj+osI/cQBCUskuT5Btkcc14HKZ
-         KyzuqXiokX08xxMvAMWR3yI+gMTFuS1AohJh8TOYckl5rj6ZndagiJ+bA1RWxIV5qrS7
-         T1nyMjXfwidx9iv7l2fuW9Xc6kNXvn++UtHCv40ntcgo/atRqRVHgFEhuOTyqh9+yf7z
-         1/f6mEgCD1tzM8+/ntsD1pwC+s3850WL2fpBzrxW4tRzmhLcNEkslPjNCyT9X0rpOUqg
-         K8tABOjZSdTXpOL1MfZ2FBe2xFzT3qyK0UlmkfEvSjNMWRZuwPO9AHJISYp3ac0pTX6E
-         F3XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SS1JDoBxWO0P2GKLy8M+dKtC5ZVoKBwYfwO8muPlSTA=;
-        b=LW9gCJkqveuuFVti2P9ddqis8ISsjhQlXRXkVdu3tORwhGh36FxDY6jrP1f2EsHFrb
-         i3V2J1pV1Qzk1Xd5QoM8s/L4BqoAKy3JeK/+sYxKXP92hgm0CniCd1qbQyEdf7WucrgM
-         78HSsjqPdwxnd/KYewXRLF09ziQIBVTA3a0lTZDQpo5STxJ+uP6WzxYn7T/jw+MO4nA+
-         5aEU3d3vJZmm5WKAgwxPmzHi592z+EZyMqDu3lbUozAgRrijqEhz5xWQmhRWRoq1vO7d
-         lanbGw6dLQtpoXgErlKkaQ9lW/QDNwldobLk54MEm/I3Fjd6q5BNpqST6D0eVIZiL6+8
-         p5vQ==
-X-Gm-Message-State: AOAM532uBNyLO5B0qbGA4a7X3m+xOqPlVW6KjuCa9W1fcl8QvQhIBrIk
-        vR6NOJ6thnXgbAoSKWu+n4wlcukXc1PJ4cGSKQU06w==
-X-Google-Smtp-Source: ABdhPJzrLlsKyI63T7yPVllxuMEj0Y2W1BWp7KAjNKIVG1UTQsO3+ZNNCMW0p9X9Pn4mZcb92u2M6tfNwXTN9pPd4rY=
-X-Received: by 2002:a25:7491:: with SMTP id p139mr2461185ybc.346.1610401671552;
- Mon, 11 Jan 2021 13:47:51 -0800 (PST)
+        id S2388733AbhAKVsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 16:48:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49908 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731959AbhAKVsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 16:48:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E53E22D05
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 21:47:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610401660;
+        bh=Y4SXqrUhlLBhYuxs0PmAaiZYlongqif+XAugbu8q28Q=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iepkmSsC0Mi+2rtoh1iLmJ23/r1NvxnN6Z6m1jw4hei1iUNLoaM0IU0A2h9DmlXGZ
+         kFT0MjZHUUkquQpWeHCNWuso8T2L5RvzazCjp1v+7xZJ1161drdCn23dK/ZHwxuAIR
+         O0n39eMLJaqIxQSKCEsJYQjFHr77b+JVi/LKSqc8Lw7Kh4yfDplkUF9kf08kVwfa9n
+         TPvfcix60WULkh/L4BMRNbtf3OFwMyS3KgnHq44ja39XZkWeUrJfqnDI74/gSwI5xd
+         vufb284VKuoTzvZ/U+hIzaT2gjUYb9L2GURTlPw6aLqov1ywE+KtZ16vjrCFNbpyFa
+         fNjdqj57cFfRg==
+Received: by mail-oi1-f174.google.com with SMTP id x13so181479oic.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:47:40 -0800 (PST)
+X-Gm-Message-State: AOAM533HKG7LV1wB4FyN49ZlOSm0Tdf3kQXWzA1Vh8rZhZ6Y/V2c4Rav
+        fnu/uwaj/RVhwMadRnu/p336fybl29/Th0wHcmI=
+X-Google-Smtp-Source: ABdhPJwCj08bsKPmvXmJPm6WPHbhSyvHZzwODOSsn4etOP80l/iTzuWW8xjNOH4Z523crEsy7rJvGMT+4MmLB9sLhwk=
+X-Received: by 2002:aca:fd91:: with SMTP id b139mr491333oii.67.1610401659284;
+ Mon, 11 Jan 2021 13:47:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20201218031703.3053753-1-saravanak@google.com>
- <20201218031703.3053753-6-saravanak@google.com> <CGME20210111141814eucas1p1f388df07b789693a999042b27f0d8c2a@eucas1p1.samsung.com>
- <5484316b-0f27-6c36-9259-5c765bb6b96c@samsung.com> <2556a69b-5da5-bf80-e051-df2d02fbc40f@samsung.com>
-In-Reply-To: <2556a69b-5da5-bf80-e051-df2d02fbc40f@samsung.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 11 Jan 2021 13:47:16 -0800
-Message-ID: <CAGETcx8-1YzF2Br0sszJROLAWo3DSm27K071Md9wY5SOwUeLdw@mail.gmail.com>
-Subject: Re: [PATCH v1 5/5] driver core: Set fw_devlink=on by default
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+ <20210111111047.mgrdho7frjukxfze@vireshk-i7> <CAK8P3a0j2XrV9a0Rm_3LaKAgKW8Kzneu-KXcfSU0zHS6S9ou8w@mail.gmail.com>
+ <AM0PR04MB556964159EEB85C87124E4A7EBAB0@AM0PR04MB5569.eurprd04.prod.outlook.com>
+In-Reply-To: <AM0PR04MB556964159EEB85C87124E4A7EBAB0@AM0PR04MB5569.eurprd04.prod.outlook.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 11 Jan 2021 22:47:22 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0+M2UHe+DqqmTSrAs94rZ1Uw6g1ibttU6PVivCi2RCkg@mail.gmail.com>
+Message-ID: <CAK8P3a0+M2UHe+DqqmTSrAs94rZ1Uw6g1ibttU6PVivCi2RCkg@mail.gmail.com>
+Subject: Re: Old platforms: bring out your dead
+To:     Mattias Wallin <mattias.wallin@se.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Mark Salter <msalter@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 6:18 AM Marek Szyprowski
-<m.szyprowski@samsung.com> wrote:
+On Mon, Jan 11, 2021 at 10:15 PM Mattias Wallin <mattias.wallin@se.com> wro=
+te:
+> >On Mon, Jan 11, 2021 at 12:10 PM Viresh Kumar <viresh.kumar@linaro.org> =
+wrote:
+> >> On 08-01-21, 23:55, Arnd Bergmann wrote:
+> >> > * spear -- added in 2010, no notable changes since 2015
+> >>
+> >> I started an email chain with the ST folks to see if there are any
+> >> concerns with this getting removed and it was confirmed by Mattias
+> >> (Cc'd) from Schneider Electric (one of SPEAr's customers) that they
+> >> indeed use mainline on spear320s and the spear1380 boards, while they
+> >> also have access to spear1310 board which they don't use that often.
 >
-> On 11.01.2021 12:12, Marek Szyprowski wrote:
-> > On 18.12.2020 04:17, Saravana Kannan wrote:
-> >> Cyclic dependencies in some firmware was one of the last remaining
-> >> reasons fw_devlink=on couldn't be set by default. Now that cyclic
-> >> dependencies don't block probing, set fw_devlink=on by default.
-> >>
-> >> Setting fw_devlink=on by default brings a bunch of benefits (currently,
-> >> only for systems with device tree firmware):
-> >> * Significantly cuts down deferred probes.
-> >> * Device probe is effectively attempted in graph order.
-> >> * Makes it much easier to load drivers as modules without having to
-> >>    worry about functional dependencies between modules (depmod is still
-> >>    needed for symbol dependencies).
-> >>
-> >> If this patch prevents some devices from probing, it's very likely due
-> >> to the system having one or more device drivers that "probe"/set up a
-> >> device (DT node with compatible property) without creating a struct
-> >> device for it.  If we hit such cases, the device drivers need to be
-> >> fixed so that they populate struct devices and probe them like normal
-> >> device drivers so that the driver core is aware of the devices and their
-> >> status. See [1] for an example of such a case.
-> >>
-> >> [1] -
-> >> https://lore.kernel.org/lkml/CAGETcx9PiX==mLxB9PO8Myyk6u2vhPVwTMsA5NkD-ywH5xhusw@mail.gmail.com/
-> >> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> >
-> > This patch landed recently in linux next-20210111 as commit
-> > e590474768f1 ("driver core: Set fw_devlink=on by default"). Sadly it
-> > breaks Exynos IOMMU operation, what causes lots of devices being
-> > deferred and not probed at all. I've briefly checked and noticed that
-> > exynos_sysmmu_probe() is never called after this patch. This is really
-> > strange for me, as the SYSMMU controllers on Exynos platform are
-> > regular platform devices registered by the OF code. The driver code is
-> > here: drivers/iommu/exynos-iommu.c, example dts:
-> > arch/arm/boot/dts/exynos3250.dtsi (compatible = "samsung,exynos-sysmmu").
+> > Thank you for reaching out to them!
 >
-> Okay, I found the source of this problem. It is caused by Exynos power
-> domain driver, which is not platform driver yet. I will post a patch,
-> which converts it to the platform driver.
+> > Do we actually support spear1380 with the mainline kernel? I've
+> > never seen anything other than 1310 and 1340 models mentioned.
+> > If Schneider have additional patches on top of mainline for this,
+> > it would be good to get those merged as well. Is there a kernel
+> > source tree available somewhere?
+>
+> > Rob Herring had mentioned that it would be nice to see SPEAr
+> > get removed eventually because it was only partially converted
+> > to devicetree, with some AUXDATA() (on 300/310/320/6xx) and
+> > some dmaengine channel data still in source format. These need
+> > to be finished before we can kill off AUXDATA.
+>
+> Thanks for taking the time Arnd and Viresh
+>
+> The spear1380 is not supported in mainline but it's quite similar to 1310=
+ and 1340.
+> The spear13xx comes in a few flavors. 1310 and 1340 are the standard ones=
+ sold by ST and the 1380 are the customized version for Schneider Electric =
+needs. One part of the chip is customizable but the base is the same in all=
+ 13xx. So a few IP blocks differ between the flavors. I can try to send you=
+ the 1380 stuff as well.
+>
+> There is currently no external source tree for our kernel easy available.
+>
+> If the AUXDATA on 3xx is a problem I can try to start focus on sending fo=
+r patches in that area. We have patches that move some more parts over to d=
+evicetree (compared to mainline) but we haven't converted all. I will inves=
+tigate if we have something that helps in that area.
 
-Thanks Marek! Hopefully the debug logs I added were sufficient to
-figure out the reason.
+This sounds great, thanks! I think the main work that needs to
+be done here is to convert the DT over to use the regular
+dma-controller binding (as used on spear13xx) for the pl080.
+Please contact Vinod Koul, Linus Walleij and me in a separate
+email thread if you have questions about that.
 
--Saravana
+Looking forward to getting those patches,
+
+      Arnd
