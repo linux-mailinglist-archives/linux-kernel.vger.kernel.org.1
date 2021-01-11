@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E405F2F13BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 442D62F1430
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:22:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732015AbhAKNN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:13:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60492 "EHLO mail.kernel.org"
+        id S1732785AbhAKNVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:21:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726652AbhAKNNf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:13:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F33E2255F;
-        Mon, 11 Jan 2021 13:12:53 +0000 (UTC)
+        id S1733246AbhAKNTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:19:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BAAE2229C;
+        Mon, 11 Jan 2021 13:18:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370774;
-        bh=RtPCodWJNa8Vq9zjgTOX1nKJGNsC80WBcGyk3ofdae0=;
+        s=korg; t=1610371115;
+        bh=qTsFhm8C1KkjChvnUpqPkXt1ZpVh7r9qSFbqq2w+djE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wB7r/cpKJyBUmuK0w5pv1riAn2FK9PUfZU1WFac3LpzhxZf0apS/BS84Xnz2iyj1K
-         BpRAKmqujMmMT98BgQHtLT+W/iLqCxqir/WuOo6iKv7AXZbzptrcMow9/mkIE7RX19
-         bvspgRNI58Mf4Mi/vmFYnx1Go3kva5cAls8ydoR0=
+        b=D5zaGUrufSGpN5Kdppy6O0N6qvMc9C7R9slaWysCp/pRTwlgmaHS3qrh2749eyyBR
+         o4iVN1jPlPMHIC3pn8PYppJ3hkbjpviR2GiSPY8tL3RoflxT1+DSHaCtrUHZy4wOwp
+         WMNXBK1ip/oKB5Ns7iE1FUyCvpFr15EMYPa7FtVY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5.4 90/92] netfilter: nft_dynset: report EOPNOTSUPP on missing set feature
+        stable@vger.kernel.org, Matthew Auld <matthew.auld@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Jani Nikula <jani.nikula@intel.com>
+Subject: [PATCH 5.10 130/145] drm/i915: clear the shadow batch
 Date:   Mon, 11 Jan 2021 14:02:34 +0100
-Message-Id: <20210111130043.494744303@linuxfoundation.org>
+Message-Id: <20210111130054.762270523@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
-References: <20210111130039.165470698@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,52 +40,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Matthew Auld <matthew.auld@intel.com>
 
-commit 95cd4bca7b1f4a25810f3ddfc5e767fb46931789 upstream.
+commit 75353bcd2184010f08a3ed2f0da019bd9d604e1e upstream.
 
-If userspace requests a feature which is not available the original set
-definition, then bail out with EOPNOTSUPP. If userspace sends
-unsupported dynset flags (new feature not supported by this kernel),
-then report EOPNOTSUPP to userspace. EINVAL should be only used to
-report malformed netlink messages from userspace.
+The shadow batch is an internal object, which doesn't have any page
+clearing, and since the batch_len can be smaller than the object, we
+should take care to clear it.
 
-Fixes: 22fe54d5fefc ("netfilter: nf_tables: add support for dynamic set updates")
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Testcase: igt/gen9_exec_parse/shadow-peek
+Fixes: 4f7af1948abc ("drm/i915: Support ro ppgtt mapped cmdparser shadow buffers")
+Signed-off-by: Matthew Auld <matthew.auld@intel.com>
+Reviewed-by: Chris Wilson <chris@chris-wilson.co.uk>
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Link: https://patchwork.freedesktop.org/patch/msgid/20201224151358.401345-1-matthew.auld@intel.com
+Cc: stable@vger.kernel.org
+(cherry picked from commit eeb52ee6c4a429ec301faf1dc48988744960786e)
+Signed-off-by: Jani Nikula <jani.nikula@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/netfilter/nft_dynset.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/i915/i915_cmd_parser.c |   27 +++++++++------------------
+ 1 file changed, 9 insertions(+), 18 deletions(-)
 
---- a/net/netfilter/nft_dynset.c
-+++ b/net/netfilter/nft_dynset.c
-@@ -146,7 +146,7 @@ static int nft_dynset_init(const struct
- 		u32 flags = ntohl(nla_get_be32(tb[NFTA_DYNSET_FLAGS]));
- 
- 		if (flags & ~NFT_DYNSET_F_INV)
--			return -EINVAL;
-+			return -EOPNOTSUPP;
- 		if (flags & NFT_DYNSET_F_INV)
- 			priv->invert = true;
+--- a/drivers/gpu/drm/i915/i915_cmd_parser.c
++++ b/drivers/gpu/drm/i915/i915_cmd_parser.c
+@@ -1166,7 +1166,7 @@ static u32 *copy_batch(struct drm_i915_g
+ 		}
  	}
-@@ -179,7 +179,7 @@ static int nft_dynset_init(const struct
- 	timeout = 0;
- 	if (tb[NFTA_DYNSET_TIMEOUT] != NULL) {
- 		if (!(set->flags & NFT_SET_TIMEOUT))
--			return -EINVAL;
-+			return -EOPNOTSUPP;
+ 	if (IS_ERR(src)) {
+-		unsigned long x, n;
++		unsigned long x, n, remain;
+ 		void *ptr;
  
- 		err = nf_msecs_to_jiffies64(tb[NFTA_DYNSET_TIMEOUT], &timeout);
- 		if (err)
-@@ -193,7 +193,7 @@ static int nft_dynset_init(const struct
+ 		/*
+@@ -1177,14 +1177,15 @@ static u32 *copy_batch(struct drm_i915_g
+ 		 * We don't care about copying too much here as we only
+ 		 * validate up to the end of the batch.
+ 		 */
++		remain = length;
+ 		if (!(dst_obj->cache_coherent & I915_BO_CACHE_COHERENT_FOR_READ))
+-			length = round_up(length,
++			remain = round_up(remain,
+ 					  boot_cpu_data.x86_clflush_size);
  
- 	if (tb[NFTA_DYNSET_SREG_DATA] != NULL) {
- 		if (!(set->flags & NFT_SET_MAP))
--			return -EINVAL;
-+			return -EOPNOTSUPP;
- 		if (set->dtype == NFT_DATA_VERDICT)
- 			return -EOPNOTSUPP;
+ 		ptr = dst;
+ 		x = offset_in_page(offset);
+-		for (n = offset >> PAGE_SHIFT; length; n++) {
+-			int len = min(length, PAGE_SIZE - x);
++		for (n = offset >> PAGE_SHIFT; remain; n++) {
++			int len = min(remain, PAGE_SIZE - x);
  
+ 			src = kmap_atomic(i915_gem_object_get_page(src_obj, n));
+ 			if (needs_clflush)
+@@ -1193,13 +1194,15 @@ static u32 *copy_batch(struct drm_i915_g
+ 			kunmap_atomic(src);
+ 
+ 			ptr += len;
+-			length -= len;
++			remain -= len;
+ 			x = 0;
+ 		}
+ 	}
+ 
+ 	i915_gem_object_unpin_pages(src_obj);
+ 
++	memset32(dst + length, 0, (dst_obj->base.size - length) / sizeof(u32));
++
+ 	/* dst_obj is returned with vmap pinned */
+ 	return dst;
+ }
+@@ -1392,11 +1395,6 @@ static unsigned long *alloc_whitelist(u3
+ 
+ #define LENGTH_BIAS 2
+ 
+-static bool shadow_needs_clflush(struct drm_i915_gem_object *obj)
+-{
+-	return !(obj->cache_coherent & I915_BO_CACHE_COHERENT_FOR_WRITE);
+-}
+-
+ /**
+  * intel_engine_cmd_parser() - parse a batch buffer for privilege violations
+  * @engine: the engine on which the batch is to execute
+@@ -1539,16 +1537,9 @@ int intel_engine_cmd_parser(struct intel
+ 				ret = 0; /* allow execution */
+ 			}
+ 		}
+-
+-		if (shadow_needs_clflush(shadow->obj))
+-			drm_clflush_virt_range(batch_end, 8);
+ 	}
+ 
+-	if (shadow_needs_clflush(shadow->obj)) {
+-		void *ptr = page_mask_bits(shadow->obj->mm.mapping);
+-
+-		drm_clflush_virt_range(ptr, (void *)(cmd + 1) - ptr);
+-	}
++	i915_gem_object_flush_map(shadow->obj);
+ 
+ 	if (!IS_ERR_OR_NULL(jump_whitelist))
+ 		kfree(jump_whitelist);
 
 
