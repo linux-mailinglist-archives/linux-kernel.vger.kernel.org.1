@@ -2,92 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27AB12F183D
+	by mail.lfdr.de (Postfix) with ESMTP id 9783B2F183E
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:27:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388700AbhAKO0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:26:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36752 "EHLO
+        id S2388711AbhAKO0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:26:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728348AbhAKO0H (ORCPT
+        with ESMTP id S1728348AbhAKO0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:26:07 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F035C061794;
-        Mon, 11 Jan 2021 06:25:27 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id t6so9613250plq.1;
-        Mon, 11 Jan 2021 06:25:27 -0800 (PST)
+        Mon, 11 Jan 2021 09:26:11 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7491BC061795
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:25:30 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id u25so17208373lfc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:25:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=kjus1H8C0QBAlALuC5Cx0BMQHU+YX+HglMSKKZRyJ+M=;
-        b=ZjH9KXHTjPckjBfk6z2A+NQL3LfnBeZc1UzLr9XLv3Uf5AKeNth48r1nE1uKR2cjuA
-         0HF7bp7YMH0khXjA4iNCPlA4hYY2J1ZJ6TZHN7oXI4DKrULNEEd12HU7d6rTwyy7WROz
-         cvCkpd4wsPBNDGrFYKrWda1epW4AsrUQyQptkHMFMdTKbZtwZSlt7YGXnu0UVr+GW/Ui
-         LR5qieqUr5XPzxLDCacA3kO4lw1xy4ajjIRby4inglRY5flR7xAmDm0psN7NkuccHhc5
-         KQTb5cMeFlmynhrwcjHZJhLngkTwtgAU4CDOjJXm2QLYjQtRAWu296FQZHw9h6wxGzTw
-         SsZA==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=smCy1Yjkgz+gZDtvnre1/QglxuwwJh77VQyDG7f7TRE=;
+        b=ZUuH8XyUNwUDj/ax6jtLuay1zUfAHTmdAj5OEzyXghQZcVky5ep8DZqIxsMBY2n40g
+         c06X17Dy/0BohuoUCgTPEfnF1EKIHFZ+Uin5pZQVE8W7Zie1OKBDts7Fw6CAJ8oUkF0+
+         r/h5M78XOTQOyOFRvsAhMPXJIxAmIhjxGdlOX9Hi3+nX64JjFSDQLgrhZZq82sDae6ST
+         Awd6jayAfyX09bC+vlJFcEgIfQybESEifE9Tuf2F/hjEouxgD3ozygW24IF04Z8y8ynU
+         N9j5pf85cu+j4nquHHa/0nuHULcDcB/q8AmB2mg3d0OdxGBUSWwN2TzUtKlGvU/bY+eL
+         /P7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=kjus1H8C0QBAlALuC5Cx0BMQHU+YX+HglMSKKZRyJ+M=;
-        b=TojvySmsMEtA51rBlz9ySxuaK3Lm3GMcWwv/oksAWGyEAiGu82CBQARWUR9T/F2bgk
-         L35tlY9hI5XvwyIt2NArwhoBEfNgJDnidpMuP9MbH/hcjko/UQ9CugSmjaRDzt0HjM5y
-         vpLU6rOONZpfBbFVYMNpyUb8pVnSlqrY7j+HYKbQxmabgUhTG3t5dvezCwB7lpTaNkYN
-         Of+uocO0buxUGoCzLfZM4SYQXFsTP+prQSq27q/DGbl4+VkVhHN4TEDwj/AOkbZyEswk
-         3Cp74KkhePcYkFnjw5kWPOyf4rQIXUvH0erWwMRrqo0dn/AzF21emJzMi6mSiyZiUpwD
-         F7Qg==
-X-Gm-Message-State: AOAM5336HDufquJdneu2EW4Qo6RH5cTf1wDKpdRtgJ3lLaDBpSGzWw4g
-        CENfcvvDc6wWJFsW+WBAdmAwoQnFY8c=
-X-Google-Smtp-Source: ABdhPJz5brRCSrb7yoX5wtnr8u6RGNZ2oK7yZ1dQjKGnluwqdlsF1I3YLgY/ov3vs9iWLXEzMIcMpA==
-X-Received: by 2002:a17:902:6f01:b029:dc:3182:ce69 with SMTP id w1-20020a1709026f01b02900dc3182ce69mr16369769plk.10.1610375126720;
-        Mon, 11 Jan 2021 06:25:26 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id q12sm19498300pgj.24.2021.01.11.06.25.24
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=smCy1Yjkgz+gZDtvnre1/QglxuwwJh77VQyDG7f7TRE=;
+        b=KuSY3YjmgIRUrOxCELZMH9whP+26K9Rx49JlHre3aa0AXAQwgUBntC/MzEKjoGaNn5
+         KX29zHxIBp0zB/qDSIFVP8UvSckURF8IKl5GNCCE988EfoNLr9L/b7YaID4+y3gN4OWu
+         wi8P7+IC+8KLWqt7YaqUVEwg+jefAxN75FJjXLne1GnXGYrXVyN1QtiPNX08UwsRm0jI
+         hOe5zM6XizKwCTHVC+WmvNV1pK3oI94fb23asF5JJzTTEiiUjrK6NcCqyzMJW/AkY85M
+         lA9hCxEknuLzfeadvNJk/NF/cE9WVgDe+rcQ6PvWmmZgxjbTkX5kw6ZgzXtfA+3uIeWs
+         +1wg==
+X-Gm-Message-State: AOAM532HF8zjhSz1+EyqhzU/f5i8c2fOKfcoHf9jTNSHhJdziGGiEJrt
+        1xuLS2Pngz3iWxLgAhMvPbKSxw==
+X-Google-Smtp-Source: ABdhPJyUEIHi1OeJLqcYRsOQdNKTnpdC0urVnyRPLnSVMvyEGUufCwFJNYt2YI+Kmx+uW4swx/YObw==
+X-Received: by 2002:a19:f601:: with SMTP id x1mr7048733lfe.256.1610375129044;
+        Mon, 11 Jan 2021 06:25:29 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id b7sm3440379ljf.76.2021.01.11.06.25.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 06:25:25 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     guoren@kernel.org
-Cc:     dong.menglong@zte.com.cn, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] csky: kprobe: fix unreachable code in simulate_blz32
-Date:   Mon, 11 Jan 2021 06:25:17 -0800
-Message-Id: <20210111142517.4959-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.17.1
+        Mon, 11 Jan 2021 06:25:28 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id B18BE102238; Mon, 11 Jan 2021 17:25:33 +0300 (+03)
+Date:   Mon, 11 Jan 2021 17:25:33 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Hugh Dickins <hughd@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v2 2/3] mm: Allow architectures to request 'old' entries
+ when prefaulting
+Message-ID: <20210111142533.oulduqd76mkpdkst@box>
+References: <20210108171517.5290-1-will@kernel.org>
+ <20210108171517.5290-3-will@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210108171517.5290-3-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+On Fri, Jan 08, 2021 at 05:15:16PM +0000, Will Deacon wrote:
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index c1f2dc89b8a7..0fb9d1714797 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -3051,14 +3051,18 @@ vm_fault_t filemap_map_pages(struct vm_fault *vmf,
+>  		if (!pte_none(*vmf->pte))
+>  			goto unlock;
+>  
+> +		/* We're about to handle the fault */
+> +		if (vmf->address == address) {
+> +			vmf->flags &= ~FAULT_FLAG_PREFAULT;
+> +			ret = VM_FAULT_NOPAGE;
+> +		} else {
+> +			vmf->flags |= FAULT_FLAG_PREFAULT;
+> +		}
+> +
 
-The type of 'val' is 'unsigned long' in simulate_blz32, so 'val < 0'
-can't be true.
+Do we need to restore the oririnal status of the bit once we are done?
 
-When 'csky_insn_reg_get_val' fails, 'false' will be returned. We
-can directly use its return value here.
-
-Fixes: 33e53ae1ce41 ("csky: Add kprobes supported")
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
- arch/csky/kernel/probes/simulate-insn.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/arch/csky/kernel/probes/simulate-insn.c b/arch/csky/kernel/probes/simulate-insn.c
-index 4e464fed52ec..b09ddcbcfa18 100644
---- a/arch/csky/kernel/probes/simulate-insn.c
-+++ b/arch/csky/kernel/probes/simulate-insn.c
-@@ -346,9 +346,7 @@ simulate_blz32(u32 opcode, long addr, struct pt_regs *regs)
- 	unsigned long tmp = opcode & 0x1f;
- 	unsigned long val;
- 
--	csky_insn_reg_get_val(regs, tmp, &val);
--
--	if (val < 0) {
-+	if (!csky_insn_reg_get_val(regs, tmp, &val)) {
- 		instruction_pointer_set(regs,
- 			addr + sign_extend32((opcode & 0xffff0000) >> 15, 15));
- 	} else
 -- 
-2.17.1
-
+ Kirill A. Shutemov
