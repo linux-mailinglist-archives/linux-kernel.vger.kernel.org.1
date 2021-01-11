@@ -2,103 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643D82F0AD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 02:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A5792F0ADA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 02:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727106AbhAKBjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 20:39:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726472AbhAKBjw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 20:39:52 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C767FC061786
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 17:39:11 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id b64so13415644qkc.12
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 17:39:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=0x0f.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YSn5Y5uJK/+IyEV47xmLezdCxCclHi6QEB/FGHKgcuI=;
-        b=FD/3lTV2zarQtOPn6hW/jXzvj0xl9hms0lH1ySJYa1pO5xf7rOMotgjDJz+EEBWkhp
-         ihzEHyRt90AGqJN3n5/VV/pYomoQCT+rWOSn+AwBAhRgWgYXNk3rJfeDBnItZZlQ0DD8
-         baFQ3gXzvBS01gG9/a+Dd9gpVeftZQSB8D8b0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YSn5Y5uJK/+IyEV47xmLezdCxCclHi6QEB/FGHKgcuI=;
-        b=q+nFbI0LXIn/FMofH1+roOdtwi4B8niHaNrP3mzjXf4MjscDQ0loj8bd6v/D+9I+PP
-         LlG/3bkGapWh8ORJ+EK+YHj5gKLp8wZ1mmo8T9XbZgl78OPwEXCZWqRENi40ZAYYZNpR
-         dO9ljXbU5/9OauQoxYIHWbLmlLw09ZwAgS7DexihKasOUvoYc/pBHijWP1hiZvER8uFB
-         edDYigHVL0PVA1Pas4QB/mn8M01KgvbwX3g9sSZoMnfNy1FtUZ/y68qld81k+fH9zLgu
-         2ctf0sO0xHTios4IG2ffaLsBCyKJweJVCC4ttte4PPTXLXofxLSP68+O8IQmdG8FW0My
-         gmDg==
-X-Gm-Message-State: AOAM533S+Hv/IcLLiAw/nIDRzJiziBPxLBeE7BPCACtN1iQ5m4Z2HH4M
-        8BRd2NxgMjo7JXyADNQ5mcKbpcu1+0vKpza/rT4Urg==
-X-Google-Smtp-Source: ABdhPJyYdF0HiEVfal7e5Z8TGQ1m9QShz3O/ZWAm0igXEtdPK1D+aDQo9mmpwOEHoNE1FLGcnhJ9M3gdAxVO0GqiIYA=
-X-Received: by 2002:a05:620a:2009:: with SMTP id c9mr14472866qka.159.1610329150899;
- Sun, 10 Jan 2021 17:39:10 -0800 (PST)
-MIME-Version: 1.0
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
-From:   Daniel Palmer <daniel@0x0f.com>
-Date:   Mon, 11 Jan 2021 10:39:00 +0900
-Message-ID: <CAFr9PX=BV1YFcO_GQWsW3XEo8nndjUwArzW5Fg1fnWzt8fiwGw@mail.gmail.com>
-Subject: Re: Old platforms: bring out your dead
+        id S1726995AbhAKBl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 20:41:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56520 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726362AbhAKBl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 20:41:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A904C2251F;
+        Mon, 11 Jan 2021 01:41:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610329277;
+        bh=kAHJ6uYNEobDjgaOJm9STHnuZlZSHgvmiRlXkbgjj0w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Mi+PvlUFJ1EAsci7yG/kklI5D2/5oSgH8smxcNU/jYKKznp2K6ZteX/SfucH8EvPl
+         JulPWAJ2Aync5TlJiQcSzFeQVZXYqvYFTw9F7tBtqpvnd9nvvPmI64UqqSoZbN4w0d
+         6DQ9JdwkaPiSD2qqaY76VwifqcvMY7+/VoVP+ESWTCjV5fYVKC2BsbaGKdS3GupzX1
+         Sl/wnATYwjtAwt25jcNVz220AXGGESYA2CZ+OewUTXeP1gFRCk5+rPDZTKJ4Es+OYF
+         2BDO3QR7KHRJxtAHmqCDN/uFdOLInSed/ak/IgN3SDI8zXvBBHmQBaqN3yTDM1wGdd
+         FYDsk2WoFszKg==
+Date:   Mon, 11 Jan 2021 09:41:11 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
 To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Mark Salter <msalter@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: imx: fix Kconfig warning for i.MX SCU clk
+Message-ID: <20210111014110.GW28365@dragon>
+References: <20201230155244.981757-1-arnd@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201230155244.981757-1-arnd@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Wed, Dec 30, 2020 at 04:52:25PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> A previous patch introduced a harmless randconfig warning:
+> 
+> WARNING: unmet direct dependencies detected for MXC_CLK_SCU
+>   Depends on [n]: COMMON_CLK [=y] && ARCH_MXC [=n] && IMX_SCU [=y] && HAVE_ARM_SMCCC [=y]
+>   Selected by [m]:
+>   - CLK_IMX8QXP [=m] && COMMON_CLK [=y] && (ARCH_MXC [=n] && ARM64 [=y] || COMPILE_TEST [=y]) && IMX_SCU [=y] && HAVE_ARM_SMCCC [=y]
+> 
+> Since the symbol is now hidden and only selected by other symbols,
+> just remove the dependencies and require the other drivers to
+> get it right.
+> 
+> Fixes: 6247e31b7530 ("clk: imx: scu: fix MXC_CLK_SCU module build break")
+> Reported-by: Anders Roxell <anders.roxell@linaro.org>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-On Sat, 9 Jan 2021 at 07:56, Arnd Bergmann <arnd@kernel.org> wrote:
-> * 68000/68328 (Dragonball): these are less capable than the
->   68020+ or the Coldfire MCF5xxx line and similar to the 68360
->   that was removed in 2016.
+Looks good to me.
 
-I have some patches for the DragonBall series to enable SPI etc there,
-some patches to support the SuperVZ variant, some tools to upload
-Linux via the integrated serial bootloader.
-The DragonBall is probably what anyone that wants to build a 68K retro
-computer should use as the DRAM controller is integrated and it can
-access 32MB of SDRAM.
-I haven't tested it recently but it should still work and I have
-hardware and I'm willing to look after it if no one else wants to.
+Stephen, I assume that you will pick it up as a material for 5.11-rc.
 
-Thanks,
-
-Daniel
+Shawn
