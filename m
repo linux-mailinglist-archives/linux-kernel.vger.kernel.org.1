@@ -2,163 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C292F1279
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:42:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 593B92F127D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:44:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727112AbhAKMmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 07:42:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727071AbhAKMl6 (ORCPT
+        id S1727409AbhAKMn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 07:43:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59127 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726686AbhAKMnZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 07:41:58 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB515C0617A7
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 04:40:39 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id e25so14970156wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 04:40:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=iLQSMu4kyOWwZDRuRCxs8aoK2DhXG2sbIHqKebgLZs8=;
-        b=YtHZifkBaY0OPg54db/1GEuBl6VpUDZZNAf4YQVSyEgPjRg25raahc/YvwMJ0nvVnx
-         6V/vWalce3AnXvu7lqT5zQ8X+tW8TmHheC1EpP/njLVKre8dGO2rzPdBuva5n3CYaU9v
-         m3xKBt7F68+9mV4hDNyqj10kkiZUPJLMVv3ImgU73RtgzfYCf4LUwYL2ChS2HOy/1UX0
-         6qJ3KhL0F0DpStRKvMXxFdW5BtfqZ4lCW1nOxcsQpeiKV0DCPZpfNWJgaoWkU4w5IqGn
-         zIIBf/HHj/7r6aZLpYOAMV1dsuFnM2b7g5Uz8d4mXxQ0b2lAYDywqQ7MScdjzsvfPGff
-         pMfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=iLQSMu4kyOWwZDRuRCxs8aoK2DhXG2sbIHqKebgLZs8=;
-        b=sjnEb7Xm92YZ1YW/Q0p58oNWCgB97T1ReoQOKqSpXrAtZf3spjArTXr/iQtqLkWrts
-         jnHkc8ZZTCCtQThksY3JQDZwIAfgyI9B5iwLz1NDsdbz8dqmDojf35b/bzLNvgA2GG+M
-         9fPID38o6Jo6tW3GkhK9pdICqm+bd1r4EVJ7eOrazGWSfn4sc3vRFVw2IFk+so1dYDak
-         ctHIEdP0HcNTtUXDr07pTYkfNmmI6tU0ygRoxzwWMNvFsOk/ZgJjAKuOZOgCn1T6/qtq
-         VIkJTolz58skAUmrLvfF3BK6QJ51ko8eF+GNH7YCVxkxUYFFxMmnzSi52bNQVGyWqZhM
-         mcEQ==
-X-Gm-Message-State: AOAM5329VIS/tpoEqrQ+/KPuqcRcwl+e5YEfjpa/5h+Ewz2cgq9AEk0A
-        dex8GERvBLw2SPqic9O15HjoTA==
-X-Google-Smtp-Source: ABdhPJy7IwW7rqicRJkE+1lyoV7lllzeWL26215H1ry1DCRVDrmCZu4Y2vJ0uDYfSxjfCx2mNGo6Lw==
-X-Received: by 2002:a1c:6208:: with SMTP id w8mr14496011wmb.96.1610368838524;
-        Mon, 11 Jan 2021 04:40:38 -0800 (PST)
-Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id l8sm26492362wrb.73.2021.01.11.04.40.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 04:40:38 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-rtc@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v4 3/3] rtc: s5m: use devm_i2c_new_dummy_device()
-Date:   Mon, 11 Jan 2021 13:40:27 +0100
-Message-Id: <20210111124027.21586-4-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20210111124027.21586-1-brgl@bgdev.pl>
-References: <20210111124027.21586-1-brgl@bgdev.pl>
+        Mon, 11 Jan 2021 07:43:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610368918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1jltblhu2Dd6iDOxJ7ANMmEZ7SYdZNOGQ9HGQetpvC0=;
+        b=GMQDkrQDkm425Poi4EBy1MEkDaeCvw8IrGyXlSWLiVTw2bTRJREx66PkxSuw2lAqzwDD1n
+        UHDjvFhpMOOO0adUSxItHQPkZUBo5ppuqvTQHlBX3zPmQ60x9UADczidKzp5nXeUDL081K
+        RASybt+Qf7DuUNc1fqBMrj7APB+xcDw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-419-na-pWaWAN-6waX9uPlQz_w-1; Mon, 11 Jan 2021 07:41:55 -0500
+X-MC-Unique: na-pWaWAN-6waX9uPlQz_w-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 83A7C190A7A3;
+        Mon, 11 Jan 2021 12:41:52 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-115-103.ams2.redhat.com [10.36.115.103])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 981BF1349A;
+        Mon, 11 Jan 2021 12:41:41 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        catalin.marinas@arm.com, teawater <teawaterz@linux.alibaba.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        hca@linux.ibm.com, Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH RFC] virtio-mem: check against memhp_get_pluggable_range() which memory we can hotplug
+Date:   Mon, 11 Jan 2021 13:41:40 +0100
+Message-Id: <20210111124140.11423-1-david@redhat.com>
+In-Reply-To: <1608218912-28932-1-git-send-email-anshuman.khandual@arm.com>
+References: <1608218912-28932-1-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Right now, we only check against MAX_PHYSMEM_BITS - but turns out there
+are more restrictions of which memory we can actually hotplug, especially
+om arm64 or s390x once we support them: we might receive something like
+-E2BIG or -ERANGE from add_memory_driver_managed(), stopping device
+operation.
 
-Use the managed variant of i2c_new_dummy_device() to shrink code and
-remove the goto label. We can drop the remove callback now too.
+So, check right when initializing the device which memory we can add,
+warning the user. Try only adding actually pluggable ranges: in the worst
+case, no memory provided by our device is pluggable.
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+In the usual case, we expect all device memory to be pluggable, and in
+corner cases only some memory at the end of the device-managed memory
+region to not be pluggable.
+
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: catalin.marinas@arm.com
+Cc: teawater <teawaterz@linux.alibaba.com>
+Cc: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: hca@linux.ibm.com
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- drivers/rtc/rtc-s5m.c | 31 +++++++------------------------
- 1 file changed, 7 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/rtc/rtc-s5m.c b/drivers/rtc/rtc-s5m.c
-index e0011d3cf61b..80b66f16db89 100644
---- a/drivers/rtc/rtc-s5m.c
-+++ b/drivers/rtc/rtc-s5m.c
-@@ -760,7 +760,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
+This is an example how virito-mem intends to use an interface like
+memhp_get_pluggable_range() once around. See:
+
+"[PATCH V2 0/3] mm/hotplug: Pre-validate the address range with platform"
+https://lkml.kernel.org/r/1608218912-28932-1-git-send-email-anshuman.khandual@arm.com
+
+@Anshuman, feel free to pick up and carry this patch. I'll retest the final
+result / new versions of you series.
+
+---
+ drivers/virtio/virtio_mem.c | 40 +++++++++++++++++++++++++------------
+ 1 file changed, 27 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+index 9fc9ec4a25f5..1fe40b2d7b6d 100644
+--- a/drivers/virtio/virtio_mem.c
++++ b/drivers/virtio/virtio_mem.c
+@@ -2222,7 +2222,7 @@ static int virtio_mem_unplug_pending_mb(struct virtio_mem *vm)
+  */
+ static void virtio_mem_refresh_config(struct virtio_mem *vm)
+ {
+-	const uint64_t phys_limit = 1UL << MAX_PHYSMEM_BITS;
++	const struct range pluggable_range = memhp_get_pluggable_range(true);
+ 	uint64_t new_plugged_size, usable_region_size, end_addr;
  
--	info->i2c = i2c_new_dummy_device(s5m87xx->i2c->adapter, RTC_I2C_ADDR);
-+	info->i2c = devm_i2c_new_dummy_device(&pdev->dev, s5m87xx->i2c->adapter,
-+					      RTC_I2C_ADDR);
- 	if (IS_ERR(info->i2c)) {
- 		dev_err(&pdev->dev, "Failed to allocate I2C for RTC\n");
- 		return PTR_ERR(info->i2c);
-@@ -771,7 +772,7 @@ static int s5m_rtc_probe(struct platform_device *pdev)
- 		ret = PTR_ERR(info->regmap);
- 		dev_err(&pdev->dev, "Failed to allocate RTC register map: %d\n",
- 				ret);
--		goto err;
-+		return ret;
- 	}
+ 	/* the plugged_size is just a reflection of what _we_ did previously */
+@@ -2234,15 +2234,25 @@ static void virtio_mem_refresh_config(struct virtio_mem *vm)
+ 	/* calculate the last usable memory block id */
+ 	virtio_cread_le(vm->vdev, struct virtio_mem_config,
+ 			usable_region_size, &usable_region_size);
+-	end_addr = vm->addr + usable_region_size;
+-	end_addr = min(end_addr, phys_limit);
++	end_addr = min(vm->addr + usable_region_size - 1,
++		       pluggable_range.end);
  
- 	info->dev = &pdev->dev;
-@@ -781,10 +782,9 @@ static int s5m_rtc_probe(struct platform_device *pdev)
- 	if (s5m87xx->irq_data) {
- 		info->irq = regmap_irq_get_virq(s5m87xx->irq_data, alarm_irq);
- 		if (info->irq <= 0) {
--			ret = -EINVAL;
- 			dev_err(&pdev->dev, "Failed to get virtual IRQ %d\n",
- 				alarm_irq);
--			goto err;
-+			return -EINVAL;
+-	if (vm->in_sbm)
+-		vm->sbm.last_usable_mb_id =
+-					 virtio_mem_phys_to_mb_id(end_addr) - 1;
+-	else
+-		vm->bbm.last_usable_bb_id =
+-				     virtio_mem_phys_to_bb_id(vm, end_addr) - 1;
++	if (vm->in_sbm) {
++		vm->sbm.last_usable_mb_id = virtio_mem_phys_to_mb_id(end_addr);
++		if (!IS_ALIGNED(end_addr + 1, memory_block_size_bytes()))
++			vm->sbm.last_usable_mb_id--;
++	} else {
++		vm->bbm.last_usable_bb_id = virtio_mem_phys_to_bb_id(vm,
++								     end_addr);
++		if (!IS_ALIGNED(end_addr + 1, vm->bbm.bb_size))
++			vm->bbm.last_usable_bb_id--;
++	}
++	/*
++	 * If we cannot plug any of our device memory (e.g., nothing in the
++	 * usable region is addressable), the last usable memory block id will
++	 * be smaller than the first usable memory block id. We'll stop
++	 * attempting to add memory with -ENOSPC from our main loop.
++	 */
+ 
+ 	/* see if there is a request to change the size */
+ 	virtio_cread_le(vm->vdev, struct virtio_mem_config, requested_size,
+@@ -2364,6 +2374,7 @@ static int virtio_mem_init_vq(struct virtio_mem *vm)
+ 
+ static int virtio_mem_init(struct virtio_mem *vm)
+ {
++	const struct range pluggable_range = memhp_get_pluggable_range(true);
+ 	const uint64_t phys_limit = 1UL << MAX_PHYSMEM_BITS;
+ 	uint64_t sb_size, addr;
+ 	uint16_t node_id;
+@@ -2405,9 +2416,10 @@ static int virtio_mem_init(struct virtio_mem *vm)
+ 	if (!IS_ALIGNED(vm->addr + vm->region_size, memory_block_size_bytes()))
+ 		dev_warn(&vm->vdev->dev,
+ 			 "The alignment of the physical end address can make some memory unusable.\n");
+-	if (vm->addr + vm->region_size > phys_limit)
++	if (vm->addr < pluggable_range.start ||
++	    vm->addr + vm->region_size - 1 > pluggable_range.end)
+ 		dev_warn(&vm->vdev->dev,
+-			 "Some memory is not addressable. This can make some memory unusable.\n");
++			 "Some device memory is not addressable/pluggable. This can make some memory unusable.\n");
+ 
+ 	/*
+ 	 * We want subblocks to span at least MAX_ORDER_NR_PAGES and
+@@ -2429,7 +2441,8 @@ static int virtio_mem_init(struct virtio_mem *vm)
+ 				     vm->sbm.sb_size;
+ 
+ 		/* Round up to the next full memory block */
+-		addr = vm->addr + memory_block_size_bytes() - 1;
++		addr = max_t(uint64_t, vm->addr, pluggable_range.start) +
++		       memory_block_size_bytes() - 1;
+ 		vm->sbm.first_mb_id = virtio_mem_phys_to_mb_id(addr);
+ 		vm->sbm.next_mb_id = vm->sbm.first_mb_id;
+ 	} else {
+@@ -2450,7 +2463,8 @@ static int virtio_mem_init(struct virtio_mem *vm)
  		}
+ 
+ 		/* Round up to the next aligned big block */
+-		addr = vm->addr + vm->bbm.bb_size - 1;
++		addr = max_t(uint64_t, vm->addr, pluggable_range.start) +
++		       vm->bbm.bb_size - 1;
+ 		vm->bbm.first_bb_id = virtio_mem_phys_to_bb_id(vm, addr);
+ 		vm->bbm.next_bb_id = vm->bbm.first_bb_id;
  	}
- 
-@@ -799,10 +799,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
- 	info->rtc_dev = devm_rtc_device_register(&pdev->dev, "s5m-rtc",
- 						 &s5m_rtc_ops, THIS_MODULE);
- 
--	if (IS_ERR(info->rtc_dev)) {
--		ret = PTR_ERR(info->rtc_dev);
--		goto err;
--	}
-+	if (IS_ERR(info->rtc_dev))
-+		return PTR_ERR(info->rtc_dev);
- 
- 	if (!info->irq) {
- 		dev_info(&pdev->dev, "Alarm IRQ not available\n");
-@@ -815,23 +813,9 @@ static int s5m_rtc_probe(struct platform_device *pdev)
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Failed to request alarm IRQ: %d: %d\n",
- 			info->irq, ret);
--		goto err;
-+		return ret;
- 	}
- 
--	return 0;
--
--err:
--	i2c_unregister_device(info->i2c);
--
--	return ret;
--}
--
--static int s5m_rtc_remove(struct platform_device *pdev)
--{
--	struct s5m_rtc_info *info = platform_get_drvdata(pdev);
--
--	i2c_unregister_device(info->i2c);
--
- 	return 0;
- }
- 
-@@ -876,7 +860,6 @@ static struct platform_driver s5m_rtc_driver = {
- 		.pm	= &s5m_rtc_pm_ops,
- 	},
- 	.probe		= s5m_rtc_probe,
--	.remove		= s5m_rtc_remove,
- 	.id_table	= s5m_rtc_id,
- };
- 
 -- 
-2.29.1
+2.29.2
 
