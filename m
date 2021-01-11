@@ -2,85 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDA42F2295
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0BF2F229D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:22:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389848AbhAKWUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 17:20:51 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:35496 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389420AbhAKWUt (ORCPT
+        id S2389706AbhAKWVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 17:21:24 -0500
+Received: from mail-oo1-f51.google.com ([209.85.161.51]:46322 "EHLO
+        mail-oo1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728040AbhAKWVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:20:49 -0500
-Received: by mail-ot1-f45.google.com with SMTP id i6so435232otr.2;
-        Mon, 11 Jan 2021 14:20:34 -0800 (PST)
+        Mon, 11 Jan 2021 17:21:23 -0500
+Received: by mail-oo1-f51.google.com with SMTP id n127so119118ooa.13;
+        Mon, 11 Jan 2021 14:21:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=VyFCFff7hYJpxW+Rad4By7LUlx7N6qhPoYPEaO1tJps=;
-        b=NxtbbNjHq6wTCHvDZqGd7CCrZuktBH1DDLrVUUMM1eCbueN18rWYeATbjloawk95CZ
-         VlUmjyKBTrZQyKO4VErMMZ41Fi3j0uMOnW1pBenVgTDCXPdqONPXXUoLLvnqnfgecS0e
-         /Rz/n2OqoWnY9KTPxoHoDtmsGD28haLssjkgdhuUrzoKubQCP0tYXFy6IS9jt+LdNh7J
-         le2CZf/xTQlMgSwiRyR3MRs+Oq354cU7TCb/w/BK5Xt7cOaCFGBDDB8p8mAyKvqBIrvF
-         XOIouR8lgxfjT8U2mO4gwVEexLu5ie8+oll8cSebexyi7uoSSkuxK+yzxktVslUrL1Z4
-         WrMw==
-X-Gm-Message-State: AOAM531KjYYU6rV9MFIK1F7uLScHrvo3A3AYSITXXGcPDMvt1fEmcCqg
-        ix9B0peSA4A+jFXa6MCXFw==
-X-Google-Smtp-Source: ABdhPJwU6Becx7jAKNM9/tRzPRBw1eNYiQOnEXAerdi4abgkEPy3hpSEyntlUQKR5I5QMiNGp8R4gg==
-X-Received: by 2002:a9d:5f9a:: with SMTP id g26mr843215oti.241.1610403608789;
-        Mon, 11 Jan 2021 14:20:08 -0800 (PST)
+        bh=bHT2GndF6urGRcw0TXxPqVOzZ2j2R9MxCgX11NwVoxE=;
+        b=rBxq0g47b/PfI6ZEx4bj5+eJFikRm/TK/ezZ6JDf2R8WjUDjzLDijfswIzd9GVYnCC
+         L2fcQsg4xM1pzq2Cg3kwCbYXn8RgbGNeToVSoU6IFKc6OcqR3rXrKxlQTRmHJxtx9IrO
+         xxxRd50eIg0oZ/kCMuk4xM1HIc7LQSLv2mfrknWG5Vjze7GpLsJTnFsjaKLpm5FZvrgo
+         z/oVCACQHtzVT7qqvnJOOoXo6RPbAaVdjuf21AKbD42SVcCmr4KXCwclaMzO/niv1ciH
+         OUNhTv9JqsnN7KwewHxo/1sXsEnh1aVezgX8fu01UiydTcyBWNURZOMoViriinAemZnB
+         bwcQ==
+X-Gm-Message-State: AOAM530ynsY/+Wy9If3DATbshWIh+3HrkA/hoS0ERqyOuY3tAWdmlYqt
+        Rsf2HTYy0ePtKo91hJvkNszu8k448A==
+X-Google-Smtp-Source: ABdhPJzJws28Cr0G657g4+VWo5Rnlmi6XMjPUxVc9XMNPuwZrLaC7zBLoW9JNXDuxDIBNr/eDBQJQg==
+X-Received: by 2002:a05:6820:22c:: with SMTP id j12mr902080oob.65.1610403641005;
+        Mon, 11 Jan 2021 14:20:41 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p10sm67054otp.43.2021.01.11.14.20.06
+        by smtp.gmail.com with ESMTPSA id a26sm179491oos.46.2021.01.11.14.20.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 14:20:07 -0800 (PST)
-Received: (nullmailer pid 3160469 invoked by uid 1000);
-        Mon, 11 Jan 2021 22:20:05 -0000
-Date:   Mon, 11 Jan 2021 16:20:05 -0600
+        Mon, 11 Jan 2021 14:20:40 -0800 (PST)
+Received: (nullmailer pid 3161297 invoked by uid 1000);
+        Mon, 11 Jan 2021 22:20:39 -0000
+Date:   Mon, 11 Jan 2021 16:20:39 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Chen-Yu Tsai <wens@csie.org>, Vinod Koul <vkoul@kernel.org>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        linux-doc@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yong Deng <yong.deng@magewell.com>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        devicetree@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        devel@driverdev.osuosl.org, kevin.lhopital@hotmail.com,
-        Maxime Ripard <mripard@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-sunxi@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        Helen Koike <helen.koike@collabora.com>
-Subject: Re: [PATCH v4 08/15] dt-bindings: media: Add A31 MIPI CSI-2 bindings
- documentation
-Message-ID: <20210111222005.GA3160418@robh.at.kernel.org>
-References: <20201231142948.3241780-1-paul.kocialkowski@bootlin.com>
- <20201231142948.3241780-9-paul.kocialkowski@bootlin.com>
+To:     Aleksander Jan Bajkowski <olek2@wp.pl>
+Cc:     tsbogend@alpha.franken.de, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, john@phrozen.org,
+        linux-mips@vger.kernel.org, robh+dt@kernel.org
+Subject: Re: [PATCH] dt-bindings: mips: lantiq: Document Lantiq Xway PMU
+ bindings
+Message-ID: <20210111222039.GA3161126@robh.at.kernel.org>
+References: <20201231163153.4512-1-olek2@wp.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201231142948.3241780-9-paul.kocialkowski@bootlin.com>
+In-Reply-To: <20201231163153.4512-1-olek2@wp.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Dec 2020 15:29:41 +0100, Paul Kocialkowski wrote:
-> This introduces YAML bindings documentation for the A31 MIPI CSI-2
-> controller.
+On Thu, 31 Dec 2020 17:31:53 +0100, Aleksander Jan Bajkowski wrote:
+> Document the Lantiq Xway SoC series Power Management Unit (PMU) bindings.
 > 
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
 > ---
->  .../media/allwinner,sun6i-a31-mipi-csi2.yaml  | 149 ++++++++++++++++++
->  1 file changed, 149 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/allwinner,sun6i-a31-mipi-csi2.yaml
+>  .../bindings/mips/lantiq/lantiq,pmu.yaml      | 32 +++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mips/lantiq/lantiq,pmu.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
