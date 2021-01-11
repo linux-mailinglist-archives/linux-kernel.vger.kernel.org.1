@@ -2,96 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814D12F1819
+	by mail.lfdr.de (Postfix) with ESMTP id ED6EF2F181A
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388319AbhAKOYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:24:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26931 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388036AbhAKOYI (ORCPT
+        id S2388401AbhAKOYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:24:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388223AbhAKOYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:24:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610374962;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gI8XHNu0lkd3sJIe8skJ03bmA6HUK+N9Xsm4VZa0VaE=;
-        b=H5w0Jssfe0dlcxeRjSLmR9HOxAypiF9sT53nptMk/pCi7uNJogXvouMq7TZwm6Pr8Jlc6M
-        hXwit46XOUq4PQn+2Xe0TmnbxXaH1LgXjenmf4jCshYmEy5600tgFYgYVFtjhL5WqhHXby
-        BRRz1gr47qRVY55yMqGn8xiBvki3kiw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-285-umpc9rAtNXqUC3wIZ2CICA-1; Mon, 11 Jan 2021 09:22:37 -0500
-X-MC-Unique: umpc9rAtNXqUC3wIZ2CICA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE147107AD3A;
-        Mon, 11 Jan 2021 14:22:32 +0000 (UTC)
-Received: from trippy.localdomain (ovpn-113-111.rdu2.redhat.com [10.10.113.111])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B5D555C224;
-        Mon, 11 Jan 2021 14:22:25 +0000 (UTC)
-Message-ID: <41dc7795afda9f776d8cd0d3075f776cf586e97c.camel@redhat.com>
-Subject: Re: Old platforms: bring out your dead
-From:   Mark Salter <msalter@redhat.com>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Date:   Mon, 11 Jan 2021 09:22:25 -0500
-In-Reply-To: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
-Organization: Red Hat, Inc
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
+        Mon, 11 Jan 2021 09:24:09 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EB11C0617BB;
+        Mon, 11 Jan 2021 06:22:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=2/VIk9crXW9UNi9JKJAAW1ZeB4HVfXeS+awzGKpCxZA=; b=wgtWCy86hWACMvd5dQBjjTB85
+        0LLd4XkTdU7NKwuJ72Rqhpzzug5ziiF6yBj5ztfxNgfiZ5dqvxjhk56ausfKtfsH6+8kxycmKe0gV
+        6yJdG1eDb3JzyfcgM3lHnBGZWxw/M/HQvxaTYlGnVvbD0Hkv+VT0h4Jhb973geXFiSUnCQL7trDjx
+        /BQuZ9HUlOAQ+oZkWnUhVdyLzCVrb1yrWSxx+uECoqazl6OiNNYOTue0obt4oNCdQkoxWOQBw65+Q
+        sxLx6OLoRHYzeFbJt+Jb4mkHnKIpTyGr4XNRg/+Qav3FFfGyxSNxaqVYJ7znqfn9TjnzIQGqzS3p0
+        2TjNecK4g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46626)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kyy5l-00078l-FD; Mon, 11 Jan 2021 14:22:45 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kyy5l-0005JT-7v; Mon, 11 Jan 2021 14:22:45 +0000
+Date:   Mon, 11 Jan 2021 14:22:45 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Bjarni Jonasson <bjarni.jonasson@microchip.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
+Subject: Re: [PATCH v1 2/2] sfp: add support for 100 base-x SFPs
+Message-ID: <20210111142245.GW1551@shell.armlinux.org.uk>
+References: <20210111130657.10703-1-bjarni.jonasson@microchip.com>
+ <20210111130657.10703-3-bjarni.jonasson@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111130657.10703-3-bjarni.jonasson@microchip.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-01-08 at 23:55 +0100, Arnd Bergmann wrote:
-> * c6x: Added in 2011, this has seen very few updates since, but
->     Mark still Acks patches when they come. Like most other DSP platforms,
->     the model of running Linux on a DSP appears to have been obsoleted
->     by using Linux on ARM with on-chip DSP cores running bare-metal code.
+On Mon, Jan 11, 2021 at 02:06:57PM +0100, Bjarni Jonasson wrote:
+> Add support for 100Base-FX, 100Base-LX, 100Base-PX and 100Base-BX10 modules
+> This is needed for Sparx-5 switch.
+> 
+> Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
+> ---
+>  drivers/net/phy/sfp-bus.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/net/phy/sfp-bus.c b/drivers/net/phy/sfp-bus.c
+> index 58014feedf6c..b2a9ee3dd28e 100644
+> --- a/drivers/net/phy/sfp-bus.c
+> +++ b/drivers/net/phy/sfp-bus.c
+> @@ -265,6 +265,12 @@ void sfp_parse_support(struct sfp_bus *bus, const struct sfp_eeprom_id *id,
+>  	    br_min <= 1300 && br_max >= 1200)
+>  		phylink_set(modes, 1000baseX_Full);
+>  
+> +	/* 100Base-FX, 100Base-LX, 100Base-PX, 100Base-BX10 */
+> +	if (id->base.e100_base_fx || id->base.e100_base_lx)
+> +		phylink_set(modes, 100baseFX_Full);
+> +	if ((id->base.e_base_px || id->base.e_base_bx10) && br_nom == 100)
+> +		phylink_set(modes, 100baseFX_Full);
 
-Hi Arnd,
+Do you have any modules that identify as PX or BX10 modules? What if
+their range of speeds covers 100M - you're only checking the nominal
+speed here.
 
-So this has been on my mind for a while now. I no longer have working hw
-for c6x and TI hasn't been forthcoming with replacements. I'm totally fine
-with removing it from mainline. In any case, I'm not really in a position
-to go forward as maintainer.
+Note that this will likely conflict with changes I submitted over the
+weekend, and it really needs to be done _before_ the comment about
+"If we haven't discovered any modes", not below.
 
-Mark
-
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
