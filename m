@@ -2,79 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27C22F17FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:23:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBA52F1805
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:23:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731531AbhAKOWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:22:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42166 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727304AbhAKOWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:22:18 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610374892; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JuR0HuBMLIDnEYv5E22nWr8owemJ74DzkLUjmpc1fUw=;
-        b=uTNG2XeJedGaESO9SdJgAo+QP6NFhhtFGRGI2VjGWXe+u+AaFrSb2xTfqqIewR4iyBi9Xv
-        +dCepl6KmWHYj5Hi4tyjyQZjlZ8KJujGzMxzj5E42CrbV/IAz8WliOJ00BlsUABM4xTe6o
-        4CSBlbTJjogXqaPkcvtMqf4Vit0mG70=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 217F2B73F;
-        Mon, 11 Jan 2021 14:21:32 +0000 (UTC)
-Date:   Mon, 11 Jan 2021 15:21:31 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org, mcgrof@kernel.org,
-        yzaikin@google.com, adobriyan@gmail.com,
-        linux-fsdevel@vger.kernel.org, vbabka@suse.cz, wangle6@huawei.com
-Subject: Re: [PATCH v2] proc_sysctl: fix oops caused by incorrect command
- parameters.
-Message-ID: <20210111142131.GA22493@dhcp22.suse.cz>
-References: <20210108023339.55917-1-nixiaoming@huawei.com>
- <20210108092145.GX13207@dhcp22.suse.cz>
- <829bbba0-d3bb-a114-af81-df7390082958@huawei.com>
- <20210108114718.GA13207@dhcp22.suse.cz>
- <202101081152.0CB22390@keescook>
- <20210108201025.GA17019@dhcp22.suse.cz>
- <20210108175008.da3c60a6e402f5f1ddab2a65@linux-foundation.org>
- <bc098af4-c0cd-212e-d09d-46d617d0acab@huawei.com>
+        id S1733026AbhAKOXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:23:09 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:46732 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732824AbhAKOXI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 09:23:08 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10BEMPp4034887;
+        Mon, 11 Jan 2021 08:22:25 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610374945;
+        bh=DME9XORExNjNrwApyDZ4ui75afAeH4B61CwZ4kIZ+po=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=myIpT0hvXZCQ+pjVHUShP0V6uLWvNnMGLwf4uLqhQLiMY9JU8tNrNtGGWZCuTgbO3
+         OrgaJ7svo2ISXqIiBBSgaFnLFW+aTfPF6GL1fXOXz7rWWZTu0OQSEHHBSy3aQ786J2
+         PHMuChmQavRsjXvdQH3lexXZd1Rq5QZnpaPm4v10=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10BEMPVI031018
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 Jan 2021 08:22:25 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 11
+ Jan 2021 08:22:25 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 11 Jan 2021 08:22:25 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10BEMOMV019519;
+        Mon, 11 Jan 2021 08:22:25 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>
+CC:     Nishanth Menon <nm@ti.com>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 0/6] PCI: J7200/J721E PCIe bindings
+Date:   Mon, 11 Jan 2021 08:22:24 -0600
+Message-ID: <161037479685.21603.17479522264383929681.b4-ty@ti.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210105151421.23237-1-kishon@ti.com>
+References: <20210105151421.23237-1-kishon@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bc098af4-c0cd-212e-d09d-46d617d0acab@huawei.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 11-01-21 11:48:19, Xiaoming Ni wrote:
-[...]
-> patch3:
-> 	+++ b/fs/proc/proc_sysctl.c
-> 	@@ -1770,6 +1770,9 @@ static int process_sysctl_arg(char *param, char *val,
-> 							return 0;
-> 			}
+On Tue, 5 Jan 2021 20:44:15 +0530, Kishon Vijay Abraham I wrote:
+> Patch series adds DT nodes in order to get PCIe working in J7200.
+> Also includes couple of fixes for J721e.
 > 
-> 	+       if (!val)
-> 	+               return -EINVAL;
-> 	+
-> 			/*
-> 			 * To set sysctl options, we use a temporary mount of proc, look up the
-> 			 * respective sys/ file and write to it. To avoid mounting it when no
+> v1 of the patch series can be found @ [1]
+> v2 of the patch series can be found @ [2]
+> v3 of the patch series can be found @ [3]
 > 
-> sysctl log for patch3:
-> 	Setting sysctl args: `' invalid for parameter `hung_task_panic'
-[...]
-> When process_sysctl_arg() is called, the param parameter may not be the
-> sysctl parameter.
-> 
-> Patch3 or patch4, which is better?
+> [...]
 
-Patch3
+Hi Kishon Vijay Abraham I,
 
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
+
+[1/6] arm64: dts: ti: k3-j721e-main: Fix supported max outbound regions
+      commit: 0e3cfb868137cf7ced91d7dc709961000c0dae29
+[2/6] arm64: dts: ti: k3-j721e-main: Remove "syscon" nodes added for pcieX_ctrl
+      commit: edb96779f3bcbe348f82b458077de0fb96118233
+[3/6] arm64: dts: ti: k3-j7200-main: Add SERDES and WIZ device tree node
+      commit: 4c1b22a953d9f8af4d5c2f238fb74dc190d92f04
+[4/6] arm64: dts: ti: k3-j7200-main: Add PCIe device tree node
+      commit: 3276d9f53cf660f8ed60d98918170670d0ca6e54
+[5/6] arm64: dts: ti: k3-j7200-common-proc-board: Enable SERDES0
+      commit: 429c0259f17f4fdf9c0beb5423b0c8f6c2ea2e8c
+[6/6] arm64: dts: ti: k3-j7200-common-proc-board: Enable PCIe
+      commit: 3a6319df506f1a821abad2c71a580a2f7b78a304
+
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
 -- 
-Michal Hocko
-SUSE Labs
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
