@@ -2,106 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D745F2F24B3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F91F2F24B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405017AbhALAZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2405006AbhALAZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 11 Jan 2021 19:25:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44040 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404190AbhAKXnX (ORCPT
+        with ESMTP id S2404188AbhAKXnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 18:43:23 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B77EDC061795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 15:42:42 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id q205so427708oig.13
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 15:42:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=Byv4yeeKkAWUlNgWtR9WJhmRvDT7D9MJeHLwHQJ0UdU=;
-        b=Njto5ZPxhyf0Rn1c8M8Mt78kivEYcxQakmUjN8sOSvICZYE6RS4YA43/GGBN/EHIZW
-         jnCUFHtqH/XR1o+CbGUqoFiHBMWvt6TRa+o8T6CgLmsLxr/cRYZPZs01IotP5Y0OZbL1
-         Xn2QekLyRbAeex/t8xpxuKLvVOP1hi/LN7ko4zBC71PnmTW4IuBHyTdt7D7pfe0Ua9CI
-         e78w2HY4y2DRBMrCoLlpV2BzuuuDHosNDOfGfFYnAUFIPEKyeseIWiqxORTnhYC9Wlf8
-         7pi+oyM8DXBszGz083g5zXIOC/tkD8g6MqFnOxSabF/+TWFlcf3qNeBI7abnUWpF9yrI
-         isJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=Byv4yeeKkAWUlNgWtR9WJhmRvDT7D9MJeHLwHQJ0UdU=;
-        b=tUuAlbckegoeCnSlQ1wPls4wOddLA0d9hP8NSxh9ZYb6E2kZEcoeeJkQpXkZLRY90g
-         twnHyDFpbjGo5pwpwRux8dvK8/SfA51c/9d5Tt2pMuOkg7dMmDbDcz51IgeUi1l9d/LD
-         dyY0k3Ku81yjoQeArQP6naHnrEWKIf5fdQWMWPRSQvd42ixr4XCONHKgYKRniR0K9Bqn
-         nc+pwjibzfJR7gGgM12lkWfSlLb2PaZNjh4p6btzMtFIj98OjSTg8e4/dIHEkV+97gml
-         AHw7tFhMglP3nk0Vhh0tQFOezThjbyrdR8Kl7f692tJ0ji+Vz8pVjIqFdsB0F3XS7Hdn
-         KJNA==
-X-Gm-Message-State: AOAM533b856lQHJoaAKipjuJofPO/Omn2FU1wUFLkbyVyLWC0u5TeqjN
-        G2Sgxwf74y97edNZ5UQiWEvbcA==
-X-Google-Smtp-Source: ABdhPJxN0FcCUJvUqpV9ny4+A645+PuCqUPRLJFm/k7zZ382PyRzeDZcjJKgwbpYX6CKhPDTVKgqlg==
-X-Received: by 2002:aca:cc01:: with SMTP id c1mr774890oig.18.1610408562014;
-        Mon, 11 Jan 2021 15:42:42 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id n16sm236777oop.9.2021.01.11.15.42.40
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 11 Jan 2021 15:42:41 -0800 (PST)
-Date:   Mon, 11 Jan 2021 15:42:27 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Saravana Kannan <saravanak@google.com>
-cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Thierry Reding <treding@nvidia.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vincent Huang <vincent.huang@tw.synaptics.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Andrew Duggan <aduggan@synaptics.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Subject: Re: 5.11-rc device reordering breaks ThinkPad rmi4 suspend
-In-Reply-To: <CAGETcx_odme9ufTps6tctOW+zfOox6iXgTx_9GAjoYn=+jy1BQ@mail.gmail.com>
-Message-ID: <alpine.LSU.2.11.2101111539070.2728@eggly.anvils>
-References: <alpine.LSU.2.11.2101102010200.25762@eggly.anvils> <X/xV7ZV5jzI7RvAe@ulmo> <CAJZ5v0iriRkEN8dVJ9gE3+Wyn_96=SNhav1QaQ59i9O0genTNQ@mail.gmail.com> <X/x49o3EtrUh6vuO@ulmo> <CAJZ5v0hyvdcKsPJ7U5WioXb1c8Pg_F1BLC_dbKesFBLTUSiVaw@mail.gmail.com>
- <CAGETcx_odme9ufTps6tctOW+zfOox6iXgTx_9GAjoYn=+jy1BQ@mail.gmail.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Mon, 11 Jan 2021 18:43:18 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02660C061786;
+        Mon, 11 Jan 2021 15:42:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=nmQpwEsqnF3hFhAlOz5aGVeI2N3knb9M3qAY/ha7fg0=; b=q0JiFKG0nzMUwXbti8rsqTSBl3
+        tb97qGmjGZVa74ROy1ON7I4/f6azbxWGDHgFPfyLk75rVgzbTd/BydFyXB7iTrYmTcE48+XJMf1iK
+        nTv7liPCZD/9EB0MYHkbfvHZ08nAbvsV1+jrTMJBnonpmwXs7Y6nN27m4ztye1T8xeNJE8E5sQ396
+        1G9n8V9Z2vVJdMS/u22GK/jRH5/1bnidCZoaVVfI7QQq6bQZJok/Vkt18zpAmcsGmA4FaN+OQqUUn
+        g4DmoyBsiMIi2fmjSdIcjMW9CpueLF0YA7QcjYNrU2lXp9Pv8quxfXIFd1LknBvvYaokSMZBOZx99
+        Tv93HqRA==;
+Received: from [2601:1c0:6280:3f0::79df]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kz6pW-0001OB-Lt; Mon, 11 Jan 2021 23:42:35 +0000
+Subject: Re: [PATCH v1 (RFC)] docs: discourage users from using
+ bugzilla.kernel.org
+To:     Thorsten Leemhuis <linux@leemhuis.info>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210110121033.130504-1-linux@leemhuis.info>
+ <6ca51584-1739-e532-d40e-e4447065ea1e@infradead.org>
+ <dc2b0eaa-26e9-f686-ae7b-7e777cb3d55f@leemhuis.info>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5ed98052-28ea-4701-10d4-b7fde106c1fd@infradead.org>
+Date:   Mon, 11 Jan 2021 15:42:28 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <dc2b0eaa-26e9-f686-ae7b-7e777cb3d55f@leemhuis.info>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Jan 2021, Saravana Kannan wrote:
+On 1/11/21 10:55 AM, Thorsten Leemhuis wrote:
+> Am 11.01.21 um 19:14 schrieb Randy Dunlap:
+>> On 1/10/21 4:10 AM, Thorsten Leemhuis wrote:
+>>> * About 66 of those ~200 components will assign bugs to email addresses
+>>>   that look valid, but 125 of them end with @kernel-bugs.osdl.org or
+>>>   @kernel-bugs.kernel.org. Those domains do not exist anymore, mails
+>>>   sent there bounce ('Unrouteable address'). It's possible that the
+>>>   server might be rewriting those domain names and nevertheless
+>>>   delivers new reports and comments by mails to some human; but it
+>>>   seems more like they never get mailed to anyone and thus just linger
+>>>   in the database; no wonder quite a few of bugs filed against such
+>>>   components never get a single reply (see below).
+>>
+>> Those @kernel-bugs email addresses should not be a problem:
+>>   https://korg.docs.kernel.org/bugzilla.html#real-assignees-vs-virtual-assignees
 > 
-> I happen to have an X1 Carbon (different gen though) lying around and
-> I poked at its /sys folders. None of the devices in the rmi4_smbus are
-> considered the grandchildren of the i2c device. I think the real
-> problem is rmi_register_transport_device() [1] not setting up the
-> parent for any of the new devices it's adding.
-> 
-> Hugh, can you try this patch?
+> Ahh, interesting, many many thx. Stupid me also forgot to put Konstantin
+> on the CC list (I had planned to do that, but forgot when I actually
+> sent the patch :-/ ), which likely would have pointed be there as well.
 
-Just tried, but no, this patch does not help; but I bet
-you're along the right lines, and something as simple will do it.
+Yes, since I got that from him. :)
 
+>> AFAIK, USB bugs go to linux-usb@vger.kernel.org,
 > 
-> diff --git a/drivers/input/rmi4/rmi_bus.c b/drivers/input/rmi4/rmi_bus.c
-> index 24f31a5c0e04..50a0134b6901 100644
-> --- a/drivers/input/rmi4/rmi_bus.c
-> +++ b/drivers/input/rmi4/rmi_bus.c
-> @@ -90,6 +90,7 @@ int rmi_register_transport_device(struct
-> rmi_transport_dev *xport)
+> Those seem to use the approach the link above describes.
 > 
->         rmi_dev->dev.bus = &rmi_bus_type;
->         rmi_dev->dev.type = &rmi_device_type;
-> +       rmi_dev->dev.parent = xport->dev;
+>> SCSI bugs go to linux-scsi@vger.kernel.org.
 > 
->         xport->rmi_dev = rmi_dev;
+> That's one of the email address that are in the database for real, which
+> were mentioned in my patch description as 'looking valid':
+> https://bugzilla.kernel.org/describecomponents.cgi?product=IO%2FStorage
 > 
-> -Saravana
+>> netdev didn't want bugs sent there automatically IIRC, so a
+>> human takes care of doing that if warranted.
 > 
-> [1] - https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/input/rmi4/rmi_bus.c#n74
+> Ahh, good to know, it's really not obvious there are some humans working
+> there to that take care of this. That and all those bugs that never get
+> a reply look really like things are not working well.
+> 
+>> Andrew Morton takes MM bugs and Cc:s them to linux-mm mailing list
+>> and then asks for discussion to continue on the mailing list.
+> 
+> Then what use it bugzilla here? Wouldn't it be better for people to go
+> straight to the list?
+
+Might as well, yes.
+
+>> We
+> 
+> Who is "we"? We as in "the kernel community"? Or is there actually a
+
+Anyone who is up for it -- yes, mostly "community."
+
+> smaller group of people you are referring to which is actively
+> maintaining the list of products and components on bugzilla.kernel.org?
+
+nope.
+
+> Just trying to understand things better here, as there are other things
+> that look strange to me and were mentioned in the patch description. For
+> example: Why are there only 200 products and components on
+> bugzilla.kernel.org (some of them for historic things like the
+> ac-kernels) while the MAINTAINERS file has more than 2200 entries?
+
+I wouldn't want a separate entry for each  SPI/GPIO/regulator/USB etc.
+device. That's just IMO...
+
+>> could/should probably see if we can add more project-specific
+>> mailing lists to the automatic reporting 
+> 
+> Guess that would mean taking to a lot of maintainers/mailing list admins
+> if they are okay with that. Who would do that?
+
+whoever is motivated to do so.
+
+>> -- but probably not LKML.
+>> Otherwise some bug reports might never be heard about.
+> 
+> Yeah, agreed.
+> 
+> FWIW: I don't care too much about this whole thing, the whole idea for
+> the approach I'm currently driving forward started when I did regression
+> tracking in 2017. Back then I noticed quite a lot of bug reports on
+> bugzilla.kernel.org never got a single reply, even if they were good and
+> looked valid. That's why I brought this forward on the maintainers
+> summit (https://lwn.net/Articles/738216/ ) and there it was discussed to
+> basically go the route I'm taking currently. But I'm totally find to
+> adjust that route if there are good reasons, especially as that
+> discussion happened some time ago.
+
+
+cheers.
+-- 
+~Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://www.kernel.org/doc/html/latest/process/submit-checklist.html
