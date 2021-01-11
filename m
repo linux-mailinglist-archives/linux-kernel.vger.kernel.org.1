@@ -2,110 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623DB2F11C9
+	by mail.lfdr.de (Postfix) with ESMTP id D92292F11CA
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730131AbhAKLqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:46:53 -0500
-Received: from ssl.serverraum.org ([176.9.125.105]:42329 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729892AbhAKLqw (ORCPT
+        id S1730148AbhAKLq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:46:59 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:44092 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730133AbhAKLq7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:46:52 -0500
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Mon, 11 Jan 2021 06:46:59 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610365595; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=rnRdrDWBNH7ytJ2L7yW9zQIx4N3YeZuP+scDtavI6Qs=; b=UBqRsy8Z0ezCU+O9WO4U6S/zlmXp0gc1Zo+nNZTIe0LMP4Ysi2COQVy2U/QHVx8TQ753zki3
+ Tzp8xYRU0ZNfTfB7lhKXHi1wwyWrrOd7Vhw5kHoljSBS2f7GGdwO+H1B6K2TW5b+QLsbYd7a
+ HvHNgNilCnbiIGNH7kHVG6iK6MU=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5ffc3a7d4dcca124755058c8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 11:46:05
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 659ECC433C6; Mon, 11 Jan 2021 11:46:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from localhost (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id DE42723E4A;
-        Mon, 11 Jan 2021 12:46:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1610365570;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=D5g8T7+ZpKplsj2ntYskL6wMxURRtOLCbLA2e3+ppjI=;
-        b=THHpSn2aoROHYHixeJt3f6tgXVG8KsnXr0w4V9c6ujOkzOsiwn0OvBpDlwebxwUpWC+zOL
-        XAFSpEh4/fM4OVag9yaJMViCFcq1ndjdoCJkZMji9pDXmFsQRT/TZMzfySF7mfHCSdzQ1K
-        IIqLbLm40JdrMaKyO2391I8aY4KuCqg=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH RESEND v3] arm64: dts: ls1028a: fix FlexSPI clock
-Date:   Mon, 11 Jan 2021 12:45:55 +0100
-Message-Id: <20210111114555.28903-1-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam: Yes
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DD103C433CA;
+        Mon, 11 Jan 2021 11:46:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DD103C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neeraj Upadhyay <neeraju@codeaurora.org>
+Subject: [PATCH] rcu: Correct cpu offline trace in rcutree_dying_cpu
+Date:   Mon, 11 Jan 2021 17:15:58 +0530
+Message-Id: <1610365558-8330-1-git-send-email-neeraju@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have a proper driver for the FlexSPI interface use it. This
-will fix SCK frequency switching on Layerscape SoCs.
+Correctly trace whether the outgoing cpu blocks current gp in
+rcutree_dying_cpu().
 
-This was tested on the Kontron sl28 board.
-
-Signed-off-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 ---
-Hi Shawn,
+ kernel/rcu/tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-this is the last remaining piece of my previous series [1]. Now with the
-actual clock driver in v5.11 and the clockgen constants patches in your
-for-next branch, there are no further dependencies.
-
-[1] https://lore.kernel.org/lkml/20201108185113.31377-1-michael@walle.cc/
-
-Changlog from the old series:
-Changes since v2:
- - use device tree constants for clockgen
- - also use &fspi_clk for fspi_en clock
-
-Changes since v1:
- - none
-
- arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-index e00acad9a5c1..0a5923e96d7f 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-@@ -206,9 +206,20 @@
- 		};
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 097990a..1f4bff4 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2364,7 +2364,7 @@ int rcutree_dying_cpu(unsigned int cpu)
  
- 		dcfg: syscon@1e00000 {
--			compatible = "fsl,ls1028a-dcfg", "syscon";
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			compatible = "fsl,ls1028a-dcfg", "syscon", "simple-mfd";
- 			reg = <0x0 0x1e00000 0x0 0x10000>;
-+			ranges = <0x0 0x0 0x1e00000 0x10000>;
- 			little-endian;
-+
-+			fspi_clk: clock-controller@900 {
-+				compatible = "fsl,ls1028a-flexspi-clk";
-+				reg = <0x900 0x4>;
-+				#clock-cells = <0>;
-+				clocks = <&clockgen QORIQ_CLK_HWACCEL 0>;
-+				clock-output-names = "fspi_clk";
-+			};
- 		};
+ 	blkd = !!(rnp->qsmask & rdp->grpmask);
+ 	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
+-			       blkd ? TPS("cpuofl") : TPS("cpuofl-bgp"));
++			       blkd ? TPS("cpuofl-bgp") : TPS("cpuofl"));
+ 	return 0;
+ }
  
- 		rst: syscon@1e60000 {
-@@ -326,8 +337,7 @@
- 			      <0x0 0x20000000 0x0 0x10000000>;
- 			reg-names = "fspi_base", "fspi_mmap";
- 			interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
--			clocks = <&clockgen QORIQ_CLK_HWACCEL 0>,
--				 <&clockgen QORIQ_CLK_HWACCEL 0>;
-+			clocks = <&fspi_clk>, <&fspi_clk>;
- 			clock-names = "fspi_en", "fspi";
- 			status = "disabled";
- 		};
 -- 
-2.20.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
