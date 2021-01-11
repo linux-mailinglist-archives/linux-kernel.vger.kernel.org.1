@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60C92F15AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9A8A2F1684
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387675AbhAKNn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:43:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58908 "EHLO mail.kernel.org"
+        id S2388156AbhAKNxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:53:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730792AbhAKNL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:11:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF7EB2255F;
-        Mon, 11 Jan 2021 13:11:43 +0000 (UTC)
+        id S1728952AbhAKNI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:08:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23206229C4;
+        Mon, 11 Jan 2021 13:07:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370704;
-        bh=6R25EZ9NDxWxuLAw08CwEgyMKSZFbQhVTswTkVPgFZ0=;
+        s=korg; t=1610370466;
+        bh=SoE5L+xLOHSO4s0H0GXXzM6KwEtcX67+LjFiMjJRfCo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VErvCGozU8V0l5YTIfLkIGeo+Cnzq1bcd5iYbjKKuXH6HJZV33TXfkzOjuk74oLI5
-         6sHwf9aPoaShR0qMosa74oGCcIkMv/XfjOubXzgd/W+pjJ+iLX+sjmg9MI83njoQJ4
-         bK4AVFtgGYNYwOUBDMd2kGLQGkkzhzTWb6j3LIPI=
+        b=q1ixy3LIqOkjFZh2awP2OmexMP68fMToX3czJd9NG9hU5BVT8g2CASoJwFGUbasHY
+         ploq3AYsgV/n6S11OZG5Fw1XnecpbHmZiKCtfAG0FK9950AziPiZ0xTYLbvodXHQi7
+         14eTC4lC1b4GN0unI+dExsOcXIgjQSivwdALDlf8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 31/92] tun: fix return value when the number of iovs exceeds MAX_SKB_FRAGS
-Date:   Mon, 11 Jan 2021 14:01:35 +0100
-Message-Id: <20210111130040.648412742@linuxfoundation.org>
+        stable@vger.kernel.org, Guillaume Nault <gnault@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 27/77] ipv4: Ignore ECN bits for fib lookups in fib_compute_spec_dst()
+Date:   Mon, 11 Jan 2021 14:01:36 +0100
+Message-Id: <20210111130037.716168401@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
-References: <20210111130039.165470698@linuxfoundation.org>
+In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
+References: <20210111130036.414620026@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,42 +39,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunjian Wang <wangyunjian@huawei.com>
+From: Guillaume Nault <gnault@redhat.com>
 
-[ Upstream commit 950271d7cc0b4546af3549d8143c4132d6e1f138 ]
+[ Upstream commit 21fdca22eb7df2a1e194b8adb812ce370748b733 ]
 
-Currently the tun_napi_alloc_frags() function returns -ENOMEM when the
-number of iovs exceeds MAX_SKB_FRAGS + 1. However this is inappropriate,
-we should use -EMSGSIZE instead of -ENOMEM.
+RT_TOS() only clears one of the ECN bits. Therefore, when
+fib_compute_spec_dst() resorts to a fib lookup, it can return
+different results depending on the value of the second ECN bit.
 
-The following distinctions are matters:
-1. the caller need to drop the bad packet when -EMSGSIZE is returned,
-   which means meeting a persistent failure.
-2. the caller can try again when -ENOMEM is returned, which means
-   meeting a transient failure.
+For example, ECT(0) and ECT(1) packets could be treated differently.
 
-Fixes: 90e33d459407 ("tun: enable napi_gro_frags() for TUN/TAP driver")
-Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Link: https://lore.kernel.org/r/1608864736-24332-1-git-send-email-wangyunjian@huawei.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+  $ ip netns add ns0
+  $ ip netns add ns1
+  $ ip link add name veth01 netns ns0 type veth peer name veth10 netns ns1
+  $ ip -netns ns0 link set dev lo up
+  $ ip -netns ns1 link set dev lo up
+  $ ip -netns ns0 link set dev veth01 up
+  $ ip -netns ns1 link set dev veth10 up
+
+  $ ip -netns ns0 address add 192.0.2.10/24 dev veth01
+  $ ip -netns ns1 address add 192.0.2.11/24 dev veth10
+
+  $ ip -netns ns1 address add 192.0.2.21/32 dev lo
+  $ ip -netns ns1 route add 192.0.2.10/32 tos 4 dev veth10 src 192.0.2.21
+  $ ip netns exec ns1 sysctl -wq net.ipv4.icmp_echo_ignore_broadcasts=0
+
+With TOS 4 and ECT(1), ns1 replies using source address 192.0.2.21
+(ping uses -Q to set all TOS and ECN bits):
+
+  $ ip netns exec ns0 ping -c 1 -b -Q 5 192.0.2.255
+  [...]
+  64 bytes from 192.0.2.21: icmp_seq=1 ttl=64 time=0.544 ms
+
+But with TOS 4 and ECT(0), ns1 replies using source address 192.0.2.11
+because the "tos 4" route isn't matched:
+
+  $ ip netns exec ns0 ping -c 1 -b -Q 6 192.0.2.255
+  [...]
+  64 bytes from 192.0.2.11: icmp_seq=1 ttl=64 time=0.597 ms
+
+After this patch the ECN bits don't affect the result anymore:
+
+  $ ip netns exec ns0 ping -c 1 -b -Q 6 192.0.2.255
+  [...]
+  64 bytes from 192.0.2.21: icmp_seq=1 ttl=64 time=0.591 ms
+
+Fixes: 35ebf65e851c ("ipv4: Create and use fib_compute_spec_dst() helper.")
+Signed-off-by: Guillaume Nault <gnault@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/tun.c |    2 +-
+ net/ipv4/fib_frontend.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/tun.c
-+++ b/drivers/net/tun.c
-@@ -1469,7 +1469,7 @@ static struct sk_buff *tun_napi_alloc_fr
- 	int i;
- 
- 	if (it->nr_segs > MAX_SKB_FRAGS + 1)
--		return ERR_PTR(-ENOMEM);
-+		return ERR_PTR(-EMSGSIZE);
- 
- 	local_bh_disable();
- 	skb = napi_get_frags(&tfile->napi);
+--- a/net/ipv4/fib_frontend.c
++++ b/net/ipv4/fib_frontend.c
+@@ -302,7 +302,7 @@ __be32 fib_compute_spec_dst(struct sk_bu
+ 			.flowi4_iif = LOOPBACK_IFINDEX,
+ 			.flowi4_oif = l3mdev_master_ifindex_rcu(dev),
+ 			.daddr = ip_hdr(skb)->saddr,
+-			.flowi4_tos = RT_TOS(ip_hdr(skb)->tos),
++			.flowi4_tos = ip_hdr(skb)->tos & IPTOS_RT_MASK,
+ 			.flowi4_scope = scope,
+ 			.flowi4_mark = vmark ? skb->mark : 0,
+ 		};
 
 
