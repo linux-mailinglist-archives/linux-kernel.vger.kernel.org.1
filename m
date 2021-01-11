@@ -2,116 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88ADD2F2232
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:51:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03F982F2236
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:52:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387666AbhAKVvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 16:51:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726499AbhAKVvG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 16:51:06 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3107EC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:50:26 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id x18so228325pln.6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:50:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=s0SkaAiQZlaYhLV8PnGXG9fGpLXxDyEs5jIvTxo5C0U=;
-        b=HY48C+vkUOoOXKvSBec6tZF+71ijEm+10AJ0jVJqwbEPva54ohG1hYa6PVYmQixg9z
-         bHywKXRMXoI0YwIXT4HnMMuCl0T+O1ClUZD+2wFza7Lsb+cky1HiPFY2dFznrOLmvwMa
-         mhCBanWLe0PoEhg/fvJdvtkkiA0vV0Fhg6J6ipuFTtt8b2EeTji8vYWq5y/yK5bxTjVS
-         So5e94k4DnCfTXQksfncfxPq8Z7rhYHvdczcItwVGoDi7C/j2SbebfXQhQO2AOAGGc4W
-         eH2S9f29NZB5+BjKOXs5s3ijR4W8j24Hdp6Hwd0Fq3P7bpXpB0W8pKa/b41zzgEW2evU
-         VYNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=s0SkaAiQZlaYhLV8PnGXG9fGpLXxDyEs5jIvTxo5C0U=;
-        b=gDHXr/tBQK7UW9BK1elW6WpUVJguwYcJ0MZ1c/o5Mg5+eZbQYKuWL8U0IUsNoMXejJ
-         4R3Y0hLhmahN2hViO/Y0JBLZHMAF83WgBnLdFRa/A5PVXLEcQqv/8qLvN5n70uxLWb0A
-         UftoaJrTLqGYEFC6g/WUXY05NsSxbcQ2PiUBoG6rVMCLcUFfnwGsVR0DTBCUe7cRcssm
-         7XVejS0gXsI6DhDurZnDBAuxoIh/BnYW95Q7DN28hFYYWiCNl2WcAWYoIKkAtSrRDelE
-         8L32aCEgk8ISCrUxNSu1FIhIAVhmThjoXcDutdS1mZI6xqfqGfuJ028cIzP37D2UP+zl
-         85Cg==
-X-Gm-Message-State: AOAM533+cTNRPmlOrdjtnXxnV3+nclaQ0I8b5Cle2IRtt6qqw/cGCn+l
-        5IbOi7OPNgLj75yGJN8WJsp/3J/GKh8AvQ==
-X-Google-Smtp-Source: ABdhPJwACfaWjfASrS3k8kPK4dLbGEugjJw7pkf6DZz1Qej0wtaNMjP457NQvik56OuYH+TqragH8Q==
-X-Received: by 2002:a17:90a:8b08:: with SMTP id y8mr941825pjn.42.1610401825693;
-        Mon, 11 Jan 2021 13:50:25 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id k64sm612901pfd.75.2021.01.11.13.50.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 13:50:25 -0800 (PST)
-Date:   Mon, 11 Jan 2021 14:50:23 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     peng.fan@nxp.com
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        o.rempel@pengutronix.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        paul@crapouillou.net, matthias.bgg@gmail.com, agross@kernel.org,
-        patrice.chotard@st.com
-Subject: Re: [PATCH V5 7/8] remoteproc: imx_rproc: ignore mapping vdev regions
-Message-ID: <20210111215023.GJ144935@xps15>
-References: <20201229033019.25899-1-peng.fan@nxp.com>
- <20201229033019.25899-8-peng.fan@nxp.com>
+        id S2388407AbhAKVve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 16:51:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726499AbhAKVvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 16:51:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A73A22CAF;
+        Mon, 11 Jan 2021 21:50:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610401852;
+        bh=sllTsw4+hrXQqGdh21Tld3kVSTGbU8J1qMWj+YcynXw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=p9v7njyZ/8ErPcX1wGdtW1hqJH0wGQJs1j8k5cJSg8bg6iJIsuaO9RGXbgC/pAH5I
+         n/X5p40MXYUTKeD9I7fGKLO/DRq3iWJte919kinnU6x/MyntdtWEF+/vGWGScNIPTy
+         +mez/BlAwxrMFoHoilMKTGHXM+QMLcTProeqbAcyWhVnW13X5+qCoces7BG3varICT
+         qkKfQJhqHl661o3ny1RnVVRUGUqzeSv//ZwuGbvk68IBtw1Iq1MlFXiaR3ZWmyv8xS
+         tGg+q9AXwXBP1i7Q7+Btp94ploq7Px/W2zYNkPkQiYCm1iHCyYCARbgi6Q3yOhV1kY
+         2dYHtUbays3pw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 198823522A7B; Mon, 11 Jan 2021 13:50:52 -0800 (PST)
+Date:   Mon, 11 Jan 2021 13:50:52 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
+Message-ID: <20210111215052.GA19589@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201226025117.2770-1-jiangshanlai@gmail.com>
+ <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net>
+ <87o8hv7pnd.fsf@nanos.tec.linutronix.de>
+ <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net>
+ <X/yH9+MGa1JCNZ8x@hirez.programming.kicks-ass.net>
+ <20210111180907.GE2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201229033019.25899-8-peng.fan@nxp.com>
+In-Reply-To: <20210111180907.GE2743@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 11:30:18AM +0800, peng.fan@nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
+On Mon, Jan 11, 2021 at 10:09:07AM -0800, Paul E. McKenney wrote:
+> On Mon, Jan 11, 2021 at 06:16:39PM +0100, Peter Zijlstra wrote:
+> > 
+> > While thinking more about this, I'm thinking a big part of the problem
+> > is that we're not dinstinguishing between geniuine per-cpu kthreads and
+> > kthreads that just happen to be per-cpu.
+> > 
+> > Geniuine per-cpu kthreads are kthread_bind() and have PF_NO_SETAFFINITY,
+> > but sadly a lot of non-per-cpu kthreads, that might happen to still be
+> > per-cpu also have that -- again workqueue does that even to it's unbound
+> > workers :-(
+> > 
+> > Now, anything created by smpboot, is created through
+> > kthread_create_on_cpu() and that additionally sets to_kthread(p)->flags
+> > KTHREAD_IS_PER_CPU.
+> > 
+> > And I'm thinking that might be sufficient, if we modify
+> > is_per_cpu_kthread() to check that, then we only match smpboot threads
+> > (which include the hotplug and stopper threads, but notably not the idle
+> > thread)
+> > 
+> > Sadly it appears like io_uring() uses kthread_create_on_cpu() without
+> > then having any hotplug crud on, so that needs additinoal frobbing.
+> > 
+> > Also, init_task is PF_KTHREAD but doesn't have a struct kthread on.. and
+> > I suppose bound workqueues don't go through this either.
+> > 
+> > Let me rummage around a bit...
+> > 
+> > This seems to not insta-explode... opinions?
 > 
-> vdev regions are vdev0vring0, vdev0vring1, vdevbuffer and similar.
-> They are handled by remoteproc common code, no need to map in imx
-> rproc driver.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/remoteproc/imx_rproc.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-> index f80428afb8a7..e62a53ee128e 100644
-> --- a/drivers/remoteproc/imx_rproc.c
-> +++ b/drivers/remoteproc/imx_rproc.c
-> @@ -417,6 +417,9 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
->  		struct resource res;
->  
->  		node = of_parse_phandle(np, "memory-region", a);
-> +		/* Not map vdev region */
-> +		if (!strcmp(node->name, "vdev"))
-> +			continue;
+> It passes quick tests on -rcu both with and without the rcutorture fixes,
+> which is encouraging.  I will start a more vigorous test in about an hour.
 
-I am very confused and because I don't see an example for the DT in the
-bindings document I have to guess what is going on.  
+And 672 ten-minute instances of RUDE01 passed with this patch applied
+and with my rcutorture patch reverted.  So looking good, thank you!!!
 
-So I am guessing that you have laid out the memory regions for the vrings
-and the vdev0buffer in the DT "memory-region".
-
-For the vrings I don't see the allocation of a carveout, which means that you
-will take the memory out of the DMA pool and the reserve memory will be wasted.
-
-For the vdev0buffer, what you have will work *only* if that entry is the
-first one in the list of memory regions, as we agreed here [2].
-
-[1]. https://elixir.bootlin.com/linux/v5.11-rc3/source/drivers/remoteproc/remoteproc_core.c#L321
-[2]. https://patchwork.kernel.org/project/linux-remoteproc/patch/20200722131543.7024-1-peng.fan@nxp.com/
-
->  		err = of_address_to_resource(node, 0, &res);
->  		if (err) {
->  			dev_err(dev, "unable to resolve memory region\n");
-> -- 
-> 2.28.0
-> 
+							Thanx, Paul
