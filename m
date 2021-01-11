@@ -2,95 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AEC2F0F93
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:00:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 557122F0F9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:01:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728831AbhAKJ65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 04:58:57 -0500
-Received: from mail-ej1-f49.google.com ([209.85.218.49]:33695 "EHLO
-        mail-ej1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728179AbhAKJ65 (ORCPT
+        id S1728875AbhAKKAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:00:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43117 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725843AbhAKKAm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 04:58:57 -0500
-Received: by mail-ej1-f49.google.com with SMTP id b9so23949715ejy.0;
-        Mon, 11 Jan 2021 01:58:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=udVCXM7Wn35aQirz5a19QL8QpKzWmV0LS9M/curg0D0=;
-        b=hewb9nzUIuPy/0EnWdpiHotg1K2M4IuKAsiXEqsP6AznGy8pd7hJEJc3G4CRtuR1gE
-         1jCQtTZw58KkgZ0arMyaYC/Jd9sboJJpYvuVC3u5Ts7HpG1GmKLSnRRWi7HqxhsCwR5Q
-         p36li4Hdk/1n8kDjTjADHU7vdIfilyCRdQsdt0DWku1ZDsV23a5z6VOmf3FiJQFjmNm1
-         cixzdH2HiXlrJ3RJW91END9fcK3nrYsx1q0lYU52ApqALQcli0Fl7/7c2+Q7R6HDotYP
-         QPU4UMeA70AUmQOOYIp5x2QhPNQ3kkGi2n0lXfrInLGiuKUbuYeR/5IxYeZtdoL3ukaT
-         Z/qg==
-X-Gm-Message-State: AOAM530HVVDrnYXtSRUUQOv3A71vIEHKd1xAX4rpXuWZTkRNLWnteigM
-        m6k4BhXoAK8yw7ZiN8HxCBCL4CbU42sdXg==
-X-Google-Smtp-Source: ABdhPJyVCsq5rTpUoTohT6CO72JxfdIzcL6xyKG3YEeMy01WtRt4r8yKJY30OCuOioOtV5QLCMAfsA==
-X-Received: by 2002:a17:906:edb2:: with SMTP id sa18mr9801943ejb.264.1610359094509;
-        Mon, 11 Jan 2021 01:58:14 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id r21sm7390769eds.91.2021.01.11.01.58.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 01:58:13 -0800 (PST)
-Subject: Re: [PATCH v2 2/8] serial: stm32: fix code cleaning warnings and
- checks
-To:     Erwan Le Ray <erwan.leray@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Valentin Caron <valentin.caron@foss.st.com>
-References: <20210106162203.28854-1-erwan.leray@foss.st.com>
- <20210106162203.28854-3-erwan.leray@foss.st.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <72c81157-4bd1-6a3e-2415-92a2fb29ab6d@kernel.org>
-Date:   Mon, 11 Jan 2021 10:58:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 11 Jan 2021 05:00:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610359154;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jycj1y2jo8xQIoybhpepcY8teXkRK2s1VZyqJsElOSc=;
+        b=OppnU9Yaef+qdAb+U0kF6IHC82WwiNbplZtmPn7uQEnNzyW+DEKxYSq72LvWrRvZBD0Yiu
+        nyxxA7vtjypAxDr598X6NLf8ftijz3ymfqxj0QhMTgMFsdOWWQ0NT+RRp/7jKUvmogpSNR
+        hZ9gCGyaFOU6r+G7Q2B3yHX4Ixqf0GI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-334-4oUB2T-EMwiUbwEH7bjctg-1; Mon, 11 Jan 2021 04:59:11 -0500
+X-MC-Unique: 4oUB2T-EMwiUbwEH7bjctg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 34708107ACF7;
+        Mon, 11 Jan 2021 09:59:09 +0000 (UTC)
+Received: from T590 (ovpn-14-16.pek2.redhat.com [10.72.14.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 700755D9F4;
+        Mon, 11 Jan 2021 09:58:58 +0000 (UTC)
+Date:   Mon, 11 Jan 2021 17:58:54 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Christoph Hellwig <hch@lst.de>, Tejun Heo <tj@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Bart Van Assche <bvanassche@acm.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@intel.com
+Subject: Re: [percpu_ref]  2b0d3d3e4f:  reaim.jobs_per_min -18.4% regression
+Message-ID: <20210111095854.GA4155851@T590>
+References: <20210110143247.GA6259@xsang-OptiPlex-9020>
 MIME-Version: 1.0
-In-Reply-To: <20210106162203.28854-3-erwan.leray@foss.st.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210110143247.GA6259@xsang-OptiPlex-9020>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06. 01. 21, 17:21, Erwan Le Ray wrote:
-> --- a/drivers/tty/serial/stm32-usart.c
-> +++ b/drivers/tty/serial/stm32-usart.c
-...
-> @@ -973,18 +971,17 @@ static int stm32_init_port(struct stm32_port *stm32port,
->   	struct resource *res;
->   	int ret;
->   
-> +	ret = platform_get_irq(pdev, 0);
-> +	if (ret <= 0)
-> +		return ret ? : -ENODEV;
-> +
->   	port->iotype	= UPIO_MEM;
->   	port->flags	= UPF_BOOT_AUTOCONF;
->   	port->ops	= &stm32_uart_ops;
->   	port->dev	= &pdev->dev;
->   	port->fifosize	= stm32port->info->cfg.fifosize;
->   	port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_STM32_CONSOLE);
-> -
-> -	ret = platform_get_irq(pdev, 0);
-> -	if (ret <= 0)
-> -		return ret ? : -ENODEV;
->   	port->irq = ret;
+On Sun, Jan 10, 2021 at 10:32:47PM +0800, kernel test robot wrote:
+> 
+> Greeting,
+> 
+> FYI, we noticed a -18.4% regression of reaim.jobs_per_min due to commit:
+> 
+> 
+> commit: 2b0d3d3e4fcfb19d10f9a82910b8f0f05c56ee3e ("percpu_ref: reduce memory footprint of percpu_ref in fast path")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> 
+> in testcase: reaim
+> on test machine: 192 threads Intel(R) Xeon(R) Platinum 9242 CPU @ 2.30GHz with 192G memory
+> with following parameters:
+> 
+> 	runtime: 300s
+> 	nr_task: 100%
+> 	test: short
+> 	cpufreq_governor: performance
+> 	ucode: 0x5002f01
+> 
+> test-description: REAIM is an updated and improved version of AIM 7 benchmark.
+> test-url: https://sourceforge.net/projects/re-aim-7/
+> 
+> In addition to that, the commit also has significant impact on the following tests:
+> 
+> +------------------+---------------------------------------------------------------------------+
+> | testcase: change | vm-scalability: vm-scalability.throughput -2.8% regression                |
+> | test machine     | 192 threads Intel(R) Xeon(R) Platinum 9242 CPU @ 2.30GHz with 192G memory |
+> | test parameters  | cpufreq_governor=performance                                              |
+> |                  | runtime=300s                                                              |
+> |                  | test=lru-file-mmap-read-rand                                              |
+> |                  | ucode=0x5003003                                                           |
+> +------------------+---------------------------------------------------------------------------+
+> | testcase: change | will-it-scale: will-it-scale.per_process_ops 14.5% improvement            |
+> | test machine     | 144 threads Intel(R) Xeon(R) CPU E7-8890 v3 @ 2.50GHz with 512G memory    |
+> | test parameters  | cpufreq_governor=performance                                              |
+> |                  | mode=process                                                              |
+> |                  | nr_task=50%                                                               |
+> |                  | test=page_fault2                                                          |
+> |                  | ucode=0x16                                                                |
+> +------------------+---------------------------------------------------------------------------+
+> | testcase: change | will-it-scale: will-it-scale.per_process_ops -13.0% regression            |
+> | test machine     | 104 threads Skylake with 192G memory                                      |
+> | test parameters  | cpufreq_governor=performance                                              |
+> |                  | mode=process                                                              |
+> |                  | nr_task=50%                                                               |
+> |                  | test=malloc1                                                              |
+> |                  | ucode=0x2006906                                                           |
+> +------------------+---------------------------------------------------------------------------+
+> | testcase: change | vm-scalability: vm-scalability.throughput -2.3% regression                |
+> | test machine     | 96 threads Intel(R) Xeon(R) CPU @ 2.30GHz with 128G memory                |
+> | test parameters  | cpufreq_governor=performance                                              |
+> |                  | runtime=300s                                                              |
+> |                  | test=lru-file-mmap-read-rand                                              |
+> |                  | ucode=0x5002f01                                                           |
+> +------------------+---------------------------------------------------------------------------+
+> | testcase: change | fio-basic: fio.read_iops -4.8% regression                                 |
+> | test machine     | 192 threads Intel(R) Xeon(R) Platinum 9242 CPU @ 2.30GHz with 192G memory |
+> | test parameters  | bs=4k                                                                     |
+> |                  | cpufreq_governor=performance                                              |
+> |                  | disk=2pmem                                                                |
+> |                  | fs=xfs                                                                    |
+> |                  | ioengine=libaio                                                           |
+> |                  | nr_task=50%                                                               |
+> |                  | runtime=200s                                                              |
+> |                  | rw=randread                                                               |
+> |                  | test_size=200G                                                            |
+> |                  | time_based=tb                                                             |
+> |                  | ucode=0x5002f01                                                           |
+> +------------------+---------------------------------------------------------------------------+
+> | testcase: change | stress-ng: stress-ng.stackmmap.ops_per_sec -45.4% regression              |
+> | test machine     | 96 threads Intel(R) Xeon(R) Gold 6252 CPU @ 2.10GHz with 256G memory      |
+> | test parameters  | class=memory                                                              |
+> |                  | cpufreq_governor=performance                                              |
+> |                  | disk=1HDD                                                                 |
+> |                  | nr_threads=100%                                                           |
+> |                  | testtime=10s                                                              |
+> |                  | ucode=0x5002f01                                                           |
+> +------------------+---------------------------------------------------------------------------+
 
-I would move this set from ret above too. Or introduce a new variable, 
-e.g. "irq".
+Just run a quick test of the last two on 2b0d3d3e4fcf ("percpu_ref: reduce memory footprint of
+percpu_ref in fast path) and cf785af19319 ("block: warn if !__GFP_DIRECT_RECLAIM in bio_crypt_set_ctx()").
 
-thanks,
--- 
-js
-suse labs
+Not see difference in the two kernel(fio on null_blk with 224 hw queues,
+and 'stress-ng --stackmmap-ops') on one 224 cores, dual sockets system.
+
+BTW this patch itself doesn't touch fast path code, so it is supposed to
+not affect performance.
+
+Can you double check if the test itself is good?
+
+Note: cf785af19319 is 2b0d3d3e4fcf^
+
+
+
+Thanks,
+Ming
+
