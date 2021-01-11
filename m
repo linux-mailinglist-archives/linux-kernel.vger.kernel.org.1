@@ -2,75 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EABDC2F1C2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CD32F1C2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:22:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389413AbhAKRVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 12:21:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55340 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388655AbhAKRVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:21:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B589922AAD;
-        Mon, 11 Jan 2021 17:20:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610385652;
-        bh=xu5gy4M4CtiKHHhXf817tQ4NAfRrgpb0PC2kGtDFUYE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fF9htN6G0xKJQCCJ8yD9XDRfPBfPGG9dWMSP7V2iI1pNDu/T2QQuuqe1kItotkh3a
-         DnqyKKii7cosHcqVVTznY1ggoroskwLWD2UqPk6F9H8LBh+qZTfC5X7lOcRcMuvkdU
-         zba88C7g/igF392KvHtorbelnanBj3+UP2XuehbV9yhL/mtDwz2jDjZOnjp9aCUm9l
-         i/t3DQcix0FxkSDkcEdob/anEXscEtTVsG3IwB7Z47KLPFUE0bhY4PLnGC1fXKThb6
-         kzEeiHrJT1+rw8AHtqho31Pf1/okOMjW8JIVZLSxFBSSg7xm+gE+bewkI77nFy2zK8
-         Hznl4xExbUd8Q==
-Date:   Mon, 11 Jan 2021 17:20:20 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     jagan@amarulasolutions.com, lgirdwood@gmail.com,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 3/6] regulator: dt-bindings: pf8x00: remove
- nxp,ilim-ma property
-Message-ID: <20210111172019.GH4728@sirena.org.uk>
-References: <20210108225006.153700-1-adrien.grassein@gmail.com>
- <20210108225006.153700-4-adrien.grassein@gmail.com>
+        id S2389427AbhAKRVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 12:21:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389122AbhAKRVl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 12:21:41 -0500
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2C9C061795
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:20:55 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id l207so97628oib.4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:20:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=fdV0VW8YWN7jAg9JebTxlrGwTE2iDZU0jMTnkLks5R8=;
+        b=JptZiE/BzILMv2edPkEWpTCiZDWqqUiaoiUj6VwDJX4FtOt7SHW4BaUrdj1iadpmmH
+         oH7UncA1jzlSQ0DNhUKBhCw2dBAE4yLK13IClTXDIsEBBQ61eAigKNvE8eR5HxFLSEt5
+         B6L2gAn3ARU3Mi1FbOC2dNgmASqtMIf7zMHah52QueN5wWrp1B2xQxTNERaMPAEZMnl0
+         qMDOaYb93yqpSItXumjhux39nifB94ZY3XjEo5OUdlWGHgFQD/v6Hq0MSTw46A130FjZ
+         SAKU4I6jHaBNbCmR5NzsPtYvuaoEp/3e+hH2M/35D8hrDf/WQVUaiABMK12yCj0NNeJr
+         AQ3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=fdV0VW8YWN7jAg9JebTxlrGwTE2iDZU0jMTnkLks5R8=;
+        b=bg+Db4niSjF26/kQD+2OR7f9jKtnlTQxHKiTJgwkQomWEc1Q18nsdT7cE3XaFp3lAZ
+         jwZ4FDlslZ6mB9I+tSwXp4uCzObDWoyi/0WVw8S0eB6eNLgyVlPUSrpVmzVaowvOwkBf
+         SK8F3WTpmjbH6/4DVcJ+haj8lQWy/ILYQFxOLFynzn73vs8hgJrsCLBeSfewn2kfsWb7
+         FtW5R6EIg+dvGdOO8KnD6s8udyeVvgdX9zy9DyHlOiLrH/EY5tVrQIhxqaHhukSFUmHZ
+         CsYGCXiczAC+a3AfEN0sTqRee7Rxg+/CYnjHHvhUTisXDdoKXGIWzgWB6z6bKNFJbqSF
+         MIRQ==
+X-Gm-Message-State: AOAM530SVdegAmm2pPljwjlq2AUO4aE+hrOTbdZsBiRi0YYdXMn1/fRM
+        8+r0bkaRIrOgO7TAv/5kU5tNjg==
+X-Google-Smtp-Source: ABdhPJyYjPqVhMs1IGXL3i/+aSzZl7jL8FLkb4dcnzw/G7iPRUa7mUsCtdiFrZJkxyaSW0Rso7PrIQ==
+X-Received: by 2002:a05:6808:2cb:: with SMTP id a11mr255356oid.93.1610385654570;
+        Mon, 11 Jan 2021 09:20:54 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id n13sm72203otk.58.2021.01.11.09.20.53
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 11 Jan 2021 09:20:54 -0800 (PST)
+Date:   Mon, 11 Jan 2021 09:20:37 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+cc:     Hugh Dickins <hughd@google.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: Re: 5.11-rc device reordering breaks ThinkPad rmi4 suspend
+In-Reply-To: <CAJZ5v0gUQApODPUuHkfmHUw30XhX3U-5zYDu5JrgehzVrtyJQw@mail.gmail.com>
+Message-ID: <alpine.LSU.2.11.2101110908170.1561@eggly.anvils>
+References: <alpine.LSU.2.11.2101102010200.25762@eggly.anvils> <CAJZ5v0gUQApODPUuHkfmHUw30XhX3U-5zYDu5JrgehzVrtyJQw@mail.gmail.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="e5bfZ/T2xnjpUIbw"
-Content-Disposition: inline
-In-Reply-To: <20210108225006.153700-4-adrien.grassein@gmail.com>
-X-Cookie: Too much is not enough.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 11 Jan 2021, Rafael J. Wysocki wrote:
+> On Mon, Jan 11, 2021 at 5:44 AM Hugh Dickins <hughd@google.com> wrote:
+> >
+> > Hi Rafael,
+> >
+> > Synaptics RMI4 SMBus touchpad on ThinkPad X1 Carbon (5th generation)
+> > fails to suspend when running 5.11-rc kernels: bisected to
+> > 5b6164d3465f ("driver core: Reorder devices on successful probe"),
+> > and reverting that fixes it.  dmesg.xz attached, but go ahead and ask
+> > me to switch on a debug option to extract further info if that may help.
+> 
+> Does the driver abort the suspend transition by returning an error or
+> does something else happen?
 
---e5bfZ/T2xnjpUIbw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Both.  Thierry has pointed to the lines showing failed suspend transition;
+and I forgot to mention that the touchpad is unresponsive from then on
+(I might not have noticed the failed suspend without that).  But I don't
+suppose that unresponsiveness is worth worrying about: things went wrong
+in suspend, so it's not surprising if the driver does not recover well.
 
-On Fri, Jan 08, 2021 at 11:50:03PM +0100, Adrien Grassein wrote:
-> This property seems useless because we can use the
-> regulator-max-microamp generic property to do the same
-> and using generic code.
+Thank you both for getting on to this so quickly - but don't worry about
+getting my touchpad working: I'm glad to see you discussing the wider
+issues of ordering that this has brought up.
 
-This made it into a kernel release so we should continue to honour it,
-it's fine to deprecate it though.
-
---e5bfZ/T2xnjpUIbw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/8iNMACgkQJNaLcl1U
-h9DibQf/XTVXJw76h3g1lJ6Xxtn0kbRZMoG2xmgA1KGcmcwjsiBJFIuPAKz7yvfT
-fayKCL782y3aG9z0FW3RFtGToM8h6FzmTQQpUiFmMjUQrMuJ2a77rhYf3apXj8+D
-1QeDXf5j1qlSQmkD12FFsL8YO+J+yhKFt6xRvmAMjCXqHmoSPEUEO1WrdWrvonQt
-x9XKnB16vpzQHAlaMBjKejhvc7qaWv1+krs4spC12XoBuyZt+Jt0PK9U/b3N1exr
-Bev7tmfs8qPK+UpLHZ54LgVPJjD43qP6SyO/aPcVKnFIXHbwJRvxcuPbgTymYprx
-2NHBtTqhR4Bb3yIMhd9RBwn7xrPteg==
-=x6TJ
------END PGP SIGNATURE-----
-
---e5bfZ/T2xnjpUIbw--
+Hugh
