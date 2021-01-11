@@ -2,85 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 922E42F0BA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 05:04:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D222F0BB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 05:07:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727227AbhAKEEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 23:04:07 -0500
-Received: from mga11.intel.com ([192.55.52.93]:49744 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726362AbhAKEEG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 23:04:06 -0500
-IronPort-SDR: FXfhJkaIeYMZa7KXYDrNeYJpzyS4uyJeesMHeZAi3M/EW0LQFQDH7KNlUQOLgDh4YQ0C8nTTCo
- I0g6KkEHJIKQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9860"; a="174292368"
-X-IronPort-AV: E=Sophos;i="5.79,337,1602572400"; 
-   d="scan'208";a="174292368"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2021 20:03:26 -0800
-IronPort-SDR: bNOGErMi/2oX0P5qyLbFMfEqnfOmG6KeUyGVi9zIq6DugpGOBw8wq1FPjODf21q9QbrCOiQ+zo
- Hbs6PfMUoC0Q==
-X-IronPort-AV: E=Sophos;i="5.79,337,1602572400"; 
-   d="scan'208";a="380869959"
-Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2021 20:03:23 -0800
-Date:   Mon, 11 Jan 2021 12:03:21 +0800
-From:   Shuo A Liu <shuo.a.liu@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v7 08/18] virt: acrn: Introduce EPT mapping management
-Message-ID: <20210111040321.GE22447@shuo-intel.sh.intel.com>
-References: <20210106075055.47226-1-shuo.a.liu@intel.com>
- <20210106075055.47226-9-shuo.a.liu@intel.com>
- <X/h7bhf9RRGjnJ+a@kroah.com>
+        id S1727276AbhAKEFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 23:05:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725824AbhAKEFA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 23:05:00 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE3A8C06179F
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 20:04:19 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id m25so35723281lfc.11
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 20:04:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6q6bK74e1uGqFWykBzn1UfhFP5mb0Otk6HA48F1HwJ0=;
+        b=C4nnRQ5QCFjqgRoNNA42Lz3EEKsOU+VJ6t9NqBzyosLVIRvjbrNmE4YBob6IONSS1P
+         nVuss5Nr2dsMA/DsEcvIR6UdEjSW+YQe+x28wgEB3GAA+yLPLKVWGWS4CHu+h57Jnnul
+         MD6MJp7vwMjnVmxSV2ZZ1ZvtETLEtzonJoVatVOfzR57Qzfvs23kG2nFwbhe304/0klQ
+         GunA6HWLx8Nu+0vIpvKolH+ffK8D3p+1SrEYTqS0XQ0aSI/iyy/unSGAEHMhNKoiuzdD
+         x+ZhvBSWXJ/J5FTrn0fCabxKEeL+BtgyIX9/ofmEBXDB4RjpSGMI0jC+UBJtnX0jyowk
+         sPnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6q6bK74e1uGqFWykBzn1UfhFP5mb0Otk6HA48F1HwJ0=;
+        b=qx+GPqZhIDsznlZXK9soTrytm2z7AD6HsAbL+s4UE3e2c88lAQHZ3YdxH7hZSCGArk
+         bWtXqwPuXcHSA/rTFclx1KAWTx56bGerBhkIkcdAtumQkWyR6V6KPXojpwpho5x0IZEH
+         ve1z+Kq3abTv/+DGBy/Bet9DGY1/rtC65U3UNVuPzLblgZfasb8F1XbMlk6SzmoCajKU
+         v6vHCD7+oa+J6qqWSPweB8tMregsmceXPSyQps28Yo/U5tMt9ZaFdQ6smZphManLuGGO
+         pN/GV2/o509cIwDuyJdwLomqA3GTCkwc1aQGjSMm2t7IMVq5e9LY5/sTd2ZlAu7h2GyF
+         FDXw==
+X-Gm-Message-State: AOAM532wPLp4BBkSglw+5tXji8Ds3XgQBRJb+eKVjb+wdFW6cDsaaOZo
+        k8yz8kt2JPqmXVZK+36qMle8TM8SlYvXmdKYU3yo+UG+E/jkZw==
+X-Google-Smtp-Source: ABdhPJxEWJWq6kAkGml3Vbi80k+g5JFrJYBEIDCSWA5K143y9EPCKxl2jzrEW+w0uxSJMhOjZ8BnB9QsuXQMPQYKusc=
+X-Received: by 2002:a05:6512:22ca:: with SMTP id g10mr3298651lfu.87.1610337858451;
+ Sun, 10 Jan 2021 20:04:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <X/h7bhf9RRGjnJ+a@kroah.com>
-User-Agent: Mutt/1.8.3 (2017-05-23)
+References: <20210107092652.3438696-1-atish.patra@wdc.com> <20210107092652.3438696-5-atish.patra@wdc.com>
+In-Reply-To: <20210107092652.3438696-5-atish.patra@wdc.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Mon, 11 Jan 2021 09:34:07 +0530
+Message-ID: <CAAhSdy3Z1zxFdPr+dSvP6GH+1NtRw7o=JS7OnOmZnqb8LPbnRQ@mail.gmail.com>
+Subject: Re: [PATCH 4/4] RISC-V: Fix maximum allowed phsyical memory for RV32
+To:     Atish Patra <atish.patra@wdc.com>
+Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup.patel@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri  8.Jan'21 at 16:34:06 +0100, Greg Kroah-Hartman wrote:
->On Wed, Jan 06, 2021 at 03:50:45PM +0800, shuo.a.liu@intel.com wrote:
->> +/**
->> + * struct acrn_vm_memmap - A EPT memory mapping info for a User VM.
->> + * @type:		Type of the memory mapping (ACRM_MEMMAP_*).
->> + *			Pass to hypervisor directly.
->> + * @attr:		Attribute of the memory mapping.
->> + *			Pass to hypervisor directly.
->> + * @user_vm_pa:		Physical address of User VM.
->> + *			Pass to hypervisor directly.
->> + * @service_vm_pa:	Physical address of Service VM.
->> + *			Pass to hypervisor directly.
->> + * @vma_base:		VMA address of Service VM. Pass to hypervisor directly.
->> + * @len:		Length of the memory mapping.
->> + *			Pass to hypervisor directly.
->> + */
->> +struct acrn_vm_memmap {
->> +	__u32	type;
->> +	__u32	attr;
->> +	__u64	user_vm_pa;
->> +	union {
->> +		__u64	service_vm_pa;
->> +		__u64	vma_base;
->> +	};
->> +	__u64	len;
->> +};
+On Thu, Jan 7, 2021 at 2:57 PM Atish Patra <atish.patra@wdc.com> wrote:
 >
->Endianness?
-
-Same consideration within patch 06/18. Need i specify these values? They
-are more like ioctls' paramter values.
-
-Thanks
-shuo
+> Linux kernel can only map 1GB of address space for RV32 as the page offset
+> is set to 0xC0000000. The current description in the Kconfig is confusing
+> as it indicates that RV32 can support 2GB of physical memory. That is
+> simply not true for current kernel. In future, a 2GB split support can be
+> added to allow 2GB physical address space.
 >
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+
+Just for information, Alex's also has a patch to simplify this. Refer,
+"[RFC PATCH 05/12] riscv: Simplify MAXPHYSMEM config"
+
+Looks good to me.
+
+Reviewed-by: Anup Patel <anup@brainfault.org>
+
+> ---
+>  arch/riscv/Kconfig | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 81b76d44725d..e9e2c1f0a690 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -137,7 +137,7 @@ config PA_BITS
+>
+>  config PAGE_OFFSET
+>         hex
+> -       default 0xC0000000 if 32BIT && MAXPHYSMEM_2GB
+> +       default 0xC0000000 if 32BIT && MAXPHYSMEM_1GB
+>         default 0x80000000 if 64BIT && !MMU
+>         default 0xffffffff80000000 if 64BIT && MAXPHYSMEM_2GB
+>         default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
+> @@ -247,10 +247,12 @@ config MODULE_SECTIONS
+>
+>  choice
+>         prompt "Maximum Physical Memory"
+> -       default MAXPHYSMEM_2GB if 32BIT
+> +       default MAXPHYSMEM_1GB if 32BIT
+>         default MAXPHYSMEM_2GB if 64BIT && CMODEL_MEDLOW
+>         default MAXPHYSMEM_128GB if 64BIT && CMODEL_MEDANY
+>
+> +       config MAXPHYSMEM_1GB
+> +               bool "1GiB"
+>         config MAXPHYSMEM_2GB
+>                 bool "2GiB"
+>         config MAXPHYSMEM_128GB
+> --
+> 2.25.1
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+Regards,
+Anup
