@@ -2,152 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A61D22F1B4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:44:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3432F1B4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:44:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389096AbhAKQoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:44:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38258 "EHLO
+        id S2389108AbhAKQok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:44:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389085AbhAKQoR (ORCPT
+        with ESMTP id S1733136AbhAKQok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:44:17 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AF89C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 08:43:37 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id h19so81254qtq.13
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 08:43:37 -0800 (PST)
+        Mon, 11 Jan 2021 11:44:40 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9442C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 08:43:59 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id w5so407609wrm.11
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 08:43:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=txuQoBp0nNONCO5E3N2c+O/s/d9J64QZ2sEFMrrplNA=;
-        b=j/YZhaO01GXAGhhw6yx1xvzgprtk8Gdvwibr1JIMgbIF2iyDqq1vRt4XzTv7fiF7oM
-         K5XcXNdheDfmzCi1HCpm9YEwPkHtyZXddhuXwl8iyc6eXCcvPdSbc5gDSW4PcYBt5pwZ
-         K8BG2hF2jiR16VMxoHUy9dZQpPEZgNhqMxpigxwCyPm++wKkKhkzVc2KlDW0pxJzSHZ2
-         Jfvi4FzHWmhYrTTFshlFRqg3cbvwRDRleH7QFuKX55oMjdWF871M1uTou2WScVFQnc4J
-         wNPtllac3N2HNOxDZZU8sZCgtLyDIWvvgbBfSJtYcZALw+UgtDquqHHuC6+O+orlf6AH
-         8+Vw==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4Hp9A8/hK542k3HGO/BcxhgR60TvBqtFaVODw3rwYZY=;
+        b=GfZ8RGI6QZLTTEBOcYp6d9hPCK5gzpEcZNZP9GIjnq5imwb4NojcaSmbBMQyfs1vd6
+         Pn5yCSAK+ln+0ropRUUTnwW3nKM1EbwnE30EMpY5i/Cp9m0YN+ZBpZVohFdLg1ML0MhX
+         S2bhkomGtlVIR1WI8pXFBC8evKNY7yRXYlJVNExyYE/J/sD0LIVwjjPaNs0m7TjVP+d+
+         B6vSm/fBft0mEYAvow8SY472qknK513cwMD/PNEi66qnK+Itn40Hkjyb3yeL7ZiWuqxy
+         eZqZnb3SXFBvdHlbPaO4Jj2z4ou1Jixy1ioVrnKo1vCWSiJs2ahlYs8Kknp514Y2WoQA
+         zjLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=txuQoBp0nNONCO5E3N2c+O/s/d9J64QZ2sEFMrrplNA=;
-        b=Vk5qoinED4YZpqrA2wbX7HnHhMSZaMCp3wsPKsaSmiFsgxhSPaq8/rPR02BVxrtz/i
-         6c57Pd0UK5OSpSy9523H2KkxtKxV/3UclXGy2yckxfd0lUvnKi4bZaLiJauj+d8GdlnT
-         Z+MrRrKKaZ7/g5etQHGehh/kPaxJYHadHB3BFMa0dfxT/IacgSdma5SfO1C/+CKMcGB1
-         9fRPgF4zPnzBaM0JhAymNfBW8Nghwz1PYpxFyYgCJUMrQvHamzXSZPRmkSCeg3gN7FVW
-         1LtwYeWwogTJ05yeRObGG55+fJgXO20SM8ANoFnjsNntVZhwa/KG1MUBmTD8mJX8CsNV
-         tsFQ==
-X-Gm-Message-State: AOAM5308TkmfPqwGmabXNX+v/cyhA/gJLXr3iZFGa6q+Zr5lLBjXIdv+
-        oDqZ9oLertxVFQiWWfgSkVM=
-X-Google-Smtp-Source: ABdhPJzlCptEldVASIcxeHlYWALNRdzYpae5OPS7tx0lRCQdZiGdtmmSPz/SCzpGv/O6HFNEjCmOsQ==
-X-Received: by 2002:aed:212d:: with SMTP id 42mr488791qtc.106.1610383416110;
-        Mon, 11 Jan 2021 08:43:36 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id n5sm160945qkh.126.2021.01.11.08.43.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 08:43:35 -0800 (PST)
-Date:   Mon, 11 Jan 2021 09:43:34 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Stafford Horne <shorne@gmail.com>
-Cc:     kernel test robot <lkp@intel.com>,
-        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
-        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        Mateusz Holenko <mholenko@antmicro.com>
-Subject: Re: drivers/soc/litex/litex_soc_ctrl.c:143:34: warning: unused
- variable 'litex_soc_ctrl_of_match'
-Message-ID: <20210111164334.GA1322395@ubuntu-m3-large-x86>
-References: <202101070445.8Kz6oJcS-lkp@intel.com>
- <20210111123055.GA2002709@lianli.shorne-pla.net>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4Hp9A8/hK542k3HGO/BcxhgR60TvBqtFaVODw3rwYZY=;
+        b=nK9API2elufILP4p6yxV0DKJY9QryYlPR7jskOTjGipA49kselfGH+GaZBv0Val6Zk
+         RsLCHY6njF7942VyS0KvdPTx1VGN/jB5iytYYtcZ+v1Qb4Ge4xquW/ANGQ6SoXg0/dUb
+         ndcLmy8STOlAaRcIKZAuOAMOvGwHrkPWaFDQb4ASFMCVCbi+JZIAUZZjCEpasn5Z3QcZ
+         kIR3tY3aYiEnyO6YbgLHpdQ3b907st07Cemrae6qd6mb0IPjHUL+d1UbBbXJLmNhG6pK
+         Ht+WUwEVsTmI1SNj6ZwfLyChBDL5bWs+OvJwNq92jBG63Q+HOZyVAPD1LaKCvvjWO5yx
+         7ZRg==
+X-Gm-Message-State: AOAM533Z3o09s1wXGc6KI96bUWgPOCAdeeJS0YOAtnF39tGByBr5a50N
+        LUutcQyP5R81FNShD+dtE+zYSdSrqxmfaA==
+X-Google-Smtp-Source: ABdhPJzH/3JXnXfnkK6TlKy4lgufv573bXaHLkv6HS1DsIu8T26xHCfTpWMEu8z56FpGQLqjZpOocw==
+X-Received: by 2002:a5d:528a:: with SMTP id c10mr450wrv.117.1610383437762;
+        Mon, 11 Jan 2021 08:43:57 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:857c:93df:6003:8cc5? ([2a01:e34:ed2f:f020:857c:93df:6003:8cc5])
+        by smtp.googlemail.com with ESMTPSA id g191sm390288wmg.39.2021.01.11.08.43.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 08:43:56 -0800 (PST)
+Subject: Re: [PATCH v2 1/2] thermal: int340x: Fix unexpected shutdown at
+ critical temperature
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "Zhang, Rui" <rui.zhang@intel.com>, amitk@kernel.org
+Cc:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20201221172345.36976-1-kai.heng.feng@canonical.com>
+ <CAAd53p6Yn2n-oBVk026nf3oZ7y+_7NFtywQe3PBhTr=3Lo7-Bg@mail.gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <f6d05777-c062-ed80-f3b8-b3b0ae042e20@linaro.org>
+Date:   Mon, 11 Jan 2021 17:43:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <CAAd53p6Yn2n-oBVk026nf3oZ7y+_7NFtywQe3PBhTr=3Lo7-Bg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210111123055.GA2002709@lianli.shorne-pla.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 09:30:55PM +0900, Stafford Horne wrote:
-> On Thu, Jan 07, 2021 at 04:04:47AM +0800, kernel test robot wrote:
-> > Hi Pawel,
-> > 
-> > FYI, the error/warning still remains.
-> > 
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> > head:   e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
-> > commit: 22447a99c97e353bde8f90c2353873f27681d57c drivers/soc/litex: add LiteX SoC Controller driver
-> > date:   8 weeks ago
-> > config: x86_64-randconfig-a001-20210107 (attached as .config)
-> > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 5c951623bc8965fa1e89660f2f5f4a2944e4981a)
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # install x86_64 cross compiling tool for clang build
-> >         # apt-get install binutils-x86-64-linux-gnu
-> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=22447a99c97e353bde8f90c2353873f27681d57c
-> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-> >         git fetch --no-tags linus master
-> >         git checkout 22447a99c97e353bde8f90c2353873f27681d57c
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64 
-> > 
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > 
-> > All warnings (new ones prefixed by >>):
-> > 
-> > >> drivers/soc/litex/litex_soc_ctrl.c:143:34: warning: unused variable 'litex_soc_ctrl_of_match' [-Wunused-const-variable]
-> >    static const struct of_device_id litex_soc_ctrl_of_match[] = {
-> >                                     ^
-> >    1 warning generated.
-> > 
-> > 
-> > vim +/litex_soc_ctrl_of_match +143 drivers/soc/litex/litex_soc_ctrl.c
-> > 
-> >    142	
-> >  > 143	static const struct of_device_id litex_soc_ctrl_of_match[] = {
-> >    144		{.compatible = "litex,soc-controller"},
-> >    145		{},
-> >    146	};
-> >    147	
-> > 
+On 11/01/2021 17:18, Kai-Heng Feng wrote:
+> On Tue, Dec 22, 2020 at 1:23 AM Kai-Heng Feng
+> <kai.heng.feng@canonical.com> wrote:
+>>
+>> We are seeing thermal shutdown on Intel based mobile workstations, the
+>> shutdown happens during the first trip handle in
+>> thermal_zone_device_register():
+>> kernel: thermal thermal_zone15: critical temperature reached (101 C), shutting down
+>>
+>> However, we shouldn't do a thermal shutdown here, since
+>> 1) We may want to use a dedicated daemon, Intel's thermald in this case,
+>> to handle thermal shutdown.
+>>
+>> 2) For ACPI based system, _CRT doesn't mean shutdown unless it's inside
+>> ThermalZone namespace. ACPI Spec, 11.4.4 _CRT (Critical Temperature):
+>> "... If this object it present under a device, the device’s driver
+>> evaluates this object to determine the device’s critical cooling
+>> temperature trip point. This value may then be used by the device’s
+>> driver to program an internal device temperature sensor trip point."
+>>
+>> So a "critical trip" here merely means we should take a more aggressive
+>> cooling method.
+>>
+>> As int340x device isn't present under ACPI ThermalZone, override the
+>> default .critical callback to prevent surprising thermal shutdown.
+>>
+>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 > 
-> I don't use clang but GCC, and I cannot reproduce this warning.
-> 
-> $ make drivers/soc/litex/litex_soc_ctrl.o 
->   CALL    scripts/checksyscalls.sh
->   CALL    scripts/atomic/check-atomics.sh
->   DESCEND  objtool
->   CC      drivers/soc/litex/litex_soc_ctrl.o
-> 
-> Also, I can see litex_soc_ctrl_of_match is used.  I am not sure what is going on
-> here.
-> 
-> -Stafford
-> 
+> A gentle ping...
 
-You need W=1
+Applied, they are in the testing branch now. They will be a linux-next
+in a couple of days.
 
-$ make -skj"$(nproc)" W=1 olddefconfig drivers/soc/litex/litex_soc_ctrl.o
-drivers/soc/litex/litex_soc_ctrl.c:143:34: warning: ‘litex_soc_ctrl_of_match’ defined but not used [-Wunused-const-variable=]
-  143 | static const struct of_device_id litex_soc_ctrl_of_match[] = {
-      |                                  ^~~~~~~~~~~~~~~~~~~~~~~
+Thanks
+  -- Daniel
 
-$ rg "CONFIG_OF|CONFIG_LITEX_SOC_CONTROLLER" .config
-1124:# CONFIG_OF is not set
-4673:CONFIG_LITEX_SOC_CONTROLLER=y
 
-This variable is used in two places in that file, in the
-MODULE_DEVICE_TABLE macro and the of_match_ptr macro. When CONFIG_OF is
-disabled, of_match_ptr evaluates to NULL. When the file is built into
-the kernel image, MODULE_DEVICE_TABLE evaluates to nothing, leaving this
-variable defined but unused in the final preprocessed source.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-Hope that helps!
-
-Cheers,
-Nathan
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
