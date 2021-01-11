@@ -2,66 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D0BF2F229D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:22:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD7E2F229F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389706AbhAKWVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 17:21:24 -0500
-Received: from mail-oo1-f51.google.com ([209.85.161.51]:46322 "EHLO
-        mail-oo1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728040AbhAKWVX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:21:23 -0500
-Received: by mail-oo1-f51.google.com with SMTP id n127so119118ooa.13;
-        Mon, 11 Jan 2021 14:21:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bHT2GndF6urGRcw0TXxPqVOzZ2j2R9MxCgX11NwVoxE=;
-        b=rBxq0g47b/PfI6ZEx4bj5+eJFikRm/TK/ezZ6JDf2R8WjUDjzLDijfswIzd9GVYnCC
-         L2fcQsg4xM1pzq2Cg3kwCbYXn8RgbGNeToVSoU6IFKc6OcqR3rXrKxlQTRmHJxtx9IrO
-         xxxRd50eIg0oZ/kCMuk4xM1HIc7LQSLv2mfrknWG5Vjze7GpLsJTnFsjaKLpm5FZvrgo
-         z/oVCACQHtzVT7qqvnJOOoXo6RPbAaVdjuf21AKbD42SVcCmr4KXCwclaMzO/niv1ciH
-         OUNhTv9JqsnN7KwewHxo/1sXsEnh1aVezgX8fu01UiydTcyBWNURZOMoViriinAemZnB
-         bwcQ==
-X-Gm-Message-State: AOAM530ynsY/+Wy9If3DATbshWIh+3HrkA/hoS0ERqyOuY3tAWdmlYqt
-        Rsf2HTYy0ePtKo91hJvkNszu8k448A==
-X-Google-Smtp-Source: ABdhPJzJws28Cr0G657g4+VWo5Rnlmi6XMjPUxVc9XMNPuwZrLaC7zBLoW9JNXDuxDIBNr/eDBQJQg==
-X-Received: by 2002:a05:6820:22c:: with SMTP id j12mr902080oob.65.1610403641005;
-        Mon, 11 Jan 2021 14:20:41 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a26sm179491oos.46.2021.01.11.14.20.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 14:20:40 -0800 (PST)
-Received: (nullmailer pid 3161297 invoked by uid 1000);
-        Mon, 11 Jan 2021 22:20:39 -0000
-Date:   Mon, 11 Jan 2021 16:20:39 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Aleksander Jan Bajkowski <olek2@wp.pl>
-Cc:     tsbogend@alpha.franken.de, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, john@phrozen.org,
-        linux-mips@vger.kernel.org, robh+dt@kernel.org
-Subject: Re: [PATCH] dt-bindings: mips: lantiq: Document Lantiq Xway PMU
- bindings
-Message-ID: <20210111222039.GA3161126@robh.at.kernel.org>
-References: <20201231163153.4512-1-olek2@wp.pl>
+        id S2389921AbhAKWVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 17:21:41 -0500
+Received: from mga03.intel.com ([134.134.136.65]:45580 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728040AbhAKWVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 17:21:40 -0500
+IronPort-SDR: pHPw3qYSbVQ5yv0uGWaWMjyUL4ajqTedgpjq2n3TlqoLFaqgnuH1r4nQJRtRcl/lIdwDI9cRwr
+ FzRIyUfRdUDw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="178040007"
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="178040007"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 14:20:59 -0800
+IronPort-SDR: 6pIQeWH++WIe5oa7r6R4Yn0mC8sPjVDU2XZ0A2/jSZOf5nG9czsXeUsatRR7hFe9qglLiP6g72
+ UUxZF1tWmcUA==
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="381170169"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 14:20:58 -0800
+Date:   Mon, 11 Jan 2021 14:20:57 -0800
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH v2 1/3] x86/mce: Avoid infinite loop for copy from user
+ recovery
+Message-ID: <20210111222057.GA2369@agluck-desk2.amr.corp.intel.com>
+References: <20210111214452.1826-2-tony.luck@intel.com>
+ <E1FCB534-9149-437A-971E-F93C009F99C3@amacapital.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201231163153.4512-1-olek2@wp.pl>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <E1FCB534-9149-437A-971E-F93C009F99C3@amacapital.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Dec 2020 17:31:53 +0100, Aleksander Jan Bajkowski wrote:
-> Document the Lantiq Xway SoC series Power Management Unit (PMU) bindings.
+On Mon, Jan 11, 2021 at 02:11:56PM -0800, Andy Lutomirski wrote:
 > 
-> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
-> ---
->  .../bindings/mips/lantiq/lantiq,pmu.yaml      | 32 +++++++++++++++++++
->  1 file changed, 32 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mips/lantiq/lantiq,pmu.yaml
+> > On Jan 11, 2021, at 1:45 PM, Tony Luck <tony.luck@intel.com> wrote:
+> > 
+> > ﻿Recovery action when get_user() triggers a machine check uses the fixup
+> > path to make get_user() return -EFAULT.  Also queue_task_work() sets up
+> > so that kill_me_maybe() will be called on return to user mode to send a
+> > SIGBUS to the current process.
+> > 
+> > But there are places in the kernel where the code assumes that this
+> > EFAULT return was simply because of a page fault. The code takes some
+> > action to fix that, and then retries the access. This results in a second
+> > machine check.
+> > 
+> > While processing this second machine check queue_task_work() is called
+> > again. But since this uses the same callback_head structure that
+> > was used in the first call, the net result is an entry on the
+> > current->task_works list that points to itself.
 > 
+> Is this happening in pagefault_disable context or normal sleepable fault context?  If the latter, maybe we should reconsider finding a way for the machine check code to do its work inline instead of deferring it.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+The first machine check is in pagefault_disable() context.
+
+static int get_futex_value_locked(u32 *dest, u32 __user *from)
+{
+        int ret;
+
+        pagefault_disable();
+        ret = __get_user(*dest, from);
+        pagefault_enable();
+
+        return (ret == -ENXIO) ? ret : ret ? -EFAULT : 0;
+}
+
+-Tony
