@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0412E2F1317
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:03:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB7B2F13D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729803AbhAKNDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:03:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50228 "EHLO mail.kernel.org"
+        id S1732168AbhAKNPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:15:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729715AbhAKNDQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:03:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 977DD225AB;
-        Mon, 11 Jan 2021 13:02:21 +0000 (UTC)
+        id S1732204AbhAKNO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:14:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57A3C2246B;
+        Mon, 11 Jan 2021 13:14:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370142;
-        bh=7/faWLGJNNlINUfVqdeH9J3vRoIwqJbpbTBtE4//Zqg=;
+        s=korg; t=1610370880;
+        bh=XOA40p5If1eeS/6MV+hgjJVYm0l/QD5+/ULkS4Czph4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oz4P/20LR7pw4iYf7JTIjJXrhxkDREgsI+Qm3L8wFlXVYKvsw/gVyJ+F1NnAZGx2Z
-         rEYI39rV1UMJ7IELLJD1+sVG5CgzZP/lXS8hrrjlBmwZbYJUACyMz9Y5o4GEOPol//
-         XWZASbsfxKeXUUIaBbxGFpgNYWSGKIcSweLTghCU=
+        b=YJU9jlG7KmZD6YEijK3pxv2J4mb6MgOv7vE5mSpEwWTjeS3v2S7a6/F0zlDJZxld2
+         3X+Wm+f9HjoIfqpfTrdpGlwKzD3CxtyACx0C31VKuIRgPdEhNZp3Fym6p/UrW+hoce
+         8L5pLobcx0+GjhpHN/5JzapDwcti82lQN80jybPQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.4 35/38] Revert "device property: Keep secondary firmware node secondary by type"
-Date:   Mon, 11 Jan 2021 14:01:07 +0100
-Message-Id: <20210111130034.141539940@linuxfoundation.org>
+        stable@vger.kernel.org, Roland Dreier <roland@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 045/145] CDC-NCM: remove "connected" log message
+Date:   Mon, 11 Jan 2021 14:01:09 +0100
+Message-Id: <20210111130050.687773688@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
-References: <20210111130032.469630231@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bard Liao <yung-chuan.liao@linux.intel.com>
+From: Roland Dreier <roland@kernel.org>
 
-commit 47f4469970d8861bc06d2d4d45ac8200ff07c693 upstream.
+[ Upstream commit 59b4a8fa27f5a895582ada1ae5034af7c94a57b5 ]
 
-While commit d5dcce0c414f ("device property: Keep secondary firmware
-node secondary by type") describes everything correct in its commit
-message, the change it made does the opposite and original commit
-c15e1bdda436 ("device property: Fix the secondary firmware node handling
-in set_primary_fwnode()") was fully correct.
+The cdc_ncm driver passes network connection notifications up to
+usbnet_link_change(), which is the right place for any logging.
+Remove the netdev_info() duplicating this from the driver itself.
 
-Revert the former one here and improve documentation in the next patch.
+This stops devices such as my "TRENDnet USB 10/100/1G/2.5G LAN"
+(ID 20f4:e02b) adapter from spamming the kernel log with
 
-Fixes: d5dcce0c414f ("device property: Keep secondary firmware node secondary by type")
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc: 5.10+ <stable@vger.kernel.org> # 5.10+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+    cdc_ncm 2-2:2.0 enp0s2u2c2: network connection: connected
+
+messages every 60 msec or so.
+
+Signed-off-by: Roland Dreier <roland@kernel.org>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20201224032116.2453938-1-roland@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/base/core.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/usb/cdc_ncm.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -2357,7 +2357,7 @@ void set_primary_fwnode(struct device *d
- 		if (fwnode_is_primary(fn)) {
- 			dev->fwnode = fn->secondary;
- 			if (!(parent && fn == parent->fwnode))
--				fn->secondary = ERR_PTR(-ENODEV);
-+				fn->secondary = NULL;
- 		} else {
- 			dev->fwnode = NULL;
- 		}
+--- a/drivers/net/usb/cdc_ncm.c
++++ b/drivers/net/usb/cdc_ncm.c
+@@ -1863,9 +1863,6 @@ static void cdc_ncm_status(struct usbnet
+ 		 * USB_CDC_NOTIFY_NETWORK_CONNECTION notification shall be
+ 		 * sent by device after USB_CDC_NOTIFY_SPEED_CHANGE.
+ 		 */
+-		netif_info(dev, link, dev->net,
+-			   "network connection: %sconnected\n",
+-			   !!event->wValue ? "" : "dis");
+ 		usbnet_link_change(dev, !!event->wValue, 0);
+ 		break;
+ 
 
 
