@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 370402F18E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:56:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F4C2F18DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388914AbhAKO4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:56:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43276 "EHLO
+        id S2388893AbhAKO4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:56:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388753AbhAKO4K (ORCPT
+        with ESMTP id S2388761AbhAKO4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:56:10 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86003C0617AA
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:54:52 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id y23so138176wmi.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:54:52 -0800 (PST)
+        Mon, 11 Jan 2021 09:56:11 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A73C0C0617B0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:54:53 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 190so113323wmz.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:54:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=B//FbTYYBDBPWWUpSDBcLG5G7/7plbLQrylxtauexS0=;
-        b=YsAKy+Fmriq36NNF1XTmPGoBWBzdjMbEOnveFTJ+tNOCDMIbMIEIB3i6T/fOB3cIVB
-         nPdzEgoBAOvpxLg9fp+dG5GtfSa6aszSiWxMME7DXUh3x7vMiJy9xMiromZgRP3oD6lJ
-         DZVFMmIm9sxoVsTuAL/Xb3uM437r/cVJdD5MY=
+        bh=tHVsXtMiml7BeUACbg86G/7vdz6mKeSHlUF/QzTEklQ=;
+        b=PjacKNZyR9RFcS0iQu+Egy58/Z7nGvb6hhfgUK+kQS5UMnzrHYRMUOnYVugTHpc7Th
+         FeravoD05+QzRJWlYcN6OnTln5sA9ICkj+zt3vx51CbVMva+sOZww8KduJjHtmRjurNR
+         3T7CK9q5k80kTAbXAdr73jwTjJLJ1q+owFUSg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=B//FbTYYBDBPWWUpSDBcLG5G7/7plbLQrylxtauexS0=;
-        b=e/aqW2WxSLeTK85yJwEZVvhqEAzJrXKC8KXxRZLly+i9oWtJFIjpDW/jPGNAfObZvm
-         0+HNMlVGv/JaP1q/8VVLMC9qo1OCQv9RTBgWYUsTppUN7ngpgaTpwtGo2YpyaOfcNNub
-         z/nUhh+nT8QSBKnmMLLIwi0ogVAvyXoUXFXk2lXuo3/m5X9LIA6PjIIyQIaHawYwTTrz
-         8msUGmKVsaglgJqiqoNj9pfn8CSKPFU2MKXd1CPS5x9QVvuS791Jc+6K46qjdLW+FTn/
-         bo4yLr+j5XVrz3bRPiW5EcHe7Ps+kwNsalbHz0qtut/EIu2UMAlpeT3LHJCgyQhGbgQ4
-         xC4g==
-X-Gm-Message-State: AOAM531qF8SMCC4j+kxCH0AoF2Cbl0bkj3WowIxE8NYu7zHT6GL0qWVy
-        E+Q+8WBp8moOi5ynRX93ZACTGg==
-X-Google-Smtp-Source: ABdhPJx1gBQziw3Izae5TOKXG7hu2VrHquyG0M+MDY9Q5kjlfU6V/0mmff31UMqfau3WJe6BBw5VTw==
-X-Received: by 2002:a7b:cf08:: with SMTP id l8mr49146wmg.189.1610376891362;
-        Mon, 11 Jan 2021 06:54:51 -0800 (PST)
+        bh=tHVsXtMiml7BeUACbg86G/7vdz6mKeSHlUF/QzTEklQ=;
+        b=RwhotJ/ZyA27FwEsPJQz0tMVDqi10gfpLvQLLQYVwYz7ZIwc78yeIi1h4G0wIEOEUw
+         K/h8Aasml5zHmbmI0u4m71EDemNu69mz3S7w5Z7f0MgKrbLJUK/rcfMZMFY5ttBKynHz
+         AZXlfquTo1vxxf+HNrzchNa4pGhKD3/zVYQfKBkK90zKfgZ75iEKwZoXQ1pqiYf7L9HN
+         oAyILmZaxQ4lIwijVTikoDLseNw3EUwPrTvzxBcacUtJaeplDiT5Efka0YCpZrKtx+Es
+         rPLfcrhK3ZsV6cavWERYzFt0tmTEafaK7E6Sjaq+/KkFEOo3t9ZmHL9WiIdUHwDAAPKD
+         Qllg==
+X-Gm-Message-State: AOAM532GDREKn7pqq/4rrGpcazbUXQ4i8q9EJCP0KZKG40u32RrTX1UG
+        uNDq0iPk6/V8N/KIoxrTbQfMvA==
+X-Google-Smtp-Source: ABdhPJy2Yqvv8vnAD8dsW6R5NcyWQfQF8aj87/xcEKNPdZNNNWa/JIH6DHJ9w4F0tgSqAKBzOqBPbQ==
+X-Received: by 2002:a05:600c:2117:: with SMTP id u23mr53230wml.153.1610376892464;
+        Mon, 11 Jan 2021 06:54:52 -0800 (PST)
 Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id s133sm17780wmf.38.2021.01.11.06.54.50
+        by smtp.gmail.com with ESMTPSA id s133sm17780wmf.38.2021.01.11.06.54.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 06:54:50 -0800 (PST)
+        Mon, 11 Jan 2021 06:54:51 -0800 (PST)
 From:   Ricardo Ribalda <ribalda@chromium.org>
 To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Ricardo Ribalda <ribalda@chromium.org>,
-        Mikhail Ulyanov <mikhail.ulyanov@cogentembedded.com>
-Subject: [PATCH 5/9] media: jpu: Do not zero reserved fields
-Date:   Mon, 11 Jan 2021 15:54:41 +0100
-Message-Id: <20210111145445.28854-6-ribalda@chromium.org>
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Subject: [PATCH 6/9] media: sum4i-csi: Do not zero reserved fields
+Date:   Mon, 11 Jan 2021 15:54:42 +0100
+Message-Id: <20210111145445.28854-7-ribalda@chromium.org>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 In-Reply-To: <20210111145445.28854-1-ribalda@chromium.org>
 References: <20210111145445.28854-1-ribalda@chromium.org>
@@ -65,41 +66,34 @@ Core code already clears reserved fields of struct
 v4l2_pix_format_mplane, check: 4e1e0eb0e074 ("media: v4l2-ioctl: Zero
 v4l2_plane_pix_format reserved fields").
 
-Cc: Mikhail Ulyanov <mikhail.ulyanov@cogentembedded.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/platform/rcar_jpu.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/media/platform/rcar_jpu.c b/drivers/media/platform/rcar_jpu.c
-index 9b99ff368698..2bddc957cb87 100644
---- a/drivers/media/platform/rcar_jpu.c
-+++ b/drivers/media/platform/rcar_jpu.c
-@@ -793,7 +793,6 @@ static int __jpu_try_fmt(struct jpu_ctx *ctx, struct jpu_fmt **fmtinfo,
- 	pix->colorspace = fmt->colorspace;
- 	pix->field = V4L2_FIELD_NONE;
- 	pix->num_planes = fmt->num_planes;
+diff --git a/drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c b/drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c
+index 1a2f65d83a6c..4785faddf630 100644
+--- a/drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c
++++ b/drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c
+@@ -113,8 +113,6 @@ static void _sun4i_csi_try_fmt(struct sun4i_csi *csi,
+ 	pix->num_planes = _fmt->num_planes;
+ 	pix->pixelformat = _fmt->fourcc;
+ 
 -	memset(pix->reserved, 0, sizeof(pix->reserved));
- 
- 	jpu_bound_align_image(&pix->width, JPU_WIDTH_MIN, JPU_WIDTH_MAX,
- 			      fmt->h_align, &pix->height, JPU_HEIGHT_MIN,
-@@ -808,8 +807,6 @@ static int __jpu_try_fmt(struct jpu_ctx *ctx, struct jpu_fmt **fmtinfo,
- 			pix->plane_fmt[0].sizeimage = JPU_JPEG_HDR_SIZE +
- 				(JPU_JPEG_MAX_BYTES_PER_PIXEL * w * h);
- 		pix->plane_fmt[0].bytesperline = 0;
--		memset(pix->plane_fmt[0].reserved, 0,
--		       sizeof(pix->plane_fmt[0].reserved));
- 	} else {
- 		unsigned int i, bpl = 0;
- 
-@@ -822,8 +819,6 @@ static int __jpu_try_fmt(struct jpu_ctx *ctx, struct jpu_fmt **fmtinfo,
- 		for (i = 0; i < pix->num_planes; ++i) {
- 			pix->plane_fmt[i].bytesperline = bpl;
- 			pix->plane_fmt[i].sizeimage = bpl * h * fmt->bpp[i] / 8;
--			memset(pix->plane_fmt[i].reserved, 0,
--			       sizeof(pix->plane_fmt[i].reserved));
- 		}
+-
+ 	/* Align the width and height on the subsampling */
+ 	width = ALIGN(pix->width, _fmt->hsub);
+ 	height = ALIGN(pix->height, _fmt->vsub);
+@@ -131,8 +129,6 @@ static void _sun4i_csi_try_fmt(struct sun4i_csi *csi,
+ 		bpl = pix->width / hsub * _fmt->bpp[i] / 8;
+ 		pix->plane_fmt[i].bytesperline = bpl;
+ 		pix->plane_fmt[i].sizeimage = bpl * pix->height / vsub;
+-		memset(pix->plane_fmt[i].reserved, 0,
+-		       sizeof(pix->plane_fmt[i].reserved));
  	}
+ }
  
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
