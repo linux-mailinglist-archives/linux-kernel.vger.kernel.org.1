@@ -2,160 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF902F0B87
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 04:40:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1753C2F0B8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 04:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727014AbhAKDj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 22:39:59 -0500
-Received: from foss.arm.com ([217.140.110.172]:44638 "EHLO foss.arm.com"
+        id S1726608AbhAKDnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 22:43:13 -0500
+Received: from ozlabs.org ([203.11.71.1]:51469 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725824AbhAKDj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 22:39:58 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 576C131B;
-        Sun, 10 Jan 2021 19:39:12 -0800 (PST)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DCC0A3F719;
-        Sun, 10 Jan 2021 19:39:11 -0800 (PST)
-Subject: Re: [PATCH] mmc: sdhci-iproc: Add ACPI bindings for the rpi4
-To:     Stefan Wahren <stefan.wahren@i2se.com>, linux-mmc@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     ulf.hansson@linaro.org, f.fainelli@gmail.com,
-        sbranden@broadcom.com, rjui@broadcom.com, adrian.hunter@intel.com,
-        linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org
-References: <20210108211339.1724769-1-jeremy.linton@arm.com>
- <ab3b5788-1148-636a-751f-0a31c87dda33@i2se.com>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <cd7c5d78-af92-84b9-8bbf-f480f63005e0@arm.com>
-Date:   Sun, 10 Jan 2021 21:39:07 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1725824AbhAKDnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 22:43:12 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DDffY2D1vz9sVy;
+        Mon, 11 Jan 2021 14:42:29 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610336550;
+        bh=jodTbF+KOi1kXgKsBSr5oI9UKFK1ngnUyj+ko0kn8Vs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=bziyIffip1o1PM0RM9DVkmtIs7aiAb7mXwRgy+fhidR4kSk2fD+1iQ4r6jBs1d296
+         3Gm22jya7wwa+px6bLM8bCXW4UJRAfR0+hpbVriPv/W1mgzATzbVS/In+xBlFJ51Kt
+         ZQq6KC3H9SIPd/e/6OYC0loTyVEC3yNqU98390q2N4UvnYFhjmFpuNisiVcKUR6iD9
+         RtOsWRwuRjkyHPHHfL3f7RFA4li4Rzlt6v48XOQsn4s36qvZ2oY13wpqn9W6Nyuv/h
+         PwlPKVkiZPhnv3T7POHBuwU21tm3SJW7R9XWrLlrXA+Jqwa/on4mvz/8d3rMQ9nygy
+         5JN0tRgsLLMMw==
+Date:   Mon, 11 Jan 2021 14:42:28 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>
+Cc:     Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        Moritz Fischer <mdf@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warnings after merge of the char-misc tree
+Message-ID: <20210111144228.7d8bbb96@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <ab3b5788-1148-636a-751f-0a31c87dda33@i2se.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/CT+aXbuL5T3W5/b+dTgRc7Q";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/CT+aXbuL5T3W5/b+dTgRc7Q
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 1/9/21 5:07 AM, Stefan Wahren wrote:
-> Hi Jeremy,
-> 
-> +add Nicolas
-> 
-> Am 08.01.21 um 22:13 schrieb Jeremy Linton:
->> The rpi4 has a Arasan controller it carries over
->> from the rpi3, and a newer eMMC2 controller.
->> Because of a couple "quirks" it seems wiser to bind
->> these controllers to the same driver that DT is using
->> on this platform rather than the generic sdhci_acpi
->> driver with PNP0D40.
->>
->> So, we use BCM2847 for the older Arasan and BRCME88C
->> for the newer eMMC2.
->>
->> With this change linux is capable of utilizing the
->> SD card slot, and the wifi on this platform
->> with linux.
->>
->> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
->> ---
->>   drivers/mmc/host/sdhci-iproc.c | 14 ++++++++++++++
->>   1 file changed, 14 insertions(+)
->>
->> diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-iproc.c
->> index c9434b461aab..f79d97b41805 100644
->> --- a/drivers/mmc/host/sdhci-iproc.c
->> +++ b/drivers/mmc/host/sdhci-iproc.c
->> @@ -250,6 +250,14 @@ static const struct sdhci_pltfm_data sdhci_bcm2835_pltfm_data = {
->>   	.ops = &sdhci_iproc_32only_ops,
->>   };
->>   
->> +static const struct sdhci_pltfm_data sdhci_bcm_arasan_data = {
->> +	.quirks = SDHCI_QUIRK_BROKEN_CARD_DETECTION |
->> +		  SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK |
->> +		  SDHCI_QUIRK_NO_HISPD_BIT,
->> +	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
->> +	.ops = &sdhci_iproc_32only_ops,
->> +};
+Hi all,
 
-First, thanks for taking a look at this!
+After merging the char-misc tree, today's linux-next build (htmldocs)
+produced these warnings:
 
+Documentation/fpga/dfl.rst:505: WARNING: Title underline too short.
 
-> Why do we need an almost exact copy of bcm2835_data which works fine for
-> all Raspberry Pi boards?
+Location of DFLs on a PCI Device
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+Documentation/fpga/dfl.rst:505: WARNING: Title underline too short.
 
-The short answer to the remainder of this email is that i'm trying to 
-continue supporting existing OSs (windows) using the ACPI tables on the 
-rpi3/rpi4 while adding rpi4+Linux support.
+Location of DFLs on a PCI Device
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+Documentation/fpga/dfl.rst:523: WARNING: Unexpected indentation.
+Documentation/fpga/dfl.rst:523: WARNING: Blank line required after table.
+Documentation/fpga/dfl.rst:524: WARNING: Block quote ends without a blank l=
+ine; unexpected unindent.
 
-An even shorter answer is they don't work because ACPI doesn't provide 
-the same clock/attributes/etc controls that exist with DT.
+Introduced by commit
 
-So, what happened here is that I got this controller "working" with the 
-generic PNP0D40 sdhci_acpi driver. I managed this only by controlling 
-the sdhci_caps/masks in the firmware. In theory this minimizes the 
-amount of work needed on the other OS which are booting on the same ACPI 
-tables (*bsds). They should only need to quirk the bcm/arasan specific 
-functionality, rather than some of the quirking which change the caps 
-behavior. But because we don't know which if any of the older rpi/arasan 
-quirks are still needed the safest solution is to use the _iproc driver 
-and just drop the quirk flags known to be worked around by the firmware 
-caps override.
+  fa41d10589be ("fpga: dfl-pci: locate DFLs by PCIe vendor specific capabil=
+ity")
 
+--=20
+Cheers,
+Stephen Rothwell
 
->> +
->>   static const struct sdhci_iproc_data bcm2835_data = {
->>   	.pdata = &sdhci_bcm2835_pltfm_data,
->>   	.caps = ((0x1 << SDHCI_MAX_BLOCK_SHIFT)
->> @@ -261,6 +269,10 @@ static const struct sdhci_iproc_data bcm2835_data = {
->>   	.mmc_caps = 0x00000000,
->>   };
->>   
->> +static const struct sdhci_iproc_data bcm_arasan_data = {
->> +	.pdata = &sdhci_bcm_arasan_data,
->> +};
->> +
->>   static const struct sdhci_ops sdhci_iproc_bcm2711_ops = {
->>   	.read_l = sdhci_iproc_readl,
->>   	.read_w = sdhci_iproc_readw,
->> @@ -299,6 +311,8 @@ MODULE_DEVICE_TABLE(of, sdhci_iproc_of_match);
->>   static const struct acpi_device_id sdhci_iproc_acpi_ids[] = {
->>   	{ .id = "BRCM5871", .driver_data = (kernel_ulong_t)&iproc_cygnus_data },
->>   	{ .id = "BRCM5872", .driver_data = (kernel_ulong_t)&iproc_data },
->> +	{ .id = "BCM2847",  .driver_data = (kernel_ulong_t)&bcm_arasan_data },
-> 
-> Sorry, i don't have deeper knowledge about ACPI, but BCM2837 is the
-> official naming of the SoC on the RPi 3.
-> 
-> Is this a typo in the id?
+--Sig_/CT+aXbuL5T3W5/b+dTgRc7Q
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Not really.
+-----BEGIN PGP SIGNATURE-----
 
-Some background: The PFTF is basically the custodian of the combined 
-rpi3 port done by Microsoft and a few other peoples/organizations ports. 
-That merged code base was upstreamed a couple years ago to edk2 for the 
-rpi3 and is the official port. On the rpi3+uefi platform, linux is just 
-using DT, but windows and possibly other OSs are using the ACPI tables. 
-For the Rpi4, the intentions is to be an ACPI first platform, but we are 
-inheriting the rpi3 legacy peripheral descriptions. So, for the past 
-year+ everyone has been basing their rpi4 ACPI OS ports on those tables 
-and only adjusting them in backwards compatible ways.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/7ySQACgkQAVBC80lX
+0GwB5wf/awBEELLKipGDWFtIrhC/oDYltW8zhGjVg/vb6qUdEu/A3Vntzi0+n/Oo
+W6zJMC7GfE2FAm0GDqcTOI16rUgxH+mMIPpMCtfSuI6gXdzyHTuL+nYU5Q5Z2Y6d
+U/b1CirDbnYxUx+yZ6MVMzp/iAjxFHdUvK9cDrH990yQ/dCy0dE2r/A846jxLfac
+YVAODQP6K/8jWSv4vOhVSunyixjusP57IEUY5U3FcU/9ucgsTx8inrEzZImSgfmz
+RhlPuh3MpRTeiBsPEpGA4zp1RGSxddO0CH4t4BSqEY1nsVs4UYhhehaPX3AqV/bI
+F52Rhpb+3WKqsx69prYmmVINuVtnxg==
+=rQM3
+-----END PGP SIGNATURE-----
 
-Meaning, that a few years back someone put that ID in the rpi3 ACPI 
-tables, and now we are stuck with it unless we are willing to break 
-other OSs.
-
-
-> 
->> +	{ .id = "BRCME88C", .driver_data = (kernel_ulong_t)&bcm2711_data },
->>   	{ /* sentinel */ }
->>   };
->>   MODULE_DEVICE_TABLE(acpi, sdhci_iproc_acpi_ids);
-> 
-
+--Sig_/CT+aXbuL5T3W5/b+dTgRc7Q--
