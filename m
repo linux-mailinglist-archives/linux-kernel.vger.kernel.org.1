@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B1D2F1395
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A8A2F14CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:30:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731387AbhAKNL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:11:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57756 "EHLO mail.kernel.org"
+        id S1732930AbhAKNax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:30:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731214AbhAKNKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:10:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB8BA2225E;
-        Mon, 11 Jan 2021 13:09:54 +0000 (UTC)
+        id S1732261AbhAKNPr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:15:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B07F0223E8;
+        Mon, 11 Jan 2021 13:15:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370595;
-        bh=QPD51QQzmq1Ndu3cdqBmSJ550XTYsxvY9PsNYMyh/RU=;
+        s=korg; t=1610370906;
+        bh=jCNVPeOnIUB1NtbTFC3Anj//bhI87IHO9E0tIhWQgbI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wcXRWa4a+Lhur4D6P1SLs63mgE02e1Zs2spgUUYS2P8L3Ae5JMPkeS7dt2VMD/lkg
-         oqo9HWuINFh5yiJWGuWezuvTbsBeAoruJHpJv5utGcSV0ibbih6oDi5Au6+f1BLYYq
-         ZUR37124Uw1noEcmxqXhcSvIyZUckiy42WkH/CwE=
+        b=GsyocB5YpE2rhZKRCT/1njjGaSeCffzthhcPqUACc+BzEHuY9NF5JFrOan5313R3j
+         syWD0nS4XPUHYWpkAA+GrXm/NRigKfJWDX1goufPs6MH349Hy56ihMYzTIb14qeNH5
+         hs4YubI2lh4WrRkAHK8J1bkqU8ZRGNi0lqSvSXZ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 14/92] net: systemport: set dev->max_mtu to UMAC_MAX_MTU_SIZE
-Date:   Mon, 11 Jan 2021 14:01:18 +0100
-Message-Id: <20210111130039.843849493@linuxfoundation.org>
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 055/145] scsi: ufs-pci: Fix restore from S4 for Intel controllers
+Date:   Mon, 11 Jan 2021 14:01:19 +0100
+Message-Id: <20210111130051.180448033@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
-References: <20210111130039.165470698@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +40,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-[ Upstream commit 54ddbdb024882e226055cc4c3c246592ddde2ee5 ]
+[ Upstream commit c763729a10e538d997744317cf4a1c4f25266066 ]
 
-The driver is already allocating receive buffers of 2KiB and the
-Ethernet MAC is configured to accept frames up to UMAC_MAX_MTU_SIZE.
+Currently, ufshcd-pci is the only UFS driver with support for
+suspend-to-disk PM callbacks (i.e. freeze/thaw/restore/poweroff). These
+callbacks are set by the macro SET_SYSTEM_SLEEP_PM_OPS to the same
+functions as system suspend/resume. That will work with spm_lvl 5 because
+spm_lvl 5 will result in a full restore for the ->restore() callback.  In
+the absence of a full restore, the host controller registers will have
+values set up by the restore kernel (the kernel that boots and loads the
+restore image) which are not necessarily the same. However it turns out,
+the only registers that sometimes need restore are the base address
+registers. This has gone un-noticed because, depending on IOMMU settings,
+the kernel can end up allocating the same addresses every time.
 
-Fixes: bfcb813203e6 ("net: dsa: configure the MTU for switch ports")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-Link: https://lore.kernel.org/r/20201218173843.141046-1-f.fainelli@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+For Intel controllers, an spm_lvl other than 5 can be used, so to support
+S4 (suspend-to-disk) with spm_lvl other than 5, restore the base address
+registers.
+
+Link: https://lore.kernel.org/r/20201207083120.26732-2-adrian.hunter@intel.com
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/bcmsysport.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/ufs/ufshcd-pci.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
---- a/drivers/net/ethernet/broadcom/bcmsysport.c
-+++ b/drivers/net/ethernet/broadcom/bcmsysport.c
-@@ -2520,6 +2520,7 @@ static int bcm_sysport_probe(struct plat
- 			 NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM;
- 	dev->hw_features |= dev->features;
- 	dev->vlan_features |= dev->features;
-+	dev->max_mtu = UMAC_MAX_MTU_SIZE;
+diff --git a/drivers/scsi/ufs/ufshcd-pci.c b/drivers/scsi/ufs/ufshcd-pci.c
+index df3a564c3e334..360c25f1f061a 100644
+--- a/drivers/scsi/ufs/ufshcd-pci.c
++++ b/drivers/scsi/ufs/ufshcd-pci.c
+@@ -163,6 +163,24 @@ static void ufs_intel_common_exit(struct ufs_hba *hba)
+ 	intel_ltr_hide(hba->dev);
+ }
  
- 	/* Request the WOL interrupt and advertise suspend if available */
- 	priv->wol_irq_disabled = 1;
++static int ufs_intel_resume(struct ufs_hba *hba, enum ufs_pm_op op)
++{
++	/*
++	 * To support S4 (suspend-to-disk) with spm_lvl other than 5, the base
++	 * address registers must be restored because the restore kernel can
++	 * have used different addresses.
++	 */
++	ufshcd_writel(hba, lower_32_bits(hba->utrdl_dma_addr),
++		      REG_UTP_TRANSFER_REQ_LIST_BASE_L);
++	ufshcd_writel(hba, upper_32_bits(hba->utrdl_dma_addr),
++		      REG_UTP_TRANSFER_REQ_LIST_BASE_H);
++	ufshcd_writel(hba, lower_32_bits(hba->utmrdl_dma_addr),
++		      REG_UTP_TASK_REQ_LIST_BASE_L);
++	ufshcd_writel(hba, upper_32_bits(hba->utmrdl_dma_addr),
++		      REG_UTP_TASK_REQ_LIST_BASE_H);
++	return 0;
++}
++
+ static int ufs_intel_ehl_init(struct ufs_hba *hba)
+ {
+ 	hba->quirks |= UFSHCD_QUIRK_BROKEN_AUTO_HIBERN8;
+@@ -174,6 +192,7 @@ static struct ufs_hba_variant_ops ufs_intel_cnl_hba_vops = {
+ 	.init			= ufs_intel_common_init,
+ 	.exit			= ufs_intel_common_exit,
+ 	.link_startup_notify	= ufs_intel_link_startup_notify,
++	.resume			= ufs_intel_resume,
+ };
+ 
+ static struct ufs_hba_variant_ops ufs_intel_ehl_hba_vops = {
+@@ -181,6 +200,7 @@ static struct ufs_hba_variant_ops ufs_intel_ehl_hba_vops = {
+ 	.init			= ufs_intel_ehl_init,
+ 	.exit			= ufs_intel_common_exit,
+ 	.link_startup_notify	= ufs_intel_link_startup_notify,
++	.resume			= ufs_intel_resume,
+ };
+ 
+ #ifdef CONFIG_PM_SLEEP
+-- 
+2.27.0
+
 
 
