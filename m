@@ -2,100 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B25602F1F48
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:29:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0566E2F1F49
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403790AbhAKT2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:28:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51034 "EHLO mail.kernel.org"
+        id S2391262AbhAKT2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:28:38 -0500
+Received: from foss.arm.com ([217.140.110.172]:35082 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388087AbhAKT2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:28:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C83822CAE
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 19:27:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610393274;
-        bh=tqYtvUHaYqDpyPKuhUK5/MI/gbHARz8MLesQiWj0ADw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=a66UvBCKfxqIkHPPkARTreV55brvMT3whwaUMKxvrd4GAmCzlnHS7FLsZKwM7cMDl
-         PnJkxHjzrS6n+C9NVpJvDhRqhebEImS6nwTRed9DGZwL3cDHdFqE7y2439T4BY9FNx
-         EvOEmGMy1KwcjwV3Jt4mJbTniZEw5BYDgAE5xKJvtE1xU1K2V56Tm12s5SqtUE4GVz
-         tXJhTbpOAwGTErzLW2FmlERwRaaV1TO7ss7fS8xwWaSYrOEnZSUpbI/qTB5YX43SED
-         vfY5ZJCXgLztHfeGO/R3o/hbqVniDtxDnyWHg9wb9aM2SToMVwYcKyO60DwUnmFVAj
-         s3En/M5ogjPPw==
-Received: by mail-ej1-f41.google.com with SMTP id b9so43712ejy.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:27:54 -0800 (PST)
-X-Gm-Message-State: AOAM531PmIgPE9jiSiW0iL5HsL+08c9o0IqKVfznd0zjI8WKUqGsFaTa
-        wWUugTr9lcaj+sIJ9fuu1g0W2qf5ZTkgHeg2ebFs+w==
-X-Google-Smtp-Source: ABdhPJz0qAES7okEj4inElh+VMRju5HGQPLVJ+TKvrt4jREIodqDODApY9bRbDih4qWHjMDxAtPS379VjgjhPIuewa0=
-X-Received: by 2002:a17:906:52c1:: with SMTP id w1mr709722ejn.214.1610393272934;
- Mon, 11 Jan 2021 11:27:52 -0800 (PST)
+        id S2388087AbhAKT2g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 14:28:36 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 081BF101E;
+        Mon, 11 Jan 2021 11:27:51 -0800 (PST)
+Received: from [10.57.56.43] (unknown [10.57.56.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E77C23F719;
+        Mon, 11 Jan 2021 11:27:49 -0800 (PST)
+Subject: Re: [PATCH] iommu/arm-smmu-v3: Handle duplicated Stream IDs from
+ other masters
+To:     Will Deacon <will@kernel.org>,
+        Ajay Kumar <ajaykumar.rs@samsung.com>
+Cc:     mark.rutland@arm.com, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, robh+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <CGME20210107092826epcas5p100f2c57a63715baa2b3fa7219ab58c7b@epcas5p1.samsung.com>
+ <20210107093340.15279-1-ajaykumar.rs@samsung.com>
+ <20210107130319.GA2986@willie-the-truck>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <5e047da1-6619-c716-927c-ae07a90f1597@arm.com>
+Date:   Mon, 11 Jan 2021 19:27:48 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210111181520.GE25645@zn.tnic>
-In-Reply-To: <20210111181520.GE25645@zn.tnic>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 11 Jan 2021 11:27:38 -0800
-X-Gmail-Original-Message-ID: <CALCETrV98776mNd20v8r+JXt0uOUKemd_YnDYDoLXN_LDfQnog@mail.gmail.com>
-Message-ID: <CALCETrV98776mNd20v8r+JXt0uOUKemd_YnDYDoLXN_LDfQnog@mail.gmail.com>
-Subject: Re: gdbserver + fsgsbase kaputt
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Andy Lutomirski <luto@kernel.org>, tdevries@suse.com,
-        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210107130319.GA2986@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 10:15 AM Borislav Petkov <bp@alien8.de> wrote:
->
-> Hi,
->
-> so there's a breakage of a use case with gdbserver on fsgsbase machines,
-> see
->
-> https://sourceware.org/bugzilla/show_bug.cgi?id=26804
->
-> Tom has an even simpler reproducer:
->
-> $ cat test.c
-> int
-> main (void)
-> {
->   return 0;
-> }
-> $ gcc test.c -m32
-> $ gdbserver localhost:12345 a.out
-> ... other terminal ...
-> $ gdb -batch -q -ex "target remote localhost:12345" -ex continue
-> Program received signal SIGSEGV, Segmentation fault.
-> 0xf7dd8bd2 in init_cacheinfo () at ../sysdeps/x86/cacheinfo.c:761
->
-> The correct output is, of course:
->
-> ...
-> [Inferior 1 (process 1860) exited normally]
->
-> I tried to bisect this but it led me to:
->
->   b745cfba44c1 ("x86/cpu: Enable FSGSBASE on 64bit by default and add a chicken bit")
->
-> which simply enables fsgsbase so I could've made a small mistake in the
-> bisection.
->
-> I say small because booting with "nofsgsbase" cures it so it must be
-> something fsgsbase + ptrace especially since the symptom is a corrupted
-> stack canary in %gs...
+On 2021-01-07 13:03, Will Deacon wrote:
+> On Thu, Jan 07, 2021 at 03:03:40PM +0530, Ajay Kumar wrote:
+>> When PCI function drivers(ex:pci-endpoint-test) are probed for already
+>> initialized PCIe-RC(Root Complex), and PCIe-RC is already bound to SMMU,
+>> then we encounter a situation where the function driver tries to attach
+>> itself to the smmu with the same stream-id as PCIe-RC and re-initialize
+>> an already initialized STE. This causes ste_live BUG_ON() in the driver.
 
-Hmm.  Can you try booting with unsafe_fsgsbase and bisecting further?
-And maybe send me your test binary?  I tried to reproduce this, but it
-worked fine, even if I compile the test program with
--fstack-protector-all.
+Note that this is actually expected behaviour, since Stream ID aliasing 
+has remained officially not supported until a sufficiently compelling 
+reason to do so appears. I always thought the most likely scenario would 
+be a legacy PCI bridge with multiple devices behind it, but even that 
+seems increasingly improbable for a modern SMMUv3-based system to ever see.
 
-Off the top of my head, I would have expected this to fix it:
+> I don't understand why the endpoint is using the same stream ID as the root
+> complex in this case. Why is that? Is the grouping logic not working
+> properly?
 
-commit 40c45904f818c1f6555294ca27afc5fda4f09e68
-Author: Andy Lutomirski <luto@kernel.org>
-Date:   Fri Jun 26 10:24:29 2020 -0700
+It's not so much that it isn't working properly, it's more that it needs 
+to be implemented at all ;)
 
-    x86/ptrace: Fix 32-bit PTRACE_SETREGS vs fsbase and gsbase
+>> There is an already existing check in the driver to manage duplicated ids
+>> if duplicated ids are added in same master device, but there can be
+>> scenarios like above where we need to extend the check for other masters
+>> using the same stream-id.
+>>
+>> Signed-off-by: Ajay Kumar <ajaykumar.rs@samsung.com>
+>> ---
+>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 33 +++++++++++++++++++++
+>>   1 file changed, 33 insertions(+)
+> 
+> It doesn't feel like the driver is the right place to fix this, as the same
+> issue could surely occur for other IOMMUs too, right? In which case, I think
+> we should avoid getting into the situation where different groups have
+> overlapping stream IDs.
+
+Yes, this patch does not represent the correct thing to do either way. 
+The main reason that Stream ID aliasing hasn't been supported so far is 
+that the required Stream ID to group lookup is rather awkward, and 
+adding all of that complexity just for the sake of a rather unlikely 
+possibility seemed dubious. However, PRI support has always had a more 
+pressing need to implement almost the same thing (Stream ID to device), 
+so once that lands we can finally get round to adding the rest of proper 
+group support relatively easily.
+
+Robin.
