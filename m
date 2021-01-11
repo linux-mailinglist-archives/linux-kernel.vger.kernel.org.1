@@ -2,77 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7B22F1EB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11FCD2F1EB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390770AbhAKTLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:11:32 -0500
-Received: from mail.efficios.com ([167.114.26.124]:60286 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390621AbhAKTLb (ORCPT
+        id S2390778AbhAKTMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:12:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbhAKTMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:11:31 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 92E68242708;
-        Mon, 11 Jan 2021 14:10:50 -0500 (EST)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 5fIU6ltaWmJh; Mon, 11 Jan 2021 14:10:50 -0500 (EST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 6962A2424E3;
-        Mon, 11 Jan 2021 14:10:50 -0500 (EST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 6962A2424E3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1610392250;
-        bh=9JVaWje3ptDlQarmNSm8HaoAAamJjX42E76uz2J9ek4=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=ZUUXQqtgC4Vb9YKqBxdX4S2xMZ2OP9NO1FYOpP6zCKqCFdseW3u5fBcYBIBlwzwNQ
-         Kh6XGdkcIruy+1LslQ1CP1t3zflHegnrw+tfj90R9FIAEbCRQdBDcKLWCWbCd14s4L
-         TKZAd6WCD3Lr7VbLv3nZ17jhkXutpcnkq/QjOXmxli6XjpdzzC8jGwhZ51fNc8oE9O
-         PSGJokkCNqMHaUsX4MzgGjSGH69fp4O29GJeRf4A5qq1ab0N8yzt0RrYt/u1/QIuXb
-         lzZo6MyitSHIFBGeUA3PjrcPWblYvXbR0SGCZqQgnU5c170L9J0MwaoOteokJ29KKz
-         7J22ml1EaLXtQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 2IORqxS2zhVi; Mon, 11 Jan 2021 14:10:50 -0500 (EST)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 5E3BA2424E2;
-        Mon, 11 Jan 2021 14:10:50 -0500 (EST)
-Date:   Mon, 11 Jan 2021 14:10:50 -0500 (EST)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     lttng-dev <lttng-dev@lists.lttng.org>,
-        diamon-discuss@lists.linuxfoundation.org,
-        linux-trace-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <897024476.10469.1610392250359.JavaMail.zimbra@efficios.com>
-Subject: [RELEASE] LTTng-modules 2.11.7 and 2.12.4 (Linux kernel tracer)
+        Mon, 11 Jan 2021 14:12:37 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE10C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:11:57 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id v3so229796ilo.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:11:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=810FEXKXHgKArsdDAMgoY00MSSyM0BmX9OCgjLnP4Og=;
+        b=UJTB+Bj11DFpIdm8er17rTscKDWE51w0Xw2dRRyGlLp/iO1XvzF3ESU45wDzK7AgLL
+         KDzHNNcr0gD+4aSNEwy7d3hA0u2nWCIQA2DYbaGf+UeAYwShkiZ+6XXgEPg5aWBKG4Wu
+         sNfwkvLkTFcF4Mjt9QBGXOd/6dSm3eTcjMYKx+Ixf2ZU2fmyqSEmGTiNtZC6wti70BYv
+         VkZfW1ubZkvtjiu8as4xrHA+6DVXD1jDP7IHftAqlADXYweBvB9auFpDwzrWnVdfkAe5
+         g73Tzg5BbqKTLA6PxoFatGMVIdra+iw66fP1QXBemXrcBZIh7Uq5zHA7VsrIG0HID5Y0
+         QwqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=810FEXKXHgKArsdDAMgoY00MSSyM0BmX9OCgjLnP4Og=;
+        b=Y0NlyF0sKXDDKizMM7Hty3IqZqnzuiY6yH1a4P0Grspy4EPDXlLvi1X/pE4rh17l4W
+         Uaj3tI4vedYcvqvSdPFWYjJ5Ulb0bHz6HT3moEYofXgzjtH/JGUWIF/ngVNB7IDWmnxh
+         8iOoxyiOj2O2tjNdffWsjo4GKwS7QmiL8AuUt5AgiueMkssrRn04mi82UXFTKyMvIU62
+         K0y8PPSAxQOZzsAbaZBBIgLqGTm3cDiulbQn+w+C8Iy30KMd2wexn2+04JfAEazDda2f
+         O6ysngQYGREja9Mfq4IxU7TqhEGIdY3Lpf7VIh5Gxt9l8ZfApvp2Bk/g65VJcOeNBLEs
+         VIJg==
+X-Gm-Message-State: AOAM533vlpybDcwwU18z9H2juId5o1X7I3I4ccRWOoGDwIJ7U2yYWmsg
+        qmHGaFFaZo6G2IrNlfYtx3k=
+X-Google-Smtp-Source: ABdhPJyhbehmXWz3weu+cQnoRjDTjfr+Jz7S4Ow/uhQ6OpqWgtRhziYeTCnADFiQaWp9ee8lKcg0aw==
+X-Received: by 2002:a92:d2ce:: with SMTP id w14mr628841ilg.182.1610392316821;
+        Mon, 11 Jan 2021 11:11:56 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id 143sm316464ila.4.2021.01.11.11.11.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 11:11:55 -0800 (PST)
+Date:   Mon, 11 Jan 2021 12:11:54 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Walter Wu <walter-zh.wu@mediatek.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>
+Subject: Re: [PATCH v3] kasan: remove redundant config option
+Message-ID: <20210111191154.GA2941328@ubuntu-m3-large-x86>
+References: <20210108040940.1138-1-walter-zh.wu@mediatek.com>
+ <CAAeHK+weY_DMNbYGz0ZEWXp7yho3_L3qfzY94QbH9pxPgqczoQ@mail.gmail.com>
+ <20210111185902.GA2112090@ubuntu-m3-large-x86>
+ <CAAeHK+y8B9x2av0C3kj_nFEjgHmkxu1Y=5Y3U4-HzxWgTMh1uQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3991 (ZimbraWebClient - FF84 (Linux)/8.8.15_GA_3980)
-Thread-Index: 5m5q9JQ/0U77YrT12Q0xQhrp1t7WVA==
-Thread-Topic: LTTng-modules 2.11.7 and 2.12.4 (Linux kernel tracer)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAeHK+y8B9x2av0C3kj_nFEjgHmkxu1Y=5Y3U4-HzxWgTMh1uQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Jan 11, 2021 at 08:03:29PM +0100, Andrey Konovalov wrote:
+> On Mon, Jan 11, 2021 at 7:59 PM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
+> >
+> > > > -config KASAN_STACK_ENABLE
+> > > > +config KASAN_STACK
+> > > >         bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
+> > >
+> > > Does this syntax mean that KASAN_STACK is only present for
+> > > CC_IS_CLANG? Or that it can only be disabled for CC_IS_CLANG?
+> >
+> > It means that the option can only be disabled for clang.
+> 
+> OK, got it.
+> 
+> > > Anyway, I think it's better to 1. allow to control KASAN_STACK
+> > > regardless of the compiler (as it was possible before), and 2. avoid
+> >
+> > It has never been possible to control KASAN_STACK for GCC because of the
+> > bool ... if ... syntax. This patch does not change that logic. Making it
+> > possible to control KASAN_STACK with GCC seems fine but that is going to
+> > be a new change that would probably be suited for a new patch on top of
+> > this one.
+> 
+> The if syntax was never applied to KASAN_STACK, only to
+> KASAN_STACK_ENABLE, so it should have been possible (although I've
+> never specifically tried it).
 
-I just released versions 2.11.7 and 2.12.4 of the lttng-modules stable branches.
-These add support for the 5.10 Linux kernel.
+CONFIG_KASAN_STACK was not a user selectable symbol so it was always 1
+for GCC.
 
-Please try them out, and, as usual, feedback is welcome!
-
-Thanks,
-
-Mathieu
-
-Project website: https://lttng.org
-Documentation: https://lttng.org/docs
-Download link: https://lttng.org/download
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Cheers,
+Nathan
