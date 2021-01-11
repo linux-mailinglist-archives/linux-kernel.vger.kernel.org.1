@@ -2,56 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01DDF2F1C5A
+	by mail.lfdr.de (Postfix) with ESMTP id DA8992F1C5C
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389487AbhAKR3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 12:29:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56680 "EHLO mail.kernel.org"
+        id S2389548AbhAKR3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 12:29:36 -0500
+Received: from aposti.net ([89.234.176.197]:36546 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732124AbhAKR3T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:29:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58C94222F9;
-        Mon, 11 Jan 2021 17:28:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610386118;
-        bh=j+QMNrWKiTVgiGIKhk5GzLT1jTpZdiSLSOdz2EEYJ9s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tn4Rm/ndpygV/ABLlCx79nWnj4Sw/X4F4q8JaU4l86OHAqcHNTHD5yG5P1HvoBDIP
-         kFro0WNthg+SPB10O6+wU3+5dfKyVi0XFwmVOmBKr7FxFyeeLAC/8mFbkMDRbp2RwF
-         KO3czdtVSu2be/LQUnZhw5ZyNVt8FRZMRBeXLHVrI8zsyDAxT+3dirYLsfvLNstWvn
-         vcSZWFNvHUinYeI+uKpcFPyAmm+YDfrr73K3vM9grSrBdN9/Ns9Gb15+iDgrUlPj6b
-         PF+KFEYVNi4w0jQX5fONBcbhtS+7MLJKV9xnc9zjmv+CoqrOFd8VM7kYu3urcwB9VU
-         sekL2BeqAMegQ==
-Date:   Mon, 11 Jan 2021 09:28:37 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Loic Poulain <loic.poulain@linaro.org>
-Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        Hemant Kumar <hemantk@codeaurora.org>
-Subject: Re: [PATCH net-next 1/3] bus: mhi: core: Add helper API to return
- number of free TREs
-Message-ID: <20210111092837.74115334@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1610385379-15140-1-git-send-email-loic.poulain@linaro.org>
-References: <1610385379-15140-1-git-send-email-loic.poulain@linaro.org>
+        id S2388882AbhAKR3f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 12:29:35 -0500
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
+        stable@vger.kernel.org
+Subject: [PATCH] seccomp: Add missing return in non-void function
+Date:   Mon, 11 Jan 2021 17:28:39 +0000
+Message-Id: <20210111172839.640914-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Jan 2021 18:16:17 +0100 Loic Poulain wrote:
-> From: Hemant Kumar <hemantk@codeaurora.org>
-> 
-> Introduce mhi_get_free_desc_count() API to return number
-> of TREs available to queue buffer. MHI clients can use this
-> API to know before hand if ring is full without calling queue
-> API.
-> 
-> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
-> Reviewed-by: Jeffrey Hugo <jhugo@codeaurora.org>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+We don't actually care about the value, since the kernel will panic
+before that; but a value should nonetheless be returned, otherwise the
+compiler will complain.
 
-You put net-next in the subject but this is not CCed to netdev.
-What's the intention?
+Fixes: 8112c4f140fa ("seccomp: remove 2-phase API")
+Cc: stable@vger.kernel.org # 4.7+
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ kernel/seccomp.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 952dc1c90229..63b40d12896b 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -1284,6 +1284,8 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+ 			    const bool recheck_after_trace)
+ {
+ 	BUG();
++
++	return -1;
+ }
+ #endif
+ 
+-- 
+2.29.2
+
