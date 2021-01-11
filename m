@@ -2,85 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9032F1E13
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 19:31:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF672F1E16
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 19:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390599AbhAKSaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 13:30:35 -0500
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:34124 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390533AbhAKSac (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 13:30:32 -0500
-Date:   Mon, 11 Jan 2021 18:29:44 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610389789; bh=ed2E3ZDT8/tIMKq0U8JNRKLCBc4eky4hYA4RXRAiMWs=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=XrpbpgkFYGY8WwMuHq87QqgNIu7l+lsA2yUPH41gqPBBZh3R/kMs6CFmeinU1Zsr5
-         z58eX9902Rn+oIxj0Cb/AgwmHkbw/RfKHgK019AIcX7euBUWPADyc5rsXFEjOXcEkR
-         vbRB30hBlfCaiQ5x38bHxwxM3fkR1dCEZGjnWqxtFYSAWIsIWEElj/BbtBZmqMHoIl
-         +XhBUJVawl6/qs0Hs2RrKG/B66moh68B4SuT61suhO0XLQhjlRkuiZLAnIQjyxc0bD
-         wOs4lyl1MI62nGmjE9goqazW3kLnrs8eaRRLtvYkFrrO4646b64vzr64wvozj3vrvo
-         G/PxsoNsEPXUg==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH net-next 5/5] skbuff: refill skb_cache early from deferred-to-consume entries
-Message-ID: <20210111182801.12609-5-alobakin@pm.me>
-In-Reply-To: <20210111182801.12609-1-alobakin@pm.me>
-References: <20210111182655.12159-1-alobakin@pm.me> <20210111182801.12609-1-alobakin@pm.me>
+        id S2390627AbhAKSbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 13:31:37 -0500
+Received: from foss.arm.com ([217.140.110.172]:34360 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389276AbhAKSbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 13:31:36 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 89AD9101E;
+        Mon, 11 Jan 2021 10:30:50 -0800 (PST)
+Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 636243F70D;
+        Mon, 11 Jan 2021 10:30:49 -0800 (PST)
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     james.quinlan@broadcom.com, Jim Quinlan <jim2101024@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        "open list:SYSTEM CONTROL & POWER/MANAGEMENT INTERFACE Mes..." 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 0/2] firmware: arm_scmi: Augment SMC/HVC to allow optional interrupt
+Date:   Mon, 11 Jan 2021 18:30:43 +0000
+Message-Id: <161038967783.12198.12858396515657491931.b4-ty@arm.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201222145603.40192-1-jim2101024@gmail.com>
+References: <20201222145603.40192-1-jim2101024@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of unconditional queueing of ready-to-consume skbuff_heads
-to flush_skb_cache, feed skb_cache with them instead if it's not
-full already.
-This greatly reduces the frequency of kmem_cache_alloc_bulk() calls.
+On Tue, 22 Dec 2020 09:56:01 -0500, Jim Quinlan wrote:
+> v4 -- s/message-serviced/a2p/ in the bindings commit message.
+>    -- Changed author/s-o-b/committer email address as my company is now
+>       appending boilerplate text to all outgoing emails.
+> 
+> v3 -- Changed interrupt name from "message-serviced" to "a2p" (RobH)
+> 
+> v2 -- Correct commit message, s/msg/message/, and remove extra WS on
+>       "dt-bindings" commit (Sudeep)
+>    -- Change interrupt name to "message-serviced", move irq assignent to end
+>       of function. (Sudeep)
+> 
+> [...]
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- net/core/skbuff.c | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 57a7307689f3..ba0d5611635e 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -904,6 +904,11 @@ static inline void _kfree_skb_defer(struct sk_buff *sk=
-b)
- =09/* drop skb->head and call any destructors for packet */
- =09skb_release_all(skb);
-=20
-+=09if (nc->skb_count < NAPI_SKB_CACHE_SIZE) {
-+=09=09nc->skb_cache[nc->skb_count++] =3D skb;
-+=09=09return;
-+=09}
-+
- =09/* record skb to CPU local list */
- =09nc->flush_skb_cache[nc->flush_skb_count++] =3D skb;
-=20
---=20
-2.30.0
+Applied to sudeep.holla/linux (for-next/scmi), thanks!
 
+[1/2] dt-bindings: arm: Add optional interrupt to smc/hvc SCMI transport
+      https://git.kernel.org/sudeep.holla/c/99a064fb3a
+[2/2] firmware: arm_scmi: Augment SMC/HVC to allow optional interrupt
+      https://git.kernel.org/sudeep.holla/c/dd820ee21d
+
+--
+Regards,
+Sudeep
 
