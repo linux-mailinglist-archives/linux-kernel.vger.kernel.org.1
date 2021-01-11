@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5DD2F15F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:47:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C872F14DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:32:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387621AbhAKNrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:47:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57836 "EHLO mail.kernel.org"
+        id S1732472AbhAKNcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:32:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731241AbhAKNKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:10:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82A6C22BE9;
-        Mon, 11 Jan 2021 13:10:01 +0000 (UTC)
+        id S1731894AbhAKNP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:15:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7048A22795;
+        Mon, 11 Jan 2021 13:15:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370602;
-        bh=EAhWSQkXW63VL3rG5c2uB4CZNDm/2e+GJaZ6dJ8vEnA=;
+        s=korg; t=1610370912;
+        bh=ba5DDOCOWU2rUNvSaILRUFl/P5ERLkhqrZq6lwPUL3U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G/ptOHtUXMWhGAyBllgkD0V5BScGPD7nq9UfuvFUqZK+PzScbZBVOMoTgaQ5+H3s1
-         eneCw5wNm+O3dXueS3tFirz+yAXyUZglY8EiSF3B4iVQEGVs/QLeQ4Ur2da/prKhZt
-         +ci9uOYrbXJxKOH6WM9ajlvqFsFr8uyjaVVmEGQk=
+        b=WIbLTBNM1wg/jzRcS48w6G3Fertj7jRyZlVS1M2kW9cKL6oElPIuQ7TLB0YdvMmkv
+         TVN8qGCzqyM78TtLLIfXu7NjHwF53gQMhbojzsNDiN/EJFVRW3qey8mfLP65zPXqLb
+         vpjHXh+LxXsORw5AfjU4/3mJ7gM2U+7cWoYRNGbc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 17/92] atm: idt77252: call pci_disable_device() on error path
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 057/145] scsi: ufs-pci: Fix recovery from hibernate exit errors for Intel controllers
 Date:   Mon, 11 Jan 2021 14:01:21 +0100
-Message-Id: <20210111130039.995280118@linuxfoundation.org>
+Message-Id: <20210111130051.277712298@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
-References: <20210111130039.165470698@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,31 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-[ Upstream commit 8df66af5c1e5f80562fe728db5ec069b21810144 ]
+[ Upstream commit 044d5bda7117891d6d0d56f2f807b7b11e120abd ]
 
-This error path needs to disable the pci device before returning.
+Intel controllers can end up in an unrecoverable state after a hibernate
+exit error unless a full reset and restore is done before anything else.
+Force that to happen.
 
-Fixes: ede58ef28e10 ("atm: remove deprecated use of pci api")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/X93dmC4NX0vbTpGp@mwanda
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20201207083120.26732-4-adrian.hunter@intel.com
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/atm/idt77252.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/ufs/ufshcd-pci.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
---- a/drivers/atm/idt77252.c
-+++ b/drivers/atm/idt77252.c
-@@ -3606,7 +3606,7 @@ static int idt77252_init_one(struct pci_
+diff --git a/drivers/scsi/ufs/ufshcd-pci.c b/drivers/scsi/ufs/ufshcd-pci.c
+index 5d33c39fa82f0..888d8c9ca3a55 100644
+--- a/drivers/scsi/ufs/ufshcd-pci.c
++++ b/drivers/scsi/ufs/ufshcd-pci.c
+@@ -178,6 +178,23 @@ static int ufs_intel_resume(struct ufs_hba *hba, enum ufs_pm_op op)
+ 		      REG_UTP_TASK_REQ_LIST_BASE_L);
+ 	ufshcd_writel(hba, upper_32_bits(hba->utmrdl_dma_addr),
+ 		      REG_UTP_TASK_REQ_LIST_BASE_H);
++
++	if (ufshcd_is_link_hibern8(hba)) {
++		int ret = ufshcd_uic_hibern8_exit(hba);
++
++		if (!ret) {
++			ufshcd_set_link_active(hba);
++		} else {
++			dev_err(hba->dev, "%s: hibern8 exit failed %d\n",
++				__func__, ret);
++			/*
++			 * Force reset and restore. Any other actions can lead
++			 * to an unrecoverable state.
++			 */
++			ufshcd_set_link_off(hba);
++		}
++	}
++
+ 	return 0;
+ }
  
- 	if ((err = dma_set_mask_and_coherent(&pcidev->dev, DMA_BIT_MASK(32)))) {
- 		printk("idt77252: can't enable DMA for PCI device at %s\n", pci_name(pcidev));
--		return err;
-+		goto err_out_disable_pdev;
- 	}
- 
- 	card = kzalloc(sizeof(struct idt77252_dev), GFP_KERNEL);
+-- 
+2.27.0
+
 
 
