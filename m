@@ -2,118 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8802F21B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:22:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 991A72F21B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729826AbhAKVVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 16:21:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726840AbhAKVVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 16:21:42 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59BC022CB2;
-        Mon, 11 Jan 2021 21:21:01 +0000 (UTC)
-Date:   Mon, 11 Jan 2021 16:20:59 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Subject: [GIT PULL] tracing/kprobes: Do the notrace functions check without
- kprobes on ftrace
-Message-ID: <20210111162059.28d4c91a@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1730497AbhAKVWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 16:22:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730374AbhAKVWG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 16:22:06 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA79C061795
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:21:26 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id ce23so416789ejb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:21:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+AfvfCqsfaWkYAg6+USDuxUF1iByJwAHFmuzpuqID3o=;
+        b=JNXA4eh+XvS7VbDRQow9rDSG63sK6s8viFtRvPQKLPQc5znp1NdUI+ZUf2P+tJOUmN
+         msc82S/JFuJGrRoM96c06ABMd8qdGoW8j1IEzQwCVlvHzQ2imnfCuaccwTzaM35r4yoC
+         5ctGnMEryb+INkdAhzu1jnFQyEdFzL61rGkEb8VgJhPqyb/vETkhRofHD5JvBPLdcmwG
+         j2JTXkJXSUQe4tun8gWbG4BaJx0oaPce60HdcO4m20+mGHVYG4kNbNbYYspvtF5AVi+w
+         Zf2O2+H+VDOqksZzd2mznPvSOVOObBMI1J3ePh8ZKuDRL33S3wmmaqGxZ8ADVTGHjlO/
+         uJFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+AfvfCqsfaWkYAg6+USDuxUF1iByJwAHFmuzpuqID3o=;
+        b=ShH/JzusuPgf8poglU1FFTu+dcZZrauwnrJRBDf/y9ZLOgMmp2iyvZhqIQX6aK2Oik
+         yHP0FOy/3S18hYl5bhAYromEph5VxQYzRJ8eNzijMlFqYW8+zy6C7kiG/wCozlmQdb+n
+         88Qcg3p9w5EaqjlYfq+ZDQ6Y+n5OVe28QmzFX4lgiI4Fwaa9x9Du8Nde33+QxmuoBI9o
+         coGaIiny8M9DmpwWXymAdLBYnzOZxS6DV55ciFMKj3VxJX6VHMI/h8kbjW6UeCvfAQ9m
+         mRa58kHIueD4RYtx98dC+awZ6KD9rN8PNt9T5uymEcXqp5h1KUDXV6HEA02IZd7o3bNj
+         0K3A==
+X-Gm-Message-State: AOAM533GvHnlOYckHYBnxp3e7bvx+jKR7yLcB7UdGbbyAysuIz39357+
+        oyRNq80VwRhGwGkq5zHPZH/1p54hIvg9i9CaG9Y=
+X-Google-Smtp-Source: ABdhPJyFOrpHE8t0ZJOiqnyBKrLl6Kg5x7EcGRv1wS/EVN/VXJyRmG8bui3pJBKEPi/eo+tz32T94OYlqAGygy6os8k=
+X-Received: by 2002:a17:906:1a4e:: with SMTP id j14mr879710ejf.507.1610400084987;
+ Mon, 11 Jan 2021 13:21:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <c617a0c6cb2a7e3bc78998ad7e2bceb22df157c2.1610398598.git.sudaraja@codeaurora.org>
+In-Reply-To: <c617a0c6cb2a7e3bc78998ad7e2bceb22df157c2.1610398598.git.sudaraja@codeaurora.org>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 11 Jan 2021 13:21:12 -0800
+Message-ID: <CAHbLzkoZpiY3qB-fuvg+HYb+SwOvY8qiHLfFG=aibgRyP5bpCQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: vmscan: support equal reclaim for anon and file pages
+To:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Masami Hiramatsu <mhiramat@kernel.org>
+On Mon, Jan 11, 2021 at 12:59 PM Sudarshan Rajagopalan
+<sudaraja@codeaurora.org> wrote:
+>
+> When performing memory reclaim support treating anonymous and
+> file backed pages equally.
+> Swapping anonymous pages out to memory can be efficient enough
+> to justify treating anonymous and file backed pages equally.
+>
+> Signed-off-by: Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> ---
+>  mm/vmscan.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 257cba79a96d..ec7585e0d5f5 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -169,6 +169,8 @@ struct scan_control {
+>   */
+>  int vm_swappiness = 60;
+>
+> +bool balance_anon_file_reclaim = false;
 
-Linus,
+I think the same effect could be achieved by adjusting swappiness. The
+"swappiness" can go to 200 now.
 
-Blacklist properly on all archs
+Please check the document at Documentation/admin-guide/sysctl/vm.rst, it says:
 
-The way to blacklist notrace functions for kprobes was not using
-the proper kconfig which caused some archs (powerpc) from blacklisting
-them.
+This control is used to define the rough relative IO cost of swapping
+and filesystem paging, as a value between 0 and 200. At 100, the VM
+assumes equal IO cost and will thus apply memory pressure to the page
+cache and swap-backed pages equally; lower values signify more
+expensive swap IO, higher values indicates cheaper.
 
-
-Please pull the latest trace-v5.11-rc2 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-trace-v5.11-rc2
-
-Tag SHA1: 9d83e1055c7a49abf656a3fe6ee390315a8f29da
-Head SHA1: 7bb83f6fc4ee84e95d0ac0d14452c2619fb3fe70
-
-
-Masami Hiramatsu (1):
-      tracing/kprobes: Do the notrace functions check without kprobes on ftrace
-
-----
- kernel/trace/Kconfig        | 2 +-
- kernel/trace/trace_kprobe.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
----------------------------
-commit 7bb83f6fc4ee84e95d0ac0d14452c2619fb3fe70
-Author: Masami Hiramatsu <mhiramat@kernel.org>
-Date:   Fri Jan 8 13:19:38 2021 +0900
-
-    tracing/kprobes: Do the notrace functions check without kprobes on ftrace
-    
-    Enable the notrace function check on the architecture which doesn't
-    support kprobes on ftrace but support dynamic ftrace. This notrace
-    function check is not only for the kprobes on ftrace but also
-    sw-breakpoint based kprobes.
-    Thus there is no reason to limit this check for the arch which
-    supports kprobes on ftrace.
-    
-    This also changes the dependency of Kconfig. Because kprobe event
-    uses the function tracer's address list for identifying notrace
-    function, if the CONFIG_DYNAMIC_FTRACE=n, it can not check whether
-    the target function is notrace or not.
-    
-    Link: https://lkml.kernel.org/r/20210105065730.2634785-1-naveen.n.rao@linux.vnet.ibm.com
-    Link: https://lkml.kernel.org/r/161007957862.114704.4512260007555399463.stgit@devnote2
-    
-    Cc: stable@vger.kernel.org
-    Fixes: 45408c4f92506 ("tracing: kprobes: Prohibit probing on notrace function")
-    Acked-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-    Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index d5a19413d4f8..c1a62ae7e812 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -538,7 +538,7 @@ config KPROBE_EVENTS
- config KPROBE_EVENTS_ON_NOTRACE
- 	bool "Do NOT protect notrace function from kprobe events"
- 	depends on KPROBE_EVENTS
--	depends on KPROBES_ON_FTRACE
-+	depends on DYNAMIC_FTRACE
- 	default n
- 	help
- 	  This is only for the developers who want to debug ftrace itself
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 9c31f42245e9..e6fba1798771 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -434,7 +434,7 @@ static int disable_trace_kprobe(struct trace_event_call *call,
- 	return 0;
- }
- 
--#if defined(CONFIG_KPROBES_ON_FTRACE) && \
-+#if defined(CONFIG_DYNAMIC_FTRACE) && \
- 	!defined(CONFIG_KPROBE_EVENTS_ON_NOTRACE)
- static bool __within_notrace_func(unsigned long addr)
- {
+> +
+>  static void set_task_reclaim_state(struct task_struct *task,
+>                                    struct reclaim_state *rs)
+>  {
+> @@ -201,6 +203,13 @@ static DECLARE_RWSEM(shrinker_rwsem);
+>  static DEFINE_IDR(shrinker_idr);
+>  static int shrinker_nr_max;
+>
+> +static int __init cmdline_parse_balance_reclaim(char *p)
+> +{
+> +       balance_anon_file_reclaim = true;
+> +       return 0;
+> +}
+> +early_param("balance_reclaim", cmdline_parse_balance_reclaim);
+> +
+>  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+>  {
+>         int id, ret = -ENOMEM;
+> @@ -2291,9 +2300,11 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+>
+>         /*
+>          * If there is enough inactive page cache, we do not reclaim
+> -        * anything from the anonymous working right now.
+> +        * anything from the anonymous working right now. But when balancing
+> +        * anon and page cache files for reclaim, allow swapping of anon pages
+> +        * even if there are a number of inactive file cache pages.
+>          */
+> -       if (sc->cache_trim_mode) {
+> +       if (!balance_anon_file_reclaim && sc->cache_trim_mode) {
+>                 scan_balance = SCAN_FILE;
+>                 goto out;
+>         }
+> --
+> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+>
+>
