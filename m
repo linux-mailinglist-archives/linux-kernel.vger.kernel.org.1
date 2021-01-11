@@ -2,59 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1702F22B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D14F02F22B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390130AbhAKWZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 17:25:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726725AbhAKWZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:25:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id D517722D07;
-        Mon, 11 Jan 2021 22:24:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610403863;
-        bh=cZy5iG1dWnO85D0f/h8kXpBNZ3w1DGJAW/MQdSkgCQc=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=CD+dVflhcuLtD9tDg5emdy+S8KSXctN/PPtiE4nlfBhAfw5nF3BHANjZyJQH+VB5a
-         zmA/JZYooCJBrCKP5iceA2JGK32ycQcxpyeCO8e6UgvE8CTEh/I21Mtb4hi0euK9Pz
-         c1upoGwVOipuUtzuYz/U/INhAjPX7aGC2227MqgbqJkc+FC2vyGnzYJk0kjdhiICAx
-         wbLvp3sRtpoBA82+WjgYaFdgpB6kIeNNn1HAAR5+8tUwaeGrH3G6EkI9in6+E7yz2m
-         pULqwp5XBTEJ6dmWP4J7V4kf82ZnodTz65LBpanthh9Lsr5ITN5i67cEqiE1xhN1wj
-         CR52cwBeC513Q==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id C208360188;
-        Mon, 11 Jan 2021 22:24:23 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 5.11-rc4
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1610386850.git.dsterba@suse.com>
-References: <cover.1610386850.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1610386850.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc3-tag
-X-PR-Tracked-Commit-Id: e076ab2a2ca70a0270232067cd49f76cd92efe64
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6e68b9961ff690ace07fac22c3c7752882ecc40a
-Message-Id: <161040386372.14966.4925989524744804733.pr-tracker-bot@kernel.org>
-Date:   Mon, 11 Jan 2021 22:24:23 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S2390239AbhAKW0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 17:26:09 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:43801 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390076AbhAKW0I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 17:26:08 -0500
+Received: by mail-ot1-f44.google.com with SMTP id q25so405774otn.10;
+        Mon, 11 Jan 2021 14:25:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4PfTLxMOVvDlbCq/bvKfXWzNilh/iML3qIR50BxBSjY=;
+        b=r38AQsZp7zMwFP4VNmVSYxjO+L1Rf1FOQ1v+kuQXVZHil2+6hu1c65KOGjIQxozLB7
+         K+0wrRbBpl/AvPk3nSXeJcrFCX4BYlaF4gx/1PCWZNf4BjjDcQBYx/9g6c3dMHUVXstx
+         Jm3fUKkxO2qil+A8QWBN8XyrC0QTgMxpIWWl1mkhhohjcJ+0J2zvY9TAzio/6Xdedu6R
+         8e9YPh9s0A/v3LtY1jTodWrnHP0lyOJl8lIb54a+2z+nXq7Lcd7S50wbunEBMRxx8al3
+         FFaiQiQedcCuOFIynrOPtPqQOZLlQcURF0Yds4R9HZ6fsPYcRlm3A+WETDf6IEYBLSJJ
+         gMnA==
+X-Gm-Message-State: AOAM531SDipokK/D4R27Y+oWjgnzn5DajmfTQeFIUgJinadrDu4r2N5c
+        nOV5ixckQzSSp7Ov6d9xeQ==
+X-Google-Smtp-Source: ABdhPJxHduQTK2m6PjKWQtnXIxp9PMu6VCRKLlpfa4iwt0UhBX6oIT2kiPwO6YaYT+/NsMM2CLOzTw==
+X-Received: by 2002:a05:6830:1d8e:: with SMTP id y14mr834615oti.356.1610403927646;
+        Mon, 11 Jan 2021 14:25:27 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id t26sm238517otm.17.2021.01.11.14.25.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 14:25:26 -0800 (PST)
+Received: (nullmailer pid 3168352 invoked by uid 1000);
+        Mon, 11 Jan 2021 22:25:25 -0000
+Date:   Mon, 11 Jan 2021 16:25:25 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        robh+dt@kernel.org, bjorn.andersson@linaro.org,
+        linux-remoteproc@vger.kernel.org, ohad@wizery.com
+Subject: Re: [PATCH v2 3/5] dt-bindings: remoteproc: Add the documentation
+ for Meson AO ARC rproc
+Message-ID: <20210111222525.GA3168299@robh.at.kernel.org>
+References: <20210102205904.2691120-1-martin.blumenstingl@googlemail.com>
+ <20210102205904.2691120-4-martin.blumenstingl@googlemail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210102205904.2691120-4-martin.blumenstingl@googlemail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 11 Jan 2021 22:09:55 +0100:
+On Sat, 02 Jan 2021 21:59:02 +0100, Martin Blumenstingl wrote:
+> Amlogic Meson6, Meson8, Meson8b and Meson8m2 SoCs embed an ARC EM4
+> controller for always-on operations, typically used for managing system
+> suspend.
+> 
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> ---
+>  .../remoteproc/amlogic,meson-mx-ao-arc.yaml   | 87 +++++++++++++++++++
+>  1 file changed, 87 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/remoteproc/amlogic,meson-mx-ao-arc.yaml
+> 
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc3-tag
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6e68b9961ff690ace07fac22c3c7752882ecc40a
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Reviewed-by: Rob Herring <robh@kernel.org>
