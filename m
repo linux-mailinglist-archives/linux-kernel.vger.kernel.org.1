@@ -2,64 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 748A52F22F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A28652F2352
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 01:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390666AbhAKWlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 17:41:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57758 "EHLO mail.kernel.org"
+        id S2390528AbhALAYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 19:24:39 -0500
+Received: from foss.arm.com ([217.140.110.172]:37320 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728062AbhAKWlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:41:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id AB601222B3;
-        Mon, 11 Jan 2021 22:40:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610404825;
-        bh=tku730vYVw2BXbF+cIp4eI/dy1XVKT/ZozV7dirFPA8=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=mWE9THHcd4hIkUgTlmADTyN6N8NB/Zbsx7WG6S+JKvF1C6sh+4yIbj2420p7QD06f
-         SybO4ZYKRswy4KUg/KxFmLZ4PcbLqwSJZX/zen5c54a+Tgak7HL5IoVaB0kpJFijfN
-         bjFRf95YmsuI6C+RqDvRuS1BPWQl/j0PADRbQRull9gdN3CjqUEytVZZ30GBylpKHU
-         BPD4xzR1/qWeJ/hL7m70A3Fs4+wODO8jJVcZwXIPR6AErrEMLN9RuOuEeAC5+gUhlY
-         qHi80DwnMH237UUGOHtmSoqoFpds5opn0lWbWuoD1hvXv8GZ1HrGewYWBbEe4G9l9v
-         czoLs+JZ7I6ig==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 98C6E600E0;
-        Mon, 11 Jan 2021 22:40:25 +0000 (UTC)
-Subject: Re: [GIT PULL] tracing/kprobes: Do the notrace functions check without
- kprobes on ftrace
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210111162059.28d4c91a@gandalf.local.home>
-References: <20210111162059.28d4c91a@gandalf.local.home>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210111162059.28d4c91a@gandalf.local.home>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.11-rc2
-X-PR-Tracked-Commit-Id: 7bb83f6fc4ee84e95d0ac0d14452c2619fb3fe70
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a0d54b4f5b219fb31f0776e9f53aa137e78ae431
-Message-Id: <161040482555.23384.11326149910780672324.pr-tracker-bot@kernel.org>
-Date:   Mon, 11 Jan 2021 22:40:25 +0000
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+        id S2390769AbhAKWsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 17:48:32 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 89F1E31B;
+        Mon, 11 Jan 2021 14:47:46 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 028F23F70D;
+        Mon, 11 Jan 2021 14:47:44 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org, Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
+In-Reply-To: <X/yzrJw4UbQsK3KB@hirez.programming.kicks-ass.net>
+References: <20201226025117.2770-1-jiangshanlai@gmail.com> <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net> <87o8hv7pnd.fsf@nanos.tec.linutronix.de> <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net> <X/yH9+MGa1JCNZ8x@hirez.programming.kicks-ass.net> <jhj7doj1dr1.mognet@arm.com> <X/yzrJw4UbQsK3KB@hirez.programming.kicks-ass.net>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Mon, 11 Jan 2021 22:47:39 +0000
+Message-ID: <jhj4kjn146s.mognet@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 11 Jan 2021 16:20:59 -0500:
+On 11/01/21 21:23, Peter Zijlstra wrote:
+> On Mon, Jan 11, 2021 at 07:21:06PM +0000, Valentin Schneider wrote:
+>> I'm less fond of the workqueue pcpu flag toggling, but it gets us what
+>> we want: allow those threads to run on !active CPUs during online, but
+>> move them away before !online during offline.
+>>
+>> Before I get ahead of myself, do we *actually* require that first part
+>> for workqueue kthreads? I'm thinking (raise alarm) we could try another
+>> approach of making them pcpu kthreads that don't abide by the !active &&
+>> online rule.
+>
+> There is code that really requires percpu workqueues to be percpu. Such
+> code will flush the percpu workqueue on hotplug and never hit the unbind
+> scenario.
+>
+> Other code uses those same percpu workqueues and only uses it as a
+> performance enhancer, it likes things to stay local, but if not, meh..
+> And these users are what got us the weird ass semantics of workqueue.
+>
+> Sadly workqueue itself can't tell them apart.
+>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.11-rc2
+Oh well...
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a0d54b4f5b219fb31f0776e9f53aa137e78ae431
+FWIW now that I've unconfused myself, that does look okay.
 
-Thank you!
+>> > ---
+>> >  include/linux/kthread.h |  3 +++
+>> >  kernel/kthread.c        | 25 ++++++++++++++++++++++++-
+>> >  kernel/sched/core.c     |  2 +-
+>> >  kernel/sched/sched.h    |  4 ++--
+>> >  kernel/smpboot.c        |  1 +
+>> >  kernel/workqueue.c      | 12 +++++++++---
+>> >  6 files changed, 40 insertions(+), 7 deletions(-)
+>> >
+>> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> > index 15d2562118d1..e71f9e44789e 100644
+>> > --- a/kernel/sched/core.c
+>> > +++ b/kernel/sched/core.c
+>> > @@ -7277,7 +7277,7 @@ static void balance_push(struct rq *rq)
+>> >        * Both the cpu-hotplug and stop task are in this case and are
+>> >        * required to complete the hotplug process.
+>> >        */
+>> > -	if (is_per_cpu_kthread(push_task) || is_migration_disabled(push_task)) {
+>> > +	if (rq->idle == push_task || is_per_cpu_kthread(push_task) || is_migration_disabled(push_task)) {
+>>
+>> I take it the p->set_child_tid thing you were complaining about on IRC
+>> is what prevents us from having the idle task seen as a pcpu kthread?
+>
+> Yes, to to_kthread() only tests PF_KTHREAD and then assumes
+> p->set_child_tid points to struct kthread, _however_ init_task has
+> PF_KTHREAD set, but a NULL ->set_child_tid.
+>
+> This then means the idle thread for the boot CPU will malfunction with
+> to_kthread() and will certainly not have KTHREAD_IS_PER_CPU set. Per
+> construction (fork_idle()) none of the other idle threads will have that
+> cured either.
+>
+> For fun and giggles, init (pid-1) will have PF_KTHREAD set for a while
+> as well, until we exec /sbin/init.
+>
+> Anyway, idle will fail kthread_is_per_cpu(), and hence without the
+> above, we'll try and push the idle task away, which results in much
+> fail.
+>
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Quite!
+
+>> Also, shouldn't this be done before the previous set_cpus_allowed_ptr()
+>> call (in the same function)?
+>
+> Don't see why; we need nr_cpus_allowed == 1, so best do it after, right?
+>
+
+Duh, yes.
+
+>> That is, if we patch
+>> __set_cpus_allowed_ptr() to also use kthread_is_per_cpu().
+>
+> That seems wrong.
+>
+
+It is, apologies.
+
+>> >       list_add_tail(&worker->node, &pool->workers);
+>> >       worker->pool = pool;
