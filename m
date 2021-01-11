@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6600F2F137F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E75802F1488
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:27:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730954AbhAKNJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:09:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56058 "EHLO mail.kernel.org"
+        id S1731949AbhAKNZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:25:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726018AbhAKNIj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:08:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8A3922515;
-        Mon, 11 Jan 2021 13:07:57 +0000 (UTC)
+        id S1732506AbhAKNQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:16:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7BB32229C;
+        Mon, 11 Jan 2021 13:16:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370478;
-        bh=+PhNYaJRKwJL82R8eXZDP1hmbMQTKaZyDAdhnImVDf8=;
+        s=korg; t=1610370976;
+        bh=WVs8kfxPIchJ0sNdhK1kVYOmHTj23s/Jk/tyhc+kvTg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ekpUbH4+lWCpEH6xc2qlFDH6/jsD7/HRBPKOLRQYeJLN3gIFeFp3aTkG6wBnu8Uyb
-         PmnQKqLet368OUrYlpvJuoZWSflv4BvOGQGrw/lkceh1csB/6Jf4LVZ0nM6COpOKVX
-         BZUDWgw4sPD5uSbLnDJevkmNn6yqk/QawJAuFdu4=
+        b=inqdBzLdd74rS0iUeVrDM1s3u2959HntgLsFRmTMWyUeUbLcjEx3/3+ARtMyiCID2
+         7CkZtFfvVbK3McxWUAR8XXQv/sKQlfh2fXc7WfmhJnvk0V0jCHnjM4wYTBDKqfAfBE
+         JBZjioUG1OQq3EK+bhWMgZfbaRguZBUl4GpvlPVo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 40/77] video: hyperv_fb: Fix the mmap() regression for v5.4.y and older
-Date:   Mon, 11 Jan 2021 14:01:49 +0100
-Message-Id: <20210111130038.342683444@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Subject: [PATCH 5.10 086/145] usb: dwc3: ulpi: Replace CPU-based busyloop with Protocol-based one
+Date:   Mon, 11 Jan 2021 14:01:50 +0100
+Message-Id: <20210111130052.662759358@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,73 +40,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dexuan Cui <decui@microsoft.com>
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-db49200b1dad is backported from the mainline commit
-5f1251a48c17 ("video: hyperv_fb: Fix the cache type when mapping the VRAM"),
-to v5.4.y and older stable branches, but unluckily db49200b1dad causes
-mmap() to fail for /dev/fb0 due to EINVAL:
+commit fca3f138105727c3a22edda32d02f91ce1bf11c9 upstream.
 
-[ 5797.049560] x86/PAT: a.out:1910 map pfn expected mapping type
-  uncached-minus for [mem 0xf8200000-0xf85cbfff], got write-back
+Originally the procedure of the ULPI transaction finish detection has been
+developed as a simple busy-loop with just decrementing counter and no
+delays. It's wrong since on different systems the loop will take a
+different time to complete. So if the system bus and CPU are fast enough
+to overtake the ULPI bus and the companion PHY reaction, then we'll get to
+take a false timeout error. Fix this by converting the busy-loop procedure
+to take the standard bus speed, address value and the registers access
+mode into account for the busy-loop delay calculation.
 
-This means the v5.4.y kernel detects an incompatibility issue about the
-mapping type of the VRAM: db49200b1dad changes to use Write-Back when
-mapping the VRAM, while the mmap() syscall tries to use Uncached-minus.
-That’s to say, the kernel thinks Uncached-minus is incompatible with
-Write-Back: see drivers/video/fbdev/core/fbmem.c: fb_mmap() ->
-vm_iomap_memory() -> io_remap_pfn_range() -> ... -> track_pfn_remap() ->
-reserve_pfn_range().
+Here is the way the fix works. It's known that the ULPI bus is clocked
+with 60MHz signal. In accordance with [1] the ULPI bus protocol is created
+so to spend 5 and 6 clock periods for immediate register write and read
+operations respectively, and 6 and 7 clock periods - for the extended
+register writes and reads. Based on that we can easily pre-calculate the
+time which will be needed for the controller to perform a requested IO
+operation. Note we'll still preserve the attempts counter in case if the
+DWC USB3 controller has got some internals delays.
 
-Note: any v5.5 and newer kernel doesn't have the issue, because they
-have commit
-d21987d709e8 ("video: hyperv: hyperv_fb: Support deferred IO for Hyper-V frame buffer driver")
-, and when the hyperv_fb driver has the deferred_io support,
-fb_deferred_io_init() overrides info->fbops->fb_mmap with
-fb_deferred_io_mmap(), which doesn’t check the mapping type
-incompatibility. Note: since it's VRAM here, the checking is not really
-necessary.
+[1] UTMI+ Low Pin Interface (ULPI) Specification, Revision 1.1,
+    October 20, 2004, pp. 30 - 36.
 
-Fix the regression by ioremap_wc(), which uses Write-combining. The kernel
-thinks it's compatible with Uncached-minus. The VRAM mappped by
-ioremap_wc() is slightly slower than mapped by ioremap_cache(), but is
-still significantly faster than by ioremap().
+Fixes: 88bc9d194ff6 ("usb: dwc3: add ULPI interface support")
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Link: https://lore.kernel.org/r/20201210085008.13264-3-Sergey.Semin@baikalelectronics.ru
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Change the comment accordingly. Linux VM on ARM64 Hyper-V is still not
-working in the latest mainline yet, and when it works in future, the ARM64
-support is unlikely to be backported to v5.4 and older, so using
-ioremap_wc() in v5.4 and older should be ok.
-
-Note: this fix is only targeted at the stable branches:
-v5.4.y, v4.19.y, v4.14.y, v4.9.y and v4.4.y.
-
-Fixes: db49200b1dad ("video: hyperv_fb: Fix the cache type when mapping the VRAM")
-Signed-off-by: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/hyperv_fb.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/usb/dwc3/ulpi.c |   18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv_fb.c
-index 56e70f12c9960..c907f96d6890c 100644
---- a/drivers/video/fbdev/hyperv_fb.c
-+++ b/drivers/video/fbdev/hyperv_fb.c
-@@ -713,11 +713,9 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
- 	}
+--- a/drivers/usb/dwc3/ulpi.c
++++ b/drivers/usb/dwc3/ulpi.c
+@@ -7,6 +7,8 @@
+  * Author: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+  */
  
- 	/*
--	 * Map the VRAM cacheable for performance. This is also required for
--	 * VM Connect to display properly for ARM64 Linux VM, as the host also
--	 * maps the VRAM cacheable.
-+	 * Map the VRAM cacheable for performance.
- 	 */
--	fb_virt = ioremap_cache(par->mem->start, screen_fb_size);
-+	fb_virt = ioremap_wc(par->mem->start, screen_fb_size);
- 	if (!fb_virt)
- 		goto err2;
++#include <linux/delay.h>
++#include <linux/time64.h>
+ #include <linux/ulpi/regs.h>
  
--- 
-2.27.0
-
+ #include "core.h"
+@@ -17,12 +19,22 @@
+ 		DWC3_GUSB2PHYACC_ADDR(ULPI_ACCESS_EXTENDED) | \
+ 		DWC3_GUSB2PHYACC_EXTEND_ADDR(a) : DWC3_GUSB2PHYACC_ADDR(a))
+ 
+-static int dwc3_ulpi_busyloop(struct dwc3 *dwc)
++#define DWC3_ULPI_BASE_DELAY	DIV_ROUND_UP(NSEC_PER_SEC, 60000000L)
++
++static int dwc3_ulpi_busyloop(struct dwc3 *dwc, u8 addr, bool read)
+ {
++	unsigned long ns = 5L * DWC3_ULPI_BASE_DELAY;
+ 	unsigned int count = 1000;
+ 	u32 reg;
+ 
++	if (addr >= ULPI_EXT_VENDOR_SPECIFIC)
++		ns += DWC3_ULPI_BASE_DELAY;
++
++	if (read)
++		ns += DWC3_ULPI_BASE_DELAY;
++
+ 	while (count--) {
++		ndelay(ns);
+ 		reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYACC(0));
+ 		if (reg & DWC3_GUSB2PHYACC_DONE)
+ 			return 0;
+@@ -47,7 +59,7 @@ static int dwc3_ulpi_read(struct device
+ 	reg = DWC3_GUSB2PHYACC_NEWREGREQ | DWC3_ULPI_ADDR(addr);
+ 	dwc3_writel(dwc->regs, DWC3_GUSB2PHYACC(0), reg);
+ 
+-	ret = dwc3_ulpi_busyloop(dwc);
++	ret = dwc3_ulpi_busyloop(dwc, addr, true);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -71,7 +83,7 @@ static int dwc3_ulpi_write(struct device
+ 	reg |= DWC3_GUSB2PHYACC_WRITE | val;
+ 	dwc3_writel(dwc->regs, DWC3_GUSB2PHYACC(0), reg);
+ 
+-	return dwc3_ulpi_busyloop(dwc);
++	return dwc3_ulpi_busyloop(dwc, addr, false);
+ }
+ 
+ static const struct ulpi_ops dwc3_ulpi_ops = {
 
 
