@@ -2,75 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A50682F0DF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 09:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F7A2F0E26
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 09:29:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728003AbhAKIZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 03:25:31 -0500
-Received: from comms.puri.sm ([159.203.221.185]:60716 "EHLO comms.puri.sm"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727774AbhAKIZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 03:25:31 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by comms.puri.sm (Postfix) with ESMTP id C7126DF90D;
-        Mon, 11 Jan 2021 00:24:50 -0800 (PST)
-Received: from comms.puri.sm ([127.0.0.1])
-        by localhost (comms.puri.sm [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id UJ3WHmDS4bbL; Mon, 11 Jan 2021 00:24:49 -0800 (PST)
-Subject: Re: [PATCH v2 2/4] arm64: dts: imx8mq-librem5: add pinctrl for the
- touchscreen description
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     robh@kernel.org, festevam@gmail.com, kernel@pengutronix.de,
-        linux-imx@nxp.com, krzk@kernel.org, kernel@puri.sm,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20201222151347.7886-1-martin.kepplinger@puri.sm>
- <20201222151347.7886-3-martin.kepplinger@puri.sm>
- <20210111002942.GR28365@dragon>
-From:   Martin Kepplinger <martin.kepplinger@puri.sm>
-Message-ID: <f699bf19-c5df-c2da-af23-ef144cec4750@puri.sm>
-Date:   Mon, 11 Jan 2021 09:24:44 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-In-Reply-To: <20210111002942.GR28365@dragon>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S1728017AbhAKI0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 03:26:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727841AbhAKI0f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 03:26:35 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04200C061786;
+        Mon, 11 Jan 2021 00:25:55 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id lt17so23523066ejb.3;
+        Mon, 11 Jan 2021 00:25:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=CSC3aRVO5ZxUUnNQTzCtcTLTQwLce1l3eFEfXxrgFOw=;
+        b=A2QvxSj9cFoYe4LJJ0kyiWaOHT0y7JE2caRSNBaF8CGkO1ZiOerMPSDmrdxmEych4L
+         pSZ4tWSYaaZcD3t33/VdIDRg8RAQ7zDYgoKg4K/dJSAe0v/Xvf1elYapiTEo1FuzhYfn
+         EoyoKZHQtEyzhHAG+7eyakLFamulxVJPKw107KnhqL+PmnLeV+IDKB5X93MghGuHDcD+
+         f+zyX+2eJM8E4WN5GkJ5o9Mmv+E5SBZP1Xw0QgBkNBXFbQB7UiuHdrj23sOvvwtw1uw+
+         /1Lcz0xsuoue3xeC1weF6AXtG2WLUuGusAKLGKAHdbsziJWIpfcijqlPXo3J/3bUX99N
+         YNPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=CSC3aRVO5ZxUUnNQTzCtcTLTQwLce1l3eFEfXxrgFOw=;
+        b=JgWK4hCJTY5fs/0TVzfrb7+Guhnhr9DhriGXh+/YX5LTNsFqZ3L5lJ6O2Va6qlXtE4
+         DBIw9ClCMOeEZm1XbKle/8gN3YkNf9wNw6tToYG0+iQke91U+RNjvy77hMZP9LtIsSk+
+         vTWIPvrtTmAq841zPQODB34j5Jlai7prYqHPH7uec2q/YmJHDSTiXTDaXBK5razVqtPj
+         +D85MnWkUUg+BwKtAlBkAdt4xnQghS2OWwaGO6OHoNB/5KmjiIqEVgHVbrRSneI3Rqtb
+         ysOqcp6EWobtiTqGus15dc4s2czPysMHw1A3DfUaFQ/OYW5kYX/88CrUnQpeeRRTKIVP
+         tYlw==
+X-Gm-Message-State: AOAM531afnJx3h3NaCf0cBne/WqTnbYkiHUNRbtfUQvrmvReoApcP3ue
+        Wx9Qt9A+INval3p2WhQti6A=
+X-Google-Smtp-Source: ABdhPJxISqx0x62ge4Zd4vTOhMdV9TQBEXNgfXx8Kzg0n67NAID4MZYt/gwWMW0CcLE5BlxjZftjow==
+X-Received: by 2002:a17:907:d8e:: with SMTP id go14mr10191370ejc.472.1610353553680;
+        Mon, 11 Jan 2021 00:25:53 -0800 (PST)
+Received: from ubuntu-laptop (ip5f5bfcff.dynamic.kabel-deutschland.de. [95.91.252.255])
+        by smtp.googlemail.com with ESMTPSA id dx7sm6737231ejb.120.2021.01.11.00.25.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 11 Jan 2021 00:25:53 -0800 (PST)
+Message-ID: <4d85d61319e6991dda75a68cb466c86c8fea30e4.camel@gmail.com>
+Subject: Re: [PATCH 2/2] scsi: ufs: Protect PM ops and err_handler from user
+ access through sysfs
+From:   Bean Huo <huobean@gmail.com>
+To:     Can Guo <cang@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Nitin Rawat <nitirawa@codeaurora.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Mon, 11 Jan 2021 09:25:52 +0100
+In-Reply-To: <4d1ad38dbe0235020183e474a3610294@codeaurora.org>
+References: <1609595975-12219-1-git-send-email-cang@codeaurora.org>
+         <1609595975-12219-3-git-send-email-cang@codeaurora.org>
+         <0ad818b10110c4c383afbc2c39235a4f7f17f4c7.camel@gmail.com>
+         <4d1ad38dbe0235020183e474a3610294@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.01.21 01:29, Shawn Guo wrote:
-> On Tue, Dec 22, 2020 at 04:13:45PM +0100, Martin Kepplinger wrote:
->> In order for the touchscreen interrupt line to work, describe it properly.
->> Otherwise it can work if defaults are ok, but we cannot be sure.
->>
->> Fixes: 8f0216b006e5 ("arm64: dts: Add a device tree for the Librem 5 phone")
->> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
->> ---
->>   arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi | 9 +++++++++
->>   1 file changed, 9 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
->> index 55268fc0622e..a60df09d90f7 100644
->> --- a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
->> +++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
->> @@ -459,6 +459,13 @@
->>   		>;
->>   	};
->>   
->> +	pinctrl_touch: touchgrp {
->> +		fsl,pins = <
->> +		/* TP_INT */
->> +		MX8MQ_IOMUXC_ENET_RD1_GPIO1_IO27	0x80
+On Mon, 2021-01-11 at 09:30 +0800, Can Guo wrote:
+> > > +static inline bool ufshcd_is_sysfs_allowed(struct ufs_hba *hba)
+> > > +{
+> > > +       return !hba->shutting_down;
+> > > +}
+> > > +
+> > 
+> > 
+> > Can,
+> > 
+> > Instead adding new shutting_down flag, can we use availible
+> > variable
+> > system_state?
+> > 
+> > Thanks,
+> > Bean
 > 
-> Miss indentation for these two lines.
+> Hi Bean,
 > 
-> I fixed it up and applied the series.
-> 
-> Shawn
+> I prefer the flag shutting_down, it tells us whether
+> ufshcd_shutdown()
+> has been invoked or not. It comes handy when debug some system crash
+> issues caused by UFS during reboot/shutdown tests. system_state is
+> too
+> wide in this case.
 > 
 
-thanks for this!
+It is only a suggestion, and others LLD use system_state, you prefer
+adding new flags.
 
-                             martin
+Bean
+
+> Thanks,
+> Can Guo.
+
