@@ -2,108 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F7A2F1082
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 279532F1087
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729459AbhAKKu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:50:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729276AbhAKKu0 (ORCPT
+        id S1729524AbhAKKu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:50:59 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:37944 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729276AbhAKKux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:50:26 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC66C061786;
-        Mon, 11 Jan 2021 02:49:45 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id t22so10719728pfl.3;
-        Mon, 11 Jan 2021 02:49:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=WvyqgYj7Ogyaz0kas4Z5Pi8oEJj2mW0UBIvV4QHkFC8=;
-        b=Zhmo13M1NRzd64WXyNSNM/ELmgFlPeNBhQSVbZ2aErRBwnkhlPXhaVde9Sg6CSyH4M
-         /ffijtV3GuxXhBtvxQIoDMjOtMzf/ALJus7aH+R4uhUWms34aPztMFZ343kHSjwUXuHz
-         SdDCs4xDb43ZtCEYQOTH5zCDFYKx17iqo+sBhBw+SzSSvORBsgCiPF/ciGpuwRmNFX3h
-         cYuiNx2x8Mwp6ST0ZW5go1XJStd04dJyQ1RYe7a2jy49Uqq2Yvfp3fhm7fzN9lOpGZjf
-         lSQ9qkQIA5mU6r8xqVdo/cHje3YgQqFricbg7ODm1zmVM7ONrqRkwu6gvDz1/XYs9cqA
-         jqyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=WvyqgYj7Ogyaz0kas4Z5Pi8oEJj2mW0UBIvV4QHkFC8=;
-        b=XzIRgwkajLCULN7g97kOuyLDPauh4c1K7HSl6b13YOUyZE4xSlTI7cdg1pMtPBBBG6
-         CYPNhNsw0iiAGXweI1x8oak2NsCTobMMk2IR6jIwSRje6tcTSsqSRwrs9OCElf86Dy3A
-         lJjjxIzVgE6nTRLmKlvwOws+Cp8EM8x9DK+Q4inICrUvk/d3qJW6bdES8CYG3CEveB0z
-         4uAcunYkZ3+Zr7a8mG3hbnL/bBo3kwiXLPU0tUlVD9iiwhGJ9fr7Y4vdAFigxokD1MtG
-         X1OAQ2N9VHuHFqPfZWwnABI2Obp/eu2CUQOTt0e8rTOAx1bA+dcCyfcc3ep9GCi2ZoOH
-         J7AQ==
-X-Gm-Message-State: AOAM531Sb6+j50NvM+8SCFBow3vFQQD7wVROLguzJPLR2rnPlXQ71K3e
-        lLC8TEV1yufi1teT2g167gKvsaIo24ohT00T
-X-Google-Smtp-Source: ABdhPJyqRtP+kYJTMNLshOXjOVYqr2Hu9YokOxgaF+bQMYvG9GmHNnShUyQ7AB0aTKm4jVfOIsWZ5A==
-X-Received: by 2002:a62:7f4c:0:b029:19e:23d1:cf0a with SMTP id a73-20020a627f4c0000b029019e23d1cf0amr15377008pfd.67.1610362185176;
-        Mon, 11 Jan 2021 02:49:45 -0800 (PST)
-Received: from android.asia-east2-a.c.savvy-summit-295307.internal (53.207.96.34.bc.googleusercontent.com. [34.96.207.53])
-        by smtp.googlemail.com with ESMTPSA id s1sm23579177pjk.1.2021.01.11.02.49.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 02:49:44 -0800 (PST)
-From:   Bui Quang Minh <minhquangbui99@gmail.com>
-To:     linux-usb@vger.kernel.org
-Cc:     a.darwish@linutronix.de, bigeasy@linutronix.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        minhquangbui99@gmail.com, stern@rowland.harvard.edu,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
-Subject: [PATCH v2] can: mcba_usb: Fix memory leak when cancelling urb
-Date:   Mon, 11 Jan 2021 10:49:27 +0000
-Message-Id: <20210111104927.2561-1-minhquangbui99@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 11 Jan 2021 05:50:53 -0500
+Date:   Mon, 11 Jan 2021 10:50:08 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610362209;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=G/n3hDKcZpF5HD2TgAvXu3ZbdawIkPcUNQtQvBVSYuw=;
+        b=CwZJVTwpAk0cElyqTTROCVBsK7dJuC8/+hsYRlLdFeMaQRRV7i19CO4/b0aCe+OvP2/5n3
+        3AhDL/StcsVcDbMrlzcbFDKLjbmU0uMUC0OFhzaKY9v/7b0Ej/HQAvJIrY/1oQLntw/u4B
+        R3DSrkWujEwx2n54T1k6ESCdOe4fp3QS1e+3P3iRjtLdovWi6x35n4TtlrxRD7FBPNyUEQ
+        PEf8yFVduBgp0mqNXqHzOvCfMgRGt7MNkTiE6z1Ow/1DJqtFweA9ff5WexQeJX4Mje52BZ
+        fdoERISKi24kxwrXMQU13DXiM3UedDS9syVLL9vVNrkvAsEHC6McRSdbHLLZdg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610362209;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=G/n3hDKcZpF5HD2TgAvXu3ZbdawIkPcUNQtQvBVSYuw=;
+        b=AnSY9fliONn/qBoiExOtRiH9yi4IVMw1fl4bN4+C0XGTkeMQJaQ8HAhuUiKtp/+yLhZj3p
+        3g1WDe9yr3S8IQCw==
+From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cache] x86/resctrl: Apply READ_ONCE/WRITE_ONCE to
+ task_struct.{rmid,closid}
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: =?utf-8?q?=3C9921fda88ad81afb9885b517fbe864a2bc7c35a9=2E16082?=
+ =?utf-8?q?43147=2Egit=2Ereinette=2Echatre=40intel=2Ecom=3E?=
+References: =?utf-8?q?=3C9921fda88ad81afb9885b517fbe864a2bc7c35a9=2E160824?=
+ =?utf-8?q?3147=2Egit=2Ereinette=2Echatre=40intel=2Ecom=3E?=
+MIME-Version: 1.0
+Message-ID: <161036220889.414.7823554165094952734.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In mcba_usb_read_bulk_callback(), when we don't resubmit or fails to
-resubmit the urb, we need to deallocate the transfer buffer that is
-allocated in mcba_usb_start().
+The following commit has been merged into the x86/cache branch of tip:
 
-Reported-by: syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com
-Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+Commit-ID:     6d3b47ddffed70006cf4ba360eef61e9ce097d8f
+Gitweb:        https://git.kernel.org/tip/6d3b47ddffed70006cf4ba360eef61e9ce097d8f
+Author:        Valentin Schneider <valentin.schneider@arm.com>
+AuthorDate:    Thu, 17 Dec 2020 14:31:21 -08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 11 Jan 2021 11:43:23 +01:00
+
+x86/resctrl: Apply READ_ONCE/WRITE_ONCE to task_struct.{rmid,closid}
+
+A CPU's current task can have its {closid, rmid} fields read locally
+while they are being concurrently written to from another CPU.
+This can happen anytime __resctrl_sched_in() races with either
+__rdtgroup_move_task() or rdt_move_group_tasks().
+
+Prevent load / store tearing for those accesses by giving them the
+READ_ONCE() / WRITE_ONCE() treatment.
+
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/9921fda88ad81afb9885b517fbe864a2bc7c35a9.1608243147.git.reinette.chatre@intel.com
 ---
-v1: add memory leak fix when not resubmitting urb
-v2: add memory leak fix when failing to resubmit urb
+ arch/x86/include/asm/resctrl.h         | 11 +++++++----
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 10 +++++-----
+ 2 files changed, 12 insertions(+), 9 deletions(-)
 
- drivers/net/can/usb/mcba_usb.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
-index df54eb7d4b36..30236e640116 100644
---- a/drivers/net/can/usb/mcba_usb.c
-+++ b/drivers/net/can/usb/mcba_usb.c
-@@ -584,6 +584,8 @@ static void mcba_usb_read_bulk_callback(struct urb *urb)
- 	case -EPIPE:
- 	case -EPROTO:
- 	case -ESHUTDOWN:
-+		usb_free_coherent(urb->dev, urb->transfer_buffer_length,
-+				  urb->transfer_buffer, urb->transfer_dma);
- 		return;
+diff --git a/arch/x86/include/asm/resctrl.h b/arch/x86/include/asm/resctrl.h
+index 0760306..d60ed06 100644
+--- a/arch/x86/include/asm/resctrl.h
++++ b/arch/x86/include/asm/resctrl.h
+@@ -56,19 +56,22 @@ static void __resctrl_sched_in(void)
+ 	struct resctrl_pqr_state *state = this_cpu_ptr(&pqr_state);
+ 	u32 closid = state->default_closid;
+ 	u32 rmid = state->default_rmid;
++	u32 tmp;
  
- 	default:
-@@ -615,11 +617,14 @@ static void mcba_usb_read_bulk_callback(struct urb *urb)
+ 	/*
+ 	 * If this task has a closid/rmid assigned, use it.
+ 	 * Else use the closid/rmid assigned to this cpu.
+ 	 */
+ 	if (static_branch_likely(&rdt_alloc_enable_key)) {
+-		if (current->closid)
+-			closid = current->closid;
++		tmp = READ_ONCE(current->closid);
++		if (tmp)
++			closid = tmp;
+ 	}
  
- 	retval = usb_submit_urb(urb, GFP_ATOMIC);
+ 	if (static_branch_likely(&rdt_mon_enable_key)) {
+-		if (current->rmid)
+-			rmid = current->rmid;
++		tmp = READ_ONCE(current->rmid);
++		if (tmp)
++			rmid = tmp;
+ 	}
  
--	if (retval == -ENODEV)
--		netif_device_detach(netdev);
--	else if (retval)
-+	if (retval < 0) {
- 		netdev_err(netdev, "failed resubmitting read bulk urb: %d\n",
- 			   retval);
-+		usb_free_coherent(urb->dev, urb->transfer_buffer_length,
-+				  urb->transfer_buffer, urb->transfer_dma);
-+		if (retval == -ENODEV)
-+			netif_device_detach(netdev);
-+	}
- }
+ 	if (closid != state->cur_closid || rmid != state->cur_rmid) {
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 37f37df..f9190ad 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -563,11 +563,11 @@ static int __rdtgroup_move_task(struct task_struct *tsk,
+ 	 */
  
- /* Start USB device */
--- 
-2.17.1
-
+ 	if (rdtgrp->type == RDTCTRL_GROUP) {
+-		tsk->closid = rdtgrp->closid;
+-		tsk->rmid = rdtgrp->mon.rmid;
++		WRITE_ONCE(tsk->closid, rdtgrp->closid);
++		WRITE_ONCE(tsk->rmid, rdtgrp->mon.rmid);
+ 	} else if (rdtgrp->type == RDTMON_GROUP) {
+ 		if (rdtgrp->mon.parent->closid == tsk->closid) {
+-			tsk->rmid = rdtgrp->mon.rmid;
++			WRITE_ONCE(tsk->rmid, rdtgrp->mon.rmid);
+ 		} else {
+ 			rdt_last_cmd_puts("Can't move task to different control group\n");
+ 			return -EINVAL;
+@@ -2310,8 +2310,8 @@ static void rdt_move_group_tasks(struct rdtgroup *from, struct rdtgroup *to,
+ 	for_each_process_thread(p, t) {
+ 		if (!from || is_closid_match(t, from) ||
+ 		    is_rmid_match(t, from)) {
+-			t->closid = to->closid;
+-			t->rmid = to->mon.rmid;
++			WRITE_ONCE(t->closid, to->closid);
++			WRITE_ONCE(t->rmid, to->mon.rmid);
+ 
+ 			/*
+ 			 * If the task is on a CPU, set the CPU in the mask.
