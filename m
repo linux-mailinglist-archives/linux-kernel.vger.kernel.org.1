@@ -2,92 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D980B2F19A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B602F19A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:30:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731680AbhAKP2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:28:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55918 "EHLO mail.kernel.org"
+        id S1730265AbhAKP3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:29:37 -0500
+Received: from vern.gendns.com ([98.142.107.122]:34118 "EHLO vern.gendns.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727917AbhAKP2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:28:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66E40225AC;
-        Mon, 11 Jan 2021 15:28:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610378891;
-        bh=2TwVSubr1Utb54puJyi85tzxRDvhFI6tBd3O/Tah+Bc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=s2JjqMdzP0q3o6qkUOgaehXBBuFWIbiYZV/Zw5TY5x6KKOEluYZwlEpEkdZiRVGlI
-         pFE5DxiPMySbcmlDOEQ/9mvUPxGJtPkIEG2DmRAhSIG32y35n92gg/qOWqR59T0OYS
-         4H5xtEZOc4XpIs4ul+z5xrlMbYfoVBUvO3aWEUXEpNnjlf1FrJnwCIijFhnmL/xAsF
-         B0tsqNyya0ykUkaqHOh1VPtnpVMvPuav3jqk1AlXOdkPxVhb33H0B45NFV4EbaKkUg
-         P1Sv2wye4uwvzZLjDNARpoAMp8kzGLY4ZuNdpCB/CIe4uR7gReEyDgBFCi3kNHK6Ev
-         Ezn+5hpLFVLdQ==
-Date:   Mon, 11 Jan 2021 16:28:05 +0100
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Schreiber <tschreibe@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] net: sfp: add workaround for Realtek RTL8672 and
- RTL9601C chips
-Message-ID: <20210111162805.77cf82b2@kernel.org>
-In-Reply-To: <20210111113909.31702-2-pali@kernel.org>
-References: <20201230154755.14746-1-pali@kernel.org>
-        <20210111113909.31702-1-pali@kernel.org>
-        <20210111113909.31702-2-pali@kernel.org>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728048AbhAKP3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 10:29:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=+pqtFW0/YpMF88xvAhu74Rc+HKuoTTrut+IkcV0uyPs=; b=VOShjSDHpvWNTSrlKhMG3zp/Cx
+        eoqxCv2wjbk90trtoIpuEJPPgAkwezXuxt48XD1zHpGGyKLWNxbSmoY9JCgc1Tky02W7g9u1oDycr
+        Ww6a1fEoGOphnqsRd/HJlGch7QuyQaZDT6e3/haF3Do9P0JcbUikaYccJ8RpVeBDffHaASuKGtVKJ
+        kg8ReKBzpqQaPSKuMKIAx6g3rKg8oH8YZrXQAu5sJHamzLrKq4NhWuG6crM/L86eVuJTZ0ojt8AZe
+        BwO0aB5K00fTRrz+5UxxTIcdTeesjbWQc1XIRltfQ6Q9yAlaVFaPUmlqdWka7PxV5J8LJSRhNnimo
+        fOLpfEyw==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:59674 helo=[192.168.0.134])
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1kyz7n-0001cy-5A; Mon, 11 Jan 2021 10:28:55 -0500
+Subject: Re: [PATCH] clocksource: davinci: move pr_fmt() before the includes
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sekhar Nori <nsekhar@ti.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20210111140814.3668-1-brgl@bgdev.pl>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <48e55483-7214-ef21-129f-2c1cb6ee8a3f@lechnology.com>
+Date:   Mon, 11 Jan 2021 09:28:54 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210111140814.3668-1-brgl@bgdev.pl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pali,
-I have rewritten the commit message a little:
+On 1/11/21 8:08 AM, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> 
+> We no longer need to undef pr_fmt if we define our own before including
+> any headers.
+> 
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
 
-The workaround for VSOL V2801F brand based GPON SFP modules added in
-commit 0d035bed2a4a ("net: sfp: VSOL V2801F / CarlitoxxPro CPGOS03-0490
-v2.0 workaround") works only for IDs added explicitly to the list.
-Since there are rebranded modules where OEM vendors put different
-strings into the vendor name field, we cannot base workaround on IDs
-only.
+Acked-by: David Lechner <david@lechnology.com>
 
-Moreover the issue which the above mentioned commit tried to work
-around is generic not only to VSOL based modules, but rather to all
-GPON modules based on Realtek RTL8672 and RTL9601C chips.
- 
-These include at least the following GPON modules:
-* V-SOL V2801F
-* C-Data FD511GX-RM0
-* OPTON GP801R
-* BAUDCOM BD-1234-SFM
-* CPGOS03-0490 v2.0
-* Ubiquiti U-Fiber Instant
-* EXOT EGS1
-
-These Realtek chips have broken EEPROM emulator which for N-byte read
-operation returns just the first byte of EEPROM data, followed by N-1 zeros.
-
-Introduce a new function, sfp_id_needs_byte_io(), which detects SFP
-modules with broken EEPROM emulator based on N-1 zeros and switch to 1
-byte EEPROM reading operation.
-
-Function sfp_i2c_read() now always uses single byte reading when it is
-required and when function sfp_hwmon_probe() detects single byte access,
-it disables registration of hwmon device, because in this case we
-cannot reliably and atomically read 2 bytes as is required byt the
-standard for retrieving values from diagnostic area.
-
-(These Realtek chips are broken in a way that violates SFP standards for
- diagnostic interface. Kernel in this case simply cannot do anything
- less of skipping registration of the hwmon interface.)
-
-This patch fixes reading of EEPROM content from SFP modules based on
-Realtek RTL8672 and RTL9601C chips. Diagnostic interface of EEPROM stays
-broken and cannot be fixed.
