@@ -2,123 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8102F0F7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:53:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EDA2F0F7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:53:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728674AbhAKJwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 04:52:23 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:29749 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725897AbhAKJwX (ORCPT
+        id S1728681AbhAKJwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 04:52:25 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:62784 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728625AbhAKJwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 04:52:23 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-130-p4Z2xdyEOkONhoHpFP1zFw-1; Mon, 11 Jan 2021 09:50:44 +0000
-X-MC-Unique: p4Z2xdyEOkONhoHpFP1zFw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 11 Jan 2021 09:50:41 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 11 Jan 2021 09:50:41 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@kernel.org>, Willy Tarreau <w@1wt.eu>
-CC:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "Jamie Iles" <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        "Viresh Kumar" <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        "Alexander Shiyan" <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.osdn.me>,
-        Mark Salter <msalter@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "Geert Uytterhoeven" <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: RE: Old platforms: bring out your dead
-Thread-Topic: Old platforms: bring out your dead
-Thread-Index: AQHW5tIZDj0fPDkXL0CUBZoouVVmHKoiLtzA
-Date:   Mon, 11 Jan 2021 09:50:41 +0000
-Message-ID: <6fb7e3f5035d44fab9801001f1811b59@AcuMS.aculab.com>
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <20210109055645.GA2009@1wt.eu>
- <CAK8P3a1C+EUvyLm3fo8TGOV39hhaxhtDM3cX_QLc-=WCzRksMw@mail.gmail.com>
-In-Reply-To: <CAK8P3a1C+EUvyLm3fo8TGOV39hhaxhtDM3cX_QLc-=WCzRksMw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 11 Jan 2021 04:52:24 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610358719; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=kDRRlMU9xZvzsoyHtTnPDyjsx/BCROLlxB6BQXmIwhk=;
+ b=QUVhn+6ES2mW2jlL7CbxKHkhlP+w9eobXlAX3g/8TthM6qPY8T5t6lwy6LJ8JFmItPjhD/eY
+ yV/tH2l9oanDqLe3fnR+G95/GSO7jDnAc4YmjRq/WzU0pLW+XT9VmL3qlwwbOELRQ9b/aHq9
+ 0kZUH1kP5liw9iIDJJ7PqBMhCPQ=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5ffc1fa58fb3cda82f0b74eb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 09:51:33
+ GMT
+Sender: pnagar=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 546ACC4346A; Mon, 11 Jan 2021 09:51:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pnagar)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5942EC43462;
+        Mon, 11 Jan 2021 09:51:31 +0000 (UTC)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 11 Jan 2021 15:21:31 +0530
+From:   pnagar@codeaurora.org
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     arnd@arndb.de, dsule@codeaurora.org, eparis@parisplace.org,
+        jmorris@namei.org, joe@perches.com, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, jeffv@google.com,
+        nmardana@codeaurora.org, ojeda@kernel.org, paul@paul-moore.com,
+        psodagud@codeaurora.org, selinux@vger.kernel.org, serge@hallyn.com,
+        stephen.smalley.work@gmail.com,
+        ndesaulniers via sendgmr 
+        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
+Subject: Re: [RFC PATCH v2] selinux: security: Move selinux_state to a
+ separate page
+In-Reply-To: <20210109010111.2299669-1-ndesaulniers@google.com>
+References: <1610099389-28329-1-git-send-email-pnagar@codeaurora.org>
+ <20210109010111.2299669-1-ndesaulniers@google.com>
+Message-ID: <fe452dce51f07bdbd4c0ae2bc70c3086@codeaurora.org>
+X-Sender: pnagar@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQXJuZCBCZXJnbWFubg0KPiBTZW50OiAwOSBKYW51YXJ5IDIwMjEgMjE6NTMNCj4gDQo+
-IE9uIFNhdCwgSmFuIDksIDIwMjEgYXQgNjo1NiBBTSBXaWxseSBUYXJyZWF1IDx3QDF3dC5ldT4g
-d3JvdGU6DQo+ID4NCj4gPiBPbiBGcmksIEphbiAwOCwgMjAyMSBhdCAxMTo1NTowNlBNICswMTAw
-LCBBcm5kIEJlcmdtYW5uIHdyb3RlOg0KPiA+ID4gKiA4MDQ4NlNYL0RYOiA4MDM4NiBDUFVzIHdl
-cmUgZHJvcHBlZCBpbiAyMDEyLCBhbmQgdGhlcmUgYXJlDQo+ID4gPiAgIGluZGljYXRpb25zIHRo
-YXQgNDg2IGhhdmUgbm8gdXNlcnMgZWl0aGVyIG9uIHJlY2VudCBrZXJuZWxzLg0KPiA+ID4gICBU
-aGVyZSBpcyBzdGlsbCB0aGUgVm9ydGV4ODYgZmFtaWx5IG9mIFNvQ3MsIGFuZCB0aGUgb2xkZXN0
-IG9mIHRob3NlIHdlcmUNCj4gPiA+ICAgNDg2U1gtY2xhc3MsIGJ1dCBhbGwgdGhlIG1vZGVybiBv
-bmVzIGFyZSA1ODYtY2xhc3MuDQo+ID4NCj4gPiBUaGVzZSBhbHNvIGFyZSB0aGUgbGFzdCBnZW5l
-cmF0aW9uIG9mIGZhbmxlc3MgeDg2IGJvYXJkcyB3aXRoIDEwMCUgY29tcGF0aWJsZQ0KPiA+IGNv
-bnRyb2xsZXJzLCB0aGF0IHNvbWUgcGVvcGxlIGhhdmUgcHJvYmFibHkga2VwdCBhcm91bmQgYmVj
-YXVzZSB0aGVzZSBkb24ndA0KPiA+IGFnZSBtdWNoIGFuZCBoYXZlIHBsZW50eSBvZiBjb25uZWN0
-aXZpdHkuIEkndmUgdXNlZCBhbiBvbGQgb25lIGEgZmV3IHRpbWVzDQo+ID4gdG8gcGx1ZyBpbiBh
-biBvbGQgZmxvcHB5IGRyaXZlLCBJU0EgU0NTSSBjb250cm9sbGVycyB0byBhY2Nlc3MgYW4gb2xk
-IHRhcGUNCj4gPiBkcml2ZSBhbmQgYSBmZXcgc3VjaCB0aGluZ3MuIFRoYXQgZG9lc24ndCBtZWFu
-IHRoYXQgaXQncyBhIGdvb2QganVzdGlmaWNhdGlvbg0KPiA+IG5vdCB0byByZW1vdmUgdGhlbSwg
-d2hhdCBJIHJhdGhlciBtZWFuIGlzIHRoYXQgKmlmKiB0aGVyZSBpcyBubyBiZW5lZml0DQo+ID4g
-aW4gZHJvcHBpbmcgdGhlbSBtYXliZSB3ZSBjYW4ga2VlcCB0aGVtLiBPbiB0aGUgb3RoZXIgaGFu
-ZCwgZ29vZCBsdWNrIGZvcg0KPiA+IHJ1bm5pbmcgYSBtb2Rlcm4gT1Mgb24gdGhlc2UsIHdoZW4g
-MTZNQi0zMk1CIFJBTSB3YXMgYWJvdXQgdGhlIG1heGltdW0gdGhhdA0KPiA+IHdhcyBjb21tb25s
-eSBmb3VuZCBieSB0aGVuICh0aG91Z2ggaWYgcGVvcGxlIGtlcHQgdGhlbSBhcm91bmQgdGhhdCdz
-IHByb2JhYmx5DQo+ID4gYmVjYXVzZSB0aGV5IHdlcmUgd2VsbCBlcXVpcHBlZCwgbGlrZSB0aGF0
-IDY0TUIgMzg2RFggSSdtIGhhdmluZyA6LSkpLg0KPiANCj4gSSB0aGluayB0aGVyZSB3ZXJlIDQ4
-NnMgd2l0aCB1cCB0byAyNTZNQiwgd2hpY2ggd291bGQgc3RpbGwgcXVhbGlmeSBhcyBiYXJlbHkN
-Cj4gdXNhYmxlIGZvciBhIG1pbmltYWwgZGVza3RvcCwgb3IgYXMgY29tZm9ydGFibGUgZm9yIGEg
-ZGVlcGx5IGVtYmVkZGVkDQo+IHN5c3RlbS4gVGhlIG1haW4gbGltaXQgd2FzIGFwcGFyZW50bHkg
-dGhlIGNhY2hlYWJsZSBSQU0sIHdoaWNoIGlzIGxpbWl0ZWQNCj4gYnkgdGhlIGFtb3VudCBvZiBM
-MiBjYWNoZSAtLSB5b3UgbmVlZGVkIGEgcmFyZSAxTUIgb2YgZXh0ZXJuYWwgTDItY2FjaGUgdG8N
-Cj4gaGF2ZSAyNTZNQiBvZiBjYWNoZWQgUkFNLCB3aGlsZSBtb3JlIGNvbW1vbiAyNTZLQiBvZiBj
-YWNoZSB3b3VsZA0KPiBiZSBnb29kIGZvciA2NE1CLiBWb3J0ZXg4NlNYIGhhcyBubyBGUFUgb3Ig
-TDIgY2FjaGUgYXQgYWxsLCBidXQgc3VwcG9ydHMNCj4gMjU2TUIgb2YgRERSMi4NCg0KVGhlcmUg
-YXJlIGFsc28gc29tZSBuZXdlciAod2VsbCBsZXNzIHRoYW4gMzAgeWVhciBvbGQpIGNwdXMgdGhh
-dCBhcmUNCmJhc2ljYWxseSA0ODYgYnV0IGhhdmUgYSBmZXcgZXh0cmEgaW5zdHJ1Y3Rpb25zIC0g
-cHJvYmFibHkganVzdCBjcHVpZA0KYW5kIChJSVJDKSByZHRzYy4NCkRlc2lnbmVkIGZvciBsb3cg
-cG93ZXIgZW1iZWRkZWQgdXNlIHRoZXkgd29uJ3QgZXZlciBoYXZlIGJlZW4gc3VpdGFibGUNCmZv
-ciBhIGRlc2t0b3AgLSBidXQgYXJlIHByb2JhYmx5IGZhc3QgZW5vdWdoIGZvciBzb21lIHVzZXMu
-DQpJJ20gbm90IHN1cmUgaG93IG11Y2gga2VlcGluZyA0ODYgc3VwcG9ydCBhY3R1YWxseSBjb3N0
-cywgMzg2IHdhcyBhDQpQSVRBIC0gYnV0IHRoZSA0ODYgZml4ZWQgbW9zdCBvZiB0aG9zZSBpc3N1
-ZXMuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkg
-Um9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlv
-biBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On 2021-01-09 06:31, Nick Desaulniers wrote:
+> Via:
+> https://lore.kernel.org/lkml/1610099389-28329-1-git-send-email-pnagar@codeaurora.org/
+> 
+>> diff --git a/include/linux/init.h b/include/linux/init.h
+>> index 7b53cb3..617adcf 100644
+>> --- a/include/linux/init.h
+>> +++ b/include/linux/init.h
+>> @@ -300,6 +300,10 @@ void __init parse_early_options(char *cmdline);
+>>  /* Data marked not to be saved by software suspend */
+>>  #define __nosavedata __section(".data..nosave")
+>> 
+>> +#ifdef CONFIG_SECURITY_RTIC
+>> +#define __rticdata  __section(".bss.rtic")
+> 
+> if you put:
+> 
+> #else
+> #define __rticdata
+> 
+> here, then you wouldn't need to label each datum you put in there.
+> 
+>> +#endif
+>> +
+>>  #ifdef MODULE
+>>  #define __exit_p(x) x
+>>  #else
+> 
+>> --- a/security/selinux/hooks.c
+>> +++ b/security/selinux/hooks.c
+>> @@ -104,7 +104,11 @@
+>>  #include "audit.h"
+>>  #include "avc_ss.h"
+>> 
+>> +#ifdef CONFIG_SECURITY_RTIC
+>> +struct selinux_state selinux_state __rticdata;
+>> +#else
+>>  struct selinux_state selinux_state;
+>> +#endif
+> 
+> so you could then drop the if-def here.
+Will update this in next version, thank you for the suggestion.
 
+> Happy to see this resolved when building with LLD+LTO, which has been a
+> problem in the past.
+Yes, downstream we have this verified with LTO configs enabled. Let us 
+know if
+you are suggesting to check anything additionally here.
+
+> Disabling selinux is a common attack vector on Android devices, so 
+> happy
+> to see some effort towards mitigation.  You might want to communicate
+> the feature more to existing OEMs that are using your chipsets that
+> support this feature.
+Glad to know the idea looks good! Yes, we will work on that, will 
+communicate
+internally as well, thank you.
