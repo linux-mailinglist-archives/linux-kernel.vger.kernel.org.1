@@ -2,150 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE432F218D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:12:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0162F2197
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:15:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727073AbhAKVLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 16:11:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31276 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725917AbhAKVLr (ORCPT
+        id S1728324AbhAKVPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 16:15:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726266AbhAKVPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 16:11:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610399420;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yvIgB4nrBqYWTewh1VPtMYxcnrmKC+gvynDYScYKR+g=;
-        b=P9FYcH1NEpXR6HUyAQOriowMwOxkNQ0lVpdMzQdnqDeswf/CFSBnuDeJnOxzgZeiRaOe6F
-        Edh5RJJ2uatEQ42v1ND0iwPVGPxCh7XsLQYe3wQewAmhYLo0/QoO5vrCNyb5rZkASskazB
-        ZkjiAmWL2Jmk6DTL7nNUh8ifuDlbU5Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-222-U2w2WC-kMpaizlOjw3acGA-1; Mon, 11 Jan 2021 16:10:18 -0500
-X-MC-Unique: U2w2WC-kMpaizlOjw3acGA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 799BFB8118;
-        Mon, 11 Jan 2021 21:10:15 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 086155D9DB;
-        Mon, 11 Jan 2021 21:10:13 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 10BLADAJ028070;
-        Mon, 11 Jan 2021 16:10:13 -0500
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 10BLABk6028066;
-        Mon, 11 Jan 2021 16:10:12 -0500
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Mon, 11 Jan 2021 16:10:11 -0500 (EST)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Mingkai Dong <mingkaidong@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Steven Whitehouse <swhiteho@redhat.com>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Wang Jianchao <jianchao.wan9@gmail.com>,
-        "Kani, Toshi" <toshi.kani@hpe.com>,
-        "Norton, Scott J" <scott.norton@hpe.com>,
-        "Tadakamadla, Rajesh" <rajesh.tadakamadla@hpe.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nvdimm@lists.01.org
-Subject: Re: Expense of read_iter
-In-Reply-To: <20210111001805.GD35215@casper.infradead.org>
-Message-ID: <alpine.LRH.2.02.2101111126150.31017@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2101061245100.30542@file01.intranet.prod.int.rdu2.redhat.com> <20210107151125.GB5270@casper.infradead.org> <alpine.LRH.2.02.2101071110080.30654@file01.intranet.prod.int.rdu2.redhat.com> <20210110061321.GC35215@casper.infradead.org>
- <alpine.LRH.2.02.2101101458420.7366@file01.intranet.prod.int.rdu2.redhat.com> <20210111001805.GD35215@casper.infradead.org>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        Mon, 11 Jan 2021 16:15:35 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B99C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:14:55 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id w1so489585pjc.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:14:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=tBBYBALNeTXmfoXgIuvASWSb43rmlp3hgP0L/sV8MGk=;
+        b=Y5IXc+PenEJZOu5pV/qLhcb6NXi6vvQHsWg3gGUxA6jHxPzRiWxtrgngQJgrpnGv0e
+         a15Gr1GQXYYE3qIR6ty2NH9NOHtvSGsC04wEZmxPZdznZJ7cjYaDqDhs5XTFTJMZ47GN
+         wvgSu3smqUHSXbR6dxZXF+aA3vomrxPEuoVjzYUUXKa7X0OP5lcDgrgRxFMSKqi7OTmI
+         DxBsXcBL6ULcqZgSDqVe9RlOGW20yie/3ILVFqZbtfCR8zOegBa8fP8/V54IgH8gHxyl
+         UP4Uf6SF4335zm/bpnCGEJZD1M+2LAO5U7fc2guqYBcfXjiAA7Nl41HizWdVT9CKkd+5
+         8+3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=tBBYBALNeTXmfoXgIuvASWSb43rmlp3hgP0L/sV8MGk=;
+        b=ruFEA6zVHn9k4Ac6BvTNOs2IsrMX18aFbMFbaCLnULrr58/OPJH9dvVuEnYXs6CNTG
+         Dd4nzDf6xsi5WlQcte0mYHR/HZ+Sg/xqTmLX/Qg3h624hcN8A1qKTMIF899JiX0OyGOr
+         E3++1Y941sFlo7Xa9u8zN2OFKRz2zG8uAmDmKNds+EyUwOjiIJiyFnHTjiOK5h4uo45r
+         zi0C9JNXqQHD7L89suLQ9hlDc7cuC4pBwlb6QVl89qIXW9JCJpQIPRYImzLhxpPbzTG3
+         GRcJMN0qxFLTb7aaTAN45pntcKSRRNkgnH17zpggRqUEuVwx11sl45fALcyhkmwww/5G
+         aTeQ==
+X-Gm-Message-State: AOAM5325PjBqYCv7O6Orv9OJGyneOz6B/1ZzGK0Yqt9qZVim1aOF9L67
+        GoVQ3uHFMmj34gpmbj2LC1zt4iKimFY=
+X-Google-Smtp-Source: ABdhPJzpJHdKjBXTiGLqg1FD+czXc2VXnMCI6J24bUH8QLdMXQSJAFFTIzNiwrpfJ8hBe8hnTxMmbA==
+X-Received: by 2002:a17:90a:c084:: with SMTP id o4mr772591pjs.165.1610399694897;
+        Mon, 11 Jan 2021 13:14:54 -0800 (PST)
+Received: from localhost (g178.219-103-173.ppp.wakwak.ne.jp. [219.103.173.178])
+        by smtp.gmail.com with ESMTPSA id o11sm336964pjs.36.2021.01.11.13.14.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 13:14:54 -0800 (PST)
+Date:   Tue, 12 Jan 2021 06:14:52 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        Mateusz Holenko <mholenko@antmicro.com>
+Subject: Re: drivers/soc/litex/litex_soc_ctrl.c:143:34: warning: unused
+ variable 'litex_soc_ctrl_of_match'
+Message-ID: <20210111211452.GB2002709@lianli.shorne-pla.net>
+References: <202101070445.8Kz6oJcS-lkp@intel.com>
+ <20210111123055.GA2002709@lianli.shorne-pla.net>
+ <20210111164334.GA1322395@ubuntu-m3-large-x86>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210111164334.GA1322395@ubuntu-m3-large-x86>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Mon, 11 Jan 2021, Matthew Wilcox wrote:
-
-> On Sun, Jan 10, 2021 at 04:19:15PM -0500, Mikulas Patocka wrote:
-> > I put counters into vfs_read and vfs_readv.
+On Mon, Jan 11, 2021 at 09:43:34AM -0700, Nathan Chancellor wrote:
+> On Mon, Jan 11, 2021 at 09:30:55PM +0900, Stafford Horne wrote:
+> > On Thu, Jan 07, 2021 at 04:04:47AM +0800, kernel test robot wrote:
+> > > Hi Pawel,
+> > > 
+> > > FYI, the error/warning still remains.
+> > > 
+> > > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > > head:   e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
+> > > commit: 22447a99c97e353bde8f90c2353873f27681d57c drivers/soc/litex: add LiteX SoC Controller driver
+> > > date:   8 weeks ago
+> > > config: x86_64-randconfig-a001-20210107 (attached as .config)
+> > > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 5c951623bc8965fa1e89660f2f5f4a2944e4981a)
+> > > reproduce (this is a W=1 build):
+> > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > >         chmod +x ~/bin/make.cross
+> > >         # install x86_64 cross compiling tool for clang build
+> > >         # apt-get install binutils-x86-64-linux-gnu
+> > >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=22447a99c97e353bde8f90c2353873f27681d57c
+> > >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> > >         git fetch --no-tags linus master
+> > >         git checkout 22447a99c97e353bde8f90c2353873f27681d57c
+> > >         # save the attached .config to linux build tree
+> > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64 
+> > > 
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > 
+> > > All warnings (new ones prefixed by >>):
+> > > 
+> > > >> drivers/soc/litex/litex_soc_ctrl.c:143:34: warning: unused variable 'litex_soc_ctrl_of_match' [-Wunused-const-variable]
+> > >    static const struct of_device_id litex_soc_ctrl_of_match[] = {
+> > >                                     ^
+> > >    1 warning generated.
+> > > 
+> > > 
+> > > vim +/litex_soc_ctrl_of_match +143 drivers/soc/litex/litex_soc_ctrl.c
+> > > 
+> > >    142	
+> > >  > 143	static const struct of_device_id litex_soc_ctrl_of_match[] = {
+> > >    144		{.compatible = "litex,soc-controller"},
+> > >    145		{},
+> > >    146	};
+> > >    147	
+> > > 
 > > 
-> > After a fresh boot of the virtual machine, the counters show "13385 4". 
-> > After a kernel compilation they show "4475220 8".
+> > I don't use clang but GCC, and I cannot reproduce this warning.
 > > 
-> > So, the readv path is almost unused.
+> > $ make drivers/soc/litex/litex_soc_ctrl.o 
+> >   CALL    scripts/checksyscalls.sh
+> >   CALL    scripts/atomic/check-atomics.sh
+> >   DESCEND  objtool
+> >   CC      drivers/soc/litex/litex_soc_ctrl.o
 > > 
-> > My reasoning was that we should optimize for the "read" path and glue the 
-> > "readv" path on the top of that. Currently, the kernel is doing the 
-> > opposite - optimizing for "readv" and glueing "read" on the top of it.
+> > Also, I can see litex_soc_ctrl_of_match is used.  I am not sure what is going on
+> > here.
+> > 
+> > -Stafford
+> > 
 > 
-> But it's not about optimising for read vs readv.  read_iter handles
-> a host of other cases, such as pread(), preadv(), AIO reads, splice,
-> and reads to in-kernel buffers.
-
-These things are used rarely compared to "read" and "pread". (BTW. "pread" 
-could be handled by the read method too).
-
-What's the reason why do you think that the "read" syscall should use the 
-"read_iter" code path? Is it because duplicating the logic is discouraged? 
-Or because of code size? Or something else?
-
-> Some device drivers abused read() vs readv() to actually return different 
-> information, depending which you called.  That's why there's now a
-> prohibition against both.
+> You need W=1
 > 
-> So let's figure out how to make iter_read() perform well for sys_read().
+> $ make -skj"$(nproc)" W=1 olddefconfig drivers/soc/litex/litex_soc_ctrl.o
+> drivers/soc/litex/litex_soc_ctrl.c:143:34: warning: ‘litex_soc_ctrl_of_match’ defined but not used [-Wunused-const-variable=]
+>   143 | static const struct of_device_id litex_soc_ctrl_of_match[] = {
+>       |                                  ^~~~~~~~~~~~~~~~~~~~~~~
+> 
+> $ rg "CONFIG_OF|CONFIG_LITEX_SOC_CONTROLLER" .config
+> 1124:# CONFIG_OF is not set
+> 4673:CONFIG_LITEX_SOC_CONTROLLER=y
+> 
+> This variable is used in two places in that file, in the
+> MODULE_DEVICE_TABLE macro and the of_match_ptr macro. When CONFIG_OF is
+> disabled, of_match_ptr evaluates to NULL. When the file is built into
+> the kernel image, MODULE_DEVICE_TABLE evaluates to nothing, leaving this
+> variable defined but unused in the final preprocessed source.
+> 
+> Hope that helps!
 
-I've got another idea - in nvfs_read_iter, test if the iovec contains just 
-one entry and call nvfs_read_locked if it does.
+That helps, I noticed it was only used in those macros so that was fishy.  I
+forgot to add W=1.
 
-diff --git a/file.c b/file.c
-index f4b8a1a..e4d87b2 100644
---- a/file.c
-+++ b/file.c
-@@ -460,6 +460,10 @@ static ssize_t nvfs_read_iter(struct kiocb *iocb, struct iov_iter *iov)
- 	if (!IS_DAX(&nmi->vfs_inode)) {
- 		r = generic_file_read_iter(iocb, iov);
- 	} else {
-+		if (likely(iter_is_iovec(iov)) && likely(!iov->iov_offset) && likely(iov->nr_segs == 1)) {
-+			r = nvfs_read_locked(nmi, iocb->ki_filp, iov->iov->iov_base, iov->count, true, &iocb->ki_pos);
-+			goto unlock_ret;
-+		}
- #if 1
- 		r = nvfs_rw_iter_locked(iocb, iov, false);
- #else
-@@ -467,6 +471,7 @@ static ssize_t nvfs_read_iter(struct kiocb *iocb, struct iov_iter *iov)
- #endif
- 	}
- 
-+unlock_ret:
- 	inode_unlock_shared(&nmi->vfs_inode);
- 
- 	return r;
+We will need to surround the definition in:
 
-
-
-The result is:
-
-nvfs_read_iter			- 7.307s
-Al Viro's read_iter_locked	- 7.147s
-test for just one entry		- 7.010s
-the read method			- 6.782s
-
-So far, this is the best way how to do it, but it's still 3.3% worse than 
-the read method. There's not anything more that could be optimized on the 
-filesystem level - the rest of optimizations must be done in the VFS.
-
-Mikulas
-
+#if defined(CONFIG_OF)
+#endif /* CONFIG_OF */
