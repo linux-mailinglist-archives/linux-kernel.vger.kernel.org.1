@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CABBC2F102B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:35:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C5E2F1034
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:37:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729255AbhAKKeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:34:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728879AbhAKKeY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:34:24 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C04FC061786;
-        Mon, 11 Jan 2021 02:33:43 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id q75so14557287wme.2;
-        Mon, 11 Jan 2021 02:33:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dbrLZ8WTPGAsZD8pPmORFSKZzWFo2KyWvC0I69a1emQ=;
-        b=EyOyI0s/8D+ZLv06FszNdfopdBXggLn3Y/dr/1cRwETBupnBanwuop+Jn1CR2HJgyC
-         d2xjycfQliepqcxXV4j4/An2pniJBwxco5ts5eJ7gx45cf4/yafZEkXSUZB6K8MDn8Nr
-         P16S0c3Z9QnG4CAvRpXIw4Axfn315lTHcNd7wLifNy0CfJMQDSGbTJUYsptzPqHFsggu
-         1aHdMtAi95Rmx6V7H7lHmVAt7dmYLoU5GbuvIUKXpvrmq1Y+0He/jdnVkAJG3EwLOFGL
-         /kFqaCqgJMYJXnda8L1XAV76N0DpTOpI/MprnknkqMbuPrxhGI7li8kjmTGS8dhrBh0H
-         ZE+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dbrLZ8WTPGAsZD8pPmORFSKZzWFo2KyWvC0I69a1emQ=;
-        b=g/SZ1TH8B8+UIfaMrzsjdza+lhlnPp8g5WzzuBejailmnJ/bA2+0lA52LWDCz7QMl5
-         73jwrujKlmJUE0FUSXCHnAzEb9O6Xik0rOk8lIBtUjmUxZkccGbOioPdI2D05q6x10dh
-         o8RHJ00L8wY+nFpOZVAuMNcysg4N1p9u39OBwU+rNL0q3ycvXzTwzOOfpyjoHa8i7qhi
-         9OrUjbiRAR/7YxogiP34iXCNn6B51KmtzKxgK2Zt/m6S5jD/So5TXRcQDAiiRpWStO7Q
-         Z8pZ/y8BnKFVpaLyB/qXCUZ0fqoVkOY4hLwcOxzG+0nVl5saUN72YMXZRn74lyGUiz6Q
-         FhsA==
-X-Gm-Message-State: AOAM530S9rlQd4QNHdtSRUySsRADaSP5a73GiW1SiOIQNs/B+w0FaHP4
-        bQyofNiOtBl2YL5PWooP08qdHn0ctWhZAw==
-X-Google-Smtp-Source: ABdhPJy3H4vUmZKPaaxnih+V4jvjXFzRweyPsPK2cKyeDQrImEQ+BTO1sjnbvHX1rSQmBbdfGmp2WQ==
-X-Received: by 2002:a05:600c:224b:: with SMTP id a11mr13949574wmm.97.1610361222248;
-        Mon, 11 Jan 2021 02:33:42 -0800 (PST)
-Received: from localhost.localdomain (242.23.159.143.dyn.plus.net. [143.159.23.242])
-        by smtp.gmail.com with ESMTPSA id u3sm26256808wre.54.2021.01.11.02.33.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 02:33:41 -0800 (PST)
-From:   Joe Pater <02joepater06@gmail.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Joe Pater <02joepater06@gmail.com>
-Subject: [PATCH] Documentation: kernel-hacking: change 'current()' to 'current'
-Date:   Mon, 11 Jan 2021 10:32:41 +0000
-Message-Id: <20210111103240.7445-1-02joepater06@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        id S1729264AbhAKKfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:35:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728893AbhAKKfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 05:35:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FB97229C4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 10:35:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610361304;
+        bh=1jvppqObcU17oix81bFxLol1bIiIGDiIxxYc0SeMzd0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=XFwVHpq1zviVzktAOysLmRdCJoQ08eAqlJpjUZSh65lRn1FBlkgzBuLxRUMj7HE9V
+         wOWOgbYxcExe64U+q9YZY4eXKt3n6tQSSP1GU12aIp2lMzZVtKmr4W360e64XSXg1Y
+         a1eHNcQszfZSyLJKBqqlhg6NJ2XJozkIOxf7FmlI/aYn0xVKvAkJ6EpwurzuWO+U08
+         1OxkwLbVTFbTcoX3T6S/t5b3DQDCAcrdlTrvfdafdujPS8qRsnZRxjsL6DQDehRnUu
+         PLRr4+GdVCtwPDKRj7BYpYFbdnV/69H4128skR2C+rqZwAOATQCqD5mV2FwOKcJgX/
+         6ezZq+92zYRkg==
+Received: by mail-oi1-f176.google.com with SMTP id x13so19617903oic.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 02:35:04 -0800 (PST)
+X-Gm-Message-State: AOAM533m1X6K9gnp0eTxGMeRyN7rsKHuFRzY92cKp6zxj050dJnsTlLx
+        1YFgzfUlFTYxWCQGlwrTvw0HZXol032OARnXc5g=
+X-Google-Smtp-Source: ABdhPJy2anaAv/SzvNP4vXQr2AWpGIAK1ktuNadzheO05rdvHbZiMYB82cZo3ghSdHWVQUulh3j6bViMqR9leEJJbqQ=
+X-Received: by 2002:aca:44d:: with SMTP id 74mr9979507oie.4.1610361303387;
+ Mon, 11 Jan 2021 02:35:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+ <CAMuHMdWiYkhN_S2t+hg0cDk84Qd950YE9-qGTgsdL_-2vPr1WQ@mail.gmail.com>
+ <CAK8P3a3TNVj_Gw=GaEFELdF9Fo25XU_PFWS5N0+kb=R394KNVQ@mail.gmail.com> <20210111094022.GA5691@alpha.franken.de>
+In-Reply-To: <20210111094022.GA5691@alpha.franken.de>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 11 Jan 2021 11:34:46 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1puMTgrP+VZEYLSsLTDn4J8hkEYab-UhbDotYjqDjNKg@mail.gmail.com>
+Message-ID: <CAK8P3a1puMTgrP+VZEYLSsLTDn4J8hkEYab-UhbDotYjqDjNKg@mail.gmail.com>
+Subject: Re: Old platforms: bring out your dead
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Mark Salter <msalter@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change 'current()' heading to 'current' to reflect usage.
+On Mon, Jan 11, 2021 at 10:40 AM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+>
+> On Mon, Jan 11, 2021 at 09:59:23AM +0100, Arnd Bergmann wrote:
+> > On Mon, Jan 11, 2021 at 9:19 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > > On Fri, Jan 8, 2021 at 11:55 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> > > > * MIPS R3000/TX39xx: 32-bit MIPS-II generation, mostly superseded by
+> > > >   64-bit MIPS-III (R4000 and higher) starting in 1991. arch/mips still
+> > > >   supports these in DECstation and Toshiba Txx9, but it appears that most
+> > > >   of those machines are of the 64-bit kind. Later MIPS32 such as 4Kc and
+> > > >   later are rather different and widely used.
+> > >
+> > > I have a (32-bit) RBTX4927 development board in my board farm, boot-test
+> > > every bi-weekly renesas-drivers release on it, and fix kernel issues
+> > > when they appear.
+> >
+> > Right, I was specifically thinking of the MIPS-II/R3000 ones here, I know
+> > there are users on multiple actively maintained MIPS-III platforms.
+>
+> Maciej still runs R3k based machines.
 
-Signed-off-by: Joe Pater <02joepater06@gmail.com>
----
- Documentation/kernel-hacking/hacking.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Ok, got it.
 
-diff --git a/Documentation/kernel-hacking/hacking.rst b/Documentation/kernel-hacking/hacking.rst
-index eed2136d847f..451523424942 100644
---- a/Documentation/kernel-hacking/hacking.rst
-+++ b/Documentation/kernel-hacking/hacking.rst
-@@ -346,8 +346,8 @@ routine.
- Before inventing your own cache of often-used objects consider using a
- slab cache in ``include/linux/slab.h``
- 
--:c:func:`current()`
---------------------
-+:c:macro:`current`
-+------------------
- 
- Defined in ``include/asm/current.h``
- 
-
-base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
--- 
-2.29.2
-
+       Arnd
