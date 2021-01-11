@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7682F160E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91B2E2F150D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387704AbhAKNsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:48:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57588 "EHLO mail.kernel.org"
+        id S1732053AbhAKNOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:14:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731161AbhAKNKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:10:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8781322AAB;
-        Mon, 11 Jan 2021 13:09:41 +0000 (UTC)
+        id S1731919AbhAKNNq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:13:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B0F4522ADF;
+        Mon, 11 Jan 2021 13:13:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370582;
-        bh=UmWMh7iMr8CpihslN4Wmb/o/xoD0uabRAq9If/Znrj4=;
+        s=korg; t=1610370786;
+        bh=34WK/JO9EGofM1VPONr95EJPWXbjCgz42fnwczCGMRg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hz/vcyGn6cfFU4gPN9Q8fSXWehg1XnFwE1KcVjrOgl7735DaDNLKyZy7bVPPN86XK
-         jmH6l5GDXB87sviVdPbL1GTBxYd+Chk5c7iqGqyF0wWxpdI/oTWT+pNB0ZB/DS0JQk
-         4ZGQbkjhXg/jNqMTAFfI++OxK/NJQfhfBYdT5Q/I=
+        b=fdAWiAueRBEMNKI8fovynODE3MwCVBwr69nALd0uZryny1zpKF3cie0aIUyz4TbfY
+         ckOmBHD5RV007ecBuwms8ZVmH28gIbFlm9Hf46RIRzYm4bCauYLNbAVVovbLSuniAL
+         aV/EOL6tuPbxhH8OiRdYAZ6X6Nmhx/jMNRcCoHIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
-        Zqiang <qiang.zhang@windriver.com>
-Subject: [PATCH 4.19 59/77] usb: gadget: function: printer: Fix a memory leak for interface descriptor
-Date:   Mon, 11 Jan 2021 14:02:08 +0100
-Message-Id: <20210111130039.250133604@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 65/92] USB: usblp: fix DMA to stack
+Date:   Mon, 11 Jan 2021 14:02:09 +0100
+Message-Id: <20210111130042.283198036@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +38,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 2cc332e4ee4febcbb685e2962ad323fe4b3b750a upstream.
+commit 020a1f453449294926ca548d8d5ca970926e8dfd upstream.
 
-When printer driver is loaded, the printer_func_bind function is called, in
-this function, the interface descriptor be allocated memory, if after that,
-the error occurred, the interface descriptor memory need to be free.
+Stack-allocated buffers cannot be used for DMA (on all architectures).
 
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-Link: https://lore.kernel.org/r/20201210020148.6691-1-qiang.zhang@windriver.com
+Replace the HP-channel macro with a helper function that allocates a
+dedicated transfer buffer so that it can continue to be used with
+arguments from the stack.
+
+Note that the buffer is cleared on allocation as usblp_ctrl_msg()
+returns success also on short transfers (the buffer is only used for
+debugging).
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210104145302.2087-1-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/function/f_printer.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/class/usblp.c |   21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/gadget/function/f_printer.c
-+++ b/drivers/usb/gadget/function/f_printer.c
-@@ -1126,6 +1126,7 @@ fail_tx_reqs:
- 		printer_req_free(dev->in_ep, req);
- 	}
+--- a/drivers/usb/class/usblp.c
++++ b/drivers/usb/class/usblp.c
+@@ -274,8 +274,25 @@ static int usblp_ctrl_msg(struct usblp *
+ #define usblp_reset(usblp)\
+ 	usblp_ctrl_msg(usblp, USBLP_REQ_RESET, USB_TYPE_CLASS, USB_DIR_OUT, USB_RECIP_OTHER, 0, NULL, 0)
  
-+	usb_free_all_descriptors(f);
- 	return ret;
+-#define usblp_hp_channel_change_request(usblp, channel, buffer) \
+-	usblp_ctrl_msg(usblp, USBLP_REQ_HP_CHANNEL_CHANGE_REQUEST, USB_TYPE_VENDOR, USB_DIR_IN, USB_RECIP_INTERFACE, channel, buffer, 1)
++static int usblp_hp_channel_change_request(struct usblp *usblp, int channel, u8 *new_channel)
++{
++	u8 *buf;
++	int ret;
++
++	buf = kzalloc(1, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	ret = usblp_ctrl_msg(usblp, USBLP_REQ_HP_CHANNEL_CHANGE_REQUEST,
++			USB_TYPE_VENDOR, USB_DIR_IN, USB_RECIP_INTERFACE,
++			channel, buf, 1);
++	if (ret == 0)
++		*new_channel = buf[0];
++
++	kfree(buf);
++
++	return ret;
++}
  
- }
+ /*
+  * See the description for usblp_select_alts() below for the usage
 
 
