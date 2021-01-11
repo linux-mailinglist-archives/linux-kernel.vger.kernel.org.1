@@ -2,87 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9502F1901
+	by mail.lfdr.de (Postfix) with ESMTP id BB4792F1902
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:59:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731421AbhAKO7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:59:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729688AbhAKO73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:59:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DCF822A84
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:58:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610377128;
-        bh=ww6Gpe7YL/eMYPGsKKGWwb+jWPe4WbloNUjLWHjxwYk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Wi2/Q+JcejnwuKtdPRBQWUIcp6yobEcGApM23Mf8vbO8LuPBGY4eRc8o9BnTBnvDN
-         NK9N/cP0M4pJVsAF65SkP4amh869Rg+H0pDWym5qOjX8ZGKGszfdSR38zsj5ISzbPL
-         isuIKBa0tF2wMiecjWQ5dra74mq8Uk+UR5FpHtYrr9g9KqwwUID1ye3Im0Awtqq1uX
-         H/OfmLNmAmnweu82+dlUh9Xg7olsIaKWRZloXXNhleVxuHimWdT1VsjzVWnL6+9cX5
-         Y+tnKViiId7AJSQzSuUGCeqYx2TpOnEAVzyY1uAztKS0i2K6pJIdj8wuElVK6sKwGt
-         p532U2wrcASwg==
-Received: by mail-oi1-f174.google.com with SMTP id p5so20359990oif.7
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:58:48 -0800 (PST)
-X-Gm-Message-State: AOAM530ySwxTkCK56t7P3KSVVYmOOBE0/7k9J4i8brp6lGOBqBnqBqxN
-        OAciO3pq2nd8N0XGzU5m5P3EedlPJ80zxDsNvgk=
-X-Google-Smtp-Source: ABdhPJwnoMVjzWHgU9eYBAHjcmZ+WgwC0YDN8Vt3dB8+9tcVBxhzWKbJTXPT5UH1L3pOkWQuIfov+2eaox+znBCZsAg=
-X-Received: by 2002:aca:fd91:: with SMTP id b139mr9928356oii.67.1610377127714;
- Mon, 11 Jan 2021 06:58:47 -0800 (PST)
+        id S1732597AbhAKO7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:59:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729285AbhAKO7b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 09:59:31 -0500
+Received: from mail-ua1-x933.google.com (mail-ua1-x933.google.com [IPv6:2607:f8b0:4864:20::933])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F07DC061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:58:51 -0800 (PST)
+Received: by mail-ua1-x933.google.com with SMTP id k47so6035346uad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:58:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HCNTiunazZYLzBElVvBsIq1txvjnJLCjiClRs9NWjxM=;
+        b=YTVMNzf3e2QLEPvy1z+h+zOAWVuLqvcH9ukx2eVAT0DG39fwZQckZcdCQ6osLjvyqB
+         W1Eok+rzydNg3x/ySgAS9J8GmnZj3T5ZFiXIpjlMQkfJ4QxtakPIIHeDDo5RhL3X4hYD
+         BuruiWbOHSMJR1i99IwafVXZr28lq7wJOBDqF0LVqYIdF6HJKbk4UZYHshu1RYbpqUdN
+         vx2u01UDuDZ0d7MOzQ8H+s+j9ooK/Xs8HQthOVRyvVWDnf61LUyOUaOuvI4JQhGHdqUj
+         CFVWKljg59zWuINxFaakP2l3XJSxanVnzr1WyM4xwPQBd4gBJ2IcYI8uDYIDCGbIVI6j
+         0q6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HCNTiunazZYLzBElVvBsIq1txvjnJLCjiClRs9NWjxM=;
+        b=fEzNMX2m0ylOx/l6Q31w5g0u3rxDb6nVr9ZYdkjtn7fA6CkcJvmqH1gh3lKrHk6QZL
+         8Mydk27MAj+MO8o6yJBWfvXKpViesuPrq6SWpizNa1DrjqbDW0pm3Ygdw/zzcGrI6pxC
+         GMEPpNqNU0Uf546UlzbOQm2AbYfphp/BrOe6VmcsoO51xTM5gdUZD7yLp6hczsh6KdK9
+         VuSXEdwBbfJ0J+sVW9KFW1B1bem1Y97EwZmtBmVjSCPqWKwu0LtSMIV95zXT7lsFDQQS
+         as0ehOBYxEmVprK1Z+2ro5RNoK51848lbT/rDYI4ZotOsk3mOEyzOnnarY86y80Qk05+
+         aLTg==
+X-Gm-Message-State: AOAM5326Z9ZGuCb7bRw5DIyd1U8chShUVBJh5ywf+RgGd2fkF9mZdwIu
+        +1SNTvco2SDQqYa9y+fUPM3J0s5DWkC8mmC6G7pL4A==
+X-Google-Smtp-Source: ABdhPJwJv5F6kb/IyvwHdQiLOnyG9BpA/BeaFV9eQQPU+tZlda6yHltHXnoTG1+5XGfPdzPrUrieOdTfXn72+CojqXw=
+X-Received: by 2002:ab0:634c:: with SMTP id f12mr13032319uap.63.1610377130152;
+ Mon, 11 Jan 2021 06:58:50 -0800 (PST)
 MIME-Version: 1.0
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <20210111174449.86c3848cb62b7aee6b94c42b@mail.ru>
-In-Reply-To: <20210111174449.86c3848cb62b7aee6b94c42b@mail.ru>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 11 Jan 2021 15:58:29 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3bFkpT3nkfc2nimmuxSA7gNUgXGdkBOKmD7_jv1+DfQw@mail.gmail.com>
-Message-ID: <CAK8P3a3bFkpT3nkfc2nimmuxSA7gNUgXGdkBOKmD7_jv1+DfQw@mail.gmail.com>
-Subject: Re: Old platforms: bring out your dead
-To:     Alexander Shiyan <shc_work@mail.ru>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Mark Salter <msalter@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <20210109043808.GA3694@localhost.localdomain>
+In-Reply-To: <20210109043808.GA3694@localhost.localdomain>
+From:   Neal Cardwell <ncardwell@google.com>
+Date:   Mon, 11 Jan 2021 09:58:33 -0500
+Message-ID: <CADVnQymUn1aKoA4nW8dhEi-fUXNCbr2--vDEmmMtHHXGp2AFNQ@mail.gmail.com>
+Subject: Re: [PATCH] Revert "tcp: simplify window probe aborting on USER_TIMEOUT"
+To:     Enke Chen <enkechen2020@gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Soheil Hassas Yeganeh <soheil@google.com>,
+        Yuchung Cheng <ycheng@google.com>,
+        Netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jonathan Maxwell <jmaxwell37@gmail.com>,
+        William McCall <william.mccall@gmail.com>, enchen2020@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 3:48 PM Alexander Shiyan <shc_work@mail.ru> wrote:
-> On Fri, 8 Jan 2021 23:55:06 +0100 Arnd Bergmann <arnd@kernel.org> wrote:
-> > Then there are ARM platforms that are old but have still seen some work
-> > in the past years. If I hear nothing, these will all stay, but if maintainers
-> > may want to drop them anyway, I can help with that:
-> >
-> > * clps711x -- prehistoric, converted to multiplatform+DT in 2016, no
-> > changes since
-> I still keep this architecture up and running (currently at 5.9.0).
+On Fri, Jan 8, 2021 at 11:38 PM Enke Chen <enkechen2020@gmail.com> wrote:
+>
+> From: Enke Chen <enchen@paloaltonetworks.com>
+>
+> This reverts commit 9721e709fa68ef9b860c322b474cfbd1f8285b0f.
+>
+> With the commit 9721e709fa68 ("tcp: simplify window probe aborting
+> on USER_TIMEOUT"), the TCP session does not terminate with
+> TCP_USER_TIMEOUT when data remain untransmitted due to zero window.
+>
+> The number of unanswered zero-window probes (tcp_probes_out) is
+> reset to zero with incoming acks irrespective of the window size,
+> as described in tcp_probe_timer():
+>
+>     RFC 1122 4.2.2.17 requires the sender to stay open indefinitely
+>     as long as the receiver continues to respond probes. We support
+>     this by default and reset icsk_probes_out with incoming ACKs.
+>
+> This counter, however, is the wrong one to be used in calculating the
+> duration that the window remains closed and data remain untransmitted.
+> Thanks to Jonathan Maxwell <jmaxwell37@gmail.com> for diagnosing the
+> actual issue.
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 9721e709fa68 ("tcp: simplify window probe aborting on USER_TIMEOUT")
+> Reported-by: William McCall <william.mccall@gmail.com>
+> Signed-off-by: Enke Chen <enchen@paloaltonetworks.com>
+> ---
 
-Ok, great. Thanks for letting us know.
+I ran this revert commit through our packetdrill TCP tests, and it's
+causing failures in a ZWP/USER_TIMEOUT test due to interactions with
+this Jan 2019 patch:
 
-       Arnd
+    7f12422c4873e9b274bc151ea59cb0cdf9415cf1
+    tcp: always timestamp on every skb transmission
+
+The issue seems to be that after 7f12422c4873 the skb->skb_mstamp_ns
+is set on every transmit attempt. That means that even skbs that are
+not successfully transmitted have a non-zero skb_mstamp_ns. That means
+that if ZWPs are repeatedly failing to be sent due to severe local
+qdisc congestion, then at this point in the code the start_ts is
+always only 500ms in the past (from TCP_RESOURCE_PROBE_INTERVAL =
+500ms). That means that if there is severe local qdisc congestion a
+USER_TIMEOUT above 500ms is a NOP, and the socket can live far past
+the USER_TIMEOUT.
+
+It seems we need a slightly different approach than the revert in this commit.
+
+neal
