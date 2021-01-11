@@ -2,33 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3D362F15DC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 912002F1697
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:55:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731313AbhAKNLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:11:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55564 "EHLO mail.kernel.org"
+        id S1731425AbhAKNye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:54:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730802AbhAKNIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:08:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CC5921973;
-        Mon, 11 Jan 2021 13:07:30 +0000 (UTC)
+        id S1729014AbhAKNHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:07:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DCA122515;
+        Mon, 11 Jan 2021 13:07:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370451;
-        bh=+f99D9fEKJnngyVOHBqLeBg8NItk6s5ISu3zsRWthg8=;
+        s=korg; t=1610370453;
+        bh=1TiPWSaZ2BsjA0pf2ejsTyQJsFB2VaC9dCixSX4ErAo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t2+DjK1krrTuh/FPswg1omwQo96aBP0mowR9BPK/Mm4aciwtsphcEEzqpUbfo2G3W
-         XdGDWi/K9HQJImVbFrAgqcnJDmky+fXypJmqC/SFJA39Gm18gAicTQPjEWfktTk4xA
-         CG6ry6RaH6bSgXxPOhB3jxo1j3bUCyT1Gbb0UFxY=
+        b=DgV/k5hD8pnrJYCu3n+aIwGjDBt29vv+W0hkMTGMEuKkmMheAjDLHSn8YPV4Kc1jK
+         8Z2elAWV6NjLz+w4q7wWoVnBxkPVdfk8FjbOQzrCVCZx47AHQQQSJBqa0at7VkB/NP
+         MngSh3T2M1+zlCgfQAJyg6VjHK+rsCPMiIFxdWxY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Can Guo <cang@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        Jens Axboe <axboe@kernel.dk>,
+        Bart Van Assche <bvanassche@acm.org>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 04/77] scsi: ufs-pci: Ensure UFS device is in PowerDown mode for suspend-to-disk ->poweroff()
-Date:   Mon, 11 Jan 2021 14:01:13 +0100
-Message-Id: <20210111130036.621831764@linuxfoundation.org>
+Subject: [PATCH 4.19 05/77] scsi: ide: Do not set the RQF_PREEMPT flag for sense requests
+Date:   Mon, 11 Jan 2021 14:01:14 +0100
+Message-Id: <20210111130036.670555504@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
 References: <20210111130036.414620026@linuxfoundation.org>
@@ -40,75 +48,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit af423534d2de86cd0db729a5ac41f056ca8717de ]
+[ Upstream commit 96d86e6a80a3ab9aff81d12f9f1f2a0da2917d38 ]
 
-The expectation for suspend-to-disk is that devices will be powered-off, so
-the UFS device should be put in PowerDown mode. If spm_lvl is not 5, then
-that will not happen. Change the pm callbacks to force spm_lvl 5 for
-suspend-to-disk poweroff.
+RQF_PREEMPT is used for two different purposes in the legacy IDE code:
 
-Link: https://lore.kernel.org/r/20201207083120.26732-3-adrian.hunter@intel.com
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+ 1. To mark power management requests.
+
+ 2. To mark requests that should preempt another request. An (old)
+    explanation of that feature is as follows: "The IDE driver in the Linux
+    kernel normally uses a series of busywait delays during its
+    initialization. When the driver executes these busywaits, the kernel
+    does nothing for the duration of the wait. The time spent in these
+    waits could be used for other initialization activities, if they could
+    be run concurrently with these waits.
+
+    More specifically, busywait-style delays such as udelay() in module
+    init functions inhibit kernel preemption because the Big Kernel Lock is
+    held, while yielding APIs such as schedule_timeout() allow
+    preemption. This is true because the kernel handles the BKL specially
+    and releases and reacquires it across reschedules allowed by the
+    current thread.
+
+    This IDE-preempt specification requires that the driver eliminate these
+    busywaits and replace them with a mechanism that allows other work to
+    proceed while the IDE driver is initializing."
+
+Since I haven't found an implementation of (2), do not set the PREEMPT flag
+for sense requests. This patch causes sense requests to be postponed while
+a drive is suspended instead of being submitted to ide_queue_rq().
+
+If it would ever be necessary to restore the IDE PREEMPT functionality,
+that can be done by introducing a new flag in struct ide_request.
+
+Link: https://lore.kernel.org/r/20201209052951.16136-4-bvanassche@acm.org
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: Can Guo <cang@codeaurora.org>
+Cc: Stanley Chu <stanley.chu@mediatek.com>
+Cc: Ming Lei <ming.lei@redhat.com>
+Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd-pci.c | 34 ++++++++++++++++++++++++++++++++--
- 1 file changed, 32 insertions(+), 2 deletions(-)
+ drivers/ide/ide-atapi.c | 1 -
+ drivers/ide/ide-io.c    | 5 -----
+ 2 files changed, 6 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd-pci.c b/drivers/scsi/ufs/ufshcd-pci.c
-index ffe6f82182ba8..68f4f67c5ff88 100644
---- a/drivers/scsi/ufs/ufshcd-pci.c
-+++ b/drivers/scsi/ufs/ufshcd-pci.c
-@@ -96,6 +96,30 @@ static int ufshcd_pci_resume(struct device *dev)
- {
- 	return ufshcd_system_resume(dev_get_drvdata(dev));
- }
-+
-+/**
-+ * ufshcd_pci_poweroff - suspend-to-disk poweroff function
-+ * @dev: pointer to PCI device handle
-+ *
-+ * Returns 0 if successful
-+ * Returns non-zero otherwise
-+ */
-+static int ufshcd_pci_poweroff(struct device *dev)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
-+	int spm_lvl = hba->spm_lvl;
-+	int ret;
-+
-+	/*
-+	 * For poweroff we need to set the UFS device to PowerDown mode.
-+	 * Force spm_lvl to ensure that.
-+	 */
-+	hba->spm_lvl = 5;
-+	ret = ufshcd_system_suspend(hba);
-+	hba->spm_lvl = spm_lvl;
-+	return ret;
-+}
-+
- #endif /* !CONFIG_PM_SLEEP */
+diff --git a/drivers/ide/ide-atapi.c b/drivers/ide/ide-atapi.c
+index 8b2b72b938857..4224c4dd89635 100644
+--- a/drivers/ide/ide-atapi.c
++++ b/drivers/ide/ide-atapi.c
+@@ -213,7 +213,6 @@ void ide_prep_sense(ide_drive_t *drive, struct request *rq)
+ 	sense_rq->rq_disk = rq->rq_disk;
+ 	sense_rq->cmd_flags = REQ_OP_DRV_IN;
+ 	ide_req(sense_rq)->type = ATA_PRIV_SENSE;
+-	sense_rq->rq_flags |= RQF_PREEMPT;
  
- #ifdef CONFIG_PM
-@@ -190,8 +214,14 @@ ufshcd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- }
- 
- static const struct dev_pm_ops ufshcd_pci_pm_ops = {
--	SET_SYSTEM_SLEEP_PM_OPS(ufshcd_pci_suspend,
--				ufshcd_pci_resume)
-+#ifdef CONFIG_PM_SLEEP
-+	.suspend	= ufshcd_pci_suspend,
-+	.resume		= ufshcd_pci_resume,
-+	.freeze		= ufshcd_pci_suspend,
-+	.thaw		= ufshcd_pci_resume,
-+	.poweroff	= ufshcd_pci_poweroff,
-+	.restore	= ufshcd_pci_resume,
-+#endif
- 	SET_RUNTIME_PM_OPS(ufshcd_pci_runtime_suspend,
- 			   ufshcd_pci_runtime_resume,
- 			   ufshcd_pci_runtime_idle)
+ 	req->cmd[0] = GPCMD_REQUEST_SENSE;
+ 	req->cmd[4] = cmd_len;
+diff --git a/drivers/ide/ide-io.c b/drivers/ide/ide-io.c
+index 0d93e0cfbeaf9..4381760846109 100644
+--- a/drivers/ide/ide-io.c
++++ b/drivers/ide/ide-io.c
+@@ -527,11 +527,6 @@ repeat:
+ 		 * above to return us whatever is in the queue. Since we call
+ 		 * ide_do_request() ourselves, we end up taking requests while
+ 		 * the queue is blocked...
+-		 * 
+-		 * We let requests forced at head of queue with ide-preempt
+-		 * though. I hope that doesn't happen too much, hopefully not
+-		 * unless the subdriver triggers such a thing in its own PM
+-		 * state machine.
+ 		 */
+ 		if ((drive->dev_flags & IDE_DFLAG_BLOCKED) &&
+ 		    ata_pm_request(rq) == 0 &&
 -- 
 2.27.0
 
