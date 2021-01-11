@@ -2,117 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AFB2F2187
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:08:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6C72F2184
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389930AbhAKVHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 16:07:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40854 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728539AbhAKVHY (ORCPT
+        id S2388842AbhAKVHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 16:07:02 -0500
+Received: from relay05.th.seeweb.it ([5.144.164.166]:33035 "EHLO
+        relay05.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730488AbhAKVHB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 16:07:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610399157;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OkwN5vYCUrXN1gSw+5AUEXR+ndNOEnKeN2JIlRxKH3E=;
-        b=Bx2IEbvbG6YoRYx07gVLovRlUTW1KeVo+WC0lJQr0m2FJ5/LQJymQy9JyhmIQKA7djNieX
-        85jRjBKLhHFLPJ+D7h46TSE3eHYGUbC36ywqHnDokC9S4v5zs2MRy5afvN9sC9bpexsyvS
-        lG6zoZOi5SU6thzwqIFU7wjyI1ClOYs=
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
- [209.85.166.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-207-WDNa0I3ePF6r5RXZO-95TQ-1; Mon, 11 Jan 2021 16:05:55 -0500
-X-MC-Unique: WDNa0I3ePF6r5RXZO-95TQ-1
-Received: by mail-io1-f69.google.com with SMTP id b136so93354iof.19
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:05:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OkwN5vYCUrXN1gSw+5AUEXR+ndNOEnKeN2JIlRxKH3E=;
-        b=bwLoZKpgkqYtf2WATEbL8pMxO5j3LUIG5kUeF3Z6YswWkw7tyrnF+Iwb/K8qR7ILEb
-         sedmxbihOCiPhyp9DLiLd7lnEE7OyrTaNpZgD34pt30yZSjF21/f4iFgVE0A625Bv/fo
-         fitYfmi7k9b8nspYmiS6B37q86q94XU/0xnRmaSM0/1kRvPDroeFwDzJ8K1Z5Mh5rUac
-         dIR5N/mkpm7c53DC+fsQtrr5BXc0d/sfJ/GE/3lo/UJFJC5OydIyZTSX+w3m/iOsFCHV
-         Z45kndBu3elZork0WZOgh3UFs8VFRDGz4HhpJyo3xi3IE4S9Od7yNOtYMSBCxdDVCDPU
-         yiHw==
-X-Gm-Message-State: AOAM533oYDfmpFY8ayKM+2kDhPQaq+ZtoQdUHJLR5T39Vz5LtrpuKMKD
-        mwExJs/PF0JIyC4+zWwglusALmjhoOrGDACXxtttL5oA9a2hlcA+XJ9BBICH1oBquCnaKJwKGmN
-        oKqmD5jiIyvmZv5IC/6F+xj5v
-X-Received: by 2002:a05:6e02:10c3:: with SMTP id s3mr973993ilj.269.1610399154545;
-        Mon, 11 Jan 2021 13:05:54 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw6Ev4z4M7iiQ4IWIhPmz+JCzu3mpjfTGAREfYqUmeQmNUT4RarijTDgpFFHOnVLiRQw5uChA==
-X-Received: by 2002:a05:6e02:10c3:: with SMTP id s3mr973984ilj.269.1610399154354;
-        Mon, 11 Jan 2021 13:05:54 -0800 (PST)
-Received: from dev.jcline.org ([2605:a601:a63a:4d01:c440:5c61:43ba:350c])
-        by smtp.gmail.com with ESMTPSA id k15sm711468ilp.10.2021.01.11.13.05.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 13:05:53 -0800 (PST)
-From:   Jeremy Cline <jcline@redhat.com>
-To:     Felix Kuehling <Felix.Kuehling@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Kent Russell <kent.russell@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Jeremy Cline <jcline@redhat.com>
-Subject: [PATCH v2] drm/amdkfd: Fix out-of-bounds read in kdf_create_vcrat_image_cpu()
-Date:   Mon, 11 Jan 2021 16:05:28 -0500
-Message-Id: <20210111210528.734483-1-jcline@redhat.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210108163104.411442-1-jcline@redhat.com>
-References: <20210108163104.411442-1-jcline@redhat.com>
+        Mon, 11 Jan 2021 16:07:01 -0500
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id E39D03E8CF;
+        Mon, 11 Jan 2021 22:06:18 +0100 (CET)
+Subject: Re: [PATCH 5/7] regulator: qcom-labibb: Implement short-circuit and
+ over-current IRQs
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, sumit.semwal@linaro.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org
+References: <20210109132921.140932-1-angelogioacchino.delregno@somainline.org>
+ <20210109132921.140932-6-angelogioacchino.delregno@somainline.org>
+ <20210111135745.GC4728@sirena.org.uk>
+ <6dee36e4-fc78-c21b-daf8-120ee44535a3@somainline.org>
+ <8115a574-ad43-d3c6-70d4-28c8a2f4a5f6@somainline.org>
+Message-ID: <09d70d24-5d0d-f1cd-d99e-5c213c8ea98c@somainline.org>
+Date:   Mon, 11 Jan 2021 22:06:18 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
+In-Reply-To: <8115a574-ad43-d3c6-70d4-28c8a2f4a5f6@somainline.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KASAN reported a slab-out-of-bounds read of size 1 in
-kdf_create_vcrat_image_cpu().
+Il 11/01/21 20:23, AngeloGioacchino Del Regno ha scritto:
+> Il 11/01/21 20:14, AngeloGioacchino Del Regno ha scritto:
+>> Il 11/01/21 14:57, Mark Brown ha scritto:
+>>> On Sat, Jan 09, 2021 at 02:29:19PM +0100, AngeloGioacchino Del Regno 
+>>> wrote:
+>>>
+>>>> +    /* If the regulator is not enabled, this is a fake event */
+>>>> +    if (!ops->is_enabled(vreg->rdev))
+>>>> +        return 0;
+>>>
+>>> Or handling the interrupt raced with a disable initiated from elsewhere.
+>>> Does the hardware actually have a problem with reporting spurious 
+>>> errors?
+>>>
+> Sorry, I forgot to answer to this one in the previous email.
+> 
+> Yes, apparently the hardware has this issue: when the current draw is 
+> very high and you disable the regulator while the attached device is 
+> still drawing a lot of current (like on the Xperia XZ2 smartphone, but I 
+> don't want to comment on that phone's HW quirks...) then the OCP 
+> interrupt fires *after* disabling the LAB/IBB regulators.
+> 
+> This doesn't seem to happen if the current draw is low in the exact 
+> moment the regulator gets disabled, but that's not always possible since 
+> it depends on external HW design / board design sometimes...
+> 
+> 
+>>>> +    return ret ? IRQ_NONE : IRQ_HANDLED;
+>>>
+>>> Here and elsewhere please write normal conditional statements to improve
+>>> legibility.
+>>>
+>> No problem. Will do.
+>>
+>>>> +    /* This function should be called only once, anyway. */
+>>>> +    if (unlikely(vreg->ocp_irq_requested))
+>>>> +        return 0;
+>>>
+>>> If this is not a fast path it doesn't need an unlikely() annotation;
+>>> indeed it sounds more like there should be a warning printed if this
+>>> isn't supposed to be called multiple times.
+>>>
+>> That was extra-paranoid safety, looking at this one again, that should 
+>> be totally unnecessary.
+>> I think that removing this check entirely would be just fine also 
+>> because.. anyway.. writing to these registers more than once won't do 
+>> any harm, nor break functionality: I mean, even if it happens for 
+>> whatever reason, there's *no real need* to avoid it from the hw 
+>> perspective.
+>>
+>>>> +    /* IRQ polarities - LAB: trigger-low, IBB: trigger-high */
+>>>> +    if (vreg->type == QCOM_LAB_TYPE) {
+>>>> +        irq_flags |= IRQF_TRIGGER_LOW;
+>>>> +        irq_trig_low = 1;
+>>>> +    } else {
+>>>> +        irq_flags |= IRQF_TRIGGER_HIGH;
+>>>> +        irq_trig_low = 0;
+>>>> +    }
+>>>
+>>> This would be more clearly written as a switch statement.
+>>>
+>> A switch statement looked like being a bit "too much" for just two 
+>> cases where vreg->type cannot be anything else but QCOM_LAB_TYPE or 
+>> QCOM_IBB_TYPE... but okay, let's write a switch statement in place of 
+>> that.
+>>
+>>>> +    return devm_request_threaded_irq(vreg->dev, vreg->ocp_irq, NULL,
+>>>> +                     qcom_labibb_ocp_isr, irq_flags,
+>>>> +                     ocp_irq_name, vreg);
+>>>
+>>> Are you *sure* that devm_ is appropriate here and the interrupt handler
+>>> won't attempt to use things that will be deallocated before devm gets
+>>> round to freeing the interrupt?
+>>>
+>> Yeah, I'm definitely sure.
+>>
+>>>> +        if (!!(val & LABIBB_CONTROL_ENABLE)) {
+>>>
+>>> The !! is redundant here and makes things less clear.
+>>>
+>> My bad, I forgot to clean this one up before sending.
+>>
+>>>> @@ -166,8 +560,37 @@ static int qcom_labibb_of_parse_cb(struct 
+>>>> device_node *np,
+>>>>                      struct regulator_config *config)
+>>>>   {
+>>>>       struct labibb_regulator *vreg = config->driver_data;
+>>>> +    char *sc_irq_name;
+>>>
+>>> I really, really wouldn't expect to see interrupts being requested in
+>>> the DT parsing callback - apart from anything else the device is going
+>>> to have the physical interrupts with or without DT binding information.
+>>> These callbacks are for regulator specific properties, not basic 
+>>> probing.
+>>> Just request the interrupts in the main probe function, this also means
+>>> you can avoid using all the DT specific APIs which are generally a
+>>> warning sign.
+>>>
+>>
+>> ...And I even wrote a comment saying "The Short Circuit interrupt is 
+>> critical: fail if not found"!!! Whoa! That was bad.
+>> Yeah, I'm definitely moving that to the appropriate place.
+> 
 
-This occurs when, for example, when on an x86_64 with a single NUMA node
-because kfd_fill_iolink_info_for_cpu() is a no-op, but afterwards the
-sub_type_hdr->length, which is out-of-bounds, is read and multiplied by
-entries. Fortunately, entries is 0 in this case so the overall
-crat_table->length is still correct.
+I'm sorry for the triple e-mail... but I've just acknowledged that using 
+platform_get_irq is actually impossible with the current schema.
+As you can see in the dt-bindings documentation, the driver is supposed 
+to be declared in DT as
 
-Check if there were any entries before de-referencing sub_type_hdr which
-may be pointing to out-of-bounds memory.
+		labibb {
 
-Fixes: b7b6c38529c9 ("drm/amdkfd: Calculate CPU VCRAT size dynamically (v2)")
-Suggested-by: Felix Kuehling <Felix.Kuehling@amd.com>
-Signed-off-by: Jeremy Cline <jcline@redhat.com>
----
- drivers/gpu/drm/amd/amdkfd/kfd_crat.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+			compatible = "qcom,pmi8998-lab-ibb";
 
-diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_crat.c b/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
-index 8cac497c2c45..a5640a6138cf 100644
---- a/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
-@@ -1040,11 +1040,14 @@ static int kfd_create_vcrat_image_cpu(void *pcrat_image, size_t *size)
- 				(struct crat_subtype_iolink *)sub_type_hdr);
- 		if (ret < 0)
- 			return ret;
--		crat_table->length += (sub_type_hdr->length * entries);
--		crat_table->total_entries += entries;
- 
--		sub_type_hdr = (typeof(sub_type_hdr))((char *)sub_type_hdr +
--				sub_type_hdr->length * entries);
-+		if (entries) {
-+			crat_table->length += (sub_type_hdr->length * entries);
-+			crat_table->total_entries += entries;
-+
-+			sub_type_hdr = (typeof(sub_type_hdr))((char *)sub_type_hdr +
-+					sub_type_hdr->length * entries);
-+		}
- #else
- 		pr_info("IO link not available for non x86 platforms\n");
- #endif
--- 
-2.29.2
 
+
+			ibb: ibb {
+
+				interrupts = <0x3 0xdc 0x2 IRQ_TYPE_EDGE_RISING>,
+
+					     <0x3 0xdc 0x0 IRQ_TYPE_LEVEL_HIGH>;
+
+				interrupt-names = "sc-err", "ocp";
+
+			};
+
+
+
+			lab: lab {
+
+				interrupts = <0x3 0xde 0x1 IRQ_TYPE_EDGE_RISING>,
+
+					     <0x3 0xde 0x0 IRQ_TYPE_LEVEL_LOW>;
+
+				interrupt-names = "sc-err", "ocp";
+
+			};
+
+		};
+
+...which was already a requirement before I touched it.
+Now, this leaves two options here:
+1. Keep the of_get_irq way, or
+2. Move the interrupts, change the documentation (currently, only 
+pmi8998.dtsi) and also fix pmi8998.dtsi to reflect the new changes.
+
+I am asking before proceeding because I know that changing a schema that 
+is already set sometimes gets "negated".
+
+How should I proceed?
+
+-- Angelo
