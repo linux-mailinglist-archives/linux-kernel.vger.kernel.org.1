@@ -2,44 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F592F14AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:28:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4F22F1394
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:11:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729381AbhAKN21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:28:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34860 "EHLO mail.kernel.org"
+        id S1731375AbhAKNLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:11:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732355AbhAKNQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:16:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AF4F2229C;
-        Mon, 11 Jan 2021 13:15:32 +0000 (UTC)
+        id S1731189AbhAKNK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:10:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7E1621534;
+        Mon, 11 Jan 2021 13:10:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370933;
-        bh=9YssnOBa8PYmCh71AmtEoBV4hBdFfYQ9/eEhNwIi0io=;
+        s=korg; t=1610370613;
+        bh=M8TOvm/1aI6Vfwo95DF783lJLCnR4hOJfYcFuxNG9Ow=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B8YeyGTrMi70R9f9YS4bbrM3f9UnJKrBdmax8MZbHM2ZdwHHEnE5lWa8ETjzMaKhe
-         5SvslxrTisyJaMOlV464vYU3FXkePoeHjKd0NMKDFNcAaCR5UBtb1OUNmsqOvgcZjC
-         MCvwaVUNrQpv6q/0AD0aAeosCXmkAPojfsxKOG1k=
+        b=xVa2B2aygcEKBS11EkjurYVKvnSuP/sQow0HucNPEgZ1LA7ND5dXLDmocSkZD30HI
+         R9w0D428pvI/nOF3v4GYWDlODImaPjp5uIZ6sN7VHe2G55e9oob8AjycXiLTFuuooW
+         3POjGT9rWZmccuDL2lI/ljoZmZprSaF9Kd+4E/qI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
-        Jens Axboe <axboe@kernel.dk>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 060/145] scsi: ide: Do not set the RQF_PREEMPT flag for sense requests
-Date:   Mon, 11 Jan 2021 14:01:24 +0100
-Message-Id: <20210111130051.424676739@linuxfoundation.org>
+        stable@vger.kernel.org, Manish Chopra <manishc@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 21/92] qede: fix offload for IPIP tunnel packets
+Date:   Mon, 11 Jan 2021 14:01:25 +0100
+Message-Id: <20210111130040.167867195@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,88 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Manish Chopra <manishc@marvell.com>
 
-[ Upstream commit 96d86e6a80a3ab9aff81d12f9f1f2a0da2917d38 ]
+[ Upstream commit 5d5647dad259bb416fd5d3d87012760386d97530 ]
 
-RQF_PREEMPT is used for two different purposes in the legacy IDE code:
+IPIP tunnels packets are unknown to device,
+hence these packets are incorrectly parsed and
+caused the packet corruption, so disable offlods
+for such packets at run time.
 
- 1. To mark power management requests.
-
- 2. To mark requests that should preempt another request. An (old)
-    explanation of that feature is as follows: "The IDE driver in the Linux
-    kernel normally uses a series of busywait delays during its
-    initialization. When the driver executes these busywaits, the kernel
-    does nothing for the duration of the wait. The time spent in these
-    waits could be used for other initialization activities, if they could
-    be run concurrently with these waits.
-
-    More specifically, busywait-style delays such as udelay() in module
-    init functions inhibit kernel preemption because the Big Kernel Lock is
-    held, while yielding APIs such as schedule_timeout() allow
-    preemption. This is true because the kernel handles the BKL specially
-    and releases and reacquires it across reschedules allowed by the
-    current thread.
-
-    This IDE-preempt specification requires that the driver eliminate these
-    busywaits and replace them with a mechanism that allows other work to
-    proceed while the IDE driver is initializing."
-
-Since I haven't found an implementation of (2), do not set the PREEMPT flag
-for sense requests. This patch causes sense requests to be postponed while
-a drive is suspended instead of being submitted to ide_queue_rq().
-
-If it would ever be necessary to restore the IDE PREEMPT functionality,
-that can be done by introducing a new flag in struct ide_request.
-
-Link: https://lore.kernel.org/r/20201209052951.16136-4-bvanassche@acm.org
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Alan Stern <stern@rowland.harvard.edu>
-Cc: Can Guo <cang@codeaurora.org>
-Cc: Stanley Chu <stanley.chu@mediatek.com>
-Cc: Ming Lei <ming.lei@redhat.com>
-Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Manish Chopra <manishc@marvell.com>
+Signed-off-by: Sudarsana Kalluru <skalluru@marvell.com>
+Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
+Link: https://lore.kernel.org/r/20201221145530.7771-1-manishc@marvell.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/ide/ide-atapi.c | 1 -
- drivers/ide/ide-io.c    | 5 -----
- 2 files changed, 6 deletions(-)
+ drivers/net/ethernet/qlogic/qede/qede_fp.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/ide/ide-atapi.c b/drivers/ide/ide-atapi.c
-index 2162bc80f09e0..013ad33fbbc81 100644
---- a/drivers/ide/ide-atapi.c
-+++ b/drivers/ide/ide-atapi.c
-@@ -223,7 +223,6 @@ void ide_prep_sense(ide_drive_t *drive, struct request *rq)
- 	sense_rq->rq_disk = rq->rq_disk;
- 	sense_rq->cmd_flags = REQ_OP_DRV_IN;
- 	ide_req(sense_rq)->type = ATA_PRIV_SENSE;
--	sense_rq->rq_flags |= RQF_PREEMPT;
+--- a/drivers/net/ethernet/qlogic/qede/qede_fp.c
++++ b/drivers/net/ethernet/qlogic/qede/qede_fp.c
+@@ -1737,6 +1737,11 @@ netdev_features_t qede_features_check(st
+ 			      ntohs(udp_hdr(skb)->dest) != gnv_port))
+ 				return features & ~(NETIF_F_CSUM_MASK |
+ 						    NETIF_F_GSO_MASK);
++		} else if (l4_proto == IPPROTO_IPIP) {
++			/* IPIP tunnels are unknown to the device or at least unsupported natively,
++			 * offloads for them can't be done trivially, so disable them for such skb.
++			 */
++			return features & ~(NETIF_F_CSUM_MASK | NETIF_F_GSO_MASK);
+ 		}
+ 	}
  
- 	req->cmd[0] = GPCMD_REQUEST_SENSE;
- 	req->cmd[4] = cmd_len;
-diff --git a/drivers/ide/ide-io.c b/drivers/ide/ide-io.c
-index 1a53c7a752244..c210ea3bd02fa 100644
---- a/drivers/ide/ide-io.c
-+++ b/drivers/ide/ide-io.c
-@@ -515,11 +515,6 @@ repeat:
- 		 * above to return us whatever is in the queue. Since we call
- 		 * ide_do_request() ourselves, we end up taking requests while
- 		 * the queue is blocked...
--		 * 
--		 * We let requests forced at head of queue with ide-preempt
--		 * though. I hope that doesn't happen too much, hopefully not
--		 * unless the subdriver triggers such a thing in its own PM
--		 * state machine.
- 		 */
- 		if ((drive->dev_flags & IDE_DFLAG_BLOCKED) &&
- 		    ata_pm_request(rq) == 0 &&
--- 
-2.27.0
-
 
 
