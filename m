@@ -2,274 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A9F2F1AFE
+	by mail.lfdr.de (Postfix) with ESMTP id 973DF2F1AFF
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:33:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388227AbhAKQc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:32:59 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17838 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728828AbhAKQc6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:32:58 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10BG3ZER138970;
-        Mon, 11 Jan 2021 11:32:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=OaLs4hT9XBUJrJ2iA9T+167zE8uCTFn9nm39hf8oNV8=;
- b=IU4uuQC66IK6mlREy5BOXCPZ08d3bmmgCrET+Fsn3/xkPg6BWrJ8V9sOZz0etUzcxJq2
- rdKDJSU8jsoFfetEfHxVYvlfVdbt2z2ksXwl9l1v6E/qcZGcqIsYilSzQNOqNZjfMmxk
- znaMAMyxwXLi0ZjavGuCUKvLeROCNLNg5spzXO+xf+H0x81Kk0OX9vlXREAv4zLdi0po
- LroF2G/fzGuZxDerIMnYykHZGjx8vOB8jtvEv/Urqx2ShaSX9nCOwrS9lkJMv6PK1gZr
- sZFIa7RGBru9rl9WV9t53J4+LYNhX5XHp9UxEsnkEHP4SczgRxV3/OybbVKvLAGPhXoj Tg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 360s3xtnpp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Jan 2021 11:32:15 -0500
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10BG3ouM140877;
-        Mon, 11 Jan 2021 11:32:14 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 360s3xtnnw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Jan 2021 11:32:14 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10BGO8Jx003731;
-        Mon, 11 Jan 2021 16:32:13 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 35ydrda2uu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Jan 2021 16:32:12 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10BGW5FA32047552
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Jan 2021 16:32:05 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 12816A4054;
-        Mon, 11 Jan 2021 16:32:10 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 48BD5A405B;
-        Mon, 11 Jan 2021 16:32:09 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.62.86])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Mon, 11 Jan 2021 16:32:09 +0000 (GMT)
-Date:   Mon, 11 Jan 2021 17:32:06 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v13 02/15] s390/vfio-ap: No need to disable IRQ after
- queue reset
-Message-ID: <20210111173206.27808b79.pasic@linux.ibm.com>
-In-Reply-To: <20201223011606.5265-3-akrowiak@linux.ibm.com>
-References: <20201223011606.5265-1-akrowiak@linux.ibm.com>
-        <20201223011606.5265-3-akrowiak@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S2388958AbhAKQdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:33:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387954AbhAKQdA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 11:33:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 086C42076D;
+        Mon, 11 Jan 2021 16:32:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610382739;
+        bh=n58+kriku0xNNNV/3xenUPJRY7XCq3l2G6iv1P43ze8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oi/8BOafwrkXdaFQDbehDZVYAvYx6tJuWdCFwbI0tJ6BKpXJ82YM1qSEyNC4fZ/gJ
+         UjefflHFfY9GB0UKcpZrBZVhusE8O/IBTNP4gsOzfEZwUI7cXi0QTnUovfecmGAQTm
+         YjUvTicIysprKflCftPRvnMlyJ7jwuTs1seV8rXMP3+4Gs6DafjS3OOtSaWgjXIGC+
+         7Jv5Jo9ZUk9v5r46MqIkqUibLGGHNJNVx+tDnX9jKwgPoyAdT8cvoaIr+/aFUWApfN
+         sY6ZbEkewOvWw7SiQUXcM3+da4PdeHZh68lV9gX+ANo4CV/4WGcQKHllcF6e00j3yw
+         dwqtnPvUS63Zw==
+Date:   Mon, 11 Jan 2021 08:32:17 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: fix to keep isolation of atomic write
+Message-ID: <X/x9kTlL8E1Wj4Dd@google.com>
+References: <20201230075557.108818-1-yuchao0@huawei.com>
+ <X/Y5pJr4Aaf0bBqj@google.com>
+ <X/ZAS6oyFiudshe2@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-11_26:2021-01-11,2021-01-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
- spamscore=0 mlxscore=0 lowpriorityscore=0 bulkscore=0 priorityscore=1501
- clxscore=1015 impostorscore=0 mlxlogscore=999 adultscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101110096
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/ZAS6oyFiudshe2@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Dec 2020 20:15:53 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-
-> The queues assigned to a matrix mediated device are currently reset when:
+On 01/06, Jaegeuk Kim wrote:
+> On 01/06, Jaegeuk Kim wrote:
+> > Hi Chao,
+> > 
+> > With a quick test, this patch causes down_write failure resulting in blocking
+> > process. I didn't dig in the bug so, please check the code again. :P
 > 
-> * The VFIO_DEVICE_RESET ioctl is invoked
-> * The mdev fd is closed by userspace (QEMU)
-> * The mdev is removed from sysfs.
+> nvm. I can see it works now.
+
+Hmm, this gives a huge perf regression when running sqlite. :(
+We may need to check the lock coverage. Thoughts?
+
 > 
-> Immediately after the reset of a queue, a call is made to disable
-> interrupts for the queue. This is entirely unnecessary because the reset of
-> a queue disables interrupts, so this will be removed.
+> > 
+> > On 12/30, Chao Yu wrote:
+> > > ThreadA					ThreadB
+> > > - f2fs_ioc_start_atomic_write
+> > > - write
+> > > - f2fs_ioc_commit_atomic_write
+> > >  - f2fs_commit_inmem_pages
+> > >  - f2fs_drop_inmem_pages
+> > >  - f2fs_drop_inmem_pages
+> > >   - __revoke_inmem_pages
+> > > 					- f2fs_vm_page_mkwrite
+> > > 					 - set_page_dirty
+> > > 					  - tag ATOMIC_WRITTEN_PAGE and add page
+> > > 					    to inmem_pages list
+> > >   - clear_inode_flag(FI_ATOMIC_FILE)
+> > > 					- f2fs_vm_page_mkwrite
+> > > 					  - set_page_dirty
+> > > 					   - f2fs_update_dirty_page
+> > > 					    - f2fs_trace_pid
+> > > 					     - tag inmem page private to pid
+> > > 					- truncate
+> > > 					 - f2fs_invalidate_page
+> > > 					 - set page->mapping to NULL
+> > > 					  then it will cause panic once we
+> > > 					  access page->mapping
+> > > 
+> > > The root cause is we missed to keep isolation of atomic write in the case
+> > > of commit_atomic_write vs mkwrite, let commit_atomic_write helds i_mmap_sem
+> > > lock to avoid this issue.
+> > > 
+> > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> > > ---
+> > > v2:
+> > > - use i_mmap_sem to avoid mkwrite racing with below flows:
+> > >  * f2fs_ioc_start_atomic_write
+> > >  * f2fs_drop_inmem_pages
+> > >  * f2fs_commit_inmem_pages
+> > > 
+> > >  fs/f2fs/file.c    | 3 +++
+> > >  fs/f2fs/segment.c | 7 +++++++
+> > >  2 files changed, 10 insertions(+)
+> > > 
+> > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> > > index 4e6d4b9120a8..a48ec650d691 100644
+> > > --- a/fs/f2fs/file.c
+> > > +++ b/fs/f2fs/file.c
+> > > @@ -2050,6 +2050,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+> > >  		goto out;
+> > >  
+> > >  	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+> > > +	down_write(&F2FS_I(inode)->i_mmap_sem);
+> > >  
+> > >  	/*
+> > >  	 * Should wait end_io to count F2FS_WB_CP_DATA correctly by
+> > > @@ -2060,6 +2061,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+> > >  			  inode->i_ino, get_dirty_pages(inode));
+> > >  	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
+> > >  	if (ret) {
+> > > +		up_write(&F2FS_I(inode)->i_mmap_sem);
+> > >  		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+> > >  		goto out;
+> > >  	}
+> > > @@ -2073,6 +2075,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+> > >  	/* add inode in inmem_list first and set atomic_file */
+> > >  	set_inode_flag(inode, FI_ATOMIC_FILE);
+> > >  	clear_inode_flag(inode, FI_ATOMIC_REVOKE_REQUEST);
+> > > +	up_write(&F2FS_I(inode)->i_mmap_sem);
+> > >  	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+> > >  
+> > >  	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
+> > > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> > > index d8570b0359f5..dab870d9faf6 100644
+> > > --- a/fs/f2fs/segment.c
+> > > +++ b/fs/f2fs/segment.c
+> > > @@ -327,6 +327,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
+> > >  	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+> > >  	struct f2fs_inode_info *fi = F2FS_I(inode);
+> > >  
+> > > +	down_write(&F2FS_I(inode)->i_mmap_sem);
+> > > +
+> > >  	while (!list_empty(&fi->inmem_pages)) {
+> > >  		mutex_lock(&fi->inmem_lock);
+> > >  		__revoke_inmem_pages(inode, &fi->inmem_pages,
+> > > @@ -344,6 +346,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
+> > >  		sbi->atomic_files--;
+> > >  	}
+> > >  	spin_unlock(&sbi->inode_lock[ATOMIC_FILE]);
+> > > +
+> > > +	up_write(&F2FS_I(inode)->i_mmap_sem);
+> > >  }
+> > >  
+> > >  void f2fs_drop_inmem_page(struct inode *inode, struct page *page)
+> > > @@ -467,6 +471,7 @@ int f2fs_commit_inmem_pages(struct inode *inode)
+> > >  	f2fs_balance_fs(sbi, true);
+> > >  
+> > >  	down_write(&fi->i_gc_rwsem[WRITE]);
+> > > +	down_write(&F2FS_I(inode)->i_mmap_sem);
+> > >  
+> > >  	f2fs_lock_op(sbi);
+> > >  	set_inode_flag(inode, FI_ATOMIC_COMMIT);
+> > > @@ -478,6 +483,8 @@ int f2fs_commit_inmem_pages(struct inode *inode)
+> > >  	clear_inode_flag(inode, FI_ATOMIC_COMMIT);
+> > >  
+> > >  	f2fs_unlock_op(sbi);
+> > > +
+> > > +	up_write(&F2FS_I(inode)->i_mmap_sem);
+> > >  	up_write(&fi->i_gc_rwsem[WRITE]);
+> > >  
+> > >  	return err;
+> > > -- 
+> > > 2.29.2
+> > 
+> > 
+> > _______________________________________________
+> > Linux-f2fs-devel mailing list
+> > Linux-f2fs-devel@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
 > 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> ---
->  drivers/s390/crypto/vfio_ap_drv.c     |  1 -
->  drivers/s390/crypto/vfio_ap_ops.c     | 40 +++++++++++++++++----------
->  drivers/s390/crypto/vfio_ap_private.h |  1 -
->  3 files changed, 26 insertions(+), 16 deletions(-)
 > 
-> diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
-> index be2520cc010b..ca18c91afec9 100644
-> --- a/drivers/s390/crypto/vfio_ap_drv.c
-> +++ b/drivers/s390/crypto/vfio_ap_drv.c
-> @@ -79,7 +79,6 @@ static void vfio_ap_queue_dev_remove(struct ap_device *apdev)
->  	apid = AP_QID_CARD(q->apqn);
->  	apqi = AP_QID_QUEUE(q->apqn);
->  	vfio_ap_mdev_reset_queue(apid, apqi, 1);
-> -	vfio_ap_irq_disable(q);
->  	kfree(q);
->  	mutex_unlock(&matrix_dev->lock);
->  }
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index 7339043906cf..052f61391ec7 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -25,6 +25,7 @@
->  #define VFIO_AP_MDEV_NAME_HWVIRT "VFIO AP Passthrough Device"
->  
->  static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev);
-> +static struct vfio_ap_queue *vfio_ap_find_queue(int apqn);
->  
->  static int match_apqn(struct device *dev, const void *data)
->  {
-> @@ -49,20 +50,15 @@ static struct vfio_ap_queue *(
->  					int apqn)
->  {
->  	struct vfio_ap_queue *q;
-> -	struct device *dev;
->  
->  	if (!test_bit_inv(AP_QID_CARD(apqn), matrix_mdev->matrix.apm))
->  		return NULL;
->  	if (!test_bit_inv(AP_QID_QUEUE(apqn), matrix_mdev->matrix.aqm))
->  		return NULL;
->  
-> -	dev = driver_find_device(&matrix_dev->vfio_ap_drv->driver, NULL,
-> -				 &apqn, match_apqn);
-> -	if (!dev)
-> -		return NULL;
-> -	q = dev_get_drvdata(dev);
-> -	q->matrix_mdev = matrix_mdev;
-> -	put_device(dev);
-> +	q = vfio_ap_find_queue(apqn);
-> +	if (q)
-> +		q->matrix_mdev = matrix_mdev;
->  
->  	return q;
->  }
-> @@ -1126,24 +1122,27 @@ static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
->  	return notify_rc;
->  }
->  
-> -static void vfio_ap_irq_disable_apqn(int apqn)
-> +static struct vfio_ap_queue *vfio_ap_find_queue(int apqn)
->  {
->  	struct device *dev;
-> -	struct vfio_ap_queue *q;
-> +	struct vfio_ap_queue *q = NULL;
->  
->  	dev = driver_find_device(&matrix_dev->vfio_ap_drv->driver, NULL,
->  				 &apqn, match_apqn);
->  	if (dev) {
->  		q = dev_get_drvdata(dev);
-> -		vfio_ap_irq_disable(q);
->  		put_device(dev);
->  	}
-> +
-> +	return q;
->  }
-
-This hunk and the previous one are a rewrite of vfio_ap_get_queue() and
-have next to nothing to do with the patch's objective. If we were at an
-earlier stage, I would ask to split it up.
-
->  
->  int vfio_ap_mdev_reset_queue(unsigned int apid, unsigned int apqi,
->  			     unsigned int retry)
->  {
->  	struct ap_queue_status status;
-> +	struct vfio_ap_queue *q;
-> +	int ret;
->  	int retry2 = 2;
->  	int apqn = AP_MKQID(apid, apqi);
->  
-> @@ -1156,18 +1155,32 @@ int vfio_ap_mdev_reset_queue(unsigned int apid, unsigned int apqi,
->  				status = ap_tapq(apqn, NULL);
->  			}
->  			WARN_ON_ONCE(retry2 <= 0);
-> -			return 0;
-> +			ret = 0;
-> +			goto free_aqic_resources;
->  		case AP_RESPONSE_RESET_IN_PROGRESS:
->  		case AP_RESPONSE_BUSY:
->  			msleep(20);
->  			break;
->  		default:
->  			/* things are really broken, give up */
-> -			return -EIO;
-> +			ret = -EIO;
-> +			goto free_aqic_resources;
-
-Do we really want the unpin here? I mean the reset did not work and
-we are giving up. So the irqs are potentially still enabled.
-
-Without this patch we try to disable the interrupts using AQIC, and
-do the cleanup after that.
-
-I'm aware, the comment says we should not take the default branch,
-but if that's really the case we should IMHO log an error and leak the
-page.
-
-It's up to you if you want to change this. I don't want to delay the
-series any further than absolutely necessary.
-
-Acked-by: Halil Pasic <pasic@linux.ibm.com>
-
->  		}
->  	} while (retry--);
->  
->  	return -EBUSY;
-> +
-> +free_aqic_resources:
-> +	/*
-> +	 * In order to free the aqic resources, the queue must be linked to
-> +	 * the matrix_mdev to which its APQN is assigned and the KVM pointer
-> +	 * must be available.
-> +	 */
-> +	q = vfio_ap_find_queue(apqn);
-> +	if (q && q->matrix_mdev && q->matrix_mdev->kvm)
-
-Is this of the type "we know there are no aqic resources to be freed" if
-precondition is false?
-
-vfio_ap_free_aqic_resources() checks the matrix_mdev pointer but not the
-kvm pointer. Could we just check the kvm pointer in
-vfio_ap_free_aqic_resources()?
-
-At the end of the series, is seeing q! indicating a bug, or is it
-something we expect to see under certain circumstances?
-
-
-> +		vfio_ap_free_aqic_resources(q);
-> +
-> +	return ret;
->  }
->  
->  static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev)
-> @@ -1189,7 +1202,6 @@ static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev)
->  			 */
->  			if (ret)
->  				rc = ret;
-> -			vfio_ap_irq_disable_apqn(AP_MKQID(apid, apqi));
->  		}
->  	}
->  
-> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
-> index f46dde56b464..0db6fb3d56d5 100644
-> --- a/drivers/s390/crypto/vfio_ap_private.h
-> +++ b/drivers/s390/crypto/vfio_ap_private.h
-> @@ -100,5 +100,4 @@ struct vfio_ap_queue {
->  #define VFIO_AP_ISC_INVALID 0xff
->  	unsigned char saved_isc;
->  };
-> -struct ap_queue_status vfio_ap_irq_disable(struct vfio_ap_queue *q);
->  #endif /* _VFIO_AP_PRIVATE_H_ */
-
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
