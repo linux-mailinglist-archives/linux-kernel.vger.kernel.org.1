@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91E312F13DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F832F1396
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:11:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732262AbhAKNPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:15:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33716 "EHLO mail.kernel.org"
+        id S1731404AbhAKNL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:11:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732238AbhAKNPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:15:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C8D521973;
-        Mon, 11 Jan 2021 13:14:33 +0000 (UTC)
+        id S1731236AbhAKNKk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:10:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25847227C3;
+        Mon, 11 Jan 2021 13:10:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370874;
-        bh=voa17hyhicDaoIa5/Ekbhr46NkGW059LLvqZ3jV7pH8=;
+        s=korg; t=1610370624;
+        bh=BQSipWm4K8jrZ6XWz6uhxK9p+QWwX1+/3UZ0O6jNdkE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bgRTdVQ8W0t+rC7lTjSb4NBRSt3UWfoe5tnruhHmAkUAacuKwE0ldSAWBUZ4wxRVq
-         pWKlnfHh5UAENRh/qtqtUcDXb8jYGjgpxvremw+R6WcQnkAEA/I66K9KT2MqPSLs/K
-         g/9es/2IV9TCWIVbvomAO7wnH+rx2HWTTjJHlleE=
+        b=WRSobjXqWIzYURRcWNiy5kfO0Un2p1rGmlQnl80mrfTrWSou0DKrFQdqvbam6qGVZ
+         JvgWnC7sj71k/Ovu2TZhOMAg8uDNE3FrnXJYn55lhVCXwJWPpESuBzi/q506Z7431f
+         9Z113A8pnOXFDNc6S8P+pI4+6ehK4m77/wlDfhbc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 042/145] r8169: work around power-saving bug on some chip versions
-Date:   Mon, 11 Jan 2021 14:01:06 +0100
-Message-Id: <20210111130050.542486628@linuxfoundation.org>
+        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 03/92] scsi: ufs-pci: Ensure UFS device is in PowerDown mode for suspend-to-disk ->poweroff()
+Date:   Mon, 11 Jan 2021 14:01:07 +0100
+Message-Id: <20210111130039.323817472@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +40,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiner Kallweit <hkallweit1@gmail.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
 
-[ Upstream commit e80bd76fbf563cc7ed8c9e9f3bbcdf59b0897f69 ]
+[ Upstream commit af423534d2de86cd0db729a5ac41f056ca8717de ]
 
-A user reported failing network with RTL8168dp (a quite rare chip
-version). Realtek confirmed that few chip versions suffer from a PLL
-power-down hw bug.
+The expectation for suspend-to-disk is that devices will be powered-off, so
+the UFS device should be put in PowerDown mode. If spm_lvl is not 5, then
+that will not happen. Change the pm callbacks to force spm_lvl 5 for
+suspend-to-disk poweroff.
 
-Fixes: 07df5bd874f0 ("r8169: power down chip in probe")
-Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-Link: https://lore.kernel.org/r/a1c39460-d533-7f9e-fa9d-2b8990b02426@gmail.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20201207083120.26732-3-adrian.hunter@intel.com
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/realtek/r8169_main.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/scsi/ufs/ufshcd-pci.c | 34 ++++++++++++++++++++++++++++++++--
+ 1 file changed, 32 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -2243,7 +2243,8 @@ static void rtl_pll_power_down(struct rt
- 	}
- 
- 	switch (tp->mac_version) {
--	case RTL_GIGA_MAC_VER_25 ... RTL_GIGA_MAC_VER_33:
-+	case RTL_GIGA_MAC_VER_25 ... RTL_GIGA_MAC_VER_26:
-+	case RTL_GIGA_MAC_VER_32 ... RTL_GIGA_MAC_VER_33:
- 	case RTL_GIGA_MAC_VER_37:
- 	case RTL_GIGA_MAC_VER_39:
- 	case RTL_GIGA_MAC_VER_43:
-@@ -2269,7 +2270,8 @@ static void rtl_pll_power_down(struct rt
- static void rtl_pll_power_up(struct rtl8169_private *tp)
+diff --git a/drivers/scsi/ufs/ufshcd-pci.c b/drivers/scsi/ufs/ufshcd-pci.c
+index 3b19de3ae9a30..e4ba2445ff56f 100644
+--- a/drivers/scsi/ufs/ufshcd-pci.c
++++ b/drivers/scsi/ufs/ufshcd-pci.c
+@@ -96,6 +96,30 @@ static int ufshcd_pci_resume(struct device *dev)
  {
- 	switch (tp->mac_version) {
--	case RTL_GIGA_MAC_VER_25 ... RTL_GIGA_MAC_VER_33:
-+	case RTL_GIGA_MAC_VER_25 ... RTL_GIGA_MAC_VER_26:
-+	case RTL_GIGA_MAC_VER_32 ... RTL_GIGA_MAC_VER_33:
- 	case RTL_GIGA_MAC_VER_37:
- 	case RTL_GIGA_MAC_VER_39:
- 	case RTL_GIGA_MAC_VER_43:
+ 	return ufshcd_system_resume(dev_get_drvdata(dev));
+ }
++
++/**
++ * ufshcd_pci_poweroff - suspend-to-disk poweroff function
++ * @dev: pointer to PCI device handle
++ *
++ * Returns 0 if successful
++ * Returns non-zero otherwise
++ */
++static int ufshcd_pci_poweroff(struct device *dev)
++{
++	struct ufs_hba *hba = dev_get_drvdata(dev);
++	int spm_lvl = hba->spm_lvl;
++	int ret;
++
++	/*
++	 * For poweroff we need to set the UFS device to PowerDown mode.
++	 * Force spm_lvl to ensure that.
++	 */
++	hba->spm_lvl = 5;
++	ret = ufshcd_system_suspend(hba);
++	hba->spm_lvl = spm_lvl;
++	return ret;
++}
++
+ #endif /* !CONFIG_PM_SLEEP */
+ 
+ #ifdef CONFIG_PM
+@@ -190,8 +214,14 @@ ufshcd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ }
+ 
+ static const struct dev_pm_ops ufshcd_pci_pm_ops = {
+-	SET_SYSTEM_SLEEP_PM_OPS(ufshcd_pci_suspend,
+-				ufshcd_pci_resume)
++#ifdef CONFIG_PM_SLEEP
++	.suspend	= ufshcd_pci_suspend,
++	.resume		= ufshcd_pci_resume,
++	.freeze		= ufshcd_pci_suspend,
++	.thaw		= ufshcd_pci_resume,
++	.poweroff	= ufshcd_pci_poweroff,
++	.restore	= ufshcd_pci_resume,
++#endif
+ 	SET_RUNTIME_PM_OPS(ufshcd_pci_runtime_suspend,
+ 			   ufshcd_pci_runtime_resume,
+ 			   ufshcd_pci_runtime_idle)
+-- 
+2.27.0
+
 
 
