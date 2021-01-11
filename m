@@ -2,183 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 049112F1D2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:55:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 767B72F1D2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389431AbhAKRzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 12:55:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727658AbhAKRzq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:55:46 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB812C0617A3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:55:00 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id a109so534790otc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:55:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=v3TDFrqVxc55qv6u1Dum5raMCBbdcZl0roEhiqKm12E=;
-        b=lZjWCfbG8Auf1FSXEvxpu9z2F5nHThHpYy+3QmdRfHgZVbQ8iOt14U29oCzCIsnSSs
-         VLnoFMCQuU8xnqBAcfa27K7hZwCGat+qOGKyVOKc1qcvS7Lptqlgs3L85HeKvTd7Fq5P
-         qNtF3fONSHYdETB6J67jpgTgQwvHjLNj8ANi2QHjTGFvKED65JATHmMfwF73+u6t2XC4
-         AdO18lob+PcRGaVt9Z3wT0TMgPWAROZq+9iUc3Mz57gtt07GZF4r/fktMmNGMqr+pNrq
-         QSHQPMXbbPinZWTBNZqVISGjn92RtSuT496ufjI7WpQHaqyhMZVHZPPnwyDGmi8DWwog
-         Jr7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=v3TDFrqVxc55qv6u1Dum5raMCBbdcZl0roEhiqKm12E=;
-        b=AteKNmrkNP1JaS7yHFibz2Z/aMdOgJP26N2BF23lRsHIRVPez+CUgcNcW3J+TejQNo
-         +hFv6McBGzy3uERQjuoHC1LXzq3zEBMz9K5JaTG/XbvVSoNO7BxHKfgcHIhRiR5r9KdU
-         G1imYehTNA5VRsQ29DNINaBLv0Ccj4SCkvfqKd9nzx2dUAO0cLsfP6AZOuNW3Zzo8v60
-         yP243I4TqckTQGNRT6wxoCtqtTh/ndEnbYTyTDX/6vLQx0JimnFZrlF2u+S09fHOqnUc
-         h7Ca7XbpmGFtqDYH6si5kfS7SNNEADuMhYSow44w00kWez6fQSqAIWk1S1QlbC5hwENM
-         Ki/Q==
-X-Gm-Message-State: AOAM531UmSuwj/G0wgw10KFJqUwLPc3DGujiXOPek5VWhdDDySDXK4qU
-        +J26PeV91mlcIUQ/WFxUs7q6CmcnFMb6vQ==
-X-Google-Smtp-Source: ABdhPJys9h9FMDY8QzdOCVIr242CR9PxOf1m9Ov17uYelIEIUq9xy+LTMHC0Hx5xuhWW8BdmeAdCCA==
-X-Received: by 2002:a9d:479a:: with SMTP id b26mr203427otf.297.1610387699841;
-        Mon, 11 Jan 2021 09:54:59 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id l5sm90794otj.57.2021.01.11.09.54.58
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 11 Jan 2021 09:54:59 -0800 (PST)
-Date:   Mon, 11 Jan 2021 09:54:37 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        syzbot+2fc0712f8f8b8b8fa0ef@syzkaller.appspotmail.com,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, stable@kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 5.10 109/145] mm: make wait_on_page_writeback() wait for
- multiple pending writebacks
-In-Reply-To: <20210111130053.764396270@linuxfoundation.org>
-Message-ID: <alpine.LSU.2.11.2101110947280.1731@eggly.anvils>
-References: <20210111130048.499958175@linuxfoundation.org> <20210111130053.764396270@linuxfoundation.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S2389564AbhAKR4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 12:56:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40940 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727658AbhAKR4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 12:56:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 10C21AB3E;
+        Mon, 11 Jan 2021 17:55:27 +0000 (UTC)
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [RFC 0/3] mm, slab, slub: remove cpu and memory hotplug locks
+To:     Christoph Lameter <cl@linux.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Qian Cai <cai@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>
+References: <20210106174029.12654-1-vbabka@suse.cz>
+ <alpine.DEB.2.22.394.2101061907330.2652@www.lameter.com>
+Message-ID: <91f48b11-b6ff-39ab-947e-341920771e0f@suse.cz>
+Date:   Mon, 11 Jan 2021 18:55:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <alpine.DEB.2.22.394.2101061907330.2652@www.lameter.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Jan 2021, Greg Kroah-Hartman wrote:
 
-> From: Linus Torvalds <torvalds@linux-foundation.org>
+On 1/6/21 8:09 PM, Christoph Lameter wrote:
+> On Wed, 6 Jan 2021, Vlastimil Babka wrote:
 > 
-> commit c2407cf7d22d0c0d94cf20342b3b8f06f1d904e7 upstream.
+>> rather accept some wasted memory in scenarios that should be rare anyway (full
+>> memory hot remove), as we do the same in other contexts already. It's all RFC
+>> for now, as I might have missed some reason why it's not safe.
 > 
-> Ever since commit 2a9127fcf229 ("mm: rewrite wait_on_page_bit_common()
-> logic") we've had some very occasional reports of BUG_ON(PageWriteback)
-> in write_cache_pages(), which we thought we already fixed in commit
-> 073861ed77b6 ("mm: fix VM_BUG_ON(PageTail) and BUG_ON(PageWriteback)").
+> Looks good to me. My only concern is the kernel that has hotplug disabled.
+> Current code allows the online/offline checks to be optimized away.
 > 
-> But syzbot just reported another one, even with that commit in place.
-> 
-> And it turns out that there's a simpler way to trigger the BUG_ON() than
-> the one Hugh found with page re-use.  It all boils down to the fact that
-> the page writeback is ostensibly serialized by the page lock, but that
-> isn't actually really true.
-> 
-> Yes, the people _setting_ writeback all do so under the page lock, but
-> the actual clearing of the bit - and waking up any waiters - happens
-> without any page lock.
-> 
-> This gives us this fairly simple race condition:
-> 
->   CPU1 = end previous writeback
->   CPU2 = start new writeback under page lock
->   CPU3 = write_cache_pages()
-> 
->   CPU1          CPU2            CPU3
->   ----          ----            ----
-> 
->   end_page_writeback()
->     test_clear_page_writeback(page)
->     ... delayed...
-> 
->                 lock_page();
->                 set_page_writeback()
->                 unlock_page()
-> 
->                                 lock_page()
->                                 wait_on_page_writeback();
-> 
->     wake_up_page(page, PG_writeback);
->     .. wakes up CPU3 ..
-> 
->                                 BUG_ON(PageWriteback(page));
-> 
-> where the BUG_ON() happens because we woke up the PG_writeback bit
-> becasue of the _previous_ writeback, but a new one had already been
-> started because the clearing of the bit wasn't actually atomic wrt the
-> actual wakeup or serialized by the page lock.
-> 
-> The reason this didn't use to happen was that the old logic in waiting
-> on a page bit would just loop if it ever saw the bit set again.
-> 
-> The nice proper fix would probably be to get rid of the whole "wait for
-> writeback to clear, and then set it" logic in the writeback path, and
-> replace it with an atomic "wait-to-set" (ie the same as we have for page
-> locking: we set the page lock bit with a single "lock_page()", not with
-> "wait for lock bit to clear and then set it").
-> 
-> However, out current model for writeback is that the waiting for the
-> writeback bit is done by the generic VFS code (ie write_cache_pages()),
-> but the actual setting of the writeback bit is done much later by the
-> filesystem ".writepages()" function.
-> 
-> IOW, to make the writeback bit have that same kind of "wait-to-set"
-> behavior as we have for page locking, we'd have to change our roughly
-> ~50 different writeback functions.  Painful.
-> 
-> Instead, just make "wait_on_page_writeback()" loop on the very unlikely
-> situation that the PG_writeback bit is still set, basically re-instating
-> the old behavior.  This is very non-optimal in case of contention, but
-> since we only ever set the bit under the page lock, that situation is
-> controlled.
-> 
-> Reported-by: syzbot+2fc0712f8f8b8b8fa0ef@syzkaller.appspotmail.com
-> Fixes: 2a9127fcf229 ("mm: rewrite wait_on_page_bit_common() logic")
-> Acked-by: Hugh Dickins <hughd@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: stable@kernel.org
-> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Can this patch be enhanced to do the same?
 
-I think it's too early to push this one through to stable:
-Linus mentioned on Friday that Michael Larabel of Phoronix
-has observed a performance regression from this commit.
+Thanks, indeed I didn't think about that.
+But on closer inspection, there doesn't seem to be need for such enhancement:
 
-Correctness outweighs performance of course, but I think
-stable users might see the performance issue much sooner
-than they would ever see the BUG fixed.  Wait a bit,
-while we think some more about what to try next?
+- Patch 1 adds the new slab_nodes nodemask, which is basically a copy of
+N_NORMAL_MEMORY. Without memory hotplug, the callbacks that would update it
+don't occur (maybe are even eliminated as dead code?), other code that uses the
+nodemask is unaffected wtf performance, it's just using a different nodemask for
+the same operations. The extra memory usage of adding the nodemask is negligible
+and not worth complicating the code to distinguish between the new nodemask and
+N_NORMAL_MEMORY depending on hotplug being disabled or enabled.
 
-Hugh
+- Patch 1 also restores slab_mutex lock in kmem_cache_shrink(). Commit
+03afc0e25f7f removed it because the memory hotplug lock was deemed to be
+sufficient replacement, but probably didn't consider the case where hotplug is
+disabled and thus the hotplug lock is no-op. Maybe it's safe not to take
+slab_mutex in kmem_cache_shrink() in that case, but kmem_cache_shrink() is only
+called from a sysfs handler, thus a very cold path anyway.
+But, I found out that lockdep complains about it, so I have to rethink this part
+anyway... (when kmem_cache_shrink() is called from write to the 'shrink' file we
+already have kernfs lock "kn->active#28" and try to lock slab_mutex, but there's
+existing dependency in reverse order where in kmem_cache_create() we start with
+slab_mutex and sysfs_slab_add takes the kernfs lock, I wonder how this wasn't a
+problem before 03afc0e25f7f)
 
-> 
-> ---
->  mm/page-writeback.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- a/mm/page-writeback.c
-> +++ b/mm/page-writeback.c
-> @@ -2826,7 +2826,7 @@ EXPORT_SYMBOL(__test_set_page_writeback)
->   */
->  void wait_on_page_writeback(struct page *page)
->  {
-> -	if (PageWriteback(page)) {
-> +	while (PageWriteback(page)) {
->  		trace_wait_on_page_writeback(page, page_mapping(page));
->  		wait_on_page_bit(page, PG_writeback);
->  	}
+- Patch 2 purely just removes calls to cpu hotplug lock.
+
+- Patch 3 only affects memory hotplug callbacks so nothing to enhance if hotplug
+is disabled
+
+
