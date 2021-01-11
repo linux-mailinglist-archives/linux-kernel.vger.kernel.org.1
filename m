@@ -2,86 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 005AB2F223B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFDC2F223A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388753AbhAKVw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 16:52:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725917AbhAKVw6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 16:52:58 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E65C061786;
-        Mon, 11 Jan 2021 13:52:18 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id r9so316063otk.11;
-        Mon, 11 Jan 2021 13:52:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pWvSLP1WxF8yJq0CNCIWrsEahi/aazph8leWknyqaLg=;
-        b=vRvoN3DKe8HTH6Xwpv4lM8qoyeIlihRX0m/Aw6fghk6agWIDJj80A7DEQCsEcAtZIZ
-         o8UrqF7K1TFJN179uuSmc1LWOOiMoEHOj6vRloG6p7iotbt0R9Xmkd3y5+GreRf65WO+
-         ujyUJZKPdlmrRSHe87ltd8F4DKSO3lnSdrSLaMo/1LYUKS+ttBZ0LLKGBhFiGUWFN/hV
-         L5TeEhr8a7+Cv4viyjqA+eFdGCutMwqmRfFqD/bpyguKC3QO3zXF4e1zl/MSm3BDAXKe
-         JTrQKASR9CODvt3JKoo+Pb8Ks9g1UYllSM7sfmIjc6llvs7EJUFG+8QWR44o6U18YBhG
-         w7gQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pWvSLP1WxF8yJq0CNCIWrsEahi/aazph8leWknyqaLg=;
-        b=NxLXSkbgyphltjAtpZnnkGiwEwYD4TTZjAlO+tj1AXtHNR89L8EiGYQuMj0WF2D2V2
-         v9XdiEMpF5JF6cNhPi7UyD6qKdeM4ZSti4NyidO9sfczaXMNsxb94GfSiQ75V2C2/GKW
-         74izJgTxwnLdfnhGJxeSQbdgQW1dReEdYv4JLGsDt6gPdaNPxohl7ETEhpxs4jq70O+y
-         gynWAY/LdlGrTZOccEbel4Lk4Ld+5NHc5lhineVhJo6QWssdACL8k5zdqLOWR5BmEJnE
-         cq123rjruI6q/KTrhWq7OoK3fFqQmoTJj1h9bV6iLahuPj+N20Fq+F4BJ/jeLDvUhmJ5
-         /wuQ==
-X-Gm-Message-State: AOAM5339iLdIJiQlR+i7gm+r4Cus6MzsZEaH1iHigt7GH0dV5y86Z0SD
-        qZkIH56aDClhjCSUJseSVfc=
-X-Google-Smtp-Source: ABdhPJzB0t835iGOzU9KC2vcTVY/tT22CnlLNCIcYrJJSDPat94+1/Momk1bhgVHiBTzKDSYnS0w2Q==
-X-Received: by 2002:a05:6830:1bc6:: with SMTP id v6mr759267ota.33.1610401937507;
-        Mon, 11 Jan 2021 13:52:17 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m7sm171532oou.11.2021.01.11.13.52.15
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 11 Jan 2021 13:52:16 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 11 Jan 2021 13:52:14 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 4.4 00/38] 4.4.251-rc1 review
-Message-ID: <20210111215214.GA56906@roeck-us.net>
-References: <20210111130032.469630231@linuxfoundation.org>
+        id S2389004AbhAKVxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 16:53:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60306 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725917AbhAKVxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 16:53:07 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B4C3BAB92;
+        Mon, 11 Jan 2021 21:52:26 +0000 (UTC)
+Date:   Mon, 11 Jan 2021 13:52:19 -0800
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     shuo.a.liu@intel.com
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH v7 09/18] virt: acrn: Introduce I/O request management
+Message-ID: <20210111215219.l44yfpyqh4m2mcbl@offworld>
+References: <20210106075055.47226-1-shuo.a.liu@intel.com>
+ <20210106075055.47226-10-shuo.a.liu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210106075055.47226-10-shuo.a.liu@intel.com>
+User-Agent: NeoMutt/20201120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 02:00:32PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.4.251 release.
-> There are 38 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 13 Jan 2021 13:00:19 +0000.
-> Anything received after that time might be too late.
-> 
+On Wed, 06 Jan 2021, shuo.a.liu@intel.com wrote:
+>The processing flow of I/O requests are listed as following:
+>
+>a) The I/O handler of the hypervisor will fill an I/O request with
+>   PENDING state when a trapped I/O access happens in a User VM.
+>b) The hypervisor makes an upcall, which is a notification interrupt, to
+>   the Service VM.
+>c) The upcall handler schedules a tasklet to dispatch I/O requests.
+>d) The tasklet looks for the PENDING I/O requests, assigns them to
+>   different registered clients based on the address of the I/O accesses,
+>   updates their state to PROCESSING, and notifies the corresponding
+>   client to handle.
 
-Build results:
-	total: 165 pass: 165 fail: 0
-Qemu test results:
-	total: 328 pass: 328 fail: 0
+Hmm so tasklets are deprecated (and have been for a while) and it's sad
+to see incoming new users in modern Linux. This wouldn't be the first one,
+however. We should be _removing_ users, not adding... In addition, this
+expands the whole tasklet_disable/enable() hacks.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Could this not be done in process context instead?
 
-Guenter
+Thanks,
+Davidlohr
