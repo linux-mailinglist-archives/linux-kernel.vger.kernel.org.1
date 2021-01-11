@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B6D2F164D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 607832F1705
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387918AbhAKNuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:50:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56732 "EHLO mail.kernel.org"
+        id S1728562AbhAKNGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:06:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730838AbhAKNJ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:09:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FA83229CA;
-        Mon, 11 Jan 2021 13:08:45 +0000 (UTC)
+        id S1730285AbhAKNFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:05:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06F5B2250F;
+        Mon, 11 Jan 2021 13:05:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370525;
-        bh=ZA4k0GC8grVRUuMqf0Ra6XGIn0Ip1OIEAcHR2mIHaaM=;
+        s=korg; t=1610370304;
+        bh=CBeLtmhgFdATqEYnUZWIl1DnW9B4RbCHHSVlrDLdWw8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bpUXzl20kW16GCk6YZHIyWo8jihAdTcMT82RSY6e5rXFWV/tUD/bRmMI8Py+B9Oyb
-         PBkqYTxiwTUCA/+qY/4pLIxzazK5TFOn0HFxNFpNND9h0eZ4ztQEzsX++kQbDaYOHu
-         y1vNRH9aBXdG5hpSQJjPm4T+sEVEOes/Cyo0oUtw=
+        b=ff+0SE6vbgKoXznuCfEEFGjx/P8wFDdovOXF6FSuA+Swo1C2gQfcfeQX4jswqD3T8
+         BpD68N83jGc3+WDAF0tMei74HqvacYOBp75S2k8TbmLh49Fnpx5JSp07E6ceUBsdNP
+         stP6kOlk4S92KC8JW3pFgIQnoeED3x2+42FeM9to=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>,
-        Xie He <xie.he.0141@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 30/77] net: hdlc_ppp: Fix issues when mod_timer is called while timer is running
+        stable@vger.kernel.org, Roland Dreier <roland@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 20/57] CDC-NCM: remove "connected" log message
 Date:   Mon, 11 Jan 2021 14:01:39 +0100
-Message-Id: <20210111130037.850248761@linuxfoundation.org>
+Message-Id: <20210111130034.702424034@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
+References: <20210111130033.715773309@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Roland Dreier <roland@kernel.org>
 
-[ Upstream commit 1fef73597fa545c35fddc953979013882fbd4e55 ]
+[ Upstream commit 59b4a8fa27f5a895582ada1ae5034af7c94a57b5 ]
 
-ppp_cp_event is called directly or indirectly by ppp_rx with "ppp->lock"
-held. It may call mod_timer to add a new timer. However, at the same time
-ppp_timer may be already running and waiting for "ppp->lock". In this
-case, there's no need for ppp_timer to continue running and it can just
-exit.
+The cdc_ncm driver passes network connection notifications up to
+usbnet_link_change(), which is the right place for any logging.
+Remove the netdev_info() duplicating this from the driver itself.
 
-If we let ppp_timer continue running, it may call add_timer. This causes
-kernel panic because add_timer can't be called with a timer pending.
-This patch fixes this problem.
+This stops devices such as my "TRENDnet USB 10/100/1G/2.5G LAN"
+(ID 20f4:e02b) adapter from spamming the kernel log with
 
-Fixes: e022c2f07ae5 ("WAN: new synchronous PPP implementation for generic HDLC.")
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+    cdc_ncm 2-2:2.0 enp0s2u2c2: network connection: connected
+
+messages every 60 msec or so.
+
+Signed-off-by: Roland Dreier <roland@kernel.org>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20201224032116.2453938-1-roland@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wan/hdlc_ppp.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/usb/cdc_ncm.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
---- a/drivers/net/wan/hdlc_ppp.c
-+++ b/drivers/net/wan/hdlc_ppp.c
-@@ -572,6 +572,13 @@ static void ppp_timer(struct timer_list
- 	unsigned long flags;
+--- a/drivers/net/usb/cdc_ncm.c
++++ b/drivers/net/usb/cdc_ncm.c
+@@ -1630,9 +1630,6 @@ static void cdc_ncm_status(struct usbnet
+ 		 * USB_CDC_NOTIFY_NETWORK_CONNECTION notification shall be
+ 		 * sent by device after USB_CDC_NOTIFY_SPEED_CHANGE.
+ 		 */
+-		netif_info(dev, link, dev->net,
+-			   "network connection: %sconnected\n",
+-			   !!event->wValue ? "" : "dis");
+ 		usbnet_link_change(dev, !!event->wValue, 0);
+ 		break;
  
- 	spin_lock_irqsave(&ppp->lock, flags);
-+	/* mod_timer could be called after we entered this function but
-+	 * before we got the lock.
-+	 */
-+	if (timer_pending(&proto->timer)) {
-+		spin_unlock_irqrestore(&ppp->lock, flags);
-+		return;
-+	}
- 	switch (proto->state) {
- 	case STOPPING:
- 	case REQ_SENT:
 
 
