@@ -2,84 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9932F2032
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 626652F2045
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:00:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391435AbhAKT66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:58:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56438 "EHLO mail.kernel.org"
+        id S2391376AbhAKUA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 15:00:27 -0500
+Received: from ms.lwn.net ([45.79.88.28]:59842 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727096AbhAKT65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:58:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D9B522B51;
-        Mon, 11 Jan 2021 19:58:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610395096;
-        bh=tNemm3d00HEoWxEcgrioF9dHm3Egmglo6jR1U8qw9Vs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GDs8td86YmFvCFTx0riW4WaZBPn/hOl0rpr6C671fpnz07LDmqXtL/XAYjgAAaBMh
-         d7xV2cecnYL3iww4o5n13Fbv2Mkqryf6cqGjiwHC3LdmTKuR1HsgVVrtA09axwUo6z
-         SzkfdUZWerYeFS8fBrf9QJvBBMNAT77R0muYvTJc=
-Date:   Mon, 11 Jan 2021 20:59:27 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Petr Machata <me@pmachata.org>
-Subject: Re: [PATCH 5.10 018/145] net: dcb: Validate netlink message in DCB
- handler
-Message-ID: <X/yuH4+l0IJ8bFDh@kroah.com>
-References: <20210111130048.499958175@linuxfoundation.org>
- <20210111130049.387370344@linuxfoundation.org>
- <20210111093616.552f84da@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S2391252AbhAKUAZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 15:00:25 -0500
+Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 291FC728;
+        Mon, 11 Jan 2021 19:59:45 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 291FC728
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1610395185; bh=XxFewXu61LUMETyFHIkWQGnRUKIhqZyZgujI+om5BzU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bmC9J1INqHz3s4h1ao5FOQfuvx8s2vUOJXayNTAyL1Dg9LOZ2VPUNGRVFmnnM+9Y4
+         E+HvJvMIFY2ZOp/qW+o1NBIXisLmij/VHlWGejMOOy4N9YdL+Tbms07L5VoYu2iox2
+         eFmlSkDk4cnuUK/W4VCLqGBQi/j+zz5XKQgi4zZm3Fp41tdG3HYHw9t7Lcsv91nu9w
+         ERn2kFRLCLwvZDnjrJTJUS2tuCA1BYSjlW/3BGuazs7blBulUif9vlaMUk4gUynTpa
+         eIANkGDkkwYzNPc3mXcExFp34TBi7rVDa4TGfU0Zu7K0uw0UILbRlp+xYlxF1sZdcd
+         KFSWqbnwqRF3A==
+Date:   Mon, 11 Jan 2021 12:59:44 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Hao Li <lihao2018.fnst@cn.fujitsu.com>, davem@davemloft.net,
+        gregkh@linuxfoundation.org, alexander.deucher@amd.com,
+        mchehab+huawei@kernel.org, lee.jones@linaro.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Documentation/dax: Update description of DAX policy
+ changing
+Message-ID: <20210111125944.13f93eb7@lwn.net>
+In-Reply-To: <20210106054541.GR3097896@iweiny-DESK2.sc.intel.com>
+References: <20210106015000.5263-1-lihao2018.fnst@cn.fujitsu.com>
+        <20210106054541.GR3097896@iweiny-DESK2.sc.intel.com>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111093616.552f84da@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 09:36:16AM -0800, Jakub Kicinski wrote:
-> On Mon, 11 Jan 2021 14:00:42 +0100 Greg Kroah-Hartman wrote:
-> > From: Petr Machata <me@pmachata.org>
-> > 
-> > [ Upstream commit 826f328e2b7e8854dd42ea44e6519cd75018e7b1 ]
-> > 
-> > DCB uses the same handler function for both RTM_GETDCB and RTM_SETDCB
-> > messages. dcb_doit() bounces RTM_SETDCB mesasges if the user does not have
-> > the CAP_NET_ADMIN capability.
-> > 
-> > However, the operation to be performed is not decided from the DCB message
-> > type, but from the DCB command. Thus DCB_CMD_*_GET commands are used for
-> > reading DCB objects, the corresponding SET and DEL commands are used for
-> > manipulation.
-> > 
-> > The assumption is that set-like commands will be sent via an RTM_SETDCB
-> > message, and get-like ones via RTM_GETDCB. However, this assumption is not
-> > enforced.
-> > 
-> > It is therefore possible to manipulate DCB objects without CAP_NET_ADMIN
-> > capability by sending the corresponding command in an RTM_GETDCB message.
-> > That is a bug. Fix it by validating the type of the request message against
-> > the type used for the response.
-> > 
-> > Fixes: 2f90b8657ec9 ("ixgbe: this patch adds support for DCB to the kernel and ixgbe driver")
-> > Signed-off-by: Petr Machata <me@pmachata.org>
-> > Link: https://lore.kernel.org/r/a2a9b88418f3a58ef211b718f2970128ef9e3793.1608673640.git.me@pmachata.org
-> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> Unfortunately we need to call backsies on this one.
-> 
-> A fix up was just posted:
-> 
-> https://patchwork.kernel.org/project/netdevbpf/patch/a3edcfda0825f2aa2591801c5232f2bbf2d8a554.1610384801.git.me@pmachata.org/
-> 
-> I'll resend both in the next submission.
+On Tue, 5 Jan 2021 21:45:41 -0800
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-No worries, thanks for letting me know, I've now dropped it from all
-stable tree queues.
+> On Wed, Jan 06, 2021 at 09:50:00AM +0800, Hao Li wrote:
+> > After commit 77573fa310d9 ("fs: Kill DCACHE_DONTCACHE dentry even if
+> > DCACHE_REFERENCED is set"), changes to DAX policy will take effect
+> > as soon as all references to this file are gone.
+> > 
+> > Update the documentation accordingly.
+> > 
+> > Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>  
+> 
+> LGTM
+> 
+> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 
-thanks,
+Applied, thanks.
 
-greg k-h
+jon
