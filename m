@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C872F14DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:32:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 409732F16C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732472AbhAKNcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:32:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33156 "EHLO mail.kernel.org"
+        id S2388050AbhAKN4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:56:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731894AbhAKNP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:15:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7048A22795;
-        Mon, 11 Jan 2021 13:15:12 +0000 (UTC)
+        id S1730437AbhAKNHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:07:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F27B22AAB;
+        Mon, 11 Jan 2021 13:06:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370912;
-        bh=ba5DDOCOWU2rUNvSaILRUFl/P5ERLkhqrZq6lwPUL3U=;
+        s=korg; t=1610370419;
+        bh=D6CLflUG2o00D2RxO9E2QgxP/uHuqvdfAnb5fqv4eLY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WIbLTBNM1wg/jzRcS48w6G3Fertj7jRyZlVS1M2kW9cKL6oElPIuQ7TLB0YdvMmkv
-         TVN8qGCzqyM78TtLLIfXu7NjHwF53gQMhbojzsNDiN/EJFVRW3qey8mfLP65zPXqLb
-         vpjHXh+LxXsORw5AfjU4/3mJ7gM2U+7cWoYRNGbc=
+        b=uZHsZcfqhzt1ik/NBGzRURa5kltwBGYkVU/L9Z1LoPncTqas2Frlyc/ks1uHoMhCS
+         X59q6cHSWBKusHGBwpBfJCmSeGWkidUBBkT2XRO8B8+Udfw50oQRpNrw6D9iA2HpMe
+         OvKyEkCtnRMQXXgQeUPOMRXDvojhn9t1Hi9hre74=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 057/145] scsi: ufs-pci: Fix recovery from hibernate exit errors for Intel controllers
-Date:   Mon, 11 Jan 2021 14:01:21 +0100
-Message-Id: <20210111130051.277712298@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 14/77] ethernet: ucc_geth: fix use-after-free in ucc_geth_remove()
+Date:   Mon, 11 Jan 2021 14:01:23 +0100
+Message-Id: <20210111130037.103404477@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
+References: <20210111130036.414620026@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
 
-[ Upstream commit 044d5bda7117891d6d0d56f2f807b7b11e120abd ]
+[ Upstream commit e925e0cd2a705aaacb0b907bb3691fcac3a973a4 ]
 
-Intel controllers can end up in an unrecoverable state after a hibernate
-exit error unless a full reset and restore is done before anything else.
-Force that to happen.
+ugeth is the netdiv_priv() part of the netdevice. Accessing the memory
+pointed to by ugeth (such as done by ucc_geth_memclean() and the two
+of_node_puts) after free_netdev() is thus use-after-free.
 
-Link: https://lore.kernel.org/r/20201207083120.26732-4-adrian.hunter@intel.com
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 80a9fad8e89a ("ucc_geth: fix module removal")
+Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/ufs/ufshcd-pci.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/net/ethernet/freescale/ucc_geth.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd-pci.c b/drivers/scsi/ufs/ufshcd-pci.c
-index 5d33c39fa82f0..888d8c9ca3a55 100644
---- a/drivers/scsi/ufs/ufshcd-pci.c
-+++ b/drivers/scsi/ufs/ufshcd-pci.c
-@@ -178,6 +178,23 @@ static int ufs_intel_resume(struct ufs_hba *hba, enum ufs_pm_op op)
- 		      REG_UTP_TASK_REQ_LIST_BASE_L);
- 	ufshcd_writel(hba, upper_32_bits(hba->utmrdl_dma_addr),
- 		      REG_UTP_TASK_REQ_LIST_BASE_H);
-+
-+	if (ufshcd_is_link_hibern8(hba)) {
-+		int ret = ufshcd_uic_hibern8_exit(hba);
-+
-+		if (!ret) {
-+			ufshcd_set_link_active(hba);
-+		} else {
-+			dev_err(hba->dev, "%s: hibern8 exit failed %d\n",
-+				__func__, ret);
-+			/*
-+			 * Force reset and restore. Any other actions can lead
-+			 * to an unrecoverable state.
-+			 */
-+			ufshcd_set_link_off(hba);
-+		}
-+	}
-+
+--- a/drivers/net/ethernet/freescale/ucc_geth.c
++++ b/drivers/net/ethernet/freescale/ucc_geth.c
+@@ -3947,12 +3947,12 @@ static int ucc_geth_remove(struct platfo
+ 	struct device_node *np = ofdev->dev.of_node;
+ 
+ 	unregister_netdev(dev);
+-	free_netdev(dev);
+ 	ucc_geth_memclean(ugeth);
+ 	if (of_phy_is_fixed_link(np))
+ 		of_phy_deregister_fixed_link(np);
+ 	of_node_put(ugeth->ug_info->tbi_node);
+ 	of_node_put(ugeth->ug_info->phy_node);
++	free_netdev(dev);
+ 
  	return 0;
  }
- 
--- 
-2.27.0
-
 
 
