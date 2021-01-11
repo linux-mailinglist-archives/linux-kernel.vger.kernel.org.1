@@ -2,158 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA60B2F0F41
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6B42F0F84
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728537AbhAKJjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 04:39:24 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:11377 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728042AbhAKJjY (ORCPT
+        id S1728792AbhAKJyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 04:54:18 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:36854 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728444AbhAKJyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 04:39:24 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DDpXQ17Hlz6vGV;
-        Mon, 11 Jan 2021 17:37:42 +0800 (CST)
-Received: from [10.67.102.118] (10.67.102.118) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 11 Jan 2021 17:38:39 +0800
-Subject: Re: [PATCH] USB:ehci:fix an interrupt calltrace error
-From:   liulongfang <liulongfang@huawei.com>
-To:     Alan Stern <stern@rowland.harvard.edu>
-CC:     <gregkh@linuxfoundation.org>, <linux-usb@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1606361673-573-1-git-send-email-liulongfang@huawei.com>
- <20201126160830.GA827745@rowland.harvard.edu>
- <96b4d366-c94c-9708-da12-5693bf16b716@huawei.com>
- <20201127154718.GA861473@rowland.harvard.edu>
- <3c2366c8-4b3e-dac0-48ad-6b33b6eed10e@huawei.com>
-Message-ID: <0f747f03-72e8-84de-c1c1-297398ca516c@huawei.com>
-Date:   Mon, 11 Jan 2021 17:38:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <3c2366c8-4b3e-dac0-48ad-6b33b6eed10e@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.102.118]
-X-CFilter-Loop: Reflected
+        Mon, 11 Jan 2021 04:54:17 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10B9WFen015032;
+        Mon, 11 Jan 2021 04:53:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id; s=pp1;
+ bh=O1aHWxRMTkGLyiDkpdEfZ0bQIlK6a4X0sjNLBBGtuPo=;
+ b=tVc2CdFZHRkIB8GyIMv18nMK5VTg8eVzQ99cuVKSuKaFbFr1PtBI5DHq72/D9VsY0r66
+ xN4Eav/HVK2qPGHnf7ErUV+sUgqX37dFpEidEGxIu8e/r7oN42Cw1Ye92oKdbA0GKOso
+ PdAYdhgecBmWWNDXKjV4NvyoZVeyJJtQU9Kx6zM8WHS2P/pICQZJXhMmumKU/dgoQkGx
+ /4JlfV2idvw7CYteEysgv1q7E6QptNX0RqCfSTHJt/akjU2F1strWGYIIm7r7UdkhTRv
+ pvtcnPrGlbxqI+gZsHEv86cVI1FTeNMkH+RG4RgVJKOjNB2ZiWiwK5tlofTz+f/k2OL7 bA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 360kg6srer-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Jan 2021 04:53:37 -0500
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10B9WrB3016974;
+        Mon, 11 Jan 2021 04:53:36 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 360kg6srbs-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Jan 2021 04:53:36 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10B9W44V006893;
+        Mon, 11 Jan 2021 09:39:01 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 35ydrd9qsb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Jan 2021 09:39:01 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10B9cwt524445398
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Jan 2021 09:38:58 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 71FC4AE055;
+        Mon, 11 Jan 2021 09:38:58 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 29C2DAE045;
+        Mon, 11 Jan 2021 09:38:58 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 11 Jan 2021 09:38:58 +0000 (GMT)
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, Pierre Morel <pmorel@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Viktor Mihajlovski <mihajlov@linux.ibm.com>
+Subject: [RFC 0/1] PCI: s390 global attribute "UID Checking"
+Date:   Mon, 11 Jan 2021 10:38:56 +0100
+Message-Id: <20210111093857.24070-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.17.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-09_13:2021-01-07,2021-01-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
+ mlxlogscore=999 mlxscore=0 priorityscore=1501 adultscore=0 suspectscore=0
+ malwarescore=0 phishscore=0 lowpriorityscore=0 spamscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101110055
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/11/28 11:22, liulongfang Wrote:
-> On 2020/11/27 23:47, Alan Stern Wrote:
->> On Fri, Nov 27, 2020 at 10:29:03AM +0800, liulongfang wrote:
->>> On 2020/11/27 0:08, Alan Stern Wrote:
->>>> On Thu, Nov 26, 2020 at 11:34:33AM +0800, Longfang Liu wrote:
->>>>> The system goes to suspend when using USB audio player. This causes
->>>>> the USB device continuous send interrupt signal to system, When the
->>>>> number of interrupts exceeds 100000, the system will forcibly close
->>>>> the interrupts and output a calltrace error.
->>>>
->>>> This description is very confusing.  USB devices do not send interrupt 
->>>> signals to the host.  Do you mean that the device sends a wakeup 
->>>> request?  Or do you mean something else?
->>> The irq type is IRQ_NONE，It's counted in the note_interrupt function.
->>> From the analysis of the driver code, that are indeed  interrupt signals.
->>
->> Above you wrote: "the USB device continuous send interrupt signal to 
->> system".  But that's not correct.  The interrupt signals are sent by the 
->> USB host controller, not by the USB audio device.
->>
-> OK, I will modify the description in the next patch.
->> The patch description should mention that this happens only with some 
->> Synopsys host controllers.
->>
->>>>> When the system goes to suspend, the last interrupt is reported to
->>>>> the driver. At this time, the system has set the state to suspend.
->>>>> This causes the last interrupt to not be processed by the system and
->>>>> not clear the interrupt state flag. This uncleared interrupt flag
->>>>> constantly triggers new interrupt event. This causing the driver to
->>>>> receive more than 100,000 interrupts, which causes the system to
->>>>> forcibly close the interrupt report and report the calltrace error.
->>>>
->>>> If the driver receives an interrupt, it is supposed to process the event 
->>>> even if the host controller is suspended.  And when ehci_irq() runs, it 
->>>> clears the bits that are set in the USBSYS register.
->>> When the host controller is suspended, the ehci_suspend() will clear
->>> the HCD_FLAG_HW_ACCESSIBLE, and then usb_hcd_irq() will return IRQ_NONE
->>> directly without calling ehci_irq().
->>
->> Yes.  But ehci_bus_suspend() runs _before_ the host controller is 
->> suspended.  While ehci_bus_suspend() is running, usb_hcd_irq() _will_ 
->> call ehci_irq(), and ehci_irq() _will_ clear the status bits.
->>
->> After the host controller is suspended it is not supposed to generate 
->> any interrupt signals at all, because ehci_suspend() writes 0 to the 
->> USBINTR register, and it does this _before_ clearing 
->> HCD_FLAG_HW_ACCESSIBLE.
->>
-> According to this process, there should be no interruption storm problem,
-> but the current fact is that the problem has occurred, so the actual
-> execution process did not follow the correct process above.
-> 
->>>> Why is your system getting interrupts?  That is, which bits are set in 
->>>> the USBSTS register?
->>> BIT(5) and BIT(3) are setted, STS_IAA and STS_FLR.
->>
->> STS_FLR is not set in the USBINTR register, but STS_IAA is.  So that's 
->> the one which matters.
->>
->>>>> so, when the driver goes to sleep and changes the system state to
->>>>> suspend, the interrupt flag needs to be cleared.
->>>>>
->>>>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
->>>>> ---
->>>>>  drivers/usb/host/ehci-hub.c | 5 +++++
->>>>>  1 file changed, 5 insertions(+)
->>>>>
->>>>> diff --git a/drivers/usb/host/ehci-hub.c b/drivers/usb/host/ehci-hub.c
->>>>> index ce0eaf7..5b13825 100644
->>>>> --- a/drivers/usb/host/ehci-hub.c
->>>>> +++ b/drivers/usb/host/ehci-hub.c
->>>>> @@ -348,6 +348,11 @@ static int ehci_bus_suspend (struct usb_hcd *hcd)
->>>>>  
->>>>>  	/* Any IAA cycle that started before the suspend is now invalid */
->>>>>  	end_iaa_cycle(ehci);
->>>>> +
->>>>> +	/* clear interrupt status */
->>>>> +	if (ehci->has_synopsys_hc_bug)
->>>>> +		ehci_writel(ehci, INTR_MASK | STS_FLR, &ehci->regs->status);
->>>>
->>>> This is a very strange place to add your new code -- right in the middle 
->>>> of the IAA and unlink handling.  Why not put it in a more reasonable 
->>>> place?After the IAA is processed, clear the STS_IAA interrupt state flag.
->>>>
->>>> Also, the patch description does not mention has_synopsys_hc_bug.  The 
->>>> meaning of this flag has no connection with the interrupt status 
->>>> register, so why do you use it here?
->>> Because of our USB IP comes from Synopsys, and the uncleared flage is also caused by
->>> special hardware design, in addition, we have not tested other manufacturers' USB
->>> controllers.We don’t know if other manufacturers’ designs have this problem,
->>> so this modification is only limited to this kind of design.
->>
->> Clearing the STS_IAA flag won't hurt, no matter who manufactured the 
->> controller.  So your patch should look more like this:
->>
->> +	/* Some Synopsys controllers mistakenly leave IAA turned on */
->> +	ehci_writel(ehci, STS_IAA, &ehci->regs->status);
->>
->> And these lines should come before the "Any IAA cycle..." comment line.
->> Does that fix the problem?
-> I will conduct a round of testing based on this modification
-> and provide the test results.
->>
->> Alan Stern
->> .
->>
-> Thanks.
-> Longfang Liu
-> .
-> 
-After continuous sleep and wake-up operation stress tests,
-this problem can be solved by using a solution that
-only cleans up STS_IAA
-Thanks.
-Longfang Liu
+Hi Bjorn, Hi Kernel Hackers,
+
+With the below patch I'm proposing to expose a global (i.e. not device
+bound) runtime attribute of the s390 PCI implementation (zPCI) called
+"UID Checking".  You can find some background information on what this
+attribute means and why it is important at the end of this mail. The
+reason I'm writing to you about it however is that this is the first
+global PCI attribute we would like to expose to user space and I'm
+searching for a good place to put it.
+The proposed patch uses "/sys/bus/pci/zpci/uid_checking" which from
+our perspective would be a great choice but I realize that there
+currently are no platform specific attributes directly under
+"/sys/bus/pci" so this clearly requires some discussion. What's your
+thought on this and do you know of any other platform specific global
+PCI attributes as I couldn't find any?
+
+Best regards,
+Niklas Schnelle
+
+Background:
+On s390 OSs always run under at least a machine level hypervisor
+(LPAR).  Simpliefied by usually running from SAN this makes VM
+migration possible at every level. For PCI this has created the need
+to allow PCI IDs to be stable across machines and to be partly user
+defined such that the setup of an existing VM on one machine can be
+recreated on another machine.
+In particular the Domain part of the PCI ID can be user defined by
+setting a per device value called UID. Since this was a late addition
+and isn't used by all OSs and since UIDs need to be unique if used as
+Domains, there is an additional global platform supplied runtime value
+called "UID Checking".  This value indicates if UIDs are guaranteed to
+be unique and set which triggers Linux to use the UIDs as PCI Domains
+otherwise PCI Domains are simply incremented as necessary.
+This "UID Checking" setting is thus very important e.g. when deciding
+how network interface names are generated as it indicates if the
+domain part of the PCI ID will remain stable across reboots and
+migrations.  Once exposed we will propose a patch to udev/systemd to
+use the "UID Checking" attribute to prefer network interface names
+which can be guaranteed to be stable and re-creatable for migration.
+
+Niklas Schnelle (1):
+  s390/pci: expose UID checking state in sysfs
+
+ Documentation/ABI/testing/sysfs-bus-pci | 11 ++++++++
+ arch/s390/include/asm/pci.h             |  3 +++
+ arch/s390/pci/pci.c                     |  4 +++
+ arch/s390/pci/pci_sysfs.c               | 34 +++++++++++++++++++++++++
+ 4 files changed, 52 insertions(+)
+
+-- 
+2.17.1
+
