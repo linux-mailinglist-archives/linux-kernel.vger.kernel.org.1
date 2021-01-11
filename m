@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9FF2F16F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:00:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AF62F1629
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730477AbhAKNGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:06:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52960 "EHLO mail.kernel.org"
+        id S1731098AbhAKNJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:09:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730332AbhAKNFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:05:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BD3422515;
-        Mon, 11 Jan 2021 13:04:57 +0000 (UTC)
+        id S1731075AbhAKNIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:08:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0ACCE22B51;
+        Mon, 11 Jan 2021 13:08:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370297;
-        bh=aOY07mU5jEGpV+urwEDRc54pLz1BBurTgi7GjYUtSbQ=;
+        s=korg; t=1610370516;
+        bh=OgqyEGXjyUvFKj//u5k0NdHDA5+4FIBB1WfgxIWBzGU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SKytvzCi/1UmxAxMeZwUsioZX7OAnQ3NuEHjmFSKB9EryJZH9VDtCuf9OHdvBZFq8
-         UCCV+bDgGffSumfEa35w1xtUFEp1fyj5z8eh0MHVOtVz+8WmqflA71Pm44klco7KDC
-         P20ra2Jmmcka17w2hcHpkfvqpCTpYsKzkU+j3v54=
+        b=jp0/fn+vQcvAUu3eJRo4/oGQVPYpk7kUkjWwxTepsO4mbH156kTA4itRdCxQvNlOS
+         XZaGJQ3uRKpxjo1RwjQ+Oq8EqS7uKNkC78SuvI4e3MW0n6mq7lF71ZpDiKFL0TYfJ/
+         tAhxXVmIieCO3EfEVYONWXEMrS7iwZDp/Ru/JxhA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
+        stable@vger.kernel.org,
+        syzbot+f583ce3d4ddf9836b27a@syzkaller.appspotmail.com,
+        William Tu <u9012063@gmail.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Cong Wang <cong.wang@bytedance.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 18/57] net: hns: fix return value check in __lb_other_process()
-Date:   Mon, 11 Jan 2021 14:01:37 +0100
-Message-Id: <20210111130034.606312678@linuxfoundation.org>
+Subject: [PATCH 4.19 29/77] erspan: fix version 1 check in gre_parse_header()
+Date:   Mon, 11 Jan 2021 14:01:38 +0100
+Message-Id: <20210111130037.802035875@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
-References: <20210111130033.715773309@linuxfoundation.org>
+In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
+References: <20210111130036.414620026@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunjian Wang <wangyunjian@huawei.com>
+From: Cong Wang <cong.wang@bytedance.com>
 
-[ Upstream commit 5ede3ada3da7f050519112b81badc058190b9f9f ]
+[ Upstream commit 085c7c4e1c0e50d90b7d90f61a12e12b317a91e2 ]
 
-The function skb_copy() could return NULL, the return value
-need to be checked.
+Both version 0 and version 1 use ETH_P_ERSPAN, but version 0 does not
+have an erspan header. So the check in gre_parse_header() is wrong,
+we have to distinguish version 1 from version 0.
 
-Fixes: b5996f11ea54 ("net: add Hisilicon Network Subsystem basic ethernet support")
-Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
+We can just check the gre header length like is_erspan_type1().
+
+Fixes: cb73ee40b1b3 ("net: ip_gre: use erspan key field for tunnel lookup")
+Reported-by: syzbot+f583ce3d4ddf9836b27a@syzkaller.appspotmail.com
+Cc: William Tu <u9012063@gmail.com>
+Cc: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/hisilicon/hns/hns_ethtool.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ net/ipv4/gre_demux.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
-+++ b/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
-@@ -418,6 +418,10 @@ static void __lb_other_process(struct hn
- 	/* for mutl buffer*/
- 	new_skb = skb_copy(skb, GFP_ATOMIC);
- 	dev_kfree_skb_any(skb);
-+	if (!new_skb) {
-+		netdev_err(ndev, "skb alloc failed\n");
-+		return;
-+	}
- 	skb = new_skb;
+--- a/net/ipv4/gre_demux.c
++++ b/net/ipv4/gre_demux.c
+@@ -133,7 +133,7 @@ int gre_parse_header(struct sk_buff *skb
+ 	 * to 0 and sets the configured key in the
+ 	 * inner erspan header field
+ 	 */
+-	if (greh->protocol == htons(ETH_P_ERSPAN) ||
++	if ((greh->protocol == htons(ETH_P_ERSPAN) && hdr_len != 4) ||
+ 	    greh->protocol == htons(ETH_P_ERSPAN2)) {
+ 		struct erspan_base_hdr *ershdr;
  
- 	check_ok = 0;
 
 
