@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C52A22F153B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:37:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 621DC2F1534
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:36:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733053AbhAKNhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:37:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60420 "EHLO mail.kernel.org"
+        id S1731947AbhAKNNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:13:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731627AbhAKNN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:13:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1940321973;
-        Mon, 11 Jan 2021 13:12:46 +0000 (UTC)
+        id S1731638AbhAKNNM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:13:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CFDC22AAB;
+        Mon, 11 Jan 2021 13:12:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370767;
-        bh=dTw/4c7vdboY41bKzNKv8RRdtWYMYkKxufFm7M1CimA=;
+        s=korg; t=1610370776;
+        bh=hlR4DTAutJKTaLyj2TlIyWV1L+EXEmeTeWFnEO5mTsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KczsJ3uR/6Soa5P9hwrvP0DIk5DVJK1wAmRQXrrhYT1KTEXDXxKfLs3L108mS1kTg
-         Lv2mXgRUwmiItkVBT5ca7/h5aC9gH37FbnzLcrpTxPxjt2QbO7UZs4OqcQNjj3FN/B
-         GEEz/LdwD/Vmb1DTkriIB1btOuieYoABoTjaNLFU=
+        b=rwADn/joqEvHPX+69actKsfxLpPia22TMafGyILt0mZHXFda7SRAopi9T2EpzIjnI
+         QgqPkjkwDKUe4SN87A+6bfVKvBJ5PFUblZAwCj471KV1KGNq0RkvJyW3YGG+Zp7AhU
+         gs/zEbJrlrmQVMfQMfQHmerohJvZVF/rMB9Sd/1w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+d66bfadebca46cf61a2b@syzkaller.appspotmail.com,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 5.4 88/92] netfilter: ipset: fix shift-out-of-bounds in htable_bits()
-Date:   Mon, 11 Jan 2021 14:02:32 +0100
-Message-Id: <20210111130043.400224281@linuxfoundation.org>
+        stable@vger.kernel.org, Ying-Tsun Huang <ying-tsun.huang@amd.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.4 91/92] x86/mtrr: Correct the range check before performing MTRR type lookups
+Date:   Mon, 11 Jan 2021 14:02:35 +0100
+Message-Id: <20210111130043.543092815@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
 References: <20210111130039.165470698@linuxfoundation.org>
@@ -42,89 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Averin <vvs@virtuozzo.com>
+From: Ying-Tsun Huang <ying-tsun.huang@amd.com>
 
-commit 5c8193f568ae16f3242abad6518dc2ca6c8eef86 upstream.
+commit cb7f4a8b1fb426a175d1708f05581939c61329d4 upstream.
 
-htable_bits() can call jhash_size(32) and trigger shift-out-of-bounds
+In mtrr_type_lookup(), if the input memory address region is not in the
+MTRR, over 4GB, and not over the top of memory, a write-back attribute
+is returned. These condition checks are for ensuring the input memory
+address region is actually mapped to the physical memory.
 
-UBSAN: shift-out-of-bounds in net/netfilter/ipset/ip_set_hash_gen.h:151:6
-shift exponent 32 is too large for 32-bit type 'unsigned int'
-CPU: 0 PID: 8498 Comm: syz-executor519
- Not tainted 5.10.0-rc7-next-20201208-syzkaller #0
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- htable_bits net/netfilter/ipset/ip_set_hash_gen.h:151 [inline]
- hash_mac_create.cold+0x58/0x9b net/netfilter/ipset/ip_set_hash_gen.h:1524
- ip_set_create+0x610/0x1380 net/netfilter/ipset/ip_set_core.c:1115
- nfnetlink_rcv_msg+0xecc/0x1180 net/netfilter/nfnetlink.c:252
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- nfnetlink_rcv+0x1ac/0x420 net/netfilter/nfnetlink.c:600
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x907/0xe40 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
+However, if the end address is just aligned with the top of memory,
+the condition check treats the address is over the top of memory, and
+write-back attribute is not returned.
 
-This patch replaces htable_bits() by simple fls(hashsize - 1) call:
-it alone returns valid nbits both for round and non-round hashsizes.
-It is normal to set any nbits here because it is validated inside
-following htable_size() call which returns 0 for nbits>31.
+And this hits in a real use case with NVDIMM: the nd_pmem module tries
+to map NVDIMMs as cacheable memories when NVDIMMs are connected. If a
+NVDIMM is the last of the DIMMs, the performance of this NVDIMM becomes
+very low since it is aligned with the top of memory and its memory type
+is uncached-minus.
 
-Fixes: 1feab10d7e6d("netfilter: ipset: Unified hash type generation")
-Reported-by: syzbot+d66bfadebca46cf61a2b@syzkaller.appspotmail.com
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
-Acked-by: Jozsef Kadlecsik <kadlec@netfilter.org>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Move the input end address change to inclusive up into
+mtrr_type_lookup(), before checking for the top of memory in either
+mtrr_type_lookup_{variable,fixed}() helpers.
+
+ [ bp: Massage commit message. ]
+
+Fixes: 0cc705f56e40 ("x86/mm/mtrr: Clean up mtrr_type_lookup()")
+Signed-off-by: Ying-Tsun Huang <ying-tsun.huang@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201215070721.4349-1-ying-tsun.huang@amd.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/netfilter/ipset/ip_set_hash_gen.h |   20 +++++---------------
- 1 file changed, 5 insertions(+), 15 deletions(-)
+ arch/x86/kernel/cpu/mtrr/generic.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/net/netfilter/ipset/ip_set_hash_gen.h
-+++ b/net/netfilter/ipset/ip_set_hash_gen.h
-@@ -143,20 +143,6 @@ htable_size(u8 hbits)
- 	return hsize * sizeof(struct hbucket *) + sizeof(struct htable);
- }
+--- a/arch/x86/kernel/cpu/mtrr/generic.c
++++ b/arch/x86/kernel/cpu/mtrr/generic.c
+@@ -167,9 +167,6 @@ static u8 mtrr_type_lookup_variable(u64
+ 	*repeat = 0;
+ 	*uniform = 1;
  
--/* Compute htable_bits from the user input parameter hashsize */
--static u8
--htable_bits(u32 hashsize)
--{
--	/* Assume that hashsize == 2^htable_bits */
--	u8 bits = fls(hashsize - 1);
+-	/* Make end inclusive instead of exclusive */
+-	end--;
 -
--	if (jhash_size(bits) != hashsize)
--		/* Round up to the first 2^n value */
--		bits = fls(hashsize);
--
--	return bits;
--}
--
- #ifdef IP_SET_HASH_WITH_NETS
- #if IPSET_NET_COUNT > 1
- #define __CIDR(cidr, i)		(cidr[i])
-@@ -1520,7 +1506,11 @@ IPSET_TOKEN(HTYPE, _create)(struct net *
- 	if (!h)
- 		return -ENOMEM;
+ 	prev_match = MTRR_TYPE_INVALID;
+ 	for (i = 0; i < num_var_ranges; ++i) {
+ 		unsigned short start_state, end_state, inclusive;
+@@ -261,6 +258,9 @@ u8 mtrr_type_lookup(u64 start, u64 end,
+ 	int repeat;
+ 	u64 partial_end;
  
--	hbits = htable_bits(hashsize);
-+	/* Compute htable_bits from the user input parameter hashsize.
-+	 * Assume that hashsize == 2^htable_bits,
-+	 * otherwise round up to the first 2^n value.
-+	 */
-+	hbits = fls(hashsize - 1);
- 	hsize = htable_size(hbits);
- 	if (hsize == 0) {
- 		kfree(h);
++	/* Make end inclusive instead of exclusive */
++	end--;
++
+ 	if (!mtrr_state_set)
+ 		return MTRR_TYPE_INVALID;
+ 
 
 
