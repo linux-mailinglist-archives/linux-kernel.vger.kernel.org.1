@@ -2,159 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B1A2F0A89
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 01:03:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70FB72F0A8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 01:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbhAKAD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 19:03:27 -0500
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:36779 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725936AbhAKAD0 (ORCPT
+        id S1726846AbhAKAMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 19:12:38 -0500
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:52814 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726049AbhAKAMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 19:03:26 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 3A5AB5C0066;
-        Sun, 10 Jan 2021 19:02:39 -0500 (EST)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Sun, 10 Jan 2021 19:02:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=YHDGpMsoVWO7Mu0PPN8KuDaFtz6Yykc
-        CQ780RW5/qxw=; b=ZaAILfvy5ecridk++cJ0nJ4K/Oni0M8gbBt8H5IDOnlfeNj
-        Mo8nq31+IJ6ROeQTNBMDqquGNuY+ixPvPF/EfCRvnYbi+StHMb5u4owS1IbLcwaJ
-        fGuGk6UTarTg8YOaqBC7OK8njZueBAATPZn/Gyy/IkKAKR6i1BztxNwh4uaR0kVm
-        3k+cccwP4SAMBs/Y8qD11DGqN7BN7OJVic/ai9BRuSvucrBpykivqaZOFos9k7pK
-        zX2TylMK/eIBVoJ34tdtJMQiUgeyMXIMTuXUX6mZs5bV1y1r699ghSY3Xqw8VaqL
-        vOFflD7nbINSIZWHwpJZotyTrA3elFBJrzie/XA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=YHDGpM
-        soVWO7Mu0PPN8KuDaFtz6YykcCQ780RW5/qxw=; b=pF4fPa/UWkHXKr5pNhdG9q
-        vBaanS0z8zTNwimmVCAM2By+ADYxx9v48FWNh7Fr/Rtgbug5jGsRqdaiRUWH7/jB
-        6I52/g8iDiUMS1yihvqSerhNlGvHsYF4+exRfoAAr7d09yjJ6WlDaFBEZ7Y0XSS6
-        xflDyUncnOYvA2k20kdwUKXVKPKO5+11/cNiRTI+59gTAfYM96auf0uLGmplIQxH
-        eTXKvAOMrB1bn1Xdn6Tg/DcHjiZughf2N5wi5bKhv0OogEjnboCcOSpyyZxYcOBn
-        55vSjGv+SzYB4a+48+TSXdPuZKRmcAqFGZkx1piqJGMpHhwp6VsUQ45bYfDREAmQ
-        ==
-X-ME-Sender: <xms:nJX7X0-vTH81zuNKvqIMJPtxcq9IN0WMIHhgscQ3qY7G-WaKCAzv1w>
-    <xme:nJX7X8u68X-9gWWX2O_IguwwioHT99hLFYB0D1zxpIJBU3qXRR7pRfTl4IvBPreiv
-    TY_f-eVW-AEjLdqgQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdehtddgudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
-    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:nZX7X6BCQ9yklg5W8vmuA_Eq76fAZ8EZcbkMVa3AwaIzKtEkWHn5rg>
-    <xmx:nZX7X0eK4qbgMcgJz9T8-pH0nH1bPGM0A5lXwDgkgxnFSjxnDBmYhQ>
-    <xmx:nZX7X5NuaN6KlHOkhyqIsFOYmhrTo4B9dzRlXBkZFmDCgsDLGrqIyA>
-    <xmx:n5X7X8eNOxauqVlg4v-yio38sT6_ingLbCRm6UHN9NpRF0-O5_nNSw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id D610CE00BF; Sun, 10 Jan 2021 19:02:36 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-45-g4839256-fm-20210104.001-g48392560
-Mime-Version: 1.0
-Message-Id: <6f341a22-f5ce-4c38-9f42-358124468821@www.fastmail.com>
-In-Reply-To: <ff588027-0fbb-100e-05a9-4a804662d838@intel.com>
-References: <20201218035338.1130849-1-andrew@aj.id.au>
- <20201218035338.1130849-5-andrew@aj.id.au>
- <ff588027-0fbb-100e-05a9-4a804662d838@intel.com>
-Date:   Mon, 11 Jan 2021 10:32:15 +1030
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Adrian Hunter" <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>
-Cc:     "Ulf Hansson" <ulf.hansson@linaro.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org,
-        "Ryan Chen" <ryan_chen@aspeedtech.com>
-Subject: =?UTF-8?Q?Re:_[PATCH_v6_4/6]_mmc:_sdhci-of-aspeed:_Add_KUnit_tests_for_p?=
- =?UTF-8?Q?hase_calculations?=
-Content-Type: text/plain
+        Sun, 10 Jan 2021 19:12:38 -0500
+Received: from dread.disaster.area (pa49-179-167-107.pa.nsw.optusnet.com.au [49.179.167.107])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id B4D54827F97;
+        Mon, 11 Jan 2021 11:11:52 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1kykoI-005ATR-MN; Mon, 11 Jan 2021 11:11:50 +1100
+Date:   Mon, 11 Jan 2021 11:11:50 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+Subject: Re: [PATCH] mm: vmscan: support complete shrinker reclaim
+Message-ID: <20210111001150.GB164110@dread.disaster.area>
+References: <2d1f1dbb7e018ad02a9e7af36a8c86397a1598a7.1609892546.git.sudaraja@codeaurora.org>
+ <20210106155602.6ce48dfe88ca7b94986b329b@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210106155602.6ce48dfe88ca7b94986b329b@linux-foundation.org>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
+        a=+wqVUQIkAh0lLYI+QRsciw==:117 a=+wqVUQIkAh0lLYI+QRsciw==:17
+        a=kj9zAlcOel0A:10 a=EmqxpYm9HcoA:10 a=LpQP-O61AAAA:8 a=VwQbUJbxAAAA:8
+        a=pGLkceISAAAA:8 a=7-415B0cAAAA:8 a=QjApW-H8ccU26VCOgC8A:9
+        a=CjuIK1q_8ugA:10 a=pioyyrs4ZptJ924tMmac:22 a=AjGcO6oz07-iQ99wixmX:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Wed, 6 Jan 2021, at 00:17, Adrian Hunter wrote:
-> On 18/12/20 5:53 am, Andrew Jeffery wrote:
-> > Converting degrees of phase to logic delays is irritating to test on
-> > hardware, so lets exercise the function using KUnit.
-> > 
-> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> > ---
-> >  drivers/mmc/host/Kconfig                |  14 ++++
-> >  drivers/mmc/host/Makefile               |   1 +
-> >  drivers/mmc/host/sdhci-of-aspeed-test.c | 100 ++++++++++++++++++++++++
-> >  3 files changed, 115 insertions(+)
-> >  create mode 100644 drivers/mmc/host/sdhci-of-aspeed-test.c
-> > 
-> > diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-> > index 596f32637315..d6f00d1d6251 100644
-> > --- a/drivers/mmc/host/Kconfig
-> > +++ b/drivers/mmc/host/Kconfig
-> > @@ -168,6 +168,20 @@ config MMC_SDHCI_OF_ASPEED
-> >  
-> >  	  If unsure, say N.
-> >  
-> > +config MMC_SDHCI_OF_ASPEED_TEST
-> > +	bool "Tests for the ASPEED SDHCI driver"
-> > +	depends on MMC_SDHCI_OF_ASPEED && KUNIT=y
-> > +	help
-> > +	  Enable KUnit tests for the ASPEED SDHCI driver. Select this
-> > +	  option only if you will boot the kernel for the purpose of running
-> > +	  unit tests (e.g. under UML or qemu).
-> > +
-> > +	  The KUnit tests generally exercise parts of the driver that do not
-> > +	  directly touch the hardware, for example, the phase correction
-> > +	  calculations.
-> > +
-> > +	  If unsure, say N.
-> > +
-> >  config MMC_SDHCI_OF_AT91
-> >  	tristate "SDHCI OF support for the Atmel SDMMC controller"
-> >  	depends on MMC_SDHCI_PLTFM
-> > diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
-> > index 451c25fc2c69..3ee59d5802cf 100644
-> > --- a/drivers/mmc/host/Makefile
-> > +++ b/drivers/mmc/host/Makefile
-> > @@ -90,6 +90,7 @@ obj-$(CONFIG_MMC_SDHCI_DOVE)		+= sdhci-dove.o
-> >  obj-$(CONFIG_MMC_SDHCI_TEGRA)		+= sdhci-tegra.o
-> >  obj-$(CONFIG_MMC_SDHCI_OF_ARASAN)	+= sdhci-of-arasan.o
-> >  obj-$(CONFIG_MMC_SDHCI_OF_ASPEED)	+= sdhci-of-aspeed.o
-> > +obj-$(CONFIG_MMC_SDHCI_OF_ASPEED_TEST)	+= sdhci-of-aspeed-test.o
-> >  obj-$(CONFIG_MMC_SDHCI_OF_AT91)		+= sdhci-of-at91.o
-> >  obj-$(CONFIG_MMC_SDHCI_OF_ESDHC)	+= sdhci-of-esdhc.o
-> >  obj-$(CONFIG_MMC_SDHCI_OF_HLWD)		+= sdhci-of-hlwd.o
-> > diff --git a/drivers/mmc/host/sdhci-of-aspeed-test.c b/drivers/mmc/host/sdhci-of-aspeed-test.c
-> > new file mode 100644
-> > index 000000000000..fb79b278fb81
-> > --- /dev/null
-> > +++ b/drivers/mmc/host/sdhci-of-aspeed-test.c
-> > @@ -0,0 +1,100 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/* Copyright (C) 2020 IBM Corp. */
-> > +
-> > +#include <kunit/test.h>
-> > +
-> > +#include "sdhci-of-aspeed.c"
+On Wed, Jan 06, 2021 at 03:56:02PM -0800, Andrew Morton wrote:
+> (cc's added)
 > 
-> I am not sure including like that is advisable.
+> On Tue,  5 Jan 2021 16:43:38 -0800 Sudarshan Rajagopalan <sudaraja@codeaurora.org> wrote:
+> 
+> > Ensure that shrinkers are given the option to completely drop
+> > their caches even when their caches are smaller than the batch size.
+> > This change helps improve memory headroom by ensuring that under
+> > significant memory pressure shrinkers can drop all of their caches.
+> > This change only attempts to more aggressively call the shrinkers
+> > during background memory reclaim, inorder to avoid hurting the
+> > performance of direct memory reclaim.
+> > 
 
-Yeah I wasn't convinced by it either, but I was just running the tests under 
-qemu and they did what I expected.
+Why isn't the residual scan count accrual (nr_deferred) not
+triggering the total_scan > freeable condition that is supposed to
+allow shrinkers to completely empty under ongoing memory pressure
+events?
 
-> Did you consider instead
-> doing it the other way around i.e. adding an include to the bottom of
-> sdhci-of-aspeed.c?
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -424,6 +424,10 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+> >  	long batch_size = shrinker->batch ? shrinker->batch
+> >  					  : SHRINK_BATCH;
+> >  	long scanned = 0, next_deferred;
+> > +	long min_cache_size = batch_size;
+> > +
+> > +	if (current_is_kswapd())
+> > +		min_cache_size = 0;
+> >  
+> >  	if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
+> >  		nid = 0;
+> > @@ -503,7 +507,7 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+> >  	 * scanning at high prio and therefore should try to reclaim as much as
+> >  	 * possible.
+> >  	 */
+> > -	while (total_scan >= batch_size ||
+> > +	while (total_scan > min_cache_size ||
+> >  	       total_scan >= freeable) {
+> >  		unsigned long ret;
+> >  		unsigned long nr_to_scan = min(batch_size, total_scan);
+> 
+> I don't really see the need to exclude direct reclaim from this fix.
+> 
+> And if we're leaving unscanned objects behind in this situation, the
+> current code simply isn't working as intended, and 0b1fb40a3b1 ("mm:
+> vmscan: shrink all slab objects if tight on memory") either failed to
+> achieve its objective or was later broken?
 
-No, I didn't. I'll switch to this approach.
+This looks to me like just another symptom of the fact that
+nr_deferred needs to be tracked per-memcg. i.e. the deferred work
+because total_scan < batch_size is not being aggregated against that
+specific memcg and hence the accrual of deferred work over multiple
+calls is not occurring correctly. Therefore we never meet the
+conditions (total_scan > freeable) where the memcg shrinker can
+drain the last few freeable entries in the cache.
 
-Thanks!
+i.e. see this patchset which makes the deferral of work be
+accounted per-memcg:
 
-Andrew
+https://lore.kernel.org/lkml/20210105225817.1036378-1-shy828301@gmail.com/
+
+and that should also allow accrual of the work skipped on each memcg
+be accounted across multiple calls to the shrinkers for the same
+memcg. Hence as memory pressure within the memcg goes up, the
+repeated calls to direct reclaim within that memcg will result in
+all of the freeable items in each cache eventually being freed...
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
