@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68EA82F1457
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:24:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CED742F1447
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:23:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728810AbhAKNX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:23:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37076 "EHLO mail.kernel.org"
+        id S1732911AbhAKNWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:22:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37102 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733124AbhAKNSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:18:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB79B2229C;
-        Mon, 11 Jan 2021 13:17:51 +0000 (UTC)
+        id S1733135AbhAKNSg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:18:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A67C2255F;
+        Mon, 11 Jan 2021 13:17:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610371072;
-        bh=b/rHpro2UBOvgR7pS8TtW4j9VgswjUFvu+g/vIdFfRI=;
+        s=korg; t=1610371074;
+        bh=fbNeV+OFVNAnSjGoJE6Mc64L/Ho9ndObvVQwda+8Ki4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GsuMrUuBsS51X1kxQhLJz5+vq8O2QQVmW29numGuN5gJZsTArg242v5Iu44USkE9I
-         FNHfCnQZd43MYLt9fnUhOgsbZDEY9WpJGEqcvKXl7pZLI3fbJ4kB+hq/sDfGs2Rdkj
-         cf3+AynY0XhI7AknY4zrCecFyR0R/LUT7Hm99nqY=
+        b=jExvUIkWuD9A6zBZkzi2YDiMJDj/zviul1Vr6n9x4RZvzsUOJpjaUGUvcPuNd8eB7
+         /qnnbtL/7SmzFEHdhArosrFdIubnK6b+bj5n3B2lMjcoWbFWrVUaFswqgaxNMVLEDY
+         l/oiJ3Qqvnwc9g6wTwYd7111Gr8Ypm2jNXGXCZ2s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        syzbot+5925509f78293baa7331@syzkaller.appspotmail.com
-Subject: [PATCH 5.10 099/145] USB: Gadget: dummy-hcd: Fix shift-out-of-bounds bug
-Date:   Mon, 11 Jan 2021 14:02:03 +0100
-Message-Id: <20210111130053.286876397@linuxfoundation.org>
+        stable@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
+Subject: [PATCH 5.10 100/145] usb: gadget: f_uac2: reset wMaxPacketSize
+Date:   Mon, 11 Jan 2021 14:02:04 +0100
+Message-Id: <20210111130053.335695412@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
 References: <20210111130048.499958175@linuxfoundation.org>
@@ -39,91 +38,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alan Stern <stern@rowland.harvard.edu>
+From: Jerome Brunet <jbrunet@baylibre.com>
 
-commit c318840fb2a42ce25febc95c4c19357acf1ae5ca upstream.
+commit 9389044f27081d6ec77730c36d5bf9a1288bcda2 upstream.
 
-The dummy-hcd driver was written under the assumption that all the
-parameters in URBs sent to its root hub would be valid.  With URBs
-sent from userspace via usbfs, that assumption can be violated.
+With commit 913e4a90b6f9 ("usb: gadget: f_uac2: finalize wMaxPacketSize according to bandwidth")
+wMaxPacketSize is computed dynamically but the value is never reset.
 
-In particular, the driver doesn't fully check the port-feature values
-stored in the wValue entry of Clear-Port-Feature and Set-Port-Feature
-requests.  Values that are too large can cause the driver to perform
-an invalid left shift of more than 32 bits.  Ironically, two of those
-left shifts are unnecessary, because they implement Set-Port-Feature
-requests that hubs are not required to support, according to section
-11.24.2.13 of the USB-2.0 spec.
+Because of this, the actual maximum packet size can only decrease each time
+the audio gadget is instantiated.
 
-This patch adds the appropriate checks for the port feature selector
-values and removes the unnecessary feature settings.  It also rejects
-requests to set the TEST feature or to set or clear the INDICATOR and
-C_OVERCURRENT features, as none of these are relevant to dummy-hcd's
-root-hub emulation.
+Reset the endpoint maximum packet size and mark wMaxPacketSize as dynamic
+to solve the problem.
 
-CC: <stable@vger.kernel.org>
-Reported-and-tested-by: syzbot+5925509f78293baa7331@syzkaller.appspotmail.com
-Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
-Link: https://lore.kernel.org/r/20201230162044.GA727759@rowland.harvard.edu
+Fixes: 913e4a90b6f9 ("usb: gadget: f_uac2: finalize wMaxPacketSize according to bandwidth")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201221173531.215169-2-jbrunet@baylibre.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/udc/dummy_hcd.c |   35 +++++++++++++++++++++++------------
- 1 file changed, 23 insertions(+), 12 deletions(-)
+ drivers/usb/gadget/function/f_uac2.c |   69 +++++++++++++++++++++++++++--------
+ 1 file changed, 55 insertions(+), 14 deletions(-)
 
---- a/drivers/usb/gadget/udc/dummy_hcd.c
-+++ b/drivers/usb/gadget/udc/dummy_hcd.c
-@@ -2114,9 +2114,21 @@ static int dummy_hub_control(
- 				dum_hcd->port_status &= ~USB_PORT_STAT_POWER;
- 			set_link_state(dum_hcd);
- 			break;
--		default:
-+		case USB_PORT_FEAT_ENABLE:
-+		case USB_PORT_FEAT_C_ENABLE:
-+		case USB_PORT_FEAT_C_SUSPEND:
-+			/* Not allowed for USB-3 */
-+			if (hcd->speed == HCD_USB3)
-+				goto error;
-+			fallthrough;
-+		case USB_PORT_FEAT_C_CONNECTION:
-+		case USB_PORT_FEAT_C_RESET:
- 			dum_hcd->port_status &= ~(1 << wValue);
- 			set_link_state(dum_hcd);
-+			break;
-+		default:
-+		/* Disallow INDICATOR and C_OVER_CURRENT */
-+			goto error;
- 		}
- 		break;
- 	case GetHubDescriptor:
-@@ -2277,18 +2289,17 @@ static int dummy_hub_control(
- 			 */
- 			dum_hcd->re_timeout = jiffies + msecs_to_jiffies(50);
- 			fallthrough;
-+		case USB_PORT_FEAT_C_CONNECTION:
-+		case USB_PORT_FEAT_C_RESET:
-+		case USB_PORT_FEAT_C_ENABLE:
-+		case USB_PORT_FEAT_C_SUSPEND:
-+			/* Not allowed for USB-3, and ignored for USB-2 */
-+			if (hcd->speed == HCD_USB3)
-+				goto error;
-+			break;
- 		default:
--			if (hcd->speed == HCD_USB3) {
--				if ((dum_hcd->port_status &
--				     USB_SS_PORT_STAT_POWER) != 0) {
--					dum_hcd->port_status |= (1 << wValue);
--				}
--			} else
--				if ((dum_hcd->port_status &
--				     USB_PORT_STAT_POWER) != 0) {
--					dum_hcd->port_status |= (1 << wValue);
--				}
--			set_link_state(dum_hcd);
-+		/* Disallow TEST, INDICATOR, and C_OVER_CURRENT */
-+			goto error;
- 		}
- 		break;
- 	case GetPortErrorCount:
+--- a/drivers/usb/gadget/function/f_uac2.c
++++ b/drivers/usb/gadget/function/f_uac2.c
+@@ -271,7 +271,7 @@ static struct usb_endpoint_descriptor fs
+ 
+ 	.bEndpointAddress = USB_DIR_OUT,
+ 	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC,
+-	.wMaxPacketSize = cpu_to_le16(1023),
++	/* .wMaxPacketSize = DYNAMIC */
+ 	.bInterval = 1,
+ };
+ 
+@@ -280,7 +280,7 @@ static struct usb_endpoint_descriptor hs
+ 	.bDescriptorType = USB_DT_ENDPOINT,
+ 
+ 	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC,
+-	.wMaxPacketSize = cpu_to_le16(1024),
++	/* .wMaxPacketSize = DYNAMIC */
+ 	.bInterval = 4,
+ };
+ 
+@@ -348,7 +348,7 @@ static struct usb_endpoint_descriptor fs
+ 
+ 	.bEndpointAddress = USB_DIR_IN,
+ 	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC,
+-	.wMaxPacketSize = cpu_to_le16(1023),
++	/* .wMaxPacketSize = DYNAMIC */
+ 	.bInterval = 1,
+ };
+ 
+@@ -357,7 +357,7 @@ static struct usb_endpoint_descriptor hs
+ 	.bDescriptorType = USB_DT_ENDPOINT,
+ 
+ 	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC,
+-	.wMaxPacketSize = cpu_to_le16(1024),
++	/* .wMaxPacketSize = DYNAMIC */
+ 	.bInterval = 4,
+ };
+ 
+@@ -444,12 +444,28 @@ struct cntrl_range_lay3 {
+ 	__le32	dRES;
+ } __packed;
+ 
+-static void set_ep_max_packet_size(const struct f_uac2_opts *uac2_opts,
++static int set_ep_max_packet_size(const struct f_uac2_opts *uac2_opts,
+ 	struct usb_endpoint_descriptor *ep_desc,
+-	unsigned int factor, bool is_playback)
++	enum usb_device_speed speed, bool is_playback)
+ {
+ 	int chmask, srate, ssize;
+-	u16 max_packet_size;
++	u16 max_size_bw, max_size_ep;
++	unsigned int factor;
++
++	switch (speed) {
++	case USB_SPEED_FULL:
++		max_size_ep = 1023;
++		factor = 1000;
++		break;
++
++	case USB_SPEED_HIGH:
++		max_size_ep = 1024;
++		factor = 8000;
++		break;
++
++	default:
++		return -EINVAL;
++	}
+ 
+ 	if (is_playback) {
+ 		chmask = uac2_opts->p_chmask;
+@@ -461,10 +477,12 @@ static void set_ep_max_packet_size(const
+ 		ssize = uac2_opts->c_ssize;
+ 	}
+ 
+-	max_packet_size = num_channels(chmask) * ssize *
++	max_size_bw = num_channels(chmask) * ssize *
+ 		DIV_ROUND_UP(srate, factor / (1 << (ep_desc->bInterval - 1)));
+-	ep_desc->wMaxPacketSize = cpu_to_le16(min_t(u16, max_packet_size,
+-				le16_to_cpu(ep_desc->wMaxPacketSize)));
++	ep_desc->wMaxPacketSize = cpu_to_le16(min_t(u16, max_size_bw,
++						    max_size_ep));
++
++	return 0;
+ }
+ 
+ /* Use macro to overcome line length limitation */
+@@ -670,10 +688,33 @@ afunc_bind(struct usb_configuration *cfg
+ 	}
+ 
+ 	/* Calculate wMaxPacketSize according to audio bandwidth */
+-	set_ep_max_packet_size(uac2_opts, &fs_epin_desc, 1000, true);
+-	set_ep_max_packet_size(uac2_opts, &fs_epout_desc, 1000, false);
+-	set_ep_max_packet_size(uac2_opts, &hs_epin_desc, 8000, true);
+-	set_ep_max_packet_size(uac2_opts, &hs_epout_desc, 8000, false);
++	ret = set_ep_max_packet_size(uac2_opts, &fs_epin_desc, USB_SPEED_FULL,
++				     true);
++	if (ret < 0) {
++		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
++		return ret;
++	}
++
++	ret = set_ep_max_packet_size(uac2_opts, &fs_epout_desc, USB_SPEED_FULL,
++				     false);
++	if (ret < 0) {
++		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
++		return ret;
++	}
++
++	ret = set_ep_max_packet_size(uac2_opts, &hs_epin_desc, USB_SPEED_HIGH,
++				     true);
++	if (ret < 0) {
++		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
++		return ret;
++	}
++
++	ret = set_ep_max_packet_size(uac2_opts, &hs_epout_desc, USB_SPEED_HIGH,
++				     false);
++	if (ret < 0) {
++		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
++		return ret;
++	}
+ 
+ 	if (EPOUT_EN(uac2_opts)) {
+ 		agdev->out_ep = usb_ep_autoconfig(gadget, &fs_epout_desc);
 
 
