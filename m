@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 434E92F143D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:22:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 853952F13B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:14:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732872AbhAKNWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:22:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36510 "EHLO mail.kernel.org"
+        id S1731987AbhAKNNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:13:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733179AbhAKNSq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:18:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BD06229C4;
-        Mon, 11 Jan 2021 13:18:30 +0000 (UTC)
+        id S1731919AbhAKNNd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:13:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBB9A2253A;
+        Mon, 11 Jan 2021 13:12:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610371110;
-        bh=Z9cMea0DCwPV9ekGawv44LwH2gcwZ+Yd/UNJSXtQM6w=;
+        s=korg; t=1610370772;
+        bh=38g0OaW0S0xlW9lL1byQD9zjXHWS9D4jvgtVRmqoqac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x+TMZy7a1LUA5Jw96ImhZ1fta3An/1dK8DptBXMV1kNHHBihFgAdQq/kFc8rT8xnh
-         tuQpkXxlsZWd9rEmkOxu4DExNDwRV2XQuK2qEn/sGVM9znX2/rS3EqhYSIo4YcuDNW
-         pZgFnBwLp40fXrGneVltH5AqpxUK5ZYfNFQ7S4E0=
+        b=tKKF31Wiyqfs/ZIkBEr6rx2kIj749V6S6sSk0oiW3PMLZRJ34wrt4cB7JYaH3kwCr
+         k78fCo6dpo935+ytcDVKPOIRDXOCOw2AZF35dt5Dmpi2DjqIcbCPlutLSwAVKvy4Zf
+         Stg71KOcPJzj8fTAntZV3iXwqU1JkESSpVhXFwnI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Charan Teja Reddy <charante@codeaurora.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH 5.10 128/145] dmabuf: fix use-after-free of dmabufs file->f_inode
-Date:   Mon, 11 Jan 2021 14:02:32 +0100
-Message-Id: <20210111130054.664526024@linuxfoundation.org>
+        syzbot+e86f7c428c8c50db65b4@syzkaller.appspotmail.com,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 5.4 89/92] netfilter: xt_RATEEST: reject non-null terminated string from userspace
+Date:   Mon, 11 Jan 2021 14:02:33 +0100
+Message-Id: <20210111130043.447563580@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,105 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Charan Teja Reddy <charante@codeaurora.org>
+From: Florian Westphal <fw@strlen.de>
 
-commit 05cd84691eafcd7959a1e120d5e72c0dd98c5d91 upstream.
+commit 6cb56218ad9e580e519dcd23bfb3db08d8692e5a upstream.
 
-It is observed 'use-after-free' on the dmabuf's file->f_inode with the
-race between closing the dmabuf file and reading the dmabuf's debug
-info.
+syzbot reports:
+detected buffer overflow in strlen
+[..]
+Call Trace:
+ strlen include/linux/string.h:325 [inline]
+ strlcpy include/linux/string.h:348 [inline]
+ xt_rateest_tg_checkentry+0x2a5/0x6b0 net/netfilter/xt_RATEEST.c:143
 
-Consider the below scenario where P1 is closing the dma_buf file
-and P2 is reading the dma_buf's debug info in the system:
+strlcpy assumes src is a c-string. Check info->name before its used.
 
-P1						P2
-					dma_buf_debug_show()
-dma_buf_put()
-  __fput()
-    file->f_op->release()
-    dput()
-    ....
-      dentry_unlink_inode()
-        iput(dentry->d_inode)
-        (where the inode is freed)
-					mutex_lock(&db_list.lock)
-					read 'dma_buf->file->f_inode'
-					(the same inode is freed by P1)
-					mutex_unlock(&db_list.lock)
-      dentry->d_op->d_release()-->
-        dma_buf_release()
-          .....
-          mutex_lock(&db_list.lock)
-          removes the dmabuf from the list
-          mutex_unlock(&db_list.lock)
-
-In the above scenario, when dma_buf_put() is called on a dma_buf, it
-first frees the dma_buf's file->f_inode(=dentry->d_inode) and then
-removes this dma_buf from the system db_list. In between P2 traversing
-the db_list tries to access this dma_buf's file->f_inode that was freed
-by P1 which is a use-after-free case.
-
-Since, __fput() calls f_op->release first and then later calls the
-d_op->d_release, move the dma_buf's db_list removal from d_release() to
-f_op->release(). This ensures that dma_buf's file->f_inode is not
-accessed after it is released.
-
-Cc: <stable@vger.kernel.org> # 5.4.x-
-Fixes: 4ab59c3c638c ("dma-buf: Move dma_buf_release() from fops to dentry_ops")
-Acked-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
-Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
-Link: https://patchwork.freedesktop.org/patch/msgid/1609857399-31549-1-git-send-email-charante@codeaurora.org
+Reported-by: syzbot+e86f7c428c8c50db65b4@syzkaller.appspotmail.com
+Fixes: 5859034d7eb8793 ("[NETFILTER]: x_tables: add RATEEST target")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/dma-buf/dma-buf.c |   21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+ net/netfilter/xt_RATEEST.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/dma-buf/dma-buf.c
-+++ b/drivers/dma-buf/dma-buf.c
-@@ -76,10 +76,6 @@ static void dma_buf_release(struct dentr
+--- a/net/netfilter/xt_RATEEST.c
++++ b/net/netfilter/xt_RATEEST.c
+@@ -115,6 +115,9 @@ static int xt_rateest_tg_checkentry(cons
+ 	} cfg;
+ 	int ret;
  
- 	dmabuf->ops->release(dmabuf);
++	if (strnlen(info->name, sizeof(est->name)) >= sizeof(est->name))
++		return -ENAMETOOLONG;
++
+ 	net_get_random_once(&jhash_rnd, sizeof(jhash_rnd));
  
--	mutex_lock(&db_list.lock);
--	list_del(&dmabuf->list_node);
--	mutex_unlock(&db_list.lock);
--
- 	if (dmabuf->resv == (struct dma_resv *)&dmabuf[1])
- 		dma_resv_fini(dmabuf->resv);
- 
-@@ -88,6 +84,22 @@ static void dma_buf_release(struct dentr
- 	kfree(dmabuf);
- }
- 
-+static int dma_buf_file_release(struct inode *inode, struct file *file)
-+{
-+	struct dma_buf *dmabuf;
-+
-+	if (!is_dma_buf_file(file))
-+		return -EINVAL;
-+
-+	dmabuf = file->private_data;
-+
-+	mutex_lock(&db_list.lock);
-+	list_del(&dmabuf->list_node);
-+	mutex_unlock(&db_list.lock);
-+
-+	return 0;
-+}
-+
- static const struct dentry_operations dma_buf_dentry_ops = {
- 	.d_dname = dmabuffs_dname,
- 	.d_release = dma_buf_release,
-@@ -413,6 +425,7 @@ static void dma_buf_show_fdinfo(struct s
- }
- 
- static const struct file_operations dma_buf_fops = {
-+	.release	= dma_buf_file_release,
- 	.mmap		= dma_buf_mmap_internal,
- 	.llseek		= dma_buf_llseek,
- 	.poll		= dma_buf_poll,
+ 	mutex_lock(&xn->hash_lock);
 
 
