@@ -2,353 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E05A22F0ADC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 02:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A11382F0AE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 03:04:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726720AbhAKBxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 20:53:09 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:60563 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726110AbhAKBxH (ORCPT
+        id S1726567AbhAKCDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 21:03:30 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:15624 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726110AbhAKCDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 20:53:07 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610329962; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=rNZHt9TaKit6EWBoetGCh4uJWhptH0EFppEZxNGgHxI=;
- b=YdOusTyX26uYzCEYFBEEZsqvaXzdh49hDVYuSDxnyGpNk53fTD46pxlDB+bYMw2AulhGvkRj
- kb/Dc10HeWMOEJC7EkKIpBYCRRdzm42TmznacrX+rxTkVvSGpD41oEmdSi7Urzb2Ld0cQg+U
- ktSxfDhIdSkfwqromwY04gn5ve4=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5ffbaf4bd84bad3547553c8a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 01:52:11
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6EE2FC433ED; Mon, 11 Jan 2021 01:52:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 89A62C433C6;
-        Mon, 11 Jan 2021 01:52:09 +0000 (UTC)
+        Sun, 10 Jan 2021 21:03:30 -0500
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210111020246epoutp04d0e20efc4007ad687b950cd57601c324~ZCx5KLkeg1801718017epoutp04U
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 02:02:46 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210111020246epoutp04d0e20efc4007ad687b950cd57601c324~ZCx5KLkeg1801718017epoutp04U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1610330566;
+        bh=/Iude2iisz7XVckjhji6PJ9V5UsIYReD/W4aRp8FiBQ=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=Wc2xhxtCqXsnN0hv19P6tkg0RRG3QIVxImaFIOhMttaI7h0UbCgKrpz2H2JXUte++
+         BvsUQiFLgtg9FwE6zBrIUIMkqbA7TvrgxBepclDjgkRl5moGWZNuGnGUh7dsczeQDR
+         +x4TSw1cU0kDoZFPzbpTG/hbSzsMbBDttzOGS/+I=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
+        20210111020245epcas2p4ef5b9b9ae8a6aebfa60146e4eb9f750a~ZCx4oVjBX1287812878epcas2p4k;
+        Mon, 11 Jan 2021 02:02:45 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.189]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4DDcRS5txxz4x9Pr; Mon, 11 Jan
+        2021 02:02:44 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        FB.C2.10621.3C1BBFF5; Mon, 11 Jan 2021 11:02:43 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210111020243epcas2p4083354605de48cc97ceb8fd8ab5fb54e~ZCx2IoN1N1288312883epcas2p4k;
+        Mon, 11 Jan 2021 02:02:43 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210111020243epsmtrp1f1fc8ba01e91779aa1febf9f8e041baf~ZCx2HW_ul0344803448epsmtrp1-;
+        Mon, 11 Jan 2021 02:02:43 +0000 (GMT)
+X-AuditID: b6c32a45-34dff7000001297d-af-5ffbb1c3c820
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        9C.92.08745.3C1BBFF5; Mon, 11 Jan 2021 11:02:43 +0900 (KST)
+Received: from KORDO035731 (unknown [12.36.185.47]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210111020242epsmtip2eb83b1c8eaaea05d59c8714e498ff6e2~ZCx159JES2714827148epsmtip2B;
+        Mon, 11 Jan 2021 02:02:42 +0000 (GMT)
+From:   "Dongseok Yi" <dseok.yi@samsung.com>
+To:     "'Steffen Klassert'" <steffen.klassert@secunet.com>
+Cc:     "'David S. Miller'" <davem@davemloft.net>,
+        <namkyu78.kim@samsung.com>,
+        "'Alexey Kuznetsov'" <kuznet@ms2.inr.ac.ru>,
+        "'Hideaki YOSHIFUJI'" <yoshfuji@linux-ipv6.org>,
+        "'Jakub Kicinski'" <kuba@kernel.org>,
+        "'Willem de Bruijn'" <willemb@google.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+In-Reply-To: <20210108133502.GZ3576117@gauss3.secunet.de>
+Subject: RE: [RFC PATCH net] udp: check sk for UDP GRO fraglist
+Date:   Mon, 11 Jan 2021 11:02:42 +0900
+Message-ID: <003701d6e7bd$d90ea860$8b2bf920$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset="Windows-1252"
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 11 Jan 2021 09:52:09 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        rjw@rjwysocki.net, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Nitin Rawat <nitirawa@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] scsi: ufs: Protect PM ops and err_handler from user
- access through sysfs
-In-Reply-To: <146b46a5c38f4582a9a8e6df1d87cdfc0684f549.camel@gmail.com>
-References: <1609595975-12219-1-git-send-email-cang@codeaurora.org>
- <1609595975-12219-3-git-send-email-cang@codeaurora.org>
- <80a15afab8024d0b61d312b57585c9322ac91958.camel@gmail.com>
- <7d49c1dfc3f648c484076f3c3a7f4e1e@codeaurora.org>
- <1514403adf486ac8069253c09f45b021bad32e00.camel@gmail.com>
- <f814b71d1d4ea87a72df4851a8190807@codeaurora.org>
- <cb388d8ea15b2c80a072dec74d9ededecb183a08.camel@gmail.com>
- <e69bd5a6b73d5c652130bf4fa077aac0@codeaurora.org>
- <606774efd4d89f0ea78cefeb428cc9e1@codeaurora.org>
- <146b46a5c38f4582a9a8e6df1d87cdfc0684f549.camel@gmail.com>
-Message-ID: <a957cf74c6b72379ee04769294338d14@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQFzjcR3biIClNsmzYH4fgoQxWffJwE+IFZfAbZGHEmq0LVV0A==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHJsWRmVeSWpSXmKPExsWy7bCmue7hjb/jDc4tULSYc76FxeLCtj5W
+        iwttr1gtLu+aw2bRcKeZzeLYAjGL3Z0/2C3ebTnCbvF1bxeLA6fHlpU3mTwWbCr12LSqk82j
+        7doqJo8tv7+zefRtWcXosal1CavH501yARxROTYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYG
+        hrqGlhbmSgp5ibmptkouPgG6bpk5QNcpKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtS
+        cgoMDQv0ihNzi0vz0vWS83OtDA0MjEyBKhNyMo5OmcJWMIGv4vOlzWwNjLO5uxg5OSQETCTa
+        jrxg72Lk4hAS2MEoMfvkLxYI5xOjxIP5E9lBqoQEPjNKnH9aANNx++hNRoiiXYwSu9/9YYNw
+        XjBKfJh4hgmkik1AS+LNrHZWEFtEwFxi9atpTCBFzAK7mCTebVzD3MXIwcEpYCnxcbUcSI2w
+        gL3EiecbWUBsFgFVieuftjGD2LxAJaf+HmaCsAUlTs58AlbDLGAg8f7cfGYIW15i+9s5zBDX
+        KUj8fLoMaq+TxN4dEL3MAiISszvbmEFukBA4wCHxc/dbVpAbJARcJB7+ioboFZZ4dXwLO4Qt
+        JfGyv40doqReorU7BqK1h1Hiyj6IGyQEjCVmPWtnhKhRljhyC+o0PomOw3+hWnklOtqEIEwl
+        iYlf4iEaJSRenJzMMoFRaRaSv2Yh+WsWkr9mIbl/ASPLKkax1ILi3PTUYqMCQ+S43sQITrha
+        rjsYJ7/9oHeIkYmD8RCjBAezkgjvwl0/4oV4UxIrq1KL8uOLSnNSiw8xmgKDeiKzlGhyPjDl
+        55XEG5oamZkZWJpamJoZWSiJ8xYbPIgXEkhPLEnNTk0tSC2C6WPi4JRqYDpRwm+e8zDW1+T/
+        1qdSTdMS/yx011mz6lXqYuPdS4TPBOTf/q3tNC/GLsy4Mvpy7Rkjm67Y6FJ9gaNJjpmFekfO
+        6Jg+MdWU3ZE+X5R7QchB/Zv5WwN4z//jbWG4cJ3hz5ynGZLO8qIxLVuz39zoOy/2KJvNeEKI
+        U2aNjINzWuPGvryyT3uDzmp+Pbf761ujuB1Kj46G3eD+bPXSinkba9Yan3sSKmqf+ndPO6/E
+        5ehz49cunXzLz2y3ZcVlnTKnTFasEjDm0lNQyMrRi6vc9/HokaNaysrOYhsTJKRYf7luOp0k
+        vJchZjbv0nSndf+++rdytq6c+jTmzicTwdn932O6NSK6pkheq6l0nMupxFKckWioxVxUnAgA
+        MEYtvkEEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFIsWRmVeSWpSXmKPExsWy7bCSvO7hjb/jDWbcYbOYc76FxeLCtj5W
+        iwttr1gtLu+aw2bRcKeZzeLYAjGL3Z0/2C3ebTnCbvF1bxeLA6fHlpU3mTwWbCr12LSqk82j
+        7doqJo8tv7+zefRtWcXosal1CavH501yARxRXDYpqTmZZalF+nYJXBlHp0xhK5jAV/H50ma2
+        BsbZ3F2MnBwSAiYSt4/eZOxi5OIQEtjBKDHh+wzWLkYOoISExK7NrhA1whL3W46wQtQ8Y5T4
+        +voXK0iCTUBL4s2sdjBbRMBcYvWraUwgRcwCB5gk9sxczgTRcYRR4s2VCewgUzkFLCU+rpYD
+        aRAWsJc48XwjC4jNIqAqcf3TNmYQmxeo5NTfw0wQtqDEyZlPwGqYBYwkzh3azwZhy0tsfzuH
+        GeI6BYmfT5dBHeEksXcHRC+zgIjE7M425gmMwrOQjJqFZNQsJKNmIWlZwMiyilEytaA4Nz23
+        2LDAKC+1XK84Mbe4NC9dLzk/dxMjOPq0tHYw7ln1Qe8QIxMH4yFGCQ5mJRHehbt+xAvxpiRW
+        VqUW5ccXleakFh9ilOZgURLnvdB1Ml5IID2xJDU7NbUgtQgmy8TBKdXAlB7+/ug6dpkjaiV3
+        bA38tt/5Xbng+eKZxW9diqSWqx1a/US7eW+smfB3h/emxp9nTEyYGX/5yh2ZDSkLuBtfHrWv
+        3Hb/lfbqUtalzKu2L7XqepNmuF3sodk655X/37KzNMw4l/uwZhk724ZFy/+95/OtLEt/cLfw
+        1u8NX7Sv7arKmPrVYs5bzy8qDM4b8jcc40radD8xdeV3GbtvRT7Tr84of8P7NFfx7mNfzqV1
+        nRF7n5zgU1ux6nLjQX69Yz1ZXEIMmvNv1ZStfB/w6n6LY4RhmY/o6eXSfmXhHFwXl3Mm1Leu
+        mXjeR/mXTn5qwjG/JwZvo0Sex1nuvNM2If6h8SuZOE+tDSrCmcYPRSI65yixFGckGmoxFxUn
+        AgArU31/LQMAAA==
+X-CMS-MailID: 20210111020243epcas2p4083354605de48cc97ceb8fd8ab5fb54e
+X-Msg-Generator: CA
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210108130414epcas2p3217d7b6ac8a8094c5b3b6c5e52480134
+References: <CGME20210108130414epcas2p3217d7b6ac8a8094c5b3b6c5e52480134@epcas2p3.samsung.com>
+        <1610110348-119768-1-git-send-email-dseok.yi@samsung.com>
+        <20210108133502.GZ3576117@gauss3.secunet.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-11 00:13, Bean Huo wrote:
-> On Sat, 2021-01-09 at 12:51 +0800, Can Guo wrote:
->> On 2021-01-09 12:45, Can Guo wrote:
->> > On 2021-01-08 19:29, Bean Huo wrote:
->> > > On Wed, 2021-01-06 at 09:20 +0800, Can Guo wrote:
->> > > > Hi Bean,
->> > > >
->> > > > On 2021-01-06 02:38, Bean Huo wrote:
->> > > > > On Tue, 2021-01-05 at 09:07 +0800, Can Guo wrote:
->> > > > > > On 2021-01-05 04:05, Bean Huo wrote:
->> > > > > > > On Sat, 2021-01-02 at 05:59 -0800, Can Guo wrote:
->> > > > > > > > + * @shutting_down: flag to check if shutdown has been
->> > > > > > > > invoked
->> > > > > > >
->> > > > > > > I am not much sure if this flag is need, since once PM
->> > > > > > > going in
->> > > > > > > shutdown path, what will be returnded by
->> > > > > > > pm_runtime_get_sync()?
->> > > > > > >
->> > > > > > > If pm_runtime_get_sync() will fail, just check its
->> > > > > > > return.
->> > > > > > >
->> > > > > >
->> > > > > > That depends. During/after shutdown, for UFS's case only,
->> > > > > > pm_runtime_get_sync(hba->dev) will most likely return 0,
->> > > > > > because it is already RUNTIME_ACTIVE, pm_runtime_get_sync()
->> > > > > > will directly return 0... meaning you cannot count on it.
->> > > > > >
->> > > > > > Check Stanley's change -
->> > > > > > https://lore.kernel.org/patchwork/patch/1341389/
->> > > > > >
->> > > > > > Can Guo.
->> > > > >
->> > > > > Can,
->> > > > >
->> > > > > Thanks for pointing out that.
->> > > > >
->> > > > > Based on my understanding, that patch is redundent. maybe I
->> > > > > misundestood Linux shutdown sequence.
->> > > >
->> > > > Sorry, do you mean Stanley's change is redundant?
->> > >
->> > > yes.
->> > >
->> >
->> > No, it is definitely needed. As Stanley replied you in another
->> > thread, it is not protecting I/Os from user layer, but from
->> > other subsystems during shutdown.
->> >
->> > > >
->> > > > >
->> > > > > I checked the shutdown flow:
->> > > > >
->> > > > > 1. Set the "system_state" variable
->> > > > > 2. Disable usermod to ensure that no user from userspace can
->> > > > > start
->> > > > > a
->> > > > > request
->> > > >
->> > > > I hope it is like what you interpreted, but step #2 only stops
->> > > > UMH(#265)
->> > > > but not all user space activities. Whereas, UMH is for kernel
->> > > > space
->> > > > calling
->> > > > user space.
->> > >
->> > >
->> > > Can,
->> > >
->> > > I did further study and homework on the Linux shutdown in the
->> > > last few
->> > > days. Yes, you are right, usermodehelper_disable() is to prevent
->> > > executing the process from the kernel space.
->> > >
->> > > But I didn't reproduce this "maybe" race issue while shutdown. no
->> > > matter how I torment my system, once Linux shutdown/halt/reboot
->> > > starts,
->> > > nobody can access the sysfs node. I create 10 processes in the
->> > > user
->> > > space and constantly access UFS sysfs node, also, fio is running
->> > > in
->> > > the
->> > > background for the normal data read/write. there is a shutdown
->> > > thread
->> > > that will randomly trigger shutdown/halt/reboot. but no race
->> > > issue
->> > > appears.
->> > >
->> > > I don't know if this is a hypothetical issue(the race between
->> > > shutdown
->> > > flow and sysfs node access), it may not really exist in the Linux
->> > > envriroment. everytime, the shutdonw flow will be:
->> > >
->> > > e10_sync_handler()->e10_svc()->do_e10_svc()->__do_sys_reboot()-
->> > > > kernel_poweroff/kernel_halt()->device_shutdown()-
->> > > > >platform_shutdown()-
->> > > > ufshcd_platform_shutdown()->ufshcd_shutdown().
->> > >
->> > > I think before going into the kernel shutdown, the userspace
->> > > cannot
->> > > issue new requests anymore. otherwise, this would be a big issue.
->> > >
->> > > pm_runtime_get_sync() will return 0 or failure while shutdown?
->> > > the
->> > > answer is not important now, maybe as you said, it is always 0.
->> > > But in
->> > > my testing, it didn't get there the system has been shutdown.
->> > > Which
->> > > means once shutdonw starts, sysfs node access path cannot reach
->> > > pm_runtime_get_sync(). (note, I don't know if sysfs node access
->> > > thread
->> > > has been disabled or not)
->> > >
->> > >
->> > > Responsibly say, I didn't reproduce this issue on my system
->> > > (ubuntu),
->> > > maybe you are using Android. I am not an expert on this topic, if
->> > > you
->> > > have the best idea on how to reproduce this issue. please please
->> > > let
->> > > me
->> > > try. appreciate it!!!!!
->> > >
->> >
->> > When you do a reboot/shutdown/poweroff, how your system behaves
->> > highly
->> > depends on how the reboot cmd is implemented in C code under
->> > /sbin/.
->> >
->> > On Ubuntu, reboot looks like:
->> > $ reboot --help
->> > reboot [OPTIONS...] [ARG]
->> >
->> > Reboot the system.
->> >
->> >       --help      Show this help
->> >       --halt      Halt the machine
->> >    -p --poweroff  Switch off the machine
->> >       --reboot    Reboot the machine
->> >    -f --force     Force immediate halt/power-off/reboot
->> >    -w --wtmp-only Don't halt/power-off/reboot, just write wtmp
->> > record
->> >    -d --no-wtmp   Don't write wtmp record
->> >       --no-wall   Don't send wall message before halt/power-
->> > off/reboot
->> >
->> >
->> > On a pure Linux with a initrd RAM FS built from busybox, reboot
->> > looks
->> > like:
->> > # reboot --help
->> > BusyBox v1.30.1 (2019-05-24 12:53:36 IST) multi-call binary.
->> >
->> > Usage: reboot [-d DELAY] [-n] [-f]
->> >
->> > Reboot the system
->> >
->> >          -d SEC  Delay interval
->> >          -n      Do not sync
->> >          -f      Force (don't go through init)
->> >
->> >
->> > For example, when you work on a pure Linux with a filesystem built
->> > from
->> > busybox, when you hit reboot cmd, halt_main() will be called. And
->> > based
->> > on the reboot options passed to reboot cmd, halt_main() behaves
->> > differently.
->> >
->> > A plain reboot cmd does things like sync filesystem, send SIGKILL
->> > to
->> > all
->> > processes (except for init), remount all filesytem as read-only and
->> > so
->> > on
->> > before invoking linux kernel reboot syscall. In this case, we are
->> > safe.
->> >
->> > However, if you do a "reboot -f", halt_main() directly invokes
->> > reboot().
->> > And with "reboot -f", I can easily reproduce the race condition we
->> > are
->> > talking about here - it is not based on imagination.
->> >
->> > Find the patch I used for replication in the attachment, fix
->> > conflicts
->> > if any. After boot up, the cmd lines I used are
->> >
->> > # while true; do cat /sys/devices/platform/soc@0/*ufshc*/rpm_lvl;
->> > done
->> > &
->> > # reboot -f
->> >
->> > Can Guo.
->> 
->> Oops... forgot the logs:
->> 
->> #
->> # while true; do cat /sys/devices/platform/soc@0/*ufshc*/rpm_lvl;
->> done &
->> 3
->> 3
->> 3
->> 3
->> ....
->> # reboot -f
->> 3
->> 3
->> 3
->> ....
->> [   17.959206] sd 0:0:0:5: [sdf] Synchronizing SCSI cache
->> 3
->> [   17.964833] sd 0:0:0:4: [sde] Synchronizing SCSI cache
->> [   17.970224] sd 0:0:0:3: [sdd] Synchronizing SCSI cache
->> [   17.975574] sd 0:0:0:2: [sdc] Synchronizing SCSI cache
->> 3
->> [   17.981034] sd 0:0:0:1: [sdb] Synchronizing SCSI cache
->> [   17.986493] sd 0:0:0:0: [sda] Synchronizing SCSI cache
->> 3
->> [   17.991870] [DEBUG]ufshcd_shutdown: UFS SHUTDOWN START
->> [   17.998902] ------------[ cut here ]------------
->> [   18.003648] kernel BUG at drivers/scsi/ufs/ufs-sysfs.c:62!
->> [   18.009286] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
->> [   18.034249] pstate: 40c00005 (nZcv daif +PAN +UAO)
->> [   18.039185] pc : rpm_lvl_show+0x38/0x40
->> [   18.043137] lr : dev_attr_show+0x1c/0x58
->> [   18.132552] Call trace:
->> [   18.135076]  rpm_lvl_show+0x38/0x40
->> [   18.138672]  sysfs_kf_seq_show+0xa8/0x140
->> [   18.142802]  kernfs_seq_show+0x28/0x30
->> [   18.146665]  seq_read+0x1d8/0x4b0
->> [   18.150072]  kernfs_fop_read+0x12c/0x1f0
->> [   18.154109]  do_iter_read+0x184/0x1c0
->> [   18.157882]  vfs_readv+0x68/0xb0
->> ....
+On 2021-01-08 22:35, Steffen Klassert wrote:
+> On Fri, Jan 08, 2021 at 09:52:28PM +0900, Dongseok Yi wrote:
+> > It is a workaround patch.
+> >
+> > UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
+> > forwarding. Only the header of head_skb from ip_finish_output_gso ->
+> > skb_gso_segment is updated but following frag_skbs are not updated.
+> >
+> > A call path skb_mac_gso_segment -> inet_gso_segment ->
+> > udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
+> > does not try to update any UDP/IP header of the segment list.
+> >
+> > It might make sense because each skb of frag_skbs is converted to a
+> > list of regular packets. Header update with checksum calculation may
+> > be not needed for UDP GROed frag_skbs.
+> >
+> > But UDP GRO frag_list is started from udp_gro_receive, we don't know
+> > whether the skb will be NAT forwarded at that time. For workaround,
+> > try to get sock always when call udp4_gro_receive -> udp_gro_receive
+> > to check if the skb is for local.
+> >
+> > I'm still not sure if UDP GRO frag_list is really designed for local
+> > session only. Can kernel support NAT forward for UDP GRO frag_list?
+> > What am I missing?
 > 
-> Hi Can
-> Please forgive me for being verbose.
-> 
-> The above BUG log is from your BUG_ON() called, not becuase of the race
-> betwen shutdown flow and sysfs node access(if I misunderstood, correct
-> me). But it tells that the user can still access UFS by sysfs node in
-> the "reboot -f" flow since it skips the actual shutdown process, "
-> --force" is not a safe way anyway.
+> The initial idea when I implemented this was to have a fast
+> forwarding path for UDP. So forwarding is a usecase, but NAT
+> is a problem, indeed. A quick fix could be to segment the
+> skb before it gets NAT forwarded. Alternatively we could
+> check for a header change in __udp_gso_segment_list and
+> update the header of the frag_skbs accordingly in that case.
 
-What is an "actual shutdown process", is there a standard? I believe it
-is free for users to decide what to do before invoking kernel reboot()
-syscall. "reboot -f" simply invokes kernel reboot() syscall, safe or not
-I don't know, but UFS shold not be the one nailed to the pillar. Do you 
-agree?
+Thank you for explaining.
+Can I think of it as a known issue? I think we should have a fix
+because NAT can be triggered by user. Can I check the current status?
+Already planning a patch or a new patch should be written?
 
-Can Guo.
-
-> 
-> 
-> If accessing sysfs nodes, which triggers a UFS UPIU request to
-> read/write UFS device descriptors during shutdown flow, there is only
-> one issue that sysfs node access failure since UFS device and LINK has
-> been shutdown. Strictly speaking, the failure comes after
-> ufshcd_set_dev_pwr_mode().
-> 
->    __ufshcd_query_descriptor: opcode 0x01 for idn 0 failed, index 0,
-> err = -11
-> 
-> Since the shutdown is oneway process, this failure is not big issue. If
-> you meant to avoid this failure for unsafe shutdown, I agree with you,
-> But for the race issue, I don't know.
-> 
-> Bean
