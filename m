@@ -2,96 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153D62F17C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:13:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED912F17BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:12:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730749AbhAKOMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:12:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33760 "EHLO
+        id S1730860AbhAKOMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:12:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729467AbhAKOMQ (ORCPT
+        with ESMTP id S1727240AbhAKOM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:12:16 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E354C061795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:11:36 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id ce23so24911599ejb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:11:36 -0800 (PST)
+        Mon, 11 Jan 2021 09:12:26 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4FEC06179F
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:11:45 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id y22so3704145ljn.9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:11:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dVZC7Hwy0sID9sYDNRf3c2kgpntf1fr82m9IY+c7BlU=;
-        b=Ib8512zkd50nS7IVCHQp+GRbvpumxwNf9N2PwrwRV/wh72d3zZiOobRA2Nn+w/Uxji
-         mmhLqbbiIY3V5vU1QlmalJkPc7LyL1p8cMLvu6HTw8MlGr3fyhd+U8/OandNlQWNOUwW
-         M2fz/4drHPlUbiAjL8aFcaP0/+yOr5wr2BuhIyZsAk2Z/LqQI9Wqq3uIUti1hAbeiSDH
-         4gHKpw8fzOmuJGFPQ6kDTTkdD9+UpfnKD5h3dZdC2XKrqILfIapC5WxwFdJyTyVJpIj5
-         zyYDBIFP0Rgf7699ajXvCzMxnpGQeKkGGbTS6EJPYNgZxzCohF9gtyvnEQnheJlNCFCP
-         UbSg==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZReoOwflH9bo7F+gPMdBMhNPvju0+jhg+phHdqxtW9U=;
+        b=bbuae7i0ajVSZs/iE1GxJS5JTwYsINPj50ZdGUxE8FoqN7c/ITb936oHhlK0+HrIG4
+         eUpaYUbVGgplw/D+vDub5l/FTKPXs9IvB+44IXU/4bS7bhCHcI3u3gXrt0ur2/2hOU/e
+         oe4rj+MEcQDpceTKAaaqkgBd0oNsV2JkHKZFXU98u1kRdxXDtKPcqYSA7eerbF/5IuM0
+         9S5xCvWno6qF4y/4oLvDqOGG1E+m6xW1z5Zea2iFihtRoI55+j2qOoGclCbeg7VD+Ws5
+         1qy4ESog4Jg16KYQQee2aEwiNqAm47G/orZksLVspkrI9h7t3ssHlKUY3J/VM9dfsQwb
+         q/jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dVZC7Hwy0sID9sYDNRf3c2kgpntf1fr82m9IY+c7BlU=;
-        b=Ce6O8rS08L34+wxVkrt1O1zvanYBIlqeg9nAZ4bpcKREIm5FBTW+OX/SW6Nba2dbFS
-         8NhlsBdcWWo9yROsRX9D/vNrT5J1A/rJ+gB+sZQdaJ6mK71S1BrF43l0UblJA1uXLp44
-         LvI7xVxQBWMtwavqcPB5sJceoMxRmobyQ7DeuAoW5XiJQ0zlPTizqSEVsp/+7pPYXzbj
-         JHmAbc2PDko4EZ6lPGp1DrjSF3jQhEiDz/lRRq5IgC78f3A1WJ7DHkQrly5BhuHZFPre
-         CDrG85nP++TzZjgMZlZeM1puoDn3r9xw2V/jos768ABDpIRWhcy9UxIgI6jA1tKRnJFM
-         JzPA==
-X-Gm-Message-State: AOAM530z2aTRYso+CnB6sybbWt/s+UiXmKxfQMKzTDc9eRZEcsT4QNEH
-        Xv8KwNszcIqooAuEntgqZO1KpLj1x+idM4hVLkCrlg==
-X-Google-Smtp-Source: ABdhPJz6IfLBiFPclFxJ3y3AOA57uKbDMPB7SMWZj3vQH9CWqAEn0YJ9bDdugqVm7l4H/R5Mao3MHYZk4pQudIYqjG8=
-X-Received: by 2002:a17:906:b04f:: with SMTP id bj15mr10358264ejb.383.1610374294969;
- Mon, 11 Jan 2021 06:11:34 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZReoOwflH9bo7F+gPMdBMhNPvju0+jhg+phHdqxtW9U=;
+        b=jMef5Fc20b+PnfQ4TX38AESpjWRXplYvfhJDFE07aG3kH9d/Gezk9lfYhhAa1x56ZE
+         cj2XhudN6JvpVHc/5198RDaZPy6Dt2Q3OqqQphp7ZtxKbatjYS9wiX1P8hKLYvNKPamH
+         o3mmpmH1nbxi7YvH65vWeGSYnYauTwn5Q8d9gpnyhiY6l+UeNglgMll+NXHPog6PB+o4
+         nWBtrxYhNP4D5JYAvlb5TFnbZkgwCTZBvBfctdqWH0CIVNNNEwEJBe4bs9gY992kRPQc
+         LxpI3KSih2dZ3ddyD8ZnzjIlYTehC1164n6dtUN0FDs8zPdUMC+i2/XtTbo7OeIHHWCr
+         WpKw==
+X-Gm-Message-State: AOAM532IZxN2aA2KoQMpIJeZAqf7bKffpFcsyV7mbOldVDNLnqEgh/Q5
+        q1XnnURtxvZjaLfRPMJUqv/8fA==
+X-Google-Smtp-Source: ABdhPJwz/2c/lBqYKtQvgp5ukYJ1MrpG+yfHbeuPoqGm/F7I13cJ0at60TMTPhYSKPvLK/IGSK8Pbw==
+X-Received: by 2002:a05:651c:c1:: with SMTP id 1mr7897396ljr.124.1610374304175;
+        Mon, 11 Jan 2021 06:11:44 -0800 (PST)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id t28sm3512091ljo.45.2021.01.11.06.11.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 06:11:43 -0800 (PST)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id E898F102238; Mon, 11 Jan 2021 17:11:47 +0300 (+03)
+Date:   Mon, 11 Jan 2021 17:11:47 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Yu Zhao <yuzhao@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH 1/1] mm: restore full accuracy in COW page reuse
+Message-ID: <20210111141147.wzk5rvycsiitnnrt@box>
+References: <20210110004435.26382-1-aarcange@redhat.com>
+ <20210110004435.26382-2-aarcange@redhat.com>
+ <X/psTXZp9xNgX3gE@redhat.com>
 MIME-Version: 1.0
-References: <20210111124027.21586-1-brgl@bgdev.pl> <20210111124027.21586-3-brgl@bgdev.pl>
- <20210111133521.GB34341@kozik-lap>
-In-Reply-To: <20210111133521.GB34341@kozik-lap>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 11 Jan 2021 15:11:24 +0100
-Message-ID: <CAMRc=MdLAupcMkSEpdVJiBTogbN6G2aqr=kC+0GT6s-igSSL0g@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] rtc: s5m: check the return value of s5m8767_rtc_init_reg()
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/psTXZp9xNgX3gE@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 2:35 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> On Mon, Jan 11, 2021 at 01:40:26PM +0100, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > This function can fail if regmap operations fail so check its return
-> > value in probe().
-> >
-> > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > ---
-> >  drivers/rtc/rtc-s5m.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/rtc/rtc-s5m.c b/drivers/rtc/rtc-s5m.c
-> > index eb9dde4095a9..e0011d3cf61b 100644
-> > --- a/drivers/rtc/rtc-s5m.c
-> > +++ b/drivers/rtc/rtc-s5m.c
-> > @@ -791,6 +791,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
-> >       platform_set_drvdata(pdev, info);
-> >
-> >       ret = s5m8767_rtc_init_reg(info);
-> > +     if (ret)
-> > +             return ret;
->
-> You leak I2C device.
->
+On Sat, Jan 09, 2021 at 09:54:05PM -0500, Andrea Arcangeli wrote:
+> Hello,
+> 
+> On Sat, Jan 09, 2021 at 07:44:35PM -0500, Andrea Arcangeli wrote:
+> > allowing a child to corrupt memory in the parent. That's a problem
+> > that could happen not-maliciously too. So the scenario described
+> 
+> I updated the above partly quoted sentence since in the previous
+> version it didn't have full accuracy:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/andrea/aa.git/commit/?id=fc5a76b1c14e5e6cdc64ece306fc03773662d98a
+> 
+> "However since a single transient GUP pin on a tail page, would elevate
+> the page_count for all other tail pages (unlike the mapcount which is
+> subpage granular), the COW page reuse inaccuracy would then cross
+> different vmas and the effect would happen at a distance in vma of
+> different processes. A single GUP pin taken on a subpage mapped in a
+> different process could trigger 511 false positive COWs copies in the
+> local process, after a fork()."
+> 
+> This a best effort to try to document all side effects, but it'd be
+> great to hear from Kirill too on the above detail to have
+> confirmation.
 
-Yes, the next patch fixes it but I changed the order. Actually this
-can be moved after 3/3 with no conflicts when applying.
+Yes, this side effect is possible. But I wouldn't worry about too much. If
+it routinely happens in a real workloads (I doubt it does), the workload
+can tune it with MADV_NOHUGEPAGE/MADV_DONTFORK/MADV_WIPEONFORK or
+something.
 
-Bartosz
+-- 
+ Kirill A. Shutemov
