@@ -2,238 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099BC2F1E97
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:08:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 041282F1E99
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390737AbhAKTHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:07:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41052 "EHLO
+        id S2390750AbhAKTHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:07:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732381AbhAKTHT (ORCPT
+        with ESMTP id S2390003AbhAKTHZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:07:19 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B0CFC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:06:39 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id q7so279583pgm.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:06:39 -0800 (PST)
+        Mon, 11 Jan 2021 14:07:25 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD0CC061795
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:06:44 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id i5so292517pgo.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:06:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EIyCJKDhvNH8KI19OBGyEbU3SM6tfKfgJa5ae5NSM3Y=;
-        b=fbBQ87YXU2W7qZDXQ1APvYVhLACLHf0jqMewwV/mDRFvsSnfDR+pwWoyh4/S8kfYEr
-         1v15ZzSqtbMtuxVJ93UgiM9geBLlm24aatkaJ46T+OIhDX/o1j8LIL/OFMR+HEPOi129
-         U+Vv+bKDDYHP3UjdaHrav+ZaYUgfFHlcdTB6ByfQTDv8Um2jMzF93zkyh9W8p/YKV/Eq
-         wzBLRUy+TUWGEJz8XSRBzXooRBuDMZsn6sW8tb1Ug3USDb2O6nzlWdZxwrR3vx3X+v8n
-         QDPzkfut4F6mh+N35Uu5lEHC+srr0z8Z2CnKATrRU2lJss3KHqTPjhUA7lW3CNkCIJnX
-         K98A==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=4XxPHvPQWjVwaEkEd8T8F1/rjFPbxSNi2UBaBoVDUtc=;
+        b=mIExJjylsTO80y1KhYW3GugF5Hcp/CTU0F64h97OgiqeAJj9vk+HpS4CLufxxBBHE5
+         JaIZrXMnxx8mTQrTX0MKxlqyeBJeVBcI/unvXSYBPi9wsAE/1m46kARQk3/qvUsJHC54
+         K20zytdr6XAmk68JniuAxsjxHl2T64mlKrqkw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EIyCJKDhvNH8KI19OBGyEbU3SM6tfKfgJa5ae5NSM3Y=;
-        b=iqgBa5aBkvJzM8cCwa9kxMAHUn6MIkdQ8hj57MKCTir31ls3ObHIjOMvSTs+4npRVN
-         Bk0rLmpkEQNlzqoWjgmDOvq8uhw8WZRQda/5HKoBAvhonRzYasUmgJoNQ3svRxnGKCgb
-         4W1Ht82gDSOP7meC2nGGXpDKldWW/T7PnPzcaDe9zP1mbkmYjwhIMe/gCP94LORVIQ+6
-         Z5UPjoKNg9AJZlWsxYIZRGIvlw8dFLQZjFLMvHa3npM78auH4AEcAbtHV2KM/SA+DITf
-         78Ol37fEVBc2iDAZsWNvidTIDduMh+EFUcOGOrvOJlohhmV3Q6JhgHZGGmTfP4ORb/NG
-         u88Q==
-X-Gm-Message-State: AOAM531ryfSbfxrKoo25AuR2+ehzybjqQXpyx69C0e3P1y1No21dA3zx
-        6Dl15x05AwLuhKLFdkX8SD8=
-X-Google-Smtp-Source: ABdhPJy72E4kZERS5fyGJBoAmidZTicX5DyA8rEAIZftM2cNodlBIkh5xPC0RV4QEiPze/JN3b005w==
-X-Received: by 2002:a63:2cd:: with SMTP id 196mr947417pgc.398.1610391998845;
-        Mon, 11 Jan 2021 11:06:38 -0800 (PST)
-Received: from adolin ([49.207.206.164])
-        by smtp.gmail.com with ESMTPSA id b18sm370264pfi.173.2021.01.11.11.06.35
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=4XxPHvPQWjVwaEkEd8T8F1/rjFPbxSNi2UBaBoVDUtc=;
+        b=mkx/d2ppCkHhTfdGhesbgMDMuyIH4ovUJEn8lRR6+kDkn1jef6UEB2fRNRdefk81bA
+         TF7770AZTDXbGtp7izMi0WULL5Abnlai7i1zvBU6WolCUq6zpnza5OGPzRUUDRFJDpt3
+         OEJ59AKaB7a2cgxzdeWTWFufcTE/EQRAUgsDtEV3HETwnlWL/CUo77dknQPhYkiUFpeb
+         2ltCKMCzTePHiLXsPhCMGiRkXfAH4KEps/uPmUMtU9eTInVlhmullhErlQ+7XadDXyDQ
+         EJHztCXXeBhDv14N/58hlY6jPN1aMrO+MXTPxklYRV4t7y511Nv/BSBwZq6GYhlVLAsk
+         RnQA==
+X-Gm-Message-State: AOAM5337meLgMV1p1xC+z8u4gbPtwiq52FaUMN9i7MO8zFQA8uIC8YAE
+        +6Bej8x7VXQD3DgMW3WOan/SonlD27Qe8g==
+X-Google-Smtp-Source: ABdhPJzOUrGSKtLNol2dA29k+WZ+URak7Sde4U7uNwOCsrZSJEYEitMk2izJ7nt4dzvvel4ArSg4EA==
+X-Received: by 2002:a63:5952:: with SMTP id j18mr966601pgm.29.1610392004115;
+        Mon, 11 Jan 2021 11:06:44 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id mw15sm121965pjb.34.2021.01.11.11.06.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 11:06:38 -0800 (PST)
-Date:   Tue, 12 Jan 2021 00:36:34 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     melissa.srw@gmail.com
-Cc:     rodrigosiqueiramelo@gmail.com, hamohammed.sa@gmail.com,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V5 1/3] drm/vkms: Add vkms_config type
-Message-ID: <a090ad29b826185df30f80c66932dd2173d7b060.1610391685.git.sylphrenadin@gmail.com>
-References: <cover.1610391685.git.sylphrenadin@gmail.com>
+        Mon, 11 Jan 2021 11:06:43 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1610391685.git.sylphrenadin@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201202200252.986230-1-swboyd@chromium.org>
+References: <20201202200252.986230-1-swboyd@chromium.org>
+Subject: Re: [PATCH v3] iio: sx9310: Fix semtech,avg-pos-strength setting when > 16
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Daniel Campello <campello@chromium.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Douglas Anderson <dianders@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Evan Green <evgreen@chromium.org>
+To:     Jonathan Cameron <jic23@kernel.org>
+Date:   Mon, 11 Jan 2021 11:06:41 -0800
+Message-ID: <161039200192.1580929.14023513752851296639@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, data for the device instance is held by vkms_device.
-Add a separate type, vkms_config to contain configuration details
-for the device and various modes to be later used by configfs.
-This config data stays constant once the device is created.
+Quoting Stephen Boyd (2020-12-02 12:02:52)
+> This DT property can be 0, 16, and then 64, but not 32. The math here
+> doesn't recognize this slight bump in the power of 2 numbers and
+> translates a DT property of 64 into the register value '3' when it
+> really should be '2'. Fix it by subtracting one more if the number being
+> translated is larger than 31. Also use clamp() because we're here.
+>=20
+> Cc: Daniel Campello <campello@chromium.org>
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: Gwendal Grignou <gwendal@chromium.org>
+> Cc: Evan Green <evgreen@chromium.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
 
-Accordingly, add vkms_create and vkms_destroy to initialize/destroy
-device through configfs. Currently, they are being called from vkms_init
-and vkms_exit, but will be evoked from configfs later on. When configfs
-is added, device configuration will be tracked by configfs and only vkms
-device lifetime will be handled by vkms_init and vkms_exit functions.
+Hi Jonathan,
 
-Modify usage of enable_cursor feature to reflect the changes in
-relevant files.
+Happy new year! Can this be picked up? Or should I resend?=20
 
-Co-developed-by: Daniel Vetter <danvet.vetter@ffwl.ch>
-Signed-off-by: Daniel Vetter <danvet.vetter@ffwl.ch>
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
----
- drivers/gpu/drm/vkms/vkms_drv.c    | 40 ++++++++++++++++++++++++------
- drivers/gpu/drm/vkms/vkms_drv.h    | 12 +++++++--
- drivers/gpu/drm/vkms/vkms_output.c |  4 +--
- 3 files changed, 44 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
-index aef29393b811..6b33975a5cb2 100644
---- a/drivers/gpu/drm/vkms/vkms_drv.c
-+++ b/drivers/gpu/drm/vkms/vkms_drv.c
-@@ -34,9 +34,9 @@
- #define DRIVER_MAJOR	1
- #define DRIVER_MINOR	0
- 
--static struct vkms_device *vkms_device;
-+static struct vkms_config *default_config;
- 
--bool enable_cursor = true;
-+static bool enable_cursor = true;
- module_param_named(enable_cursor, enable_cursor, bool, 0444);
- MODULE_PARM_DESC(enable_cursor, "Enable/Disable cursor support");
- 
-@@ -122,10 +122,11 @@ static int vkms_modeset_init(struct vkms_device *vkmsdev)
- 	return vkms_output_init(vkmsdev, 0);
- }
- 
--static int __init vkms_init(void)
-+static int vkms_create(struct vkms_config *config)
- {
- 	int ret;
- 	struct platform_device *pdev;
-+	struct vkms_device *vkms_device;
- 
- 	pdev = platform_device_register_simple(DRIVER_NAME, -1, NULL, 0);
- 	if (IS_ERR(pdev))
-@@ -143,6 +144,8 @@ static int __init vkms_init(void)
- 		goto out_devres;
- 	}
- 	vkms_device->platform = pdev;
-+	vkms_device->config = config;
-+	config->dev = vkms_device;
- 
- 	ret = dma_coerce_mask_and_coherent(vkms_device->drm.dev,
- 					   DMA_BIT_MASK(64));
-@@ -179,21 +182,42 @@ static int __init vkms_init(void)
- 	return ret;
- }
- 
--static void __exit vkms_exit(void)
-+static int __init vkms_init(void)
-+{
-+	struct vkms_config *config = kmalloc(sizeof(*config), GFP_KERNEL);
-+
-+	default_config = config;
-+
-+	config->cursor = enable_cursor;
-+
-+	return vkms_create(config);
-+}
-+
-+static void vkms_destroy(struct vkms_config *config)
- {
- 	struct platform_device *pdev;
- 
--	if (!vkms_device) {
-+	if (!config->dev) {
- 		DRM_INFO("vkms_device is NULL.\n");
- 		return;
- 	}
- 
--	pdev = vkms_device->platform;
-+	pdev = config->dev->platform;
- 
--	drm_dev_unregister(&vkms_device->drm);
--	drm_atomic_helper_shutdown(&vkms_device->drm);
-+	drm_dev_unregister(&config->dev->drm);
-+	drm_atomic_helper_shutdown(&config->dev->drm);
- 	devres_release_group(&pdev->dev, NULL);
- 	platform_device_unregister(pdev);
-+
-+	config->dev = NULL;
-+}
-+
-+static void __exit vkms_exit(void)
-+{
-+	if (default_config->dev)
-+		vkms_destroy(default_config);
-+
-+	kfree(default_config);
- }
- 
- module_init(vkms_init);
-diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
-index 5ed91ff08cb3..6a27bd8875f2 100644
---- a/drivers/gpu/drm/vkms/vkms_drv.h
-+++ b/drivers/gpu/drm/vkms/vkms_drv.h
-@@ -19,8 +19,6 @@
- #define XRES_MAX  8192
- #define YRES_MAX  8192
- 
--extern bool enable_cursor;
--
- struct vkms_composer {
- 	struct drm_framebuffer fb;
- 	struct drm_rect src, dst;
-@@ -82,10 +80,19 @@ struct vkms_output {
- 	spinlock_t composer_lock;
- };
- 
-+struct vkms_device;
-+
-+struct vkms_config {
-+	bool cursor;
-+	/* only set when instantiated */
-+	struct vkms_device *dev;
-+};
-+
- struct vkms_device {
- 	struct drm_device drm;
- 	struct platform_device *platform;
- 	struct vkms_output output;
-+	const struct vkms_config *config;
- };
- 
- #define drm_crtc_to_vkms_output(target) \
-@@ -124,3 +131,4 @@ void vkms_set_composer(struct vkms_output *out, bool enabled);
- int vkms_enable_writeback_connector(struct vkms_device *vkmsdev);
- 
- #endif /* _VKMS_DRV_H_ */
-+
-diff --git a/drivers/gpu/drm/vkms/vkms_output.c b/drivers/gpu/drm/vkms/vkms_output.c
-index 4a1848b0318f..8f3ffb28b9d1 100644
---- a/drivers/gpu/drm/vkms/vkms_output.c
-+++ b/drivers/gpu/drm/vkms/vkms_output.c
-@@ -46,7 +46,7 @@ int vkms_output_init(struct vkms_device *vkmsdev, int index)
- 	if (IS_ERR(primary))
- 		return PTR_ERR(primary);
- 
--	if (enable_cursor) {
-+	if (vkmsdev->config->cursor) {
- 		cursor = vkms_plane_init(vkmsdev, DRM_PLANE_TYPE_CURSOR, index);
- 		if (IS_ERR(cursor)) {
- 			ret = PTR_ERR(cursor);
-@@ -98,7 +98,7 @@ int vkms_output_init(struct vkms_device *vkmsdev, int index)
- 	drm_crtc_cleanup(crtc);
- 
- err_crtc:
--	if (enable_cursor)
-+	if (vkmsdev->config->cursor)
- 		drm_plane_cleanup(cursor);
- 
- err_cursor:
--- 
-2.25.1
-
+>=20
+> Changes from v2 (https://lore.kernel.org/r/20201120182944.543428-1-swboyd=
+@chromium.org):                                                            =
+                                            =20
+>  * Use clamp()
+>  * Add comment to clarify
+>=20
+> Changes from v1 (https://lore.kernel.org/r/20201120073842.3232458-1-swboy=
+d@chromium.org):                                                           =
+                                             =20
+>  * Changed ternary to consider 17 to 31 as the same as 16  =20
+>=20
+>  drivers/iio/proximity/sx9310.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/iio/proximity/sx9310.c b/drivers/iio/proximity/sx931=
+0.c
+> index a2f820997afc..0e6863e4d384 100644
+> --- a/drivers/iio/proximity/sx9310.c
+> +++ b/drivers/iio/proximity/sx9310.c
+> @@ -1305,7 +1305,8 @@ sx9310_get_default_reg(struct sx9310_data *data, in=
+t i,
+>                 if (ret)
+>                         break;
+> =20
+> -               pos =3D min(max(ilog2(pos), 3), 10) - 3;
+> +               /* Powers of 2, except for a gap between 16 and 64 */
+> +               pos =3D clamp(ilog2(pos), 3, 11) - (pos >=3D 32 ? 4 : 3);
+>                 reg_def->def &=3D ~SX9310_REG_PROX_CTRL7_AVGPOSFILT_MASK;
+>                 reg_def->def |=3D FIELD_PREP(SX9310_REG_PROX_CTRL7_AVGPOS=
+FILT_MASK,
+>                                            pos);
+>=20
+> base-commit: 5b19ca2c78a0838976064c0347e46a2c859b541d
