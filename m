@@ -2,142 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB5312F1C39
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8762F1C3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:24:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389480AbhAKRWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 12:22:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55678 "EHLO mail.kernel.org"
+        id S2389172AbhAKRXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 12:23:48 -0500
+Received: from mga06.intel.com ([134.134.136.31]:60906 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389172AbhAKRWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:22:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16AFF22AAD;
-        Mon, 11 Jan 2021 17:22:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610385725;
-        bh=ucPgUzXVIgWKKN/+F8TNx30krDlRgEwvSla3l6JVkSU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UKRoI/e2JspwtRrHn2mzv0r4hzgem7xRf7oblunSNksCu9iLEM30gwWBM+EfL4EZ8
-         8QztRIpnPMiMF9LJj7czvYTXwakOf15ku18gA1aMtTx10xl/7NyhyHX7cRrYAPqylg
-         IjOmojire0zwNCkbqEQNluEw6AZ3nstYOJ2Wf1KXerz2eQeIG0WknAxcDsCFL2np5k
-         0ogyxZPPzrYbUUPh9lT62na9TIeswAO3VWqXZfOZ/5gR+QV7JlqV3PquwjfMBkm9U0
-         L/7l9dHWiZjydDjUuwz7eWNWIz4Gjk5pzYcwhu4Vdk6X9gnQs4KBeNa1q/osAxTXmA
-         XvX/jN8RUx9FQ==
-Date:   Mon, 11 Jan 2021 22:52:00 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@kernel.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/7] soc: qcom: geni: Add support for gpi dma
-Message-ID: <20210111172200.GZ2771@vkoul-mobl>
-References: <20210111151651.1616813-1-vkoul@kernel.org>
- <20210111151651.1616813-4-vkoul@kernel.org>
- <X/xxh8ejwY6cHdC1@builder.lan>
+        id S1726952AbhAKRXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 12:23:48 -0500
+IronPort-SDR: 4dlW9V7LchdIn+n3PFs7CLJihQkyFyA1wFu4F4qMAh1HjQXjv50YPUM2ZGgle69N6Dq3t92Se3
+ UxR1q/f4F9pA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="239442366"
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="239442366"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 09:22:02 -0800
+IronPort-SDR: l1FN9CGAIBj9AKm0LfXGp4swwYdk9Sf37EFVlbesGyrMPFP+xDQI0FD5b+/1NEAExSdjdcnUzg
+ u7edYXBHIE7Q==
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="567241173"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 09:21:58 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kz0uB-00AZJR-Hu; Mon, 11 Jan 2021 19:22:59 +0200
+Date:   Mon, 11 Jan 2021 19:22:59 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Wesley Zhao <zhaowei1102@thundersoft.com>
+Cc:     akpm@linux-foundation.org, keescook@chromium.org,
+        tglx@linutronix.de, kerneldev@karsmulder.nl, nivedita@alum.mit.edu,
+        joe@perches.com, gpiccoli@canonical.com, aquini@redhat.com,
+        gustavoars@kernel.org, ojeda@kernel.org, ndesaulniers@gooogle.com,
+        linux-kernel@vger.kernel.org, david@redhat.com,
+        dan.j.williams@intel.com, guohanjun@huawei.com,
+        mchehab+huawei@kernel.org
+Subject: Re: [PATCH 1/2] lib/cmdline: add new function get_option_ull()
+Message-ID: <20210111172259.GZ4077@smile.fi.intel.com>
+References: <1610382798-4528-1-git-send-email-zhaowei1102@thundersoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X/xxh8ejwY6cHdC1@builder.lan>
+In-Reply-To: <1610382798-4528-1-git-send-email-zhaowei1102@thundersoft.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-01-21, 09:40, Bjorn Andersson wrote:
-> On Mon 11 Jan 09:16 CST 2021, Vinod Koul wrote:
+On Mon, Jan 11, 2021 at 08:33:17AM -0800, Wesley Zhao wrote:
+> From: "Wesley.Zhao" <zhaowei1102@thundersoft.com>
 > 
-> > GPI DMA is one of the DMA modes supported on geni, this adds support to
-> > enable that mode
-> > 
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > ---
-> >  drivers/soc/qcom/qcom-geni-se.c | 39 ++++++++++++++++++++++++++++++++-
-> >  include/linux/qcom-geni-se.h    |  4 ++++
-> >  2 files changed, 42 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/soc/qcom/qcom-geni-se.c b/drivers/soc/qcom/qcom-geni-se.c
-> > index a3868228ea05..db44dc32e049 100644
-> > --- a/drivers/soc/qcom/qcom-geni-se.c
-> > +++ b/drivers/soc/qcom/qcom-geni-se.c
-> > @@ -310,6 +310,39 @@ static void geni_se_select_dma_mode(struct geni_se *se)
-> >  		writel_relaxed(val, se->base + SE_GENI_DMA_MODE_EN);
-> >  }
-> >  
-> > +static int geni_se_select_gpi_mode(struct geni_se *se)
-> 
-> This doesn't return any information and the return value isn't looked
-> at, please make it void.
+> In the future we would pass the unsigned long long parameter
+> like(0x123456781234) in cmdline on the 64bit platform, so add a new
+> option parse function get_option_ull()
 
-Sure..
+No negative numbers?
+No test cases?
+No user?
 
-> > +{
-> > +	unsigned int geni_dma_mode = 0;
-> > +	unsigned int gpi_event_en = 0;
-> > +	unsigned int common_geni_m_irq_en = 0;
-> > +	unsigned int common_geni_s_irq_en = 0;
-> 
-> These could certainly be given a shorter name.
+Please, address above.
 
-Certainly..
-
-> None of them needs to be initialized, first access in all cases are
-> assignments.
-
-Will update
-
-> > +
-> > +	common_geni_m_irq_en = readl_relaxed(se->base + SE_GENI_M_IRQ_EN);
-> > +	common_geni_s_irq_en = readl_relaxed(se->base + SE_GENI_S_IRQ_EN);
-> > +	common_geni_m_irq_en &=
-> > +			~(M_CMD_DONE_EN | M_TX_FIFO_WATERMARK_EN |
-> > +			M_RX_FIFO_WATERMARK_EN | M_RX_FIFO_LAST_EN);
-> > +	common_geni_s_irq_en &= ~S_CMD_DONE_EN;
-> > +	geni_dma_mode = readl_relaxed(se->base + SE_GENI_DMA_MODE_EN);
-> > +	gpi_event_en = readl_relaxed(se->base + SE_GSI_EVENT_EN);
-> > +
-> > +	geni_dma_mode |= GENI_DMA_MODE_EN;
-> > +	gpi_event_en |= (DMA_RX_EVENT_EN | DMA_TX_EVENT_EN |
-> > +				GENI_M_EVENT_EN | GENI_S_EVENT_EN);
-> 
-> Please reorder these so that you do
-> 	readl(m)
-> 	mask out bits of m
-> 
-> 	readl(s)
-> 	mask out bits of s
-> 
-> 	...
-
-okay will update
-
-> > +
-> > +	writel_relaxed(0, se->base + SE_IRQ_EN);
-> > +	writel_relaxed(common_geni_s_irq_en, se->base + SE_GENI_S_IRQ_EN);
-> > +	writel_relaxed(common_geni_m_irq_en, se->base + SE_GENI_M_IRQ_EN);
-> > +	writel_relaxed(0xFFFFFFFF, se->base + SE_GENI_M_IRQ_CLEAR);
-> 
-> Lowercase hex digits please.
-
-Yeah missed
-
-> > +	writel_relaxed(0xFFFFFFFF, se->base + SE_GENI_S_IRQ_CLEAR);
-> > +	writel_relaxed(0xFFFFFFFF, se->base + SE_DMA_TX_IRQ_CLR);
-> > +	writel_relaxed(0xFFFFFFFF, se->base + SE_DMA_RX_IRQ_CLR);
-> > +	writel_relaxed(geni_dma_mode, se->base + SE_GENI_DMA_MODE_EN);
-> > +	writel_relaxed(gpi_event_en, se->base + SE_GSI_EVENT_EN);
-> 
-> Why is this driver using _relaxed accessors exclusively? Why are you
-> using _relaxed versions?
-> 
-> And wouldn't it be suitable to have a wmb() before the "dma mode enable"
-> and "event enable" at least? (I.e. use writel() instead)
-
-Yeah we invoke this to select the mode before programming DMA, so yes a
-wmb() would make sense. Thanks for quick look
+Besides that, consider to deduplicate (like it's done in simple_strto*() family
+of functions), so we don't have two implementation that are basically do the
+same, only put result to a different type of variable.
 
 -- 
-~Vinod
+With Best Regards,
+Andy Shevchenko
+
+
