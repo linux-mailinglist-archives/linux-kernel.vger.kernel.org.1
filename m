@@ -2,162 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872082F1CA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD1F02F1CAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:41:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389814AbhAKRjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 12:39:08 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:6674 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728222AbhAKRjG (ORCPT
+        id S2389831AbhAKRk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 12:40:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389647AbhAKRk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:39:06 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ffc8d120001>; Mon, 11 Jan 2021 09:38:26 -0800
-Received: from [10.2.51.38] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 11 Jan
- 2021 17:38:25 +0000
-Subject: Re: [PATCH v1] i2c: tegra: Fix i2c_writesl() to use writel() instead
- of writesl()
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     <jonathanh@nvidia.com>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>
-References: <1603166634-13639-1-git-send-email-skomatineni@nvidia.com>
- <20201020074846.GA1877013@ulmo>
- <538d8436-260d-40a8-b0a3-a822a0f9c909@nvidia.com>
- <c37f8618-5100-4087-3bc3-fe421d40f3b8@gmail.com>
- <2212a21b-7dff-4ba0-a193-badd5a1770c8@gmail.com>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <6373bc13-a53d-2bb2-98f5-f6f01b0b8b69@nvidia.com>
-Date:   Mon, 11 Jan 2021 09:38:28 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 11 Jan 2021 12:40:59 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C65DC061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:40:19 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id p12so5099pju.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:40:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qjQEnNzMbx9jfPqlYY0N0jYj1R3Q/O+LmSxzsF9dUuI=;
+        b=vMdJQPxBpe62gqG1pM4PczjRnOrPEyBn6OX27rJgh3RoP9Bb8niJeXWnlLtYASKzs1
+         3tec2zfE91shpqvsoUtUzkG/s3YvNOUBIs6QRIpbj5A2uTZilfmqSgEHCupMdmtcskw3
+         z/0Ho9FHyV3j6J1WTeTJ6ki8j0WWTYpMEMl0kNXESAM7BHsOSEN5BvaVIJrRezTX9O++
+         54WMwrTMCRPa2hxQD6G+aGtFz3ktlz5+uiSLFgT2YlOhNAAkdL03lR/0nNzjGTsVyTJY
+         FPQNiuvc4oFV+C92Xx1rH933KYdXsTRE6t9fEHQ3WjlZaghphrDKguNdYDsJa+44c0Ob
+         da3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qjQEnNzMbx9jfPqlYY0N0jYj1R3Q/O+LmSxzsF9dUuI=;
+        b=nwsVRDKI03A/wNiCzx65PoQkxL6tcCp9QfNNzEIMLdYVP6oorPYHQamoDIfEzpHpp5
+         R0tAExYHXYtn338NtU8KKP24nsrrGJqnecJ286aY+V/JCtDF/swGb2KBICbkiCjw7fIK
+         NyR9H+5G7AtQNs5lyhE+AaSjk1PaRdSit8cxAwDdPL5gYEUVw+BzisO6w6oPIhQM22uV
+         Ie2aLCp9MIa58fvs1HwjjwlwVJ00jE8guEqsBZQfUb8NFJQNtCe+JgoxZCPPgKc2J+L+
+         Y56S9VbGQJ+qrP4QtpXAMMFI2i6v+vGV35TVChFj8+0GrfhI9FkRCCFntqS0J8w17jLP
+         8M+Q==
+X-Gm-Message-State: AOAM532bY/S6Fx08Ku1fGXkobhXWVp6qsotIOxKXsLHwQQi/zYFqU5V1
+        zlNqNKIjd8TMsOxgbOrgYcX9ZMO78cbDvCWb0MqLuA==
+X-Google-Smtp-Source: ABdhPJz90wo+LNABRutfNJ9IAurAbJzzUQp2ytJ+Y6N0wWoqRh/YQRSb/ZBZwZsHxcnBTnLqMoLIoyxfsgW7wTllDmY=
+X-Received: by 2002:a17:90a:f683:: with SMTP id cl3mr383204pjb.136.1610386818720;
+ Mon, 11 Jan 2021 09:40:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <2212a21b-7dff-4ba0-a193-badd5a1770c8@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610386706; bh=MSUbQcdtbYvVnN/kvsd5vBI0hvqwlEgPoy2ZjaKkqeM=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=Q14YgeYeBiQjf7c0AK9pN/oWtK7gj1MRhs1be99WyE5XB54wtoAHNsHNrkGp9MI+X
-         8DO3l/6PsEGOfg6WFoF2P69nIyewVYZaTWMMVGhzxiUlAxOZ89RrJ70rIG0uELvxZ3
-         +a7WJ/4pzqswveRxdwwTkAkDz0t4PrEzOovdmOShNy94IieU4DKgXibmC1ioXILfKE
-         CSWbWUCbJ2ivb2HzT4NpzPvzobFd9KgXyF3vjcXsoshyaza/igKTpigQKvm3YchrIH
-         2VU61bplILlikosMr0hJ3ji+bmtf1TB7DySM/eBgCnd4EydavKZGGfc+6jqD4AEMfg
-         9su69UVNMd9Fw==
+References: <20210108040940.1138-1-walter-zh.wu@mediatek.com>
+ <CAAeHK+wW3bTCvk=6v_vDQFYLC6=3kunmprXA-P=tWyXCTMZjhQ@mail.gmail.com> <CAK8P3a3FakV-Y9xkoy_fpYKBNkMvcO7DPOQC8R7ku7yPcgDw3g@mail.gmail.com>
+In-Reply-To: <CAK8P3a3FakV-Y9xkoy_fpYKBNkMvcO7DPOQC8R7ku7yPcgDw3g@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Mon, 11 Jan 2021 18:40:07 +0100
+Message-ID: <CAAeHK+zB0=eBgrWTxcUK8GkxmUAn-W44NWDFE4zEB79CxVpwXg@mail.gmail.com>
+Subject: Re: [PATCH v3] kasan: remove redundant config option
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Walter Wu <walter-zh.wu@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jan 8, 2021 at 9:31 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Fri, Jan 8, 2021 at 7:56 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+> > On Fri, Jan 8, 2021 at 5:09 AM Walter Wu <walter-zh.wu@mediatek.com> wrote:
+>
+> > > @@ -2,6 +2,12 @@
+> > >  CFLAGS_KASAN_NOSANITIZE := -fno-builtin
+> > >  KASAN_SHADOW_OFFSET ?= $(CONFIG_KASAN_SHADOW_OFFSET)
+> > >
+> > > +ifdef CONFIG_KASAN_STACK
+> > > +       stack_enable := 1
+> > > +else
+> > > +       stack_enable := 0
+> > > +endif
+> > > +
+> >
+> > AFAIR, Arnd wanted to avoid having KASAN_STACK to be enabled by
+> > default when compiling with Clang, since Clang instrumentation leads
+> > to very large kernel stacks, which, in turn, lead to compile-time
+> > warnings. What I don't remember is why there are two configs.
+> >
+> > Arnd, is that correct? What was the reason behind having two configs?
+>
+> I think I just considered it cleaner than defining the extra variable in the
+> Makefile at the time, as this was the only place that referenced
+> CONFIG_KASAN_STACK.
+>
+> The '#if CONFIG_KASAN_STACK' (rather than #ifdef) that got added
+> later do make my version more confusing though, so I agree that
+> Walter's second patch improves it.
+>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-On 1/11/21 4:09 AM, Dmitry Osipenko wrote:
-> 11.01.2021 14:50, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->> 20.10.2020 19:37, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>> On 10/20/20 12:48 AM, Thierry Reding wrote:
->>>> On Mon, Oct 19, 2020 at 09:03:54PM -0700, Sowjanya Komatineni wrote:
->>>>> VI I2C don't have DMA support and uses PIO mode all the time.
->>>>>
->>>>> Current driver uses writesl() to fill TX FIFO based on available
->>>>> empty slots and with this seeing strange silent hang during any I2C
->>>>> register access after filling TX FIFO with 8 words.
->>>>>
->>>>> Using writel() followed by i2c_readl() in a loop to write all words
->>>>> to TX FIFO instead of using writesl() helps for large transfers in
->>>>> PIO mode.
->>>>>
->>>>> So, this patch updates i2c_writesl() API to use writel() in a loop
->>>>> instead of writesl().
->>>>>
->>>>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
->>>>> ---
->>>>>  =C2=A0 drivers/i2c/busses/i2c-tegra.c | 9 ++++++---
->>>>>  =C2=A0 1 file changed, 6 insertions(+), 3 deletions(-)
->>>>>
->>>>> diff --git a/drivers/i2c/busses/i2c-tegra.c
->>>>> b/drivers/i2c/busses/i2c-tegra.c
->>>>> index 6f08c0c..274bf3a 100644
->>>>> --- a/drivers/i2c/busses/i2c-tegra.c
->>>>> +++ b/drivers/i2c/busses/i2c-tegra.c
->>>>> @@ -333,10 +333,13 @@ static u32 i2c_readl(struct tegra_i2c_dev
->>>>> *i2c_dev, unsigned int reg)
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return readl_relaxed(i2c_dev->base +
->>>>> tegra_i2c_reg_addr(i2c_dev, reg));
->>>>>  =C2=A0 }
->>>>>  =C2=A0 -static void i2c_writesl(struct tegra_i2c_dev *i2c_dev, void =
-*data,
->>>>> +static void i2c_writesl(struct tegra_i2c_dev *i2c_dev, u32 *data,
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 unsigned int reg, unsigned int len)
->>>>>  =C2=A0 {
->>>>> -=C2=A0=C2=A0=C2=A0 writesl(i2c_dev->base + tegra_i2c_reg_addr(i2c_de=
-v, reg), data,
->>>>> len);
->>>>> +=C2=A0=C2=A0=C2=A0 while (len--) {
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 writel(*data++, i2c_dev->=
-base + tegra_i2c_reg_addr(i2c_dev,
->>>>> reg));
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i2c_readl(i2c_dev, I2C_IN=
-T_STATUS);
->>>>> +=C2=A0=C2=A0=C2=A0 }
->>>>>  =C2=A0 }
->>>>>  =C2=A0 =C2=A0 static void i2c_readsl(struct tegra_i2c_dev *i2c_dev, =
-void *data,
->>>>> @@ -811,7 +814,7 @@ static int tegra_i2c_fill_tx_fifo(struct
->>>>> tegra_i2c_dev *i2c_dev)
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i2c_dev->msg_=
-buf_remaining =3D buf_remaining;
->>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i2c_dev->msg_=
-buf =3D buf + words_to_transfer *
->>>>> BYTES_PER_FIFO_WORD;
->>>>>  =C2=A0 -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i2c_writesl(i2c_d=
-ev, buf, I2C_TX_FIFO, words_to_transfer);
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i2c_writesl(i2c_dev, (u32=
- *)buf, I2C_TX_FIFO,
->>>>> words_to_transfer);
->>>> I've thought a bit more about this and I wonder if we're simply readin=
-g
->>>> out the wrong value for tx_fifo_avail and therefore end up overflowing
->>>> the TX FIFO. Have you checked what the value is for tx_fifo_avail when
->>>> this silent hang occurs? Given that this is specific to the VI I2C I'm
->>>> wondering if this is perhaps a hardware bug where we read the wrong TX
->>>> FIFO available count.
->>>>
->>>> Thierry
->>> Yes FIFO status shows all 8 slots available.
->> Please explain how you checked that 8 slots are available, provide
->> example code.
->>
-> Have you checked the FIFO overflow interrupt?
+Got it, thanks!
 
-This is seen with VI I2C (which is under host1x) as we use PIO mode=20
-always even for large transfers.
-HW wise VI I2C is similar to other I2C and FIFO depth is also 8 words.
+> On a related note: do you have any hope that clang will ever fix
+> https://bugs.llvm.org/show_bug.cgi?id=38809 and KASAN_STACK
+> can be enabled by default on clang without risking stack
+> overflows?
 
-tegra_i2c_fill_tx_fifo() reads I2C_FIFO_STATUS register field=20
-TX_FIFO_EMPTY_CNT which tells empty slots available in TX_FIFO that can=20
-be filled.
-Added debug message to print empty count and, during beginning of=20
-transfer when it executes tegra_i2c_fill_tx_fifo(), empty slots are 8
+Not sure :(
 
-
-Using writesl() for filling TX_FIFO causing silent hang immediate on any=20
-i2c register access after filling FIFO with 8 words and some times with=20
-6 words as well.
-
-So couldn't INTERRUPT_STATUS registers to check for TX FIFO Overflows=20
-when this silent hang happens.
-
-Tried to read thru back-door (JTAG path) but could not connect to JTAG=20
-either. Looks like Tegra chip is in some weird state.
-
-But using writel() followed by i2c_readl helps. Not sure if any thing=20
-related to register access delay or some other issue.
-
-
+I've filed this on KASAN bugzilla to not forget:
+https://bugzilla.kernel.org/show_bug.cgi?id=211139
