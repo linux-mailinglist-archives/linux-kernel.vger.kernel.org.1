@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D51992F1355
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4794E2F13F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730565AbhAKNHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:07:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53778 "EHLO mail.kernel.org"
+        id S1732595AbhAKNRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:17:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728766AbhAKNGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:06:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8ECF32255F;
-        Mon, 11 Jan 2021 13:06:09 +0000 (UTC)
+        id S1732573AbhAKNRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:17:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 78DE322B30;
+        Mon, 11 Jan 2021 13:16:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370370;
-        bh=8lGXfChzd96VRmdI3XiedLSbfp9gS012jJfWzenkTac=;
+        s=korg; t=1610371016;
+        bh=DGW6Mz8slPuD3LtgLu+/gLiV0rGpfojaEjSgz9p5A7M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J7KCfvr0okJtjY0YUUtcfRwj0nDrkPVPVh3XwtyhdUGiGZKpk4A3xKI5F//PyyZLg
-         1+5kiqAFWZAXWVO5tSFd3+65f06ZFOyINonnP3Qh+/gTrbVJYAMd1JRQeH8UTuqVER
-         WDrqxsVTKO5ph5eBR680lLTAsM1wM+fZ6EAC9AuI=
+        b=Jxs5hlyCNJP9C16hsKLIfF+cu1oSiSNsXSqCWg3d4PhNwVkHVCSknxaq3GhtQxz0L
+         dxXgpGyhf6d9hjdREM+CSswRqbDD9mCDMYUdA5B3X2T3M3cjgwPWEDCb/W2ylQfjBU
+         dnvBrFYYESaeuGEtuSoL/Z5lQUuAc2AcPVob2Rus=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.14 49/57] USB: serial: keyspan_pda: remove unused variable
-Date:   Mon, 11 Jan 2021 14:02:08 +0100
-Message-Id: <20210111130036.097607321@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Chandana Kishori Chiluveru <cchiluve@codeaurora.org>,
+        Jack Pham <jackp@codeaurora.org>,
+        Peter Chen <peter.chen@nxp.com>
+Subject: [PATCH 5.10 105/145] usb: gadget: configfs: Preserve function ordering after bind failure
+Date:   Mon, 11 Jan 2021 14:02:09 +0100
+Message-Id: <20210111130053.573863100@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
-References: <20210111130033.715773309@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +41,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
 
-Remove an unused variable which was mistakingly left by commit
-37faf5061541 ("USB: serial: keyspan_pda: fix write-wakeup
-use-after-free") and only removed by a later change.
+commit 6cd0fe91387917be48e91385a572a69dfac2f3f7 upstream.
 
-This is needed to suppress a W=1 warning about the unused variable in
-the stable trees that the build bots triggers.
+When binding the ConfigFS gadget to a UDC, the functions in each
+configuration are added in list order. However, if usb_add_function()
+fails, the failed function is put back on its configuration's
+func_list and purge_configs_funcs() is called to further clean up.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+purge_configs_funcs() iterates over the configurations and functions
+in forward order, calling unbind() on each of the previously added
+functions. But after doing so, each function gets moved to the
+tail of the configuration's func_list. This results in reshuffling
+the original order of the functions within a configuration such
+that the failed function now appears first even though it may have
+originally appeared in the middle or even end of the list. At this
+point if the ConfigFS gadget is attempted to re-bind to the UDC,
+the functions will be added in a different order than intended,
+with the only recourse being to remove and relink the functions all
+over again.
+
+An example of this as follows:
+
+ln -s functions/mass_storage.0 configs/c.1
+ln -s functions/ncm.0 configs/c.1
+ln -s functions/ffs.adb configs/c.1	# oops, forgot to start adbd
+echo "<udc device>" > UDC		# fails
+start adbd
+echo "<udc device>" > UDC		# now succeeds, but...
+					# bind order is
+					# "ADB", mass_storage, ncm
+
+[30133.118289] configfs-gadget gadget: adding 'Mass Storage Function'/ffffff810af87200 to config 'c'/ffffff817d6a2520
+[30133.119875] configfs-gadget gadget: adding 'cdc_network'/ffffff80f48d1a00 to config 'c'/ffffff817d6a2520
+[30133.119974] using random self ethernet address
+[30133.120002] using random host ethernet address
+[30133.139604] usb0: HOST MAC 3e:27:46:ba:3e:26
+[30133.140015] usb0: MAC 6e:28:7e:42:66:6a
+[30133.140062] configfs-gadget gadget: adding 'Function FS Gadget'/ffffff80f3868438 to config 'c'/ffffff817d6a2520
+[30133.140081] configfs-gadget gadget: adding 'Function FS Gadget'/ffffff80f3868438 --> -19
+[30133.140098] configfs-gadget gadget: unbind function 'Mass Storage Function'/ffffff810af87200
+[30133.140119] configfs-gadget gadget: unbind function 'cdc_network'/ffffff80f48d1a00
+[30133.173201] configfs-gadget a600000.dwc3: failed to start g1: -19
+[30136.661933] init: starting service 'adbd'...
+[30136.700126] read descriptors
+[30136.700413] read strings
+[30138.574484] configfs-gadget gadget: adding 'Function FS Gadget'/ffffff80f3868438 to config 'c'/ffffff817d6a2520
+[30138.575497] configfs-gadget gadget: adding 'Mass Storage Function'/ffffff810af87200 to config 'c'/ffffff817d6a2520
+[30138.575554] configfs-gadget gadget: adding 'cdc_network'/ffffff80f48d1a00 to config 'c'/ffffff817d6a2520
+[30138.575631] using random self ethernet address
+[30138.575660] using random host ethernet address
+[30138.595338] usb0: HOST MAC 2e:cf:43:cd:ca:c8
+[30138.597160] usb0: MAC 6a:f0:9f:ee:82:a0
+[30138.791490] configfs-gadget gadget: super-speed config #1: c
+
+Fix this by reversing the iteration order of the functions in
+purge_config_funcs() when unbinding them, and adding them back to
+the config's func_list at the head instead of the tail. This
+ensures that we unbind and unwind back to the original list order.
+
+Fixes: 88af8bbe4ef7 ("usb: gadget: the start of the configfs interface")
+Signed-off-by: Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
+Signed-off-by: Jack Pham <jackp@codeaurora.org>
+Reviewed-by: Peter Chen <peter.chen@nxp.com>
+Link: https://lore.kernel.org/r/20201229224443.31623-1-jackp@codeaurora.org
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/usb/serial/keyspan_pda.c |    2 --
- 1 file changed, 2 deletions(-)
 
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -559,10 +559,8 @@ exit:
- static void keyspan_pda_write_bulk_callback(struct urb *urb)
- {
- 	struct usb_serial_port *port = urb->context;
--	struct keyspan_pda_private *priv;
+---
+ drivers/usb/gadget/configfs.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/drivers/usb/gadget/configfs.c
++++ b/drivers/usb/gadget/configfs.c
+@@ -1248,9 +1248,9 @@ static void purge_configs_funcs(struct g
  
- 	set_bit(0, &port->write_urbs_free);
--	priv = usb_get_serial_port_data(port);
+ 		cfg = container_of(c, struct config_usb_cfg, c);
  
- 	/* queue up a wakeup at scheduler time */
- 	usb_serial_port_softint(port);
+-		list_for_each_entry_safe(f, tmp, &c->functions, list) {
++		list_for_each_entry_safe_reverse(f, tmp, &c->functions, list) {
+ 
+-			list_move_tail(&f->list, &cfg->func_list);
++			list_move(&f->list, &cfg->func_list);
+ 			if (f->unbind) {
+ 				dev_dbg(&gi->cdev.gadget->dev,
+ 					"unbind function '%s'/%p\n",
 
 
