@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2282F13E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA5FA2F131B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:03:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732415AbhAKNQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:16:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34636 "EHLO mail.kernel.org"
+        id S1729941AbhAKNDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:03:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732321AbhAKNQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:16:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C850E22AAF;
-        Mon, 11 Jan 2021 13:15:23 +0000 (UTC)
+        id S1729822AbhAKND2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:03:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDB0D22A83;
+        Mon, 11 Jan 2021 13:02:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370924;
-        bh=oOBJirg8qm11NYUZkzKNBcocKaIKzDjg3yr8e5hFAnc=;
+        s=korg; t=1610370160;
+        bh=BQa/xllUUOdjW/BVOtJzQMzlH/X+84S7At6ck3ZZkGg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dj9EGbW6mt/OxT2Q8bGcLaAtRvMwPBu8XZG/HAq0Xr58EC6eTcPcCfj84zPDPj3Nb
-         xJHr/Pu1baLNuXNoTidr6ppYxoYhUZ/tHYpUTdczILuKZ507J+YeHoKl14pAZiMRXL
-         1bNswxN/fzaVWt1uJMcZKe4eCnjROigPwcs3DYuY=
+        b=Y7d5noy8dXEoBtP22VmZ35rOeRQOH2gyusk7Z34dNqRbLa9KoMY9OzZycQMi8JDIM
+         8J2Ysj2M65wumsqLwg5dU5DRzLYL4Yk5uY0Y9S/YPwIOQ7B9+jOV9WtB9TGLBAegdS
+         7fNF1UReOtf0jYczj9yJwwgbC6VH9L0xKAMhQ2ME=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Edwin Peer <edwin.peer@broadcom.com>,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 033/145] bnxt_en: Fix AER recovery.
+        stable@vger.kernel.org,
+        syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.4 25/38] ALSA: usb-audio: Fix UBSAN warnings for MIDI jacks
 Date:   Mon, 11 Jan 2021 14:00:57 +0100
-Message-Id: <20210111130050.109775061@linuxfoundation.org>
+Message-Id: <20210111130033.673998227@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
+References: <20210111130032.469630231@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,90 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit fb1e6e562b37b39adfe251919c9abfdb3e01f921 ]
+commit c06ccf3ebb7503706ea49fd248e709287ef385a3 upstream.
 
-A recent change skips sending firmware messages to the firmware when
-pci_channel_offline() is true during fatal AER error.  To make this
-complete, we need to move the re-initialization sequence to
-bnxt_io_resume(), otherwise the firmware messages to re-initialize
-will all be skipped.  In any case, it is more correct to re-initialize
-in bnxt_io_resume().
+The calculation of in_cables and out_cables bitmaps are done with the
+bit shift by the value from the descriptor, which is an arbitrary
+value, and can lead to UBSAN shift-out-of-bounds warnings.
 
-Also, fix the reverse x-mas tree format when defining variables
-in bnxt_io_slot_reset().
+Fix it by filtering the bad descriptor values with the check of the
+upper bound 0x10 (the cable bitmaps are 16 bits).
 
-Fixes: b340dc680ed4 ("bnxt_en: Avoid sending firmware messages when AER error is detected.")
-Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
-Signed-off-by: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reported-by: syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201223174557.10249-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/broadcom/bnxt/bnxt.c |   31 +++++++++++++-----------------
- 1 file changed, 14 insertions(+), 17 deletions(-)
 
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -12890,10 +12890,10 @@ static pci_ers_result_t bnxt_io_error_de
-  */
- static pci_ers_result_t bnxt_io_slot_reset(struct pci_dev *pdev)
- {
-+	pci_ers_result_t result = PCI_ERS_RESULT_DISCONNECT;
- 	struct net_device *netdev = pci_get_drvdata(pdev);
- 	struct bnxt *bp = netdev_priv(netdev);
- 	int err = 0, off;
--	pci_ers_result_t result = PCI_ERS_RESULT_DISCONNECT;
- 
- 	netdev_info(bp->dev, "PCI Slot Reset\n");
- 
-@@ -12922,22 +12922,8 @@ static pci_ers_result_t bnxt_io_slot_res
- 		pci_save_state(pdev);
- 
- 		err = bnxt_hwrm_func_reset(bp);
--		if (!err) {
--			err = bnxt_hwrm_func_qcaps(bp);
--			if (!err && netif_running(netdev))
--				err = bnxt_open(netdev);
--		}
--		bnxt_ulp_start(bp, err);
--		if (!err) {
--			bnxt_reenable_sriov(bp);
-+		if (!err)
- 			result = PCI_ERS_RESULT_RECOVERED;
--		}
--	}
--
--	if (result != PCI_ERS_RESULT_RECOVERED) {
--		if (netif_running(netdev))
--			dev_close(netdev);
--		pci_disable_device(pdev);
- 	}
- 
- 	rtnl_unlock();
-@@ -12955,10 +12941,21 @@ static pci_ers_result_t bnxt_io_slot_res
- static void bnxt_io_resume(struct pci_dev *pdev)
- {
- 	struct net_device *netdev = pci_get_drvdata(pdev);
-+	struct bnxt *bp = netdev_priv(netdev);
-+	int err;
- 
-+	netdev_info(bp->dev, "PCI Slot Resume\n");
- 	rtnl_lock();
- 
--	netif_device_attach(netdev);
-+	err = bnxt_hwrm_func_qcaps(bp);
-+	if (!err && netif_running(netdev))
-+		err = bnxt_open(netdev);
-+
-+	bnxt_ulp_start(bp, err);
-+	if (!err) {
-+		bnxt_reenable_sriov(bp);
-+		netif_device_attach(netdev);
-+	}
- 
- 	rtnl_unlock();
- }
+---
+ sound/usb/midi.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -1865,6 +1865,8 @@ static int snd_usbmidi_get_ms_info(struc
+ 		ms_ep = find_usb_ms_endpoint_descriptor(hostep);
+ 		if (!ms_ep)
+ 			continue;
++		if (ms_ep->bNumEmbMIDIJack > 0x10)
++			continue;
+ 		if (usb_endpoint_dir_out(ep)) {
+ 			if (endpoints[epidx].out_ep) {
+ 				if (++epidx >= MIDI_MAX_ENDPOINTS) {
+@@ -2117,6 +2119,8 @@ static int snd_usbmidi_detect_roland(str
+ 		    cs_desc[1] == USB_DT_CS_INTERFACE &&
+ 		    cs_desc[2] == 0xf1 &&
+ 		    cs_desc[3] == 0x02) {
++			if (cs_desc[4] > 0x10 || cs_desc[5] > 0x10)
++				continue;
+ 			endpoint->in_cables  = (1 << cs_desc[4]) - 1;
+ 			endpoint->out_cables = (1 << cs_desc[5]) - 1;
+ 			return snd_usbmidi_detect_endpoints(umidi, endpoint, 1);
 
 
