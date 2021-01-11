@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7577F2F16BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:57:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9B42F15EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:47:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388026AbhAKN4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:56:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54568 "EHLO mail.kernel.org"
+        id S2387569AbhAKNqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:46:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730560AbhAKNHR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:07:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 674AB21973;
-        Mon, 11 Jan 2021 13:07:01 +0000 (UTC)
+        id S1731278AbhAKNKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:10:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CCCD2250F;
+        Mon, 11 Jan 2021 13:10:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370421;
-        bh=hkFSNNtbWccLQ7znFMeZxP5hZ3nq6YC0ExdlhoqGE/U=;
+        s=korg; t=1610370611;
+        bh=QvmCKY8dUPY2jKimtVqqmR5Ges0Ofd9MXp7WqARN9WE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OFfl9aJ8CklmPTMerRrJkzlbD4AyNILutLkkbGMdi0DhCFmbat6iOBL4GTVC+IwqL
-         x80mmpN0euY5iCNeArQjsQizgxh+HTwfmVLqAr0+Hzy+o3Mmj0QxzhxkDAlGgbf8A8
-         OHgP5hAgZzI0sutDmyTMEYgviOB4PVH3pX7/otww=
+        b=C0onDa6eVhctpvBcmYnXkoAC2o7eKLcM1gBx58ZiW9gsFJMhwc4yngE3r/8xqISzF
+         2iRv+5EhwIhmCKSdopsVUMjSfmX0PjiznnLWlY7tNn0SSADYfpKxOxl2JCTS6FiOvk
+         mdC98tP3kKFk4fFtA2ZzjOtJRfu3Q/GtU5nhgxYM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 15/77] ethernet: ucc_geth: set dev->max_mtu to 1518
+Subject: [PATCH 5.4 20/92] net: ethernet: mvneta: Fix error handling in mvneta_probe
 Date:   Mon, 11 Jan 2021 14:01:24 +0100
-Message-Id: <20210111130037.152367978@linuxfoundation.org>
+Message-Id: <20210111130040.128418421@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 1385ae5c30f238f81bc6528d897c6d7a0816783f ]
+[ Upstream commit 58f60329a6be35a5653edb3fd2023ccef9eb9943 ]
 
-All the buffers and registers are already set up appropriately for an
-MTU slightly above 1500, so we just need to expose this to the
-networking stack. AFAICT, there's no need to implement .ndo_change_mtu
-when the receive buffers are always set up to support the max_mtu.
+When mvneta_port_power_up() fails, we should execute
+cleanup functions after label err_netdev to avoid memleak.
 
-This fixes several warnings during boot on our mpc8309-board with an
-embedded mv88e6250 switch:
-
-mv88e6085 mdio@e0102120:10: nonfatal error -34 setting MTU 1500 on port 0
-...
-mv88e6085 mdio@e0102120:10: nonfatal error -34 setting MTU 1500 on port 4
-ucc_geth e0102000.ethernet eth1: error -22 setting MTU to 1504 to include DSA overhead
-
-The last line explains what the DSA stack tries to do: achieving an MTU
-of 1500 on-the-wire requires that the master netdevice connected to
-the CPU port supports an MTU of 1500+the tagging overhead.
-
-Fixes: bfcb813203e6 ("net: dsa: configure the MTU for switch ports")
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Fixes: 41c2b6b4f0f80 ("net: ethernet: mvneta: Add back interface mode validation")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Link: https://lore.kernel.org/r/20201220082930.21623-1-dinghao.liu@zju.edu.cn
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/freescale/ucc_geth.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/marvell/mvneta.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/freescale/ucc_geth.c
-+++ b/drivers/net/ethernet/freescale/ucc_geth.c
-@@ -3902,6 +3902,7 @@ static int ucc_geth_probe(struct platfor
- 	INIT_WORK(&ugeth->timeout_work, ucc_geth_timeout_work);
- 	netif_napi_add(dev, &ugeth->napi, ucc_geth_poll, 64);
- 	dev->mtu = 1500;
-+	dev->max_mtu = 1518;
+--- a/drivers/net/ethernet/marvell/mvneta.c
++++ b/drivers/net/ethernet/marvell/mvneta.c
+@@ -4694,7 +4694,7 @@ static int mvneta_probe(struct platform_
+ 	err = mvneta_port_power_up(pp, pp->phy_interface);
+ 	if (err < 0) {
+ 		dev_err(&pdev->dev, "can't power up port\n");
+-		return err;
++		goto err_netdev;
+ 	}
  
- 	ugeth->msg_enable = netif_msg_init(debug.msg_enable, UGETH_MSG_DEFAULT);
- 	ugeth->phy_interface = phy_interface;
+ 	/* Armada3700 network controller does not support per-cpu
 
 
