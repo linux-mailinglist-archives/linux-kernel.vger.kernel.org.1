@@ -2,107 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777132F1FDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3032F1FE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:52:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391156AbhAKTvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:51:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730166AbhAKTvc (ORCPT
+        id S2391195AbhAKTw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:52:27 -0500
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:45956 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389589AbhAKTw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:51:32 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4928AC061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:50:52 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id p12so166456pju.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:50:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=n6ls+HCeSi/UAGSF82kmFOo5CUAwHtYihLvyPgL0mcE=;
-        b=H8QTkAzz/CeEF6/0Vl1CTWBMYc/3JUp0GGJBSpkbejf0BMipsZqtGfUzN7Jjgc7t18
-         1Jfhjcnv8nEpLFEsI85m5V2Do69agxrK4EKE81AEH2PDf69QwM/T+1ryVsFHN2OFFAQL
-         W3NnhhLBGonsRHVxbY4xVLnczBS7PwApeaLkQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=n6ls+HCeSi/UAGSF82kmFOo5CUAwHtYihLvyPgL0mcE=;
-        b=lhr9fSoycDeMXxAResVty6GeKQ4hNj0EeDDbB5xLWX5gFwYks3G6X4QbsN8IwLH7v5
-         DuP+qhHCnW1ZGpNFvOGo5Km7SVVgssJb0/SrBWyTW1Ini9aQT4/kzbkDhaMFRVm1gH28
-         Y/thprEA4nYrE3tpKxHk9ImOlTGtgD5au4rlWgdQR07iJi3XVlf19EYEIc7kXlBFOIH3
-         dfdnF1maDSnF7x2Lr43HiipndyTLbAZ+c40/3NSFuTKXEIKAaPd7g9SVx5sj+AaAYcqs
-         CjSfT8R6l1UGmNOM2zlEIMWFL8Dn+0PTCxTdrri/YLiKBA7NuMjS6fbO7JdPuxjRRAoC
-         RMZQ==
-X-Gm-Message-State: AOAM532UaJyVcfPTKkIgOmP3Et7zRNoxtI8QaVPgrKId8neBFKJc0TiA
-        7+/iSAFlBD+TlRpMs02Qv5dLFg==
-X-Google-Smtp-Source: ABdhPJxKa7QP3e4sq1yJcAafKZZT/e+hen74xAJGxhKWlM/2If7MuvrSisNeNB/Dxb26DvWCKVgWEw==
-X-Received: by 2002:a17:902:d48c:b029:de:2fb:98a with SMTP id c12-20020a170902d48cb02900de02fb098amr859988plg.59.1610394651729;
-        Mon, 11 Jan 2021 11:50:51 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t135sm451741pfc.39.2021.01.11.11.50.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 11:50:50 -0800 (PST)
-Date:   Mon, 11 Jan 2021 11:50:49 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Xiaoming Ni <nixiaoming@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, mcgrof@kernel.org,
-        yzaikin@google.com, adobriyan@gmail.com,
-        linux-fsdevel@vger.kernel.org, vbabka@suse.cz, wangle6@huawei.com
-Subject: Re: [PATCH v2] proc_sysctl: fix oops caused by incorrect command
- parameters.
-Message-ID: <202101111149.20A58E1@keescook>
-References: <20210108023339.55917-1-nixiaoming@huawei.com>
- <20210108092145.GX13207@dhcp22.suse.cz>
- <829bbba0-d3bb-a114-af81-df7390082958@huawei.com>
- <20210108114718.GA13207@dhcp22.suse.cz>
- <202101081152.0CB22390@keescook>
- <20210108201025.GA17019@dhcp22.suse.cz>
- <20210108175008.da3c60a6e402f5f1ddab2a65@linux-foundation.org>
- <bc098af4-c0cd-212e-d09d-46d617d0acab@huawei.com>
- <20210111142131.GA22493@dhcp22.suse.cz>
+        Mon, 11 Jan 2021 14:52:26 -0500
+X-Greylist: delayed 1890 seconds by postgrey-1.27 at vger.kernel.org; Mon, 11 Jan 2021 14:52:24 EST
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 10BJpRbo021925;
+        Tue, 12 Jan 2021 04:51:27 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 10BJpRbo021925
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1610394688;
+        bh=ItG6RXKqICsvoOxHCqOhjokCnPBLYEL/fl3sMptIQxM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=aZnGLDoeg10Xj/lLkkvubtnDMFXBOWqn+G9q0gCgMr7x3jwwQ6yAYFFuyBFrpCtQ0
+         QiyvcPiFxHh+d91md3EaCE1ank3G2zqG7k1DeEvcuuP0Dqx0xLjd1U9XErzPQ3SrX2
+         Fg73drapC6OgIFkLUcaMqGsQIfi4eLv+mJFNTpeRyDrwqWbkWlilncrncxL4Y/BRRP
+         fyVO2J90yy0le6YbNdZfrk0Cvy7n2mQ1vcNygTft2ru3jhM4ofwj7pbs2WoPyifajL
+         CrlBEojNwZb179L62f9KIz9d+h9K8RE2GNpKB/7FYiVgv5xUIoT1pQHclzhSaxCEx9
+         QFpYUTjzv/ZPQ==
+X-Nifty-SrcIP: [209.85.215.169]
+Received: by mail-pg1-f169.google.com with SMTP id n25so371004pgb.0;
+        Mon, 11 Jan 2021 11:51:27 -0800 (PST)
+X-Gm-Message-State: AOAM531EqcIsRFyQl8FHOHQS8gGOEo73oc+CZiKl9xYlG6HwWV9Pag7d
+        TcZ6dNI6g3UWIUfM8XxD1z6Ikg7XGQSSBEsHVTo=
+X-Google-Smtp-Source: ABdhPJwiWmifGckt7py++NZBF3MlPvLFNx7xeFXySdQrm+pbBznt0vx0PAl1WQLBSrjANOHybx/pbWbQ2rAQPltB7uQ=
+X-Received: by 2002:a63:eb0c:: with SMTP id t12mr1117953pgh.7.1610394686894;
+ Mon, 11 Jan 2021 11:51:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111142131.GA22493@dhcp22.suse.cz>
+References: <20210111180609.713998-1-natechancellor@gmail.com>
+ <CAK7LNAQ=38BUi-EG5v2UiuAF-BOsVe5BTd-=jVYHHHPD7ikS5A@mail.gmail.com> <20210111193400.GA1343746@ubuntu-m3-large-x86>
+In-Reply-To: <20210111193400.GA1343746@ubuntu-m3-large-x86>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 12 Jan 2021 04:50:50 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASZuWp=aPOCKo6QkdHwM5KG6MUv8305v3x-2yR7cKEX-w@mail.gmail.com>
+Message-ID: <CAK7LNASZuWp=aPOCKo6QkdHwM5KG6MUv8305v3x-2yR7cKEX-w@mail.gmail.com>
+Subject: Re: [PATCH] bpf: Hoise pahole version checks into Kconfig
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 03:21:31PM +0100, Michal Hocko wrote:
-> On Mon 11-01-21 11:48:19, Xiaoming Ni wrote:
-> [...]
-> > patch3:
-> > 	+++ b/fs/proc/proc_sysctl.c
-> > 	@@ -1770,6 +1770,9 @@ static int process_sysctl_arg(char *param, char *val,
-> > 							return 0;
-> > 			}
-> > 
-> > 	+       if (!val)
-> > 	+               return -EINVAL;
-> > 	+
-> > 			/*
-> > 			 * To set sysctl options, we use a temporary mount of proc, look up the
-> > 			 * respective sys/ file and write to it. To avoid mounting it when no
-> > 
-> > sysctl log for patch3:
-> > 	Setting sysctl args: `' invalid for parameter `hung_task_panic'
-> [...]
-> > When process_sysctl_arg() is called, the param parameter may not be the
-> > sysctl parameter.
-> > 
-> > Patch3 or patch4, which is better?
-> 
-> Patch3
+On Tue, Jan 12, 2021 at 4:34 AM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> On Tue, Jan 12, 2021 at 04:19:01AM +0900, Masahiro Yamada wrote:
+> > On Tue, Jan 12, 2021 at 3:06 AM Nathan Chancellor
+> > <natechancellor@gmail.com> wrote:
+> > >
+> > > After commit da5fb18225b4 ("bpf: Support pre-2.25-binutils objcopy for
+> > > vmlinux BTF"), having CONFIG_DEBUG_INFO_BTF enabled but lacking a valid
+> > > copy of pahole results in a kernel that will fully compile but fail to
+> > > link. The user then has to either install pahole or disable
+> > > CONFIG_DEBUG_INFO_BTF and rebuild the kernel but only after their build
+> > > has failed, which could have been a significant amount of time depending
+> > > on the hardware.
+> > >
+> > > Avoid a poor user experience and require pahole to be installed with an
+> > > appropriate version to select and use CONFIG_DEBUG_INFO_BTF, which is
+> > > standard for options that require a specific tools version.
+> > >
+> > > Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> > > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> >
+> >
+> >
+> > I am not sure if this is the right direction.
+> >
+> >
+> > I used to believe moving any tool test to the Kconfig
+> > was the right thing to do.
+> >
+> > For example, I tried to move the libelf test to Kconfig,
+> > and make STACK_VALIDATION depend on it.
+> >
+> > https://patchwork.kernel.org/project/linux-kbuild/patch/1531186516-15764-1-git-send-email-yamada.masahiro@socionext.com/
+> >
+> > It was rejected.
+> >
+> >
+> > In my understanding, it is good to test target toolchains
+> > in Kconfig (e.g. cc-option, ld-option, etc).
+> >
+> > As for host tools, in contrast, it is better to _intentionally_
+> > break the build in order to let users know that something needed is missing.
+> > Then, they will install necessary tools or libraries.
+> > It is just a one-time setup, in most cases,
+> > just running 'apt install' or 'dnf install'.
+> >
+> >
+> >
+> > Recently, a similar thing happened to GCC_PLUGINS
+> > https://patchwork.kernel.org/project/linux-kbuild/patch/20201203125700.161354-1-masahiroy@kernel.org/#23855673
+> >
+> >
+> >
+> >
+> > Following this pattern, if a new pahole is not installed,
+> > it might be better to break the build instead of hiding
+> > the CONFIG option.
+> >
+> > In my case, it is just a matter of 'apt install pahole'.
+> > On some distributions, the bundled pahole is not new enough,
+> > and people may end up with building pahole from the source code.
+>
+> This is fair enough. However, I think that parts of this patch could
+> still be salvaged into something that fits this by making it so that if
+> pahole is not installed (CONFIG_PAHOLE_VERSION=0) or too old, the build
+> errors at the beginning, rather at the end. I am not sure where the best
+> place to put that check would be though.
 
-Oh, I see the issue here -- I thought we were only calling
-process_sysctl_arg() with valid sysctl fields. It looks like we're not,
-which means it should silently ignore everything that isn't a sysctl
-field, and only return -EINVAL when it IS a sysctl but it lacks a value.
+Me neither.
+
+
+Collecting tool checks to the beginning would be user-friendly.
+However, scattering the related code to multiple places is not
+nice from the developer point of view.
+
+How big is it a problem if the build fails
+at the very last stage?
+
+You can install pahole, then resume "make".
+
+Kbuild skips unneeded building, then you will
+be able to come back to the last build stage shortly.
+
+
 
 -- 
-Kees Cook
+Best Regards
+Masahiro Yamada
