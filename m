@@ -2,207 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BABC2F184A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:27:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 421AE2F1857
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:33:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388895AbhAKO1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:27:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37090 "EHLO
+        id S1730930AbhAKOb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:31:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387984AbhAKO1g (ORCPT
+        with ESMTP id S1729869AbhAKObY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:27:36 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90CE3C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:26:56 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id y12so3647887pji.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:26:56 -0800 (PST)
+        Mon, 11 Jan 2021 09:31:24 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3526C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:30:43 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id y13so10607702ilm.12
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:30:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=u1Q+CnZQ1RwsIXw54gOMHhCMb9MqSqNh4KWTQHw3xe8=;
-        b=sbqi3lilJD+am1yDwSFQxSq9HQ1IVSN/ezBcwaEPcRhywZcJ/aPJFO3eBVk/miWhOQ
-         CGbHPBrcsNhjZMpcxA6JrhjYAFulR79LfCdJuj82t4PnXzO4zN8ApTK4Z2eGXAd2zfQG
-         Dw26h4A8G52n02pyiGFCSN7PUYMlQQ6q0JPTIzya2ey5pLTqmMfthLzIVEVoH402oOIT
-         2AUB/0W5Nl61WIO+cvSwKd7MEYACd7LFiaZ7cboiXRuYiwnJgUUs2T34aN+Fe7p8vewc
-         k4hC5juegCeaPR3Lb8woTO8IEMAxcBaDhmSo94G3RniqdMmlj+kwyKMYO21jFf1soCGP
-         RqfQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KMF8Z4FWkjNeZljl8WD2NdixP/23YL2yC6tkyI8SqoM=;
+        b=fB3ODE+P38k+rxpwzuWHcrxJ3NGma2vpXW+RePxBICF1ySjkFRi+HDqfENHHdUUxXu
+         5/W0YM0RUxgcjOCJpK6o7vHAZh99xLsK9/5VApHbf1rYHP2ed3vV2CHw9Mx5raouv8k6
+         7KEOPJruEadjnWd+ngnafRaaDZ4Gaoedm0YEgV6wNLoVtjpoV+i6y1UC2hbqTSDq5iTl
+         j9PsTPR+jeqbPHKdd3BaTkPjUaliLFrAQRtNwawQseTOj2f4w4BYVSIyvVAeoxWfG8j1
+         84NxuB1aWa4DCv7+zxuAu3wheOYhngp69+BNvawrn8bDym20dQBkO/VpTDFlZimLwbMi
+         4nkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=u1Q+CnZQ1RwsIXw54gOMHhCMb9MqSqNh4KWTQHw3xe8=;
-        b=cy08YoCVUC11c28hnECXp1NWIsDjRwPKGut+1H5vMfCiKL7OpEMqEp27ipYIXFVYlN
-         82peEmkZbV9upMpva2N0VucE1NYiV5PKBDZH9SueOir1zB4xCBDoMjoF9stPtj+qPvmn
-         qWQHr7s09TmKJ2tiol8md81WZJo81P3uLVCqlyv97zkx+e9wBU86N+XBNGG8W4mJOdTd
-         7xTfFbCNofIbNk8lpTzqICC7lQtIoMXAqkvTEtnWAp2ygxN23o53d6syo5U9WKzAz1KD
-         CyGPZO9+o9gHHAUPjXY4mZdl7WSurq+EIgXVZQRM4GVdytzvbolYXp0dz+pBgAaksgoL
-         NZOg==
-X-Gm-Message-State: AOAM530AxunBOUhf5P3p3GS4RfOaxQOX1SYDD1SA0hwSrDPIgBCorrEj
-        swNrLvPdgBI7v2kx3leAkHcPTitbaIA=
-X-Google-Smtp-Source: ABdhPJxqAmJw/M8ABgk7EfQd/sX/+fkOc4UkjmzC+SOx1myyl1J/c+6tiObm4COp1VtHoVJws/7VAA==
-X-Received: by 2002:a17:902:b706:b029:dc:3817:4da5 with SMTP id d6-20020a170902b706b02900dc38174da5mr16355103pls.23.1610375215886;
-        Mon, 11 Jan 2021 06:26:55 -0800 (PST)
-Received: from localhost ([47.251.4.198])
-        by smtp.gmail.com with ESMTPSA id a10sm18647403pfi.168.2021.01.11.06.26.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 11 Jan 2021 06:26:55 -0800 (PST)
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KMF8Z4FWkjNeZljl8WD2NdixP/23YL2yC6tkyI8SqoM=;
+        b=uaTE67J4Gz78Z8B/YPEWXD16iKNWRlXaK76GWia9Qcnpy0sQbBMStVr+IIHi8LWUIw
+         VDO5IH//ekJaCUwSGndtxhTZ/eBLBXYKzngEUHXgCPRsM1N6P6+G8Xy/+sximK2Iz/4V
+         q5mlx4GmTxpdALNJ2ew5S+NOacxorPBSDp5c+k8/obDcOAsxjvx3wkggAX0TUwYHgNQR
+         tfdj6kaYvRd0bVIK2P9PEBdGG8Qz2Ip8Nf8YW4YPxAypnGIJhegJQff9W3wDcx9e1s3/
+         Msuj6fAzXB8jqvoFf1ZSLfU7L5oniXwL1OZ8rDZq6y+C3W2tUuvHcDUt8aUCu71RyGoU
+         G3TA==
+X-Gm-Message-State: AOAM531N6qH+sIHwtK0aoYMD7B7EDeWAccXhP3p/1U1lnE448PvV0DIm
+        4BGxTjDlCOWaBUbXXk8RS2/EAg==
+X-Google-Smtp-Source: ABdhPJzqdEDH3WPfRNU/XsnpU8jeOuA8kd5tFyq5xCR+hHYuQb5mo0xFb8H4iIUDd1JPA9p2Ol+row==
+X-Received: by 2002:a92:d40a:: with SMTP id q10mr15882339ilm.20.1610375443138;
+        Mon, 11 Jan 2021 06:30:43 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id j65sm16018698ilg.53.2021.01.11.06.30.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 06:30:42 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kyyDR-005WFX-K9; Mon, 11 Jan 2021 10:30:41 -0400
+Date:   Mon, 11 Jan 2021 10:30:41 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Tejun Heo <tj@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Hillf Danton <hdanton@sina.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: [PATCH -tip V4 8/8] workqueue: Fix affinity of kworkers when attaching into pool
-Date:   Mon, 11 Jan 2021 23:26:38 +0800
-Message-Id: <20210111152638.2417-9-jiangshanlai@gmail.com>
-X-Mailer: git-send-email 2.19.1.6.gb485710b
-In-Reply-To: <20210111152638.2417-1-jiangshanlai@gmail.com>
-References: <20210111152638.2417-1-jiangshanlai@gmail.com>
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>
+Subject: Re: [PATCH 0/2] page_count can't be used to decide when wp_page_copy
+Message-ID: <20210111143041.GI504133@ziepe.ca>
+References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
+ <20210107200402.31095-1-aarcange@redhat.com>
+ <20210107202525.GD504133@ziepe.ca>
+ <X/eA/f1r5GXvcRWH@redhat.com>
+ <20210108133649.GE504133@ziepe.ca>
+ <X/iPtCktcQHwuK5T@redhat.com>
+ <20210108181945.GF504133@ziepe.ca>
+ <X/jgLGPgPb+Xms1t@redhat.com>
+ <20210109004255.GG504133@ziepe.ca>
+ <X/kZ4ETE6LR8jpug@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/kZ4ETE6LR8jpug@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+On Fri, Jan 08, 2021 at 09:50:08PM -0500, Andrea Arcangeli wrote:
 
-When worker_attach_to_pool() is called, we should not put the workers
-to pool->attrs->cpumask when there is or will be no CPU online in it.
+> For all those that aren't using mmu notifier and that rely solely on
+> page pins, they still require privilege, except they do through /dev/
+> permissions.
 
-Otherwise, it may cause BUG_ON(): (quote from Valentin:)
-  Per-CPU kworkers forcefully migrated away by hotplug via
-  workqueue_offline_cpu() can end up spawning more kworkers via
+It is normal that the dev nodes are a+rw so it doesn't really require
+privilege in any real sense.
 
-    manage_workers() -> maybe_create_worker()
+> Actually the mmu notifier doesn't strictly require pins, it only
+> requires GUP. All users tend to use FOLL_GET just as a safety
+> precaution (I already tried to optimize away the two atomics per GUP,
+> but we were naked by the KVM maintainer that didn't want to take the
+> risk, I would have, but it's a fair point indeed, obviously it's safer
+> with the pin plus the mmu notifier, two is safer than one).
 
-  Workers created at this point will be bound using
+I'm not sure what holding the pin will do to reduce risk?
 
-    pool->attrs->cpumask
-
-  which in this case is wrong, as the hotplug state machine already
-  migrated all pinned kworkers away from this CPU. This ends up
-  triggering the BUG_ON condition is sched_cpu_dying() (i.e. there's
-  a kworker enqueued on the dying rq).
-(end of quote)
-
-We need to find out where it is in the hotplug stages to determind
-whether pool->attrs->cpumask is valid.  So we have to check
-%POOL_DISASSOCIATED and wq_unbound_online_cpumask which are indications
-for the hotplug stages.
-
-So for per-CPU kworker case, %POOL_DISASSOCIATED marks the kworkers
-of the pool are bound or unboud, so it is used to detect whether
-pool->attrs->cpumask is valid to use when attachment.
-
-For unbound workers, we should not set online&!active cpumask to workers.
-Just introduced wq_unound_online_cpumask has the features that going-down
-cpu is cleared earlier in it than in cpu_active_mask and bring-up cpu
-is set later in it than cpu_active_mask.  So it is perfect to be used to
-detect whether the pool->attrs->cpumask is valid to use.
-
-To use wq_unound_online_cpumask in worker_attach_to_pool(), we need to protect
-wq_unbound_online_cpumask in wq_pool_attach_mutex.
-
-Cc: Qian Cai <cai@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Vincent Donnefort <vincent.donnefort@arm.com>
-Link: https://lore.kernel.org/lkml/20201210163830.21514-3-valentin.schneider@arm.com/
-Link: https://lore.kernel.org/r/ff62e3ee994efb3620177bf7b19fab16f4866845.camel@redhat.com
-Reported-by: Qian Cai <cai@redhat.com>
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
----
- kernel/workqueue.c | 39 ++++++++++++++++++++++++++++++---------
- 1 file changed, 30 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index b012adbeff9f..d1f1b863c52a 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -310,7 +310,7 @@ static bool workqueue_freezing;		/* PL: have wqs started freezing? */
- /* PL: allowable cpus for unbound wqs and work items */
- static cpumask_var_t wq_unbound_cpumask;
+If you get into a situation where you are stuffing a page into the
+SMMU that is not in the CPU's MMU then everything is lost. Holding a
+pin while carrying a page from the CPU page table to the SMMU just
+ensures that page isn't freed until it is installed, but once
+installed you are back to being broken.
  
--/* PL: online cpus (cpu_online_mask with the going-down cpu cleared) */
-+/* PL&A: online cpus (cpu_online_mask with the going-down cpu cleared) */
- static cpumask_var_t wq_unbound_online_cpumask;
- 
- /* CPU where unbound work was last round robin scheduled from this CPU */
-@@ -1849,19 +1849,36 @@ static struct worker *alloc_worker(int node)
- static void worker_attach_to_pool(struct worker *worker,
- 				   struct worker_pool *pool)
- {
-+	bool pool_cpumask_active;
-+
- 	mutex_lock(&wq_pool_attach_mutex);
- 
- 	/*
--	 * set_cpus_allowed_ptr() will fail if the cpumask doesn't have any
--	 * online CPUs.  It'll be re-applied when any of the CPUs come up.
-+	 * The wq_pool_attach_mutex ensures %POOL_DISASSOCIATED and
-+	 * wq_unbound_online_cpumask remain stable across this function.
-+	 * See the comments above the definitions of the flag and
-+	 * wq_unbound_online_cpumask for details.
-+	 *
-+	 * For percpu pools, whether pool->attrs->cpumask is legitimate
-+	 * for @worker task depends on where it is in the hotplug stages
-+	 * divided by workqueue_online/offline_cpu().  Refer the functions
-+	 * to see how they toggle %POOL_DISASSOCIATED and update cpumask
-+	 * of the workers.
-+	 *
-+	 * For unbound pools, whether pool->attrs->cpumask is legitimate
-+	 * for @worker task depends on where it is in the hotplug stages
-+	 * divided by workqueue_unbound_online/offline_cpu().  Refer the
-+	 * functions to see how they update wq_unbound_online_cpumask and
-+	 * update cpumask of the workers.
- 	 */
--	set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask);
-+	pool_cpumask_active = pool->cpu >= 0 ? !(pool->flags & POOL_DISASSOCIATED) :
-+		cpumask_intersects(pool->attrs->cpumask, wq_unbound_online_cpumask);
-+
-+	if (pool_cpumask_active)
-+		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, pool->attrs->cpumask) < 0);
-+	else
-+		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
- 
--	/*
--	 * The wq_pool_attach_mutex ensures %POOL_DISASSOCIATED remains
--	 * stable across this function.  See the comments above the flag
--	 * definition for details.
--	 */
- 	if (pool->flags & POOL_DISASSOCIATED)
- 		worker->flags |= WORKER_UNBOUND;
- 
-@@ -5149,7 +5166,9 @@ int workqueue_unbound_online_cpu(unsigned int cpu)
- 	int pi;
- 
- 	mutex_lock(&wq_pool_mutex);
-+	mutex_lock(&wq_pool_attach_mutex);
- 	cpumask_set_cpu(cpu, wq_unbound_online_cpumask);
-+	mutex_unlock(&wq_pool_attach_mutex);
- 
- 	/* update CPU affinity of workers of unbound pools */
- 	for_each_pool(pool, pi) {
-@@ -5176,7 +5195,9 @@ int workqueue_unbound_offline_cpu(unsigned int cpu)
- 	int pi;
- 
- 	mutex_lock(&wq_pool_mutex);
-+	mutex_lock(&wq_pool_attach_mutex);
- 	cpumask_clear_cpu(cpu, wq_unbound_online_cpumask);
-+	mutex_unlock(&wq_pool_attach_mutex);
- 
- 	/* update CPU affinity of workers of unbound pools */
- 	for_each_pool(pool, pi) {
--- 
-2.19.1.6.gb485710b
+> I'm not sure how any copy-user could obviate a secondary MMU mapping,
+> mappings and copies are mutually exclusive. Any copy would be breaking
+> memory coherency in this environment.
 
+Because most places need to copy from user to stable kernel memory
+before processing data under user control. You can't just cast a user
+controlled pointer to a kstruct and use it - that is very likely a
+security bug.
+
+Still, the general version is something like kmap:
+
+  map = user_map_setup(user_ptr, length)
+  kptr = user_map_enter(map)
+  [use kptr]
+  user_map_leave(map, kptr)
+
+And inside it could use mmu notifiers, or gup, or whatever.
+
+user_map_setup() would register the notifier and user_map_enter()
+would validate the cache'd page pointer and block cached invalidation
+until user_map_leave().
+
+> The primary concern with the mmu notifier in io_uring is the
+> take_all_locks latency.
+
+Just enabling mmu_notifier takes a performance hit on the entire
+process too, it is not such a simple decision.. We'd need benchmarks
+against a database or scientific application to see how negative the
+notifier actually becomes.
+
+> The problem with the mmu notifier as an universal solution, for
+> example is that it can't wait for I/O completion of O_DIRECT since it
+> has no clue where the put_page is to wait for it, otherwise we could
+> avoid even the FOLL_GET for O_DIRECT and guarantee the I/O has to be
+> completed before paging or anything can unmap the page under I/O from
+> the pagetable.
+
+GPU is already doing something like this, waiting in a notifier
+invalidate callback for DMA to finish before allowing invalidate to
+complete.
+
+It is horrendously complicated and I'm not sure blocking invalidate
+for a long time is actually much better for the MM..
+
+> I see the incompatibility you describe as problem we have today, in
+> the present, and that will fade with time.
+> 
+> Reminds me when we had >4G of RAM and 32bit devices doing DMA. How
+> many 32bit devices are there now?
+
+I'm not so sure anymore. A few years ago OpenCAPI and PCI PRI seemed
+like good things, but now with experience they carry pretty bad
+performance hits to use them. Lots of places are skipping them.
+
+CXL offers another chance at this, so we'll see again in another 5
+years or so if it works out. It is not any easy problem to solve from
+a HW perspective.
+
+> We're not talking here about any random PCI device, we're talking here
+> about very special and very advanced devices that need to have "long
+> term" GUP pins in order to operate, not the usual nvme/gigabit device
+> where GUP pins are never long term.
+
+Beyond RDMA, netdev's XDP uses FOLL_LONGTERM, so do various video
+devices, lots of things related to virtualization like vfio, vdpa and
+vhost. I think this is a bit defeatist to say it doesn't matter. If
+anything as time goes on it seems to be growing, not shrinking
+currently.
+
+> The point is that if you do echo ... >/proc/self/clear_refs on your
+> pid, that has any FOLL_LONGTERM on its mm, it'll just cause your
+> device driver to go out of sync with the mm. It'll see the old pages,
+> before the spurious COWs. The CPU will use new pages (the spurious
+> COWs).
+
+But if you do that then clear-refs isn't going to work they way it
+thought either - this first needs some explanation for how clear_refs
+is supposed to work when DMA WRITE is active on the page.
+
+I'd certainly say causing a loss of synchrony is not acceptable, so if
+we keep Linus's version of COW then clear_refs has to not write
+protect pages under DMA.
+
+> > secondary-mmu drivers using mmu notifier should not trigger this logic
+> > and should not restrict write protect.
+> 
+> That's a great point. I didn't think the mmu notifier will invalidate
+> the secondary MMU and ultimately issue a GUP after the wp_copy_page to
+> keep it in sync.
+
+It had better, or mmu notifiers are broken, right?
+
+> The funny thing that doesn't make sense is that wp_copy_page will only
+> be invoked because the PIN was left by KVM on the page for that extra
+> safety I was talking about earlier.
+
+Yes, with the COW change if kvm cares about this inefficiency it
+should not have the unnecessary pin.
+
+> You clearly contemplate the existance of a read mode, long term. That
+> is also completely compatible with wrprotection. 
+
+We talked about a read mode, but we didn't flesh it out. It is not
+unconditionally compatible with wrprotect - most likely you still
+can't write protect a page under READ DMA because when you eventually
+take the COW there will be ambiguous situations that will break the
+synchrony.
+
+Jason
