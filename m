@@ -2,72 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 119722F0EAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD3B2F0EB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:03:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728219AbhAKJAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 04:00:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728190AbhAKJAV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 04:00:21 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5123DC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 00:59:41 -0800 (PST)
-Received: from dude02.hi.pengutronix.de ([2001:67c:670:100:1d::28])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1kyt31-0007ue-AL; Mon, 11 Jan 2021 09:59:35 +0100
-Received: from mfe by dude02.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1kyt30-0007Td-9U; Mon, 11 Jan 2021 09:59:34 +0100
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     f.fainelli@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: [PATCH] net: phy: smsc: fix clk error handling
-Date:   Mon, 11 Jan 2021 09:59:32 +0100
-Message-Id: <20210111085932.28680-1-m.felsch@pengutronix.de>
-X-Mailer: git-send-email 2.20.1
+        id S1728273AbhAKJDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 04:03:21 -0500
+Received: from muru.com ([72.249.23.125]:42700 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728061AbhAKJDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 04:03:19 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 3100880BB;
+        Mon, 11 Jan 2021 09:02:38 +0000 (UTC)
+Date:   Mon, 11 Jan 2021 11:02:34 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Arthur Demchenkov <spinal.by@gmail.com>,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        Merlijn Wajer <merlijn@wizzup.org>, ruleh <ruleh@gmx.de>,
+        Sebastian Reichel <sre@kernel.org>
+Subject: Re: [PATCH 5/5] Input: omap4-keypad - implement errata check for
+ lost key-up events
+Message-ID: <X/wUKh4kYj2SBri5@atomide.com>
+References: <20210110190529.46135-1-tony@atomide.com>
+ <20210110190529.46135-6-tony@atomide.com>
+ <20210111083353.GA23439@amd>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::28
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111083353.GA23439@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit bedd8d78aba3 ("net: phy: smsc: LAN8710/20: add phy refclk in
-support") added the phy clk support. The commit already checks if
-clk_get_optional() throw an error but instead of returning the error it
-ignores it.
+* Pavel Machek <pavel@ucw.cz> [210111 08:34]:
+> Hi!
+> 
+> > We are still missing handling for errata i689 related issues for the
+> > case where we never see a key up interrupt for the last pressed key.
+> > 
+> > To fix the issue, we must scan the key state again after the keyboard
+> > controller has idled to check if a key up event was missed. This is
+> > described in the omap4 silicon errata documentation for Errata ID i689
+> > "1.32 Keyboard Key Up Event Can Be Missed":
+> > 
+> > "When a key is released for a time shorter than the debounce time,
+> >  in-between 2 key press (KP1 and KP2), the keyboard state machine will go
+> >  to idle mode and will never detect the key release (after KP1, and also
+> >  after KP2), and thus will never generate a new IRQ indicating the key
+> >  release."
+> > 
+> > We can use PM runtime autosuspend features to check the keyboard state
+> > after it enters idle.
+> 
+> I thought about this and... is it reasonable?
+> 
+> Autosuspend is now required for correct operation. But autosuspend is
+> optional feature, configurable by user, and may not be available
+> depending on .config.
 
-Fixes: bedd8d78aba3 ("net: phy: smsc: LAN8710/20: add phy refclk in support")
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
----
- drivers/net/phy/smsc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Well suspending hardware that has (lost) events pending is wrong. So we
+need to do this delayed hardware check at least when runtime suspending
+the device.
 
-diff --git a/drivers/net/phy/smsc.c b/drivers/net/phy/smsc.c
-index 0fc39ac5ca88..10722fed666d 100644
---- a/drivers/net/phy/smsc.c
-+++ b/drivers/net/phy/smsc.c
-@@ -284,7 +284,8 @@ static int smsc_phy_probe(struct phy_device *phydev)
- 	/* Make clk optional to keep DTB backward compatibility. */
- 	priv->refclk = clk_get_optional(dev, NULL);
- 	if (IS_ERR(priv->refclk))
--		dev_err_probe(dev, PTR_ERR(priv->refclk), "Failed to request clock\n");
-+		return dev_err_probe(dev, PTR_ERR(priv->refclk),
-+				     "Failed to request clock\n");
- 
- 	ret = clk_prepare_enable(priv->refclk);
- 	if (ret)
--- 
-2.20.1
+> Do we need some other solution?
+
+Not sure if other places make sense to do this check as we need to wait
+about 50ms for hardware to autoidle, and only then check if there are
+events pending, and then clear the pending events. The PM runtime suspend
+function seems like a natural place to do this.
+
+If PM runtime autosuspend is disabled, the issue with last pressed key
+getting stuck sometimes can still happen like it did earlier. That issue
+has always been there for past 10 or so years and nobody else bothered to
+fix it so I'm not too worried about it.
+
+With this series we already fix the bigger issue anyways where rapidly
+pressing the keys would have the previous key stuck. Like rapid pressing
+of shift shift j would produce an upper case J instead of j.
+
+Naturally there is nothing stopping us from adding additional other places
+to call omap4_keypad_scan_keys() as needed now though if you have some
+good ideas for that :)
+
+Regards,
+
+Tony
+
+
+
+
+
+
 
