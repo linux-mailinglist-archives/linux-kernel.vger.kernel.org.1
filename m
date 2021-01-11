@@ -2,97 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F13982F1B95
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59AF52F1B9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389067AbhAKQyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:54:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732327AbhAKQyy (ORCPT
+        id S2389040AbhAKQ5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:57:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46752 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731149AbhAKQ5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:54:54 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3489C061786;
-        Mon, 11 Jan 2021 08:54:14 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id p12so8131408pju.5;
-        Mon, 11 Jan 2021 08:54:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hxC1qJrlI0mdrHZWwzeRQSreuKvyt9lhWexionM4bvc=;
-        b=jxi/iFmty57nzeTvRbSd8YTGnCoBs+nIg7Xb3rogDOUe+DisU3WnALwowVXJyKCdf9
-         SNIrJFrH9wUNxjvl8JlykHbNFo0sanCK9U2HLEtAA7DTdBwUqQxwSKiUlgXKN45UKMsr
-         9IJ8RVGGpE1hds+aKcovVVyMX8n7xvHYhmCwhPe+81bd3a8pxpAoP8Gob1rCTxutFvpd
-         eoXQoDJToMgjgIvROkHiTPbdzzORIvC2a3a1djItlqB8kTmdHgHHkyYIxOeXq1kUf9FR
-         JII7XYS6E6qz3aoERJLkAcvkj4EcYuerXOaj8lnWULRHMEhH2Edrwiw4Ul+6RdxmbQ7f
-         mDMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hxC1qJrlI0mdrHZWwzeRQSreuKvyt9lhWexionM4bvc=;
-        b=FnJhdpwSWye1m5vvqv//KKtRfTEKfEYAwvKD5K2puSQ9MhmOCOEDS5D7YJ65XPZYyc
-         hkjWGY+3RTpAgczY4UQr2qj2BWA0yAYUL0OuzpKkXsiu6dBElCZTXRB8ahX3OirHHRHz
-         cOtDFDI+c3X037kPn+9rP+KWZ2mJ+aL6ANCG5Dnx4JiPkq5n7cSoJdEv//+iUzM3M2nr
-         TELpcNo9NqLjP+/ChBxvgjxfhSf+5LlomjVGDEn9s3qcCCA3TETQ8CZCJJjKo3MMqBqp
-         gEXBwgOCNgh23x++ia/R6o6SeVCy0ykIZMh36w+4UZ1LhUj9gg2SdrbAoygYVzlcY0t+
-         795g==
-X-Gm-Message-State: AOAM533BJJc1XQDcvTifcIrG+WpShtUhfffBdRuW3YYePJOECCuyAwGX
-        l1w1OvpUIRHTL2Wcj768/r8A4Pslogo=
-X-Google-Smtp-Source: ABdhPJxZc9BlCRH4vHrwGcRGH4A9CVXGnll08SaLUdGhIqreT6BDwqmzNHnBS8fd2Kp2yKbARF6sXg==
-X-Received: by 2002:a17:90a:4689:: with SMTP id z9mr145138pjf.87.1610384053835;
-        Mon, 11 Jan 2021 08:54:13 -0800 (PST)
-Received: from [10.230.29.29] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id x1sm272433pgj.37.2021.01.11.08.54.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 08:54:13 -0800 (PST)
-Subject: Re: [PATCH v2 01/15] ARM: bcm: Select BRCMSTB_L2_IRQ for bcm2835
-To:     Maxime Ripard <maxime@cerno.tech>, Eric Anholt <eric@anholt.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        linux-media@vger.kernel.org
-References: <20210111142309.193441-1-maxime@cerno.tech>
- <20210111142309.193441-2-maxime@cerno.tech>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <000a8e5b-cb97-f413-6d8b-2f5a529f7137@gmail.com>
-Date:   Mon, 11 Jan 2021 08:54:10 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.6.0
+        Mon, 11 Jan 2021 11:57:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610384142;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7+qfhY97NCTMgUChfBrWKmfcQ+DSxbvypcL004zBfdk=;
+        b=DyRrBTOC3v3YMR01jXMX6lfcwZ3NY2R1M/U31WIpOZavctDvhhnsSQjJUipiqqfaaRylBM
+        kbYObu4+z/2m4Izf6Wcxya+EGm80Zd1YgGlTJc1C+RB3IufMgJb2LQInH6uLl27K4k1AFz
+        kSzi8KbsFJzOJjSQUkaUqlS6mRIvXDc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-217-wSNQmkLbMAOfiiQjLDy1ww-1; Mon, 11 Jan 2021 11:55:40 -0500
+X-MC-Unique: wSNQmkLbMAOfiiQjLDy1ww-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 742411005E49;
+        Mon, 11 Jan 2021 16:55:39 +0000 (UTC)
+Received: from [10.36.115.103] (ovpn-115-103.ams2.redhat.com [10.36.115.103])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 04E535D9DB;
+        Mon, 11 Jan 2021 16:55:37 +0000 (UTC)
+Subject: Re: [PATCH 4/5] powerpc/memhotplug: Enable MHP_MEMMAP_ON_MEMORY when
+ supported
+To:     Oscar Salvador <osalvador@suse.de>, akpm@linux-foundation.org
+Cc:     mhocko@kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, vbabka@suse.cz, pasha.tatashin@soleen.com
+References: <20201217130758.11565-1-osalvador@suse.de>
+ <20201217130758.11565-5-osalvador@suse.de>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <a8fc4fb8-5c88-35a4-4cd7-8cea818acd3a@redhat.com>
+Date:   Mon, 11 Jan 2021 17:55:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20210111142309.193441-2-maxime@cerno.tech>
+In-Reply-To: <20201217130758.11565-5-osalvador@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/11/2021 6:22 AM, Maxime Ripard wrote:
-> The BCM2711 has a number of instances of interrupt controllers handled
-> by the driver behind the BRCMSTB_L2_IRQ Kconfig option (irq-brcmstb-l2).
+On 17.12.20 14:07, Oscar Salvador wrote:
+> Let the caller check whether it can pass MHP_MEMMAP_ON_MEMORY by
+> checking mhp_supports_memmap_on_memory().
+> MHP_MEMMAP_ON_MEMORY can only be set in case
+> ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE is enabled, the architecture supports
+> altmap, and the range to be added spans a single memory block.
 > 
-> Let's select that driver as part of the ARCH_BCM2835 Kconfig option.
+> Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> ---
+>  arch/powerpc/platforms/pseries/hotplug-memory.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> diff --git a/arch/powerpc/platforms/pseries/hotplug-memory.c b/arch/powerpc/platforms/pseries/hotplug-memory.c
+> index 7efe6ec5d14a..a7f68e282ec1 100644
+> --- a/arch/powerpc/platforms/pseries/hotplug-memory.c
+> +++ b/arch/powerpc/platforms/pseries/hotplug-memory.c
+> @@ -610,6 +610,7 @@ static int dlpar_memory_remove_by_ic(u32 lmbs_to_remove, u32 drc_index)
+>  
+>  static int dlpar_add_lmb(struct drmem_lmb *lmb)
+>  {
+> +	mhp_t mhp_flags = MHP_NONE;
+>  	unsigned long block_sz;
+>  	int nid, rc;
+>  
+> @@ -629,8 +630,10 @@ static int dlpar_add_lmb(struct drmem_lmb *lmb)
+>  	if (nid < 0 || !node_possible(nid))
+>  		nid = first_online_node;
+>  
+> +	if (mhp_supports_memmap_on_memory(block_sz))
+> +		mhp_flags |= MHP_MEMMAP_ON_MEMORY;
+>  	/* Add the memory */
+> -	rc = __add_memory(nid, lmb->base_addr, block_sz, MHP_NONE);
+> +	rc = __add_memory(nid, lmb->base_addr, block_sz, mhp_flags);
+>  	if (rc) {
+>  		invalidate_lmb_associativity_index(lmb);
+>  		return rc;
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+With 16MB LMBs it's quite wasteful - you won't even have a huge page
+fitting the the remaining part.
 
-Nicolas, I suppose you will be taking patches 1 and 14, 15 through the
-SoC pull request, right?
+I do wonder if we want this on powerpc only with a bigger LMB/memory
+block size (e.g., 256 MB, which is AFAIK the maximum usually found).
+
 -- 
-Florian
+Thanks,
+
+David / dhildenb
+
