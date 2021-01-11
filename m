@@ -2,55 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 974DD2F0EFD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:25:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2882F0F08
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:27:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728415AbhAKJZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 04:25:19 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:36328 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728204AbhAKJZS (ORCPT
+        id S1727987AbhAKJ0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 04:26:39 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:36709 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727872AbhAKJ0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 04:25:18 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0ULMSkuR_1610357064;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0ULMSkuR_1610357064)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 11 Jan 2021 17:24:30 +0800
-From:   YANG LI <abaci-bugfix@linux.alibaba.com>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        YANG LI <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] hci: llc_shdlc: style: Simplify bool comparison
-Date:   Mon, 11 Jan 2021 17:24:23 +0800
-Message-Id: <1610357063-57705-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 11 Jan 2021 04:26:39 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kytSV-0005BM-To; Mon, 11 Jan 2021 09:25:55 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] dm integrity: fix spelling mistake "flusing" -> "flushing"
+Date:   Mon, 11 Jan 2021 09:25:55 +0000
+Message-Id: <20210111092555.6770-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
-./net/nfc/hci/llc_shdlc.c:239:5-21: WARNING: Comparison to bool
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
-Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+There is a spelling mistake in a dm_integrity_io_error error
+message. Fix it.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- net/nfc/hci/llc_shdlc.c | 2 +-
+ drivers/md/dm-integrity.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/nfc/hci/llc_shdlc.c b/net/nfc/hci/llc_shdlc.c
-index 0eb4ddc..c0c8fea 100644
---- a/net/nfc/hci/llc_shdlc.c
-+++ b/net/nfc/hci/llc_shdlc.c
-@@ -236,7 +236,7 @@ static void llc_shdlc_rcv_i_frame(struct llc_shdlc *shdlc,
- 		goto exit;
- 	}
+diff --git a/drivers/md/dm-integrity.c b/drivers/md/dm-integrity.c
+index 11c7c538f7a9..44478744f191 100644
+--- a/drivers/md/dm-integrity.c
++++ b/drivers/md/dm-integrity.c
+@@ -1390,7 +1390,7 @@ static void flush_notify(unsigned long error, void *fr_)
+ {
+ 	struct flush_request *fr = fr_;
+ 	if (unlikely(error != 0))
+-		dm_integrity_io_error(fr->ic, "flusing disk cache", -EIO);
++		dm_integrity_io_error(fr->ic, "flushing disk cache", -EIO);
+ 	complete(&fr->comp);
+ }
  
--	if (shdlc->t1_active == false) {
-+	if (!shdlc->t1_active) {
- 		shdlc->t1_active = true;
- 		mod_timer(&shdlc->t1_timer, jiffies +
- 			  msecs_to_jiffies(SHDLC_T1_VALUE_MS(shdlc->w)));
 -- 
-1.8.3.1
+2.29.2
 
