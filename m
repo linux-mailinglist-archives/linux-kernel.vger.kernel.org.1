@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1582F1161
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A09C22F1165
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:27:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729616AbhAKLYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:24:01 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:46248 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1729544AbhAKLX7 (ORCPT
+        id S1730028AbhAKLYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:24:23 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:33662 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729637AbhAKLYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:23:59 -0500
-X-UUID: a63ee9ac1e574feba14e294c2bb66451-20210111
-X-UUID: a63ee9ac1e574feba14e294c2bb66451-20210111
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        Mon, 11 Jan 2021 06:24:20 -0500
+X-UUID: 47bfbcef09be4534bfd2b8fb72d7e07a-20210111
+X-UUID: 47bfbcef09be4534bfd2b8fb72d7e07a-20210111
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
         (envelope-from <yong.wu@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1850579567; Mon, 11 Jan 2021 19:23:30 +0800
+        with ESMTP id 261536895; Mon, 11 Jan 2021 19:23:37 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
  mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 11 Jan 2021 19:23:30 +0800
+ 15.0.1497.2; Mon, 11 Jan 2021 19:23:36 +0800
 Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 11 Jan 2021 19:23:29 +0800
+ Transport; Mon, 11 Jan 2021 19:23:35 +0800
 From:   Yong Wu <yong.wu@mediatek.com>
 To:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
@@ -39,9 +39,9 @@ CC:     Krzysztof Kozlowski <krzk@kernel.org>,
         <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
         <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
         <anan.sun@mediatek.com>, <chao.hao@mediatek.com>
-Subject: [PATCH v6 26/33] iommu/mediatek: Add iova_region structure
-Date:   Mon, 11 Jan 2021 19:19:07 +0800
-Message-ID: <20210111111914.22211-27-yong.wu@mediatek.com>
+Subject: [PATCH v6 27/33] iommu/mediatek: Add get_domain_id from dev->dma_range_map
+Date:   Mon, 11 Jan 2021 19:19:08 +0800
+Message-ID: <20210111111914.22211-28-yong.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20210111111914.22211-1-yong.wu@mediatek.com>
 References: <20210111111914.22211-1-yong.wu@mediatek.com>
@@ -52,103 +52,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new structure for the iova_region. Each a region will be a
-independent iommu domain.
+Add a new interface _get_domain_id from dev->dma_range_map,
+The iommu consumer device will use dma-ranges in dtsi node to indicate
+its dma address region requirement. In this iommu driver, we will get
+the requirement and decide which iova domain it should locate.
 
-For the previous SoC, there is single iova region(0~4G). For the SoC
-that need support multi-domains, there will be several regions.
+In the lastest SoC, there will be several iova-regions(domains), we will
+compare and calculate which domain is right. If the start/end of device
+requirement equal some region. it is best fit of course. If it is inside
+some region, it is also ok. the iova requirement of a device should not
+be inside two or more regions.
 
 Signed-off-by: Yong Wu <yong.wu@mediatek.com>
 ---
- drivers/iommu/mtk_iommu.c | 19 +++++++++++++++++++
- drivers/iommu/mtk_iommu.h |  5 +++++
- 2 files changed, 24 insertions(+)
+ drivers/iommu/mtk_iommu.c | 42 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index 309b06d5e1f9..6875ca1225f0 100644
+index 6875ca1225f0..8fc17158bc28 100644
 --- a/drivers/iommu/mtk_iommu.c
 +++ b/drivers/iommu/mtk_iommu.c
-@@ -167,6 +167,15 @@ static LIST_HEAD(m4ulist);	/* List all the M4U HWs */
+@@ -8,6 +8,7 @@
+ #include <linux/clk.h>
+ #include <linux/component.h>
+ #include <linux/device.h>
++#include <linux/dma-direct.h>
+ #include <linux/dma-iommu.h>
+ #include <linux/err.h>
+ #include <linux/interrupt.h>
+@@ -314,6 +315,36 @@ static irqreturn_t mtk_iommu_isr(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
  
- #define for_each_m4u(data)	list_for_each_entry(data, &m4ulist, list)
- 
-+struct mtk_iommu_iova_region {
-+	dma_addr_t		iova_base;
-+	unsigned long long	size;
-+};
++static int mtk_iommu_get_domain_id(struct device *dev,
++				   const struct mtk_iommu_plat_data *plat_data)
++{
++	const struct mtk_iommu_iova_region *rgn = plat_data->iova_region;
++	const struct bus_dma_region *dma_rgn = dev->dma_range_map;
++	int i, candidate = -1;
++	dma_addr_t dma_end;
 +
-+static const struct mtk_iommu_iova_region single_domain[] = {
-+	{.iova_base = 0,		.size = SZ_4G},
-+};
++	if (!dma_rgn || plat_data->iova_region_nr == 1)
++		return 0;
 +
- /*
-  * There may be 1 or 2 M4U HWs, But we always expect they are in the same domain
-  * for the performance.
-@@ -901,6 +910,8 @@ static const struct mtk_iommu_plat_data mt2712_data = {
- 	.m4u_plat     = M4U_MT2712,
- 	.flags        = HAS_4GB_MODE | HAS_BCLK | HAS_VLD_PA_RNG,
- 	.inv_sel_reg  = REG_MMU_INV_SEL_GEN1,
-+	.iova_region  = single_domain,
-+	.iova_region_nr = ARRAY_SIZE(single_domain),
- 	.larbid_remap = {{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}},
- };
- 
-@@ -908,6 +919,8 @@ static const struct mtk_iommu_plat_data mt6779_data = {
- 	.m4u_plat      = M4U_MT6779,
- 	.flags         = HAS_SUB_COMM | OUT_ORDER_WR_EN | WR_THROT_EN,
- 	.inv_sel_reg   = REG_MMU_INV_SEL_GEN2,
-+	.iova_region   = single_domain,
-+	.iova_region_nr = ARRAY_SIZE(single_domain),
- 	.larbid_remap  = {{0}, {1}, {2}, {3}, {5}, {7, 8}, {10}, {9}},
- };
- 
-@@ -915,6 +928,8 @@ static const struct mtk_iommu_plat_data mt8167_data = {
- 	.m4u_plat     = M4U_MT8167,
- 	.flags        = RESET_AXI | HAS_LEGACY_IVRP_PADDR,
- 	.inv_sel_reg  = REG_MMU_INV_SEL_GEN1,
-+	.iova_region  = single_domain,
-+	.iova_region_nr = ARRAY_SIZE(single_domain),
- 	.larbid_remap = {{0}, {1}, {2}}, /* Linear mapping. */
- };
- 
-@@ -923,6 +938,8 @@ static const struct mtk_iommu_plat_data mt8173_data = {
- 	.flags	      = HAS_4GB_MODE | HAS_BCLK | RESET_AXI |
- 			HAS_LEGACY_IVRP_PADDR,
- 	.inv_sel_reg  = REG_MMU_INV_SEL_GEN1,
-+	.iova_region  = single_domain,
-+	.iova_region_nr = ARRAY_SIZE(single_domain),
- 	.larbid_remap = {{0}, {1}, {2}, {3}, {4}, {5}}, /* Linear mapping. */
- };
- 
-@@ -930,6 +947,8 @@ static const struct mtk_iommu_plat_data mt8183_data = {
- 	.m4u_plat     = M4U_MT8183,
- 	.flags        = RESET_AXI,
- 	.inv_sel_reg  = REG_MMU_INV_SEL_GEN1,
-+	.iova_region  = single_domain,
-+	.iova_region_nr = ARRAY_SIZE(single_domain),
- 	.larbid_remap = {{0}, {4}, {5}, {6}, {7}, {2}, {3}, {1}},
- };
- 
-diff --git a/drivers/iommu/mtk_iommu.h b/drivers/iommu/mtk_iommu.h
-index a9b79e118f02..118170af1974 100644
---- a/drivers/iommu/mtk_iommu.h
-+++ b/drivers/iommu/mtk_iommu.h
-@@ -45,10 +45,15 @@ enum mtk_iommu_plat {
- 	M4U_MT8183,
- };
- 
-+struct mtk_iommu_iova_region;
++	dma_end = dma_rgn->dma_start + dma_rgn->size - 1;
++	for (i = 0; i < plat_data->iova_region_nr; i++, rgn++) {
++		/* Best fit. */
++		if (dma_rgn->dma_start == rgn->iova_base &&
++		    dma_end == rgn->iova_base + rgn->size - 1)
++			return i;
++		/* ok if it is inside this region. */
++		if (dma_rgn->dma_start >= rgn->iova_base &&
++		    dma_end < rgn->iova_base + rgn->size)
++			candidate = i;
++	}
 +
- struct mtk_iommu_plat_data {
- 	enum mtk_iommu_plat m4u_plat;
- 	u32                 flags;
- 	u32                 inv_sel_reg;
++	if (candidate >= 0)
++		return candidate;
++	dev_err(dev, "Can NOT find the iommu domain id(%pad 0x%llx).\n",
++		&dma_rgn->dma_start, dma_rgn->size);
++	return -EINVAL;
++}
 +
-+	unsigned int				iova_region_nr;
-+	const struct mtk_iommu_iova_region	*iova_region;
- 	unsigned char       larbid_remap[MTK_LARB_COM_MAX][MTK_LARB_SUBCOM_MAX];
- };
+ static void mtk_iommu_config(struct mtk_iommu_data *data,
+ 			     struct device *dev, bool enable)
+ {
+@@ -400,11 +431,15 @@ static int mtk_iommu_attach_device(struct iommu_domain *domain,
+ 	struct mtk_iommu_data *data = dev_iommu_priv_get(dev);
+ 	struct mtk_iommu_domain *dom = to_mtk_domain(domain);
+ 	struct device *m4udev = data->dev;
+-	int ret;
++	int ret, domid;
  
+ 	if (!data)
+ 		return -ENODEV;
+ 
++	domid = mtk_iommu_get_domain_id(dev, data->plat_data);
++	if (domid < 0)
++		return domid;
++
+ 	if (!dom->data) {
+ 		if (mtk_iommu_domain_finalise(dom, data))
+ 			return -ENODEV;
+@@ -534,10 +569,15 @@ static void mtk_iommu_release_device(struct device *dev)
+ static struct iommu_group *mtk_iommu_device_group(struct device *dev)
+ {
+ 	struct mtk_iommu_data *data = mtk_iommu_get_m4u_data();
++	int domid;
+ 
+ 	if (!data)
+ 		return ERR_PTR(-ENODEV);
+ 
++	domid = mtk_iommu_get_domain_id(dev, data->plat_data);
++	if (domid < 0)
++		return ERR_PTR(domid);
++
+ 	/* All the client devices are in the same m4u iommu-group */
+ 	if (!data->m4u_group) {
+ 		data->m4u_group = iommu_group_alloc();
 -- 
 2.18.0
 
