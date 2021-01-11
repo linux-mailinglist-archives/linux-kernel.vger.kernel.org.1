@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543832F13F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:18:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB672F138E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:10:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732662AbhAKNRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:17:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35478 "EHLO mail.kernel.org"
+        id S1731264AbhAKNKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:10:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731660AbhAKNRe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:17:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E030222BE9;
-        Mon, 11 Jan 2021 13:17:17 +0000 (UTC)
+        id S1730950AbhAKNJr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:09:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D756229C4;
+        Mon, 11 Jan 2021 13:09:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610371038;
-        bh=56ljdGGTh5L4PdGUDOdZmasYU7QmrraHehc84vPPjYc=;
+        s=korg; t=1610370545;
+        bh=0stzJbUrAZcqs9NqQMB5BlC35WwMhLiKAJWDeHs7rkU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lfg5EOYbyylaPGRPSBQIpUtjve1OaD5O63lmKM4uSDmskxc2izVftIuctXXt35JlF
-         hyD117UucDPnfYBzE3pZqLD2TkhSwh9bEtSvX9/odc1BHYspeT5hy7NSPPWVwCT5iT
-         w665qZhLOtEVUHgZOjegB61+0EN41a949UwH3P4A=
+        b=1FNu+Lgq3Wku+R/ZMPkD57zOHZ3qTAnqsQ70Gu+p1bm6FHm8CANYIxxgposZpkzEN
+         3sJZN1zr/0aAnqOBAKwhxL3ptGBrnD/hHIGDx2DvbBV1/XFkglDLhsGb6zvX2mGwgO
+         A2NupAKfevUJ9p0h4K8PJkILaqNb8PD1MwuWqOjg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ben Gardon <bgardon@google.com>
-Subject: [PATCH 5.10 114/145] KVM: x86/mmu: Ensure TDP MMU roots are freed after yield
-Date:   Mon, 11 Jan 2021 14:02:18 +0100
-Message-Id: <20210111130054.005402130@linuxfoundation.org>
+        stable@vger.kernel.org, "Massimo B." <massimo.b@gmx.net>,
+        Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 4.19 70/77] btrfs: send: fix wrong file path when there is an inode with a pending rmdir
+Date:   Mon, 11 Jan 2021 14:02:19 +0100
+Message-Id: <20210111130039.772683307@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
+References: <20210111130036.414620026@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,230 +40,290 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Gardon <bgardon@google.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-commit a889ea54b3daa63ee1463dc19ed699407d61458b upstream.
+commit 0b3f407e6728d990ae1630a02c7b952c21c288d3 upstream.
 
-Many TDP MMU functions which need to perform some action on all TDP MMU
-roots hold a reference on that root so that they can safely drop the MMU
-lock in order to yield to other threads. However, when releasing the
-reference on the root, there is a bug: the root will not be freed even
-if its reference count (root_count) is reduced to 0.
+When doing an incremental send, if we have a new inode that happens to
+have the same number that an old directory inode had in the base snapshot
+and that old directory has a pending rmdir operation, we end up computing
+a wrong path for the new inode, causing the receiver to fail.
 
-To simplify acquiring and releasing references on TDP MMU root pages, and
-to ensure that these roots are properly freed, move the get/put operations
-into another TDP MMU root iterator macro.
+Example reproducer:
 
-Moving the get/put operations into an iterator macro also helps
-simplify control flow when a root does need to be freed. Note that using
-the list_for_each_entry_safe macro would not have been appropriate in
-this situation because it could keep a pointer to the next root across
-an MMU lock release + reacquire, during which time that root could be
-freed.
+  $ cat test-send-rmdir.sh
+  #!/bin/bash
 
-Reported-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-Fixes: faaf05b00aec ("kvm: x86/mmu: Support zapping SPTEs in the TDP MMU")
-Fixes: 063afacd8730 ("kvm: x86/mmu: Support invalidate range MMU notifier for TDP MMU")
-Fixes: a6a0b05da9f3 ("kvm: x86/mmu: Support dirty logging for the TDP MMU")
-Fixes: 14881998566d ("kvm: x86/mmu: Support disabling dirty logging for the tdp MMU")
-Signed-off-by: Ben Gardon <bgardon@google.com>
-Message-Id: <20210107001935.3732070-1-bgardon@google.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+  DEV=/dev/sdi
+  MNT=/mnt/sdi
+
+  mkfs.btrfs -f $DEV >/dev/null
+  mount $DEV $MNT
+
+  mkdir $MNT/dir
+  touch $MNT/dir/file1
+  touch $MNT/dir/file2
+  touch $MNT/dir/file3
+
+  # Filesystem looks like:
+  #
+  # .                                     (ino 256)
+  # |----- dir/                           (ino 257)
+  #         |----- file1                  (ino 258)
+  #         |----- file2                  (ino 259)
+  #         |----- file3                  (ino 260)
+  #
+
+  btrfs subvolume snapshot -r $MNT $MNT/snap1
+  btrfs send -f /tmp/snap1.send $MNT/snap1
+
+  # Now remove our directory and all its files.
+  rm -fr $MNT/dir
+
+  # Unmount the filesystem and mount it again. This is to ensure that
+  # the next inode that is created ends up with the same inode number
+  # that our directory "dir" had, 257, which is the first free "objectid"
+  # available after mounting again the filesystem.
+  umount $MNT
+  mount $DEV $MNT
+
+  # Now create a new file (it could be a directory as well).
+  touch $MNT/newfile
+
+  # Filesystem now looks like:
+  #
+  # .                                     (ino 256)
+  # |----- newfile                        (ino 257)
+  #
+
+  btrfs subvolume snapshot -r $MNT $MNT/snap2
+  btrfs send -f /tmp/snap2.send -p $MNT/snap1 $MNT/snap2
+
+  # Now unmount the filesystem, create a new one, mount it and try to apply
+  # both send streams to recreate both snapshots.
+  umount $DEV
+
+  mkfs.btrfs -f $DEV >/dev/null
+
+  mount $DEV $MNT
+
+  btrfs receive -f /tmp/snap1.send $MNT
+  btrfs receive -f /tmp/snap2.send $MNT
+
+  umount $MNT
+
+When running the test, the receive operation for the incremental stream
+fails:
+
+  $ ./test-send-rmdir.sh
+  Create a readonly snapshot of '/mnt/sdi' in '/mnt/sdi/snap1'
+  At subvol /mnt/sdi/snap1
+  Create a readonly snapshot of '/mnt/sdi' in '/mnt/sdi/snap2'
+  At subvol /mnt/sdi/snap2
+  At subvol snap1
+  At snapshot snap2
+  ERROR: chown o257-9-0 failed: No such file or directory
+
+So fix this by tracking directories that have a pending rmdir by inode
+number and generation number, instead of only inode number.
+
+A test case for fstests follows soon.
+
+Reported-by: Massimo B. <massimo.b@gmx.net>
+Tested-by: Massimo B. <massimo.b@gmx.net>
+Link: https://lore.kernel.org/linux-btrfs/6ae34776e85912960a253a8327068a892998e685.camel@gmx.net/
+CC: stable@vger.kernel.org # 4.19+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/mmu/tdp_mmu.c |  104 ++++++++++++++++++++-------------------------
- 1 file changed, 48 insertions(+), 56 deletions(-)
+ fs/btrfs/send.c |   49 +++++++++++++++++++++++++++++++------------------
+ 1 file changed, 31 insertions(+), 18 deletions(-)
 
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -42,7 +42,48 @@ void kvm_mmu_uninit_tdp_mmu(struct kvm *
- 	WARN_ON(!list_empty(&kvm->arch.tdp_mmu_roots));
- }
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -238,6 +238,7 @@ struct waiting_dir_move {
+ 	 * after this directory is moved, we can try to rmdir the ino rmdir_ino.
+ 	 */
+ 	u64 rmdir_ino;
++	u64 rmdir_gen;
+ 	bool orphanized;
+ };
  
--#define for_each_tdp_mmu_root(_kvm, _root)			    \
-+static void tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root)
-+{
-+	if (kvm_mmu_put_root(kvm, root))
-+		kvm_tdp_mmu_free_root(kvm, root);
-+}
-+
-+static inline bool tdp_mmu_next_root_valid(struct kvm *kvm,
-+					   struct kvm_mmu_page *root)
-+{
-+	lockdep_assert_held(&kvm->mmu_lock);
-+
-+	if (list_entry_is_head(root, &kvm->arch.tdp_mmu_roots, link))
-+		return false;
-+
-+	kvm_mmu_get_root(kvm, root);
-+	return true;
-+
-+}
-+
-+static inline struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
-+						     struct kvm_mmu_page *root)
-+{
-+	struct kvm_mmu_page *next_root;
-+
-+	next_root = list_next_entry(root, link);
-+	tdp_mmu_put_root(kvm, root);
-+	return next_root;
-+}
-+
-+/*
-+ * Note: this iterator gets and puts references to the roots it iterates over.
-+ * This makes it safe to release the MMU lock and yield within the loop, but
-+ * if exiting the loop early, the caller must drop the reference to the most
-+ * recent root. (Unless keeping a live reference is desirable.)
-+ */
-+#define for_each_tdp_mmu_root_yield_safe(_kvm, _root)				\
-+	for (_root = list_first_entry(&_kvm->arch.tdp_mmu_roots,	\
-+				      typeof(*_root), link);		\
-+	     tdp_mmu_next_root_valid(_kvm, _root);			\
-+	     _root = tdp_mmu_next_root(_kvm, _root))
-+
-+#define for_each_tdp_mmu_root(_kvm, _root)				\
- 	list_for_each_entry(_root, &_kvm->arch.tdp_mmu_roots, link)
+@@ -308,7 +309,7 @@ static int is_waiting_for_move(struct se
+ static struct waiting_dir_move *
+ get_waiting_dir_move(struct send_ctx *sctx, u64 ino);
  
- bool is_tdp_mmu_root(struct kvm *kvm, hpa_t hpa)
-@@ -439,18 +480,9 @@ bool kvm_tdp_mmu_zap_gfn_range(struct kv
- 	struct kvm_mmu_page *root;
- 	bool flush = false;
+-static int is_waiting_for_rm(struct send_ctx *sctx, u64 dir_ino);
++static int is_waiting_for_rm(struct send_ctx *sctx, u64 dir_ino, u64 gen);
  
--	for_each_tdp_mmu_root(kvm, root) {
--		/*
--		 * Take a reference on the root so that it cannot be freed if
--		 * this thread releases the MMU lock and yields in this loop.
--		 */
--		kvm_mmu_get_root(kvm, root);
--
-+	for_each_tdp_mmu_root_yield_safe(kvm, root)
- 		flush |= zap_gfn_range(kvm, root, start, end, true);
+ static int need_send_hole(struct send_ctx *sctx)
+ {
+@@ -2304,7 +2305,7 @@ static int get_cur_path(struct send_ctx
  
--		kvm_mmu_put_root(kvm, root);
--	}
--
- 	return flush;
- }
+ 		fs_path_reset(name);
  
-@@ -609,13 +641,7 @@ static int kvm_tdp_mmu_handle_hva_range(
- 	int ret = 0;
- 	int as_id;
- 
--	for_each_tdp_mmu_root(kvm, root) {
--		/*
--		 * Take a reference on the root so that it cannot be freed if
--		 * this thread releases the MMU lock and yields in this loop.
--		 */
--		kvm_mmu_get_root(kvm, root);
--
-+	for_each_tdp_mmu_root_yield_safe(kvm, root) {
- 		as_id = kvm_mmu_page_as_id(root);
- 		slots = __kvm_memslots(kvm, as_id);
- 		kvm_for_each_memslot(memslot, slots) {
-@@ -637,8 +663,6 @@ static int kvm_tdp_mmu_handle_hva_range(
- 			ret |= handler(kvm, memslot, root, gfn_start,
- 				       gfn_end, data);
- 		}
--
--		kvm_mmu_put_root(kvm, root);
- 	}
- 
+-		if (is_waiting_for_rm(sctx, ino)) {
++		if (is_waiting_for_rm(sctx, ino, gen)) {
+ 			ret = gen_unique_name(sctx, ino, gen, name);
+ 			if (ret < 0)
+ 				goto out;
+@@ -2863,8 +2864,8 @@ out:
  	return ret;
-@@ -826,21 +850,13 @@ bool kvm_tdp_mmu_wrprot_slot(struct kvm
- 	int root_as_id;
- 	bool spte_set = false;
- 
--	for_each_tdp_mmu_root(kvm, root) {
-+	for_each_tdp_mmu_root_yield_safe(kvm, root) {
- 		root_as_id = kvm_mmu_page_as_id(root);
- 		if (root_as_id != slot->as_id)
- 			continue;
- 
--		/*
--		 * Take a reference on the root so that it cannot be freed if
--		 * this thread releases the MMU lock and yields in this loop.
--		 */
--		kvm_mmu_get_root(kvm, root);
--
- 		spte_set |= wrprot_gfn_range(kvm, root, slot->base_gfn,
- 			     slot->base_gfn + slot->npages, min_level);
--
--		kvm_mmu_put_root(kvm, root);
- 	}
- 
- 	return spte_set;
-@@ -894,21 +910,13 @@ bool kvm_tdp_mmu_clear_dirty_slot(struct
- 	int root_as_id;
- 	bool spte_set = false;
- 
--	for_each_tdp_mmu_root(kvm, root) {
-+	for_each_tdp_mmu_root_yield_safe(kvm, root) {
- 		root_as_id = kvm_mmu_page_as_id(root);
- 		if (root_as_id != slot->as_id)
- 			continue;
- 
--		/*
--		 * Take a reference on the root so that it cannot be freed if
--		 * this thread releases the MMU lock and yields in this loop.
--		 */
--		kvm_mmu_get_root(kvm, root);
--
- 		spte_set |= clear_dirty_gfn_range(kvm, root, slot->base_gfn,
- 				slot->base_gfn + slot->npages);
--
--		kvm_mmu_put_root(kvm, root);
- 	}
- 
- 	return spte_set;
-@@ -1017,21 +1025,13 @@ bool kvm_tdp_mmu_slot_set_dirty(struct k
- 	int root_as_id;
- 	bool spte_set = false;
- 
--	for_each_tdp_mmu_root(kvm, root) {
-+	for_each_tdp_mmu_root_yield_safe(kvm, root) {
- 		root_as_id = kvm_mmu_page_as_id(root);
- 		if (root_as_id != slot->as_id)
- 			continue;
- 
--		/*
--		 * Take a reference on the root so that it cannot be freed if
--		 * this thread releases the MMU lock and yields in this loop.
--		 */
--		kvm_mmu_get_root(kvm, root);
--
- 		spte_set |= set_dirty_gfn_range(kvm, root, slot->base_gfn,
- 				slot->base_gfn + slot->npages);
--
--		kvm_mmu_put_root(kvm, root);
- 	}
- 	return spte_set;
- }
-@@ -1077,21 +1077,13 @@ void kvm_tdp_mmu_zap_collapsible_sptes(s
- 	struct kvm_mmu_page *root;
- 	int root_as_id;
- 
--	for_each_tdp_mmu_root(kvm, root) {
-+	for_each_tdp_mmu_root_yield_safe(kvm, root) {
- 		root_as_id = kvm_mmu_page_as_id(root);
- 		if (root_as_id != slot->as_id)
- 			continue;
- 
--		/*
--		 * Take a reference on the root so that it cannot be freed if
--		 * this thread releases the MMU lock and yields in this loop.
--		 */
--		kvm_mmu_get_root(kvm, root);
--
- 		zap_collapsible_spte_range(kvm, root, slot->base_gfn,
- 					   slot->base_gfn + slot->npages);
--
--		kvm_mmu_put_root(kvm, root);
- 	}
  }
  
+-static struct orphan_dir_info *
+-add_orphan_dir_info(struct send_ctx *sctx, u64 dir_ino)
++static struct orphan_dir_info *add_orphan_dir_info(struct send_ctx *sctx,
++						   u64 dir_ino, u64 dir_gen)
+ {
+ 	struct rb_node **p = &sctx->orphan_dirs.rb_node;
+ 	struct rb_node *parent = NULL;
+@@ -2873,20 +2874,23 @@ add_orphan_dir_info(struct send_ctx *sct
+ 	while (*p) {
+ 		parent = *p;
+ 		entry = rb_entry(parent, struct orphan_dir_info, node);
+-		if (dir_ino < entry->ino) {
++		if (dir_ino < entry->ino)
+ 			p = &(*p)->rb_left;
+-		} else if (dir_ino > entry->ino) {
++		else if (dir_ino > entry->ino)
+ 			p = &(*p)->rb_right;
+-		} else {
++		else if (dir_gen < entry->gen)
++			p = &(*p)->rb_left;
++		else if (dir_gen > entry->gen)
++			p = &(*p)->rb_right;
++		else
+ 			return entry;
+-		}
+ 	}
+ 
+ 	odi = kmalloc(sizeof(*odi), GFP_KERNEL);
+ 	if (!odi)
+ 		return ERR_PTR(-ENOMEM);
+ 	odi->ino = dir_ino;
+-	odi->gen = 0;
++	odi->gen = dir_gen;
+ 	odi->last_dir_index_offset = 0;
+ 
+ 	rb_link_node(&odi->node, parent, p);
+@@ -2894,8 +2898,8 @@ add_orphan_dir_info(struct send_ctx *sct
+ 	return odi;
+ }
+ 
+-static struct orphan_dir_info *
+-get_orphan_dir_info(struct send_ctx *sctx, u64 dir_ino)
++static struct orphan_dir_info *get_orphan_dir_info(struct send_ctx *sctx,
++						   u64 dir_ino, u64 gen)
+ {
+ 	struct rb_node *n = sctx->orphan_dirs.rb_node;
+ 	struct orphan_dir_info *entry;
+@@ -2906,15 +2910,19 @@ get_orphan_dir_info(struct send_ctx *sct
+ 			n = n->rb_left;
+ 		else if (dir_ino > entry->ino)
+ 			n = n->rb_right;
++		else if (gen < entry->gen)
++			n = n->rb_left;
++		else if (gen > entry->gen)
++			n = n->rb_right;
+ 		else
+ 			return entry;
+ 	}
+ 	return NULL;
+ }
+ 
+-static int is_waiting_for_rm(struct send_ctx *sctx, u64 dir_ino)
++static int is_waiting_for_rm(struct send_ctx *sctx, u64 dir_ino, u64 gen)
+ {
+-	struct orphan_dir_info *odi = get_orphan_dir_info(sctx, dir_ino);
++	struct orphan_dir_info *odi = get_orphan_dir_info(sctx, dir_ino, gen);
+ 
+ 	return odi != NULL;
+ }
+@@ -2959,7 +2967,7 @@ static int can_rmdir(struct send_ctx *sc
+ 	key.type = BTRFS_DIR_INDEX_KEY;
+ 	key.offset = 0;
+ 
+-	odi = get_orphan_dir_info(sctx, dir);
++	odi = get_orphan_dir_info(sctx, dir, dir_gen);
+ 	if (odi)
+ 		key.offset = odi->last_dir_index_offset;
+ 
+@@ -2990,7 +2998,7 @@ static int can_rmdir(struct send_ctx *sc
+ 
+ 		dm = get_waiting_dir_move(sctx, loc.objectid);
+ 		if (dm) {
+-			odi = add_orphan_dir_info(sctx, dir);
++			odi = add_orphan_dir_info(sctx, dir, dir_gen);
+ 			if (IS_ERR(odi)) {
+ 				ret = PTR_ERR(odi);
+ 				goto out;
+@@ -2998,12 +3006,13 @@ static int can_rmdir(struct send_ctx *sc
+ 			odi->gen = dir_gen;
+ 			odi->last_dir_index_offset = found_key.offset;
+ 			dm->rmdir_ino = dir;
++			dm->rmdir_gen = dir_gen;
+ 			ret = 0;
+ 			goto out;
+ 		}
+ 
+ 		if (loc.objectid > send_progress) {
+-			odi = add_orphan_dir_info(sctx, dir);
++			odi = add_orphan_dir_info(sctx, dir, dir_gen);
+ 			if (IS_ERR(odi)) {
+ 				ret = PTR_ERR(odi);
+ 				goto out;
+@@ -3043,6 +3052,7 @@ static int add_waiting_dir_move(struct s
+ 		return -ENOMEM;
+ 	dm->ino = ino;
+ 	dm->rmdir_ino = 0;
++	dm->rmdir_gen = 0;
+ 	dm->orphanized = orphanized;
+ 
+ 	while (*p) {
+@@ -3188,7 +3198,7 @@ static int path_loop(struct send_ctx *sc
+ 	while (ino != BTRFS_FIRST_FREE_OBJECTID) {
+ 		fs_path_reset(name);
+ 
+-		if (is_waiting_for_rm(sctx, ino))
++		if (is_waiting_for_rm(sctx, ino, gen))
+ 			break;
+ 		if (is_waiting_for_move(sctx, ino)) {
+ 			if (*ancestor_ino == 0)
+@@ -3228,6 +3238,7 @@ static int apply_dir_move(struct send_ct
+ 	u64 parent_ino, parent_gen;
+ 	struct waiting_dir_move *dm = NULL;
+ 	u64 rmdir_ino = 0;
++	u64 rmdir_gen;
+ 	u64 ancestor;
+ 	bool is_orphan;
+ 	int ret;
+@@ -3242,6 +3253,7 @@ static int apply_dir_move(struct send_ct
+ 	dm = get_waiting_dir_move(sctx, pm->ino);
+ 	ASSERT(dm);
+ 	rmdir_ino = dm->rmdir_ino;
++	rmdir_gen = dm->rmdir_gen;
+ 	is_orphan = dm->orphanized;
+ 	free_waiting_dir_move(sctx, dm);
+ 
+@@ -3278,6 +3290,7 @@ static int apply_dir_move(struct send_ct
+ 			dm = get_waiting_dir_move(sctx, pm->ino);
+ 			ASSERT(dm);
+ 			dm->rmdir_ino = rmdir_ino;
++			dm->rmdir_gen = rmdir_gen;
+ 		}
+ 		goto out;
+ 	}
+@@ -3296,7 +3309,7 @@ static int apply_dir_move(struct send_ct
+ 		struct orphan_dir_info *odi;
+ 		u64 gen;
+ 
+-		odi = get_orphan_dir_info(sctx, rmdir_ino);
++		odi = get_orphan_dir_info(sctx, rmdir_ino, rmdir_gen);
+ 		if (!odi) {
+ 			/* already deleted */
+ 			goto finish;
 
 
