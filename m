@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4252F1467
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:24:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7732F13AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:13:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732627AbhAKNRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:17:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35922 "EHLO mail.kernel.org"
+        id S1731571AbhAKNNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:13:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732603AbhAKNRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:17:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A68882226A;
-        Mon, 11 Jan 2021 13:16:37 +0000 (UTC)
+        id S1730897AbhAKNML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:12:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 035702250F;
+        Mon, 11 Jan 2021 13:11:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370998;
-        bh=H3Vg39PJBb8bU4b9uFjLwWenejDhGNvVdsLhkM1vwtU=;
+        s=korg; t=1610370715;
+        bh=kv7j7t0b3SZU4C2i21LlhxQz0FcvtjUII2WzLKI6S2Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ir7fhglME+6Gssml12wFUgK2DH7+cRCdpf/5yjUr1FoYxLJm0bLoaqQtgVI5hqhTt
-         tXqFQ/ZEUnTyvlGowqiagXcF7tb8CsbQC75Oct1/d+q4obXGqMrvN0YxYWWlujYosM
-         IhtDaUhxVyIWB2Omjz12NmWNc4BANC05IzOunbi0=
+        b=AWKNQdSKhZlfFEU8rzuVJLJPJDtbSGpI5nY1H1TvqQylrq8Bu+yEMsV1Fh3mL14QO
+         0MPS2puCO9/F+KyAyyevCMQk7BtPAy8Yik2/13pu+qUJqsR06R4f1i5t8zOItkdoTH
+         fYA1clF36iu/QetRZ3k/EZy8XO1c5Z4w9yVyZ4ic=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: [PATCH 5.10 066/145] depmod: handle the case of /sbin/depmod without /sbin in PATH
+        stable@vger.kernel.org, Antoine Tenart <atenart@kernel.org>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 26/92] net-sysfs: take the rtnl lock when storing xps_cpus
 Date:   Mon, 11 Jan 2021 14:01:30 +0100
-Message-Id: <20210111130051.723998803@linuxfoundation.org>
+Message-Id: <20210111130040.408172787@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +40,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Antoine Tenart <atenart@kernel.org>
 
-[ Upstream commit cedd1862be7e666be87ec824dabc6a2b05618f36 ]
+[ Upstream commit 1ad58225dba3f2f598d2c6daed4323f24547168f ]
 
-Commit 436e980e2ed5 ("kbuild: don't hardcode depmod path") stopped
-hard-coding the path of depmod, but in the process caused trouble for
-distributions that had that /sbin location, but didn't have it in the
-PATH (generally because /sbin is limited to the super-user path).
+Two race conditions can be triggered when storing xps cpus, resulting in
+various oops and invalid memory accesses:
 
-Work around it for now by just adding /sbin to the end of PATH in the
-depmod.sh script.
+1. Calling netdev_set_num_tc while netif_set_xps_queue:
 
-Reported-and-tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+   - netif_set_xps_queue uses dev->tc_num as one of the parameters to
+     compute the size of new_dev_maps when allocating it. dev->tc_num is
+     also used to access the map, and the compiler may generate code to
+     retrieve this field multiple times in the function.
+
+   - netdev_set_num_tc sets dev->tc_num.
+
+   If new_dev_maps is allocated using dev->tc_num and then dev->tc_num
+   is set to a higher value through netdev_set_num_tc, later accesses to
+   new_dev_maps in netif_set_xps_queue could lead to accessing memory
+   outside of new_dev_maps; triggering an oops.
+
+2. Calling netif_set_xps_queue while netdev_set_num_tc is running:
+
+   2.1. netdev_set_num_tc starts by resetting the xps queues,
+        dev->tc_num isn't updated yet.
+
+   2.2. netif_set_xps_queue is called, setting up the map with the
+        *old* dev->num_tc.
+
+   2.3. netdev_set_num_tc updates dev->tc_num.
+
+   2.4. Later accesses to the map lead to out of bound accesses and
+        oops.
+
+   A similar issue can be found with netdev_reset_tc.
+
+One way of triggering this is to set an iface up (for which the driver
+uses netdev_set_num_tc in the open path, such as bnx2x) and writing to
+xps_cpus in a concurrent thread. With the right timing an oops is
+triggered.
+
+Both issues have the same fix: netif_set_xps_queue, netdev_set_num_tc
+and netdev_reset_tc should be mutually exclusive. We do that by taking
+the rtnl lock in xps_cpus_store.
+
+Fixes: 184c449f91fe ("net: Add support for XPS with QoS via traffic classes")
+Signed-off-by: Antoine Tenart <atenart@kernel.org>
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- scripts/depmod.sh | 2 ++
- 1 file changed, 2 insertions(+)
+ net/core/net-sysfs.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/scripts/depmod.sh b/scripts/depmod.sh
-index e083bcae343f3..3643b4f896ede 100755
---- a/scripts/depmod.sh
-+++ b/scripts/depmod.sh
-@@ -15,6 +15,8 @@ if ! test -r System.map ; then
- 	exit 0
- fi
+--- a/net/core/net-sysfs.c
++++ b/net/core/net-sysfs.c
+@@ -1314,7 +1314,13 @@ static ssize_t xps_cpus_store(struct net
+ 		return err;
+ 	}
  
-+# legacy behavior: "depmod" in /sbin, no /sbin in PATH
-+PATH="$PATH:/sbin"
- if [ -z $(command -v $DEPMOD) ]; then
- 	echo "Warning: 'make modules_install' requires $DEPMOD. Please install it." >&2
- 	echo "This is probably in the kmod package." >&2
--- 
-2.27.0
-
++	if (!rtnl_trylock()) {
++		free_cpumask_var(mask);
++		return restart_syscall();
++	}
++
+ 	err = netif_set_xps_queue(dev, mask, index);
++	rtnl_unlock();
+ 
+ 	free_cpumask_var(mask);
+ 
 
 
