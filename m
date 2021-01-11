@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FC82F24A8
+	by mail.lfdr.de (Postfix) with ESMTP id 84B432F24A7
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404871AbhALAZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2404884AbhALAZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 11 Jan 2021 19:25:04 -0500
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:37221 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404133AbhAKXdE (ORCPT
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:44415 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404137AbhAKXib (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 18:33:04 -0500
-Received: by mail-ot1-f51.google.com with SMTP id o11so583493ote.4;
-        Mon, 11 Jan 2021 15:32:48 -0800 (PST)
+        Mon, 11 Jan 2021 18:38:31 -0500
+Received: by mail-ot1-f44.google.com with SMTP id r9so553291otk.11;
+        Mon, 11 Jan 2021 15:38:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=FO+1RWOepEgnEnQDhYtS1zJXbSeLIjgq43icfIf2ou8=;
-        b=SIf33LJ/Cj9yqcd8rIZQyoZsCzdZMVDiSYIb+WlRCnpRODvZfXTVwjC4c2pgCze2nf
-         Wpebg9dsUUhAJPF34E/gjzSkJMUp9dOZkXGi+GKsjI0iuXOA1xjdfEnAG3ZMLRE49ub+
-         c5RYzmmcifmQjBbfzSJGPJPf43dGW2yZGMGRhGnaVD/s7XXXj49lmKuEeY0OMliWglWJ
-         295Guv7HWoaIIh/MbVt0eXFHGoIdoDyn6MRdWYfD3Frq0UfFM0yYbNGjduPXHsdiCLlH
-         QlBpyFceu6g4vRals3/fkb1YjEnY57OGUUdbtYxO2lY95/o6/bYyO7Alt+tdOtQjFsId
-         wqbQ==
-X-Gm-Message-State: AOAM533/5is+EVBsUhIeQr1nbBvk0drF4IKY9bAHmGwtiqN6dhJ1pL0p
-        uLWR2gm8w1T+d/WvWrWYAhLRlIhEFA==
-X-Google-Smtp-Source: ABdhPJw7nfxAAHoj8MVA3IL1gcQbO0RTxwbr6D9qumK+Zpkh49OrEff3WNhW+1FwlTgN2vu155/4Jw==
-X-Received: by 2002:a05:6830:204b:: with SMTP id f11mr958232otp.372.1610407942996;
-        Mon, 11 Jan 2021 15:32:22 -0800 (PST)
+        bh=9s5Q5x35iMmb8mRRkeqa901ka66QlLDIEbKbIA8D9iQ=;
+        b=FLvOtbe5yX0OkeJ+Uv+kuKSgByrojEM18jEC5uKLMV+csmilOslrZMBfGAyY2d2ona
+         YaC2gTxHXZfotWtOIhaMw23umw6Tmtb06NfAMGR1h2JDQ7+hnJ9Wsp7B2ykxnBjhX2pu
+         k4/XFJ4PVM2bykrDNsShJUfV8VYFG+pqWWY5hgpv/MOQ6JNOBl+VuCMyThF+Vi0oBpeu
+         UKr4TxxJOEBJ1Eoobo8qSoLfMn9zDA//E1yWoQ9LPl8dUWl3dTdZyi2uKYBAFYMigtWq
+         AZOlrMu8pXGjou9ra6T48NWBc/pzRBLz+KpmnCxzGcYcyCJgY6KLof4r7gJxSgdz9jA0
+         V9XQ==
+X-Gm-Message-State: AOAM532gRjmj6ADxwMewjHmEvEJctMHDeqRWUjgdHGVHRxS7YfWTNACQ
+        8HlGPtHNv8FPhPBeseoL9g==
+X-Google-Smtp-Source: ABdhPJyQMGlXniemdA078EsVaBrrRNlRHILOkRlvB83XJYriNIGEICcAlXfBbgOLBk1iv0TFKYN0Vw==
+X-Received: by 2002:a9d:e91:: with SMTP id 17mr976906otj.237.1610408270503;
+        Mon, 11 Jan 2021 15:37:50 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 39sm276397otu.6.2021.01.11.15.32.21
+        by smtp.gmail.com with ESMTPSA id n5sm295459oif.27.2021.01.11.15.37.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 15:32:22 -0800 (PST)
-Received: (nullmailer pid 3259406 invoked by uid 1000);
-        Mon, 11 Jan 2021 23:32:20 -0000
-Date:   Mon, 11 Jan 2021 17:32:20 -0600
+        Mon, 11 Jan 2021 15:37:49 -0800 (PST)
+Received: (nullmailer pid 3267061 invoked by uid 1000);
+        Mon, 11 Jan 2021 23:37:48 -0000
+Date:   Mon, 11 Jan 2021 17:37:48 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     Pratyush Yadav <p.yadav@ti.com>, devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, Sekhar Nori <nsekhar@ti.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] Documentation: devicetree: Add new compatible
- string for eeprom microchip 93LC46B
-Message-ID: <20210111233220.GA3259372@robh.at.kernel.org>
-References: <20210105105817.17644-1-a-govindraju@ti.com>
- <20210105105817.17644-2-a-govindraju@ti.com>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Taniya Das <tdas@codeaurora.org>
+Subject: Re: [PATCH 3/4] dt-bindings: clock: Add SM8350 GCC clock bindings
+Message-ID: <20210111233748.GA3267006@robh.at.kernel.org>
+References: <20210105154645.217998-1-vkoul@kernel.org>
+ <20210105154645.217998-4-vkoul@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210105105817.17644-2-a-govindraju@ti.com>
+In-Reply-To: <20210105154645.217998-4-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Jan 2021 16:28:11 +0530, Aswath Govindraju wrote:
-> Add a new compatible string for eeprom microchip 93LC46B in eeprom-93xx46
-> dt-binding file as it belongs to the 93xx46 family of devices.
+On Tue, 05 Jan 2021 21:16:44 +0530, Vinod Koul wrote:
+> Add device tree bindings for global clock controller on SM8350 SoCs.
 > 
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 > ---
->  Documentation/devicetree/bindings/misc/eeprom-93xx46.txt | 1 +
->  1 file changed, 1 insertion(+)
+>  .../bindings/clock/qcom,gcc-sm8350.yaml       |  96 +++++++
+>  include/dt-bindings/clock/qcom,gcc-sm8350.h   | 261 ++++++++++++++++++
+>  2 files changed, 357 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sm8350.yaml
+>  create mode 100644 include/dt-bindings/clock/qcom,gcc-sm8350.h
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
