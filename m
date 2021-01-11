@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 409D62F1A50
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBDD2F1A54
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388868AbhAKP65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:58:57 -0500
-Received: from outbound-smtp17.blacknight.com ([46.22.139.234]:56371 "EHLO
-        outbound-smtp17.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731804AbhAKP64 (ORCPT
+        id S2388893AbhAKP7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:59:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731804AbhAKP7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:58:56 -0500
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp17.blacknight.com (Postfix) with ESMTPS id 6F8D61C34C9
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 15:58:05 +0000 (GMT)
-Received: (qmail 15571 invoked from network); 11 Jan 2021 15:58:05 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 11 Jan 2021 15:58:04 -0000
-Date:   Mon, 11 Jan 2021 15:58:02 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Jiang Biao <benbjiang@gmail.com>
-Subject: Re: [RFC][PATCH 1/5] sched/fair: Fix select_idle_cpu()s cost
- accounting
-Message-ID: <20210111155802.GI3592@techsingularity.net>
-References: <20201214164822.402812729@infradead.org>
- <20201214170017.877557652@infradead.org>
- <c4e31235-e1fb-52ac-99a8-ae943ee0de54@linux.intel.com>
- <20201215075911.GA3040@hirez.programming.kicks-ass.net>
- <20210108102738.GB3592@techsingularity.net>
- <CAKfTPtD5R1S=rwp9C-jyMg8bAB-37FCe3qrqad9KEeyR7mOmkw@mail.gmail.com>
- <20210108144058.GD3592@techsingularity.net>
- <CAKfTPtCGCmCv0yXSUmYUh6=8uzd0n9xFPqC0cW4sm-FqDvjvCQ@mail.gmail.com>
- <20210108161405.GE3592@techsingularity.net>
- <CAKfTPtAQuX5ZbzOH_LnFbBRWErP9pcnAVMvVE9qQw1LXouwzog@mail.gmail.com>
+        Mon, 11 Jan 2021 10:59:09 -0500
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1704EC061786;
+        Mon, 11 Jan 2021 07:58:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
+        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=7Po4id9eWkY7uvToizGBFW5yEu2kvXRu4dj6jXQtgHo=; b=ym6Fttri1WKbSAKbRIudWCv2rr
+        eLJkUbLVQ60OpUYu48+3KrSg7PD+BhBhyQ4QEdpmIv9+FsLCLh/mrf3qORhjseOJ2SYh0VeL2sVmn
+        dx8As0clkznvKlAizDsQzTS9LO0daZvJxmaIwE6Md2MjR+lsI3EmraL0ihu3noOs0y0d0Q3UGlYgG
+        QaErLfo8YkkFaZRDLfCNKliqu7Xag1ftCDxVcr+UdxXUMzk8X6hkJ9RT9N40shXOSnaA46Mlnchky
+        1ljxHO1jjp8lhnaRoOBjYU2Y8+WuSjAFHw0KTbQQ6L6BTiRBq3/Y5Tv4zS3obWLD9MU9tmfK/CSsA
+        bTe55VaQ==;
+Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=toshino.localdomain)
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <mperttunen@nvidia.com>)
+        id 1kyzaN-0005h1-89; Mon, 11 Jan 2021 17:58:27 +0200
+From:   Mikko Perttunen <mperttunen@nvidia.com>
+To:     thierry.reding@gmail.com, jonathanh@nvidia.com
+Cc:     talho@nvidia.com, linux-i2c@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Muhammed Fazal <mfazale@nvidia.com>, stable@vger.kernel.org,
+        Mikko Perttunen <mperttunen@nvidia.com>
+Subject: [PATCH v2] i2c: tegra-bpmp: ignore DMA safe buffer flag
+Date:   Mon, 11 Jan 2021 17:58:16 +0200
+Message-Id: <20210111155816.3656820-1-mperttunen@nvidia.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtAQuX5ZbzOH_LnFbBRWErP9pcnAVMvVE9qQw1LXouwzog@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 84.249.134.236
+X-SA-Exim-Mail-From: mperttunen@nvidia.com
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 03:36:57PM +0100, Vincent Guittot wrote:
-> > > <SNIP>
-> > >
-> > > I think
-> > > that we should decay it periodically to reflect there is less and less
-> > > idle time (in fact no more)  on this busy CPU that never goes to idle.
-> > > If a cpu was idle for a long period but then a long running task
-> > > starts, the avg_idle will stay stalled to the large value which is
-> > > becoming less and less relevant.
-> >
-> > While I get what you're saying, it does not help extrapolate what the
-> > idleness of a domain is.
-> 
-> not but it gives a more up to date view of the idleness of the local
-> cpu which is better than a stalled value
-> 
+From: Muhammed Fazal <mfazale@nvidia.com>
 
-Fair enough.
+Ignore I2C_M_DMA_SAFE flag as it does not make a difference
+for bpmp-i2c, but causes -EINVAL to be returned for valid
+transactions.
 
-> >
-> > > At the opposite, a cpu with a short running/idle period task will have
-> > > a lower avg_idle whereas it is more often idle.
-> > >
-> > > Another thing that worries me, is that we use the avg_idle of the
-> > > local cpu, which is obviously not idle otherwise it would have been
-> > > selected, to decide how much time we should spend on looking for
-> > > another idle CPU. I'm not sure that's the right metrics to use
-> > > especially with a possibly stalled value.
-> > >
-> >
-> > A better estimate requires heavy writes to sd_llc. The cost of that will
-> > likely offset any benefit gained by a superior selection of a scan
-> > depth.
-> >
-> > Treating a successful scan cost and a failed scan cost as being equal has
-> > too many corner cases. If we do not want to weight the successful scan
-> > cost, then the compromise is to keep the old behaviour that accounts for
-> 
-> I think that keeping the current way to scane_cost id the best option for now
-> 
+Signed-off-by: Muhammed Fazal <mfazale@nvidia.com>
+Cc: stable@vger.kernel.org # v4.19+
+Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+---
+v2:
+- Remove unnecessary check for if the bit is set
+---
+ drivers/i2c/busses/i2c-tegra-bpmp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-I sent a series that drops this patch for the moment as well as the
-SIS_PROP for selecting a core.
-
+diff --git a/drivers/i2c/busses/i2c-tegra-bpmp.c b/drivers/i2c/busses/i2c-tegra-bpmp.c
+index ec7a7e917edd..aa6685cabde3 100644
+--- a/drivers/i2c/busses/i2c-tegra-bpmp.c
++++ b/drivers/i2c/busses/i2c-tegra-bpmp.c
+@@ -80,6 +80,8 @@ static int tegra_bpmp_xlate_flags(u16 flags, u16 *out)
+ 		flags &= ~I2C_M_RECV_LEN;
+ 	}
+ 
++	flags &= ~I2C_M_DMA_SAFE;
++
+ 	return (flags != 0) ? -EINVAL : 0;
+ }
+ 
 -- 
-Mel Gorman
-SUSE Labs
+2.30.0
+
