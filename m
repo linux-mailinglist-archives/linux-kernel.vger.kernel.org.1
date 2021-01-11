@@ -2,362 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5152F1A5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:03:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F9B2F1A63
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:04:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732597AbhAKQC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:02:27 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:55050 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730584AbhAKQC0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:02:26 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610380923; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=tIaeOh2O8eQew0PEtYuX7dx/6nI/Req8F64eYze35UE=; b=Z4Gp+TfTCl7l2DCUHvDdThMlvOzUGKQPGoe+K2J8VQFdVn5IsaDF+vgromxAXBXLnKeuXTuG
- uixfFijtH81w/zVNTIswO8OB1ETu64B0C6awZhSQEYm/OvryNIxvg9etfYrMx0ClzV61WNFs
- Mf564e2DIu/1oYX8DUExvoO7SKA=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5ffc7650415a6293c592fa89 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 16:01:20
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5106BC43464; Mon, 11 Jan 2021 16:01:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.75.31])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BE0A8C433CA;
-        Mon, 11 Jan 2021 16:01:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BE0A8C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
-Subject: Re: [PATCH v5 4/4] pinctrl: qcom: Don't clear pending interrupts when
- enabling
-To:     Douglas Anderson <dianders@chromium.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>, linux-gpio@vger.kernel.org,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210108093339.v5.1.I3ad184e3423d8e479bc3e86f5b393abb1704a1d1@changeid>
- <20210108093339.v5.4.I7cf3019783720feb57b958c95c2b684940264cd1@changeid>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <a08c603b-d72b-c72b-a607-fac3ba9f0e1b@codeaurora.org>
-Date:   Mon, 11 Jan 2021 21:31:11 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <20210108093339.v5.4.I7cf3019783720feb57b958c95c2b684940264cd1@changeid>
+        id S2388558AbhAKQDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:03:35 -0500
+Received: from mail-bn8nam08on2081.outbound.protection.outlook.com ([40.107.100.81]:28256
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727180AbhAKQDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 11:03:33 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I6/VGR0IrO0B6cKfIrQM6Ee/Ad8H3FtOijt1g58OrQ0vCoJlYv68z16GV7yEF0X84wwTIhSa+zlIUAhZiM52gLECLH50yaNAnVO1Mdqb8U1NxDO30JU1UhMESOkocFIEB1ltKoDqfs52EIgNLgp6ur3UT5W+z9jQdOPQ49Bvj1EahUl8j4cBReU8DoFZT+ywI9tKUlv6dyYL5KfzPyJhdXOga7jJ7u9IFewa37zazT//SSkaY+vWIuUioPh6okOlS7LGT+9P4iHa4527OeR46v1K3kluJJ1o42z1lgYb8CCduFEyvDXH2A/U2XY81HvplWDMrIwqX0fsa/Bg1/SVIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kRkBhxZ3CGsv9HOatfmHugF6kquCt7dAoRyCeQjWef4=;
+ b=DpIjgU3F2WL2G4K1QCCJCe1kA3j/wgnEq9vj2q0hJMWt+33UZOd5fvk80ym219nwuFoaeqvMDsVapPrDs9h6+H8Bwu478Lf0IQnJR2Jfsw58YOjDVH5DoTevXSTvdi89sVsMVEmEYJst5y5zmKBOZ5Ivt8vtnf8AbdzxB+uPDpsTTjWsKyId/dvGsrg/xW407pczira5pwq4HU0pNzWOZiOA0edtJSu3hLypZzYpxmJB7HERmWz30ZTVhq9cDTwkAUZalujjYxgEgD3JJtOd4Uzt4WZcnvyC7pm4wefB4hXkKPpebbj3FBcpHEB2CsZFS1JfYHJ2qiFJfchySIG2ww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kRkBhxZ3CGsv9HOatfmHugF6kquCt7dAoRyCeQjWef4=;
+ b=dw6IqMCCNv9sKP/6LuPrmh7Fh/aSINC6T5zvhuVyk/3NXOSF1Ceda1yzWz+uTVeER2nZhWcpg7ApmLtpPkl2DX98hL/yJgXG6m4lAb8tfoMVf7hAmDQfCC8yvrokqyKmKAYCooXobQ/gmrVLsliyEYsyaJDdM82KZL9+XqgZXEk=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM6PR12MB3370.namprd12.prod.outlook.com (2603:10b6:5:38::25) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3742.9; Mon, 11 Jan 2021 16:02:40 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::d95e:b9d:1d6a:e845]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::d95e:b9d:1d6a:e845%12]) with mapi id 15.20.3742.012; Mon, 11 Jan 2021
+ 16:02:40 +0000
+Subject: Re: [PATCH 06/13] x86/sev: Rename global "sev_enabled" flag to
+ "sev_guest"
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <20210109004714.1341275-1-seanjc@google.com>
+ <20210109004714.1341275-7-seanjc@google.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <f6ed8566-6521-92f0-927e-1764d8074ce6@amd.com>
+Date:   Mon, 11 Jan 2021 10:02:38 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210109004714.1341275-7-seanjc@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+X-Originating-IP: [67.79.209.213]
+X-ClientProxiedBy: SN1PR12CA0095.namprd12.prod.outlook.com
+ (2603:10b6:802:21::30) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from office-linux.texastahm.com (67.79.209.213) by SN1PR12CA0095.namprd12.prod.outlook.com (2603:10b6:802:21::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Mon, 11 Jan 2021 16:02:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 9dec8690-b9b3-4160-7419-08d8b64a52e6
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3370:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB337025C3C258F4494A43A6B7ECAB0@DM6PR12MB3370.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: i9c18XBX8a4id1YltkEni62amtjqtrRr+qx/R9CnAG2nMz2x8QnAtwKacxRxIAJyGRebWayf17fsGx3gCKXGS1dTmcrjPtG60k8AnklVvfzhwotWoBYw1t5wViD/r8hHJyXjqi9YRf4j90BCQ8nb30uFsQSMvsKtEL3/tTYoByFrA6yXPwlhnccdVz9pjxD+5DXrN6F/ZGxbTe+LmGyLP4jr/1gbed5HKCaryPzB25Crupu/hZPDKAmIidFfeWLl9Oih6QUseIl/VJ4wyIZYqVchyKbXebKNMesSDp/G5KjOdoQJwuIRvlM+Iughm7OZHp6kY+4MG5UhzomTit1iKBkH9oG3AFNQV9Kb3fYteNl3BT0B+l0x9zt0KgcduO/ZxUdPr5fCSbqWUlQnE1+JxaaNm35W/oJ3mKZ+bhGqsCix0IDi2HGQmjyFyeJVY80hTmP82QN9lqBXlyDoommQdDCAMBckniZOg192AGlHBRQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(396003)(39860400002)(366004)(66556008)(52116002)(83380400001)(66946007)(86362001)(36756003)(6506007)(4326008)(6512007)(316002)(54906003)(5660300002)(8936002)(478600001)(31686004)(2616005)(110136005)(31696002)(8676002)(53546011)(7416002)(2906002)(16526019)(66476007)(956004)(6486002)(186003)(26005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dU0vR0VQdzlteEQ3YzRtQ2sxMDM0NkwvZEo0K3NFdW1qMEt3NEZqcGhHU1hE?=
+ =?utf-8?B?eGwwYWtWeU83Y3VCTnNrc3NPZmc1elpwd1k3SjludzVxbUxQd3JFNG5Ca1hJ?=
+ =?utf-8?B?UXJOUDBCVFhQN1hoZDEvdkZ4WXlibUZhSVBramVodzdJdnZUdm9wekdCbU1E?=
+ =?utf-8?B?YlNHeFdwdk51dTQ4TGVTRlR3cGQxdWdKQXZxblYvb2R0NTJaSmVJcHo4ais1?=
+ =?utf-8?B?bEJkbGlwSUtoc2ZjaFcwakJsMWFmRUYzeU85OVNiQk5aQmFPWVZ0bytWdG1H?=
+ =?utf-8?B?R1YxaFhSdmRQeWdBKzJtVTAxcW9CQkthK1h1dnlaTXVqMVBNWHhDSVB5V0Vy?=
+ =?utf-8?B?SERyb2JSSVJrU3hRc2pob01nZHBSTFNEcndiWDlra0FKY3h6L09IS3pubzVF?=
+ =?utf-8?B?TUhyRjNSL1VKcG4zTVE3NEtvdVZidFhOUXQyZ1F6WVpPNk5kV3dUbG5jVkd2?=
+ =?utf-8?B?YnlTOFEvU1lnSlBXekIzZThvYjVpRWxXK2tLQmZmQU5QR1Z4Y25kRkZIeHhr?=
+ =?utf-8?B?eEpNVjdyNWJhaUEyRGw2ays2NmRyZWdPMHNZRzV3Snhvay9ieVNSYU1PUXpH?=
+ =?utf-8?B?a0NyM0ZzSVRiY0lUb2EyUkVQK1I3aE4yZDdZTU9CYmdGSjZYN0ZjTFZabkZs?=
+ =?utf-8?B?RDh5aG9CSUcxZzNNWWczVE0veTV2V1FlS2l0L21DeWc5NWpIUnpOL1NIdjdO?=
+ =?utf-8?B?am9WL2srYUoxb2ZLWGZPeWhlb3dFdVpxOWNMSkI1VCt0WjFHTUJvc3l5RUxP?=
+ =?utf-8?B?U1J2NUc4aGxPcUFZYjhURk1pdXBqZk4yL2trQllMNG8zSlNVZkdUSVQrZmND?=
+ =?utf-8?B?ZXpCL1ZBcW1BS1RZdWpvdnkzUkZrYTZvTTVTWTFIUU5reXZkUnpFZkJvLzZL?=
+ =?utf-8?B?cjg3M1EwUnVPU0hSaHo0cHpqOE91M2ZRcWFzVE85WFg1NkM1SUdTbENpY1Zy?=
+ =?utf-8?B?Qm1LenV3MzBPM2lBcy95OVMwNVVxcFlEMllSaWlhT09Wbit6Vmlaa2M0bzhn?=
+ =?utf-8?B?UWpKQnc2elB0Vk5ISmt3QklKRmVpdnZpL3JwK0dWVXF6b29vZzhnOFhob1hr?=
+ =?utf-8?B?anQ3TnRibUdSMW5KSS9MMFExaDA0RjNoQXhHamc0dlAwUWdFTHZmNS9DTDZP?=
+ =?utf-8?B?S1dxRXJ4VkJlK3FPdW5JSXV1V0FSb1lpSUdvREdBYm91a2xuMzVqOHkyU2xz?=
+ =?utf-8?B?bnpFb2t5bzRhQ0QyOTNDQng0NnV3MVRnMGgzRXlKL1dRMlpqS3lFamxRZlFt?=
+ =?utf-8?B?WTRVQzRRS09yRkQzL2YvcVhJY04wWDVIZ2dhczZOSmVjc29ROGp0UWtRanlu?=
+ =?utf-8?Q?AAdpPpGi4BBbMnE8dWE6AVNMqZih638/wC?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2021 16:02:40.6385
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9dec8690-b9b3-4160-7419-08d8b64a52e6
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +PWqVjH1t7oqAaUK2LtUwvmF9jR9RXZMVMQDUQ7sww9triFRAuJbjOaa79D1ulqgm8MuaqPOWvSzk2V9xvDmlA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3370
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
+On 1/8/21 6:47 PM, Sean Christopherson wrote:
+> Use "guest" instead of "enabled" for the global "running as an SEV guest"
+> flag to avoid confusion over whether "sev_enabled" refers to the guest or
+> the host.  This will also allow KVM to usurp "sev_enabled" for its own
+> purposes.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-Thanks for the patch. Looks good to me and tested.
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
 
-Reviewed-by: Maulik Shah <mkshah@codeaurora.org>
-Tested-by: Maulik Shah <mkshah@codeaurora.org>
-
-Thanks,
-Maulik
-
-On 1/8/2021 11:05 PM, Douglas Anderson wrote:
-> In Linux, if a driver does disable_irq() and later does enable_irq()
-> on its interrupt, I believe it's expecting these properties:
-> * If an interrupt was pending when the driver disabled then it will
->    still be pending after the driver re-enables.
-> * If an edge-triggered interrupt comes in while an interrupt is
->    disabled it should assert when the interrupt is re-enabled.
->
-> If you think that the above sounds a lot like the disable_irq() and
-> enable_irq() are supposed to be masking/unmasking the interrupt
-> instead of disabling/enabling it then you've made an astute
-> observation.  Specifically when talking about interrupts, "mask"
-> usually means to stop posting interrupts but keep tracking them and
-> "disable" means to fully shut off interrupt detection.  It's
-> unfortunate that this is so confusing, but presumably this is all the
-> way it is for historical reasons.
->
-> Perhaps more confusing than the above is that, even though clients of
-> IRQs themselves don't have a way to request mask/unmask
-> vs. disable/enable calls, IRQ chips themselves can implement both.
-> ...and yet more confusing is that if an IRQ chip implements
-> disable/enable then they will be called when a client driver calls
-> disable_irq() / enable_irq().
->
-> It does feel like some of the above could be cleared up.  However,
-> without any other core interrupt changes it should be clear that when
-> an IRQ chip gets a request to "disable" an IRQ that it has to treat it
-> like a mask of that IRQ.
->
-> In any case, after that long interlude you can see that the "unmask
-> and clear" can break things.  Maulik tried to fix it so that we no
-> longer did "unmask and clear" in commit 71266d9d3936 ("pinctrl: qcom:
-> Move clearing pending IRQ to .irq_request_resources callback"), but it
-> only handled the PDC case and it had problems (it caused
-> sc7180-trogdor devices to fail to suspend).  Let's fix.
->
->  From my understanding the source of the phantom interrupt in the
-> were these two things:
-> 1. One that could have been introduced in msm_gpio_irq_set_type()
->     (only for the non-PDC case).
-> 2. Edges could have been detected when a GPIO was muxed away.
->
-> Fixing case #1 is easy.  We can just add a clear in
-> msm_gpio_irq_set_type().
->
-> Fixing case #2 is harder.  Let's use a concrete example.  In
-> sc7180-trogdor.dtsi we configure the uart3 to have two pinctrl states,
-> sleep and default, and mux between the two during runtime PM and
-> system suspend (see geni_se_resources_{on,off}() for more
-> details). The difference between the sleep and default state is that
-> the RX pin is muxed to a GPIO during sleep and muxed to the UART
-> otherwise.
->
-> As per Qualcomm, when we mux the pin over to the UART function the PDC
-> (or the non-PDC interrupt detection logic) is still watching it /
-> latching edges.  These edges don't cause interrupts because the
-> current code masks the interrupt unless we're entering suspend.
-> However, as soon as we enter suspend we unmask the interrupt and it's
-> counted as a wakeup.
->
-> Let's deal with the problem like this:
-> * When we mux away, we'll mask our interrupt.  This isn't necessary in
->    the above case since the client already masked us, but it's a good
->    idea in general.
-> * When we mux back will clear any interrupts and unmask.
->
-> Fixes: 4b7618fdc7e6 ("pinctrl: qcom: Add irq_enable callback for msm gpio")
-> Fixes: 71266d9d3936 ("pinctrl: qcom: Move clearing pending IRQ to .irq_request_resources callback")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
 > ---
-> Note that patch #1 of v4 has now landed so it's dropped from the v5
-> post.  Also note that there is no dependency of this series on the v4
-> patch #1 so no special coordination need happen for that.
->
-> I didn't add Rajendra's and Stephen's tags from v4 since there were
-> enough changes from v4 to v5 to warrant a re-review.
->
-> My tests here for the non-PDC case are mostly synthetic and I don't
-> have any good way to test the case that the original patch was added
-> for.  Hopefully it's all good?
->
-> Changes in v5:
-> - Re-combined PDC and non-PDC since non-PDC their issues are similar.
-> - "it" => "the interrupt" in comment.
-> - Handle 2nd case where edges came when muxed away.
-> - Handle controllers where you write 1 to Ack.
->
-> Changes in v4:
-> - Split non-PDC fix and PDC fix in two.
-> - Totally rewrote again with my new understanding of the world.
->
-> Changes in v3:
-> - Fixed bug in msm_gpio_direction_output() (s/oldval =/oldval = val =/)
-> - Add back "if !skip_wake_irqs" test in msm_gpio_irq_enable()
-> - For non-PDC, clear 1st interrupt in msm_gpio_irq_set_type()
->
-> Changes in v2:
-> - 0 => false
-> - If skip_wake_irqs, don't need to clear normal intr.
-> - Add comment about glitches in both output and input.
->
->   drivers/pinctrl/qcom/pinctrl-msm.c | 74 +++++++++++++++++++-----------
->   1 file changed, 46 insertions(+), 28 deletions(-)
->
-> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
-> index a6b0c17e2f78..d5d1f3430c6c 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
-> @@ -51,6 +51,7 @@
->    * @dual_edge_irqs: Bitmap of irqs that need sw emulated dual edge
->    *                  detection.
->    * @skip_wake_irqs: Skip IRQs that are handled by wakeup interrupt controller
-> + * @disabled_for_mux: These IRQs were disabled because we muxed away.
->    * @soc:            Reference to soc_data of platform specific data.
->    * @regs:           Base addresses for the TLMM tiles.
->    * @phys_base:      Physical base address
-> @@ -72,6 +73,7 @@ struct msm_pinctrl {
->   	DECLARE_BITMAP(dual_edge_irqs, MAX_NR_GPIO);
->   	DECLARE_BITMAP(enabled_irqs, MAX_NR_GPIO);
->   	DECLARE_BITMAP(skip_wake_irqs, MAX_NR_GPIO);
-> +	DECLARE_BITMAP(disabled_for_mux, MAX_NR_GPIO);
+>   arch/x86/include/asm/mem_encrypt.h | 2 +-
+>   arch/x86/mm/mem_encrypt.c          | 4 ++--
+>   arch/x86/mm/mem_encrypt_identity.c | 2 +-
+>   3 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/mem_encrypt.h b/arch/x86/include/asm/mem_encrypt.h
+> index 2f62bbdd9d12..9b3990928674 100644
+> --- a/arch/x86/include/asm/mem_encrypt.h
+> +++ b/arch/x86/include/asm/mem_encrypt.h
+> @@ -20,7 +20,7 @@
 >   
->   	const struct msm_pinctrl_soc_data *soc;
->   	void __iomem *regs[MAX_NR_TILES];
-> @@ -179,6 +181,10 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
->   			      unsigned group)
+>   extern u64 sme_me_mask;
+>   extern u64 sev_status;
+> -extern bool sev_enabled;
+> +extern bool sev_guest;
+>   
+>   void sme_encrypt_execute(unsigned long encrypted_kernel_vaddr,
+>   			 unsigned long decrypted_kernel_vaddr,
+> diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+> index bc0833713be9..0f798355de03 100644
+> --- a/arch/x86/mm/mem_encrypt.c
+> +++ b/arch/x86/mm/mem_encrypt.c
+> @@ -44,7 +44,7 @@ EXPORT_SYMBOL(sme_me_mask);
+>   DEFINE_STATIC_KEY_FALSE(sev_enable_key);
+>   EXPORT_SYMBOL_GPL(sev_enable_key);
+>   
+> -bool sev_enabled __section(".data");
+> +bool sev_guest __section(".data");
+>   
+>   /* Buffer used for early in-place encryption by BSP, no locking needed */
+>   static char sme_early_buffer[PAGE_SIZE] __initdata __aligned(PAGE_SIZE);
+> @@ -344,7 +344,7 @@ int __init early_set_memory_encrypted(unsigned long vaddr, unsigned long size)
+>    */
+>   bool sme_active(void)
 >   {
->   	struct msm_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
-> +	struct gpio_chip *gc = &pctrl->chip;
-> +	unsigned int irq = irq_find_mapping(gc->irq.domain, group);
-> +	struct irq_data *d = irq_get_irq_data(irq);
-> +	unsigned int gpio_func = pctrl->soc->gpio_func;
->   	const struct msm_pingroup *g;
->   	unsigned long flags;
->   	u32 val, mask;
-> @@ -195,6 +201,20 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
->   	if (WARN_ON(i == g->nfuncs))
->   		return -EINVAL;
->   
-> +	/*
-> +	 * If an GPIO interrupt is setup on this pin then we need special
-> +	 * handling.  Specifically interrupt detection logic will still see
-> +	 * the pin twiddle even when we're muxed away.
-> +	 *
-> +	 * When we see a pin with an interrupt setup on it then we'll disable
-> +	 * (mask) interrupts on it when we mux away until we mux back.  Note
-> +	 * that disable_irq() refcounts and interrupts are disabled as long as
-> +	 * at least one disable_irq() has been called.
-> +	 */
-> +	if (d && i != gpio_func &&
-> +	    !test_and_set_bit(d->hwirq, pctrl->disabled_for_mux))
-> +		disable_irq(irq);
-> +
->   	raw_spin_lock_irqsave(&pctrl->lock, flags);
->   
->   	val = msm_readl_ctl(pctrl, g);
-> @@ -204,6 +224,20 @@ static int msm_pinmux_set_mux(struct pinctrl_dev *pctldev,
->   
->   	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
->   
-> +	if (d && i == gpio_func &&
-> +	    test_and_clear_bit(d->hwirq, pctrl->disabled_for_mux)) {
-> +		/*
-> +		 * Clear interrupts detected while not GPIO since we only
-> +		 * masked things.
-> +		 */
-> +		if (d->parent_data && test_bit(d->hwirq, pctrl->skip_wake_irqs))
-> +			irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDING, false);
-> +		else
-> +			msm_ack_intr_status(pctrl, g);
-> +
-> +		enable_irq(irq);
-> +	}
-> +
->   	return 0;
+> -	return sme_me_mask && !sev_enabled;
+> +	return sme_me_mask && !sev_guest;
 >   }
 >   
-> @@ -782,7 +816,7 @@ static void msm_gpio_irq_mask(struct irq_data *d)
->   	raw_spin_unlock_irqrestore(&pctrl->lock, flags);
->   }
+>   bool sev_active(void)
+> diff --git a/arch/x86/mm/mem_encrypt_identity.c b/arch/x86/mm/mem_encrypt_identity.c
+> index 6c5eb6f3f14f..91b6b899c02b 100644
+> --- a/arch/x86/mm/mem_encrypt_identity.c
+> +++ b/arch/x86/mm/mem_encrypt_identity.c
+> @@ -545,7 +545,7 @@ void __init sme_enable(struct boot_params *bp)
 >   
-> -static void msm_gpio_irq_clear_unmask(struct irq_data *d, bool status_clear)
-> +static void msm_gpio_irq_unmask(struct irq_data *d)
->   {
->   	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
->   	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
-> @@ -800,14 +834,6 @@ static void msm_gpio_irq_clear_unmask(struct irq_data *d, bool status_clear)
->   
->   	raw_spin_lock_irqsave(&pctrl->lock, flags);
->   
-> -	/*
-> -	 * clear the interrupt status bit before unmask to avoid
-> -	 * any erroneous interrupts that would have got latched
-> -	 * when the interrupt is not in use.
-> -	 */
-> -	if (status_clear)
-> -		msm_ack_intr_status(pctrl, g);
-> -
->   	val = msm_readl_intr_cfg(pctrl, g);
->   	val |= BIT(g->intr_raw_status_bit);
->   	val |= BIT(g->intr_enable_bit);
-> @@ -827,7 +853,7 @@ static void msm_gpio_irq_enable(struct irq_data *d)
->   		irq_chip_enable_parent(d);
->   
->   	if (!test_bit(d->hwirq, pctrl->skip_wake_irqs))
-> -		msm_gpio_irq_clear_unmask(d, true);
-> +		msm_gpio_irq_unmask(d);
->   }
->   
->   static void msm_gpio_irq_disable(struct irq_data *d)
-> @@ -842,11 +868,6 @@ static void msm_gpio_irq_disable(struct irq_data *d)
->   		msm_gpio_irq_mask(d);
->   }
->   
-> -static void msm_gpio_irq_unmask(struct irq_data *d)
-> -{
-> -	msm_gpio_irq_clear_unmask(d, false);
-> -}
-> -
->   /**
->    * msm_gpio_update_dual_edge_parent() - Prime next edge for IRQs handled by parent.
->    * @d: The irq dta.
-> @@ -935,6 +956,7 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
->   	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
->   	const struct msm_pingroup *g;
->   	unsigned long flags;
-> +	bool was_enabled;
->   	u32 val;
->   
->   	if (msm_gpio_needs_dual_edge_parent_workaround(d, type)) {
-> @@ -996,6 +1018,7 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
->   	 * could cause the INTR_STATUS to be set for EDGE interrupts.
->   	 */
->   	val = msm_readl_intr_cfg(pctrl, g);
-> +	was_enabled = val & BIT(g->intr_raw_status_bit);
->   	val |= BIT(g->intr_raw_status_bit);
->   	if (g->intr_detection_width == 2) {
->   		val &= ~(3 << g->intr_detection_bit);
-> @@ -1045,6 +1068,14 @@ static int msm_gpio_irq_set_type(struct irq_data *d, unsigned int type)
+>   		/* SEV state cannot be controlled by a command line option */
+>   		sme_me_mask = me_mask;
+> -		sev_enabled = true;
+> +		sev_guest = true;
+>   		physical_mask &= ~sme_me_mask;
+>   		return;
 >   	}
->   	msm_writel_intr_cfg(val, pctrl, g);
->   
-> +	/*
-> +	 * The first time we set RAW_STATUS_EN it could trigger an interrupt.
-> +	 * Clear the interrupt.  This is safe because we have
-> +	 * IRQCHIP_SET_TYPE_MASKED.
-> +	 */
-> +	if (!was_enabled)
-> +		msm_ack_intr_status(pctrl, g);
-> +
->   	if (test_bit(d->hwirq, pctrl->dual_edge_irqs))
->   		msm_gpio_update_dual_edge_pos(pctrl, g, d);
->   
-> @@ -1096,19 +1127,6 @@ static int msm_gpio_irq_reqres(struct irq_data *d)
->   		ret = -EINVAL;
->   		goto out;
->   	}
-> -
-> -	/*
-> -	 * Clear the interrupt that may be pending before we enable
-> -	 * the line.
-> -	 * This is especially a problem with the GPIOs routed to the
-> -	 * PDC. These GPIOs are direct-connect interrupts to the GIC.
-> -	 * Disabling the interrupt line at the PDC does not prevent
-> -	 * the interrupt from being latched at the GIC. The state at
-> -	 * GIC needs to be cleared before enabling.
-> -	 */
-> -	if (d->parent_data && test_bit(d->hwirq, pctrl->skip_wake_irqs))
-> -		irq_chip_set_parent_state(d, IRQCHIP_STATE_PENDING, 0);
-> -
->   	return 0;
->   out:
->   	module_put(gc->owner);
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
-
+> 
