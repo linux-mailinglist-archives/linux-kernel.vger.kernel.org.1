@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0942F1393
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:11:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B5B2F145C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:24:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731357AbhAKNLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:11:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57564 "EHLO mail.kernel.org"
+        id S1732791AbhAKNXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:23:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731154AbhAKNKU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:10:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F81B22795;
-        Mon, 11 Jan 2021 13:09:39 +0000 (UTC)
+        id S1732617AbhAKNRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:17:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D78D22B30;
+        Mon, 11 Jan 2021 13:17:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370579;
-        bh=HFLXw64YrlEkSM+prgXkSVsLAxNofUjOyAixqjMf1tg=;
+        s=korg; t=1610371036;
+        bh=3pEz0FIIu+fu/KJfgYF3aR7EIsGGl7yKccvVx1G/XRc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zKXDez5hgP26wo6r0Vo2yNNSxBqat53qdX3g8bqsx/1AR50LqHmjBufSNerE6eouH
-         +EU3j9gYWhDjtUquEGqO7MAqM9rd/DrCMhFN2TGKbC7cu6pxyPbJQmQjlCi4TqBHdb
-         2MO2XrjIc/5/Fb/pcGgI/GxVBDSNNlBeBHCI2hRk=
+        b=a094M9auXmEblFJBzTMFy/JkC8MuJGWj3R2kGAABxyYaB6xeZOD8cG/W3UL79QrJi
+         SgKkAMW6Q/G7xAAb+r8xY3Tofr7d9caGLq4Vjwyt2urAQ4xNdvK09KDLl+90ywZ3bs
+         hC05WdZqzT2yLjJ0ivETcfmcbKfLn8+AQ0shlekg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, bo liu <bo.liu@senarytech.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 68/77] ALSA: hda/conexant: add a new hda codec CX11970
+        stable@vger.kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.10 113/145] kvm: check tlbs_dirty directly
 Date:   Mon, 11 Jan 2021 14:02:17 +0100
-Message-Id: <20210111130039.675166370@linuxfoundation.org>
+Message-Id: <20210111130053.957222980@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +39,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: bo liu <bo.liu@senarytech.com>
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-commit 744a11abc56405c5a106e63da30a941b6d27f737 upstream.
+commit 88bf56d04bc3564542049ec4ec168a8b60d0b48c upstream.
 
-The current kernel does not support the cx11970 codec chip.
-Add a codec configuration item to kernel.
+In kvm_mmu_notifier_invalidate_range_start(), tlbs_dirty is used as:
+        need_tlb_flush |= kvm->tlbs_dirty;
+with need_tlb_flush's type being int and tlbs_dirty's type being long.
 
-[ Minor coding style fix by tiwai ]
+It means that tlbs_dirty is always used as int and the higher 32 bits
+is useless.  We need to check tlbs_dirty in a correct way and this
+change checks it directly without propagating it to need_tlb_flush.
 
-Signed-off-by: bo liu <bo.liu@senarytech.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201229035226.62120-1-bo.liu@senarytech.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Note: it's _extremely_ unlikely this neglecting of higher 32 bits can
+cause problems in practice.  It would require encountering tlbs_dirty
+on a 4 billion count boundary, and KVM would need to be using shadow
+paging or be running a nested guest.
+
+Cc: stable@vger.kernel.org
+Fixes: a4ee1ca4a36e ("KVM: MMU: delay flush all tlbs on sync_page path")
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+Message-Id: <20201217154118.16497-1-jiangshanlai@gmail.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/pci/hda/patch_conexant.c |    1 +
- 1 file changed, 1 insertion(+)
+ virt/kvm/kvm_main.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -1088,6 +1088,7 @@ static int patch_conexant_auto(struct hd
- static const struct hda_device_id snd_hda_id_conexant[] = {
- 	HDA_CODEC_ENTRY(0x14f11f86, "CX8070", patch_conexant_auto),
- 	HDA_CODEC_ENTRY(0x14f12008, "CX8200", patch_conexant_auto),
-+	HDA_CODEC_ENTRY(0x14f120d0, "CX11970", patch_conexant_auto),
- 	HDA_CODEC_ENTRY(0x14f15045, "CX20549 (Venice)", patch_conexant_auto),
- 	HDA_CODEC_ENTRY(0x14f15047, "CX20551 (Waikiki)", patch_conexant_auto),
- 	HDA_CODEC_ENTRY(0x14f15051, "CX20561 (Hermosa)", patch_conexant_auto),
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -482,9 +482,8 @@ static int kvm_mmu_notifier_invalidate_r
+ 	kvm->mmu_notifier_count++;
+ 	need_tlb_flush = kvm_unmap_hva_range(kvm, range->start, range->end,
+ 					     range->flags);
+-	need_tlb_flush |= kvm->tlbs_dirty;
+ 	/* we've to flush the tlb before the pages can be freed */
+-	if (need_tlb_flush)
++	if (need_tlb_flush || kvm->tlbs_dirty)
+ 		kvm_flush_remote_tlbs(kvm);
+ 
+ 	spin_unlock(&kvm->mmu_lock);
 
 
