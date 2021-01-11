@@ -2,130 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 155142F20FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:40:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BEA62F20FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390805AbhAKUj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 15:39:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387533AbhAKUj5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:39:57 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90551C061794;
-        Mon, 11 Jan 2021 12:39:16 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id b64so52705ybg.7;
-        Mon, 11 Jan 2021 12:39:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R4z8VuhNyMDL7g096sbikTkm1i+21r0leC/d47KG000=;
-        b=ZJeLWXP4rm29LpTASshdqb2QPKHYF7FZlN1CyQCn7y3N5TZAG81UbOkHMEOrTHs/Yp
-         Id1Kj+czxOJ3iBhERZDdaVf3lt2WnVkKmaOzb/kUfB4vtjJkB9zzjWpGAG149FOdON8i
-         3d8IwdN8Vo8X5ckoqon9dFdRFXgRo2ruGw6acRHduw3klS0YSQQ2dbVvI1LebpvnCQqt
-         bMBrWbx0MnvaWTqDseoJOc8dLzXCTcDgU2SSrHfdqSjNA7e4G0VpNXlgBdtXgyUePqKz
-         GyHmyZ19FVO8XDuwaflslYk2FoSdh7D1CZE0W0nNYuL2+maaih7gR0RHr+k9g0Zu1c1l
-         HI9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R4z8VuhNyMDL7g096sbikTkm1i+21r0leC/d47KG000=;
-        b=PWUZZqbi504IpmfSJOxME2+frmkIdVCIffV4sMnyCdoQjkmhvMmFzMybtZwtnAR/kE
-         ASMpIo5q06Nvne9z5POvRivDa9gE3miqIVusYzcKkE0ALIrfjJWQGNcJV/9RURXIZA53
-         zMbS9vcb0D4xGINkkaNHxD+cqzXJpXLhWMQlV+FpyzTgWGElSU0ggD6NjImUxTNzav3h
-         Rw6JzX4iPTXrHXm4UC8gmEpIuuDR0augxVcxnsUdGeyP1MhDRBtNg8sOmkWV53fJp9FF
-         k/7C9IAry4m/Tb4KmhJ9F1SnKG83VqWQpthYA94aPaQZvFNpgCXjBYDPjTngPSfwfYzi
-         +V8w==
-X-Gm-Message-State: AOAM530654uW0aPt922cjc3WXVyaXanGxryAbs5n0VZP6RlRrZVPFWDR
-        1ziXWABfSYJbF7vFKydAADuWepnxssM8HqQxIF0=
-X-Google-Smtp-Source: ABdhPJzy85RUE/nM7uiN77b46n1I1uFND5gf1iCHGJMDBBwXvVmPHE3iNagHqaCJEW2rzJ5Wqkg75zo5lrC4A/x0228=
-X-Received: by 2002:a25:d6d0:: with SMTP id n199mr2172909ybg.27.1610397555867;
- Mon, 11 Jan 2021 12:39:15 -0800 (PST)
+        id S2390879AbhAKUkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 15:40:25 -0500
+Received: from foss.arm.com ([217.140.110.172]:36038 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730464AbhAKUkY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 15:40:24 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A1B9A101E;
+        Mon, 11 Jan 2021 12:39:38 -0800 (PST)
+Received: from [10.57.56.43] (unknown [10.57.56.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ADDC73F66E;
+        Mon, 11 Jan 2021 12:39:37 -0800 (PST)
+Subject: Re: [PATCH] dma: mark unmapped DMA scatter/gather invalid
+To:     Marc Orr <marcorr@google.com>
+Cc:     hch@lst.de, m.szyprowski@samsung.com,
+        Jianxiong Gao <jxgao@google.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+References: <20210111154335.23388-1-marcorr@google.com>
+ <dc6db6b4-88f1-4762-bd3b-edf3dd410366@arm.com>
+ <CAA03e5HLN_iPzXRTJ_Dvx5h8KP-Qi+=6u+9mHnaoB9oBMMWs7Q@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <bbf6f07c-369b-e470-78ff-815cfb4dbf92@arm.com>
+Date:   Mon, 11 Jan 2021 20:39:35 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210111153123.GA423936@ubuntu> <17629073-4fab-a922-ecc3-25b019960f44@iogearbox.net>
- <CANaYP3FiB-+Zs3C27VgPW+4Ltg8b9dErYAoX7Gu2WqkczcC8vw@mail.gmail.com>
-In-Reply-To: <CANaYP3FiB-+Zs3C27VgPW+4Ltg8b9dErYAoX7Gu2WqkczcC8vw@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 11 Jan 2021 12:39:05 -0800
-Message-ID: <CAEf4BzaG2q-4qFZ0WDhbfPJL70T7z84CE=MoKkT2peOXrx28cw@mail.gmail.com>
-Subject: Re: [PATCH] Signed-off-by: giladreti <gilad.reti@gmail.com>
-To:     Gilad Reti <gilad.reti@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAA03e5HLN_iPzXRTJ_Dvx5h8KP-Qi+=6u+9mHnaoB9oBMMWs7Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 8:06 AM Gilad Reti <gilad.reti@gmail.com> wrote:
->
-> On Mon, Jan 11, 2021, 17:55 Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >
-> > Hello Gilad,
-> >
-> > On 1/11/21 4:31 PM, giladreti wrote:
-> > > Added support for pointer to mem register spilling, to allow the verifier
-> > > to track pointer to valid memory addresses. Such pointers are returned
-> > > for example by a successful call of the bpf_ringbuf_reserve helper.
-> > >
-> > > This patch was suggested as a solution by Yonghong Song.
-> >
-> > The SoB should not be in subject line but as part of the commit message instead
-> > and with proper name, e.g.
-> >
-> > Signed-off-by: Gilad Reti <gilad.reti@gmail.com>
-> >
-> > For subject line, please use a short summary that fits the patch prefixed with
-> > the subsystem "bpf: [...]", see also [0] as an example. Thanks.
-> >
-> > It would be good if you could also add a BPF selftest for this [1].
-> >
-> >    [0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=e22d7f05e445165e58feddb4e40cc9c0f94453bc
-> >    [1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/
-> >        https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/verifier/spill_fill.c
-> >
->
-> Sure. Thanks for your guidance. As you can probably tell, I am new to
-> kernel code contribution (in fact this is a first time for me).
-> Should I try to submit this patch again?
+On 2021-01-11 18:03, Marc Orr wrote:
+>> On 2021-01-11 15:43, Marc Orr wrote:
+> 
+> minus stable@vger.kernel.org, per gregkh@'s email.
+> 
+>>> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+>>> index 0a4881e59aa7..3d9b17fe5771 100644
+>>> --- a/kernel/dma/direct.c
+>>> +++ b/kernel/dma/direct.c
+>>> @@ -374,9 +374,11 @@ void dma_direct_unmap_sg(struct device *dev, struct scatterlist *sgl,
+>>>        struct scatterlist *sg;
+>>>        int i;
+>>>
+>>> -     for_each_sg(sgl, sg, nents, i)
+>>> +     for_each_sg(sgl, sg, nents, i) {
+>>>                dma_direct_unmap_page(dev, sg->dma_address, sg_dma_len(sg), dir,
+>>>                             attrs);
+>>> +             sg->dma_address = DMA_MAPPING_ERROR;
+>>
+>> There are more DMA API backends than just dma-direct, so while this
+>> might help paper over bugs when SWIOTLB is in use, it's not going to
+>> have any effect when those same bugs are hit under other circumstances.
+>> Once again, the moral of the story is that effort is better spent just
+>> fixing the bugs ;)
+> 
+> Thanks for the quick feedback. What is the correct fix? I understand
+> the first half. The NVMe driver should be updated to not call unmap on
+> an address that has already been unmapped within the DMA direct code.
+> Where I'm less certain is how to communicate to the NVMe driver that
+> the mapping failed. In particular, the NVMe code explicitly checks if
+> the first DMA address in the scatter/gather list is set to
+> DMA_MAPPING_ERROR. Thus, don't we need to update the DMA direct code
+> to propagate DMA_MAPPING_ERROR back up to the driver, via the
+> scatter/gather struct?
 
-In addition to all already mentioned things, also make sure you have
-[PATCH bpf] prefix in the subject, to identify that this is a bug fix
-for the bpf tree.
+Erm, you check the return value of dma_map_sg(). If it's zero, the 
+request failed; if it's nonzero, that's how many DMA segments you now 
+have to process. See Documentation/core-api/dma-api.rst.
 
-Also you missed adding Fixes tag, please add this:
+The only guarantee offered about the state of the scatterlist itself is 
+that if it is successfully mapped, then the dma_address and dma_length 
+fields are valid for that many segments, and if that is fewer than the 
+total number of physical segments then the next one after the final DMA 
+segment will have a dma_length of 0. In particular there are no 
+guarantees at all about the state if the mapping was unsuccessful.
 
-Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier
-support for it")
+If a driver is failing to keep track of the success/failure status and 
+later down the line trying to guess what to do with a list that may or 
+may not have been mapped, then frankly that driver should be redesigned 
+because that is a terrible anti-pattern. At the very very least it 
+should explicitly encode its own "known bad" state upon failure that it 
+can then reliably recognise later.
 
-And yes, please re-submit with all the feedback incorporated
-(including the selftest).
+Robin.
 
->
-> Sorry in advance for all the overhead I may be causing to you...
->
-> > > ---
-> > >   kernel/bpf/verifier.c | 2 ++
-> > >   1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 17270b8404f1..36af69fac591 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -2217,6 +2217,8 @@ static bool is_spillable_regtype(enum bpf_reg_type type)
-> > >       case PTR_TO_RDWR_BUF:
-> > >       case PTR_TO_RDWR_BUF_OR_NULL:
-> > >       case PTR_TO_PERCPU_BTF_ID:
-> > > +     case PTR_TO_MEM:
-> > > +     case PTR_TO_MEM_OR_NULL:
-> > >               return true;
-> > >       default:
-> > >               return false;
-> > >
-> >
+> I skimmed arch/arm/mm/dma-mapping.c, just now. I can see that this
+> code sets the address within the scatter/gather struct to
+> DMA_MAPPING_ERROR before trying to map an IO address and write it into
+> the struct. Is this a good example to follow?
+> 
+> Thanks,
+> Marc
+> 
