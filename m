@@ -2,41 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A102F1431
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:22:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E405F2F13BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732822AbhAKNVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:21:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37532 "EHLO mail.kernel.org"
+        id S1732015AbhAKNN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:13:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60492 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733244AbhAKNTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:19:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60C2022A83;
-        Mon, 11 Jan 2021 13:18:32 +0000 (UTC)
+        id S1726652AbhAKNNf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:13:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F33E2255F;
+        Mon, 11 Jan 2021 13:12:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610371112;
-        bh=xZJ4AxdMJDxWjNqQHP2cu0DDr9uFvEAqpMKQt77EwSs=;
+        s=korg; t=1610370774;
+        bh=RtPCodWJNa8Vq9zjgTOX1nKJGNsC80WBcGyk3ofdae0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qFFyjMZs8fkwBw3Ey/Sc7gnhbWcDQibnmORjqfgrxaG+/gfH1OHYtJQQnwVhdDATx
-         ewC0yyRXbhCYWel6EepIbUihc/iAufO8C5q2a57xWRAICRhp/kkdFVA3DDPvnmoQzO
-         /DVQ1AeYD6tohXBB5Ek/0Fi4kiwcuXehfsoGkw4E=
+        b=wB7r/cpKJyBUmuK0w5pv1riAn2FK9PUfZU1WFac3LpzhxZf0apS/BS84Xnz2iyj1K
+         BpRAKmqujMmMT98BgQHtLT+W/iLqCxqir/WuOo6iKv7AXZbzptrcMow9/mkIE7RX19
+         bvspgRNI58Mf4Mi/vmFYnx1Go3kva5cAls8ydoR0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "kernelci.org bot" <bot@kernelci.org>,
-        Quentin Perret <qperret@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Alan Modra <amodra@gmail.com>,
-        =?UTF-8?q?F=C4=81ng-ru=C3=AC=20S=C3=B2ng?= <maskray@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Subject: [PATCH 5.10 129/145] arm64: link with -z norelro for LLD or aarch64-elf
-Date:   Mon, 11 Jan 2021 14:02:33 +0100
-Message-Id: <20210111130054.714929856@linuxfoundation.org>
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 5.4 90/92] netfilter: nft_dynset: report EOPNOTSUPP on missing set feature
+Date:   Mon, 11 Jan 2021 14:02:34 +0100
+Message-Id: <20210111130043.494744303@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,82 +38,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-commit 311bea3cb9ee20ef150ca76fc60a592bf6b159f5 upstream.
+commit 95cd4bca7b1f4a25810f3ddfc5e767fb46931789 upstream.
 
-With GNU binutils 2.35+, linking with BFD produces warnings for vmlinux:
-aarch64-linux-gnu-ld: warning: -z norelro ignored
+If userspace requests a feature which is not available the original set
+definition, then bail out with EOPNOTSUPP. If userspace sends
+unsupported dynset flags (new feature not supported by this kernel),
+then report EOPNOTSUPP to userspace. EINVAL should be only used to
+report malformed netlink messages from userspace.
 
-BFD can produce this warning when the target emulation mode does not
-support RELRO program headers, and -z relro or -z norelro is passed.
-
-Alan Modra clarifies:
-  The default linker emulation for an aarch64-linux ld.bfd is
-  -maarch64linux, the default for an aarch64-elf linker is
-  -maarch64elf.  They are not equivalent.  If you choose -maarch64elf
-  you get an emulation that doesn't support -z relro.
-
-The ARCH=arm64 kernel prefers -maarch64elf, but may fall back to
--maarch64linux based on the toolchain configuration.
-
-LLD will always create RELRO program header regardless of target
-emulation.
-
-To avoid the above warning when linking with BFD, pass -z norelro only
-when linking with LLD or with -maarch64linux.
-
-Fixes: 3b92fa7485eb ("arm64: link with -z norelro regardless of CONFIG_RELOCATABLE")
-Fixes: 3bbd3db86470 ("arm64: relocatable: fix inconsistencies in linker script and options")
-Cc: <stable@vger.kernel.org> # 5.0.x-
-Reported-by: kernelci.org bot <bot@kernelci.org>
-Reported-by: Quentin Perret <qperret@google.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Cc: Alan Modra <amodra@gmail.com>
-Cc: Fāng-ruì Sòng <maskray@google.com>
-Link: https://lore.kernel.org/r/20201218002432.788499-1-ndesaulniers@google.com
-Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Fixes: 22fe54d5fefc ("netfilter: nf_tables: add support for dynamic set updates")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm64/Makefile |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ net/netfilter/nft_dynset.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/arch/arm64/Makefile
-+++ b/arch/arm64/Makefile
-@@ -10,7 +10,7 @@
- #
- # Copyright (C) 1995-2001 by Russell King
+--- a/net/netfilter/nft_dynset.c
++++ b/net/netfilter/nft_dynset.c
+@@ -146,7 +146,7 @@ static int nft_dynset_init(const struct
+ 		u32 flags = ntohl(nla_get_be32(tb[NFTA_DYNSET_FLAGS]));
  
--LDFLAGS_vmlinux	:=--no-undefined -X -z norelro
-+LDFLAGS_vmlinux	:=--no-undefined -X
+ 		if (flags & ~NFT_DYNSET_F_INV)
+-			return -EINVAL;
++			return -EOPNOTSUPP;
+ 		if (flags & NFT_DYNSET_F_INV)
+ 			priv->invert = true;
+ 	}
+@@ -179,7 +179,7 @@ static int nft_dynset_init(const struct
+ 	timeout = 0;
+ 	if (tb[NFTA_DYNSET_TIMEOUT] != NULL) {
+ 		if (!(set->flags & NFT_SET_TIMEOUT))
+-			return -EINVAL;
++			return -EOPNOTSUPP;
  
- ifeq ($(CONFIG_RELOCATABLE), y)
- # Pass --no-apply-dynamic-relocs to restore pre-binutils-2.27 behaviour
-@@ -110,16 +110,20 @@ KBUILD_CPPFLAGS	+= -mbig-endian
- CHECKFLAGS	+= -D__AARCH64EB__
- # Prefer the baremetal ELF build target, but not all toolchains include
- # it so fall back to the standard linux version if needed.
--KBUILD_LDFLAGS	+= -EB $(call ld-option, -maarch64elfb, -maarch64linuxb)
-+KBUILD_LDFLAGS	+= -EB $(call ld-option, -maarch64elfb, -maarch64linuxb -z norelro)
- UTS_MACHINE	:= aarch64_be
- else
- KBUILD_CPPFLAGS	+= -mlittle-endian
- CHECKFLAGS	+= -D__AARCH64EL__
- # Same as above, prefer ELF but fall back to linux target if needed.
--KBUILD_LDFLAGS	+= -EL $(call ld-option, -maarch64elf, -maarch64linux)
-+KBUILD_LDFLAGS	+= -EL $(call ld-option, -maarch64elf, -maarch64linux -z norelro)
- UTS_MACHINE	:= aarch64
- endif
+ 		err = nf_msecs_to_jiffies64(tb[NFTA_DYNSET_TIMEOUT], &timeout);
+ 		if (err)
+@@ -193,7 +193,7 @@ static int nft_dynset_init(const struct
  
-+ifeq ($(CONFIG_LD_IS_LLD), y)
-+KBUILD_LDFLAGS	+= -z norelro
-+endif
-+
- CHECKFLAGS	+= -D__aarch64__
+ 	if (tb[NFTA_DYNSET_SREG_DATA] != NULL) {
+ 		if (!(set->flags & NFT_SET_MAP))
+-			return -EINVAL;
++			return -EOPNOTSUPP;
+ 		if (set->dtype == NFT_DATA_VERDICT)
+ 			return -EOPNOTSUPP;
  
- ifeq ($(CONFIG_DYNAMIC_FTRACE_WITH_REGS),y)
 
 
