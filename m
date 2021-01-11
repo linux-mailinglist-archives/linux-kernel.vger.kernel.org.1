@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8AC62F0F1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:29:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C202F0F25
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:32:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbhAKJ3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 04:29:06 -0500
-Received: from foss.arm.com ([217.140.110.172]:51098 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726273AbhAKJ3F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 04:29:05 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 88323101E;
-        Mon, 11 Jan 2021 01:28:19 -0800 (PST)
-Received: from e123083-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E58003F70D;
-        Mon, 11 Jan 2021 01:28:14 -0800 (PST)
-Date:   Mon, 11 Jan 2021 10:28:11 +0100
-From:   Morten Rasmussen <morten.rasmussen@arm.com>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Barry Song <song.bao.hua@hisilicon.com>,
-        valentin.schneider@arm.com, catalin.marinas@arm.com,
-        will@kernel.org, rjw@rjwysocki.net, vincent.guittot@linaro.org,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        jonathan.cameron@huawei.com, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, mark.rutland@arm.com, sudeep.holla@arm.com,
-        aubrey.li@linux.intel.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linuxarm@openeuler.org, xuwei5@huawei.com,
-        prime.zeng@hisilicon.com, tiantao6@hisilicon.com
-Subject: Re: [RFC PATCH v3 0/2] scheduler: expose the topology of clusters
- and add cluster scheduler
-Message-ID: <20210111092811.GB47324@e123083-lin>
-References: <20210106083026.40444-1-song.bao.hua@hisilicon.com>
- <737932c9-846a-0a6b-08b8-e2d2d95b67ce@linux.intel.com>
- <20210108151241.GA47324@e123083-lin>
- <99c07bdf-02d1-153a-bd1e-2f4200cc67c5@linux.intel.com>
+        id S1728166AbhAKJcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 04:32:50 -0500
+Received: from devianza.investici.org ([198.167.222.108]:48799 "EHLO
+        devianza.investici.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728014AbhAKJcu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 04:32:50 -0500
+Received: from mx2.investici.org (unknown [127.0.0.1])
+        by devianza.investici.org (Postfix) with ESMTP id 4DDpBB3lblz6v8y;
+        Mon, 11 Jan 2021 09:21:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=privacyrequired.com;
+        s=stigmate; t=1610356914;
+        bh=esG6VqDUFVCdrIj93XWTgBoGpprN/Tj8Y746iTS3G6E=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FN2qPUCZvFH/IZ0YLYBycGZFcJpyWjYGGfykmVSTJuZV05tIziDcSeJKecrsSv4wp
+         uVSCsD6KzkFKD12eIVXt5GwY14fmhpVZugXoU1/HbDKhVQGaVjW74uXpIrMZoAU2Q6
+         q3NR9eC+uIHUr/PCdO2DigunGzRUpY/hemGVhy6I=
+Received: from [198.167.222.108] (mx2.investici.org [198.167.222.108]) (Authenticated sender: laniel_francis@privacyrequired.com) by localhost (Postfix) with ESMTPSA id 4DDpBB2CWkz6v8w;
+        Mon, 11 Jan 2021 09:21:54 +0000 (UTC)
+From:   laniel_francis@privacyrequired.com
+To:     linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org,
+        Francis Laniel <laniel_francis@privacyrequired.com>
+Subject: [RFC PATCH v2 0/1] Create header for fortified string functions.
+Date:   Mon, 11 Jan 2021 10:21:40 +0100
+Message-Id: <20210111092141.22946-1-laniel_francis@privacyrequired.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <99c07bdf-02d1-153a-bd1e-2f4200cc67c5@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 12:22:41PM -0800, Tim Chen wrote:
-> 
-> 
-> On 1/8/21 7:12 AM, Morten Rasmussen wrote:
-> > On Thu, Jan 07, 2021 at 03:16:47PM -0800, Tim Chen wrote:
-> >> On 1/6/21 12:30 AM, Barry Song wrote:
-> >>> ARM64 server chip Kunpeng 920 has 6 clusters in each NUMA node, and each
-> >>> cluster has 4 cpus. All clusters share L3 cache data while each cluster
-> >>> has local L3 tag. On the other hand, each cluster will share some
-> >>> internal system bus. This means cache is much more affine inside one cluster
-> >>> than across clusters.
-> >>
-> >> There is a similar need for clustering in x86.  Some x86 cores could share L2 caches that
-> >> is similar to the cluster in Kupeng 920 (e.g. on Jacobsville there are 6 clusters
-> >> of 4 Atom cores, each cluster sharing a separate L2, and 24 cores sharing L3).  
-> >> Having a sched domain at the L2 cluster helps spread load among 
-> >> L2 domains.  This will reduce L2 cache contention and help with
-> >> performance for low to moderate load scenarios.
-> > 
-> > IIUC, you are arguing for the exact opposite behaviour, i.e. balancing
-> > between L2 caches while Barry is after consolidating tasks within the
-> > boundaries of a L3 tag cache. One helps cache utilization, the other
-> > communication latency between tasks. Am I missing something? 
-> > 
-> > IMHO, we need some numbers on the table to say which way to go. Looking
-> > at just benchmarks of one type doesn't show that this is a good idea in
-> > general.
-> > 
-> 
-> I think it is going to depend on the workload.  If there are dependent
-> tasks that communicate with one another, putting them together
-> in the same cluster will be the right thing to do to reduce communication
-> costs.  On the other hand, if the tasks are independent, putting them together on the same cluster
-> will increase resource contention and spreading them out will be better.
+From: Francis Laniel <laniel_francis@privacyrequired.com>
 
-Agree. That is exactly where I'm coming from. This is all about the task
-placement policy. We generally tend to spread tasks to avoid resource
-contention, SMT and caches, which seems to be what you are proposing to
-extend. I think that makes sense given it can produce significant
-benefits.
+Hi.
 
-> 
-> Any thoughts on what is the right clustering "tag" to use to clump
-> related tasks together?
-> Cgroup? Pid? Tasks with same mm?
 
-I think this is the real question. I think the closest thing we have at
-the moment is the wakee/waker flip heuristic. This seems to be related.
-Perhaps the wake_affine tricks can serve as starting point?
+First, I hope your families, friends and yourself are fine.
 
-Morten
+In a recent mail about the merge of a new fortified string function, Linus
+Torvalds suggested the creation of a dedicated header file for these functions:
+https://marc.info/?l=linux-mm-commits&m=160810366111244
+This will make the code cleaner and also improve compile time for people who do
+not set CONFIG_FORTIFY_SOURCE.
+
+So, this patch creates fortify-string.h which is a new header which contains
+all the fortified versions of functions declared in string.h.
+Since code was moved, I might as well correct the warnings raised by
+checkpatch.pl.
+
+I benchmarked the code compilation with and without CONFIG_FORTIFY_SOURCE.
+To do this, I compiled 10 times a x86_64_defconfig'ured kernel using make -j4
+and cleaning after each compilation.
+These compilations were first done without CONFIG_FORTIFY_SOURCE defined,
+then with this option defined.
+The results were collected using the time bash builtin and are the following
+(in seconds, rounded to 10^-3):
+|     |   min   |   max   |   mean  | std. dev. |  median | 99th percentile |
+| --- | ------- | ------- | ------- | --------- | ------- | --------------- |
+| w/o | 524.488 | 526.982 | 525.111 |   0.722   | 524.901 |     526.848     |
+| w/  | 529.502 | 531.795 | 529.939 |   0.671   | 529.783 |     531.633     |
+First, the results are quite stable as shown by the standard deviation
+(less than 1 second).
+On average, compile time without CONFIG_FORTIFY_SOURCE is 0.919% faster.
+For the median case, compiling without setting this option is  0.930% faster.
+Finally, with the 99th percentile, not using CONFIG_FORTIFY_SOURCE is 0.908%
+faster.
+
+Globally, using a different header seems to provide a roughly 1% faster compile
+time for people who do not set CONFIG_FORTIFY_SOURCE.
+This is not a huge gain... but still a gain!
+Especially on compilation which is an operation kernel developers do a lot.
+
+So, I await your opinions and reviews on this patch.
+
+Version history:
+* v2: Correct misguarded instructions which follow if.
+
+
+Best regards.
+
+Francis Laniel (1):
+  string.h: Move fortified functions definitions in a dedicated header.
+
+ include/linux/fortify-string.h | 302 +++++++++++++++++++++++++++++++++
+ include/linux/string.h         | 282 +-----------------------------
+ 2 files changed, 303 insertions(+), 281 deletions(-)
+ create mode 100644 include/linux/fortify-string.h
+
+-- 
+2.20.1
+
