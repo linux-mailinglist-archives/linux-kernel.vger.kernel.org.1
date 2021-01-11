@@ -2,126 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BCE52F125B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:35:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2952F125C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:35:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbhAKMfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 07:35:32 -0500
-Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:50965 "EHLO
-        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726151AbhAKMfa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726784AbhAKMfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 11 Jan 2021 07:35:30 -0500
-X-Greylist: delayed 948 seconds by postgrey-1.27 at vger.kernel.org; Mon, 11 Jan 2021 07:35:29 EST
+Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:5621 "EHLO
+        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726754AbhAKMf3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 07:35:29 -0500
 Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
- 15.0.1156.6; Mon, 11 Jan 2021 04:18:54 -0800
+ EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
+ 15.0.1156.6; Mon, 11 Jan 2021 04:18:53 -0800
 Received: from sc-dbc2115.eng.vmware.com (sc-dbc2115.eng.vmware.com [10.182.28.6])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 6CF5C209BE;
+        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 71E33209C1;
         Mon, 11 Jan 2021 04:18:55 -0800 (PST)
 From:   Jorgen Hansen <jhansen@vmware.com>
 To:     <linux-kernel@vger.kernel.org>,
         <virtualization@lists.linux-foundation.org>
 CC:     <gregkh@linuxfoundation.org>, <pv-drivers@vmware.com>,
         Jorgen Hansen <jhansen@vmware.com>
-Subject: [PATCH] VMCI: Enforce queuepair max size for IOCTL_VMCI_QUEUEPAIR_ALLOC
-Date:   Mon, 11 Jan 2021 04:18:53 -0800
-Message-ID: <1610367535-4463-1-git-send-email-jhansen@vmware.com>
+Subject: [PATCH] VMCI: Stop log spew when qp allocation isn't possible
+Date:   Mon, 11 Jan 2021 04:18:54 -0800
+Message-ID: <1610367535-4463-2-git-send-email-jhansen@vmware.com>
 X-Mailer: git-send-email 2.6.2
+In-Reply-To: <1610367535-4463-1-git-send-email-jhansen@vmware.com>
+References: <1610367535-4463-1-git-send-email-jhansen@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-Received-SPF: None (EX13-EDG-OU-002.vmware.com: jhansen@vmware.com does not
+Received-SPF: None (EX13-EDG-OU-001.vmware.com: jhansen@vmware.com does not
  designate permitted sender hosts)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When create the VMCI queue pair tracking data structures on the host
-side, the IOCTL for creating the VMCI queue pair didn't validate
-the queue pair size parameters. This change adds checks for this.
+VMCI queue pair allocation is disabled, if a VM is in FT mode. In
+these cases, VMware Tools may still once in a while attempt to
+create a vSocket stream connection, resulting in multiple
+warnings in the kernel logs. Therefore downgrade the error log to
+a debug log.
 
-This avoids a memory allocation issue in qp_host_alloc_queue, as
-reported by nslusarek@gmx.net. The check in qp_host_alloc_queue
-has also been updated to enforce the maximum queue pair size
-as defined by VMCI_MAX_GUEST_QP_MEMORY.
-
-The fix has been verified using sample code supplied by
-nslusarek@gmx.net.
-
-Reported-by: nslusarek@gmx.net
 Reviewed-by: Vishnu Dasa <vdasa@vmware.com>
 Signed-off-by: Jorgen Hansen <jhansen@vmware.com>
 ---
- drivers/misc/vmw_vmci/vmci_queue_pair.c | 12 ++++++++----
- include/linux/vmw_vmci_defs.h           |  4 ++--
- 2 files changed, 10 insertions(+), 6 deletions(-)
+ drivers/misc/vmw_vmci/vmci_queue_pair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.c b/drivers/misc/vmw_vmci/vmci_queue_pair.c
-index 525ef96..39d2f191 100644
+index c490658..a3691c1 100644
 --- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
 +++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
-@@ -237,7 +237,9 @@ static struct qp_list qp_guest_endpoints = {
- #define QPE_NUM_PAGES(_QPE) ((u32) \
- 			     (DIV_ROUND_UP(_QPE.produce_size, PAGE_SIZE) + \
- 			      DIV_ROUND_UP(_QPE.consume_size, PAGE_SIZE) + 2))
--
-+#define QP_SIZES_ARE_VALID(_prod_qsize, _cons_qsize) \
-+	((_prod_qsize) + (_cons_qsize) >= max(_prod_qsize, _cons_qsize) && \
-+	 (_prod_qsize) + (_cons_qsize) <= VMCI_MAX_GUEST_QP_MEMORY)
- 
- /*
-  * Frees kernel VA space for a given queue and its queue header, and
-@@ -528,7 +530,7 @@ static struct vmci_queue *qp_host_alloc_queue(u64 size)
- 	u64 num_pages;
- 	const size_t queue_size = sizeof(*queue) + sizeof(*(queue->kernel_if));
- 
--	if (size > SIZE_MAX - PAGE_SIZE)
-+	if (size > min(VMCI_MAX_GUEST_QP_MEMORY, SIZE_MAX - PAGE_SIZE))
- 		return NULL;
- 	num_pages = DIV_ROUND_UP(size, PAGE_SIZE) + 1;
- 	if (num_pages > (SIZE_MAX - queue_size) /
-@@ -1929,6 +1931,9 @@ int vmci_qp_broker_alloc(struct vmci_handle handle,
- 			 struct vmci_qp_page_store *page_store,
- 			 struct vmci_ctx *context)
- {
-+	if (!QP_SIZES_ARE_VALID(produce_size, consume_size))
-+		return VMCI_ERROR_NO_RESOURCES;
-+
- 	return qp_broker_alloc(handle, peer, flags, priv_flags,
- 			       produce_size, consume_size,
- 			       page_store, context, NULL, NULL, NULL, NULL);
-@@ -2685,8 +2690,7 @@ int vmci_qpair_alloc(struct vmci_qp **qpair,
- 	 * used by the device is NO_RESOURCES, so use that here too.
- 	 */
- 
--	if (produce_qsize + consume_qsize < max(produce_qsize, consume_qsize) ||
--	    produce_qsize + consume_qsize > VMCI_MAX_GUEST_QP_MEMORY)
-+	if (!QP_SIZES_ARE_VALID(produce_qsize, consume_qsize))
- 		return VMCI_ERROR_NO_RESOURCES;
- 
- 	retval = vmci_route(&src, &dst, false, &route);
-diff --git a/include/linux/vmw_vmci_defs.h b/include/linux/vmw_vmci_defs.h
-index be0afe6..e36cb11 100644
---- a/include/linux/vmw_vmci_defs.h
-+++ b/include/linux/vmw_vmci_defs.h
-@@ -66,7 +66,7 @@ enum {
-  * consists of at least two pages, the memory limit also dictates the
-  * number of queue pairs a guest can create.
-  */
--#define VMCI_MAX_GUEST_QP_MEMORY (128 * 1024 * 1024)
-+#define VMCI_MAX_GUEST_QP_MEMORY ((size_t)(128 * 1024 * 1024))
- #define VMCI_MAX_GUEST_QP_COUNT  (VMCI_MAX_GUEST_QP_MEMORY / PAGE_SIZE / 2)
- 
- /*
-@@ -80,7 +80,7 @@ enum {
-  * too much kernel memory (especially on vmkernel).  We limit a queuepair to
-  * 32 KB, or 16 KB per queue for symmetrical pairs.
-  */
--#define VMCI_MAX_PINNED_QP_MEMORY (32 * 1024)
-+#define VMCI_MAX_PINNED_QP_MEMORY ((size_t)(32 * 1024))
- 
- /*
-  * We have a fixed set of resource IDs available in the VMX.
+@@ -1207,7 +1207,7 @@ static int qp_alloc_guest_work(struct vmci_handle *handle,
+ 	} else {
+ 		result = qp_alloc_hypercall(queue_pair_entry);
+ 		if (result < VMCI_SUCCESS) {
+-			pr_warn("qp_alloc_hypercall result = %d\n", result);
++			pr_devel("qp_alloc_hypercall result = %d\n", result);
+ 			goto error;
+ 		}
+ 	}
 -- 
 2.6.2
 
