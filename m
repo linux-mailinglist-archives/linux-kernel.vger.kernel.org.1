@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44A52F173E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:03:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0DA2F1749
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388557AbhAKODf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:03:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60008 "EHLO
+        id S2388537AbhAKODs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:03:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388366AbhAKODE (ORCPT
+        with ESMTP id S1730256AbhAKODp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:03:04 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D89DEC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:02:23 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id d13so16485421wrc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:02:23 -0800 (PST)
+        Mon, 11 Jan 2021 09:03:45 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA12CC061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:03:04 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id y23so15196810wmi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:03:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:autocrypt:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=uobXBUEv4oqTEB0i8KeKmXbTD71SSmB2fLpGYVHr2ko=;
-        b=fqM4/6tnFGkA2YdC2Xvp8v/SciCLjx8C2wwyCZXDqVDUisTyY10dWRHOgYi2dXAb6K
-         hbEfEjyDfWIs+qlQBHC5ciDPmxCrQASYYzNf5GYZw+RA1NxfAnaErTFY2jMGwC3yRyx2
-         P/L9BTMxS0xf+4uJYpw5OLF6eDFX3JDziZ9gCgYRocS223D/6+LDHF3FNsDGQgGmY647
-         IDKL5nrZhx8LYaf8K1a03IJqdn+bTyRgi1xhFvI3Wk0QE23LtPJsarrxspZMJc9LTFXP
-         zclX/CG0Oe8sQzuKb7P1NnEbVJIf8lvSsw9ERKveK9s3mGjXv1XGAajVUL0qRzKMd7M+
-         8SwQ==
+        bh=uUfUDdGFg+KzOzGTBmGUqmDy9inEby6Kce6phzRd4pU=;
+        b=CnsoZzKpBW6PcNyRpvPAI4KDQCUaXXvBiXNE3cebMx6/NxWJAFclJ98GILA0Ny7G4d
+         mdd5DK54R0tiPpfI0tIkxV+ua1NmZoJt96BrBOG5dJa9XtdVdoQezTc8s44B9/WfUWiN
+         i1iTRIqjRHpzFnR3ENhv+iPqEKei1NmqXMJ415snGwD9iwJuVoJwOPDF98url45CDlPV
+         jtGSMRIxy4683LmiGtDzjWU3JJlMpXLip7D4C+8U8GwtgYKMUaoZJth4zzQLnbn8ZZwU
+         cBRxhLmkywEiOZ0IzFigKpNvr7eOgcUlMCnW0XGqrlO9Ft8tOuIupCJVK5mGjisBjND7
+         IhEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :organization:message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=uobXBUEv4oqTEB0i8KeKmXbTD71SSmB2fLpGYVHr2ko=;
-        b=MwuiPO+QXJf8Kn8qFIvHWRV+Rgcpu6nntR6ISVMaNNzcePwcoICiecUdodsJWFX3kN
-         bRYs5bT9UhcO4G9yVYn/F++JlDGDaFraPrRkGgN/M4b4K2H68ho7eMB/Ti+Hgg62IGmZ
-         88jYPD/sh+mALuBN23lnCsr3rdKptK9SMoJWdE51uvZZFocUYeGEpDCTysmrmjLr+fWE
-         EFXpJgx3PaJ4QkfCtGJ4wzqR+miXgv0qaEEa6YpuDhnaEO2dqcwxxffgi6IgSpmOW3XO
-         zktvMMAYhy0DdlaGGp1z9DUYcJAjDXpm5tkDRTm44tcy/1IfngJT+yzddhzS/aKPlpeL
-         QnbQ==
-X-Gm-Message-State: AOAM530g+CMAZ563+kGaYrwyV0KgUwP+SrVfPQC7swHK2OKws19tr/x0
-        PaZZTk9Bucou3DCkWHIq3xS5enU7xY10t03i
-X-Google-Smtp-Source: ABdhPJwxTiw8X//R/D3H7WitQ02xAMgOgYR74fC6rLIz9Ah0oOp8y5Z1bzaVkZXVpQaKe3urg21v/g==
-X-Received: by 2002:adf:b343:: with SMTP id k3mr16162064wrd.202.1610373742081;
-        Mon, 11 Jan 2021 06:02:22 -0800 (PST)
+        bh=uUfUDdGFg+KzOzGTBmGUqmDy9inEby6Kce6phzRd4pU=;
+        b=e18q4DqO9jH9x+x0nqou3k0th9vzZJVqF7muuRPgThzNlUsO9Yx4zWwfkCZNqYa/uT
+         YjUbSbYoNZSsrBmt7BrToQzf015fx4C2gha/ZPnp1hwq6fJSBTz033mMoIJBYkhXDMlo
+         zSm1Deg8UY8dvmrXYWRMjRfpQ5PDueou9dj6c3h0i9qR6Wc2Cgn91JJts1mL3Typp+vh
+         8a/TVtS/G+6N7+fKU3qse51VIf77JisXVP5XtwRzxixjm3QeFi8rSBddbbX0cDgMXK5G
+         gV+xrhC+4s8ZjCwQHP4EI3elwOe+2iXA/TP9WAyMFi20eLfT/94xQBkA2V+s6U1Zbkyn
+         MWNQ==
+X-Gm-Message-State: AOAM5338xnDpB950n8/ax3gnVlhlA9YkTjNzOdJB6MK8HYzVzxWllsxD
+        YfzXCImWgVgTKFO5Yo9BaX+de3g3d+ehNUDv
+X-Google-Smtp-Source: ABdhPJyTYXJbpxvLDLeIqnQaRiT8bonr+ja91r5Ulm5wdpLzAVlCLWF6iWq3lhMbHidIte1FlyYt8w==
+X-Received: by 2002:a1c:a912:: with SMTP id s18mr14400927wme.26.1610373782808;
+        Mon, 11 Jan 2021 06:03:02 -0800 (PST)
 Received: from ?IPv6:2a01:e35:2ec0:82b0:7474:6cdc:8087:ca98? ([2a01:e35:2ec0:82b0:7474:6cdc:8087:ca98])
-        by smtp.gmail.com with ESMTPSA id w13sm24263695wrt.52.2021.01.11.06.02.20
+        by smtp.gmail.com with ESMTPSA id z8sm21907871wmg.17.2021.01.11.06.03.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 06:02:21 -0800 (PST)
-Subject: Re: [PATCH] arm64: dts: meson: add i2c3/rtc nodes and rtc aliases to
- ODROID-N2 dtsi
-To:     Christian Hewitt <christianshewitt@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210111135831.2218-1-christianshewitt@gmail.com>
+        Mon, 11 Jan 2021 06:03:02 -0800 (PST)
+Subject: Re: [PATCH 1/5] ARM: dts: meson: move iio-hwmon for the SoC
+ temperature to meson.dtsi
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-amlogic@lists.infradead.org, khilman@baylibre.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20201221181306.904272-1-martin.blumenstingl@googlemail.com>
+ <20201221181306.904272-2-martin.blumenstingl@googlemail.com>
 From:   Neil Armstrong <narmstrong@baylibre.com>
 Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  mQENBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
@@ -110,12 +108,12 @@ Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  VsbXrP9BZ6snXyHfebPnno/te5XRqZTL9aJOytB/1iUna+1MAwBxGFPvqeEUUyT+gx1l3Acl
  ZaTUOEkgIor5losDrePdPgE=
 Organization: Baylibre
-Message-ID: <e571f308-b8fd-7979-c050-0ab5f09e44c5@baylibre.com>
-Date:   Mon, 11 Jan 2021 15:02:20 +0100
+Message-ID: <5ff93086-d913-6465-7af3-9555c1cceba2@baylibre.com>
+Date:   Mon, 11 Jan 2021 15:03:01 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210111135831.2218-1-christianshewitt@gmail.com>
+In-Reply-To: <20201221181306.904272-2-martin.blumenstingl@googlemail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -123,47 +121,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/01/2021 14:58, Christian Hewitt wrote:
-> Enable the onboard pcf8563 rtc hardware on ODROID N2/N2+ boards via the
-> common dtsi. Also add aliases to ensure vrtc does not claim /dev/rtc0.
+On 21/12/2020 19:13, Martin Blumenstingl wrote:
+> The SoC temperature can be retrieved from ADC channel 8 on all 32-bit
+> SoCs (Meson6, Meson8, Meson8b and Meson8m2). Move the iio-hwmon instance
+> to meson.dtsi instead of duplicating it in all board.dts.
+> If the temperature sensor calibration data is missing for a board then
+> iio-hwmon will simply not probe.
 > 
-> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 > ---
->  .../boot/dts/amlogic/meson-g12b-odroid-n2.dtsi     | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+>  arch/arm/boot/dts/meson.dtsi              | 5 +++++
+>  arch/arm/boot/dts/meson8b-ec100.dts       | 5 -----
+>  arch/arm/boot/dts/meson8b-mxq.dts         | 5 -----
+>  arch/arm/boot/dts/meson8b-odroidc1.dts    | 5 -----
+>  arch/arm/boot/dts/meson8m2-mxiii-plus.dts | 5 -----
+>  5 files changed, 5 insertions(+), 20 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-> index 39a09661c5f6..b78be3e6974d 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
-> @@ -13,6 +13,8 @@
->  	aliases {
->  		serial0 = &uart_AO;
->  		ethernet0 = &ethmac;
-> +		rtc0 = &rtc;
-> +		rtc1 = &vrtc;
+> diff --git a/arch/arm/boot/dts/meson.dtsi b/arch/arm/boot/dts/meson.dtsi
+> index 7649dd1e0b9e..5f074f7aa1a2 100644
+> --- a/arch/arm/boot/dts/meson.dtsi
+> +++ b/arch/arm/boot/dts/meson.dtsi
+> @@ -11,6 +11,11 @@ / {
+>  	#size-cells = <1>;
+>  	interrupt-parent = <&gic>;
+>  
+> +	iio-hwmon {
+> +		compatible = "iio-hwmon";
+> +		io-channels = <&saradc 8>;
+> +	};
+> +
+>  	soc {
+>  		compatible = "simple-bus";
+>  		#address-cells = <1>;
+> diff --git a/arch/arm/boot/dts/meson8b-ec100.dts b/arch/arm/boot/dts/meson8b-ec100.dts
+> index ed06102a4014..8e48ccc6b634 100644
+> --- a/arch/arm/boot/dts/meson8b-ec100.dts
+> +++ b/arch/arm/boot/dts/meson8b-ec100.dts
+> @@ -70,11 +70,6 @@ gpio-poweroff {
+>  		timeout-ms = <20000>;
 >  	};
 >  
->  	dioo2133: audio-amplifier-0 {
-> @@ -478,6 +480,18 @@
->  	linux,rc-map-name = "rc-odroid";
->  };
+> -	iio-hwmon {
+> -		compatible = "iio-hwmon";
+> -		io-channels = <&saradc 8>;
+> -	};
+> -
+>  	leds {
+>  		compatible = "gpio-leds";
 >  
-> +&i2c3 {
-> +	status = "okay";
-> +	pinctrl-0 = <&i2c3_sda_a_pins>, <&i2c3_sck_a_pins>;
-> +	pinctrl-names = "default";
-> +
-> +	rtc: rtc@51 {
-> +		compatible = "nxp,pcf8563";
-> +		reg = <0x51>;
-> +		wakeup-source;
-> +	};
-> +};
-> +
->  &pwm_ab {
->  	pinctrl-0 = <&pwm_a_e_pins>;
->  	pinctrl-names = "default";
+> diff --git a/arch/arm/boot/dts/meson8b-mxq.dts b/arch/arm/boot/dts/meson8b-mxq.dts
+> index 33037ef62d0a..f3937d55472d 100644
+> --- a/arch/arm/boot/dts/meson8b-mxq.dts
+> +++ b/arch/arm/boot/dts/meson8b-mxq.dts
+> @@ -27,11 +27,6 @@ memory {
+>  		reg = <0x40000000 0x40000000>;
+>  	};
+>  
+> -	iio-hwmon {
+> -		compatible = "iio-hwmon";
+> -		io-channels = <&saradc 8>;
+> -	};
+> -
+>  	vcck: regulator-vcck {
+>  		compatible = "pwm-regulator";
+>  
+> diff --git a/arch/arm/boot/dts/meson8b-odroidc1.dts b/arch/arm/boot/dts/meson8b-odroidc1.dts
+> index 5963566dbcc9..c440ef94e082 100644
+> --- a/arch/arm/boot/dts/meson8b-odroidc1.dts
+> +++ b/arch/arm/boot/dts/meson8b-odroidc1.dts
+> @@ -85,11 +85,6 @@ tf_io: gpio-regulator-tf_io {
+>  			  1800000 1>;
+>  	};
+>  
+> -	iio-hwmon {
+> -		compatible = "iio-hwmon";
+> -		io-channels = <&saradc 8>;
+> -	};
+> -
+>  	rtc32k_xtal: rtc32k-xtal-clk {
+>  		/* X3 in the schematics */
+>  		compatible = "fixed-clock";
+> diff --git a/arch/arm/boot/dts/meson8m2-mxiii-plus.dts b/arch/arm/boot/dts/meson8m2-mxiii-plus.dts
+> index 8f4eb1ed4581..fa6d55f1cfb9 100644
+> --- a/arch/arm/boot/dts/meson8m2-mxiii-plus.dts
+> +++ b/arch/arm/boot/dts/meson8m2-mxiii-plus.dts
+> @@ -45,11 +45,6 @@ button-function {
+>  		};
+>  	};
+>  
+> -	iio-hwmon {
+> -		compatible = "iio-hwmon";
+> -		io-channels = <&saradc 8>;
+> -	};
+> -
+>  	vcc_3v3: regulator-vcc3v3 {
+>  		compatible = "regulator-fixed";
+>  		regulator-name = "VCC3V3";
 > 
 
 Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
