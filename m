@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7B22F1735
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:03:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7632F171A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:01:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388301AbhAKOCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:02:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52524 "EHLO mail.kernel.org"
+        id S2388191AbhAKOBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:01:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730306AbhAKNFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:05:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 91D4E225AC;
-        Mon, 11 Jan 2021 13:04:43 +0000 (UTC)
+        id S1730361AbhAKNFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:05:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B7FE21973;
+        Mon, 11 Jan 2021 13:05:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370284;
-        bh=Of8vp7pARP2LdU4yg5g8udYvSyXNZZovsyduhvk9YzI=;
+        s=korg; t=1610370331;
+        bh=obHfZ6B5I0DLFG4GxUg5kBUuzOrmx5Mj6UZD2celW38=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aDPWeT9qIXxkILnW9SsBtk4Zc3e8qFpwKMQcDKzan6+omsd+6NqG6Pb/R04C1O4A8
-         nUhItS7Ybxr9rwnAzRuJ05jN5JbCCZohiquZW43z84CvLfUsfL8Za4sImT0ZF0Prt+
-         qgTbBwzxEcArDkNqECLhirkZUACIa7f52ntrnScs=
+        b=XrwbSIXj4M+6G7FwaXJUgajaaLW4HznHuuEQL29HioFd73k0iKIDkMhJfrNq5HTM5
+         VTxIWBXkFiktPOHdPx+zUCnXASazxrJZ1gdhu1c45+ppeiJgHkN8hWLiPfA+eX1/lR
+         dcPQSJo8CMkBqyD41HDIOCiGBXspeW0BvWA5b0mM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Petr Machata <me@pmachata.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 12/57] net: dcb: Validate netlink message in DCB handler
-Date:   Mon, 11 Jan 2021 14:01:31 +0100
-Message-Id: <20210111130034.311718549@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>
+Subject: [PATCH 4.14 33/57] USB: xhci: fix U1/U2 handling for hardware with XHCI_INTEL_HOST quirk set
+Date:   Mon, 11 Jan 2021 14:01:52 +0100
+Message-Id: <20210111130035.325517367@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
 References: <20210111130033.715773309@linuxfoundation.org>
@@ -39,47 +39,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Machata <me@pmachata.org>
+From: Michael Grzeschik <m.grzeschik@pengutronix.de>
 
-[ Upstream commit 826f328e2b7e8854dd42ea44e6519cd75018e7b1 ]
+commit 5d5323a6f3625f101dbfa94ba3ef7706cce38760 upstream.
 
-DCB uses the same handler function for both RTM_GETDCB and RTM_SETDCB
-messages. dcb_doit() bounces RTM_SETDCB mesasges if the user does not have
-the CAP_NET_ADMIN capability.
+The commit 0472bf06c6fd ("xhci: Prevent U1/U2 link pm states if exit
+latency is too long") was constraining the xhci code not to allow U1/U2
+sleep states if the latency to wake up from the U-states reached the
+service interval of an periodic endpoint. This fix was not taking into
+account that in case the quirk XHCI_INTEL_HOST is set, the wakeup time
+will be calculated and configured differently.
 
-However, the operation to be performed is not decided from the DCB message
-type, but from the DCB command. Thus DCB_CMD_*_GET commands are used for
-reading DCB objects, the corresponding SET and DEL commands are used for
-manipulation.
+It checks for u1_params.mel/u2_params.mel as a limit. But the code could
+decide to write another MEL into the hardware. This leads to broken
+cases where not enough bandwidth is available for other devices:
 
-The assumption is that set-like commands will be sent via an RTM_SETDCB
-message, and get-like ones via RTM_GETDCB. However, this assumption is not
-enforced.
+usb 1-2: can't set config #1, error -28
 
-It is therefore possible to manipulate DCB objects without CAP_NET_ADMIN
-capability by sending the corresponding command in an RTM_GETDCB message.
-That is a bug. Fix it by validating the type of the request message against
-the type used for the response.
+This patch is fixing that case by checking for timeout_ns after the
+wakeup time was calculated depending on the quirks.
 
-Fixes: 2f90b8657ec9 ("ixgbe: this patch adds support for DCB to the kernel and ixgbe driver")
-Signed-off-by: Petr Machata <me@pmachata.org>
-Link: https://lore.kernel.org/r/a2a9b88418f3a58ef211b718f2970128ef9e3793.1608673640.git.me@pmachata.org
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 0472bf06c6fd ("xhci: Prevent U1/U2 link pm states if exit latency is too long")
+Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201215193147.11738-1-m.grzeschik@pengutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/dcb/dcbnl.c |    2 ++
- 1 file changed, 2 insertions(+)
 
---- a/net/dcb/dcbnl.c
-+++ b/net/dcb/dcbnl.c
-@@ -1727,6 +1727,8 @@ static int dcb_doit(struct sk_buff *skb,
- 	fn = &reply_funcs[dcb->cmd];
- 	if (!fn->cb)
- 		return -EOPNOTSUPP;
-+	if (fn->type != nlh->nlmsg_type)
-+		return -EPERM;
+---
+ drivers/usb/host/xhci.c |   24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -4390,19 +4390,19 @@ static u16 xhci_calculate_u1_timeout(str
+ {
+ 	unsigned long long timeout_ns;
  
- 	if (!tb[DCB_ATTR_IFNAME])
- 		return -EINVAL;
++	if (xhci->quirks & XHCI_INTEL_HOST)
++		timeout_ns = xhci_calculate_intel_u1_timeout(udev, desc);
++	else
++		timeout_ns = udev->u1_params.sel;
++
+ 	/* Prevent U1 if service interval is shorter than U1 exit latency */
+ 	if (usb_endpoint_xfer_int(desc) || usb_endpoint_xfer_isoc(desc)) {
+-		if (xhci_service_interval_to_ns(desc) <= udev->u1_params.mel) {
++		if (xhci_service_interval_to_ns(desc) <= timeout_ns) {
+ 			dev_dbg(&udev->dev, "Disable U1, ESIT shorter than exit latency\n");
+ 			return USB3_LPM_DISABLED;
+ 		}
+ 	}
+ 
+-	if (xhci->quirks & XHCI_INTEL_HOST)
+-		timeout_ns = xhci_calculate_intel_u1_timeout(udev, desc);
+-	else
+-		timeout_ns = udev->u1_params.sel;
+-
+ 	/* The U1 timeout is encoded in 1us intervals.
+ 	 * Don't return a timeout of zero, because that's USB3_LPM_DISABLED.
+ 	 */
+@@ -4454,19 +4454,19 @@ static u16 xhci_calculate_u2_timeout(str
+ {
+ 	unsigned long long timeout_ns;
+ 
++	if (xhci->quirks & XHCI_INTEL_HOST)
++		timeout_ns = xhci_calculate_intel_u2_timeout(udev, desc);
++	else
++		timeout_ns = udev->u2_params.sel;
++
+ 	/* Prevent U2 if service interval is shorter than U2 exit latency */
+ 	if (usb_endpoint_xfer_int(desc) || usb_endpoint_xfer_isoc(desc)) {
+-		if (xhci_service_interval_to_ns(desc) <= udev->u2_params.mel) {
++		if (xhci_service_interval_to_ns(desc) <= timeout_ns) {
+ 			dev_dbg(&udev->dev, "Disable U2, ESIT shorter than exit latency\n");
+ 			return USB3_LPM_DISABLED;
+ 		}
+ 	}
+ 
+-	if (xhci->quirks & XHCI_INTEL_HOST)
+-		timeout_ns = xhci_calculate_intel_u2_timeout(udev, desc);
+-	else
+-		timeout_ns = udev->u2_params.sel;
+-
+ 	/* The U2 timeout is encoded in 256us intervals */
+ 	timeout_ns = DIV_ROUND_UP_ULL(timeout_ns, 256 * 1000);
+ 	/* If the necessary timeout value is bigger than what we can set in the
 
 
