@@ -2,114 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF4D2F1BC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8E62F1BCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389101AbhAKRGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 12:06:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730342AbhAKRGa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:06:30 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A0D7C061795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:05:50 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id c133so439744wme.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:05:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zHu1ckVRAMWx4RepAlDhc0i4dSbBejVwjp9wkCsGwWQ=;
-        b=U8DCHxOZsNnXyHsqGt/aEYsvKCWeeNiemmjB41i5nfiN+qhhV7UhvWucy4ZZ50W9ya
-         zKysXo93jowfFFeokf0s7lG6rUakqE5kd4+DIk3XeUI36UidX0kc5ti1qRvvCgO9UO2x
-         hVPp85Jhh4Gm7ZelMM25WPtS/jQSC3s95fnmdSfFQMjFuZEKGaO5AO9uEASvwk/Xfn8z
-         +VjqUJXYp3t6IpE1sBc3MFGU/NsX2HFZL0Ff9MqF+LiUYQp2t9JXTlbkYyYTvEB/OzhZ
-         mpPlpyGqFACMFjZgtADlHwln/yvk6eFkGGVyuPBvaBIlfDJo8hEO+EtFZ6IJVKxpdUye
-         t33A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zHu1ckVRAMWx4RepAlDhc0i4dSbBejVwjp9wkCsGwWQ=;
-        b=cmADLkEqq7V++a97j+LooT8uYctLAJR2/zkxrNzxEh8WxZnLM4LwcbzegjOZhFrI0Y
-         afp5NUPkzO1rpesfj9PhqAxjbMhuBBiPOx3xL1gJHfsfntnC4w+T8bLeYq2AeMXRm+jM
-         /wtlwASNOlURxBO76i/DrvIHiA67GgRENDxfjas0mBe56N2DZzvas9v1sPGTEkRYF1LE
-         jKfm7f8e86pLUIl+t09ud53SXyYexZ3GlvduRtWnlEpmvpUofDXAB916gIP8s1injxHg
-         oGhWmfkylGoolu5CJ6B2YNPFLqLZcddBRj2vZjdoik/7AqXC62tzXLnwYihLbs7y6vBE
-         CIZw==
-X-Gm-Message-State: AOAM531BR9mAIbBgdiiAIwliA/v38ttSvad9BhuDrsBbCTrUDFPndK9U
-        WEGXmcvXabWExQggsBBLPKOAIS/nEdsdM4oMayzfUQ==
-X-Google-Smtp-Source: ABdhPJwuNTuUcYaBZ08xd/Ii7ZYohmL1BPrUHr53gbc0AGN0DmQFWjIcA/QD16dFhDbX+aMkVap0PfDnmCDOKrzq9QY=
-X-Received: by 2002:a7b:cc94:: with SMTP id p20mr612383wma.22.1610384748638;
- Mon, 11 Jan 2021 09:05:48 -0800 (PST)
+        id S2389148AbhAKRHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 12:07:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727753AbhAKRHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 12:07:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B1585229CA;
+        Mon, 11 Jan 2021 17:06:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610384789;
+        bh=J/sznXZARagNO3dLodSI/Tf4aehRsam4T+NdIpKHdw8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gFtHG9CDFig8Dgc1ay9WeQXCIuJ7o+op5IZnIBPM6Oq2uTbstWXtDo87WoImSeewA
+         GD1nHHmwBNImq0SyWIwwPNgblexx+x9bTKexjBAHoYHfTRU3ImrTpg1Jv8kWOcatoo
+         RRbp+IP2d6RWA5a54j/TCaJwMwbfLkjyJfGbLqS0fzAr71+lzDqX4L7dDff/x/RxUu
+         czqz3pIphlHE/hypDQlaeIkqIXLyhVWOOPxNBeg70+fIXHm1mw6BPf+rzIJaROmukM
+         FJ9tTIjWI5d9mxnG6SPgCyjCx8g+ei+zQcRq+sEIFx57RkAM0TxnL+arckxeX5TfiM
+         uVoPWHGPeZNwg==
+Date:   Mon, 11 Jan 2021 17:05:56 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     YANG LI <abaci-bugfix@linux.alibaba.com>, kdasu.kdev@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org
+Subject: Re: [PATCH] spi: spi-bcm-qspi: style: Simplify bool comparison
+Message-ID: <20210111170556.GF4728@sirena.org.uk>
+References: <1610357189-60031-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+ <161038255869.32886.11006261963964555197.b4-ty@kernel.org>
+ <ec735a59-0fbd-3d4a-e997-895099a8e534@gmail.com>
 MIME-Version: 1.0
-References: <20210108205857.1471269-1-surenb@google.com> <875z43rd0u.fsf@oldenburg2.str.redhat.com>
-In-Reply-To: <875z43rd0u.fsf@oldenburg2.str.redhat.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 11 Jan 2021 09:05:37 -0800
-Message-ID: <CAJuCfpGwer93uKRE3nqtmLwsUnK_Cn-Zz1bXuFGX94mmVxqQZg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm/madvise: replace ptrace attach requirement for process_madvise
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
-        Tim Murray <timmurray@google.com>,
-        linux-mm <linux-mm@kvack.org>, selinux@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cz6wLo+OExbGG7q/"
+Content-Disposition: inline
+In-Reply-To: <ec735a59-0fbd-3d4a-e997-895099a8e534@gmail.com>
+X-Cookie: Too much is not enough.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 2:20 AM Florian Weimer <fweimer@redhat.com> wrote:
->
-> * Suren Baghdasaryan:
->
-> > diff --git a/mm/madvise.c b/mm/madvise.c
-> > index 6a660858784b..c2d600386902 100644
-> > --- a/mm/madvise.c
-> > +++ b/mm/madvise.c
-> > @@ -1197,12 +1197,22 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
-> >               goto release_task;
-> >       }
-> >
-> > -     mm = mm_access(task, PTRACE_MODE_ATTACH_FSCREDS);
-> > +     /* Require PTRACE_MODE_READ to avoid leaking ASLR metadata. */
-> > +     mm = mm_access(task, PTRACE_MODE_READ_FSCREDS);
-> >       if (IS_ERR_OR_NULL(mm)) {
-> >               ret = IS_ERR(mm) ? PTR_ERR(mm) : -ESRCH;
-> >               goto release_task;
-> >       }
->
-> Shouldn't this depend on the requested behavior?  Several operations
-> directly result in observable changes, and go beyond performance tuning.
 
-Thanks for the comment Florian.
-process_madvise supports only MADV_COLD and MADV_PAGEOUT hints which
-are both non-destructive (see process_madvise_behavior_valid()
-function). Maybe you meant something else by "observable changes", if
-so please clarify.
-Thanks,
-Suren.
+--cz6wLo+OExbGG7q/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
-> Thanks,
-> Florian
-> --
-> Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-> Commercial register: Amtsgericht Muenchen, HRB 153243,
-> Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
->
+On Mon, Jan 11, 2021 at 08:41:19AM -0800, Florian Fainelli wrote:
+
+> > [1/1] spi: spi-bcm-qspi: style: Simplify bool comparison
+> >       commit: 6650ab2a44268af8d24995d28ae199b57b2ebff8
+
+> I don't think that "style: " is a subject prefix that is used commonly
+> and it certainly should not belong in a commit subject. Mark can you
+> please people at least 10-12 hours to review changes before applying
+> them? This one is trivial except the commit subject does not match
+> previous changes done to this file and it should have been fixed.
+
+Honestly for super trivial stuff like this I'm not sure it's a useful
+use of anyone's time to police this sort of stuff aggressively, it's
+after the prefixes that matter so I saw it easily and I'm having a hard
+time caring that it happens to be done as a prefix rather than saying
+style somewhere else in the subject.
+
+I will generally hold off for longer with these trivial patches on
+things where I expect to see some review but that's felt a bit patchy
+with the Broadcom drivers.
+
+--cz6wLo+OExbGG7q/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/8hXMACgkQJNaLcl1U
+h9Dwgwf/YCFcxryTJnVKlTEM26muvYJidZX7j5hFAFMsUOcnTH8Y/TCcHxBx5d6a
+NiC7G8gPDrsw8yByKD5NUuDkLWc7fbvjJUQTZ4LxIM+zoT7tC10L1DQAJzoYrDHI
+d/5vr5rrHjJERjB0X4BvV9sNyfrbFtbCXZBl6m3bTD4p++rTpLHhzqR6c/GkpP2a
+nM7u61sfQCKvp4yLxA1Q389Weiy3z20hs/vbBbWTml3ppjEqUbQlvPkaLpYRjv/L
+EzOfirWtHoF286LL3KMH4d4doqSOnf/otbenLl4Bp8ahVc2bOtyklnJwJ6P1iFvm
+XopmzF+1B8YnMvt0btDIgydsQaP21w==
+=IhKH
+-----END PGP SIGNATURE-----
+
+--cz6wLo+OExbGG7q/--
