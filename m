@@ -2,162 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C66A2F247E
+	by mail.lfdr.de (Postfix) with ESMTP id B8C952F247F
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391552AbhALAYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2391530AbhALAYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 11 Jan 2021 19:24:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59501 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2403811AbhAKXKX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 18:10:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610406536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XZDeRCQYJoezv5keDk7+o32vhu8r74OG0tRv9cLa8Bs=;
-        b=JVx7WjusI+in290KoptublzLF6olRuvf8ROzDF1b8KQjtwn1fep6By8H/OwZGMrKvXWyQX
-        0HM0B/ce3NpHo1cRTrbvLBq9JgeDeC8loWqdkoSHBhRCvXMPnxBm68dUEOzDHBBj1TZYVh
-        DSo6FBXxerfswEKcT8YWy5IecRZf2Ds=
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
- [209.85.166.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-386-3knLXS93OISQnP1j2Y5SgQ-1; Mon, 11 Jan 2021 18:08:53 -0500
-X-MC-Unique: 3knLXS93OISQnP1j2Y5SgQ-1
-Received: by mail-il1-f198.google.com with SMTP id f19so763192ilk.8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 15:08:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XZDeRCQYJoezv5keDk7+o32vhu8r74OG0tRv9cLa8Bs=;
-        b=ieAg0FFqD3fwrZoh1WO5oQ539vLg4ZRmAExN39IdnSMy5QeAAFuCJCZegQDyc6+fE3
-         6qi/FULSSuqRsEA1Jgk5PCoMPGuwrFiGKHSg4Wo1JW+6/ylwIQuLEVWb2E8ZLsOclAnZ
-         7Ej7rq6T8Q7QxJDeoWDHTnzeUM2mNIoJ4E2nX7PS7vGX7OiZngj7o0tmmCCo4laHb1Nl
-         TkHCpfQ7G0RXZHLFS+IgzCeLysvDYLtlqX421AwwG/Q7jyoq2fKxKcjuB4ur7iXkDYGE
-         lKjdCDca/LS06QBFE/USmDIBW7r5TEBMtso7rRf83IZSBaXs7hTpS3XBxj8ZucOBKKVW
-         UwQQ==
-X-Gm-Message-State: AOAM530FxAv87lU0jTAgbtbZuOJkAcTzFV3pcjGZPH49A+vJtl/WaeOJ
-        icnjqUbIDXxSF7ass9tusDVDah+lQiFIEWF0Xlv/SKgCIvvEywWWNqjdh7x7TgqJRqGRBx4y+yT
-        BDIfpVyNqOI1k9fDmPrim7rYg
-X-Received: by 2002:a92:6f07:: with SMTP id k7mr1342461ilc.18.1610406532567;
-        Mon, 11 Jan 2021 15:08:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzi58bzqh6TdOv13kET/jPoSNAHx1PfMuqHIzilGW0nnoTifMrHyGHUJjjT4/c/z4CZPFG8BQ==
-X-Received: by 2002:a92:6f07:: with SMTP id k7mr1342424ilc.18.1610406532311;
-        Mon, 11 Jan 2021 15:08:52 -0800 (PST)
-Received: from xz-x1 ([142.126.83.202])
-        by smtp.gmail.com with ESMTPSA id l20sm669280ioh.49.2021.01.11.15.08.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 15:08:51 -0800 (PST)
-Date:   Mon, 11 Jan 2021 18:08:48 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [RFC PATCH 0/2] userfaultfd: handle minor faults, add
- UFFDIO_CONTINUE
-Message-ID: <20210111230848.GA588752@xz-x1>
-References: <20210107190453.3051110-1-axelrasmussen@google.com>
- <48f4f43f-eadd-f37d-bd8f-bddba03a7d39@oracle.com>
+Received: from mga11.intel.com ([192.55.52.93]:39033 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403798AbhAKXKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 18:10:02 -0500
+IronPort-SDR: qC1aELj2gyhGu/i9CxfUmbUejtQuOj7DK4jBnyhfF0KlAYS7swMbLKRVzr+CftFOvizEFsidyM
+ zxfxk1dV1+eQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="174441940"
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="174441940"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 15:09:21 -0800
+IronPort-SDR: 03gtsdKQMl7/Ci6SQ2nPH6H+l81KnWZEJl/l4Hwg+8Psk5ygcnq5dCSVulJdv9ncXRgZbYB9pQ
+ QkYlEnicI7ng==
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="381184164"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 15:09:20 -0800
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [PATCH v17 04/26] x86/cpufeatures: Introduce X86_FEATURE_CET and setup functions
+Date:   Mon, 11 Jan 2021 15:09:00 -0800
+Message-Id: <20210111230900.5916-1-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20201229213053.16395-5-yu-cheng.yu@intel.com>
+References: <20201229213053.16395-5-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <48f4f43f-eadd-f37d-bd8f-bddba03a7d39@oracle.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 02:42:48PM -0800, Mike Kravetz wrote:
-> On 1/7/21 11:04 AM, Axel Rasmussen wrote:
-> > Overview
-> > ========
-> > 
-> > This series adds a new userfaultfd registration mode,
-> > UFFDIO_REGISTER_MODE_MINOR. This allows userspace to intercept "minor" faults.
-> > By "minor" fault, I mean the following situation:
-> > 
-> > Let there exist two mappings (i.e., VMAs) to the same page(s) (shared memory).
-> > One of the mappings is registered with userfaultfd (in minor mode), and the
-> > other is not. Via the non-UFFD mapping, the underlying pages have already been
-> > allocated & filled with some contents. The UFFD mapping has not yet been
-> > faulted in; when it is touched for the first time, this results in what I'm
-> > calling a "minor" fault. As a concrete example, when working with hugetlbfs, we
-> > have huge_pte_none(), but find_lock_page() finds an existing page.
-> > 
-> > We also add a new ioctl to resolve such faults: UFFDIO_CONTINUE. The idea is,
-> > userspace resolves the fault by either a) doing nothing if the contents are
-> > already correct, or b) updating the underlying contents using the second,
-> > non-UFFD mapping (via memcpy/memset or similar, or something fancier like RDMA,
-> > or etc...). In either case, userspace issues UFFDIO_CONTINUE to tell the kernel
-> > "I have ensured the page contents are correct, carry on setting up the mapping".
-> > 
-> 
-> One quick thought.
-> 
-> This is not going to work as expected with hugetlbfs pmd sharing.  If you
-> are not familiar with hugetlbfs pmd sharing, you are not alone. :)
-> 
-> pmd sharing is enabled for x86 and arm64 architectures.  If there are multiple
-> shared mappings of the same underlying hugetlbfs file or shared memory segment
-> that are 'suitably aligned', then the PMD pages associated with those regions
-> are shared by all the mappings.  Suitably aligned means 'on a 1GB boundary'
-> and 1GB in size.
-> 
-> When pmds are shared, your mappings will never see a 'minor fault'.  This
-> is because the PMD (page table entries) is shared.
+Introduce a software-defined X86_FEATURE_CET, which indicates either Shadow
+Stack or Indirect Branch Tracking (or both) is present.  Also introduce
+related cpu init/setup functions.
 
-Thanks for raising this, Mike.
+Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+---
+ arch/x86/include/asm/cpufeatures.h          |  2 +-
+ arch/x86/include/asm/disabled-features.h    |  5 ++++-
+ arch/x86/include/uapi/asm/processor-flags.h |  2 ++
+ arch/x86/kernel/cpu/common.c                | 19 +++++++++++++++++++
+ arch/x86/kernel/cpu/intel.c                 |  3 +++
+ 5 files changed, 29 insertions(+), 2 deletions(-)
 
-I've got a few patches that plan to disable huge pmd sharing for uffd in
-general, e.g.:
-
-https://github.com/xzpeter/linux/commit/f9123e803d9bdd91bf6ef23b028087676bed1540
-https://github.com/xzpeter/linux/commit/aa9aeb5c4222a2fdb48793cdbc22902288454a31
-
-I believe we don't want that for missing mode too, but it's just not extremely
-important for missing mode yet, because in missing mode we normally monitor all
-the processes that will be using the registered mm range.  For example, in QEMU
-postcopy migration with vhost-user hugetlbfs files as backends, we'll monitor
-both the QEMU process and the DPDK program, so that either of the programs will
-trigger a missing fault even if pmd shared between them.  However again I think
-it's not ideal since uffd (even if missing mode) is pgtable-based, so sharing
-could always be too tricky.
-
-They're not yet posted to public yet since that's part of uffd-wp support for
-hugetlbfs (along with shmem).  So just raise this up to avoid potential
-duplicated work before I post the patchset.
-
-(Will read into details soon; probably too many things piled up...)
-
-Thanks,
-
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index 292fe87b26b3..d1866659edbd 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -108,7 +108,7 @@
+ #define X86_FEATURE_EXTD_APICID		( 3*32+26) /* Extended APICID (8 bits) */
+ #define X86_FEATURE_AMD_DCM		( 3*32+27) /* AMD multi-node processor */
+ #define X86_FEATURE_APERFMPERF		( 3*32+28) /* P-State hardware coordination feedback capability (APERF/MPERF MSRs) */
+-/* free					( 3*32+29) */
++#define X86_FEATURE_CET			( 3*32+29) /* Control-flow enforcement */
+ #define X86_FEATURE_NONSTOP_TSC_S3	( 3*32+30) /* TSC doesn't stop in S3 state */
+ #define X86_FEATURE_TSC_KNOWN_FREQ	( 3*32+31) /* TSC has known frequency */
+ 
+diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
+index 4d3b7ce509e5..86ac4a1c6d81 100644
+--- a/arch/x86/include/asm/disabled-features.h
++++ b/arch/x86/include/asm/disabled-features.h
+@@ -71,9 +71,11 @@
+ #ifdef CONFIG_X86_CET_USER
+ #define DISABLE_SHSTK	0
+ #define DISABLE_IBT	0
++#define DISABLE_CET	0
+ #else
+ #define DISABLE_SHSTK	(1 << (X86_FEATURE_SHSTK & 31))
+ #define DISABLE_IBT	(1 << (X86_FEATURE_IBT & 31))
++#define DISABLE_CET	(1 << (X86_FEATURE_CET & 31))
+ #endif
+ 
+ /*
+@@ -82,7 +84,8 @@
+ #define DISABLED_MASK0	(DISABLE_VME)
+ #define DISABLED_MASK1	0
+ #define DISABLED_MASK2	0
+-#define DISABLED_MASK3	(DISABLE_CYRIX_ARR|DISABLE_CENTAUR_MCR|DISABLE_K6_MTRR)
++#define DISABLED_MASK3	(DISABLE_CYRIX_ARR|DISABLE_CENTAUR_MCR|DISABLE_K6_MTRR| \
++			 DISABLE_CET)
+ #define DISABLED_MASK4	(DISABLE_PCID)
+ #define DISABLED_MASK5	0
+ #define DISABLED_MASK6	0
+diff --git a/arch/x86/include/uapi/asm/processor-flags.h b/arch/x86/include/uapi/asm/processor-flags.h
+index bcba3c643e63..a8df907e8017 100644
+--- a/arch/x86/include/uapi/asm/processor-flags.h
++++ b/arch/x86/include/uapi/asm/processor-flags.h
+@@ -130,6 +130,8 @@
+ #define X86_CR4_SMAP		_BITUL(X86_CR4_SMAP_BIT)
+ #define X86_CR4_PKE_BIT		22 /* enable Protection Keys support */
+ #define X86_CR4_PKE		_BITUL(X86_CR4_PKE_BIT)
++#define X86_CR4_CET_BIT		23 /* enable Control-flow Enforcement */
++#define X86_CR4_CET		_BITUL(X86_CR4_CET_BIT)
+ 
+ /*
+  * x86-64 Task Priority Register, CR8
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index 35ad8480c464..954f92ef7bc1 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -510,6 +510,14 @@ static __init int setup_disable_pku(char *arg)
+ __setup("nopku", setup_disable_pku);
+ #endif /* CONFIG_X86_64 */
+ 
++static __always_inline void setup_cet(struct cpuinfo_x86 *c)
++{
++	if (!cpu_feature_enabled(X86_FEATURE_CET))
++		return;
++
++	cr4_set_bits(X86_CR4_CET);
++}
++
+ /*
+  * Some CPU features depend on higher CPUID levels, which may not always
+  * be available due to CPUID level capping or broken virtualization
+@@ -1252,6 +1260,16 @@ static void __init cpu_parse_early_param(void)
+ 	if (cmdline_find_option_bool(boot_command_line, "noxsaves"))
+ 		setup_clear_cpu_cap(X86_FEATURE_XSAVES);
+ 
++	/*
++	 * CET states are XSAVES states and options must be parsed early.
++	 */
++#ifdef CONFIG_X86_CET_USER
++	if (cmdline_find_option_bool(boot_command_line, "no_user_shstk"))
++		setup_clear_cpu_cap(X86_FEATURE_SHSTK);
++	if (cmdline_find_option_bool(boot_command_line, "no_user_ibt"))
++		setup_clear_cpu_cap(X86_FEATURE_IBT);
++#endif
++
+ 	arglen = cmdline_find_option(boot_command_line, "clearcpuid", arg, sizeof(arg));
+ 	if (arglen <= 0)
+ 		return;
+@@ -1591,6 +1609,7 @@ static void identify_cpu(struct cpuinfo_x86 *c)
+ 
+ 	x86_init_rdrand(c);
+ 	setup_pku(c);
++	setup_cet(c);
+ 
+ 	/*
+ 	 * Clear/Set all flags overridden by options, need do it
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index 59a1e3ce3f14..1784b9f95239 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -333,6 +333,9 @@ static void early_init_intel(struct cpuinfo_x86 *c)
+ 
+ static void bsp_init_intel(struct cpuinfo_x86 *c)
+ {
++	if (cpu_has(c, X86_FEATURE_SHSTK) || cpu_has(c, X86_FEATURE_IBT))
++		setup_force_cpu_cap(X86_FEATURE_CET);
++
+ 	resctrl_cpu_detect(c);
+ }
+ 
 -- 
-Peter Xu
+2.21.0
 
