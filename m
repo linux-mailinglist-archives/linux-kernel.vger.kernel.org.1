@@ -2,66 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F122B2F1A96
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 991BD2F1AA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:12:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388669AbhAKQKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:10:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728173AbhAKQKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:10:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E66C22211;
-        Mon, 11 Jan 2021 16:09:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610381392;
-        bh=O3KkggcTR993pzuXy38vTCRE06aeOpM/+lPk5MMIqos=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bpbSXEYDSZ190PG7WW6/gt85Hv9QCsCVVmhqoPhOijmIDTOAXbbtbnDoDN9oSSsX3
-         Vszyu7Cus5DRq6L9KTNtf4FaSjANE67aMRkqTObawAPIBtW+zQeLTnFLYr6d4HZCwB
-         Xl0YJtPuuf0G0kXJCtRJtGcPy2z09nrppiKU9Nbo=
-Date:   Mon, 11 Jan 2021 17:11:03 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/145] 5.10.7-rc1 review
-Message-ID: <X/x4lwaZri3jkczr@kroah.com>
-References: <20210111130048.499958175@linuxfoundation.org>
- <37e4ce34-0779-fee9-4575-051a85b2dbb2@roeck-us.net>
+        id S1732675AbhAKQM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:12:28 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:41016 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730426AbhAKQM1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 11:12:27 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610381524; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=P5+Mis721Z6vZ3WqvVWUlOlPJxsnwl96h64oYHY/Qv4=; b=AN3fNe1Wco8BjwLtmEdXtAwI/p/huZDkTJ36s172Pbce9Y3eNjHkcUclhwhXAnoRIO2CXvPc
+ setm2JgsiHyvBIT9SrDA8Ac4iJ0C4ZSFc7UwEjIxyhDWpL9Djr8EcaVvzTImLXoq6eipOUz1
+ /2zAm4dBjfFcQQ2HU6RHEInLX2s=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5ffc78ab415a6293c5a395fc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 16:11:23
+ GMT
+Sender: jcrouse=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 95A15C43466; Mon, 11 Jan 2021 16:11:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BAD3DC43463;
+        Mon, 11 Jan 2021 16:11:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BAD3DC43463
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Mon, 11 Jan 2021 09:11:15 -0700
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Sean Paul <sean@poorly.run>, Jonathan <jonathan@marek.ca>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        martin.botka@somainline.org,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        marijn.suijten@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Daniel Vetter <daniel@ffwll.ch>,
+        angelogioacchino.delregno@somainline.org,
+        Dave Airlie <airlied@redhat.com>, phone-devel@vger.kernel.org,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [Freedreno] [PATCH] drm/msm: Only enable A6xx LLCC code on A6xx
+Message-ID: <20210111161115.GB29638@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Sean Paul <sean@poorly.run>, Jonathan <jonathan@marek.ca>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        martin.botka@somainline.org,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Shawn Guo <shawn.guo@linaro.org>, marijn.suijten@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Daniel Vetter <daniel@ffwll.ch>,
+        angelogioacchino.delregno@somainline.org,
+        Dave Airlie <airlied@redhat.com>, phone-devel@vger.kernel.org,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAF6AEGu0Sv6nYNDn0z61pXRjNyFLpLw5S4_O3opmrQ-UVNR_MA@mail.gmail.com>
+ <20210108122601.14993-1-saiprakash.ranjan@codeaurora.org>
+ <fa091855-8096-6377-e173-ce1cd02f74ec@somainline.org>
+ <43c8779bc5f03be2e8072c6484dfcabb@codeaurora.org>
+ <CAF6AEGsd5B0R7H1noO+=LByx4zkdVvu1LALZWnevGbMRj76m2w@mail.gmail.com>
+ <73609df52188588bf7d023e16a706a7a@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <37e4ce34-0779-fee9-4575-051a85b2dbb2@roeck-us.net>
+In-Reply-To: <73609df52188588bf7d023e16a706a7a@codeaurora.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 07:15:17AM -0800, Guenter Roeck wrote:
-> On 1/11/21 5:00 AM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.10.7 release.
-> > There are 145 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 13 Jan 2021 13:00:19 +0000.
-> > Anything received after that time might be too late.
-> > 
+On Mon, Jan 11, 2021 at 09:54:12AM +0530, Sai Prakash Ranjan wrote:
+> Hi Rob,
 > 
-> Building powerpc:ppc6xx_defconfig ... failed
-> --------------
-> Error log:
-> arch/powerpc/kernel/head_book3s_32.S: Assembler messages:
-> arch/powerpc/kernel/head_book3s_32.S:266: Error: unsupported relocation against SPRN_SPRG_SCRATCH2
-> arch/powerpc/kernel/head_book3s_32.S:271: Error: unsupported relocation against SPRN_SPRG_SCRATCH2
-> make[3]: *** [arch/powerpc/kernel/head_book3s_32.o] Error 1
+> On 2021-01-08 22:16, Rob Clark wrote:
+> >On Fri, Jan 8, 2021 at 6:05 AM Sai Prakash Ranjan
+> ><saiprakash.ranjan@codeaurora.org> wrote:
+> >>
+> >>On 2021-01-08 19:09, Konrad Dybcio wrote:
+> >>>> Konrad, can you please test this below change without your change?
+> >>>
+> >>> This brings no difference, a BUG still happens. We're still calling
+> >>> to_a6xx_gpu on ANY device that's probed! Too bad it won't turn my A330
+> >>> into an A640..
+> >>>
+> >>> Also, relying on disabling LLCC in the config is out of question as it
+> >>> makes the arm32 kernel not compile with DRM/MSM and it just removes
+> >>> the functionality on devices with a6xx.. (unless somebody removes the
+> >>> dependency on it, which in my opinion is even worse and will cause
+> >>> more problems for developers!).
+> >>>
+> >>
+> >>Disabling LLCC is not the suggestion, I was under the impression that
+> >>was the cause here for the smmu bug. Anyways, the check for llc slice
+> >>in case llcc is disabled is not correct as well. I will send a patch for
+> >>that as well.
+> >>
+> >>> The bigger question is how and why did that piece of code ever make it
+> >>> to adreno_gpu.c and not a6xx_gpu.c?
+> >>>
+> >>
+> >>My mistake, I will move it.
+> >
+> >Thanks, since we don't have kernel-CI coverage for gpu, and there
+> >probably isn't one person who has all the different devices supported
+> >(or enough hours in the day to test them all), it is probably
+> >better/safer to keep things in the backend code that is specific to a
+> >given generation.
+> >
 > 
-> Commit 90cd4bdd2bc0 ("powerpc/32s: Fix RTAS machine check with VMAP stack")
-> is missing some context commits (and at least one of the patches it presumably fixes
-> isn't even v5.10.y in the first place). Looking through Fixes: tags, it seems that ppc
-> support in v5.10.y may be a bit of a mess, at least for 32-bit systems.
+> Agreed, I will post this change soon and will introduce some feature
+> check as well because we will need it for iommu prot flag as per discussion
+> here - https://lore.kernel.org/lkml/20210108181830.GA5457@willie-the-truck/
+> 
+> >>> To solve it in a cleaner way I propose to move it to an a6xx-specific
+> >>> file, or if it's going to be used with next-gen GPUs, perhaps manage
+> >>> calling of this code via an adreno quirk/feature in adreno_device.c.
+> >>> Now that I think about it, A5xx GPMU en/disable could probably managed
+> >>> like that, instead of using tons of if-statements for each GPU model
+> >>> that has it..
+> >>>
+> >>> While we're at it, do ALL (and I truly do mean ALL, including the
+> >>> low-end ones, this will be important later on) A6xx GPUs make use of
+> >>> that feature?
+> >>>
+> >>
+> >>I do not have a list of all A6XX GPUs with me currently, but from what
+> >>I know, A618, A630, A640, A650 has the support.
+> >>
+> >
+> >From the PoV of bringing up new a6xx, we should probably consider that
+> >some of them may not *yet* have LLCC enabled.  I have an 8cx laptop
+> >and once I find time to get the display working, the next step would
+> >be bringing up a680.. and I'd probably like to start without LLCC..
+> >
+> 
+> Right, once I move the LLCC code to a6xx specific address space creation,
+> without LLCC slices for GPU specified in qcom llcc driver, we will not
+> be using it.
 
-Thanks, will go drop that one now and push out a -rc2.
+Right. The problem here was that we were assuming an a6xx container in generic
+code. Testing the existence of LLCC or not is a different problem but it is my
+understanding that if we set the attribute without LLCC enabled it just gets
+ignored. Is that correct Sai?
 
-greg k-h
+Jordan
+
+> Thanks,
+> Sai
+> 
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+> of Code Aurora Forum, hosted by The Linux Foundation
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
