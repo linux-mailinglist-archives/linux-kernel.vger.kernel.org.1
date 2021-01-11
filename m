@@ -2,134 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0A92F0D22
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 08:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A5A2F0D28
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 08:26:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727684AbhAKHOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 02:14:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53188 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727589AbhAKHOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 02:14:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A7D3225A9;
-        Mon, 11 Jan 2021 07:13:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610349217;
-        bh=ZwNYpISPlVywIvh+htoo5VWC0pR+1TPmOJ4Ti8bujmw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TWB+q7EVVt43XK2L4hFXQTgQio6V9SsGk7CF5+6zsgbX1i6KhMJRcl/Pw2fqWfKXp
-         tE86Mxxl8VkbNG3OJzKhOCtTv29cO8j3Rv5j89Ex2pYfSP8HxmyKWoNwQtB/MXu4Zc
-         OmXs7MAedSa/HyRZbVzvRLzLIXl9LkKTHK8cdNyA=
-Date:   Mon, 11 Jan 2021 08:14:49 +0100
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Pho Tran <Pho.Tran@silabs.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Hung Nguyen <Hung.Nguyen@silabs.com>,
-        Tung Pham <Tung.Pham@silabs.com>
-Subject: Re: [PATCH] USB: otg: Fix error 32 when enable hardware flow control.
-Message-ID: <X/v66Rm8nECrmNYY@kroah.com>
-References: <C429CBAD-FE44-42AE-909C-4C33052A7413@silabs.com>
+        id S1727240AbhAKHZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 02:25:29 -0500
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:38703 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725897AbhAKHZ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 02:25:29 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 584282246;
+        Mon, 11 Jan 2021 02:24:22 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 11 Jan 2021 02:24:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=oTk9qxjggj8k3+Jk6DND6iSQdC6
+        Ga0j20+wE6NXltGY=; b=5MYhJGyr7kD08MauMhWMTdmuJOJou1czYlyOgK/mdmJ
+        zdjz0BlK0FylnQgLcbQDy80nsuf+DTGB+T+BJ+Tfz0WYOcv+FDKIWn1dW5oiDePF
+        iN4xzwzNVL1/ERR4yk+X1clWR+8xG92BvWlUPNmJdeai5oWWg92jeWmtmFg17k4p
+        OHdEUf6umHwGA+uX/TIGLR5H6LWQoxvK/8Jrr+6kWGmF3Go98SNPvPmoejfBzzBH
+        BUx93qfVoCS5mWT4Xl7OVWLjzAV7KqLN6SjT1JgVtSzY+ULw7RbTprNvLkyuW/zw
+        DE2UWsx2tPgLofHnc5epAtiY0eGnMsDZ+u7AH+g22Kg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=oTk9qx
+        jggj8k3+Jk6DND6iSQdC6Ga0j20+wE6NXltGY=; b=O8QBLDiBEFsZ1PzxHwqmW+
+        t2RJcrWgX3lpeAhUlATqcYDHuhfNlfZUfx9kh4ffQMq3KtA2/+qnCWap7nioWu1c
+        XvUmWpaKnLq02P+gzGY9QImauBzNSMoORD1LYQhxFZ9CMlw7FZkeuHmRSRjwH3LA
+        q5djFnOZYzHLwI+flfMmPgIFONxyR92fdYaeMVK4FURyxNQamkXq5LjcEOt1e9ic
+        3fQ70WSZInH8QMSXJb2O7JQmr/lQ/L+8wUJzPZGixiC3JNQeHdM1bh0XtPz35zvg
+        9NMNPg7g/vpYvaZoMoq9NB0mEkzf3S1BA4TKlQf0x9rNwY5EBNHkqxz8JInXfpeg
+        ==
+X-ME-Sender: <xms:JP37Xz4CMa3dFDkiOYuQKZBQEfJxE8blDan2o4EsvJqkBe1mrpxTiQ>
+    <xme:JP37X47E_-LQVe2nVU0rvP2s69uiUDjBsfDlhdwEx2Yb2pZXkcRNPJWuq2TsgHBQK
+    GHbRvqJRIQMFw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdehtddguddtgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepveeuhe
+    ejgfffgfeivddukedvkedtleelleeghfeljeeiueeggeevueduudekvdetnecukfhppeek
+    fedrkeeirdejgedrieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:JP37X6ecxr84qGvVhAXlcFkBidA9Z7z4n544g8Ji-NVszs2Ph_IeTg>
+    <xmx:JP37X0IpJpm3hUlbQ3r47I1Ar2iShJLZWAVRG3sKRgc6M87CRqfsRA>
+    <xmx:JP37X3KhbP_tsD9WvsXrHWNcu-QXaExMZO-bbB5_7LBrS-j517MkTg>
+    <xmx:Jf37X4UeAL5aPHcywkYazKGY5PE9uMXyiy4_1ZCqZ06_y6mm08zb-MrmGD8>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id AD6061080057;
+        Mon, 11 Jan 2021 02:24:19 -0500 (EST)
+Date:   Mon, 11 Jan 2021 08:25:32 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mark.gross@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Moritz Fischer <mdf@kernel.org>,
+        Russ Weight <russell.h.weight@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>
+Subject: Re: linux-next: manual merge of the char-misc tree with the
+ drivers-x86 tree
+Message-ID: <X/v9bAznWVNMupY7@kroah.com>
+References: <20210111130851.374bf4ea@canb.auug.org.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <C429CBAD-FE44-42AE-909C-4C33052A7413@silabs.com>
+In-Reply-To: <20210111130851.374bf4ea@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 04:55:22AM +0000, Pho Tran wrote:
-> When hardware flow control is enabled,
-> don't allow host send MHS command to cp210x.
+On Mon, Jan 11, 2021 at 01:08:51PM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> Signed-off-by: Pho Tran<pho.tran@silabs.com>
-
-Nit, you need a ' ' before the '<' character.
-
-And why didn't you send this to the maintainer of this file as described
-by scripts/get_maintainer.pl?
-
-Please do so when you fix things up and send the next version.
-
-> ---
->  drivers/usb/serial/cp210x.c | 32 +++++++++++++++++++++++++++++++-
->  1 file changed, 31 insertions(+), 1 deletion(-)
+> Today's linux-next merge of the char-misc tree got conflicts in:
 > 
-> diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-> index fbb10dfc56e3..f231cecdaf7d 100644
-> --- a/drivers/usb/serial/cp210x.c
-> +++ b/drivers/usb/serial/cp210x.c
-> @@ -1204,6 +1204,7 @@ static int cp210x_tiocmset(struct tty_struct *tty,
->  		unsigned int set, unsigned int clear)
->  {
->  	struct usb_serial_port *port = tty->driver_data;
-> +
->  	return cp210x_tiocmset_port(port, set, clear);
->  }
->  
+>   include/linux/mod_devicetable.h
+>   scripts/mod/devicetable-offsets.c
+>   scripts/mod/file2alias.c
+> 
+> between commit:
+> 
+>   eb0e90a82098 ("platform/surface: aggregator: Add dedicated bus and device type")
+> 
+> from the drivers-x86 tree and commits:
+> 
+>   9326eecd9365 ("fpga: dfl: move dfl_device_id to mod_devicetable.h")
+>   4a224acec597 ("fpga: dfl: add dfl bus support to MODULE_DEVICE_TABLE()")
+> 
+> from the char-misc tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-Unneeded change :(
-
-
-> @@ -1211,6 +1212,11 @@ static int cp210x_tiocmset_port(struct usb_serial_port *port,
->  		unsigned int set, unsigned int clear)
->  {
->  	u16 control = 0;
-> +	struct cp210x_flow_ctl flow_ctl;
-> +	u32 ctl_hs = 0;
-> +	u32 flow_repl = 0;
-> +	bool auto_dtr = false;
-> +	bool auto_rts = false;
->  
->  	if (set & TIOCM_RTS) {
->  		control |= CONTROL_RTS;
-> @@ -1230,6 +1236,30 @@ static int cp210x_tiocmset_port(struct usb_serial_port *port,
->  	}
->  
->  	dev_dbg(&port->dev, "%s - control = 0x%.4x\n", __func__, control);
-> +	/*
-> +	 *	Don't send MHS command if device in hardware flowcontrol mode
-> +	 */
-
-Why the giant comment?
-
-> +	cp210x_read_reg_block(port, CP210X_GET_FLOW, &flow_ctl,
-> +				sizeof(flow_ctl));
-> +	ctl_hs = le32_to_cpu(flow_ctl.ulControlHandshake);
-> +	flow_repl = le32_to_cpu(flow_ctl.ulFlowReplace);
-> +
-> +	if (CP210X_SERIAL_DTR_SHIFT(CP210X_SERIAL_DTR_FLOW_CTL)
-> +		== (ctl_hs & CP210X_SERIAL_DTR_MASK))
-
-Very odd indentation :(
-
-> +		auto_dtr = true;
-> +	else
-> +		auto_dtr = false;
-> +
-> +	if (CP210X_SERIAL_RTS_SHIFT(CP210X_SERIAL_RTS_FLOW_CTL)
-> +		== (flow_repl & CP210X_SERIAL_RTS_MASK))
-> +		auto_rts = true;
-> +	else
-> +		auto_rts = false;
-> +
-> +	if (auto_dtr || auto_rts) {
-> +		dev_dbg(&port->dev, "Don't set MHS when while device in flow control mode\n");
-> +		return 0;
-> +	}
->  
->  	return cp210x_write_u16_reg(port, CP210X_SET_MHS, control);
->  }
-> @@ -1256,7 +1286,7 @@ static int cp210x_tiocmget(struct tty_struct *tty)
->  		|((control & CONTROL_RTS) ? TIOCM_RTS : 0)
->  		|((control & CONTROL_CTS) ? TIOCM_CTS : 0)
->  		|((control & CONTROL_DSR) ? TIOCM_DSR : 0)
-> -		|((control & CONTROL_RING)? TIOCM_RI  : 0)
-> +		|((control & CONTROL_RING) ? TIOCM_RI  : 0)
-
-Do not mix whitespace changes with logic changes in the same patch, that
-is a sure way to get your patch rejected.
-
-thanks,
+Thanks, this looks correct, and expected as new subsystems add
+auto-loading capabilities at the same time.
 
 greg k-h
