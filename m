@@ -2,69 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A23292F0ECB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:15:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CED0E2F0EC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:15:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728337AbhAKJOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 04:14:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55376 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728323AbhAKJOb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 04:14:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBED0224F9;
-        Mon, 11 Jan 2021 09:14:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610356455;
-        bh=Npb6UaECTy8VDi/eZrBMLvCAVCD/glv4uAXFYUi/Iq8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sdI/KY38wiQQwATMddevMBnHNAWmVbV5YJP+0E1kw256TqolaceueBvKTrBoaU9mO
-         5qeqZd2rXux1NKQrjUEvLdLhHvcPqMQoFJy3xam0+7RF31LeqXbHy8juPzMS3zJZHw
-         QcYbkkqq3/A+DU8IIz1OEn+QNE7nj6TDFHMRjewE=
-Date:   Mon, 11 Jan 2021 10:13:00 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Baoquan He <bhe@redhat.com>
-Cc:     Alexander Egorenkov <egorenar@linux.ibm.com>, dyoung@redhat.com,
-        vgoyal@redhat.com, lijiang@redhat.com, ebiederm@xmission.com,
-        akpm@linux-foundation.org, ktkhai@virtuozzo.com,
-        keescook@chromium.org, christian.brauner@ubuntu.com,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] kdump: append uts_namespace.name offset to
- VMCOREINFO
-Message-ID: <X/wWnGF5ajYk0bf4@kroah.com>
-References: <20200930102328.396488-1-egorenar@linux.ibm.com>
- <20210108033248.GA4959@MiWiFi-R3L-srv>
+        id S1728312AbhAKJOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 04:14:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728299AbhAKJOK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 04:14:10 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A609C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 01:13:30 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kytGM-00014x-H7; Mon, 11 Jan 2021 10:13:22 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kytGC-00032c-GA; Mon, 11 Jan 2021 10:13:12 +0100
+Date:   Mon, 11 Jan 2021 10:13:10 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>, linux-rtc@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        allen <allen.chen@ite.com.tw>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Mark Brown <broonie@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v7 4/7] pwm: ntxec: Add driver for PWM function in
+ Netronix EC
+Message-ID: <20210111091310.ok47s7yvk5ngs4q7@pengutronix.de>
+References: <20210109180220.121511-1-j.neuschaefer@gmx.net>
+ <20210109180220.121511-5-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yaagkpiwccmvofgv"
 Content-Disposition: inline
-In-Reply-To: <20210108033248.GA4959@MiWiFi-R3L-srv>
+In-Reply-To: <20210109180220.121511-5-j.neuschaefer@gmx.net>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 11:32:48AM +0800, Baoquan He wrote:
-> On 09/30/20 at 12:23pm, Alexander Egorenkov wrote:
-> > The offset of the field 'init_uts_ns.name' has changed
-> > since commit 9a56493f6942 ("uts: Use generic ns_common::count").
-> 
-> This patch is merged into 5.11-rc1, but we met the makedumpfile failure
-> of kdump test case in 5.10.0 kernel. Should affect 5.9 too since
-> commit 9a56493f6942 is merged into 5.9-rc2.
-> 
-> Below tag and CC should have been added into patch when posted. 
-> 
-> Fixes: commit 9a56493f6942 ("uts: Use generic ns_common::count")
-> Cc: <stable@vger.kernel.org>
-> 
-> Hi Greg,
-> 
-> Do we still have chance to make it added into stable?
 
-Wait, 9a56493f6942 ("uts: Use generic ns_common::count") is in 5.11-rc1,
-and this commit fixes that one, so why does anything need to be
-backported?
+--yaagkpiwccmvofgv
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Are you _SURE_ that this commit is needed in 5.10.y?
+Hello,
 
-thanks,
+On Sat, Jan 09, 2021 at 07:02:17PM +0100, Jonathan Neusch=E4fer wrote:
+> The Netronix EC provides a PWM output which is used for the backlight
+> on some ebook readers. This patches adds a driver for the PWM output.
+>=20
+> The .get_state callback is not implemented, because the PWM state can't
+> be read back from the hardware.
 
-greg k-h
+There is only very little I would have done differently (only indention
+which is too minor to make a fuss), so:
+
+Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+=20
+Thanks for your work
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--yaagkpiwccmvofgv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/8FqQACgkQwfwUeK3K
+7AkfOgf+Im2rZmWnsNL7mT4lJlbUjot+WGBgUG+cZ7HYEr0wbqbO82FpAgY+K/6D
+cW6W1txTfWkr/4LbJW0rBQUkXkbeUa9hIpSMoOjpFnhmI/exEixKaY5FRnoueCb6
+vKOwoH66j+vYuzTIm1oDLEUHFCNqk34FaHj8g+VpvtDxVwdnQq7DrRkVVmrzYv5I
+QHdXsj4T4Bi/NKvGhepJI3k8t5tZWPMp81Lw61lqKJe63t2GAC+1TGH6YXxD4B+D
+pQe0gvV0MTJVRC5JC6umyF3EUPPRMyR6krgEQeE7YSpvredGWssJ24wGxuB+ZAMS
+XtLVJujpqo9QJtzrId8kXSBRR1L5wg==
+=H+zc
+-----END PGP SIGNATURE-----
+
+--yaagkpiwccmvofgv--
