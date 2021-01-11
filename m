@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2232F1F32
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:25:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 414E22F1F3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:25:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403796AbhAKTUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:20:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43984 "EHLO
+        id S2390948AbhAKTYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:24:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403769AbhAKTUw (ORCPT
+        with ESMTP id S2403772AbhAKTUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:20:52 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE34BC0617A7
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:19:40 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id t16so948900wra.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:19:40 -0800 (PST)
+        Mon, 11 Jan 2021 14:20:54 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DC08C0617AA
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:19:42 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id t30so972639wrb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:19:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gYAUvWYhLSY+y3POXwzPmF8UOJaTJ9mXjk2V2XniJm0=;
-        b=AvjJHTIgB9FSFfzuhd2/xZddg8dZhEgKX/CNFOHHQ7b9yZsOPZNXR49nJuu2Y3EZf6
-         nUy0bQnAI1boEBFBEoLLzNZNtykXnh6Nep+/FljRN06bxsfy9XrWoASbuW4gRpXFmeHq
-         uw87V0KY+HzEFkFreB0xHPov/rSoFGqymGVJCJKOd5Xj7nLXfnnwmP4Rxeev8YCd/XzN
-         eoNsw5lmZJrz9wKkkiTSm9obVvLZuTZuyD09jCcXNJMvvm/FUZRXFn8GSmGRi1njKqMW
-         gFM8rEm3OsjmjtxdT9TdiLV56tLbw67SeScy7kFp2Og0E2rZzMC32vhYy9IZbztGz2XX
-         y1/A==
+        bh=qokjD6k+LHHF78mVRlZu4OQtVVLhVZTnUnkH0SWg7U4=;
+        b=Y7hRLpaw1tA7qK1gE0XMTHNgfJoJa25sR2HTvgV5c7RjonfBp0XE2iRIsnCFMtGO39
+         S+NEpJl2eaEmALDQRKx8ppkwsCoVWE3be6ZZJFzOuP67Xvztt95hteobDRDSxOb/95MM
+         lKRVIyo4wj/LQnNfBuNrjra9ty8cH1ugArBlzNWr6EHFKCOUdEWycKG234cNehdzJ+wP
+         0QDVGyYLbpKAFH1a21yyszuVT9kl0cgGtmbtDEQiL1HpMRc+hvrgqhNAQ37t/CyQBE/L
+         UwaAKv90//Snerjrws6nYy8YrKhwdfpClNDZ0IvSLAcuPPQJeDDzpFV92/gqloYExeN0
+         eYzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gYAUvWYhLSY+y3POXwzPmF8UOJaTJ9mXjk2V2XniJm0=;
-        b=lMEUWh+6hhD+65QbXhdgNWo5gJIo7MIr3tLZ/HwtuO36JvacYFPyN+Zz0e/jq+1vj7
-         dmCXdzLM4TNOaue5NAMmlcLUUjsDlb80gNszApq1/ZuoXO0jkZfc30tvL/yfrmSvO7vR
-         PRSZSz6ewQcfwCV+3GwVo3nqtn+x7qPyoxCrgBGIO0eAKR8XUfMiJ33Jkfjj4wFk992h
-         XFhkRVBPGCexaFTBV0B5YuUmNPdKlaHNPH8vqThveGP3EF6OvNreAKnpPqmOwVaovEt+
-         wbUZf5fWR9ys/wvXdBi7NP8oE6ylzazC9vg0JF9W0kAItIxYwmKjhpGwcmHq44f0ldho
-         ABKA==
-X-Gm-Message-State: AOAM530KgEK9f6gsxU8HCzHd/vq4K2DDldxFuiGfm4hICPc5Euty+If3
-        cgnzSM70vKgEyy6/p37tkQ6Gm5LUSjsS3REu
-X-Google-Smtp-Source: ABdhPJx4yFMdBRMlt7UNZ0+TK6A3eCANJ4OL+8R9h9mxZjmvYAxD+wT/31ZR77V8KnbfZmyjH+EZVQ==
-X-Received: by 2002:adf:fd41:: with SMTP id h1mr613515wrs.284.1610392779552;
-        Mon, 11 Jan 2021 11:19:39 -0800 (PST)
+        bh=qokjD6k+LHHF78mVRlZu4OQtVVLhVZTnUnkH0SWg7U4=;
+        b=eBMQgYGaWg+eQfiuPV7FY8Ait5HYpJbts3PMM1/M1ybORUXdUcW8JJJFnXMIeYqaVA
+         /78tyo1brCMgH/6s+RCGFQc+t+4l+IWACqATwLVn64drmysuld5RNb0rmD9Lwi2aFabP
+         LRBu4zDfl/JpeKlx8WcvYrqZvhuNpfOcwT14yvSJ+5nY/bZNB5daHTTexgaiMLY/GU+i
+         EVq0fCRljm/PstXlebSsc1YiAg5epNdBcFsw1M/DT6N5QwNOLvOB+lsJPY25Lon0Y1K/
+         vrkmAUSDAW3cYw5/O6OQ23pGXR2BLQ5tcF7Fl1vPd0G7c4odqqyzcoyyJ/v2R1PUPrHA
+         gknQ==
+X-Gm-Message-State: AOAM533RhZE5WTEf60OCKnx5Y6iaiep0LcMV/cB4AXQOL3WqjzQyaNbD
+        I1C6PkbftwgnhQYOgrDN9YQXHI5JVbSeh+8Z
+X-Google-Smtp-Source: ABdhPJzjSnGz3m69nDkME1UYSAct3l1QQN+GkRACjqqKTZWxnotX0x9Ssham7MB2ZUEAb0ssDpTGyg==
+X-Received: by 2002:adf:c449:: with SMTP id a9mr570620wrg.281.1610392780828;
+        Mon, 11 Jan 2021 11:19:40 -0800 (PST)
 Received: from dell.default ([91.110.221.229])
-        by smtp.gmail.com with ESMTPSA id n3sm778090wrw.61.2021.01.11.11.19.38
+        by smtp.gmail.com with ESMTPSA id n3sm778090wrw.61.2021.01.11.11.19.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 11:19:38 -0800 (PST)
+        Mon, 11 Jan 2021 11:19:40 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -56,12 +56,11 @@ Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mauro Rossi <issor.oruam@gmail.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH 07/40] drm/amd/display/dc/irq/irq_service: Make local function static
-Date:   Mon, 11 Jan 2021 19:18:53 +0000
-Message-Id: <20210111191926.3688443-8-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 08/40] drm/amd/display/dc/gpio/diagnostics/hw_factory_diag: Fix struct declared inside parameter list error
+Date:   Mon, 11 Jan 2021 19:18:54 +0000
+Message-Id: <20210111191926.3688443-9-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210111191926.3688443-1-lee.jones@linaro.org>
 References: <20210111191926.3688443-1-lee.jones@linaro.org>
@@ -74,7 +73,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/../display/dc/irq/irq_service.c:82:31: warning: no previous prototype for ‘find_irq_source_info’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/gpio/diagnostics/hw_factory_diag.h:30:43: warning: ‘struct hw_factory’ declared inside parameter list will not be visible outside of this definition or declaration
+ drivers/gpu/drm/amd/amdgpu/../display/dc/gpio/diagnostics/hw_factory_diag.h:30:6: note: previous declaration of ‘dal_hw_factory_diag_fpga_init’ was here
+ drivers/gpu/drm/amd/amdgpu/../display/dc/gpio/diagnostics/hw_factory_diag.h:30:43: warning: ‘struct hw_factory’ declared inside parameter list will not be visible outside of this definition or declaration
+ drivers/gpu/drm/amd/amdgpu/../display/dc/gpio/diagnostics/hw_factory_diag.h:30:6: note: previous declaration of ‘dal_hw_factory_diag_fpga_init’ was here
+ drivers/gpu/drm/amd/amdgpu/../display/dc/gpio/diagnostics/hw_factory_diag.h:30:43: warning: ‘struct hw_factory’ declared inside parameter list will not be visible outside of this definition or declaration
+ drivers/gpu/drm/amd/amdgpu/../display/dc/gpio/diagnostics/hw_factory_diag.h:30:6: note: previous declaration of ‘dal_hw_factory_diag_fpga_init’ was here
 
 Cc: Harry Wentland <harry.wentland@amd.com>
 Cc: Leo Li <sunpeng.li@amd.com>
@@ -82,27 +86,26 @@ Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Mauro Rossi <issor.oruam@gmail.com>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/display/dc/irq/irq_service.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../gpu/drm/amd/display/dc/gpio/diagnostics/hw_factory_diag.h   | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/irq/irq_service.c b/drivers/gpu/drm/amd/display/dc/irq/irq_service.c
-index 6bf27bde87240..5f245bde54ff7 100644
---- a/drivers/gpu/drm/amd/display/dc/irq/irq_service.c
-+++ b/drivers/gpu/drm/amd/display/dc/irq/irq_service.c
-@@ -79,7 +79,7 @@ void dal_irq_service_destroy(struct irq_service **irq_service)
- 	*irq_service = NULL;
- }
+diff --git a/drivers/gpu/drm/amd/display/dc/gpio/diagnostics/hw_factory_diag.h b/drivers/gpu/drm/amd/display/dc/gpio/diagnostics/hw_factory_diag.h
+index 8a74f6adb8eee..bf68eb1d9a1d2 100644
+--- a/drivers/gpu/drm/amd/display/dc/gpio/diagnostics/hw_factory_diag.h
++++ b/drivers/gpu/drm/amd/display/dc/gpio/diagnostics/hw_factory_diag.h
+@@ -26,6 +26,8 @@
+ #ifndef __DAL_HW_FACTORY_DIAG_FPGA_H__
+ #define __DAL_HW_FACTORY_DIAG_FPGA_H__
  
--const struct irq_source_info *find_irq_source_info(
-+static const struct irq_source_info *find_irq_source_info(
- 	struct irq_service *irq_service,
- 	enum dc_irq_source source)
- {
++struct hw_factory;
++
+ /* Initialize HW factory function pointers and pin info */
+ void dal_hw_factory_diag_fpga_init(struct hw_factory *factory);
+ 
 -- 
 2.25.1
 
