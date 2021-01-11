@@ -2,123 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2142F11D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7982F11E3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730185AbhAKLry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:47:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59240 "EHLO
+        id S1730110AbhAKLtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:49:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730170AbhAKLry (ORCPT
+        with ESMTP id S1729881AbhAKLtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:47:54 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974BDC061786;
-        Mon, 11 Jan 2021 03:47:13 -0800 (PST)
-Date:   Mon, 11 Jan 2021 11:47:10 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610365630;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=m2MOL1qSJqi2HzuLgNWZQvWWUwriQAZkS4okhDCGt94=;
-        b=XgR9ow1ClVEl+7uurGAXqjanUQwBBm14y9Sz8YIPwwKPnJe9FjQ4XansUnpSMvFpouPKrC
-        XrLtCxBVk0+7ocdnD3VO3wJRJxUf+kh0PtAgU3gIe3zWdSAD/fYZ/Iyy/yJXdETetxuilL
-        jHeWDcao5H99AWGKVlCOc6vB9y+HxKEVBCbwmqfjpCv7qHixykQVvysajT7ibO+ZVV8Fht
-        1BEteX4FPJDWs5PhY8KagpZUAFqtBauuuARy8iZwlXbQ7uitu0TRD2uY6nNBsxGqQ/4Pgc
-        Flg8iicv35QSJ1d6kicdTL41S2odzP7gnqZt2tkKZt48KCidAedFY50EDjcd0g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610365630;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=m2MOL1qSJqi2HzuLgNWZQvWWUwriQAZkS4okhDCGt94=;
-        b=W8wDe+8qwuYgJLB4J86iMxY4ENfUCaklfcoalpgpmJkwYm8FOvEyFlqWH1MRCS/AG2UYKC
-        r8aa/VIj9oBci6AQ==
-From:   "tip-bot2 for Hyunwook (Wooky) Baek" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/seves] x86/sev-es: Handle string port IO to kernel memory properly
-Cc:     "Hyunwook (Wooky) Baek" <baekhw@google.com>,
-        Borislav Petkov <bp@suse.de>,
-        David Rientjes <rientjes@google.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210110071102.2576186-1-baekhw@google.com>
-References: <20210110071102.2576186-1-baekhw@google.com>
+        Mon, 11 Jan 2021 06:49:39 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7079C061786;
+        Mon, 11 Jan 2021 03:48:58 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id AD7F91F44D9B
+Message-ID: <ef218bf2bd948961079237686b58a00ca1b125bf.camel@collabora.com>
+Subject: Re: [PATCH] hantro: Format IOCTLs compliance fixes
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Ricardo Ribalda <ribalda@chromium.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Date:   Mon, 11 Jan 2021 08:48:46 -0300
+In-Reply-To: <20210111113529.45488-1-ribalda@chromium.org>
+References: <20210111113529.45488-1-ribalda@chromium.org>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Message-ID: <161036563003.414.6721977220175208221.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/seves branch of tip:
+Hi Ricardo,
 
-Commit-ID:     36648d64ac3420b3cfa741b12b14633fad9651e4
-Gitweb:        https://git.kernel.org/tip/36648d64ac3420b3cfa741b12b14633fad9651e4
-Author:        Hyunwook (Wooky) Baek <baekhw@google.com>
-AuthorDate:    Sat, 09 Jan 2021 23:11:02 -08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 11 Jan 2021 12:22:10 +01:00
+On Mon, 2021-01-11 at 12:35 +0100, Ricardo Ribalda wrote:
+> Clear the reserved fields.
+> 
+> Fixes:
+>   fail: v4l2-test-formats.cpp(482): pix_mp.plane_fmt[0].reserved not zeroed
+> test VIDIOC_TRY_FMT: FAIL
+>   fail: v4l2-test-formats.cpp(482): pix_mp.plane_fmt[0].reserved not zeroed
+> test VIDIOC_S_FMT: FAIL
+> 
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  drivers/staging/media/hantro/hantro_v4l2.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/staging/media/hantro/hantro_v4l2.c b/drivers/staging/media/hantro/hantro_v4l2.c
+> index b668a82d40ad..9b384fbffc93 100644
+> --- a/drivers/staging/media/hantro/hantro_v4l2.c
+> +++ b/drivers/staging/media/hantro/hantro_v4l2.c
+> @@ -239,6 +239,7 @@ static int hantro_try_fmt(const struct hantro_ctx *ctx,
+>         const struct hantro_fmt *fmt, *vpu_fmt;
+>         bool capture = V4L2_TYPE_IS_CAPTURE(type);
+>         bool coded;
+> +       int i;
+>  
+>         coded = capture == ctx->is_encoder;
+>  
+> @@ -293,6 +294,10 @@ static int hantro_try_fmt(const struct hantro_ctx *ctx,
+>                         pix_mp->width * pix_mp->height * fmt->max_depth;
+>         }
+>  
+> +       for (i = 0; i < pix_mp->num_planes; i++)
+> +               memset(pix_mp->plane_fmt[i].reserved, 0,
+> +                      sizeof(pix_mp->plane_fmt[i].reserved));
+> +
 
-x86/sev-es: Handle string port IO to kernel memory properly
+This looks like something that should be handled at the core,
+probably in drivers/media/v4l2-core/v4l2-ioctl.c::v4l_try_fmt().
 
-Don't assume dest/source buffers are userspace addresses when manually
-copying data for string I/O or MOVS MMIO, as {get,put}_user() will fail
-if handed a kernel address and ultimately lead to a kernel panic.
+Thanks,
+Ezequiel
 
-When invoking INSB/OUTSB instructions in kernel space in a
-SEV-ES-enabled VM, the kernel crashes with the following message:
-
-  "SEV-ES: Unsupported exception in #VC instruction emulation - can't continue"
-
-Handle that case properly.
-
- [ bp: Massage commit message. ]
-
-Signed-off-by: Hyunwook (Wooky) Baek <baekhw@google.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: David Rientjes <rientjes@google.com>
-Link: https://lkml.kernel.org/r/20210110071102.2576186-1-baekhw@google.com
----
- arch/x86/kernel/sev-es.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-index 0bd1a0f..ab31c34 100644
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -286,6 +286,12 @@ static enum es_result vc_write_mem(struct es_em_ctxt *ctxt,
- 	u16 d2;
- 	u8  d1;
- 
-+	/* If instruction ran in kernel mode and the I/O buffer is in kernel space */
-+	if (!user_mode(ctxt->regs) && !access_ok(target, size)) {
-+		memcpy(dst, buf, size);
-+		return ES_OK;
-+	}
-+
- 	switch (size) {
- 	case 1:
- 		memcpy(&d1, buf, 1);
-@@ -335,6 +341,12 @@ static enum es_result vc_read_mem(struct es_em_ctxt *ctxt,
- 	u16 d2;
- 	u8  d1;
- 
-+	/* If instruction ran in kernel mode and the I/O buffer is in kernel space */
-+	if (!user_mode(ctxt->regs) && !access_ok(s, size)) {
-+		memcpy(buf, src, size);
-+		return ES_OK;
-+	}
-+
- 	switch (size) {
- 	case 1:
- 		if (get_user(d1, s))
