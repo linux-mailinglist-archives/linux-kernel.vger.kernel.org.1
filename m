@@ -2,90 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA33B2F0F9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:01:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5B52F0FA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728860AbhAKKA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:00:26 -0500
-Received: from mail-ej1-f53.google.com ([209.85.218.53]:40746 "EHLO
-        mail-ej1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725897AbhAKKAZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:00:25 -0500
-Received: by mail-ej1-f53.google.com with SMTP id x16so23809327ejj.7;
-        Mon, 11 Jan 2021 02:00:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=T8T/O0ZlTJGLCjZbDX0PD9JZEkqddMeqh2KTM2iKu8k=;
-        b=ohT8YdtKk17FeFIR3YugMEE+o0rMNpoeCKtgp1L89IIHmX/h2jqSLhA05VD164kZwL
-         s6e6zJjxZIFEISQb3bxM6F5FhMQYIjTerx5Ahm2KVd9y7Yf9hZ+PltDFtjygTCvAd/C6
-         jDfOGnCLgva7uqenqhLXqUkJ9+CVt5x01ATWnz+Xb0XRDTnCpgVWY8425FEbE1w2BU16
-         wQZW6p10/4/X/nJwquj0YMt+1HF/lepwo+yUnrqanDFglknkiWW+suF/pkmrRuYdXOB8
-         J0OuIxzq8SW9m62obE6DdxGUqTtsGRhQ57Z1j+aYw2tsVjrDOR4JmG32xDiuIDgcD24a
-         MFIg==
-X-Gm-Message-State: AOAM530c4rPrJM4VGJAY/PW8F6AuYh2RaFVxb8ZOcjVzxuFfhEcYwPaN
-        WzIeCy8is5Z9kehmqaexf5g=
-X-Google-Smtp-Source: ABdhPJznV8Dt+uZrNWIQOGNosnX8IcpJUXUdaTHl1pHDy/ueH99EE7egorYvLE83L8+vlNI0OoPEEQ==
-X-Received: by 2002:a17:906:4c55:: with SMTP id d21mr10257637ejw.116.1610359183463;
-        Mon, 11 Jan 2021 01:59:43 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id a6sm7483946edv.74.2021.01.11.01.59.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 01:59:42 -0800 (PST)
-Subject: Re: [PATCH v2 4/8] serial: stm32: add author
-To:     Erwan Le Ray <erwan.leray@foss.st.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Valentin Caron <valentin.caron@foss.st.com>
-References: <20210106162203.28854-1-erwan.leray@foss.st.com>
- <20210106162203.28854-5-erwan.leray@foss.st.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <e1d17cb6-a057-f427-dc77-6be139d39624@kernel.org>
-Date:   Mon, 11 Jan 2021 10:59:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1728699AbhAKKEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:04:04 -0500
+Received: from muru.com ([72.249.23.125]:42728 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728527AbhAKKEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 05:04:04 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 6516C80BB;
+        Mon, 11 Jan 2021 10:03:22 +0000 (UTC)
+Date:   Mon, 11 Jan 2021 12:03:18 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Drew Fustini <drew@beagleboard.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Pantelis Antoniou <pantelis.antoniou@linaro.org>,
+        Pantelis Antoniou <pantelis.antoniou@gmail.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>
+Subject: Re: [RFC PATCH v2] pinctrl: add helper to expose pinctrl state in
+ debugfs
+Message-ID: <X/wiZjioLqcTYVfj@atomide.com>
+References: <20201218045134.4158709-1-drew@beagleboard.org>
+ <CAHp75Vfwb+f3k2+mAj+jB=XsKFX-hCxx61A_PCmwz6y-YKHMcg@mail.gmail.com>
+ <20201224203603.GA59600@x1>
+ <CACRpkdb9RnGJbct+D-88JPDSbaVp1XS8vjhhHYosy20EPkLjaw@mail.gmail.com>
+ <20210109025527.GA2918377@x1>
+ <CACRpkdaOfU=OLp5D-EXK2oU9bScLZ-QjLdCSrewiSBa0SRRNwg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210106162203.28854-5-erwan.leray@foss.st.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdaOfU=OLp5D-EXK2oU9bScLZ-QjLdCSrewiSBa0SRRNwg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06. 01. 21, 17:21, Erwan Le Ray wrote:
-> Update email address add new author in authors list.
+Hi,
 
-Parsing error :).
-
-> Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
+* Linus Walleij <linus.walleij@linaro.org> [210109 21:14]:
+> On Sat, Jan 9, 2021 at 3:55 AM Drew Fustini <drew@beagleboard.org> wrote:
 > 
-> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-> index 717a97759928..938d2c4aeaed 100644
-> --- a/drivers/tty/serial/stm32-usart.c
-> +++ b/drivers/tty/serial/stm32-usart.c
-> @@ -3,7 +3,8 @@
->    * Copyright (C) Maxime Coquelin 2015
->    * Copyright (C) STMicroelectronics SA 2017
->    * Authors:  Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> - *	     Gerald Baeza <gerald.baeza@st.com>
-> + *	     Gerald Baeza <gerald.baeza@foss.st.com>
-> + *	     Erwan Le Ray <erwan.leray@foss.st.com>
->    *
->    * Inspired by st-asc.c from STMicroelectronics (c)
->    */
+> > I discussed my use case and this patch on #armlinux earlier this week
+> > and Alexandre Belloni suggested looking at the pinmux-pins debugfs file.
 > 
+> This sounds reasonable.
+> 
+> > This made me think that a possible solution could be to define a store
+> > function for pinmux-pins to handle something like "<pin#> <function#>".
+> > I believe the ability to activate a pin function (or pin group) from
+> > userspace would satisfy our beagleboard.org use-case.
+> >
+> > Does that seem like a reasonable approach?
+> 
+> This sounds like a good approach.
 
+Makes sense to me too.
 
--- 
-js
-suse labs
+We may want to make it into a proper sysfs interface eventually to not
+require debugfs be enabled in .config. But that's another set of patches,
+certainly makes sense to first enable it for debugfs.
+
+Regards,
+
+Tony
