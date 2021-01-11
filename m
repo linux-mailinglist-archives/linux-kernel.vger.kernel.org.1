@@ -2,244 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 968332F0CA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 06:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4580C2F0CA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 06:54:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727428AbhAKFqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 00:46:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725957AbhAKFqE (ORCPT
+        id S1726278AbhAKFyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 00:54:04 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:55867 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbhAKFyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 00:46:04 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03578C061795;
-        Sun, 10 Jan 2021 21:45:24 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id g15so11858107pgu.9;
-        Sun, 10 Jan 2021 21:45:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/IG9QX0IHrdPUT/Mg6rywGJ37NO8HyXBbRa3ZgeBS9M=;
-        b=oJ0fM+AcEpK6rJSSsNW6UOxHZphHa70yHtXPHyWvdLY1XXSpbAkPyFMvk/cDQE8A+2
-         tZt3vxZ9ZPheMXFV1IabJFSHVsVWxv3q5TEj1TrdSzVUbZ11Su6ZKSg7p9TFn+GZlTa2
-         6FsaH8vfNbNuyyJ+0d90UNxhAYzLhnBxXkaRV9dIfDUCm7/qlxembEgvx8VOd003H7xI
-         FyUkugu7jh5NGYnfIqYRveGPj94wZ9HF00o5zfihBNFIl2Z9QzO9CPzFwXCUQkiXSzk9
-         Sfh9vxSXeheOrl0o/lg5gY6BdyT64G59tDdeZHO3YyM9s1ds1kvvfuqnFmij5vuHb90A
-         eu0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/IG9QX0IHrdPUT/Mg6rywGJ37NO8HyXBbRa3ZgeBS9M=;
-        b=l//WvilKnIpwbiodWE1SUwj22qEXnl9thB1F4t2Ewl/HP9yGcG/y1uNu7wFVTHXAKO
-         C4X67ML0xyvI5m/NFjnq8ObRDvwnST55U3yBGFGcbjQpZbLDn/e0cfYXLKaSDHiYDmOu
-         UpKygY+CzG4XYjcjD4p8s6b/4oYQSh/a1qzTX5xAq6tdF6t3TjHYQaJXjy1KL08g52fZ
-         FLjmfmu43tHL2ZaXAHh6BGbbDoyOD0iz6avT722Xp37aLarTIAaGTA+H++AA6cqyKfT4
-         y4RI28JMk03zva7YzKl10+cwtj0iQZ5COWxy+LkW3vNDq5bKjdh6iMM/kCX47+Bk4SOW
-         NcNQ==
-X-Gm-Message-State: AOAM531CZAuzFUP0uGeWRMabtLwwpWGlV/w80PWXZQpYnHQ+D9tmiIp9
-        RVGxqRehWnwOMehvG+n4T1E=
-X-Google-Smtp-Source: ABdhPJy/ZferhM6b1DXi1APDWQlpyda2XCQFyyhZemiRFgF70lMgurxMK2f9nMPlEU6bLiCTBi5X+w==
-X-Received: by 2002:a65:50c8:: with SMTP id s8mr18467136pgp.68.1610343923559;
-        Sun, 10 Jan 2021 21:45:23 -0800 (PST)
-Received: from container-ubuntu.lan ([218.89.163.70])
-        by smtp.gmail.com with ESMTPSA id q16sm17548005pfg.139.2021.01.10.21.45.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Jan 2021 21:45:23 -0800 (PST)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>,
-        =?UTF-8?q?Ren=C3=A9=20van=20Dorst?= <opensource@vdorst.com>
-Subject: [PATCH net-next 2/2] drivers: net: dsa: mt7530: MT7530 optional GPIO support
-Date:   Mon, 11 Jan 2021 13:44:28 +0800
-Message-Id: <20210111054428.3273-3-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210111054428.3273-1-dqfext@gmail.com>
-References: <20210111054428.3273-1-dqfext@gmail.com>
+        Mon, 11 Jan 2021 00:54:03 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610344418; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=cwnfahSMqI6baLZQoFMM2lVfnr2c3yNUVMgIdG5YGZc=;
+ b=PMxoRiSxCaZTjTUCj2P5OPcRqIkOL3HbNyJDqhdUCbcOllIKzt2Cx51862GURi9qDomqljqg
+ LXPwPNzM3mqa/hAbOcewKxksh+7s/KjoTAQmDXgcFgV7H06lKe9B3aPe25Ol4Hr+lPkLeKEd
+ lt4NjUKTPw/Vo+LYPySirv2Xvsk=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5ffbe7c8e53eb5da8cabc2b6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 05:53:11
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AF7B7C43464; Mon, 11 Jan 2021 05:53:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id ECEB7C433CA;
+        Mon, 11 Jan 2021 05:53:10 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 11 Jan 2021 13:53:10 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, bvanassche@acm.org,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        Jaegeuk Kim <jaegeuk@google.com>
+Subject: Re: [PATCH] scsi: ufs: should not override buffer lengh
+In-Reply-To: <20210111044443.1405049-1-jaegeuk@kernel.org>
+References: <20210111044443.1405049-1-jaegeuk@kernel.org>
+Message-ID: <6551e7d6dd7dc4132dc69e77a51f6f21@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MT7530's LED controller can drive up to 15 LED/GPIOs.
+Hi Jaegeuk,
 
-Add support for GPIO control and allow users to use its GPIOs by
-setting gpio-controller property in device tree.
+I think the problem is that func ufshcd_read_desc_param() is not 
+expecting
+one access unsupported descriptors on all W-LUs, not just RPMB LU.
 
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
----
- drivers/net/dsa/mt7530.c | 96 ++++++++++++++++++++++++++++++++++++++++
- drivers/net/dsa/mt7530.h | 20 +++++++++
- 2 files changed, 116 insertions(+)
+If we can get the right buf_len from func 
+ufshcd_map_desc_id_to_length(),
+the issue won't happen. - 
+https://lore.kernel.org/patchwork/patch/1323421/.
 
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index a67cac15a724..0686d8cbd086 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -18,6 +18,7 @@
- #include <linux/regulator/consumer.h>
- #include <linux/reset.h>
- #include <linux/gpio/consumer.h>
-+#include <linux/gpio/driver.h>
- #include <net/dsa.h>
- 
- #include "mt7530.h"
-@@ -1639,6 +1640,95 @@ mtk_get_tag_protocol(struct dsa_switch *ds, int port,
- 	}
- }
- 
-+static u32
-+mt7530_gpio_to_bit(unsigned int offset)
-+{
-+	return BIT(offset + offset / 3);
-+}
-+
-+static int
-+mt7530_gpio_get(struct gpio_chip *gc, unsigned int offset)
-+{
-+	struct mt7530_priv *priv = gpiochip_get_data(gc);
-+	u32 bit = mt7530_gpio_to_bit(offset);
-+
-+	return !!(mt7530_read(priv, MT7530_LED_GPIO_DATA) & bit);
-+}
-+
-+static void
-+mt7530_gpio_set(struct gpio_chip *gc, unsigned int offset, int value)
-+{
-+	struct mt7530_priv *priv = gpiochip_get_data(gc);
-+	u32 bit = mt7530_gpio_to_bit(offset);
-+
-+	if (value)
-+		mt7530_set(priv, MT7530_LED_GPIO_DATA, bit);
-+	else
-+		mt7530_clear(priv, MT7530_LED_GPIO_DATA, bit);
-+}
-+
-+static int
-+mt7530_gpio_get_direction(struct gpio_chip *gc, unsigned int offset)
-+{
-+	struct mt7530_priv *priv = gpiochip_get_data(gc);
-+	u32 bit = mt7530_gpio_to_bit(offset);
-+
-+	return (mt7530_read(priv, MT7530_LED_GPIO_DIR) & bit) ?
-+		GPIO_LINE_DIRECTION_OUT : GPIO_LINE_DIRECTION_IN;
-+}
-+
-+static int
-+mt7530_gpio_direction_input(struct gpio_chip *gc, unsigned int offset)
-+{
-+	struct mt7530_priv *priv = gpiochip_get_data(gc);
-+	u32 bit = mt7530_gpio_to_bit(offset);
-+
-+	mt7530_clear(priv, MT7530_LED_GPIO_DIR, bit);
-+	mt7530_clear(priv, MT7530_LED_GPIO_OE, bit);
-+
-+	return 0;
-+}
-+
-+static int
-+mt7530_gpio_direction_output(struct gpio_chip *gc, unsigned int offset, int value)
-+{
-+	struct mt7530_priv *priv = gpiochip_get_data(gc);
-+	u32 bit = mt7530_gpio_to_bit(offset);
-+
-+	mt7530_set(priv, MT7530_LED_GPIO_DIR, bit);
-+	mt7530_set(priv, MT7530_LED_GPIO_OE, bit);
-+	mt7530_gpio_set(gc, offset, value);
-+
-+	return 0;
-+}
-+
-+static int
-+mt7530_setup_gpio(struct mt7530_priv *priv)
-+{
-+	struct device *dev = priv->dev;
-+	struct gpio_chip *gc;
-+
-+	gc = devm_kzalloc(dev, sizeof(*gc), GFP_KERNEL);
-+	if (!gc)
-+		return -ENOMEM;
-+
-+	mt7530_write(priv, MT7530_LED_IO_MODE, 0);
-+
-+	gc->label = "mt7530";
-+	gc->parent = dev;
-+	gc->owner = THIS_MODULE;
-+	gc->get_direction = mt7530_gpio_get_direction;
-+	gc->direction_input = mt7530_gpio_direction_input;
-+	gc->direction_output = mt7530_gpio_direction_output;
-+	gc->get = mt7530_gpio_get;
-+	gc->set = mt7530_gpio_set;
-+	gc->base = -1;
-+	gc->ngpio = 15;
-+	gc->can_sleep = true;
-+
-+	return devm_gpiochip_add_data(dev, gc, priv);
-+}
-+
- static int
- mt7530_setup(struct dsa_switch *ds)
- {
-@@ -1781,6 +1871,12 @@ mt7530_setup(struct dsa_switch *ds)
- 		}
- 	}
- 
-+	if (of_property_read_bool(priv->dev->of_node, "gpio-controller")) {
-+		ret = mt7530_setup_gpio(priv);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	mt7530_setup_port5(ds, interface);
- 
- 	/* Flush the FDB table */
-diff --git a/drivers/net/dsa/mt7530.h b/drivers/net/dsa/mt7530.h
-index 32d8969b3ace..e7903ecc6a7c 100644
---- a/drivers/net/dsa/mt7530.h
-+++ b/drivers/net/dsa/mt7530.h
-@@ -554,6 +554,26 @@ enum mt7531_clk_skew {
- #define  MT7531_GPIO12_RG_RXD3_MASK	GENMASK(19, 16)
- #define  MT7531_EXT_P_MDIO_12		(2 << 16)
- 
-+/* Registers for LED GPIO control (MT7530 only)
-+ * All registers follow this pattern:
-+ * [2:0]    port 0
-+ * [6:4]    port 1
-+ * [10:8]   port 2
-+ * [14:12]  port 3
-+ * [18:16]  port 4
-+ */
-+
-+/* LED enable, 0: Disable, 1: Enable (Default) */
-+#define MT7530_LED_EN			0x7d00
-+/* LED mode, 0: GPIO mode, 1: PHY mode (Default) */
-+#define MT7530_LED_IO_MODE		0x7d04
-+/* GPIO direction, 0: Input, 1: Output */
-+#define MT7530_LED_GPIO_DIR		0x7d10
-+/* GPIO output enable, 0: Disable, 1: Enable */
-+#define MT7530_LED_GPIO_OE		0x7d14
-+/* GPIO value, 0: Low, 1: High */
-+#define MT7530_LED_GPIO_DATA		0x7d18
-+
- #define MT7530_CREV			0x7ffc
- #define  CHIP_NAME_SHIFT		16
- #define  MT7530_ID			0x7530
--- 
-2.25.1
+What do you think if we update ufshcd_map_desc_id_to_length(add one 
+param - desc_index)
+so that it can tell the correct buf_len in case of W-LUs?
 
+Thanks,
+Can Guo.
+
+On 2021-01-11 12:44, Jaegeuk Kim wrote:
+> From: Jaegeuk Kim <jaegeuk@google.com>
+> 
+> Kernel stack violation when getting unit_descriptor/wb_buf_alloc_units 
+> from
+> rpmb lun. The reason is the unit descriptor length is different per LU.
+> 
+> The lengh of Normal LU is 45, while the one of rpmb LU is 35.
+> 
+> int ufshcd_read_desc_param(struct ufs_hba *hba, ...)
+> {
+> 	param_offset=41;
+> 	param_size=4;
+> 	buff_len=45;
+> 	...
+> 	buff_len=35 by rpmb LU;
+> 
+> 	if (is_kmalloc) {
+> 		/* Make sure we don't copy more data than available */
+> 		if (param_offset + param_size > buff_len)
+> 			param_size = buff_len - param_offset;
+> 			--> param_size = 250;
+> 		memcpy(param_read_buf, &desc_buf[param_offset], param_size);
+> 		--> memcpy(param_read_buf, desc_buf+41, 250);
+> 
+> [  141.868974][ T9174] Kernel panic - not syncing: stack-protector:
+> Kernel stack is corrupted in: wb_buf_alloc_units_show+0x11c/0x11c
+> 	}
+> }
+> 
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 2a715f13fe1d..722697b57777 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -3293,8 +3293,12 @@ int ufshcd_read_desc_param(struct ufs_hba *hba,
+> 
+>  	if (is_kmalloc) {
+>  		/* Make sure we don't copy more data than available */
+> -		if (param_offset + param_size > buff_len)
+> -			param_size = buff_len - param_offset;
+> +		if (param_offset + param_size > buff_len) {
+> +			if (buff_len > param_offset)
+> +				param_size = buff_len - param_offset;
+> +			else
+> +				param_size = 0;
+> +		}
+>  		memcpy(param_read_buf, &desc_buf[param_offset], param_size);
+>  	}
+>  out:
