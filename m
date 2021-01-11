@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B672F157C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:41:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA97A2F1583
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387546AbhAKNkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:40:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731984AbhAKNkl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:40:41 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A6FCC061786;
-        Mon, 11 Jan 2021 05:40:01 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id 81so17761534ioc.13;
-        Mon, 11 Jan 2021 05:40:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VPX+TWLUVWMLDjFiSnhOZGL+SWYosAkfqkHnqdSxUAM=;
-        b=oYpWOHIwy6XftMFufPxgO9fchZbGj2sitlgT6yrncOYW3o+rDnEaoDdEBgXbnIkNeX
-         BRgMVzfxXtPehTLtxH6/A+/pCGEJ3rhhXAiCTmRByGxtCcl8HuLLDc4BXZpAV55H3biZ
-         0yDuJ/sOHEfW0HPXS5Fkcy+xtw+eO8Vz+ABu8n7XEudo17TUNCRfI2C5ZA6PpHF0HWLe
-         Lx7Pjc40cr4XA321nE1pFq1IE4Pg7cHaco2k4hd0nh2MkbN3i8tPv7ypcjFqWMR7xBRv
-         c3Bd9zDm7FaaHKwWj0GVydeK7Us4jjDSjh2RO7254w2P/sPOk9WCkIF5XTrXgUCTwGu8
-         z98g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VPX+TWLUVWMLDjFiSnhOZGL+SWYosAkfqkHnqdSxUAM=;
-        b=ExQYTm2mjN9pDwKXVoFR7DGfblCYkkdZkc4f9UaQ7+fkxpHeXRVhVMvENp7hSN/Y8S
-         YqUc8vgAPYotsIiKOg9iFsSYqxpYIKm2wiIjaRdiwANVdVXqHXXTN59t82ZfYmaieIEj
-         K4mmHeSN2h65tGQV/b5UFf1KXRowRtJBN0ctomcpdecmkzITic1BnaSv4lxEmltu+ybB
-         RK0PngNCKnciaKKu1mHbyZpj4TojRH7Tbz9BpHHvpp3AOvFvquPT/SUoS0rVEMfmFmhE
-         oyExkAKPDRtAfPagJWpA/d6ZicvTE9R4tl9Wr9+oy/yr7c3onK+sHs4vTWTST+gnkJQ5
-         T2RA==
-X-Gm-Message-State: AOAM532w/nemwmpkAXu4NksVBYPXr34KoLkKWZcFfvLtKUYx0u7WCE9r
-        pLCxSViWjNhEen45aRq3XBPuJTLt7bj0QUMNKwU=
-X-Google-Smtp-Source: ABdhPJxdIHd1jmADjrtYp3Zsp0l/yfn12bjpz+qSZpWV+XVteUVCntZjcfHonB6Q9MK8aoe7wB6LwfSgeU+sRkaghGs=
-X-Received: by 2002:a02:c8c7:: with SMTP id q7mr14527159jao.7.1610372400687;
- Mon, 11 Jan 2021 05:40:00 -0800 (PST)
+        id S2387405AbhAKNli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:41:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47962 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733235AbhAKNlb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:41:31 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9137D221FD;
+        Mon, 11 Jan 2021 13:40:50 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kyxRA-006gvt-Gn; Mon, 11 Jan 2021 13:40:48 +0000
 MIME-Version: 1.0
-References: <20210111054428.3273-1-dqfext@gmail.com> <20210111054428.3273-3-dqfext@gmail.com>
- <20210111110407.GR1551@shell.armlinux.org.uk>
-In-Reply-To: <20210111110407.GR1551@shell.armlinux.org.uk>
-From:   DENG Qingfang <dqfext@gmail.com>
-Date:   Mon, 11 Jan 2021 21:40:00 +0800
-Message-ID: <CALW65jaqciOiRxJxzPiEADgpmKa7-q2QfQnBdaVMcOa5YDHjRA@mail.gmail.com>
-Subject: Re: [PATCH net-next 2/2] drivers: net: dsa: mt7530: MT7530 optional
- GPIO support
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        netdev <netdev@vger.kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, linux-kernel@vger.kernel.org,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
-        Frank Wunderlich <frank-w@public-files.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 11 Jan 2021 13:40:48 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Srinivas Ramana <sramana@codeaurora.org>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pajay@qti.qualcomm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 0/3] arm64: cpufeature: Add filter function to control
+In-Reply-To: <1610152163-16554-1-git-send-email-sramana@codeaurora.org>
+References: <1610152163-16554-1-git-send-email-sramana@codeaurora.org>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <6dfdf691b5ed57df81c4c61422949af5@misterjones.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: sramana@codeaurora.org, catalin.marinas@arm.com, will@kernel.org, pajay@qti.qualcomm.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, linux-arm-msm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 7:04 PM Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
->
-> FYI, Documentation/driver-api/gpio/consumer.rst says:
->
->   For output GPIOs, the value provided becomes the initial output value.
->   This helps avoid signal glitching during system startup.
->
-> Setting the pin to be an output, and then setting its initial value
-> does not avoid the glitch. You may wish to investigate whether you
-> can set the value before setting the pin as an output to avoid this
-> issue.
->
+Hi Srinivas,
 
-So, setting the Output Enable bit _after_ setting the direction and
-initial value should avoid this issue. Right?
+On 2021-01-09 00:29, Srinivas Ramana wrote:
+> This patchset adds a control function for cpufeature framework
+> so that the feature can be controlled at runtime.
+> 
+> Defer PAC on boot core and use the filter function added to disable
+> PAC from command line. This will help toggling the feature on systems
+> that do not support PAC or where PAC needs to be disabled at runtime,
+> without modifying the core kernel.
+> 
+> The idea of adding the filter function for cpufeature is taken from
+> https://lore.kernel.org/linux-arm-kernel/20200515171612.1020-25-catalin.marinas@arm.com/
+> https://lore.kernel.org/linux-arm-kernel/20200515171612.1020-24-catalin.marinas@arm.com/
+> 
+> Srinivas Ramana (3):
+>   arm64: Defer enabling pointer authentication on boot core
+>   arm64: cpufeature: Add a filter function to cpufeature
+>   arm64: Enable control of pointer authentication using early param
+> 
+>  Documentation/admin-guide/kernel-parameters.txt |  6 +++
+>  arch/arm64/include/asm/cpufeature.h             |  8 +++-
+>  arch/arm64/include/asm/pointer_auth.h           | 10 +++++
+>  arch/arm64/include/asm/stackprotector.h         |  1 +
+>  arch/arm64/kernel/cpufeature.c                  | 53 
+> +++++++++++++++++++------
+>  arch/arm64/kernel/head.S                        |  4 --
+>  6 files changed, 64 insertions(+), 18 deletions(-)
+
+I've been working for some time on a similar series to allow a feature
+set to be disabled during the early boot phase, initially to prevent
+booting a kernel with VHE, but the mechanism is generic enough to
+deal with most architectural features.
+
+I took the liberty to lift your first patch and to add it to my 
+series[1],
+further allowing PAuth to be disabled at boot time on top of BTI and 
+VHE.
+
+I'd appreciate your comments on this.
+
+Thanks,
+
+         M.
+
+[1] https://lore.kernel.org/r/20210111132811.2455113-1-maz@kernel.org
+-- 
+Jazz is not dead. It just smells funny...
