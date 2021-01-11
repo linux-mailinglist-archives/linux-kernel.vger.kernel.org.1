@@ -2,79 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6DFE2F1869
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A07572F186E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732700AbhAKOi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:38:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727984AbhAKOi2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:38:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D905E2255F;
-        Mon, 11 Jan 2021 14:37:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610375868;
-        bh=GWRS5isknuBePcoSAEiQ0Gy97LT1eGijAvL9gElMOKg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r504WNhhXsmdMwwackGhLo169jGkVCjkosfE9M0sCA0ZYCTMnJILVvIQbIESp1eWw
-         pheYCRuPCnBSGC9dYMVYt2RxAS//hrSZxls78sajMqIhrA9rrRHL3ffErTIWhP6Yky
-         XXtQSUy9D2V9NpydrbhpZKLbdjtcM4p5z3I+pu7Rv5zcz9S/XPms9+7i816uP1mXLN
-         N0jRUfMInp84kiybxt1UYP5xetN7fRLythVa4Y82fhV7RK/EKZDMGrHjW4ceV6WSwj
-         t5v2MOCcLEImMD6QAljKq5yOWkit6zp55i4vwV/iV3WoYiQeXRzyFy0Mvdlu+c5R0v
-         LgfQfu9skWxPA==
-Date:   Mon, 11 Jan 2021 14:37:42 +0000
-From:   Will Deacon <will@kernel.org>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Hugh Dickins <hughd@google.com>, kernel-team@android.com
-Subject: Re: [PATCH v2 2/3] mm: Allow architectures to request 'old' entries
- when prefaulting
-Message-ID: <20210111143742.GD7642@willie-the-truck>
-References: <20210108171517.5290-1-will@kernel.org>
- <20210108171517.5290-3-will@kernel.org>
- <20210111142533.oulduqd76mkpdkst@box>
+        id S2387685AbhAKOiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:38:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727984AbhAKOit (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 09:38:49 -0500
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DB1C061786;
+        Mon, 11 Jan 2021 06:38:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Ixsfk5NwQACytWv/iH7/K21zegLffRIyRkNvUq/GHSI=; b=FL+aKR9e5W+KUyeSOR3QP01kCJ
+        3Fzf4i0EE9fMDz5UmtBuPYNSIOpTj/9MXCNPOxA9nUJkMO8ZqjEwiEDpZhuYiXMwXBSl0hGUhH1LF
+        Le2jdTJ13B+m3kltnOGiY2ocrtYUocHkeW/uMFfw00F+d5i20DX4cDRu/obuUFZpS/Ix3miQFsS0Z
+        qOLP1LbDwmYG5gdqBa1nJrZQXj26a/+GXHndDlX0eyTKm39iQYoyTTrHo+qEydMWSMUuoOLSUzgPe
+        e4ylBVbXaals04IRIN2nAcfm5vF5VmUmbuW6oPDBZpSSDUy5BqezxyDQsUK277wU2OiKxYHAIea3P
+        7WfS63yA==;
+Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=[192.168.1.10])
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <cyndis@kapsi.fi>)
+        id 1kyyKd-0005Qp-Ex; Mon, 11 Jan 2021 16:38:07 +0200
+Subject: Re: [PATCH] i2c: tegra: Wait for config load atomically while in ISR
+To:     David Laight <David.Laight@ACULAB.COM>,
+        'Mikko Perttunen' <mperttunen@nvidia.com>,
+        "ldewangan@nvidia.com" <ldewangan@nvidia.com>,
+        "digetx@gmail.com" <digetx@gmail.com>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
+        "wsa@kernel.org" <wsa@kernel.org>
+Cc:     "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <20210111135547.3613092-1-mperttunen@nvidia.com>
+ <a0b0f224c2864b80a5bac53646d67daf@AcuMS.aculab.com>
+From:   Mikko Perttunen <cyndis@kapsi.fi>
+Message-ID: <9ba3d704-674b-94df-d10f-e3edb3c695d6@kapsi.fi>
+Date:   Mon, 11 Jan 2021 16:38:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111142533.oulduqd76mkpdkst@box>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <a0b0f224c2864b80a5bac53646d67daf@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 84.249.134.236
+X-SA-Exim-Mail-From: cyndis@kapsi.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 05:25:33PM +0300, Kirill A. Shutemov wrote:
-> On Fri, Jan 08, 2021 at 05:15:16PM +0000, Will Deacon wrote:
-> > diff --git a/mm/filemap.c b/mm/filemap.c
-> > index c1f2dc89b8a7..0fb9d1714797 100644
-> > --- a/mm/filemap.c
-> > +++ b/mm/filemap.c
-> > @@ -3051,14 +3051,18 @@ vm_fault_t filemap_map_pages(struct vm_fault *vmf,
-> >  		if (!pte_none(*vmf->pte))
-> >  			goto unlock;
-> >  
-> > +		/* We're about to handle the fault */
-> > +		if (vmf->address == address) {
-> > +			vmf->flags &= ~FAULT_FLAG_PREFAULT;
-> > +			ret = VM_FAULT_NOPAGE;
-> > +		} else {
-> > +			vmf->flags |= FAULT_FLAG_PREFAULT;
-> > +		}
-> > +
+Agreed that this is possibly not optimal, but this patch simply returns 
+the behavior to what it was before "i2c: tegra: Support atomic 
+transfers", fixing the overt issue.
+
+Design fixes can be considered later, in a non-stable patch.
+
+Mikko
+
+On 1/11/21 4:31 PM, David Laight wrote:
+> From: Mikko Perttunen
+>> Sent: 11 January 2021 13:56
+>>
+>> Upon a communication error, the interrupt handler can call
+>> tegra_i2c_disable_packet_mode. This causes a sleeping poll to happen
+>> unless the current transaction was marked atomic. Since
+>> tegra_i2c_disable_packet_mode is only called from the interrupt path,
+>> make it use atomic waiting always.
 > 
-> Do we need to restore the oririnal status of the bit once we are done?
-
-I can certainly add that, although it doesn't look like we do that for
-vmf->pte, so it's hard to tell what the rules are here. It certainly feels
-odd to restore some fields but not others, as it looks like vmf->address
-will be out-of-whack with vmf->pte when filemap_map_pages() returns. Am I
-missing something?
-
-Will
+> Spin-waiting in an ISR for anything that it makes sense to do
+> a sleep-wait for at other times is badly broken design.
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+> 
