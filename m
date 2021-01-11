@@ -2,110 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9FE2F22E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:38:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E207C2F22F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390457AbhAKWif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 17:38:35 -0500
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:42425 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389720AbhAKWie (ORCPT
+        id S2390728AbhAKWlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 17:41:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21314 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390083AbhAKWlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:38:34 -0500
-Received: by mail-ot1-f44.google.com with SMTP id x5so116705otp.9;
-        Mon, 11 Jan 2021 14:38:18 -0800 (PST)
+        Mon, 11 Jan 2021 17:41:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610404782;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cW3iSBkKoKiESA256+xWB2cAcMZQzJSIVrZ0jjOHSOQ=;
+        b=MfxfpSAQRjxHQAuMTu4POs8zxfx+n6kJZTaCKxeSLZ+iwkrVss4D1439muXZhwhfrcWpS5
+        5Oxaf0loDnNWMdUB1H1kXcjX27z1RbqUeNTKl+/nTZ9m1WgvvxuTaDTYJtpZhgNXHihpYm
+        frhPTM5OZDdvKl+INJdLHsufKwmZga0=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-467-chQxQDliPwSfSizckw1xjg-1; Mon, 11 Jan 2021 17:39:41 -0500
+X-MC-Unique: chQxQDliPwSfSizckw1xjg-1
+Received: by mail-io1-f70.google.com with SMTP id c7so244364iob.10
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:39:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fLMj84hkUp5+4mSadplRSQZF7rQJLNm76i5JIfHTAL8=;
-        b=i64VkvcIZQKROOie31EaeSBSMkw83z6POeGNxNbo2lfAoW7HhiyPtqG9k8C2T9qC5M
-         DtOPSlHwi5Obdp9fVyHzagnh9kuz516MYVnxSnYpcNbG3GHfafW121hKI5iXv9HwCh3t
-         7dseXeuEXpjMIH+6r72TpY/5hB8m4Yz6hU9rvOBlUlrDd7nkU3cESGeYJSRQbOvVkl6X
-         wC5Kx3lgt3pKFL9upaY4o5biQbwuTh3iNeKIz2Zr4BNYxn4KV70pK4n+UTNNgMXAWCz3
-         nQ9IBEh6foCV0fVYs+cOMGQh0/H9RY8fD+kjbYdjhp8ZECOVkpd89qpJ1jk8ewplTLOu
-         k/lg==
-X-Gm-Message-State: AOAM532rHX3rCRd6IfuOSSbiYylxNJ3/L5gQTNsmBstBwI0OeJzn0ewO
-        N9xtS0JiO23RkgKbBcXoNg==
-X-Google-Smtp-Source: ABdhPJx9xq6P6glabPHmo4SavGc3OTfs/lhS2g2fLFMmAgMDmpH6KWLvkZWD/hqD8l6UME/txyE6zA==
-X-Received: by 2002:a05:6830:2397:: with SMTP id l23mr841766ots.357.1610404672925;
-        Mon, 11 Jan 2021 14:37:52 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id e10sm236515otr.73.2021.01.11.14.37.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 14:37:51 -0800 (PST)
-Received: (nullmailer pid 3185487 invoked by uid 1000);
-        Mon, 11 Jan 2021 22:37:50 -0000
-Date:   Mon, 11 Jan 2021 16:37:50 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Nadeem Athani <nadeem@cadence.com>, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/4] dt-bindings: pci: ti,j721e: Add host mode
- dt-bindings for TI's AM64 SoC
-Message-ID: <20210111223750.GA3177728@robh.at.kernel.org>
-References: <20210104124103.30930-1-kishon@ti.com>
- <20210104124103.30930-3-kishon@ti.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=cW3iSBkKoKiESA256+xWB2cAcMZQzJSIVrZ0jjOHSOQ=;
+        b=UTbZfSXVWXDdUniDNydWgqP3hjevxEigZ4PNay/3cbrVeCxbtsYAs+ZvDrXsFy6ZIl
+         18kl4ulpLekYtEinxpwVJrENRoimIv7NVbVhgcHZwDeYoLV6xqJf2+f+Vm3ZcPOH+/vT
+         zfXjWa5ACKoapIOnbIQFM691KmThSMWSKrNzNIhNg46rtVz48S/3wrnSad6zg66PlMSL
+         a01tb4KfMunUqrdDKJ6+0TxbbSsWWD+qj7fHE92/Ewph5KvLhQgAW4Lloeqh23LTLkrZ
+         ha5op4SmJcOZpmiryjnVzX2kbh4Sqfcn5BIIEsKWG4PdPqO3HlR7pbmThZmhvKNxa3t1
+         7qVQ==
+X-Gm-Message-State: AOAM530S2q2/Cd4R1+C32dGPHlA5DrUShc7bXdMOgCWcspoCBka1NVRW
+        02zpBZO9AZYVNvOrvtHiP/dtEa1Uid3JEz1XL/lREe2MxdAFuR8UxwAgOgvd8yHPuYr+819Z6W4
+        S/3U9FVed7GzR7CrG+GnVPNXT
+X-Received: by 2002:a02:ca09:: with SMTP id i9mr1601460jak.135.1610404780434;
+        Mon, 11 Jan 2021 14:39:40 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzmYVnTm8u0tEM8m+5ab64f5NvBdYw48ngffL+JZzdezvXPa/KnRQlhCw/IPQKqaD8BZ2/85A==
+X-Received: by 2002:a02:ca09:: with SMTP id i9mr1601443jak.135.1610404780215;
+        Mon, 11 Jan 2021 14:39:40 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id k9sm539842iob.13.2021.01.11.14.39.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 14:39:39 -0800 (PST)
+Subject: Re: [PATCH 0/8] FPGA DFL Changes for 5.12
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, moritzf@google.com,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Russ Weight <russell.h.weight@intel.com>,
+        "Gerlach, Matthew" <matthew.gerlach@intel.com>,
+        Sonal Santan <sonal.santan@xilinx.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Richard Gong <richard.gong@intel.com>
+References: <X/sz6lDq8WFzrRUJ@archbook>
+ <95af46d6-d123-f610-2f21-6d6de6f248e9@redhat.com>
+ <X/v2xs5Rnfw9F18E@kroah.com>
+ <9bc01a73-726f-a979-1246-6ea048961670@redhat.com>
+ <X/xmi/jJmDHnV5/N@kroah.com>
+ <7923d9dc-c503-5318-6e4f-931f8c13c1be@redhat.com>
+ <X/x4QjGyP8ssYUDI@kroah.com>
+ <fe9739cf-abc9-c0c6-933e-8447a9d197a8@redhat.com>
+ <X/yXOFYnQcA1MsUd@kroah.com>
+ <dccc8075-b900-8680-3620-8050475858a7@redhat.com> <X/y0+ZCPsfrg/LUp@archbook>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <ac1fd7f4-f53a-ddc4-192b-8c8af254f7ee@redhat.com>
+Date:   Mon, 11 Jan 2021 14:39:36 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210104124103.30930-3-kishon@ti.com>
+In-Reply-To: <X/y0+ZCPsfrg/LUp@archbook>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 06:11:01PM +0530, Kishon Vijay Abraham I wrote:
-> Add host mode dt-bindings for TI's AM64 SoC. This is the same IP used in
-> J7200, however AM64 is a non-coherent architecture.
-> 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  .../devicetree/bindings/pci/ti,j721e-pci-host.yaml     | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
-> index 7607018a115b..77118dba415e 100644
-> --- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
-> +++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
-> @@ -16,12 +16,17 @@ allOf:
->  properties:
->    compatible:
->      oneOf:
-> -      - description: PCIe controller in J7200
-> +      - const: ti,am64-pcie-host
 
-No, either you have fallback or you don't. 
-
-> +      - const: ti,j7200-pcie-host
-> +      - const: ti,j721e-pcie-host
-> +      - description: PCIe controller in AM64
->          items:
-> +          - const: ti,am64-pcie-host
->            - const: ti,j7200-pcie-host
->            - const: ti,j721e-pcie-host
-
-2 fallbacks is probably not too useful. Do those really enable 
-anything?
-
-> -      - description: PCIe controller in J721E
-> +      - description: PCIe controller in J7200
->          items:
-> +          - const: ti,j7200-pcie-host
->            - const: ti,j721e-pcie-host
+On 1/11/21 12:28 PM, Moritz Fischer wrote:
+> Tom,
+>
+> On Mon, Jan 11, 2021 at 11:46:03AM -0800, Tom Rix wrote:
+>
+> [..]
+>> I have been doing the first review in a couple of days after every patch landing.
+> I appreciate your help with doing reviews.
 >  
->    reg:
-> @@ -87,7 +92,6 @@ required:
->    - vendor-id
->    - device-id
->    - msi-map
-> -  - dma-coherent
->    - dma-ranges
->    - ranges
->    - reset-gpios
-> -- 
-> 2.17.1
-> 
+>> I see some pretty good response from the developers to fix the issues raised.Ã‚Â 
+> ... yet patches have been rejected. So it doesn't seem purely a matter
+> of throughput?
+>
+>> But I do not see Moritz picking up the review until weeks later.
+> I'll admit there are delays that happen, I have a dayjob as I pointed
+> out in earlier conversations. Furthermore, just because I do not
+> immediately send out an email does not mean I don't look at stuff.
+>
+> If people show up with 100kLOC patchsets that don't pass checkpatch,
+> it'll take a while for me to even read up and understand what they're
+> doing / trying to do.
+>
+>> This consistent delay in timely reviews is a bottleneck.
+> As Greg pointed out even ones that were reviewed got rejected, so
+> clearly the issue is with the quality and not the speed at which we send
+> them on.
+>
+>> It would be good if the big first reviews could be done in parallel.
+> Again depending how the patchsets are structured it will take me a while
+> to process. Having them re-use existing infrastructure, following
+> coding and submission guidelines will speed up the process.
+>
+> On a personal level, being told I'm too slow and not doing my job as
+> maintainer doesn't exactly increase my motivation to get to it ...
+
+Sorry about that.
+
+I really do want to help out, earlier you mentioned patchwork problems.
+
+If you can point me at the wreckage, I'll take a look.
+
+Tom
+
+
+>
+> - Moritz
+>
+
