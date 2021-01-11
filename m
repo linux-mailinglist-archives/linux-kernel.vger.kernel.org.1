@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4433C2F1D48
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 19:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 523B92F1D46
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 19:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390065AbhAKR71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 12:59:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727658AbhAKR70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:59:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 368A3223C8;
-        Mon, 11 Jan 2021 17:58:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610387925;
-        bh=l9BECwPh5Uw1xsnT6CBJ//g1d59ts1A3zWVtuCkzoJY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d1+EiBSpawyQ677csW0iNpD59tJDqpWFYDwZz4nKjt0Y9Al9lI7opSvj8kTSUGTNj
-         O6Y+MOWGgOs1KX/rFdNcBol0oLWJHStoHBwYpDYry62Qiczcq9iMJIUNZXLZheY4iS
-         2CwuicaCpop9rxRtKh68mCr8RcbeGe4i94QmoG0JUxVwUOJWEw8MijkN8Qm/ENkvq+
-         04dz7pdgQZlyIw+EYn8jLSCbMUpUBiRI88YayrW0BvXmEicRn6E3O6df9bH3R6nIFp
-         +vZUoMLPcPRCP9RZ6JKyXEti2kiyeihkazsxmXG7QhAMjdlnBw9V/any77rK4WR9S6
-         70Amgsr9TZ+5g==
-Date:   Mon, 11 Jan 2021 17:58:12 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        =?utf-8?B?5pyx54G/54G/?= <zhucancan@vivo.com>,
-        alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] ASoC: soc-pcm: Fix uninitialised return value in
- variable ret
-Message-ID: <20210111175812.GK4728@sirena.org.uk>
-References: <20210108123546.19601-1-colin.king@canonical.com>
- <20210111163551.GA33269@sirena.org.uk>
- <9bef4fe5-0eed-03f8-9505-909b669ba49b@canonical.com>
+        id S2390051AbhAKR7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 12:59:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727658AbhAKR7R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 12:59:17 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DF98C061795
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:58:37 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id h186so406750pfe.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:58:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=2lm70Ggq7phoaQdO9eh1J8nKy568IRUhnAqo2gDpwug=;
+        b=Yi1bvgxwKfXTkZnOP72Pmv2jaenl99ZsFBSzUvtEwJ17uzJQss8ZzOego2XKqv4otc
+         evFFIrPaX1U27ZqTvupdxeRvKk45MrdmtGy+JZx144XDMfu4dg8xG6Bc+1XQgYUdjTxb
+         74ZhoVogcEQjbpjheC6e34dQ7qkWzH+JktjuOTsneshLfedvfBcfsCNWo+AI0oPAkOht
+         HEth2dS89lsqGBY7pNWjqVGISAMT1RUJzW/hH3mD9a0JfD9VziDVA7osIB+UK2tWNYeL
+         nJViH2v83mqPgS8j5BikrBPJTErIqCU33ZZP5j8NDDPmL10cAxvmX0toekm0gt7u5vJV
+         jrPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=2lm70Ggq7phoaQdO9eh1J8nKy568IRUhnAqo2gDpwug=;
+        b=MJThZ8GlLfkbiHMHhzdamDhcnMqR/Qyqn5v5IKCgVW1+GTJ7eJ4dt8kdIQDj5Pr0Wl
+         dRDB/upuHEtd/Ijtldop3rdjLBgtVRfFK/xWgasthLnvZBGxk/7TWr4sHDsIV1qmGvw6
+         bkXCtjcWD5DaGRgNmITubSQy3Qgc2gSbJ41d6pl+0qzzqrYMPwZqYSVOyO3x1YD709eD
+         oZsv3Wg+x79gG6Zc1rBiLMFxYWHeN8qamwkTYnz3A2PcWSWRkjTyYx9Ilaj+2xnoYAIn
+         Rv7mnt06aVsOHJxC92JibXZjzcHx4wQ+CcYvSyepVUTWY7PcexBRyP681fXVB14WWs2e
+         df+w==
+X-Gm-Message-State: AOAM533+hn2qtAEgkQ/62z0O2sP6ylxxqKqu1sKHp2OZjuCDWLWXL/NL
+        5Wb0mmOVUQ8HRvvtH1lHei6xnw==
+X-Google-Smtp-Source: ABdhPJyl9l6RFQcpeTXKU39dwIVyADDHDqn4PQCQHlG/RcoPfTkeFWsCm2MbiPbtssnq7luGy2r0Gw==
+X-Received: by 2002:aa7:843a:0:b029:19d:b279:73c9 with SMTP id q26-20020aa7843a0000b029019db27973c9mr765662pfn.3.1610387916649;
+        Mon, 11 Jan 2021 09:58:36 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id 84sm277900pfy.9.2021.01.11.09.58.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 09:58:35 -0800 (PST)
+Date:   Mon, 11 Jan 2021 09:58:29 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH 06/13] x86/sev: Rename global "sev_enabled" flag to
+ "sev_guest"
+Message-ID: <X/yRxYCrEuaq2oVX@google.com>
+References: <20210109004714.1341275-1-seanjc@google.com>
+ <20210109004714.1341275-7-seanjc@google.com>
+ <f6ed8566-6521-92f0-927e-1764d8074ce6@amd.com>
+ <5b3a5d5e-befe-8be2-bbc4-7e7a8ebbe316@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yiup30KVCQiHUZFC"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <9bef4fe5-0eed-03f8-9505-909b669ba49b@canonical.com>
-X-Cookie: Too much is not enough.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5b3a5d5e-befe-8be2-bbc4-7e7a8ebbe316@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 11, 2021, Tom Lendacky wrote:
+> On 1/11/21 10:02 AM, Tom Lendacky wrote:
+> > On 1/8/21 6:47 PM, Sean Christopherson wrote:
+> > > Use "guest" instead of "enabled" for the global "running as an SEV guest"
+> > > flag to avoid confusion over whether "sev_enabled" refers to the guest or
+> > > the host.  This will also allow KVM to usurp "sev_enabled" for its own
+> > > purposes.
+> > > 
+> > > No functional change intended.
+> > > 
+> > > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > 
+> > Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+> 
+> Ah, I tried building with CONFIG_KVM=y and CONFIG_KVM_AMD=y and got a build
+> error:
+> 
+> In file included from arch/x86/kvm/svm/svm.c:43:
+> arch/x86/kvm/svm/svm.h:222:20: error: ‘sev_guest’ redeclared as different
+> kind of symbol
 
---yiup30KVCQiHUZFC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jan 11, 2021 at 05:37:36PM +0000, Colin Ian King wrote:
-> On 11/01/2021 16:35, Mark Brown wrote:
-
-> > This doesn't apply against current code, please check and resend.
-
-> ..both set ret to non-zero, which I believe will throw a subsequent
-> warning messagethat's not strictly related.
-
-> my fix was acked by zhucancan@vivo.com, so I'm now confused what is the
-> *correct* fix.
-
-Quite probably yours in which case it'll need rebasing - IIRC I looked
-at the various patches at fairly separate times and didn't connect them,
-my workflow is based on queueing things for automated processing later
-so I won't always remember seeing something similar.
-
---yiup30KVCQiHUZFC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/8kbQACgkQJNaLcl1U
-h9DAkwf+M1VbQOU/Iy6orX+mjHXlUnvmVyBAj7mzFuZiwwbG0+Eh3ZdHM1zNcNO4
-oLc75RxJJjJu4LVtwB2yNCi/ecE6wpn4RCQphOUqC0JceV7Fmv1g6DbgQm7FAEg6
-c51rug8SVBRaNw3MisdINNE6LOAuO7lRTJYzCINoei2Bc5VvhGva4E2mhnXvr7Ht
-o6T03efSI+GFHGtXt5UzmzwSJd55bx/I1hmzPSSkIgqLhgMsCiqEAm/ksQrUD7Hl
-cIZBh4puCJwHry9XMaqDK1FX8l4eg1Ey6suXcsBBvbsXUJG/C75zFr5rgLb38y0w
-yCqLHIaGdltiVwB+kQAZ/MXBZct/Dw==
-=6anD
------END PGP SIGNATURE-----
-
---yiup30KVCQiHUZFC--
+Dang, didn't consider that scenario, obviously.  The irony of introducing a
+conflict while trying to avoid conflicts...
