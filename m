@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 727722F15D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD4C2F1558
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731275AbhAKNKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:10:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56566 "EHLO mail.kernel.org"
+        id S1731641AbhAKNNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:13:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730987AbhAKNJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:09:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98A5F2255F;
-        Mon, 11 Jan 2021 13:09:32 +0000 (UTC)
+        id S1730942AbhAKNMT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:12:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9822821534;
+        Mon, 11 Jan 2021 13:12:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370573;
-        bh=TDmRcODaA1zi6IDRn+XzSDrBCs4+1dO5A6xNwn0w2fE=;
+        s=korg; t=1610370723;
+        bh=l16RtqhC7S/v30fafAiX2Y5m+Bp5Qein82UDZB18Dx4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M9ig0KaeVpb6jEi/41tMkJMZvPAjy9TwI7nIpQDTQ5F9PFQWihHfC/BmDRaspB894
-         raKNeot2vxtkciLTEdYWlJwjA/yaHYCMvlkWVxDBWeewVhPi9ciRrm89YBQDqBQSV6
-         nEff0nkH6eu7NNf9ObibEhKf1cBx3X9kOENIHOP8=
+        b=1foWbyvyOwEL9FMwKq9/sxU9eF9J/ypN+rfaQ5O4gzbo2mWAiqIE88YWOGzDgT7iV
+         xgFpD45ruKsIVRr68vKdWmOmnWelR7oKyvgig4nFeB0Z+T4e/0snbFdSObnl15ZN6i
+         vUHuvfqK7q+O1oJRYpLuaoFUba2rY5w9HnI0uoEg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 65/77] USB: serial: keyspan_pda: remove unused variable
+        stable@vger.kernel.org, Manish Narani <manish.narani@xilinx.com>
+Subject: [PATCH 5.4 70/92] usb: gadget: u_ether: Fix MTU size mismatch with RX packet size
 Date:   Mon, 11 Jan 2021 14:02:14 +0100
-Message-Id: <20210111130039.537550043@linuxfoundation.org>
+Message-Id: <20210111130042.523326086@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +38,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Manish Narani <manish.narani@xilinx.com>
 
-Remove an unused variable which was mistakingly left by commit
-37faf5061541 ("USB: serial: keyspan_pda: fix write-wakeup
-use-after-free") and only removed by a later change.
+commit 0a88fa221ce911c331bf700d2214c5b2f77414d3 upstream.
 
-This is needed to suppress a W=1 warning about the unused variable in
-the stable trees that the build bots triggers.
+Fix the MTU size issue with RX packet size as the host sends the packet
+with extra bytes containing ethernet header. This causes failure when
+user sets the MTU size to the maximum i.e. 15412. In this case the
+ethernet packet received will be of length 15412 plus the ethernet header
+length. This patch fixes the issue where there is a check that RX packet
+length must not be more than max packet length.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Fixes: bba787a860fa ("usb: gadget: ether: Allow jumbo frames")
+Signed-off-by: Manish Narani <manish.narani@xilinx.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/1605597215-122027-1-git-send-email-manish.narani@xilinx.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/usb/serial/keyspan_pda.c |    2 --
- 1 file changed, 2 deletions(-)
 
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -555,10 +555,8 @@ exit:
- static void keyspan_pda_write_bulk_callback(struct urb *urb)
- {
- 	struct usb_serial_port *port = urb->context;
--	struct keyspan_pda_private *priv;
+---
+ drivers/usb/gadget/function/u_ether.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+--- a/drivers/usb/gadget/function/u_ether.c
++++ b/drivers/usb/gadget/function/u_ether.c
+@@ -45,9 +45,10 @@
+ #define UETH__VERSION	"29-May-2008"
  
- 	set_bit(0, &port->write_urbs_free);
--	priv = usb_get_serial_port_data(port);
+ /* Experiments show that both Linux and Windows hosts allow up to 16k
+- * frame sizes. Set the max size to 15k+52 to prevent allocating 32k
++ * frame sizes. Set the max MTU size to 15k+52 to prevent allocating 32k
+  * blocks and still have efficient handling. */
+-#define GETHER_MAX_ETH_FRAME_LEN 15412
++#define GETHER_MAX_MTU_SIZE 15412
++#define GETHER_MAX_ETH_FRAME_LEN (GETHER_MAX_MTU_SIZE + ETH_HLEN)
  
- 	/* queue up a wakeup at scheduler time */
- 	usb_serial_port_softint(port);
+ struct eth_dev {
+ 	/* lock is held while accessing port_usb
+@@ -786,7 +787,7 @@ struct eth_dev *gether_setup_name(struct
+ 
+ 	/* MTU range: 14 - 15412 */
+ 	net->min_mtu = ETH_HLEN;
+-	net->max_mtu = GETHER_MAX_ETH_FRAME_LEN;
++	net->max_mtu = GETHER_MAX_MTU_SIZE;
+ 
+ 	dev->gadget = g;
+ 	SET_NETDEV_DEV(net, &g->dev);
+@@ -848,7 +849,7 @@ struct net_device *gether_setup_name_def
+ 
+ 	/* MTU range: 14 - 15412 */
+ 	net->min_mtu = ETH_HLEN;
+-	net->max_mtu = GETHER_MAX_ETH_FRAME_LEN;
++	net->max_mtu = GETHER_MAX_MTU_SIZE;
+ 
+ 	return net;
+ }
 
 
