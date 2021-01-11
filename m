@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463B22F17AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:10:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E79622F1763
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388819AbhAKOJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:09:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50256 "EHLO mail.kernel.org"
+        id S2388409AbhAKOF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:05:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729747AbhAKNDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:03:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C812229CA;
-        Mon, 11 Jan 2021 13:02:26 +0000 (UTC)
+        id S1730083AbhAKNEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:04:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7828B2255F;
+        Mon, 11 Jan 2021 13:03:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370146;
-        bh=uTq+W4MVFfjIYMnK37PL+HEcsRBrOW2yKQSlDP3W708=;
+        s=korg; t=1610370224;
+        bh=ebq/lvUZrQGdlPxBXL+zHJgRhb7155BfBW0ebW12G98=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Aa549uiNDZ9saIf7XH0HtDwDYcA4yfZIzgUTGJvkLqGs5eGzwjgDaGjhtU11mUfO9
-         TlvoYEIq5yppVmhe4Tdu/A9Adr+oNj1KBX977k8+V+H8Uq+PBp1z8X7u9kzXnO/UBS
-         amWSnPHM30k2nrI6sQRqR38NGXKM+VBNMLkguvfI=
+        b=JwjELWKU9JYGQ/ZmMoifvQjuDsruVjPqlfDm/6m1aDmI8Dvxk5GF3GqT9zFQOYPWq
+         Ee5IrrnNIzZhjwGmiqp2RInvNU+5AlLAHYtMhKDZshZ7zcWsp8JRIK5tULRZgQbchS
+         3mGETFR9zNVwu2/9hF5QZqgTTQc1DEnM8ebqo4ng=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+e86f7c428c8c50db65b4@syzkaller.appspotmail.com,
-        Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [PATCH 4.4 37/38] netfilter: xt_RATEEST: reject non-null terminated string from userspace
-Date:   Mon, 11 Jan 2021 14:01:09 +0100
-Message-Id: <20210111130034.232997307@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 4.9 32/45] usb: gadget: select CONFIG_CRC32
+Date:   Mon, 11 Jan 2021 14:01:10 +0100
+Message-Id: <20210111130035.200444302@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
-References: <20210111130032.469630231@linuxfoundation.org>
+In-Reply-To: <20210111130033.676306636@linuxfoundation.org>
+References: <20210111130033.676306636@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,41 +38,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 6cb56218ad9e580e519dcd23bfb3db08d8692e5a upstream.
+commit d7889c2020e08caab0d7e36e947f642d91015bd0 upstream.
 
-syzbot reports:
-detected buffer overflow in strlen
-[..]
-Call Trace:
- strlen include/linux/string.h:325 [inline]
- strlcpy include/linux/string.h:348 [inline]
- xt_rateest_tg_checkentry+0x2a5/0x6b0 net/netfilter/xt_RATEEST.c:143
+Without crc32 support, this driver fails to link:
 
-strlcpy assumes src is a c-string. Check info->name before its used.
+arm-linux-gnueabi-ld: drivers/usb/gadget/function/f_eem.o: in function `eem_unwrap':
+f_eem.c:(.text+0x11cc): undefined reference to `crc32_le'
+arm-linux-gnueabi-ld: drivers/usb/gadget/function/f_ncm.o:f_ncm.c:(.text+0x1e40):
+more undefined references to `crc32_le' follow
 
-Reported-by: syzbot+e86f7c428c8c50db65b4@syzkaller.appspotmail.com
-Fixes: 5859034d7eb8793 ("[NETFILTER]: x_tables: add RATEEST target")
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Fixes: 6d3865f9d41f ("usb: gadget: NCM: Add transmit multi-frame.")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210103214224.1996535-1-arnd@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/netfilter/xt_RATEEST.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/gadget/Kconfig |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/net/netfilter/xt_RATEEST.c
-+++ b/net/netfilter/xt_RATEEST.c
-@@ -107,6 +107,9 @@ static int xt_rateest_tg_checkentry(cons
- 	} cfg;
- 	int ret;
- 
-+	if (strnlen(info->name, sizeof(est->name)) >= sizeof(est->name))
-+		return -ENAMETOOLONG;
-+
- 	if (unlikely(!rnd_inited)) {
- 		get_random_bytes(&jhash_rnd, sizeof(jhash_rnd));
- 		rnd_inited = true;
+--- a/drivers/usb/gadget/Kconfig
++++ b/drivers/usb/gadget/Kconfig
+@@ -258,6 +258,7 @@ config USB_CONFIGFS_NCM
+ 	depends on NET
+ 	select USB_U_ETHER
+ 	select USB_F_NCM
++	select CRC32
+ 	help
+ 	  NCM is an advanced protocol for Ethernet encapsulation, allows
+ 	  grouping of several ethernet frames into one USB transfer and
+@@ -307,6 +308,7 @@ config USB_CONFIGFS_EEM
+ 	depends on NET
+ 	select USB_U_ETHER
+ 	select USB_F_EEM
++	select CRC32
+ 	help
+ 	  CDC EEM is a newer USB standard that is somewhat simpler than CDC ECM
+ 	  and therefore can be supported by more hardware.  Technically ECM and
 
 
