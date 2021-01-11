@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A49992F163A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:50:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4B32F170A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730920AbhAKNJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:09:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54966 "EHLO mail.kernel.org"
+        id S2387976AbhAKOAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:00:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730583AbhAKNIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:08:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E28722AAD;
-        Mon, 11 Jan 2021 13:08:22 +0000 (UTC)
+        id S1729144AbhAKNGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:06:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43A2C21973;
+        Mon, 11 Jan 2021 13:05:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370503;
-        bh=ND16EHmscqdxezGMzjljNfRlqyR0mAeKDTLu3CcKBBE=;
+        s=korg; t=1610370349;
+        bh=VedbmO/5/bZazH0fUPBlfrJlYbOrNDIrQEbwdNqIqQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VHx3BopoAl7Y10mJScUjIFpAMyGzIYPkO6eWEHEGKlQ9dy8yOEgpQgZ8XMaWU3taW
-         L+MvOl0HI/lZZqJhn7CeeA2Fob2bQFfRaa3el+LvjYXSEopMqP6TJGARsBF/nVG6cC
-         SVDzsQhxgoMgaXXc46TIamyXFB20/cb8ej2Npw4M=
+        b=2DXCDyXYekOqVoAxnI/yXtqPUgu73zONVxaak3g+LZUkxy39w0SaEhHAHDngg4eSq
+         e0qzdSzgKxRbfqVpimjFH7169Py6Ub0X+3gTOtr9WrCrPpb65k1ljnVmO+xyc7qaAK
+         ROGwKojNXKE6LCCjLocKHW9z8/IZll0sX93K6twU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Subject: [PATCH 4.19 50/77] usb: uas: Add PNY USB Portable SSD to unusual_uas
-Date:   Mon, 11 Jan 2021 14:01:59 +0100
-Message-Id: <20210111130038.822504948@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 41/57] ALSA: usb-audio: Fix UBSAN warnings for MIDI jacks
+Date:   Mon, 11 Jan 2021 14:02:00 +0100
+Message-Id: <20210111130035.709738727@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
+References: <20210111130033.715773309@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 96ebc9c871d8a28fb22aa758dd9188a4732df482 upstream.
+commit c06ccf3ebb7503706ea49fd248e709287ef385a3 upstream.
 
-Here's another variant PNY Pro Elite USB 3.1 Gen 2 portable SSD that
-hangs and doesn't respond to ATA_1x pass-through commands. If it doesn't
-support these commands, it should respond properly to the host. Add it
-to the unusual uas list to be able to move forward with other
-operations.
+The calculation of in_cables and out_cables bitmaps are done with the
+bit shift by the value from the descriptor, which is an arbitrary
+value, and can lead to UBSAN shift-out-of-bounds warnings.
 
-Cc: stable@vger.kernel.org
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Oliver Neukum <oneukum@suse.com>
-Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Link: https://lore.kernel.org/r/2edc7af892d0913bf06f5b35e49ec463f03d5ed8.1609819418.git.Thinh.Nguyen@synopsys.com
+Fix it by filtering the bad descriptor values with the check of the
+upper bound 0x10 (the cable bitmaps are 16 bits).
+
+Reported-by: syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201223174557.10249-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/storage/unusual_uas.h |    7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/usb/midi.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/usb/storage/unusual_uas.h
-+++ b/drivers/usb/storage/unusual_uas.h
-@@ -91,6 +91,13 @@ UNUSUAL_DEV(0x152d, 0x0578, 0x0000, 0x99
- 		US_FL_BROKEN_FUA),
- 
- /* Reported-by: Thinh Nguyen <thinhn@synopsys.com> */
-+UNUSUAL_DEV(0x154b, 0xf00b, 0x0000, 0x9999,
-+		"PNY",
-+		"Pro Elite SSD",
-+		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
-+		US_FL_NO_ATA_1X),
-+
-+/* Reported-by: Thinh Nguyen <thinhn@synopsys.com> */
- UNUSUAL_DEV(0x154b, 0xf00d, 0x0000, 0x9999,
- 		"PNY",
- 		"Pro Elite SSD",
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -1867,6 +1867,8 @@ static int snd_usbmidi_get_ms_info(struc
+ 		ms_ep = find_usb_ms_endpoint_descriptor(hostep);
+ 		if (!ms_ep)
+ 			continue;
++		if (ms_ep->bNumEmbMIDIJack > 0x10)
++			continue;
+ 		if (usb_endpoint_dir_out(ep)) {
+ 			if (endpoints[epidx].out_ep) {
+ 				if (++epidx >= MIDI_MAX_ENDPOINTS) {
+@@ -2119,6 +2121,8 @@ static int snd_usbmidi_detect_roland(str
+ 		    cs_desc[1] == USB_DT_CS_INTERFACE &&
+ 		    cs_desc[2] == 0xf1 &&
+ 		    cs_desc[3] == 0x02) {
++			if (cs_desc[4] > 0x10 || cs_desc[5] > 0x10)
++				continue;
+ 			endpoint->in_cables  = (1 << cs_desc[4]) - 1;
+ 			endpoint->out_cables = (1 << cs_desc[5]) - 1;
+ 			return snd_usbmidi_detect_endpoints(umidi, endpoint, 1);
 
 
