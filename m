@@ -2,37 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4F22F1394
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B91C2F1496
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:27:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731375AbhAKNLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:11:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57186 "EHLO mail.kernel.org"
+        id S1730668AbhAKN1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:27:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731189AbhAKNK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:10:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7E1621534;
-        Mon, 11 Jan 2021 13:10:12 +0000 (UTC)
+        id S1732445AbhAKNQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:16:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55EB42246B;
+        Mon, 11 Jan 2021 13:15:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370613;
-        bh=M8TOvm/1aI6Vfwo95DF783lJLCnR4hOJfYcFuxNG9Ow=;
+        s=korg; t=1610370958;
+        bh=HznA0eEHrJ9bdfPi1nOVuidn9zDlJncJbcLATJvhaoM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xVa2B2aygcEKBS11EkjurYVKvnSuP/sQow0HucNPEgZ1LA7ND5dXLDmocSkZD30HI
-         R9w0D428pvI/nOF3v4GYWDlODImaPjp5uIZ6sN7VHe2G55e9oob8AjycXiLTFuuooW
-         3POjGT9rWZmccuDL2lI/ljoZmZprSaF9Kd+4E/qI=
+        b=tbuoQlmFEd+a96NEtPfXMWOQkIkNq/PHasvRGAu2varziHMRjaIKjD8kHKpAYwQSh
+         VqINgA2A9Zsis0HTRXf0twCi0uRJmUAwx9OfB+xecpQiKDUH5Slrxe6n3RoOWILNVN
+         MtiFHtZ3vivlsfMDqLGzAfvtbefpMU4Db/ZNlwto=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Manish Chopra <manishc@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        Igor Russkikh <irusskikh@marvell.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 21/92] qede: fix offload for IPIP tunnel packets
+        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Can Guo <cang@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        Jens Axboe <axboe@kernel.dk>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 061/145] scsi: ide: Mark power management requests with RQF_PM instead of RQF_PREEMPT
 Date:   Mon, 11 Jan 2021 14:01:25 +0100
-Message-Id: <20210111130040.167867195@linuxfoundation.org>
+Message-Id: <20210111130051.473787566@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
-References: <20210111130039.165470698@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +48,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manish Chopra <manishc@marvell.com>
+From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit 5d5647dad259bb416fd5d3d87012760386d97530 ]
+[ Upstream commit 5ae65383fc7633e0247c31b0c8bf0e6ea63b95a3 ]
 
-IPIP tunnels packets are unknown to device,
-hence these packets are incorrectly parsed and
-caused the packet corruption, so disable offlods
-for such packets at run time.
+This is another step that prepares for the removal of RQF_PREEMPT.
 
-Signed-off-by: Manish Chopra <manishc@marvell.com>
-Signed-off-by: Sudarsana Kalluru <skalluru@marvell.com>
-Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
-Link: https://lore.kernel.org/r/20201221145530.7771-1-manishc@marvell.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20201209052951.16136-5-bvanassche@acm.org
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Alan Stern <stern@rowland.harvard.edu>
+Cc: Can Guo <cang@codeaurora.org>
+Cc: Stanley Chu <stanley.chu@mediatek.com>
+Cc: Ming Lei <ming.lei@redhat.com>
+Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qlogic/qede/qede_fp.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/ide/ide-io.c | 2 +-
+ drivers/ide/ide-pm.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/qlogic/qede/qede_fp.c
-+++ b/drivers/net/ethernet/qlogic/qede/qede_fp.c
-@@ -1737,6 +1737,11 @@ netdev_features_t qede_features_check(st
- 			      ntohs(udp_hdr(skb)->dest) != gnv_port))
- 				return features & ~(NETIF_F_CSUM_MASK |
- 						    NETIF_F_GSO_MASK);
-+		} else if (l4_proto == IPPROTO_IPIP) {
-+			/* IPIP tunnels are unknown to the device or at least unsupported natively,
-+			 * offloads for them can't be done trivially, so disable them for such skb.
-+			 */
-+			return features & ~(NETIF_F_CSUM_MASK | NETIF_F_GSO_MASK);
- 		}
+diff --git a/drivers/ide/ide-io.c b/drivers/ide/ide-io.c
+index c210ea3bd02fa..4867b67b60d69 100644
+--- a/drivers/ide/ide-io.c
++++ b/drivers/ide/ide-io.c
+@@ -518,7 +518,7 @@ repeat:
+ 		 */
+ 		if ((drive->dev_flags & IDE_DFLAG_BLOCKED) &&
+ 		    ata_pm_request(rq) == 0 &&
+-		    (rq->rq_flags & RQF_PREEMPT) == 0) {
++		    (rq->rq_flags & RQF_PM) == 0) {
+ 			/* there should be no pending command at this point */
+ 			ide_unlock_port(hwif);
+ 			goto plug_device;
+diff --git a/drivers/ide/ide-pm.c b/drivers/ide/ide-pm.c
+index 192e6c65d34e7..82ab308f1aafe 100644
+--- a/drivers/ide/ide-pm.c
++++ b/drivers/ide/ide-pm.c
+@@ -77,7 +77,7 @@ int generic_ide_resume(struct device *dev)
  	}
  
+ 	memset(&rqpm, 0, sizeof(rqpm));
+-	rq = blk_get_request(drive->queue, REQ_OP_DRV_IN, BLK_MQ_REQ_PREEMPT);
++	rq = blk_get_request(drive->queue, REQ_OP_DRV_IN, BLK_MQ_REQ_PM);
+ 	ide_req(rq)->type = ATA_PRIV_PM_RESUME;
+ 	ide_req(rq)->special = &rqpm;
+ 	rqpm.pm_step = IDE_PM_START_RESUME;
+-- 
+2.27.0
+
 
 
