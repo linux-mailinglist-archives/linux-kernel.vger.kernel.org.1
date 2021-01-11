@@ -2,239 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CAE2F20F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 155142F20FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:40:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403872AbhAKUjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 15:39:35 -0500
-Received: from mail-ot1-f48.google.com ([209.85.210.48]:39796 "EHLO
-        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730894AbhAKUje (ORCPT
+        id S2390805AbhAKUj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 15:39:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387533AbhAKUj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:39:34 -0500
-Received: by mail-ot1-f48.google.com with SMTP id d8so155094otq.6;
-        Mon, 11 Jan 2021 12:39:18 -0800 (PST)
+        Mon, 11 Jan 2021 15:39:57 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90551C061794;
+        Mon, 11 Jan 2021 12:39:16 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id b64so52705ybg.7;
+        Mon, 11 Jan 2021 12:39:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R4z8VuhNyMDL7g096sbikTkm1i+21r0leC/d47KG000=;
+        b=ZJeLWXP4rm29LpTASshdqb2QPKHYF7FZlN1CyQCn7y3N5TZAG81UbOkHMEOrTHs/Yp
+         Id1Kj+czxOJ3iBhERZDdaVf3lt2WnVkKmaOzb/kUfB4vtjJkB9zzjWpGAG149FOdON8i
+         3d8IwdN8Vo8X5ckoqon9dFdRFXgRo2ruGw6acRHduw3klS0YSQQ2dbVvI1LebpvnCQqt
+         bMBrWbx0MnvaWTqDseoJOc8dLzXCTcDgU2SSrHfdqSjNA7e4G0VpNXlgBdtXgyUePqKz
+         GyHmyZ19FVO8XDuwaflslYk2FoSdh7D1CZE0W0nNYuL2+maaih7gR0RHr+k9g0Zu1c1l
+         HI9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CuduTLZlbG35ugDeNBQcYjINyRmKUeAkNe31I9bczWo=;
-        b=asMuTe0uocr9SEqNnzcnSO2QKwsmrL4IJj10rkBoiNIHr5Y5Lq5wKYYZjmWh+6SzsU
-         RW+eetiAZPnZdubeOne0UN2889CvVfm2by4Ec8tNHTO3ZBeVQO1lyDIMa1CfKZsqhG/4
-         K+bYMHwSebgUz+mMT6TJOhwT11TsfxB5YUpFtgC05++rfW8s6ZEV1CB2Ilw7SS30SrjJ
-         gf8MbAvSykbmcyZFq6Z2xzvpDrDuu8JZWzbX7C9ZQUMJdvqrBCZ3llTfzdtuwAASNZEc
-         WRiS2MoF88NXDTRSsk1x2Ze7d04azI3ZIn30eILkh1Q2UrBt9jKI1N2npp/k0BVnBing
-         nVNQ==
-X-Gm-Message-State: AOAM533noXsDlkmrYi40EHEKuJr4eljp53J79rqS0TCIxF3waK8mYahg
-        H+FfglqjVVmBo+TEDtxrBw==
-X-Google-Smtp-Source: ABdhPJxTRSLja0Ho46/iFyMEhN0kc2ToJeDnvK9Ayi6Oy07tXCHtANqvw5CXVDBAtyMzqOaEojN1Mg==
-X-Received: by 2002:a9d:2a86:: with SMTP id e6mr611496otb.313.1610397532905;
-        Mon, 11 Jan 2021 12:38:52 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p132sm182478oia.41.2021.01.11.12.38.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 12:38:52 -0800 (PST)
-Received: (nullmailer pid 3026340 invoked by uid 1000);
-        Mon, 11 Jan 2021 20:38:50 -0000
-Date:   Mon, 11 Jan 2021 14:38:50 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
-Cc:     lee.jones@linaro.org, joel@jms.id.au, andrew@aj.id.au,
-        linus.walleij@linaro.org, minyard@acm.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, BMC-SW@aspeedtech.com,
-        haiyue.wang@linux.intel.com, cyrilbur@gmail.com,
-        rlippert@google.com
-Subject: Re: [PATCH v4 1/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
-Message-ID: <20210111203850.GA3022469@robh.at.kernel.org>
-References: <20201229063157.3587-1-chiawei_wang@aspeedtech.com>
- <20201229063157.3587-2-chiawei_wang@aspeedtech.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R4z8VuhNyMDL7g096sbikTkm1i+21r0leC/d47KG000=;
+        b=PWUZZqbi504IpmfSJOxME2+frmkIdVCIffV4sMnyCdoQjkmhvMmFzMybtZwtnAR/kE
+         ASMpIo5q06Nvne9z5POvRivDa9gE3miqIVusYzcKkE0ALIrfjJWQGNcJV/9RURXIZA53
+         zMbS9vcb0D4xGINkkaNHxD+cqzXJpXLhWMQlV+FpyzTgWGElSU0ggD6NjImUxTNzav3h
+         Rw6JzX4iPTXrHXm4UC8gmEpIuuDR0augxVcxnsUdGeyP1MhDRBtNg8sOmkWV53fJp9FF
+         k/7C9IAry4m/Tb4KmhJ9F1SnKG83VqWQpthYA94aPaQZvFNpgCXjBYDPjTngPSfwfYzi
+         +V8w==
+X-Gm-Message-State: AOAM530654uW0aPt922cjc3WXVyaXanGxryAbs5n0VZP6RlRrZVPFWDR
+        1ziXWABfSYJbF7vFKydAADuWepnxssM8HqQxIF0=
+X-Google-Smtp-Source: ABdhPJzy85RUE/nM7uiN77b46n1I1uFND5gf1iCHGJMDBBwXvVmPHE3iNagHqaCJEW2rzJ5Wqkg75zo5lrC4A/x0228=
+X-Received: by 2002:a25:d6d0:: with SMTP id n199mr2172909ybg.27.1610397555867;
+ Mon, 11 Jan 2021 12:39:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201229063157.3587-2-chiawei_wang@aspeedtech.com>
+References: <20210111153123.GA423936@ubuntu> <17629073-4fab-a922-ecc3-25b019960f44@iogearbox.net>
+ <CANaYP3FiB-+Zs3C27VgPW+4Ltg8b9dErYAoX7Gu2WqkczcC8vw@mail.gmail.com>
+In-Reply-To: <CANaYP3FiB-+Zs3C27VgPW+4Ltg8b9dErYAoX7Gu2WqkczcC8vw@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Mon, 11 Jan 2021 12:39:05 -0800
+Message-ID: <CAEf4BzaG2q-4qFZ0WDhbfPJL70T7z84CE=MoKkT2peOXrx28cw@mail.gmail.com>
+Subject: Re: [PATCH] Signed-off-by: giladreti <gilad.reti@gmail.com>
+To:     Gilad Reti <gilad.reti@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 02:31:53PM +0800, Chia-Wei, Wang wrote:
-> The LPC controller has no concept of the BMC and the Host partitions.
-> This patch fixes the documentation by removing the description on LPC
-> partitions. The register offsets illustrated in the DTS node examples
-> are also fixed to adapt to the LPC DTS change.
-> 
-> Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
-> ---
->  .../devicetree/bindings/mfd/aspeed-lpc.txt    | 99 ++++---------------
->  1 file changed, 21 insertions(+), 78 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt b/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
-> index d0a38ba8b9ce..90eb0ecc95d1 100644
-> --- a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
-> +++ b/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
-> @@ -9,13 +9,7 @@ primary use case of the Aspeed LPC controller is as a slave on the bus
->  conditions it can also take the role of bus master.
->  
->  The LPC controller is represented as a multi-function device to account for the
-> -mix of functionality it provides. The principle split is between the register
-> -layout at the start of the I/O space which is, to quote the Aspeed datasheet,
-> -"basically compatible with the [LPC registers from the] popular BMC controller
-> -H8S/2168[1]", and everything else, where everything else is an eclectic
-> -collection of functions with a esoteric register layout. "Everything else",
-> -here labeled the "host" portion of the controller, includes, but is not limited
-> -to:
-> +mix of functionality, which includes, but is not limited to:
->  
->  * An IPMI Block Transfer[2] Controller
->  
-> @@ -44,80 +38,29 @@ Required properties
->  ===================
->  
->  - compatible:	One of:
-> -		"aspeed,ast2400-lpc", "simple-mfd"
-> -		"aspeed,ast2500-lpc", "simple-mfd"
-> -		"aspeed,ast2600-lpc", "simple-mfd"
-> +		"aspeed,ast2400-lpc-v2", "simple-mfd", "syscon"
-> +		"aspeed,ast2500-lpc-v2", "simple-mfd", "syscon"
-> +		"aspeed,ast2600-lpc-v2", "simple-mfd", "syscon"
->  
->  - reg:		contains the physical address and length values of the Aspeed
->                  LPC memory region.
->  
->  - #address-cells: <1>
->  - #size-cells:	<1>
-> -- ranges: 	Maps 0 to the physical address and length of the LPC memory
-> -                region
-> -
-> -Required LPC Child nodes
-> -========================
-> -
-> -BMC Node
-> ---------
-> -
-> -- compatible:	One of:
-> -		"aspeed,ast2400-lpc-bmc"
-> -		"aspeed,ast2500-lpc-bmc"
-> -		"aspeed,ast2600-lpc-bmc"
-> -
-> -- reg:		contains the physical address and length values of the
-> -                H8S/2168-compatible LPC controller memory region
-> -
-> -Host Node
-> ----------
-> -
-> -- compatible:   One of:
-> -		"aspeed,ast2400-lpc-host", "simple-mfd", "syscon"
-> -		"aspeed,ast2500-lpc-host", "simple-mfd", "syscon"
-> -		"aspeed,ast2600-lpc-host", "simple-mfd", "syscon"
-> -
-> -- reg:		contains the address and length values of the host-related
-> -                register space for the Aspeed LPC controller
-> -
-> -- #address-cells: <1>
-> -- #size-cells:	<1>
-> -- ranges: 	Maps 0 to the address and length of the host-related LPC memory
-> +- ranges:	Maps 0 to the physical address and length of the LPC memory
->                  region
->  
->  Example:
->  
->  lpc: lpc@1e789000 {
-> -	compatible = "aspeed,ast2500-lpc", "simple-mfd";
-> +	compatible = "aspeed,ast2500-lpc-v2", "simple-mfd", "syscon";
->  	reg = <0x1e789000 0x1000>;
->  
->  	#address-cells = <1>;
->  	#size-cells = <1>;
->  	ranges = <0x0 0x1e789000 0x1000>;
+On Mon, Jan 11, 2021 at 8:06 AM Gilad Reti <gilad.reti@gmail.com> wrote:
+>
+> On Mon, Jan 11, 2021, 17:55 Daniel Borkmann <daniel@iogearbox.net> wrote:
+> >
+> > Hello Gilad,
+> >
+> > On 1/11/21 4:31 PM, giladreti wrote:
+> > > Added support for pointer to mem register spilling, to allow the verifier
+> > > to track pointer to valid memory addresses. Such pointers are returned
+> > > for example by a successful call of the bpf_ringbuf_reserve helper.
+> > >
+> > > This patch was suggested as a solution by Yonghong Song.
+> >
+> > The SoB should not be in subject line but as part of the commit message instead
+> > and with proper name, e.g.
+> >
+> > Signed-off-by: Gilad Reti <gilad.reti@gmail.com>
+> >
+> > For subject line, please use a short summary that fits the patch prefixed with
+> > the subsystem "bpf: [...]", see also [0] as an example. Thanks.
+> >
+> > It would be good if you could also add a BPF selftest for this [1].
+> >
+> >    [0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=e22d7f05e445165e58feddb4e40cc9c0f94453bc
+> >    [1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/
+> >        https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/verifier/spill_fill.c
+> >
+>
+> Sure. Thanks for your guidance. As you can probably tell, I am new to
+> kernel code contribution (in fact this is a first time for me).
+> Should I try to submit this patch again?
 
-No child nodes? Then you don't need 'ranges', '#size-cells', nor 
-'#address-cells'.
+In addition to all already mentioned things, also make sure you have
+[PATCH bpf] prefix in the subject, to identify that this is a bug fix
+for the bpf tree.
 
-> -
-> -	lpc_bmc: lpc-bmc@0 {
-> -		compatible = "aspeed,ast2500-lpc-bmc";
-> -		reg = <0x0 0x80>;
-> -	};
-> -
-> -	lpc_host: lpc-host@80 {
-> -		compatible = "aspeed,ast2500-lpc-host", "simple-mfd", "syscon";
-> -		reg = <0x80 0x1e0>;
-> -		reg-io-width = <4>;
-> -
-> -		#address-cells = <1>;
-> -		#size-cells = <1>;
-> -		ranges = <0x0 0x80 0x1e0>;
-> -	};
->  };
->  
-> -BMC Node Children
-> -==================
-> -
-> -
-> -Host Node Children
-> -==================
->  
->  LPC Host Interface Controller
->  -------------------
-> @@ -149,14 +92,12 @@ Optional properties:
->  
->  Example:
->  
-> -lpc-host@80 {
-> -	lpc_ctrl: lpc-ctrl@0 {
-> -		compatible = "aspeed,ast2500-lpc-ctrl";
-> -		reg = <0x0 0x80>;
-> -		clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
-> -		memory-region = <&flash_memory>;
-> -		flash = <&spi>;
-> -	};
-> +lpc_ctrl: lpc-ctrl@80 {
-> +	compatible = "aspeed,ast2500-lpc-ctrl";
-> +	reg = <0x80 0x80>;
-> +	clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
-> +	memory-region = <&flash_memory>;
-> +	flash = <&spi>;
->  };
->  
->  LPC Host Controller
-> @@ -179,9 +120,9 @@ Required properties:
->  
->  Example:
->  
-> -lhc: lhc@20 {
-> +lhc: lhc@a0 {
->  	compatible = "aspeed,ast2500-lhc";
-> -	reg = <0x20 0x24 0x48 0x8>;
-> +	reg = <0xa0 0x24 0xc8 0x8>;
->  };
->  
->  LPC reset control
-> @@ -192,16 +133,18 @@ state of the LPC bus. Some systems may chose to modify this configuration.
->  
->  Required properties:
->  
-> - - compatible:		"aspeed,ast2600-lpc-reset" or
-> -			"aspeed,ast2500-lpc-reset"
-> -			"aspeed,ast2400-lpc-reset"
-> + - compatible:		One of:
-> +			"aspeed,ast2600-lpc-reset";
-> +			"aspeed,ast2500-lpc-reset";
-> +			"aspeed,ast2400-lpc-reset";
-> +
->   - reg:			offset and length of the IP in the LHC memory region
->   - #reset-controller	indicates the number of reset cells expected
->  
->  Example:
->  
-> -lpc_reset: reset-controller@18 {
-> +lpc_reset: reset-controller@98 {
->          compatible = "aspeed,ast2500-lpc-reset";
-> -        reg = <0x18 0x4>;
-> +        reg = <0x98 0x4>;
->          #reset-cells = <1>;
->  };
-> -- 
-> 2.17.1
-> 
+Also you missed adding Fixes tag, please add this:
+
+Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier
+support for it")
+
+And yes, please re-submit with all the feedback incorporated
+(including the selftest).
+
+>
+> Sorry in advance for all the overhead I may be causing to you...
+>
+> > > ---
+> > >   kernel/bpf/verifier.c | 2 ++
+> > >   1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 17270b8404f1..36af69fac591 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -2217,6 +2217,8 @@ static bool is_spillable_regtype(enum bpf_reg_type type)
+> > >       case PTR_TO_RDWR_BUF:
+> > >       case PTR_TO_RDWR_BUF_OR_NULL:
+> > >       case PTR_TO_PERCPU_BTF_ID:
+> > > +     case PTR_TO_MEM:
+> > > +     case PTR_TO_MEM_OR_NULL:
+> > >               return true;
+> > >       default:
+> > >               return false;
+> > >
+> >
