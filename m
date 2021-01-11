@@ -2,164 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6502F1D28
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:55:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 049112F1D2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389366AbhAKRzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 12:55:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53666 "EHLO
+        id S2389431AbhAKRzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 12:55:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732124AbhAKRzP (ORCPT
+        with ESMTP id S1727658AbhAKRzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:55:15 -0500
-Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [IPv6:2001:4b7a:2000:18::171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95ED4C061795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:54:34 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 05B3A3E822;
-        Mon, 11 Jan 2021 18:54:33 +0100 (CET)
-Subject: Re: [PATCH 1/2] pinctrl: Add driver for Awinic AW9523/B I2C GPIO
- Expander
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, phone-devel@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        marek.vasut@gmail.com
-References: <20210109140204.151340-1-angelogioacchino.delregno@somainline.org>
- <20210109140204.151340-2-angelogioacchino.delregno@somainline.org>
- <CACRpkdbETKnhgR2-T+s3ChY4v-C5ErdPEp2WcMSZHzJ=O-fHig@mail.gmail.com>
- <111b918d-2b43-be81-2dbf-e984750b0ef7@somainline.org>
- <CACRpkdZXgN91jKBDvf=P5_6ObOaacQa2PGL3-jP1gBW__ZyOaA@mail.gmail.com>
- <744125a7-ffb6-a3f5-70cb-2ab48fcf31b8@somainline.org>
- <CACRpkdYmVpEZMruu3UcqiGr2q7xSdTQKmwnu7eq2-MPJte8ATA@mail.gmail.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <985163d2-9e22-52f2-9632-594c5502bd10@somainline.org>
-Date:   Mon, 11 Jan 2021 18:54:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 11 Jan 2021 12:55:46 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB812C0617A3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:55:00 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id a109so534790otc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:55:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=v3TDFrqVxc55qv6u1Dum5raMCBbdcZl0roEhiqKm12E=;
+        b=lZjWCfbG8Auf1FSXEvxpu9z2F5nHThHpYy+3QmdRfHgZVbQ8iOt14U29oCzCIsnSSs
+         VLnoFMCQuU8xnqBAcfa27K7hZwCGat+qOGKyVOKc1qcvS7Lptqlgs3L85HeKvTd7Fq5P
+         qNtF3fONSHYdETB6J67jpgTgQwvHjLNj8ANi2QHjTGFvKED65JATHmMfwF73+u6t2XC4
+         AdO18lob+PcRGaVt9Z3wT0TMgPWAROZq+9iUc3Mz57gtt07GZF4r/fktMmNGMqr+pNrq
+         QSHQPMXbbPinZWTBNZqVISGjn92RtSuT496ufjI7WpQHaqyhMZVHZPPnwyDGmi8DWwog
+         Jr7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=v3TDFrqVxc55qv6u1Dum5raMCBbdcZl0roEhiqKm12E=;
+        b=AteKNmrkNP1JaS7yHFibz2Z/aMdOgJP26N2BF23lRsHIRVPez+CUgcNcW3J+TejQNo
+         +hFv6McBGzy3uERQjuoHC1LXzq3zEBMz9K5JaTG/XbvVSoNO7BxHKfgcHIhRiR5r9KdU
+         G1imYehTNA5VRsQ29DNINaBLv0Ccj4SCkvfqKd9nzx2dUAO0cLsfP6AZOuNW3Zzo8v60
+         yP243I4TqckTQGNRT6wxoCtqtTh/ndEnbYTyTDX/6vLQx0JimnFZrlF2u+S09fHOqnUc
+         h7Ca7XbpmGFtqDYH6si5kfS7SNNEADuMhYSow44w00kWez6fQSqAIWk1S1QlbC5hwENM
+         Ki/Q==
+X-Gm-Message-State: AOAM531UmSuwj/G0wgw10KFJqUwLPc3DGujiXOPek5VWhdDDySDXK4qU
+        +J26PeV91mlcIUQ/WFxUs7q6CmcnFMb6vQ==
+X-Google-Smtp-Source: ABdhPJys9h9FMDY8QzdOCVIr242CR9PxOf1m9Ov17uYelIEIUq9xy+LTMHC0Hx5xuhWW8BdmeAdCCA==
+X-Received: by 2002:a9d:479a:: with SMTP id b26mr203427otf.297.1610387699841;
+        Mon, 11 Jan 2021 09:54:59 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id l5sm90794otj.57.2021.01.11.09.54.58
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 11 Jan 2021 09:54:59 -0800 (PST)
+Date:   Mon, 11 Jan 2021 09:54:37 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        syzbot+2fc0712f8f8b8b8fa0ef@syzkaller.appspotmail.com,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>, stable@kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 5.10 109/145] mm: make wait_on_page_writeback() wait for
+ multiple pending writebacks
+In-Reply-To: <20210111130053.764396270@linuxfoundation.org>
+Message-ID: <alpine.LSU.2.11.2101110947280.1731@eggly.anvils>
+References: <20210111130048.499958175@linuxfoundation.org> <20210111130053.764396270@linuxfoundation.org>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-In-Reply-To: <CACRpkdYmVpEZMruu3UcqiGr2q7xSdTQKmwnu7eq2-MPJte8ATA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 10/01/21 20:35, Linus Walleij ha scritto:
-> On Sun, Jan 10, 2021 at 3:32 PM AngeloGioacchino Del Regno
-> <angelogioacchino.delregno@somainline.org> wrote:
-> 
->> So, I've retried some basic usage of the regcache, relevant snippets here:
->> static bool aw9523_volatile_reg(struct device *dev, unsigned int reg)
->> {
->>
->>          return reg == AW9523_REG_IN_STATE(0) ||
->>                 reg == AW9523_REG_IN_STATE(AW9523_PINS_PER_PORT) ||
->>                 reg == AW9523_REG_CHIPID;
->> }
-> (...)
->> Since REG_IN_STATE is used to read the GPIO input level, it's not
->> cacheable,
-> 
-> Fair enough.
-> 
->> then CHIPID was set as not cacheable for safety: that may be
->> avoided, but that may make no sense.. since it's a one-time readout for
->> init putposes, it'd be useless to keep it cached.
-> 
-> I guess.
-> 
->> Then, the set_bit/clear_bit in aw9523_irq_mask(), aw9523_irq_unmask were
->> replaced with calls to regmap_update_bits_async, example:
->>
->>          regmap_update_bits_async(awi->regmap,
->>                                   AW9523_REG_INTR_DIS(d->hwirq),
->>                                   BIT(n), BIT(n));
->>
->> Where of course the value is either BIT(n) or 0 for mask and unmask
->> respectively.
->> Also, the bus_sync_unlock callback was changed as follows:
->>
->> static void aw9523_irq_bus_sync_unlock(struct irq_data *d)
->>
->> {
->>        struct aw9523 *awi = gpiochip_get_data(irq_data_get_irq_chip_data(d));
->>        regcache_mark_dirty(awi->regmap);
->>        regcache_sync_region(awi->regmap, AW9523_REG_INTR_DIS(0),
->>                             AW9523_REG_INTR_DIS(AW9523_PINS_PER_PORT));
->>         mutex_unlock(&awi->irq->lock);
-> (...)
->> One of the biggest / oddest issues that I get when trying to use
->> regcache is that I'm getting badbadbad scheduling while atomic warnings
->> all over and I don't get why, since regcache_default_sync is just
->> calling _regmap_write, which is exactly what (non _prefix) regmap_write
->> also calls...
-> 
-> OK that is the real problem to solve then.
-> 
->> As a reference, this is one out of "many" (as you can imagine) stacktraces:
->>
->> <3>[    1.061428] BUG: scheduling while atomic: kworker/3:1/119/0x00000000
-> (...)
->> <4>[    1.063134]  wait_for_completion_timeout+0x8c/0x110
->> <4>[    1.063257]  qup_i2c_wait_for_complete.isra.18+0x1c/0x80
->> <4>[    1.063429]  qup_i2c_xfer_v2_msg+0x2d4/0x3f0
->> <4>[    1.063543]  qup_i2c_xfer_v2+0x290/0xa28
->> <4>[    1.063652]  __i2c_transfer+0x16c/0x380
->> <4>[    1.063798]  i2c_transfer+0x5c/0x138
->> <4>[    1.063903]  i2c_transfer_buffer_flags+0x58/0x80
->> <4>[    1.064060]  regmap_i2c_write+0x1c/0x50
->> <4>[    1.064168]  _regmap_raw_write_impl+0x35c/0x688
->> <4>[    1.064285]  _regmap_bus_raw_write+0x64/0x80
->> <4>[    1.064440]  _regmap_write+0x58/0xa8
->> <4>[    1.064545]  regcache_default_sync+0xcc/0x1a0
->> <4>[    1.064660]  regcache_sync_region+0xdc/0xe8
->> <4>[    1.064811]  aw9523_irq_bus_sync_unlock+0x30/0x48
->> <4>[    1.064931]  __setup_irq+0x798/0x890
->> <4>[    1.065034]  request_threaded_irq+0xe0/0x198
->> <4>[    1.065188]  devm_request_threaded_irq+0x78/0xf8
->> <4>[    1.065311]  gpio_keyboard_probe+0x2a8/0x468
-> 
-> scheduling while atomic happens when this trace gets called with interrupts
-> disabled, usually because someone has taken a spinlock.
-> 
-> Looking in __setup_irq() it looks safe.
-> 
-> I would turn on lock debugging (lockdep) and see if I can find it that way.
-> 
-> Yours,
-> Linus Walleij
-> 
+On Mon, 11 Jan 2021, Greg Kroah-Hartman wrote:
 
-Hey!
-Good news around the corner!
+> From: Linus Torvalds <torvalds@linux-foundation.org>
+> 
+> commit c2407cf7d22d0c0d94cf20342b3b8f06f1d904e7 upstream.
+> 
+> Ever since commit 2a9127fcf229 ("mm: rewrite wait_on_page_bit_common()
+> logic") we've had some very occasional reports of BUG_ON(PageWriteback)
+> in write_cache_pages(), which we thought we already fixed in commit
+> 073861ed77b6 ("mm: fix VM_BUG_ON(PageTail) and BUG_ON(PageWriteback)").
+> 
+> But syzbot just reported another one, even with that commit in place.
+> 
+> And it turns out that there's a simpler way to trigger the BUG_ON() than
+> the one Hugh found with page re-use.  It all boils down to the fact that
+> the page writeback is ostensibly serialized by the page lock, but that
+> isn't actually really true.
+> 
+> Yes, the people _setting_ writeback all do so under the page lock, but
+> the actual clearing of the bit - and waking up any waiters - happens
+> without any page lock.
+> 
+> This gives us this fairly simple race condition:
+> 
+>   CPU1 = end previous writeback
+>   CPU2 = start new writeback under page lock
+>   CPU3 = write_cache_pages()
+> 
+>   CPU1          CPU2            CPU3
+>   ----          ----            ----
+> 
+>   end_page_writeback()
+>     test_clear_page_writeback(page)
+>     ... delayed...
+> 
+>                 lock_page();
+>                 set_page_writeback()
+>                 unlock_page()
+> 
+>                                 lock_page()
+>                                 wait_on_page_writeback();
+> 
+>     wake_up_page(page, PG_writeback);
+>     .. wakes up CPU3 ..
+> 
+>                                 BUG_ON(PageWriteback(page));
+> 
+> where the BUG_ON() happens because we woke up the PG_writeback bit
+> becasue of the _previous_ writeback, but a new one had already been
+> started because the clearing of the bit wasn't actually atomic wrt the
+> actual wakeup or serialized by the page lock.
+> 
+> The reason this didn't use to happen was that the old logic in waiting
+> on a page bit would just loop if it ever saw the bit set again.
+> 
+> The nice proper fix would probably be to get rid of the whole "wait for
+> writeback to clear, and then set it" logic in the writeback path, and
+> replace it with an atomic "wait-to-set" (ie the same as we have for page
+> locking: we set the page lock bit with a single "lock_page()", not with
+> "wait for lock bit to clear and then set it").
+> 
+> However, out current model for writeback is that the waiting for the
+> writeback bit is done by the generic VFS code (ie write_cache_pages()),
+> but the actual setting of the writeback bit is done much later by the
+> filesystem ".writepages()" function.
+> 
+> IOW, to make the writeback bit have that same kind of "wait-to-set"
+> behavior as we have for page locking, we'd have to change our roughly
+> ~50 different writeback functions.  Painful.
+> 
+> Instead, just make "wait_on_page_writeback()" loop on the very unlikely
+> situation that the PG_writeback bit is still set, basically re-instating
+> the old behavior.  This is very non-optimal in case of contention, but
+> since we only ever set the bit under the page lock, that situation is
+> controlled.
+> 
+> Reported-by: syzbot+2fc0712f8f8b8b8fa0ef@syzkaller.appspotmail.com
+> Fixes: 2a9127fcf229 ("mm: rewrite wait_on_page_bit_common() logic")
+> Acked-by: Hugh Dickins <hughd@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: stable@kernel.org
+> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-So, the issues were relative to the gpio matrix_keypad driver, which is 
-protecting with spinlocks (!), "throwing" us in atomic context and 
-obviously producing this kind of havoc.
+I think it's too early to push this one through to stable:
+Linus mentioned on Friday that Michael Larabel of Phoronix
+has observed a performance regression from this commit.
 
-Regarding this, I feel like we should bring this to the attention of the 
-matrix_keypad driver maintainer, Marek Vasut, which I'm including to the 
-Cc list of this email... but at the same time, that driver seems to be 
-largely outdated and for this reason I've decided to make one on-the-fly 
-that uses modern APIs instead and also seems to solve slowness issues on 
-my KB matrix connected to the AW9523.
+Correctness outweighs performance of course, but I think
+stable users might see the performance issue much sooner
+than they would ever see the BUG fixed.  Wait a bit,
+while we think some more about what to try next?
 
-Back to our topic, I have solved the issues that were preventing the 
-usage of a FLAT regcache, cleaned up a bit and tested the entire thing 
-again.
-This works even better than before.
+Hugh
 
-The V2 of this series is coming in a few minutes.
-A huge thank you for your help!
-
--- Angelo
+> 
+> ---
+>  mm/page-writeback.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- a/mm/page-writeback.c
+> +++ b/mm/page-writeback.c
+> @@ -2826,7 +2826,7 @@ EXPORT_SYMBOL(__test_set_page_writeback)
+>   */
+>  void wait_on_page_writeback(struct page *page)
+>  {
+> -	if (PageWriteback(page)) {
+> +	while (PageWriteback(page)) {
+>  		trace_wait_on_page_writeback(page, page_mapping(page));
+>  		wait_on_page_bit(page, PG_writeback);
+>  	}
