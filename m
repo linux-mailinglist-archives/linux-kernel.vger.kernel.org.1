@@ -2,95 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3AB12F14B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5653B2F14BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732738AbhAKN2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:28:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732338AbhAKN2c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:28:32 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB97C061786;
-        Mon, 11 Jan 2021 05:27:52 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id v3so9496131plz.13;
-        Mon, 11 Jan 2021 05:27:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=TzGBogmpfFLHSaMXxd8I8+bOPYrX5vXlwh/zl2QbWek=;
-        b=o6BIWUPjq0nRj6t2DXJ+Asf2yC7jcoL9P5ktV2GZ5/3Ivy50RoLqztJyjPgyiNaoHo
-         qVAlSTdwLCzG+cywGjICDzBLZAGSGgLTcervhJukRClZwik3A5vB7raobdJI3HynfJk6
-         m1Liv4HBgVzDTVtpY+2hwjCgT7Bef6p/0eyWwiuztJOSrZ14Be5nj6grroNoJkI3Pzbk
-         3E1ury4WAPOEv3jL2PSPs3DnmzQvAx0bRwPKt5e10WckL6Jbg0dVWv1yDl3ZrXXLgFuY
-         HaQ5oamU2RxVS9udBNHZohriw5isyiha5pIsqejYOw+DK5iZcC9yQGZHIUVZUSuKW/Fc
-         Dl8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=TzGBogmpfFLHSaMXxd8I8+bOPYrX5vXlwh/zl2QbWek=;
-        b=b1h8PZ6uMVcMTjQBEXC7ZuviW+YLZnseIokVCRnKTTJe0ICHMvBf00WSS36twgpcHG
-         R7FdpO0S7qMWxWut44JpmVkeXVWYNqDqxSUVpK3NVlUa3TVIcvDcmOKQjjmn0trTBqPo
-         rQFvPeJoP8tlkcNvh9a04MqjHg1TjBTRu+FNZS+ckovH/cY4sWqQXPpl0IV2LCBkBtnG
-         6qC950HrgMCsbujyWVWYfKr1xDEB7MFOWNaxAwG8kb10tvODDlK2en89LiU6K8QslpL8
-         uovtdZgSArPPEH/ee+yM/LnJIz//DZgipjUD9Ujr+nHJiTx8aqVK3NaWjNoe99vyimf1
-         31ig==
-X-Gm-Message-State: AOAM533qqvRysGyTFus9EYesqm5qoLlMEFuwvNlJOrZWROz4XHvmN0c/
-        7NQYH9ndb9e8hGaBJnT9BIE=
-X-Google-Smtp-Source: ABdhPJxB8Kijes6KXskrbzg0PSiZfoGxblHFzDrlutT3Yg4+rKfUVMmxwSA9igVsPMxPe6E8j3Jukg==
-X-Received: by 2002:a17:902:cb95:b029:dc:3a38:c7df with SMTP id d21-20020a170902cb95b02900dc3a38c7dfmr16303189ply.49.1610371671565;
-        Mon, 11 Jan 2021 05:27:51 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id v3sm19414640pjn.7.2021.01.11.05.27.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 05:27:50 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     alexander.sverdlin@nokia.com, paulburton@kernel.org
-Cc:     tsbogend@alpha.franken.de, gustavo@embeddedor.com,
-        dong.menglong@zte.com.cn, colin.king@canonical.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] MIPS: OCTEON: fix unreachable code in octeon_irq_init_ciu
-Date:   Mon, 11 Jan 2021 05:27:25 -0800
-Message-Id: <20210111132725.4513-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.17.1
+        id S1732330AbhAKN3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:29:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732732AbhAKN3C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:29:02 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97B0021919;
+        Mon, 11 Jan 2021 13:28:21 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kyxF5-006gPD-Gd; Mon, 11 Jan 2021 13:28:19 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kernel-team@android.com
+Subject: [PATCH v3 00/21] arm64: Early CPU feature override, and applications to VHE, BTI and PAuth
+Date:   Mon, 11 Jan 2021 13:27:50 +0000
+Message-Id: <20210111132811.2455113-1-maz@kernel.org>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+It recently came to light that there is a need to be able to override
+some CPU features very early on, before the kernel is fully up and
+running. The reasons for this range from specific feature support
+(such as using Protected KVM on VHE HW, which is the main motivation
+for this work) to errata workaround (a feature is broken on a CPU and
+needs to be turned off, or rather not enabled).
 
-The type of 'r' in octeon_irq_init_ciu is 'unsigned int', so 'r < 0'
-can't be true.
+This series tries to offer a limited framework for this kind of
+problems, by allowing a set of options to be passed on the
+command-line and altering the feature set that the cpufeature
+subsystem exposes to the rest of the kernel. Note that this doesn't
+change anything for code that directly uses the CPU ID registers.
 
-Fix this by change the type of 'r' and 'i' from 'unsigned int'
-to 'int'. As 'i' won't be negative, this change works.
+The series completely changes the way a VHE-capable system boots, by
+*always* booting non-VHE first, and then upgrading to VHE when deemed
+capable. Although it sounds scary, this is actually simple to
+implement (and I wish I had done that five years ago). The "upgrade to
+VHE" path is then conditioned on the VHE feature not being disabled
+from the command-line.
 
-Fixes: 99fbc70f8547 ("MIPS: Octeon: irq: Alloc desc before configuring IRQ")
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
-Reviewed-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
----
-v2:
-- change 'Fixes' from 64b139f97c01 to 99fbc70f8547
----
- arch/mips/cavium-octeon/octeon-irq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Said command-line parsing borrows a lot from the kaslr code, and
+subsequently allows the "nokaslr" option to be moved to the new
+infrastructure (though it all looks a bit... odd).
 
-diff --git a/arch/mips/cavium-octeon/octeon-irq.c b/arch/mips/cavium-octeon/octeon-irq.c
-index bd47e15d02c7..be5d4afcd30f 100644
---- a/arch/mips/cavium-octeon/octeon-irq.c
-+++ b/arch/mips/cavium-octeon/octeon-irq.c
-@@ -1444,7 +1444,7 @@ static void octeon_irq_setup_secondary_ciu2(void)
- static int __init octeon_irq_init_ciu(
- 	struct device_node *ciu_node, struct device_node *parent)
- {
--	unsigned int i, r;
-+	int i, r;
- 	struct irq_chip *chip;
- 	struct irq_chip *chip_edge;
- 	struct irq_chip *chip_mbox;
+Further patches now add support for disabling BTI and PAuth, the
+latter being based on an initial series by Srinivas Ramana[0].
+
+This has been tested on multiple VHE and non-VHE systems.
+
+* From v2 [2]:
+   - Simplify the VHE_RESTART stub
+   - Fixed a number of spelling mistakes, and hopefully introduced a
+     few more
+   - Override features in __read_sysreg_by_encoding()
+   - Allow both BTI and PAuth to be overridden on the command line
+   - Rebased on -rc3
+
+* From v1 [1]:
+  - Fix SPE init on VHE when EL2 doesn't own SPE
+  - Fix re-init when KASLR is used
+  - Handle the resume path
+  - Rebased to 5.11-rc2
+
+[0] https://lore.kernel.org/r/1610152163-16554-1-git-send-email-sramana@codeaurora.org
+[1] https://lore.kernel.org/r/20201228104958.1848833-1-maz@kernel.org
+[2] https://lore.kernel.org/r/20210104135011.2063104-1-maz@kernel.org
+
+Marc Zyngier (20):
+  arm64: Fix labels in el2_setup macros
+  arm64: Fix outdated TCR setup comment
+  arm64: Turn the MMU-on sequence into a macro
+  arm64: Provide an 'upgrade to VHE' stub hypercall
+  arm64: Initialise as nVHE before switching to VHE
+  arm64: Move VHE-specific SPE setup to mutate_to_vhe()
+  arm64: Simplify init_el2_state to be non-VHE only
+  arm64: Move SCTLR_EL1 initialisation to EL-agnostic code
+  arm64: cpufeature: Add global feature override facility
+  arm64: cpufeature: Use IDreg override in __read_sysreg_by_encoding()
+  arm64: Extract early FDT mapping from kaslr_early_init()
+  arm64: cpufeature: Add an early command-line cpufeature override
+    facility
+  arm64: Allow ID_AA64MMFR1_EL1.VH to be overridden from the command
+    line
+  arm64: Honor VHE being disabled from the command-line
+  arm64: Add an aliasing facility for the idreg override
+  arm64: Make kvm-arm.mode={nvhe,protected} an alias of
+    id_aa64mmfr1.vh=0
+  KVM: arm64: Document HVC_VHE_RESTART stub hypercall
+  arm64: Move "nokaslr" over to the early cpufeature infrastructure
+  arm64: cpufeatures: Allow disabling of BTI from the command-line
+  arm64: cpufeatures: Allow disabling of Pointer Auth from the
+    command-line
+
+Srinivas Ramana (1):
+  arm64: Defer enabling pointer authentication on boot core
+
+ .../admin-guide/kernel-parameters.txt         |   9 +
+ Documentation/virt/kvm/arm/hyp-abi.rst        |   9 +
+ arch/arm64/include/asm/assembler.h            |  17 ++
+ arch/arm64/include/asm/cpufeature.h           |  10 +
+ arch/arm64/include/asm/el2_setup.h            |  60 ++----
+ arch/arm64/include/asm/pointer_auth.h         |  10 +
+ arch/arm64/include/asm/setup.h                |  11 +
+ arch/arm64/include/asm/stackprotector.h       |   1 +
+ arch/arm64/include/asm/virt.h                 |   7 +-
+ arch/arm64/kernel/Makefile                    |   2 +-
+ arch/arm64/kernel/cpufeature.c                |  57 ++++-
+ arch/arm64/kernel/head.S                      |  75 ++-----
+ arch/arm64/kernel/hyp-stub.S                  | 124 ++++++++++-
+ arch/arm64/kernel/idreg-override.c            | 199 ++++++++++++++++++
+ arch/arm64/kernel/kaslr.c                     |  44 +---
+ arch/arm64/kernel/setup.c                     |  15 ++
+ arch/arm64/kernel/sleep.S                     |   1 +
+ arch/arm64/kvm/arm.c                          |   3 +
+ arch/arm64/kvm/hyp/nvhe/hyp-init.S            |   2 +-
+ arch/arm64/mm/mmu.c                           |   2 +-
+ arch/arm64/mm/proc.S                          |  16 +-
+ 21 files changed, 505 insertions(+), 169 deletions(-)
+ create mode 100644 arch/arm64/include/asm/setup.h
+ create mode 100644 arch/arm64/kernel/idreg-override.c
+
 -- 
-2.17.1
+2.29.2
 
