@@ -2,44 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 845A62F13E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:17:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B782F134B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:07:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732380AbhAKNQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:16:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33882 "EHLO mail.kernel.org"
+        id S1728567AbhAKNG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:06:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732278AbhAKNPx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:15:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01C9B2246B;
-        Mon, 11 Jan 2021 13:15:37 +0000 (UTC)
+        id S1730318AbhAKNFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:05:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DC8E22527;
+        Mon, 11 Jan 2021 13:04:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370937;
-        bh=cypiEaOxJZITf3HXcWLWePfPYyK/+WFE/VFWM5SxPu8=;
+        s=korg; t=1610370290;
+        bh=L/PF4KektrZsjrwa4PCRm0f6IxtRfH5vURxw8QrqVa8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qA927dQeUOwY2uxiiLuGx8S4sKD78IoKZKzD3mYz0AF0Ahtx1MSp7ZdH3uGPaPzbA
-         jDg2bLHAi74EkhZ4Iu7/PEH6SCLSqM7py8B/3yogsoI7/dl/RGsuKVloxfVYow6znE
-         k9Z8UOLQ2mH3002diPBNYfWWSjh+/fmnciKK/L3c=
+        b=fe8m/BSs9feYc4p69md0g2qwCoJpegRn1BOE27hq7Im/KOXz2C6MhCESzO2BZkxJj
+         wOweJ04gcKlPx8yXmvTQQiGg3nC37GHWWH15QZbhTY7tNEmsDw5sqypa/3PreZz3JV
+         4YUZSjrnb5AYKtw2EEmenXo2ICYNxZX5duYe+x8Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Ming Lei <ming.lei@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Martin Kepplinger <martin.kepplinger@puri.sm>,
-        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
-        Jens Axboe <axboe@kernel.dk>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 070/145] scsi: block: Remove RQF_PREEMPT and BLK_MQ_REQ_PREEMPT
+        stable@vger.kernel.org, Antoine Tenart <atenart@kernel.org>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 15/57] net-sysfs: take the rtnl lock when storing xps_cpus
 Date:   Mon, 11 Jan 2021 14:01:34 +0100
-Message-Id: <20210111130051.904265571@linuxfoundation.org>
+Message-Id: <20210111130034.468704561@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
+References: <20210111130033.715773309@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,127 +40,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Antoine Tenart <atenart@kernel.org>
 
-[ Upstream commit a4d34da715e3cb7e0741fe603dcd511bed067e00 ]
+[ Upstream commit 1ad58225dba3f2f598d2c6daed4323f24547168f ]
 
-Remove flag RQF_PREEMPT and BLK_MQ_REQ_PREEMPT since these are no longer
-used by any kernel code.
+Two race conditions can be triggered when storing xps cpus, resulting in
+various oops and invalid memory accesses:
 
-Link: https://lore.kernel.org/r/20201209052951.16136-8-bvanassche@acm.org
-Cc: Can Guo <cang@codeaurora.org>
-Cc: Stanley Chu <stanley.chu@mediatek.com>
-Cc: Alan Stern <stern@rowland.harvard.edu>
-Cc: Ming Lei <ming.lei@redhat.com>
-Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: Martin Kepplinger <martin.kepplinger@puri.sm>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
-Reviewed-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+1. Calling netdev_set_num_tc while netif_set_xps_queue:
+
+   - netif_set_xps_queue uses dev->tc_num as one of the parameters to
+     compute the size of new_dev_maps when allocating it. dev->tc_num is
+     also used to access the map, and the compiler may generate code to
+     retrieve this field multiple times in the function.
+
+   - netdev_set_num_tc sets dev->tc_num.
+
+   If new_dev_maps is allocated using dev->tc_num and then dev->tc_num
+   is set to a higher value through netdev_set_num_tc, later accesses to
+   new_dev_maps in netif_set_xps_queue could lead to accessing memory
+   outside of new_dev_maps; triggering an oops.
+
+2. Calling netif_set_xps_queue while netdev_set_num_tc is running:
+
+   2.1. netdev_set_num_tc starts by resetting the xps queues,
+        dev->tc_num isn't updated yet.
+
+   2.2. netif_set_xps_queue is called, setting up the map with the
+        *old* dev->num_tc.
+
+   2.3. netdev_set_num_tc updates dev->tc_num.
+
+   2.4. Later accesses to the map lead to out of bound accesses and
+        oops.
+
+   A similar issue can be found with netdev_reset_tc.
+
+One way of triggering this is to set an iface up (for which the driver
+uses netdev_set_num_tc in the open path, such as bnx2x) and writing to
+xps_cpus in a concurrent thread. With the right timing an oops is
+triggered.
+
+Both issues have the same fix: netif_set_xps_queue, netdev_set_num_tc
+and netdev_reset_tc should be mutually exclusive. We do that by taking
+the rtnl lock in xps_cpus_store.
+
+Fixes: 184c449f91fe ("net: Add support for XPS with QoS via traffic classes")
+Signed-off-by: Antoine Tenart <atenart@kernel.org>
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- block/blk-core.c       | 7 +++----
- block/blk-mq-debugfs.c | 1 -
- block/blk-mq.c         | 2 --
- include/linux/blk-mq.h | 2 --
- include/linux/blkdev.h | 6 +-----
- 5 files changed, 4 insertions(+), 14 deletions(-)
+ net/core/net-sysfs.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 10696f9fb6ac6..a00bce9f46d88 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -424,11 +424,11 @@ EXPORT_SYMBOL(blk_cleanup_queue);
- /**
-  * blk_queue_enter() - try to increase q->q_usage_counter
-  * @q: request queue pointer
-- * @flags: BLK_MQ_REQ_NOWAIT, BLK_MQ_REQ_PM and/or BLK_MQ_REQ_PREEMPT
-+ * @flags: BLK_MQ_REQ_NOWAIT and/or BLK_MQ_REQ_PM
-  */
- int blk_queue_enter(struct request_queue *q, blk_mq_req_flags_t flags)
- {
--	const bool pm = flags & (BLK_MQ_REQ_PM | BLK_MQ_REQ_PREEMPT);
-+	const bool pm = flags & BLK_MQ_REQ_PM;
+--- a/net/core/net-sysfs.c
++++ b/net/core/net-sysfs.c
+@@ -1273,7 +1273,13 @@ static ssize_t xps_cpus_store(struct net
+ 		return err;
+ 	}
  
- 	while (true) {
- 		bool success = false;
-@@ -630,8 +630,7 @@ struct request *blk_get_request(struct request_queue *q, unsigned int op,
- 	struct request *req;
++	if (!rtnl_trylock()) {
++		free_cpumask_var(mask);
++		return restart_syscall();
++	}
++
+ 	err = netif_set_xps_queue(dev, mask, index);
++	rtnl_unlock();
  
- 	WARN_ON_ONCE(op & REQ_NOWAIT);
--	WARN_ON_ONCE(flags & ~(BLK_MQ_REQ_NOWAIT | BLK_MQ_REQ_PM |
--			       BLK_MQ_REQ_PREEMPT));
-+	WARN_ON_ONCE(flags & ~(BLK_MQ_REQ_NOWAIT | BLK_MQ_REQ_PM));
+ 	free_cpumask_var(mask);
  
- 	req = blk_mq_alloc_request(q, op, flags);
- 	if (!IS_ERR(req) && q->mq_ops->initialize_rq_fn)
-diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
-index e21eed20a1551..4d6e83e5b4429 100644
---- a/block/blk-mq-debugfs.c
-+++ b/block/blk-mq-debugfs.c
-@@ -298,7 +298,6 @@ static const char *const rqf_name[] = {
- 	RQF_NAME(MIXED_MERGE),
- 	RQF_NAME(MQ_INFLIGHT),
- 	RQF_NAME(DONTPREP),
--	RQF_NAME(PREEMPT),
- 	RQF_NAME(FAILED),
- 	RQF_NAME(QUIET),
- 	RQF_NAME(ELVPRIV),
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 0072ffa50b46e..2a1eff60c7975 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -294,8 +294,6 @@ static struct request *blk_mq_rq_ctx_init(struct blk_mq_alloc_data *data,
- 	rq->cmd_flags = data->cmd_flags;
- 	if (data->flags & BLK_MQ_REQ_PM)
- 		rq->rq_flags |= RQF_PM;
--	if (data->flags & BLK_MQ_REQ_PREEMPT)
--		rq->rq_flags |= RQF_PREEMPT;
- 	if (blk_queue_io_stat(data->q))
- 		rq->rq_flags |= RQF_IO_STAT;
- 	INIT_LIST_HEAD(&rq->queuelist);
-diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
-index c9ecfd8b03381..f8ea27423d1d8 100644
---- a/include/linux/blk-mq.h
-+++ b/include/linux/blk-mq.h
-@@ -448,8 +448,6 @@ enum {
- 	BLK_MQ_REQ_RESERVED	= (__force blk_mq_req_flags_t)(1 << 1),
- 	/* set RQF_PM */
- 	BLK_MQ_REQ_PM		= (__force blk_mq_req_flags_t)(1 << 2),
--	/* set RQF_PREEMPT */
--	BLK_MQ_REQ_PREEMPT	= (__force blk_mq_req_flags_t)(1 << 3),
- };
- 
- struct request *blk_mq_alloc_request(struct request_queue *q, unsigned int op,
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 033eb5f73b654..4a6e33d382429 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -79,9 +79,6 @@ typedef __u32 __bitwise req_flags_t;
- #define RQF_MQ_INFLIGHT		((__force req_flags_t)(1 << 6))
- /* don't call prep for this one */
- #define RQF_DONTPREP		((__force req_flags_t)(1 << 7))
--/* set for "ide_preempt" requests and also for requests for which the SCSI
--   "quiesce" state must be ignored. */
--#define RQF_PREEMPT		((__force req_flags_t)(1 << 8))
- /* vaguely specified driver internal error.  Ignored by the block layer */
- #define RQF_FAILED		((__force req_flags_t)(1 << 10))
- /* don't warn about errors */
-@@ -430,8 +427,7 @@ struct request_queue {
- 	unsigned long		queue_flags;
- 	/*
- 	 * Number of contexts that have called blk_set_pm_only(). If this
--	 * counter is above zero then only RQF_PM and RQF_PREEMPT requests are
--	 * processed.
-+	 * counter is above zero then only RQF_PM requests are processed.
- 	 */
- 	atomic_t		pm_only;
- 
--- 
-2.27.0
-
 
 
