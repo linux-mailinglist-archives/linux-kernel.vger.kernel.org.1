@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBAD2F1320
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F3F62F13E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730148AbhAKNEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:04:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50192 "EHLO mail.kernel.org"
+        id S1732337AbhAKNQH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:16:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729959AbhAKNDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:03:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD358225AC;
-        Mon, 11 Jan 2021 13:03:22 +0000 (UTC)
+        id S1731823AbhAKNPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:15:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0431521973;
+        Mon, 11 Jan 2021 13:15:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370203;
-        bh=34Aj2L0RvDFMS4ZKzTodq8xu8rAEnK9IVYiI0+RiQsA=;
+        s=korg; t=1610370917;
+        bh=G0HOX0nuJv1P8Dh+8TKWpgFh/t97RqxkK7ycDDfEzLE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jwibylOPm9OBNZWsa/H0b+pQGwxY4LnOd6vLBku69yH7CiT1ihESQ5NXLHNIdxOiA
-         vHyqDS2j7jg0x+FyLu9atE9Ij39G81/QxJk6MZonqv1T1pOJpTngjgo3nGttFBqjaE
-         YyVP5toEl2ln4Cy/rD+gcDhABvb7vA4zyi9R+xp4=
+        b=gOzBJhx/29uN+bNDIg17fW0mM3omEL+0+2gxDNGo2NyeAMpQCNPxHYjuKiEyNe2k2
+         w0Akhtv4W1/rzZ/CkOk2l1KvDAJ8fLhsptSDLhTrvTtaEHVqgXO/9NBhLLb3CcKS/f
+         IP+HE0+vNsfBiUi4//yQG9Lv9ku6y4eJkYa/pL+U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        syzbot+97c5bd9cc81eca63d36e@syzkaller.appspotmail.com,
-        Nogah Frankel <nogahf@mellanox.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.9 15/45] net: sched: prevent invalid Scell_log shift count
-Date:   Mon, 11 Jan 2021 14:00:53 +0100
-Message-Id: <20210111130034.390190141@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Yijun Shen <Yijun.shen@dell.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: [PATCH 5.10 030/145] e1000e: Export S0ix flags to ethtool
+Date:   Mon, 11 Jan 2021 14:00:54 +0100
+Message-Id: <20210111130049.959182146@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130033.676306636@linuxfoundation.org>
-References: <20210111130033.676306636@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,98 +42,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Mario Limonciello <mario.limonciello@dell.com>
 
-[ Upstream commit bd1248f1ddbc48b0c30565fce897a3b6423313b8 ]
+[ Upstream commit 3c98cbf22a96c1b12f48c1b2a4680dfe5cb280f9 ]
 
-Check Scell_log shift size in red_check_params() and modify all callers
-of red_check_params() to pass Scell_log.
+This flag can be used by an end user to disable S0ix flows on a
+buggy system or by an OEM for development purposes.
 
-This prevents a shift out-of-bounds as detected by UBSAN:
-  UBSAN: shift-out-of-bounds in ./include/net/red.h:252:22
-  shift exponent 72 is too large for 32-bit type 'int'
+If you need this flag to be persisted across reboots, it's suggested
+to use a udev rule to call adjust it until the kernel could have your
+configuration in a disallow list.
 
-Fixes: 8afa10cbe281 ("net_sched: red: Avoid illegal values")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: syzbot+97c5bd9cc81eca63d36e@syzkaller.appspotmail.com
-Cc: Nogah Frankel <nogahf@mellanox.com>
-Cc: Jamal Hadi Salim <jhs@mojatatu.com>
-Cc: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: Jiri Pirko <jiri@resnulli.us>
-Cc: netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Mario Limonciello <mario.limonciello@dell.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Tested-by: Yijun Shen <Yijun.shen@dell.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/red.h     |    4 +++-
- net/sched/sch_choke.c |    2 +-
- net/sched/sch_gred.c  |    2 +-
- net/sched/sch_red.c   |    2 +-
- net/sched/sch_sfq.c   |    2 +-
- 5 files changed, 7 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/intel/e1000e/e1000.h   |    1 
+ drivers/net/ethernet/intel/e1000e/ethtool.c |   46 ++++++++++++++++++++++++++++
+ drivers/net/ethernet/intel/e1000e/netdev.c  |    9 +++--
+ 3 files changed, 52 insertions(+), 4 deletions(-)
 
---- a/include/net/red.h
-+++ b/include/net/red.h
-@@ -167,12 +167,14 @@ static inline void red_set_vars(struct r
- 	v->qcount	= -1;
+--- a/drivers/net/ethernet/intel/e1000e/e1000.h
++++ b/drivers/net/ethernet/intel/e1000e/e1000.h
+@@ -436,6 +436,7 @@ s32 e1000e_get_base_timinca(struct e1000
+ #define FLAG2_DFLT_CRC_STRIPPING          BIT(12)
+ #define FLAG2_CHECK_RX_HWTSTAMP           BIT(13)
+ #define FLAG2_CHECK_SYSTIM_OVERFLOW       BIT(14)
++#define FLAG2_ENABLE_S0IX_FLOWS           BIT(15)
+ 
+ #define E1000_RX_DESC_PS(R, i)	    \
+ 	(&(((union e1000_rx_desc_packet_split *)((R).desc))[i]))
+--- a/drivers/net/ethernet/intel/e1000e/ethtool.c
++++ b/drivers/net/ethernet/intel/e1000e/ethtool.c
+@@ -23,6 +23,13 @@ struct e1000_stats {
+ 	int stat_offset;
+ };
+ 
++static const char e1000e_priv_flags_strings[][ETH_GSTRING_LEN] = {
++#define E1000E_PRIV_FLAGS_S0IX_ENABLED	BIT(0)
++	"s0ix-enabled",
++};
++
++#define E1000E_PRIV_FLAGS_STR_LEN ARRAY_SIZE(e1000e_priv_flags_strings)
++
+ #define E1000_STAT(str, m) { \
+ 		.stat_string = str, \
+ 		.type = E1000_STATS, \
+@@ -1776,6 +1783,8 @@ static int e1000e_get_sset_count(struct
+ 		return E1000_TEST_LEN;
+ 	case ETH_SS_STATS:
+ 		return E1000_STATS_LEN;
++	case ETH_SS_PRIV_FLAGS:
++		return E1000E_PRIV_FLAGS_STR_LEN;
+ 	default:
+ 		return -EOPNOTSUPP;
+ 	}
+@@ -2097,6 +2106,10 @@ static void e1000_get_strings(struct net
+ 			p += ETH_GSTRING_LEN;
+ 		}
+ 		break;
++	case ETH_SS_PRIV_FLAGS:
++		memcpy(data, e1000e_priv_flags_strings,
++		       E1000E_PRIV_FLAGS_STR_LEN * ETH_GSTRING_LEN);
++		break;
+ 	}
  }
  
--static inline bool red_check_params(u32 qth_min, u32 qth_max, u8 Wlog)
-+static inline bool red_check_params(u32 qth_min, u32 qth_max, u8 Wlog, u8 Scell_log)
- {
- 	if (fls(qth_min) + Wlog > 32)
- 		return false;
- 	if (fls(qth_max) + Wlog > 32)
- 		return false;
-+	if (Scell_log >= 32)
-+		return false;
- 	if (qth_max < qth_min)
- 		return false;
- 	return true;
---- a/net/sched/sch_choke.c
-+++ b/net/sched/sch_choke.c
-@@ -425,7 +425,7 @@ static int choke_change(struct Qdisc *sc
+@@ -2305,6 +2318,37 @@ static int e1000e_get_ts_info(struct net
+ 	return 0;
+ }
  
- 	ctl = nla_data(tb[TCA_CHOKE_PARMS]);
++static u32 e1000e_get_priv_flags(struct net_device *netdev)
++{
++	struct e1000_adapter *adapter = netdev_priv(netdev);
++	u32 priv_flags = 0;
++
++	if (adapter->flags2 & FLAG2_ENABLE_S0IX_FLOWS)
++		priv_flags |= E1000E_PRIV_FLAGS_S0IX_ENABLED;
++
++	return priv_flags;
++}
++
++static int e1000e_set_priv_flags(struct net_device *netdev, u32 priv_flags)
++{
++	struct e1000_adapter *adapter = netdev_priv(netdev);
++	unsigned int flags2 = adapter->flags2;
++
++	flags2 &= ~FLAG2_ENABLE_S0IX_FLOWS;
++	if (priv_flags & E1000E_PRIV_FLAGS_S0IX_ENABLED) {
++		struct e1000_hw *hw = &adapter->hw;
++
++		if (hw->mac.type < e1000_pch_cnp)
++			return -EINVAL;
++		flags2 |= FLAG2_ENABLE_S0IX_FLOWS;
++	}
++
++	if (flags2 != adapter->flags2)
++		adapter->flags2 = flags2;
++
++	return 0;
++}
++
+ static const struct ethtool_ops e1000_ethtool_ops = {
+ 	.supported_coalesce_params = ETHTOOL_COALESCE_RX_USECS,
+ 	.get_drvinfo		= e1000_get_drvinfo,
+@@ -2336,6 +2380,8 @@ static const struct ethtool_ops e1000_et
+ 	.set_eee		= e1000e_set_eee,
+ 	.get_link_ksettings	= e1000_get_link_ksettings,
+ 	.set_link_ksettings	= e1000_set_link_ksettings,
++	.get_priv_flags		= e1000e_get_priv_flags,
++	.set_priv_flags		= e1000e_set_priv_flags,
+ };
  
--	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog))
-+	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog, ctl->Scell_log))
- 		return -EINVAL;
+ void e1000e_set_ethtool_ops(struct net_device *netdev)
+--- a/drivers/net/ethernet/intel/e1000e/netdev.c
++++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+@@ -6923,7 +6923,6 @@ static __maybe_unused int e1000e_pm_susp
+ 	struct net_device *netdev = pci_get_drvdata(to_pci_dev(dev));
+ 	struct e1000_adapter *adapter = netdev_priv(netdev);
+ 	struct pci_dev *pdev = to_pci_dev(dev);
+-	struct e1000_hw *hw = &adapter->hw;
+ 	int rc;
  
- 	if (ctl->limit > CHOKE_MAX_QUEUE)
---- a/net/sched/sch_gred.c
-+++ b/net/sched/sch_gred.c
-@@ -356,7 +356,7 @@ static inline int gred_change_vq(struct
- 	struct gred_sched *table = qdisc_priv(sch);
- 	struct gred_sched_data *q = table->tab[dp];
- 
--	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog))
-+	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog, ctl->Scell_log))
- 		return -EINVAL;
- 
- 	if (!q) {
---- a/net/sched/sch_red.c
-+++ b/net/sched/sch_red.c
-@@ -184,7 +184,7 @@ static int red_change(struct Qdisc *sch,
- 	max_P = tb[TCA_RED_MAX_P] ? nla_get_u32(tb[TCA_RED_MAX_P]) : 0;
- 
- 	ctl = nla_data(tb[TCA_RED_PARMS]);
--	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog))
-+	if (!red_check_params(ctl->qth_min, ctl->qth_max, ctl->Wlog, ctl->Scell_log))
- 		return -EINVAL;
- 
- 	if (ctl->limit > 0) {
---- a/net/sched/sch_sfq.c
-+++ b/net/sched/sch_sfq.c
-@@ -645,7 +645,7 @@ static int sfq_change(struct Qdisc *sch,
+ 	e1000e_flush_lpic(pdev);
+@@ -6935,7 +6934,7 @@ static __maybe_unused int e1000e_pm_susp
+ 		e1000e_pm_thaw(dev);
+ 	} else {
+ 		/* Introduce S0ix implementation */
+-		if (hw->mac.type >= e1000_pch_cnp)
++		if (adapter->flags2 & FLAG2_ENABLE_S0IX_FLOWS)
+ 			e1000e_s0ix_entry_flow(adapter);
  	}
  
- 	if (ctl_v1 && !red_check_params(ctl_v1->qth_min, ctl_v1->qth_max,
--					ctl_v1->Wlog))
-+					ctl_v1->Wlog, ctl_v1->Scell_log))
- 		return -EINVAL;
- 	if (ctl_v1 && ctl_v1->qth_min) {
- 		p = kmalloc(sizeof(*p), GFP_KERNEL);
+@@ -6947,11 +6946,10 @@ static __maybe_unused int e1000e_pm_resu
+ 	struct net_device *netdev = pci_get_drvdata(to_pci_dev(dev));
+ 	struct e1000_adapter *adapter = netdev_priv(netdev);
+ 	struct pci_dev *pdev = to_pci_dev(dev);
+-	struct e1000_hw *hw = &adapter->hw;
+ 	int rc;
+ 
+ 	/* Introduce S0ix implementation */
+-	if (hw->mac.type >= e1000_pch_cnp)
++	if (adapter->flags2 & FLAG2_ENABLE_S0IX_FLOWS)
+ 		e1000e_s0ix_exit_flow(adapter);
+ 
+ 	rc = __e1000_resume(pdev);
+@@ -7615,6 +7613,9 @@ static int e1000_probe(struct pci_dev *p
+ 	if (!(adapter->flags & FLAG_HAS_AMT))
+ 		e1000e_get_hw_control(adapter);
+ 
++	if (hw->mac.type >= e1000_pch_cnp)
++		adapter->flags2 |= FLAG2_ENABLE_S0IX_FLOWS;
++
+ 	strlcpy(netdev->name, "eth%d", sizeof(netdev->name));
+ 	err = register_netdev(netdev);
+ 	if (err)
 
 
