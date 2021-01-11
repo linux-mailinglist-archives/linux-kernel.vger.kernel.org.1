@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 851442F197E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2962F198D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731709AbhAKPUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:20:02 -0500
-Received: from mail-out.m-online.net ([212.18.0.9]:55242 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727614AbhAKPUB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:20:01 -0500
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4DDy651Fmqz1qskT;
-        Mon, 11 Jan 2021 16:18:53 +0100 (CET)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4DDy646j31z1tYWW;
-        Mon, 11 Jan 2021 16:18:52 +0100 (CET)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id S1jEDPKn3m5i; Mon, 11 Jan 2021 16:18:51 +0100 (CET)
-X-Auth-Info: +4ZBp6oP5UHBQbz30gRFNPVk3E+f0nOqHIQmb61qUoCy/249mUINCdfQGZyGGjep
-Received: from igel.home (ppp-46-244-179-249.dynamic.mnet-online.de [46.244.179.249])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Mon, 11 Jan 2021 16:18:51 +0100 (CET)
-Received: by igel.home (Postfix, from userid 1000)
-        id 666492C352E; Mon, 11 Jan 2021 16:18:51 +0100 (CET)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH] powerpc/vdso: fix clock_gettime_fallback for vdso32
-CC:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org
-X-Yow:  Yow!  Did something bad happen or am I in a drive-in movie??
-Date:   Mon, 11 Jan 2021 16:18:51 +0100
-Message-ID: <87eeirsdr8.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1.90 (gnu/linux)
+        id S1732985AbhAKPWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:22:13 -0500
+Received: from terminus.zytor.com ([198.137.202.136]:42433 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731265AbhAKPWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 10:22:10 -0500
+Received: from [IPv6:2601:646:8680:a581:a9e0:c11f:a526:e0f6] ([IPv6:2601:646:8680:a581:a9e0:c11f:a526:e0f6])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 10BFKY171008008
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Mon, 11 Jan 2021 07:20:35 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 10BFKY171008008
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2020122501; t=1610378438;
+        bh=vwych3g6kd2B7PEaiLOn+znZEnaaw/IxZDstfNfdYSU=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=snforGX2nUUPKlsgUV+7isdPOXU4cyemVT7F0d2NtEC+dlTBF83ch5CV3Bg1uceBG
+         IkhM4AWNxhm2yh69Fx+7EuT8L9TFRLh8T2ZApgqesjYTIm/VlGhQmSGiqampxhyGwP
+         VXAK7vV7E+i1olI7u+LhOGXS6y8vmTl1mvCzZqyLRpjB5LmusdDuhqQo23M5i9cir2
+         BaOUOxvIreCjS7MVR37Ri/8Ego7uxTFwxBfpnwb8fjuncxCCNsmNg1Vp0JjEzv0m44
+         6DQprld21LgfFjlwnALdCGLopK70gCAryVriE6W9CJKATPMYf0mEvO4KW6mOSC77XL
+         vwqg6jblrlhsQ==
+Date:   Mon, 11 Jan 2021 07:20:25 -0800
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20210107063750.GA14697@zn.tnic>
+References: <1610000348-17316-1-git-send-email-TonyWWang-oc@zhaoxin.com> <1610000348-17316-2-git-send-email-TonyWWang-oc@zhaoxin.com> <20210107063750.GA14697@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v1 1/3] x86/cpufeatures: Add low performance CRC32C instruction CPU feature
+To:     Borislav Petkov <bp@alien8.de>,
+        Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+CC:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        tony.luck@intel.com, dave.hansen@intel.com, seanjc@google.com,
+        fenghua.yu@intel.com, thomas.lendacky@amd.com,
+        kyung.min.park@intel.com, kim.phillips@amd.com,
+        mgross@linux.intel.com, peterz@infradead.org,
+        krish.sadhukhan@oracle.com, liam.merwick@oracle.com,
+        mlevitsk@redhat.com, reinette.chatre@intel.com, babu.moger@amd.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        TimGuo-oc@zhaoxin.com, CooperYan@zhaoxin.com,
+        QiyuanWang@zhaoxin.com, HerryYang@zhaoxin.com,
+        CobeChen@zhaoxin.com, SilviaZhao@zhaoxin.com
+From:   hpa@zytor.com
+Message-ID: <A96ECD10-F51F-408C-80DF-5937DF43D314@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The second argument of __kernel_clock_gettime64 points to a struct
-__kernel_timespec, with 64-bit time_t, so use the clock_gettime64 syscall
-in the fallback function for the 32-bit vdso.  Similarily,
-clock_getres_fallback should use the clock_getres_time64 syscall, though
-it isn't yet called from the 32-bit vdso.
+On January 6, 2021 10:37:50 PM PST, Borislav Petkov <bp@alien8=2Ede> wrote:
+>On Thu, Jan 07, 2021 at 02:19:06PM +0800, Tony W Wang-oc wrote:
+>> SSE4=2E2 on Zhaoxin CPUs are compatible with Intel=2E The presence of
+>> CRC32C instruction is enumerated by CPUID=2E01H:ECX=2ESSE4_2[bit 20] =
+=3D 1=2E
+>> Some Zhaoxin CPUs declare support SSE4=2E2 instruction sets but their
+>> CRC32C instruction are working with low performance=2E
+>>=20
+>> Add a synthetic CPU flag to indicates that the CRC32C instruction is
+>> not working as intended=2E This low performance CRC32C instruction flag
+>> is depend on X86_FEATURE_XMM4_2=2E
+>>=20
+>> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin=2Ecom>
+>> ---
+>>  arch/x86/include/asm/cpufeatures=2Eh | 1 +
+>>  arch/x86/kernel/cpu/cpuid-deps=2Ec   | 1 +
+>>  2 files changed, 2 insertions(+)
+>>=20
+>> diff --git a/arch/x86/include/asm/cpufeatures=2Eh
+>b/arch/x86/include/asm/cpufeatures=2Eh
+>> index 84b8878=2E=2E9e8151b 100644
+>> --- a/arch/x86/include/asm/cpufeatures=2Eh
+>> +++ b/arch/x86/include/asm/cpufeatures=2Eh
+>> @@ -292,6 +292,7 @@
+>>  #define X86_FEATURE_FENCE_SWAPGS_KERNEL	(11*32+ 5) /* "" LFENCE in
+>kernel entry SWAPGS path */
+>>  #define X86_FEATURE_SPLIT_LOCK_DETECT	(11*32+ 6) /* #AC for split
+>lock */
+>>  #define X86_FEATURE_PER_THREAD_MBA	(11*32+ 7) /* "" Per-thread
+>Memory Bandwidth Allocation */
+>> +#define X86_FEATURE_CRC32C		(11*32+ 8) /* "" Low performance CRC32C
+>instruction */
+>
+>Didn't hpa say to create a BUG flag for it - X86_BUG=2E=2E=2E? Low
+>performance
+>insn sounds like a bug and not a feature to me=2E
+>
+>And call it X86_BUG_CRC32C_SLOW or =2E=2E=2E_UNUSABLE to denote what it
+>means=2E
+>
+>Thx=2E
 
-Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
----
- arch/powerpc/include/asm/vdso/gettimeofday.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/arch/powerpc/include/asm/vdso/gettimeofday.h b/arch/powerpc/include/asm/vdso/gettimeofday.h
-index 81671aa365b3..a26c12df2c9a 100644
---- a/arch/powerpc/include/asm/vdso/gettimeofday.h
-+++ b/arch/powerpc/include/asm/vdso/gettimeofday.h
-@@ -106,13 +106,21 @@ int gettimeofday_fallback(struct __kernel_old_timeval *_tv, struct timezone *_tz
- static __always_inline
- int clock_gettime_fallback(clockid_t _clkid, struct __kernel_timespec *_ts)
- {
-+#ifndef __powerpc64__
-+	return do_syscall_2(__NR_clock_gettime64, _clkid, (unsigned long)_ts);
-+#else
- 	return do_syscall_2(__NR_clock_gettime, _clkid, (unsigned long)_ts);
-+#endif
- }
- 
- static __always_inline
- int clock_getres_fallback(clockid_t _clkid, struct __kernel_timespec *_ts)
- {
-+#ifndef __powerpc64__
-+	return do_syscall_2(__NR_clock_getres_time64, _clkid, (unsigned long)_ts);
-+#else
- 	return do_syscall_2(__NR_clock_getres, _clkid, (unsigned long)_ts);
-+#endif
- }
- 
- #ifdef CONFIG_VDSO32
--- 
-2.30.0
-
-
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+Yes, it should be a BUG due to the inclusion properties of BUG v FEATURE=
+=2E
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
