@@ -2,90 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DDDF2F20E1
+	by mail.lfdr.de (Postfix) with ESMTP id 318492F20E0
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:33:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390325AbhAKUdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 15:33:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32406 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390052AbhAKUdN (ORCPT
+        id S2389353AbhAKUcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 15:32:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730955AbhAKUck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:33:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610397106;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+2kB21kABqOOu7gOcB3+o+ykSXSkI5oDu8DPYbkJeBA=;
-        b=Q2FhOvtZmlkKqLeVc2iVxIsvQcuZQmDbk14ExwkvkSwxyCVYEU20/hNffuE9w8O9OdCOE9
-        BqAQNYXJg3GHEIsOwYVGYZEyH2nn/rnMA8WVCXmmfNvsrnLsKD5ypWBK7ynjrq129XRfYo
-        VY0xQHVHboY2Uwi5wI5cnxEmcSpobNw=
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
- [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-234-TbYNnJb9OM-rTpBhKc0-pw-1; Mon, 11 Jan 2021 15:31:45 -0500
-X-MC-Unique: TbYNnJb9OM-rTpBhKc0-pw-1
-Received: by mail-io1-f70.google.com with SMTP id x7so43054ion.12
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 12:31:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=+2kB21kABqOOu7gOcB3+o+ykSXSkI5oDu8DPYbkJeBA=;
-        b=i7cSXghm5W7PDK5SQWdS+ZL4An7lzHbPJ3pTUVjR5BUKwIFXYW/NOHsEZR6ef5cAsb
-         BNLX3cQn1TbHUwVH9VgnzoiCCk1u7t6Tbxh/CBfVfYUrPxwNc6QOAY471+RwW1kFKceC
-         AsmXjsLXvPy9hOXxKi98B0XCXhKWfyp1uYtonrj7/4qMt2C9vaTXN3JWeN0k0VkgMkSb
-         eaItHr97qeyWyUAcXJTL/OJNY7cJFB5A2mfDJ6gxUhLMYpcXv3vzpxINVMzHVa1Hniy5
-         Ts3C1TOgjaOiJzlfQcsC6L6bCFI05q9mwlCRPNfT4fqkgFB1WNrVZ4dTTnk1AXhyMUpf
-         kT8w==
-X-Gm-Message-State: AOAM530TakJWYTq8t1BcxCvfxB9JX4Z3O8VqC8FEpl/7Ro8A75L4LytB
-        RzelNlpH/bdumuekT1Bd3Gx4h13oP2EfnazMByk4uvGH266tvoQvdqWp7m3wzDHE2MewsKZTfow
-        xjaUJ5PSSXG7HKKUJS/V3VN3z
-X-Received: by 2002:a02:c9cc:: with SMTP id c12mr1326491jap.116.1610397104444;
-        Mon, 11 Jan 2021 12:31:44 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyKhDndwsOo2nRD5VZRaC8ko0qBQPThQauo77lSvQeu/a6IRHRXlNcv8N/azwv1N1MAovUXww==
-X-Received: by 2002:a02:c9cc:: with SMTP id c12mr1326478jap.116.1610397104214;
-        Mon, 11 Jan 2021 12:31:44 -0800 (PST)
-Received: from xps13 ([2605:a601:a63a:4d01:c3c1:7008:ba35:96])
-        by smtp.gmail.com with ESMTPSA id w3sm494775ilk.17.2021.01.11.12.31.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 12:31:43 -0800 (PST)
-Date:   Mon, 11 Jan 2021 15:31:42 -0500
-From:   Jeremy Cline <jcline@redhat.com>
-To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc:     Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/ttm: Fix address passed to dma_mapping_error() in
- ttm_pool_map()
-Message-ID: <20210111203142.GA51463@xps13>
-References: <20210111164033.695968-1-jcline@redhat.com>
- <cbd76108-a7c4-119b-b045-eb857a84fcab@amd.com>
+        Mon, 11 Jan 2021 15:32:40 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A01C061786;
+        Mon, 11 Jan 2021 12:32:00 -0800 (PST)
+Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id E36C69B2;
+        Mon, 11 Jan 2021 20:31:59 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net E36C69B2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1610397120; bh=26pO2/zq+dBjgEu9pl4QKeQ5FvwMWC8q9w3/eaxa6O8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DPPdGuerm6JpqKf7UkmXiL9/k9jPonkJgb9Y4o6lyZrtu/gv69D+GdD+A4EJgWzt/
+         i9EgmQJ6A5M6k+JvKLK0xg+ZZAytckhCl0lqEIYlan31xb3FAgoncuefyeWLMXjjFM
+         kKQD3xLO/pHwUkmdqTTozPD4h9u7R8FB/IEdTCNqdzuu/4A6z8az/XD6lkn2t4bRVq
+         5Prc8qXJgwmVakLztmb+HBLqgDE5fszdaJ4Pt/VQXq1x/TCNiVq/ORSVLRrZ2g2/ke
+         JEbn7wkt9QKolgNc62wto2LhK4Trqo47jlGC5iWFZSjjdQcZbtxCnRHo6hGlA8Ue4U
+         9oVRGAJBOTH5w==
+Date:   Mon, 11 Jan 2021 13:31:58 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Michael Witten <mfwitten@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: driver-model: bus.rst: Clean up the formatting,
+ expound, modernize
+Message-ID: <20210111133158.34923b4c@lwn.net>
+In-Reply-To: <3dc7d8abd06941fca5071b0ede9b6088@gmail.com>
+References: <3dc7d8abd06941fca5071b0ede9b6088@gmail.com>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <cbd76108-a7c4-119b-b045-eb857a84fcab@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 09:21:48PM +0100, Christian König wrote:
-> Am 11.01.21 um 17:40 schrieb Jeremy Cline:
-> > check_unmap() is producing a warning about a missing map error check.
-> > The return value from dma_map_page() should be checked for an error, not
-> > the caller-provided dma_addr.
-> > 
-> > Fixes: d099fc8f540a ("drm/ttm: new TT backend allocation pool v3")
-> > Signed-off-by: Jeremy Cline <jcline@redhat.com>
+On Mon, 21 Dec 2020 07:52:00 -0000
+Michael Witten <mfwitten@gmail.com> wrote:
+
+> * The reStructuredText had some indentation issues.
 > 
-> Good catch. Reviewed and pushed to drm-misc-fixes, should be in the -rc by
-> the weekend.
+> * The HTML output was not properly formatted in places.
 > 
+> * Some of the details were lacking or needed clarification (especially
+>   with regard to how a `struct bus_type` object should be defined).
+> 
+> * The sysfs example hierarchy appeared outdated; I've updated it with
+>   output based on what my own system currently displays.
+> 
+> Signed-off-by: Michael Witten <mfwitten@gmail.com>
+> ---
+>  Documentation/driver-api/driver-model/bus.rst | 110 +++++++++++++--------
+>  1 file changed, 67 insertions(+), 43 deletions(-)
 
-Great, many thanks!
+Thanks for working to improve the docs.  I have a couple of requests,
+though... 
 
-- Jeremy
+> diff --git a/Documentation/driver-api/driver-model/bus.rst b/Documentation/driver-api/driver-model/bus.rst
+> index 016b15a6e8ea..68a95389b1eb 100644
+> --- a/Documentation/driver-api/driver-model/bus.rst
+> +++ b/Documentation/driver-api/driver-model/bus.rst
+> @@ -4,34 +4,58 @@ Bus Types
+>  
+>  Definition
+>  ~~~~~~~~~~
+> -See the kerneldoc for the struct bus_type.
+> -
+> -int bus_register(struct bus_type * bus);
+> +* ``struct bus_type``;
+> +* ``int bus_register(struct bus_type *bus);``
 
+This should just be made into a literal block like the others.
+
+>  Declaration
+>  ~~~~~~~~~~~
+>  
+> -Each bus type in the kernel (PCI, USB, etc) should declare one static
+> -object of this type. They must initialize the name field, and may
+> -optionally initialize the match callback::
+> +For each bus type (PCI, USB, etc), there should be code that defines
+> +one object of type ``struct bus_type``:
+
+It is better not to mark types as ``literal`` this way; the build system is
+getting better at recognizing such things on its own and generating the
+appropriate links.
+
+[...]
+
+>  Registration
+>  ~~~~~~~~~~~~
+>  
+> -When a bus driver is initialized, it calls bus_register. This
+> -initializes the rest of the fields in the bus object and inserts it
+> -into a global list of bus types. Once the bus object is registered,
+> +During initialization of a bus driver, ``bus_register()`` is called; this
+
+*definitely* don't mark functions as literal in this way; simply say
+ bus_register() and the Right Things will happen.
+
+Thanks,
+
+jon
