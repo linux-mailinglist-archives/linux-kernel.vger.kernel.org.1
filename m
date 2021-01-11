@@ -2,98 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 169E92F1BD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91B912F1C10
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:17:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389193AbhAKRHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 12:07:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388294AbhAKRHS (ORCPT
+        id S2388991AbhAKRRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 12:17:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24126 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728752AbhAKRRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:07:18 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1C4C06179F
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:06:38 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id d13so467633wrc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:06:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Hzqb7q+hCD/lNO+yAqM3iVZkO0rtWj2v+FJjuf+pTrs=;
-        b=SC3B5EkHlLEmR6il3eQiRW6k8K2+HExqspyouE4pNfeCHqvIkh/kboRCjti7DbJqOr
-         gHdmRwjXL6ignsaOqSM5L9098cg9ykY00uFOECGo3+yItxBY6dy/TO3Yx6vUulRlwEGT
-         08QXLH+CBQJKOuQoVG+2eNzaLS+OtMVYouQU3N0QdzfZgfL7I8GWJXFFd52WqxOGYqWK
-         nz6bxmgY6DlI8krhj3J28GRws7+IAlGV5MP4RTEb/uVtIpgISBCXRpCjJo20JNEt9E0l
-         ZENLIYWHEKsaX3pVZWncUbbHrNKVvz78q1yOGURMuV6FuE8PHfy9uRj+Kq3r59XQHHOt
-         29Xw==
+        Mon, 11 Jan 2021 12:17:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610385348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XG4nE77l9V+rRZuoWuOzDt9ZOhzNiCqRWdt18ZZfUjs=;
+        b=UCINYGTvcxJXkN+Ktr0d6Oe6/i5FX6vwwxbBLqC2UkciHHezuFGmbPPuJmBPuLph/WY1HU
+        Gt2fu8dRKgZZivqA44K2JwelMkgmSc1e+iwAV4jw8DmLLNNBnTTM5WPArNRPwmH7BJ3Deh
+        kFEcGNG4I2smuOAFasNwqaYEAS8Ii1w=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-388-SQQ6LHaiMTGCTD4EZliGLQ-1; Mon, 11 Jan 2021 12:15:46 -0500
+X-MC-Unique: SQQ6LHaiMTGCTD4EZliGLQ-1
+Received: by mail-ed1-f70.google.com with SMTP id k5so8500921edk.15
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:15:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Hzqb7q+hCD/lNO+yAqM3iVZkO0rtWj2v+FJjuf+pTrs=;
-        b=CDkGX0021+Dv1K190Nd2BYeAJ/4nhXqxk9f3zQk9YKZf/BRki6NnPYn8U2IWoYK2lj
-         eM1S6I8HTFzXyT2Uo/BeGzh5sEjpXmnw58RaRsjC5MCmmJ34C1NjWYB2L/NrhBajJpcd
-         vysN0CyYKb6Yturccvg5Z6yx95x6vtLIqgs1znINkqgOAOdtxQjRe6mpz4DDTrz2fqFf
-         aD0ljKSZ5U2Ox2HRzrCE6ydezOqHKqB7rYaHqE6DwnlHB5X5gAkJtswU6VKGPmU2zFRT
-         bP81w1AIZ63t+EbPLDB4WolDZN6nbcfZxD4ypxL3yXG6wqMYZNwEugnuea505+7btqpq
-         mrxQ==
-X-Gm-Message-State: AOAM532RBFJBYBtAMmC1mWxsWosbVMb9Caxh1W3ELteWYF8UDSOdpZ8o
-        L4lb5q90xyrK9nQIECA03jCCHg==
-X-Google-Smtp-Source: ABdhPJwR/BpMWpRjDKSvk6sbqwRX3odJyWM84Fr1hzdpe6wDMtK02H9zAQERCRPTCsg/AT7VuorKsg==
-X-Received: by 2002:adf:fbc5:: with SMTP id d5mr143401wrs.82.1610384796791;
-        Mon, 11 Jan 2021 09:06:36 -0800 (PST)
-Received: from localhost.localdomain ([88.122.66.28])
-        by smtp.gmail.com with ESMTPSA id j59sm336806wrj.13.2021.01.11.09.06.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 11 Jan 2021 09:06:36 -0800 (PST)
-From:   Loic Poulain <loic.poulain@linaro.org>
-To:     kuba@kernel.org, davem@davemloft.net
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        manivannan.sadhasivam@linaro.org,
-        Loic Poulain <loic.poulain@linaro.org>
-Subject: [PATCH 2/3] net: mhi: Get RX queue size from MHI core
-Date:   Mon, 11 Jan 2021 18:14:10 +0100
-Message-Id: <1610385251-14947-2-git-send-email-loic.poulain@linaro.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1610385251-14947-1-git-send-email-loic.poulain@linaro.org>
-References: <1610385251-14947-1-git-send-email-loic.poulain@linaro.org>
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=XG4nE77l9V+rRZuoWuOzDt9ZOhzNiCqRWdt18ZZfUjs=;
+        b=Mlb3pd9Jbo5X5y6gUaci80RdkIb8kkMdiG2ggcKuKMfglrQUbQDwulZeEAHeraGwUq
+         qfx10YEgsIFn289RmtaKoIXeNFecMGqAEanqktB6jaGpgBT3ileXj0u6XYl4qW6aR16I
+         /byHsOvP3o0HS98GJXXsA5zB+GxTG3GLfcgdiG/2Q8FGOgpqMEQg13+Jobt+6TwWKpGj
+         yRWqPCZY4ZXBTUQT0EoUjFoQeTy59gqrJt/Ll8Z7W37mRK+GGml3MPZ2BBdPSEz1fJQm
+         Z7euzRgo6akvGsglXWcliGlLZFW4SMhpNDk2JKE68hwJyjV3mgCu+9WHpVdKscl2PbwV
+         dg3g==
+X-Gm-Message-State: AOAM531x+w7ZIbOkUXyVKFxzuX7iJKJJ0ylJ3dqwYAZLkCeO1hBfGgdp
+        c+6AlV/oGb8iOT+JScCUmJh4f6h+rKCV5nGh79+ZWshtcoONvr8tN5MvmrOxMERYPUcqkvKl55o
+        Ra2zccARL4eWJZUyt/Z3/AWA6
+X-Received: by 2002:a05:6402:318f:: with SMTP id di15mr275581edb.237.1610385345332;
+        Mon, 11 Jan 2021 09:15:45 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwtU8IgVCF7zsM451sQJKQOHdiAFlqQKj7bLZn7B0U5ai/6SyhYTAzdtk72H5Nhzn+BgqLiKQ==
+X-Received: by 2002:a05:6402:318f:: with SMTP id di15mr275559edb.237.1610385345089;
+        Mon, 11 Jan 2021 09:15:45 -0800 (PST)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id a13sm211657edb.76.2021.01.11.09.15.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 09:15:44 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Cun Li <cun.jia.li@gmail.com>
+Cc:     seanjc@google.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Cun Li <cun.jia.li@gmail.com>,
+        pbonzini@redhat.com
+Subject: Re: [PATCH] KVM: update depracated jump label API
+In-Reply-To: <20210111152435.50275-1-cun.jia.li@gmail.com>
+References: <20210111152435.50275-1-cun.jia.li@gmail.com>
+Date:   Mon, 11 Jan 2021 18:15:43 +0100
+Message-ID: <87h7nn8ke8.fsf@vitty.brq.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The RX queue size can be determined at runtime by retrieving the
-number of available transfer descriptors.
+Cun Li <cun.jia.li@gmail.com> writes:
 
-Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
----
- drivers/net/mhi_net.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> The use of 'struct static_key' and 'static_key_false' is
+> deprecated. Use the new API.
+>
+> Signed-off-by: Cun Li <cun.jia.li@gmail.com>
+> ---
+>  arch/x86/kvm/lapic.h         | 6 +++---
+>  arch/x86/kvm/mmu/mmu_audit.c | 4 ++--
+>  arch/x86/kvm/x86.c           | 2 +-
+>  3 files changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/arch/x86/kvm/lapic.h b/arch/x86/kvm/lapic.h
+> index 4fb86e3a9dd3..b7aa76e2678e 100644
+> --- a/arch/x86/kvm/lapic.h
+> +++ b/arch/x86/kvm/lapic.h
+> @@ -176,7 +176,7 @@ extern struct static_key kvm_no_apic_vcpu;
+>  
+>  static inline bool lapic_in_kernel(struct kvm_vcpu *vcpu)
+>  {
+> -	if (static_key_false(&kvm_no_apic_vcpu))
+> +	if (static_branch_unlikely(&kvm_no_apic_vcpu))
+>  		return vcpu->arch.apic;
+>  	return true;
+>  }
+> @@ -185,7 +185,7 @@ extern struct static_key_deferred apic_hw_disabled;
+>  
+>  static inline int kvm_apic_hw_enabled(struct kvm_lapic *apic)
+>  {
+> -	if (static_key_false(&apic_hw_disabled.key))
+> +	if (static_branch_unlikely(&apic_hw_disabled.key))
+>  		return apic->vcpu->arch.apic_base & MSR_IA32_APICBASE_ENABLE;
+>  	return MSR_IA32_APICBASE_ENABLE;
+>  }
+> @@ -194,7 +194,7 @@ extern struct static_key_deferred apic_sw_disabled;
+>  
+>  static inline bool kvm_apic_sw_enabled(struct kvm_lapic *apic)
+>  {
+> -	if (static_key_false(&apic_sw_disabled.key))
+> +	if (static_branch_unlikely(&apic_sw_disabled.key))
+>  		return apic->sw_enabled;
+>  	return true;
+>  }
+> diff --git a/arch/x86/kvm/mmu/mmu_audit.c b/arch/x86/kvm/mmu/mmu_audit.c
+> index c8d51a37e2ce..8a4b3510151a 100644
+> --- a/arch/x86/kvm/mmu/mmu_audit.c
+> +++ b/arch/x86/kvm/mmu/mmu_audit.c
+> @@ -234,7 +234,7 @@ static void audit_vcpu_spte(struct kvm_vcpu *vcpu)
+>  }
+>  
+>  static bool mmu_audit;
+> -static struct static_key mmu_audit_key;
+> +static DEFINE_STATIC_KEY_FALSE(mmu_audit_key);
+>  
+>  static void __kvm_mmu_audit(struct kvm_vcpu *vcpu, int point)
+>  {
+> @@ -250,7 +250,7 @@ static void __kvm_mmu_audit(struct kvm_vcpu *vcpu, int point)
+>  
+>  static inline void kvm_mmu_audit(struct kvm_vcpu *vcpu, int point)
+>  {
+> -	if (static_key_false((&mmu_audit_key)))
+> +	if (static_branch_unlikely((&mmu_audit_key)))
+>  		__kvm_mmu_audit(vcpu, point);
+>  }
+>  
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 9a8969a6dd06..b8c05ef26942 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10339,7 +10339,7 @@ bool kvm_vcpu_is_bsp(struct kvm_vcpu *vcpu)
+>  	return (vcpu->arch.apic_base & MSR_IA32_APICBASE_BSP) != 0;
+>  }
+>  
+> -struct static_key kvm_no_apic_vcpu __read_mostly;
+> +__read_mostly DEFINE_STATIC_KEY_FALSE(kvm_no_apic_vcpu);
+>  EXPORT_SYMBOL_GPL(kvm_no_apic_vcpu);
+>  
+>  void kvm_arch_sched_in(struct kvm_vcpu *vcpu, int cpu)
 
-diff --git a/drivers/net/mhi_net.c b/drivers/net/mhi_net.c
-index b7f7f2e..3da820b 100644
---- a/drivers/net/mhi_net.c
-+++ b/drivers/net/mhi_net.c
-@@ -257,9 +257,6 @@ static int mhi_net_probe(struct mhi_device *mhi_dev,
- 	mhi_netdev->mdev = mhi_dev;
- 	SET_NETDEV_DEV(ndev, &mhi_dev->dev);
- 
--	/* All MHI net channels have 128 ring elements (at least for now) */
--	mhi_netdev->rx_queue_sz = 128;
--
- 	INIT_DELAYED_WORK(&mhi_netdev->rx_refill, mhi_net_rx_refill_work);
- 	u64_stats_init(&mhi_netdev->stats.rx_syncp);
- 	u64_stats_init(&mhi_netdev->stats.tx_syncp);
-@@ -269,6 +266,9 @@ static int mhi_net_probe(struct mhi_device *mhi_dev,
- 	if (err)
- 		goto out_err;
- 
-+	/* Number of transfer descriptors determines size of the queue */
-+	mhi_netdev->rx_queue_sz = mhi_get_free_desc_count(mhi_dev, DMA_FROM_DEVICE);
-+
- 	err = register_netdev(ndev);
- 	if (err)
- 		goto out_err;
+mmu_audit_key can only be true or false so it would also be nice to use 
+static_branch_enable()/static_branch_disable() for it and not
+static_key_slow_inc()/static_key_slow_dec() we currently use (as it
+sounds weird to increment 'false').
+
+kvm_no_apic_vcpu is different, we actually need to increase it with
+every vCPU which doesn't have LAPIC but maybe we can at least switch to
+static_branch_inc()/static_branch_dec(). It is still weird we initialize
+it to 'false' but it seems to be a documented behavior. From
+include/linux/jump_label.h:
+
+"... Thus, static_branch_inc() can be thought of as a 'make more true'
+ and static_branch_dec() as a 'make more false'"
+
+so .. oh well.
+
 -- 
-2.7.4
+Vitaly
 
