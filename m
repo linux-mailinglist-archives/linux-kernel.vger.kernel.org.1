@@ -2,145 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C082F2213
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:45:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51DE92F2216
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:46:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388052AbhAKVom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 16:44:42 -0500
-Received: from foss.arm.com ([217.140.110.172]:36576 "EHLO foss.arm.com"
+        id S1732706AbhAKVpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 16:45:49 -0500
+Received: from mga14.intel.com ([192.55.52.115]:20892 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729635AbhAKVol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 16:44:41 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6DEE101E;
-        Mon, 11 Jan 2021 13:43:55 -0800 (PST)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 451C53F66E;
-        Mon, 11 Jan 2021 13:43:55 -0800 (PST)
-Subject: Re: [PATCH] mmc: sdhci-iproc: Add ACPI bindings for the rpi4
-To:     Stefan Wahren <stefan.wahren@i2se.com>, linux-mmc@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     ulf.hansson@linaro.org, f.fainelli@gmail.com,
-        sbranden@broadcom.com, rjui@broadcom.com, adrian.hunter@intel.com,
-        linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org
-References: <20210108211339.1724769-1-jeremy.linton@arm.com>
- <ab3b5788-1148-636a-751f-0a31c87dda33@i2se.com>
- <cd7c5d78-af92-84b9-8bbf-f480f63005e0@arm.com>
- <2d92e093-a6f2-ac2c-d7e3-2d0172e1047c@i2se.com>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <be996d25-7421-a5d3-0861-18b9e6502382@arm.com>
-Date:   Mon, 11 Jan 2021 15:43:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1727984AbhAKVpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 16:45:49 -0500
+IronPort-SDR: U51tNpuckr48qFMG8nMhNGUsX2rHdBiyDqVmh8k/xd771wBmcFu3zMe0DLajWMsusXqlX9FWoN
+ 126g363h+aLw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="177166208"
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="177166208"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 13:45:08 -0800
+IronPort-SDR: ON9q/4OUcxoRqdb/E+9YK6bG+4BABofaWZXDjw0hAlpGBfjFP81JT1sCssE0/B5bVIeoAnbObJ
+ FMM4xUtYQTKA==
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="352760861"
+Received: from agluck-desk2.sc.intel.com ([10.3.52.68])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 13:45:08 -0800
+From:   Tony Luck <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tony Luck <tony.luck@intel.com>, x86@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v2 0/3] Fix infinite machine check loop in futex_wait_setup()
+Date:   Mon, 11 Jan 2021 13:44:49 -0800
+Message-Id: <20210111214452.1826-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.21.1
+In-Reply-To: <20210108222251.14391-1-tony.luck@intel.com>
+References: <20210108222251.14391-1-tony.luck@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <2d92e093-a6f2-ac2c-d7e3-2d0172e1047c@i2se.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Linux can now recover from machine checks where kernel code is
+doing get_user() to access application memory. But there isn't
+a way to distinguish whether get_user() failed because of a page
+fault or a machine check.
 
-On 1/11/21 6:23 AM, Stefan Wahren wrote:
-> Hi,
-> 
-> Am 11.01.21 um 04:39 schrieb Jeremy Linton:
->> Hi,
->>
->> On 1/9/21 5:07 AM, Stefan Wahren wrote:
->>> Hi Jeremy,
->>>
->>> +add Nicolas
->>>
->>> Am 08.01.21 um 22:13 schrieb Jeremy Linton:
->>>> The rpi4 has a Arasan controller it carries over
->>>> from the rpi3, and a newer eMMC2 controller.
->>>> Because of a couple "quirks" it seems wiser to bind
->>>> these controllers to the same driver that DT is using
->>>> on this platform rather than the generic sdhci_acpi
->>>> driver with PNP0D40.
->>>>
->>>> So, we use BCM2847 for the older Arasan and BRCME88C
->>>> for the newer eMMC2.
->>>>
->>>> With this change linux is capable of utilizing the
->>>> SD card slot, and the wifi on this platform
->>>> with linux.
->>>>
->>>> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
->>>> ---
->>>>    drivers/mmc/host/sdhci-iproc.c | 14 ++++++++++++++
->>>>    1 file changed, 14 insertions(+)
->>>>
->>>> diff --git a/drivers/mmc/host/sdhci-iproc.c
->>>> b/drivers/mmc/host/sdhci-iproc.c
->>>> index c9434b461aab..f79d97b41805 100644
->>>> --- a/drivers/mmc/host/sdhci-iproc.c
->>>> +++ b/drivers/mmc/host/sdhci-iproc.c
->>>> @@ -250,6 +250,14 @@ static const struct sdhci_pltfm_data
->>>> sdhci_bcm2835_pltfm_data = {
->>>>        .ops = &sdhci_iproc_32only_ops,
->>>>    };
->>>>    +static const struct sdhci_pltfm_data sdhci_bcm_arasan_data = {
->>>> +    .quirks = SDHCI_QUIRK_BROKEN_CARD_DETECTION |
->>>> +          SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK |
->>>> +          SDHCI_QUIRK_NO_HISPD_BIT,
->>>> +    .quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
->>>> +    .ops = &sdhci_iproc_32only_ops,
->>>> +};
->>
->> First, thanks for taking a look at this!
->>
->>
->>> Why do we need an almost exact copy of bcm2835_data which works fine for
->>> all Raspberry Pi boards?
->>
->> The short answer to the remainder of this email is that i'm trying to
->> continue supporting existing OSs (windows) using the ACPI tables on
->> the rpi3/rpi4 while adding rpi4+Linux support.
->>
->> An even shorter answer is they don't work because ACPI doesn't provide
->> the same clock/attributes/etc controls that exist with DT.
->>
->> So, what happened here is that I got this controller "working" with
->> the generic PNP0D40 sdhci_acpi driver. I managed this only by
->> controlling the sdhci_caps/masks in the firmware. In theory this
->> minimizes the amount of work needed on the other OS which are booting
->> on the same ACPI tables (*bsds). They should only need to quirk the
->> bcm/arasan specific functionality, rather than some of the quirking
->> which change the caps behavior. But because we don't know which if any
->> of the older rpi/arasan quirks are still needed the safest solution is
->> to use the _iproc driver and just drop the quirk flags known to be
->> worked around by the firmware caps override.
-> 
-> okay, thanks for the explanation. I was also confused by bcm_arasan,
-> because there is already an Arasan specific sdhci driver. But now it's
-> clear to me.
-> 
-> Could you please add a short comment (above sdhci_bcm_arasan_data) why
-> we cannot use bcm2835_data?
+Thus there is a problem if any kernel code thinks it can retry
+an access after doing something that would fix the page fault.
 
-Sure.
-
-> 
-> Btw the subject isn't complete. The patch is also related to the rpi3.
-
-Only via the historical ACPI tables. There isn't any attempt to get 
-ACPI+Linux working on the rpi3. Its to far away from BSA. For starters 
-it doesn't have a GIC. So while one could bind this driver on the rpi3, 
-that would require being able to boot Linux on the rpi3 in ACPI mode.
-
-Thanks again!
+One such example (I'm sure there are more) is in futex_wait_setup()
+where an attempt to read the futex with page faults disabled. Then
+a retry (after dropping a lock so page faults are safe):
 
 
+        ret = get_futex_value_locked(&uval, uaddr);
 
-> 
-> Best regards
-> Stefan
-> 
-> 
+        if (ret) {
+                queue_unlock(*hb);
+
+                ret = get_user(uval, uaddr);
+
+It would be good to avoid deliberately taking a second machine
+check (especially as the recovery code does really bad things
+and ends up in an infinite loop!).
+
+V2 (thanks to feedback from PeterZ) fixes this by changing get_user() to
+return -ENXIO ("No such device or address") for the case where a machine
+check occurred. Peter left it open which error code to use (suggesting
+"-EMEMERR or whatever name we come up with"). I think the existing ENXIO
+error code seems appropriate (the address being accessed has effectively
+gone away). But I don't have a strong attachment if anyone thinks we
+need a new code.
+
+Callers can check for ENXIO in paths where the access would be
+retried so they can avoid a second machine check.
+
+Patch roadmap:
+
+Part 1 (unchanged since v1):
+Add code to avoid the infinite loop in the machine check
+code. Just panic if code runs into the same machine check a second
+time. This should make it much easier to debug other places where
+this happens.
+
+Part 2: Change recovery path for get_user() to return -ENXIO
+
+Part 3: Fix the one case in futex code that my test case hits (I'm
+sure there are more).
+
+TBD: There are a few places in arch/x86 code that test "ret == -EFAULT"
+or have "switch (ret) { case -EFAULT: }" that may benefit from an
+additional check for -ENXIO. For now those will continue to crash
+(just like every pre-v5.10 kernel crashed when get_user() touched
+poison).
+
+
+Tony Luck (3):
+  x86/mce: Avoid infinite loop for copy from user recovery
+  x86/mce: Add new return value to get_user() for machine check
+  futex, x86/mce: Avoid double machine checks
+
+ arch/x86/kernel/cpu/mce/core.c | 7 ++++++-
+ arch/x86/lib/getuser.S         | 8 +++++++-
+ arch/x86/mm/extable.c          | 1 +
+ include/linux/sched.h          | 3 ++-
+ kernel/futex.c                 | 5 ++++-
+ 5 files changed, 20 insertions(+), 4 deletions(-)
+
+-- 
+2.21.1
 
