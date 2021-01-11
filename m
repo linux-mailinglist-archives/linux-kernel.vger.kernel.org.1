@@ -2,136 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D24692F20DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:32:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DDDF2F20E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:33:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389034AbhAKUcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 15:32:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728813AbhAKUcF (ORCPT
+        id S2390325AbhAKUdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 15:33:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32406 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390052AbhAKUdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:32:05 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EA5C06179F
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 12:31:25 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id j13so249286pjz.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 12:31:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BZbWJMckP7KnFzgMzYjv6b0GUK1slDkOJ3IpYhCUuJM=;
-        b=ZmSjWT7fgSd1h2QCqYkfefvC7EBMF1WXYaFlU/v6xYDyebfJ3A4MtqB5B9R9QoJZdr
-         zwOkX46YznqaaTwRUsjKhbu/FTJce0XchX3Dg38w4d2PJ78QBFiXRDYnLVddUQPZXii6
-         w1MIlAW7XLcq/wIvIcumiEkGdcHd1/N4oQg63J9ONYBGGCvtmkdgYKdY9EivNstrRP6C
-         UcXE7ajSI/3Z4OVHWC4dl4c9Vfila5c9BIabdkWEkgYCM7Ti8QeQDSM2DJBievQ1Efwu
-         HMMhPtCEikIiUF7Yx4UrhQK+CrOLwJUyjvTrJYRZJmxR9tmkl9AGvjbIcU86JCWmlfdM
-         J+xw==
+        Mon, 11 Jan 2021 15:33:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610397106;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+2kB21kABqOOu7gOcB3+o+ykSXSkI5oDu8DPYbkJeBA=;
+        b=Q2FhOvtZmlkKqLeVc2iVxIsvQcuZQmDbk14ExwkvkSwxyCVYEU20/hNffuE9w8O9OdCOE9
+        BqAQNYXJg3GHEIsOwYVGYZEyH2nn/rnMA8WVCXmmfNvsrnLsKD5ypWBK7ynjrq129XRfYo
+        VY0xQHVHboY2Uwi5wI5cnxEmcSpobNw=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-234-TbYNnJb9OM-rTpBhKc0-pw-1; Mon, 11 Jan 2021 15:31:45 -0500
+X-MC-Unique: TbYNnJb9OM-rTpBhKc0-pw-1
+Received: by mail-io1-f70.google.com with SMTP id x7so43054ion.12
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 12:31:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BZbWJMckP7KnFzgMzYjv6b0GUK1slDkOJ3IpYhCUuJM=;
-        b=hzrICPmpNxLJmxSNeEC8bw6JLM5Z3WeJVPJ38N0sTTl6a/dSDGSJlC5uJxqOYsKsNi
-         6n8qerwvqKdhLTLORbE0GX56Q2Rt1NFlrfb/GSAqQuLJsA4p9Iu/uqa2izWfXRr1RYlo
-         mnWKBaqDnVQ5JQKUGfyB2m8B/DxjchV8qlHVTODXSZ8D6GWVy6kSXW6PTPS+3yw8Cv3m
-         bjJjigpyfRX/XVQ3ynbEy0O7HFw/+RDLolQdb28DSNoLRkVCXXAlgFJnciGCt2qDT9Y3
-         IhZpO1WI1B3Iwe2lH9HW+ZpkvGQj05T9OGHmDVg+KGXUFKYF3iSI811CG1aQzcruQwJ4
-         L0/w==
-X-Gm-Message-State: AOAM533zwu6HjvbIrpnzoHarJVLZKGtCrceKHA7FcHAXzLaCZU6eoGip
-        Y/l5/QOM9pwQSC/IgftUL19zww==
-X-Google-Smtp-Source: ABdhPJxYNzGpmQg8oZE5NeZyx+bJ73huRA+dBmzVz8D+rUMN7YQUX4wwdcr0btxqP/PRS0wXW4Ugrg==
-X-Received: by 2002:a17:90b:23d6:: with SMTP id md22mr638840pjb.206.1610397084289;
-        Mon, 11 Jan 2021 12:31:24 -0800 (PST)
-Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
-        by smtp.gmail.com with ESMTPSA id t23sm538631pfc.0.2021.01.11.12.31.22
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+2kB21kABqOOu7gOcB3+o+ykSXSkI5oDu8DPYbkJeBA=;
+        b=i7cSXghm5W7PDK5SQWdS+ZL4An7lzHbPJ3pTUVjR5BUKwIFXYW/NOHsEZR6ef5cAsb
+         BNLX3cQn1TbHUwVH9VgnzoiCCk1u7t6Tbxh/CBfVfYUrPxwNc6QOAY471+RwW1kFKceC
+         AsmXjsLXvPy9hOXxKi98B0XCXhKWfyp1uYtonrj7/4qMt2C9vaTXN3JWeN0k0VkgMkSb
+         eaItHr97qeyWyUAcXJTL/OJNY7cJFB5A2mfDJ6gxUhLMYpcXv3vzpxINVMzHVa1Hniy5
+         Ts3C1TOgjaOiJzlfQcsC6L6bCFI05q9mwlCRPNfT4fqkgFB1WNrVZ4dTTnk1AXhyMUpf
+         kT8w==
+X-Gm-Message-State: AOAM530TakJWYTq8t1BcxCvfxB9JX4Z3O8VqC8FEpl/7Ro8A75L4LytB
+        RzelNlpH/bdumuekT1Bd3Gx4h13oP2EfnazMByk4uvGH266tvoQvdqWp7m3wzDHE2MewsKZTfow
+        xjaUJ5PSSXG7HKKUJS/V3VN3z
+X-Received: by 2002:a02:c9cc:: with SMTP id c12mr1326491jap.116.1610397104444;
+        Mon, 11 Jan 2021 12:31:44 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyKhDndwsOo2nRD5VZRaC8ko0qBQPThQauo77lSvQeu/a6IRHRXlNcv8N/azwv1N1MAovUXww==
+X-Received: by 2002:a02:c9cc:: with SMTP id c12mr1326478jap.116.1610397104214;
+        Mon, 11 Jan 2021 12:31:44 -0800 (PST)
+Received: from xps13 ([2605:a601:a63a:4d01:c3c1:7008:ba35:96])
+        by smtp.gmail.com with ESMTPSA id w3sm494775ilk.17.2021.01.11.12.31.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 12:31:23 -0800 (PST)
-Date:   Mon, 11 Jan 2021 12:31:20 -0800
-From:   Fangrui Song <maskray@google.com>
-To:     Bill Wendling <morbo@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-Subject: Re: [PATCH] pgo: add clang's Profile Guided Optimization
- infrastructure
-Message-ID: <20210111203120.daeef4yuwgmk5em4@google.com>
-References: <20210111081821.3041587-1-morbo@google.com>
- <20210111201224.l5r2zxuyd7ayszke@google.com>
- <CAGG=3QWo5_wwTMHtif4BzFssByaW1ScvpaEH1p1nZ6ymVggLjA@mail.gmail.com>
+        Mon, 11 Jan 2021 12:31:43 -0800 (PST)
+Date:   Mon, 11 Jan 2021 15:31:42 -0500
+From:   Jeremy Cline <jcline@redhat.com>
+To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc:     Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/ttm: Fix address passed to dma_mapping_error() in
+ ttm_pool_map()
+Message-ID: <20210111203142.GA51463@xps13>
+References: <20210111164033.695968-1-jcline@redhat.com>
+ <cbd76108-a7c4-119b-b045-eb857a84fcab@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAGG=3QWo5_wwTMHtif4BzFssByaW1ScvpaEH1p1nZ6ymVggLjA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cbd76108-a7c4-119b-b045-eb857a84fcab@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-11, Bill Wendling wrote:
->On Mon, Jan 11, 2021 at 12:12 PM Fangrui Song <maskray@google.com> wrote:
->>
->> On 2021-01-11, 'Bill Wendling' via Clang Built Linux wrote:
->> >From: Sami Tolvanen <samitolvanen@google.com>
->> >
->> >Enable the use of clang's Profile-Guided Optimization[1]. To generate a
->> >profile, the kernel is instrumented with PGO counters, a representative
->> >workload is run, and the raw profile data is collected from
->> >/sys/kernel/debug/pgo/profraw.
->> >
->> >The raw profile data must be processed by clang's "llvm-profdata" tool before
->> >it can be used during recompilation:
->> >
->> >  $ cp /sys/kernel/debug/pgo/profraw vmlinux.profraw
->> >  $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
->> >
->> >Multiple raw profiles may be merged during this step.
->> >
->> >The data can be used either by the compiler if LTO isn't enabled:
->> >
->> >    ... -fprofile-use=vmlinux.profdata ...
->> >
->> >or by LLD if LTO is enabled:
->> >
->> >    ... -lto-cs-profile-file=vmlinux.profdata ...
->>
->> This LLD option does not exist.
->> LLD does have some `--lto-*` options but the `-lto-*` form is not supported
->> (it clashes with -l) https://reviews.llvm.org/D79371
->>
->That's strange. I've been using that option for years now. :-) Is this
->a recent change?
+On Mon, Jan 11, 2021 at 09:21:48PM +0100, Christian König wrote:
+> Am 11.01.21 um 17:40 schrieb Jeremy Cline:
+> > check_unmap() is producing a warning about a missing map error check.
+> > The return value from dma_map_page() should be checked for an error, not
+> > the caller-provided dma_addr.
+> > 
+> > Fixes: d099fc8f540a ("drm/ttm: new TT backend allocation pool v3")
+> > Signed-off-by: Jeremy Cline <jcline@redhat.com>
+> 
+> Good catch. Reviewed and pushed to drm-misc-fixes, should be in the -rc by
+> the weekend.
+> 
 
-The more frequently used options (specifyed by the clang driver) are
--plugin-opt=... (options implemented by LLVMgold.so).
-`-lto-*` is rare.
+Great, many thanks!
 
->> (There is an earlier -fprofile-instr-generate which does
->> instrumentation in Clang, but the option does not have broad usage.
->> It is used more for code coverage, not for optimization.
->> Noticeably, it does not even implement the Kirchhoff's current law
->> optimization)
->>
->Right. I've been told outside of this email that -fprofile-generate is
->the prefered flag to use.
->
->> -fprofile-use= is used by both regular PGO and context-sensitive PGO (CSPGO).
->>
->> clang -flto=thin -fprofile-use= passes -plugin-opt=cs-profile-path= to the linker.
->> For regular PGO, this option is effectively a no-op (confirmed with CSPGO main developer).
->>
->> So I think the "or by LLD if LTO is enabled:" part should be removed.
->
->But what if you specify the linking step explicitly? Linux doesn't
->call "clang" when linking, but "ld.lld".
+- Jeremy
 
-Regular PGO+LTO does not need -plugin-opt=cs-profile-path=
-CSPGO+LTO needs it.
-Because -fprofile-use= may be used by both, Clang driver adds it.
-CSPGO is relevant in this this patch, so the linker option does not need to be mentioned.
