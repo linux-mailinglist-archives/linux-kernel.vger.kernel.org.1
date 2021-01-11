@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1612C2F13C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3492F2F12E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:03:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732124AbhAKNOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:14:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60596 "EHLO mail.kernel.org"
+        id S1728141AbhAKNBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:01:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48766 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732036AbhAKNOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:14:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A00A227C3;
-        Mon, 11 Jan 2021 13:13:45 +0000 (UTC)
+        id S1727454AbhAKNBU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:01:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CF4622527;
+        Mon, 11 Jan 2021 13:00:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370825;
-        bh=+HaAOliobIdZyWT5KnELUAHmdMqwo59Pt6D2zGxneG4=;
+        s=korg; t=1610370014;
+        bh=c+VdNQkvnXBrSweCeC/HDTRguVf18HGSP1aDZdj7Yu8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q/qjcGbBysH+nE2Y58XD17VCipijMnC1jHyv2JexxYiN7FvnUDnfEjKxZ+/ZKxCtp
-         itDU3NcfM/+L+FXg1DdqY4pmjVt4/5dl3yS+8WVcQ8YsJZPcMr6nksgbxEbYh1nTL6
-         S2/ag4YIWvr5McQr2Dixi3it5Kpw2Vw0orFxbPk8=
+        b=Cf1mwN53Zsm5NQWlHAXCr7BzxKLoJTRFgTSUxne8axqPQeyhMqtUOXbqoskIKvmk4
+         lr0el82c2LZwxWBU7Pzo5jBG+d7OOJCt2MQDYjQmMiwML4zt5KBwbAkeL+yyHl14uN
+         OHEwAiEConr4okMuwOjc28Cc9WwR9/xIUHNQTV/c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 020/145] net: ethernet: Fix memleak in ethoc_probe
-Date:   Mon, 11 Jan 2021 14:00:44 +0100
-Message-Id: <20210111130049.479468219@linuxfoundation.org>
+        stable@vger.kernel.org, Jeff Dike <jdike@akamai.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.4 13/38] virtio_net: Fix recursive call to cpus_read_lock()
+Date:   Mon, 11 Jan 2021 14:00:45 +0100
+Message-Id: <20210111130033.111954313@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
+References: <20210111130032.469630231@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,42 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Jeff Dike <jdike@akamai.com>
 
-[ Upstream commit 5d41f9b7ee7a5a5138894f58846a4ffed601498a ]
+[ Upstream commit de33212f768c5d9e2fe791b008cb26f92f0aa31c ]
 
-When mdiobus_register() fails, priv->mdio allocated
-by mdiobus_alloc() has not been freed, which leads
-to memleak.
+virtnet_set_channels can recursively call cpus_read_lock if CONFIG_XPS
+and CONFIG_HOTPLUG are enabled.
 
-Fixes: e7f4dc3536a4 ("mdio: Move allocation of interrupts into core")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Link: https://lore.kernel.org/r/20201223110615.31389-1-dinghao.liu@zju.edu.cn
+The path is:
+    virtnet_set_channels - calls get_online_cpus(), which is a trivial
+wrapper around cpus_read_lock()
+    netif_set_real_num_tx_queues
+    netif_reset_xps_queues_gt
+    netif_reset_xps_queues - calls cpus_read_lock()
+
+This call chain and potential deadlock happens when the number of TX
+queues is reduced.
+
+This commit the removes netif_set_real_num_[tr]x_queues calls from
+inside the get/put_online_cpus section, as they don't require that it
+be held.
+
+Fixes: 47be24796c13 ("virtio-net: fix the set affinity bug when CPU IDs are not consecutive")
+Signed-off-by: Jeff Dike <jdike@akamai.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+Link: https://lore.kernel.org/r/20201223025421.671-1-jdike@akamai.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ethoc.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/virtio_net.c |   12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
---- a/drivers/net/ethernet/ethoc.c
-+++ b/drivers/net/ethernet/ethoc.c
-@@ -1211,7 +1211,7 @@ static int ethoc_probe(struct platform_d
- 	ret = mdiobus_register(priv->mdio);
- 	if (ret) {
- 		dev_err(&netdev->dev, "failed to register MDIO bus\n");
--		goto free2;
-+		goto free3;
- 	}
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -1372,14 +1372,16 @@ static int virtnet_set_channels(struct n
  
- 	ret = ethoc_mdio_probe(netdev);
-@@ -1243,6 +1243,7 @@ error2:
- 	netif_napi_del(&priv->napi);
- error:
- 	mdiobus_unregister(priv->mdio);
-+free3:
- 	mdiobus_free(priv->mdio);
- free2:
- 	clk_disable_unprepare(priv->clk);
+ 	get_online_cpus();
+ 	err = virtnet_set_queues(vi, queue_pairs);
+-	if (!err) {
+-		netif_set_real_num_tx_queues(dev, queue_pairs);
+-		netif_set_real_num_rx_queues(dev, queue_pairs);
+-
+-		virtnet_set_affinity(vi);
++	if (err) {
++		put_online_cpus();
++		goto err;
+ 	}
++	virtnet_set_affinity(vi);
+ 	put_online_cpus();
+ 
++	netif_set_real_num_tx_queues(dev, queue_pairs);
++	netif_set_real_num_rx_queues(dev, queue_pairs);
++err:
+ 	return err;
+ }
+ 
 
 
