@@ -2,88 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E47A2F17FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B27C22F17FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:23:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730988AbhAKOVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:21:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36558 "EHLO mail.kernel.org"
+        id S1731531AbhAKOWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:22:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42166 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727240AbhAKOVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:21:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DC5A2242A;
-        Mon, 11 Jan 2021 14:20:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610374852;
-        bh=lRhzRu5y4+MceKt6vK/qDXTv1oaK7iwXlndeq3cc600=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SFji115mDcl1gtX+XC2CFqcklpyblJlnLg+sAOKBIybrr5ATHHjfg0hOlH8GzVpHA
-         /aOkR5ICzC35xufnLjxzu15zrIPs/jbwmvSSr9quMYAUHIluDaWAnnGxdK+Nh5tbpm
-         H4z5KvSLtFKg4J0kv/2o3RPFs7XcNe6Kfot//k7/pfDPgittnqfYxacFfTsX9qVzNH
-         rGV8CBpEaZ7aQHgnT5VLYxjfRQ3DsKHnJYKEDORm7D2N6Ospcmv0V++YAZe42FaFcG
-         KIdOgaEEAS+G22dVfnYFAYiBAjiOZb6EsPRfU4Mi70ce/c7sXpSZxC9eTOxyYf9HAT
-         hUQ/RuFVFha4Q==
-Date:   Mon, 11 Jan 2021 15:20:48 +0100
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Adam Zabrocki <pi3@pi3.com.pl>
-Cc:     Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Solar Designer <solar@openwall.com>
-Subject: Re: Linux Kernel module notification bug
-Message-ID: <20210111142048.GA27038@linux-8ccs>
-References: <20210110175401.GB32505@pi3.com.pl>
+        id S1727304AbhAKOWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 09:22:18 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610374892; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JuR0HuBMLIDnEYv5E22nWr8owemJ74DzkLUjmpc1fUw=;
+        b=uTNG2XeJedGaESO9SdJgAo+QP6NFhhtFGRGI2VjGWXe+u+AaFrSb2xTfqqIewR4iyBi9Xv
+        +dCepl6KmWHYj5Hi4tyjyQZjlZ8KJujGzMxzj5E42CrbV/IAz8WliOJ00BlsUABM4xTe6o
+        4CSBlbTJjogXqaPkcvtMqf4Vit0mG70=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 217F2B73F;
+        Mon, 11 Jan 2021 14:21:32 +0000 (UTC)
+Date:   Mon, 11 Jan 2021 15:21:31 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Xiaoming Ni <nixiaoming@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, mcgrof@kernel.org,
+        yzaikin@google.com, adobriyan@gmail.com,
+        linux-fsdevel@vger.kernel.org, vbabka@suse.cz, wangle6@huawei.com
+Subject: Re: [PATCH v2] proc_sysctl: fix oops caused by incorrect command
+ parameters.
+Message-ID: <20210111142131.GA22493@dhcp22.suse.cz>
+References: <20210108023339.55917-1-nixiaoming@huawei.com>
+ <20210108092145.GX13207@dhcp22.suse.cz>
+ <829bbba0-d3bb-a114-af81-df7390082958@huawei.com>
+ <20210108114718.GA13207@dhcp22.suse.cz>
+ <202101081152.0CB22390@keescook>
+ <20210108201025.GA17019@dhcp22.suse.cz>
+ <20210108175008.da3c60a6e402f5f1ddab2a65@linux-foundation.org>
+ <bc098af4-c0cd-212e-d09d-46d617d0acab@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210110175401.GB32505@pi3.com.pl>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.28-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <bc098af4-c0cd-212e-d09d-46d617d0acab@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Adam Zabrocki [10/01/21 18:54 +0100]:
->Hello,
->
->I believe that the following commit does introduce a gentle "functionality
->bug":
->
->"module: delay kobject uevent until after module init call":
->https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/kernel/module.c?id=38dc717e97153e46375ee21797aa54777e5498f3
->
->The official Linux Kernel API for the kernel module activities notification has
->been divided based on the readiness 'stage' for such module. We have the
->following stages:
->
->        MODULE_STATE_LIVE,      /* Normal state. */
->        MODULE_STATE_COMING,    /* Full formed, running module_init. */
->        MODULE_STATE_GOING,     /* Going away. */
->        MODULE_STATE_UNFORMED,  /* Still setting it up. */
->
->LIVE means that the kernel module is correctly running and all initialization
->work has been already done. Otherwise, we have event 'COMING' or 'UNFORMED'.
->
->In the described commit, creation of the KOBJECT has been moved after invoking
->a notficiation of the newly formed kernel module state (LIVE). That's somehow
->inconsistent from my understanding of the kernel modules notifiers logic.
->Creation of the new objects (like KOBJ) should be done before notification of
->the stage LIVE is invoked.
+On Mon 11-01-21 11:48:19, Xiaoming Ni wrote:
+[...]
+> patch3:
+> 	+++ b/fs/proc/proc_sysctl.c
+> 	@@ -1770,6 +1770,9 @@ static int process_sysctl_arg(char *param, char *val,
+> 							return 0;
+> 			}
+> 
+> 	+       if (!val)
+> 	+               return -EINVAL;
+> 	+
+> 			/*
+> 			 * To set sysctl options, we use a temporary mount of proc, look up the
+> 			 * respective sys/ file and write to it. To avoid mounting it when no
+> 
+> sysctl log for patch3:
+> 	Setting sysctl args: `' invalid for parameter `hung_task_panic'
+[...]
+> When process_sysctl_arg() is called, the param parameter may not be the
+> sysctl parameter.
+> 
+> Patch3 or patch4, which is better?
 
-I'm confused. We're not creating any kobjects here. That is all done
-in mod_sysfs_setup(), which is called while the module is still
-COMING.  What that commit does is delay telling userspace about the
-module (specifically, systemd/udev) until the module is basically
-ready. Systemd was basically receiving the uevent too early, before
-the module has initialized, hence we decided to delay the uevent [1].
+Patch3
 
->This commit breaks some of the projects that rely on the LIVE notification to
->monitor when the newly loaded module is ready.
-
-Hm, could you please explain specifically what is the issue you're seeing?
-What projects is it breaking?
-
-Thanks,
-
-Jessica
-
-[1] https://github.com/systemd/systemd/issues/17586
+-- 
+Michal Hocko
+SUSE Labs
