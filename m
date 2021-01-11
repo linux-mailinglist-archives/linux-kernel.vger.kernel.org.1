@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA41E2F1539
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DC02F1643
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:51:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731782AbhAKNNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:13:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59254 "EHLO mail.kernel.org"
+        id S2387860AbhAKNuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:50:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730999AbhAKNMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:12:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CD8E2255F;
-        Mon, 11 Jan 2021 13:12:14 +0000 (UTC)
+        id S1730989AbhAKNJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:09:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C32CE225AB;
+        Mon, 11 Jan 2021 13:09:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370734;
-        bh=TDmRcODaA1zi6IDRn+XzSDrBCs4+1dO5A6xNwn0w2fE=;
+        s=korg; t=1610370548;
+        bh=LXP6tuufYFW7jUWZ60lcjdZMLnmWhNG3hxlvzB6Yqoo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K7sqV5d9iJmK8l5EKr09XVUqHXAA5jFb1K0sdoV4Xaxwi7GXice6yEY6AQ33LNprA
-         JB6bNDuTkZ9RpkQpMAw/DMOoQ7H/avz8TRhz9OhKMImtLHlzMoJW4ocdygTosT/+wl
-         8L11F19jYjrZ0JzXX+ZUeYwgJq+uMr975FQ1Gs+E=
+        b=aB//0jvqJhgOgzb+sbgymSe/Anm0JXtt1ADeMj7+suXwlI4fo/TVAWeUvd8sFOX7n
+         wuoaWM8FuPs+GPCVqVFBDeRft4fHIyUuA5UaBrCwN1G4IEKvNLa+ltR7o49J1cZEFw
+         waqE4bolQekTj4g5WLtPjBrqcJKrclbzkNC57+GQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 5.4 75/92] USB: serial: keyspan_pda: remove unused variable
-Date:   Mon, 11 Jan 2021 14:02:19 +0100
-Message-Id: <20210111130042.768400152@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 4.19 71/77] Revert "device property: Keep secondary firmware node secondary by type"
+Date:   Mon, 11 Jan 2021 14:02:20 +0100
+Message-Id: <20210111130039.819211483@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
-References: <20210111130039.165470698@linuxfoundation.org>
+In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
+References: <20210111130036.414620026@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-Remove an unused variable which was mistakingly left by commit
-37faf5061541 ("USB: serial: keyspan_pda: fix write-wakeup
-use-after-free") and only removed by a later change.
+commit 47f4469970d8861bc06d2d4d45ac8200ff07c693 upstream.
 
-This is needed to suppress a W=1 warning about the unused variable in
-the stable trees that the build bots triggers.
+While commit d5dcce0c414f ("device property: Keep secondary firmware
+node secondary by type") describes everything correct in its commit
+message, the change it made does the opposite and original commit
+c15e1bdda436 ("device property: Fix the secondary firmware node handling
+in set_primary_fwnode()") was fully correct.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+Revert the former one here and improve documentation in the next patch.
+
+Fixes: d5dcce0c414f ("device property: Keep secondary firmware node secondary by type")
+Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: 5.10+ <stable@vger.kernel.org> # 5.10+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/usb/serial/keyspan_pda.c |    2 --
- 1 file changed, 2 deletions(-)
 
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -555,10 +555,8 @@ exit:
- static void keyspan_pda_write_bulk_callback(struct urb *urb)
- {
- 	struct usb_serial_port *port = urb->context;
--	struct keyspan_pda_private *priv;
- 
- 	set_bit(0, &port->write_urbs_free);
--	priv = usb_get_serial_port_data(port);
- 
- 	/* queue up a wakeup at scheduler time */
- 	usb_serial_port_softint(port);
+---
+ drivers/base/core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -3349,7 +3349,7 @@ void set_primary_fwnode(struct device *d
+ 		if (fwnode_is_primary(fn)) {
+ 			dev->fwnode = fn->secondary;
+ 			if (!(parent && fn == parent->fwnode))
+-				fn->secondary = ERR_PTR(-ENODEV);
++				fn->secondary = NULL;
+ 		} else {
+ 			dev->fwnode = NULL;
+ 		}
 
 
