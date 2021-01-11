@@ -2,86 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1422F1B54
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:46:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0492F1B5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:49:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733134AbhAKQqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:46:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57901 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731405AbhAKQqX (ORCPT
+        id S2389002AbhAKQr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:47:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388582AbhAKQr5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:46:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610383497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jfWDa25Akh5OH/pweDQ3fJnM+dfnZCEUX8OjvCsiZ/E=;
-        b=ShQGl5jodYGJeRsMs7ebxBQtCyErrTMUCbHIePw/N6xnEkQ7HtL4D/iSaC03mdzD9HARx1
-        PGpFyFy8QX5RO82u19BtUFhNu2nl10fqIGPUaDi7BYxnbQNXxdf3RRNq+eP6YaZdgbyA0X
-        wYVkUYqn3xKwuX59cjWxkyDL09aSAWw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-333-ULda1Ar_Pm688wQ0kVuMcw-1; Mon, 11 Jan 2021 11:44:55 -0500
-X-MC-Unique: ULda1Ar_Pm688wQ0kVuMcw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A7C711823E41;
-        Mon, 11 Jan 2021 16:44:53 +0000 (UTC)
-Received: from [10.36.115.103] (ovpn-115-103.ams2.redhat.com [10.36.115.103])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 815EC60C6E;
-        Mon, 11 Jan 2021 16:44:51 +0000 (UTC)
-Subject: Re: [PATCH] mm/compaction: Remove duplicated VM_BUG_ON_PAGE
- !PageLocked
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210109081420.46030-1-linmiaohe@huawei.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <c51ae9e1-2e15-cfa7-43b2-a558867573cf@redhat.com>
-Date:   Mon, 11 Jan 2021 17:44:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 11 Jan 2021 11:47:57 -0500
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F27AC06179F
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 08:47:17 -0800 (PST)
+Received: by mail-vs1-xe2d.google.com with SMTP id e20so10007882vsr.12
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 08:47:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iQTCUBSd32PPGYWf+4NIALcXpFdvaLx7ubBy6PwA+oo=;
+        b=dV4BlOFvq3NnHp1B03OjVOTUkXxDivdCZzUxDmW4DhWl6JK6pz/TMEZzznL40CNtlU
+         qTyNX4XXjyD4aWzUANyL5M3W32syMhp1DThb4pUUuqAM0FwZhL67S1aeDy5vDZDwNy2n
+         0n7glfkziSL5hW3iiaR7wq4xhfDKi5Lv9eZxw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iQTCUBSd32PPGYWf+4NIALcXpFdvaLx7ubBy6PwA+oo=;
+        b=t0qup3oeHrzRikoUwz5w8+BcnJ+zGcjRkF2r347kRclycBvECPL+Z6bUFg+Qwe/mWq
+         BO7BtlgDiwF8Xvijcz70F+2fa8njmHND1GJy2wRkN9BtLOzcCDG9MuBA/0za5y7JpEMy
+         TnKnIGkzo2fkoa3QwD+uduOhH4jagd9JTkdpRjh8fm5Hok91THxBD0SU5HLacyT/ivU4
+         dwbIypMXi7iiPgYtzl2k2BVLiuiy2A5B+lypQouinXSV1NuNBe2dkR2mc1k9xUJmF1LT
+         rxTzca6drEdfgk5dVC6h/UMZxJ6+lyRJJbfWROdtfRmlZgnWbkaUOHeYgRzWJQKpCdSv
+         8koQ==
+X-Gm-Message-State: AOAM532JP0qilXTzmtNQTacQZt2FN7Vsh/RvnDm3341jILw+qjsmdgTJ
+        7gYLM/zyIkr0BHONgZf+LgvMQKbYw8Q8Ig==
+X-Google-Smtp-Source: ABdhPJwPDYD3bxT9MHoUQTTb8h/d2MuFCdxyH94ONYmaoPzscdmzMwz6JYWycyZ7WkWthzK6M/4aZw==
+X-Received: by 2002:a05:6102:42:: with SMTP id k2mr461351vsp.7.1610383636456;
+        Mon, 11 Jan 2021 08:47:16 -0800 (PST)
+Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com. [209.85.221.169])
+        by smtp.gmail.com with ESMTPSA id i45sm39576uah.11.2021.01.11.08.47.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 08:47:15 -0800 (PST)
+Received: by mail-vk1-f169.google.com with SMTP id l187so4389257vki.6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 08:47:14 -0800 (PST)
+X-Received: by 2002:a1f:4582:: with SMTP id s124mr621617vka.7.1610383633600;
+ Mon, 11 Jan 2021 08:47:13 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210109081420.46030-1-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210111151651.1616813-1-vkoul@kernel.org> <20210111151651.1616813-8-vkoul@kernel.org>
+In-Reply-To: <20210111151651.1616813-8-vkoul@kernel.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 11 Jan 2021 08:47:01 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=UPNnSmgJM33QjAb4VvTe4Xs-OHcQCkk5E+o3u+afjbjA@mail.gmail.com>
+Message-ID: <CAD=FV=UPNnSmgJM33QjAb4VvTe4Xs-OHcQCkk5E+o3u+afjbjA@mail.gmail.com>
+Subject: Re: [PATCH 7/7] arm64: dts: qcom: sdm845: enable dma for spi
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        linux-spi <linux-spi@vger.kernel.org>, linux-i2c@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.01.21 09:14, Miaohe Lin wrote:
-> The VM_BUG_ON_PAGE(!PageLocked(page), page) is also done in PageMovable.
-> Remove this explicitly one.
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  mm/compaction.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 02af220fb992..6d316eb99913 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -137,7 +137,6 @@ EXPORT_SYMBOL(__SetPageMovable);
->  
->  void __ClearPageMovable(struct page *page)
->  {
-> -	VM_BUG_ON_PAGE(!PageLocked(page), page);
->  	VM_BUG_ON_PAGE(!PageMovable(page), page);
->  	/*
->  	 * Clear registered address_space val with keeping PAGE_MAPPING_MOVABLE
-> 
+Hi,
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+On Mon, Jan 11, 2021 at 7:18 AM Vinod Koul <vkoul@kernel.org> wrote:
+>
+> @@ -2622,6 +2626,13 @@ pinmux {
+>                                                "gpio2", "gpio3";
+>                                         function = "qup0";
+>                                 };
+> +
+> +                               config {
 
--- 
-Thanks,
+Convention in Qualcomm device tree files seems to be that the node is
+"pinconf", not "config".
 
-David / dhildenb
 
+> +                                       pins = "gpio0", "gpio1",
+> +                                              "gpio2", "gpio3";
+> +                                       drive-strength = <6>;
+> +                                       bias-disable;
+> +                               };
+
+Pin config almost never belongs in the SoC dtsi file.  This should be
+in the board .dts file.  What if pulls are needed on some pins?  What
+if you need a stronger or weaker drive strength?
+
+-Doug
