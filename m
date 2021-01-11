@@ -2,43 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F0A2F15F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 936D82F15A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:43:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731484AbhAKNqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:46:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57186 "EHLO mail.kernel.org"
+        id S1731477AbhAKNMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:12:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731250AbhAKNKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:10:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8FB4E2253A;
-        Mon, 11 Jan 2021 13:10:28 +0000 (UTC)
+        id S1731345AbhAKNLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:11:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C70021534;
+        Mon, 11 Jan 2021 13:10:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370629;
-        bh=xoTRx8qQQtnSaYwMqIVpCPfEi1lceBrcYZvQ/URSaLI=;
+        s=korg; t=1610370631;
+        bh=L47XDru5DO/x57PYjBmpn9hhBR5f2Vn1dNZcEwIfZ38=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WlnhLItEkCpkEx29Jljb0QMw4uzRolY2+fwqCwsf1lRIBM9eLHa+DIMbbnxMPpXRs
-         Wm/SWe3XEk0wJlly+EszQ/nGOjFlNeHTsZvgIYiiUY/GX0D1y+A9Nwieyomva1Yw9D
-         vhjghi43T+TqmijDdMGJ81TNC0mgV1IcNF5zIUlI=
+        b=UbwGO9pWvaNiHh47G6FdKSiqi8IPtvZCpuCCyD0y4GtfZ4pnq23beUAyGr6kggg8x
+         ddwZQNFoXkWUPb62LQ4YK50QQ2XDnozwrSOkLKDuv4qevI/6CcMnjtTZLAcSM4Tzhy
+         aZ/IYR/wtKspqNdc1yrmBQ68ihYvkryN593AO9M8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Woody Suwalski <terraluna977@gmail.com>,
-        Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Stan Johnson <userm57@yahoo.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Hannes Reinecke <hare@suse.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Huang Shijie <sjhuang@iluvatar.ai>,
+        Shi Jiasheng <jiasheng.shi@iluvatar.ai>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 05/92] scsi: scsi_transport_spi: Set RQF_PM for domain validation commands
-Date:   Mon, 11 Jan 2021 14:01:09 +0100
-Message-Id: <20210111130039.422834627@linuxfoundation.org>
+Subject: [PATCH 5.4 06/92] lib/genalloc: fix the overflow when size is too big
+Date:   Mon, 11 Jan 2021 14:01:10 +0100
+Message-Id: <20210111130039.468790192@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
 References: <20210111130039.165470698@linuxfoundation.org>
@@ -50,106 +42,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Huang Shijie <sjhuang@iluvatar.ai>
 
-[ Upstream commit cfefd9f8240a7b9fdd96fcd54cb029870b6d8d88 ]
+[ Upstream commit 36845663843fc59c5d794e3dc0641472e3e572da ]
 
-Disable runtime power management during domain validation. Since a later
-patch removes RQF_PREEMPT, set RQF_PM for domain validation commands such
-that these are executed in the quiesced SCSI device state.
+Some graphic card has very big memory on chip, such as 32G bytes.
 
-Link: https://lore.kernel.org/r/20201209052951.16136-6-bvanassche@acm.org
-Cc: Alan Stern <stern@rowland.harvard.edu>
-Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc: Woody Suwalski <terraluna977@gmail.com>
-Cc: Can Guo <cang@codeaurora.org>
-Cc: Stanley Chu <stanley.chu@mediatek.com>
-Cc: Ming Lei <ming.lei@redhat.com>
-Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: Stan Johnson <userm57@yahoo.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+In the following case, it will cause overflow:
+
+    pool = gen_pool_create(PAGE_SHIFT, NUMA_NO_NODE);
+    ret = gen_pool_add(pool, 0x1000000, SZ_32G, NUMA_NO_NODE);
+
+    va = gen_pool_alloc(pool, SZ_4G);
+
+The overflow occurs in gen_pool_alloc_algo_owner():
+
+		....
+		size = nbits << order;
+		....
+
+The @nbits is "int" type, so it will overflow.
+Then the gen_pool_avail() will return the wrong value.
+
+This patch converts some "int" to "unsigned long", and
+changes the compare code in while.
+
+Link: https://lkml.kernel.org/r/20201229060657.3389-1-sjhuang@iluvatar.ai
+Signed-off-by: Huang Shijie <sjhuang@iluvatar.ai>
+Reported-by: Shi Jiasheng <jiasheng.shi@iluvatar.ai>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/scsi_transport_spi.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
+ lib/genalloc.c | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/scsi/scsi_transport_spi.c b/drivers/scsi/scsi_transport_spi.c
-index f3d5b1bbd5aa7..c37dd15d16d24 100644
---- a/drivers/scsi/scsi_transport_spi.c
-+++ b/drivers/scsi/scsi_transport_spi.c
-@@ -117,12 +117,16 @@ static int spi_execute(struct scsi_device *sdev, const void *cmd,
- 		sshdr = &sshdr_tmp;
+diff --git a/lib/genalloc.c b/lib/genalloc.c
+index 9fc31292cfa1d..80d10d02cf388 100644
+--- a/lib/genalloc.c
++++ b/lib/genalloc.c
+@@ -81,14 +81,14 @@ static int clear_bits_ll(unsigned long *addr, unsigned long mask_to_clear)
+  * users set the same bit, one user will return remain bits, otherwise
+  * return 0.
+  */
+-static int bitmap_set_ll(unsigned long *map, int start, int nr)
++static int bitmap_set_ll(unsigned long *map, unsigned long start, unsigned long nr)
+ {
+ 	unsigned long *p = map + BIT_WORD(start);
+-	const int size = start + nr;
++	const unsigned long size = start + nr;
+ 	int bits_to_set = BITS_PER_LONG - (start % BITS_PER_LONG);
+ 	unsigned long mask_to_set = BITMAP_FIRST_WORD_MASK(start);
  
- 	for(i = 0; i < DV_RETRIES; i++) {
-+		/*
-+		 * The purpose of the RQF_PM flag below is to bypass the
-+		 * SDEV_QUIESCE state.
-+		 */
- 		result = scsi_execute(sdev, cmd, dir, buffer, bufflen, sense,
- 				      sshdr, DV_TIMEOUT, /* retries */ 1,
- 				      REQ_FAILFAST_DEV |
- 				      REQ_FAILFAST_TRANSPORT |
- 				      REQ_FAILFAST_DRIVER,
--				      0, NULL);
-+				      RQF_PM, NULL);
- 		if (driver_byte(result) != DRIVER_SENSE ||
- 		    sshdr->sense_key != UNIT_ATTENTION)
- 			break;
-@@ -1005,23 +1009,26 @@ spi_dv_device(struct scsi_device *sdev)
- 	 */
- 	lock_system_sleep();
+-	while (nr - bits_to_set >= 0) {
++	while (nr >= bits_to_set) {
+ 		if (set_bits_ll(p, mask_to_set))
+ 			return nr;
+ 		nr -= bits_to_set;
+@@ -116,14 +116,15 @@ static int bitmap_set_ll(unsigned long *map, int start, int nr)
+  * users clear the same bit, one user will return remain bits,
+  * otherwise return 0.
+  */
+-static int bitmap_clear_ll(unsigned long *map, int start, int nr)
++static unsigned long
++bitmap_clear_ll(unsigned long *map, unsigned long start, unsigned long nr)
+ {
+ 	unsigned long *p = map + BIT_WORD(start);
+-	const int size = start + nr;
++	const unsigned long size = start + nr;
+ 	int bits_to_clear = BITS_PER_LONG - (start % BITS_PER_LONG);
+ 	unsigned long mask_to_clear = BITMAP_FIRST_WORD_MASK(start);
  
-+	if (scsi_autopm_get_device(sdev))
-+		goto unlock_system_sleep;
-+
- 	if (unlikely(spi_dv_in_progress(starget)))
--		goto unlock;
-+		goto put_autopm;
+-	while (nr - bits_to_clear >= 0) {
++	while (nr >= bits_to_clear) {
+ 		if (clear_bits_ll(p, mask_to_clear))
+ 			return nr;
+ 		nr -= bits_to_clear;
+@@ -183,8 +184,8 @@ int gen_pool_add_owner(struct gen_pool *pool, unsigned long virt, phys_addr_t ph
+ 		 size_t size, int nid, void *owner)
+ {
+ 	struct gen_pool_chunk *chunk;
+-	int nbits = size >> pool->min_alloc_order;
+-	int nbytes = sizeof(struct gen_pool_chunk) +
++	unsigned long nbits = size >> pool->min_alloc_order;
++	unsigned long nbytes = sizeof(struct gen_pool_chunk) +
+ 				BITS_TO_LONGS(nbits) * sizeof(long);
  
- 	if (unlikely(scsi_device_get(sdev)))
--		goto unlock;
-+		goto put_autopm;
+ 	chunk = vzalloc_node(nbytes, nid);
+@@ -242,7 +243,7 @@ void gen_pool_destroy(struct gen_pool *pool)
+ 	struct list_head *_chunk, *_next_chunk;
+ 	struct gen_pool_chunk *chunk;
+ 	int order = pool->min_alloc_order;
+-	int bit, end_bit;
++	unsigned long bit, end_bit;
  
- 	spi_dv_in_progress(starget) = 1;
+ 	list_for_each_safe(_chunk, _next_chunk, &pool->chunks) {
+ 		chunk = list_entry(_chunk, struct gen_pool_chunk, next_chunk);
+@@ -278,7 +279,7 @@ unsigned long gen_pool_alloc_algo_owner(struct gen_pool *pool, size_t size,
+ 	struct gen_pool_chunk *chunk;
+ 	unsigned long addr = 0;
+ 	int order = pool->min_alloc_order;
+-	int nbits, start_bit, end_bit, remain;
++	unsigned long nbits, start_bit, end_bit, remain;
  
- 	buffer = kzalloc(len, GFP_KERNEL);
+ #ifndef CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	BUG_ON(in_nmi());
+@@ -487,7 +488,7 @@ void gen_pool_free_owner(struct gen_pool *pool, unsigned long addr, size_t size,
+ {
+ 	struct gen_pool_chunk *chunk;
+ 	int order = pool->min_alloc_order;
+-	int start_bit, nbits, remain;
++	unsigned long start_bit, nbits, remain;
  
- 	if (unlikely(!buffer))
--		goto out_put;
-+		goto put_sdev;
+ #ifndef CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	BUG_ON(in_nmi());
+@@ -754,7 +755,7 @@ unsigned long gen_pool_best_fit(unsigned long *map, unsigned long size,
+ 	index = bitmap_find_next_zero_area(map, size, start, nr, 0);
  
- 	/* We need to verify that the actual device will quiesce; the
- 	 * later target quiesce is just a nice to have */
- 	if (unlikely(scsi_device_quiesce(sdev)))
--		goto out_free;
-+		goto free_buffer;
- 
- 	scsi_target_quiesce(starget);
- 
-@@ -1041,12 +1048,16 @@ spi_dv_device(struct scsi_device *sdev)
- 
- 	spi_initial_dv(starget) = 1;
- 
-- out_free:
-+free_buffer:
- 	kfree(buffer);
-- out_put:
-+
-+put_sdev:
- 	spi_dv_in_progress(starget) = 0;
- 	scsi_device_put(sdev);
--unlock:
-+put_autopm:
-+	scsi_autopm_put_device(sdev);
-+
-+unlock_system_sleep:
- 	unlock_system_sleep();
- }
- EXPORT_SYMBOL(spi_dv_device);
+ 	while (index < size) {
+-		int next_bit = find_next_bit(map, size, index + nr);
++		unsigned long next_bit = find_next_bit(map, size, index + nr);
+ 		if ((next_bit - index) < len) {
+ 			len = next_bit - index;
+ 			start_bit = index;
 -- 
 2.27.0
 
