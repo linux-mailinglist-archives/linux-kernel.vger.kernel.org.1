@@ -2,117 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A8322F12A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:56:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CC232F12AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:59:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727380AbhAKMza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 07:55:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47692 "EHLO mail.kernel.org"
+        id S1727668AbhAKM61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 07:58:27 -0500
+Received: from mga09.intel.com ([134.134.136.24]:19306 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727328AbhAKMz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 07:55:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CD0820728;
-        Mon, 11 Jan 2021 12:54:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610369688;
-        bh=HuyDIlefzS9pOGuogHytTfEprxzWqtveZHaAkNqfZug=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RVeE+oQDDb2JYoKRuuWXXU0FhMUSVglquRFu+sPNRZqW+MXlZAHdTSRxNoI337kGp
-         iI125xwSGxZsFtixy0Sx9LSklRcLj2Ww+X2Os0TqMsx+nfhpZAsN3xbFuDBcqJeMKX
-         2VBXhDHurokKjclQSweCHiyzhlSbPi57UOpotLG3DrFePLYlJqrxnh6ofxdvmsY1OK
-         Nx3au6d+hAijkkv0iftaaPKLo0r2+Xb+dgjf+lUQBsJO09YpiCz3fllwLXORZwAco6
-         wOeAEoiSeH6LC/4jJ7EZkzQf2uk7/g44/ArCg0ad7EgjRu6NKJP2MxAaw6+Q0UKznK
-         EpUBfkQ45iuFQ==
-Date:   Mon, 11 Jan 2021 13:54:46 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org
-Subject: Re: [RFC PATCH 5/8] entry: Explicitly flush pending rcuog wakeup
- before last rescheduling points
-Message-ID: <20210111125446.GE242508@lothringen>
-References: <20210109020536.127953-1-frederic@kernel.org>
- <20210109020536.127953-6-frederic@kernel.org>
- <X/w/qBdnnQ5pFQxJ@hirez.programming.kicks-ass.net>
+        id S1726686AbhAKM60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 07:58:26 -0500
+IronPort-SDR: LoT3vkwoCskR2FOcijk4ohDA0eQpWoCBxt6Y4YZLBLQySxAR9oQwrZtsOqCNdqdW+tMNO8PNgu
+ 5/LjBgUW4t0w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9860"; a="178002962"
+X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
+   d="scan'208";a="178002962"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 04:56:36 -0800
+IronPort-SDR: rYQXHqKv5O3uuQA3e427T24HknA9G3wkZhKo2mwyILHTWFz9r0QGNRFJzThPjPlIQ2vfrvk3st
+ f8enqWbH0Zdg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
+   d="scan'208";a="464152338"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 11 Jan 2021 04:56:33 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 11 Jan 2021 14:56:32 +0200
+Date:   Mon, 11 Jan 2021 14:56:32 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
+        <linux-usb@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH 0/2] Remove one more platform_device_add_properties() call
+Message-ID: <20210111125632.GA2020859@kuha.fi.intel.com>
+References: <20201123153148.52647-1-heikki.krogerus@linux.intel.com>
+ <CAJZ5v0jAaz2zELkJoKjHtxyfuKEi=ORuCCad-F0yp6KephieGg@mail.gmail.com>
+ <20201204112318.GA4013126@kuha.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X/w/qBdnnQ5pFQxJ@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201204112318.GA4013126@kuha.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 01:08:08PM +0100, Peter Zijlstra wrote:
-> On Sat, Jan 09, 2021 at 03:05:33AM +0100, Frederic Weisbecker wrote:
-> > Following the idle loop model, cleanly check for pending rcuog wakeup
-> > before the last rescheduling point on resuming to user mode. This
-> > way we can avoid to do it from rcu_user_enter() with the last resort
-> > self-IPI hack that enforces rescheduling.
-> > 
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Ingo Molnar<mingo@kernel.org>
-> > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >  kernel/entry/common.c |  6 ++++++
-> >  kernel/rcu/tree.c     | 12 +++++++-----
-> >  2 files changed, 13 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/kernel/entry/common.c b/kernel/entry/common.c
-> > index 378341642f94..8f3292b5f9b7 100644
-> > --- a/kernel/entry/common.c
-> > +++ b/kernel/entry/common.c
-> > @@ -178,6 +178,9 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
-> >  		/* Architecture specific TIF work */
-> >  		arch_exit_to_user_mode_work(regs, ti_work);
-> >  
-> > +		/* Check if any of the above work has queued a deferred wakeup */
-> > +		rcu_nocb_flush_deferred_wakeup();
-> > +
-> >  		/*
-> >  		 * Disable interrupts and reevaluate the work flags as they
-> >  		 * might have changed while interrupts and preemption was
-> > @@ -197,6 +200,9 @@ static void exit_to_user_mode_prepare(struct pt_regs *regs)
-> >  
-> >  	lockdep_assert_irqs_disabled();
-> >  
-> > +	/* Flush pending rcuog wakeup before the last need_resched() check */
-> > +	rcu_nocb_flush_deferred_wakeup();
-> > +
-> >  	if (unlikely(ti_work & EXIT_TO_USER_MODE_WORK))
-> >  		ti_work = exit_to_user_mode_loop(regs, ti_work);
-> >  
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index 2920dfc9f58c..3c4c0d5cea65 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -705,12 +705,14 @@ noinstr void rcu_user_enter(void)
-> >  
-> >  	lockdep_assert_irqs_disabled();
-> >  	/*
-> > -	 * We may be past the last rescheduling opportunity in the entry code.
-> > -	 * Trigger a self IPI that will fire and reschedule once we resume to
-> > -	 * user/guest mode.
-> > +	 * Other than generic entry implementation, we may be past the last
-> > +	 * rescheduling opportunity in the entry code. Trigger a self IPI
-> > +	 * that will fire and reschedule once we resume in user/guest mode.
-> >  	 */
-> > -	if (do_nocb_deferred_wakeup(rdp) && need_resched())
-> > -		irq_work_queue(this_cpu_ptr(&late_wakeup_work));
-> > +	if (!IS_ENABLED(CONFIG_GENERIC_ENTRY) || (current->flags & PF_VCPU)) {
+On Fri, Dec 04, 2020 at 01:23:22PM +0200, Heikki Krogerus wrote:
+> Hi Felipe,
 > 
-> We have xfer_to_guest_mode_work() for that PF_VCPU case.
-
-Ah very nice! I'll integrate that on the next iteration.
-
-Thanks.
-
+> On Mon, Nov 23, 2020 at 06:06:31PM +0100, Rafael J. Wysocki wrote:
+> > On Mon, Nov 23, 2020 at 4:32 PM Heikki Krogerus
+> > <heikki.krogerus@linux.intel.com> wrote:
+> > >
+> > > Hi,
+> > >
+> > > I originally introduced these as part of my series where I was
+> > > proposing PM ops for software nodes [1], but since that still needs
+> > > work, I'm sending these two separately.
+> > >
+> > > So basically I'm only modifying dwc3-pci.c so it registers a software
+> > > node directly at this point. That will remove one more user of
+> > > platform_device_add_properties().
+> > >
+> > > [1] https://lore.kernel.org/lkml/20201029105941.63410-1-heikki.krogerus@linux.intel.com/
+> > >
+> > > thanks,
+> > >
+> > > Heikki Krogerus (2):
+> > >   software node: Introduce device_add_software_node()
+> > >   usb: dwc3: pci: Register a software node for the dwc3 platform device
+> > >
+> > >  drivers/base/swnode.c       | 69 ++++++++++++++++++++++++++++++++-----
+> > >  drivers/usb/dwc3/dwc3-pci.c | 61 +++++++++++++++++++-------------
+> > >  include/linux/property.h    |  3 ++
+> > >  3 files changed, 100 insertions(+), 33 deletions(-)
+> > >
+> > > --
+> > 
+> > These look good to me.
+> > 
+> > If you want me to take them, though, I need an ACK from the dwc3 side.
 > 
-> > +		if (do_nocb_deferred_wakeup(rdp) && need_resched())
-> > +			irq_work_queue(this_cpu_ptr(&late_wakeup_work));
-> > +	}
+> Is this OK?
+
+I think this went under you radar, so I'll resend these.
+
+Br,
+
+-- 
+heikki
