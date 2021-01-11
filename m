@@ -2,106 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8C92F1241
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D32EC2F1248
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:27:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726468AbhAKMZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 07:25:46 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:53536 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725858AbhAKMZq (ORCPT
+        id S1726551AbhAKM0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 07:26:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726008AbhAKM0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 07:25:46 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 888DA1F44A81
-Message-ID: <5b6d07096cbc19da68bbbfd29acb6c9ad584935b.camel@collabora.com>
-Subject: Re: [PATCH] hantro: Format IOCTLs compliance fixes
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-rockchip@lists.infradead.org, devel@driverdev.osuosl.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Mon, 11 Jan 2021 09:24:55 -0300
-In-Reply-To: <CANiDSCuy9MPK8qpwEz4CTta54i6S=k3DsempGLYssU2NtFGM3Q@mail.gmail.com>
-References: <20210111113529.45488-1-ribalda@chromium.org>
-         <ef218bf2bd948961079237686b58a00ca1b125bf.camel@collabora.com>
-         <CANiDSCsX3k7xeC7Sr2T2SxHqspay+i054rAuv-NYCQpFRNuGeg@mail.gmail.com>
-         <CANiDSCuy9MPK8qpwEz4CTta54i6S=k3DsempGLYssU2NtFGM3Q@mail.gmail.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        Mon, 11 Jan 2021 07:26:50 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0549C061786;
+        Mon, 11 Jan 2021 04:26:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yffeqYboBqOGua6hWCkEf8XKAwaOj/3UxQruZqzhb1g=; b=WMxGA+VKW3fO7JteFchAlyxi9T
+        3l4Jjs0FWsulRdLl+Ft7Ymq7xBdelXluchQFPRmvne3SLsgX+9D6DMjvi96a+IewVi72FKWKgWUQA
+        gTFmRL9d2sm1vvtX1m9XXAX2Z1SYujzEf8TYf/1W1YbpRCvGjqCrzHUJxNYhPM+ErjCa7WwigUDwb
+        jBmaUaVHiacc8cAHFnLPPGgpf0WJDcQmKo1r7RcyUAhJfcykd4gYmJTb3iEpx+phBsZT8SCKEbIld
+        ye2mLVCssRDX4ggpEReSWPS1KZWOnxf1Gw7CI2tb8GU9G/TxZexK7xW0Io6adlO2nqp/tAjMtjOHK
+        bYDyw2fg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1kywGm-003Cxp-Eb; Mon, 11 Jan 2021 12:26:00 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DC3F4301324;
+        Mon, 11 Jan 2021 13:25:59 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9C195235E2519; Mon, 11 Jan 2021 13:25:59 +0100 (CET)
+Date:   Mon, 11 Jan 2021 13:25:59 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org
+Subject: Re: [RFC PATCH 6/8] sched: Report local wake up on resched blind
+ zone within idle loop
+Message-ID: <X/xD1/yjYXi28XXs@hirez.programming.kicks-ass.net>
+References: <20210109020536.127953-1-frederic@kernel.org>
+ <20210109020536.127953-7-frederic@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210109020536.127953-7-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-01-11 at 13:22 +0100, Ricardo Ribalda wrote:
-> Hi Ezequiel
+On Sat, Jan 09, 2021 at 03:05:34AM +0100, Frederic Weisbecker wrote:
+> The idle loop has several need_resched() checks that make sure we don't
+> miss a rescheduling request. This means that any wake up performed on
+> the local runqueue after the last generic need_resched() check is going
+> to have its rescheduling silently ignored. This has happened in the
+> past with rcu kthreads awaken from rcu_idle_enter() for example.
 > 
-> On Mon, Jan 11, 2021 at 12:55 PM Ricardo Ribalda <ribalda@chromium.org> wrote:
-> > 
-> > Hi Ezequiel
-> > 
-> > On Mon, Jan 11, 2021 at 12:48 PM Ezequiel Garcia <ezequiel@collabora.com> wrote:
-> > > 
-> > > Hi Ricardo,
-> > > 
-> > > On Mon, 2021-01-11 at 12:35 +0100, Ricardo Ribalda wrote:
-> > > > Clear the reserved fields.
-> > > > 
-> > > > Fixes:
-> > > >   fail: v4l2-test-formats.cpp(482): pix_mp.plane_fmt[0].reserved not zeroed
-> > > > test VIDIOC_TRY_FMT: FAIL
-> > > >   fail: v4l2-test-formats.cpp(482): pix_mp.plane_fmt[0].reserved not zeroed
-> > > > test VIDIOC_S_FMT: FAIL
-> > > > 
-> > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > > > ---
-> > > >  drivers/staging/media/hantro/hantro_v4l2.c | 5 +++++
-> > > >  1 file changed, 5 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/staging/media/hantro/hantro_v4l2.c b/drivers/staging/media/hantro/hantro_v4l2.c
-> > > > index b668a82d40ad..9b384fbffc93 100644
-> > > > --- a/drivers/staging/media/hantro/hantro_v4l2.c
-> > > > +++ b/drivers/staging/media/hantro/hantro_v4l2.c
-> > > > @@ -239,6 +239,7 @@ static int hantro_try_fmt(const struct hantro_ctx *ctx,
-> > > >         const struct hantro_fmt *fmt, *vpu_fmt;
-> > > >         bool capture = V4L2_TYPE_IS_CAPTURE(type);
-> > > >         bool coded;
-> > > > +       int i;
-> > > > 
-> > > >         coded = capture == ctx->is_encoder;
-> > > > 
-> > > > @@ -293,6 +294,10 @@ static int hantro_try_fmt(const struct hantro_ctx *ctx,
-> > > >                         pix_mp->width * pix_mp->height * fmt->max_depth;
-> > > >         }
-> > > > 
-> > > > +       for (i = 0; i < pix_mp->num_planes; i++)
-> > > > +               memset(pix_mp->plane_fmt[i].reserved, 0,
-> > > > +                      sizeof(pix_mp->plane_fmt[i].reserved));
-> > > > +
-> > > 
-> > > This looks like something that should be handled at the core,
-> > > probably in drivers/media/v4l2-core/v4l2-ioctl.c::v4l_try_fmt().
-> > 
-> > The core does clear the reserved field from v4l2_pix_format_mplane,
-> 
-> My bad, It is also clearing the per plane reserved field. I was
-> testing in an old kernel.
-> 
+> Perform sanity checks to report these situations.
 
-OK, cool.
+I really don't like this..
 
-> The grep it is still valid though. We can remove all the memsets in the drivers.
-> 
+ - it's too specific to the actual reschedule condition, any wakeup this
+   late is dodgy, not only those that happen to cause a local
+   reschedule.
 
-That would be very nice indeed.
+ - we can already test this with unwind and checking against __cpuidle
 
-Thanks,
-Ezequiel
+ - moving all of __cpuidle into noinstr would also cover this. And we're
+   going to have to do that anyway.
+
+> +void noinstr sched_resched_local_assert_allowed(void)
+> +{
+> +	if (this_rq()->resched_local_allow)
+> +		return;
+> +
+
+> +	/*
+> +	 * Idle interrupts break the CPU from its pause and
+> +	 * rescheduling happens on idle loop exit.
+> +	 */
+> +	if (in_hardirq())
+> +		return;
+> +
+> +	/*
+> +	 * What applies to hardirq also applies to softirq as
+> +	 * we assume they execute on hardirq tail. Ksoftirqd
+> +	 * shouldn't have resched_local_allow == 0.
+> +	 * We also assume that no local_bh_enable() call may
+> +	 * execute softirqs inline on fragile idle/entry
+> +	 * path...
+> +	 */
+> +	if (in_serving_softirq())
+> +		return;
+> +
+> +	WARN_ONCE(1, "Late current task rescheduling may be lost\n");
+
+That seems like it wants to be:
+
+	WARN_ONCE(in_task(), "...");
+
+> +}
+
 
