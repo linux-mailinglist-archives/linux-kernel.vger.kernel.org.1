@@ -2,103 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE6192F0E7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 09:49:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A3142F0E76
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 09:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbhAKIrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 03:47:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728100AbhAKIra (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 03:47:30 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC44C061786;
-        Mon, 11 Jan 2021 00:46:49 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id w1so23446517ejf.11;
-        Mon, 11 Jan 2021 00:46:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=YlWsX4vIpjnJ+C3Yar4M2WF0HiBoobe/CVqoUsW6rVo=;
-        b=COw2rqB77zW6ZIOfu7OjUku4N7nfgax8oJ9zq1ttqjWKsRXGjatsHvgc6ObraJj3v6
-         Z+JDkxvucKWw1riQrOqDrq1qyGO8Jj/73spV6l1EgiO1BB54dNqyeFIAC6EY6GRg1/3X
-         77C+7c1DTWy2+5FwfzUB+PCZIv2JhiYxVLrfuTdHhwJ6+c2FNgy0hlzw1fj/Gnf5fiBG
-         QJsNi5alVtS8/6D06g0QFg8P/IvtuxBUhy2FqFS8DSAoyctBr44V8MDp6WFcHVabHeo/
-         RY1AvfGCBzjfJ9ZYX1f7tnOIWUfN0tpnjepI7koTzaoA7D4zIGVObe6zEydk13m8blH4
-         IyqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=YlWsX4vIpjnJ+C3Yar4M2WF0HiBoobe/CVqoUsW6rVo=;
-        b=mOyYx6W7wQz+6L8tPOATDfv6ZA540lONNcasxXKj0fWW7Y1hTn7vA11xRAvawBp+GD
-         EZVbZ8vCaqqqdwDh6sO1XETvOf5K7zP/rcp4R9lL3+T5sgwzgtxBJmxf6/5mw048Aa4w
-         Qw8OcsQma7ToMHm88bb5Xvkx8XZZgMZ5sG4tLoPWjEl4vaMJMuBCUKoWIFI+bm27k8ep
-         5RHDcm9kaWQkcpH3ZKOm5mpZQRy8GUL17TTLEy9bUX/upHRFVBs+z98kkBf3ObUy3g13
-         7T6+YoimEcdoDBfMsbRF9E5Auwn2Z7+sg5gMPZnDNpchKZVpjB89RQneuAK3ulNPcPPF
-         i4Pw==
-X-Gm-Message-State: AOAM532IuJ7if252H7frEomt+hThDuq6N3DhtObiQtv4AfxltKrFjKk3
-        VgO+K4igHCMk4aqkIlycq2LhU17KR/aMWw==
-X-Google-Smtp-Source: ABdhPJwACYUF7sGeZamayddBFCwllD7sJkbrh/rFulbE6JzAxqy1K0DMg/EsOWVzFKaoobUwwyrblg==
-X-Received: by 2002:a17:907:6e9:: with SMTP id yh9mr9959389ejb.131.1610354808059;
-        Mon, 11 Jan 2021 00:46:48 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2d2f:cf00:597a:a5a4:31de:992e])
-        by smtp.gmail.com with ESMTPSA id j7sm6775313ejj.27.2021.01.11.00.46.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 00:46:47 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        Nick Kazlauskas <Nicholas.Kazlauskas@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        amd-gfx@lists.freedesktop.org
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH -next] drm/amd/display: tweak the kerneldoc for active_vblank_irq_count
-Date:   Mon, 11 Jan 2021 09:46:40 +0100
-Message-Id: <20210111084640.28500-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728166AbhAKIr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 03:47:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728100AbhAKIr0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 03:47:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69C4022581;
+        Mon, 11 Jan 2021 08:46:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610354805;
+        bh=iuSTbGqR+zsnjqjBJ9uA9PVEqOmt2IdakL8100IQQu8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P89kzg7DSWAd18bJTIESq1nH4/nKUPtIt99k9lGIJQHXcws2N4kMrDpjn0rvF+UpD
+         1mXRmtdQ+i4tWDKf9ALWlFmiJQVc3jOxxqOAIiOrOX3JwWEa0nezPxEUmopUajJDH9
+         U8t0uhIg6rF3a5Lsx+6KtirpLqybb2xp/cXB03TSBMKHa6hzFGFIB1RswMVMWRSvNn
+         Wki9pO90R7dZwEWMRqvqNCHFREzM7bD8wZswraqDsmlZq73XUHP/N97dEzDYULQK80
+         wNWbk7hCb4XxYTJWIbXhxb1G6v3x7x9PonXph3CRW8uBJ4LM+ctWv7KWVyNHOuvgum
+         Rq+pRWReWrgdA==
+Date:   Mon, 11 Jan 2021 00:46:43 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Can Guo <cang@codeaurora.org>
+Cc:     Avri Altman <Avri.Altman@wdc.com>, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        alim.akhtar@samsung.com, bvanassche@acm.org,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com
+Subject: Re: [PATCH] scsi: ufs: should not override buffer lengh
+Message-ID: <X/wQcwkdSOTkuFBV@google.com>
+References: <20210111044443.1405049-1-jaegeuk@kernel.org>
+ <6551e7d6dd7dc4132dc69e77a51f6f21@codeaurora.org>
+ <e1b29f7cdd62cefcc9355baaed66641f@codeaurora.org>
+ <DM6PR04MB65753C88CF333FABF5CB1704FCAB0@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <f4f633617ce91628b251b6ba668df820@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f4f633617ce91628b251b6ba668df820@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 71338cb4a7c2 ("drm/amd/display: enable idle optimizations for linux
-(MALL stutter)") adds active_vblank_irq_count to amdgpu_display_manager
-in ./drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h.
+On 01/11, Can Guo wrote:
+> On 2021-01-11 16:15, Avri Altman wrote:
+> > > 
+> > > Sorry, typo corrected.
+> > > 
+> > > Hi Jaegeuk,
+> > > 
+> > > I think the problem is that func ufshcd_read_desc_param() is not
+> > > expecting
+> > > one access unsupported descriptors on RPMB LU.
+> > Correct.
+> > This is about wb introducing a new constraint: wb buffer is only
+> > allowed in lu 0..7.
+> > And this is why, IMHO, the fix should be in ufs_is_valid_unit_desc_lun,
+> > To include param offset, as it is only called in contingency of
+> > ufshcd_read_desc_param.
+> > 
+> > Thanks,
+> > Avri
+> 
+> Yeah... Fixing it in ufs-sysfs.c also works. Anyways, the math in
+> ufshcd_read_desc_param is already complex. Let's fix it somewhere
+> close to the source/initiator.
 
-The kerneldoc is incorrectly formatted, and make htmldocs warns:
+Thank you, Can and Avri.
+I think fixing the lun check makese sense. Let me post v2. :)
 
-  ./drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:
-    340: warning: Incorrect use of kernel-doc format:          * @active_vblank_irq_count
-    379: warning: Function parameter or member 'active_vblank_irq_count' not described in 'amdgpu_display_manager'
-
-Tweak the kerneldoc for active_vblank_irq_count.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies on amdgpu's -next and next-20210111
-
-Bhawanpreet, Nick, please review and ack.
-
-Alex, Christian, please pick on top of the commit above.
-
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-index f084e2fc9569..5ee1b766884e 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
-@@ -337,7 +337,7 @@ struct amdgpu_display_manager {
- 	const struct gpu_info_soc_bounding_box_v1_0 *soc_bounding_box;
- 
- 	/**
--	 * @active_vblank_irq_count
-+	 * @active_vblank_irq_count:
- 	 *
- 	 * number of currently active vblank irqs
- 	 */
--- 
-2.17.1
-
+> 
+> Thanks,
+> Can Guo.
