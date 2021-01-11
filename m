@@ -2,131 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE7C2F0CFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 07:46:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4E52F0D00
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 07:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727406AbhAKGpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 01:45:12 -0500
-Received: from mx12.kaspersky-labs.com ([91.103.66.155]:52710 "EHLO
-        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbhAKGpM (ORCPT
+        id S1727439AbhAKGph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 01:45:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbhAKGpg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 01:45:12 -0500
-Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 4683575FF8;
-        Mon, 11 Jan 2021 09:44:26 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail; t=1610347466;
-        bh=aApp4LN/QtkPAOSm6mJdV5wecd76/VDE+Frwf2Hzg/U=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=P4h/crwpaYLkch4uHMleAiBG2IJv3G8TGD2wMJ4YIMNA8y6dCrCxHV0+JeUGrklvO
-         8+l7vSoCkCyEvfx2B8GNaaAlSDQptsffUkgstb8vzPXxiX+jZiYL19KFkI+21E3y66
-         +u7NVvjdcHIBn19C+2LYidS/T3NLeeizf5r8QGH8=
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id 4FA9875FFB;
-        Mon, 11 Jan 2021 09:44:25 +0300 (MSK)
-Received: from [10.16.171.77] (10.64.68.129) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Mon, 11
- Jan 2021 09:44:24 +0300
-Subject: Re: [PATCH 3/5] af_vsock: send/receive loops for SOCK_SEQPACKET.
-To:     stsp <stsp2@yandex.ru>, Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Arseniy Krasnov <oxffffaa@gmail.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Jeff Vander Stoep <jeffv@google.com>
-CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210103195454.1954169-1-arseny.krasnov@kaspersky.com>
- <20210103200347.1956354-1-arseny.krasnov@kaspersky.com>
- <8ffb1753-c95b-c8f3-6ed9-112bf35623be@yandex.ru>
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Message-ID: <61ee202f-58bc-0bd2-5aa7-3a84993d055e@kaspersky.com>
-Date:   Mon, 11 Jan 2021 09:44:24 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 11 Jan 2021 01:45:36 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A95ADC061786
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 22:44:56 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id n3so7796060pjm.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 22:44:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=PYIUlaTfC+qHfMej4twucGScSCQDmWbCEShoQb2dW8E=;
+        b=SE8xprRJJp7ffnAN2XwtmMwNkjg0oTQfgcxyaAWnVaZUZrU4GG3WjpwwCx4rwly22e
+         zrkIkta05MipEf8DDLMk+Xz+8omYJs4uGUhm/LlRVuVEkiVgD6ZgEtqgEn9ko1YoST91
+         jVhCYSKUG06h1gjlBICdBBnYutTmpm3h5xuSM6jRr15t39I61POVg5fXrOTiry+1DIjX
+         tMpgMZe3F5C2SIReJUnbsc4841SkFc+ub51ku13h1iCQcNzeshIBpXRq0rFbkRTJ8i+J
+         wbw6hUqa7rviY13EmlN7qiDw1YFV7ZrPS9Wvfe0pIVKM26piJhCPoSgunjl2XtU06I8f
+         OPmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PYIUlaTfC+qHfMej4twucGScSCQDmWbCEShoQb2dW8E=;
+        b=OBta3+k49pT9rtyCkMUltgetDpDZxjya+6ebZA2XmbkGp2BOWueRT9RrROzKEGaWnl
+         m/SIDrE/LGln0ahlLvrpPG6l8karoJOhbYmqRUKpwt2x0dORgTn5Cjk1lq3czBJFjcls
+         IvOjNHZ6r9jxTo6l2xgAqYJL2/iJFEDjEL1e61cfX1C2Xcr0N8+HtMFgd7JOUVSvq6i5
+         qtE1To7vS8KUVWN06GhwcEpuMXVCKCu2rIxIK9Hrpp6GtRP30CilTSdYNEawzGt5XORo
+         0t3RwyI5rlJiNpcyqMin65hu/H/S8vnMU2tYYXndoZW2z1y2W82Ro3/IsIbx8PiJP3Ck
+         joTg==
+X-Gm-Message-State: AOAM533cgyRNjprWYcW5sxxjdsC1J2sGbVoo1rHyPHuPPuUPo//MMNJu
+        1KObXLotFGuxnGsA2N+s8xCNkn1YInEEt7tQoarCBw==
+X-Google-Smtp-Source: ABdhPJwbvxRmFXwN7HNR0Bbi52W2c2CAV0qBXCm39LOpqHYzcXv/9mi+DdpK0xzFmeZvCeZQrQ+DPEau+jP1ZyesYTg=
+X-Received: by 2002:a17:902:eb03:b029:db:c0d6:5845 with SMTP id
+ l3-20020a170902eb03b02900dbc0d65845mr18211576plb.76.1610347495820; Sun, 10
+ Jan 2021 22:44:55 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <8ffb1753-c95b-c8f3-6ed9-112bf35623be@yandex.ru>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.64.68.129]
-X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 01/11/2021 06:22:17
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 161021 [Jan 11 2021]
-X-KSE-AntiSpam-Info: LuaCore: 419 419 70b0c720f8ddd656e5f4eb4a4449cf8ce400df94
-X-KSE-AntiSpam-Info: Version: 5.9.16.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: {Tracking_content_type, plain}
-X-KSE-AntiSpam-Info: {Tracking_date, moscow}
-X-KSE-AntiSpam-Info: {Tracking_c_tr_enc, eight_bit}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 01/11/2021 06:25:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 11.01.2021 5:48:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/01/11 04:28:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/01/11 04:10:00 #16053498
-X-KLMS-AntiVirus-Status: Clean, skipped
+References: <20210106161233.GA44413@e120937-lin> <20210106212353.951807-1-jbhayana@google.com>
+ <20210109190133.61051fab@archlinux>
+In-Reply-To: <20210109190133.61051fab@archlinux>
+From:   Jyoti Bhayana <jbhayana@google.com>
+Date:   Sun, 10 Jan 2021 22:44:44 -0800
+Message-ID: <CA+=V6c3f5Z4_JOr+KzvxpL9nOcPrNAZYmG_VpUF+QAW4=cfy=Q@mail.gmail.com>
+Subject: Re: Reply to [RFC PATCH v2 0/1] Adding support for IIO SCMI based sensors
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Enrico Granata <egranata@google.com>,
+        Mikhail Golubev <mikhail.golubev@opensynergy.com>,
+        Igor Skalkin <Igor.Skalkin@opensynergy.com>,
+        Peter Hilber <Peter.hilber@opensynergy.com>,
+        Ankit Arora <ankitarora@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Hmm, are you sure you need to convert
-> "err" to the pointer, just to return true/false
-> as the return value?
-> How about still returning "err" itself?
+Hi Jonathan,
 
-In this case i need to reserve some value for
-"err" as success, because both 0 and negative
-values are passed to caller when this function
-returns false(check failed). May be i will
-inline this function.
+In section 4.7.2.5.1 of the specification, the following exponent is
+the scale value
 
-> Its not very clear (only for me perhaps) how
-> dequeue_total and len correlate. Are they
-> equal here? Would you need to check that
-> dequeued_total >= record_len?
-> I mean, its just a bit strange that you check
-> dequeued_total>0 and no longer use that var
-> inside the block.
+uint32 axis_attributes_high
+Bits[15:11] Exponent: The power-of-10 multiplier in two=E2=80=99s-complemen=
+t
+format that is applied to the sensor unit
+specified by the SensorType field.
 
-When "dequeued_total > 0" record copy is succeed.
-"len" is length of user  buffer. I think i can
-replace "dequeued_total" to some flag, like "error",
-because in SOCK_SEQPACKET mode record could be
-copied whole or error returned.
+and the resolution is
 
+uint32 axis_resolution
+Bits[31:27] Exponent: The power-of-10 multiplier in two=E2=80=99s-complemen=
+t format
+that is applied to the Res field. Bits[26:0] Res: The resolution of
+the sensor axis.
+
+From code in scmi_protocol.h
+/**
+ * scmi_sensor_axis_info  - describes one sensor axes
+ * @id: The axes ID.
+ * @type: Axes type. Chosen amongst one of @enum scmi_sensor_class.
+ * @scale: Power-of-10 multiplier applied to the axis unit.
+ * @name: NULL-terminated string representing axes name as advertised by
+ *  SCMI platform.
+ * @extended_attrs: Flag to indicate the presence of additional extended
+ *    attributes for this axes.
+ * @resolution: Extended attribute representing the resolution of the axes.
+ * Set to 0 if not reported by this axes.
+ * @exponent: Extended attribute representing the power-of-10 multiplier th=
+at
+ *      is applied to the resolution field. Set to 0 if not reported by
+ *      this axes.
+ * @attrs: Extended attributes representing minimum and maximum values
+ *   measurable by this axes. Set to 0 if not reported by this sensor.
+ */
+
+struct scmi_sensor_axis_info {
+unsigned int id;
+unsigned int type;
+int scale; //This is the scale used for min/max range
+char name[SCMI_MAX_STR_SIZE];
+bool extended_attrs;
+unsigned int resolution;
+int exponent; // This is the scale used in resolution
+struct scmi_range_attrs attrs;
+};
+
+The scale above  is the Power-of-10 multiplier which is applied to the min =
+range
+and the max range value
+but the resolution is equal to resolution and multiplied by
+Power-of-10 multiplier
+of exponent in the above struct.
+So as can be seen above the value of the power of 10 multiplier used
+for min/max range
+can be different than the value of the power of 10 multiplier used for
+the resolution.
+Hence, if I have to use IIO_AVAIL_RANGE to specify min/max range and as wel=
+l
+as resolution, then I have to use the float format with the scale applied.
+
+If there is another way which you know of and prefer, please let me know.
+
+Thanks,
+Jyoti
+
+
+
+
+Thanks,
+Jyoti
+
+On Sat, Jan 9, 2021 at 11:01 AM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Wed,  6 Jan 2021 21:23:53 +0000
+> Jyoti Bhayana <jbhayana@google.com> wrote:
+>
+> > Hi Jonathan,
+> >
+> > Instead of adding IIO_VAL_INT_H32_L32, I am thinking of adding IIO_VAL_=
+FRACTIONAL_LONG
+> > or IIO_VAL_FRACTIONAL_64 as the scale/exponent used for min/max range c=
+an be different
+> > than the one used in resolution according to specification.
+>
+> That's somewhat 'odd'.  Given min/max are inherently values the sensor is=
+ supposed to
+> be able to return why give them different resolutions?  Can you point me =
+at a specific
+> section of the spec?  The axis_min_range_low etc fields don't seem to hav=
+e units specified
+> but I assumed they were in sensor units and so same scale factors?
+>
+> >
+> > I am planning to use read_avail for IIO_CHAN_INFO_PROCESSED using IIO_A=
+VAIL_RANGE
+> > and this new IIO_VAL_FRACTIONAL_64 for min range,max range and resoluti=
+on.
+> > Instead of two values used in IIO_VAL_FRACTIONAL, IIO_VAL_FRACTIONAL_64=
+ will use 4 values
+> > val_high,val_low,and val2_high and val2_low.
+>
+> I'm not keen on the changing that internal kernel interface unless we abs=
+olutely
+> have to.  read_avail() is called from consumer drivers and they won't kno=
+w anything
+> about this new variant.
+>
+> >
+> > Let me know if that is an acceptable solution.
+>
+> Hmm. It isn't a standard use of the ABI given the value in the buffer is =
+(I assume)
+> raw (needs scale applied).  However, it isn't excluded by the ABI docs.  =
+Whether
+> a standard userspace is going to expect it is not clear to me.
+>
+> I don't want to end up in a position where we end up with available being=
+ generally
+> added for processed when what most people care about is what the value ra=
+nge they
+> might get from a polled read is (rather than via a buffer).
+>
+> So I'm not that keen on this solution but if we can find a way to avoid i=
+t.
+>
+> Jonathan
+>
+>
+> >
+> >
+> > Thanks,
+> > Jyoti
+> >
+>
