@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C03F2F1770
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 793D92F176F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728546AbhAKOG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:06:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50166 "EHLO mail.kernel.org"
+        id S2388062AbhAKOGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:06:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728048AbhAKND4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:03:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0EF92250F;
-        Mon, 11 Jan 2021 13:03:38 +0000 (UTC)
+        id S1727994AbhAKND5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:03:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3612822527;
+        Mon, 11 Jan 2021 13:03:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370219;
-        bh=I4sHZ/9+9WaCBncCxa31WvcaN/i3zoWGwQUJX7ocuzY=;
+        s=korg; t=1610370221;
+        bh=VedbmO/5/bZazH0fUPBlfrJlYbOrNDIrQEbwdNqIqQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hUyS79FceySKjWilvHan9ePGLV/snnbyOLkKuFsVy3b9a0Jv8wigrVqYx2gVM1PcA
-         w4P7sS8n0VZmNPMidp6aDnHGjwssctaM6lUuikRwdI3TIn63QMd0jzaJnBfoaIamok
-         WZuWp2mA9qlmj1Ol0+hQ+2ckYki6+RBdkKAtZOqo=
+        b=GgO3vK8yDX6y2z1u8yT4KolfzFn5NkxuVjF3NF3t9KrOFvPWS8WfXZvU2vLci3FsW
+         Fpo9Qw8wZEFs4M/ikSct1IvZv5Obza4iigqyB6Ig9hAjuxY7iTA6dhCQ2kgXO+shvI
+         U3Sx/HiheQUcfNsqiEMuPix1Hd7d9oSjOM7nJBuQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 30/45] USB: usblp: fix DMA to stack
-Date:   Mon, 11 Jan 2021 14:01:08 +0100
-Message-Id: <20210111130035.101672460@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.9 31/45] ALSA: usb-audio: Fix UBSAN warnings for MIDI jacks
+Date:   Mon, 11 Jan 2021 14:01:09 +0100
+Message-Id: <20210111130035.151846078@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130033.676306636@linuxfoundation.org>
 References: <20210111130033.676306636@linuxfoundation.org>
@@ -38,58 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 020a1f453449294926ca548d8d5ca970926e8dfd upstream.
+commit c06ccf3ebb7503706ea49fd248e709287ef385a3 upstream.
 
-Stack-allocated buffers cannot be used for DMA (on all architectures).
+The calculation of in_cables and out_cables bitmaps are done with the
+bit shift by the value from the descriptor, which is an arbitrary
+value, and can lead to UBSAN shift-out-of-bounds warnings.
 
-Replace the HP-channel macro with a helper function that allocates a
-dedicated transfer buffer so that it can continue to be used with
-arguments from the stack.
+Fix it by filtering the bad descriptor values with the check of the
+upper bound 0x10 (the cable bitmaps are 16 bits).
 
-Note that the buffer is cleared on allocation as usblp_ctrl_msg()
-returns success also on short transfers (the buffer is only used for
-debugging).
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210104145302.2087-1-johan@kernel.org
+Reported-by: syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201223174557.10249-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/class/usblp.c |   21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+ sound/usb/midi.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/usb/class/usblp.c
-+++ b/drivers/usb/class/usblp.c
-@@ -289,8 +289,25 @@ static int usblp_ctrl_msg(struct usblp *
- #define usblp_reset(usblp)\
- 	usblp_ctrl_msg(usblp, USBLP_REQ_RESET, USB_TYPE_CLASS, USB_DIR_OUT, USB_RECIP_OTHER, 0, NULL, 0)
- 
--#define usblp_hp_channel_change_request(usblp, channel, buffer) \
--	usblp_ctrl_msg(usblp, USBLP_REQ_HP_CHANNEL_CHANGE_REQUEST, USB_TYPE_VENDOR, USB_DIR_IN, USB_RECIP_INTERFACE, channel, buffer, 1)
-+static int usblp_hp_channel_change_request(struct usblp *usblp, int channel, u8 *new_channel)
-+{
-+	u8 *buf;
-+	int ret;
-+
-+	buf = kzalloc(1, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	ret = usblp_ctrl_msg(usblp, USBLP_REQ_HP_CHANNEL_CHANGE_REQUEST,
-+			USB_TYPE_VENDOR, USB_DIR_IN, USB_RECIP_INTERFACE,
-+			channel, buf, 1);
-+	if (ret == 0)
-+		*new_channel = buf[0];
-+
-+	kfree(buf);
-+
-+	return ret;
-+}
- 
- /*
-  * See the description for usblp_select_alts() below for the usage
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -1867,6 +1867,8 @@ static int snd_usbmidi_get_ms_info(struc
+ 		ms_ep = find_usb_ms_endpoint_descriptor(hostep);
+ 		if (!ms_ep)
+ 			continue;
++		if (ms_ep->bNumEmbMIDIJack > 0x10)
++			continue;
+ 		if (usb_endpoint_dir_out(ep)) {
+ 			if (endpoints[epidx].out_ep) {
+ 				if (++epidx >= MIDI_MAX_ENDPOINTS) {
+@@ -2119,6 +2121,8 @@ static int snd_usbmidi_detect_roland(str
+ 		    cs_desc[1] == USB_DT_CS_INTERFACE &&
+ 		    cs_desc[2] == 0xf1 &&
+ 		    cs_desc[3] == 0x02) {
++			if (cs_desc[4] > 0x10 || cs_desc[5] > 0x10)
++				continue;
+ 			endpoint->in_cables  = (1 << cs_desc[4]) - 1;
+ 			endpoint->out_cables = (1 << cs_desc[5]) - 1;
+ 			return snd_usbmidi_detect_endpoints(umidi, endpoint, 1);
 
 
