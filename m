@@ -2,178 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E2362F2094
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:19:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E80602F2099
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391488AbhAKUTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 15:19:08 -0500
-Received: from out01.mta.xmission.com ([166.70.13.231]:37882 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391355AbhAKUTG (ORCPT
+        id S2390963AbhAKUTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 15:19:51 -0500
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:44997 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726722AbhAKUTt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:19:06 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kz3du-0092Lm-23; Mon, 11 Jan 2021 13:18:22 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kz3ds-00GF4a-SO; Mon, 11 Jan 2021 13:18:21 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alexey Gladkov <gladkov.alexey@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>
-References: <cover.1610299857.git.gladkov.alexey@gmail.com>
-        <CAHk-=wgXZmRu762bjSeK80+T_LTo+UP9y5rP-uvym1vquSxmBw@mail.gmail.com>
-Date:   Mon, 11 Jan 2021 14:17:19 -0600
-In-Reply-To: <CAHk-=wgXZmRu762bjSeK80+T_LTo+UP9y5rP-uvym1vquSxmBw@mail.gmail.com>
-        (Linus Torvalds's message of "Sun, 10 Jan 2021 10:46:05 -0800")
-Message-ID: <87a6tfp6sw.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Mon, 11 Jan 2021 15:19:49 -0500
+Received: by mail-ot1-f53.google.com with SMTP id r9so72137otk.11;
+        Mon, 11 Jan 2021 12:19:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pTEei5dEH4PIxEjKAqNLnrxtbUQjm4MMQetV6yQHoxM=;
+        b=RjNhxSeIN+QMrR+xZIA+sW1aKl0K0tjCUg76bkLKG5f4igq+68Z73mTA16nDoMQh6B
+         jA1Sr/8wFXLSV92lBvo2UW9Sf01WP4ibQOlySCMG8RYog0FDjw15Zaha0bPr5zcwC4kO
+         UYgO6Fu36i8uqdVQAczNpk+8HZfOq8Y1n2L9Khmj8zVEvtM7Di9H66MFQ5BNBLT8eEpB
+         Vrez6YmNVJ/F81ldb6sC8X5fWqk0GfCbSBjljl/2hGFS9QHZ6C7i+GF1vkASINc7LIwp
+         oXw+Q23DgyHgOpE5gbSPYGirGa6d1Pjasb55w2tnLhl4r7VY/oF7LDqBoPiXv5NFW3jK
+         l26w==
+X-Gm-Message-State: AOAM531HMtJ8OpyFSN0+pewSC5aq84wOghirzwCSsHrax7o5pcnfn+AC
+        sHrBabpXN/47LOqRJV1SHA==
+X-Google-Smtp-Source: ABdhPJwMDa3KC54DsO8d/vRfsonWoX8KtCx0u5h1FM26jRCL419mEPoBhNmuAB1SyKxxBhZPyn5V/A==
+X-Received: by 2002:a9d:372:: with SMTP id 105mr603176otv.118.1610396348992;
+        Mon, 11 Jan 2021 12:19:08 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 69sm165562otc.76.2021.01.11.12.19.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 12:19:08 -0800 (PST)
+Received: (nullmailer pid 2999631 invoked by uid 1000);
+        Mon, 11 Jan 2021 20:19:07 -0000
+Date:   Mon, 11 Jan 2021 14:19:07 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     aford@beaconembedded.com, linux-renesas-soc@vger.kernel.org,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        devicetree@vger.kernel.org,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH 1/4] dt-bindings: net: renesas,etheravb: Add additional
+ clocks
+Message-ID: <20210111201906.GA2999597@robh.at.kernel.org>
+References: <20201228213121.2331449-1-aford173@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kz3ds-00GF4a-SO;;;mid=<87a6tfp6sw.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/Yf/U+HHFa2llriv5GGUzjHmbH00nuzd4=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4988]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 485 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 3.5 (0.7%), b_tie_ro: 2.4 (0.5%), parse: 1.21
-        (0.2%), extract_message_metadata: 15 (3.1%), get_uri_detail_list: 3.0
-        (0.6%), tests_pri_-1000: 4.7 (1.0%), tests_pri_-950: 1.08 (0.2%),
-        tests_pri_-900: 0.84 (0.2%), tests_pri_-90: 120 (24.7%), check_bayes:
-        111 (22.8%), b_tokenize: 7 (1.5%), b_tok_get_all: 9 (1.8%),
-        b_comp_prob: 1.96 (0.4%), b_tok_touch_all: 89 (18.4%), b_finish: 0.74
-        (0.2%), tests_pri_0: 328 (67.6%), check_dkim_signature: 0.41 (0.1%),
-        check_dkim_adsp: 2.1 (0.4%), poll_dns_idle: 0.74 (0.2%), tests_pri_10:
-        1.73 (0.4%), tests_pri_500: 5 (1.1%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [RFC PATCH v2 0/8] Count rlimits in each user namespace
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201228213121.2331449-1-aford173@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> writes:
+On Mon, 28 Dec 2020 15:31:17 -0600, Adam Ford wrote:
+> The AVB driver assumes there is an external clock, but it could
+> be driven by an external clock.  In order to enable a programmable
+> clock, it needs to be added to the clocks list and enabled in the
+> driver.  Since there currently only one clock, there is no
+> clock-names list either.
+> 
+> Update bindings to add the additional optional clock, and explicitly
+> name both of them.
+> 
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+>  .../devicetree/bindings/net/renesas,etheravb.yaml     | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+> 
 
-> On Sun, Jan 10, 2021 at 9:34 AM Alexey Gladkov <gladkov.alexey@gmail.com> wrote:
->>
->> To address the problem, we bind rlimit counters to each user namespace. The
->> result is a tree of rlimit counters with the biggest value at the root (aka
->> init_user_ns). The rlimit counter increment/decrement occurs in the current and
->> all parent user namespaces.
->
-> I'm not seeing why this is necessary.
->
-> Maybe it's the right approach, but none of the patches (or this cover
-> letter email) really explain it to me.
->
-> I understand why you might want the _limits_ themselves would form a
-> tree like this - with the "master limit" limiting the limits in the
-> user namespaces under it.
->
-> But I don't understand why the _counts_ should do that. The 'struct
-> user_struct' should be shared across even user namespaces for the same
-> user.
->
-> IOW, the very example of the problem you quote seems to argue against this:
->
->> For example, there are two containers (A and B) created by one user. The
->> container A sets RLIMIT_NPROC=1 and starts one process. Everything is fine, but
->> when container B tries to do the same it will fail because the number of
->> processes is counted globally for each user and user has one process already.
->
-> Note how the problem was _not_ that the _count_ was global. That part
-> was fine and all good.
-
-The problem is fundamentally that the per process RLIMIT_NPROC was
-compared against the user_struct->processes.
-
-I have only heard the problem described but I believe it is either the
-RLIMIT_NPROC test in fork or at the beginning of do_execveat_common that
-is failing.
-
-From fs/exec.c line 1866:
-> 	/*
-> 	 * We move the actual failure in case of RLIMIT_NPROC excess from
-> 	 * set*uid() to execve() because too many poorly written programs
-> 	 * don't check setuid() return code.  Here we additionally recheck
-> 	 * whether NPROC limit is still exceeded.
-> 	 */
-> 	if ((current->flags & PF_NPROC_EXCEEDED) &&
-> 	    atomic_read(&current_user()->processes) > rlimit(RLIMIT_NPROC)) {
-> 		retval = -EAGAIN;
-> 		goto out_ret;
-> 	}
-
-From fs/fork.c line 1966:
-> 	retval = -EAGAIN;
-> 	if (atomic_read(&p->real_cred->user->processes) >=
-> 			task_rlimit(p, RLIMIT_NPROC)) {
-> 		if (p->real_cred->user != INIT_USER &&
-> 		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
-> 			goto bad_fork_free;
-> 	}
-> 	current->flags &= ~PF_NPROC_EXCEEDED;
-
-In both the cases the RLIMIT_NPROC value comes from
-task->signal->rlim[RLIMIT_NPROC] and the count of processes
-comes from task->cred->user->processes.
-
-> No, the problem was that the _limit_ in container A also ended up
-> affecting container B.
-
-The description I have is that both containers run the same service
-that set it's RLIMIT_NPROC to 1 in both containers.
-
-> So to me, that says that it would make sense to continue to use the
-> resource counts in 'struct user_struct' (because if user A has a hard
-> limit of X, then creating a new namespace shouldn't expand that
-> limit), but then have the ability to make per-container changes to the
-> resource limits (as long as they are within the bounds of the parent
-> user namespace resource limit).
-
-I agree that needs to work as well.
-
-> Maybe there is some reason for this ucounts approach, but if so, I
-> feel it was not explained at all.
-
-Let me see if I can starte the example a litle more clearly.
-
-Suppose there is a service never_fork that sets RLIMIT_NPROC runs as
-never_fork_user and sets RLIMIT_NPROC to 1 in it's systemd service file.
-
-Further suppose there is a user bob who has two containers he wants to
-run: container1 and container2.  Both containers start the never_fork
-service.
-
-Bob first starts container1 and inside it the never_fork service starts.
-Bob starts container2 and the never_fork service fails to start.
-
-Does that make it clear that it is the count of the processes that would
-exceed 1 if both instances of the never_fork service starts that would
-be the problem?
-
-Eric
+Acked-by: Rob Herring <robh@kernel.org>
