@@ -2,115 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623262F2277
+	by mail.lfdr.de (Postfix) with ESMTP id CFE632F2278
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389416AbhAKWKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 17:10:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43663 "EHLO
+        id S2389487AbhAKWKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 17:10:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26896 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388713AbhAKWKm (ORCPT
+        by vger.kernel.org with ESMTP id S2388713AbhAKWKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:10:42 -0500
+        Mon, 11 Jan 2021 17:10:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610402956;
+        s=mimecast20190719; t=1610402959;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=wAtnYWwrlK7tpbrs/+tnNUH4YreR07+THJRUh9/6qM8=;
-        b=Fx71VGTsaYQj1tzMpI8V7d2w5tvT5cU9yD9ch22/F7HWc7/zJPP0nOF/L96znTT22Rqijx
-        S0SwtAzzDRlp8rw14ovBvbos1ZRB5FkuM3dgp6/im7SjEEiVvHpFOJQsuHBtPCq0NGbryS
-        LCPHxIXu/LeSUBz35b+1RVUmq+Y08kY=
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
- [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-105-6DsG8wt8Mbeu8wzFHbuE9Q-1; Mon, 11 Jan 2021 17:09:12 -0500
-X-MC-Unique: 6DsG8wt8Mbeu8wzFHbuE9Q-1
-Received: by mail-io1-f70.google.com with SMTP id r16so231164ioa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:09:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wAtnYWwrlK7tpbrs/+tnNUH4YreR07+THJRUh9/6qM8=;
-        b=F70QvlCeqpthvTt79n/LmyNn3WY5wQDCxjd/c4FyfWwqu0IKboERXwBgriMa8xK6Ye
-         4KpOm6Me7um/pK+pKmpCFTfcYbjcPXTd/aZOXRLN95M7mROxwrzP8L5r5qEWw7OdMgrR
-         savJ5wR+qDrcXdWZv+XcW+DNjwbQ/eVgPjDIGaKAwg71p1vQTAIF+kpKX9b9ozcsYMqV
-         FiykiHDVAVzZ0eqfvfgPozD5LNK/e7CazN3ky7weEiEalwnpmHRJRMjSXopbiOYbNYIM
-         wuq9/lSPiDEGCDqDDOTVj6r1AWmcfyWi4KZUK2NAUYZGiaQesUX3i9qwT1WgcmPloCIF
-         NAnA==
-X-Gm-Message-State: AOAM530xTEBA9MvtPpdqwdg8Rj6s96TGkDENnSVjpJ5T5e1l6XNRywFp
-        znbJQW4EdQ2GiUGlnROspS4zsZIRzSb0A69XX5HbBJMm2/SCb4ArP82qbCgoqSJo15PdYRw0+kf
-        bKU9ZFrliZIu+7+GTfkFjBXrL
-X-Received: by 2002:a02:bb99:: with SMTP id g25mr1555074jan.11.1610402951224;
-        Mon, 11 Jan 2021 14:09:11 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxswd5YF7Eo0k165Z8e6I3dQ4wtHbxizYkFRXv1FPhiW6/Y1lObuf/ddgaiWUlhPY/R/ftasg==
-X-Received: by 2002:a02:bb99:: with SMTP id g25mr1555056jan.11.1610402951001;
-        Mon, 11 Jan 2021 14:09:11 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id m15sm692170ilh.6.2021.01.11.14.09.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 14:09:10 -0800 (PST)
-From:   trix@redhat.com
-To:     johan@kernel.org, gregkh@linuxfoundation.org,
-        natechancellor@gmail.com, ndesaulniers@google.com
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, Tom Rix <trix@redhat.com>
-Subject: [PATCH] USB: serial: mos7720: improve handling of a kmalloc failure in read_mos_reg()
-Date:   Mon, 11 Jan 2021 14:09:04 -0800
-Message-Id: <20210111220904.1035957-1-trix@redhat.com>
-X-Mailer: git-send-email 2.27.0
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q8xcEaScocMaIAyGo9r9RJw+Py5fHWtPNocsWnO7jC4=;
+        b=Xc1wAeFBFbJqlgNxh7v2bPeJ1NEuz4xMH6P6FZ4jh+t8FBRPf816KPPdULp0vVpTrlDYt0
+        EMknXiYLEzjaY+TyMKG+Vap1HmthLisndHetnccRpZg9QX/AKwXRny3FNt5lcGffLb4p2E
+        1Oyi1GqZx8Laf+zy2czXYCFZBpxyVS0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-28-W4ny10YCPTGLemtj538iuw-1; Mon, 11 Jan 2021 17:09:15 -0500
+X-MC-Unique: W4ny10YCPTGLemtj538iuw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 41733809DCC;
+        Mon, 11 Jan 2021 22:09:13 +0000 (UTC)
+Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 830315C5DF;
+        Mon, 11 Jan 2021 22:09:11 +0000 (UTC)
+Date:   Mon, 11 Jan 2021 16:09:09 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Fangrui Song <maskray@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v3] x86/entry: emit a symbol for register restoring thunk
+Message-ID: <20210111220909.2wexjehwiria7jem@treble>
+References: <20210106015810.5p6crnh7jqtmjtv4@treble>
+ <20210111203807.3547278-1-ndesaulniers@google.com>
+ <20210111205814.m6bbvekdhqs7pnhr@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210111205814.m6bbvekdhqs7pnhr@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Mon, Jan 11, 2021 at 12:58:14PM -0800, Fangrui Song wrote:
+> On 2021-01-11, Nick Desaulniers wrote:
+> > Arnd found a randconfig that produces the warning:
+> > 
+> > arch/x86/entry/thunk_64.o: warning: objtool: missing symbol for insn at
+> > offset 0x3e
+> > 
+> > when building with LLVM_IAS=1 (use Clang's integrated assembler). Josh
+> > notes:
+> > 
+> >  With the LLVM assembler stripping the .text section symbol, objtool
+> >  has no way to reference this code when it generates ORC unwinder
+> >  entries, because this code is outside of any ELF function.
+> > 
+> > Fangrui notes that this optimization is helpful for reducing images size
+> > when compiling with -ffunction-sections and -fdata-sections. I have
+> > observerd on the order of tens of thousands of symbols for the kernel
+> > images built with those flags. A patch has been authored against GNU
+> > binutils to match this behavior, with a new flag
+> > --generate-unused-section-symbols=[yes|no].
+> 
+> https://sourceware.org/git/gitweb.cgi?p=binutils-gdb.git;h=d1bcae833b32f1408485ce69f844dcd7ded093a8
+> has been committed. The patch should be included in binutils 2.37.
+> The maintainers are welcome to the idea, but fixing all the arch-specific tests is tricky.
+> 
+> H.J. fixed the x86 tests and enabled this for x86. When binutils 2.37
+> come out, some other architectures may follow as well.
+> 
+> > We can omit the .L prefix on a label to emit an entry into the symbol
+> > table for the label, with STB_LOCAL binding.  This enables objtool to
+> > generate proper unwind info here with LLVM_IAS=1.
+> 
+> Josh, I think objtool orc generate needs to synthesize STT_SECTION
+> symbols even if they do not exist in object files.
 
-clang static analysis reports this problem
+I'm guessing you don't mean re-adding *all* missing STT_SECTIONs, as
+that would just be undoing these new assembler features.
 
-mos7720.c:352:2: warning: Undefined or garbage value returned to caller
-        return d;
-        ^~~~~~~~
+We could re-add STT_SECTION only when there's no other corresponding
+symbol associated with the code, but then objtool would have to start
+updating the symbol table (which right now it manages to completely
+avoid).  But that would only be for the niche cases, like
+'SYM_CODE.*\.L' as you mentioned.
 
-In the parport_mos7715_read_data()'s call to read_mos_reg(), 'd' is
-only set after the alloc block.
+I'd rather avoid making doing something so pervasive for such a small
+number of edge cases.  It's hopefully easier and more robust to just say
+"all code must be associated with a symbol".  I suspect we're already
+~99.99% there anyway.
 
-	buf = kmalloc(1, GFP_KERNEL);
-	if (!buf)
-		return -ENOMEM;
+  $ git grep -e 'SYM_CODE.*\.L'
+  arch/x86/entry/entry_64.S:SYM_CODE_START_LOCAL_NOALIGN(.Lbad_gs)
+  arch/x86/entry/entry_64.S:SYM_CODE_END(.Lbad_gs)
+  arch/x86/entry/thunk_64.S:SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
+  arch/x86/entry/thunk_64.S:SYM_CODE_END(.L_restore)
+  arch/x86/lib/copy_user_64.S:SYM_CODE_START_LOCAL(.Lcopy_user_handle_tail)
+  arch/x86/lib/copy_user_64.S:SYM_CODE_END(.Lcopy_user_handle_tail)
+  arch/x86/lib/getuser.S:SYM_CODE_START_LOCAL(.Lbad_get_user_clac)
+  arch/x86/lib/getuser.S:SYM_CODE_END(.Lbad_get_user_clac)
+  arch/x86/lib/getuser.S:SYM_CODE_START_LOCAL(.Lbad_get_user_8_clac)
+  arch/x86/lib/getuser.S:SYM_CODE_END(.Lbad_get_user_8_clac)
+  arch/x86/lib/putuser.S:SYM_CODE_START_LOCAL(.Lbad_put_user_clac)
+  arch/x86/lib/putuser.S:SYM_CODE_END(.Lbad_put_user_clac)
 
-Although the problem is reported in parport_most7715_read_data(),
-none of the callee's of read_mos_reg() check the return status.
+Alternatively, the assemblers could add an option to only strip
+-ffunction-sections and -fdata-sections STT_SECTION symbols, e.g. leave
+".text" and friends alone.
 
-So move the clearing of data to before the malloc.
-
-Fixes: 0d130367abf5 ("USB: serial: mos7720: fix control-message error handling")
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/usb/serial/mos7720.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/usb/serial/mos7720.c b/drivers/usb/serial/mos7720.c
-index 41ee2984a0df..23e8162c768b 100644
---- a/drivers/usb/serial/mos7720.c
-+++ b/drivers/usb/serial/mos7720.c
-@@ -214,6 +214,7 @@ static int read_mos_reg(struct usb_serial *serial, unsigned int serial_portnum,
- 	u8 *buf;
- 	int status;
- 
-+	*data = 0;
- 	buf = kmalloc(1, GFP_KERNEL);
- 	if (!buf)
- 		return -ENOMEM;
-@@ -227,7 +228,6 @@ static int read_mos_reg(struct usb_serial *serial, unsigned int serial_portnum,
- 			"mos7720: usb_control_msg() failed: %d\n", status);
- 		if (status >= 0)
- 			status = -EIO;
--		*data = 0;
- 	}
- 
- 	kfree(buf);
 -- 
-2.27.0
+Josh
 
