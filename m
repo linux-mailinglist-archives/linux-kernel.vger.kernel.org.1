@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70ADF2F132A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:05:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E67D72F137C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730213AbhAKNEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:04:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50872 "EHLO mail.kernel.org"
+        id S1730868AbhAKNJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:09:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55720 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728752AbhAKNES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:04:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B1972253A;
-        Mon, 11 Jan 2021 13:04:02 +0000 (UTC)
+        id S1731004AbhAKNIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:08:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CFFE225AB;
+        Mon, 11 Jan 2021 13:07:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370242;
-        bh=8lGXfChzd96VRmdI3XiedLSbfp9gS012jJfWzenkTac=;
+        s=korg; t=1610370462;
+        bh=ctz+HUrC3mHkW7PxvILZIdjn4dG5FDl8YWBYehaPlV8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bqdV8r0+oKCYg/A/ifI4bP4DGfjryk15xXLRiXfjuA4PSrfS5GhZNT6vufYb7CUR1
-         4RHYSyQoNd7fdd3y4ZMUnPsZlKz9CI2pzmO0wzPRlPMOiblcoZKD+IJu5Us0HCPvN7
-         PjubInib56UUf+mQhGFtGewlLoy4rNNiuxWondok=
+        b=Y8BNZt3bXpkJflUzVwVw0chu2Fof80MpWbjLkAUcCvB8Q89oqLyTkTAHQHuVT/Z+r
+         jBtljo23N31306UX3Zsa8LKhNBkZo+EoWxKfCcdcL4TpOt8o0xKJQAWqiZzpjVY9jK
+         QOcZzRMCjyeN5Y4WyLsA0+mULxuoawGG2n351b0U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.9 39/45] USB: serial: keyspan_pda: remove unused variable
-Date:   Mon, 11 Jan 2021 14:01:17 +0100
-Message-Id: <20210111130035.531903834@linuxfoundation.org>
+        stable@vger.kernel.org, Alexey Dobriyan <adobriyan@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 09/77] proc: change ->nlink under proc_subdir_lock
+Date:   Mon, 11 Jan 2021 14:01:18 +0100
+Message-Id: <20210111130036.858266032@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130033.676306636@linuxfoundation.org>
-References: <20210111130033.676306636@linuxfoundation.org>
+In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
+References: <20210111130036.414620026@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +42,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Alexey Dobriyan <adobriyan@gmail.com>
 
-Remove an unused variable which was mistakingly left by commit
-37faf5061541 ("USB: serial: keyspan_pda: fix write-wakeup
-use-after-free") and only removed by a later change.
+[ Upstream commit e06689bf57017ac022ccf0f2a5071f760821ce0f ]
 
-This is needed to suppress a W=1 warning about the unused variable in
-the stable trees that the build bots triggers.
+Currently gluing PDE into global /proc tree is done under lock, but
+changing ->nlink is not.  Additionally struct proc_dir_entry::nlink is
+not atomic so updates can be lost.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: http://lkml.kernel.org/r/20190925202436.GA17388@avx2
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/serial/keyspan_pda.c |    2 --
- 1 file changed, 2 deletions(-)
+ fs/proc/generic.c | 31 +++++++++++++++----------------
+ 1 file changed, 15 insertions(+), 16 deletions(-)
 
---- a/drivers/usb/serial/keyspan_pda.c
-+++ b/drivers/usb/serial/keyspan_pda.c
-@@ -559,10 +559,8 @@ exit:
- static void keyspan_pda_write_bulk_callback(struct urb *urb)
+diff --git a/fs/proc/generic.c b/fs/proc/generic.c
+index e39bac94dead0..7820fe524cb03 100644
+--- a/fs/proc/generic.c
++++ b/fs/proc/generic.c
+@@ -137,8 +137,12 @@ static int proc_getattr(const struct path *path, struct kstat *stat,
  {
- 	struct usb_serial_port *port = urb->context;
--	struct keyspan_pda_private *priv;
+ 	struct inode *inode = d_inode(path->dentry);
+ 	struct proc_dir_entry *de = PDE(inode);
+-	if (de && de->nlink)
+-		set_nlink(inode, de->nlink);
++	if (de) {
++		nlink_t nlink = READ_ONCE(de->nlink);
++		if (nlink > 0) {
++			set_nlink(inode, nlink);
++		}
++	}
  
- 	set_bit(0, &port->write_urbs_free);
--	priv = usb_get_serial_port_data(port);
+ 	generic_fillattr(inode, stat);
+ 	return 0;
+@@ -361,6 +365,7 @@ struct proc_dir_entry *proc_register(struct proc_dir_entry *dir,
+ 		write_unlock(&proc_subdir_lock);
+ 		goto out_free_inum;
+ 	}
++	dir->nlink++;
+ 	write_unlock(&proc_subdir_lock);
  
- 	/* queue up a wakeup at scheduler time */
- 	usb_serial_port_softint(port);
+ 	return dp;
+@@ -471,10 +476,7 @@ struct proc_dir_entry *proc_mkdir_data(const char *name, umode_t mode,
+ 		ent->data = data;
+ 		ent->proc_fops = &proc_dir_operations;
+ 		ent->proc_iops = &proc_dir_inode_operations;
+-		parent->nlink++;
+ 		ent = proc_register(parent, ent);
+-		if (!ent)
+-			parent->nlink--;
+ 	}
+ 	return ent;
+ }
+@@ -504,10 +506,7 @@ struct proc_dir_entry *proc_create_mount_point(const char *name)
+ 		ent->data = NULL;
+ 		ent->proc_fops = NULL;
+ 		ent->proc_iops = NULL;
+-		parent->nlink++;
+ 		ent = proc_register(parent, ent);
+-		if (!ent)
+-			parent->nlink--;
+ 	}
+ 	return ent;
+ }
+@@ -665,8 +664,12 @@ void remove_proc_entry(const char *name, struct proc_dir_entry *parent)
+ 	len = strlen(fn);
+ 
+ 	de = pde_subdir_find(parent, fn, len);
+-	if (de)
++	if (de) {
+ 		rb_erase(&de->subdir_node, &parent->subdir);
++		if (S_ISDIR(de->mode)) {
++			parent->nlink--;
++		}
++	}
+ 	write_unlock(&proc_subdir_lock);
+ 	if (!de) {
+ 		WARN(1, "name '%s'\n", name);
+@@ -675,9 +678,6 @@ void remove_proc_entry(const char *name, struct proc_dir_entry *parent)
+ 
+ 	proc_entry_rundown(de);
+ 
+-	if (S_ISDIR(de->mode))
+-		parent->nlink--;
+-	de->nlink = 0;
+ 	WARN(pde_subdir_first(de),
+ 	     "%s: removing non-empty directory '%s/%s', leaking at least '%s'\n",
+ 	     __func__, de->parent->name, de->name, pde_subdir_first(de)->name);
+@@ -713,13 +713,12 @@ int remove_proc_subtree(const char *name, struct proc_dir_entry *parent)
+ 			de = next;
+ 			continue;
+ 		}
+-		write_unlock(&proc_subdir_lock);
+-
+-		proc_entry_rundown(de);
+ 		next = de->parent;
+ 		if (S_ISDIR(de->mode))
+ 			next->nlink--;
+-		de->nlink = 0;
++		write_unlock(&proc_subdir_lock);
++
++		proc_entry_rundown(de);
+ 		if (de == root)
+ 			break;
+ 		pde_put(de);
+-- 
+2.27.0
+
 
 
