@@ -2,270 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F622F190B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F73B2F1911
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:01:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731806AbhAKPAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:00:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27822 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727617AbhAKPAp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:00:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610377157;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ITnHqcO7sIEWr+InPo1+37W7NuL6w/yxgJzxS4jgowk=;
-        b=EeoLemapDU0sFx1mAbG6hBA7p8y6cr8O2nZimntGUl13cszNNoFOpq9Pvht6HMC/H3gmk6
-        qCmytckxBQXOGg/EBq19Z3cf4u3ofAaafQ4eKXbOj9Eg2T1iTLnlvfbc44wrirmqJXSLtr
-        dBQl0ZzhmWxrEUtnv0oQUsj6plcwlq8=
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
- [209.85.166.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-332-qNEP1VOSMJy1gLkXQc8T3w-1; Mon, 11 Jan 2021 09:59:15 -0500
-X-MC-Unique: qNEP1VOSMJy1gLkXQc8T3w-1
-Received: by mail-il1-f198.google.com with SMTP id f2so17334901ils.6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:59:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=ITnHqcO7sIEWr+InPo1+37W7NuL6w/yxgJzxS4jgowk=;
-        b=nhmMgzTVg6Mn9XV9QybK/Sv/0h1ayKqxWU8ig59nBw7QUO6QPSSOoLmHbdDE2PqZ1N
-         HDgpZXisVYflc/SOLnyel7J9IX4VQnUtJmvmFck/jbl1EZzYI8qhD2o0JnbpJxkLs0QR
-         wSZ5SaSj8lowmO7F8lmI6tD0f9HvSK3yTe52cu3nksN4CbIaidPjt6VPhvxx81GX2wfJ
-         9r5BZTIMFju6AWcCF4bMlVHXAKI3bCrqZJxkz4WIAq4toLXl1UFa/pQ+Ma4YaIhYCNV5
-         HXqUAIbISenc3TACeNHzbaNn+XsYmc5jxHCP1m/VWWbEAb/jlaCGwwF/wHsqxsBg7yWt
-         vTFA==
-X-Gm-Message-State: AOAM531xlnvYtq7RZ0+ZmetC1iFWDWcZ0FeAQYHrVPDOyFdl44le+05M
-        oy4WTsP9IVkxlfR/v5BHLoUhbv1TRCqsT6csU741L687KJn+BqMzVFIDqXBGTjFX5o84Yqpf24X
-        0whn9o74CT0uMkLe+TivOAs6p
-X-Received: by 2002:a92:d8c1:: with SMTP id l1mr15584666ilo.178.1610377153736;
-        Mon, 11 Jan 2021 06:59:13 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwigTybs5u4uWrwl8KRTtIq8+8v+eF72Ka8ywCY1j+MUob7wkMFHvpyUjgj5sbYS0qjNBPUmQ==
-X-Received: by 2002:a92:d8c1:: with SMTP id l1mr15584641ilo.178.1610377153495;
-        Mon, 11 Jan 2021 06:59:13 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id r11sm15231261ilg.39.2021.01.11.06.59.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 06:59:12 -0800 (PST)
-Subject: Re: [PATCH v5 1/2] fpga: dfl: add the userspace I/O device support
- for DFL devices
-To:     Xu Yilun <yilun.xu@intel.com>, Moritz Fischer <mdf@kernel.org>
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, lgoncalv@redhat.com, hao.wu@intel.com
-References: <1609557182-20787-1-git-send-email-yilun.xu@intel.com>
- <1609557182-20787-2-git-send-email-yilun.xu@intel.com>
- <X/tfZQz8tCGkabMZ@archbook> <20210111061602.GA13963@yilunxu-OptiPlex-7050>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <dae0308c-c991-e079-73c5-68d602005c33@redhat.com>
-Date:   Mon, 11 Jan 2021 06:59:10 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1732894AbhAKPA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:00:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48998 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730300AbhAKPA6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 10:00:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47DC0225AC;
+        Mon, 11 Jan 2021 15:00:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610377216;
+        bh=rtirb3fjqCCH9U1KaB7/dG6Wh9fR3Tril3LbNgaV7iE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=j7qh6/eMuRqJsv0NxBZtm6vvT4kdkB/oyAjt0gVhITLwIT8lhzM/FXCH2YJOtiiNW
+         Loq9VSqWa2mN6qWsaZWzITjv17m7oq+PafYYEw5+jDnursC99fxg3j8NuB+fsE9yob
+         ZAz42c3TK9Hl68aWFhQtloeMg6mbDz176eErrTOuH6zN7wX/InZS0i8PjHdaW1JICA
+         M3U/jnn+jMrnIzYyTk4fKeCgEOAHbWg2Ru2yUOXHlH17cOkt7DMZvtvQclFtzQ31rO
+         MWv1shBzjKguv5V92P1vAlqZ1e7wJpiW0VqyA0vDWI14k+CROlRsNBpNKgiiseO6dG
+         DyV/aVmATXjwA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 191A835226C6; Mon, 11 Jan 2021 07:00:16 -0800 (PST)
+Date:   Mon, 11 Jan 2021 07:00:16 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
+Message-ID: <20210111150016.GC2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201226025117.2770-1-jiangshanlai@gmail.com>
+ <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net>
+ <87o8hv7pnd.fsf@nanos.tec.linutronix.de>
+ <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20210111061602.GA13963@yilunxu-OptiPlex-7050>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 11, 2021 at 12:01:03PM +0100, Peter Zijlstra wrote:
+> On Mon, Jan 11, 2021 at 11:07:34AM +0100, Thomas Gleixner wrote:
+> > On Fri, Jan 08 2021 at 12:46, Peter Zijlstra wrote:
+> > > On Sat, Dec 26, 2020 at 10:51:08AM +0800, Lai Jiangshan wrote:
+> > >> From: Lai Jiangshan <laijs@linux.alibaba.com>
+> > >> 
+> > >> 06249738a41a ("workqueue: Manually break affinity on hotplug")
+> > >> said that scheduler will not force break affinity for us.
+> > >
+> > > So I've been looking at this the past day or so, and the more I look,
+> > > the more I think commit:
+> > >
+> > >   1cf12e08bc4d ("sched/hotplug: Consolidate task migration on CPU unplug")
+> > >
+> > > is a real problem and we need to revert it (at least for now).
+> > >
+> > > Let me attempt a brain dump:
+> > >
+> > >  - the assumption that per-cpu kernel threads are 'well behaved' on
+> > >    hot-plug has, I think, been proven incorrect, it's far worse than
+> > >    just bounded workqueue. Therefore, it makes sense to provide the old
+> > >    semantics.
+> > 
+> > I disagree. Per-cpu kernel threads which are magically stopped during
+> > hotplug and then migrated to a random other CPU are just wrong.
+> > 
+> > We really need to fix that and not proliferate the sloppy and ill
+> > defined behaviour.
+> 
+> Well yes, but afaict the workqueue stuff hasn't been settled yet, and
+> the rcutorture patch Paul did was just plain racy and who knows what
+> other daft kthread users are out there. That and we're at -rc3.
 
-On 1/10/21 10:16 PM, Xu Yilun wrote:
-> On Sun, Jan 10, 2021 at 12:11:17PM -0800, Moritz Fischer wrote:
->> On Sat, Jan 02, 2021 at 11:13:01AM +0800, Xu Yilun wrote:
->>> This patch supports the DFL drivers be written in userspace. This is
->>> realized by exposing the userspace I/O device interfaces.
->>>
->>> The driver leverages the uio_pdrv_genirq, it adds the uio_pdrv_genirq
->>> platform device with the DFL device's resources, and let the generic UIO
->>> platform device driver provide support to userspace access to kernel
->>> interrupts and memory locations.
->>>
->>> The driver now supports the ether group feature. To support a new DFL
->>> feature been directly accessed via UIO, its feature id should be added to
->>> the driver's id_table.
->>>
->>> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
->>> Reviewed-by: Tom Rix <trix@redhat.com>
->>> ---
->>> v2: switch to the new matching algorithem. It matches DFL devices which
->>>      could not be handled by other DFL drivers.
->>>     refacor the code about device resources filling.
->>>     fix some comments.
->>> v3: split the dfl.c changes out of this patch.
->>>     some minor fixes
->>> v4: drop the idea of a generic matching algorithem, instead we specify
->>>      each matching device in id_table.
->>>     to make clear that only one irq is supported, the irq handling code
->>>      is refactored.
->>> v5: refactor the irq resource code.
->>> ---
->>>  drivers/fpga/Kconfig        | 10 +++++
->>>  drivers/fpga/Makefile       |  1 +
->>>  drivers/fpga/dfl-uio-pdev.c | 91 +++++++++++++++++++++++++++++++++++++++++++++
->>>  3 files changed, 102 insertions(+)
->>>  create mode 100644 drivers/fpga/dfl-uio-pdev.c
->>>
->>> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
->>> index 5ff9438..61445be 100644
->>> --- a/drivers/fpga/Kconfig
->>> +++ b/drivers/fpga/Kconfig
->>> @@ -203,6 +203,16 @@ config FPGA_DFL_NIOS_INTEL_PAC_N3000
->>>  	  the card. It also instantiates the SPI master (spi-altera) for
->>>  	  the card's BMC (Board Management Controller).
->>>  
->>> +config FPGA_DFL_UIO_PDEV
->>> +	tristate "FPGA DFL Driver for Userspace I/O platform devices"
->>> +	depends on FPGA_DFL && UIO_PDRV_GENIRQ
->>> +	help
->>> +	  Enable this to allow some DFL drivers be written in userspace. It
->>> +	  adds the uio_pdrv_genirq platform device with the DFL feature's
->>> +	  resources, and lets the generic UIO platform device driver provide
->>> +	  support for userspace access to kernel interrupts and memory
->>> +	  locations.
->>> +
->>>  config FPGA_DFL_PCI
->>>  	tristate "FPGA DFL PCIe Device Driver"
->>>  	depends on PCI && FPGA_DFL
->>> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
->>> index 18dc9885..8847fe0 100644
->>> --- a/drivers/fpga/Makefile
->>> +++ b/drivers/fpga/Makefile
->>> @@ -45,6 +45,7 @@ dfl-afu-objs := dfl-afu-main.o dfl-afu-region.o dfl-afu-dma-region.o
->>>  dfl-afu-objs += dfl-afu-error.o
->>>  
->>>  obj-$(CONFIG_FPGA_DFL_NIOS_INTEL_PAC_N3000)	+= dfl-n3000-nios.o
->>> +obj-$(CONFIG_FPGA_DFL_UIO_PDEV)		+= dfl-uio-pdev.o
->>>  
->>>  # Drivers for FPGAs which implement DFL
->>>  obj-$(CONFIG_FPGA_DFL_PCI)		+= dfl-pci.o
->>> diff --git a/drivers/fpga/dfl-uio-pdev.c b/drivers/fpga/dfl-uio-pdev.c
->>> new file mode 100644
->>> index 0000000..a4cd581
->>> --- /dev/null
->>> +++ b/drivers/fpga/dfl-uio-pdev.c
->>> @@ -0,0 +1,91 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/*
->>> + * DFL driver for Userspace I/O platform devices
->>> + *
->>> + * Copyright (C) 2020 Intel Corporation, Inc.
->>> + */
->>> +#include <linux/dfl.h>
->>> +#include <linux/errno.h>
->>> +#include <linux/kernel.h>
->>> +#include <linux/module.h>
->>> +#include <linux/platform_device.h>
->>> +#include <linux/slab.h>
->>> +#include <linux/uio_driver.h>
->>> +
->>> +#define DRIVER_NAME "dfl-uio-pdev"
->>> +
->>> +static int dfl_uio_pdev_probe(struct dfl_device *ddev)
->>> +{
->>> +	struct platform_device_info pdevinfo = { 0 };
->>> +	struct uio_info uio_pdata = { 0 };
->>> +	struct platform_device *uio_pdev;
->>> +	struct device *dev = &ddev->dev;
->>> +	unsigned int num_res = 1;
->>> +	struct resource res[2];
->>> +
->>> +	res[0].parent = &ddev->mmio_res;
->>> +	res[0].flags = IORESOURCE_MEM;
->>> +	res[0].start = ddev->mmio_res.start;
->>> +	res[0].end = ddev->mmio_res.end;
->>> +
->>> +	if (ddev->num_irqs) {
->>> +		if (ddev->num_irqs > 1)
->>> +			dev_warn(&ddev->dev,
->>> +				 "%d irqs for %s, but UIO only supports the first one\n",
->>> +				 ddev->num_irqs, dev_name(&ddev->dev));
->>> +
->>> +		res[1].flags = IORESOURCE_IRQ;
->>> +		res[1].start = ddev->irqs[0];
->>> +		res[1].end = ddev->irqs[0];
->>> +		num_res++;
->>> +	}
->>> +
->>> +	uio_pdata.name = DRIVER_NAME;
->>> +	uio_pdata.version = "0";
->>> +
->>> +	pdevinfo.name = "uio_pdrv_genirq";
->>> +	pdevinfo.res = res;
->>> +	pdevinfo.num_res = num_res;
->>> +	pdevinfo.parent = &ddev->dev;
->>> +	pdevinfo.id = PLATFORM_DEVID_AUTO;
->>> +	pdevinfo.data = &uio_pdata;
->>> +	pdevinfo.size_data = sizeof(uio_pdata);
->>> +
->>> +	uio_pdev = platform_device_register_full(&pdevinfo);
->>> +	if (!IS_ERR(uio_pdev))
->>> +		dev_set_drvdata(dev, uio_pdev);
->> I'm not sure if this is more readable than:
->>
->>    	uio_pdev = platform_device_register_full(&pdevinfo);
->>    	if (IS_ERR(uio_pdev))
->>    		return PTR_ERR(uio_pdev);
->>
->> 	dev_set_drvdata(dev, uio_pdev);
->> 	return 0;
->>
->> No strong preference, though ... :)
-> I think your version is more readable, I'll change it.
->
->>> +
->>> +	return PTR_ERR_OR_ZERO(uio_pdev);
->>> +}
->>> +
->>> +static void dfl_uio_pdev_remove(struct dfl_device *ddev)
->>> +{
->>> +	struct platform_device *uio_pdev = dev_get_drvdata(&ddev->dev);
->>> +
->>> +	platform_device_unregister(uio_pdev);
->>> +}
->>> +
->>> +#define FME_FEATURE_ID_ETH_GROUP	0x10
->>> +
->>> +static const struct dfl_device_id dfl_uio_pdev_ids[] = {
->>> +	{ FME_ID, FME_FEATURE_ID_ETH_GROUP },
->> Will you want to always bind FME_FEATURE_ID_ETH_GROUP? If not I'd suggest not
->> to add it here.
-> Actually this is not the most preferable to me. I'm always looking for a
-> generic way to bind the uio driver to user assigned dfl devices. But there
-> is concern that userspace should not be responsible for the device driver
-> matching in previous mail thread:
->
-> https://lore.kernel.org/linux-fpga/1602828151-24784-2-git-send-email-yilun.xu@intel.com/
->
-> But TBH I still didn't figure out why driver_override is not OK in this
-> case.
->
->> If you want to provide an option to somewhat non-ABI fixed bind things
->> you could look at what vfio-pci does (provide a module parameter),
->> otherwise use sysfs 'new_id' or 'bind'.
-> I would like to have a "new_id" for dfl bus driver. It is not generic to
-> all drivers, I need to add the attr for dfl drivers like pci do.
->
-> My concern is how the module param or "new_id" is different from
-> "driver_override", seems userspace is also taking part in the device
-> matching.
->
-> But since we've restarted the discussion, I'm very much willing to have
-> a try on the "new_id".
+Here is what I currently have, which passed 40 hours of each flavor of
+rcutorture last night (with Lai Jiangshan's patches).
 
-I don't believe there is any problem with the basic platform uio driver.
+Except that I cannot explain why the "onoff_task && num_online_cpus"
+is needed, just that it doesn't pass otherwise.  So either I am blind
+or something else is also messed up.  (Why did I think to add it?
+Because experimenting with suppressing individual rcutorture options
+pointed in that direction.)
 
-Can we split it out and work the new_id change in parallel ?
+Also, adding that condition to that "if" statement is removing CPU
+shuffling entirely from two-CPU runs, which is at best suboptimal.
 
-Tom
+> So I'm really tempted to revert for now and try again later.
 
->
-> Thanks,
-> Yilun
->
+I am not feeling at all good about this being in mainline quite yet.  I do
+agree that the semantic might be in some sense cleaner, but let's face it,
+rcutorture is a very focused test.  There are large parts of the kernel
+that it does not stress at all.  There could be any number of other bugs
+involving other parts of the kernel.  It would be good to have a rationale
+for why this is safe beforehand rather than random experiment-driven
+changes like that added "if" condition in the patch below.
 
+							Thanx, Paul
+
+------------------------------------------------------------------------
+commit dd0d40aecf506ed6982d7c98f48b4327d7d59485
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Wed Dec 23 11:23:48 2020 -0800
+
+    torture: Break affinity of kthreads last running on outgoing CPU
+    
+    The advent of commit 06249738a41a ("workqueue: Manually break affinity
+    on hotplug") means that the scheduler no longer silently breaks affinity
+    for kthreads pinned to the outgoing CPU.  This can happen for many of
+    rcutorture's kthreads due to shuffling, which periodically affinities
+    these ktheads away from a randomly chosen CPU.  This usually works fine
+    because these kthreads are allowed to run on any other CPU and because
+    shuffling is a no-op any time there is but one online CPU.
+    
+    However, consider the following sequence of events:
+    
+    1.      CPUs 0 and 1 are initially online.
+    
+    2.      The torture_shuffle_tasks() function affinities all the tasks
+            away from CPU 0.
+    
+    3.      CPU 1 goes offline.
+    
+    4.      All the tasks are now affinitied to an offline CPU, triggering
+            the warning added by the commit noted above.
+    
+    This can trigger the following in sched_cpu_dying() in kernel/sched/core.c:
+    
+            BUG_ON(rq->nr_running != 1 || rq_has_pinned_tasks(rq))
+    
+    This commit therefore adds a new torture_shuffle_tasks_offline() function
+    that is invoked from torture_offline() prior to offlining a CPU.  This new
+    function scans the list of shuffled kthreads and for any thread that
+    last ran (or is set to run) on the outgoing CPU, sets its affinity to
+    all online CPUs.  Thus there will never be a kthread that is affinitied
+    only to the outgoing CPU.
+    
+    Of course, if the sysadm manually applies affinity to any of these
+    kthreads, all bets are off.  However, such a sysadm must be fast because
+    the torture_shuffle_tasks_offline() function is invoked immediately before
+    offlining the outgoing CPU.  Therefore, let it be known that with great
+    speed and great power comes great responsibility.
+    
+    Fixes: 1cf12e08bc4d ("sched/hotplug: Consolidate task migration on CPU unplug")
+    [ paulmck: Applied synchronization feedback from Peter Zijlstra. ]
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/torture.c b/kernel/torture.c
+index 01e336f..9208a03 100644
+--- a/kernel/torture.c
++++ b/kernel/torture.c
+@@ -65,6 +65,7 @@ static int fullstop = FULLSTOP_RMMOD;
+ static DEFINE_MUTEX(fullstop_mutex);
+ 
+ static atomic_t verbose_sleep_counter;
++static DEFINE_MUTEX(shuffle_task_mutex);
+ 
+ /*
+  * Sleep if needed from VERBOSE_TOROUT*().
+@@ -153,14 +154,17 @@ int torture_hrtimeout_s(u32 baset_s, u32 fuzzt_ms, struct torture_random_state *
+ }
+ EXPORT_SYMBOL_GPL(torture_hrtimeout_s);
+ 
++static struct task_struct *onoff_task;
++
+ #ifdef CONFIG_HOTPLUG_CPU
+ 
++static void torture_shuffle_tasks_offline(int cpu);
++
+ /*
+  * Variables for online-offline handling.  Only present if CPU hotplug
+  * is enabled, otherwise does nothing.
+  */
+ 
+-static struct task_struct *onoff_task;
+ static long onoff_holdoff;
+ static long onoff_interval;
+ static torture_ofl_func *onoff_f;
+@@ -212,6 +216,8 @@ bool torture_offline(int cpu, long *n_offl_attempts, long *n_offl_successes,
+ 			 torture_type, cpu);
+ 	starttime = jiffies;
+ 	(*n_offl_attempts)++;
++	mutex_lock(&shuffle_task_mutex);
++	torture_shuffle_tasks_offline(cpu);
+ 	ret = remove_cpu(cpu);
+ 	if (ret) {
+ 		s = "";
+@@ -245,6 +251,7 @@ bool torture_offline(int cpu, long *n_offl_attempts, long *n_offl_successes,
+ 		WRITE_ONCE(torture_online_cpus, torture_online_cpus - 1);
+ 		WARN_ON_ONCE(torture_online_cpus <= 0);
+ 	}
++	mutex_unlock(&shuffle_task_mutex);
+ 
+ 	return true;
+ }
+@@ -474,7 +481,6 @@ static struct task_struct *shuffler_task;
+ static cpumask_var_t shuffle_tmp_mask;
+ static int shuffle_idle_cpu;	/* Force all torture tasks off this CPU */
+ static struct list_head shuffle_task_list = LIST_HEAD_INIT(shuffle_task_list);
+-static DEFINE_MUTEX(shuffle_task_mutex);
+ 
+ /*
+  * Register a task to be shuffled.  If there is no memory, just splat
+@@ -512,6 +518,19 @@ static void torture_shuffle_task_unregister_all(void)
+ 	mutex_unlock(&shuffle_task_mutex);
+ }
+ 
++#ifdef CONFIG_HOTPLUG_CPU
++// Unbind all tasks from a CPU that is to be taken offline.
++static void torture_shuffle_tasks_offline(int cpu)
++{
++	struct shuffle_task *stp;
++
++	lockdep_assert_held(&shuffle_task_mutex);
++	list_for_each_entry(stp, &shuffle_task_list, st_l)
++		if (task_cpu(stp->st_t) == cpu)
++			set_cpus_allowed_ptr(stp->st_t, cpu_present_mask);
++}
++#endif // #ifdef CONFIG_HOTPLUG_CPU
++
+ /* Shuffle tasks such that we allow shuffle_idle_cpu to become idle.
+  * A special case is when shuffle_idle_cpu = -1, in which case we allow
+  * the tasks to run on all CPUs.
+@@ -521,11 +540,13 @@ static void torture_shuffle_tasks(void)
+ 	struct shuffle_task *stp;
+ 
+ 	cpumask_setall(shuffle_tmp_mask);
+-	get_online_cpus();
++	mutex_lock(&shuffle_task_mutex);
++	cpus_read_lock();
+ 
+ 	/* No point in shuffling if there is only one online CPU (ex: UP) */
+-	if (num_online_cpus() == 1) {
+-		put_online_cpus();
++	if (num_online_cpus() == 1 || (onoff_task && num_online_cpus() <= 2)) {
++		cpus_read_unlock();
++		mutex_unlock(&shuffle_task_mutex);
+ 		return;
+ 	}
+ 
+@@ -536,12 +557,11 @@ static void torture_shuffle_tasks(void)
+ 	else
+ 		cpumask_clear_cpu(shuffle_idle_cpu, shuffle_tmp_mask);
+ 
+-	mutex_lock(&shuffle_task_mutex);
+ 	list_for_each_entry(stp, &shuffle_task_list, st_l)
+ 		set_cpus_allowed_ptr(stp->st_t, shuffle_tmp_mask);
+-	mutex_unlock(&shuffle_task_mutex);
+ 
+-	put_online_cpus();
++	cpus_read_unlock();
++	mutex_unlock(&shuffle_task_mutex);
+ }
+ 
+ /* Shuffle tasks across CPUs, with the intent of allowing each CPU in the
