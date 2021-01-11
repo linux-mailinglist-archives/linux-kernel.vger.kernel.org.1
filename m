@@ -2,54 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61ABD2F0D9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 09:08:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 453212F0DA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 09:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727800AbhAKIGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 03:06:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbhAKIGa (ORCPT
+        id S1727841AbhAKIG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 03:06:57 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:17095 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727804AbhAKIG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 03:06:30 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34FBCC061786;
-        Mon, 11 Jan 2021 00:05:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/462xsoiQ5s3oGp2fbaA+kjjbZ55BjDK0eDv97mG05A=; b=E3ao1TNNWj8lhdcseniY57FgDm
-        psn5Oo/Hh8p0p0HrnZ56ZZPpKQ05V9ti7WNEcnaMnQL675Lc6yEsykIDM4a3WCxYXIPr3/sBU2JTw
-        UWdhqc0AqYBlChLrus7ouaPT/R2zR0B+wivcSMmFACTzH0V+Vh06zjXwEU/im/5FZqHgmY9TtjOJa
-        xKpQ7be8neYQt4I8rXr8pPQ5q2sOCR16Nxh64KgE8LDpf3iFWAoIKcZ+SrrJo/cGnPJMXOvJy2Y+d
-        XIfQGtWBkO/958/LhE8zvg462raCfEiGMQ0Q5sT9R8UWXiGCm1KOByorBmed0Vm1/WCYzUcN/qVMV
-        zsdwDANQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1kysCl-002uzS-V9; Mon, 11 Jan 2021 08:05:40 +0000
-Date:   Mon, 11 Jan 2021 08:05:35 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-Subject: Re: [PATCH] mm/filemap: don't revert iter on -EIOCBQUEUED
-Message-ID: <20210111080535.GA693550@infradead.org>
-References: <f5247b60e7abbd2ff850cd108491f53a2e0c501a.1610207781.git.asml.silence@gmail.com>
+        Mon, 11 Jan 2021 03:06:56 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610352396; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=q6HVAxk/hQzZS5AhQvky+aYNydoq0obr1IZUR/g5mjQ=; b=uYEy7Avwl253Ph3dLPQnsNbsNlCbMVFjOmwnzj8dSznbc4N8GENMBMgcvBJUOhzs+gpRh75C
+ drn5Y3lv4eVbK4fwBV84F/KbDvqjJmmarpkm8aVjXW575VmjwqMCOd8KCeVq9lH51lySmgcH
+ CNmGmtoYkAPoathTNX6FdmbBTFY=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5ffc06f24dcca12475ea0822 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 08:06:10
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 843DBC43466; Mon, 11 Jan 2021 08:06:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 44E4BC433C6;
+        Mon, 11 Jan 2021 08:06:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 44E4BC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Lorenzo Bianconi <lorenzo@kernel.org>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] mt76: Fix queue ID variable types after mcu queue split
+References: <20201229211548.1348077-1-natechancellor@gmail.com>
+        <20201231100918.GA1819773@computer-5.station>
+Date:   Mon, 11 Jan 2021 10:06:04 +0200
+In-Reply-To: <20201231100918.GA1819773@computer-5.station> (Lorenzo Bianconi's
+        message of "Thu, 31 Dec 2020 11:09:18 +0100")
+Message-ID: <87k0sjlwyb.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f5247b60e7abbd2ff850cd108491f53a2e0c501a.1610207781.git.asml.silence@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 09, 2021 at 04:00:32PM +0000, Pavel Begunkov wrote:
-> Currently, if I/O is enqueued for async execution direct paths of
-> generic_file_{read,write}_iter() will always revert the iter. There are
-> no users expecting that, and that is also costly. Leave iterators as is
-> on -EIOCBQUEUED.
+Lorenzo Bianconi <lorenzo@kernel.org> writes:
 
-Looks good,
+>> Clang warns in both mt7615 and mt7915:
+>> 
+>> drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:271:9: warning: implicit
+>> conversion from enumeration type 'enum mt76_mcuq_id' to different
+>> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
+>>                 txq = MT_MCUQ_FWDL;
+>>                     ~ ^~~~~~~~~~~~
+>> drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:278:9: warning: implicit
+>> conversion from enumeration type 'enum mt76_mcuq_id' to different
+>> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
+>>                 txq = MT_MCUQ_WA;
+>>                     ~ ^~~~~~~~~~
+>> drivers/net/wireless/mediatek/mt76/mt7915/mcu.c:282:9: warning: implicit
+>> conversion from enumeration type 'enum mt76_mcuq_id' to different
+>> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
+>>                 txq = MT_MCUQ_WM;
+>>                     ~ ^~~~~~~~~~
+>> 3 warnings generated.
+>> 
+>> drivers/net/wireless/mediatek/mt76/mt7615/mcu.c:238:9: warning: implicit
+>> conversion from enumeration type 'enum mt76_mcuq_id' to different
+>> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
+>>                 qid = MT_MCUQ_WM;
+>>                     ~ ^~~~~~~~~~
+>> drivers/net/wireless/mediatek/mt76/mt7615/mcu.c:240:9: warning: implicit
+>> conversion from enumeration type 'enum mt76_mcuq_id' to different
+>> enumeration type 'enum mt76_txq_id' [-Wenum-conversion]
+>>                 qid = MT_MCUQ_FWDL;
+>>                     ~ ^~~~~~~~~~~~
+>> 2 warnings generated.
+>> 
+>> Use the proper type for the queue ID variables to fix these warnings.
+>> Additionally, rename the txq variable in mt7915_mcu_send_message to be
+>> more neutral like mt7615_mcu_send_message.
+>> 
+>> Fixes: e637763b606b ("mt76: move mcu queues to mt76_dev q_mcu array")
+>> Link: https://github.com/ClangBuiltLinux/linux/issues/1229
+>> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+>
+> Acked-by: Lorenzo Bianconi <lorenzo@kernel.org>
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+I see that Felix already applied this, but as this is a regression
+starting from v5.11-rc1 I think it should be applied to
+wireless-drivers. Felix, can you drop this from your tree so that I
+could apply it to wireless-drivers?
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
