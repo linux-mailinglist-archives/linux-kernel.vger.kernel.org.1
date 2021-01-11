@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8A12F131F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71CEE2F130D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:03:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728422AbhAKNEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:04:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50226 "EHLO mail.kernel.org"
+        id S1729460AbhAKNCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:02:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729876AbhAKNDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:03:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E1E7622B30;
-        Mon, 11 Jan 2021 13:02:57 +0000 (UTC)
+        id S1729416AbhAKNCh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:02:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 737CF2251F;
+        Mon, 11 Jan 2021 13:01:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370178;
-        bh=MoUO5H4SMERM/X57okUKuEQLnXWZ9k/cq0uOJUYMSoI=;
+        s=korg; t=1610370116;
+        bh=dUErXp/SWhpDo6ZZNPnEl8bhszyk8ag0fqc8gzI25q8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hveg0i8AWJi2gXktjJtRUCSrmjpxEkrJMKTuujFjf2dWP7BH9AgPaP7N344GA4FVr
-         dHaeDFLsaTpxCoS4PZXmIOflmA8ZfbqrYFlkQd5CMw+7+puJ8+2olGb6FdNFXFrTq+
-         rziHIFo19u0EhtTVf4y4wUhzLRxkIutqc36GYBpc=
+        b=0WgwdPWLkASyUHfCfgWHaMdKesyjV4YwK0C6kuns+krQ1OQwDJQPOGyIR1osOUmb2
+         eIpG9j39MxdSMsPxlYWNrmI4NBE3lhjPs06fShUbu5pgB8uR6GPi84B4ULE01QwcJL
+         bnjVFdkiyz3H+RmRzTCQuWjSznlHguWHrc2BoMYg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Halasa <khc@pm.waw.pl>,
-        Xie He <xie.he.0141@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 12/45] net: hdlc_ppp: Fix issues when mod_timer is called while timer is running
-Date:   Mon, 11 Jan 2021 14:00:50 +0100
-Message-Id: <20210111130034.253490852@linuxfoundation.org>
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Subject: [PATCH 4.4 20/38] usb: uas: Add PNY USB Portable SSD to unusual_uas
+Date:   Mon, 11 Jan 2021 14:00:52 +0100
+Message-Id: <20210111130033.442984599@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130033.676306636@linuxfoundation.org>
-References: <20210111130033.676306636@linuxfoundation.org>
+In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
+References: <20210111130032.469630231@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,44 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie He <xie.he.0141@gmail.com>
+From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 
-[ Upstream commit 1fef73597fa545c35fddc953979013882fbd4e55 ]
+commit 96ebc9c871d8a28fb22aa758dd9188a4732df482 upstream.
 
-ppp_cp_event is called directly or indirectly by ppp_rx with "ppp->lock"
-held. It may call mod_timer to add a new timer. However, at the same time
-ppp_timer may be already running and waiting for "ppp->lock". In this
-case, there's no need for ppp_timer to continue running and it can just
-exit.
+Here's another variant PNY Pro Elite USB 3.1 Gen 2 portable SSD that
+hangs and doesn't respond to ATA_1x pass-through commands. If it doesn't
+support these commands, it should respond properly to the host. Add it
+to the unusual uas list to be able to move forward with other
+operations.
 
-If we let ppp_timer continue running, it may call add_timer. This causes
-kernel panic because add_timer can't be called with a timer pending.
-This patch fixes this problem.
-
-Fixes: e022c2f07ae5 ("WAN: new synchronous PPP implementation for generic HDLC.")
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: stable@vger.kernel.org
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Oliver Neukum <oneukum@suse.com>
+Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Link: https://lore.kernel.org/r/2edc7af892d0913bf06f5b35e49ec463f03d5ed8.1609819418.git.Thinh.Nguyen@synopsys.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/wan/hdlc_ppp.c |    7 +++++++
+ drivers/usb/storage/unusual_uas.h |    7 +++++++
  1 file changed, 7 insertions(+)
 
---- a/drivers/net/wan/hdlc_ppp.c
-+++ b/drivers/net/wan/hdlc_ppp.c
-@@ -572,6 +572,13 @@ static void ppp_timer(unsigned long arg)
- 	unsigned long flags;
+--- a/drivers/usb/storage/unusual_uas.h
++++ b/drivers/usb/storage/unusual_uas.h
+@@ -163,6 +163,13 @@ UNUSUAL_DEV(0x152d, 0x0578, 0x0000, 0x99
+ 		US_FL_BROKEN_FUA),
  
- 	spin_lock_irqsave(&ppp->lock, flags);
-+	/* mod_timer could be called after we entered this function but
-+	 * before we got the lock.
-+	 */
-+	if (timer_pending(&proto->timer)) {
-+		spin_unlock_irqrestore(&ppp->lock, flags);
-+		return;
-+	}
- 	switch (proto->state) {
- 	case STOPPING:
- 	case REQ_SENT:
+ /* Reported-by: Thinh Nguyen <thinhn@synopsys.com> */
++UNUSUAL_DEV(0x154b, 0xf00b, 0x0000, 0x9999,
++		"PNY",
++		"Pro Elite SSD",
++		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
++		US_FL_NO_ATA_1X),
++
++/* Reported-by: Thinh Nguyen <thinhn@synopsys.com> */
+ UNUSUAL_DEV(0x154b, 0xf00d, 0x0000, 0x9999,
+ 		"PNY",
+ 		"Pro Elite SSD",
 
 
