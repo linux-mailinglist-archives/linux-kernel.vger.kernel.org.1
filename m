@@ -2,34 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7FF2F1324
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E442F13D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729571AbhAKNEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:04:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50798 "EHLO mail.kernel.org"
+        id S1731840AbhAKNPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:15:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728173AbhAKNDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:03:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66DFB2251F;
-        Mon, 11 Jan 2021 13:02:44 +0000 (UTC)
+        id S1732220AbhAKNPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:15:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F17212250F;
+        Mon, 11 Jan 2021 13:14:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370164;
-        bh=69FRb86U0lkthIViw6BofrHtE23XAqp4RBNfmMOLtTs=;
+        s=korg; t=1610370862;
+        bh=V0YfpRdskoi1wo05n6BbXjnKr81nb/SjTlpJSVCI8tE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AiavzTP89gbuE3Eou0+stsc1S3jAKajW5Wo4H6QG+PccIRh0zt7ZekJEn1gYgxrOV
-         T96IrI8MrB7eSB7/Truwh2rYtllVhkP+Kk2+lkiKZxuoAu7KkCbtRnGch6J4ohwwFU
-         I5s7JYs6JnOf2e85FXTRuxKmSCsu99b/uxuA7za4=
+        b=GQfm0IJF3Oyn7+rPG+INCPc7IN/Zoak0I5mATVz9czKgHLI1WPKge+gUHvGw/O/9p
+         rdUvJ52f1vvz4G6Vy18dJBNIU2gD3M397KQpqgSK75z06iiCaYziODP0SF65UxgpQI
+         WydcYHH8tJkLbi6W73u9m+/biDHWXIbYId1I1lXg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH 4.4 27/38] usb: gadget: f_uac2: reset wMaxPacketSize
-Date:   Mon, 11 Jan 2021 14:00:59 +0100
-Message-Id: <20210111130033.765431926@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+f583ce3d4ddf9836b27a@syzkaller.appspotmail.com,
+        William Tu <u9012063@gmail.com>,
+        Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 037/145] erspan: fix version 1 check in gre_parse_header()
+Date:   Mon, 11 Jan 2021 14:01:01 +0100
+Message-Id: <20210111130050.303429522@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
-References: <20210111130032.469630231@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,152 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jerome Brunet <jbrunet@baylibre.com>
+From: Cong Wang <cong.wang@bytedance.com>
 
-commit 9389044f27081d6ec77730c36d5bf9a1288bcda2 upstream.
+[ Upstream commit 085c7c4e1c0e50d90b7d90f61a12e12b317a91e2 ]
 
-With commit 913e4a90b6f9 ("usb: gadget: f_uac2: finalize wMaxPacketSize according to bandwidth")
-wMaxPacketSize is computed dynamically but the value is never reset.
+Both version 0 and version 1 use ETH_P_ERSPAN, but version 0 does not
+have an erspan header. So the check in gre_parse_header() is wrong,
+we have to distinguish version 1 from version 0.
 
-Because of this, the actual maximum packet size can only decrease each time
-the audio gadget is instantiated.
+We can just check the gre header length like is_erspan_type1().
 
-Reset the endpoint maximum packet size and mark wMaxPacketSize as dynamic
-to solve the problem.
-
-Fixes: 913e4a90b6f9 ("usb: gadget: f_uac2: finalize wMaxPacketSize according to bandwidth")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201221173531.215169-2-jbrunet@baylibre.com
+Fixes: cb73ee40b1b3 ("net: ip_gre: use erspan key field for tunnel lookup")
+Reported-by: syzbot+f583ce3d4ddf9836b27a@syzkaller.appspotmail.com
+Cc: William Tu <u9012063@gmail.com>
+Cc: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/gadget/function/f_uac2.c |   69 +++++++++++++++++++++++++++--------
- 1 file changed, 55 insertions(+), 14 deletions(-)
+ net/ipv4/gre_demux.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/gadget/function/f_uac2.c
-+++ b/drivers/usb/gadget/function/f_uac2.c
-@@ -766,7 +766,7 @@ static struct usb_endpoint_descriptor fs
+--- a/net/ipv4/gre_demux.c
++++ b/net/ipv4/gre_demux.c
+@@ -128,7 +128,7 @@ int gre_parse_header(struct sk_buff *skb
+ 	 * to 0 and sets the configured key in the
+ 	 * inner erspan header field
+ 	 */
+-	if (greh->protocol == htons(ETH_P_ERSPAN) ||
++	if ((greh->protocol == htons(ETH_P_ERSPAN) && hdr_len != 4) ||
+ 	    greh->protocol == htons(ETH_P_ERSPAN2)) {
+ 		struct erspan_base_hdr *ershdr;
  
- 	.bEndpointAddress = USB_DIR_OUT,
- 	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC,
--	.wMaxPacketSize = cpu_to_le16(1023),
-+	/* .wMaxPacketSize = DYNAMIC */
- 	.bInterval = 1,
- };
- 
-@@ -775,7 +775,7 @@ static struct usb_endpoint_descriptor hs
- 	.bDescriptorType = USB_DT_ENDPOINT,
- 
- 	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC,
--	.wMaxPacketSize = cpu_to_le16(1024),
-+	/* .wMaxPacketSize = DYNAMIC */
- 	.bInterval = 4,
- };
- 
-@@ -843,7 +843,7 @@ static struct usb_endpoint_descriptor fs
- 
- 	.bEndpointAddress = USB_DIR_IN,
- 	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC,
--	.wMaxPacketSize = cpu_to_le16(1023),
-+	/* .wMaxPacketSize = DYNAMIC */
- 	.bInterval = 1,
- };
- 
-@@ -852,7 +852,7 @@ static struct usb_endpoint_descriptor hs
- 	.bDescriptorType = USB_DT_ENDPOINT,
- 
- 	.bmAttributes = USB_ENDPOINT_XFER_ISOC | USB_ENDPOINT_SYNC_ASYNC,
--	.wMaxPacketSize = cpu_to_le16(1024),
-+	/* .wMaxPacketSize = DYNAMIC */
- 	.bInterval = 4,
- };
- 
-@@ -963,12 +963,28 @@ free_ep(struct uac2_rtd_params *prm, str
- 			"%s:%d Error!\n", __func__, __LINE__);
- }
- 
--static void set_ep_max_packet_size(const struct f_uac2_opts *uac2_opts,
-+static int set_ep_max_packet_size(const struct f_uac2_opts *uac2_opts,
- 	struct usb_endpoint_descriptor *ep_desc,
--	unsigned int factor, bool is_playback)
-+	enum usb_device_speed speed, bool is_playback)
- {
- 	int chmask, srate, ssize;
--	u16 max_packet_size;
-+	u16 max_size_bw, max_size_ep;
-+	unsigned int factor;
-+
-+	switch (speed) {
-+	case USB_SPEED_FULL:
-+		max_size_ep = 1023;
-+		factor = 1000;
-+		break;
-+
-+	case USB_SPEED_HIGH:
-+		max_size_ep = 1024;
-+		factor = 8000;
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
- 
- 	if (is_playback) {
- 		chmask = uac2_opts->p_chmask;
-@@ -980,10 +996,12 @@ static void set_ep_max_packet_size(const
- 		ssize = uac2_opts->c_ssize;
- 	}
- 
--	max_packet_size = num_channels(chmask) * ssize *
-+	max_size_bw = num_channels(chmask) * ssize *
- 		DIV_ROUND_UP(srate, factor / (1 << (ep_desc->bInterval - 1)));
--	ep_desc->wMaxPacketSize = cpu_to_le16(min_t(u16, max_packet_size,
--				le16_to_cpu(ep_desc->wMaxPacketSize)));
-+	ep_desc->wMaxPacketSize = cpu_to_le16(min_t(u16, max_size_bw,
-+						    max_size_ep));
-+
-+	return 0;
- }
- 
- static int
-@@ -1082,10 +1100,33 @@ afunc_bind(struct usb_configuration *cfg
- 	uac2->c_prm.uac2 = uac2;
- 
- 	/* Calculate wMaxPacketSize according to audio bandwidth */
--	set_ep_max_packet_size(uac2_opts, &fs_epin_desc, 1000, true);
--	set_ep_max_packet_size(uac2_opts, &fs_epout_desc, 1000, false);
--	set_ep_max_packet_size(uac2_opts, &hs_epin_desc, 8000, true);
--	set_ep_max_packet_size(uac2_opts, &hs_epout_desc, 8000, false);
-+	ret = set_ep_max_packet_size(uac2_opts, &fs_epin_desc, USB_SPEED_FULL,
-+				     true);
-+	if (ret < 0) {
-+		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
-+		return ret;
-+	}
-+
-+	ret = set_ep_max_packet_size(uac2_opts, &fs_epout_desc, USB_SPEED_FULL,
-+				     false);
-+	if (ret < 0) {
-+		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
-+		return ret;
-+	}
-+
-+	ret = set_ep_max_packet_size(uac2_opts, &hs_epin_desc, USB_SPEED_HIGH,
-+				     true);
-+	if (ret < 0) {
-+		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
-+		return ret;
-+	}
-+
-+	ret = set_ep_max_packet_size(uac2_opts, &hs_epout_desc, USB_SPEED_HIGH,
-+				     false);
-+	if (ret < 0) {
-+		dev_err(dev, "%s:%d Error!\n", __func__, __LINE__);
-+		return ret;
-+	}
- 
- 	hs_epout_desc.bEndpointAddress = fs_epout_desc.bEndpointAddress;
- 	hs_epin_desc.bEndpointAddress = fs_epin_desc.bEndpointAddress;
 
 
