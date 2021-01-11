@@ -2,102 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FCFC2F17A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:09:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2CC02F17AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:10:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388799AbhAKOJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:09:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388335AbhAKOJD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:09:03 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5106EC061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:08:23 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id n16so10947609wmc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:08:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I58h35GkwvjcxsG9VAqhK3onP53PzupAl4Y9BVQb82w=;
-        b=uRx5WHjTnV332VFUpSqk+tFT51LcmLudFmaPDTDvwzixaV8JhRZytSLeKRZbsNqRm7
-         T79BkqF7Ia58Lzy8Q7oNsJnmG/ErBKeQJlmYNqVlIyGQmYLfaUUQ6nm8Mkluk/1yepx1
-         ULOn8W6E9PWnLH9YDzYD0niHkY8DJ+el5Vq2RZI6bGFm9JznAb9hos9gvCZ1Ht/st/JM
-         +WOE+6h1i40A0QmdyUMhY2f9lK6zAgMC0qiqULdRcdrUQwxeCOPzGYBDQ881IGuLhpV0
-         OcMFWV5kRI3DU7Uz4kPrDUMFZqEpOIqgTw46O2q7mevTQD+Hoqe8rPN736QXWxeHfdT5
-         Atrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I58h35GkwvjcxsG9VAqhK3onP53PzupAl4Y9BVQb82w=;
-        b=Is2zM/IeC29ZsaktuRPELplEprM1RMCutY4hbqN8HMCy8YKMO9/o/hICsy6yVKliXg
-         IpZx58Fuq/sUDERnro8RZa7MO3UQGaenohL6DscVF7JyJiOWC5B+SM0IvggeqZTL9RJ5
-         OHCmTXHKMViuFl4pE0JLbP/1mLcmKokGI6CIRcySCBM8XogVHcuaLXO9ylYIcg2a0Z9B
-         O+HBFpcR9WcQfwHhZsa51yfPsEphFODzX44H6P2W9AlZmtuDHQ+fSpDFB5VEDDpvoRt4
-         usg2y1n3qLxVr9UrVCJe2Mx4SD1hwCJK2ksv4dIHBOUoc3UPW/btSuQHyMKzKSCwutI2
-         KsbQ==
-X-Gm-Message-State: AOAM530TfZvqd7I7tuNxcU8u5nkZ7ZwbyC4o/k8UDLuFjJgL6F8W2TSR
-        q+ru2rdoPIPF5GvGf2oEBFERh9oWXjPynA==
-X-Google-Smtp-Source: ABdhPJwjNOQPTRhauX395hkydHi2zy6dykxEDyPmdbz388dPWlH49jAat4a1988G5Y5eWOjmJLJHEA==
-X-Received: by 2002:a7b:cd90:: with SMTP id y16mr14998511wmj.115.1610374102076;
-        Mon, 11 Jan 2021 06:08:22 -0800 (PST)
-Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id h16sm21751539wmb.41.2021.01.11.06.08.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 06:08:21 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        David Lechner <david@lechnology.com>,
-        Sekhar Nori <nsekhar@ti.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH] clocksource: davinci: move pr_fmt() before the includes
-Date:   Mon, 11 Jan 2021 15:08:14 +0100
-Message-Id: <20210111140814.3668-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.29.1
+        id S2388848AbhAKOJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:09:48 -0500
+Received: from foss.arm.com ([217.140.110.172]:58844 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729847AbhAKOJc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 09:09:32 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 397631042;
+        Mon, 11 Jan 2021 06:08:46 -0800 (PST)
+Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1CE673F719;
+        Mon, 11 Jan 2021 06:08:45 -0800 (PST)
+Date:   Mon, 11 Jan 2021 14:08:42 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Phil Auld <pauld@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        vincent.donnefort@arm.com, mingo@redhat.com,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        valentin.schneider@arm.com
+Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
+Message-ID: <20210111140842.hwl4qojw3qymzw34@e107158-lin>
+References: <1598605249-72651-1-git-send-email-vincent.donnefort@arm.com>
+ <20200828102724.wmng7p6je2pkc33n@e107158-lin.cambridge.arm.com>
+ <1e806d48-fd54-fd86-5b3a-372d9876f360@arm.com>
+ <20200828172658.dxygk7j672gho4ax@e107158-lin.cambridge.arm.com>
+ <58f5d2e8-493b-7ce1-6abd-57705e5ab437@arm.com>
+ <20200902135423.GB93959@lorien.usersys.redhat.com>
+ <20200907110223.gtdgqod2iv2w7xmg@e107158-lin.cambridge.arm.com>
+ <20200908131954.GA147026@lorien.usersys.redhat.com>
+ <20210104182642.xglderapsfrop6pi@e107158-lin>
+ <X/xa1WBqu8ZOl5QD@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <X/xa1WBqu8ZOl5QD@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On 01/11/21 15:04, Peter Zijlstra wrote:
+> On Mon, Jan 04, 2021 at 06:26:42PM +0000, Qais Yousef wrote:
+> 
+> > So I have a proper patch for that now, that actually turned out to be really
+> > tiny once you untangle exactly what is missing.
+> > 
+> > Peter, bpf programs aren't considered ABIs AFAIK, do you have concerns about
+> > that?
+> 
+> In order to use these you need to rely on BTF to get anything useful
+> done right? And anything that relies on BTF cannot be ABI.
 
-We no longer need to undef pr_fmt if we define our own before including
-any headers.
+Yes. To decode struct rq for instance one has to either hardcode it in their
+program or use BTF to get the definition dynamically.
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/clocksource/timer-davinci.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+The worry is if we modify the function signature of the tracepoint. Alexei did
+confirm this can't be an ABI and I'm adding additional documentation to make
+this crystal clear.
 
-diff --git a/drivers/clocksource/timer-davinci.c b/drivers/clocksource/timer-davinci.c
-index bb4eee31ae08..9996c0542520 100644
---- a/drivers/clocksource/timer-davinci.c
-+++ b/drivers/clocksource/timer-davinci.c
-@@ -7,6 +7,8 @@
-  * (with tiny parts adopted from code by Kevin Hilman <khilman@baylibre.com>)
-  */
- 
-+#define pr_fmt(fmt) "%s: " fmt, __func__
-+
- #include <linux/clk.h>
- #include <linux/clockchips.h>
- #include <linux/interrupt.h>
-@@ -17,9 +19,6 @@
- 
- #include <clocksource/timer-davinci.h>
- 
--#undef pr_fmt
--#define pr_fmt(fmt) "%s: " fmt, __func__
--
- #define DAVINCI_TIMER_REG_TIM12			0x10
- #define DAVINCI_TIMER_REG_TIM34			0x14
- #define DAVINCI_TIMER_REG_PRD12			0x18
--- 
-2.29.1
+Thanks
 
+--
+Qais Yousef
