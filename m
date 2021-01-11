@@ -2,111 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11FCD2F1EB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:13:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D02052F1EBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:14:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390778AbhAKTMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:12:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbhAKTMh (ORCPT
+        id S2390898AbhAKTOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:14:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35632 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388128AbhAKTOA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:12:37 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EE10C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:11:57 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id v3so229796ilo.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:11:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=810FEXKXHgKArsdDAMgoY00MSSyM0BmX9OCgjLnP4Og=;
-        b=UJTB+Bj11DFpIdm8er17rTscKDWE51w0Xw2dRRyGlLp/iO1XvzF3ESU45wDzK7AgLL
-         KDzHNNcr0gD+4aSNEwy7d3hA0u2nWCIQA2DYbaGf+UeAYwShkiZ+6XXgEPg5aWBKG4Wu
-         sNfwkvLkTFcF4Mjt9QBGXOd/6dSm3eTcjMYKx+Ixf2ZU2fmyqSEmGTiNtZC6wti70BYv
-         VkZfW1ubZkvtjiu8as4xrHA+6DVXD1jDP7IHftAqlADXYweBvB9auFpDwzrWnVdfkAe5
-         g73Tzg5BbqKTLA6PxoFatGMVIdra+iw66fP1QXBemXrcBZIh7Uq5zHA7VsrIG0HID5Y0
-         QwqA==
+        Mon, 11 Jan 2021 14:14:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610392352;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=k4k4vHfas2/mfUg7QiyVoCdeOBt+W1BwAcMEvMJo9ZY=;
+        b=KCKXss+Ye7/2qyvyg6KYuYTk2aIXb99kVUkgB2zcy7mGtBKrwIwPPkC8jeDCkk9pUKD3wh
+        yYC4PwNb79B3mzQNtOwc5X4jsA2uBuMrtccZxBx8GGq/Kn1b8kkziqIP6fW+jczu8Muf6O
+        VVLlYWlWx/WgVJT909EYcJtUdWUOmPY=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-115-2cyErDamMwqt9IhTIw4BDw-1; Mon, 11 Jan 2021 14:12:30 -0500
+X-MC-Unique: 2cyErDamMwqt9IhTIw4BDw-1
+Received: by mail-ed1-f69.google.com with SMTP id z20so114828edl.21
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:12:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=810FEXKXHgKArsdDAMgoY00MSSyM0BmX9OCgjLnP4Og=;
-        b=Y0NlyF0sKXDDKizMM7Hty3IqZqnzuiY6yH1a4P0Grspy4EPDXlLvi1X/pE4rh17l4W
-         Uaj3tI4vedYcvqvSdPFWYjJ5Ulb0bHz6HT3moEYofXgzjtH/JGUWIF/ngVNB7IDWmnxh
-         8iOoxyiOj2O2tjNdffWsjo4GKwS7QmiL8AuUt5AgiueMkssrRn04mi82UXFTKyMvIU62
-         K0y8PPSAxQOZzsAbaZBBIgLqGTm3cDiulbQn+w+C8Iy30KMd2wexn2+04JfAEazDda2f
-         O6ysngQYGREja9Mfq4IxU7TqhEGIdY3Lpf7VIh5Gxt9l8ZfApvp2Bk/g65VJcOeNBLEs
-         VIJg==
-X-Gm-Message-State: AOAM533vlpybDcwwU18z9H2juId5o1X7I3I4ccRWOoGDwIJ7U2yYWmsg
-        qmHGaFFaZo6G2IrNlfYtx3k=
-X-Google-Smtp-Source: ABdhPJyhbehmXWz3weu+cQnoRjDTjfr+Jz7S4Ow/uhQ6OpqWgtRhziYeTCnADFiQaWp9ee8lKcg0aw==
-X-Received: by 2002:a92:d2ce:: with SMTP id w14mr628841ilg.182.1610392316821;
-        Mon, 11 Jan 2021 11:11:56 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id 143sm316464ila.4.2021.01.11.11.11.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 11:11:55 -0800 (PST)
-Date:   Mon, 11 Jan 2021 12:11:54 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Walter Wu <walter-zh.wu@mediatek.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH v3] kasan: remove redundant config option
-Message-ID: <20210111191154.GA2941328@ubuntu-m3-large-x86>
-References: <20210108040940.1138-1-walter-zh.wu@mediatek.com>
- <CAAeHK+weY_DMNbYGz0ZEWXp7yho3_L3qfzY94QbH9pxPgqczoQ@mail.gmail.com>
- <20210111185902.GA2112090@ubuntu-m3-large-x86>
- <CAAeHK+y8B9x2av0C3kj_nFEjgHmkxu1Y=5Y3U4-HzxWgTMh1uQ@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=k4k4vHfas2/mfUg7QiyVoCdeOBt+W1BwAcMEvMJo9ZY=;
+        b=NSKSMkPgfGVsCtpphDCC/oCo/2o8K+uP/332qoydIJSOvDoYbVLgSGfvrVCX9JeEs/
+         FTv5QR45ec3h4mgyByNb8aFJOUzc+26161zFvXoq6bQYGlNAlZO52gMT1VJUEMMtIrDR
+         3aXums1IWHnL3fG9VBVRaM7ONWgaLsk0KJai5D8rBSuRNs1+PzePkmc1EoU4A9dC55Pf
+         S3KNkFpQfxEbNLuqQMS/hB6O3iYMAkWqy+b473F16CrR6vTL9hXx56+1sMYw5HzeLFFH
+         ugVZxLSSwGq1ym4ZzVNTex6bd/l1YHHEMDIymUZOljGSLkc/TJRiuQ7SPF/hMWHD3AAy
+         wrUA==
+X-Gm-Message-State: AOAM531rPrK2E/ONOJEqzgHN8QvjKvjoAlrFII7BEZhrrHF5/EPas/tf
+        IaJmnn+1s1QW2kYK+kjEkGXMenJ7lsX2hYVpm21NfXKYf8ZXDWmhRmuZZGvI2nmTHgQr7nBuu3a
+        c+lMQzpHMOCC9jeEGgqwNt6SW
+X-Received: by 2002:aa7:df0d:: with SMTP id c13mr608353edy.387.1610392348894;
+        Mon, 11 Jan 2021 11:12:28 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxoUfiTrQIZDkbSWIORExhpcx31FDvF4RUR04EuWDnj+mZK8y6ZiTUUVvTNgVsSA/0cqV+nwA==
+X-Received: by 2002:aa7:df0d:: with SMTP id c13mr608334edy.387.1610392348650;
+        Mon, 11 Jan 2021 11:12:28 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id k23sm199424ejs.100.2021.01.11.11.12.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 11:12:28 -0800 (PST)
+Subject: Re: [PATCH 04/14] mfd: arizona: Allow building arizona MFD-core as
+ module
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20201227211232.117801-1-hdegoede@redhat.com>
+ <20201227211232.117801-5-hdegoede@redhat.com>
+ <20201229120039.GI9673@ediswmail.ad.cirrus.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <d80e90c1-143e-2655-b053-9361458f3df9@redhat.com>
+Date:   Mon, 11 Jan 2021 20:12:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAeHK+y8B9x2av0C3kj_nFEjgHmkxu1Y=5Y3U4-HzxWgTMh1uQ@mail.gmail.com>
+In-Reply-To: <20201229120039.GI9673@ediswmail.ad.cirrus.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 08:03:29PM +0100, Andrey Konovalov wrote:
-> On Mon, Jan 11, 2021 at 7:59 PM Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
-> >
-> > > > -config KASAN_STACK_ENABLE
-> > > > +config KASAN_STACK
-> > > >         bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
-> > >
-> > > Does this syntax mean that KASAN_STACK is only present for
-> > > CC_IS_CLANG? Or that it can only be disabled for CC_IS_CLANG?
-> >
-> > It means that the option can only be disabled for clang.
-> 
-> OK, got it.
-> 
-> > > Anyway, I think it's better to 1. allow to control KASAN_STACK
-> > > regardless of the compiler (as it was possible before), and 2. avoid
-> >
-> > It has never been possible to control KASAN_STACK for GCC because of the
-> > bool ... if ... syntax. This patch does not change that logic. Making it
-> > possible to control KASAN_STACK with GCC seems fine but that is going to
-> > be a new change that would probably be suited for a new patch on top of
-> > this one.
-> 
-> The if syntax was never applied to KASAN_STACK, only to
-> KASAN_STACK_ENABLE, so it should have been possible (although I've
-> never specifically tried it).
+Hi,
 
-CONFIG_KASAN_STACK was not a user selectable symbol so it was always 1
-for GCC.
+First of all thank you for the review and for all your comments
+(also in the other part of the thread).
 
-Cheers,
-Nathan
+On 12/29/20 1:00 PM, Charles Keepax wrote:
+> On Sun, Dec 27, 2020 at 10:12:22PM +0100, Hans de Goede wrote:
+>> There is no reason why the arizona core,irq and codec model specific
+>> regmap bits cannot be build as a module. All they do is export symbols
+>> which are used by the arizona-spi and/or arizona-i2c modules, which
+>> themselves can be built as module.
+>>
+>> Change the Kconfig and Makefile arizona bits so that the arizona MFD-core
+>> can be built as a module.
+>>
+>> This is especially useful on x86 platforms with a WM5102 codec, this
+>> allows the arizona MFD driver necessary for the WM5102 codec to be
+>> enabled in generic distro-kernels without growing the base kernel-image
+>> size.
+>>
+>> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+>> ---
+> 
+> I think this patch might still cause some issues. ASoC has an
+> idiom where the machine driver does a select on the necessary
+> CODEC drivers. Select doesn't take care of dependencies etc. So I
+> believe if you build the machine driver as built in, it then
+> selects the CODEC as built in. If you have the MFD as a module
+> the build then fails due to the the CODEC calling some Arizona
+> functions.
+
+The rules for using select in Kconfig say that the Kconfig
+symbol doing the selecting must either have a "requires on
+or a "select" on any dependencies of the Kconfig symbol which
+it is selecting. Looking at the new machine-driver which this
+series adds:
+
+config SND_SOC_INTEL_BYTCR_WM5102_MACH
+        tristate "Baytrail and Baytrail-CR with WM5102 codec"
+        depends on SPI && ACPI
+        depends on X86_INTEL_LPSS || COMPILE_TEST
+        select SND_SOC_ACPI
+        select SND_SOC_WM5102
+        help
+          This adds support for ASoC machine driver for Intel(R) Baytrail and Baytrail-CR
+          platforms with WM5102 audio codec.
+          Say Y if you have such a device.
+          If unsure select "N".
+
+I now see that I'm breaking that rule myself and this is
+missing a "depends on MFD_WM5102" I do see a "depends on MFD_WM5102"
+here:
+
+config SND_SOC_WM5102
+        tristate
+        depends on MFD_WM5102
+
+So I would expect some sort of error if I unselect MFD_WM5102 and indeed
+the following happens if I unselect MFD_WM5102:
+
+[hans@x1 linux]$ make oldconfig
+
+WARNING: unmet direct dependencies detected for SND_SOC_WM5102
+  Depends on [n]: SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && MFD_WM5102 [=n]
+  Selected by [m]:
+  - SND_SOC_INTEL_BYTCR_WM5102_MACH [=m] && SOUND [=m] && !UML && SND [=m] && SND_SOC [=m] && SND_SOC_INTEL_MACH [=y] && (SND_SST_ATOM_HIFI2_PLATFORM [=m] || SND_SOC_SOF_BAYTRAIL [=m]) && SPI [=y] && ACPI [=y] && (X86_INTEL_LPSS [=y] || COMPILE_TEST [=n])
+
+Which of course is not supposed to happen and is caused by the
+config SND_SOC_INTEL_BYTCR_WM5102_MACH missing
+"depends on MFD_WM5102", which is my bad.
+
+But typing this (rubber ducky effect) has made me realized what the
+problem is, the codec Kconfig symbols depend on the: MFD_WM5102,
+MFD_WM5110, etc. Kconfig symbols. But those are booleans which enable/disable
+support for those codecs inside arizona-core.c. So you are right that
+this ("mfd: arizona: Allow building arizona MFD-core as module") could
+cause a scenario where the core is built as a module and the codec
+driver is builtin.
+
+But I do not think that the solution is to inline all the functions used
+from the codec drivers. The solution is to extend:
+
+config SND_SOC_WM5102
+        tristate
+        depends on MFD_WM5102
+
+to:
+
+config SND_SOC_WM5102
+        tristate
+        depends on MFD_WM5102
+        depends on MFD_ARIZONA
+
+And to update machine drivers to still match the:
+"The Kconfig symbol doing the selecting must either have a "requires
+on" or a "select" on any dependencies of the Kconfig symbol which
+it is selecting." rule which I formulated above.
+
+(and idem for all the other codecs which use symbols from MFD_ARIZONA)
+
+> arizona_request_irq, arizona_free_irq, arizona_set_irq_wake
+> 
+> On Madera we made the equivalents inline functions to avoid the
+> issue, the same should work here.
+> 
+> include/linux/irqchip/irq-madera.h
+
+Yes that will work too, but I would prefer to solve what is a Kconfig
+issue with Kconfig changes.
+
+Note I will simply drop this patch for the next version of this series (*)
+since the whole jack rework thing we discussed is really orthogonal to
+this and that one will be interesting enough the review all by itself :)
+
+Regards,
+
+Hans
+
+
+
+*) I will resubmit a fixed version later after the other stuff has landed
+
