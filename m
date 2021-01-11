@@ -2,97 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CFF2F0CDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 07:27:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3322F0CDE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 07:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727304AbhAKG0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 01:26:21 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:38392 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726202AbhAKG0V (ORCPT
+        id S1727337AbhAKG0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 01:26:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726202AbhAKG0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 01:26:21 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610346362; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Y66XF+Djddn7k3iYTGrUGms1lzGNsW9OD4rOjfjlTmE=;
- b=fdCb0Dh1ZNZHo81bgsCeq1vpT9cBPJMbufafIAHNY6YSMFa0nT5JQjVIzWVNfskPGwih7A1X
- +vNrSYmEY5Czdzdq2oJbWYn7VgkDw17A1tw+DbDi7mvXor7Y3dIwJEH2NtDVGWYY/rNqjc69
- Nx6GYeo+8rR+3upAxn77AOi5m7w=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5ffbef59c88af06107e5d797 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 06:25:29
- GMT
-Sender: pnagar=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E99EDC43465; Mon, 11 Jan 2021 06:25:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pnagar)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2BF48C433CA;
-        Mon, 11 Jan 2021 06:25:28 +0000 (UTC)
+        Mon, 11 Jan 2021 01:26:37 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6426EC061786;
+        Sun, 10 Jan 2021 22:25:57 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id n3so7774298pjm.1;
+        Sun, 10 Jan 2021 22:25:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c8YblQxEDlSi4KdR2OhmYHVl79InGx3H9fAohgRz1gk=;
+        b=J3yz9EAS6995Cyx2OC8p55Rl2jizybjzfBpCZHrF9wRdYRF3ChKV2AdJRN8I9Ydllt
+         m8beiKdHpAF7GC2dB3/0m+WHCwc5Kmr0up0YCSMx9rn5IzQivj+YH+s8KPAhg8i7rBuE
+         8csU80TgBgeOwEllBXweda4RlLI+mdOUYopDIwFDu7JOUNWXmNiyw2G7V2Lx4pxCAmMw
+         A53TwXU6gWd5RxLIQ8EonA/oSCmeyalLEih0BWByJsndFIYDmRDZEUfSZ0rG213ZlGQ6
+         t9mhnk+myKjESwqTNgjLN2QLdnD/3cML60xVFUVSQSk1cMa5reFTJzSE9ueBkv5wDRJb
+         7XeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c8YblQxEDlSi4KdR2OhmYHVl79InGx3H9fAohgRz1gk=;
+        b=AKRiOnowf5wYssKfPEoIEGiFyLl9a+7Qwbtro6IY4llDejFJMhIAwSBmVW4/Hnd9AI
+         IoBNLzz4moHwP3Eoo8tRYVH7j0lBHREMgDXdNzmec5LYTQ4djjKUXlXOI7+0/7xIjLFf
+         E2xspt+rgBPRqOID499jSioNHr8SANdxpcuCHwt4B7QGlbzSQQVwIXpfx90AUS+M6fba
+         nziKcJ62bzjEpx1jZUgIW4cDSmfxBLiDdvxFjnxt0MoZug9nx6aG9qUso+gyLKJaGt/q
+         qjQZmY3jf9FmSH5H+tkXKH4CQ7wK7cqz9/+KTPDVyM8PoeDQ9axKeu0qNgW/L58khCCB
+         YfGw==
+X-Gm-Message-State: AOAM532EjdO5F/V03I0ryFwyjDKvs6wdvJfeBJb75k8mFEg7WO0WpQHq
+        1RlwXFzT+oH++SmRDSBmIC2pK2ASK1o=
+X-Google-Smtp-Source: ABdhPJwU12BYLiCuCddFEJ0LSzw3+nMPEv0uFYMphRZ1Sjim62Uf21Dgx9gN7Zq9TZ6h+Wf3UZJppQ==
+X-Received: by 2002:a17:90b:34f:: with SMTP id fh15mr16145340pjb.80.1610346356904;
+        Sun, 10 Jan 2021 22:25:56 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id w18sm17852785pfj.120.2021.01.10.22.25.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Jan 2021 22:25:55 -0800 (PST)
+Date:   Sun, 10 Jan 2021 22:25:53 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Arthur Demchenkov <spinal.by@gmail.com>,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>, ruleh <ruleh@gmx.de>,
+        Sebastian Reichel <sre@kernel.org>
+Subject: Re: [PATCH 1/5] Input: omap4-keypad - disable unused long interrupts
+Message-ID: <X/vvcTx4+kJBqLN7@google.com>
+References: <20210110190529.46135-1-tony@atomide.com>
+ <20210110190529.46135-2-tony@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 11 Jan 2021 11:55:28 +0530
-From:   pnagar@codeaurora.org
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, jmorris@namei.org, serge@hallyn.com,
-        paul@paul-moore.com, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        selinux@vger.kernel.org, linux-arch <linux-arch@vger.kernel.org>,
-        psodagud@codeaurora.org, nmardana@codeaurora.org,
-        dsule@codeaurora.org, Joe Perches <joe@perches.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Nick Desaulniers <ndesaulniers@gooogle.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v2] selinux: security: Move selinux_state to a
- separate page
-In-Reply-To: <CANiq72=y7gapKpVKFwu30jDpv4qswgo5K3+u5QMOY4dtacKX=Q@mail.gmail.com>
-References: <1610099389-28329-1-git-send-email-pnagar@codeaurora.org>
- <CANiq72=y7gapKpVKFwu30jDpv4qswgo5K3+u5QMOY4dtacKX=Q@mail.gmail.com>
-Message-ID: <afa0b8674f87c3cac17bf725c826d37e@codeaurora.org>
-X-Sender: pnagar@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210110190529.46135-2-tony@atomide.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-08 20:55, Miguel Ojeda wrote:
-> On Fri, Jan 8, 2021 at 10:52 AM Preeti Nagar <pnagar@codeaurora.org> 
-> wrote:
->> 
->> We want to seek your suggestions and comments on the idea and the 
->> changes
->> in the patch.
+On Sun, Jan 10, 2021 at 09:05:25PM +0200, Tony Lindgren wrote:
+> We are not using the long events and they produce extra interrupts.
+> Let's not enable them at all.
 > 
-> Not sure why I was Cc'd, but I have a quick comment nevertheless.
+> Note that also the v3.0.8 Linux Android kernel has long interrupts
+> disabled.
 > 
->> +#ifdef CONFIG_SECURITY_RTIC
->> +struct selinux_state selinux_state __rticdata;
->> +#else
->>  struct selinux_state selinux_state;
->> +#endif
-> 
-> If you define an empty __rticdata for the !CONFIG case, then we don't
-> need #ifdefs for uses like this.
-> 
-> Cheers,
-> Miguel
-Thank you for the review! Will update this change in the next version of 
-the patch soon.
+> Cc: Arthur Demchenkov <spinal.by@gmail.com>
+> Cc: Carl Philipp Klemm <philipp@uvos.xyz>
+> Cc: Merlijn Wajer <merlijn@wizzup.org>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: ruleh <ruleh@gmx.de>
+> Cc: Sebastian Reichel <sre@kernel.org>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
 
-Thanks,
-Preeti
+Applied, thank you.
+
+-- 
+Dmitry
