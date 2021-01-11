@@ -2,176 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD11F2F0C03
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 05:58:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 710672F0C0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 06:03:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbhAKE5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 23:57:43 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:54433 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725831AbhAKE5m (ORCPT
+        id S1727185AbhAKFCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 00:02:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726564AbhAKFCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 23:57:42 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610341038; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=jYkO7dbOgBg1/0RRjemneHKpWx/1hw2rJ9cPf6v85BA=;
- b=IEniBcLij9mDuA5Sj+NHUPIOy8Dc42xeEaSYqgKui+XNCbEAyqYL9ZuH8tE4fkXOMOE1iiTH
- tfSa+lbtmvUBwWYsL37fDTbHk38XHF5qt/YmRCU6L5YsLO0ZZJtHSjFsU13SdzlMjSTMt5YC
- b1iXbYeDncdlkRET5/gnim1phs8=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5ffbda834104d9478dd68d4b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 04:56:35
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9EA69C433CA; Mon, 11 Jan 2021 04:56:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3A2DEC433C6;
-        Mon, 11 Jan 2021 04:56:32 +0000 (UTC)
+        Mon, 11 Jan 2021 00:02:13 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1DF1C061794;
+        Sun, 10 Jan 2021 21:01:33 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id t6so8890680plq.1;
+        Sun, 10 Jan 2021 21:01:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hpf4L3YpdFkNNyZKDq8pfq/j80coUrhja102cOfT0B0=;
+        b=GvG4VETtjf5Exf1aImJoQj6aKDTy8C3hlPE601xpjagmHLAkdnTrxL8/hJkW6sBrUz
+         vH9w5ZTfbdFvL1AHBdJETIRrQS3PHfdqiUD52izuio9IK4VPUVHcUnVNyXl6p4rfH8gp
+         79mL6WSNMKB15VxLHeG4qhAHCexml0F7V2yvvT15Wlf6FLZyVXHfRv8aocctT7utDc4E
+         gyiSEN7cqDTNyTyJ4VXpLnedsgHBIzndn8CM+T5LPcNkfG+nfE+sq+IwBw8NK1TkcvXu
+         1S4WGHTcg//paqg75SnxGysxMqQPhyeiEwMkUuhNZ1z+kpWJvAiByyO+DBTzuNRpqPcM
+         P+FA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hpf4L3YpdFkNNyZKDq8pfq/j80coUrhja102cOfT0B0=;
+        b=OMV9nVsmOLLG52yZGytcGnZYMqcxolYjUt96duMapIKYfQ2jjoHRd9ivapTXre2u6W
+         Obxy0uFsGqkrBuBV5fdoAT6OVEp4pEqE89ZEMcVsJQdSKyI88czDtmMMEyJFm4J8o6fk
+         yZUjzqE6BX0z9Ub26yVxL3wdP033DCDZKoFh9V4BIyOk5E7sDQcEhy3HJVi69DGw1zV8
+         H/eAYwflEOCLZDyuA0GeZulbR2AygjxU7tIuDRQ+xjj9kmID64uxwTeDQ4spojeZfaSd
+         BLPYVY0b8ejyBsvIdz6ISBVtQWEGm4KgGQj3sUB3dSM1nsCmBmYTqk/eT1GcNlfpnwOB
+         qaHw==
+X-Gm-Message-State: AOAM532oiAlb1WYbHbNb2rer5HXO2ljeOjK6qUcaETVu43I1c0MZ7nO2
+        ePvhIaxZBDg067Db0JUtR8wvWc1L1LI=
+X-Google-Smtp-Source: ABdhPJzF2oWlDggdOZ1bP0D6gX7LkgtduwxZGwhl5iOfYajKh88CB0c0lJxKmGlXOXPuzAaUtfQ71Q==
+X-Received: by 2002:a17:90a:cb13:: with SMTP id z19mr16180178pjt.18.1610341293133;
+        Sun, 10 Jan 2021 21:01:33 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id gp14sm17056512pjb.6.2021.01.10.21.01.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Jan 2021 21:01:32 -0800 (PST)
+Date:   Sun, 10 Jan 2021 21:01:29 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Arthur Demchenkov <spinal.by@gmail.com>,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>, ruleh <ruleh@gmx.de>,
+        Sebastian Reichel <sre@kernel.org>
+Subject: Re: [PATCH 4/5] Input: omap4-keypad - use PM runtime autosuspend
+Message-ID: <X/vbqdQTTDg2UUaJ@google.com>
+References: <20210110190529.46135-1-tony@atomide.com>
+ <20210110190529.46135-5-tony@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 11 Jan 2021 10:26:32 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     isaacm@codeaurora.org, Rob Clark <robdclark@gmail.com>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        linux-kernel@vger.kernel.org,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        iommu@lists.linux-foundation.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] iommu/io-pgtable-arm: Allow non-coherent masters to use
- system cache
-In-Reply-To: <20210108181830.GA5457@willie-the-truck>
-References: <20201224064007.2339-1-saiprakash.ranjan@codeaurora.org>
- <20210106115615.GA1763@willie-the-truck>
- <cfced52002337025088a64aa159760b2@codeaurora.org>
- <8cfefbff135a5287d177b6ab2ccc3304@codeaurora.org>
- <20210108181830.GA5457@willie-the-truck>
-Message-ID: <3a776219db9f1256133920d52f864792@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210110190529.46135-5-tony@atomide.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-08 23:48, Will Deacon wrote:
-> On Fri, Jan 08, 2021 at 11:17:25AM +0530, Sai Prakash Ranjan wrote:
->> On 2021-01-07 22:27, isaacm@codeaurora.org wrote:
->> > On 2021-01-06 03:56, Will Deacon wrote:
->> > > On Thu, Dec 24, 2020 at 12:10:07PM +0530, Sai Prakash Ranjan wrote:
->> > > > commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY
->> > > > flag")
->> > > > removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
->> > > > the memory type setting required for the non-coherent masters to use
->> > > > system cache. Now that system cache support for GPU is added, we will
->> > > > need to mark the memory as normal sys-cached for GPU to use
->> > > > system cache.
->> > > > Without this, the system cache lines are not allocated for GPU.
->> > > > We use
->> > > > the IO_PGTABLE_QUIRK_ARM_OUTER_WBWA quirk instead of a page
->> > > > protection
->> > > > flag as the flag cannot be exposed via DMA api because of no in-tree
->> > > > users.
->> > > >
->> > > > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> > > > ---
->> > > >  drivers/iommu/io-pgtable-arm.c | 3 +++
->> > > >  1 file changed, 3 insertions(+)
->> > > >
->> > > > diff --git a/drivers/iommu/io-pgtable-arm.c
->> > > > b/drivers/iommu/io-pgtable-arm.c
->> > > > index 7c9ea9d7874a..3fb7de8304a2 100644
->> > > > --- a/drivers/iommu/io-pgtable-arm.c
->> > > > +++ b/drivers/iommu/io-pgtable-arm.c
->> > > > @@ -415,6 +415,9 @@ static arm_lpae_iopte
->> > > > arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
->> > > >  		else if (prot & IOMMU_CACHE)
->> > > >  			pte |= (ARM_LPAE_MAIR_ATTR_IDX_CACHE
->> > > >  				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
->> > > > +		else if (data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA)
->> > > > +			pte |= (ARM_LPAE_MAIR_ATTR_IDX_INC_OCACHE
->> > > > +				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
->> > > >  	}
->> > >
->> > While this approach of enabling system cache globally for both page
->> > tables and other buffers
->> > works for the GPU usecase, this isn't ideal for other clients that use
->> > system cache. For example,
->> > video clients only want to cache a subset of their buffers in the
->> > system cache, due to the sizing constraint
->> > imposed by how much of the system cache they can use. So, it would be
->> > ideal to have
->> > a way of expressing the desire to use the system cache on a per-buffer
->> > basis. Additionally,
->> > our video clients use the DMA layer, and since the requirement is for
->> > caching in the system cache
->> > to be a per buffer attribute, it seems like we would have to have a
->> > DMA attribute to express
->> > this on a per-buffer basis.
->> >
->> 
->> I did bring this up initially [1], also where is this video client
->> in upstream? AFAIK, only system cache user in upstream is GPU.
->> We cannot add any DMA attribute unless there is any user upstream
->> as per [2], so when the support for such a client is added, wouldn't
->> ((data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA) || 
->> PROT_FLAG)
->> work?
-> 
-> Hmm, I think this is another case where we need to separate out the
-> page-table walker attributes from the access attributes. Currently,
-> IO_PGTABLE_QUIRK_ARM_OUTER_WBWA applies _only_ to the page-table walker
-> and I don't think it makes any sense for that to be per-buffer (how 
-> would
-> you even manage that?). However, if we want to extend this to data 
-> accesses
-> and we know that there are valid use-cases where this should be 
-> per-buffer,
-> then shoe-horning it in with the walker quirk does not feel like the 
-> best
-> thing to do.
-> 
-> As a starting point, we could:
-> 
->   1. Rename IO_PGTABLE_QUIRK_ARM_OUTER_WBWA to IO_PGTABLE_QUIRK_PTW_LLC
->   2. Add a new prot flag IOMMU_LLC
->   3. Have the GPU pass the new prot for its buffer mappings
-> 
+Hi Tony,
 
-This looks good to me, I will work on this and post something soon.
+On Sun, Jan 10, 2021 at 09:05:28PM +0200, Tony Lindgren wrote:
+> @@ -350,15 +379,12 @@ static int omap4_keypad_probe(struct platform_device *pdev)
+>  
+>  	error = omap4_keypad_check_revision(&pdev->dev,
+>  					    keypad_data);
+> -	if (!error) {
+> -		/* Ensure device does not raise interrupts */
+> -		omap4_keypad_stop(keypad_data);
+> -	}
+> -
+> -	pm_runtime_put_sync(&pdev->dev);
 
-> Does that work? One thing I'm not sure about is whether IOMMU_CACHE 
-> should
-> imply IOMMU_LLC, or whether there is a use-case for inner-cacheable, 
-> outer
-> non-cacheable mappings for a coherent device. Have you ever seen that 
-> sort
-> of thing before?
-> 
+Why are we moving this down? The idea was to make sure the power usage
+counters are correct even if we exit probe early.
 
-I don't think there is such a usecase as Isaac mentioned.
+Can we call pm_runtime_mark_last_busy() and pm_runtime_put_autosuspend()
+here?
 
-Thanks,
-Sai
+>  	if (error)
+>  		return error;
+>  
+> +	/* Ensure device does not raise interrupts */
+> +	omap4_keypad_stop(keypad_data);
+> +
+>  	/* input device allocation */
+>  	keypad_data->input = input_dev = devm_input_allocate_device(dev);
+>  	if (!input_dev)
+> @@ -419,7 +445,8 @@ static int omap4_keypad_probe(struct platform_device *pdev)
+>  	if (error)
+>  		dev_warn(dev, "failed to set up wakeup irq: %d\n", error);
+>  
+> -	platform_set_drvdata(pdev, keypad_data);
+> +	pm_runtime_mark_last_busy(&pdev->dev);
+> +	pm_runtime_put_autosuspend(&pdev->dev);
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.30.0
+
+Thanks.
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Dmitry
