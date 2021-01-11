@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CFA32F125E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD7D2F1260
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:36:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbhAKMfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 07:35:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44704 "EHLO mail.kernel.org"
+        id S1726871AbhAKMgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 07:36:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726151AbhAKMfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 07:35:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62179223DB;
-        Mon, 11 Jan 2021 12:35:12 +0000 (UTC)
+        id S1726151AbhAKMgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 07:36:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0561E2242A;
+        Mon, 11 Jan 2021 12:35:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610368513;
-        bh=mg/Imn7k+NULxFNAhHU+LBlwGl7PuKLLZ/KT9Jr1zak=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RqmZLseJPCgyZCcc9uVsyvhrdFOhuF6kWEfNFtuylgh1N2gCiqK0WGyk5h085Ea4F
-         PWi2hkC5xIa6T4+k59Qf0AIaYmfAPJEjPpa/n5Cc8SvTeISzpelSftpQSTjs0cJgCA
-         wLICyuz5gBzCyZfJ/kTJuWqCUVESFIr873LEMCfszv2cLr9GEEYeASKqw9vpYYuRYt
-         UPKQ9coHB+ua6ffoLJMSt57u/NUE1Eyxmyqi6DR50M4pJjb7NF20JKUjpvESZVjP5A
-         PXxJiaT2tSLzWVRpzwWCmPHfRdPYTGAeENFX08GjzspjoefQjGWY7A7AI2lSAyLgAO
-         UXlVEYhM3+ajg==
-Date:   Mon, 11 Jan 2021 13:35:10 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org
-Subject: Re: [RFC PATCH 4/8] rcu/nocb: Trigger self-IPI on late deferred wake
- up before user resume
-Message-ID: <20210111123510.GD242508@lothringen>
-References: <20210109020536.127953-1-frederic@kernel.org>
- <20210109020536.127953-5-frederic@kernel.org>
- <X/w+yJmCBnDWxtoE@hirez.programming.kicks-ass.net>
+        s=k20201202; t=1610368526;
+        bh=lyrqn/YKGeP0Jj9QNzTMSXTnF1LuV/RkfrUdbtb+apA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Unv1BIJ9Jm9n+7R6/SBgSgI2EeU6Gd8l6XFtjv3uktKBZDcM665rLGPm9XW8ILqCT
+         MJ/79cu9oTuIo6OlkAOwDIXU/xH4/TtdQZRiSBYTxx5UO30qliRol/yVr9p8qiVGrw
+         ZcSWdpWWmMB1fTDlCtB8wS5bgH7/Ef9WLsYSu/yzar+OMWwHKJ4RHReYE1euwDm6MX
+         wcZsRS2riLLS7OqjhdiyThqGM2BJPNGEvdMcZcS5JwB+GCIwbsPshOX2yvoYAUefTi
+         KYQfrTZZRFU4wzmuvRcbJOA8JqhX2JmlTt00vIN7bQ2FyD9NYIZgHjTphwEZnIVC32
+         1ROC2WwKypFXQ==
+From:   matthias.bgg@kernel.org
+To:     Lee Jones <lee.jones@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Gene Chen <gene_chen@richtek.com>
+Cc:     linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <mbrugger@suse.com>,
+        ChiYuan Huang <cy_huang@richtek.com>,
+        Gene Chen <gene.chen.richtek@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH] mfd: mt6360: Fix MFD cell names and compatibles
+Date:   Mon, 11 Jan 2021 13:35:18 +0100
+Message-Id: <20210111123518.30438-1-matthias.bgg@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/w+yJmCBnDWxtoE@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 01:04:24PM +0100, Peter Zijlstra wrote:
-> > +static DEFINE_PER_CPU(struct irq_work, late_wakeup_work) =
-> > +	IRQ_WORK_INIT(late_wakeup_func);
-> > +
-> >  /**
-> >   * rcu_user_enter - inform RCU that we are resuming userspace.
-> >   *
-> > @@ -692,9 +704,17 @@ noinstr void rcu_user_enter(void)
-> >  	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
-> >  
-> >  	lockdep_assert_irqs_disabled();
-> > -	do_nocb_deferred_wakeup(rdp);
-> > +	/*
-> > +	 * We may be past the last rescheduling opportunity in the entry code.
-> > +	 * Trigger a self IPI that will fire and reschedule once we resume to
-> > +	 * user/guest mode.
-> > +	 */
-> > +	if (do_nocb_deferred_wakeup(rdp) && need_resched())
-> > +		irq_work_queue(this_cpu_ptr(&late_wakeup_work));
-> > +
-> >  	rcu_eqs_enter(true);
-> >  }
-> 
-> Do we have the guarantee that every architecture that supports NOHZ_FULL
-> has arch_irq_work_raise() on?
+From: Matthias Brugger <mbrugger@suse.com>
 
-Yes it's a requirement for NOHZ_FULL to work. But you make me realize this
-is tacit and isn't constrained anywhere in the code. I'm going to add
-HAVE_IRQ_WORK_RAISE and replace the weak definition with a config
-based.
+MFD cell names and compatibles use '_' instead of '-', which is common
+practice for names and the standard for DT compatibles.
+This will also fix the probing for the drivers already implemented
+(mt6360-adc and mt6360-tcpc).
 
-> 
-> Also, can't you do the same thing you did earlier and do that wakeup
-> thing before we complete exit_to_user_mode_prepare() ?
+Fixes: 7edd363421da ("mfd: Add support for PMIC MT6360")
+Fixes: 1f4877218f7e ("iio: adc: mt6360: Add ADC driver for MT6360")
+Fixes: e1aefcdd394f ("usb typec: mt6360: Add support for mt6360 Type-C driver")
+Signed-off-by: Matthias Brugger <mbrugger@suse.com>
 
-I do it for CONFIG_GENERIC_ENTRY but the other architectures have their own
-exit to user loop that I would need to audit and make sure that interrupts aren't
-ever re-enabled before resuming to user and there is no possible rescheduling
-point. I could manage to handle arm and arm64 but the others scare me:
+---
 
-$ git grep HAVE_CONTEXT_TRACKING
-arch/csky/Kconfig:      select HAVE_CONTEXT_TRACKING
-arch/mips/Kconfig:      select HAVE_CONTEXT_TRACKING
-arch/powerpc/Kconfig:   select HAVE_CONTEXT_TRACKING            if PPC64
-arch/riscv/Kconfig:     select HAVE_CONTEXT_TRACKING
-arch/sparc/Kconfig:     select HAVE_CONTEXT_TRACKING
+ drivers/mfd/mt6360-core.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-:-s
+diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
+index 4661c1b29a72..14e649ffe50f 100644
+--- a/drivers/mfd/mt6360-core.c
++++ b/drivers/mfd/mt6360-core.c
+@@ -292,18 +292,18 @@ static const struct resource mt6360_ldo_resources[] = {
+ };
+ 
+ static const struct mfd_cell mt6360_devs[] = {
+-	OF_MFD_CELL("mt6360_adc", mt6360_adc_resources,
+-		    NULL, 0, 0, "mediatek,mt6360_adc"),
+-	OF_MFD_CELL("mt6360_chg", mt6360_chg_resources,
+-		    NULL, 0, 0, "mediatek,mt6360_chg"),
+-	OF_MFD_CELL("mt6360_led", mt6360_led_resources,
+-		    NULL, 0, 0, "mediatek,mt6360_led"),
+-	OF_MFD_CELL("mt6360_pmic", mt6360_pmic_resources,
+-		    NULL, 0, 0, "mediatek,mt6360_pmic"),
+-	OF_MFD_CELL("mt6360_ldo", mt6360_ldo_resources,
+-		    NULL, 0, 0, "mediatek,mt6360_ldo"),
+-	OF_MFD_CELL("mt6360_tcpc", NULL,
+-		    NULL, 0, 0, "mediatek,mt6360_tcpc"),
++	OF_MFD_CELL("mt6360-adc", mt6360_adc_resources,
++		    NULL, 0, 0, "mediatek,mt6360-adc"),
++	OF_MFD_CELL("mt6360-chg", mt6360_chg_resources,
++		    NULL, 0, 0, "mediatek,mt6360-chg"),
++	OF_MFD_CELL("mt6360-led", mt6360_led_resources,
++		    NULL, 0, 0, "mediatek,mt6360-led"),
++	OF_MFD_CELL("mt6360-pmic", mt6360_pmic_resources,
++		    NULL, 0, 0, "mediatek,mt6360-pmic"),
++	OF_MFD_CELL("mt6360-ldo", mt6360_ldo_resources,
++		    NULL, 0, 0, "mediatek,mt6360-ldo"),
++	OF_MFD_CELL("mt6360-tcpc", NULL,
++		    NULL, 0, 0, "mediatek,mt6360-tcpc"),
+ };
+ 
+ static const unsigned short mt6360_slave_addr[MT6360_SLAVE_MAX] = {
+-- 
+2.29.2
+
