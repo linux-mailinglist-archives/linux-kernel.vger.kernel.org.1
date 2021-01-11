@@ -2,154 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A11382F0AE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 03:04:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 078842F0AE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 03:04:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726567AbhAKCDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 21:03:30 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:15624 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726110AbhAKCDa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 21:03:30 -0500
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210111020246epoutp04d0e20efc4007ad687b950cd57601c324~ZCx5KLkeg1801718017epoutp04U
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 02:02:46 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210111020246epoutp04d0e20efc4007ad687b950cd57601c324~ZCx5KLkeg1801718017epoutp04U
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1610330566;
-        bh=/Iude2iisz7XVckjhji6PJ9V5UsIYReD/W4aRp8FiBQ=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=Wc2xhxtCqXsnN0hv19P6tkg0RRG3QIVxImaFIOhMttaI7h0UbCgKrpz2H2JXUte++
-         BvsUQiFLgtg9FwE6zBrIUIMkqbA7TvrgxBepclDjgkRl5moGWZNuGnGUh7dsczeQDR
-         +x4TSw1cU0kDoZFPzbpTG/hbSzsMbBDttzOGS/+I=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20210111020245epcas2p4ef5b9b9ae8a6aebfa60146e4eb9f750a~ZCx4oVjBX1287812878epcas2p4k;
-        Mon, 11 Jan 2021 02:02:45 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.189]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4DDcRS5txxz4x9Pr; Mon, 11 Jan
-        2021 02:02:44 +0000 (GMT)
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        FB.C2.10621.3C1BBFF5; Mon, 11 Jan 2021 11:02:43 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210111020243epcas2p4083354605de48cc97ceb8fd8ab5fb54e~ZCx2IoN1N1288312883epcas2p4k;
-        Mon, 11 Jan 2021 02:02:43 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210111020243epsmtrp1f1fc8ba01e91779aa1febf9f8e041baf~ZCx2HW_ul0344803448epsmtrp1-;
-        Mon, 11 Jan 2021 02:02:43 +0000 (GMT)
-X-AuditID: b6c32a45-34dff7000001297d-af-5ffbb1c3c820
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        9C.92.08745.3C1BBFF5; Mon, 11 Jan 2021 11:02:43 +0900 (KST)
-Received: from KORDO035731 (unknown [12.36.185.47]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210111020242epsmtip2eb83b1c8eaaea05d59c8714e498ff6e2~ZCx159JES2714827148epsmtip2B;
-        Mon, 11 Jan 2021 02:02:42 +0000 (GMT)
-From:   "Dongseok Yi" <dseok.yi@samsung.com>
-To:     "'Steffen Klassert'" <steffen.klassert@secunet.com>
-Cc:     "'David S. Miller'" <davem@davemloft.net>,
-        <namkyu78.kim@samsung.com>,
-        "'Alexey Kuznetsov'" <kuznet@ms2.inr.ac.ru>,
-        "'Hideaki YOSHIFUJI'" <yoshfuji@linux-ipv6.org>,
-        "'Jakub Kicinski'" <kuba@kernel.org>,
-        "'Willem de Bruijn'" <willemb@google.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20210108133502.GZ3576117@gauss3.secunet.de>
-Subject: RE: [RFC PATCH net] udp: check sk for UDP GRO fraglist
-Date:   Mon, 11 Jan 2021 11:02:42 +0900
-Message-ID: <003701d6e7bd$d90ea860$8b2bf920$@samsung.com>
+        id S1727115AbhAKCDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 21:03:47 -0500
+Received: from mail-bn7nam10on2054.outbound.protection.outlook.com ([40.107.92.54]:9953
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726841AbhAKCDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 21:03:46 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lQWLC9eshNUozr2uT1xO94tFGsjOPz5N4BtXo9N8tJL9n+ljpe3WPKvxX/K7KOWRSaRqBv+C48DS4lMYxIKSQ81kHlK52aIydjvXr+ZGraCoP3N1uMRlKpWt3eEHWXLqo055EwYB5CCAHI+XZJ1ok8IX4EtSKI5j5jh5zFO3dAMunZkycNiBs6rRn3BBv2Xv2EGztrXA47TfqK7UpjYX72kvJKgB8Y0ZQJJi4dBzE8J2djxAuEazS05mU6xBr15/WfyGIM1Xfc+zTpD0G3gbcGE+5CgkbTSf0CZMTnS/gzIcu8F4AmGCebkRLLsIOOwSwgCjgzxRNkxeIfpR9PWtUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iVPZGi3P6nEmyO2aWUG5XFXp7B5w+YVZwXx7I0nqq/s=;
+ b=Wr/ud2tMm2uHs6Tv6VWgySYJysKM0ryo/kXw/qqBhlgjyU8S8dQUReb1SdaAc1WkcrRKIMelc1qlX1J5MCjbijFaZTrSZusD86kUZEnRJP7yXmsFye9CC+J13MH1FQWgAna8AQ4QfR1jTzBzFHss7PNr97+eeRilxc2n2dJCRQXBMikAXZTca284/nnQRO0SaC5bbQYQM3wcomgvGLV5ZrAm+8v8QRu8Vcm/3OKZ8QRsner3mplyEvNlYq3Jq9BrmDr7TtaVpAVb0M9D4hop6wXOONeYvuCZYsIMyy4W+ouVsfyk+YX2saVuWb8fplH0379ugtJz/7FbDod6QLnWQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=linaro.org smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iVPZGi3P6nEmyO2aWUG5XFXp7B5w+YVZwXx7I0nqq/s=;
+ b=aMrgypEppZTLG9pLfoiWyQxrIk1NMne6e+VshEM4fiB8Cp9JHjOcsieTyhIeK7rAeWykM65AEybitSUtLTuQwRSM/m8qUydhibX6zJqRzeC2e1xhax3plsPzTHhJeDyR55ePjynSQ7Jl94u4gAsyo9MKFfl7QyGwT5mOTzy8Ry8=
+Received: from SN4PR0501CA0145.namprd05.prod.outlook.com
+ (2603:10b6:803:2c::23) by SJ0PR02MB7647.namprd02.prod.outlook.com
+ (2603:10b6:a03:320::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Mon, 11 Jan
+ 2021 02:02:52 +0000
+Received: from SN1NAM02FT015.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:803:2c:cafe::69) by SN4PR0501CA0145.outlook.office365.com
+ (2603:10b6:803:2c::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.4 via Frontend
+ Transport; Mon, 11 Jan 2021 02:02:52 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT015.mail.protection.outlook.com (10.152.72.109) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3742.6 via Frontend Transport; Mon, 11 Jan 2021 02:02:52 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Sun, 10 Jan 2021 18:02:50 -0800
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Sun, 10 Jan 2021 18:02:50 -0800
+Envelope-to: michal.simek@xilinx.com,
+ mathieu.poirier@linaro.org,
+ devicetree@vger.kernel.org,
+ linux-remoteproc@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org
+Received: from [172.19.2.206] (port=48226 helo=xsjblevinsk50.xilinx.com)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <ben.levinsky@xilinx.com>)
+        id 1kymXi-00008K-H4; Sun, 10 Jan 2021 18:02:50 -0800
+From:   Ben Levinsky <ben.levinsky@xilinx.com>
+To:     <mathieu.poirier@linaro.org>
+CC:     <devicetree@vger.kernel.org>, <linux-remoteproc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <michal.simek@xilinx.com>
+Subject: [PATCH v25 0/5] Provide basic driver to control Arm R5 co-processor found on Xilinx ZynqMP
+Date:   Sun, 10 Jan 2021 18:02:45 -0800
+Message-ID: <20210111020250.6846-1-ben.levinsky@xilinx.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQFzjcR3biIClNsmzYH4fgoQxWffJwE+IFZfAbZGHEmq0LVV0A==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHJsWRmVeSWpSXmKPExsWy7bCmue7hjb/jDc4tULSYc76FxeLCtj5W
-        iwttr1gtLu+aw2bRcKeZzeLYAjGL3Z0/2C3ebTnCbvF1bxeLA6fHlpU3mTwWbCr12LSqk82j
-        7doqJo8tv7+zefRtWcXosal1CavH501yARxROTYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYG
-        hrqGlhbmSgp5ibmptkouPgG6bpk5QNcpKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtS
-        cgoMDQv0ihNzi0vz0vWS83OtDA0MjEyBKhNyMo5OmcJWMIGv4vOlzWwNjLO5uxg5OSQETCTa
-        jrxg72Lk4hAS2MEoMfvkLxYI5xOjxIP5E9lBqoQEPjNKnH9aANNx++hNRoiiXYwSu9/9YYNw
-        XjBKfJh4hgmkik1AS+LNrHZWEFtEwFxi9atpTCBFzAK7mCTebVzD3MXIwcEpYCnxcbUcSI2w
-        gL3EiecbWUBsFgFVieuftjGD2LxAJaf+HmaCsAUlTs58AlbDLGAg8f7cfGYIW15i+9s5zBDX
-        KUj8fLoMaq+TxN4dEL3MAiISszvbmEFukBA4wCHxc/dbVpAbJARcJB7+ioboFZZ4dXwLO4Qt
-        JfGyv40doqReorU7BqK1h1Hiyj6IGyQEjCVmPWtnhKhRljhyC+o0PomOw3+hWnklOtqEIEwl
-        iYlf4iEaJSRenJzMMoFRaRaSv2Yh+WsWkr9mIbl/ASPLKkax1ILi3PTUYqMCQ+S43sQITrha
-        rjsYJ7/9oHeIkYmD8RCjBAezkgjvwl0/4oV4UxIrq1KL8uOLSnNSiw8xmgKDeiKzlGhyPjDl
-        55XEG5oamZkZWJpamJoZWSiJ8xYbPIgXEkhPLEnNTk0tSC2C6WPi4JRqYDpRwm+e8zDW1+T/
-        1qdSTdMS/yx011mz6lXqYuPdS4TPBOTf/q3tNC/GLsy4Mvpy7Rkjm67Y6FJ9gaNJjpmFekfO
-        6Jg+MdWU3ZE+X5R7QchB/Zv5WwN4z//jbWG4cJ3hz5ynGZLO8qIxLVuz39zoOy/2KJvNeEKI
-        U2aNjINzWuPGvryyT3uDzmp+Pbf761ujuB1Kj46G3eD+bPXSinkba9Yan3sSKmqf+ndPO6/E
-        5ehz49cunXzLz2y3ZcVlnTKnTFasEjDm0lNQyMrRi6vc9/HokaNaysrOYhsTJKRYf7luOp0k
-        vJchZjbv0nSndf+++rdytq6c+jTmzicTwdn932O6NSK6pkheq6l0nMupxFKckWioxVxUnAgA
-        MEYtvkEEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFIsWRmVeSWpSXmKPExsWy7bCSvO7hjb/jDWbcYbOYc76FxeLCtj5W
-        iwttr1gtLu+aw2bRcKeZzeLYAjGL3Z0/2C3ebTnCbvF1bxeLA6fHlpU3mTwWbCr12LSqk82j
-        7doqJo8tv7+zefRtWcXosal1CavH501yARxRXDYpqTmZZalF+nYJXBlHp0xhK5jAV/H50ma2
-        BsbZ3F2MnBwSAiYSt4/eZOxi5OIQEtjBKDHh+wzWLkYOoISExK7NrhA1whL3W46wQtQ8Y5T4
-        +voXK0iCTUBL4s2sdjBbRMBcYvWraUwgRcwCB5gk9sxczgTRcYRR4s2VCewgUzkFLCU+rpYD
-        aRAWsJc48XwjC4jNIqAqcf3TNmYQmxeo5NTfw0wQtqDEyZlPwGqYBYwkzh3azwZhy0tsfzuH
-        GeI6BYmfT5dBHeEksXcHRC+zgIjE7M425gmMwrOQjJqFZNQsJKNmIWlZwMiyilEytaA4Nz23
-        2LDAKC+1XK84Mbe4NC9dLzk/dxMjOPq0tHYw7ln1Qe8QIxMH4yFGCQ5mJRHehbt+xAvxpiRW
-        VqUW5ccXleakFh9ilOZgURLnvdB1Ml5IID2xJDU7NbUgtQgmy8TBKdXAlB7+/ug6dpkjaiV3
-        bA38tt/5Xbng+eKZxW9diqSWqx1a/US7eW+smfB3h/emxp9nTEyYGX/5yh2ZDSkLuBtfHrWv
-        3Hb/lfbqUtalzKu2L7XqepNmuF3sodk655X/37KzNMw4l/uwZhk724ZFy/+95/OtLEt/cLfw
-        1u8NX7Sv7arKmPrVYs5bzy8qDM4b8jcc40radD8xdeV3GbtvRT7Tr84of8P7NFfx7mNfzqV1
-        nRF7n5zgU1ux6nLjQX69Yz1ZXEIMmvNv1ZStfB/w6n6LY4RhmY/o6eXSfmXhHFwXl3Mm1Leu
-        mXjeR/mXTn5qwjG/JwZvo0Sex1nuvNM2If6h8SuZOE+tDSrCmcYPRSI65yixFGckGmoxFxUn
-        AgArU31/LQMAAA==
-X-CMS-MailID: 20210111020243epcas2p4083354605de48cc97ceb8fd8ab5fb54e
-X-Msg-Generator: CA
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210108130414epcas2p3217d7b6ac8a8094c5b3b6c5e52480134
-References: <CGME20210108130414epcas2p3217d7b6ac8a8094c5b3b6c5e52480134@epcas2p3.samsung.com>
-        <1610110348-119768-1-git-send-email-dseok.yi@samsung.com>
-        <20210108133502.GZ3576117@gauss3.secunet.de>
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0cc7beff-375f-4086-d98d-08d8b5d50114
+X-MS-TrafficTypeDiagnostic: SJ0PR02MB7647:
+X-Microsoft-Antispam-PRVS: <SJ0PR02MB76475199F01EEDF71F2F8FE8B5AB0@SJ0PR02MB7647.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YFRAlcvwPoeg8OBB592/Gpqewl4N9/0noEIcGQmRnWMZjV3uw/zZeR0JFrpGp+O06nbmBUuvSiSVCuOO/OXUXDlvYD9CZWmXqP+B4mlg0DNBqUgaV/9Bq+cz8ADNVWSr8hoExOCSP1X1RpkK1sKudpjEEXZvfnj5f1uMtfQOxJsvvyU9jCWZ3aK+In0/e1FDdJBLoWYFJfL245+vfsUQPj6/UE0tjf8G5ezVJEKihwKIs+1BaKCE4ox4ih22rBqru5lgmR8/Tl6NypOMTTVwlpkdh111ZhwYqqDa2G8qpZ2jntd8MniTuAkO8W+kBl4DXPxd4/gp8Al0Qkd3kaA8sdKNBV0eV/113kKC/+mqDMNUd8vRBQvgmufgZRfX4treE0DIoMa8u2ETB/ck1nybVEbwAlunggcEZsnQWO+htFsEwIWV7g5nzo5lPLZtwalwzjKzKtn51J64mrcdanpipzAlGOrw2Bch3FFHPE1Zd+YZdnV6FBwk2tyBpMAcTqNBBIESxzg/Y2A+CExGO92QL/K/Pcv7UJaUdl1dJv8Adt8/qz0rr5KIg5i7Osc3XIVVPN4dPfg7h7RsrxrFoa4ivFLXIIHKwIoyZ0AlHuXh+TQ=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(39850400004)(346002)(396003)(376002)(46966006)(356005)(478600001)(8676002)(2616005)(70586007)(70206006)(5660300002)(44832011)(6916009)(7696005)(7636003)(336012)(83380400001)(6666004)(426003)(9786002)(2906002)(8936002)(1076003)(82740400003)(966005)(82310400003)(107886003)(54906003)(36906005)(4326008)(47076005)(26005)(186003)(316002)(36756003)(34020700004)(102446001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2021 02:02:52.2930
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0cc7beff-375f-4086-d98d-08d8b5d50114
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT015.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR02MB7647
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-08 22:35, Steffen Klassert wrote:
-> On Fri, Jan 08, 2021 at 09:52:28PM +0900, Dongseok Yi wrote:
-> > It is a workaround patch.
-> >
-> > UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
-> > forwarding. Only the header of head_skb from ip_finish_output_gso ->
-> > skb_gso_segment is updated but following frag_skbs are not updated.
-> >
-> > A call path skb_mac_gso_segment -> inet_gso_segment ->
-> > udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
-> > does not try to update any UDP/IP header of the segment list.
-> >
-> > It might make sense because each skb of frag_skbs is converted to a
-> > list of regular packets. Header update with checksum calculation may
-> > be not needed for UDP GROed frag_skbs.
-> >
-> > But UDP GRO frag_list is started from udp_gro_receive, we don't know
-> > whether the skb will be NAT forwarded at that time. For workaround,
-> > try to get sock always when call udp4_gro_receive -> udp_gro_receive
-> > to check if the skb is for local.
-> >
-> > I'm still not sure if UDP GRO frag_list is really designed for local
-> > session only. Can kernel support NAT forward for UDP GRO frag_list?
-> > What am I missing?
-> 
-> The initial idea when I implemented this was to have a fast
-> forwarding path for UDP. So forwarding is a usecase, but NAT
-> is a problem, indeed. A quick fix could be to segment the
-> skb before it gets NAT forwarded. Alternatively we could
-> check for a header change in __udp_gso_segment_list and
-> update the header of the frag_skbs accordingly in that case.
+R5 is included in Xilinx Zynq UltraScale MPSoC so by adding this
+remotproc driver, we can boot the R5 sub-system in two different
+configurations -
+	* Split
+	* Lockstep
 
-Thank you for explaining.
-Can I think of it as a known issue? I think we should have a fix
-because NAT can be triggered by user. Can I check the current status?
-Already planning a patch or a new patch should be written?
+The Xilinx R5 Remoteproc Driver boots the R5's via calls to the Xilinx
+Platform Management Unit that handles the R5 configuration, memory access
+and R5 lifecycle management. The interface to this manager is done in this
+driver via zynqmp_pm_* function calls.
+
+v25:
+- reword error message for rpu configuration
+- change char name[15] to 16 chars to have null terminated string
+  in parse_mem_regions()
+- reword comments in tcm_mem_alloc
+- grammar in device tree bindings
+- call xilinx platform cleanup in parse_tcm_banks() case of failure
+- check value of mbox_send_message in all calls within this driver
+- update include/linux/firmware/xlnx-zynqmp.h style to match for enum
+  pm_node_id
+- indentation in zynqmp_r5_remoteproc driver
+- update style of constructing carveouts to match convention in ST
+  remoteproc drivers. No longer iterate through memory-region property
+  using of_count_phandle_with_args. Instead use of_phandle_iterator
+- use rproc_of_resm_mem_entry_init for vdev0buffer carveout as per feedback
+- rework loop in zynqmp_r5_pm_request_sram as per feedback
+- fix comment and linebreak in tcm_mem_alloc description
+- add comments and remove extraneous devm_ioremap_wc call in tcm_mem_alloc
+- in parse_tcm_banks remove check for bank not being available
+- rework order of locals and remove else in zynqmp_r5_rproc_kick
+- document and update logic for zynqmp_r5_parse_fw
+- add dev_dbg output in event_notified_idr_cb if
+  rproc_vq_interrupt(rproc, id) == IRQ_NONE
+- add comment for handle_event_notified mbox_send_message function call
+- add comment for zynqmp_r5_mb_rx_cb
+- update zynqmp_r5_setup_mbox to match convention of mbox setup in ST
+  remoteproc drivers
+- change return in zynqmp_r5_setup_mbox to use PTR_ERR
+- add zynqmp_r5_cleanup_mbox
+- in zynqmp_r5_probe, reteurn zynqmp_r5_rproc instead of taking in as arg.
+- in zynqmp_r5_probe use return of PTR_ERR and use zynqmp_r5_cleanup_mbox
+- in zynqmp_r5_remoteproc_probe update use return value of zynqmp_r5_probe as
+  either zynqmp_r5_rproc* or PTR_ERR
+- update loop that cleans up cluster and mboxes in zynqmp_r5_remoteproc_probe
+- update loop that cleans up cluster and mboxes in zynqmp_r5_remoteproc_remove
+
+Previous version:
+https://patchwork.kernel.org/project/linux-remoteproc/list/?series=393387
+
+
+Ben Levinsky (5):
+  firmware: xilinx: Add ZynqMP firmware ioctl enums for RPU
+    configuration.
+  firmware: xilinx: Add shutdown/wakeup APIs
+  firmware: xilinx: Add RPU configuration APIs
+  dt-bindings: remoteproc: Add documentation for ZynqMP R5 rproc
+    bindings
+  remoteproc: Add initial zynqmp R5 remoteproc driver
+
+ .../xilinx,zynqmp-r5-remoteproc.yaml          | 223 +++++
+ drivers/firmware/xilinx/zynqmp.c              |  96 ++
+ drivers/remoteproc/Kconfig                    |   8 +
+ drivers/remoteproc/Makefile                   |   1 +
+ drivers/remoteproc/zynqmp_r5_remoteproc.c     | 897 ++++++++++++++++++
+ include/linux/firmware/xlnx-zynqmp.h          |  66 +-
+ 6 files changed, 1290 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/remoteproc/xilinx,zynqmp-r5-remoteproc.yaml
+ create mode 100644 drivers/remoteproc/zynqmp_r5_remoteproc.c
+
+-- 
+2.17.1
 
