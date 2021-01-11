@@ -2,84 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856892F11AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:44:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD372F11BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729821AbhAKLmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:42:55 -0500
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:40864 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729674AbhAKLmy (ORCPT
+        id S1729928AbhAKLpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:45:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21558 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729681AbhAKLp3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:42:54 -0500
-Received: by mail-wm1-f43.google.com with SMTP id r4so14730905wmh.5;
-        Mon, 11 Jan 2021 03:42:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=kU+5ZIShFLlRS86WVYUr53zj33ppDQeh+yN7XDrg+rs=;
-        b=pTYstYvpljE+S/9IFfoWfAMlgiuVXkRrookSDTmdk0qSX6bwOZ12IZl5CHnzobebuX
-         MIXPsAMBAOW2bc9y/hg1ysanHNdaa5ro1KJVpLNjhs/zBjZbGXvjPhoNo9ZTeivzYg/i
-         eqVQ/88lseWK0OJ4OUSwZOx0JA/RaO3Vv/aHD4FhhtNE/lUPEgAepO/+UQ/fb4GCY1hW
-         5rWa/nLWUNUOhPiqEGI1/JHIf3sY8ejpPwNQRmsv4AwjsGZg5sQCDTh5fZdbbnopPU7X
-         O9I80ceKfuBAR+Pi6FtcE+OzWSj2BoZtyohxYMWO0e/wvIbttpOyXkk+co7Y5FjLKTjM
-         adwQ==
-X-Gm-Message-State: AOAM531ZM7IpxZOVNs2Gwtdu35Wxv61c+W2dxCH7WxugH2AKueqIC1gH
-        4QsYd/kZCYTzcyY2iSMciKKgjP8lqVQ=
-X-Google-Smtp-Source: ABdhPJxabsakOLEUzPpm8QyqqUvVMzaaP2huKpM8HcMnzo8WHAzPXp/5mVsvqwe1RZ1159LnCi+S8A==
-X-Received: by 2002:a7b:cf37:: with SMTP id m23mr14227433wmg.37.1610365332633;
-        Mon, 11 Jan 2021 03:42:12 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id a14sm23765945wrn.3.2021.01.11.03.42.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 03:42:12 -0800 (PST)
-Date:   Mon, 11 Jan 2021 11:42:10 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Wei Liu <wei.liu@kernel.org>, kys@microsoft.com,
-        sthemmin@microsoft.com, haiyangz@microsoft.com,
-        Michael Kelley <mikelley@microsoft.com>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] Hyper-V fixes for 5.11-rc4
-Message-ID: <20210111114210.zpuskk7pct6ibf6d@liuwe-devbox-debian-v2>
+        Mon, 11 Jan 2021 06:45:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610365441;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ttGeJCjE88RI/JbnjK4ApWmv5dTWaDqgt7cJ0I9tF9Y=;
+        b=MhdcWvGitp67lOdWne9Tmx3n0uqYmWxh7zLMjYjKLuZoFYMxJNDkL7N7sAOk1jXtOrtFU8
+        WRCvgM+F1g+JJPy/LX5OEWXQBBY2E4EGJ+SGsqTPm2/nooJXPNIxPOCdz7AE7fk92PoWaE
+        t047UkY2+tKKoAhM2KhJtmxOL7plnKo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-89-MBrAzwhyNoKbZQXhtz3HHA-1; Mon, 11 Jan 2021 06:43:57 -0500
+X-MC-Unique: MBrAzwhyNoKbZQXhtz3HHA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6FDAD15720;
+        Mon, 11 Jan 2021 11:43:53 +0000 (UTC)
+Received: from work-vm (ovpn-115-72.ams2.redhat.com [10.36.115.72])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3982460939;
+        Mon, 11 Jan 2021 11:43:43 +0000 (UTC)
+Date:   Mon, 11 Jan 2021 11:43:40 +0000
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [RFC PATCH 0/2] userfaultfd: handle minor faults, add
+ UFFDIO_CONTINUE
+Message-ID: <20210111114340.GF2965@work-vm>
+References: <20210107190453.3051110-1-axelrasmussen@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210107190453.3051110-1-axelrasmussen@google.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+* Axel Rasmussen (axelrasmussen@google.com) wrote:
+> Overview
+> ========
+> 
+> This series adds a new userfaultfd registration mode,
+> UFFDIO_REGISTER_MODE_MINOR. This allows userspace to intercept "minor" faults.
+> By "minor" fault, I mean the following situation:
+> 
+> Let there exist two mappings (i.e., VMAs) to the same page(s) (shared memory).
+> One of the mappings is registered with userfaultfd (in minor mode), and the
+> other is not. Via the non-UFFD mapping, the underlying pages have already been
+> allocated & filled with some contents. The UFFD mapping has not yet been
+> faulted in; when it is touched for the first time, this results in what I'm
+> calling a "minor" fault. As a concrete example, when working with hugetlbfs, we
+> have huge_pte_none(), but find_lock_page() finds an existing page.
+>
+> We also add a new ioctl to resolve such faults: UFFDIO_CONTINUE. The idea is,
+> userspace resolves the fault by either a) doing nothing if the contents are
+> already correct, or b) updating the underlying contents using the second,
+> non-UFFD mapping (via memcpy/memset or similar, or something fancier like RDMA,
+> or etc...). In either case, userspace issues UFFDIO_CONTINUE to tell the kernel
+> "I have ensured the page contents are correct, carry on setting up the mapping".
+> 
+> Use Case
+> ========
+> 
+> Consider the use case of VM live migration (e.g. under QEMU/KVM):
+> 
+> 1. While a VM is still running, we copy the contents of its memory to a
+>    target machine. The pages are populated on the target by writing to the
+>    non-UFFD mapping, using the setup described above. The VM is still running
+>    (and therefore its memory is likely changing), so this may be repeated
+>    several times, until we decide the target is "up to date enough".
+> 
+> 2. We pause the VM on the source, and start executing on the target machine.
+>    During this gap, the VM's user(s) will *see* a pause, so it is desirable to
+>    minimize this window.
+> 
+> 3. Between the last time any page was copied from the source to the target, and
+>    when the VM was paused, the contents of that page may have changed - and
+>    therefore the copy we have on the target machine is out of date. Although we
+>    can keep track of which pages are out of date, for VMs with large amounts of
+>    memory, it is "slow" to transfer this information to the target machine. We
+>    want to resume execution before such a transfer would complete.
+> 
+> 4. So, the guest begins executing on the target machine. The first time it
+>    touches its memory (via the UFFD-registered mapping), userspace wants to
+>    intercept this fault. Userspace checks whether or not the page is up to date,
+>    and if not, copies the updated page from the source machine, via the non-UFFD
+>    mapping. Finally, whether a copy was performed or not, userspace issues a
+>    UFFDIO_CONTINUE ioctl to tell the kernel "I have ensured the page contents
+>    are correct, carry on setting up the mapping".
+> 
+> We don't have to do all of the final updates on-demand. The userfaultfd manager
+> can, in the background, also copy over updated pages once it receives the map of
+> which pages are up-to-date or not.
 
-The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
+Yes, this would make the handover during postcopy of large VMs a heck of
+a lot faster; and probably simpler; the cleanup code that tidies up the
+re-dirty pages is pretty messy.
 
-  Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
+Dave
 
-are available in the Git repository at:
+> Interaction with Existing APIs
+> ==============================
+> 
+> Because it's possible to combine registration modes (e.g. a single VMA can be
+> userfaultfd-registered MINOR | MISSING), and because it's up to userspace how to
+> resolve faults once they are received, I spent some time thinking through how
+> the existing API interacts with the new feature.
+> 
+> UFFDIO_CONTINUE cannot be used to resolve non-minor faults, as it does not
+> allocate a new page. If UFFDIO_CONTINUE is used on a non-minor fault:
+> 
+> - For non-shared memory or shmem, -EINVAL is returned.
+> - For hugetlb, -EFAULT is returned.
+> 
+> UFFDIO_COPY and UFFDIO_ZEROPAGE cannot be used to resolve minor faults. Without
+> modifications, the existing codepath assumes a new page needs to be allocated.
+> This is okay, since userspace must have a second non-UFFD-registered mapping
+> anyway, thus there isn't much reason to want to use these in any case (just
+> memcpy or memset or similar).
+> 
+> - If UFFDIO_COPY is used on a minor fault, -EEXIST is returned.
+> - If UFFDIO_ZEROPAGE is used on a minor fault, -EEXIST is returned (or -EINVAL
+>   in the case of hugetlb, as UFFDIO_ZEROPAGE is unsupported in any case).
+> - UFFDIO_WRITEPROTECT simply doesn't work with shared memory, and returns
+>   -ENOENT in that case (regardless of the kind of fault).
+> 
+> Remaining Work
+> ==============
+> 
+> This patchset doesn't include updates to userfaultfd's documentation or
+> selftests. This will be added before I send a non-RFC version of this series
+> (I want to find out if there are strong objections to the API surface before
+> spending the time to document it.)
+> 
+> Currently the patchset only supports hugetlbfs. There is no reason it can't work
+> with shmem, but I expect hugetlbfs to be much more commonly used since we're
+> talking about backing guest memory for VMs. I plan to implement shmem support in
+> a follow-up patch series.
+> 
+> Axel Rasmussen (2):
+>   userfaultfd: add minor fault registration mode
+>   userfaultfd: add UFFDIO_CONTINUE ioctl
+> 
+>  fs/proc/task_mmu.c               |   1 +
+>  fs/userfaultfd.c                 | 143 ++++++++++++++++++++++++-------
+>  include/linux/mm.h               |   1 +
+>  include/linux/userfaultfd_k.h    |  14 ++-
+>  include/trace/events/mmflags.h   |   1 +
+>  include/uapi/linux/userfaultfd.h |  36 +++++++-
+>  mm/hugetlb.c                     |  42 +++++++--
+>  mm/userfaultfd.c                 |  86 ++++++++++++++-----
+>  8 files changed, 261 insertions(+), 63 deletions(-)
+> 
+> --
+> 2.29.2.729.g45daf8777d-goog
+> 
+-- 
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
 
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-fixes-signed-20210111
-
-for you to fetch changes up to ad0a6bad44758afa3b440c254a24999a0c7e35d5:
-
-  x86/hyperv: check cpu mask after interrupt has been disabled (2021-01-06 11:03:16 +0000)
-
-----------------------------------------------------------------
-hyperv-fixes for 5.11-rc4
-  - One patch from Dexuan Cui to fix kexec panic/hang
-  - One patch from Wei Liu to fix occasional crashes when flushing TLB
-----------------------------------------------------------------
-Dexuan Cui (1):
-      x86/hyperv: Fix kexec panic/hang issues
-
-Wei Liu (1):
-      x86/hyperv: check cpu mask after interrupt has been disabled
-
- arch/x86/hyperv/hv_init.c       |  4 ++++
- arch/x86/hyperv/mmu.c           | 12 +++++++++---
- arch/x86/include/asm/mshyperv.h |  2 ++
- arch/x86/kernel/cpu/mshyperv.c  | 18 ++++++++++++++++++
- drivers/hv/vmbus_drv.c          |  2 --
- 5 files changed, 33 insertions(+), 5 deletions(-)
