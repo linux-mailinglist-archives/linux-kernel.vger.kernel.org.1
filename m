@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5952F14A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:28:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDBBE2F13A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731704AbhAKN1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:27:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33156 "EHLO mail.kernel.org"
+        id S1731496AbhAKNMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:12:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732426AbhAKNQe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:16:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ECF7D225AC;
-        Mon, 11 Jan 2021 13:16:17 +0000 (UTC)
+        id S1731405AbhAKNLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:11:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E93E722B49;
+        Mon, 11 Jan 2021 13:11:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370978;
-        bh=Ctj68VZACeIPAZijUdrZcGNznPfeL/T+LUrKGqmYa40=;
+        s=korg; t=1610370674;
+        bh=Y88JrtSnJigugINxiQIwypf7dwV/4rm8VVeXFG57HYY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JScpsWkmNp9aXFJBUwcgoi18K0Hjs1x0GzB80aKNAhFe2zaRrx4mNPor2IRuMBBFX
-         nmTgYjNNEwhVe+0i0eTxKGmsJJ4fg29beAJkEKGEB2hKxIG4OAt7fs2fDkDdSvZDH5
-         xgE5EZO4eH2xDO/0yRwnkcOPpd+XRE5/Hz0NdNDg=
+        b=N718UyMVzi3edaveVAusqEjyAm7qFfiE9aDO6Jxl1txKMfB2E9UkMeZSi06Wb8g6b
+         wECilPAIAmA8DrGG6PjEi7dD7o1LZKh5ZjcV8+Dqu3YsYw7FDa58MAdTdJtXe9XY0A
+         EJRIzKfDBjaZ1+no8S45jgSMjBQr/Rb3BxeGEX5Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Subject: [PATCH 5.10 087/145] usb: dwc3: ulpi: Fix USB2.0 HS/FS/LS PHY suspend regression
-Date:   Mon, 11 Jan 2021 14:01:51 +0100
-Message-Id: <20210111130052.712944468@linuxfoundation.org>
+        stable@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 48/92] video: hyperv_fb: Fix the mmap() regression for v5.4.y and older
+Date:   Mon, 11 Jan 2021 14:01:52 +0100
+Message-Id: <20210111130041.456762660@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,91 +39,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+From: Dexuan Cui <decui@microsoft.com>
 
-commit e5f4ca3fce90a37b23a77bfcc86800d484a80514 upstream.
+db49200b1dad is backported from the mainline commit
+5f1251a48c17 ("video: hyperv_fb: Fix the cache type when mapping the VRAM"),
+to v5.4.y and older stable branches, but unluckily db49200b1dad causes
+mmap() to fail for /dev/fb0 due to EINVAL:
 
-First of all the commit e0082698b689 ("usb: dwc3: ulpi: conditionally
-resume ULPI PHY") introduced the Suspend USB2.0 HS/FS/LS PHY regression,
-as by design of the fix any attempt to read/write from/to the PHY control
-registers will completely disable the PHY suspension, which consequently
-will increase the USB bus power consumption. Secondly the fix won't work
-well for the very first attempt of the ULPI PHY control registers IO,
-because after disabling the USB2.0 PHY suspension functionality it will
-still take some time for the bus to resume from the sleep state if one has
-been reached before it. So the very first PHY register read/write
-operation will take more time than the busy-loop provides and the IO
-timeout error might be returned anyway.
+[ 5797.049560] x86/PAT: a.out:1910 map pfn expected mapping type
+  uncached-minus for [mem 0xf8200000-0xf85cbfff], got write-back
 
-Here we suggest to fix the denoted problems in the following way. First of
-all let's not disable the Suspend USB2.0 HS/FS/LS PHY functionality so to
-make the controller and the USB2.0 bus more power efficient. Secondly
-instead of that we'll extend the PHY IO op wait procedure with 1 - 1.2 ms
-sleep if the PHY suspension is enabled (1ms should be enough as by LPM
-specification it is at most how long it takes for the USB2.0 bus to resume
-from L1 (Sleep) state). Finally in case if the USB2.0 PHY suspension
-functionality has been disabled on the DWC USB3 controller setup procedure
-we'll compensate the USB bus resume process latency by extending the
-busy-loop attempts counter.
+This means the v5.4.y kernel detects an incompatibility issue about the
+mapping type of the VRAM: db49200b1dad changes to use Write-Back when
+mapping the VRAM, while the mmap() syscall tries to use Uncached-minus.
+That’s to say, the kernel thinks Uncached-minus is incompatible with
+Write-Back: see drivers/video/fbdev/core/fbmem.c: fb_mmap() ->
+vm_iomap_memory() -> io_remap_pfn_range() -> ... -> track_pfn_remap() ->
+reserve_pfn_range().
 
-Fixes: e0082698b689 ("usb: dwc3: ulpi: conditionally resume ULPI PHY")
-Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Link: https://lore.kernel.org/r/20201210085008.13264-4-Sergey.Semin@baikalelectronics.ru
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Note: any v5.5 and newer kernel doesn't have the issue, because they
+have commit
+d21987d709e8 ("video: hyperv: hyperv_fb: Support deferred IO for Hyper-V frame buffer driver")
+, and when the hyperv_fb driver has the deferred_io support,
+fb_deferred_io_init() overrides info->fbops->fb_mmap with
+fb_deferred_io_mmap(), which doesn’t check the mapping type
+incompatibility. Note: since it's VRAM here, the checking is not really
+necessary.
 
+Fix the regression by ioremap_wc(), which uses Write-combining. The kernel
+thinks it's compatible with Uncached-minus. The VRAM mappped by
+ioremap_wc() is slightly slower than mapped by ioremap_cache(), but is
+still significantly faster than by ioremap().
+
+Change the comment accordingly. Linux VM on ARM64 Hyper-V is still not
+working in the latest mainline yet, and when it works in future, the ARM64
+support is unlikely to be backported to v5.4 and older, so using
+ioremap_wc() in v5.4 and older should be ok.
+
+Note: this fix is only targeted at the stable branches:
+v5.4.y, v4.19.y, v4.14.y, v4.9.y and v4.4.y.
+
+Fixes: db49200b1dad ("video: hyperv_fb: Fix the cache type when mapping the VRAM")
+Signed-off-by: Dexuan Cui <decui@microsoft.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/ulpi.c |   18 +++++-------------
- 1 file changed, 5 insertions(+), 13 deletions(-)
+ drivers/video/fbdev/hyperv_fb.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/dwc3/ulpi.c
-+++ b/drivers/usb/dwc3/ulpi.c
-@@ -24,7 +24,7 @@
- static int dwc3_ulpi_busyloop(struct dwc3 *dwc, u8 addr, bool read)
- {
- 	unsigned long ns = 5L * DWC3_ULPI_BASE_DELAY;
--	unsigned int count = 1000;
-+	unsigned int count = 10000;
- 	u32 reg;
+diff --git a/drivers/video/fbdev/hyperv_fb.c b/drivers/video/fbdev/hyperv_fb.c
+index 81671272aa58f..1c6ae98710a01 100644
+--- a/drivers/video/fbdev/hyperv_fb.c
++++ b/drivers/video/fbdev/hyperv_fb.c
+@@ -704,11 +704,9 @@ static int hvfb_getmem(struct hv_device *hdev, struct fb_info *info)
+ 	}
  
- 	if (addr >= ULPI_EXT_VENDOR_SPECIFIC)
-@@ -33,6 +33,10 @@ static int dwc3_ulpi_busyloop(struct dwc
- 	if (read)
- 		ns += DWC3_ULPI_BASE_DELAY;
+ 	/*
+-	 * Map the VRAM cacheable for performance. This is also required for
+-	 * VM Connect to display properly for ARM64 Linux VM, as the host also
+-	 * maps the VRAM cacheable.
++	 * Map the VRAM cacheable for performance.
+ 	 */
+-	fb_virt = ioremap_cache(par->mem->start, screen_fb_size);
++	fb_virt = ioremap_wc(par->mem->start, screen_fb_size);
+ 	if (!fb_virt)
+ 		goto err2;
  
-+	reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYCFG(0));
-+	if (reg & DWC3_GUSB2PHYCFG_SUSPHY)
-+		usleep_range(1000, 1200);
-+
- 	while (count--) {
- 		ndelay(ns);
- 		reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYACC(0));
-@@ -50,12 +54,6 @@ static int dwc3_ulpi_read(struct device
- 	u32 reg;
- 	int ret;
- 
--	reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYCFG(0));
--	if (reg & DWC3_GUSB2PHYCFG_SUSPHY) {
--		reg &= ~DWC3_GUSB2PHYCFG_SUSPHY;
--		dwc3_writel(dwc->regs, DWC3_GUSB2PHYCFG(0), reg);
--	}
--
- 	reg = DWC3_GUSB2PHYACC_NEWREGREQ | DWC3_ULPI_ADDR(addr);
- 	dwc3_writel(dwc->regs, DWC3_GUSB2PHYACC(0), reg);
- 
-@@ -73,12 +71,6 @@ static int dwc3_ulpi_write(struct device
- 	struct dwc3 *dwc = dev_get_drvdata(dev);
- 	u32 reg;
- 
--	reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYCFG(0));
--	if (reg & DWC3_GUSB2PHYCFG_SUSPHY) {
--		reg &= ~DWC3_GUSB2PHYCFG_SUSPHY;
--		dwc3_writel(dwc->regs, DWC3_GUSB2PHYCFG(0), reg);
--	}
--
- 	reg = DWC3_GUSB2PHYACC_NEWREGREQ | DWC3_ULPI_ADDR(addr);
- 	reg |= DWC3_GUSB2PHYACC_WRITE | val;
- 	dwc3_writel(dwc->regs, DWC3_GUSB2PHYACC(0), reg);
+-- 
+2.27.0
+
 
 
