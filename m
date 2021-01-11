@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B6E2F184C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB1B2F1843
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:27:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388747AbhAKO07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:26:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36936 "EHLO
+        id S2388784AbhAKO1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:27:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729900AbhAKO06 (ORCPT
+        with ESMTP id S1732524AbhAKO1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:26:58 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1176DC061795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:26:18 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id h186so24084pfe.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:26:18 -0800 (PST)
+        Mon, 11 Jan 2021 09:27:04 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18ED9C0617A2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:26:24 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id lj6so7894569pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:26:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OYaotrkJ9GWz9HcVxQ85G6lbaUv108utYr6j0utTxOY=;
-        b=JZ31gUo3wbSvlxiPJS3CXd3WwYuueDWtWYRAA4eF1IuXaDLL8XqpAJu7rWYwdx4Kxa
-         DENehRMeZfz2zDooVSKUcOe3fD3p8ZiSalirHTLB0QaaaP0/mUBxtf+n8RZrGjLwJI0v
-         XXITQa5CvlhWHSKFNayue8b3DFEip15PJkiuIhOGuteBprImyy8lnoj+tAmcgCrTmDNV
-         xhPdKabdH8JS7S9dAqmCZLCRuzfYCps+Sg7QFxSE35Ra5d/q9fN8fG9HIh3aWW8QzLIN
-         55e5ToTc6ZOGRVBS6kW3TcOohC4KLbENsx5yzELMSUHj1U224RW0aCsQgBXIrEIkgI60
-         TdbQ==
+        bh=SdyKLfTCh3Xym0Uup/ThWZDD/W67Hk+8R3SOcImsVaw=;
+        b=csXVsYUApfJVPJFgGRWbUivRKnbUZ3JwY9w41zB1tZb5RLOy/lLWXvSRjPukG7V5fi
+         4imAX4Ull2VeuL0Q/JThp7ijtRruIaG/JjhG3nO585hHXJikn8LVwBynOph3fSlL6V1z
+         ym/VvI8ZXkuvWjcZpfqxwIDB9h5OO4xx7FyOjqqyljb6mZXvTuaS66hDhIskhbJcW4EY
+         Iiln5QetCG98szrUhQD35n4cXkcB3vxbR43r09WfS0GPMzeMv5TPhTTDTsKbQWjNhDAP
+         +Mdfr+U6qTGYPibIC1OJCuavhKFe1043Dp6hmOuGQGY6GOnGHEaMdMjg71DyiZlyiaiS
+         Mt/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OYaotrkJ9GWz9HcVxQ85G6lbaUv108utYr6j0utTxOY=;
-        b=qE8DXaFuzhkCtMVwSKYm4RRngKrsRxyfJqqUsifH7YmtiAk9xNCkIBl0E8Gr5EyYer
-         uU31m0WOMLGpE7b+L4P0Cl8DM7zZkMEe9okOfR2DUiAJK1HnQfJhIxH2uhVmrySvlEW0
-         MMXS2oqlOJAzrVvthh//CNsfYenZmxvVA2/cMYif7vWEEJyXDA6T4tNHT+ECKAkPz90y
-         5ex8Xjs9XJYWQzGNKaAtKX7ZUgkCzd9DT573bNZvjvifJ1iZzqjLPQlfWrSM84pzLtaB
-         H7qcHJudGghBLpOZxsrsLDu3Pgvgr6QWiTTcTBfuDZ+jzomsdkdgmylttf9IJhL9YPrR
-         v/gw==
-X-Gm-Message-State: AOAM530H7Qm40m1E7X+xEdPJfI9NdbqyoX43ixISyGuEuoxf7JESTXL2
-        93fsOzNhObW1bjkWdvdWzmorFJTIvEQ=
-X-Google-Smtp-Source: ABdhPJxpQ4S6oYwWgdIFGvi8oGUuZX1eOlxf8MPxVy/WnvfHqoragV237+Kll7MYiEUrr+Oe2dlsPQ==
-X-Received: by 2002:a62:25c1:0:b029:1a9:ee40:3fd3 with SMTP id l184-20020a6225c10000b02901a9ee403fd3mr16192880pfl.58.1610375177358;
-        Mon, 11 Jan 2021 06:26:17 -0800 (PST)
+        bh=SdyKLfTCh3Xym0Uup/ThWZDD/W67Hk+8R3SOcImsVaw=;
+        b=DePt3MbhwhsSbXDwKtj9hJJVJzgrcMAx6/51kgRW0PNcnWS6h3rKihbFnfbuzX8kRY
+         aK91ph4l4WsrrDbN8kBmZ4+RNmSR/MUutvMMks+SxelS367ELSfJxkq6xsDdJApUjesM
+         DD+EAUQdsctThsTy+l9lHy3Pj+OEvUPrvo14H0IRjfZGr2oUMRHgySkGZnKYQcbeyP0z
+         +WwIw4Xn7MOpNP1OpRYLbdaZ0CvznwKwY+fSC2IKx2oCrBPIlIuCGpD+N4SLPn9SPGXV
+         OOy11m999X1qIWwPa7OavA4MQBlm8Kn5mbkNxVKcQzwK3AJrzOPXXlzTdZNti4jZG8qp
+         qHkA==
+X-Gm-Message-State: AOAM532wD6lJAdSvYLC5r/uUDX2zIlfodtBtLDIommGdw3bk1/N7l7Cu
+        WWpOBJm4prwbTFGkwKzDRLsCSxsSRt0=
+X-Google-Smtp-Source: ABdhPJzfDG6FHeBFQA+wUzWsYoFbEpFa8gWUcRqZDGwuOHBT7BLjo6Vad1OI+06MzPuKAHc85E1Npg==
+X-Received: by 2002:a17:90a:e386:: with SMTP id b6mr18026129pjz.134.1610375183517;
+        Mon, 11 Jan 2021 06:26:23 -0800 (PST)
 Received: from localhost ([47.251.4.198])
-        by smtp.gmail.com with ESMTPSA id t18sm18890429pfl.138.2021.01.11.06.26.16
+        by smtp.gmail.com with ESMTPSA id s13sm20693932pfd.99.2021.01.11.06.26.22
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 11 Jan 2021 06:26:16 -0800 (PST)
+        Mon, 11 Jan 2021 06:26:23 -0800 (PST)
 From:   Lai Jiangshan <jiangshanlai@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Valentin Schneider <valentin.schneider@arm.com>,
@@ -59,10 +59,11 @@ Cc:     Valentin Schneider <valentin.schneider@arm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Hillf Danton <hdanton@sina.com>,
         Lai Jiangshan <laijs@linux.alibaba.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: [PATCH -tip V4 2/8] workqueue: set pool->attr->cpumask to workers when cpu online
-Date:   Mon, 11 Jan 2021 23:26:32 +0800
-Message-Id: <20210111152638.2417-3-jiangshanlai@gmail.com>
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: [PATCH -tip V4 3/8] workqueue: use cpu_possible_mask instead of cpu_active_mask to break affinity
+Date:   Mon, 11 Jan 2021 23:26:33 +0800
+Message-Id: <20210111152638.2417-4-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20210111152638.2417-1-jiangshanlai@gmail.com>
 References: <20210111152638.2417-1-jiangshanlai@gmail.com>
@@ -74,49 +75,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-The commit d945b5e9f0e("workqueue: Fix setting affinity of unbound worker
-threads") fixed a problem of set_cpus_allowed_ptr() with online&!active
-cpumasks (more than one CPUs) when restore_unbound_workers_cpumask() in
-online callback.
+The scheduler won't break affinity for us any more, and we should
+"emulate" the same behavior when the scheduler breaks affinity for
+us.  The behavior is "changing the cpumask to cpu_possible_mask".
 
-But now the new online callback for unbound workqueue is called later
-than sched_cpu_activate().  So the cpu is set in cpu_active_mask and
-set_cpus_allowed_ptr() with pool->attrs->cpumask in the code won't
-cause such warning any more.
+And there might be some other CPUs online later while the worker is
+still running with the pending work items.  The worker should be allowed
+to use the later online CPUs as before and process the work items ASAP.
+If we use cpu_active_mask here, we can't achieve this goal but
+using cpu_possible_mask can.
 
-The said commit also left comments outdated and causes confusing.
-It is better to change the code back.
-
-Cc: Hillf Danton <hdanton@sina.com>
-Reported-by: Hillf Danton <hdanton@sina.com>
+Fixes: 06249738a41a ("workqueue: Manually break affinity on hotplug")
 Acked-by: Tejun Heo <tj@kernel.org>
 Tested-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
 ---
- kernel/workqueue.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ kernel/workqueue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index d7bdb7885e55..38628e2a622c 100644
+index 38628e2a622c..3e92bc4f8a36 100644
 --- a/kernel/workqueue.c
 +++ b/kernel/workqueue.c
-@@ -5039,11 +5039,15 @@ static void restore_unbound_workers_cpumask(struct worker_pool *pool, int cpu)
- 	if (!cpumask_test_cpu(cpu, pool->attrs->cpumask))
- 		return;
+@@ -4920,7 +4920,7 @@ static void unbind_workers(int cpu)
+ 		raw_spin_unlock_irq(&pool->lock);
  
-+	/* is @cpu the only online CPU? */
- 	cpumask_and(&cpumask, pool->attrs->cpumask, cpu_online_mask);
-+	if (cpumask_weight(&cpumask) != 1)
-+		return;
+ 		for_each_pool_worker(worker, pool)
+-			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_active_mask) < 0);
++			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
  
- 	/* as we're called from CPU_ONLINE, the following shouldn't fail */
- 	for_each_pool_worker(worker, pool)
--		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, &cpumask) < 0);
-+		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task,
-+						  pool->attrs->cpumask) < 0);
- }
+ 		mutex_unlock(&wq_pool_attach_mutex);
  
- int workqueue_prepare_cpu(unsigned int cpu)
 -- 
 2.19.1.6.gb485710b
 
