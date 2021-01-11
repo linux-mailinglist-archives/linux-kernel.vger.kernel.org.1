@@ -2,110 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 790662F197C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF422F1960
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388221AbhAKPSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:18:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387696AbhAKPSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:18:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E671B22795;
-        Mon, 11 Jan 2021 15:17:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610378284;
-        bh=1k/dDAFiDUWxTSUPTCRsR3hrQeA+upFSBkz9fiRxVQQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pJoA99L7F+nG63Gzc0eukLFTRCbMhaInrZAtZrdKHoRTuZk016tuk6fOKhl6bKhmR
-         quDgj+P2ql+3OrLljdEUsNLZdxDDhQXY8bCpAptXRRvoIuEqfYTRYbRRWwhBzxcoTd
-         HewvUnmhB5CRzAwsl/7hyqF2fghJn+4uuFWyL0earuxwK33V23l0XHavJdcSsrcrYf
-         lS39IeFA/YfEqKuBLXTwC8JIE6uqv0R55FE6OtL85V7xVM25xOGbzzLXij4Gwzd/y3
-         wJWvQl3ngiD9zT1vmiGmUMYeloGNwt7OVLFtZHpRE3oNeZ+MtNmBgrOHStN1t7nhnv
-         CpMI0HlSfAiag==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 7/7] arm64: dts: qcom: sdm845: enable dma for spi
-Date:   Mon, 11 Jan 2021 20:46:51 +0530
-Message-Id: <20210111151651.1616813-8-vkoul@kernel.org>
+        id S1732487AbhAKPR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:17:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729118AbhAKPR6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 10:17:58 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAD7C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:17:18 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id a6so162345wmc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:17:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0TcPx+7pAz4mOWYUryj7o7tYaRTL8G4UVxUnW9m5I0k=;
+        b=DEoO57eOc347UcLngC0mqGHqk13ZR+N6Vrv8iz9hXRyaMX1xMe+Cs1ifYqtzUA0nvd
+         NQ57pZZKtYCU7ijRMRto7TtcU5RkH+RdDSjvymjocAbTyvIAHRGm14km6TRxdbqYIQAw
+         NvQAY7kBorhPVZWQmSrYKWvUXbk5uBHNXBpjLW6OWPG/lj4zfAQwpxJYm4sow14P5lmJ
+         uPRpj9aOo8/dLS75aaWftnEmBxt8tOgOJyB3By8UYlLYz4OIegliGMPaWvq+pMtZIt2T
+         IPsphoISuAHVfmmRfpSDUQPQGfjXQ5EpClKGkjrsyFwCjKUd9egsvOUJwuR7O3l9l4D/
+         4sNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0TcPx+7pAz4mOWYUryj7o7tYaRTL8G4UVxUnW9m5I0k=;
+        b=QHsshutn802NRKfBOYhfNeW8cboq62SdmB9GaBkvPEaIIIiPE6AZO/9WXkCMOBSKMq
+         ymXuaJoogGFc4EkjTnpjJWXeqoGXGIKg4gMhXdwYO8UD5Bo/+B8V6rgPM1QMP8IekZjx
+         Nie1HX/CY/2GxCxmCu+XilEkU71z9xIcBQXEizGTw0Ax99fmAsHzwMgZm0yqeU3757z9
+         0WQfoT1hGCZxIXXU4ftmNluV1ifSRigIoBu+mAKf9rPopQrSr7M9XWh+c0XVY/0K+pVW
+         PfFh29WFnyPkL0uV3t2U81fq5WmoUaHxccbrfYX3xikf4WdZ3fJRd3O7nnsKKmwd9wDK
+         2f6g==
+X-Gm-Message-State: AOAM531F/tcXQ2wdmaizMBP68YzD+CcHHsU1QDetyZ8AbKGMVyfnQnzy
+        wzxt5FelMgANrEWaMrw3vV8=
+X-Google-Smtp-Source: ABdhPJzw1xmUcOJ05wP+KGreicwg6Mno9pFPVs5TMOS191SkVsAXLEG9EhYrETFd4Xn1hNBtx1X5gA==
+X-Received: by 2002:a05:600c:2117:: with SMTP id u23mr145106wml.153.1610378237257;
+        Mon, 11 Jan 2021 07:17:17 -0800 (PST)
+Received: from Saturn.local.all ([81.221.211.103])
+        by smtp.gmail.com with ESMTPSA id h5sm25549623wrp.56.2021.01.11.07.17.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 07:17:16 -0800 (PST)
+From:   Max Krummenacher <max.oss.09@gmail.com>
+X-Google-Original-From: Max Krummenacher <max.krummenacher@toradex.com>
+To:     Max Krummenacher <max.oss.09@gmail.com>
+Cc:     Max Krummenacher <max.krummenacher@toradex.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Fabio Estevam <festevam@gmail.com>,
+        Rouven Czerwinski <r.czerwinski@pengutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>
+Subject: [PATCH 0/1] ARM: imx: build suspend-imx6.S with arm instruction set
+Date:   Mon, 11 Jan 2021 16:17:03 +0100
+Message-Id: <20210111151704.26296-1-max.krummenacher@toradex.com>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210111151651.1616813-1-vkoul@kernel.org>
-References: <20210111151651.1616813-1-vkoul@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dmas property for spi@880000 and pinconf setting so that we can use
-dma for this spi device. Also, add iommu properties for qup and spi.
+When the kernel is configured to use the Thumb-2 instruction set
+"suspend-to-memory" fails to resume while in ARM mode it works as
+expected.
+(I used imx_v6_v7_defconfig and deselected ARCH_MULTI_V6 and selected
+THUMB2_KERNEL)
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
----
- arch/arm64/boot/dts/qcom/sdm845-db845c.dts |  4 ++++
- arch/arm64/boot/dts/qcom/sdm845.dtsi       | 11 +++++++++++
- 2 files changed, 15 insertions(+)
+The system prints what is expected when suspending but an event of a
+wakeup source does give no output.
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-index 7cc236575ee2..0653468f26ce 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-@@ -418,6 +418,10 @@ &gcc {
- 			   <GCC_QSPI_CNOC_PERIPH_AHB_CLK>;
- };
- 
-+&gpi_dma0 {
-+	status = "okay";
-+};
-+
- &gpu {
- 	zap-shader {
- 		memory-region = <&gpu_mem>;
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index c9a127bbd606..bd9952f54721 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -12,6 +12,7 @@
- #include <dt-bindings/clock/qcom,lpass-sdm845.h>
- #include <dt-bindings/clock/qcom,rpmh.h>
- #include <dt-bindings/clock/qcom,videocc-sdm845.h>
-+#include <dt-bindings/dma/qcom-gpi.h>
- #include <dt-bindings/interconnect/qcom,osm-l3.h>
- #include <dt-bindings/interconnect/qcom,sdm845.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-@@ -1183,6 +1184,9 @@ spi0: spi@880000 {
- 				interconnects = <&aggre1_noc MASTER_QUP_1 0 &config_noc SLAVE_BLSP_1 0>,
- 						<&gladiator_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_BLSP_1 0>;
- 				interconnect-names = "qup-core", "qup-config";
-+				dmas = <&gpi_dma0 0 0 QCOM_GPI_SPI>,
-+				       <&gpi_dma0 1 0 QCOM_GPI_SPI>;
-+				dma-names = "tx", "rx";
- 				status = "disabled";
- 			};
- 
-@@ -2622,6 +2626,13 @@ pinmux {
- 					       "gpio2", "gpio3";
- 					function = "qup0";
- 				};
-+
-+				config {
-+					pins = "gpio0", "gpio1",
-+					       "gpio2", "gpio3";
-+					drive-strength = <6>;
-+					bias-disable;
-+				};
- 			};
- 
- 			qup_spi1_default: qup-spi1-default {
+root@colibri-imx6ull:~# echo mem > /sys/power/state
+
+[   58.610809] PM: suspend entry (deep)
+[   58.629354] Filesystems sync: 0.014 seconds
+[   58.653411] Freezing user space processes ... (elapsed 0.001 seconds) done.
+[   58.661941] OOM killer disabled.
+[   58.665176] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+[   58.674028] printk: Suspending console(s) (use no_console_suspend to debug)
+
+-> trigger wakeup event, no reaction.
+
+It looks like the CPU resumes unconditionally in ARM instruction mode
+and then chokes on the presented Thumb-2 code it should execute on resume.
+With the following code change resume succeeds.
+
+--- a/arch/arm/mach-imx/suspend-imx6.S
++++ b/arch/arm/mach-imx/suspend-imx6.S
+@@ -287,11 +286,20 @@ rbc_loop:
+ 	bne	rbc_loop
+
+ 	/* Zzz, enter stop mode */
+ 	wfi
++#ifdef CONFIG_THUMB2_KERNEL
++	/* i.MX CPUs seem to leave stop mode set to ARM instruction set */
++	.arm
++#endif
+ 	nop
+ 	nop
+ 	nop
+ 	nop
++#ifdef CONFIG_THUMB2_KERNEL
++	/* switch to Thumb2 mode */
++	sub     pc, pc, #3
++	.thumb
++#endif
+
+ 	/*
+
+I propose however to compile the whole file in ARM mode and have the
+linker taking care of the ARM/Thumb-2 switching. This would also keep
+the code working if a i.MX CPU variant exists that resumes in the same
+mode in which it went to sleep.
+
+
+
+Max Krummenacher (1):
+  ARM: imx: build suspend-imx6.S with arm instruction set
+
+ arch/arm/mach-imx/suspend-imx6.S | 1 +
+ 1 file changed, 1 insertion(+)
+
 -- 
 2.26.2
 
