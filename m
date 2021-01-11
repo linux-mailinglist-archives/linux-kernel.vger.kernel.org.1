@@ -2,191 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8DC02F0F45
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:40:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2382F0F47
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:40:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728553AbhAKJjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 04:39:46 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36954 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727915AbhAKJjp (ORCPT
+        id S1728569AbhAKJjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 04:39:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727915AbhAKJjy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 04:39:45 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10B9WNXe035651;
-        Mon, 11 Jan 2021 04:39:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references; s=pp1;
- bh=yTfOc+eDKqFMMFf7FN0ReIS9NkA9YfK5RVQTgUQghIA=;
- b=SnLxhwVXqwVQHxF2/HFMvs66/MbX2j3YS++EP8NemDOX1GJuAfbUpub+GXEpiCpbqCtG
- AX/hQw+GYMelMQ5i8dFdCGPvQq3s+XMFL+0c5Fb9cbkJe2FfTPOAbhLFVGv2nGBd4lMV
- 6RKSs3OkZLuuA301qdL95GVDLVZ3bu5SHMBoCLemzUcN5FJm8QUH+vtsiDCKG/C9N0HI
- 5lVqiiF+MRpwWDFppee+TQmfQnCbcSdc7mQDIsCRdWirtWoiTXuKtXtcgIloPWti+gfV
- Kw8QSxT9z8p/gem5oG5COX4r0eRFlqBrwtBF22cNzw2zkIyRIN/KVR6SQctlkKlbMnX5 4Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 360jyc2c1f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Jan 2021 04:39:03 -0500
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10B9X4Am038468;
-        Mon, 11 Jan 2021 04:39:03 -0500
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 360jyc2c0k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Jan 2021 04:39:03 -0500
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10B9WrRW025114;
-        Mon, 11 Jan 2021 09:39:01 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04fra.de.ibm.com with ESMTP id 3604h98cpe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Jan 2021 09:39:01 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10B9cw0d29622654
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Jan 2021 09:38:58 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BD7B2AE057;
-        Mon, 11 Jan 2021 09:38:58 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7F566AE056;
-        Mon, 11 Jan 2021 09:38:58 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 11 Jan 2021 09:38:58 +0000 (GMT)
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, Pierre Morel <pmorel@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Viktor Mihajlovski <mihajlov@linux.ibm.com>
-Subject: [RFC 1/1] s390/pci: expose UID checking state in sysfs
-Date:   Mon, 11 Jan 2021 10:38:57 +0100
-Message-Id: <20210111093857.24070-2-schnelle@linux.ibm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210111093857.24070-1-schnelle@linux.ibm.com>
-References: <20210111093857.24070-1-schnelle@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-09_13:2021-01-07,2021-01-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=999 priorityscore=1501 adultscore=0 suspectscore=0
- malwarescore=0 clxscore=1011 mlxscore=0 spamscore=0 lowpriorityscore=0
- bulkscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101110055
+        Mon, 11 Jan 2021 04:39:54 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59514C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 01:39:14 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id r63so16261539ybf.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 01:39:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=TyMDrKK1RYWgdlZ3jYnZItWAg1UbJzYK4Hmay2jpDlA=;
+        b=aPzMLRMYYq7I24fI/bvD1Wfk59O66/Q2VNFYZn9QiJePy2h0I8EUrc85bfIXsnB0sj
+         p1TO8SRDVgFBWqadmSZCAiHSS2AVi3r0HV1hNLEZzkC6atD5Wq2zsp9DyppoNrrjgsf0
+         nQUzh0oDi6qu6s06AFFvP6O5ZOGEiBsb5HhnYomTAO1R84XzqIMvBFgk2xnzHyuxjMDd
+         Trfo7vGUxiPW63wICWvlGS7vsl/kxEOM0BJmN9cUDgEWG5xLutkolDzFFy9LfsM/9K1L
+         qugoChOmSaRVAdTei4Tpe1l58NLR/kGu6f4c2gSABbwESJmeCYrZ7hE62LGeDxmgwvb9
+         CRjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=TyMDrKK1RYWgdlZ3jYnZItWAg1UbJzYK4Hmay2jpDlA=;
+        b=GNUew7caveN6DbbBPoMBDdL8S8ITIRKP4XX8KvmcNaSVH+NAUr/gL1v0cqHTu8ZYu+
+         vMz5cTUFrDcCvH8lVow3VYFhh4JCmG3ZP2EApII2PxAmgMfhiVGEHmbLDpcAXBCAqqBx
+         g20EH6Iq5DJQEW/0DN4OS1KfxH/xYCZiC0VkpD2AyyGw25E9v/alJR7auoaiEX0cOchV
+         uLt7/RtdyPbOJqe4sBxrkttAG8i5r9vL6fAmWt0h+YZj921GhJx9t2A5lZjCDocfJoYR
+         2sVQ7EI74n9+USWHVXooo4Wym8T6rspdNX3FvmkDXL12sfP/dQFPBuIELJOqqHZX0bVG
+         WCug==
+X-Gm-Message-State: AOAM530/oOZbWUiLPwwe+Jw/awhF13EV7KTLyybF4+A2Bq0KR1x3d/rC
+        83KHeLGCiVtcLp17eoae/AgGAmBUD2FUGbBIvL4=
+X-Google-Smtp-Source: ABdhPJw4OyuMQW1KazQNtxdu0gnpEWdSOd8LM7maZfmS8T+WZLpKJgubRKHQqUB4aPRGUHR6rrKQkUNrmQH9y8P1ckY=
+X-Received: by 2002:a25:2d53:: with SMTP id s19mr22943389ybe.188.1610357953589;
+ Mon, 11 Jan 2021 01:39:13 -0800 (PST)
+MIME-Version: 1.0
+Received: by 2002:a25:1bc4:0:0:0:0:0 with HTTP; Mon, 11 Jan 2021 01:39:12
+ -0800 (PST)
+Reply-To: michellegoodman035@gmail.com
+From:   Shayma <shaymamarwan08@gmail.com>
+Date:   Mon, 11 Jan 2021 09:39:12 +0000
+Message-ID: <CA+HOoT2XuNQRSzBYtAyJNoXeKZUR=UFac6Eygu06GWQ_eYBSRg@mail.gmail.com>
+Subject: From Michelle
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We use the UID of a zPCI adapter, or the UID of the function zero if
-there are multiple functions in an adapter, as PCI domain if and only if
-UID Checking is turned on.
-Otherwise we automatically generate domains as devices appear.
-
-The state of UID Checking is thus essential to know if the PCI domain
-will be stable, yet currently there is no way to access this information
-from userspace.
-So let's solve this by showing the state of UID checking as a sysfs
-attribute in /sys/bus/pci/uid_checking
-
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
----
- Documentation/ABI/testing/sysfs-bus-pci | 11 ++++++++
- arch/s390/include/asm/pci.h             |  3 +++
- arch/s390/pci/pci.c                     |  4 +++
- arch/s390/pci/pci_sysfs.c               | 34 +++++++++++++++++++++++++
- 4 files changed, 52 insertions(+)
-
-diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
-index 25c9c39770c6..a174aac0ebb0 100644
---- a/Documentation/ABI/testing/sysfs-bus-pci
-+++ b/Documentation/ABI/testing/sysfs-bus-pci
-@@ -375,3 +375,14 @@ Description:
- 		The value comes from the PCI kernel device state and can be one
- 		of: "unknown", "error", "D0", D1", "D2", "D3hot", "D3cold".
- 		The file is read only.
-+What:		/sys/bus/pci/zpci/uid_checking
-+Date:		December 2020
-+Contact:	Niklas Schnelle <schnelle@linux.ibm.com>
-+Description:
-+		This attribute exposes the global state of UID Checking on
-+		an s390 Linux system. If UID Checking is on this file
-+		contains '1' otherwise '0'. If UID Checking is on the UID of
-+		a zPCI device, or the UID of function zero for a multi-function
-+		device will be used as its PCI Domain number. If UID Checking
-+		is off PCI Domain numbers are generated automatically and
-+		are not stable across reboots.
-diff --git a/arch/s390/include/asm/pci.h b/arch/s390/include/asm/pci.h
-index 212628932ddc..3cfa6cc701ba 100644
---- a/arch/s390/include/asm/pci.h
-+++ b/arch/s390/include/asm/pci.h
-@@ -285,6 +285,9 @@ void zpci_debug_exit_device(struct zpci_dev *);
- /* Error reporting */
- int zpci_report_error(struct pci_dev *, struct zpci_report_error_header *);
- 
-+/* Sysfs Entries */
-+int zpci_sysfs_init(void);
-+
- #ifdef CONFIG_NUMA
- 
- /* Returns the node based on PCI bus */
-diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
-index 41df8fcfddde..c16c93e5f9af 100644
---- a/arch/s390/pci/pci.c
-+++ b/arch/s390/pci/pci.c
-@@ -881,6 +881,10 @@ static int __init pci_base_init(void)
- 	if (rc)
- 		goto out_find;
- 
-+	rc = zpci_sysfs_init();
-+	if (rc)
-+		goto out_find;
-+
- 	s390_pci_initialized = 1;
- 	return 0;
- 
-diff --git a/arch/s390/pci/pci_sysfs.c b/arch/s390/pci/pci_sysfs.c
-index 5c028bee91b9..d00690f73539 100644
---- a/arch/s390/pci/pci_sysfs.c
-+++ b/arch/s390/pci/pci_sysfs.c
-@@ -172,3 +172,37 @@ const struct attribute_group *zpci_attr_groups[] = {
- 	&pfip_attr_group,
- 	NULL,
- };
-+
-+/* Global zPCI attributes */
-+static ssize_t uid_checking_show(struct kobject *kobj,
-+				 struct kobj_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "%i\n", zpci_unique_uid);
-+}
-+
-+static struct kobj_attribute sys_zpci_uid_checking_attr =
-+	__ATTR(uid_checking, 0444, uid_checking_show, NULL);
-+
-+static struct kset *zpci_global_kset;
-+
-+static struct attribute *zpci_attrs_global[] = {
-+	&sys_zpci_uid_checking_attr.attr,
-+	NULL,
-+};
-+
-+static struct attribute_group zpci_attr_group_global = {
-+	.attrs = zpci_attrs_global,
-+};
-+
-+int __init zpci_sysfs_init(void)
-+{
-+	struct kset *pci_bus_kset;
-+
-+	pci_bus_kset = bus_get_kset(&pci_bus_type);
-+
-+	zpci_global_kset = kset_create_and_add("zpci", NULL, &pci_bus_kset->kobj);
-+	if (!zpci_global_kset)
-+		return -ENOMEM;
-+
-+	return sysfs_create_group(&zpci_global_kset->kobj, &zpci_attr_group_global);
-+}
--- 
-2.17.1
-
+Hallo Liebes, bitte hoffe du hast meine Nachricht bekommen
+Ich brauche dringend eine Antwort
+Vielen Dank
+Michelle
