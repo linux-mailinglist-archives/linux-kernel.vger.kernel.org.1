@@ -2,122 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A88DB2F1A82
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F122B2F1A96
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388879AbhAKQJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:09:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40528 "EHLO mail.kernel.org"
+        id S2388669AbhAKQKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:10:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42086 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387962AbhAKQJI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:09:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89CB021D7F;
-        Mon, 11 Jan 2021 16:08:27 +0000 (UTC)
+        id S1728173AbhAKQKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 11:10:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E66C22211;
+        Mon, 11 Jan 2021 16:09:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610381308;
-        bh=5fZnpwgj10vPRw+LiuHoD3+pb12cQ9s/sMY2kXPo4is=;
+        s=korg; t=1610381392;
+        bh=O3KkggcTR993pzuXy38vTCRE06aeOpM/+lPk5MMIqos=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UuDK2KSpROlsOnFjMtQU+xGSNBANbyERFpXjd4JfEirPRtofCeO5W7gzY9Un3exBB
-         wjOozse6h6bmYcV9Ue8vCxqPRWJoNCXaLU52VqIp0BwVnpUktgi33cH/0L56pPZmpQ
-         znrFdVEzKaefhaL3Lu6vIMX1//hdei748FmXqRV4=
-Date:   Mon, 11 Jan 2021 17:09:38 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, moritzf@google.com,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Russ Weight <russell.h.weight@intel.com>,
-        "Gerlach, Matthew" <matthew.gerlach@intel.com>,
-        Sonal Santan <sonal.santan@xilinx.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Richard Gong <richard.gong@intel.com>
-Subject: Re: [PATCH 0/8] FPGA DFL Changes for 5.12
-Message-ID: <X/x4QjGyP8ssYUDI@kroah.com>
-References: <20210107043714.991646-1-mdf@kernel.org>
- <80b29715-aa0a-b2ac-03af-904fc8f8be98@redhat.com>
- <e1d30642-ce85-b9b7-e8b2-5ad4fe6338e5@redhat.com>
- <X/sz6lDq8WFzrRUJ@archbook>
- <95af46d6-d123-f610-2f21-6d6de6f248e9@redhat.com>
- <X/v2xs5Rnfw9F18E@kroah.com>
- <9bc01a73-726f-a979-1246-6ea048961670@redhat.com>
- <X/xmi/jJmDHnV5/N@kroah.com>
- <7923d9dc-c503-5318-6e4f-931f8c13c1be@redhat.com>
+        b=bpbSXEYDSZ190PG7WW6/gt85Hv9QCsCVVmhqoPhOijmIDTOAXbbtbnDoDN9oSSsX3
+         Vszyu7Cus5DRq6L9KTNtf4FaSjANE67aMRkqTObawAPIBtW+zQeLTnFLYr6d4HZCwB
+         Xl0YJtPuuf0G0kXJCtRJtGcPy2z09nrppiKU9Nbo=
+Date:   Mon, 11 Jan 2021 17:11:03 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/145] 5.10.7-rc1 review
+Message-ID: <X/x4lwaZri3jkczr@kroah.com>
+References: <20210111130048.499958175@linuxfoundation.org>
+ <37e4ce34-0779-fee9-4575-051a85b2dbb2@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7923d9dc-c503-5318-6e4f-931f8c13c1be@redhat.com>
+In-Reply-To: <37e4ce34-0779-fee9-4575-051a85b2dbb2@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 07:55:24AM -0800, Tom Rix wrote:
+On Mon, Jan 11, 2021 at 07:15:17AM -0800, Guenter Roeck wrote:
+> On 1/11/21 5:00 AM, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.10.7 release.
+> > There are 145 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Wed, 13 Jan 2021 13:00:19 +0000.
+> > Anything received after that time might be too late.
+> > 
 > 
-> On 1/11/21 6:54 AM, Greg KH wrote:
-> > On Mon, Jan 11, 2021 at 06:40:24AM -0800, Tom Rix wrote:
-> >> On 1/10/21 10:57 PM, Greg KH wrote:
-> >>> On Sun, Jan 10, 2021 at 11:43:54AM -0800, Tom Rix wrote:
-> >>>> On 1/10/21 9:05 AM, Moritz Fischer wrote:
-> >>>>> Tom,
-> >>>>>
-> >>>>> On Sun, Jan 10, 2021 at 07:46:29AM -0800, Tom Rix wrote:
-> >>>>>> On 1/7/21 8:09 AM, Tom Rix wrote:
-> >>>>>>> On 1/6/21 8:37 PM, Moritz Fischer wrote:
-> >>>>>>>> This is a resend of the previous (unfortunately late) patchset of
-> >>>>>>>> changes for FPGA DFL.
-> >>>>>>> Is there something I can do to help ?
-> >>>>>>>
-> >>>>>>> I am paid to look after linux-fpga, so i have plenty of time.
-> >>>>>>>
-> >>>>>>> Some ideas of what i am doing now privately i can do publicly.
-> >>>>>>>
-> >>>>>>> 1. keep linux-fpga sync-ed to greg's branch so linux-fpga is normally in a pullable state.
-> >>>>> Is it not? It currently points to v5.11-rc1. If I start applying patches
-> >>>>> that require the changes that went into Greg's branch I can merge.
-> >>>> I mean the window between when we have staged patches and when they go into Greg's branch.
-> >>>>
-> >>>> We don't have any now, maybe those two trival ones.
-> >>>>
-> >>>> Since Greg's branch moves much faster than ours, our staging branch needs to be rebased regularly until its merge.
-> >>> Ick, no!  NEVER rebase a public branch.  Why does it matter the speed of
-> >>> my branch vs. anyone elses?  Git handles merges very well.
-> >>>
-> >>> Just like Linus's branches move much faster than mine, and I don't
-> >>> rebase my branches, you shouldn't rebase yours.
-> >>>
-> >>> Becides, I'm only taking _PATCHES_ for fpga changes at the moment, no
-> >>> git pulls, so why does it matter at all for any of this?
-> >>>
-> >>> What is the problem you are trying to solve here?
-> >> This 5.12 fpga patchset not making it into 5.11.
-> > Ok, but isn't it the responsibility of the submitter to make sure they
-> > apply properly when sending them out?
-> >
-> >> At some point before the 5.11 window, I tried it on next and it failed to merge.
-> >>
-> >> This points to needing some c/i so it does not happen again.
-> > "again"?  Merges and the like are a totally normal thing and happen all
-> > the time, I still fail to understand what you are trying to "solve" for
-> > here...
+> Building powerpc:ppc6xx_defconfig ... failed
+> --------------
+> Error log:
+> arch/powerpc/kernel/head_book3s_32.S: Assembler messages:
+> arch/powerpc/kernel/head_book3s_32.S:266: Error: unsupported relocation against SPRN_SPRG_SCRATCH2
+> arch/powerpc/kernel/head_book3s_32.S:271: Error: unsupported relocation against SPRN_SPRG_SCRATCH2
+> make[3]: *** [arch/powerpc/kernel/head_book3s_32.o] Error 1
 > 
-> What can I do to help make your merges as easy as possible ?
+> Commit 90cd4bdd2bc0 ("powerpc/32s: Fix RTAS machine check with VMAP stack")
+> is missing some context commits (and at least one of the patches it presumably fixes
+> isn't even v5.10.y in the first place). Looking through Fixes: tags, it seems that ppc
+> support in v5.10.y may be a bit of a mess, at least for 32-bit systems.
 
-I have not had any problems with merges, I've only had "problems"
-rejecting patches for their content.
-
-Try helping out with patch reviews if you want, finding and fixing
-things before I review them is usually a good idea :)
-
-> Does the patchwork infra Moritz was speaking of earlier need fixing help?
-
-No idea, I don't use it.
-
-> Any other things ?
-
-What problems are you trying to solve here?  What's wrong with how this
-subsystem is working that you are feeling needs to be addressed?
-
-confused,
+Thanks, will go drop that one now and push out a -rc2.
 
 greg k-h
