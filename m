@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 852502F138F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:10:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E812F1399
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:11:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731289AbhAKNKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:10:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55534 "EHLO mail.kernel.org"
+        id S1731436AbhAKNLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:11:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730764AbhAKNIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:08:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BA342225E;
-        Mon, 11 Jan 2021 13:07:28 +0000 (UTC)
+        id S1730987AbhAKNKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:10:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DAFB2255F;
+        Mon, 11 Jan 2021 13:10:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370448;
-        bh=ZjdsGTBZOcFa18VX4bHs5tA9QYubn3McMHcu6nFZ+3U=;
+        s=korg; t=1610370636;
+        bh=5igYRM//wsP2dCkuShwXCZoN+YG4ADcFp0CzWco+I50=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iz7wKeikAorj1DrjFyMRTggZOrUXllrDAsRGA9cXBg/mH+QEqh5tNSCWOiAr1BjYg
-         E7QEppTW5wjZHREvDAILtdI37hPCr0ANcm1RkTa0iZUUZniAFi0CfvIM5fd9KTVK75
-         8y04IDsXpQuuXF1ywue0uKIOGXEy8D9NkfGXQ/b4=
+        b=Rybj4UJKlqYHqSjBnnx7EEGkSb4uzCdVrk15Rfy+yIlR+oS2Tlt4BRAGWGDV5MiZE
+         /KjQMjygs22hwLunDPNiOVW8aIerE/1qgYLFwHpv66zkC9iHG/F15/jAi4MMdCbcWx
+         Pr64lGsNW3K8CqgUNbKUU92zzrxpDdKur7CAljsc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Alexey Dobriyan <adobriyan@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 03/77] scsi: ufs: Fix wrong print message in dev_err()
+Subject: [PATCH 5.4 08/92] proc: change ->nlink under proc_subdir_lock
 Date:   Mon, 11 Jan 2021 14:01:12 +0100
-Message-Id: <20210111130036.573671195@linuxfoundation.org>
+Message-Id: <20210111130039.556916907@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,36 +42,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+From: Alexey Dobriyan <adobriyan@gmail.com>
 
-[ Upstream commit 1fa0570002e3f66db9b58c32c60de4183b857a19 ]
+[ Upstream commit e06689bf57017ac022ccf0f2a5071f760821ce0f ]
 
-Change dev_err() print message from "dme-reset" to "dme_enable" in function
-ufshcd_dme_enable().
+Currently gluing PDE into global /proc tree is done under lock, but
+changing ->nlink is not.  Additionally struct proc_dir_entry::nlink is
+not atomic so updates can be lost.
 
-Link: https://lore.kernel.org/r/20201207190137.6858-3-huobean@gmail.com
-Acked-by: Alim Akhtar <alim.akhtar@samsung.com>
-Acked-by: Avri Altman <avri.altman@wdc.com>
-Signed-off-by: Bean Huo <beanhuo@micron.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Link: http://lkml.kernel.org/r/20190925202436.GA17388@avx2
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/proc/generic.c | 31 +++++++++++++++----------------
+ 1 file changed, 15 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 61b1eae42ea85..40f478c4d118f 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -3583,7 +3583,7 @@ static int ufshcd_dme_enable(struct ufs_hba *hba)
- 	ret = ufshcd_send_uic_cmd(hba, &uic_cmd);
- 	if (ret)
- 		dev_err(hba->dev,
--			"dme-reset: error code %d\n", ret);
-+			"dme-enable: error code %d\n", ret);
+diff --git a/fs/proc/generic.c b/fs/proc/generic.c
+index 64e9ee1b129e2..d4f353187d67c 100644
+--- a/fs/proc/generic.c
++++ b/fs/proc/generic.c
+@@ -138,8 +138,12 @@ static int proc_getattr(const struct path *path, struct kstat *stat,
+ {
+ 	struct inode *inode = d_inode(path->dentry);
+ 	struct proc_dir_entry *de = PDE(inode);
+-	if (de && de->nlink)
+-		set_nlink(inode, de->nlink);
++	if (de) {
++		nlink_t nlink = READ_ONCE(de->nlink);
++		if (nlink > 0) {
++			set_nlink(inode, nlink);
++		}
++	}
  
- 	return ret;
+ 	generic_fillattr(inode, stat);
+ 	return 0;
+@@ -362,6 +366,7 @@ struct proc_dir_entry *proc_register(struct proc_dir_entry *dir,
+ 		write_unlock(&proc_subdir_lock);
+ 		goto out_free_inum;
+ 	}
++	dir->nlink++;
+ 	write_unlock(&proc_subdir_lock);
+ 
+ 	return dp;
+@@ -472,10 +477,7 @@ struct proc_dir_entry *proc_mkdir_data(const char *name, umode_t mode,
+ 		ent->data = data;
+ 		ent->proc_fops = &proc_dir_operations;
+ 		ent->proc_iops = &proc_dir_inode_operations;
+-		parent->nlink++;
+ 		ent = proc_register(parent, ent);
+-		if (!ent)
+-			parent->nlink--;
+ 	}
+ 	return ent;
  }
+@@ -505,10 +507,7 @@ struct proc_dir_entry *proc_create_mount_point(const char *name)
+ 		ent->data = NULL;
+ 		ent->proc_fops = NULL;
+ 		ent->proc_iops = NULL;
+-		parent->nlink++;
+ 		ent = proc_register(parent, ent);
+-		if (!ent)
+-			parent->nlink--;
+ 	}
+ 	return ent;
+ }
+@@ -666,8 +665,12 @@ void remove_proc_entry(const char *name, struct proc_dir_entry *parent)
+ 	len = strlen(fn);
+ 
+ 	de = pde_subdir_find(parent, fn, len);
+-	if (de)
++	if (de) {
+ 		rb_erase(&de->subdir_node, &parent->subdir);
++		if (S_ISDIR(de->mode)) {
++			parent->nlink--;
++		}
++	}
+ 	write_unlock(&proc_subdir_lock);
+ 	if (!de) {
+ 		WARN(1, "name '%s'\n", name);
+@@ -676,9 +679,6 @@ void remove_proc_entry(const char *name, struct proc_dir_entry *parent)
+ 
+ 	proc_entry_rundown(de);
+ 
+-	if (S_ISDIR(de->mode))
+-		parent->nlink--;
+-	de->nlink = 0;
+ 	WARN(pde_subdir_first(de),
+ 	     "%s: removing non-empty directory '%s/%s', leaking at least '%s'\n",
+ 	     __func__, de->parent->name, de->name, pde_subdir_first(de)->name);
+@@ -714,13 +714,12 @@ int remove_proc_subtree(const char *name, struct proc_dir_entry *parent)
+ 			de = next;
+ 			continue;
+ 		}
+-		write_unlock(&proc_subdir_lock);
+-
+-		proc_entry_rundown(de);
+ 		next = de->parent;
+ 		if (S_ISDIR(de->mode))
+ 			next->nlink--;
+-		de->nlink = 0;
++		write_unlock(&proc_subdir_lock);
++
++		proc_entry_rundown(de);
+ 		if (de == root)
+ 			break;
+ 		pde_put(de);
 -- 
 2.27.0
 
