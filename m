@@ -2,152 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B312F11BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:46:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99CE32F11BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730026AbhAKLpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:45:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35821 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729792AbhAKLpp (ORCPT
+        id S1729979AbhAKLpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:45:31 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:46477 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729845AbhAKLp3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:45:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610365458;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/Hcdfw5VdpoOwIxyvr0g1FbdByZ5Ha2c5UYqhxzG0vE=;
-        b=MTJlaWcA+IKmjRrznQw5x6Az77b24rw1ML23iogus1llC1EMFQcicb/w3Ejmfsx09Xmr2G
-        yPNHXbuLwsS2EnNGhS6eTIonFCmNhCcb62BG9u6fVIUw2KD/DIJV9bvfydotPRZ9jFyXEl
-        v9mIBx4U9mO64FJ7mGP9bB3aXHWjAYg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-229-PFxPmiI0PCK_U1RyLxwyqQ-1; Mon, 11 Jan 2021 06:44:14 -0500
-X-MC-Unique: PFxPmiI0PCK_U1RyLxwyqQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 11 Jan 2021 06:45:29 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610365506; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=/zAmJ+29rI7Hmfs0HvwvL7kL3/lcUmum7keDkzWEwYk=; b=WYDajSHFp8LLbDmOt0r6MRMadiTk5dgrk7BcV6sTb0wudNhvsqbaGYHa5gIlryhkjEeCjhuS
+ 47GzKb32sH39LjtFLYP3PFC4FlrpF6f2Vo5GWkRebquFVSUB0+ySEXEH1vto7/DPzol/BcRr
+ SmYXXbYZ3z7qqwe0hf4Z20ApJQo=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5ffc3a188fb3cda82f47f5ec (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 11:44:24
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4DC0EC433C6; Mon, 11 Jan 2021 11:44:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4999D801B13;
-        Mon, 11 Jan 2021 11:44:11 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D1E63106D5B9;
-        Mon, 11 Jan 2021 11:44:10 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 10BBiAnB005247;
-        Mon, 11 Jan 2021 06:44:10 -0500
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 10BBi9Af005243;
-        Mon, 11 Jan 2021 06:44:10 -0500
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Mon, 11 Jan 2021 06:44:09 -0500 (EST)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     David Laight <David.Laight@ACULAB.COM>
-cc:     "'Al Viro'" <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Steven Whitehouse <swhiteho@redhat.com>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Wang Jianchao <jianchao.wan9@gmail.com>,
-        "Kani, Toshi" <toshi.kani@hpe.com>,
-        "Norton, Scott J" <scott.norton@hpe.com>,
-        "Tadakamadla, Rajesh" <rajesh.tadakamadla@hpe.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>
-Subject: RE: [RFC v2] nvfs: a filesystem for persistent memory
-In-Reply-To: <c26db2b0ea1a4891a7cbd0363de856d3@AcuMS.aculab.com>
-Message-ID: <alpine.LRH.2.02.2101110641490.4356@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2101061245100.30542@file01.intranet.prod.int.rdu2.redhat.com> <20210110162008.GV3579531@ZenIV.linux.org.uk> <c26db2b0ea1a4891a7cbd0363de856d3@AcuMS.aculab.com>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A0CD0C433CA;
+        Mon, 11 Jan 2021 11:44:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A0CD0C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <objelf@gmail.com>,
+        Wan-Feng Jiang <Wan-Feng.Jiang@mediatek.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Yiwei Chung <yiwei.chung@mediatek.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mt76: fix enum conversion warning
+References: <20201230145824.3203726-1-arnd@kernel.org>
+Date:   Mon, 11 Jan 2021 13:44:16 +0200
+In-Reply-To: <20201230145824.3203726-1-arnd@kernel.org> (Arnd Bergmann's
+        message of "Wed, 30 Dec 2020 15:57:55 +0100")
+Message-ID: <878s8zk8a7.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Arnd Bergmann <arnd@kernel.org> writes:
 
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> A recent patch changed some enum values, but not the type
+> declaration for the assignment:
+>
+> drivers/net/wireless/mediatek/mt76/mt7615/mcu.c:238:9: error: implicit conversion from enumeration type 'enum mt76_mcuq_id' to different enumeration type 'enum mt76_txq_id' [-Werror,-Wenum-conversion]
+>                 qid = MT_MCUQ_WM;
+>                     ~ ^~~~~~~~~~
+> drivers/net/wireless/mediatek/mt76/mt7615/mcu.c:240:9: error: implicit conversion from enumeration type 'enum mt76_mcuq_id' to different enumeration type 'enum mt76_txq_id' [-Werror,-Wenum-conversion]
+>                 qid = MT_MCUQ_FWDL;
+>                     ~ ^~~~~~~~~~~~
+>
+> Change the type to match again.
+>
+> Fixes: e637763b606b ("mt76: move mcu queues to mt76_dev q_mcu array")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-On Mon, 11 Jan 2021, David Laight wrote:
+Nathan submitted a similar (but not identical) patch:
 
-> From: Al Viro <viro@ftp.linux.org.uk> On Behalf Of Al Viro
-> > Sent: 10 January 2021 16:20
-> > 
-> > On Thu, Jan 07, 2021 at 08:15:41AM -0500, Mikulas Patocka wrote:
-> > > Hi
-> > >
-> > > I announce a new version of NVFS - a filesystem for persistent memory.
-> > > 	http://people.redhat.com/~mpatocka/nvfs/
-> > Utilities, AFAICS
-> > 
-> > > 	git://leontynka.twibright.com/nvfs.git
-> > Seems to hang on git pull at the moment...  Do you have it anywhere else?
-> > 
-> > > I found out that on NVFS, reading a file with the read method has 10%
-> > > better performance than the read_iter method. The benchmark just reads the
-> > > same 4k page over and over again - and the cost of creating and parsing
-> > > the kiocb and iov_iter structures is just that high.
-> > 
-> > Apples and oranges...  What happens if you take
-> > 
-> > ssize_t read_iter_locked(struct file *file, struct iov_iter *to, loff_t *ppos)
-> > {
-> > 	struct inode *inode = file_inode(file);
-> > 	struct nvfs_memory_inode *nmi = i_to_nmi(inode);
-> > 	struct nvfs_superblock *nvs = inode->i_sb->s_fs_info;
-> > 	ssize_t total = 0;
-> > 	loff_t pos = *ppos;
-> > 	int r;
-> > 	int shift = nvs->log2_page_size;
-> > 	size_t i_size;
-> > 
-> > 	i_size = inode->i_size;
-> > 	if (pos >= i_size)
-> > 		return 0;
-> > 	iov_iter_truncate(to, i_size - pos);
-> > 
-> > 	while (iov_iter_count(to)) {
-> > 		void *blk, *ptr;
-> > 		size_t page_mask = (1UL << shift) - 1;
-> > 		unsigned page_offset = pos & page_mask;
-> > 		unsigned prealloc = (iov_iter_count(to) + page_mask) >> shift;
-> > 		unsigned size;
-> > 
-> > 		blk = nvfs_bmap(nmi, pos >> shift, &prealloc, NULL, NULL, NULL);
-> > 		if (unlikely(IS_ERR(blk))) {
-> > 			r = PTR_ERR(blk);
-> > 			goto ret_r;
-> > 		}
-> > 		size = ((size_t)prealloc << shift) - page_offset;
-> > 		ptr = blk + page_offset;
-> > 		if (unlikely(!blk)) {
-> > 			size = min(size, (unsigned)PAGE_SIZE);
-> > 			ptr = empty_zero_page;
-> > 		}
-> > 		size = copy_to_iter(to, ptr, size);
-> > 		if (unlikely(!size)) {
-> > 			r = -EFAULT;
-> > 			goto ret_r;
-> > 		}
-> > 
-> > 		pos += size;
-> > 		total += size;
-> > 	} while (iov_iter_count(to));
-> 
-> That isn't the best formed loop!
-> 
-> 	David
+https://patchwork.kernel.org/project/linux-wireless/patch/20201229211548.1348077-1-natechancellor@gmail.com/
 
-I removed the second "while" statement and fixed the arguments to 
-copy_to_iter - other than that, Al's function works.
+As Nathan was first we take that one.
 
-Mikuklas
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
