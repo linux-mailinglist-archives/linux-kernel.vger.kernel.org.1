@@ -2,71 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82D22F1543
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:38:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D691B2F155F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:39:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733097AbhAKNhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:37:39 -0500
-Received: from mail-ed1-f43.google.com ([209.85.208.43]:46905 "EHLO
-        mail-ed1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733085AbhAKNhd (ORCPT
+        id S1731604AbhAKNjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:39:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51897 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731690AbhAKNiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:37:33 -0500
-Received: by mail-ed1-f43.google.com with SMTP id v26so9855865eds.13;
-        Mon, 11 Jan 2021 05:37:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/p6z+cfcMRRJbK5oOjot9uxJkXRvECRXp10L4gMtvXc=;
-        b=t9SWUkr2snnbTOMhPq5/sNMK7UYb/RZAFgG1huDVY6zsYmdPBxeQxoCqyGryjg1qZQ
-         9eUPGfw9hz8wzBoNZ36YOzRMiDRWEgSNE6wd5kPIvqXCk9P54TxdskAZSkivcmzeXZ23
-         E5Gu0rEtJoatUHTWKzx2GKf4xhiEtRZ3vnVwkUX6e2rlnncAw7jZVmP3adYbWnm2ZRBO
-         yE29GqqC5aRJMUtLqX4/RK9SvfvoGOkLsPfNKOLKfVR9FWBGIcwDXz9dW+7Bz4EFGKeX
-         c0dZJkmRvK7LQXN5Dxs4rxuvAs/es3JSTN4zRLCcBYnU6TnFz9l79lLMvujqDrCxuopn
-         siEA==
-X-Gm-Message-State: AOAM532CAN73poM9OkPq9vuHTTLGm4XbjhSOfsAQ5d8tacA229j9Kj7u
-        JO4Q1Tcd2PmOgDc2t/u9mAY=
-X-Google-Smtp-Source: ABdhPJzJ/xljqZbCR66lwjkB+vNgn2WYSOBgA0dFm0ZVg0NR3NnvbhnYVI4K+wr8HnzKUlSV8sB0dQ==
-X-Received: by 2002:a50:abc6:: with SMTP id u64mr14326229edc.21.1610372211038;
-        Mon, 11 Jan 2021 05:36:51 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id c14sm7773877edy.56.2021.01.11.05.36.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 05:36:49 -0800 (PST)
-Date:   Mon, 11 Jan 2021 14:36:48 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-rtc@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH v4 3/3] rtc: s5m: use devm_i2c_new_dummy_device()
-Message-ID: <20210111133648.GC34341@kozik-lap>
-References: <20210111124027.21586-1-brgl@bgdev.pl>
- <20210111124027.21586-4-brgl@bgdev.pl>
+        Mon, 11 Jan 2021 08:38:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610372248;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=z9Ytc0z65ta6VBHkGYAtmWB3CyrCaTNiz9kZPtd9Uis=;
+        b=VuWBMiXuaXHH/UzujDs85/x51SZwBDiqfv2HkEXgkWqiYCnc6MlSVm28+DCjBATQRkpexo
+        1BqouaJjBmQdmLeyuu+QXdYPTg6A1hLekVFHmCIfpgeMRl/Pna0Hy1pQIA+DICLRTWsASj
+        eCtq9BslSeKxy886muOxZ2GifaJZWzU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-528-2Qg1gw1kP32avUrGJwu4QQ-1; Mon, 11 Jan 2021 08:37:24 -0500
+X-MC-Unique: 2Qg1gw1kP32avUrGJwu4QQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A2B4835B68;
+        Mon, 11 Jan 2021 13:37:22 +0000 (UTC)
+Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 81BED50C0D;
+        Mon, 11 Jan 2021 13:37:21 +0000 (UTC)
+Date:   Mon, 11 Jan 2021 07:37:19 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] gcc-plugins: fix gcc 11 indigestion with plugins...
+Message-ID: <20210111133719.w53ad4xnw5yyi2lf@treble>
+References: <82487.1609006918@turing-police>
+ <160997457204.3687425.15622431721220616573.b4-ty@chromium.org>
+ <CAMuHMdU1YSODgh_T5RxqUqorveAQiy_-gQbF_SwMEj7gvG25qw@mail.gmail.com>
+ <122278.1610362619@turing-police>
+ <CAMuHMdXR09QdSiziQQ_XuPcJPOca_+mK1jYYHj3VsP_eCu_KbA@mail.gmail.com>
+ <128149.1610368277@turing-police>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210111124027.21586-4-brgl@bgdev.pl>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <128149.1610368277@turing-police>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 01:40:27PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Mon, Jan 11, 2021 at 07:31:17AM -0500, Valdis Klētnieks wrote:
+> On Mon, 11 Jan 2021 05:56:59 -0500, I said:
 > 
-> Use the managed variant of i2c_new_dummy_device() to shrink code and
-> remove the goto label. We can drop the remove callback now too.
+> > > It's probably related. I'm just having a hard time understanding why 4.9 and 5.4
+> > > whine about the lack of a space, while 8.3 and 11 didn't complain...
 > 
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> ---
->  drivers/rtc/rtc-s5m.c | 31 +++++++------------------------
->  1 file changed, 7 insertions(+), 24 deletions(-)
+> So after more digging, at least some clarity has surfaced.
+> 
+> It looks like it's not a kernel source tree issue, it's a g++ issue fixed in g++ 6 and later.
+> 
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=69959
+> 
+> And it looks like there was an intent to backport it to 4.9 and 5.4:
+> https://gcc.gnu.org/legacy-ml/gcc-patches/2016-02/msg01409.html
+> 
+> The bugtracker doesn't show an equivalent for 69959 being closed against 4.9.x or 5.[56],
+> 
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63254 has a patch for one of the
+> gcc-supplied files that tosses the warning, but that way lies madness...
+> 
+> Not sure what we want to do here - the main alternatives I see are:
+> 
+> Tell people still using 4.9/5.4 to either live with the warning or upgrade to 6 or later
+> 
+> Make the flag a variable and pass either -std=gnu++98 or -std=gnu++11
+> depending on the output of 'g++ --version'
+> 
+> What say the peanut gallery?
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+I think putting the flag in a variable (based on call cc-ifversion)
+should be easy enough, then we can put this little saga behind us and
+pretend it never happened :-)
 
-Best regards,
-Krzysztof
+-- 
+Josh
+
