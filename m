@@ -2,111 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB042F10A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:57:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 217722F10C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:05:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729529AbhAKK5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:57:55 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:11378 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbhAKK5y (ORCPT
+        id S1729628AbhAKLFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:05:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728242AbhAKLFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:57:54 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DDrH06SfGz7Sq5;
-        Mon, 11 Jan 2021 18:56:12 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Mon, 11 Jan 2021
- 18:57:05 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Ye Bin <yebin10@huawei.com>
-Subject: [PATCH] scsi: scsi_dh_rdac: Avoid crash during rdac_bus_attach
-Date:   Mon, 11 Jan 2021 19:03:34 +0800
-Message-ID: <20210111110334.3495674-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        Mon, 11 Jan 2021 06:05:16 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1F9C06179F;
+        Mon, 11 Jan 2021 03:04:36 -0800 (PST)
+Received: by ozlabs.org (Postfix, from userid 1007)
+        id 4DDrSc72Mcz9sjD; Mon, 11 Jan 2021 22:04:32 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=gibson.dropbear.id.au; s=201602; t=1610363072;
+        bh=QjrIJsy+sDTV8RqXTwVI4hjuHj+8s1FwQRQGdWnyhLY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IT2R5xfnNEn4LD7qbZZRnHCkajV+dxR1J/c6bSj4gX8I5OrDOeS4KAfEAypzwFWqo
+         aaHnGl9NBIjCKjxo2poXyVeU3GbxLQtKT2rGP2v3CmUtmUvpJDtEX8m545HEoK3m/1
+         LfNdbkR8UHiy/UD7wD2GUbPsQkLtY62gyrT11dTQ=
+Date:   Mon, 11 Jan 2021 21:56:11 +1100
+From:   David Gibson <david@gibson.dropbear.id.au>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     devicetree-compiler@vger.kernel.org,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org
+Subject: Re: [PATCH] dtc: Allow overlays to have .dtbo extension
+Message-ID: <20210111105611.GD3051@yekko.fritz.box>
+References: <30fd0e5f2156665c713cf191c5fea9a5548360c0.1609926856.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Km1U/tdNT/EmXiR1"
+Content-Disposition: inline
+In-Reply-To: <30fd0e5f2156665c713cf191c5fea9a5548360c0.1609926856.git.viresh.kumar@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We get follow BUG_ON when rdac scan:
-[595952.944297] kernel BUG at drivers/scsi/device_handler/scsi_dh_rdac.c:427!
-[595952.951143] Internal error: Oops - BUG: 0 [#1] SMP
-......
-[595953.251065] Call trace:
-[595953.259054]  check_ownership+0xb0/0x118
-[595953.269794]  rdac_bus_attach+0x1f0/0x4b0
-[595953.273787]  scsi_dh_handler_attach+0x3c/0xe8
-[595953.278211]  scsi_dh_add_device+0xc4/0xe8
-[595953.282291]  scsi_sysfs_add_sdev+0x8c/0x2a8
-[595953.286544]  scsi_probe_and_add_lun+0x9fc/0xd00
-[595953.291142]  __scsi_scan_target+0x598/0x630
-[595953.295395]  scsi_scan_target+0x120/0x130
-[595953.299481]  fc_user_scan+0x1a0/0x1c0 [scsi_transport_fc]
-[595953.304944]  store_scan+0xb0/0x108
-[595953.308420]  dev_attr_store+0x44/0x60
-[595953.312160]  sysfs_kf_write+0x58/0x80
-[595953.315893]  kernfs_fop_write+0xe8/0x1f0
-[595953.319888]  __vfs_write+0x60/0x190
-[595953.323448]  vfs_write+0xac/0x1c0
-[595953.326836]  ksys_write+0x74/0xf0
-[595953.330221]  __arm64_sys_write+0x24/0x30
 
-BUG_ON code is in check_ownership:
-                list_for_each_entry_rcu(tmp, &h->ctlr->dh_list, node) {
-                        /* h->sdev should always be valid */
-                        BUG_ON(!tmp->sdev);
-                        tmp->sdev->access_state = access_state;
-                }
-rdac_bus_attach
-	initialize_controller
-		list_add_rcu(&h->node, &h->ctlr->dh_list);
-		h->sdev = sdev;
-rdac_bus_detach
-	list_del_rcu(&h->node);
-	h->sdev = NULL;
+--Km1U/tdNT/EmXiR1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-There is race runing rdac_bus_attach concurrently, maybe we access rdac_dh_data
-but h->sdev has not been set.
+On Wed, Jan 06, 2021 at 03:26:08PM +0530, Viresh Kumar wrote:
+> Allow the overlays to have .dtbo extension instead of just .dtb. This
+> allows them to be identified easily by tools as well as humans.
+>=20
+> Allow the dtbo outform in dtc.c for the same.
+>=20
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- drivers/scsi/device_handler/scsi_dh_rdac.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Seems reasonable.  Applied.
 
-diff --git a/drivers/scsi/device_handler/scsi_dh_rdac.c b/drivers/scsi/device_handler/scsi_dh_rdac.c
-index 5efc959493ec..85a71bafaea7 100644
---- a/drivers/scsi/device_handler/scsi_dh_rdac.c
-+++ b/drivers/scsi/device_handler/scsi_dh_rdac.c
-@@ -453,8 +453,8 @@ static int initialize_controller(struct scsi_device *sdev,
- 		if (!h->ctlr)
- 			err = SCSI_DH_RES_TEMP_UNAVAIL;
- 		else {
--			list_add_rcu(&h->node, &h->ctlr->dh_list);
- 			h->sdev = sdev;
-+			list_add_rcu(&h->node, &h->ctlr->dh_list);
- 		}
- 		spin_unlock(&list_lock);
- 		err = SCSI_DH_OK;
-@@ -778,11 +778,11 @@ static void rdac_bus_detach( struct scsi_device *sdev )
- 	spin_lock(&list_lock);
- 	if (h->ctlr) {
- 		list_del_rcu(&h->node);
--		h->sdev = NULL;
- 		kref_put(&h->ctlr->kref, release_controller);
- 	}
- 	spin_unlock(&list_lock);
- 	sdev->handler_data = NULL;
-+	synchronize_rcu();
- 	kfree(h);
- }
- 
--- 
-2.25.4
+>=20
+> ---
+> Hello,
+>=20
+> This was earlier posted for the Linux Kernel and here is the thread
+> where Rob gave his feedback:
+>=20
+> https://lore.kernel.org/lkml/CAL_Jsq+0dL=3DLHo8r9mY_weBP_bQ97UOBnt596J3Jo=
+VHwGNinHA@mail.gmail.com/
+> ---
+>  dtc.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>=20
+> diff --git a/dtc.c b/dtc.c
+> index bdb3f5945699..838c5df96c00 100644
+> --- a/dtc.c
+> +++ b/dtc.c
+> @@ -122,6 +122,8 @@ static const char *guess_type_by_name(const char *fna=
+me, const char *fallback)
+>  		return "dts";
+>  	if (!strcasecmp(s, ".yaml"))
+>  		return "yaml";
+> +	if (!strcasecmp(s, ".dtbo"))
+> +		return "dtb";
+>  	if (!strcasecmp(s, ".dtb"))
+>  		return "dtb";
+>  	return fallback;
+> @@ -357,6 +359,8 @@ int main(int argc, char *argv[])
+>  #endif
+>  	} else if (streq(outform, "dtb")) {
+>  		dt_to_blob(outf, dti, outversion);
+> +	} else if (streq(outform, "dtbo")) {
+> +		dt_to_blob(outf, dti, outversion);
+>  	} else if (streq(outform, "asm")) {
+>  		dt_to_asm(outf, dti, outversion);
+>  	} else if (streq(outform, "null")) {
 
+--=20
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
+
+--Km1U/tdNT/EmXiR1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEdfRlhq5hpmzETofcbDjKyiDZs5IFAl/8LskACgkQbDjKyiDZ
+s5LJRxAAyZuKDfckgaD4VT7+dn1SApdLNnYU/KlgjI4dU/PdBoTJefdZw0oncDn0
+dTk1LawxDTmNpJUXR/Q587Y7aFWqYrVhc5Xb4SGKhCCH/MsEOYHKrgh3N2ffE1JG
+KnZC6Cvze8pEzIZxn/Umqo90GRr561i1G0n+H8fZsgwfbVAR0j953Np6LJsfJUVn
+9a6tRPuwPLR1IHZuNdd6aFa5N/XYSALmKr3CPHeuaE1BFfRUXdIaF7JTnZM3xMlw
+/3Bc23x7BKlOml0epR9zdG4HHYRNdXCyrAzSdE5HonBiuRfTI2oZ5r+nb5hUQAP1
+57aPfub2zrsgQMTxKQs6YnCsOyBLJHJaqzGy+DS1Ki1sH3pdbEi56TDe82oZeoGh
+1/bEoRGx16gv9CatY63wyM7E31Du3l7XJC9lR/NwITuxMcVr/ywyKzrkw235KcA7
+yjnJz5+fqCTHhMZ0VatGeeSuBzKAUhsBeyc3FU9EGhLB+hS2BXLwjuti37G+0wd3
+38u5WWF/HVewxsFatLSQ1+Ivn8LDOHjMli/UUloYKuS6UzTYJddYsT5HL/sI6qO1
+Ie1KYlnObcxXrMqwRftBO7ife9pfygQna+cBX6xbBFWM0+WgUYbvAwh3Usf0CTEH
+nVFSURLCy3sALfkBd5S8cujqJq27//01JF1gHONWtNdMpVg1Co0=
+=riIS
+-----END PGP SIGNATURE-----
+
+--Km1U/tdNT/EmXiR1--
