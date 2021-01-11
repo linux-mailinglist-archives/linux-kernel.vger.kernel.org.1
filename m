@@ -2,189 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 972E32F0AD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 02:38:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 643D82F0AD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 02:40:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727100AbhAKBiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 20:38:17 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:39379 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726533AbhAKBiP (ORCPT
+        id S1727106AbhAKBjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 20:39:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726472AbhAKBjw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 20:38:15 -0500
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210111013732epoutp048898a54a42a7951c7e3f58cadfd882d0~ZCb3D6iY23017030170epoutp04Z
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 01:37:32 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210111013732epoutp048898a54a42a7951c7e3f58cadfd882d0~ZCb3D6iY23017030170epoutp04Z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1610329052;
-        bh=k7uOJKC9V/GZ9lXL4zRTJOQEE5ZaazD70AM/Qkn6vVM=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=oeTkwfdgT0/Kx6D1yIBzQzn7A+cPxCe5o2VjzNUurArrfowNypxcKlEDq2TlKI8Qf
-         RzP4/Fvl2VwSZaTV2wyJAU0oX9+pp6EuRxKWwKadCb3vzd3dJx19ylgz/2GNTrWLdl
-         RQuC0EOcC1lyPN/RN19C/M5y59uXBDA1RIxIX+c4=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20210111013731epcas2p42fe3fabda1b2045649a17e988dc5e6f2~ZCb2hnVOy0557805578epcas2p4B;
-        Mon, 11 Jan 2021 01:37:31 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.190]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4DDbtK6gsWz4x9QC; Mon, 11 Jan
-        2021 01:37:29 +0000 (GMT)
-X-AuditID: b6c32a48-4f9ff7000000cd1f-9c-5ffbabd69d73
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        32.83.52511.6DBABFF5; Mon, 11 Jan 2021 10:37:27 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH v2] ext4: Change list_for_each* to list_for_each_entry*
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     harshad shirwadkar <harshadshirwadkar@gmail.com>,
-        "tytso@mit.edu" <tytso@mit.edu>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        Daejun Park <daejun7.park@samsung.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210111013726epcms2p4579ae56040d7043db785bf0d0a785dc7@epcms2p4>
-Date:   Mon, 11 Jan 2021 10:37:26 +0900
-X-CMS-MailID: 20210111013726epcms2p4579ae56040d7043db785bf0d0a785dc7
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHKsWRmVeSWpSXmKPExsWy7bCmqe711b/jDc70MVt8/dLBYrHqQbjF
-        ysYWJouZ8+6wWVzeNYfNorXnJ7sDm0fL5nKPnbPusns0nTnK7NG3ZRWjx+dNcgGsUTk2GamJ
-        KalFCql5yfkpmXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUD7lRTKEnNKgUIB
-        icXFSvp2NkX5pSWpChn5xSW2SqkFKTkFhoYFesWJucWleel6yfm5VoYGBkamQJUJORl9O+Yw
-        FlyRq7j67xhLA+MVyS5GTg4JAROJR+unM3YxcnEICexglFizfBV7FyMHB6+AoMTfHcIgNcIC
-        7hJTHm1gBbGFBJQk1l+cxQ4R15O49XANI4jNJqAjMf3EfbC4CMicz5ODQWxmgTqJLQt2skHs
-        4pWY0f6UBcKWlti+fCsjhK0h8WNZLzOELSpxc/Vbdhj7/bH5UDUiEq33zkLVCEo8+LkbKi4p
-        cWz3ByYIu15i651fYL9ICPQwShzeeYsVIqEvca1jIwvEX74Sly5JgYRZBFQlLh0+AtXrInF1
-        0Q5WiJvlJba/ncMMUs4soCmxfpc+iCkhoCxx5BYLRAWfRMfhv+wwX+2Y9wRqiprEup/rmSDK
-        ZSRuzYM60kOi9/13aAAGSsxbsoR5AqPCLEQwz0KydhbC2gWMzKsYxVILinPTU4uNCkyQY3YT
-        IzghannsYJz99oPeIUYmDsZDjBIczEoivAt3/YgX4k1JrKxKLcqPLyrNSS0+xGgK9PBEZinR
-        5HxgSs4riTc0NTIzM7A0tTA1M7JQEuctMngQLySQnliSmp2aWpBaBNPHxMEp1cCUVm0gwrP6
-        YsvF98ohykUOlY8rys4qvJE68e72y5q1S0X00he7snbkOLLtPF3+Ry9VdyJL7bTAPVfNSteY
-        zLKe1lSv7Sawyzf/nmztWwG9V/FRmZlzC/a5bvTP8Y82vD1rafjavvn1ARM2ns741pyzwSZQ
-        +PAr39KNkxapud+8nXBXacLbD5tLdFa8iDsTeLY1wunv89B/UUk7cvYafa8RFfV7UuLOPieB
-        S19jffH2lStKcldJPLi9ufqw8Ybv7A2/nQ/bN7ed3vW1e/m5+geG/uzu81pXNYYfurnsn4uj
-        PUPCmaiG558NNK6fkA2YW8JkO/vxBE3HSo/Iy4c+t/HxPXe9cu6Ze/HCy8/ulcxXYinOSDTU
-        Yi4qTgQAqjy4eBEEAAA=
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210111013726epcms2p4579ae56040d7043db785bf0d0a785dc7
-References: <CGME20210111013726epcms2p4579ae56040d7043db785bf0d0a785dc7@epcms2p4>
+        Sun, 10 Jan 2021 20:39:52 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C767FC061786
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 17:39:11 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id b64so13415644qkc.12
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 17:39:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YSn5Y5uJK/+IyEV47xmLezdCxCclHi6QEB/FGHKgcuI=;
+        b=FD/3lTV2zarQtOPn6hW/jXzvj0xl9hms0lH1ySJYa1pO5xf7rOMotgjDJz+EEBWkhp
+         ihzEHyRt90AGqJN3n5/VV/pYomoQCT+rWOSn+AwBAhRgWgYXNk3rJfeDBnItZZlQ0DD8
+         baFQ3gXzvBS01gG9/a+Dd9gpVeftZQSB8D8b0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YSn5Y5uJK/+IyEV47xmLezdCxCclHi6QEB/FGHKgcuI=;
+        b=q+nFbI0LXIn/FMofH1+roOdtwi4B8niHaNrP3mzjXf4MjscDQ0loj8bd6v/D+9I+PP
+         LlG/3bkGapWh8ORJ+EK+YHj5gKLp8wZ1mmo8T9XbZgl78OPwEXCZWqRENi40ZAYYZNpR
+         dO9ljXbU5/9OauQoxYIHWbLmlLw09ZwAgS7DexihKasOUvoYc/pBHijWP1hiZvER8uFB
+         edDYigHVL0PVA1Pas4QB/mn8M01KgvbwX3g9sSZoMnfNy1FtUZ/y68qld81k+fH9zLgu
+         2ctf0sO0xHTios4IG2ffaLsBCyKJweJVCC4ttte4PPTXLXofxLSP68+O8IQmdG8FW0My
+         gmDg==
+X-Gm-Message-State: AOAM533S+Hv/IcLLiAw/nIDRzJiziBPxLBeE7BPCACtN1iQ5m4Z2HH4M
+        8BRd2NxgMjo7JXyADNQ5mcKbpcu1+0vKpza/rT4Urg==
+X-Google-Smtp-Source: ABdhPJyYdF0HiEVfal7e5Z8TGQ1m9QShz3O/ZWAm0igXEtdPK1D+aDQo9mmpwOEHoNE1FLGcnhJ9M3gdAxVO0GqiIYA=
+X-Received: by 2002:a05:620a:2009:: with SMTP id c9mr14472866qka.159.1610329150899;
+ Sun, 10 Jan 2021 17:39:10 -0800 (PST)
+MIME-Version: 1.0
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Mon, 11 Jan 2021 10:39:00 +0900
+Message-ID: <CAFr9PX=BV1YFcO_GQWsW3XEo8nndjUwArzW5Fg1fnWzt8fiwGw@mail.gmail.com>
+Subject: Re: Old platforms: bring out your dead
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Mark Salter <msalter@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the fast_commit.c, list_for_each* + list_entry can be changed to
-list_for_each_entry*. It reduces number of variables and lines.
+Hi Arnd,
 
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
----
- fs/ext4/fast_commit.c | 29 +++++++++++------------------
- 1 file changed, 11 insertions(+), 18 deletions(-)
+On Sat, 9 Jan 2021 at 07:56, Arnd Bergmann <arnd@kernel.org> wrote:
+> * 68000/68328 (Dragonball): these are less capable than the
+>   68020+ or the Coldfire MCF5xxx line and similar to the 68360
+>   that was removed in 2016.
 
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 4fcc21c25e79..b184cc2567fc 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -915,13 +915,11 @@ static int ext4_fc_submit_inode_data_all(journal_t *journal)
- 	struct super_block *sb = (struct super_block *)(journal->j_private);
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_inode_info *ei;
--	struct list_head *pos;
- 	int ret = 0;
- 
- 	spin_lock(&sbi->s_fc_lock);
- 	ext4_set_mount_flag(sb, EXT4_MF_FC_COMMITTING);
--	list_for_each(pos, &sbi->s_fc_q[FC_Q_MAIN]) {
--		ei = list_entry(pos, struct ext4_inode_info, i_fc_list);
-+	list_for_each_entry(ei, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
- 		ext4_set_inode_state(&ei->vfs_inode, EXT4_STATE_FC_COMMITTING);
- 		while (atomic_read(&ei->i_fc_updates)) {
- 			DEFINE_WAIT(wait);
-@@ -978,17 +976,15 @@ __releases(&sbi->s_fc_lock)
- {
- 	struct super_block *sb = (struct super_block *)(journal->j_private);
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
--	struct ext4_fc_dentry_update *fc_dentry;
-+	struct ext4_fc_dentry_update *fc_dentry, *fc_dentry_n;
- 	struct inode *inode;
--	struct list_head *pos, *n, *fcd_pos, *fcd_n;
--	struct ext4_inode_info *ei;
-+	struct ext4_inode_info *ei, *ei_n;
- 	int ret;
- 
- 	if (list_empty(&sbi->s_fc_dentry_q[FC_Q_MAIN]))
- 		return 0;
--	list_for_each_safe(fcd_pos, fcd_n, &sbi->s_fc_dentry_q[FC_Q_MAIN]) {
--		fc_dentry = list_entry(fcd_pos, struct ext4_fc_dentry_update,
--					fcd_list);
-+	list_for_each_entry_safe(fc_dentry, fc_dentry_n,
-+				 &sbi->s_fc_dentry_q[FC_Q_MAIN], fcd_list) {
- 		if (fc_dentry->fcd_op != EXT4_FC_TAG_CREAT) {
- 			spin_unlock(&sbi->s_fc_lock);
- 			if (!ext4_fc_add_dentry_tlv(
-@@ -1004,8 +1000,8 @@ __releases(&sbi->s_fc_lock)
- 		}
- 
- 		inode = NULL;
--		list_for_each_safe(pos, n, &sbi->s_fc_q[FC_Q_MAIN]) {
--			ei = list_entry(pos, struct ext4_inode_info, i_fc_list);
-+		list_for_each_entry_safe(ei, ei_n, &sbi->s_fc_q[FC_Q_MAIN],
-+					 i_fc_list) {
- 			if (ei->vfs_inode.i_ino == fc_dentry->fcd_ino) {
- 				inode = &ei->vfs_inode;
- 				break;
-@@ -1057,7 +1053,6 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_inode_info *iter;
- 	struct ext4_fc_head head;
--	struct list_head *pos;
- 	struct inode *inode;
- 	struct blk_plug plug;
- 	int ret = 0;
-@@ -1099,8 +1094,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 		goto out;
- 	}
- 
--	list_for_each(pos, &sbi->s_fc_q[FC_Q_MAIN]) {
--		iter = list_entry(pos, struct ext4_inode_info, i_fc_list);
-+	list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
- 		inode = &iter->vfs_inode;
- 		if (!ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING))
- 			continue;
-@@ -1226,9 +1220,8 @@ static void ext4_fc_cleanup(journal_t *journal, int full)
- {
- 	struct super_block *sb = journal->j_private;
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
--	struct ext4_inode_info *iter;
-+	struct ext4_inode_info *iter, *iter_n;
- 	struct ext4_fc_dentry_update *fc_dentry;
--	struct list_head *pos, *n;
- 
- 	if (full && sbi->s_fc_bh)
- 		sbi->s_fc_bh = NULL;
-@@ -1236,8 +1229,8 @@ static void ext4_fc_cleanup(journal_t *journal, int full)
- 	jbd2_fc_release_bufs(journal);
- 
- 	spin_lock(&sbi->s_fc_lock);
--	list_for_each_safe(pos, n, &sbi->s_fc_q[FC_Q_MAIN]) {
--		iter = list_entry(pos, struct ext4_inode_info, i_fc_list);
-+	list_for_each_entry_safe(iter, iter_n, &sbi->s_fc_q[FC_Q_MAIN],
-+				 i_fc_list) {
- 		list_del_init(&iter->i_fc_list);
- 		ext4_clear_inode_state(&iter->vfs_inode,
- 				       EXT4_STATE_FC_COMMITTING);
--- 
-2.25.1
+I have some patches for the DragonBall series to enable SPI etc there,
+some patches to support the SuperVZ variant, some tools to upload
+Linux via the integrated serial bootloader.
+The DragonBall is probably what anyone that wants to build a 68K retro
+computer should use as the DRAM controller is integrated and it can
+access 32MB of SDRAM.
+I haven't tested it recently but it should still work and I have
+hardware and I'm willing to look after it if no one else wants to.
 
+Thanks,
+
+Daniel
