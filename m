@@ -2,82 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E2D2F1B8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:54:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A2E2F1B8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:53:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389146AbhAKQxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:53:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47958 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729070AbhAKQxv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:53:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610383945;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TT5nmDWi6LkHgnWEhMxL8P9sU/ossqA0nVC3Jti0BDE=;
-        b=apfshiNMxc0gfCIjtcDl3lSaXoTdl8CHekzty9p4Gw4xpk8a7/xP7lf+ECXa7yJ7U1Yizs
-        j3Tu+Bt7e21WzvS0IOsLriZAxpDiR9sXdlB/v90sEjSFKu0c5V0b0k8Vy1wzGMp9+fUN6O
-        Hz2d7onIOdR6ufQvRI/f0BP9BmWJMt4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-360-6bMbofalNa2CmOJ9E8mIOw-1; Mon, 11 Jan 2021 11:52:23 -0500
-X-MC-Unique: 6bMbofalNa2CmOJ9E8mIOw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F158418C89C4;
-        Mon, 11 Jan 2021 16:52:21 +0000 (UTC)
-Received: from [10.36.115.103] (ovpn-115-103.ams2.redhat.com [10.36.115.103])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 76E651899A;
-        Mon, 11 Jan 2021 16:52:20 +0000 (UTC)
-Subject: Re: [PATCH 1/5] mm: Introduce ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
-To:     Oscar Salvador <osalvador@suse.de>, akpm@linux-foundation.org
-Cc:     mhocko@kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, vbabka@suse.cz, pasha.tatashin@soleen.com
-References: <20201217130758.11565-1-osalvador@suse.de>
- <20201217130758.11565-2-osalvador@suse.de>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <21932014-3027-8ad9-2140-f63500c641d7@redhat.com>
-Date:   Mon, 11 Jan 2021 17:52:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <20201217130758.11565-2-osalvador@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        id S2389125AbhAKQxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:53:41 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:47492 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389086AbhAKQxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 11:53:41 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DF0BS3lSXz9tySV;
+        Mon, 11 Jan 2021 17:52:48 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id dNkOVLFC7gay; Mon, 11 Jan 2021 17:52:48 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DF0BS2xVmz9tyST;
+        Mon, 11 Jan 2021 17:52:48 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0B78E8B79E;
+        Mon, 11 Jan 2021 17:52:54 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id JV9njlin5Dbq; Mon, 11 Jan 2021 17:52:53 +0100 (CET)
+Received: from localhost.localdomain (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8C0EA8B78E;
+        Mon, 11 Jan 2021 17:52:53 +0100 (CET)
+Received: by localhost.localdomain (Postfix, from userid 0)
+        id 98DA766970; Mon, 11 Jan 2021 16:52:52 +0000 (UTC)
+Message-Id: <77cb8f5e668a2f6e00ea6e90d5f4f37763957b5b.1610383963.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2] powerpc/vdso: fix clock_gettime_fallback for vdso32
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, schwab@linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 11 Jan 2021 16:52:52 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.12.20 14:07, Oscar Salvador wrote:
-> In order to use self-hosted memmap array, the platform needs to have
-> support for CONFIG_SPARSEMEM_VMEMMAP and altmap.
-> Currently, only arm64, PPC and x86_64 have the support, so enable those
-> platforms with ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE.
+From: Andreas Schwab <schwab@linux-m68k.org>
 
-"In the first version, only .... will support it".
+The second argument of __kernel_clock_gettime64 points to a struct
+__kernel_timespec, with 64-bit time_t, so use the clock_gettime64 syscall
+in the fallback function for the 32-bit vdso.  Similarily,
+clock_getres_fallback should use the clock_getres_time64 syscall, though
+it isn't yet called from the 32-bit vdso.
 
-I'd probably split off enabling it per architecture in separate patches
-and the end of the series.
+Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
+[chleroy: Moved into the #ifdef CONFIG_VDSO32 block]
+Fixes: d0e3fc69d00d ("powerpc/vdso: Provide __kernel_clock_gettime64() on vdso32")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/vdso/gettimeofday.h | 27 +++++++++++++++-----
+ 1 file changed, 21 insertions(+), 6 deletions(-)
 
-Apart from that looks good.
-
-> 
-> ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE will be checked later on to see whether
-> we can enable this feature or not.
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-
-
+diff --git a/arch/powerpc/include/asm/vdso/gettimeofday.h b/arch/powerpc/include/asm/vdso/gettimeofday.h
+index 7a215cc5da77..3ecddd9c6302 100644
+--- a/arch/powerpc/include/asm/vdso/gettimeofday.h
++++ b/arch/powerpc/include/asm/vdso/gettimeofday.h
+@@ -102,22 +102,22 @@ int gettimeofday_fallback(struct __kernel_old_timeval *_tv, struct timezone *_tz
+ 	return do_syscall_2(__NR_gettimeofday, (unsigned long)_tv, (unsigned long)_tz);
+ }
+ 
++#ifdef CONFIG_VDSO32
++
++#define BUILD_VDSO32		1
++
+ static __always_inline
+ int clock_gettime_fallback(clockid_t _clkid, struct __kernel_timespec *_ts)
+ {
+-	return do_syscall_2(__NR_clock_gettime, _clkid, (unsigned long)_ts);
++	return do_syscall_2(__NR_clock_gettime64, _clkid, (unsigned long)_ts);
+ }
+ 
+ static __always_inline
+ int clock_getres_fallback(clockid_t _clkid, struct __kernel_timespec *_ts)
+ {
+-	return do_syscall_2(__NR_clock_getres, _clkid, (unsigned long)_ts);
++	return do_syscall_2(__NR_clock_getres_time64, _clkid, (unsigned long)_ts);
+ }
+ 
+-#ifdef CONFIG_VDSO32
+-
+-#define BUILD_VDSO32		1
+-
+ static __always_inline
+ int clock_gettime32_fallback(clockid_t _clkid, struct old_timespec32 *_ts)
+ {
+@@ -129,6 +129,21 @@ int clock_getres32_fallback(clockid_t _clkid, struct old_timespec32 *_ts)
+ {
+ 	return do_syscall_2(__NR_clock_getres, _clkid, (unsigned long)_ts);
+ }
++
++#else
++
++static __always_inline
++int clock_gettime_fallback(clockid_t _clkid, struct __kernel_timespec *_ts)
++{
++	return do_syscall_2(__NR_clock_gettime, _clkid, (unsigned long)_ts);
++}
++
++static __always_inline
++int clock_getres_fallback(clockid_t _clkid, struct __kernel_timespec *_ts)
++{
++	return do_syscall_2(__NR_clock_getres, _clkid, (unsigned long)_ts);
++}
++
+ #endif
+ 
+ static __always_inline u64 __arch_get_hw_counter(s32 clock_mode,
 -- 
-Thanks,
-
-David / dhildenb
+2.25.0
 
