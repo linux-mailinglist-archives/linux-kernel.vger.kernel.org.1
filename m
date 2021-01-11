@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23752F176E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:07:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8CEE2F1769
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730046AbhAKNDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:03:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50206 "EHLO mail.kernel.org"
+        id S1727996AbhAKND6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:03:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729830AbhAKND3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:03:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D528B22A85;
-        Mon, 11 Jan 2021 13:02:48 +0000 (UTC)
+        id S1729877AbhAKNDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:03:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25DBD22B49;
+        Mon, 11 Jan 2021 13:03:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370169;
-        bh=Qswikp4JGGMtS7udAqu8yLc7or4JBCQMhInn+25dkzo=;
+        s=korg; t=1610370180;
+        bh=03QUWQ415jjUHIpHk/zRgS5jbP2+2GX/ofxhdKU9KSw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HtYAqzKtVNrrT+BFpDeFNeVAtFhyg/oPsErb0Bigc3g9SCvEjg0EAuJsPBx8MsjHZ
-         /yP7uOu5hU6AP+eAfdDkAtxLaXQOuSguHtBiSTXa+gWLtq2LLt4eza//YNL3FbZwdh
-         x41ZGGI/0Ab0nk6lrtRfZOktizCKPvL+5zbvgJYM=
+        b=IVOh3H2b7WJlaIGjqoHQaqp89d9fDUu/4yTJN/N5k/e0D94HjLTMLpfPTNKNGuMhP
+         MnbdJiXAKxRgBkXFPFtTm33q2fTS9rfsEldeEgjOGL5I71b2V+MrrbmIWqcUvv2I0T
+         QiE1YAPWdP29kB7T1RWHCl7q4zHJ4g7EU9cd8bU4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>
-Subject: [PATCH 4.4 19/38] USB: xhci: fix U1/U2 handling for hardware with XHCI_INTEL_HOST quirk set
+        stable@vger.kernel.org, Roland Dreier <roland@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 13/45] CDC-NCM: remove "connected" log message
 Date:   Mon, 11 Jan 2021 14:00:51 +0100
-Message-Id: <20210111130033.393841085@linuxfoundation.org>
+Message-Id: <20210111130034.290222470@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
-References: <20210111130032.469630231@linuxfoundation.org>
+In-Reply-To: <20210111130033.676306636@linuxfoundation.org>
+References: <20210111130033.676306636@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,89 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Grzeschik <m.grzeschik@pengutronix.de>
+From: Roland Dreier <roland@kernel.org>
 
-commit 5d5323a6f3625f101dbfa94ba3ef7706cce38760 upstream.
+[ Upstream commit 59b4a8fa27f5a895582ada1ae5034af7c94a57b5 ]
 
-The commit 0472bf06c6fd ("xhci: Prevent U1/U2 link pm states if exit
-latency is too long") was constraining the xhci code not to allow U1/U2
-sleep states if the latency to wake up from the U-states reached the
-service interval of an periodic endpoint. This fix was not taking into
-account that in case the quirk XHCI_INTEL_HOST is set, the wakeup time
-will be calculated and configured differently.
+The cdc_ncm driver passes network connection notifications up to
+usbnet_link_change(), which is the right place for any logging.
+Remove the netdev_info() duplicating this from the driver itself.
 
-It checks for u1_params.mel/u2_params.mel as a limit. But the code could
-decide to write another MEL into the hardware. This leads to broken
-cases where not enough bandwidth is available for other devices:
+This stops devices such as my "TRENDnet USB 10/100/1G/2.5G LAN"
+(ID 20f4:e02b) adapter from spamming the kernel log with
 
-usb 1-2: can't set config #1, error -28
+    cdc_ncm 2-2:2.0 enp0s2u2c2: network connection: connected
 
-This patch is fixing that case by checking for timeout_ns after the
-wakeup time was calculated depending on the quirks.
+messages every 60 msec or so.
 
-Fixes: 0472bf06c6fd ("xhci: Prevent U1/U2 link pm states if exit latency is too long")
-Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201215193147.11738-1-m.grzeschik@pengutronix.de
+Signed-off-by: Roland Dreier <roland@kernel.org>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20201224032116.2453938-1-roland@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/host/xhci.c |   24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ drivers/net/usb/cdc_ncm.c |    3 ---
+ 1 file changed, 3 deletions(-)
 
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -4428,19 +4428,19 @@ static u16 xhci_calculate_u1_timeout(str
- {
- 	unsigned long long timeout_ns;
+--- a/drivers/net/usb/cdc_ncm.c
++++ b/drivers/net/usb/cdc_ncm.c
+@@ -1602,9 +1602,6 @@ static void cdc_ncm_status(struct usbnet
+ 		 * USB_CDC_NOTIFY_NETWORK_CONNECTION notification shall be
+ 		 * sent by device after USB_CDC_NOTIFY_SPEED_CHANGE.
+ 		 */
+-		netif_info(dev, link, dev->net,
+-			   "network connection: %sconnected\n",
+-			   !!event->wValue ? "" : "dis");
+ 		usbnet_link_change(dev, !!event->wValue, 0);
+ 		break;
  
-+	if (xhci->quirks & XHCI_INTEL_HOST)
-+		timeout_ns = xhci_calculate_intel_u1_timeout(udev, desc);
-+	else
-+		timeout_ns = udev->u1_params.sel;
-+
- 	/* Prevent U1 if service interval is shorter than U1 exit latency */
- 	if (usb_endpoint_xfer_int(desc) || usb_endpoint_xfer_isoc(desc)) {
--		if (xhci_service_interval_to_ns(desc) <= udev->u1_params.mel) {
-+		if (xhci_service_interval_to_ns(desc) <= timeout_ns) {
- 			dev_dbg(&udev->dev, "Disable U1, ESIT shorter than exit latency\n");
- 			return USB3_LPM_DISABLED;
- 		}
- 	}
- 
--	if (xhci->quirks & XHCI_INTEL_HOST)
--		timeout_ns = xhci_calculate_intel_u1_timeout(udev, desc);
--	else
--		timeout_ns = udev->u1_params.sel;
--
- 	/* The U1 timeout is encoded in 1us intervals.
- 	 * Don't return a timeout of zero, because that's USB3_LPM_DISABLED.
- 	 */
-@@ -4492,19 +4492,19 @@ static u16 xhci_calculate_u2_timeout(str
- {
- 	unsigned long long timeout_ns;
- 
-+	if (xhci->quirks & XHCI_INTEL_HOST)
-+		timeout_ns = xhci_calculate_intel_u2_timeout(udev, desc);
-+	else
-+		timeout_ns = udev->u2_params.sel;
-+
- 	/* Prevent U2 if service interval is shorter than U2 exit latency */
- 	if (usb_endpoint_xfer_int(desc) || usb_endpoint_xfer_isoc(desc)) {
--		if (xhci_service_interval_to_ns(desc) <= udev->u2_params.mel) {
-+		if (xhci_service_interval_to_ns(desc) <= timeout_ns) {
- 			dev_dbg(&udev->dev, "Disable U2, ESIT shorter than exit latency\n");
- 			return USB3_LPM_DISABLED;
- 		}
- 	}
- 
--	if (xhci->quirks & XHCI_INTEL_HOST)
--		timeout_ns = xhci_calculate_intel_u2_timeout(udev, desc);
--	else
--		timeout_ns = udev->u2_params.sel;
--
- 	/* The U2 timeout is encoded in 256us intervals */
- 	timeout_ns = DIV_ROUND_UP_ULL(timeout_ns, 256 * 1000);
- 	/* If the necessary timeout value is bigger than what we can set in the
 
 
