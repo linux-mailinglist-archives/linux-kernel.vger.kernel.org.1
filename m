@@ -2,100 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA742F104C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:44:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7AB92F1051
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729369AbhAKKnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:43:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726295AbhAKKnj (ORCPT
+        id S1729381AbhAKKoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:44:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22108 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729298AbhAKKoT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:43:39 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A77C061786;
-        Mon, 11 Jan 2021 02:42:59 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id x126so10699921pfc.7;
-        Mon, 11 Jan 2021 02:42:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=yjwa/+wwRjtStCWa2EN4TWA8E306sEyH4OcuP/qlzRo=;
-        b=GrOBJtpzR8VXd8yY0Sork+De+Pclz2Zs2svNIk7VYm7+HIeKUXVqRhF+VEwXd4C6Sc
-         UueTUZhdc8yk4t407hgjNJe9fi+2snUAtxmJoBqKdjqWa/1oJVDYSQoUBQR6KVDGVwc4
-         4mPicSprnhdQE8bp6XMcG1VhgN3XQrDUC1K/Q+P+IuKxYlsXSJM1tODSjy9zwRzFntOr
-         IdE580lgPKzR+YiqWL9FRECds6/MYfJHW2eo4Niwtd61BqaIWQ5l1/Xl0ZN480hAaOo/
-         Rt7M3uQCdHgbGd4+ok0wMjSoqHq6ieO9AJC3IFP17igES5AoI5J/w0ottPgwFbYq9vlP
-         TA6A==
+        Mon, 11 Jan 2021 05:44:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610361772;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ixUVOIGb/XAJr3qxQXdPsUM6DBOCljtoBWyj9OZ5agw=;
+        b=itKxLEmnKH0KsbhfYWV3FkkWYSU3tJsMQRn32XOJ1gurzq1IC1fzOkJpCQfDbaSUfExMA6
+        3ghFCNxvG5uXYNmEtkvhcD1Bds9xiawbO2/N7t5jR9DqkIz/7hOmOoA4GA6FOTuAbFr0fS
+        7GIMQxiKdVS8t/AGBUHV/zduCbXL2I8=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-184--7EJVcvlOIyqKMQJbE5d8Q-1; Mon, 11 Jan 2021 05:42:51 -0500
+X-MC-Unique: -7EJVcvlOIyqKMQJbE5d8Q-1
+Received: by mail-ed1-f70.google.com with SMTP id bf13so8061281edb.10
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 02:42:51 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=yjwa/+wwRjtStCWa2EN4TWA8E306sEyH4OcuP/qlzRo=;
-        b=pARku3uJor4YYVRB/gWO9ZdwtN5WUszBVmiV3yzV9kkYFtAAWCjg3KFGvg7yNFLFRb
-         CikCDRM/ctn20xJ7SDGIYOLVBR2RC9umgKEtB+0T73oikgOmAqAZVBH3b7k+cHW8OAWG
-         LOwRWIuXTqI10r8NVREfTGVj7pbkM4U4/DeJhI1StymPknlZJ9T2jaF5kj3rj+sfsYyM
-         rLjQ63Tjga39rqWS4NmvzlcroVVDoekaJOFrRud/YN/6B5QHHo16lc81/34DJVlNCSrf
-         M6u1gNWzUVj9AbI35CxYLrDvcBIZrmwhBORhA9LufcwkG2r9lfNrmAYvN+NhGG1iFnRq
-         JUng==
-X-Gm-Message-State: AOAM530eQJVlBKbScMPdSXFLK45kbwU8sQlko5Q5EsckelL3iLnwsqDE
-        d5PYjvY8H0lz1wwyXaTOzao=
-X-Google-Smtp-Source: ABdhPJwSGz1mZamAN5xujGCHRsNBpA2mqUuxLuAl//oToAYSvXlNGMTDZqnsjBb0iIt+Pg1kL3UpUA==
-X-Received: by 2002:a65:50c8:: with SMTP id s8mr19309476pgp.68.1610361778919;
-        Mon, 11 Jan 2021 02:42:58 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id d36sm19804128pgm.77.2021.01.11.02.42.55
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=ixUVOIGb/XAJr3qxQXdPsUM6DBOCljtoBWyj9OZ5agw=;
+        b=KmswiYUJqOelIXJ2/t9py1FejbAG+724/5duPDFiWj5f2LKXzKuqEhGgv72Q0J4fRi
+         pge8u8X+YR6ZXHYUUbjFu9XiSLMa28GINpkSWOjDsPMB9d2iHKY4gjTAhVzoCwXQZlG2
+         VUsJ7sIMTU/cB7WW2QwJD2BmZ8BejZw1uvRapAIbxzlYlcCSsLkth2+pLvFM2lxXbeKE
+         QThPZ+FLVv+eI8M9NExHnRNAMXBBltBJz+8+2GZHGvUxSAXHH0wy/t/st0gtadQJg+eq
+         jpZcho/yJHZvdBWBUhmIOnPNPA3Vwu+sOdNxmrpCNKrV21GeOYeONVB6O+lkyXXpa8x3
+         lBRw==
+X-Gm-Message-State: AOAM5325PfbpxhO+2q0Y4gO8539agynGVhPUrU45QiJCAhtGK/65V1rm
+        NvL6Bbkwhw0qcVi4AbeKEpC+bf3sKRANdqrSaDo/QajaG5iomXn/nKPEMYQX7EwWaq4xch9rFPC
+        tPlQepfz1K6yoQM5fR7I3CaNU
+X-Received: by 2002:a50:eb44:: with SMTP id z4mr13431748edp.167.1610361770117;
+        Mon, 11 Jan 2021 02:42:50 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxbX/oCXfXUXqADHbp1OPdT3DJnuK1Y9QdQdoj+RWltqZSTQDeEQcUQrrvFvmimNu19OBmQQQ==
+X-Received: by 2002:a50:eb44:: with SMTP id z4mr13431733edp.167.1610361769920;
+        Mon, 11 Jan 2021 02:42:49 -0800 (PST)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id ca4sm7536916edb.80.2021.01.11.02.42.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 02:42:58 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     kuba@kernel.org
-Cc:     davem@davemloft.net, ast@kernel.org, andriin@fb.com,
-        daniel@iogearbox.net, edumazet@google.com, ap420073@gmail.com,
-        xiyou.wangcong@gmail.com, jiri@mellanox.com, bjorn.topel@intel.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: [PATCH net-next] net: core: use eth_type_vlan in __netif_receive_skb_core
-Date:   Mon, 11 Jan 2021 02:42:21 -0800
-Message-Id: <20210111104221.3451-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.17.1
+        Mon, 11 Jan 2021 02:42:49 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@suse.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 03/13] KVM: SVM: Move SEV module params/variables to sev.c
+In-Reply-To: <20210109004714.1341275-4-seanjc@google.com>
+References: <20210109004714.1341275-1-seanjc@google.com>
+ <20210109004714.1341275-4-seanjc@google.com>
+Date:   Mon, 11 Jan 2021 11:42:48 +0100
+Message-ID: <87sg7792l3.fsf@vitty.brq.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+Sean Christopherson <seanjc@google.com> writes:
 
-Replace the check for ETH_P_8021Q and ETH_P_8021AD in
-__netif_receive_skb_core with eth_type_vlan.
+> Unconditionally invoke sev_hardware_setup() when configuring SVM and
+> handle clearing the module params/variable 'sev' and 'sev_es' in
+> sev_hardware_setup().  This allows making said variables static within
+> sev.c and reduces the odds of a collision with guest code, e.g. the guest
+> side of things has already laid claim to 'sev_enabled'.
+>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/svm/sev.c | 11 +++++++++++
+>  arch/x86/kvm/svm/svm.c | 15 +--------------
+>  arch/x86/kvm/svm/svm.h |  2 --
+>  3 files changed, 12 insertions(+), 16 deletions(-)
+>
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 0eeb6e1b803d..8ba93b8fa435 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -27,6 +27,14 @@
+>  
+>  #define __ex(x) __kvm_handle_fault_on_reboot(x)
+>  
+> +/* enable/disable SEV support */
+> +static int sev = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
+> +module_param(sev, int, 0444);
+> +
+> +/* enable/disable SEV-ES support */
+> +static int sev_es = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
+> +module_param(sev_es, int, 0444);
 
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
- net/core/dev.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Two stupid questions (and not really related to your patch) for
+self-eduacation if I may:
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index e4d77c8abe76..267c4a8daa55 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -5151,8 +5151,7 @@ static int __netif_receive_skb_core(struct sk_buff **pskb, bool pfmemalloc,
- 		skb_reset_mac_len(skb);
- 	}
- 
--	if (skb->protocol == cpu_to_be16(ETH_P_8021Q) ||
--	    skb->protocol == cpu_to_be16(ETH_P_8021AD)) {
-+	if (eth_type_vlan(skb->protocol)) {
- 		skb = skb_vlan_untag(skb);
- 		if (unlikely(!skb))
- 			goto out;
-@@ -5236,8 +5235,7 @@ static int __netif_receive_skb_core(struct sk_buff **pskb, bool pfmemalloc,
- 			 * find vlan device.
- 			 */
- 			skb->pkt_type = PACKET_OTHERHOST;
--		} else if (skb->protocol == cpu_to_be16(ETH_P_8021Q) ||
--			   skb->protocol == cpu_to_be16(ETH_P_8021AD)) {
-+		} else if (eth_type_vlan(skb->protocol)) {
- 			/* Outer header is 802.1P with vlan 0, inner header is
- 			 * 802.1Q or 802.1AD and vlan_do_receive() above could
- 			 * not find vlan dev for vlan id 0.
+1) Why do we rely on CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT (which
+sound like it control the guest side of things) to set defaults here? 
+
+2) It appears to be possible to do 'modprobe kvm_amd sev=0 sev_es=1' and
+this looks like a bogus configuration, should we make an effort to
+validate the correctness upon module load?
+
+> +
+>  static u8 sev_enc_bit;
+>  static int sev_flush_asids(void);
+>  static DECLARE_RWSEM(sev_deactivate_lock);
+> @@ -1249,6 +1257,9 @@ void __init sev_hardware_setup(void)
+>  	bool sev_es_supported = false;
+>  	bool sev_supported = false;
+>  
+> +	if (!IS_ENABLED(CONFIG_KVM_AMD_SEV) || !sev)
+> +		goto out;
+> +
+>  	/* Does the CPU support SEV? */
+>  	if (!boot_cpu_has(X86_FEATURE_SEV))
+>  		goto out;
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index ccf52c5531fb..f89f702b2a58 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -189,14 +189,6 @@ module_param(vls, int, 0444);
+>  static int vgif = true;
+>  module_param(vgif, int, 0444);
+>  
+> -/* enable/disable SEV support */
+> -int sev = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
+> -module_param(sev, int, 0444);
+> -
+> -/* enable/disable SEV-ES support */
+> -int sev_es = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
+> -module_param(sev_es, int, 0444);
+> -
+>  bool __read_mostly dump_invalid_vmcb;
+>  module_param(dump_invalid_vmcb, bool, 0644);
+>  
+> @@ -976,12 +968,7 @@ static __init int svm_hardware_setup(void)
+>  		kvm_enable_efer_bits(EFER_SVME | EFER_LMSLE);
+>  	}
+>  
+> -	if (IS_ENABLED(CONFIG_KVM_AMD_SEV) && sev) {
+> -		sev_hardware_setup();
+> -	} else {
+> -		sev = false;
+> -		sev_es = false;
+> -	}
+> +	sev_hardware_setup();
+>  
+>  	svm_adjust_mmio_mask();
+>  
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 0fe874ae5498..8e169835f52a 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -408,8 +408,6 @@ static inline bool gif_set(struct vcpu_svm *svm)
+>  #define MSR_CR3_LONG_MBZ_MASK			0xfff0000000000000U
+>  #define MSR_INVALID				0xffffffffU
+>  
+> -extern int sev;
+> -extern int sev_es;
+>  extern bool dump_invalid_vmcb;
+>  
+>  u32 svm_msrpm_offset(u32 msr);
+
 -- 
-2.17.1
+Vitaly
 
