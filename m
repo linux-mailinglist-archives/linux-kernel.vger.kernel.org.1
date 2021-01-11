@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522122F1685
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:53:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9FF2F16F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388162AbhAKNxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:53:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55564 "EHLO mail.kernel.org"
+        id S1730477AbhAKNGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:06:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728072AbhAKNI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:08:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FE662225E;
-        Mon, 11 Jan 2021 13:08:11 +0000 (UTC)
+        id S1730332AbhAKNFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:05:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BD3422515;
+        Mon, 11 Jan 2021 13:04:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370491;
-        bh=fva7RPyukFLyATIhb2owJRVdVcnxJZQeD2TuuPYw2Dw=;
+        s=korg; t=1610370297;
+        bh=aOY07mU5jEGpV+urwEDRc54pLz1BBurTgi7GjYUtSbQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jnhuNUG6n8tt1qROX2sHPnlNs8IGRydc2m0/eG/BeuGH/rewVG7coioSvcbnXt5KY
-         KHNc1d9yk6DvTrridjUjNPWG1StkY2TASStxA8SDzWBHKDn6WqHQnaj5DPCaHfvbNE
-         G/YOKRQ1qzbzP/PxJbG4Us4x6gule1uwMVsBj9MQ=
+        b=SKytvzCi/1UmxAxMeZwUsioZX7OAnQ3NuEHjmFSKB9EryJZH9VDtCuf9OHdvBZFq8
+         UCCV+bDgGffSumfEa35w1xtUFEp1fyj5z8eh0MHVOtVz+8WmqflA71Pm44klco7KDC
+         P20ra2Jmmcka17w2hcHpkfvqpCTpYsKzkU+j3v54=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 28/77] net: hns: fix return value check in __lb_other_process()
+Subject: [PATCH 4.14 18/57] net: hns: fix return value check in __lb_other_process()
 Date:   Mon, 11 Jan 2021 14:01:37 +0100
-Message-Id: <20210111130037.763783989@linuxfoundation.org>
+Message-Id: <20210111130034.606312678@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
+References: <20210111130033.715773309@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,7 +56,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
 +++ b/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
-@@ -419,6 +419,10 @@ static void __lb_other_process(struct hn
+@@ -418,6 +418,10 @@ static void __lb_other_process(struct hn
  	/* for mutl buffer*/
  	new_skb = skb_copy(skb, GFP_ATOMIC);
  	dev_kfree_skb_any(skb);
