@@ -2,154 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42FC2F1885
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7935D2F1893
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387648AbhAKOnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:43:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728923AbhAKOnt (ORCPT
+        id S2388635AbhAKOoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:44:32 -0500
+Received: from mail-oo1-f42.google.com ([209.85.161.42]:34992 "EHLO
+        mail-oo1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730598AbhAKOob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:43:49 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E88C06179F
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:43:09 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id 81so18008617ioc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:43:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1Uy4dmSh1YXfPmAlEsVIKk8C/onNwMc2Qs5bzKzONEY=;
-        b=IEBc0YK6atXTkF/0ep40Msod91NjmTr9cLAHeYx9ZEwhH9/ioU/Ke/2QaOxLtPTflQ
-         h5+BFBVQYdQNlmztL63yL9yF/DkIS7V2iwlKHqyZ57yiGKFKpE8Z4DHqNwECA+THTqfg
-         KK39n68NS76uYp4WCHPSKGCW/gZCXz8UFs/Nh+z8uxLeMskRR5ScoHWZvxzqV5kAcR7b
-         kNx2p48bUJZM0tuIXW6mjHt+XYdfvQwyHKmb3zBhoNRGX6b2B3g13TphzPcLudJwyQqQ
-         6kgxwhtTkNyxPxSA/XRHBsFC2o9+3zYifBIBE4/wKNhZRjV/bFn2BjQtWPS0J19LWhAh
-         E8tw==
+        Mon, 11 Jan 2021 09:44:31 -0500
+Received: by mail-oo1-f42.google.com with SMTP id s19so4146011oos.2;
+        Mon, 11 Jan 2021 06:44:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1Uy4dmSh1YXfPmAlEsVIKk8C/onNwMc2Qs5bzKzONEY=;
-        b=mLdxsS8RGAgvwJn6MPwuJ6gSHtlWlI/2luP47XsxEpFNfhEGCpl6pI858DnEQNCBtI
-         sEOH31tG/1j3q1dKl/MYVRnjmI9w/HrJbWM2ocgFDINVxE7hoFF48aA1m3UUlpoqEGXW
-         VmbR9rr0PSb6sg74RxoV8gato8gIuT+n4h7auLalG9+dgXMLOP4aGMk1CiSaytN9DRq7
-         Ui/Srt9zN4BzsQtP1lwVVQvKvtBXXG7NPEJoqBQ1Zv3Sgt48mlKL31UzI2961JK8vcPE
-         Fuu+saUJUJwxkpGxdzhKvw8dpr6W1QbH3p1ESqs8L1RF2TgTyOX9BEag+dmXRADeEvGh
-         3+3g==
-X-Gm-Message-State: AOAM530lZOIhew+n7RXXlRXG2hY9hWgsoq9ZZkeqdMbMNZUTG3fVl9FW
-        c59Ju5EUvwWqc0KNbXt3t+RRMg==
-X-Google-Smtp-Source: ABdhPJyZ4N4cjirnjDbebnDeZG+f7StyYJS43ntMtcIQPUiYPQbNQdhEnL7AFHNuclaajx6Qc8gFDA==
-X-Received: by 2002:a05:6602:1cb:: with SMTP id w11mr14752467iot.45.1610376188168;
-        Mon, 11 Jan 2021 06:43:08 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id a7sm15427506iln.0.2021.01.11.06.43.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 06:43:07 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kyyPS-005WSa-NT; Mon, 11 Jan 2021 10:43:06 -0400
-Date:   Mon, 11 Jan 2021 10:43:06 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Douglas Gilbert <dgilbert@interlog.com>
-Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        jejb@linux.vnet.ibm.com, bostroesser@gmail.com, bvanassche@acm.org,
-        ddiss@suse.de
-Subject: Re: [PATCH v5 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
- warning
-Message-ID: <20210111144306.GK504133@ziepe.ca>
-References: <20201228234955.190858-1-dgilbert@interlog.com>
- <20201228234955.190858-2-dgilbert@interlog.com>
- <20210107174410.GB504133@ziepe.ca>
- <76827f07-9484-d2c6-346b-0bdccfdf4a7a@interlog.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GdSctKqLQYmOUEK3R48DhANxukWX3Hs9jqc6NTFnbIo=;
+        b=Hv147+YA8cO+4kSiysQju3VbErf0aBXerCumC5VJzDd3cGGmHUteBPMhqoKOgW2FjN
+         XGlvE4ykmzhqPBHUukAMwLQ0Xw00ewYjUWqjuri9odbCX4gD+tKCRLdJAJbX2DtIj681
+         k5VwfHB/rHix8+i7qpEFfhQgstF1mQacK7OpOOz2VuZoj/fKnlqTBdPGKTHfAKRXWa4V
+         Kdzv6qUHjj8scrSQFSSeqpvyvvHf6sQIBB/gnlRVg/7Y8GCPByiV3loN35DIvCmWR4KQ
+         gv+gvi00pSZlieiL8ngTJYiHgaNTgv405ilVQTGrqGHNgBMi3gqdoW63W31n18OOiOY+
+         HgkA==
+X-Gm-Message-State: AOAM532Ksicunxcu1/JDoRMuBm+/gaSBCjJj33PjgnECzs0je3N86SBN
+        Jn+iJV2zT38vKG0jzPgnAeIJtmab/uSvyy/Wn/s=
+X-Google-Smtp-Source: ABdhPJwbMuHt3X2HQWHZGi4W8x4mg5oqPgrAY37VBfIPt0PZZ2blpXzT9tiSbKGR7RsCV5O2icbJnUD/CcXPnhh/Po4=
+X-Received: by 2002:a4a:bf14:: with SMTP id r20mr12064558oop.2.1610376230095;
+ Mon, 11 Jan 2021 06:43:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <76827f07-9484-d2c6-346b-0bdccfdf4a7a@interlog.com>
+References: <alpine.LSU.2.11.2101102010200.25762@eggly.anvils> <X/xV7ZV5jzI7RvAe@ulmo>
+In-Reply-To: <X/xV7ZV5jzI7RvAe@ulmo>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 11 Jan 2021 15:43:38 +0100
+Message-ID: <CAJZ5v0j76NEY12JBs1z47KLwBQr73XF-W58BzbwEECbh6j=Hww@mail.gmail.com>
+Subject: Re: 5.11-rc device reordering breaks ThinkPad rmi4 suspend
+To:     Thierry Reding <treding@nvidia.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 09, 2021 at 05:58:50PM -0500, Douglas Gilbert wrote:
-> On 2021-01-07 12:44 p.m., Jason Gunthorpe wrote:
-> > On Mon, Dec 28, 2020 at 06:49:52PM -0500, Douglas Gilbert wrote:
-> > > diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-> > > index a59778946404..4986545beef9 100644
-> > > +++ b/lib/scatterlist.c
-> > > @@ -554,13 +554,15 @@ EXPORT_SYMBOL(sg_alloc_table_from_pages);
-> > >   #ifdef CONFIG_SGL_ALLOC
-> > >   /**
-> > > - * sgl_alloc_order - allocate a scatterlist and its pages
-> > > + * sgl_alloc_order - allocate a scatterlist with equally sized elements
-> > >    * @length: Length in bytes of the scatterlist. Must be at least one
-> > > - * @order: Second argument for alloc_pages()
-> > > + * @order: Second argument for alloc_pages(). Each sgl element size will
-> > > + *	   be (PAGE_SIZE*2^order) bytes
-> > >    * @chainable: Whether or not to allocate an extra element in the scatterlist
-> > > - *	for scatterlist chaining purposes
-> > > + *	       for scatterlist chaining purposes
-> > >    * @gfp: Memory allocation flags
-> > > - * @nent_p: [out] Number of entries in the scatterlist that have pages
-> > > + * @nent_p: [out] Number of entries in the scatterlist that have pages.
-> > > + *		  Ignored if NULL is given.
-> > >    *
-> > >    * Returns: A pointer to an initialized scatterlist or %NULL upon failure.
-> > >    */
-> > > @@ -574,8 +576,8 @@ struct scatterlist *sgl_alloc_order(unsigned long long length,
-> > >   	u32 elem_len;
-> > >   	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
-> > > -	/* Check for integer overflow */
-> > > -	if (length > (nent << (PAGE_SHIFT + order)))
-> > > +	/* Integer overflow if:  length > nent*2^(PAGE_SHIFT+order) */
-> > > +	if (ilog2(length) > ilog2(nent) + PAGE_SHIFT + order)
-> > >   		return NULL;
-> > >   	nalloc = nent;
-> > >   	if (chainable) {
-> > 
-> > This is a little bit too tortured now, how about this:
-> > 
-> > 	if (length >> (PAGE_SHIFT + order) >= UINT_MAX)
-> > 		return NULL;
-> > 	nent = length >> (PAGE_SHIFT + order);
-> > 	if (length & ((1ULL << (PAGE_SHIFT + order)) - 1))
-> > 		nent++;
-> > 
-> > 	if (chainable) {
-> > 		if (check_add_overflow(nent, 1, &nalloc))
-> > 			return NULL;
-> > 	}
-> > 	else
-> > 		nalloc = nent;
-> > 
-> 
-> And your proposal is less <<tortured>> ?
+On Mon, Jan 11, 2021 at 2:43 PM Thierry Reding <treding@nvidia.com> wrote:
+>
+> On Sun, Jan 10, 2021 at 08:44:13PM -0800, Hugh Dickins wrote:
+> > Hi Rafael,
+> >
+> > Synaptics RMI4 SMBus touchpad on ThinkPad X1 Carbon (5th generation)
+> > fails to suspend when running 5.11-rc kernels: bisected to
+> > 5b6164d3465f ("driver core: Reorder devices on successful probe"),
+> > and reverting that fixes it.  dmesg.xz attached, but go ahead and ask
+> > me to switch on a debug option to extract further info if that may help.
+>
+> Hi Hugh,
+>
+> Quoting what I think are the relevant parts of that log:
 
-Yes, obviously checking something fits in a variable is less tortured
-than checking the result of math is correct.
+I'm not sure how I overlooked that part of the log.  Oh well.
 
-> I'm looking at performance, not elegance and I'm betting that two
-> ilog2() calls [which boil down to ffs()] are faster than two
-> right-shift-by-n_s and one left-shift-by-n . Perhaps an extra comment
-> could help my code by noting that mathematically:
->   /* if n > m for positive n and m then: log(n) > log(m) */
+> [   34.373742] printk: Suspending console(s) (use no_console_suspend to debug)
+> [   34.429015] rmi4_physical rmi4-00: Failed to read irqs, code=-6
 
-One instruction difference seems completely irrelavent here.
+This is a transport device read operation failing, but I'm not sure
+how it is related to suspend.
 
-If you care about micro-optimizing this then please add a
-check_shr_overflow() just like we have for check_shl_overflow() that
-has all the right tricks.
+> [   34.474973] rmi4_f01 rmi4-00.fn01: Failed to write sleep mode: -6.
 
-Probably:
+And this is the rmi_write() in rmi_f01_suspend() failing AFAICS.
 
-input_type x = arg >> shift;
-if (x != (output_type)x)
-   fail
-return (output_type)x
+> [   34.474994] rmi4_f01 rmi4-00.fn01: Suspend failed with code -6.
+> [   34.475001] rmi4_physical rmi4-00: Failed to suspend functions: -6
+> [   34.475105] rmi4_smbus 6-002c: Failed to suspend device: -6
+> [   34.475113] PM: dpm_run_callback(): rmi_smb_suspend+0x0/0x3c returns -6
 
-Is fastest.
+So the call chain is
+rmi_smb_suspend()->rmi_driver_suspend()->rmi_suspend_functions()->suspend_one_function()->rmi_f01_suspend().
 
-Jason
+> [   34.475130] PM: Device 6-002c failed to suspend: error -6
+> [   34.475187] PM: Some devices failed to suspend, or early wake event detected
+> [   34.480324] rmi4_f03 rmi4-00.fn03: rmi_f03_pt_write: Failed to write to F03 TX register (-6).
+> [   34.480748] rmi4_f03 rmi4-00.fn03: rmi_f03_pt_write: Failed to write to F03 TX register (-6).
+> [   34.481558] rmi4_physical rmi4-00: rmi_driver_clear_irq_bits: Failed to change enabled interrupts!
+> [   34.487935] acpi LNXPOWER:02: Turning OFF
+> [   34.488707] acpi LNXPOWER:01: Turning OFF
+> [   34.489554] rmi4_physical rmi4-00: rmi_driver_set_irq_bits: Failed to change enabled interrupts!
+> [   34.489669] psmouse: probe of serio2 failed with error -1
+> [   34.489882] OOM killer enabled.
+> [   34.489891] Restarting tasks ... done.
+> [   34.589183] PM: suspend exit
+> [   34.589839] PM: suspend entry (s2idle)
+> [   34.605884] Filesystems sync: 0.017 seconds
+> [   34.607594] Freezing user space processes ... (elapsed 0.006 seconds) done.
+> [   34.613645] OOM killer disabled.
+> [   34.613650] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+> [   34.615482] printk: Suspending console(s) (use no_console_suspend to debug)
+> [   34.653097] rmi4_f01 rmi4-00.fn01: Failed to write sleep mode: -6.
+> [   34.653108] rmi4_f01 rmi4-00.fn01: Suspend failed with code -6.
+> [   34.653115] rmi4_physical rmi4-00: Failed to suspend functions: -6
+> [   34.653123] rmi4_smbus 6-002c: Failed to suspend device: -6
+> [   34.653129] PM: dpm_run_callback(): rmi_smb_suspend+0x0/0x3c returns -6
+> [   34.653160] PM: Device 6-002c failed to suspend: error -6
+> [   34.653174] PM: Some devices failed to suspend, or early wake event detected
+> [   34.660515] OOM killer enabled.
+> [   34.660524] Restarting tasks ...
+> [   34.661456] rmi4_physical rmi4-00: rmi_driver_set_irq_bits: Failed to change enabled interrupts!
+> [   34.661591] psmouse: probe of serio2 failed with error -1
+> [   34.669469] done.
+> [   34.748386] PM: suspend exit
+>
+> I think what might be happening here is that the offending patch causes
+> some devices to be reordered in a way different to how they were ordered
+> originally and the rmi4 driver currently depends on that implicit order.
+
+Yes, that's what appears to be happening.
+
+> Interestingly one of the bugs that the offending patch fixes is similar
+> in the failure mode but for the reverse reason: the implicit order
+> causes suspend/resume to fail.
+>
+> I suspect that the underlying reason here is that rmi4 needs something
+> in order to successfully suspend (i.e. read the IRQ status registers)
+> that has already been suspended where it hadn't prior to the offending
+> patch.
+
+Definitely, something has been suspended prematurely.
+
+> It can't be the I2C controller itself that has been suspended,
+> because the parent/child relationship should prevent that from
+> happening.
+
+Well, assuming that there is such a parent-child dependency.
+
+It looks like there is at least one level of indirection between i2c
+and the affected device.
+
+> I'm not familiar with how exactly rmi4 works, so I'll have to do
+> some digging to hopefully pinpoint exactly what's going wrong here.
+>
+> In the meantime, it would be useful to know what exactly the I2C
+> hierarchy looks like. For example, what's the I2C controller that the
+> RMI4 device is hooked up to. According to the above, that's I2C bus 6,
+> so you should be able to find out some details about it by inspecting
+> the corresponding sysfs nodes:
+>
+>         $ ls -l /sys/class/i2c-adapter/i2c-6/
+>         $ cat /sys/class/i2c-adapter/i2c-6/name
+>         $ ls -l /sys/class/i2c-adapter/i2c-6/device/
+>
+> Thierry
