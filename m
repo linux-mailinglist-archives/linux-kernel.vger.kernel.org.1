@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3840A2F13D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:15:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E84372F1329
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729328AbhAKNPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:15:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33156 "EHLO mail.kernel.org"
+        id S1730204AbhAKNEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:04:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731767AbhAKNPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:15:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A30322795;
-        Mon, 11 Jan 2021 13:14:56 +0000 (UTC)
+        id S1730156AbhAKNEN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:04:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC1052250F;
+        Mon, 11 Jan 2021 13:03:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370896;
-        bh=nJXW8k50MDHJuJ3C+GABp+P+axjo7kBiWqO5tLlJr0Q=;
+        s=korg; t=1610370238;
+        bh=wo6pm9ohGcB/1KEUuuqem5RuMIwAyCSPzcvEh5EnJ9w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YInl/FmY+eMSs9BEkgLEGC2Sx+FYbGcvO2PjK5ltb6GodYGSUyx/RvhLEg01nfxJH
-         HOtTAggcd0zjaNK63kv0dW7Wg/p3eSl63oqHAQw3UXJCtywhiTpD8I0VAfdJIrJ8XS
-         d14vxy1AotWUlPXCsILcju24PrsaFEkje9x2fwHM=
+        b=WyU6cJmRWkMph3VAgCtVHOWpbyREem3gcb/d8DRl+OyqxtIgpXpRlE0F2kUf8pVSc
+         Ldbf+EvdDglAZ6MHf8b3AHmnnwqYffehL8W6SNhVXUvqXBEKcrx1Gxh35VzVF9Ztzj
+         IwdU6/ezirg08pHqNYU9TkHXMzrJDrq0P1omDvfQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Andres Freund <andres@anarazel.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 051/145] block: add debugfs stanza for QUEUE_FLAG_NOWAIT
+        Chandana Kishori Chiluveru <cchiluve@codeaurora.org>,
+        Jack Pham <jackp@codeaurora.org>,
+        Peter Chen <peter.chen@nxp.com>
+Subject: [PATCH 4.9 37/45] usb: gadget: configfs: Preserve function ordering after bind failure
 Date:   Mon, 11 Jan 2021 14:01:15 +0100
-Message-Id: <20210111130050.978460643@linuxfoundation.org>
+Message-Id: <20210111130035.433887395@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130033.676306636@linuxfoundation.org>
+References: <20210111130033.676306636@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,40 +41,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andres Freund <andres@anarazel.de>
+From: Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
 
-[ Upstream commit dc30432605bbbd486dfede3852ea4d42c40a84b4 ]
+commit 6cd0fe91387917be48e91385a572a69dfac2f3f7 upstream.
 
-This was missed in 021a24460dc2. Leads to the numeric value of
-QUEUE_FLAG_NOWAIT (i.e. 29) showing up in
-/sys/kernel/debug/block/*/state.
+When binding the ConfigFS gadget to a UDC, the functions in each
+configuration are added in list order. However, if usb_add_function()
+fails, the failed function is put back on its configuration's
+func_list and purge_configs_funcs() is called to further clean up.
 
-Fixes: 021a24460dc28e7412aecfae89f60e1847e685c0
-Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Cc: Mike Snitzer <snitzer@redhat.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Andres Freund <andres@anarazel.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+purge_configs_funcs() iterates over the configurations and functions
+in forward order, calling unbind() on each of the previously added
+functions. But after doing so, each function gets moved to the
+tail of the configuration's func_list. This results in reshuffling
+the original order of the functions within a configuration such
+that the failed function now appears first even though it may have
+originally appeared in the middle or even end of the list. At this
+point if the ConfigFS gadget is attempted to re-bind to the UDC,
+the functions will be added in a different order than intended,
+with the only recourse being to remove and relink the functions all
+over again.
+
+An example of this as follows:
+
+ln -s functions/mass_storage.0 configs/c.1
+ln -s functions/ncm.0 configs/c.1
+ln -s functions/ffs.adb configs/c.1	# oops, forgot to start adbd
+echo "<udc device>" > UDC		# fails
+start adbd
+echo "<udc device>" > UDC		# now succeeds, but...
+					# bind order is
+					# "ADB", mass_storage, ncm
+
+[30133.118289] configfs-gadget gadget: adding 'Mass Storage Function'/ffffff810af87200 to config 'c'/ffffff817d6a2520
+[30133.119875] configfs-gadget gadget: adding 'cdc_network'/ffffff80f48d1a00 to config 'c'/ffffff817d6a2520
+[30133.119974] using random self ethernet address
+[30133.120002] using random host ethernet address
+[30133.139604] usb0: HOST MAC 3e:27:46:ba:3e:26
+[30133.140015] usb0: MAC 6e:28:7e:42:66:6a
+[30133.140062] configfs-gadget gadget: adding 'Function FS Gadget'/ffffff80f3868438 to config 'c'/ffffff817d6a2520
+[30133.140081] configfs-gadget gadget: adding 'Function FS Gadget'/ffffff80f3868438 --> -19
+[30133.140098] configfs-gadget gadget: unbind function 'Mass Storage Function'/ffffff810af87200
+[30133.140119] configfs-gadget gadget: unbind function 'cdc_network'/ffffff80f48d1a00
+[30133.173201] configfs-gadget a600000.dwc3: failed to start g1: -19
+[30136.661933] init: starting service 'adbd'...
+[30136.700126] read descriptors
+[30136.700413] read strings
+[30138.574484] configfs-gadget gadget: adding 'Function FS Gadget'/ffffff80f3868438 to config 'c'/ffffff817d6a2520
+[30138.575497] configfs-gadget gadget: adding 'Mass Storage Function'/ffffff810af87200 to config 'c'/ffffff817d6a2520
+[30138.575554] configfs-gadget gadget: adding 'cdc_network'/ffffff80f48d1a00 to config 'c'/ffffff817d6a2520
+[30138.575631] using random self ethernet address
+[30138.575660] using random host ethernet address
+[30138.595338] usb0: HOST MAC 2e:cf:43:cd:ca:c8
+[30138.597160] usb0: MAC 6a:f0:9f:ee:82:a0
+[30138.791490] configfs-gadget gadget: super-speed config #1: c
+
+Fix this by reversing the iteration order of the functions in
+purge_config_funcs() when unbinding them, and adding them back to
+the config's func_list at the head instead of the tail. This
+ensures that we unbind and unwind back to the original list order.
+
+Fixes: 88af8bbe4ef7 ("usb: gadget: the start of the configfs interface")
+Signed-off-by: Chandana Kishori Chiluveru <cchiluve@codeaurora.org>
+Signed-off-by: Jack Pham <jackp@codeaurora.org>
+Reviewed-by: Peter Chen <peter.chen@nxp.com>
+Link: https://lore.kernel.org/r/20201229224443.31623-1-jackp@codeaurora.org
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- block/blk-mq-debugfs.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/gadget/configfs.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
-index 3094542e12ae0..e21eed20a1551 100644
---- a/block/blk-mq-debugfs.c
-+++ b/block/blk-mq-debugfs.c
-@@ -129,6 +129,7 @@ static const char *const blk_queue_flag_name[] = {
- 	QUEUE_FLAG_NAME(PCI_P2PDMA),
- 	QUEUE_FLAG_NAME(ZONE_RESETALL),
- 	QUEUE_FLAG_NAME(RQ_ALLOC_TIME),
-+	QUEUE_FLAG_NAME(NOWAIT),
- };
- #undef QUEUE_FLAG_NAME
+--- a/drivers/usb/gadget/configfs.c
++++ b/drivers/usb/gadget/configfs.c
+@@ -1214,9 +1214,9 @@ static void purge_configs_funcs(struct g
  
--- 
-2.27.0
-
+ 		cfg = container_of(c, struct config_usb_cfg, c);
+ 
+-		list_for_each_entry_safe(f, tmp, &c->functions, list) {
++		list_for_each_entry_safe_reverse(f, tmp, &c->functions, list) {
+ 
+-			list_move_tail(&f->list, &cfg->func_list);
++			list_move(&f->list, &cfg->func_list);
+ 			if (f->unbind) {
+ 				dev_dbg(&gi->cdev.gadget->dev,
+ 				         "unbind function '%s'/%p\n",
 
 
