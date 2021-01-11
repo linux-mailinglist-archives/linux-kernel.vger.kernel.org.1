@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9B42F15EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:47:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A932F16AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:56:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387569AbhAKNqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:46:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58080 "EHLO mail.kernel.org"
+        id S2387995AbhAKN4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:56:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731278AbhAKNKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:10:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CCCD2250F;
-        Mon, 11 Jan 2021 13:10:10 +0000 (UTC)
+        id S1728969AbhAKNHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:07:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9A92229C4;
+        Mon, 11 Jan 2021 13:07:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370611;
-        bh=QvmCKY8dUPY2jKimtVqqmR5Ges0Ofd9MXp7WqARN9WE=;
+        s=korg; t=1610370424;
+        bh=0pvycBJoN4waGColndHYcZmO8vQD+V3btAXV0Gvctl0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C0onDa6eVhctpvBcmYnXkoAC2o7eKLcM1gBx58ZiW9gsFJMhwc4yngE3r/8xqISzF
-         2iRv+5EhwIhmCKSdopsVUMjSfmX0PjiznnLWlY7tNn0SSADYfpKxOxl2JCTS6FiOvk
-         mdC98tP3kKFk4fFtA2ZzjOtJRfu3Q/GtU5nhgxYM=
+        b=n5aELTZyRfxBzJzywa28vliNbxjh6EnlwA/NDa7o1QSokjvxhyjo2yVz/RrdKpuab
+         a8Xq8ryJoqy9J3C5qonRAr0D3PSzDM+lGZkaTy8ZIzjeyG1kTG4bQe2xzGalZKvQyi
+         ekPXu3Q2H5Mo82IZMlHm5XAIXMzJ6XXBqtVyUp3c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 20/92] net: ethernet: mvneta: Fix error handling in mvneta_probe
-Date:   Mon, 11 Jan 2021 14:01:24 +0100
-Message-Id: <20210111130040.128418421@linuxfoundation.org>
+Subject: [PATCH 4.19 16/77] atm: idt77252: call pci_disable_device() on error path
+Date:   Mon, 11 Jan 2021 14:01:25 +0100
+Message-Id: <20210111130037.196535447@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
-References: <20210111130039.165470698@linuxfoundation.org>
+In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
+References: <20210111130036.414620026@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,32 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dinghao Liu <dinghao.liu@zju.edu.cn>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 58f60329a6be35a5653edb3fd2023ccef9eb9943 ]
+[ Upstream commit 8df66af5c1e5f80562fe728db5ec069b21810144 ]
 
-When mvneta_port_power_up() fails, we should execute
-cleanup functions after label err_netdev to avoid memleak.
+This error path needs to disable the pci device before returning.
 
-Fixes: 41c2b6b4f0f80 ("net: ethernet: mvneta: Add back interface mode validation")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-Link: https://lore.kernel.org/r/20201220082930.21623-1-dinghao.liu@zju.edu.cn
+Fixes: ede58ef28e10 ("atm: remove deprecated use of pci api")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/X93dmC4NX0vbTpGp@mwanda
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/marvell/mvneta.c |    2 +-
+ drivers/atm/idt77252.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/marvell/mvneta.c
-+++ b/drivers/net/ethernet/marvell/mvneta.c
-@@ -4694,7 +4694,7 @@ static int mvneta_probe(struct platform_
- 	err = mvneta_port_power_up(pp, pp->phy_interface);
- 	if (err < 0) {
- 		dev_err(&pdev->dev, "can't power up port\n");
+--- a/drivers/atm/idt77252.c
++++ b/drivers/atm/idt77252.c
+@@ -3607,7 +3607,7 @@ static int idt77252_init_one(struct pci_
+ 
+ 	if ((err = dma_set_mask_and_coherent(&pcidev->dev, DMA_BIT_MASK(32)))) {
+ 		printk("idt77252: can't enable DMA for PCI device at %s\n", pci_name(pcidev));
 -		return err;
-+		goto err_netdev;
++		goto err_out_disable_pdev;
  	}
  
- 	/* Armada3700 network controller does not support per-cpu
+ 	card = kzalloc(sizeof(struct idt77252_dev), GFP_KERNEL);
 
 
