@@ -2,74 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A60C2F0C31
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 06:17:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7F82F0C3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 06:22:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727301AbhAKFQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 00:16:48 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:46306 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727240AbhAKFQr (ORCPT
+        id S1725957AbhAKFWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 00:22:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725355AbhAKFWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 00:16:47 -0500
-Received: by mail-io1-f71.google.com with SMTP id a2so11734253iod.13
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 21:16:31 -0800 (PST)
+        Mon, 11 Jan 2021 00:22:30 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFBBC061786;
+        Sun, 10 Jan 2021 21:21:49 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id x15so1370612ilk.3;
+        Sun, 10 Jan 2021 21:21:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4l64O1cL8mld7+QbyRcMbphc6gWq2pCIGE+VaAyHP00=;
+        b=Xr76vSnV0HqEjGmgxVvhNZkeUCAw+BlVtDjqz+mtfAiXv1BsmIPrigVbPZb9JhcLj2
+         fgoNfvChsZkGGMY1ikj3k9dHnqwj5+XnOnafMq0ZXXlIf9bxbNlEpjqLpz8JcAzmAzYg
+         TEYsl3cNQp6CPueNKGQPJpRuZvswBIXDQV3JKx9pn2Zh7liq9YI211UHa9PY1CiDziCg
+         KHo9Sc0V9uEh678sYy+9ol1wQJyMq6aPeeUwemPZa1Aq3wbQW1lk33xSzgHeA8w+SKRI
+         sCdYgwR7+TjjK4bw37uHSpTzR8Ws3ZXNgHdbBgLU26Klpp6YK6AU8GQ2mGYMHpUjrbSN
+         q8KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=TwLtYgNM/VxZnJX9RYzFOAmbDbu3TS829VUYdlrQ6tU=;
-        b=buha3KGrInUXuTjtb0vdNkCyNgNyCn190JChpp4oV57sgOh7UjYaGEXAjW6mTARMO6
-         yp/fZlqfU5YZ0lKIlQZoD+lVA2c7fcWw9q4qMFkXr4IjuDV2d5wd+BEZcn1KuZug39lW
-         0C3SFpnj4KIvaLlA2ywT3XC3U6/GkBEDDgUwk+SUgzo0jHcf5bgZUZRQwEWabIZoSKMy
-         wNObDcHws7mT7mrdbxirgKhqbl2X0yPZwoMFPWdBTv2k2mt6glEhcx1p6L5pUaOI5J+/
-         WberUITQGc0euIEIciQY18MIs5nMEDVv+eGf3k9GzcLZc+ewx/zzH1zO6z1m543n9zvf
-         jH7g==
-X-Gm-Message-State: AOAM533xC2KeFQqPGIjhDr2RK0AkZjqDYzo2fYLs/AXOAn8zWbSLn44D
-        xeAfTA5IiYmGb+Fa9V4wHduphhdt4dv/IodKnjwD0hy6rACd
-X-Google-Smtp-Source: ABdhPJw34d6R73XmCxuksM9133DcvPyLfBOZgm6heuu0BEb6aKdNf+Jt1XOKWGljxWX0oVlLoshF5G4fzBYFc5U+6aYPAdyyumLW
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4l64O1cL8mld7+QbyRcMbphc6gWq2pCIGE+VaAyHP00=;
+        b=fSdhBb4N4ejL0rv5jopC3sDs1f7Cbi9S8dRXNp0j/THkNlXzDysPwasvrIvVvq7lBv
+         4CKyg/9mH5hd+StuuhO6WMXpEg+R19LaOgCkAa4TfC4TrWFQ12McVeEGyAT2MYXLiFNv
+         W2McRH61PyoNPYugMb2P0aNH2X/xC7dyQaa3vM8NAU2pzKZIIs1GqKjwImjBPCD8gLcE
+         zoasNZjYV64g6o6kITz6kuZCM76enX9+dqXmub03PA2CD+l9QE2domn14wX+NUuDre45
+         qLRvjrllCk5aoPvqH50z8R14gFfhvKQR0GOv130DJRUqgDN9FD/89gntZan3NLC4XFNJ
+         eVew==
+X-Gm-Message-State: AOAM531cfghGF0YWLaeOZOba3wtgJr5AWTqqBa6s6dsMN50elI2QSUUJ
+        AIa/Firkn1t2O46tAlvWWuQ=
+X-Google-Smtp-Source: ABdhPJyfStv6on8rG1XJx6IhcZyH437rcGoQf/fNgV2x80K8V17nfkj0KEvchYXzZK4sQgLR2DHocA==
+X-Received: by 2002:a92:41d2:: with SMTP id o201mr13827519ila.117.1610342509012;
+        Sun, 10 Jan 2021 21:21:49 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id z18sm14020189ilb.26.2021.01.10.21.21.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Jan 2021 21:21:48 -0800 (PST)
+Date:   Sun, 10 Jan 2021 22:21:46 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jinyang He <hejinyang@loongson.cn>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Matt Redfearn <matt.redfearn@mips.com>,
+        linux-mips@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH mips-fixes] MIPS: relocatable: fix possible boot hangup
+ with KASLR enabled
+Message-ID: <20210111052146.GA1018564@ubuntu-m3-large-x86>
+References: <20210110142023.185275-1-alobakin@pm.me>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:f86:: with SMTP id v6mr14014231ilo.56.1610342166413;
- Sun, 10 Jan 2021 21:16:06 -0800 (PST)
-Date:   Sun, 10 Jan 2021 21:16:06 -0800
-In-Reply-To: <000000000000f5964705b7d47d8c@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cbca0705b89900b3@google.com>
-Subject: Re: INFO: trying to register non-static key in l2cap_sock_teardown_cb
-From:   syzbot <syzbot+a41dfef1d2e04910eb2e@syzkaller.appspotmail.com>
-To:     a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org,
-        davem@davemloft.net, hdanton@sina.com, johan.hedberg@gmail.com,
-        kuba@kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        luiz.dentz@gmail.com, marcel@holtmann.org,
-        mareklindner@neomailbox.ch, miklos@szeredi.hu, mszeredi@redhat.com,
-        netdev@vger.kernel.org, sw@simonwunderlich.de,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210110142023.185275-1-alobakin@pm.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Sun, Jan 10, 2021 at 02:21:05PM +0000, Alexander Lobakin wrote:
+> LLVM-built Linux triggered a boot hangup with KASLR enabled.
+> 
+> arch/mips/kernel/relocate.c:get_random_boot() uses linux_banner,
+> which is a string constant, as a random seed, but accesses it
+> as an array of unsigned long (in rotate_xor()).
+> When the address of linux_banner is not aligned to sizeof(long),
+> such access emits unaligned access exception and hangs the kernel.
+> 
+> Use PTR_ALIGN() to align input address to sizeof(long) and also
+> align down the input length to prevent possible access-beyond-end.
+> 
+> Fixes: 405bc8fd12f5 ("MIPS: Kernel: Implement KASLR using CONFIG_RELOCATABLE")
+> Cc: stable@vger.kernel.org # 4.7+
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 
-commit 4680a7ee5db27772af40d83393fa0fb955b745b7
-Author: Miklos Szeredi <mszeredi@redhat.com>
-Date:   Sat Oct 1 05:32:33 2016 +0000
+Apologies for not being familiar enough with the issue to give a review
+but I did reproduce the hang that the commit mentions with
+malta_kvm_guest_defconfig + CONFIG_RELOCATABLE=y +
+CONFIG_RANDOMIZE_BASE=y and this patch does resolve it so:
 
-    fuse: remove duplicate cs->offset assignment
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11fc80e7500000
-start commit:   73b7a604 net: dsa: bcm_sf2: support BCM4908's integrated s..
-git tree:       net-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=13fc80e7500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=15fc80e7500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9ce34124da4c882b
-dashboard link: https://syzkaller.appspot.com/bug?extid=a41dfef1d2e04910eb2e
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=166ee4cf500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1337172f500000
-
-Reported-by: syzbot+a41dfef1d2e04910eb2e@syzkaller.appspotmail.com
-Fixes: 4680a7ee5db2 ("fuse: remove duplicate cs->offset assignment")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> ---
+>  arch/mips/kernel/relocate.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/relocate.c
+> index 47aeb3350a76..0e365b7c742d 100644
+> --- a/arch/mips/kernel/relocate.c
+> +++ b/arch/mips/kernel/relocate.c
+> @@ -187,8 +187,14 @@ static int __init relocate_exception_table(long offset)
+>  static inline __init unsigned long rotate_xor(unsigned long hash,
+>  					      const void *area, size_t size)
+>  {
+> -	size_t i;
+> -	unsigned long *ptr = (unsigned long *)area;
+> +	const typeof(hash) *ptr = PTR_ALIGN(area, sizeof(hash));
+> +	size_t diff, i;
+> +
+> +	diff = (void *)ptr - area;
+> +	if (unlikely(size < diff + sizeof(hash)))
+> +		return hash;
+> +
+> +	size = ALIGN_DOWN(size - diff, sizeof(hash));
+>  
+>  	for (i = 0; i < size / sizeof(hash); i++) {
+>  		/* Rotate by odd number of bits and XOR. */
+> -- 
+> 2.30.0
+> 
+> 
