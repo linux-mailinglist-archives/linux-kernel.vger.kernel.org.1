@@ -2,245 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48B12F23FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 01:34:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 014412F2477
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729736AbhALAbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 19:31:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726444AbhALAbn (ORCPT
+        id S2391465AbhALAYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 19:24:47 -0500
+Received: from ppsw-41.csi.cam.ac.uk ([131.111.8.141]:46656 "EHLO
+        ppsw-41.csi.cam.ac.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390856AbhAKW5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 19:31:43 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F944C0617A3;
-        Mon, 11 Jan 2021 16:30:29 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id t3so1191602ilh.9;
-        Mon, 11 Jan 2021 16:30:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1bBzMydguUVXlJygZy+L+A0TLEvNxN16shoUGEugiOE=;
-        b=cdKYCMkJT6j0/WukuM7xLyLMsjNCArvFlXBUi0hiSFZChaB45MAM9Ri6QUi21Xp13o
-         6UzV87LjpOLviKXDAb4h75gGPH7RANkjJCTBbyVm/pj2RmkoLxZyIWV/XiMz71fj26he
-         6JFjlFLqABDeltopFgQuG3+s1FPpXrusNJTE08eaRekZMmBrUUZNffn8GNuck4ukwZEP
-         iXG6/kijx93tFQk4hs/XxW1W1mOBg0EJfkfsFL4oibKUxp9Nl9mlU+qPCjjmWrEqT0R8
-         emT8laVy6Ksrvx3fYTTX+jxQGT4lscm2ZEt1JD6p9i+4K0vbZfj3EISy5w64IHoFcyl1
-         zqWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1bBzMydguUVXlJygZy+L+A0TLEvNxN16shoUGEugiOE=;
-        b=Ial7GatJZk/a5DidSZSpCosgW/kK8QXswsllOLtfoXTs7ygMtCBPTMmkQyDOFlJzgw
-         tRGr804jqttm+9Dd3LgE+TV2bTIhL0tzUIFz/pAhtE3bu8cxsTDDis23skEf7LlSetiA
-         IDjfBunwEr53WnlUd/RUGZPCXuIbrpvkMfg7eBUuxloorEvUlcAUIaj79aoYYbjSQ5Fu
-         6IhP/6oRaYIOxXOgMEQG9cNUxup4ByrB1g53UnARp4OTxQd2Xoa4DIFWFEvxUC3fGN4l
-         Lv2U4retB9IlKXsYXW1icoaMUfZqjR5QUMIcxpkANMuTETwOEjuuDt3qypqWCIU3SMhV
-         RBTQ==
-X-Gm-Message-State: AOAM530YQ/WJ4oKvQP9pCrhgQzWa38qVoKqM7iwjtimoGWFjrLIOfLaJ
-        m18e07tF8ROjmcoX19wEF+ctqCx9mbs=
-X-Google-Smtp-Source: ABdhPJxuG0iilI9x/mweoOX+8NEI3wrg+1n34TnEKT+2KJRo+cQ76mBHnUVeM2zoQyOQgxTUuXK3cg==
-X-Received: by 2002:a92:d350:: with SMTP id a16mr1551482ilh.262.1610411428446;
-        Mon, 11 Jan 2021 16:30:28 -0800 (PST)
-Received: from willemb.nyc.corp.google.com ([2620:0:1003:312:f693:9fff:fef4:3e8a])
-        by smtp.gmail.com with ESMTPSA id z10sm741723ioi.47.2021.01.11.16.30.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 16:30:27 -0800 (PST)
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
-        akpm@linux-foundation.org, willy@infradead.org, arnd@kernel.org,
-        Willem de Bruijn <willemb@google.com>,
-        Benjamin LaHaise <bcrl@kvack.org>
-Subject: [PATCH 6/6] io_pgetevents: deduplicate compat logic
-Date:   Mon, 11 Jan 2021 19:30:17 -0500
-Message-Id: <20210112003017.4010304-7-willemdebruijn.kernel@gmail.com>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-In-Reply-To: <20210112003017.4010304-1-willemdebruijn.kernel@gmail.com>
-References: <20210112003017.4010304-1-willemdebruijn.kernel@gmail.com>
+        Mon, 11 Jan 2021 17:57:16 -0500
+X-Greylist: delayed 987 seconds by postgrey-1.27 at vger.kernel.org; Mon, 11 Jan 2021 17:57:15 EST
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=cam.ac.uk;
+         s=20180806.ppsw; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ubJM33kU3xsjzHRYhB0tpE3AOfiw+sSQImPwRb0K+gs=; b=ZNI0ks9Vi6PIiNmfyj/RBDynqn
+        m9OLvA6mceITmc8rGCX19XTWutCKIGOgfp23chcymEVgUTQt55wshs4+7Ta3StnxfFdxavjo5vq+l
+        PMTXyjCvJo1yDqHyUJj9sLfrGEaBNrHOU/a8P151vuAuakF9hwhBE/tsJfEErUKExL40=;
+X-Cam-AntiVirus: no malware found
+X-Cam-ScannerInfo: http://help.uis.cam.ac.uk/email-scanner-virus
+Received: from 88-111-124-141.dynamic.dsl.as9105.com ([88.111.124.141]:51080 helo=[192.168.1.219])
+        by ppsw-41.csi.cam.ac.uk (smtp.hermes.cam.ac.uk [131.111.8.159]:465)
+        with esmtpsa (PLAIN:amc96) (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        id 1kz5qn-000X0j-SK (Exim 4.92.3)
+        (return-path <amc96@cam.ac.uk>); Mon, 11 Jan 2021 22:39:49 +0000
+Subject: Re: [PATCH] xen/privcmd: allow fetching resource sizes
+To:     boris.ostrovsky@oracle.com, Roger Pau Monne <roger.pau@citrix.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Paul Durrant <paul.durrant@citrix.com>,
+        xen-devel@lists.xenproject.org,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andrew Cooper <amc96@cam.ac.uk>
+References: <20210111152958.7166-1-roger.pau@citrix.com>
+ <555ba53c-1b6b-6cf7-9887-52d4179f7456@oracle.com>
+From:   Andrew Cooper <amc96@cam.ac.uk>
+Message-ID: <ed089f3f-4950-f3e9-6df6-07ca9148e6a6@cam.ac.uk>
+Date:   Mon, 11 Jan 2021 22:39:49 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
+In-Reply-To: <555ba53c-1b6b-6cf7-9887-52d4179f7456@oracle.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Willem de Bruijn <willemb@google.com>
+On 11/01/2021 22:09, boris.ostrovsky@oracle.com wrote:
+> On 1/11/21 10:29 AM, Roger Pau Monne wrote:
+>>  
+>> +	xdata.domid = kdata.dom;
+>> +	xdata.type = kdata.type;
+>> +	xdata.id = kdata.id;
+>> +
+>> +	if (!kdata.addr && !kdata.num) {
+>
+> I think we should not allow only one of them to be zero. If it's only kdata.num then we will end up with pfns array set to ZERO_SIZE_PTR (which is 0x10). We seem to be OK in that we are not derefencing pfns (either in kernel or in hypervisor) if number of frames is zero but IMO we shouldn't be tempting the fate.
+>
+>
+> (And if it's only kdata.addr then we will get a vma but I am not sure it will do what we want.)
 
-io_pgetevents has four variants, including compat variants of both
-timespec and sigmask.
+Passing addr == 0 without num being 0 is already an error in Xen, and
+passing num == 0 without addr being 0 is bogus and will be an error by
+the time I'm finished fixing this.
 
-With set_maybe_compat_user_sigmask helper, the latter can be
-deduplicated. Move the shared logic to new do_io_pgetevents,
-analogous to do_io_getevents.
+FWIW, the common usecase for non-trivial examples will be:
 
-Signed-off-by: Willem de Bruijn <willemb@google.com>
-Cc: Benjamin LaHaise <bcrl@kvack.org>
----
- fs/aio.c | 94 ++++++++++++++++++++++----------------------------------
- 1 file changed, 37 insertions(+), 57 deletions(-)
+xenforeignmem_resource_size(domid, type, id, &size);
+xenforeignmem_map_resource(domid, type, id, NULL, size, ...);
 
-diff --git a/fs/aio.c b/fs/aio.c
-index d213be7b8a7e..56460ab47d64 100644
---- a/fs/aio.c
-+++ b/fs/aio.c
-@@ -2101,6 +2101,31 @@ struct __aio_sigset {
- 	size_t		sigsetsize;
- };
- 
-+static long do_io_pgetevents(aio_context_t ctx_id,
-+		long min_nr,
-+		long nr,
-+		struct io_event __user *events,
-+		struct timespec64 *ts,
-+		const void __user *umask,
-+		size_t sigsetsize)
-+{
-+	bool interrupted;
-+	int ret;
-+
-+	ret = set_maybe_compat_user_sigmask(umask, sigsetsize);
-+	if (ret)
-+		return ret;
-+
-+	ret = do_io_getevents(ctx_id, min_nr, nr, events, ts);
-+
-+	interrupted = signal_pending(current);
-+	restore_saved_sigmask_unless(interrupted);
-+	if (interrupted && !ret)
-+		ret = -ERESTARTNOHAND;
-+
-+	return ret;
-+}
-+
- SYSCALL_DEFINE6(io_pgetevents,
- 		aio_context_t, ctx_id,
- 		long, min_nr,
-@@ -2111,8 +2136,6 @@ SYSCALL_DEFINE6(io_pgetevents,
- {
- 	struct __aio_sigset	ksig = { NULL, };
- 	struct timespec64	ts;
--	bool interrupted;
--	int ret;
- 
- 	if (timeout && unlikely(get_timespec64(&ts, timeout)))
- 		return -EFAULT;
-@@ -2120,18 +2143,9 @@ SYSCALL_DEFINE6(io_pgetevents,
- 	if (usig && copy_from_user(&ksig, usig, sizeof(ksig)))
- 		return -EFAULT;
- 
--	ret = set_user_sigmask(ksig.sigmask, ksig.sigsetsize);
--	if (ret)
--		return ret;
--
--	ret = do_io_getevents(ctx_id, min_nr, nr, events, timeout ? &ts : NULL);
--
--	interrupted = signal_pending(current);
--	restore_saved_sigmask_unless(interrupted);
--	if (interrupted && !ret)
--		ret = -ERESTARTNOHAND;
--
--	return ret;
-+	return do_io_pgetevents(ctx_id, min_nr, nr, events,
-+				timeout ? &ts : NULL,
-+				ksig.sigmask, ksig.sigsetsize);
- }
- 
- #if defined(CONFIG_COMPAT_32BIT_TIME) && !defined(CONFIG_64BIT)
-@@ -2146,8 +2160,6 @@ SYSCALL_DEFINE6(io_pgetevents_time32,
- {
- 	struct __aio_sigset	ksig = { NULL, };
- 	struct timespec64	ts;
--	bool interrupted;
--	int ret;
- 
- 	if (timeout && unlikely(get_old_timespec32(&ts, timeout)))
- 		return -EFAULT;
-@@ -2155,19 +2167,9 @@ SYSCALL_DEFINE6(io_pgetevents_time32,
- 	if (usig && copy_from_user(&ksig, usig, sizeof(ksig)))
- 		return -EFAULT;
- 
--
--	ret = set_user_sigmask(ksig.sigmask, ksig.sigsetsize);
--	if (ret)
--		return ret;
--
--	ret = do_io_getevents(ctx_id, min_nr, nr, events, timeout ? &ts : NULL);
--
--	interrupted = signal_pending(current);
--	restore_saved_sigmask_unless(interrupted);
--	if (interrupted && !ret)
--		ret = -ERESTARTNOHAND;
--
--	return ret;
-+	return do_io_pgetevents(ctx_id, min_nr, nr, events,
-+				timeout ? &ts : NULL,
-+				ksig.sigmask, ksig.sigsetsize);
- }
- 
- #endif
-@@ -2213,8 +2215,6 @@ COMPAT_SYSCALL_DEFINE6(io_pgetevents,
- {
- 	struct __compat_aio_sigset ksig = { 0, };
- 	struct timespec64 t;
--	bool interrupted;
--	int ret;
- 
- 	if (timeout && get_old_timespec32(&t, timeout))
- 		return -EFAULT;
-@@ -2222,18 +2222,9 @@ COMPAT_SYSCALL_DEFINE6(io_pgetevents,
- 	if (usig && copy_from_user(&ksig, usig, sizeof(ksig)))
- 		return -EFAULT;
- 
--	ret = set_compat_user_sigmask(compat_ptr(ksig.sigmask), ksig.sigsetsize);
--	if (ret)
--		return ret;
--
--	ret = do_io_getevents(ctx_id, min_nr, nr, events, timeout ? &t : NULL);
--
--	interrupted = signal_pending(current);
--	restore_saved_sigmask_unless(interrupted);
--	if (interrupted && !ret)
--		ret = -ERESTARTNOHAND;
--
--	return ret;
-+	return do_io_pgetevents(ctx_id, min_nr, nr, events,
-+				timeout ? &t : NULL,
-+				compat_ptr(ksig.sigmask), ksig.sigsetsize);
- }
- 
- #endif
-@@ -2248,8 +2239,6 @@ COMPAT_SYSCALL_DEFINE6(io_pgetevents_time64,
- {
- 	struct __compat_aio_sigset ksig = { 0, };
- 	struct timespec64 t;
--	bool interrupted;
--	int ret;
- 
- 	if (timeout && get_timespec64(&t, timeout))
- 		return -EFAULT;
-@@ -2257,17 +2246,8 @@ COMPAT_SYSCALL_DEFINE6(io_pgetevents_time64,
- 	if (usig && copy_from_user(&ksig, usig, sizeof(ksig)))
- 		return -EFAULT;
- 
--	ret = set_compat_user_sigmask(compat_ptr(ksig.sigmask), ksig.sigsetsize);
--	if (ret)
--		return ret;
--
--	ret = do_io_getevents(ctx_id, min_nr, nr, events, timeout ? &t : NULL);
--
--	interrupted = signal_pending(current);
--	restore_saved_sigmask_unless(interrupted);
--	if (interrupted && !ret)
--		ret = -ERESTARTNOHAND;
--
--	return ret;
-+	return do_io_pgetevents(ctx_id, min_nr, nr, events,
-+				timeout ? &t : NULL,
-+				compat_ptr(ksig.sigmask), ksig.sigsetsize);
- }
- #endif
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
+which translates into:
 
+ioctl(MAP_RESOURCE, NULL, 0) => size
+mmap(NULL, size, ...) => ptr
+ioctl(MAP_RESOURCE, ptr, size)
+
+from the kernels point of view, and two hypercalls from Xen's point of
+view.  The NULL's above are expected to be the common case for letting
+the kernel chose the vma, but ought to be filled in by the time the
+second ioctl() occurs.
+
+See
+https://lore.kernel.org/xen-devel/20200922182444.12350-1-andrew.cooper3@citrix.com/T/#u
+for all the gory details.
+
+~Andrew
