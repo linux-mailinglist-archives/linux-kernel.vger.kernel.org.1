@@ -2,117 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B74B02F10E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:15:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF702F10DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:12:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728975AbhAKLM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:12:59 -0500
-Received: from mga04.intel.com ([192.55.52.120]:49836 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728318AbhAKLM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:12:59 -0500
-IronPort-SDR: UT4t2gbYd+bzgmE0+ozHgXlXzYfNGK5HGsZOBteM2ZswE6OvjtzpfVpYFbrkGI7/C/2R3v18tN
- IHcZFMLNmJFg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9860"; a="175265217"
-X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
-   d="scan'208";a="175265217"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 03:11:11 -0800
-IronPort-SDR: 9PcpfJcInE5757IqGJ9eeWzQh5eSTfsETODmj/Wo4QxbpmrLMR//xlqZ3GHCyMzWfv1wZ84S3X
- 89lg3ebf8wkA==
-X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
-   d="scan'208";a="399763025"
-Received: from kbrownfi-mobl2.amr.corp.intel.com ([10.212.201.85])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 03:11:06 -0800
-Message-ID: <7a7de1fedb49489fddf7eac791149f546adccad1.camel@linux.intel.com>
-Subject: Re: [PATCH 2/2][v2] cpufreq: intel_pstate: Get percpu max freq via
- HWP MSR register if available
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Chen Yu <yu.c.chen@intel.com>, Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhang Rui <rui.zhang@intel.com>,
-        Wendy Wang <wendy.wang@intel.com>
-Date:   Mon, 11 Jan 2021 03:11:02 -0800
-In-Reply-To: <0ca097c7bbf58415b1df150ea50cb37579f8f8ab.1610338353.git.yu.c.chen@intel.com>
-References: <cover.1610338353.git.yu.c.chen@intel.com>
-         <0ca097c7bbf58415b1df150ea50cb37579f8f8ab.1610338353.git.yu.c.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
+        id S1728844AbhAKLMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:12:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728318AbhAKLMe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 06:12:34 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0AFC061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 03:11:54 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id 2so10911555qtt.10
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 03:11:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=eO8TrWdvw4R4xWpTIDUEJA/5vB5dkqjiiFS6laGpRo4=;
+        b=zdNV9cyPJhbXvAYit+eFFL2qw89Zc3csdcN2l3OruzXH7TCr9dA/ZePlv4iJzqdASu
+         v6p6soyOkxGFHJtUu0q+vXuoa+7Q3EyF2BNNJU6ZOr/Y5aKyuyTZBdHmNBYFQiS9QvZP
+         mhJDJ1N/qUqyU5elveqZFzrtdmCZ6PAXiRY6PXq7iZ3B7ZqMWcLlgCjoHLuY1G0CHbvr
+         8Tjh7tuw48LchinkPiLfogSZfOrxpMe9WbigvCnP7AqX/Tm9gSK6LAYfWz10MgZFD6ws
+         8mOAcEXaZDu2KGsYqXMcONYKVoxhyRL1WD7l15r664G8Ngsj4iEOE15s/9XnIEx/Q6U7
+         LyCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eO8TrWdvw4R4xWpTIDUEJA/5vB5dkqjiiFS6laGpRo4=;
+        b=lZN2Rf8qpTBvV0IIJovi7SBVdAg8oojeiVMjocJrHgee7WVNTJAKftEDTxXQdNUbRA
+         VRujeZ2vvy7rV/HklHO62xeFrq1e1okSk8+CKOV+raoWlvMNpSz1MucLVCS1svEJ8nyU
+         KZGKBnMGfHLx1+rnW9Dy+A4NGlrLpCnbIlhIrZp0JQnibHJ8FlFNu+UAZYqAy/A/sZgq
+         3iCz/DvlZTUPkQ9nvTWdq05RahA+4MzVMiY78+BO3Oh04iTG4vvytkdkkmkDnqx3DCKF
+         YvSJ6Jsey6HT9kMD+mMCtL7UZTC/aCWpdBJIBgNMegxaF8a3gHVI+xnKXnNBU9or7635
+         xAig==
+X-Gm-Message-State: AOAM533tPekbXLdMuoF0JJgvOPNFsZCeuNnj59STar7B78Oq9bN51Mtb
+        Cq69S6CnGEKWF8MQ1cUmMsD2f6y+CVZaoQMM5sQTkg==
+X-Google-Smtp-Source: ABdhPJxpC28EzCkh1w3QBeeBUERjVmd/FUg4zbMTTJGhKGeBof8NghzI/sBFo9v/BO8nPBRmFbWdqg1fWc8ZzgpcFtE=
+X-Received: by 2002:ac8:5296:: with SMTP id s22mr14533706qtn.343.1610363513505;
+ Mon, 11 Jan 2021 03:11:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1610306582-16641-1-git-send-email-stefanc@marvell.com>
+In-Reply-To: <1610306582-16641-1-git-send-email-stefanc@marvell.com>
+From:   Marcin Wojtas <mw@semihalf.com>
+Date:   Mon, 11 Jan 2021 12:11:42 +0100
+Message-ID: <CAPv3WKcCJkQxsg3dywy2ZW+e7eyy8ZzofHsTc1WO+e9wXP78Yw@mail.gmail.com>
+Subject: Re: [PATCH net ] net: mvpp2: Remove Pause and Asym_Pause support
+To:     Stefan Chulski <stefanc@marvell.com>
+Cc:     netdev <netdev@vger.kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>, nadavh@marvell.com,
+        Yan Markman <ymarkman@marvell.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Russell King <rmk+kernel@armlinux.org.uk>, atenart@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-01-11 at 15:43 +0800, Chen Yu wrote:
-> Currently when turbo is disabled(either by BIOS or by the user), the
-> intel_pstate
-> driver reads the max frequency from the package-wide
-> MSR_PLATFORM_INFO(0xce) register.
-> However on asymmetric platforms it is possible in theory that small
-> and big core with
-> HWP enabled might have different max cpu frequency
-max non-turbo frequency (although code call max_freq).
-
-Thanks,
-Srinivas
-
-> , because the MSR_HWP_CAPABILITIES
-> is percpu scope according to Intel Software Developer Manual.
-> 
-> The turbo max freq is already percpu basis in current code, thus make
-> similar change
-> to the max non-turbo frequency as well.
-> 
-> Reported-by: Wendy Wang <wendy.wang@intel.com>
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+niedz., 10 sty 2021 o 20:25 <stefanc@marvell.com> napisa=C5=82(a):
+>
+> From: Stefan Chulski <stefanc@marvell.com>
+>
+> Packet Processor hardware not connected to MAC flow control unit and
+> cannot support TX flow control.
+> This patch disable flow control support.
+>
+> Fixes: 3f518509dedc ("ethernet: Add new driver for Marvell Armada 375 net=
+work unit")
+> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
 > ---
-> v2: per Srinivas' suggestion, avoid duplicated assignment of
-> max_pstate.
+>  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/ne=
+t/ethernet/marvell/mvpp2/mvpp2_main.c
+> index 82c6bef..d04171d 100644
+> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+> @@ -5861,8 +5861,6 @@ static void mvpp2_phylink_validate(struct phylink_c=
+onfig *config,
+>
+>         phylink_set(mask, Autoneg);
+>         phylink_set_port_modes(mask);
+> -       phylink_set(mask, Pause);
+> -       phylink_set(mask, Asym_Pause);
+>
+>         switch (state->interface) {
+>         case PHY_INTERFACE_MODE_10GBASER:
 > --
->  drivers/cpufreq/intel_pstate.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/cpufreq/intel_pstate.c
-> b/drivers/cpufreq/intel_pstate.c
-> index bd3dd1be73ba..f2d18991d969 100644
-> --- a/drivers/cpufreq/intel_pstate.c
-> +++ b/drivers/cpufreq/intel_pstate.c
-> @@ -1725,11 +1725,9 @@ static void
-> intel_pstate_max_within_limits(struct cpudata *cpu)
->  static void intel_pstate_get_cpu_pstates(struct cpudata *cpu)
->  {
->         cpu->pstate.min_pstate = pstate_funcs.get_min();
-> -       cpu->pstate.max_pstate = pstate_funcs.get_max();
->         cpu->pstate.max_pstate_physical =
-> pstate_funcs.get_max_physical();
->         cpu->pstate.turbo_pstate = pstate_funcs.get_turbo();
->         cpu->pstate.scaling = pstate_funcs.get_scaling();
-> -       cpu->pstate.max_freq = cpu->pstate.max_pstate * cpu-
-> >pstate.scaling;
->  
->         if (hwp_active && !hwp_mode_bdw) {
->                 unsigned int phy_max, current_max, guar_state;
-> @@ -1737,8 +1735,12 @@ static void
-> intel_pstate_get_cpu_pstates(struct cpudata *cpu)
->                 intel_pstate_get_hwp_max(cpu, &phy_max, &current_max,
-> &guar_state);
->                 cpu->pstate.turbo_freq = phy_max * cpu-
-> >pstate.scaling;
->                 cpu->pstate.turbo_pstate = phy_max;
-> +               cpu->pstate.max_pstate = guar_state;
-> +               cpu->pstate.max_freq = guar_state * cpu-
-> >pstate.scaling;
->         } else {
->                 cpu->pstate.turbo_freq = cpu->pstate.turbo_pstate *
-> cpu->pstate.scaling;
-> +               cpu->pstate.max_pstate = pstate_funcs.get_max();
-> +               cpu->pstate.max_freq = cpu->pstate.max_pstate * cpu-
-> >pstate.scaling;
->         }
->  
->         if (pstate_funcs.get_aperf_mperf_shift)
+> 1.9.1
+>
 
+Acked-by: Marcin Wojtas <mw@semihalf.com>
 
+Thanks!
