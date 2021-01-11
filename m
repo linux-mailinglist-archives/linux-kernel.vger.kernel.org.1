@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A9EC2F15B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF0892F16D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387739AbhAKNnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:43:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59068 "EHLO mail.kernel.org"
+        id S1729459AbhAKNGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:06:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730789AbhAKNL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:11:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EBDD21534;
-        Mon, 11 Jan 2021 13:11:16 +0000 (UTC)
+        id S1728530AbhAKNFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:05:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6440222527;
+        Mon, 11 Jan 2021 13:05:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370676;
-        bh=dCWYoSgP0H6MmMbGD2bGUmY/0stEmMVXnyrvmkctCRs=;
+        s=korg; t=1610370333;
+        bh=sUKfxwrbimKxmFEzL1rsXWGJvE5P8LG7qKPxBGm+uMQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iRTfISL/sqt7jQhhLXjGfivls7f9PBROrg3GG7V4lQijfPUO71S7lBif20Yw0aiew
-         KVYxU7xTFhnJsRs52vtKzuBY5m+zayj1mHhW2p6bPBTh1z59I4avw/uS9pgZNF5uT0
-         sqz3qS2p1/TGWTyvHXoPDVPnWFux6EJgeqN2T3Sw=
+        b=S+3PdVEi0qQKUM8jlYv5IJfRlpNXm56hbHgWLRJNjORGlzvWtdZRCy5JO69fiKS2h
+         bYu/CrO8jmyyYl4m6zmKuJt/VnI4LUM4Qpo/ycq5JFP4Dt8yrt545swDHsH0M34DlB
+         0amQXe5Zpvruv05LZe6k66OueG8uReJExAUw0XqQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Machek <pavel@denx.de>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 5.4 49/92] crypto: ecdh - avoid buffer overflow in ecdh_set_secret()
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        syzbot+297d20e437b79283bf6d@syzkaller.appspotmail.com,
+        Yuyang Du <yuyang.du@intel.com>,
+        Shuah Khan <shuahkh@osg.samsung.com>, linux-usb@vger.kernel.org
+Subject: [PATCH 4.14 34/57] usb: usbip: vhci_hcd: protect shift size
 Date:   Mon, 11 Jan 2021 14:01:53 +0100
-Message-Id: <20210111130041.505768530@linuxfoundation.org>
+Message-Id: <20210111130035.378296325@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
-References: <20210111130039.165470698@linuxfoundation.org>
+In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
+References: <20210111130033.715773309@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,41 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Randy Dunlap <rdunlap@infradead.org>
 
-commit 0aa171e9b267ce7c52d3a3df7bc9c1fc0203dec5 upstream.
+commit 718bf42b119de652ebcc93655a1f33a9c0d04b3c upstream.
 
-Pavel reports that commit 17858b140bf4 ("crypto: ecdh - avoid unaligned
-accesses in ecdh_set_secret()") fixes one problem but introduces another:
-the unconditional memcpy() introduced by that commit may overflow the
-target buffer if the source data is invalid, which could be the result of
-intentional tampering.
+Fix shift out-of-bounds in vhci_hcd.c:
 
-So check params.key_size explicitly against the size of the target buffer
-before validating the key further.
+  UBSAN: shift-out-of-bounds in ../drivers/usb/usbip/vhci_hcd.c:399:41
+  shift exponent 768 is too large for 32-bit type 'int'
 
-Fixes: 17858b140bf4 ("crypto: ecdh - avoid unaligned accesses in ecdh_set_secret()")
-Reported-by: Pavel Machek <pavel@denx.de>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: 03cd00d538a6 ("usbip: vhci-hcd: Set the vhci structure up to work")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: syzbot+297d20e437b79283bf6d@syzkaller.appspotmail.com
+Cc: Yuyang Du <yuyang.du@intel.com>
+Cc: Shuah Khan <shuahkh@osg.samsung.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201229071309.18418-1-rdunlap@infradead.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- crypto/ecdh.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/usbip/vhci_hcd.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/crypto/ecdh.c
-+++ b/crypto/ecdh.c
-@@ -39,7 +39,8 @@ static int ecdh_set_secret(struct crypto
- 	struct ecdh params;
- 	unsigned int ndigits;
- 
--	if (crypto_ecdh_decode_key(buf, len, &params) < 0)
-+	if (crypto_ecdh_decode_key(buf, len, &params) < 0 ||
-+	    params.key_size > sizeof(ctx->private_key))
- 		return -EINVAL;
- 
- 	ndigits = ecdh_supported_curve(params.curve_id);
+--- a/drivers/usb/usbip/vhci_hcd.c
++++ b/drivers/usb/usbip/vhci_hcd.c
+@@ -410,6 +410,8 @@ static int vhci_hub_control(struct usb_h
+ 		default:
+ 			usbip_dbg_vhci_rh(" ClearPortFeature: default %x\n",
+ 					  wValue);
++			if (wValue >= 32)
++				goto error;
+ 			vhci_hcd->port_status[rhport] &= ~(1 << wValue);
+ 			break;
+ 		}
 
 
