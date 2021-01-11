@@ -2,90 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91BC92F2191
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:13:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE432F218D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:12:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728173AbhAKVMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 16:12:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49504 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725917AbhAKVM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 16:12:29 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610399507; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=UZfTOTlI/9ojCFP5Snsu4a2nRYo71yHUjRX0aMyhfAc=;
-        b=YVOoDyLn9c2TcxGZQXMSDkpiSUm7YduNbT0bx4H4FTUnJSrJIHOAhWgLFTB5GkuUh/klSu
-        W43Wb97mN1/tdlwvWbrDgS0CzF/gQ2wELT+lxcfdDry0J5JsWTHcyzzJ4hwdQXqU7d3psB
-        txVB14+JloGwG23h4HOp7Q4sN4twtGk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8828EB800;
-        Mon, 11 Jan 2021 21:11:47 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 831E3DA701; Mon, 11 Jan 2021 22:09:55 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.11-rc4
-Date:   Mon, 11 Jan 2021 22:09:55 +0100
-Message-Id: <cover.1610386850.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.29.2
+        id S1727073AbhAKVLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 16:11:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31276 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725917AbhAKVLr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 16:11:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610399420;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yvIgB4nrBqYWTewh1VPtMYxcnrmKC+gvynDYScYKR+g=;
+        b=P9FYcH1NEpXR6HUyAQOriowMwOxkNQ0lVpdMzQdnqDeswf/CFSBnuDeJnOxzgZeiRaOe6F
+        Edh5RJJ2uatEQ42v1ND0iwPVGPxCh7XsLQYe3wQewAmhYLo0/QoO5vrCNyb5rZkASskazB
+        ZkjiAmWL2Jmk6DTL7nNUh8ifuDlbU5Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-222-U2w2WC-kMpaizlOjw3acGA-1; Mon, 11 Jan 2021 16:10:18 -0500
+X-MC-Unique: U2w2WC-kMpaizlOjw3acGA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 799BFB8118;
+        Mon, 11 Jan 2021 21:10:15 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 086155D9DB;
+        Mon, 11 Jan 2021 21:10:13 +0000 (UTC)
+Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 10BLADAJ028070;
+        Mon, 11 Jan 2021 16:10:13 -0500
+Received: from localhost (mpatocka@localhost)
+        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 10BLABk6028066;
+        Mon, 11 Jan 2021 16:10:12 -0500
+X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
+Date:   Mon, 11 Jan 2021 16:10:11 -0500 (EST)
+From:   Mikulas Patocka <mpatocka@redhat.com>
+X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
+To:     Matthew Wilcox <willy@infradead.org>
+cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Mingkai Dong <mingkaidong@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Steven Whitehouse <swhiteho@redhat.com>,
+        Eric Sandeen <esandeen@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Wang Jianchao <jianchao.wan9@gmail.com>,
+        "Kani, Toshi" <toshi.kani@hpe.com>,
+        "Norton, Scott J" <scott.norton@hpe.com>,
+        "Tadakamadla, Rajesh" <rajesh.tadakamadla@hpe.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nvdimm@lists.01.org
+Subject: Re: Expense of read_iter
+In-Reply-To: <20210111001805.GD35215@casper.infradead.org>
+Message-ID: <alpine.LRH.2.02.2101111126150.31017@file01.intranet.prod.int.rdu2.redhat.com>
+References: <alpine.LRH.2.02.2101061245100.30542@file01.intranet.prod.int.rdu2.redhat.com> <20210107151125.GB5270@casper.infradead.org> <alpine.LRH.2.02.2101071110080.30654@file01.intranet.prod.int.rdu2.redhat.com> <20210110061321.GC35215@casper.infradead.org>
+ <alpine.LRH.2.02.2101101458420.7366@file01.intranet.prod.int.rdu2.redhat.com> <20210111001805.GD35215@casper.infradead.org>
+User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-more material for stable trees. Please pull, thanks.
 
-- tree-checker: check item end overflow
+On Mon, 11 Jan 2021, Matthew Wilcox wrote:
 
-- fix false warning during relocation regarding extent type
+> On Sun, Jan 10, 2021 at 04:19:15PM -0500, Mikulas Patocka wrote:
+> > I put counters into vfs_read and vfs_readv.
+> > 
+> > After a fresh boot of the virtual machine, the counters show "13385 4". 
+> > After a kernel compilation they show "4475220 8".
+> > 
+> > So, the readv path is almost unused.
+> > 
+> > My reasoning was that we should optimize for the "read" path and glue the 
+> > "readv" path on the top of that. Currently, the kernel is doing the 
+> > opposite - optimizing for "readv" and glueing "read" on the top of it.
+> 
+> But it's not about optimising for read vs readv.  read_iter handles
+> a host of other cases, such as pread(), preadv(), AIO reads, splice,
+> and reads to in-kernel buffers.
 
-- fix inode flushing logic, caused notable performance regression (since
-  5.10)
+These things are used rarely compared to "read" and "pread". (BTW. "pread" 
+could be handled by the read method too).
 
-- debugging fixups:
-  - print correct offset for reloc tree key
-  - pass reliable fs_info pointer to error reporting helper
+What's the reason why do you think that the "read" syscall should use the 
+"read_iter" code path? Is it because duplicating the logic is discouraged? 
+Or because of code size? Or something else?
 
-----------------------------------------------------------------
-The following changes since commit a8cc263eb58ca133617662a5a5e07131d0ebf299:
+> Some device drivers abused read() vs readv() to actually return different 
+> information, depending which you called.  That's why there's now a
+> prohibition against both.
+> 
+> So let's figure out how to make iter_read() perform well for sys_read().
 
-  btrfs: run delayed iputs when remounting RO to avoid leaking them (2020-12-18 15:00:08 +0100)
+I've got another idea - in nvfs_read_iter, test if the iovec contains just 
+one entry and call nvfs_read_locked if it does.
 
-are available in the Git repository at:
+diff --git a/file.c b/file.c
+index f4b8a1a..e4d87b2 100644
+--- a/file.c
++++ b/file.c
+@@ -460,6 +460,10 @@ static ssize_t nvfs_read_iter(struct kiocb *iocb, struct iov_iter *iov)
+ 	if (!IS_DAX(&nmi->vfs_inode)) {
+ 		r = generic_file_read_iter(iocb, iov);
+ 	} else {
++		if (likely(iter_is_iovec(iov)) && likely(!iov->iov_offset) && likely(iov->nr_segs == 1)) {
++			r = nvfs_read_locked(nmi, iocb->ki_filp, iov->iov->iov_base, iov->count, true, &iocb->ki_pos);
++			goto unlock_ret;
++		}
+ #if 1
+ 		r = nvfs_rw_iter_locked(iocb, iov, false);
+ #else
+@@ -467,6 +471,7 @@ static ssize_t nvfs_read_iter(struct kiocb *iocb, struct iov_iter *iov)
+ #endif
+ 	}
+ 
++unlock_ret:
+ 	inode_unlock_shared(&nmi->vfs_inode);
+ 
+ 	return r;
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc3-tag
 
-for you to fetch changes up to e076ab2a2ca70a0270232067cd49f76cd92efe64:
 
-  btrfs: shrink delalloc pages instead of full inodes (2021-01-08 16:36:44 +0100)
+The result is:
 
-----------------------------------------------------------------
-Josef Bacik (2):
-      btrfs: print the actual offset in btrfs_root_name
-      btrfs: shrink delalloc pages instead of full inodes
+nvfs_read_iter			- 7.307s
+Al Viro's read_iter_locked	- 7.147s
+test for just one entry		- 7.010s
+the read method			- 6.782s
 
-Qu Wenruo (1):
-      btrfs: reloc: fix wrong file extent type check to avoid false ENOENT
+So far, this is the best way how to do it, but it's still 3.3% worse than 
+the read method. There's not anything more that could be optimized on the 
+filesystem level - the rest of optimizations must be done in the VFS.
 
-Su Yue (2):
-      btrfs: prevent NULL pointer dereference in extent_io_tree_panic
-      btrfs: tree-checker: check if chunk item end overflows
+Mikulas
 
- fs/btrfs/disk-io.c      |  2 +-
- fs/btrfs/extent_io.c    |  4 +---
- fs/btrfs/inode.c        | 60 +++++++++++++++++++++++++++++++++++--------------
- fs/btrfs/print-tree.c   | 10 ++++-----
- fs/btrfs/print-tree.h   |  2 +-
- fs/btrfs/relocation.c   |  7 +++++-
- fs/btrfs/space-info.c   |  4 +++-
- fs/btrfs/tree-checker.c |  7 ++++++
- 8 files changed, 67 insertions(+), 29 deletions(-)
