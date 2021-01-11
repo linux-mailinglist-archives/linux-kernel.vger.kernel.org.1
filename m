@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5C62F1720
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C53B2F1723
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:03:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727957AbhAKNFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:05:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51598 "EHLO mail.kernel.org"
+        id S1730269AbhAKNFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:05:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51772 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730200AbhAKNEq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:04:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DAD32255F;
-        Mon, 11 Jan 2021 13:04:04 +0000 (UTC)
+        id S1728346AbhAKNEw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:04:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 760A122515;
+        Mon, 11 Jan 2021 13:04:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370245;
-        bh=xZfgbdIZgnixBjkOpU9qNJuurp2/n8Tkx0NY8XmEcoM=;
+        s=korg; t=1610370251;
+        bh=8jl9gkz96iSt/IcIkfmZuHAkL1C82Yc2gSQ2KHN3JNo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qewFTdj34bmT4RL0umtFUcjslWZEFxi27Oh6S6KRzQ/DRbOWC1ha+fUsPmH3/N/lt
-         oA3UqzB0k+6DC+0I+J3eMP2sLmNQmctCWaQDnikznrz2ZJ8nHnjbW/KbRgAPfK+thB
-         J70ms47t6KwX9REaUdOdKVa4kA5sXl80Xr8Jxk/8=
+        b=zynqLT1cu1sNdlb5xbFx9obyqyaAIn0ALKhiwZcfPOa4pHDxLUPk5VlhNo8T8HHmh
+         DhDGhlsPeasviQSUy71C8hMH23ZVGKxBjwhAd8AUU0uzQW6ZOn6zDGMjoQ+Tg/D5E/
+         HBrGi/Gt+ool50AvzGKGbiAYlsa14tH5HnIgazzE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
-        Borislav Petkov <bp@suse.de>, Yi Zhang <yi.zhang@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 4.9 40/45] x86/mm: Fix leak of pmd ptlock
-Date:   Mon, 11 Jan 2021 14:01:18 +0100
-Message-Id: <20210111130035.573043718@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+d66bfadebca46cf61a2b@syzkaller.appspotmail.com,
+        Vasily Averin <vvs@virtuozzo.com>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 4.9 43/45] netfilter: ipset: fix shift-out-of-bounds in htable_bits()
+Date:   Mon, 11 Jan 2021 14:01:21 +0100
+Message-Id: <20210111130035.707078890@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130033.676306636@linuxfoundation.org>
 References: <20210111130033.676306636@linuxfoundation.org>
@@ -40,85 +42,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Williams <dan.j.williams@intel.com>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-commit d1c5246e08eb64991001d97a3bd119c93edbc79a upstream.
+commit 5c8193f568ae16f3242abad6518dc2ca6c8eef86 upstream.
 
-Commit
+htable_bits() can call jhash_size(32) and trigger shift-out-of-bounds
 
-  28ee90fe6048 ("x86/mm: implement free pmd/pte page interfaces")
+UBSAN: shift-out-of-bounds in net/netfilter/ipset/ip_set_hash_gen.h:151:6
+shift exponent 32 is too large for 32-bit type 'unsigned int'
+CPU: 0 PID: 8498 Comm: syz-executor519
+ Not tainted 5.10.0-rc7-next-20201208-syzkaller #0
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+ htable_bits net/netfilter/ipset/ip_set_hash_gen.h:151 [inline]
+ hash_mac_create.cold+0x58/0x9b net/netfilter/ipset/ip_set_hash_gen.h:1524
+ ip_set_create+0x610/0x1380 net/netfilter/ipset/ip_set_core.c:1115
+ nfnetlink_rcv_msg+0xecc/0x1180 net/netfilter/nfnetlink.c:252
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+ nfnetlink_rcv+0x1ac/0x420 net/netfilter/nfnetlink.c:600
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x907/0xe40 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-introduced a new location where a pmd was released, but neglected to
-run the pmd page destructor. In fact, this happened previously for a
-different pmd release path and was fixed by commit:
+This patch replaces htable_bits() by simple fls(hashsize - 1) call:
+it alone returns valid nbits both for round and non-round hashsizes.
+It is normal to set any nbits here because it is validated inside
+following htable_size() call which returns 0 for nbits>31.
 
-  c283610e44ec ("x86, mm: do not leak page->ptl for pmd page tables").
-
-This issue was hidden until recently because the failure mode is silent,
-but commit:
-
-  b2b29d6d0119 ("mm: account PMD tables like PTE tables")
-
-turns the failure mode into this signature:
-
- BUG: Bad page state in process lt-pmem-ns  pfn:15943d
- page:000000007262ed7b refcount:0 mapcount:-1024 mapping:0000000000000000 index:0x0 pfn:0x15943d
- flags: 0xaffff800000000()
- raw: 00affff800000000 dead000000000100 0000000000000000 0000000000000000
- raw: 0000000000000000 ffff913a029bcc08 00000000fffffbff 0000000000000000
- page dumped because: nonzero mapcount
- [..]
-  dump_stack+0x8b/0xb0
-  bad_page.cold+0x63/0x94
-  free_pcp_prepare+0x224/0x270
-  free_unref_page+0x18/0xd0
-  pud_free_pmd_page+0x146/0x160
-  ioremap_pud_range+0xe3/0x350
-  ioremap_page_range+0x108/0x160
-  __ioremap_caller.constprop.0+0x174/0x2b0
-  ? memremap+0x7a/0x110
-  memremap+0x7a/0x110
-  devm_memremap+0x53/0xa0
-  pmem_attach_disk+0x4ed/0x530 [nd_pmem]
-  ? __devm_release_region+0x52/0x80
-  nvdimm_bus_probe+0x85/0x210 [libnvdimm]
-
-Given this is a repeat occurrence it seemed prudent to look for other
-places where this destructor might be missing and whether a better
-helper is needed. try_to_free_pmd_page() looks like a candidate, but
-testing with setting up and tearing down pmd mappings via the dax unit
-tests is thus far not triggering the failure.
-
-As for a better helper pmd_free() is close, but it is a messy fit
-due to requiring an @mm arg. Also, ___pmd_free_tlb() wants to call
-paravirt_tlb_remove_table() instead of free_page(), so open-coded
-pgtable_pmd_page_dtor() seems the best way forward for now.
-
-Debugged together with Matthew Wilcox <willy@infradead.org>.
-
-Fixes: 28ee90fe6048 ("x86/mm: implement free pmd/pte page interfaces")
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Tested-by: Yi Zhang <yi.zhang@redhat.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/160697689204.605323.17629854984697045602.stgit@dwillia2-desk3.amr.corp.intel.com
+Fixes: 1feab10d7e6d("netfilter: ipset: Unified hash type generation")
+Reported-by: syzbot+d66bfadebca46cf61a2b@syzkaller.appspotmail.com
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Acked-by: Jozsef Kadlecsik <kadlec@netfilter.org>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/mm/pgtable.c |    2 ++
- 1 file changed, 2 insertions(+)
+ net/netfilter/ipset/ip_set_hash_gen.h |   20 +++++---------------
+ 1 file changed, 5 insertions(+), 15 deletions(-)
 
---- a/arch/x86/mm/pgtable.c
-+++ b/arch/x86/mm/pgtable.c
-@@ -697,6 +697,8 @@ int pud_free_pmd_page(pud_t *pud, unsign
- 	}
+--- a/net/netfilter/ipset/ip_set_hash_gen.h
++++ b/net/netfilter/ipset/ip_set_hash_gen.h
+@@ -113,20 +113,6 @@ htable_size(u8 hbits)
+ 	return hsize * sizeof(struct hbucket *) + sizeof(struct htable);
+ }
  
- 	free_page((unsigned long)pmd_sv);
-+
-+	pgtable_pmd_page_dtor(virt_to_page(pmd));
- 	free_page((unsigned long)pmd);
+-/* Compute htable_bits from the user input parameter hashsize */
+-static u8
+-htable_bits(u32 hashsize)
+-{
+-	/* Assume that hashsize == 2^htable_bits */
+-	u8 bits = fls(hashsize - 1);
+-
+-	if (jhash_size(bits) != hashsize)
+-		/* Round up to the first 2^n value */
+-		bits = fls(hashsize);
+-
+-	return bits;
+-}
+-
+ #ifdef IP_SET_HASH_WITH_NETS
+ #if IPSET_NET_COUNT > 1
+ #define __CIDR(cidr, i)		(cidr[i])
+@@ -1309,7 +1295,11 @@ IPSET_TOKEN(HTYPE, _create)(struct net *
+ 	get_random_bytes(&h->initval, sizeof(h->initval));
+ 	set->timeout = IPSET_NO_TIMEOUT;
  
- 	return 1;
+-	hbits = htable_bits(hashsize);
++	/* Compute htable_bits from the user input parameter hashsize.
++	 * Assume that hashsize == 2^htable_bits,
++	 * otherwise round up to the first 2^n value.
++	 */
++	hbits = fls(hashsize - 1);
+ 	hsize = htable_size(hbits);
+ 	if (hsize == 0) {
+ 		kfree(h);
 
 
