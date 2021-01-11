@@ -2,70 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14F02F22B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A910D2F22BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390239AbhAKW0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 17:26:09 -0500
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:43801 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390076AbhAKW0I (ORCPT
+        id S2390289AbhAKW0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 17:26:50 -0500
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:33425 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389909AbhAKW0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:26:08 -0500
-Received: by mail-ot1-f44.google.com with SMTP id q25so405774otn.10;
-        Mon, 11 Jan 2021 14:25:53 -0800 (PST)
+        Mon, 11 Jan 2021 17:26:50 -0500
+Received: by mail-ot1-f45.google.com with SMTP id b24so457511otj.0;
+        Mon, 11 Jan 2021 14:26:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=4PfTLxMOVvDlbCq/bvKfXWzNilh/iML3qIR50BxBSjY=;
-        b=r38AQsZp7zMwFP4VNmVSYxjO+L1Rf1FOQ1v+kuQXVZHil2+6hu1c65KOGjIQxozLB7
-         K+0wrRbBpl/AvPk3nSXeJcrFCX4BYlaF4gx/1PCWZNf4BjjDcQBYx/9g6c3dMHUVXstx
-         Jm3fUKkxO2qil+A8QWBN8XyrC0QTgMxpIWWl1mkhhohjcJ+0J2zvY9TAzio/6Xdedu6R
-         8e9YPh9s0A/v3LtY1jTodWrnHP0lyOJl8lIb54a+2z+nXq7Lcd7S50wbunEBMRxx8al3
-         FFaiQiQedcCuOFIynrOPtPqQOZLlQcURF0Yds4R9HZ6fsPYcRlm3A+WETDf6IEYBLSJJ
-         gMnA==
-X-Gm-Message-State: AOAM531SDipokK/D4R27Y+oWjgnzn5DajmfTQeFIUgJinadrDu4r2N5c
-        nOV5ixckQzSSp7Ov6d9xeQ==
-X-Google-Smtp-Source: ABdhPJxHduQTK2m6PjKWQtnXIxp9PMu6VCRKLlpfa4iwt0UhBX6oIT2kiPwO6YaYT+/NsMM2CLOzTw==
-X-Received: by 2002:a05:6830:1d8e:: with SMTP id y14mr834615oti.356.1610403927646;
-        Mon, 11 Jan 2021 14:25:27 -0800 (PST)
+        bh=JwN7V3dbH4OLsq431395GidD0QpUQFZHGYXmdb5Rf9k=;
+        b=ui01wP7NrexBJy1jPHFXQw+lIUf7GUFD1YruN988IZGrMEdSA0iIt3z+adEANnKH7a
+         wUHk/iuszgyJgbu2iYxga5UEr8aCu76KhPZe5wwHIyWIC1LZkyxI+lddtAcxnUAj8w6J
+         cRPWDwU9K1775KKmZ26v4m0UyvYzo2zmoWAivKs2zej4MSwCUfenZtezBcncYEbOggCi
+         s3YosG99HQYkdZbVvkCJEjkYjDl3Rvcn8MOSIx1hM6WuJ/jsw+yt/o61KRa9zhN3k9NX
+         LHLPFekt1gjcZQJvAS1BejblPeJ5Y3bwsK4yibFtmA3vqqEY/8OiaPAq1H3mdI8Dpe2+
+         TnYw==
+X-Gm-Message-State: AOAM530UBGFB19CCVGRPROrKxLc7rjs55S7Qa1KBp9DXlzcZ4F3eCKUd
+        4G7uXjweYoQSzOS44vOl8Q==
+X-Google-Smtp-Source: ABdhPJwVoRrLT8QjezvnMiijQU5N/avlkOQoZaMcSwJF15NUAqxdSaEP/lhVB/2Cqp0+AuWKsvUjVA==
+X-Received: by 2002:a05:6830:578:: with SMTP id f24mr837995otc.7.1610403969311;
+        Mon, 11 Jan 2021 14:26:09 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id t26sm238517otm.17.2021.01.11.14.25.26
+        by smtp.gmail.com with ESMTPSA id w9sm242492otq.44.2021.01.11.14.26.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 14:25:26 -0800 (PST)
-Received: (nullmailer pid 3168352 invoked by uid 1000);
-        Mon, 11 Jan 2021 22:25:25 -0000
-Date:   Mon, 11 Jan 2021 16:25:25 -0600
+        Mon, 11 Jan 2021 14:26:08 -0800 (PST)
+Received: (nullmailer pid 3169359 invoked by uid 1000);
+        Mon, 11 Jan 2021 22:26:07 -0000
+Date:   Mon, 11 Jan 2021 16:26:07 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, bjorn.andersson@linaro.org,
-        linux-remoteproc@vger.kernel.org, ohad@wizery.com
-Subject: Re: [PATCH v2 3/5] dt-bindings: remoteproc: Add the documentation
- for Meson AO ARC rproc
-Message-ID: <20210111222525.GA3168299@robh.at.kernel.org>
-References: <20210102205904.2691120-1-martin.blumenstingl@googlemail.com>
- <20210102205904.2691120-4-martin.blumenstingl@googlemail.com>
+To:     John-Eric Kamps <johnny86@gmx.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Alistair Francis <alistair@alistair23.me>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: net: bluetooth: Add rtl8723ds-bluetooth
+Message-ID: <20210111222607.GA3169309@robh.at.kernel.org>
+References: <20210102213803.1097624-1-johnny86@gmx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210102205904.2691120-4-martin.blumenstingl@googlemail.com>
+In-Reply-To: <20210102213803.1097624-1-johnny86@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 02 Jan 2021 21:59:02 +0100, Martin Blumenstingl wrote:
-> Amlogic Meson6, Meson8, Meson8b and Meson8m2 SoCs embed an ARC EM4
-> controller for always-on operations, typically used for managing system
-> suspend.
+On Sat, 02 Jan 2021 22:38:03 +0100, John-Eric Kamps wrote:
+> Add binding documentation for bluetooth part of RTL8723DS
 > 
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> Signed-off-by: John-Eric Kamps <johnny86@gmx.de>
 > ---
->  .../remoteproc/amlogic,meson-mx-ao-arc.yaml   | 87 +++++++++++++++++++
->  1 file changed, 87 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/remoteproc/amlogic,meson-mx-ao-arc.yaml
+>  Documentation/devicetree/bindings/net/realtek-bluetooth.yaml | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
