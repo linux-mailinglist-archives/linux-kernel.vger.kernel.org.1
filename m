@@ -2,140 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C2A2F0CB9
+	by mail.lfdr.de (Postfix) with ESMTP id E0B042F0CBB
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 07:04:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727324AbhAKGDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 01:03:09 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:30350 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbhAKGDI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 01:03:08 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610344968; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=rS57+Ry26VBvqzS/JbgOJTy503yPANHdZuGCYWXuK+0=;
- b=TwH2K7u3gNk24pIs5HFyliNnW7Qay2JmWgWm6cJZGYvDn/pj3rjVVowMdEJ8uVtVLANMzihb
- 17dZu6UGC31AUcUjU3hyKyKgUge/0GUT/WH3UGN4pQpWOJ4jDSvzUT0/Alf2ACLsoweoxWxf
- sGicw2mac6lXZvEQIX25SqBg9gM=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
- 5ffbe9eef1be2d22c4087be9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 06:02:22
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AC19BC43466; Mon, 11 Jan 2021 06:02:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E6809C433CA;
-        Mon, 11 Jan 2021 06:02:20 +0000 (UTC)
+        id S1727388AbhAKGDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 01:03:36 -0500
+Received: from muru.com ([72.249.23.125]:42646 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727363AbhAKGDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 01:03:36 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id BF72B80E4;
+        Mon, 11 Jan 2021 06:02:53 +0000 (UTC)
+Date:   Mon, 11 Jan 2021 08:02:50 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Arthur Demchenkov <spinal.by@gmail.com>,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>, ruleh <ruleh@gmx.de>,
+        Sebastian Reichel <sre@kernel.org>
+Subject: Re: [PATCH 4/5] Input: omap4-keypad - use PM runtime autosuspend
+Message-ID: <X/vqCs5/EDURprAJ@atomide.com>
+References: <20210110190529.46135-1-tony@atomide.com>
+ <20210110190529.46135-5-tony@atomide.com>
+ <X/vbqdQTTDg2UUaJ@google.com>
+ <X/vePMbD4fwsNb5Y@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 11 Jan 2021 14:02:20 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, bvanassche@acm.org,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        Jaegeuk Kim <jaegeuk@google.com>
-Subject: Re: [PATCH] scsi: ufs: should not override buffer lengh
-In-Reply-To: <6551e7d6dd7dc4132dc69e77a51f6f21@codeaurora.org>
-References: <20210111044443.1405049-1-jaegeuk@kernel.org>
- <6551e7d6dd7dc4132dc69e77a51f6f21@codeaurora.org>
-Message-ID: <e1b29f7cdd62cefcc9355baaed66641f@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/vePMbD4fwsNb5Y@atomide.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry, typo corrected.
+* Tony Lindgren <tony@atomide.com> [210111 05:13]:
+> * Dmitry Torokhov <dmitry.torokhov@gmail.com> [210111 05:01]:
+> > Hi Tony,
+> > 
+> > On Sun, Jan 10, 2021 at 09:05:28PM +0200, Tony Lindgren wrote:
+> > > @@ -350,15 +379,12 @@ static int omap4_keypad_probe(struct platform_device *pdev)
+> > >  
+> > >  	error = omap4_keypad_check_revision(&pdev->dev,
+> > >  					    keypad_data);
+> > > -	if (!error) {
+> > > -		/* Ensure device does not raise interrupts */
+> > > -		omap4_keypad_stop(keypad_data);
+> > > -	}
+> > > -
+> > > -	pm_runtime_put_sync(&pdev->dev);
+> > 
+> > Why are we moving this down? The idea was to make sure the power usage
+> > counters are correct even if we exit probe early.
+> 
+> Yes you are right, omap4_keypad_close() won't help with balancing the
+> get if we exit early.
+> 
+> > Can we call pm_runtime_mark_last_busy() and pm_runtime_put_autosuspend()
+> > here?
+> 
+> Yes that should work as there's no more register access during the probe.
 
-Hi Jaegeuk,
+Below is an updated version. I updated probe to use dev instead of
+&pdev->dev since we have it there. Does this look OK to you?
 
-I think the problem is that func ufshcd_read_desc_param() is not 
-expecting
-one access unsupported descriptors on RPMB LU.
+Regards,
 
-If we can get the right buf_len from func 
-ufshcd_map_desc_id_to_length(),
-the issue won't happen. - 
-https://lore.kernel.org/patchwork/patch/1323421/.
+Tony
 
-What do you think if we update ufshcd_map_desc_id_to_length(add one 
-param - desc_index)
-so that it can tell the correct buf_len in case of RPMB LU?
+8< ---------------------------
+From tony Mon Sep 17 00:00:00 2001
+From: Tony Lindgren <tony@atomide.com>
+Date: Sun, 10 Jan 2021 17:38:15 +0200
+Subject: [PATCH] Input: omap4-keypad - use PM runtime autosuspend
 
-Thanks,
-Can Guo.
+Implement PM runtime autosuspend support to prepare for adding handling to
+clear stuck last pressed key in the following patches. The hardware has
+support for autoidle and can wake up to keypress events.
 
-> On 2021-01-11 12:44, Jaegeuk Kim wrote:
->> From: Jaegeuk Kim <jaegeuk@google.com>
->> 
->> Kernel stack violation when getting unit_descriptor/wb_buf_alloc_units 
->> from
->> rpmb lun. The reason is the unit descriptor length is different per 
->> LU.
->> 
->> The lengh of Normal LU is 45, while the one of rpmb LU is 35.
->> 
->> int ufshcd_read_desc_param(struct ufs_hba *hba, ...)
->> {
->> 	param_offset=41;
->> 	param_size=4;
->> 	buff_len=45;
->> 	...
->> 	buff_len=35 by rpmb LU;
->> 
->> 	if (is_kmalloc) {
->> 		/* Make sure we don't copy more data than available */
->> 		if (param_offset + param_size > buff_len)
->> 			param_size = buff_len - param_offset;
->> 			--> param_size = 250;
->> 		memcpy(param_read_buf, &desc_buf[param_offset], param_size);
->> 		--> memcpy(param_read_buf, desc_buf+41, 250);
->> 
->> [  141.868974][ T9174] Kernel panic - not syncing: stack-protector:
->> Kernel stack is corrupted in: wb_buf_alloc_units_show+0x11c/0x11c
->> 	}
->> }
->> 
->> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
->> ---
->>  drivers/scsi/ufs/ufshcd.c | 8 ++++++--
->>  1 file changed, 6 insertions(+), 2 deletions(-)
->> 
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index 2a715f13fe1d..722697b57777 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -3293,8 +3293,12 @@ int ufshcd_read_desc_param(struct ufs_hba *hba,
->> 
->>  	if (is_kmalloc) {
->>  		/* Make sure we don't copy more data than available */
->> -		if (param_offset + param_size > buff_len)
->> -			param_size = buff_len - param_offset;
->> +		if (param_offset + param_size > buff_len) {
->> +			if (buff_len > param_offset)
->> +				param_size = buff_len - param_offset;
->> +			else
->> +				param_size = 0;
->> +		}
->>  		memcpy(param_read_buf, &desc_buf[param_offset], param_size);
->>  	}
->>  out:
+Let's also update omap4_keypad_probe() to use dev instead of &pdev->dev
+since we already have it from the earlier changes.
+
+Cc: Arthur Demchenkov <spinal.by@gmail.com>
+Cc: Carl Philipp Klemm <philipp@uvos.xyz>
+Cc: Merlijn Wajer <merlijn@wizzup.org>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: ruleh <ruleh@gmx.de>
+Cc: Sebastian Reichel <sre@kernel.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ drivers/input/keyboard/omap4-keypad.c | 51 ++++++++++++++++++++-------
+ 1 file changed, 39 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/input/keyboard/omap4-keypad.c b/drivers/input/keyboard/omap4-keypad.c
+--- a/drivers/input/keyboard/omap4-keypad.c
++++ b/drivers/input/keyboard/omap4-keypad.c
+@@ -172,9 +172,17 @@ static irqreturn_t omap4_keypad_irq_handler(int irq, void *dev_id)
+ static irqreturn_t omap4_keypad_irq_thread_fn(int irq, void *dev_id)
+ {
+ 	struct omap4_keypad *keypad_data = dev_id;
++	struct device *dev = keypad_data->input->dev.parent;
+ 	u32 low, high;
++	int error;
+ 	u64 keys;
+ 
++	error = pm_runtime_get_sync(dev);
++	if (error < 0) {
++		pm_runtime_put_noidle(dev);
++		return IRQ_NONE;
++	}
++
+ 	low = kbd_readl(keypad_data, OMAP4_KBD_FULLCODE31_0);
+ 	high = kbd_readl(keypad_data, OMAP4_KBD_FULLCODE63_32);
+ 	keys = low | (u64)high << 32;
+@@ -185,14 +193,23 @@ static irqreturn_t omap4_keypad_irq_thread_fn(int irq, void *dev_id)
+ 	kbd_write_irqreg(keypad_data, OMAP4_KBD_IRQSTATUS,
+ 			 kbd_read_irqreg(keypad_data, OMAP4_KBD_IRQSTATUS));
+ 
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_put_autosuspend(dev);
++
+ 	return IRQ_HANDLED;
+ }
+ 
+ static int omap4_keypad_open(struct input_dev *input)
+ {
+ 	struct omap4_keypad *keypad_data = input_get_drvdata(input);
++	struct device *dev = input->dev.parent;
++	int error;
+ 
+-	pm_runtime_get_sync(input->dev.parent);
++	error = pm_runtime_get_sync(dev);
++	if (error < 0) {
++		pm_runtime_put_noidle(dev);
++		return error;
++	}
+ 
+ 	disable_irq(keypad_data->irq);
+ 
+@@ -211,6 +228,9 @@ static int omap4_keypad_open(struct input_dev *input)
+ 
+ 	enable_irq(keypad_data->irq);
+ 
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_put_autosuspend(dev);
++
+ 	return 0;
+ }
+ 
+@@ -228,14 +248,20 @@ static void omap4_keypad_stop(struct omap4_keypad *keypad_data)
+ 
+ static void omap4_keypad_close(struct input_dev *input)
+ {
+-	struct omap4_keypad *keypad_data;
++	struct omap4_keypad *keypad_data = input_get_drvdata(input);
++	struct device *dev = input->dev.parent;
++	int error;
++
++	error = pm_runtime_get_sync(dev);
++	if (error < 0)
++		pm_runtime_put_noidle(dev);
+ 
+-	keypad_data = input_get_drvdata(input);
+ 	disable_irq(keypad_data->irq);
+ 	omap4_keypad_stop(keypad_data);
+ 	enable_irq(keypad_data->irq);
+ 
+-	pm_runtime_put_sync(input->dev.parent);
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_put_autosuspend(dev);
+ }
+ 
+ static int omap4_keypad_parse_dt(struct device *dev,
+@@ -282,6 +308,7 @@ static int omap4_keypad_check_revision(struct device *dev,
+ 
+ static void omap4_disable_pm(void *d)
+ {
++	pm_runtime_dont_use_autosuspend(d);
+ 	pm_runtime_disable(d);
+ }
+ 
+@@ -314,6 +341,7 @@ static int omap4_keypad_probe(struct platform_device *pdev)
+ 
+ 	keypad_data->irq = irq;
+ 	mutex_init(&keypad_data->lock);
++	platform_set_drvdata(pdev, keypad_data);
+ 
+ 	error = omap4_keypad_parse_dt(dev, keypad_data);
+ 	if (error)
+@@ -323,6 +351,7 @@ static int omap4_keypad_probe(struct platform_device *pdev)
+ 	if (IS_ERR(keypad_data->base))
+ 		return PTR_ERR(keypad_data->base);
+ 
++	pm_runtime_use_autosuspend(dev);
+ 	pm_runtime_enable(dev);
+ 
+ 	error = devm_add_action_or_reset(dev, omap4_disable_pm, dev);
+@@ -335,21 +364,21 @@ static int omap4_keypad_probe(struct platform_device *pdev)
+ 	 * Enable clocks for the keypad module so that we can read
+ 	 * revision register.
+ 	 */
+-	error = pm_runtime_get_sync(&pdev->dev);
++	error = pm_runtime_get_sync(dev);
+ 	if (error) {
+-		dev_err(&pdev->dev, "pm_runtime_get_sync() failed\n");
+-		pm_runtime_put_noidle(&pdev->dev);
++		dev_err(dev, "pm_runtime_get_sync() failed\n");
++		pm_runtime_put_noidle(dev);
+ 		return error;
+ 	}
+ 
+-	error = omap4_keypad_check_revision(&pdev->dev,
+-					    keypad_data);
++	error = omap4_keypad_check_revision(dev, keypad_data);
+ 	if (!error) {
+ 		/* Ensure device does not raise interrupts */
+ 		omap4_keypad_stop(keypad_data);
+ 	}
+ 
+-	pm_runtime_put_sync(&pdev->dev);
++	pm_runtime_mark_last_busy(dev);
++	pm_runtime_put_autosuspend(dev);
+ 	if (error)
+ 		return error;
+ 
+@@ -413,8 +442,6 @@ static int omap4_keypad_probe(struct platform_device *pdev)
+ 	if (error)
+ 		dev_warn(dev, "failed to set up wakeup irq: %d\n", error);
+ 
+-	platform_set_drvdata(pdev, keypad_data);
+-
+ 	return 0;
+ }
+ 
+-- 
+2.30.0
