@@ -2,229 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 597432F101D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC002F1022
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729165AbhAKKab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:30:31 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:57197 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726695AbhAKKaa (ORCPT
+        id S1729186AbhAKKcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:32:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54172 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728959AbhAKKck (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:30:30 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 38316580557;
-        Mon, 11 Jan 2021 05:29:38 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 11 Jan 2021 05:29:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=YZXFEHRVUr3V+AEbjPO03cseRYi
-        /P0yN90ljuM26SGI=; b=MRgfIkzwwXAu8YfCHoQ23fXhAzYEI29Nf/Newf90lt9
-        xVdtsC7h/rt87eTugQSjxfJkxPhZy0/Ug7u6hMuKvPjWWhlFU62OXQ/cwZZPqMjB
-        NAR8i0JhzqMMNBr0LQx1xnWUJPmUU6ULnDizMLBXGkaa6FMn2g4QBjfNUTMMRbsH
-        zYggJ08uwk48zQ6o6r6KSUQhsDJ7O6rBhsgsitoAsdVaWCtflmpgCgnxngKoirfE
-        LveMTcaN8w1svFThFcPUvhOKfyNxT1ziOwJR/7730PKOKOD16ulPGMydoFZn/dT3
-        ObLWe316nk0qoxQ3SGbSzdb8orEf2w+5FhmHsDS72vw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=YZXFEH
-        RVUr3V+AEbjPO03cseRYi/P0yN90ljuM26SGI=; b=I4Hkn+41HffOpUEiy9af3c
-        St7n4vY8+LuugawTrAwKqLHS1+BVr+Ml5AIRJKyE4ulz0epWl+FPUs5ot7X+j6Ov
-        XAxfSvZrpA07TrPIPh4nKMG1iHZx0h8D9rfeyLzWnFBA5DYI2ta+lj8MMvfAaar/
-        9wZvWTP9wu41C5B/F9b/61/4LmIjQX75Q0LJNIHqUPDajtuOhh6uOxhd0kncR2hP
-        9um+9IiNbz+JEMDVA4HmYvItB8p11z0qpHloH9eoyVHZQSg192iqrKUbS7ats7eA
-        R46o0Z1V3s9O9YHa0FcUj0zLbXJJARegBeYHj/C6cZA3DNRl6mHJgQIicwnxeFug
-        ==
-X-ME-Sender: <xms:kCj8X1Pjk2mQHJ3XOOMuSyDaB_SkdxRvbCLrDy3bsAHr1IIXT0WKhg>
-    <xme:kCj8X394rqTxn-a4ddXbDUY86jVNYfpAH9vlK5h3whgQ7KXRln__nAQJ-RTNv9s4p
-    2jqo8iCojUGyVh9k-0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdehuddgudejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepveegudetkeethfetgffgtdekkefghefhffefgeduleehgeehieeuveefgedv
-    ieegnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucfkphepledtrdekledrieekrd
-    ejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehm
-    rgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:kCj8X0TA_wzjXnj3pznTY2K--tRVZ1CVTUXTNhcvga7U2HO17zPJ6A>
-    <xmx:kCj8XxthNcsAk7rQsnk3V2rPg5vA2wGnfk7hWxcPzmVv4cwPM9Uk3Q>
-    <xmx:kCj8X9deIKY-oDyMz6WS77NJFUCJzQF5LxsMtI9bDsPsMV2RNZsQjA>
-    <xmx:kij8X9-gaF_E0K2Yqq0uuPrjCB8wkZVZM7YvN2Gi8z0a9r-vwnCSkw>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7CD5624005B;
-        Mon, 11 Jan 2021 05:29:36 -0500 (EST)
-Date:   Mon, 11 Jan 2021 11:29:35 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Dave Stevenson <dave.stevenson@raspberrypi.com>
-Cc:     Eric Anholt <eric@anholt.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Jason Cooper <jason@lakedaemon.net>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-rpi-kernel@lists.infradead.org,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Dom Cobley <popcornmix@gmail.com>
-Subject: Re: [PATCH 05/15] drm/vc4: hdmi: Restore cec physical address on
- reconnect
-Message-ID: <20210111102935.tyairu2pw2phfmfo@gilmour>
-References: <20201210134648.272857-1-maxime@cerno.tech>
- <20201210134648.272857-6-maxime@cerno.tech>
- <CAPY8ntDXJWR-vssSLsRbh7RTd-40SQApOxWGwt2LkeoyxCdYMw@mail.gmail.com>
- <CAPY8ntAx56BhKLVGyNUjjOYSaaJ1H2wku=Co8oqb38bPDEvGKA@mail.gmail.com>
+        Mon, 11 Jan 2021 05:32:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610361073;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/QT/Hp5d8s31dfaDUdmb1dSbYnAGLRZtytEVGSsU3o4=;
+        b=BvrqDye1mPhuNgRsVn4VGl20u9ksK6LDNvqcsYIvDnFcqo660qsBqwFzz4UOGAixoIFo9s
+        EOQ7oPXcJsMsrjI6E/FKWQ4gF1G/b3eq09nlk0uhD4zBZzuP8T6MkJhaCmj/PBHFSm9a1a
+        7OeYCAyFFce6vXZ1xKJf7tsq2qfr1DY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-103-rzFCbHHGPiCPR8n1V_r2cw-1; Mon, 11 Jan 2021 05:31:09 -0500
+X-MC-Unique: rzFCbHHGPiCPR8n1V_r2cw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1055E15720;
+        Mon, 11 Jan 2021 10:31:07 +0000 (UTC)
+Received: from [10.36.115.103] (ovpn-115-103.ams2.redhat.com [10.36.115.103])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 43FEF6A8EE;
+        Mon, 11 Jan 2021 10:31:03 +0000 (UTC)
+Subject: Re: [RFC 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based memory
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     catalin.marinas@arm.com, will@kernel.org, ardb@kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Ellerman <michael@ellerman.id.au>
+References: <1608621144-4001-1-git-send-email-anshuman.khandual@arm.com>
+ <1608621144-4001-2-git-send-email-anshuman.khandual@arm.com>
+ <4b282848-d2d7-6156-4726-ce974b2dff41@redhat.com>
+ <75d0da03-204a-c2b2-aba9-f70d2f5b6e40@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <3616e9f5-b825-6575-45ce-bfc1b1408c89@redhat.com>
+Date:   Mon, 11 Jan 2021 11:31:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qmysxmbkp2dmwhyb"
-Content-Disposition: inline
-In-Reply-To: <CAPY8ntAx56BhKLVGyNUjjOYSaaJ1H2wku=Co8oqb38bPDEvGKA@mail.gmail.com>
+In-Reply-To: <75d0da03-204a-c2b2-aba9-f70d2f5b6e40@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 04.01.21 07:18, Anshuman Khandual wrote:
+> 
+> On 12/22/20 2:41 PM, David Hildenbrand wrote:
+>> On 22.12.20 08:12, Anshuman Khandual wrote:
+>>> pfn_valid() validates a pfn but basically it checks for a valid struct page
+>>> backing for that pfn. It should always return positive for memory ranges
+>>> backed with struct page mapping. But currently pfn_valid() fails for all
+>>> ZONE_DEVICE based memory types even though they have struct page mapping.
+>>>
+>>> pfn_valid() asserts that there is a memblock entry for a given pfn without
+>>> MEMBLOCK_NOMAP flag being set. The problem with ZONE_DEVICE based memory is
+>>> that they do not have memblock entries. Hence memblock_is_map_memory() will
+>>> invariably fail via memblock_search() for a ZONE_DEVICE based address. This
+>>> eventually fails pfn_valid() which is wrong. memblock_is_map_memory() needs
+>>> to be skipped for such memory ranges. As ZONE_DEVICE memory gets hotplugged
+>>> into the system via memremap_pages() called from a driver, their respective
+>>> memory sections will not have SECTION_IS_EARLY set.
+>>>
+>>> Normal hotplug memory will never have MEMBLOCK_NOMAP set in their memblock
+>>> regions. Because the flag MEMBLOCK_NOMAP was specifically designed and set
+>>> for firmware reserved memory regions. memblock_is_map_memory() can just be
+>>> skipped as its always going to be positive and that will be an optimization
+>>> for the normal hotplug memory. Like ZONE_DEVIE based memory, all hotplugged
+>>> normal memory too will not have SECTION_IS_EARLY set for their sections.
+>>>
+>>> Skipping memblock_is_map_memory() for all non early memory sections would
+>>> fix pfn_valid() problem for ZONE_DEVICE based memory and also improve its
+>>> performance for normal hotplug memory as well.
+>>>
+>>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>>> Cc: Will Deacon <will@kernel.org>
+>>> Cc: Ard Biesheuvel <ardb@kernel.org>
+>>> Cc: Robin Murphy <robin.murphy@arm.com>
+>>> Cc: linux-arm-kernel@lists.infradead.org
+>>> Cc: linux-kernel@vger.kernel.org
+>>> Fixes: 73b20c84d42d ("arm64: mm: implement pte_devmap support")
+>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> ---
+>>>  arch/arm64/mm/init.c | 12 ++++++++++++
+>>>  1 file changed, 12 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+>>> index 75addb36354a..ee23bda00c28 100644
+>>> --- a/arch/arm64/mm/init.c
+>>> +++ b/arch/arm64/mm/init.c
+>>> @@ -225,6 +225,18 @@ int pfn_valid(unsigned long pfn)
+>>>  
+>>>  	if (!valid_section(__pfn_to_section(pfn)))
+>>>  		return 0;
+>>> +
+>>> +	/*
+>>> +	 * ZONE_DEVICE memory does not have the memblock entries.
+>>> +	 * memblock_is_map_memory() check for ZONE_DEVICE based
+>>> +	 * addresses will always fail. Even the normal hotplugged
+>>> +	 * memory will never have MEMBLOCK_NOMAP flag set in their
+>>> +	 * memblock entries. Skip memblock search for all non early
+>>> +	 * memory sections covering all of hotplug memory including
+>>> +	 * both normal and ZONE_DEVIE based.
+>>> +	 */
+>>> +	if (!early_section(__pfn_to_section(pfn)))
+>>> +		return 1;
+>>
+>> Actually, I think we want to check for partial present sections.
+>>
+>> Maybe we can rather switch to generic pfn_valid() and tweak it to
+>> something like
+>>
+>> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+>> index fb3bf696c05e..7b1fcce5bd5a 100644
+>> --- a/include/linux/mmzone.h
+>> +++ b/include/linux/mmzone.h
+>> @@ -1382,9 +1382,13 @@ static inline int pfn_valid(unsigned long pfn)
+>>                 return 0;
+>>         /*
+>>          * Traditionally early sections always returned pfn_valid() for
+>> -        * the entire section-sized span.
+>> +        * the entire section-sized span. Some archs might have holes in
+>> +        * early sections, so double check with memblock if configured.
+>>          */
+>> -       return early_section(ms) || pfn_section_valid(ms, pfn);
+>> +       if (early_section(ms))
+>> +               return IS_ENABLED(CONFIG_EARLY_SECTION_MEMMAP_HOLES) ?
+>> +                      memblock_is_map_memory(pfn << PAGE_SHIFT) : 1;
+>> +       return pfn_section_valid(ms, pfn);
+>>  }
+>>  #endif
+> 
+> Could not find CONFIG_EARLY_SECTION_MEMMAP_HOLES. Are you suggesting to
+> create this config which could track platform scenarios where all early
+> sections might not have mmap coverage such as arm64 ?
 
---qmysxmbkp2dmwhyb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, a new config that states what's actually happening.
 
-Hi Dave,
+> 
+>>
+>>
+>>
+>> Which users are remaining that require us to add/remove memblocks when
+>> hot(un)plugging memory
+>>
+>>  $ git grep KEEP_MEM | grep memory_hotplug
+>> mm/memory_hotplug.c:    if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK))
+>> mm/memory_hotplug.c:    if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK))
+>> mm/memory_hotplug.c:    if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK)) {
+> 
+> Did not follow, do we want to drop ARCH_KEEP_MEMBLOCK ? Without it arm64
+> will not be able to track MEMBLOCK_NOMAP memory at runtime.
 
-Thanks for your review
+I'd only like the hot(un)plug parts gone for now, if possible: I don't
+see the need for that handling really that cannot be handled easier, as
+in the proposed pfn_valid() changes.
 
-On Fri, Dec 18, 2020 at 02:45:54PM +0000, Dave Stevenson wrote:
-> On Fri, 18 Dec 2020 at 14:21, Dave Stevenson
-> <dave.stevenson@raspberrypi.com> wrote:
-> >
-> > Hi  Maxime & Dom
-> >
-> > On Thu, 10 Dec 2020 at 13:47, Maxime Ripard <maxime@cerno.tech> wrote:
-> > >
-> > > From: Dom Cobley <popcornmix@gmail.com>
-> > >
-> > > Currently we call cec_phys_addr_invalidate on a hotplug deassert.
-> > > That may be due to a TV power cycling, or an AVR being switched
-> > > on (and switching edid).
-> > >
-> > > This makes CEC unusable since our controller wouldn't have a physical
-> > > address anymore.
-> > >
-> > > Set it back up again on the hotplug assert.
-> > >
-> > > Fixes: 15b4511a4af6 ("drm/vc4: add HDMI CEC support")
-> > > Signed-off-by: Dom Cobley <popcornmix@gmail.com>
-> > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > > ---
-> > >  drivers/gpu/drm/vc4/vc4_hdmi.c | 25 +++++++++++++++++--------
-> > >  1 file changed, 17 insertions(+), 8 deletions(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4=
-_hdmi.c
-> > > index 28b78ea885ea..eff3bac562c6 100644
-> > > --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-> > > +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> > > @@ -136,20 +136,29 @@ static enum drm_connector_status
-> > >  vc4_hdmi_connector_detect(struct drm_connector *connector, bool forc=
-e)
-> > >  {
-> > >         struct vc4_hdmi *vc4_hdmi =3D connector_to_vc4_hdmi(connector=
-);
-> > > +       bool connected =3D false;
-> > >
-> > >         if (vc4_hdmi->hpd_gpio) {
-> > >                 if (gpio_get_value_cansleep(vc4_hdmi->hpd_gpio) ^
-> > >                     vc4_hdmi->hpd_active_low)
-> > > -                       return connector_status_connected;
-> > > -               cec_phys_addr_invalidate(vc4_hdmi->cec_adap);
-> > > -               return connector_status_disconnected;
-> > > -       }
-> > > -
-> > > -       if (drm_probe_ddc(vc4_hdmi->ddc))
-> > > -               return connector_status_connected;
-> > > -
-> > > +                       connected =3D true;
-> > > +       } else if (drm_probe_ddc(vc4_hdmi->ddc))
-> > > +               connected =3D true;
-> > >         if (HDMI_READ(HDMI_HOTPLUG) & VC4_HDMI_HOTPLUG_CONNECTED)
-> >
-> > This needs to become an "else if(...".
-> > It used to be that all the other paths would return, so were mutually
-> > exclusive to this. Now they set a thing and keep going we need to
-> > avoid reading the register should there be a HPD gpio or the ddc probe
-> > succeeds.
-> > Memory says that otherwise Pi3 always reports connected.
-> >
-> > I fixed this in a downstream patch already -
-> > https://github.com/raspberrypi/linux/commit/d345caec1e9b2317b9cd7eb5b92=
-ae453a0d3e98c
-> >
-> > Otherwise fine.
-> >
-> >   Dave
-> >
-> > > +               connected =3D true;
-> > > +       if (connected) {
-> > > +               if (connector->status !=3D connector_status_connected=
-) {
-> > > +                       struct edid *edid =3D drm_get_edid(connector,=
- vc4_hdmi->ddc);
-> > > +
-> > > +                       if (edid) {
-> > > +                               cec_s_phys_addr_from_edid(vc4_hdmi->c=
-ec_adap, edid);
-> > > +                               vc4_hdmi->encoder.hdmi_monitor =3D dr=
-m_detect_hdmi_monitor(edid);
-> > > +                               drm_connector_update_edid_property(co=
-nnector, edid);
->=20
-> Actually looking at this again in the context of the other changes, do
-> we need to call drm_connector_update_edid_property() here?
->=20
-> We've just called drm_get_edid() to get the edid, and that calls
-> drm_connector_update_edid_property() as well [1]
+I understand that current handling of memory holes in early sections and
+memory marked as MEMBLOCK_NOMAP requires ARCH_KEEP_MEMBLOCK for now.
 
-Yeah, you're right I'll drop it
+> 
+>>
+>>
+>> I think one user we would have to handle is
+>> arch/arm64/mm/mmap.c:valid_phys_addr_range(). AFAIS, powerpc at least
+>> does not rely on memblock_is_map_memory.
+> 
+> memblock_is_map_memory() is currently used only on arm/arm64 platforms.
+> Apart from the above example in valid_phys_addr_range(), there are some
+> other memblock_is_map_memory() call sites as well. But then, we are not
+> trying to completely drop memblock_is_map_memory() or are we ?
 
-> Updating vc4_hdmi->encoder.hdmi_monitor may be necessary. It's
-> otherwise done in vc4_hdmi_connector_get_modes, which I sort of expect
-> to be called almost immediately by the framework when connector_detect
-> returns "connected". I haven't checked if that is guaranteed though.
->=20
-> vc4_hdmi_connector_get_modes also includes a manual call to
-> drm_connector_update_edid_property after having just called
-> drm_get_edid, so that one feels redundant too.
+No, just change the semantics: only relevant for early sections. Imagine
+freezing MEMBLOCK state after boot.
 
-=2Eget_modes is called in drm_helper_probe_single_connector_modes, which
-is usually the helper set in .fill_modes. .fill_modes seems to only be
-called when either DRM_IOCTL_MODE_GETCONNECTOR is called, or when the
-connector status is forced through sysfs, so it doesn't look like it's
-done automatically.
+Only early sections can have memory holes and might be marked
+MEMBLOCK_NOMAP. For hotplugged memory, we don't have to call
+memblock_is_map_memory().
 
-I'm not sure we need to set hdmi_monitor though, it's only used to
-configure the display related side, and that can't happen without
-get_modes being called.
+-- 
+Thanks,
 
-Maxime
+David / dhildenb
 
---qmysxmbkp2dmwhyb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX/wojwAKCRDj7w1vZxhR
-xc/UAP4uzcrDbeddwq8fB/meHTS+faUCJJfFGqyserLZSOQPawD+PaA4lSzVPlU4
-Xk3OPdAtdOnLKH0IHfvlFUdE8CeZSAc=
-=GJnj
------END PGP SIGNATURE-----
-
---qmysxmbkp2dmwhyb--
