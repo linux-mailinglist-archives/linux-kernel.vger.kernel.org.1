@@ -2,163 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD132F1C29
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:21:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EABDC2F1C2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389254AbhAKRVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 12:21:05 -0500
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:45665 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728432AbhAKRVD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:21:03 -0500
-X-Originating-IP: 93.29.109.196
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 595964000B;
-        Mon, 11 Jan 2021 17:20:17 +0000 (UTC)
-Date:   Mon, 11 Jan 2021 18:20:16 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Jacob Chen <jacob-chen@iotwrt.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 3/5] dt-bindings: media: rockchip-vpu: Add PX30 compatible
-Message-ID: <X/yI0BCrkrEI/K42@aptenodytes>
-References: <20210107134101.195426-1-paul.kocialkowski@bootlin.com>
- <20210107134101.195426-4-paul.kocialkowski@bootlin.com>
- <a23ab40e50a761bd2127df6bc8b2a91e99a1617c.camel@pengutronix.de>
+        id S2389413AbhAKRVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 12:21:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388655AbhAKRVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 12:21:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B589922AAD;
+        Mon, 11 Jan 2021 17:20:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610385652;
+        bh=xu5gy4M4CtiKHHhXf817tQ4NAfRrgpb0PC2kGtDFUYE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fF9htN6G0xKJQCCJ8yD9XDRfPBfPGG9dWMSP7V2iI1pNDu/T2QQuuqe1kItotkh3a
+         DnqyKKii7cosHcqVVTznY1ggoroskwLWD2UqPk6F9H8LBh+qZTfC5X7lOcRcMuvkdU
+         zba88C7g/igF392KvHtorbelnanBj3+UP2XuehbV9yhL/mtDwz2jDjZOnjp9aCUm9l
+         i/t3DQcix0FxkSDkcEdob/anEXscEtTVsG3IwB7Z47KLPFUE0bhY4PLnGC1fXKThb6
+         kzEeiHrJT1+rw8AHtqho31Pf1/okOMjW8JIVZLSxFBSSg7xm+gE+bewkI77nFy2zK8
+         Hznl4xExbUd8Q==
+Date:   Mon, 11 Jan 2021 17:20:20 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     jagan@amarulasolutions.com, lgirdwood@gmail.com,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v3 3/6] regulator: dt-bindings: pf8x00: remove
+ nxp,ilim-ma property
+Message-ID: <20210111172019.GH4728@sirena.org.uk>
+References: <20210108225006.153700-1-adrien.grassein@gmail.com>
+ <20210108225006.153700-4-adrien.grassein@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="7MHoYb//4iLnyjZi"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="e5bfZ/T2xnjpUIbw"
 Content-Disposition: inline
-In-Reply-To: <a23ab40e50a761bd2127df6bc8b2a91e99a1617c.camel@pengutronix.de>
+In-Reply-To: <20210108225006.153700-4-adrien.grassein@gmail.com>
+X-Cookie: Too much is not enough.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---7MHoYb//4iLnyjZi
-Content-Type: text/plain; charset=utf-8
+--e5bfZ/T2xnjpUIbw
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi Philipp,
+On Fri, Jan 08, 2021 at 11:50:03PM +0100, Adrien Grassein wrote:
+> This property seems useless because we can use the
+> regulator-max-microamp generic property to do the same
+> and using generic code.
 
-On Thu 07 Jan 21, 15:55, Philipp Zabel wrote:
-> Hi Paul,
->=20
-> On Thu, 2021-01-07 at 14:40 +0100, Paul Kocialkowski wrote:
-> > The Rockchip PX30 SoC has a Hantro VPU that features a decoder (VDPU2)
-> > and an encoder (VEPU2). It is similar to the RK3399's VPU but takes an
-> > extra clock (SCLK).
-> >=20
-> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > ---
-> >  .../bindings/media/rockchip-vpu.yaml          | 25 +++++++++++++------
-> >  1 file changed, 17 insertions(+), 8 deletions(-)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/media/rockchip-vpu.yaml =
-b/Documentation/devicetree/bindings/media/rockchip-vpu.yaml
-> > index c81dbc3e8960..c446b9ead21b 100644
-> > --- a/Documentation/devicetree/bindings/media/rockchip-vpu.yaml
-> > +++ b/Documentation/devicetree/bindings/media/rockchip-vpu.yaml
-> > @@ -15,10 +15,13 @@ description:
-> > =20
-> >  properties:
-> >    compatible:
-> > -    enum:
-> > -      - rockchip,rk3288-vpu
-> > -      - rockchip,rk3328-vpu
-> > -      - rockchip,rk3399-vpu
-> > +    oneOf:
-> > +      - const: rockchip,rk3288-vpu
-> > +      - const: rockchip,rk3328-vpu
-> > +      - const: rockchip,rk3399-vpu
-> > +      - items:
-> > +        - const: rockchip,px30-vpu
-> > +        - const: rockchip,rk3399-vpu
-> > =20
-> >    reg:
-> >      maxItems: 1
-> > @@ -35,12 +38,18 @@ properties:
-> >            - const: vdpu
-> > =20
-> >    clocks:
-> > -    maxItems: 2
-> > +    minItems: 2
-> > +    maxItems: 3
-> > =20
-> >    clock-names:
-> > -    items:
-> > -      - const: aclk
-> > -      - const: hclk
-> > +    oneOf:
-> > +      - items:
-> > +        - const: aclk
-> > +        - const: hclk
-> > +      - items:
-> > +        - const: aclk
-> > +        - const: hclk
-> > +        - const: sclk
->=20
-> You could make this:
->=20
->     clock-names:
->       minItems: 2
->       items:
->         - const: aclk
->         - const: hclk
->         - const: sclk
->=20
-> And then:
->=20
-> allOf:
->   - if:
->       properties:
->         compatible:
->           contains:
->             const: rockchip,px30-vpu
->     then:
->       properties:
->         clock-names:
->           minItems: 3
->=20
-> to make sure each variant has the correct clocks set.
+This made it into a kernel release so we should continue to honour it,
+it's fine to deprecate it though.
 
-Thanks for the suggestion! That's a finer grain that my proposal.
-
-Rob, is there a preference for how this case should be handled?
-Here, we want to specify an extra clock for the PX30 case.
-
-Cheers,
-
-Paul
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---7MHoYb//4iLnyjZi
+--e5bfZ/T2xnjpUIbw
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl/8iNAACgkQ3cLmz3+f
-v9EGTgf/cgOKh4wu1sCC8/0p35XnHK1fKqvY0710rustUO1l4hbVKA0uavtIZ0ei
-2xTeicq6AK40n0SPvMiyYB/Naz/YT1CJ3xY+rm+fBARG2tW+IPZS16/EudbQYrb2
-aW1iXXj8hGqTPjIDaKMbTBRv/r+mSFsEZuimq2iNbF5Qq2J0AkESeEj6H3YLvl9z
-BibYPcx+NHtHlA6iogqV5iqvmUT+x0ur0+NeUDj8Tu4qDZhPZY2I++U5WNSIqAlQ
-jPsef+ABZ5Uzq2JmrjJqY9PATVuuTx8kbHIqCLpKRW1a+1PnZf7zedf1BRI19EgL
-lg9SFntpJ6LjCpUVWLPLlpHIgWMqBA==
-=L38N
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/8iNMACgkQJNaLcl1U
+h9DibQf/XTVXJw76h3g1lJ6Xxtn0kbRZMoG2xmgA1KGcmcwjsiBJFIuPAKz7yvfT
+fayKCL782y3aG9z0FW3RFtGToM8h6FzmTQQpUiFmMjUQrMuJ2a77rhYf3apXj8+D
+1QeDXf5j1qlSQmkD12FFsL8YO+J+yhKFt6xRvmAMjCXqHmoSPEUEO1WrdWrvonQt
+x9XKnB16vpzQHAlaMBjKejhvc7qaWv1+krs4spC12XoBuyZt+Jt0PK9U/b3N1exr
+Bev7tmfs8qPK+UpLHZ54LgVPJjD43qP6SyO/aPcVKnFIXHbwJRvxcuPbgTymYprx
+2NHBtTqhR4Bb3yIMhd9RBwn7xrPteg==
+=x6TJ
 -----END PGP SIGNATURE-----
 
---7MHoYb//4iLnyjZi--
+--e5bfZ/T2xnjpUIbw--
