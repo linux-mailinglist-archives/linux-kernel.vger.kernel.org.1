@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E427C2F1611
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:48:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 310352F16CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387525AbhAKNsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:48:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57418 "EHLO mail.kernel.org"
+        id S2388067AbhAKN5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:57:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731149AbhAKNKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:10:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C320122C97;
-        Mon, 11 Jan 2021 13:09:34 +0000 (UTC)
+        id S1728930AbhAKNG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:06:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EFC421973;
+        Mon, 11 Jan 2021 13:06:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370575;
-        bh=/z54QfOG6s9ODcbkYCIYxVVtDhnpn0+2ykax0ZVUG9M=;
+        s=korg; t=1610370403;
+        bh=IA7TGggmcx72d5tLxSAIGgYIs0Fwt8X87wfoKNTEucM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YHeYOq4TizVtQqNC8ngR/JOXfzsJ7+vAQZzjm5YDS2+2S+WHIATJyb6AwCziTx6IU
-         0wCUDsks5tPqNw9fvbzhklEuFch4ovw0V646HdYOrH9/iOPuoIf1qm8+GQMC7Idj53
-         xRflKKS3vpsu6L5SiqdhJ27Kd3z4PFp5g8kWHUIs=
+        b=AbOJK2ltAe/NvihQ/0iVx7pDXA+zoVQq5KI6wU+BQZFpHDe/4OiLH9oWQRdtldGzE
+         +b/NHvg90e2RSu/fYtxIrdtP+Xqsp/7MhufpXY4flKCF9v+KHm3BlkcnqEONGlEPfq
+         s89bV4jJXugDLUhp5k8vej2JPEeYaKVtxhXl626E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
-        Borislav Petkov <bp@suse.de>, Yi Zhang <yi.zhang@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 4.19 66/77] x86/mm: Fix leak of pmd ptlock
-Date:   Mon, 11 Jan 2021 14:02:15 +0100
-Message-Id: <20210111130039.581237108@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.14 57/57] KVM: x86: fix shift out of bounds reported by UBSAN
+Date:   Mon, 11 Jan 2021 14:02:16 +0100
+Message-Id: <20210111130036.481241131@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
+References: <20210111130033.715773309@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,85 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Williams <dan.j.williams@intel.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-commit d1c5246e08eb64991001d97a3bd119c93edbc79a upstream.
+commit 2f80d502d627f30257ba7e3655e71c373b7d1a5a upstream.
 
-Commit
+Since we know that e >= s, we can reassociate the left shift,
+changing the shifted number from 1 to 2 in exchange for
+decreasing the right hand side by 1.
 
-  28ee90fe6048 ("x86/mm: implement free pmd/pte page interfaces")
-
-introduced a new location where a pmd was released, but neglected to
-run the pmd page destructor. In fact, this happened previously for a
-different pmd release path and was fixed by commit:
-
-  c283610e44ec ("x86, mm: do not leak page->ptl for pmd page tables").
-
-This issue was hidden until recently because the failure mode is silent,
-but commit:
-
-  b2b29d6d0119 ("mm: account PMD tables like PTE tables")
-
-turns the failure mode into this signature:
-
- BUG: Bad page state in process lt-pmem-ns  pfn:15943d
- page:000000007262ed7b refcount:0 mapcount:-1024 mapping:0000000000000000 index:0x0 pfn:0x15943d
- flags: 0xaffff800000000()
- raw: 00affff800000000 dead000000000100 0000000000000000 0000000000000000
- raw: 0000000000000000 ffff913a029bcc08 00000000fffffbff 0000000000000000
- page dumped because: nonzero mapcount
- [..]
-  dump_stack+0x8b/0xb0
-  bad_page.cold+0x63/0x94
-  free_pcp_prepare+0x224/0x270
-  free_unref_page+0x18/0xd0
-  pud_free_pmd_page+0x146/0x160
-  ioremap_pud_range+0xe3/0x350
-  ioremap_page_range+0x108/0x160
-  __ioremap_caller.constprop.0+0x174/0x2b0
-  ? memremap+0x7a/0x110
-  memremap+0x7a/0x110
-  devm_memremap+0x53/0xa0
-  pmem_attach_disk+0x4ed/0x530 [nd_pmem]
-  ? __devm_release_region+0x52/0x80
-  nvdimm_bus_probe+0x85/0x210 [libnvdimm]
-
-Given this is a repeat occurrence it seemed prudent to look for other
-places where this destructor might be missing and whether a better
-helper is needed. try_to_free_pmd_page() looks like a candidate, but
-testing with setting up and tearing down pmd mappings via the dax unit
-tests is thus far not triggering the failure.
-
-As for a better helper pmd_free() is close, but it is a messy fit
-due to requiring an @mm arg. Also, ___pmd_free_tlb() wants to call
-paravirt_tlb_remove_table() instead of free_page(), so open-coded
-pgtable_pmd_page_dtor() seems the best way forward for now.
-
-Debugged together with Matthew Wilcox <willy@infradead.org>.
-
-Fixes: 28ee90fe6048 ("x86/mm: implement free pmd/pte page interfaces")
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Tested-by: Yi Zhang <yi.zhang@redhat.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/160697689204.605323.17629854984697045602.stgit@dwillia2-desk3.amr.corp.intel.com
+Reported-by: syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/mm/pgtable.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kvm/mmu.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/mm/pgtable.c
-+++ b/arch/x86/mm/pgtable.c
-@@ -838,6 +838,8 @@ int pud_free_pmd_page(pud_t *pud, unsign
- 	}
+--- a/arch/x86/kvm/mmu.h
++++ b/arch/x86/kvm/mmu.h
+@@ -53,7 +53,7 @@ static inline u64 rsvd_bits(int s, int e
+ 	if (e < s)
+ 		return 0;
  
- 	free_page((unsigned long)pmd_sv);
-+
-+	pgtable_pmd_page_dtor(virt_to_page(pmd));
- 	free_page((unsigned long)pmd);
+-	return ((1ULL << (e - s + 1)) - 1) << s;
++	return ((2ULL << (e - s)) - 1) << s;
+ }
  
- 	return 1;
+ void kvm_mmu_set_mmio_spte_mask(u64 mmio_mask, u64 mmio_value);
 
 
