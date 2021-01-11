@@ -2,78 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C2E2F10BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:04:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D15A12F10C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729571AbhAKLDR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Jan 2021 06:03:17 -0500
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:42391 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728725AbhAKLDO (ORCPT
+        id S1729533AbhAKLEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:04:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727747AbhAKLEi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:03:14 -0500
-Received: by mail-ot1-f43.google.com with SMTP id 11so16471641oty.9;
-        Mon, 11 Jan 2021 03:02:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MHCmvXvpGHFVb33mpUBJ2Js02o/EFIeyUQRQPV9z6gY=;
-        b=semtb+3PUmv/aRBvc189fiRhk/pGuHpE2MQ+0ka127vjxe/IbNnwdf8B8CguSRb2sS
-         ge/2MAvKpXLWtN+8uId4tZzA+MpH+QPwDB9D+NEG7DHqTXLV9s+iUHMVgzdFp9Kt5oWY
-         I0jF+Lk1VshivMHRFi1rD8M++yDuO88bQwcQ8fwfRUuilVp7I5nIEqoFcny8SrfYOIgf
-         G/i5E4gb4QR13o2VjP1chvAU9ZDHevvujW9Qdyd013pZcmLboGZ1U3GVFP9LT/wLuzZY
-         DPTQvrFyuRGhEX7RrL4H43XiFsML7ZZisdf6WyQEV59fO6lL1iItkHH71Gs/l4kOONc5
-         wQcQ==
-X-Gm-Message-State: AOAM5308ghNTpKfKCldurV6lTVKLEnjX2Yae1rvq1W7odEZDq/7Ucp+Z
-        1FUFgPlbaxrDn2AvZDos4hQATrOXF032BjPFZBY=
-X-Google-Smtp-Source: ABdhPJykrrMStMJLiiXGwsvMMzaA/CL/vYTUsewatwlV9ffmERCTEPv9/AX+Ak8IvfWQEmIUOn8F8btCmKSctcTMP1Q=
-X-Received: by 2002:a9d:c01:: with SMTP id 1mr10417143otr.107.1610362953195;
- Mon, 11 Jan 2021 03:02:33 -0800 (PST)
+        Mon, 11 Jan 2021 06:04:38 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23214C061794;
+        Mon, 11 Jan 2021 03:03:58 -0800 (PST)
+Received: from zn.tnic (p200300ec2f088f0076781dde3322831e.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:8f00:7678:1dde:3322:831e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9F9771EC0304;
+        Mon, 11 Jan 2021 12:03:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1610363036;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=UakkcWenq1z7BJChiF5DJB9KugQPmWGiKzxCrVkRxtM=;
+        b=d8CAAgxEWT3neFXZIU/nOYd80kmOKIeE1hd8hoRXg7PtaNUoePEahwDHE/xuYHwDyAYisf
+        SJtieBaOHOTS9tpJGtcn16FFyv7LFcKSKhzkdZWs/h0nKkW+jJ2rUy8SdenxnVJ5Db0bF4
+        RtuqRjfIIIP3xh9p2La10ak/MTTZBOY=
+Date:   Mon, 11 Jan 2021 12:03:51 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        hpa@zytor.com, tony.luck@intel.com, dave.hansen@intel.com,
+        seanjc@google.com, fenghua.yu@intel.com, thomas.lendacky@amd.com,
+        kyung.min.park@intel.com, kim.phillips@amd.com,
+        mgross@linux.intel.com, peterz@infradead.org,
+        krish.sadhukhan@oracle.com, liam.merwick@oracle.com,
+        mlevitsk@redhat.com, reinette.chatre@intel.com, babu.moger@amd.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        TimGuo-oc@zhaoxin.com, CooperYan@zhaoxin.com,
+        QiyuanWang@zhaoxin.com, HerryYang@zhaoxin.com,
+        CobeChen@zhaoxin.com, SilviaZhao@zhaoxin.com
+Subject: Re: [PATCH v1 1/3] x86/cpufeatures: Add low performance CRC32C
+ instruction CPU feature
+Message-ID: <20210111110351.GC25645@zn.tnic>
+References: <1610000348-17316-1-git-send-email-TonyWWang-oc@zhaoxin.com>
+ <1610000348-17316-2-git-send-email-TonyWWang-oc@zhaoxin.com>
+ <20210107063750.GA14697@zn.tnic>
+ <871e93d3-701e-86cd-6454-19fbb083d0c5@zhaoxin.com>
 MIME-Version: 1.0
-References: <82487.1609006918@turing-police> <160997457204.3687425.15622431721220616573.b4-ty@chromium.org>
- <CAMuHMdU1YSODgh_T5RxqUqorveAQiy_-gQbF_SwMEj7gvG25qw@mail.gmail.com> <122278.1610362619@turing-police>
-In-Reply-To: <122278.1610362619@turing-police>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 11 Jan 2021 12:02:22 +0100
-Message-ID: <CAMuHMdXR09QdSiziQQ_XuPcJPOca_+mK1jYYHj3VsP_eCu_KbA@mail.gmail.com>
-Subject: Re: [PATCH] gcc-plugins: fix gcc 11 indigestion with plugins...
-To:     =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>
-Cc:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <871e93d3-701e-86cd-6454-19fbb083d0c5@zhaoxin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Valdis,
+On Mon, Jan 11, 2021 at 06:51:59PM +0800, Tony W Wang-oc wrote:
+> This issue will be enhanced by hardware and patch submit will be pending.
 
-On Mon, Jan 11, 2021 at 11:57 AM Valdis Klētnieks
-<valdis.kletnieks@vt.edu> wrote:
-> On Mon, 11 Jan 2021 10:47:23 +0100, Geert Uytterhoeven said:
-> > I guess this is the cause of the new "warning: invalid suffix on
-> > literal; C++11 requires a space between literal and string macro
-> > [-Wliteral-suffix]" with gcc 4.9 or 5.4?
->
-> Well, we fixed a #error, and picked up a warning.  That's progress. ;)
->
-> It's probably related. I'm just having a hard time understanding why 4.9 and 5.4
-> whine about the lack of a space, while 8.3 and 11 didn't complain...
->
-> I'll see if I can cook up a patch that newer gcc are still happy with.  You able
-> to easily test with 4.9 or 5.4?
-
-No, I don't have 4.9 or 5.4 cross-compilers anymore.
-
-Gr{oetje,eeting}s,
-
-                        Geert
+I have no clue what that has to do with your current patch... you might
+need to explain more verbosely.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Regards/Gruss,
+    Boris.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+https://people.kernel.org/tglx/notes-about-netiquette
