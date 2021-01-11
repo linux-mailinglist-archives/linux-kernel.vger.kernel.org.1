@@ -2,172 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED372F1B99
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:57:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 703642F1BA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387966AbhAKQ4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:56:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731149AbhAKQ4x (ORCPT
+        id S2389063AbhAKQ6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:58:10 -0500
+Received: from mail-oi1-f170.google.com ([209.85.167.170]:40950 "EHLO
+        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725858AbhAKQ6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:56:53 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC96C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 08:56:07 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id be12so148955plb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 08:56:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sq2FqrzDyoQz9BNrYG3sZPVfF1ZaYE0pB1skj9ELFjc=;
-        b=onrBw1GPHkgynAnAEeSSbPWi21Krue7y5Rhppl5Q7EyJqoIg3uViib/enI60U0SpG5
-         86Cd9fRvacZZO3GTdg5LTL3kN/Ynd7cVPDu7WVQWSyPd4cowrbhJ43fqGuaFTzaa8Tbs
-         T4Umg3Uej6PrrSW9byEJIojRYLftXr5Kk1L39qrK0Hm3HpcODM5OHoX7FJnnIo4bl8CJ
-         zEPeQrAo5Y6K3s2j3HMkRnPYUNNYgvaTnnBToe4Zmrr764ynX7/eIlP8J5rkPEYrfNPh
-         jGeGkKfezWJbv9BI9WzUiMIwelyNYaT2vMBhcufypl0ET9MfVLzvqq8Mz1VLRadBfV9n
-         XIUA==
+        Mon, 11 Jan 2021 11:58:10 -0500
+Received: by mail-oi1-f170.google.com with SMTP id p5so20783409oif.7;
+        Mon, 11 Jan 2021 08:57:54 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sq2FqrzDyoQz9BNrYG3sZPVfF1ZaYE0pB1skj9ELFjc=;
-        b=k1wkDOgJ/lXUwuYOTHJjBhdGinM/ROHC6QaZfO6bEMuOilsRn29mixYZDQ+stAFQCq
-         S13rqYpC4OsSxHqtOn1ORFzimq0ioCmyQDCIPRCChVBTZ0st2SVG7M6igqGLqiD9zMuG
-         b6WZ/+eJOQdqJrmu4UK3Ks8fSTKTmyhLVgA2I9vHv2F/ER5JKXvNI6kgYpLM6a7b2TYG
-         xdMZVU1I1aKo+h120kY6YBLsSVYBoFuoj324/BpkVG0/7Ptz8Tm8WLe2+chNBhScln6T
-         sSshhfQsX4Y8MRzUfo/w8UiDUp2LIU3GuV4lbq4LJqj9gxiBqK6l4RyaL98qR+M0Rkrs
-         8fFQ==
-X-Gm-Message-State: AOAM5339tYe6M1CQZiMyvRY1AvGFgk+0E5lyIl5Bo0nTOBlky++gogSq
-        cq3OMczwYqXo8lmuTPn91IkIlg==
-X-Google-Smtp-Source: ABdhPJw5Ga1bQgrMJQN1BQDx7WNtwLOuNJl3y3VbY7TEzg1avaAboesxUzYk01s/y/E+/kYsj4no5w==
-X-Received: by 2002:a17:902:a401:b029:dc:3e1d:234a with SMTP id p1-20020a170902a401b02900dc3e1d234amr223959plq.48.1610384167224;
-        Mon, 11 Jan 2021 08:56:07 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id a29sm160231pfr.73.2021.01.11.08.56.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 08:56:06 -0800 (PST)
-Date:   Mon, 11 Jan 2021 09:56:04 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     James Clark <james.clark@arm.com>, acme@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, coresight@lists.linaro.org,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>, Leo Yan <leo.yan@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Al Grant <al.grant@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: Re: [PATCH] perf tools: Update OpenCSD to v1.0.0
-Message-ID: <20210111165604.GA144935@xps15>
-References: <20210108142752.27872-1-james.clark@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P+nDsYG9Q3n8Iq6HYj/EY0EG60HNs2mFR1GKr608fhI=;
+        b=LImLWd8lqozHhgJWxWsiYD+VxMd4L8bKMXFVzwD7AdHgcQ3QwmRufADvswiPtSaRgH
+         oLbH4t7pS2/KOZp0GrPz6v/kc9Ce7Rb5W16HX7MeM9NHVIDB7NQxiGUc60dzmgcsTUov
+         TiIRivtKCi6r8GPIu+ixAXTXz7plOQ4NY1w2u+vqPVCEEERxMGH0UEbA/ua9lMJobrkv
+         o1McOfG5W7qUYZjpzozQ/Aj89DXNK6QwxdzoO5Qh5x755OFlhuW9gFpI41dYgU/+X6XF
+         5Q9qa30rAeKx3bB/f6/KaMBpTN9nI18XCmNDkOsZTYCEsmqhcKyrrj451KkEF9YV841b
+         LHTQ==
+X-Gm-Message-State: AOAM530UJveW/XN1tVht9C5YqP0pebcJfqpsH6OjmB0tHgqLFtiTm+bY
+        CznCKdYZjdovRkbFEsp6r0Rre9cdAk6S8LX4wMU=
+X-Google-Smtp-Source: ABdhPJxeYQvhkDvrzUmiTAAQi1srXAMnMQehO2dD17Mgyab/lvFnlvKuuIgdhFXulE9Q6SW++75S5boDHfgtNzrlEBA=
+X-Received: by 2002:aca:4c1:: with SMTP id 184mr173866oie.157.1610384248474;
+ Mon, 11 Jan 2021 08:57:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108142752.27872-1-james.clark@arm.com>
+References: <alpine.LSU.2.11.2101102010200.25762@eggly.anvils>
+ <X/xV7ZV5jzI7RvAe@ulmo> <CAJZ5v0iriRkEN8dVJ9gE3+Wyn_96=SNhav1QaQ59i9O0genTNQ@mail.gmail.com>
+ <X/x49o3EtrUh6vuO@ulmo>
+In-Reply-To: <X/x49o3EtrUh6vuO@ulmo>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 11 Jan 2021 17:57:17 +0100
+Message-ID: <CAJZ5v0hyvdcKsPJ7U5WioXb1c8Pg_F1BLC_dbKesFBLTUSiVaw@mail.gmail.com>
+Subject: Re: 5.11-rc device reordering breaks ThinkPad rmi4 suspend
+To:     Thierry Reding <treding@nvidia.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vincent Huang <vincent.huang@tw.synaptics.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andrew Duggan <aduggan@synaptics.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 04:27:52PM +0200, James Clark wrote:
-> Replace the OCSD_INSTR switch statement with an if to
-> fix compilation error about unhandled values and avoid
-> this issue again in the future.
-> 
-> Add new OCSD_GEN_TRC_ELEM_SYNC_MARKER and
-> OCSD_GEN_TRC_ELEM_MEMTRANS enum values to fix unhandled
-> value compilation error. Currently they are ignored.
-> 
-> Increase the minimum version number to v1.0.0 now
-> that new enum values are used that are only present
-> in this version.
-> 
-> Signed-off-by: James Clark <james.clark@arm.com>
-> Cc: John Garry <john.garry@huawei.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Al Grant <al.grant@arm.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/build/feature/test-libopencsd.c           |  4 ++--
->  tools/perf/util/cs-etm-decoder/cs-etm-decoder.c | 15 ++++-----------
->  2 files changed, 6 insertions(+), 13 deletions(-)
-> 
-> diff --git a/tools/build/feature/test-libopencsd.c b/tools/build/feature/test-libopencsd.c
-> index 1547bc2c0950..52c790b0317b 100644
-> --- a/tools/build/feature/test-libopencsd.c
-> +++ b/tools/build/feature/test-libopencsd.c
-> @@ -4,9 +4,9 @@
->  /*
->   * Check OpenCSD library version is sufficient to provide required features
->   */
-> -#define OCSD_MIN_VER ((0 << 16) | (14 << 8) | (0))
-> +#define OCSD_MIN_VER ((1 << 16) | (0 << 8) | (0))
->  #if !defined(OCSD_VER_NUM) || (OCSD_VER_NUM < OCSD_MIN_VER)
-> -#error "OpenCSD >= 0.14.0 is required"
-> +#error "OpenCSD >= 1.0.0 is required"
->  #endif
->  
->  int main(void)
-> diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> index cd007cc9c283..3f4bc4050477 100644
-> --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> @@ -419,19 +419,10 @@ cs_etm_decoder__buffer_range(struct cs_etm_queue *etmq,
->  	packet->last_instr_subtype = elem->last_i_subtype;
->  	packet->last_instr_cond = elem->last_instr_cond;
->  
-> -	switch (elem->last_i_type) {
-> -	case OCSD_INSTR_BR:
-> -	case OCSD_INSTR_BR_INDIRECT:
-> +	if (elem->last_i_type == OCSD_INSTR_BR || elem->last_i_type == OCSD_INSTR_BR_INDIRECT)
->  		packet->last_instr_taken_branch = elem->last_instr_exec;
-> -		break;
-> -	case OCSD_INSTR_ISB:
-> -	case OCSD_INSTR_DSB_DMB:
-> -	case OCSD_INSTR_WFI_WFE:
-> -	case OCSD_INSTR_OTHER:
-> -	default:
-> +	else
->  		packet->last_instr_taken_branch = false;
-> -		break;
-> -	}
->  
->  	packet->last_instr_size = elem->last_instr_sz;
->  
-> @@ -572,6 +563,8 @@ static ocsd_datapath_resp_t cs_etm_decoder__gen_trace_elem_printer(
->  	case OCSD_GEN_TRC_ELEM_EVENT:
->  	case OCSD_GEN_TRC_ELEM_SWTRACE:
->  	case OCSD_GEN_TRC_ELEM_CUSTOM:
-> +	case OCSD_GEN_TRC_ELEM_SYNC_MARKER:
-> +	case OCSD_GEN_TRC_ELEM_MEMTRANS:
->  	default:
->  		break;
+On Mon, Jan 11, 2021 at 5:12 PM Thierry Reding <treding@nvidia.com> wrote:
+>
+> On Mon, Jan 11, 2021 at 03:57:37PM +0100, Rafael J. Wysocki wrote:
+> > On Mon, Jan 11, 2021 at 2:43 PM Thierry Reding <treding@nvidia.com> wrote:
+> > >
+> > > On Sun, Jan 10, 2021 at 08:44:13PM -0800, Hugh Dickins wrote:
+> > > > Hi Rafael,
+> > > >
+> > > > Synaptics RMI4 SMBus touchpad on ThinkPad X1 Carbon (5th generation)
+> > > > fails to suspend when running 5.11-rc kernels: bisected to
+> > > > 5b6164d3465f ("driver core: Reorder devices on successful probe"),
+> > > > and reverting that fixes it.  dmesg.xz attached, but go ahead and ask
+> > > > me to switch on a debug option to extract further info if that may help.
+> > >
+> > > Hi Hugh,
+> > >
+> > > Quoting what I think are the relevant parts of that log:
+> > >
+> > > [   34.373742] printk: Suspending console(s) (use no_console_suspend to debug)
+> > > [   34.429015] rmi4_physical rmi4-00: Failed to read irqs, code=-6
+> > > [   34.474973] rmi4_f01 rmi4-00.fn01: Failed to write sleep mode: -6.
+> > > [   34.474994] rmi4_f01 rmi4-00.fn01: Suspend failed with code -6.
+> > > [   34.475001] rmi4_physical rmi4-00: Failed to suspend functions: -6
+> > > [   34.475105] rmi4_smbus 6-002c: Failed to suspend device: -6
+> > > [   34.475113] PM: dpm_run_callback(): rmi_smb_suspend+0x0/0x3c returns -6
+> > > [   34.475130] PM: Device 6-002c failed to suspend: error -6
+> > > [   34.475187] PM: Some devices failed to suspend, or early wake event detected
+> > > [   34.480324] rmi4_f03 rmi4-00.fn03: rmi_f03_pt_write: Failed to write to F03 TX register (-6).
+> > > [   34.480748] rmi4_f03 rmi4-00.fn03: rmi_f03_pt_write: Failed to write to F03 TX register (-6).
+> > > [   34.481558] rmi4_physical rmi4-00: rmi_driver_clear_irq_bits: Failed to change enabled interrupts!
+> > > [   34.487935] acpi LNXPOWER:02: Turning OFF
+> > > [   34.488707] acpi LNXPOWER:01: Turning OFF
+> > > [   34.489554] rmi4_physical rmi4-00: rmi_driver_set_irq_bits: Failed to change enabled interrupts!
+> > > [   34.489669] psmouse: probe of serio2 failed with error -1
+> > > [   34.489882] OOM killer enabled.
+> > > [   34.489891] Restarting tasks ... done.
+> > > [   34.589183] PM: suspend exit
+> > > [   34.589839] PM: suspend entry (s2idle)
+> > > [   34.605884] Filesystems sync: 0.017 seconds
+> > > [   34.607594] Freezing user space processes ... (elapsed 0.006 seconds) done.
+> > > [   34.613645] OOM killer disabled.
+> > > [   34.613650] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+> > > [   34.615482] printk: Suspending console(s) (use no_console_suspend to debug)
+> > > [   34.653097] rmi4_f01 rmi4-00.fn01: Failed to write sleep mode: -6.
+> > > [   34.653108] rmi4_f01 rmi4-00.fn01: Suspend failed with code -6.
+> > > [   34.653115] rmi4_physical rmi4-00: Failed to suspend functions: -6
+> > > [   34.653123] rmi4_smbus 6-002c: Failed to suspend device: -6
+> > > [   34.653129] PM: dpm_run_callback(): rmi_smb_suspend+0x0/0x3c returns -6
+> > > [   34.653160] PM: Device 6-002c failed to suspend: error -6
+> > > [   34.653174] PM: Some devices failed to suspend, or early wake event detected
+> > > [   34.660515] OOM killer enabled.
+> > > [   34.660524] Restarting tasks ...
+> > > [   34.661456] rmi4_physical rmi4-00: rmi_driver_set_irq_bits: Failed to change enabled interrupts!
+> > > [   34.661591] psmouse: probe of serio2 failed with error -1
+> > > [   34.669469] done.
+> > > [   34.748386] PM: suspend exit
+> > >
+> > > I think what might be happening here is that the offending patch causes
+> > > some devices to be reordered in a way different to how they were ordered
+> > > originally and the rmi4 driver currently depends on that implicit order.
+> >
+> > Actually, the only possible case in which the commit in question can
+> > introduce suspend failures like this is when some dependency
+> > information is missing and so the reordering causes the ordering to
+> > change from the (working) implicit one.
+> >
+> > > Interestingly one of the bugs that the offending patch fixes is similar
+> > > in the failure mode but for the reverse reason: the implicit order
+> > > causes suspend/resume to fail.
+> >
+> > And that happens because some dependency information is missing.
+> >
+> > So we have failing cases when dependency information is missing, so
+> > instead of fixing those we have tried to make the core change the
+> > ordering after every successful probe in the hope that this will take
+> > care of the problem without introducing new breakage.
+> >
+> > However, it evidently has introduced new breakage and in order to fix
+> > it we need to figure out what dependency information is missing in the
+> > failing cases and put that information in, but we may as well do the
+> > same for the cases that are failing without the offending change.
+> >
+> > So why don't we revert the commit in question and do just that?
+>
+> Unfortunately it isn't that easy. In fact, all the dependency
+> information already exists in the case that I cited in 5b6164d3465f
+> ("driver core: Reorder devices on successful probe"), but it's the
+> driver core that suspends/resumes the devices in the wrong order.
+>
+> The reason is because the ACONNECT device depends on the BPMP device
+> (via a power-domains property), but it's also instantiated before the
+> BPMP device (because it is listed earlier in device tree, which is
+> sorted by unit-address first, then alphabetically). BPMP being a CPU
+> non-addressable device it doesn't have a unit-address and hence is
+> listed very late in device tree (by convention). Normally this is would
+> not be a problem because deferred probe would take care of it. But there
+> is one corner-case which happens when the BPMP is built into the kernel
+> (which it usually is, as it provides access to resources necessary for
+> booting, such as clocks and resets) and ACONNECT is built as a loadable
+> module. In that case, BPMP gets probed before ACONNECT and hence when
+> ACONNECT does eventually get loaded, the BPMP is already there, meaning
+> ACONNECT won't defer probe and hence the DPM suspend/resume order is not
+> fixed up by the deferred probe code.
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+What about using a device link to enforce the right ordering, then?
 
-Arnaldo please consider.
+Deferred probing is not a way to ensure the suitable suspend/resume ordering.
 
-Thanks,
-Mathieu
+> And that's precisely what the offending commit addresses. However, the
+> downside is, and we did discuss this during review, that it operates
+> under the (somewhat optimistic) assumption that all the dependency
+> information exists. This is because reordering on successful probe can
+> potentially introduce regressions for dependencies that were previously
+> implicit. So if a system has component B that depends on component A but
+> doesn't model that dependency via some child/parent relationship or an
+> explicit relationship that would be flagged by deferred probe,
 
->  	}
-> -- 
-> 2.28.0
-> 
+Again, deferred probing may not help here.
+
+> then this implicit dependency can break by the new reordering on successful probe.
+>
+> I very much suspect that that's exactly what's going on here. This RMI4
+> device very likely implicitly depends on some other resource getting
+> enabled but doesn't properly model that dependency. If we find out what
+> that dependency is and return -EPROBE_DEFER when that dependency has not
+> probed yet, then deferred probe will automatically take care of ordering
+> everything correctly again (or, in fact, ordering by successful probe
+> will take care of it already because RMI4 would initially fail with
+> -EPROBE_DEFER).
+>
+> Adding Vincent, Jason, Andrew and Lucas (who have recently worked on
+> this driver), perhaps they have some better understanding of what
+> missing dependencies might be causing the above errors.
+
+IMV it is a mistake to believe that deferred probing can get
+everything right for you in every case, with or without the offending
+commit.  Sometimes you need to tell the core what the right ordering
+is and that's what device links are for.
+
+As it stands today, that commit doesn't improve the situation and it
+adds overhead and complexity.
