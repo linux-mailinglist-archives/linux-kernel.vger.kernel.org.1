@@ -2,73 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529A92F11C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:46:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 623DB2F11C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730113AbhAKLql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:46:41 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11006 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730090AbhAKLqk (ORCPT
+        id S1730131AbhAKLqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:46:53 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:42329 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729892AbhAKLqw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:46:40 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DDsMG5Q4Vzj61M;
-        Mon, 11 Jan 2021 19:44:58 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.498.0; Mon, 11 Jan
- 2021 19:45:53 +0800
-Subject: Re: [f2fs-dev] [PATCH v3 1/5] f2fs: compress: add compress_inode to
- cache compressed blocks
-From:   Chao Yu <yuchao0@huawei.com>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20210107093126.116958-1-yuchao0@huawei.com>
- <X/we0NoUqAwuW82+@google.com>
- <6b0060b9-460a-617a-3778-e67f35d551f0@huawei.com>
-Message-ID: <cdd681ad-462d-cb37-2b4b-8f9d547bc718@huawei.com>
-Date:   Mon, 11 Jan 2021 19:45:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Mon, 11 Jan 2021 06:46:52 -0500
+Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id DE42723E4A;
+        Mon, 11 Jan 2021 12:46:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1610365570;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=D5g8T7+ZpKplsj2ntYskL6wMxURRtOLCbLA2e3+ppjI=;
+        b=THHpSn2aoROHYHixeJt3f6tgXVG8KsnXr0w4V9c6ujOkzOsiwn0OvBpDlwebxwUpWC+zOL
+        XAFSpEh4/fM4OVag9yaJMViCFcq1ndjdoCJkZMji9pDXmFsQRT/TZMzfySF7mfHCSdzQ1K
+        IIqLbLm40JdrMaKyO2391I8aY4KuCqg=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH RESEND v3] arm64: dts: ls1028a: fix FlexSPI clock
+Date:   Mon, 11 Jan 2021 12:45:55 +0100
+Message-Id: <20210111114555.28903-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <6b0060b9-460a-617a-3778-e67f35d551f0@huawei.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/11 18:31, Chao Yu wrote:
-> On 2021/1/11 17:48, Jaegeuk Kim wrote:
->> Hi Chao,
->>
->> After quick test of fsstress w/ fault injection, it gave wrong block address
->> errors. Could you please run the test a bit?
-> 
-> Jaegeuk,
-> 
-> Oh, I've covered with fstest cases and there is no such error message, let me
-> try fault injection + SPO case soon.
+Now that we have a proper driver for the FlexSPI interface use it. This
+will fix SCK frequency switching on Layerscape SoCs.
 
-Till now, I haven't see any problem... will let the test run for longer time in
-this night.
+This was tested on the Kontron sl28 board.
 
-Could you share me detailed error message you encounter?
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+Hi Shawn,
 
-Thanks,
+this is the last remaining piece of my previous series [1]. Now with the
+actual clock driver in v5.11 and the clockgen constants patches in your
+for-next branch, there are no further dependencies.
 
-> 
-> Thanks,
-> 
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> .
-> 
+[1] https://lore.kernel.org/lkml/20201108185113.31377-1-michael@walle.cc/
+
+Changlog from the old series:
+Changes since v2:
+ - use device tree constants for clockgen
+ - also use &fspi_clk for fspi_en clock
+
+Changes since v1:
+ - none
+
+ arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+index e00acad9a5c1..0a5923e96d7f 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+@@ -206,9 +206,20 @@
+ 		};
+ 
+ 		dcfg: syscon@1e00000 {
+-			compatible = "fsl,ls1028a-dcfg", "syscon";
++			#address-cells = <1>;
++			#size-cells = <1>;
++			compatible = "fsl,ls1028a-dcfg", "syscon", "simple-mfd";
+ 			reg = <0x0 0x1e00000 0x0 0x10000>;
++			ranges = <0x0 0x0 0x1e00000 0x10000>;
+ 			little-endian;
++
++			fspi_clk: clock-controller@900 {
++				compatible = "fsl,ls1028a-flexspi-clk";
++				reg = <0x900 0x4>;
++				#clock-cells = <0>;
++				clocks = <&clockgen QORIQ_CLK_HWACCEL 0>;
++				clock-output-names = "fspi_clk";
++			};
+ 		};
+ 
+ 		rst: syscon@1e60000 {
+@@ -326,8 +337,7 @@
+ 			      <0x0 0x20000000 0x0 0x10000000>;
+ 			reg-names = "fspi_base", "fspi_mmap";
+ 			interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
+-			clocks = <&clockgen QORIQ_CLK_HWACCEL 0>,
+-				 <&clockgen QORIQ_CLK_HWACCEL 0>;
++			clocks = <&fspi_clk>, <&fspi_clk>;
+ 			clock-names = "fspi_en", "fspi";
+ 			status = "disabled";
+ 		};
+-- 
+2.20.1
+
