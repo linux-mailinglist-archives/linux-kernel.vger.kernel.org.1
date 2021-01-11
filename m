@@ -2,129 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E5D2F1940
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE812F1942
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731531AbhAKPNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:13:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35136 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731299AbhAKPNa (ORCPT
+        id S1731939AbhAKPNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:13:37 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:29803 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731299AbhAKPNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:13:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610377923;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zH2sY2KFOZF7TSs2Cj/3HvzX9baKiIPNLIu6OGwY2+M=;
-        b=iTZ9Dt3UGCVQ2+XRFE/ePihDxClp91i2MsAPxbXquzHCVVMUJTQKrRybR13eezKOgDMoAv
-        HYCgf1Hu3Rj18s27IdG3TsgeNJSVyPN9y+/i4BT3zI23MSiGE5XDyZgUhn1azcL3xZKaRP
-        +CZV7xKAH6oAlHazgq2rqa4n3DdDDDU=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-152-NCasrmK5MWygKp9owwR6TA-1; Mon, 11 Jan 2021 10:12:02 -0500
-X-MC-Unique: NCasrmK5MWygKp9owwR6TA-1
-Received: by mail-qv1-f71.google.com with SMTP id t16so13372944qvk.13
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:12:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=zH2sY2KFOZF7TSs2Cj/3HvzX9baKiIPNLIu6OGwY2+M=;
-        b=GXsxRX3vIUC52qEwPbJqK6AxpCCYDNLymGVZdpboDVR0p75SShIlsYbfnLrDrfyx+Y
-         A+daRQi+TdtY8tWm3GtBC63Cdkp1lc8xFEiPiwgmUr341drIEYZRwHD4vTElZUPk6yst
-         3YuGtefaW/3r47m+IRQRx17ytqNjlcqbUNCeYzxfdXvl7s/XuxWzwXckGpzIm85dqXOW
-         Z5Cl7USpCdgpRSeNlF8zvpmChpgo4zHz3IS3e+QURCZN147tQwAWrYmSh8pgAmASzb19
-         tQ+/HWVqp7RV5Rl2Gr30VOfv5t6J4+AVONE7INRy3YCjYWxtz51kK2/080GaokO/WU7A
-         jdpQ==
-X-Gm-Message-State: AOAM531FK0+/8y8YYCPJ8oktbzpD9fryIMzDMkF8KQKXo6k3gLp8Aj59
-        bbdoTdMTH4MDu3cFUWJ9CTn2RhIpux4A80Sl6XodGsWBXXLdPwuUpMhuWqHPM1x86Zkg4pDWred
-        hu+glDUc8BNmYLAIF189uGI5iQJBns1TDIRWvkYzb4FU7h22jiRMrnpJwqQuHPXgU9dQ+LB8=
-X-Received: by 2002:a0c:a789:: with SMTP id v9mr64927qva.41.1610377921922;
-        Mon, 11 Jan 2021 07:12:01 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxcAqysHBNs93WJfvR2O2qKdvrvzOgfLz+paIVyIwplHKXl+Trm6gELqe7+VJOEgIEjl7lfig==
-X-Received: by 2002:a0c:a789:: with SMTP id v9mr64894qva.41.1610377921612;
-        Mon, 11 Jan 2021 07:12:01 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id n31sm2516266qtn.66.2021.01.11.07.11.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 07:12:01 -0800 (PST)
-Subject: Re: [PATCH -next] fpga: dfl-pci: rectify ReST formatting
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wu Hao <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        linux-fpga@vger.kernel.org
-Cc:     linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210111112113.27242-1-lukas.bulwahn@gmail.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <d22ccfa1-19a1-d48c-d822-76ea289965ab@redhat.com>
-Date:   Mon, 11 Jan 2021 07:11:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 11 Jan 2021 10:13:36 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610377993; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=hirL+bx7ovoUKx/v5BmgMLJbirQ64ET+KGM2Ze9K26Y=;
+ b=sOYsrzKkHmppohlAQHvGtFLM0NnYVCuKIpMOSSV0p+1slNVzp7jrBYzA8cRAq08FbAWTgI62
+ ndVJeCrctYNpQVP+QOtKnZ1wLc1PR189i95CHOhj3xXbWQkPor0g3c+k0csnvDrWeUj10zQ3
+ sCZTPvsAKU4MZB46LcKL/HM5L+w=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5ffc6aec46a6c7cde75fde99 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 15:12:44
+ GMT
+Sender: isaacm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 551B6C43465; Mon, 11 Jan 2021 15:12:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: isaacm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 55053C433C6;
+        Mon, 11 Jan 2021 15:12:42 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210111112113.27242-1-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Date:   Mon, 11 Jan 2021 07:12:42 -0800
+From:   isaacm@codeaurora.org
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     iommu@lists.linux-foundation.org, joro@8bytes.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        pdaly@codeaurora.org, pratikp@codeaurora.org, robin.murphy@arm.com,
+        will@kernel.org
+Subject: Re: [PATCH 0/5] Optimize iommu_map_sg() performance
+In-Reply-To: <5a29b6e339c66e9c7cd9a608baa3f9e1@codeaurora.org>
+References: <1610157031-26301-1-git-send-email-isaacm@codeaurora.org>
+ <20210111062300.28541-1-saiprakash.ranjan@codeaurora.org>
+ <5a29b6e339c66e9c7cd9a608baa3f9e1@codeaurora.org>
+Message-ID: <6f57460f1b95373c615fdbad97edd9ed@codeaurora.org>
+X-Sender: isaacm@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-01-10 23:52, Sai Prakash Ranjan wrote:
+> On 2021-01-11 11:52, Sai Prakash Ranjan wrote:
+>> Hi Isaac,
+>> 
+>> I gave this series a go on chromebook and saw these warnings
+>> and several device probe failures, logs attached below:
+>> 
+>> WARN corresponds to this code in arm_lpae_map_by_pgsize()
+>> 
+>> 	if (WARN_ON(iaext || (paddr + size) >> cfg->oas))
+>> 		return -ERANGE;
+>> 
+>> Logs:
+>> 
+>> [    2.411391] ------------[ cut here ]------------
+>> [    2.416149] WARNING: CPU: 6 PID: 56 at
+>> drivers/iommu/io-pgtable-arm.c:492 arm_lpae_map_sg+0x234/0x248
+>> [    2.425606] Modules linked in:
+>> [    2.428749] CPU: 6 PID: 56 Comm: kworker/6:1 Not tainted 5.10.5 
+>> #970
+>> [    2.440287] Workqueue: events deferred_probe_work_func
+>> [    2.445563] pstate: 20c00009 (nzCv daif +PAN +UAO -TCO BTYPE=--)
+>> [    2.451726] pc : arm_lpae_map_sg+0x234/0x248
+>> [    2.456112] lr : arm_lpae_map_sg+0xe0/0x248
+>> [    2.460410] sp : ffffffc010513750
+>> [    2.463820] x29: ffffffc010513790 x28: ffffffb943332000
+>> [    2.469281] x27: 0000000ffffff000 x26: ffffffb943d14900
+>> [    2.474738] x25: 0000000000001000 x24: 0000000103465000
+>> [    2.480196] x23: 0000000000000001 x22: 0000000103466000
+>> [    2.485645] x21: 0000000000000003 x20: 0000000000000a20
+>> [    2.491103] x19: ffffffc010513850 x18: 0000000000000001
+>> [    2.496562] x17: 0000000000000002 x16: 00000000ffffffff
+>> [    2.502021] x15: 0000000000000000 x14: 0000000000000000
+>> [    2.507479] x13: 0000000000000001 x12: 0000000000000000
+>> [    2.512928] x11: 0000001000000000 x10: 0000000000000000
+>> [    2.518385] x9 : 0000000000000001 x8 : 0000000040201000
+>> [    2.523844] x7 : 0000000000000a20 x6 : ffffffb943463000
+>> [    2.529302] x5 : 0000000000000003 x4 : 0000000000001000
+>> [    2.534760] x3 : 0000000000000001 x2 : ffffffb941f605a0
+>> [    2.540219] x1 : 0000000000000003 x0 : 0000000000000e40
+>> [    2.545679] Call trace:
+>> [    2.548196]  arm_lpae_map_sg+0x234/0x248
+>> [    2.552225]  arm_smmu_map_sg+0x80/0xc4
+>> [    2.556078]  __iommu_map_sg+0x6c/0x188
+>> [    2.559931]  iommu_map_sg_atomic+0x18/0x20
+>> [    2.564144]  iommu_dma_alloc_remap+0x26c/0x34c
+>> [    2.568703]  iommu_dma_alloc+0x9c/0x268
+>> [    2.572647]  dma_alloc_attrs+0x88/0xfc
+>> [    2.576503]  gsi_ring_alloc+0x50/0x144
+>> [    2.580356]  gsi_init+0x2c4/0x5c4
+>> [    2.583766]  ipa_probe+0x14c/0x2b4
+>> [    2.587263]  platform_drv_probe+0x94/0xb4
+>> [    2.591377]  really_probe+0x138/0x348
+>> [    2.595145]  driver_probe_device+0x80/0xb8
+>> [    2.599358]  __device_attach_driver+0x90/0xa8
+>> [    2.603829]  bus_for_each_drv+0x84/0xcc
+>> [    2.607772]  __device_attach+0xc0/0x148
+>> [    2.611713]  device_initial_probe+0x18/0x20
+>> [    2.616012]  bus_probe_device+0x38/0x94
+>> [    2.619953]  deferred_probe_work_func+0x78/0xb0
+>> [    2.624611]  process_one_work+0x210/0x3dc
+>> [    2.628726]  worker_thread+0x284/0x3e0
+>> [    2.632578]  kthread+0x148/0x1a8
+>> [    2.635891]  ret_from_fork+0x10/0x18
+>> [    2.639562] ---[ end trace 9bac18cad6a9862e ]---
+>> [    2.644414] ipa 1e40000.ipa: error -12 allocating channel 0 event 
+>> ring
+>> [    2.651656] ipa: probe of 1e40000.ipa failed with error -12
+>> [    2.660072] dwc3 a600000.dwc3: Adding to iommu group 8
+>> [    2.668632] xhci-hcd xhci-hcd.13.auto: xHCI Host Controller
+>> [    2.674680] xhci-hcd xhci-hcd.13.auto: new USB bus registered,
+>> assigned bus number 1
+>> 
+> 
+> <snip>...
+> 
+> Isaac provided a fix which he will post as v2 and no warnings were 
+> observed
+> with that fix.
+> 
+> Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> 
+> Thanks,
+> Sai
 
-On 1/11/21 3:21 AM, Lukas Bulwahn wrote:
-> Commit fa41d10589be ("fpga: dfl-pci: locate DFLs by PCIe vendor specific
-> capability") provides documentation to the FPGA Device Feature List (DFL)
-> Framework Overview, but introduced new documentation warnings:
->
->   ./Documentation/fpga/dfl.rst:
->     505: WARNING: Title underline too short.
->     523: WARNING: Unexpected indentation.
->     523: WARNING: Blank line required after table.
->     524: WARNING: Block quote ends without a blank line; unexpected unindent.
->
-> Rectify ReST formatting in ./Documentation/fpga/dfl.rst.
+Thanks for testing out the patches. I've added the fix (there was an 
+off-by-one error in the calculation
+used to check if the IOVA/physical addresses are within limits) to 
+version 2 of the series:
+https://lore.kernel.org/linux-iommu/1610376862-927-1-git-send-email-isaacm@codeaurora.org/T/#t
 
-Can you explain how to reproduce this problem ?
-
-Tom
-
->
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> applies cleanly on next-20210111
->
-> Moritz, Matthew, please ack.
->
-> Greg, please pick this doc fixup to your fpga -next tree on top of
-> the commit above.
->
->  Documentation/fpga/dfl.rst | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-> index ea8cefc18bdb..c41ac76ffaae 100644
-> --- a/Documentation/fpga/dfl.rst
-> +++ b/Documentation/fpga/dfl.rst
-> @@ -502,7 +502,7 @@ FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
->  could be a reference.
->  
->  Location of DFLs on a PCI Device
-> -===========================
-> +================================
->  The original method for finding a DFL on a PCI device assumed the start of the
->  first DFL to offset 0 of bar 0.  If the first node of the DFL is an FME,
->  then further DFLs in the port(s) are specified in FME header registers.
-> @@ -514,6 +514,7 @@ data begins with a 4 byte vendor specific register for the number of DFLs follow
->  Offset/BIR vendor specific registers for each DFL. Bits 2:0 of Offset/BIR register
->  indicates the BAR, and bits 31:3 form the 8 byte aligned offset where bits 2:0 are
->  zero.
-> +::
->  
->          +----------------------------+
->          |31     Number of DFLS      0|
-
+Thanks,
+Isaac
