@@ -2,78 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 357042F2142
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:00:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C21412F2147
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:00:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729941AbhAKU7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 15:59:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726840AbhAKU7M (ORCPT
+        id S1730359AbhAKU7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 15:59:50 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:40879 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728885AbhAKU7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:59:12 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977CFC061794;
-        Mon, 11 Jan 2021 12:58:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Cv7VbZ5smu3P4Ii21Ehn0+Vp636YonNPeqjeeY7v9Jw=; b=tnAv4qWaCc85VIMfUWbl4cZRjE
-        lkskA4ziJMQruGVP3Hf8eCGWXc+uwGnSB8F1A/ddnjtWx8x5EGqkKCeyFM4lUE+qhXflJoypfMEJx
-        wmc1GoyYz9rmVqtGbQhIw4UaG5IvlpHfJGobpLqkXqMUgeGc+Pe7ii9GJZdWMFHp7QzJOQpKjyP5t
-        uMKCkXX7GsNhs0cUmj+ltn6Hx7Ewy92JvN+3OsOUrKzqWIY0xRKRF70SP59sfNEg4z5f9fY2oRhME
-        Tv2+5j+s7nukDUg4oDQwulFRcy4Wizovzg1K2EXURY7M3yki7Arordu9itjqWIOS1tlhiPePGG+NK
-        PsVIJ/Tw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1kz4GY-003r1a-Vv; Mon, 11 Jan 2021 20:58:23 +0000
-Date:   Mon, 11 Jan 2021 20:58:18 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] char_dev: replace cdev_map with an xarray
-Message-ID: <20210111205818.GJ35215@casper.infradead.org>
-References: <20210111170513.1526780-1-hch@lst.de>
+        Mon, 11 Jan 2021 15:59:49 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610398771; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=FejdcNeskbNijKqbe186xVWD9/tCQ7On7jSIGSIFwSc=; b=ORQPElTQtT6gY4LAtWx/iVEelWyzH8HoqNSsyriWeRh2wJ+/qcAGBSgJ6Cnm0J8hl72A4JtW
+ SwBvK0hlQIVNnVVdvrYZmw/avxh+R7YLMLRtE8w095oHzr1jIRvJt8Vj18AWp8TBQzYZsFcs
+ XmLlsHfCGkcmAUc9Li96a7TUlBo=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5ffcbc124104d9478d3043a1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 20:58:58
+ GMT
+Sender: sudaraja=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 30B2BC43462; Mon, 11 Jan 2021 20:58:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from th-lint-014.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sudaraja)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2156EC433CA;
+        Mon, 11 Jan 2021 20:58:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2156EC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sudaraja@codeaurora.org
+From:   Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org
+Cc:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+Subject: [PATCH] mm: vmscan: support equal reclaim for anon and file pages
+Date:   Mon, 11 Jan 2021 12:58:43 -0800
+Message-Id: <c617a0c6cb2a7e3bc78998ad7e2bceb22df157c2.1610398598.git.sudaraja@codeaurora.org>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111170513.1526780-1-hch@lst.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 06:05:13PM +0100, Christoph Hellwig wrote:
-> @@ -486,14 +491,22 @@ int cdev_add(struct cdev *p, dev_t dev, unsigned count)
->  	if (WARN_ON(dev == WHITEOUT_DEV))
->  		return -EBUSY;
->  
-> -	error = kobj_map(cdev_map, dev, count, NULL,
-> -			 exact_match, exact_lock, p);
-> -	if (error)
-> -		return error;
-> +	mutex_lock(&chrdevs_lock);
-> +	for (i = 0; i < count; i++) {
-> +		error = xa_insert(&cdev_map, dev + i, p, GFP_KERNEL);
-> +		if (error)
-> +			goto out_unwind;
-> +	}
-> +	mutex_unlock(&chrdevs_lock);
+When performing memory reclaim support treating anonymous and
+file backed pages equally.
+Swapping anonymous pages out to memory can be efficient enough
+to justify treating anonymous and file backed pages equally.
 
-Looking at some of the users ...
+Signed-off-by: Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+---
+ mm/vmscan.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
-#define BSG_MAX_DEVS            32768
-...
-        ret = cdev_add(&bsg_cdev, MKDEV(bsg_major, 0), BSG_MAX_DEVS);
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 257cba79a96d..ec7585e0d5f5 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -169,6 +169,8 @@ struct scan_control {
+  */
+ int vm_swappiness = 60;
+ 
++bool balance_anon_file_reclaim = false;
++
+ static void set_task_reclaim_state(struct task_struct *task,
+ 				   struct reclaim_state *rs)
+ {
+@@ -201,6 +203,13 @@ static DECLARE_RWSEM(shrinker_rwsem);
+ static DEFINE_IDR(shrinker_idr);
+ static int shrinker_nr_max;
+ 
++static int __init cmdline_parse_balance_reclaim(char *p)
++{
++	balance_anon_file_reclaim = true;
++	return 0;
++}
++early_param("balance_reclaim", cmdline_parse_balance_reclaim);
++
+ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
+ {
+ 	int id, ret = -ENOMEM;
+@@ -2291,9 +2300,11 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+ 
+ 	/*
+ 	 * If there is enough inactive page cache, we do not reclaim
+-	 * anything from the anonymous working right now.
++	 * anything from the anonymous working right now. But when balancing
++	 * anon and page cache files for reclaim, allow swapping of anon pages
++	 * even if there are a number of inactive file cache pages.
+ 	 */
+-	if (sc->cache_trim_mode) {
++	if (!balance_anon_file_reclaim && sc->cache_trim_mode) {
+ 		scan_balance = SCAN_FILE;
+ 		goto out;
+ 	}
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-So this is going to allocate 32768 entries; at 8 bytes each, that's 256kB.
-With XArray overhead, it works out to 73 pages or 292kB.  While I don't
-have bsg loaded on my laptop, I imagine a lot of machines do.
-
-drivers/net/tap.c:#define TAP_NUM_DEVS (1U << MINORBITS)
-include/linux/kdev_t.h:#define MINORBITS        20
-drivers/net/tap.c:      err = cdev_add(tap_cdev, *tap_major, TAP_NUM_DEVS);
-
-That's going to be even worse -- 8MB plus the overhead to be closer to 9MB.
-
-I think we do need to implement the 'store a range' option ;-(
