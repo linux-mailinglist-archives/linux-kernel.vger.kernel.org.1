@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D24C2F0FEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CD2E2F0FF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728917AbhAKKTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:19:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40314 "EHLO
+        id S1728981AbhAKKT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:19:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728683AbhAKKTv (ORCPT
+        with ESMTP id S1728929AbhAKKT5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:19:51 -0500
+        Mon, 11 Jan 2021 05:19:57 -0500
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CE34C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 02:19:11 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8577C06179F
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 02:19:16 -0800 (PST)
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1kyuHu-0008UD-6h; Mon, 11 Jan 2021 11:19:02 +0100
+        id 1kyuHu-0008UE-6i; Mon, 11 Jan 2021 11:19:02 +0100
 Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1kyuHt-0000pV-87; Mon, 11 Jan 2021 11:19:01 +0100
+        id 1kyuHt-0000pe-9A; Mon, 11 Jan 2021 11:19:01 +0100
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     Mark Rutland <mark.rutland@arm.com>,
         Rob Herring <robh+dt@kernel.org>,
@@ -35,9 +35,9 @@ Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
         NXP Linux Team <linux-imx@nxp.com>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         David Jander <david@protonic.nl>
-Subject: [PATCH v7 1/5] dt-bindings: vendor-prefixes: Add an entry for Kverneland Group
-Date:   Mon, 11 Jan 2021 11:18:51 +0100
-Message-Id: <20210111101855.3121-2-o.rempel@pengutronix.de>
+Subject: [PATCH v7 2/5] dt-bindings: arm: fsl: add Kverneland UT1, UT1Q and UI1P boards
+Date:   Mon, 11 Jan 2021 11:18:52 +0100
+Message-Id: <20210111101855.3121-3-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111101855.3121-1-o.rempel@pengutronix.de>
 References: <20210111101855.3121-1-o.rempel@pengutronix.de>
@@ -51,27 +51,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "kvg" entry for Kverneland Group: https://ien.kvernelandgroup.com/
+Add Kverneland UT1 (imx6dl), UT1Q (imx6q) and UT1P (imx6dp) based boards
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 Acked-by: Rob Herring <robh@kernel.org>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/arm/fsl.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index f03ba0c4ae5e..115d859927f8 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -581,6 +581,8 @@ patternProperties:
-     description: Kontron S&T AG
-   "^kosagi,.*":
-     description: Sutajio Ko-Usagi PTE Ltd.
-+  "^kvg,.*":
-+    description: Kverneland Group
-   "^kyo,.*":
-     description: Kyocera Corporation
-   "^lacie,.*":
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 2ae66407e2aa..e0e3261dd1bb 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -210,6 +210,7 @@ properties:
+               - kiebackpeter,imx6q-tpc    # K+P i.MX6 Quad TPC Board
+               - kontron,imx6q-samx6i      # Kontron i.MX6 Dual/Quad SMARC Module
+               - kosagi,imx6q-novena       # Kosagi Novena Dual/Quad
++              - kvg,vicut1q               # Kverneland UT1Q board
+               - logicpd,imx6q-logicpd
+               - lwn,display5              # Liebherr Display5 i.MX6 Quad Board
+               - lwn,mccmon6               # Liebherr Monitor6 i.MX6 Quad Board
+@@ -331,6 +332,7 @@ properties:
+               - fsl,imx6qp-sabreauto      # i.MX6 Quad Plus SABRE Automotive Board
+               - fsl,imx6qp-sabresd        # i.MX6 Quad Plus SABRE Smart Device Board
+               - karo,imx6qp-tx6qp         # Ka-Ro electronics TX6QP-8037 Module
++              - kvg,vicutp                # Kverneland UT1P board
+               - prt,prtwd3                # Protonic WD3 board
+               - wand,imx6qp-wandboard     # Wandboard i.MX6 QuadPlus Board
+               - zii,imx6qp-zii-rdu2       # ZII RDU2+ Board
+@@ -364,6 +366,7 @@ properties:
+               - fsl,imx6dl-sabresd        # i.MX6 DualLite SABRE Smart Device Board
+               - karo,imx6dl-tx6dl         # Ka-Ro electronics TX6U Modules
+               - kontron,imx6dl-samx6i     # Kontron i.MX6 Solo SMARC Module
++              - kvg,vicut1                # Kverneland UT1 board
+               - ply,plybas                # Plymovent BAS board
+               - ply,plym2m                # Plymovent M2M board
+               - poslab,imx6dl-savageboard # Poslab SavageBoard Dual
 -- 
 2.30.0
 
