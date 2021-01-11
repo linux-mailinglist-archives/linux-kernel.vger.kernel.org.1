@@ -2,89 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C482F1FB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:44:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5B92F1FB5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:46:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391087AbhAKTn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:43:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387724AbhAKTn4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:43:56 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B1FC061794;
-        Mon, 11 Jan 2021 11:43:16 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id jx16so21556ejb.10;
-        Mon, 11 Jan 2021 11:43:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=heazb9k/m8/zIdtN3jRoAAnqyK1a1wK3ts+R6742L6M=;
-        b=OUQ39xFQqtOehkimmfAf739cawBRIfUXq7buq8L9pTI+oTRJ3bvIXwHVcWE6jhQQjo
-         XurM1fh92irZV6l+GGdJL9SBg1OgBxukzfs0olW8S9FIvE1Kfv8i32Yh9J0Dvx5Bj//E
-         yN3ZmFAL92lFx4JciAQPbuQv5Rk79nG1RF8MDWIK80DMY8C6moQghyBcwOsszppodCVB
-         6TCLYY5/tHEvrxUEjBTWVRcxdcqH3UmGrYpKm17tZlq+ho8+RRbWffnTn066q+vYrNab
-         roHQf8XBbRSxDHgBWRexLFM//N0oOmsaEBMEIy48QTokon4+JtzLtt1sgWVgNcFV5VsR
-         Q1pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=heazb9k/m8/zIdtN3jRoAAnqyK1a1wK3ts+R6742L6M=;
-        b=PmeWmhYcJaiRQfhQb8a9TyWrPdMEkGL4BRSxEqu2xoNIiwTHUZKzoD0MTvGAu8Aj4E
-         Hh7VNjOoloT8IO1yE8+bT+lQAsho5X0Lor6HwaINzT1azvgigbaRgE2kZ1nHvOQKdVny
-         l/vgZDTzGBDCu6yQZcYEs+HB42Qq2DgZIpl+RtTVRkqBiP5aDcU6xJgM3pEm6MitnpKP
-         LJzD1TX/q4q8Gt8sOTaJXhdCzsdcR9qZ1NaEiTUtEfjX9kWaE+ukf8T2+oiBaf3oxZ7b
-         UgXgicfAZ+73ym2ZKyMuS7N5JVB19h2EouEF8CXcgiZz8+L7lja3nx1shZpzLeAQopuH
-         5a5A==
-X-Gm-Message-State: AOAM5313ModPfqbS33Y0JUHTsIw7H4i9zeKtF4dU/klJyQuL5XCULfdT
-        ViQMpkJwZ2OVAydF9N5pcwAZQ0Sc3x22ZmjQa0w=
-X-Google-Smtp-Source: ABdhPJxU1h3Fa4qWWsvhta1+jAtDt3hDvEy4bC1whizOT51BBn8be0SpuiWBBHYcXoccZ+wa/cKStF3Sn8sOozF3VDY=
-X-Received: by 2002:a17:907:20a4:: with SMTP id pw4mr677910ejb.499.1610394195084;
- Mon, 11 Jan 2021 11:43:15 -0800 (PST)
+        id S2388997AbhAKTpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:45:51 -0500
+Received: from ms.lwn.net ([45.79.88.28]:58558 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730411AbhAKTpu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 14:45:50 -0500
+Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id C00D09A8;
+        Mon, 11 Jan 2021 19:45:09 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net C00D09A8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1610394310; bh=7TmXEknUcAlmtbHUglEqhDvsunxbo1+equLlj15wZRc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=OLtkSmzV7gUwAYyEPu8SNG1dobLmpodw5HfBkKUiFspzwIr4hFAa+VNRbpDHr+pe1
+         hTKiyF5pjveM9agl1gcEaL3+6Un05bA6bBMhVZ8kpUOH4stiS7W/1ms9q1SpRRwHBn
+         Rmfrf4KRwgmi8FH0p3jGCmAD6Jet54LF/2OuujxmoNtHLuEmL56sidX6rYno3zc6ic
+         /uPF+xklQ/FrCG2MK7c90kmQ5UXWJgnUCmCYAHopwLfTnBGgEyOuBUim1NrcxZlM96
+         EIgHnPSiiXs4hOm/r9Fz9Kf70zMwAZZxodKrfbFWwcuClxK5bEossHnZPzTbaqplOp
+         VFQPdDsIJaglg==
+Date:   Mon, 11 Jan 2021 12:45:08 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Joe Pater <02joepater06@gmail.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: kernel-hacking: change 'current()' to
+ 'current'
+Message-ID: <20210111124508.0434a8a9@lwn.net>
+In-Reply-To: <20210111103240.7445-1-02joepater06@gmail.com>
+References: <20210111103240.7445-1-02joepater06@gmail.com>
+Organization: LWN.net
 MIME-Version: 1.0
-References: <20210105225817.1036378-1-shy828301@gmail.com> <20210105225817.1036378-3-shy828301@gmail.com>
- <20210107001351.GD1110904@carbon.dhcp.thefacebook.com> <CAHbLzkqnLKh7L5BWdSsoX5t-DjpOwYREwY5yBXgRUqAuubueQw@mail.gmail.com>
- <20210111193740.GB1388856@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20210111193740.GB1388856@carbon.dhcp.thefacebook.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 11 Jan 2021 11:43:03 -0800
-Message-ID: <CAHbLzkoYhB1fPyTwBtNqyppbypWuihFWMPAwNVjX0Yk_t2EUGg@mail.gmail.com>
-Subject: Re: [v3 PATCH 02/11] mm: vmscan: consolidate shrinker_maps handling code
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 11:37 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Mon, Jan 11, 2021 at 11:00:17AM -0800, Yang Shi wrote:
-> > On Wed, Jan 6, 2021 at 4:14 PM Roman Gushchin <guro@fb.com> wrote:
-> > >
-> > > On Tue, Jan 05, 2021 at 02:58:08PM -0800, Yang Shi wrote:
-> > > > The shrinker map management is not really memcg specific, it's just allocation
-> > >
-> > > In the current form it doesn't look so, especially because each name
-> > > has a memcg_ prefix and each function takes a memcg argument.
-> > >
-> > > It begs for some refactorings (Kirill suggested some) and renamings.
-> >
-> > BTW, do you mean the suggestion about renaming memcg_shrinker_maps to
-> > shrinker_maps? I just saw his email today since gmail filtered his
-> > emails to SPAM :-(
->
-> Yes.
+On Mon, 11 Jan 2021 10:32:41 +0000
+Joe Pater <02joepater06@gmail.com> wrote:
 
-Thanks for confirming, will do it in v4.
+> Change 'current()' heading to 'current' to reflect usage.
+> 
+> Signed-off-by: Joe Pater <02joepater06@gmail.com>
+> ---
+>  Documentation/kernel-hacking/hacking.rst | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/kernel-hacking/hacking.rst b/Documentation/kernel-hacking/hacking.rst
+> index eed2136d847f..451523424942 100644
+> --- a/Documentation/kernel-hacking/hacking.rst
+> +++ b/Documentation/kernel-hacking/hacking.rst
+> @@ -346,8 +346,8 @@ routine.
+>  Before inventing your own cache of often-used objects consider using a
+>  slab cache in ``include/linux/slab.h``
+>  
+> -:c:func:`current()`
+> --------------------
+> +:c:macro:`current`
+> +------------------
+
+Applied, thanks.
+
+jon
