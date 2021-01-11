@@ -2,98 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48FD32F0BEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 05:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1932A2F0BF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 05:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727246AbhAKEr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 23:47:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
+        id S1726841AbhAKEtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 23:49:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727127AbhAKErZ (ORCPT
+        with ESMTP id S1725797AbhAKEtd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 23:47:25 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2773EC061786
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 20:46:45 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id i5so11826634pgo.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 20:46:45 -0800 (PST)
+        Sun, 10 Jan 2021 23:49:33 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC095C061786;
+        Sun, 10 Jan 2021 20:48:52 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id 30so11806463pgr.6;
+        Sun, 10 Jan 2021 20:48:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZmYHYVSE+wijAXrMkpVFBYT02fsk0rSX0i+WknLcUdM=;
-        b=hHk/rjvkIFk1uf5mcTgifNX16JP3AM6kobxRAsYo390jv4AaydoLoZqbrfnOpESAFg
-         NzQ4CzzzuEPBswWeimK0YwPEClgwCx/5/EXdD2H4gwamPVt8lMl/BUMv6wsy1Zt1ZpYD
-         LHLXSEpjnLP1iALJhwd/cB9FzEE7btZoMfzF5Wk2oDbCGobJprcMQfy1BljdYUPL9cXj
-         tTfCV+gt++WZOKDJVfCkZK6dEibZCeE2oG8lHJ15yVA9DbqiN4I6avBNsTqTTKLV/rpa
-         rQmwplU04ilcQBsGBgbRsPIFPc0uaQCUYeQUzH8vFqxzKdJ1KxYaqgSCPkZXC973xyO6
-         FXYQ==
+         :content-disposition:in-reply-to;
+        bh=b4RS69ujb5Y+r7PmC+oADOOjWqIYiqiOvDuEILLKDJQ=;
+        b=gr8zeixHjabO1BH1le504uwB2w6vgruWvbZYEQ+0e93iMwDRQSKSb8n1Rt1inehELs
+         4RhG89iSjjXgf6SxwJosuuMuU8Hx46IedxKnPJ27FVFHgF3EXmk167i87IoZR3kY8l2l
+         S2TRVaGFb36QasF7+Obsq2LAH3OOtAB64EocAcny0CZeXwwATp8kNfHlVRWdKNpQNVQa
+         kngb/bG5SRWPx/tRbPQDgi1S7nKZFLP/vUQpAOkt1P/s8RQbn19xtDHXCneei8zAAS3t
+         6qfR5KH1//3Tf+QbX8E2m5g5nM9dyefmQu6HrZkqYpThS7uVB9wbqbYb3KNyHMGAnf7J
+         QNEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZmYHYVSE+wijAXrMkpVFBYT02fsk0rSX0i+WknLcUdM=;
-        b=b0ntnDzOvFeCIckJbtx/xjbyTG/nLAI1VzxgRbUXvP2DjHnPMXAYfaorte+B44uSiS
-         bePjUH+XqQFUcvM5HpAJ1AwUrVjnt4nFqcvp6Rvo95eX7J33cSJfu34MpyAzBxYuxcIu
-         hDtxu55FClmGxa/5EqeTRxl0oRf873OuXEz8H5fYRPVcqoV+xkPmLgLpvrW/vm+Lb8VJ
-         KAQtksHlRKJL5G4cR4kIJUww04mCX2As/D4kcol5e2Vu0Qlqsg+UURcEfOhs1VXBXSzs
-         /A4/1UUf6edJFsbwcE4s5cYv7uFU2yPosxTG2dO7rY6kkfaZZmRzANCC89FYuaZRhOJ6
-         crrw==
-X-Gm-Message-State: AOAM532tBW/ADi+mgi33Nwiew2e9Kn5y7ZMX2OV0OQpdm3nUldFRVvgA
-        FcA60Gee5kQ49AI1R2uHOhNbwA==
-X-Google-Smtp-Source: ABdhPJxFzrPuUbpd6T5Suw/b1ZuegdHwIQdjQ3Z3Fu7xYKu/ud7f4qYffzZq/oAYXXuCJWSXGrzb7w==
-X-Received: by 2002:aa7:954c:0:b029:1a6:2130:db4f with SMTP id w12-20020aa7954c0000b02901a62130db4fmr14363237pfq.68.1610340404684;
-        Sun, 10 Jan 2021 20:46:44 -0800 (PST)
-Received: from localhost ([122.172.85.111])
-        by smtp.gmail.com with ESMTPSA id f7sm13172935pjs.25.2021.01.10.20.46.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 10 Jan 2021 20:46:43 -0800 (PST)
-Date:   Mon, 11 Jan 2021 10:16:41 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 0/3] arm64: topology: improvements
-Message-ID: <20210111044641.zmv3mw73hvq23367@vireshk-i7>
-References: <cover.1610104461.git.viresh.kumar@linaro.org>
- <20210108155334.GA21679@arm.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=b4RS69ujb5Y+r7PmC+oADOOjWqIYiqiOvDuEILLKDJQ=;
+        b=pHooB5/WIP7HsXR9gJr62Jg+h2fXhYuqCYly6+z3+wbZ/3q7HVdZ4dNk5ztaMVowt3
+         T4h0VoN6JrVB3Bmg6q6j3ITwNRGMbeiI6seWz3FNaEDavRL5bjBE+lTlskxipMiB2/wq
+         GtUsSpHjc0XhHPINgL22IQry6QsBsuZ0qd0r0cI131MQS1aiXv8jWnVdLG0U1Ez9K0s0
+         n01byU15HMG2/+P90edR4Ubk4X6BTgoTwsk+5ne2PpDfct8ihzFVG+mPAgDWZWk+dfht
+         AhGrvLDeDpZFhrYR0XwEzo9j5nOfzGYwVQjhL5wETIeNEB0dwCc2FviEMLrxMcFDsqst
+         i3tg==
+X-Gm-Message-State: AOAM533rns3vkb0+hXmgQfElD8KqHYMNwEKNbXzYvcPVLCT4TP9G3TfI
+        F5stblU/GYyByzla595uJmA=
+X-Google-Smtp-Source: ABdhPJyMX06fb4mVbuiUoURLbU6qjf8mQ0jDVJXCg8i2rby76TPFdbfYuKeVTkm0c3NjSl17JTKBqQ==
+X-Received: by 2002:a65:58c7:: with SMTP id e7mr18014621pgu.350.1610340532343;
+        Sun, 10 Jan 2021 20:48:52 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id 37sm13740146pjz.41.2021.01.10.20.48.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Jan 2021 20:48:51 -0800 (PST)
+Date:   Sun, 10 Jan 2021 20:48:49 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Arthur Demchenkov <spinal.by@gmail.com>,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>, ruleh <ruleh@gmx.de>,
+        Sebastian Reichel <sre@kernel.org>
+Subject: Re: [PATCH 2/5] Input: omap4-keypad - scan keys in two phases and
+ simplify with bitmask
+Message-ID: <X/vYsc19ltOYafQb@google.com>
+References: <20210110190529.46135-1-tony@atomide.com>
+ <20210110190529.46135-3-tony@atomide.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210108155334.GA21679@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210110190529.46135-3-tony@atomide.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-01-21, 15:53, Ionela Voinescu wrote:
-> On Friday 08 Jan 2021 at 16:46:50 (+0530), Viresh Kumar wrote:
-> > Hi,
-> > 
-> > Here is the V4 with the general improvements for topology stuff. This
-> > cleans up the code and makes it work with cpufreq modules.
-> > 
-> > V4:
-> > - Added Rby from Ionela.
-> > - In 3/3, Print cpus instead of amu_fie_cpus and make it pr_debug
-> >   instead.
-> > 
-> > Viresh Kumar (3):
-> >   arm64: topology: Avoid the have_policy check
-> >   arm64: topology: Reorder init_amu_fie() a bit
-> >   arm64: topology: Make AMUs work with modular cpufreq drivers
-> > 
-> >  arch/arm64/kernel/topology.c | 115 +++++++++++++++++------------------
-> >  1 file changed, 56 insertions(+), 59 deletions(-)
-> > 
-> 
-> Tested-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> 
-> ..for the full set.
+Hi Tony,
 
-Thanks, Ionela.
+On Sun, Jan 10, 2021 at 09:05:26PM +0200, Tony Lindgren wrote:
+> Because of errata i689 the keyboard can idle with state where no key
+> up interrupts are seen until after the next key press.
+> 
+> This means we need to first check for any lost key up events before
+> scanning for new down events.
+> 
+> For example, rapidly pressing shift-shift-j can sometimes produce a J
+> instead of j. Let's fix the issue by scanning the keyboard in two
+> phases. First we scan for any key up events that we may have missed,
+> and then we scan for key down events.
+> 
+> Let's also simplify things with for_each_set_bit() as suggested by
+> Dmitry Torokhov <dmitry.torokhov@gmail.com>.
+> 
+> Cc: Arthur Demchenkov <spinal.by@gmail.com>
+> Cc: Carl Philipp Klemm <philipp@uvos.xyz>
+> Cc: Merlijn Wajer <merlijn@wizzup.org>
+> Cc: Pavel Machek <pavel@ucw.cz>
+> Cc: ruleh <ruleh@gmx.de>
+> Cc: Sebastian Reichel <sre@kernel.org>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> ---
+>  drivers/input/keyboard/omap4-keypad.c | 69 ++++++++++++++++++---------
+>  1 file changed, 46 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/input/keyboard/omap4-keypad.c b/drivers/input/keyboard/omap4-keypad.c
+> --- a/drivers/input/keyboard/omap4-keypad.c
+> +++ b/drivers/input/keyboard/omap4-keypad.c
+> @@ -78,7 +78,7 @@ struct omap4_keypad {
+>  	u32 irqreg_offset;
+>  	unsigned int row_shift;
+>  	bool no_autorepeat;
+> -	unsigned char key_state[8];
+> +	u64 keys;
+>  	unsigned short *keymap;
+>  };
+>  
+> @@ -107,6 +107,41 @@ static void kbd_write_irqreg(struct omap4_keypad *keypad_data,
+>  		     keypad_data->base + keypad_data->irqreg_offset + offset);
+>  }
+>  
+> +static int omap4_keypad_scan_state(struct omap4_keypad *keypad_data, u64 keys,
+> +				   bool down)
+> +{
+> +	struct input_dev *input_dev = keypad_data->input;
+> +	unsigned int col, row, code;
+> +	DECLARE_BITMAP(mask, 64);
+> +	unsigned long bit;
+> +	int events = 0;
+> +	bool key_down;
+> +	u64 changed;
+> +
+> +	changed = keys ^ keypad_data->keys;
+> +	bitmap_from_u64(mask, changed);
+> +
+> +	for_each_set_bit(bit, mask, keypad_data->rows * BITS_PER_BYTE) {
+> +		row = bit / BITS_PER_BYTE;
+> +		col = bit % BITS_PER_BYTE;
+> +		code = MATRIX_SCAN_CODE(row, col, keypad_data->row_shift);
+> +
+> +		if (BIT_ULL(bit) & keys)
+> +			key_down = true;
+> +		else
+> +			key_down = false;
+> +
+> +		if (key_down != down)
+> +			continue;
+> +
+> +		input_event(input_dev, EV_MSC, MSC_SCAN, code);
+> +		input_report_key(input_dev, keypad_data->keymap[code],
+> +				 key_down);
+> +		events++;
+> +	}
+> +
+> +	return events;
+> +}
+>  
+>  /* Interrupt handlers */
+>  static irqreturn_t omap4_keypad_irq_handler(int irq, void *dev_id)
+> @@ -123,34 +158,22 @@ static irqreturn_t omap4_keypad_irq_thread_fn(int irq, void *dev_id)
+>  {
+>  	struct omap4_keypad *keypad_data = dev_id;
+>  	struct input_dev *input_dev = keypad_data->input;
+> -	unsigned char key_state[ARRAY_SIZE(keypad_data->key_state)];
+> -	unsigned int col, row, code, changed;
+> -	u32 *new_state = (u32 *) key_state;
+> +	u32 low, high;
+> +	u64 keys;
+>  
+> -	*new_state = kbd_readl(keypad_data, OMAP4_KBD_FULLCODE31_0);
+> -	*(new_state + 1) = kbd_readl(keypad_data, OMAP4_KBD_FULLCODE63_32);
+> +	low = kbd_readl(keypad_data, OMAP4_KBD_FULLCODE31_0);
+> +	high = kbd_readl(keypad_data, OMAP4_KBD_FULLCODE63_32);
+> +	keys = low | (u64)high << 32;
+>  
+> -	for (row = 0; row < keypad_data->rows; row++) {
+> -		changed = key_state[row] ^ keypad_data->key_state[row];
+> -		if (!changed)
+> -			continue;
+> +	/* Scan for key up events for lost key-up interrupts */
+> +	omap4_keypad_scan_state(keypad_data, keys, false);
+>  
+> -		for (col = 0; col < keypad_data->cols; col++) {
+> -			if (changed & (1 << col)) {
+> -				code = MATRIX_SCAN_CODE(row, col,
+> -						keypad_data->row_shift);
+> -				input_event(input_dev, EV_MSC, MSC_SCAN, code);
+> -				input_report_key(input_dev,
+> -						 keypad_data->keymap[code],
+> -						 key_state[row] & (1 << col));
+> -			}
+> -		}
+> -	}
+> +	/* Scan for key down events */
+> +	omap4_keypad_scan_state(keypad_data, keys, true);
+>  
+>  	input_sync(input_dev);
+
+Technically speaking, userspace is free to accumulate the events until
+it receives EV_SYN/SYN_REPORT event and process the events in the event
+packet in order it sees fit. So to achieve what you want, I think we
+should issue 2 input_sync()s, one for the release block, and another is
+for press. I think we can also simplify the code if we pass into the new
+scan function exact set of keys that are being released or pressed.
+
+How about the version below?
+
+Thanks!
 
 -- 
-viresh
+Dmitry
+
+
+Input: omap4-keypad - scan keys in two phases and simplify with bitmask
+
+From: Tony Lindgren <tony@atomide.com>
+
+Because of errata i689 the keyboard can idle with state where no key
+up interrupts are seen until after the next key press.
+
+This means we need to first check for any lost key up events before
+scanning for new down events.
+
+For example, rapidly pressing shift-shift-j can sometimes produce a J
+instead of j. Let's fix the issue by scanning the keyboard in two
+phases. First we scan for any key up events that we may have missed,
+and then we scan for key down events.
+
+Let's also simplify things with for_each_set_bit() as suggested by
+Dmitry Torokhov <dmitry.torokhov@gmail.com>.
+
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ drivers/input/keyboard/omap4-keypad.c |   73 ++++++++++++++++++++-------------
+ 1 file changed, 45 insertions(+), 28 deletions(-)
+
+diff --git a/drivers/input/keyboard/omap4-keypad.c b/drivers/input/keyboard/omap4-keypad.c
+index ab761aa66b6d..6dcf27af856d 100644
+--- a/drivers/input/keyboard/omap4-keypad.c
++++ b/drivers/input/keyboard/omap4-keypad.c
+@@ -78,7 +78,7 @@ struct omap4_keypad {
+ 	u32 irqreg_offset;
+ 	unsigned int row_shift;
+ 	bool no_autorepeat;
+-	unsigned char key_state[8];
++	u64 keys;
+ 	unsigned short *keymap;
+ };
+ 
+@@ -107,6 +107,33 @@ static void kbd_write_irqreg(struct omap4_keypad *keypad_data,
+ 		     keypad_data->base + keypad_data->irqreg_offset + offset);
+ }
+ 
++static int omap4_keypad_report_keys(struct omap4_keypad *keypad_data,
++				    u64 keys, bool down)
++{
++	struct input_dev *input_dev = keypad_data->input;
++	unsigned int col, row, code;
++	DECLARE_BITMAP(mask, 64);
++	unsigned long bit;
++	int events = 0;
++
++	bitmap_from_u64(mask, keys);
++
++	for_each_set_bit(bit, mask, keypad_data->rows * BITS_PER_BYTE) {
++		row = bit / BITS_PER_BYTE;
++		col = bit % BITS_PER_BYTE;
++		code = MATRIX_SCAN_CODE(row, col, keypad_data->row_shift);
++
++		input_event(input_dev, EV_MSC, MSC_SCAN, code);
++		input_report_key(input_dev, keypad_data->keymap[code], down);
++
++		events++;
++	}
++
++	if (events)
++		input_sync(input_dev);
++
++	return events;
++}
+ 
+ /* Interrupt handlers */
+ static irqreturn_t omap4_keypad_irq_handler(int irq, void *dev_id)
+@@ -122,35 +149,25 @@ static irqreturn_t omap4_keypad_irq_handler(int irq, void *dev_id)
+ static irqreturn_t omap4_keypad_irq_thread_fn(int irq, void *dev_id)
+ {
+ 	struct omap4_keypad *keypad_data = dev_id;
+-	struct input_dev *input_dev = keypad_data->input;
+-	unsigned char key_state[ARRAY_SIZE(keypad_data->key_state)];
+-	unsigned int col, row, code, changed;
+-	u32 *new_state = (u32 *) key_state;
+-
+-	*new_state = kbd_readl(keypad_data, OMAP4_KBD_FULLCODE31_0);
+-	*(new_state + 1) = kbd_readl(keypad_data, OMAP4_KBD_FULLCODE63_32);
+-
+-	for (row = 0; row < keypad_data->rows; row++) {
+-		changed = key_state[row] ^ keypad_data->key_state[row];
+-		if (!changed)
+-			continue;
+-
+-		for (col = 0; col < keypad_data->cols; col++) {
+-			if (changed & (1 << col)) {
+-				code = MATRIX_SCAN_CODE(row, col,
+-						keypad_data->row_shift);
+-				input_event(input_dev, EV_MSC, MSC_SCAN, code);
+-				input_report_key(input_dev,
+-						 keypad_data->keymap[code],
+-						 key_state[row] & (1 << col));
+-			}
+-		}
+-	}
++	u32 low, high;
++	u64 keys, changed;
++
++	low = kbd_readl(keypad_data, OMAP4_KBD_FULLCODE31_0);
++	high = kbd_readl(keypad_data, OMAP4_KBD_FULLCODE63_32);
++	keys = low | (u64)high << 32;
++
++	changed = keys ^ keypad_data->keys;
++
++	/*
++	 * Report key up events separately and first. This matters in case we
++	 * lost key-up interrupt and just now catching up.
++	 */
++	omap4_keypad_report_keys(keypad_data, changed & ~keys, false);
+ 
+-	input_sync(input_dev);
++	/* Report key down events */
++	omap4_keypad_report_keys(keypad_data, changed & keys, true);
+ 
+-	memcpy(keypad_data->key_state, key_state,
+-		sizeof(keypad_data->key_state));
++	keypad_data->keys = keys;
+ 
+ 	/* clear pending interrupts */
+ 	kbd_write_irqreg(keypad_data, OMAP4_KBD_IRQSTATUS,
