@@ -2,74 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F02A2F225C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:01:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCDD22F225E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388832AbhAKWB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 17:01:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731436AbhAKWBY (ORCPT
+        id S2389319AbhAKWB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 17:01:57 -0500
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:38145 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731436AbhAKWB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:01:24 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAEEC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:00:44 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id u11so558659ljo.13
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:00:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jVdLysk1x6ZZsXbP0Zr5h+mMevWQuwTL1CpskBya6v8=;
-        b=u4OsVlAAndy3l+Ngu/fYohy/mYFqxZDi4TLDNXDuZeeg3kChazJI9iXpzSE1HPcz3J
-         UBulNCJkOdWiFliA2DuqX/vmg2SByWNgmhYs9F6nwFU7kL69aOkIMK8utFqCFoMW9Gw8
-         nRTHRCtzv8cSD3n/3/R6hEg4dWPf2eXdapGk9/S6u6IQpV03ZNiontp3DtUP5s4RekbR
-         h/z5F4A9AIq0Rvg381fUFmRmIYQkyRJBSDApLDdZT1yQbygM/j6lmuKKJgCEZCZDpD0A
-         MnBrktjJ7LQoerAsJn3KfGe346IrqAtOZXXp/107SzHRLheTBO9SjLSojxn8uwHMUfVY
-         ehzw==
+        Mon, 11 Jan 2021 17:01:56 -0500
+Received: by mail-oi1-f181.google.com with SMTP id x13so218283oic.5;
+        Mon, 11 Jan 2021 14:01:41 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jVdLysk1x6ZZsXbP0Zr5h+mMevWQuwTL1CpskBya6v8=;
-        b=Mten812PaJyOFSiGSUSKD7Ujp8uhS/so0XSMyC3Xqk2APmAKDEwImtBHdYx7dk6tv3
-         ewOQecbluTfQezllGyw+DPAQU10VUGiTgFEQLbBRRzG5mw78opL4QXza+6a4iLmTfeij
-         UktFKKs0vI0cJ5KVbQYzvcoW6fCzGoRaPZhonTUXTH7PFiumNSfTKSMRlxWTksLLi8aF
-         4zQ9R3Gd3gQtLU6yH2wdeMOti+5OBN8kfm6PuODaTqzA26099liX3lj4M8p2LleVMZnD
-         E/VIJCDJmW0lvyUGvR/os4P/vzmAYgCjOM6KhFFVTjhmmJX4sHmnRVNrwM1fcQUY88wk
-         Ry8A==
-X-Gm-Message-State: AOAM531hvmTDGkpxqCxp89kh9CHMazdndsn7OxA2wINyVRRqCXC5NA8m
-        xZjES+kYpFtu/8LlgMI/71Eru6FMEvyFKSixgCpihQ==
-X-Google-Smtp-Source: ABdhPJyn6aCXyneWJOgZKxnoF9Ct2sh9Dfr16D2OhX3Out/rqGrQWppRJQJ0dfvbe8j5pKv+eDAPpyQFMjIjJbKbdMw=
-X-Received: by 2002:a05:651c:1312:: with SMTP id u18mr647685lja.200.1610402441598;
- Mon, 11 Jan 2021 14:00:41 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=swMeYjn7bXqKRG/eRayNFSOvBd+XVAGrQ+8GLln8aFU=;
+        b=CrcNrAVOwNysbiR4O01UCx3ro0JdS7IsL/o5jw8+y8OuMx5BQJgz+wOtqlGfkn2hz1
+         AI3rtEi2d+0ITp+XLg7qeYGmf2Mf/cBbNNRXSFLPKhYRYE700PTKDcfD7RM6VOLskycy
+         d32BIQ3y+fVRhrk5oFKXFQRjOH+9hD1MPGCnx/cM6ILKvM+WV4W94TCJU/MhZI9N4CZb
+         XWLV/9p0PWI0zsUuSSfOjfc4E9wVUN2YCLqAnPRZMbsxq0yP/luzcOroOS6DhKtVrFUS
+         Omp21aEN7J+EG3l1gHwLjsw9AW6h9xBCL5aEqdqKBDiMFuNhbzF8JM6Y+BArJotV83Y8
+         Px2w==
+X-Gm-Message-State: AOAM530OD+9dqv1cGOK6cPFUExOvzg4MNcVeqBkQeNb59n++dEa6JuIj
+        6Lh+zuVonXFQmPTvV7gq3A==
+X-Google-Smtp-Source: ABdhPJxFniA6qPNv3KBmaOx3/o/zHYRUuc8SweMVySqIHH9M/ZOASz+ccNp9qYW5Gxcyevxidi6b+g==
+X-Received: by 2002:aca:fc8d:: with SMTP id a135mr552787oii.87.1610402476055;
+        Mon, 11 Jan 2021 14:01:16 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id q1sm247211oij.9.2021.01.11.14.01.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 14:01:15 -0800 (PST)
+Received: (nullmailer pid 3135296 invoked by uid 1000);
+        Mon, 11 Jan 2021 22:01:14 -0000
+Date:   Mon, 11 Jan 2021 16:01:14 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     linux-mips@vger.kernel.org, Sander Vanheule <sander@svanheule.net>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] dt-bindings: Add Cisco prefix to vendor list
+Message-ID: <20210111220114.GA3135243@robh.at.kernel.org>
+References: <20201230212205.2605383-1-bert@biot.com>
+ <20201230212205.2605383-3-bert@biot.com>
 MIME-Version: 1.0
-References: <20210110231752.1418816-1-alexandre.belloni@bootlin.com> <20210110231752.1418816-3-alexandre.belloni@bootlin.com>
-In-Reply-To: <20210110231752.1418816-3-alexandre.belloni@bootlin.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 11 Jan 2021 23:00:30 +0100
-Message-ID: <CACRpkdaGRujF0p-57L5HgRmP=3sZOUSBfCnwAxv67dhDwiBkNQ@mail.gmail.com>
-Subject: Re: [PATCH 02/17] rtc: pl031: use RTC_FEATURE_ALARM
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-rtc@vger.kernel.org, Alessandro Zummo <a.zummo@towertech.it>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linuxppc-dev@lists.ozlabs.org list" <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201230212205.2605383-3-bert@biot.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 12:18 AM Alexandre Belloni
-<alexandre.belloni@bootlin.com> wrote:
+On Wed, 30 Dec 2020 22:22:04 +0100, Bert Vermeulen wrote:
+> Signed-off-by: Bert Vermeulen <bert@biot.com>
+> Signed-off-by: Sander Vanheule <sander@svanheule.net>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-> Clear RTC_FEATURE_ALARM instead of setting set_alarm, read_alarm and
-> alarm_irq_enable to NULL.
->
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+Acked-by: Rob Herring <robh@kernel.org>
