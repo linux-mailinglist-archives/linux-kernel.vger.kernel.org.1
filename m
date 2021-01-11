@@ -2,109 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7C62F1737
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D44A52F173E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:03:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388357AbhAKOCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:02:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388298AbhAKOCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:02:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E8692242A;
-        Mon, 11 Jan 2021 14:01:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610373715;
-        bh=50IG3zR+Q9oxcbVhieDnuu5FgxkxGAFNFUX/rpImuNo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LDweBAoGyGcdo8Q8Z8bdxt61JEm0SV2DUE6HLbw752d+V76R95FuTrxT9fQycKawv
-         Wi8hxok+e6+KdKSNX97rOM1kbhPMaY1S8+8hXQz67FyHjM5uhruT5m6yMODANNDVdY
-         AKRFj73QUdnxLxOgBZ6V+uuJpXq51aHVTlV69KrSG/Hpur51tjxpR0DGa8CSTTQJDZ
-         6H4kumU/NWhGA0Ks0hbP3YN59eBuRIsWvFNH3kBqUWB01t6msUEQ+FXaO84528YDdI
-         hs5Z8UtK23t0OmOfssqdRj8FOak+MOvmjbhHhBdK/irmCoJX7gF6TCdK8QiStch3Hq
-         SEJ9+aHuxr5BQ==
-Date:   Mon, 11 Jan 2021 14:01:49 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Hugh Dickins <hughd@google.com>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH v2 0/3] Create 'old' ptes for faultaround mappings on
- arm64 with hardware access flag
-Message-ID: <20210111140149.GB7642@willie-the-truck>
-References: <20210108171517.5290-1-will@kernel.org>
- <CAHk-=wg3UkUdiTbqWFx3zBLXv9VJHuNZAa5QyDvXiSmD4gX94A@mail.gmail.com>
- <CAHk-=wh=6=7qYKL0RLbzg4vKnT0v_c66n8RYS-CvmUxnO9MxPw@mail.gmail.com>
+        id S2388557AbhAKODf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:03:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388366AbhAKODE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 09:03:04 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D89DEC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:02:23 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id d13so16485421wrc.13
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:02:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:autocrypt:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uobXBUEv4oqTEB0i8KeKmXbTD71SSmB2fLpGYVHr2ko=;
+        b=fqM4/6tnFGkA2YdC2Xvp8v/SciCLjx8C2wwyCZXDqVDUisTyY10dWRHOgYi2dXAb6K
+         hbEfEjyDfWIs+qlQBHC5ciDPmxCrQASYYzNf5GYZw+RA1NxfAnaErTFY2jMGwC3yRyx2
+         P/L9BTMxS0xf+4uJYpw5OLF6eDFX3JDziZ9gCgYRocS223D/6+LDHF3FNsDGQgGmY647
+         IDKL5nrZhx8LYaf8K1a03IJqdn+bTyRgi1xhFvI3Wk0QE23LtPJsarrxspZMJc9LTFXP
+         zclX/CG0Oe8sQzuKb7P1NnEbVJIf8lvSsw9ERKveK9s3mGjXv1XGAajVUL0qRzKMd7M+
+         8SwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=uobXBUEv4oqTEB0i8KeKmXbTD71SSmB2fLpGYVHr2ko=;
+        b=MwuiPO+QXJf8Kn8qFIvHWRV+Rgcpu6nntR6ISVMaNNzcePwcoICiecUdodsJWFX3kN
+         bRYs5bT9UhcO4G9yVYn/F++JlDGDaFraPrRkGgN/M4b4K2H68ho7eMB/Ti+Hgg62IGmZ
+         88jYPD/sh+mALuBN23lnCsr3rdKptK9SMoJWdE51uvZZFocUYeGEpDCTysmrmjLr+fWE
+         EFXpJgx3PaJ4QkfCtGJ4wzqR+miXgv0qaEEa6YpuDhnaEO2dqcwxxffgi6IgSpmOW3XO
+         zktvMMAYhy0DdlaGGp1z9DUYcJAjDXpm5tkDRTm44tcy/1IfngJT+yzddhzS/aKPlpeL
+         QnbQ==
+X-Gm-Message-State: AOAM530g+CMAZ563+kGaYrwyV0KgUwP+SrVfPQC7swHK2OKws19tr/x0
+        PaZZTk9Bucou3DCkWHIq3xS5enU7xY10t03i
+X-Google-Smtp-Source: ABdhPJwxTiw8X//R/D3H7WitQ02xAMgOgYR74fC6rLIz9Ah0oOp8y5Z1bzaVkZXVpQaKe3urg21v/g==
+X-Received: by 2002:adf:b343:: with SMTP id k3mr16162064wrd.202.1610373742081;
+        Mon, 11 Jan 2021 06:02:22 -0800 (PST)
+Received: from ?IPv6:2a01:e35:2ec0:82b0:7474:6cdc:8087:ca98? ([2a01:e35:2ec0:82b0:7474:6cdc:8087:ca98])
+        by smtp.gmail.com with ESMTPSA id w13sm24263695wrt.52.2021.01.11.06.02.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 06:02:21 -0800 (PST)
+Subject: Re: [PATCH] arm64: dts: meson: add i2c3/rtc nodes and rtc aliases to
+ ODROID-N2 dtsi
+To:     Christian Hewitt <christianshewitt@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210111135831.2218-1-christianshewitt@gmail.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ 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
+ ZaTUOEkgIor5losDrePdPgE=
+Organization: Baylibre
+Message-ID: <e571f308-b8fd-7979-c050-0ab5f09e44c5@baylibre.com>
+Date:   Mon, 11 Jan 2021 15:02:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wh=6=7qYKL0RLbzg4vKnT0v_c66n8RYS-CvmUxnO9MxPw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210111135831.2218-1-christianshewitt@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 11:42:39AM -0800, Linus Torvalds wrote:
-> On Fri, Jan 8, 2021 at 11:34 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > Yeah, I think that's a side effect of "now the code really makes a lot
-> > more sense". Your subsequent patches 2-3 certainly are much simpler
-> > now
+On 11/01/2021 14:58, Christian Hewitt wrote:
+> Enable the onboard pcf8563 rtc hardware on ODROID N2/N2+ boards via the
+> common dtsi. Also add aliases to ensure vrtc does not claim /dev/rtc0.
 > 
-> On that note - they could be simpler still if this was just done
-> entirely unconditionally..
+> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+> ---
+>  .../boot/dts/amlogic/meson-g12b-odroid-n2.dtsi     | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 > 
-> I'm taking your word for "it makes sense", but when you say
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+> index 39a09661c5f6..b78be3e6974d 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+> @@ -13,6 +13,8 @@
+>  	aliases {
+>  		serial0 = &uart_AO;
+>  		ethernet0 = &ethmac;
+> +		rtc0 = &rtc;
+> +		rtc1 = &vrtc;
+>  	};
+>  
+>  	dioo2133: audio-amplifier-0 {
+> @@ -478,6 +480,18 @@
+>  	linux,rc-map-name = "rc-odroid";
+>  };
+>  
+> +&i2c3 {
+> +	status = "okay";
+> +	pinctrl-0 = <&i2c3_sda_a_pins>, <&i2c3_sck_a_pins>;
+> +	pinctrl-names = "default";
+> +
+> +	rtc: rtc@51 {
+> +		compatible = "nxp,pcf8563";
+> +		reg = <0x51>;
+> +		wakeup-source;
+> +	};
+> +};
+> +
+>  &pwm_ab {
+>  	pinctrl-0 = <&pwm_a_e_pins>;
+>  	pinctrl-names = "default";
 > 
->   On CPUs with hardware AF/DBM, initialising prefaulted PTEs as 'old'
->   improves vmscan behaviour and does not appear to introduce any overhead.
-> 
-> in the description for patch 3, it makes me wonder how noticeable the
-> overhead is on the hardware that _does_ take a fault on old pte's..
-> 
-> IOW, it would be lovely to see numbers if you have any like that..
 
-[Vinayak -- please chime in if I miss anything here, as you've posted these
- numbers before]
-
-The initial posting in 2016 had some numbers based on a 3.18 kernel, which
-didn't have support for hardware AF/DBM:
-
-  https://lore.kernel.org/lkml/fdc23a2a-b42a-f0af-d403-41ea4e755084@codeaurora.org
-
-  (note that "Kirill's-fix" in the last column was a quick hack and didn't
-   make the faulting pte young)
-
-So yes, for the cases we care about in Android (where the vmscan behaviour
-seems to be the important thing), then this patch makes sense for
-non-hardware AF/DBM CPUs too. In either case, we see ~80% reduction in
-direct reclaim time according to mmtests [1] and double-digit percentage
-reductions in app launch latency (some of this is mentioned in the link
-above). The actual fault cost isn't especially relevant.
-
-*However...*
-
-For machines with lots of memory, the increased fault cost when hardware
-AF/DBM is not available may well be measurable, and I suspect it would
-hurt unixbench (which was the reason behind reverting this on x86 [2],
-although I must admit that the diagnosis wasn't particularly satisfactory
-[3]). We could run those numbers on arm64 but, due to the wide diversity of
-micro-architectures we have to deal with, I would like to keep our options
-open to detecting this dynamically anyway, just in case somebody builds a
-CPU which struggles in this area.
-
-Cheers,
-
-Will
-
-[1] https://github.com/gormanm/mmtests
-[2] https://lore.kernel.org/lkml/20160613125248.GA30109@black.fi.intel.com/
-[3] https://lore.kernel.org/lkml/20160616151049.GM6836@dhcp22.suse.cz/
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
