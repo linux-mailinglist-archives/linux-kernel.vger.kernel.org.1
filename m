@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 145F72F1AEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:30:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8CBA2F1AEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733133AbhAKQ3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:29:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37214 "EHLO mail.kernel.org"
+        id S2388335AbhAKQaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:30:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725858AbhAKQ3T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:29:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C00D22B30;
-        Mon, 11 Jan 2021 16:28:38 +0000 (UTC)
+        id S1728949AbhAKQaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 11:30:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 651C6221FE;
+        Mon, 11 Jan 2021 16:29:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610382518;
-        bh=aSEP22RVIp/nVYRhctvQJEglPOgklG5HtjTl5BfbCkE=;
+        s=k20201202; t=1610382566;
+        bh=fxnw7/lfYiILcbmwfVtG7wR3OePe2w21x200A6Facfo=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=Xbv/W/pqgqqIExXYNi2EDYMrMUgRROcOifZUtDfEysa3+N5ju3TaTdmW73Au70hZJ
-         q4daF5k1TwEttx1mH3mPBKutryk8lioK2KIra3FmQwqEvxQf0eZITTqjpYQlM5RTq+
-         QP6MC1EUhQiUsYHfEbDyMkBp1nDWzPl94i9ctoi3EOR0IdFc0ryPHETOn6fPSwCU9e
-         6dOf/strL06jT87qY84nL8HFo2xY75cNoYCs6eK7PjOFTcQ2HiaumXc3iekSgaEvum
-         +8a7NQgMA+Hzb036WoXnLNqt/92VZnk2px1MTDVIbj10uJfXFSW46gjYDpMnGBC06+
-         9k0fakQCS86KQ==
+        b=Zh6vUG1HcUUHM4SRIo/3DaxXGMCUgpbZWu9q8VRkCNyKNrK6tmbzXmLBes+SS0Y9U
+         DzN10v4FDOBH9501jWh7jRYxg7VLsrg7YcSOtd/TTPcU02QkGj0rJbhlHYPPhl6XrE
+         zw5CG7KOkt09XFcCY9Yxy20USmJE2n1DesZZgOx9ikuwG0WakdA3E3xJWrt2KGFIkm
+         IaHLPSiw2+0zHfMAaeYudMpdV6ilwPK+V+WFNAzfVHhWlLHu2ajzED3YWzLQg7RCWg
+         wgN5GvBkpFCKbquVQALZ8npPjKduR9ztPlnMsqdqlBobXFwl9rV/bOFM1eCTSGsH3N
+         X5Pto1DYZnZDQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        patches@opensource.cirrus.com
-In-Reply-To: <20210111133825.8758-1-rf@opensource.cirrus.com>
-References: <20210111133825.8758-1-rf@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: wm_adsp: Fix uninitialized variable warnings
-Message-Id: <161038245912.32701.15008025253298695654.b4-ty@kernel.org>
-Date:   Mon, 11 Jan 2021 16:27:39 +0000
+To:     David Collins <collinsd@codeaurora.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1610068562-4410-1-git-send-email-collinsd@codeaurora.org>
+References: <1610068562-4410-1-git-send-email-collinsd@codeaurora.org>
+Subject: Re: [PATCH] regulator: core: avoid regulator_resolve_supply() race condition
+Message-Id: <161038253465.32830.8002222438288106508.b4-ty@kernel.org>
+Date:   Mon, 11 Jan 2021 16:28:54 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -39,24 +39,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Jan 2021 13:38:25 +0000, Richard Fitzgerald wrote:
-> wm_adsp_read_data_word() used if (ret) to check for an error from
-> wm_adsp_read_raw_data_block(). While this is perfectly valid,
-> wm_adsp_read_raw_data_block() itself uses if (ret < 0) and three
-> calls to wm_adsp_read_data_word() also use if (ret < 0).
-> 
-> This creates an error check chain like this:
+On Thu, 7 Jan 2021 17:16:02 -0800, David Collins wrote:
+> The final step in regulator_register() is to call
+> regulator_resolve_supply() for each registered regulator
+> (including the one in the process of being registered).  The
+> regulator_resolve_supply() function first checks if rdev->supply
+> is NULL, then it performs various steps to try to find the supply.
+> If successful, rdev->supply is set inside of set_supply().
 > 
 > [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/1] ASoC: wm_adsp: Fix uninitialized variable warnings
-      commit: fe9989fb25b0cea6414e72e0514c70ed8b158c28
+[1/1] regulator: core: avoid regulator_resolve_supply() race condition
+      commit: eaa7995c529b54d68d97a30f6344cc6ca2f214a7
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
