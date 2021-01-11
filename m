@@ -2,79 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FBA72F1C47
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B45222F1C4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389289AbhAKR0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 12:26:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33689 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728844AbhAKR0P (ORCPT
+        id S2389544AbhAKR2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 12:28:22 -0500
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:21638 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732924AbhAKR2W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:26:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610385889;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YWos6wwkUpA6YfuQI0uj2Gas5WM8ywmCf9F0bcaCUXM=;
-        b=izLji0Ksf+zH4e/zKM2PimXblmVvm0x8goa5IsAwTi2gvqfn2EZ8/ajFPEk4vgmVSlJz8o
-        EGXIOmZHGJ7+41EsQEc0UYqUT4UMpNAIeb/Kx2cPWpq02hWfKB7i4qfyV5U2A/C54cuWZ9
-        JvttCiL+EOZQQIy8QQG16RQfk+RZDQI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-487-a0tiaJbXP_iV7T0nJPbSog-1; Mon, 11 Jan 2021 12:24:47 -0500
-X-MC-Unique: a0tiaJbXP_iV7T0nJPbSog-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 20C94107ACF9;
-        Mon, 11 Jan 2021 17:24:44 +0000 (UTC)
-Received: from [10.36.115.103] (ovpn-115-103.ams2.redhat.com [10.36.115.103])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D11DE19D9F;
-        Mon, 11 Jan 2021 17:24:36 +0000 (UTC)
-Subject: Re: [PATCH 2/2] resource: Make it possible to reserve memory on 64bit
- platform
-To:     Wesley Zhao <zhaowei1102@thundersoft.com>,
-        akpm@linux-foundation.org
-Cc:     andriy.shevchenko@linux.intel.com, keescook@chromium.org,
-        tglx@linutronix.de, kerneldev@karsmulder.nl, nivedita@alum.mit.edu,
-        joe@perches.com, gpiccoli@canonical.com, aquini@redhat.com,
-        gustavoars@kernel.org, ojeda@kernel.org,
-        linux-kernel@vger.kernel.org, dan.j.williams@intel.com,
-        guohanjun@huawei.com, mchehab+huawei@kernel.org
-References: <1610382798-4528-1-git-send-email-zhaowei1102@thundersoft.com>
- <1610382798-4528-2-git-send-email-zhaowei1102@thundersoft.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <0043f2fe-d936-0db6-7b12-25a5026cb106@redhat.com>
-Date:   Mon, 11 Jan 2021 18:24:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 11 Jan 2021 12:28:22 -0500
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 10BHRJjA021933;
+        Tue, 12 Jan 2021 02:27:20 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 10BHRJjA021933
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1610386040;
+        bh=zHsgjQ+d0Jh9QA9SxHCmXDhgqkszADIFlqp7wpTZyFU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=efqhad3rgWDVbhuqRNstJOLSSePdYG684zoKuQ4ft+kVT5N+HTXbejJ4HJFr95g/Z
+         /6880+z3HytUwLegtIEZGp2vCpP1OFI4THl9KqNiXbnzWxlDMLbHPfcYd7lMGifMvT
+         DxrysMA+QHNSQbOzGOfDX7a50cbliquxsZhoZFiUwASkOXWkFQ2nSixLFdAzmpnmBr
+         bVE4FljHZKSmZ7RSmtGpu6hCeWUAG/EmUD7pmY+sCTENYxhtyv4mCYPWQ8WQxyQGkn
+         vPwjQsfmoIjrCqMaai9ZCKLaRd50qvrT833zHHVcgaLXyehsvYY+RcCiObbvxZopxh
+         VGJIrd9qEHGPg==
+X-Nifty-SrcIP: [209.85.215.172]
+Received: by mail-pg1-f172.google.com with SMTP id g15so90522pgu.9;
+        Mon, 11 Jan 2021 09:27:20 -0800 (PST)
+X-Gm-Message-State: AOAM53121AnML1JqZrqBVzgvkdzEBZwAl1LfWaHKnibmTBC1giysOh+I
+        I106zgj37cYoQsmbXSnyGM9bgEWFtYPPJSinR0I=
+X-Google-Smtp-Source: ABdhPJwCHFfCjtdNSGA/7Wf9BJPLiWnZBTudc7GDzA7ko9n2DbU++QgJDyhybdeBstxXcnxsUZ0d61nz647CQvbRPA0=
+X-Received: by 2002:a63:eb0c:: with SMTP id t12mr556694pgh.7.1610386039159;
+ Mon, 11 Jan 2021 09:27:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1610382798-4528-2-git-send-email-zhaowei1102@thundersoft.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <cover.1609844956.git.viresh.kumar@linaro.org> <CAL_JsqJMr3vfz2B29vzvFALCt_5-J__eJv2TZHJ0sR9nM=xXaw@mail.gmail.com>
+ <CAK7LNAR9fdjZ7iWKSWvJ9etGZkd+n87cmXKN-Hah8DBDYbuAwA@mail.gmail.com> <CAL_Jsq+DFF0tRv61XCAGLJYYu=ow8Ah8prd6su=6dpoU_AyMXw@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+DFF0tRv61XCAGLJYYu=ow8Ah8prd6su=6dpoU_AyMXw@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 12 Jan 2021 02:26:41 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASVb6k9CZ+5Y4zzoRasqU7av193Jvv-aX0uD4=y4V8t9A@mail.gmail.com>
+Message-ID: <CAK7LNASVb6k9CZ+5Y4zzoRasqU7av193Jvv-aX0uD4=y4V8t9A@mail.gmail.com>
+Subject: Re: [RFC 0/2] kbuild: Add support to build overlays (%.dtbo)
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, tero.kristo@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.01.21 17:33, Wesley Zhao wrote:
-> From: "Wesley.Zhao" <zhaowei1102@thundersoft.com>
-> 
-> For now "reserve=" is limitied to 32bit,not available on 64bit
-> platform,so we change the get_option() to get_option_ull(added in
-> patch: commit 4b6bfe96265e ("lib/cmdline: add new function
-> get_option_ull()"))
+On Fri, Jan 8, 2021 at 4:02 AM Rob Herring <robh+dt@kernel.org> wrote:
+>
+> On Wed, Jan 6, 2021 at 10:35 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> >
+> > On Wed, Jan 6, 2021 at 12:21 AM Rob Herring <robh+dt@kernel.org> wrote:
+> > >
+> > > On Tue, Jan 5, 2021 at 4:24 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > > >
+> > > > Hello,
+> > > >
+> > > > Here is an attempt to make some changes in the kernel to allow building
+> > > > of device tree overlays.
+> > > >
+> > > > While at it, I would also like to discuss about how we should mention
+> > > > the base DT blobs in the Makefiles for the overlays, so they can be
+> > > > build tested to make sure the overlays apply properly.
+> > > >
+> > > > A simple way is to mention that with -base extension, like this:
+> > > >
+> > > > $(overlay-file)-base := platform-base.dtb
+> > > >
+> > > > Any other preference ?
+> >
+> >
+> >
+> > Viresh's patch is not enough.
+> >
+> > We will need to change .gitignore
+> > and scripts/Makefile.dtbinst as well.
+> >
+> >
+> > In my understanding, the build rule is completely the same
+> > between .dtb and .dtbo
+> > As Rob mentioned, I am not sure if we really need/want
+> > a separate extension.
+> >
+> >
+> > A counter approach is to use an extension like '.ovl.dtb'
+> > It clarifies it is an overlay fragment without changing
+> > anything in our build system or the upstream DTC project.
+> >
+> > We use chained extension in some places, for example,
+> > .dt.yaml for schema yaml files.
+> >
+> >
+> >
+> > dtb-$(CONFIG_ARCH_FOO) += \
+> >     foo-board.dtb \
+> >     foo-overlay1.ovl.dtb \
+> >     foo-overlay2.ovl.dtb
+> >
+> >
+> > Overlay DT source file names must end with '.ovl.dts'
+>
+> I like that suggestion as then it's also clear looking at the source
+> files which ones are overlays. Or we'd need .dtso to be consistent.
+>
+>
+> > > I think we'll want something similar to how '-objs' works for modules:
+> > >
+> > > foo-board-1-dtbs := foo-board.dtb foo-overlay1.dtbo
+> > > foo-board-2-dtbs := foo-board.dtb foo-overlay2.dtbo
+> > > foo-board-1-2-dtbs := foo-board.dtb foo-overlay1.dtbo foo-overlay2.dtbo
+> > > dtbs-y += foo-board-1.dtb foo-board-2.dtb foo-board-1-2.dtb
+> > >
+> > > (One difference here is we will want all the intermediate targets
+> > > unlike .o files.)
+> > >
+> > > You wouldn't necessarily have all the above combinations, but you have
+> > > to allow for them. I'm not sure how we'd handle applying any common
+> > > overlays where the base and overlay are in different directories.
+> >
+> >
+> > I guess the motivation for supporting -dtbs is to
+> > add per-board -@ option only when it contains *.dtbo pattern.
+>
+> I hadn't thought that far, but yeah, that would be good. Really, I
+> just want it to be controlled per SoC family at least.
+>
+> > But, as you notice, if the overlay files are located
+> > under drivers/, it is difficult to add -@ per board.
+>
+> Generally, they shouldn't be. The exceptions are what we already have
+> there which are old dt fixups and unittests.
+>
+> We want the stripped DT repo (devicetree-rebasing) to have all this
+> and drivers/ is stripped out. (Which reminds me, the DT repo will need
+> some work to support all this. It's a different build sys.)
+>
+> > Another scenario is, some people may want to compile
+> > downstream overlay files (i.e. similar concept as external modules),
+> > then we have no idea which base board should be given with the -@ flag.
+> >
+> >
+> > I'd rather be tempted to add it globally
+> >
+> >
+> > ifdef CONFIG_OF_OVERLAY
+> > DTC_FLAGS += -@
+> > endif
+>
+> We've already rejected doing that. Turning on '-@' can grow the dtb
+> size by a significant amount which could be problematic for some
+> boards.
+>
+>
+> > > Another thing here is adding all the above is not really going to
+> > > scale on arm32 where we have a single dts directory. We need to move
+> > > things to per vendor/soc family directories. I have the script to do
+> > > this. We just need to agree on the vendor names and get Arnd/Olof to
+> > > run it. I also want that so we can enable schema checks by default
+> > > once a vendor is warning free (the whole tree is going to take
+> > > forever).
+> >
+> >
+> > If this is a big churn, perhaps we could make it extreme
+> > to decouple DT and Linux-arch.
+>
+> I would be fine with that, but I don't think we'll get agreement
+> there. With that amount of change, we'll be discussing git submodule
+> again.
+>
+> Rereading the thread on vendor directories[1], we may just move boards
+> one vendor at a time. We could just make that a prerequisite for
+> vendor supporting overlays.
+>
+> > arch/*/boot/dts/*.dts
+> >  ->  dts/<vendor>/*.dts
+> >
+> > Documentation/devicetree/bindings
+> >  -> dts/Bindings/
+> >
+> > include/dt-bindings/
+> >  -> dts/include/dt-bindings/
+> >
+> >
+> >
+> > Then, other project can take dts/
+> > to reuse for them.
+>
+> This is already possible with devicetree-rebasing.git. Though it is
+> still by arch.
 
-Curious, what's the target use case? (did not receive a cover letter,
-maybe it's buried in there)
+
+Yes, I know this project.
+
+There are still cross-references between arm and arm64.
+
+Associating DT with Linux-arch is not good
+because it is possible to boot the 32-bit kernel (arch/arm/)
+on the 64-bit boards (arch/arm64/boot/dts/).
+
+
+
+
+
+
+> Rob
+>
+> [1] https://lore.kernel.org/linux-devicetree/20181204183649.GA5716@bogus/
+
+
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Best Regards
+Masahiro Yamada
