@@ -2,97 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF5B2F1086
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6BB42F1094
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729510AbhAKKuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:50:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729468AbhAKKux (ORCPT
+        id S1729565AbhAKKxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:53:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23417 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729306AbhAKKxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:50:53 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92651C061794;
-        Mon, 11 Jan 2021 02:50:12 -0800 (PST)
-Date:   Mon, 11 Jan 2021 10:50:09 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610362210;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Mon, 11 Jan 2021 05:53:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610362314;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SjG6NeQwMWLQyBvBb8aDaAh5iiJ+ZpsSSFk3gMHqIn8=;
-        b=1xR7bKqLs4eEJWwEDdSo5Anta+6e+WzgdwJwsjSNQLg+icfOdxW2hUlvi3YazHcCtDpFYs
-        pXK11OdX/UjaqwDhPvpBOZWkKD+EOJE3OBoRtvogLHcQFs0nPHGdDXSCahifV7IBDE0ZJz
-        Fd8VGktBDpVJ3m2s0ocE6bwloFiyWvacY8RSn+J2lHlw3xZT3TKsm5TRvnfcfFRNP5wGcl
-        lOqADayC/p+T/BUktK2qGiX2Jqceekd1RoZcyCCLC55r5/HcMO2OCP70xE6w5PRDfKAQj8
-        Qe5kQcX/FDivB69DCHcieZP39tgRSbf36lsiKMWUw08cGDSGIlcQuo6LyKwF6g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610362210;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SjG6NeQwMWLQyBvBb8aDaAh5iiJ+ZpsSSFk3gMHqIn8=;
-        b=C70oEVeMQrtKgC4Wkg3ceoR3B+mFGjc7zNJw24w/Y2VNeAQ4APKerRedIoqk8T7dqCVrPI
-        8ACTlT2T3mn7h/Bw==
-From:   "tip-bot2 for Tom Rix" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cache] x86/resctrl: Add printf attribute to log function
-Cc:     Tom Rix <trix@redhat.com>, Borislav Petkov <bp@suse.de>,
-        Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201221160009.3752017-1-trix@redhat.com>
-References: <20201221160009.3752017-1-trix@redhat.com>
+        bh=dw2Go3odg3xQMi8oKZf9V/+2r4MBnUAd+QSYJ2Ro4mk=;
+        b=VFEF7adGCxt5rRD3DiV6/2isRp278+qFdI+tbiI4JgMtOVhNEMjPPu7ou0f1q3aAt4AVOr
+        OQ6lqqGoPLknSraCae98xMuJkSI729nqAzclD+/AwEwCUdar5K/iQVG7TeFzgD/XX9DIrR
+        g7yfE9Dqsb9X+AfIizE/TElCiH1OUhQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-482-94NqtCM0NF23H57DTgUYyg-1; Mon, 11 Jan 2021 05:51:52 -0500
+X-MC-Unique: 94NqtCM0NF23H57DTgUYyg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E87FF180A09F;
+        Mon, 11 Jan 2021 10:51:50 +0000 (UTC)
+Received: from [10.36.115.103] (ovpn-115-103.ams2.redhat.com [10.36.115.103])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 94DC274AAC;
+        Mon, 11 Jan 2021 10:51:48 +0000 (UTC)
+Subject: Re: [PATCH V2 1/3] mm/hotplug: Prevalidate the address range being
+ added with platform
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org, hca@linux.ibm.com,
+        catalin.marinas@arm.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <1608218912-28932-1-git-send-email-anshuman.khandual@arm.com>
+ <1608218912-28932-2-git-send-email-anshuman.khandual@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <10e733fa-4568-d38f-9b95-2ccc5dc627b8@redhat.com>
+Date:   Mon, 11 Jan 2021 11:51:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Message-ID: <161036220964.414.17560951659569378079.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <1608218912-28932-2-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cache branch of tip:
+On 17.12.20 16:28, Anshuman Khandual wrote:
+> This introduces memhp_range_allowed() which can be called in various memory
+> hotplug paths to prevalidate the address range which is being added, with
+> the platform. Then memhp_range_allowed() calls memhp_get_pluggable_range()
+> which provides applicable address range depending on whether linear mapping
+> is required or not. For ranges that require linear mapping, it calls a new
+> arch callback arch_get_mappable_range() which the platform can override. So
+> the new callback, in turn provides the platform an opportunity to configure
+> acceptable memory hotplug address ranges in case there are constraints.
+> 
+> This mechanism will help prevent platform specific errors deep down during
+> hotplug calls. This drops now redundant check_hotplug_memory_addressable()
+> check in __add_pages() but instead adds a VM_BUG_ON() check which would
+> ensure that the range has been validated with memhp_range_allowed() earlier
+> in the call chain. Besides memhp_get_pluggable_range() also can be used by
+> potential memory hotplug callers to avail the allowed physical range which
+> would go through on a given platform.
+> 
+> This does not really add any new range check in generic memory hotplug but
+> instead compensates for lost checks in arch_add_memory() where applicable
+> and check_hotplug_memory_addressable(), with unified memhp_range_allowed().
+> 
 
-Commit-ID:     3ff4ec0e281d0b234917e6e3033dd3067a5ea945
-Gitweb:        https://git.kernel.org/tip/3ff4ec0e281d0b234917e6e3033dd3067a5ea945
-Author:        Tom Rix <trix@redhat.com>
-AuthorDate:    Mon, 21 Dec 2020 08:00:09 -08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 11 Jan 2021 11:20:36 +01:00
+Subject s/mm\/hotplug/mm\/memory_hotplug/
 
-x86/resctrl: Add printf attribute to log function
+Everywhere in this patch: Use "true/false" for boolean values.
 
-Mark the function with the __printf attribute to allow the compiler to
-more thoroughly typecheck its arguments against a format string with
--Wformat and similar flags.
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Suggested-by: David Hildenbrand <david@redhat.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  include/linux/memory_hotplug.h | 10 +++++
+>  mm/memory_hotplug.c            | 79 +++++++++++++++++++++++++---------
+>  mm/memremap.c                  |  6 +++
+>  3 files changed, 75 insertions(+), 20 deletions(-)
+> 
+> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
+> index 551093b74596..8d72354758c8 100644
+> --- a/include/linux/memory_hotplug.h
+> +++ b/include/linux/memory_hotplug.h
+> @@ -70,6 +70,9 @@ typedef int __bitwise mhp_t;
+>   */
+>  #define MEMHP_MERGE_RESOURCE	((__force mhp_t)BIT(0))
+>  
+> +bool memhp_range_allowed(u64 start, u64 size, bool need_mapping);
+> +struct range memhp_get_pluggable_range(bool need_mapping);
 
- [ bp: Massage commit message. ]
+AFAIKs, all memhp_get_pluggable_range() users pass "1".
 
-Signed-off-by: Tom Rix <trix@redhat.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Reinette Chatre <reinette.chatre@intel.com>
-Link: https://lkml.kernel.org/r/20201221160009.3752017-1-trix@redhat.com
----
- arch/x86/kernel/cpu/resctrl/internal.h | 1 +
- 1 file changed, 1 insertion(+)
+What about the "add_pages()-only" path?
 
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index ee71c47..c4d320d 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -572,6 +572,7 @@ union cpuid_0x10_x_edx {
- 
- void rdt_last_cmd_clear(void);
- void rdt_last_cmd_puts(const char *s);
-+__printf(1, 2)
- void rdt_last_cmd_printf(const char *fmt, ...);
- 
- void rdt_ctrl_update(void *arg);
+-- 
+Thanks,
+
+David / dhildenb
+
