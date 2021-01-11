@@ -2,198 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 655612F21C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:28:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49FAE2F21DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:34:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730998AbhAKV1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 16:27:33 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:41978 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728986AbhAKV1c (ORCPT
+        id S1730167AbhAKVdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 16:33:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727073AbhAKVdg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 16:27:32 -0500
-Received: by mail-ot1-f50.google.com with SMTP id x13so271790oto.8;
-        Mon, 11 Jan 2021 13:27:16 -0800 (PST)
+        Mon, 11 Jan 2021 16:33:36 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF6AC061795
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:32:55 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id ce23so457301ejb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:32:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=50L+1hnJJiPA478RLj/gLuEG+isMc9fiaMNBoBubFG8=;
+        b=rYOp9BCUVy7bgeYU35xdwLribm7Ww37Bcp1eJcWjuc90z/LhUUyMPc19HCdqTD9l67
+         cd7GR+imksIxIU/WsQLWGGaJwGxPmCMbUdUzfXyohigz6XcMRByOcdeY/ZhAenAMpTwA
+         TfMVLU1yeUw8nGcMTu9UfQXyqb56ftQSQJVpOy227M/Qr3ML+GTo+2e+WO2M2d86uFFh
+         H9nxrtZSY5Q//LSDZvsOJSsTnRMj+gn2d5mMpa0JN0ET6dmpD5wJRfs58n3zp176Hy+0
+         TdzKJLJSR1qTLZlQxX1nnsFosQCCpbL4aMhAwViuDQUIsOJNg091t58ZiFilVJTroXIM
+         1VCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jrbTgbbsB7ucHyxqU5kyUyc0pfYnA0fSrAb67IIDtuY=;
-        b=lOj00gPgeaftJP2L3gEs6aOay07NSnEVss1gizfSnxhaRKjHp5JRezqjO3/6jhEnIA
-         aePwR0nWixslYGhwiWsStftYLMhRsw4YqIzYCKnaeh/iwwlqbii0r7TUMo8xRKHTD1GS
-         SHRxIR51LDQHReLEryqyAAQlqt3G68HPaskriBYTr8M62BoTNWykr9Bxa98g0XKIrOug
-         rfZOYdaMR1k1VCwmTQRTws1ojZsImlipuYYZ1MwA8c7aw4qTSxKNq0cWy5ii14jzuYC7
-         NTecmNJ+vepwLGvJ25VLuB+wZQN7TkBEoE36HPjXy7D0C8ckrYyCsMC5fLAVWQCUjMnm
-         e9MQ==
-X-Gm-Message-State: AOAM530L++DYcvhmNeRvY1rKwiljO4BOXuGf1j2aVw7WlhbETWRViKnI
-        Xw3BxDGn7l8uE1cx3aTuHidHllK8YA==
-X-Google-Smtp-Source: ABdhPJxAknhS0Ub3hT/iS75EucEXTks5a7hr8NkJJy7o+yxvBdn8Urgg0jfNQOiJtfQAoonW70R++g==
-X-Received: by 2002:a9d:7a48:: with SMTP id z8mr744043otm.146.1610400411252;
-        Mon, 11 Jan 2021 13:26:51 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v3sm155081ool.16.2021.01.11.13.26.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 13:26:50 -0800 (PST)
-Received: (nullmailer pid 3089505 invoked by uid 1000);
-        Mon, 11 Jan 2021 21:26:49 -0000
-Date:   Mon, 11 Jan 2021 15:26:49 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Subject: Re: [PATCH v5 1/3] media: dt-bindings: media: Document Rockchip VIP
- bindings
-Message-ID: <20210111212649.GA3086014@robh.at.kernel.org>
-References: <20201229161724.511102-1-maxime.chevallier@bootlin.com>
- <20201229161724.511102-2-maxime.chevallier@bootlin.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=50L+1hnJJiPA478RLj/gLuEG+isMc9fiaMNBoBubFG8=;
+        b=Kln3xKPRIJzQ44PAQSX2OCaJpFbQRdQger8ELoPLghoSOgnG61O4dmGbH3FqythhsJ
+         c8i7e/RrEOQjH40BVrRcUnvcYd0g7McnKVy+641wn5WMFnmpj9ZLQejdIrVD83qpJlJ+
+         1KsmemL1FulDrwRep1+ChKPRzU5Iz6hWzE06HQgxF/e5jq6GLq+iZrBWlzS0mXvnY9wF
+         5IrYmviBARanBLNC4c+AwO348SZ0f/f9rbiZ2xNuwE1nr+9Zs3KwSF2E+gsx/ASG/Bsd
+         SjLwpFHbTPNhfyvhs0vcltEkVIjgJGh+VZIHe3fEkFuIKvuOymVqs7LXC/D9JjBwjGDd
+         EoGA==
+X-Gm-Message-State: AOAM530WTB2qnw4nNVns9w4VaMKBsDT/so6hrv1HIhMM5XEuIQIIFto/
+        /pHe3ufqnuhmF96ry2Yu9fGs9iOBV7ZTpSJDTRrM
+X-Google-Smtp-Source: ABdhPJx+2LyouZzRygCuLlWFWx4k+p6i/4U8LokURJQNA4v0tODWOZ8ObMJC5e5El+Q6xCskMviaUUvpTxEojhVhqlQ=
+X-Received: by 2002:a17:906:cc8c:: with SMTP id oq12mr958706ejb.419.1610400774280;
+ Mon, 11 Jan 2021 13:32:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201229161724.511102-2-maxime.chevallier@bootlin.com>
+References: <20210111081821.3041587-1-morbo@google.com> <20210111210418.GA3660906@ubuntu-m3-large-x86>
+ <CAKwvOdnssY=CV4daRQvGa659AzGvMT+Kb10g5-DDuZjqbp-J5A@mail.gmail.com>
+In-Reply-To: <CAKwvOdnssY=CV4daRQvGa659AzGvMT+Kb10g5-DDuZjqbp-J5A@mail.gmail.com>
+From:   Bill Wendling <morbo@google.com>
+Date:   Mon, 11 Jan 2021 13:32:43 -0800
+Message-ID: <CAGG=3QVpxUpZJJYiy88YYk80-kvRPipnYdk9_9WzN=bToX9POA@mail.gmail.com>
+Subject: Re: [PATCH] pgo: add clang's Profile Guided Optimization infrastructure
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 05:17:22PM +0100, Maxime Chevallier wrote:
-> Add a documentation for the Rockchip Camera Interface controller
-> binding.
-> 
-> This controller can be found on platforms such as the PX30 or the
-> RK3288, the PX30 being the only platform supported so far.
-> 
-> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
-> ---
-> v3: Renamed the controller to "vip"
-> 
-> v4: fixed the binding to get a compiling example
-> 
-> v5: Fixed the binding even more, the 'endpoint' description was missing
-> 
->  .../bindings/media/rockchip-vip.yaml          | 101 ++++++++++++++++++
->  1 file changed, 101 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/rockchip-vip.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/media/rockchip-vip.yaml b/Documentation/devicetree/bindings/media/rockchip-vip.yaml
-> new file mode 100644
-> index 000000000000..93055273b32f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/rockchip-vip.yaml
-> @@ -0,0 +1,101 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/rockchip-vip.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Rockchip VIP Camera Interface
-> +
-> +maintainers:
-> +  - Maxime Chevallier <maxime.chevallier@bootlin.com>
-> +
-> +description: |-
-> +  Camera Interface for Rockchip platforms
-> +
-> +properties:
-> +  compatible:
-> +    const: rockchip,px30-vip
-> +
-> +  reg:
-> +    maxItems: 2
+On Mon, Jan 11, 2021 at 1:18 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Mon, Jan 11, 2021 at 1:04 PM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
+> >
+> > On Mon, Jan 11, 2021 at 12:18:21AM -0800, Bill Wendling wrote:
+> > > From: Sami Tolvanen <samitolvanen@google.com>
+> > >
+> > > Enable the use of clang's Profile-Guided Optimization[1]. To generate a
+> > > profile, the kernel is instrumented with PGO counters, a representative
+> > > workload is run, and the raw profile data is collected from
+> > > /sys/kernel/debug/pgo/profraw.
+> > >
+> > > The raw profile data must be processed by clang's "llvm-profdata" tool before
+> > > it can be used during recompilation:
+> > >
+> > >   $ cp /sys/kernel/debug/pgo/profraw vmlinux.profraw
+> > >   $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
+> > >
+> > > Multiple raw profiles may be merged during this step.
+> > >
+> > > The data can be used either by the compiler if LTO isn't enabled:
+> > >
+> > >     ... -fprofile-use=vmlinux.profdata ...
+> > >
+> > > or by LLD if LTO is enabled:
+> > >
+> > >     ... -lto-cs-profile-file=vmlinux.profdata ...
+> > >
+> > > This initial submission is restricted to x86, as that's the platform we know
+> > > works. This restriction can be lifted once other platforms have been verified
+> > > to work with PGO.
+> > >
+> > > Note that this method of profiling the kernel is clang-native and isn't
+> > > compatible with clang's gcov support in kernel/gcov.
+> > >
+> > > [1] https://clang.llvm.org/docs/UsersManual.html#profile-guided-optimization
+> > >
+> > > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> > > Co-developed-by: Bill Wendling <morbo@google.com>
+> > > Signed-off-by: Bill Wendling <morbo@google.com>
+> >
+> > I took this for a spin against x86_64_defconfig and ran into two issues:
+> >
+> > 1. https://github.com/ClangBuiltLinux/linux/issues/1252
+>
+> "Cannot split an edge from a CallBrInst"
+> Looks like that should be fixed first, then we should gate this
+> feature on clang-12.
+>
+Weird. I'll investigate.
 
-Need to define what each 'reg' entry represents.
+> >
+> >    There is also one in drivers/gpu/drm/i915/i915_query.c. For the time
+> >    being, I added PGO_PROFILE_... := n for those two files.
+> >
+> > 2. After doing that, I run into an undefined function error with ld.lld.
+> >
+> > How I tested:
+> >
+> > $ make -skj"$(nproc)" LLVM=1 defconfig
+> >
+> > $ scripts/config -e PGO_CLANG
+> >
+> > $ make -skj"$(nproc)" LLVM=1 olddefconfig vmlinux all
+> > ld.lld: error: undefined symbol: __llvm_profile_instrument_memop
+>
+> Err...that seems like it should be implemented in
+> kernel/pgo/instrument.c in this patch in a v2?
+>
+Yes. I'll submit a new V2 with this and other feedback integrated.
 
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: ACLK
-> +      - description: HCLK
-> +      - description: PCLK IN
-> +
-> +  clock-names:
-> +    items:
-> +      - const: aclk
-> +      - const: hclk
-> +      - const: pclkin
-> +
-> +  resets:
-> +    items:
-> +      - description: AXI
-> +      - description: AHB
-> +      - description: PCLK IN
-> +
-> +  reset-names:
-> +    items:
-> +      - const: axi
-> +      - const: ahb
-> +      - const: pclkin
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  # See ./video-interfaces.txt for details
-> +  port:
-> +    type: object
-> +    additionalProperties: false
-> +    description: A connection to a sensor or decoder
-> +
-> +    properties:
-> +      endpoint:
-> +        type: object
-> +
-> +        properties:
-> +          remote-endpoint: true
-> +
-> +        required:
-> +          - remote-endpoint
-> +
-> +    required:
-> +      - endpoint
+> > >>> referenced by head64.c
+> > >>>               arch/x86/kernel/head64.o:(__early_make_pgtable)
+> > >>> referenced by head64.c
+> > >>>               arch/x86/kernel/head64.o:(x86_64_start_kernel)
+> > >>> referenced by head64.c
+> > >>>               arch/x86/kernel/head64.o:(copy_bootdata)
+> > >>> referenced 2259 more times
+> >
+> > Local diff:
+> >
+> > diff --git a/drivers/char/Makefile b/drivers/char/Makefile
+> > index ffce287ef415..4b2f238770b5 100644
+> > --- a/drivers/char/Makefile
+> > +++ b/drivers/char/Makefile
+> > @@ -4,6 +4,7 @@
+> >  #
+> >
+> >  obj-y                          += mem.o random.o
+> > +PGO_PROFILE_random.o           := n
+> >  obj-$(CONFIG_TTY_PRINTK)       += ttyprintk.o
+> >  obj-y                          += misc.o
+> >  obj-$(CONFIG_ATARI_DSP56K)     += dsp56k.o
+> > diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
+> > index e5574e506a5c..d83cacc79b1a 100644
+> > --- a/drivers/gpu/drm/i915/Makefile
+> > +++ b/drivers/gpu/drm/i915/Makefile
+> > @@ -168,6 +168,7 @@ i915-y += \
+> >           i915_vma.o \
+> >           intel_region_lmem.o \
+> >           intel_wopcm.o
+> > +PGO_PROFILE_i915_query.o := n
+> >
+> >  # general-purpose microcontroller (GuC) support
+> >  i915-y += gt/uc/intel_uc.o \
+>
+> I'd rather have these both sorted out before landing with PGO disabled
+> on these files.
+>
+Agreed.
 
-You can drop everything for 'endpoint'. Just need 'port'.
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - port
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/clock/px30-cru.h>
-> +    #include <dt-bindings/power/px30-power.h>
-> +
-> +    vip: vip@ff490000 {
-> +        compatible = "rockchip,px30-vip";
-> +        reg = <0x0 0xff490000>, <0x0 0x200>;
-> +        interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
-> +        clocks = <&cru ACLK_CIF>, <&cru HCLK_CIF>, <&cru PCLK_CIF>;
-> +        clock-names = "aclk", "hclk", "pclkin";
-> +        resets = <&cru SRST_CIF_A>, <&cru SRST_CIF_H>, <&cru SRST_CIF_PCLKIN>;
-> +        reset-names = "axi", "ahb", "pclkin";
-> +        power-domains = <&power PX30_PD_VI>;
-> +        port {
-> +            vip_in: endpoint {
-> +                remote-endpoint = <&tw9900_out>;
-> +            };
-> +        };
-> +    };
-> +...
-> -- 
-> 2.25.4
-> 
+-bw
