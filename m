@@ -2,225 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED3C2F0BA2
+	by mail.lfdr.de (Postfix) with ESMTP id E02DA2F0BA3
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 05:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727214AbhAKEAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 23:00:34 -0500
-Received: from mga14.intel.com ([192.55.52.115]:50611 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726278AbhAKEAd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 23:00:33 -0500
-IronPort-SDR: JPlny5dfHqSNT7os+Dq9Yg+0RMs7lq03WIkj7xrGhhVapEdaZ+2Jym+4Bi1T0Tm3273fsi2ENf
- iPsOXx2iQxPw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9860"; a="177023013"
-X-IronPort-AV: E=Sophos;i="5.79,337,1602572400"; 
-   d="scan'208";a="177023013"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2021 19:59:52 -0800
-IronPort-SDR: IaxAy0qLMhzcVacsBAIeGvrVqTacxDcxAIVUm6mhBU2tk2Pk8MPUeJBGV27ElZNBmedszfP7f0
- zZLagpudc4eQ==
-X-IronPort-AV: E=Sophos;i="5.79,337,1602572400"; 
-   d="scan'208";a="380868678"
-Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2021 19:59:48 -0800
-Date:   Mon, 11 Jan 2021 11:59:46 +0800
-From:   Shuo A Liu <shuo.a.liu@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v7 07/18] virt: acrn: Introduce an ioctl to set vCPU
- registers state
-Message-ID: <20210111035946.GD22447@shuo-intel.sh.intel.com>
-References: <20210106075055.47226-1-shuo.a.liu@intel.com>
- <20210106075055.47226-8-shuo.a.liu@intel.com>
- <X/h7QoSqRw2Anfvo@kroah.com>
+        id S1727236AbhAKEAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 23:00:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726362AbhAKEAz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 23:00:55 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED67C061786
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 20:00:14 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id n8so2019126ljg.3
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 20:00:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aHEcr4bSN1zx2FiEMYBhMzgQIQxqAhuq0PemUwVcZMc=;
+        b=17Yxy068PsRgBYF8Z92oLby9dxH4xCw0G3KUSVK5aO7ukRRPstyXKGXxnHINqOemMp
+         bU+NJ7KZAgJRAVo1zy+w+gzx0dM0gHBT+TQt0yxMMgKCsw5tPTwi5KdwHDmcU01JhPNV
+         Bq9F+wWEQQ5tV7c9UmvAI+X3CWzL3R0e2Vo4y/OJhC+Q/1amaASVE7w5mH5k+bbFG1jA
+         wRgBprCrTIrNPjuO56ZRm3Vjyv4ZJsDDjbmGyCJXoMCA2T0TBPAWe+/DQKLeJZ+CIrJP
+         7gPBedFvoO6wG3diINpIwu3pGaOmD8MLRNwJOiAvB/SGca5vL0Y3LUbVHbfy/laplQwT
+         s0PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aHEcr4bSN1zx2FiEMYBhMzgQIQxqAhuq0PemUwVcZMc=;
+        b=YAlgsdMh6zSm3OmPkLWpgXfcRGcaEZoKyUYfABPOrDrU8BUNpzc+JTFCA0s+ynjgGz
+         ytnOOTQzqw0UMay8wSz97eJ+xFD2iF7Recf32xy/0n8DlLWLSS+alDA3UKrHSk+Yxmjs
+         UPO50VINSOCq3ZCvJuMIP6kDLhiz7zxsbJJFaqv4TzRMibvi824A/M8Iw3WPT9L2Q/0m
+         p7T0HTNw8yQOYarfCLCwBZBU/rsk1sVx7VkatYNlM8lu6+mOuBC8aG7se58CZUoK77h+
+         E7vUK7gKTIXQeDkKYSTmAAZcTHcTNcmutaO+R3uIZH2F/fABfIWTDW3QOXaeko2x7Sac
+         BA8g==
+X-Gm-Message-State: AOAM532afrUK+XLvTTcbFZxN6gKg5zYPzvkYzVPrm4QG6M9gUli4ZGus
+        DhOrlrr+oHc1ZOoHV35PKZWVi12QB+wGczNHCs6w5A==
+X-Google-Smtp-Source: ABdhPJx0b8YVu7rdN1I7HqOu9IoKI4q9eHnmGHiqxjmUPNYuhHmSXBuJjGwjX9ZjFoRWPWz4LF2jbblYZ1gYh8hSE7c=
+X-Received: by 2002:a05:651c:202:: with SMTP id y2mr6385586ljn.162.1610337613243;
+ Sun, 10 Jan 2021 20:00:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <X/h7QoSqRw2Anfvo@kroah.com>
-User-Agent: Mutt/1.8.3 (2017-05-23)
+References: <20210107092652.3438696-1-atish.patra@wdc.com> <20210107092652.3438696-4-atish.patra@wdc.com>
+In-Reply-To: <20210107092652.3438696-4-atish.patra@wdc.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Mon, 11 Jan 2021 09:30:01 +0530
+Message-ID: <CAAhSdy3XsG3J1nE-nQhiJe5vVTa-1f09t=FY4AMRv7HtdoK=-w@mail.gmail.com>
+Subject: Re: [PATCH 3/4] RISC-V: Fix L1_CACHE_BYTES for RV32
+To:     Atish Patra <atish.patra@wdc.com>
+Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup.patel@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri  8.Jan'21 at 16:33:22 +0100, Greg Kroah-Hartman wrote:
->On Wed, Jan 06, 2021 at 03:50:44PM +0800, shuo.a.liu@intel.com wrote:
->> From: Shuo Liu <shuo.a.liu@intel.com>
->>
->> A virtual CPU of User VM has different context due to the different
->> registers state. ACRN userspace needs to set the virtual CPU
->> registers state (e.g. giving a initial registers state to a virtual
->> BSP of a User VM).
->>
->> HSM provides an ioctl ACRN_IOCTL_SET_VCPU_REGS to do the virtual CPU
->> registers state setting. The ioctl passes the registers state from ACRN
->> userspace to the hypervisor directly.
->>
->> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
->> Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
->> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
->> Cc: Zhi Wang <zhi.a.wang@intel.com>
->> Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
->> Cc: Yu Wang <yu1.wang@intel.com>
->> Cc: Reinette Chatre <reinette.chatre@intel.com>
->> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> ---
->>  drivers/virt/acrn/hsm.c       | 21 ++++++++++-
->>  drivers/virt/acrn/hypercall.h | 13 +++++++
->>  include/uapi/linux/acrn.h     | 69 +++++++++++++++++++++++++++++++++++
->>  3 files changed, 102 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
->> index 5fd933471683..2d04ebaa43f8 100644
->> --- a/drivers/virt/acrn/hsm.c
->> +++ b/drivers/virt/acrn/hsm.c
->> @@ -9,6 +9,7 @@
->>   *	Yakui Zhao <yakui.zhao@intel.com>
->>   */
->>
->> +#include <linux/io.h>
->>  #include <linux/mm.h>
->>  #include <linux/module.h>
->>  #include <linux/slab.h>
->> @@ -46,7 +47,8 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
->>  {
->>  	struct acrn_vm *vm = filp->private_data;
->>  	struct acrn_vm_creation *vm_param;
->> -	int ret = 0;
->> +	struct acrn_vcpu_regs *cpu_regs;
->> +	int i, ret = 0;
->>
->>  	if (vm->vmid == ACRN_INVALID_VMID && cmd != ACRN_IOCTL_CREATE_VM) {
->>  		dev_dbg(acrn_dev.this_device,
->> @@ -100,6 +102,23 @@ static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
->>  	case ACRN_IOCTL_DESTROY_VM:
->>  		ret = acrn_vm_destroy(vm);
->>  		break;
->> +	case ACRN_IOCTL_SET_VCPU_REGS:
->> +		cpu_regs = memdup_user((void __user *)ioctl_param,
->> +				       sizeof(struct acrn_vcpu_regs));
->> +		if (IS_ERR(cpu_regs))
->> +			return PTR_ERR(cpu_regs);
->> +
->> +		for (i = 0; i < ARRAY_SIZE(cpu_regs->reserved); i++)
->> +			if (cpu_regs->reserved[i])
->> +				return -EINVAL;
->> +
->> +		ret = hcall_set_vcpu_regs(vm->vmid, virt_to_phys(cpu_regs));
->> +		if (ret < 0)
->> +			dev_dbg(acrn_dev.this_device,
->> +				"Failed to set regs state of VM%u!\n",
->> +				vm->vmid);
->> +		kfree(cpu_regs);
->> +		break;
->>  	default:
->>  		dev_dbg(acrn_dev.this_device, "Unknown IOCTL 0x%x!\n", cmd);
->>  		ret = -ENOTTY;
->> diff --git a/drivers/virt/acrn/hypercall.h b/drivers/virt/acrn/hypercall.h
->> index 426b66cadb1f..f29cfae08862 100644
->> --- a/drivers/virt/acrn/hypercall.h
->> +++ b/drivers/virt/acrn/hypercall.h
->> @@ -19,6 +19,7 @@
->>  #define HC_START_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x02)
->>  #define HC_PAUSE_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x03)
->>  #define HC_RESET_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x05)
->> +#define HC_SET_VCPU_REGS		_HC_ID(HC_ID, HC_ID_VM_BASE + 0x06)
->>
->>  /**
->>   * hcall_create_vm() - Create a User VM
->> @@ -75,4 +76,16 @@ static inline long hcall_reset_vm(u64 vmid)
->>  	return acrn_hypercall1(HC_RESET_VM, vmid);
->>  }
->>
->> +/**
->> + * hcall_set_vcpu_regs() - Set up registers of virtual CPU of a User VM
->> + * @vmid:	User VM ID
->> + * @regs_state:	Service VM GPA of registers state
->> + *
->> + * Return: 0 on success, <0 on failure
->> + */
->> +static inline long hcall_set_vcpu_regs(u64 vmid, u64 regs_state)
->> +{
->> +	return acrn_hypercall2(HC_SET_VCPU_REGS, vmid, regs_state);
->> +}
->> +
->>  #endif /* __ACRN_HSM_HYPERCALL_H */
->> diff --git a/include/uapi/linux/acrn.h b/include/uapi/linux/acrn.h
->> index e1608b8a50a2..d5d66b93586e 100644
->> --- a/include/uapi/linux/acrn.h
->> +++ b/include/uapi/linux/acrn.h
->> @@ -35,6 +35,73 @@ struct acrn_vm_creation {
->>  	__u64	cpu_affinity;
->>  };
->>
->> +struct acrn_gp_regs {
->> +	__le64	rax;
->> +	__le64	rcx;
->> +	__le64	rdx;
->> +	__le64	rbx;
->> +	__le64	rsp;
->> +	__le64	rbp;
->> +	__le64	rsi;
->> +	__le64	rdi;
->> +	__le64	r8;
->> +	__le64	r9;
->> +	__le64	r10;
->> +	__le64	r11;
->> +	__le64	r12;
->> +	__le64	r13;
->> +	__le64	r14;
->> +	__le64	r15;
->> +};
->> +
->> +struct acrn_descriptor_ptr {
->> +	__le16	limit;
->> +	__le64	base;
->> +	__le16	reserved[3];
->> +} __attribute__ ((__packed__));
->> +
->> +struct acrn_regs {
->> +	struct acrn_gp_regs		gprs;
->> +	struct acrn_descriptor_ptr	gdt;
->> +	struct acrn_descriptor_ptr	idt;
->> +
->> +	__le64				rip;
->> +	__le64				cs_base;
->> +	__le64				cr0;
->> +	__le64				cr4;
->> +	__le64				cr3;
->> +	__le64				ia32_efer;
->> +	__le64				rflags;
->> +	__le64				reserved_64[4];
->> +
->> +	__le32				cs_ar;
->> +	__le32				cs_limit;
->> +	__le32				reserved_32[3];
->> +
->> +	__le16				cs_sel;
->> +	__le16				ss_sel;
->> +	__le16				ds_sel;
->> +	__le16				es_sel;
->> +	__le16				fs_sel;
->> +	__le16				gs_sel;
->> +	__le16				ldt_sel;
->> +	__le16				tr_sel;
->> +};
+On Thu, Jan 7, 2021 at 2:57 PM Atish Patra <atish.patra@wdc.com> wrote:
 >
->No documentation of what these variables are anywhere?
-
-I will add the documentation to explain them in this file.
-
+> SMP_CACHE_BYTES/L1_CACHE_BYTES should be defined as 32 instead of
+> 64 for RV32. Otherwise, there will be hole of 32 bytes with each memblock
+> allocation if it is requested to be aligned with SMP_CACHE_BYTES.
 >
->What about the reserved slots, what must they be set to?
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
 
-Will document they shoud be zero and check them.
+Looks good to me.
 
-Thanks
-shuo
+Reviewed-by: Anup Patel <anup@brainfault.org>
+
+> ---
+>  arch/riscv/include/asm/cache.h | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/arch/riscv/include/asm/cache.h b/arch/riscv/include/asm/cache.h
+> index 9b58b104559e..c9c669ea2fe6 100644
+> --- a/arch/riscv/include/asm/cache.h
+> +++ b/arch/riscv/include/asm/cache.h
+> @@ -7,7 +7,11 @@
+>  #ifndef _ASM_RISCV_CACHE_H
+>  #define _ASM_RISCV_CACHE_H
+>
+> +#ifdef CONFIG_64BIT
+>  #define L1_CACHE_SHIFT         6
+> +#else
+> +#define L1_CACHE_SHIFT         5
+> +#endif
+>
+>  #define L1_CACHE_BYTES         (1 << L1_CACHE_SHIFT)
+>
+> --
+> 2.25.1
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+Regards,
+Anup
