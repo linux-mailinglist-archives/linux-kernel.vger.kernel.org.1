@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDC292F151F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22EC62F152F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:36:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727278AbhAKNfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:35:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60846 "EHLO mail.kernel.org"
+        id S1733029AbhAKNgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:36:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732031AbhAKNOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:14:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E24522250F;
-        Mon, 11 Jan 2021 13:13:21 +0000 (UTC)
+        id S1731981AbhAKNNp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:13:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBF2A21534;
+        Mon, 11 Jan 2021 13:13:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370802;
-        bh=xjoEzV6Xi5sP+X7sPDYGi4A5zF7gVw5Z60vBv1CS8ws=;
+        s=korg; t=1610370809;
+        bh=kNO3KipiFXEsWPJ01ZPZn2Txoo8zY+/9Xz4w4VV+vno=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ngBEfkHsKYDggOQIjsjbirxlNzynH+ej8fAK1et/4bcKtEqhIudTrEp0Sj0o7HzeX
-         8Nzf9sNHaNLxI1w2x8m9ERWdQNiOTHyYvAbg5cI814t972TADaCkt5ZW0iu/dWVhr3
-         LeIGY6B13gMzUpBxdzJQHcIXTMsDWvI9vuk6el3o=
+        b=JvGvBRtUwESUOp0i9BNktgrwj1s3rp6NKXtBn8tJMqqtH4LUUrbv506MSxccTvwbY
+         ElvCI4OEBj1N3g9TiHxLK11aTnzfIGlkNjlQtjd/FF2are8vxzxYbU2iz5u7APabGv
+         oha2jT/lwO0ONFB9Ij953O+s4F/C9JSLQzVUFd5E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marcin Wojtas <mw@semihalf.com>,
-        Stefan Chulski <stefanc@marvell.com>,
+        stable@vger.kernel.org, Lijun Pan <ljp@linux.ibm.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 011/145] net: mvpp2: Fix GoP port 3 Networking Complex Control configurations
-Date:   Mon, 11 Jan 2021 14:00:35 +0100
-Message-Id: <20210111130049.058866908@linuxfoundation.org>
+Subject: [PATCH 5.10 014/145] ibmvnic: continue fatal error reset after passive init
+Date:   Mon, 11 Jan 2021 14:00:38 +0100
+Message-Id: <20210111130049.198080120@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
 References: <20210111130048.499958175@linuxfoundation.org>
@@ -40,34 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+From: Lijun Pan <ljp@linux.ibm.com>
 
-[ Upstream commit 2575bc1aa9d52a62342b57a0b7d0a12146cf6aed ]
+[ Upstream commit 1f45dc22066797479072978feeada0852502e180 ]
 
-During GoP port 2 Networking Complex Control mode of operation configurations,
-also GoP port 3 mode of operation was wrongly set.
-Patch removes these configurations.
+Commit f9c6cea0b385 ("ibmvnic: Skip fatal error reset after passive init")
+says "If the passive
+CRQ initialization occurs before the FATAL reset task is processed,
+the FATAL error reset task would try to access a CRQ message queue
+that was freed, causing an oops. The problem may be most likely to
+occur during DLPAR add vNIC with a non-default MTU, because the DLPAR
+process will automatically issue a change MTU request.
+Fix this by not processing fatal error reset if CRQ is passively
+initialized after client-driven CRQ initialization fails."
 
-Fixes: f84bf386f395 ("net: mvpp2: initialize the GoP")
-Acked-by: Marcin Wojtas <mw@semihalf.com>
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-Link: https://lore.kernel.org/r/1608462149-1702-1-git-send-email-stefanc@marvell.com
+Even with this commit, we still see similar kernel crashes. In order
+to completely solve this problem, we'd better continue the fatal error
+reset, capture the kernel crash, and try to fix it from that end.
+
+Fixes: f9c6cea0b385 ("ibmvnic: Skip fatal error reset after passive init")
+Signed-off-by: Lijun Pan <ljp@linux.ibm.com>
+Link: https://lore.kernel.org/r/20201219214034.21123-1-ljp@linux.ibm.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/ibm/ibmvnic.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -1231,7 +1231,7 @@ static void mvpp22_gop_init_rgmii(struct
- 
- 	regmap_read(priv->sysctrl_base, GENCONF_CTRL0, &val);
- 	if (port->gop_id == 2)
--		val |= GENCONF_CTRL0_PORT0_RGMII | GENCONF_CTRL0_PORT1_RGMII;
-+		val |= GENCONF_CTRL0_PORT0_RGMII;
- 	else if (port->gop_id == 3)
- 		val |= GENCONF_CTRL0_PORT1_RGMII_MII;
- 	regmap_write(priv->sysctrl_base, GENCONF_CTRL0, val);
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -2248,8 +2248,7 @@ static void __ibmvnic_reset(struct work_
+ 				set_current_state(TASK_UNINTERRUPTIBLE);
+ 				schedule_timeout(60 * HZ);
+ 			}
+-		} else if (!(rwi->reset_reason == VNIC_RESET_FATAL &&
+-				adapter->from_passive_init)) {
++		} else {
+ 			rc = do_reset(adapter, rwi, reset_state);
+ 		}
+ 		kfree(rwi);
 
 
