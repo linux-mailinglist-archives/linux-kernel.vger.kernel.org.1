@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A7E2F1302
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD3A2F13C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:15:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727530AbhAKNCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:02:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48794 "EHLO mail.kernel.org"
+        id S1732169AbhAKNOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:14:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728077AbhAKNBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:01:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 570AD22510;
-        Mon, 11 Jan 2021 13:00:20 +0000 (UTC)
+        id S1732066AbhAKNOM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:14:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E7AB22AAD;
+        Mon, 11 Jan 2021 13:13:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370020;
-        bh=F06FkNZFTnqZxgw/nwOYLrbLIypwVh8ABQmQEKuw5Aw=;
+        s=korg; t=1610370837;
+        bh=ymxAtAwdo9vYbw2D6Rwx0TX1jZoSUwz4VrH3bPjVfy0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=odSQ5eS61UtT9XmtQGzInn7/kJzZGZQpKRJ2u9bEV719ecsLLsu4fN6ZH/fejLkC2
-         1IwdBhIHr1fbbA6GwOwV9FBbmi1nVo5CaydAv/wkIoDTJT608smr5UcT/EQ+5faWQI
-         afah0DBr42dV3/Pct+ZkYGKa8pYAWmiIBMKCW6G0=
+        b=O5p/Sa84r5cbDGyCjk8nyqKy2PsTzE1w6uVw4lJLTjcEXR13bDVnf8Fel//PlrRNp
+         7YK7kg4m3CYs0QMBLJxHsVN/UBEhvxZ8YPwuPI9itCEKq2PA6OslpPCJtBUwxTD1d2
+         VbmDgmjfjb78gw7w6S6EfczuGaqzEb55SLAruYow=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Colitti <lorenzo@google.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        "taehyun.cho" <taehyun.cho@samsung.com>
-Subject: [PATCH 4.4 16/38] usb: gadget: enable super speed plus
-Date:   Mon, 11 Jan 2021 14:00:48 +0100
-Message-Id: <20210111130033.252203628@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 025/145] net: ethernet: ti: cpts: fix ethtool output when no ptp_clock registered
+Date:   Mon, 11 Jan 2021 14:00:49 +0100
+Message-Id: <20210111130049.719034658@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
-References: <20210111130032.469630231@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: taehyun.cho <taehyun.cho@samsung.com>
+From: Grygorii Strashko <grygorii.strashko@ti.com>
 
-commit e2459108b5a0604c4b472cae2b3cb8d3444c77fb upstream.
+[ Upstream commit 4614792eebcbf81c60ad3604c1aeeb2b0899cea4 ]
 
-Enable Super speed plus in configfs to support USB3.1 Gen2.
-This ensures that when a USB gadget is plugged in, it is
-enumerated as Gen 2 and connected at 10 Gbps if the host and
-cable are capable of it.
+The CPTS driver registers PTP PHC clock when first netif is going up and
+unregister it when all netif are down. Now ethtool will show:
+ - PTP PHC clock index 0 after boot until first netif is up;
+ - the last assigned PTP PHC clock index even if PTP PHC clock is not
+registered any more after all netifs are down.
 
-Many in-tree gadget functions (fs, midi, acm, ncm, mass_storage,
-etc.) already have SuperSpeed Plus support.
+This patch ensures that -1 is returned by ethtool when PTP PHC clock is not
+registered any more.
 
-Tested: plugged gadget into Linux host and saw:
-[284907.385986] usb 8-2: new SuperSpeedPlus Gen 2 USB device number 3 using xhci_hcd
-
-Tested-by: Lorenzo Colitti <lorenzo@google.com>
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: taehyun.cho <taehyun.cho@samsung.com>
-Signed-off-by: Lorenzo Colitti <lorenzo@google.com>
-Link: https://lore.kernel.org/r/20210106154625.2801030-1-lorenzo@google.com
-Cc: stable <stable@vger.kernel.org>
+Fixes: 8a2c9a5ab4b9 ("net: ethernet: ti: cpts: rework initialization/deinitialization")
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Acked-by: Richard Cochran <richardcochran@gmail.com>
+Link: https://lore.kernel.org/r/20201224162405.28032-1-grygorii.strashko@ti.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/gadget/configfs.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/ti/cpts.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/usb/gadget/configfs.c
-+++ b/drivers/usb/gadget/configfs.c
-@@ -1507,7 +1507,7 @@ static const struct usb_gadget_driver co
- 	.suspend	= configfs_composite_suspend,
- 	.resume		= configfs_composite_resume,
+--- a/drivers/net/ethernet/ti/cpts.c
++++ b/drivers/net/ethernet/ti/cpts.c
+@@ -599,6 +599,7 @@ void cpts_unregister(struct cpts *cpts)
  
--	.max_speed	= USB_SPEED_SUPER,
-+	.max_speed	= USB_SPEED_SUPER_PLUS,
- 	.driver = {
- 		.owner          = THIS_MODULE,
- 		.name		= "configfs-gadget",
-@@ -1543,7 +1543,7 @@ static struct config_group *gadgets_make
- 	gi->composite.unbind = configfs_do_nothing;
- 	gi->composite.suspend = NULL;
- 	gi->composite.resume = NULL;
--	gi->composite.max_speed = USB_SPEED_SUPER;
-+	gi->composite.max_speed = USB_SPEED_SUPER_PLUS;
+ 	ptp_clock_unregister(cpts->clock);
+ 	cpts->clock = NULL;
++	cpts->phc_index = -1;
  
- 	spin_lock_init(&gi->spinlock);
- 	mutex_init(&gi->lock);
+ 	cpts_write32(cpts, 0, int_enable);
+ 	cpts_write32(cpts, 0, control);
+@@ -784,6 +785,7 @@ struct cpts *cpts_create(struct device *
+ 	cpts->cc.read = cpts_systim_read;
+ 	cpts->cc.mask = CLOCKSOURCE_MASK(32);
+ 	cpts->info = cpts_info;
++	cpts->phc_index = -1;
+ 
+ 	if (n_ext_ts)
+ 		cpts->info.n_ext_ts = n_ext_ts;
 
 
