@@ -2,175 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6B12F10E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:15:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 869552F10E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:15:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729047AbhAKLN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:13:29 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:43502 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727143AbhAKLN2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:13:28 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210111111246euoutp02e9956bf9cbc0681ba4d857d8b71e408d~ZKSGwH9JX0135901359euoutp02S
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:12:46 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210111111246euoutp02e9956bf9cbc0681ba4d857d8b71e408d~ZKSGwH9JX0135901359euoutp02S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1610363566;
-        bh=Os6YQqidd68CpsiQz2Q8qja9eV+6Zsth1YrEA4TfMyw=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=PIoYck2V/4cWF3iE1+t6XZl0jj375KRP1IJ5StoWhS33BG/aUeAswuh/Iro7lEhgx
-         dMMUr3uiK3Ho87lx0MSC5IGslqz511QqNixD8PuX0e8fQlO+Pt5ds5b4By+H43HULf
-         gXp/PVE/48n7Lii6J+iA+SB1jPQUcqVNoRIYPjCA=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210111111246eucas1p10fcdbea347d591cd4916f118f713084b~ZKSGXvLHr1798617986eucas1p1H;
-        Mon, 11 Jan 2021 11:12:46 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 02.B5.45488.DA23CFF5; Mon, 11
-        Jan 2021 11:12:45 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210111111245eucas1p15acde7ecc2ca7f7782beb8ed74c72022~ZKSF1Vo4y1243712437eucas1p1_;
-        Mon, 11 Jan 2021 11:12:45 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210111111245eusmtrp12c498b057546e611f45115135c0792b0~ZKSF0f-Zo2586425864eusmtrp1V;
-        Mon, 11 Jan 2021 11:12:45 +0000 (GMT)
-X-AuditID: cbfec7f5-c77ff7000000b1b0-df-5ffc32ad5ffd
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id D7.B1.16282.DA23CFF5; Mon, 11
-        Jan 2021 11:12:45 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210111111244eusmtip24ca4472d228d74cbbee662092e0fcaed~ZKSFBM1sj2971429714eusmtip2f;
-        Mon, 11 Jan 2021 11:12:44 +0000 (GMT)
-Subject: Re: [PATCH v1 5/5] driver core: Set fw_devlink=on by default
-To:     Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     kernel-team@android.com, linux-kernel@vger.kernel.org,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Marc Zyngier <maz@kernel.org>,
-        'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <5484316b-0f27-6c36-9259-5c765bb6b96c@samsung.com>
-Date:   Mon, 11 Jan 2021 12:12:44 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.6.0
+        id S1729498AbhAKLN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:13:57 -0500
+Received: from mga06.intel.com ([134.134.136.31]:52483 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727143AbhAKLN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 06:13:56 -0500
+IronPort-SDR: oc8yQTos5UGbXtQRsbLfnmW/D5NMm6buzMPB1Bc1BR8h8nGvKvBknQNcRqoATcrMZ1uQlSNGaD
+ L51U24Os/CNQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9860"; a="239384620"
+X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
+   d="scan'208";a="239384620"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 03:13:10 -0800
+IronPort-SDR: QttBTfr48Xyi6MyBpwAiEQudiv/a2xDxer/36n8OAkM1vYyTsJHuEg2qeUTwTUwYM7wA0B57Dx
+ hWeE/gc4+ypA==
+X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
+   d="scan'208";a="464131003"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 03:13:08 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1kyv9F-00A8Xk-5t; Mon, 11 Jan 2021 13:14:09 +0200
+Date:   Mon, 11 Jan 2021 13:14:09 +0200
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, patches@opensource.cirrus.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Subject: Re: [PATCH v3 1/4] lib: vsprintf: scanf: Negative number must have
+ field width > 1
+Message-ID: <20210111111409.GW4077@smile.fi.intel.com>
+References: <20201217180057.23786-1-rf@opensource.cirrus.com>
+ <X/wnoJLEt0zQskDU@alley>
+ <CAHp75VfeccM8D=DT-j4ApPAbDhDgV_M_FKOyXEMP8YBJZMed=g@mail.gmail.com>
+ <f9aa8622-0c64-072b-dc44-e550460cf57f@opensource.cirrus.com>
+ <395b37b8-d9b2-1825-8e57-9e1b74aa7502@opensource.cirrus.com>
 MIME-Version: 1.0
-In-Reply-To: <20201218031703.3053753-6-saravanak@google.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAKsWRmVeSWpSXmKPExsWy7djP87prjf7EGzTfsLTYOGM9q0Xz4vVs
-        FtNuLmexOPNb12LHdhGLn+1bmCzOn9/AbnF51xw2ixnn9zFZ7JxzktVi26zlbBZzv0xltug6
-        9JfNgddj2+5trB7vb7SyeyzYVOqxaVUnm8eda3vYPPbPXcPu0bdlFaPH5tPVHpOunGP2+LxJ
-        LoArissmJTUnsyy1SN8ugSujqesMY8ENkYpXP3cxNzD+Euhi5OSQEDCRmHz5HSOILSSwglFi
-        7uuILkYuIPsLo8S51+9YIJzPjBKb/yxlgen4/Xc+G0THckaJYzcEIYo+MkqceTeFvYuRg0NY
-        wFXiy3EfkLiIQBujxMN9P8GamQUWMktMuJIFYrMJGEp0ve0CG8QrYCcx/RBILycHi4CqxKLG
-        7WAniQokSRzf180MUSMocXLmE7A5nAI2EssftbFCzJSX2P52DjOELS5x68l8JpDFEgKrOSXu
-        nfvIBHG1i8Tkr9/ZIWxhiVfHt0DZMhKnJ/ewQDQ0A116bi07hNPDKHG5aQYjRJW1xJ1zv9hA
-        XmMW0JRYv0sfIuwosfr1FmaQsIQAn8SNt4IQR/BJTNo2HSrMK9HRJgRRrSYx6/g6uLUHL1xi
-        nsCoNAvJa7OQvDMLyTuzEPYuYGRZxSieWlqcm55abJyXWq5XnJhbXJqXrpecn7uJEZjoTv87
-        /nUH44pXH/UOMTJxMB5ilOBgVhLhXbjrR7wQb0piZVVqUX58UWlOavEhRmkOFiVx3l1b18QL
-        CaQnlqRmp6YWpBbBZJk4OKUamGZJdbFMW2RkzPd5wiedQyusqr9OC5ESiXTaMSuKmU/4afvx
-        cuvd5j/7Z12rd2TwP2Xz3+/S/CuCegpeV5deatI45Xhp7bnNgXcDrho3Hl6V7Jejkh6+8rFB
-        gFlD6BWmS+f2LxKZmd3gqi0mtuDzamf9oPKSy92eS8V0FlumOoS+3H2Hfxbz1M4Nvx4fzNp8
-        5P8tUXfmKOn5/GYC15S/ei9VNomy+JTJd5Hl8hbX8+ZT58/5qnaeK/Rjk73e1bgnQfNyTI7u
-        vHD5v/ad9SYrtFjD82PjTZaq7dva+vPTkfoqIR1e1t5Fkj0WbhJT2OPl2vq1yizWsG3WeCaf
-        bbW/T0Gu/a4E04SLkxj/Wu2vU2Ipzkg01GIuKk4EAFT2VtPjAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMIsWRmVeSWpSXmKPExsVy+t/xe7prjf7EG8x4ImSxccZ6VovmxevZ
-        LKbdXM5icea3rsWO7SIWP9u3MFmcP7+B3eLyrjlsFjPO72Oy2DnnJKvFtlnL2SzmfpnKbNF1
-        6C+bA6/Htt3bWD3e32hl91iwqdRj06pONo871/aweeyfu4bdo2/LKkaPzaerPSZdOcfs8XmT
-        XABXlJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamSvp1NSmpOZllqkb5dgl5G
-        U9cZxoIbIhWvfu5ibmD8JdDFyMkhIWAi8fvvfLYuRi4OIYGljBLXur+xQCRkJE5Oa2CFsIUl
-        /lzrgip6zyixcHsXUBEHh7CAq8SX4z4gcRGBDkaJb1evgxUxCyxlllh46BozSLeQQK7Egp4F
-        7CA2m4ChRNdbkEmcHLwCdhLTD00Bi7MIqEosatzOCDJUVCBJYvFbJ4gSQYmTM5+AHcQpYCOx
-        /FEb2EHMAmYS8zY/ZIaw5SW2v50DZYtL3Hoyn2kCo9AsJO2zkLTMQtIyC0nLAkaWVYwiqaXF
-        uem5xUZ6xYm5xaV56XrJ+bmbGIGxve3Yzy07GFe++qh3iJGJg/EQowQHs5II78JdP+KFeFMS
-        K6tSi/Lji0pzUosPMZoCvTORWUo0OR+YXPJK4g3NDEwNTcwsDUwtzYyVxHlNjqyJFxJITyxJ
-        zU5NLUgtgulj4uCUamDauuiClm5SS8j9iT4Fd/SrN9xod2ctVBG9ahef+uk1qwxHpnDw/wVa
-        pxYuY+7euW7O/EsRCUn3NTij/ablHzimFMC1M/FUblMxS5uMaIG1AN/C1tW7Psxc8Pp3V/4u
-        7wdM7rNdBfg4n/ptmp1kqvV+f41m1dpi0QnF7ZN8LFd9V5wTMkP8kOfvg3te9KQ0JdqdDnrt
-        KOX/LTlTKyDq9N6YzW8cdcRZf36+fPe3Vti0K4f3lKyV8OlRu3xtAoP3hZi+qHNLpzEnNVcx
-        JJyWXbHPUebFCpFd64XjXZaYBnNubfHl3vH44VbeBj6/M9q5QkxbfeZ2Xu3ddnf/pl+rvXdZ
-        uO/8lxuy+uIkmR8ON8OVWIozEg21mIuKEwFnoYWadgMAAA==
-X-CMS-MailID: 20210111111245eucas1p15acde7ecc2ca7f7782beb8ed74c72022
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210111111245eucas1p15acde7ecc2ca7f7782beb8ed74c72022
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210111111245eucas1p15acde7ecc2ca7f7782beb8ed74c72022
-References: <20201218031703.3053753-1-saravanak@google.com>
-        <20201218031703.3053753-6-saravanak@google.com>
-        <CGME20210111111245eucas1p15acde7ecc2ca7f7782beb8ed74c72022@eucas1p1.samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <395b37b8-d9b2-1825-8e57-9e1b74aa7502@opensource.cirrus.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+On Mon, Jan 11, 2021 at 10:43:17AM +0000, Richard Fitzgerald wrote:
+> On 11/01/2021 10:39, Richard Fitzgerald wrote:
+> > On 11/01/2021 10:36, Andy Shevchenko wrote:
+> > > On Mon, Jan 11, 2021 at 12:28 PM Petr Mladek <pmladek@suse.com> wrote:
+> > > > 
+> > > > Sigh, I have just realized that Andy and Rasmus, the other
+> > > > vsprintf maintainers and reviewers, were not in CC.
+> > > > I am sorry for not noticing this earlier.
+> > > > 
+> > > > The patchset is ready for 5.12 from my POV.
+> > > 
+> > > Thanks, Petr!
+> > > 
+> > > I have one question, do we have a test case for that? If not, I prefer
+> > > defer until a test case will be provided.
+> > > 
+> > 
+> > See patch 3, numbers_prefix_overflow()
+> 
+> Sorry, I missed you off the original mailing so you won't have
+> seen the other patches.
+> Patch 3 with the test cases is here:
+> https://lore.kernel.org/lkml/X%2FwnoJLEt0zQskDU@alley/T/#mf2ffba20126e438bea7af171bc78fdbebdb40027
 
-On 18.12.2020 04:17, Saravana Kannan wrote:
-> Cyclic dependencies in some firmware was one of the last remaining
-> reasons fw_devlink=on couldn't be set by default. Now that cyclic
-> dependencies don't block probing, set fw_devlink=on by default.
->
-> Setting fw_devlink=on by default brings a bunch of benefits (currently,
-> only for systems with device tree firmware):
-> * Significantly cuts down deferred probes.
-> * Device probe is effectively attempted in graph order.
-> * Makes it much easier to load drivers as modules without having to
->    worry about functional dependencies between modules (depmod is still
->    needed for symbol dependencies).
->
-> If this patch prevents some devices from probing, it's very likely due
-> to the system having one or more device drivers that "probe"/set up a
-> device (DT node with compatible property) without creating a struct
-> device for it.  If we hit such cases, the device drivers need to be
-> fixed so that they populate struct devices and probe them like normal
-> device drivers so that the driver core is aware of the devices and their
-> status. See [1] for an example of such a case.
->
-> [1] - https://lore.kernel.org/lkml/CAGETcx9PiX==mLxB9PO8Myyk6u2vhPVwTMsA5NkD-ywH5xhusw@mail.gmail.com/
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+Good, you did it!
+Couple of remarks:
+ - free resources in the same function where you allocated them
+ - use post increment where it doesn't matter (like total_test)
 
-This patch landed recently in linux next-20210111 as commit e590474768f1 
-("driver core: Set fw_devlink=on by default"). Sadly it breaks Exynos 
-IOMMU operation, what causes lots of devices being deferred and not 
-probed at all. I've briefly checked and noticed that 
-exynos_sysmmu_probe() is never called after this patch. This is really 
-strange for me, as the SYSMMU controllers on Exynos platform are regular 
-platform devices registered by the OF code. The driver code is here: 
-drivers/iommu/exynos-iommu.c, example dts: 
-arch/arm/boot/dts/exynos3250.dtsi (compatible = "samsung,exynos-sysmmu").
 
-> ---
->   drivers/base/core.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 4cc030361165..803bfa6eb823 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -1457,7 +1457,7 @@ static void device_links_purge(struct device *dev)
->   #define FW_DEVLINK_FLAGS_RPM		(FW_DEVLINK_FLAGS_ON | \
->   					 DL_FLAG_PM_RUNTIME)
->   
-> -static u32 fw_devlink_flags = FW_DEVLINK_FLAGS_PERMISSIVE;
-> +static u32 fw_devlink_flags = FW_DEVLINK_FLAGS_ON;
->   static int __init fw_devlink_setup(char *arg)
->   {
->   	if (!arg)
-
-Best regards
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+With Best Regards,
+Andy Shevchenko
+
 
