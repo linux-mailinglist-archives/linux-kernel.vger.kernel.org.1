@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7632F171A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F542F1711
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:01:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388191AbhAKOBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:01:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52338 "EHLO mail.kernel.org"
+        id S2388332AbhAKOBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:01:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730361AbhAKNFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:05:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B7FE21973;
-        Mon, 11 Jan 2021 13:05:30 +0000 (UTC)
+        id S1730384AbhAKNF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:05:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70C21225AC;
+        Mon, 11 Jan 2021 13:05:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370331;
-        bh=obHfZ6B5I0DLFG4GxUg5kBUuzOrmx5Mj6UZD2celW38=;
+        s=korg; t=1610370342;
+        bh=OXEvQQV1uO87HDnWqyariZYFCgrNqnSZsg59BEcYYpw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XrwbSIXj4M+6G7FwaXJUgajaaLW4HznHuuEQL29HioFd73k0iKIDkMhJfrNq5HTM5
-         VTxIWBXkFiktPOHdPx+zUCnXASazxrJZ1gdhu1c45+ppeiJgHkN8hWLiPfA+eX1/lR
-         dcPQSJo8CMkBqyD41HDIOCiGBXspeW0BvWA5b0mM=
+        b=u+zfQGSYQ/Aj5glMXaysJGisNaXg4s3pvX0MSN9vzbdC/FKWmZfe1yVY8NwMrF49M
+         SMfwtheNsZGTuPg6NjsXz3AcUIZU++vM0qv06q/JdrLBR6P7l2NajIqgyjtebQbGqg
+         BOlfdiOERwu0ikCGrjL92ikP4Df1+Ym5b2X3sy90=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>
-Subject: [PATCH 4.14 33/57] USB: xhci: fix U1/U2 handling for hardware with XHCI_INTEL_HOST quirk set
-Date:   Mon, 11 Jan 2021 14:01:52 +0100
-Message-Id: <20210111130035.325517367@linuxfoundation.org>
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.14 38/57] USB: serial: option: add Quectel EM160R-GL
+Date:   Mon, 11 Jan 2021 14:01:57 +0100
+Message-Id: <20210111130035.564500996@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
 References: <20210111130033.715773309@linuxfoundation.org>
@@ -39,89 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Grzeschik <m.grzeschik@pengutronix.de>
+From: Bjørn Mork <bjorn@mork.no>
 
-commit 5d5323a6f3625f101dbfa94ba3ef7706cce38760 upstream.
+commit d6c1ddd938d84a1adef7e19e8efc10e1b4df5034 upstream.
 
-The commit 0472bf06c6fd ("xhci: Prevent U1/U2 link pm states if exit
-latency is too long") was constraining the xhci code not to allow U1/U2
-sleep states if the latency to wake up from the U-states reached the
-service interval of an periodic endpoint. This fix was not taking into
-account that in case the quirk XHCI_INTEL_HOST is set, the wakeup time
-will be calculated and configured differently.
+New modem using ff/ff/30 for QCDM, ff/00/00 for  AT and NMEA,
+and ff/ff/ff for RMNET/QMI.
 
-It checks for u1_params.mel/u2_params.mel as a limit. But the code could
-decide to write another MEL into the hardware. This leads to broken
-cases where not enough bandwidth is available for other devices:
+T: Bus=02 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 2 Spd=5000 MxCh= 0
+D: Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs= 1
+P: Vendor=2c7c ProdID=0620 Rev= 4.09
+S: Manufacturer=Quectel
+S: Product=EM160R-GL
+S: SerialNumber=e31cedc1
+C:* #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=896mA
+I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=(none)
+E: Ad=81(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E: Ad=01(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+E: Ad=83(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
+E: Ad=82(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E: Ad=02(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+E: Ad=85(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
+E: Ad=84(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E: Ad=03(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+E: Ad=87(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
+E: Ad=86(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E: Ad=04(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+I:* If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
+E: Ad=88(I) Atr=03(Int.) MxPS= 8 Ivl=32ms
+E: Ad=8e(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E: Ad=0f(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
 
-usb 1-2: can't set config #1, error -28
-
-This patch is fixing that case by checking for timeout_ns after the
-wakeup time was calculated depending on the quirks.
-
-Fixes: 0472bf06c6fd ("xhci: Prevent U1/U2 link pm states if exit latency is too long")
-Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201215193147.11738-1-m.grzeschik@pengutronix.de
+Cc: stable@vger.kernel.org
+Signed-off-by: Bjørn Mork <bjorn@mork.no>
+[ johan: add model comment ]
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/host/xhci.c |   24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ drivers/usb/serial/option.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -4390,19 +4390,19 @@ static u16 xhci_calculate_u1_timeout(str
- {
- 	unsigned long long timeout_ns;
- 
-+	if (xhci->quirks & XHCI_INTEL_HOST)
-+		timeout_ns = xhci_calculate_intel_u1_timeout(udev, desc);
-+	else
-+		timeout_ns = udev->u1_params.sel;
-+
- 	/* Prevent U1 if service interval is shorter than U1 exit latency */
- 	if (usb_endpoint_xfer_int(desc) || usb_endpoint_xfer_isoc(desc)) {
--		if (xhci_service_interval_to_ns(desc) <= udev->u1_params.mel) {
-+		if (xhci_service_interval_to_ns(desc) <= timeout_ns) {
- 			dev_dbg(&udev->dev, "Disable U1, ESIT shorter than exit latency\n");
- 			return USB3_LPM_DISABLED;
- 		}
- 	}
- 
--	if (xhci->quirks & XHCI_INTEL_HOST)
--		timeout_ns = xhci_calculate_intel_u1_timeout(udev, desc);
--	else
--		timeout_ns = udev->u1_params.sel;
--
- 	/* The U1 timeout is encoded in 1us intervals.
- 	 * Don't return a timeout of zero, because that's USB3_LPM_DISABLED.
- 	 */
-@@ -4454,19 +4454,19 @@ static u16 xhci_calculate_u2_timeout(str
- {
- 	unsigned long long timeout_ns;
- 
-+	if (xhci->quirks & XHCI_INTEL_HOST)
-+		timeout_ns = xhci_calculate_intel_u2_timeout(udev, desc);
-+	else
-+		timeout_ns = udev->u2_params.sel;
-+
- 	/* Prevent U2 if service interval is shorter than U2 exit latency */
- 	if (usb_endpoint_xfer_int(desc) || usb_endpoint_xfer_isoc(desc)) {
--		if (xhci_service_interval_to_ns(desc) <= udev->u2_params.mel) {
-+		if (xhci_service_interval_to_ns(desc) <= timeout_ns) {
- 			dev_dbg(&udev->dev, "Disable U2, ESIT shorter than exit latency\n");
- 			return USB3_LPM_DISABLED;
- 		}
- 	}
- 
--	if (xhci->quirks & XHCI_INTEL_HOST)
--		timeout_ns = xhci_calculate_intel_u2_timeout(udev, desc);
--	else
--		timeout_ns = udev->u2_params.sel;
--
- 	/* The U2 timeout is encoded in 256us intervals */
- 	timeout_ns = DIV_ROUND_UP_ULL(timeout_ns, 256 * 1000);
- 	/* If the necessary timeout value is bigger than what we can set in the
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -1120,6 +1120,8 @@ static const struct usb_device_id option
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EM12, 0xff, 0xff, 0xff),
+ 	  .driver_info = RSVD(1) | RSVD(2) | RSVD(3) | RSVD(4) | NUMEP2 },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EM12, 0xff, 0, 0) },
++	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, 0x0620, 0xff, 0xff, 0x30) },	/* EM160R-GL */
++	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, 0x0620, 0xff, 0, 0) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0xff, 0x30) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0, 0) },
+ 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0xff, 0x10),
 
 
