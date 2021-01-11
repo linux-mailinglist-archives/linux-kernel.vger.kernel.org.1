@@ -2,186 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7930F2F1F8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:34:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 518A42F1F93
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391219AbhAKTeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:34:01 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5775 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387466AbhAKTeB (ORCPT
+        id S2403949AbhAKTep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:34:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390813AbhAKTeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:34:01 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ffca8000002>; Mon, 11 Jan 2021 11:33:20 -0800
-Received: from [10.2.51.38] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 11 Jan
- 2021 19:33:19 +0000
-Subject: Re: [PATCH v1] i2c: tegra: Fix i2c_writesl() to use writel() instead
- of writesl()
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     <jonathanh@nvidia.com>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>
-References: <1603166634-13639-1-git-send-email-skomatineni@nvidia.com>
- <20201020074846.GA1877013@ulmo>
- <538d8436-260d-40a8-b0a3-a822a0f9c909@nvidia.com>
- <c37f8618-5100-4087-3bc3-fe421d40f3b8@gmail.com>
- <2212a21b-7dff-4ba0-a193-badd5a1770c8@gmail.com>
- <6373bc13-a53d-2bb2-98f5-f6f01b0b8b69@nvidia.com>
- <c961f8a4-17dd-f90a-53f5-e33196627fb3@gmail.com>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <adc54bc1-f124-94ec-f509-92208beacdfb@nvidia.com>
-Date:   Mon, 11 Jan 2021 11:33:23 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 11 Jan 2021 14:34:44 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4FAC061794;
+        Mon, 11 Jan 2021 11:34:04 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id x15so341238ilq.1;
+        Mon, 11 Jan 2021 11:34:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5n87tlf//wbzIK0eFiapoMfQ9AN1g8d2FAoAK9a2vxY=;
+        b=Rq4NY83BuV9gdq7ymDniXgE3trbn7AuWPX5XYRuawZOf3jkN7iziyclvuU/QMCUHPU
+         rmMU25jDfrKvPW4ayQTUxpimEJ9WzdPmc245vbt2wq69TSazRKSNXyLQqNADZOWd3xX/
+         +9IKJ92XGDBm8QOYOb84gmTJh5ufYhJHY+PNmZMmdZi4u+4naJWNhVj8pQoB2k+aDf3s
+         wpiwxCk5b5dn7Mij0UywlCyVmBt/t71Dg90yxMnh32+PaYrcklD79sFo7axxUwaG08l/
+         w3X57MW4x9e5qBqVCgzbziPqgge1KEYgiMnnuYUzAlNeN/+/DyCVPfMH8pd/MYgouQja
+         4XYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5n87tlf//wbzIK0eFiapoMfQ9AN1g8d2FAoAK9a2vxY=;
+        b=SZRKpB4Ji+xtK5M3qTyanfb8moB3Z2HmD4gHaHw3Stf1lgn10htTJ94l35hSoBhrlI
+         N/q9Usv1NA0g0nIjxWHMmU0LqlnXmMQPYDzNOWnrNMHmEcvhvKvvVUYUDefBnayIdPHe
+         PssmUwOuEOzmv0c5NKydSRQviWEcdRBkC9OOLSABuKOMksmtvB4mRKahvg0MduJa6Eec
+         03kjC0OoKzHhLNDfnmxGsXMFYu8RZLd+/2iym5phXNPhCb8QFJ8uwkqtSnQsoqZsbUAD
+         2FtoRlsCIqWH1afSsSL9M4fmhts5X93IfljJX8eS3EUHJlu63VAwt+sFEGoBbOEW4E6B
+         q7OQ==
+X-Gm-Message-State: AOAM532wQTwuF9cmXotDlXxsnVR9tj06n7XDeHK9yh+4D+exzqGeY6dz
+        669rQz/wc42Tsng8bgE11+M=
+X-Google-Smtp-Source: ABdhPJxT+GymjMQRiWHQH2hZ/KGPHBJNpw1mPTlAxAfe8CDKz5S50mJKepd4An2jXnXrmp51GhmhlQ==
+X-Received: by 2002:a92:418d:: with SMTP id o135mr649615ila.213.1610393643713;
+        Mon, 11 Jan 2021 11:34:03 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id 17sm360669ilt.15.2021.01.11.11.34.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 11:34:02 -0800 (PST)
+Date:   Mon, 11 Jan 2021 12:34:00 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: Re: [PATCH] bpf: Hoise pahole version checks into Kconfig
+Message-ID: <20210111193400.GA1343746@ubuntu-m3-large-x86>
+References: <20210111180609.713998-1-natechancellor@gmail.com>
+ <CAK7LNAQ=38BUi-EG5v2UiuAF-BOsVe5BTd-=jVYHHHPD7ikS5A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <c961f8a4-17dd-f90a-53f5-e33196627fb3@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610393600; bh=kmV152yoB/XFGT7dFyaHgChbvfgY9wLwSMIDi83Ucoc=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=gsgti1GCGsGAzBeQFe/YmGS7+8KkrR0OoaRjHXvKaNczuYQMDOMltL9h8eoAXityV
-         /O0m8ArI7WhwyE7nTuKpvHg0S7Df2mSUUx/FBEY4hyPXSIjfsf5HmcP+BdTa/IWQN/
-         8wwbRiUpY89fY4LfW3P3f3qaQGH/ND4hUxJjjKCNZyD3k0nFloLBj//0qhSobzpKqD
-         PRndDhqgg1b851CD4C2V/j0togKGdiPyJK2thbld2Z86ZOaZ/AKi/SoXtJCgyiYyGA
-         +lFb/576PUWYJVAuSib6UXYQVqcqi36E8nkWbomcm7UARAjQ7w6N2cu9OP0Zj/Bib0
-         WVT8PMeiY/54g==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAQ=38BUi-EG5v2UiuAF-BOsVe5BTd-=jVYHHHPD7ikS5A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 12, 2021 at 04:19:01AM +0900, Masahiro Yamada wrote:
+> On Tue, Jan 12, 2021 at 3:06 AM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
+> >
+> > After commit da5fb18225b4 ("bpf: Support pre-2.25-binutils objcopy for
+> > vmlinux BTF"), having CONFIG_DEBUG_INFO_BTF enabled but lacking a valid
+> > copy of pahole results in a kernel that will fully compile but fail to
+> > link. The user then has to either install pahole or disable
+> > CONFIG_DEBUG_INFO_BTF and rebuild the kernel but only after their build
+> > has failed, which could have been a significant amount of time depending
+> > on the hardware.
+> >
+> > Avoid a poor user experience and require pahole to be installed with an
+> > appropriate version to select and use CONFIG_DEBUG_INFO_BTF, which is
+> > standard for options that require a specific tools version.
+> >
+> > Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
+> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> 
+> 
+> 
+> I am not sure if this is the right direction.
+> 
+> 
+> I used to believe moving any tool test to the Kconfig
+> was the right thing to do.
+> 
+> For example, I tried to move the libelf test to Kconfig,
+> and make STACK_VALIDATION depend on it.
+> 
+> https://patchwork.kernel.org/project/linux-kbuild/patch/1531186516-15764-1-git-send-email-yamada.masahiro@socionext.com/
+> 
+> It was rejected.
+> 
+> 
+> In my understanding, it is good to test target toolchains
+> in Kconfig (e.g. cc-option, ld-option, etc).
+> 
+> As for host tools, in contrast, it is better to _intentionally_
+> break the build in order to let users know that something needed is missing.
+> Then, they will install necessary tools or libraries.
+> It is just a one-time setup, in most cases,
+> just running 'apt install' or 'dnf install'.
+> 
+> 
+> 
+> Recently, a similar thing happened to GCC_PLUGINS
+> https://patchwork.kernel.org/project/linux-kbuild/patch/20201203125700.161354-1-masahiroy@kernel.org/#23855673
+> 
+> 
+> 
+> 
+> Following this pattern, if a new pahole is not installed,
+> it might be better to break the build instead of hiding
+> the CONFIG option.
+> 
+> In my case, it is just a matter of 'apt install pahole'.
+> On some distributions, the bundled pahole is not new enough,
+> and people may end up with building pahole from the source code.
 
-On 1/11/21 11:29 AM, Dmitry Osipenko wrote:
-> 11.01.2021 20:38, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->> On 1/11/21 4:09 AM, Dmitry Osipenko wrote:
->>> 11.01.2021 14:50, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>>> 20.10.2020 19:37, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>>>> On 10/20/20 12:48 AM, Thierry Reding wrote:
->>>>>> On Mon, Oct 19, 2020 at 09:03:54PM -0700, Sowjanya Komatineni wrote:
->>>>>>> VI I2C don't have DMA support and uses PIO mode all the time.
->>>>>>>
->>>>>>> Current driver uses writesl() to fill TX FIFO based on available
->>>>>>> empty slots and with this seeing strange silent hang during any I2C
->>>>>>> register access after filling TX FIFO with 8 words.
->>>>>>>
->>>>>>> Using writel() followed by i2c_readl() in a loop to write all words
->>>>>>> to TX FIFO instead of using writesl() helps for large transfers in
->>>>>>> PIO mode.
->>>>>>>
->>>>>>> So, this patch updates i2c_writesl() API to use writel() in a loop
->>>>>>> instead of writesl().
->>>>>>>
->>>>>>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
->>>>>>> ---
->>>>>>>  =C2=A0=C2=A0 drivers/i2c/busses/i2c-tegra.c | 9 ++++++---
->>>>>>>  =C2=A0=C2=A0 1 file changed, 6 insertions(+), 3 deletions(-)
->>>>>>>
->>>>>>> diff --git a/drivers/i2c/busses/i2c-tegra.c
->>>>>>> b/drivers/i2c/busses/i2c-tegra.c
->>>>>>> index 6f08c0c..274bf3a 100644
->>>>>>> --- a/drivers/i2c/busses/i2c-tegra.c
->>>>>>> +++ b/drivers/i2c/busses/i2c-tegra.c
->>>>>>> @@ -333,10 +333,13 @@ static u32 i2c_readl(struct tegra_i2c_dev
->>>>>>> *i2c_dev, unsigned int reg)
->>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return readl_relaxed(i2c_dev-=
->base +
->>>>>>> tegra_i2c_reg_addr(i2c_dev, reg));
->>>>>>>  =C2=A0=C2=A0 }
->>>>>>>  =C2=A0=C2=A0 -static void i2c_writesl(struct tegra_i2c_dev *i2c_de=
-v, void
->>>>>>> *data,
->>>>>>> +static void i2c_writesl(struct tegra_i2c_dev *i2c_dev, u32 *data,
->>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 unsigned int reg, unsigned int len)
->>>>>>>  =C2=A0=C2=A0 {
->>>>>>> -=C2=A0=C2=A0=C2=A0 writesl(i2c_dev->base + tegra_i2c_reg_addr(i2c_=
-dev, reg), data,
->>>>>>> len);
->>>>>>> +=C2=A0=C2=A0=C2=A0 while (len--) {
->>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 writel(*data++, i2c_dev=
-->base + tegra_i2c_reg_addr(i2c_dev,
->>>>>>> reg));
->>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i2c_readl(i2c_dev, I2C_=
-INT_STATUS);
->>>>>>> +=C2=A0=C2=A0=C2=A0 }
->>>>>>>  =C2=A0=C2=A0 }
->>>>>>>  =C2=A0=C2=A0 =C2=A0 static void i2c_readsl(struct tegra_i2c_dev *i=
-2c_dev, void
->>>>>>> *data,
->>>>>>> @@ -811,7 +814,7 @@ static int tegra_i2c_fill_tx_fifo(struct
->>>>>>> tegra_i2c_dev *i2c_dev)
->>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i2c_d=
-ev->msg_buf_remaining =3D buf_remaining;
->>>>>>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i2c_d=
-ev->msg_buf =3D buf + words_to_transfer *
->>>>>>> BYTES_PER_FIFO_WORD;
->>>>>>>  =C2=A0=C2=A0 -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i2c_write=
-sl(i2c_dev, buf, I2C_TX_FIFO,
->>>>>>> words_to_transfer);
->>>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 i2c_writesl(i2c_dev, (u=
-32 *)buf, I2C_TX_FIFO,
->>>>>>> words_to_transfer);
->>>>>> I've thought a bit more about this and I wonder if we're simply
->>>>>> reading
->>>>>> out the wrong value for tx_fifo_avail and therefore end up overflowi=
-ng
->>>>>> the TX FIFO. Have you checked what the value is for tx_fifo_avail wh=
-en
->>>>>> this silent hang occurs? Given that this is specific to the VI I2C I=
-'m
->>>>>> wondering if this is perhaps a hardware bug where we read the wrong =
-TX
->>>>>> FIFO available count.
->>>>>>
->>>>>> Thierry
->>>>> Yes FIFO status shows all 8 slots available.
->>>> Please explain how you checked that 8 slots are available, provide
->>>> example code.
->>>>
->>> Have you checked the FIFO overflow interrupt?
->> This is seen with VI I2C (which is under host1x) as we use PIO mode
->> always even for large transfers.
->> HW wise VI I2C is similar to other I2C and FIFO depth is also 8 words.
->>
->> tegra_i2c_fill_tx_fifo() reads I2C_FIFO_STATUS register field
->> TX_FIFO_EMPTY_CNT which tells empty slots available in TX_FIFO that can
->> be filled.
->> Added debug message to print empty count and, during beginning of
->> transfer when it executes tegra_i2c_fill_tx_fifo(), empty slots are 8
->>
->>
->> Using writesl() for filling TX_FIFO causing silent hang immediate on any
->> i2c register access after filling FIFO with 8 words and some times with
->> 6 words as well.
->>
->> So couldn't INTERRUPT_STATUS registers to check for TX FIFO Overflows
->> when this silent hang happens.
->>
->> Tried to read thru back-door (JTAG path) but could not connect to JTAG
->> either. Looks like Tegra chip is in some weird state.
->>
->> But using writel() followed by i2c_readl helps. Not sure if any thing
->> related to register access delay or some other issue.
->>
->>
-> Does downstream kernel have this problem?
->
-> If there is really no good alternative right now, then perhaps should be
-> a bit cleaner to add i2c_writesl_vi(), which should contain explanatory
-> comment telling why it's needed and then it should be used only for the
-> VI I2C controller.
+This is fair enough. However, I think that parts of this patch could
+still be salvaged into something that fits this by making it so that if
+pahole is not installed (CONFIG_PAHOLE_VERSION=0) or too old, the build
+errors at the beginning, rather at the end. I am not sure where the best
+place to put that check would be though.
 
-Yes downstream also has same issue when using writesl() and downstream=20
-vi i2c driver uses writel() followed by i2c_readl()
-
-OK. Will create separate i2c_writesl_vi() to use with vi i2c and will=20
-add comment in the code.
-
+Cheers,
+Nathan
