@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FEB2F13A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:13:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 304EE2F13AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730961AbhAKNMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:12:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58500 "EHLO mail.kernel.org"
+        id S1731530AbhAKNMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:12:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731422AbhAKNLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:11:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9C4822BE9;
-        Mon, 11 Jan 2021 13:11:20 +0000 (UTC)
+        id S1730855AbhAKNME (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:12:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 196F92225E;
+        Mon, 11 Jan 2021 13:11:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370681;
-        bh=hXGonQ0Il0FvCFkAfgbzTwdEh4Q1yVy1OFZ7lCrPz9I=;
+        s=korg; t=1610370683;
+        bh=G0noWMFnPx4Xa1LAOaU73xoY/TmIC6lqcfmQq+kqoDg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rNc+y9jX/fHwjfkRYxG//I/QMyW20FtK1jwYkV1E9AeYSvknQKyomsfC+SpR0tBTF
-         zseCZ0I21hozSF9lpI2leCDZhDg45A8Y3x9+cqmHll8D/tQG8eBzUomVqjSp+vOpXE
-         1EiRQphBH9qvrQQxOW97zQRp8dSlkUs1s44aVLIg=
+        b=E4fglSwLjmVeWv1JRBbdlzJTy5D/CZyxsCqTsH5e9p3ccddO8w7ZUNYhFqUD8u3qC
+         4YnkgOjxeS+8I9HAg+0tVB/hNMR6Z4XyO/omkvwgdQi+tP9fQBYJufR0JtADv/p2So
+         cuKc3/dX5IrDK0OSL6ruZhqjeNZdpwfZsfAnbLLE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 51/92] powerpc: Handle .text.{hot,unlikely}.* in linker script
-Date:   Mon, 11 Jan 2021 14:01:55 +0100
-Message-Id: <20210111130041.599697102@linuxfoundation.org>
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 5.4 52/92] staging: mt7621-dma: Fix a resource leak in an error handling path
+Date:   Mon, 11 Jan 2021 14:01:56 +0100
+Message-Id: <20210111130041.647963147@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
 References: <20210111130039.165470698@linuxfoundation.org>
@@ -40,57 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit 3ce47d95b7346dcafd9bed3556a8d072cb2b8571 upstream.
+commit d887d6104adeb94d1b926936ea21f07367f0ff9f upstream.
 
-Commit eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO input
-sections") added ".text.unlikely.*" and ".text.hot.*" due to an LLVM
-change [1].
+If an error occurs after calling 'mtk_hsdma_init()', it must be undone by
+a corresponding call to 'mtk_hsdma_uninit()' as already done in the
+remove function.
 
-After another LLVM change [2], these sections are seen in some PowerPC
-builds, where there is a orphan section warning then build failure:
-
-$ make -skj"$(nproc)" \
-       ARCH=powerpc CROSS_COMPILE=powerpc64le-linux-gnu- LLVM=1 O=out \
-       distclean powernv_defconfig zImage.epapr
-ld.lld: warning: kernel/built-in.a(panic.o):(.text.unlikely.) is being placed in '.text.unlikely.'
-...
-ld.lld: warning: address (0xc000000000009314) of section .text is not a multiple of alignment (256)
-...
-ERROR: start_text address is c000000000009400, should be c000000000008000
-ERROR: try to enable LD_HEAD_STUB_CATCH config option
-ERROR: see comments in arch/powerpc/tools/head_check.sh
-...
-
-Explicitly handle these sections like in the main linker script so
-there is no more build failure.
-
-[1]: https://reviews.llvm.org/D79600
-[2]: https://reviews.llvm.org/D92493
-
-Fixes: 83a092cf95f2 ("powerpc: Link warning for orphan sections")
-Cc: stable@vger.kernel.org
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1218
-Link: https://lore.kernel.org/r/20210104205952.1399409-1-natechancellor@gmail.com
+Fixes: 0853c7a53eb3 ("staging: mt7621-dma: ralink: add rt2880 dma engine")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201213153513.138723-1-christophe.jaillet@wanadoo.fr
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/kernel/vmlinux.lds.S |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/mt7621-dma/mtk-hsdma.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/powerpc/kernel/vmlinux.lds.S
-+++ b/arch/powerpc/kernel/vmlinux.lds.S
-@@ -98,7 +98,7 @@ SECTIONS
- 		ALIGN_FUNCTION();
- #endif
- 		/* careful! __ftr_alt_* sections need to be close to .text */
--		*(.text.hot TEXT_MAIN .text.fixup .text.unlikely .fixup __ftr_alt_* .ref.text);
-+		*(.text.hot .text.hot.* TEXT_MAIN .text.fixup .text.unlikely .text.unlikely.* .fixup __ftr_alt_* .ref.text);
- #ifdef CONFIG_PPC64
- 		*(.tramp.ftrace.text);
- #endif
+--- a/drivers/staging/mt7621-dma/mtk-hsdma.c
++++ b/drivers/staging/mt7621-dma/mtk-hsdma.c
+@@ -714,7 +714,7 @@ static int mtk_hsdma_probe(struct platfo
+ 	ret = dma_async_device_register(dd);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to register dma device\n");
+-		return ret;
++		goto err_uninit_hsdma;
+ 	}
+ 
+ 	ret = of_dma_controller_register(pdev->dev.of_node,
+@@ -730,6 +730,8 @@ static int mtk_hsdma_probe(struct platfo
+ 
+ err_unregister:
+ 	dma_async_device_unregister(dd);
++err_uninit_hsdma:
++	mtk_hsdma_uninit(hsdma);
+ 	return ret;
+ }
+ 
 
 
