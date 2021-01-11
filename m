@@ -2,88 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D772F0F99
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3482F0F9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728834AbhAKKAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:00:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728748AbhAKKAN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728846AbhAKKAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:00:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42154 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728773AbhAKKAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 11 Jan 2021 05:00:13 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 390F5C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 01:59:33 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id u19so18172348edx.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 01:59:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7r6VuPBKQigjoyxyE9moxapiWhf8PXnfSot3BszutPM=;
-        b=CkDTMfWTDfFLgj8ve+EItETtX2GIofV8zoXCWnLGUux+rvizG3TdJIWF/R457wvOsm
-         UuDd2fwPodyn5rBN/3nPGXFUKtESz6RxRJl733ZzKkAxbdBbYXI+lnZUr59h4dVD4KpH
-         6nXDaUMqyAcyxQ0D2vkng0idT8eYgdFD5GYb2Igky2rqtpkXEnvS10bdBL51oApYIEQj
-         J2JAd73gJg4BNhGbW7j6jp1gXqijd0IysniL3o0K9oMPOX5eUVfct/trn/yawJyGDbCT
-         gjsN2itW0LOYXNys9x0Ghhasr/kv5GW0bLDSthhaioKoKd/2K/EQPK+hvjFOo4agkxFm
-         yQYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7r6VuPBKQigjoyxyE9moxapiWhf8PXnfSot3BszutPM=;
-        b=pLYnEpxpbh0Zj5cv1Y4fYaTmmPXKps7xXI+EPI8xoqo94hJt+n+vDu7PnGsKIM9g3m
-         ipTmfRvTUxMSbUOPix4dIc4iOG2bX0qscbyHvvBrvkIeexE77EvoE5ePjbTkRpke/Qcr
-         07grQIm19y5ZJCQDDMoGVAJo5+fU6cu5/o69BPIg/wnH8rVZmajcGYTV2QIMVEBl73lc
-         GloVlEWbXrdqXFbtGnkjYa9E8cpTBpmtoPKbIustGIvtL785V5KlvBlz8crGPr0k9Ls/
-         7K2dgMGyV0EMsadx8snbr1CIwA2ZolPaKLbatQ+JacqTkj4nmJS32bh5ysCjgm0Z4lG0
-         0S3Q==
-X-Gm-Message-State: AOAM531Ye9WtfHYCvmEKuMwUdyiwsa81V6F2LdtnPnKvYyWmhh8iSGz0
-        5eQOY5pk6RScAdg7nf+JYdKcH5jOU0evg4qG6BgfVA==
-X-Google-Smtp-Source: ABdhPJzX1NZOrDEKGrHw76vQzEuSktC8dH+VSQnOTGEU4cpxzLrdVZMlkuwjAjc/V1Q6p9v7ChK3XsSC4EIJmFV7f3Q=
-X-Received: by 2002:a50:b742:: with SMTP id g60mr13230007ede.113.1610359171797;
- Mon, 11 Jan 2021 01:59:31 -0800 (PST)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 314E522288;
+        Mon, 11 Jan 2021 09:59:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610359173;
+        bh=m+Ij2dBktkSThrVZO1cu0ZmecjHv4ArG21/Sjc4ELbE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Sumn3fI6nwDJfqbK511YBu2eJjBViZRlp2x2+Br8BXA8vvEPtthXbTMKZTgQQlpbW
+         QNbRczwfo8k1oLrSoQd1gcY0nnwhglZLUamIOlEGItf0xhV5sBlYRHXNTG8EN2w+SZ
+         5tpiNVfLVODYF38SEKpNZCJJrNpWtvxwG25eBPYRSCOLpg+y5Y88aiviU+6z5bsAOs
+         cjfjUsfD6RzcKhDUAoXoi5crKKssDFWYbqWSUWZzNgeraAr9f85/6+C87H2HcLna1s
+         JgHKdOrVK0vF+rRyxM5z2mPsjsaG19cKWTQwydD5ZZvf8XHLSv3jE07FF3LbuDnVMi
+         rroztWqR3y9YA==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     cang@codeaurora.org, alim.akhtar@samsung.com, avri.altman@wdc.com,
+        bvanassche@acm.org, martin.petersen@oracle.com,
+        stanley.chu@mediatek.com, Jaegeuk Kim <jaegeuk@google.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH v3] scsi: ufs: WB is only available on LUN #0 to #7
+Date:   Mon, 11 Jan 2021 01:59:27 -0800
+Message-Id: <20210111095927.1830311-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 MIME-Version: 1.0
-References: <20210107040020.257671-1-warthog618@gmail.com>
-In-Reply-To: <20210107040020.257671-1-warthog618@gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 11 Jan 2021 10:59:21 +0100
-Message-ID: <CAMpxmJV4SnGnL1Z04q3dHs5S5qZjXBMk-8=piPm2yOVbHb7y7Q@mail.gmail.com>
-Subject: Re: [PATCH 0/2] tools: gpio: fix %llu warnings
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 5:00 AM Kent Gibson <warthog618@gmail.com> wrote:
->
-> Fix a couple of warnings that I ran across while testing selftest changes.
->
-> Sorry about the repetition in the checkin comments, but as the problem was
-> introduced to the two files separately it seemed more appropriate than
-> tying their history together.
->
-> Cheers,
-> Kent.
->
-> Kent Gibson (2):
->   tools: gpio: fix %llu warning in gpio-event-mon.c
->   tools: gpio: fix %llu warning in gpio-watch.c
->
->  tools/gpio/gpio-event-mon.c | 4 ++--
->  tools/gpio/gpio-watch.c     | 5 +++--
->  2 files changed, 5 insertions(+), 4 deletions(-)
->
-> --
-> 2.30.0
->
+From: Jaegeuk Kim <jaegeuk@google.com>
 
-Applied both patches for fixes.
+Kernel stack violation when getting unit_descriptor/wb_buf_alloc_units from
+rpmb lun. The reason is the unit descriptor length is different per LU.
 
-Thanks!
-Bartosz
+The lengh of Normal LU is 45, while the one of rpmb LU is 35.
+
+int ufshcd_read_desc_param(struct ufs_hba *hba, ...)
+{
+	param_offset=41;
+	param_size=4;
+	buff_len=45;
+	...
+	buff_len=35 by rpmb LU;
+
+	if (is_kmalloc) {
+		/* Make sure we don't copy more data than available */
+		if (param_offset + param_size > buff_len)
+			param_size = buff_len - param_offset;
+			--> param_size = 250;
+		memcpy(param_read_buf, &desc_buf[param_offset], param_size);
+		--> memcpy(param_read_buf, desc_buf+41, 250);
+
+[  141.868974][ T9174] Kernel panic - not syncing: stack-protector: Kernel stack is corrupted in: wb_buf_alloc_units_show+0x11c/0x11c
+	}
+}
+
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+ drivers/scsi/ufs/ufs-sysfs.c | 3 ++-
+ drivers/scsi/ufs/ufs.h       | 6 ++++--
+ drivers/scsi/ufs/ufshcd.c    | 2 +-
+ 3 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
+index 08e72b7eef6a..50e90416262b 100644
+--- a/drivers/scsi/ufs/ufs-sysfs.c
++++ b/drivers/scsi/ufs/ufs-sysfs.c
+@@ -792,7 +792,8 @@ static ssize_t _pname##_show(struct device *dev,			\
+ 	struct scsi_device *sdev = to_scsi_device(dev);			\
+ 	struct ufs_hba *hba = shost_priv(sdev->host);			\
+ 	u8 lun = ufshcd_scsi_to_upiu_lun(sdev->lun);			\
+-	if (!ufs_is_valid_unit_desc_lun(&hba->dev_info, lun))		\
++	if (!ufs_is_valid_unit_desc_lun(&hba->dev_info, lun,		\
++				_duname##_DESC_PARAM##_puname))		\
+ 		return -EINVAL;						\
+ 	return ufs_sysfs_read_desc_param(hba, QUERY_DESC_IDN_##_duname,	\
+ 		lun, _duname##_DESC_PARAM##_puname, buf, _size);	\
+diff --git a/drivers/scsi/ufs/ufs.h b/drivers/scsi/ufs/ufs.h
+index 14dfda735adf..580aa56965d0 100644
+--- a/drivers/scsi/ufs/ufs.h
++++ b/drivers/scsi/ufs/ufs.h
+@@ -552,13 +552,15 @@ struct ufs_dev_info {
+  * @return: true if the lun has a matching unit descriptor, false otherwise
+  */
+ static inline bool ufs_is_valid_unit_desc_lun(struct ufs_dev_info *dev_info,
+-		u8 lun)
++		u8 lun, u8 param_offset)
+ {
+ 	if (!dev_info || !dev_info->max_lu_supported) {
+ 		pr_err("Max General LU supported by UFS isn't initialized\n");
+ 		return false;
+ 	}
+-
++	/* WB is available only for the logical unit from 0 to 7 */
++	if (param_offset == UNIT_DESC_PARAM_WB_BUF_ALLOC_UNITS)
++		return lun < UFS_UPIU_MAX_WB_LUN_ID;
+ 	return lun == UFS_UPIU_RPMB_WLUN || (lun < dev_info->max_lu_supported);
+ }
+ 
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 2a715f13fe1d..48cbd4f294dd 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -3425,7 +3425,7 @@ static inline int ufshcd_read_unit_desc_param(struct ufs_hba *hba,
+ 	 * Unit descriptors are only available for general purpose LUs (LUN id
+ 	 * from 0 to 7) and RPMB Well known LU.
+ 	 */
+-	if (!ufs_is_valid_unit_desc_lun(&hba->dev_info, lun))
++	if (!ufs_is_valid_unit_desc_lun(&hba->dev_info, lun, param_offset))
+ 		return -EOPNOTSUPP;
+ 
+ 	return ufshcd_read_desc_param(hba, QUERY_DESC_IDN_UNIT, lun,
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
+
