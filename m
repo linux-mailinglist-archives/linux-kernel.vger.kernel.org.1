@@ -2,173 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF6C2F21A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:19:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 253422F21AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730167AbhAKVSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 16:18:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41194 "EHLO
+        id S1728829AbhAKVUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 16:20:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727150AbhAKVSp (ORCPT
+        with ESMTP id S1727484AbhAKVUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 16:18:45 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD5F3C061795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:18:04 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id w1so493242pjc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:18:04 -0800 (PST)
+        Mon, 11 Jan 2021 16:20:36 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BDEC061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:19:56 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id lj6so312093pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 13:19:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=0qOSbOIoHdN2DZPTqNutcK6F4X/pENnDZjQfdlW5H0c=;
-        b=j2/sB7/RU5nL76Pa1L1dp1gCmPW9RtgnhlOkU9CiPL/vgEu0AzN3MnegQM25nqbFZO
-         GdzCzXY3KfqY40y9YoRy4JUZ/j60yRTN/7zwg7Uo3PdHlEJS7blWtkjbjnUjohiO+2i5
-         HxQ6qaRIV8v12rY/kSwUVK9q2Vd9+FdUTrxewc2nzJ0P1GV2EVo+ansDYxAFpMBtk14/
-         NwBf5ewSGbABgg5tXfSizs6Hsx00LlHf8+58gz3epX9LGeFudhkSvXxU59RoDpeIowwK
-         uKu61pD7h2broKNQKMpLvxQqdRr4+avLzxtK4epTmhvB//XOnXGXuNuwFI8WOewkw7hy
-         OLRA==
+        bh=n97oZNXIEipHpRZCUvWuyIU1bjCU11iLeg9wFjnwI/U=;
+        b=bdIIFp6LYe4j4mymR82w+8TxiLK9PqLThqlRxlGzzrFLYp+xZ4Rsq4BCBASlq6x7uo
+         DdDLlWaRnx88/UwnnQ7HyEatlfF0+jnhCppOyhhrZkrI+y0WThEE8B31v5+K9Dgt0vXv
+         /tbTGdl3xVFN8RnbwknuMxY7IQC3f36ca9zifnBaOk08EVrajWHkUSs9oorOGNLGGnzZ
+         gB0iW+CpWkRWSI6L8P//tbk6N0KUomGy5hpr2PucqutFAX0I7VTHmcronVbvmyaFjJbn
+         QkebwHEoAYdpJP9De1OV859mAPwnvCbZ9NJRjtpTtYvWYq1Fs/k1yrctbVnI9VFSpcEr
+         K/Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=0qOSbOIoHdN2DZPTqNutcK6F4X/pENnDZjQfdlW5H0c=;
-        b=GP0SybdcN4cmUG9scnmWc0z3VaraYGe433AJLK3EPxx9Ckto7iJxOGV2HTeVrvrDWw
-         dLw2N+vAGpJPpqbzBcff5713wOPsu2gHaJaBxlQ2OGeIIQYknPmxy1hyPoRu9d5+M+yz
-         Mw6TR8lEaqZGi+4AsUTZEWLKGiLOHl8Jp8J94316DFYZymQXV5JjqfDPw5QpYzJu9TK7
-         gvtYiHUpfcDMHLsdarKwjXh5RexPvl0KjSa8dhvTsSJWSSGHpxp+1iIcC6/29YSkROle
-         YQuuc4Myma34AKCsKxd319rRLhMWX3nwypNi6iJdb1b0ZWdYZ+fOdDh/Vqn2MOerqKzA
-         4yIw==
-X-Gm-Message-State: AOAM530S4OOazLWHERtFhmFxNHgwZ8u6SLViTwzmSmQv8d5TdtV2Vij7
-        hO/5vrxHqdudXSixFSdtt/YHezqRvChIZainoiB/6g==
-X-Google-Smtp-Source: ABdhPJyYZpgnU/gvEartMbBN+7Sn5P8XKvPTxtPvXdocg5hO3oXk45vtvgeULsI39ZYVL2M1L1TiMCvHdHZ/Z9j7/pg=
-X-Received: by 2002:a17:90a:cb0b:: with SMTP id z11mr786374pjt.101.1610399884135;
- Mon, 11 Jan 2021 13:18:04 -0800 (PST)
+        bh=n97oZNXIEipHpRZCUvWuyIU1bjCU11iLeg9wFjnwI/U=;
+        b=StFFVNuvKYIba270GwkPQ6LcAmyly/udnj86Fl54g2cVAma7a22XSJXjnq8aUetb7R
+         6nBkhxKI7LuNOcNVZMwOIaV1imtnFXcT0LDUe0yUs966Sn51ePxjmzV5PxeJlKc848UQ
+         o07m6FFtwbZkxIuVg03hRpfLhdP2NHrYDnY4ZbLkf4yTuzu2jyToOiAU67raHaRiXWBf
+         HIAEGO6TL4v9Dj1TvooaiYhZijz5PDR3yE1+70dIYG3LkDDl2yAMYBXhEFuxp8gMRA8G
+         /LK0/0zmrg8ssYrPhpobtHv9v31tsToqgY2EtzdetcuOoSd+We68hCF1odXkfQ6d/bxn
+         ISlw==
+X-Gm-Message-State: AOAM53198uqaSKm8CWOTl06jsl2EkVQUHdp/bHAaC0i7Vxtl214oJ4hH
+        byXP3T2dKlEYcjhIG+8giLT+r3rl6j7Lgclhi57aPA==
+X-Google-Smtp-Source: ABdhPJy2zuBFI2WxQFh+zswk7vvE1Ll9jQA8Ir6fK3ClgvLdL6voF0yNaP0jwxohL/w7CmFOXaK4xdaZlB928E/RPxU=
+X-Received: by 2002:a17:902:f686:b029:de:18c7:41f8 with SMTP id
+ l6-20020a170902f686b02900de18c741f8mr255538plg.65.1610399995802; Mon, 11 Jan
+ 2021 13:19:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20210111081821.3041587-1-morbo@google.com> <20210111210418.GA3660906@ubuntu-m3-large-x86>
-In-Reply-To: <20210111210418.GA3660906@ubuntu-m3-large-x86>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 11 Jan 2021 13:17:52 -0800
-Message-ID: <CAKwvOdnssY=CV4daRQvGa659AzGvMT+Kb10g5-DDuZjqbp-J5A@mail.gmail.com>
-Subject: Re: [PATCH] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Bill Wendling <morbo@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sami Tolvanen <samitolvanen@google.com>
+References: <20210107234803.1096592-1-dlatypov@google.com> <20210107234803.1096592-2-dlatypov@google.com>
+In-Reply-To: <20210107234803.1096592-2-dlatypov@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Mon, 11 Jan 2021 13:19:44 -0800
+Message-ID: <CAFd5g46HKkj3heY+jOYDZH9uaNwcDE6UsQwcC0gULBJD22Bv7Q@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] kunit: tool: fix minor typing issue with None status
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     David Gow <davidgow@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 1:04 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
+On Thu, Jan 7, 2021 at 3:48 PM Daniel Latypov <dlatypov@google.com> wrote:
 >
-> On Mon, Jan 11, 2021 at 12:18:21AM -0800, Bill Wendling wrote:
-> > From: Sami Tolvanen <samitolvanen@google.com>
-> >
-> > Enable the use of clang's Profile-Guided Optimization[1]. To generate a
-> > profile, the kernel is instrumented with PGO counters, a representative
-> > workload is run, and the raw profile data is collected from
-> > /sys/kernel/debug/pgo/profraw.
-> >
-> > The raw profile data must be processed by clang's "llvm-profdata" tool before
-> > it can be used during recompilation:
-> >
-> >   $ cp /sys/kernel/debug/pgo/profraw vmlinux.profraw
-> >   $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
-> >
-> > Multiple raw profiles may be merged during this step.
-> >
-> > The data can be used either by the compiler if LTO isn't enabled:
-> >
-> >     ... -fprofile-use=vmlinux.profdata ...
-> >
-> > or by LLD if LTO is enabled:
-> >
-> >     ... -lto-cs-profile-file=vmlinux.profdata ...
-> >
-> > This initial submission is restricted to x86, as that's the platform we know
-> > works. This restriction can be lifted once other platforms have been verified
-> > to work with PGO.
-> >
-> > Note that this method of profiling the kernel is clang-native and isn't
-> > compatible with clang's gcov support in kernel/gcov.
-> >
-> > [1] https://clang.llvm.org/docs/UsersManual.html#profile-guided-optimization
-> >
-> > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > Co-developed-by: Bill Wendling <morbo@google.com>
-> > Signed-off-by: Bill Wendling <morbo@google.com>
+> The code to handle aggregating statuses didn't check that the status
+> actually got set to some non-None value.
+> Default the value to SUCCESS instead of adding a bunch of `is None`
+> checks.
 >
-> I took this for a spin against x86_64_defconfig and ran into two issues:
+> This sorta follows the precedent in commit 3fc48259d525 ("kunit: Don't
+> fail test suites if one of them is empty").
 >
-> 1. https://github.com/ClangBuiltLinux/linux/issues/1252
+> Also slightly simplify the code and add type annotations.
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> Reviewed-by: David Gow <davidgow@google.com>
 
-"Cannot split an edge from a CallBrInst"
-Looks like that should be fixed first, then we should gate this
-feature on clang-12.
-
->
->    There is also one in drivers/gpu/drm/i915/i915_query.c. For the time
->    being, I added PGO_PROFILE_... := n for those two files.
->
-> 2. After doing that, I run into an undefined function error with ld.lld.
->
-> How I tested:
->
-> $ make -skj"$(nproc)" LLVM=1 defconfig
->
-> $ scripts/config -e PGO_CLANG
->
-> $ make -skj"$(nproc)" LLVM=1 olddefconfig vmlinux all
-> ld.lld: error: undefined symbol: __llvm_profile_instrument_memop
-
-Err...that seems like it should be implemented in
-kernel/pgo/instrument.c in this patch in a v2?
-
-> >>> referenced by head64.c
-> >>>               arch/x86/kernel/head64.o:(__early_make_pgtable)
-> >>> referenced by head64.c
-> >>>               arch/x86/kernel/head64.o:(x86_64_start_kernel)
-> >>> referenced by head64.c
-> >>>               arch/x86/kernel/head64.o:(copy_bootdata)
-> >>> referenced 2259 more times
->
-> Local diff:
->
-> diff --git a/drivers/char/Makefile b/drivers/char/Makefile
-> index ffce287ef415..4b2f238770b5 100644
-> --- a/drivers/char/Makefile
-> +++ b/drivers/char/Makefile
-> @@ -4,6 +4,7 @@
->  #
->
->  obj-y                          += mem.o random.o
-> +PGO_PROFILE_random.o           := n
->  obj-$(CONFIG_TTY_PRINTK)       += ttyprintk.o
->  obj-y                          += misc.o
->  obj-$(CONFIG_ATARI_DSP56K)     += dsp56k.o
-> diff --git a/drivers/gpu/drm/i915/Makefile b/drivers/gpu/drm/i915/Makefile
-> index e5574e506a5c..d83cacc79b1a 100644
-> --- a/drivers/gpu/drm/i915/Makefile
-> +++ b/drivers/gpu/drm/i915/Makefile
-> @@ -168,6 +168,7 @@ i915-y += \
->           i915_vma.o \
->           intel_region_lmem.o \
->           intel_wopcm.o
-> +PGO_PROFILE_i915_query.o := n
->
->  # general-purpose microcontroller (GuC) support
->  i915-y += gt/uc/intel_uc.o \
-
-I'd rather have these both sorted out before landing with PGO disabled
-on these files.
-
--- 
-Thanks,
-~Nick Desaulniers
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
