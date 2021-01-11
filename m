@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAFF82F13F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:17:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DADD2F1365
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732552AbhAKNRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:17:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35370 "EHLO mail.kernel.org"
+        id S1730700AbhAKNIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:08:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732499AbhAKNQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:16:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04F3D2255F;
-        Mon, 11 Jan 2021 13:16:08 +0000 (UTC)
+        id S1730542AbhAKNHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:07:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E93022A83;
+        Mon, 11 Jan 2021 13:06:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370969;
-        bh=lkq7ObhJRbo7/out0sskq5kFZuIs0ut907Nze18cRWw=;
+        s=korg; t=1610370392;
+        bh=pcriLTtPpJM2ggFmyoNvuSxCjVMiHRhqnc3Tp0am0vE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uvXThu4asIuH1IQugiMcTm6BaEgOkcuCl+zk8bYDdgdAhMNgtuyKulRxQE4VUWRGA
-         hBrsgENAxzduh1i3GJz98zpdzh+Gx+W6/A0kdRNsbeqTIfZLGmuX6NSFwg0bIYdyHe
-         xo2PoPdBWP0N5xGDefhy1Hl4vZsSHxj9g0vc55nk=
+        b=yPaCTptc6aXjYa3vdq8iuooYeDHtNfOJcZjPAomQBfm1Yz1lfJRBW9XaTMC9z9Bn+
+         1SP0pwPmrPcwvy2wBDXWnUi0FXD8MKvu6rbD8AqcQE0libNb8QinK6BG8PwVfSkTKi
+         nb23fKyeuDoOc+sacNDm71aNTbr88qqRBg9rAmrI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Tretter <m.tretter@pengutronix.de>,
-        Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH 5.10 083/145] usb: dwc3: gadget: Restart DWC3 gadget when enabling pullup
-Date:   Mon, 11 Jan 2021 14:01:47 +0100
-Message-Id: <20210111130052.518265351@linuxfoundation.org>
+        stable@vger.kernel.org, Lorenzo Colitti <lorenzo@google.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        "taehyun.cho" <taehyun.cho@samsung.com>
+Subject: [PATCH 4.14 29/57] usb: gadget: enable super speed plus
+Date:   Mon, 11 Jan 2021 14:01:48 +0100
+Message-Id: <20210111130035.131398522@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
+References: <20210111130033.715773309@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,70 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wesley Cheng <wcheng@codeaurora.org>
+From: taehyun.cho <taehyun.cho@samsung.com>
 
-commit a1383b3537a7bea1c213baa7878ccc4ecf4413b5 upstream.
+commit e2459108b5a0604c4b472cae2b3cb8d3444c77fb upstream.
 
-usb_gadget_deactivate/usb_gadget_activate does not execute the UDC start
-operation, which may leave EP0 disabled and event IRQs disabled when
-re-activating the function. Move the enabling/disabling of USB EP0 and
-device event IRQs to be performed in the pullup routine.
+Enable Super speed plus in configfs to support USB3.1 Gen2.
+This ensures that when a USB gadget is plugged in, it is
+enumerated as Gen 2 and connected at 10 Gbps if the host and
+cable are capable of it.
 
-Fixes: ae7e86108b12 ("usb: dwc3: Stop active transfers before halting the controller")
-Tested-by: Michael Tretter <m.tretter@pengutronix.de>
+Many in-tree gadget functions (fs, midi, acm, ncm, mass_storage,
+etc.) already have SuperSpeed Plus support.
+
+Tested: plugged gadget into Linux host and saw:
+[284907.385986] usb 8-2: new SuperSpeedPlus Gen 2 USB device number 3 using xhci_hcd
+
+Tested-by: Lorenzo Colitti <lorenzo@google.com>
+Acked-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: taehyun.cho <taehyun.cho@samsung.com>
+Signed-off-by: Lorenzo Colitti <lorenzo@google.com>
+Link: https://lore.kernel.org/r/20210106154625.2801030-1-lorenzo@google.com
 Cc: stable <stable@vger.kernel.org>
-Reported-by: Michael Tretter <m.tretter@pengutronix.de>
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-Link: https://lore.kernel.org/r/1609282837-21666-1-git-send-email-wcheng@codeaurora.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/dwc3/gadget.c |   14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ drivers/usb/gadget/configfs.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -2083,6 +2083,7 @@ static int dwc3_gadget_run_stop(struct d
+--- a/drivers/usb/gadget/configfs.c
++++ b/drivers/usb/gadget/configfs.c
+@@ -1504,7 +1504,7 @@ static const struct usb_gadget_driver co
+ 	.suspend	= configfs_composite_suspend,
+ 	.resume		= configfs_composite_resume,
  
- static void dwc3_gadget_disable_irq(struct dwc3 *dwc);
- static void __dwc3_gadget_stop(struct dwc3 *dwc);
-+static int __dwc3_gadget_start(struct dwc3 *dwc);
+-	.max_speed	= USB_SPEED_SUPER,
++	.max_speed	= USB_SPEED_SUPER_PLUS,
+ 	.driver = {
+ 		.owner          = THIS_MODULE,
+ 		.name		= "configfs-gadget",
+@@ -1544,7 +1544,7 @@ static struct config_group *gadgets_make
+ 	gi->composite.unbind = configfs_do_nothing;
+ 	gi->composite.suspend = NULL;
+ 	gi->composite.resume = NULL;
+-	gi->composite.max_speed = USB_SPEED_SUPER;
++	gi->composite.max_speed = USB_SPEED_SUPER_PLUS;
  
- static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
- {
-@@ -2145,6 +2146,8 @@ static int dwc3_gadget_pullup(struct usb
- 			dwc->ev_buf->lpos = (dwc->ev_buf->lpos + count) %
- 						dwc->ev_buf->length;
- 		}
-+	} else {
-+		__dwc3_gadget_start(dwc);
- 	}
- 
- 	ret = dwc3_gadget_run_stop(dwc, is_on, false);
-@@ -2319,10 +2322,6 @@ static int dwc3_gadget_start(struct usb_
- 	}
- 
- 	dwc->gadget_driver	= driver;
--
--	if (pm_runtime_active(dwc->dev))
--		__dwc3_gadget_start(dwc);
--
- 	spin_unlock_irqrestore(&dwc->lock, flags);
- 
- 	return 0;
-@@ -2348,13 +2347,6 @@ static int dwc3_gadget_stop(struct usb_g
- 	unsigned long		flags;
- 
- 	spin_lock_irqsave(&dwc->lock, flags);
--
--	if (pm_runtime_suspended(dwc->dev))
--		goto out;
--
--	__dwc3_gadget_stop(dwc);
--
--out:
- 	dwc->gadget_driver	= NULL;
- 	spin_unlock_irqrestore(&dwc->lock, flags);
- 
+ 	spin_lock_init(&gi->spinlock);
+ 	mutex_init(&gi->lock);
 
 
