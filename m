@@ -2,129 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D152F1E00
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 19:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 778D92F1E03
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 19:30:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390467AbhAKS3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 13:29:11 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:20076 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389472AbhAKS3K (ORCPT
+        id S2390487AbhAKS3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 13:29:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390469AbhAKS3O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 13:29:10 -0500
-Date:   Mon, 11 Jan 2021 18:28:21 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610389706; bh=gXXU1styr81EC3F2Bwbxq+s5c4Q77ESXBToxUwsCrQs=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=RGkKbnVP8ThOFM7803+38qDOY3bT36OdUxsDpI0RmrxKBowzL+X+fiZ4rBoS7dhL8
-         mBVt/UmLpRuEWsHnfofnzXQc99P33fa+1PzRr8LmmMA16Q+H11RfCY/T6jf+z6SFw8
-         BtT79uC4U2tXtY01x8GPv3Qk5ItKb3p9AEECxUumKMB+o5rvFF1wjEe2pppSbmLwrS
-         B08FYcU7Uk0uBciwT5Qx7N943xzLW2vx4suxQ5ZNElFZtO2ebZVR0CdVRwpy1Gm5tn
-         dvexlp53KIKtkso+1kjdGTh3PSkNjCFhyBvgtjx9Ipvy0y+c7QJu+Rkkq40E5Imm/f
-         AGGzlloiDMUaw==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH net-next 1/5] skbuff: rename fields of struct napi_alloc_cache to be more intuitive
-Message-ID: <20210111182801.12609-1-alobakin@pm.me>
-In-Reply-To: <20210111182655.12159-1-alobakin@pm.me>
-References: <20210111182655.12159-1-alobakin@pm.me>
+        Mon, 11 Jan 2021 13:29:14 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE04C061786;
+        Mon, 11 Jan 2021 10:28:34 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id h4so408726qkk.4;
+        Mon, 11 Jan 2021 10:28:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ExTGI1xPKNq4svVK8CHLz8qefNJSyDheErjNSIGWfZ4=;
+        b=YYffgrENxRJQcTsL0yqhA7FrKx1Hkd/gDDpAE1Uhy0DuRc+FLL88lcZu/xG/QEF6aX
+         IyYoJKxRhFEVT1EshDCkR7+UCtV6uoWOBBXStinXTvidZ2gvoLJpMnwQxwqNmtqpMNqg
+         eZoXHV77NwXAvIPiAJMMT1pceSzmpiIsiaiCMUsnmyQG1EJunG3Ce7QYLY3t2dDG+IUi
+         Z8YQb9B3OICTNK0ScFPDbn4Z0mMCkZ3We9mbWB+fHfG+/JG6xCntwPO8ZRVhSU8pC1RF
+         07PnyjPB6wlyw/+TVo40ktJjT8YnTKmKVeRSWDo8MLp2ewPxzv4W9Tbb3y5ZvPUZ9nv/
+         mzgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ExTGI1xPKNq4svVK8CHLz8qefNJSyDheErjNSIGWfZ4=;
+        b=tYGH4GKA1kOSRehvZqr4+Mf+P5lvsBNa4g9t27u6jyXnHEHJkR36/T1iJautfliCzO
+         f0cBwWV8/SnU+VIoElxMx0jMnPF7Ycpu5XWOMClidmrFWdwaMPKUvjK1CM8vhgNKtyjA
+         yKU42+qNW33OCBfExxReSwPOtlL5ymZNQTcfYDLUJx63X1r1yxMRD9jV2c2W9iYOwJjM
+         2XjOGsJGWMo6YCcmogxnZzKBb+hYGt88P752buHJzop8aU/bN8eNuWNPi1kfgeMZkXag
+         rtD3a+YKJJLm6tTZdW+zss/JLiQlH/dz0uXhOPNl6ry2vpW6CR4f0IHGodnzxfkuSKh0
+         WZzA==
+X-Gm-Message-State: AOAM533a74mauWJVM5wFMc5D/dQE8xvD8IP7mbqTFgiPAU1wKO4mOMSy
+        w5EI7snM///HpiY1k45kTvso35pOP+ZiGw==
+X-Google-Smtp-Source: ABdhPJxqOPGIAmd28x6rr4jzh1TSGIWuX+9SrfehHjib9sM4AevbyanVEqzUI62bl8rGBeoXPgBS3g==
+X-Received: by 2002:a37:b985:: with SMTP id j127mr606560qkf.85.1610389713257;
+        Mon, 11 Jan 2021 10:28:33 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id g26sm332942qka.76.2021.01.11.10.28.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 10:28:32 -0800 (PST)
+Date:   Mon, 11 Jan 2021 11:28:31 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Bill Wendling <morbo@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: Re: [PATCH] pgo: add clang's Profile Guided Optimization
+ infrastructure
+Message-ID: <20210111182831.GB758023@ubuntu-m3-large-x86>
+References: <20210111081821.3041587-1-morbo@google.com>
+ <CA+icZUUUTEdRNbmORy4X=UqMHLMEfD186o2mh23v_mXGBM8Anw@mail.gmail.com>
+ <CAGG=3QUHWkuF0Q-=tNO5PztqtxuKYgyQy_EbBLyL0xNQ7TjgoQ@mail.gmail.com>
+ <CA+icZUX0dtfOFLqyG_NOHgFnbwnOKEBP7Fo+RxgjhzuL3FPA9g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+icZUX0dtfOFLqyG_NOHgFnbwnOKEBP7Fo+RxgjhzuL3FPA9g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-skb_cache and skb_count fields are used to store skbuff_heads queued
-for freeing to flush them by bulks, and aren't related to allocation
-path. Give them more obvious names to improve code understanding and
-allow to expand this struct with more allocation-related elements.
+On Mon, Jan 11, 2021 at 10:57:35AM +0100, Sedat Dilek wrote:
+> On Mon, Jan 11, 2021 at 10:17 AM Bill Wendling <morbo@google.com> wrote:
+> >
+> > On Mon, Jan 11, 2021 at 12:39 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > >
+> > > On Mon, Jan 11, 2021 at 9:18 AM 'Bill Wendling' via Clang Built Linux
+> > > <clang-built-linux@googlegroups.com> wrote:
+> > > >
+> > > > From: Sami Tolvanen <samitolvanen@google.com>
+> > > >
+> > > > Enable the use of clang's Profile-Guided Optimization[1]. To generate a
+> > > > profile, the kernel is instrumented with PGO counters, a representative
+> > > > workload is run, and the raw profile data is collected from
+> > > > /sys/kernel/debug/pgo/profraw.
+> > > >
+> > > > The raw profile data must be processed by clang's "llvm-profdata" tool before
+> > > > it can be used during recompilation:
+> > > >
+> > > >   $ cp /sys/kernel/debug/pgo/profraw vmlinux.profraw
+> > > >   $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
+> > > >
+> > > > Multiple raw profiles may be merged during this step.
+> > > >
+> > > > The data can be used either by the compiler if LTO isn't enabled:
+> > > >
+> > > >     ... -fprofile-use=vmlinux.profdata ...
+> > > >
+> > > > or by LLD if LTO is enabled:
+> > > >
+> > > >     ... -lto-cs-profile-file=vmlinux.profdata ...
+> > > >
+> > > > This initial submission is restricted to x86, as that's the platform we know
+> > > > works. This restriction can be lifted once other platforms have been verified
+> > > > to work with PGO.
+> > > >
+> > > > Note that this method of profiling the kernel is clang-native and isn't
+> > > > compatible with clang's gcov support in kernel/gcov.
+> > > >
+> > > > [1] https://clang.llvm.org/docs/UsersManual.html#profile-guided-optimization
+> > > >
+> > >
+> > > Hi Bill and Sami,
+> > >
+> > > I have seen the pull-request in the CBL issue tracker and had some
+> > > questions in mind.
+> > >
+> > > Good you send this.
+> > >
+> > > First of all, I like to fetch any development stuff easily from a Git
+> > > repository.
+> >
+> > The version in the pull-request in the CBL issue tracker is roughly
+> > the same as this patch. (There are some changes, but they aren't
+> > functionality changes.)
+> >
+> > > Can you offer this, please?
+> > > What is the base for your work?
+> > > I hope this is (fresh released) Linux v5.11-rc3.
+> > >
+> > This patch (and the PR on the CBL issue tracker) are from top-of-tree Linux.
+> >
+> > > I myself had some experiences with a PGO + ThinLTO optimized LLVM
+> > > toolchain built with the help of tc-build.
+> > > Here it takes very long to build it.
+> > >
+> > > This means I have some profile-data archived.
+> > > Can I use it?
+> > >
+> > LLVM is more tolerant of "stale" profile data than gcov, so it's
+> > possible that your archived profile data would still work, but I can't
+> > guarantee that it will be better than using new profile data.
+> >
+> > > Is an own PGO + ThinLTO optimized LLVM toolchain pre-requirement for
+> > > this or not?
+> > > That is one of my important questions.
+> > >
+> > Do you mean that the LLVM tools (clang, llc, etc.) are compiled with
+> > PGO + ThinLTO?
+> >
+> 
+> Yes.
+> 
+> - Sedat -
 
-Misc: indent struct napi_alloc_cache declaration for better reading.
+No, having an optimized LLVM toolchain is not a requirement of this
+patchset. It will make compiling the kernel faster but it does nothing
+more than that.
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- net/core/skbuff.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
-
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 7626a33cce59..17ae5e90f103 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -366,9 +366,9 @@ EXPORT_SYMBOL(build_skb_around);
- #define NAPI_SKB_CACHE_SIZE=0964
-=20
- struct napi_alloc_cache {
--=09struct page_frag_cache page;
--=09unsigned int skb_count;
--=09void *skb_cache[NAPI_SKB_CACHE_SIZE];
-+=09struct page_frag_cache=09page;
-+=09u32=09=09=09flush_skb_count;
-+=09void=09=09=09*flush_skb_cache[NAPI_SKB_CACHE_SIZE];
- };
-=20
- static DEFINE_PER_CPU(struct page_frag_cache, netdev_alloc_cache);
-@@ -860,11 +860,11 @@ void __kfree_skb_flush(void)
- {
- =09struct napi_alloc_cache *nc =3D this_cpu_ptr(&napi_alloc_cache);
-=20
--=09/* flush skb_cache if containing objects */
--=09if (nc->skb_count) {
--=09=09kmem_cache_free_bulk(skbuff_head_cache, nc->skb_count,
--=09=09=09=09     nc->skb_cache);
--=09=09nc->skb_count =3D 0;
-+=09/* flush flush_skb_cache if containing objects */
-+=09if (nc->flush_skb_count) {
-+=09=09kmem_cache_free_bulk(skbuff_head_cache, nc->flush_skb_count,
-+=09=09=09=09     nc->flush_skb_cache);
-+=09=09nc->flush_skb_count =3D 0;
- =09}
- }
-=20
-@@ -876,18 +876,18 @@ static inline void _kfree_skb_defer(struct sk_buff *s=
-kb)
- =09skb_release_all(skb);
-=20
- =09/* record skb to CPU local list */
--=09nc->skb_cache[nc->skb_count++] =3D skb;
-+=09nc->flush_skb_cache[nc->flush_skb_count++] =3D skb;
-=20
- #ifdef CONFIG_SLUB
- =09/* SLUB writes into objects when freeing */
- =09prefetchw(skb);
- #endif
-=20
--=09/* flush skb_cache if it is filled */
--=09if (unlikely(nc->skb_count =3D=3D NAPI_SKB_CACHE_SIZE)) {
-+=09/* flush flush_skb_cache if it is filled */
-+=09if (unlikely(nc->flush_skb_count =3D=3D NAPI_SKB_CACHE_SIZE)) {
- =09=09kmem_cache_free_bulk(skbuff_head_cache, NAPI_SKB_CACHE_SIZE,
--=09=09=09=09     nc->skb_cache);
--=09=09nc->skb_count =3D 0;
-+=09=09=09=09     nc->flush_skb_cache);
-+=09=09nc->flush_skb_count =3D 0;
- =09}
- }
- void __kfree_skb_defer(struct sk_buff *skb)
---=20
-2.30.0
-
-
+Cheers,
+Nathan
