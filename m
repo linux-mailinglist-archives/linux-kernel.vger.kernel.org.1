@@ -2,122 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 328C62F0E2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 09:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 481B32F0E35
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 09:32:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727958AbhAKIaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 03:30:09 -0500
-Received: from mail-bn8nam12on2056.outbound.protection.outlook.com ([40.107.237.56]:34528
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726611AbhAKIaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 03:30:08 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bq1KftOJbkhw92VAVnc6HYyfvm5R/EqKFAYnwDSL5G2FYd0o6hTM7O2DzJ37/OsNQyjAT+icugSrOdg9f2JO2AoL/KPQGcLrTU4Nfr/TegE4uQ4LBhF/7fh/aTpFFVm2qNT01armd2aK2U9xv7p+YmqHDT+YnS906YB+imJn0jlze6FqWJz/1aGdcfuG3z3MkbqAvwPZOWcJnXjliy9HE0CDhSAiqH9QvYYyNz2B0XT5x2Qgas2zmYfXRmp6YfSVseFVg2M8gsKr+fD/TFTSThc56bI545UkDCvKl4YVc05T8SNWcvnFHPXXyI69nPfldFVUgGX7doPKFlq5ScwKUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+RfPmekk1bGWvDKiEJAa33Se06KjXQI71ovevjxo9Yw=;
- b=Ge5KPINyX0ePYQGnQWz25lfDkX+zEFXEf1fhU7z9R6e5kFxs+c3jXiSzHrYRdFeo/5VNuRK6m/d8fw7W0MB1oOAniU8s1XcK/IOZIZla9OZJW7IVxI36sUn5wPFT5gnb+nmC0/O/5QAvJMVf2v0XuAM0/iDjP/UBvO0cO73TMmfV1Jay1mVfQu9sggVPWtCvbYE1mcadp93rNltD12w5nYavrLn9vUBjcsz3UvFORLW7tr81+bJEXVFW3ITAB6S1RZ4zt4nliaH7EEP4krKKj6vS8JTXf0S+kWRrA1jp+TXbWpUoiB3Gop1hKJDGcWR6i3E5s1wm/HB3cT2ej+oRsg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S1727884AbhAKIch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 03:32:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726345AbhAKIch (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 03:32:37 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB838C061786;
+        Mon, 11 Jan 2021 00:31:56 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id x15so1749298ilk.3;
+        Mon, 11 Jan 2021 00:31:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+RfPmekk1bGWvDKiEJAa33Se06KjXQI71ovevjxo9Yw=;
- b=e+5M1fxTnKy9xiCJzWG2usDdGKFlQk+O13cbEdaArk9ZxRoi1g6EWVjZCju7kdpK1NCdgnP1MRuWPSWlPPrY+IeYo4x31yRZPFx4mKGQIDU0m8T8r0MmRVTIvSps9ZjYchV2tk6HJWCf9cv1EBrGrOt+Ozwef+OladMAiorv79M=
-Authentication-Results: lists.ozlabs.org; dkim=none (message not signed)
- header.d=none;lists.ozlabs.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com (2603:10b6:5:2ae::14)
- by DM6PR11MB4740.namprd11.prod.outlook.com (2603:10b6:5:2ad::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Mon, 11 Jan
- 2021 08:28:51 +0000
-Received: from DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::87:8baa:7135:501d]) by DM6PR11MB4545.namprd11.prod.outlook.com
- ([fe80::87:8baa:7135:501d%6]) with mapi id 15.20.3742.012; Mon, 11 Jan 2021
- 08:28:51 +0000
-From:   Paul Gortmaker <paul.gortmaker@windriver.com>
-To:     linuxppc-dev@lists.ozlabs.org
-Cc:     linux-kernel@vger.kernel.org,
-        Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: [PATCH 3/3] MAINTAINERS: update for Paul Gortmaker
-Date:   Mon, 11 Jan 2021 03:28:23 -0500
-Message-Id: <20210111082823.99562-4-paul.gortmaker@windriver.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210111082823.99562-1-paul.gortmaker@windriver.com>
-References: <20210111082823.99562-1-paul.gortmaker@windriver.com>
-Content-Type: text/plain
-X-Originating-IP: [128.224.252.2]
-X-ClientProxiedBy: YTXPR0101CA0036.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00::49) To DM6PR11MB4545.namprd11.prod.outlook.com
- (2603:10b6:5:2ae::14)
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=v/NXBvCLKrac3XyokGdCPBcnqn52lWLwH6gBQ31Muv0=;
+        b=JbkQHk9ziGv0q5L+6TJzchHwzF1l03U1EvtxyLPZPe4rKl4XpTcOWd3DWHtZOFVaM0
+         QeYN/A6L1tm9CsPBfHZXkuk6+v1ufg4iD9/VoG89coWrihHuouVZzpGVyh1P8NuD23d0
+         72d+1fWaHEA9s+sHMWA/3fleC74cLkAvOamvOtyDfPbsMlBmdiJVR1IDuLIe3Nj31vPy
+         jqfFtgiS0aHtorZDnyPAjJXThwNw0JReURzrb55vyJnw9ACtlGqlV2D8zs3xePKldBYi
+         RvsKUYreIyGWHcmR+SRlpqVIGCe1DAVZ/BQXa1gyVFXOvVPoJL53HtagH2j2Re3QaAGE
+         1Uwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=v/NXBvCLKrac3XyokGdCPBcnqn52lWLwH6gBQ31Muv0=;
+        b=rLZk+WHrmhfqtRL5GrzxtsttyQh1kIlBkRwx/Kq8JvBc7uNnFTaQB7OYq7jEifhAvv
+         J/zOFoLoDU3ryTvcT4iIY1Im+xe9WO0RIoGW4Adp2EElgRn0jR6Gfa7iMyViZBTeZ/lO
+         BRkCC1stXcHgPcptuX/QaY6Ep30qTCjSyr+Y27TrdqHp/k+JTihu0k6UwifO9W8tTmMU
+         EobKBhIZiwRHvqA8TIw6+F2OSBg1KnOzMu7hZf22GYYYRnoPvY7qvONPhpnGBSl4s8UE
+         adq7BDD2vXUiz8j8Q+cGqHC5RhF8wgCPk6Yu3dQrutlFB8bUtfwRxjqUgr8N2G9B36Ru
+         NQ8w==
+X-Gm-Message-State: AOAM530jVY3f0EVui3HOgEnB40F9ZolvOpkDAzdxiHPCXYgtO7vmPZ2O
+        J5MA+Yet8q/rO5JGlo4OW4LidKolT7Q=
+X-Google-Smtp-Source: ABdhPJwaTB6TYxQj7LLrW6fBsjRXSSsXBmy+Xih7j3qQmJQZiA4wu6uP7t/L6F7y2f2G3eoP1OLs6w==
+X-Received: by 2002:a05:6e02:5d0:: with SMTP id l16mr14185032ils.90.1610353916110;
+        Mon, 11 Jan 2021 00:31:56 -0800 (PST)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id a10sm10521499ioc.43.2021.01.11.00.31.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 00:31:54 -0800 (PST)
+Date:   Mon, 11 Jan 2021 09:31:52 +0100
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Wolfram Sang <wsa@the-dreams.de>
+Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>, jonathanh@nvidia.com,
+        digetx@gmail.com, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH v1] i2c: tegra: Fix i2c_writesl() to use writel() instead
+ of writesl()
+Message-ID: <X/wM+LBkqF5ixuMf@ulmo>
+References: <1603166634-13639-1-git-send-email-skomatineni@nvidia.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from yow-pgortmak-lx2.corp.ad.wrs.com (128.224.252.2) by YTXPR0101CA0036.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Mon, 11 Jan 2021 08:28:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 775ce56b-9271-457e-bf46-08d8b60aed09
-X-MS-TrafficTypeDiagnostic: DM6PR11MB4740:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR11MB4740C356DB60F357F7D5E69983AB0@DM6PR11MB4740.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:296;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TWhMz/HMDyB4v9qRMXs2oyc/o6cSu8KlKqvZsle98BVc+9ss59kiLctrdr13fc3Xe3StSUBq2IwSxWgFnXcZEg6eMeBcNmTaiklZgP8nxUrQz/ih65hj42bFe4+gtLzagQTKC9aqTtYgSzrNRvp2Ar8xEIYxF+wzHv/TouF6GfZOHgBYQ8eMNxyRGbDHRLj0VzT2jcuBKmQ4qigJJd9k+GPQnmpmf3fo/fOZXvprBHtb63hTtjLTzeFxHsUHNhL5Q7AIx7A+QM0huMe71iYQl1Gu4hv47xfMzh1G7Xwol2W3FFc8AGnLDTtbTdWW5uXj9eIvEqA1DutW+rE9rlVaaY9HGGfFpOs90PtfkEP959ly8n3cFsSqn99hANGyTak53oEpG/n4Js76PBqTa2cQeA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39840400004)(366004)(396003)(136003)(26005)(186003)(2616005)(6506007)(16526019)(6916009)(44832011)(86362001)(956004)(478600001)(83380400001)(6512007)(36756003)(6486002)(66476007)(66556008)(1076003)(4326008)(5660300002)(107886003)(8936002)(52116002)(66946007)(8676002)(2906002)(6666004)(316002)(4744005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?yiegjbKdE1PHeTLt4E12SyLSP4UQjPf+6Ew2UYHflyMDAn3JCajHKn1cMC1N?=
- =?us-ascii?Q?bP9T6QfAD09I+eQ6dE0xpODzz9Zr022wUd453WDuFR5Kdbp0hTtNx0pZEP1w?=
- =?us-ascii?Q?EGPvxvUUQ5DQZYw8a6C97Sn6IzvGaz3iVt9KwRTr3L7FgjB9ChGuj6GnUN4v?=
- =?us-ascii?Q?i6TFjUMaVUyTR9dKfj5Kdz+Mi/PY8hpdtn26s8KNJ9605BUU79aDW4sg0knw?=
- =?us-ascii?Q?wnYwFYlTvhPITtZPEHthij/YUIBrkpP9/bD/2gOPw45mM2FbsLKql0Btpad5?=
- =?us-ascii?Q?WT5eNR6FVOfk7iG1n6EH3quqWfcXrgcBbQeUdG1Tl+4LWu/A41gc2hbo8kqj?=
- =?us-ascii?Q?s5acihrgMBsFSgxTi1xbbBV1KzZh9srRXECUNzdFruuuEtj7jrLyQeeRjei4?=
- =?us-ascii?Q?0AD39y/ybvJcSfkJnDJyWonYR1csqRlfxtDihVtk89TZa+Vn5FlnMw60Wlds?=
- =?us-ascii?Q?3NwzRukTeWZwGinQd4D/TDpr33Dco06N9nawi2hMUGTpZ+pP8fysqErNBkg7?=
- =?us-ascii?Q?4/kLWkoIr5rShaKiTq6Kts7w07kzF8xLlQPVzdTz8HoXhg/NaqBjQoi73Xk3?=
- =?us-ascii?Q?PnWA5hxPWvWIYG892H9u6b0UfUdCQXwDU1hY3CmmfLo0Ojc/xA17wVDPfomT?=
- =?us-ascii?Q?dAQeTBTL6yPWwqOPm8t4LOhczfblGV8G4AEDFnLS94L1BWuzDEI1YcJ9pV4X?=
- =?us-ascii?Q?xM5C4y7V0/295N5BpmpO4H2TRU2lVgMqvMrt4ApZvLyQPc0C5qLM6a52sCXa?=
- =?us-ascii?Q?ELTklfAY+RlGm0yjLcv0mSOTAmfdVGIzBEtSJnV/yZHPig08FyciTzBBUC1F?=
- =?us-ascii?Q?tQXr/DNNvHtVG+U6wWV3DUtGQIYMtfFdl1/ElnLc6wCPK7kUxZly1TGNRRXy?=
- =?us-ascii?Q?qux9JL8qgL+/xQoTn1NVm0KqITydG7SrY2hvXUDM52oS/5ZfqZq5WIO3uifm?=
- =?us-ascii?Q?nRdBeohkgvNmeutPbrLr96cZMcdoW4ONoF/G0CT3Rga69jrIANSyf7S/r2N6?=
- =?us-ascii?Q?nSFY?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4545.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2021 08:28:51.4437
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-Network-Message-Id: 775ce56b-9271-457e-bf46-08d8b60aed09
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DLTdFhynG2i+nEyiSpyEKDoMPpxVlkmRTai/MpzkD2bBu6r+76quNCMBkL8pc9FYn/qnTjj+DtuAD7Jq/TJGyXwChy51lPhDJTycJ0VzI0k=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4740
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2H5ZGAP27J0BwHMG"
+Content-Disposition: inline
+In-Reply-To: <1603166634-13639-1-git-send-email-skomatineni@nvidia.com>
+User-Agent: Mutt/2.0.3 (a51f058f) (2020-12-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
----
- MAINTAINERS | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index cc1e6a5ee6e6..c5f5cdb24674 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6529,7 +6529,6 @@ F:	Documentation/admin-guide/media/em28xx*
- F:	drivers/media/usb/em28xx/
- 
- EMBEDDED LINUX
--M:	Paul Gortmaker <paul.gortmaker@windriver.com>
- M:	Matt Mackall <mpm@selenic.com>
- M:	David Woodhouse <dwmw2@infradead.org>
- L:	linux-embedded@vger.kernel.org
--- 
-2.17.1
+--2H5ZGAP27J0BwHMG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Oct 19, 2020 at 09:03:54PM -0700, Sowjanya Komatineni wrote:
+> VI I2C don't have DMA support and uses PIO mode all the time.
+>=20
+> Current driver uses writesl() to fill TX FIFO based on available
+> empty slots and with this seeing strange silent hang during any I2C
+> register access after filling TX FIFO with 8 words.
+>=20
+> Using writel() followed by i2c_readl() in a loop to write all words
+> to TX FIFO instead of using writesl() helps for large transfers in
+> PIO mode.
+>=20
+> So, this patch updates i2c_writesl() API to use writel() in a loop
+> instead of writesl().
+>=20
+> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+> ---
+>  drivers/i2c/busses/i2c-tegra.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+
+Hi Wolfram,
+
+after discussing a bit more with Sowjanya, I don't think we're going to
+have a better solution than this. It should be fairly harmless to have
+this additional flushing read of the interrupt status register because
+the reads don't have any side-effects (the register is write-1-to-clear)
+and these write loops don't happen very often (or when they do we tend
+to use DMA anyway), so:
+
+Acked-by: Thierry Reding <treding@nvidia.com>
+
+I did notice that for some reason Sowjanya hadn't listed you as a
+recipient, so perhaps you don't have this anywhere in your inbox. I've
+quoted the patch fully for reference below and the patchwork link for
+this is:
+
+	https://patchwork.ozlabs.org/project/linux-i2c/patch/1603166634-13639-1-gi=
+t-send-email-skomatineni@nvidia.com/
+
+If you'd prefer to have this in your inbox for proper review, please
+let us know so that Sowjanya can resend this.
+
+Thanks,
+Thierry
+
+>=20
+> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegr=
+a.c
+> index 6f08c0c..274bf3a 100644
+> --- a/drivers/i2c/busses/i2c-tegra.c
+> +++ b/drivers/i2c/busses/i2c-tegra.c
+> @@ -333,10 +333,13 @@ static u32 i2c_readl(struct tegra_i2c_dev *i2c_dev,=
+ unsigned int reg)
+>  	return readl_relaxed(i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg));
+>  }
+> =20
+> -static void i2c_writesl(struct tegra_i2c_dev *i2c_dev, void *data,
+> +static void i2c_writesl(struct tegra_i2c_dev *i2c_dev, u32 *data,
+>  			unsigned int reg, unsigned int len)
+>  {
+> -	writesl(i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg), data, len);
+> +	while (len--) {
+> +		writel(*data++, i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg));
+> +		i2c_readl(i2c_dev, I2C_INT_STATUS);
+> +	}
+>  }
+> =20
+>  static void i2c_readsl(struct tegra_i2c_dev *i2c_dev, void *data,
+> @@ -811,7 +814,7 @@ static int tegra_i2c_fill_tx_fifo(struct tegra_i2c_de=
+v *i2c_dev)
+>  		i2c_dev->msg_buf_remaining =3D buf_remaining;
+>  		i2c_dev->msg_buf =3D buf + words_to_transfer * BYTES_PER_FIFO_WORD;
+> =20
+> -		i2c_writesl(i2c_dev, buf, I2C_TX_FIFO, words_to_transfer);
+> +		i2c_writesl(i2c_dev, (u32 *)buf, I2C_TX_FIFO, words_to_transfer);
+> =20
+>  		buf +=3D words_to_transfer * BYTES_PER_FIFO_WORD;
+>  	}
+> --=20
+> 2.7.4
+>=20
+
+--2H5ZGAP27J0BwHMG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/8DPQACgkQ3SOs138+
+s6H/pQ//TtAcAyV2STrKLqwdsAY4M7EJsz39gSa4Rs53jgTyD1xidMMOq4Y8SbGz
+75lI2ihuk/YoVqsWJJat2PEBA9+cXRorB+DskpDRG+JDbfm5Zoq04VZ51hg0NHlp
++rY+IySRl93clzdxrVuej+6zLi4amNVjBst1BgfWpqEdPDDde3OKLR6ZBCiWK4wz
+7jpBhFr/oKq9rg2+bj2a1c9nnQdW4dM5vf2Hb7qIL9tCCcbWIoiql+4KM328N3Dh
+saLAJzOYTEcS8GrzMhRSqXfp1J4l9SlKpoLleLJ8/TIOIH8ESrcM9Kj4PSKiKXdC
+c6cs2qTe25S7SO/oQ1LGAFGQHgbhKkPQUAMvg22RgrlhScLw+ZoEpcCb+MZ2RDsf
+Psjbd69qNxdj6FUZZo41CFj2hO6l7Y1OIsWwJXbZBCwbYfG3q1y1ugzcaYsPx5ei
+gJKhfI9IC8wqkhhXN50tE7k+lKSUbywGfB6O+AdWuI2vEqrExnd3rdnbwPgJRht7
+kTbGH+34JqYTyRM5fg8PaPuONTRikj2admTJwHB3j9pOhjun0mVQnD12XBRQUAvX
+XNTetMXAi9ZcrfJ8mJxJ96fjCanftMS8mnFPhdRP1WIPMxkzVxtaV2RZa8b8PvRF
+BQPrKoiL4+yonw+g0C+62QBJyVANQ8p8jD1fnJF3+exB67TcCfA=
+=brDH
+-----END PGP SIGNATURE-----
+
+--2H5ZGAP27J0BwHMG--
