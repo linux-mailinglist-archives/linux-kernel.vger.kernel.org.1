@@ -2,118 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEEBD2F1212
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:06:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 899262F1216
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:06:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726581AbhAKMEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 07:04:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbhAKMEr (ORCPT
+        id S1726674AbhAKMFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 07:05:20 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:12495 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726590AbhAKMFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 07:04:47 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0789EC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 04:04:07 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id d2so10823531pfq.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 04:04:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yct/bRwX1SOlF2lOdkoL6Ak94EKf/2hUDGXuoWe6Kh4=;
-        b=bJ0XLRD1wmt8vA3mfkwBDMlgMH3i45cBOJeQ+twPiCTBeY576PgXIRI0cNkF6GMYAr
-         HSlOS6W+C6+PFkBQvZxoLrC7C98ZccEVnUKI1FXoI92ZGCgQ83DhlN2gqBuKayVsdkUp
-         Ymm0Y/4rJk6WT7ZsMnc3ITvuLVOhY2lVz5Hh1x1/vbgJFC8ZNs7grm03Wb5+7xTM0H2a
-         mH6MW379K2XOEvz21RDhXjFZl5gdsf7Ds/PtEBLBgoNhtNZTOEI/YkmniyG+6HHhtUU3
-         TfL7JTINTe57ojfu1BdULcNSd1740zHMO9hjL/ktHHBCeSz61ZDIOI27c7R/HzlopOXt
-         pLOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yct/bRwX1SOlF2lOdkoL6Ak94EKf/2hUDGXuoWe6Kh4=;
-        b=mGpb4bF6LP71rGCZXCKUl1yDzKJtqYDxYLlOo/kXOcMNCNDt3LkIWCuPdCGYy7EJjc
-         ZJ5TA6TFHByoXn4Tb9TzGR4KJvzndbeNP3nvh8HefIFVrCI1d9LIHnWDRm/r/u6KEEr+
-         4pUyEkgcwAdWBOIlYyGv90BNDp9mhdKm56JwwkNuYLo08pnaVSNMs9EGfN93Yj7DJD5a
-         ABNNn7riuaHbOwfOnoaGVL8TUZSAcA5PMWQJT4HRtLI1T1pKRhgHjSJ+4xkEAVdJd0Uq
-         qHkdgJZc6F/WB4vDmoSHPocuJFppe9dc6kXFci4MtuH22ScFOZYLPSeqAXRkxaNwfY1V
-         Riag==
-X-Gm-Message-State: AOAM530c045OX/Kv6vLbazW9Z3wmWw4yzHo4ct4m7dY37lhLO3LFWOlI
-        9R3qPmSkZ+ljcANs1ptk0Gk/7ouQPvxLA6B17uDH5A==
-X-Google-Smtp-Source: ABdhPJxrU59cCksNCY7xbJDFzx3T/kHxDH8+ym2V0QgLeeabyX7cdjCLMlGoz+9SPzSnjJ4aObbiaOTZEixtWEvCxSE=
-X-Received: by 2002:a63:e151:: with SMTP id h17mr19160314pgk.120.1610366646297;
- Mon, 11 Jan 2021 04:04:06 -0800 (PST)
+        Mon, 11 Jan 2021 07:05:20 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610366696; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=vU5lLL7erh17OyDOTHUXUrpFtmLAspc7WbMtxFyfvTg=; b=Sa2p6C3Bgzr+IvlDn/N6kpshNb2qm59J3IKkOjVxhRwM3l/rop4IvklqcdsI62cANWg69tSC
+ rfGiS8WZZzqHHHggNWSt0SfTLeVo6KMtHntH5mkiHVeNeOBPK4VyZkBhoFJPNklX+nUF1PN/
+ vbvdZuVl8IkpGlhqk+DEOiP41uU=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5ffc3ec74dcca1247559efa3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 12:04:23
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D5E39C43466; Mon, 11 Jan 2021 12:04:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 453ABC433CA;
+        Mon, 11 Jan 2021 12:04:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 453ABC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Rob Clark <robdclark@gmail.com>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        angelogioacchino.delregno@somainline.org
+Cc:     linux-arm-msm@vger.kernel.org,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-kernel@vger.kernel.org,
+        Kristian H Kristensen <hoegsberg@google.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Subject: [PATCH 0/2] drm/msm/a6xx: LLCC related fix and cleanup
+Date:   Mon, 11 Jan 2021 17:34:07 +0530
+Message-Id: <cover.1610366113.git.saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-References: <20210111115930.117393-1-robert.foss@linaro.org>
-In-Reply-To: <20210111115930.117393-1-robert.foss@linaro.org>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Mon, 11 Jan 2021 13:03:55 +0100
-Message-ID: <CAG3jFyvymhoMdewsWg6inTdoBYDEBmCjfnPm-d8E+-9H1OcL6w@mail.gmail.com>
-Subject: Re: [PATCH v2] media: ov8856: Configure sensor for GRBG Bayer for all modes
-To:     Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@linux.intel.com>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>
-Cc:     Tomasz Figa <tfiga@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Darn, this should have been sent out as v3.
+Patch 1 is a fix to not set the attributes when CONFIG_QCOM_LLCC
+is disabled and Patch 2 is a cleanup to create an a6xx specific address
+space.
 
-On Mon, 11 Jan 2021 at 13:00, Robert Foss <robert.foss@linaro.org> wrote:
->
-> The previously added modes 3264x2448 & 1632x1224 are actually
-> configuring the sensor for BGGR mode, this is an issue since
-> the mode that is exposed through V4L incorrectly is set as GRBG.
->
-> This patch fixes the issue by configuring the sensor to always
-> output GRBG Bayer formatted frames.
->
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> Suggested-by: Andrey Konovalov <andrey.konovalov@linaro.org>
-> ---
->
->
-> Changes since v1:
->  - Sakari: Added mode information to ov8856_mode struct
->  - Sakari: enum_mbus_code updated
->
-> Changes since v2:
->  - Andrey: Switched approach to changing the sensor configuration
->    to yield identical Bayer modes for all modes
->
->
->  drivers/media/i2c/ov8856.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
-> index 2f4ceaa80593..8a355135c7db 100644
-> --- a/drivers/media/i2c/ov8856.c
-> +++ b/drivers/media/i2c/ov8856.c
-> @@ -428,7 +428,7 @@ static const struct ov8856_reg mode_3264x2448_regs[] = {
->         {0x3810, 0x00},
->         {0x3811, 0x04},
->         {0x3812, 0x00},
-> -       {0x3813, 0x02},
-> +       {0x3813, 0x01},
->         {0x3814, 0x01},
->         {0x3815, 0x01},
->         {0x3816, 0x00},
-> @@ -821,7 +821,7 @@ static const struct ov8856_reg mode_1632x1224_regs[] = {
->         {0x3810, 0x00},
->         {0x3811, 0x02},
->         {0x3812, 0x00},
-> -       {0x3813, 0x02},
-> +       {0x3813, 0x01},
->         {0x3814, 0x03},
->         {0x3815, 0x01},
->         {0x3816, 0x00},
-> --
-> 2.27.0
->
+Sai Prakash Ranjan (2):
+  drm/msm: Add proper checks for GPU LLCC support
+  drm/msm/a6xx: Create an A6XX GPU specific address space
+
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 48 +++++++++++++++++++++++--
+ drivers/gpu/drm/msm/adreno/adreno_gpu.c | 23 +++++-------
+ drivers/gpu/drm/msm/adreno/adreno_gpu.h |  7 ++--
+ 3 files changed, 56 insertions(+), 22 deletions(-)
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
+
