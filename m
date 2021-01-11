@@ -2,182 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28CA02F0C01
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 05:57:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD11F2F0C03
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 05:58:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727199AbhAKE4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 23:56:14 -0500
-Received: from mail-bn7nam10on2051.outbound.protection.outlook.com ([40.107.92.51]:14561
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727043AbhAKE4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 23:56:13 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S/RLhvDk17cgEcUtH2UOb6Z+gq7vemlBp499CnQZX1kKeX4nDfZQZYBhK3iyYoRXlOzUg5WIm+RTeY6/tTk90ctBKiUNqMg43sexUygAV9bB3ml33eUeGzIUEZodlcacr8TjiEQd6YT6reFCYt+4EvtL+Do9T5f7dd46IODoqtetaBJFM/X5026q5pNLGyb3stJ/m75ITSAH+GPkLqdpskJi1czsgLC5AM4SYF/A7iOcmR1Vk7JelFYq8g+emt7Ol8oo9ZBn9xJ0fuXxXJKa91XQjV1+C6N/Gv/DMLEGR9T4Xv5INYWJvfWEsvGnfwqiyGnUi0wxTYuFhPjcxfHP1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Im1XgOUxAZ4+sALQiFyqGZ+io5YJsVlsSEGDgjFCl3Q=;
- b=AUElHssJZw2NTWCfNVg2EfcKCP4CPa0M2ihz+5iiMWJT/d3AkbLuQtw7FcpvuXrE18JcbDRi5RB2RIUXkzH1UaoOxKaXnyS26kDPm63MEWBC4sJJm4AArHoXx6SyGRdHdx1knteyOkCa9RtCd6O63UvRygFiDjnj9pq8405zQv1y/L+gAjEDFYDQyaRcIGVoiWxHsg0BkxpoRQZxfSFOPDvHHskx8fFHBC8fzSdhM7PF31/rj3GX0mTrxFH6iAnyseZlt609MQR+6ksagKxNcy9cZmBIVyMDb85hwXbKNmc4epEVyfYyglPZ+qtwPDnVEcOWSVJv5kMNr1vdbfS1SQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=silabs.com; dmarc=pass action=none header.from=silabs.com;
- dkim=pass header.d=silabs.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=silabs.onmicrosoft.com; s=selector2-silabs-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Im1XgOUxAZ4+sALQiFyqGZ+io5YJsVlsSEGDgjFCl3Q=;
- b=avjBTcTB7/TXrEVfKrtPAIxgkADY+VapjapsAJdyVOrglc2LnehQBxfnNs2U1ofN+vICqCU5NJkXtKDuEDOOaDYtQe9a4SSQ9LHlbnfTwG6DY+DaAG/9xeXLTjzXtIZhcEas2trnIZZVVxsWMCHmcqED1VldqBOPGHhLB37Jz30=
-Received: from SJ0PR11MB5008.namprd11.prod.outlook.com (2603:10b6:a03:2d5::17)
- by BY5PR11MB4007.namprd11.prod.outlook.com (2603:10b6:a03:189::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Mon, 11 Jan
- 2021 04:55:22 +0000
-Received: from SJ0PR11MB5008.namprd11.prod.outlook.com
- ([fe80::589d:3fe7:733c:eb72]) by SJ0PR11MB5008.namprd11.prod.outlook.com
- ([fe80::589d:3fe7:733c:eb72%6]) with mapi id 15.20.3742.012; Mon, 11 Jan 2021
- 04:55:22 +0000
-From:   Pho Tran <Pho.Tran@silabs.com>
-To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        Hung Nguyen <Hung.Nguyen@silabs.com>,
-        Tung Pham <Tung.Pham@silabs.com>
-Subject: [PATCH] USB: otg: Fix error 32 when enable hardware flow control.
-Thread-Topic: [PATCH] USB: otg: Fix error 32 when enable hardware flow
- control.
-Thread-Index: AQHW59X3zHF6wEm0PEC++j/MCSj8dQ==
-Date:   Mon, 11 Jan 2021 04:55:22 +0000
-Message-ID: <C429CBAD-FE44-42AE-909C-4C33052A7413@silabs.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.40.0.2.31)
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=silabs.com;
-x-originating-ip: [118.70.199.1]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ad525140-165c-4628-699d-08d8b5ed1a2d
-x-ms-traffictypediagnostic: BY5PR11MB4007:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR11MB40079952530C63FF59337A3BE3AB0@BY5PR11MB4007.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:86;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: PZn4n5bi8xOJGYWhbKVUFNqn9cVCC5smtib2gtRifzm6z4Ppg+gQocNDMw3SD8KaoIfDDSA+Bz6UMPzHfb6iLlS6fEx1XZ3CePN7ZTLjpfECiPXG4blgtmrwKAFwT+/mus8wuVYUkdTsUX1ixKvWj4b7D93JueuYul3hdv5kYqhNAcSkFXwu6doKUSy+Gy1deueTAmAcujy7yyBtLiPc1P8zHUT7Rl6l7+Yk5n4nywfW0SxGtUiqi45def+jxawDT6bNgR/wtyc/mPPW0joZ5klTWnsaNWEzkH6fecAD8Ux4GhbxjnepN+ll7fkKfxmaSZrndOaET0GKmO+sxGxZEu38cOKudO5av4rQzckTmAu5KIS66powZTd6zsSKlsCUIpIAnWuvq7f7tNNGfPv59v5tccZn8X0w6udEJJZmoDtGyMW3TuL+CO/043NYnnCa
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5008.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39850400004)(376002)(366004)(346002)(396003)(136003)(83380400001)(6512007)(8936002)(54906003)(6486002)(8676002)(36756003)(2906002)(186003)(316002)(33656002)(26005)(478600001)(2616005)(6506007)(66946007)(91956017)(66556008)(64756008)(76116006)(86362001)(66476007)(6916009)(71200400001)(66446008)(107886003)(5660300002)(4326008)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?c5eooreWxw2xzdHcwIVC5/o/YFdPbSRPE5pE4yd07w907VmhZKby29ZYW8kl?=
- =?us-ascii?Q?/q19v+lJhbwZnj5FrYa2dlEmMiGqb/7yd8GoxZO24J/Oe4uGTMaO6ULZrbuG?=
- =?us-ascii?Q?0OFwYg/k0xo/nMGgLRTNnOj71Dhmzely5raDapa5TJxOdGVTiKS6zAiiI3Ho?=
- =?us-ascii?Q?HiwHamf2EjzrO8ufmCVRDlIqNqvKaliwBFUeGl1F30ZYYYXJ26WMjQCUguDh?=
- =?us-ascii?Q?FxiKsfNY7jnMm/ep03dZ+MZCdsqs6rAvFrGA5PNyKI2neAFtRHftkfafK3F7?=
- =?us-ascii?Q?GUabEdQEqdE0p7+DinYjs7vSTa1Ksu83nZXYFM9dLE3PbtCIil35CgvMTj5V?=
- =?us-ascii?Q?VpzhNgRHCwWbwR0ayNtin0eJR0+GpGwY7xTiS4Rl2lS2qBfq2+lphRWh2m74?=
- =?us-ascii?Q?HcjQy2ZXMdTBYVB+n6UbKDdxKep5YW9PbD4i4hdiGi4RSQI5sGCtMCkq0Qf6?=
- =?us-ascii?Q?HD9nQm/J6YQaPrvfvn7mIfVrXthVbx4+GeyDjQ0qe7XXqdgwh+Whx1dNcgNG?=
- =?us-ascii?Q?/FGKNY3cBzxBm+8ZjAC9K21pdjEvQIiDui++TgBX3VwJIaQiTjKsAGBhLybw?=
- =?us-ascii?Q?Ns0QkO2e6G7bt3fXw0GqrjSiepu1FYMlpW9pQmRCIhhnynLjiY0UrvJrVcp6?=
- =?us-ascii?Q?W+3raQRb2oExnDIqxqhQe+bpZ/4hLWVMtvfiZy379BuhS5Hw9cv21TPPMK0M?=
- =?us-ascii?Q?ujAl9xYO5FLenw9MkbnN4XKCgKj0jdZbW7F2XJy6cQt5+wwmU8rHaf+4Fsu/?=
- =?us-ascii?Q?csZrGhOkgYYojJ9ZhsnGIu5rBJBfyO6VTN2jWoeCgm2VBGsSPzr+iIyO8Nwj?=
- =?us-ascii?Q?o/yNqUGs6hCeutSyyench3FtLHhaus0yXGanAnjgx4tfappqVPPVSlKKqRB9?=
- =?us-ascii?Q?VGiW7QM+GpsJmNYRgM/Of3YAmAVSahVtUPs2uBBpGYuy40309uUVffRA8v+/?=
- =?us-ascii?Q?9Uu4TDc/CL00SQAReZU+AU2vRaOf09n+7cWHtoY/7BUYMcHCfkgSxJ7wlMk2?=
- =?us-ascii?Q?JP58?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <C898074B790CF542A0F2053BAF3B6385@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1726652AbhAKE5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 23:57:43 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:54433 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725831AbhAKE5m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 23:57:42 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610341038; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=jYkO7dbOgBg1/0RRjemneHKpWx/1hw2rJ9cPf6v85BA=;
+ b=IEniBcLij9mDuA5Sj+NHUPIOy8Dc42xeEaSYqgKui+XNCbEAyqYL9ZuH8tE4fkXOMOE1iiTH
+ tfSa+lbtmvUBwWYsL37fDTbHk38XHF5qt/YmRCU6L5YsLO0ZZJtHSjFsU13SdzlMjSTMt5YC
+ b1iXbYeDncdlkRET5/gnim1phs8=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5ffbda834104d9478dd68d4b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 04:56:35
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9EA69C433CA; Mon, 11 Jan 2021 04:56:35 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3A2DEC433C6;
+        Mon, 11 Jan 2021 04:56:32 +0000 (UTC)
 MIME-Version: 1.0
-X-OriginatorOrg: silabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5008.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad525140-165c-4628-699d-08d8b5ed1a2d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jan 2021 04:55:22.0152
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 54dbd822-5231-4b20-944d-6f4abcd541fb
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: q2jHYC2TcBS22PlhuubHngzhXAKxV8RkwijTnF0TwNZ8xq0uSpJMM3vgpgkBujc8cNleKgYl09dQ4WjfBP1Blw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4007
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 11 Jan 2021 10:26:32 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     isaacm@codeaurora.org, Rob Clark <robdclark@gmail.com>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        linux-kernel@vger.kernel.org,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        iommu@lists.linux-foundation.org,
+        Robin Murphy <robin.murphy@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] iommu/io-pgtable-arm: Allow non-coherent masters to use
+ system cache
+In-Reply-To: <20210108181830.GA5457@willie-the-truck>
+References: <20201224064007.2339-1-saiprakash.ranjan@codeaurora.org>
+ <20210106115615.GA1763@willie-the-truck>
+ <cfced52002337025088a64aa159760b2@codeaurora.org>
+ <8cfefbff135a5287d177b6ab2ccc3304@codeaurora.org>
+ <20210108181830.GA5457@willie-the-truck>
+Message-ID: <3a776219db9f1256133920d52f864792@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When hardware flow control is enabled,
-don't allow host send MHS command to cp210x.
+On 2021-01-08 23:48, Will Deacon wrote:
+> On Fri, Jan 08, 2021 at 11:17:25AM +0530, Sai Prakash Ranjan wrote:
+>> On 2021-01-07 22:27, isaacm@codeaurora.org wrote:
+>> > On 2021-01-06 03:56, Will Deacon wrote:
+>> > > On Thu, Dec 24, 2020 at 12:10:07PM +0530, Sai Prakash Ranjan wrote:
+>> > > > commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY
+>> > > > flag")
+>> > > > removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
+>> > > > the memory type setting required for the non-coherent masters to use
+>> > > > system cache. Now that system cache support for GPU is added, we will
+>> > > > need to mark the memory as normal sys-cached for GPU to use
+>> > > > system cache.
+>> > > > Without this, the system cache lines are not allocated for GPU.
+>> > > > We use
+>> > > > the IO_PGTABLE_QUIRK_ARM_OUTER_WBWA quirk instead of a page
+>> > > > protection
+>> > > > flag as the flag cannot be exposed via DMA api because of no in-tree
+>> > > > users.
+>> > > >
+>> > > > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>> > > > ---
+>> > > >  drivers/iommu/io-pgtable-arm.c | 3 +++
+>> > > >  1 file changed, 3 insertions(+)
+>> > > >
+>> > > > diff --git a/drivers/iommu/io-pgtable-arm.c
+>> > > > b/drivers/iommu/io-pgtable-arm.c
+>> > > > index 7c9ea9d7874a..3fb7de8304a2 100644
+>> > > > --- a/drivers/iommu/io-pgtable-arm.c
+>> > > > +++ b/drivers/iommu/io-pgtable-arm.c
+>> > > > @@ -415,6 +415,9 @@ static arm_lpae_iopte
+>> > > > arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
+>> > > >  		else if (prot & IOMMU_CACHE)
+>> > > >  			pte |= (ARM_LPAE_MAIR_ATTR_IDX_CACHE
+>> > > >  				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
+>> > > > +		else if (data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA)
+>> > > > +			pte |= (ARM_LPAE_MAIR_ATTR_IDX_INC_OCACHE
+>> > > > +				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
+>> > > >  	}
+>> > >
+>> > While this approach of enabling system cache globally for both page
+>> > tables and other buffers
+>> > works for the GPU usecase, this isn't ideal for other clients that use
+>> > system cache. For example,
+>> > video clients only want to cache a subset of their buffers in the
+>> > system cache, due to the sizing constraint
+>> > imposed by how much of the system cache they can use. So, it would be
+>> > ideal to have
+>> > a way of expressing the desire to use the system cache on a per-buffer
+>> > basis. Additionally,
+>> > our video clients use the DMA layer, and since the requirement is for
+>> > caching in the system cache
+>> > to be a per buffer attribute, it seems like we would have to have a
+>> > DMA attribute to express
+>> > this on a per-buffer basis.
+>> >
+>> 
+>> I did bring this up initially [1], also where is this video client
+>> in upstream? AFAIK, only system cache user in upstream is GPU.
+>> We cannot add any DMA attribute unless there is any user upstream
+>> as per [2], so when the support for such a client is added, wouldn't
+>> ((data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA) || 
+>> PROT_FLAG)
+>> work?
+> 
+> Hmm, I think this is another case where we need to separate out the
+> page-table walker attributes from the access attributes. Currently,
+> IO_PGTABLE_QUIRK_ARM_OUTER_WBWA applies _only_ to the page-table walker
+> and I don't think it makes any sense for that to be per-buffer (how 
+> would
+> you even manage that?). However, if we want to extend this to data 
+> accesses
+> and we know that there are valid use-cases where this should be 
+> per-buffer,
+> then shoe-horning it in with the walker quirk does not feel like the 
+> best
+> thing to do.
+> 
+> As a starting point, we could:
+> 
+>   1. Rename IO_PGTABLE_QUIRK_ARM_OUTER_WBWA to IO_PGTABLE_QUIRK_PTW_LLC
+>   2. Add a new prot flag IOMMU_LLC
+>   3. Have the GPU pass the new prot for its buffer mappings
+> 
 
-Signed-off-by: Pho Tran<pho.tran@silabs.com>
----
- drivers/usb/serial/cp210x.c | 32 +++++++++++++++++++++++++++++++-
- 1 file changed, 31 insertions(+), 1 deletion(-)
+This looks good to me, I will work on this and post something soon.
 
-diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-index fbb10dfc56e3..f231cecdaf7d 100644
---- a/drivers/usb/serial/cp210x.c
-+++ b/drivers/usb/serial/cp210x.c
-@@ -1204,6 +1204,7 @@ static int cp210x_tiocmset(struct tty_struct *tty,
- 		unsigned int set, unsigned int clear)
- {
- 	struct usb_serial_port *port =3D tty->driver_data;
-+
- 	return cp210x_tiocmset_port(port, set, clear);
- }
-=20
-@@ -1211,6 +1212,11 @@ static int cp210x_tiocmset_port(struct usb_serial_po=
-rt *port,
- 		unsigned int set, unsigned int clear)
- {
- 	u16 control =3D 0;
-+	struct cp210x_flow_ctl flow_ctl;
-+	u32 ctl_hs =3D 0;
-+	u32 flow_repl =3D 0;
-+	bool auto_dtr =3D false;
-+	bool auto_rts =3D false;
-=20
- 	if (set & TIOCM_RTS) {
- 		control |=3D CONTROL_RTS;
-@@ -1230,6 +1236,30 @@ static int cp210x_tiocmset_port(struct usb_serial_po=
-rt *port,
- 	}
-=20
- 	dev_dbg(&port->dev, "%s - control =3D 0x%.4x\n", __func__, control);
-+	/*
-+	 *	Don't send MHS command if device in hardware flowcontrol mode
-+	 */
-+	cp210x_read_reg_block(port, CP210X_GET_FLOW, &flow_ctl,
-+				sizeof(flow_ctl));
-+	ctl_hs =3D le32_to_cpu(flow_ctl.ulControlHandshake);
-+	flow_repl =3D le32_to_cpu(flow_ctl.ulFlowReplace);
-+
-+	if (CP210X_SERIAL_DTR_SHIFT(CP210X_SERIAL_DTR_FLOW_CTL)
-+		=3D=3D (ctl_hs & CP210X_SERIAL_DTR_MASK))
-+		auto_dtr =3D true;
-+	else
-+		auto_dtr =3D false;
-+
-+	if (CP210X_SERIAL_RTS_SHIFT(CP210X_SERIAL_RTS_FLOW_CTL)
-+		=3D=3D (flow_repl & CP210X_SERIAL_RTS_MASK))
-+		auto_rts =3D true;
-+	else
-+		auto_rts =3D false;
-+
-+	if (auto_dtr || auto_rts) {
-+		dev_dbg(&port->dev, "Don't set MHS when while device in flow control mod=
-e\n");
-+		return 0;
-+	}
-=20
- 	return cp210x_write_u16_reg(port, CP210X_SET_MHS, control);
- }
-@@ -1256,7 +1286,7 @@ static int cp210x_tiocmget(struct tty_struct *tty)
- 		|((control & CONTROL_RTS) ? TIOCM_RTS : 0)
- 		|((control & CONTROL_CTS) ? TIOCM_CTS : 0)
- 		|((control & CONTROL_DSR) ? TIOCM_DSR : 0)
--		|((control & CONTROL_RING)? TIOCM_RI  : 0)
-+		|((control & CONTROL_RING) ? TIOCM_RI  : 0)
- 		|((control & CONTROL_DCD) ? TIOCM_CD  : 0);
-=20
- 	dev_dbg(&port->dev, "%s - control =3D 0x%.2x\n", __func__, control);
---=20
-2.17.1=
+> Does that work? One thing I'm not sure about is whether IOMMU_CACHE 
+> should
+> imply IOMMU_LLC, or whether there is a use-case for inner-cacheable, 
+> outer
+> non-cacheable mappings for a coherent device. Have you ever seen that 
+> sort
+> of thing before?
+> 
+
+I don't think there is such a usecase as Isaac mentioned.
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
