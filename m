@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529832F13E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1052F1338
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732431AbhAKNQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:16:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34898 "EHLO mail.kernel.org"
+        id S1730313AbhAKNF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:05:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732361AbhAKNQQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:16:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE188225AC;
-        Mon, 11 Jan 2021 13:15:34 +0000 (UTC)
+        id S1730236AbhAKNFE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:05:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BE2E2255F;
+        Mon, 11 Jan 2021 13:04:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370935;
-        bh=+8yPsiN/uB4rKcfeO/7Nj7eL9eaN2tczFxebo4r3sQA=;
+        s=korg; t=1610370288;
+        bh=lnIgKExTFNLQC4+UMBirQm1JKZUB0vvXVvSHP64FZfQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j2RNbCtM5x2k7Qx9qhhJAF/IPHPNif+bHx2qlDKaT2usbhCMg7f9vqwsvBQ04Fl4l
-         h9bOrccwvG1jGmtVqxcIA2+c44VOpJQMITFNXsKBDtEdS+1HMDUOsd2Ig+KlQ6mN0y
-         KFBtD1JI1kU6AnogjG/mggSoQjW7lYJT3PYTiHfc=
+        b=AgLZ75gtlbym/j6PR//7lSwNferIire44YkeyRDCY0Iz4FIE/P/X7gNRd8nMuFl/2
+         1GGz+BXIs8NU44uQl/j3aw00HxZ+j/0qX70tUq5jMKxS+amBi20Ipgd+ljvc9WsYLt
+         bw3jVgTksDkyOJbDSM0r212IE9zWtJopGEUVAYuA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 5.10 069/145] Bluetooth: revert: hci_h5: close serdev device and free hu in h5_close
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Andrew Lunn <andrew@lunn.ch>, Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 14/57] net: ethernet: Fix memleak in ethoc_probe
 Date:   Mon, 11 Jan 2021 14:01:33 +0100
-Message-Id: <20210111130051.861027890@linuxfoundation.org>
+Message-Id: <20210111130034.415569565@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
+References: <20210111130033.715773309@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,65 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit 5c3b5796866f85354a5ce76a28f8ffba0dcefc7e upstream.
+[ Upstream commit 5d41f9b7ee7a5a5138894f58846a4ffed601498a ]
 
-There have been multiple revisions of the patch fix the h5->rx_skb
-leak. Accidentally the first revision (which is buggy) and v5 have
-both been merged:
+When mdiobus_register() fails, priv->mdio allocated
+by mdiobus_alloc() has not been freed, which leads
+to memleak.
 
-v1 commit 70f259a3f427 ("Bluetooth: hci_h5: close serdev device and free
-hu in h5_close");
-v5 commit 855af2d74c87 ("Bluetooth: hci_h5: fix memory leak in h5_close")
-
-The correct v5 makes changes slightly higher up in the h5_close()
-function, which allowed both versions to get merged without conflict.
-
-The changes from v1 unconditionally frees the h5 data struct, this
-is wrong because in the serdev enumeration case the memory is
-allocated in h5_serdev_probe() like this:
-
-        h5 = devm_kzalloc(dev, sizeof(*h5), GFP_KERNEL);
-
-So its lifetime is tied to the lifetime of the driver being bound
-to the serdev and it is automatically freed when the driver gets
-unbound. In the serdev case the same h5 struct is re-used over
-h5_close() and h5_open() calls and thus MUST not be free-ed in
-h5_close().
-
-The serdev_device_close() added to h5_close() is incorrect in the
-same way, serdev_device_close() is called on driver unbound too and
-also MUST no be called from h5_close().
-
-This reverts the changes made by merging v1 of the patch, so that
-just the changes of the correct v5 remain.
-
-Cc: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: e7f4dc3536a4 ("mdio: Move allocation of interrupts into core")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Link: https://lore.kernel.org/r/20201223110615.31389-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/bluetooth/hci_h5.c |    8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ drivers/net/ethernet/ethoc.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/bluetooth/hci_h5.c
-+++ b/drivers/bluetooth/hci_h5.c
-@@ -251,12 +251,8 @@ static int h5_close(struct hci_uart *hu)
- 	if (h5->vnd && h5->vnd->close)
- 		h5->vnd->close(h5);
+--- a/drivers/net/ethernet/ethoc.c
++++ b/drivers/net/ethernet/ethoc.c
+@@ -1212,7 +1212,7 @@ static int ethoc_probe(struct platform_d
+ 	ret = mdiobus_register(priv->mdio);
+ 	if (ret) {
+ 		dev_err(&netdev->dev, "failed to register MDIO bus\n");
+-		goto free2;
++		goto free3;
+ 	}
  
--	if (hu->serdev)
--		serdev_device_close(hu->serdev);
--
--	kfree_skb(h5->rx_skb);
--	kfree(h5);
--	h5 = NULL;
-+	if (!hu->serdev)
-+		kfree(h5);
- 
- 	return 0;
- }
+ 	ret = ethoc_mdio_probe(netdev);
+@@ -1244,6 +1244,7 @@ error2:
+ 	netif_napi_del(&priv->napi);
+ error:
+ 	mdiobus_unregister(priv->mdio);
++free3:
+ 	mdiobus_free(priv->mdio);
+ free2:
+ 	if (priv->clk)
 
 
