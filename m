@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D962F1318
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:03:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C45C2F13DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729850AbhAKNDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:03:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50254 "EHLO mail.kernel.org"
+        id S1732302AbhAKNP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:15:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729744AbhAKNDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:03:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6067422795;
-        Mon, 11 Jan 2021 13:02:28 +0000 (UTC)
+        id S1731879AbhAKNP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:15:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD4A7227C3;
+        Mon, 11 Jan 2021 13:14:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370148;
-        bh=PSJJeZbr+lK0GCebJ9clBwB5PAAtK4YdfQoHGi7zZiE=;
+        s=korg; t=1610370885;
+        bh=acif9ItcE+J1Fn1mgBfQPEX361VIIqCAwFDdZuTiARo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J/AlSgji3LPPjQ6toZiAqz9II9ZydZAOwI/SDjDVj9dBDK8/19zDfYpoA5Fij4iVG
-         WCj7gpIDjKQF+iw3wm22hD/jzNrHya6fClGKaBl+8aG9oyGvu32RcdrkGXo8moWxPH
-         XTGlnHPmOeS/l39cvshbWLAmwoL5hfqdTTVWh0d4=
+        b=1ZzcUQ7wyvQ3hB+yGJgk3E7EP1QgYC3J4+NyksK5PyvYrTF0p4Fz9y8q9b6hJGbob
+         ecCVmGvJYEH/VXi01r+MmWCzv3SCs8RfgFrxBojGHUn2lDXyegHHz1z9bKfT7ir/fH
+         l5a1qRSbVndEw1XFNKS/fsBK2AqwOJJFA1U5bx+A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ying-Tsun Huang <ying-tsun.huang@amd.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 4.4 38/38] x86/mtrr: Correct the range check before performing MTRR type lookups
+        stable@vger.kernel.org, YANG LI <abaci-bugfix@linux.alibaba.com>,
+        Abaci <abaci@linux.alibaba.com>, Lijun Pan <ljp@linux.ibm.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 046/145] ibmvnic: fix: NULL pointer dereference.
 Date:   Mon, 11 Jan 2021 14:01:10 +0100
-Message-Id: <20210111130034.275116538@linuxfoundation.org>
+Message-Id: <20210111130050.736495477@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
-References: <20210111130032.469630231@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,62 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ying-Tsun Huang <ying-tsun.huang@amd.com>
+From: YANG LI <abaci-bugfix@linux.alibaba.com>
 
-commit cb7f4a8b1fb426a175d1708f05581939c61329d4 upstream.
+[ Upstream commit 862aecbd9569e563b979c0e23a908b43cda4b0b9 ]
 
-In mtrr_type_lookup(), if the input memory address region is not in the
-MTRR, over 4GB, and not over the top of memory, a write-back attribute
-is returned. These condition checks are for ensuring the input memory
-address region is actually mapped to the physical memory.
+The error is due to dereference a null pointer in function
+reset_one_sub_crq_queue():
 
-However, if the end address is just aligned with the top of memory,
-the condition check treats the address is over the top of memory, and
-write-back attribute is not returned.
+if (!scrq) {
+    netdev_dbg(adapter->netdev,
+               "Invalid scrq reset. irq (%d) or msgs(%p).\n",
+		scrq->irq, scrq->msgs);
+		return -EINVAL;
+}
 
-And this hits in a real use case with NVDIMM: the nd_pmem module tries
-to map NVDIMMs as cacheable memories when NVDIMMs are connected. If a
-NVDIMM is the last of the DIMMs, the performance of this NVDIMM becomes
-very low since it is aligned with the top of memory and its memory type
-is uncached-minus.
+If the expression is true, scrq must be a null pointer and cannot
+dereference.
 
-Move the input end address change to inclusive up into
-mtrr_type_lookup(), before checking for the top of memory in either
-mtrr_type_lookup_{variable,fixed}() helpers.
-
- [ bp: Massage commit message. ]
-
-Fixes: 0cc705f56e40 ("x86/mm/mtrr: Clean up mtrr_type_lookup()")
-Signed-off-by: Ying-Tsun Huang <ying-tsun.huang@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20201215070721.4349-1-ying-tsun.huang@amd.com
+Fixes: 9281cf2d5840 ("ibmvnic: avoid memset null scrq msgs")
+Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
+Reported-by: Abaci <abaci@linux.alibaba.com>
+Acked-by: Lijun Pan <ljp@linux.ibm.com>
+Link: https://lore.kernel.org/r/1609312994-121032-1-git-send-email-abaci-bugfix@linux.alibaba.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- arch/x86/kernel/cpu/mtrr/generic.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/ibm/ibmvnic.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/arch/x86/kernel/cpu/mtrr/generic.c
-+++ b/arch/x86/kernel/cpu/mtrr/generic.c
-@@ -166,9 +166,6 @@ static u8 mtrr_type_lookup_variable(u64
- 	*repeat = 0;
- 	*uniform = 1;
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -2869,9 +2869,7 @@ static int reset_one_sub_crq_queue(struc
+ 	int rc;
  
--	/* Make end inclusive instead of exclusive */
--	end--;
--
- 	prev_match = MTRR_TYPE_INVALID;
- 	for (i = 0; i < num_var_ranges; ++i) {
- 		unsigned short start_state, end_state, inclusive;
-@@ -260,6 +257,9 @@ u8 mtrr_type_lookup(u64 start, u64 end,
- 	int repeat;
- 	u64 partial_end;
- 
-+	/* Make end inclusive instead of exclusive */
-+	end--;
-+
- 	if (!mtrr_state_set)
- 		return MTRR_TYPE_INVALID;
+ 	if (!scrq) {
+-		netdev_dbg(adapter->netdev,
+-			   "Invalid scrq reset. irq (%d) or msgs (%p).\n",
+-			   scrq->irq, scrq->msgs);
++		netdev_dbg(adapter->netdev, "Invalid scrq reset.\n");
+ 		return -EINVAL;
+ 	}
  
 
 
