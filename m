@@ -2,109 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76ECF2F227F
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA392F2282
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:14:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389571AbhAKWNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 17:13:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40451 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732176AbhAKWNm (ORCPT
+        id S2389560AbhAKWOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 17:14:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730805AbhAKWOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:13:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610403135;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=U2SRQaJi68oIpDWEDot6m4+vdPC0oqlKXjoXJCK3EU8=;
-        b=TAt0wI0vt5OCDmJf3r5DTtjaRzOyn3IVbYE+VddpQx97HlxxkoW5OHianp/JX+Q0hGW1C2
-        FnciXONTE5H4kkC7eUJCvXuXWJvZfdh+UQeGIZdF01AoYPA9RRZi4J70Y/twLpBmnBqz64
-        nNb6UEw7+KmnTk44hS4b8v+8qT76O6A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-105-g1YzdYylM4OYtp5p5gL-PQ-1; Mon, 11 Jan 2021 17:12:12 -0500
-X-MC-Unique: g1YzdYylM4OYtp5p5gL-PQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C4BF7B8101;
-        Mon, 11 Jan 2021 22:12:10 +0000 (UTC)
-Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8BA925C232;
-        Mon, 11 Jan 2021 22:12:09 +0000 (UTC)
-Date:   Mon, 11 Jan 2021 16:12:07 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Fangrui Song <maskray@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v3] x86/entry: emit a symbol for register restoring thunk
-Message-ID: <20210111221207.3hdgzhhis7ubcyrb@treble>
-References: <20210106015810.5p6crnh7jqtmjtv4@treble>
- <20210111203807.3547278-1-ndesaulniers@google.com>
+        Mon, 11 Jan 2021 17:14:33 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C4BC061786;
+        Mon, 11 Jan 2021 14:13:53 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id w79so301935qkb.5;
+        Mon, 11 Jan 2021 14:13:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nUSuOLEwKddwqAGQmUtdt1EL4PjE5423SzZtxcSveBk=;
+        b=n0RinPCSd6PDjjzBzNAePmt0rFKjNgZ2Rq8UadvjZBjYbsggF2cF0kca77n9CBFXGS
+         pwPQWwNXUbQZcr9Dm0JK4idGhlnTYPUFPHg4MehE+ZPn4Hyn8+5jzqP3IghHxR9aNcIo
+         EdBQUbhUxNJrmQ2bIodk3y6JL9NdesS3OsWXA7N2ZYP06Myd+rqDs0xvE/IPq1jBxoU/
+         ARLiLVRrKdfXyI2bUHPSHFZQnGwjywwgnLOOfk3ggYiIs377YDGa+qg9QcCzPtqe/Ome
+         AVTnDNF4zKZbH2nnIUEuWfp4EkaQV/jZMgfEp9j2nAssEn0f1chKRcIX72Fi15sdfrNW
+         FH3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nUSuOLEwKddwqAGQmUtdt1EL4PjE5423SzZtxcSveBk=;
+        b=flGxXcNw5XQ+5TyZYv8xnPucoCFieqNIpwqjU56+eai0l8/ymto5DWCauVGB+brIFa
+         0D/F9lXrKWwdqZkZQ0ausGFT05wns/s+7pdhAQDBwHvAflrC3fs0Ukd66u5ARCtEAp1B
+         fO62f/KB58uA8mWvGptUaRBAwsR3SQCBgm6j1cQdk62+GKowWcRlhrkTnrVZEoYtt7F5
+         ZoQr3gcuRurvU3PocBkZ1P8pJmft3uwyp9VJA9X+UyVak3eyW01+Qln5OfIYcbbUJZb/
+         gvwUkU5lXmkAwYvfVKTXeF3uU7iOpKWkby7aH+4CsvxkNBygrFYa2DW5ld/CxE511umk
+         ixiA==
+X-Gm-Message-State: AOAM532aOfmWdira3FERnMbEhvTUxiRtjr12p/MSGAQEZRZnEpgvOB21
+        PQlUpzO+UEapWbpIUBJEBVg=
+X-Google-Smtp-Source: ABdhPJzHX0z0hgj/Frp8oQS6zmOwwhR0jVYTmjM7pSi5J6S3ezg+zjKEQLsV+8HEEXzyhajNaZVcMg==
+X-Received: by 2002:a37:4d8e:: with SMTP id a136mr1454492qkb.317.1610403232586;
+        Mon, 11 Jan 2021 14:13:52 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id a194sm590265qkc.70.2021.01.11.14.13.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 14:13:52 -0800 (PST)
+Subject: Re: [PATCH V2 1/2] scripts: dtc: Add fdtoverlay.c and fdtdump.c to
+ DTC_SOURCE
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org
+References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <f346aea6-b97f-484f-6371-965831fc06fc@gmail.com>
+Date:   Mon, 11 Jan 2021 16:13:51 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210111203807.3547278-1-ndesaulniers@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 12:38:06PM -0800, Nick Desaulniers wrote:
-> Arnd found a randconfig that produces the warning:
-> 
-> arch/x86/entry/thunk_64.o: warning: objtool: missing symbol for insn at
-> offset 0x3e
-> 
-> when building with LLVM_IAS=1 (use Clang's integrated assembler). Josh
-> notes:
-> 
->   With the LLVM assembler stripping the .text section symbol, objtool
->   has no way to reference this code when it generates ORC unwinder
->   entries, because this code is outside of any ELF function.
-> 
-> Fangrui notes that this optimization is helpful for reducing images size
+Hi Viresh,
 
-"image"
-
-> when compiling with -ffunction-sections and -fdata-sections. I have
-> observerd on the order of tens of thousands of symbols for the kernel
-
-"observed"
-
-> images built with those flags. A patch has been authored against GNU
-> binutils to match this behavior, with a new flag
-> --generate-unused-section-symbols=[yes|no].
+On 1/6/21 11:15 PM, Viresh Kumar wrote:
+> We will start building overlays for platforms soon in the kernel and
+> would need these tools going forward. Lets start fetching them.
 > 
-> We can omit the .L prefix on a label to emit an entry into the symbol
-> table for the label, with STB_LOCAL binding.  This enables objtool to
-> generate proper unwind info here with LLVM_IAS=1.
+> Note that a copy of fdtdump.c was already copied back in the year 2012,
+> but was never updated or built for some reason.
 > 
-> Cc: Fangrui Song <maskray@google.com>
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1209
-> Link: https://reviews.llvm.org/D93783
-> Link: https://sourceware.org/binutils/docs/as/Symbol-Names.html
-> Link: https://sourceware.org/pipermail/binutils/2020-December/114671.html
-> Reported-by: Arnd Bergmann <arnd@arndb.de>
-> Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
-> Changes v2 -> v3:
-> * rework to use STB_LOCAL rather than STB_GLOBAL by dropping .L prefix,
->   as per Josh.
-> * rename oneline to drop STB_GLOBAL in commit message.
-> * add link to GAS docs on .L prefix.
-> * drop Josh's ack since patch changed.
+> V2: Separate out this change from Makefile one.
+> 
+> This needs to be followed by invocation of the ./update-dtc-source.sh
+> script so the relevant files can be copied before the Makefile is
+> updated in the next patch.
 
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Just an FYI that Rob will do the ./update-dtc-source.sh step at the appropriate
+time, creating a commit to be submitted in his pull request to Linus.
 
--- 
-Josh
+That way Rob will ensure that all of the updates from the parent project are
+updated in a careful manner.
+
+-Frank
+
+> 
+>  scripts/dtc/update-dtc-source.sh | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/scripts/dtc/update-dtc-source.sh b/scripts/dtc/update-dtc-source.sh
+> index bc704e2a6a4a..9bc4afb71415 100755
+> --- a/scripts/dtc/update-dtc-source.sh
+> +++ b/scripts/dtc/update-dtc-source.sh
+> @@ -31,9 +31,9 @@ set -ev
+>  DTC_UPSTREAM_PATH=`pwd`/../dtc
+>  DTC_LINUX_PATH=`pwd`/scripts/dtc
+>  
+> -DTC_SOURCE="checks.c data.c dtc.c dtc.h flattree.c fstree.c livetree.c srcpos.c \
+> -		srcpos.h treesource.c util.c util.h version_gen.h yamltree.c \
+> -		dtc-lexer.l dtc-parser.y"
+> +DTC_SOURCE="checks.c data.c dtc.c dtc.h fdtdump.c fdtoverlay.c flattree.c \
+> +		fstree.c livetree.c srcpos.c srcpos.h treesource.c util.c \
+> +		util.h version_gen.h yamltree.c dtc-lexer.l dtc-parser.y"
+>  LIBFDT_SOURCE="fdt.c fdt.h fdt_addresses.c fdt_empty_tree.c \
+>  		fdt_overlay.c fdt_ro.c fdt_rw.c fdt_strerror.c fdt_sw.c \
+>  		fdt_wip.c libfdt.h libfdt_env.h libfdt_internal.h"
+> 
 
