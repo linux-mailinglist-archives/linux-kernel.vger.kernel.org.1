@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50842F13D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:15:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEDE2F13A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732244AbhAKNPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:15:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33212 "EHLO mail.kernel.org"
+        id S1730895AbhAKNMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:12:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732221AbhAKNPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:15:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27365223E8;
-        Mon, 11 Jan 2021 13:14:47 +0000 (UTC)
+        id S1731350AbhAKNLO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:11:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A7A522AAD;
+        Mon, 11 Jan 2021 13:10:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370887;
-        bh=Gg9z6JL+vxxqWPzngExFRAgFl7dGE2SV/3kWYZbc7TA=;
+        s=korg; t=1610370633;
+        bh=H3Vg39PJBb8bU4b9uFjLwWenejDhGNvVdsLhkM1vwtU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P2sRzbc/6xSF98jARFjCJPgr93ME18Z22BcLdnsFXEf+4iv9vcr1wRwX5Qlfi2bCJ
-         OE1wFhjObaGoRkxqLF+Wdql+7uDoMQSNDMyIw3MMZrbeHrruFgTD3sNbTOErOKI79P
-         Wi2I038pYvGMZReGYJN0j5x9+joe0/wP2VdhwPVM=
+        b=qRQGQeI0mDqddOZ+AJFHv50fWVNSQn7oETfJfHhVDiHk9gUJF4UtZwaSdVA7MEocv
+         NEOju4P7igPW9jMOf9CJjwTTF7cgFTd7Vj65FsI0ICoaq7Q3Yu7EsVV+M5zM3A/pXI
+         +7UzHT99IgkOGmAldFoRO5rR42O1cRe5y1nxmu9g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 047/145] net: usb: qmi_wwan: add Quectel EM160R-GL
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: [PATCH 5.4 07/92] depmod: handle the case of /sbin/depmod without /sbin in PATH
 Date:   Mon, 11 Jan 2021 14:01:11 +0100
-Message-Id: <20210111130050.785749679@linuxfoundation.org>
+Message-Id: <20210111130039.508778357@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,57 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Bjørn Mork" <bjorn@mork.no>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit cfd82dfc9799c53ef109343a23af006a0f6860a9 ]
+[ Upstream commit cedd1862be7e666be87ec824dabc6a2b05618f36 ]
 
-New modem using ff/ff/30 for QCDM, ff/00/00 for  AT and NMEA,
-and ff/ff/ff for RMNET/QMI.
+Commit 436e980e2ed5 ("kbuild: don't hardcode depmod path") stopped
+hard-coding the path of depmod, but in the process caused trouble for
+distributions that had that /sbin location, but didn't have it in the
+PATH (generally because /sbin is limited to the super-user path).
 
-T: Bus=02 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 2 Spd=5000 MxCh= 0
-D: Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs= 1
-P: Vendor=2c7c ProdID=0620 Rev= 4.09
-S: Manufacturer=Quectel
-S: Product=EM160R-GL
-S: SerialNumber=e31cedc1
-C:* #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=896mA
-I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=(none)
-E: Ad=81(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E: Ad=01(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-E: Ad=83(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
-E: Ad=82(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E: Ad=02(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-E: Ad=85(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
-E: Ad=84(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E: Ad=03(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-E: Ad=87(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
-E: Ad=86(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E: Ad=04(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:* If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
-E: Ad=88(I) Atr=03(Int.) MxPS= 8 Ivl=32ms
-E: Ad=8e(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E: Ad=0f(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+Work around it for now by just adding /sbin to the end of PATH in the
+depmod.sh script.
 
-Signed-off-by: BjÃ¸rn Mork <bjorn@mork.no>
-Link: https://lore.kernel.org/r/20201230152451.245271-1-bjorn@mork.no
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-and-tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/qmi_wwan.c |    1 +
- 1 file changed, 1 insertion(+)
+ scripts/depmod.sh | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/net/usb/qmi_wwan.c
-+++ b/drivers/net/usb/qmi_wwan.c
-@@ -1036,6 +1036,7 @@ static const struct usb_device_id produc
- 	{QMI_MATCH_FF_FF_FF(0x2c7c, 0x0125)},	/* Quectel EC25, EC20 R2.0  Mini PCIe */
- 	{QMI_MATCH_FF_FF_FF(0x2c7c, 0x0306)},	/* Quectel EP06/EG06/EM06 */
- 	{QMI_MATCH_FF_FF_FF(0x2c7c, 0x0512)},	/* Quectel EG12/EM12 */
-+	{QMI_MATCH_FF_FF_FF(0x2c7c, 0x0620)},	/* Quectel EM160R-GL */
- 	{QMI_MATCH_FF_FF_FF(0x2c7c, 0x0800)},	/* Quectel RM500Q-GL */
+diff --git a/scripts/depmod.sh b/scripts/depmod.sh
+index e083bcae343f3..3643b4f896ede 100755
+--- a/scripts/depmod.sh
++++ b/scripts/depmod.sh
+@@ -15,6 +15,8 @@ if ! test -r System.map ; then
+ 	exit 0
+ fi
  
- 	/* 3. Combined interface devices matching on interface number */
++# legacy behavior: "depmod" in /sbin, no /sbin in PATH
++PATH="$PATH:/sbin"
+ if [ -z $(command -v $DEPMOD) ]; then
+ 	echo "Warning: 'make modules_install' requires $DEPMOD. Please install it." >&2
+ 	echo "This is probably in the kmod package." >&2
+-- 
+2.27.0
+
 
 
