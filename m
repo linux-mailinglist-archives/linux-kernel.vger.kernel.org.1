@@ -2,145 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C852F1D8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 19:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE102F1D80
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 19:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390193AbhAKSH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 13:07:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56462 "EHLO
+        id S2390130AbhAKSHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 13:07:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389925AbhAKSH4 (ORCPT
+        with ESMTP id S2390106AbhAKSHb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 13:07:56 -0500
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA8DC061795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 10:06:49 -0800 (PST)
-Received: by mail-ua1-x92c.google.com with SMTP id w7so112246uap.13
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 10:06:49 -0800 (PST)
+        Mon, 11 Jan 2021 13:07:31 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC36C0617AB;
+        Mon, 11 Jan 2021 10:06:32 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id w79so326123qkb.5;
+        Mon, 11 Jan 2021 10:06:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XWiH05HuaGWdRbA9U5L//orrI8G7vM7uoQMJxI3AypY=;
-        b=UYbp94mGeQYkBROkU3bvrAvpFFf4nVlbW5Vhlat17xqFjsNegXtz30bz3EI9akwZmg
-         qZs7MPAYdHs7UmBcBbJStXA9ahnnX88PLO62wS0rXjaWrbbtZUy8uht8h8Ukjq7SR80T
-         D5BCnKGKZ4Ewf/GlqkOpdlHEecDqwFG6MkKZfAnM+DZfgDe6b1B9bFwMEXYfFeZ4xPYw
-         4aaQ9hohj0w16piLZryWdDnnifPJ1uqeRDPWjdOES2tAFaGVZnSCTuMCPitzxu5LmHlU
-         Y1sP0qBdAwNWKaGm22sif3vwaHmpl61avubzrlqLaHRFW288o9RHh4Klag5TnR2rLTGK
-         8XCw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9lp28zoWOKLPGFRTu8+kIhpE6rBiQRtmpdJvXYx3+tY=;
+        b=ez1SefshWrFxr/3XbQrkWZhJIOzAqVAKha8CL5HWT4x+mLivWRS4dkFUm7HwH2jRFj
+         35RyeXAQJ1GHXy0yh6vjr2sd1FmADkpsLwXV73Eqx0FTfyI91aVGSqsGWrpB9hd9Z3Mg
+         5ezoFNrH++EteGshvlRBQEMzZx+t77f48oPDqewSK7fGTUaO1+wWYAP1lq2kt+bn1Lo7
+         yPIll/9SFKumsFKeGZqH0lHOfeaAkKP6HS5T6doHT5QxygwFwC7rcCi24LCEs+p+bCWm
+         ZwBI0MYIGO+4Ti1un1JlgNvYPrrv0JSyPZwmh/nGNhlvBRp/HWBHY90zCUJJ8OpSDcep
+         tUnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XWiH05HuaGWdRbA9U5L//orrI8G7vM7uoQMJxI3AypY=;
-        b=LI3+tnFSQZ/esD6GkAqTkuJwitkEau8O8ntHopcZMURnN4EqXHZniqIhPu8jC9jFhR
-         1Xhxc75kGn0uF6inQwBrpAbQhwmxNoQpoDItWvzacIFGQfAa+sPfneEe75YOOd+N0RlV
-         vch0gnDIOFlKBaTdefe1acQYnz1uSKE85OJajoQM1ap5sKW4pimPAID7M01L2Y1XdyyU
-         57Z7F970jgdglDZtwwIGA/KMk6fNRfi7c8dIgUok3+M68c1yzRGRCkeKM8DRSqhI47qk
-         VmcnqoKVdCPLBZ9EpZbk9ONwioxOSMZbFtLL7/2Q2NUFQM7SKnmkanc6h1vZTFePsjqN
-         PifQ==
-X-Gm-Message-State: AOAM53393mJeO1r3xI3v7wIVAs4LjTfQWa7XD20ElXgI1qRbi86af0/V
-        eFQvRN0Gj9Ioy3lgeI66ZNrUnW+CKke6yrY1X9jBXPmB2xmWnw==
-X-Google-Smtp-Source: ABdhPJy6k5BPXea4aijRSzb9FWxF8qw7DLALO/1gvHOZKC29+FYABLx5yMtCIB55CBVS1dmY1otNdJYl8fuFMcHN8wM=
-X-Received: by 2002:a9f:204e:: with SMTP id 72mr659337uam.19.1610388408471;
- Mon, 11 Jan 2021 10:06:48 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9lp28zoWOKLPGFRTu8+kIhpE6rBiQRtmpdJvXYx3+tY=;
+        b=nyycVbVBFCA5cHX1K+1kZnz0C8sNAy+zEDr/+r0gwk4Z4bb3CNbRUaOCeNnALPFjDN
+         sL3Gldu4LguphJk61D25g4VCuGhKrUpPqWA/WW0qvn5ro7WKC2a81GQZsavlHGmE3ZaC
+         kv/kHjtCuOjODWrZJL0xoEWJd8VbG82kR/tFTna7G0kd9EQkuoFBKWBDi0O2bX7nGbpA
+         Z+e/VYX0bxoFbWUsO5bAAmKUWGbiXT79Orld+rHngvys+hUI+b+kCW0ON2tq2KsrmEeD
+         EhqDrqpNypsg810lbjNw+KpkF1ryDENlFGxlriMfvviJKaQ/EvrjHK2Z5l7a+GObNENH
+         1leQ==
+X-Gm-Message-State: AOAM5332ukz/6db0jEN5Tx7GdduoONZatvOQX3DnvZVmh/aykDipLygz
+        21Feg/00s6A3mBmyrbK7tB+p4Yg9vI2Cgg==
+X-Google-Smtp-Source: ABdhPJwx8k0tYOOZKUoXq0vInH3wbViiSZCtXbNbqNuIHyl1UktVYK4JCeL9x3IbIOGZ87AlhyDxtg==
+X-Received: by 2002:a37:b94:: with SMTP id 142mr536071qkl.318.1610388391183;
+        Mon, 11 Jan 2021 10:06:31 -0800 (PST)
+Received: from localhost.localdomain ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id g28sm158752qtm.91.2021.01.11.10.06.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 10:06:30 -0800 (PST)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>
+Cc:     Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+        Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Nathan Chancellor <natechancellor@gmail.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Subject: [PATCH] bpf: Hoise pahole version checks into Kconfig
+Date:   Mon, 11 Jan 2021 11:06:09 -0700
+Message-Id: <20210111180609.713998-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20201229161625.38255233@xhacker.debian>
-In-Reply-To: <20201229161625.38255233@xhacker.debian>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 11 Jan 2021 19:06:05 +0100
-Message-ID: <CAPDyKFqWMFpe=y5dO1pguTFnffDTp-b_9yF=+Ev5PhDbYSKUMA@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-of-dwcmshc: fix rpmb access
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Dec 2020 at 09:19, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
->
-> Commit a44f7cb93732 ("mmc: core: use mrq->sbc when sending CMD23 for
-> RPMB") began to use ACMD23 for RPMB if the host supports ACMD23. In
-> RPMB ACM23 case, we need to set bit 31 to CMD23 argument, otherwise
-> RPMB write operation will return general fail.
->
-> However, no matter V4 is enabled or not, the dwcmshc's ARGUMENT2
-> register is 32-bit block count register which doesn't support stuff
-> bits of CMD23 argument. So let's handle this specific ACMD23 case.
->
-> From another side, this patch also prepare for future v4 enabling
-> for dwcmshc, because from the 4.10 spec, the ARGUMENT2 register is
-> redefined as 32bit block count which doesn't support stuff bits of
-> CMD23 argument.
->
-> Fixes: a44f7cb93732 ("mmc: core: use mrq->sbc when sending CMD23 for RPMB")
-> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+After commit da5fb18225b4 ("bpf: Support pre-2.25-binutils objcopy for
+vmlinux BTF"), having CONFIG_DEBUG_INFO_BTF enabled but lacking a valid
+copy of pahole results in a kernel that will fully compile but fail to
+link. The user then has to either install pahole or disable
+CONFIG_DEBUG_INFO_BTF and rebuild the kernel but only after their build
+has failed, which could have been a significant amount of time depending
+on the hardware.
 
-Applied for fixes and by adding a stable tag, thanks!
+Avoid a poor user experience and require pahole to be installed with an
+appropriate version to select and use CONFIG_DEBUG_INFO_BTF, which is
+standard for options that require a specific tools version.
 
-Kind regards
-Uffe
+Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ MAINTAINERS               |  1 +
+ init/Kconfig              |  4 ++++
+ lib/Kconfig.debug         |  6 ++----
+ scripts/link-vmlinux.sh   | 13 -------------
+ scripts/pahole-version.sh | 16 ++++++++++++++++
+ 5 files changed, 23 insertions(+), 17 deletions(-)
+ create mode 100755 scripts/pahole-version.sh
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b8db7637263a..6f6e24285a94 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3282,6 +3282,7 @@ F:	net/core/filter.c
+ F:	net/sched/act_bpf.c
+ F:	net/sched/cls_bpf.c
+ F:	samples/bpf/
++F:	scripts/pahole-version.sh
+ F:	tools/bpf/
+ F:	tools/lib/bpf/
+ F:	tools/testing/selftests/bpf/
+diff --git a/init/Kconfig b/init/Kconfig
+index b77c60f8b963..872c61b5d204 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -74,6 +74,10 @@ config TOOLS_SUPPORT_RELR
+ config CC_HAS_ASM_INLINE
+ 	def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
+ 
++config PAHOLE_VERSION
++	int
++	default $(shell,$(srctree)/scripts/pahole-version.sh $(PAHOLE))
++
+ config CONSTRUCTORS
+ 	bool
+ 	depends on !UML
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 7937265ef879..70c446af9664 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -267,6 +267,7 @@ config DEBUG_INFO_DWARF4
+ 
+ config DEBUG_INFO_BTF
+ 	bool "Generate BTF typeinfo"
++	depends on PAHOLE_VERSION >= 116
+ 	depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
+ 	depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
+ 	help
+@@ -274,12 +275,9 @@ config DEBUG_INFO_BTF
+ 	  Turning this on expects presence of pahole tool, which will convert
+ 	  DWARF type info into equivalent deduplicated BTF type info.
+ 
+-config PAHOLE_HAS_SPLIT_BTF
+-	def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
+-
+ config DEBUG_INFO_BTF_MODULES
+ 	def_bool y
+-	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
++	depends on DEBUG_INFO_BTF && MODULES && PAHOLE_VERSION >= 119
+ 	help
+ 	  Generate compact split BTF type information for kernel modules.
+ 
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index 6eded325c837..eef40fa9485d 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -139,19 +139,6 @@ vmlinux_link()
+ # ${2} - file to dump raw BTF data into
+ gen_btf()
+ {
+-	local pahole_ver
+-
+-	if ! [ -x "$(command -v ${PAHOLE})" ]; then
+-		echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
+-		return 1
+-	fi
+-
+-	pahole_ver=$(${PAHOLE} --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
+-	if [ "${pahole_ver}" -lt "116" ]; then
+-		echo >&2 "BTF: ${1}: pahole version $(${PAHOLE} --version) is too old, need at least v1.16"
+-		return 1
+-	fi
+-
+ 	vmlinux_link ${1}
+ 
+ 	info "BTF" ${2}
+diff --git a/scripts/pahole-version.sh b/scripts/pahole-version.sh
+new file mode 100755
+index 000000000000..6de6f734a345
+--- /dev/null
++++ b/scripts/pahole-version.sh
+@@ -0,0 +1,16 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++#
++# Usage: $ ./scripts/pahole-version.sh pahole
++#
++# Print the pahole version as a three digit string
++# such as `119' for pahole v1.19 etc.
++
++pahole="$*"
++
++if ! [ -x "$(command -v $pahole)" ]; then
++    echo 0
++    exit 1
++fi
++
++$pahole --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'
 
-> ---
->  drivers/mmc/host/sdhci-of-dwcmshc.c | 27 +++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
->
-> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> index 4b673792b5a4..d90020ed3622 100644
-> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> @@ -16,6 +16,8 @@
->
->  #include "sdhci-pltfm.h"
->
-> +#define SDHCI_DWCMSHC_ARG2_STUFF       GENMASK(31, 16)
-> +
->  /* DWCMSHC specific Mode Select value */
->  #define DWCMSHC_CTRL_HS400             0x7
->
-> @@ -49,6 +51,29 @@ static void dwcmshc_adma_write_desc(struct sdhci_host *host, void **desc,
->         sdhci_adma_write_desc(host, desc, addr, len, cmd);
->  }
->
-> +static void dwcmshc_check_auto_cmd23(struct mmc_host *mmc,
-> +                                    struct mmc_request *mrq)
-> +{
-> +       struct sdhci_host *host = mmc_priv(mmc);
-> +
-> +       /*
-> +        * No matter V4 is enabled or not, ARGUMENT2 register is 32-bit
-> +        * block count register which doesn't support stuff bits of
-> +        * CMD23 argument on dwcmsch host controller.
-> +        */
-> +       if (mrq->sbc && (mrq->sbc->arg & SDHCI_DWCMSHC_ARG2_STUFF))
-> +               host->flags &= ~SDHCI_AUTO_CMD23;
-> +       else
-> +               host->flags |= SDHCI_AUTO_CMD23;
-> +}
-> +
-> +static void dwcmshc_request(struct mmc_host *mmc, struct mmc_request *mrq)
-> +{
-> +       dwcmshc_check_auto_cmd23(mmc, mrq);
-> +
-> +       sdhci_request(mmc, mrq);
-> +}
-> +
->  static void dwcmshc_set_uhs_signaling(struct sdhci_host *host,
->                                       unsigned int timing)
->  {
-> @@ -133,6 +158,8 @@ static int dwcmshc_probe(struct platform_device *pdev)
->
->         sdhci_get_of_property(pdev);
->
-> +       host->mmc_host_ops.request = dwcmshc_request;
-> +
->         err = sdhci_add_host(host);
->         if (err)
->                 goto err_clk;
-> --
-> 2.30.0.rc2
->
+base-commit: e22d7f05e445165e58feddb4e40cc9c0f94453bc
+-- 
+2.30.0
+
