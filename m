@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABEE2F16D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:59:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 473622F1549
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:38:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388087AbhAKN55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:57:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54252 "EHLO mail.kernel.org"
+        id S1731695AbhAKNNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:13:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730394AbhAKNG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:06:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E452E22AAF;
-        Mon, 11 Jan 2021 13:06:40 +0000 (UTC)
+        id S1730791AbhAKNMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:12:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDC5A2225E;
+        Mon, 11 Jan 2021 13:12:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370401;
-        bh=PSJJeZbr+lK0GCebJ9clBwB5PAAtK4YdfQoHGi7zZiE=;
+        s=korg; t=1610370725;
+        bh=xGu95+CnD5vKduMRPLs/Rn1+Ud92sW1QnyUcoG3zxAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Th/Mx3GgrxOf6hQvxqLCTOKPDqgSDfAQnn004pyd4TSxINvRl3Rk9l5+hZUEEOLzx
-         jfQTA+JuYq+H6kyJ7visgiKyTEDSlLaXTbeOFpLNHFLJZKs43JxXEkr7Q2o5RwYaad
-         FIwJA6MROA7pnSledxmG4lPa6rER2mA8ILfuH2No=
+        b=Y8sN3Oq/O1w0ouID4IG9LD0tJGgzrXcJjiwiQ6X7tJSO/Vn6hmABnECYYI/9VOZRA
+         7r987+0OMc5RG7XeMOc7SaRAcYM7XlsYjz31y+YGE7Pjzx5n8dShdnwifUfJo4yIvn
+         Bbw64OV8FMTeHEl2ccvZVXnWmWHWwEVX3QTNsTrY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ying-Tsun Huang <ying-tsun.huang@amd.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 4.14 56/57] x86/mtrr: Correct the range check before performing MTRR type lookups
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>
+Subject: [PATCH 5.4 71/92] USB: gadget: legacy: fix return error code in acm_ms_bind()
 Date:   Mon, 11 Jan 2021 14:02:15 +0100
-Message-Id: <20210111130036.438085698@linuxfoundation.org>
+Message-Id: <20210111130042.571447526@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
-References: <20210111130033.715773309@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,62 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ying-Tsun Huang <ying-tsun.huang@amd.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-commit cb7f4a8b1fb426a175d1708f05581939c61329d4 upstream.
+commit c91d3a6bcaa031f551ba29a496a8027b31289464 upstream.
 
-In mtrr_type_lookup(), if the input memory address region is not in the
-MTRR, over 4GB, and not over the top of memory, a write-back attribute
-is returned. These condition checks are for ensuring the input memory
-address region is actually mapped to the physical memory.
+If usb_otg_descriptor_alloc() failed, it need return ENOMEM.
 
-However, if the end address is just aligned with the top of memory,
-the condition check treats the address is over the top of memory, and
-write-back attribute is not returned.
-
-And this hits in a real use case with NVDIMM: the nd_pmem module tries
-to map NVDIMMs as cacheable memories when NVDIMMs are connected. If a
-NVDIMM is the last of the DIMMs, the performance of this NVDIMM becomes
-very low since it is aligned with the top of memory and its memory type
-is uncached-minus.
-
-Move the input end address change to inclusive up into
-mtrr_type_lookup(), before checking for the top of memory in either
-mtrr_type_lookup_{variable,fixed}() helpers.
-
- [ bp: Massage commit message. ]
-
-Fixes: 0cc705f56e40 ("x86/mm/mtrr: Clean up mtrr_type_lookup()")
-Signed-off-by: Ying-Tsun Huang <ying-tsun.huang@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20201215070721.4349-1-ying-tsun.huang@amd.com
+Fixes: 578aa8a2b12c ("usb: gadget: acm_ms: allocate and init otg descriptor by otg capabilities")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201117092955.4102785-1-yangyingliang@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kernel/cpu/mtrr/generic.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/usb/gadget/legacy/acm_ms.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kernel/cpu/mtrr/generic.c
-+++ b/arch/x86/kernel/cpu/mtrr/generic.c
-@@ -166,9 +166,6 @@ static u8 mtrr_type_lookup_variable(u64
- 	*repeat = 0;
- 	*uniform = 1;
+--- a/drivers/usb/gadget/legacy/acm_ms.c
++++ b/drivers/usb/gadget/legacy/acm_ms.c
+@@ -203,8 +203,10 @@ static int acm_ms_bind(struct usb_compos
+ 		struct usb_descriptor_header *usb_desc;
  
--	/* Make end inclusive instead of exclusive */
--	end--;
--
- 	prev_match = MTRR_TYPE_INVALID;
- 	for (i = 0; i < num_var_ranges; ++i) {
- 		unsigned short start_state, end_state, inclusive;
-@@ -260,6 +257,9 @@ u8 mtrr_type_lookup(u64 start, u64 end,
- 	int repeat;
- 	u64 partial_end;
- 
-+	/* Make end inclusive instead of exclusive */
-+	end--;
-+
- 	if (!mtrr_state_set)
- 		return MTRR_TYPE_INVALID;
- 
+ 		usb_desc = usb_otg_descriptor_alloc(gadget);
+-		if (!usb_desc)
++		if (!usb_desc) {
++			status = -ENOMEM;
+ 			goto fail_string_ids;
++		}
+ 		usb_otg_descriptor_init(gadget, usb_desc);
+ 		otg_desc[0] = usb_desc;
+ 		otg_desc[1] = NULL;
 
 
