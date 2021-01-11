@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E8F2F1401
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:18:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B632F1387
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:10:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733152AbhAKNSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:18:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36626 "EHLO mail.kernel.org"
+        id S1729362AbhAKNKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:10:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732746AbhAKNSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:18:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D29D22795;
-        Mon, 11 Jan 2021 13:17:22 +0000 (UTC)
+        id S1730799AbhAKNJ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:09:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 135E222AAB;
+        Mon, 11 Jan 2021 13:09:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610371042;
-        bh=/4g7NcMHy4RSzSE1mmqUpPvrVzn9VNNwrPww1/iTURQ=;
+        s=korg; t=1610370550;
+        bh=UydTLdreVjfJNWvvcennbFS5TKT5XPVp+559k5oOHB0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eLea32PuqSHLcNmwVqUzZTzwvAiatMwnu1tdIyt8jJA7spwytDJO7TMQ67qwFwNOF
-         kS9mns3Fvlhr7laTYnia+BSRzl49tZ7wps0GVIjLyJXvgzXq+iu81PqyrGb850eGj7
-         yN76SuO6fPmXgOyXPn3XnPYs4zGWoi3lod2hb91M=
+        b=cjKJr3kUf8WVCQZRmb7khiYbsB+Ro00VE7nxQmQEQUQ92u29G9gw/6MG+st34iCig
+         y4BqNZtg+WDxIexdlYQv0GZnGsK5b2+Vf1GUlzPePSLTOlP55sDv81GEGdhHj6yV+6
+         90TP2XdAs57gr0Gn4hRnECQshwcn77t/xXfcTV3M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Borislav Petkov <bp@suse.de>, Tony Luck <tony.luck@intel.com>
-Subject: [PATCH 5.10 116/145] x86/resctrl: Dont move a task to the same resource group
-Date:   Mon, 11 Jan 2021 14:02:20 +0100
-Message-Id: <20210111130054.102343935@linuxfoundation.org>
+        stable@vger.kernel.org, PGNet Dev <pgnet.dev@gmail.com>,
+        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Jinoh Kang <jinoh.kang.kr@gmail.com>
+Subject: [PATCH 4.19 72/77] xen/pvh: correctly setup the PV EFI interface for dom0
+Date:   Mon, 11 Jan 2021 14:02:21 +0100
+Message-Id: <20210111130039.869512056@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
+References: <20210111130036.414620026@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,49 +41,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fenghua Yu <fenghua.yu@intel.com>
+From: Roger Pau Monne <roger.pau@citrix.com>
 
-commit a0195f314a25582b38993bf30db11c300f4f4611 upstream.
+commit 72813bfbf0276a97c82af038efb5f02dcdd9e310 upstream.
 
-Shakeel Butt reported in [1] that a user can request a task to be moved
-to a resource group even if the task is already in the group. It just
-wastes time to do the move operation which could be costly to send IPI
-to a different CPU.
+This involves initializing the boot params EFI related fields and the
+efi global variable.
 
-Add a sanity check to ensure that the move operation only happens when
-the task is not already in the resource group.
+Without this fix a PVH dom0 doesn't detect when booted from EFI, and
+thus doesn't support accessing any of the EFI related data.
 
-[1] https://lore.kernel.org/lkml/CALvZod7E9zzHwenzf7objzGKsdBmVwTgEJ0nPgs0LUFU3SN5Pw@mail.gmail.com/
-
-Fixes: e02737d5b826 ("x86/intel_rdt: Add tasks files")
-Reported-by: Shakeel Butt <shakeelb@google.com>
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Signed-off-by: Reinette Chatre <reinette.chatre@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/962ede65d8e95be793cb61102cca37f7bb018e66.1608243147.git.reinette.chatre@intel.com
+Reported-by: PGNet Dev <pgnet.dev@gmail.com>
+Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Jinoh Kang <jinoh.kang.kr@gmail.com>
+Cc: stable@vger.kernel.org # 4.19+
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
----
- arch/x86/kernel/cpu/resctrl/rdtgroup.c |    7 +++++++
- 1 file changed, 7 insertions(+)
 
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -546,6 +546,13 @@ static void update_task_closid_rmid(stru
- static int __rdtgroup_move_task(struct task_struct *tsk,
- 				struct rdtgroup *rdtgrp)
+---
+ arch/x86/xen/efi.c           |   12 ++++++------
+ arch/x86/xen/enlighten_pv.c  |    2 +-
+ arch/x86/xen/enlighten_pvh.c |    4 ++++
+ arch/x86/xen/xen-ops.h       |    4 ++--
+ 4 files changed, 13 insertions(+), 9 deletions(-)
+
+--- a/arch/x86/xen/efi.c
++++ b/arch/x86/xen/efi.c
+@@ -172,7 +172,7 @@ static enum efi_secureboot_mode xen_efi_
+ 	return efi_secureboot_mode_unknown;
+ }
+ 
+-void __init xen_efi_init(void)
++void __init xen_efi_init(struct boot_params *boot_params)
  {
-+	/* If the task is already in rdtgrp, no need to move the task. */
-+	if ((rdtgrp->type == RDTCTRL_GROUP && tsk->closid == rdtgrp->closid &&
-+	     tsk->rmid == rdtgrp->mon.rmid) ||
-+	    (rdtgrp->type == RDTMON_GROUP && tsk->rmid == rdtgrp->mon.rmid &&
-+	     tsk->closid == rdtgrp->mon.parent->closid))
-+		return 0;
+ 	efi_system_table_t *efi_systab_xen;
+ 
+@@ -181,12 +181,12 @@ void __init xen_efi_init(void)
+ 	if (efi_systab_xen == NULL)
+ 		return;
+ 
+-	strncpy((char *)&boot_params.efi_info.efi_loader_signature, "Xen",
+-			sizeof(boot_params.efi_info.efi_loader_signature));
+-	boot_params.efi_info.efi_systab = (__u32)__pa(efi_systab_xen);
+-	boot_params.efi_info.efi_systab_hi = (__u32)(__pa(efi_systab_xen) >> 32);
++	strncpy((char *)&boot_params->efi_info.efi_loader_signature, "Xen",
++			sizeof(boot_params->efi_info.efi_loader_signature));
++	boot_params->efi_info.efi_systab = (__u32)__pa(efi_systab_xen);
++	boot_params->efi_info.efi_systab_hi = (__u32)(__pa(efi_systab_xen) >> 32);
+ 
+-	boot_params.secure_boot = xen_efi_get_secureboot();
++	boot_params->secure_boot = xen_efi_get_secureboot();
+ 
+ 	set_bit(EFI_BOOT, &efi.flags);
+ 	set_bit(EFI_PARAVIRT, &efi.flags);
+--- a/arch/x86/xen/enlighten_pv.c
++++ b/arch/x86/xen/enlighten_pv.c
+@@ -1409,7 +1409,7 @@ asmlinkage __visible void __init xen_sta
+ 	/* We need this for printk timestamps */
+ 	xen_setup_runstate_info(0);
+ 
+-	xen_efi_init();
++	xen_efi_init(&boot_params);
+ 
+ 	/* Start the world */
+ #ifdef CONFIG_X86_32
+--- a/arch/x86/xen/enlighten_pvh.c
++++ b/arch/x86/xen/enlighten_pvh.c
+@@ -14,6 +14,8 @@
+ #include <xen/interface/memory.h>
+ #include <xen/interface/hvm/start_info.h>
+ 
++#include "xen-ops.h"
 +
- 	/*
- 	 * Set the task's closid/rmid before the PQR_ASSOC MSR can be
- 	 * updated by them.
+ /*
+  * PVH variables.
+  *
+@@ -79,6 +81,8 @@ static void __init init_pvh_bootparams(v
+ 	pvh_bootparams.hdr.type_of_loader = (9 << 4) | 0; /* Xen loader */
+ 
+ 	x86_init.acpi.get_root_pointer = pvh_get_root_pointer;
++
++	xen_efi_init(&pvh_bootparams);
+ }
+ 
+ /*
+--- a/arch/x86/xen/xen-ops.h
++++ b/arch/x86/xen/xen-ops.h
+@@ -122,9 +122,9 @@ static inline void __init xen_init_vga(c
+ void __init xen_init_apic(void);
+ 
+ #ifdef CONFIG_XEN_EFI
+-extern void xen_efi_init(void);
++extern void xen_efi_init(struct boot_params *boot_params);
+ #else
+-static inline void __init xen_efi_init(void)
++static inline void __init xen_efi_init(struct boot_params *boot_params)
+ {
+ }
+ #endif
 
 
