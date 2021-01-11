@@ -2,52 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B94C72F0F0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:27:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB6C2F0F0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:27:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728218AbhAKJ1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 04:27:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60778 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726273AbhAKJ1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 04:27:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63ECF224F9;
-        Mon, 11 Jan 2021 09:26:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610357182;
-        bh=3b4PJBOuTYQGc9w9iCrEybfn6cP80nyQRBWRqUVFi/o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uD40Kv/c2eWlfY7bVePNmO/nRiWoys2NZ8o5ecTpDk16FWjvXgUeVL1Le80GoodS5
-         F30pQG45wwZ+bSsXETqrWq1DTcIzFtyUUqJ5ep2XINtvUMaaSp6Ofgk65OZEKjn1tv
-         RGMX4MxDQBxi5WaDw5BCcUN3YRP/1/+wB8DMmSe1OL+Aq4nfP92c3z4R114/PNcY1+
-         TinWZcDXTJ/QE4l1KRYkowLvmcJL2rBf+ShDih7rzlteqNYmRl/DkjnlB4eKwe5ftB
-         7+g05J0kG2vo9AzeiWbSi5biKqjD3ABXt5jrYCCuvdTa8yq4lpYPNqSjd7oxCa0pQv
-         wolF6KpyFTOng==
-Date:   Mon, 11 Jan 2021 10:26:18 +0100
-From:   Robert Richter <rric@kernel.org>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-i2c@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Jan Glauber <jan.glauber@gmail.com>,
-        David Daney <david.daney@cavium.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/8] i2c: octeon: check correct size of maximum RECV_LEN
- packet
-Message-ID: <X/wZupAp0Gr/uDNv@rric.localdomain>
-References: <20210109124314.27466-1-wsa+renesas@sang-engineering.com>
- <20210109124314.27466-5-wsa+renesas@sang-engineering.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210109124314.27466-5-wsa+renesas@sang-engineering.com>
+        id S1728329AbhAKJ13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 04:27:29 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:59684 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727819AbhAKJ12 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 04:27:28 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0ULMRcOQ_1610357190;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0ULMRcOQ_1610357190)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 11 Jan 2021 17:26:36 +0800
+From:   YANG LI <abaci-bugfix@linux.alibaba.com>
+To:     kdasu.kdev@gmail.com
+Cc:     bcm-kernel-feedback-list@broadcom.com, broonie@kernel.org,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        YANG LI <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] spi: spi-bcm-qspi: style: Simplify bool comparison
+Date:   Mon, 11 Jan 2021 17:26:29 +0800
+Message-Id: <1610357189-60031-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.01.21 13:43:08, Wolfram Sang wrote:
-> I2C_SMBUS_BLOCK_MAX defines already the maximum number as defined in the
-> SMBus 2.0 specs. No reason to add one to it.
-> 
-> Fixes: 886f6f8337dd ("i2c: octeon: Support I2C_M_RECV_LEN")
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Fix the following coccicheck warning:
+./drivers/spi/spi-bcm-qspi.c:884:5-34: WARNING: Comparison to bool
 
-Reviewed-by: Robert Richter <rric@kernel.org>
+Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+---
+ drivers/spi/spi-bcm-qspi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
+index c028446..707fe3a 100644
+--- a/drivers/spi/spi-bcm-qspi.c
++++ b/drivers/spi/spi-bcm-qspi.c
+@@ -881,7 +881,7 @@ static int bcm_qspi_bspi_exec_mem_op(struct spi_device *spi,
+ 	 * when using flex mode we need to send
+ 	 * the upper address byte to bspi
+ 	 */
+-	if (bcm_qspi_bspi_ver_three(qspi) == false) {
++	if (!bcm_qspi_bspi_ver_three(qspi)) {
+ 		addr = from & 0xff000000;
+ 		bcm_qspi_write(qspi, BSPI,
+ 			       BSPI_BSPI_FLASH_UPPER_ADDR_BYTE, addr);
+-- 
+1.8.3.1
+
