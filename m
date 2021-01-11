@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE00D2F1045
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA742F104C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:44:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729327AbhAKKlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:41:22 -0500
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:34125 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726594AbhAKKlV (ORCPT
+        id S1729369AbhAKKnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:43:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726295AbhAKKnj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:41:21 -0500
-Received: by mail-ot1-f54.google.com with SMTP id a109so16470566otc.1;
-        Mon, 11 Jan 2021 02:41:05 -0800 (PST)
+        Mon, 11 Jan 2021 05:43:39 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51A77C061786;
+        Mon, 11 Jan 2021 02:42:59 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id x126so10699921pfc.7;
+        Mon, 11 Jan 2021 02:42:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=yjwa/+wwRjtStCWa2EN4TWA8E306sEyH4OcuP/qlzRo=;
+        b=GrOBJtpzR8VXd8yY0Sork+De+Pclz2Zs2svNIk7VYm7+HIeKUXVqRhF+VEwXd4C6Sc
+         UueTUZhdc8yk4t407hgjNJe9fi+2snUAtxmJoBqKdjqWa/1oJVDYSQoUBQR6KVDGVwc4
+         4mPicSprnhdQE8bp6XMcG1VhgN3XQrDUC1K/Q+P+IuKxYlsXSJM1tODSjy9zwRzFntOr
+         IdE580lgPKzR+YiqWL9FRECds6/MYfJHW2eo4Niwtd61BqaIWQ5l1/Xl0ZN480hAaOo/
+         Rt7M3uQCdHgbGd4+ok0wMjSoqHq6ieO9AJC3IFP17igES5AoI5J/w0ottPgwFbYq9vlP
+         TA6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fQE92wGImoCuHGlTBsuRYfPJyJNJDeXQD1pa+O0heSQ=;
-        b=k3CagimkYb5qti0xPocP9KUUcWHcx57HTW4rxNTMiDtntcJOflk9XuQSFaKrsXryQG
-         VKFQdGQ2KtNcgl7UBf+xmXsHosyL7TgRxvXV/W0TL0t+bgrqheg0g8QdADQTlDAP8r0M
-         pfCEOlCGoVuP1L/Bv1BeAtzDrfOvNcqwYzkgI/+wZ7CoL3SdlFBAkzy5aA1zOivBcKN8
-         Z4n9bPH8RwZFO+OAdBhBrAJHbnSqKYIXPavjD9BNLEP6WGIQWcXdeZJjmi9Idv73TszC
-         vbn4RpeScyaseBMScBrAFfTWQ7jFRppq0mpLVy+Kge83L6SGNRHeYhAV4Sk9Dtlej9KV
-         qLAQ==
-X-Gm-Message-State: AOAM531zKhywTZpLSAwkmf4zJE32isxlh+FPfxtQJIef+UvJOYLRkd12
-        sBN18F/uIUWiUOCUO6/ndNC4KcpOItHbKJXTupE=
-X-Google-Smtp-Source: ABdhPJw0eeT3HhWAExbemNPOr5fFXG+x/OCUxkL5CeiTn4tO82WpZyRF9+zqWH7caDpH3OcHEW0fc+4bhYFaLcEtYtw=
-X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr10469024oth.250.1610361640322;
- Mon, 11 Jan 2021 02:40:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20201206214613.444124194@linutronix.de> <20201206220542.062910520@linutronix.de>
- <CAMuHMdVB9XMAaMDnKrRzkqvhFugrDGmj=00Vh5sDQT-idnA7DA@mail.gmail.com> <87lfcz7pem.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87lfcz7pem.fsf@nanos.tec.linutronix.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 11 Jan 2021 11:40:29 +0100
-Message-ID: <CAMuHMdXQvPY_mYicjPKjDSCwdO_rP-9PJOvqD0J6=S3Opr1ycg@mail.gmail.com>
-Subject: Re: [patch 5/8] ntp: Make the RTC synchronization more reliable
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=yjwa/+wwRjtStCWa2EN4TWA8E306sEyH4OcuP/qlzRo=;
+        b=pARku3uJor4YYVRB/gWO9ZdwtN5WUszBVmiV3yzV9kkYFtAAWCjg3KFGvg7yNFLFRb
+         CikCDRM/ctn20xJ7SDGIYOLVBR2RC9umgKEtB+0T73oikgOmAqAZVBH3b7k+cHW8OAWG
+         LOwRWIuXTqI10r8NVREfTGVj7pbkM4U4/DeJhI1StymPknlZJ9T2jaF5kj3rj+sfsYyM
+         rLjQ63Tjga39rqWS4NmvzlcroVVDoekaJOFrRud/YN/6B5QHHo16lc81/34DJVlNCSrf
+         M6u1gNWzUVj9AbI35CxYLrDvcBIZrmwhBORhA9LufcwkG2r9lfNrmAYvN+NhGG1iFnRq
+         JUng==
+X-Gm-Message-State: AOAM530eQJVlBKbScMPdSXFLK45kbwU8sQlko5Q5EsckelL3iLnwsqDE
+        d5PYjvY8H0lz1wwyXaTOzao=
+X-Google-Smtp-Source: ABdhPJwSGz1mZamAN5xujGCHRsNBpA2mqUuxLuAl//oToAYSvXlNGMTDZqnsjBb0iIt+Pg1kL3UpUA==
+X-Received: by 2002:a65:50c8:: with SMTP id s8mr19309476pgp.68.1610361778919;
+        Mon, 11 Jan 2021 02:42:58 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id d36sm19804128pgm.77.2021.01.11.02.42.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 02:42:58 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     kuba@kernel.org
+Cc:     davem@davemloft.net, ast@kernel.org, andriin@fb.com,
+        daniel@iogearbox.net, edumazet@google.com, ap420073@gmail.com,
+        xiyou.wangcong@gmail.com, jiri@mellanox.com, bjorn.topel@intel.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: [PATCH net-next] net: core: use eth_type_vlan in __netif_receive_skb_core
+Date:   Mon, 11 Jan 2021 02:42:21 -0800
+Message-Id: <20210111104221.3451-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-On Mon, Jan 11, 2021 at 11:12 AM Thomas Gleixner <tglx@linutronix.de> wrote:
-> On Tue, Dec 29 2020 at 20:41, Geert Uytterhoeven wrote:
-> >> Reported-by: Miroslav Lichvar <mlichvar@redhat.com>
-> >> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> >
-> > Thanks for your patch, which is now commit c9e6189fb03123a7 ("ntp: Make
-> > the RTC synchronization more reliable").
-> >
-> > Since this commit, the I2C RTC on the R-Car M2-W Koelsch development
-> > board is accessed every two seconds.  Sticking a WARN() in the I2C
-> > activation path gives e.g.
->
-> Huch? Every two seconds? The timer is armed with 11 * 60 * NSEC_PER_SEC,
-> which is 11 minutes. Confused....
+Replace the check for ETH_P_8021Q and ETH_P_8021AD in
+__netif_receive_skb_core with eth_type_vlan.
 
-Thanks for the hint:
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+---
+ net/core/dev.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-    #define SYNC_PERIOD_NS (11UL * 60 * NSEC_PER_SEC)
+diff --git a/net/core/dev.c b/net/core/dev.c
+index e4d77c8abe76..267c4a8daa55 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -5151,8 +5151,7 @@ static int __netif_receive_skb_core(struct sk_buff **pskb, bool pfmemalloc,
+ 		skb_reset_mac_len(skb);
+ 	}
+ 
+-	if (skb->protocol == cpu_to_be16(ETH_P_8021Q) ||
+-	    skb->protocol == cpu_to_be16(ETH_P_8021AD)) {
++	if (eth_type_vlan(skb->protocol)) {
+ 		skb = skb_vlan_untag(skb);
+ 		if (unlikely(!skb))
+ 			goto out;
+@@ -5236,8 +5235,7 @@ static int __netif_receive_skb_core(struct sk_buff **pskb, bool pfmemalloc,
+ 			 * find vlan device.
+ 			 */
+ 			skb->pkt_type = PACKET_OTHERHOST;
+-		} else if (skb->protocol == cpu_to_be16(ETH_P_8021Q) ||
+-			   skb->protocol == cpu_to_be16(ETH_P_8021AD)) {
++		} else if (eth_type_vlan(skb->protocol)) {
+ 			/* Outer header is 802.1P with vlan 0, inner header is
+ 			 * 802.1Q or 802.1AD and vlan_do_receive() above could
+ 			 * not find vlan dev for vlan id 0.
+-- 
+2.17.1
 
-is truncated on 32-bit platforms.
-
-Patch sent.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
