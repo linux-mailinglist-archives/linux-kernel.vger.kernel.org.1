@@ -2,122 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6BB42F1094
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:53:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04BA32F1090
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:53:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729565AbhAKKxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:53:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23417 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729306AbhAKKxV (ORCPT
+        id S1729427AbhAKKw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:52:58 -0500
+Received: from ZXSHCAS1.zhaoxin.com ([203.148.12.81]:31062 "EHLO
+        ZXSHCAS1.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728725AbhAKKw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:53:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610362314;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dw2Go3odg3xQMi8oKZf9V/+2r4MBnUAd+QSYJ2Ro4mk=;
-        b=VFEF7adGCxt5rRD3DiV6/2isRp278+qFdI+tbiI4JgMtOVhNEMjPPu7ou0f1q3aAt4AVOr
-        OQ6lqqGoPLknSraCae98xMuJkSI729nqAzclD+/AwEwCUdar5K/iQVG7TeFzgD/XX9DIrR
-        g7yfE9Dqsb9X+AfIizE/TElCiH1OUhQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-482-94NqtCM0NF23H57DTgUYyg-1; Mon, 11 Jan 2021 05:51:52 -0500
-X-MC-Unique: 94NqtCM0NF23H57DTgUYyg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E87FF180A09F;
-        Mon, 11 Jan 2021 10:51:50 +0000 (UTC)
-Received: from [10.36.115.103] (ovpn-115-103.ams2.redhat.com [10.36.115.103])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 94DC274AAC;
-        Mon, 11 Jan 2021 10:51:48 +0000 (UTC)
-Subject: Re: [PATCH V2 1/3] mm/hotplug: Prevalidate the address range being
- added with platform
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org, hca@linux.ibm.com,
-        catalin.marinas@arm.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <1608218912-28932-1-git-send-email-anshuman.khandual@arm.com>
- <1608218912-28932-2-git-send-email-anshuman.khandual@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <10e733fa-4568-d38f-9b95-2ccc5dc627b8@redhat.com>
-Date:   Mon, 11 Jan 2021 11:51:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 11 Jan 2021 05:52:57 -0500
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS1.zhaoxin.com
+ (10.28.252.161) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Mon, 11 Jan
+ 2021 18:52:10 +0800
+Received: from [10.32.56.37] (10.32.56.37) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Mon, 11 Jan
+ 2021 18:52:07 +0800
+Subject: Re: [PATCH v1 1/3] x86/cpufeatures: Add low performance CRC32C
+ instruction CPU feature
+To:     Borislav Petkov <bp@alien8.de>
+CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <x86@kernel.org>,
+        <hpa@zytor.com>, <tony.luck@intel.com>, <dave.hansen@intel.com>,
+        <seanjc@google.com>, <fenghua.yu@intel.com>,
+        <thomas.lendacky@amd.com>, <kyung.min.park@intel.com>,
+        <kim.phillips@amd.com>, <mgross@linux.intel.com>,
+        <peterz@infradead.org>, <krish.sadhukhan@oracle.com>,
+        <liam.merwick@oracle.com>, <mlevitsk@redhat.com>,
+        <reinette.chatre@intel.com>, <babu.moger@amd.com>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <TimGuo-oc@zhaoxin.com>, <CooperYan@zhaoxin.com>,
+        <QiyuanWang@zhaoxin.com>, <HerryYang@zhaoxin.com>,
+        <CobeChen@zhaoxin.com>, <SilviaZhao@zhaoxin.com>
+References: <1610000348-17316-1-git-send-email-TonyWWang-oc@zhaoxin.com>
+ <1610000348-17316-2-git-send-email-TonyWWang-oc@zhaoxin.com>
+ <20210107063750.GA14697@zn.tnic>
+From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+Message-ID: <871e93d3-701e-86cd-6454-19fbb083d0c5@zhaoxin.com>
+Date:   Mon, 11 Jan 2021 18:51:59 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <1608218912-28932-2-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210107063750.GA14697@zn.tnic>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Originating-IP: [10.32.56.37]
+X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.12.20 16:28, Anshuman Khandual wrote:
-> This introduces memhp_range_allowed() which can be called in various memory
-> hotplug paths to prevalidate the address range which is being added, with
-> the platform. Then memhp_range_allowed() calls memhp_get_pluggable_range()
-> which provides applicable address range depending on whether linear mapping
-> is required or not. For ranges that require linear mapping, it calls a new
-> arch callback arch_get_mappable_range() which the platform can override. So
-> the new callback, in turn provides the platform an opportunity to configure
-> acceptable memory hotplug address ranges in case there are constraints.
+
+On 07/01/2021 14:37, Borislav Petkov wrote:
+> On Thu, Jan 07, 2021 at 02:19:06PM +0800, Tony W Wang-oc wrote:
+>> SSE4.2 on Zhaoxin CPUs are compatible with Intel. The presence of
+>> CRC32C instruction is enumerated by CPUID.01H:ECX.SSE4_2[bit 20] = 1.
+>> Some Zhaoxin CPUs declare support SSE4.2 instruction sets but their
+>> CRC32C instruction are working with low performance.
+>>
+>> Add a synthetic CPU flag to indicates that the CRC32C instruction is
+>> not working as intended. This low performance CRC32C instruction flag
+>> is depend on X86_FEATURE_XMM4_2.
+>>
+>> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+>> ---
+>>  arch/x86/include/asm/cpufeatures.h | 1 +
+>>  arch/x86/kernel/cpu/cpuid-deps.c   | 1 +
+>>  2 files changed, 2 insertions(+)
+>>
+>> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+>> index 84b8878..9e8151b 100644
+>> --- a/arch/x86/include/asm/cpufeatures.h
+>> +++ b/arch/x86/include/asm/cpufeatures.h
+>> @@ -292,6 +292,7 @@
+>>  #define X86_FEATURE_FENCE_SWAPGS_KERNEL	(11*32+ 5) /* "" LFENCE in kernel entry SWAPGS path */
+>>  #define X86_FEATURE_SPLIT_LOCK_DETECT	(11*32+ 6) /* #AC for split lock */
+>>  #define X86_FEATURE_PER_THREAD_MBA	(11*32+ 7) /* "" Per-thread Memory Bandwidth Allocation */
+>> +#define X86_FEATURE_CRC32C		(11*32+ 8) /* "" Low performance CRC32C instruction */
 > 
-> This mechanism will help prevent platform specific errors deep down during
-> hotplug calls. This drops now redundant check_hotplug_memory_addressable()
-> check in __add_pages() but instead adds a VM_BUG_ON() check which would
-> ensure that the range has been validated with memhp_range_allowed() earlier
-> in the call chain. Besides memhp_get_pluggable_range() also can be used by
-> potential memory hotplug callers to avail the allowed physical range which
-> would go through on a given platform.
+> Didn't hpa say to create a BUG flag for it - X86_BUG...? Low performance
+> insn sounds like a bug and not a feature to me.
 > 
-> This does not really add any new range check in generic memory hotplug but
-> instead compensates for lost checks in arch_add_memory() where applicable
-> and check_hotplug_memory_addressable(), with unified memhp_range_allowed().
+> And call it X86_BUG_CRC32C_SLOW or ..._UNUSABLE to denote what it means.
 > 
 
-Subject s/mm\/hotplug/mm\/memory_hotplug/
+This issue will be enhanced by hardware and patch submit will be pending.
 
-Everywhere in this patch: Use "true/false" for boolean values.
-
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  include/linux/memory_hotplug.h | 10 +++++
->  mm/memory_hotplug.c            | 79 +++++++++++++++++++++++++---------
->  mm/memremap.c                  |  6 +++
->  3 files changed, 75 insertions(+), 20 deletions(-)
-> 
-> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-> index 551093b74596..8d72354758c8 100644
-> --- a/include/linux/memory_hotplug.h
-> +++ b/include/linux/memory_hotplug.h
-> @@ -70,6 +70,9 @@ typedef int __bitwise mhp_t;
->   */
->  #define MEMHP_MERGE_RESOURCE	((__force mhp_t)BIT(0))
->  
-> +bool memhp_range_allowed(u64 start, u64 size, bool need_mapping);
-> +struct range memhp_get_pluggable_range(bool need_mapping);
-
-AFAIKs, all memhp_get_pluggable_range() users pass "1".
-
-What about the "add_pages()-only" path?
-
--- 
-Thanks,
-
-David / dhildenb
+Sincerely
+Tonyw
 
