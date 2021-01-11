@@ -2,100 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828202F15C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:45:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3CD2F1608
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:48:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387653AbhAKNoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:44:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731796AbhAKNoe (ORCPT
+        id S2387668AbhAKNrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:47:47 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20844 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387573AbhAKNrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:44:34 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FC3C061786;
-        Mon, 11 Jan 2021 05:43:53 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id jx16so24741983ejb.10;
-        Mon, 11 Jan 2021 05:43:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TqQMMmVG//s097FZcK6S1d+MUdnJBT3N8IWJdlGCSdY=;
-        b=vQ7xg/NMs8B/jW9COLAiIpNiEJ+21BdjvoLnazkLt9/lR13If2ikF5RZJksFN0Dkoo
-         C0zqtI4JCm9GWfi/CnjsDhI23DQE22A6bgR9PF4vRW7MkpPcJj/AfIk/3yfLeBcsdnrl
-         Yxa9K6+wwF493HZ7SArizr69FpCLfQl6lpgliMFGI+kKl21Gl8bYrR6g9FSUpBY5PsE3
-         tGUj1wkuFyjj1ZdM3ORq7/uzV+J+9E46Sk41CqgvwrUGYV7JHTTfAzR2DYg1oKwxXg5l
-         95cO6WK6GrEoNp+J3zEoxppuEPX80yVLWxK08AgEQL/vFBuUgkRl+BMTYNyireUNYVig
-         F/YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TqQMMmVG//s097FZcK6S1d+MUdnJBT3N8IWJdlGCSdY=;
-        b=dA886S/8gKGJScICiiMhsQDVcDs7yXMRws7AodAdW6A34rnzYKHqBAPeMc1OnbSxIN
-         /y8w0V5f23i2OV/eqi96ipfpildcKQjqrx3Cq44UmCADUdkDoqKE0NtUorPL1apoYAvm
-         vPqeaSevdY1ZuV6hTcYqDB+7vgyxrf8Q05zOTo/lbaA1c0WkBODsuWRpwfBuLiGe/wQT
-         s7ddCkFscOyvLccnb+6zvpKNR8kRrZrpw/aO0nB1Hl5j8hH+b3jyYHe+MfWtZ1FLcJQF
-         04mBDeZ/vqP5H8ocYZezmzTmHxM01ihtQECiG9YxqpR4RXBs3WSCOCNiGz8LRQJ53aSK
-         eamg==
-X-Gm-Message-State: AOAM532/2G4h2sMoeaAjxhcE9Rq5fZ+Z0TQEVqv09bvUporakHisUWXT
-        6rn/hdi8c5GxqC4ExXReOV0=
-X-Google-Smtp-Source: ABdhPJxqhexf4kPL914wqbd3XhrF0WLk2Dmhk3wPJ0oFcVMccX9vwvzyZgV6p+0xwhhjVShAmlSr8g==
-X-Received: by 2002:a17:906:7689:: with SMTP id o9mr5102315ejm.324.1610372632156;
-        Mon, 11 Jan 2021 05:43:52 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id t26sm7120228eji.22.2021.01.11.05.43.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 05:43:51 -0800 (PST)
-Date:   Mon, 11 Jan 2021 15:43:49 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Frank Wunderlich <frank-w@public-files.de>,
-        =?utf-8?B?UmVuw6k=?= van Dorst <opensource@vdorst.com>
-Subject: Re: [PATCH net-next 0/2] dsa: add MT7530 GPIO support
-Message-ID: <20210111134349.vdhyebdllbaakukk@skbuf>
-References: <20210111054428.3273-1-dqfext@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111054428.3273-1-dqfext@gmail.com>
+        Mon, 11 Jan 2021 08:47:43 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10BDknDm144977;
+        Mon, 11 Jan 2021 08:46:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=pndz/Z80vqMHUBLIj5CZ6gUYG29beKH5GXEQU02RA9w=;
+ b=NHr6FeZcAib4+IezLZWu6kCvq8329gbUplF5EWkKESNegjuwgLGB3PpyEAtBuc5HHino
+ 5RFOKF3uM/d+B/zIauQbPMpXILzKmg6FiuytFm6GKTsLVfXXmnq7m5XpcdbA57ttZjyq
+ eLvDFTf/jLy+Y9AXlwbPsAVeJpnAEKijj4mj1aZ2BsorXqHa6swnLpRUiQ4aIiKm8ly/
+ auPLc9oQiOFDdUqhWrm942sC/tX6dQDYl2VGa16gXXhpxGUJ8H9aIZVWaPR8a5R6YTt0
+ cf9ibW1wg6ScmX0a9yNg1NkgrUHTHPemnLBXXRtoIy6xM2LEGBoLNsnvjyLzOob263y7 IA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 360qv0801m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Jan 2021 08:46:49 -0500
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10BDkmYP144929;
+        Mon, 11 Jan 2021 08:46:48 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 360qv08012-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Jan 2021 08:46:48 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10BDgHIA032091;
+        Mon, 11 Jan 2021 13:46:46 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 35ydrd9xeq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Jan 2021 13:46:45 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10BDkh9250725254
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Jan 2021 13:46:43 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BB02D42045;
+        Mon, 11 Jan 2021 13:46:43 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B4B524204C;
+        Mon, 11 Jan 2021 13:46:41 +0000 (GMT)
+Received: from sig-9-65-221-171.ibm.com (unknown [9.65.221.171])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 11 Jan 2021 13:46:41 +0000 (GMT)
+Message-ID: <31aed9f12482d1156c224c2cc5ac8afd81e8cb14.camel@linux.ibm.com>
+Subject: Re: [PATCH v2] evm: Fix memory leak in init_desc
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Markus Elfring <Markus.Elfring@web.de>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Dmitry Kasatkin <dmitry.kasatkin@nokia.com>,
+        James Morris <jmorris@namei.org>, Kangjie Lu <kjlu@umn.edu>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Date:   Mon, 11 Jan 2021 08:46:40 -0500
+In-Reply-To: <7288d0ce-e900-d942-fb6b-eabb63649591@web.de>
+References: <20210110080253.32345-1-dinghao.liu@zju.edu.cn>
+         <7288d0ce-e900-d942-fb6b-eabb63649591@web.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-11_26:2021-01-11,2021-01-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 bulkscore=0 adultscore=0 phishscore=0
+ mlxscore=0 spamscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101110081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 01:44:26PM +0800, DENG Qingfang wrote:
-> MT7530's LED controller can be used as GPIO controller. Add support for
-> it.
-> 
-> DENG Qingfang (2):
->   dt-bindings: net: dsa: add MT7530 GPIO controller binding
->   drivers: net: dsa: mt7530: MT7530 optional GPIO support
-> 
->  .../devicetree/bindings/net/dsa/mt7530.txt    |  6 ++
->  drivers/net/dsa/mt7530.c                      | 96 +++++++++++++++++++
->  drivers/net/dsa/mt7530.h                      | 20 ++++
->  3 files changed, 122 insertions(+)
-> 
-> -- 
-> 2.25.1
+Hi Dinghao,
 
-Adding GPIO and LED maintainers to also have a look.
-https://patchwork.kernel.org/project/netdevbpf/cover/20210111054428.3273-1-dqfext@gmail.com/
+On Sun, 2021-01-10 at 11:50 +0100, Markus Elfring wrote:
+> > When kmalloc() fails, tmp_tfm allocated by
+> > crypto_alloc_shash() has not been freed, which
+> > leads to memleak.
+
+In the future, please conform to Documentation/process/submitting-
+patches.rst: 
+
+  - The body of the explanation, line wrapped at 75 columns, which will
+    be copied to the permanent changelog to describe this patch.
+
+> 
+> Do any Linux developers care for the following aspects?
+> 
+> * Imperative wordings for change descriptions
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=2ff90100ace886895e4fbb2850b8d5e49d931ed6#n89
+> 
+> * Usage of the term “memory leak” (instead of an abbreviation)
+
+In general I agree, but this is a really small, obvious bug fix. 
+Assuming Dinghao is fine with my updating the patch description, I'll
+fix it.
+
+Mimi
+
