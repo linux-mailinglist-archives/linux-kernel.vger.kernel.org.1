@@ -2,177 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95EEF2F2067
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:10:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE732F206C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:11:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391361AbhAKUHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 15:07:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54118 "EHLO
+        id S2391041AbhAKUKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 15:10:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390143AbhAKUHe (ORCPT
+        with ESMTP id S2404092AbhAKUKE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:07:34 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19A9C061795;
-        Mon, 11 Jan 2021 12:06:53 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id dk8so1113781edb.1;
-        Mon, 11 Jan 2021 12:06:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Vua/4FAuzJKcybmU96dmSVXE6bAQ11vfonwPty39STU=;
-        b=jn/iS6wcEHjTuKOIG5EgLsXBQT5yi8UITaREcgDFXa1OyA9PpNg21X0CURa1dZbccI
-         kLm5aLJ/C0ouFXWl2PrVviBsFA2LcdVNtK4/KlZeAL6uNreI1ZqznNthWpzF1kMC5wvE
-         5jvDHnNzKshVcPoQ2uXvYt3efl+eHkLJBrCr+km7SFOLC0Ku9SqxqvjJvOZdxFHlPsu7
-         F+PPmfJytzn+dEFmwShYtxrQuSxt7iHZ4xNi9LXgfOz9O6Okqv+I1hlDVIiW13Cw0VAn
-         TokAs3MmOmZfkqtPZhp/SpTQuXW6lJbeRa5qP0DNu97Z0OxvYiiw+xAIaHdoFDeeWcvt
-         0ogA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Vua/4FAuzJKcybmU96dmSVXE6bAQ11vfonwPty39STU=;
-        b=TUx7GsanfaRifau7DSsftuhWlYGByg7IRc1IIixjEm18EHVjwGE3lG2Dv0N9B3iHw2
-         gdTYwSE357UApjaDlRxSVHayifPWu2xZzKqlOrFn+YnnHT0eVceZsjO3dE2j6lLWeCUi
-         rJGmIZDsv9IpdT9z3jz52RR5TMY/gZ72YL1X+rb1BhNk3nUoHsh/gZSO2G1s3zqSKla+
-         T9fO2Nqmb5ZdOfgch710hLZryzwCTaJF1UmPB9uqyHPSvtgvEhk0qFE+OJCrva80xJKr
-         ot2TfLeqBzRJOeyY1TZd6Mdk9dgiUuisaanNAmReP2p3iqo5hzKbrYMKwHIDh5hZMfv6
-         i1Vg==
-X-Gm-Message-State: AOAM532uSMiJFTLdHw/tfjP9NX/k6yTjpl49MyZ21EhwIsZA+ZDDXtcc
-        9s5K8uV8fqZZ7wz0m5KM3Sbcq/0hnXn77WecD2Q=
-X-Google-Smtp-Source: ABdhPJw2JE0XKzdLSRtyimoueQT49YkniTFElT5qp82XIKYeiHDg+pZyGZERgKh4rOTg8hcgpGSHlVp3ZDd0HMD1u+Q=
-X-Received: by 2002:a05:6402:350:: with SMTP id r16mr752578edw.176.1610395612650;
- Mon, 11 Jan 2021 12:06:52 -0800 (PST)
-MIME-Version: 1.0
-References: <20201118144617.986860-1-willemdebruijn.kernel@gmail.com>
- <20201118144617.986860-2-willemdebruijn.kernel@gmail.com> <20201118150041.GF29991@casper.infradead.org>
- <CA+FuTSdxNBvNMy341EHeiKOWZ19H++aw-tfr6Fx1mFmbg-z4zQ@mail.gmail.com>
- <CAK8P3a0t02o77+8QNZwXF2k1pY3Xrm5bydv8Vx1TW060P7BKqA@mail.gmail.com>
- <893e8ed21e544d048bff7933013332a0@AcuMS.aculab.com> <CAF=yD-+arBFuZCU3UDx0XKmUGaEz8P1EaDLPK0YFCz82MdwBcg@mail.gmail.com>
- <20201119143131.GG29991@casper.infradead.org> <CAK8P3a1SwQ=L_qA1BmeAt=Xc-Q9Mv4V+J5LFLB5R6rMDST8UiA@mail.gmail.com>
- <CAF=yD-Kd-6f9wAYLD=dP1pk4qncWim424Fu6Hgj=ZrnUtEPORA@mail.gmail.com>
- <CAK8P3a21JRFUJrz1+TYWcVL8s4uSfeSFyoMkGsqUPbV+F=r_yw@mail.gmail.com>
- <CAF=yD-Lzu9j6T4ubRjawF-EKOC3pkQTkpigg=PugWwybY-1ZyQ@mail.gmail.com>
- <CAK8P3a1cJf7+b5HCmFiLq+FdM+D+37rHYaftRgRYbhTyjwR6wg@mail.gmail.com>
- <CAF=yD-LdtCCY=Mg9CruZHdjBXV6VmEPydzwfcE2BHUC8z7Xgng@mail.gmail.com>
- <CAK8P3a2WifcGmmFzSLC4-0SKsv0RT231P6TVKpWm=j927ykmQg@mail.gmail.com>
- <CA+FuTSdPir68M9PwhuCkd_Saz-Wi3xa_rNuwvbNmpAkMjOqhuA@mail.gmail.com>
- <CAK8P3a2Z=X68aU27qQ_0vK6c_oj9CVbThuGscjqKXRCYKfFpgg@mail.gmail.com> <CAF=yD-LAzjyNRy0vqToWqx5LxeQMYY3fVzV0vr0X7Q70ZAR-AQ@mail.gmail.com>
-In-Reply-To: <CAF=yD-LAzjyNRy0vqToWqx5LxeQMYY3fVzV0vr0X7Q70ZAR-AQ@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Mon, 11 Jan 2021 15:06:15 -0500
-Message-ID: <CAF=yD-JskHu0oBBTaRT_v7MZNEdgtYN3BmiexqjAgJV1hBKkEw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] epoll: add nsec timeout support with epoll_pwait2
+        Mon, 11 Jan 2021 15:10:04 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3FC4C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 12:09:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=7mVHYFSOD6PIstBzq8DpUaHpjmOPYloyxHKSoY+lXIM=; b=Ic8i/251qLlOukDGpoCiKBnTI
+        0eJKrMYnc1U31xjUfRzMK30w9AabAKO+eFLi+64pKMZ9MJ8Mgca45hGFr55CQ+RRu0UCMO81z8g4d
+        5EQ5erlJp9yZNWSCjfO+erRc1mn5IgVmitbooxY4xQT7MagxeONC9vVkbvT1EjihgSMS2wIc9g4eT
+        Vd9VWcolHM2wVAdwVHg6Rt4LthYH5MII8ug2QS7hNQqzbCPEF2tdx3Bkuio1XQt7gB3dhh/JgOrYU
+        wPU75AWkZt/ZZReeiQBMS7w4GFPX304URussZ03TOUzbvPcRD6J/+0Rjx3WWsB5e0R3vixsCzeQOW
+        caSW3EO9Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46732)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kz3V4-0007Qx-Oo; Mon, 11 Jan 2021 20:09:14 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kz3Uv-0005XO-St; Mon, 11 Jan 2021 20:09:05 +0000
+Date:   Mon, 11 Jan 2021 20:09:05 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
 To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        David Laight <David.Laight@aculab.com>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Soheil Hassas Yeganeh <soheil.kdev@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Shuo Chen <shuochen@google.com>,
-        linux-man <linux-man@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        Jamie Iles <jamie@jamieiles.com>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Alex Elder <elder@linaro.org>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Mark Salter <msalter@redhat.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: Re: Old platforms: bring out your dead
+Message-ID: <20210111200905.GZ1551@shell.armlinux.org.uk>
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+ <20210109174357.GB1551@shell.armlinux.org.uk>
+ <CAK8P3a03+C6aoR-f0nr4Gf_O6e=ppPoEMPMPya59cT826a0=Pg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a03+C6aoR-f0nr4Gf_O6e=ppPoEMPMPya59cT826a0=Pg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 5:59 PM Willem de Bruijn
-<willemdebruijn.kernel@gmail.com> wrote:
->
-> On Thu, Dec 10, 2020 at 3:34 PM Arnd Bergmann <arnd@kernel.org> wrote:
+On Sat, Jan 09, 2021 at 10:34:57PM +0100, Arnd Bergmann wrote:
+> On Sat, Jan 9, 2021 at 6:43 PM Russell King - ARM Linux admin
+> <linux@armlinux.org.uk> wrote:
+> > On Fri, Jan 08, 2021 at 11:55:06PM +0100, Arnd Bergmann wrote:
+> > > * dove -- added in 2009, obsoleted by mach-mvebu in 2015
 > >
-> > On Thu, Dec 10, 2020 at 6:33 PM Willem de Bruijn
-> > <willemdebruijn.kernel@gmail.com> wrote:
-> > > On Sat, Nov 21, 2020 at 4:27 AM Arnd Bergmann <arnd@kernel.org> wrote=
-:
-> > > > On Fri, Nov 20, 2020 at 11:28 PM Willem de Bruijn <willemdebruijn.k=
-ernel@gmail.com> wrote:
-> > > > I would imagine this can be done like the way I proposed
-> > > > for get_bitmap() in sys_migrate_pages:
-> > > >
-> > > > https://lore.kernel.org/lkml/20201102123151.2860165-4-arnd@kernel.o=
-rg/
-> > >
-> > > Coming back to this. Current patchset includes new select and poll
-> > > selftests to verify the changes. I need to send a small kselftest
-> > > patch for that first.
-> > >
-> > > Assuming there's no time pressure, I will finish up and send the main
-> > > changes after the merge window, for the next release then.
-> > >
-> > > Current state against linux-next at
-> > > https://github.com/wdebruij/linux-next-mirror/tree/select-compat-1
-> >
-> > Ok, sounds good to me. I've had a (very brief) look and have one
-> > suggestion: instead of open-coding the compat vs native mode
-> > in multiple places like
-> >
-> > if (!in_compat_syscall())
-> >     =EF=BF=BC return copy_from_user(fdset, ufdset, FDS_BYTES(nr)) ? -EF=
-AULT : 0;
-> > else
-> >     =EF=BF=BC return compat_get_bitmap(fdset, ufdset, nr);
-> >
-> > maybe move this into a separate function and call that where needed.
-> >
-> > I've done this for the get_bitmap() function in my series at
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/arnd/playground.git/com=
-mit/?h=3Dcompat-alloc-user-space-7&id=3Db1b23ebb12b635654a2060df49455167a14=
-2c5d2
-> >
-> > The definition is slightly differrent for cpumask, nodemask and fd_set,
-> > so we'd need to try out the best way to structure the code to end
-> > up with the most readable version, but it should be possible when
-> > there are only three callers (and duplicating the function would
-> > be the end of the world either)
->
-> For fd_set there is only a single caller for each direction. Do you
-> prefer helpers even so?
->
-> For sigmask, with three callers, something along the lines of this?
->
->   @@ -1138,10 +1135,7 @@ static int do_ppoll(struct pollfd __user
-> *ufds, unsigned int nfds,
->                           return -EINVAL;
->           }
->
->   -       if (!in_compat_syscall())
->   -               ret =3D set_user_sigmask(sigmask, sigsetsize);
->   -       else
->   -               ret =3D set_compat_user_sigmask(sigmask, sigsetsize);
->   +       ret =3D set_maybe_compat_user_sigmask(sigmask, sigsetsize);
->           if (ret)
->                   return ret;
->
->   --- a/include/linux/compat.h
->   +++ b/include/linux/compat.h
->   @@ -942,6 +942,17 @@ static inline bool in_compat_syscall(void) {
-> return false; }
->
->   +static inline int set_maybe_compat_user_sigmask(const void __user *sig=
-mask,
->   +                                               size_t sigsetsize)
->   +{
->   +#if defined CONFIG_COMPAT
->   +       if (unlikely(in_compat_syscall()))
->   +               return set_compat_user_sigmask(sigmask, sigsetsize);
->   +#endif
->   +
->   +       return set_user_sigmask(sigmask, sigsetsize);
->   +}
+> > May be obsoleted, but I still use this for my dove cubox with
+> > additional patches.
+> 
+> What is the status of these patches? I also still have a set of patches
+> to integrate it with the other ARMv7 machines into multiplatform,
+> and a series to change some of the PCI handling in all plat-orion
+> platforms, that I was hoping to either upstream or drop once the
+> platform itself gets removed.
 
-set_user_sigmask is the only open-coded variant that is used more than once=
-.
+I really couldn't say - I have over 200 patches in my kernel tree for
+the Dove Cubox that give me a fully featured kernel - and I mean
+everything, including the vMeta video decoder. I haven't updated the
+tree since last Summer, partly because other things have taken
+precedence. I couldn't say what the status is right now without
+going through an update to 5.10.
 
-Because it is used in both select.c and eventpoll.c, a helper would
-have to live in compat.h. This then needs a new dependency on
-sched_signal.h.
+However, some bits can't go into mainline - I was totally shafted over
+the audio support. There is no way to add flexible support to the
+kirkwood audio driver without breaking the DT descriptions for every
+board using that - and by flexible, I mean the ability to output DTS
+via the SPDIF connector or HDMI on the Dove Cubox. I wasn't listened
+to at the time, and it _still_ hurts to this day that there is no way
+back from the crippling bad choices that mainline kernel developers
+and others made. There was no need for this, other than a desire to
+merge something that worked for everyone else but was totally
+unsuitable to be able to provide the full features.
 
-So given that this is a simple branch, it might just make logic more
-complex, instead of less. I can add this change in a separate patch on
-top of the original three, to judge whether it is worthwhile.
+> Did you give up on moving the Cubox to DT, or is this something you
+> still want to get back?
+
+Yes, because it is the only fully featured platform I have.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
