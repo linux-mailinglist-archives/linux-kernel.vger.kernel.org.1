@@ -2,128 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE382F1225
+	by mail.lfdr.de (Postfix) with ESMTP id 9339C2F1226
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:10:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726729AbhAKMKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 07:10:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725919AbhAKMKF (ORCPT
+        id S1726769AbhAKMKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 07:10:46 -0500
+Received: from mail2.protonmail.ch ([185.70.40.22]:32262 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726635AbhAKMKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 07:10:05 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5F7C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 04:09:24 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id e25so14876272wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 04:09:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qAfBPpGti4IJb/cZMqnoVtqAcc2r4v07Ip2T/G5Ovz4=;
-        b=uhMWbETIOgCPmlXFR2NKajl5ifHGLOYARBG1WPZ8kSXAvb5hSGYLFYetzZdbqRoUXw
-         xyoBqCRr7vFo267aAYXOqWj3rTMXUbjHBghJ73ThVlXv3QXTjOVXJNI081o+qc8BihBG
-         mqA8IW2z2GvDodU1XdOMOVukxzYjnJtfjTSp2LYXXmSxkPUWuGSjRPQTkZ1Lp87EEAYG
-         7oLO9EgDedzdO1fBq/KET0Rxo23I+mWfD5OsJ4C72D0JOLcDLkaKuPgFTXxo394F7/Wz
-         5WRpwOeU4zxwdsFyKXWPgwHVd4GW6rDPEbyuDothVcY1nfCiTuERlF9Z941tsp9zf/yd
-         kygA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qAfBPpGti4IJb/cZMqnoVtqAcc2r4v07Ip2T/G5Ovz4=;
-        b=Qy3ejeFNd9p1tKGUJLFhKpGQRLi2gJjGq/FsHGiA8U4cMC5G2aQJUpwCMkwu7VSj7J
-         PUdl08YvioeTVaRmqiEIJ8eR/sc0GdaZlLpYkYStwIdKV0ZeKjTTAiGF7V/k99WWjzd+
-         X5JUxA+T/wGsgci5s73+8Dt5iSEtpGdgpViwsUltKiEVYyE4u+XjRgKJBn9WElFqf9W2
-         y7gTKTNWx1+rFBibDuUtK1nI17NbGuZGh4fyyJWlpUzbo+4AN3564ds1czIyUq5Zco3o
-         2z3X1+rS9lZgodZQkBSWMqDk1dn0xTp8NFT+buFFiZ4tcvHFEXRsU7i2YDs/Ud2moRHe
-         hHhA==
-X-Gm-Message-State: AOAM5304FFi3KwXXOr3waUeQLbl+DgPc+X8Fkk8IUXefhYP/hDSBP0Xx
-        iEGxy6+svAbsMlsKRcMDaoW4no+R9c8G9SiZBbXyqQ==
-X-Google-Smtp-Source: ABdhPJzDeFk/mOQloneLtj4kfha+Qnij5WrMFQUSxRNUrw8SRxCA+cQtKp2UGtisY7+fW/cX3oO00jllzN2ejjxl2AI=
-X-Received: by 2002:a7b:c7d3:: with SMTP id z19mr14624684wmk.31.1610366963630;
- Mon, 11 Jan 2021 04:09:23 -0800 (PST)
+        Mon, 11 Jan 2021 07:10:46 -0500
+Date:   Mon, 11 Jan 2021 12:09:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1610366997; bh=zUY1WTDEiMVW2+TLKz6QzDCMBOZ6h9D50PRiYZRI15E=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=cAHC/A9CkwDn9wy1cgwJc5gsJHjgqEyimjEimCKPMLzw7DiGk5avDFOZn1TIrlFuI
+         wrVyHm9ygMCIVI6uc5nS6rPFcQ3t/QeJqsSojuiGiEX4Dm9QnifesPm7/9x4B0FUsT
+         oPx2fWkf/QJCqkYUlUiKKfzM4Z8OAEg1ZmLL2q4Q+L+OdbLHAcjS4dpDsNSTMAEjL4
+         KR7aLkhkxfVvg8ity9wkNWXG4uU61DCKoPV3+T9IoN7RMli3ODHhI4VXPkj0NamG8j
+         bd19BMSOq+1Dr+Jol9h6diT19mIDqQ6CGdXfFKLEO0xBpac7Q13SdkSy1xzSyd1gRE
+         qFDGdo3P3y0gQ==
+To:     Steffen Klassert <steffen.klassert@secunet.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Dongseok Yi <dseok.yi@samsung.com>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        namkyu78.kim@samsung.com,
+        'Alexey Kuznetsov' <kuznet@ms2.inr.ac.ru>,
+        'Hideaki YOSHIFUJI' <yoshfuji@linux-ipv6.org>,
+        'Jakub Kicinski' <kuba@kernel.org>,
+        'Willem de Bruijn' <willemb@google.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [RFC PATCH net] udp: check sk for UDP GRO fraglist
+Message-ID: <20210111120902.2453-1-alobakin@pm.me>
 MIME-Version: 1.0
-References: <20210109074435.626855-1-leo.yan@linaro.org> <20210109074435.626855-4-leo.yan@linaro.org>
- <96ec434e-4103-02ac-a05a-761a9ca8cb0d@arm.com>
-In-Reply-To: <96ec434e-4103-02ac-a05a-761a9ca8cb0d@arm.com>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Mon, 11 Jan 2021 12:09:12 +0000
-Message-ID: <CAJ9a7VjtUuRRYBBu63kSXKwrGdB8ZoWJz-bE1g9tMLSbkFVDGg@mail.gmail.com>
-Subject: Re: [PATCH v1 3/7] perf cs-etm: Calculate per CPU metadata array size
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <Daniel.Kiss@arm.com>,
-        Denis Nikitin <denik@chromium.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
+From: Steffen Klassert <steffen.klassert@secunet.com>
+Date: Mon, 11 Jan 2021 09:43:22 +0100
 
-I think there is an issue here in that your modification assumes that
-all cpus in the system are of the same ETM type. The original routine
-allowed for differing ETM types, thus differing cpu ETM field lengths
-between ETMv4 / ETMv3, the field size was used after the relevant
-magic number for the cpu ETM was read.
-
-You have replaced two different sizes - with a single calculated size.
-
-Moving forwards we are seeing the newer FEAT_ETE protocol drivers
-appearing on the list, which will ultimately need a new metadata
-structure.
-
-We have had discussions within ARM regarding the changing of the
-format to be more self describing - which should probably be opened
-out to the CS mailing list.
-
-Regards
-
-Mike
-
-
-On Mon, 11 Jan 2021 at 07:29, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+> On Mon, Jan 11, 2021 at 11:02:42AM +0900, Dongseok Yi wrote:
+>> On 2021-01-08 22:35, Steffen Klassert wrote:
+>>> On Fri, Jan 08, 2021 at 09:52:28PM +0900, Dongseok Yi wrote:
+>>>> It is a workaround patch.
+>>>>
+>>>> UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
+>>>> forwarding. Only the header of head_skb from ip_finish_output_gso ->
+>>>> skb_gso_segment is updated but following frag_skbs are not updated.
+>>>>
+>>>> A call path skb_mac_gso_segment -> inet_gso_segment ->
+>>>> udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
+>>>> does not try to update any UDP/IP header of the segment list.
+>>>>
+>>>> It might make sense because each skb of frag_skbs is converted to a
+>>>> list of regular packets. Header update with checksum calculation may
+>>>> be not needed for UDP GROed frag_skbs.
+>>>>
+>>>> But UDP GRO frag_list is started from udp_gro_receive, we don't know
+>>>> whether the skb will be NAT forwarded at that time. For workaround,
+>>>> try to get sock always when call udp4_gro_receive -> udp_gro_receive
+>>>> to check if the skb is for local.
+>>>>
+>>>> I'm still not sure if UDP GRO frag_list is really designed for local
+>>>> session only. Can kernel support NAT forward for UDP GRO frag_list?
+>>>> What am I missing?
+>>>
+>>> The initial idea when I implemented this was to have a fast
+>>> forwarding path for UDP. So forwarding is a usecase, but NAT
+>>> is a problem, indeed. A quick fix could be to segment the
+>>> skb before it gets NAT forwarded. Alternatively we could
+>>> check for a header change in __udp_gso_segment_list and
+>>> update the header of the frag_skbs accordingly in that case.
+>>
+>> Thank you for explaining.
+>> Can I think of it as a known issue?
 >
-> On 1/9/21 7:44 AM, Leo Yan wrote:
-> > The metadata array can be extended over time and the tool, if using the
-> > predefined macro (like CS_ETMV4_PRIV_MAX for ETMv4) as metadata array
-> > size to copy data, it can cause compatible issue within different
-> > versions of perf tool.
-> >
-> > E.g. we recorded a data file with an old version tool, afterwards if
-> > use the new version perf tool to parse the file, since the metadata
-> > array has been extended and the macro CS_ETMV4_PRIV_MAX has been
-> > altered, if use it to parse the perf data with old format, this will
-> > lead to mismatch.
-> >
-> > To maintain backward compatibility, this patch calculates per CPU
-> > metadata array size on the runtime, the calculation is based on the
-> > info stored in the data file so that it's reliable.
-> >
-> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> No, it was not known before you reported it.
 >
-> Looks good to me.
+>> I think we should have a fix
+>> because NAT can be triggered by user. Can I check the current status?
+>> Already planning a patch or a new patch should be written?
 >
-> Acked-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->
+> We have to do a new patch to fix that issue. If you want do
+> do so, go ahead.
 
+This patch is incorrect. I do NAT UDP GRO Fraglists via nftables
+(both with and without flow offload) with no issues since March'20.
+Packet loss rates are always +/- 0, so I can say it works properly.
+I can share any details / dump any runtime data if needed.
 
---
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+Thanks,
+Al
+
