@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B5B2F145C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:24:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7293C2F138D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:10:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732791AbhAKNXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:23:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35860 "EHLO mail.kernel.org"
+        id S1731246AbhAKNKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:10:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732617AbhAKNRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:17:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D78D22B30;
-        Mon, 11 Jan 2021 13:17:15 +0000 (UTC)
+        id S1729045AbhAKNJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:09:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B5502250F;
+        Mon, 11 Jan 2021 13:09:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610371036;
-        bh=3pEz0FIIu+fu/KJfgYF3aR7EIsGGl7yKccvVx1G/XRc=;
+        s=korg; t=1610370543;
+        bh=6neRFHzUFMb4DfoxTZKUcTRsPqHTJJN/joGvpAtC94A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a094M9auXmEblFJBzTMFy/JkC8MuJGWj3R2kGAABxyYaB6xeZOD8cG/W3UL79QrJi
-         SgKkAMW6Q/G7xAAb+r8xY3Tofr7d9caGLq4Vjwyt2urAQ4xNdvK09KDLl+90ywZ3bs
-         hC05WdZqzT2yLjJ0ivETcfmcbKfLn8+AQ0shlekg=
+        b=bNoP08xlbYbjJjLlvMj+ksNecWO8FSAmbXUysuXawB+pvLxCuAjozVnXvVn5RFxwt
+         /E5PvUcj2SSGXLJpr1ZXeBqQL6rx1A9FYLSTztvoLN9ei4uaD+RWfVim7yCKut6gUQ
+         8HVVzJKI/CYuwu1MQ8K9z+x9nSjglvTJZVmKdavE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.10 113/145] kvm: check tlbs_dirty directly
-Date:   Mon, 11 Jan 2021 14:02:17 +0100
-Message-Id: <20210111130053.957222980@linuxfoundation.org>
+        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 69/77] ALSA: hda/realtek - Fix speaker volume control on Lenovo C940
+Date:   Mon, 11 Jan 2021 14:02:18 +0100
+Message-Id: <20210111130039.722388671@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
+References: <20210111130036.414620026@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,46 +39,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+From: Kailang Yang <kailang@realtek.com>
 
-commit 88bf56d04bc3564542049ec4ec168a8b60d0b48c upstream.
+commit f86de9b1c0663b0a3ca2dcddec9aa910ff0fbf2c upstream.
 
-In kvm_mmu_notifier_invalidate_range_start(), tlbs_dirty is used as:
-        need_tlb_flush |= kvm->tlbs_dirty;
-with need_tlb_flush's type being int and tlbs_dirty's type being long.
+Cannot adjust speaker's volume on Lenovo C940.
+Applying the alc298_fixup_speaker_volume function can fix the issue.
 
-It means that tlbs_dirty is always used as int and the higher 32 bits
-is useless.  We need to check tlbs_dirty in a correct way and this
-change checks it directly without propagating it to need_tlb_flush.
+[ Additional note: C940 has I2S amp for the speaker and this needs the
+  same initialization as Dell machines.
+  The patch was slightly modified so that the quirk entry is moved
+  next to the corresponding Dell quirk entry. -- tiwai ]
 
-Note: it's _extremely_ unlikely this neglecting of higher 32 bits can
-cause problems in practice.  It would require encountering tlbs_dirty
-on a 4 billion count boundary, and KVM would need to be using shadow
-paging or be running a nested guest.
-
-Cc: stable@vger.kernel.org
-Fixes: a4ee1ca4a36e ("KVM: MMU: delay flush all tlbs on sync_page path")
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-Message-Id: <20201217154118.16497-1-jiangshanlai@gmail.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Kailang Yang <kailang@realtek.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/ea25b4e5c468491aa2e9d6cb1f2fced3@realtek.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- virt/kvm/kvm_main.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/pci/hda/patch_realtek.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -482,9 +482,8 @@ static int kvm_mmu_notifier_invalidate_r
- 	kvm->mmu_notifier_count++;
- 	need_tlb_flush = kvm_unmap_hva_range(kvm, range->start, range->end,
- 					     range->flags);
--	need_tlb_flush |= kvm->tlbs_dirty;
- 	/* we've to flush the tlb before the pages can be freed */
--	if (need_tlb_flush)
-+	if (need_tlb_flush || kvm->tlbs_dirty)
- 		kvm_flush_remote_tlbs(kvm);
- 
- 	spin_unlock(&kvm->mmu_lock);
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5774,6 +5774,7 @@ enum {
+ 	ALC221_FIXUP_HP_FRONT_MIC,
+ 	ALC292_FIXUP_TPT460,
+ 	ALC298_FIXUP_SPK_VOLUME,
++	ALC298_FIXUP_LENOVO_SPK_VOLUME,
+ 	ALC256_FIXUP_DELL_INSPIRON_7559_SUBWOOFER,
+ 	ALC269_FIXUP_ATIV_BOOK_8,
+ 	ALC221_FIXUP_HP_MIC_NO_PRESENCE,
+@@ -6545,6 +6546,10 @@ static const struct hda_fixup alc269_fix
+ 		.chained = true,
+ 		.chain_id = ALC298_FIXUP_DELL_AIO_MIC_NO_PRESENCE,
+ 	},
++	[ALC298_FIXUP_LENOVO_SPK_VOLUME] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc298_fixup_speaker_volume,
++	},
+ 	[ALC295_FIXUP_DISABLE_DAC3] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc295_fixup_disable_dac3,
+@@ -7220,6 +7225,7 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x17aa, 0x3151, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x3176, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x3178, "ThinkCentre Station", ALC283_FIXUP_HEADSET_MIC),
++	SND_PCI_QUIRK(0x17aa, 0x3818, "Lenovo C940", ALC298_FIXUP_LENOVO_SPK_VOLUME),
+ 	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
+ 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x3978, "Lenovo B50-70", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
 
 
