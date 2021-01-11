@@ -2,106 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C7B2F1015
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:30:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 406AB2F101F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:32:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729221AbhAKK3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:29:17 -0500
-Received: from mga05.intel.com ([192.55.52.43]:14253 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728762AbhAKK3R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:29:17 -0500
-IronPort-SDR: n5t3IywvKyNuJS/HVl21Q1ULdCGulutDN2twgTc+O0NASA/3MDiZry365MC1Vsg4H2o28RERI0
- 0wT1UD5/axJw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9860"; a="262618129"
-X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
-   d="scan'208";a="262618129"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 02:28:32 -0800
-IronPort-SDR: 5MzC5HhH255GOVkG6N4933OfzmRqUt6c+42gYGNb3SJikDLDRzhfQ2OWfsTarTtSk3m7l2hTrx
- jqlyJ1kpTimw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
-   d="scan'208";a="464119262"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.149]) ([10.237.72.149])
-  by fmsmga001.fm.intel.com with ESMTP; 11 Jan 2021 02:28:29 -0800
-Subject: Re: [PATCH -next] scsi: docs: ABI: sysfs-driver-ufs: rectify table
- formatting
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Cc:     linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210111102212.19377-1-lukas.bulwahn@gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <25616ec5-3c90-2548-8516-599a73cc986b@intel.com>
-Date:   Mon, 11 Jan 2021 12:28:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729177AbhAKKbJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Jan 2021 05:31:09 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:54939 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726734AbhAKKbI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 05:31:08 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-34-7ibnZ-d1Oea7y-_CqhqRwQ-1; Mon, 11 Jan 2021 10:29:29 +0000
+X-MC-Unique: 7ibnZ-d1Oea7y-_CqhqRwQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 11 Jan 2021 10:29:28 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 11 Jan 2021 10:29:28 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Al Viro' <viro@zeniv.linux.org.uk>,
+        Mikulas Patocka <mpatocka@redhat.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Dave Jiang" <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "Matthew Wilcox" <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+        Steven Whitehouse <swhiteho@redhat.com>,
+        Eric Sandeen <esandeen@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Wang Jianchao <jianchao.wan9@gmail.com>,
+        "Kani, Toshi" <toshi.kani@hpe.com>,
+        "Norton, Scott J" <scott.norton@hpe.com>,
+        "Tadakamadla, Rajesh" <rajesh.tadakamadla@hpe.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>
+Subject: RE: [RFC v2] nvfs: a filesystem for persistent memory
+Thread-Topic: [RFC v2] nvfs: a filesystem for persistent memory
+Thread-Index: AQHW52zcFLyucqAcQUmnqwhwPozPcaoiOfvQ
+Date:   Mon, 11 Jan 2021 10:29:28 +0000
+Message-ID: <c26db2b0ea1a4891a7cbd0363de856d3@AcuMS.aculab.com>
+References: <alpine.LRH.2.02.2101061245100.30542@file01.intranet.prod.int.rdu2.redhat.com>
+ <20210110162008.GV3579531@ZenIV.linux.org.uk>
+In-Reply-To: <20210110162008.GV3579531@ZenIV.linux.org.uk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20210111102212.19377-1-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/01/21 12:22 pm, Lukas Bulwahn wrote:
-> Commit 0b2894cd0fdf ("scsi: docs: ABI: sysfs-driver-ufs: Add DeepSleep
-> power mode") adds new entries in tables of sysfs-driver-ufs ABI
-> documentation, but formatted the table incorrectly.
+From: Al Viro <viro@ftp.linux.org.uk> On Behalf Of Al Viro
+> Sent: 10 January 2021 16:20
 > 
-> Hence, make htmldocs warns:
+> On Thu, Jan 07, 2021 at 08:15:41AM -0500, Mikulas Patocka wrote:
+> > Hi
+> >
+> > I announce a new version of NVFS - a filesystem for persistent memory.
+> > 	http://people.redhat.com/~mpatocka/nvfs/
+> Utilities, AFAICS
 > 
->   ./Documentation/ABI/testing/sysfs-driver-ufs:{915,956}:
->   WARNING: Malformed table. Text in column margin in table line 15.
+> > 	git://leontynka.twibright.com/nvfs.git
+> Seems to hang on git pull at the moment...  Do you have it anywhere else?
 > 
-> Rectify table formatting for DeepSleep power mode.
+> > I found out that on NVFS, reading a file with the read method has 10%
+> > better performance than the read_iter method. The benchmark just reads the
+> > same 4k page over and over again - and the cost of creating and parsing
+> > the kiocb and iov_iter structures is just that high.
 > 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Apples and oranges...  What happens if you take
+> 
+> ssize_t read_iter_locked(struct file *file, struct iov_iter *to, loff_t *ppos)
+> {
+> 	struct inode *inode = file_inode(file);
+> 	struct nvfs_memory_inode *nmi = i_to_nmi(inode);
+> 	struct nvfs_superblock *nvs = inode->i_sb->s_fs_info;
+> 	ssize_t total = 0;
+> 	loff_t pos = *ppos;
+> 	int r;
+> 	int shift = nvs->log2_page_size;
+> 	size_t i_size;
+> 
+> 	i_size = inode->i_size;
+> 	if (pos >= i_size)
+> 		return 0;
+> 	iov_iter_truncate(to, i_size - pos);
+> 
+> 	while (iov_iter_count(to)) {
+> 		void *blk, *ptr;
+> 		size_t page_mask = (1UL << shift) - 1;
+> 		unsigned page_offset = pos & page_mask;
+> 		unsigned prealloc = (iov_iter_count(to) + page_mask) >> shift;
+> 		unsigned size;
+> 
+> 		blk = nvfs_bmap(nmi, pos >> shift, &prealloc, NULL, NULL, NULL);
+> 		if (unlikely(IS_ERR(blk))) {
+> 			r = PTR_ERR(blk);
+> 			goto ret_r;
+> 		}
+> 		size = ((size_t)prealloc << shift) - page_offset;
+> 		ptr = blk + page_offset;
+> 		if (unlikely(!blk)) {
+> 			size = min(size, (unsigned)PAGE_SIZE);
+> 			ptr = empty_zero_page;
+> 		}
+> 		size = copy_to_iter(to, ptr, size);
+> 		if (unlikely(!size)) {
+> 			r = -EFAULT;
+> 			goto ret_r;
+> 		}
+> 
+> 		pos += size;
+> 		total += size;
+> 	} while (iov_iter_count(to));
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+That isn't the best formed loop!
 
-Thank you!
+	David
 
-> ---
-> Adrian, please ack.
-> 
-> Martin, please pick on your scsi-next tree.
-> 
->  Documentation/ABI/testing/sysfs-driver-ufs | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-> index e77fa784d6d8..75ccc5c62b3c 100644
-> --- a/Documentation/ABI/testing/sysfs-driver-ufs
-> +++ b/Documentation/ABI/testing/sysfs-driver-ufs
-> @@ -932,8 +932,9 @@ Description:	This entry could be used to set or show the UFS device
->  		5   UFS device will be powered off, UIC link will
->  		    be powered off
->  		6   UFS device will be moved to deep sleep, UIC link
-> -		will be powered off. Note, deep sleep might not be
-> -		supported in which case this value will not be accepted
-> +		    will be powered off. Note, deep sleep might not be
-> +		    supported in which case this value will not be
-> +		    accepted
->  		==  ====================================================
->  
->  What:		/sys/bus/platform/drivers/ufshcd/*/rpm_target_dev_state
-> @@ -973,8 +974,9 @@ Description:	This entry could be used to set or show the UFS device
->  		5   UFS device will be powered off, UIC link will
->  		    be powered off
->  		6   UFS device will be moved to deep sleep, UIC link
-> -		will be powered off. Note, deep sleep might not be
-> -		supported in which case this value will not be accepted
-> +		    will be powered off. Note, deep sleep might not be
-> +		    supported in which case this value will not be
-> +		    accepted
->  		==  ====================================================
->  
->  What:		/sys/bus/platform/drivers/ufshcd/*/spm_target_dev_state
-> 
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
