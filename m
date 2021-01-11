@@ -2,79 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E31E82F1B22
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 746612F1B2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:40:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388810AbhAKQhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:37:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43140 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726997AbhAKQhE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:37:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A9F420B1F;
-        Mon, 11 Jan 2021 16:36:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610382984;
-        bh=FJ6UYmcp9qZ1+F9nDoqN3eSCeXg5LWZGhO2qmO2UrgU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=erEHoJgEokRZJPDaOfAepJ6+VEHuyp7HvfoJ+KEJ2EyWGzv0KVvCFc2J2gTDQM58v
-         rTjbHSoJHqMp9+g27xZk2GKBbGxnUHJ9eANnJjyKCoTFFccA/EA3LSyV5eCwcC3BqP
-         f8WW2UlhOhalPXGu0Iq/WpCI+nfy4NG28cFzJXv1GPA9RyWKpymG2G9rABQYCg8/G5
-         j+2IonqWPZXA5QpQMZKBOUMv9KSLxdRQKvXQHbyOjx4ZbTTvh4no/eT4oFQ4kSSz7c
-         f0zEwxhCMeSeszOrS2mlPq058PPIywzyL0oz4K/DXteje68hDf1F1JbjqAtyGRSkfu
-         1VuLM+o1Sigdg==
-Date:   Mon, 11 Jan 2021 16:35:51 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        =?utf-8?B?5pyx54G/54G/?= <zhucancan@vivo.com>,
-        alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] ASoC: soc-pcm: Fix uninitialised return value in
- variable ret
-Message-ID: <20210111163551.GA33269@sirena.org.uk>
-References: <20210108123546.19601-1-colin.king@canonical.com>
+        id S1730398AbhAKQkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:40:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23821 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725858AbhAKQkX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 11:40:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610383136;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Anf00cFKpSQFqZofaFMhsr0DykCPEZ28puus8iFCALM=;
+        b=fOe5E2UUzmOTpU5anLNeq7GjmMeEbVSJgSASeA4jEfumq/6N1Eag/0hd+9kTNFYf68uBA2
+        h6PhZrkE17ICEZyQYQN3/HIBtPSffUA1qIH2R3aWJ361wc1idP9AIrKidA0p54W9FXziP1
+        uEbuDdyBFFGMI6gSEtJvFlthNRDxk7s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-164-OSlGZaL8NDm872sorYfV9Q-1; Mon, 11 Jan 2021 11:38:52 -0500
+X-MC-Unique: OSlGZaL8NDm872sorYfV9Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A88C800050;
+        Mon, 11 Jan 2021 16:38:51 +0000 (UTC)
+Received: from bfoster (ovpn-114-23.rdu2.redhat.com [10.10.114.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0D8315C1B4;
+        Mon, 11 Jan 2021 16:38:49 +0000 (UTC)
+Date:   Mon, 11 Jan 2021 11:38:48 -0500
+From:   Brian Foster <bfoster@redhat.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Donald Buczek <buczek@molgen.mpg.de>, linux-xfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        it+linux-xfs@molgen.mpg.de
+Subject: Re: [PATCH] xfs: Wake CIL push waiters more reliably
+Message-ID: <20210111163848.GC1091932@bfoster>
+References: <1705b481-16db-391e-48a8-a932d1f137e7@molgen.mpg.de>
+ <20201229235627.33289-1-buczek@molgen.mpg.de>
+ <20201230221611.GC164134@dread.disaster.area>
+ <20210104162353.GA254939@bfoster>
+ <20210107215444.GG331610@dread.disaster.area>
+ <20210108165657.GC893097@bfoster>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gBBFr7Ir9EOA20Yy"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210108123546.19601-1-colin.king@canonical.com>
-X-Cookie: Made with real ingredients.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210108165657.GC893097@bfoster>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jan 08, 2021 at 11:56:57AM -0500, Brian Foster wrote:
+> On Fri, Jan 08, 2021 at 08:54:44AM +1100, Dave Chinner wrote:
+> > On Mon, Jan 04, 2021 at 11:23:53AM -0500, Brian Foster wrote:
+> > > On Thu, Dec 31, 2020 at 09:16:11AM +1100, Dave Chinner wrote:
+> > > > On Wed, Dec 30, 2020 at 12:56:27AM +0100, Donald Buczek wrote:
+> > > > > If the value goes below the limit while some threads are
+> > > > > already waiting but before the push worker gets to it, these threads are
+> > > > > not woken.
+> > > > > 
+> > > > > Always wake all CIL push waiters. Test with waitqueue_active() as an
+> > > > > optimization. This is possible, because we hold the xc_push_lock
+> > > > > spinlock, which prevents additions to the waitqueue.
+> > > > > 
+> > > > > Signed-off-by: Donald Buczek <buczek@molgen.mpg.de>
+> > > > > ---
+> > > > >  fs/xfs/xfs_log_cil.c | 2 +-
+> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/fs/xfs/xfs_log_cil.c b/fs/xfs/xfs_log_cil.c
+> > > > > index b0ef071b3cb5..d620de8e217c 100644
+> > > > > --- a/fs/xfs/xfs_log_cil.c
+> > > > > +++ b/fs/xfs/xfs_log_cil.c
+> > > > > @@ -670,7 +670,7 @@ xlog_cil_push_work(
+> > > > >  	/*
+> > > > >  	 * Wake up any background push waiters now this context is being pushed.
+> > > > >  	 */
+> > > > > -	if (ctx->space_used >= XLOG_CIL_BLOCKING_SPACE_LIMIT(log))
+> > > > > +	if (waitqueue_active(&cil->xc_push_wait))
+> > > > >  		wake_up_all(&cil->xc_push_wait);
+> > > > 
+> > > > That just smells wrong to me. It *might* be correct, but this
+> > > > condition should pair with the sleep condition, as space used by a
+> > > > CIL context should never actually decrease....
+> > > > 
+> > > 
+> > > ... but I'm a little confused by this assertion. The shadow buffer
+> > > allocation code refers to the possibility of shadow buffers falling out
+> > > that are smaller than currently allocated buffers. Further, the
+> > > _insert_format_items() code appears to explicitly optimize for this
+> > > possibility by reusing the active buffer, subtracting the old size/count
+> > > values from the diff variables and then reformatting the latest
+> > > (presumably smaller) item to the lv.
+> > 
+> > Individual items might shrink, but the overall transaction should
+> > grow. Think of a extent to btree conversion of an inode fork. THe
+> > data in the inode fork decreases from a list of extents to a btree
+> > root block pointer, so the inode item shrinks. But then we add a new
+> > btree root block that contains all the extents + the btree block
+> > header, and it gets rounded up to ithe 128 byte buffer logging chunk
+> > size.
+> > 
+> > IOWs, while the inode item has decreased in size, the overall
+> > space consumed by the transaction has gone up and so the CIL ctx
+> > used_space should increase. Hence we can't just look at individual
+> > log items and whether they have decreased in size - we have to look
+> > at all the items in the transaction to understand how the space used
+> > in that transaction has changed. i.e. it's the aggregation of all
+> > items in the transaction that matter here, not so much the
+> > individual items.
+> > 
+> 
+> Ok, that makes more sense...
+> 
+> > > Of course this could just be implementation detail. I haven't dug into
+> > > the details in the remainder of this thread and I don't have specific
+> > > examples off the top of my head, but perhaps based on the ability of
+> > > various structures to change formats and the ability of log vectors to
+> > > shrink in size, shouldn't we expect the possibility of a CIL context to
+> > > shrink in size as well? Just from poking around the CIL it seems like
+> > > the surrounding code supports it (xlog_cil_insert_items() checks len > 0
+> > > for recalculating split res as well)...
+> > 
+> > Yes, there may be situations where it decreases. It may be this is
+> > fine, but the assumption *I've made* in lots of the CIL push code is
+> > that ctx->used_space rarely, if ever, will go backwards.
+> > 
+> 
+> ... and rarely seems a bit more pragmatic than never.
+> 
 
---gBBFr7Ir9EOA20Yy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+FWIW, a cursory look at the inode size/format code (motivated by
+Donald's recent log dump that appears to show inode log items changing
+size) suggested that a simple local format size change might be enough
+to cause this condition on an item. A subsequent test to create and
+immediately remove a file from an otherwise empty directory triggers a
+tracepoint I injected in xlog_cil_insert_items() to detect a negative
+transaction delta. As expected, the absolute value of the delta does
+seem to increase with a larger filename. This also produces a negative
+iovec delta, fwiw. E.g.:
 
-On Fri, Jan 08, 2021 at 12:35:46PM +0000, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
->=20
-> Currently when attempting to start the BE fails because the
-> FE is not started the error return variable ret is not initialized
-> and garbage is returned.  Fix this by setting it to 0 so the
+# touch `for i in $(seq 0 63); do echo -n a; done`
+# rm -f `for i in $(seq 0 63); do echo -n a; done`
+#
 
-This doesn't apply against current code, please check and resend.
+rm-9265    [001] ....  4660.177806: xfs_log_commit_cil: 409: len -72 diff_iovecs 0
+rm-9265    [001] .N.1  4660.177913: xfs_log_commit_cil: 419: len -72 diff_iovecs 0
+rm-9265    [001] ....  4660.178313: xfs_log_commit_cil: 409: len -52 diff_iovecs -1
+rm-9265    [001] ...1  4660.178336: xfs_log_commit_cil: 419: len -64 diff_iovecs -1
 
---gBBFr7Ir9EOA20Yy
-Content-Type: application/pgp-signature; name="signature.asc"
+... and this only seems to occur when the unlink occurs before the CIL
+has been checkpointed and pushed out the inode (i.e. a freeze/unfreeze
+cycle prevents it).
 
------BEGIN PGP SIGNATURE-----
+I've not dug into the transaction details and have no idea if this is
+the variant that Donald reproduces; it wouldn't surprise me a ton if
+there were various others. This is pretty straightforward, however, and
+shows the negative item delta carry through the transaction. IMO, that
+seems to justify a throttling fix...
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/8fmYACgkQJNaLcl1U
-h9Buowf/Z7C140455AraBh0sDuBCFIG9HvDvb3RUm0/Xt5lR91JwaVxdYRlBbjJ0
-dLSaYFh0GepPSHSAAn+AjVG5dN+26Lck2t/19LRscETOIZlqNwJ+YNY5f/FLJlau
-Fe7Z6qDaPUL/WgeDGaY1gqAsJpdVdfGP1ojKEXeqsKjyZnB35D7Ftt9Ouw/v5MPV
-V4z2ody8iK6SwNe/kIRIZndr8c2DOz3nodv0nBBuEn+18jdL1twh3CqqiL0eirCa
-nC9dqQWuy12SdRHWWv6w1M/lfWqVdZKhVO5/d/2jS2nGOr2bphnJ5/3Hy9ecbF5o
-TKGZIfArkmvxX+IAXxXeyPP85xKDBg==
-=RuRu
------END PGP SIGNATURE-----
+Brian
 
---gBBFr7Ir9EOA20Yy--
+> > e.g. we run the first transaction into the CIL, it steals the sapce
+> > needed for the cil checkpoint headers for the transaciton. Then if
+> > the space returned by the item formatting is negative (because it is
+> > in the AIL and being relogged), the CIL checkpoint now doesn't have
+> > the space reserved it needs to run a checkpoint. That transaction is
+> > a sync transaction, so it forces the log, and now we push the CIL
+> > without sufficient reservation to write out the log headers and the
+> > items we just formatted....
+> > 
+> 
+> Hmmm... that seems like an odd scenario because I'd expect the space
+> usage delta to reflect what might or might not have already been added
+> to the CIL context, not necessarily the AIL. IOW, shouldn't a negative
+> delta only occur for items being relogged while still CIL resident
+> (regardless of AIL residency)?
+> 
+> From a code standpoint, the way a particular log item delta comes out
+> negative is from having a shadow lv size smaller than the ->li_lv size.
+> Thus, xlog_cil_insert_format_items() subtracts the currently formatted
+> lv size from the delta, formats the current state of the item, and
+> xfs_cil_prepare_item() adds the new (presumably smaller) size to the
+> delta. We reuse ->li_lv in this scenario so both it and the shadow
+> buffer remain, but a CIL push pulls ->li_lv from all log items and
+> chains them to the CIL context for writing, so I don't see how we could
+> have an item return a negative delta on an empty CIL. Hm?
+> 
+> (I was also wondering whether repeated smaller relogs of an item could
+> be a vector for this to go wrong, but it looks like
+> xlog_cil_insert_format_items() always uses the formatted size of the
+> current buffer...).
+> 
+> Brian
+> 
+> > So, yeah, shrinking transaction space usage definitely violates some
+> > of the assumptions the code makes about how relogging works. It's
+> > entirely possible the assumptions I've made are not entirely correct
+> > in some corner cases - those particular cases are what we need to
+> > ferret out here, and then decide if they are correct or not and deal
+> > with it from there...
+> > 
+> > Cheers,
+> > 
+> > Dave.
+> > -- 
+> > Dave Chinner
+> > david@fromorbit.com
+> > 
+> 
+
