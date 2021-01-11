@@ -2,105 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9339C2F1226
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:10:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E452F122B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:13:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbhAKMKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 07:10:46 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:32262 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726635AbhAKMKq (ORCPT
+        id S1726535AbhAKMNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 07:13:08 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:41131 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726407AbhAKMNH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 07:10:46 -0500
-Date:   Mon, 11 Jan 2021 12:09:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610366997; bh=zUY1WTDEiMVW2+TLKz6QzDCMBOZ6h9D50PRiYZRI15E=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=cAHC/A9CkwDn9wy1cgwJc5gsJHjgqEyimjEimCKPMLzw7DiGk5avDFOZn1TIrlFuI
-         wrVyHm9ygMCIVI6uc5nS6rPFcQ3t/QeJqsSojuiGiEX4Dm9QnifesPm7/9x4B0FUsT
-         oPx2fWkf/QJCqkYUlUiKKfzM4Z8OAEg1ZmLL2q4Q+L+OdbLHAcjS4dpDsNSTMAEjL4
-         KR7aLkhkxfVvg8ity9wkNWXG4uU61DCKoPV3+T9IoN7RMli3ODHhI4VXPkj0NamG8j
-         bd19BMSOq+1Dr+Jol9h6diT19mIDqQ6CGdXfFKLEO0xBpac7Q13SdkSy1xzSyd1gRE
-         qFDGdo3P3y0gQ==
-To:     Steffen Klassert <steffen.klassert@secunet.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Dongseok Yi <dseok.yi@samsung.com>,
-        "'David S. Miller'" <davem@davemloft.net>,
-        namkyu78.kim@samsung.com,
-        'Alexey Kuznetsov' <kuznet@ms2.inr.ac.ru>,
-        'Hideaki YOSHIFUJI' <yoshfuji@linux-ipv6.org>,
-        'Jakub Kicinski' <kuba@kernel.org>,
-        'Willem de Bruijn' <willemb@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [RFC PATCH net] udp: check sk for UDP GRO fraglist
-Message-ID: <20210111120902.2453-1-alobakin@pm.me>
+        Mon, 11 Jan 2021 07:13:07 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kyw3e-0006uu-3M; Mon, 11 Jan 2021 12:12:26 +0000
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Colin Ian King <colin.king@canonical.com>
+Subject: re: platform/surface: Add Surface Aggregator user-space interface
+ (static analysis issues)
+Message-ID: <9e450370-7c5c-2e93-ac86-6f7c21652ab8@canonical.com>
+Date:   Mon, 11 Jan 2021 12:12:25 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steffen Klassert <steffen.klassert@secunet.com>
-Date: Mon, 11 Jan 2021 09:43:22 +0100
+Hi Maximilian,
 
-> On Mon, Jan 11, 2021 at 11:02:42AM +0900, Dongseok Yi wrote:
->> On 2021-01-08 22:35, Steffen Klassert wrote:
->>> On Fri, Jan 08, 2021 at 09:52:28PM +0900, Dongseok Yi wrote:
->>>> It is a workaround patch.
->>>>
->>>> UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
->>>> forwarding. Only the header of head_skb from ip_finish_output_gso ->
->>>> skb_gso_segment is updated but following frag_skbs are not updated.
->>>>
->>>> A call path skb_mac_gso_segment -> inet_gso_segment ->
->>>> udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
->>>> does not try to update any UDP/IP header of the segment list.
->>>>
->>>> It might make sense because each skb of frag_skbs is converted to a
->>>> list of regular packets. Header update with checksum calculation may
->>>> be not needed for UDP GROed frag_skbs.
->>>>
->>>> But UDP GRO frag_list is started from udp_gro_receive, we don't know
->>>> whether the skb will be NAT forwarded at that time. For workaround,
->>>> try to get sock always when call udp4_gro_receive -> udp_gro_receive
->>>> to check if the skb is for local.
->>>>
->>>> I'm still not sure if UDP GRO frag_list is really designed for local
->>>> session only. Can kernel support NAT forward for UDP GRO frag_list?
->>>> What am I missing?
->>>
->>> The initial idea when I implemented this was to have a fast
->>> forwarding path for UDP. So forwarding is a usecase, but NAT
->>> is a problem, indeed. A quick fix could be to segment the
->>> skb before it gets NAT forwarded. Alternatively we could
->>> check for a header change in __udp_gso_segment_list and
->>> update the header of the frag_skbs accordingly in that case.
->>
->> Thank you for explaining.
->> Can I think of it as a known issue?
->
-> No, it was not known before you reported it.
->
->> I think we should have a fix
->> because NAT can be triggered by user. Can I check the current status?
->> Already planning a patch or a new patch should be written?
->
-> We have to do a new patch to fix that issue. If you want do
-> do so, go ahead.
+Static analysis of linux-next with Coverity has found several issues
+with the following commit:
 
-This patch is incorrect. I do NAT UDP GRO Fraglists via nftables
-(both with and without flow offload) with no issues since March'20.
-Packet loss rates are always +/- 0, so I can say it works properly.
-I can share any details / dump any runtime data if needed.
+commit 178f6ab77e617c984d6520b92e747075a12676ff
+Author: Maximilian Luz <luzmaximilian@gmail.com>
+Date:   Mon Dec 21 19:39:58 2020 +0100
 
-Thanks,
-Al
+    platform/surface: Add Surface Aggregator user-space interface
 
+The analysis is as follows:
+
+65static long ssam_cdev_request(struct ssam_cdev *cdev, unsigned long arg)
+ 66{
+ 67        struct ssam_cdev_request __user *r;
+ 68        struct ssam_cdev_request rqst;
+
+   1. var_decl: Declaring variable spec without initializer.
+
+ 69        struct ssam_request spec;
+ 70        struct ssam_response rsp;
+ 71        const void __user *plddata;
+ 72        void __user *rspdata;
+ 73        int status = 0, ret = 0, tmp;
+ 74
+ 75        r = (struct ssam_cdev_request __user *)arg;
+ 76        ret = copy_struct_from_user(&rqst, sizeof(rqst), r, sizeof(*r));
+
+   2. Condition ret, taking true branch.
+
+ 77        if (ret)
+
+   3. Jumping to label out.
+
+ 78                goto out;
+
+ 79
+ 80        plddata = u64_to_user_ptr(rqst.payload.data);
+ 81        rspdata = u64_to_user_ptr(rqst.response.data);
+ 82
+ 83        /* Setup basic request fields. */
+ 84        spec.target_category = rqst.target_category;
+ 85        spec.target_id = rqst.target_id;
+ 86        spec.command_id = rqst.command_id;
+ 87        spec.instance_id = rqst.instance_id;
+ 88        spec.flags = 0;
+ 89        spec.length = rqst.payload.length;
+ 90        spec.payload = NULL;
+ 91
+ 92        if (rqst.flags & SSAM_CDEV_REQUEST_HAS_RESPONSE)
+ 93                spec.flags |= SSAM_REQUEST_HAS_RESPONSE;
+ 94
+ 95        if (rqst.flags & SSAM_CDEV_REQUEST_UNSEQUENCED)
+ 96                spec.flags |= SSAM_REQUEST_UNSEQUENCED;
+ 97
+ 98        rsp.capacity = rqst.response.length;
+ 99        rsp.length = 0;
+100        rsp.pointer = NULL;
+101
+102        /* Get request payload from user-space. */
+103        if (spec.length) {
+104                if (!plddata) {
+105                        ret = -EINVAL;
+106                        goto out;
+107                }
+108
+
+CID: Untrusted allocation size (TAINTED_SCALAR)
+   8. tainted_data: Passing tainted expression spec.length to kzalloc,
+which uses it as an allocation size
+
+109                spec.payload = kzalloc(spec.length, GFP_KERNEL);
+110                if (!spec.payload) {
+111                        ret = -ENOMEM;
+112                        goto out;
+113                }
+114
+115                if (copy_from_user((void *)spec.payload, plddata,
+spec.length)) {
+116                        ret = -EFAULT;
+117                        goto out;
+118                }
+119        }
+120
+121        /* Allocate response buffer. */
+122        if (rsp.capacity) {
+123                if (!rspdata) {
+124                        ret = -EINVAL;
+125                        goto out;
+126                }
+127
+
+CID: Untrusted allocation size (TAINTED_SCALAR)
+   12. tainted_data: Passing tainted expression rsp.capacity to kzalloc,
+which uses it as an allocation size
+
+128                rsp.pointer = kzalloc(rsp.capacity, GFP_KERNEL);
+129                if (!rsp.pointer) {
+130                        ret = -ENOMEM;
+131                        goto out;
+132                }
+133        }
+134
+135        /* Perform request. */
+136        status = ssam_request_sync(cdev->ctrl, &spec, &rsp);
+137        if (status)
+138                goto out;
+139
+140        /* Copy response to user-space. */
+141        if (rsp.length && copy_to_user(rspdata, rsp.pointer, rsp.length))
+142                ret = -EFAULT;
+143
+144out:
+145        /* Always try to set response-length and status. */
+
+   CID: Uninitialized pointer read (UNINIT)
+   Using uninitialized value rsp.length
+
+146        tmp = put_user(rsp.length, &r->response.length);
+
+   4. Condition tmp, taking true branch.
+
+147        if (tmp)
+148                ret = tmp;
+149
+150        tmp = put_user(status, &r->status);
+
+   5. Condition tmp, taking true branch.
+
+151        if (tmp)
+152                ret = tmp;
+153
+154        /* Cleanup. */
+
+   CID: Uninitialized pointer read (UNINIT)
+   6. uninit_use_in_call: Using uninitialized value spec.payload when
+calling kfree.
+
+155        kfree(spec.payload);
+
+   CID: Uninitialized pointer read (UNINIT)
+   uninit_use_in_call: Using uninitialized value rsp.pointer when
+calling kfree
+
+156        kfree(rsp.pointer);
+157
+158        return ret;
+
+Colin
