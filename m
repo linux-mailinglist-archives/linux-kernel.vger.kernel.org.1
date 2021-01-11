@@ -2,84 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CBDD2F1A54
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:59:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 752C92F1A59
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:00:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388893AbhAKP7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:59:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731804AbhAKP7J (ORCPT
+        id S1732215AbhAKQAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:00:07 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:34231 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729200AbhAKQAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:59:09 -0500
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1704EC061786;
-        Mon, 11 Jan 2021 07:58:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
-        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=7Po4id9eWkY7uvToizGBFW5yEu2kvXRu4dj6jXQtgHo=; b=ym6Fttri1WKbSAKbRIudWCv2rr
-        eLJkUbLVQ60OpUYu48+3KrSg7PD+BhBhyQ4QEdpmIv9+FsLCLh/mrf3qORhjseOJ2SYh0VeL2sVmn
-        dx8As0clkznvKlAizDsQzTS9LO0daZvJxmaIwE6Md2MjR+lsI3EmraL0ihu3noOs0y0d0Q3UGlYgG
-        QaErLfo8YkkFaZRDLfCNKliqu7Xag1ftCDxVcr+UdxXUMzk8X6hkJ9RT9N40shXOSnaA46Mlnchky
-        1ljxHO1jjp8lhnaRoOBjYU2Y8+WuSjAFHw0KTbQQ6L6BTiRBq3/Y5Tv4zS3obWLD9MU9tmfK/CSsA
-        bTe55VaQ==;
-Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=toshino.localdomain)
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <mperttunen@nvidia.com>)
-        id 1kyzaN-0005h1-89; Mon, 11 Jan 2021 17:58:27 +0200
-From:   Mikko Perttunen <mperttunen@nvidia.com>
-To:     thierry.reding@gmail.com, jonathanh@nvidia.com
-Cc:     talho@nvidia.com, linux-i2c@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Muhammed Fazal <mfazale@nvidia.com>, stable@vger.kernel.org,
-        Mikko Perttunen <mperttunen@nvidia.com>
-Subject: [PATCH v2] i2c: tegra-bpmp: ignore DMA safe buffer flag
-Date:   Mon, 11 Jan 2021 17:58:16 +0200
-Message-Id: <20210111155816.3656820-1-mperttunen@nvidia.com>
-X-Mailer: git-send-email 2.30.0
+        Mon, 11 Jan 2021 11:00:06 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610380785; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=KF3pDVrkGIwiIeNHkgBT0vpztBzizZGwHLuTfWBg/Lg=; b=wcLa5+7wAA749AjywpejH3DlNwZzDdqLWhwJtGP8F7ocyXQRhyTc9ebNstCFoHgKaoBjbClH
+ M1dKsLP9FNPKcTJ9dr4hBbKZvekEjyqNe3Um6wOCv+HtzreUmhLtyqpNogWAmWal2001jl73
+ hSV0Rb3MqIeyTYKDQx52cQwJpzE=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5ffc75cc415a6293c59068f7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 15:59:08
+ GMT
+Sender: mkshah=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 441F7C43465; Mon, 11 Jan 2021 15:59:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.29.129] (unknown [49.36.75.31])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: mkshah)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 21D5AC433C6;
+        Mon, 11 Jan 2021 15:59:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 21D5AC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
+Subject: Re: [PATCH v5 3/4] pinctrl: qcom: Properly clear "intr_ack_high"
+ interrupts when unmasking
+To:     Douglas Anderson <dianders@chromium.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>, linux-gpio@vger.kernel.org,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        linux-kernel@vger.kernel.org
+References: <20210108093339.v5.1.I3ad184e3423d8e479bc3e86f5b393abb1704a1d1@changeid>
+ <20210108093339.v5.3.I32d0f4e174d45363b49ab611a13c3da8f1e87d0f@changeid>
+From:   Maulik Shah <mkshah@codeaurora.org>
+Message-ID: <029799d8-014c-6ad2-bbdd-d81ba355edba@codeaurora.org>
+Date:   Mon, 11 Jan 2021 21:29:00 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 84.249.134.236
-X-SA-Exim-Mail-From: mperttunen@nvidia.com
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+In-Reply-To: <20210108093339.v5.3.I32d0f4e174d45363b49ab611a13c3da8f1e87d0f@changeid>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Muhammed Fazal <mfazale@nvidia.com>
+Hi Doug,
 
-Ignore I2C_M_DMA_SAFE flag as it does not make a difference
-for bpmp-i2c, but causes -EINVAL to be returned for valid
-transactions.
+Reviewed-by: Maulik Shah <mkshah@codeaurora.org>
+Tested-by: Maulik Shah <mkshah@codeaurora.org>
 
-Signed-off-by: Muhammed Fazal <mfazale@nvidia.com>
-Cc: stable@vger.kernel.org # v4.19+
-Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
----
-v2:
-- Remove unnecessary check for if the bit is set
----
- drivers/i2c/busses/i2c-tegra-bpmp.c | 2 ++
- 1 file changed, 2 insertions(+)
+Thanks,
+Maulik
 
-diff --git a/drivers/i2c/busses/i2c-tegra-bpmp.c b/drivers/i2c/busses/i2c-tegra-bpmp.c
-index ec7a7e917edd..aa6685cabde3 100644
---- a/drivers/i2c/busses/i2c-tegra-bpmp.c
-+++ b/drivers/i2c/busses/i2c-tegra-bpmp.c
-@@ -80,6 +80,8 @@ static int tegra_bpmp_xlate_flags(u16 flags, u16 *out)
- 		flags &= ~I2C_M_RECV_LEN;
- 	}
- 
-+	flags &= ~I2C_M_DMA_SAFE;
-+
- 	return (flags != 0) ? -EINVAL : 0;
- }
- 
+On 1/8/2021 11:05 PM, Douglas Anderson wrote:
+> In commit 4b7618fdc7e6 ("pinctrl: qcom: Add irq_enable callback for
+> msm gpio") we tried to Ack interrupts during unmask.  However, that
+> patch forgot to check "intr_ack_high" so, presumably, it only worked
+> for a certain subset of SoCs.
+>
+> Let's add a small accessor so we don't need to open-code the logic in
+> both places.
+>
+> This was found by code inspection.  I don't have any access to the
+> hardware in question nor software that needs the Ack during unmask.
+>
+> Fixes: 4b7618fdc7e6 ("pinctrl: qcom: Add irq_enable callback for msm gpio")
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> It should be noted that this code will be moved in the next patch.  In
+> theory this could be squashed into the next patch but it seems more
+> documenting to have this as a separate patch.
+>
+> Changes in v5:
+> - ("pinctrl: qcom: Properly clear "intr_ack_high" interrupts...") new for v5.
+>
+>   drivers/pinctrl/qcom/pinctrl-msm.c | 14 ++++++++++----
+>   1 file changed, 10 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
+> index 1787ada6bfab..a6b0c17e2f78 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
+> @@ -96,6 +96,14 @@ MSM_ACCESSOR(intr_cfg)
+>   MSM_ACCESSOR(intr_status)
+>   MSM_ACCESSOR(intr_target)
+>   
+> +static void msm_ack_intr_status(struct msm_pinctrl *pctrl,
+> +				const struct msm_pingroup *g)
+> +{
+> +	u32 val = (g->intr_ack_high) ? BIT(g->intr_status_bit) : 0;
+> +
+> +	msm_writel_intr_status(val, pctrl, g);
+> +}
+> +
+>   static int msm_get_groups_count(struct pinctrl_dev *pctldev)
+>   {
+>   	struct msm_pinctrl *pctrl = pinctrl_dev_get_drvdata(pctldev);
+> @@ -798,7 +806,7 @@ static void msm_gpio_irq_clear_unmask(struct irq_data *d, bool status_clear)
+>   	 * when the interrupt is not in use.
+>   	 */
+>   	if (status_clear)
+> -		msm_writel_intr_status(0, pctrl, g);
+> +		msm_ack_intr_status(pctrl, g);
+>   
+>   	val = msm_readl_intr_cfg(pctrl, g);
+>   	val |= BIT(g->intr_raw_status_bit);
+> @@ -891,7 +899,6 @@ static void msm_gpio_irq_ack(struct irq_data *d)
+>   	struct msm_pinctrl *pctrl = gpiochip_get_data(gc);
+>   	const struct msm_pingroup *g;
+>   	unsigned long flags;
+> -	u32 val;
+>   
+>   	if (test_bit(d->hwirq, pctrl->skip_wake_irqs)) {
+>   		if (test_bit(d->hwirq, pctrl->dual_edge_irqs))
+> @@ -903,8 +910,7 @@ static void msm_gpio_irq_ack(struct irq_data *d)
+>   
+>   	raw_spin_lock_irqsave(&pctrl->lock, flags);
+>   
+> -	val = (g->intr_ack_high) ? BIT(g->intr_status_bit) : 0;
+> -	msm_writel_intr_status(val, pctrl, g);
+> +	msm_ack_intr_status(pctrl, g);
+>   
+>   	if (test_bit(d->hwirq, pctrl->dual_edge_irqs))
+>   		msm_gpio_update_dual_edge_pos(pctrl, g, d);
+
 -- 
-2.30.0
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
 
