@@ -2,132 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B3B2F1E81
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5057E2F1E7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390672AbhAKTE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:04:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40438 "EHLO
+        id S2390630AbhAKTEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:04:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390620AbhAKTE1 (ORCPT
+        with ESMTP id S1726063AbhAKTEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:04:27 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D457C061795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:03:47 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id m12so1096300lfo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:03:46 -0800 (PST)
+        Mon, 11 Jan 2021 14:04:21 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA4BC061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:03:41 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id c79so514161pfc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:03:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kPTtQzuom5Awb0GxiDKd05xSwBAc8AF72bAoBes2ggE=;
-        b=H2kU5UYMYcLQgzHllGugRqyIESmcF7I3idrXTq24h4uCLEVVDpGBmLxGmD8+GhSnGF
-         m3sQWed5AyIGadPjSXqHFAF5DYRLez2ICQqJFYKb2qGv5VvYWGCJMpJiiR9pFThDDPpR
-         3/cFpiZY2VRv3AnOfbFvv16B9MBZPaZxXw1C0=
+        bh=0M90n7WjWo+X1yIVKHdOTyfvfwcWqL9tkBr22HLMVsY=;
+        b=mQxWWfxrpoJqQpQ0teH0JWLWjRlCD6LzwnF9DaADN1VituMO7/JZhJSc19maKjmKa0
+         XAhLsG6GziZLcTS2nrs4aZgJyR1MwzUKmkGihnYT4kRyKGczg0UL7kcyLDEfJM67gV4o
+         C6Qe1DfX/qHHCoZSiQr1IC3yt5haB46iMoLbiVigq5Z4Wk9LZWV1EsqDj7jVKI0Idjm+
+         9FgiQytvEQ6ZkCGZeiYITKvdh+L8AFRXr2eHwaMMEDY3+zyb7fJvMawbCCycvQOicRPY
+         459LZinhBEH0OuPe0NVfJ99MWMN4iZoQOUkf3GKueztCB5U3p47j+G6zeNylLPU3TE3A
+         l7/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kPTtQzuom5Awb0GxiDKd05xSwBAc8AF72bAoBes2ggE=;
-        b=NY4kHHjKv64B+Ssp5JxpkoPRzUFMgVDeelZc95U5UKtZDiBCVug4mA3NS4RuI579Ys
-         U1jk8OQ3zbOPuPxDmHVzp1k4GXgDqFhPd13wKX6oTcViiNvOjLJ4A8Vj5NVFSRfa+NuZ
-         7N6ew+IXP8XbSbXw9RMjkUFcg3IHmGlHn53u9DXlRH/9U3JQOBU9KdpDaPGixuyeyZnz
-         3Catx7Db9AlFlnbzrVXvGtNYxzcG203ZjuRkSb9ldg6t2QK45Ecen3F2yUBEPzmFG2rq
-         YPZHYgDzOlQKB1k1PCuFKKmvN21qJkc3BD6BGY5o2OkY/2AJWBtQ+fhL5FZTi8s4ubH0
-         UddQ==
-X-Gm-Message-State: AOAM533nM++7L0Dneo4L7fYbPCdP9iNMCqXIUpbCDc1Hc1f1g2VEd1+s
-        Fo/rHC80SLoCZLm8Yp0zNQ6E1XEpLYXLug==
-X-Google-Smtp-Source: ABdhPJyEg03Tzlq7WyZcKA8CGogYF5pi/iZol5YJybSraJ+bbf+hARb8RqQs/4apQHBzbGghQH17og==
-X-Received: by 2002:a19:7109:: with SMTP id m9mr397302lfc.351.1610391825037;
-        Mon, 11 Jan 2021 11:03:45 -0800 (PST)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id a10sm81593lfs.18.2021.01.11.11.03.43
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 11:03:44 -0800 (PST)
-Received: by mail-lj1-f181.google.com with SMTP id f11so66087ljm.8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:03:43 -0800 (PST)
-X-Received: by 2002:a2e:8995:: with SMTP id c21mr368315lji.251.1610391823175;
- Mon, 11 Jan 2021 11:03:43 -0800 (PST)
+        bh=0M90n7WjWo+X1yIVKHdOTyfvfwcWqL9tkBr22HLMVsY=;
+        b=LBWiw5IwvNmdP7ReSwDZ6ztjbN+BxHFS+s5jCvhmw5dyysL0yi3MLuEgIJbpSfcBmn
+         IRbw2e7uQP7P2GowoMcn5hpuNMhMdzsS6EGO8SQ5KQxYWwnSrn0XkqVXXMngywKagTaw
+         Is/7YPWSuBto+E/xfJEjk4ZktsNMlTJrXyNKIb7AUSP9N60ANjLoEHFasZMUfs9Hv1zL
+         /LDOLHTMS1Pnq0EoUQAexLWlTlAPhomfZ936WoHoRTO94zlRN0xstij3NnDH1CrCvBPK
+         zNKUAIhujgmfg6N98nYhGejue442cGQDeR46q470118AJ9XvABz+5EXJ3mGfa90c5u/M
+         Agog==
+X-Gm-Message-State: AOAM530webm4DNYy42MlHXnWGQKj5QSCCVMGYIpPaQUlDgCng7aytv51
+        mvXQtjZPODQcZPdXjAxz260J9sFXedMMWjpGVjgLIA==
+X-Google-Smtp-Source: ABdhPJwE4imAaZmMhSvygLJ7bWjPPKzRbOvPeN2tNIIdl6OeQBhwMi9C6hF05YOIW4ESl/Tn4KeOeJ11tsXFRkISwUg=
+X-Received: by 2002:a62:14c4:0:b029:19d:d3f5:c304 with SMTP id
+ 187-20020a6214c40000b029019dd3f5c304mr991822pfu.55.1610391820883; Mon, 11 Jan
+ 2021 11:03:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20210111130048.499958175@linuxfoundation.org> <20210111130053.764396270@linuxfoundation.org>
- <alpine.LSU.2.11.2101110947280.1731@eggly.anvils>
-In-Reply-To: <alpine.LSU.2.11.2101110947280.1731@eggly.anvils>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 11 Jan 2021 11:03:27 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whj+ixuJ7+_h42CRssvsuzHaMsYf-2LjYBaM4dRax7cyQ@mail.gmail.com>
-Message-ID: <CAHk-=whj+ixuJ7+_h42CRssvsuzHaMsYf-2LjYBaM4dRax7cyQ@mail.gmail.com>
-Subject: Re: [PATCH 5.10 109/145] mm: make wait_on_page_writeback() wait for
- multiple pending writebacks
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        syzbot <syzbot+2fc0712f8f8b8b8fa0ef@syzkaller.appspotmail.com>,
+References: <20210108040940.1138-1-walter-zh.wu@mediatek.com>
+ <CAAeHK+weY_DMNbYGz0ZEWXp7yho3_L3qfzY94QbH9pxPgqczoQ@mail.gmail.com> <20210111185902.GA2112090@ubuntu-m3-large-x86>
+In-Reply-To: <20210111185902.GA2112090@ubuntu-m3-large-x86>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Mon, 11 Jan 2021 20:03:29 +0100
+Message-ID: <CAAeHK+y8B9x2av0C3kj_nFEjgHmkxu1Y=5Y3U4-HzxWgTMh1uQ@mail.gmail.com>
+Subject: Re: [PATCH v3] kasan: remove redundant config option
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Walter Wu <walter-zh.wu@mediatek.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, stable@kernel.org
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 9:55 AM Hugh Dickins <hughd@google.com> wrote:
+On Mon, Jan 11, 2021 at 7:59 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
 >
-> I think it's too early to push this one through to stable:
-> Linus mentioned on Friday that Michael Larabel of Phoronix
-> has observed a performance regression from this commit.
+> > > -config KASAN_STACK_ENABLE
+> > > +config KASAN_STACK
+> > >         bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
+> >
+> > Does this syntax mean that KASAN_STACK is only present for
+> > CC_IS_CLANG? Or that it can only be disabled for CC_IS_CLANG?
+>
+> It means that the option can only be disabled for clang.
 
-That turned out to be a red herring. Yes, Michael saw a performance
-regression on some machines, but the change to go back to the old
-model (where the repeat was basically at wakeup time rather than in
-the waiter) didn't actually make any difference.
+OK, got it.
 
-And the issue only showed on a couple of machines, and only with
-certain configurations (ie apparently switching to the performance
-governor made it go away).
+> > Anyway, I think it's better to 1. allow to control KASAN_STACK
+> > regardless of the compiler (as it was possible before), and 2. avoid
+>
+> It has never been possible to control KASAN_STACK for GCC because of the
+> bool ... if ... syntax. This patch does not change that logic. Making it
+> possible to control KASAN_STACK with GCC seems fine but that is going to
+> be a new change that would probably be suited for a new patch on top of
+> this one.
 
-So it seems to have been some modal behavior about random timing
-(possibly just interaction with cpufreq) rather than a real
-regression.
-
-I think the real issue is simply that some loads are very sensitive to
-the exact writeback timing patterns. And I think we're making things
-worse by having some of the patterns be very non-deterministic indeed.
-
-For example, long before we actually take the page lock and then wait
-for (and set) the page writeback bit, look at how we first use the
-Xarray tags to turn the "page dirty" tag into "page needs writeback"
-tag, and then look up an array of such writeback pages: all without
-any real locking at all (apart from the xas lock itself for the
-tagging op).
-
-Making things even less deterministic, the code that doesn't do
-writeback - but just _wait_ for writeback - doesn't actually serialize
-with the page lock at all. It _just_ does that
-"wait_for_page_writeback()", which is ambiguous when there are
-consecutive writebacks happening. That's actually the case that I
-think Michael would have seen - because he obviously never saw the
-(very very rare) BUG_ON.
-
-The BUG_ON() in page writeback itself is serialized by the page lock
-and so there aren't really many possibilities for that to get
-contention or other odd behavior (the wakeup race being the one very
-very unlikely notable one). In contrast, the "wait for writeback"
-isn't serialized by anything else, so that one is literally "if was at
-writeback at some point, wait for it to no longer be", and then the
-aggressive wakeup was good for that case, while it caused problems for
-the writeback case.
-
-Anyway, the numbers are all ambiguous, the one-liner fix is not
-horrible, and the take-away from all of this is likely mostly: it
-would be good to have some more clarity about the whole writeback and
-wait-for-writeback thing.
-
-In many ways it would be really line to have a sequence count rather
-than just a single bit. But obviously that does not work for 'struct
-page'.
-
-Anyway, don't hold up this "get rid of BUG_ON() in writeback" patch for this.
-
-              Linus
+The if syntax was never applied to KASAN_STACK, only to
+KASAN_STACK_ENABLE, so it should have been possible (although I've
+never specifically tried it).
