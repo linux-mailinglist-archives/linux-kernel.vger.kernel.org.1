@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E6F2F1772
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F23752F176E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388435AbhAKOGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:06:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50822 "EHLO mail.kernel.org"
+        id S1730046AbhAKNDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:03:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728055AbhAKNDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:03:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACEC422ADF;
-        Mon, 11 Jan 2021 13:02:55 +0000 (UTC)
+        id S1729830AbhAKND3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:03:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D528B22A85;
+        Mon, 11 Jan 2021 13:02:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370176;
-        bh=CpjiHtyJeATbfgkR8IbujFim1oHq4xj2LJmCjeroXW4=;
+        s=korg; t=1610370169;
+        bh=Qswikp4JGGMtS7udAqu8yLc7or4JBCQMhInn+25dkzo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d37bZTfA57oWnIQAyG0DW6KI/8BVLvEKScQ0pN9WyjuA4x0Hc+Pn+Dm5PLNUD5wey
-         NYfQTXrsFRU4a9oDRr3PpDnLNYKPFq+NjrFUfPLwIz3hGKm0k2gf9qNC1dy2xvQaw0
-         u8apqsozJ/9+qW269ni0naWm9DhgHFmioKDy0N/Q=
+        b=HtYAqzKtVNrrT+BFpDeFNeVAtFhyg/oPsErb0Bigc3g9SCvEjg0EAuJsPBx8MsjHZ
+         /yP7uOu5hU6AP+eAfdDkAtxLaXQOuSguHtBiSTXa+gWLtq2LLt4eza//YNL3FbZwdh
+         x41ZGGI/0Ab0nk6lrtRfZOktizCKPvL+5zbvgJYM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 11/45] net: hns: fix return value check in __lb_other_process()
-Date:   Mon, 11 Jan 2021 14:00:49 +0100
-Message-Id: <20210111130034.207604013@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>
+Subject: [PATCH 4.4 19/38] USB: xhci: fix U1/U2 handling for hardware with XHCI_INTEL_HOST quirk set
+Date:   Mon, 11 Jan 2021 14:00:51 +0100
+Message-Id: <20210111130033.393841085@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130033.676306636@linuxfoundation.org>
-References: <20210111130033.676306636@linuxfoundation.org>
+In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
+References: <20210111130032.469630231@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +39,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunjian Wang <wangyunjian@huawei.com>
+From: Michael Grzeschik <m.grzeschik@pengutronix.de>
 
-[ Upstream commit 5ede3ada3da7f050519112b81badc058190b9f9f ]
+commit 5d5323a6f3625f101dbfa94ba3ef7706cce38760 upstream.
 
-The function skb_copy() could return NULL, the return value
-need to be checked.
+The commit 0472bf06c6fd ("xhci: Prevent U1/U2 link pm states if exit
+latency is too long") was constraining the xhci code not to allow U1/U2
+sleep states if the latency to wake up from the U-states reached the
+service interval of an periodic endpoint. This fix was not taking into
+account that in case the quirk XHCI_INTEL_HOST is set, the wakeup time
+will be calculated and configured differently.
 
-Fixes: b5996f11ea54 ("net: add Hisilicon Network Subsystem basic ethernet support")
-Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+It checks for u1_params.mel/u2_params.mel as a limit. But the code could
+decide to write another MEL into the hardware. This leads to broken
+cases where not enough bandwidth is available for other devices:
+
+usb 1-2: can't set config #1, error -28
+
+This patch is fixing that case by checking for timeout_ns after the
+wakeup time was calculated depending on the quirks.
+
+Fixes: 0472bf06c6fd ("xhci: Prevent U1/U2 link pm states if exit latency is too long")
+Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201215193147.11738-1-m.grzeschik@pengutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/net/ethernet/hisilicon/hns/hns_ethtool.c |    4 ++++
- 1 file changed, 4 insertions(+)
 
---- a/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
-+++ b/drivers/net/ethernet/hisilicon/hns/hns_ethtool.c
-@@ -447,6 +447,10 @@ static void __lb_other_process(struct hn
- 	/* for mutl buffer*/
- 	new_skb = skb_copy(skb, GFP_ATOMIC);
- 	dev_kfree_skb_any(skb);
-+	if (!new_skb) {
-+		netdev_err(ndev, "skb alloc failed\n");
-+		return;
-+	}
- 	skb = new_skb;
+---
+ drivers/usb/host/xhci.c |   24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -4428,19 +4428,19 @@ static u16 xhci_calculate_u1_timeout(str
+ {
+ 	unsigned long long timeout_ns;
  
- 	check_ok = 0;
++	if (xhci->quirks & XHCI_INTEL_HOST)
++		timeout_ns = xhci_calculate_intel_u1_timeout(udev, desc);
++	else
++		timeout_ns = udev->u1_params.sel;
++
+ 	/* Prevent U1 if service interval is shorter than U1 exit latency */
+ 	if (usb_endpoint_xfer_int(desc) || usb_endpoint_xfer_isoc(desc)) {
+-		if (xhci_service_interval_to_ns(desc) <= udev->u1_params.mel) {
++		if (xhci_service_interval_to_ns(desc) <= timeout_ns) {
+ 			dev_dbg(&udev->dev, "Disable U1, ESIT shorter than exit latency\n");
+ 			return USB3_LPM_DISABLED;
+ 		}
+ 	}
+ 
+-	if (xhci->quirks & XHCI_INTEL_HOST)
+-		timeout_ns = xhci_calculate_intel_u1_timeout(udev, desc);
+-	else
+-		timeout_ns = udev->u1_params.sel;
+-
+ 	/* The U1 timeout is encoded in 1us intervals.
+ 	 * Don't return a timeout of zero, because that's USB3_LPM_DISABLED.
+ 	 */
+@@ -4492,19 +4492,19 @@ static u16 xhci_calculate_u2_timeout(str
+ {
+ 	unsigned long long timeout_ns;
+ 
++	if (xhci->quirks & XHCI_INTEL_HOST)
++		timeout_ns = xhci_calculate_intel_u2_timeout(udev, desc);
++	else
++		timeout_ns = udev->u2_params.sel;
++
+ 	/* Prevent U2 if service interval is shorter than U2 exit latency */
+ 	if (usb_endpoint_xfer_int(desc) || usb_endpoint_xfer_isoc(desc)) {
+-		if (xhci_service_interval_to_ns(desc) <= udev->u2_params.mel) {
++		if (xhci_service_interval_to_ns(desc) <= timeout_ns) {
+ 			dev_dbg(&udev->dev, "Disable U2, ESIT shorter than exit latency\n");
+ 			return USB3_LPM_DISABLED;
+ 		}
+ 	}
+ 
+-	if (xhci->quirks & XHCI_INTEL_HOST)
+-		timeout_ns = xhci_calculate_intel_u2_timeout(udev, desc);
+-	else
+-		timeout_ns = udev->u2_params.sel;
+-
+ 	/* The U2 timeout is encoded in 256us intervals */
+ 	timeout_ns = DIV_ROUND_UP_ULL(timeout_ns, 256 * 1000);
+ 	/* If the necessary timeout value is bigger than what we can set in the
 
 
