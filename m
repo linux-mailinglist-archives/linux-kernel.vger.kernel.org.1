@@ -2,217 +2,532 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A030D2F0F5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:47:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD012F0F5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:47:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728593AbhAKJo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 04:44:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725897AbhAKJo2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 04:44:28 -0500
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D7FBC061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 01:43:47 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by andre.telenet-ops.be with bizsmtp
-        id FMjk2400H4C55Sk01MjkAG; Mon, 11 Jan 2021 10:43:44 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kytjj-002nHF-VJ
-        for linux-kernel@vger.kernel.org; Mon, 11 Jan 2021 10:43:43 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kytjj-00GZAJ-Fu
-        for linux-kernel@vger.kernel.org; Mon, 11 Jan 2021 10:43:43 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-kernel@vger.kernel.org
-Subject: Build regressions/improvements in v5.11-rc3
-Date:   Mon, 11 Jan 2021 10:43:43 +0100
-Message-Id: <20210111094343.3948339-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        id S1728608AbhAKJpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 04:45:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37694 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728566AbhAKJpE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 04:45:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49D8122AAA;
+        Mon, 11 Jan 2021 09:44:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610358263;
+        bh=/wSotCOYvAh5xyd6TuwCRFRcF6UClU7ALUhJwsCbv+A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YolxQZNBCBWT592BEJJt4zC30qJPw+Sh7gdGxSOEsvhpxbyM/f2awnev5HXZyRkuS
+         V08w/M6fvsFK6UYehDYKoL0FkAhOHkCp8HRJ7uVOXqb0kfUdH1bQMMtqr+PIzFpGnL
+         1wBEiTui6df0IoKGNiCu33OQBSWgpsCXIXSIR/Cpm1kQrshkhGZf/PZ827ufMzpQkE
+         5xFuYob8D1D/G6yemONF7/s165tms/HKSXXx5Sj1l9w8fG37wiYEM796BjFYnbWvKO
+         /wGo/n9j17Pvp4/yq58rPDZfAeGxbyutac7riBiNeHR3nOqjPKygWwClXMH2o+QYw5
+         65iDL/mKtbsFA==
+Date:   Mon, 11 Jan 2021 01:44:21 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Daeho Jeong <daehojeong@google.com>
+Subject: Re: [f2fs-dev] [PATCH 1/2] f2fs: introduce checkpoint=merge mount
+ option
+Message-ID: <X/wd9Z+b+fe9P6T4@google.com>
+References: <20210111051543.243387-1-daeho43@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111051543.243387-1-daeho43@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below is the list of build error/warning regressions/improvements in
-v5.11-rc3[1] compared to v5.10[2].
+On 01/11, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
+> 
+> We've added a new mount option "checkpoint=merge", which creates a
+> kernel daemon and makes it to merge concurrent checkpoint requests as
+> much as possible to eliminate redundant checkpoint issues. Plus, we
+> can eliminate the sluggish issue caused by slow checkpoint operation
+> when the checkpoint is done in a process context in a cgroup having
+> low i/o budget and cpu shares, and The below verification result
+> explains this.
+> The basic idea has come from https://opensource.samsung.com.
+> 
+> [Verification]
+> Android Pixel Device(ARM64, 7GB RAM, 256GB UFS)
+> Create two I/O cgroups (fg w/ weight 100, bg w/ wight 20)
+> 
+> In "fg" cgroup,
+> - thread A => trigger 1000 checkpoint operations
+>   "for i in `seq 1 1000`; do touch test_dir1/file; fsync test_dir1;
+>    done"
+> - thread B => gererating async. I/O
+>   "fio --rw=write --numjobs=1 --bs=128k --runtime=3600 --time_based=1
+>        --filename=test_img --name=test"
+> 
+> In "bg" cgroup,
+> - thread C => trigger repeated checkpoint operations
+>   "echo $$ > /dev/blkio/bg/tasks; while true; do touch test_dir2/file;
+>    fsync test_dir2; done"
+> 
+> We've measured thread A's execution time.
+> 
+> [ w/o patch ]
+> Elapsed Time: Avg. 68 seconds
+> [ w/  patch ]
+> Elapsed Time: Avg. 48 seconds
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> Signed-off-by: Sungjong Seo <sj1557.seo@samsung.com>
+> ---
+>  Documentation/filesystems/f2fs.rst |   6 +
+>  fs/f2fs/checkpoint.c               | 176 +++++++++++++++++++++++++++++
+>  fs/f2fs/debug.c                    |   6 +
+>  fs/f2fs/f2fs.h                     |  24 ++++
+>  fs/f2fs/super.c                    |  53 ++++++++-
+>  5 files changed, 261 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+> index dae15c96e659..bccc021bf31a 100644
+> --- a/Documentation/filesystems/f2fs.rst
+> +++ b/Documentation/filesystems/f2fs.rst
+> @@ -247,6 +247,12 @@ checkpoint=%s[:%u[%]]	 Set to "disable" to turn off checkpointing. Set to "enabl
+>  			 hide up to all remaining free space. The actual space that
+>  			 would be unusable can be viewed at /sys/fs/f2fs/<disk>/unusable
+>  			 This space is reclaimed once checkpoint=enable.
+> +			 Here is another option "merge", which creates a kernel daemon
+> +			 and makes it to merge concurrent checkpoint requests as much
+> +			 as possible to eliminate redundant checkpoint issues. Plus,
+> +			 we can eliminate the sluggish issue caused by slow checkpoint
+> +			 operation when the checkpoint is done in a process context in
+> +			 a cgroup having low i/o budget and cpu shares.
+>  compress_algorithm=%s	 Control compress algorithm, currently f2fs supports "lzo",
+>  			 "lz4", "zstd" and "lzo-rle" algorithm.
+>  compress_log_size=%u	 Support configuring compress cluster size, the size will
+> diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+> index 897edb7c951a..11288f435dbe 100644
+> --- a/fs/f2fs/checkpoint.c
+> +++ b/fs/f2fs/checkpoint.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/f2fs_fs.h>
+>  #include <linux/pagevec.h>
+>  #include <linux/swap.h>
+> +#include <linux/kthread.h>
+>  
+>  #include "f2fs.h"
+>  #include "node.h"
+> @@ -20,6 +21,8 @@
+>  #include "trace.h"
+>  #include <trace/events/f2fs.h>
+>  
+> +#define DEFAULT_CHECKPOINT_IOPRIO (IOPRIO_PRIO_VALUE(IOPRIO_CLASS_BE, 3))
+> +
+>  static struct kmem_cache *ino_entry_slab;
+>  struct kmem_cache *f2fs_inode_entry_slab;
+>  
+> @@ -1707,3 +1710,176 @@ void f2fs_destroy_checkpoint_caches(void)
+>  	kmem_cache_destroy(ino_entry_slab);
+>  	kmem_cache_destroy(f2fs_inode_entry_slab);
+>  }
+> +
+> +static int __write_checkpoint_sync(struct f2fs_sb_info *sbi)
+> +{
+> +	struct cp_control cpc = { .reason = CP_SYNC, };
+> +	int err;
+> +
+> +	down_write(&sbi->gc_lock);
+> +	err = f2fs_write_checkpoint(sbi, &cpc);
+> +	up_write(&sbi->gc_lock);
+> +
+> +	return err;
+> +}
+> +
+> +static void __checkpoint_and_complete_reqs(struct f2fs_sb_info *sbi)
+> +{
+> +	struct ckpt_req_control *cprc = sbi->cprc_info;
+> +	struct ckpt_req *req, *next;
+> +	struct llist_node *dispatch_list;
+> +	int ret;
+> +
+> +	dispatch_list = llist_del_all(&cprc->issue_list);
+> +	if (!dispatch_list)
+> +		return;
+> +	dispatch_list = llist_reverse_order(dispatch_list);
+> +
+> +	ret = __write_checkpoint_sync(sbi);
+> +	atomic_inc(&cprc->issued_ckpt);
+> +
+> +	llist_for_each_entry_safe(req, next, dispatch_list, llnode) {
+> +		atomic_dec(&cprc->queued_ckpt);
+> +		atomic_inc(&cprc->total_ckpt);
+> +		req->complete_time = jiffies;
+> +		req->ret = ret;
+> +		complete(&req->wait);
+> +	}
+> +}
+> +
+> +static int issue_checkpoint_thread(void *data)
+> +{
+> +	struct f2fs_sb_info *sbi = data;
+> +	struct ckpt_req_control *cprc = sbi->cprc_info;
+> +	wait_queue_head_t *q = &cprc->ckpt_wait_queue;
+> +repeat:
+> +	if (kthread_should_stop())
+> +		return 0;
+> +
+> +	sb_start_intwrite(sbi->sb);
+> +
+> +	if (!llist_empty(&cprc->issue_list))
+> +		__checkpoint_and_complete_reqs(sbi);
+> +
+> +	sb_end_intwrite(sbi->sb);
+> +
+> +	wait_event_interruptible(*q,
+> +		kthread_should_stop() || !llist_empty(&cprc->issue_list));
+> +	goto repeat;
+> +}
+> +
+> +static void flush_remained_ckpt_reqs(struct f2fs_sb_info *sbi,
+> +		struct ckpt_req *wait_req)
+> +{
+> +	struct ckpt_req_control *cprc = sbi->cprc_info;
+> +
+> +	if (!llist_empty(&cprc->issue_list)) {
+> +		__checkpoint_and_complete_reqs(sbi);
+> +	} else {
+> +		/* already dispatched by issue_checkpoint_thread */
+> +		if (wait_req)
+> +			wait_for_completion(&wait_req->wait);
+> +	}
+> +}
+> +
+> +static void init_ckpt_req(struct ckpt_req *req)
+> +{
+> +	memset(req, 0, sizeof(struct ckpt_req));
+> +
+> +	req->owner = current;
+> +	init_completion(&req->wait);
+> +}
+> +
+> +int f2fs_issue_checkpoint(struct f2fs_sb_info *sbi)
+> +{
+> +	struct ckpt_req_control *cprc = sbi->cprc_info;
+> +	struct ckpt_req req;
+> +
+> +	if (!cprc || !cprc->f2fs_issue_ckpt)
+> +		return __write_checkpoint_sync(sbi);
+> +
+> +	init_ckpt_req(&req);
+> +
+> +	req.queue_time = jiffies;
+> +	llist_add(&req.llnode, &cprc->issue_list);
+> +	atomic_inc(&cprc->queued_ckpt);
+> +
+> +	/* update issue_list before we wake up issue_checkpoint thread */
+> +	smp_mb();
+> +
+> +	if (waitqueue_active(&cprc->ckpt_wait_queue))
+> +		wake_up(&cprc->ckpt_wait_queue);
+> +
+> +	if (cprc->f2fs_issue_ckpt)
+> +		wait_for_completion(&req.wait);
+> +	else
+> +		flush_remained_ckpt_reqs(sbi, &req);
+> +
+> +	return req.ret;
+> +}
+> +
+> +int f2fs_create_ckpt_req_control(struct f2fs_sb_info *sbi)
+> +{
+> +	dev_t dev = sbi->sb->s_bdev->bd_dev;
+> +	struct ckpt_req_control *cprc;
+> +	bool need_free = true;
+> +
+> +	if (sbi->cprc_info) {
+> +		cprc = sbi->cprc_info;
+> +		if (cprc->f2fs_issue_ckpt)
+> +			return 0;
+> +
+> +		need_free = false;
+> +		goto init_thread;
+> +	}
+> +
+> +	cprc = f2fs_kzalloc(sbi, sizeof(struct ckpt_req_control), GFP_KERNEL);
+> +	if (!cprc)
+> +		return -ENOMEM;
+> +	atomic_set(&cprc->issued_ckpt, 0);
+> +	atomic_set(&cprc->total_ckpt, 0);
+> +	atomic_set(&cprc->queued_ckpt, 0);
+> +	init_waitqueue_head(&cprc->ckpt_wait_queue);
+> +	init_llist_head(&cprc->issue_list);
+> +	sbi->cprc_info = cprc;
+> +
+> +init_thread:
+> +	if (!test_opt(sbi, MERGE_CHECKPOINT))
+> +		return 0;
+> +
+> +	cprc->f2fs_issue_ckpt = kthread_run(issue_checkpoint_thread, sbi,
+> +			"f2fs_ckpt-%u:%u", MAJOR(dev), MINOR(dev));
+> +	if (IS_ERR(cprc->f2fs_issue_ckpt)) {
+> +		int err = PTR_ERR(cprc->f2fs_issue_ckpt);
+> +
+> +		if (need_free) {
+> +			kvfree(cprc);
+> +			sbi->cprc_info = NULL;
+> +		}
+> +		return err;
+> +	}
+> +
+> +	set_task_ioprio(cprc->f2fs_issue_ckpt, DEFAULT_CHECKPOINT_IOPRIO);
+> +
+> +	return 0;
+> +}
+> +
+> +void f2fs_destroy_ckpt_req_control(struct f2fs_sb_info *sbi, bool free)
+> +{
+> +	struct ckpt_req_control *cprc = sbi->cprc_info;
+> +
+> +	if (cprc && cprc->f2fs_issue_ckpt) {
+> +		struct task_struct *ckpt_task = cprc->f2fs_issue_ckpt;
+> +
+> +		cprc->f2fs_issue_ckpt = NULL;
+> +		kthread_stop(ckpt_task);
+> +
+> +		flush_remained_ckpt_reqs(sbi, NULL);
+> +	}
+> +
+> +	if (free) {
+> +		kvfree(cprc);
+> +		sbi->cprc_info = NULL;
 
-Summarized:
-  - build errors: +2/-3
-  - build warnings: +33/-95
+This makes null pointer access by stat_show() in debug.c. We need to free this
+at the end of f2fs_put_super separately like destroy_discard_cmd_control()
+in f2fs_destroy_segment_manager().
 
-JFYI, when comparing v5.11-rc3[1] to v5.11-rc2[3], the summaries are:
-  - build errors: +0/-1
-  - build warnings: +13/-3
-
-Happy fixing! ;-)
-
-Thanks to the linux-next team for providing the build service.
-
-[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/7c53f6b671f4aba70ff15e1b05148b10d58c2837/ (all 192 configs)
-[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/2c85ebc57b3e1817b6ce1a6b703928e113a90442/ (all 192 configs)
-[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62/ (all 192 configs)
-
-
-*** ERRORS ***
-
-2 error regressions:
-  + /kisskb/src/include/linux/mmzone.h: error: #error Allocator MAX_ORDER exceeds SECTION_SIZE:  => 1156:2
-  + error: modpost: "irq_check_status_bit" [drivers/perf/arm_spe_pmu.ko] undefined!:  => N/A
-
-3 error improvements:
-  - /kisskb/src/arch/powerpc/platforms/powermac/smp.c: error: implicit declaration of function 'cleanup_cpu_mmu_context' [-Werror=implicit-function-declaration]: 914:2 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'disable_kernel_vsx' [-Werror=implicit-function-declaration]: 676:2 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dcn_calcs.c: error: implicit declaration of function 'enable_kernel_vsx' [-Werror=implicit-function-declaration]: 640:2 => 
-
-
-*** WARNINGS ***
-
-33 warning regressions:
-  + .config: warning: override: reassigning to symbol GCC_PLUGIN_CYC_COMPLEXITY:  => 4523, 4497
-  + .config: warning: override: reassigning to symbol GCC_PLUGIN_LATENT_ENTROPY:  => 4525, 4499
-  + .config: warning: override: reassigning to symbol MIPS_CPS_NS16550_SHIFT: 12743, 12729 => 12879, 12896, 12883
-  + .config: warning: override: reassigning to symbol PPC_64K_PAGES:  => 13259
-  + /kisskb/src/arch/arm/mach-omap1/board-h2.c: warning: 'isp1301_gpiod_table' defined but not used [-Wunused-variable]:  => 347:34
-  + /kisskb/src/arch/ia64/include/asm/sparsemem.h: warning: "PAGE_SHIFT" is not defined [-Wundef]:  => 14:40
-  + /kisskb/src/arch/sh/kernel/traps.c: warning: unused variable 'cpu' [-Wunused-variable]:  => 183:15
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn20.c: warning: (near initialization for 'boot_options.bits') [-Wmissing-braces]:  => 326:8
-  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dmub/src/dmub_dcn20.c: warning: missing braces around initializer [-Wmissing-braces]:  => 326:8
-  + /kisskb/src/drivers/pinctrl/nomadik/pinctrl-nomadik.c: warning: unused variable 'wake' [-Wunused-variable]:  => 952:8
-  + /kisskb/src/drivers/rtc/rtc-rx6110.c: warning: 'rx6110_probe' defined but not used [-Wunused-function]:  => 314:12
-  + /kisskb/src/drivers/soc/qcom/pdr_interface.c: warning: (near initialization for 'req.service_path') [-Wmissing-braces]:  => 572:9
-  + /kisskb/src/drivers/soc/qcom/pdr_interface.c: warning: missing braces around initializer [-Wmissing-braces]:  => 572:9
-  + /kisskb/src/include/linux/minmax.h: warning: comparison of distinct pointer types lacks a cast:  => 18:28
-  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 4200 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
-  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 4224 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
-  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 7432 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
-  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 7440 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
-  + /kisskb/src/lib/bitfield_kunit.c: warning: the frame size of 7456 bytes is larger than 2048 bytes [-Wframe-larger-than=]:  => 93:1
-  + /kisskb/src/lib/zstd/compress.c: warning: the frame size of 1348 bytes is larger than 1280 bytes [-Wframe-larger-than=]:  => 2262:1
-  + /opt/cross/kisskb/br-aarch64-glibc-2016.08-613-ge98b4dd/bin/../lib/gcc/aarch64-buildroot-linux-gnu/5.4.0/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 102:21, 170:24
-  + /opt/cross/kisskb/br-aarch64-glibc-2016.08-613-ge98b4dd/bin/../lib/gcc/aarch64-buildroot-linux-gnu/5.4.0/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 126:24
-  + /opt/cross/kisskb/br-mipsel-o32-full-2016.08-613-ge98b4dd/bin/../lib/gcc/mipsel-buildroot-linux-uclibc/5.4.0/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 102:21, 170:24
-  + /opt/cross/kisskb/br-mipsel-o32-full-2016.08-613-ge98b4dd/bin/../lib/gcc/mipsel-buildroot-linux-uclibc/5.4.0/plugin/include/config/mips/mips.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 2913:20
-  + /opt/cross/kisskb/br-mipsel-o32-full-2016.08-613-ge98b4dd/bin/../lib/gcc/mipsel-buildroot-linux-uclibc/5.4.0/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 126:24
-  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/4.9.4/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 102:21, 170:24
-  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/arm-linux-gnueabi/bin/../lib/gcc/arm-linux-gnueabi/4.9.4/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 126:24
-  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/mips-linux/bin/../lib/gcc/mips-linux/4.9.4/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 102:21, 170:24
-  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/mips-linux/bin/../lib/gcc/mips-linux/4.9.4/plugin/include/config/mips/mips.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 2791:20
-  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/mips-linux/bin/../lib/gcc/mips-linux/4.9.4/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 126:24
-  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/s390-linux/bin/../lib/gcc/s390-linux/4.9.4/plugin/include/config/elfos.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 102:21, 170:24
-  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/s390-linux/bin/../lib/gcc/s390-linux/4.9.4/plugin/include/config/s390/s390.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 836:20
-  + /opt/cross/kisskb/korg/gcc-4.9.4-nolibc/s390-linux/bin/../lib/gcc/s390-linux/4.9.4/plugin/include/defaults.h: warning: invalid suffix on literal; C++11 requires a space between literal and string macro [-Wliteral-suffix]:  => 126:24
-
-95 warning improvements:
-  - /kisskb/src/arch/m68k/include/asm/cmpxchg.h: warning: value computed is not used [-Wunused-value]: 122:3, 79:22 => 
-  - /kisskb/src/arch/parisc/kernel/pci-dma.c: warning: 'proc_pcxl_dma_show' defined but not used [-Wunused-function]: 338:12 => 
-  - /kisskb/src/arch/s390/boot/mem_detect.c: warning: 'detect_memory' uses dynamic stack allocation: 175:1 => 
-  - /kisskb/src/arch/um/os-Linux/signal.c: warning: the frame size of 2960 bytes is larger than 1024 bytes [-Wframe-larger-than=]: 51:1, 95:1 => 
-  - /kisskb/src/arch/um/os-Linux/signal.c: warning: the frame size of 2960 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 95:1 => 
-  - /kisskb/src/arch/um/os-Linux/signal.c: warning: the frame size of 2976 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 51:1 => 
-  - /kisskb/src/block/genhd.c: warning: the frame size of 1688 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 1662:1 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn21/rn_clk_mgr.c: warning: (near initialization for 'clock_table.DcfClocks') [-Wmissing-braces]: 846:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/clk_mgr/dcn21/rn_clk_mgr.c: warning: missing braces around initializer [-Wmissing-braces]: 846:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]: 1795:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn10/dcn10_hw_sequencer.c: warning: missing braces around initializer [-Wmissing-braces]: 1795:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hubp.c: warning: (near initialization for 'rq_regs.rq_regs_l') [-Wmissing-braces]: 1279:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hubp.c: warning: missing braces around initializer [-Wmissing-braces]: 1279:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hwseq.c: warning: (near initialization for 'hw_locks.bits') [-Wmissing-braces]: 1200:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_hwseq.c: warning: missing braces around initializer [-Wmissing-braces]: 1200:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: (near initialization for 'dcn2_0_nv12_soc.clock_limits') [-Wmissing-braces]: 451:15 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn20/dcn20_resource.c: warning: missing braces around initializer [-Wmissing-braces]: 451:15 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn21/dcn21_hubp.c: warning: (near initialization for 'rq_regs.rq_regs_l') [-Wmissing-braces]: 258:9 => 
-  - /kisskb/src/drivers/gpu/drm/amd/amdgpu/../display/dc/dcn21/dcn21_hubp.c: warning: missing braces around initializer [-Wmissing-braces]: 258:9 => 
-  - /kisskb/src/drivers/media/pci/intel/ipu3/ipu3-cio2.h: warning: large integer implicitly truncated to unsigned type [-Woverflow]: 22:28 => 
-  - /kisskb/src/drivers/net/ethernet/aurora/nb8800.h: warning: "TCR_DIE" redefined: 92:0, 92 => 92
-  - /kisskb/src/drivers/net/ethernet/chelsio/inline_crypto/chtls/chtls_cm.c: warning: 'wait_for_states.constprop' uses dynamic stack allocation: 441:1 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/mvpp2/mvpp2.h: warning: overflow in conversion from 'long unsigned int' to 'int' changes value from '18446744073709551584' to '-32' [-Woverflow]: 760:2 => 
-  - /kisskb/src/drivers/net/ethernet/marvell/mvpp2/mvpp2.h: warning: overflow in implicit constant conversion [-Woverflow]: 760:2 => 
-  - /kisskb/src/drivers/net/ethernet/neterion/vxge/vxge-config.c: warning: 'vxge_hw_device_hw_info_get' uses dynamic stack allocation: 1092:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_add_vlan_id' uses dynamic stack allocation: 317:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_del_vlan_id' uses dynamic stack allocation: 331:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_probe' uses dynamic stack allocation: 590:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_query_rgid' uses dynamic stack allocation: 216:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_register_dmb' uses dynamic stack allocation: 282:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_signal_ieq' uses dynamic stack allocation: 359:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'ism_unregister_dmb' uses dynamic stack allocation: 303:1 => 
-  - /kisskb/src/drivers/s390/net/ism_drv.c: warning: 'query_info' uses dynamic stack allocation: 85:1 => 
-  - /kisskb/src/drivers/target/iscsi/cxgbit/cxgbit_target.c: warning: 'cxgbit_tx_datain_iso.isra.40' uses dynamic stack allocation: 482:1 => 
-  - /kisskb/src/drivers/target/iscsi/iscsi_target.c: warning: 'iscsit_send_datain' uses dynamic stack allocation: 2886:1 => 
-  - /kisskb/src/fs/nfs/super.c: warning: 'nfs_show_stats' uses dynamic stack allocation: 704:1 => 
-  - /kisskb/src/fs/ntfs/aops.c: warning: the frame size of 2192 bytes is larger than 2048 bytes [-Wframe-larger-than=]: 1311:1 => 
-  - /kisskb/src/kernel/bpf/cpumap.c: warning: 'cpu_map_bpf_prog_run_xdp.isra.14' uses dynamic stack allocation: 295:1 => 
-  - /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_get_info_by_fd.isra.24' uses dynamic stack allocation: 3667:1 => 
-  - /kisskb/src/kernel/bpf/syscall.c: warning: 'bpf_prog_show_fdinfo' uses dynamic stack allocation: 1819:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_free_coherent' uses dynamic stack allocation: 1439:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_sg_for_cpu' uses dynamic stack allocation: 1549:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_sg_for_device' uses dynamic stack allocation: 1580:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_single_for_cpu' uses dynamic stack allocation: 1498:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_sync_single_for_device' uses dynamic stack allocation: 1517:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_page' uses dynamic stack allocation: 1290:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_resource' uses dynamic stack allocation: 1480:1 => 
-  - /kisskb/src/kernel/dma/debug.c: warning: 'debug_dma_unmap_sg' uses dynamic stack allocation: 1378:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: '___perf_sw_event' uses dynamic stack allocation: 9116:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_aux_event' uses dynamic stack allocation: 8303:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_bpf_output' uses dynamic stack allocation: 8600:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_cgroup_output' uses dynamic stack allocation: 7871:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_comm_output' uses dynamic stack allocation: 7649:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_ksymbol_output' uses dynamic stack allocation: 8511:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_mmap_output' uses dynamic stack allocation: 8012:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_namespaces_output' uses dynamic stack allocation: 7748:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_read_event' uses dynamic stack allocation: 7268:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_switch_output' uses dynamic stack allocation: 8395:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_task_output' uses dynamic stack allocation: 7555:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_event_text_poke_output' uses dynamic stack allocation: 8718:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_log_itrace_start' uses dynamic stack allocation: 8791:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_log_lost_samples' uses dynamic stack allocation: 8336:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_log_throttle' uses dynamic stack allocation: 8466:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_swevent_hrtimer' uses dynamic stack allocation: 10275:1 => 
-  - /kisskb/src/kernel/events/core.c: warning: 'perf_tp_event' uses dynamic stack allocation: 9430:1 => 
-  - /kisskb/src/kernel/rcu/tasks.h: warning: 'show_rcu_tasks_rude_gp_kthread' defined but not used [-Wunused-function]: 710:13 => 
-  - /kisskb/src/kernel/rseq.c: warning: '__rseq_handle_notify_resume' uses dynamic stack allocation: 281:1 => 
-  - /kisskb/src/kernel/rseq.c: warning: 'rseq_syscall' uses dynamic stack allocation: 300:1 => 
-  - /kisskb/src/kernel/smp.c: warning: 'smp_call_function_single' uses dynamic stack allocation: 517:1 => 
-  - /kisskb/src/lib/crypto/chacha20poly1305.c: warning: 'chacha20poly1305_crypt_sg_inplace' uses dynamic stack allocation: 331:1 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_dynamic_all' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_dynamic_partial.isra.29' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_none.isra.63' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_runtime_all.isra.49' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_runtime_partial.isra.41' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_static_all' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_static_partial.isra.17' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'leaf_big_hole_zero.isra.9' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_dynamic_all' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_dynamic_partial' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_none' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_runtime_all' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_runtime_partial' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_static_all' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_static_partial' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/lib/test_stackinit.c: warning: 'test_big_hole_zero' uses dynamic stack allocation: 255:15 => 
-  - /kisskb/src/mm/slub.c: warning: '___slab_alloc' uses dynamic stack allocation: 2759:1 => 
-  - /kisskb/src/mm/slub.c: warning: '__slab_free' uses dynamic stack allocation: 3073:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'deactivate_slab.isra.60' uses dynamic stack allocation: 2295:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'get_partial_node.isra.59' uses dynamic stack allocation: 1992:1 => 
-  - /kisskb/src/mm/slub.c: warning: 'unfreeze_partials.isra.58' uses dynamic stack allocation: 2363:1 => 
-  - /kisskb/src/net/bridge/netfilter/ebtables.c: warning: 'compat_copy_everything_to_user' uses dynamic stack allocation: 1767:1 => 
-  - /kisskb/src/net/sched/sch_cake.c: warning: the frame size of 1480 bytes is larger than 1280 bytes [-Wframe-larger-than=]: 2942:1 => 
-  - warning: unmet direct dependencies detected for MFD_CORE: N/A => 
-  - warning: unmet direct dependencies detected for NEED_MULTIPLE_NODES: N/A => 
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+> +	}
+> +}
+> +
+> diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
+> index 197c914119da..6ee81afae6b7 100644
+> --- a/fs/f2fs/debug.c
+> +++ b/fs/f2fs/debug.c
+> @@ -120,6 +120,9 @@ static void update_general_status(struct f2fs_sb_info *sbi)
+>  			atomic_read(&SM_I(sbi)->dcc_info->discard_cmd_cnt);
+>  		si->undiscard_blks = SM_I(sbi)->dcc_info->undiscard_blks;
+>  	}
+> +	si->nr_issued_ckpt = atomic_read(&sbi->cprc_info->issued_ckpt);
+> +	si->nr_total_ckpt = atomic_read(&sbi->cprc_info->total_ckpt);
+> +	si->nr_queued_ckpt = atomic_read(&sbi->cprc_info->queued_ckpt);
+>  	si->total_count = (int)sbi->user_block_count / sbi->blocks_per_seg;
+>  	si->rsvd_segs = reserved_segments(sbi);
+>  	si->overp_segs = overprovision_segments(sbi);
+> @@ -417,6 +420,9 @@ static int stat_show(struct seq_file *s, void *v)
+>  				si->meta_count[META_NAT]);
+>  		seq_printf(s, "  - ssa blocks : %u\n",
+>  				si->meta_count[META_SSA]);
+> +		seq_printf(s, "CP merge (Queued: %4d, Issued: %4d, Total: %4d)\n",
+> +				si->nr_queued_ckpt, si->nr_issued_ckpt,
+> +				si->nr_total_ckpt);
+>  		seq_printf(s, "GC calls: %d (BG: %d)\n",
+>  			   si->call_count, si->bg_gc);
+>  		seq_printf(s, "  - data segments : %d (%d)\n",
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index bb11759191dc..4de5285df17d 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -97,6 +97,7 @@ extern const char *f2fs_fault_name[FAULT_MAX];
+>  #define F2FS_MOUNT_DISABLE_CHECKPOINT	0x02000000
+>  #define F2FS_MOUNT_NORECOVERY		0x04000000
+>  #define F2FS_MOUNT_ATGC			0x08000000
+> +#define F2FS_MOUNT_MERGE_CHECKPOINT	0x10000000
+>  
+>  #define F2FS_OPTION(sbi)	((sbi)->mount_opt)
+>  #define clear_opt(sbi, option)	(F2FS_OPTION(sbi).opt &= ~F2FS_MOUNT_##option)
+> @@ -266,6 +267,24 @@ struct fsync_node_entry {
+>  	unsigned int seq_id;	/* sequence id */
+>  };
+>  
+> +struct ckpt_req {
+> +	struct completion wait;
+> +	struct llist_node llnode;
+> +	int ret;
+> +	struct task_struct *owner;
+> +	unsigned long queue_time;	/* request queued time in jiffies */
+> +	unsigned long complete_time;	/* request completed time in jiffies */
+> +};
+> +
+> +struct ckpt_req_control {
+> +	struct task_struct *f2fs_issue_ckpt;	/* checkpoint task */
+> +	wait_queue_head_t ckpt_wait_queue;	/* waiting queue for wake-up */
+> +	atomic_t issued_ckpt;			/* # of actually issued ckpts */
+> +	atomic_t total_ckpt;			/* # of total ckpts */
+> +	atomic_t queued_ckpt;			/* # of queued ckpts */
+> +	struct llist_head issue_list;		/* list for command issue */
+> +};
+> +
+>  /* for the bitmap indicate blocks to be discarded */
+>  struct discard_entry {
+>  	struct list_head list;	/* list head */
+> @@ -1404,6 +1423,7 @@ struct f2fs_sb_info {
+>  	wait_queue_head_t cp_wait;
+>  	unsigned long last_time[MAX_TIME];	/* to store time in jiffies */
+>  	long interval_time[MAX_TIME];		/* to store thresholds */
+> +	struct ckpt_req_control *cprc_info;	/* for checkpoint request control */
+>  
+>  	struct inode_management im[MAX_INO_ENTRY];	/* manage inode cache */
+>  
+> @@ -3418,6 +3438,9 @@ int f2fs_write_checkpoint(struct f2fs_sb_info *sbi, struct cp_control *cpc);
+>  void f2fs_init_ino_entry_info(struct f2fs_sb_info *sbi);
+>  int __init f2fs_create_checkpoint_caches(void);
+>  void f2fs_destroy_checkpoint_caches(void);
+> +int f2fs_issue_checkpoint(struct f2fs_sb_info *sbi);
+> +int f2fs_create_ckpt_req_control(struct f2fs_sb_info *sbi);
+> +void f2fs_destroy_ckpt_req_control(struct f2fs_sb_info *sbi, bool free);
+>  
+>  /*
+>   * data.c
+> @@ -3530,6 +3553,7 @@ struct f2fs_stat_info {
+>  	int nr_discarding, nr_discarded;
+>  	int nr_discard_cmd;
+>  	unsigned int undiscard_blks;
+> +	int nr_issued_ckpt, nr_total_ckpt, nr_queued_ckpt;
+>  	int inline_xattr, inline_inode, inline_dir, append, update, orphans;
+>  	int compr_inode;
+>  	unsigned long long compr_blocks;
+> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> index b4a07fe62d1a..5cd89c231223 100644
+> --- a/fs/f2fs/super.c
+> +++ b/fs/f2fs/super.c
+> @@ -143,6 +143,7 @@ enum {
+>  	Opt_checkpoint_disable_cap,
+>  	Opt_checkpoint_disable_cap_perc,
+>  	Opt_checkpoint_enable,
+> +	Opt_checkpoint_merge,
+>  	Opt_compress_algorithm,
+>  	Opt_compress_log_size,
+>  	Opt_compress_extension,
+> @@ -213,6 +214,7 @@ static match_table_t f2fs_tokens = {
+>  	{Opt_checkpoint_disable_cap, "checkpoint=disable:%u"},
+>  	{Opt_checkpoint_disable_cap_perc, "checkpoint=disable:%u%%"},
+>  	{Opt_checkpoint_enable, "checkpoint=enable"},
+> +	{Opt_checkpoint_merge, "checkpoint=merge"},
+>  	{Opt_compress_algorithm, "compress_algorithm=%s"},
+>  	{Opt_compress_log_size, "compress_log_size=%u"},
+>  	{Opt_compress_extension, "compress_extension=%s"},
+> @@ -872,6 +874,9 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>  		case Opt_checkpoint_enable:
+>  			clear_opt(sbi, DISABLE_CHECKPOINT);
+>  			break;
+> +		case Opt_checkpoint_merge:
+> +			set_opt(sbi, MERGE_CHECKPOINT);
+> +			break;
+>  #ifdef CONFIG_F2FS_FS_COMPRESSION
+>  		case Opt_compress_algorithm:
+>  			if (!f2fs_sb_has_compression(sbi)) {
+> @@ -1040,6 +1045,12 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>  		return -EINVAL;
+>  	}
+>  
+> +	if (test_opt(sbi, DISABLE_CHECKPOINT) &&
+> +			test_opt(sbi, MERGE_CHECKPOINT)) {
+> +		f2fs_err(sbi, "checkpoint=merge cannot be used with checkpoint=disable\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	/* Not pass down write hints if the number of active logs is lesser
+>  	 * than NR_CURSEG_PERSIST_TYPE.
+>  	 */
+> @@ -1245,6 +1256,12 @@ static void f2fs_put_super(struct super_block *sb)
+>  	/* prevent remaining shrinker jobs */
+>  	mutex_lock(&sbi->umount_mutex);
+>  
+> +	/*
+> +	 * flush all issued checkpoints and destroy checkpoint request control.
+> +	 * after then, all checkpoints should be done by each process context.
+> +	 */
+> +	f2fs_destroy_ckpt_req_control(sbi, true);
+> +
+>  	/*
+>  	 * We don't need to do checkpoint when superblock is clean.
+>  	 * But, the previous checkpoint was not done by umount, it needs to do
+> @@ -1347,10 +1364,13 @@ int f2fs_sync_fs(struct super_block *sb, int sync)
+>  		struct cp_control cpc;
+>  
+>  		cpc.reason = __get_cp_reason(sbi);
+> -
+> -		down_write(&sbi->gc_lock);
+> -		err = f2fs_write_checkpoint(sbi, &cpc);
+> -		up_write(&sbi->gc_lock);
+> +		if (test_opt(sbi, MERGE_CHECKPOINT) && cpc.reason == CP_SYNC) {
+> +			err = f2fs_issue_checkpoint(sbi);
+> +		} else {
+> +			down_write(&sbi->gc_lock);
+> +			err = f2fs_write_checkpoint(sbi, &cpc);
+> +			up_write(&sbi->gc_lock);
+> +		}
+>  	}
+>  	f2fs_trace_ios(NULL, 1);
+>  
+> @@ -1674,6 +1694,8 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+>  	if (test_opt(sbi, DISABLE_CHECKPOINT))
+>  		seq_printf(seq, ",checkpoint=disable:%u",
+>  				F2FS_OPTION(sbi).unusable_cap);
+> +	if (test_opt(sbi, MERGE_CHECKPOINT))
+> +		seq_puts(seq, ",checkpoint=merge");
+>  	if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_POSIX)
+>  		seq_printf(seq, ",fsync_mode=%s", "posix");
+>  	else if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT)
+> @@ -1954,6 +1976,18 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>  		}
+>  	}
+>  
+> +	if (!test_opt(sbi, MERGE_CHECKPOINT)) {
+> +		f2fs_destroy_ckpt_req_control(sbi, false);
+> +	} else {
+> +		err = f2fs_create_ckpt_req_control(sbi);
+> +		if (err) {
+> +			f2fs_err(sbi,
+> +				"Failed to initialize F2FS issue_checkpoint_thread (%d)",
+> +				err);
+> +			goto restore_gc;
+> +		}
+> +	}
+> +
+>  	/*
+>  	 * We stop issue flush thread if FS is mounted as RO
+>  	 * or if flush_merge is not passed in mount option.
+> @@ -3701,6 +3735,15 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+>  
+>  	f2fs_init_fsync_node_info(sbi);
+>  
+> +	/* setup checkpoint request control */
+> +	err = f2fs_create_ckpt_req_control(sbi);
+> +	if (err) {
+> +		f2fs_err(sbi,
+> +		    "Failed to initialize F2FS checkpoint request control (%d)",
+> +		    err);
+> +		goto free_cprc;
+> +	}
+> +
+>  	/* setup f2fs internal modules */
+>  	err = f2fs_build_segment_manager(sbi);
+>  	if (err) {
+> @@ -3910,6 +3953,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+>  free_sm:
+>  	f2fs_destroy_segment_manager(sbi);
+>  	f2fs_destroy_post_read_wq(sbi);
+> +free_cprc:
+> +	f2fs_destroy_ckpt_req_control(sbi, true);
+>  free_devices:
+>  	destroy_device_list(sbi);
+>  	kvfree(sbi->ckpt);
+> -- 
+> 2.30.0.284.gd98b1dd5eaa7-goog
+> 
+> 
+> 
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
