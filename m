@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 080762F1386
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68EA82F1457
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:24:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728922AbhAKNKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:10:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56510 "EHLO mail.kernel.org"
+        id S1728810AbhAKNX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:23:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730721AbhAKNJK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:09:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FDFD21534;
-        Mon, 11 Jan 2021 13:08:29 +0000 (UTC)
+        id S1733124AbhAKNSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:18:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB79B2229C;
+        Mon, 11 Jan 2021 13:17:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370509;
-        bh=+6pb8yRuN6V+nCW5kpXkVhfOZg6PyGeOad7faSLloxM=;
+        s=korg; t=1610371072;
+        bh=b/rHpro2UBOvgR7pS8TtW4j9VgswjUFvu+g/vIdFfRI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xIfHZeW/2agx/la94fH33ynLQwRUPfJRrIPMxOEuLzT4wsmUy/Ois+E1fu5hw8JeU
-         /P1hnkxaV0uJaHq7swnqza1+WlnBWes9G/MsJctwGw3hOLOnlM7qwwGdPEnj0iKepb
-         kDbBOcqXGLYVjalwwAXTxZ5PnVjmTWHn7dGxSe3E=
+        b=GsuMrUuBsS51X1kxQhLJz5+vq8O2QQVmW29numGuN5gJZsTArg242v5Iu44USkE9I
+         FNHfCnQZd43MYLt9fnUhOgsbZDEY9WpJGEqcvKXl7pZLI3fbJ4kB+hq/sDfGs2Rdkj
+         cf3+AynY0XhI7AknY4zrCecFyR0R/LUT7Hm99nqY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
-        Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.19 53/77] USB: serial: option: add Quectel EM160R-GL
-Date:   Mon, 11 Jan 2021 14:02:02 +0100
-Message-Id: <20210111130038.974598560@linuxfoundation.org>
+        stable@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>,
+        syzbot+5925509f78293baa7331@syzkaller.appspotmail.com
+Subject: [PATCH 5.10 099/145] USB: Gadget: dummy-hcd: Fix shift-out-of-bounds bug
+Date:   Mon, 11 Jan 2021 14:02:03 +0100
+Message-Id: <20210111130053.286876397@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +39,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjørn Mork <bjorn@mork.no>
+From: Alan Stern <stern@rowland.harvard.edu>
 
-commit d6c1ddd938d84a1adef7e19e8efc10e1b4df5034 upstream.
+commit c318840fb2a42ce25febc95c4c19357acf1ae5ca upstream.
 
-New modem using ff/ff/30 for QCDM, ff/00/00 for  AT and NMEA,
-and ff/ff/ff for RMNET/QMI.
+The dummy-hcd driver was written under the assumption that all the
+parameters in URBs sent to its root hub would be valid.  With URBs
+sent from userspace via usbfs, that assumption can be violated.
 
-T: Bus=02 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 2 Spd=5000 MxCh= 0
-D: Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs= 1
-P: Vendor=2c7c ProdID=0620 Rev= 4.09
-S: Manufacturer=Quectel
-S: Product=EM160R-GL
-S: SerialNumber=e31cedc1
-C:* #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=896mA
-I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=(none)
-E: Ad=81(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E: Ad=01(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-E: Ad=83(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
-E: Ad=82(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E: Ad=02(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-E: Ad=85(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
-E: Ad=84(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E: Ad=03(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
-E: Ad=87(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
-E: Ad=86(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E: Ad=04(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-I:* If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
-E: Ad=88(I) Atr=03(Int.) MxPS= 8 Ivl=32ms
-E: Ad=8e(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
-E: Ad=0f(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+In particular, the driver doesn't fully check the port-feature values
+stored in the wValue entry of Clear-Port-Feature and Set-Port-Feature
+requests.  Values that are too large can cause the driver to perform
+an invalid left shift of more than 32 bits.  Ironically, two of those
+left shifts are unnecessary, because they implement Set-Port-Feature
+requests that hubs are not required to support, according to section
+11.24.2.13 of the USB-2.0 spec.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Bjørn Mork <bjorn@mork.no>
-[ johan: add model comment ]
-Signed-off-by: Johan Hovold <johan@kernel.org>
+This patch adds the appropriate checks for the port feature selector
+values and removes the unnecessary feature settings.  It also rejects
+requests to set the TEST feature or to set or clear the INDICATOR and
+C_OVERCURRENT features, as none of these are relevant to dummy-hcd's
+root-hub emulation.
+
+CC: <stable@vger.kernel.org>
+Reported-and-tested-by: syzbot+5925509f78293baa7331@syzkaller.appspotmail.com
+Signed-off-by: Alan Stern <stern@rowland.harvard.edu>
+Link: https://lore.kernel.org/r/20201230162044.GA727759@rowland.harvard.edu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/serial/option.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/gadget/udc/dummy_hcd.c |   35 +++++++++++++++++++++++------------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
 
---- a/drivers/usb/serial/option.c
-+++ b/drivers/usb/serial/option.c
-@@ -1117,6 +1117,8 @@ static const struct usb_device_id option
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EM12, 0xff, 0xff, 0xff),
- 	  .driver_info = RSVD(1) | RSVD(2) | RSVD(3) | RSVD(4) | NUMEP2 },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_EM12, 0xff, 0, 0) },
-+	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, 0x0620, 0xff, 0xff, 0x30) },	/* EM160R-GL */
-+	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, 0x0620, 0xff, 0, 0) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0xff, 0x30) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0, 0) },
- 	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, QUECTEL_PRODUCT_RM500Q, 0xff, 0xff, 0x10),
+--- a/drivers/usb/gadget/udc/dummy_hcd.c
++++ b/drivers/usb/gadget/udc/dummy_hcd.c
+@@ -2114,9 +2114,21 @@ static int dummy_hub_control(
+ 				dum_hcd->port_status &= ~USB_PORT_STAT_POWER;
+ 			set_link_state(dum_hcd);
+ 			break;
+-		default:
++		case USB_PORT_FEAT_ENABLE:
++		case USB_PORT_FEAT_C_ENABLE:
++		case USB_PORT_FEAT_C_SUSPEND:
++			/* Not allowed for USB-3 */
++			if (hcd->speed == HCD_USB3)
++				goto error;
++			fallthrough;
++		case USB_PORT_FEAT_C_CONNECTION:
++		case USB_PORT_FEAT_C_RESET:
+ 			dum_hcd->port_status &= ~(1 << wValue);
+ 			set_link_state(dum_hcd);
++			break;
++		default:
++		/* Disallow INDICATOR and C_OVER_CURRENT */
++			goto error;
+ 		}
+ 		break;
+ 	case GetHubDescriptor:
+@@ -2277,18 +2289,17 @@ static int dummy_hub_control(
+ 			 */
+ 			dum_hcd->re_timeout = jiffies + msecs_to_jiffies(50);
+ 			fallthrough;
++		case USB_PORT_FEAT_C_CONNECTION:
++		case USB_PORT_FEAT_C_RESET:
++		case USB_PORT_FEAT_C_ENABLE:
++		case USB_PORT_FEAT_C_SUSPEND:
++			/* Not allowed for USB-3, and ignored for USB-2 */
++			if (hcd->speed == HCD_USB3)
++				goto error;
++			break;
+ 		default:
+-			if (hcd->speed == HCD_USB3) {
+-				if ((dum_hcd->port_status &
+-				     USB_SS_PORT_STAT_POWER) != 0) {
+-					dum_hcd->port_status |= (1 << wValue);
+-				}
+-			} else
+-				if ((dum_hcd->port_status &
+-				     USB_PORT_STAT_POWER) != 0) {
+-					dum_hcd->port_status |= (1 << wValue);
+-				}
+-			set_link_state(dum_hcd);
++		/* Disallow TEST, INDICATOR, and C_OVER_CURRENT */
++			goto error;
+ 		}
+ 		break;
+ 	case GetPortErrorCount:
 
 
