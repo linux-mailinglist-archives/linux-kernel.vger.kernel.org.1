@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7A52F12EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:03:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D69AD2F13BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728575AbhAKNBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:01:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48886 "EHLO mail.kernel.org"
+        id S1732043AbhAKNOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:14:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60360 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728455AbhAKNBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:01:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F98B229C4;
-        Mon, 11 Jan 2021 13:00:31 +0000 (UTC)
+        id S1731965AbhAKNNl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:13:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4157822CA1;
+        Mon, 11 Jan 2021 13:13:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370031;
-        bh=Bw66MLSjIB+PJWcyGEpfYuDnTbHjUiYkQ52L7EeBa98=;
+        s=korg; t=1610370804;
+        bh=HOfmmsNDwLOfN7qKJIMJttvvQjlx4KepTPwiRGShhy0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uVRE5tdrsklSRO0WwoGwCYM8l6EffdeYMl7IvOea568HX6VHuFqQTAMlouzNK09Vz
-         m2oFxR0q8p2+4q8bVvVC/EQbuHNZdDsMJLcJmrl8GLZy5LkRBhGry3DIC+qVMkycIv
-         boUCuO+9eecRBZNM3Fna+gsyYRARjyZI2/KsZhnI=
+        b=ahr3TkMUMEqOly4zsyQWii95uypRuDDWue9WTi6++jCE0z3e2bx4VTIBWSVcMF0Mj
+         awq167m6TcmkelVoqTuoVjcHdpFMwsKRjOJDqwnpirQ+s7AyDs7NZGE46E58lM/kT3
+         NhZT6sLf3/QniYg2XiJXuImq2iSTilAYtgzXML8w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: [PATCH 4.4 04/38] depmod: handle the case of /sbin/depmod without /sbin in PATH
+        Thomas Graichen <thomas.graichen@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.10 012/145] net: stmmac: dwmac-meson8b: ignore the second clock input
 Date:   Mon, 11 Jan 2021 14:00:36 +0100
-Message-Id: <20210111130032.686802531@linuxfoundation.org>
+Message-Id: <20210111130049.104722338@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
-References: <20210111130032.469630231@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-[ Upstream commit cedd1862be7e666be87ec824dabc6a2b05618f36 ]
+[ Upstream commit f87777a3c30cf50c66a20e1d153f0e003bb30774 ]
 
-Commit 436e980e2ed5 ("kbuild: don't hardcode depmod path") stopped
-hard-coding the path of depmod, but in the process caused trouble for
-distributions that had that /sbin location, but didn't have it in the
-PATH (generally because /sbin is limited to the super-user path).
+The dwmac glue registers on Amlogic Meson8b and newer SoCs has two clock
+inputs:
+- Meson8b and Meson8m2: MPLL2 and MPLL2 (the same parent is wired to
+  both inputs)
+- GXBB, GXL, GXM, AXG, G12A, G12B, SM1: FCLK_DIV2 and MPLL2
 
-Work around it for now by just adding /sbin to the end of PATH in the
-depmod.sh script.
+All known vendor kernels and u-boots are using the first input only. We
+let the common clock framework automatically choose the "right" parent.
+For some boards this causes a problem though, specificially with G12A and
+newer SoCs. The clock input is used for generating the 125MHz RGMII TX
+clock. For the two input clocks this means on G12A:
+- FCLK_DIV2: 999999985Hz / 8 = 124999998.125Hz
+- MPLL2: 499999993Hz / 4 = 124999998.25Hz
 
-Reported-and-tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+In theory MPLL2 is the "better" clock input because it's gets us 0.125Hz
+closer to the requested frequency than FCLK_DIV2. In reality however
+there is a resource conflict because MPLL2 is needed to generate some of
+the audio clocks. dwmac-meson8b probes first and sets up the clock tree
+with MPLL2. This works fine until the audio driver comes and "steals"
+the MPLL2 clocks and configures it with it's own rate (294909637Hz). The
+common clock framework happily changes the MPLL2 rate but does not
+reconfigure our RGMII TX clock tree, which then ends up at 73727409Hz,
+which is more than 40% off the requested 125MHz.
+
+Don't use the second clock input for now to force the common clock
+framework to always select the first parent. This mimics the behavior
+from the vendor driver and fixes the clock resource conflict with the
+audio driver on G12A boards. Once the common clock framework can handle
+this situation this change can be reverted again.
+
+Fixes: 566e8251625304 ("net: stmmac: add a glue driver for the Amlogic Meson 8b / GXBB DWMAC")
+Reported-by: Thomas Graichen <thomas.graichen@gmail.com>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Tested-by: thomas graichen <thomas.graichen@gmail.com>
+Link: https://lore.kernel.org/r/20201219135036.3216017-1-martin.blumenstingl@googlemail.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- scripts/depmod.sh |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/scripts/depmod.sh
-+++ b/scripts/depmod.sh
-@@ -14,6 +14,8 @@ if ! test -r System.map ; then
- 	exit 0
- fi
- 
-+# legacy behavior: "depmod" in /sbin, no /sbin in PATH
-+PATH="$PATH:/sbin"
- if [ -z $(command -v $DEPMOD) ]; then
- 	echo "Warning: 'make modules_install' requires $DEPMOD. Please install it." >&2
- 	echo "This is probably in the kmod package." >&2
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
+@@ -135,7 +135,7 @@ static int meson8b_init_rgmii_tx_clk(str
+ 	struct device *dev = dwmac->dev;
+ 	static const struct clk_parent_data mux_parents[] = {
+ 		{ .fw_name = "clkin0", },
+-		{ .fw_name = "clkin1", },
++		{ .index = -1, },
+ 	};
+ 	static const struct clk_div_table div_table[] = {
+ 		{ .div = 2, .val = 2, },
 
 
