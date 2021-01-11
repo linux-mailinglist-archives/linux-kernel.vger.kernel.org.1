@@ -2,202 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5202F20B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C76462F20BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:26:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404239AbhAKUYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 15:24:39 -0500
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:42287 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403977AbhAKUY1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:24:27 -0500
-Received: by mail-oi1-f180.google.com with SMTP id l200so667997oig.9;
-        Mon, 11 Jan 2021 12:24:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N+l7oEoC2Gtdd3tsUSXfbCD3VNBOdwhPR2for7AGSP0=;
-        b=BfeH9dnmszit+bA8pGswZrF7E/0dltNYlKrH7qRsb9tK8JYOlhSOZgcA3jaQY9IUJK
-         8GdZYRW0bCFRk2lCdstkkAUZf6RbpSb05/VpxBfr9soFUnYCAG1HNttS7AWVJFvmstgi
-         /klIi7UG2VoEfpNzfFrbJ3cYCvKBw4rD0Ngt+oJpqxT2SMiQKWGzRWMe6FrsIXLlEVnr
-         my3QBk6LnzX1KrSFs5jqdPmdXcBAdspNmOIEIYy0+Teo6QeUg62MM5LDNxzmp2/bNykG
-         96y5lnGH78/t0WNPXsY0fdgW2JfPZDpnpuYbEWTly+0fNESMhd4Obck/tNz0FAwh7tS2
-         r2BQ==
-X-Gm-Message-State: AOAM531UHItUO4sNLoEl2TBX++V3yfSbE9kzAxKT80ODd2e0aD5ooibM
-        GHmNRvYku2HofybdZb16LQ==
-X-Google-Smtp-Source: ABdhPJwWxknOlQUQyjNGUH3P7COKkSvblU0b4yZxPrYfjVei7f813EPmKrrInAQ0BrcWWGXpSQEl5g==
-X-Received: by 2002:a05:6808:8f0:: with SMTP id d16mr344964oic.47.1610396626307;
-        Mon, 11 Jan 2021 12:23:46 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v4sm171269otk.50.2021.01.11.12.23.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 12:23:45 -0800 (PST)
-Received: (nullmailer pid 3005685 invoked by uid 1000);
-        Mon, 11 Jan 2021 20:23:44 -0000
-Date:   Mon, 11 Jan 2021 14:23:44 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Hector Yuan <hector.yuan@mediatek.com>
-Cc:     linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wsd_upstream@mediatek.com
-Subject: Re: [PATCH v10 2/2] dt-bindings: cpufreq: add bindings for MediaTek
- cpufreq HW
-Message-ID: <20210111202344.GA2999777@robh.at.kernel.org>
-References: <1609222629-2979-1-git-send-email-hector.yuan@mediatek.com>
- <1609222629-2979-3-git-send-email-hector.yuan@mediatek.com>
+        id S2404253AbhAKUZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 15:25:54 -0500
+Received: from mga17.intel.com ([192.55.52.151]:35332 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403946AbhAKUZw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 15:25:52 -0500
+IronPort-SDR: K0A3MjIdwgu+IJope8zHS713Rq6ZeVvK7AgVVC1IB7JsyTHWoGu0FzixOWIrQ+iaeTLNQLXAzM
+ 7/oFbLnXqWLQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="157709744"
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="157709744"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 12:25:11 -0800
+IronPort-SDR: Dt8C4gv/BTd8wW9R3c0fF+bFblte/UVcjVFn9jevBPFF9vCHgBDoyYuJW9Fvs8g1H3zg3J60s1
+ RQhA4mW+8QVA==
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="352739979"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.197.241]) ([10.212.197.241])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 12:25:08 -0800
+Subject: Re: [PATCH v17 04/26] x86/cpufeatures: Introduce X86_FEATURE_CET and
+ setup functions
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <20201229213053.16395-1-yu-cheng.yu@intel.com>
+ <20201229213053.16395-5-yu-cheng.yu@intel.com>
+ <20210111175643.GD25645@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <7def977d-ce6b-e9b4-ea4a-467a9d652147@intel.com>
+Date:   Mon, 11 Jan 2021 12:25:07 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1609222629-2979-3-git-send-email-hector.yuan@mediatek.com>
+In-Reply-To: <20210111175643.GD25645@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 02:17:09PM +0800, Hector Yuan wrote:
-> From: "Hector.Yuan" <hector.yuan@mediatek.com>
+On 1/11/2021 9:56 AM, Borislav Petkov wrote:
+> On Tue, Dec 29, 2020 at 01:30:31PM -0800, Yu-cheng Yu wrote:
+>> @@ -895,6 +903,12 @@ static void init_speculation_control(struct cpuinfo_x86 *c)
+>>   	}
+>>   }
+>>   
+>> +static void init_cet_features(struct cpuinfo_x86 *c)
+>> +{
+>> +	if (cpu_has(c, X86_FEATURE_SHSTK) || cpu_has(c, X86_FEATURE_IBT))
+>> +		set_cpu_cap(c, X86_FEATURE_CET);
+>> +}
 > 
-> Add devicetree bindings for MediaTek HW driver.
+> No need for that function - just add this two-liner to bsp_init_intel()
+> and not in get_cpu_cap().
 > 
-> Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
-> ---
->  .../bindings/cpufreq/cpufreq-mediatek-hw.yaml      |  116 ++++++++++++++++++++
->  1 file changed, 116 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
-> new file mode 100644
-> index 0000000..53e0eb3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
-> @@ -0,0 +1,116 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/cpufreq/cpufreq-mediatek-hw.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MediaTek's CPUFREQ Bindings
-> +
-> +maintainers:
-> +  - Hector Yuan <hector.yuan@mediatek.com>
-> +
-> +description:
-> +  CPUFREQ HW is a hardware engine used by MediaTek
-> +  SoCs to manage frequency in hardware. It is capable of controlling frequency
-> +  for multiple clusters.
-> +
-> +properties:
-> +  compatible:
-> +    const: mediatek,cpufreq-hw
-> +
-> +  reg:
-> +    minItems: 1
-> +    maxItems: 2
-> +    description: |
-> +      Addresses and sizes for the memory of the
-> +      HW bases in each frequency domain.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: true
 
-This is only correct on common bindings which are incomplete. You need 
-to define '#performance-domain-cells'.
+I will move these to bsp_init_intel(), and change to:
 
-And this is all dependent on performance-domains binding being accepted.
+if (cpu_has(c, X86_FEATURE_SHSTK) || cpu_has(c, X86_FEATURE_IBT))
+	setup_force_cpu_cap(X86_FEATURE_CET);
 
-> +
-> +examples:
-> +  - |
-> +    cpus {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            cpu0: cpu@0 {
-> +                device_type = "cpu";
-> +                compatible = "arm,cortex-a55";
-> +                enable-method = "psci";
-> +                performance-domains = <&performance 0>;
-> +                reg = <0x000>;
-> +            };
-> +
-> +            cpu1: cpu@100 {
-> +                device_type = "cpu";
-> +                compatible = "arm,cortex-a55";
-> +                enable-method = "psci";
-> +                performance-domains = <&performance 0>;
-> +                reg = <0x100>;
-> +            };
-> +
-> +            cpu2: cpu@200 {
-> +                device_type = "cpu";
-> +                compatible = "arm,cortex-a55";
-> +                enable-method = "psci";
-> +                performance-domains = <&performance 0>;
-> +                reg = <0x200>;
-> +            };
-> +
-> +            cpu3: cpu@300 {
-> +                device_type = "cpu";
-> +                compatible = "arm,cortex-a55";
-> +                enable-method = "psci";
-> +                performance-domains = <&performance 0>;
-> +                reg = <0x300>;
-> +            };
-> +
-> +            cpu4: cpu@400 {
-> +                device_type = "cpu";
-> +                compatible = "arm,cortex-a55";
-> +                enable-method = "psci";
-> +                performance-domains = <&performance 1>;
-> +                reg = <0x400>;
-> +            };
-> +
-> +            cpu5: cpu@500 {
-> +                device_type = "cpu";
-> +                compatible = "arm,cortex-a55";
-> +                enable-method = "psci";
-> +                performance-domains = <&performance 1>;
-> +                reg = <0x500>;
-> +            };
-> +
-> +            cpu6: cpu@600 {
-> +                device_type = "cpu";
-> +                compatible = "arm,cortex-a75";
-> +                enable-method = "psci";
-> +                performance-domains = <&performance 1>;
-> +                reg = <0x600>;
-> +            };
-> +
-> +            cpu7: cpu@700 {
-> +                device_type = "cpu";
-> +                compatible = "arm,cortex-a75";
-> +                enable-method = "psci";
-> +                performance-domains = <&performance 1>;
-> +                reg = <0x700>;
-> +            };
-> +    };
-> +
-> +    /* ... */
-> +
-> +    soc {
-> +        #address-cells = <2>;
-> +        #size-cells = <2>;
-> +
-> +        performance: performance-controller@11bc00 {
-> +            compatible = "mediatek,cpufreq-hw";
-> +            reg = <0 0x0011bc10 0 0x120>, <0 0x0011bd30 0 0x120>;
-> +            #performance-domain-cells = <1>;
-> +        };
-> +    };
-> -- 
-> 1.7.9.5
+>> +static void adjust_combined_cpu_features(void)
+>> +{
+>> +#ifdef CONFIG_X86_CET_USER
+>> +	if (test_bit(X86_FEATURE_SHSTK, (unsigned long *)cpu_caps_cleared) &&
+>> +	    test_bit(X86_FEATURE_IBT, (unsigned long *)cpu_caps_cleared))
+>> +		setup_clear_cpu_cap(X86_FEATURE_CET);
+>> +#endif
 > 
+> There's no need for this function...
+> 
+>> +}
+>> +
+>>   /*
+>>    * We parse cpu parameters early because fpu__init_system() is executed
+>>    * before parse_early_param().
+>> @@ -1252,9 +1276,19 @@ static void __init cpu_parse_early_param(void)
+>>   	if (cmdline_find_option_bool(boot_command_line, "noxsaves"))
+>>   		setup_clear_cpu_cap(X86_FEATURE_XSAVES);
+>>   
+>> +	/*
+>> +	 * CET states are XSAVES states and options must be parsed early.
+>> +	 */
+>> +#ifdef CONFIG_X86_CET_USER
+>> +	if (cmdline_find_option_bool(boot_command_line, "no_user_shstk"))
+>> +		setup_clear_cpu_cap(X86_FEATURE_SHSTK);
+> 
+> ... when you can do
+> 
+> 	setup_clear_cpu_cap(X86_FEATURE_CET);
+> 
+> here and...
+> 
+>> +	if (cmdline_find_option_bool(boot_command_line, "no_user_ibt"))
+>> +		setup_clear_cpu_cap(X86_FEATURE_IBT);
+> 
+> ... here.
+>
+
+Two problems here.  X86_FEATURE_CET indicates either CET features is 
+enabled, not both.  Also, "clearcpuid" can has CET features.  However, 
+since X86_FEATURE_CET is now set in bsp_init_intel() (after 
+cpu_parse_early_params()), I think, adjust_combined_cpu_features() can 
+be removed.  I will test it.
+
+--
+Thanks,
+Yu-cheng
