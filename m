@@ -2,93 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC1F2F0AB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 02:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2AF2F0AB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 02:13:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbhAKBKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 20:10:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36038 "EHLO
+        id S1727069AbhAKBK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 20:10:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726151AbhAKBKD (ORCPT
+        with ESMTP id S1726151AbhAKBK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 20:10:03 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B55C061786;
-        Sun, 10 Jan 2021 17:09:23 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id iq13so6789977pjb.3;
-        Sun, 10 Jan 2021 17:09:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9W27aDEcM2zclqETCrZa+HXBBxEceLbS1pDaUDxlwnY=;
-        b=O74ymKZCnKUo7LJYtV6u42gGexQ/NcGqi6IhXI+q0cF7X08qR6JkA3KIpZVWTGsHYr
-         5oqNAAJASR6FUFa+xDAiMiqOuX/9Fsdg9IPjpGRNQ0/UpI1pyKqZC0zjcO/hPWVYFRKM
-         00lXr6DBAxegl0n4NOhqRdLZYwUk/udyOzpFsWQDPmusBI9O1HToCKVCBKx4QsQk6iNS
-         0bi2vVERzOXRqafFTh55BXBuPjybB5q0DPSqcp7ZeogH5AbzFIizyDPwEGQ3UXF+2foJ
-         EQ7/l/HIz9zzMUcIeN2em62JZTQNBAZr2uB9VSi0V6sD1fK+W2ai9zWoFY9rkrDiho2E
-         ahIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9W27aDEcM2zclqETCrZa+HXBBxEceLbS1pDaUDxlwnY=;
-        b=SH91FTK/OANgh231FLQkhAy/2BiiRMByS5gXxUFVLqUtWZ+EzKQHhylro7v8HKKSI7
-         /C+LpquHsNUOUeekOGgGrw9ljFCUAIsOGrciCcBmnK2htqG3pdD+GPaCv/jGxpHuE4Ik
-         ps6/zawOyk9v8KEsgjK82lUWCWntQMmmJvSSe2bnj937XAufzPTlb7t911X9X1cMaA2v
-         IAkp9JzajEXMAV7kU2v4NqIuFAfgV1FMsYEpPPbMwgkXEOxvM+L7LXdiXPiaHJJl2q+5
-         1yqWu91XA/Hp4SciKttCGoW3wVNV37BAoix4O/RMBY1A4TeFkGx0y9ALqp5GS1riqy03
-         I3zA==
-X-Gm-Message-State: AOAM532ubicpUtBx+ivmkRBLSA2l5fPZDovJI+j8YfPBhYbN8/Bkjj5e
-        vIWhrSt1SKwBnMUP89BzxGc=
-X-Google-Smtp-Source: ABdhPJwdM43NMBeAb8Gwnqd9m1yuUkJKRLjYG47J2cgNCRcY3pKLIUX6BLePfqo18RDLB+hkHjbpjA==
-X-Received: by 2002:a17:902:b282:b029:da:fd05:7766 with SMTP id u2-20020a170902b282b02900dafd057766mr14230591plr.52.1610327362467;
-        Sun, 10 Jan 2021 17:09:22 -0800 (PST)
-Received: from localhost.localdomain ([45.135.186.18])
-        by smtp.gmail.com with ESMTPSA id x5sm15659171pjr.38.2021.01.10.17.09.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Jan 2021 17:09:21 -0800 (PST)
-From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
-To:     340442286@qq.com, paulmck@kernel.org, josh@joshtriplett.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
-Subject: [PATCH] rcu: remove surplus instrumentation_end in rcu_nmi_enter
-Date:   Mon, 11 Jan 2021 09:08:59 +0800
-Message-Id: <20210111010859.7778-1-zhouzhouyi@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 10 Jan 2021 20:10:26 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4373CC061794;
+        Sun, 10 Jan 2021 17:09:45 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DDbGC5Vrtz9sWj;
+        Mon, 11 Jan 2021 12:09:39 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610327381;
+        bh=W5yEqvPRAX9Ph8yTBRkoKbr9bk7YJU6Ay1+V3Swbz34=;
+        h=Date:From:To:Cc:Subject:From;
+        b=hotX+jd8kd9mDTTxpouZUmilaE8MNP/Sjdsh3C+IUBGEAdq3O/EObn9LW504TxXg+
+         5CPbeFzKDDWr2u2W7E0dzjbdk0GqpWw21eGY9xNwPnJB8g9Ob12MRj0ag4LCPBhfDP
+         1GWJBjFSpSSO9nIfHdfWCsE/w53yUbgUejEQf+obtKCnklW5Hf03Oam7sRmyq4t/j0
+         O+XsHlH2yf6hbp7w896Nd0WxAIB7FqyBAlCpyBYo0d4Nq13uIepHAtqyEcgyap01Kv
+         ZDRRDLU1vKVFT5R4vlpicpZbGpwxJZqMrfScpBwCpCE7s0ywitTNeUvhFNK9+I8lgT
+         6ZT30VA+EPTUA==
+Date:   Mon, 11 Jan 2021 12:09:39 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Yanteng Si <siyanteng@loongson.cn>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the spi tree
+Message-ID: <20210111120939.7d982bb2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/IX3Hr6fTTQq1GCYa0EPQj+U";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In function rcu_nmi_enter, there is a surplus instrumentation_end
-in second branch of if statement, although objtool check -f vmlinux.o will
-not complain because of its inability to correctly cover all cases
-(objtool will visit the third branch first, which markes
- following trace_rcu_dyntick as visited), I think remove the surplus
-instrumentation_end will make the code better.
+--Sig_/IX3Hr6fTTQq1GCYa0EPQj+U
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
----
- kernel/rcu/tree.c | 1 -
- 1 file changed, 1 deletion(-)
+After merging the spi tree, today's linux-next build (x86_64 allmodconfig)
+produced this warning:
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 40e5e3dd253e..eaec6f6032c2 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -1021,7 +1021,6 @@ noinstr void rcu_nmi_enter(void)
- 	} else if (!in_nmi()) {
- 		instrumentation_begin();
- 		rcu_irq_enter_check_tick();
--		instrumentation_end();
- 	} else  {
- 		instrumentation_begin();
- 	}
--- 
-2.25.1
+In file included from include/linux/kernel.h:14,
+                 from include/linux/clk.h:13,
+                 from drivers/spi/spi-cadence-quadspi.c:9:
+drivers/spi/spi-cadence-quadspi.c: In function 'cqspi_direct_read_execute':
+include/linux/minmax.h:18:28: warning: comparison of distinct pointer types=
+ lacks a cast
+   18 |  (!!(sizeof((typeof(x) *)1 =3D=3D (typeof(y) *)1)))
+      |                            ^~
+include/linux/minmax.h:32:4: note: in expansion of macro '__typecheck'
+   32 |   (__typecheck(x, y) && __no_side_effects(x, y))
+      |    ^~~~~~~~~~~
+include/linux/minmax.h:42:24: note: in expansion of macro '__safe_cmp'
+   42 |  __builtin_choose_expr(__safe_cmp(x, y), \
+      |                        ^~~~~~~~~~
+include/linux/minmax.h:58:19: note: in expansion of macro '__careful_cmp'
+   58 | #define max(x, y) __careful_cmp(x, y, >)
+      |                   ^~~~~~~~~~~~~
+drivers/spi/spi-cadence-quadspi.c:1153:24: note: in expansion of macro 'max'
+ 1153 |       msecs_to_jiffies(max(len, 500U)))) {
+      |                        ^~~
 
+Introduced by commit
+
+  8728a81b8f10 ("spi: Fix distinct pointer types warning for ARCH=3Dmips")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/IX3Hr6fTTQq1GCYa0EPQj+U
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/7pVMACgkQAVBC80lX
+0Gyligf/UHPdx0ZdtXiO6H7wFRWdp7aEO1Ioj0X9/ES+/5Al48YQWwzOScjlbpYs
+9jVrEluo1i/3q+4aMnKWK8ikRPL6Hvp8JNYpw74uI2+TQ4hueTATqoD8Xwllb6Ys
+aA9uVKm6IQfzOsg3CAcYu8FRoTsGkYWJHHFpcBVqBw51Qip4qu2bgJcjY338EcLw
+vefS7/uOtkM0lUe8s8rY8LsSGfzjI2CEfPChZaU2bLyk11SNSbWuIT+hhgjDwes1
+Te/793FzIALNa9Lnc2e3/V0vepw/SNWpPu5AMSG8IulceSWSKd25dv3vjuUAoBj9
+xv1W2hO9RaBZH8TeDCT0OAi0MpXDTQ==
+=avOr
+-----END PGP SIGNATURE-----
+
+--Sig_/IX3Hr6fTTQq1GCYa0EPQj+U--
