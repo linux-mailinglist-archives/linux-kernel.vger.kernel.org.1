@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 707C82F1A42
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1697C2F1A3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733195AbhAKP4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:56:17 -0500
-Received: from mail-pl1-f171.google.com ([209.85.214.171]:37393 "EHLO
-        mail-pl1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728440AbhAKP4R (ORCPT
+        id S2387814AbhAKP43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:56:29 -0500
+Received: from www62.your-server.de ([213.133.104.62]:36360 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727195AbhAKP42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:56:17 -0500
-Received: by mail-pl1-f171.google.com with SMTP id be12so44842plb.4;
-        Mon, 11 Jan 2021 07:56:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=k/q6ghGfVX7aRpJrmdqiUQq3M7wvn3TgGk1yd7jRFY4=;
-        b=f+gHvHwczaiPKNypEg/08szetmr2tsEiGbgp4lBYRLg5BoHoMoLZpdmD0Yxkrb6nT2
-         NYWEjOp8FalqqJpgHRJWglgnHqpkzVv8RAp6g+McH0w2iwSLE0GkHS+qPPRRtn+4BfgZ
-         jPHQ5xxm6oBF6IHKSWzd5ylzghdSA86Tifw73oCqEciUUNKAhoTm8Nrum8auUnMd21U3
-         0XAnmsB7X0fOpy1Q7+XDukGixYdTUtrinkP6auUKR+6bR4rZR9C0Fs75SzFk6hWJ52f6
-         UmmVbWV24dIVPZ6dEQr1DW0XKC8GQFB3MyREj9CwcqCD3CUzmZwob0hPe4EwvxLUMHQY
-         SpgQ==
-X-Gm-Message-State: AOAM533K0bYm0W3199nlItm0jy+B5h28WrsLw1mr4RxqL9PDvHZS7bJa
-        zFLexEI22GSM+kjFMDER024=
-X-Google-Smtp-Source: ABdhPJw/h92k1Ojnvsu1M8LaI6nhi4Ozo+JY0SeMDYwxnwMfh58dNhSXaiy/H6TsPZszB6bCBN2lTw==
-X-Received: by 2002:a17:90a:ee94:: with SMTP id i20mr17913724pjz.185.1610380535942;
-        Mon, 11 Jan 2021 07:55:35 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
-        by smtp.gmail.com with ESMTPSA id v11sm20097308pju.40.2021.01.11.07.55.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 07:55:28 -0800 (PST)
-Date:   Mon, 11 Jan 2021 07:55:25 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wu Hao <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>,
-        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
-        linux-fpga@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Mon, 11 Jan 2021 10:56:28 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kyzXm-000AEm-OE; Mon, 11 Jan 2021 16:55:46 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kyzXm-0002w9-IG; Mon, 11 Jan 2021 16:55:46 +0100
+Subject: Re: [PATCH] Signed-off-by: giladreti <gilad.reti@gmail.com>
+To:     giladreti <gilad.reti@gmail.com>, bpf@vger.kernel.org,
+        Yonghong Song <yhs@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] fpga: dfl-pci: rectify ReST formatting
-Message-ID: <X/x07V2WqhmkIMcr@archbook>
-References: <20210111112113.27242-1-lukas.bulwahn@gmail.com>
+References: <20210111153123.GA423936@ubuntu>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <17629073-4fab-a922-ecc3-25b019960f44@iogearbox.net>
+Date:   Mon, 11 Jan 2021 16:55:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111112113.27242-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20210111153123.GA423936@ubuntu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26046/Mon Jan 11 13:34:14 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lukas,
+Hello Gilad,
 
-On Mon, Jan 11, 2021 at 12:21:13PM +0100, Lukas Bulwahn wrote:
-> Commit fa41d10589be ("fpga: dfl-pci: locate DFLs by PCIe vendor specific
-> capability") provides documentation to the FPGA Device Feature List (DFL)
-Nit: Do you want to make this a Fixes: tag instead?
-> Framework Overview, but introduced new documentation warnings:
+On 1/11/21 4:31 PM, giladreti wrote:
+> Added support for pointer to mem register spilling, to allow the verifier
+> to track pointer to valid memory addresses. Such pointers are returned
+> for example by a successful call of the bpf_ringbuf_reserve helper.
 > 
->   ./Documentation/fpga/dfl.rst:
->     505: WARNING: Title underline too short.
->     523: WARNING: Unexpected indentation.
->     523: WARNING: Blank line required after table.
->     524: WARNING: Block quote ends without a blank line; unexpected unindent.
-> 
-> Rectify ReST formatting in ./Documentation/fpga/dfl.rst.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Acked-by: Moritz Fischer <mdf@kernel.org>
+> This patch was suggested as a solution by Yonghong Song.
+
+The SoB should not be in subject line but as part of the commit message instead
+and with proper name, e.g.
+
+Signed-off-by: Gilad Reti <gilad.reti@gmail.com>
+
+For subject line, please use a short summary that fits the patch prefixed with
+the subsystem "bpf: [...]", see also [0] as an example. Thanks.
+
+It would be good if you could also add a BPF selftest for this [1].
+
+   [0] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/commit/?id=e22d7f05e445165e58feddb4e40cc9c0f94453bc
+   [1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/
+       https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/tools/testing/selftests/bpf/verifier/spill_fill.c
+
 > ---
-> applies cleanly on next-20210111
+>   kernel/bpf/verifier.c | 2 ++
+>   1 file changed, 2 insertions(+)
 > 
-> Moritz, Matthew, please ack.
-> 
-> Greg, please pick this doc fixup to your fpga -next tree on top of
-> the commit above.
-> 
->  Documentation/fpga/dfl.rst | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-> index ea8cefc18bdb..c41ac76ffaae 100644
-> --- a/Documentation/fpga/dfl.rst
-> +++ b/Documentation/fpga/dfl.rst
-> @@ -502,7 +502,7 @@ FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
->  could be a reference.
->  
->  Location of DFLs on a PCI Device
-> -===========================
-> +================================
->  The original method for finding a DFL on a PCI device assumed the start of the
->  first DFL to offset 0 of bar 0.  If the first node of the DFL is an FME,
->  then further DFLs in the port(s) are specified in FME header registers.
-> @@ -514,6 +514,7 @@ data begins with a 4 byte vendor specific register for the number of DFLs follow
->  Offset/BIR vendor specific registers for each DFL. Bits 2:0 of Offset/BIR register
->  indicates the BAR, and bits 31:3 form the 8 byte aligned offset where bits 2:0 are
->  zero.
-> +::
->  
->          +----------------------------+
->          |31     Number of DFLS      0|
-> -- 
-> 2.17.1
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 17270b8404f1..36af69fac591 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -2217,6 +2217,8 @@ static bool is_spillable_regtype(enum bpf_reg_type type)
+>   	case PTR_TO_RDWR_BUF:
+>   	case PTR_TO_RDWR_BUF_OR_NULL:
+>   	case PTR_TO_PERCPU_BTF_ID:
+> +	case PTR_TO_MEM:
+> +	case PTR_TO_MEM_OR_NULL:
+>   		return true;
+>   	default:
+>   		return false;
 > 
 
-Thanks for doing this, I was about to send that same patch myself.
-
-- Moritz
