@@ -2,89 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 670C62F1042
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C889C2F1047
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:42:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729313AbhAKKlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:41:12 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:10406 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726594AbhAKKlL (ORCPT
+        id S1729340AbhAKKlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:41:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26271 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729031AbhAKKlm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:41:11 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10BAaMBm007129;
-        Mon, 11 Jan 2021 04:39:56 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=d75rPZz6XfMRGET+XeZnq7haDjcGG9W0zaixbxQsXDo=;
- b=LQeQSL+GVTnq8hrA7FJamx64yiJNaDzZSgLSmSX0CDrj/NUCdYkmk5WSmXPdHiHbRFsH
- 1/5UkdYJLDIcHUfhYjySI/rEAP4TDeRQlzQMvsEeQeEDnsHL7nJnvpnKvYThDQiC6pB7
- WM2uIn4dxrjk2iYH8pnvbHqQVcI0wnR5Ot9jKDa2cDVPExyUbSUrZ4x2kpVfNxf43OxV
- 28ZZ5XrWfl6wbQMyr73/uhNoLNzVLcbDbo+IHM9cS1Er6W8Lr556/xm2yerTcGepPTne
- QOOPlw5qzKkSc84Yc73c/64n5k78gKyXWmCoeY2vhq2IElzUY2oNR3kereWY2I2SWEsv zA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 35y9srsyd4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 11 Jan 2021 04:39:56 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 11 Jan
- 2021 10:39:54 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Mon, 11 Jan 2021 10:39:54 +0000
-Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.3])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 79BE845;
-        Mon, 11 Jan 2021 10:39:54 +0000 (UTC)
-Subject: Re: [PATCH v3 1/4] lib: vsprintf: scanf: Negative number must have
- field width > 1
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Petr Mladek <pmladek@suse.com>
-CC:     Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, <patches@opensource.cirrus.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-References: <20201217180057.23786-1-rf@opensource.cirrus.com>
- <X/wnoJLEt0zQskDU@alley>
- <CAHp75VfeccM8D=DT-j4ApPAbDhDgV_M_FKOyXEMP8YBJZMed=g@mail.gmail.com>
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-Message-ID: <f9aa8622-0c64-072b-dc44-e550460cf57f@opensource.cirrus.com>
-Date:   Mon, 11 Jan 2021 10:39:56 +0000
+        Mon, 11 Jan 2021 05:41:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610361615;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SXDYc0wJR1WVDdg07JHpUA2tSMEFWcqIlRZk9oZHqH8=;
+        b=i/utmrOoDDOXGuOArmq9H3VAEP+GWH/VcUSXCCAUSrHr2zH0aJlS83101GHQQcMjfqe4x1
+        ENeWeKQRDxRLGLd7MCNzDJWY6vuTrCcwmkw/cnFdrjB6Djk4WPRuqkFuynRl5dAMI653No
+        WzrFodKjRVzAMINKofi46arVM2qr4X8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-337-JoQK4F-oPEq0NI9cddKRPQ-1; Mon, 11 Jan 2021 05:40:11 -0500
+X-MC-Unique: JoQK4F-oPEq0NI9cddKRPQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75351190B2A0;
+        Mon, 11 Jan 2021 10:40:09 +0000 (UTC)
+Received: from [10.36.115.103] (ovpn-115-103.ams2.redhat.com [10.36.115.103])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0CA8A5C232;
+        Mon, 11 Jan 2021 10:40:06 +0000 (UTC)
+Subject: Re: [PATCH V2 3/3] s390/mm: Define arch_get_mappable_range()
+To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+        akpm@linux-foundation.org, hca@linux.ibm.com,
+        catalin.marinas@arm.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+References: <1608218912-28932-1-git-send-email-anshuman.khandual@arm.com>
+ <1608218912-28932-4-git-send-email-anshuman.khandual@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <87ae0b7c-0e95-6068-900e-d813a53f2732@redhat.com>
+Date:   Mon, 11 Jan 2021 11:40:06 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfeccM8D=DT-j4ApPAbDhDgV_M_FKOyXEMP8YBJZMed=g@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <1608218912-28932-4-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
- phishscore=0 spamscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
- adultscore=0 mlxlogscore=687 impostorscore=0 clxscore=1011 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101110063
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/01/2021 10:36, Andy Shevchenko wrote:
-> On Mon, Jan 11, 2021 at 12:28 PM Petr Mladek <pmladek@suse.com> wrote:
->>
->> Sigh, I have just realized that Andy and Rasmus, the other
->> vsprintf maintainers and reviewers, were not in CC.
->> I am sorry for not noticing this earlier.
->>
->> The patchset is ready for 5.12 from my POV.
+On 17.12.20 16:28, Anshuman Khandual wrote:
+> This overrides arch_get_mappabble_range() on s390 platform which will be
+> used with recently added generic framework. It modifies the existing range
+> check in vmem_add_mapping() using arch_get_mappable_range(). It also adds a
+> VM_BUG_ON() check that would ensure that memhp_range_allowed() has already
+> been called on the hotplug path.
 > 
-> Thanks, Petr!
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: linux-s390@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Acked-by: Heiko Carstens <hca@linux.ibm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  arch/s390/mm/init.c |  1 +
+>  arch/s390/mm/vmem.c | 15 ++++++++++++++-
+>  2 files changed, 15 insertions(+), 1 deletion(-)
 > 
-> I have one question, do we have a test case for that? If not, I prefer
-> defer until a test case will be provided.
-> 
+> diff --git a/arch/s390/mm/init.c b/arch/s390/mm/init.c
+> index 77767850d0d0..e0e78234ae57 100644
+> --- a/arch/s390/mm/init.c
+> +++ b/arch/s390/mm/init.c
+> @@ -291,6 +291,7 @@ int arch_add_memory(int nid, u64 start, u64 size,
+>  	if (WARN_ON_ONCE(params->pgprot.pgprot != PAGE_KERNEL.pgprot))
+>  		return -EINVAL;
+>  
+> +	VM_BUG_ON(!memhp_range_allowed(start, size, 1));
 
-See patch 3, numbers_prefix_overflow()
+s/1/true/
+
+>  	rc = vmem_add_mapping(start, size);
+>  	if (rc)
+>  		return rc;
+> diff --git a/arch/s390/mm/vmem.c b/arch/s390/mm/vmem.c
+> index b239f2ba93b0..e10e563ad2b4 100644
+> --- a/arch/s390/mm/vmem.c
+> +++ b/arch/s390/mm/vmem.c
+> @@ -4,6 +4,7 @@
+>   *    Author(s): Heiko Carstens <heiko.carstens@de.ibm.com>
+>   */
+>  
+> +#include <linux/memory_hotplug.h>
+>  #include <linux/memblock.h>
+>  #include <linux/pfn.h>
+>  #include <linux/mm.h>
+> @@ -532,11 +533,23 @@ void vmem_remove_mapping(unsigned long start, unsigned long size)
+>  	mutex_unlock(&vmem_mutex);
+>  }
+>  
+> +struct range arch_get_mappable_range(void)
+> +{
+> +	struct range memhp_range;
+> +
+> +	memhp_range.start = 0;
+> +	memhp_range.end =  VMEM_MAX_PHYS;
+
+s/  / /
+
+IIRC, the range is inclusive? "VMEM_MAX_PHYS - 1" then, and adjust the
+check below.
+
+> +	return memhp_range;
+> +}
+> +
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
