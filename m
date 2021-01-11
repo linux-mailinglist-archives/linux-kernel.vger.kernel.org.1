@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2952F1668
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:53:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E89B2F1592
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:43:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731070AbhAKNIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:08:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55316 "EHLO mail.kernel.org"
+        id S1730927AbhAKNMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:12:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730649AbhAKNH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:07:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 242B8229CA;
-        Mon, 11 Jan 2021 13:07:17 +0000 (UTC)
+        id S1731371AbhAKNLX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:11:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CD35227C3;
+        Mon, 11 Jan 2021 13:10:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370437;
-        bh=8ZRubXY4IiMXWJoWSSogaIWe+OAl/TR6/1E4Qi9ZkyU=;
+        s=korg; t=1610370642;
+        bh=z3O2d7uTqPV8mHw6kNG5G6BMybboTdu4NcYvXUMhMBM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vLIj/gYlUd2guqVNIRgmXHoChH/hEnU8o83pjZoR797JKxcx6tsWuW4lx7Ha+2eVA
-         yLxmo89kAN8xiL6N/Go+HaQBVFbXruvuyVwZmYdeToJWdqNYQE6NHeTi2+tq7nMNC9
-         PkT/HkfLRtISJ5eLtuqK3YI1xAI0G/FhJuq6dqr0=
+        b=YxMJkWHA6sE9dyoXes1TZd+Fa8BqocC2U0X/qdKu1+jNrYGg1LTU74lSRXE1UpzQm
+         UlJf9LPEGBhJFsJjrAO7U79SwKMv1Ng6viyQDUNdUpmBFVyagF9KnU7jGTFcCn97j8
+         po/wULX1DJiQkH2lpWZ5gYbLejjF6yvWnBi2iFY0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Wang <wangzhiqiang.bj@bytedance.com>,
+        stable@vger.kernel.org, Antoine Tenart <atenart@kernel.org>,
+        Alexander Duyck <alexanderduyck@fb.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 21/77] net/ncsi: Use real net-device for response handler
-Date:   Mon, 11 Jan 2021 14:01:30 +0100
-Message-Id: <20210111130037.437535996@linuxfoundation.org>
+Subject: [PATCH 5.4 27/92] net-sysfs: take the rtnl lock when accessing xps_cpus_map and num_tc
+Date:   Mon, 11 Jan 2021 14:01:31 +0100
+Message-Id: <20210111130040.457884922@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +40,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Wang <wangzhiqiang.bj@bytedance.com>
+From: Antoine Tenart <atenart@kernel.org>
 
-[ Upstream commit 427c940558560bff2583d07fc119a21094675982 ]
+[ Upstream commit fb25038586d0064123e393cadf1fadd70a9df97a ]
 
-When aggregating ncsi interfaces and dedicated interfaces to bond
-interfaces, the ncsi response handler will use the wrong net device to
-find ncsi_dev, so that the ncsi interface will not work properly.
-Here, we use the original net device to fix it.
+Accesses to dev->xps_cpus_map (when using dev->num_tc) should be
+protected by the rtnl lock, like we do for netif_set_xps_queue. I didn't
+see an actual bug being triggered, but let's be safe here and take the
+rtnl lock while accessing the map in sysfs.
 
-Fixes: 138635cc27c9 ("net/ncsi: NCSI response packet handler")
-Signed-off-by: John Wang <wangzhiqiang.bj@bytedance.com>
-Link: https://lore.kernel.org/r/20201223055523.2069-1-wangzhiqiang.bj@bytedance.com
+Fixes: 184c449f91fe ("net: Add support for XPS with QoS via traffic classes")
+Signed-off-by: Antoine Tenart <atenart@kernel.org>
+Reviewed-by: Alexander Duyck <alexanderduyck@fb.com>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ncsi/ncsi-rsp.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/core/net-sysfs.c |   29 ++++++++++++++++++++++-------
+ 1 file changed, 22 insertions(+), 7 deletions(-)
 
---- a/net/ncsi/ncsi-rsp.c
-+++ b/net/ncsi/ncsi-rsp.c
-@@ -949,7 +949,7 @@ int ncsi_rcv_rsp(struct sk_buff *skb, st
- 	int payload, i, ret;
+--- a/net/core/net-sysfs.c
++++ b/net/core/net-sysfs.c
+@@ -1235,8 +1235,8 @@ static const struct attribute_group dql_
+ static ssize_t xps_cpus_show(struct netdev_queue *queue,
+ 			     char *buf)
+ {
++	int cpu, len, ret, num_tc = 1, tc = 0;
+ 	struct net_device *dev = queue->dev;
+-	int cpu, len, num_tc = 1, tc = 0;
+ 	struct xps_dev_maps *dev_maps;
+ 	cpumask_var_t mask;
+ 	unsigned long index;
+@@ -1246,22 +1246,31 @@ static ssize_t xps_cpus_show(struct netd
  
- 	/* Find the NCSI device */
--	nd = ncsi_find_dev(dev);
-+	nd = ncsi_find_dev(orig_dev);
- 	ndp = nd ? TO_NCSI_DEV_PRIV(nd) : NULL;
- 	if (!ndp)
- 		return -ENODEV;
+ 	index = get_netdev_queue_index(queue);
+ 
++	if (!rtnl_trylock())
++		return restart_syscall();
++
+ 	if (dev->num_tc) {
+ 		/* Do not allow XPS on subordinate device directly */
+ 		num_tc = dev->num_tc;
+-		if (num_tc < 0)
+-			return -EINVAL;
++		if (num_tc < 0) {
++			ret = -EINVAL;
++			goto err_rtnl_unlock;
++		}
+ 
+ 		/* If queue belongs to subordinate dev use its map */
+ 		dev = netdev_get_tx_queue(dev, index)->sb_dev ? : dev;
+ 
+ 		tc = netdev_txq_to_tc(dev, index);
+-		if (tc < 0)
+-			return -EINVAL;
++		if (tc < 0) {
++			ret = -EINVAL;
++			goto err_rtnl_unlock;
++		}
+ 	}
+ 
+-	if (!zalloc_cpumask_var(&mask, GFP_KERNEL))
+-		return -ENOMEM;
++	if (!zalloc_cpumask_var(&mask, GFP_KERNEL)) {
++		ret = -ENOMEM;
++		goto err_rtnl_unlock;
++	}
+ 
+ 	rcu_read_lock();
+ 	dev_maps = rcu_dereference(dev->xps_cpus_map);
+@@ -1284,9 +1293,15 @@ static ssize_t xps_cpus_show(struct netd
+ 	}
+ 	rcu_read_unlock();
+ 
++	rtnl_unlock();
++
+ 	len = snprintf(buf, PAGE_SIZE, "%*pb\n", cpumask_pr_args(mask));
+ 	free_cpumask_var(mask);
+ 	return len < PAGE_SIZE ? len : -EINVAL;
++
++err_rtnl_unlock:
++	rtnl_unlock();
++	return ret;
+ }
+ 
+ static ssize_t xps_cpus_store(struct netdev_queue *queue,
 
 
