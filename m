@@ -2,154 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 909882F1F18
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:22:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C757E2F1F2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:23:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404061AbhAKTWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:22:06 -0500
-Received: from foss.arm.com ([217.140.110.172]:34918 "EHLO foss.arm.com"
+        id S2404106AbhAKTXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:23:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33836 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404037AbhAKTWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:22:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7D3EB101E;
-        Mon, 11 Jan 2021 11:21:14 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 10D6B3F719;
-        Mon, 11 Jan 2021 11:21:12 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org, Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paul McKenney <paulmck@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
-In-Reply-To: <X/yH9+MGa1JCNZ8x@hirez.programming.kicks-ass.net>
-References: <20201226025117.2770-1-jiangshanlai@gmail.com> <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net> <87o8hv7pnd.fsf@nanos.tec.linutronix.de> <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net> <X/yH9+MGa1JCNZ8x@hirez.programming.kicks-ass.net>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Mon, 11 Jan 2021 19:21:06 +0000
-Message-ID: <jhj7doj1dr1.mognet@arm.com>
+        id S2404152AbhAKTX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 14:23:29 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E6432AB7F;
+        Mon, 11 Jan 2021 19:22:47 +0000 (UTC)
+Date:   Mon, 11 Jan 2021 11:22:40 -0800
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     jacmet@sunsite.dk, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: Re: [PATCH] usb/c67x00: Replace tasklet with work
+Message-ID: <20210111192240.osls6hi5wmnw76ts@offworld>
+References: <20210111044050.86763-1-dave@stgolabs.net>
+ <20210111090533.1450-1-hdanton@sina.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210111090533.1450-1-hdanton@sina.com>
+User-Agent: NeoMutt/20201120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/01/21 18:16, Peter Zijlstra wrote:
-> Sadly it appears like io_uring() uses kthread_create_on_cpu() without
-> then having any hotplug crud on, so that needs additinoal frobbing.
+On Mon, 11 Jan 2021, Hillf Danton wrote:
+
+>On Sun, 10 Jan 2021 20:40:50 -0800 Davidlohr Bueso wrote:
+>> Tasklets have long been deprecated as being too heavy on the system
+>> by running in irq context - and this is not a performance critical
+>> path. If a higher priority process wants to run, it must wait for
+>> the tasklet to finish before doing so.
+>>
+>> c67x00_do_work() will now run in process context and have further
+>> concurrency (tasklets being serialized among themselves), but this
+>> is done holding the c67x00->lock, so it should be fine. Furthermore,
+>> this patch fixes the usage of the lock in the callback as otherwise
+>> it would need to be irq-safe.
 >
+>Can you add a couple of words about the need to be irq-safe because
+>no lock is taken for scheduling either tasklet or work?
 
-I noticed that as well sometime ago, and I believed then (still do) this
-usage is broken. I don't think usage of kthread_create_on_cpu() outside
-of smpboot makes sense, because without any hotplug step to park the
-thread, its affinity can end up being reset after its dedicated CPU gets
-offlined.
+I was refering to the locking in the c67x00_do_work() tasklet callback.
+Because it is currently under irq it should be disabling irq (or at least
+BH) but after this patch that is no longer the case.
 
-I'm clueless about io_uring, but if it *actually* has a good reason to
-use some pcpu kthreads (it seems it doesn't have to be on all CPUs?),
-then it needs to register some hotplug step to park them / do something
-sensible on hotplug.
-
-> Also, init_task is PF_KTHREAD but doesn't have a struct kthread on.. and
-> I suppose bound workqueues don't go through this either.
+>>
+>> Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+>> ---
+>>  drivers/usb/c67x00/c67x00-hcd.h   |  2 +-
+>>  drivers/usb/c67x00/c67x00-sched.c | 12 +++++++-----
+>>  2 files changed, 8 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/usb/c67x00/c67x00-hcd.h b/drivers/usb/c67x00/c67x00-hcd.h
+>> index 6b6b04a3fe0f..6332a6b5dce6 100644
+>> --- a/drivers/usb/c67x00/c67x00-hcd.h
+>> +++ b/drivers/usb/c67x00/c67x00-hcd.h
+>> @@ -76,7 +76,7 @@ struct c67x00_hcd {
+>>	u16 next_td_addr;
+>>	u16 next_buf_addr;
+>>
+>> -	struct tasklet_struct tasklet;
+>> +	struct work_struct work;
+>>
+>>	struct completion endpoint_disable;
+>>
+>> diff --git a/drivers/usb/c67x00/c67x00-sched.c b/drivers/usb/c67x00/c67x00-sched.c
+>> index e65f1a0ae80b..af60f4fdd340 100644
+>> --- a/drivers/usb/c67x00/c67x00-sched.c
+>> +++ b/drivers/usb/c67x00/c67x00-sched.c
+>> @@ -1123,24 +1123,26 @@ static void c67x00_do_work(struct c67x00_hcd *c67x00)
+>>
+>>  /* -------------------------------------------------------------------------- */
+>>
+>> -static void c67x00_sched_tasklet(struct tasklet_struct *t)
+>> +static void c67x00_sched_work(struct work_struct *work)
+>>  {
+>> -	struct c67x00_hcd *c67x00 = from_tasklet(c67x00, t, tasklet);
+>> +	struct c67x00_hcd *c67x00;
+>> +
+>> +	c67x00 = container_of(work, struct c67x00_hcd, work);
+>>	c67x00_do_work(c67x00);
+>>  }
+>>
+>>  void c67x00_sched_kick(struct c67x00_hcd *c67x00)
+>>  {
+>> -	tasklet_hi_schedule(&c67x00->tasklet);
+>> +        queue_work(system_highpri_wq, &c67x00->work);
 >
-> Let me rummage around a bit...
->
-> This seems to not insta-explode... opinions?
->
+>Better if one line comment is added for highpri, given this is not a
+>performance critical path.
 
-I like having a proper distinction between 'intended' and 'accidental'
-pcpu kthreads.
+I'm not sure the value here, considering the highprio is not being
+changed here. There are a few drivers who use highpri workqueue and
+care about latencies but they are still not performance critical (to
+the overall system that is, which is what I meant by that).
 
-I'm less fond of the workqueue pcpu flag toggling, but it gets us what
-we want: allow those threads to run on !active CPUs during online, but
-move them away before !online during offline.
-
-Before I get ahead of myself, do we *actually* require that first part
-for workqueue kthreads? I'm thinking (raise alarm) we could try another
-approach of making them pcpu kthreads that don't abide by the !active &&
-online rule.
-
-> ---
->  include/linux/kthread.h |  3 +++
->  kernel/kthread.c        | 25 ++++++++++++++++++++++++-
->  kernel/sched/core.c     |  2 +-
->  kernel/sched/sched.h    |  4 ++--
->  kernel/smpboot.c        |  1 +
->  kernel/workqueue.c      | 12 +++++++++---
->  6 files changed, 40 insertions(+), 7 deletions(-)
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 15d2562118d1..e71f9e44789e 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -7277,7 +7277,7 @@ static void balance_push(struct rq *rq)
->        * Both the cpu-hotplug and stop task are in this case and are
->        * required to complete the hotplug process.
->        */
-> -	if (is_per_cpu_kthread(push_task) || is_migration_disabled(push_task)) {
-> +	if (rq->idle == push_task || is_per_cpu_kthread(push_task) || is_migration_disabled(push_task)) {
-
-I take it the p->set_child_tid thing you were complaining about on IRC
-is what prevents us from having the idle task seen as a pcpu kthread?
-
->               /*
->                * If this is the idle task on the outgoing CPU try to wake
->                * up the hotplug control thread which might wait for the
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 12ada79d40f3..3679f63e0aa2 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -2697,10 +2697,10 @@ static inline bool is_per_cpu_kthread(struct task_struct *p)
->       if (!(p->flags & PF_KTHREAD))
->               return false;
->
-> -	if (p->nr_cpus_allowed != 1)
-> +	if (!(p->flags & PF_NO_SETAFFINITY))
->               return false;
->
-> -	return true;
-> +	return kthread_is_per_cpu(p);
->  }
->  #endif
->
-> diff --git a/kernel/smpboot.c b/kernel/smpboot.c
-> index 2efe1e206167..b0abe575a524 100644
-> --- a/kernel/smpboot.c
-> +++ b/kernel/smpboot.c
-> @@ -188,6 +188,7 @@ __smpboot_create_thread(struct smp_hotplug_thread *ht, unsigned int cpu)
->               kfree(td);
->               return PTR_ERR(tsk);
->       }
-> +	kthread_set_per_cpu(tsk, true);
->       /*
->        * Park the thread so that it could start right on the CPU
->        * when it is available.
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 9880b6c0e272..824276e4fb2e 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -1861,6 +1861,8 @@ static void worker_attach_to_pool(struct worker *worker,
->        */
->       if (pool->flags & POOL_DISASSOCIATED)
->               worker->flags |= WORKER_UNBOUND;
-> +	else
-> +		kthread_set_per_cpu(worker->task, true);
->
-
-I thought only pcpu pools would get the POOL_DISASSOCIATED flag on
-offline, but it seems unbound pools also get it at init time. Did I get
-that right?
-
-Also, shouldn't this be done before the previous set_cpus_allowed_ptr()
-call (in the same function)? That is, if we patch
-__set_cpus_allowed_ptr() to also use kthread_is_per_cpu().
-
->       list_add_tail(&worker->node, &pool->workers);
->       worker->pool = pool;
+Thanks,
+Davidlohr
