@@ -2,414 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F532F1ECF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 350E72F1EF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390826AbhAKTSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:18:44 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64654 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732725AbhAKTSn (ORCPT
+        id S2390816AbhAKTUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:20:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729848AbhAKTUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:18:43 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10BJ3O8c090722;
-        Mon, 11 Jan 2021 14:18:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=eB+FS5HuAc1Pp8Py6LG+Dd8gBO0T3kD7jYyu+g+GrWo=;
- b=aHrnl2jyB3dBgo8tAbmaHvCiSsgOLKZKUk6jSzSymyA/WGDMyk6SPkg/q84njbiv6tV8
- iDEAc8X7WYByzLbZbNNlS8x43raa8xccPDAOL6V08lCvV0r9CnaDLZVAYS/GSiyzJLPU
- iWE8S+qsiwdM/6WqlAXeZVJLH3v6TlA5pcprX3nYotFOpQx9rn2O7RY33CJmxhW0tjGy
- cOr9lITpVLo2r75d+bqGN6Z7P1JJw2wXHUoPE4z7e9KmIkqhhOkfEamzvrqp1liO6jd+
- pW6WBaqUVIjtI2iIow+cAOuuH+hIrYm0xBmHp4S9MehMm/IVf81v3jQ8zyaURcw1Sg+P kw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 360snjxf2p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Jan 2021 14:18:02 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10BJ3NmB090664;
-        Mon, 11 Jan 2021 14:18:01 -0500
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 360snjxf1h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Jan 2021 14:18:01 -0500
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10BJGadU007763;
-        Mon, 11 Jan 2021 19:17:59 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma01fra.de.ibm.com with ESMTP id 35y4481bah-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Jan 2021 19:17:59 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10BJHpMC31916420
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 11 Jan 2021 19:17:51 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1980752050;
-        Mon, 11 Jan 2021 19:17:56 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.62.86])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 62D185204F;
-        Mon, 11 Jan 2021 19:17:55 +0000 (GMT)
-Date:   Mon, 11 Jan 2021 20:17:52 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v13 05/15] s390/vfio-ap: manage link between queue
- struct and matrix mdev
-Message-ID: <20210111201752.21a41db4.pasic@linux.ibm.com>
-In-Reply-To: <20201223011606.5265-6-akrowiak@linux.ibm.com>
-References: <20201223011606.5265-1-akrowiak@linux.ibm.com>
-        <20201223011606.5265-6-akrowiak@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Mon, 11 Jan 2021 14:20:12 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE329C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:19:31 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 190so255115wmz.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:19:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PECDtmeFRTTbINpo1MBoxeyYk3sK6YMNX5ISdYlRSfY=;
+        b=bEP+YEmqCeDN3RyNe6EivxTw/yjX7MVFIrNcAawNmgxyS0evh90c8B23+z33XT1SNe
+         CG6s6PcQvz60ZI6zOkh0SPduCuUXuwbzu4781tlmRDvvTUjgQwPyf+d3/fuFjHNe1gdq
+         jrq8YrTUAJ/B2Hfog0n0OrhJ9qhJ4tHTew2TeqHVLFy4Zb0qiA9FM0FVvopLPi9PRL2e
+         HU4P2AkKZXbx2ojbWO5LEmQP4S6ZT3jhdMXSBHU/tcvJuZH1K/L0gG5oE+WFDXxIHSpP
+         PZQ4zZzlseVjhtcdgVDxmNrW1hmgeOvAx+ubJgF4isRsuJ1GOMGXrAsde/7Zl9qUquic
+         xREg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PECDtmeFRTTbINpo1MBoxeyYk3sK6YMNX5ISdYlRSfY=;
+        b=jSKLhTviepfQi/RwOaVa9KjxfO80uIr4Mm71cl0XywlKE/rCcoTdRo0MJYUspcB6No
+         +NbTt09qqtTJ8KuOn2tytAxpDM6SeLZW0di8keqXQKgLBcnNMdusJigbgxXxrwwDnyHL
+         LabKK80K0kYRg5LXMP3uMKBNDt/zQ/bQoTzzBKPlxVmviQ3jP7t3/8wtpKcFzvnc7LXM
+         3fZWIMFIkmU9CwpWn+Tn4C6LYv7objDFfXPab+RUdTYuNTwpsryPBw5dYG32XdBxadnr
+         O9L9DIR65cpATqZdoO0Uh+1JvXdesFgIhlZ2zV7mgiM08iqCqnncF/SUe2VZjl8pFBHZ
+         hmHQ==
+X-Gm-Message-State: AOAM532H7SGfB2Hm2Z+ejSRtK39uMF/OdQVUYD+K/4ESIakMLysXyElk
+        Lffx2B8+9fJkT014bU5dzW3hbQ==
+X-Google-Smtp-Source: ABdhPJxjofujK1MYN201ahii9IuZL5GFpIteWPNIpWPJ1RVAHK4iaqUKUikzOi6JRd0GzRb/ggmMuw==
+X-Received: by 2002:a7b:c306:: with SMTP id k6mr292835wmj.52.1610392770402;
+        Mon, 11 Jan 2021 11:19:30 -0800 (PST)
+Received: from dell.default ([91.110.221.229])
+        by smtp.gmail.com with ESMTPSA id n3sm778090wrw.61.2021.01.11.11.19.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 11:19:29 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org, Anthony Koo <Anthony.Koo@amd.com>,
+        Aric Cyr <aric.cyr@amd.com>, Aric Cyr <Aric.Cyr@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org,
+        Harry Wentland <harry.wentland@amd.com>,
+        Josip Pavic <Josip.Pavic@amd.com>, Leo Li <sunpeng.li@amd.com>,
+        Mauro Rossi <issor.oruam@gmail.com>,
+        Tony Cheng <Tony.Cheng@amd.com>,
+        Xiaojian Du <Xiaojian.Du@amd.com>
+Subject: [PATCH 00/40] [Set 12] Rid W=1 warnings from GPU
+Date:   Mon, 11 Jan 2021 19:18:46 +0000
+Message-Id: <20210111191926.3688443-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-11_30:2021-01-11,2021-01-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 phishscore=0
- mlxlogscore=999 clxscore=1015 priorityscore=1501 adultscore=0
- impostorscore=0 malwarescore=0 suspectscore=0 bulkscore=0
- lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2101110105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Dec 2020 20:15:56 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-> Let's create links between each queue device bound to the vfio_ap device
-> driver and the matrix mdev to which the queue's APQN is assigned. The idea
-> is to facilitate efficient retrieval of the objects representing the queue
-> devices and matrix mdevs as well as to verify that a queue assigned to
-> a matrix mdev is bound to the driver.
-> 
-> The links will be created as follows:
-> 
->    * When the queue device is probed, if its APQN is assigned to a matrix
->      mdev, the structures representing the queue device and the matrix mdev
->      will be linked.
-> 
->    * When an adapter or domain is assigned to a matrix mdev, for each new
->      APQN assigned that references a queue device bound to the vfio_ap
->      device driver, the structures representing the queue device and the
->      matrix mdev will be linked.
-> 
-> The links will be removed as follows:
-> 
->    * When the queue device is removed, if its APQN is assigned to a matrix
->      mdev, the structures representing the queue device and the matrix mdev
->      will be unlinked.
-> 
->    * When an adapter or domain is unassigned from a matrix mdev, for each
->      APQN unassigned that references a queue device bound to the vfio_ap
->      device driver, the structures representing the queue device and the
->      matrix mdev will be unlinked.
-> 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+Lee Jones (40):
+  drm/amd/display/dc/dce/dce_aux: Mark 'dce_aux_transfer_raw' as
+    __maybe_unused
+  drm/amd/display/dc/dce/dce_link_encoder: Remove unused variable
+    'value0'
+  drm/amd/display/dc/gpio/hw_ddc: Remove unused variable 'reg2'
+  drm/amd/display/dc/dce/dce_opp: Demote non-compliant kernel-doc
+    headers
+  drm/amd/display/dc/dce/dce_transform: Demote kernel-doc abuse
+  drm/amd/display/dc/gpio/diagnostics/hw_translate_diag: Include our own
+    header containing prototypes
+  drm/amd/display/dc/irq/irq_service: Make local function static
+  drm/amd/display/dc/gpio/diagnostics/hw_factory_diag: Fix struct
+    declared inside parameter list error
+  drm/amd/display/dc/gpio/diagnostics/hw_factory_diag: Include our own
+    header containing prototypes
+  drm/amd/display/dc/dce120/dce120_hw_sequencer: Encompass defines in
+    same clause as their use
+  drm/amd/display/dc/dce120/dce120_timing_generator:
+  drm/amd/display/dc/dce120/Makefile: Ignore -Woverride-init warning
+  drm/amd/display/dc/calcs/dce_calcs: Move some large variables from the
+    stack to the heap
+  drm/amd/display/dc/calcs/dce_calcs: Remove some large variables from
+    the stack
+  drm/amd/display/dc/dce120/dce120_resource: Staticify local functions
+  drm/amd/display/dc/dce120/dce120_timing_generator: Demote
+    non-kerneldoc headers
+  drm/amd/display/dc/dce/dce_aux: Remove duplicate line causing 'field
+    overwritten' issue
+  drm/amd/display/dc/dce112/Makefile: Ignore -Woverride-init warning
+  drm/amd/display/dc/dce/dce_opp: Remove duplicate entries causing
+    'field overwritten' issues
+  drm/amd/display/dc/dce110/dce110_timing_generator: Remove unused
+    variable 'value_crtc_vtotal'
+  drm/amd/display/dc/dce110/dce110_compressor: Remove unused function
+    'dce110_get_required_compressed_surfacesize
+  drm/amd/display/dc/dce110/dce110_hw_sequencer: Demote non-conformant
+    kernel-doc header
+  drm/amd/display/dc/dce110/dce110_mem_input_v: Make local functions
+    static
+  drm/amd/pm/swsmu/smu11/vangogh_ppt: Make local function
+    'vangogh_clk_dpm_is_enabled' static
+  drm/amd/display/dc/dce120/dce120_timing_generator: Remove unused
+    function 'dce120_timing_generator_get_position'
+  drm/amd/display/dc/dce110/dce110_timing_generator: Demote kernel-doc
+    abuses to standard function headers
+  drm/amd/display/dc/dce110/dce110_compressor: Strip out unused function
+    'controller_id_to_index'
+  drm/amd/display/dc/calcs/dce_calcs: Demote non-conformant kernel-doc
+    function headers
+  drm/amd/display/dc/dce112/dce112_resource: Make local functions and
+    ones called by reference static
+  drm/amd/display/dc/dce110/dce110_timing_generator_v: Demote kernel-doc
+    abuse and line up comments
+  drm/amd/display/dc/dce110/dce110_mem_input_v: Include our own header,
+    containing prototypes
+  drm/amd/display/dc/dce110/Makefile: Ignore -Woverride-init warning
+  drm/amd/display/dc/dce110/dce110_resource: Make local functions
+    invoked by reference static
+  drm/amd/display/dc/dce110/dce110_transform_v: Demote kernel-doc abuse
+  drm/amd/display/dc/dce60/dce60_timing_generator: Make
+    'dce60_configure_crc' invoked by reference static
+  drm/amd/display/dc/dce100/dce100_resource: Make local functions and
+    ones called by reference static
+  drm/amd/display/dc/dce60/dce60_resource: Make local functions static
+  drm/amd/display/dc/dce80/dce80_resource: Make local functions static
+  drm/amd/display/dc/core/dc_surface: Demote kernel-doc abuse
+  drm/amd/display/dc/core/dc_stream: Demote non-conformant kernel-doc
+    headers
 
-> ---
->  drivers/s390/crypto/vfio_ap_ops.c     | 140 +++++++++++++++++++++-----
->  drivers/s390/crypto/vfio_ap_private.h |   3 +
->  2 files changed, 117 insertions(+), 26 deletions(-)
-> 
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index 835c963ae16d..cdcc6378b4a5 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -27,33 +27,17 @@
->  static int vfio_ap_mdev_reset_queues(struct mdev_device *mdev);
->  static struct vfio_ap_queue *vfio_ap_find_queue(int apqn);
->  
-> -/**
-> - * vfio_ap_get_queue: Retrieve a queue with a specific APQN from a list
-> - * @matrix_mdev: the associated mediated matrix
-> - * @apqn: The queue APQN
-> - *
-> - * Retrieve a queue with a specific APQN from the list of the
-> - * devices of the vfio_ap_drv.
-> - * Verify that the APID and the APQI are set in the matrix.
-> - *
-> - * Returns the pointer to the associated vfio_ap_queue
-> - */
-> -static struct vfio_ap_queue *vfio_ap_get_queue(
-> -					struct ap_matrix_mdev *matrix_mdev,
-> -					int apqn)
-> +static struct vfio_ap_queue *
-> +vfio_ap_mdev_get_queue(struct ap_matrix_mdev *matrix_mdev, unsigned long apqn)
->  {
-> -	struct vfio_ap_queue *q = NULL;
-> -
-> -	if (!test_bit_inv(AP_QID_CARD(apqn), matrix_mdev->matrix.apm))
-> -		return NULL;
-> -	if (!test_bit_inv(AP_QID_QUEUE(apqn), matrix_mdev->matrix.aqm))
-> -		return NULL;
-> +	struct vfio_ap_queue *q;
->  
-> -	q = vfio_ap_find_queue(apqn);
-> -	if (q)
-> -		q->matrix_mdev = matrix_mdev;
-> +	hash_for_each_possible(matrix_mdev->qtable, q, mdev_qnode, apqn) {
-> +		if (q && (q->apqn == apqn))
-> +			return q;
-> +	}
->  
-> -	return q;
-> +	return NULL;
->  }
->  
->  /**
-> @@ -166,7 +150,6 @@ static struct ap_queue_status vfio_ap_irq_disable(struct vfio_ap_queue *q)
->  		  status.response_code);
->  end_free:
->  	vfio_ap_free_aqic_resources(q);
-> -	q->matrix_mdev = NULL;
->  	return status;
->  }
->  
-> @@ -282,7 +265,7 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
->  	matrix_mdev = container_of(vcpu->kvm->arch.crypto.pqap_hook,
->  				   struct ap_matrix_mdev, pqap_hook);
->  
-> -	q = vfio_ap_get_queue(matrix_mdev, apqn);
-> +	q = vfio_ap_mdev_get_queue(matrix_mdev, apqn);
->  	if (!q)
->  		goto out_unlock;
->  
-> @@ -325,6 +308,7 @@ static int vfio_ap_mdev_create(struct kobject *kobj, struct mdev_device *mdev)
->  
->  	matrix_mdev->mdev = mdev;
->  	vfio_ap_matrix_init(&matrix_dev->info, &matrix_mdev->matrix);
-> +	hash_init(matrix_mdev->qtable);
->  	mdev_set_drvdata(mdev, matrix_mdev);
->  	matrix_mdev->pqap_hook.hook = handle_pqap;
->  	matrix_mdev->pqap_hook.owner = THIS_MODULE;
-> @@ -553,6 +537,50 @@ static int vfio_ap_mdev_verify_no_sharing(struct ap_matrix_mdev *matrix_mdev)
->  	return 0;
->  }
->  
-> +static void vfio_ap_mdev_link_queue(struct ap_matrix_mdev *matrix_mdev,
-> +				    struct vfio_ap_queue *q)
-> +{
-> +	if (q) {
-> +		q->matrix_mdev = matrix_mdev;
-> +		hash_add(matrix_mdev->qtable,
-> +			 &q->mdev_qnode, q->apqn);
-> +	}
-> +}
-> +
-> +static void vfio_ap_mdev_link_apqn(struct ap_matrix_mdev *matrix_mdev, int apqn)
-> +{
-> +	struct vfio_ap_queue *q;
-> +
-> +	q = vfio_ap_find_queue(apqn);
-> +	vfio_ap_mdev_link_queue(matrix_mdev, q);
-> +}
-> +
-> +static void vfio_ap_mdev_unlink_queue(struct vfio_ap_queue *q)
-> +{
-> +	if (q) {
-> +		q->matrix_mdev = NULL;
-> +		hash_del(&q->mdev_qnode);
-> +	}
-> +}
-> +
-> +static void vfio_ap_mdev_unlink_apqn(int apqn)
-> +{
-> +	struct vfio_ap_queue *q;
-> +
-> +	q = vfio_ap_find_queue(apqn);
-> +	vfio_ap_mdev_unlink_queue(q);
-> +}
-> +
-> +static void vfio_ap_mdev_link_adapter(struct ap_matrix_mdev *matrix_mdev,
-> +				      unsigned long apid)
-> +{
-> +	unsigned long apqi;
-> +
-> +	for_each_set_bit_inv(apqi, matrix_mdev->matrix.aqm, AP_DOMAINS)
-> +		vfio_ap_mdev_link_apqn(matrix_mdev,
-> +				       AP_MKQID(apid, apqi));
-> +}
-> +
->  /**
->   * assign_adapter_store
->   *
-> @@ -622,6 +650,7 @@ static ssize_t assign_adapter_store(struct device *dev,
->  	if (ret)
->  		goto share_err;
->  
-> +	vfio_ap_mdev_link_adapter(matrix_mdev, apid);
->  	ret = count;
->  	goto done;
->  
-> @@ -634,6 +663,15 @@ static ssize_t assign_adapter_store(struct device *dev,
->  }
->  static DEVICE_ATTR_WO(assign_adapter);
->  
-> +static void vfio_ap_mdev_unlink_adapter(struct ap_matrix_mdev *matrix_mdev,
-> +					unsigned long apid)
-> +{
-> +	unsigned long apqi;
-> +
-> +	for_each_set_bit_inv(apqi, matrix_mdev->matrix.aqm, AP_DOMAINS)
-> +		vfio_ap_mdev_unlink_apqn(AP_MKQID(apid, apqi));
-> +}
-> +
->  /**
->   * unassign_adapter_store
->   *
-> @@ -673,6 +711,7 @@ static ssize_t unassign_adapter_store(struct device *dev,
->  
->  	mutex_lock(&matrix_dev->lock);
->  	clear_bit_inv((unsigned long)apid, matrix_mdev->matrix.apm);
-> +	vfio_ap_mdev_unlink_adapter(matrix_mdev, apid);
->  	mutex_unlock(&matrix_dev->lock);
->  
->  	return count;
-> @@ -699,6 +738,15 @@ vfio_ap_mdev_verify_queues_reserved_for_apqi(struct ap_matrix_mdev *matrix_mdev,
->  	return 0;
->  }
->  
-> +static void vfio_ap_mdev_link_domain(struct ap_matrix_mdev *matrix_mdev,
-> +				     unsigned long apqi)
-> +{
-> +	unsigned long apid;
-> +
-> +	for_each_set_bit_inv(apid, matrix_mdev->matrix.apm, AP_DEVICES)
-> +		vfio_ap_mdev_link_apqn(matrix_mdev, AP_MKQID(apid, apqi));
-> +}
-> +
->  /**
->   * assign_domain_store
->   *
-> @@ -763,6 +811,7 @@ static ssize_t assign_domain_store(struct device *dev,
->  	if (ret)
->  		goto share_err;
->  
-> +	vfio_ap_mdev_link_domain(matrix_mdev, apqi);
->  	ret = count;
->  	goto done;
->  
-> @@ -775,6 +824,14 @@ static ssize_t assign_domain_store(struct device *dev,
->  }
->  static DEVICE_ATTR_WO(assign_domain);
->  
-> +static void vfio_ap_mdev_unlink_domain(struct ap_matrix_mdev *matrix_mdev,
-> +				       unsigned long apqi)
-> +{
-> +	unsigned long apid;
-> +
-> +	for_each_set_bit_inv(apid, matrix_mdev->matrix.apm, AP_DEVICES)
-> +		vfio_ap_mdev_unlink_apqn(AP_MKQID(apid, apqi));
-> +}
->  
->  /**
->   * unassign_domain_store
-> @@ -815,6 +872,7 @@ static ssize_t unassign_domain_store(struct device *dev,
->  
->  	mutex_lock(&matrix_dev->lock);
->  	clear_bit_inv((unsigned long)apqi, matrix_mdev->matrix.aqm);
-> +	vfio_ap_mdev_unlink_domain(matrix_mdev, apqi);
->  	mutex_unlock(&matrix_dev->lock);
->  
->  	return count;
-> @@ -1317,6 +1375,28 @@ void vfio_ap_mdev_unregister(void)
->  	mdev_unregister_device(&matrix_dev->device);
->  }
->  
-> +/*
-> + * vfio_ap_queue_link_mdev
-> + *
-> + * @q: The queue to link with the matrix mdev.
-> + *
-> + * Links @q with the matrix mdev to which the queue's APQN is assigned.
-> + */
-> +static void vfio_ap_queue_link_mdev(struct vfio_ap_queue *q)
-> +{
-> +	unsigned long apid = AP_QID_CARD(q->apqn);
-> +	unsigned long apqi = AP_QID_QUEUE(q->apqn);
-> +	struct ap_matrix_mdev *matrix_mdev;
-> +
-> +	list_for_each_entry(matrix_mdev, &matrix_dev->mdev_list, node) {
-> +		if (test_bit_inv(apid, matrix_mdev->matrix.apm) &&
-> +		    test_bit_inv(apqi, matrix_mdev->matrix.aqm)) {
-> +			vfio_ap_mdev_link_queue(matrix_mdev, q);
-> +			break;
-> +		}
-> +	}
-> +}
-> +
->  int vfio_ap_mdev_probe_queue(struct ap_device *apdev)
->  {
->  	struct vfio_ap_queue *q;
-> @@ -1324,9 +1404,13 @@ int vfio_ap_mdev_probe_queue(struct ap_device *apdev)
->  	q = kzalloc(sizeof(*q), GFP_KERNEL);
->  	if (!q)
->  		return -ENOMEM;
-> +	mutex_lock(&matrix_dev->lock);
->  	dev_set_drvdata(&apdev->device, q);
->  	q->apqn = to_ap_queue(&apdev->device)->qid;
->  	q->saved_isc = VFIO_AP_ISC_INVALID;
-> +	vfio_ap_queue_link_mdev(q);
-> +	mutex_unlock(&matrix_dev->lock);
-> +
+ .../gpu/drm/amd/display/dc/calcs/dce_calcs.c  | 1141 +++++++++--------
+ .../gpu/drm/amd/display/dc/core/dc_stream.c   |    5 +-
+ .../gpu/drm/amd/display/dc/core/dc_surface.c  |    2 +-
+ drivers/gpu/drm/amd/display/dc/dce/dce_aux.c  |    2 +-
+ drivers/gpu/drm/amd/display/dc/dce/dce_aux.h  |    1 -
+ .../drm/amd/display/dc/dce/dce_link_encoder.c |    3 +-
+ drivers/gpu/drm/amd/display/dc/dce/dce_opp.c  |   16 +-
+ drivers/gpu/drm/amd/display/dc/dce/dce_opp.h  |    2 -
+ .../drm/amd/display/dc/dce/dce_transform.c    |    2 +-
+ .../amd/display/dc/dce100/dce100_resource.c   |   16 +-
+ .../gpu/drm/amd/display/dc/dce110/Makefile    |    2 +
+ .../amd/display/dc/dce110/dce110_compressor.c |   55 -
+ .../display/dc/dce110/dce110_hw_sequencer.c   |    2 +-
+ .../display/dc/dce110/dce110_mem_input_v.c    |   17 +-
+ .../amd/display/dc/dce110/dce110_resource.c   |   16 +-
+ .../dc/dce110/dce110_timing_generator.c       |   76 +-
+ .../dc/dce110/dce110_timing_generator_v.c     |   19 +-
+ .../display/dc/dce110/dce110_transform_v.c    |   19 +-
+ .../gpu/drm/amd/display/dc/dce112/Makefile    |    2 +
+ .../amd/display/dc/dce112/dce112_resource.c   |   16 +-
+ .../gpu/drm/amd/display/dc/dce120/Makefile    |    2 +
+ .../display/dc/dce120/dce120_hw_sequencer.c   |    2 +-
+ .../amd/display/dc/dce120/dce120_resource.c   |    6 +-
+ .../dc/dce120/dce120_timing_generator.c       |   99 +-
+ .../drm/amd/display/dc/dce60/dce60_resource.c |   16 +-
+ .../display/dc/dce60/dce60_timing_generator.c |    4 +-
+ .../drm/amd/display/dc/dce80/dce80_resource.c |   16 +-
+ .../dc/gpio/diagnostics/hw_factory_diag.c     |    1 +
+ .../dc/gpio/diagnostics/hw_factory_diag.h     |    2 +
+ .../dc/gpio/diagnostics/hw_translate_diag.c   |    1 +
+ drivers/gpu/drm/amd/display/dc/gpio/hw_ddc.c  |    7 +-
+ .../gpu/drm/amd/display/dc/irq/irq_service.c  |    2 +-
+ .../gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c  |    4 +-
+ 33 files changed, 746 insertions(+), 830 deletions(-)
 
-Does the critical section have to include more than just
-vfio_ap_queue_link_mdev()? Did we need the critical section
-before this patch?
-
->  	return 0;
->  }
->  
-> @@ -1341,6 +1425,10 @@ void vfio_ap_mdev_remove_queue(struct ap_device *apdev)
->  	apid = AP_QID_CARD(q->apqn);
->  	apqi = AP_QID_QUEUE(q->apqn);
->  	vfio_ap_mdev_reset_queue(apid, apqi, 1);
-> +
-> +	if (q->matrix_mdev)
-> +		vfio_ap_mdev_unlink_queue(q);
-> +
->  	kfree(q);
->  	mutex_unlock(&matrix_dev->lock);
->  }
-> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
-> index d9003de4fbad..4e5cc72fc0db 100644
-> --- a/drivers/s390/crypto/vfio_ap_private.h
-> +++ b/drivers/s390/crypto/vfio_ap_private.h
-> @@ -18,6 +18,7 @@
->  #include <linux/delay.h>
->  #include <linux/mutex.h>
->  #include <linux/kvm_host.h>
-> +#include <linux/hashtable.h>
->  
->  #include "ap_bus.h"
->  
-> @@ -86,6 +87,7 @@ struct ap_matrix_mdev {
->  	struct kvm *kvm;
->  	struct kvm_s390_module_hook pqap_hook;
->  	struct mdev_device *mdev;
-> +	DECLARE_HASHTABLE(qtable, 8);
->  };
->  
->  extern int vfio_ap_mdev_register(void);
-> @@ -97,6 +99,7 @@ struct vfio_ap_queue {
->  	int	apqn;
->  #define VFIO_AP_ISC_INVALID 0xff
->  	unsigned char saved_isc;
-> +	struct hlist_node mdev_qnode;
->  };
->  
->  int vfio_ap_mdev_probe_queue(struct ap_device *queue);
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: amd-gfx@lists.freedesktop.org
+Cc: Anthony Koo <Anthony.Koo@amd.com>
+Cc: Aric Cyr <aric.cyr@amd.com>
+Cc: Aric Cyr <Aric.Cyr@amd.com>
+Cc: Aurabindo Pillai <aurabindo.pillai@amd.com>
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Colin Ian King <colin.king@canonical.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: David Airlie <airlied@linux.ie>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Harry Wentland <harry.wentland@amd.com>
+Cc: Josip Pavic <Josip.Pavic@amd.com>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Leo Li <sunpeng.li@amd.com>
+Cc: Mauro Rossi <issor.oruam@gmail.com>
+Cc: Tony Cheng <Tony.Cheng@amd.com>
+Cc: Xiaojian Du <Xiaojian.Du@amd.com>
+-- 
+2.25.1
 
