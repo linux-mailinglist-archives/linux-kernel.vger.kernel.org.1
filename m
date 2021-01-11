@@ -2,152 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579CA2F1FEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:54:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9842F201B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:55:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404046AbhAKTyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:54:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51208 "EHLO
+        id S2391329AbhAKTyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:54:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391318AbhAKTyV (ORCPT
+        with ESMTP id S2391092AbhAKTyo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:54:21 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F60C061795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:53:41 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id l23so196482pjg.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:53:41 -0800 (PST)
+        Mon, 11 Jan 2021 14:54:44 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5FFC0617A4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:54:04 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id m6so586162pfm.6
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:54:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kqzAS7vv3isJxvxaKX99/4deyJqxK70Am6O+u1zhufI=;
-        b=nXAUtCl5E6clL+2HewBlse6knjeO3Qp1aPdeuYBpDlz8EnXwTACfUnrSGm0VuMOjw1
-         NeS74Ipb8j/qW34RmwJt2LVEnF+By3NNt3nJYOYr9sp3TttH9K1qA3p2N9EIH3AitKXC
-         YPuAv5EsYMTsYTnNVAx1szkPJdL9X18yzs2F0=
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=Vxk2nV7tt4HCztmmcM/p9PpvV3AZqTIQaGCtnRxgY5o=;
+        b=PYTOCCGpovAEIhp6SDc7oo7y6LDK0BrdmH5Bo6LK5wdMJMxJPgEfd+o4Ygb8Zm1W6N
+         WT12d307T0ug2fNJrkoAHMKl/62zRSABiCuI41DTLqQTmWvAKerQmPYf8hZZ6PZ4IkQg
+         8XXC0t3qPdfh8ztVgYLAPMtyOlQzV4bAnFIN4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kqzAS7vv3isJxvxaKX99/4deyJqxK70Am6O+u1zhufI=;
-        b=fkuj5WJA/rD7sO5FcGfI4Uzs7OWVh1pfbfFlPaYzP6Mus+itPKnv5f7pnCoEVYXjG2
-         UYMNRjXVq8MFfHtFMo6caN28yTMQfVTCz2Z7YhzxNqVQKFbaUdHo0XKKLx3RXegEjeFo
-         ygdfB3X2A9h2wE2stuVQU73z7qMZenqyILsxxy2ulKklIrPDDZPJiyd4Je+nalxg72oG
-         6e7ODognGyucrODZzcmL/AP/kWKs4WDMOVg2WcqepRVHrEOB/ZeA+IcqZ16+Ai7Xp4Oz
-         JHqlBTg83ts/PXO05PKU/RDtIP52LVdxZKKQ9Bp7JINTf491Uq3VT3fl4HP1WGujsgXB
-         UTiQ==
-X-Gm-Message-State: AOAM531l6gZFknPmW73OxSfOeYZXmgWvi4lKbQWUAnD/hdi6b9EDtHVl
-        5Tk9pERdHnIymmLcoc1QHr9UCA==
-X-Google-Smtp-Source: ABdhPJzvYP86OQ4uqkMtM24wFDq6qEnqHZO8PCbrEqVvaJXgt7NLlNssoaUa0+LDD1I6B0iBoCU/JQ==
-X-Received: by 2002:a17:902:eb53:b029:da:da92:c187 with SMTP id i19-20020a170902eb53b02900dada92c187mr1378702pli.34.1610394821104;
-        Mon, 11 Jan 2021 11:53:41 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a23sm214136pjh.19.2021.01.11.11.53.40
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=Vxk2nV7tt4HCztmmcM/p9PpvV3AZqTIQaGCtnRxgY5o=;
+        b=P7Up/bwNek4OwpJ/7NJr13K1C73P+VUiwtKrBRwhjJui+++T0WwE560FdyAiYGxrxB
+         wGZdjEz0Rhdmn9TZ5hTCVVfcjokJFYMZfF3WNs5vet61eJh48DhEQyRqj4oeMwlC1t1I
+         9LhD2pDAL4QbaQHeVA+er8DCYSxT6g3YBOnvgb5e6N5TaVF+S5MqE0jk1bJJxqVXlHsh
+         53Lkv0MahOKaAd9r4+nAGBH8CXcZ/JEIQ5jehp8wG6Tw7IpK3V9sGOiSbZhM/2We5Ks9
+         bZREJ3iRnDcG2kWhKjlZ3wDjnRrqwQ8EpMxPkz/DQWCGk9riPUHrhSkGhxbBQCPvgv5/
+         gcDg==
+X-Gm-Message-State: AOAM531Qg7Yrew+DsakYNStzrdXYTJ1v96a+OtilUWaw1JZh8GOPIoJ9
+        n9aHBnFWjG21fL5R9GDe8M93mQ==
+X-Google-Smtp-Source: ABdhPJxKRGtGDIO3VfXdh7jxqm6nRjvFkD4HG/tJC8VlSrZjMO2GjMyC/nt1FZND08abv6HToCiIrg==
+X-Received: by 2002:a65:494f:: with SMTP id q15mr1092942pgs.367.1610394844028;
+        Mon, 11 Jan 2021 11:54:04 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id 5sm419116pff.125.2021.01.11.11.54.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 11:53:40 -0800 (PST)
-Date:   Mon, 11 Jan 2021 11:53:39 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Pei Huang <huangpei@loongson.cn>,
-        Fangrui Song <maskray@google.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, stable@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v5 mips-next 0/9] MIPS: vmlinux.lds.S sections fixes &
- cleanup
-Message-ID: <202101111153.AE5123B6@keescook>
-References: <20210110115245.30762-1-alobakin@pm.me>
+        Mon, 11 Jan 2021 11:54:03 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210110115245.30762-1-alobakin@pm.me>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1610051425-20632-3-git-send-email-khsieh@codeaurora.org>
+References: <y> <1610051425-20632-1-git-send-email-khsieh@codeaurora.org> <1610051425-20632-3-git-send-email-khsieh@codeaurora.org>
+Subject: Re: [PATCH 2/2] drm/msm/dp: unplug interrupt missed after irq_hpd handler
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Kuogee Hsieh <khsieh@codeaurora.org>, tanmay@codeaurora.org,
+        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+To:     Kuogee Hsieh <khsieh@codeaurora.org>,
+        dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run
+Date:   Mon, 11 Jan 2021 11:54:01 -0800
+Message-ID: <161039484176.3661239.14240346276437866761@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 11:53:50AM +0000, Alexander Lobakin wrote:
-> This series hunts the problems discovered after manual enabling of
-> ARCH_WANT_LD_ORPHAN_WARN. Notably:
->  - adds the missing PAGE_ALIGNED_DATA() section affecting VDSO
->    placement (marked for stable);
->  - stops blind catching of orphan text sections with .text.*
->    directive;
->  - properly stops .eh_frame section generation.
-> 
-> Compile and runtime tested on MIPS32R2 CPS board with no issues
-> using two different toolkits:
->  - Binutils 2.35.1, GCC 10.2.1 (with Alpine patches);
->  - LLVM stack: 11.0.0 and from latest Git snapshot.
-> 
-> Since v4 [3]:
->  - new: drop redundant .text.cps-vec creation and blind inclusion
->    of orphan text sections via .text.* directive in vmlinux.lds.S;
->  - don't assert SIZEOF(.rel.dyn) as it's reported that it may be not
->    empty on certain machines and compilers (Thomas);
->  - align GOT table like it's done for ARM64;
->  - new: catch UBSAN's "unnamed data" sections in generic definitions
->    when building with LD_DEAD_CODE_DATA_ELIMINATION;
->  - collect Reviewed-bys (Kees, Nathan).
+Quoting Kuogee Hsieh (2021-01-07 12:30:25)
+> There is HPD unplug interrupts missed at scenario of an irq_hpd
+> followed by unplug interrupts with around 10 ms in between.
+> Since both AUX_SW_RESET and DP_SW_RESET clear pending HPD interrupts,
+> irq_hpd handler should not issues either aux or sw reset to avoid
+> following unplug interrupt be cleared accidentally.
 
-Looks good; which tree will this land through?
+So the problem is that we're resetting the DP aux phy in the middle of
+the HPD state machine transitioning states?
 
--Kees
+>=20
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
+> diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp=
+/dp_catalog.c
+> index 44f0c57..9c0ce98 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_catalog.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
+> @@ -190,6 +190,18 @@ int dp_catalog_aux_clear_hw_interrupts(struct dp_cat=
+alog *dp_catalog)
+>         return 0;
+>  }
+> =20
+> +/**
+> + * dp_catalog_aux_reset() - reset AUX controller
+> + *
+> + * @aux: DP catalog structure
+> + *
+> + * return: void
+> + *
+> + * This function reset AUX controller
+> + *
+> + * NOTE: reset AUX controller will also clear any pending HPD related in=
+terrupts
+> + *=20
+> + */
+>  void dp_catalog_aux_reset(struct dp_catalog *dp_catalog)
+>  {
+>         u32 aux_ctrl;
+> @@ -483,6 +495,18 @@ int dp_catalog_ctrl_set_pattern(struct dp_catalog *d=
+p_catalog,
+>         return 0;
+>  }
+> =20
+> +/**
+> + * dp_catalog_ctrl_reset() - reset DP controller
+> + *
+> + * @aux: DP catalog structure
 
-> 
-> Since v3 [2]:
->  - fix the third patch as GNU stack emits .rel.dyn into VDSO for
->    some reason if .cfi_sections is specified.
-> 
-> Since v2 [1]:
->  - stop discarding .eh_frame and just prevent it from generating
->    (Kees);
->  - drop redundant sections assertions (Fangrui);
->  - place GOT table in .text instead of asserting as it's not empty
->    when building with LLVM (Nathan);
->  - catch compound literals in generic definitions when building with
->    LD_DEAD_CODE_DATA_ELIMINATION (Kees);
->  - collect two Reviewed-bys (Kees).
-> 
-> Since v1 [0]:
->  - catch .got entries too as LLD may produce it (Nathan);
->  - check for unwanted sections to be zero-sized instead of
->    discarding (Fangrui).
-> 
-> [0] https://lore.kernel.org/linux-mips/20210104121729.46981-1-alobakin@pm.me
-> [1] https://lore.kernel.org/linux-mips/20210106200713.31840-1-alobakin@pm.me
-> [2] https://lore.kernel.org/linux-mips/20210107115120.281008-1-alobakin@pm.me
-> [3] https://lore.kernel.org/linux-mips/20210107123331.354075-1-alobakin@pm.me
-> 
-> Alexander Lobakin (9):
->   MIPS: vmlinux.lds.S: add missing PAGE_ALIGNED_DATA() section
->   MIPS: CPS: don't create redundant .text.cps-vec section
->   MIPS: vmlinux.lds.S: add ".gnu.attributes" to DISCARDS
->   MIPS: properly stop .eh_frame generation
->   MIPS: vmlinux.lds.S: explicitly catch .rel.dyn symbols
->   MIPS: vmlinux.lds.S: explicitly declare .got table
->   vmlinux.lds.h: catch compound literals into data and BSS
->   vmlinux.lds.h: catch UBSAN's "unnamed data" into data
->   MIPS: select ARCH_WANT_LD_ORPHAN_WARN
-> 
->  arch/mips/Kconfig                 |  1 +
->  arch/mips/include/asm/asm.h       | 18 ++++++++++++++++++
->  arch/mips/kernel/cps-vec.S        |  1 -
->  arch/mips/kernel/vmlinux.lds.S    | 11 +++++++++--
->  include/asm-generic/vmlinux.lds.h |  6 +++---
->  5 files changed, 31 insertions(+), 6 deletions(-)
-> 
-> -- 
-> 2.30.0
-> 
-> 
+It's called dp_catalog though.
 
--- 
-Kees Cook
+> + *
+> + * return: void
+> + *
+> + * This function reset DP controller
+
+resets the
+
+> + *
+> + * NOTE: reset DP controller will also clear any pending HPD related int=
+errupts
+> + *=20
+> + */
+>  void dp_catalog_ctrl_reset(struct dp_catalog *dp_catalog)
+>  {
+>         u32 sw_reset;
+> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp=
+_ctrl.c
+> index e3462f5..f96c415 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> @@ -1296,7 +1296,8 @@ static int dp_ctrl_setup_main_link(struct dp_ctrl_p=
+rivate *ctrl,
+>          * transitioned to PUSH_IDLE. In order to start transmitting
+>          * a link training pattern, we have to first do soft reset.
+>          */
+> -       dp_catalog_ctrl_reset(ctrl->catalog);
+> +       if (*training_step !=3D DP_TRAINING_NONE)
+
+Can we check for the positive value instead? i.e.
+DP_TRAINING_1/DP_TRAINING_2
+
+> +               dp_catalog_ctrl_reset(ctrl->catalog);
+> =20
+>         ret =3D dp_ctrl_link_train(ctrl, cr, training_step);
+>
