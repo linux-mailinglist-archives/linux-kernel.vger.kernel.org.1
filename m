@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC822F14CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:30:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE6472F1344
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:06:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732438AbhAKNah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:30:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34500 "EHLO mail.kernel.org"
+        id S1730380AbhAKNF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:05:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732272AbhAKNPv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:15:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B9512226A;
-        Mon, 11 Jan 2021 13:15:10 +0000 (UTC)
+        id S1730277AbhAKNFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:05:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95D2B2225E;
+        Mon, 11 Jan 2021 13:04:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370910;
-        bh=3uOgKyUvuPg0H0ShYe5pWcrJkp8gkS2HfmouQazHRUY=;
+        s=korg; t=1610370277;
+        bh=oxIaAD2CWvYsRb4p59w9dckM6dBF0lDotUm7Zh3oYio=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dxSVsdpij7Ilq3vS2OFDqXvWTWUFMUSiWvFs0qvbgewEv+YbLZs3UjxI+MkCj6lp7
-         CNbDkJ0lqRvYnowCB1d4PC/T1msNlJ9gcafV10APUZo0/EeMNS12AtFSKlNYX3bwhL
-         8rEcvrI1uG+jh9DMGueQp2+10IQ0i61vuSvj5yVU=
+        b=bsLtT7EXfWp3Xs85WsyIwgHJEq7e5mJDKCziJIOrIVk3VxCNwLucouDPQNT4pzaf7
+         1mtq90SlppCprB6FSPR3iFB+LlfqnpqwuU+8GaKxRFKexRARrJTodYkDc99T45e/6f
+         ZHcTMq/sLOp1MQEuZ6dAymu1Dbvvhqiw1PIG84Fw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 056/145] scsi: ufs-pci: Ensure UFS device is in PowerDown mode for suspend-to-disk ->poweroff()
+        stable@vger.kernel.org,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 4.14 01/57] kbuild: dont hardcode depmod path
 Date:   Mon, 11 Jan 2021 14:01:20 +0100
-Message-Id: <20210111130051.230618212@linuxfoundation.org>
+Message-Id: <20210111130033.795387580@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
+References: <20210111130033.715773309@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,77 +42,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adrian Hunter <adrian.hunter@intel.com>
+From: Dominique Martinet <asmadeus@codewreck.org>
 
-[ Upstream commit af423534d2de86cd0db729a5ac41f056ca8717de ]
+commit 436e980e2ed526832de822cbf13c317a458b78e1 upstream.
 
-The expectation for suspend-to-disk is that devices will be powered-off, so
-the UFS device should be put in PowerDown mode. If spm_lvl is not 5, then
-that will not happen. Change the pm callbacks to force spm_lvl 5 for
-suspend-to-disk poweroff.
+depmod is not guaranteed to be in /sbin, just let make look for
+it in the path like all the other invoked programs
 
-Link: https://lore.kernel.org/r/20201207083120.26732-3-adrian.hunter@intel.com
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/scsi/ufs/ufshcd-pci.c | 34 ++++++++++++++++++++++++++++++++--
- 1 file changed, 32 insertions(+), 2 deletions(-)
+ Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd-pci.c b/drivers/scsi/ufs/ufshcd-pci.c
-index 360c25f1f061a..5d33c39fa82f0 100644
---- a/drivers/scsi/ufs/ufshcd-pci.c
-+++ b/drivers/scsi/ufs/ufshcd-pci.c
-@@ -227,6 +227,30 @@ static int ufshcd_pci_resume(struct device *dev)
- {
- 	return ufshcd_system_resume(dev_get_drvdata(dev));
- }
-+
-+/**
-+ * ufshcd_pci_poweroff - suspend-to-disk poweroff function
-+ * @dev: pointer to PCI device handle
-+ *
-+ * Returns 0 if successful
-+ * Returns non-zero otherwise
-+ */
-+static int ufshcd_pci_poweroff(struct device *dev)
-+{
-+	struct ufs_hba *hba = dev_get_drvdata(dev);
-+	int spm_lvl = hba->spm_lvl;
-+	int ret;
-+
-+	/*
-+	 * For poweroff we need to set the UFS device to PowerDown mode.
-+	 * Force spm_lvl to ensure that.
-+	 */
-+	hba->spm_lvl = 5;
-+	ret = ufshcd_system_suspend(hba);
-+	hba->spm_lvl = spm_lvl;
-+	return ret;
-+}
-+
- #endif /* !CONFIG_PM_SLEEP */
- 
- #ifdef CONFIG_PM
-@@ -322,8 +346,14 @@ ufshcd_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- }
- 
- static const struct dev_pm_ops ufshcd_pci_pm_ops = {
--	SET_SYSTEM_SLEEP_PM_OPS(ufshcd_pci_suspend,
--				ufshcd_pci_resume)
-+#ifdef CONFIG_PM_SLEEP
-+	.suspend	= ufshcd_pci_suspend,
-+	.resume		= ufshcd_pci_resume,
-+	.freeze		= ufshcd_pci_suspend,
-+	.thaw		= ufshcd_pci_resume,
-+	.poweroff	= ufshcd_pci_poweroff,
-+	.restore	= ufshcd_pci_resume,
-+#endif
- 	SET_RUNTIME_PM_OPS(ufshcd_pci_runtime_suspend,
- 			   ufshcd_pci_runtime_resume,
- 			   ufshcd_pci_runtime_idle)
--- 
-2.27.0
-
+--- a/Makefile
++++ b/Makefile
+@@ -382,7 +382,7 @@ OBJDUMP		= $(CROSS_COMPILE)objdump
+ AWK		= awk
+ GENKSYMS	= scripts/genksyms/genksyms
+ INSTALLKERNEL  := installkernel
+-DEPMOD		= /sbin/depmod
++DEPMOD		= depmod
+ PERL		= perl
+ PYTHON		= python
+ CHECK		= sparse
 
 
