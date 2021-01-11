@@ -2,184 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E47802F11F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 823262F11F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:55:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729821AbhAKLyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:54:01 -0500
-Received: from mga02.intel.com ([134.134.136.20]:15323 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726125AbhAKLyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:54:01 -0500
-IronPort-SDR: nYWXJOfXj2w9FC9G5DMBFXSa0rD6SIpA4qhJt1vsZcUR9T8Hf0Bt78Zdm/63n7/JGHsgkbNojy
- bVZW45wfnQRw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9860"; a="164928824"
-X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
-   d="scan'208";a="164928824"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 03:53:19 -0800
-IronPort-SDR: 2yold6fRnyjnSeFUW7OsBPh6lc2XxlDQdi/hT8a4sirFKwOek8llyrZmTcGQLa2fStWNLklv9l
- lmGZqLvnwnIw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
-   d="scan'208";a="397008754"
-Received: from lkp-server01.sh.intel.com (HELO 3cff8e4c45aa) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 11 Jan 2021 03:53:18 -0800
-Received: from kbuild by 3cff8e4c45aa with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kyvl8-00005p-1v; Mon, 11 Jan 2021 11:53:18 +0000
-Date:   Mon, 11 Jan 2021 19:52:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.01.10a] BUILD SUCCESS
- 7975c26716559b3b9a177ee7acd83b25d56f1792
-Message-ID: <5ffc3bf6.PEOmaS4GYvfJ3RHk%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1729867AbhAKLyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:54:46 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17734 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729758AbhAKLyq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 06:54:46 -0500
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10BBabIh196079;
+        Mon, 11 Jan 2021 06:54:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : in-reply-to : references : date : message-id :
+ mime-version : content-type; s=pp1;
+ bh=or+DMSFNahJXJOExLmpU8igAXrlWM7Vrz+hgQRMPi0s=;
+ b=B0OTdrdgnYcqT7pzlRP0wsSlPvzL2tnndw+5b+IH5vhdSddu/X0F6jYNNa4fzl0a2cmi
+ immmVVwbDID2anUeBPM2a7U3Dt7sgXbq2emRfoiBO6TnwM2Eimszoi1lpAD4lHdOZawp
+ 150hIr9yfAx1nROdEntPAyh0ZPovLwczw4vsDgio4nypG78NxdfFsyasns2coK7/2aDB
+ XUBpd9A7Cve4gxscoLqzghWOnw/NFda8ZlSm1gbcQiiKyGGMoNyZl0c8dJpwVmzMgt6w
+ DS6UWDRDQ+0HwPwgAAUjtx+v+eV5HaLJB2X5VQhnVUAyE7rERto1YjUt59VqhGxwG6xg Fg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 360mr4ja2p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Jan 2021 06:54:03 -0500
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10BBdVb7014162;
+        Mon, 11 Jan 2021 06:54:02 -0500
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 360mr4ja22-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Jan 2021 06:54:02 -0500
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10BBm38O024180;
+        Mon, 11 Jan 2021 11:54:01 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma02fra.de.ibm.com with ESMTP id 35y448h4uv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 11 Jan 2021 11:54:00 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10BBrw2U31195456
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Jan 2021 11:53:58 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9A87C4C04A;
+        Mon, 11 Jan 2021 11:53:58 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5E64F4C040;
+        Mon, 11 Jan 2021 11:53:58 +0000 (GMT)
+Received: from oc8242746057.ibm.com (unknown [9.171.88.27])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 11 Jan 2021 11:53:58 +0000 (GMT)
+From:   Alexander Egorenkov <egorenar@linux.ibm.com>
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Mike Galbraith <efault@gmx.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: regression: 9a56493f6942 "uts: Use generic ns_common::count"
+ broke makedumpfile 1.6.7
+In-Reply-To: <6933cde2-7d43-7d7e-066c-1c4a13c752dd@virtuozzo.com>
+In-Reply-To: 
+References: <7b13506084a015d0256222cdd278fe461cdd4a74.camel@gmx.de>
+ <6933cde2-7d43-7d7e-066c-1c4a13c752dd@virtuozzo.com>
+Date:   Mon, 11 Jan 2021 12:53:57 +0100
+Message-ID: <87im83u1t6.fsf@oc8242746057.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-11_23:2021-01-11,2021-01-11 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ spamscore=0 lowpriorityscore=0 malwarescore=0 bulkscore=0 clxscore=1011
+ priorityscore=1501 adultscore=0 mlxscore=0 mlxlogscore=886 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101110069
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2021.01.10a
-branch HEAD: 7975c26716559b3b9a177ee7acd83b25d56f1792  fixup! torture: Break affinity of kthreads last running on outgoing CPU
+Kirill Tkhai <ktkhai@virtuozzo.com> writes:
 
-elapsed time: 725m
+> Hi, Alexander,
+>
+> On 16.12.2020 14:02, Mike Galbraith wrote:
+>> Greetings,
+>> 
+>> With this commit, bisected and confirmed, kdump stops working here,
+>> makedumpfile saying "check_release: Can't get the kernel version".
+>
+> hasn't your commit 55d9e11398a4 "kdump: append uts_namespace.name offset to VMCOREINFO"
+> fixed this issue?
+>
+> What problem with offset we meet here in case of uts_namespace is even marked with __randomize_layout?
+>
+> Kirill
 
-configs tested: 122
-configs skipped: 2
+Hi Kirill,
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+the makedumpfile fix has been applied on Dec 17 2020.
+makedumpfile complains about linux kernel version with newer ones but it should still work.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                           jazz_defconfig
-powerpc                 mpc8560_ads_defconfig
-sh                        dreamcast_defconfig
-powerpc                      makalu_defconfig
-nios2                            allyesconfig
-powerpc                           allnoconfig
-powerpc                   motionpro_defconfig
-nds32                               defconfig
-powerpc                 mpc832x_mds_defconfig
-sh                           sh2007_defconfig
-sh                   rts7751r2dplus_defconfig
-arm                     eseries_pxa_defconfig
-sh                          sdk7780_defconfig
-riscv                            alldefconfig
-mips                       rbtx49xx_defconfig
-sh                             shx3_defconfig
-powerpc                   bluestone_defconfig
-arm                         socfpga_defconfig
-arm                        realview_defconfig
-mips                         cobalt_defconfig
-sh                          lboxre2_defconfig
-h8300                     edosk2674_defconfig
-powerpc                      ep88xc_defconfig
-arc                      axs103_smp_defconfig
-arm                       multi_v4t_defconfig
-sh                          sdk7786_defconfig
-arc                           tb10x_defconfig
-arm                         assabet_defconfig
-xtensa                           alldefconfig
-sh                  sh7785lcr_32bit_defconfig
-arc                     nsimosci_hs_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a004-20210111
-x86_64               randconfig-a006-20210111
-x86_64               randconfig-a001-20210111
-x86_64               randconfig-a003-20210111
-x86_64               randconfig-a005-20210111
-x86_64               randconfig-a002-20210111
-i386                 randconfig-a002-20210111
-i386                 randconfig-a005-20210111
-i386                 randconfig-a006-20210111
-i386                 randconfig-a001-20210111
-i386                 randconfig-a003-20210111
-i386                 randconfig-a004-20210111
-i386                 randconfig-a002-20210110
-i386                 randconfig-a005-20210110
-i386                 randconfig-a006-20210110
-i386                 randconfig-a001-20210110
-i386                 randconfig-a003-20210110
-i386                 randconfig-a004-20210110
-x86_64               randconfig-a015-20210110
-x86_64               randconfig-a012-20210110
-x86_64               randconfig-a013-20210110
-x86_64               randconfig-a016-20210110
-x86_64               randconfig-a014-20210110
-x86_64               randconfig-a011-20210110
-i386                 randconfig-a012-20210110
-i386                 randconfig-a011-20210110
-i386                 randconfig-a016-20210110
-i386                 randconfig-a015-20210110
-i386                 randconfig-a013-20210110
-i386                 randconfig-a014-20210110
-i386                 randconfig-a012-20210111
-i386                 randconfig-a011-20210111
-i386                 randconfig-a016-20210111
-i386                 randconfig-a015-20210111
-i386                 randconfig-a013-20210111
-i386                 randconfig-a014-20210111
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a004-20210110
-x86_64               randconfig-a006-20210110
-x86_64               randconfig-a001-20210110
-x86_64               randconfig-a003-20210110
-x86_64               randconfig-a005-20210110
-x86_64               randconfig-a002-20210110
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Regards
+Alex
