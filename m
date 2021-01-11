@@ -2,124 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 252122F0E75
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 09:47:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6192F0E7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 09:49:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728099AbhAKIqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 03:46:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42034 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728011AbhAKIqh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 03:46:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 184A222AB0;
-        Mon, 11 Jan 2021 08:45:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610354757;
-        bh=3m/pirjaLolCItAn89wEfp9ds3Kuziz1XS2fYzL6XSw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=p8htGpLE4r02ekjhcmKBlFQWm1dbXuE9qtvjWF2xyScp72/uklkY+VP1rDJXxb/EL
-         eIFpvz3bJhXs11bSjVyZRbDNc3gUYH4yRtShlcvf+Waasd9OTvYX4OS9TjE5FsdieB
-         +c7UqOAHrYiL6ecR6nNL3QVtKOC9r7AgqDoaNsKxr0KBmlA4fdP8KSBOkCf6hfC9FU
-         TpGyZml6WBVuJg0cADT8+rOAjc8I++Z3wdUlUIzqrkkkmHXeNAXS0thCNhrefu0qI7
-         esF2Vi1Zu4yvK8C0bcQ3vbUdXZyXZ+vgwtlxpTCLTM9EKlyLHWYRlIwL2wmKR+EfPy
-         BTgQyW0B5gkpQ==
-Received: by mail-ot1-f43.google.com with SMTP id b24so16253242otj.0;
-        Mon, 11 Jan 2021 00:45:57 -0800 (PST)
-X-Gm-Message-State: AOAM530puF/C4xozySOj2qD/lpy94usHmPVDaTbzaS0touRGIprK44dZ
-        S8K3MqKmi4A7IWN5n2A0mHw+tggbajn6NrW3PSA=
-X-Google-Smtp-Source: ABdhPJzRP/mDvKkh8pUUn+o7ynd71Lby9VvGAAY/A+GR7cG9mR+lZ5EXMPWlGNlZcYnwG6pj6FARfqelEIUqhDhIIos=
-X-Received: by 2002:a05:6830:1c24:: with SMTP id f4mr9959749ote.108.1610354756304;
- Mon, 11 Jan 2021 00:45:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20210108211339.1724769-1-jeremy.linton@arm.com>
- <ab3b5788-1148-636a-751f-0a31c87dda33@i2se.com> <cd7c5d78-af92-84b9-8bbf-f480f63005e0@arm.com>
-In-Reply-To: <cd7c5d78-af92-84b9-8bbf-f480f63005e0@arm.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 11 Jan 2021 09:45:45 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEKWsnEzswx-=cA3QO6rKB0OWLGRpsnJg7JsyiJj1vYqA@mail.gmail.com>
-Message-ID: <CAMj1kXEKWsnEzswx-=cA3QO6rKB0OWLGRpsnJg7JsyiJj1vYqA@mail.gmail.com>
-Subject: Re: [PATCH] mmc: sdhci-iproc: Add ACPI bindings for the rpi4
-To:     Jeremy Linton <jeremy.linton@arm.com>
-Cc:     Stefan Wahren <stefan.wahren@i2se.com>, linux-mmc@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        ulf.hansson@linaro.org, Florian Fainelli <f.fainelli@gmail.com>,
-        sbranden@broadcom.com, rjui@broadcom.com, adrian.hunter@intel.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1728198AbhAKIrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 03:47:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728100AbhAKIra (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 03:47:30 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC44C061786;
+        Mon, 11 Jan 2021 00:46:49 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id w1so23446517ejf.11;
+        Mon, 11 Jan 2021 00:46:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=YlWsX4vIpjnJ+C3Yar4M2WF0HiBoobe/CVqoUsW6rVo=;
+        b=COw2rqB77zW6ZIOfu7OjUku4N7nfgax8oJ9zq1ttqjWKsRXGjatsHvgc6ObraJj3v6
+         Z+JDkxvucKWw1riQrOqDrq1qyGO8Jj/73spV6l1EgiO1BB54dNqyeFIAC6EY6GRg1/3X
+         77C+7c1DTWy2+5FwfzUB+PCZIv2JhiYxVLrfuTdHhwJ6+c2FNgy0hlzw1fj/Gnf5fiBG
+         QJsNi5alVtS8/6D06g0QFg8P/IvtuxBUhy2FqFS8DSAoyctBr44V8MDp6WFcHVabHeo/
+         RY1AvfGCBzjfJ9ZYX1f7tnOIWUfN0tpnjepI7koTzaoA7D4zIGVObe6zEydk13m8blH4
+         IyqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=YlWsX4vIpjnJ+C3Yar4M2WF0HiBoobe/CVqoUsW6rVo=;
+        b=mOyYx6W7wQz+6L8tPOATDfv6ZA540lONNcasxXKj0fWW7Y1hTn7vA11xRAvawBp+GD
+         EZVbZ8vCaqqqdwDh6sO1XETvOf5K7zP/rcp4R9lL3+T5sgwzgtxBJmxf6/5mw048Aa4w
+         Qw8OcsQma7ToMHm88bb5Xvkx8XZZgMZ5sG4tLoPWjEl4vaMJMuBCUKoWIFI+bm27k8ep
+         5RHDcm9kaWQkcpH3ZKOm5mpZQRy8GUL17TTLEy9bUX/upHRFVBs+z98kkBf3ObUy3g13
+         7T6+YoimEcdoDBfMsbRF9E5Auwn2Z7+sg5gMPZnDNpchKZVpjB89RQneuAK3ulNPcPPF
+         i4Pw==
+X-Gm-Message-State: AOAM532IuJ7if252H7frEomt+hThDuq6N3DhtObiQtv4AfxltKrFjKk3
+        VgO+K4igHCMk4aqkIlycq2LhU17KR/aMWw==
+X-Google-Smtp-Source: ABdhPJwACYUF7sGeZamayddBFCwllD7sJkbrh/rFulbE6JzAxqy1K0DMg/EsOWVzFKaoobUwwyrblg==
+X-Received: by 2002:a17:907:6e9:: with SMTP id yh9mr9959389ejb.131.1610354808059;
+        Mon, 11 Jan 2021 00:46:48 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2d2f:cf00:597a:a5a4:31de:992e])
+        by smtp.gmail.com with ESMTPSA id j7sm6775313ejj.27.2021.01.11.00.46.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 00:46:47 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Nick Kazlauskas <Nicholas.Kazlauskas@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        amd-gfx@lists.freedesktop.org
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH -next] drm/amd/display: tweak the kerneldoc for active_vblank_irq_count
+Date:   Mon, 11 Jan 2021 09:46:40 +0100
+Message-Id: <20210111084640.28500-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Jan 2021 at 04:40, Jeremy Linton <jeremy.linton@arm.com> wrote:
->
-> Hi,
->
-> On 1/9/21 5:07 AM, Stefan Wahren wrote:
-> > Hi Jeremy,
-> >
-> > +add Nicolas
-> >
-> > Am 08.01.21 um 22:13 schrieb Jeremy Linton:
-> >> The rpi4 has a Arasan controller it carries over
-...
-> >> @@ -299,6 +311,8 @@ MODULE_DEVICE_TABLE(of, sdhci_iproc_of_match);
-> >>   static const struct acpi_device_id sdhci_iproc_acpi_ids[] = {
-> >>      { .id = "BRCM5871", .driver_data = (kernel_ulong_t)&iproc_cygnus_data },
-> >>      { .id = "BRCM5872", .driver_data = (kernel_ulong_t)&iproc_data },
-> >> +    { .id = "BCM2847",  .driver_data = (kernel_ulong_t)&bcm_arasan_data },
-> >
-> > Sorry, i don't have deeper knowledge about ACPI, but BCM2837 is the
-> > official naming of the SoC on the RPi 3.
-> >
-> > Is this a typo in the id?
->
-> Not really.
->
-> Some background: The PFTF is basically the custodian of the combined
-> rpi3 port done by Microsoft and a few other peoples/organizations ports.
-> That merged code base was upstreamed a couple years ago to edk2 for the
-> rpi3 and is the official port. On the rpi3+uefi platform, linux is just
-> using DT, but windows and possibly other OSs are using the ACPI tables.
-> For the Rpi4, the intentions is to be an ACPI first platform, but we are
-> inheriting the rpi3 legacy peripheral descriptions.
+Commit 71338cb4a7c2 ("drm/amd/display: enable idle optimizations for linux
+(MALL stutter)") adds active_vblank_irq_count to amdgpu_display_manager
+in ./drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h.
 
-I wouldn't say ACPI first - Linux will likely always have far better
-DT coverage for these platforms, with DT overlays etc. However, there
-is a strong pull from the industry to support Windows, VMware,
-RHEL/Centos and the BSDs on these systems, which is why the ACPI
-firmware port is important.
+The kerneldoc is incorrectly formatted, and make htmldocs warns:
 
-RPi4 is also the most easily obtained Linux/arm64 machine with a
-proper and fairly complete implementation of standards-based rich
-firmware, which is why it makes sense to support both ACPI and DT boot
-on it in Linux.
+  ./drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h:
+    340: warning: Incorrect use of kernel-doc format:          * @active_vblank_irq_count
+    379: warning: Function parameter or member 'active_vblank_irq_count' not described in 'amdgpu_display_manager'
 
-> So, for the past
-> year+ everyone has been basing their rpi4 ACPI OS ports on those tables
-> and only adjusting them in backwards compatible ways.
->
-> Meaning, that a few years back someone put that ID in the rpi3 ACPI
-> tables, and now we are stuck with it unless we are willing to break
-> other OSs.
->
+Tweak the kerneldoc for active_vblank_irq_count.
 
-Note that most of the ACPI tables were contributed by Microsoft in
-order to boot Windows for IOT (or whatever it was called at the time)
-on the RPi3; they weren't just pulled out of thin air.
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies on amdgpu's -next and next-20210111
 
+Bhawanpreet, Nick, please review and ack.
 
->
-> >
-> >> +    { .id = "BRCME88C", .driver_data = (kernel_ulong_t)&bcm2711_data },
-> >>      { /* sentinel */ }
-> >>   };
-> >>   MODULE_DEVICE_TABLE(acpi, sdhci_iproc_acpi_ids);
-> >
->
->
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Alex, Christian, please pick on top of the commit above.
+
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+index f084e2fc9569..5ee1b766884e 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.h
+@@ -337,7 +337,7 @@ struct amdgpu_display_manager {
+ 	const struct gpu_info_soc_bounding_box_v1_0 *soc_bounding_box;
+ 
+ 	/**
+-	 * @active_vblank_irq_count
++	 * @active_vblank_irq_count:
+ 	 *
+ 	 * number of currently active vblank irqs
+ 	 */
+-- 
+2.17.1
+
