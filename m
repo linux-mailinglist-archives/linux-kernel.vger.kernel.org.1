@@ -2,198 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 674AB2F1C17
+	by mail.lfdr.de (Postfix) with ESMTP id D39952F1C18
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389352AbhAKRRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 12:17:47 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:62071 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389214AbhAKRRp (ORCPT
+        id S2389369AbhAKRR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 12:17:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388598AbhAKRR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:17:45 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10BHEQVJ022997;
-        Mon, 11 Jan 2021 09:16:43 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=JSuDuJfdt1fYKfD+NJwOJKD4A0fd/ZaKtv4kdQ3JMk4=;
- b=MekuRAzB9RjLKS7a13dopfXZL1x8CjX/L1hx6GWqF5TIUakd0TUW8stYY5j7XIdGlAcB
- R4o7MuzhGIqaYA66Gtqcj7OAWJI/fTgvOm9fLUJQaZr4QYW3vl6mA8bVWf3L5Q5LZFac
- +k0r1c2QlcfiLZ8aQzOxXByHkWP2XLCE3Sg= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 35yavt0ee3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 11 Jan 2021 09:16:43 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 11 Jan 2021 09:16:42 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Op9jkAfEGYCsLGlraNLhwUwDKhnfwRfiEsB6e8j9MPhGtqJQUaPnRPVy9XGscUYu6c8ks2vEEjl4FQuKxqCYt5owam4CinMcu8DfJoXt3ZUQs/CB/mvtSC3Xrb+QavT4CEqO5newwiSZ7taOOmPKazeJaZaFGMHGYSwYeqp2acBVfzgmNGEUAp4YdIgtadAj+AsEQNNC7pA2AHw7GV5YVH9utKlgXzuue+AJUPqhcxO5JRQN/14GZD1tkMfObF2MMYQnL3F0QZ8DvkL/G9SjdIDUiV635iq4piXZiGG1KdSU8Qba3hEZtpvUPavPzFGDFUlGOgkUtltn/P/JB8R9Fg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JSuDuJfdt1fYKfD+NJwOJKD4A0fd/ZaKtv4kdQ3JMk4=;
- b=agAbyWxklpiZ63NL+7quWQ1t1Q7PSbVz/Bnmh5ccF9gJSLSoCKXl6noNV/NsIefna5h0dZsYA65ISXYikvGBkUhZuLLWzaf5Z4X2T29dKpn8xr2kXdQOEi5jhBxVMQrxRpX6IIpK956db4KwVwQ/22mGHREJGdb9KyevkB2aWbrLaSn2vD7zzkfN4ybKwJxVZ7OqESTHYhaxd7wglTcGI02BIaqEixItat5ZzqTJWnmF54sqz/ATTWLDF+BW2lU+Th4LuNqU0IeC9nlOluAxkJtJaaGySN5e7aK17un4Hg08YXhMqf+R9F6pP6vgdvjeB1s92v5uLjbt+tDClZo+1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JSuDuJfdt1fYKfD+NJwOJKD4A0fd/ZaKtv4kdQ3JMk4=;
- b=S27sKy0ANNwW3+gW+pDlI3ec4C6E7BLXOXDA+Y3TQ/wgATY+AQhxZbxuNqFfiel+urvSEGVhxiOPhhbkLkI2ePURyRvrLkXbmqzGD8AIyBxHXDiLylpRU3xPYveAzPS1ruanE6ySDxZcWPSVUydI1ZEwTkqBDdmX1c5ieQNp8x4=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3208.namprd15.prod.outlook.com (2603:10b6:a03:10c::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Mon, 11 Jan
- 2021 17:16:36 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3742.012; Mon, 11 Jan 2021
- 17:16:36 +0000
-Subject: Re: [PATCH bpf-next 1/4] bpf: enable task local storage for tracing
- programs
-To:     Song Liu <songliubraving@fb.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <mingo@redhat.com>, <peterz@infradead.org>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <john.fastabend@gmail.com>, <kpsingh@chromium.org>,
-        <kernel-team@fb.com>, <haoluo@google.com>,
-        kernel test robot <lkp@intel.com>
-References: <20210108231950.3844417-1-songliubraving@fb.com>
- <20210108231950.3844417-2-songliubraving@fb.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <a3421aeb-b293-e49a-cfe1-7163cc75bd84@fb.com>
-Date:   Mon, 11 Jan 2021 09:16:33 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.0
-In-Reply-To: <20210108231950.3844417-2-songliubraving@fb.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:6450]
-X-ClientProxiedBy: BY3PR04CA0004.namprd04.prod.outlook.com
- (2603:10b6:a03:217::9) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        Mon, 11 Jan 2021 12:17:58 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24297C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 09:17:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=e//1nENxXUXmqxmS9umEa5Q8fNCRbqTa3+XqQqXzUJI=; b=t1CjWcjiAxZrljDqC9LrEs4ykI
+        cIpn5oqykCh3gMsgLh/+7d1LXQWiXJI49BFsIJYkh/K0vhf8nZoaUbTewb8LLXLgyGX7y2GuA26Ky
+        f8XZYCxfuaxjn7kEOyGC8bI5gSek70xMXzPJl/iFSQBcUR3HB/te+DMvQ4zcG9Z/w21d0cymX+GiX
+        9C2zgTRQPOaWlm/R1y8xcQY050YV5NxN3VazHb2Od8pJ7R+G9xjieJPemAGy6lrBMvNF4+oTTSSpb
+        n3XJYfwpvFI9CrWs3EXR5mXyyWwNnh8SXNWAvUlWNRSqy+xEcMT+fdUgr2DITlDVHYAh+5Yj9helr
+        p3kyyhsw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kz0o7-0005Ai-Mb; Mon, 11 Jan 2021 17:16:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CD1AE30015A;
+        Mon, 11 Jan 2021 18:16:39 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B5B962BBF4D10; Mon, 11 Jan 2021 18:16:39 +0100 (CET)
+Date:   Mon, 11 Jan 2021 18:16:39 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
+Message-ID: <X/yH9+MGa1JCNZ8x@hirez.programming.kicks-ass.net>
+References: <20201226025117.2770-1-jiangshanlai@gmail.com>
+ <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net>
+ <87o8hv7pnd.fsf@nanos.tec.linutronix.de>
+ <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21c1::1158] (2620:10d:c090:400::5:6450) by BY3PR04CA0004.namprd04.prod.outlook.com (2603:10b6:a03:217::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Mon, 11 Jan 2021 17:16:35 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8d9546e4-093d-476b-19c7-08d8b654a6bf
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3208:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB320819B029520AEBF07DAA40D3AB0@BYAPR15MB3208.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: W9edEDyMXSK15eN3i2UsMQSBccuQL/8HsPk+V343HGlWVq2cA6i+v9D54J19iMDzaDCIaiaMoyZRLA/jYsCIRxAfjSLyUkHWFYBp48cFXQcYjE7X8f00JfuODanC29uf5OD1nevPbn1D9pgGpvVd1wy27FgeW2iaat5Qp8kfsWzeEAowvTrx9aSXz7HsPZGkNo/IWY+QZmRW+A0Wq8kZ3MBaGT/3FU5KulqD0emlnMrJ0xKU9q/CG/7qOd4JwwRsMdYAG9sfjAxDU7tLCUQagyiFjs1ERP+n9sHu0aoSYhW+J0ZW3moiWfRypkAAHkdiXwggPKD4qYMHfDgby4s0twS9Sk2d2YHUdGFMix+Xg2nke8BDZdWkee+aCK4QLVgDKFZhHn2zwzWJMcuOFfGM72iAL5ZAkh3lRAdxsdVcj7ocnqXoKQwgDSipAuY3JQv/fau2eQVlDMRi4SefoU4RAnG8EnaB/pV7H6r9wqZuQN8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(376002)(346002)(396003)(136003)(2616005)(31686004)(7416002)(5660300002)(52116002)(31696002)(86362001)(478600001)(66476007)(66556008)(16526019)(186003)(4326008)(8936002)(2906002)(316002)(36756003)(6486002)(66946007)(8676002)(53546011)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cjUxZzBSNWZHOFB2RjEwWXZnbGZ5VC9TUTdud0txb0tqRGRzUzBPQUtkNWxq?=
- =?utf-8?B?bWMzZVV2c1hmQlFGVE5QUmFnRzkvQlZKL21YVzVyWFUxVlFmRmI4bzdqcmNM?=
- =?utf-8?B?TjZmZVRDV243dkd1NHZCYlhSaHhvRFhVL0RHREg2T08rZEhSQzM5OW92NFgy?=
- =?utf-8?B?Nm1abzFhSjV2am5PVHBZalZGeE1Dd29NbHlSSEVhS3d6bVlBQ2J3NnNTNEp1?=
- =?utf-8?B?OTc4N3A1VWlidkZjN00wWlpnOE83bTNvU2lyOXF1R0hDcklOYWI1Z1BZc3lQ?=
- =?utf-8?B?c2dWckVkUzJJYXpkOWhkQWJ2Y2dHSVJwMGx4dkdoTmRLY3ppRWROcnFQQTdN?=
- =?utf-8?B?em54Z3VmZHlYc1h3eWtiQWN1T0g0TzV0cjlNMExvNldGY0R5VW1JSWI0aXRY?=
- =?utf-8?B?enp4UVRRYUwxM3J2VkQxaTZDL0xQOU51eXpINjdlQ1lBWDlURTdKSDhBMXFt?=
- =?utf-8?B?VkcrN0lFZUtjR2s1SzVzanUraDNreng0Q3ZRTUVxSkxEVGFycmlRUmpFUlBM?=
- =?utf-8?B?SEhwcXJCOGpmNkE1UngrK3RwRWJKdEIvVmVQTmt1RmFnRnZ0bjNHNmE0Uk5h?=
- =?utf-8?B?MUZSRWtnRVJPeTgraFRRNVIyWVNydmxHN1RmY1JPV3owNUwyZDVoNDhGOHhF?=
- =?utf-8?B?a1JTU2ZTbVdmOCsvdCtLUjZUUklaS2k1VXQvcm81RGNqVGFhSXRMTnlQNXlH?=
- =?utf-8?B?dWJBOUFBVjA3VW5wZW5iTGlTRHIyMDA3UlRiN25JZzFwWEZqWlk4RUdYeWNL?=
- =?utf-8?B?YlFOQXVYM1pPT3FrZTJRalYzVVB1a3dlU0o4RVM1LzIwNmhKUUJWemd1T0VZ?=
- =?utf-8?B?TENVeStXNEZHQWdXRVBEcG1BVDRsWGl4elpULzYzbzZ3ME13cHgxQThmVlFi?=
- =?utf-8?B?c2s0Z1oyMXQyMDdmRm80NEVYWW1pQ0Q3dU9yYUhuY28vMFlweDdzR3VBajNo?=
- =?utf-8?B?QWJwWklUaDArVTdaN1JaWEc3bWxDVWNtMEpKNGJ4ZXFZMEVnaVQ5SnpqRzdN?=
- =?utf-8?B?MzIrbWVES0s4RUQ5UXpla2ZuT1JmdUx0dm9SWGNYVDMwZ2gxM21NM095WFcx?=
- =?utf-8?B?V084NDhHM09kc0RJU0U4dEthZVh2V3E3ekpITk1jRTZwWlFGdnd3V0d0YzJh?=
- =?utf-8?B?bzFVNWgrVW1Sc3JuMjB3RnpqLy9vUXNaZEFxS3ZBcEQ4Z1B6WkR3dURrRVZO?=
- =?utf-8?B?dUVGT2p3TFFvRWswUnJjdzFYVDBNS2xlTGx3cmNiZ1drT2ZPZUU5U0NQREQz?=
- =?utf-8?B?Vi9pdXM1WEZpRGR1dnhJd2NHaHoxRkFHSjhZYSswRndIQzlOazJCNEwwZUR0?=
- =?utf-8?B?UndPdW12SW1kNkN2d3M5Um50WDhzUzVNZkgvTm1zU21KbzhCOThmK3Raa215?=
- =?utf-8?B?ZGo5UGp2NlVrbnc9PQ==?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2021 17:16:36.2865
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8d9546e4-093d-476b-19c7-08d8b654a6bf
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ji3nuWwEkwg0iIDg/mXc54iU5JiwZ5DwGAefOaJlg5G/MXY/5BZJelawf1Kj2gtP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3208
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-11_29:2021-01-11,2021-01-11 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 suspectscore=0
- clxscore=1015 priorityscore=1501 mlxlogscore=999 lowpriorityscore=0
- impostorscore=0 adultscore=0 bulkscore=0 spamscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101110099
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+While thinking more about this, I'm thinking a big part of the problem
+is that we're not dinstinguishing between geniuine per-cpu kthreads and
+kthreads that just happen to be per-cpu.
 
-On 1/8/21 3:19 PM, Song Liu wrote:
-> To access per-task data, BPF program typically creates a hash table with
-> pid as the key. This is not ideal because:
->   1. The use need to estimate requires size of the hash table, with may be
->      inaccurate;
->   2. Big hash tables are slow;
->   3. To clean up the data properly during task terminations, the user need
->      to write code.
-> 
-> Task local storage overcomes these issues and becomes a better option for
-> these per-task data. Task local storage is only available to BPF_LSM. Now
-> enable it for tracing programs.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
+Geniuine per-cpu kthreads are kthread_bind() and have PF_NO_SETAFFINITY,
+but sadly a lot of non-per-cpu kthreads, that might happen to still be
+per-cpu also have that -- again workqueue does that even to it's unbound
+workers :-(
 
-The whole patch is not reported by kernel test robot. I think we should
-drop this.
+Now, anything created by smpboot, is created through
+kthread_create_on_cpu() and that additionally sets to_kthread(p)->flags
+KTHREAD_IS_PER_CPU.
 
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
->   include/linux/bpf.h            |  7 +++++++
->   include/linux/bpf_lsm.h        | 22 ----------------------
->   include/linux/bpf_types.h      |  2 +-
->   include/linux/sched.h          |  5 +++++
->   kernel/bpf/Makefile            |  3 +--
->   kernel/bpf/bpf_local_storage.c | 28 +++++++++++++++++-----------
->   kernel/bpf/bpf_lsm.c           |  4 ----
->   kernel/bpf/bpf_task_storage.c  | 26 ++++++--------------------
->   kernel/fork.c                  |  5 +++++
->   kernel/trace/bpf_trace.c       |  4 ++++
->   10 files changed, 46 insertions(+), 60 deletions(-)
-> 
-> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> index 07cb5d15e7439..cf16548f28f7b 100644
-> --- a/include/linux/bpf.h
-> +++ b/include/linux/bpf.h
-> @@ -1480,6 +1480,7 @@ struct bpf_prog *bpf_prog_by_id(u32 id);
->   struct bpf_link *bpf_link_by_id(u32 id);
->   
->   const struct bpf_func_proto *bpf_base_func_proto(enum bpf_func_id func_id);
-> +void bpf_task_storage_free(struct task_struct *task);
->   #else /* !CONFIG_BPF_SYSCALL */
->   static inline struct bpf_prog *bpf_prog_get(u32 ufd)
->   {
-> @@ -1665,6 +1666,10 @@ bpf_base_func_proto(enum bpf_func_id func_id)
->   {
->   	return NULL;
->   }
-> +
-> +static inline void bpf_task_storage_free(struct task_struct *task)
-> +{
-> +}
->   #endif /* CONFIG_BPF_SYSCALL */
-[...]
+And I'm thinking that might be sufficient, if we modify
+is_per_cpu_kthread() to check that, then we only match smpboot threads
+(which include the hotplug and stopper threads, but notably not the idle
+thread)
+
+Sadly it appears like io_uring() uses kthread_create_on_cpu() without
+then having any hotplug crud on, so that needs additinoal frobbing.
+
+Also, init_task is PF_KTHREAD but doesn't have a struct kthread on.. and
+I suppose bound workqueues don't go through this either.
+
+Let me rummage around a bit...
+
+This seems to not insta-explode... opinions?
+
+---
+ include/linux/kthread.h |  3 +++
+ kernel/kthread.c        | 25 ++++++++++++++++++++++++-
+ kernel/sched/core.c     |  2 +-
+ kernel/sched/sched.h    |  4 ++--
+ kernel/smpboot.c        |  1 +
+ kernel/workqueue.c      | 12 +++++++++---
+ 6 files changed, 40 insertions(+), 7 deletions(-)
+
+diff --git a/include/linux/kthread.h b/include/linux/kthread.h
+index 65b81e0c494d..fdd5a52e35d8 100644
+--- a/include/linux/kthread.h
++++ b/include/linux/kthread.h
+@@ -33,6 +33,9 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
+ 					  unsigned int cpu,
+ 					  const char *namefmt);
+ 
++void kthread_set_per_cpu(struct task_struct *k, bool set);
++bool kthread_is_per_cpu(struct task_struct *k);
++
+ /**
+  * kthread_run - create and wake a thread.
+  * @threadfn: the function to run until signal_pending(current).
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index a5eceecd4513..7f081530e459 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -493,11 +493,34 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
+ 		return p;
+ 	kthread_bind(p, cpu);
+ 	/* CPU hotplug need to bind once again when unparking the thread. */
+-	set_bit(KTHREAD_IS_PER_CPU, &to_kthread(p)->flags);
+ 	to_kthread(p)->cpu = cpu;
+ 	return p;
+ }
+ 
++void kthread_set_per_cpu(struct task_struct *k, bool set)
++{
++	struct kthread *kthread = to_kthread(k);
++	if (!kthread)
++		return;
++
++	if (set) {
++		WARN_ON_ONCE(!(k->flags & PF_NO_SETAFFINITY));
++		WARN_ON_ONCE(k->nr_cpus_allowed != 1);
++		set_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
++	} else {
++		clear_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
++	}
++}
++
++bool kthread_is_per_cpu(struct task_struct *k)
++{
++	struct kthread *kthread = to_kthread(k);
++	if (!kthread)
++		return false;
++
++	return test_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
++}
++
+ /**
+  * kthread_unpark - unpark a thread created by kthread_create().
+  * @k:		thread created by kthread_create().
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 15d2562118d1..e71f9e44789e 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -7277,7 +7277,7 @@ static void balance_push(struct rq *rq)
+ 	 * Both the cpu-hotplug and stop task are in this case and are
+ 	 * required to complete the hotplug process.
+ 	 */
+-	if (is_per_cpu_kthread(push_task) || is_migration_disabled(push_task)) {
++	if (rq->idle == push_task || is_per_cpu_kthread(push_task) || is_migration_disabled(push_task)) {
+ 		/*
+ 		 * If this is the idle task on the outgoing CPU try to wake
+ 		 * up the hotplug control thread which might wait for the
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 12ada79d40f3..3679f63e0aa2 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2697,10 +2697,10 @@ static inline bool is_per_cpu_kthread(struct task_struct *p)
+ 	if (!(p->flags & PF_KTHREAD))
+ 		return false;
+ 
+-	if (p->nr_cpus_allowed != 1)
++	if (!(p->flags & PF_NO_SETAFFINITY))
+ 		return false;
+ 
+-	return true;
++	return kthread_is_per_cpu(p);
+ }
+ #endif
+ 
+diff --git a/kernel/smpboot.c b/kernel/smpboot.c
+index 2efe1e206167..b0abe575a524 100644
+--- a/kernel/smpboot.c
++++ b/kernel/smpboot.c
+@@ -188,6 +188,7 @@ __smpboot_create_thread(struct smp_hotplug_thread *ht, unsigned int cpu)
+ 		kfree(td);
+ 		return PTR_ERR(tsk);
+ 	}
++	kthread_set_per_cpu(tsk, true);
+ 	/*
+ 	 * Park the thread so that it could start right on the CPU
+ 	 * when it is available.
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index 9880b6c0e272..824276e4fb2e 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -1861,6 +1861,8 @@ static void worker_attach_to_pool(struct worker *worker,
+ 	 */
+ 	if (pool->flags & POOL_DISASSOCIATED)
+ 		worker->flags |= WORKER_UNBOUND;
++	else
++		kthread_set_per_cpu(worker->task, true);
+ 
+ 	list_add_tail(&worker->node, &pool->workers);
+ 	worker->pool = pool;
+@@ -4919,8 +4921,10 @@ static void unbind_workers(int cpu)
+ 
+ 		raw_spin_unlock_irq(&pool->lock);
+ 
+-		for_each_pool_worker(worker, pool)
+-			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_active_mask) < 0);
++		for_each_pool_worker(worker, pool) {
++			kthread_set_per_cpu(worker->task, false);
++			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
++		}
+ 
+ 		mutex_unlock(&wq_pool_attach_mutex);
+ 
+@@ -4972,9 +4976,11 @@ static void rebind_workers(struct worker_pool *pool)
+ 	 * of all workers first and then clear UNBOUND.  As we're called
+ 	 * from CPU_ONLINE, the following shouldn't fail.
+ 	 */
+-	for_each_pool_worker(worker, pool)
++	for_each_pool_worker(worker, pool) {
+ 		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task,
+ 						  pool->attrs->cpumask) < 0);
++		kthread_set_per_cpu(worker->task, true);
++	}
+ 
+ 	raw_spin_lock_irq(&pool->lock);
+ 
