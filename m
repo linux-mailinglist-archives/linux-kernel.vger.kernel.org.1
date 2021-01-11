@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458B62F1358
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:07:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E6F2F13B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:13:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730585AbhAKNH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:07:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54288 "EHLO mail.kernel.org"
+        id S1731810AbhAKNNS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:13:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730482AbhAKNGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:06:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 94948225AB;
-        Mon, 11 Jan 2021 13:06:00 +0000 (UTC)
+        id S1731120AbhAKNMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:12:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B0592225E;
+        Mon, 11 Jan 2021 13:12:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370361;
-        bh=rwPYVE94HfNpJFsSt+E5hlbIoXRvehJRH/rC2WXnwAY=;
+        s=korg; t=1610370744;
+        bh=TOJcZvjnJZQGS+cQbsthieBdACSYNWvv/ibbBiaOXuY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K1LPgZEqgUFn47gqjdiBmzS51TxwrAqOJfuIX4OOnww15DHt5/t2QOBG+IY+32SaL
-         SlWM4uvgr+6gWzsaP3aMavb2Ov+w2H7EqHtM7d2Mqd7mwP1tYDb3PpVpBz7Xvn6oTF
-         LJJocP6XOCavqUYd5cKMhKq30N+o33fI+I6BTd5A=
+        b=o1x5LQSI4ZD+3eRyzr4YGn53y9MDHiagu9lsx+okmSdI3EVU/wIVAEFKfRPyNCGo/
+         kUtGBwW8F1lbjnxWtCo7MPKUr4syQyKh3LinAvPPwuxAZPg2QQUaCKSqVBqx7W/hCh
+         lU1tr8fZhuE0LuY8BarVmuyHRko1z9N3AY7RtfDc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>
-Subject: [PATCH 4.14 45/57] USB: gadget: legacy: fix return error code in acm_ms_bind()
-Date:   Mon, 11 Jan 2021 14:02:04 +0100
-Message-Id: <20210111130035.901405308@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 61/92] USB: serial: iuu_phoenix: fix DMA from stack
+Date:   Mon, 11 Jan 2021 14:02:05 +0100
+Message-Id: <20210111130042.090610008@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
-References: <20210111130033.715773309@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,36 +38,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit c91d3a6bcaa031f551ba29a496a8027b31289464 upstream.
+commit 54d0a3ab80f49f19ee916def62fe067596833403 upstream.
 
-If usb_otg_descriptor_alloc() failed, it need return ENOMEM.
+Stack-allocated buffers cannot be used for DMA (on all architectures) so
+allocate the flush command buffer using kmalloc().
 
-Fixes: 578aa8a2b12c ("usb: gadget: acm_ms: allocate and init otg descriptor by otg capabilities")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201117092955.4102785-1-yangyingliang@huawei.com
+Fixes: 60a8fc017103 ("USB: add iuu_phoenix driver")
+Cc: stable <stable@vger.kernel.org>     # 2.6.25
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/legacy/acm_ms.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/usb/serial/iuu_phoenix.c |   20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
---- a/drivers/usb/gadget/legacy/acm_ms.c
-+++ b/drivers/usb/gadget/legacy/acm_ms.c
-@@ -207,8 +207,10 @@ static int acm_ms_bind(struct usb_compos
- 		struct usb_descriptor_header *usb_desc;
+--- a/drivers/usb/serial/iuu_phoenix.c
++++ b/drivers/usb/serial/iuu_phoenix.c
+@@ -536,23 +536,29 @@ static int iuu_uart_flush(struct usb_ser
+ 	struct device *dev = &port->dev;
+ 	int i;
+ 	int status;
+-	u8 rxcmd = IUU_UART_RX;
++	u8 *rxcmd;
+ 	struct iuu_private *priv = usb_get_serial_port_data(port);
  
- 		usb_desc = usb_otg_descriptor_alloc(gadget);
--		if (!usb_desc)
-+		if (!usb_desc) {
-+			status = -ENOMEM;
- 			goto fail_string_ids;
-+		}
- 		usb_otg_descriptor_init(gadget, usb_desc);
- 		otg_desc[0] = usb_desc;
- 		otg_desc[1] = NULL;
+ 	if (iuu_led(port, 0xF000, 0, 0, 0xFF) < 0)
+ 		return -EIO;
+ 
++	rxcmd = kmalloc(1, GFP_KERNEL);
++	if (!rxcmd)
++		return -ENOMEM;
++
++	rxcmd[0] = IUU_UART_RX;
++
+ 	for (i = 0; i < 2; i++) {
+-		status = bulk_immediate(port, &rxcmd, 1);
++		status = bulk_immediate(port, rxcmd, 1);
+ 		if (status != IUU_OPERATION_OK) {
+ 			dev_dbg(dev, "%s - uart_flush_write error\n", __func__);
+-			return status;
++			goto out_free;
+ 		}
+ 
+ 		status = read_immediate(port, &priv->len, 1);
+ 		if (status != IUU_OPERATION_OK) {
+ 			dev_dbg(dev, "%s - uart_flush_read error\n", __func__);
+-			return status;
++			goto out_free;
+ 		}
+ 
+ 		if (priv->len > 0) {
+@@ -560,12 +566,16 @@ static int iuu_uart_flush(struct usb_ser
+ 			status = read_immediate(port, priv->buf, priv->len);
+ 			if (status != IUU_OPERATION_OK) {
+ 				dev_dbg(dev, "%s - uart_flush_read error\n", __func__);
+-				return status;
++				goto out_free;
+ 			}
+ 		}
+ 	}
+ 	dev_dbg(dev, "%s - uart_flush_read OK!\n", __func__);
+ 	iuu_led(port, 0, 0xF000, 0, 0xFF);
++
++out_free:
++	kfree(rxcmd);
++
+ 	return status;
+ }
+ 
 
 
