@@ -2,185 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2092F1865
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:38:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2BC2F1868
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:38:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729869AbhAKOhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:37:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39264 "EHLO
+        id S1731291AbhAKOiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:38:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727984AbhAKOhu (ORCPT
+        with ESMTP id S1727984AbhAKOiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:37:50 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480CCC061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:37:10 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id e7so3804558ljg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:37:10 -0800 (PST)
+        Mon, 11 Jan 2021 09:38:05 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC89C061794;
+        Mon, 11 Jan 2021 06:37:24 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id cm17so19062226edb.4;
+        Mon, 11 Jan 2021 06:37:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sC4E+CANulYGsf3AD5726pEn2yqMCAtzJ1BXr61X6ow=;
-        b=yTq/vdrDwIVDayA1cJV6ja9Z6DxF57PjcMQhP8aoNG7m7JauYmbiTp8g+hhhMF+n6s
-         EoFW1GHGuZIkgANK85ueJZbGB7wuuJTSxG0FQucn6xMzCdOKsa8icKKTFBSDgny2Ce5g
-         99MSDHDJ3L1UErnvIIrnyulpO8iv8Nvm6MtCSK27sTL+7gbH2JUxbdUVIUM8GnQegCzF
-         HSkHE0K2wsn8rsXRiuU7A+1b1IX+zWo7QeRmUtu/pS/rf6W8ZHaDFw4OJcPIm3lrTtBt
-         2x5yhRqs3HRhWVU3xzX/smr0p7IPz/RC6ybUar+LVsjqnSwDhQ16yEtSbr3jIVEUZ8pm
-         5+lA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=21jRwdzuelmCNx4/IPIy1mZV6+0ZKfy86dmmgxvQCxk=;
+        b=aWvwN2ZYqUzKvnXb1nt3yiJu/tSulZqg2xtxicqCk3dtZR586X/pC5Xb8RB+Pr1MBv
+         jjIXJGAxBsbOZnWAcE7o0JI2q3HdklbX3cvMczTh4y5Iuu2AB12oe8l/RAxajaVybT6f
+         gtlG6QbqvXSuYScNOfwiIKMxaU2AgnfAzQUMWoZvhEUH1u6XDA6GAbyAWDzOSzmJc4xq
+         7TYcyMz/VRJOy83zT5j8ipLYyNK5uPj7ncgEE2iJFOsXeX85rS1FV09hjktjfOZKhUSj
+         YXf+4gGcmtSQjB1Leet2YsqfPo0885MFu7PolKTTZZDdr/f3KXXg92nqa0Jhm/gNfWeb
+         //Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sC4E+CANulYGsf3AD5726pEn2yqMCAtzJ1BXr61X6ow=;
-        b=fxtyEG8Zp5//Ud58ovqbtHMJMpYrK44DwtKCnE8OZwd0gqYkLZgOQC2DP0+p31Lxdf
-         kp5ODXYFgg9eTh+2Hpev1f67/xSa6vR07sNw2OVeIMxJhgiekOk/6YunjNwKNXhOerCo
-         p4aPMIueshMpnyXnKPhox52WfVend/yk7a0AyjGcZ3owfROOh2pqolAndaDdt6KrkF9Q
-         UOPiob6wyPYLg7kaF6rXFis49s7OyxmV9/qtRXbeiEaYOE96mqVb8bac/Z+cQWntQqMm
-         TemEbVJHwHKZ51mBfhXGKKCXatLLpRFHVE5O7wIpds32/PHeLx6Onu4235spm8bYgwy+
-         V/lg==
-X-Gm-Message-State: AOAM53129F+NaVfrc0ERYChGnqiKgsgmY7JIWt0qPbIdJbRmmg4NKMiK
-        wiMagvVvrzkQO8l6uUpWvtsCGn3ZiiFcpJDx4fq15g==
-X-Google-Smtp-Source: ABdhPJyEIIcWqss+gfkcUn2BkBjR9rhWvDUPzf1eebrV5sU3OTEGYbY0bmyXWjq7LWjXt5kTVKdXV5Iw5RR0rGIqS00=
-X-Received: by 2002:a05:651c:20b:: with SMTP id y11mr7009856ljn.176.1610375828612;
- Mon, 11 Jan 2021 06:37:08 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=21jRwdzuelmCNx4/IPIy1mZV6+0ZKfy86dmmgxvQCxk=;
+        b=ZDt73MkQhpsnm1Gty09tJQH1Ra3AyO4YPabq12qrBRLhC+p78+K89SHNOshToH2N8a
+         coUXxJTm9aRMZWnznuglaKmjr/HtM7HN+mvfv76IOKZC8llgiFjbwNutn1RVGmxi526S
+         C/b2OBIAvtHEk/yHcherx4WAV+i6gl4qVnMa7p5xwjlPZkhp2dG+N5AOpi+6hfpXw7Lh
+         2kjhWhd4ueFw0wLSlae6z6jRUzl8rRDFDh9gvhWyJQWE4ChVSyw5j+bAUjW9U5EZRlvg
+         n5i9ieKQJ1xfI6gYMq6GBBzn2EPWPBHtCrAYp3XHRurVfVbI0wl/acjky0gEQt5mlmN9
+         s7rw==
+X-Gm-Message-State: AOAM530PvUxg4qIuQn3SSTZO2xOECrPYDgMGDREP9z3TBA2FDKpWfe9B
+        DhmuGV1qmgSPK3IgvlJyrbVe7SfewLo=
+X-Google-Smtp-Source: ABdhPJwExfM4guYhEDOpYYOxDlQJ1kdr4i6zASr6tdbF6UzwDW6sr2hoQsi8bRMKyDTIYbpEm3/NYg==
+X-Received: by 2002:a50:c3c5:: with SMTP id i5mr14470606edf.166.1610375842947;
+        Mon, 11 Jan 2021 06:37:22 -0800 (PST)
+Received: from [192.168.2.202] (pd9ea3126.dip0.t-ipconnect.de. [217.234.49.38])
+        by smtp.gmail.com with ESMTPSA id i15sm7121272ejj.28.2021.01.11.06.37.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 06:37:22 -0800 (PST)
+Subject: Re: platform/surface: Add Surface Aggregator user-space interface
+ (static analysis issues)
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <9e450370-7c5c-2e93-ac86-6f7c21652ab8@canonical.com>
+ <cf5213f9-0863-eba6-0e74-2f15577dba9d@gmail.com>
+ <a2e05368-42bb-b7bb-8b13-dc654d56bcbc@canonical.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <365cb250-47e0-a81e-434a-b776889853ad@gmail.com>
+Date:   Mon, 11 Jan 2021 15:37:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20201214164822.402812729@infradead.org> <20201214170017.877557652@infradead.org>
- <c4e31235-e1fb-52ac-99a8-ae943ee0de54@linux.intel.com> <20201215075911.GA3040@hirez.programming.kicks-ass.net>
- <20210108102738.GB3592@techsingularity.net> <CAKfTPtD5R1S=rwp9C-jyMg8bAB-37FCe3qrqad9KEeyR7mOmkw@mail.gmail.com>
- <20210108144058.GD3592@techsingularity.net> <CAKfTPtCGCmCv0yXSUmYUh6=8uzd0n9xFPqC0cW4sm-FqDvjvCQ@mail.gmail.com>
- <20210108161405.GE3592@techsingularity.net>
-In-Reply-To: <20210108161405.GE3592@techsingularity.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 11 Jan 2021 15:36:57 +0100
-Message-ID: <CAKfTPtAQuX5ZbzOH_LnFbBRWErP9pcnAVMvVE9qQw1LXouwzog@mail.gmail.com>
-Subject: Re: [RFC][PATCH 1/5] sched/fair: Fix select_idle_cpu()s cost accounting
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Jiang Biao <benbjiang@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a2e05368-42bb-b7bb-8b13-dc654d56bcbc@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Jan 2021 at 17:14, Mel Gorman <mgorman@techsingularity.net> wrote:
->
-> On Fri, Jan 08, 2021 at 04:10:51PM +0100, Vincent Guittot wrote:
-> > > > Trying to bias the avg_scan_cost with:  loops <<= 2;
-> > > > will just make avg_scan_cost lost any kind of meaning because it
-> > > > doesn't reflect the avg cost of scanning a rq anymore
-> > > >
-> > >
-> > > Before the series, the avg_scan_cost also did not represent the cost of
-> > > scanning a RQ before either. Treating scan failures and successes equally
-> >
-> > I agree that the previous avg_scan_cost was not representing a RQ
-> > because it was the avg cost of scanning the full domain.
->
-> It was not even that. As the full domain was not necessarily scanned at
-> all, it simply reflected how much time was spent scanning in general. It
-> neither represented an rq scan cost (which is variable due to cache
-> traffic) nor did it represent a full domain scan.
+On 1/11/21 3:11 PM, Colin Ian King wrote:
+> On 11/01/2021 13:55, Maximilian Luz wrote:
+>> On 1/11/21 1:12 PM, Colin Ian King wrote:
+>>> Hi Maximilian,
+>>>
+>>> Static analysis of linux-next with Coverity has found several issues
+>>> with the following commit:
+>>>
+>>> commit 178f6ab77e617c984d6520b92e747075a12676ff
+>>> Author: Maximilian Luz <luzmaximilian@gmail.com>
+>>> Date:   Mon Dec 21 19:39:58 2020 +0100
+>>>
+>>>       platform/surface: Add Surface Aggregator user-space interface
+>>>
+>>> The analysis is as follows:
+>>>
+>>> 65static long ssam_cdev_request(struct ssam_cdev *cdev, unsigned long
+>>> arg)
+>>>    66{
+>>>    67        struct ssam_cdev_request __user *r;
+>>>    68        struct ssam_cdev_request rqst;
+>>>
+>>>      1. var_decl: Declaring variable spec without initializer.
+>>>
+>>>    69        struct ssam_request spec;
+>>>    70        struct ssam_response rsp;
+>>>    71        const void __user *plddata;
+>>>    72        void __user *rspdata;
+>>>    73        int status = 0, ret = 0, tmp;
+>>>    74
+>>>    75        r = (struct ssam_cdev_request __user *)arg;
+>>>    76        ret = copy_struct_from_user(&rqst, sizeof(rqst), r,
+>>> sizeof(*r));
+>>>
+>>>      2. Condition ret, taking true branch.
+>>>
+>>>    77        if (ret)
+>>>
+>>>      3. Jumping to label out.
+>>>
+>>>    78                goto out;
+>>>
+>>>    79
+>>>    80        plddata = u64_to_user_ptr(rqst.payload.data);
+>>>    81        rspdata = u64_to_user_ptr(rqst.response.data);
+>>>    82
+>>>    83        /* Setup basic request fields. */
+>>>    84        spec.target_category = rqst.target_category;
+>>>    85        spec.target_id = rqst.target_id;
+>>>    86        spec.command_id = rqst.command_id;
+>>>    87        spec.instance_id = rqst.instance_id;
+>>>    88        spec.flags = 0;
+>>>    89        spec.length = rqst.payload.length;
+>>>    90        spec.payload = NULL;
+>>>    91
+>>>    92        if (rqst.flags & SSAM_CDEV_REQUEST_HAS_RESPONSE)
+>>>    93                spec.flags |= SSAM_REQUEST_HAS_RESPONSE;
+>>>    94
+>>>    95        if (rqst.flags & SSAM_CDEV_REQUEST_UNSEQUENCED)
+>>>    96                spec.flags |= SSAM_REQUEST_UNSEQUENCED;
+>>>    97
+>>>    98        rsp.capacity = rqst.response.length;
+>>>    99        rsp.length = 0;
+>>> 100        rsp.pointer = NULL;
+>>> 101
+>>> 102        /* Get request payload from user-space. */
+>>> 103        if (spec.length) {
+>>> 104                if (!plddata) {
+>>> 105                        ret = -EINVAL;
+>>> 106                        goto out;
+>>> 107                }
+>>> 108
+>>>
+>>> CID: Untrusted allocation size (TAINTED_SCALAR)
+>>>      8. tainted_data: Passing tainted expression spec.length to kzalloc,
+>>> which uses it as an allocation size
+>>>
+>>> 109                spec.payload = kzalloc(spec.length, GFP_KERNEL);
+>>
+>> I assume a constraint on the maximum length will fix this?
+> 
+> I believe so, it's unsigned so just an upper size check will be required
+> to silence this static analysis warning. Mind you, you may want a size
+> that is the full u16 max of 65535, so in that case the check is not
+> required.
 
-My point was mainly that the goal was to monitor the avg scan cost for
-the domain (whatever the number of rq effectively checked) so the
-duration was impacted by a successful scan that returns earlier
+Right, the theoretical maximum payload (spec.length) and response size
+allowed by the Surface Aggregator SSH protocol is 'U16_MAX -
+sizeof(struct ssh_command)' (not that anything this size should ever be
+allocated in any normal case). Meaning it is (slightly) smaller than
+U16_MAX, but I'm not sure if it warrants a check here. The payload size
+is later validated by ssam_request_sync(), so it does only affect the
+allocation here (the response is just an output buffer and may be of
+arbitrary size).
 
->
-> > And we were
-> > comparing it with the average idle time (weighted by few factors).
-> > And this cost was impacted by the fact that the scan can return early
-> > because it found a cpu. This has advantage and drawback but at least
-> > stays coherent in what we are comparing
-> >
->
-> Not really because it represented the cost of a scan of some number of
-> rqs from 1 to sd->span_weight.
->
-> > Peter's patch wants to move on per rq avg scan cost. And what you're
-> > proposing is to add a magic heuristic to bias the per rq which at the
-> > end makes this value just an opaque metric.
-> >
->
-> The metric is a heuristic no matter what. The scan cost of a RQ is not
-> fixed as it depends on whether cache data needs to be updated or not. Also
-> bear in mind that the first round of results and the results that I posted
-> showed that Peter's patch has significant corner cases that the patch
-> mitigates. You also note that avg_idle is an unusual metric to compare
-> against because it has numerous timing artifacts. At least one of them
-> is that we are extrapolating the domain idle time from a single rq which
-> is a poor proxy measure when a domain is only partially used. There just
-> is not a better one available without heavy writes to sd_llc which causes
-> its own set of problems.
->
-> > If we really want to keep the impact of early return than IMO we
-> > should stay on a full domain scan level instead of a per rq.
-> >
->
-> That also has the same class of side-effects. Once the scan cost of
-> a successful scan is strictly accounted for, there are problems. Even
-> tracking the success scans is costly as the CPU clock has to be read and
-> sd_llc has to be updated.
->
-> > Also, there is another problem (that I'm investigating)  which is that
-> > this_rq()->avg_idle is stalled when your cpu is busy. Which means that
-> > this avg_idle can just be a very old and meaningless value.
->
-> Yes, avg_idle in itself is just the average inter-arrival time between
-> a CPU going idle and receiving a wakeup partially bound roughly
-> by 2*sysctl_sched_migration_cost. If avg_idle is traced for each
-> select_idle_cpu(), it's obvious that it takes time to adjust when a
-> load starts.
->
-> > I think
-> > that we should decay it periodically to reflect there is less and less
-> > idle time (in fact no more)  on this busy CPU that never goes to idle.
-> > If a cpu was idle for a long period but then a long running task
-> > starts, the avg_idle will stay stalled to the large value which is
-> > becoming less and less relevant.
->
-> While I get what you're saying, it does not help extrapolate what the
-> idleness of a domain is.
+I think the limit imposed by having u16 as user-input should be enough.
+I can still add an explicit check here if that is preferred, but I could
+also add a comment explaining that this should be safe.
 
-not but it gives a more up to date view of the idleness of the local
-cpu which is better than a stalled value
-
->
-> > At the opposite, a cpu with a short running/idle period task will have
-> > a lower avg_idle whereas it is more often idle.
-> >
-> > Another thing that worries me, is that we use the avg_idle of the
-> > local cpu, which is obviously not idle otherwise it would have been
-> > selected, to decide how much time we should spend on looking for
-> > another idle CPU. I'm not sure that's the right metrics to use
-> > especially with a possibly stalled value.
-> >
->
-> A better estimate requires heavy writes to sd_llc. The cost of that will
-> likely offset any benefit gained by a superior selection of a scan
-> depth.
->
-> Treating a successful scan cost and a failed scan cost as being equal has
-> too many corner cases. If we do not want to weight the successful scan
-> cost, then the compromise is to keep the old behaviour that accounts for
-
-I think that keeping the current way to scane_cost id the best option for now
-
-> scan failures only (avoids an sd_llc write at least) but base it on the
-> estimated scan cost for a single rq. The fact that we do not account for
-> scan failures should be explicitly commented so we do not forget it
-> again in the future.
->
-> --
-> Mel Gorman
-> SUSE Labs
+> 
+>>
+>>> 110                if (!spec.payload) {
+>>> 111                        ret = -ENOMEM;
+>>> 112                        goto out;
+>>> 113                }
+>>> 114
+>>> 115                if (copy_from_user((void *)spec.payload, plddata,
+>>> spec.length)) {
+>>> 116                        ret = -EFAULT;
+>>> 117                        goto out;
+>>> 118                }
+>>> 119        }
+>>> 120
+>>> 121        /* Allocate response buffer. */
+>>> 122        if (rsp.capacity) {
+>>> 123                if (!rspdata) {
+>>> 124                        ret = -EINVAL;
+>>> 125                        goto out;
+>>> 126                }
+>>> 127
+>>>
+>>> CID: Untrusted allocation size (TAINTED_SCALAR)
+>>>      12. tainted_data: Passing tainted expression rsp.capacity to kzalloc,
+>>> which uses it as an allocation size
+>>>
+>>> 128                rsp.pointer = kzalloc(rsp.capacity, GFP_KERNEL);
+>>> 129                if (!rsp.pointer) {
+>>> 130                        ret = -ENOMEM;
+>>> 131                        goto out;
+>>> 132                }
+>>> 133        }
+>>> 134
+>>> 135        /* Perform request. */
+>>> 136        status = ssam_request_sync(cdev->ctrl, &spec, &rsp);
+>>> 137        if (status)
+>>> 138                goto out;
+>>> 139
+>>> 140        /* Copy response to user-space. */
+>>> 141        if (rsp.length && copy_to_user(rspdata, rsp.pointer,
+>>> rsp.length))
+>>> 142                ret = -EFAULT;
+>>> 143
+>>> 144out:
+>>> 145        /* Always try to set response-length and status. */
+>>>
+>>>      CID: Uninitialized pointer read (UNINIT)
+>>>      Using uninitialized value rsp.length
+>>>
+>>> 146        tmp = put_user(rsp.length, &r->response.length);
+>>>
+>>>      4. Condition tmp, taking true branch.
+>>>
+>>> 147        if (tmp)
+>>> 148                ret = tmp;
+>>> 149
+>>> 150        tmp = put_user(status, &r->status);
+>>>
+>>>      5. Condition tmp, taking true branch.
+>>>
+>>> 151        if (tmp)
+>>> 152                ret = tmp;
+>>> 153
+>>> 154        /* Cleanup. */
+>>>
+>>>      CID: Uninitialized pointer read (UNINIT)
+>>>      6. uninit_use_in_call: Using uninitialized value spec.payload when
+>>> calling kfree.
+>>>
+>>> 155        kfree(spec.payload);
+>>>
+>>>      CID: Uninitialized pointer read (UNINIT)
+>>>      uninit_use_in_call: Using uninitialized value rsp.pointer when
+>>> calling kfree
+>>>
+>>> 156        kfree(rsp.pointer);
+>>
+>> Right, taking the first jump to out leaves rsp and spec uninitialized.
+>> I'll fix that.
+>>
+>>> 157
+>>> 158        return ret;
+>>>
+>>> Colin
+>>>
+>>
+>> Thank you for the analysis. I'll draft up two patches to address these
+>> issues.
+>>
+>> Regards,
+>> Max
+> 
