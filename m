@@ -2,272 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6E22F208B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E2362F2094
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:19:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404125AbhAKURC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 15:17:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391382AbhAKURA (ORCPT
+        id S2391488AbhAKUTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 15:19:08 -0500
+Received: from out01.mta.xmission.com ([166.70.13.231]:37882 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391355AbhAKUTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:17:00 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0ABEC061794;
-        Mon, 11 Jan 2021 12:16:19 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id q7so393710pgm.5;
-        Mon, 11 Jan 2021 12:16:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=fdRtUN0vRfDIgoyI5IKMd32l9LrJZSebJr2uosM4FH8=;
-        b=rhTxTlp17JDo/Jq6WvAxkEU1qFHfUoLFOGLKO7yXjROIN7zKN8kHdloRMA0liB+tbl
-         wfZDsZ8pSmVFD+8bA8RNy/SndBObj0sRZBgz5winwOSwRwLeZvGY+fVtgARDhm1tGpIN
-         G1to/Eklstxd2urW7BrnzoKyKMleqwbGYDo7gO7WKmyNw0C5R6JR6dzknw3BcJQ0OWZU
-         FT/Gtxfgsmckw+WkC96Gd3EFSrT38vMqF3ja/tcfNUgo7Gn177CLQxxLeSBGRnuJ6ezP
-         Jkmy5xP3Uasg37+EbGhiXxYAZTsXh09xD65olRnDJCbM0BuWt81mTZMl6g8GXXZIqmWi
-         ZuGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fdRtUN0vRfDIgoyI5IKMd32l9LrJZSebJr2uosM4FH8=;
-        b=SgWndCZiALZqA7n9eej9FpXq2gsvR2+VdLnFTpOawrpgZ+87YYM6SVr9RN6xbSBVPn
-         dFvqDNisuQDFOON4PtFXWqUHyyjDNtANol3ZMFtcUZGC0cBqdGuBu/R2kVPZGWu9hFmm
-         TgXz8xPkIj5aBK/27fStzUE+tARBYhKloU5lgplrKxK+7mHNbvBFuixCZVtWRCmNiHL7
-         f033LnZ90z4et6TmCAphu1StwqT8EVVvTUkVHjBPn1IQg2Qi953QX7lNUaZ9D5gU9RyI
-         TJfRheGKuwZOnd1S1yW+AfRA+AId0n94B4xxTA4B+ls51OHE+9J5lbUmKgrMUD839bQr
-         7Oyg==
-X-Gm-Message-State: AOAM5305r3VZM47nIBzTRZ2QgJ3aQDL9Ja7RaMfwmZYrqYhyIKuCuKgE
-        RBF75ztzl6odzhILwMaBKw==
-X-Google-Smtp-Source: ABdhPJyQ8ga5gZKZ7xLZqkxuDgItmBaLV/mt1zSRov2rDyErY8m/WYoBaBW6qlp8XCjz7XRAtPPUYQ==
-X-Received: by 2002:a63:e14a:: with SMTP id h10mr1188532pgk.297.1610396179522;
-        Mon, 11 Jan 2021 12:16:19 -0800 (PST)
-Received: from localhost.localdomain ([216.52.21.4])
-        by smtp.gmail.com with ESMTPSA id t25sm591278pgv.30.2021.01.11.12.16.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 11 Jan 2021 12:16:19 -0800 (PST)
-From:   Praveen Chaudhary <praveen5582@gmail.com>
-X-Google-Original-From: Praveen Chaudhary <pchaudhary@linkedin.com>
-To:     davem@davemloft.net, kuba@kernel.org, corbet@lwn.net,
-        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v0 net-next 1/1] Allow user to set metric on default route learned via Router Advertisement. Router Advertisement.
-Date:   Mon, 11 Jan 2021 12:16:10 -0800
-Message-Id: <20210111201610.2425-2-pchaudhary@linkedin.com>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20210111201610.2425-1-pchaudhary@linkedin.com>
-References: <20210111201610.2425-1-pchaudhary@linkedin.com>
+        Mon, 11 Jan 2021 15:19:06 -0500
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kz3du-0092Lm-23; Mon, 11 Jan 2021 13:18:22 -0700
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1kz3ds-00GF4a-SO; Mon, 11 Jan 2021 13:18:21 -0700
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Alexey Gladkov <gladkov.alexey@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian@brauner.io>
+References: <cover.1610299857.git.gladkov.alexey@gmail.com>
+        <CAHk-=wgXZmRu762bjSeK80+T_LTo+UP9y5rP-uvym1vquSxmBw@mail.gmail.com>
+Date:   Mon, 11 Jan 2021 14:17:19 -0600
+In-Reply-To: <CAHk-=wgXZmRu762bjSeK80+T_LTo+UP9y5rP-uvym1vquSxmBw@mail.gmail.com>
+        (Linus Torvalds's message of "Sun, 10 Jan 2021 10:46:05 -0800")
+Message-ID: <87a6tfp6sw.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-XM-SPF: eid=1kz3ds-00GF4a-SO;;;mid=<87a6tfp6sw.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/Yf/U+HHFa2llriv5GGUzjHmbH00nuzd4=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Virus: No
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4988]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Linus Torvalds <torvalds@linux-foundation.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 485 ms - load_scoreonly_sql: 0.04 (0.0%),
+        signal_user_changed: 3.5 (0.7%), b_tie_ro: 2.4 (0.5%), parse: 1.21
+        (0.2%), extract_message_metadata: 15 (3.1%), get_uri_detail_list: 3.0
+        (0.6%), tests_pri_-1000: 4.7 (1.0%), tests_pri_-950: 1.08 (0.2%),
+        tests_pri_-900: 0.84 (0.2%), tests_pri_-90: 120 (24.7%), check_bayes:
+        111 (22.8%), b_tokenize: 7 (1.5%), b_tok_get_all: 9 (1.8%),
+        b_comp_prob: 1.96 (0.4%), b_tok_touch_all: 89 (18.4%), b_finish: 0.74
+        (0.2%), tests_pri_0: 328 (67.6%), check_dkim_signature: 0.41 (0.1%),
+        check_dkim_adsp: 2.1 (0.4%), poll_dns_idle: 0.74 (0.2%), tests_pri_10:
+        1.73 (0.4%), tests_pri_500: 5 (1.1%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [RFC PATCH v2 0/8] Count rlimits in each user namespace
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix:
-For IPv4, default route is learned via DHCPv4 and user is allowed to change
-metric using config etc/network/interfaces. But for IPv6, default route can
-be learned via RA, for which, currently a fixed metric value 1024 is used.
+Linus Torvalds <torvalds@linux-foundation.org> writes:
 
-Ideally, user should be able to configure metric on default route for IPv6
-similar to IPv4. This fix adds sysctl for the same.
+> On Sun, Jan 10, 2021 at 9:34 AM Alexey Gladkov <gladkov.alexey@gmail.com> wrote:
+>>
+>> To address the problem, we bind rlimit counters to each user namespace. The
+>> result is a tree of rlimit counters with the biggest value at the root (aka
+>> init_user_ns). The rlimit counter increment/decrement occurs in the current and
+>> all parent user namespaces.
+>
+> I'm not seeing why this is necessary.
+>
+> Maybe it's the right approach, but none of the patches (or this cover
+> letter email) really explain it to me.
+>
+> I understand why you might want the _limits_ themselves would form a
+> tree like this - with the "master limit" limiting the limits in the
+> user namespaces under it.
+>
+> But I don't understand why the _counts_ should do that. The 'struct
+> user_struct' should be shared across even user namespaces for the same
+> user.
+>
+> IOW, the very example of the problem you quote seems to argue against this:
+>
+>> For example, there are two containers (A and B) created by one user. The
+>> container A sets RLIMIT_NPROC=1 and starts one process. Everything is fine, but
+>> when container B tries to do the same it will fail because the number of
+>> processes is counted globally for each user and user has one process already.
+>
+> Note how the problem was _not_ that the _count_ was global. That part
+> was fine and all good.
 
-Signed-off-by: Praveen Chaudhary<pchaudhary@linkedin.com>
-Signed-off-by: Zhenggen Xu
----
- Documentation/networking/ip-sysctl.rst |  8 ++++++++
- include/linux/ipv6.h                   |  1 +
- include/net/ip6_route.h                |  3 ++-
- include/uapi/linux/ipv6.h              |  1 +
- include/uapi/linux/sysctl.h            |  1 +
- net/ipv6/addrconf.c                    | 10 ++++++++++
- net/ipv6/ndisc.c                       | 15 +++++++++++----
- net/ipv6/route.c                       |  8 +++++---
- 8 files changed, 39 insertions(+), 8 deletions(-)
+The problem is fundamentally that the per process RLIMIT_NPROC was
+compared against the user_struct->processes.
 
-diff --git a/Documentation/networking/ip-sysctl.rst b/Documentation/networking/ip-sysctl.rst
-index dd2b12a32b73..073c1f3f8429 100644
---- a/Documentation/networking/ip-sysctl.rst
-+++ b/Documentation/networking/ip-sysctl.rst
-@@ -1871,6 +1871,14 @@ accept_ra_defrtr - BOOLEAN
- 		- enabled if accept_ra is enabled.
- 		- disabled if accept_ra is disabled.
- 
-+accept_ra_defrtr_metric - INTEGER
-+	Metric for default router learned in Router Advertisement.
-+
-+	Functional default:
-+
-+		* 0 if accept_ra_defrtr is enabled.
-+		* Ignored, if accept_ra_defrtr is enabled.
-+
- accept_ra_from_local - BOOLEAN
- 	Accept RA with source-address that is found on local machine
- 	if the RA is otherwise proper and able to be accepted.
-diff --git a/include/linux/ipv6.h b/include/linux/ipv6.h
-index dda61d150a13..19af90c77200 100644
---- a/include/linux/ipv6.h
-+++ b/include/linux/ipv6.h
-@@ -31,6 +31,7 @@ struct ipv6_devconf {
- 	__s32		max_desync_factor;
- 	__s32		max_addresses;
- 	__s32		accept_ra_defrtr;
-+	__s32		accept_ra_defrtr_metric;
- 	__s32		accept_ra_min_hop_limit;
- 	__s32		accept_ra_pinfo;
- 	__s32		ignore_routes_with_linkdown;
-diff --git a/include/net/ip6_route.h b/include/net/ip6_route.h
-index 2a5277758379..a470bdab2420 100644
---- a/include/net/ip6_route.h
-+++ b/include/net/ip6_route.h
-@@ -174,7 +174,8 @@ struct fib6_info *rt6_get_dflt_router(struct net *net,
- 				     struct net_device *dev);
- struct fib6_info *rt6_add_dflt_router(struct net *net,
- 				     const struct in6_addr *gwaddr,
--				     struct net_device *dev, unsigned int pref);
-+				     struct net_device *dev, unsigned int pref,
-+				     unsigned int defrtr_usr_metric);
- 
- void rt6_purge_dflt_routers(struct net *net);
- 
-diff --git a/include/uapi/linux/ipv6.h b/include/uapi/linux/ipv6.h
-index 13e8751bf24a..945de5de5144 100644
---- a/include/uapi/linux/ipv6.h
-+++ b/include/uapi/linux/ipv6.h
-@@ -189,6 +189,7 @@ enum {
- 	DEVCONF_ACCEPT_RA_RT_INFO_MIN_PLEN,
- 	DEVCONF_NDISC_TCLASS,
- 	DEVCONF_RPL_SEG_ENABLED,
-+	DEVCONF_ACCEPT_RA_DEFRTR_METRIC,
- 	DEVCONF_MAX
- };
- 
-diff --git a/include/uapi/linux/sysctl.h b/include/uapi/linux/sysctl.h
-index 458179df9b27..5e79c196e33c 100644
---- a/include/uapi/linux/sysctl.h
-+++ b/include/uapi/linux/sysctl.h
-@@ -571,6 +571,7 @@ enum {
- 	NET_IPV6_ACCEPT_SOURCE_ROUTE=25,
- 	NET_IPV6_ACCEPT_RA_FROM_LOCAL=26,
- 	NET_IPV6_ACCEPT_RA_RT_INFO_MIN_PLEN=27,
-+	NET_IPV6_ACCEPT_RA_DEFRTR_METRIC=28,
- 	__NET_IPV6_MAX
- };
- 
-diff --git a/net/ipv6/addrconf.c b/net/ipv6/addrconf.c
-index eff2cacd5209..702ec4a33936 100644
---- a/net/ipv6/addrconf.c
-+++ b/net/ipv6/addrconf.c
-@@ -205,6 +205,7 @@ static struct ipv6_devconf ipv6_devconf __read_mostly = {
- 	.max_desync_factor	= MAX_DESYNC_FACTOR,
- 	.max_addresses		= IPV6_MAX_ADDRESSES,
- 	.accept_ra_defrtr	= 1,
-+	.accept_ra_defrtr_metric = 0,
- 	.accept_ra_from_local	= 0,
- 	.accept_ra_min_hop_limit= 1,
- 	.accept_ra_pinfo	= 1,
-@@ -260,6 +261,7 @@ static struct ipv6_devconf ipv6_devconf_dflt __read_mostly = {
- 	.max_desync_factor	= MAX_DESYNC_FACTOR,
- 	.max_addresses		= IPV6_MAX_ADDRESSES,
- 	.accept_ra_defrtr	= 1,
-+	.accept_ra_defrtr_metric = 0,
- 	.accept_ra_from_local	= 0,
- 	.accept_ra_min_hop_limit= 1,
- 	.accept_ra_pinfo	= 1,
-@@ -5475,6 +5477,7 @@ static inline void ipv6_store_devconf(struct ipv6_devconf *cnf,
- 	array[DEVCONF_MAX_DESYNC_FACTOR] = cnf->max_desync_factor;
- 	array[DEVCONF_MAX_ADDRESSES] = cnf->max_addresses;
- 	array[DEVCONF_ACCEPT_RA_DEFRTR] = cnf->accept_ra_defrtr;
-+	array[DEVCONF_ACCEPT_RA_DEFRTR_METRIC] = cnf->accept_ra_defrtr_metric;
- 	array[DEVCONF_ACCEPT_RA_MIN_HOP_LIMIT] = cnf->accept_ra_min_hop_limit;
- 	array[DEVCONF_ACCEPT_RA_PINFO] = cnf->accept_ra_pinfo;
- #ifdef CONFIG_IPV6_ROUTER_PREF
-@@ -6667,6 +6670,13 @@ static const struct ctl_table addrconf_sysctl[] = {
- 		.mode		= 0644,
- 		.proc_handler	= proc_dointvec,
- 	},
-+	{
-+		.procname	= "accept_ra_defrtr_metric",
-+		.data		= &ipv6_devconf.accept_ra_defrtr_metric,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec,
-+	},
- 	{
- 		.procname	= "accept_ra_min_hop_limit",
- 		.data		= &ipv6_devconf.accept_ra_min_hop_limit,
-diff --git a/net/ipv6/ndisc.c b/net/ipv6/ndisc.c
-index 76717478f173..05f7f246a768 100644
---- a/net/ipv6/ndisc.c
-+++ b/net/ipv6/ndisc.c
-@@ -1180,6 +1180,7 @@ static void ndisc_router_discovery(struct sk_buff *skb)
- 	unsigned int pref = 0;
- 	__u32 old_if_flags;
- 	bool send_ifinfo_notify = false;
-+	unsigned int defrtr_usr_metric = 0;
- 
- 	__u8 *opt = (__u8 *)(ra_msg + 1);
- 
-@@ -1303,18 +1304,24 @@ static void ndisc_router_discovery(struct sk_buff *skb)
- 			return;
- 		}
- 	}
--	if (rt && lifetime == 0) {
-+
-+	defrtr_usr_metric = in6_dev->cnf.accept_ra_defrtr_metric;
-+	/* default metric is IP6_RT_PRIO_USER */
-+	if (defrtr_usr_metric == 0)
-+		defrtr_usr_metric = IP6_RT_PRIO_USER;
-+	/* delete the route if lifetime is 0 or if new metric is needed */
-+	if (rt && (lifetime == 0 || rt->rt6i_metric != defrtr_usr_metric))  {
- 		ip6_del_rt(net, rt, false);
- 		rt = NULL;
- 	}
- 
--	ND_PRINTK(3, info, "RA: rt: %p  lifetime: %d, for dev: %s\n",
--		  rt, lifetime, skb->dev->name);
-+	ND_PRINTK(3, info, "RA: rt: %p  lifetime: %d, metric: %d, for dev: %s\n",
-+		  rt, lifetime, defrtr_usr_metric, skb->dev->name);
- 	if (!rt && lifetime) {
- 		ND_PRINTK(3, info, "RA: adding default router\n");
- 
- 		rt = rt6_add_dflt_router(net, &ipv6_hdr(skb)->saddr,
--					 skb->dev, pref);
-+					 skb->dev, pref, defrtr_usr_metric);
- 		if (!rt) {
- 			ND_PRINTK(0, err,
- 				  "RA: %s failed to add default route\n",
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 188e114b29b4..249b211362cd 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -4252,11 +4252,12 @@ struct fib6_info *rt6_get_dflt_router(struct net *net,
- struct fib6_info *rt6_add_dflt_router(struct net *net,
- 				     const struct in6_addr *gwaddr,
- 				     struct net_device *dev,
--				     unsigned int pref)
-+				     unsigned int pref,
-+				     unsigned int defrtr_usr_metric)
- {
- 	struct fib6_config cfg = {
- 		.fc_table	= l3mdev_fib_table(dev) ? : RT6_TABLE_DFLT,
--		.fc_metric	= IP6_RT_PRIO_USER,
-+		.fc_metric	= defrtr_usr_metric ? defrtr_usr_metric : IP6_RT_PRIO_USER,
- 		.fc_ifindex	= dev->ifindex,
- 		.fc_flags	= RTF_GATEWAY | RTF_ADDRCONF | RTF_DEFAULT |
- 				  RTF_UP | RTF_EXPIRES | RTF_PREF(pref),
-@@ -4266,7 +4267,8 @@ struct fib6_info *rt6_add_dflt_router(struct net *net,
- 		.fc_nlinfo.nlh = NULL,
- 		.fc_nlinfo.nl_net = net,
- 	};
--
-+    ND_PRINTK(3, info, "RA: metric: %d for dev: %s\n",
-+              cfg.fc_metric, dev->name);
- 	cfg.fc_gateway = *gwaddr;
- 
- 	if (!ip6_route_add(&cfg, GFP_ATOMIC, NULL)) {
--- 
-2.29.0
+I have only heard the problem described but I believe it is either the
+RLIMIT_NPROC test in fork or at the beginning of do_execveat_common that
+is failing.
 
+From fs/exec.c line 1866:
+> 	/*
+> 	 * We move the actual failure in case of RLIMIT_NPROC excess from
+> 	 * set*uid() to execve() because too many poorly written programs
+> 	 * don't check setuid() return code.  Here we additionally recheck
+> 	 * whether NPROC limit is still exceeded.
+> 	 */
+> 	if ((current->flags & PF_NPROC_EXCEEDED) &&
+> 	    atomic_read(&current_user()->processes) > rlimit(RLIMIT_NPROC)) {
+> 		retval = -EAGAIN;
+> 		goto out_ret;
+> 	}
+
+From fs/fork.c line 1966:
+> 	retval = -EAGAIN;
+> 	if (atomic_read(&p->real_cred->user->processes) >=
+> 			task_rlimit(p, RLIMIT_NPROC)) {
+> 		if (p->real_cred->user != INIT_USER &&
+> 		    !capable(CAP_SYS_RESOURCE) && !capable(CAP_SYS_ADMIN))
+> 			goto bad_fork_free;
+> 	}
+> 	current->flags &= ~PF_NPROC_EXCEEDED;
+
+In both the cases the RLIMIT_NPROC value comes from
+task->signal->rlim[RLIMIT_NPROC] and the count of processes
+comes from task->cred->user->processes.
+
+> No, the problem was that the _limit_ in container A also ended up
+> affecting container B.
+
+The description I have is that both containers run the same service
+that set it's RLIMIT_NPROC to 1 in both containers.
+
+> So to me, that says that it would make sense to continue to use the
+> resource counts in 'struct user_struct' (because if user A has a hard
+> limit of X, then creating a new namespace shouldn't expand that
+> limit), but then have the ability to make per-container changes to the
+> resource limits (as long as they are within the bounds of the parent
+> user namespace resource limit).
+
+I agree that needs to work as well.
+
+> Maybe there is some reason for this ucounts approach, but if so, I
+> feel it was not explained at all.
+
+Let me see if I can starte the example a litle more clearly.
+
+Suppose there is a service never_fork that sets RLIMIT_NPROC runs as
+never_fork_user and sets RLIMIT_NPROC to 1 in it's systemd service file.
+
+Further suppose there is a user bob who has two containers he wants to
+run: container1 and container2.  Both containers start the never_fork
+service.
+
+Bob first starts container1 and inside it the never_fork service starts.
+Bob starts container2 and the never_fork service fails to start.
+
+Does that make it clear that it is the count of the processes that would
+exceed 1 if both instances of the never_fork service starts that would
+be the problem?
+
+Eric
