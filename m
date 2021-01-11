@@ -2,145 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CEFA2F0CB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 07:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C2A2F0CB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 07:04:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727185AbhAKF6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 00:58:25 -0500
-Received: from muru.com ([72.249.23.125]:42630 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727055AbhAKF6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 00:58:24 -0500
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 528C980E4;
-        Mon, 11 Jan 2021 05:57:43 +0000 (UTC)
-Date:   Mon, 11 Jan 2021 07:57:39 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org,
-        Arthur Demchenkov <spinal.by@gmail.com>,
-        Carl Philipp Klemm <philipp@uvos.xyz>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>, ruleh <ruleh@gmx.de>,
-        Sebastian Reichel <sre@kernel.org>
-Subject: Re: [PATCH 3/5] Input: omap4-keypad - move rest of key scanning to a
- separate function
-Message-ID: <X/vo03Hd0sJFou3h@atomide.com>
-References: <20210110190529.46135-1-tony@atomide.com>
- <20210110190529.46135-4-tony@atomide.com>
- <X/vZJMAOJc/CzmHH@google.com>
+        id S1727324AbhAKGDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 01:03:09 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:30350 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbhAKGDI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 01:03:08 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610344968; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=rS57+Ry26VBvqzS/JbgOJTy503yPANHdZuGCYWXuK+0=;
+ b=TwH2K7u3gNk24pIs5HFyliNnW7Qay2JmWgWm6cJZGYvDn/pj3rjVVowMdEJ8uVtVLANMzihb
+ 17dZu6UGC31AUcUjU3hyKyKgUge/0GUT/WH3UGN4pQpWOJ4jDSvzUT0/Alf2ACLsoweoxWxf
+ sGicw2mac6lXZvEQIX25SqBg9gM=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 5ffbe9eef1be2d22c4087be9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 06:02:22
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AC19BC43466; Mon, 11 Jan 2021 06:02:21 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E6809C433CA;
+        Mon, 11 Jan 2021 06:02:20 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/vZJMAOJc/CzmHH@google.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 11 Jan 2021 14:02:20 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, bvanassche@acm.org,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        Jaegeuk Kim <jaegeuk@google.com>
+Subject: Re: [PATCH] scsi: ufs: should not override buffer lengh
+In-Reply-To: <6551e7d6dd7dc4132dc69e77a51f6f21@codeaurora.org>
+References: <20210111044443.1405049-1-jaegeuk@kernel.org>
+ <6551e7d6dd7dc4132dc69e77a51f6f21@codeaurora.org>
+Message-ID: <e1b29f7cdd62cefcc9355baaed66641f@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Dmitry Torokhov <dmitry.torokhov@gmail.com> [210111 04:50]:
-> On Sun, Jan 10, 2021 at 09:05:27PM +0200, Tony Lindgren wrote:
-> > Let's move rest of the key scanning code to omap4_keypad_scan_keys().
-> > We will use omap4_keypad_scan_keys() also for implementing errata
-> > handling to clear the stuck last key in the following patch.
-> 
-> And this one will become then...
+Sorry, typo corrected.
 
-Yes great, this works for me.
+Hi Jaegeuk,
+
+I think the problem is that func ufshcd_read_desc_param() is not 
+expecting
+one access unsupported descriptors on RPMB LU.
+
+If we can get the right buf_len from func 
+ufshcd_map_desc_id_to_length(),
+the issue won't happen. - 
+https://lore.kernel.org/patchwork/patch/1323421/.
+
+What do you think if we update ufshcd_map_desc_id_to_length(add one 
+param - desc_index)
+so that it can tell the correct buf_len in case of RPMB LU?
 
 Thanks,
+Can Guo.
 
-Tony
-
-
-> 
-> Input: omap4-keypad - move rest of key scanning to a separate function
-> 
-> From: Tony Lindgren <tony@atomide.com>
-> 
-> Let's move rest of the key scanning code to omap4_keypad_scan_keys().
-> We will use omap4_keypad_scan_keys() also for implementing errata
-> handling to clear the stuck last key in the following patch.
-> 
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> ---
->  drivers/input/keyboard/omap4-keypad.c |   39 ++++++++++++++++++++++-----------
->  1 file changed, 26 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/input/keyboard/omap4-keypad.c b/drivers/input/keyboard/omap4-keypad.c
-> index 6dcf27af856d..c48705dd049b 100644
-> --- a/drivers/input/keyboard/omap4-keypad.c
-> +++ b/drivers/input/keyboard/omap4-keypad.c
-> @@ -71,6 +71,7 @@ struct omap4_keypad {
->  
->  	void __iomem *base;
->  	unsigned int irq;
-> +	struct mutex lock;		/* for key scan */
->  
->  	unsigned int rows;
->  	unsigned int cols;
-> @@ -135,6 +136,28 @@ static int omap4_keypad_report_keys(struct omap4_keypad *keypad_data,
->  	return events;
->  }
->  
-> +static void omap4_keypad_scan_keys(struct omap4_keypad *keypad_data, u64 keys)
-> +{
-> +	u64 changed;
-> +
-> +	mutex_lock(&keypad_data->lock);
-> +
-> +	changed = keys ^ keypad_data->keys;
-> +
-> +	/*
-> +	 * Report key up events separately and first. This matters in case we
-> +	 * lost key-up interrupt and just now catching up.
-> +	 */
-> +	omap4_keypad_report_keys(keypad_data, changed & ~keys, false);
-> +
-> +	/* Report key down events */
-> +	omap4_keypad_report_keys(keypad_data, changed & keys, true);
-> +
-> +	keypad_data->keys = keys;
-> +
-> +	mutex_unlock(&keypad_data->lock);
-> +}
-> +
->  /* Interrupt handlers */
->  static irqreturn_t omap4_keypad_irq_handler(int irq, void *dev_id)
->  {
-> @@ -150,24 +173,13 @@ static irqreturn_t omap4_keypad_irq_thread_fn(int irq, void *dev_id)
->  {
->  	struct omap4_keypad *keypad_data = dev_id;
->  	u32 low, high;
-> -	u64 keys, changed;
-> +	u64 keys;
->  
->  	low = kbd_readl(keypad_data, OMAP4_KBD_FULLCODE31_0);
->  	high = kbd_readl(keypad_data, OMAP4_KBD_FULLCODE63_32);
->  	keys = low | (u64)high << 32;
->  
-> -	changed = keys ^ keypad_data->keys;
-> -
-> -	/*
-> -	 * Report key up events separately and first. This matters in case we
-> -	 * lost key-up interrupt and just now catching up.
-> -	 */
-> -	omap4_keypad_report_keys(keypad_data, changed & ~keys, false);
-> -
-> -	/* Report key down events */
-> -	omap4_keypad_report_keys(keypad_data, changed & keys, true);
-> -
-> -	keypad_data->keys = keys;
-> +	omap4_keypad_scan_keys(keypad_data, keys);
->  
->  	/* clear pending interrupts */
->  	kbd_write_irqreg(keypad_data, OMAP4_KBD_IRQSTATUS,
-> @@ -300,6 +312,7 @@ static int omap4_keypad_probe(struct platform_device *pdev)
->  	}
->  
->  	keypad_data->irq = irq;
-> +	mutex_init(&keypad_data->lock);
->  
->  	error = omap4_keypad_parse_dt(dev, keypad_data);
->  	if (error)
+> On 2021-01-11 12:44, Jaegeuk Kim wrote:
+>> From: Jaegeuk Kim <jaegeuk@google.com>
+>> 
+>> Kernel stack violation when getting unit_descriptor/wb_buf_alloc_units 
+>> from
+>> rpmb lun. The reason is the unit descriptor length is different per 
+>> LU.
+>> 
+>> The lengh of Normal LU is 45, while the one of rpmb LU is 35.
+>> 
+>> int ufshcd_read_desc_param(struct ufs_hba *hba, ...)
+>> {
+>> 	param_offset=41;
+>> 	param_size=4;
+>> 	buff_len=45;
+>> 	...
+>> 	buff_len=35 by rpmb LU;
+>> 
+>> 	if (is_kmalloc) {
+>> 		/* Make sure we don't copy more data than available */
+>> 		if (param_offset + param_size > buff_len)
+>> 			param_size = buff_len - param_offset;
+>> 			--> param_size = 250;
+>> 		memcpy(param_read_buf, &desc_buf[param_offset], param_size);
+>> 		--> memcpy(param_read_buf, desc_buf+41, 250);
+>> 
+>> [  141.868974][ T9174] Kernel panic - not syncing: stack-protector:
+>> Kernel stack is corrupted in: wb_buf_alloc_units_show+0x11c/0x11c
+>> 	}
+>> }
+>> 
+>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>> ---
+>>  drivers/scsi/ufs/ufshcd.c | 8 ++++++--
+>>  1 file changed, 6 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index 2a715f13fe1d..722697b57777 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -3293,8 +3293,12 @@ int ufshcd_read_desc_param(struct ufs_hba *hba,
+>> 
+>>  	if (is_kmalloc) {
+>>  		/* Make sure we don't copy more data than available */
+>> -		if (param_offset + param_size > buff_len)
+>> -			param_size = buff_len - param_offset;
+>> +		if (param_offset + param_size > buff_len) {
+>> +			if (buff_len > param_offset)
+>> +				param_size = buff_len - param_offset;
+>> +			else
+>> +				param_size = 0;
+>> +		}
+>>  		memcpy(param_read_buf, &desc_buf[param_offset], param_size);
+>>  	}
+>>  out:
