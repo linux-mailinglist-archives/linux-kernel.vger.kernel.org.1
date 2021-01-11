@@ -2,223 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 657E02F1A1C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 149C92F1A26
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:53:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387990AbhAKPvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:51:48 -0500
-Received: from outbound-smtp26.blacknight.com ([81.17.249.194]:54256 "EHLO
-        outbound-smtp26.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732648AbhAKPvq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:51:46 -0500
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp26.blacknight.com (Postfix) with ESMTPS id 2DE20CAC1E
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 15:50:54 +0000 (GMT)
-Received: (qmail 15539 invoked from network); 11 Jan 2021 15:50:54 -0000
-Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPA; 11 Jan 2021 15:50:53 -0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Li Aubrey <aubrey.li@linux.intel.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 5/5] sched/fair: Merge select_idle_core/cpu()
-Date:   Mon, 11 Jan 2021 15:50:47 +0000
-Message-Id: <20210111155047.10657-6-mgorman@techsingularity.net>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210111155047.10657-1-mgorman@techsingularity.net>
-References: <20210111155047.10657-1-mgorman@techsingularity.net>
+        id S2388376AbhAKPw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:52:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60548 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731466AbhAKPwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 10:52:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A07EF2251F;
+        Mon, 11 Jan 2021 15:51:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610380303;
+        bh=Es2k0h+26hNNjATG11DvaX8uXnVDAE5QUnH9ejSvFPI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=l71kPYjBBbCPdO3SBsxD9bpm7OE7Zi/6v3Lk3CtXQee3op9frz+YUPOXjg89qfgug
+         RlEU7Aj0H/k5S6HVwXDpRPKgWzXaCCIUjsWIg7HXsR+k6XoW/4jNYZ7QpYQ31Mtvck
+         ScGnT4FNMVsav4D+gfKmZBo26I+OftmauN+EWx4NFySxHHe0H3cQpRaJsS03wE0XgC
+         BcqEZYPFgaaUEc0FODjwMcUkudt+AvwzqtFegyVsemSXvVFWoNkc4gOXRhAAcpP1Z5
+         +QwJ5NamXBo3yT6prJZhFDP316a14MCeZBzJ5vFYZvFYNzxwS8mW4fiY2QbL/HA/sV
+         qHlTKBJr3B6uA==
+Date:   Mon, 11 Jan 2021 16:51:38 +0100
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     giladreti <gilad.reti@gmail.com>
+Cc:     bpf@vger.kernel.org, Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Signed-off-by: giladreti <gilad.reti@gmail.com>
+Message-ID: <20210111165138.652a5525@kernel.org>
+In-Reply-To: <20210111153123.GA423936@ubuntu>
+References: <20210111153123.GA423936@ubuntu>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both select_idle_core() and select_idle_cpu() do a loop over the same
-cpumask. Observe that by clearing the already visited CPUs, we can
-fold the iteration and iterate a core at a time.
+The Signed-off-by line should be last in the commit message, not first.
+First line (which becomes e-mail subject) should describe what the
+commit does (in a short one liner) and where it does it.
 
-All we need to do is remember any non-idle CPU we encountered while
-scanning for an idle core. This way we'll only iterate every CPU once.
+So for your patch it could be something like
+  bpf: support pointer to mem register spilling in verifier
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- kernel/sched/fair.c | 97 +++++++++++++++++++++++++++------------------
- 1 file changed, 59 insertions(+), 38 deletions(-)
+The commit message should be written in present simple tense, not past
+simple, ie. not "Added support" but "Add support".
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 12e08da90024..84f02abb29e3 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6006,6 +6006,14 @@ static inline int find_idlest_cpu(struct sched_domain *sd, struct task_struct *p
- 	return new_cpu;
- }
- 
-+static inline int __select_idle_cpu(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
-+{
-+	if (available_idle_cpu(core) || sched_idle_cpu(core))
-+		return core;
-+
-+	return -1;
-+}
-+
- #ifdef CONFIG_SCHED_SMT
- DEFINE_STATIC_KEY_FALSE(sched_smt_present);
- EXPORT_SYMBOL_GPL(sched_smt_present);
-@@ -6066,40 +6074,34 @@ void __update_idle_core(struct rq *rq)
-  * there are no idle cores left in the system; tracked through
-  * sd_llc->shared->has_idle_cores and enabled through update_idle_core() above.
-  */
--static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int target)
-+static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
- {
--	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
--	int core, cpu;
-+	bool idle = true;
-+	int cpu;
- 
- 	if (!static_branch_likely(&sched_smt_present))
--		return -1;
--
--	if (!test_idle_cores(target, false))
--		return -1;
--
--	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-+		return __select_idle_cpu(p, core, cpus, idle_cpu);
- 
--	for_each_cpu_wrap(core, cpus, target) {
--		bool idle = true;
--
--		for_each_cpu(cpu, cpu_smt_mask(core)) {
--			if (!available_idle_cpu(cpu)) {
--				idle = false;
--				break;
-+	for_each_cpu(cpu, cpu_smt_mask(core)) {
-+		if (!available_idle_cpu(cpu)) {
-+			idle = false;
-+			if (*idle_cpu == -1) {
-+				if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, p->cpus_ptr)) {
-+					*idle_cpu = cpu;
-+					break;
-+				}
-+				continue;
- 			}
-+			break;
- 		}
--
--		if (idle)
--			return core;
--
--		cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
-+		if (*idle_cpu == -1 && cpumask_test_cpu(cpu, p->cpus_ptr))
-+			*idle_cpu = cpu;
- 	}
- 
--	/*
--	 * Failed to find an idle core; stop looking for one.
--	 */
--	set_idle_cores(target, 0);
-+	if (idle)
-+		return core;
- 
-+	cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
- 	return -1;
- }
- 
-@@ -6107,9 +6109,18 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
- 
- #define sched_smt_weight	1
- 
--static inline int select_idle_core(struct task_struct *p, struct sched_domain *sd, int target)
-+static inline void set_idle_cores(int cpu, int val)
- {
--	return -1;
-+}
-+
-+static inline bool test_idle_cores(int cpu, bool def)
-+{
-+	return def;
-+}
-+
-+static inline int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
-+{
-+	return __select_idle_cpu(p, core, cpus, idle_cpu);
- }
- 
- #endif /* CONFIG_SCHED_SMT */
-@@ -6124,10 +6135,11 @@ static inline int select_idle_core(struct task_struct *p, struct sched_domain *s
- static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int target)
- {
- 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
-+	int i, cpu, idle_cpu = -1, nr = INT_MAX;
-+	bool smt = test_idle_cores(target, false);
-+	int this = smp_processor_id();
- 	struct sched_domain *this_sd;
- 	u64 time;
--	int this = smp_processor_id();
--	int cpu, nr = INT_MAX;
- 
- 	this_sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
- 	if (!this_sd)
-@@ -6135,7 +6147,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 
- 	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
- 
--	if (sched_feat(SIS_PROP)) {
-+	if (sched_feat(SIS_PROP) && !smt) {
- 		u64 avg_cost, avg_idle, span_avg;
- 
- 		/*
-@@ -6159,16 +6171,29 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 	for_each_cpu_wrap(cpu, cpus, target) {
- 		if (!--nr)
- 			return -1;
--		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
--			break;
-+		if (smt) {
-+			i = select_idle_core(p, cpu, cpus, &idle_cpu);
-+			if ((unsigned int)i < nr_cpumask_bits)
-+				return i;
-+
-+		} else {
-+			i = __select_idle_cpu(p, cpu, cpus, &idle_cpu);
-+			if ((unsigned int)i < nr_cpumask_bits) {
-+				idle_cpu = i;
-+				break;
-+			}
-+		}
- 	}
- 
--	if (sched_feat(SIS_PROP)) {
-+	if (smt)
-+		set_idle_cores(this, false);
-+
-+	if (sched_feat(SIS_PROP) && !smt) {
- 		time = cpu_clock(this) - time;
- 		update_avg(&this_sd->avg_scan_cost, time);
- 	}
- 
--	return cpu;
-+	return idle_cpu;
- }
- 
- /*
-@@ -6297,10 +6322,6 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	if (!sd)
- 		return target;
- 
--	i = select_idle_core(p, sd, target);
--	if ((unsigned)i < nr_cpumask_bits)
--		return i;
--
- 	i = select_idle_cpu(p, sd, target);
- 	if ((unsigned)i < nr_cpumask_bits)
- 		return i;
--- 
-2.26.2
+Also we need your name and surname in From: header and Signed-off-by:
+tag. So instead of
+  giladreti <gilad.reti@gmail.com>
+it should be
+  Gilad Reti <gilad.reti@gmail.com>
+if that is your real time. If it is not, please provide your real name.
+
+On Mon, 11 Jan 2021 17:31:23 +0200
+giladreti <gilad.reti@gmail.com> wrote:
+
+> Added support for pointer to mem register spilling, to allow the verifier
+> to track pointer to valid memory addresses. Such pointers are returned
+> for example by a successful call of the bpf_ringbuf_reserve helper.
+> 
+> This patch was suggested as a solution by Yonghong Song.
+> ---
+>  kernel/bpf/verifier.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 17270b8404f1..36af69fac591 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -2217,6 +2217,8 @@ static bool is_spillable_regtype(enum bpf_reg_type type)
+>  	case PTR_TO_RDWR_BUF:
+>  	case PTR_TO_RDWR_BUF_OR_NULL:
+>  	case PTR_TO_PERCPU_BTF_ID:
+> +	case PTR_TO_MEM:
+> +	case PTR_TO_MEM_OR_NULL:
+>  		return true;
+>  	default:
+>  		return false;
 
