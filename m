@@ -2,87 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B592F11DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:49:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2142F11D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:49:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730253AbhAKLsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:48:22 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:57590 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728568AbhAKLsV (ORCPT
+        id S1730185AbhAKLry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:47:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730170AbhAKLry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:48:21 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610365676; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=e2RKIfh/3Dgq5OF2y0vpSR1viIDQKn/3YAJh2Hfy6ZE=; b=IOMJUFn7w4CdazneybaeUeQZ+OM7xAiQ93Cph6DRmZ9kpw0lxuaLKq1bEriDq15cRwFqrgMf
- a75LJN3y2KBb1A9Q2rpHpevG2J/ecDAuXJOx68KaFlfNfmBIvjyjMKqdD1irETeSlCAkmo+L
- VF+ajAO3bxstNaIhsLmdtmb2/7g=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5ffc3ac346a6c7cde7a811b4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 11:47:15
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CB814C433CA; Mon, 11 Jan 2021 11:47:14 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 78830C433C6;
-        Mon, 11 Jan 2021 11:47:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 78830C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Maya Erez <merez@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "John W. Linville" <linville@tuxdriver.com>,
-        Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>,
-        linux-wireless@vger.kernel.org, wil6210@qti.qualcomm.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/7] wil6210: select CONFIG_CRC32
-References: <20210103213645.1994783-1-arnd@kernel.org>
-        <20210103213645.1994783-4-arnd@kernel.org>
-Date:   Mon, 11 Jan 2021 13:47:09 +0200
-In-Reply-To: <20210103213645.1994783-4-arnd@kernel.org> (Arnd Bergmann's
-        message of "Sun, 3 Jan 2021 22:36:20 +0100")
-Message-ID: <874kjnk85e.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        Mon, 11 Jan 2021 06:47:54 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974BDC061786;
+        Mon, 11 Jan 2021 03:47:13 -0800 (PST)
+Date:   Mon, 11 Jan 2021 11:47:10 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610365630;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m2MOL1qSJqi2HzuLgNWZQvWWUwriQAZkS4okhDCGt94=;
+        b=XgR9ow1ClVEl+7uurGAXqjanUQwBBm14y9Sz8YIPwwKPnJe9FjQ4XansUnpSMvFpouPKrC
+        XrLtCxBVk0+7ocdnD3VO3wJRJxUf+kh0PtAgU3gIe3zWdSAD/fYZ/Iyy/yJXdETetxuilL
+        jHeWDcao5H99AWGKVlCOc6vB9y+HxKEVBCbwmqfjpCv7qHixykQVvysajT7ibO+ZVV8Fht
+        1BEteX4FPJDWs5PhY8KagpZUAFqtBauuuARy8iZwlXbQ7uitu0TRD2uY6nNBsxGqQ/4Pgc
+        Flg8iicv35QSJ1d6kicdTL41S2odzP7gnqZt2tkKZt48KCidAedFY50EDjcd0g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610365630;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m2MOL1qSJqi2HzuLgNWZQvWWUwriQAZkS4okhDCGt94=;
+        b=W8wDe+8qwuYgJLB4J86iMxY4ENfUCaklfcoalpgpmJkwYm8FOvEyFlqWH1MRCS/AG2UYKC
+        r8aa/VIj9oBci6AQ==
+From:   "tip-bot2 for Hyunwook (Wooky) Baek" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/seves] x86/sev-es: Handle string port IO to kernel memory properly
+Cc:     "Hyunwook (Wooky) Baek" <baekhw@google.com>,
+        Borislav Petkov <bp@suse.de>,
+        David Rientjes <rientjes@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210110071102.2576186-1-baekhw@google.com>
+References: <20210110071102.2576186-1-baekhw@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Message-ID: <161036563003.414.6721977220175208221.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> writes:
+The following commit has been merged into the x86/seves branch of tip:
 
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> Without crc32, the driver fails to link:
->
-> arm-linux-gnueabi-ld: drivers/net/wireless/ath/wil6210/fw.o: in function `wil_fw_verify':
-> fw.c:(.text+0x74c): undefined reference to `crc32_le'
-> arm-linux-gnueabi-ld: drivers/net/wireless/ath/wil6210/fw.o:fw.c:(.text+0x758): more undefined references to `crc32_le' follow
->
-> Fixes: 151a9706503f ("wil6210: firmware download")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Commit-ID:     36648d64ac3420b3cfa741b12b14633fad9651e4
+Gitweb:        https://git.kernel.org/tip/36648d64ac3420b3cfa741b12b14633fad9651e4
+Author:        Hyunwook (Wooky) Baek <baekhw@google.com>
+AuthorDate:    Sat, 09 Jan 2021 23:11:02 -08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 11 Jan 2021 12:22:10 +01:00
 
-I'll queue this to v5.11.
+x86/sev-es: Handle string port IO to kernel memory properly
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Don't assume dest/source buffers are userspace addresses when manually
+copying data for string I/O or MOVS MMIO, as {get,put}_user() will fail
+if handed a kernel address and ultimately lead to a kernel panic.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+When invoking INSB/OUTSB instructions in kernel space in a
+SEV-ES-enabled VM, the kernel crashes with the following message:
+
+  "SEV-ES: Unsupported exception in #VC instruction emulation - can't continue"
+
+Handle that case properly.
+
+ [ bp: Massage commit message. ]
+
+Signed-off-by: Hyunwook (Wooky) Baek <baekhw@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: David Rientjes <rientjes@google.com>
+Link: https://lkml.kernel.org/r/20210110071102.2576186-1-baekhw@google.com
+---
+ arch/x86/kernel/sev-es.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+index 0bd1a0f..ab31c34 100644
+--- a/arch/x86/kernel/sev-es.c
++++ b/arch/x86/kernel/sev-es.c
+@@ -286,6 +286,12 @@ static enum es_result vc_write_mem(struct es_em_ctxt *ctxt,
+ 	u16 d2;
+ 	u8  d1;
+ 
++	/* If instruction ran in kernel mode and the I/O buffer is in kernel space */
++	if (!user_mode(ctxt->regs) && !access_ok(target, size)) {
++		memcpy(dst, buf, size);
++		return ES_OK;
++	}
++
+ 	switch (size) {
+ 	case 1:
+ 		memcpy(&d1, buf, 1);
+@@ -335,6 +341,12 @@ static enum es_result vc_read_mem(struct es_em_ctxt *ctxt,
+ 	u16 d2;
+ 	u8  d1;
+ 
++	/* If instruction ran in kernel mode and the I/O buffer is in kernel space */
++	if (!user_mode(ctxt->regs) && !access_ok(s, size)) {
++		memcpy(buf, src, size);
++		return ES_OK;
++	}
++
+ 	switch (size) {
+ 	case 1:
+ 		if (get_user(d1, s))
