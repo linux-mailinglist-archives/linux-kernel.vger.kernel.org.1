@@ -2,159 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D099E2F247D
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6ED2F247C
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391487AbhALAYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2391512AbhALAYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 11 Jan 2021 19:24:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403775AbhAKXFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 18:05:19 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5712522D05;
-        Mon, 11 Jan 2021 23:04:38 +0000 (UTC)
-Date:   Mon, 11 Jan 2021 18:04:36 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [RFC PATCH] tracing: Merge irqflags + preemt counter, add RT
- bits
-Message-ID: <20210111180436.475bab08@gandalf.local.home>
-In-Reply-To: <20201216172205.gvpizdw4kzpn326q@linutronix.de>
-References: <20201216172205.gvpizdw4kzpn326q@linutronix.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Received: from userp2130.oracle.com ([156.151.31.86]:59750 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403789AbhAKXGk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 18:06:40 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10BMx6fb141323;
+        Mon, 11 Jan 2021 23:04:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=dcOf8/3HyGRDDIM8oEls4ruaz1euZ2/0IkDYmsCtANM=;
+ b=ReDIvZTb7bpsQ4oUVRI1HZ0VymQTV4eOSh8XVIno0+y/NGuWN25iriRfs4cfHoNsabw9
+ Fi8eThoenuFojfPvDg6Cvop+TP4+njl8Wlf1mtUEl/BNo1M59uXZ/slfA++m4I+6NBVS
+ qATQu6dkV6k7/2lL+fZrlEL65Q3tzptDoU78CJYX/oCCTXOZqCbmGDToVe4NOPSRl8lq
+ zuVYXJNrysw7XYtlMnZLyGwxIIJG7LS0ecgH0Y2bbdCQhBKmSDp9+m2oNI08Z5YRg5x8
+ +YHTLyqgSf3jP19R7arT1AgqxhBAX3p44w7Z5t+HLjdSy6R/XtECkpHQI6Cd+g4Cy3XX Zg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 360kvjumfw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 Jan 2021 23:04:48 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10BN0USs061107;
+        Mon, 11 Jan 2021 23:04:48 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 360kefvh2p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Jan 2021 23:04:48 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10BN4jZO016433;
+        Mon, 11 Jan 2021 23:04:45 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 11 Jan 2021 15:04:45 -0800
+Subject: Re: [PATCH v3 2/6] mm: hugetlbfs: fix cannot migrate the fallocated
+ HugeTLB page
+To:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org
+Cc:     n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20210110124017.86750-1-songmuchun@bytedance.com>
+ <20210110124017.86750-3-songmuchun@bytedance.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <3ee2bcf5-35cf-1062-433d-56b4c7f011a0@oracle.com>
+Date:   Mon, 11 Jan 2021 15:04:43 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210110124017.86750-3-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 spamscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101110130
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ lowpriorityscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
+ clxscore=1015 impostorscore=0 spamscore=0 mlxscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101110130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Dec 2020 18:22:05 +0100
-Sebastian Andrzej Siewior <bigeasy@linutronix.de> wrote:
-
-> PREEMPT_RT never reported "serving softirq". I took a look to see if it
-> could be changed. The tracing infrastructure examinates the preemtion
-                                                           "preemption"
-
-> counter for that. PREEMPT_RT does not change the preemption counter
-> while disabling the bottom half or serving the softirqs in order to
-> remain preemptible. The in_serving_softirq() macro and the SOFTIRQ_OFFSET
-> define are still working but not on the preempt-counter.
-> I started to look how to integrate the RT bits regarding softirq.
+On 1/10/21 4:40 AM, Muchun Song wrote:
+> If a new hugetlb page is allocated during fallocate it will not be
+> marked as active (set_page_huge_active) which will result in a later
+> isolate_huge_page failure when the page migration code would like to
+> move that page. Such a failure would be unexpected and wrong.
 > 
-> The state of the interrupts (irqflags) and the preemption counter are
-> passed down to tracing_generic_entry_update(). However only one bit of
-> irqflags is actually required: The on/off state.
-> The irqflags and the preemption counter could be evaluated early and the
-> information stored in an integer `trace_ctx'.
-> tracing_generic_entry_update() would use the upper bits as the
-> TRACE_FLAG_* and the lower 16bit as the preemption counter (considering
-> that 1 must be substracted from the counter in some cases).
+> Only export set_page_huge_active, just leave clear_page_huge_active
+> as static. Because there are no external users.
 > 
-> Whith this change the preemption counter is read in one place and the
-  "With"
+> Fixes: 70c3547e36f5 (hugetlbfs: add hugetlbfs_fallocate())
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Cc: stable@vger.kernel.org
+> ---
+>  fs/hugetlbfs/inode.c    | 3 ++-
+>  include/linux/hugetlb.h | 2 ++
+>  mm/hugetlb.c            | 2 +-
+>  3 files changed, 5 insertions(+), 2 deletions(-)
 
-> relevant RT bits for softirq can be set there.
-> 
-> The actual preemption value is not used except for the tracing record.
-> The `irqflags' is also not used except for the _irqsave() locking in a
-> few spots.
+Thanks.
 
-Which spots?
+Although page_huge_active is declared in page-flags.h, I much prefer the
+declaration of set_page_huge_active to be in hugetlb.c.
 
-> As part of the patch I added __ to trace_event_buffer_commit() while
-> evaluating trace_event_buffer() for the struct trace_event_buffer usage
-> regarding the `pc' and `flags' members. It appears that those two can
-> also be merged into the `trace_ctx' integer.
-
-Looks like you did change the trace_event_buffer. I don't understand why
-the "__" was added?
-
-
-> With this change the callchain passes one argument less and evaluates
-> the flags early. A build with all tracers enabled on x86-64 with and
-> without the patch:
-> 
->     text     data      bss      dec      hex    filename
-> 24301717 22148594 13996284 60446595  39a5783 vmlinux.old
-> 24301248 22148850 13996284 60446382  39a56ae vmlinux.new
-> 
-> data increased by 256 bytes, text shrank by 469 bytes.
-> 
-
-> -void
-> -tracing_generic_entry_update(struct trace_entry *entry, unsigned short type,
-> -			     unsigned long flags, int pc)
-> +static unsigned int __tracing_gen_ctx_flags(unsigned long irqflags)
->  {
-> -	struct task_struct *tsk = current;
-> +	unsigned int trace_flags = 0;
-> +	unsigned int pc;
-> +
-> +	pc = preempt_count();
->  
-> -	entry->preempt_count		= pc & 0xff;
-> -	entry->pid			= (tsk) ? tsk->pid : 0;
-> -	entry->type			= type;
-> -	entry->flags =
->  #ifdef CONFIG_TRACE_IRQFLAGS_SUPPORT
-> -		(irqs_disabled_flags(flags) ? TRACE_FLAG_IRQS_OFF : 0) |
-> +	if (irqs_disabled_flags(irqflags))
-> +		trace_flags |= TRACE_FLAG_IRQS_OFF;
->  #else
-> -		TRACE_FLAG_IRQS_NOSUPPORT |
-> +		trace_flags |= TRACE_FLAG_IRQS_NOSUPPORT;
->  #endif
-> -		((pc & NMI_MASK    ) ? TRACE_FLAG_NMI     : 0) |
-> -		((pc & HARDIRQ_MASK) ? TRACE_FLAG_HARDIRQ : 0) |
-> -		((pc & SOFTIRQ_OFFSET) ? TRACE_FLAG_SOFTIRQ : 0) |
-> -		(tif_need_resched() ? TRACE_FLAG_NEED_RESCHED : 0) |
-> -		(test_preempt_need_resched() ? TRACE_FLAG_PREEMPT_RESCHED : 0);
-
-Note, the above was a result of playing around with seeing how the compiler
-optimized the above. Have you seen how the below logic looks as assembly?
-This is a very hot path.
-
-> +
-> +	if (pc & NMI_MASK)
-> +		trace_flags |= TRACE_FLAG_NMI;
-> +	if (pc & HARDIRQ_MASK)
-> +		trace_flags |= TRACE_FLAG_HARDIRQ;
-> +
-> +	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-> +		if (in_serving_softirq())
-> +			trace_flags |= TRACE_FLAG_SOFTIRQ;
-> +	} else {
-> +		if (pc & SOFTIRQ_OFFSET)
-> +			trace_flags |= TRACE_FLAG_SOFTIRQ;
-> +	}
-> +	if (tif_need_resched())
-> +		trace_flags |= TRACE_FLAG_NEED_RESCHED;
-> +	if (test_preempt_need_resched())
-> +		trace_flags |= TRACE_FLAG_PREEMPT_RESCHED;
-> +	return (trace_flags << 16) | (pc & 0xff);
-> +}
-
-Can you break this into two patches. One that adds the trace_ctx and merges
-the flags and pc, and another patch that only updates to add the RT bits.
-
-Thanks!
-
--- Steve
-
-> +
-> +unsigned int _tracing_gen_ctx_flags(unsigned long irqflags)
-> +{
-> +	return __tracing_gen_ctx_flags(irqflags);
-> +}
-> +
-> +unsigned int tracing_gen_ctx_flags(void)
-> +{
-> +	unsigned long irqflags;
-> +
->
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+-- 
+Mike Kravetz
