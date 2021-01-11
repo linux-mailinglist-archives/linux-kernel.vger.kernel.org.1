@@ -2,118 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBE282F1E53
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 19:56:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3FF02F1E56
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 19:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390585AbhAKSzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 13:55:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38604 "EHLO
+        id S2390597AbhAKS4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 13:56:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390441AbhAKSzz (ORCPT
+        with ESMTP id S1732877AbhAKS4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 13:55:55 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2270C061786;
-        Mon, 11 Jan 2021 10:55:14 -0800 (PST)
-Received: from ip4d149f6e.dynamic.kabel-deutschland.de ([77.20.159.110] helo=[192.168.66.101]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1kz2LP-0005Dj-G0; Mon, 11 Jan 2021 19:55:11 +0100
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210110121033.130504-1-linux@leemhuis.info>
- <6ca51584-1739-e532-d40e-e4447065ea1e@infradead.org>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: [PATCH v1 (RFC)] docs: discourage users from using
- bugzilla.kernel.org
-Message-ID: <dc2b0eaa-26e9-f686-ae7b-7e777cb3d55f@leemhuis.info>
-Date:   Mon, 11 Jan 2021 19:55:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 11 Jan 2021 13:56:32 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A8EC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 10:55:51 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id b5so102050pjl.0
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 10:55:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=GiJzDlHY7NbMJSzu5qvXLENp5Kn/WCh9GwN8prVJoSQ=;
+        b=b/R0IYSWidGxFe+KJk08+07xjiNQtQJa0OcNTaPK9ynEWnWFbULEQrVRdKreMoM/YY
+         pGR0SWg6b8DUNBAYXKAyF1ML3yhBe5NO7RJJnempYwaNfhJ4h0rBMIDUf4WSa9ss0woy
+         7it3v91dpJI/UpJ2275PGTyWNbGNLWBxM9r2fs+Zj7l1phpxYk2J9QQ0UTYlaP3BpqWQ
+         ZFmrSuBjN8tgXhf10zKsNEuSRqYOUB3rYmK3TT3KMTp+5DX17JWXVbZefH2EN/GJ/ly6
+         d2vZOhOHwqJ+2pOW0edzD9bUWlZNDde/kIzClWRwTQIqSpv2ykEFnUi7BnKM4gGZV+mv
+         683w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=GiJzDlHY7NbMJSzu5qvXLENp5Kn/WCh9GwN8prVJoSQ=;
+        b=H0Kgd9BfxCz2brdOmHRxRhm+o1zjgmKQfiKDPhP2rntseHTghYXQ+rFy6iusvJX6V4
+         a2K/SkXE2NRaKkIkRrSKttfCmlgQV6T929xeQBaHOhsxDui2noVLjGyc3uckQzDNd+OM
+         s8gn0vq1Mmkl9gBqZF3+eUwdtiolxDJzUMlI24NXxkKTKnrXsDdQQLKuaoP5v4KDeFlX
+         pbnAiNe2zgRcPavs2J9MkDlNLWMyqeEFrg/sDI8IXshqHTdUpNa313sBZcWR9AXnWy8T
+         rJTxWQ0sJ45QUAvy41jIA4DJ7My/m3AjVzO5rj6xOnAZ4DQEzHG+152QX/BoaXV7i4YG
+         vM8A==
+X-Gm-Message-State: AOAM533LkFU9gjoQbuUcpBwa8ej2oLDuEfqylp8Q9iQObj94mMcjscEm
+        GCvb+R8sAbdcrCefkXtFB2cJzA==
+X-Google-Smtp-Source: ABdhPJzK8J8iySjxXueYW+ofTafiBnMREN6lkXERL3ol8gQ+SDjB+djPZQQfslUERvPI+z676VxnbA==
+X-Received: by 2002:a17:902:64:b029:da:a9cf:4065 with SMTP id 91-20020a1709020064b02900daa9cf4065mr1156152pla.26.1610391351357;
+        Mon, 11 Jan 2021 10:55:51 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id 17sm338363pfj.91.2021.01.11.10.55.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 10:55:50 -0800 (PST)
+Date:   Mon, 11 Jan 2021 10:55:49 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+cc:     "Hyunwook (Wooky) Baek" <baekhw@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Joerg Roedel <jroedel@suse.de>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH V2] x86/sev-es: Fix SEV-ES #VC handler for string port
+ IO
+In-Reply-To: <1c7f7df6-11f0-e290-cb26-6d8c01b45e2c@amd.com>
+Message-ID: <4f71f9a4-3d78-a876-6fab-25549756fd2e@google.com>
+References: <20210110071102.2576186-1-baekhw@google.com> <1c7f7df6-11f0-e290-cb26-6d8c01b45e2c@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <6ca51584-1739-e532-d40e-e4447065ea1e@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1610391315;12dcc039;
-X-HE-SMSGID: 1kz2LP-0005Dj-G0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 11.01.21 um 19:14 schrieb Randy Dunlap:
-> On 1/10/21 4:10 AM, Thorsten Leemhuis wrote:
->> * About 66 of those ~200 components will assign bugs to email addresses
->>   that look valid, but 125 of them end with @kernel-bugs.osdl.org or
->>   @kernel-bugs.kernel.org. Those domains do not exist anymore, mails
->>   sent there bounce ('Unrouteable address'). It's possible that the
->>   server might be rewriting those domain names and nevertheless
->>   delivers new reports and comments by mails to some human; but it
->>   seems more like they never get mailed to anyone and thus just linger
->>   in the database; no wonder quite a few of bugs filed against such
->>   components never get a single reply (see below).
+On Mon, 11 Jan 2021, Tom Lendacky wrote:
+
+> > Don't assume dest/source buffers are userspace addresses when manually
+> > copying data for string I/O or MOVS MMIO, as {get,put}_user() will fail
+> > if handed a kernel address and ultimately lead to a kernel panic.
+> > 
+> > Signed-off-by: Hyunwook (Wooky) Baek <baekhw@google.com>
+> > Acked-by: David Rientjes <rientjes@google.com>
+> > ---
+> > 
+> > This patch is tested by invoking INSB/OUTSB instructions in kernel space in
+> > a
+> > SEV-ES-enabled VM. Without the patch, the kernel crashed with the following
+> > message:
+> >    "SEV-ES: Unsupported exception in #VC instruction emulation - can't
+> > continue"
+> > With the patch, the instructions successfully read/wrote the string from/to
+> > the I/O port.
 > 
-> Those @kernel-bugs email addresses should not be a problem:
->   https://korg.docs.kernel.org/bugzilla.html#real-assignees-vs-virtual-assignees
+> Shouldn't this have a Fixes: tag?
+> 
 
-Ahh, interesting, many many thx. Stupid me also forgot to put Konstantin
-on the CC list (I had planned to do that, but forgot when I actually
-sent the patch :-/ ), which likely would have pointed be there as well.
+Makes sense, I think this should likely be:
 
-> AFAIK, USB bugs go to linux-usb@vger.kernel.org,
-
-Those seem to use the approach the link above describes.
-
-> SCSI bugs go to linux-scsi@vger.kernel.org.
-
-That's one of the email address that are in the database for real, which
-were mentioned in my patch description as 'looking valid':
-https://bugzilla.kernel.org/describecomponents.cgi?product=IO%2FStorage
-
-> netdev didn't want bugs sent there automatically IIRC, so a
-> human takes care of doing that if warranted.
-
-Ahh, good to know, it's really not obvious there are some humans working
-there to that take care of this. That and all those bugs that never get
-a reply look really like things are not working well.
-
-> Andrew Morton takes MM bugs and Cc:s them to linux-mm mailing list
-> and then asks for discussion to continue on the mailing list.
-
-Then what use it bugzilla here? Wouldn't it be better for people to go
-straight to the list?
-
-> We
-
-Who is "we"? We as in "the kernel community"? Or is there actually a
-smaller group of people you are referring to which is actively
-maintaining the list of products and components on bugzilla.kernel.org?
-
-Just trying to understand things better here, as there are other things
-that look strange to me and were mentioned in the patch description. For
-example: Why are there only 200 products and components on
-bugzilla.kernel.org (some of them for historic things like the
-ac-kernels) while the MAINTAINERS file has more than 2200 entries?
-
-> could/should probably see if we can add more project-specific
-> mailing lists to the automatic reporting 
-
-Guess that would mean taking to a lot of maintainers/mailing list admins
-if they are okay with that. Who would do that?
-
-> -- but probably not LKML.
-> Otherwise some bug reports might never be heard about.
-
-Yeah, agreed.
-
-FWIW: I don't care too much about this whole thing, the whole idea for
-the approach I'm currently driving forward started when I did regression
-tracking in 2017. Back then I noticed quite a lot of bug reports on
-bugzilla.kernel.org never got a single reply, even if they were good and
-looked valid. That's why I brought this forward on the maintainers
-summit (https://lwn.net/Articles/738216/ ) and there it was discussed to
-basically go the route I'm taking currently. But I'm totally find to
-adjust that route if there are good reasons, especially as that
-discussion happened some time ago.
-
-Ciao, Thorsten
+Fixes: f980f9c31a92 ("x86/sev-es: Compile early handler code into kernel image")
