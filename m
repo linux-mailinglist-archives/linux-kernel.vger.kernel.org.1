@@ -2,139 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 763362F22EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9FE2F22E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:38:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390006AbhAKWi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 17:38:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726725AbhAKWi2 (ORCPT
+        id S2390457AbhAKWif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 17:38:35 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:42425 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389720AbhAKWie (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:38:28 -0500
-Received: from hera.aquilenet.fr (hera.aquilenet.fr [IPv6:2a0c:e300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C8CC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:37:47 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by hera.aquilenet.fr (Postfix) with ESMTP id EA0026CB;
-        Mon, 11 Jan 2021 23:37:43 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at aquilenet.fr
-Received: from hera.aquilenet.fr ([127.0.0.1])
-        by localhost (hera.aquilenet.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id xyErmMPk6uo5; Mon, 11 Jan 2021 23:37:41 +0100 (CET)
-Received: from begin (unknown [IPv6:2a01:cb19:956:1b00:de41:a9ff:fe47:ec49])
-        by hera.aquilenet.fr (Postfix) with ESMTPSA id EC0E2162;
-        Mon, 11 Jan 2021 23:37:40 +0100 (CET)
-Received: from samy by begin with local (Exim 4.94)
-        (envelope-from <samuel.thibault@ens-lyon.org>)
-        id 1kz5og-002vQD-OE; Mon, 11 Jan 2021 23:37:38 +0100
-From:   Samuel Thibault <samuel.thibault@ens-lyon.org>
-To:     gregkh@linuxfoundation.org
-Cc:     Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        linux-kernel@vger.kernel.org, speakup@linux-speakup.org
-Subject: [PATCH 4/4] speakup: Add documentation on changing the speakup messages language
-Date:   Mon, 11 Jan 2021 23:37:37 +0100
-Message-Id: <20210111223737.697336-5-samuel.thibault@ens-lyon.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210111223737.697336-1-samuel.thibault@ens-lyon.org>
-References: <20210111223737.697336-1-samuel.thibault@ens-lyon.org>
+        Mon, 11 Jan 2021 17:38:34 -0500
+Received: by mail-ot1-f44.google.com with SMTP id x5so116705otp.9;
+        Mon, 11 Jan 2021 14:38:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fLMj84hkUp5+4mSadplRSQZF7rQJLNm76i5JIfHTAL8=;
+        b=i64VkvcIZQKROOie31EaeSBSMkw83z6POeGNxNbo2lfAoW7HhiyPtqG9k8C2T9qC5M
+         DtOPSlHwi5Obdp9fVyHzagnh9kuz516MYVnxSnYpcNbG3GHfafW121hKI5iXv9HwCh3t
+         7dseXeuEXpjMIH+6r72TpY/5hB8m4Yz6hU9rvOBlUlrDd7nkU3cESGeYJSRQbOvVkl6X
+         wC5Kx3lgt3pKFL9upaY4o5biQbwuTh3iNeKIz2Zr4BNYxn4KV70pK4n+UTNNgMXAWCz3
+         nQ9IBEh6foCV0fVYs+cOMGQh0/H9RY8fD+kjbYdjhp8ZECOVkpd89qpJ1jk8ewplTLOu
+         k/lg==
+X-Gm-Message-State: AOAM532rHX3rCRd6IfuOSSbiYylxNJ3/L5gQTNsmBstBwI0OeJzn0ewO
+        N9xtS0JiO23RkgKbBcXoNg==
+X-Google-Smtp-Source: ABdhPJx9xq6P6glabPHmo4SavGc3OTfs/lhS2g2fLFMmAgMDmpH6KWLvkZWD/hqD8l6UME/txyE6zA==
+X-Received: by 2002:a05:6830:2397:: with SMTP id l23mr841766ots.357.1610404672925;
+        Mon, 11 Jan 2021 14:37:52 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id e10sm236515otr.73.2021.01.11.14.37.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 14:37:51 -0800 (PST)
+Received: (nullmailer pid 3185487 invoked by uid 1000);
+        Mon, 11 Jan 2021 22:37:50 -0000
+Date:   Mon, 11 Jan 2021 16:37:50 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Nadeem Athani <nadeem@cadence.com>, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 2/4] dt-bindings: pci: ti,j721e: Add host mode
+ dt-bindings for TI's AM64 SoC
+Message-ID: <20210111223750.GA3177728@robh.at.kernel.org>
+References: <20210104124103.30930-1-kishon@ti.com>
+ <20210104124103.30930-3-kishon@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Bar: +++++
-X-Spam-Level: *****
-X-Rspamd-Server: hera
-Authentication-Results: hera.aquilenet.fr
-X-Rspamd-Queue-Id: EA0026CB
-X-Spamd-Result: default: False [5.00 / 15.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         RCPT_COUNT_THREE(0.00)[4];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         R_MISSING_CHARSET(2.50)[];
-         BROKEN_CONTENT_TYPE(1.50)[];
-         RCVD_COUNT_THREE(0.00)[3];
-         MID_CONTAINS_FROM(1.00)[];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210104124103.30930-3-kishon@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
----
- Documentation/admin-guide/spkguide.txt | 48 ++++++++++++++++++++++++--
- 1 file changed, 46 insertions(+), 2 deletions(-)
+On Mon, Jan 04, 2021 at 06:11:01PM +0530, Kishon Vijay Abraham I wrote:
+> Add host mode dt-bindings for TI's AM64 SoC. This is the same IP used in
+> J7200, however AM64 is a non-coherent architecture.
+> 
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  .../devicetree/bindings/pci/ti,j721e-pci-host.yaml     | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+> index 7607018a115b..77118dba415e 100644
+> --- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+> +++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+> @@ -16,12 +16,17 @@ allOf:
+>  properties:
+>    compatible:
+>      oneOf:
+> -      - description: PCIe controller in J7200
+> +      - const: ti,am64-pcie-host
 
-diff --git a/Documentation/admin-guide/spkguide.txt b/Documentation/admin-guide/spkguide.txt
-index 5ff6a0f..96d4c87 100644
---- a/Documentation/admin-guide/spkguide.txt
-+++ b/Documentation/admin-guide/spkguide.txt
-@@ -1033,7 +1033,9 @@ speakup + keypad 3, you would hear:
- The speakup key is depressed, so the name of the key state is speakup.
- This part of the message comes from the states collection.
- 
--14.2.  Loading Your Own Messages
-+14.2.  Changing language
-+
-+14.2.1. Loading Your Own Messages
- 
- The files under the i18n subdirectory all follow the same format.
- They consist of lines, with one message per line.
-@@ -1066,8 +1068,50 @@ echo '1 azul' > /speakup/i18n/colors
- The next time that Speakup says message 1 from the colors group, it will
- say "azul", rather than "blue."
- 
-+14.2.2. Choose a language
-+
- In the future, translations into various languages will be made available,
--and most users will just load the files necessary for their language.
-+and most users will just load the files necessary for their language. So far,
-+only French language is available beyond native Canadian English language.
-+
-+French is only available after you are logged in.
-+
-+Canadian English is the default language. To toogle another language,
-+download the source of Speakup and untar it in your home directory. The
-+following command should let you do this:
-+
-+tar xvjf speakup-<version>.tar.bz2
-+
-+where <version> is the version number of the application.
-+
-+Next, change to the newly created directory, then into the tools/ directory, and
-+run the script speakup_setlocale. You are asked the language that you want to
-+use. Type the number associated to your language (e.g. fr for French) then press
-+Enter. Needed files are copied in the i18n directory.
-+
-+Note: the speakupconf must be installed on your system so that settings are saved.
-+Otherwise, you will have an error: your language will be loaded but you will
-+have to run the script again every time Speakup restarts.
-+See section 16.1. for information about speakupconf.
-+
-+You will have to repeat these steps for any change of locale, i.e. if you wish
-+change the speakup's language or charset (iso-8859-15 ou UTF-8).
-+
-+If you wish store the settings, note that at your next login, you will need to
-+do:
-+
-+speakup load
-+
-+Alternatively, you can add the above line to your file
-+~/.bashrc or ~/.bash_profile.
-+
-+If your system administrator ran himself the script, all the users will be able
-+to change from English to the language choosed by root and do directly
-+speakupconf load (or add this to the ~/.bashrc or
-+~/.bash_profile file). If there are several languages to handle, the
-+administrator (or every user) will have to run the first steps until speakupconf
-+save, choosing the appropriate language, in every user's home directory. Every
-+user will then be able to do speakupconf load, Speakup will load his own settings.
- 
- 14.3.  No Support for Non-Western-European Languages
- 
--- 
-2.20.1
+No, either you have fallback or you don't. 
 
+> +      - const: ti,j7200-pcie-host
+> +      - const: ti,j721e-pcie-host
+> +      - description: PCIe controller in AM64
+>          items:
+> +          - const: ti,am64-pcie-host
+>            - const: ti,j7200-pcie-host
+>            - const: ti,j721e-pcie-host
+
+2 fallbacks is probably not too useful. Do those really enable 
+anything?
+
+> -      - description: PCIe controller in J721E
+> +      - description: PCIe controller in J7200
+>          items:
+> +          - const: ti,j7200-pcie-host
+>            - const: ti,j721e-pcie-host
+>  
+>    reg:
+> @@ -87,7 +92,6 @@ required:
+>    - vendor-id
+>    - device-id
+>    - msi-map
+> -  - dma-coherent
+>    - dma-ranges
+>    - ranges
+>    - reset-gpios
+> -- 
+> 2.17.1
+> 
