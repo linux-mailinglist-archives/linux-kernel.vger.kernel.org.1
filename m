@@ -2,165 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3696E2F19DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1152F19E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730356AbhAKPku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:40:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50817 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727180AbhAKPkt (ORCPT
+        id S1731317AbhAKPln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:41:43 -0500
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:26853 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727917AbhAKPlm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:40:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610379562;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=V6s22bNSoq1L+NIFn/JvX6d51nE1mLRjnfTwZ0WeTw4=;
-        b=UGpgWj79HBcdJnkBtUIGCZqpsA1rgF0hz/DFMjZHuYug6vpA4KOagjokW6GGCDOnPOXy/I
-        WtpLn9zvsSG9Hpw/8bhHHCQj8qrP2yO52FgTgzx5VDrtOQJQhchCugxLHDn7ImNudFdUQN
-        bo0YbxhPoItwWo1XdJeas/XaIGt23fQ=
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
- [209.85.166.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-218-JFgxkQL4NNWcvie_BtvaBA-1; Mon, 11 Jan 2021 10:39:21 -0500
-X-MC-Unique: JFgxkQL4NNWcvie_BtvaBA-1
-Received: by mail-io1-f71.google.com with SMTP id l5so12800794ioj.17
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:39:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=V6s22bNSoq1L+NIFn/JvX6d51nE1mLRjnfTwZ0WeTw4=;
-        b=gauq6b0ipw2A2JSmE83BytXxwToyX7Kc4B52hF50ZBPCOSpPX+MI5ftYsGkuDfZCYP
-         dRNQzc+LrsSEKTJytMZ7vBbvAi6OLAQvLApc06JL5xRrnWqUw3NyzMG4n35d0wgahe/i
-         UTZQQs+hwZsp7H8zj80ecGVkuDckQjtiaxoz20hyPk0x/gk07t1TX3Zi+BlAm9t5N7qu
-         J+CpE1KUZtUruTot/IHgEKtX3SGCMvCeMRQUmOMRo2UTtn4c7ARWtEL0LSJOR+PBfYwc
-         8Hm5+5bPKp4plgrtUx0Lr1y2rfB/GWaHw37IO0YQPI6/sxWckrYj4tmTtBob2iotZnLH
-         M+/Q==
-X-Gm-Message-State: AOAM531eKY9D6Eihg2Y1JuaXrzqKUeK50WlI4DISrFkxQNbD1Rv4fUux
-        0LKuOG+rY9blyNuA0fNnvZNWkAvdx/2zS7wvO09XHowyIuGA4bXKX+tcoWJMKMqDWBgoslItHzG
-        Wh0xvS+Ty6j+G/7WHs1A/S7yL
-X-Received: by 2002:a92:cf44:: with SMTP id c4mr15547582ilr.207.1610379560551;
-        Mon, 11 Jan 2021 07:39:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyzlggvM+nwzezd73mKCuiQILg/y8Tnj4twPqnA644Y3DXvue24trNEi0s1w98pXs6fxCdnvw==
-X-Received: by 2002:a92:cf44:: with SMTP id c4mr15547567ilr.207.1610379560359;
-        Mon, 11 Jan 2021 07:39:20 -0800 (PST)
-Received: from xps13 ([2605:a601:a63a:4d01:c3c1:7008:ba35:96])
-        by smtp.gmail.com with ESMTPSA id t2sm16862182ili.31.2021.01.11.07.39.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 07:39:19 -0800 (PST)
-Date:   Mon, 11 Jan 2021 10:39:17 -0500
-From:   Jeremy Cline <jcline@redhat.com>
-To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc:     Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Timothy Pearson <tpearson@raptorengineering.com>
-Subject: Re: [PATCH] amdgpu: Avoid sleeping during FPU critical sections
-Message-ID: <20210111153917.GA22594@xps13>
-References: <20210108215838.470637-1-jcline@redhat.com>
- <3c94f9d6-501d-271c-ca83-1cf4229cb3ab@amd.com>
+        Mon, 11 Jan 2021 10:41:42 -0500
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 10BFeiF9015872;
+        Tue, 12 Jan 2021 00:40:45 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 10BFeiF9015872
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1610379645;
+        bh=92u5oyvx07CgdmY35pNqgIKcY7bZ9dVnwxJcos9+FlA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BjMUV+PQBGXEZ8sKSUb2kxGeK7mJ2+jD5FeIelPp7Dl4shGUHf+Wl419kIlDaBXA2
+         530bEGn/NNVVughL90TaedYs1Qjfd/RJSV1Q3npGpdh6QxswUeEo2RggRxqj76kB+l
+         NZfCuxrAPIp5tn9dwOOUEq6MyBVAIW978UvRiyPpEuSYKRvl1gO/YX7RhUv07X8kdu
+         L+c2AaK4T4OAFdQRzgu9wCCj/lk9L8yuYVTCbqAnNH2gkYdDvl2SlUu8Q/tbOeFz1B
+         +WL9XEuvgGaQFTbOt9Ny06DAULXgIYtYB8/2X72mcJ8hzkp/WJ5+4Q75lA3bQfLw93
+         UrvlK5FuvCuZA==
+X-Nifty-SrcIP: [209.85.215.170]
+Received: by mail-pg1-f170.google.com with SMTP id p18so12709308pgm.11;
+        Mon, 11 Jan 2021 07:40:45 -0800 (PST)
+X-Gm-Message-State: AOAM531sYZoj0e+Yha0mctncBabapspR9teXqWy7Tfz2Ii7mCHH0rcQH
+        drhOsiBlt6ci5qvaE1t39oOfbREQq1qwUoI2nYM=
+X-Google-Smtp-Source: ABdhPJyMDvJbegafb3/FFMgw5BDoL6BTmVrEK60ISDDFR392feEkFRF3SFHH5UiXszjPTc9NGE9mJWXNeaUYCHfo6hQ=
+X-Received: by 2002:a62:820d:0:b029:1ad:d810:6805 with SMTP id
+ w13-20020a62820d0000b02901add8106805mr17033953pfd.63.1610379644310; Mon, 11
+ Jan 2021 07:40:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3c94f9d6-501d-271c-ca83-1cf4229cb3ab@amd.com>
+References: <cover.1609844956.git.viresh.kumar@linaro.org> <CAL_JsqJMr3vfz2B29vzvFALCt_5-J__eJv2TZHJ0sR9nM=xXaw@mail.gmail.com>
+ <CAK7LNAR9fdjZ7iWKSWvJ9etGZkd+n87cmXKN-Hah8DBDYbuAwA@mail.gmail.com> <20210111111711.r2xesydzhq5js2nf@vireshk-i7>
+In-Reply-To: <20210111111711.r2xesydzhq5js2nf@vireshk-i7>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 12 Jan 2021 00:40:07 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASViCOTGR7yDTfh0O+PAu+X-P2NwdY4oPMuXrr51awafA@mail.gmail.com>
+Message-ID: <CAK7LNASViCOTGR7yDTfh0O+PAu+X-P2NwdY4oPMuXrr51awafA@mail.gmail.com>
+Subject: Re: [RFC 0/2] kbuild: Add support to build overlays (%.dtbo)
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, tero.kristo@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Jan 11, 2021 at 8:17 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 07-01-21, 14:28, Masahiro Yamada wrote:
+> > Viresh's patch is not enough.
+> >
+> > We will need to change .gitignore
+> > and scripts/Makefile.dtbinst as well.
+> >
+> > In my understanding, the build rule is completely the same
+> > between .dtb and .dtbo
+> > As Rob mentioned, I am not sure if we really need/want
+> > a separate extension.
+> >
+> > A counter approach is to use an extension like '.ovl.dtb'
+> > It clarifies it is an overlay fragment without changing
+> > anything in our build system or the upstream DTC project.
+>
+> By the time you gave feedback, I have already sent the dtbo change for
+> DTC to the device-tree-compiler list (based on Rob's suggestion).
+>
+> And it got merged today by David:
+>
+> https://github.com/dgibson/dtc/commit/163f0469bf2ed8b2fe5aa15bc796b93c70243ddc
+>
+> Can we please finalize what we need to do with naming here and be done
+> with it, so I can rework my patches and get going ?
+>
+> Thanks.
+>
+> --
+> viresh
 
-On Mon, Jan 11, 2021 at 09:53:56AM +0100, Christian König wrote:
-> Am 08.01.21 um 22:58 schrieb Jeremy Cline:
-> > dcn20_resource_construct() includes a number of kzalloc(GFP_KERNEL)
-> > calls which can sleep, but kernel_fpu_begin() disables preemption and
-> > sleeping in this context is invalid.
-> > 
-> > The only places the FPU appears to be required is in the
-> > init_soc_bounding_box() function and when calculating the
-> > {min,max}_fill_clk_mhz. Narrow the scope to just these two parts to
-> > avoid sleeping while using the FPU.
-> > 
-> > Fixes: 7a8a3430be15 ("amdgpu: Wrap FPU dependent functions in dc20")
-> > Cc: Timothy Pearson <tpearson@raptorengineering.com>
-> > Signed-off-by: Jeremy Cline <jcline@redhat.com>
-> 
-> Good catch, but I would rather replace the kzalloc(GFP_KERNEL) with a
-> kzalloc(GFP_ATOMIC) for now.
-> 
-> We have tons of problems with this DC_FP_START()/DC_FP_END() annotations and
-> are even in the process of moving them out of the file because the compiles
-> tend to clutter FP registers even outside of the annotated ranges on some
-> architectures.
-> 
 
-Thanks for the review. Is it acceptable to move the DC_FP_END()
-annotation up to the last usage? Keeping it where it is is probably
-do-able, but covers things like calls to resource_construct() which
-makes use of struct resource_create_funcs. I'm guessing only a sub-set
-of the implementations are called via this function, but having an
-interface which can't sleep sometimes doesn't sound appealing.
 
-Happy to do it, but before I go down that road I just wanted to make
-sure that's what you had in mind.
+It is unfortunate to see such a patch merged
+before getting agreement about how it should work
+as a whole.
 
-Thanks,
-Jeremy
 
-> > ---
-> >   drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c | 8 ++++----
-> >   1 file changed, 4 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-> > index e04ecf0fc0db..a4fa5bf016c1 100644
-> > --- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-> > +++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-> > @@ -3622,6 +3622,7 @@ static bool init_soc_bounding_box(struct dc *dc,
-> >   	if (bb && ASICREV_IS_NAVI12_P(dc->ctx->asic_id.hw_internal_rev)) {
-> >   		int i;
-> > +		DC_FP_START();
-> >   		dcn2_0_nv12_soc.sr_exit_time_us =
-> >   				fixed16_to_double_to_cpu(bb->sr_exit_time_us);
-> >   		dcn2_0_nv12_soc.sr_enter_plus_exit_time_us =
-> > @@ -3721,6 +3722,7 @@ static bool init_soc_bounding_box(struct dc *dc,
-> >   			dcn2_0_nv12_soc.clock_limits[i].dram_speed_mts =
-> >   					fixed16_to_double_to_cpu(bb->clock_limits[i].dram_speed_mts);
-> >   		}
-> > +		DC_FP_END();
-> >   	}
-> >   	if (pool->base.pp_smu) {
-> > @@ -3777,8 +3779,6 @@ static bool dcn20_resource_construct(
-> >   	enum dml_project dml_project_version =
-> >   			get_dml_project_version(ctx->asic_id.hw_internal_rev);
-> > -	DC_FP_START();
-> > -
-> >   	ctx->dc_bios->regs = &bios_regs;
-> >   	pool->base.funcs = &dcn20_res_pool_funcs;
-> > @@ -3959,8 +3959,10 @@ static bool dcn20_resource_construct(
-> >   				ranges.reader_wm_sets[i].wm_inst = i;
-> >   				ranges.reader_wm_sets[i].min_drain_clk_mhz = PP_SMU_WM_SET_RANGE_CLK_UNCONSTRAINED_MIN;
-> >   				ranges.reader_wm_sets[i].max_drain_clk_mhz = PP_SMU_WM_SET_RANGE_CLK_UNCONSTRAINED_MAX;
-> > +				DC_FP_START();
-> >   				ranges.reader_wm_sets[i].min_fill_clk_mhz = (i > 0) ? (loaded_bb->clock_limits[i - 1].dram_speed_mts / 16) + 1 : 0;
-> >   				ranges.reader_wm_sets[i].max_fill_clk_mhz = loaded_bb->clock_limits[i].dram_speed_mts / 16;
-> > +				DC_FP_END();
-> >   				ranges.num_reader_wm_sets = i + 1;
-> >   			}
-> > @@ -4125,12 +4127,10 @@ static bool dcn20_resource_construct(
-> >   		pool->base.oem_device = NULL;
-> >   	}
-> > -	DC_FP_END();
-> >   	return true;
-> >   create_fail:
-> > -	DC_FP_END();
-> >   	dcn20_resource_destruct(pool);
-> >   	return false;
-> 
 
+
+>+# enable creation of __symbols__ node
+>+ifneq ($(dtbo-y),)
+>+DTC_FLAGS += -@
+>+endif
+
+I am not convinced with this code.
+
+A single user of the dtbo-y syntax gives -@ to all
+device trees in the same directory.
+
+This is not a solution since Rob already stated -@ should be
+given per board (or per platform, at least).
+
+I still do not understand why adding the new syntax dtbo-y
+is helpful.
+
+
+
+
+Have we already decided to use separate ".dtb" and ".dtbo" for blobs?
+
+Will we use ".dts" for all source files?
+Or, will we use ".dtso" for overlay source files?
+
+How should the build system determine the targets
+that should have -@ option?
+
+
+
+For consistency, will we need a patch like follows?
+
+
+diff --git a/dtc.c b/dtc.c
+index bdb3f59..474401e 100644
+--- a/dtc.c
++++ b/dtc.c
+@@ -120,6 +120,8 @@ static const char *guess_type_by_name(const char
+*fname, const char *fallback)
+                return fallback;
+        if (!strcasecmp(s, ".dts"))
+                return "dts";
++       if (!strcasecmp(s, ".dtso"))
++               return "dts";
+        if (!strcasecmp(s, ".yaml"))
+                return "yaml";
+        if (!strcasecmp(s, ".dtb"))
+@@ -349,6 +351,8 @@ int main(int argc, char *argv[])
+
+        if (streq(outform, "dts")) {
+                dt_to_source(outf, dti);
++       else if (streq(outform, "dtso")) {
++               dt_to_source(outf, dti);
+ #ifndef NO_YAML
+        } else if (streq(outform, "yaml")) {
+                if (!streq(inform, "dts"))
+
+
+
+Overall solution looks unclear to me.
+
+
+Again, it is unfortunate that we did not take enough time
+(in spite of the RFC prefix) before proceeding.
+
+
+-- 
+Best Regards
+Masahiro Yamada
