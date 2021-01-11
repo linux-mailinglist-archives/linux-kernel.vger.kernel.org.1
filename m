@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91F932F139E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:12:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD722F148C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:27:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730795AbhAKNMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:12:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58174 "EHLO mail.kernel.org"
+        id S1730981AbhAKN0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:26:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731303AbhAKNLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:11:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA9F3229CA;
-        Mon, 11 Jan 2021 13:10:19 +0000 (UTC)
+        id S1732417AbhAKNQv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:16:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B67C229C4;
+        Mon, 11 Jan 2021 13:16:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370620;
-        bh=Pnfm3O090tdqEk/5y0vw8aghyeCrZ2nPkZItlV8v2oQ=;
+        s=korg; t=1610370995;
+        bh=AK9iJv+x8kTl0Sl9+HoJo0sugeXt9B+PEPDZzl+zwNI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H59TAZEu5TqpJAq9sP3gnQr9nEFnDo58cTrAV+5mBPvGmQg+WKcfkctBESgvRvwFo
-         el+WKMaOsKyWDTm9H8qaU/B4Zf/6aXmeY6Ow2qiJWh1jz5yCZ0xYDxlp7jg/M1j2Ni
-         37arOCU5ZkHa2lfZjYPq8p7kLus2MSJVTYV2+KH8=
+        b=dWx8ZvRqaWs0KeukvijwRhwIHBZb4aTRWQJX2ECvR49fniS2orkGQlJuG6mpkTzlh
+         H/skGCgREZZAOIasQYfASCImxKSlWFzp0Vj76OiWW5/wJvjHXKA/w2dWQSkrDnQOa5
+         YEjo3ITHy1XpRg5L6VKu0J/rXCTayQDudJDSb2WY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Wang <wangzhiqiang.bj@bytedance.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 24/92] net/ncsi: Use real net-device for response handler
-Date:   Mon, 11 Jan 2021 14:01:28 +0100
-Message-Id: <20210111130040.309674134@linuxfoundation.org>
+        stable@vger.kernel.org, Huang Shijie <sjhuang@iluvatar.ai>,
+        Shi Jiasheng <jiasheng.shi@iluvatar.ai>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 065/145] lib/genalloc: fix the overflow when size is too big
+Date:   Mon, 11 Jan 2021 14:01:29 +0100
+Message-Id: <20210111130051.675602171@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
-References: <20210111130039.165470698@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,34 +42,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Wang <wangzhiqiang.bj@bytedance.com>
+From: Huang Shijie <sjhuang@iluvatar.ai>
 
-[ Upstream commit 427c940558560bff2583d07fc119a21094675982 ]
+[ Upstream commit 36845663843fc59c5d794e3dc0641472e3e572da ]
 
-When aggregating ncsi interfaces and dedicated interfaces to bond
-interfaces, the ncsi response handler will use the wrong net device to
-find ncsi_dev, so that the ncsi interface will not work properly.
-Here, we use the original net device to fix it.
+Some graphic card has very big memory on chip, such as 32G bytes.
 
-Fixes: 138635cc27c9 ("net/ncsi: NCSI response packet handler")
-Signed-off-by: John Wang <wangzhiqiang.bj@bytedance.com>
-Link: https://lore.kernel.org/r/20201223055523.2069-1-wangzhiqiang.bj@bytedance.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In the following case, it will cause overflow:
+
+    pool = gen_pool_create(PAGE_SHIFT, NUMA_NO_NODE);
+    ret = gen_pool_add(pool, 0x1000000, SZ_32G, NUMA_NO_NODE);
+
+    va = gen_pool_alloc(pool, SZ_4G);
+
+The overflow occurs in gen_pool_alloc_algo_owner():
+
+		....
+		size = nbits << order;
+		....
+
+The @nbits is "int" type, so it will overflow.
+Then the gen_pool_avail() will return the wrong value.
+
+This patch converts some "int" to "unsigned long", and
+changes the compare code in while.
+
+Link: https://lkml.kernel.org/r/20201229060657.3389-1-sjhuang@iluvatar.ai
+Signed-off-by: Huang Shijie <sjhuang@iluvatar.ai>
+Reported-by: Shi Jiasheng <jiasheng.shi@iluvatar.ai>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ncsi/ncsi-rsp.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/genalloc.c | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
---- a/net/ncsi/ncsi-rsp.c
-+++ b/net/ncsi/ncsi-rsp.c
-@@ -1114,7 +1114,7 @@ int ncsi_rcv_rsp(struct sk_buff *skb, st
- 	int payload, i, ret;
+diff --git a/lib/genalloc.c b/lib/genalloc.c
+index 7f1244b5294a8..dab97bb69df63 100644
+--- a/lib/genalloc.c
++++ b/lib/genalloc.c
+@@ -81,14 +81,14 @@ static int clear_bits_ll(unsigned long *addr, unsigned long mask_to_clear)
+  * users set the same bit, one user will return remain bits, otherwise
+  * return 0.
+  */
+-static int bitmap_set_ll(unsigned long *map, int start, int nr)
++static int bitmap_set_ll(unsigned long *map, unsigned long start, unsigned long nr)
+ {
+ 	unsigned long *p = map + BIT_WORD(start);
+-	const int size = start + nr;
++	const unsigned long size = start + nr;
+ 	int bits_to_set = BITS_PER_LONG - (start % BITS_PER_LONG);
+ 	unsigned long mask_to_set = BITMAP_FIRST_WORD_MASK(start);
  
- 	/* Find the NCSI device */
--	nd = ncsi_find_dev(dev);
-+	nd = ncsi_find_dev(orig_dev);
- 	ndp = nd ? TO_NCSI_DEV_PRIV(nd) : NULL;
- 	if (!ndp)
- 		return -ENODEV;
+-	while (nr - bits_to_set >= 0) {
++	while (nr >= bits_to_set) {
+ 		if (set_bits_ll(p, mask_to_set))
+ 			return nr;
+ 		nr -= bits_to_set;
+@@ -116,14 +116,15 @@ static int bitmap_set_ll(unsigned long *map, int start, int nr)
+  * users clear the same bit, one user will return remain bits,
+  * otherwise return 0.
+  */
+-static int bitmap_clear_ll(unsigned long *map, int start, int nr)
++static unsigned long
++bitmap_clear_ll(unsigned long *map, unsigned long start, unsigned long nr)
+ {
+ 	unsigned long *p = map + BIT_WORD(start);
+-	const int size = start + nr;
++	const unsigned long size = start + nr;
+ 	int bits_to_clear = BITS_PER_LONG - (start % BITS_PER_LONG);
+ 	unsigned long mask_to_clear = BITMAP_FIRST_WORD_MASK(start);
+ 
+-	while (nr - bits_to_clear >= 0) {
++	while (nr >= bits_to_clear) {
+ 		if (clear_bits_ll(p, mask_to_clear))
+ 			return nr;
+ 		nr -= bits_to_clear;
+@@ -183,8 +184,8 @@ int gen_pool_add_owner(struct gen_pool *pool, unsigned long virt, phys_addr_t ph
+ 		 size_t size, int nid, void *owner)
+ {
+ 	struct gen_pool_chunk *chunk;
+-	int nbits = size >> pool->min_alloc_order;
+-	int nbytes = sizeof(struct gen_pool_chunk) +
++	unsigned long nbits = size >> pool->min_alloc_order;
++	unsigned long nbytes = sizeof(struct gen_pool_chunk) +
+ 				BITS_TO_LONGS(nbits) * sizeof(long);
+ 
+ 	chunk = vzalloc_node(nbytes, nid);
+@@ -242,7 +243,7 @@ void gen_pool_destroy(struct gen_pool *pool)
+ 	struct list_head *_chunk, *_next_chunk;
+ 	struct gen_pool_chunk *chunk;
+ 	int order = pool->min_alloc_order;
+-	int bit, end_bit;
++	unsigned long bit, end_bit;
+ 
+ 	list_for_each_safe(_chunk, _next_chunk, &pool->chunks) {
+ 		chunk = list_entry(_chunk, struct gen_pool_chunk, next_chunk);
+@@ -278,7 +279,7 @@ unsigned long gen_pool_alloc_algo_owner(struct gen_pool *pool, size_t size,
+ 	struct gen_pool_chunk *chunk;
+ 	unsigned long addr = 0;
+ 	int order = pool->min_alloc_order;
+-	int nbits, start_bit, end_bit, remain;
++	unsigned long nbits, start_bit, end_bit, remain;
+ 
+ #ifndef CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	BUG_ON(in_nmi());
+@@ -487,7 +488,7 @@ void gen_pool_free_owner(struct gen_pool *pool, unsigned long addr, size_t size,
+ {
+ 	struct gen_pool_chunk *chunk;
+ 	int order = pool->min_alloc_order;
+-	int start_bit, nbits, remain;
++	unsigned long start_bit, nbits, remain;
+ 
+ #ifndef CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	BUG_ON(in_nmi());
+@@ -755,7 +756,7 @@ unsigned long gen_pool_best_fit(unsigned long *map, unsigned long size,
+ 	index = bitmap_find_next_zero_area(map, size, start, nr, 0);
+ 
+ 	while (index < size) {
+-		int next_bit = find_next_bit(map, size, index + nr);
++		unsigned long next_bit = find_next_bit(map, size, index + nr);
+ 		if ((next_bit - index) < len) {
+ 			len = next_bit - index;
+ 			start_bit = index;
+-- 
+2.27.0
+
 
 
