@@ -2,82 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D92292F11CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:49:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4015C2F11CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:49:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730148AbhAKLq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:46:59 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:44092 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730133AbhAKLq7 (ORCPT
+        id S1730166AbhAKLrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:47:22 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:40511 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729779AbhAKLrV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:46:59 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610365595; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=rnRdrDWBNH7ytJ2L7yW9zQIx4N3YeZuP+scDtavI6Qs=; b=UBqRsy8Z0ezCU+O9WO4U6S/zlmXp0gc1Zo+nNZTIe0LMP4Ysi2COQVy2U/QHVx8TQ753zki3
- Tzp8xYRU0ZNfTfB7lhKXHi1wwyWrrOd7Vhw5kHoljSBS2f7GGdwO+H1B6K2TW5b+QLsbYd7a
- HvHNgNilCnbiIGNH7kHVG6iK6MU=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5ffc3a7d4dcca124755058c8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 11:46:05
- GMT
-Sender: neeraju=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 659ECC433C6; Mon, 11 Jan 2021 11:46:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from localhost (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DD103C433CA;
-        Mon, 11 Jan 2021 11:46:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DD103C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Neeraj Upadhyay <neeraju@codeaurora.org>
-Subject: [PATCH] rcu: Correct cpu offline trace in rcutree_dying_cpu
-Date:   Mon, 11 Jan 2021 17:15:58 +0530
-Message-Id: <1610365558-8330-1-git-send-email-neeraju@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Mon, 11 Jan 2021 06:47:21 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kyveg-0005Md-6w; Mon, 11 Jan 2021 11:46:38 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] drm/amdgpu: Add missing BOOTUP_DEFAULT to profile_name[]
+Date:   Mon, 11 Jan 2021 11:46:38 +0000
+Message-Id: <20210111114638.16530-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correctly trace whether the outgoing cpu blocks current gp in
-rcutree_dying_cpu().
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+A recent change added a new BOOTUP_DEFAULT power profile mode
+to the PP_SMC_POWER_PROFILE enum but omitted updating the
+corresponding profile_name array.  Fix this by adding in the
+missing BOOTUP_DEFAULT to profile_name[].
+
+Addresses-Coverity: ("Out-of-bounds read")
+Fixes: c27c9778a19e ("drm/amd/powerplay: support BOOTUP_DEFAULT power profile mode")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- kernel/rcu/tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 097990a..1f4bff4 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2364,7 +2364,7 @@ int rcutree_dying_cpu(unsigned int cpu)
- 
- 	blkd = !!(rnp->qsmask & rdp->grpmask);
- 	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
--			       blkd ? TPS("cpuofl") : TPS("cpuofl-bgp"));
-+			       blkd ? TPS("cpuofl-bgp") : TPS("cpuofl"));
- 	return 0;
- }
- 
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+index 75ddcadf3802..4763cb095820 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
++++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+@@ -774,6 +774,7 @@ static int vangogh_get_power_profile_mode(struct smu_context *smu,
+ 					   char *buf)
+ {
+ 	static const char *profile_name[] = {
++					"BOOTUP_DEFAULT",
+ 					"FULL_SCREEN_3D",
+ 					"VIDEO",
+ 					"VR",
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.29.2
 
