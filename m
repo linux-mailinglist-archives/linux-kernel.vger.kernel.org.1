@@ -2,93 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA6D2F19F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:45:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB83A2F19F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:45:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732849AbhAKPnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:43:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58502 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730056AbhAKPnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:43:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDFDA22A84;
-        Mon, 11 Jan 2021 15:43:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610379790;
-        bh=RonP8ve3WthsTBKKQ/UytIvBztNvyV5RjN0+msXV9nY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EgsgZofnCOPBEefh+/TPgHC68i8JC3CVERGqmBI3ncBGYet9Hw0TLEERVXD5wXkFY
-         duwV+IlNESa3Ygu7m9Och5ei/39fVUxOP1DGtZZcIocRggogvyMbWDrRCs8qDXDFqF
-         ZrpTMQZYIY2OyI59+EGg7GincB9gN4EDdo5dp8Po2xmV8LVY3GCEBZkufC3KXpDH3I
-         nP4xQentOyqNwkv75+pbdoYPmDdFoCnA8O3d4B09a8t3lz/Mntl7kXYBSuFl0utk2N
-         3sPoTstRVpQRLjFTajeRCn/9iyiXEV60W6jZy8J88GxPk52xZZz+kMJYLeJUnKgkLd
-         TScPvN2llX70Q==
-Received: by mail-ej1-f53.google.com with SMTP id x16so222562ejj.7;
-        Mon, 11 Jan 2021 07:43:09 -0800 (PST)
-X-Gm-Message-State: AOAM530SUQTP+nBkv24FVoPIDtuT00pwwr6q0wES4cVCIDE5DXmq3+JG
-        xzvYG5002ar4HMlk6qqUKGk3uQoUhaak558IcQ==
-X-Google-Smtp-Source: ABdhPJx/jzAlheiwQjfn7BpiqB02i68e/htTzamuYVsQwpyl2HDp4/Rfdpic2s2pRL+gj/DN5FUyq/zWNIoZo3v0HcY=
-X-Received: by 2002:a17:906:31cb:: with SMTP id f11mr58560ejf.468.1610379788269;
- Mon, 11 Jan 2021 07:43:08 -0800 (PST)
-MIME-Version: 1.0
-References: <1610092095-5113-1-git-send-email-henryc.chen@mediatek.com>
- <1610092095-5113-2-git-send-email-henryc.chen@mediatek.com>
- <1610163019.789930.3762037.nullmailer@robh.at.kernel.org> <1610333553.2992.7.camel@mtksdaap41>
-In-Reply-To: <1610333553.2992.7.camel@mtksdaap41>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 11 Jan 2021 09:42:54 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+W3UL4-s6ezFJrhUYko2EBPsO9nMOGzGR1nQT3x_VtdQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+W3UL4-s6ezFJrhUYko2EBPsO9nMOGzGR1nQT3x_VtdQ@mail.gmail.com>
-Subject: Re: [PATCH V7 01/13] dt-bindings: soc: Add dvfsrc driver bindings
-To:     Henry Chen <henryc.chen@mediatek.com>
-Cc:     "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Fan Chen <fan.chen@mediatek.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ryan Case <ryandcase@chromium.org>,
-        Arvin Wang <arvin.wang@mediatek.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org
+        id S1730454AbhAKPou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:44:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727996AbhAKPot (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 10:44:49 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 900E2C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:44:08 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id v138so156584pfc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:44:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=FfPhYcgmpWfwmSV36aZsn2I7a8UwoF5mD7MCCfCIqsM=;
+        b=hzZWrMpCqJJDhEcCP2t/Pa1Lp/Mjs7S51gLMqdSGernAmS6D1MVKbdz8bc3aUH6JsV
+         YwxEi0Wo5x6CpbhjAiZYIRCQx1IjF1ebjNsbiiq8KU5sfGnJHhSwfmwD2ceKh6aEAw30
+         04G7l1e6RT+UWbUfrUr7ABpI/vAUo02eYnSCREkCVMiqxVhaZdkwCGZZCvoXWWI+23Kk
+         FtcC60BODKq43VdlxVuUGYUMH+qPvAsJ17RFnX5oHSVmWhlVyaVbvBR8ltTQoI+yMBOM
+         zjHP+j1uNC28b6zicrOmjH1B16kiJWLFecCe1oigeKVm7YZddi1L3UxN4OgoLaxzkaXC
+         pplw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=FfPhYcgmpWfwmSV36aZsn2I7a8UwoF5mD7MCCfCIqsM=;
+        b=ezenO3pCNEdWgMjRl5tAuR6O7eADIlKDlcwOuQ3vmRI5bnuS0Xue/WOqjeUxA0HJU7
+         y5Jh25mADWnGwP/OhK/fgpLIKEvQeS7baS4+J3FBeKYphemwqRwQPTr6Ob5ZllzLzJAG
+         mBESgxmf8T4RDqpAC3KSBspLegVvPMvXh2nO7FjAB5qYJtbUrmFYfKPj5FVYHZV0gSGf
+         TpI6y/ifDgcnmaYO9xrgxcqqLPPZqkloQvW2RStB6Bid3aZdm483Cl7a8mSCzaaed0gc
+         GfnTliWsQdjjb3VuSJFTE5TVGZIyR6AqvlFRv0U32PoxwNFJGBx4RVRACaRTjEQKz1kP
+         8hBA==
+X-Gm-Message-State: AOAM531/A3Sx3ivj8HYNfEPlkMGieY82zAFWUWmQKJziFvrO33mOM1Nx
+        re96d1GzU+0unTLrTyWSlhv1yjYiNFPD
+X-Google-Smtp-Source: ABdhPJyLqwzeL4t2eytHl1iY8HQ1baI3DclZDFWZdkBLNL7yQv+KBJSfikwzJGitgqEBvIQ9yMlu+w/nBd/j
+Sender: "marcorr via sendgmr" <marcorr@marcorr.c.googlers.com>
+X-Received: from marcorr.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:1d18])
+ (user=marcorr job=sendgmr) by 2002:a17:902:d90c:b029:da:9930:9da7 with SMTP
+ id c12-20020a170902d90cb02900da99309da7mr17350870plz.85.1610379848075; Mon,
+ 11 Jan 2021 07:44:08 -0800 (PST)
+Date:   Mon, 11 Jan 2021 07:43:35 -0800
+Message-Id: <20210111154335.23388-1-marcorr@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH] dma: mark unmapped DMA scatter/gather invalid
+From:   Marc Orr <marcorr@google.com>
+To:     hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
+        jxgao@google.com, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, Marc Orr <marcorr@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 8:52 PM Henry Chen <henryc.chen@mediatek.com> wrote:
->
-> Hi Rob,
->
-> On Fri, 2021-01-08 at 20:30 -0700, Rob Herring wrote:
-> > On Fri, 08 Jan 2021 15:48:03 +0800, Henry Chen wrote:
-> > > Document the binding for enabling dvfsrc on MediaTek SoC.
-> > >
-> > > Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
-> > > ---
-> > >  .../devicetree/bindings/soc/mediatek/dvfsrc.yaml   | 67 ++++++++++++++++++++++
-> > >  1 file changed, 67 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/soc/mediatek/dvfsrc.yaml
-> > >
-> >
-> > My bot found errors running 'make dt_binding_check' on your patch:
-> >
-> > yamllint warnings/errors:
-> >
-> > dtschema/dtc warnings/errors:
-> > Documentation/devicetree/bindings/soc/mediatek/dvfsrc.example.dts:19:18: fatal error: dt-bindings/interconnect/mtk,mt8183-emi.h: No such file or directory
-> >    19 |         #include <dt-bindings/interconnect/mtk,mt8183-emi.h>
-> >       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> Sorry, because this header file is added on "[V7,07/13] dt-bindings:
-> interconnect: add MT8183 interconnect dt-bindings".
-> Should I change the order of the patchset (let the yaml pathc behind the
-> header) to fixed that ?
+This patch updates dma_direct_unmap_sg() to mark each scatter/gather
+entry invalid, after it's unmapped. This fixes two issues:
 
-DT headers should be part of the binding schema patch. (Or at least come first).
+1. It makes the unmapping code able to tolerate a double unmap.
+2. It prevents the NVMe driver from erroneously treating an unmapped DMA
+address as mapped.
 
-Rob
+The bug that motivated this patch was the following sequence, which
+occurred within the NVMe driver, with the kernel flag `swiotlb=force`.
+
+* NVMe driver calls dma_direct_map_sg()
+* dma_direct_map_sg() fails part way through the scatter gather/list
+* dma_direct_map_sg() calls dma_direct_unmap_sg() to unmap any entries
+  succeeded.
+* NVMe driver calls dma_direct_unmap_sg(), redundantly, leading to a
+  double unmap, which is a bug.
+
+With this patch, a hadoop workload running on a cluster of three AMD
+SEV VMs, is able to succeed. Without the patch, the hadoop workload
+suffers application-level and even VM-level failures.
+
+Tested-by: Jianxiong Gao <jxgao@google.com>
+Tested-by: Marc Orr <marcorr@google.com>
+Reviewed-by: Jianxiong Gao <jxgao@google.com>
+Signed-off-by: Marc Orr <marcorr@google.com>
+---
+ kernel/dma/direct.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+index 0a4881e59aa7..3d9b17fe5771 100644
+--- a/kernel/dma/direct.c
++++ b/kernel/dma/direct.c
+@@ -374,9 +374,11 @@ void dma_direct_unmap_sg(struct device *dev, struct scatterlist *sgl,
+ 	struct scatterlist *sg;
+ 	int i;
+ 
+-	for_each_sg(sgl, sg, nents, i)
++	for_each_sg(sgl, sg, nents, i) {
+ 		dma_direct_unmap_page(dev, sg->dma_address, sg_dma_len(sg), dir,
+ 			     attrs);
++		sg->dma_address = DMA_MAPPING_ERROR;
++	}
+ }
+ EXPORT_SYMBOL(dma_direct_unmap_sg);
+ #endif
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
+
