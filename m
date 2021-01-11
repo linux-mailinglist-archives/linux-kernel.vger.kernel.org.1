@@ -2,108 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180562F1919
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5682F2F1920
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:06:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730240AbhAKPEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:04:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726459AbhAKPEk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:04:40 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC04CC061786;
-        Mon, 11 Jan 2021 07:03:59 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id d17so679ejy.9;
-        Mon, 11 Jan 2021 07:03:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aAeE0TTHdKHoJkBYQsPdM4kqaplDlSaeVpHaFu0f2pw=;
-        b=vSp5iHmtr+/75uywTjkXTBnxCX3gZU/hlkgu7K8AMQUHLiqpyG8enC7XVQ71V/QaGK
-         biRC0kvKBRu+mlWp9xCbs5+9VAGnzcGv0kFFpymvUsR6P3ykiEL6rM55ahyO9ieG8JjZ
-         q990kKVHlOLSXu750+i0m1dMMoZ7IlfYK9jngg5aBqUgT7+Nba8ndXLe5swygJedvWwP
-         QsQ5DUWSXyO5MThoWwrbyis9PYgNfuYafMKCI4JTHaYiLAoLsLcgUHNCTfRJ3YJSYg0p
-         CBVWfve1OnVo0ArrGx1rUiv4/7mfag5UeqPvvmH6e5Ll9XjfOhatl8EnrRzb9gTgK58k
-         H8gA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aAeE0TTHdKHoJkBYQsPdM4kqaplDlSaeVpHaFu0f2pw=;
-        b=FDN0APK7O1mUMUqUXIpEW8HSLltxBdk0HjrHGUjDhoR8YeZX1VXS7JbA0QIjcv952z
-         9iDF+zEuRXenOY0NLsu7r7ux5GjTF10pESwFNBOmNj8HcRQjvPbzDFCluI5EO75zayhw
-         CMc5kgzRnT4F/smjzTjYZkM4KGuJ3H842AhsFfahccZ3iXNO2ofbknXk2QecD5aBC0lY
-         hnWCY46jTiz3BH5jHfu0BJeyATs3ybHHiQf+of3TMrORBXv3iSJoj+Ur8a3iVNan+iC9
-         ET3dg7mVHKUrDOERiQbg3oa4Cnl0Vr6ixHxehyfcH17cs9gW61cKz7ttVGXb383f4Vhk
-         iEig==
-X-Gm-Message-State: AOAM532PK43YmJRLp9UpqKTglYmSn4E8c3JFxNhD5KAYJsRmZRSBh1gA
-        JGQfDxBnHOh9AgTIIXVKDA2922smjv4=
-X-Google-Smtp-Source: ABdhPJxIyaLozHRUSkxGCf9e46os4PII+e+rFlcGTGASsZ5G6GpsA7YmSEqFQ0qbBTusFlQlcioPdw==
-X-Received: by 2002:a17:906:7a46:: with SMTP id i6mr10589160ejo.257.1610377438272;
-        Mon, 11 Jan 2021 07:03:58 -0800 (PST)
-Received: from [192.168.2.202] (pd9ea3126.dip0.t-ipconnect.de. [217.234.49.38])
-        by smtp.gmail.com with ESMTPSA id j23sm58529edv.45.2021.01.11.07.03.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 07:03:57 -0800 (PST)
-Subject: Re: [PATCH][next] platform/surface: fix potential integer overflow on
- shift of a int
-To:     Colin King <colin.king@canonical.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210111144648.20498-1-colin.king@canonical.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <94d4044a-d50f-0108-9312-53338c388f39@gmail.com>
-Date:   Mon, 11 Jan 2021 16:03:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1732015AbhAKPFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:05:50 -0500
+Received: from mout.gmx.net ([212.227.17.21]:37555 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726459AbhAKPFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 10:05:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1610377452;
+        bh=3EJylRDIVB92ko0ziXyNuJcEzvFJ7aK75H2nlm6+7bk=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=KPXGCxLF3eU3I9fRnG2Q7A5ovJLjj1GPza+k/CxZHUUoBu/+zxOzdPyrW/TkPxcaZ
+         +OaLZcc27+kSol5w4AtwkYw3rPw5ZnnYc9ASGkAD8Evhcjksu/+HNoNf0qH/SwgQoq
+         IDkxIE/Llx1YbHLl+twpW07giCxxuoioiUZnzu5A=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.1.81] ([82.59.212.144]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N1OXT-1jy2HH23GF-012tLd; Mon, 11
+ Jan 2021 16:04:12 +0100
+Subject: Re: Old platforms: bring out your dead
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+References: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
+From:   Gerhard Pircher <gerhard_pircher@gmx.net>
+Openpgp: preference=signencrypt
+Autocrypt: addr=gerhard_pircher@gmx.net; prefer-encrypt=mutual; keydata=
+ mQINBFJ8FFoBEACppfmJokJ5NMYp+JnpOH65xNtMBVfgUKW+nwuE1SsiQvao7V5/XrX+SsXI
+ Enk9GGU/FDnEJrjOK2c0t7zticDhveZCaEtAXupJjnIMpZo0IGy8mkX91ypozyHWhIfiIgDM
+ HY/mwyNdDYGwWIZahHdi+xrbkYrYj00ViXyv9OSFPHYHhGJI0kmoUzdc3+s5q53vUn2xrl2W
+ BMolE+6fLS3ZjmVNdl9zjgwRM+rE1tIR61fFBuiMSxhrUtSO8eyWQbQpnyQp6OK4oBHioPLQ
+ +yVgFFlyosF1DCxKX94mZ6hTOMUJeNug84gpQZRlsDGPr8ke4w7YSS18DJj8IJPWZzFvLqIF
+ KRd+gfIvujAk4ScVvL0SMpMMHEqN6E64xwbMuPdanj4u5ZLbvmggXPbTZ1Lo2pZeNoPP9RGR
+ 2B7W1WomQiZEzGiV99pW5l4e0a3wIj9GldoDvGyS0SfW9T/kBH1vkbCstmhSrcvGPqxYXqFx
+ c0mI5TliIH93jPhnDnJj5nHDN665hz1XSaYKAtWngJsm7HfqRuqbEe2PHoErj3H7bVbGNvfp
+ BulXfCjAp+LcmfWlkH6lzd7mvqGFQ2lTguvL6ZCiWNWVq81wsJ8eUPlGikRg3rxY63+pfao5
+ zDD4GaSxvePKI/kdZ7Q7UJgg9RLM1LQTCe7kD19g3YpJu9YdkQARAQABtClHZXJoYXJkIFBp
+ cmNoZXIgPGdlcmhhcmRfcGlyY2hlckBnbXgubmV0PokCTQQTAQoANwQLCQgHAhUKAhYBAhkB
+ Ap4BApsjFiEED327A82TVD0VemhZ0Yg+eBGoazYFAl3B9KAFCQ0nE8YACgkQ0Yg+eBGoazZj
+ Wg/+IVmoUxbBUMnbrK/kvAKBAo1zhiVGRMXk5QAD//6VhKzb02pfH79sdnyOcYmQEWDh7dbv
+ 3kzjbmjLrhunf0pqOUPP/0Ad66acFsLfh/up/LgDcWUP5nE5YRbYaQ/Av5zFhJaBM5SqV1LB
+ OiQ+dLKH5oNtx0W54d2YqSoIIFSHbUPt49RL4fvcX73w1sQT0KZZgRjCfyVuYvHWaW1CdEfi
+ B0OWnIlenrXoVcQrrd99WKxy8sdzRfF3YmLwqVZmOGhcpp/PODeSbHMoPo2wfLMToKtcvYPH
+ ilNwTQHGghoR8v0SdkDS+W4fkoX92xPdvADTHqXI4LOIDKPbaUPcqY62F0B55Dk2H6XgTg00
+ 84Yi5RDosFO7DteVuYpm4UOytrCoB/HfHduex7+ZP9bsT+W3Fyj1k7L/DXD7MT70Z68zyhEb
+ W5eCoKe2OWEbYvMRNLVT8tUzMchJpra7LJzCg9uTWdcqywrZ2jNvgdO3jh+TBxcwj3O8LfWq
+ UrZxoFcEB92Kufg68ACaHdKjl+geGFKBSPTrUb9befUSfv2WfBpdHmuRWRUEpSOG3SHAYurc
+ HccFtJtcdF/a6gxwyHz0jeXPNcSxBOKnU9xh5oVTigxIERs5CUdfl9ugsNGAzfsRQn5XdJOL
+ cWwysQhchRW6kXT386cHq25icairzwbcEpi7etg=
+Message-ID: <f48bcf43-9dcc-e48b-d29d-f75f3814398b@gmx.net>
+Date:   Mon, 11 Jan 2021 16:04:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20210111144648.20498-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:MlWhL7GVxwFDIJnrjVA2obGipsevKZ5cKIO62cjtF7D8u4+nJwH
+ d1Izq11BC5a6SNTmeL9ar4zE6tB87dCgDWxDTAPWeBltg1bqFuO5l1i/7NUtg59bw+FIbap
+ F144986xX+kAVuVsHMgEG+oVWhnxY+RYHC4oIBPCE4D1bvGmHfvZZzkLaFmJM5IUKDtEJ7u
+ XZdXtMkMuyymWmfMbviRw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:YB6FUPUySdQ=:K2bton6tAZKZUNtEfShPUR
+ YMOb3v9fDlMSrwCHOT4ih7757hwCODnHUVWi/6jXpBZtDMF0Q2druCim0kW39qnfPU74Xm+Py
+ nP9cEsbYRxFnEaHDxjFEGbRu/wmQ8Qj2nX3SbrCMSEuY2trl63JUPWosZlSmFN4TI9PgPm8IQ
+ 8hk9+e+I1VwJJL0yv5GlGqT4UCp4jsXa7WCxBchlSXe3i96WKUqsp5BQhC72/G9JyOV34eeK4
+ 5PDeEJbiVC+cWJWlvyxGJLSmeeOt/uNfShJsaEkVi2vSGmFDiFL4kgtlAJRbgGDVBsfYhWbkK
+ /n6jGkQpbCsS5arailGaJhfFmRGTgBnIuTMMXy5HL3J2b/i2wcOG1TxSecnZf7TFb2nfpzUm2
+ ls+lC5352dGgHgwXjS0Mzg0DiIxpt76VSmJe6Q44MEON5Ug8WNxPmUAOTzUGYSjJMgox7DHPO
+ dFmuG7BleCE8SykAajxBUiUS59dTIWKQ2OU7PQx2WIr3Gt+IR0DxnzhYNJ8RluTzWk4aR2Dov
+ MvfJGtZaszx23O7CLk1PkycPID+73jxOIZ2CpDFZRCtrrhHQkOmQ6rBTal0dV/4alZDVRgLZa
+ taxbOQfkTijZRKEpHoia0hI1fnca7s/rgoD0sYurotoYtpS4vR5j+vYXHK2eWqD81Tt3kJy6Y
+ 23UUpSiLuCrrhoJ3HWvqlFjMhaPLUQGbtoZAzwLQqTGe+W7Rr4foMsEk6y0a7hFekjL7WNR+U
+ R2bDKTNGHDsTdiYBmzg0AEfDKa+VMfjUezZ0gjuNR1EYeZ1uM47UagdizbOvO97QF0VxiFHSQ
+ Fb0suUMuioj2gNdviyNWHZpvVEP+ROmOf9Bp4Cxn47CSzzhW/oNvHpvVC3NVamF/n9Ls9AFRJ
+ wJwTKfp0+oRWTrRSGvHQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/11/21 3:46 PM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The left shift of int 32 bit integer constant 1 is evaluated using 32 bit
-> arithmetic and then passed as a 64 bit function argument. In the case where
-> func is 32 or more this can lead to an oveflow.  Avoid this by shifting
-> using the BIT_ULL macro instead.
-> 
-> Addresses-Coverity: ("Unintentional integer overflow")
-> Fixes: fc00bc8ac1da ("platform/surface: Add Surface ACPI Notify driver")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->   drivers/platform/surface/surface_acpi_notify.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/platform/surface/surface_acpi_notify.c b/drivers/platform/surface/surface_acpi_notify.c
-> index 8cd67a669c86..ef9c1f8e8336 100644
-> --- a/drivers/platform/surface/surface_acpi_notify.c
-> +++ b/drivers/platform/surface/surface_acpi_notify.c
-> @@ -188,7 +188,7 @@ static int san_acpi_notify_event(struct device *dev, u64 func,
->   	union acpi_object *obj;
->   	int status = 0;
->   
-> -	if (!acpi_check_dsm(san, &SAN_DSM_UUID, SAN_DSM_REVISION, 1 << func))
-> +	if (!acpi_check_dsm(san, &SAN_DSM_UUID, SAN_DSM_REVISION, BIT_ULL(func)))
->   		return 0;
->   
->   	dev_dbg(dev, "notify event %#04llx\n", func);
-> 
+Am 10.01.21 um 18:35 schrieb John Paul Adrian Glaubitz:
+> Hi Arnd!
+>
+> (Please let's have this cross-posted for more visibility. I only learned=
+ about this
+>  while reading Phoronix news)
+Same for me!
 
-Thanks, looks good to me.
+>> I also looked at non-ARM platforms while preparing for my article. Some=
+ of
+>> these look like they are no longer actively maintained or used, but I'm=
+ not
+>> doing anything about those unless the maintainers would like me to:
+>>
+>> * h8300: Steven Rostedt has repeatedly asked about it to be removed
+>>    or fixed in 2020 with no reply. This was killed before in 2013, adde=
+d back
+>>    in 2015 but has been mostly stale again since 2016
+>
+> As far as I know, Yoshinori Sato is actively maintaining H8300 support, =
+see:
+>
+>> https://osdn.net/projects/uclinux-h8/
+>
+>> * c6x: Added in 2011, this has seen very few updates since, but
+>>     Mark still Acks patches when they come. Like most other DSP platfor=
+ms,
+>>     the model of running Linux on a DSP appears to have been obsoleted
+>>     by using Linux on ARM with on-chip DSP cores running bare-metal cod=
+e.
+>> * sparc/sun4m: A patch for removing 32-bit Sun sparc support (not LEON)
+>>    is currently under review
+>
+> I don't think this has reached any agreement yet. Multiple people want i=
+t to stay.
+>
+>> * powerpc/cell: I'm the maintainer and I promised to send a patch to re=
+move it.
+>>    it's in my backlog but I will get to it. This is separate from PS3,
+>>    which is actively maintained and used; spufs will move to ps3
+>> * powerpc/chrp (32-bit rs6000, pegasos2): last updated in 2009
+>
+> I'm still using this. Please keep it.
+I can also confirm that Pegasos2 users in the Amiga scene are running Linu=
+x
+(Debian) on these machines.
 
-Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
+>> * powerpc/amigaone: last updated in 2009
+I still have 2 of the 3 types of the first generation AmigaOne machines (n=
+ot
+to be confused with the newer AmigaOne X1000 and X5000 machines based on
+PASemi and P5020 CPUs) working here. A third machine needs a repair of the
+G4 CPU module (replacement parts already available).
+I have to admit however that I yet have to setup an environment that allow=
+s
+me to regularly test new Linux kernel versions on these machines. Especial=
+ly
+because there are not many Linux users for these machines - which is likel=
+y
+due to the fact that no distribution officially supports these machines ou=
+t
+of the box (the Pegasos2 platform had more luck here). Inputs on how to
+automate tests would therefore be very welcome!
+Given however that the Debian PowerPC port has a proper maintainer again
+(kudos to Adrian!) and there is also another new PowerPC distro (Void Linu=
+x),
+I would like to ask for a period of grace. After all this is just a hobby
+project for me, so keeping up with the pace of the Linux development isn't
+always that easy (and no, work on this did not stop in 2009, but shifted m=
+ore
+towards distro support since then).
 
-Regards,
-Max
+>> * powerpc/maple: last updated in 2011
+>> * m68k/{apollo,hp300,sun3,q40} these are all presumably dead and have n=
+ot
+>>    seen updates in many years (atari/amiga/mac and coldfire are very mu=
+ch
+>>    alive)
+>
+> Dito. I have both sun3 and hp300 machines.
+>
+>> * mips/jazz: last updated in 2007
+>> * mips/cobalt: last updated in 2010
+>>
+>> There might be some value in dropping old CPU support on architectures
+>> and platforms that are almost exclusively used with more modern CPUs.
+>> If there are only few users, those can still keep using v5.10 or v5.4 s=
+table
+>> kernels for a few more years. Again, I'm not doing anything about them,
+>> except mention them since I did the research.
+>> These are the oldest one by architecture, and they may have reached
+>> their best-served-by-date:
+>>
+>> * 80486SX/DX: 80386 CPUs were dropped in 2012, and there are
+>>   indications that 486 have no users either on recent kernels.
+>>   There is still the Vortex86 family of SoCs, and the oldest of those w=
+ere
+>>   486SX-class, but all the modern ones are 586-class.
+>> * Alpha 2106x: First generation that lacks some of the later features.
+>>   Since all Alphas are ancient by now, it's hard to tell whether these =
+have
+>>   any fewer users.
+>
+> I don't see the point in crippling Alpha support. Does this achieve anyt=
+hing?
+>
+>> * IA64 Merced: first generation Itanium (2001) was quickly replaced by
+>>   Itanium II in 2002.
+>> * MIPS R3000/TX39xx: 32-bit MIPS-II generation, mostly superseded by
+>>   64-bit MIPS-III (R4000 and higher) starting in 1991. arch/mips still
+>>   supports these in DECstation and Toshiba Txx9, but it appears that mo=
+st
+>>   of those machines are of the 64-bit kind. Later MIPS32 such as 4Kc an=
+d
+>>   later are rather different and widely used.
+>> * PowerPC 601 (from 1992) just got removed, later 60x, 4xx, 8xx etc
+>>   are apparently all still used.
+>> * SuperH SH-2: We discussed removing SH-2 (not J2 or SH-4)
+>>   support in the past, I don't think there were any objections, but
+>>   nobody submitted a patch.
+>
+> Isn't SH-2 basically J-2? I'm not sure what we would gain here.
+>
+>> * 68000/68328 (Dragonball): these are less capable than the
+>>   68020+ or the Coldfire MCF5xxx line and similar to the 68360
+>>   that was removed in 2016.
+>
+> Adrian
+>
