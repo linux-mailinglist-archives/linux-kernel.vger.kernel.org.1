@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AEAC2F15CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:45:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F28D2F1651
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:52:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387672AbhAKNpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:45:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58878 "EHLO mail.kernel.org"
+        id S1730746AbhAKNJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:09:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731439AbhAKNLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:11:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 273BC229C4;
-        Mon, 11 Jan 2021 13:11:00 +0000 (UTC)
+        id S1730758AbhAKNIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:08:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2188D2250F;
+        Mon, 11 Jan 2021 13:07:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370660;
-        bh=blUMQHoXIKTmHAs/tkVLjkrrjh9v/Zn/TYAiAvccOzw=;
+        s=korg; t=1610370473;
+        bh=fMvEGgNJiH3fN5VWU5fVlLjxkoXawqbWiqvbbcugPIQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ob6qxVXyBLhThBKuYRT8tRibskfvl4fbGvARofEhCMnTsHrkDmCtpvROvlqlqL1lP
-         mTBPHkk7mzjzDvvWRyR6r6ckXcF1+oYnWWQx8kHatifVPj0qX455ghmjFjZ1uK6EBH
-         MceoX6QbrM040ntdQWvf7vxBRe+nKWHZ4U6jF+IA=
+        b=Ql5JlvLA/sHVyUVyzUi9NTeO89qNjtWXzSuDV6g62FVFCDNd8cd7LBvwxuumYR4gW
+         DiUxFGK+KJAf0BCG/OG4mSd4invoEcfP2b1fPQhx4I/s4Kq9TxY44uTkdJCh9wG/FW
+         ayOsSjxaf2ISzCqlE//ccoYxKYV0LqPh2cQFN+bQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 43/92] vhost_net: fix ubuf refcount incorrectly when sendmsg fails
+Subject: [PATCH 4.19 38/77] net: systemport: set dev->max_mtu to UMAC_MAX_MTU_SIZE
 Date:   Mon, 11 Jan 2021 14:01:47 +0100
-Message-Id: <20210111130041.220554024@linuxfoundation.org>
+Message-Id: <20210111130038.242053796@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
-References: <20210111130039.165470698@linuxfoundation.org>
+In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
+References: <20210111130036.414620026@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunjian Wang <wangyunjian@huawei.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-[ Upstream commit 01e31bea7e622f1890c274f4aaaaf8bccd296aa5 ]
+[ Upstream commit 54ddbdb024882e226055cc4c3c246592ddde2ee5 ]
 
-Currently the vhost_zerocopy_callback() maybe be called to decrease
-the refcount when sendmsg fails in tun. The error handling in vhost
-handle_tx_zerocopy() will try to decrease the same refcount again.
-This is wrong. To fix this issue, we only call vhost_net_ubuf_put()
-when vq->heads[nvq->desc].len == VHOST_DMA_IN_PROGRESS.
+The driver is already allocating receive buffers of 2KiB and the
+Ethernet MAC is configured to accept frames up to UMAC_MAX_MTU_SIZE.
 
-Fixes: bab632d69ee4 ("vhost: vhost TX zero-copy support")
-Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Link: https://lore.kernel.org/r/1609207308-20544-1-git-send-email-wangyunjian@huawei.com
+Fixes: bfcb813203e6 ("net: dsa: configure the MTU for switch ports")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Link: https://lore.kernel.org/r/20201218173843.141046-1-f.fainelli@gmail.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/vhost/net.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/broadcom/bcmsysport.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -860,6 +860,7 @@ static void handle_tx_zerocopy(struct vh
- 	size_t len, total_len = 0;
- 	int err;
- 	struct vhost_net_ubuf_ref *uninitialized_var(ubufs);
-+	struct ubuf_info *ubuf;
- 	bool zcopy_used;
- 	int sent_pkts = 0;
+--- a/drivers/net/ethernet/broadcom/bcmsysport.c
++++ b/drivers/net/ethernet/broadcom/bcmsysport.c
+@@ -2507,6 +2507,7 @@ static int bcm_sysport_probe(struct plat
+ 	/* HW supported features, none enabled by default */
+ 	dev->hw_features |= NETIF_F_RXCSUM | NETIF_F_HIGHDMA |
+ 				NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM;
++	dev->max_mtu = UMAC_MAX_MTU_SIZE;
  
-@@ -892,9 +893,7 @@ static void handle_tx_zerocopy(struct vh
- 
- 		/* use msg_control to pass vhost zerocopy ubuf info to skb */
- 		if (zcopy_used) {
--			struct ubuf_info *ubuf;
- 			ubuf = nvq->ubuf_info + nvq->upend_idx;
--
- 			vq->heads[nvq->upend_idx].id = cpu_to_vhost32(vq, head);
- 			vq->heads[nvq->upend_idx].len = VHOST_DMA_IN_PROGRESS;
- 			ubuf->callback = vhost_zerocopy_callback;
-@@ -924,7 +923,8 @@ static void handle_tx_zerocopy(struct vh
- 		err = sock->ops->sendmsg(sock, &msg, len);
- 		if (unlikely(err < 0)) {
- 			if (zcopy_used) {
--				vhost_net_ubuf_put(ubufs);
-+				if (vq->heads[ubuf->desc].len == VHOST_DMA_IN_PROGRESS)
-+					vhost_net_ubuf_put(ubufs);
- 				nvq->upend_idx = ((unsigned)nvq->upend_idx - 1)
- 					% UIO_MAXIOV;
- 			}
+ 	/* Request the WOL interrupt and advertise suspend if available */
+ 	priv->wol_irq_disabled = 1;
 
 
