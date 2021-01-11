@@ -2,215 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D8B2F125A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:35:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CFA32F125E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726743AbhAKMfB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Jan 2021 07:35:01 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2303 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726151AbhAKMe7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 07:34:59 -0500
-Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DDtNn4cw6z67WP5;
-        Mon, 11 Jan 2021 20:31:21 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 11 Jan 2021 13:34:17 +0100
-Received: from localhost (10.47.69.27) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 11 Jan
- 2021 12:34:16 +0000
-Date:   Mon, 11 Jan 2021 12:33:38 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Jyoti Bhayana <jbhayana@google.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        "Lukas Bulwahn" <lukas.bulwahn@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Enrico Granata <egranata@google.com>,
-        Mikhail Golubev <mikhail.golubev@opensynergy.com>,
-        Igor Skalkin <Igor.Skalkin@opensynergy.com>,
-        Peter Hilber <Peter.hilber@opensynergy.com>,
-        Ankit Arora <ankitarora@google.com>
-Subject: Re: Reply to [RFC PATCH v2 0/1] Adding support for IIO SCMI based
- sensors
-Message-ID: <20210111123338.00007c06@Huawei.com>
-In-Reply-To: <CA+=V6c3f5Z4_JOr+KzvxpL9nOcPrNAZYmG_VpUF+QAW4=cfy=Q@mail.gmail.com>
-References: <20210106161233.GA44413@e120937-lin>
-        <20210106212353.951807-1-jbhayana@google.com>
-        <20210109190133.61051fab@archlinux>
-        <CA+=V6c3f5Z4_JOr+KzvxpL9nOcPrNAZYmG_VpUF+QAW4=cfy=Q@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S1726844AbhAKMfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 07:35:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44704 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726151AbhAKMfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 07:35:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62179223DB;
+        Mon, 11 Jan 2021 12:35:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610368513;
+        bh=mg/Imn7k+NULxFNAhHU+LBlwGl7PuKLLZ/KT9Jr1zak=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RqmZLseJPCgyZCcc9uVsyvhrdFOhuF6kWEfNFtuylgh1N2gCiqK0WGyk5h085Ea4F
+         PWi2hkC5xIa6T4+k59Qf0AIaYmfAPJEjPpa/n5Cc8SvTeISzpelSftpQSTjs0cJgCA
+         wLICyuz5gBzCyZfJ/kTJuWqCUVESFIr873LEMCfszv2cLr9GEEYeASKqw9vpYYuRYt
+         UPKQ9coHB+ua6ffoLJMSt57u/NUE1Eyxmyqi6DR50M4pJjb7NF20JKUjpvESZVjP5A
+         PXxJiaT2tSLzWVRpzwWCmPHfRdPYTGAeENFX08GjzspjoefQjGWY7A7AI2lSAyLgAO
+         UXlVEYhM3+ajg==
+Date:   Mon, 11 Jan 2021 13:35:10 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org
+Subject: Re: [RFC PATCH 4/8] rcu/nocb: Trigger self-IPI on late deferred wake
+ up before user resume
+Message-ID: <20210111123510.GD242508@lothringen>
+References: <20210109020536.127953-1-frederic@kernel.org>
+ <20210109020536.127953-5-frederic@kernel.org>
+ <X/w+yJmCBnDWxtoE@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.47.69.27]
-X-ClientProxiedBy: lhreml722-chm.china.huawei.com (10.201.108.73) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/w+yJmCBnDWxtoE@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 Jan 2021 22:44:44 -0800
-Jyoti Bhayana <jbhayana@google.com> wrote:
-
-> Hi Jonathan,
-> 
-> In section 4.7.2.5.1 of the specification, the following exponent is
-> the scale value
-> 
-> uint32 axis_attributes_high
-> Bits[15:11] Exponent: The power-of-10 multiplier in two’s-complement
-> format that is applied to the sensor unit
-> specified by the SensorType field.
-> 
-> and the resolution is
-> 
-> uint32 axis_resolution
-> Bits[31:27] Exponent: The power-of-10 multiplier in two’s-complement format
-> that is applied to the Res field. Bits[26:0] Res: The resolution of
-> the sensor axis.
-> 
-> From code in scmi_protocol.h
-> /**
->  * scmi_sensor_axis_info  - describes one sensor axes
->  * @id: The axes ID.
->  * @type: Axes type. Chosen amongst one of @enum scmi_sensor_class.
->  * @scale: Power-of-10 multiplier applied to the axis unit.
->  * @name: NULL-terminated string representing axes name as advertised by
->  *  SCMI platform.
->  * @extended_attrs: Flag to indicate the presence of additional extended
->  *    attributes for this axes.
->  * @resolution: Extended attribute representing the resolution of the axes.
->  * Set to 0 if not reported by this axes.
->  * @exponent: Extended attribute representing the power-of-10 multiplier that
->  *      is applied to the resolution field. Set to 0 if not reported by
->  *      this axes.
->  * @attrs: Extended attributes representing minimum and maximum values
->  *   measurable by this axes. Set to 0 if not reported by this sensor.
->  */
-> 
-> struct scmi_sensor_axis_info {
-> unsigned int id;
-> unsigned int type;
-> int scale; //This is the scale used for min/max range
-> char name[SCMI_MAX_STR_SIZE];
-> bool extended_attrs;
-> unsigned int resolution;
-> int exponent; // This is the scale used in resolution
-> struct scmi_range_attrs attrs;
-> };
-> 
-> The scale above  is the Power-of-10 multiplier which is applied to the min range
-> and the max range value
-> but the resolution is equal to resolution and multiplied by
-> Power-of-10 multiplier
-> of exponent in the above struct.
-> So as can be seen above the value of the power of 10 multiplier used
-> for min/max range
-> can be different than the value of the power of 10 multiplier used for
-> the resolution.
-> Hence, if I have to use IIO_AVAIL_RANGE to specify min/max range and as well
-> as resolution, then I have to use the float format with the scale applied.
-> 
-> If there is another way which you know of and prefer, please let me know.
-I'll confess I've gotten a bit lost here.
-
-So I think where we are is how to describe the range of the sensor and why we can't
-use in_accel_x_raw_available to provide the 
-
-Understood that the resolution can have different scaling.  That is presumably
-to allow for the case where a device is reporting values at a finer scale than
-it's real resolution.  Resolution might take into account expected noise for
-example.  So it should be decoupled from the scaling of both the actual measurements
-and the axis high / low limits.
-
-However, I'd read that as saying the axis high / low limits and the actual sensor
-readings should be scaled by the exponent in axis_attributes_high.
-So I think we are fine for the range, but my earlier assumption that resolution
-was equivalent to scale in IIO (real world value for 1LSB) may be completely wrong
-as resolution may be unconnected to how you convert to a real world value?
-
-If nothing else I'd like to suggest the spec needs to be tightened a bit here
-to say exactly how we convert a value coming in to real world units (maybe
-I'm just missing it).
-
-Anyhow, I suspect we've been looking at this the wrong way and what we actually
-need is non standard ABI for resolution.
-
-Jonathan
-
-
-
-
-> 
-> Thanks,
-> Jyoti
-> 
-> 
-> 
-> 
-> Thanks,
-> Jyoti
-> 
-> On Sat, Jan 9, 2021 at 11:01 AM Jonathan Cameron <jic23@kernel.org> wrote:
-> >
-> > On Wed,  6 Jan 2021 21:23:53 +0000
-> > Jyoti Bhayana <jbhayana@google.com> wrote:
+On Mon, Jan 11, 2021 at 01:04:24PM +0100, Peter Zijlstra wrote:
+> > +static DEFINE_PER_CPU(struct irq_work, late_wakeup_work) =
+> > +	IRQ_WORK_INIT(late_wakeup_func);
+> > +
+> >  /**
+> >   * rcu_user_enter - inform RCU that we are resuming userspace.
+> >   *
+> > @@ -692,9 +704,17 @@ noinstr void rcu_user_enter(void)
+> >  	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
 > >  
-> > > Hi Jonathan,
-> > >
-> > > Instead of adding IIO_VAL_INT_H32_L32, I am thinking of adding IIO_VAL_FRACTIONAL_LONG
-> > > or IIO_VAL_FRACTIONAL_64 as the scale/exponent used for min/max range can be different
-> > > than the one used in resolution according to specification.  
-> >
-> > That's somewhat 'odd'.  Given min/max are inherently values the sensor is supposed to
-> > be able to return why give them different resolutions?  Can you point me at a specific
-> > section of the spec?  The axis_min_range_low etc fields don't seem to have units specified
-> > but I assumed they were in sensor units and so same scale factors?
-> >  
-> > >
-> > > I am planning to use read_avail for IIO_CHAN_INFO_PROCESSED using IIO_AVAIL_RANGE
-> > > and this new IIO_VAL_FRACTIONAL_64 for min range,max range and resolution.
-> > > Instead of two values used in IIO_VAL_FRACTIONAL, IIO_VAL_FRACTIONAL_64 will use 4 values
-> > > val_high,val_low,and val2_high and val2_low.  
-> >
-> > I'm not keen on the changing that internal kernel interface unless we absolutely
-> > have to.  read_avail() is called from consumer drivers and they won't know anything
-> > about this new variant.
-> >  
-> > >
-> > > Let me know if that is an acceptable solution.  
-> >
-> > Hmm. It isn't a standard use of the ABI given the value in the buffer is (I assume)
-> > raw (needs scale applied).  However, it isn't excluded by the ABI docs.  Whether
-> > a standard userspace is going to expect it is not clear to me.
-> >
-> > I don't want to end up in a position where we end up with available being generally
-> > added for processed when what most people care about is what the value range they
-> > might get from a polled read is (rather than via a buffer).
-> >
-> > So I'm not that keen on this solution but if we can find a way to avoid it.
-> >
-> > Jonathan
-> >
-> >  
-> > >
-> > >
-> > > Thanks,
-> > > Jyoti
-> > >  
-> >  
+> >  	lockdep_assert_irqs_disabled();
+> > -	do_nocb_deferred_wakeup(rdp);
+> > +	/*
+> > +	 * We may be past the last rescheduling opportunity in the entry code.
+> > +	 * Trigger a self IPI that will fire and reschedule once we resume to
+> > +	 * user/guest mode.
+> > +	 */
+> > +	if (do_nocb_deferred_wakeup(rdp) && need_resched())
+> > +		irq_work_queue(this_cpu_ptr(&late_wakeup_work));
+> > +
+> >  	rcu_eqs_enter(true);
+> >  }
+> 
+> Do we have the guarantee that every architecture that supports NOHZ_FULL
+> has arch_irq_work_raise() on?
 
+Yes it's a requirement for NOHZ_FULL to work. But you make me realize this
+is tacit and isn't constrained anywhere in the code. I'm going to add
+HAVE_IRQ_WORK_RAISE and replace the weak definition with a config
+based.
+
+> 
+> Also, can't you do the same thing you did earlier and do that wakeup
+> thing before we complete exit_to_user_mode_prepare() ?
+
+I do it for CONFIG_GENERIC_ENTRY but the other architectures have their own
+exit to user loop that I would need to audit and make sure that interrupts aren't
+ever re-enabled before resuming to user and there is no possible rescheduling
+point. I could manage to handle arm and arm64 but the others scare me:
+
+$ git grep HAVE_CONTEXT_TRACKING
+arch/csky/Kconfig:      select HAVE_CONTEXT_TRACKING
+arch/mips/Kconfig:      select HAVE_CONTEXT_TRACKING
+arch/powerpc/Kconfig:   select HAVE_CONTEXT_TRACKING            if PPC64
+arch/riscv/Kconfig:     select HAVE_CONTEXT_TRACKING
+arch/sparc/Kconfig:     select HAVE_CONTEXT_TRACKING
+
+:-s
