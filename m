@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E932F16C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 345E52F1571
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:41:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387829AbhAKN4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:56:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54802 "EHLO mail.kernel.org"
+        id S1731422AbhAKNMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:12:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730551AbhAKNHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:07:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39CFD22A85;
-        Mon, 11 Jan 2021 13:06:34 +0000 (UTC)
+        id S1731451AbhAKNLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:11:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB1C622795;
+        Mon, 11 Jan 2021 13:11:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370394;
-        bh=OzF4GEV4r3pJjABym4dxY+cjvR9HNA8PaiX5fxQNmAs=;
+        s=korg; t=1610370665;
+        bh=Gj/HyAUsIQo2G+cUZKMhSKG86mDRwD00QEa/a3fU9xs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gKoGTVdwb3SiodGntIrLkjIS+PhiTEUqurUormR4g31nDVMElsDRp+eCEGYLhJlZJ
-         61GWuUpY2eMiR15T7WQEeZV5dOqas7hoQGNcWZYhvbN94ONrvAdGcv97X44HUqMeAv
-         bMbTKH/0TTsMWo/YKnp4htow7qiHksykWtlrpR2s=
+        b=PguChEDhnGe7CwkAjxhoxZ2ER60yePUl/NrOYpjMQbZ02mLkXlxhOpHoOAxL+gW+Y
+         aSMxa6fNjHhzv8m3DaR1E1qMsI4tzugKKUszcvwQw4kjiJ32zL8FFLoL7VAFw5AAyt
+         lqgmCYWVRwpo4eKvfi2xaNPKAVXSiUGHJETNqZH4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Georgi Bakalski <georgi.bakalski@gmail.com>,
-        Sean Young <sean@mess.org>, Oliver Neukum <oneukum@suse.com>
-Subject: [PATCH 4.14 30/57] USB: cdc-acm: blacklist another IR Droid device
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Davide Caratti <dcaratti@redhat.com>
+Subject: [PATCH 5.4 45/92] net/sched: sch_taprio: ensure to reset/destroy all child qdiscs
 Date:   Mon, 11 Jan 2021 14:01:49 +0100
-Message-Id: <20210111130035.182124092@linuxfoundation.org>
+Message-Id: <20210111130041.315198350@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
-References: <20210111130033.715773309@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Young <sean@mess.org>
+From: Davide Caratti <dcaratti@redhat.com>
 
-commit 0ffc76539e6e8d28114f95ac25c167c37b5191b3 upstream.
+[ Upstream commit 698285da79f5b0b099db15a37ac661ac408c80eb ]
 
-This device is supported by the IR Toy driver.
+taprio_graft() can insert a NULL element in the array of child qdiscs. As
+a consquence, taprio_reset() might not reset child qdiscs completely, and
+taprio_destroy() might leak resources. Fix it by ensuring that loops that
+iterate over q->qdiscs[] don't end when they find the first NULL item.
 
-Reported-by: Georgi Bakalski <georgi.bakalski@gmail.com>
-Signed-off-by: Sean Young <sean@mess.org>
-Acked-by: Oliver Neukum <oneukum@suse.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201227134502.4548-2-sean@mess.org
+Fixes: 44d4775ca518 ("net/sched: sch_taprio: reset child qdiscs before freeing them")
+Fixes: 5a781ccbd19e ("tc: Add support for configuring the taprio scheduler")
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Davide Caratti <dcaratti@redhat.com>
+Link: https://lore.kernel.org/r/13edef6778fef03adc751582562fba4a13e06d6a.1608240532.git.dcaratti@redhat.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/class/cdc-acm.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ net/sched/sch_taprio.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -1952,6 +1952,10 @@ static const struct usb_device_id acm_id
- 	{ USB_DEVICE(0x04d8, 0x0083),	/* Bootloader mode */
- 	.driver_info = IGNORE_DEVICE,
- 	},
-+
-+	{ USB_DEVICE(0x04d8, 0xf58b),
-+	.driver_info = IGNORE_DEVICE,
-+	},
- #endif
+--- a/net/sched/sch_taprio.c
++++ b/net/sched/sch_taprio.c
+@@ -1626,7 +1626,7 @@ static void taprio_destroy(struct Qdisc
+ 	taprio_disable_offload(dev, q, NULL);
  
- 	/*Samsung phone in firmware update mode */
+ 	if (q->qdiscs) {
+-		for (i = 0; i < dev->num_tx_queues && q->qdiscs[i]; i++)
++		for (i = 0; i < dev->num_tx_queues; i++)
+ 			qdisc_put(q->qdiscs[i]);
+ 
+ 		kfree(q->qdiscs);
 
 
