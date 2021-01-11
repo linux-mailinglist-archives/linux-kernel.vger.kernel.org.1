@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40D22F14DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D33972F1613
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:48:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732088AbhAKNbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:31:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34196 "EHLO mail.kernel.org"
+        id S2387784AbhAKNsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:48:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57186 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731897AbhAKNPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:15:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA0A52253A;
-        Mon, 11 Jan 2021 13:15:00 +0000 (UTC)
+        id S1731143AbhAKNKN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:10:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1ED0F225AB;
+        Mon, 11 Jan 2021 13:09:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370901;
-        bh=KS5gmCZ6EzJVi1yQawSh86bpDzZj0sa0Ft49c6zGkvE=;
+        s=korg; t=1610370597;
+        bh=dfNV/FXTT4rsVzj5Jdw+OKC/W6560auufiveX5B7YXE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=olwA0EsyxxLAt2p7U7WSuzVXNVgVLC+/mEAvo//XSgD94a3YR/sL8mxX3kWsiP+pJ
-         101YrVpRxogYz/RhVWA0KMeSb3V9QhHjZjanDgE0a97Ft7j/Pd1Q7TfWuWF+HRGTjf
-         oyMh1NuK1B59iNKBlK+6qerhEs6dqQwh+QFAlE6Y=
+        b=CeSzpiMncHFrOnPyDv+kij9nQT2JQE/owcOduhwV2MnQXbjPWpK/IUS1WozROHHhf
+         5TU8WXVEv/6ODj/qdOZ7pgrWVDiv8JHIL+CWtslmdIyQ9NcVBJK3R8Jz93KvkuZbS+
+         fShu8f6RVlACcsbZryy3tTfUROHOtx245SKytdNU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 053/145] scsi: ufs: Fix wrong print message in dev_err()
-Date:   Mon, 11 Jan 2021 14:01:17 +0100
-Message-Id: <20210111130051.077079181@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 15/92] ethernet: ucc_geth: fix use-after-free in ucc_geth_remove()
+Date:   Mon, 11 Jan 2021 14:01:19 +0100
+Message-Id: <20210111130039.895843678@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
-References: <20210111130048.499958175@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+References: <20210111130039.165470698@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+From: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
 
-[ Upstream commit 1fa0570002e3f66db9b58c32c60de4183b857a19 ]
+[ Upstream commit e925e0cd2a705aaacb0b907bb3691fcac3a973a4 ]
 
-Change dev_err() print message from "dme-reset" to "dme_enable" in function
-ufshcd_dme_enable().
+ugeth is the netdiv_priv() part of the netdevice. Accessing the memory
+pointed to by ugeth (such as done by ucc_geth_memclean() and the two
+of_node_puts) after free_netdev() is thus use-after-free.
 
-Link: https://lore.kernel.org/r/20201207190137.6858-3-huobean@gmail.com
-Acked-by: Alim Akhtar <alim.akhtar@samsung.com>
-Acked-by: Avri Altman <avri.altman@wdc.com>
-Signed-off-by: Bean Huo <beanhuo@micron.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 80a9fad8e89a ("ucc_geth: fix module removal")
+Signed-off-by: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 2 +-
+ drivers/net/ethernet/freescale/ucc_geth.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 911aba3e7675c..d7e9c4bc80478 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -3620,7 +3620,7 @@ static int ufshcd_dme_enable(struct ufs_hba *hba)
- 	ret = ufshcd_send_uic_cmd(hba, &uic_cmd);
- 	if (ret)
- 		dev_err(hba->dev,
--			"dme-reset: error code %d\n", ret);
-+			"dme-enable: error code %d\n", ret);
+--- a/drivers/net/ethernet/freescale/ucc_geth.c
++++ b/drivers/net/ethernet/freescale/ucc_geth.c
+@@ -3935,12 +3935,12 @@ static int ucc_geth_remove(struct platfo
+ 	struct device_node *np = ofdev->dev.of_node;
  
- 	return ret;
+ 	unregister_netdev(dev);
+-	free_netdev(dev);
+ 	ucc_geth_memclean(ugeth);
+ 	if (of_phy_is_fixed_link(np))
+ 		of_phy_deregister_fixed_link(np);
+ 	of_node_put(ugeth->ug_info->tbi_node);
+ 	of_node_put(ugeth->ug_info->phy_node);
++	free_netdev(dev);
+ 
+ 	return 0;
  }
--- 
-2.27.0
-
 
 
