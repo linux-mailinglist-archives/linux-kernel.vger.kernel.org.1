@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E202F1385
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B22AE2F13AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:13:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729414AbhAKNKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:10:09 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:61231 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730693AbhAKNJG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:09:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1610370546; x=1641906546;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=XZInnv4rahRaiEGnE72fke2xIfQouNcxrqo3yUet0yA=;
-  b=Vx/RByMhi1tbGMYyvwn6OFLx7lE6NYnxyQTOJqqonl+VGWWEfRKieXKQ
-   0b9NC/noPVMzmeTadPzaf0mXWQkV+IAkZC622NfTNaM3rFjItAW369JgW
-   ZRh7jJYoDSgl1Bdn5d7dVaZyIIcEPsuv+a2IHWQ5nUOyRxvpBHSGN7MJX
-   3zJQ1WyG84Ffp5FPlrsYvLXM3IVZy75j9W+LLk2L90SCf0BXxaSE5t6a/
-   KQyuQYqrBSWC7ZO/Fhpf+XcGD2GKwsA98/+79UGtsxdGh2SoC4eJ5ouWb
-   04NSVbaMUnUYEvMLxnBjP4ptNhBMItSuk06tzgbhZ7FhZgIz+1fGMcmmc
-   g==;
-IronPort-SDR: SnQNRKgKhSoV3/4TiRKrPNXv926H3UAYr0VFezKlfoVjX3OiS48WZtFN9g5L9wJm1PTCCWvT1n
- GVkC6teIBdCqxawBm5P7fdiKInJy2/5Ad1Gfc5LvVd1YESRQewjcc6tzWytieWVfDqkUV7OU8A
- m33NROd8H9HPMrlqS0imWxUnFziNCxWu/ZE8ZwcVOOBvR1PDFKVkwKqzwUUxT4d6sJrRREbjvA
- yz8sG77x20r3AFz/5Vj7cXbF8yi0f3aZk/1fpEXTNdUaZpHCvGkuHcEYGAT3pVThebjjP2umqI
- iIk=
-X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
-   d="scan'208";a="104983674"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Jan 2021 06:07:50 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 11 Jan 2021 06:07:49 -0700
-Received: from soft-dev2.microsemi.net (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Mon, 11 Jan 2021 06:07:47 -0700
-From:   Bjarni Jonasson <bjarni.jonasson@microchip.com>
-To:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
-        "Heiner Kallweit" <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
-Subject: [PATCH v1 2/2] sfp: add support for 100 base-x SFPs
-Date:   Mon, 11 Jan 2021 14:06:57 +0100
-Message-ID: <20210111130657.10703-3-bjarni.jonasson@microchip.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210111130657.10703-1-bjarni.jonasson@microchip.com>
-References: <20210111130657.10703-1-bjarni.jonasson@microchip.com>
+        id S1731517AbhAKNMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:12:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59032 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730752AbhAKNLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:11:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E240122AAB;
+        Mon, 11 Jan 2021 13:11:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610370673;
+        bh=AmODotHhHqE5rQ7jrjw/zpMa0EF2YxLtNlbdQq2dKFY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jPsLXfVKxGo3XvOdA/kWPru4HQo3uHlHD7WTD7Z+jg4EeHklB+xudWVRvumR8ZEjp
+         IH1MR0hhEoUQeQCROZC/qInMMcaTVRe39vLogAayU40d8kFEh0Hr0KdmxxiZHciE8i
+         Bi+Bvg0z4iUKqYnCcxQrtOE0mairMCBQ3xKaMgTVQQg/kxtVMx5oS28GgyURVl45Ry
+         ih7dP2NS4jhasdDwjWmdGYfRc84rctt53Ae9aTrlN3GsatNGHdETOt26lJljgOY0Rg
+         xfTX0bdwO3EZqK7i5iS4JI8GqCQIsDfGYFK3iW5wLuh9f8E2VkF0kncAL6/yZzU6gm
+         X9FeLFZdmtlWA==
+Date:   Mon, 11 Jan 2021 13:10:40 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, phone-devel@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH 1/2] pinctrl: Add driver for Awinic AW9523/B I2C GPIO
+ Expander
+Message-ID: <20210111131040.GA4728@sirena.org.uk>
+References: <20210109140204.151340-1-angelogioacchino.delregno@somainline.org>
+ <20210109140204.151340-2-angelogioacchino.delregno@somainline.org>
+ <CACRpkdbETKnhgR2-T+s3ChY4v-C5ErdPEp2WcMSZHzJ=O-fHig@mail.gmail.com>
+ <111b918d-2b43-be81-2dbf-e984750b0ef7@somainline.org>
+ <CACRpkdZXgN91jKBDvf=P5_6ObOaacQa2PGL3-jP1gBW__ZyOaA@mail.gmail.com>
+ <744125a7-ffb6-a3f5-70cb-2ab48fcf31b8@somainline.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cNdxnHkX5QqsyA0e"
+Content-Disposition: inline
+In-Reply-To: <744125a7-ffb6-a3f5-70cb-2ab48fcf31b8@somainline.org>
+X-Cookie: Too much is not enough.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for 100Base-FX, 100Base-LX, 100Base-PX and 100Base-BX10 modules
-This is needed for Sparx-5 switch.
 
-Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
----
- drivers/net/phy/sfp-bus.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+--cNdxnHkX5QqsyA0e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/net/phy/sfp-bus.c b/drivers/net/phy/sfp-bus.c
-index 58014feedf6c..b2a9ee3dd28e 100644
---- a/drivers/net/phy/sfp-bus.c
-+++ b/drivers/net/phy/sfp-bus.c
-@@ -265,6 +265,12 @@ void sfp_parse_support(struct sfp_bus *bus, const struct sfp_eeprom_id *id,
- 	    br_min <= 1300 && br_max >= 1200)
- 		phylink_set(modes, 1000baseX_Full);
- 
-+	/* 100Base-FX, 100Base-LX, 100Base-PX, 100Base-BX10 */
-+	if (id->base.e100_base_fx || id->base.e100_base_lx)
-+		phylink_set(modes, 100baseFX_Full);
-+	if ((id->base.e_base_px || id->base.e_base_bx10) && br_nom == 100)
-+		phylink_set(modes, 100baseFX_Full);
-+
- 	/* For active or passive cables, select the link modes
- 	 * based on the bit rates and the cable compliance bytes.
- 	 */
-@@ -385,6 +391,9 @@ phy_interface_t sfp_select_interface(struct sfp_bus *bus,
- 	if (phylink_test(link_modes, 1000baseX_Full))
- 		return PHY_INTERFACE_MODE_1000BASEX;
- 
-+	if (phylink_test(link_modes, 100baseFX_Full))
-+		return PHY_INTERFACE_MODE_100BASEX;
-+
- 	dev_warn(bus->sfp_dev, "Unable to ascertain link mode\n");
- 
- 	return PHY_INTERFACE_MODE_NA;
--- 
-2.17.1
+On Sun, Jan 10, 2021 at 03:32:47PM +0100, AngeloGioacchino Del Regno wrote:
 
+> Then, the set_bit/clear_bit in aw9523_irq_mask(), aw9523_irq_unmask were
+> replaced with calls to regmap_update_bits_async, example:
+
+Why are you trying to use the _async() versions here?  Don't you need
+the I/O to complete synchronously, and what would be the benefit of
+dealing with the complexity of making things async?  The genirq
+framework is definitely going to expect things to be complete before you
+return to it...
+
+Note also that this only really does anything for SPI, I2C doesn't offer
+an aynchronous API.
+
+> <4>[    1.064060]  regmap_i2c_write+0x1c/0x50
+
+regmap will only use spinlocks if you explictly ask it to do so by
+setting fast_io.  You can't use spinlock based locking for your register
+cache if your device is attached via I2C, I2C is a very slow bus and I2C
+controllers will need to sleep.  I'd be very surprised if there were any
+benefit from using a flat cache with such a device frankly, the I/O is
+going to be so slow that any performance gain from using a flat cache is
+lost in the noise.
+
+--cNdxnHkX5QqsyA0e
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/8TlAACgkQJNaLcl1U
+h9By5gf9GtyGBDOfQulWOZeMoyUphHU9j0RN7pN2FPc5guPc3ihmcnQMo0qTp5MD
++Kt5kV85ysVR/vwhrMyGkfKuvh8mAqXxYxSzPruo6Iy23c2YPasuIGqhJEILrfB4
+sB5JYtsjDXrWqwaFk3jnhmRljiyG6QIeXoQwc9bGmXsV6lcYkFN/WP/w1zUo9j2t
+NfNQ4ao/O1hpRY1+2pgoZ0bjPeo8ck4kow8sDl2KKnNDudJZcTiHLswOQ+rkwrhE
+ekktFQknw8BaqGRFpyxJgM822hHKtKROIIE9u+L/wiDp2d5+RDkVCGw7XLzU6Wcm
+U3XKnRsGfi2xxnO2VzInFjWfAqv6uQ==
+=6nWa
+-----END PGP SIGNATURE-----
+
+--cNdxnHkX5QqsyA0e--
