@@ -2,89 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C227F2F0D08
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 07:58:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E63272F0D0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 07:58:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727461AbhAKG4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 01:56:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48602 "EHLO mail.kernel.org"
+        id S1727498AbhAKG55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 01:57:57 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:41291 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725536AbhAKG4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 01:56:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17A23206A3;
-        Mon, 11 Jan 2021 06:55:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610348158;
-        bh=MnoY6HKjvx2onhwcFSa4eVbWmXuTQi7IxeR2WTukIUU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Cx7CgQ58xD7qCuF78UAL8tL2wo76n4OSRQ3qMtFmnMolPmU8OnymQNE5hFSD8HPTS
-         1sn8dB1i/cdB/Sj5CDWTQxOOtQXBRYvQi2Vp1cHMZHCdXz7ntXyfl5t148ChoMtn86
-         I8+0LqB7+KL3zAjId+oHv0qwSlvd2E7Cq56oOIjM=
-Date:   Mon, 11 Jan 2021 07:57:10 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, moritzf@google.com,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Russ Weight <russell.h.weight@intel.com>,
-        "Gerlach, Matthew" <matthew.gerlach@intel.com>,
-        Sonal Santan <sonal.santan@xilinx.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Richard Gong <richard.gong@intel.com>
-Subject: Re: [PATCH 0/8] FPGA DFL Changes for 5.12
-Message-ID: <X/v2xs5Rnfw9F18E@kroah.com>
-References: <20210107043714.991646-1-mdf@kernel.org>
- <80b29715-aa0a-b2ac-03af-904fc8f8be98@redhat.com>
- <e1d30642-ce85-b9b7-e8b2-5ad4fe6338e5@redhat.com>
- <X/sz6lDq8WFzrRUJ@archbook>
- <95af46d6-d123-f610-2f21-6d6de6f248e9@redhat.com>
+        id S1725536AbhAKG55 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 01:57:57 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DDkz86g5jz9vBmm;
+        Mon, 11 Jan 2021 07:57:08 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id RpWUxy8JRXa2; Mon, 11 Jan 2021 07:57:08 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DDkz857YNz9vBmk;
+        Mon, 11 Jan 2021 07:57:08 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A8DE18B78A;
+        Mon, 11 Jan 2021 07:57:13 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 8JmCnz_6i7ZZ; Mon, 11 Jan 2021 07:57:13 +0100 (CET)
+Received: from [172.25.230.103] (po15451.idsi0.si.c-s.fr [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6CF9B8B75B;
+        Mon, 11 Jan 2021 07:57:13 +0100 (CET)
+Subject: Re: [PATCH v1 06/15] powerpc: Remove address and errorcode arguments
+ from do_break()
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <cover.1608641532.git.christophe.leroy@csgroup.eu>
+ <0246430576c2ff0aed1d35ccbd6f44e658908102.1608641533.git.christophe.leroy@csgroup.eu>
+ <1609039258.ijw9vns8wh.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <5332bb98-0d65-c51f-8514-04d76bf448c4@csgroup.eu>
+Date:   Mon, 11 Jan 2021 07:57:13 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <95af46d6-d123-f610-2f21-6d6de6f248e9@redhat.com>
+In-Reply-To: <1609039258.ijw9vns8wh.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 11:43:54AM -0800, Tom Rix wrote:
+
+
+Le 27/12/2020 à 04:25, Nicholas Piggin a écrit :
+> Excerpts from Christophe Leroy's message of December 22, 2020 11:28 pm:
+>> Let do_break() retrieve address and errorcode from regs.
+>>
+>> This simplifies the code and shouldn't impeed performance as
+>> address and errorcode are likely still hot in the cache.
+>>
+>> Suggested-by: Nicholas Piggin <npiggin@gmail.com>
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>>   arch/powerpc/include/asm/debug.h     | 3 +--
+>>   arch/powerpc/kernel/exceptions-64s.S | 2 --
+>>   arch/powerpc/kernel/head_8xx.S       | 5 -----
+>>   arch/powerpc/kernel/process.c        | 8 +++-----
+>>   4 files changed, 4 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/arch/powerpc/include/asm/debug.h b/arch/powerpc/include/asm/debug.h
+>> index ec57daf87f40..0550eceab3ca 100644
+>> --- a/arch/powerpc/include/asm/debug.h
+>> +++ b/arch/powerpc/include/asm/debug.h
+>> @@ -52,8 +52,7 @@ extern void do_send_trap(struct pt_regs *regs, unsigned long address,
+>>   			 unsigned long error_code, int brkpt);
+>>   #else
+>>   
+>> -extern void do_break(struct pt_regs *regs, unsigned long address,
+>> -		     unsigned long error_code);
+>> +void do_break(struct pt_regs *regs);
+>>   #endif
+>>   
+>>   #endif /* _ASM_POWERPC_DEBUG_H */
+>> diff --git a/arch/powerpc/kernel/exceptions-64s.S b/arch/powerpc/kernel/exceptions-64s.S
+>> index cfbd1d690033..3ea067bcbb95 100644
+>> --- a/arch/powerpc/kernel/exceptions-64s.S
+>> +++ b/arch/powerpc/kernel/exceptions-64s.S
+>> @@ -3262,8 +3262,6 @@ handle_page_fault:
+>>   
+>>   /* We have a data breakpoint exception - handle it */
+>>   handle_dabr_fault:
+>> -	ld      r4,_DAR(r1)
+>> -	ld      r5,_DSISR(r1)
+>>   	addi    r3,r1,STACK_FRAME_OVERHEAD
+>>   	bl      do_break
+>>   	/*
+>> diff --git a/arch/powerpc/kernel/head_8xx.S b/arch/powerpc/kernel/head_8xx.S
+>> index 52702f3db6df..81f3c984f50c 100644
+>> --- a/arch/powerpc/kernel/head_8xx.S
+>> +++ b/arch/powerpc/kernel/head_8xx.S
+>> @@ -364,11 +364,6 @@ do_databreakpoint:
+>>   	addi	r3,r1,STACK_FRAME_OVERHEAD
+>>   	mfspr	r4,SPRN_BAR
+>>   	stw	r4,_DAR(r11)
+>> -#ifdef CONFIG_VMAP_STACK
+>> -	lwz	r5,_DSISR(r11)
+>> -#else
+>> -	mfspr	r5,SPRN_DSISR
+>> -#endif
 > 
-> On 1/10/21 9:05 AM, Moritz Fischer wrote:
-> > Tom,
-> >
-> > On Sun, Jan 10, 2021 at 07:46:29AM -0800, Tom Rix wrote:
-> >> On 1/7/21 8:09 AM, Tom Rix wrote:
-> >>> On 1/6/21 8:37 PM, Moritz Fischer wrote:
-> >>>> This is a resend of the previous (unfortunately late) patchset of
-> >>>> changes for FPGA DFL.
-> >>> Is there something I can do to help ?
-> >>>
-> >>> I am paid to look after linux-fpga, so i have plenty of time.
-> >>>
-> >>> Some ideas of what i am doing now privately i can do publicly.
-> >>>
-> >>> 1. keep linux-fpga sync-ed to greg's branch so linux-fpga is normally in a pullable state.
-> > Is it not? It currently points to v5.11-rc1. If I start applying patches
-> > that require the changes that went into Greg's branch I can merge.
+> I didn't think you can do this (at leastuntil after your patch 10). I have my
+> !VMAP path doing mfspr r5,DSISR ; stw r3,_DSISR(r11);
 > 
-> I mean the window between when we have staged patches and when they go into Greg's branch.
-> 
-> We don't have any now, maybe those two trival ones.
-> 
-> Since Greg's branch moves much faster than ours, our staging branch needs to be rebased regularly until its merge.
 
-Ick, no!  NEVER rebase a public branch.  Why does it matter the speed of
-my branch vs. anyone elses?  Git handles merges very well.
+Yes you are right, I went too quick.
 
-Just like Linus's branches move much faster than mine, and I don't
-rebase my branches, you shouldn't rebase yours.
-
-Becides, I'm only taking _PATCHES_ for fpga changes at the moment, no
-git pulls, so why does it matter at all for any of this?
-
-What is the problem you are trying to solve here?
-
-thanks,
-
-greg k-h
+Christophe
