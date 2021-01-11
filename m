@@ -2,232 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952232F19D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:38:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDD32F19DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:38:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731160AbhAKPh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:37:27 -0500
-Received: from mail-co1nam11on2049.outbound.protection.outlook.com ([40.107.220.49]:42468
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727180AbhAKPh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:37:26 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qqo17xVFrhFldRy/INinVTjUsBVKt9jMqMcqhPsXR8RKXXg0GN4sSgf2/Ceo7LvBXURFul2xD4/DcHJPwP/W0wHmEFTonH1vAfnTZ9zCvhm8qg6KXjzuccqvaM0WfRY0+Ysij3w6AUA1AdbcW6r5vV3+inA6JxkRiTUbraZhTMNBNL3FHHdQm/U6EbvD7tZEw5NsgEIw2/GL6tALuDrikFEovepF03pVCkIrZ6Q+t7PYHWew+9ewlmwyNAZpIFJywYlSvY1tHiLSfl48uX65VcdkfAxGTZCdcJn0eGq5wM6Adoz9VH8/NwwF4iOkMeVNmAmD+Pt6PcX1A8YPpvXzbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XxoxZNF2O5Lhidf85TVbu3v1lJi+5PVw9SkOSiTinq8=;
- b=LZgMTc3Oc9pdsR1iRCu99Fnco9xVZVrVVTiw8xW3EynLBGEtpt5G7ZFNwI1VV4i+3yipOA6vXlHBbYwKFdCuxx/IqZLhy5Hx0UH0qJbzdTkWOglibiAGZtLrKVXvfgE8QiLaXxIuHScRuwYn9F/IPe/UFctetHfTjGEljKj3MFbL3uqUEsfpnRHTnrAmEoud98B3fn1lAKVyzIGFv/uKIVp9s6/c38+CB9sACd6I9nEVcXQYrh1dEW9NpMeQtDAQUjHSwBFkJ1jBDM3w3lkFJpzW33C/++EJByn+iTbNKnXvalR5UOGppyPaCJf9mTraYw6uwNUtEkCnEQCMJ6HRCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XxoxZNF2O5Lhidf85TVbu3v1lJi+5PVw9SkOSiTinq8=;
- b=xaoQkzpcKts0VK/Na2+67YMaYaxAd5tmagJfs+cEsJXBnggDjL3Ns698dL3nbH2m/bDkL75Emiz19Ehmbs1sTN2COeipcF//z2ajIETfkFNDAU6c4jXqfsRWc2AGYr20G3/Qvi8INSFQ9Dn3vnhiutsscbTtfALTR4wz5dFaKv0=
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM6PR12MB3370.namprd12.prod.outlook.com (2603:10b6:5:38::25) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3742.9; Mon, 11 Jan 2021 15:36:32 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::d95e:b9d:1d6a:e845]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::d95e:b9d:1d6a:e845%12]) with mapi id 15.20.3742.012; Mon, 11 Jan 2021
- 15:36:32 +0000
-Subject: Re: [PATCH 03/13] KVM: SVM: Move SEV module params/variables to sev.c
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
+        id S1731704AbhAKPiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:38:00 -0500
+Received: from foss.arm.com ([217.140.110.172]:60144 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727824AbhAKPh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 10:37:59 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C6B7B1042;
+        Mon, 11 Jan 2021 07:37:13 -0800 (PST)
+Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C243F3F70D;
+        Mon, 11 Jan 2021 07:37:12 -0800 (PST)
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Mark Rutland <mark.rutland@arm.com>,
         Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210109004714.1341275-1-seanjc@google.com>
- <20210109004714.1341275-4-seanjc@google.com>
- <87sg7792l3.fsf@vitty.brq.redhat.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <672e86f7-86c7-0377-c544-fe52c8d7c1b9@amd.com>
-Date:   Mon, 11 Jan 2021 09:36:29 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <87sg7792l3.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [67.79.209.213]
-X-ClientProxiedBy: SA9PR11CA0026.namprd11.prod.outlook.com
- (2603:10b6:806:6e::31) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from office-linux.texastahm.com (67.79.209.213) by SA9PR11CA0026.namprd11.prod.outlook.com (2603:10b6:806:6e::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.22 via Frontend Transport; Mon, 11 Jan 2021 15:36:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: f02395be-7b13-4785-374e-08d8b646ac4a
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3370:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB33706710F88C9E83B0819673ECAB0@DM6PR12MB3370.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WmeFAD54rHGnoLhLW6VOzffFKvSdv8zqY8rR0pTogKQlXKANoFPN+eUa5MGuWErX7UUeKB+iiHRQypplsZqei0ZbdmITqHk4xG8lYEHKbsIa0r3rhzhNqw6tHpHRdC1YSiy6cQmUagTvZQDTvNTx0w522bi2WIO8seveXEVx3uEEStru6xpEntPBHWK7WjMnD6lY5k888EpDCkVmiZmSaWl2/UV4yqg6LROWD6nT4yJ4MiJbtd9rjqF8ln341KGbwo9BuC447JcBQJ/u9tgh8BIcOchhcjR4zeXiIAvm9buvXM5DOcfT2pOD5bS1oVPlk57ClTkzh4vV3qTvPIPIdtokX5k4BRPdwwuiE8G+pfX/ytjOCXaw+57372rRQwFIekqvHSPRY/2YotgLaSlh+pSJsjq5o9xedEApt+K0PLN73zd+xq72qFpSobeW5ziIWg7RKnpel+o/H+Krf16gkushl8xTkr+q8LC9GubjpFk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(396003)(376002)(346002)(136003)(2906002)(16526019)(8676002)(53546011)(7416002)(6486002)(186003)(26005)(956004)(66476007)(31696002)(6506007)(4326008)(86362001)(36756003)(6512007)(316002)(66946007)(66556008)(83380400001)(52116002)(31686004)(478600001)(110136005)(2616005)(5660300002)(54906003)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Q2VsUVNyMEI0L1VmbEN2Z1Bqc1dOVEhtak5rVytRa1JPZTNBWjhYTkZrVEIv?=
- =?utf-8?B?NDYxQUROUkdQbS9ZT2Nnc3cvVDQ0TTJOVHFhSHdzZE1GTkhXSzZCc3JCamxY?=
- =?utf-8?B?eXNYcDNBNGd1KzFEcFg1dTAyMU9LbXZUaVczeUhkaHdQK3RneXdjMGJFcnhZ?=
- =?utf-8?B?bC80RjFhdGV4UlF4NHFmK1NmaExBdVhKRDkwM2dyOGFwaGxGQ0pwaUEyUHV0?=
- =?utf-8?B?QXBES1lLRW1lYVNXc2R2MktqVC8xMi80ZzRXakd0cjVmSGl1KzZ6WlpzdmtM?=
- =?utf-8?B?T0txOHVQWTNIL2wrK2w5a0JEREIyVEpraEFrbDhGL3FxWW1ncFNZZjFEdkxr?=
- =?utf-8?B?QmxUVHNubUIvTm9acTNKS1dOTjNmQlJRQlRaNFdranNsVG9iaytUUmRJd1gz?=
- =?utf-8?B?VmIrd2pWYXdJU2c2R2pzWUJaYlZReEhzUUltWkd5cDdUWlduZ2lTamtKOHgw?=
- =?utf-8?B?YWdGKzgwaC8wR2w5YVZWdzVQTlhZc2NwMHAwTXMwK3A1MldmU2Z6KzIvbm1D?=
- =?utf-8?B?K3ZuU2txeHRCVERyTlFCb3hycEFBeWxNU0N2Z2czeTJYVTlma3RBckhEOUxY?=
- =?utf-8?B?YUdWNGliTWVzak5RVlc1T3ZoL2VJazkyUHZZUnFkTXN5QnYvVkR5RDRYZURQ?=
- =?utf-8?B?MTR3bWt5KytJT3VCZlBjc0g4cDc3Nm9EN2FWb2xTd2Y1WUlKMDN3NnMrUERy?=
- =?utf-8?B?cmlVNEhUWjJFbWRQaHMreWFTcGxXb3p2LzNqWGlabkJHS3E0YUh4UTdsUDFL?=
- =?utf-8?B?aStlSXFpK1pOODZZVjF3MFp3ZmI3bTRmdWRuQWIrOVpWYVdHQXFmR1hpMmZk?=
- =?utf-8?B?R28rZDRDUmNvbmtMUEZiYTc0LzB0ZXkrcDZ5bkExNy9oRUp1ckkxaTUyUysw?=
- =?utf-8?B?QU82bnpiTitJYmg1ZGFUMTFQMEo4UFpTT1ZwMFVSWkt2ZVNSOEFtNlhRaVU2?=
- =?utf-8?B?c2ExYjJLZlR5czcxUFFpTjk2YzlPTVNxdmtndzNCMEZSdkt0TTA1QnhBZENJ?=
- =?utf-8?B?dzJxdTRINkRjbTR5UVMrdldsTmNiR2pFTDhMbW9RT2czYWtIaGVPZ0xCNWpy?=
- =?utf-8?B?UUVwQlF5L2FGaGEzZUdXUTRKak5La0gxakEvUHFxQ0lzM3V3ZTJrMklwOVJ0?=
- =?utf-8?B?c3ZoVGo0NmwwWUZlVE1EVmpNWldzNXI2Q0hpZnhUd3pYU3BrZDEwWEg3dkVq?=
- =?utf-8?B?Q3dOUFdHRk5nSTZVallJTFllSStENDJhS1BYRGJFSDJ5bDJ5M3RUQU15U042?=
- =?utf-8?B?TWN6RXo0dEFHNUMxbkNrR2lYWDA1SFo1MWNsNWRvMmppS1BkVktlZ013SWx5?=
- =?utf-8?Q?pujLqeYKQm6XceItSlH4u8KeNhYearm2kY?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2021 15:36:32.6346
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: f02395be-7b13-4785-374e-08d8b646ac4a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XnMo+BQmJzmRBn2kDBqny9WgmGKILVQGT+Vuf+gKLz2oNy39PTjknLPHt+XI9FXSJs3RROl64zdKsVh5p//ccg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3370
+        Ingo Molnar <mingo@redhat.com>,
+        Juergen Gross <jgross@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCHv2] lockdep: report broken irq restoration
+Date:   Mon, 11 Jan 2021 15:37:07 +0000
+Message-Id: <20210111153707.10071-1-mark.rutland@arm.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/11/21 4:42 AM, Vitaly Kuznetsov wrote:
-> Sean Christopherson <seanjc@google.com> writes:
-> 
->> Unconditionally invoke sev_hardware_setup() when configuring SVM and
->> handle clearing the module params/variable 'sev' and 'sev_es' in
->> sev_hardware_setup().  This allows making said variables static within
->> sev.c and reduces the odds of a collision with guest code, e.g. the guest
->> side of things has already laid claim to 'sev_enabled'.
->>
->> Signed-off-by: Sean Christopherson <seanjc@google.com>
->> ---
->>   arch/x86/kvm/svm/sev.c | 11 +++++++++++
->>   arch/x86/kvm/svm/svm.c | 15 +--------------
->>   arch/x86/kvm/svm/svm.h |  2 --
->>   3 files changed, 12 insertions(+), 16 deletions(-)
->>
->> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
->> index 0eeb6e1b803d..8ba93b8fa435 100644
->> --- a/arch/x86/kvm/svm/sev.c
->> +++ b/arch/x86/kvm/svm/sev.c
->> @@ -27,6 +27,14 @@
->>   
->>   #define __ex(x) __kvm_handle_fault_on_reboot(x)
->>   
->> +/* enable/disable SEV support */
->> +static int sev = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
->> +module_param(sev, int, 0444);
->> +
->> +/* enable/disable SEV-ES support */
->> +static int sev_es = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
->> +module_param(sev_es, int, 0444);
-> 
-> Two stupid questions (and not really related to your patch) for
-> self-eduacation if I may:
-> 
-> 1) Why do we rely on CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT (which
-> sound like it control the guest side of things) to set defaults here?
+We generally expect local_irq_save() and local_irq_restore() to be
+paired and sanely nested, and so local_irq_restore() expects to be
+called with irqs disabled. Thus, within local_irq_restore() we only
+trace irq flag changes when unmasking irqs.
 
-I thought it was a review comment, but I'm not able to find it now.
+This means that a sequence such as:
 
-Brijesh probably remembers better than me.
+| local_irq_disable();
+| local_irq_save(flags);
+| local_irq_enable();
+| local_irq_restore(flags);
 
-> 
-> 2) It appears to be possible to do 'modprobe kvm_amd sev=0 sev_es=1' and
-> this looks like a bogus configuration, should we make an effort to
-> validate the correctness upon module load?
+... is liable to break things, as the local_irq_restore() would mask
+irqs without tracing this change. Similar problems may exist for
+architectures whose arch_irq_restore() function depends on being called
+with irqs disabled.
 
-This will still result in an overall sev=0 sev_es=0. Is the question just 
-about issuing a message based on the initial values specified?
+We don't consider such sequences to be a good idea, so let's define
+those as forbidden, and add tooling to detect such broken cases.
 
-Thanks,
-Tom
+This patch adds debug code to WARN() when raw_local_irq_restore() is
+called with irqs enabled. As raw_local_irq_restore() is expected to pair
+with raw_local_irq_save(), it should never be called with irqs enabled.
 
-> 
->> +
->>   static u8 sev_enc_bit;
->>   static int sev_flush_asids(void);
->>   static DECLARE_RWSEM(sev_deactivate_lock);
->> @@ -1249,6 +1257,9 @@ void __init sev_hardware_setup(void)
->>   	bool sev_es_supported = false;
->>   	bool sev_supported = false;
->>   
->> +	if (!IS_ENABLED(CONFIG_KVM_AMD_SEV) || !sev)
->> +		goto out;
->> +
->>   	/* Does the CPU support SEV? */
->>   	if (!boot_cpu_has(X86_FEATURE_SEV))
->>   		goto out;
->> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
->> index ccf52c5531fb..f89f702b2a58 100644
->> --- a/arch/x86/kvm/svm/svm.c
->> +++ b/arch/x86/kvm/svm/svm.c
->> @@ -189,14 +189,6 @@ module_param(vls, int, 0444);
->>   static int vgif = true;
->>   module_param(vgif, int, 0444);
->>   
->> -/* enable/disable SEV support */
->> -int sev = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
->> -module_param(sev, int, 0444);
->> -
->> -/* enable/disable SEV-ES support */
->> -int sev_es = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
->> -module_param(sev_es, int, 0444);
->> -
->>   bool __read_mostly dump_invalid_vmcb;
->>   module_param(dump_invalid_vmcb, bool, 0644);
->>   
->> @@ -976,12 +968,7 @@ static __init int svm_hardware_setup(void)
->>   		kvm_enable_efer_bits(EFER_SVME | EFER_LMSLE);
->>   	}
->>   
->> -	if (IS_ENABLED(CONFIG_KVM_AMD_SEV) && sev) {
->> -		sev_hardware_setup();
->> -	} else {
->> -		sev = false;
->> -		sev_es = false;
->> -	}
->> +	sev_hardware_setup();
->>   
->>   	svm_adjust_mmio_mask();
->>   
->> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
->> index 0fe874ae5498..8e169835f52a 100644
->> --- a/arch/x86/kvm/svm/svm.h
->> +++ b/arch/x86/kvm/svm/svm.h
->> @@ -408,8 +408,6 @@ static inline bool gif_set(struct vcpu_svm *svm)
->>   #define MSR_CR3_LONG_MBZ_MASK			0xfff0000000000000U
->>   #define MSR_INVALID				0xffffffffU
->>   
->> -extern int sev;
->> -extern int sev_es;
->>   extern bool dump_invalid_vmcb;
->>   
->>   u32 svm_msrpm_offset(u32 msr);
-> 
+To avoid the possibility of circular header dependencies between
+irqflags.h and bug.h, the warning is handled in a separate C file.
+
+The new code is all conditional on a new CONFIG_DEBUG_IRQFLAGS symbol
+which is independent of CONFIG_TRACE_IRQFLAGS. As noted above such cases
+will confuse lockdep, so CONFIG_DEBUG_LOCKDEP now selects
+CONFIG_DEBUG_IRQFLAGS.
+
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Juergen Gross <jgross@suse.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+---
+ include/linux/irqflags.h       | 12 ++++++++++++
+ kernel/locking/Makefile        |  1 +
+ kernel/locking/irqflag-debug.c | 11 +++++++++++
+ lib/Kconfig.debug              |  8 ++++++++
+ 4 files changed, 32 insertions(+)
+ create mode 100644 kernel/locking/irqflag-debug.c
+
+Since v1 [1]:
+* Remove per-instance bool in favour of a single WARN_ONCE()
+* Move check into raw_local_irq_restore()
+* Update Kconfig text and cover
+
+[1] https://lore.kernel.org/r/20201209183337.1912-1-mark.rutland@arm.com
+
+Mark.
+
+diff --git a/include/linux/irqflags.h b/include/linux/irqflags.h
+index 8de0e1373de7..600c10da321a 100644
+--- a/include/linux/irqflags.h
++++ b/include/linux/irqflags.h
+@@ -149,6 +149,17 @@ do {						\
+ # define start_critical_timings() do { } while (0)
+ #endif
+ 
++#ifdef CONFIG_DEBUG_IRQFLAGS
++extern void warn_bogus_irq_restore(void);
++#define raw_check_bogus_irq_restore()			\
++	do {						\
++		if (unlikely(!arch_irqs_disabled()))	\
++			warn_bogus_irq_restore();	\
++	} while (0)
++#else
++#define raw_check_bogus_irq_restore() do { } while (0)
++#endif
++
+ /*
+  * Wrap the arch provided IRQ routines to provide appropriate checks.
+  */
+@@ -162,6 +173,7 @@ do {						\
+ #define raw_local_irq_restore(flags)			\
+ 	do {						\
+ 		typecheck(unsigned long, flags);	\
++		raw_check_bogus_irq_restore();		\
+ 		arch_local_irq_restore(flags);		\
+ 	} while (0)
+ #define raw_local_save_flags(flags)			\
+diff --git a/kernel/locking/Makefile b/kernel/locking/Makefile
+index 6d11cfb9b41f..8838f1d7c4a2 100644
+--- a/kernel/locking/Makefile
++++ b/kernel/locking/Makefile
+@@ -15,6 +15,7 @@ CFLAGS_REMOVE_mutex-debug.o = $(CC_FLAGS_FTRACE)
+ CFLAGS_REMOVE_rtmutex-debug.o = $(CC_FLAGS_FTRACE)
+ endif
+ 
++obj-$(CONFIG_DEBUG_IRQFLAGS) += irqflag-debug.o
+ obj-$(CONFIG_DEBUG_MUTEXES) += mutex-debug.o
+ obj-$(CONFIG_LOCKDEP) += lockdep.o
+ ifeq ($(CONFIG_PROC_FS),y)
+diff --git a/kernel/locking/irqflag-debug.c b/kernel/locking/irqflag-debug.c
+new file mode 100644
+index 000000000000..9603d207a4ca
+--- /dev/null
++++ b/kernel/locking/irqflag-debug.c
+@@ -0,0 +1,11 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <linux/bug.h>
++#include <linux/export.h>
++#include <linux/irqflags.h>
++
++void warn_bogus_irq_restore(void)
++{
++	WARN_ONCE(1, "raw_local_irq_restore() called with IRQs enabled\n");
++}
++EXPORT_SYMBOL(warn_bogus_irq_restore);
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 7937265ef879..5ea0c1773b0a 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1335,6 +1335,7 @@ config LOCKDEP_SMALL
+ config DEBUG_LOCKDEP
+ 	bool "Lock dependency engine debugging"
+ 	depends on DEBUG_KERNEL && LOCKDEP
++	select DEBUG_IRQFLAGS
+ 	help
+ 	  If you say Y here, the lock dependency engine will do
+ 	  additional runtime checks to debug itself, at the price
+@@ -1423,6 +1424,13 @@ config TRACE_IRQFLAGS_NMI
+ 	depends on TRACE_IRQFLAGS
+ 	depends on TRACE_IRQFLAGS_NMI_SUPPORT
+ 
++config DEBUG_IRQFLAGS
++	bool "Debug IRQ flag manipulation"
++	help
++	  Enables checks for potentially unsafe enabling or disabling of
++	  interrupts, such as calling raw_local_irq_restore() when interrupts
++	  are enabled.
++
+ config STACKTRACE
+ 	bool "Stack backtrace support"
+ 	depends on STACKTRACE_SUPPORT
+-- 
+2.11.0
+
