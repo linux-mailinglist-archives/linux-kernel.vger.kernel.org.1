@@ -2,97 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 902572F227E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:12:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76ECF2F227F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389154AbhAKWMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 17:12:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726945AbhAKWMj (ORCPT
+        id S2389571AbhAKWNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 17:13:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40451 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732176AbhAKWNm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:12:39 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97531C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:11:59 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id h10so113963pfo.9
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:11:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=HS7fxdK8JZoFgzbZviQDL+FJot9ytoncxDHn7G7o7hU=;
-        b=N7A7iQCrzatkQ5cCobcCikH4tHwyq62MMxZUpCjV0P2VTkTTTjtghzY3FYBg44GCVg
-         l0anrYZpCE+ugJIxWSO62h22DQ4/WmYRZgr8P7oIm3edhizY3pjzCWsYjjlzLgbB5ZY6
-         +sRv2zNCr/xUPttFKn9FEVK/92e+dS7VeiuQTArgIbfC240td3LsfyrItnd0EuVfNz64
-         PHLGtWX9MxVFMGt43Gp0P5oHN3rMNp/IhCSt0KKqBLwAYEUYgGesBNPAFCH8R6ae/lpo
-         XElKavbwO8xbtGial7DbFuGaanxBo+99apBaNcptQuY/Hkpi8IK8UzBxcSAOiWvdcTv7
-         4C8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=HS7fxdK8JZoFgzbZviQDL+FJot9ytoncxDHn7G7o7hU=;
-        b=le7rzMZyFrKl0UixKWMa9Cb4OuonRbS7XNiAtsxkFT+W728odud9VY+qqlkkyNMY+/
-         Yu/j2bbLowF0+N14GMWDWjv8i7rYT7eX2X+OzTMyjAGoGI7qVM9nGNIN225+OpOzBY32
-         lfjSpTpl43X+/beWJ3LmP479+1r+QvrOxG3+/qTpip4kx69LPMI4M96diQtA9MGvoYDP
-         f1EBdykI29AeI3TBjBH4JIuzekjSWGv/tomaEKMtq0bgQZepn2fGOkMUcIpr9Qf0DWBU
-         irp7ofmF3g4iowFiAADqiWFNmV8tE2O3zw62UOYBeEzCnbOfZvYmOta43DtFgP9ZlMZy
-         7t3w==
-X-Gm-Message-State: AOAM532Ns5yknXnRTAYP41WxNekycmaDdvYmy0SGwewL4GIM3yfxgY3J
-        XuOde0lcF2JmfB5AU56WsTxy5rZphhq0hw==
-X-Google-Smtp-Source: ABdhPJwtazOAjIUNjsp7P6XBjKEky8Y/ydC2ogSCffAC48MQyc7KChGD2v03jQV/bFeIMs7ikFsouA==
-X-Received: by 2002:a63:3e8f:: with SMTP id l137mr1519125pga.117.1610403118800;
-        Mon, 11 Jan 2021 14:11:58 -0800 (PST)
-Received: from ?IPv6:2601:646:c200:1ef2:4d0d:5741:f5e3:172? ([2601:646:c200:1ef2:4d0d:5741:f5e3:172])
-        by smtp.gmail.com with ESMTPSA id z23sm658756pfj.143.2021.01.11.14.11.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 14:11:58 -0800 (PST)
+        Mon, 11 Jan 2021 17:13:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610403135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U2SRQaJi68oIpDWEDot6m4+vdPC0oqlKXjoXJCK3EU8=;
+        b=TAt0wI0vt5OCDmJf3r5DTtjaRzOyn3IVbYE+VddpQx97HlxxkoW5OHianp/JX+Q0hGW1C2
+        FnciXONTE5H4kkC7eUJCvXuXWJvZfdh+UQeGIZdF01AoYPA9RRZi4J70Y/twLpBmnBqz64
+        nNb6UEw7+KmnTk44hS4b8v+8qT76O6A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-105-g1YzdYylM4OYtp5p5gL-PQ-1; Mon, 11 Jan 2021 17:12:12 -0500
+X-MC-Unique: g1YzdYylM4OYtp5p5gL-PQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C4BF7B8101;
+        Mon, 11 Jan 2021 22:12:10 +0000 (UTC)
+Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8BA925C232;
+        Mon, 11 Jan 2021 22:12:09 +0000 (UTC)
+Date:   Mon, 11 Jan 2021 16:12:07 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Fangrui Song <maskray@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v3] x86/entry: emit a symbol for register restoring thunk
+Message-ID: <20210111221207.3hdgzhhis7ubcyrb@treble>
+References: <20210106015810.5p6crnh7jqtmjtv4@treble>
+ <20210111203807.3547278-1-ndesaulniers@google.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 1/3] x86/mce: Avoid infinite loop for copy from user recovery
-Date:   Mon, 11 Jan 2021 14:11:56 -0800
-Message-Id: <E1FCB534-9149-437A-971E-F93C009F99C3@amacapital.net>
-References: <20210111214452.1826-2-tony.luck@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-mm@kvack.org
-In-Reply-To: <20210111214452.1826-2-tony.luck@intel.com>
-To:     Tony Luck <tony.luck@intel.com>
-X-Mailer: iPhone Mail (18B121)
+Content-Disposition: inline
+In-Reply-To: <20210111203807.3547278-1-ndesaulniers@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 11, 2021 at 12:38:06PM -0800, Nick Desaulniers wrote:
+> Arnd found a randconfig that produces the warning:
+> 
+> arch/x86/entry/thunk_64.o: warning: objtool: missing symbol for insn at
+> offset 0x3e
+> 
+> when building with LLVM_IAS=1 (use Clang's integrated assembler). Josh
+> notes:
+> 
+>   With the LLVM assembler stripping the .text section symbol, objtool
+>   has no way to reference this code when it generates ORC unwinder
+>   entries, because this code is outside of any ELF function.
+> 
+> Fangrui notes that this optimization is helpful for reducing images size
 
-> On Jan 11, 2021, at 1:45 PM, Tony Luck <tony.luck@intel.com> wrote:
->=20
-> =EF=BB=BFRecovery action when get_user() triggers a machine check uses the=
- fixup
-> path to make get_user() return -EFAULT.  Also queue_task_work() sets up
-> so that kill_me_maybe() will be called on return to user mode to send a
-> SIGBUS to the current process.
->=20
-> But there are places in the kernel where the code assumes that this
-> EFAULT return was simply because of a page fault. The code takes some
-> action to fix that, and then retries the access. This results in a second
-> machine check.
->=20
-> While processing this second machine check queue_task_work() is called
-> again. But since this uses the same callback_head structure that
-> was used in the first call, the net result is an entry on the
-> current->task_works list that points to itself.
+"image"
 
-Is this happening in pagefault_disable context or normal sleepable fault con=
-text?  If the latter, maybe we should reconsider finding a way for the machi=
-ne check code to do its work inline instead of deferring it.
+> when compiling with -ffunction-sections and -fdata-sections. I have
+> observerd on the order of tens of thousands of symbols for the kernel
 
-Yes, I realize this is messy, but maybe it=E2=80=99s not that messy. Concept=
-ually, we just (famous last words) need to arrange for an MCE with IF=3D1 to=
- switch off the IST stack and run like a normal exception.=
+"observed"
+
+> images built with those flags. A patch has been authored against GNU
+> binutils to match this behavior, with a new flag
+> --generate-unused-section-symbols=[yes|no].
+> 
+> We can omit the .L prefix on a label to emit an entry into the symbol
+> table for the label, with STB_LOCAL binding.  This enables objtool to
+> generate proper unwind info here with LLVM_IAS=1.
+> 
+> Cc: Fangrui Song <maskray@google.com>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1209
+> Link: https://reviews.llvm.org/D93783
+> Link: https://sourceware.org/binutils/docs/as/Symbol-Names.html
+> Link: https://sourceware.org/pipermail/binutils/2020-December/114671.html
+> Reported-by: Arnd Bergmann <arnd@arndb.de>
+> Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+> Changes v2 -> v3:
+> * rework to use STB_LOCAL rather than STB_GLOBAL by dropping .L prefix,
+>   as per Josh.
+> * rename oneline to drop STB_GLOBAL in commit message.
+> * add link to GAS docs on .L prefix.
+> * drop Josh's ack since patch changed.
+
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+
+-- 
+Josh
+
