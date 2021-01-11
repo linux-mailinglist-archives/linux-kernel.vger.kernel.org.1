@@ -2,147 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F91F2F24B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A13522F24B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405006AbhALAZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 19:25:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404188AbhAKXnS (ORCPT
+        id S2405055AbhALAZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 19:25:10 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:38128 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404195AbhAKXqZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 18:43:18 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02660C061786;
-        Mon, 11 Jan 2021 15:42:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=nmQpwEsqnF3hFhAlOz5aGVeI2N3knb9M3qAY/ha7fg0=; b=q0JiFKG0nzMUwXbti8rsqTSBl3
-        tb97qGmjGZVa74ROy1ON7I4/f6azbxWGDHgFPfyLk75rVgzbTd/BydFyXB7iTrYmTcE48+XJMf1iK
-        nTv7liPCZD/9EB0MYHkbfvHZ08nAbvsV1+jrTMJBnonpmwXs7Y6nN27m4ztye1T8xeNJE8E5sQ396
-        1G9n8V9Z2vVJdMS/u22GK/jRH5/1bnidCZoaVVfI7QQq6bQZJok/Vkt18zpAmcsGmA4FaN+OQqUUn
-        g4DmoyBsiMIi2fmjSdIcjMW9CpueLF0YA7QcjYNrU2lXp9Pv8quxfXIFd1LknBvvYaokSMZBOZx99
-        Tv93HqRA==;
-Received: from [2601:1c0:6280:3f0::79df]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kz6pW-0001OB-Lt; Mon, 11 Jan 2021 23:42:35 +0000
-Subject: Re: [PATCH v1 (RFC)] docs: discourage users from using
- bugzilla.kernel.org
-To:     Thorsten Leemhuis <linux@leemhuis.info>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210110121033.130504-1-linux@leemhuis.info>
- <6ca51584-1739-e532-d40e-e4447065ea1e@infradead.org>
- <dc2b0eaa-26e9-f686-ae7b-7e777cb3d55f@leemhuis.info>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <5ed98052-28ea-4701-10d4-b7fde106c1fd@infradead.org>
-Date:   Mon, 11 Jan 2021 15:42:28 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Mon, 11 Jan 2021 18:46:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1610408785; x=1641944785;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=tvZB29ktPRPxUbu7K7bplYyQtg0XnG4cGna9D/+Lark=;
+  b=n8YSS5L4+eH8alE3YlJbXZHHr+n+5fUlsrlOZO6gBDs0ReAWpwPeXdjf
+   sjYAYNe0cLzJenaXrOCBkpsEmO1PgtkSQYyaLAysr6StDgAbtgffu3ONb
+   inJo0ZuFRdAuaM/WCkNDtiYwekTZ+S8J0EsrEr3SrU/S8Zk3AvjTUqpmY
+   3xp53wKluz+zFexJVf0oeci2LXHbC8C649Cs0SdqWEbPksHv+pOiNnABO
+   QBbonEYi1/H4/g/cSlKBQ2SZhZy3HOH/xF9q/cr7xpkarE9Jk+UcXOLig
+   ed5Df/SikJPsXN7qWbK0ft3Uu+DPiYSAngTDgNNG279NstHnFB3DMW9rZ
+   A==;
+IronPort-SDR: H4C70pO/MhtBLrqTuPro3JIiGohP755jApeVaeXbUx3pAnT0DPADY3U+UpSh3TFwjG7nDoWQT2
+ H5pXxalskVyBskIroM2U7SPEz7OROas9lPNMU4lVfK35kvTPMtCijp6+HhlV0JbDCnG2dNOPJo
+ iXxxuP0IufZgk/uLm35wxkrI6qPLglOnWaRYUKJ8amvJCM1xRs0akDkZdkCHug09wWxs5aWm5Y
+ nXzbjKWvip8ck6KctfZZDtOLRz+uoOLC2igbeP8IOQcFsZMFIwsUmIcRl9x8sZ366QNb92zbhy
+ /H0=
+X-IronPort-AV: E=Sophos;i="5.79,339,1602518400"; 
+   d="scan'208";a="157190568"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 12 Jan 2021 07:45:19 +0800
+IronPort-SDR: Jp42Rrun7hoDnfgaKI8QUfaF4RhkqdDOFH1s5vC1gbz1YG9+50nVGbBoOci3n50BcioYCNPrfq
+ k0K8kjL+vHYImEjsmnqyiHg0O17Bd44ymmIVQATHRbQsGUbJhl3Ogk0930JHea7opJrJx9n/0B
+ O6s58l2GhtStay9LYCJ4dsxuGlWYh/rgjrUXkeNI4Keo+vt8QOppo0/xnt7gYTRGKuVBeTA4EB
+ fa8gAmWIG/OKF0llAr6qZ8ZJkYA8hmzfSer9/pcegb4Ub5XcFA/8QFRSKPuOSnEe254/bLgXpN
+ RquS1yGBcQ6s40MbvGB0SCjt
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 15:28:13 -0800
+IronPort-SDR: EQInO/9vri52nvmIWcEUHszD8BfL0SIUPoaYPJJMgKnCYS7YpuPA11r9okTng8jkPiD9/T4zoN
+ nDK7ZZbZ+o35kmz5ht5VhN9IuKBxz8SQYNrHp620y6/g3erpMgJ0nxtzqxrRLqYuYqHeZePpMl
+ 0hjx8o4X9fXPR+AVpGucJCVncJeZDkbIRMH9B1+RFfcqurTCgEGYu3XXbfd5nhr4UF38mV2XPn
+ bhX4YrOVKcarwsjP0C0bc6+moIW0MGVkGh0hxtrXMHFBa8vkaPDF3Qj5zKFdiNbT636BzWI/8U
+ 2hc=
+WDCIronportException: Internal
+Received: from usa002483.ad.shared (HELO jedi-01.hgst.com) ([10.86.62.194])
+  by uls-op-cesaip02.wdc.com with ESMTP; 11 Jan 2021 15:45:19 -0800
+From:   Atish Patra <atish.patra@wdc.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anup Patel <anup@brainfault.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        linux-riscv@lists.infradead.org, Mike Rapoport <rppt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Subject: [PATCH v2 0/4] Assorted fixes for RV32
+Date:   Mon, 11 Jan 2021 15:45:00 -0800
+Message-Id: <20210111234504.3782179-1-atish.patra@wdc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <dc2b0eaa-26e9-f686-ae7b-7e777cb3d55f@leemhuis.info>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/11/21 10:55 AM, Thorsten Leemhuis wrote:
-> Am 11.01.21 um 19:14 schrieb Randy Dunlap:
->> On 1/10/21 4:10 AM, Thorsten Leemhuis wrote:
->>> * About 66 of those ~200 components will assign bugs to email addresses
->>>   that look valid, but 125 of them end with @kernel-bugs.osdl.org or
->>>   @kernel-bugs.kernel.org. Those domains do not exist anymore, mails
->>>   sent there bounce ('Unrouteable address'). It's possible that the
->>>   server might be rewriting those domain names and nevertheless
->>>   delivers new reports and comments by mails to some human; but it
->>>   seems more like they never get mailed to anyone and thus just linger
->>>   in the database; no wonder quite a few of bugs filed against such
->>>   components never get a single reply (see below).
->>
->> Those @kernel-bugs email addresses should not be a problem:
->>   https://korg.docs.kernel.org/bugzilla.html#real-assignees-vs-virtual-assignees
-> 
-> Ahh, interesting, many many thx. Stupid me also forgot to put Konstantin
-> on the CC list (I had planned to do that, but forgot when I actually
-> sent the patch :-/ ), which likely would have pointed be there as well.
+This series fixes various issues observed in latest kernel on RV32.
+The first two patches fixes an resource tree introduced in 5.11-rc1
+while the last two fixes the case where 2GB physical memory is used
+on RV32.
 
-Yes, since I got that from him. :)
+There are may be better way to fix the issue pointed out in PATCH 3
+as it seems a generic kernel issue where kernel pointers can not use
+last 4k of addressable memory. I am open to other better alternate
+suggestions.
 
->> AFAIK, USB bugs go to linux-usb@vger.kernel.org,
-> 
-> Those seem to use the approach the link above describes.
-> 
->> SCSI bugs go to linux-scsi@vger.kernel.org.
-> 
-> That's one of the email address that are in the database for real, which
-> were mentioned in my patch description as 'looking valid':
-> https://bugzilla.kernel.org/describecomponents.cgi?product=IO%2FStorage
-> 
->> netdev didn't want bugs sent there automatically IIRC, so a
->> human takes care of doing that if warranted.
-> 
-> Ahh, good to know, it's really not obvious there are some humans working
-> there to that take care of this. That and all those bugs that never get
-> a reply look really like things are not working well.
-> 
->> Andrew Morton takes MM bugs and Cc:s them to linux-mm mailing list
->> and then asks for discussion to continue on the mailing list.
-> 
-> Then what use it bugzilla here? Wouldn't it be better for people to go
-> straight to the list?
+Changes from v1->v2:
+1. Added Reviewed/Tested by tags.
+2. Replaced PHYS_ADDR_MAX with explicit __pa(~(ulong)0).
 
-Might as well, yes.
+Atish Patra (4):
+RISC-V: Do not allocate memblock while iterating reserved memblocks
+RISC-V: Set current memblock limit
+RISC-V: Fix L1_CACHE_BYTES for RV32
+RISC-V: Fix maximum allowed phsyical memory for RV32
 
->> We
-> 
-> Who is "we"? We as in "the kernel community"? Or is there actually a
+arch/riscv/Kconfig             |  6 ++++--
+arch/riscv/include/asm/cache.h |  4 ++++
+arch/riscv/kernel/setup.c      | 24 +++++++++++++-----------
+arch/riscv/mm/init.c           | 16 ++++++++++++++--
+4 files changed, 35 insertions(+), 15 deletions(-)
 
-Anyone who is up for it -- yes, mostly "community."
+--
+2.25.1
 
-> smaller group of people you are referring to which is actively
-> maintaining the list of products and components on bugzilla.kernel.org?
-
-nope.
-
-> Just trying to understand things better here, as there are other things
-> that look strange to me and were mentioned in the patch description. For
-> example: Why are there only 200 products and components on
-> bugzilla.kernel.org (some of them for historic things like the
-> ac-kernels) while the MAINTAINERS file has more than 2200 entries?
-
-I wouldn't want a separate entry for each  SPI/GPIO/regulator/USB etc.
-device. That's just IMO...
-
->> could/should probably see if we can add more project-specific
->> mailing lists to the automatic reporting 
-> 
-> Guess that would mean taking to a lot of maintainers/mailing list admins
-> if they are okay with that. Who would do that?
-
-whoever is motivated to do so.
-
->> -- but probably not LKML.
->> Otherwise some bug reports might never be heard about.
-> 
-> Yeah, agreed.
-> 
-> FWIW: I don't care too much about this whole thing, the whole idea for
-> the approach I'm currently driving forward started when I did regression
-> tracking in 2017. Back then I noticed quite a lot of bug reports on
-> bugzilla.kernel.org never got a single reply, even if they were good and
-> looked valid. That's why I brought this forward on the maintainers
-> summit (https://lwn.net/Articles/738216/ ) and there it was discussed to
-> basically go the route I'm taking currently. But I'm totally find to
-> adjust that route if there are good reasons, especially as that
-> discussion happened some time ago.
-
-
-cheers.
--- 
-~Randy
-https://people.kernel.org/tglx/notes-about-netiquette
-https://www.kernel.org/doc/html/latest/process/submit-checklist.html
