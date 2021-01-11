@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 008CE2F16E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:59:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3C82F1675
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388060AbhAKN6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:58:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54304 "EHLO mail.kernel.org"
+        id S2387905AbhAKNwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:52:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728199AbhAKNGo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:06:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DBCE2225AC;
-        Mon, 11 Jan 2021 13:06:02 +0000 (UTC)
+        id S1731089AbhAKNIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:08:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B2CF2225E;
+        Mon, 11 Jan 2021 13:08:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370363;
-        bh=gUtW2hs3cQfjq3jLCaO0K0UfyvlU2IVIVjgIyOmwL7E=;
+        s=korg; t=1610370518;
+        bh=gEYCIXb0eKw/POcy9VSjYwvhfVTfn0Mc2Zxa5sddFKk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=as97cqfboCxKVEG2s2JNi0jnBMlOEOimKCZ10UDC1xI7d87YTr0hvrSQXGvfg7tBW
-         bLUiepPZDZ6izZTTWQPs9De68/rCKP4SxMHFfz93Wn5DsjmaErqx0jLwT1/VVbYXFl
-         onqvWttfAkD5rBi9epsGq7GkFbRpT/YGhTAwci6Q=
+        b=OMRSpA9+u7PBe0oAWhHFhxBhqUmH6JE1Y+22Z0HG+wEUR4POiTyzJQjWcHT68XVTm
+         C9iSH7Wl5ODYXEwFPpbs4r6HdYfdtXqhsZO33EcUUL6d4xnKPnVs0xNZpizB2N7/2Y
+         hY8b96IvTO0Pf5LvfqQq5IcUyBJg3EbOoU1KyojE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
-        Sriharsha Allenki <sallenki@codeaurora.org>
-Subject: [PATCH 4.14 46/57] usb: gadget: Fix spinlock lockup on usb_function_deactivate
+        stable@vger.kernel.org,
+        syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 56/77] ALSA: usb-audio: Fix UBSAN warnings for MIDI jacks
 Date:   Mon, 11 Jan 2021 14:02:05 +0100
-Message-Id: <20210111130035.951405553@linuxfoundation.org>
+Message-Id: <20210111130039.105182002@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
-References: <20210111130033.715773309@linuxfoundation.org>
+In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
+References: <20210111130036.414620026@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,86 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sriharsha Allenki <sallenki@codeaurora.org>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 5cc35c224a80aa5a5a539510ef049faf0d6ed181 upstream.
+commit c06ccf3ebb7503706ea49fd248e709287ef385a3 upstream.
 
-There is a spinlock lockup as part of composite_disconnect
-when it tries to acquire cdev->lock as part of usb_gadget_deactivate.
-This is because the usb_gadget_deactivate is called from
-usb_function_deactivate with the same spinlock held.
+The calculation of in_cables and out_cables bitmaps are done with the
+bit shift by the value from the descriptor, which is an arbitrary
+value, and can lead to UBSAN shift-out-of-bounds warnings.
 
-This would result in the below call stack and leads to stall.
+Fix it by filtering the bad descriptor values with the check of the
+upper bound 0x10 (the cable bitmaps are 16 bits).
 
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-rcu:     3-...0: (1 GPs behind) idle=162/1/0x4000000000000000
-softirq=10819/10819 fqs=2356
- (detected by 2, t=5252 jiffies, g=20129, q=3770)
- Task dump for CPU 3:
- task:uvc-gadget_wlhe state:R  running task     stack:    0 pid:  674 ppid:
- 636 flags:0x00000202
- Call trace:
-  __switch_to+0xc0/0x170
-  _raw_spin_lock_irqsave+0x84/0xb0
-  composite_disconnect+0x28/0x78
-  configfs_composite_disconnect+0x68/0x70
-  usb_gadget_disconnect+0x10c/0x128
-  usb_gadget_deactivate+0xd4/0x108
-  usb_function_deactivate+0x6c/0x80
-  uvc_function_disconnect+0x20/0x58
-  uvc_v4l2_release+0x30/0x88
-  v4l2_release+0xbc/0xf0
-  __fput+0x7c/0x230
-  ____fput+0x14/0x20
-  task_work_run+0x88/0x140
-  do_notify_resume+0x240/0x6f0
-  work_pending+0x8/0x200
-
-Fix this by doing an unlock on cdev->lock before the usb_gadget_deactivate
-call from usb_function_deactivate.
-
-The same lockup can happen in the usb_gadget_activate path. Fix that path
-as well.
-
-Reported-by: Peter Chen <peter.chen@nxp.com>
-Link: https://lore.kernel.org/linux-usb/20201102094936.GA29581@b29397-desktop/
-Tested-by: Peter Chen <peter.chen@nxp.com>
-Signed-off-by: Sriharsha Allenki <sallenki@codeaurora.org>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201202130220.24926-1-sallenki@codeaurora.org
+Reported-by: syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20201223174557.10249-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/gadget/composite.c |   10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ sound/usb/midi.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/usb/gadget/composite.c
-+++ b/drivers/usb/gadget/composite.c
-@@ -395,8 +395,11 @@ int usb_function_deactivate(struct usb_f
- 
- 	spin_lock_irqsave(&cdev->lock, flags);
- 
--	if (cdev->deactivations == 0)
-+	if (cdev->deactivations == 0) {
-+		spin_unlock_irqrestore(&cdev->lock, flags);
- 		status = usb_gadget_deactivate(cdev->gadget);
-+		spin_lock_irqsave(&cdev->lock, flags);
-+	}
- 	if (status == 0)
- 		cdev->deactivations++;
- 
-@@ -427,8 +430,11 @@ int usb_function_activate(struct usb_fun
- 		status = -EINVAL;
- 	else {
- 		cdev->deactivations--;
--		if (cdev->deactivations == 0)
-+		if (cdev->deactivations == 0) {
-+			spin_unlock_irqrestore(&cdev->lock, flags);
- 			status = usb_gadget_activate(cdev->gadget);
-+			spin_lock_irqsave(&cdev->lock, flags);
-+		}
- 	}
- 
- 	spin_unlock_irqrestore(&cdev->lock, flags);
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -1890,6 +1890,8 @@ static int snd_usbmidi_get_ms_info(struc
+ 		ms_ep = find_usb_ms_endpoint_descriptor(hostep);
+ 		if (!ms_ep)
+ 			continue;
++		if (ms_ep->bNumEmbMIDIJack > 0x10)
++			continue;
+ 		if (usb_endpoint_dir_out(ep)) {
+ 			if (endpoints[epidx].out_ep) {
+ 				if (++epidx >= MIDI_MAX_ENDPOINTS) {
+@@ -2142,6 +2144,8 @@ static int snd_usbmidi_detect_roland(str
+ 		    cs_desc[1] == USB_DT_CS_INTERFACE &&
+ 		    cs_desc[2] == 0xf1 &&
+ 		    cs_desc[3] == 0x02) {
++			if (cs_desc[4] > 0x10 || cs_desc[5] > 0x10)
++				continue;
+ 			endpoint->in_cables  = (1 << cs_desc[4]) - 1;
+ 			endpoint->out_cables = (1 << cs_desc[5]) - 1;
+ 			return snd_usbmidi_detect_endpoints(umidi, endpoint, 1);
 
 
