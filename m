@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565132F145D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:24:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3AB12F14B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:28:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730618AbhAKNXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:23:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732514AbhAKNRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:17:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 014282229C;
-        Mon, 11 Jan 2021 13:17:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610371035;
-        bh=CmkRPkyW+CATZH9bzTVu39t6lVrMI3J3IbU932DutAk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TzJh0gBf47sx2RbCpMXf+TfAdv1Flwn9Ae44A9KJf+tM498ABXQvqgLhyH1zYE3cu
-         ZWVAf4NyLBmPLkFViDyXAtfqtdkd67K7A8vsMUt63JaA/mYr/rlGj+yM/usbcG2hAw
-         qIpAe4lQ+GkuDAmEVRQSB9g+KBywqaFB9oKjx1RhcRBcqX4DzZJaelEgwYX8j9kcAT
-         rr0FE7yWyXXZKyziKsETzzyvZBtfS8sFsREndoZDpvbuRkCCBkqkamIF8hRzsyajWa
-         MdiNPzek4HrZ5LOo7hxb62asOoJfY2VNR+9rUIPbZTDE/gTSHpvN5LpVB1bYuLUn3a
-         ApW4/7FbJuZOQ==
-Date:   Mon, 11 Jan 2021 13:16:42 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, sumit.semwal@linaro.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org
-Subject: Re: [PATCH 1/7] regulator: qcom-labibb: Implement voltage selector
- ops
-Message-ID: <20210111131642.GB4728@sirena.org.uk>
-References: <20210109132921.140932-1-angelogioacchino.delregno@somainline.org>
- <20210109132921.140932-2-angelogioacchino.delregno@somainline.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="St7VIuEGZ6dlpu13"
-Content-Disposition: inline
-In-Reply-To: <20210109132921.140932-2-angelogioacchino.delregno@somainline.org>
-X-Cookie: Too much is not enough.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1732738AbhAKN2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:28:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732338AbhAKN2c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:28:32 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DB97C061786;
+        Mon, 11 Jan 2021 05:27:52 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id v3so9496131plz.13;
+        Mon, 11 Jan 2021 05:27:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=TzGBogmpfFLHSaMXxd8I8+bOPYrX5vXlwh/zl2QbWek=;
+        b=o6BIWUPjq0nRj6t2DXJ+Asf2yC7jcoL9P5ktV2GZ5/3Ivy50RoLqztJyjPgyiNaoHo
+         qVAlSTdwLCzG+cywGjICDzBLZAGSGgLTcervhJukRClZwik3A5vB7raobdJI3HynfJk6
+         m1Liv4HBgVzDTVtpY+2hwjCgT7Bef6p/0eyWwiuztJOSrZ14Be5nj6grroNoJkI3Pzbk
+         3E1ury4WAPOEv3jL2PSPs3DnmzQvAx0bRwPKt5e10WckL6Jbg0dVWv1yDl3ZrXXLgFuY
+         HaQ5oamU2RxVS9udBNHZohriw5isyiha5pIsqejYOw+DK5iZcC9yQGZHIUVZUSuKW/Fc
+         Dl8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=TzGBogmpfFLHSaMXxd8I8+bOPYrX5vXlwh/zl2QbWek=;
+        b=b1h8PZ6uMVcMTjQBEXC7ZuviW+YLZnseIokVCRnKTTJe0ICHMvBf00WSS36twgpcHG
+         R7FdpO0S7qMWxWut44JpmVkeXVWYNqDqxSUVpK3NVlUa3TVIcvDcmOKQjjmn0trTBqPo
+         rQFvPeJoP8tlkcNvh9a04MqjHg1TjBTRu+FNZS+ckovH/cY4sWqQXPpl0IV2LCBkBtnG
+         6qC950HrgMCsbujyWVWYfKr1xDEB7MFOWNaxAwG8kb10tvODDlK2en89LiU6K8QslpL8
+         uovtdZgSArPPEH/ee+yM/LnJIz//DZgipjUD9Ujr+nHJiTx8aqVK3NaWjNoe99vyimf1
+         31ig==
+X-Gm-Message-State: AOAM533qqvRysGyTFus9EYesqm5qoLlMEFuwvNlJOrZWROz4XHvmN0c/
+        7NQYH9ndb9e8hGaBJnT9BIE=
+X-Google-Smtp-Source: ABdhPJxB8Kijes6KXskrbzg0PSiZfoGxblHFzDrlutT3Yg4+rKfUVMmxwSA9igVsPMxPe6E8j3Jukg==
+X-Received: by 2002:a17:902:cb95:b029:dc:3a38:c7df with SMTP id d21-20020a170902cb95b02900dc3a38c7dfmr16303189ply.49.1610371671565;
+        Mon, 11 Jan 2021 05:27:51 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id v3sm19414640pjn.7.2021.01.11.05.27.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 05:27:50 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     alexander.sverdlin@nokia.com, paulburton@kernel.org
+Cc:     tsbogend@alpha.franken.de, gustavo@embeddedor.com,
+        dong.menglong@zte.com.cn, colin.king@canonical.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] MIPS: OCTEON: fix unreachable code in octeon_irq_init_ciu
+Date:   Mon, 11 Jan 2021 05:27:25 -0800
+Message-Id: <20210111132725.4513-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
---St7VIuEGZ6dlpu13
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The type of 'r' in octeon_irq_init_ciu is 'unsigned int', so 'r < 0'
+can't be true.
 
-On Sat, Jan 09, 2021 at 02:29:15PM +0100, AngeloGioacchino Del Regno wrote:
+Fix this by change the type of 'r' and 'i' from 'unsigned int'
+to 'int'. As 'i' won't be negative, this change works.
 
-> +	.linear_ranges		= (struct linear_range[]) {
-> +		REGULATOR_LINEAR_RANGE(4600000, 0, 15, 100000),
-> +	},
-> +	.n_linear_ranges	= 1,
+Fixes: 99fbc70f8547 ("MIPS: Octeon: irq: Alloc desc before configuring IRQ")
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+Reviewed-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+---
+v2:
+- change 'Fixes' from 64b139f97c01 to 99fbc70f8547
+---
+ arch/mips/cavium-octeon/octeon-irq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-If there's a single range that's just a simple linear mapping and should
-use regulator_map_voltage_linear().
+diff --git a/arch/mips/cavium-octeon/octeon-irq.c b/arch/mips/cavium-octeon/octeon-irq.c
+index bd47e15d02c7..be5d4afcd30f 100644
+--- a/arch/mips/cavium-octeon/octeon-irq.c
++++ b/arch/mips/cavium-octeon/octeon-irq.c
+@@ -1444,7 +1444,7 @@ static void octeon_irq_setup_secondary_ciu2(void)
+ static int __init octeon_irq_init_ciu(
+ 	struct device_node *ciu_node, struct device_node *parent)
+ {
+-	unsigned int i, r;
++	int i, r;
+ 	struct irq_chip *chip;
+ 	struct irq_chip *chip_edge;
+ 	struct irq_chip *chip_mbox;
+-- 
+2.17.1
 
---St7VIuEGZ6dlpu13
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/8T7oACgkQJNaLcl1U
-h9AkPAf+MAVILl2ffHOGp2fVUT5aN8gdBqK8rfxbiQEm6bDV5yFx+sLu7vuCGki5
-PjBq8BF088Hj2i6TY9OCaYPhtoSMiQ21gcZTdFWt7zZ5dFk1oCWKxkEhVSMdsjOp
-mHxAhQb1Eek8AA2R0+hMpp1D8+44DFEHE3gQnph+N8mHxXPXi23bdoUSZRF1nZeB
-bAx9ojeQ5+sv1un7mNIUMl2auDlGtjJOO2m62VJovgP0CIDfP9KNCoBDgXEPf8Qb
-4A5bN1oFeqkk3k9LP0LyRyzYsvnP/tn4KawgJI1kbVi/4xLdLGJTk08w0jluwN/N
-q1Obh6BUqc3IRbHqDSrlITHYI9Ovtw==
-=/6OF
------END PGP SIGNATURE-----
-
---St7VIuEGZ6dlpu13--
