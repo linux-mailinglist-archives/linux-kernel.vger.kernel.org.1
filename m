@@ -2,109 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C757E2F1F2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76AA12F1F38
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404106AbhAKTXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:23:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33836 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404152AbhAKTX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:23:29 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E6432AB7F;
-        Mon, 11 Jan 2021 19:22:47 +0000 (UTC)
-Date:   Mon, 11 Jan 2021 11:22:40 -0800
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     jacmet@sunsite.dk, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: Re: [PATCH] usb/c67x00: Replace tasklet with work
-Message-ID: <20210111192240.osls6hi5wmnw76ts@offworld>
-References: <20210111044050.86763-1-dave@stgolabs.net>
- <20210111090533.1450-1-hdanton@sina.com>
+        id S2390883AbhAKTX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:23:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388051AbhAKTXz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 14:23:55 -0500
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE696C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:23:14 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 416893E859;
+        Mon, 11 Jan 2021 20:23:09 +0100 (CET)
+Subject: Re: [PATCH 5/7] regulator: qcom-labibb: Implement short-circuit and
+ over-current IRQs
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, sumit.semwal@linaro.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org
+References: <20210109132921.140932-1-angelogioacchino.delregno@somainline.org>
+ <20210109132921.140932-6-angelogioacchino.delregno@somainline.org>
+ <20210111135745.GC4728@sirena.org.uk>
+ <6dee36e4-fc78-c21b-daf8-120ee44535a3@somainline.org>
+Message-ID: <8115a574-ad43-d3c6-70d4-28c8a2f4a5f6@somainline.org>
+Date:   Mon, 11 Jan 2021 20:23:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210111090533.1450-1-hdanton@sina.com>
-User-Agent: NeoMutt/20201120
+In-Reply-To: <6dee36e4-fc78-c21b-daf8-120ee44535a3@somainline.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Jan 2021, Hillf Danton wrote:
+Il 11/01/21 20:14, AngeloGioacchino Del Regno ha scritto:
+> Il 11/01/21 14:57, Mark Brown ha scritto:
+>> On Sat, Jan 09, 2021 at 02:29:19PM +0100, AngeloGioacchino Del Regno 
+>> wrote:
+>>
+>>> +    /* If the regulator is not enabled, this is a fake event */
+>>> +    if (!ops->is_enabled(vreg->rdev))
+>>> +        return 0;
+>>
+>> Or handling the interrupt raced with a disable initiated from elsewhere.
+>> Does the hardware actually have a problem with reporting spurious errors?
+>>
+Sorry, I forgot to answer to this one in the previous email.
 
->On Sun, 10 Jan 2021 20:40:50 -0800 Davidlohr Bueso wrote:
->> Tasklets have long been deprecated as being too heavy on the system
->> by running in irq context - and this is not a performance critical
->> path. If a higher priority process wants to run, it must wait for
->> the tasklet to finish before doing so.
->>
->> c67x00_do_work() will now run in process context and have further
->> concurrency (tasklets being serialized among themselves), but this
->> is done holding the c67x00->lock, so it should be fine. Furthermore,
->> this patch fixes the usage of the lock in the callback as otherwise
->> it would need to be irq-safe.
->
->Can you add a couple of words about the need to be irq-safe because
->no lock is taken for scheduling either tasklet or work?
+Yes, apparently the hardware has this issue: when the current draw is 
+very high and you disable the regulator while the attached device is 
+still drawing a lot of current (like on the Xperia XZ2 smartphone, but I 
+don't want to comment on that phone's HW quirks...) then the OCP 
+interrupt fires *after* disabling the LAB/IBB regulators.
 
-I was refering to the locking in the c67x00_do_work() tasklet callback.
-Because it is currently under irq it should be disabling irq (or at least
-BH) but after this patch that is no longer the case.
+This doesn't seem to happen if the current draw is low in the exact 
+moment the regulator gets disabled, but that's not always possible since 
+it depends on external HW design / board design sometimes...
 
->>
->> Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
->> ---
->>  drivers/usb/c67x00/c67x00-hcd.h   |  2 +-
->>  drivers/usb/c67x00/c67x00-sched.c | 12 +++++++-----
->>  2 files changed, 8 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/usb/c67x00/c67x00-hcd.h b/drivers/usb/c67x00/c67x00-hcd.h
->> index 6b6b04a3fe0f..6332a6b5dce6 100644
->> --- a/drivers/usb/c67x00/c67x00-hcd.h
->> +++ b/drivers/usb/c67x00/c67x00-hcd.h
->> @@ -76,7 +76,7 @@ struct c67x00_hcd {
->>	u16 next_td_addr;
->>	u16 next_buf_addr;
->>
->> -	struct tasklet_struct tasklet;
->> +	struct work_struct work;
->>
->>	struct completion endpoint_disable;
->>
->> diff --git a/drivers/usb/c67x00/c67x00-sched.c b/drivers/usb/c67x00/c67x00-sched.c
->> index e65f1a0ae80b..af60f4fdd340 100644
->> --- a/drivers/usb/c67x00/c67x00-sched.c
->> +++ b/drivers/usb/c67x00/c67x00-sched.c
->> @@ -1123,24 +1123,26 @@ static void c67x00_do_work(struct c67x00_hcd *c67x00)
->>
->>  /* -------------------------------------------------------------------------- */
->>
->> -static void c67x00_sched_tasklet(struct tasklet_struct *t)
->> +static void c67x00_sched_work(struct work_struct *work)
->>  {
->> -	struct c67x00_hcd *c67x00 = from_tasklet(c67x00, t, tasklet);
->> +	struct c67x00_hcd *c67x00;
->> +
->> +	c67x00 = container_of(work, struct c67x00_hcd, work);
->>	c67x00_do_work(c67x00);
->>  }
->>
->>  void c67x00_sched_kick(struct c67x00_hcd *c67x00)
->>  {
->> -	tasklet_hi_schedule(&c67x00->tasklet);
->> +        queue_work(system_highpri_wq, &c67x00->work);
->
->Better if one line comment is added for highpri, given this is not a
->performance critical path.
 
-I'm not sure the value here, considering the highprio is not being
-changed here. There are a few drivers who use highpri workqueue and
-care about latencies but they are still not performance critical (to
-the overall system that is, which is what I meant by that).
+>>> +    return ret ? IRQ_NONE : IRQ_HANDLED;
+>>
+>> Here and elsewhere please write normal conditional statements to improve
+>> legibility.
+>>
+> No problem. Will do.
+> 
+>>> +    /* This function should be called only once, anyway. */
+>>> +    if (unlikely(vreg->ocp_irq_requested))
+>>> +        return 0;
+>>
+>> If this is not a fast path it doesn't need an unlikely() annotation;
+>> indeed it sounds more like there should be a warning printed if this
+>> isn't supposed to be called multiple times.
+>>
+> That was extra-paranoid safety, looking at this one again, that should 
+> be totally unnecessary.
+> I think that removing this check entirely would be just fine also 
+> because.. anyway.. writing to these registers more than once won't do 
+> any harm, nor break functionality: I mean, even if it happens for 
+> whatever reason, there's *no real need* to avoid it from the hw 
+> perspective.
+> 
+>>> +    /* IRQ polarities - LAB: trigger-low, IBB: trigger-high */
+>>> +    if (vreg->type == QCOM_LAB_TYPE) {
+>>> +        irq_flags |= IRQF_TRIGGER_LOW;
+>>> +        irq_trig_low = 1;
+>>> +    } else {
+>>> +        irq_flags |= IRQF_TRIGGER_HIGH;
+>>> +        irq_trig_low = 0;
+>>> +    }
+>>
+>> This would be more clearly written as a switch statement.
+>>
+> A switch statement looked like being a bit "too much" for just two cases 
+> where vreg->type cannot be anything else but QCOM_LAB_TYPE or 
+> QCOM_IBB_TYPE... but okay, let's write a switch statement in place of that.
+> 
+>>> +    return devm_request_threaded_irq(vreg->dev, vreg->ocp_irq, NULL,
+>>> +                     qcom_labibb_ocp_isr, irq_flags,
+>>> +                     ocp_irq_name, vreg);
+>>
+>> Are you *sure* that devm_ is appropriate here and the interrupt handler
+>> won't attempt to use things that will be deallocated before devm gets
+>> round to freeing the interrupt?
+>>
+> Yeah, I'm definitely sure.
+> 
+>>> +        if (!!(val & LABIBB_CONTROL_ENABLE)) {
+>>
+>> The !! is redundant here and makes things less clear.
+>>
+> My bad, I forgot to clean this one up before sending.
+> 
+>>> @@ -166,8 +560,37 @@ static int qcom_labibb_of_parse_cb(struct 
+>>> device_node *np,
+>>>                      struct regulator_config *config)
+>>>   {
+>>>       struct labibb_regulator *vreg = config->driver_data;
+>>> +    char *sc_irq_name;
+>>
+>> I really, really wouldn't expect to see interrupts being requested in
+>> the DT parsing callback - apart from anything else the device is going
+>> to have the physical interrupts with or without DT binding information.
+>> These callbacks are for regulator specific properties, not basic probing.
+>> Just request the interrupts in the main probe function, this also means
+>> you can avoid using all the DT specific APIs which are generally a
+>> warning sign.
+>>
+> 
+> ...And I even wrote a comment saying "The Short Circuit interrupt is 
+> critical: fail if not found"!!! Whoa! That was bad.
+> Yeah, I'm definitely moving that to the appropriate place.
 
-Thanks,
-Davidlohr
