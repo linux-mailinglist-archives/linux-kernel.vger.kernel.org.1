@@ -2,108 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8292F195B
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:18:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 851442F197E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731613AbhAKPRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:17:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729295AbhAKPRi (ORCPT
+        id S1731709AbhAKPUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:20:02 -0500
+Received: from mail-out.m-online.net ([212.18.0.9]:55242 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727614AbhAKPUB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:17:38 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC02EC061795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:17:22 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id 190so173600wmz.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:17:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3V5kTTS4a3gz1m9EB+LiOHUnvU/xEqJ67ethW81gCEU=;
-        b=Ue2pE50LK8hgmdGzCq1pb3qowjevnViBjTsApMPbErJMwtTgMRdh8+JdAAW47V+KAg
-         XicKlCVkxVHHbj+S5fGPs+Eps/7ETjlTvu1kfrkofRXYCdwxq2aMgU6IyuluObvbygq1
-         36bjw9zE6zrqHp56YJ+Zd5NeHeY/oVlO5TGt1oeo61iNWPDUpufQd9mpPOXqNLPxy7Ws
-         QBly51FK7NjRIfDGoMyFyQuyntYIsnmiHCdt5SamE9npWQPZfMNQG678jsy2fER/RD8+
-         fC+oo8tc4NAC6pjHh0d7fHodSQb9GcOZ2ORP8Wzqi04WVTTSdvUV5i6yu6EoY4BBn4wQ
-         2YCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3V5kTTS4a3gz1m9EB+LiOHUnvU/xEqJ67ethW81gCEU=;
-        b=aV6FgzmXG6LnzX1LAccuUw9/lUbUh2SlsoeYMvPnSSsDq+s6sruaxz+Am3wlNKzn+U
-         HWFT4rm6HqDhDOgly90vJSvHQCHoLRdWvC3/0Dw0sTqq8vkCx/wNkkHBM8UHrwPu3f7B
-         kvw3oHOfcVMhEQGBoJs7pNx9ymCpcOyKvVE9Qt6nAOUpE9DICaOk1EjaK6HNY4GCzd7v
-         dY5EIYRtNftLJBXTjUVYnMv+CTFFCF72CcrgC4KwAIYIJC33rwHZ69AyZNXZEoka6PXW
-         +Zb1lwk0ghdRtwifBemtLaYa7WNOqcQmA+q8G31YLQbmvoWWvgPO0aR0XSQTexIJe3bc
-         j/Fg==
-X-Gm-Message-State: AOAM5335XlfDunchjE6aQVSPdT+SJWNjZWjPqMgoASLXkd96AlrscYgU
-        uki9dFdMfpNmdyyYX4dxLZY=
-X-Google-Smtp-Source: ABdhPJwt7MSBlYrmbAe7A8nsKgB9BV6xeDPh5jjs81Sl6n7ZL2DYnDy+CsIsmqw3wsrQ5GTfe0fp4w==
-X-Received: by 2002:a05:600c:2116:: with SMTP id u22mr181601wml.174.1610378241664;
-        Mon, 11 Jan 2021 07:17:21 -0800 (PST)
-Received: from Saturn.local.all ([81.221.211.103])
-        by smtp.gmail.com with ESMTPSA id h5sm25549623wrp.56.2021.01.11.07.17.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 07:17:21 -0800 (PST)
-From:   Max Krummenacher <max.oss.09@gmail.com>
-X-Google-Original-From: Max Krummenacher <max.krummenacher@toradex.com>
-To:     Max Krummenacher <max.oss.09@gmail.com>
-Cc:     Max Krummenacher <max.krummenacher@toradex.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Fabio Estevam <festevam@gmail.com>,
-        Rouven Czerwinski <r.czerwinski@pengutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>
-Subject: [PATCH 1/1] ARM: imx: build suspend-imx6.S with arm instruction set
-Date:   Mon, 11 Jan 2021 16:17:04 +0100
-Message-Id: <20210111151704.26296-2-max.krummenacher@toradex.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210111151704.26296-1-max.krummenacher@toradex.com>
-References: <20210111151704.26296-1-max.krummenacher@toradex.com>
+        Mon, 11 Jan 2021 10:20:01 -0500
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4DDy651Fmqz1qskT;
+        Mon, 11 Jan 2021 16:18:53 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4DDy646j31z1tYWW;
+        Mon, 11 Jan 2021 16:18:52 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id S1jEDPKn3m5i; Mon, 11 Jan 2021 16:18:51 +0100 (CET)
+X-Auth-Info: +4ZBp6oP5UHBQbz30gRFNPVk3E+f0nOqHIQmb61qUoCy/249mUINCdfQGZyGGjep
+Received: from igel.home (ppp-46-244-179-249.dynamic.mnet-online.de [46.244.179.249])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Mon, 11 Jan 2021 16:18:51 +0100 (CET)
+Received: by igel.home (Postfix, from userid 1000)
+        id 666492C352E; Mon, 11 Jan 2021 16:18:51 +0100 (CET)
+From:   Andreas Schwab <schwab@linux-m68k.org>
+To:     linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] powerpc/vdso: fix clock_gettime_fallback for vdso32
+CC:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org
+X-Yow:  Yow!  Did something bad happen or am I in a drive-in movie??
+Date:   Mon, 11 Jan 2021 16:18:51 +0100
+Message-ID: <87eeirsdr8.fsf@igel.home>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1.90 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the kernel is configured to use the Thumb-2 instruction set
-"suspend-to-memory" fails to resume. Observed on a Colibri iMX6ULL
-(i.MX 6ULL) and Apalis iMX6 (i.MX 6Q).
+The second argument of __kernel_clock_gettime64 points to a struct
+__kernel_timespec, with 64-bit time_t, so use the clock_gettime64 syscall
+in the fallback function for the 32-bit vdso.  Similarily,
+clock_getres_fallback should use the clock_getres_time64 syscall, though
+it isn't yet called from the 32-bit vdso.
 
-It looks like the CPU resumes unconditionally in ARM instruction mode
-and then chokes on the presented Thumb-2 code it should execute.
-
-Fix this by using the arm instruction set for all code in
-suspend-imx6.S.
-
-Signed-off-by: Max Krummenacher <max.krummenacher@toradex.com>
-
+Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
 ---
+ arch/powerpc/include/asm/vdso/gettimeofday.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
- arch/arm/mach-imx/suspend-imx6.S | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm/mach-imx/suspend-imx6.S b/arch/arm/mach-imx/suspend-imx6.S
-index 1eabf2d2834be..e06f946b75b96 100644
---- a/arch/arm/mach-imx/suspend-imx6.S
-+++ b/arch/arm/mach-imx/suspend-imx6.S
-@@ -67,6 +67,7 @@
- #define MX6Q_CCM_CCR	0x0
+diff --git a/arch/powerpc/include/asm/vdso/gettimeofday.h b/arch/powerpc/include/asm/vdso/gettimeofday.h
+index 81671aa365b3..a26c12df2c9a 100644
+--- a/arch/powerpc/include/asm/vdso/gettimeofday.h
++++ b/arch/powerpc/include/asm/vdso/gettimeofday.h
+@@ -106,13 +106,21 @@ int gettimeofday_fallback(struct __kernel_old_timeval *_tv, struct timezone *_tz
+ static __always_inline
+ int clock_gettime_fallback(clockid_t _clkid, struct __kernel_timespec *_ts)
+ {
++#ifndef __powerpc64__
++	return do_syscall_2(__NR_clock_gettime64, _clkid, (unsigned long)_ts);
++#else
+ 	return do_syscall_2(__NR_clock_gettime, _clkid, (unsigned long)_ts);
++#endif
+ }
  
- 	.align 3
-+	.arm
+ static __always_inline
+ int clock_getres_fallback(clockid_t _clkid, struct __kernel_timespec *_ts)
+ {
++#ifndef __powerpc64__
++	return do_syscall_2(__NR_clock_getres_time64, _clkid, (unsigned long)_ts);
++#else
+ 	return do_syscall_2(__NR_clock_getres, _clkid, (unsigned long)_ts);
++#endif
+ }
  
- 	.macro  sync_l2_cache
- 
+ #ifdef CONFIG_VDSO32
 -- 
-2.26.2
+2.30.0
 
+
+-- 
+Andreas Schwab, schwab@linux-m68k.org
+GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+"And now for something completely different."
