@@ -2,203 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5961A2F10B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D49EA2F10A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:57:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729595AbhAKK6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:58:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56242 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729372AbhAKK6Q (ORCPT
+        id S1729441AbhAKK5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:57:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbhAKK5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:58:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610362609;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=e+Vq/8bmKni7bGYalB55TS1xHbS37RSImPWuJfrT6hY=;
-        b=Ok+WBJXqvVPY6NCW71SUuwgNsGv9UB5h8d/94a28qOa6UrmZKWcpmDdiAlNRqtkvITsk8k
-        Tyb/iCd24oKjotplk0h6saoCa5udG/isz3eYt4yUaOodHp8vbNebqc35/XXKEZTxgU2FT2
-        Q2g6qrNcBD+mnrWmkHAp1YylKwxJx2g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-469-97Y9n1KrO7iVSz3KMHdvBg-1; Mon, 11 Jan 2021 05:56:45 -0500
-X-MC-Unique: 97Y9n1KrO7iVSz3KMHdvBg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 68DC88049C2;
-        Mon, 11 Jan 2021 10:56:43 +0000 (UTC)
-Received: from krava (unknown [10.40.192.185])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 0D07F19746;
-        Mon, 11 Jan 2021 10:56:39 +0000 (UTC)
-Date:   Mon, 11 Jan 2021 11:56:38 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Stephane Eranian <eranian@google.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: Re: [PATCHv2] perf tools: Detect when pipe is passed as perf data
-Message-ID: <20210111105638.GA1210240@krava>
-References: <20201230110935.582332-1-jolsa@kernel.org>
- <CABPqkBTQfFWvEba-=T6ms=GTsjrZUosRQyZZK-EMZ2c_2NQvAA@mail.gmail.com>
- <20210106094934.GA972880@krava>
- <CABPqkBRx4JYG-g-HTw8-TCu0kv0GJ73_AX_APNp_3RW+HAAb2w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABPqkBRx4JYG-g-HTw8-TCu0kv0GJ73_AX_APNp_3RW+HAAb2w@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        Mon, 11 Jan 2021 05:57:42 -0500
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79770C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 02:57:02 -0800 (PST)
+Received: by mail-il1-x12b.google.com with SMTP id e7so17894274ile.7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 02:57:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=sender:from:to:cc:subject:in-reply-to:references:mime-version
+         :content-transfer-encoding:date:message-id;
+        bh=nqIQLzwGrtcxFYKZkj0z+xis73875duwqiCkk4GOBKo=;
+        b=qwU3ww8Ca+JbeHLbpyR5qvDQUkr+xDQFsi1Kh8OWii/0LXK6aGP5G2QhJJnKBw8fPD
+         L0tALbZzx0uuIQUMc/GoJQka9EAnNz+q0Ilbc+pagNWAW4OZzC+3jZPNV856Bd/u/v9y
+         MvPiyEWf0RFAacRtxT1GptvJYJGgQ/us8qBAmJwYmUz91NZ/FJt2akJ1X6qMRP/D5LLw
+         eez2DupxSSVbZxThdvEd+aicIKCFTYw2cxzIVGnNSZBVYlc9esQTZvnn1QE4XfmhORl2
+         tu0bFTGa4n8L1r1LX9NMCONHxAj32MBbpTkBPVJJ4YL9nFgn6VzjE1GOAv/zoYeh58Qr
+         ex4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
+         :mime-version:content-transfer-encoding:date:message-id;
+        bh=nqIQLzwGrtcxFYKZkj0z+xis73875duwqiCkk4GOBKo=;
+        b=CNqHFEMKhr+YuMUGAzlpz1d8hrVwxlOvsl8dUeXlO9IYjtlAEDHV2tE3MG5JFO4Bhn
+         gjRx1tURm/lCNzeaSAJNEBp2OmlY/xl29o6IrifThxTwbESmnbk37odaoLWMGNjI0ZU1
+         Lfky68zfpm8evM/SKojXBb8WfkFg2CNdnUwGaB9qfpUhkn3fIE35JK11RzjWI94tSjFz
+         oZZKu8xxcHv4Ld3DXXW0oroXquz5qr7/ofRY3oF1fA8fFsDayWbm3aPIBJGc2qUujOhB
+         QzpTdd2b5m8AtVA7v5AiFMF/MRvEGfaHNc2Ddee7sdBBOd6eCzfQAacojC/2kg1Dw+cj
+         QGeQ==
+X-Gm-Message-State: AOAM531Vm6gYDcL+BCASRsXo8x+2qgmw8aqSbX5/jc8Zr20EUPusa/gU
+        wBGfnLtN7zDM6N/pgmBz6lZSTA==
+X-Google-Smtp-Source: ABdhPJyLqDmoq/j3K+zEcicUCA3OcphDj/miOd/cMpvIberW98MdC+NQKuFu3qtilzEzVldbl9oGtg==
+X-Received: by 2002:a92:5802:: with SMTP id m2mr14548739ilb.271.1610362621835;
+        Mon, 11 Jan 2021 02:57:01 -0800 (PST)
+Received: from turing-police ([2601:5c0:c380:d61::359])
+        by smtp.gmail.com with ESMTPSA id b12sm15118172ilc.21.2021.01.11.02.57.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 02:57:00 -0800 (PST)
+Sender: Valdis Kletnieks <valdis@vt.edu>
+From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
+X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
+X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH] gcc-plugins: fix gcc 11 indigestion with plugins...
+In-Reply-To: <CAMuHMdU1YSODgh_T5RxqUqorveAQiy_-gQbF_SwMEj7gvG25qw@mail.gmail.com>
+References: <82487.1609006918@turing-police> <160997457204.3687425.15622431721220616573.b4-ty@chromium.org>
+ <CAMuHMdU1YSODgh_T5RxqUqorveAQiy_-gQbF_SwMEj7gvG25qw@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; boundary="==_Exmh_1610362618_16026P";
+         micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 11 Jan 2021 05:56:59 -0500
+Message-ID: <122278.1610362619@turing-police>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 11:13:18PM -0800, Stephane Eranian wrote:
-> On Wed, Jan 6, 2021 at 1:49 AM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Tue, Jan 05, 2021 at 05:33:38PM -0800, Stephane Eranian wrote:
-> > > Hi,
-> > >
-> > > On Wed, Dec 30, 2020 at 3:09 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> > > >
-> > > > Currently we allow pipe input/output only through '-' string
-> > > > being passed to '-o' or '-i' options, like:
-> > > >
-> > > It seems to me it would be useful to auto-detect that the perf.data
-> > > file is in pipe vs. file mode format.
-> > > Your patch detects the type of the file which is something different
-> > > from the format of its content.
-> >
-> > hi,
-> > it goes together with the format, once the output file
-> > is pipe, the format is pipe as well
-> >
-> What I was saying is if I do:
-> $ perf record -o - -a sleep 10 > perf.data
-> $ perf report -i perf.data
-> it should autodetect it is a pipe mode file.
-> Does it do that today?
+--==_Exmh_1610362618_16026P
+Content-Type: text/plain; charset=us-ascii
 
-yes, your record stores pipe mode data to perf.data file,
-and report detects pipe mode data even in normal file,
-so we're fine here
+On Mon, 11 Jan 2021 10:47:23 +0100, Geert Uytterhoeven said:
 
-jirka
+> I guess this is the cause of the new "warning: invalid suffix on
+> literal; C++11 requires a space between literal and string macro
+> [-Wliteral-suffix]" with gcc 4.9 or 5.4?
 
-> 
-> > jirka
-> >
-> > > Thanks.
-> > >
-> > > >   # mkfifo perf.pipe
-> > > >   # perf record --no-buffering -e 'sched:sched_switch' -o - > perf.pipe &
-> > > >   [1] 354406
-> > > >   # cat perf.pipe | ./perf --no-pager script -i - | head -3
-> > > >             perf 354406 [000] 168190.164921: sched:sched_switch: perf:354406..
-> > > >      migration/0    12 [000] 168190.164928: sched:sched_switch: migration/0:..
-> > > >             perf 354406 [001] 168190.164981: sched:sched_switch: perf:354406..
-> > > >   ...
-> > > >
-> > > > This patch detects if given path is pipe and set the perf data
-> > > > object accordingly, so it's possible now to do above with:
-> > > >
-> > > >   # mkfifo perf.pipe
-> > > >   # perf record --no-buffering -e 'sched:sched_switch' -o perf.pipe &
-> > > >   [1] 360188
-> > > >   # perf --no-pager script -i ./perf.pipe | head -3
-> > > >             perf 354442 [000] 168275.464895: sched:sched_switch: perf:354442..
-> > > >      migration/0    12 [000] 168275.464902: sched:sched_switch: migration/0:..
-> > > >             perf 354442 [001] 168275.464953: sched:sched_switch: perf:354442..
-> > > >
-> > > > It's of course possible to combine any of above ways.
-> > > >
-> > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > > ---
-> > > > v2:
-> > > >   - removed O_CREAT|O_TRUNC flags from pipe's write end
-> > > >
-> > > >  tools/perf/util/data.c | 27 +++++++++++++++++++++------
-> > > >  1 file changed, 21 insertions(+), 6 deletions(-)
-> > > >
-> > > > diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
-> > > > index f29af4fc3d09..4dfa9e0f2fec 100644
-> > > > --- a/tools/perf/util/data.c
-> > > > +++ b/tools/perf/util/data.c
-> > > > @@ -159,7 +159,7 @@ int perf_data__update_dir(struct perf_data *data)
-> > > >         return 0;
-> > > >  }
-> > > >
-> > > > -static bool check_pipe(struct perf_data *data)
-> > > > +static int check_pipe(struct perf_data *data)
-> > > >  {
-> > > >         struct stat st;
-> > > >         bool is_pipe = false;
-> > > > @@ -172,6 +172,15 @@ static bool check_pipe(struct perf_data *data)
-> > > >         } else {
-> > > >                 if (!strcmp(data->path, "-"))
-> > > >                         is_pipe = true;
-> > > > +               else if (!stat(data->path, &st) && S_ISFIFO(st.st_mode)) {
-> > > > +                       int flags = perf_data__is_read(data) ?
-> > > > +                                   O_RDONLY : O_WRONLY;
-> > > > +
-> > > > +                       fd = open(data->path, flags);
-> > > > +                       if (fd < 0)
-> > > > +                               return -EINVAL;
-> > > > +                       is_pipe = true;
-> > > > +               }
-> > > >         }
-> > > >
-> > > >         if (is_pipe) {
-> > > > @@ -190,7 +199,8 @@ static bool check_pipe(struct perf_data *data)
-> > > >                 }
-> > > >         }
-> > > >
-> > > > -       return data->is_pipe = is_pipe;
-> > > > +       data->is_pipe = is_pipe;
-> > > > +       return 0;
-> > > >  }
-> > > >
-> > > >  static int check_backup(struct perf_data *data)
-> > > > @@ -344,8 +354,11 @@ static int open_dir(struct perf_data *data)
-> > > >
-> > > >  int perf_data__open(struct perf_data *data)
-> > > >  {
-> > > > -       if (check_pipe(data))
-> > > > -               return 0;
-> > > > +       int err;
-> > > > +
-> > > > +       err = check_pipe(data);
-> > > > +       if (err || data->is_pipe)
-> > > > +               return err;
-> > > >
-> > > >         /* currently it allows stdio for pipe only */
-> > > >         data->use_stdio = false;
-> > > > @@ -410,8 +423,10 @@ int perf_data__switch(struct perf_data *data,
-> > > >  {
-> > > >         int ret;
-> > > >
-> > > > -       if (check_pipe(data))
-> > > > -               return -EINVAL;
-> > > > +       ret = check_pipe(data);
-> > > > +       if (ret || data->is_pipe)
-> > > > +               return ret;
-> > > > +
-> > > >         if (perf_data__is_read(data))
-> > > >                 return -EINVAL;
-> > > >
-> > > > --
-> > > > 2.26.2
-> > > >
-> > >
-> >
-> 
+Well, we fixed a #error, and picked up a warning.  That's progress. ;)
 
+It's probably related. I'm just having a hard time understanding why 4.9 and 5.4
+whine about the lack of a space, while 8.3 and 11 didn't complain...
+
+I'll see if I can cook up a patch that newer gcc are still happy with.  You able
+to easily test with 4.9 or 5.4?
+
+
+
+
+--==_Exmh_1610362618_16026P
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Comment: Exmh version 2.9.0 11/07/2018
+
+iQIVAwUBX/wu+QdmEQWDXROgAQJOIBAAtkQZFN6DBq0ke31o+qNydBx9V66q5WT1
+Rn3IhqLAePAT4VudG8e5IjYOa23aHMy2OEFiPZE1Dl8QqmSCLcYl5C/R9XjQq89A
+jjtpSCK2vqxxeBnxRMHbfXj9cZFGykEO2+KDea/LV+m11j9k2pN8OLcLDq8sn1/h
+OdLoHrtXNCRuUcfdkfXDuSMBHG1uZ5xqakZRhTr13rp0vIo7o9L6MbbzYia0VkiT
+HTM4r5hJyZgNfz4+J/I3zTj4dC8GmpW31CdoSrmtc2sWgUySYKNaumyELQqCWhtc
+0scAbs5gPFWTdTlpUSspVXHjvaxcm2Df/s6r65MkOAvqioV0anPU1kiuVqswcU9z
+waDb60JomhspqesVAmt2x6dCsrYEBXV7TWDHyEgAcjCDMZvz5bvdMPQukxyimqYR
+mJdH1hj9jJxBSQMf6J2v+bgz7SLapburc/AeaD72b8srL4Rhnx1XHPOqa1J74EJW
+OeWPYnOd2R640SgNEpCR4sZ1TDWeFOvhOPkwvuInVNAwWUQsmxZDJiMXFfxMUDCk
+15QJhiIS6Bepw4s4oOBnJAL5489IPzdc4IRe5R71IkQzY/I64nt6sAD2wQOwW6dK
+A3jCSC9UUkl7BrorfK8sl/MhN7BVbkqFayua7c7Vfwt9HGjhNIgPYqyaI40VZPti
+W4gjymofSp0=
+=p7uY
+-----END PGP SIGNATURE-----
+
+--==_Exmh_1610362618_16026P--
