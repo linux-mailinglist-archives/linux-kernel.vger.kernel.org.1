@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BACB42F15C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F542F1561
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:40:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731450AbhAKNLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:11:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48828 "EHLO
+        id S1731658AbhAKNjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:39:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730764AbhAKNK4 (ORCPT
+        with ESMTP id S1731026AbhAKNMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:10:56 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5F1FC06179F
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 05:10:15 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id u4so8842630pjn.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 05:10:15 -0800 (PST)
+        Mon, 11 Jan 2021 08:12:53 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3B41C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 05:12:12 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id be12so9498657plb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 05:12:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=yPCLa6FZjqK4D17lMqre5j2awEs5gnDDXh+r5vWQ68M=;
-        b=XcGOC0tDejK2g+VJ42m5jhAZimTZauS9GkLVMP224pD0LlOJCB7skxgUk1n7Cs9KfK
-         r3PoZGKfKQ04dqejCrtJdgg+xwuhaBgYds1n4Qi2zSmnGYU3rw//grbrkI8/yg2ioUlh
-         MRPoyOiPZwMCPFfymg5WGy5jx1nyLxVcMuG0LiZ34SCRQSc0yaSer1aAcjpnETnFPeUR
-         WnbUZNZ55HeUROOFhc4AZMGGMtJ5x0gnuocyfTDGZxXVeynvxD06I+dBdnWZfchBGmvd
-         B/SZBAY171ygyFZ+A05KvUMpr3i/TwcJG5tarIVdmfhh9ntslkisXv+JmKhTfjpBR4gh
-         MPvA==
+        bh=1vxLxmNp00/ADs1BfRL7o4NMbtUvoFLTlYBIY2H+Ps4=;
+        b=zKB1IKhP7jxgQzFwIq4aDk8gaG/nxwrlnS4JSbAlUGvU6IezYhc7Suz4fS3aklhmoF
+         rhdN0vSLwQjB8DFbMAzZz3Ilt9wVw7FpvDdicjrNp148Nr26YeTAg2OiFqlKjyB8rVcY
+         bjccuChI3cxJf62jFBbtfy6uhIGkPajHXo8kmuLXe+FcHUTtQ6pqzFfQsNp/AUv9neIO
+         LEqvLumJ475zC/iQiXTBtqQy+svxsewEkLIbsI2PReWOfxF/Xsi/8KpIQ8i1g71moUjB
+         rOend+njerAn9v3fHa3fajiN21Yl6DGqbhwxGZEGWmz9TP+Hu+r1KwcmkHUncCDQtGeJ
+         CPYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=yPCLa6FZjqK4D17lMqre5j2awEs5gnDDXh+r5vWQ68M=;
-        b=sjzXXgRJ9UGvtHC9szmkv3wmPMtzv3zzbWOyhU41Ehutdr5UTyhwhZ/Cnh7e4pl195
-         tyIrKmPO18UXLiGzPT2kBOVve9nK/OWD9iDuCidvjTRNRTF7Ipl155txsJe47XXO1qNe
-         j46JHcRHGng8mFM9PGS6/F0O6QXEj7Z1TniWCSYmdYG09kmDAsP7iMi6uTrgVr2Ht12/
-         GjA+SXgBu2RMLemI3jCHFOnKabwk+dackL1k6vO/wegIJbujtSOqf2SbsGtdiM8IN4H6
-         g1t/J+EjbCCs+3CUpvkrny8mllBhvIqcdu72jbu1bREx5lcI/Znz4UuuQPfLzitSzMiu
-         VRDQ==
-X-Gm-Message-State: AOAM531KYhuRqnvbD7E5AwJ81DQs9dQPKhg1SQt+35GXMK/SFdye28U1
-        7phIW3+RIYj1w5uefAdPvQpO2w==
-X-Google-Smtp-Source: ABdhPJy2XE4QraMGyMvItnMnUYzA9ToHqlvjoaRvAujliJ93tmmsZyrq0XX/dELem2s97VNVM1BO4w==
-X-Received: by 2002:a17:902:9a97:b029:db:f96a:bb4d with SMTP id w23-20020a1709029a97b02900dbf96abb4dmr19262180plp.27.1610370615250;
-        Mon, 11 Jan 2021 05:10:15 -0800 (PST)
+        bh=1vxLxmNp00/ADs1BfRL7o4NMbtUvoFLTlYBIY2H+Ps4=;
+        b=POd5wZhyzT++hR1udmhAYcOm124Vkk2IG7ZLbBjge/YA09t/nPRBBRuadOjqHXrz6e
+         js8QJz7xosVEs2hXtvIgnARk+tQfEZ6sQcGOyE9C51HJ9kwinQtn4vJJtExs8xa74YEn
+         5W+V0haidhCkNpEWhpPEKjDLb6Hr4g6Pr5Ags5XlN3P/761wty8I3GGGpiQGysJhH6OC
+         RGzuYiMiOdsnibq1KqE19TSH0Md7QeSDiWJOcfcr0TRqkDhcpLpF1dY5IrXM53icfAar
+         0sNd/29jbscXhIQjli1sYTKDoO6zXkzgPMlxRB8NwBA6widNkv96xPtT9JG08k1Kt8O8
+         K+IQ==
+X-Gm-Message-State: AOAM533bH1QklIXTH5G5XGctYf8jPm32nbT26CNFPluDeea/ietKfMf1
+        KEpJn7YiwnKjf7Ch8Kb3G+RU8g==
+X-Google-Smtp-Source: ABdhPJzTYTldT9Zoofpj4KAlRo4sADwH6EDwRRQZu1318y0tBL6omOHEY+QqkArlA0iDE3jytgSsIQ==
+X-Received: by 2002:a17:90b:1901:: with SMTP id mp1mr18201678pjb.233.1610370731452;
+        Mon, 11 Jan 2021 05:12:11 -0800 (PST)
 Received: from leoy-ThinkPad-X240s ([64.120.119.108])
-        by smtp.gmail.com with ESMTPSA id s5sm18951963pju.9.2021.01.11.05.10.10
+        by smtp.gmail.com with ESMTPSA id b129sm20124237pgc.52.2021.01.11.05.12.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 05:10:14 -0800 (PST)
-Date:   Mon, 11 Jan 2021 21:10:08 +0800
+        Mon, 11 Jan 2021 05:12:10 -0800 (PST)
+Date:   Mon, 11 Jan 2021 21:12:05 +0800
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Suzuki K Poulose <suzuki.poulose@arm.com>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -64,77 +64,81 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Daniel Kiss <Daniel.Kiss@arm.com>,
         Denis Nikitin <denik@chromium.org>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Al Grant <al.grant@arm.com>
-Subject: Re: [PATCH v1 7/7] perf cs-etm: Detect pid in VMID for kernel
- running at EL2
-Message-ID: <20210111131008.GA222747@leoy-ThinkPad-X240s>
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 4/7] perf cs-etm: Add PID format into metadata
+Message-ID: <20210111131205.GB222747@leoy-ThinkPad-X240s>
 References: <20210109074435.626855-1-leo.yan@linaro.org>
- <20210109074435.626855-8-leo.yan@linaro.org>
- <19205bb1-369a-9274-d752-d94f33a909f8@arm.com>
+ <20210109074435.626855-5-leo.yan@linaro.org>
+ <c9aa6c3b-9df5-31c7-9a57-3180d260c660@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <19205bb1-369a-9274-d752-d94f33a909f8@arm.com>
+In-Reply-To: <c9aa6c3b-9df5-31c7-9a57-3180d260c660@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 10:07:03AM +0000, Suzuki Kuruppassery Poulose wrote:
-> Hi Leo
+On Mon, Jan 11, 2021 at 09:45:12AM +0000, Suzuki Kuruppassery Poulose wrote:
+> Hi Leo,
 > 
 > On 1/9/21 7:44 AM, Leo Yan wrote:
-> > From: Suzuki K Poulose <suzuki.poulose@arm.com>
+> > It's possible for CoreSight to trace PID in either CONTEXTIDR_EL1 or
+> > CONTEXTIDR_EL2, the PID format info is used to distinguish the PID
+> > is traced in which register.
 > > 
-> > The pid of the task could be traced as VMID when the kernel is
-> > running at EL2. Teach the decoder to look for vmid when the
-> > context_id is invalid but we have a valid VMID.
+> > This patch saves PID format into the metadata when record.
 > 
-> Thank you again for cleaning up this ! Please see one comment
-> below.
-
-Welcome!
-
-> > Cc: Mike Leach <mike.leach@linaro.org>
-> > Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > Cc: Al Grant <al.grant@arm.com>
-> > Co-developed-by: Leo Yan <leo.yan@linaro.org>
-> > Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> The patch looks good to me. One minor suggestion below
+> 
+> > 
 > > Signed-off-by: Leo Yan <leo.yan@linaro.org>
 > > ---
-> >   .../perf/util/cs-etm-decoder/cs-etm-decoder.c | 32 ++++++++++++++++---
-> >   1 file changed, 28 insertions(+), 4 deletions(-)
+> >   tools/perf/arch/arm/util/cs-etm.c | 21 +++++++++++++++++++++
+> >   tools/perf/util/cs-etm.c          |  2 ++
+> >   tools/perf/util/cs-etm.h          |  2 ++
+> >   3 files changed, 25 insertions(+)
 > > 
-> > diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> > index cd007cc9c283..9e81169dfa76 100644
-> > --- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> > +++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-> > @@ -6,6 +6,7 @@
-> >    * Author: Mathieu Poirier <mathieu.poirier@linaro.org>
-> >    */
-> > +#include <linux/coresight-pmu.h>
-> >   #include <linux/err.h>
-> >   #include <linux/list.h>
-> >   #include <linux/zalloc.h>
-> > @@ -500,13 +501,36 @@ cs_etm_decoder__set_tid(struct cs_etm_queue *etmq,
-> >   			const ocsd_generic_trace_elem *elem,
-> >   			const uint8_t trace_chan_id)
-> >   {
-> > -	pid_t tid;
-> > +	pid_t tid = -1;
+> > diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
+> > index fad7b6e13ccc..ee78df3b1b07 100644
+> > --- a/tools/perf/arch/arm/util/cs-etm.c
+> > +++ b/tools/perf/arch/arm/util/cs-etm.c
+> > @@ -613,6 +613,7 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
+> >   	struct cs_etm_recording *ptr =
+> >   			container_of(itr, struct cs_etm_recording, itr);
+> >   	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
 > > +	u64 pid_fmt;
-> > +	int ret;
-> > -	/* Ignore PE_CONTEXT packets that don't have a valid contextID */
-> > -	if (!elem->context.ctxt_id_valid)
-> > +	ret = cs_etm__get_pid_fmt(trace_chan_id, &pid_fmt);
-> > +	if (ret)
-> > +		return OCSD_RESP_FATAL_SYS_ERR;
+> >   	/* first see what kind of tracer this cpu is affined to */
+> >   	if (cs_etm_is_etmv4(itr, cpu)) {
+> > @@ -641,6 +642,16 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
+> >   				      metadata_etmv4_ro
+> >   				      [CS_ETMV4_TRCAUTHSTATUS]);
+> > +		/*
+> > +		 * The PID format will be used when decode the trace data;
+> > +		 * based on it the decoder will make decision for setting
+> > +		 * sample's PID as context_id or VMID.
+> > +		 */
+> > +		pid_fmt = perf_pmu__format_bits(&cs_etm_pmu->format, "pid");
+> > +		if (!pid_fmt)
+> > +			pid_fmt = 1ULL << ETM_OPT_CTXTID;
+> > +		info->priv[*offset + CS_ETMV4_PID_FMT] = pid_fmt;
+> > +
 > 
-> The patch looks fine to me. I am wondering if this can be cached somewhere in
-> the etmq to avoid doing the search everytime we hit a CID ? Surely for a session,
-> this woudn't change and thus for the decoder life time.
+> Given we do this same step twice here in this function and also in patch 2.
+> I am wondering if this could be made into a small helper function ?
+> 
+> static u64 cs_etm_pmu_format_pid(cs_etm_pm)
+> {
+> 	pid_fmt = perf_pmu__format_bits(&cs_etm_pmu->format, "pid");
+> 	/*
+> 	 * An older kernel doesn't expose this, so fall back to using
+> 	 * CTXTID.
+> 	 */
+> 	if (!pid_fmt)
+> 		pid_fmt = 1ULL << ETM_OPT_CTXTID;
+> 	return pid_fmt;
+> }
 
-Good suggestion, will refine for this in next version.
+Agreed; will follow up this suggestion.
 
 Thanks,
 Leo
