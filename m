@@ -2,129 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 286052F0B2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 03:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4432F0B28
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 03:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727199AbhAKCxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 21:53:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57035 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726229AbhAKCxy (ORCPT
+        id S1727130AbhAKCxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 21:53:24 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:50832 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726472AbhAKCxW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 21:53:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610333548;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NmxIKId+VX6+cTF2RHQgxXMT+Y+5Xys40++ViI5AjPc=;
-        b=QSQnnjERghwcTtto6QV0IuRif+m6Dj/XXeUCh0jpoh8HY4bVSFhpIAmjoIsmKhFdbiScA2
-        uY6YhzedwpIPu1Yp/1uX7ZVHe5HiI07teKDVQ7E2mjO74gVWXwoQIsQofLdtmM15YPg8FD
-        TTx60bySagMkHiMIdocPEd9E6tdhSRo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-498-PYIOgBh0OiqZjtWVS1Btig-1; Sun, 10 Jan 2021 21:52:22 -0500
-X-MC-Unique: PYIOgBh0OiqZjtWVS1Btig-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3ED78801817;
-        Mon, 11 Jan 2021 02:52:20 +0000 (UTC)
-Received: from T590 (ovpn-12-180.pek2.redhat.com [10.72.12.180])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B5C561002391;
-        Mon, 11 Jan 2021 02:52:09 +0000 (UTC)
-Date:   Mon, 11 Jan 2021 10:52:05 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-doc@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v3 3/7] block/psi: remove PSI annotations from direct IO
-Message-ID: <20210111025205.GD4147870@T590>
-References: <cover.1610170479.git.asml.silence@gmail.com>
- <faad7d7f58ff45285eaac9af7fae9a5fcca98977.1610170479.git.asml.silence@gmail.com>
+        Sun, 10 Jan 2021 21:53:22 -0500
+X-UUID: 7ea9de077b6f4014b6316b66de40cde8-20210111
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=RU7+xCTgbwjA5/NtcwBJENhgnq5+fPnUIsbPT3lI/JM=;
+        b=u3b95U32sPUFB6giWzfm6HoTt305o5A02NSaF3ruxcMHyzCYwsL8IsMURf7hJ+KNQe2sDv1Rs2ZaexXJcBySZoo8IGk9UWWP3Hr6KW7CsjHhC306ITGgTJEnCXFgrHAUKZb50hrCrED2l7nyYsR9OMkEPa9dUzRculju3cGRln4=;
+X-UUID: 7ea9de077b6f4014b6316b66de40cde8-20210111
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <henryc.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 705182530; Mon, 11 Jan 2021 10:52:36 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 11 Jan 2021 10:52:33 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 11 Jan 2021 10:52:33 +0800
+Message-ID: <1610333553.2992.7.camel@mtksdaap41>
+Subject: Re: [PATCH V7 01/13] dt-bindings: soc: Add dvfsrc driver bindings
+From:   Henry Chen <henryc.chen@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     <linux-mediatek@lists.infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Fan Chen <fan.chen@mediatek.com>, <linux-pm@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        James Liao <jamesjj.liao@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        <linux-kernel@vger.kernel.org>, Ryan Case <ryandcase@chromium.org>,
+        "Arvin Wang" <arvin.wang@mediatek.com>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Mark Brown <broonie@kernel.org>, <devicetree@vger.kernel.org>
+Date:   Mon, 11 Jan 2021 10:52:33 +0800
+In-Reply-To: <1610163019.789930.3762037.nullmailer@robh.at.kernel.org>
+References: <1610092095-5113-1-git-send-email-henryc.chen@mediatek.com>
+         <1610092095-5113-2-git-send-email-henryc.chen@mediatek.com>
+         <1610163019.789930.3762037.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <faad7d7f58ff45285eaac9af7fae9a5fcca98977.1610170479.git.asml.silence@gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-TM-SNTS-SMTP: 95F7C6906A6D4DC8F92E1987659365ED2D84E2337FE6B238817FF73313E3F32C2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 09, 2021 at 04:02:59PM +0000, Pavel Begunkov wrote:
-> Direct IO does not operate on the current working set of pages managed
-> by the kernel, so it should not be accounted as memory stall to PSI
-> infrastructure.
-> 
-> The block layer and iomap direct IO use bio_iov_iter_get_pages()
-> to build bios, and they are the only users of it, so to avoid PSI
-> tracking for them clear out BIO_WORKINGSET flag. Do same for
-> dio_bio_submit() because fs/direct_io constructs bios by hand directly
-> calling bio_add_page().
-> 
-> Reported-by: Christoph Hellwig <hch@infradead.org>
-> Suggested-by: Christoph Hellwig <hch@infradead.org>
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-> ---
->  block/bio.c    | 6 ++++++
->  fs/direct-io.c | 2 ++
->  2 files changed, 8 insertions(+)
-> 
-> diff --git a/block/bio.c b/block/bio.c
-> index 1f2cc1fbe283..9f26984af643 100644
-> --- a/block/bio.c
-> +++ b/block/bio.c
-> @@ -1099,6 +1099,9 @@ static int __bio_iov_append_get_pages(struct bio *bio, struct iov_iter *iter)
->   * fit into the bio, or are requested in @iter, whatever is smaller. If
->   * MM encounters an error pinning the requested pages, it stops. Error
->   * is returned only if 0 pages could be pinned.
-> + *
-> + * It's intended for direct IO, so doesn't do PSI tracking, the caller is
-> + * responsible for setting BIO_WORKINGSET if necessary.
->   */
->  int bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
->  {
-> @@ -1123,6 +1126,9 @@ int bio_iov_iter_get_pages(struct bio *bio, struct iov_iter *iter)
->  
->  	if (is_bvec)
->  		bio_set_flag(bio, BIO_NO_PAGE_REF);
-> +
-> +	/* don't account direct I/O as memory stall */
-> +	bio_clear_flag(bio, BIO_WORKINGSET);
->  	return bio->bi_vcnt ? 0 : ret;
->  }
->  EXPORT_SYMBOL_GPL(bio_iov_iter_get_pages);
-> diff --git a/fs/direct-io.c b/fs/direct-io.c
-> index d53fa92a1ab6..0e689233f2c7 100644
-> --- a/fs/direct-io.c
-> +++ b/fs/direct-io.c
-> @@ -426,6 +426,8 @@ static inline void dio_bio_submit(struct dio *dio, struct dio_submit *sdio)
->  	unsigned long flags;
->  
->  	bio->bi_private = dio;
-> +	/* don't account direct I/O as memory stall */
-> +	bio_clear_flag(bio, BIO_WORKINGSET);
->  
->  	spin_lock_irqsave(&dio->bio_lock, flags);
->  	dio->refcount++;
-> -- 
-> 2.24.0
-> 
-
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-
--- 
-Ming
+SGkgUm9iLA0KDQpPbiBGcmksIDIwMjEtMDEtMDggYXQgMjA6MzAgLTA3MDAsIFJvYiBIZXJyaW5n
+IHdyb3RlOg0KPiBPbiBGcmksIDA4IEphbiAyMDIxIDE1OjQ4OjAzICswODAwLCBIZW5yeSBDaGVu
+IHdyb3RlOg0KPiA+IERvY3VtZW50IHRoZSBiaW5kaW5nIGZvciBlbmFibGluZyBkdmZzcmMgb24g
+TWVkaWFUZWsgU29DLg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IEhlbnJ5IENoZW4gPGhlbnJ5
+Yy5jaGVuQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgLi4uL2RldmljZXRyZWUvYmluZGlu
+Z3Mvc29jL21lZGlhdGVrL2R2ZnNyYy55YW1sICAgfCA2NyArKysrKysrKysrKysrKysrKysrKysr
+DQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA2NyBpbnNlcnRpb25zKCspDQo+ID4gIGNyZWF0ZSBtb2Rl
+IDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc29jL21lZGlhdGVrL2R2
+ZnNyYy55YW1sDQo+ID4gDQo+IA0KPiBNeSBib3QgZm91bmQgZXJyb3JzIHJ1bm5pbmcgJ21ha2Ug
+ZHRfYmluZGluZ19jaGVjaycgb24geW91ciBwYXRjaDoNCj4gDQo+IHlhbWxsaW50IHdhcm5pbmdz
+L2Vycm9yczoNCj4gDQo+IGR0c2NoZW1hL2R0YyB3YXJuaW5ncy9lcnJvcnM6DQo+IERvY3VtZW50
+YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb2MvbWVkaWF0ZWsvZHZmc3JjLmV4YW1wbGUuZHRz
+OjE5OjE4OiBmYXRhbCBlcnJvcjogZHQtYmluZGluZ3MvaW50ZXJjb25uZWN0L210ayxtdDgxODMt
+ZW1pLmg6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkNCj4gICAgMTkgfCAgICAgICAgICNpbmNs
+dWRlIDxkdC1iaW5kaW5ncy9pbnRlcmNvbm5lY3QvbXRrLG10ODE4My1lbWkuaD4NCj4gICAgICAg
+fCAgICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn4NClNvcnJ5LCBiZWNhdXNlIHRoaXMgaGVhZGVyIGZpbGUgaXMgYWRkZWQgb24gIltWNyww
+Ny8xM10gZHQtYmluZGluZ3M6DQppbnRlcmNvbm5lY3Q6IGFkZCBNVDgxODMgaW50ZXJjb25uZWN0
+IGR0LWJpbmRpbmdzIi4NClNob3VsZCBJIGNoYW5nZSB0aGUgb3JkZXIgb2YgdGhlIHBhdGNoc2V0
+IChsZXQgdGhlIHlhbWwgcGF0aGMgYmVoaW5kIHRoZQ0KaGVhZGVyKSB0byBmaXhlZCB0aGF0ID8N
+Cg0KVGhhbmtzLA0KSGVucnkNCj4gY29tcGlsYXRpb24gdGVybWluYXRlZC4NCj4gbWFrZVsxXTog
+KioqIFtzY3JpcHRzL01ha2VmaWxlLmxpYjozNDQ6IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
+aW5kaW5ncy9zb2MvbWVkaWF0ZWsvZHZmc3JjLmV4YW1wbGUuZHQueWFtbF0gRXJyb3IgMQ0KPiBt
+YWtlOiAqKiogW01ha2VmaWxlOjEzNzA6IGR0X2JpbmRpbmdfY2hlY2tdIEVycm9yIDINCj4gDQo+
+IFNlZSBodHRwczovL3BhdGNod29yay5vemxhYnMub3JnL3BhdGNoLzE0MjM2NzkNCj4gDQo+IFRo
+aXMgY2hlY2sgY2FuIGZhaWwgaWYgdGhlcmUgYXJlIGFueSBkZXBlbmRlbmNpZXMuIFRoZSBiYXNl
+IGZvciBhIHBhdGNoDQo+IHNlcmllcyBpcyBnZW5lcmFsbHkgdGhlIG1vc3QgcmVjZW50IHJjMS4N
+Cj4gDQo+IElmIHlvdSBhbHJlYWR5IHJhbiAnbWFrZSBkdF9iaW5kaW5nX2NoZWNrJyBhbmQgZGlk
+bid0IHNlZSB0aGUgYWJvdmUNCj4gZXJyb3IocyksIHRoZW4gbWFrZSBzdXJlICd5YW1sbGludCcg
+aXMgaW5zdGFsbGVkIGFuZCBkdC1zY2hlbWEgaXMgdXAgdG8NCj4gZGF0ZToNCj4gDQo+IHBpcDMg
+aW5zdGFsbCBkdHNjaGVtYSAtLXVwZ3JhZGUNCj4gDQo+IFBsZWFzZSBjaGVjayBhbmQgcmUtc3Vi
+bWl0Lg0KPiANCg0K
 
