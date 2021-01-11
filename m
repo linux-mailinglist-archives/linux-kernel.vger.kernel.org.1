@@ -2,214 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4E52F0D00
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 07:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A696C2F0D0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 07:58:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727439AbhAKGph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 01:45:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50958 "EHLO
+        id S1727531AbhAKG57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 01:57:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725536AbhAKGpg (ORCPT
+        with ESMTP id S1725536AbhAKG56 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 01:45:36 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A95ADC061786
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 22:44:56 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id n3so7796060pjm.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 22:44:56 -0800 (PST)
+        Mon, 11 Jan 2021 01:57:58 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 221F7C061786
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 22:57:18 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id d17so23131579ejy.9
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 22:57:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=cloud.ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PYIUlaTfC+qHfMej4twucGScSCQDmWbCEShoQb2dW8E=;
-        b=SE8xprRJJp7ffnAN2XwtmMwNkjg0oTQfgcxyaAWnVaZUZrU4GG3WjpwwCx4rwly22e
-         zrkIkta05MipEf8DDLMk+Xz+8omYJs4uGUhm/LlRVuVEkiVgD6ZgEtqgEn9ko1YoST91
-         jVhCYSKUG06h1gjlBICdBBnYutTmpm3h5xuSM6jRr15t39I61POVg5fXrOTiry+1DIjX
-         tMpgMZe3F5C2SIReJUnbsc4841SkFc+ub51ku13h1iCQcNzeshIBpXRq0rFbkRTJ8i+J
-         wbw6hUqa7rviY13EmlN7qiDw1YFV7ZrPS9Wvfe0pIVKM26piJhCPoSgunjl2XtU06I8f
-         OPmA==
+         :cc;
+        bh=+lyh1ppXIwVihU1vaSfQka7MGwNTcAyGaSNwcJGbRT4=;
+        b=BQBzzfbH/m620+N7MJFkTRbdXbHw1MUrP0quVj3E0xdU1n2clxvwAGEiwraS10+8wv
+         5YhjkZ3NlYaWjnaKX9eaU0oJjf87JLch1FudPerJMgAB7/qykhrg7meIlOpAS3GcWIv0
+         FTHEDoNm/NR1NEbXDTo97QP4rm2/9SUSbQ5aEg/Sk44HEVGROyg3gteWKUGXJPuBSTga
+         h1fvzfhtXT3hFNbeCb1DJf7GWqmDCYnxJZknrJn7yfWvsk1Dteqr8oQnR9HkIZlDZQyV
+         ztqmSCP7kNR3rhoRWY2IVpXhkK5UxH2D2x9s9J64edPJWJySO1SKjzVGlxafdTuHJz+z
+         ciqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PYIUlaTfC+qHfMej4twucGScSCQDmWbCEShoQb2dW8E=;
-        b=OBta3+k49pT9rtyCkMUltgetDpDZxjya+6ebZA2XmbkGp2BOWueRT9RrROzKEGaWnl
-         m/SIDrE/LGln0ahlLvrpPG6l8karoJOhbYmqRUKpwt2x0dORgTn5Cjk1lq3czBJFjcls
-         IvOjNHZ6r9jxTo6l2xgAqYJL2/iJFEDjEL1e61cfX1C2Xcr0N8+HtMFgd7JOUVSvq6i5
-         qtE1To7vS8KUVWN06GhwcEpuMXVCKCu2rIxIK9Hrpp6GtRP30CilTSdYNEawzGt5XORo
-         0t3RwyI5rlJiNpcyqMin65hu/H/S8vnMU2tYYXndoZW2z1y2W82Ro3/IsIbx8PiJP3Ck
-         joTg==
-X-Gm-Message-State: AOAM533cgyRNjprWYcW5sxxjdsC1J2sGbVoo1rHyPHuPPuUPo//MMNJu
-        1KObXLotFGuxnGsA2N+s8xCNkn1YInEEt7tQoarCBw==
-X-Google-Smtp-Source: ABdhPJwbvxRmFXwN7HNR0Bbi52W2c2CAV0qBXCm39LOpqHYzcXv/9mi+DdpK0xzFmeZvCeZQrQ+DPEau+jP1ZyesYTg=
-X-Received: by 2002:a17:902:eb03:b029:db:c0d6:5845 with SMTP id
- l3-20020a170902eb03b02900dbc0d65845mr18211576plb.76.1610347495820; Sun, 10
- Jan 2021 22:44:55 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=+lyh1ppXIwVihU1vaSfQka7MGwNTcAyGaSNwcJGbRT4=;
+        b=b5lOdvIxPD4sUhBUx+lUBy8+cdvIvRFGA2TXgd4ks4iZ9EPzAbQFxTAQVGL5smMCMC
+         be5RBel0U8TJv6fI4pgK/R1/GGchE2x02cYpI+mjNJIktji5CoDRF4J6Nc25P6GsvGAQ
+         kVHGhHeFZGNjrKbZkyN2CPvu3uYaxRT5P8rKKm+Ii9LKrkEA6Q1io3WzXSVba8PKHQdp
+         iOC31lFBJCo6cO8QN5V5W+dhwF2PfOGOOm/lidUv3kz4PmeLDhG/rfxOxFajcOocVy8A
+         ojJX540QvpXEHdY1ISQD2Xch75+wxV1qTtxwuUCfP28734eu0+xe+ashOrp3svCfa7zZ
+         Pt+w==
+X-Gm-Message-State: AOAM533klUgZNu71VJ6KvPLCMgAylDJynH9WG7Byu+wYwc8Q1qbDF2X9
+        nRy0Y6TzzwI1DaSIxupDS9MrTLilmbPUT5cF5pk7Bw==
+X-Google-Smtp-Source: ABdhPJxcnwOKJW+7PaRjv13AJnR4ZY6ZtOFxqa2IamjgxWQFkIE/NHsiwfD6EjJH5ZqQEQnEASWUNRA8l4hbVsBzU6s=
+X-Received: by 2002:a17:907:4243:: with SMTP id np3mr9714493ejb.212.1610348235838;
+ Sun, 10 Jan 2021 22:57:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20210106161233.GA44413@e120937-lin> <20210106212353.951807-1-jbhayana@google.com>
- <20210109190133.61051fab@archlinux>
-In-Reply-To: <20210109190133.61051fab@archlinux>
-From:   Jyoti Bhayana <jbhayana@google.com>
-Date:   Sun, 10 Jan 2021 22:44:44 -0800
-Message-ID: <CA+=V6c3f5Z4_JOr+KzvxpL9nOcPrNAZYmG_VpUF+QAW4=cfy=Q@mail.gmail.com>
-Subject: Re: Reply to [RFC PATCH v2 0/1] Adding support for IIO SCMI based sensors
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Enrico Granata <egranata@google.com>,
-        Mikhail Golubev <mikhail.golubev@opensynergy.com>,
-        Igor Skalkin <Igor.Skalkin@opensynergy.com>,
-        Peter Hilber <Peter.hilber@opensynergy.com>,
-        Ankit Arora <ankitarora@google.com>
+References: <20210110215726.861269-1-trix@redhat.com>
+In-Reply-To: <20210110215726.861269-1-trix@redhat.com>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Mon, 11 Jan 2021 07:57:05 +0100
+Message-ID: <CAMGffEnM0qD68x8bA17gWcqM-PkzveX+E02t-ircy68ses0rGw@mail.gmail.com>
+Subject: Re: [PATCH] block/rnbd-clt: improve find_or_create_sess() return check
+To:     Tom Rix <trix@redhat.com>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>,
+        Jens Axboe <axboe@kernel.dk>, ndesaulniers@google.com,
+        linux-block <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
-
-In section 4.7.2.5.1 of the specification, the following exponent is
-the scale value
-
-uint32 axis_attributes_high
-Bits[15:11] Exponent: The power-of-10 multiplier in two=E2=80=99s-complemen=
-t
-format that is applied to the sensor unit
-specified by the SensorType field.
-
-and the resolution is
-
-uint32 axis_resolution
-Bits[31:27] Exponent: The power-of-10 multiplier in two=E2=80=99s-complemen=
-t format
-that is applied to the Res field. Bits[26:0] Res: The resolution of
-the sensor axis.
-
-From code in scmi_protocol.h
-/**
- * scmi_sensor_axis_info  - describes one sensor axes
- * @id: The axes ID.
- * @type: Axes type. Chosen amongst one of @enum scmi_sensor_class.
- * @scale: Power-of-10 multiplier applied to the axis unit.
- * @name: NULL-terminated string representing axes name as advertised by
- *  SCMI platform.
- * @extended_attrs: Flag to indicate the presence of additional extended
- *    attributes for this axes.
- * @resolution: Extended attribute representing the resolution of the axes.
- * Set to 0 if not reported by this axes.
- * @exponent: Extended attribute representing the power-of-10 multiplier th=
-at
- *      is applied to the resolution field. Set to 0 if not reported by
- *      this axes.
- * @attrs: Extended attributes representing minimum and maximum values
- *   measurable by this axes. Set to 0 if not reported by this sensor.
- */
-
-struct scmi_sensor_axis_info {
-unsigned int id;
-unsigned int type;
-int scale; //This is the scale used for min/max range
-char name[SCMI_MAX_STR_SIZE];
-bool extended_attrs;
-unsigned int resolution;
-int exponent; // This is the scale used in resolution
-struct scmi_range_attrs attrs;
-};
-
-The scale above  is the Power-of-10 multiplier which is applied to the min =
-range
-and the max range value
-but the resolution is equal to resolution and multiplied by
-Power-of-10 multiplier
-of exponent in the above struct.
-So as can be seen above the value of the power of 10 multiplier used
-for min/max range
-can be different than the value of the power of 10 multiplier used for
-the resolution.
-Hence, if I have to use IIO_AVAIL_RANGE to specify min/max range and as wel=
-l
-as resolution, then I have to use the float format with the scale applied.
-
-If there is another way which you know of and prefer, please let me know.
-
-Thanks,
-Jyoti
-
-
-
-
-Thanks,
-Jyoti
-
-On Sat, Jan 9, 2021 at 11:01 AM Jonathan Cameron <jic23@kernel.org> wrote:
+On Sun, Jan 10, 2021 at 10:58 PM <trix@redhat.com> wrote:
 >
-> On Wed,  6 Jan 2021 21:23:53 +0000
-> Jyoti Bhayana <jbhayana@google.com> wrote:
+> From: Tom Rix <trix@redhat.com>
 >
-> > Hi Jonathan,
-> >
-> > Instead of adding IIO_VAL_INT_H32_L32, I am thinking of adding IIO_VAL_=
-FRACTIONAL_LONG
-> > or IIO_VAL_FRACTIONAL_64 as the scale/exponent used for min/max range c=
-an be different
-> > than the one used in resolution according to specification.
+> clang static analysis reports this problem
 >
-> That's somewhat 'odd'.  Given min/max are inherently values the sensor is=
- supposed to
-> be able to return why give them different resolutions?  Can you point me =
-at a specific
-> section of the spec?  The axis_min_range_low etc fields don't seem to hav=
-e units specified
-> but I assumed they were in sensor units and so same scale factors?
+> rnbd-clt.c:1212:11: warning: Branch condition evaluates to a
+>   garbage value
+>         else if (!first)
+>                  ^~~~~~
 >
-> >
-> > I am planning to use read_avail for IIO_CHAN_INFO_PROCESSED using IIO_A=
-VAIL_RANGE
-> > and this new IIO_VAL_FRACTIONAL_64 for min range,max range and resoluti=
-on.
-> > Instead of two values used in IIO_VAL_FRACTIONAL, IIO_VAL_FRACTIONAL_64=
- will use 4 values
-> > val_high,val_low,and val2_high and val2_low.
+> This is triggered in the find_and_get_or_create_sess() call
+> because the variable first is not initialized and the
+> earlier check is specifically for
 >
-> I'm not keen on the changing that internal kernel interface unless we abs=
-olutely
-> have to.  read_avail() is called from consumer drivers and they won't kno=
-w anything
-> about this new variant.
+>         if (sess == ERR_PTR(-ENOMEM))
 >
-> >
-> > Let me know if that is an acceptable solution.
+> This is false positive.
 >
-> Hmm. It isn't a standard use of the ABI given the value in the buffer is =
-(I assume)
-> raw (needs scale applied).  However, it isn't excluded by the ABI docs.  =
-Whether
-> a standard userspace is going to expect it is not clear to me.
+> But the if-check can be reduced by initializing first to
+> false and then returning if the call to find_or_creat_sess()
+> does not set it to true.  When it remains false, either
+> sess will be valid or not.  The not case is caught by
+> find_and_get_or_create_sess()'s caller rnbd_clt_map_device()
 >
-> I don't want to end up in a position where we end up with available being=
- generally
-> added for processed when what most people care about is what the value ra=
-nge they
-> might get from a polled read is (rather than via a buffer).
+>         sess = find_and_get_or_create_sess(...);
+>         if (IS_ERR(sess))
+>                 return ERR_CAST(sess);
 >
-> So I'm not that keen on this solution but if we can find a way to avoid i=
-t.
+> Since find_and_get_or_create_sess() initializes first to false
+> setting it in find_or_create_sess() is not needed.
 >
-> Jonathan
+> Signed-off-by: Tom Rix <trix@redhat.com>
+Less LOC is better :)
+Acked-by: Jack Wang <jinpu.wang@cloud.ionos.com>
+Thanks Tom and Nathan!
+> ---
+>  drivers/block/rnbd/rnbd-clt.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
 >
+> diff --git a/drivers/block/rnbd/rnbd-clt.c b/drivers/block/rnbd/rnbd-clt.c
+> index 96e3f9fe8241..251f747cf10d 100644
+> --- a/drivers/block/rnbd/rnbd-clt.c
+> +++ b/drivers/block/rnbd/rnbd-clt.c
+> @@ -919,6 +919,7 @@ static struct rnbd_clt_session *__find_and_get_sess(const char *sessname)
+>         return NULL;
+>  }
 >
-> >
-> >
-> > Thanks,
-> > Jyoti
-> >
+> +/* caller is responsible for initializing 'first' to false */
+>  static struct
+>  rnbd_clt_session *find_or_create_sess(const char *sessname, bool *first)
+>  {
+> @@ -934,8 +935,7 @@ rnbd_clt_session *find_or_create_sess(const char *sessname, bool *first)
+>                 }
+>                 list_add(&sess->list, &sess_list);
+>                 *first = true;
+> -       } else
+> -               *first = false;
+> +       }
+>         mutex_unlock(&sess_lock);
+>
+>         return sess;
+> @@ -1203,13 +1203,11 @@ find_and_get_or_create_sess(const char *sessname,
+>         struct rnbd_clt_session *sess;
+>         struct rtrs_attrs attrs;
+>         int err;
+> -       bool first;
+> +       bool first = false;
+>         struct rtrs_clt_ops rtrs_ops;
+>
+>         sess = find_or_create_sess(sessname, &first);
+> -       if (sess == ERR_PTR(-ENOMEM))
+> -               return ERR_PTR(-ENOMEM);
+> -       else if (!first)
+> +       if (!first)
+>                 return sess;
+>
+>         if (!path_cnt) {
+> --
+> 2.27.0
 >
