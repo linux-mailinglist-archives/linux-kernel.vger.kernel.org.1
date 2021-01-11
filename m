@@ -2,104 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96EA72F10D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:12:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B74B02F10E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:15:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728417AbhAKLLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:11:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727747AbhAKLLb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:11:31 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC86C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 03:10:50 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id y8so9325908plp.8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 03:10:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dVzeDIeFGB9KdppVPpTXtvgJ/V3K1VlejVNrV7Jet8Q=;
-        b=EQj1r9npWGL2wZJf8jEyVAgKoS/ndcMOaIW5RCfKQrdlKm0pzJPOmSL3R9SXisnhY/
-         z9tRn9jY4VavBwnPJDq10o1UtGC5ykxZebPPPIw4bQnageCzxarguV6K/QayTLmptv5o
-         LDJk831nzp0Lfwn76zawEgEwngJwRHfE3ICkN+6tK5655PzI/WgGSzk1m0Tgd86yhbJR
-         upbD1i8ynHznVkbNaB7rA8f4RMdceJENDxzE6uwqdf056T2GlJWQ9bU7Zs9crdXQeF8w
-         Z2X8iN0v6CcL+rGLQ4kcVXRPe1PXyJ0ETbEyACBvZiFAYc2YJs7qOc7Fcan1uCJxuv4O
-         WWtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dVzeDIeFGB9KdppVPpTXtvgJ/V3K1VlejVNrV7Jet8Q=;
-        b=iep15src1PKFXocura4Lzpmpr5NyFKEyGL0XhViOCVvRlTMnFXzd2CXsAxPQdrfejd
-         yoSQy5JTo8M82hxi45cvkRJlBTLqgpZ0NLgR/Yq1FXo7vxoqnkKMZm4mkRa1q9l83Me3
-         Nk1MS9BCp/oUXdEpM1M7d/v+B38/fRj/4LGHN5M/4sHe/uJqxFQrs7MdyE5jFUWiViwv
-         7AqM3SS6X3ZHb/HQi5BV6ZBWRQmgUbhbb39p64wnPawrhsPmxWFatlh6Qy8tVCk770Al
-         GsB330rxdc4guJZKGroUooydEwOedF2Qq9DwkZg3RS8YjbihBbZIouRN275kLL7F9geL
-         zRDQ==
-X-Gm-Message-State: AOAM532qsdINk6fOZCWD9VjCGPpnynj4DKAUOcnLlo/k8ACvS5rYtXWg
-        veD+AJRt0h7d2xZVUGgcvbLCug==
-X-Google-Smtp-Source: ABdhPJwH1oCOkXXjASYQcVMUknfmihkly1onOdB6y/d6jeOBZpInh9rslGy9gN3zizofeosocykzWg==
-X-Received: by 2002:a17:90a:9f47:: with SMTP id q7mr17554145pjv.93.1610363449640;
-        Mon, 11 Jan 2021 03:10:49 -0800 (PST)
-Received: from localhost ([122.172.85.111])
-        by smtp.gmail.com with ESMTPSA id z3sm18325194pfb.157.2021.01.11.03.10.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 11 Jan 2021 03:10:48 -0800 (PST)
-Date:   Mon, 11 Jan 2021 16:40:47 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Mattias Wallin <mattias.wallin@se.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Mark Salter <msalter@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: Re: Old platforms: bring out your dead
-Message-ID: <20210111111047.mgrdho7frjukxfze@vireshk-i7>
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+        id S1728975AbhAKLM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:12:59 -0500
+Received: from mga04.intel.com ([192.55.52.120]:49836 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728318AbhAKLM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 06:12:59 -0500
+IronPort-SDR: UT4t2gbYd+bzgmE0+ozHgXlXzYfNGK5HGsZOBteM2ZswE6OvjtzpfVpYFbrkGI7/C/2R3v18tN
+ IHcZFMLNmJFg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9860"; a="175265217"
+X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
+   d="scan'208";a="175265217"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 03:11:11 -0800
+IronPort-SDR: 9PcpfJcInE5757IqGJ9eeWzQh5eSTfsETODmj/Wo4QxbpmrLMR//xlqZ3GHCyMzWfv1wZ84S3X
+ 89lg3ebf8wkA==
+X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
+   d="scan'208";a="399763025"
+Received: from kbrownfi-mobl2.amr.corp.intel.com ([10.212.201.85])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 03:11:06 -0800
+Message-ID: <7a7de1fedb49489fddf7eac791149f546adccad1.camel@linux.intel.com>
+Subject: Re: [PATCH 2/2][v2] cpufreq: intel_pstate: Get percpu max freq via
+ HWP MSR register if available
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Chen Yu <yu.c.chen@intel.com>, Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhang Rui <rui.zhang@intel.com>,
+        Wendy Wang <wendy.wang@intel.com>
+Date:   Mon, 11 Jan 2021 03:11:02 -0800
+In-Reply-To: <0ca097c7bbf58415b1df150ea50cb37579f8f8ab.1610338353.git.yu.c.chen@intel.com>
+References: <cover.1610338353.git.yu.c.chen@intel.com>
+         <0ca097c7bbf58415b1df150ea50cb37579f8f8ab.1610338353.git.yu.c.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-01-21, 23:55, Arnd Bergmann wrote:
-> * spear -- added in 2010, no notable changes since 2015
+On Mon, 2021-01-11 at 15:43 +0800, Chen Yu wrote:
+> Currently when turbo is disabled(either by BIOS or by the user), the
+> intel_pstate
+> driver reads the max frequency from the package-wide
+> MSR_PLATFORM_INFO(0xce) register.
+> However on asymmetric platforms it is possible in theory that small
+> and big core with
+> HWP enabled might have different max cpu frequency
+max non-turbo frequency (although code call max_freq).
 
-I started an email chain with the ST folks to see if there are any
-concerns with this getting removed and it was confirmed by Mattias
-(Cc'd) from Schneider Electric (one of SPEAr's customers) that they
-indeed use mainline on spear320s and the spear1380 boards, while they
-also have access to spear1310 board which they don't use that often.
+Thanks,
+Srinivas
 
--- 
-viresh
+> , because the MSR_HWP_CAPABILITIES
+> is percpu scope according to Intel Software Developer Manual.
+> 
+> The turbo max freq is already percpu basis in current code, thus make
+> similar change
+> to the max non-turbo frequency as well.
+> 
+> Reported-by: Wendy Wang <wendy.wang@intel.com>
+> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> ---
+> v2: per Srinivas' suggestion, avoid duplicated assignment of
+> max_pstate.
+> --
+>  drivers/cpufreq/intel_pstate.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/intel_pstate.c
+> b/drivers/cpufreq/intel_pstate.c
+> index bd3dd1be73ba..f2d18991d969 100644
+> --- a/drivers/cpufreq/intel_pstate.c
+> +++ b/drivers/cpufreq/intel_pstate.c
+> @@ -1725,11 +1725,9 @@ static void
+> intel_pstate_max_within_limits(struct cpudata *cpu)
+>  static void intel_pstate_get_cpu_pstates(struct cpudata *cpu)
+>  {
+>         cpu->pstate.min_pstate = pstate_funcs.get_min();
+> -       cpu->pstate.max_pstate = pstate_funcs.get_max();
+>         cpu->pstate.max_pstate_physical =
+> pstate_funcs.get_max_physical();
+>         cpu->pstate.turbo_pstate = pstate_funcs.get_turbo();
+>         cpu->pstate.scaling = pstate_funcs.get_scaling();
+> -       cpu->pstate.max_freq = cpu->pstate.max_pstate * cpu-
+> >pstate.scaling;
+>  
+>         if (hwp_active && !hwp_mode_bdw) {
+>                 unsigned int phy_max, current_max, guar_state;
+> @@ -1737,8 +1735,12 @@ static void
+> intel_pstate_get_cpu_pstates(struct cpudata *cpu)
+>                 intel_pstate_get_hwp_max(cpu, &phy_max, &current_max,
+> &guar_state);
+>                 cpu->pstate.turbo_freq = phy_max * cpu-
+> >pstate.scaling;
+>                 cpu->pstate.turbo_pstate = phy_max;
+> +               cpu->pstate.max_pstate = guar_state;
+> +               cpu->pstate.max_freq = guar_state * cpu-
+> >pstate.scaling;
+>         } else {
+>                 cpu->pstate.turbo_freq = cpu->pstate.turbo_pstate *
+> cpu->pstate.scaling;
+> +               cpu->pstate.max_pstate = pstate_funcs.get_max();
+> +               cpu->pstate.max_freq = cpu->pstate.max_pstate * cpu-
+> >pstate.scaling;
+>         }
+>  
+>         if (pstate_funcs.get_aperf_mperf_shift)
+
+
