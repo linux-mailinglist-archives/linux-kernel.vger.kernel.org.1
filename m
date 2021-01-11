@@ -2,127 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF692F20F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:40:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CAE2F20F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:40:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390366AbhAKUjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 15:39:48 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:42867 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403903AbhAKUjr (ORCPT
+        id S2403872AbhAKUjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 15:39:35 -0500
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:39796 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730894AbhAKUje (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:39:47 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610397561; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Ees3o6e/XkCpCJVrzGN7Ici92EyC8KlYvYm+4z3SO9w=; b=TYqqbT3XZK3rj5GnlAuS/5EcfjT96r+gNiNND8FmqLNshivrwSJzcbxTOKErsxDQYDz65ZOo
- k5g/B+96rZlkWmTmflg7kfARFBSc/oBrgO20MJyo+mcE5WUu0yGFvELpbu/kUfJMSlsKXdfM
- VZkkHC9OhtTrEsWGsyZG1sVT3xQ=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5ffcb756af68fb3b06b880cd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 20:38:46
- GMT
-Sender: sramana=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C4F37C433ED; Mon, 11 Jan 2021 20:38:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.1.11] (cpe-70-95-74-122.san.res.rr.com [70.95.74.122])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sramana)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EE9AAC433CA;
-        Mon, 11 Jan 2021 20:38:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EE9AAC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sramana@codeaurora.org
-Subject: Re: [PATCH v3 09/21] arm64: cpufeature: Add global feature override
- facility
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-References: <20210111132811.2455113-1-maz@kernel.org>
- <20210111132811.2455113-10-maz@kernel.org> <20210111184154.GC17941@gaia>
-From:   Srinivas Ramana <sramana@codeaurora.org>
-Message-ID: <de9d8631-4ff9-9d0c-e4eb-5ce0eeb0ecea@codeaurora.org>
-Date:   Mon, 11 Jan 2021 12:38:43 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 11 Jan 2021 15:39:34 -0500
+Received: by mail-ot1-f48.google.com with SMTP id d8so155094otq.6;
+        Mon, 11 Jan 2021 12:39:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CuduTLZlbG35ugDeNBQcYjINyRmKUeAkNe31I9bczWo=;
+        b=asMuTe0uocr9SEqNnzcnSO2QKwsmrL4IJj10rkBoiNIHr5Y5Lq5wKYYZjmWh+6SzsU
+         RW+eetiAZPnZdubeOne0UN2889CvVfm2by4Ec8tNHTO3ZBeVQO1lyDIMa1CfKZsqhG/4
+         K+bYMHwSebgUz+mMT6TJOhwT11TsfxB5YUpFtgC05++rfW8s6ZEV1CB2Ilw7SS30SrjJ
+         gf8MbAvSykbmcyZFq6Z2xzvpDrDuu8JZWzbX7C9ZQUMJdvqrBCZ3llTfzdtuwAASNZEc
+         WRiS2MoF88NXDTRSsk1x2Ze7d04azI3ZIn30eILkh1Q2UrBt9jKI1N2npp/k0BVnBing
+         nVNQ==
+X-Gm-Message-State: AOAM533noXsDlkmrYi40EHEKuJr4eljp53J79rqS0TCIxF3waK8mYahg
+        H+FfglqjVVmBo+TEDtxrBw==
+X-Google-Smtp-Source: ABdhPJxTRSLja0Ho46/iFyMEhN0kc2ToJeDnvK9Ayi6Oy07tXCHtANqvw5CXVDBAtyMzqOaEojN1Mg==
+X-Received: by 2002:a9d:2a86:: with SMTP id e6mr611496otb.313.1610397532905;
+        Mon, 11 Jan 2021 12:38:52 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p132sm182478oia.41.2021.01.11.12.38.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 12:38:52 -0800 (PST)
+Received: (nullmailer pid 3026340 invoked by uid 1000);
+        Mon, 11 Jan 2021 20:38:50 -0000
+Date:   Mon, 11 Jan 2021 14:38:50 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
+Cc:     lee.jones@linaro.org, joel@jms.id.au, andrew@aj.id.au,
+        linus.walleij@linaro.org, minyard@acm.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, BMC-SW@aspeedtech.com,
+        haiyue.wang@linux.intel.com, cyrilbur@gmail.com,
+        rlippert@google.com
+Subject: Re: [PATCH v4 1/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
+Message-ID: <20210111203850.GA3022469@robh.at.kernel.org>
+References: <20201229063157.3587-1-chiawei_wang@aspeedtech.com>
+ <20201229063157.3587-2-chiawei_wang@aspeedtech.com>
 MIME-Version: 1.0
-In-Reply-To: <20210111184154.GC17941@gaia>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201229063157.3587-2-chiawei_wang@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Catalin,
+On Tue, Dec 29, 2020 at 02:31:53PM +0800, Chia-Wei, Wang wrote:
+> The LPC controller has no concept of the BMC and the Host partitions.
+> This patch fixes the documentation by removing the description on LPC
+> partitions. The register offsets illustrated in the DTS node examples
+> are also fixed to adapt to the LPC DTS change.
+> 
+> Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
+> ---
+>  .../devicetree/bindings/mfd/aspeed-lpc.txt    | 99 ++++---------------
+>  1 file changed, 21 insertions(+), 78 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt b/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+> index d0a38ba8b9ce..90eb0ecc95d1 100644
+> --- a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+> +++ b/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+> @@ -9,13 +9,7 @@ primary use case of the Aspeed LPC controller is as a slave on the bus
+>  conditions it can also take the role of bus master.
+>  
+>  The LPC controller is represented as a multi-function device to account for the
+> -mix of functionality it provides. The principle split is between the register
+> -layout at the start of the I/O space which is, to quote the Aspeed datasheet,
+> -"basically compatible with the [LPC registers from the] popular BMC controller
+> -H8S/2168[1]", and everything else, where everything else is an eclectic
+> -collection of functions with a esoteric register layout. "Everything else",
+> -here labeled the "host" portion of the controller, includes, but is not limited
+> -to:
+> +mix of functionality, which includes, but is not limited to:
+>  
+>  * An IPMI Block Transfer[2] Controller
+>  
+> @@ -44,80 +38,29 @@ Required properties
+>  ===================
+>  
+>  - compatible:	One of:
+> -		"aspeed,ast2400-lpc", "simple-mfd"
+> -		"aspeed,ast2500-lpc", "simple-mfd"
+> -		"aspeed,ast2600-lpc", "simple-mfd"
+> +		"aspeed,ast2400-lpc-v2", "simple-mfd", "syscon"
+> +		"aspeed,ast2500-lpc-v2", "simple-mfd", "syscon"
+> +		"aspeed,ast2600-lpc-v2", "simple-mfd", "syscon"
+>  
+>  - reg:		contains the physical address and length values of the Aspeed
+>                  LPC memory region.
+>  
+>  - #address-cells: <1>
+>  - #size-cells:	<1>
+> -- ranges: 	Maps 0 to the physical address and length of the LPC memory
+> -                region
+> -
+> -Required LPC Child nodes
+> -========================
+> -
+> -BMC Node
+> ---------
+> -
+> -- compatible:	One of:
+> -		"aspeed,ast2400-lpc-bmc"
+> -		"aspeed,ast2500-lpc-bmc"
+> -		"aspeed,ast2600-lpc-bmc"
+> -
+> -- reg:		contains the physical address and length values of the
+> -                H8S/2168-compatible LPC controller memory region
+> -
+> -Host Node
+> ----------
+> -
+> -- compatible:   One of:
+> -		"aspeed,ast2400-lpc-host", "simple-mfd", "syscon"
+> -		"aspeed,ast2500-lpc-host", "simple-mfd", "syscon"
+> -		"aspeed,ast2600-lpc-host", "simple-mfd", "syscon"
+> -
+> -- reg:		contains the address and length values of the host-related
+> -                register space for the Aspeed LPC controller
+> -
+> -- #address-cells: <1>
+> -- #size-cells:	<1>
+> -- ranges: 	Maps 0 to the address and length of the host-related LPC memory
+> +- ranges:	Maps 0 to the physical address and length of the LPC memory
+>                  region
+>  
+>  Example:
+>  
+>  lpc: lpc@1e789000 {
+> -	compatible = "aspeed,ast2500-lpc", "simple-mfd";
+> +	compatible = "aspeed,ast2500-lpc-v2", "simple-mfd", "syscon";
+>  	reg = <0x1e789000 0x1000>;
+>  
+>  	#address-cells = <1>;
+>  	#size-cells = <1>;
+>  	ranges = <0x0 0x1e789000 0x1000>;
 
-On 1/11/2021 10:41 AM, Catalin Marinas wrote:
-> Hi Marc,
->
-> On Mon, Jan 11, 2021 at 01:27:59PM +0000, Marc Zyngier wrote:
->> Add a facility to globally override a feature, no matter what
->> the HW says. Yes, this is dangerous.
-> Yeah, it's dangerous. We can make it less so if we only allow safe
-> values (e.g. lower if FTR_UNSIGNED).
->
->> diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
->> index 9a555809b89c..465d2cb63bfc 100644
->> --- a/arch/arm64/include/asm/cpufeature.h
->> +++ b/arch/arm64/include/asm/cpufeature.h
->> @@ -75,6 +75,8 @@ struct arm64_ftr_reg {
->>   	u64				sys_val;
->>   	u64				user_val;
->>   	const struct arm64_ftr_bits	*ftr_bits;
->> +	u64				*override_val;
->> +	u64				*override_mask;
->>   };
-> At the arm64_ftr_reg level, we don't have any information about the safe
-> values for a feature. Could we instead move this to arm64_ftr_bits? We
-> probably only need a single field. When populating the feature values,
-> we can make sure it doesn't go above the hardware one.
->
-> I attempted a feature modification for MTE here, though I dropped the
-> entire series in the meantime as we clarified the ARM ARM:
->
-> https://lore.kernel.org/linux-arm-kernel/20200515171612.1020-24-catalin.marinas@arm.com/
->
-> Srinivas copied it in his patch (but forgot to give credit ;)):
+No child nodes? Then you don't need 'ranges', '#size-cells', nor 
+'#address-cells'.
 
-Sorry about that. I did mention that its taken from your patch-set in my 
-cover letter. But missed your signed-off-by in the patch.
-
-https://lore.kernel.org/linux-arm-msm/6dfdf691b5ed57df81c4c61422949af5@misterjones.org/T/#m1ae76e6096c07ab5f1636a4e383a3fd6cfb4665f
-
-Since we can ignore my patch with the mechanism added by Marc, I am not 
-re-sending this. Thanks.
-
->
-> https://lore.kernel.org/linux-arm-msm/1610152163-16554-3-git-send-email-sramana@codeaurora.org/
->
-> The above adds a filter function but, instead, just use your mechanism in
-> this series for idreg.feature setting via cmdline. The arm64_ftr_value()
-> function extracts the hardware value and lowers it if a cmdline argument
-> was passed.
->
+> -
+> -	lpc_bmc: lpc-bmc@0 {
+> -		compatible = "aspeed,ast2500-lpc-bmc";
+> -		reg = <0x0 0x80>;
+> -	};
+> -
+> -	lpc_host: lpc-host@80 {
+> -		compatible = "aspeed,ast2500-lpc-host", "simple-mfd", "syscon";
+> -		reg = <0x80 0x1e0>;
+> -		reg-io-width = <4>;
+> -
+> -		#address-cells = <1>;
+> -		#size-cells = <1>;
+> -		ranges = <0x0 0x80 0x1e0>;
+> -	};
+>  };
+>  
+> -BMC Node Children
+> -==================
+> -
+> -
+> -Host Node Children
+> -==================
+>  
+>  LPC Host Interface Controller
+>  -------------------
+> @@ -149,14 +92,12 @@ Optional properties:
+>  
+>  Example:
+>  
+> -lpc-host@80 {
+> -	lpc_ctrl: lpc-ctrl@0 {
+> -		compatible = "aspeed,ast2500-lpc-ctrl";
+> -		reg = <0x0 0x80>;
+> -		clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
+> -		memory-region = <&flash_memory>;
+> -		flash = <&spi>;
+> -	};
+> +lpc_ctrl: lpc-ctrl@80 {
+> +	compatible = "aspeed,ast2500-lpc-ctrl";
+> +	reg = <0x80 0x80>;
+> +	clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
+> +	memory-region = <&flash_memory>;
+> +	flash = <&spi>;
+>  };
+>  
+>  LPC Host Controller
+> @@ -179,9 +120,9 @@ Required properties:
+>  
+>  Example:
+>  
+> -lhc: lhc@20 {
+> +lhc: lhc@a0 {
+>  	compatible = "aspeed,ast2500-lhc";
+> -	reg = <0x20 0x24 0x48 0x8>;
+> +	reg = <0xa0 0x24 0xc8 0x8>;
+>  };
+>  
+>  LPC reset control
+> @@ -192,16 +133,18 @@ state of the LPC bus. Some systems may chose to modify this configuration.
+>  
+>  Required properties:
+>  
+> - - compatible:		"aspeed,ast2600-lpc-reset" or
+> -			"aspeed,ast2500-lpc-reset"
+> -			"aspeed,ast2400-lpc-reset"
+> + - compatible:		One of:
+> +			"aspeed,ast2600-lpc-reset";
+> +			"aspeed,ast2500-lpc-reset";
+> +			"aspeed,ast2400-lpc-reset";
+> +
+>   - reg:			offset and length of the IP in the LHC memory region
+>   - #reset-controller	indicates the number of reset cells expected
+>  
+>  Example:
+>  
+> -lpc_reset: reset-controller@18 {
+> +lpc_reset: reset-controller@98 {
+>          compatible = "aspeed,ast2500-lpc-reset";
+> -        reg = <0x18 0x4>;
+> +        reg = <0x98 0x4>;
+>          #reset-cells = <1>;
+>  };
+> -- 
+> 2.17.1
+> 
