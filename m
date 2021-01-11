@@ -2,194 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B91652F112A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:23:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C929B2F1140
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729686AbhAKLUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:20:54 -0500
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:39473 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726753AbhAKLUw (ORCPT
+        id S1729420AbhAKLWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:22:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729564AbhAKLWI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:20:52 -0500
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 39F5A40005;
-        Mon, 11 Jan 2021 11:20:05 +0000 (UTC)
-Date:   Mon, 11 Jan 2021 12:20:23 +0100
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        sergei.shtylyov@gmail.com
-Subject: Re: [PATCH v6 5/5] media: i2c: max9286: Configure reverse channel
- amplitude
-Message-ID: <20210111112023.brrhxgfedo5fer53@uno.localdomain>
-References: <20201215170957.92761-1-jacopo+renesas@jmondi.org>
- <20201215170957.92761-6-jacopo+renesas@jmondi.org>
- <X9pCSfxE722rnPHE@pendragon.ideasonboard.com>
- <20210111104311.e6nyxhzhvlyjjxxw@uno.localdomain>
- <X/wvc26LXz2VsCkp@pendragon.ideasonboard.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <X/wvc26LXz2VsCkp@pendragon.ideasonboard.com>
+        Mon, 11 Jan 2021 06:22:08 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32313C061786;
+        Mon, 11 Jan 2021 03:21:28 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id p22so18299578edu.11;
+        Mon, 11 Jan 2021 03:21:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=jCkNG6d1sS57slG3YOXz4r4g6qRq6UBa2FdiKKF/U8M=;
+        b=AvBkVaufXzXIsVdn1YJ4xAeqSkLx8xzFgWYsG4YCOou8z0VtlmhpGf/yqOoxgmzzDW
+         /ZeObeuvfUAw8q3QK9OjBUTask/TCMO0f06FPAFjOqw+t31cDrKJYk6CHovnhxbpUPU9
+         Bdp1heIK+nQGqlgql8xA0hvzCmSg+2zEsnOYFnX/+lcF2F6LzUsxtt/g8M+12rBrZzsv
+         9WG1+hteAwOJLpywSJb5/zx2iVbRaqgq314Uqizfux4YbQH5D38JupGDpdCXhNlTudYI
+         JcpHNDz82r3eWTYnpxQnQm46qei5QkPCJkuds5g+23rJWmI9ptte7TuwmB86qf2VD+mQ
+         S6kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=jCkNG6d1sS57slG3YOXz4r4g6qRq6UBa2FdiKKF/U8M=;
+        b=bigaoHN8I7Rjzzv13lfEBKQ/gO2lB6vIFsV0AzZO/di+UzIvfoWzdbLQAWZI6we4pq
+         P/jI5R0cteh2vbW+WD8mH0LSE9O6sL+aqS8VO97Ofmv/tHAHM28ZvH7Sfo9CJiyrkgTd
+         X4LKZW96NjIHPOAlT9mx3iimrAJMhwJqN5lVGroHzkEvEx3M+gOsr6qQdsJObTCg2Kzp
+         /XzhdQiKMG+XA/VD/rBxeoppS+BT1wZk8UnmVq7SbZnNW2v/Zpv5TknlPT/fGwd3ttqh
+         IW6MTEBKOgU7gIPnptsg9Ns7244tzbbbJMP2NrpxQix09GtXr2PracOhOnIQCwh6Q0Zv
+         6bmQ==
+X-Gm-Message-State: AOAM530YWAfCTRM3dHB2JnGksUJjKA4nuavGFesbBNv5+1CXHDq29mYF
+        iaXtQPOmt98SsLnke2AFu/w=
+X-Google-Smtp-Source: ABdhPJyAns38qBDE1Lc13bKVIkxB+w9SwLysPYTkgMIasHzSmg6AQ4IEYqKemx29sgueBY5wPJaOew==
+X-Received: by 2002:a05:6402:610:: with SMTP id n16mr13422354edv.172.1610364086747;
+        Mon, 11 Jan 2021 03:21:26 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2d2f:cf00:597a:a5a4:31de:992e])
+        by smtp.gmail.com with ESMTPSA id z25sm6833936ejd.23.2021.01.11.03.21.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 03:21:26 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wu Hao <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        linux-fpga@vger.kernel.org
+Cc:     Tom Rix <trix@redhat.com>, linux-doc@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH -next] fpga: dfl-pci: rectify ReST formatting
+Date:   Mon, 11 Jan 2021 12:21:13 +0100
+Message-Id: <20210111112113.27242-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+Commit fa41d10589be ("fpga: dfl-pci: locate DFLs by PCIe vendor specific
+capability") provides documentation to the FPGA Device Feature List (DFL)
+Framework Overview, but introduced new documentation warnings:
 
-On Mon, Jan 11, 2021 at 12:58:59PM +0200, Laurent Pinchart wrote:
-> Hi Jacopo,
->
-> On Mon, Jan 11, 2021 at 11:43:11AM +0100, Jacopo Mondi wrote:
-> > On Wed, Dec 16, 2020 at 07:22:17PM +0200, Laurent Pinchart wrote:
-> > > On Tue, Dec 15, 2020 at 06:09:57PM +0100, Jacopo Mondi wrote:
-> > > > Adjust the initial reverse channel amplitude parsing from
-> > > > firmware interface the 'maxim,reverse-channel-microvolt'
-> > > > property.
-> > > >
-> > > > This change is required for both rdacm20 and rdacm21 camera
-> > > > modules to be correctly probed when used in combination with
-> > > > the max9286 deserializer.
-> > > >
-> > > > Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-> > > > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> > > > ---
-> > > >  drivers/media/i2c/max9286.c | 23 ++++++++++++++++++++++-
-> > > >  1 file changed, 22 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
-> > > > index 021309c6dd6f..9b40a4890c4d 100644
-> > > > --- a/drivers/media/i2c/max9286.c
-> > > > +++ b/drivers/media/i2c/max9286.c
-> > > > @@ -163,6 +163,8 @@ struct max9286_priv {
-> > > >  	unsigned int mux_channel;
-> > > >  	bool mux_open;
-> > > >
-> > > > +	u32 reverse_channel_mv;
-> > > > +
-> > > >  	struct v4l2_ctrl_handler ctrls;
-> > > >  	struct v4l2_ctrl *pixelrate;
-> > > >
-> > > > @@ -557,10 +559,14 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
-> > > >  	 * All enabled sources have probed and enabled their reverse control
-> > > >  	 * channels:
-> > > >  	 *
-> > > > +	 * - Increase the reverse channel amplitude to compensate for the
-> > > > +	 *   remote ends high threshold, if not done already
-> > > >  	 * - Verify all configuration links are properly detected
-> > > >  	 * - Disable auto-ack as communication on the control channel are now
-> > > >  	 *   stable.
-> > > >  	 */
-> > > > +	if (priv->reverse_channel_mv < 170)
-> > > > +		max9286_reverse_channel_setup(priv, 170);
-> > >
-> > > I'm beginning to wonder if there will be a need in the future to not
-> > > increase the reverse channel amplitude (keeping the threshold low on the
-> > > remote side). An increased amplitude increases power consumption, and if
-> > > the environment isn't noisy, a low amplitude would work. The device tree
-> > > would then need to specify both the initial amplitude required by the
-> > > remote side, and the desired amplitude after initialization. What do you
-> > > think ? Is it overkill ? We don't have to implement this now, so
-> > >
-> > > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> > >
-> > > but if this feature could be required later, we may want to take into
-> > > account in the naming of the new DT property to reflect the fact that it
-> > > is the initial value.
-> >
-> > I had the same thought when I initially proposed
-> > "maxim,initial-reverse-channel-mV"
-> >
-> > Having to use the standard unit suffix that would have become
-> > "maxim,initial-reverse-channel-microvolt"
-> > which is extremely long.
-> >
-> > I can't tell if there will be any need to adjust the amplitude later.
-> > In any case, I would not rely on a DTS property to do so, as once we
-> > have probed the remote we have a subdev where to call
-> > 'get_mbus_config()' on, and from there we can report the high threshold
-> > status of the serializer and adjust the deser amplitude accordingly.
->
-> I don't think that's the point. The threshold of the serializer is
-> something we can configure at runtime. What voltage level to use after
+  ./Documentation/fpga/dfl.rst:
+    505: WARNING: Title underline too short.
+    523: WARNING: Unexpected indentation.
+    523: WARNING: Blank line required after table.
+    524: WARNING: Block quote ends without a blank line; unexpected unindent.
 
-How so ? I mean, we can add an API for this, but currently it's
-configured at probe time and that's it. Its configuration might as
-well come from a DT property like we do on the deserializer here but I
-fail to see why it's different. Both settings depends on the required
-noise immunity of th system.
+Rectify ReST formatting in ./Documentation/fpga/dfl.rst.
 
-> initialization time is a system property as it depends on noise
-> immunity, so we'll have to specify it in DT.
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on next-20210111
 
-I don't see it differently than what happens on the serializer. We can
-add an API if we want to, but it's configured at probe time (initial
-value) and later can be adjusted in reponse to the serializer
-configuration setting.
+Moritz, Matthew, please ack.
 
-I feel like we're on different pages :/
+Greg, please pick this doc fixup to your fpga -next tree on top of
+the commit above.
 
->
-> > The property documentation clearly says the there specified amplitude
-> > is 'initial' many times, so I don't think it is strictly necessary to
-> > report it in the name too.
-> >
-> > Would this work for you ?
->
-> I don't mind either way.
->
-> > > >  	max9286_check_config_link(priv, priv->source_mask);
-> > > >
-> > > >  	/*
-> > > > @@ -967,7 +973,7 @@ static int max9286_setup(struct max9286_priv *priv)
-> > > >  	 * only. This should be disabled after the mux is initialised.
-> > > >  	 */
-> > > >  	max9286_configure_i2c(priv, true);
-> > > > -	max9286_reverse_channel_setup(priv, 170);
-> > > > +	max9286_reverse_channel_setup(priv, priv->reverse_channel_mv);
-> > > >
-> > > >  	/*
-> > > >  	 * Enable GMSL links, mask unused ones and autodetect link
-> > > > @@ -1131,6 +1137,7 @@ static int max9286_parse_dt(struct max9286_priv *priv)
-> > > >  	struct device_node *i2c_mux;
-> > > >  	struct device_node *node = NULL;
-> > > >  	unsigned int i2c_mux_mask = 0;
-> > > > +	u32 reverse_channel_microvolt;
-> > > >
-> > > >  	/* Balance the of_node_put() performed by of_find_node_by_name(). */
-> > > >  	of_node_get(dev->of_node);
-> > > > @@ -1221,6 +1228,20 @@ static int max9286_parse_dt(struct max9286_priv *priv)
-> > > >  	}
-> > > >  	of_node_put(node);
-> > > >
-> > > > +	/*
-> > > > +	 * Parse the initial value of the reverse channel amplitude from
-> > > > +	 * the firmware interface and convert it to millivolts.
-> > > > +	 *
-> > > > +	 * Default it to 170mV for backward compatibility with DTBs that do not
-> > > > +	 * provide the property.
-> > > > +	 */
-> > > > +	if (of_property_read_u32(dev->of_node,
-> > > > +				 "maxim,reverse-channel-microvolt",
-> > > > +				 &reverse_channel_microvolt))
-> > > > +		priv->reverse_channel_mv = 170;
-> > > > +	else
-> > > > +		priv->reverse_channel_mv = reverse_channel_microvolt / 1000U;
-> > > > +
-> > > >  	priv->route_mask = priv->source_mask;
-> > > >
-> > > >  	return 0;
->
-> --
-> Regards,
->
-> Laurent Pinchart
+ Documentation/fpga/dfl.rst | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
+index ea8cefc18bdb..c41ac76ffaae 100644
+--- a/Documentation/fpga/dfl.rst
++++ b/Documentation/fpga/dfl.rst
+@@ -502,7 +502,7 @@ FME Partial Reconfiguration Sub Feature driver (see drivers/fpga/dfl-fme-pr.c)
+ could be a reference.
+ 
+ Location of DFLs on a PCI Device
+-===========================
++================================
+ The original method for finding a DFL on a PCI device assumed the start of the
+ first DFL to offset 0 of bar 0.  If the first node of the DFL is an FME,
+ then further DFLs in the port(s) are specified in FME header registers.
+@@ -514,6 +514,7 @@ data begins with a 4 byte vendor specific register for the number of DFLs follow
+ Offset/BIR vendor specific registers for each DFL. Bits 2:0 of Offset/BIR register
+ indicates the BAR, and bits 31:3 form the 8 byte aligned offset where bits 2:0 are
+ zero.
++::
+ 
+         +----------------------------+
+         |31     Number of DFLS      0|
+-- 
+2.17.1
+
