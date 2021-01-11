@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BECC2F178C
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:09:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA992F1753
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729890AbhAKNDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:03:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50166 "EHLO mail.kernel.org"
+        id S2388187AbhAKOEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:04:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729784AbhAKNDY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:03:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AB682225E;
-        Mon, 11 Jan 2021 13:02:30 +0000 (UTC)
+        id S1728453AbhAKNEa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:04:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B338E2225E;
+        Mon, 11 Jan 2021 13:03:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370151;
-        bh=mrNo0Ex0OLlP2kMgax/JZwei4JLmgWL/WzFV0B+sF1w=;
+        s=korg; t=1610370229;
+        bh=rlJCZaBn2wZZtcLRZY2q/ooWUVjQvUEIhZ/A3xI2WVc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wU6s5G5+j6FqGbAhXCbj4QMtruOKAmV2MyDDry3A+Ya9Z3LQy6QLygIa/UrP29uHA
-         fjjivNcetsLfXJmnWC3R/K8NWyuWkLrc5EXtjzXmOU+9tCAcSnz/tonoXyMH3R6J3z
-         OOXrQFh7snfTMIafO4vx1jwoyB7Sa8MLCxjZUpG8=
+        b=mUy0GWH7sI6IPH31z7CPccr52dcGz+LKm/Kgzaoq1C52meAInj/3LeHnAH6OTBLn9
+         Bnut9I6ZQi4TefWu3zqysaArxx7+2BE7NtAcgUcWq8XMY+ksTeccpUVUn5KSKJ+YGB
+         apuzeVOhWNzE5mrBMmLKVdCwfdYXSAbHyvxpx5K8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
-Subject: [PATCH 4.4 21/38] USB: serial: iuu_phoenix: fix DMA from stack
-Date:   Mon, 11 Jan 2021 14:00:53 +0100
-Message-Id: <20210111130033.481687959@linuxfoundation.org>
+        stable@vger.kernel.org, Jeff Dike <jdike@akamai.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 16/45] virtio_net: Fix recursive call to cpus_read_lock()
+Date:   Mon, 11 Jan 2021 14:00:54 +0100
+Message-Id: <20210111130034.437141773@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
-References: <20210111130032.469630231@linuxfoundation.org>
+In-Reply-To: <20210111130033.676306636@linuxfoundation.org>
+References: <20210111130033.676306636@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,75 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Jeff Dike <jdike@akamai.com>
 
-commit 54d0a3ab80f49f19ee916def62fe067596833403 upstream.
+[ Upstream commit de33212f768c5d9e2fe791b008cb26f92f0aa31c ]
 
-Stack-allocated buffers cannot be used for DMA (on all architectures) so
-allocate the flush command buffer using kmalloc().
+virtnet_set_channels can recursively call cpus_read_lock if CONFIG_XPS
+and CONFIG_HOTPLUG are enabled.
 
-Fixes: 60a8fc017103 ("USB: add iuu_phoenix driver")
-Cc: stable <stable@vger.kernel.org>     # 2.6.25
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Johan Hovold <johan@kernel.org>
+The path is:
+    virtnet_set_channels - calls get_online_cpus(), which is a trivial
+wrapper around cpus_read_lock()
+    netif_set_real_num_tx_queues
+    netif_reset_xps_queues_gt
+    netif_reset_xps_queues - calls cpus_read_lock()
+
+This call chain and potential deadlock happens when the number of TX
+queues is reduced.
+
+This commit the removes netif_set_real_num_[tr]x_queues calls from
+inside the get/put_online_cpus section, as they don't require that it
+be held.
+
+Fixes: 47be24796c13 ("virtio-net: fix the set affinity bug when CPU IDs are not consecutive")
+Signed-off-by: Jeff Dike <jdike@akamai.com>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+Link: https://lore.kernel.org/r/20201223025421.671-1-jdike@akamai.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/serial/iuu_phoenix.c |   20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ drivers/net/virtio_net.c |   12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
---- a/drivers/usb/serial/iuu_phoenix.c
-+++ b/drivers/usb/serial/iuu_phoenix.c
-@@ -551,23 +551,29 @@ static int iuu_uart_flush(struct usb_ser
- 	struct device *dev = &port->dev;
- 	int i;
- 	int status;
--	u8 rxcmd = IUU_UART_RX;
-+	u8 *rxcmd;
- 	struct iuu_private *priv = usb_get_serial_port_data(port);
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -1357,14 +1357,16 @@ static int virtnet_set_channels(struct n
  
- 	if (iuu_led(port, 0xF000, 0, 0, 0xFF) < 0)
- 		return -EIO;
- 
-+	rxcmd = kmalloc(1, GFP_KERNEL);
-+	if (!rxcmd)
-+		return -ENOMEM;
-+
-+	rxcmd[0] = IUU_UART_RX;
-+
- 	for (i = 0; i < 2; i++) {
--		status = bulk_immediate(port, &rxcmd, 1);
-+		status = bulk_immediate(port, rxcmd, 1);
- 		if (status != IUU_OPERATION_OK) {
- 			dev_dbg(dev, "%s - uart_flush_write error\n", __func__);
--			return status;
-+			goto out_free;
- 		}
- 
- 		status = read_immediate(port, &priv->len, 1);
- 		if (status != IUU_OPERATION_OK) {
- 			dev_dbg(dev, "%s - uart_flush_read error\n", __func__);
--			return status;
-+			goto out_free;
- 		}
- 
- 		if (priv->len > 0) {
-@@ -575,12 +581,16 @@ static int iuu_uart_flush(struct usb_ser
- 			status = read_immediate(port, priv->buf, priv->len);
- 			if (status != IUU_OPERATION_OK) {
- 				dev_dbg(dev, "%s - uart_flush_read error\n", __func__);
--				return status;
-+				goto out_free;
- 			}
- 		}
+ 	get_online_cpus();
+ 	err = virtnet_set_queues(vi, queue_pairs);
+-	if (!err) {
+-		netif_set_real_num_tx_queues(dev, queue_pairs);
+-		netif_set_real_num_rx_queues(dev, queue_pairs);
+-
+-		virtnet_set_affinity(vi);
++	if (err) {
++		put_online_cpus();
++		goto err;
  	}
- 	dev_dbg(dev, "%s - uart_flush_read OK!\n", __func__);
- 	iuu_led(port, 0, 0xF000, 0, 0xFF);
-+
-+out_free:
-+	kfree(rxcmd);
-+
- 	return status;
++	virtnet_set_affinity(vi);
+ 	put_online_cpus();
+ 
++	netif_set_real_num_tx_queues(dev, queue_pairs);
++	netif_set_real_num_rx_queues(dev, queue_pairs);
++err:
+ 	return err;
  }
  
 
