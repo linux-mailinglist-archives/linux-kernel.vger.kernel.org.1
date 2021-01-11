@@ -2,103 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24392F1190
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9689C2F1194
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729490AbhAKLgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:36:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56730 "EHLO
+        id S1729663AbhAKLhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:37:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbhAKLgN (ORCPT
+        with ESMTP id S1725868AbhAKLhC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:36:13 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3125C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 03:35:32 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id g24so18383338edw.9
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 03:35:32 -0800 (PST)
+        Mon, 11 Jan 2021 06:37:02 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7404FC061786;
+        Mon, 11 Jan 2021 03:36:22 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id d2so10781847pfq.5;
+        Mon, 11 Jan 2021 03:36:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lXOWeR9801FrisPggQzBoR4P1LZC0ogSzc7qiclRxzA=;
-        b=Mf2f7LJM9bPXCaZWpu+DA3F8zjBC3NYdKnghIBztANh6OSOVMK4LbhwONJlFeqAU6H
-         pPSrTCV6Jx9bvjcyGbOIGMOKxmMwu/jHp1FqUYKRJnRF7aa8ssiiz/i2Ojgla86zeC67
-         RFZq1mjsHkMRdKKz0w0brsi7WTIhAR8EMNdFY=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=u4zCRiO4TFY3Cd502e/7E3igZAqf0yWD6hiEeS0tq/Q=;
+        b=VGHWQlZrUzym90xYdJpd1KIhCZW/kvkNaRxr8RDC4g9V2ryg5jehOMXZMrTxelfBaO
+         67r+42qBM+CiRz5+dB6sfG5oippbhP0R3rGqOLKN9HrxxiUgkbpz4gGJEb/dJajI8+mW
+         p03WIBEJIMSNHIHX77YYZH8HrvDEMHwmxHpnV6/P7aqONrJ0jazJtE+ClzZoRZVpf/rJ
+         IuXMS6+yGxX6Hgd+Lj1dH0WymXc1lv9N0uUCydG6r1cMx2qz8/QPKNCD7GybJrInAWeD
+         C5zD78pgxABlkW5YcNrkBe1d+y4UfXaGlSTS2B2T3TCl8c/+g0HpfbYjVoou+0Y6w4ox
+         8A4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lXOWeR9801FrisPggQzBoR4P1LZC0ogSzc7qiclRxzA=;
-        b=l3bZMLSPrN06TsZ9GsgYNxDk+kqHqJf9FFtWn3dKOyWu8Mi1n0BNhll1cdsZrqx/ZL
-         XYGFwvPJiSnyymsEOQblUUQdTSHvU1ZVLtxvXlUqGs7jeA36VYwCP0/IRvSAYlgsjQl6
-         9azxrkyTEYdvfPF4KyfGbfUx8eSOI09LU09Zrd5TxtyTBwDYuwhzHOWDm+yhGM/Nlvxh
-         Z/bdZe9GSiuv01zjsp/H5D5hpDjgk1iQd6BRE0K/fFQPNiYSKoGNak0JgVPdP17gDVpp
-         TWvtZuGFKsttNWn+DiqUYTIZ5l3RRVyvdpPTogF2X14x9zGlB0LD3FUENAu1C3G3RJ4j
-         BJDA==
-X-Gm-Message-State: AOAM53095cWVHj8dtzWx0IEX8uSu4JO1LKr6B7IHhNsoSF8u/vT9Ul3A
-        v+VXvkQRkhJj1sSLuKUaAwo28g==
-X-Google-Smtp-Source: ABdhPJzwxJwfY2vvKcY/y88PUCnedWNHcDU/ytPX64NcJqeDQDiDRVSjMIYqBwltXgDOoc01CDFlTw==
-X-Received: by 2002:a05:6402:307c:: with SMTP id bs28mr13865398edb.186.1610364931540;
-        Mon, 11 Jan 2021 03:35:31 -0800 (PST)
-Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id rs27sm6982564ejb.21.2021.01.11.03.35.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=u4zCRiO4TFY3Cd502e/7E3igZAqf0yWD6hiEeS0tq/Q=;
+        b=f6IZhaGMCrRx5VCohlDm+6VCGVgeSSKD3o5X6vjBivHg9MSMQisjpbFsd4Ev0v+8Gw
+         Wk187jw/KaYmxS7bVmtjwPBYr9Vi4Cn5DTCwrlIgRXtZN/YKyODbs/RfrC6m+L7FLB7I
+         8yqNPDEwpkiZwxUfQlyCcZXyty+nd9tOtTJ7dHxyM5GHewkPf9QQHjCwPUNIXWB5vgON
+         ocP7kPH2VoW6oDwIkA+NXl3gFy6l1iNkAVTye2wkaYw6pND1hGFCDn192c/9HdQL+4MK
+         A/PfRU9hOmsTrGcB0NdpvISU/OfRE3rT0wEjfSp4UPlT74vUXpU8AXqz9lcwDciUw7Yn
+         f9AQ==
+X-Gm-Message-State: AOAM533TT5bSf7/6VPASGs8qbXrlzdTUVLDmYLp/4l06/LeeUb8zSQcv
+        6hgEjCQK6fTv9rqpfQOdmVU=
+X-Google-Smtp-Source: ABdhPJynbSCybCgvKLCWksVtvnUrv4NNOp764XCoRj8IVpwHxdxY36hS930nZHSbYxh0+LI+FuwdUQ==
+X-Received: by 2002:a63:1c13:: with SMTP id c19mr19016658pgc.359.1610364981363;
+        Mon, 11 Jan 2021 03:36:21 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id u12sm19757927pgi.91.2021.01.11.03.36.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 03:35:30 -0800 (PST)
-From:   Ricardo Ribalda <ribalda@chromium.org>
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH] hantro: Format IOCTLs compliance fixes
-Date:   Mon, 11 Jan 2021 12:35:29 +0100
-Message-Id: <20210111113529.45488-1-ribalda@chromium.org>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 11 Jan 2021 03:36:20 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     paulburton@kernel.org
+Cc:     tsbogend@alpha.franken.de, dong.menglong@zte.com.cn,
+        colin.king@canonical.com, alexander.sverdlin@nokia.com,
+        gustavo@embeddedor.com, ralf@linux-mips.org,
+        peter.swain@cavium.com, aleksey.makarov@auriga.com,
+        lrosenboim@caviumnetworks.com, david.daney@cavium.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: OCTEON: fix unreachable code in octeon_irq_init_ciu
+Date:   Mon, 11 Jan 2021 03:36:05 -0800
+Message-Id: <20210111113605.3863-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clear the reserved fields.
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-Fixes:
-  fail: v4l2-test-formats.cpp(482): pix_mp.plane_fmt[0].reserved not zeroed
-test VIDIOC_TRY_FMT: FAIL
-  fail: v4l2-test-formats.cpp(482): pix_mp.plane_fmt[0].reserved not zeroed
-test VIDIOC_S_FMT: FAIL
+The type of 'r' in octeon_irq_init_ciu is 'unsigned int', so 'r < 0'
+can't be true.
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Fix this by change the type of 'r' and 'i' from 'unsigned int'
+to 'int'. As 'i' won't be negative, this change works.
+
+Fixes: 64b139f97c01("MIPS: OCTEON: irq: add CIB and other fixes")
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 ---
- drivers/staging/media/hantro/hantro_v4l2.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/mips/cavium-octeon/octeon-irq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/media/hantro/hantro_v4l2.c b/drivers/staging/media/hantro/hantro_v4l2.c
-index b668a82d40ad..9b384fbffc93 100644
---- a/drivers/staging/media/hantro/hantro_v4l2.c
-+++ b/drivers/staging/media/hantro/hantro_v4l2.c
-@@ -239,6 +239,7 @@ static int hantro_try_fmt(const struct hantro_ctx *ctx,
- 	const struct hantro_fmt *fmt, *vpu_fmt;
- 	bool capture = V4L2_TYPE_IS_CAPTURE(type);
- 	bool coded;
-+	int i;
- 
- 	coded = capture == ctx->is_encoder;
- 
-@@ -293,6 +294,10 @@ static int hantro_try_fmt(const struct hantro_ctx *ctx,
- 			pix_mp->width * pix_mp->height * fmt->max_depth;
- 	}
- 
-+	for (i = 0; i < pix_mp->num_planes; i++)
-+		memset(pix_mp->plane_fmt[i].reserved, 0,
-+		       sizeof(pix_mp->plane_fmt[i].reserved));
-+
- 	return 0;
- }
- 
+diff --git a/arch/mips/cavium-octeon/octeon-irq.c b/arch/mips/cavium-octeon/octeon-irq.c
+index bd47e15d02c7..be5d4afcd30f 100644
+--- a/arch/mips/cavium-octeon/octeon-irq.c
++++ b/arch/mips/cavium-octeon/octeon-irq.c
+@@ -1444,7 +1444,7 @@ static void octeon_irq_setup_secondary_ciu2(void)
+ static int __init octeon_irq_init_ciu(
+ 	struct device_node *ciu_node, struct device_node *parent)
+ {
+-	unsigned int i, r;
++	int i, r;
+ 	struct irq_chip *chip;
+ 	struct irq_chip *chip_edge;
+ 	struct irq_chip *chip_mbox;
 -- 
-2.30.0.284.gd98b1dd5eaa7-goog
+2.17.1
 
