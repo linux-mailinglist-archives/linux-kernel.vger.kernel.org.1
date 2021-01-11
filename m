@@ -2,152 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693982F0AFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 03:07:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8982F0AFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 03:11:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727136AbhAKCHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 21:07:21 -0500
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:34648 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727043AbhAKCHU (ORCPT
+        id S1727177AbhAKCJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 21:09:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727143AbhAKCJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 21:07:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1610330839; x=1641866839;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=gI/87ItPBjesG5AtnFSnIy8lth146aH0sYHayJi1W+4=;
-  b=jNJNj6dStccdYphhsoQ2tyMVeaWBU4gbnM+8zS6vM41GqEbpvXHTU41Z
-   Mu6VcbyNmujaEO0xMt1Rhx6dHnYO0uSCGWO1pd6RpdSVOmCqulaT5TpKp
-   rH9YiE3y9Ig1seXfZJAm0wYeYyW3sy2w//X7t3NZ55iBoqSZpGSMLmGCA
-   BF7jUllaXwLGU6nRcNKNokS/AeXW8IABgDSdQmds3T/EF/9rr03kIN8xj
-   65ysWLS0mUMUxiRshxtiLa0HTlBtfPej3wL6VvyjDmO7i8x57lRGrgpgm
-   hjs2/zpNgyYotDumoqBQy43sS5sm0A1FzjTIBCgS/IY5tHuqPe9LIlCYl
-   g==;
-IronPort-SDR: T7i9qUDUyKLTaYhcFz9jrwsMcDLUDytq88T1klXoqrE+WaaE6zwq9O8C08/phTV5F5mAOJVJug
- UDlTPdMi9P1NSXJY8RB6vDoTO5NCPE/f1QSZitoW31CcfqM8EUcLpLdFbwDU4tlFXa4FGbt56Y
- R0/tAXN5J73FLnaZhfmvopE62cUdUudMJu+boPi8JeQq0nN7RadS/0I0TgphxKoToLJVpQfbkd
- 4tfp30JsffwUoeo7MwGT4pHReiM6aFyUh7sR4lkT67xXEGyaM1n/QxYTvyW0+RJZVe98Y7mbG5
- kIo=
-X-IronPort-AV: E=Sophos;i="5.79,337,1602518400"; 
-   d="scan'208";a="157109830"
-Received: from mail-bn7nam10lp2103.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.103])
-  by ob1.hgst.iphmx.com with ESMTP; 11 Jan 2021 10:06:13 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WZaID0KnqxzgSWuGhSQduTwGnfPXPCex/ZBQ4/wemxNQ/RvX8ZiJobmmC+aOK2CrLSwgovbrVxHETQ69DkQc7yLZpNh7IDomVtisjTJsjTK4uBXeUdao4ZljdFkMf+JJ1HEJPI3cschcpoLYPpkTIB4SdV1rMo2GuZgilLAguWRjmZSD81NBlnGSJMru8LMgZ2B9X2zEhJadhXI9WLlhtk39ob0VaFSGhNpztojFYaOayZWSgE5PBKKF2CZoWlp4oQVpgZ0CKXnfuq6UTduMLHhLbNwZRYBEka2wYkT84xchfW3Ko0Efk5Cu0tLLRRLiINpNcKtK5kn/0EKto2nBMg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gI/87ItPBjesG5AtnFSnIy8lth146aH0sYHayJi1W+4=;
- b=SBNifqlj+IsErCx4jOwW+iDtnsBscCHmRIpY4nf0JBbgCyL6H9FFigAF5xZft10cUkwezYHpnh6wqgdN5XDNieBZCStD0NBGuGDoQp4pgXnkOCiVRBRcGY67Jzv7x1KG6gd3SmX6LCygQVk0t6Uj/f23s0PC1WiSU9Lp1DZ5MLmjpc6dH5kZokMm3fnCJNfMPM8PpRJyUIV8Im/9uTiwWBmWauHncwQKvJ89WAdxtXlmdZR6ZyJydaEvl/Vu4kJ2fEDpw0n37NHCe61m4bXkEzx0Na3N2dDYp9tvXf2fyfYbIaTk4bE/2HZn5asrLaU1afsg12LQkk1Sqm4Bcg0t/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gI/87ItPBjesG5AtnFSnIy8lth146aH0sYHayJi1W+4=;
- b=NIT7WJNyIv8U9LNDCuY9F2o9vG9JOpT0PfH5HBnhOwpqW4xCGkrhYM3f3qDUjCDEAZpzS8oHDTwARRJhcZ7/JZefhUWdELAkpcsD3qIzSKhZtFXW8q0uEhJ+Vh6J/qy0hYe2u+QlsU4klFRsq9p15swxUtC/Iz2l5O+IsJiyEEo=
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
- by BYAPR04MB5334.namprd04.prod.outlook.com (2603:10b6:a03:c8::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Mon, 11 Jan
- 2021 02:06:12 +0000
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::716c:4e0c:c6d1:298a]) by BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::716c:4e0c:c6d1:298a%6]) with mapi id 15.20.3742.012; Mon, 11 Jan 2021
- 02:06:12 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] target/file: don't zero iter before iov_iter_bvec
-Thread-Topic: [PATCH] target/file: don't zero iter before iov_iter_bvec
-Thread-Index: AQHW5qBkaWm3Wnjfmk+XiYs/GS5+eQ==
-Date:   Mon, 11 Jan 2021 02:06:11 +0000
-Message-ID: <BYAPR04MB4965E008861D5B29B9E757D186AB0@BYAPR04MB4965.namprd04.prod.outlook.com>
-References: <34cd22d6cec046e3adf402accb1453cc255b9042.1610207523.git.asml.silence@gmail.com>
- <BYAPR04MB4965F4DCF59E5225CF17322D86AD0@BYAPR04MB4965.namprd04.prod.outlook.com>
- <4d063dde-c710-44e3-31b9-8fb6b7e1d952@gmail.com>
- <BYAPR04MB49653C92C7925B8C3EAEF3CE86AD0@BYAPR04MB4965.namprd04.prod.outlook.com>
- <b9558bf8-a7e3-c2f9-ce00-3fc2b90dcc87@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [199.255.45.62]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 17a077a6-4864-4eff-b479-08d8b5d57835
-x-ms-traffictypediagnostic: BYAPR04MB5334:
-x-microsoft-antispam-prvs: <BYAPR04MB53346B09010BFE5B7FF80D1A86AB0@BYAPR04MB5334.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1284;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: KtfT562tRKKS4fyHR36t3HTlaGLemikqHg1JVI8n8uXfzqt+5ZyBCkxPDWvIx5zjYNJEDKo48bBwSymYaz6kHrwrQYiOYsDrnktDH4TdKN53iESNsOjlxDpDdjLsruPqKeL8yuFHHTG+z82Uu74797xQz7c4/+gVLfVTeD+abglio8Zpwsa7UMSP7Ajvjbjpw2xL1cMo/gShpFIe4QO8Cx7gGW6y80h9pHxgd7Gl2TkJIRccIDfMM/jkDsT7Nz7TzrMBirfVgedIMEpWa6N25Hc2XQYTruMq69GelqVMkcaf/bdADX1FXJCTbRodXsnfvgBTlMDJ4mR7T1F+QxjxW1pqF9/54lXcv3R+kBsME/98gdHXWyG2CWG3ynZqqfnsEbPsLYgsThch7wBbCikwYwZkC4yAezXp0LjwQi2WX5VhbyS9KDdjq1sCCDwFAlXmvsBh2G04+152l7XIHun3Kg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(366004)(136003)(39860400002)(4326008)(83380400001)(186003)(86362001)(52536014)(26005)(54906003)(66446008)(478600001)(64756008)(6506007)(966005)(9686003)(110136005)(33656002)(8936002)(76116006)(66556008)(66476007)(2906002)(53546011)(66946007)(8676002)(316002)(5660300002)(7696005)(71200400001)(55016002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?5mgma7cQmu5I4OhPoriBdHzVNJE0TQ9jrqTvZB64QoZQ6+Qt9JuflYFrVizU?=
- =?us-ascii?Q?jP5Pv34W0VIa9VdVJdAbtO5nefw/Zz6oVvN3K9iomdvSqeqkMuRldf8RcrhP?=
- =?us-ascii?Q?PbDiy1pERytbyhPhEPCIUJEDXgxNFaTqEwzUJU5cw/ktmhvcIB3NH3AxtENj?=
- =?us-ascii?Q?y0+yLxfmqUGrOkzoMRlGT3KSl7JFfIRx6ThclhbxANGFOnSYlvqr2VmcCerK?=
- =?us-ascii?Q?utenkoDnMManLxJFZriinkttibeDN79zjTRMERkIUBMe3Yizb4LDxvFCX51f?=
- =?us-ascii?Q?VFdFVJ/u2oC+mcrNm7saX8D09bxdGLC503Qf46jRR3ZbdDhzBxTrLRls3E4i?=
- =?us-ascii?Q?lwHb1oUZ9jMUd0GeurCrPJsBt7ndq42eY62Ud3E4cjmjNLjOv8XnVSAR7PfR?=
- =?us-ascii?Q?vxDaFsLS8ypSxPS81l3tsg3A1eZvsGtfM3YCZbo1eupDWDiNVD98/10aWPe/?=
- =?us-ascii?Q?IM+b/Iv0BuS1tNRi5cQ5gvte0ECJCqV4M0HYEdt+/onYLVi9qXiBo+cJqL51?=
- =?us-ascii?Q?E1HSTEIgN/brdzShiMw5NCfLid0yDbrfcqYnv5h/IH9W2pQBL2FOHwj8P5g1?=
- =?us-ascii?Q?bVW8cIaP4rVkF3UbuwBjgmPDtUO8zHHHMRElV0/etMeWXuteS1G3Ip4lujq8?=
- =?us-ascii?Q?FF75wt+A6ECUTq+tNyIjLq2DI8lj0WNNGoDQlH0t3uad1F4YL50cVkAl1Ws7?=
- =?us-ascii?Q?udk0CBud5fk82uWj6yE5vEB830CNqeBh8l9JpfYFzR5LQKkxvnqj8ro06wud?=
- =?us-ascii?Q?GylF6W4JNPeVLiyPm5wJk8ibpyI1+1Tj/l+9RceebajQf1UrccBf4BjG7jay?=
- =?us-ascii?Q?FAsqiMG00Jr9Alx+m204cHrW+d3SE7ObGk7+gaB62RqIFyWdNjiLqcY3QINr?=
- =?us-ascii?Q?MDXFfJVZoM3mjuuymVg3GYzVQPEtEBtJnUIIjEs8F4OweZr0/Y79Fu0iAV/6?=
- =?us-ascii?Q?LO3FsQhle+8+HHXcyR/vHpBV+Fl4D7OqK3W+INvptSEyRNKxhQc1l9a5vG+4?=
- =?us-ascii?Q?5U6h?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Sun, 10 Jan 2021 21:09:38 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7284DC061786;
+        Sun, 10 Jan 2021 18:08:57 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DDcZX44PNz9sWt;
+        Mon, 11 Jan 2021 13:08:52 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610330935;
+        bh=Olx3Cqulm7JX3feJeVkYzSp6xUqNTiT84X9zxBlBb0I=;
+        h=Date:From:To:Cc:Subject:From;
+        b=CDF/I0cL8dRiY/pEBY4eNcvl8UfHjbg722HA4p7mSzjGHaUlmCmEVPo/7LKlr8e3k
+         NVZOPFHTQK6Drrwi8GtnMPBdB2NroeT4DhzWFgsEGGhl3S88wWg1L1sE2xRMPFNjlp
+         +OY/0xfhqSTxHOWryx7acnNOUn8snwsI0dGdpkbv50JuPUS55RhLJRMDDXgZNqfCCO
+         8xfD/5T+fVPCWWZ0EDIRmIkees6XolnInn8BzfpqFl15TZp4Gmb/G6fkvZpBX4rJRu
+         XHHIzdfB0erLQ5n5To0VskJJcFrHHt7a/cps9RYnaiGmB23MxzZxOvED0zoWqtFHh6
+         AlUQMelMkcyHQ==
+Date:   Mon, 11 Jan 2021 13:08:51 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>, Arnd Bergmann <arnd@arndb.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mark.gross@intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Matthew Gerlach <matthew.gerlach@linux.intel.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Moritz Fischer <mdf@kernel.org>,
+        Russ Weight <russell.h.weight@intel.com>,
+        Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>
+Subject: linux-next: manual merge of the char-misc tree with the drivers-x86
+ tree
+Message-ID: <20210111130851.374bf4ea@canb.auug.org.au>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 17a077a6-4864-4eff-b479-08d8b5d57835
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jan 2021 02:06:12.1114
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0qqlWQ0aoPkb0O/77uIvbdeFli0T5fs61zBKPB7Q0iQ45seJzB97jhiLGNPYZ0jFF9BP3l6GxxGOuu0r/ga7EgZ6/9Jxe3ZD7957GD/e3zU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB5334
+Content-Type: multipart/signed; boundary="Sig_/ntWdfkIo+VtArDOy9mKh+F4";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/9/21 13:29, Pavel Begunkov wrote:=0A=
-> On 09/01/2021 20:52, Chaitanya Kulkarni wrote:=0A=
->> On 1/9/21 12:40, Pavel Begunkov wrote:=0A=
->>> I expect you won't find any, but such little things can pile up=0A=
->>> into a not-easy-to-spot overhead over time.=0A=
->> That is what I suspected with the resulting assembly. The commit log=0A=
->> needs to document that there is no direct impact on the performance=0A=
-> It's obvious that 3-4 extra mov $0 off(%reg) won't change performance=0A=
-> but still hasn't been formally confirmed ...=0A=
-This is obvious for you and me since we spent time into looking into=0A=
-resulting assembly not every reviewer is expected to do that see [1].=0A=
->=0A=
->> which can be seen with this patch, but this is nice to have=0A=
-> ... so if you don't mind, I won't be resending just for that.=0A=
-As per commit log guidelines [1] you have to quantify the optimization.=0A=
-=0A=
-Since you cannot quantify the optimization modify the commit log explaining=
-=0A=
-that there is not significant performance benefit observe.=0A=
-> -- Pavel Begunkov=0A=
-[1] https://www.kernel.org/doc/html/v4.10/process/submitting-patches.html=
-=0A=
+--Sig_/ntWdfkIo+VtArDOy9mKh+F4
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+Today's linux-next merge of the char-misc tree got conflicts in:
+
+  include/linux/mod_devicetable.h
+  scripts/mod/devicetable-offsets.c
+  scripts/mod/file2alias.c
+
+between commit:
+
+  eb0e90a82098 ("platform/surface: aggregator: Add dedicated bus and device=
+ type")
+
+from the drivers-x86 tree and commits:
+
+  9326eecd9365 ("fpga: dfl: move dfl_device_id to mod_devicetable.h")
+  4a224acec597 ("fpga: dfl: add dfl bus support to MODULE_DEVICE_TABLE()")
+
+from the char-misc tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/mod_devicetable.h
+index 935060955152,b8dae34eca10..000000000000
+--- a/include/linux/mod_devicetable.h
++++ b/include/linux/mod_devicetable.h
+@@@ -846,22 -846,28 +846,46 @@@ struct auxiliary_device_id=20
+  	kernel_ulong_t driver_data;
+  };
+ =20
+ +/* Surface System Aggregator Module */
+ +
+ +#define SSAM_MATCH_TARGET	0x1
+ +#define SSAM_MATCH_INSTANCE	0x2
+ +#define SSAM_MATCH_FUNCTION	0x4
+ +
+ +struct ssam_device_id {
+ +	__u8 match_flags;
+ +
+ +	__u8 domain;
+ +	__u8 category;
+ +	__u8 target;
+ +	__u8 instance;
+ +	__u8 function;
+ +
+ +	kernel_ulong_t driver_data;
+ +};
+ +
++ /*
++  * DFL (Device Feature List)
++  *
++  * DFL defines a linked list of feature headers within the device MMIO sp=
+ace to
++  * provide an extensible way of adding features. Software can walk throug=
+h these
++  * predefined data structures to enumerate features. It is now used in th=
+e FPGA.
++  * See Documentation/fpga/dfl.rst for more information.
++  *
++  * The dfl bus type is introduced to match the individual feature devices=
+ (dfl
++  * devices) for specific dfl drivers.
++  */
++=20
++ /**
++  * struct dfl_device_id -  dfl device identifier
++  * @type: DFL FIU type of the device. See enum dfl_id_type.
++  * @feature_id: feature identifier local to its DFL FIU type.
++  * @driver_data: driver specific data.
++  */
++ struct dfl_device_id {
++ 	__u16 type;
++ 	__u16 feature_id;
++ 	kernel_ulong_t driver_data;
++ };
++=20
+  #endif /* LINUX_MOD_DEVICETABLE_H */
+diff --cc scripts/mod/devicetable-offsets.c
+index f078eeb0a961,1b14f3cde4e5..000000000000
+--- a/scripts/mod/devicetable-offsets.c
++++ b/scripts/mod/devicetable-offsets.c
+@@@ -246,13 -246,9 +246,17 @@@ int main(void
+  	DEVID(auxiliary_device_id);
+  	DEVID_FIELD(auxiliary_device_id, name);
+ =20
+ +	DEVID(ssam_device_id);
+ +	DEVID_FIELD(ssam_device_id, match_flags);
+ +	DEVID_FIELD(ssam_device_id, domain);
+ +	DEVID_FIELD(ssam_device_id, category);
+ +	DEVID_FIELD(ssam_device_id, target);
+ +	DEVID_FIELD(ssam_device_id, instance);
+ +	DEVID_FIELD(ssam_device_id, function);
+ +
++ 	DEVID(dfl_device_id);
++ 	DEVID_FIELD(dfl_device_id, type);
++ 	DEVID_FIELD(dfl_device_id, feature_id);
++=20
+  	return 0;
+  }
+diff --cc scripts/mod/file2alias.c
+index d21d2871387b,7ebabeb1e9c9..000000000000
+--- a/scripts/mod/file2alias.c
++++ b/scripts/mod/file2alias.c
+@@@ -1375,28 -1375,18 +1375,40 @@@ static int do_auxiliary_entry(const cha
+  	return 1;
+  }
+ =20
+ +/*
+ + * Looks like: ssam:dNcNtNiNfN
+ + *
+ + * N is exactly 2 digits, where each is an upper-case hex digit.
+ + */
+ +static int do_ssam_entry(const char *filename, void *symval, char *alias)
+ +{
+ +	DEF_FIELD(symval, ssam_device_id, match_flags);
+ +	DEF_FIELD(symval, ssam_device_id, domain);
+ +	DEF_FIELD(symval, ssam_device_id, category);
+ +	DEF_FIELD(symval, ssam_device_id, target);
+ +	DEF_FIELD(symval, ssam_device_id, instance);
+ +	DEF_FIELD(symval, ssam_device_id, function);
+ +
+ +	sprintf(alias, "ssam:d%02Xc%02X", domain, category);
+ +	ADD(alias, "t", match_flags & SSAM_MATCH_TARGET, target);
+ +	ADD(alias, "i", match_flags & SSAM_MATCH_INSTANCE, instance);
+ +	ADD(alias, "f", match_flags & SSAM_MATCH_FUNCTION, function);
+ +
+ +	return 1;
+ +}
+ +
++ /* Looks like: dfl:tNfN */
++ static int do_dfl_entry(const char *filename, void *symval, char *alias)
++ {
++ 	DEF_FIELD(symval, dfl_device_id, type);
++ 	DEF_FIELD(symval, dfl_device_id, feature_id);
++=20
++ 	sprintf(alias, "dfl:t%04Xf%04X", type, feature_id);
++=20
++ 	add_wildcard(alias);
++ 	return 1;
++ }
++=20
+  /* Does namelen bytes of name exactly match the symbol? */
+  static bool sym_is(const char *name, unsigned namelen, const char *symbol)
+  {
+@@@ -1472,7 -1462,7 +1484,8 @@@ static const struct devtable devtable[
+  	{"wmi", SIZE_wmi_device_id, do_wmi_entry},
+  	{"mhi", SIZE_mhi_device_id, do_mhi_entry},
+  	{"auxiliary", SIZE_auxiliary_device_id, do_auxiliary_entry},
+ +	{"ssam", SIZE_ssam_device_id, do_ssam_entry},
++ 	{"dfl", SIZE_dfl_device_id, do_dfl_entry},
+  };
+ =20
+  /* Create MODULE_ALIAS() statements.
+
+--Sig_/ntWdfkIo+VtArDOy9mKh+F4
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/7szMACgkQAVBC80lX
+0GzsGwf/cObJj5b8I/vAo3sGT6Lg0eGZSXRew07fwPO93lSDYkCjcYsoSzjganUg
+lPzpYJ9nFCa5dBQbx9As0chH018s1C+xfqyq5r4r1bKcdHIbwIK8SvA5LRnYfoOZ
+Me/XGmQD/ebIsLg5FiGzIWfRVq6Rrsx3H3+RikxTW7Gs0HV5E/C/EiIiHqcuV1x7
+m4Nv6mTM2ZAFNcyg/EXbsi4H9wMSVxvN8bCBm7vJ4xnz6lucWWVtIdd4osKJYKNy
+feuN4ZWOA1Dye8xjKK55xyOF/AYuv/zaTndrUci4WHx5jqvKWy68omZiSSAmcQ4g
+BcLtkt0oigpzYsq6CUvLNrBr1cs05w==
+=u51h
+-----END PGP SIGNATURE-----
+
+--Sig_/ntWdfkIo+VtArDOy9mKh+F4--
