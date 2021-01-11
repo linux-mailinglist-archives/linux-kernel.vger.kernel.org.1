@@ -2,111 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CF752F0CF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 07:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE4B2F0CFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 07:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727341AbhAKGby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 01:31:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56750 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727130AbhAKGbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 01:31:53 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F0864AB3E;
-        Mon, 11 Jan 2021 06:31:11 +0000 (UTC)
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, Richard Guenther <rguenther@suse.de>,
-        "H.J. Lu" <hjl.tools@gmail.com>
-From:   Jiri Slaby <jslaby@suse.cz>
-Subject: perf does not resolve plt symbols from libstdc++ right (.plt.sec
- problem)
-Message-ID: <d6980662-bf74-1d48-831e-ca1d7209ca2f@suse.cz>
-Date:   Mon, 11 Jan 2021 07:31:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1727289AbhAKGoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 01:44:44 -0500
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:54521 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbhAKGoo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 01:44:44 -0500
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 10B6ccde099152;
+        Mon, 11 Jan 2021 14:38:38 +0800 (GMT-8)
+        (envelope-from kuohsiang_chou@aspeedtech.com)
+Received: from localhost.localdomain.com (192.168.2.206) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 11 Jan
+ 2021 14:43:30 +0800
+From:   KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+To:     <tzimmermann@suse.de>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <airlied@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <jenmin_yuan@aspeedtech.com>, <kuohsiang_chou@aspeedtech.com>,
+        <arc_sung@aspeedtech.com>, <tommy_huang@aspeedtech.com>
+Subject: [PATCH] drm/ast: Disable fast reset after DRAM initial
+Date:   Mon, 11 Jan 2021 14:43:20 +0800
+Message-ID: <20210111064320.72780-1-kuohsiang_chou@aspeedtech.com>
+X-Mailer: git-send-email 2.18.4
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII;
-        format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain
+X-Originating-IP: [192.168.2.206]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 10B6ccde099152
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+[Bug][AST2500]
+When AST2500 acts as stand-alone VGA so that DRAM and DVO initialization
+have to be achieved by VGA driver with P2A (PCI to AHB) enabling.
+However, HW suggests disable Fast reset mode after DRAM initializaton,
+because fast reset mode is mainly designed for ARM ICE debugger.
+Once Fast reset is checked as enabling, WDT (Watch Dog Timer) should be
+first enabled to avoid system deadlock before disable fast reset mode.
 
-this e-mails is a follow-up of my report at:
-https://bugzilla.suse.com/show_bug.cgi?id=1180681
+Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
+---
+ drivers/gpu/drm/ast/ast_drv.h  |  1 +
+ drivers/gpu/drm/ast/ast_main.c |  4 ++
+ drivers/gpu/drm/ast/ast_post.c | 72 ++++++++++++++++++++++------------
+ 3 files changed, 51 insertions(+), 26 deletions(-)
 
-There is a problem with *@plt symbols in some libraries, they are 
-unresolved by perf (memcmp@plt in this case):
- >     0.26%  main2    /usr/lib64/libstdc++.so.6.0.28            0xa51a0 
-            l [.] 0x00000000000a51a0
+diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_drv.h
+index da6dfb677540..8bdd1482370d 100644
+--- a/drivers/gpu/drm/ast/ast_drv.h
++++ b/drivers/gpu/drm/ast/ast_drv.h
+@@ -320,6 +320,7 @@ bool ast_is_vga_enabled(struct drm_device *dev);
+ void ast_post_gpu(struct drm_device *dev);
+ u32 ast_mindwm(struct ast_private *ast, u32 r);
+ void ast_moutdwm(struct ast_private *ast, u32 r, u32 v);
++void patch_ahb_ast2500(struct ast_private *ast);
+ /* ast dp501 */
+ void ast_set_dp501_video_output(struct drm_device *dev, u8 mode);
+ bool ast_backup_fw(struct drm_device *dev, u8 *addr, u32 size);
+diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_main.c
+index 3775fe26f792..3c072c6589a2 100644
+--- a/drivers/gpu/drm/ast/ast_main.c
++++ b/drivers/gpu/drm/ast/ast_main.c
+@@ -96,6 +96,10 @@ static void ast_detect_config_mode(struct drm_device *dev, u32 *scu_rev)
+ 	jregd0 = ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff);
+ 	jregd1 = ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd1, 0xff);
+ 	if (!(jregd0 & 0x80) || !(jregd1 & 0x10)) {
++		/* Patch AST2500 */
++		if (((dev->pdev->revision & 0xF0) == 0x40) && ((jregd0 & 0xC0) == 0))
++			patch_ahb_ast2500(ast);
++
+ 		/* Double check it's actually working */
+ 		data = ast_read32(ast, 0xf004);
+ 		if (data != 0xFFFFFFFF) {
+diff --git a/drivers/gpu/drm/ast/ast_post.c b/drivers/gpu/drm/ast/ast_post.c
+index 8902c2f84bf9..2d121c5b2233 100644
+--- a/drivers/gpu/drm/ast/ast_post.c
++++ b/drivers/gpu/drm/ast/ast_post.c
+@@ -2026,6 +2026,33 @@ static bool ast_dram_init_2500(struct ast_private *ast)
+ 	return true;
+ }
 
-On the other hand, plt symbols in other libraries are fine (memset@plt 
-in this case):
- >     0.17%  main2    /usr/lib64/libantlr4-runtime.so.4.8       0x4ed10 
-            l [.] memset@plt
++void patch_ahb_ast2500(struct ast_private *ast)
++{
++	u32	data;
++
++patch_ahb_lock:
++	/* Clear bus lock condition */
++	ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
++	ast_moutdwm(ast, 0x1e600084, 0x00010000);
++	ast_moutdwm(ast, 0x1e600088, 0x00000000);
++	ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
++	data = ast_mindwm(ast, 0x1e6e2070);
++	if (data & 0x08000000) {				/* check fast reset */
++
++		ast_moutdwm(ast, 0x1E785004, 0x00000010);
++		ast_moutdwm(ast, 0x1E785008, 0x00004755);
++		ast_moutdwm(ast, 0x1E78500c, 0x00000033);
++		udelay(1000);
++	}
++	ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
++	do {
++		data = ast_mindwm(ast, 0x1e6e2000);
++		if (data == 0xffffffff)
++			goto patch_ahb_lock;
++	}	while (data != 1);
++	ast_moutdwm(ast, 0x1e6e207c, 0x08000000);		/* clear fast reset */
++}
++
+ void ast_post_chip_2500(struct drm_device *dev)
+ {
+ 	struct ast_private *ast = to_ast_private(dev);
+@@ -2033,39 +2060,32 @@ void ast_post_chip_2500(struct drm_device *dev)
+ 	u8 reg;
 
-I dumped memcmp's .plt.rela entries in perf:
-/usr/lib64/libantlr4-runtime.so.4.8: 154th addr=4e9d0 plt_off=4e020 
-hdr=10 entry=10
-/usr/lib64/libstdc++.so.6.0.28: 772th addr=a1070 plt_off=9e020 hdr=10 
-entry=10
+ 	reg = ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff);
+-	if ((reg & 0x80) == 0) {/* vga only */
++	if ((reg & 0xC0) == 0) {/* vga only */
+ 		/* Clear bus lock condition */
+-		ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
+-		ast_moutdwm(ast, 0x1e600084, 0x00010000);
+-		ast_moutdwm(ast, 0x1e600088, 0x00000000);
+-		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
+-		ast_write32(ast, 0xf004, 0x1e6e0000);
+-		ast_write32(ast, 0xf000, 0x1);
+-		ast_write32(ast, 0x12000, 0x1688a8a8);
+-		while (ast_read32(ast, 0x12000) != 0x1)
+-			;
+-
+-		ast_write32(ast, 0x10000, 0xfc600309);
+-		while (ast_read32(ast, 0x10000) != 0x1)
+-			;
++		patch_ahb_ast2500(ast);
++
++		/* Disable watchdog */
++		ast_moutdwm(ast, 0x1E78502C, 0x00000000);
++		ast_moutdwm(ast, 0x1E78504C, 0x00000000);
++		/* Reset USB port */
++		ast_moutdwm(ast, 0x1E6E2090, 0x20000000);		/* add at V1.2 */
++		ast_moutdwm(ast, 0x1E6E2094, 0x00004000);		/* add at V1.2 */
++		if (ast_mindwm(ast, 0x1E6E2070) & 0x00800000) {		/* add at V1.2 */
++			ast_moutdwm(ast, 0x1E6E207C, 0x00800000);	/* add at V1.2 */
++			mdelay(100);					/* add at V1.2 */
++			ast_moutdwm(ast, 0x1E6E2070, 0x00800000);	/* add at V1.2 */
++		}							/* add at V1.2 */
++		/* Modify eSPI reset pin */
++		temp = ast_mindwm(ast, 0x1E6E2070);			/* add at V1.3 */
++		if (temp & 0x02000000) {				/* add at V1.3 */
++			ast_moutdwm(ast, 0x1E6E207C, 0x00004000);	/* add at V1.3 */
++		}
 
-The difference (offset) of stdc++'s memcmp is 0xa51a0 (correct) - 
-0xa1070 (perf's computed) = 0x4130.
+ 		/* Slow down CPU/AHB CLK in VGA only mode */
+ 		temp = ast_read32(ast, 0x12008);
+ 		temp |= 0x73;
+ 		ast_write32(ast, 0x12008, temp);
 
-The problem is perf assumes nth entry of .plt.rela to correspond to nth 
-function in .plt, but memcmp is in .plt.sec in libstdc++.so:
+-		/* Reset USB port to patch USB unknown device issue */
+-		ast_moutdwm(ast, 0x1e6e2090, 0x20000000);
+-		temp  = ast_mindwm(ast, 0x1e6e2094);
+-		temp |= 0x00004000;
+-		ast_moutdwm(ast, 0x1e6e2094, temp);
+-		temp  = ast_mindwm(ast, 0x1e6e2070);
+-		if (temp & 0x00800000) {
+-			ast_moutdwm(ast, 0x1e6e207c, 0x00800000);
+-			mdelay(100);
+-			ast_moutdwm(ast, 0x1e6e2070, 0x00800000);
+-		}
+-
+ 		if (!ast_dram_init_2500(ast))
+ 			drm_err(dev, "DRAM init failed !\n");
 
- > Relocation section '.rela.plt' at offset 0x97900 contains 1018 entries:
- >     Offset             Info             Type               Symbol's 
-Value  Symbol's Name + Addend
- > ...
- > 00000000001dc838  0000007800000007 R_X86_64_JUMP_SLOT 
-0000000000000000 memcmp@GLIBC_2.2.5 + 0
+--
+2.18.4
 
-Perf does this with the rela entries:
-https://github.com/torvalds/linux/blob/f5e6c330254ae691f6d7befe61c786eb5056007e/tools/perf/util/symbol-elf.c#L385
-
-It takes a symbol index from sym.r_info. Then it resolves its name from 
-.dynsym, appending "@plt" to it. Then this name is added to perf's 
-symbol table along with address which is computed as .rela.plt index 
-multiplied by entry size (shdr_plt.sh_entsize) plus plt header 
-(shdr_plt.sh_entsize on x86_64 too).
-
-And from this comes (almost) the offset above:
- > $ objdump -h /usr/lib64/libstdc++.so.6|grep -E ' .plt(\.sec)? '
- >  12 .plt          00003fb0  000000000009e020  000000000009e020 
-0009e020  2**4
- >  14 .plt.sec      00003fa0  00000000000a2160  00000000000a2160 
-000a2160  2**4
-
-0xa2160-0x9e020 = 0x4140. I assume the 0x10 difference is that perf adds 
-shdr_plt.sh_entsize (0x10) to the offset to skip the first .plt entry 
-(header).
-
-Richard writes:
-======
-.plt.sec is IIRC the "second" (sec) PLT entry - the one that will be 
-used on the second call (and on).  This is used / emitted for ELF object 
-instrumented for Intel CET.  The details escape me for the moment but I 
-hope the x86 ABI documents this (and the constraints) in detail.
-======
-
-How should perf find out whether to consider .plt or .plt.sec? Or 
-generally, how to properly find an address of *@plt symbols like 
-memcmp@plt above?
-
-thanks,
--- 
-js
-suse labs
