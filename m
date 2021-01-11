@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B113E2F1757
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:05:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FB7D2F175F
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:06:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388375AbhAKOFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:05:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60422 "EHLO
+        id S2388374AbhAKOFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:05:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388198AbhAKOE6 (ORCPT
+        with ESMTP id S1729958AbhAKOFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:04:58 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99900C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:04:17 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id n16so10940795wmc.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:04:17 -0800 (PST)
+        Mon, 11 Jan 2021 09:05:17 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA284C061795
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:04:36 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id 3so15178087wmg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:04:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:autocrypt:organization:message-id
          :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=6DV9eaBGiT/1toR+Kiob+2xXWfsRd9Dm9opipygdNwg=;
-        b=jpxb5h9JmxaJiMs/aDOutUtoiMB98ZYrmCRkv0yDIj3yzkqhzBbSLQl6Kqgh2uXkl1
-         TxMfa3s6060dL3MSErw8vcQ7PoELvtc24ayUBaWNhk9gEmnDtl5g/6xpRd3AHcI2fD5z
-         CVES9ITwR3jAqyZ4vZimwtskV/0Y8sruSREEzPzMOMRxy2QQenT84W8bpiiHoP6HMmmQ
-         lDCziRgRd4iDOIbLnH5rvr92tilYj835g4KOrJ/2VquMVtA9/GNo/EikuwpYatXV1PbT
-         +/7ovIUy4e9+MTtFm9Tkzo5oTMHPcnCtwVlfUSusxAP/OGvePR6I/MJYiC3a/RU7Dd3d
-         Xz0w==
+        bh=KTs2HBhwh7moZ5CeZAKMljzz63C9NOrlB8lqTJNcmTQ=;
+        b=Mx+MpUmSSDsU10hZD/59sC8hDb5zVkgA2AqZcVmgLjMUOvxVuJiCpcWR/mzE5ZbS4P
+         qv43VWprWKtZgk7UtYwijxhzA+UHIqsBJw2+PEs/3HRz4BhVfVis4Qq6KkyAY2a98N/+
+         30Uoswm8z6F9rEF8aZTzE3dExAu8zaA+fdIXJkf0Ncojf0J37bbXxjbfY7+MsFsp/5+B
+         E78BmEeoYQ+kgwq6eM35uQoMw+1N0Sp5T3kRXh9GlnYtM7fMNrRiq2qM9vqYfdA7/OOd
+         nrXG7W08pdzBclSMC0RD/LcaqCTpJ/va06MgDGvIN2JHmTgZvhqiMwKAoBthufkETrXW
+         Dnmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :organization:message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=6DV9eaBGiT/1toR+Kiob+2xXWfsRd9Dm9opipygdNwg=;
-        b=HP1FwzWKMkrTdLtspMSAt5KDV+3qjQNTSWKeY3BCK9INiXm/oEmUaYRUKe0FUlzvcb
-         k5UVk2nSMZcXpft98At9VAXvtSlcTRYqV3o5+UHBVrZZvi/6emsysDIRujsIV+gJ8thM
-         2WrpkT/p/8OEWkkKzKUGYDf3v9cHtWNc3fQZiIch5Mh3hzVN0xSvp7H11Da63nFjoxP6
-         conWC0KXNpzf6doMDdWQD6EDJUOqH85z8OkBnazfSKxOfPTQWYfAyoomA5t34T9Od6lq
-         1yTkIQpBBYiSo8Alf/wy2MBXGJ1WQnpUWxhmXsuc6UXwMZYp5Jv1HD7vM0U/yF/Aw61n
-         01hg==
-X-Gm-Message-State: AOAM531ZWzt2nsm7U5p0QGeGl/cdVWK54w4wSu4wFH+IHFnMwvaeMfB0
-        XgECJIg3TreogLMatEXvtDU+PG3efUVwL88a
-X-Google-Smtp-Source: ABdhPJyzrKQ4OZCxiaXI1a4DMxO8Ded0AtA1/WrPlvt8Ohw1YXA8eYVVVp1o/MpHR3j8v9QMYGFKCw==
-X-Received: by 2002:a1c:27c3:: with SMTP id n186mr14743909wmn.96.1610373855767;
-        Mon, 11 Jan 2021 06:04:15 -0800 (PST)
+        bh=KTs2HBhwh7moZ5CeZAKMljzz63C9NOrlB8lqTJNcmTQ=;
+        b=RCSSieVBYjhHEDiT3tx01sw7WVlWezbFE6nTgCtS3Ui8e8po6vvxZ2ma4h7rWUrqUs
+         0dwp1kL7Ng0zhKqr08aUfcJ1bMrYjc7PIiA3csuQ+heiJDshQ1ZXKcKqZb9bSWpasYY3
+         NTFEJtf0z0cSLD+GhagkLJav6cBeBf2rUV+ajaxRZVDGO9EG6oZlVUrfNbA/NwzdvORV
+         3smoiQJiUCEecc0CbVzQ7i1vUZoBlXaSaF7x71TDpR1VaDInCy/jH2+WEJ0XG5gSCdG5
+         45M/JxyzI5RbVq8NhIXR8nmWcPjTN/xXKJQa7N07aQrVUd3vNAhZsm0dohBVUv9wAq9l
+         gUjA==
+X-Gm-Message-State: AOAM533z6w+vSDUtpw4+t9hBNHR6lS24YSWCK3jr7vRIWVDsBlCDGt1K
+        6KKYih+AyLWv8+s1U5UZTpgUs8OiOWYbaDG9
+X-Google-Smtp-Source: ABdhPJyERn3K8LWbc+cMWCEwUJ3JFyIBmcZKml4pSdEDWmgSvb+ETSs8bP2yNMjFHIgN7Ls8fmv9EQ==
+X-Received: by 2002:a1c:6383:: with SMTP id x125mr14764462wmb.46.1610373874936;
+        Mon, 11 Jan 2021 06:04:34 -0800 (PST)
 Received: from ?IPv6:2a01:e35:2ec0:82b0:7474:6cdc:8087:ca98? ([2a01:e35:2ec0:82b0:7474:6cdc:8087:ca98])
-        by smtp.gmail.com with ESMTPSA id w18sm24507291wrn.2.2021.01.11.06.04.14
+        by smtp.gmail.com with ESMTPSA id z21sm21041584wmk.20.2021.01.11.06.04.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 06:04:15 -0800 (PST)
-Subject: Re: [PATCH 3/5] ARM: dts: meson8: add the thermal-zones with cooling
+        Mon, 11 Jan 2021 06:04:33 -0800 (PST)
+Subject: Re: [PATCH 4/5] ARM: dts: meson8b: add the thermal-zones with cooling
  configuration
 To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
         linux-amlogic@lists.infradead.org, khilman@baylibre.com
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 References: <20201221181306.904272-1-martin.blumenstingl@googlemail.com>
- <20201221181306.904272-4-martin.blumenstingl@googlemail.com>
+ <20201221181306.904272-5-martin.blumenstingl@googlemail.com>
 From:   Neil Armstrong <narmstrong@baylibre.com>
 Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  mQENBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
@@ -108,12 +108,12 @@ Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  VsbXrP9BZ6snXyHfebPnno/te5XRqZTL9aJOytB/1iUna+1MAwBxGFPvqeEUUyT+gx1l3Acl
  ZaTUOEkgIor5losDrePdPgE=
 Organization: Baylibre
-Message-ID: <93307a31-ea51-cc21-9470-859ffe0f1023@baylibre.com>
-Date:   Mon, 11 Jan 2021 15:04:14 +0100
+Message-ID: <11cd42bd-6b5f-f126-d53e-e06693b8000b@baylibre.com>
+Date:   Mon, 11 Jan 2021 15:04:32 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201221181306.904272-4-martin.blumenstingl@googlemail.com>
+In-Reply-To: <20201221181306.904272-5-martin.blumenstingl@googlemail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -124,45 +124,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 21/12/2020 19:13, Martin Blumenstingl wrote:
 > The vendor kernel uses the following thermal-zone settings:
 > <= 70°C:
-> - CPU frequency limited to 1.608GHz
-> - GPU limited to 511MHz and 5 cores (pixel processors)
+> - CPU frequency limited to 1.488GHz
+> - GPU limited to 511MHz and 2 cores (pixel processors)
 > 
 > <= 80°C:
 > - CPU frequency limited to 1.2GHz
-> - GPU limited to 435MHz and 4 cores (pixel processors)
+> - GPU limited to 435MHz and 2 cores (pixel processors)
 > 
 > <= 90°C:
 > - CPU frequency limited to 0.804GHz
-> - GPU limited to 328MHz and 3 cores (pixel processors)
+> - GPU limited to 328MHz and 1 core (pixel processor)
 > 
 > Add simplified thermal configuration which is taken from the
 > GXBB/GXL/GXM SoC family (which uses the same manufacturing process and
 > has the same maximum junction temperature of 125°C). With this the
 > thermal framework will try to keep the SoC temperature at or below 80°C
-> which is identical to the vendor kernel (with the exception of one GPU
-> pixel processor).
+> which is identical to the vendor kernel (with the exception of one CPU
+> frequency step from 1.488GHz to 1.536GHz).
 > 
 > The number of GPU cores are not taken into account as this is not
 > supported.
 > 
 > Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 > ---
->  arch/arm/boot/dts/meson8.dtsi | 54 +++++++++++++++++++++++++++++++++++
+>  arch/arm/boot/dts/meson8b.dtsi | 54 ++++++++++++++++++++++++++++++++++
 >  1 file changed, 54 insertions(+)
 > 
-> diff --git a/arch/arm/boot/dts/meson8.dtsi b/arch/arm/boot/dts/meson8.dtsi
-> index 04688e8abce2..420324ea2ad7 100644
-> --- a/arch/arm/boot/dts/meson8.dtsi
-> +++ b/arch/arm/boot/dts/meson8.dtsi
-> @@ -9,6 +9,7 @@
+> diff --git a/arch/arm/boot/dts/meson8b.dtsi b/arch/arm/boot/dts/meson8b.dtsi
+> index 2401cdf5f751..dbf7963b6c87 100644
+> --- a/arch/arm/boot/dts/meson8b.dtsi
+> +++ b/arch/arm/boot/dts/meson8b.dtsi
+> @@ -10,6 +10,7 @@
 >  #include <dt-bindings/power/meson8-power.h>
->  #include <dt-bindings/reset/amlogic,meson8b-clkc-reset.h>
 >  #include <dt-bindings/reset/amlogic,meson8b-reset.h>
+>  #include <dt-bindings/reset/amlogic,meson8b-clkc-reset.h>
 > +#include <dt-bindings/thermal/thermal.h>
 >  #include "meson.dtsi"
 >  
 >  / {
-> @@ -28,6 +29,7 @@ cpu0: cpu@200 {
+> @@ -26,6 +27,7 @@ cpu0: cpu@200 {
 >  			resets = <&clkc CLKC_RESET_CPU0_SOFT_RESET>;
 >  			operating-points-v2 = <&cpu_opp_table>;
 >  			clocks = <&clkc CLKID_CPUCLK>;
@@ -170,7 +170,7 @@ On 21/12/2020 19:13, Martin Blumenstingl wrote:
 >  		};
 >  
 >  		cpu1: cpu@201 {
-> @@ -39,6 +41,7 @@ cpu1: cpu@201 {
+> @@ -37,6 +39,7 @@ cpu1: cpu@201 {
 >  			resets = <&clkc CLKC_RESET_CPU1_SOFT_RESET>;
 >  			operating-points-v2 = <&cpu_opp_table>;
 >  			clocks = <&clkc CLKID_CPUCLK>;
@@ -178,7 +178,7 @@ On 21/12/2020 19:13, Martin Blumenstingl wrote:
 >  		};
 >  
 >  		cpu2: cpu@202 {
-> @@ -50,6 +53,7 @@ cpu2: cpu@202 {
+> @@ -48,6 +51,7 @@ cpu2: cpu@202 {
 >  			resets = <&clkc CLKC_RESET_CPU2_SOFT_RESET>;
 >  			operating-points-v2 = <&cpu_opp_table>;
 >  			clocks = <&clkc CLKID_CPUCLK>;
@@ -186,7 +186,7 @@ On 21/12/2020 19:13, Martin Blumenstingl wrote:
 >  		};
 >  
 >  		cpu3: cpu@203 {
-> @@ -61,6 +65,7 @@ cpu3: cpu@203 {
+> @@ -59,6 +63,7 @@ cpu3: cpu@203 {
 >  			resets = <&clkc CLKC_RESET_CPU3_SOFT_RESET>;
 >  			operating-points-v2 = <&cpu_opp_table>;
 >  			clocks = <&clkc CLKID_CPUCLK>;
@@ -194,7 +194,7 @@ On 21/12/2020 19:13, Martin Blumenstingl wrote:
 >  		};
 >  	};
 >  
-> @@ -190,6 +195,54 @@ power-firmware@4f00000 {
+> @@ -167,6 +172,54 @@ hwrom@0 {
 >  		};
 >  	};
 >  
@@ -249,7 +249,7 @@ On 21/12/2020 19:13, Martin Blumenstingl wrote:
 >  	mmcbus: bus@c8000000 {
 >  		compatible = "simple-bus";
 >  		reg = <0xc8000000 0x8000>;
-> @@ -254,6 +307,7 @@ mali: gpu@c0000 {
+> @@ -221,6 +274,7 @@ mali: gpu@c0000 {
 >  			clocks = <&clkc CLKID_CLK81>, <&clkc CLKID_MALI>;
 >  			clock-names = "bus", "core";
 >  			operating-points-v2 = <&gpu_opp_table>;
