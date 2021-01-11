@@ -2,195 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF6B2F1B53
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:45:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3911D2F1B4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 17:44:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389118AbhAKQox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 11:44:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35009 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732142AbhAKQow (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 11:44:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610383405;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e/65f+ialXh4Oqh1VlU0K0i3Gq5vr/yiWp5Ivn7C86E=;
-        b=RFW2WAT8Uo4Ai0fHOBsaAIp4TpJKFGcxjf4lBw0BuzMSZ1ayRFWoFEwBQwHBf1HciHUp6R
-        EKTm8ZqiIkOXkfhX4Z2/dqWeTPEq73IRk95/1SfbuLwG2czNSWQmrDKxM8k9V2w+16oi8K
-        AnypZEcOErr9UUd96g8dlXQxPi+a+VM=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-326-1wA5IGSwMe-r6DLvRkHfzw-1; Mon, 11 Jan 2021 11:43:20 -0500
-X-MC-Unique: 1wA5IGSwMe-r6DLvRkHfzw-1
-Received: by mail-qt1-f198.google.com with SMTP id z43so174372qtb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 08:43:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=e/65f+ialXh4Oqh1VlU0K0i3Gq5vr/yiWp5Ivn7C86E=;
-        b=kfqLcNAlwbp69PobiZQCetFnOZZOkz3SzNQbt10jXtOwZI7BJZRoUS6L7Ra/SnHhXn
-         7Ub+bdcvLbN8ozGRn36LCFj9kXS7qWBk3Y/IARJAYCk/VFZVTKIJ/Sfg4MIfhhmMXv3x
-         ZaYwDVoM7XfaxnrHDpyy6AjrtD+PTgSvaJOu4wxI78lruvl/O3VvxzuonQXGlXxeYSww
-         C9DCtcg6pNZXy/Hvvc8K4ETAfnhaHwz50e3ptAItf9drvQRrqNHZYIQfSTlBWwbsENBU
-         tchnKaJtahIIrIvnDq8+0mnat4PqDukhyHI/m+Z6X+TCCH/1H+5PmK2dwNlOR74wWnnD
-         udrw==
-X-Gm-Message-State: AOAM533DEw9BUTcPja2/YNNS65IurEbDaHoN8MNA8ICSCulCjyAZRnKo
-        hutk4ZoZhMRa4SGW+WAudeVnnYFkN0RtkgtZV0sR0q//vDuErNThDDzVJirlPGPbFdQssc6T42j
-        er5rCmuPiKW9fgjchErqECaD5
-X-Received: by 2002:a37:9ecc:: with SMTP id h195mr165349qke.302.1610383398588;
-        Mon, 11 Jan 2021 08:43:18 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJybJwjoYPSaJ+4HrIVa7HsjxVDugBHXzIiM1E9WGAvsuQII6bArqWtLnMMZD2Asu82QfFiztg==
-X-Received: by 2002:a37:9ecc:: with SMTP id h195mr165324qke.302.1610383398343;
-        Mon, 11 Jan 2021 08:43:18 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 60sm57418qth.14.2021.01.11.08.43.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 08:43:17 -0800 (PST)
-Subject: Re: [PATCH 0/8] FPGA DFL Changes for 5.12
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, moritzf@google.com,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Russ Weight <russell.h.weight@intel.com>,
-        "Gerlach, Matthew" <matthew.gerlach@intel.com>,
-        Sonal Santan <sonal.santan@xilinx.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Richard Gong <richard.gong@intel.com>
-References: <20210107043714.991646-1-mdf@kernel.org>
- <80b29715-aa0a-b2ac-03af-904fc8f8be98@redhat.com>
- <e1d30642-ce85-b9b7-e8b2-5ad4fe6338e5@redhat.com> <X/sz6lDq8WFzrRUJ@archbook>
- <95af46d6-d123-f610-2f21-6d6de6f248e9@redhat.com>
- <X/v2xs5Rnfw9F18E@kroah.com>
- <9bc01a73-726f-a979-1246-6ea048961670@redhat.com>
- <X/xmi/jJmDHnV5/N@kroah.com>
- <7923d9dc-c503-5318-6e4f-931f8c13c1be@redhat.com>
- <X/x4QjGyP8ssYUDI@kroah.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <fe9739cf-abc9-c0c6-933e-8447a9d197a8@redhat.com>
-Date:   Mon, 11 Jan 2021 08:43:15 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S2389083AbhAKQoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 11:44:13 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:39078 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731908AbhAKQoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 11:44:13 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DDzzV71Z3z9tySH;
+        Mon, 11 Jan 2021 17:43:18 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 4TE2AUabVSHM; Mon, 11 Jan 2021 17:43:18 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DDzzV67CGz9tySG;
+        Mon, 11 Jan 2021 17:43:18 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A1E1F8B79D;
+        Mon, 11 Jan 2021 17:43:24 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id zAXdc398vnxx; Mon, 11 Jan 2021 17:43:24 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1E32C8B79C;
+        Mon, 11 Jan 2021 17:43:24 +0100 (CET)
+Subject: Re: [PATCH] powerpc/vdso: fix clock_gettime_fallback for vdso32
+To:     Andreas Schwab <schwab@linux-m68k.org>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, linux-kernel@vger.kernel.org
+References: <87eeirsdr8.fsf@igel.home>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <a703eaa2-178f-02b3-8206-b200b6bf1f35@csgroup.eu>
+Date:   Mon, 11 Jan 2021 17:43:18 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <X/x4QjGyP8ssYUDI@kroah.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <87eeirsdr8.fsf@igel.home>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 1/11/21 8:09 AM, Greg KH wrote:
-> On Mon, Jan 11, 2021 at 07:55:24AM -0800, Tom Rix wrote:
->> On 1/11/21 6:54 AM, Greg KH wrote:
->>> On Mon, Jan 11, 2021 at 06:40:24AM -0800, Tom Rix wrote:
->>>> On 1/10/21 10:57 PM, Greg KH wrote:
->>>>> On Sun, Jan 10, 2021 at 11:43:54AM -0800, Tom Rix wrote:
->>>>>> On 1/10/21 9:05 AM, Moritz Fischer wrote:
->>>>>>> Tom,
->>>>>>>
->>>>>>> On Sun, Jan 10, 2021 at 07:46:29AM -0800, Tom Rix wrote:
->>>>>>>> On 1/7/21 8:09 AM, Tom Rix wrote:
->>>>>>>>> On 1/6/21 8:37 PM, Moritz Fischer wrote:
->>>>>>>>>> This is a resend of the previous (unfortunately late) patchset of
->>>>>>>>>> changes for FPGA DFL.
->>>>>>>>> Is there something I can do to help ?
->>>>>>>>>
->>>>>>>>> I am paid to look after linux-fpga, so i have plenty of time.
->>>>>>>>>
->>>>>>>>> Some ideas of what i am doing now privately i can do publicly.
->>>>>>>>>
->>>>>>>>> 1. keep linux-fpga sync-ed to greg's branch so linux-fpga is normally in a pullable state.
->>>>>>> Is it not? It currently points to v5.11-rc1. If I start applying patches
->>>>>>> that require the changes that went into Greg's branch I can merge.
->>>>>> I mean the window between when we have staged patches and when they go into Greg's branch.
->>>>>>
->>>>>> We don't have any now, maybe those two trival ones.
->>>>>>
->>>>>> Since Greg's branch moves much faster than ours, our staging branch needs to be rebased regularly until its merge.
->>>>> Ick, no!  NEVER rebase a public branch.  Why does it matter the speed of
->>>>> my branch vs. anyone elses?  Git handles merges very well.
->>>>>
->>>>> Just like Linus's branches move much faster than mine, and I don't
->>>>> rebase my branches, you shouldn't rebase yours.
->>>>>
->>>>> Becides, I'm only taking _PATCHES_ for fpga changes at the moment, no
->>>>> git pulls, so why does it matter at all for any of this?
->>>>>
->>>>> What is the problem you are trying to solve here?
->>>> This 5.12 fpga patchset not making it into 5.11.
->>> Ok, but isn't it the responsibility of the submitter to make sure they
->>> apply properly when sending them out?
->>>
->>>> At some point before the 5.11 window, I tried it on next and it failed to merge.
->>>>
->>>> This points to needing some c/i so it does not happen again.
->>> "again"?  Merges and the like are a totally normal thing and happen all
->>> the time, I still fail to understand what you are trying to "solve" for
->>> here...
->> What can I do to help make your merges as easy as possible ?
-> I have not had any problems with merges, I've only had "problems"
-> rejecting patches for their content.
->
-> Try helping out with patch reviews if you want, finding and fixing
-> things before I review them is usually a good idea :)
-ok.
->
->> Does the patchwork infra Moritz was speaking of earlier need fixing help?
-> No idea, I don't use it.
->
->> Any other things ?
-> What problems are you trying to solve here?  What's wrong with how this
-> subsystem is working that you are feeling needs to be addressed?
 
-I do not believe the issue I raised in 5.10 has made any progress.
+Le 11/01/2021 à 16:18, Andreas Schwab a écrit :
+> The second argument of __kernel_clock_gettime64 points to a struct
+> __kernel_timespec, with 64-bit time_t, so use the clock_gettime64 syscall
+> in the fallback function for the 32-bit vdso.  Similarily,
+> clock_getres_fallback should use the clock_getres_time64 syscall, though
+> it isn't yet called from the 32-bit vdso.
+> 
+> Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
 
-If you look at the content in 5.11 we have actually regressed.
+Fixes: d0e3fc69d00d ("powerpc/vdso: Provide __kernel_clock_gettime64() on vdso32")
 
-https://lore.kernel.org/linux-fpga/3295710c-5e82-7b97-43de-99b9870a8c8c@redhat.com/
+> ---
+>   arch/powerpc/include/asm/vdso/gettimeofday.h | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> diff --git a/arch/powerpc/include/asm/vdso/gettimeofday.h b/arch/powerpc/include/asm/vdso/gettimeofday.h
+> index 81671aa365b3..a26c12df2c9a 100644
+> --- a/arch/powerpc/include/asm/vdso/gettimeofday.h
+> +++ b/arch/powerpc/include/asm/vdso/gettimeofday.h
+> @@ -106,13 +106,21 @@ int gettimeofday_fallback(struct __kernel_old_timeval *_tv, struct timezone *_tz
+>   static __always_inline
+>   int clock_gettime_fallback(clockid_t _clkid, struct __kernel_timespec *_ts)
+>   {
+> +#ifndef __powerpc64__
 
-Over the last two releases, I have shown i have the time and interest to maintain this subsystem.
+I think we should do like x86, create a second version of clock_gettime_fallback() inside the #ifdef 
+CONFIG_VDSO32, and move that one in a matching (non existing yet) #else
 
-So I am asking for
+> +	return do_syscall_2(__NR_clock_gettime64, _clkid, (unsigned long)_ts);
+> +#else
+>   	return do_syscall_2(__NR_clock_gettime, _clkid, (unsigned long)_ts);
+> +#endif
+>   }
+>   
+>   static __always_inline
+>   int clock_getres_fallback(clockid_t _clkid, struct __kernel_timespec *_ts)
+>   {
+> +#ifndef __powerpc64__
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 11b38acb4c08..269cd08f4969 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6951,7 +6951,7 @@ F:        drivers/net/ethernet/nvidia/*
- 
- FPGA DFL DRIVERS
- M:     Wu Hao <hao.wu@intel.com>
--R:     Tom Rix <trix@redhat.com>
-+M:     Tom Rix <trix@redhat.com>
- L:     linux-fpga@vger.kernel.org
- S:     Maintained
- F:     Documentation/ABI/testing/sysfs-bus-dfl*
-@@ -6962,7 +6962,7 @@ F:        include/uapi/linux/fpga-dfl.h
- 
- FPGA MANAGER FRAMEWORK
- M:     Moritz Fischer <mdf@kernel.org>
--R:     Tom Rix <trix@redhat.com>
-+M:     Tom Rix <trix@redhat.com>
- L:     linux-fpga@vger.kernel.org
- S:     Maintained
- W:     http://www.rocketboards.org
+Same.
 
-And to use/maintain my fpga-next and fpga-testing as official kernel.org branches.
+> +	return do_syscall_2(__NR_clock_getres_time64, _clkid, (unsigned long)_ts);
+> +#else
+>   	return do_syscall_2(__NR_clock_getres, _clkid, (unsigned long)_ts);
+> +#endif
+>   }
+>   
+>   #ifdef CONFIG_VDSO32
+> 
 
-Tom
-
->
-> confused,
->
-> greg k-h
->
-
+Christophe
