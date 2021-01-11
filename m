@@ -2,130 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231052F16E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:59:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD9E2F16F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388150AbhAKN7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:59:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387908AbhAKN66 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:58:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BCB2D223E8;
-        Mon, 11 Jan 2021 13:58:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610373497;
-        bh=W82HKcWU3D5Ryo3ShBlAvfn9wpslSYr5mBG/7GxjaAU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WlLfwHBpSpB4mRqjRwzR1ZZJ6UjYn92nALj2E2l4ufIyxobFQHpKfebEL5RVPgxxF
-         0okCBq6a6vNghxuWenmsE5aoIQzw+y7KYsiTTti553FUIkOASme2Weg4XKOP+bzCp+
-         MSe9WjqLVrAwS4ViIXSPwIabSJKNLf+YLiU5JNyoXrXgSg2ucRTbmi+8hU+HAdWT8j
-         pW97PMcNChh+IF7MflkvgipRpFiGvsZsfZ8f7wbH9I6MZJ2WothkT3TJJKi94QmU5/
-         Nyhk36sQrn3l1Z3RrE9C5LphK8+PS2dw3iPaMkakMLp4/vhTCYxdsi/B7ZOkTi2mGW
-         qSXfwR0sdH4SQ==
-Date:   Mon, 11 Jan 2021 13:57:45 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, sumit.semwal@linaro.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org
-Subject: Re: [PATCH 5/7] regulator: qcom-labibb: Implement short-circuit and
- over-current IRQs
-Message-ID: <20210111135745.GC4728@sirena.org.uk>
-References: <20210109132921.140932-1-angelogioacchino.delregno@somainline.org>
- <20210109132921.140932-6-angelogioacchino.delregno@somainline.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qtZFehHsKgwS5rPz"
-Content-Disposition: inline
-In-Reply-To: <20210109132921.140932-6-angelogioacchino.delregno@somainline.org>
-X-Cookie: Too much is not enough.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S2388225AbhAKN7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:59:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388153AbhAKN7S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:59:18 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E21EEC061786;
+        Mon, 11 Jan 2021 05:58:37 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id t16so16559408wra.3;
+        Mon, 11 Jan 2021 05:58:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Y+oG+xNm9xP+x0Bd2rZ9vn+P0+PwuwT6nvWBSD6Nz98=;
+        b=ej1ljIbtahWMaGXTQNV9pI+UlDz+JM+ZZrdSUlnKqTdv7A15XmfHu75mqT/bnbCBxm
+         mv3MSo78U0qjwGkbEqyVzv11PXj+p5h4fN6MCY0649LWbj8b0rjKf4lM+uWj5gJQPJPr
+         6UsaWjAUNa5iz+yByAoCG3T8JKVu+C78QnGrjV2y/cjFx1AomkF9b/+P2g1DWbwlSbvR
+         LgLl7EuO5nXnhzL+bO/CAvFEUBz4yJ8ucl3q7r6+NrHiHsGfJxlXKhuVryc71Z1qY9Oh
+         9tftHFp4sgdIzf3ePzxShqkcoJsQgautCst1j1EZaidgxOWhQNUhye9y4uhFVewf97dQ
+         dckg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Y+oG+xNm9xP+x0Bd2rZ9vn+P0+PwuwT6nvWBSD6Nz98=;
+        b=Tu/U0Hz9H3vfU32Xalzu9Vr4cembt7Zi/u2ug0Nejkkb8ifVBik21P/Gz2UN4ptjGE
+         d61FINxIES2a6icNIJgsJrkYtrtNt/dPlcRuQb/OPfmd6E8w9uTeSPOLg0aRQ17nqxOf
+         noculMkU5osdQj8oVYexU1XOgFtL1bWpOUTbEJ6enrSUEIGt/yqc/X/IRU38EkUFwNkt
+         vLI+9+5o2QaqYvdmmT9ZsmnDqGFYhIckUu5XqzznyNCttM0MiSAHYkSMxKBnGyfkUdaP
+         LsmItqKqC+GOcE3GNF9TCvWpZLtfxUar3zc82CIDpQpVgCQf0aFW+xeubyjZQZU98dm+
+         CALw==
+X-Gm-Message-State: AOAM532igy/mpMFNPVZV5nXd/HSn4gBJL0OIZ+n2m7tVc0uULOEjlrPO
+        wVPY+eBDQxhYt8eR5+6sAP0=
+X-Google-Smtp-Source: ABdhPJw4USDQqdK6oVUdyEsVMIb9mDKFEOAu1DET+S/0kX+94PlJZ/YAMZjwVEuDbBRCLbuiUUZR3A==
+X-Received: by 2002:a5d:43ce:: with SMTP id v14mr16366742wrr.342.1610373516733;
+        Mon, 11 Jan 2021 05:58:36 -0800 (PST)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id u66sm22543950wmg.30.2021.01.11.05.58.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 05:58:36 -0800 (PST)
+From:   Christian Hewitt <christianshewitt@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>
+Subject: [PATCH] arm64: dts: meson: add i2c3/rtc nodes and rtc aliases to ODROID-N2 dtsi
+Date:   Mon, 11 Jan 2021 13:58:31 +0000
+Message-Id: <20210111135831.2218-1-christianshewitt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Enable the onboard pcf8563 rtc hardware on ODROID N2/N2+ boards via the
+common dtsi. Also add aliases to ensure vrtc does not claim /dev/rtc0.
 
---qtZFehHsKgwS5rPz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+ .../boot/dts/amlogic/meson-g12b-odroid-n2.dtsi     | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-On Sat, Jan 09, 2021 at 02:29:19PM +0100, AngeloGioacchino Del Regno wrote:
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+index 39a09661c5f6..b78be3e6974d 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2.dtsi
+@@ -13,6 +13,8 @@
+ 	aliases {
+ 		serial0 = &uart_AO;
+ 		ethernet0 = &ethmac;
++		rtc0 = &rtc;
++		rtc1 = &vrtc;
+ 	};
+ 
+ 	dioo2133: audio-amplifier-0 {
+@@ -478,6 +480,18 @@
+ 	linux,rc-map-name = "rc-odroid";
+ };
+ 
++&i2c3 {
++	status = "okay";
++	pinctrl-0 = <&i2c3_sda_a_pins>, <&i2c3_sck_a_pins>;
++	pinctrl-names = "default";
++
++	rtc: rtc@51 {
++		compatible = "nxp,pcf8563";
++		reg = <0x51>;
++		wakeup-source;
++	};
++};
++
+ &pwm_ab {
+ 	pinctrl-0 = <&pwm_a_e_pins>;
+ 	pinctrl-names = "default";
+-- 
+2.17.1
 
-> +	/* If the regulator is not enabled, this is a fake event */
-> +	if (!ops->is_enabled(vreg->rdev))
-> +		return 0;
-
-Or handling the interrupt raced with a disable initiated from elsewhere.
-Does the hardware actually have a problem with reporting spurious errors?
-
-> +	return ret ? IRQ_NONE : IRQ_HANDLED;
-
-Here and elsewhere please write normal conditional statements to improve
-legibility.
-
-> +	/* This function should be called only once, anyway. */
-> +	if (unlikely(vreg->ocp_irq_requested))
-> +		return 0;
-
-If this is not a fast path it doesn't need an unlikely() annotation;
-indeed it sounds more like there should be a warning printed if this
-isn't supposed to be called multiple times.
-
-> +	/* IRQ polarities - LAB: trigger-low, IBB: trigger-high */
-> +	if (vreg->type == QCOM_LAB_TYPE) {
-> +		irq_flags |= IRQF_TRIGGER_LOW;
-> +		irq_trig_low = 1;
-> +	} else {
-> +		irq_flags |= IRQF_TRIGGER_HIGH;
-> +		irq_trig_low = 0;
-> +	}
-
-This would be more clearly written as a switch statement.
-
-> +	return devm_request_threaded_irq(vreg->dev, vreg->ocp_irq, NULL,
-> +					 qcom_labibb_ocp_isr, irq_flags,
-> +					 ocp_irq_name, vreg);
-
-Are you *sure* that devm_ is appropriate here and the interrupt handler
-won't attempt to use things that will be deallocated before devm gets
-round to freeing the interrupt?
-
-> +		if (!!(val & LABIBB_CONTROL_ENABLE)) {
-
-The !! is redundant here and makes things less clear.
-
-> @@ -166,8 +560,37 @@ static int qcom_labibb_of_parse_cb(struct device_node *np,
->  				   struct regulator_config *config)
->  {
->  	struct labibb_regulator *vreg = config->driver_data;
-> +	char *sc_irq_name;
-
-I really, really wouldn't expect to see interrupts being requested in
-the DT parsing callback - apart from anything else the device is going
-to have the physical interrupts with or without DT binding information.
-These callbacks are for regulator specific properties, not basic probing.
-Just request the interrupts in the main probe function, this also means
-you can avoid using all the DT specific APIs which are generally a
-warning sign.
-
---qtZFehHsKgwS5rPz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/8WVgACgkQJNaLcl1U
-h9BUYAf/TRPb+bKAijDciE8hEa+oPUUE1PWOxG2ZLTi57IfR8ggOxbhy4sbegUBQ
-PRK1JWlxq+cGBBOqjnUxknfHdNVrooqk2X0nm0X7r10qxrbK2gdNr1JKEcUnskAo
-hv4H1yMVLwj49CBUxRckZXELgCg3szojgvbRChICSlZR+/4kXukrdId8DtPWwP0V
-UJoMRVhUqJ84mRDzpKfdaNSSWavsNGJRpSDpJzjAMOrthb9n/2viTi7J7rzEi3zS
-3E7RkEueq8xfVfmlPDFHQijeAVsd5KropNTrl5GJtppnYTOGGgLIreUyepAfLLN6
-8R4Xka5ROuNUm3qKNlIOwzPb9iLgcA==
-=bBx5
------END PGP SIGNATURE-----
-
---qtZFehHsKgwS5rPz--
