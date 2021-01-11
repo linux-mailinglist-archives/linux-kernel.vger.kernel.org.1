@@ -2,127 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4532F1EC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:15:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7738D2F1EC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:16:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390790AbhAKTPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:15:07 -0500
-Received: from relay07.th.seeweb.it ([5.144.164.168]:51869 "EHLO
-        relay07.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387724AbhAKTPG (ORCPT
+        id S2390804AbhAKTPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:15:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390383AbhAKTPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:15:06 -0500
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id E47963E8B4;
-        Mon, 11 Jan 2021 20:14:08 +0100 (CET)
-Subject: Re: [PATCH 5/7] regulator: qcom-labibb: Implement short-circuit and
- over-current IRQs
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, sumit.semwal@linaro.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org
-References: <20210109132921.140932-1-angelogioacchino.delregno@somainline.org>
- <20210109132921.140932-6-angelogioacchino.delregno@somainline.org>
- <20210111135745.GC4728@sirena.org.uk>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <6dee36e4-fc78-c21b-daf8-120ee44535a3@somainline.org>
-Date:   Mon, 11 Jan 2021 20:14:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 11 Jan 2021 14:15:34 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B38DEC061786;
+        Mon, 11 Jan 2021 11:14:53 -0800 (PST)
+Date:   Mon, 11 Jan 2021 19:14:50 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610392491;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wMKpksQeNw2J4WuIigQd8lSlcw5aEFUcku4DAHtxxbA=;
+        b=lSxjlCRNc/xWYmw0zoBCqaRBo8NvkRBSPtbvX5ZN1EF1dZ6dW0T2raN4EU2HszZ750/q+P
+        Cd+7vPz/cWs+bQtBdwMV0i9u9EP2NJ5U7kWZlC5h2+HS0uyWyXv10pQMfE8WhqCBNhaCYW
+        5OYQ4cYlHPt7tysma0LMklbQSpiP/JMyW1j52WWiA2zijYbNMbyCFYxRVvuwcYbeTXwwT6
+        uJC3yMzp9tN5eh19xiabYuWmc/2+cQ+qlCngAyiYj6UGflVgI6SyIYgC1VDX7W0h5JT0C2
+        s3FmYTqDNfyIizK5p/ddd1VCooNSadSGf5wdhPrINU/0VhDfv1ZIL9ZtqtxCrA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610392491;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wMKpksQeNw2J4WuIigQd8lSlcw5aEFUcku4DAHtxxbA=;
+        b=+QIVEE+74+S9amFbZSLOi27B2NS6S+TOhAb+YZLIzELQyGshD9Ynv1TuxhNNx7cOXUap6b
+        OdEOMSsyYRKwYtAw==
+From:   "tip-bot2 for Hyunwook (Wooky) Baek" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/sev-es: Handle string port IO to kernel memory properly
+Cc:     "Hyunwook (Wooky) Baek" <baekhw@google.com>,
+        Borislav Petkov <bp@suse.de>,
+        David Rientjes <rientjes@google.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210110071102.2576186-1-baekhw@google.com>
+References: <20210110071102.2576186-1-baekhw@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210111135745.GC4728@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
+Message-ID: <161039249026.414.12255461373156299431.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 11/01/21 14:57, Mark Brown ha scritto:
-> On Sat, Jan 09, 2021 at 02:29:19PM +0100, AngeloGioacchino Del Regno wrote:
-> 
->> +	/* If the regulator is not enabled, this is a fake event */
->> +	if (!ops->is_enabled(vreg->rdev))
->> +		return 0;
-> 
-> Or handling the interrupt raced with a disable initiated from elsewhere.
-> Does the hardware actually have a problem with reporting spurious errors?
-> 
->> +	return ret ? IRQ_NONE : IRQ_HANDLED;
-> 
-> Here and elsewhere please write normal conditional statements to improve
-> legibility.
-> 
-No problem. Will do.
+The following commit has been merged into the x86/urgent branch of tip:
 
->> +	/* This function should be called only once, anyway. */
->> +	if (unlikely(vreg->ocp_irq_requested))
->> +		return 0;
-> 
-> If this is not a fast path it doesn't need an unlikely() annotation;
-> indeed it sounds more like there should be a warning printed if this
-> isn't supposed to be called multiple times.
-> 
-That was extra-paranoid safety, looking at this one again, that should 
-be totally unnecessary.
-I think that removing this check entirely would be just fine also 
-because.. anyway.. writing to these registers more than once won't do 
-any harm, nor break functionality: I mean, even if it happens for 
-whatever reason, there's *no real need* to avoid it from the hw perspective.
+Commit-ID:     7024f60d655272bd2ca1d3a4c9e0a63319b1eea1
+Gitweb:        https://git.kernel.org/tip/7024f60d655272bd2ca1d3a4c9e0a63319b1eea1
+Author:        Hyunwook (Wooky) Baek <baekhw@google.com>
+AuthorDate:    Sat, 09 Jan 2021 23:11:02 -08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 11 Jan 2021 20:01:52 +01:00
 
->> +	/* IRQ polarities - LAB: trigger-low, IBB: trigger-high */
->> +	if (vreg->type == QCOM_LAB_TYPE) {
->> +		irq_flags |= IRQF_TRIGGER_LOW;
->> +		irq_trig_low = 1;
->> +	} else {
->> +		irq_flags |= IRQF_TRIGGER_HIGH;
->> +		irq_trig_low = 0;
->> +	}
-> 
-> This would be more clearly written as a switch statement.
-> 
-A switch statement looked like being a bit "too much" for just two cases 
-where vreg->type cannot be anything else but QCOM_LAB_TYPE or 
-QCOM_IBB_TYPE... but okay, let's write a switch statement in place of that.
+x86/sev-es: Handle string port IO to kernel memory properly
 
->> +	return devm_request_threaded_irq(vreg->dev, vreg->ocp_irq, NULL,
->> +					 qcom_labibb_ocp_isr, irq_flags,
->> +					 ocp_irq_name, vreg);
-> 
-> Are you *sure* that devm_ is appropriate here and the interrupt handler
-> won't attempt to use things that will be deallocated before devm gets
-> round to freeing the interrupt?
-> 
-Yeah, I'm definitely sure.
+Don't assume dest/source buffers are userspace addresses when manually
+copying data for string I/O or MOVS MMIO, as {get,put}_user() will fail
+if handed a kernel address and ultimately lead to a kernel panic.
 
->> +		if (!!(val & LABIBB_CONTROL_ENABLE)) {
-> 
-> The !! is redundant here and makes things less clear.
-> 
-My bad, I forgot to clean this one up before sending.
+When invoking INSB/OUTSB instructions in kernel space in a
+SEV-ES-enabled VM, the kernel crashes with the following message:
 
->> @@ -166,8 +560,37 @@ static int qcom_labibb_of_parse_cb(struct device_node *np,
->>   				   struct regulator_config *config)
->>   {
->>   	struct labibb_regulator *vreg = config->driver_data;
->> +	char *sc_irq_name;
-> 
-> I really, really wouldn't expect to see interrupts being requested in
-> the DT parsing callback - apart from anything else the device is going
-> to have the physical interrupts with or without DT binding information.
-> These callbacks are for regulator specific properties, not basic probing.
-> Just request the interrupts in the main probe function, this also means
-> you can avoid using all the DT specific APIs which are generally a
-> warning sign.
-> 
+  "SEV-ES: Unsupported exception in #VC instruction emulation - can't continue"
 
-...And I even wrote a comment saying "The Short Circuit interrupt is 
-critical: fail if not found"!!! Whoa! That was bad.
-Yeah, I'm definitely moving that to the appropriate place.
+Handle that case properly.
+
+ [ bp: Massage commit message. ]
+
+Fixes: f980f9c31a92 ("x86/sev-es: Compile early handler code into kernel image")
+Signed-off-by: Hyunwook (Wooky) Baek <baekhw@google.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: David Rientjes <rientjes@google.com>
+Link: https://lkml.kernel.org/r/20210110071102.2576186-1-baekhw@google.com
+---
+ arch/x86/kernel/sev-es.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+index 0bd1a0f..ab31c34 100644
+--- a/arch/x86/kernel/sev-es.c
++++ b/arch/x86/kernel/sev-es.c
+@@ -286,6 +286,12 @@ static enum es_result vc_write_mem(struct es_em_ctxt *ctxt,
+ 	u16 d2;
+ 	u8  d1;
+ 
++	/* If instruction ran in kernel mode and the I/O buffer is in kernel space */
++	if (!user_mode(ctxt->regs) && !access_ok(target, size)) {
++		memcpy(dst, buf, size);
++		return ES_OK;
++	}
++
+ 	switch (size) {
+ 	case 1:
+ 		memcpy(&d1, buf, 1);
+@@ -335,6 +341,12 @@ static enum es_result vc_read_mem(struct es_em_ctxt *ctxt,
+ 	u16 d2;
+ 	u8  d1;
+ 
++	/* If instruction ran in kernel mode and the I/O buffer is in kernel space */
++	if (!user_mode(ctxt->regs) && !access_ok(s, size)) {
++		memcpy(buf, src, size);
++		return ES_OK;
++	}
++
+ 	switch (size) {
+ 	case 1:
+ 		if (get_user(d1, s))
