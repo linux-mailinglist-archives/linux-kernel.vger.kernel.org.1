@@ -2,151 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3532F11DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B592F11DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:49:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730203AbhAKLsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:48:06 -0500
-Received: from mga01.intel.com ([192.55.52.88]:8391 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730191AbhAKLsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:48:05 -0500
-IronPort-SDR: AOoT6v+8hRrkwyUBI2vBXhmRD1iUQJCEVGEtYdNTXk1Lopg2RpE0AYZpyYND6mth8rTpzvQogw
- jBoRkrZSas6w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9860"; a="196431271"
-X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
-   d="scan'208";a="196431271"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 03:47:20 -0800
-IronPort-SDR: WEaW+5G0Ci9pw9yhrf+GyFB+gtPOl1OoeA+PxYa/Z4Ug59FNAMjgGU+zLXkqGhwon8PZdDSI9Y
- oLTS/XgjBwSQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
-   d="scan'208";a="380985085"
-Received: from lkp-server01.sh.intel.com (HELO 3cff8e4c45aa) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 11 Jan 2021 03:47:18 -0800
-Received: from kbuild by 3cff8e4c45aa with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kyvfJ-00005d-RQ; Mon, 11 Jan 2021 11:47:17 +0000
-Date:   Mon, 11 Jan 2021 19:46:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.01.07a] BUILD SUCCESS
- d1753f4ba479f7ecec0571d5808b911740ede26f
-Message-ID: <5ffc3aa4.ZoZ5rRjFuXBJQIOA%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1730253AbhAKLsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:48:22 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:57590 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728568AbhAKLsV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 06:48:21 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610365676; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=e2RKIfh/3Dgq5OF2y0vpSR1viIDQKn/3YAJh2Hfy6ZE=; b=IOMJUFn7w4CdazneybaeUeQZ+OM7xAiQ93Cph6DRmZ9kpw0lxuaLKq1bEriDq15cRwFqrgMf
+ a75LJN3y2KBb1A9Q2rpHpevG2J/ecDAuXJOx68KaFlfNfmBIvjyjMKqdD1irETeSlCAkmo+L
+ VF+ajAO3bxstNaIhsLmdtmb2/7g=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5ffc3ac346a6c7cde7a811b4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 11:47:15
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CB814C433CA; Mon, 11 Jan 2021 11:47:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 78830C433C6;
+        Mon, 11 Jan 2021 11:47:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 78830C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Maya Erez <merez@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "John W. Linville" <linville@tuxdriver.com>,
+        Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>,
+        linux-wireless@vger.kernel.org, wil6210@qti.qualcomm.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/7] wil6210: select CONFIG_CRC32
+References: <20210103213645.1994783-1-arnd@kernel.org>
+        <20210103213645.1994783-4-arnd@kernel.org>
+Date:   Mon, 11 Jan 2021 13:47:09 +0200
+In-Reply-To: <20210103213645.1994783-4-arnd@kernel.org> (Arnd Bergmann's
+        message of "Sun, 3 Jan 2021 22:36:20 +0100")
+Message-ID: <874kjnk85e.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2021.01.07a
-branch HEAD: d1753f4ba479f7ecec0571d5808b911740ede26f  fixup! torture: Break affinity of kthreads last running on outgoing CPU
+Arnd Bergmann <arnd@kernel.org> writes:
 
-elapsed time: 725m
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> Without crc32, the driver fails to link:
+>
+> arm-linux-gnueabi-ld: drivers/net/wireless/ath/wil6210/fw.o: in function `wil_fw_verify':
+> fw.c:(.text+0x74c): undefined reference to `crc32_le'
+> arm-linux-gnueabi-ld: drivers/net/wireless/ath/wil6210/fw.o:fw.c:(.text+0x758): more undefined references to `crc32_le' follow
+>
+> Fixes: 151a9706503f ("wil6210: firmware download")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-configs tested: 89
-configs skipped: 6
+I'll queue this to v5.11.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                     eseries_pxa_defconfig
-sh                          sdk7780_defconfig
-riscv                            alldefconfig
-mips                       rbtx49xx_defconfig
-sh                             shx3_defconfig
-mips                       bmips_be_defconfig
-sh                           sh2007_defconfig
-powerpc                        cell_defconfig
-m68k                          multi_defconfig
-sh                          sdk7786_defconfig
-arc                           tb10x_defconfig
-arm                         assabet_defconfig
-xtensa                           alldefconfig
-sh                  sh7785lcr_32bit_defconfig
-arc                     nsimosci_hs_defconfig
-mips                         tb0219_defconfig
-m68k                        mvme147_defconfig
-powerpc                           allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a004-20210111
-x86_64               randconfig-a006-20210111
-x86_64               randconfig-a001-20210111
-x86_64               randconfig-a003-20210111
-x86_64               randconfig-a005-20210111
-x86_64               randconfig-a002-20210111
-i386                 randconfig-a002-20210111
-i386                 randconfig-a005-20210111
-i386                 randconfig-a006-20210111
-i386                 randconfig-a001-20210111
-i386                 randconfig-a003-20210111
-i386                 randconfig-a004-20210111
-i386                 randconfig-a012-20210111
-i386                 randconfig-a011-20210111
-i386                 randconfig-a016-20210111
-i386                 randconfig-a015-20210111
-i386                 randconfig-a013-20210111
-i386                 randconfig-a014-20210111
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a015-20210111
-x86_64               randconfig-a012-20210111
-x86_64               randconfig-a013-20210111
-x86_64               randconfig-a016-20210111
-x86_64               randconfig-a014-20210111
-x86_64               randconfig-a011-20210111
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
