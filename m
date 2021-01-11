@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B72DE2F0DC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 09:20:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7676A2F0DE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 09:23:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727829AbhAKIUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 03:20:24 -0500
-Received: from mail-oo1-f44.google.com ([209.85.161.44]:39795 "EHLO
-        mail-oo1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727477AbhAKIUX (ORCPT
+        id S1727872AbhAKIWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 03:22:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727786AbhAKIWq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 03:20:23 -0500
-Received: by mail-oo1-f44.google.com with SMTP id k9so3917496oop.6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 00:20:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RnZdbI3asH8PEPPSzjCJDBfk3jaPeti8mCF848WSZhc=;
-        b=p8GaFm89GWi7R12+IV3i4bSJIUPDYgZneT4LN4LO4KP7g56vqBlpFuRijr5+WRwQww
-         pI/FkljPUXKtlQ+ToNdGAka+l9oA2qNcwWO83fExDE58B2vGlFV3cJKmKKwdzzTDa9We
-         r++2deWntOUfUytL158y4pSpbg5vr336jfiMLt8r1ZkvFKe14uRQ/VGz9Mg+bLVhsUrO
-         0+4k/iKyJ64zN4d6GLfqMwJHynV2DO1ITcQGDxn/mzql3zpeLpTXCqpJcTYYIzAjLdEA
-         55nJe1z3NiZdFtbQeFrdX+MPw25bdI9QqmzD7gK0CiVrmESlklvLLNJqdZKEi6JN9OZt
-         A/EA==
-X-Gm-Message-State: AOAM530+4t1CkEl5EZnhVv2liv31XNd4VPFijJspNqrv2GuooBFcTg5X
-        tYGThOnH/jH/RnFAoSDLkPGq3P2rlLQOhdPUoKE=
-X-Google-Smtp-Source: ABdhPJxo//LOA1NJsq1u7P5al9TztJRyJuJNYoTWU3fzhtBTGb4ierpk2jcw26KsnWxKko3a9J8Pq/7ilGCUQYi9xEw=
-X-Received: by 2002:a4a:ca14:: with SMTP id w20mr11245802ooq.11.1610353183024;
- Mon, 11 Jan 2021 00:19:43 -0800 (PST)
+        Mon, 11 Jan 2021 03:22:46 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2016EC061786;
+        Mon, 11 Jan 2021 00:22:06 -0800 (PST)
+Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id A195A22ED8;
+        Mon, 11 Jan 2021 09:22:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1610353322;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=z16DerIaeIQb7u36oALr+3/maDGK44yawY1L6TYmiWQ=;
+        b=dXoUjx1oeN1q68466J+xSQq/T46Yz5j3XiOtP6HEvBWXShxcjHUxZf9BoZEOUy5lenfAY2
+        846Hlb5fMI1ZVWI09RO5cOBXX3ln4PKcsRX//tRdXc5W6Dy8w06CQeiBqNS2dcefGSKnI5
+        9ykDvHTUSuGZuRyhAVrbgTVhhef/ILo=
+From:   Michael Walle <michael@walle.cc>
+To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Li Yang <leoyang.li@nxp.com>, Michael Walle <michael@walle.cc>
+Subject: [PATCH v2 1/2] dt-bindings: arm: fsl: add Kontron sl28 variant 1
+Date:   Mon, 11 Jan 2021 09:21:33 +0100
+Message-Id: <20210111082134.24704-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 11 Jan 2021 09:19:31 +0100
-Message-ID: <CAMuHMdWiYkhN_S2t+hg0cDk84Qd950YE9-qGTgsdL_-2vPr1WQ@mail.gmail.com>
-Subject: Re: Old platforms: bring out your dead
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Mark Salter <msalter@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+Add the a new variant for the Kontron SMARC-sAL28 board.
 
-On Fri, Jan 8, 2021 at 11:55 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> * MIPS R3000/TX39xx: 32-bit MIPS-II generation, mostly superseded by
->   64-bit MIPS-III (R4000 and higher) starting in 1991. arch/mips still
->   supports these in DECstation and Toshiba Txx9, but it appears that most
->   of those machines are of the 64-bit kind. Later MIPS32 such as 4Kc and
->   later are rather different and widely used.
+Signed-off-by: Michael Walle <michael@walle.cc>
+---
+changes since v1:
+ - none
 
-I have a (32-bit) RBTX4927 development board in my board farm, boot-test
-every bi-weekly renesas-drivers release on it, and fix kernel issues
-when they appear.
+ Documentation/devicetree/bindings/arm/fsl.yaml | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index cee74fc0c115..cbb531ad5284 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -835,10 +835,12 @@ properties:
+           Kontron SMARC-sAL28 board on the SMARC Eval Carrier 2.0
+         items:
+           - enum:
++              - kontron,sl28-var1-ads2
+               - kontron,sl28-var2-ads2
+               - kontron,sl28-var3-ads2
+               - kontron,sl28-var4-ads2
+           - enum:
++              - kontron,sl28-var1
+               - kontron,sl28-var2
+               - kontron,sl28-var3
+               - kontron,sl28-var4
+@@ -849,6 +851,7 @@ properties:
+           Kontron SMARC-sAL28 board (on a generic/undefined carrier)
+         items:
+           - enum:
++              - kontron,sl28-var1
+               - kontron,sl28-var2
+               - kontron,sl28-var3
+               - kontron,sl28-var4
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.20.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
