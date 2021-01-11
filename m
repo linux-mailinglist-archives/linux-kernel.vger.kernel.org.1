@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE9882F0EE1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7EB22F0ED0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:15:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728409AbhAKJQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 04:16:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728320AbhAKJQv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 04:16:51 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1BCFC061795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 01:16:10 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id c7so14055362qke.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 01:16:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fU7GH9LhkO3q58rwtJyvkvBoIzpRxN+MgLow1nbzzOs=;
-        b=KV/W4TkVDv1dKMb+PQGRb4AZX/A7K1VuhTBpyuxT4wHjHJisP09LZdYiFhCWYD/dOR
-         3OItl1/pOUZ5jeEvWZcXecEiqlQRDeWr/DcBV13JEckh8dzP0n74k5acinDTieaf/4y/
-         4kNFVyX4Ps/idfQgk9zZF4/ndeXz3r6k5lT3NYqWC1lRsL0/B1I6Wiop5IAmeZ9eiemp
-         xWd6z+xtdazwE+03DJOp+jhaJPsZxxLIBvvkDSYIwjoVGlmWqLdlDC0/vovsapxVKSwm
-         QHzpEzP2J01MTb6wm6kn7HKM3ihdG6WMVzuhvn/jkq30a4vcaXVgdwM2zIsajjB3/jqY
-         V+LQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fU7GH9LhkO3q58rwtJyvkvBoIzpRxN+MgLow1nbzzOs=;
-        b=Ve/GKOmFukOYnobw8PnvWUN0yvksiDsNw0ZYv443hrmoXhZvrIqa+HdTeV9KX5mmN3
-         deaegovCqERA9Axl9DrA5NXS7S9Bn75LIis4zv8fZyTKp3IP+sVFOgMeHGnw13vlKAbB
-         2oGaKlfsTNcUlDVJqxsFCqVajN7KAyhPc7Mq+SyCmAJMgPPm9GROLBxKxgbObODrjYu0
-         F617LeqapmXLzDT5LBEust+jzmliEZUW9P0uMuMspJTZHkrS7CNePq0fHzJioRkBt2hC
-         bINnp2Ei5BXrDisw1wmK/JvA1L6usozxkKvkDJCSbRgnuVkwQ9HIPBfHc6+ZF8eLk1/N
-         iL4Q==
-X-Gm-Message-State: AOAM530OwU2HMKgRMyLspZ5k2XAkGMnaa2JpOy6k/PxQMrvjM3mY30wu
-        EydAUylvBE1ApT0tAnkZNnXPdndyOYVMgK/3sHl/TQ==
-X-Google-Smtp-Source: ABdhPJwbbIjmwetHH0GCBp0TCjbgD7zj06OWKV6/f1Ysv0jMf+ZhAh+8kUwh/YJDM+J6eaRv2DGqE8kYHyTUtYEm4DY=
-X-Received: by 2002:a05:620a:713:: with SMTP id 19mr15861120qkc.424.1610356569698;
- Mon, 11 Jan 2021 01:16:09 -0800 (PST)
+        id S1728054AbhAKJPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 04:15:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727771AbhAKJPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 04:15:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 316362063A;
+        Mon, 11 Jan 2021 09:14:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610356491;
+        bh=LMS7ht4z1I4PScZJj3KRqljIkMoNyPpVmKLwHDqk64U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rUG98atK6vuBjwmZXWb0Jc6e+GnUPPLdLHQek2OEaooAjgFJboybvbTaAPwi0fjhp
+         jVjfcqLVutvoBgcvLRBpuvqjggm6GOuWSsAQTnyPHLSBX2rGPXiQtMeSxyosTrsaYY
+         j1ZEYyJrcAQi/IaIIjeVfcm2PPQhhA8xuosyPUWA=
+Date:   Mon, 11 Jan 2021 10:16:03 +0100
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     HAGIO =?utf-8?B?S0FaVUhJVE8o6JCp5bC+44CA5LiA5LuBKQ==?= 
+        <k-hagio-ab@nec.com>, "lijiang@redhat.com" <lijiang@redhat.com>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ktkhai@virtuozzo.com" <ktkhai@virtuozzo.com>,
+        "ebiederm@xmission.com" <ebiederm@xmission.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "dyoung@redhat.com" <dyoung@redhat.com>,
+        "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>,
+        "vgoyal@redhat.com" <vgoyal@redhat.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        Alexander Egorenkov <egorenar@linux.ibm.com>
+Subject: Re: [PATCH v3 1/1] kdump: append uts_namespace.name offset to
+ VMCOREINFO
+Message-ID: <X/wXU9G/+AJhb4HP@kroah.com>
+References: <20200930102328.396488-1-egorenar@linux.ibm.com>
+ <20210108033248.GA4959@MiWiFi-R3L-srv>
+ <OSBPR01MB1991DBFA6C4BD6818947EF6BDDAE0@OSBPR01MB1991.jpnprd01.prod.outlook.com>
+ <20210108102224.GC4959@MiWiFi-R3L-srv>
 MIME-Version: 1.0
-References: <000000000000588c2c05aa156b2b@google.com> <00000000000087569605b8928ce3@google.com>
-In-Reply-To: <00000000000087569605b8928ce3@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 11 Jan 2021 10:15:58 +0100
-Message-ID: <CACT4Y+a3Xe11dAkRAAewXQ7b=KzK1pk36Arwq=vCR7R-KQy9DQ@mail.gmail.com>
-Subject: Re: kernel BUG at mm/vmalloc.c:LINE! (2)
-To:     syzbot <syzbot+5f326d255ca648131f87@syzkaller.appspotmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, andrii@kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Borislav Petkov <bp@alien8.de>, bpf <bpf@vger.kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Miller <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        jonathan.lemon@gmail.com, Martin KaFai Lau <kafai@fb.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Andy Lutomirski <luto@kernel.org>,
-        "Karlsson, Magnus" <magnus.karlsson@intel.com>,
-        marekx.majtyka@intel.com, Ingo Molnar <mingo@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        netdev <netdev@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Song Liu <songliubraving@fb.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Yonghong Song <yhs@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210108102224.GC4959@MiWiFi-R3L-srv>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 10:34 PM syzbot
-<syzbot+5f326d255ca648131f87@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit 537cf4e3cc2f6cc9088dcd6162de573f603adc29
-> Author: Magnus Karlsson <magnus.karlsson@intel.com>
-> Date:   Fri Nov 20 11:53:39 2020 +0000
->
->     xsk: Fix umem cleanup bug at socket destruct
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=139f3dfb500000
-> start commit:   e87d24fc Merge branch 'net-iucv-fixes-2020-11-09'
-> git tree:       net
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
-> dashboard link: https://syzkaller.appspot.com/bug?extid=5f326d255ca648131f87
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d10006500000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=126c9eaa500000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: xsk: Fix umem cleanup bug at socket destruct
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+On Fri, Jan 08, 2021 at 06:22:24PM +0800, Baoquan He wrote:
+> On 01/08/21 at 10:07am, HAGIO KAZUHITO(萩尾 一仁) wrote:
+> > Hi Baoquan,
+> > 
+> > -----Original Message-----
+> > > On 09/30/20 at 12:23pm, Alexander Egorenkov wrote:
+> > > > The offset of the field 'init_uts_ns.name' has changed
+> > > > since commit 9a56493f6942 ("uts: Use generic ns_common::count").
+> > > 
+> > > This patch is merged into 5.11-rc1, but we met the makedumpfile failure
+> > > of kdump test case in 5.10.0 kernel. Should affect 5.9 too since
+> > > commit 9a56493f6942 is merged into 5.9-rc2.
+> > 
+> > Hmm, commit 9a56493f6942 should have been merged into 5.11-rc1
+> > together with commit ca4a9241cc5e.
+> 
+> Checked on master branch of mainline kernel, commit 9a56493f6942 is in
+> 5.9-rc1.
 
-FTR, the bisection log looks clean, but this does not look like the
-fix for this. The reproducer does not destroy sockets.
+
+No, that commit is in 5.11-rc1, not 5.9-rc1:
+	$ git describe --contains 9a56493f6942
+	v5.11-rc1~182^2~9
+
+> commit ca4a9241cc5e is merged into 5.11-rc1.
+> 
+> commit 9a56493f6942c0e2df1579986128721da96e00d8
+> Author: Kirill Tkhai <ktkhai@virtuozzo.com>
+> Date:   Mon Aug 3 13:16:21 2020 +0300
+> 
+>     uts: Use generic ns_common::count
+> 
+> 
+> commit ca4a9241cc5e718de86a34afd41972869546a5e3
+> Author: Alexander Egorenkov <egorenar@linux.ibm.com>
+> Date:   Tue Dec 15 20:45:31 2020 -0800
+> 
+>     kdump: append uts_namespace.name offset to VMCOREINFO
+
+
+Are you all sure this is needed in 5.10.y?
+
+thanks,
+
+greg k-h
