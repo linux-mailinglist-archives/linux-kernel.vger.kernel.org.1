@@ -2,87 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8341C2F17DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 153D62F17C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:13:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731342AbhAKOPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:15:53 -0500
-Received: from mga17.intel.com ([192.55.52.151]:16819 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727901AbhAKOPu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:15:50 -0500
-IronPort-SDR: 33Lji3lI5WhBwd9SZKlASCbz2XQJAUBkjlHFasLyhgnSj7cbzc37lVFECPC5o5Y7wP7Yvdlfqy
- SYdZXZdSFEDQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9860"; a="157645656"
-X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
-   d="scan'208";a="157645656"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 06:10:56 -0800
-IronPort-SDR: 80nKZa5+vzdWdub2518utsZrmhx4RamZ6dnQTww03pLys3O8rRQnG8fFqiXFEZ0EuWSa0S4QD8
- Qmk152lNN33w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
-   d="scan'208";a="464171628"
-Received: from black.fi.intel.com (HELO black.fi.intel.com.) ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 11 Jan 2021 06:10:54 -0800
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Felipe Balbi <balbi@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: [PATCH v2 3/3] usb: dwc3: pci: ID for Tiger Lake CPU
-Date:   Mon, 11 Jan 2021 17:10:45 +0300
-Message-Id: <20210111141045.14027-4-heikki.krogerus@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210111141045.14027-1-heikki.krogerus@linux.intel.com>
-References: <20210111141045.14027-1-heikki.krogerus@linux.intel.com>
+        id S1730749AbhAKOMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:12:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729467AbhAKOMQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 09:12:16 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E354C061795
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:11:36 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id ce23so24911599ejb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:11:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dVZC7Hwy0sID9sYDNRf3c2kgpntf1fr82m9IY+c7BlU=;
+        b=Ib8512zkd50nS7IVCHQp+GRbvpumxwNf9N2PwrwRV/wh72d3zZiOobRA2Nn+w/Uxji
+         mmhLqbbiIY3V5vU1QlmalJkPc7LyL1p8cMLvu6HTw8MlGr3fyhd+U8/OandNlQWNOUwW
+         M2fz/4drHPlUbiAjL8aFcaP0/+yOr5wr2BuhIyZsAk2Z/LqQI9Wqq3uIUti1hAbeiSDH
+         4gHKpw8fzOmuJGFPQ6kDTTkdD9+UpfnKD5h3dZdC2XKrqILfIapC5WxwFdJyTyVJpIj5
+         zyYDBIFP0Rgf7699ajXvCzMxnpGQeKkGGbTS6EJPYNgZxzCohF9gtyvnEQnheJlNCFCP
+         UbSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dVZC7Hwy0sID9sYDNRf3c2kgpntf1fr82m9IY+c7BlU=;
+        b=Ce6O8rS08L34+wxVkrt1O1zvanYBIlqeg9nAZ4bpcKREIm5FBTW+OX/SW6Nba2dbFS
+         8NhlsBdcWWo9yROsRX9D/vNrT5J1A/rJ+gB+sZQdaJ6mK71S1BrF43l0UblJA1uXLp44
+         LvI7xVxQBWMtwavqcPB5sJceoMxRmobyQ7DeuAoW5XiJQ0zlPTizqSEVsp/+7pPYXzbj
+         JHmAbc2PDko4EZ6lPGp1DrjSF3jQhEiDz/lRRq5IgC78f3A1WJ7DHkQrly5BhuHZFPre
+         CDrG85nP++TzZjgMZlZeM1puoDn3r9xw2V/jos768ABDpIRWhcy9UxIgI6jA1tKRnJFM
+         JzPA==
+X-Gm-Message-State: AOAM530z2aTRYso+CnB6sybbWt/s+UiXmKxfQMKzTDc9eRZEcsT4QNEH
+        Xv8KwNszcIqooAuEntgqZO1KpLj1x+idM4hVLkCrlg==
+X-Google-Smtp-Source: ABdhPJz6IfLBiFPclFxJ3y3AOA57uKbDMPB7SMWZj3vQH9CWqAEn0YJ9bDdugqVm7l4H/R5Mao3MHYZk4pQudIYqjG8=
+X-Received: by 2002:a17:906:b04f:: with SMTP id bj15mr10358264ejb.383.1610374294969;
+ Mon, 11 Jan 2021 06:11:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210111124027.21586-1-brgl@bgdev.pl> <20210111124027.21586-3-brgl@bgdev.pl>
+ <20210111133521.GB34341@kozik-lap>
+In-Reply-To: <20210111133521.GB34341@kozik-lap>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 11 Jan 2021 15:11:24 +0100
+Message-ID: <CAMRc=MdLAupcMkSEpdVJiBTogbN6G2aqr=kC+0GT6s-igSSL0g@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] rtc: s5m: check the return value of s5m8767_rtc_init_reg()
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tiger Lake SOC (the versions of it that have integrated USB4
-controller) may have two DWC3 controllers. One is part of
-the PCH (Platform Controller Hub, i.e. the chipset) as
-usual, and the other is inside the actual CPU block.
+On Mon, Jan 11, 2021 at 2:35 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Mon, Jan 11, 2021 at 01:40:26PM +0100, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > This function can fail if regmap operations fail so check its return
+> > value in probe().
+> >
+> > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > ---
+> >  drivers/rtc/rtc-s5m.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/rtc/rtc-s5m.c b/drivers/rtc/rtc-s5m.c
+> > index eb9dde4095a9..e0011d3cf61b 100644
+> > --- a/drivers/rtc/rtc-s5m.c
+> > +++ b/drivers/rtc/rtc-s5m.c
+> > @@ -791,6 +791,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+> >       platform_set_drvdata(pdev, info);
+> >
+> >       ret = s5m8767_rtc_init_reg(info);
+> > +     if (ret)
+> > +             return ret;
+>
+> You leak I2C device.
+>
 
-On all Intel platforms that have the two separate DWC3
-controllers, the one inside the CPU handles USB3 and only
-USB3 traffic, while the PCH version handles USB2 and USB2
-alone. The reason for splitting the two busses like this is
-to allow easy USB3 tunneling over USB4 connections. As USB2
-is not tunneled over USB4, it has dedicated USB controllers
-(both xHCI and DWC3).
+Yes, the next patch fixes it but I changed the order. Actually this
+can be moved after 3/3 with no conflicts when applying.
 
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- drivers/usb/dwc3/dwc3-pci.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
-index 037bc21bffa66..51029cec119ed 100644
---- a/drivers/usb/dwc3/dwc3-pci.c
-+++ b/drivers/usb/dwc3/dwc3-pci.c
-@@ -41,6 +41,7 @@
- #define PCI_DEVICE_ID_INTEL_TGPH		0x43ee
- #define PCI_DEVICE_ID_INTEL_JSP			0x4dee
- #define PCI_DEVICE_ID_INTEL_ADLS		0x7ae1
-+#define PCI_DEVICE_ID_INTEL_TGL			0x9a15
- 
- #define PCI_INTEL_BXT_DSM_GUID		"732b85d5-b7a7-4a1b-9ba0-4bbd00ffd511"
- #define PCI_INTEL_BXT_FUNC_PMU_PWR	4
-@@ -384,6 +385,9 @@ static const struct pci_device_id dwc3_pci_id_table[] = {
- 	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_ADLS),
- 	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
- 
-+	{ PCI_VDEVICE(INTEL, PCI_DEVICE_ID_INTEL_TGL),
-+	  (kernel_ulong_t) &dwc3_pci_intel_swnode, },
-+
- 	{ PCI_VDEVICE(AMD, PCI_DEVICE_ID_AMD_NL_USB),
- 	  (kernel_ulong_t) &dwc3_pci_amd_swnode, },
- 	{  }	/* Terminating Entry */
--- 
-2.29.2
-
+Bartosz
