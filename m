@@ -2,137 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EFF2F1356
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 857EC2F1383
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:10:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729102AbhAKNHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:07:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728605AbhAKNGd (ORCPT
+        id S1731032AbhAKNJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:09:55 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:43244 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731071AbhAKNIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:06:33 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E99FC061795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 05:05:53 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id s75so20040422oih.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 05:05:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=32AMbD7JqvqTfJOA6mRlZcATxY9GlJ290keV9DKYi+U=;
-        b=vbavSgfTX5r4VBBQ1t8Rd07gUOcwgaEfa6MNLKd2ZpZVeAfq4hXNUIs04fPddsxEqf
-         xEbYuZp6cuiwyB791fKV0/6sXkfJZXML0shJduwRXmw6LzB3SQgYa7TPL5i8fWIXUZ4v
-         XKjic147rn8oinoh7mK2VVqxA5w/tpR1ZoUVSaf9OqHp7U4GOqyXT4TS/BXfOYLakJsA
-         B3JHPxwQZtJsr06gslGh7g0pyT4dy3KHzSXbSV+yor/Y7W9P0B5IZ5cwnTd17AuUtfL0
-         IniEfnbXREVDWK0mLq+BxhjdFpWdQYrPG9mPkXETHCsGPKscgIi6oPkzaeDoZRmiVonc
-         n8cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=32AMbD7JqvqTfJOA6mRlZcATxY9GlJ290keV9DKYi+U=;
-        b=VfwJVgNhzNIYtVoH8vgVCnonXixOzlj1d49ev9EHPuFIbvRgQ5jmotyySu5wIyTVdX
-         L4rF+lF0fG0kVPxuSQLBBznzFGejX4jG31LpduAMIcSJ30vZfvBw1D5EXfIfhjS76TcH
-         vlXNzyfo02PPO6Mdie/UCskv3MsX7Czcp6jrGMx4WjZD92/zL7uylYPY/6JYyO9g23Mj
-         K6ZeJeQ09CgN6N+qlalBsfzc3JNJCC7U9WsT8l20XvFuNTyAGWr+MePxv1OQ37zbAjAS
-         dhkcpraChZXAy7DWWIT2kpeWdsSvfzmvZe8inbn++pE3EDbVHQIGhi9ZVxsEjsi+EQIJ
-         JxcQ==
-X-Gm-Message-State: AOAM530PICQ46dsoj2awh5btPDlsGc+P+wW9LC4N3NpBw9dT3XKZcxYH
-        Mtr6MNP/FrfXyuILRN7LUBL+uggvMprLZSiJ9hA=
-X-Google-Smtp-Source: ABdhPJzguLowuko/yV4hNw+yFJ+Sm5NdnIJqP1kdJJLYyr1yI3lUtDVXhN6ed6MvPjHm53SEwGDFTuDWE4dv0PUO0aE=
-X-Received: by 2002:aca:c492:: with SMTP id u140mr9920851oif.51.1610370352601;
- Mon, 11 Jan 2021 05:05:52 -0800 (PST)
+        Mon, 11 Jan 2021 08:08:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1610370530; x=1641906530;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=SZdfnr5UG13cVDMwC8iTHnUXXEdughCiI8OHKTE/Eno=;
+  b=OOqEIrpur3+E4RlDMLBMON9QSWFKKj42yUKRkRsSh461VJyTFd6yABGx
+   3w4qiXr43WQf4Zv1XRQSVXCM071Q3310CgjOhVCVX2MRqSnguSufU6K7s
+   kKO61sV+HI/+ZUxlCMn0jecSqTYe/+U7HgLnfDFlxxomcDOZznD6DKwII
+   ZTWtWbETmXKoZ/jdH/cUTgUmxWR0rES0CKyTkzusai4sUJlyPLdbxgKzY
+   8A6+rou1qdqmkf5iYmWhFVaR9ry1OBRf1oKZIv97D+z8S2Ezw8RhAuJ3Q
+   vPlcqohHXvRH5chLuMiIDTAx/fApfNMRO1sTEj+cKziUDDEetIVWaQVNd
+   g==;
+IronPort-SDR: s4OBNZPLmmFt6n5nBH+TBuZ7RxSoNm1OcBjhxNOphcfDj+i1qVE/0tTPX9Kyxx28bghgB+mJRF
+ muHXbGJaJ2mFvPGZatWdL9Fc2D7iaFCo4XKthi8CdOoUobz0k7lfazued87cbkwXMfkYjHsiCs
+ S4gRadzTdbA629CAoBqoy9nDCdkSKujK0PfMv9z4nXJthIkouAszhEq4pmAckvezXrINOEC+2Q
+ TACpoNn18/zyYjnkVWm8t4AjpCxejU6LPPi+EwWy9qZp+zeT9YuCEhoW/uxmT1CBCz/SNYTY5f
+ ZM8=
+X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
+   d="scan'208";a="105520718"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Jan 2021 06:07:35 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 11 Jan 2021 06:07:34 -0700
+Received: from soft-dev2.microsemi.net (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Mon, 11 Jan 2021 06:07:32 -0700
+From:   Bjarni Jonasson <bjarni.jonasson@microchip.com>
+To:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
+        "Heiner Kallweit" <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
+Subject: [PATCH v1 0/2] Add 100 base-x mode
+Date:   Mon, 11 Jan 2021 14:06:55 +0100
+Message-ID: <20210111130657.10703-1-bjarni.jonasson@microchip.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210111123518.30438-1-matthias.bgg@kernel.org>
-In-Reply-To: <20210111123518.30438-1-matthias.bgg@kernel.org>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Mon, 11 Jan 2021 21:05:41 +0800
-Message-ID: <CAE+NS35Br8jgLfii=VPjFx+m+9=a=EQKYyoQMAyd7Zdo0K6n+A@mail.gmail.com>
-Subject: Re: [PATCH] mfd: mt6360: Fix MFD cell names and compatibles
-To:     matthias.bgg@kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Gene Chen <gene_chen@richtek.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Matthias Brugger <mbrugger@suse.com>,
-        ChiYuan Huang <cy_huang@richtek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+Adding support for 100 base-x in phylink.
+The Sparx5 switch supports 100 base-x pcs (IEEE 802.3 Clause 24) 4b5b encoded.
+These patches adds phylink support for that mode.
 
-This change exists in [PATCH v7 03/11] mfd: mt6360: Indicate sub-dev
-compatible name by using "-".
-Does patch v7 also merge together to mfd-next?
+Tested in Sparx5, using sfp modules:
+Axcen 100fx AXFE-1314-0521 
+Cisco GLC-FE-100LX
+HP SFP 100FX J9054C
+Excom SFP-SX-M1002
 
-<matthias.bgg@kernel.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=8811=E6=97=A5 =E9=
-=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=888:35=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> From: Matthias Brugger <mbrugger@suse.com>
->
-> MFD cell names and compatibles use '_' instead of '-', which is common
-> practice for names and the standard for DT compatibles.
-> This will also fix the probing for the drivers already implemented
-> (mt6360-adc and mt6360-tcpc).
->
-> Fixes: 7edd363421da ("mfd: Add support for PMIC MT6360")
-> Fixes: 1f4877218f7e ("iio: adc: mt6360: Add ADC driver for MT6360")
-> Fixes: e1aefcdd394f ("usb typec: mt6360: Add support for mt6360 Type-C dr=
-iver")
-> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
->
-> ---
->
->  drivers/mfd/mt6360-core.c | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/mfd/mt6360-core.c b/drivers/mfd/mt6360-core.c
-> index 4661c1b29a72..14e649ffe50f 100644
-> --- a/drivers/mfd/mt6360-core.c
-> +++ b/drivers/mfd/mt6360-core.c
-> @@ -292,18 +292,18 @@ static const struct resource mt6360_ldo_resources[]=
- =3D {
->  };
->
->  static const struct mfd_cell mt6360_devs[] =3D {
-> -       OF_MFD_CELL("mt6360_adc", mt6360_adc_resources,
-> -                   NULL, 0, 0, "mediatek,mt6360_adc"),
-> -       OF_MFD_CELL("mt6360_chg", mt6360_chg_resources,
-> -                   NULL, 0, 0, "mediatek,mt6360_chg"),
-> -       OF_MFD_CELL("mt6360_led", mt6360_led_resources,
-> -                   NULL, 0, 0, "mediatek,mt6360_led"),
-> -       OF_MFD_CELL("mt6360_pmic", mt6360_pmic_resources,
-> -                   NULL, 0, 0, "mediatek,mt6360_pmic"),
-> -       OF_MFD_CELL("mt6360_ldo", mt6360_ldo_resources,
-> -                   NULL, 0, 0, "mediatek,mt6360_ldo"),
-> -       OF_MFD_CELL("mt6360_tcpc", NULL,
-> -                   NULL, 0, 0, "mediatek,mt6360_tcpc"),
-> +       OF_MFD_CELL("mt6360-adc", mt6360_adc_resources,
-> +                   NULL, 0, 0, "mediatek,mt6360-adc"),
-> +       OF_MFD_CELL("mt6360-chg", mt6360_chg_resources,
-> +                   NULL, 0, 0, "mediatek,mt6360-chg"),
-> +       OF_MFD_CELL("mt6360-led", mt6360_led_resources,
-> +                   NULL, 0, 0, "mediatek,mt6360-led"),
-> +       OF_MFD_CELL("mt6360-pmic", mt6360_pmic_resources,
-> +                   NULL, 0, 0, "mediatek,mt6360-pmic"),
-> +       OF_MFD_CELL("mt6360-ldo", mt6360_ldo_resources,
-> +                   NULL, 0, 0, "mediatek,mt6360-ldo"),
-> +       OF_MFD_CELL("mt6360-tcpc", NULL,
-> +                   NULL, 0, 0, "mediatek,mt6360-tcpc"),
->  };
->
->  static const unsigned short mt6360_slave_addr[MT6360_SLAVE_MAX] =3D {
-> --
-> 2.29.2
->
+Bjarni Jonasson (2):
+  net: phy: Add 100 base-x mode
+  sfp: add support for 100 base-x SFPs
+
+ drivers/net/phy/sfp-bus.c | 9 +++++++++
+ include/linux/phy.h       | 4 ++++
+ 2 files changed, 13 insertions(+)
+
+-- 
+2.17.1
+
