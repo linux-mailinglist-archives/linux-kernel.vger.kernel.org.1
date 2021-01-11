@@ -2,221 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D26EE2F19CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:34:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EADA2F19D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:35:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732675AbhAKPeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:34:04 -0500
-Received: from www381.your-server.de ([78.46.137.84]:49286 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729271AbhAKPeD (ORCPT
+        id S1730749AbhAKPfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:35:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730454AbhAKPfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:34:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=MEHalcD1jDI946oWI+zXedvtpM9ONZor0wigVGZ6Czw=; b=A83cHY2WxhzaUgp3SP+7DlCGSD
-        juft+sgRxBV/PQ9d7hdXi6qLfF9xCIU6pY4zQeBXtKxBBy5Q7uvwsi3oqAopwhgVNS75tlHg1n0D4
-        +QiBPxHw4kwZ6q+H8H+F26CF9+12izYMqJ4YGhRtn/EVWzbg9fah6gfodeMZmfQQm8ttwWG2AkvZy
-        8jNx+j6ydfMNJfYHG7HbZR1mW00O2zR+auS/c3RvsTmgmoY2ePY5QlmIM75ZqZh+o7k04CyAEaFUQ
-        3P1AqgZxEwiGrvEQEX9cXBk06Xs4zNBSRL0bKh/poUIj2yuBwGDzcs3Z3lgEkxo2WHAovT3QgnmMx
-        Y+14UGgw==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1kyzBx-0006X5-J2; Mon, 11 Jan 2021 16:33:13 +0100
-Received: from [62.216.202.121] (helo=[192.168.178.20])
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1kyzBx-000PaY-Az; Mon, 11 Jan 2021 16:33:13 +0100
-Subject: Re: dmaengine : xilinx_dma two issues
-To:     Michal Simek <michal.simek@xilinx.com>,
-        Paul Thomas <pthomas8589@gmail.com>,
-        Radhey Shyam Pandey <radheys@xilinx.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Matthew Murrian <matthew.murrian@goctsi.com>,
-        Romain Perier <romain.perier@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Marc Ferland <ferlandm@amotus.ca>,
-        Sebastian von Ohr <vonohr@smaract.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        Shravya Kumbham <shravyak@xilinx.com>, git <git@xilinx.com>
-References: <CAD56B7dpewwJVttuk4GAcAsx62HP=vPF9jmxTFNG3Z9RP4u9zA@mail.gmail.com>
- <BY5PR02MB652004976C500CD4EA763047C7D20@BY5PR02MB6520.namprd02.prod.outlook.com>
- <BY5PR02MB6520C9083F072E6907534497C7AE0@BY5PR02MB6520.namprd02.prod.outlook.com>
- <CAD56B7f9D5HnN-rx2QRi4z4HA-bM1=oVpUv6XY35HxBQkAaXmQ@mail.gmail.com>
- <BY5PR02MB6520112ACAD71BD7339BAE89C7AE0@BY5PR02MB6520.namprd02.prod.outlook.com>
- <CAD56B7eUrNYFnV8dhmRE-2RdAA+dix-dYGHAewDutF6B849b0g@mail.gmail.com>
- <d153eb8c-bc55-37b5-2b22-a4f6c6263d38@metafoo.de>
- <8c0dff8b-eac8-f1d9-0ca9-a901a438d6e9@xilinx.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <70a1f7eb-9d32-1e9a-764b-781082292ab3@metafoo.de>
-Date:   Mon, 11 Jan 2021 16:33:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 11 Jan 2021 10:35:36 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC12C06179F
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:34:56 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id x13so20504358oic.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:34:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TzWprvP0E5iilUODRGt6CKDwV/2kCYGt43hwkGEjZBk=;
+        b=j18QL97ZdXcR/1Wial7AoWPFyJjXMopmtHu33rDETf1iyeWOD6oVQT9p4VCRatNVT1
+         xUOvXW6F/iyqr66IJQ6MgnpXo6l4M+p0POEb2ukFRsSVA3jPg8hJzBOL0bI2u6QGi9Ig
+         myarg/62h+TM2cWpKt/zt9AcNN3R+t8ssnjJAiBrEGeU61aVbjDeoA7JV0AusyvbpV0v
+         EJqf2oJNhxj+Rmrng5A+uaCoOs4VkcEyt2fUTArKugC/HhcC2rpN1Ra4aVdNbmz2CobJ
+         CfUlRS0ed4OoikQFKHMmA1Taldgx62rUup6ak93Y4L40X+WQtoKasiKo9sSZ3Tg8qCFW
+         R3pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TzWprvP0E5iilUODRGt6CKDwV/2kCYGt43hwkGEjZBk=;
+        b=aNlLTcAmNlF4KqmnEBlYotzghg0YedClbgrn/yOOWzIoZVyFjhNid2qeDwoB+3eqLS
+         LchYQ4+R//A57d3TAudPBxap2yG01KR2ovE7kmZACVyzYYzQUP8gqJ/k+LBSG4PSuYOS
+         IUaNu77nfz4GY3VbJXGW4n5Jv4bFIESg2tVjRjNne3n6tHl0F6YMwM9ULLcuED5z0PRa
+         lTx2vXJ8DLWAZo265AJeeCo/bURiBNB6o3Yn4WU7N1Y5XHMWC8nT5NJ+Ndlsg7+zZm+V
+         XV1hUpuhJd7gQ+RjgM31govieqonGRpOlzMc8vJifGnGEf2V7yP6l7vBdpcBZfogtu4I
+         OpBA==
+X-Gm-Message-State: AOAM531fX3Q/yRQUp2bl98w2mVxVZ03Bp/d0OXDZtgIpi0xa7a36dlON
+        KGkcRT35QPStTx5kQTuY3WbQtg==
+X-Google-Smtp-Source: ABdhPJym+3NChkBHA8NS/z2uVQ6cUCMR1A3L+017mVCHLkPPcp9m2j9LWQAt7zUUBArLpZtVIYAzDQ==
+X-Received: by 2002:aca:2807:: with SMTP id 7mr10727532oix.49.1610379295611;
+        Mon, 11 Jan 2021 07:34:55 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id p4sm14419oib.24.2021.01.11.07.34.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 07:34:54 -0800 (PST)
+Date:   Mon, 11 Jan 2021 09:34:53 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@kernel.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/7] soc: qcom: geni: move struct geni_wrapper to header
+Message-ID: <X/xwHeRAs4Cl/efj@builder.lan>
+References: <20210111151651.1616813-1-vkoul@kernel.org>
+ <20210111151651.1616813-3-vkoul@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <8c0dff8b-eac8-f1d9-0ca9-a901a438d6e9@xilinx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26046/Mon Jan 11 13:34:14 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111151651.1616813-3-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/11/21 10:32 AM, Michal Simek wrote:
-> Hi Lars,
->
-> On 10. 01. 21 16:43, Lars-Peter Clausen wrote:
->> On 1/10/21 4:16 PM, Paul Thomas wrote:
->>> On Fri, Jan 8, 2021 at 1:36 PM Radhey Shyam Pandey
->>> <radheys@xilinx.com> wrote:
->>>>> -----Original Message-----
->>>>> From: Paul Thomas <pthomas8589@gmail.com>
->>>>> Sent: Friday, January 8, 2021 9:27 PM
->>>>> To: Radhey Shyam Pandey <radheys@xilinx.com>
->>>>> Cc: Dan Williams <dan.j.williams@intel.com>; Vinod Koul
->>>>> <vkoul@kernel.org>; Michal Simek <michals@xilinx.com>; Matthew Murrian
->>>>> <matthew.murrian@goctsi.com>; Romain Perier
->>>>> <romain.perier@gmail.com>; Krzysztof Kozlowski <krzk@kernel.org>; Marc
->>>>> Ferland <ferlandm@amotus.ca>; Sebastian von Ohr
->>>>> <vonohr@smaract.com>; dmaengine@vger.kernel.org; Linux ARM <linux-
->>>>> arm-kernel@lists.infradead.org>; linux-kernel <linux-
->>>>> kernel@vger.kernel.org>; dave.jiang@intel.com; Shravya Kumbham
->>>>> <shravyak@xilinx.com>; git <git@xilinx.com>
->>>>> Subject: Re: dmaengine : xilinx_dma two issues
->>>>>
->>>>> Hi All,
->>>>>
->>>>> On Fri, Jan 8, 2021 at 2:13 AM Radhey Shyam Pandey <radheys@xilinx.com>
->>>>> wrote:
->>>>>>> -----Original Message-----
->>>>>>> From: Radhey Shyam Pandey
->>>>>>> Sent: Monday, January 4, 2021 10:50 AM
->>>>>>> To: Paul Thomas <pthomas8589@gmail.com>; Dan Williams
->>>>>>> <dan.j.williams@intel.com>; Vinod Koul <vkoul@kernel.org>; Michal
->>>>>>> Simek <michals@xilinx.com>; Matthew Murrian
->>>>>>> <matthew.murrian@goctsi.com>; Romain Perier
->>>>>>> <romain.perier@gmail.com>; Krzysztof Kozlowski <krzk@kernel.org>;
->>>>>>> Marc Ferland <ferlandm@amotus.ca>; Sebastian von Ohr
->>>>>>> <vonohr@smaract.com>; dmaengine@vger.kernel.org; Linux ARM <linux-
->>>>>>> arm-kernel@lists.infradead.org>; linux-kernel <linux-
->>>>>>> kernel@vger.kernel.org>; Shravya Kumbham <shravyak@xilinx.com>; git
->>>>>>> <git@xilinx.com>
->>>>>>> Subject: RE: dmaengine : xilinx_dma two issues
->>>>>>>
->>>>>>>> -----Original Message-----
->>>>>>>> From: Paul Thomas <pthomas8589@gmail.com>
->>>>>>>> Sent: Monday, December 28, 2020 10:14 AM
->>>>>>>> To: Dan Williams <dan.j.williams@intel.com>; Vinod Koul
->>>>>>>> <vkoul@kernel.org>; Michal Simek <michals@xilinx.com>; Radhey
->>>>>>>> Shyam Pandey <radheys@xilinx.com>; Matthew Murrian
->>>>>>>> <matthew.murrian@goctsi.com>; Romain Perier
->>>>>>> <romain.perier@gmail.com>;
->>>>>>>> Krzysztof Kozlowski <krzk@kernel.org>; Marc Ferland
->>>>>>>> <ferlandm@amotus.ca>; Sebastian von Ohr <vonohr@smaract.com>;
->>>>>>>> dmaengine@vger.kernel.org; Linux ARM <linux-
->>>>>>>> arm-kernel@lists.infradead.org>; linux-kernel <linux-
->>>>>>>> kernel@vger.kernel.org>
->>>>>>>> Subject: dmaengine : xilinx_dma two issues
->>>>>>>>
->>>>>>>> Hello,
->>>>>>>>
->>>>>>>> I'm trying to get the 5.10 kernel up and running for our system,
->>>>>>>> and I'm running into a couple of issues with xilinx_dma.
->>>>>>> + (Xilinx mailing list)
->>>>>>>
->>>>>>> Thanks for bringing the issues to our notice. Replies inline.
->>>>>>>
->>>>>>>> First, commit 14ccf0aab46e 'dmaengine: xilinx_dma: In dma channel
->>>>>>>> probe fix node order dependency' breaks our usage. Before this
->>>>>>>> commit a
->>>>>>> call to:
->>>>>>>> dma_request_chan(&indio_dev->dev, "axi_dma_0"); returns fine, but
->>>>>>>> after that commit it returns -19. The reason for this seems to be
->>>>>>>> that the only channel that is setup is channel 1 (chan->id is 1 in
->>>>>>> xilinx_dma_chan_probe()).
->>>>>>>> However in
->>>>>>>> of_dma_xilinx_xlate() chan_id is gets set to 0 (int chan_id =
->>>>>>>> dma_spec-
->>>>>>>>> args[0];), which causes the:
->>>>>>>> !xdev->chan[chan_id]
->>>>>>>> test to fail in of_dma_xilinx_xlate()
->>>>>>> What is the channel number passed in dmaclient DT?
->>>>> Is this a question for me?
->>>> Yes, please also share the dmaclient DT client node. Need to see
->>>> channel number passed to dmas property. Something like below-
->>>>
->>>> dmas = <& axi_dma_0 1>
->>>> dma-names = "axi_dma_0"
->>> OK, I think I need to revisit this and clean it up some. Currently In
->>> the driver (a custom iio adc driver) it is hard coded:
->>> dma_request_chan(&indio_dev->dev, "axi_dma_0");
->>>
->>> However, the DT also has the entries (currently unused by the driver):
->>>           dmas = <&axi_dma_0 0>;
->>>           dma-names = "axi_dma_0";
->>>
->>> I'll go back and clean up our driver to do something like
->>> adi-axi-adc.c does:
->>>
->>>           if (!device_property_present(dev, "dmas"))
->>>                   return 0;
->>>
->>>           if (device_property_read_string(dev, "dma-names", &dma_name))
->>>                   dma_name = "axi_dma_0";
->>>
->>> Should the dmas node get used by the driver? I see the second argument
->>> is: '0' for write/tx and '1' for read/rx channel. So I should be
->>> setting this to 1 like this?
->>>           dmas = <&axi_dma_0 1>;
->>>           dma-names = "axi_dma_0";
->>>
->>> But where does that field get used?
->> This got broken in "dmaengine: xilinx_dma: In dma channel probe fix node
->> order dependency"
->> <https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=14ccf0aab46e1888e2f45b6e995c621c70b32651>.
->> Before if there was only one channel that channel was always at index 0.
->> Regardless of whether the channel was RX or TX. But after that change
->> the RX channel is always at offset 1, regardless of whether the DMA has
->> one or two channels. This is a breakage in ABI.
->>
->> If you have the choice I'd recommend to not use the Xilinx DMA, it gets
->> broken pretty much every other release.
-> I expect that you are talking about Xilinx releases and I hope that this
-> has changed over times when most of changes are upstreamed already. The
-> patch above you are referencing has been applied by Vinod and he is
-> checking patches a lot. If there is a problem and any breakage it needs
-> to be fixed. And bugs happen all the time and we have a way how to work
-> with it.
+On Mon 11 Jan 09:16 CST 2021, Vinod Koul wrote:
 
-I don't know if it has gotten better. When I upgrade to a new release 
-what takes up most of the time is figuring out why the Xilinx DMA 
-doesn't work anymore. Its been like this for years.
+> I2C geni driver needs to access struct geni_wrapper, so move it to
+> header.
+> 
 
-> If you see there any issue please report them and let's fix them and
-> continue on this topic from technical point of view.
-> In connection to this problem what are you suggesting? Just revert this
-> patch or fix ordering differently? Would be good to provide your
-> suggestion and fix it.
+Please tell me more!
 
-Reverting would re-introduce the issue the patch was supposed to fix.
+Glanced through the other patches and the only user I can find it in
+patch 5 where you use this to get the struct device * of the wrapper.
 
-The would have been to use index 0 for the channel if there is only one 
-channel. If there are two channels use 0 for TX and 1 for RX.
+At least in the DT case this would be [SE]->dev->parent, perhaps we
+can't rely on this due to ACPI?
 
-The problem is that the change has been around for a while and restoring 
-the previous behavior will break users that are expecting the new 
-behavior. It is a bit of a catch-22.
+Regards,
+Bjorn
 
-- Lars
-
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  drivers/soc/qcom/qcom-geni-se.c | 15 ---------------
+>  include/linux/qcom-geni-se.h    | 15 +++++++++++++++
+>  2 files changed, 15 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/soc/qcom/qcom-geni-se.c b/drivers/soc/qcom/qcom-geni-se.c
+> index 285ed86c2bab..a3868228ea05 100644
+> --- a/drivers/soc/qcom/qcom-geni-se.c
+> +++ b/drivers/soc/qcom/qcom-geni-se.c
+> @@ -79,21 +79,6 @@
+>   */
+>  
+>  #define MAX_CLK_PERF_LEVEL 32
+> -#define NUM_AHB_CLKS 2
+> -
+> -/**
+> - * struct geni_wrapper - Data structure to represent the QUP Wrapper Core
+> - * @dev:		Device pointer of the QUP wrapper core
+> - * @base:		Base address of this instance of QUP wrapper core
+> - * @ahb_clks:		Handle to the primary & secondary AHB clocks
+> - * @to_core:		Core ICC path
+> - */
+> -struct geni_wrapper {
+> -	struct device *dev;
+> -	void __iomem *base;
+> -	struct clk_bulk_data ahb_clks[NUM_AHB_CLKS];
+> -	struct geni_icc_path to_core;
+> -};
+>  
+>  static const char * const icc_path_names[] = {"qup-core", "qup-config",
+>  						"qup-memory"};
+> diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
+> index e3f4b16040d9..cb4e40908f9f 100644
+> --- a/include/linux/qcom-geni-se.h
+> +++ b/include/linux/qcom-geni-se.h
+> @@ -38,6 +38,21 @@ struct geni_icc_path {
+>  	unsigned int avg_bw;
+>  };
+>  
+> +#define NUM_AHB_CLKS 2
+> +
+> +/**
+> + * @struct geni_wrapper - Data structure to represent the QUP Wrapper Core
+> + * @dev:		Device pointer of the QUP wrapper core
+> + * @base:		Base address of this instance of QUP wrapper core
+> + * @ahb_clks:		Handle to the primary & secondary AHB clocks
+> + */
+> +struct geni_wrapper {
+> +	struct device *dev;
+> +	void __iomem *base;
+> +	struct clk_bulk_data ahb_clks[NUM_AHB_CLKS];
+> +	struct geni_icc_path to_core;
+> +};
+> +
+>  /**
+>   * struct geni_se - GENI Serial Engine
+>   * @base:		Base Address of the Serial Engine's register block
+> -- 
+> 2.26.2
+> 
