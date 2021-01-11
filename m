@@ -2,121 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70412F206D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4CEF2F2070
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:12:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391370AbhAKULM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 15:11:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58996 "EHLO mail.kernel.org"
+        id S2391392AbhAKUMT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Jan 2021 15:12:19 -0500
+Received: from aposti.net ([89.234.176.197]:54386 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726722AbhAKULL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:11:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06C5A22D04
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 20:10:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610395831;
-        bh=PAmmi3WEVNu+XF6HOJcil+oslU7LNAsHmQgcOS7diCQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=I72FBlX3qlW+aQzowCV1kutMZCcjqCNlHANlEy56XF4khfePE8vAFKtaOyxpBmZFn
-         B6NjqJihUBs54hyj5AzkMnr0rWvztprNKR5+0RjffvcIQOm6FZ4/k1wnKUee/QzUMK
-         E425Q0mrtlV3u+QP7OlKDTFwmM5pjuw6fJ86CkMyPWXlq4QGUUToBdCzIVpkro33uU
-         +9mGqeE69Mc/xxwE9jUBfgQXFhGuPTAURPxw/EtZLwHkopQJaJhE6C/bYhzvkSMu82
-         AavvbOQlGXWSjoqT0oUtw+K66nkm4KWiSqaGTkXS5lZbdzstJkd9x3FokPKXg5D+LX
-         IgxnwWfNWrWgg==
-Received: by mail-oi1-f177.google.com with SMTP id f132so605951oib.12
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 12:10:30 -0800 (PST)
-X-Gm-Message-State: AOAM531oEdAiFLiuCmq6TP6iNBau94lnzn5+dZNf8IOw+gT06qovQnlw
-        qyJv1MiLR/YRqcvd2ygLtNHWDmgvDeGP1sMO+Wc=
-X-Google-Smtp-Source: ABdhPJx8fWqrvTGn3wI1Z2wCm0FLpeaYFvG+O8ZhOkp3Nmb7sRZiqysCgyKK2zfCfep7SqLqul//v+L6P1GustpH12g=
-X-Received: by 2002:aca:44d:: with SMTP id 74mr353245oie.4.1610395829991; Mon,
- 11 Jan 2021 12:10:29 -0800 (PST)
+        id S2390481AbhAKUMP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 15:12:15 -0500
+Date:   Mon, 11 Jan 2021 20:11:20 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] seccomp: Add missing return in non-void function
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Message-Id: <WEDSMQ.JSIS9ORBR57H1@crapouillou.net>
+In-Reply-To: <202101111204.971BDEC@keescook>
+References: <20210111172839.640914-1-paul@crapouillou.net>
+        <202101111204.971BDEC@keescook>
 MIME-Version: 1.0
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <20210111205814.0e6d3493@windsurf.home>
-In-Reply-To: <20210111205814.0e6d3493@windsurf.home>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 11 Jan 2021 21:10:12 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2bhqa60Jd=kO5sOq+mKqA_Krnrbk3UJE2W97aF_EYj0A@mail.gmail.com>
-Message-ID: <CAK8P3a2bhqa60Jd=kO5sOq+mKqA_Krnrbk3UJE2W97aF_EYj0A@mail.gmail.com>
-Subject: Re: Old platforms: bring out your dead
-To:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        Jamie Iles <jamie@jamieiles.com>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Alex Elder <elder@linaro.org>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Mark Salter <msalter@redhat.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 8:58 PM Thomas Petazzoni
-<thomas.petazzoni@bootlin.com> wrote:
-> > On Fri, 8 Jan 2021 23:55:06 +0100 Arnd Bergmann <arnd@kernel.org> wrote=
-:
->
-> So overall, I'd say that yes we could probably drop arch/arm/mach-dove/.
 
-Russell mentioned that he still uses a cubox with an out-of-tree
-board file for dove.
 
-> > * spear -- added in 2010, no notable changes since 2015
->
-> Well, I did quite a few improvements in spear DTs in 2017, some
-> improvements to the NAND FSMC driver for Spear, and my colleague Miqu=C3=
-=A8l
-> Raynal fixed an issue in the Spear NOR driver in 2019.
->
-> We have one customer running a 4.14 upstream kernel on a Spear600
-> product, and this was a fairly "recent" port, in the sense that the
-> product was originally running WinCE, and we ported Linux to it many
-> years later after the product was first shipped.
+Le lun. 11 janv. 2021 à 12:04, Kees Cook <keescook@chromium.org> a 
+écrit :
+> On Mon, Jan 11, 2021 at 05:28:39PM +0000, Paul Cercueil wrote:
+>>  We don't actually care about the value, since the kernel will panic
+>>  before that; but a value should nonetheless be returned, otherwise 
+>> the
+>>  compiler will complain.
+>> 
+>>  Fixes: 8112c4f140fa ("seccomp: remove 2-phase API")
+>>  Cc: stable@vger.kernel.org # 4.7+
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> 
+> Ah, yes, thanks. What was the build config where this actually got
+> exposed?
 
-Ok, thanks for the list, very helpful. Sorry I missed your DT changes
-when I went through the logs there.
-Viresh already pointed out Schneider Electric as a user of multiple
-SPEAr SoCs.
+I did not try to get a minimum config to expose the issue; but see my 
+full defconfig below [1].
 
-> > * lpc32xx -- added in 2010, multiplatform 2019, hardware is EOL
->
-> As late as early 2020, we were finishing the migration of one of our
-> customer LPC32xx platform to a recent mainline kernel.
->
-> So in fact for us at Bootlin, it happens pretty regularly to see users
-> of "legacy" platforms having a need for an updated kernel. From the
-> above, you can see that even legacy SoCs such as Spear600 and LPC32xx
-> are still used in products were kernel are being updated.
+That was when building for MIPS with GCC 10.2.
 
-I had put the lpc32xx in the list of code that is still updated and
-should not get removed unless the maintainers think it is near
-its end of useful life (which I did not really expect in this case).
+Cheers,
+-Paul
 
-        Arnd
+[1]:
+CONFIG_LOCALVERSION="-opendingux"
+# CONFIG_LOCALVERSION_AUTO is not set
+CONFIG_KERNEL_ZSTD=y
+CONFIG_DEFAULT_HOSTNAME="opendingux"
+# CONFIG_SWAP is not set
+# CONFIG_CROSS_MEMORY_ATTACH is not set
+CONFIG_NO_HZ_IDLE=y
+CONFIG_HIGH_RES_TIMERS=y
+CONFIG_PREEMPT_VOLUNTARY=y
+CONFIG_BLK_DEV_INITRD=y
+# CONFIG_RD_BZIP2 is not set
+# CONFIG_RD_LZMA is not set
+# CONFIG_RD_XZ is not set
+# CONFIG_RD_LZO is not set
+# CONFIG_RD_LZ4 is not set
+# CONFIG_RD_ZSTD is not set
+CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=y
+# CONFIG_MULTIUSER is not set
+# CONFIG_SGETMASK_SYSCALL is not set
+# CONFIG_SYSFS_SYSCALL is not set
+# CONFIG_FHANDLE is not set
+# CONFIG_POSIX_TIMERS is not set
+# CONFIG_BUG is not set
+# CONFIG_BASE_FULL is not set
+# CONFIG_FUTEX is not set
+# CONFIG_EPOLL is not set
+# CONFIG_SIGNALFD is not set
+# CONFIG_TIMERFD is not set
+# CONFIG_SHMEM is not set
+# CONFIG_AIO is not set
+# CONFIG_IO_URING is not set
+# CONFIG_ADVISE_SYSCALLS is not set
+# CONFIG_MEMBARRIER is not set
+# CONFIG_KALLSYMS is not set
+# CONFIG_RSEQ is not set
+CONFIG_EMBEDDED=y
+# CONFIG_VM_EVENT_COUNTERS is not set
+# CONFIG_COMPAT_BRK is not set
+CONFIG_SLOB=y
+# CONFIG_SLAB_MERGE_DEFAULT is not set
+CONFIG_MACH_INGENIC_SOC=y
+# CONFIG_MIPS_FP_SUPPORT is not set
+CONFIG_HIGHMEM=y
+CONFIG_HZ_100=y
+CONFIG_MIPS_RAW_APPENDED_DTB=y
+CONFIG_MIPS_CMDLINE_FROM_DTB=y
+# CONFIG_SUSPEND is not set
+# CONFIG_STACKPROTECTOR is not set
+# CONFIG_COMPAT_32BIT_TIME is not set
+# CONFIG_BLK_DEV_BSG is not set
+# CONFIG_MQ_IOSCHED_DEADLINE is not set
+# CONFIG_MQ_IOSCHED_KYBER is not set
+# CONFIG_COREDUMP is not set
+CONFIG_CMA=y
+CONFIG_DEVTMPFS=y
+CONFIG_DEVTMPFS_MOUNT=y
+# CONFIG_STANDALONE is not set
+# CONFIG_PREVENT_FIRMWARE_BUILD is not set
+# CONFIG_FW_LOADER is not set
+# CONFIG_ALLOW_DEV_COREDUMP is not set
+CONFIG_MTD=y
+CONFIG_MTD_BLOCK=y
+CONFIG_MTD_RAW_NAND=y
+CONFIG_MTD_UBI=y
+CONFIG_MTD_UBI_FASTMAP=y
+CONFIG_BLK_DEV_LOOP=y
+CONFIG_BLK_DEV_LOOP_MIN_COUNT=0
+CONFIG_INPUT_EVDEV=y
+# CONFIG_KEYBOARD_ATKBD is not set
+CONFIG_KEYBOARD_GPIO=y
+# CONFIG_INPUT_MOUSE is not set
+# CONFIG_SERIO is not set
+# CONFIG_CONSOLE_TRANSLATIONS is not set
+# CONFIG_UNIX98_PTYS is not set
+# CONFIG_LEGACY_PTYS is not set
+# CONFIG_LDISC_AUTOLOAD is not set
+# CONFIG_HW_RANDOM is not set
+# CONFIG_DEVMEM is not set
+# CONFIG_I2C_COMPAT is not set
+CONFIG_I2C_GPIO=y
+CONFIG_I2C_JZ4780=y
+CONFIG_SPI=y
+CONFIG_SPI_GPIO=y
+CONFIG_CHARGER_GPIO=y
+# CONFIG_HWMON is not set
+CONFIG_WATCHDOG=y
+CONFIG_JZ4740_WDT=y
+CONFIG_REGULATOR=y
+CONFIG_REGULATOR_FIXED_VOLTAGE=y
+CONFIG_REGULATOR_ACT8865=y
+CONFIG_DRM=y
+CONFIG_DRM_MIPI_DBI_SPI=y
+CONFIG_DRM_PANEL_AUO_A030JTN01=y
+CONFIG_DRM_PANEL_ABT_Y030XX067A=y
+CONFIG_DRM_PANEL_SIMPLE=y
+CONFIG_DRM_PANEL_INNOLUX_EJ030NA=y
+CONFIG_DRM_PANEL_NEWVISION_NV3052C=y
+CONFIG_DRM_PANEL_NOVATEK_NT39016=y
+CONFIG_DRM_ITE_IT6610=y
+CONFIG_DRM_ITE_IT66121=y
+CONFIG_DRM_INGENIC=y
+CONFIG_BACKLIGHT_CLASS_DEVICE=y
+CONFIG_BACKLIGHT_PWM=y
+# CONFIG_VGA_CONSOLE is not set
+CONFIG_FRAMEBUFFER_CONSOLE=y
+CONFIG_USB_CONN_GPIO=y
+CONFIG_USB_MUSB_HDRC=y
+CONFIG_USB_MUSB_JZ4740=y
+CONFIG_USB_INVENTRA_DMA=y
+CONFIG_USB_GADGET=y
+CONFIG_USB_CONFIGFS=y
+CONFIG_USB_CONFIGFS_F_FS=y
+CONFIG_MMC=y
+# CONFIG_PWRSEQ_EMMC is not set
+# CONFIG_PWRSEQ_SIMPLE is not set
+CONFIG_MMC_JZ4740=y
+CONFIG_MMC_HSQ=y
+CONFIG_NEW_LEDS=y
+CONFIG_LEDS_CLASS=y
+CONFIG_LEDS_GPIO=y
+CONFIG_RTC_CLASS=y
+# CONFIG_RTC_SYSTOHC is not set
+# CONFIG_RTC_NVMEM is not set
+# CONFIG_RTC_INTF_SYSFS is not set
+# CONFIG_RTC_INTF_PROC is not set
+# CONFIG_RTC_INTF_DEV is not set
+CONFIG_RTC_DRV_JZ4740=y
+CONFIG_DMADEVICES=y
+CONFIG_DMA_JZ4780=y
+# CONFIG_VIRTIO_MENU is not set
+# CONFIG_VHOST_MENU is not set
+# CONFIG_MIPS_PLATFORM_DEVICES is not set
+# CONFIG_INGENIC_CGU_JZ4780 is not set
+# CONFIG_INGENIC_CGU_X1000 is not set
+# CONFIG_INGENIC_CGU_X1830 is not set
+CONFIG_INGENIC_OST=y
+# CONFIG_IOMMU_SUPPORT is not set
+CONFIG_MEMORY=y
+CONFIG_JZ4780_NEMC=y
+CONFIG_PWM=y
+CONFIG_PWM_JZ4740=y
+CONFIG_PHY_INGENIC_USB=y
+# CONFIG_NVMEM is not set
+CONFIG_EXT4_FS=y
+CONFIG_F2FS_FS=y
+# CONFIG_F2FS_STAT_FS is not set
+# CONFIG_F2FS_FS_XATTR is not set
+CONFIG_F2FS_FS_COMPRESSION=y
+# CONFIG_F2FS_FS_LZO is not set
+# CONFIG_F2FS_FS_LZ4 is not set
+# CONFIG_FILE_LOCKING is not set
+# CONFIG_DNOTIFY is not set
+# CONFIG_INOTIFY_USER is not set
+CONFIG_VFAT_FS=y
+CONFIG_UBIFS_FS=y
+CONFIG_UBIFS_FS_ADVANCED_COMPR=y
+# CONFIG_UBIFS_FS_XATTR is not set
+CONFIG_NLS_CODEPAGE_437=y
+CONFIG_NLS_ISO8859_1=y
+# CONFIG_SYMBOLIC_ERRNAME is not set
+CONFIG_DEBUG_SECTION_MISMATCH=y
+# CONFIG_SECTION_MISMATCH_WARN_ONLY is not set
+# CONFIG_DEBUG_MISC is not set
+# CONFIG_FTRACE is not set
+CONFIG_CMDLINE_BOOL=y
+CONFIG_CMDLINE="root=/dev/mmcblk0p1 rootfstype=vfat rootwait ro 
+init=/mininit-syspart"
+# CONFIG_RUNTIME_TESTING_MENU is not set
+
+
