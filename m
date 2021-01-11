@@ -2,71 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D15A12F10C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:05:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C15352F10C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:05:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729533AbhAKLEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:04:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49964 "EHLO
+        id S1729572AbhAKLFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:05:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727747AbhAKLEi (ORCPT
+        with ESMTP id S1728387AbhAKLFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:04:38 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23214C061794;
-        Mon, 11 Jan 2021 03:03:58 -0800 (PST)
-Received: from zn.tnic (p200300ec2f088f0076781dde3322831e.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:8f00:7678:1dde:3322:831e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9F9771EC0304;
-        Mon, 11 Jan 2021 12:03:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1610363036;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=UakkcWenq1z7BJChiF5DJB9KugQPmWGiKzxCrVkRxtM=;
-        b=d8CAAgxEWT3neFXZIU/nOYd80kmOKIeE1hd8hoRXg7PtaNUoePEahwDHE/xuYHwDyAYisf
-        SJtieBaOHOTS9tpJGtcn16FFyv7LFcKSKhzkdZWs/h0nKkW+jJ2rUy8SdenxnVJ5Db0bF4
-        RtuqRjfIIIP3xh9p2La10ak/MTTZBOY=
-Date:   Mon, 11 Jan 2021 12:03:51 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        hpa@zytor.com, tony.luck@intel.com, dave.hansen@intel.com,
-        seanjc@google.com, fenghua.yu@intel.com, thomas.lendacky@amd.com,
-        kyung.min.park@intel.com, kim.phillips@amd.com,
-        mgross@linux.intel.com, peterz@infradead.org,
-        krish.sadhukhan@oracle.com, liam.merwick@oracle.com,
-        mlevitsk@redhat.com, reinette.chatre@intel.com, babu.moger@amd.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        TimGuo-oc@zhaoxin.com, CooperYan@zhaoxin.com,
-        QiyuanWang@zhaoxin.com, HerryYang@zhaoxin.com,
-        CobeChen@zhaoxin.com, SilviaZhao@zhaoxin.com
-Subject: Re: [PATCH v1 1/3] x86/cpufeatures: Add low performance CRC32C
- instruction CPU feature
-Message-ID: <20210111110351.GC25645@zn.tnic>
-References: <1610000348-17316-1-git-send-email-TonyWWang-oc@zhaoxin.com>
- <1610000348-17316-2-git-send-email-TonyWWang-oc@zhaoxin.com>
- <20210107063750.GA14697@zn.tnic>
- <871e93d3-701e-86cd-6454-19fbb083d0c5@zhaoxin.com>
+        Mon, 11 Jan 2021 06:05:03 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1A5C061786;
+        Mon, 11 Jan 2021 03:04:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=L+GBxSxQTI4Xb+fBuV7rsaceskolDWPmYIZDlSCrKEA=; b=Sb6+uLCnIDe9NNSGTDhKzutUR
+        3XCa5whm7rOxRR2NqRXfjjnuMhKhz2ginjFbvJi/KOEwMYKQnkby0iYFFyVCayFxgrXbSoMdYUeV6
+        tmD562vzE6D9MZp/yRnWkbzGbjHzv90Haeejy9+IRa/plE6JHMM7ZFF7ExcVtAr+Pa/F1de836+79
+        2pLD9tOzsHgdMbVvoxq9jydHrE/N3CMs96arbO/hEI0LLvSbHSMhJX65fS+I35XiZO05y4XTGbXFj
+        EsUTwkmUBuZ1zWjWu8C6OUA5u/gmQ7cssfqiftQLA1J3MD2cLhpgj+7yRoxjWQSBEQ0wugwRfKcO8
+        TB485TmFg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46558)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kyuzb-0006rM-1o; Mon, 11 Jan 2021 11:04:11 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kyuzX-0005At-T2; Mon, 11 Jan 2021 11:04:07 +0000
+Date:   Mon, 11 Jan 2021 11:04:07 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
+        Frank Wunderlich <frank-w@public-files.de>
+Subject: Re: [PATCH net-next 2/2] drivers: net: dsa: mt7530: MT7530 optional
+ GPIO support
+Message-ID: <20210111110407.GR1551@shell.armlinux.org.uk>
+References: <20210111054428.3273-1-dqfext@gmail.com>
+ <20210111054428.3273-3-dqfext@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <871e93d3-701e-86cd-6454-19fbb083d0c5@zhaoxin.com>
+In-Reply-To: <20210111054428.3273-3-dqfext@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 06:51:59PM +0800, Tony W Wang-oc wrote:
-> This issue will be enhanced by hardware and patch submit will be pending.
+On Mon, Jan 11, 2021 at 01:44:28PM +0800, DENG Qingfang wrote:
+> +static int
+> +mt7530_gpio_direction_output(struct gpio_chip *gc, unsigned int offset, int value)
+> +{
+> +	struct mt7530_priv *priv = gpiochip_get_data(gc);
+> +	u32 bit = mt7530_gpio_to_bit(offset);
+> +
+> +	mt7530_set(priv, MT7530_LED_GPIO_DIR, bit);
+> +	mt7530_set(priv, MT7530_LED_GPIO_OE, bit);
+> +	mt7530_gpio_set(gc, offset, value);
 
-I have no clue what that has to do with your current patch... you might
-need to explain more verbosely.
+FYI, Documentation/driver-api/gpio/consumer.rst says:
+
+  For output GPIOs, the value provided becomes the initial output value.
+  This helps avoid signal glitching during system startup.
+
+Setting the pin to be an output, and then setting its initial value
+does not avoid the glitch. You may wish to investigate whether you
+can set the value before setting the pin as an output to avoid this
+issue.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
