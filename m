@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981EA2F1547
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:38:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA41E2F1539
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:37:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731753AbhAKNNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:13:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59032 "EHLO mail.kernel.org"
+        id S1731782AbhAKNNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:13:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730994AbhAKNM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:12:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CC9A22250F;
-        Mon, 11 Jan 2021 13:12:11 +0000 (UTC)
+        id S1730999AbhAKNMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:12:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CD8E2255F;
+        Mon, 11 Jan 2021 13:12:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370732;
-        bh=JBQRMPwzIFk3BqsNYbbGrUdQvze5NXP34K6QtpsmpPY=;
+        s=korg; t=1610370734;
+        bh=TDmRcODaA1zi6IDRn+XzSDrBCs4+1dO5A6xNwn0w2fE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OzT3vNmRaReonBwtE7RgdhyH3ZiXqhHIZXfKIG3PBT10gnV8Bmb3W0FPTKN+yjYz5
-         s1CkJuNYX1wsSeixMPSg9FqNyzbY+gxS8hA4I5uz1gFXYexqdnLEvoFWEzfYODToTT
-         qll8mBJWGMo2KUTosUcARjmoKHlLHDF2Nq6vKDOI=
+        b=K7sqV5d9iJmK8l5EKr09XVUqHXAA5jFb1K0sdoV4Xaxwi7GXice6yEY6AQ33LNprA
+         JB6bNDuTkZ9RpkQpMAw/DMOoQ7H/avz8TRhz9OhKMImtLHlzMoJW4ocdygTosT/+wl
+         8L11F19jYjrZ0JzXX+ZUeYwgJq+uMr975FQ1Gs+E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eddie Hung <eddie.hung@mediatek.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Peter Chen <peter.chen@nxp.com>
-Subject: [PATCH 5.4 74/92] usb: gadget: configfs: Fix use-after-free issue with udc_name
-Date:   Mon, 11 Jan 2021 14:02:18 +0100
-Message-Id: <20210111130042.718347779@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 5.4 75/92] USB: serial: keyspan_pda: remove unused variable
+Date:   Mon, 11 Jan 2021 14:02:19 +0100
+Message-Id: <20210111130042.768400152@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
 References: <20210111130039.165470698@linuxfoundation.org>
@@ -40,72 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eddie Hung <eddie.hung@mediatek.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit 64e6bbfff52db4bf6785fab9cffab850b2de6870 upstream.
+Remove an unused variable which was mistakingly left by commit
+37faf5061541 ("USB: serial: keyspan_pda: fix write-wakeup
+use-after-free") and only removed by a later change.
 
-There is a use-after-free issue, if access udc_name
-in function gadget_dev_desc_UDC_store after another context
-free udc_name in function unregister_gadget.
+This is needed to suppress a W=1 warning about the unused variable in
+the stable trees that the build bots triggers.
 
-Context 1:
-gadget_dev_desc_UDC_store()->unregister_gadget()->
-free udc_name->set udc_name to NULL
-
-Context 2:
-gadget_dev_desc_UDC_show()-> access udc_name
-
-Call trace:
-dump_backtrace+0x0/0x340
-show_stack+0x14/0x1c
-dump_stack+0xe4/0x134
-print_address_description+0x78/0x478
-__kasan_report+0x270/0x2ec
-kasan_report+0x10/0x18
-__asan_report_load1_noabort+0x18/0x20
-string+0xf4/0x138
-vsnprintf+0x428/0x14d0
-sprintf+0xe4/0x12c
-gadget_dev_desc_UDC_show+0x54/0x64
-configfs_read_file+0x210/0x3a0
-__vfs_read+0xf0/0x49c
-vfs_read+0x130/0x2b4
-SyS_read+0x114/0x208
-el0_svc_naked+0x34/0x38
-
-Add mutex_lock to protect this kind of scenario.
-
-Signed-off-by: Eddie Hung <eddie.hung@mediatek.com>
-Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
-Reviewed-by: Peter Chen <peter.chen@nxp.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/1609239215-21819-1-git-send-email-macpaul.lin@mediatek.com
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/gadget/configfs.c |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ drivers/usb/serial/keyspan_pda.c |    2 --
+ 1 file changed, 2 deletions(-)
 
---- a/drivers/usb/gadget/configfs.c
-+++ b/drivers/usb/gadget/configfs.c
-@@ -233,9 +233,16 @@ static ssize_t gadget_dev_desc_bcdUSB_st
- 
- static ssize_t gadget_dev_desc_UDC_show(struct config_item *item, char *page)
+--- a/drivers/usb/serial/keyspan_pda.c
++++ b/drivers/usb/serial/keyspan_pda.c
+@@ -555,10 +555,8 @@ exit:
+ static void keyspan_pda_write_bulk_callback(struct urb *urb)
  {
--	char *udc_name = to_gadget_info(item)->composite.gadget_driver.udc_name;
-+	struct gadget_info *gi = to_gadget_info(item);
-+	char *udc_name;
-+	int ret;
+ 	struct usb_serial_port *port = urb->context;
+-	struct keyspan_pda_private *priv;
  
--	return sprintf(page, "%s\n", udc_name ?: "");
-+	mutex_lock(&gi->lock);
-+	udc_name = gi->composite.gadget_driver.udc_name;
-+	ret = sprintf(page, "%s\n", udc_name ?: "");
-+	mutex_unlock(&gi->lock);
-+
-+	return ret;
- }
+ 	set_bit(0, &port->write_urbs_free);
+-	priv = usb_get_serial_port_data(port);
  
- static int unregister_gadget(struct gadget_info *gi)
+ 	/* queue up a wakeup at scheduler time */
+ 	usb_serial_port_softint(port);
 
 
