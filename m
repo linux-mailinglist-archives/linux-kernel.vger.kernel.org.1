@@ -2,72 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C372F1A23
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:53:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 911532F1A18
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:53:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388286AbhAKPwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:52:13 -0500
-Received: from mga17.intel.com ([192.55.52.151]:23997 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731466AbhAKPwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:52:09 -0500
-IronPort-SDR: okogNNFDjef2Tg6suwu/QxcK564K52C2sXl5BmfKoqcnMqbSOD+yuM9bamq8Fm4hK3Lbw9y4Ew
- 9vxJiz69zy+A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9860"; a="157661823"
-X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
-   d="scan'208";a="157661823"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 07:51:29 -0800
-IronPort-SDR: DILJyjPplbo5AgKrMCFvYkVOWnMtMGib8BhiefjKjcFb58AtybpMdq7egI+to/MDv4ZCNyBWy8
- /Ct8PB53698w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,338,1602572400"; 
-   d="scan'208";a="404152377"
-Received: from zulkifl3-ilbpg0.png.intel.com ([10.88.229.114])
-  by FMSMGA003.fm.intel.com with ESMTP; 11 Jan 2021 07:51:27 -0800
-From:   Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
-To:     ulf.hansson@linaro.org, michal.simek@xilinx.com,
-        linux-mmc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     adrian.hunter@intel.com, andriy.shevchenko@intel.com,
-        muhammad.husaini.zulkifli@intel.com
-Subject: [PATCH v1 2/2] mmc: sdhci-of-arasan: Change code style of mapping the syscon field
-Date:   Mon, 11 Jan 2021 23:50:01 +0800
-Message-Id: <20210111155001.12307-3-muhammad.husaini.zulkifli@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210111155001.12307-1-muhammad.husaini.zulkifli@intel.com>
-References: <20210111155001.12307-1-muhammad.husaini.zulkifli@intel.com>
+        id S1733055AbhAKPvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:51:42 -0500
+Received: from outbound-smtp34.blacknight.com ([46.22.139.253]:44923 "EHLO
+        outbound-smtp34.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730658AbhAKPvk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 10:51:40 -0500
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp34.blacknight.com (Postfix) with ESMTPS id 8BAE418B3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 15:50:49 +0000 (GMT)
+Received: (qmail 15189 invoked from network); 11 Jan 2021 15:50:49 -0000
+Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPA; 11 Jan 2021 15:50:49 -0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Li Aubrey <aubrey.li@linux.intel.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>
+Subject: [PATCH 0/5] Scan for an idle sibling in a single pass
+Date:   Mon, 11 Jan 2021 15:50:42 +0000
+Message-Id: <20210111155047.10657-1-mgorman@techsingularity.net>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change code style of mapping the syscon in sdhci_arasan_update_support64b()
-for readability and consistency.
+This series of 5 patches reposts three patches from Peter entitled
+"select_idle_sibling() wreckage". It only scans the runqueues in a single
+pass when searching for an idle sibling.
 
-Signed-off-by: Muhammad Husaini Zulkifli <muhammad.husaini.zulkifli@intel.com>
-Acked-by: Andy Shevchenko <andriy.shevchenko@intel.com>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
----
- drivers/mmc/host/sdhci-of-arasan.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Two patches from Peter were dropped. The first patch altered how scan
+depth was calculated. Scan depth deletion is a random number generator
+with two major limitations. The avg_idle time is based on the time
+between a CPU going idle and being woken up clamped approximately by
+2*sysctl_sched_migration_cost.  This is difficult to compare in a sensible
+fashion to avg_scan_cost. The second issue is that only the avg_scan_cost
+of scan failures is recorded and it does not decay.  This requires deeper
+surgery that would justify a patch on its own although Peter notes that
+https://lkml.kernel.org/r/20180530143105.977759909@infradead.org is
+potentially useful for an alternative avg_idle metric.
 
-diff --git a/drivers/mmc/host/sdhci-of-arasan.c b/drivers/mmc/host/sdhci-of-arasan.c
-index 643313687b5e..8a406b62c6ad 100644
---- a/drivers/mmc/host/sdhci-of-arasan.c
-+++ b/drivers/mmc/host/sdhci-of-arasan.c
-@@ -1395,10 +1395,10 @@ static void sdhci_arasan_update_support64b(struct sdhci_host *host, u32 value)
- {
- 	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
- 	struct sdhci_arasan_data *sdhci_arasan = sdhci_pltfm_priv(pltfm_host);
--	const struct sdhci_arasan_soc_ctl_map *soc_ctl_map =
--		sdhci_arasan->soc_ctl_map;
-+	const struct sdhci_arasan_soc_ctl_map *soc_ctl_map;
- 
- 	/* Having a map is optional */
-+	soc_ctl_map = sdhci_arasan->soc_ctl_map;
- 	if (!soc_ctl_map)
- 		return;
- 
+The second patch dropped converted the idle core scan throttling
+mechanism to SIS_PROP. While this would unify the throttling of core
+and CPU scanning, it was not free of regressions and has_idle_cores is
+a fairly effective throttling mechanism with the caveat that it can have
+a lot of false positives for workloads like hackbench.
+
+Peter's series tried to solve three problems at once, this subset addresses
+one problem. As with anything select_idle_sibling, it's a mix of wins and
+losses but won more than it lost across a range of workloads and machines.
+
+ kernel/sched/core.c     |  19 +++--
+ kernel/sched/fair.c     | 157 ++++++++++++++++++++--------------------
+ kernel/sched/features.h |   1 -
+ 3 files changed, 92 insertions(+), 85 deletions(-)
+
 -- 
-2.17.1
+2.26.2
 
