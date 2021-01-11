@@ -2,97 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F892F14D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:32:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92F3F2F1506
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:34:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732985AbhAKNa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:30:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732941AbhAKNay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:30:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81C82221FF;
-        Mon, 11 Jan 2021 13:30:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610371813;
-        bh=9u2HWgUS7+SBF2cXUUEJwwSvQMwtFkX8ve6mtxwTAK0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i33J0sYvklsC5LMvdOiZUD222Ye0+QMPyCyLIs77djWJf8gtM9OjQJD7ZUVdeco7C
-         oLud5b0oRQ3ocbVbqoWB0rrbZhNnejHE0an6HIOIpJaMlBybFr2Wtq94iCJqXaEjJ5
-         G5INIwpk5ke9G6Ww2eGWRmXHfhd5rkfD0odRytJRMcM82dPrMxSmcx0kc/0bcLPqsX
-         XO2YRb4YZDg87YDFkl8lFlVP1DnbLMggGPL0gY9Bc4bj5ncNkDPQ25Q4v0bTHL5GWg
-         Ue7LcULTBfONfDe4SFGPKNax/ecxXFN7zbtaZ4Tg6LStZiDjWagL3ONBsc1VCthFFC
-         wZRs9Kj8n2aqQ==
-Date:   Mon, 11 Jan 2021 13:30:08 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Hugh Dickins <hughd@google.com>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH v2 0/3] Create 'old' ptes for faultaround mappings on
- arm64 with hardware access flag
-Message-ID: <20210111133007.GA7642@willie-the-truck>
-References: <20210108171517.5290-1-will@kernel.org>
- <CAHk-=wg3UkUdiTbqWFx3zBLXv9VJHuNZAa5QyDvXiSmD4gX94A@mail.gmail.com>
+        id S2387528AbhAKNeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:34:23 -0500
+Received: from mail-ed1-f51.google.com ([209.85.208.51]:33620 "EHLO
+        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732133AbhAKNeO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:34:14 -0500
+Received: by mail-ed1-f51.google.com with SMTP id j16so18879216edr.0;
+        Mon, 11 Jan 2021 05:33:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9LXcLQjLFUIZwVreL9T4LwAn0Ka22u3rRcDfj0mv29s=;
+        b=mPFgJF/Da5WqbAfNGkKhs0dOlIi0Lh9+HC1rYL6XXrBQJ6XJrrbsDxiHYG3iBCbJXy
+         TtvWx4P6mhZ6qRU+aDzBZCQQK/8r9CwYWfYcEvKwDW5VH4FqXp5fzEpeDHE9pT1Mtsre
+         1e25dkuq+4iUnbXyZUrjzOHx6isiH/lY9AnyHXnh8y1SHsBZp2qqIzzcvXgN/rK2bQmv
+         lBt7TRlXrW5rlB/dkzaov1u98u+ngtCoLasXpaxLJNUdJ69ABAi1E6KLPLZ7OxY4SalX
+         pS4PM0APbN53v3g0J5+2WTXICxkU3a4MYOwejcdQtzLEpuJeWRIo56aHYll1X2jswiXh
+         p1nQ==
+X-Gm-Message-State: AOAM532q+iGl67zWDXVUXFwaCcxqd+hPMZ/RqdBACdRgqfLCyKG1iTVz
+        RDOyRtDhQosZZybiDYaePLo=
+X-Google-Smtp-Source: ABdhPJzcO4R3XJgyHaTn67pp9BxEeB1a9oXk0gmETOpMRyDWZfAG+7U8td7yKEnnIP4Uy4GAAy0zOA==
+X-Received: by 2002:a50:fc8b:: with SMTP id f11mr14123754edq.11.1610372012763;
+        Mon, 11 Jan 2021 05:33:32 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id rs27sm7116396ejb.21.2021.01.11.05.33.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 05:33:31 -0800 (PST)
+Date:   Mon, 11 Jan 2021 14:33:30 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-rtc@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v4 1/3] rtc: s5m: select REGMAP_I2C
+Message-ID: <20210111133330.GA34341@kozik-lap>
+References: <20210111124027.21586-1-brgl@bgdev.pl>
+ <20210111124027.21586-2-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wg3UkUdiTbqWFx3zBLXv9VJHuNZAa5QyDvXiSmD4gX94A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210111124027.21586-2-brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 11:34:08AM -0800, Linus Torvalds wrote:
-> On Fri, Jan 8, 2021 at 9:15 AM Will Deacon <will@kernel.org> wrote:
-> >
-> > The big difference in this version is that I have reworked it based on
-> > Kirill's patch which he posted as a follow-up to the original. However,
-> > I can't tell where we've landed on that -- Linus seemed to like it, but
-> > Hugh was less enthusiastic.
+On Mon, Jan 11, 2021 at 01:40:25PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> Yeah, I like it, but I have to admit that it had a disturbingly high
-> number of small details wrong for several versions. I hope you picked
-> up the final version of the code.
-
-I picked the version from here:
-
-  https://lore.kernel.org/r/20201229132819.najtavneutnf7ajp@box
-
-and actually, I just noticed that willy spotted a typo in a comment, so
-I'll fix that locally as well as adding the above to a 'Link:' tag for
-reference.
-
-> At the same time, I do think that the "disturbingly high number of
-> issues" was primarily exactly _because_ the old code was so
-> incomprehensible, and I think the end result is much cleaner, so I
-> still like it.
+> The rtc-s5m uses the I2C regmap but doesn't select it in Kconfig so
+> depending on the configuration the build may fail. Fix it.
 > 
-> >I think that my subsequent patches are an
-> > awful lot cleaner after the rework
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+>  drivers/rtc/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Yeah, I think that's a side effect of "now the code really makes a lot
-> more sense". Your subsequent patches 2-3 certainly are much simpler
-> now, although I'd be inclined to add an argument to "do_set_pte()"
-> that has the "write" and "pretault" bits in it, instead of having to
-> modify the 'vmf' structure.
 
-I played with a few different ways of doing this, but I can't say I prefer
-them over what I ended up posting. Having a bunch of 'bool' arguments makes
-the callers hard to read and brings into question what exactly vmf->flags is
-for. I also tried adding a separate 'address' parameter so that vmf->address
-is always the real faulting address, but 'address' is the thing to use for
-the pte (i.e. prefault is when 'address != vmf->address'). That wasn't too
-bad, but it made the normal finish_fault() case look weird.
+Fixes: 959df7778bbd ("rtc: Enable compile testing for Maxim and Samsung drivers")
 
-So I think I'll leave it as-is and see if anybody wants to change it later
-on.
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Will
+Best regards,
+Krzysztof
