@@ -2,106 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541522F12A8
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8F42F12A7
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:57:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727591AbhAKM5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 07:57:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47986 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727114AbhAKM5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 07:57:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DB4B20728;
-        Mon, 11 Jan 2021 12:56:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610369818;
-        bh=WAlsCM2z9lOTHqMg7LOk+d/mYCm8oj+S8UjSrkvBjfg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jqDAhg3fraQzP9QEVTZVVCDBqLXckaEooiJu34wRg8mrzJ6EnqdcKoUAlilUO+/cU
-         l10VWsy/iCXNbfEISrgdNMHfOLDhKs7B0t5Jstsn2XSG4Brc1feRRNmGXe5/W2PmqS
-         zd0Wd6YxuJSMD2Mq1GKbuMle529+XLDUQBLV16Yc7HsSFyfkCD3BY3lZiEz4bB5YWw
-         W+xFRDsl8D0oO29D5LK0DYo0S3kTFLbdNnUXJnYUjTdsDLkyuAw6MMAc1g82kUoxip
-         dinZ0pddlq5DM0KGPM9PITDFoZHSPhaYMtmfHRTcSuqPmfrDtm0kbzaJ+zjjS4XFMY
-         BUgHYnTPk6auA==
-Date:   Mon, 11 Jan 2021 13:56:55 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org
-Subject: Re: [RFC PATCH 6/8] sched: Report local wake up on resched blind
- zone within idle loop
-Message-ID: <20210111125655.GF242508@lothringen>
-References: <20210109020536.127953-1-frederic@kernel.org>
- <20210109020536.127953-7-frederic@kernel.org>
- <X/xD1/yjYXi28XXs@hirez.programming.kicks-ass.net>
+        id S1727635AbhAKM5r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 07:57:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727114AbhAKM5r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 07:57:47 -0500
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0864C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 04:57:06 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by michel.telenet-ops.be with bizsmtp
+        id FQx42400V4C55Sk06Qx4bv; Mon, 11 Jan 2021 13:57:05 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kywkp-002prj-TH; Mon, 11 Jan 2021 13:57:03 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kywkp-001VrE-AU; Mon, 11 Jan 2021 13:57:03 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] drm/bridge: nwl-dsi: Avoid potential multiplication overflow on 32-bit
+Date:   Mon, 11 Jan 2021 13:57:02 +0100
+Message-Id: <20210111125702.360745-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/xD1/yjYXi28XXs@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 01:25:59PM +0100, Peter Zijlstra wrote:
-> On Sat, Jan 09, 2021 at 03:05:34AM +0100, Frederic Weisbecker wrote:
-> > The idle loop has several need_resched() checks that make sure we don't
-> > miss a rescheduling request. This means that any wake up performed on
-> > the local runqueue after the last generic need_resched() check is going
-> > to have its rescheduling silently ignored. This has happened in the
-> > past with rcu kthreads awaken from rcu_idle_enter() for example.
-> > 
-> > Perform sanity checks to report these situations.
-> 
-> I really don't like this..
-> 
->  - it's too specific to the actual reschedule condition, any wakeup this
->    late is dodgy, not only those that happen to cause a local
->    reschedule.
+As nwl_dsi.lanes is u32, and NSEC_PER_SEC is 1000000000L, the second
+multiplication in
 
-Right.
+    dsi->lanes * 8 * NSEC_PER_SEC
 
-> 
->  - we can already test this with unwind and checking against __cpuidle
-> 
->  - moving all of __cpuidle into noinstr would also cover this. And we're
->    going to have to do that anyway.
+will overflow on a 32-bit platform.  Fix this by making the constant
+unsigned long long, forcing 64-bit arithmetic.
 
-Ok then, I'll wait for that instead.
+While iMX8 is arm64, this driver is currently used on 64-bit platforms
+only, where long is 64-bit, so this cannot happen.  But the issue may
+start to happen when the driver is reused for a 32-bit SoC, or when code
+is copied for a new driver.
 
-> 
-> > +void noinstr sched_resched_local_assert_allowed(void)
-> > +{
-> > +	if (this_rq()->resched_local_allow)
-> > +		return;
-> > +
-> 
-> > +	/*
-> > +	 * Idle interrupts break the CPU from its pause and
-> > +	 * rescheduling happens on idle loop exit.
-> > +	 */
-> > +	if (in_hardirq())
-> > +		return;
-> > +
-> > +	/*
-> > +	 * What applies to hardirq also applies to softirq as
-> > +	 * we assume they execute on hardirq tail. Ksoftirqd
-> > +	 * shouldn't have resched_local_allow == 0.
-> > +	 * We also assume that no local_bh_enable() call may
-> > +	 * execute softirqs inline on fragile idle/entry
-> > +	 * path...
-> > +	 */
-> > +	if (in_serving_softirq())
-> > +		return;
-> > +
-> > +	WARN_ONCE(1, "Late current task rescheduling may be lost\n");
-> 
-> That seems like it wants to be:
-> 
-> 	WARN_ONCE(in_task(), "...");
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+Compile-tested only.
+---
+ drivers/gpu/drm/bridge/nwl-dsi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Right! But I guess I'll drop that patch now.
+diff --git a/drivers/gpu/drm/bridge/nwl-dsi.c b/drivers/gpu/drm/bridge/nwl-dsi.c
+index 66b67402f1acd57d..a8da3081efdcc84e 100644
+--- a/drivers/gpu/drm/bridge/nwl-dsi.c
++++ b/drivers/gpu/drm/bridge/nwl-dsi.c
+@@ -195,7 +195,7 @@ static u32 ps2bc(struct nwl_dsi *dsi, unsigned long long ps)
+ 	u32 bpp = mipi_dsi_pixel_format_to_bpp(dsi->format);
+ 
+ 	return DIV64_U64_ROUND_UP(ps * dsi->mode.clock * bpp,
+-				  dsi->lanes * 8 * NSEC_PER_SEC);
++				  dsi->lanes * 8ULL * NSEC_PER_SEC);
+ }
+ 
+ /*
+-- 
+2.25.1
 
-Thanks.
