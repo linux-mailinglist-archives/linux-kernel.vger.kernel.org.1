@@ -2,227 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 635FD2F121A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:06:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1CFA2F1219
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726784AbhAKMF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 07:05:28 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:43661 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726125AbhAKMF1 (ORCPT
+        id S1726737AbhAKMFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 07:05:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726125AbhAKMFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 07:05:27 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610366700; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=P6fim5Tz2QEHSDbi95F4RGXF3HiX1EPKCKQvMfPse7M=; b=EvVH7lvuCX3PcBTCsNLQTwhs/kDQonbMWtIXqBpVCLFQhVNHui+cTNJEChW3G/oIc2QRwvaQ
- JC2J4jSKOL+Us3a5l2heNvkIpsxJVTnRpWRSHp7Y3SRIOkirE7jY4BXj704aEJrhlBIISNs9
- OiDcJaVLMabRGsBMgZVkb/YyU3A=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5ffc3ed2af68fb3b06d8b9e1 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 12:04:34
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B92A6C43465; Mon, 11 Jan 2021 12:04:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6C3E6C433CA;
-        Mon, 11 Jan 2021 12:04:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6C3E6C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Rob Clark <robdclark@gmail.com>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        angelogioacchino.delregno@somainline.org
-Cc:     linux-arm-msm@vger.kernel.org,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-kernel@vger.kernel.org,
-        Kristian H Kristensen <hoegsberg@google.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCH 2/2] drm/msm/a6xx: Create an A6XX GPU specific address space
-Date:   Mon, 11 Jan 2021 17:34:09 +0530
-Message-Id: <c5848b1c15765c8d6db7de2305baac856e818f12.1610366113.git.saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <cover.1610366113.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1610366113.git.saiprakash.ranjan@codeaurora.org>
+        Mon, 11 Jan 2021 07:05:20 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B170C061795;
+        Mon, 11 Jan 2021 04:04:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=okJh5T5JUHbtQcEyhttfzXGbXcDNpFBisqV852wbo54=; b=ZKDb0wZq+jCuCP9Y+2OVH8d+Vt
+        MqQTH4ohAtniBycrO5uiMvWbwaY2qEl89UvIrtV+N/QVNXGHcXE7dQaviHQRMTppQO3d6yPO5QTjh
+        XwhVViwOolFRI0tULQLm6eGkuLXIh5+laEhcGA1ZEGA4nbcIs7Mq4nxaqgNQqSTDIe2LrPapcwuZg
+        1Kgp3CygQn/y8a1eg9x8eE62DT/n0pf7fUYOuP476Fp0kiha38Z1sCYpByjK3NJZy7mPC6Y/pXNUy
+        +gth0IVV34C4Dc3ZEi102m/1F3kRWH+7Zl5Gt4cDgqRZSY6p6FwdNMj9QnbsC7qvMT92/jZBG/FqS
+        aWhB1D0Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kyvvz-0007Z7-My; Mon, 11 Jan 2021 12:04:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DE40B30015A;
+        Mon, 11 Jan 2021 13:04:24 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C53B82BB727A5; Mon, 11 Jan 2021 13:04:24 +0100 (CET)
+Date:   Mon, 11 Jan 2021 13:04:24 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org
+Subject: Re: [RFC PATCH 4/8] rcu/nocb: Trigger self-IPI on late deferred wake
+ up before user resume
+Message-ID: <X/w+yJmCBnDWxtoE@hirez.programming.kicks-ass.net>
+References: <20210109020536.127953-1-frederic@kernel.org>
+ <20210109020536.127953-5-frederic@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210109020536.127953-5-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A6XX GPUs have support for last level cache(LLC) also known
-as system cache and need to set the bus attributes to
-use it. Currently we use a generic adreno iommu address space
-implementation which are also used by older GPU generations
-which do not have LLC and might introduce issues accidentally
-and is not clean in a way that anymore additions of GPUs
-supporting LLC would have to be guarded under ifdefs. So keep
-the generic code separate and make the address space creation
-A6XX specific. We also have a helper to set the llc attributes
-so that if the newer GPU generations do support them, we can
-use it instead of open coding domain attribute setting for each
-GPU.
+On Sat, Jan 09, 2021 at 03:05:32AM +0100, Frederic Weisbecker wrote:
+> Entering RCU idle mode may cause a deferred wake up of an RCU NOCB_GP
+> kthread (rcuog) to be serviced.
+> 
+> Unfortunately the call to rcu_user_enter() is already past the last
+> rescheduling opportunity before we resume to userspace or to guest mode.
+> We may escape there with the woken task ignored.
+> 
+> The ultimate resort to fix every callsites is to trigger a self-IPI
+> (nohz_full depends on IRQ_WORK) that will trigger a reschedule on IRQ
+> tail or guest exit.
+> 
+> Eventually every site that want a saner treatment will need to carefully
+> place a call to rcu_nocb_flush_deferred_wakeup() before the last explicit
+> need_resched() check upon resume.
+> 
+> Reported-by: Paul E. McKenney <paulmck@kernel.org>
+> Fixes: 96d3fd0d315a (rcu: Break call_rcu() deadlock involving scheduler and perf)
+> Cc: stable@vger.kernel.org
+> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar<mingo@kernel.org>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  kernel/rcu/tree.c        | 22 +++++++++++++++++++++-
+>  kernel/rcu/tree.h        |  2 +-
+>  kernel/rcu/tree_plugin.h | 25 ++++++++++++++++---------
+>  3 files changed, 38 insertions(+), 11 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index b6e1377774e3..2920dfc9f58c 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -676,6 +676,18 @@ void rcu_idle_enter(void)
+>  EXPORT_SYMBOL_GPL(rcu_idle_enter);
+>  
+>  #ifdef CONFIG_NO_HZ_FULL
+> +
+> +/*
+> + * An empty function that will trigger a reschedule on
+> + * IRQ tail once IRQs get re-enabled on userspace resume.
+> + */
+> +static void late_wakeup_func(struct irq_work *work)
+> +{
+> +}
+> +
+> +static DEFINE_PER_CPU(struct irq_work, late_wakeup_work) =
+> +	IRQ_WORK_INIT(late_wakeup_func);
+> +
+>  /**
+>   * rcu_user_enter - inform RCU that we are resuming userspace.
+>   *
+> @@ -692,9 +704,17 @@ noinstr void rcu_user_enter(void)
+>  	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+>  
+>  	lockdep_assert_irqs_disabled();
+> -	do_nocb_deferred_wakeup(rdp);
+> +	/*
+> +	 * We may be past the last rescheduling opportunity in the entry code.
+> +	 * Trigger a self IPI that will fire and reschedule once we resume to
+> +	 * user/guest mode.
+> +	 */
+> +	if (do_nocb_deferred_wakeup(rdp) && need_resched())
+> +		irq_work_queue(this_cpu_ptr(&late_wakeup_work));
+> +
+>  	rcu_eqs_enter(true);
+>  }
 
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c   | 46 ++++++++++++++++++++++++-
- drivers/gpu/drm/msm/adreno/adreno_gpu.c | 23 +++++--------
- drivers/gpu/drm/msm/adreno/adreno_gpu.h |  7 ++--
- 3 files changed, 55 insertions(+), 21 deletions(-)
+Do we have the guarantee that every architecture that supports NOHZ_FULL
+has arch_irq_work_raise() on?
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index 3b798e883f82..3c7ad51732bb 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -1239,6 +1239,50 @@ static unsigned long a6xx_gpu_busy(struct msm_gpu *gpu)
- 	return (unsigned long)busy_time;
- }
- 
-+static struct msm_gem_address_space *
-+a6xx_create_address_space(struct msm_gpu *gpu, struct platform_device *pdev)
-+{
-+	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
-+	struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
-+	struct iommu_domain *iommu;
-+	struct msm_mmu *mmu;
-+	struct msm_gem_address_space *aspace;
-+	u64 start, size;
-+
-+	iommu = iommu_domain_alloc(&platform_bus_type);
-+	if (!iommu)
-+		return NULL;
-+
-+	/*
-+	 * This allows GPU to set the bus attributes required to use system
-+	 * cache on behalf of the iommu page table walker.
-+	 */
-+	if (!IS_ERR_OR_NULL(a6xx_gpu->htw_llc_slice))
-+		adreno_set_llc_attributes(iommu);
-+
-+	mmu = msm_iommu_new(&pdev->dev, iommu);
-+	if (IS_ERR(mmu)) {
-+		iommu_domain_free(iommu);
-+		return ERR_CAST(mmu);
-+	}
-+
-+	/*
-+	 * Use the aperture start or SZ_16M, whichever is greater. This will
-+	 * ensure that we align with the allocated pagetable range while still
-+	 * allowing room in the lower 32 bits for GMEM and whatnot
-+	 */
-+	start = max_t(u64, SZ_16M, iommu->geometry.aperture_start);
-+	size = iommu->geometry.aperture_end - start + 1;
-+
-+	aspace = msm_gem_address_space_create(mmu, "gpu",
-+		start & GENMASK_ULL(48, 0), size);
-+
-+	if (IS_ERR(aspace) && !IS_ERR(mmu))
-+		mmu->funcs->destroy(mmu);
-+
-+	return aspace;
-+}
-+
- static struct msm_gem_address_space *
- a6xx_create_private_address_space(struct msm_gpu *gpu)
- {
-@@ -1285,7 +1329,7 @@ static const struct adreno_gpu_funcs funcs = {
- 		.gpu_state_get = a6xx_gpu_state_get,
- 		.gpu_state_put = a6xx_gpu_state_put,
- #endif
--		.create_address_space = adreno_iommu_create_address_space,
-+		.create_address_space = a6xx_create_address_space,
- 		.create_private_address_space = a6xx_create_private_address_space,
- 		.get_rptr = a6xx_get_rptr,
- 	},
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-index b35914de1b27..0f184c3dd9d9 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-@@ -186,11 +186,18 @@ int adreno_zap_shader_load(struct msm_gpu *gpu, u32 pasid)
- 	return zap_shader_load_mdt(gpu, adreno_gpu->info->zapfw, pasid);
- }
- 
-+void adreno_set_llc_attributes(struct iommu_domain *iommu)
-+{
-+	struct io_pgtable_domain_attr pgtbl_cfg;
-+
-+	pgtbl_cfg.quirks = IO_PGTABLE_QUIRK_ARM_OUTER_WBWA;
-+	iommu_domain_set_attr(iommu, DOMAIN_ATTR_IO_PGTABLE_CFG, &pgtbl_cfg);
-+}
-+
- struct msm_gem_address_space *
- adreno_iommu_create_address_space(struct msm_gpu *gpu,
- 		struct platform_device *pdev)
- {
--	struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
- 	struct iommu_domain *iommu;
- 	struct msm_mmu *mmu;
- 	struct msm_gem_address_space *aspace;
-@@ -200,20 +207,6 @@ adreno_iommu_create_address_space(struct msm_gpu *gpu,
- 	if (!iommu)
- 		return NULL;
- 
--	if (adreno_is_a6xx(adreno_gpu)) {
--		struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
--		struct io_pgtable_domain_attr pgtbl_cfg;
--
--		/*
--		 * This allows GPU to set the bus attributes required to use system
--		 * cache on behalf of the iommu page table walker.
--		 */
--		if (!IS_ERR_OR_NULL(a6xx_gpu->htw_llc_slice)) {
--			pgtbl_cfg.quirks = IO_PGTABLE_QUIRK_ARM_OUTER_WBWA;
--			iommu_domain_set_attr(iommu, DOMAIN_ATTR_IO_PGTABLE_CFG, &pgtbl_cfg);
--		}
--	}
--
- 	mmu = msm_iommu_new(&pdev->dev, iommu);
- 	if (IS_ERR(mmu)) {
- 		iommu_domain_free(iommu);
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-index b3d9a333591b..2a3d049b46b5 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-+++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-@@ -212,11 +212,6 @@ static inline int adreno_is_a540(struct adreno_gpu *gpu)
- 	return gpu->revn == 540;
- }
- 
--static inline bool adreno_is_a6xx(struct adreno_gpu *gpu)
--{
--	return ((gpu->revn < 700 && gpu->revn > 599));
--}
--
- static inline int adreno_is_a618(struct adreno_gpu *gpu)
- {
-        return gpu->revn == 618;
-@@ -278,6 +273,8 @@ struct msm_gem_address_space *
- adreno_iommu_create_address_space(struct msm_gpu *gpu,
- 		struct platform_device *pdev);
- 
-+void adreno_set_llc_attributes(struct iommu_domain *iommu);
-+
- /*
-  * For a5xx and a6xx targets load the zap shader that is used to pull the GPU
-  * out of secure mode
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Also, can't you do the same thing you did earlier and do that wakeup
+thing before we complete exit_to_user_mode_prepare() ?
