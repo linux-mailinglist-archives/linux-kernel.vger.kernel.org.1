@@ -2,94 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CDF92F1179
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C1D62F1186
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:32:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729431AbhAKL3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:29:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728483AbhAKL3X (ORCPT
+        id S1729782AbhAKLcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:32:32 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10647 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729672AbhAKLcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:29:23 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C4FC061794;
-        Mon, 11 Jan 2021 03:28:43 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id m13so3126720ljo.11;
-        Mon, 11 Jan 2021 03:28:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=E9of78v4i96JZrNoHe6kz/pn16yK55YQHi5bQS+//0Y=;
-        b=gghDSodYEVB/wOR4YTdnNKDKWtPNvq52HJtVtr+B+Ip3gRopcLVgwYs/tgIJBV8ERz
-         Wwm7RNxs5kDe6nn6NwL0uTpxZP1b19/W3EvfIyT1+FAUOynLW6MDgjAXFskW0osWc1Bb
-         zbyqjp2T7nHQbHGTSj0wH7xpDdyaaWnbEHz8Y8sTilPw8C6t8LeufwPoqxBqVy10ukP9
-         PiVyW7QbvmjGri53e320Y2OFO45ZFAM6ZFSDJWDexwAuEbGLRah4lX0sfF5NGNs2hhiF
-         N7NJSlixI5NcSy4RrjPLdZFrlmuTW+8l3v6OsrH1c23jxIIfOimVn1XvHfLCT0xugj+9
-         0KBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=E9of78v4i96JZrNoHe6kz/pn16yK55YQHi5bQS+//0Y=;
-        b=oxb9cRBDbNaffIgvL7wZ/Av7g4hR1s2rAHj0WpL7GIzPixlmSgDM2TNn6+ZEF+DySv
-         mM9q+QTDMo6EPt2IzRkhJhB/L20Eubs+4HvRLzQB0U4GP8C5vF/03LJUcm8YzrtBfkLv
-         Jg9GVl3cFywv4Fl79bjSpWH3Wi3zFyEV0neNc50ApG/v0ZNxjajnVTi3fYrgm0rzffRa
-         Qonahjs/5QvPmgAHuR5DXisqAXa7Yj89uqB5WpjAFosFruLYooiOH3rsIt7WyftyK7Ak
-         19QtNZLZFZsugFNbwzLJWiCytA/ehXH0bVT/nYDZGaJ69cJhPoRxHCf7m9T2l0eBzGaj
-         kpZA==
-X-Gm-Message-State: AOAM530a+X+zHkYJvuKzsbNsITzU4JWfCpQBc2kNmCr82YoPZAffjoOJ
-        MAn4TESNSPe0UA6hc52O/EXjjbJnn4k=
-X-Google-Smtp-Source: ABdhPJyY2Jpk7wfZUTy1IDLgP6NY3VIDeQNyfnMntxiErPN2Ac7dbKJLuzPUWCHTkxDP0bn4o7j0BA==
-X-Received: by 2002:a05:651c:1304:: with SMTP id u4mr7541313lja.146.1610364521385;
-        Mon, 11 Jan 2021 03:28:41 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id m16sm3063973lfo.294.2021.01.11.03.28.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 03:28:40 -0800 (PST)
-Subject: Re: [PATCH v2 21/48] PM: domains: Add "performance" column to debug
- summary
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
-References: <20201217180638.22748-1-digetx@gmail.com>
- <20201217180638.22748-22-digetx@gmail.com>
- <CAPDyKFqm4vqWXFxsogo0UVu7r6APmO2c4QG0zf+1ZUKQTP3P2w@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <92f0fb58-0e6b-066d-f7a8-1ead714ef3d6@gmail.com>
-Date:   Mon, 11 Jan 2021 14:28:39 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Mon, 11 Jan 2021 06:32:31 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DDs2w5b34z15h8F;
+        Mon, 11 Jan 2021 19:30:48 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Mon, 11 Jan 2021
+ 19:31:38 +0800
+From:   Longfang Liu <liulongfang@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <stern@rowland.harvard.edu>
+CC:     <yisen.zhuang@huawei.com>, <kong.kongxinwei@hisilicon.com>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] USB:ehci:fix an interrupt calltrace error
+Date:   Mon, 11 Jan 2021 19:29:37 +0800
+Message-ID: <1610364577-11617-1-git-send-email-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFqm4vqWXFxsogo0UVu7r6APmO2c4QG0zf+1ZUKQTP3P2w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-11.01.2021 12:13, Ulf Hansson пишет:
-> On Thu, 17 Dec 2020 at 19:07, Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> Add "performance" column to debug summary which shows performance state
->> of all power domains and theirs devices.
->>
->> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> 
-> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-> 
-> As I stated for patch 20, I suggest you resend this to the linux-pm
-> mailing list so it can be picked up by Rafael.
+The system that use Synopsys USB host controllers goes to suspend
+when using USB audio player. This causes the USB host controller
+continuous send interrupt signal to system, When the number of
+interrupts exceeds 100000, the system will forcibly close the
+interrupts and output a calltrace error.
 
-Thanks, I'm finalizing v3 with various fixes and improvements over all
-the patches, including this one, which will get a slightly improved
-seq_printf formatting.
+When the system goes to suspend, the last interrupt is reported to
+the driver. At this time, the system has set the state to suspend.
+This causes the last interrupt to not be processed by the system and
+not clear the interrupt flag. This uncleared interrupt flag constantly
+triggers new interrupt event. This causing the driver to receive more
+than 100,000 interrupts, which causes the system to forcibly close the
+interrupt report and report the calltrace error.
+
+so, when the driver goes to sleep and changes the system state to
+suspend, the interrupt flag needs to be cleared.
+
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+---
+
+Changes in v2:
+- updated cleared registers
+
+ drivers/usb/host/ehci-hub.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/usb/host/ehci-hub.c b/drivers/usb/host/ehci-hub.c
+index ce0eaf7..a99c1ac 100644
+--- a/drivers/usb/host/ehci-hub.c
++++ b/drivers/usb/host/ehci-hub.c
+@@ -346,8 +346,12 @@ static int ehci_bus_suspend (struct usb_hcd *hcd)
+ 
+ 	unlink_empty_async_suspended(ehci);
+ 
++	/* Some Synopsys controllers mistakenly leave IAA turned on */
++	ehci_writel(ehci, STS_IAA, &ehci->regs->status);
++
+ 	/* Any IAA cycle that started before the suspend is now invalid */
+ 	end_iaa_cycle(ehci);
++
+ 	ehci_handle_start_intr_unlinks(ehci);
+ 	ehci_handle_intr_unlinks(ehci);
+ 	end_free_itds(ehci);
+-- 
+2.8.1
+
