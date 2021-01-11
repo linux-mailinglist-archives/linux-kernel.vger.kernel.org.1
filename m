@@ -2,173 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1282F1930
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:07:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 432D72F1932
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733029AbhAKPG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:06:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726459AbhAKPGz (ORCPT
+        id S2388075AbhAKPIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:08:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37418 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731426AbhAKPIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:06:55 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99BE4C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:06:15 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id 30so12683789pgr.6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:06:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dOiO62KsX0NSWhPyER9EWahr6YjNU7/wBoB4Mtw/qG8=;
-        b=I26iCUdkJfEx0eL31iUzJKV2NGdBGlmztRk2l8NK8xPkktIFW5IWvNoEP2hsV8zjMx
-         i1xgmbxWlTLia+1PSEw+AJHXzbfB9CEzh5ZKH+62fcbJUj2iZgaVOmkSC9H5Z/I40TEk
-         GZq0G17/BBzM6hFL7POwOT8QdIGBt445DdakOul8CW7fZd9Iq6SfgLLoWlq4m7yMSlT/
-         l2NBW9RJVqmtPHqJsOaS6/xx+QyjUQNPsPZH8Nn8CGZ30W2oBx6m2/6IsDMpzzJBlMJo
-         3wG2SGQ2/+YfIFVldeAezNkqg1eHTZ/4jmuV8Ni64dQbFHtGKKrekFIw14+QXiDBRE+v
-         lv4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dOiO62KsX0NSWhPyER9EWahr6YjNU7/wBoB4Mtw/qG8=;
-        b=TEHJ3Cut4dalQ++a/t27JKEaC/pSGBSyMU6LI8gc21XcGY3aVZqyT+YpmzbiJZygsS
-         f77qs/zXmXgny8tsAnRD27XfY8QDT37uSA9j6bX3YKtrfLbY3iTfYPcnODVquCCljfpt
-         veu6fhDMcOSbDcrBP8gJuVkAlwptpYByd/XeuzXjCJM4UIdRNTQmwzROcweubd9Y+84H
-         BeUqrVdyOcw/+yq0bhJz55FGu2kJJi78ryZbqey/x+JzlLOKYLvVYFQXGZmgFdazzTh/
-         /auHB7YEKTM2EiVtO1WNYDUp2Ig0aD9POttZVpDsG2FHw1+KtYOwlFs9H6G45ZVDG2lv
-         P4Ww==
-X-Gm-Message-State: AOAM532evP+Dtpj1gntYroMJglKo+1nqLAGSn12SfNba9VcTfelggefl
-        37VocRf56zEugptS0Bv/6Vu60Q==
-X-Google-Smtp-Source: ABdhPJyM+zLWM6rli5NSRUi4NFJ6N14FxaYpUYt+V4qKxrq6RHNrPGzbbWI8N8JhW19Eaf2LTFHNOg==
-X-Received: by 2002:a63:d917:: with SMTP id r23mr49303pgg.126.1610377574968;
-        Mon, 11 Jan 2021 07:06:14 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([64.120.119.108])
-        by smtp.gmail.com with ESMTPSA id x1sm62153pgj.37.2021.01.11.07.06.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 07:06:14 -0800 (PST)
-Date:   Mon, 11 Jan 2021 23:06:08 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Mike Leach <mike.leach@linaro.org>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <Daniel.Kiss@arm.com>,
-        Denis Nikitin <denik@chromium.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 3/7] perf cs-etm: Calculate per CPU metadata array size
-Message-ID: <20210111150608.GC222747@leoy-ThinkPad-X240s>
-References: <20210109074435.626855-1-leo.yan@linaro.org>
- <20210109074435.626855-4-leo.yan@linaro.org>
- <96ec434e-4103-02ac-a05a-761a9ca8cb0d@arm.com>
- <CAJ9a7VjtUuRRYBBu63kSXKwrGdB8ZoWJz-bE1g9tMLSbkFVDGg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJ9a7VjtUuRRYBBu63kSXKwrGdB8ZoWJz-bE1g9tMLSbkFVDGg@mail.gmail.com>
+        Mon, 11 Jan 2021 10:08:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610377615;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/g7CoqAv3+2DuhrWm4HZxfGTuv3YxRqKxge5jGqMOnw=;
+        b=d95k9JOKyzP8xpDY79wwZzJ5hh7MxF8Im1NtM3Y/zVNg4qtX9A5fteOhADoMmwzW4rrg1J
+        q6D9fUurIs6FG9/jBMvfXfDN1Hi+ZHJbi//u3ZONpis+4BueRd9ijvdPX0tTT1DPvswJwA
+        V7xqwlpXGwEkXAGq7Ojy/CfNzzK08cI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-397-FIhTPNSeNnCUTrXgbggs3Q-1; Mon, 11 Jan 2021 10:06:51 -0500
+X-MC-Unique: FIhTPNSeNnCUTrXgbggs3Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 261E715724;
+        Mon, 11 Jan 2021 15:06:49 +0000 (UTC)
+Received: from ovpn-119-23.rdu2.redhat.com (ovpn-119-23.rdu2.redhat.com [10.10.119.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A425219C59;
+        Mon, 11 Jan 2021 15:06:43 +0000 (UTC)
+Message-ID: <782e710eac32b1ab3bf9713bcd6afcbc9483e16c.camel@redhat.com>
+Subject: Re: [PATCH v2 2/2] mm: fix initialization of struct page for holes
+ in memory layout
+From:   Qian Cai <qcai@redhat.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Date:   Mon, 11 Jan 2021 10:06:43 -0500
+In-Reply-To: <20210110153956.GD1106298@kernel.org>
+References: <20201209214304.6812-1-rppt@kernel.org>
+         <20201209214304.6812-3-rppt@kernel.org>
+         <768cb57d6ef0989293b3f9fbe0af8e8851723ea1.camel@redhat.com>
+         <20210105082403.GA1106298@kernel.org>
+         <67ef893f27551f80ecf49ef78c0ebc05d3e41b46.camel@redhat.com>
+         <20210106080553.GB1106298@kernel.org>
+         <8171f5a5a8b407a1fcca56bab912555bde80d323.camel@redhat.com>
+         <20210110153956.GD1106298@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
-
-On Mon, Jan 11, 2021 at 12:09:12PM +0000, Mike Leach wrote:
-> Hi Leo,
+On Sun, 2021-01-10 at 17:39 +0200, Mike Rapoport wrote:
+> On Wed, Jan 06, 2021 at 04:04:21PM -0500, Qian Cai wrote:
+> > On Wed, 2021-01-06 at 10:05 +0200, Mike Rapoport wrote:
+> > > I think we trigger PF_POISONED_CHECK() in PageSlab(), then
+> > > fffffffffffffffe
+> > > is "accessed" from VM_BUG_ON_PAGE().
+> > > 
+> > > It seems to me that we are not initializing struct pages for holes at the
+> > > node
+> > > boundaries because zones are already clamped to exclude those holes.
+> > > 
+> > > Can you please try to see if the patch below will produce any useful info:
+> > 
+> > [    0.000000] init_unavailable_range: spfn: 8c, epfn: 9b, zone: DMA, node:
+> > 0
+> > [    0.000000] init_unavailable_range: spfn: 1f7be, epfn: 1f9fe, zone:
+> > DMA32, node: 0
+> > [    0.000000] init_unavailable_range: spfn: 28784, epfn: 288e4, zone:
+> > DMA32, node: 0
+> > [    0.000000] init_unavailable_range: spfn: 298b9, epfn: 298bd, zone:
+> > DMA32, node: 0
+> > [    0.000000] init_unavailable_range: spfn: 29923, epfn: 29931, zone:
+> > DMA32, node: 0
+> > [    0.000000] init_unavailable_range: spfn: 29933, epfn: 29941, zone:
+> > DMA32, node: 0
+> > [    0.000000] init_unavailable_range: spfn: 29945, epfn: 29946, zone:
+> > DMA32, node: 0
+> > [    0.000000] init_unavailable_range: spfn: 29ff9, epfn: 2a823, zone:
+> > DMA32, node: 0
+> > [    0.000000] init_unavailable_range: spfn: 33a23, epfn: 33a53, zone:
+> > DMA32, node: 0
+> > [    0.000000] init_unavailable_range: spfn: 78000, epfn: 100000, zone:
+> > DMA32, node: 0
+> > ...
+> > [  572.222563][ T2302] kpagecount_read: pfn 47f380 is poisoned
+> ...
+> > [  590.570032][ T2302] kpagecount_read: pfn 47ffff is poisoned
+> > [  604.268653][ T2302] kpagecount_read: pfn 87ff80 is poisoned
+> ...
+> > [  604.611698][ T2302] kpagecount_read: pfn 87ffbc is poisoned
+> > [  617.484205][ T2302] kpagecount_read: pfn c7ff80 is poisoned
+> ...
+> > [  618.212344][ T2302] kpagecount_read: pfn c7ffff is poisoned
+> > [  633.134228][ T2302] kpagecount_read: pfn 107ff80 is poisoned
+> ...
+> > [  633.874087][ T2302] kpagecount_read: pfn 107ffff is poisoned
+> > [  647.686412][ T2302] kpagecount_read: pfn 147ff80 is poisoned
+> ...
+> > [  648.425548][ T2302] kpagecount_read: pfn 147ffff is poisoned
+> > [  663.692630][ T2302] kpagecount_read: pfn 187ff80 is poisoned
+> ...
+> > [  664.432671][ T2302] kpagecount_read: pfn 187ffff is poisoned
+> > [  675.462757][ T2302] kpagecount_read: pfn 1c7ff80 is poisoned
+> ...
+> > [  676.202548][ T2302] kpagecount_read: pfn 1c7ffff is poisoned
+> > [  687.121605][ T2302] kpagecount_read: pfn 207ff80 is poisoned
+> ...
+> > [  687.860981][ T2302] kpagecount_read: pfn 207ffff is poisoned
 > 
-> I think there is an issue here in that your modification assumes that
-> all cpus in the system are of the same ETM type. The original routine
-> allowed for differing ETM types, thus differing cpu ETM field lengths
-> between ETMv4 / ETMv3, the field size was used after the relevant
-> magic number for the cpu ETM was read.
+> The e820 map has a hole near the end of each node and these holes are not
+> initialized with init_unavailable_range() after it was interleaved with
+> memmap initialization because such holes are not accounted by
+> zone->spanned_pages.
 > 
-> You have replaced two different sizes - with a single calculated size.
-
-Thanks for pointing out this.
-
-> Moving forwards we are seeing the newer FEAT_ETE protocol drivers
-> appearing on the list, which will ultimately need a new metadata
-> structure.
+> Yet, I'm still cannot really understand how this never triggered 
 > 
-> We have had discussions within ARM regarding the changing of the
-> format to be more self describing - which should probably be opened
-> out to the CS mailing list.
+> 	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
+> 
+> before v5.7 as all the struct pages for these holes would have zone=0 and
+> node=0 ... 
+> 
+> @Qian, can you please boot your system with memblock=debug and share the
+> logs?
+> 
 
-I think here have two options.  One option is I think we can use
-__perf_cs_etmv3_magic/__perf_cs_etmv4_magic as indicator for the
-starting of next metadata array; when copy the metadata, always check
-the next item in the buffer, if it's __perf_cs_etmv3_magic or
-__perf_cs_etmv4_magic, will break loop and start copying metadata
-array for next CPU.  The suggested change is pasted in below.
+http://people.redhat.com/qcai/memblock.txt
 
-Another option is I drop patches 03,05/07 in the series and leave the
-backward compatibility fixing for a saperate patch series with self
-describing method.  Especially, if you think the first option will
-introduce trouble for enabling self describing later, then I am happy
-to drop patches 03,05.
-
-How about you think for this?
-
-Thanks,
-Leo
-
----8<---
-
-diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-index a2a369e2fbb6..edaec57362f0 100644
---- a/tools/perf/util/cs-etm.c
-+++ b/tools/perf/util/cs-etm.c
-@@ -2558,12 +2558,19 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
- 				err = -ENOMEM;
- 				goto err_free_metadata;
- 			}
--			for (k = 0; k < CS_ETM_PRIV_MAX; k++)
-+			for (k = 0; k < CS_ETM_PRIV_MAX; k++) {
- 				metadata[j][k] = ptr[i + k];
- 
-+				if (ptr[i + k + 1] == __perf_cs_etmv3_magic ||
-+				    ptr[i + k + 1] == __perf_cs_etmv4_magic) {
-+					k++;
-+					break;
-+				}
-+			}
-+
- 			/* The traceID is our handle */
- 			idx = metadata[j][CS_ETM_ETMTRACEIDR];
--			i += CS_ETM_PRIV_MAX;
-+			i += k;
- 		} else if (ptr[i] == __perf_cs_etmv4_magic) {
- 			metadata[j] = zalloc(sizeof(*metadata[j]) *
- 					     CS_ETMV4_PRIV_MAX);
-@@ -2571,12 +2578,19 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
- 				err = -ENOMEM;
- 				goto err_free_metadata;
- 			}
--			for (k = 0; k < CS_ETMV4_PRIV_MAX; k++)
-+			for (k = 0; k < CS_ETMV4_PRIV_MAX; k++) {
- 				metadata[j][k] = ptr[i + k];
- 
-+				if (ptr[i + k + 1] == __perf_cs_etmv3_magic ||
-+				    ptr[i + k + 1] == __perf_cs_etmv4_magic) {
-+					k++;
-+					break;
-+				}
-+			}
-+
- 			/* The traceID is our handle */
- 			idx = metadata[j][CS_ETMV4_TRCTRACEIDR];
--			i += CS_ETMV4_PRIV_MAX;
-+			i += k;
- 		}
- 
- 		/* Get an RB node for this CPU */
