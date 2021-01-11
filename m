@@ -2,235 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 944532F1D9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 19:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D6F2F1DA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 19:10:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390271AbhAKSJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 13:09:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389750AbhAKSJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 13:09:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44C8F223C8;
-        Mon, 11 Jan 2021 18:09:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610388547;
-        bh=IIhrxD+dCVr8eZ4VKDyDJS9h2Ifj8FSug4zcvfBIoYU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=MeXbhZFcot/ZwthLtQ3LvLWV8iflMrXKZJIQNR6I0CmFky7ceRQRiAgn7vHsJStUj
-         aSPESvEUeXl5m6ip08MaSoqZjtrZ2XFkUaPLSaDdgv+F5pgfakbq1vPE+9qsVi5bMV
-         QI0WlX2giu8hZtmpPq6KX/pUzMWnZXeFXazPFJJoGYUdnUdETWl766vCbBYetqYVvu
-         ZVLLEAiaSU1MTcbR/sSwiufx9k6oH6TRFCD4YdXKuQeuXBkePhBFOg5yTIlz0yu95n
-         t7NEdPUIZaYUJUSv9aeFyOGuQU1j90UKLTDGvVmHzs2eUWDvd+9LmtuLvd9wnt8RuG
-         0+qJumJIPtfbQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 152C93522A7B; Mon, 11 Jan 2021 10:09:07 -0800 (PST)
-Date:   Mon, 11 Jan 2021 10:09:07 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
-Message-ID: <20210111180907.GE2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201226025117.2770-1-jiangshanlai@gmail.com>
- <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net>
- <87o8hv7pnd.fsf@nanos.tec.linutronix.de>
- <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net>
- <X/yH9+MGa1JCNZ8x@hirez.programming.kicks-ass.net>
+        id S2390284AbhAKSK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 13:10:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389280AbhAKSK3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 13:10:29 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C142FC061795
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 10:09:48 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id b26so848836lff.9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 10:09:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qx5NtRg644M9EwAhhUsoA+tVxkWnXslMUnk4cz5xSwY=;
+        b=JspLrp5KxfwF3KnS9LFqu2aRf7DbqqTSuJfQ084idxFh88Tft58jHaeUJfwXnXW2Na
+         H7dBZiL9FieUYDjzCvry3JV8tskVLSjTImkEPH8DbcGRPw4Jyd7HC2HCtNzqvYTDufvC
+         NqlQTeLZFd6p4FobDi0UL6zd8fhkwN0FhG0GI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qx5NtRg644M9EwAhhUsoA+tVxkWnXslMUnk4cz5xSwY=;
+        b=OoPScBz4jCg7CCH41xafBhDthNnxtWiichgJfp72MVD6s5H8Qx2WgDRsphAQlvW9+a
+         Ho8WHb7BY98m0maGi0DhQOyc+H+BVghyzg4VUcRdZjZOSEw/Ay2XCM25Shybd98l3J5u
+         wwxFdHUrw9BS55Ni1HDzcRVSc07n3E0sCWM7dD4zBu1bCpW5WdxBShaBGdFf/clT0XIg
+         QYGCJCu8DxpPkad/ohP/eUd2BqBx+tUUptudmSyEl8ZeSOoixEHi0lUt2PNiaQvOuFhX
+         85bOwG+lnBHoPfZsMBlljT8a1utHlnje8o7uMOk6Uf/eU0PJ9PgagHrLGQaXIFgnL8ue
+         2+2g==
+X-Gm-Message-State: AOAM532XC6ReQNC4ykjVpFwWZZsHw424U/phzdphJYRrXPcUyFSl0gJW
+        GpCNWHhG1p86yh6xumOQcxMQkYD87MqnEVzkpHoeR+BqxwXT7g==
+X-Google-Smtp-Source: ABdhPJzeVlQYCsuwV9Pqis6BBOoUIQtb+MgbCu4rLp2cDpKdkINp25aWl5+FKdNC7rg5k56Fjgg9gm/ONDelvAr0/II=
+X-Received: by 2002:aa7:c886:: with SMTP id p6mr464760eds.352.1610388586018;
+ Mon, 11 Jan 2021 10:09:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/yH9+MGa1JCNZ8x@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201230024653.1516495-1-trix@redhat.com> <20210107204102.GA933840@nvidia.com>
+ <00c76f8e-4e46-2ab5-772b-ad5db59f8490@redhat.com>
+In-Reply-To: <00c76f8e-4e46-2ab5-772b-ad5db59f8490@redhat.com>
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+Date:   Mon, 11 Jan 2021 23:39:34 +0530
+Message-ID: <CA+sbYW1_zYv47YV8Btd8+JW=3QcSo4N1yFFDycnTS853UHGGag@mail.gmail.com>
+Subject: Re: [PATCH] RDMA/ocrdma: fix use after free in ocrdma_dealloc_ucontext_pd()
+To:     Tom Rix <trix@redhat.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>, maxg@mellanox.com,
+        Gal Pressman <galpress@amazon.com>, michaelgur@nvidia.com,
+        Moni Shoua <monis@mellanox.com>, gustavoars@kernel.org,
+        linux-rdma@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000b4a60f05b8a3cf14"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 06:16:39PM +0100, Peter Zijlstra wrote:
-> 
-> While thinking more about this, I'm thinking a big part of the problem
-> is that we're not dinstinguishing between geniuine per-cpu kthreads and
-> kthreads that just happen to be per-cpu.
-> 
-> Geniuine per-cpu kthreads are kthread_bind() and have PF_NO_SETAFFINITY,
-> but sadly a lot of non-per-cpu kthreads, that might happen to still be
-> per-cpu also have that -- again workqueue does that even to it's unbound
-> workers :-(
-> 
-> Now, anything created by smpboot, is created through
-> kthread_create_on_cpu() and that additionally sets to_kthread(p)->flags
-> KTHREAD_IS_PER_CPU.
-> 
-> And I'm thinking that might be sufficient, if we modify
-> is_per_cpu_kthread() to check that, then we only match smpboot threads
-> (which include the hotplug and stopper threads, but notably not the idle
-> thread)
-> 
-> Sadly it appears like io_uring() uses kthread_create_on_cpu() without
-> then having any hotplug crud on, so that needs additinoal frobbing.
-> 
-> Also, init_task is PF_KTHREAD but doesn't have a struct kthread on.. and
-> I suppose bound workqueues don't go through this either.
-> 
-> Let me rummage around a bit...
-> 
-> This seems to not insta-explode... opinions?
+--000000000000b4a60f05b8a3cf14
+Content-Type: text/plain; charset="UTF-8"
 
-It passes quick tests on -rcu both with and without the rcutorture fixes,
-which is encouraging.  I will start a more vigorous test in about an hour.
+On Fri, Jan 8, 2021 at 3:13 AM Tom Rix <trix@redhat.com> wrote:
+>
+>
+> On 1/7/21 12:41 PM, Jason Gunthorpe wrote:
+> > On Tue, Dec 29, 2020 at 06:46:53PM -0800, trix@redhat.com wrote:
+> >> From: Tom Rix <trix@redhat.com>
+> >>
+> >> In ocrdma_dealloc_ucontext_pd() uctx->cntxt_pd is assigned to
+> >> the variable pd and then after uctx->cntxt_pd is freed, the
+> >> variable pd is passed to function _ocrdma_dealloc_pd() which
+> >> dereferences pd directly or through its call to
+> >> ocrdma_mbx_dealloc_pd().
+> >>
+> >> Reorder the free using the variable pd.
+> >>
+> >> Fixes: 21a428a019c9 ("RDMA: Handle PD allocations by IB/core")
+> >> Signed-off-by: Tom Rix <trix@redhat.com>
+> >>  drivers/infiniband/hw/ocrdma/ocrdma_verbs.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> > Applied to for-rc
+> >
+> > Is anyone testing ocrdma? Just doing the pyverbs rdma tests with kasn
+> > turned on would have instantly caught this, and the change is nearly a
+> > year old.
+> >
+> > Is ocrdma obsolete enough we can delete the driver?
 
-							Thanx, Paul
+Broadcom is not doing any active development/testing  with ocrdma now.
+I am checking with other teams to see if this can be deleted
+completely. Will get back asap.
 
-> ---
->  include/linux/kthread.h |  3 +++
->  kernel/kthread.c        | 25 ++++++++++++++++++++++++-
->  kernel/sched/core.c     |  2 +-
->  kernel/sched/sched.h    |  4 ++--
->  kernel/smpboot.c        |  1 +
->  kernel/workqueue.c      | 12 +++++++++---
->  6 files changed, 40 insertions(+), 7 deletions(-)
-> 
-> diff --git a/include/linux/kthread.h b/include/linux/kthread.h
-> index 65b81e0c494d..fdd5a52e35d8 100644
-> --- a/include/linux/kthread.h
-> +++ b/include/linux/kthread.h
-> @@ -33,6 +33,9 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
->  					  unsigned int cpu,
->  					  const char *namefmt);
->  
-> +void kthread_set_per_cpu(struct task_struct *k, bool set);
-> +bool kthread_is_per_cpu(struct task_struct *k);
-> +
->  /**
->   * kthread_run - create and wake a thread.
->   * @threadfn: the function to run until signal_pending(current).
-> diff --git a/kernel/kthread.c b/kernel/kthread.c
-> index a5eceecd4513..7f081530e459 100644
-> --- a/kernel/kthread.c
-> +++ b/kernel/kthread.c
-> @@ -493,11 +493,34 @@ struct task_struct *kthread_create_on_cpu(int (*threadfn)(void *data),
->  		return p;
->  	kthread_bind(p, cpu);
->  	/* CPU hotplug need to bind once again when unparking the thread. */
-> -	set_bit(KTHREAD_IS_PER_CPU, &to_kthread(p)->flags);
->  	to_kthread(p)->cpu = cpu;
->  	return p;
->  }
->  
-> +void kthread_set_per_cpu(struct task_struct *k, bool set)
-> +{
-> +	struct kthread *kthread = to_kthread(k);
-> +	if (!kthread)
-> +		return;
-> +
-> +	if (set) {
-> +		WARN_ON_ONCE(!(k->flags & PF_NO_SETAFFINITY));
-> +		WARN_ON_ONCE(k->nr_cpus_allowed != 1);
-> +		set_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
-> +	} else {
-> +		clear_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
-> +	}
-> +}
-> +
-> +bool kthread_is_per_cpu(struct task_struct *k)
-> +{
-> +	struct kthread *kthread = to_kthread(k);
-> +	if (!kthread)
-> +		return false;
-> +
-> +	return test_bit(KTHREAD_IS_PER_CPU, &kthread->flags);
-> +}
-> +
->  /**
->   * kthread_unpark - unpark a thread created by kthread_create().
->   * @k:		thread created by kthread_create().
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 15d2562118d1..e71f9e44789e 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -7277,7 +7277,7 @@ static void balance_push(struct rq *rq)
->  	 * Both the cpu-hotplug and stop task are in this case and are
->  	 * required to complete the hotplug process.
->  	 */
-> -	if (is_per_cpu_kthread(push_task) || is_migration_disabled(push_task)) {
-> +	if (rq->idle == push_task || is_per_cpu_kthread(push_task) || is_migration_disabled(push_task)) {
->  		/*
->  		 * If this is the idle task on the outgoing CPU try to wake
->  		 * up the hotplug control thread which might wait for the
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 12ada79d40f3..3679f63e0aa2 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -2697,10 +2697,10 @@ static inline bool is_per_cpu_kthread(struct task_struct *p)
->  	if (!(p->flags & PF_KTHREAD))
->  		return false;
->  
-> -	if (p->nr_cpus_allowed != 1)
-> +	if (!(p->flags & PF_NO_SETAFFINITY))
->  		return false;
->  
-> -	return true;
-> +	return kthread_is_per_cpu(p);
->  }
->  #endif
->  
-> diff --git a/kernel/smpboot.c b/kernel/smpboot.c
-> index 2efe1e206167..b0abe575a524 100644
-> --- a/kernel/smpboot.c
-> +++ b/kernel/smpboot.c
-> @@ -188,6 +188,7 @@ __smpboot_create_thread(struct smp_hotplug_thread *ht, unsigned int cpu)
->  		kfree(td);
->  		return PTR_ERR(tsk);
->  	}
-> +	kthread_set_per_cpu(tsk, true);
->  	/*
->  	 * Park the thread so that it could start right on the CPU
->  	 * when it is available.
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index 9880b6c0e272..824276e4fb2e 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -1861,6 +1861,8 @@ static void worker_attach_to_pool(struct worker *worker,
->  	 */
->  	if (pool->flags & POOL_DISASSOCIATED)
->  		worker->flags |= WORKER_UNBOUND;
-> +	else
-> +		kthread_set_per_cpu(worker->task, true);
->  
->  	list_add_tail(&worker->node, &pool->workers);
->  	worker->pool = pool;
-> @@ -4919,8 +4921,10 @@ static void unbind_workers(int cpu)
->  
->  		raw_spin_unlock_irq(&pool->lock);
->  
-> -		for_each_pool_worker(worker, pool)
-> -			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_active_mask) < 0);
-> +		for_each_pool_worker(worker, pool) {
-> +			kthread_set_per_cpu(worker->task, false);
-> +			WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
-> +		}
->  
->  		mutex_unlock(&wq_pool_attach_mutex);
->  
-> @@ -4972,9 +4976,11 @@ static void rebind_workers(struct worker_pool *pool)
->  	 * of all workers first and then clear UNBOUND.  As we're called
->  	 * from CPU_ONLINE, the following shouldn't fail.
->  	 */
-> -	for_each_pool_worker(worker, pool)
-> +	for_each_pool_worker(worker, pool) {
->  		WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task,
->  						  pool->attrs->cpumask) < 0);
-> +		kthread_set_per_cpu(worker->task, true);
-> +	}
->  
->  	raw_spin_lock_irq(&pool->lock);
->  
+Thanks,
+Selvin
+
+>
+> I am not an authority on ocrdma, i am fixing treewide, the problems clang static analysis flags.
+>
+> Tom
+>
+> >
+> > Thanks,
+> > Jason
+> >
+>
+
+--000000000000b4a60f05b8a3cf14
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+E57pwqmNNXKez5LsgWg0MCcM26jqs8SBTJIA/6zJgjW8nK8WLLIPfCZO1NGVxIkHTjVy2Du2fAKX
+qPfnml4GF/qROS0CAwEAAaOCAdEwggHNMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEw
+gY4wTQYIKwYBBQUHMAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVy
+c29uYWxzaWduMnNoYTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFs
+c2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0
+MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNV
+HRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJz
+b25hbHNpZ24yc2hhMmczLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNv
+bTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAd
+BgNVHQ4EFgQUKr67/GLyV/C27HDAeg3i3tW9facwDQYJKoZIhvcNAQELBQADggEBABQEPPwx33W2
+mW8bSM5/AERxpztkHy4343YTHPsNXO/WrC+SuEQTYhV1eMrJbh1tZduP2rKgvZskl65mPF3qkRWi
+J4J0DABOqmcJmyNoeIeXxcZx9bJqjiQWTT2iV+cCTYuiDrA+JUVKoMnmGwh2aSz6BH9Jsv2PFCNS
+A6WyTEkC5z+3rM1f91ynuoPZCsYw/V1Hm5Nb+8lCB+0vqbUNUU3vlsiCuyym/XpDULrdf+qAGK+z
+fntrEGyEOXbwpxyp5YGNdslhesuWawlpJUy3JSzRI9vx1SS2UaXG1+tsbKMkc1OyML6gl7W2AGPy
+KN/Okg/+FqXwVaCbzR83sc69+FYxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQK
+ExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENB
+IC0gU0hBMjU2IC0gRzMCDCokiEUX3rGKhbywTjANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0B
+CQQxIgQg79KOpUiGMAfmaRdI3C8P+fgFuRovGKKZoR3UDIxRHjIwGAYJKoZIhvcNAQkDMQsGCSqG
+SIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEwMTExMTgwOTQ3WjBpBgkqhkiG9w0BCQ8xXDBaMAsG
+CWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3
+DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBANnlameak0di
+LkHp5adw6dlEmyezMsJ175oofSqpEsE+bkVr/q9tW7bPyFGt8R6ab9LdAEKZF6pSKT8NZXnYBBMS
+Nlc32fIFW/ti0D5qoPMVSWV4aODbG4h44OU2U6spVIiH9Pul1DuK2MxcVrapgrpgQEvA0/OXvPBn
+q9npzVydXPgQYiv8wXBGew96P8B+NgvU95+BZaMthl9qKqKchO1sphHeDexmxeR6sovQinbIh/Jb
+FY40A5IJrmueUQoWiEI+aZd4CzWi5WldVXw00fkuhF/C0DDuzntX8Tu75SSlAe5toz5ARQ0MhWGk
+GKMMgeo5rO/DLKrZ3sfSAvRvLIs=
+--000000000000b4a60f05b8a3cf14--
