@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7982F11E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:49:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A18B2F11EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:53:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730110AbhAKLtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:49:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729881AbhAKLtj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:49:39 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7079C061786;
-        Mon, 11 Jan 2021 03:48:58 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id AD7F91F44D9B
-Message-ID: <ef218bf2bd948961079237686b58a00ca1b125bf.camel@collabora.com>
-Subject: Re: [PATCH] hantro: Format IOCTLs compliance fixes
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Ricardo Ribalda <ribalda@chromium.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Date:   Mon, 11 Jan 2021 08:48:46 -0300
-In-Reply-To: <20210111113529.45488-1-ribalda@chromium.org>
-References: <20210111113529.45488-1-ribalda@chromium.org>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        id S1730034AbhAKLvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:51:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729755AbhAKLvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 06:51:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A351224BD;
+        Mon, 11 Jan 2021 11:50:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610365829;
+        bh=NP9L6a6Mu9+yVb7bcao5sARkOO84Twaf5gsOxbxTCz4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B8xIUnRGbG+eiLmhAKkTAsjfXbTYgQ8uYAVSl4bxG+leFEqHaXhtNHSdrT/Wg1Qby
+         p4mox/VJcbAsuChYQKfGUT5MPWDclBa+Vs7ZVCHgzgwZTMKAXZrYdMnyvnA5WocTZq
+         WIsSg74NkVIy04joBEPJ+vveTpsaKvpRXhyxJqeiQfpb8QAKII/LGOxXH8yURCs6ir
+         pL7MdfM1R4DPUVN7j5G+5GUEv09h1wMLcbtLNnDgfjJ0m6u+F5i39hpxXXUPFKAdIr
+         mhkehV98MT98x0YSJ+QMhYPW1hMtXk66Ehc1HAUArzwLoGYfiQTX9DHFDuC2fsyzGI
+         3CleWD3eEwxMw==
+Date:   Mon, 11 Jan 2021 12:50:26 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org
+Subject: Re: [RFC PATCH 5/8] entry: Explicitly flush pending rcuog wakeup
+ before last rescheduling points
+Message-ID: <20210111115026.GC242508@lothringen>
+References: <20210109020536.127953-1-frederic@kernel.org>
+ <20210109020536.127953-6-frederic@kernel.org>
+ <20210111004014.GA242508@lothringen>
+ <20210111051318.GZ2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111051318.GZ2743@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
-
-On Mon, 2021-01-11 at 12:35 +0100, Ricardo Ribalda wrote:
-> Clear the reserved fields.
+On Sun, Jan 10, 2021 at 09:13:18PM -0800, Paul E. McKenney wrote:
+> On Mon, Jan 11, 2021 at 01:40:14AM +0100, Frederic Weisbecker wrote:
+> > On Sat, Jan 09, 2021 at 03:05:33AM +0100, Frederic Weisbecker wrote:
+> > > Following the idle loop model, cleanly check for pending rcuog wakeup
+> > > before the last rescheduling point on resuming to user mode. This
+> > > way we can avoid to do it from rcu_user_enter() with the last resort
+> > > self-IPI hack that enforces rescheduling.
+> > > 
+> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > > Cc: Peter Zijlstra <peterz@infradead.org>
+> > > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > > Cc: Ingo Molnar<mingo@kernel.org>
+> > > Cc: Paul E. McKenney <paulmck@kernel.org>
+> > > Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > > ---
+> > >  kernel/entry/common.c |  6 ++++++
+> > >  kernel/rcu/tree.c     | 12 +++++++-----
+> > >  2 files changed, 13 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+> > > index 378341642f94..8f3292b5f9b7 100644
+> > > --- a/kernel/entry/common.c
+> > > +++ b/kernel/entry/common.c
+> > > @@ -178,6 +178,9 @@ static unsigned long exit_to_user_mode_loop(struct pt_regs *regs,
+> > >  		/* Architecture specific TIF work */
+> > >  		arch_exit_to_user_mode_work(regs, ti_work);
+> > >  
+> > > +		/* Check if any of the above work has queued a deferred wakeup */
+> > > +		rcu_nocb_flush_deferred_wakeup();
+> > 
+> > So this needs to be moved to the IRQs disabled section, just a few lines later,
+> > otherwise preemption may schedule another task that in turn do call_rcu() and create
+> > new deferred wake up (thank Paul for the warning). Not to mention moving to
+> > another CPU with its own deferred wakeups to flush...
+> > 
+> > I'll fix that for the next version.
 > 
-> Fixes:
->   fail: v4l2-test-formats.cpp(482): pix_mp.plane_fmt[0].reserved not zeroed
-> test VIDIOC_TRY_FMT: FAIL
->   fail: v4l2-test-formats.cpp(482): pix_mp.plane_fmt[0].reserved not zeroed
-> test VIDIOC_S_FMT: FAIL
-> 
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/staging/media/hantro/hantro_v4l2.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/staging/media/hantro/hantro_v4l2.c b/drivers/staging/media/hantro/hantro_v4l2.c
-> index b668a82d40ad..9b384fbffc93 100644
-> --- a/drivers/staging/media/hantro/hantro_v4l2.c
-> +++ b/drivers/staging/media/hantro/hantro_v4l2.c
-> @@ -239,6 +239,7 @@ static int hantro_try_fmt(const struct hantro_ctx *ctx,
->         const struct hantro_fmt *fmt, *vpu_fmt;
->         bool capture = V4L2_TYPE_IS_CAPTURE(type);
->         bool coded;
-> +       int i;
->  
->         coded = capture == ctx->is_encoder;
->  
-> @@ -293,6 +294,10 @@ static int hantro_try_fmt(const struct hantro_ctx *ctx,
->                         pix_mp->width * pix_mp->height * fmt->max_depth;
->         }
->  
-> +       for (i = 0; i < pix_mp->num_planes; i++)
-> +               memset(pix_mp->plane_fmt[i].reserved, 0,
-> +                      sizeof(pix_mp->plane_fmt[i].reserved));
-> +
+> Ah, so it was not just my laptop dying, then!  ;-)
 
-This looks like something that should be handled at the core,
-probably in drivers/media/v4l2-core/v4l2-ioctl.c::v4l_try_fmt().
-
-Thanks,
-Ezequiel
-
+Note that it fixes the "smp_processor_id() in preemptible" warnings you
+reported but it shouldn't fix the other issues.
