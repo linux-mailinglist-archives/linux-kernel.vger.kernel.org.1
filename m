@@ -2,172 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD5F2F0EFC
+	by mail.lfdr.de (Postfix) with ESMTP id 974DD2F0EFD
 	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 10:25:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728385AbhAKJXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 04:23:37 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:13550 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727690AbhAKJXg (ORCPT
+        id S1728415AbhAKJZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 04:25:19 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:36328 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728204AbhAKJZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 04:23:36 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610356997; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=lTjykblV8tDGM9es9mjJrFFmMVEipVxBCLhQLHO2kAA=;
- b=BRzZXUIvtMD5H5qqL6y+tWAYTqOeCHvU9cfczNoxoBXlfK1jE+FOmlmuP2JWcnbH4R08Fi1Z
- yOVNAHlhYARjnsTyPsvLrgN92QFvKhQxTl8dbbmxcRA3Erc/VHnBIaqlvJErCHzbUgixIHK9
- yQDWZ2Cbh1/RG+Q6NbIDYifumRo=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5ffc18ea8fb3cda82ffcdeaf (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 09:22:50
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2E471C4346B; Mon, 11 Jan 2021 09:22:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 03E76C433C6;
-        Mon, 11 Jan 2021 09:22:47 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 11 Jan 2021 17:22:47 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        rjw@rjwysocki.net, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Nitin Rawat <nitirawa@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] scsi: ufs: Protect PM ops and err_handler from user
- access through sysfs
-In-Reply-To: <976641f42211af23d90464d0c4841cc40740b0d7.camel@gmail.com>
-References: <1609595975-12219-1-git-send-email-cang@codeaurora.org>
- <1609595975-12219-3-git-send-email-cang@codeaurora.org>
- <80a15afab8024d0b61d312b57585c9322ac91958.camel@gmail.com>
- <7d49c1dfc3f648c484076f3c3a7f4e1e@codeaurora.org>
- <1514403adf486ac8069253c09f45b021bad32e00.camel@gmail.com>
- <f814b71d1d4ea87a72df4851a8190807@codeaurora.org>
- <cb388d8ea15b2c80a072dec74d9ededecb183a08.camel@gmail.com>
- <e69bd5a6b73d5c652130bf4fa077aac0@codeaurora.org>
- <606774efd4d89f0ea78cefeb428cc9e1@codeaurora.org>
- <146b46a5c38f4582a9a8e6df1d87cdfc0684f549.camel@gmail.com>
- <fa0e976387070c64752c972d32ce15df@codeaurora.org>
- <976641f42211af23d90464d0c4841cc40740b0d7.camel@gmail.com>
-Message-ID: <7f193fe5abfb41aa72d17f7884cbd113@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        Mon, 11 Jan 2021 04:25:18 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0ULMSkuR_1610357064;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0ULMSkuR_1610357064)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 11 Jan 2021 17:24:30 +0800
+From:   YANG LI <abaci-bugfix@linux.alibaba.com>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        YANG LI <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] hci: llc_shdlc: style: Simplify bool comparison
+Date:   Mon, 11 Jan 2021 17:24:23 +0800
+Message-Id: <1610357063-57705-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-11 16:23, Bean Huo wrote:
-> On Mon, 2021-01-11 at 09:27 +0800, Can Guo wrote:
->> >
->> > If accessing sysfs nodes, which triggers a UFS UPIU request to
->> > read/write UFS device descriptors during shutdown flow, there is
->> > only
->> > one issue that sysfs node access failure since UFS device and LINK
->> > has
->> > been shutdown. Strictly speaking, the failure comes after
->> > ufshcd_set_dev_pwr_mode().
->> >
->> >     __ufshcd_query_descriptor: opcode 0x01 for idn 0 failed, index
->> > 0,
->> > err = -11
->> 
->> You misunderstood it again. You are expecting a simple query cmd
->> error.
->> But what really matters are NoC issues[1] and OCP[2]. And
->> while/after
->> UFS
->> shutting down, either of them may happen.
->> 
->> [1] When a un-clocked register access issue happens, we call it a
->> NoC
->> issue,
->> meaning you are tring to access a register when clocks are disabled.
->> This
->> leads to system CRASH.
->> 
-> 
-> OK, let it simple, share this kind of crash log becuase of access sysfs
-> node in the shutdown flow.
-> 
-> 
->> [2] OCP is over current protection. While UFS shutting down, you may
->> have put UFS regulators to LPM. After that, if you are still trying
->> to
->> talk to UFS, OCP can happen on VCCQ/VCCQ2. This leads to system
->> CRASH
->> too.
-> 
-> the same as above, share the crash log.
-> 
+Fix the following coccicheck warning:
+./net/nfc/hci/llc_shdlc.c:239:5-21: WARNING: Comparison to bool
 
-If you have hand-on experiences on NoC and/or OCP issues, you won't ask
-for the crash log. The tricky parts about critial NoC and OCP issues is
-that they don't print much logs (maybe no logs at all) in uart, which is
-why they are hard to debug and why I add another flag to help debug.
+Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+---
+ net/nfc/hci/llc_shdlc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Take OCP as an example, when OCP happens on VCCQ/VCCQ2, PMIC will do a
-hard reset and put the system to crash dump mode (this is a general 
-design
-in our mutual customers, but it may vary platform by platform).
+diff --git a/net/nfc/hci/llc_shdlc.c b/net/nfc/hci/llc_shdlc.c
+index 0eb4ddc..c0c8fea 100644
+--- a/net/nfc/hci/llc_shdlc.c
++++ b/net/nfc/hci/llc_shdlc.c
+@@ -236,7 +236,7 @@ static void llc_shdlc_rcv_i_frame(struct llc_shdlc *shdlc,
+ 		goto exit;
+ 	}
+ 
+-	if (shdlc->t1_active == false) {
++	if (!shdlc->t1_active) {
+ 		shdlc->t1_active = true;
+ 		mod_timer(&shdlc->t1_timer, jiffies +
+ 			  msecs_to_jiffies(SHDLC_T1_VALUE_MS(shdlc->w)));
+-- 
+1.8.3.1
 
-And if you have a crash dump tool to collect the dump, after the dump is
-parsed, the best part which you can count on is the last callstacks and
-related flags, variables in hba. The callstack is pretty much same with
-the one I shared with my debug patch applied during the weekend.
-
-Stanley can correct me if I am wrong.
-
-Thanks,
-Can Guo.
-
->> 
->> >
->> > Since the shutdown is oneway process, this failure is not big
->> > issue. If
->> > you meant to avoid this failure for unsafe shutdown, I agree with
->> > you,
->> > But for the race issue, I don't know.
->> >
->> 
->> Easy for you to say. System crash is a big issue to any SoC vendors
->> I
->> belive.
->> 
-> 
-> indeed, crash is serious issue, share the log.
-> 
-> 
-> Thanks,
-> Bean
-> 
-> 
->> Can Guo.
