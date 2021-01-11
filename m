@@ -2,70 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81FCE2F1040
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 670C62F1042
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:42:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729301AbhAKKkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:40:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728941AbhAKKkl (ORCPT
+        id S1729313AbhAKKlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:41:12 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:10406 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726594AbhAKKlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:40:41 -0500
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7374C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 02:40:00 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by michel.telenet-ops.be with bizsmtp
-        id FNfy2400e4C55Sk06NfyTn; Mon, 11 Jan 2021 11:39:58 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kyucA-002o7L-08; Mon, 11 Jan 2021 11:39:58 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kyuc9-001DYH-DI; Mon, 11 Jan 2021 11:39:57 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] ntp: Fix RTC synchronization on 32-bit platforms
-Date:   Mon, 11 Jan 2021 11:39:56 +0100
-Message-Id: <20210111103956.290378-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Mon, 11 Jan 2021 05:41:11 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10BAaMBm007129;
+        Mon, 11 Jan 2021 04:39:56 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=d75rPZz6XfMRGET+XeZnq7haDjcGG9W0zaixbxQsXDo=;
+ b=LQeQSL+GVTnq8hrA7FJamx64yiJNaDzZSgLSmSX0CDrj/NUCdYkmk5WSmXPdHiHbRFsH
+ 1/5UkdYJLDIcHUfhYjySI/rEAP4TDeRQlzQMvsEeQeEDnsHL7nJnvpnKvYThDQiC6pB7
+ WM2uIn4dxrjk2iYH8pnvbHqQVcI0wnR5Ot9jKDa2cDVPExyUbSUrZ4x2kpVfNxf43OxV
+ 28ZZ5XrWfl6wbQMyr73/uhNoLNzVLcbDbo+IHM9cS1Er6W8Lr556/xm2yerTcGepPTne
+ QOOPlw5qzKkSc84Yc73c/64n5k78gKyXWmCoeY2vhq2IElzUY2oNR3kereWY2I2SWEsv zA== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 35y9srsyd4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 11 Jan 2021 04:39:56 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Mon, 11 Jan
+ 2021 10:39:54 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Mon, 11 Jan 2021 10:39:54 +0000
+Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.3])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 79BE845;
+        Mon, 11 Jan 2021 10:39:54 +0000 (UTC)
+Subject: Re: [PATCH v3 1/4] lib: vsprintf: scanf: Negative number must have
+ field width > 1
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Petr Mladek <pmladek@suse.com>
+CC:     Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, <patches@opensource.cirrus.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+References: <20201217180057.23786-1-rf@opensource.cirrus.com>
+ <X/wnoJLEt0zQskDU@alley>
+ <CAHp75VfeccM8D=DT-j4ApPAbDhDgV_M_FKOyXEMP8YBJZMed=g@mail.gmail.com>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <f9aa8622-0c64-072b-dc44-e550460cf57f@opensource.cirrus.com>
+Date:   Mon, 11 Jan 2021 10:39:56 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VfeccM8D=DT-j4ApPAbDhDgV_M_FKOyXEMP8YBJZMed=g@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
+ phishscore=0 spamscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
+ adultscore=0 mlxlogscore=687 impostorscore=0 clxscore=1011 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101110063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Due to an integer overflow, RTC synchronization now happens every 2s
-instead of the intended 11 minutes.  Fix this by forcing 64-bit
-arithmetic for the sync period calculation.
+On 11/01/2021 10:36, Andy Shevchenko wrote:
+> On Mon, Jan 11, 2021 at 12:28 PM Petr Mladek <pmladek@suse.com> wrote:
+>>
+>> Sigh, I have just realized that Andy and Rasmus, the other
+>> vsprintf maintainers and reviewers, were not in CC.
+>> I am sorry for not noticing this earlier.
+>>
+>> The patchset is ready for 5.12 from my POV.
+> 
+> Thanks, Petr!
+> 
+> I have one question, do we have a test case for that? If not, I prefer
+> defer until a test case will be provided.
+> 
 
-Fixes: c9e6189fb03123a7 ("ntp: Make the RTC synchronization more reliable")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- kernel/time/ntp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/time/ntp.c b/kernel/time/ntp.c
-index 7404d38315276a96..54d52fab201d283e 100644
---- a/kernel/time/ntp.c
-+++ b/kernel/time/ntp.c
-@@ -498,7 +498,7 @@ int second_overflow(time64_t secs)
- static void sync_hw_clock(struct work_struct *work);
- static DECLARE_WORK(sync_work, sync_hw_clock);
- static struct hrtimer sync_hrtimer;
--#define SYNC_PERIOD_NS (11UL * 60 * NSEC_PER_SEC)
-+#define SYNC_PERIOD_NS (11ULL * 60 * NSEC_PER_SEC)
- 
- static enum hrtimer_restart sync_timer_callback(struct hrtimer *timer)
- {
--- 
-2.25.1
-
+See patch 3, numbers_prefix_overflow()
