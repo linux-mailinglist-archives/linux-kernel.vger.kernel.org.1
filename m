@@ -2,105 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EE42F10F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0BD72F1106
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:20:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729154AbhAKLR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:17:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728658AbhAKLRz (ORCPT
+        id S1729278AbhAKLUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:20:12 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:43750 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728318AbhAKLUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:17:55 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C2DBC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 03:17:15 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id y12so3366981pji.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 03:17:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=vBU9e6qyBvT5ZyCJomv4xriQsn7W38v5x67CwrScjsY=;
-        b=nYSrbnM/SnogBIYP8F8QIZmbgrUADTNeZxHozvUNmjqEjOIqHbwP6EdZageFoUCpbp
-         RlFDS1YbJSKKIYteN71fcaSAxssopABgaek9Dp7ZuCaQLYrnB2Bbw+SN/q7uTDK5kP6U
-         WIZ64yWIGwm+vYX2Gh3d8diTBeb46C7C4HhNWm5eNMPpcKJPMnsQ3w9k+/tFlmGlpcsO
-         ubmPWOj6PNYow3oURddjaOKgO1moyoGDB5fM2F5jjMRHZyfDad0nN0n9YUYNmYDEbP9U
-         9AQ3LQqPleAHxKEzp2N4ouXkCvhywR+I05n5ohiQbmYi6u4c68wvJ0J/A+uU5f2NwwmN
-         +dtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vBU9e6qyBvT5ZyCJomv4xriQsn7W38v5x67CwrScjsY=;
-        b=SlrXHiQU6yGnqcJzsVvlfFKh/JgI6GBB+fCBVtcQes951uLK4kDSjM2OD8PqImmb1J
-         autvty1NE4DPwL1H7/Cq10ZiO9bYAdsRF3VYkABIpCnjADKm3j+OQ4DHI/BoZShf72rs
-         uLJdEg7Hx5JaLk8EtvS+dwP4SCvYEKvBC3i4e9VEv7QN5Cufd7cKYVXTAAxFkZUvjPow
-         Ad5/0WDDKyRZzt9Tuq1iSUQKupdVv/1BiodoW67Vj39FgOod0Jss1D00hPposBttSvJH
-         LqLob+ubISFI0F3IFnQJF8Q1rGkW2OqrzJRgqxCaf/YLtFWQDHF5MlDWeVdG/uEL0Pse
-         5csA==
-X-Gm-Message-State: AOAM533Wg5mSYAvtbL8EL6WqyGmZDFide1SZbkmfcR79tDP0k+4RvmvN
-        zwdJ+Kykk+52IuRP47IxuiHMohvy5g7aNg==
-X-Google-Smtp-Source: ABdhPJxt34tCOBXDfUJk3pPZ0yxAGN7NW92b+4hhJvRSg1GMXrG/sPu4+TJ2kUlBUKmqgX1XaFfS3w==
-X-Received: by 2002:a17:902:9a90:b029:da:ba07:efdc with SMTP id w16-20020a1709029a90b02900daba07efdcmr16068115plp.1.1610363834824;
-        Mon, 11 Jan 2021 03:17:14 -0800 (PST)
-Received: from localhost ([122.172.85.111])
-        by smtp.gmail.com with ESMTPSA id y21sm20500535pfr.90.2021.01.11.03.17.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 11 Jan 2021 03:17:14 -0800 (PST)
-Date:   Mon, 11 Jan 2021 16:47:11 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Olof Johansson <olof@lixom.net>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, tero.kristo@gmail.com
-Subject: Re: [RFC 0/2] kbuild: Add support to build overlays (%.dtbo)
-Message-ID: <20210111111711.r2xesydzhq5js2nf@vireshk-i7>
-References: <cover.1609844956.git.viresh.kumar@linaro.org>
- <CAL_JsqJMr3vfz2B29vzvFALCt_5-J__eJv2TZHJ0sR9nM=xXaw@mail.gmail.com>
- <CAK7LNAR9fdjZ7iWKSWvJ9etGZkd+n87cmXKN-Hah8DBDYbuAwA@mail.gmail.com>
+        Mon, 11 Jan 2021 06:20:11 -0500
+X-UUID: e4e974fdc73441cebd2fa83495b0f4ff-20210111
+X-UUID: e4e974fdc73441cebd2fa83495b0f4ff-20210111
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 22183689; Mon, 11 Jan 2021 19:19:27 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 11 Jan 2021 19:19:22 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 11 Jan 2021 19:19:22 +0800
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+CC:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
+        <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
+        <anan.sun@mediatek.com>, <chao.hao@mediatek.com>
+Subject: [PATCH v6 00/33] MT8192 IOMMU support
+Date:   Mon, 11 Jan 2021 19:18:41 +0800
+Message-ID: <20210111111914.22211-1-yong.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAR9fdjZ7iWKSWvJ9etGZkd+n87cmXKN-Hah8DBDYbuAwA@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07-01-21, 14:28, Masahiro Yamada wrote:
-> Viresh's patch is not enough.
-> 
-> We will need to change .gitignore
-> and scripts/Makefile.dtbinst as well.
-> 
-> In my understanding, the build rule is completely the same
-> between .dtb and .dtbo
-> As Rob mentioned, I am not sure if we really need/want
-> a separate extension.
-> 
-> A counter approach is to use an extension like '.ovl.dtb'
-> It clarifies it is an overlay fragment without changing
-> anything in our build system or the upstream DTC project.
+This patch mainly adds support for mt8192 Multimedia IOMMU and SMI.
 
-By the time you gave feedback, I have already sent the dtbo change for
-DTC to the device-tree-compiler list (based on Rob's suggestion).
+mt8192 also is MTK IOMMU gen2 which uses ARM Short-Descriptor translation
+table format. The M4U-SMI HW diagram is as below:
 
-And it got merged today by David:
+                          EMI
+                           |
+                          M4U
+                           |
+                      ------------
+                       SMI Common
+                      ------------
+                           |
+  +-------+------+------+----------------------+-------+
+  |       |      |      |       ......         |       |
+  |       |      |      |                      |       |
+larb0   larb1  larb2  larb4     ......      larb19   larb20
+disp0   disp1   mdp    vdec                   IPE      IPE
 
-https://github.com/dgibson/dtc/commit/163f0469bf2ed8b2fe5aa15bc796b93c70243ddc
+All the connections are HW fixed, SW can NOT adjust it.
 
-Can we please finalize what we need to do with naming here and be done
-with it, so I can rework my patches and get going ?
+Comparing with the preview SoC, this patchset mainly adds two new functions:
+a) add iova 34 bits support.
+b) add multi domains support since several HW has the special iova
+region requirement.
 
-Thanks.
+change note:
+v6:a) base on v5.11-rc1. and tlb v4:
+      https://lore.kernel.org/linux-mediatek/20210107122909.16317-1-yong.wu@mediatek.com/T/#t 
+   b) Remove the "domain id" definition in the binding header file.
+      Get the domain from dev->dma_range_map.
+      After this, Change many codes flow.
+   c) the patchset adds a new common file(mtk_smi-larb-port.h).
+      This version changes that name into mtk-memory-port.h which reflect 
+      its file path. This only changes the file name. no other change.
+      thus I keep all the Reviewed-by Tags.
+      (another reason is that we will add some iommu ports unrelated with
+       smi-larb)
+   d) Refactor the power-domain flow suggestted by Tomasz.
+   e) Some other small fix. use different oas for different soc; Change the
+   macro for 34bit iova tlb flush.
+
+v5: https://lore.kernel.org/linux-iommu/20201209080102.26626-1-yong.wu@mediatek.com/
+    a) Add a new patch for the header guard for smi-larb-port.h in [5/27].
+    b) Add a new patch for error handle for iommu_device_sysfs_add and
+ iommu_device_register[15/27].
+    c) Add a flag for the iova "ias == 34" case. the previous SoC still keep
+ 32bits to save 16KB*3 lvl1 pgtable memory[13/27].
+    d) Add include <linux/bitfield.h> for FIELD_GET build fail.
+    e) In PM power domain patch, add a checking "pm_runtime_enabled" when call
+ pm_runtime_get_sync for non power-domain case. and add a pm_runtime_put_noidle
+ while pm_runtime_get_sync fail case.
+
+v4: https://lore.kernel.org/linux-iommu/20201111123838.15682-1-yong.wu@mediatek.com/
+  a) rebase on v5.10-rc1
+  b) Move the smi part to a independent patchset.
+  c) Improve v7s code from Robin and Will.
+  d) Add a mediatek iommu entry patch in MAINTAIN.
+
+v3: https://lore.kernel.org/linux-iommu/20200930070647.10188-1-yong.wu@mediatek.com/
+  a) Fix DT schema issue commented from Rob.
+  b) Fix a v7s issue. Use "_lvl" instead of "_l" in the macro(ARM_V7S_PTES_PER_LVL) since 
+  it is called in ARM_V7S_LVL_IDX which has already used "_l".
+  c) Fix a PM suspend issue: Avoid pm suspend in pm runtime case.
+
+v2: https://lore.kernel.org/linux-iommu/20200905080920.13396-1-yong.wu@mediatek.com/
+  a) Convert IOMMU/SMI dt-binding to DT schema.
+  b) Fix some comment from Pi-Hsun and Nicolas. like use
+  generic_iommu_put_resv_regions.
+  c) Reword some comment, like add how to use domain-id.
+
+v1: https://lore.kernel.org/linux-iommu/20200711064846.16007-1-yong.wu@mediatek.com/
+
+Yong Wu (33):
+  dt-bindings: iommu: mediatek: Convert IOMMU to DT schema
+  dt-bindings: memory: mediatek: Add a common memory header file
+  dt-bindings: memory: mediatek: Extend LARB_NR_MAX to 32
+  dt-bindings: memory: mediatek: Rename header guard for SMI header file
+  dt-bindings: mediatek: Add binding for mt8192 IOMMU
+  of/device: Move dma_range_map before of_iommu_configure
+  iommu: Avoid reallocate default domain for a group
+  iommu/mediatek: Use the common mtk-memory-port.h
+  iommu/io-pgtable-arm-v7s: Use ias to check the valid iova in unmap
+  iommu/io-pgtable-arm-v7s: Extend PA34 for MediaTek
+  iommu/io-pgtable-arm-v7s: Clarify LVL_SHIFT/BITS macro
+  iommu/io-pgtable-arm-v7s: Add cfg as a param in some macros
+  iommu/io-pgtable-arm-v7s: Quad lvl1 pgtable for MediaTek
+  iommu/mediatek: Add a flag for iova 34bits case
+  iommu/mediatek: Update oas for v7s
+  iommu/mediatek: Move hw_init into attach_device
+  iommu/mediatek: Add error handle for mtk_iommu_probe
+  iommu/mediatek: Add device link for smi-common and m4u
+  iommu/mediatek: Add pm runtime callback
+  iommu/mediatek: Add power-domain operation
+  iommu/mediatek: Support up to 34bit iova in tlb flush
+  iommu/mediatek: Support report iova 34bit translation fault in ISR
+  iommu/mediatek: Adjust the structure
+  iommu/mediatek: Move domain_finalise into attach_device
+  iommu/mediatek: Move geometry.aperture updating into domain_finalise
+  iommu/mediatek: Add iova_region structure
+  iommu/mediatek: Add get_domain_id from dev->dma_range_map
+  iommu/mediatek: Support for multi domains
+  iommu/mediatek: Add iova reserved function
+  iommu/mediatek: Support master use iova over 32bit
+  iommu/mediatek: Remove unnecessary check in attach_device
+  iommu/mediatek: Add mt8192 support
+  MAINTAINERS: Add entry for MediaTek IOMMU
+
+ .../bindings/iommu/mediatek,iommu.txt         | 105 -----
+ .../bindings/iommu/mediatek,iommu.yaml        | 183 +++++++++
+ MAINTAINERS                                   |   9 +
+ drivers/iommu/io-pgtable-arm-v7s.c            |  56 +--
+ drivers/iommu/iommu.c                         |   3 +-
+ drivers/iommu/mtk_iommu.c                     | 366 ++++++++++++++----
+ drivers/iommu/mtk_iommu.h                     |  12 +-
+ drivers/memory/mtk-smi.c                      |   8 +
+ drivers/of/device.c                           |   3 +-
+ include/dt-bindings/memory/mt2701-larb-port.h |   4 +-
+ include/dt-bindings/memory/mt2712-larb-port.h |   6 +-
+ include/dt-bindings/memory/mt6779-larb-port.h |   6 +-
+ include/dt-bindings/memory/mt8167-larb-port.h |   6 +-
+ include/dt-bindings/memory/mt8173-larb-port.h |   6 +-
+ include/dt-bindings/memory/mt8183-larb-port.h |   6 +-
+ include/dt-bindings/memory/mt8192-larb-port.h | 243 ++++++++++++
+ include/dt-bindings/memory/mtk-memory-port.h  |  15 +
+ include/linux/io-pgtable.h                    |   4 +-
+ include/soc/mediatek/smi.h                    |   3 +-
+ 19 files changed, 810 insertions(+), 234 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
+ create mode 100644 Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
+ create mode 100644 include/dt-bindings/memory/mt8192-larb-port.h
+ create mode 100644 include/dt-bindings/memory/mtk-memory-port.h
 
 -- 
-viresh
+2.18.0
+
+
