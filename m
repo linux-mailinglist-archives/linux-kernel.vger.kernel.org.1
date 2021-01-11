@@ -2,75 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6650E2F1C96
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:38:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 102332F1C9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 18:39:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389766AbhAKRiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 12:38:19 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:51445 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389458AbhAKRiT (ORCPT
+        id S2389779AbhAKRi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 12:38:57 -0500
+Received: from smtpcmd0756.aruba.it ([62.149.156.56]:53131 "EHLO
+        smtpcmd15176.aruba.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2389564AbhAKRi5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 12:38:19 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kz18K-0004GW-RF; Mon, 11 Jan 2021 17:37:36 +0000
-Subject: Re: [PATCH][next] ASoC: soc-pcm: Fix uninitialised return value in
- variable ret
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        =?UTF-8?B?5pyx54G/54G/?= <zhucancan@vivo.com>,
-        alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210108123546.19601-1-colin.king@canonical.com>
- <20210111163551.GA33269@sirena.org.uk>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <9bef4fe5-0eed-03f8-9505-909b669ba49b@canonical.com>
-Date:   Mon, 11 Jan 2021 17:37:36 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 11 Jan 2021 12:38:57 -0500
+Received: from [192.168.126.129] ([146.241.213.249])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id z18QkRB5IiSGyz18QkaX0h; Mon, 11 Jan 2021 18:37:49 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1610386669; bh=9rypusLXSregUp5IREA3MTJHjP1GCcUbjnNzJVPU29A=;
+        h=Subject:To:From:Date:MIME-Version:Content-Type;
+        b=F75mtUW8k9w5YP0g3OxcngzxU/7uRbim1V62GTN1xj27hKfVNQgMohcE0MEniDgl8
+         U1hCZ5vaujqq03jOtOD4r2bJNRQQFSyMiTjHIXQ1kL1huX/TECbxBWoohTxLsg6SdN
+         MwVarMQpuiiAPVLaXYHwXNa9hIrAjo3PiqQ1qVScpRGBylzo5ZMvClam14ktGe0g8S
+         i1NHeYFAOpwa6c7e523+lsaodbI85DEp4MdvNc8iYJJpUHJcJ2y0OTYvL7S/jqHEe6
+         TFWG6pb/QsDy/gDsNoCiyX4SLhw6PvlUjK52+IkE6jWRlaTn0nVbpnyvidYYHe28R+
+         Rc5d0YMTXnjRA==
+Subject: Re: [PATCH v2 2/2] drm/sun4i: tcon: improve DCLK polarity handling
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Marjan Pascolo <marjan.pascolo@trexom.it>, wens@csie.org,
+        daniel@ffwll.ch, airlied@linux.ie, treding@nvidia.com,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Giulio Benetti <giulio.benetti@micronovasrl.com>
+References: <3685133.SLcexNTYsu@kista>
+ <20210107023032.560182-1-giulio.benetti@benettiengineering.com>
+ <20210107023032.560182-3-giulio.benetti@benettiengineering.com>
+ <20210108092355.7p5uakxt7lpdu3bn@gilmour>
+ <35622307-5e88-a2ed-bdf9-fca6554efefc@benettiengineering.com>
+ <20210111172052.7v522xam74xkq6se@gilmour>
+From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
+Message-ID: <fc01c99c-3b5d-0064-917f-1582abba51f4@benettiengineering.com>
+Date:   Mon, 11 Jan 2021 18:37:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210111163551.GA33269@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20210111172052.7v522xam74xkq6se@gilmour>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfK8Kt4nJXeFMs4gCbJtRGyPSD58rPmQLQ1OKbK7WAyj6e0WfasPgC+VWds73gfqHjRv51nb+TgfqF82quQSbJOZrAsthYIroOpocDqIL4QQRuWu1d5bE
+ sOPKvRqjYYl5cYKzWTIEj2j76ZBlBKnuC7ITHZ9B4QGKr2PAouWcDC/hbUInTuxP48DlTRc9bXRWeH+/NozPc97jpN6gQUpVqZ7DVZCk0Xrok0qTkvw1VkyV
+ LkagEdS5aN9bV682N6z4ltxiTw6Sc1aClsfZL0hzFruiUJGt/jvkcVg7/GzgbwNB7emG+gCjrzo17hxYYXAqcoFphBD0P5CUQKT6uAxq9Naysjz7dsfPKYyR
+ DnddLFC/3fnH7Jr24Jiu46SueAfUW8394VkKWhCnXqg8zjKVxpPDtamlZQu5iuzYQjG/jHTU/fw4tHl9TlYGRjjoMdTCgcdkoCMxOS3zuXqr9VKVk9t3udyQ
+ 0LW2wDYmLXuP7AxgjPc/+moYG/Wl+rbdwY7zogPE4DlUUJXFFLSVTD93ehuA8abYWHc5I43IujLuMdTe+peICcKyLLoyDxVzmBmLOg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/01/2021 16:35, Mark Brown wrote:
-> On Fri, Jan 08, 2021 at 12:35:46PM +0000, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
+On 1/11/21 6:20 PM, Maxime Ripard wrote:
+> On Fri, Jan 08, 2021 at 03:34:52PM +0100, Giulio Benetti wrote:
+>> Hi,
 >>
->> Currently when attempting to start the BE fails because the
->> FE is not started the error return variable ret is not initialized
->> and garbage is returned.  Fix this by setting it to 0 so the
+>> On 1/8/21 10:23 AM, Maxime Ripard wrote:
+>>> Hi,
+>>>
+>>> Thanks for those patches
+>>>
+>>> On Thu, Jan 07, 2021 at 03:30:32AM +0100, Giulio Benetti wrote:
+>>>> From: Giulio Benetti <giulio.benetti@micronovasrl.com>
+>>>>
+>>>> It turned out(Maxime suggestion) that bit 26 of SUN4I_TCON0_IO_POL_REG is
+>>>> dedicated to invert DCLK polarity and this makes thing really easier than
+>>>> before. So let's handle DCLK polarity by adding
+>>>> SUN4I_TCON0_IO_POL_DCLK_POSITIVE as bit 26 and activating according to
+>>>> bus_flags the same way is done for all the other signals.
+>>>>
+>>>> Cc: Maxime Ripard <maxime@cerno.tech>
+>>>
+>>> Suggested-by would be nice here :)
+>>
+>> Ok, didn't know about this tag
+>>
+>>>> Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
+>>>> ---
+>>>>    drivers/gpu/drm/sun4i/sun4i_tcon.c | 20 +-------------------
+>>>>    drivers/gpu/drm/sun4i/sun4i_tcon.h |  1 +
+>>>>    2 files changed, 2 insertions(+), 19 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+>>>> index 52598bb0fb0b..30171ccd87e5 100644
+>>>> --- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
+>>>> +++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+>>>> @@ -569,26 +569,8 @@ static void sun4i_tcon0_mode_set_rgb(struct sun4i_tcon *tcon,
+>>>>    	if (info->bus_flags & DRM_BUS_FLAG_DE_LOW)
+>>>>    		val |= SUN4I_TCON0_IO_POL_DE_NEGATIVE;
+>>>> -	/*
+>>>> -	 * On A20 and similar SoCs, the only way to achieve Positive Edge
+>>>> -	 * (Rising Edge), is setting dclk clock phase to 2/3(240°).
+>>>> -	 * By default TCON works in Negative Edge(Falling Edge),
+>>>> -	 * this is why phase is set to 0 in that case.
+>>>> -	 * Unfortunately there's no way to logically invert dclk through
+>>>> -	 * IO_POL register.
+>>>> -	 * The only acceptable way to work, triple checked with scope,
+>>>> -	 * is using clock phase set to 0° for Negative Edge and set to 240°
+>>>> -	 * for Positive Edge.
+>>>> -	 * On A33 and similar SoCs there would be a 90° phase option,
+>>>> -	 * but it divides also dclk by 2.
+>>>> -	 * Following code is a way to avoid quirks all around TCON
+>>>> -	 * and DOTCLOCK drivers.
+>>>> -	 */
+>>>>    	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE)
+>>>> -		clk_set_phase(tcon->dclk, 0);
+>>>> -
+>>>> -	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
+>>>> -		clk_set_phase(tcon->dclk, 240);
+>>>> +		val |= SUN4I_TCON0_IO_POL_DCLK_POSITIVE;
+>>>
+>>> I'm not really sure why we need the first patch of this series here?
+>>
+>> The idea was to have 2 for testing, 1st one is already applicable, while the
+>> other must be tested, but I can send only one with no problem.
+>>
+>>> That patch only seem to undo what you did in patch 1
+>>
+>> No, it doesn't, the 2nd one change the way it achieve the same thing,
+>> because the 1st swap DCLK phase, while the 2nd uses the IO_POL bit to set IO
+>> polarity according to bus_flags.
 > 
-> This doesn't apply against current code, please check and resend.
-> 
+> It makes sense for testing, but I'm not sure we want to carry it into
+> the history. Can you squash them both into the same patch?
+Sure, I'm going to send V3 then.
 
-Current ASoC tree now has two commits:
-
-commit 4eeed5f40354735c4e68e71904db528ed19c9cbb
-Author: Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Sat Jan 9 09:15:01 2021 +0530
-
-    ASoC: soc-pcm: return correct -ERRNO in failure path
-
-commit e91b65b36fde0690f1c694f17dd1b549295464a7
-Author: Dan Carpenter <dan.carpenter@oracle.com>
-Date:   Mon Jan 11 12:50:21 2021 +0300
-
-    ASoC: soc-pcm: Fix an uninitialized error code
-
-..both set ret to non-zero, which I believe will throw a subsequent
-warning messagethat's not strictly related.
-
-my fix was acked by zhucancan@vivo.com, so I'm now confused what is the
-*correct* fix.
-
-Colin
+Thank you
+Best regards
+-- 
+Giulio Benetti
+Benetti Engineering sas
