@@ -2,93 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52CB02F0D54
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 08:42:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FFF72F0D72
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 08:48:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727686AbhAKHlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 02:41:11 -0500
-Received: from mga09.intel.com ([134.134.136.24]:37525 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727666AbhAKHlK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 02:41:10 -0500
-IronPort-SDR: ocXrBnJrTVUTVUSs2KHD9grsp29dmsH9Mk/l1MHQKkXcpENMwYcXqzVPmk76cIIrXjYYsLlR13
- V97wdSuzlA2g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9860"; a="177968048"
-X-IronPort-AV: E=Sophos;i="5.79,337,1602572400"; 
-   d="scan'208";a="177968048"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2021 23:40:29 -0800
-IronPort-SDR: VlYwKUzp1mzzE3fVOmDmmJqAI1KfKXPKkEowabRmPbZ2s6pnfuw6Gyi93/YCshaIsx/bWnU74N
- M+AN7xy4vA0w==
-X-IronPort-AV: E=Sophos;i="5.79,337,1602572400"; 
-   d="scan'208";a="571328609"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2021 23:40:26 -0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhang Rui <rui.zhang@intel.com>,
-        Wendy Wang <wendy.wang@intel.com>,
-        Chen Yu <yu.c.chen@intel.com>
-Subject: [PATCH 2/2][v2] cpufreq: intel_pstate: Get percpu max freq via HWP MSR register if available
-Date:   Mon, 11 Jan 2021 15:43:42 +0800
-Message-Id: <0ca097c7bbf58415b1df150ea50cb37579f8f8ab.1610338353.git.yu.c.chen@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1610338353.git.yu.c.chen@intel.com>
-References: <cover.1610338353.git.yu.c.chen@intel.com>
+        id S1727835AbhAKHpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 02:45:17 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:36036 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727669AbhAKHpP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 02:45:15 -0500
+X-UUID: 096091ece4744d42bc83a839f72ac26d-20210111
+X-UUID: 096091ece4744d42bc83a839f72ac26d-20210111
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 403095666; Mon, 11 Jan 2021 15:44:03 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 11 Jan 2021 15:44:01 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 11 Jan 2021 15:44:01 +0800
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>
+Subject: [PATCH v3, 07/15] drm/mediatek: enable OVL_LAYER_SMI_ID_EN for multi-layer usecase
+Date:   Mon, 11 Jan 2021 15:43:43 +0800
+Message-ID: <1610351031-21133-8-git-send-email-yongqiang.niu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
+In-Reply-To: <1610351031-21133-1-git-send-email-yongqiang.niu@mediatek.com>
+References: <1610351031-21133-1-git-send-email-yongqiang.niu@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently when turbo is disabled(either by BIOS or by the user), the intel_pstate
-driver reads the max frequency from the package-wide MSR_PLATFORM_INFO(0xce) register.
-However on asymmetric platforms it is possible in theory that small and big core with
-HWP enabled might have different max cpu frequency, because the MSR_HWP_CAPABILITIES
-is percpu scope according to Intel Software Developer Manual.
+enable OVL_LAYER_SMI_ID_EN for multi-layer usecase
 
-The turbo max freq is already percpu basis in current code, thus make similar change
-to the max non-turbo frequency as well.
-
-Reported-by: Wendy Wang <wendy.wang@intel.com>
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
 ---
-v2: per Srinivas' suggestion, avoid duplicated assignment of max_pstate.
---
- drivers/cpufreq/intel_pstate.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index bd3dd1be73ba..f2d18991d969 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -1725,11 +1725,9 @@ static void intel_pstate_max_within_limits(struct cpudata *cpu)
- static void intel_pstate_get_cpu_pstates(struct cpudata *cpu)
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+index b47c238..4934bee 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+@@ -23,6 +23,7 @@
+ #define DISP_REG_OVL_RST			0x0014
+ #define DISP_REG_OVL_ROI_SIZE			0x0020
+ #define DISP_REG_OVL_DATAPATH_CON		0x0024
++#define OVL_LAYER_SMI_ID_EN				BIT(0)
+ #define OVL_BGCLR_SEL_IN				BIT(2)
+ #define DISP_REG_OVL_ROI_BGCLR			0x0028
+ #define DISP_REG_OVL_SRC_CON			0x002c
+@@ -61,6 +62,7 @@ struct mtk_disp_ovl_data {
+ 	unsigned int gmc_bits;
+ 	unsigned int layer_nr;
+ 	bool fmt_rgb565_is_0;
++	bool smi_id_en;
+ };
+ 
+ /**
+@@ -116,7 +118,17 @@ static void mtk_ovl_disable_vblank(struct mtk_ddp_comp *comp)
+ 
+ static void mtk_ovl_start(struct mtk_ddp_comp *comp)
  {
- 	cpu->pstate.min_pstate = pstate_funcs.get_min();
--	cpu->pstate.max_pstate = pstate_funcs.get_max();
- 	cpu->pstate.max_pstate_physical = pstate_funcs.get_max_physical();
- 	cpu->pstate.turbo_pstate = pstate_funcs.get_turbo();
- 	cpu->pstate.scaling = pstate_funcs.get_scaling();
--	cpu->pstate.max_freq = cpu->pstate.max_pstate * cpu->pstate.scaling;
++	struct mtk_disp_ovl *ovl = comp_to_ovl(comp);
++
+ 	writel_relaxed(0x1, comp->regs + DISP_REG_OVL_EN);
++
++	if(ovl->data->smi_id_en) {
++		unsigned int reg;
++
++		reg = readl(comp->regs + DISP_REG_OVL_DATAPATH_CON);
++		reg = reg | OVL_LAYER_SMI_ID_EN;
++		writel_relaxed(reg, comp->regs + DISP_REG_OVL_DATAPATH_CON);
++	}
+ }
  
- 	if (hwp_active && !hwp_mode_bdw) {
- 		unsigned int phy_max, current_max, guar_state;
-@@ -1737,8 +1735,12 @@ static void intel_pstate_get_cpu_pstates(struct cpudata *cpu)
- 		intel_pstate_get_hwp_max(cpu, &phy_max, &current_max, &guar_state);
- 		cpu->pstate.turbo_freq = phy_max * cpu->pstate.scaling;
- 		cpu->pstate.turbo_pstate = phy_max;
-+		cpu->pstate.max_pstate = guar_state;
-+		cpu->pstate.max_freq = guar_state * cpu->pstate.scaling;
- 	} else {
- 		cpu->pstate.turbo_freq = cpu->pstate.turbo_pstate * cpu->pstate.scaling;
-+		cpu->pstate.max_pstate = pstate_funcs.get_max();
-+		cpu->pstate.max_freq = cpu->pstate.max_pstate * cpu->pstate.scaling;
- 	}
- 
- 	if (pstate_funcs.get_aperf_mperf_shift)
+ static void mtk_ovl_stop(struct mtk_ddp_comp *comp)
 -- 
-2.17.1
+1.8.1.1.dirty
 
