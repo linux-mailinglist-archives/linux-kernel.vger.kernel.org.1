@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9771D2F1602
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:48:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F40D22F14DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387469AbhAKNr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:47:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57732 "EHLO mail.kernel.org"
+        id S1732088AbhAKNbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:31:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731205AbhAKNKd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:10:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9403222B30;
-        Mon, 11 Jan 2021 13:09:52 +0000 (UTC)
+        id S1731897AbhAKNPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:15:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA0A52253A;
+        Mon, 11 Jan 2021 13:15:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370593;
-        bh=jjYAseWg2HOjRMlOeY2x4tbpR7/ZWjLk5Wb9MXxpk9M=;
+        s=korg; t=1610370901;
+        bh=KS5gmCZ6EzJVi1yQawSh86bpDzZj0sa0Ft49c6zGkvE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JvK61jSXPNEglLRZAFjA05Ew25xPKEL/kQ6ze1bCw3/rwkMOCqu7z6zwgCpiXPi8G
-         rIR9aKAPSuzmkHdnqQLzHZsaUwzAHmmuK/dot5+5f4KDsv8SwGJmpY/Eyk4jiKooHO
-         uWG8Gbmx9tIbDGiwVlV5jGkDnHZ9hiW5lGjHPGW4=
+        b=olwA0EsyxxLAt2p7U7WSuzVXNVgVLC+/mEAvo//XSgD94a3YR/sL8mxX3kWsiP+pJ
+         101YrVpRxogYz/RhVWA0KMeSb3V9QhHjZjanDgE0a97Ft7j/Pd1Q7TfWuWF+HRGTjf
+         oyMh1NuK1B59iNKBlK+6qerhEs6dqQwh+QFAlE6Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Liron Himi <lironh@marvell.com>,
-        Stefan Chulski <stefanc@marvell.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 13/92] net: mvpp2: prs: fix PPPoE with ipv6 packet parse
+        stable@vger.kernel.org, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 053/145] scsi: ufs: Fix wrong print message in dev_err()
 Date:   Mon, 11 Jan 2021 14:01:17 +0100
-Message-Id: <20210111130039.793386364@linuxfoundation.org>
+Message-Id: <20210111130051.077079181@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
-References: <20210111130039.165470698@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+From: Bean Huo <beanhuo@micron.com>
 
-[ Upstream commit fec6079b2eeab319d9e3d074f54d3b6f623e9701 ]
+[ Upstream commit 1fa0570002e3f66db9b58c32c60de4183b857a19 ]
 
-Current PPPoE+IPv6 entry is jumping to 'next-hdr'
-field and not to 'DIP' field as done for IPv4.
+Change dev_err() print message from "dme-reset" to "dme_enable" in function
+ufshcd_dme_enable().
 
-Fixes: 3f518509dedc ("ethernet: Add new driver for Marvell Armada 375 network unit")
-Reported-by: Liron Himi <lironh@marvell.com>
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-Link: https://lore.kernel.org/r/1608230266-22111-1-git-send-email-stefanc@marvell.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20201207190137.6858-3-huobean@gmail.com
+Acked-by: Alim Akhtar <alim.akhtar@samsung.com>
+Acked-by: Avri Altman <avri.altman@wdc.com>
+Signed-off-by: Bean Huo <beanhuo@micron.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/scsi/ufs/ufshcd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
-@@ -1680,8 +1680,9 @@ static int mvpp2_prs_pppoe_init(struct m
- 	mvpp2_prs_sram_next_lu_set(&pe, MVPP2_PRS_LU_IP6);
- 	mvpp2_prs_sram_ri_update(&pe, MVPP2_PRS_RI_L3_IP6,
- 				 MVPP2_PRS_RI_L3_PROTO_MASK);
--	/* Skip eth_type + 4 bytes of IPv6 header */
--	mvpp2_prs_sram_shift_set(&pe, MVPP2_ETH_TYPE_LEN + 4,
-+	/* Jump to DIP of IPV6 header */
-+	mvpp2_prs_sram_shift_set(&pe, MVPP2_ETH_TYPE_LEN + 8 +
-+				 MVPP2_MAX_L3_ADDR_SIZE,
- 				 MVPP2_PRS_SRAM_OP_SEL_SHIFT_ADD);
- 	/* Set L3 offset */
- 	mvpp2_prs_sram_offset_set(&pe, MVPP2_PRS_SRAM_UDF_TYPE_L3,
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 911aba3e7675c..d7e9c4bc80478 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -3620,7 +3620,7 @@ static int ufshcd_dme_enable(struct ufs_hba *hba)
+ 	ret = ufshcd_send_uic_cmd(hba, &uic_cmd);
+ 	if (ret)
+ 		dev_err(hba->dev,
+-			"dme-reset: error code %d\n", ret);
++			"dme-enable: error code %d\n", ret);
+ 
+ 	return ret;
+ }
+-- 
+2.27.0
+
 
 
