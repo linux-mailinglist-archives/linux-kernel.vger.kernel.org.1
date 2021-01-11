@@ -2,111 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1AC2F0D99
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 09:06:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF492F0D9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 09:08:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727749AbhAKIFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 03:05:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33442 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725536AbhAKIFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 03:05:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AEB6A22AAD;
-        Mon, 11 Jan 2021 08:05:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610352311;
-        bh=02v3tzqN9AzUV/0Va6HZhKJjrBRDGhuHYnwmkekIVnQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mkTG3f/NF0dxGlMO5dJ2Jk3U01ihAxH/IDXNRhPmf+4iO4s/H+NOZ6jomrunpHE96
-         LN9TKFPcYs0u+67CTArn0VsEQN68956SI/BAJ2XhNefnk1Wzq2eu+LjUJDGREARed/
-         B1SFuGyPz8JucdQkgdeYDfu+o/pIKEQxHRyn4fYY1cqvR9pw2UrZ2gTpYJ5MEgfhb3
-         Ju16J2nD7KI2KZWOwd3aOxjDxxbGN0Yawc3Nc430aN9O+3bI9OJBKfQBkSThTZzEl+
-         4EtGHCIqSsy8ahSPqq6LlRRs1j9vSx9KdA9NSQoEreRTZfAO0yi6MR4aw4cniewj97
-         L+GL3UKnvMUDw==
-Received: by mail-lj1-f181.google.com with SMTP id n11so2503267lji.5;
-        Mon, 11 Jan 2021 00:05:10 -0800 (PST)
-X-Gm-Message-State: AOAM530sy+cZHQgLqQdSse/FMbybflbbKqLubnpXy7+2DMuHAw3zDHZT
-        zYJEyoaXGD60rk2L7tHzIBOwsuWocIT34VIfSCU=
-X-Google-Smtp-Source: ABdhPJwj85ZDfKme11UV/Voov4qWAa0P4jY5FCrsPJxXgJJEtzRu1NCCT5US+jtHkig72ciC9xKAgmf5Ha4C3FrHnos=
-X-Received: by 2002:a2e:3503:: with SMTP id z3mr7297395ljz.74.1610352308850;
- Mon, 11 Jan 2021 00:05:08 -0800 (PST)
+        id S1727776AbhAKIGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 03:06:02 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:37163 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725536AbhAKIGB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 03:06:01 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1kysCV-003d9p-H0; Mon, 11 Jan 2021 09:05:19 +0100
+Received: from p5b13a61e.dip0.t-ipconnect.de ([91.19.166.30] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1kysCU-001gTx-M3; Mon, 11 Jan 2021 09:05:19 +0100
+Subject: Re: Old platforms: bring out your dead
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+ <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
+ <20210110214653.GA1693373@ravnborg.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <df42946e-5b1f-c433-fc6b-a2950f3d8dab@physik.fu-berlin.de>
+Date:   Mon, 11 Jan 2021 09:05:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210110035846.9155-1-wens@kernel.org> <2241380.NG923GbCHz@diego>
- <CAGb2v67h3v4DdEY68BmHy263=L1tB0DuJnf_exHrLi57SiRjUA@mail.gmail.com> <2633022.BEx9A2HvPv@diego>
-In-Reply-To: <2633022.BEx9A2HvPv@diego>
-From:   Chen-Yu Tsai <wens@kernel.org>
-Date:   Mon, 11 Jan 2021 16:04:56 +0800
-X-Gmail-Original-Message-ID: <CAGb2v678BgP_23oz+XMzw5B0U2hBy_fW9VK9mvVVhoXqchJmTg@mail.gmail.com>
-Message-ID: <CAGb2v678BgP_23oz+XMzw5B0U2hBy_fW9VK9mvVVhoXqchJmTg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] arm64: dts: rockchip: rk3328: Add Radxa ROCK Pi E
-To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>
-Cc:     Chen-Yu Tsai <wens@kernel.org>, Johan Jonker <jbx6244@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210110214653.GA1693373@ravnborg.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.166.30
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 3:50 PM Heiko St=C3=BCbner <heiko@sntech.de> wrote:
->
-> Am Montag, 11. Januar 2021, 04:27:47 CET schrieb Chen-Yu Tsai:
-> > On Mon, Jan 11, 2021 at 4:06 AM Heiko St=C3=BCbner <heiko@sntech.de> wr=
-ote:
-> > >
-> > > Hi,
-> > >
-> > > Am Sonntag, 10. Januar 2021, 16:37:15 CET schrieb Chen-Yu Tsai:
-> > > > > > +     vcc_sd: sdmmc-regulator {
-> > > > > > +             compatible =3D "regulator-fixed";
-> > > > > > +             gpio =3D <&gpio0 RK_PD6 GPIO_ACTIVE_LOW>;
-> > > > > > +             pinctrl-names =3D "default";
-> > > > > > +             pinctrl-0 =3D <&sdmmc0m1_pin>;
-> > > > >
-> > > > > > +             regulator-boot-on;
-> > > > > > +             regulator-name =3D "vcc_sd";
-> > > > >
-> > > > > regulator-name above other regulator properties
-> > > >
-> > > > That is actually what I was used to, but some other rockchip dts fi=
-les
-> > > > have all the properties sorted alphabetically. So I stuck with what=
- I
-> > > > saw.
-> > >
-> > > I try to keep it alphabetical except for the exceptions :-D .
-> > >
-> > > regulator-name is such an exception. Similar to compatibles, the
-> > > regulator-name is an entry needed to see if you're at the right node,
-> > > so I really like it being the topmost regulator-foo property - just m=
-akes
-> > > reading easier.
-> > >
-> > > (same for the compatible first, then regs, interrupts parts, as well
-> > > as "status-last")
-> > >
-> > > But oftentimes, I just fix the ordering when applying - but seem to h=
-ave
-> > > missed this somewhere in those "other Rockchip dts files" ;-) .
-> >
-> > I was slightly confused. I looked again and yes regulator-name is alway=
-s the
-> > first regulator related property. What's off is that in some cases min/=
-max
-> > voltage comes before always-on/boot-on, and in others vice versa.
-> >
-> > For example in the Rock64 and ROC-RK3328-CC device trees, in the fixed
-> > regulators, always-on/boot-on come before min/max voltage, while in the
-> > PMIC the other order is used.
->
-> That's likely undecidednes on my part ;-)
->
-> There could be an argument for a "name, voltages, flags" sorting, but on
-> the other hand just keeping it alphabetical with the naming on top
-> creates less special cases.
+Hello!
 
-And min before max? :D
+On 1/10/21 10:46 PM, Sam Ravnborg wrote:
+>> I don't think this has reached any agreement yet. Multiple people want it to stay.
+> 
+> None of the people that replied have any real use of the sun4m port,
+> they only wanted it to stay because they had some machines or such.
+> In other words - people will be sad if we sunset sun4m, but it will not
+> hurt anyone as there are no users left.
+> 
+> I will include the above summary when I post v2 of the patch to sunset
+> sun4m and sun4d. Then we will see what we conclude in the end.
+
+I'm not sure I understand the reasoning for doing this. The SPARC architecture
+isn't going to see any new hardware developments in the future after Oracle
+let go of most of the SPARC developers. So it's not that we need to make room
+for new hardware.
+
+And I also disagree with Arnd's stance that a port seems broken because it
+doesn't see frequent or recent changes. As pointed out by Thomas Bogendoerfer
+in this thread [1], missing updates don't necessarily mean that something
+is broken but it can also just mean the hardware is fully supported and
+working, so why fix something that isn't broken?
+
+On the other hand, there are really serious bugs in the kernel that easily
+allow crashing the whole machine (here on POWER [2] or here on SPARC [3])
+that never get addressed.
+
+We have a $10k IBM POWER server in Debian Ports which hosts a big-endian
+PowerKVM build server instance and regularly hard-crashes because of the
+bug in [2]. This bug has remained unfixed for almost a year now.
+
+On top of that, some of the tree-wide conversions like [4] have completely
+broken the Linux kernel on certain machines so that any larger ia64 servers
+are stuck on the 4.14 kernel with no fix in sight. Before that, the kernel
+worked perfectly fine on these machines.
+
+I understand that cleaning up code and modernizing things is important, but
+I think that the top priority should be to deliver something that is stable
+and usable by the enduser.
+
+But kernel development shouldn't be about scratching an itch which I sometimes
+have the impression is the main driver behind some changes in the kernel.
+
+I have personally invested a lot of time and effort in the past years to get
+Debian into shape on exotic and older architectures and I feel all this effort
+goes to waste when upstream projects just decide to kill of a certain platform
+in the kernel or toolchain like it already happened with PowerPCSPE in GCC.
+
+Adrian
+
+> [1] https://lore.kernel.org/lkml/20210108234430.GA17487@alpha.franken.de/
+> [2] https://bugzilla.kernel.org/show_bug.cgi?id=206669
+> [3] https://marc.info/?l=linux-sparc&m=160967865029609&w=2
+> [4] https://marc.info/?l=linux-ia64&m=156144480821712&w=2
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
