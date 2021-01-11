@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A7C2F13F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:17:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38CA72F13FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:18:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727150AbhAKNR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:17:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35538 "EHLO mail.kernel.org"
+        id S1732723AbhAKNR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:17:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732617AbhAKNRW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:17:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 820B82250F;
-        Mon, 11 Jan 2021 13:17:06 +0000 (UTC)
+        id S1732699AbhAKNRu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:17:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B046B2255F;
+        Mon, 11 Jan 2021 13:17:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610371027;
-        bh=+pecJYo9xzO5xwLkoFM7mTiEqH6XONzcqbtZGX7VWVI=;
+        s=korg; t=1610371029;
+        bh=iC9m1BmdeWnt802W7E5xu3hKI66EzCeVlbrciNhPVgE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OEXsDedpM2/ReY6Gsu97lgLMLhAMam0j+ho3iD65lunZyGBfdnBI0P6kMbcMlHvhq
-         dMqwOB3Vc/l08R4SI27t/yhFBiyFsuqfhWddPLCwQLNyIp8aizRBivmLnrVDFDCfWx
-         nSeFIGspPv+QJvJ9K2AXU+DctcxPS0MJZgLY3Lpk=
+        b=U4eKK02y3bluLhKmGLQHrRASOTLgRveLqO7Zf+wOY9hqXMJvUvaQC5O4E3uYfZrRd
+         ikgq5Rx+XprfZi0CiAzq4qo3FX2LVB4No0li2kdTdhWqyZ21V2GFLTezxI6I3Mc5S3
+         fAWVWLM4rr1diSzky4lbHwRY/W9ZKlZsK/+xBHJk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
-        Borislav Petkov <bp@suse.de>, Yi Zhang <yi.zhang@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 5.10 110/145] x86/mm: Fix leak of pmd ptlock
-Date:   Mon, 11 Jan 2021 14:02:14 +0100
-Message-Id: <20210111130053.813985590@linuxfoundation.org>
+        stable@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 5.10 111/145] KVM: x86/mmu: Use -1 to flag an undefined spte in get_mmio_spte()
+Date:   Mon, 11 Jan 2021 14:02:15 +0100
+Message-Id: <20210111130053.862018544@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
 References: <20210111130048.499958175@linuxfoundation.org>
@@ -40,85 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Williams <dan.j.williams@intel.com>
+From: Sean Christopherson <seanjc@google.com>
 
-commit d1c5246e08eb64991001d97a3bd119c93edbc79a upstream.
+commit 2aa078932ff6c66bf10cc5b3144440dbfa7d813d upstream.
 
-Commit
+Return -1 from the get_walk() helpers if the shadow walk doesn't fill at
+least one spte, which can theoretically happen if the walk hits a
+not-present PDPTR.  Returning the root level in such a case will cause
+get_mmio_spte() to return garbage (uninitialized stack data).  In
+practice, such a scenario should be impossible as KVM shouldn't get a
+reserved-bit page fault with a not-present PDPTR.
 
-  28ee90fe6048 ("x86/mm: implement free pmd/pte page interfaces")
+Note, using mmu->root_level in get_walk() is wrong for other reasons,
+too, but that's now a moot point.
 
-introduced a new location where a pmd was released, but neglected to
-run the pmd page destructor. In fact, this happened previously for a
-different pmd release path and was fixed by commit:
-
-  c283610e44ec ("x86, mm: do not leak page->ptl for pmd page tables").
-
-This issue was hidden until recently because the failure mode is silent,
-but commit:
-
-  b2b29d6d0119 ("mm: account PMD tables like PTE tables")
-
-turns the failure mode into this signature:
-
- BUG: Bad page state in process lt-pmem-ns  pfn:15943d
- page:000000007262ed7b refcount:0 mapcount:-1024 mapping:0000000000000000 index:0x0 pfn:0x15943d
- flags: 0xaffff800000000()
- raw: 00affff800000000 dead000000000100 0000000000000000 0000000000000000
- raw: 0000000000000000 ffff913a029bcc08 00000000fffffbff 0000000000000000
- page dumped because: nonzero mapcount
- [..]
-  dump_stack+0x8b/0xb0
-  bad_page.cold+0x63/0x94
-  free_pcp_prepare+0x224/0x270
-  free_unref_page+0x18/0xd0
-  pud_free_pmd_page+0x146/0x160
-  ioremap_pud_range+0xe3/0x350
-  ioremap_page_range+0x108/0x160
-  __ioremap_caller.constprop.0+0x174/0x2b0
-  ? memremap+0x7a/0x110
-  memremap+0x7a/0x110
-  devm_memremap+0x53/0xa0
-  pmem_attach_disk+0x4ed/0x530 [nd_pmem]
-  ? __devm_release_region+0x52/0x80
-  nvdimm_bus_probe+0x85/0x210 [libnvdimm]
-
-Given this is a repeat occurrence it seemed prudent to look for other
-places where this destructor might be missing and whether a better
-helper is needed. try_to_free_pmd_page() looks like a candidate, but
-testing with setting up and tearing down pmd mappings via the dax unit
-tests is thus far not triggering the failure.
-
-As for a better helper pmd_free() is close, but it is a messy fit
-due to requiring an @mm arg. Also, ___pmd_free_tlb() wants to call
-paravirt_tlb_remove_table() instead of free_page(), so open-coded
-pgtable_pmd_page_dtor() seems the best way forward for now.
-
-Debugged together with Matthew Wilcox <willy@infradead.org>.
-
-Fixes: 28ee90fe6048 ("x86/mm: implement free pmd/pte page interfaces")
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Tested-by: Yi Zhang <yi.zhang@redhat.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/160697689204.605323.17629854984697045602.stgit@dwillia2-desk3.amr.corp.intel.com
+Fixes: 95fb5b0258b7 ("kvm: x86/mmu: Support MMIO in the TDP MMU")
+Cc: Ben Gardon <bgardon@google.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+Message-Id: <20201218003139.2167891-2-seanjc@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/mm/pgtable.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kvm/mmu/mmu.c     |    7 ++++++-
+ arch/x86/kvm/mmu/tdp_mmu.c |    2 +-
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
---- a/arch/x86/mm/pgtable.c
-+++ b/arch/x86/mm/pgtable.c
-@@ -829,6 +829,8 @@ int pud_free_pmd_page(pud_t *pud, unsign
- 	}
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -3488,7 +3488,7 @@ static bool mmio_info_in_cache(struct kv
+ static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes)
+ {
+ 	struct kvm_shadow_walk_iterator iterator;
+-	int leaf = vcpu->arch.mmu->root_level;
++	int leaf = -1;
+ 	u64 spte;
  
- 	free_page((unsigned long)pmd_sv);
+ 
+@@ -3532,6 +3532,11 @@ static bool get_mmio_spte(struct kvm_vcp
+ 	else
+ 		leaf = get_walk(vcpu, addr, sptes);
+ 
++	if (unlikely(leaf < 0)) {
++		*sptep = 0ull;
++		return reserved;
++	}
 +
-+	pgtable_pmd_page_dtor(virt_to_page(pmd));
- 	free_page((unsigned long)pmd);
+ 	rsvd_check = &vcpu->arch.mmu->shadow_zero_check;
  
- 	return 1;
+ 	for (level = root; level >= leaf; level--) {
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -1152,8 +1152,8 @@ int kvm_tdp_mmu_get_walk(struct kvm_vcpu
+ {
+ 	struct tdp_iter iter;
+ 	struct kvm_mmu *mmu = vcpu->arch.mmu;
+-	int leaf = vcpu->arch.mmu->shadow_root_level;
+ 	gfn_t gfn = addr >> PAGE_SHIFT;
++	int leaf = -1;
+ 
+ 	tdp_mmu_for_each_pte(iter, mmu, gfn, gfn + 1) {
+ 		leaf = iter.level;
 
 
