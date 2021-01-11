@@ -2,106 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DA02F18DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:56:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B702F18CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:56:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388744AbhAKOzw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Jan 2021 09:55:52 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:52020 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732236AbhAKOzv (ORCPT
+        id S1729414AbhAKOzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:55:17 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:62425 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727617AbhAKOzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:55:51 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-259-cwMCCFf6NSqMv-TjxwzQZQ-1; Mon, 11 Jan 2021 14:54:12 +0000
-X-MC-Unique: cwMCCFf6NSqMv-TjxwzQZQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Mon, 11 Jan 2021 14:54:11 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Mon, 11 Jan 2021 14:54:11 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Al Viro' <viro@zeniv.linux.org.uk>
-CC:     'Mikulas Patocka' <mpatocka@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Vishal Verma" <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        "Ira Weiny" <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Steven Whitehouse <swhiteho@redhat.com>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Wang Jianchao <jianchao.wan9@gmail.com>,
-        "Kani, Toshi" <toshi.kani@hpe.com>,
-        "Norton, Scott J" <scott.norton@hpe.com>,
-        "Tadakamadla, Rajesh" <rajesh.tadakamadla@hpe.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>
-Subject: RE: [RFC v2] nvfs: a filesystem for persistent memory
-Thread-Topic: [RFC v2] nvfs: a filesystem for persistent memory
-Thread-Index: AQHW52zcFLyucqAcQUmnqwhwPozPcaoiOfvQgAAVUICAAALF8IAAL2SAgAAB4jA=
-Date:   Mon, 11 Jan 2021 14:54:11 +0000
-Message-ID: <de2f960c4fee4b7c9d4ed466b49ec97e@AcuMS.aculab.com>
-References: <alpine.LRH.2.02.2101061245100.30542@file01.intranet.prod.int.rdu2.redhat.com>
- <20210110162008.GV3579531@ZenIV.linux.org.uk>
- <c26db2b0ea1a4891a7cbd0363de856d3@AcuMS.aculab.com>
- <alpine.LRH.2.02.2101110641490.4356@file01.intranet.prod.int.rdu2.redhat.com>
- <57dad96341d34822a7943242c9bcad71@AcuMS.aculab.com>
- <20210111144341.GZ3579531@ZenIV.linux.org.uk>
-In-Reply-To: <20210111144341.GZ3579531@ZenIV.linux.org.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        Mon, 11 Jan 2021 09:55:16 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610376896; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=JnBbZxRF3zkY63N32iw+S1nZmnw8Y5p/1yS9PAvI0Fg=; b=XlVVPXkTOgztMHgGJLHCAJxJcjULTEGuVyAhfOzo5wGUHftdeM1m2Bj97RhD1/trL+bTj/My
+ 1fwn+NzcVdZYF8JiOGoArJTEh6K5SBh74Lwdz05ANTMKAlIPK2w4Q8V/zO5k9OAghlnXIRQR
+ ExQybx1VHUM0GiREH8VnQOH29Eg=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5ffc66a58fb3cda82ff04a0e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 14:54:29
+ GMT
+Sender: isaacm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EEAD3C433ED; Mon, 11 Jan 2021 14:54:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from isaacm-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: isaacm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CC79DC433C6;
+        Mon, 11 Jan 2021 14:54:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CC79DC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=isaacm@codeaurora.org
+From:   "Isaac J. Manjarres" <isaacm@codeaurora.org>
+To:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org
+Cc:     "Isaac J. Manjarres" <isaacm@codeaurora.org>, pdaly@codeaurora.org,
+        pratikp@codeaurora.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/5] Optimize iommu_map_sg() performance
+Date:   Mon, 11 Jan 2021 06:54:17 -0800
+Message-Id: <1610376862-927-1-git-send-email-isaacm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@ftp.linux.org.uk> On Behalf Of Al Viro
-> Sent: 11 January 2021 14:44
-> On Mon, Jan 11, 2021 at 11:57:08AM +0000, David Laight wrote:
-> > > > > 		size = copy_to_iter(to, ptr, size);
-> > > > > 		if (unlikely(!size)) {
-> > > > > 			r = -EFAULT;
-> > > > > 			goto ret_r;
-> > > > > 		}
-> > > > >
-> > > > > 		pos += size;
-> > > > > 		total += size;
-> > > > > 	}
-> > > >
-> > > > 	David
-> > >
-> > > I fixed the arguments to
-> > > copy_to_iter - other than that, Al's function works.
-> >
-> 
-> > Oh - the error return for copy_to_iter() is wrong.
-> > It should (probably) return 'total' if it is nonzero.
-> 
-> 	copy_to_iter() call there has an obvious problem
-> (arguments in the wrong order), but return value is handled
-> correctly.  It does not do a blind return -EFAULT.  RTFS...
+The iommu_map_sg() code currently iterates through the given
+scatter-gather list, and in the worst case, invokes iommu_map()
+for each element in the scatter-gather list, which calls into
+the IOMMU driver through an indirect call. For an IOMMU driver
+that uses a format supported by the io-pgtable code, the IOMMU
+driver will then call into the io-pgtable code to map the chunk.
 
-Ah I was looking at the version I'd cut the tail off...
+Jumping between the IOMMU core code, the IOMMU driver, and the
+io-pgtable code and back for each element in a scatter-gather list
+is not efficient.
 
-	David
+Instead, add a map_sg() hook in both the IOMMU driver ops and the
+io-pgtable ops. iommu_map_sg() can then call into the IOMMU driver's
+map_sg() hook with the entire scatter-gather list, which can call
+into the io-pgtable map_sg() hook, which can process the entire
+scatter-gather list, signficantly reducing the number of indirect
+calls, and jumps between these layers, boosting performance.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+On a system that uses the ARM SMMU driver, and the ARM LPAE format,
+the current implementation of iommu_map_sg() yields the following
+latencies for mapping scatter-gather lists of various sizes. These
+latencies are calculated by repeating the mapping operation 10 times:
+
+    size        iommu_map_sg latency
+      4K            0.624 us
+     64K            9.468 us
+      1M          122.557 us
+      2M          239.807 us
+     12M         1435.979 us
+     24M         2884.968 us
+     32M         3832.979 us
+
+On the same system, the proposed modifications yield the following
+results:
+
+    size        iommu_map_sg latency
+      4K            3.645 us
+     64K            4.198 us
+      1M           11.010 us
+      2M           17.125 us
+     12M           82.416 us
+     24M          158.677 us
+     32M          210.468 us
+
+The procedure for collecting the iommu_map_sg latencies is
+the same in both experiments. Clearly, reducing the jumps
+between the different layers in the IOMMU code offers a
+signficant performance boost in iommu_map_sg() latency.
+
+Changes since v1:
+
+-Fixed an off by one error in arm_[lpae/v7s]_map_by_pgsize
+when checking if the IOVA and physical address ranges being
+mapped are within the appropriate limits.
+-Added Sai Prakash Ranjan's "Tested-by" tag.
+
+Thanks,
+Isaac
+
+Isaac J. Manjarres (5):
+  iommu/io-pgtable: Introduce map_sg() as a page table op
+  iommu/io-pgtable-arm: Hook up map_sg()
+  iommu/io-pgtable-arm-v7s: Hook up map_sg()
+  iommu: Introduce map_sg() as an IOMMU op for IOMMU drivers
+  iommu/arm-smmu: Hook up map_sg()
+
+ drivers/iommu/arm/arm-smmu/arm-smmu.c | 19 ++++++++
+ drivers/iommu/io-pgtable-arm-v7s.c    | 90 +++++++++++++++++++++++++++++++++++
+ drivers/iommu/io-pgtable-arm.c        | 86 +++++++++++++++++++++++++++++++++
+ drivers/iommu/iommu.c                 | 25 ++++++++--
+ include/linux/io-pgtable.h            |  6 +++
+ include/linux/iommu.h                 | 13 +++++
+ 6 files changed, 234 insertions(+), 5 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
