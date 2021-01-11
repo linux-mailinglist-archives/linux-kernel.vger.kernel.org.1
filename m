@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 114BC2F136D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:09:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D41F2F1345
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730608AbhAKNIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:08:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54288 "EHLO mail.kernel.org"
+        id S1730397AbhAKNGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:06:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730591AbhAKNHa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:07:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E35BA22515;
-        Mon, 11 Jan 2021 13:07:14 +0000 (UTC)
+        id S1730287AbhAKNFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:05:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBBA8225AB;
+        Mon, 11 Jan 2021 13:04:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370435;
-        bh=99pWozPUTAovepm9asQ1gDQbcAldCs2aL9E+joD8nIw=;
+        s=korg; t=1610370279;
+        bh=u9WYEJYd5BU1aoAQsY33A+FOR4Djvrd9dC+1/c9oFF8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C6YLZ8ntb4toBt+5uw3w7ShaTS1E9WH2uSz2SfWjw0Z9vNV06ulRLrTchJvA1V+nD
-         U0IEixlipWXyB8wG0eaifJjKfbbso6I0u1bSRRcqOmyYoAoPHSjje81C8H8u0YmPHd
-         1L9VhzmakpTcxvDSQGNTpUx4snuqqLSDVeU2N/Ck=
+        b=Th5x73YlPVdYhxM+e8UjAOXS/eEjqVwwvjJh4wQuhPjYyWqTfEWsJSutYZLyhH9Hi
+         lbdEslIowjieQzCSPHZOoHLzNjvrt+Zi8B8IH57Pjy/DdJY5Q9qM9qPFghF/ZjXBlY
+         rXaWv3lFA0du27YopJO8WVL2qLTnphm7VCCLGpuk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Petr Machata <me@pmachata.org>,
+        stable@vger.kernel.org, Manish Chopra <manishc@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        Igor Russkikh <irusskikh@marvell.com>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 20/77] net: dcb: Validate netlink message in DCB handler
+Subject: [PATCH 4.14 10/57] qede: fix offload for IPIP tunnel packets
 Date:   Mon, 11 Jan 2021 14:01:29 +0100
-Message-Id: <20210111130037.389318488@linuxfoundation.org>
+Message-Id: <20210111130034.229643115@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
-References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
+References: <20210111130033.715773309@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Machata <me@pmachata.org>
+From: Manish Chopra <manishc@marvell.com>
 
-[ Upstream commit 826f328e2b7e8854dd42ea44e6519cd75018e7b1 ]
+[ Upstream commit 5d5647dad259bb416fd5d3d87012760386d97530 ]
 
-DCB uses the same handler function for both RTM_GETDCB and RTM_SETDCB
-messages. dcb_doit() bounces RTM_SETDCB mesasges if the user does not have
-the CAP_NET_ADMIN capability.
+IPIP tunnels packets are unknown to device,
+hence these packets are incorrectly parsed and
+caused the packet corruption, so disable offlods
+for such packets at run time.
 
-However, the operation to be performed is not decided from the DCB message
-type, but from the DCB command. Thus DCB_CMD_*_GET commands are used for
-reading DCB objects, the corresponding SET and DEL commands are used for
-manipulation.
-
-The assumption is that set-like commands will be sent via an RTM_SETDCB
-message, and get-like ones via RTM_GETDCB. However, this assumption is not
-enforced.
-
-It is therefore possible to manipulate DCB objects without CAP_NET_ADMIN
-capability by sending the corresponding command in an RTM_GETDCB message.
-That is a bug. Fix it by validating the type of the request message against
-the type used for the response.
-
-Fixes: 2f90b8657ec9 ("ixgbe: this patch adds support for DCB to the kernel and ixgbe driver")
-Signed-off-by: Petr Machata <me@pmachata.org>
-Link: https://lore.kernel.org/r/a2a9b88418f3a58ef211b718f2970128ef9e3793.1608673640.git.me@pmachata.org
+Signed-off-by: Manish Chopra <manishc@marvell.com>
+Signed-off-by: Sudarsana Kalluru <skalluru@marvell.com>
+Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
+Link: https://lore.kernel.org/r/20201221145530.7771-1-manishc@marvell.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/dcb/dcbnl.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/qlogic/qede/qede_fp.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/net/dcb/dcbnl.c
-+++ b/net/dcb/dcbnl.c
-@@ -1756,6 +1756,8 @@ static int dcb_doit(struct sk_buff *skb,
- 	fn = &reply_funcs[dcb->cmd];
- 	if (!fn->cb)
- 		return -EOPNOTSUPP;
-+	if (fn->type != nlh->nlmsg_type)
-+		return -EPERM;
+--- a/drivers/net/ethernet/qlogic/qede/qede_fp.c
++++ b/drivers/net/ethernet/qlogic/qede/qede_fp.c
+@@ -1708,6 +1708,11 @@ netdev_features_t qede_features_check(st
+ 			      ntohs(udp_hdr(skb)->dest) != gnv_port))
+ 				return features & ~(NETIF_F_CSUM_MASK |
+ 						    NETIF_F_GSO_MASK);
++		} else if (l4_proto == IPPROTO_IPIP) {
++			/* IPIP tunnels are unknown to the device or at least unsupported natively,
++			 * offloads for them can't be done trivially, so disable them for such skb.
++			 */
++			return features & ~(NETIF_F_CSUM_MASK | NETIF_F_GSO_MASK);
+ 		}
+ 	}
  
- 	if (!tb[DCB_ATTR_IFNAME])
- 		return -EINVAL;
 
 
