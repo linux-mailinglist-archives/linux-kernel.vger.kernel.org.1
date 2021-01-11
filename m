@@ -2,132 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3C22F0A9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 01:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED47D2F0AA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 01:41:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbhAKAf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 19:35:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56896 "EHLO
+        id S1727120AbhAKAj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 19:39:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726049AbhAKAf0 (ORCPT
+        with ESMTP id S1727094AbhAKAj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 19:35:26 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA47C061786
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 16:34:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=0cyTYomTYRleb2ivxdiXv+EK4ye6kzvnUXElS+kgyYE=; b=aAxpuPMBpQ12U+b3ThpHyBFhF
-        brySmDrHOp+5m+dNTxnmQWi+xvlxOzOGO+H3a0wSzJmIOVCnV+pcaEURbNyqAySga1sM5nkYJ9QRP
-        bnPf3mXhcNkYqeBBbSMYYPtBCIk2iRqBdb7SWfipk/8AF35L0Vgrly12XFDYTyTshhyQJd0lqPQsu
-        tnkY9DClbDaldQXjFxFfZKntj1Fu+T40J+i6lDbuXx5+3LEBL5aLaRqj/kLznLkp5f8CtC2BhXwZK
-        ROyU/e/VSevHpy3cZnMYV4+pNdGUtP6Stww3G/E4USElKPzook1Jv+CYqFi4hdlSgcKTZt0y/wAkz
-        rFACq5Fkw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46376)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kyl9G-0006OC-7b; Mon, 11 Jan 2021 00:33:30 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kyl96-0004g6-RB; Mon, 11 Jan 2021 00:33:20 +0000
-Date:   Mon, 11 Jan 2021 00:33:20 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Fabian Vogt <fabian@ritter-vogt.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        Jamie Iles <jamie@jamieiles.com>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Alex Elder <elder@linaro.org>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Mark Salter <msalter@redhat.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: Re: Old platforms: bring out your dead
-Message-ID: <20210111003320.GQ1551@shell.armlinux.org.uk>
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <67171E13-6786-4B44-A8C2-3302963B055F@gmail.com>
- <CAK8P3a0o=1KjPtp0Ah8Afe5vvG1b72+77HRFh4Z06HUGwN6+Ew@mail.gmail.com>
- <1702853.1557dWfJA4@linux-e202.suse.de>
- <CACRpkdYaMASWWDTX7hTt+xQnVPA=WTWNFk2eDnTjKoJF=LA7LQ@mail.gmail.com>
+        Sun, 10 Jan 2021 19:39:57 -0500
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 606B0C061795
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 16:39:16 -0800 (PST)
+Received: by mail-vk1-xa2b.google.com with SMTP id a6so3872673vkb.8
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 16:39:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tfW1bXDcu/lByxe5Lzd9326trCLUNqKWrb1d3xD70zE=;
+        b=Vcss8DRQLz+AJgqcoiMcwtcRHNY+1FT4m5PO1GpPO7uSSe/h3lptsFESwXv6y/jDPn
+         uZeESDldBzFW4P11UXupd8R0iDzHZdVW2iUmfDvnV2JfbnEIKbc1827Nlg2rjywQnJk9
+         03bSP87LEsYrhPVKci/2g8cz3XGXrRryTp/58=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tfW1bXDcu/lByxe5Lzd9326trCLUNqKWrb1d3xD70zE=;
+        b=RzFA5JAjhd/JqfTRLTYA6bOIQfvIGrLfOX7IpHA1H6VWaEZPjoUOPVoebHzCcoHUbg
+         pQBuoX+ZNKIo+krKehHefpsmJD0w/xWnfOyTwW9OvsNYUm6lyZb/zJ0xJ/MGxJ2WZabg
+         9idehqPktT7OFks0qeHHCqUdAvklbDHMD9X22MZekIIa+ln6qjQZHxuyeTgBRro5s8Wb
+         mLFzqZS/+g5OxB2mmq+bGluiuswkHVwfTHiQ+7t/wSLW4zMGz5ErYWfVXXdqV8biTc9d
+         GZ4YO9NANWRG1lH0gWFBDdoqUprMcJZ6bo7owDucwbWgrfZUpHgbIdt2gWbUSxKD37H5
+         OaDg==
+X-Gm-Message-State: AOAM533m9CuyU7ditlOPz/WXAsi3htqTp/ZEGN64k1cmV9rYrMXWIwis
+        JUI0eiXLs7TsubQHtLeBMfl1/BgwT819jvrtlOgfwQ==
+X-Google-Smtp-Source: ABdhPJwjiecZEFrsXBirizL7rHJlesi3agn3gpEePPWBsWov8yc+6W5r6tJ9rLrqQ3BMouyiAxKTgevMOKDBth7uO2M=
+X-Received: by 2002:ac5:c5b5:: with SMTP id f21mr10963955vkl.13.1610325555144;
+ Sun, 10 Jan 2021 16:39:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACRpkdYaMASWWDTX7hTt+xQnVPA=WTWNFk2eDnTjKoJF=LA7LQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+References: <20201013102358.22588-1-michael.kao@mediatek.com> <20201013102358.22588-4-michael.kao@mediatek.com>
+In-Reply-To: <20201013102358.22588-4-michael.kao@mediatek.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Mon, 11 Jan 2021 08:39:04 +0800
+Message-ID: <CANMq1KDAuXtPc_J4Kxt+e=BfJP+cLt70wPStQShO84LQLaOe8A@mail.gmail.com>
+Subject: Re: [v5 3/3] thermal: mediatek: add another get_temp ops for thermal sensors
+To:     Michael Kao <michael.kao@mediatek.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 10:33:56PM +0100, Linus Walleij wrote:
-> On Sun, Jan 10, 2021 at 7:16 PM Fabian Vogt <fabian@ritter-vogt.de> wrote:
-> > Am Samstag, 9. Januar 2021, 23:20:48 CET schrieb Arnd Bergmann:
-> > > On Sat, Jan 9, 2021 at 1:06 AM Daniel Tang <dt.tangr@gmail.com> wrote:
-> 
-> > > > * nspire -- added in 2013, no notable changes after 2015
-> >
-> > Most of the platform is just the DT sources and some small drivers around it,
-> > so it's actually fairly low maintenance. So far the migration away from
-> > panel-simple in 2019
-> > (https://lore.kernel.org/linux-arm-kernel/20190805085847.25554-1-linus.walleij@linaro.org)
-> > was the biggest required change so far.
-> 
-> What we're seeing here is actually a port that is:
-> - Finished
-> - Has a complete set of working drivers
-> - Supported
-> - Just works
-> 
-> I.e. it doesn't see much patches because it is pretty much perfect.
-> 
-> We are so unused to this situation that it can be mistaken for
-> the device being abandoned.
-> 
-> I think it was Russell who first pointed out that this is actually
-> the case for a few machines.
+On Tue, Oct 13, 2020 at 6:24 PM Michael Kao <michael.kao@mediatek.com> wrote:
+>
+> Provide thermal zone to read thermal sensor
+> in the SoC. We can read all the thermal sensors
+> value in the SoC by the node /sys/class/thermal/
+>
+> In mtk_thermal_bank_temperature, return -EAGAIN instead of -EACCESS
+> on the first read of sensor that often are bogus values.
+>
+> This can avoid following warning on boot:
+>
+>   thermal thermal_zone6: failed to read out thermal zone (-13)
+>
+> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+>  drivers/thermal/mtk_thermal.c | 99 +++++++++++++++++++++++++++--------
+>  1 file changed, 76 insertions(+), 23 deletions(-)
+>
+> diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
+> index 0bd7aa564bc2..43c7bdbc147f 100644
+> --- a/drivers/thermal/mtk_thermal.c
+> +++ b/drivers/thermal/mtk_thermal.c
+> @@ -245,6 +245,11 @@ enum mtk_thermal_version {
+>
+>  struct mtk_thermal;
+>
+> +struct mtk_thermal_zone {
+> +       struct mtk_thermal *mt;
+> +       int id;
+> +};
+> +
+>  struct thermal_bank_cfg {
+>         unsigned int num_sensors;
+>         const int *sensors;
+> @@ -637,6 +642,32 @@ static void mtk_thermal_put_bank(struct mtk_thermal_bank *bank)
+>                 mutex_unlock(&mt->lock);
+>  }
+>
+> +static u32 _get_sensor_temp(struct mtk_thermal *mt, int id)
+> +{
+> +       u32 raw;
+> +       int temp;
+> +
+> +       const struct mtk_thermal_data *conf = mt->conf;
 
-Yes indeed. I find it utterly rediculous that there is a perception
-that you constantly need to be patching a bit of software for it to
-not be seen as abandoned. If a piece of software works and does what
-it needs to do, why does it need to be continually patched? It makes
-no sense to me.
+nit: You only use conf once, so I'd just use mt->conf->msr[id] below.
 
-I have my xf86-video-armada which I use on the Dove Cubox and iMX6
-platforms. It does what I need it to, and I haven't updated the
-userspace on these platforms for a while. Therefore, I've no reason
-to patch that code, and no one has sent me patches. Does that mean
-it's abandoned? Absolutely not.
+(or at least use conf->version instead of mt->conf->version just below)
 
-Some people are just weird and think that unless stuff is constantly
-worked on, no one cares about it.
+> +
+> +       raw = readl(mt->thermal_base + conf->msr[id]);
+> +
+> +       if (mt->conf->version == MTK_THERMAL_V1)
+> +               temp = raw_to_mcelsius_v1(mt, id, raw);
+> +       else
+> +               temp = raw_to_mcelsius_v2(mt, id, raw);
+> +
+> +       /*
+> +        * The first read of a sensor often contains very high bogus
+> +        * temperature value. Filter these out so that the system does
+> +        * not immediately shut down.
+> +        */
+> +
+> +       if (temp > 200000)
+> +               return  -EAGAIN;
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+nit: one space between return and -EAGAIN.
+
+> +       else
+> +               return  temp;
+
+ditto.
+
+> +}
+> +
+>  /**
+>   * mtk_thermal_bank_temperature - get the temperature of a bank
+>   * @bank:      The bank
+> @@ -649,26 +680,10 @@ static int mtk_thermal_bank_temperature(struct mtk_thermal_bank *bank)
+>         struct mtk_thermal *mt = bank->mt;
+>         const struct mtk_thermal_data *conf = mt->conf;
+
+nit: Since this is now only used once, drop this variable?
+
+>         int i, temp = INT_MIN, max = INT_MIN;
+> -       u32 raw;
+>
+>         for (i = 0; i < conf->bank_data[bank->id].num_sensors; i++) {
+> -               raw = readl(mt->thermal_base + conf->msr[i]);
+> -
+> -               if (mt->conf->version == MTK_THERMAL_V1) {
+> -                       temp = raw_to_mcelsius_v1(
+> -                               mt, conf->bank_data[bank->id].sensors[i], raw);
+
+The new version of the code does this instead:
+                       temp = raw_to_mcelsius_v1(mt, i, raw);
+
+What's the difference between conf->bank_data[bank->id].sensors[i] and i?
+
+
+> -               } else {
+> -                       temp = raw_to_mcelsius_v2(
+> -                               mt, conf->bank_data[bank->id].sensors[i], raw);
+> -               }
+>
+> -               /*
+> -                * The first read of a sensor often contains very high bogus
+> -                * temperature value. Filter these out so that the system does
+> -                * not immediately shut down.
+> -                */
+> -               if (temp > 200000)
+> -                       temp = 0;
+> +               temp = _get_sensor_temp(mt, i);
+>
+>                 if (temp > max)
+>                         max = temp;
+> @@ -679,7 +694,8 @@ static int mtk_thermal_bank_temperature(struct mtk_thermal_bank *bank)
+>
+>  static int mtk_read_temp(void *data, int *temperature)
+>  {
+> -       struct mtk_thermal *mt = data;
+> +       struct mtk_thermal_zone *tz = data;
+> +       struct mtk_thermal *mt = tz->mt;
+>         int i;
+>         int tempmax = INT_MIN;
+>
+> @@ -698,10 +714,28 @@ static int mtk_read_temp(void *data, int *temperature)
+>         return 0;
+>  }
+>
+> +static int mtk_read_sensor_temp(void *data, int *temperature)
+> +{
+> +       struct mtk_thermal_zone *tz = data;
+> +       struct mtk_thermal *mt = tz->mt;
+> +       int id = tz->id - 1;
+> +
+> +       if (id < 0)
+> +               return  -EACCES;
+
+nit: one space after return.
+
+> +
+> +       *temperature = _get_sensor_temp(mt, id);
+> +
+> +       return 0;
+> +}
+> +
+>  static const struct thermal_zone_of_device_ops mtk_thermal_ops = {
+>         .get_temp = mtk_read_temp,
+>  };
+>
+> +static const struct thermal_zone_of_device_ops mtk_thermal_sensor_ops = {
+> +       .get_temp = mtk_read_sensor_temp,
+> +};
+> +
+>  static void mtk_thermal_init_bank(struct mtk_thermal *mt, int num,
+>                                   u32 apmixed_phys_base, u32 auxadc_phys_base,
+>                                   int ctrl_id)
+> @@ -992,6 +1026,7 @@ static int mtk_thermal_probe(struct platform_device *pdev)
+>         u64 auxadc_phys_base, apmixed_phys_base;
+>         struct thermal_zone_device *tzdev;
+>         void __iomem *apmixed_base, *auxadc_base;
+> +       struct mtk_thermal_zone *tz;
+>
+>         mt = devm_kzalloc(&pdev->dev, sizeof(*mt), GFP_KERNEL);
+>         if (!mt)
+> @@ -1080,11 +1115,29 @@ static int mtk_thermal_probe(struct platform_device *pdev)
+>
+>         platform_set_drvdata(pdev, mt);
+>
+> -       tzdev = devm_thermal_zone_of_sensor_register(&pdev->dev, 0, mt,
+> -                                                    &mtk_thermal_ops);
+> -       if (IS_ERR(tzdev)) {
+> -               ret = PTR_ERR(tzdev);
+> -               goto err_disable_clk_peri_therm;
+> +       for (i = 0; i < mt->conf->num_sensors + 1; i++) {
+> +               tz = kmalloc(sizeof(*tz), GFP_KERNEL);
+
+I don't see those structures being freed on error, or on driver unbind.
+
+Maybe use dev_kmalloc instead?
+
+> +               if (!tz)
+> +                       return -ENOMEM;
+> +
+> +               tz->mt = mt;
+> +               tz->id = i;
+> +
+> +               tzdev = devm_thermal_zone_of_sensor_register(&pdev->dev, i, tz, (i == 0) ?
+> +                                                            &mtk_thermal_ops :
+> +                                                            &mtk_thermal_sensor_ops);
+> +
+> +               if (IS_ERR(tzdev)) {
+> +                       if (PTR_ERR(tzdev) == -ENODEV) {
+> +                               dev_warn(&pdev->dev,
+> +                                        "sensor %d not registered in thermal zone in dt\n", i);
+> +                               continue;
+> +                       }
+> +                       if (PTR_ERR(tzdev) == -EACCES) {
+> +                               ret = PTR_ERR(tzdev);
+> +                               goto err_disable_clk_peri_therm;
+> +                       }
+> +               }
+>         }
+>
+>         return 0;
+> --
+> 2.18.0
