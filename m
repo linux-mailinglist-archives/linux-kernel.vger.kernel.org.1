@@ -2,116 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86C402F0C94
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 06:45:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 602B72F0C9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 06:46:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727326AbhAKFoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 00:44:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37866 "EHLO
+        id S1727366AbhAKFpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 00:45:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726347AbhAKFoE (ORCPT
+        with ESMTP id S1726544AbhAKFpe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 00:44:04 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819DAC0617A2
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 21:43:24 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id e2so8896670plt.12
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 21:43:24 -0800 (PST)
+        Mon, 11 Jan 2021 00:45:34 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0068C061786;
+        Sun, 10 Jan 2021 21:44:53 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id 11so10294779pfu.4;
+        Sun, 10 Jan 2021 21:44:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dxcaQzCef245GEe8BHqti9uSrUtRw/ahVKeK4xjDRr4=;
-        b=Ez90y4CATdLWsRXoTHvdWFgKb9imu7x6pZ+0tq54Es0wZGv/TwxRFVAQ5QPX9cHi+6
-         8oDY9Z4gmLSjBFoIkQOQzgyFCkKT690yLHSGO3rzG9zvwNpYnSRHbX035eeF6EYo4Zry
-         lhhRV04k4I5RzkWmBJa21Np/2xC+3SvKizJOOhSMtIM4zRyltuTc81NapAYx4fGrfEu6
-         sqjuHtlvWgVhnlMVTsWwEWiXqeUkNfzsRahPHriuvjmJslB57Nh9OpfkPIRj5YhfecBW
-         JhQ1h6W/wBQU0sCiEjmVVB7MQcjFEgjMXS1tn32mXvL+hX2jsEeql8CnGNJgUNtWAsY4
-         BkZA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=88GcoNGL/AXgeCjNvngovwMr6/msxp3BLQE6/faGv1E=;
+        b=h4+cG8LBG4mJ2vwsd0js8PfV+47sXFW4md16+AhwPXwgU9YZmmW2Lbaanew5uI+efR
+         zxNOSQz+NPgRzUZN54kj7M4CTyLAeDMQ4sI8MlJaKA6U28f5X1Ttwhlvn6ke5ccL99bV
+         IhZ0wc4vjAW+v0aiYBZscmF0Hg5up2X/8PWzw1QVEx2emEkzgZ0isVk5GQuCHEjDh+Au
+         mTjoRy8bwfYWPmGnaPczlFMa5fPx7oQD8HJdtlJki8doIr1dyB0vwKO4zcaRR+nFpvnU
+         kiJOLyZdXC4wL862hDu6srQ8LXH2o98c2u1m2wnEqj2kHNZNPJh4m8P6LZZtKEpgyoQL
+         8EDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dxcaQzCef245GEe8BHqti9uSrUtRw/ahVKeK4xjDRr4=;
-        b=KAM3uB9aaz0rkXmw1L9EexTFLffNvk2I8/L6KJOlIwOkGM6mA0AtxrcbLt90Ylti8X
-         LAGX3xJDbfM2l49bfi+4iMMEULvl9G0VTguVxRv3dHqJ6xu5kEhSOiNR6mMAc6trt6dw
-         cHDM5m03AJz3zdymCZ5gAqtPeHPfzKJ2rUVZXcT2I+j1GuGYRWS4ME6EP5rXgrFhTWwQ
-         Lc6nIBK8+gGPWBed0QbCX1Uq0YnTnEjdTHvjdeclEE6PxIP8+J7dTIYGUUXO25h7GwNi
-         sCAgy4pQQcRFkqQ/0+6rg47tyW0Eb188YpnptxtWkzR6xClwKdeE8EkhgAs6y7cJIntN
-         zSZg==
-X-Gm-Message-State: AOAM531egKDDWSEy4MKtxAvhWZosf9nJBJ6L1hvHlYo9T+1pC9NT+0kV
-        iFs13IhQZDL+wCFpv/f2K+Q5chgAS4J/FA==
-X-Google-Smtp-Source: ABdhPJziyb7hLc7BZt6/cajylkz98uap7IhWPym7e8MO4EeDMQPQ1K9MyNAlYU5WgWaEdLxjh9RQzg==
-X-Received: by 2002:a17:90a:a012:: with SMTP id q18mr15775938pjp.223.1610343804055;
-        Sun, 10 Jan 2021 21:43:24 -0800 (PST)
-Received: from localhost.localdomain (61-231-198-38.dynamic-ip.hinet.net. [61.231.198.38])
-        by smtp.googlemail.com with ESMTPSA id x15sm16726267pfn.118.2021.01.10.21.43.22
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=88GcoNGL/AXgeCjNvngovwMr6/msxp3BLQE6/faGv1E=;
+        b=LNKdUuUuQCcQ5wcUU5aJ4Tj+po9sICDBVO8lTdyczJiT8fpS8QZJUAxTjh09FfHjPJ
+         EqJVbL15Sv6N3rmQWjo10AdNvDcbTaOfFc9b7DV6vrGSSC95u+20cT0CETPCuHmCxn/q
+         3/r4Q83FZVvl0SsRJ3Ymnv+5axh5efwjKfeA6GKtcjY0fAoYOPIpcv9DwaJh5zvW7126
+         t5HWCBvvjrsnAjsR+KFU28PlbopKdkZ7PRSXY2QuCY9Vgjn5VEK1WrohLvmGjrXVD1J9
+         Ntq9YUj74GcDNsU+2Fkv/7vMlTdwHmv84Ipctmw7dQwslcorkwIGY0pyCa1VwDXx332p
+         qLVg==
+X-Gm-Message-State: AOAM53158Kwex2hRgZrNckAG+kFTj3lgK06S9A3f51tOkkWbp4V6B+6o
+        xhKXwcPcaq1SLT7i+XH0rsI=
+X-Google-Smtp-Source: ABdhPJxglMNH6WCUJJua0ObPzfzCa/AOfasQge6NqUl2igBLSmJcdZvEEwFVOyUKepzuXmQCloQ5tA==
+X-Received: by 2002:a63:1d59:: with SMTP id d25mr18119366pgm.259.1610343893413;
+        Sun, 10 Jan 2021 21:44:53 -0800 (PST)
+Received: from container-ubuntu.lan ([218.89.163.70])
+        by smtp.gmail.com with ESMTPSA id q16sm17548005pfg.139.2021.01.10.21.44.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Jan 2021 21:43:23 -0800 (PST)
-From:   Chris Chiu <chiu@endlessos.org>
-To:     oder_chiou@realtek.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux@endlessos.org, Chris Chiu <chiu@endlessos.org>
-Subject: [PATCH v3 4/4] ASoC: rt5645: Enable internal microphone and JD on ECS EF20
-Date:   Mon, 11 Jan 2021 13:41:41 +0800
-Message-Id: <20210111054141.4668-5-chiu@endlessos.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210111054141.4668-1-chiu@endlessos.org>
-References: <20210111054141.4668-1-chiu@endlessos.org>
+        Sun, 10 Jan 2021 21:44:52 -0800 (PST)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Frank Wunderlich <frank-w@public-files.de>,
+        =?UTF-8?q?Ren=C3=A9=20van=20Dorst?= <opensource@vdorst.com>
+Subject: [PATCH net-next 0/2] dsa: add MT7530 GPIO support
+Date:   Mon, 11 Jan 2021 13:44:26 +0800
+Message-Id: <20210111054428.3273-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On ECS EF20 series laptops, the internal mic is on DMIC2/IN2P.
-And they need the inv_hp_det to make jack detection to work as
-exoected.
+MT7530's LED controller can be used as GPIO controller. Add support for
+it.
 
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
----
-  v2 -> v3:
-        - restore the terminator {} of the dmi_platform_data[]
-  v1 -> v2:
-        - none
+DENG Qingfang (2):
+  dt-bindings: net: dsa: add MT7530 GPIO controller binding
+  drivers: net: dsa: mt7530: MT7530 optional GPIO support
 
- sound/soc/codecs/rt5645.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ .../devicetree/bindings/net/dsa/mt7530.txt    |  6 ++
+ drivers/net/dsa/mt7530.c                      | 96 +++++++++++++++++++
+ drivers/net/dsa/mt7530.h                      | 20 ++++
+ 3 files changed, 122 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 4fd91ee3cfaa..3c082c4ac3fc 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3656,6 +3656,12 @@ static const struct rt5645_platform_data kahlee_platform_data = {
- 	.jd_mode = 3,
- };
- 
-+static const struct rt5645_platform_data ecs_ef20_platform_data = {
-+	.dmic1_data_pin = RT5645_DMIC1_DISABLE,
-+	.dmic2_data_pin = RT5645_DMIC_DATA_IN2P,
-+	.inv_hp_pol = 1,
-+};
-+
- static const struct acpi_gpio_params ef20_hp_detect = { 1, 0, false };
- 
- static const struct acpi_gpio_mapping cht_rt5645_ef20_gpios[] = {
-@@ -3804,6 +3810,7 @@ static const struct dmi_system_id dmi_platform_data[] = {
- 		.matches = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "EF20"),
- 		},
-+		.driver_data = (void *)&ecs_ef20_platform_data,
- 	},
- 	{
- 		.ident = "EF20EA",
-@@ -3811,6 +3818,7 @@ static const struct dmi_system_id dmi_platform_data[] = {
- 		.matches = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "EF20EA"),
- 		},
-+		.driver_data = (void *)&ecs_ef20_platform_data,
- 	},
- 	{ }
- };
 -- 
-2.20.1
-
+2.25.1
