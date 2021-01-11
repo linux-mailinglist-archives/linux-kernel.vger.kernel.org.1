@@ -2,110 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FCE52F1FC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:49:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 947B52F1FCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:50:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404104AbhAKTtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 14:49:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388832AbhAKTtP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 14:49:15 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED64C061795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:48:34 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id m6so592610pfk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:48:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=L2dO51YCX50/jqI3yiEYU3ac1GBJfHi3X0HQmwH4sZc=;
-        b=k2V72fKFl01J3y3Dzl0Pb6pZuFQYuafr+l3lvOn50o/U0VCG+t32afav1f0rmeUdbK
-         Kl/J/+vHfWdWmmgtWD94eQ1MAdyNlwvQqBdDRS6AvUsQLjIQu0ILWUBNQAmeB/0VrrEi
-         WNISKNaK+FzpOLMwl+JNKvVcbNYHPUNiq6NeE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=L2dO51YCX50/jqI3yiEYU3ac1GBJfHi3X0HQmwH4sZc=;
-        b=KkSnGoa3U7oXoq6pgHdwQPFR6YOOfhZq9hD9DGhNEf2+wE+fftMNh3nLOvSlrxbDIv
-         VVDaYVX1HC8QDJItp+GoO1NBq9qA1YDaNTKyUW0gy9pmmsMfPpNl/NGiVIB9P5Zv9qDo
-         +SM0XCxGzEx+EIIwT13dbjotbz+lh4PG0W2ry2dCQEV8w7b8I1xNKy/rxxoHJ4H/wrCa
-         IfRv+VwG8w8/1m4J01ERCUaM8U+sqTQobeAcaUIlmiWGYuqt75lzt695FSCBNDMPlEEn
-         CwpkQttE+awqEu0F0W/BX70pJ51NDmunl7XJrfzAcastdOOoaV1iEnlIeomRH4/cCs5E
-         x5gw==
-X-Gm-Message-State: AOAM5334BSrBnpTWg6qNyWZ5b994jdyanE8/41BFfLhktziawXJWw7Me
-        iCde2jNbpAx6CNszFaoHLEtZvQ==
-X-Google-Smtp-Source: ABdhPJzslm0sW3E1xyjK6iTczmGD4MMC+I117oW3pqCCuY683Jr0Df72IrmO5iJXCHhOZBvC/X91fA==
-X-Received: by 2002:a62:79cd:0:b029:1a8:4d9b:921a with SMTP id u196-20020a6279cd0000b02901a84d9b921amr953318pfc.33.1610394514381;
-        Mon, 11 Jan 2021 11:48:34 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h12sm579029pgs.7.2021.01.11.11.48.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 11:48:33 -0800 (PST)
-Date:   Mon, 11 Jan 2021 11:48:32 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] gcc-plugins: fix gcc 11 indigestion with plugins...
-Message-ID: <202101111148.CDE77FF@keescook>
-References: <82487.1609006918@turing-police>
- <160997457204.3687425.15622431721220616573.b4-ty@chromium.org>
- <CAMuHMdU1YSODgh_T5RxqUqorveAQiy_-gQbF_SwMEj7gvG25qw@mail.gmail.com>
- <122278.1610362619@turing-police>
- <CAMuHMdXR09QdSiziQQ_XuPcJPOca_+mK1jYYHj3VsP_eCu_KbA@mail.gmail.com>
- <128149.1610368277@turing-police>
- <20210111133719.w53ad4xnw5yyi2lf@treble>
+        id S2404121AbhAKTtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:49:42 -0500
+Received: from ms.lwn.net ([45.79.88.28]:58932 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388832AbhAKTtl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 14:49:41 -0500
+Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 3237B9A8;
+        Mon, 11 Jan 2021 19:48:59 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 3237B9A8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1610394540; bh=EozPVlZIs3bnnXIKn7dDr0mmHi5XdirNCyxTvjIj9uE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PALuxSnoS8Zs3fpNgecTI09xiv7NwxbzGbThKLcbZn0OwLfz/f85HMLF4pkH+Bh0S
+         xOCAT8x5kzdjC6DaeAl+tDwZWJD9xczHoB0533HMDlPJTc3LFjs1wjJBzapB8Lj8vJ
+         Crekpj+OtXlgSOZa/iV7V0O2D99K/J+Sc3rIKlU3f3I5IkIAHU0JwkJwUSOAZ7R8bR
+         xYE1zThYgmvHl+zg8I6vfwmqo3HLkwnwq+Y3JYXbY6JXOczglR/+NSPlDSqvH4Hsyv
+         wJFZxlYSB/svsWGzxBKtsMTAuLhtbZdSvPEWmWRO4jXyrd34sKG6RlknO8ACwxc9ue
+         REcwd7vi+LDWg==
+Date:   Mon, 11 Jan 2021 12:48:58 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Joe Perches <joe@perches.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        bhelgaas@google.com, robh+dt@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        kishon@ti.com, lorenzo.pieralisi@arm.com, hongxing.zhu@nxp.com,
+        l.stach@pengutronix.de, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, m-karicheri2@ti.com, songxiaowei@hisilicon.com,
+        wangbinghui@hisilicon.com, amurray@thegoodpenguin.co.uk,
+        sathyanarayanan.kuppuswamy@linux.intel.com, hkallweit1@gmail.com,
+        rafael.j.wysocki@intel.com, rdunlap@infradead.org,
+        linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] Documentation: Replace lkml.org links with lore
+Message-ID: <20210111124858.2b35982c@lwn.net>
+In-Reply-To: <77cdb7f32cfb087955bfc3600b86c40bed5d4104.camel@perches.com>
+References: <20200627103050.71712-1-grandmaster@al2klimov.de>
+        <20200630180917.GA3455699@bjorn-Precision-5520>
+        <20200630140417.3a2dba67@lwn.net>
+        <77cdb7f32cfb087955bfc3600b86c40bed5d4104.camel@perches.com>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210111133719.w53ad4xnw5yyi2lf@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 07:37:19AM -0600, Josh Poimboeuf wrote:
-> On Mon, Jan 11, 2021 at 07:31:17AM -0500, Valdis Klētnieks wrote:
-> > On Mon, 11 Jan 2021 05:56:59 -0500, I said:
-> > 
-> > > > It's probably related. I'm just having a hard time understanding why 4.9 and 5.4
-> > > > whine about the lack of a space, while 8.3 and 11 didn't complain...
-> > 
-> > So after more digging, at least some clarity has surfaced.
-> > 
-> > It looks like it's not a kernel source tree issue, it's a g++ issue fixed in g++ 6 and later.
-> > 
-> > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=69959
-> > 
-> > And it looks like there was an intent to backport it to 4.9 and 5.4:
-> > https://gcc.gnu.org/legacy-ml/gcc-patches/2016-02/msg01409.html
-> > 
-> > The bugtracker doesn't show an equivalent for 69959 being closed against 4.9.x or 5.[56],
-> > 
-> > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63254 has a patch for one of the
-> > gcc-supplied files that tosses the warning, but that way lies madness...
-> > 
-> > Not sure what we want to do here - the main alternatives I see are:
-> > 
-> > Tell people still using 4.9/5.4 to either live with the warning or upgrade to 6 or later
-> > 
-> > Make the flag a variable and pass either -std=gnu++98 or -std=gnu++11
-> > depending on the output of 'g++ --version'
-> > 
-> > What say the peanut gallery?
-> 
-> I think putting the flag in a variable (based on call cc-ifversion)
-> should be easy enough, then we can put this little saga behind us and
-> pretend it never happened :-)
+On Sun, 10 Jan 2021 12:41:44 -0800
+Joe Perches <joe@perches.com> wrote:
 
-Yeah, that seems best. Valdis, can you send a patch for this?
+> Replace the lkml.org links with lore to better use a single source
+> that's more likely to stay available long-term.
 
--- 
-Kees Cook
+Makes sense to me...applied, thanks.
+
+jon
