@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EC012F0F97
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:00:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50AEC2F0F93
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728736AbhAKJ77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 04:59:59 -0500
-Received: from elvis.franken.de ([193.175.24.41]:42348 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725897AbhAKJ76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 04:59:58 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kytyc-0000DI-00; Mon, 11 Jan 2021 10:59:06 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 9C599C0898; Mon, 11 Jan 2021 10:40:22 +0100 (CET)
-Date:   Mon, 11 Jan 2021 10:40:22 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Mark Salter <msalter@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: Old platforms: bring out your dead
-Message-ID: <20210111094022.GA5691@alpha.franken.de>
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <CAMuHMdWiYkhN_S2t+hg0cDk84Qd950YE9-qGTgsdL_-2vPr1WQ@mail.gmail.com>
- <CAK8P3a3TNVj_Gw=GaEFELdF9Fo25XU_PFWS5N0+kb=R394KNVQ@mail.gmail.com>
+        id S1728831AbhAKJ65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 04:58:57 -0500
+Received: from mail-ej1-f49.google.com ([209.85.218.49]:33695 "EHLO
+        mail-ej1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728179AbhAKJ65 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 04:58:57 -0500
+Received: by mail-ej1-f49.google.com with SMTP id b9so23949715ejy.0;
+        Mon, 11 Jan 2021 01:58:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=udVCXM7Wn35aQirz5a19QL8QpKzWmV0LS9M/curg0D0=;
+        b=hewb9nzUIuPy/0EnWdpiHotg1K2M4IuKAsiXEqsP6AznGy8pd7hJEJc3G4CRtuR1gE
+         1jCQtTZw58KkgZ0arMyaYC/Jd9sboJJpYvuVC3u5Ts7HpG1GmKLSnRRWi7HqxhsCwR5Q
+         p36li4Hdk/1n8kDjTjADHU7vdIfilyCRdQsdt0DWku1ZDsV23a5z6VOmf3FiJQFjmNm1
+         cixzdH2HiXlrJ3RJW91END9fcK3nrYsx1q0lYU52ApqALQcli0Fl7/7c2+Q7R6HDotYP
+         QPU4UMeA70AUmQOOYIp5x2QhPNQ3kkGi2n0lXfrInLGiuKUbuYeR/5IxYeZtdoL3ukaT
+         Z/qg==
+X-Gm-Message-State: AOAM530HVVDrnYXtSRUUQOv3A71vIEHKd1xAX4rpXuWZTkRNLWnteigM
+        m6k4BhXoAK8yw7ZiN8HxCBCL4CbU42sdXg==
+X-Google-Smtp-Source: ABdhPJyVCsq5rTpUoTohT6CO72JxfdIzcL6xyKG3YEeMy01WtRt4r8yKJY30OCuOioOtV5QLCMAfsA==
+X-Received: by 2002:a17:906:edb2:: with SMTP id sa18mr9801943ejb.264.1610359094509;
+        Mon, 11 Jan 2021 01:58:14 -0800 (PST)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id r21sm7390769eds.91.2021.01.11.01.58.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 01:58:13 -0800 (PST)
+Subject: Re: [PATCH v2 2/8] serial: stm32: fix code cleaning warnings and
+ checks
+To:     Erwan Le Ray <erwan.leray@foss.st.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc:     linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Valentin Caron <valentin.caron@foss.st.com>
+References: <20210106162203.28854-1-erwan.leray@foss.st.com>
+ <20210106162203.28854-3-erwan.leray@foss.st.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <72c81157-4bd1-6a3e-2415-92a2fb29ab6d@kernel.org>
+Date:   Mon, 11 Jan 2021 10:58:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3TNVj_Gw=GaEFELdF9Fo25XU_PFWS5N0+kb=R394KNVQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210106162203.28854-3-erwan.leray@foss.st.com>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 09:59:23AM +0100, Arnd Bergmann wrote:
-> On Mon, Jan 11, 2021 at 9:19 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Fri, Jan 8, 2021 at 11:55 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> > > * MIPS R3000/TX39xx: 32-bit MIPS-II generation, mostly superseded by
-> > >   64-bit MIPS-III (R4000 and higher) starting in 1991. arch/mips still
-> > >   supports these in DECstation and Toshiba Txx9, but it appears that most
-> > >   of those machines are of the 64-bit kind. Later MIPS32 such as 4Kc and
-> > >   later are rather different and widely used.
-> >
-> > I have a (32-bit) RBTX4927 development board in my board farm, boot-test
-> > every bi-weekly renesas-drivers release on it, and fix kernel issues
-> > when they appear.
-> 
-> Right, I was specifically thinking of the MIPS-II/R3000 ones here, I know
-> there are users on multiple actively maintained MIPS-III platforms.
+On 06. 01. 21, 17:21, Erwan Le Ray wrote:
+> --- a/drivers/tty/serial/stm32-usart.c
+> +++ b/drivers/tty/serial/stm32-usart.c
+...
+> @@ -973,18 +971,17 @@ static int stm32_init_port(struct stm32_port *stm32port,
+>   	struct resource *res;
+>   	int ret;
+>   
+> +	ret = platform_get_irq(pdev, 0);
+> +	if (ret <= 0)
+> +		return ret ? : -ENODEV;
+> +
+>   	port->iotype	= UPIO_MEM;
+>   	port->flags	= UPF_BOOT_AUTOCONF;
+>   	port->ops	= &stm32_uart_ops;
+>   	port->dev	= &pdev->dev;
+>   	port->fifosize	= stm32port->info->cfg.fifosize;
+>   	port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_STM32_CONSOLE);
+> -
+> -	ret = platform_get_irq(pdev, 0);
+> -	if (ret <= 0)
+> -		return ret ? : -ENODEV;
+>   	port->irq = ret;
 
-Maciej still runs R3k based machines.
+I would move this set from ret above too. Or introduce a new variable, 
+e.g. "irq".
 
-Thomas.
-
+thanks,
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+js
+suse labs
