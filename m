@@ -2,95 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E992F1912
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:02:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 180562F1919
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:04:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731864AbhAKPB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:01:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730264AbhAKPBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:01:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D0E722795
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 15:01:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610377274;
-        bh=eKy50e4DY4SL9/AcF52lTzbb2W9yqyrDJvJZDmzYAls=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GyEoQrJMV8yVDQ0DHdjDPzpz3/ewOYhXJvb+1yMjTYgllWy3sWRrFpIPuNpr0lISD
-         IBR7QCsmzOE1NBiCHCkOv32ANRzIWRzU5MQCvy8CAt4LTvNH+/Vp5iSz6vRWpWurLp
-         5MIc0Uf7I2qAbwXXQwAfW6aQH3BH+UycqmjJ48NOrioR5/7H+k6rnlYuM+QUiFD7bu
-         bk7/+VSYotWLOaqeHwsjMa70nW+6vrWXrDmB4ipQDBeDZlH0ZoHa3UWptxNRxAM/F8
-         ut3yC6SEphFSaHt5HsKJyIMbDi04adbmoMOOPS8rCd8avlwcxaRlntrZo0pU6ecKdM
-         BjQIoAdODnQrQ==
-Received: by mail-ot1-f46.google.com with SMTP id w3so17084953otp.13
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:01:14 -0800 (PST)
-X-Gm-Message-State: AOAM531aSpQoyp9fN0FPEJj9KMCWaB0WeuuC2IAmkg7p7z82E/KGxcrT
-        nCgF7A/rnE2OS1isBnhijy8lepM+5n9vC2iStwQ=
-X-Google-Smtp-Source: ABdhPJw8HZVruPoahj4S7PvQGqsa+IY423HuaTrj9hH8ma5vxU2COhZP9sOB7P3/mz8uywP7nQ5+83UFCZ4dQXAGnAI=
-X-Received: by 2002:a05:6830:2413:: with SMTP id j19mr11703458ots.251.1610377272945;
- Mon, 11 Jan 2021 07:01:12 -0800 (PST)
+        id S1730240AbhAKPEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:04:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726459AbhAKPEk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 10:04:40 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC04CC061786;
+        Mon, 11 Jan 2021 07:03:59 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id d17so679ejy.9;
+        Mon, 11 Jan 2021 07:03:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aAeE0TTHdKHoJkBYQsPdM4kqaplDlSaeVpHaFu0f2pw=;
+        b=vSp5iHmtr+/75uywTjkXTBnxCX3gZU/hlkgu7K8AMQUHLiqpyG8enC7XVQ71V/QaGK
+         biRC0kvKBRu+mlWp9xCbs5+9VAGnzcGv0kFFpymvUsR6P3ykiEL6rM55ahyO9ieG8JjZ
+         q990kKVHlOLSXu750+i0m1dMMoZ7IlfYK9jngg5aBqUgT7+Nba8ndXLe5swygJedvWwP
+         QsQ5DUWSXyO5MThoWwrbyis9PYgNfuYafMKCI4JTHaYiLAoLsLcgUHNCTfRJ3YJSYg0p
+         CBVWfve1OnVo0ArrGx1rUiv4/7mfag5UeqPvvmH6e5Ll9XjfOhatl8EnrRzb9gTgK58k
+         H8gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aAeE0TTHdKHoJkBYQsPdM4kqaplDlSaeVpHaFu0f2pw=;
+        b=FDN0APK7O1mUMUqUXIpEW8HSLltxBdk0HjrHGUjDhoR8YeZX1VXS7JbA0QIjcv952z
+         9iDF+zEuRXenOY0NLsu7r7ux5GjTF10pESwFNBOmNj8HcRQjvPbzDFCluI5EO75zayhw
+         CMc5kgzRnT4F/smjzTjYZkM4KGuJ3H842AhsFfahccZ3iXNO2ofbknXk2QecD5aBC0lY
+         hnWCY46jTiz3BH5jHfu0BJeyATs3ybHHiQf+of3TMrORBXv3iSJoj+Ur8a3iVNan+iC9
+         ET3dg7mVHKUrDOERiQbg3oa4Cnl0Vr6ixHxehyfcH17cs9gW61cKz7ttVGXb383f4Vhk
+         iEig==
+X-Gm-Message-State: AOAM532PK43YmJRLp9UpqKTglYmSn4E8c3JFxNhD5KAYJsRmZRSBh1gA
+        JGQfDxBnHOh9AgTIIXVKDA2922smjv4=
+X-Google-Smtp-Source: ABdhPJxIyaLozHRUSkxGCf9e46os4PII+e+rFlcGTGASsZ5G6GpsA7YmSEqFQ0qbBTusFlQlcioPdw==
+X-Received: by 2002:a17:906:7a46:: with SMTP id i6mr10589160ejo.257.1610377438272;
+        Mon, 11 Jan 2021 07:03:58 -0800 (PST)
+Received: from [192.168.2.202] (pd9ea3126.dip0.t-ipconnect.de. [217.234.49.38])
+        by smtp.gmail.com with ESMTPSA id j23sm58529edv.45.2021.01.11.07.03.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 07:03:57 -0800 (PST)
+Subject: Re: [PATCH][next] platform/surface: fix potential integer overflow on
+ shift of a int
+To:     Colin King <colin.king@canonical.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210111144648.20498-1-colin.king@canonical.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <94d4044a-d50f-0108-9312-53338c388f39@gmail.com>
+Date:   Mon, 11 Jan 2021 16:03:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <41dc7795afda9f776d8cd0d3075f776cf586e97c.camel@redhat.com>
-In-Reply-To: <41dc7795afda9f776d8cd0d3075f776cf586e97c.camel@redhat.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 11 Jan 2021 16:00:55 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2HzAFCyK6Y+-NDgFDCyzqeZqBwzGK3L-FR2toTP+szAQ@mail.gmail.com>
-Message-ID: <CAK8P3a2HzAFCyK6Y+-NDgFDCyzqeZqBwzGK3L-FR2toTP+szAQ@mail.gmail.com>
-Subject: Re: Old platforms: bring out your dead
-To:     Mark Salter <msalter@redhat.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210111144648.20498-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 3:22 PM Mark Salter <msalter@redhat.com> wrote:
->
-> On Fri, 2021-01-08 at 23:55 +0100, Arnd Bergmann wrote:
-> > * c6x: Added in 2011, this has seen very few updates since, but
-> >     Mark still Acks patches when they come. Like most other DSP platforms,
-> >     the model of running Linux on a DSP appears to have been obsoleted
-> >     by using Linux on ARM with on-chip DSP cores running bare-metal code.
->
-> Hi Arnd,
->
-> So this has been on my mind for a while now. I no longer have working hw
-> for c6x and TI hasn't been forthcoming with replacements. I'm totally fine
-> with removing it from mainline. In any case, I'm not really in a position
-> to go forward as maintainer.
+On 1/11/21 3:46 PM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The left shift of int 32 bit integer constant 1 is evaluated using 32 bit
+> arithmetic and then passed as a 64 bit function argument. In the case where
+> func is 32 or more this can lead to an oveflow.  Avoid this by shifting
+> using the BIT_ULL macro instead.
+> 
+> Addresses-Coverity: ("Unintentional integer overflow")
+> Fixes: fc00bc8ac1da ("platform/surface: Add Surface ACPI Notify driver")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>   drivers/platform/surface/surface_acpi_notify.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/surface/surface_acpi_notify.c b/drivers/platform/surface/surface_acpi_notify.c
+> index 8cd67a669c86..ef9c1f8e8336 100644
+> --- a/drivers/platform/surface/surface_acpi_notify.c
+> +++ b/drivers/platform/surface/surface_acpi_notify.c
+> @@ -188,7 +188,7 @@ static int san_acpi_notify_event(struct device *dev, u64 func,
+>   	union acpi_object *obj;
+>   	int status = 0;
+>   
+> -	if (!acpi_check_dsm(san, &SAN_DSM_UUID, SAN_DSM_REVISION, 1 << func))
+> +	if (!acpi_check_dsm(san, &SAN_DSM_UUID, SAN_DSM_REVISION, BIT_ULL(func)))
+>   		return 0;
+>   
+>   	dev_dbg(dev, "notify event %#04llx\n", func);
+> 
 
-Ok, let's remove it then. I'm happy to take patches through my
-asm-generic tree. If someone shows up later that does have an
-interest in the platform for future kernels, I'll drop the branch or
-revert it after it gets merged.
+Thanks, looks good to me.
 
-       Arnd
+Reviewed-by: Maximilian Luz <luzmaximilian@gmail.com>
+
+Regards,
+Max
