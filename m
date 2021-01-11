@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B40DA2F1312
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:03:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8A82F1315
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:03:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729729AbhAKNDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:03:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50168 "EHLO mail.kernel.org"
+        id S1727903AbhAKNDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:03:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729176AbhAKNDJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:03:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BFF42250F;
-        Mon, 11 Jan 2021 13:02:08 +0000 (UTC)
+        id S1729683AbhAKNDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:03:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 03A8F225AC;
+        Mon, 11 Jan 2021 13:02:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370128;
-        bh=rwPYVE94HfNpJFsSt+E5hlbIoXRvehJRH/rC2WXnwAY=;
+        s=korg; t=1610370135;
+        bh=8lGXfChzd96VRmdI3XiedLSbfp9gS012jJfWzenkTac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FnrA9S9fdFFP2VujjSvdmEGOkJvnmV0ZWThdCRlVZnFpsYrIkAjJBbqJY3Rawu3gt
-         fXOSyKiY9qUtBpdxaiFQWfHPbYl/1HFd2WEOmvzsXEIUZt34CdWn5se3sTD2w2ji3V
-         UQsBb5C6yMipqB9Xf/9h2a/NIh2Yj4O/VMSoOcZs=
+        b=DnGeiSY8/vDt6QljF0c8O2ADBdTNy8jcaR9+sKsy3CnZ9brwWvKhWtoX6bPRPHKyi
+         M/TFE25jPAJI0dvDxzyKCkmzbw1U7+pfMYs+slpbjPCNi3YGjZS7TNJXNDdTcmyX4Z
+         5SSLusyXE7MOjXoNZ7SBvAJzOyy0dnFY2T683BdI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>
-Subject: [PATCH 4.4 29/38] USB: gadget: legacy: fix return error code in acm_ms_bind()
-Date:   Mon, 11 Jan 2021 14:01:01 +0100
-Message-Id: <20210111130033.864180020@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.4 32/38] USB: serial: keyspan_pda: remove unused variable
+Date:   Mon, 11 Jan 2021 14:01:04 +0100
+Message-Id: <20210111130034.004813791@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130032.469630231@linuxfoundation.org>
 References: <20210111130032.469630231@linuxfoundation.org>
@@ -39,36 +39,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Johan Hovold <johan@kernel.org>
 
-commit c91d3a6bcaa031f551ba29a496a8027b31289464 upstream.
+Remove an unused variable which was mistakingly left by commit
+37faf5061541 ("USB: serial: keyspan_pda: fix write-wakeup
+use-after-free") and only removed by a later change.
 
-If usb_otg_descriptor_alloc() failed, it need return ENOMEM.
+This is needed to suppress a W=1 warning about the unused variable in
+the stable trees that the build bots triggers.
 
-Fixes: 578aa8a2b12c ("usb: gadget: acm_ms: allocate and init otg descriptor by otg capabilities")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201117092955.4102785-1-yangyingliang@huawei.com
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- drivers/usb/gadget/legacy/acm_ms.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/usb/serial/keyspan_pda.c |    2 --
+ 1 file changed, 2 deletions(-)
 
---- a/drivers/usb/gadget/legacy/acm_ms.c
-+++ b/drivers/usb/gadget/legacy/acm_ms.c
-@@ -207,8 +207,10 @@ static int acm_ms_bind(struct usb_compos
- 		struct usb_descriptor_header *usb_desc;
+--- a/drivers/usb/serial/keyspan_pda.c
++++ b/drivers/usb/serial/keyspan_pda.c
+@@ -559,10 +559,8 @@ exit:
+ static void keyspan_pda_write_bulk_callback(struct urb *urb)
+ {
+ 	struct usb_serial_port *port = urb->context;
+-	struct keyspan_pda_private *priv;
  
- 		usb_desc = usb_otg_descriptor_alloc(gadget);
--		if (!usb_desc)
-+		if (!usb_desc) {
-+			status = -ENOMEM;
- 			goto fail_string_ids;
-+		}
- 		usb_otg_descriptor_init(gadget, usb_desc);
- 		otg_desc[0] = usb_desc;
- 		otg_desc[1] = NULL;
+ 	set_bit(0, &port->write_urbs_free);
+-	priv = usb_get_serial_port_data(port);
+ 
+ 	/* queue up a wakeup at scheduler time */
+ 	usb_serial_port_softint(port);
 
 
