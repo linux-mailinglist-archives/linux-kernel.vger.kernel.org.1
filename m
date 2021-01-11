@@ -2,78 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8702F22AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:25:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C1702F22B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389977AbhAKWYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 17:24:49 -0500
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:45717 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726725AbhAKWYs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:24:48 -0500
-Received: by mail-oi1-f171.google.com with SMTP id f132so241572oib.12;
-        Mon, 11 Jan 2021 14:24:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KoacxLrwG781qT5RG7YqfWItnfklIT+YgSdisL9jVhg=;
-        b=Q3Nr/o553HPXeFPUeAOktwXkBymuXAlyzuQdI+3w92kj99mYPTvkzOY9xC+GyJW7xl
-         KrkrAGdaj2GQaY9PbhxJEncSGJLGwghBE2sSGjonLyEnkG+MiI8qerl3+6wyEYPzm+d6
-         Pm6CyM0/paJ7P/3JUEUK98swG+dK5l38D1AGRjcl7PHdO8HaQuGy3oKEew3rCkr9naUO
-         +kKr9h6NOuqEzfbT/m+ggRnByXLHLPkKgUxc3gsyl0IwkbmODbwcoie7L8X7G8qiV0ci
-         TWN01zRaMzH4xZduBYUT9UDJTfNbO0n4+SnMLzsOVzyhffjfU6Yq7plKlKaCL0tDrp6j
-         EAgQ==
-X-Gm-Message-State: AOAM532Q6Z//wrOrrDtuGkLRqoMAybgHWhLjPB25MQ82oCce/jQ2UACp
-        HMAm+bs/RWnYp/w/yAk1Tw==
-X-Google-Smtp-Source: ABdhPJwYdKgyRVQAbZFYeZx2MSTvcx37NH1sC+LDnpzYisFoBMSSFNUVxQm7CmWiF0U0a+z3t3+3GA==
-X-Received: by 2002:aca:d54a:: with SMTP id m71mr591460oig.30.1610403847004;
-        Mon, 11 Jan 2021 14:24:07 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id h2sm186107ooa.25.2021.01.11.14.24.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 14:24:05 -0800 (PST)
-Received: (nullmailer pid 3166438 invoked by uid 1000);
-        Mon, 11 Jan 2021 22:24:04 -0000
-Date:   Mon, 11 Jan 2021 16:24:04 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     ohad@wizery.com, devicetree@vger.kernel.org,
-        bjorn.andersson@linaro.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, robh+dt@kernel.org,
-        linux-remoteproc@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] dt-bindings: Amlogic: add the documentation for
- the SECBUS2 registers
-Message-ID: <20210111222404.GA3166382@robh.at.kernel.org>
-References: <20210102205904.2691120-1-martin.blumenstingl@googlemail.com>
- <20210102205904.2691120-3-martin.blumenstingl@googlemail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210102205904.2691120-3-martin.blumenstingl@googlemail.com>
+        id S2390130AbhAKWZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 17:25:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726725AbhAKWZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 17:25:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id D517722D07;
+        Mon, 11 Jan 2021 22:24:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610403863;
+        bh=cZy5iG1dWnO85D0f/h8kXpBNZ3w1DGJAW/MQdSkgCQc=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=CD+dVflhcuLtD9tDg5emdy+S8KSXctN/PPtiE4nlfBhAfw5nF3BHANjZyJQH+VB5a
+         zmA/JZYooCJBrCKP5iceA2JGK32ycQcxpyeCO8e6UgvE8CTEh/I21Mtb4hi0euK9Pz
+         c1upoGwVOipuUtzuYz/U/INhAjPX7aGC2227MqgbqJkc+FC2vyGnzYJk0kjdhiICAx
+         wbLvp3sRtpoBA82+WjgYaFdgpB6kIeNNn1HAAR5+8tUwaeGrH3G6EkI9in6+E7yz2m
+         pULqwp5XBTEJ6dmWP4J7V4kf82ZnodTz65LBpanthh9Lsr5ITN5i67cEqiE1xhN1wj
+         CR52cwBeC513Q==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id C208360188;
+        Mon, 11 Jan 2021 22:24:23 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 5.11-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1610386850.git.dsterba@suse.com>
+References: <cover.1610386850.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1610386850.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc3-tag
+X-PR-Tracked-Commit-Id: e076ab2a2ca70a0270232067cd49f76cd92efe64
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 6e68b9961ff690ace07fac22c3c7752882ecc40a
+Message-Id: <161040386372.14966.4925989524744804733.pr-tracker-bot@kernel.org>
+Date:   Mon, 11 Jan 2021 22:24:23 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 02 Jan 2021 21:59:01 +0100, Martin Blumenstingl wrote:
-> The Meson8/Meson8b/Meson8m2 SoCs have a register bank called SECBUS2 which
-> contains registers for various IP blocks such as pin-controller bits for
-> the BSD_EN and TEST_N GPIOs as well as some AO ARC core control bits.
-> The registers can be accessed directly when not running in "secure mode".
-> When "secure mode" is enabled then these registers have to be accessed
-> through secure monitor calls.
-> 
-> So far these SoCs are always known to boot in "non-secure mode".
-> Add a binding documentation using syscon (as these registers are shared
-> across different IPs) for the SECBUS2 registers.
-> 
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
->  .../arm/amlogic/amlogic,meson-mx-secbus2.yaml | 42 +++++++++++++++++++
->  1 file changed, 42 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/arm/amlogic/amlogic,meson-mx-secbus2.yaml
-> 
+The pull request you sent on Mon, 11 Jan 2021 22:09:55 +0100:
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc3-tag
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/6e68b9961ff690ace07fac22c3c7752882ecc40a
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
