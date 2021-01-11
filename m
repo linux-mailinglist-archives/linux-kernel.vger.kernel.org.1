@@ -2,86 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 180BC2F2264
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:04:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B01E82F2267
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:06:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389027AbhAKWEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 17:04:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51088 "EHLO
+        id S2388713AbhAKWGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 17:06:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727380AbhAKWEJ (ORCPT
+        with ESMTP id S1730511AbhAKWGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:04:09 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA3C6C061786;
-        Mon, 11 Jan 2021 14:03:28 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id 9so238301oiq.3;
-        Mon, 11 Jan 2021 14:03:28 -0800 (PST)
+        Mon, 11 Jan 2021 17:06:07 -0500
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 984CFC061795
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:05:26 -0800 (PST)
+Received: by mail-qt1-x833.google.com with SMTP id y15so387912qtv.5
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:05:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4pnAUu4MoWOWC8B526NUcSdK5Bv3Jv4STD3FiBRZNko=;
-        b=ZAdmY9NPZXL/ECXlxSJ2c8FFpNtjaCFLqMAKCkEmkltVV8schM/n9EZYDoWLKlMDtt
-         UecdLrjjCpJev2jxRovNPe6rSWncB7TqNUeDCluzeo7y/MIcW2zE9MXjVjQzfzTCSkkS
-         1eWO6Dg7ckcWW3xVe3MS1RMgDBHZSj+QlqCHqpsh48Bxd9/nup/Xye/mOuihB3R62ZUo
-         PeSv8LJE8gdJ7j5LanzKERrFATUxUw6bdFz4vy1T9MK29hSLmWk5b9pxOruAimP30EVb
-         VQ2RuQilL/zUkMW3LVimOvhdIoDsZn219LV0yOmeeGdi3taqcGY0loNSPihCJCSKFQ7Q
-         TqLQ==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4vVoFe3ab/Wam+wi8u1O6FD/EPWPv+oi1jIlO88avgU=;
+        b=Ulw33JYYiiazGRtSxRzagNgcW4YuP1s6T/H7RMPzhm3wA1ZRu0uCqM/bdeUgGNqu2M
+         e1BJeTCJKThLKIBruqpbKOlPF+5exWtFOwrQqgw//0bmV8gaabwvvI9tMncTLXdYmG8D
+         2H8lvUW/WzrWTDgu9ddvQ64iEVwvXHTg1B5Zc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4pnAUu4MoWOWC8B526NUcSdK5Bv3Jv4STD3FiBRZNko=;
-        b=eB5xvwE5SAULgga0Fbw6vgVyDBeVeiYcmb1H5P4e6UNFvbLRPUXi5Q+DpjMIZklvOs
-         2rLuZzaDMV4aHFelhhBUnSJD/m6/4Fdd/wVdfwhd3y4g3a8pPNjceOOPxApbyt/+0y05
-         ktjppgGNAQ4BLtiGbFuYT06LD2fvur2QV55Lq1F6Ut2FpqHmhxoFnz2SQU4sa+HpHjfs
-         bzzkylrirGd40KDvwbzMVyncld3bDfQUfZlLvY8ja0ErUsEfBqNAOZNSzVIPScyo7i2u
-         7lV+o6xbwN+Cauk87MvAM8qXIMk/eGbahw+q7fS5HqO6X4lRlZ8+VUj0os1GfBnBY+l7
-         Sd5A==
-X-Gm-Message-State: AOAM532pTP4sckuFlgcCNQuDjiNofeHXhxPh2rU7AYbRQgLuvfu1FG5/
-        DoJniktlp9Jo7hen+AR6qf8=
-X-Google-Smtp-Source: ABdhPJzbtZ/T0PKwNqkqEyPo0xB2G3hNodTikJ9l7qoKWKGX0T8rPAjQWNhZm7qjBvmZzNijkNO8Bg==
-X-Received: by 2002:aca:bc54:: with SMTP id m81mr414334oif.27.1610402608399;
-        Mon, 11 Jan 2021 14:03:28 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z3sm176111ooj.26.2021.01.11.14.03.27
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 11 Jan 2021 14:03:27 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 11 Jan 2021 14:03:26 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/144] 5.10.7-rc2 review
-Message-ID: <20210111220326.GF56906@roeck-us.net>
-References: <20210111161510.602817176@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4vVoFe3ab/Wam+wi8u1O6FD/EPWPv+oi1jIlO88avgU=;
+        b=SRWj53gwJ7Euzr6ay8BPXP0ice0PdeydTzEwUuILpO3g4yBtQh8/aYJH/4TGTOlIxo
+         r0UxrTfO9ZGrTs4ytucEk1/tSq95evvYs8R7QoeUzF4CrvWfv3Tmowv2focHyQQgMAaH
+         srdNKQVwqQSQf/5FLwJ5ea4854aIkbs7j3pN8bX0H1QWWBKd2yyvjQQUR9EtMM+EpAPB
+         +WSnTj1QvTnamS1Z4+YyZD1gTqeuSM9TfRGqCzZPcW1on26kfjOYD4jKIe4G3w0lKNpm
+         5Eba18H0wB+HXmQJBNDZNJd+Mqh5R6XFoPMWNs6fC4ade3P1v/xSFwvyMGevRz0Ze8UC
+         /+0Q==
+X-Gm-Message-State: AOAM533rw4NuRmaZK/NnJcPF9Gneh37M0pY8+KCvZoC+GPFcOenHpEH/
+        Z/lgmcqFbQeNwsO3d+f1/Xv79nObpVBfqw==
+X-Google-Smtp-Source: ABdhPJwuLpciSb4rAcPpq/n9ESBDo9Pw3Qve4rigt30f4fOquhqTzV+y96U6Nvy65nj3mHGSD+VPsw==
+X-Received: by 2002:ac8:4899:: with SMTP id i25mr1745210qtq.184.1610402725491;
+        Mon, 11 Jan 2021 14:05:25 -0800 (PST)
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com. [209.85.219.180])
+        by smtp.gmail.com with ESMTPSA id y17sm575689qki.48.2021.01.11.14.05.24
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 14:05:24 -0800 (PST)
+Received: by mail-yb1-f180.google.com with SMTP id d37so273950ybi.4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:05:24 -0800 (PST)
+X-Received: by 2002:a25:7a44:: with SMTP id v65mr2923320ybc.0.1610402723434;
+ Mon, 11 Jan 2021 14:05:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111161510.602817176@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210109072130.784-1-stanimir.varbanov@linaro.org>
+In-Reply-To: <20210109072130.784-1-stanimir.varbanov@linaro.org>
+From:   Fritz Koenig <frkoenig@chromium.org>
+Date:   Mon, 11 Jan 2021 14:05:12 -0800
+X-Gmail-Original-Message-ID: <CAMfZQbwmSCXVZN_9N=CrWsX9P-4xj029NoDsENBhUdX9pjkjZg@mail.gmail.com>
+Message-ID: <CAMfZQbwmSCXVZN_9N=CrWsX9P-4xj029NoDsENBhUdX9pjkjZg@mail.gmail.com>
+Subject: Re: [PATCH] venus: pm_helpers: Control core power domain manually
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Vikash Garodia <vgarodia@codeaurora.org>,
+        Dikshita Agarwal <dikshita@codeaurora.org>,
+        Mansur Alisha Shaik <mansur@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 05:15:35PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.7 release.
-> There are 144 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 13 Jan 2021 16:14:43 +0000.
-> Anything received after that time might be too late.
-> 
+On Fri, Jan 8, 2021 at 11:23 PM Stanimir Varbanov
+<stanimir.varbanov@linaro.org> wrote:
+>
+> Presently we use device_link to control core power domain. But this
+> leads to issues because the genpd doesn't guarantee synchronous on/off
+> for supplier devices. Switch to manually control by pmruntime calls.
+>
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  drivers/media/platform/qcom/venus/core.h      |  1 -
+>  .../media/platform/qcom/venus/pm_helpers.c    | 36 ++++++++++---------
+>  2 files changed, 19 insertions(+), 18 deletions(-)
+>
+> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+> index dfc13b2f371f..74d9fd3d51cc 100644
+> --- a/drivers/media/platform/qcom/venus/core.h
+> +++ b/drivers/media/platform/qcom/venus/core.h
+> @@ -128,7 +128,6 @@ struct venus_core {
+>         struct icc_path *cpucfg_path;
+>         struct opp_table *opp_table;
+>         bool has_opp_table;
+> -       struct device_link *pd_dl_venus;
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 427 pass: 427 fail: 0
+remove from comment at start of struct as well.
+ * @pd_dl_venus: pmdomain device-link for venus domain
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+The patch gives huge improvements in encoder stability!
 
-Guenter
+Tested-by: Fritz Koenig <frkoenig@chromium.org>
+
+
+
+>         struct device *pmdomains[VIDC_PMDOMAINS_NUM_MAX];
+>         struct device_link *opp_dl_venus;
+>         struct device *opp_pmdomain;
+> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
+> index 94219a3093cb..e0338932a720 100644
+> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
+> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
+> @@ -774,13 +774,6 @@ static int vcodec_domains_get(struct device *dev)
+>                 core->pmdomains[i] = pd;
+>         }
+>
+> -       core->pd_dl_venus = device_link_add(dev, core->pmdomains[0],
+> -                                           DL_FLAG_PM_RUNTIME |
+> -                                           DL_FLAG_STATELESS |
+> -                                           DL_FLAG_RPM_ACTIVE);
+> -       if (!core->pd_dl_venus)
+> -               return -ENODEV;
+> -
+>  skip_pmdomains:
+>         if (!core->has_opp_table)
+>                 return 0;
+> @@ -807,14 +800,12 @@ static int vcodec_domains_get(struct device *dev)
+>  opp_dl_add_err:
+>         dev_pm_opp_detach_genpd(core->opp_table);
+>  opp_attach_err:
+> -       if (core->pd_dl_venus) {
+> -               device_link_del(core->pd_dl_venus);
+> -               for (i = 0; i < res->vcodec_pmdomains_num; i++) {
+> -                       if (IS_ERR_OR_NULL(core->pmdomains[i]))
+> -                               continue;
+> -                       dev_pm_domain_detach(core->pmdomains[i], true);
+> -               }
+> +       for (i = 0; i < res->vcodec_pmdomains_num; i++) {
+> +               if (IS_ERR_OR_NULL(core->pmdomains[i]))
+> +                       continue;
+> +               dev_pm_domain_detach(core->pmdomains[i], true);
+>         }
+> +
+>         return ret;
+>  }
+>
+> @@ -827,9 +818,6 @@ static void vcodec_domains_put(struct device *dev)
+>         if (!res->vcodec_pmdomains_num)
+>                 goto skip_pmdomains;
+>
+> -       if (core->pd_dl_venus)
+> -               device_link_del(core->pd_dl_venus);
+> -
+>         for (i = 0; i < res->vcodec_pmdomains_num; i++) {
+>                 if (IS_ERR_OR_NULL(core->pmdomains[i]))
+>                         continue;
+> @@ -917,16 +905,30 @@ static void core_put_v4(struct device *dev)
+>  static int core_power_v4(struct device *dev, int on)
+>  {
+>         struct venus_core *core = dev_get_drvdata(dev);
+> +       struct device *pmctrl = core->pmdomains[0];
+>         int ret = 0;
+>
+>         if (on == POWER_ON) {
+> +               if (pmctrl) {
+> +                       ret = pm_runtime_get_sync(pmctrl);
+> +                       if (ret < 0) {
+> +                               pm_runtime_put_noidle(pmctrl);
+> +                               return ret;
+> +                       }
+> +               }
+> +
+>                 ret = core_clks_enable(core);
+> +               if (ret < 0 && pmctrl)
+> +                       pm_runtime_put_sync(pmctrl);
+>         } else {
+>                 /* Drop the performance state vote */
+>                 if (core->opp_pmdomain)
+>                         dev_pm_opp_set_rate(dev, 0);
+>
+>                 core_clks_disable(core);
+> +
+> +               if (pmctrl)
+> +                       pm_runtime_put_sync(pmctrl);
+>         }
+>
+>         return ret;
+> --
+> 2.17.1
+>
