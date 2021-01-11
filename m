@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C3AB2F15B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:44:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9EC2F15B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:44:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733310AbhAKNnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:43:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59012 "EHLO mail.kernel.org"
+        id S2387739AbhAKNnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:43:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730736AbhAKNLw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:11:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89CCC225AB;
-        Mon, 11 Jan 2021 13:11:11 +0000 (UTC)
+        id S1730789AbhAKNL5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:11:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EBDD21534;
+        Mon, 11 Jan 2021 13:11:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370672;
-        bh=VL9IKgNgQz2J7NwXX484ckSLnlZn/DTR/YyUnEcM0fk=;
+        s=korg; t=1610370676;
+        bh=dCWYoSgP0H6MmMbGD2bGUmY/0stEmMVXnyrvmkctCRs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1Dr/Lyq0I6aBdn5pDO1v9Pq7brI2KHFBqUja3zx8qBHwxtQMCGebCDvYayrnw7yJ3
-         AU/aRLz1Q5TBusqo83tLLCU080uMQXQETtAeVdO69I4nl3uLCZLIuZIB7xmpcCBK9M
-         HopM0+ehv7/wjeG/TXkg7LvR7nTqr9PrCT/SgpUo=
+        b=iRTfISL/sqt7jQhhLXjGfivls7f9PBROrg3GG7V4lQijfPUO71S7lBif20Yw0aiew
+         KVYxU7xTFhnJsRs52vtKzuBY5m+zayj1mHhW2p6bPBTh1z59I4avw/uS9pgZNF5uT0
+         sqz3qS2p1/TGWTyvHXoPDVPnWFux6EJgeqN2T3Sw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 5.4 47/92] Bluetooth: revert: hci_h5: close serdev device and free hu in h5_close
-Date:   Mon, 11 Jan 2021 14:01:51 +0100
-Message-Id: <20210111130041.409792879@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Machek <pavel@denx.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: [PATCH 5.4 49/92] crypto: ecdh - avoid buffer overflow in ecdh_set_secret()
+Date:   Mon, 11 Jan 2021 14:01:53 +0100
+Message-Id: <20210111130041.505768530@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
 References: <20210111130039.165470698@linuxfoundation.org>
@@ -41,65 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-commit 5c3b5796866f85354a5ce76a28f8ffba0dcefc7e upstream.
+commit 0aa171e9b267ce7c52d3a3df7bc9c1fc0203dec5 upstream.
 
-There have been multiple revisions of the patch fix the h5->rx_skb
-leak. Accidentally the first revision (which is buggy) and v5 have
-both been merged:
+Pavel reports that commit 17858b140bf4 ("crypto: ecdh - avoid unaligned
+accesses in ecdh_set_secret()") fixes one problem but introduces another:
+the unconditional memcpy() introduced by that commit may overflow the
+target buffer if the source data is invalid, which could be the result of
+intentional tampering.
 
-v1 commit 70f259a3f427 ("Bluetooth: hci_h5: close serdev device and free
-hu in h5_close");
-v5 commit 855af2d74c87 ("Bluetooth: hci_h5: fix memory leak in h5_close")
+So check params.key_size explicitly against the size of the target buffer
+before validating the key further.
 
-The correct v5 makes changes slightly higher up in the h5_close()
-function, which allowed both versions to get merged without conflict.
-
-The changes from v1 unconditionally frees the h5 data struct, this
-is wrong because in the serdev enumeration case the memory is
-allocated in h5_serdev_probe() like this:
-
-        h5 = devm_kzalloc(dev, sizeof(*h5), GFP_KERNEL);
-
-So its lifetime is tied to the lifetime of the driver being bound
-to the serdev and it is automatically freed when the driver gets
-unbound. In the serdev case the same h5 struct is re-used over
-h5_close() and h5_open() calls and thus MUST not be free-ed in
-h5_close().
-
-The serdev_device_close() added to h5_close() is incorrect in the
-same way, serdev_device_close() is called on driver unbound too and
-also MUST no be called from h5_close().
-
-This reverts the changes made by merging v1 of the patch, so that
-just the changes of the correct v5 remain.
-
-Cc: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Fixes: 17858b140bf4 ("crypto: ecdh - avoid unaligned accesses in ecdh_set_secret()")
+Reported-by: Pavel Machek <pavel@denx.de>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/bluetooth/hci_h5.c |    8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ crypto/ecdh.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/bluetooth/hci_h5.c
-+++ b/drivers/bluetooth/hci_h5.c
-@@ -250,12 +250,8 @@ static int h5_close(struct hci_uart *hu)
- 	if (h5->vnd && h5->vnd->close)
- 		h5->vnd->close(h5);
+--- a/crypto/ecdh.c
++++ b/crypto/ecdh.c
+@@ -39,7 +39,8 @@ static int ecdh_set_secret(struct crypto
+ 	struct ecdh params;
+ 	unsigned int ndigits;
  
--	if (hu->serdev)
--		serdev_device_close(hu->serdev);
--
--	kfree_skb(h5->rx_skb);
--	kfree(h5);
--	h5 = NULL;
-+	if (!hu->serdev)
-+		kfree(h5);
+-	if (crypto_ecdh_decode_key(buf, len, &params) < 0)
++	if (crypto_ecdh_decode_key(buf, len, &params) < 0 ||
++	    params.key_size > sizeof(ctx->private_key))
+ 		return -EINVAL;
  
- 	return 0;
- }
+ 	ndigits = ecdh_supported_curve(params.curve_id);
 
 
