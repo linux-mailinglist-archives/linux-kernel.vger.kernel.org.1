@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 418442F0FDA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:15:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3296A2F0FDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:15:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729029AbhAKKPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:15:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725843AbhAKKPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:15:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C85D2225AC
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 10:14:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610360095;
-        bh=d3oM9Oo6bVko7We/EPWu4QxmYIbJ4zJH2EUzv0RJwUI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EIknoTTUOA5JOVqZp5FFk/YV11pg/k+grAQhZ9jHYbC7VQ38q+Y2mwEfXoSO+CDwr
-         z4zF6OWN0h94MaPePDFjVC95uGuEcrvkM6BX/INH4LdeJNv7iR47la14Fwc7jhklAq
-         ovujKqNyz8ZpnzBzYfqWvTMnk+AsZp7c7T49+vbN8R07R1VMRhvxThhYSAZIFuNPqy
-         qUBqp91LUrw6YySXszXeWBupXhVW+9X0r3pIckKnHcZzYwmuJAeEhgeUo65nm2pVPz
-         ltXHN345ZslUel2sb4CRG9xC26Y3C4JfVodZPtjfbetEmjtAlR/AbGSHSQhRCqqxn2
-         gq16UzrTIVo2w==
-Received: by mail-lj1-f178.google.com with SMTP id b10so2896339ljp.6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 02:14:54 -0800 (PST)
-X-Gm-Message-State: AOAM531rXvKpQ4iHAYFPanJmr4RmhPpHpIHEu+fW2CE4c/ZpBx+HfIk5
-        HH0KU09U8hotLR6YN9SgJXDApqciFJDYETPeJ/XyYg==
-X-Google-Smtp-Source: ABdhPJxrYgQcEgxWO0GY0HQ/eD89zuEf1GD1o7KXaFoAe6xlgUqy7scB0TPtomJZL4cRNzfuB49GOAnPxY86RG1sMTU=
-X-Received: by 2002:a2e:5018:: with SMTP id e24mr7428302ljb.425.1610360093047;
- Mon, 11 Jan 2021 02:14:53 -0800 (PST)
+        id S1729043AbhAKKPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:15:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729031AbhAKKPm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 05:15:42 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A7A7C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 02:15:02 -0800 (PST)
+Received: from zn.tnic (p200300ec2f088f0076781dde3322831e.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:8f00:7678:1dde:3322:831e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7780D1EC04DE;
+        Mon, 11 Jan 2021 11:15:00 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1610360100;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=QR7DiRD554jh+hGalm2pZVNoketlTs2mdhguC+pnBic=;
+        b=kBEPYNVyijvHOmqf/N3AXP0dGFjTBHzEbIZaWw1JWreZwLZzxcDKeUFWEpHEqOWKZ6kDb8
+        g67UMFINaR6JUavr461B6o0Chn3mXNEowtadELr4iVT+SD6E/5pEc+EF2PFeWS6iRvcP/F
+        MxLAeb3bzDNPN3XvWFG20LxlVnVA5lQ=
+From:   Borislav Petkov <bp@alien8.de>
+To:     X86 ML <x86@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Johnathan Smithinovic <johnathan.smithinovic@gmx.at>,
+        Rafael Kitover <rkitover@gmail.com>
+Subject: [PATCH] x86/cpu/amd: Set __max_die_per_package on AMD
+Date:   Mon, 11 Jan 2021 11:14:55 +0100
+Message-Id: <20210111101455.1194-1-bp@alien8.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210108231950.3844417-1-songliubraving@fb.com> <20210108231950.3844417-2-songliubraving@fb.com>
-In-Reply-To: <20210108231950.3844417-2-songliubraving@fb.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Mon, 11 Jan 2021 11:14:42 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ6BT8F+75GW=7hLwjMwFccYBqPb3FXV5dVk0SkeNFpurg@mail.gmail.com>
-Message-ID: <CACYkzJ6BT8F+75GW=7hLwjMwFccYBqPb3FXV5dVk0SkeNFpurg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/4] bpf: enable task local storage for tracing programs
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, mingo@redhat.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Kernel Team <kernel-team@fb.com>, Hao Luo <haoluo@google.com>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 12:35 AM Song Liu <songliubraving@fb.com> wrote:
->
-> To access per-task data, BPF program typically creates a hash table with
-> pid as the key. This is not ideal because:
->  1. The use need to estimate requires size of the hash table, with may be
->     inaccurate;
->  2. Big hash tables are slow;
->  3. To clean up the data properly during task terminations, the user need
->     to write code.
->
-> Task local storage overcomes these issues and becomes a better option for
-> these per-task data. Task local storage is only available to BPF_LSM. Now
-> enable it for tracing programs.
+From: Yazen Ghannam <Yazen.Ghannam@amd.com>
 
-Also mention here that you change the pointer from being a security blob to a
-dedicated member in the task struct. I assume this is because you want to
-use it without CONFIG_BPF_LSM?
+Set the maximum DIE per package variable on AMD using the
+NodesPerProcessor topology value. This will be used by RAPL, among
+others, to determine the maximum number of DIEs on the system in order
+to do per-DIE manipulations.
 
->
+ [ bp: Productize into a proper patch. ]
 
-Can you also mention the reasons for changing the
-raw_spin_lock_bh to raw_spin_lock_irqsave in the commit log?
+Fixes: 028c221ed190 ("x86/CPU/AMD: Save AMD NodeId as cpu_die_id")
+Reported-by: Johnathan Smithinovic <johnathan.smithinovic@gmx.at>
+Reported-by: Rafael Kitover <rkitover@gmail.com>
+Signed-off-by: Yazen Ghannam <Yazen.Ghannam@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Tested-by: Johnathan Smithinovic <johnathan.smithinovic@gmx.at>
+Tested-by: Rafael Kitover <rkitover@gmail.com>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=210939
+---
+ arch/x86/kernel/cpu/amd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index f8ca66f3d861..347a956f71ca 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -542,12 +542,12 @@ static void bsp_init_amd(struct cpuinfo_x86 *c)
+ 		u32 ecx;
+ 
+ 		ecx = cpuid_ecx(0x8000001e);
+-		nodes_per_socket = ((ecx >> 8) & 7) + 1;
++		__max_die_per_package = nodes_per_socket = ((ecx >> 8) & 7) + 1;
+ 	} else if (boot_cpu_has(X86_FEATURE_NODEID_MSR)) {
+ 		u64 value;
+ 
+ 		rdmsrl(MSR_FAM10H_NODE_ID, value);
+-		nodes_per_socket = ((value >> 3) & 7) + 1;
++		__max_die_per_package = nodes_per_socket = ((value >> 3) & 7) + 1;
+ 	}
+ 
+ 	if (!boot_cpu_has(X86_FEATURE_AMD_SSBD) &&
+-- 
+2.29.2
 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-> ---
->  include/linux/bpf.h            |  7 +++++++
->  include/linux/bpf_lsm.h        | 22 ----------------------
->  include/linux/bpf_types.h      |  2 +-
->  include/linux/sched.h          |  5 +++++
->  kernel/bpf/Makefile            |  3 +--
->  kernel/bpf/bpf_local_storage.c | 28 +++++++++++++++++-----------
->  kernel/bpf/bpf_lsm.c           |  4 ----
->  kernel/bpf/bpf_task_storage.c  | 26 ++++++--------------------
->  kernel/fork.c                  |  5 +++++
->  kernel/trace/bpf_trace.c       |  4 ++++
->  10 files changed, 46 insertions(+), 60 deletions(-)
->
-
-[...]
