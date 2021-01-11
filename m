@@ -2,269 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07072F1DED
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 19:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C1D2F1DF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 19:24:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390114AbhAKSXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 13:23:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59876 "EHLO
+        id S2390321AbhAKSYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 13:24:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726244AbhAKSXi (ORCPT
+        with ESMTP id S2390150AbhAKSYM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 13:23:38 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF01C061786;
-        Mon, 11 Jan 2021 10:22:58 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id w1so960339ejf.11;
-        Mon, 11 Jan 2021 10:22:57 -0800 (PST)
+        Mon, 11 Jan 2021 13:24:12 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2E9C0617A2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 10:23:32 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id n42so554331ota.12
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 10:23:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mzN5bz6gja/X5dov9pXQmFrPtsmh4ja4sEQP9VQaaGg=;
-        b=alUB7W1UuzhBjLoGcICmod8MSAAajWbpmzGh9T1xUn34JUoLup1I+GSVAm9WzexkbT
-         jbk/NKXpHhz9uv9L42ah4gSrf45f4BoesCxCQ4RkGYKRgYnbg6ajQMxwWXkCQ7ZakTCy
-         QLIbOrCnOb4FX1q0BfIVqTR1h4mQ5P7PNGJ+WUb0DCSpwnjF2fBQjUucDnxEZBUg+j+U
-         W8WWxcO0HYdp1Cxd3ICCpdSnt70MTlRxqF0IWPCExjlxCT6IaaOOpTdtF9cAoKj2+P73
-         vS3G/hlIpBS1uJaV1+QqLlNZuuPauJIBdtdD/nwaw1A7ORyONo/z13tXG23Si7seB8ZP
-         5aTw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oHRRLRP3syrNXRgtXLe4zDZLAZUIXTDNntM1178Onx4=;
+        b=Lp1keZgFL5eKc+p+U8+latPO0VrJ+THVD5+vETX/XbAZVYvwgTosayKSqfBl4lltLE
+         prnwYmDyDqZjjpkZG8T/fbfotQ6/9AZe9de6vzX2LvnCC9Nv+KSQ2x/qNvGSxDLKSTdF
+         amxHMiw4LqCC5QtpruCbAu3fVVPKQy91ziavo1befz2e23eqvTdKjqxycWNvOjrlUhcs
+         Xt52rjVidw91lPqNouCwIpaozGhne9OrdiRIYZQYe2bbEi6E5nR2aU4mFIYzr32uRMcj
+         RX10ysfFcmaxIWpq5Y+ZQjIklMACRFAa/bfh11s3Zf9e3cAaemVfkB5dWFn1RaHlh5O7
+         8sfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mzN5bz6gja/X5dov9pXQmFrPtsmh4ja4sEQP9VQaaGg=;
-        b=OOpK1ksfXowoTmvSRAaEFDDDvLBNX46knRK0+VMRKrIC0ObMcGlUzTA4eLCDLd8P3J
-         qvuWvJYozjyDWurfxyk+chzZ2M3+nQYDcZ6GomUdMnYqMnq2H8zapCw4B8JYShQxqerW
-         wlv99gJD6OX+9+Y53RHICdOTZM7PXPjjmIZ6gTEBEBk5bKFJRhQSwVNGVmeogdBiXfCv
-         o0vPd3ROGb6v6FCxwXl1FFKphoSqKkXCrdY4QJqw7ylnpmQVYRnIcvETCbFUgAJJAzCD
-         W7yDFeS7vHl1jPM5/ihZ1rmnvYIW21gtJ4xoDbsoWsiNqBJYi40fElx8gRdc3UeE7Rbc
-         SHGA==
-X-Gm-Message-State: AOAM531G/kwG7ueWcuBCci0zyidfYQa7/D1Yn5MqJltU+VJcWzL0Dmcf
-        ZLu6q9umjXW7vbsT15qzdgAURu42Aak=
-X-Google-Smtp-Source: ABdhPJys0oBiETIdWww00NhPjU2FTD1xrVV2d/Ip1plB1NG3CmkcIQhbNGaBIGyVYYtNncUCXnCHxA==
-X-Received: by 2002:a17:906:4d59:: with SMTP id b25mr559961ejv.8.1610389376719;
-        Mon, 11 Jan 2021 10:22:56 -0800 (PST)
-Received: from [192.168.178.40] (ipbcc05d1b.dynamic.kabel-deutschland.de. [188.192.93.27])
-        by smtp.gmail.com with ESMTPSA id b19sm298460edx.47.2021.01.11.10.22.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 10:22:56 -0800 (PST)
-Subject: Re: [PATCH] scsi: target: tcmu: Fix wrong uio handling causing big
- memory leak
-To:     linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mike Christie <michael.christie@oracle.com>,
-        Bodo Stroesser <bostroesser@gmail.com>
-References: <20201218141534.9918-1-bostroesser@gmail.com>
-From:   Bodo Stroesser <bostroesser@gmail.com>
-Message-ID: <703e98c0-31e6-7d3d-c818-d1f071eb552c@gmail.com>
-Date:   Mon, 11 Jan 2021 19:22:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oHRRLRP3syrNXRgtXLe4zDZLAZUIXTDNntM1178Onx4=;
+        b=pC+fUG7imELkCzt/V9M/xR/oWRdcXGdthufUsbYZ2Fl+C3K1a06v4PxbWaSNK/WxL5
+         hK+u/ePkLSuOgu78Ga9i1mHL3+ncmEbUW7tgd3v6dwQiQHzfiIBJl4o7cg2fKcXRvHKx
+         ViOzXDJ8Ruk0fhFs3URuWidUgtJsXItq23nFEsO6i9KFrJJaEYXi3m62CgU5wmc6x0px
+         lXNdoL8ao+El1wOewzS2iGidpZgHMMDVEBW0zwzRuEfw5eMQQFxqRzBBBHAAzEkV5aOE
+         uob+AFAHRwmmajua8OcPQoHFxvATwzMteN70AVSQ8fDSGCU0JycZ0d7qiTubeOZdPDlT
+         OwAg==
+X-Gm-Message-State: AOAM533wN9Vg1rao+v4P0TNtWNsV7ppEojXLFHEPVkkIeHLtV+Ju0NAS
+        B+pvNl/C2k3gTTqksvPqx5lIVA==
+X-Google-Smtp-Source: ABdhPJwSQkESyJB6Kz1cjy5okZasf3ZxNpivGY61xq/DZzbGSNQ/13Qf+v159Mg5XngNF2QuTl/ANg==
+X-Received: by 2002:a9d:65d7:: with SMTP id z23mr309029oth.131.1610389411993;
+        Mon, 11 Jan 2021 10:23:31 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id f145sm58970oob.18.2021.01.11.10.23.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 10:23:31 -0800 (PST)
+Date:   Mon, 11 Jan 2021 12:23:29 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@kernel.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/7] arm64: dts: qcom: sdm845: Add gpi dma node
+Message-ID: <X/yXoY/3pqvvDpd6@builder.lan>
+References: <20210111151651.1616813-1-vkoul@kernel.org>
+ <20210111151651.1616813-7-vkoul@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201218141534.9918-1-bostroesser@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111151651.1616813-7-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm sending a gentle ping for the below patch.
+On Mon 11 Jan 09:16 CST 2021, Vinod Koul wrote:
 
-Especially I'm wondering whether the way how tcmu_destroy_device()
-now 'stops' the uio device is ok. Should we better have something
-like uio_stop_device() instead?
+> This add the device node for gpi dma0 instances found in sdm845.
 
-Thank you,
-Bodo
+I think the 0 in "dma0" should go?
 
+Apart from that, this looks good.
 
-On 18.12.20 15:15, Bodo Stroesser wrote:
-> tcmu calls uio_unregister_device from tcmu_destroy_device.
-> After that uio will never call tcmu_release for this device.
-> If userspace still had the uio device open and / or mmap'ed
-> during uio_unregister_device, tcmu_release will not be called and
-> udev->kref will never go down to 0.
 > 
-> So tcmu in this situation will not free:
->   - cmds or tmrs still in the queue or the ring
->   - all pages allocated for mailbox and cmd_ring (vmalloc)
->   - all pages allocated for data space
->   - the udev itself
-> 
-> The vmalloc'ed area is 8 MB, amount of pages allocated for data
-> space depends on previous usage of the tcmu device. Theoretically
-> that can be up to 1GB.
-> 
-> This patch moves the call of uio_unregister_device to the
-> beginning of tcmu_dev_kref_release, which is called when
-> udev->kref drops down to zero. So we know, that uio device is
-> closed and unmap'ed.
-> 
-> In case tcmu_realease drops the last kref, we would end up doing
-> the uio_unregister_device from a function called by uio_release,
-> which causes the process to block forever.
-> So we now do the kref_put from new worker function
-> tcmu_release_work_fn which is scheduled by tcmu_release.
-> 
-> To make userspace still aware of the device being deleted,
-> tcmu_destroy_device instead of uio_unregister_device now does:
->   - sets a bit in udev, so that tcmu_open and tcmu_mmap can check
->     and fail with -EIO
->   - resets udev->uio_info->irq to 0, so uio will fail read() and
->     write() with -EIO
->   - wakes up userspace possibly waiting in read(), so the read
->     fails with -EIO
-> 
-> Avoid possible races in tcmu_open by replacing kref_get with
-> kref_get_unless_zero.
-> 
-> Signed-off-by: Bodo Stroesser <bostroesser@gmail.com>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 > ---
->   drivers/target/target_core_user.c | 54 ++++++++++++++++++++++++++++++++++++---
->   1 file changed, 50 insertions(+), 4 deletions(-)
+>  arch/arm64/boot/dts/qcom/sdm845.dtsi | 46 ++++++++++++++++++++++++++++
+>  1 file changed, 46 insertions(+)
 > 
-> diff --git a/drivers/target/target_core_user.c b/drivers/target/target_core_user.c
-> index 0458bfb143f8..080760985ebf 100644
-> --- a/drivers/target/target_core_user.c
-> +++ b/drivers/target/target_core_user.c
-> @@ -21,6 +21,7 @@
->   #include <linux/configfs.h>
->   #include <linux/mutex.h>
->   #include <linux/workqueue.h>
-> +#include <linux/delay.h>
->   #include <net/genetlink.h>
->   #include <scsi/scsi_common.h>
->   #include <scsi/scsi_proto.h>
-> @@ -109,6 +110,7 @@ struct tcmu_nl_cmd {
->   struct tcmu_dev {
->   	struct list_head node;
->   	struct kref kref;
-> +	struct work_struct release_work;
->   
->   	struct se_device se_dev;
->   
-> @@ -119,6 +121,7 @@ struct tcmu_dev {
->   #define TCMU_DEV_BIT_BROKEN 1
->   #define TCMU_DEV_BIT_BLOCKED 2
->   #define TCMU_DEV_BIT_TMR_NOTIFY 3
-> +#define TCMU_DEV_BIT_GOING_DOWN 4
->   	unsigned long flags;
->   
->   	struct uio_info uio_info;
-> @@ -1527,6 +1530,8 @@ static void tcmu_detach_hba(struct se_hba *hba)
->   	hba->hba_ptr = NULL;
->   }
->   
-> +static void tcmu_release_work_fn(struct work_struct *work);
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> index bcf888381f14..c9a127bbd606 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> @@ -1114,6 +1114,29 @@ opp-128000000 {
+>  			};
+>  		};
+>  
+> +		gpi_dma0: dma-controller@800000 {
+> +			#dma-cells = <3>;
+
+Nit. I know #dma-cells are important to you ;) but I would prefer to
+have the standard properties (e.g. compatible) first.
+
+Regards,
+Bjorn
+
+> +			compatible = "qcom,sdm845-gpi-dma";
+> +			reg = <0 0x00800000 0 0x60000>;
+> +			interrupts = <GIC_SPI 244 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 245 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 246 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 247 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 248 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 249 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 250 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 251 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 252 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 253 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 254 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 256 IRQ_TYPE_LEVEL_HIGH>;
+> +			dma-channels = <13>;
+> +			dma-channel-mask = <0xfa>;
+> +			iommus = <&apps_smmu 0x0016 0x0>;
+> +			status = "disabled";
+> +		};
 > +
->   static struct se_device *tcmu_alloc_device(struct se_hba *hba, const char *name)
->   {
->   	struct tcmu_dev *udev;
-> @@ -1542,6 +1547,8 @@ static struct se_device *tcmu_alloc_device(struct se_hba *hba, const char *name)
->   		return NULL;
->   	}
->   
-> +	INIT_WORK(&udev->release_work, tcmu_release_work_fn);
+>  		qupv3_id_0: geniqup@8c0000 {
+>  			compatible = "qcom,geni-se-qup";
+>  			reg = <0 0x008c0000 0 0x6000>;
+> @@ -1533,6 +1556,29 @@ uart7: serial@89c000 {
+>  			};
+>  		};
+>  
+> +		gpi_dma1: dma-controller@0xa00000 {
+> +			#dma-cells = <3>;
+> +			compatible = "qcom,sdm845-gpi-dma";
+> +			reg = <0 0x00a00000 0 0x60000>;
+> +			interrupts = <GIC_SPI 279 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 280 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 281 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 282 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 283 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 284 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 293 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 294 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 295 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 296 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 297 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 298 IRQ_TYPE_LEVEL_HIGH>,
+> +				     <GIC_SPI 299 IRQ_TYPE_LEVEL_HIGH>;
+> +			dma-channels = <13>;
+> +			dma-channel-mask = <0xfa>;
+> +			iommus = <&apps_smmu 0x06d6 0x0>;
+> +			status = "disabled";
+> +		};
 > +
->   	udev->hba = hba;
->   	udev->cmd_time_out = TCMU_TIME_OUT;
->   	udev->qfull_time_out = -1;
-> @@ -1719,6 +1726,9 @@ static int tcmu_mmap(struct uio_info *info, struct vm_area_struct *vma)
->   {
->   	struct tcmu_dev *udev = container_of(info, struct tcmu_dev, uio_info);
->   
-> +	if (test_bit(TCMU_DEV_BIT_GOING_DOWN, &udev->flags))
-> +		return -EIO;
-> +
->   	vma->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
->   	vma->vm_ops = &tcmu_vm_ops;
->   
-> @@ -1735,12 +1745,17 @@ static int tcmu_open(struct uio_info *info, struct inode *inode)
->   {
->   	struct tcmu_dev *udev = container_of(info, struct tcmu_dev, uio_info);
->   
-> +	if (test_bit(TCMU_DEV_BIT_GOING_DOWN, &udev->flags))
-> +		return -EIO;
-> +
->   	/* O_EXCL not supported for char devs, so fake it? */
->   	if (test_and_set_bit(TCMU_DEV_BIT_OPEN, &udev->flags))
->   		return -EBUSY;
->   
->   	udev->inode = inode;
-> -	kref_get(&udev->kref);
-> +	if (!kref_get_unless_zero(&udev->kref))
-> +		/* Race between open and device going down */
-> +		return -EIO;
->   
->   	pr_debug("open\n");
->   
-> @@ -1799,6 +1814,8 @@ static void tcmu_dev_kref_release(struct kref *kref)
->   	bool all_expired = true;
->   	int i;
->   
-> +	uio_unregister_device(&udev->uio_info);
-> +
->   	vfree(udev->mb_addr);
->   	udev->mb_addr = NULL;
->   
-> @@ -1827,6 +1844,15 @@ static void tcmu_dev_kref_release(struct kref *kref)
->   	call_rcu(&dev->rcu_head, tcmu_dev_call_rcu);
->   }
->   
-> +static void tcmu_release_work_fn(struct work_struct *work)
-> +{
-> +	struct tcmu_dev *udev = container_of(work, struct tcmu_dev,
-> +					     release_work);
-> +
-> +	/* release ref from open */
-> +	kref_put(&udev->kref, tcmu_dev_kref_release);
-> +}
-> +
->   static int tcmu_release(struct uio_info *info, struct inode *inode)
->   {
->   	struct tcmu_dev *udev = container_of(info, struct tcmu_dev, uio_info);
-> @@ -1834,8 +1860,17 @@ static int tcmu_release(struct uio_info *info, struct inode *inode)
->   	clear_bit(TCMU_DEV_BIT_OPEN, &udev->flags);
->   
->   	pr_debug("close\n");
-> -	/* release ref from open */
-> -	kref_put(&udev->kref, tcmu_dev_kref_release);
-> +
-> +	/*
-> +	 * We must not put kref directly from here, since dropping down kref to
-> +	 * zero would implicitly call tcmu_dev_kref_release, which calls
-> +	 * uio_unregister_device --> process hangs forever, since tcmu_release
-> +	 * is called from uio.
-> +	 * So we leave it to tcmu_release_work_fn to put the kref.
-> +	 */
-> +	while (!schedule_work(&udev->release_work))
-> +		usleep_range(1000, 5000);
-> +
->   	return 0;
->   }
->   
-> @@ -2166,7 +2201,18 @@ static void tcmu_destroy_device(struct se_device *dev)
->   
->   	tcmu_send_dev_remove_event(udev);
->   
-> -	uio_unregister_device(&udev->uio_info);
-> +	/*
-> +	 * We must not call uio_unregister_device here. If there is a userspace
-> +	 * process with open or mmap'ed uio device, uio would not call
-> +	 * tcmu_release on later unmap or close.
-> +	 */
-> +
-> +	/* reset uio_info->irq, so uio will reject read() and write() */
-> +	udev->uio_info.irq = 0;
-> +	/* Set bit, so we can reject later calls to tcmu_open and tcmu_mmap */
-> +	set_bit(TCMU_DEV_BIT_GOING_DOWN, &udev->flags);
-> +	/* wake up possible sleeper in uio_read(), it will return -EIO */
-> +	uio_event_notify(&udev->uio_info);
->   
->   	/* release ref from configure */
->   	kref_put(&udev->kref, tcmu_dev_kref_release);
+>  		qupv3_id_1: geniqup@ac0000 {
+>  			compatible = "qcom,geni-se-qup";
+>  			reg = <0 0x00ac0000 0 0x6000>;
+> -- 
+> 2.26.2
 > 
