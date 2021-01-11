@@ -2,131 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABDAF2F222E
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C50152F222C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 22:51:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733037AbhAKVus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 16:50:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26602 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727380AbhAKVus (ORCPT
+        id S1732176AbhAKVup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 16:50:45 -0500
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:37508 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727380AbhAKVuo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 16:50:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610401761;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YcHYs6OZqBWCMgb0rpCE3M6MXEuKUj2tsDDbqZh/79Q=;
-        b=EyuIzZfELTbtMCf31PCMpwCiHsjcTbjKf5T7bWMEcJJ+h3+duCDVQor5GBr3rQcEixGtu9
-        OdS5sFVWokZEpD+/yH5kc/amqfK7/kzrIsSd/WIqiCcrfZ4F2/Lp8tsriG/fLfDJTmkCVj
-        qtPCdfO/dKrPPcuAZbF02OHGNUjPHV0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-70-ekx4pMUpPXWmh16-SihWQQ-1; Mon, 11 Jan 2021 16:49:19 -0500
-X-MC-Unique: ekx4pMUpPXWmh16-SihWQQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B8F1107ACF7;
-        Mon, 11 Jan 2021 21:49:16 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 828CE60BE2;
-        Mon, 11 Jan 2021 21:49:14 +0000 (UTC)
-Date:   Mon, 11 Jan 2021 14:49:13 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Daniel Lezcano" <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-Subject: Re: [PATCH 4/5] vfio/iommu_type1: Carefully use unmap_unpin_all
- during dirty tracking
-Message-ID: <20210111144913.3092b1b1@omen.home.shazbot.org>
-In-Reply-To: <20210107092901.19712-5-zhukeqian1@huawei.com>
-References: <20210107092901.19712-1-zhukeqian1@huawei.com>
-        <20210107092901.19712-5-zhukeqian1@huawei.com>
+        Mon, 11 Jan 2021 16:50:44 -0500
+Received: by mail-ot1-f43.google.com with SMTP id o11so350980ote.4;
+        Mon, 11 Jan 2021 13:50:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qZB7YFnYmK5pmVyjaf+FA297zYveGF4/mkcj6q7QOss=;
+        b=KzzdNZ6Atd3vBpENJVNI0RJlHFY4HrjV+UMAXXdX00Rah+o4Fl1mJCK/L9LhydwEGD
+         UBkdr1YSw5din4zzw9jg3kI+rDjFEZMR1eV/eKMCa9J+bT7fdxH3G1IyqP4ZZH91OjG0
+         BHQOsgyKaJpl4/BV9D8HDdFc6C6tflQUSNhEzlXKsm0kvIdG/0IdXWk4cQAPmkUbQt8L
+         eAtQ1FV5acmEQGkjaebMlD01hygS9bIlXx0pTbPipZ2k1aJ4irsHg25X0Drp2Rjyr9xJ
+         zlvb8VaqbZH77Au1hgxblZnIYAn8POm9FuNekOSEZV58gqGoP6zDGTk8vj32l8mCR2ZF
+         JXXg==
+X-Gm-Message-State: AOAM53088rib++/Yfr0VEHejVfTiIWtEYfyhsXKZo1UIk/udhHTNwNhs
+        Kv4w46R3+5BYL3ew65PalQ==
+X-Google-Smtp-Source: ABdhPJx4sESqsRtj0tIKhFssBKghbCoKpOR5OcYFGX1jMiDvJvhAgfB0xNG4OTZoj71kNHt+15hP5w==
+X-Received: by 2002:a05:6830:1343:: with SMTP id r3mr753075otq.344.1610401803679;
+        Mon, 11 Jan 2021 13:50:03 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id f18sm214594otf.55.2021.01.11.13.50.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 13:50:02 -0800 (PST)
+Received: (nullmailer pid 3120427 invoked by uid 1000);
+        Mon, 11 Jan 2021 21:50:01 -0000
+Date:   Mon, 11 Jan 2021 15:50:01 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v6 2/8] regulator: dt-bindings: Document max8997-pmic
+ nodes
+Message-ID: <20210111215001.GA3111856@robh.at.kernel.org>
+References: <20201230205139.1812366-1-timon.baetz@protonmail.com>
+ <20201230205139.1812366-2-timon.baetz@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201230205139.1812366-2-timon.baetz@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Jan 2021 17:29:00 +0800
-Keqian Zhu <zhukeqian1@huawei.com> wrote:
-
-> If we detach group during dirty page tracking, we shouldn't remove
-> vfio_dma, because dirty log will lose.
+On Wed, Dec 30, 2020 at 08:52:07PM +0000, Timon Baetz wrote:
+> Add maxim,max8997-battery and maxim,max8997-muic optional nodes.
 > 
-> But we don't prevent unmap_unpin_all in vfio_iommu_release, because
-> under normal procedure, dirty tracking has been stopped.
-
-This looks like it's creating a larger problem than it's fixing, it's
-not our job to maintain the dirty bitmap regardless of what the user
-does.  If the user detaches the last group in a container causing the
-mappings within that container to be deconstructed before the user has
-collected dirty pages, that sounds like a user error.  A container with
-no groups is de-privileged and therefore loses all state.  Thanks,
-
-Alex
-
-> Fixes: d6a4c185660c ("vfio iommu: Implementation of ioctl for dirty pages tracking")
-> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+> Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
+> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 > ---
->  drivers/vfio/vfio_iommu_type1.c | 14 ++++++++++++--
->  1 file changed, 12 insertions(+), 2 deletions(-)
+> v6: No change.
+> v5: No change.
+> v4: Make extcon and charger-supply optional.
+> v3: Reorder patch, no change.
+> v2: Add patch.
 > 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index 26b7eb2a5cfc..9776a059904d 100644
-> --- a/drivers/vfio/vfio_iommu_type1.c
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -2373,7 +2373,12 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
->  			if (list_empty(&iommu->external_domain->group_list)) {
->  				vfio_sanity_check_pfn_list(iommu);
->  
-> -				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu))
-> +				/*
-> +				 * During dirty page tracking, we can't remove
-> +				 * vfio_dma because dirty log will lose.
-> +				 */
-> +				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu) &&
-> +				    !iommu->dirty_page_tracking)
->  					vfio_iommu_unmap_unpin_all(iommu);
->  
->  				kfree(iommu->external_domain);
-> @@ -2406,10 +2411,15 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
->  		 * iommu and external domain doesn't exist, then all the
->  		 * mappings go away too. If it's the last domain with iommu and
->  		 * external domain exist, update accounting
-> +		 *
-> +		 * Note: During dirty page tracking, we can't remove vfio_dma
-> +		 * because dirty log will lose. Just update accounting is a good
-> +		 * choice.
->  		 */
->  		if (list_empty(&domain->group_list)) {
->  			if (list_is_singular(&iommu->domain_list)) {
-> -				if (!iommu->external_domain)
-> +				if (!iommu->external_domain &&
-> +				    !iommu->dirty_page_tracking)
->  					vfio_iommu_unmap_unpin_all(iommu);
->  				else
->  					vfio_iommu_unmap_unpin_reaccount(iommu);
+>  .../bindings/regulator/max8997-regulator.txt         | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
 
+This exceeds my threshold of changes for please convert this to schema 
+first. However, I agree with what Mark has said already, so maybe some 
+of this isn't needed.
+
+> 
+> diff --git a/Documentation/devicetree/bindings/regulator/max8997-regulator.txt b/Documentation/devicetree/bindings/regulator/max8997-regulator.txt
+> index 6fe825b8ac1b..faaf2bbf0272 100644
+> --- a/Documentation/devicetree/bindings/regulator/max8997-regulator.txt
+> +++ b/Documentation/devicetree/bindings/regulator/max8997-regulator.txt
+> @@ -53,6 +53,18 @@ Additional properties required if either of the optional properties are used:
+>  - max8997,pmic-buck125-dvs-gpios: GPIO specifiers for three host gpio's used
+>    for dvs. The format of the gpio specifier depends in the gpio controller.
+>  
+> +Optional nodes:
+> +- charger: Node for configuring the charger driver.
+> +  Required properties:
+> +  - compatible: "maxim,max8997-battery"
+> +  Optional properties:
+> +  - extcon: extcon specifier for charging events
+
+Don't use 'extcon' for new bindings. Define a connector node. USB I 
+suppose?
+
+> +  - charger-supply: regulator node for charging current
+> +
+> +- muic: Node used only by extcon consumers.
+> +  Required properties:
+> +  - compatible: "maxim,max8997-muic"
+> +
+>  Regulators: The regulators of max8997 that have to be instantiated should be
+>  included in a sub-node named 'regulators'. Regulator nodes included in this
+>  sub-node should be of the format as listed below.
+> -- 
+> 2.25.1
+> 
+> 
