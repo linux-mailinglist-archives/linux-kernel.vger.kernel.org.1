@@ -2,218 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 451FF2F17BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E372F17C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:15:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727917AbhAKOMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:12:44 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:44241 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729275AbhAKOMj (ORCPT
+        id S1729154AbhAKONe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:13:34 -0500
+Received: from mail-ej1-f53.google.com ([209.85.218.53]:33351 "EHLO
+        mail-ej1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728002AbhAKON0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:12:39 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kyxvG-0005j2-QT; Mon, 11 Jan 2021 14:11:54 +0000
-Subject: Re: platform/surface: Add Surface Aggregator user-space interface
- (static analysis issues)
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <9e450370-7c5c-2e93-ac86-6f7c21652ab8@canonical.com>
- <cf5213f9-0863-eba6-0e74-2f15577dba9d@gmail.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <a2e05368-42bb-b7bb-8b13-dc654d56bcbc@canonical.com>
-Date:   Mon, 11 Jan 2021 14:11:54 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 11 Jan 2021 09:13:26 -0500
+Received: by mail-ej1-f53.google.com with SMTP id b9so25057996ejy.0;
+        Mon, 11 Jan 2021 06:13:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PQX6JSrchxeSIcws95/Px/lb+7q2acGOY2HvUqsnqJY=;
+        b=DV7ms29sQ1I9IKE4G0yDP5Erd3IGfEk6ZlZKDN9nmmkk0l4apg8k5X289CkN3qdcWP
+         pZeUhzThCqHqKjoxezGBqS/t6JpEWbyXruKzz9mA1vP98hrWJCuDl/QvrK71hladIidd
+         offIuVprUEd10ZWSRMBhlhPOeYavd3NBffrsThSBMsrewDaP3rmzsi+QKQMWX6XCZNXw
+         nLtCrs/amyC2xwlmmKl/tkPnLmXXEDvp1hfiIh0BQwdaiGz5bj5EuGZc2fqn62x1Vb4I
+         vJbPog8vqtp1z+3tI0DJswVPRkC6C/75jWIMz5ze8Nj0IGAzOjRgRW0MC1r3ReYjVAh1
+         4KTA==
+X-Gm-Message-State: AOAM532FnicH3V/SwieAAWr2WIyQHko023G0Js2smjpXzR8yJrlXO5xd
+        PUR1EujyKl/I2IsxTLupqzPTIEuHKjM=
+X-Google-Smtp-Source: ABdhPJyFDyrzwy7vnnZVjdHgkuH/8muxvlW4pg8QElFZTdnWYL9bQlKscnF+61+l1gajpxCnOg923w==
+X-Received: by 2002:a17:906:ae41:: with SMTP id lf1mr11254078ejb.369.1610374363866;
+        Mon, 11 Jan 2021 06:12:43 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id gb14sm6410106ejc.61.2021.01.11.06.12.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 06:12:42 -0800 (PST)
+Date:   Mon, 11 Jan 2021 15:12:41 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH v4 2/3] rtc: s5m: check the return value of
+ s5m8767_rtc_init_reg()
+Message-ID: <20210111141241.GA38402@kozik-lap>
+References: <20210111124027.21586-1-brgl@bgdev.pl>
+ <20210111124027.21586-3-brgl@bgdev.pl>
+ <20210111133521.GB34341@kozik-lap>
+ <CAMRc=MdLAupcMkSEpdVJiBTogbN6G2aqr=kC+0GT6s-igSSL0g@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <cf5213f9-0863-eba6-0e74-2f15577dba9d@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <CAMRc=MdLAupcMkSEpdVJiBTogbN6G2aqr=kC+0GT6s-igSSL0g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/01/2021 13:55, Maximilian Luz wrote:
-> On 1/11/21 1:12 PM, Colin Ian King wrote:
->> Hi Maximilian,
->>
->> Static analysis of linux-next with Coverity has found several issues
->> with the following commit:
->>
->> commit 178f6ab77e617c984d6520b92e747075a12676ff
->> Author: Maximilian Luz <luzmaximilian@gmail.com>
->> Date:   Mon Dec 21 19:39:58 2020 +0100
->>
->>      platform/surface: Add Surface Aggregator user-space interface
->>
->> The analysis is as follows:
->>
->> 65static long ssam_cdev_request(struct ssam_cdev *cdev, unsigned long
->> arg)
->>   66{
->>   67        struct ssam_cdev_request __user *r;
->>   68        struct ssam_cdev_request rqst;
->>
->>     1. var_decl: Declaring variable spec without initializer.
->>
->>   69        struct ssam_request spec;
->>   70        struct ssam_response rsp;
->>   71        const void __user *plddata;
->>   72        void __user *rspdata;
->>   73        int status = 0, ret = 0, tmp;
->>   74
->>   75        r = (struct ssam_cdev_request __user *)arg;
->>   76        ret = copy_struct_from_user(&rqst, sizeof(rqst), r,
->> sizeof(*r));
->>
->>     2. Condition ret, taking true branch.
->>
->>   77        if (ret)
->>
->>     3. Jumping to label out.
->>
->>   78                goto out;
->>
->>   79
->>   80        plddata = u64_to_user_ptr(rqst.payload.data);
->>   81        rspdata = u64_to_user_ptr(rqst.response.data);
->>   82
->>   83        /* Setup basic request fields. */
->>   84        spec.target_category = rqst.target_category;
->>   85        spec.target_id = rqst.target_id;
->>   86        spec.command_id = rqst.command_id;
->>   87        spec.instance_id = rqst.instance_id;
->>   88        spec.flags = 0;
->>   89        spec.length = rqst.payload.length;
->>   90        spec.payload = NULL;
->>   91
->>   92        if (rqst.flags & SSAM_CDEV_REQUEST_HAS_RESPONSE)
->>   93                spec.flags |= SSAM_REQUEST_HAS_RESPONSE;
->>   94
->>   95        if (rqst.flags & SSAM_CDEV_REQUEST_UNSEQUENCED)
->>   96                spec.flags |= SSAM_REQUEST_UNSEQUENCED;
->>   97
->>   98        rsp.capacity = rqst.response.length;
->>   99        rsp.length = 0;
->> 100        rsp.pointer = NULL;
->> 101
->> 102        /* Get request payload from user-space. */
->> 103        if (spec.length) {
->> 104                if (!plddata) {
->> 105                        ret = -EINVAL;
->> 106                        goto out;
->> 107                }
->> 108
->>
->> CID: Untrusted allocation size (TAINTED_SCALAR)
->>     8. tainted_data: Passing tainted expression spec.length to kzalloc,
->> which uses it as an allocation size
->>
->> 109                spec.payload = kzalloc(spec.length, GFP_KERNEL);
+On Mon, Jan 11, 2021 at 03:11:24PM +0100, Bartosz Golaszewski wrote:
+> On Mon, Jan 11, 2021 at 2:35 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> >
+> > On Mon, Jan 11, 2021 at 01:40:26PM +0100, Bartosz Golaszewski wrote:
+> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > >
+> > > This function can fail if regmap operations fail so check its return
+> > > value in probe().
+> > >
+> > > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > ---
+> > >  drivers/rtc/rtc-s5m.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/drivers/rtc/rtc-s5m.c b/drivers/rtc/rtc-s5m.c
+> > > index eb9dde4095a9..e0011d3cf61b 100644
+> > > --- a/drivers/rtc/rtc-s5m.c
+> > > +++ b/drivers/rtc/rtc-s5m.c
+> > > @@ -791,6 +791,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+> > >       platform_set_drvdata(pdev, info);
+> > >
+> > >       ret = s5m8767_rtc_init_reg(info);
+> > > +     if (ret)
+> > > +             return ret;
+> >
+> > You leak I2C device.
+> >
 > 
-> I assume a constraint on the maximum length will fix this?
+> Yes, the next patch fixes it but I changed the order. Actually this
+> can be moved after 3/3 with no conflicts when applying.
 
-I believe so, it's unsigned so just an upper size check will be required
-to silence this static analysis warning. Mind you, you may want a size
-that is the full u16 max of 65535, so in that case the check is not
-required.
+Yes, but for bisecting and any backporting (e.g. with autosel) the order
+is quite important. Please resend with new order.
 
-
-> 
->> 110                if (!spec.payload) {
->> 111                        ret = -ENOMEM;
->> 112                        goto out;
->> 113                }
->> 114
->> 115                if (copy_from_user((void *)spec.payload, plddata,
->> spec.length)) {
->> 116                        ret = -EFAULT;
->> 117                        goto out;
->> 118                }
->> 119        }
->> 120
->> 121        /* Allocate response buffer. */
->> 122        if (rsp.capacity) {
->> 123                if (!rspdata) {
->> 124                        ret = -EINVAL;
->> 125                        goto out;
->> 126                }
->> 127
->>
->> CID: Untrusted allocation size (TAINTED_SCALAR)
->>     12. tainted_data: Passing tainted expression rsp.capacity to kzalloc,
->> which uses it as an allocation size
->>
->> 128                rsp.pointer = kzalloc(rsp.capacity, GFP_KERNEL);
->> 129                if (!rsp.pointer) {
->> 130                        ret = -ENOMEM;
->> 131                        goto out;
->> 132                }
->> 133        }
->> 134
->> 135        /* Perform request. */
->> 136        status = ssam_request_sync(cdev->ctrl, &spec, &rsp);
->> 137        if (status)
->> 138                goto out;
->> 139
->> 140        /* Copy response to user-space. */
->> 141        if (rsp.length && copy_to_user(rspdata, rsp.pointer,
->> rsp.length))
->> 142                ret = -EFAULT;
->> 143
->> 144out:
->> 145        /* Always try to set response-length and status. */
->>
->>     CID: Uninitialized pointer read (UNINIT)
->>     Using uninitialized value rsp.length
->>
->> 146        tmp = put_user(rsp.length, &r->response.length);
->>
->>     4. Condition tmp, taking true branch.
->>
->> 147        if (tmp)
->> 148                ret = tmp;
->> 149
->> 150        tmp = put_user(status, &r->status);
->>
->>     5. Condition tmp, taking true branch.
->>
->> 151        if (tmp)
->> 152                ret = tmp;
->> 153
->> 154        /* Cleanup. */
->>
->>     CID: Uninitialized pointer read (UNINIT)
->>     6. uninit_use_in_call: Using uninitialized value spec.payload when
->> calling kfree.
->>
->> 155        kfree(spec.payload);
->>
->>     CID: Uninitialized pointer read (UNINIT)
->>     uninit_use_in_call: Using uninitialized value rsp.pointer when
->> calling kfree
->>
->> 156        kfree(rsp.pointer);
-> 
-> Right, taking the first jump to out leaves rsp and spec uninitialized.
-> I'll fix that.
-> 
->> 157
->> 158        return ret;
->>
->> Colin
->>
-> 
-> Thank you for the analysis. I'll draft up two patches to address these
-> issues.
-> 
-> Regards,
-> Max
+Best regards,
+Krzysztof
 
