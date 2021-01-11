@@ -2,187 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E092F0BD8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 05:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B41D82F0BDB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 05:44:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbhAKEjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 23:39:08 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:55491 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbhAKEjI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 23:39:08 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610339927; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=PEGSH/aIZYUszxE+cliw+QdalqdBswRdWn1gj8ZjzE4=;
- b=DJWMEXDMzoJU2K9/pPHTcf2M7vjCi9j7ym0LEP69aC9qBpNr7mTTov5mp5TjQjXAK0Kz6nzL
- 6kMybFBWeDWi65OOLnvEPM7U7Dw8boREd/CSziC6ItzgvdaLNL99VzcOwXoZJMvgaxm4bvkq
- 6EK+KfEUO5GbwxFzalny1rU7k4A=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5ffbd632c88af06107bcea54 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 04:38:10
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0F16DC43464; Mon, 11 Jan 2021 04:38:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 05BF3C433CA;
-        Mon, 11 Jan 2021 04:38:08 +0000 (UTC)
+        id S1727010AbhAKElk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 23:41:40 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43588 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726494AbhAKElk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 23:41:40 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6C661AD7A;
+        Mon, 11 Jan 2021 04:40:58 +0000 (UTC)
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     jacmet@sunsite.dk
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dave@stgolabs.net,
+        Davidlohr Bueso <dbueso@suse.de>
+Subject: [PATCH] usb/c67x00: Replace tasklet with work
+Date:   Sun, 10 Jan 2021 20:40:50 -0800
+Message-Id: <20210111044050.86763-1-dave@stgolabs.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 11 Jan 2021 10:08:08 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     isaacm@codeaurora.org
-Cc:     Will Deacon <will@kernel.org>, Rob Clark <robdclark@gmail.com>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        linux-kernel@vger.kernel.org,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        iommu@lists.linux-foundation.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] iommu/io-pgtable-arm: Allow non-coherent masters to use
- system cache
-In-Reply-To: <84ff10c38e99635bc222ca2dd29be2b5@codeaurora.org>
-References: <20201224064007.2339-1-saiprakash.ranjan@codeaurora.org>
- <20210106115615.GA1763@willie-the-truck>
- <cfced52002337025088a64aa159760b2@codeaurora.org>
- <8cfefbff135a5287d177b6ab2ccc3304@codeaurora.org>
- <84ff10c38e99635bc222ca2dd29be2b5@codeaurora.org>
-Message-ID: <73b1957d0898a937e5e88c1a469352ea@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-08 23:39, isaacm@codeaurora.org wrote:
-> On 2021-01-07 21:47, Sai Prakash Ranjan wrote:
->> On 2021-01-07 22:27, isaacm@codeaurora.org wrote:
->>> On 2021-01-06 03:56, Will Deacon wrote:
->>>> On Thu, Dec 24, 2020 at 12:10:07PM +0530, Sai Prakash Ranjan wrote:
->>>>> commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY 
->>>>> flag")
->>>>> removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it 
->>>>> went
->>>>> the memory type setting required for the non-coherent masters to 
->>>>> use
->>>>> system cache. Now that system cache support for GPU is added, we 
->>>>> will
->>>>> need to mark the memory as normal sys-cached for GPU to use system 
->>>>> cache.
->>>>> Without this, the system cache lines are not allocated for GPU. We 
->>>>> use
->>>>> the IO_PGTABLE_QUIRK_ARM_OUTER_WBWA quirk instead of a page 
->>>>> protection
->>>>> flag as the flag cannot be exposed via DMA api because of no 
->>>>> in-tree
->>>>> users.
->>>>> 
->>>>> Signed-off-by: Sai Prakash Ranjan 
->>>>> <saiprakash.ranjan@codeaurora.org>
->>>>> ---
->>>>>  drivers/iommu/io-pgtable-arm.c | 3 +++
->>>>>  1 file changed, 3 insertions(+)
->>>>> 
->>>>> diff --git a/drivers/iommu/io-pgtable-arm.c 
->>>>> b/drivers/iommu/io-pgtable-arm.c
->>>>> index 7c9ea9d7874a..3fb7de8304a2 100644
->>>>> --- a/drivers/iommu/io-pgtable-arm.c
->>>>> +++ b/drivers/iommu/io-pgtable-arm.c
->>>>> @@ -415,6 +415,9 @@ static arm_lpae_iopte 
->>>>> arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
->>>>>  		else if (prot & IOMMU_CACHE)
->>>>>  			pte |= (ARM_LPAE_MAIR_ATTR_IDX_CACHE
->>>>>  				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
->>>>> +		else if (data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA)
->>>>> +			pte |= (ARM_LPAE_MAIR_ATTR_IDX_INC_OCACHE
->>>>> +				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
->>>>>  	}
->>>> 
->>> While this approach of enabling system cache globally for both page
->>> tables and other buffers
->>> works for the GPU usecase, this isn't ideal for other clients that 
->>> use
->>> system cache. For example,
->>> video clients only want to cache a subset of their buffers in the
->>> system cache, due to the sizing constraint
->>> imposed by how much of the system cache they can use. So, it would be
->>> ideal to have
->>> a way of expressing the desire to use the system cache on a 
->>> per-buffer
->>> basis. Additionally,
->>> our video clients use the DMA layer, and since the requirement is for
->>> caching in the system cache
->>> to be a per buffer attribute, it seems like we would have to have a
->>> DMA attribute to express
->>> this on a per-buffer basis.
->>> 
->> 
->> I did bring this up initially [1], also where is this video client
->> in upstream? AFAIK, only system cache user in upstream is GPU.
->> We cannot add any DMA attribute unless there is any user upstream
-> Right, there wouldn't be an upstream user, which would be problematic,
-> but I was thinking of having it so that when video or any of our other
-> clients that use this attribute on a per buffer basis upstreams their
-> code, it's not too much of a stretch to add the support.
+Tasklets have long been deprecated as being too heavy on the system
+by running in irq context - and this is not a performance critical
+path. If a higher priority process wants to run, it must wait for
+the tasklet to finish before doing so.
 
-Agreed.
+c67x00_do_work() will now run in process context and have further
+concurrency (tasklets being serialized among themselves), but this
+is done holding the c67x00->lock, so it should be fine. Furthermore,
+this patch fixes the usage of the lock in the callback as otherwise
+it would need to be irq-safe.
 
->> as per [2], so when the support for such a client is added, wouldn't
->> ((data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA) || 
->> PROT_FLAG)
->> work?
-> I don't think that will work, because we currently have clients who use 
-> the
-> system cache as follows:
-> -cache only page tables in the system cache
-> -cache only data buffers in the system cache
-> -cache both page tables and all buffers in the system cache
-> -cache both page tables and some buffers in the system cache
-> 
-> The approach you're suggesting doesn't allow for the last case, as 
-> caching the
-> page tables in the system cache involves setting
-> IO_PGTABLE_QUIRK_ARM_OUTER_WBWA,
-> so we will end up losing the flexibility to cache some data buffers in
-> the system cache.
-> 
+Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+---
+ drivers/usb/c67x00/c67x00-hcd.h   |  2 +-
+ drivers/usb/c67x00/c67x00-sched.c | 12 +++++++-----
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-Ah yes, you are right, I believe Jordan mentioned the same [1].
-
-[1] 
-https://lore.kernel.org/lkml/20200709161352.GC21059@jcrouse1-lnx.qualcomm.com/
-
-> Ideally, the page table quirk would drive the settings for the TCR,
-> and the prot flag
-> drives the PTE for the mapping, as is done with the page table walker
-> being dma-coherent,
-> while buffers are mapped as cacheable based on IOMMU_CACHE. Thoughts?
-> 
-
-Right, mixing the two is not correct. Will's suggestion for a new prot
-flag sounds good to me, I will work on that.
-
-Thanks,
-Sai
-
+diff --git a/drivers/usb/c67x00/c67x00-hcd.h b/drivers/usb/c67x00/c67x00-hcd.h
+index 6b6b04a3fe0f..6332a6b5dce6 100644
+--- a/drivers/usb/c67x00/c67x00-hcd.h
++++ b/drivers/usb/c67x00/c67x00-hcd.h
+@@ -76,7 +76,7 @@ struct c67x00_hcd {
+ 	u16 next_td_addr;
+ 	u16 next_buf_addr;
+ 
+-	struct tasklet_struct tasklet;
++	struct work_struct work;
+ 
+ 	struct completion endpoint_disable;
+ 
+diff --git a/drivers/usb/c67x00/c67x00-sched.c b/drivers/usb/c67x00/c67x00-sched.c
+index e65f1a0ae80b..af60f4fdd340 100644
+--- a/drivers/usb/c67x00/c67x00-sched.c
++++ b/drivers/usb/c67x00/c67x00-sched.c
+@@ -1123,24 +1123,26 @@ static void c67x00_do_work(struct c67x00_hcd *c67x00)
+ 
+ /* -------------------------------------------------------------------------- */
+ 
+-static void c67x00_sched_tasklet(struct tasklet_struct *t)
++static void c67x00_sched_work(struct work_struct *work)
+ {
+-	struct c67x00_hcd *c67x00 = from_tasklet(c67x00, t, tasklet);
++	struct c67x00_hcd *c67x00;
++
++	c67x00 = container_of(work, struct c67x00_hcd, work);
+ 	c67x00_do_work(c67x00);
+ }
+ 
+ void c67x00_sched_kick(struct c67x00_hcd *c67x00)
+ {
+-	tasklet_hi_schedule(&c67x00->tasklet);
++        queue_work(system_highpri_wq, &c67x00->work);
+ }
+ 
+ int c67x00_sched_start_scheduler(struct c67x00_hcd *c67x00)
+ {
+-	tasklet_setup(&c67x00->tasklet, c67x00_sched_tasklet);
++        INIT_WORK(&c67x00->work, c67x00_sched_work);
+ 	return 0;
+ }
+ 
+ void c67x00_sched_stop_scheduler(struct c67x00_hcd *c67x00)
+ {
+-	tasklet_kill(&c67x00->tasklet);
++        cancel_work_sync(&c67x00->work);
+ }
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.26.2
+
