@@ -2,95 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBB32F24BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D64982F24BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391624AbhALAZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2391637AbhALAZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 11 Jan 2021 19:25:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37066 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:37198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404206AbhAKXvC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 18:51:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66F9922D2C;
-        Mon, 11 Jan 2021 23:50:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610409021;
-        bh=7YRMvE845hC7SAVXz/U/NF9WxBp7q4L/HB0jlWcqqVU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Lrzp2zbK7APcbmjCCCv0vJu/ty5To01Fq6cbVVmMwxYiiv2J2JwFrIfphZetDHv3/
-         pxoAVneTZnJX7oghB1xRLmSFyup0O/+Jy020Ov3u7psjAxu7mzIl73WpRvmR053r+u
-         7csdeeuUyBxtANKtSjtf7hd7TnOL4sXEebmM1Ktk97XAxIoKYZ+0Nf+mHzsTAbiuoR
-         GHfHFoP2Y8cj3RMDVwbanwcg1gMxn3AP1SjCVvMFmbyiRjlJOKUB8RScGwfkz9vzWu
-         JYQknH1DyE1VTzeYkxdil6aTTgV2dbBra9atRqx+TmSMb5IWImmkMQLLz0UiGbGbKa
-         Ovx5cxzbSllpQ==
-Received: by mail-ej1-f49.google.com with SMTP id lt17so919837ejb.3;
-        Mon, 11 Jan 2021 15:50:21 -0800 (PST)
-X-Gm-Message-State: AOAM533Lqw0/Q90kl7D+5I6ROH5vEcf5lDx7TJaZ3t7MYbcXZaPoUtN9
-        r1sSg+PSYSsCvRC+65IFih1fuYdszx2O7py0Og==
-X-Google-Smtp-Source: ABdhPJxVy9VDMMYfYRVMs9afxI0l5RRiNtKc2yMSb9lG3FiW9P61v7cZ+yR5sHJHLZMW2E0QIlo4LzB1ZzkCSbrrWtg=
-X-Received: by 2002:a17:907:2108:: with SMTP id qn8mr1236249ejb.127.1610409019978;
- Mon, 11 Jan 2021 15:50:19 -0800 (PST)
+        id S2404209AbhAKXwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 18:52:11 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C583522BED;
+        Mon, 11 Jan 2021 23:51:30 +0000 (UTC)
+Date:   Mon, 11 Jan 2021 18:51:29 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Qiujun Huang <hqjagain@gmail.com>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] trace: Remove get/put_cpu() from function_trace_init
+Message-ID: <20210111185129.0d5745f9@gandalf.local.home>
+In-Reply-To: <20201230140521.31920-1-hqjagain@gmail.com>
+References: <20201230140521.31920-1-hqjagain@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <1610351031-21133-1-git-send-email-yongqiang.niu@mediatek.com> <1610351031-21133-7-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1610351031-21133-7-git-send-email-yongqiang.niu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Tue, 12 Jan 2021 07:50:09 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_8CaUr-zZXoBsQTXvxeO88WhHm0neg5RuDR1KG6NsaWwA@mail.gmail.com>
-Message-ID: <CAAOTY_8CaUr-zZXoBsQTXvxeO88WhHm0neg5RuDR1KG6NsaWwA@mail.gmail.com>
-Subject: Re: [PATCH v3, 06/15] drm/mediatek: add component RDMA4
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongqiang:
+On Wed, 30 Dec 2020 22:05:21 +0800
+Qiujun Huang <hqjagain@gmail.com> wrote:
 
-Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=
-=8811=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=883:44=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> This patch add component RDMA4
+> Since commit b6f11df26fdc ("trace: Call tracing_reset_online_cpus before
+> tracer->init()"), get/put_cpu() are not needed anymore.
+> We can use raw_smp_processor_id() instead.
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+I added both your patches (this one and the trace_ignore_this_task()
+kernel-doc fix to my queue.
 
->
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+Thanks!
+
+-- Steve
+
+> 
+> Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
 > ---
->  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/dr=
-m/mediatek/mtk_drm_ddp_comp.c
-> index bc6b10a..fc01fea 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> @@ -392,6 +392,7 @@ struct mtk_ddp_comp_match {
->         [DDP_COMPONENT_RDMA0]   =3D { MTK_DISP_RDMA,      0, NULL },
->         [DDP_COMPONENT_RDMA1]   =3D { MTK_DISP_RDMA,      1, NULL },
->         [DDP_COMPONENT_RDMA2]   =3D { MTK_DISP_RDMA,      2, NULL },
-> +       [DDP_COMPONENT_RDMA4]   =3D { MTK_DISP_RDMA,      4, NULL },
->         [DDP_COMPONENT_UFOE]    =3D { MTK_DISP_UFOE,      0, &ddp_ufoe },
->         [DDP_COMPONENT_WDMA0]   =3D { MTK_DISP_WDMA,      0, NULL },
->         [DDP_COMPONENT_WDMA1]   =3D { MTK_DISP_WDMA,      1, NULL },
-> --
-> 1.8.1.1.dirty
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+> v2:
+> Use raw_smp_processor_id() instead of smp_processor_id()
+> ---
+>  kernel/trace/trace_functions.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
+> index c5095dd28e20..f67aec5bb771 100644
+> --- a/kernel/trace/trace_functions.c
+> +++ b/kernel/trace/trace_functions.c
+> @@ -106,8 +106,7 @@ static int function_trace_init(struct trace_array *tr)
+>  
+>  	ftrace_init_array_ops(tr, func);
+>  
+> -	tr->array_buffer.cpu = get_cpu();
+> -	put_cpu();
+> +	tr->array_buffer.cpu = raw_smp_processor_id();
+>  
+>  	tracing_start_cmdline_record();
+>  	tracing_start_function_trace(tr);
+
