@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4B32F170A
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 740382F1662
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:52:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387976AbhAKOAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:00:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52672 "EHLO mail.kernel.org"
+        id S2387684AbhAKNwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:52:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729144AbhAKNGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:06:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43A2C21973;
-        Mon, 11 Jan 2021 13:05:49 +0000 (UTC)
+        id S1730699AbhAKNJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:09:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0F1122ADF;
+        Mon, 11 Jan 2021 13:08:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370349;
-        bh=VedbmO/5/bZazH0fUPBlfrJlYbOrNDIrQEbwdNqIqQY=;
+        s=korg; t=1610370505;
+        bh=TOJcZvjnJZQGS+cQbsthieBdACSYNWvv/ibbBiaOXuY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2DXCDyXYekOqVoAxnI/yXtqPUgu73zONVxaak3g+LZUkxy39w0SaEhHAHDngg4eSq
-         e0qzdSzgKxRbfqVpimjFH7169Py6Ub0X+3gTOtr9WrCrPpb65k1ljnVmO+xyc7qaAK
-         ROGwKojNXKE6LCCjLocKHW9z8/IZll0sX93K6twU=
+        b=IQ9Q0fhj5GIy6Gk7xbgk0Zj8stxmzHes+r3QQWwysOdyMZ8IsiuwxEpNmVbuCWqEC
+         mX/SWsRJXrt2EarxuhtQjHWbuZwc0hogIh9E6KhFwaDCF7Ghr0z/hxs7802Ne8RAdN
+         KIeZ7hvTh39tyofPLzx+NkYraIH4sjIix56himo4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 41/57] ALSA: usb-audio: Fix UBSAN warnings for MIDI jacks
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH 4.19 51/77] USB: serial: iuu_phoenix: fix DMA from stack
 Date:   Mon, 11 Jan 2021 14:02:00 +0100
-Message-Id: <20210111130035.709738727@linuxfoundation.org>
+Message-Id: <20210111130038.874137327@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
-References: <20210111130033.715773309@linuxfoundation.org>
+In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
+References: <20210111130036.414620026@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,46 +38,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Iwai <tiwai@suse.de>
+From: Johan Hovold <johan@kernel.org>
 
-commit c06ccf3ebb7503706ea49fd248e709287ef385a3 upstream.
+commit 54d0a3ab80f49f19ee916def62fe067596833403 upstream.
 
-The calculation of in_cables and out_cables bitmaps are done with the
-bit shift by the value from the descriptor, which is an arbitrary
-value, and can lead to UBSAN shift-out-of-bounds warnings.
+Stack-allocated buffers cannot be used for DMA (on all architectures) so
+allocate the flush command buffer using kmalloc().
 
-Fix it by filtering the bad descriptor values with the check of the
-upper bound 0x10 (the cable bitmaps are 16 bits).
-
-Reported-by: syzbot+92e45ae45543f89e8c88@syzkaller.appspotmail.com
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201223174557.10249-1-tiwai@suse.de
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Fixes: 60a8fc017103 ("USB: add iuu_phoenix driver")
+Cc: stable <stable@vger.kernel.org>     # 2.6.25
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Johan Hovold <johan@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/usb/midi.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/usb/serial/iuu_phoenix.c |   20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -1867,6 +1867,8 @@ static int snd_usbmidi_get_ms_info(struc
- 		ms_ep = find_usb_ms_endpoint_descriptor(hostep);
- 		if (!ms_ep)
- 			continue;
-+		if (ms_ep->bNumEmbMIDIJack > 0x10)
-+			continue;
- 		if (usb_endpoint_dir_out(ep)) {
- 			if (endpoints[epidx].out_ep) {
- 				if (++epidx >= MIDI_MAX_ENDPOINTS) {
-@@ -2119,6 +2121,8 @@ static int snd_usbmidi_detect_roland(str
- 		    cs_desc[1] == USB_DT_CS_INTERFACE &&
- 		    cs_desc[2] == 0xf1 &&
- 		    cs_desc[3] == 0x02) {
-+			if (cs_desc[4] > 0x10 || cs_desc[5] > 0x10)
-+				continue;
- 			endpoint->in_cables  = (1 << cs_desc[4]) - 1;
- 			endpoint->out_cables = (1 << cs_desc[5]) - 1;
- 			return snd_usbmidi_detect_endpoints(umidi, endpoint, 1);
+--- a/drivers/usb/serial/iuu_phoenix.c
++++ b/drivers/usb/serial/iuu_phoenix.c
+@@ -536,23 +536,29 @@ static int iuu_uart_flush(struct usb_ser
+ 	struct device *dev = &port->dev;
+ 	int i;
+ 	int status;
+-	u8 rxcmd = IUU_UART_RX;
++	u8 *rxcmd;
+ 	struct iuu_private *priv = usb_get_serial_port_data(port);
+ 
+ 	if (iuu_led(port, 0xF000, 0, 0, 0xFF) < 0)
+ 		return -EIO;
+ 
++	rxcmd = kmalloc(1, GFP_KERNEL);
++	if (!rxcmd)
++		return -ENOMEM;
++
++	rxcmd[0] = IUU_UART_RX;
++
+ 	for (i = 0; i < 2; i++) {
+-		status = bulk_immediate(port, &rxcmd, 1);
++		status = bulk_immediate(port, rxcmd, 1);
+ 		if (status != IUU_OPERATION_OK) {
+ 			dev_dbg(dev, "%s - uart_flush_write error\n", __func__);
+-			return status;
++			goto out_free;
+ 		}
+ 
+ 		status = read_immediate(port, &priv->len, 1);
+ 		if (status != IUU_OPERATION_OK) {
+ 			dev_dbg(dev, "%s - uart_flush_read error\n", __func__);
+-			return status;
++			goto out_free;
+ 		}
+ 
+ 		if (priv->len > 0) {
+@@ -560,12 +566,16 @@ static int iuu_uart_flush(struct usb_ser
+ 			status = read_immediate(port, priv->buf, priv->len);
+ 			if (status != IUU_OPERATION_OK) {
+ 				dev_dbg(dev, "%s - uart_flush_read error\n", __func__);
+-				return status;
++				goto out_free;
+ 			}
+ 		}
+ 	}
+ 	dev_dbg(dev, "%s - uart_flush_read OK!\n", __func__);
+ 	iuu_led(port, 0, 0xF000, 0, 0xFF);
++
++out_free:
++	kfree(rxcmd);
++
+ 	return status;
+ }
+ 
 
 
