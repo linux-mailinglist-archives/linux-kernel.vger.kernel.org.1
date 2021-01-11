@@ -2,136 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAEC2F1258
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:34:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D8B2F125A
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 13:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbhAKMd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 07:33:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726224AbhAKMd4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 07:33:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89F0F22AAF
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 12:33:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610368395;
-        bh=yXKODVd5TEykAAHQEUTv6Lm1lMaSuUtCpmCOou3eymQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PnjnHhKW4LH8QVex919JalF9HdZb30dCk/UUEbYm5nMt0D0PflszGL2OytxaMu89k
-         KaxUpJGNWxI+90fOJE2C4Mg70ti7qMx4j/csMhJ2OkcpnlmR2bx9RDet/6paGPPUCc
-         S/Xi8S4zb6Yl4M5fLxkCvkJ8wLioDM2dRRMpsoWQ5128uwvM6lSD0L6Y9XAhUs5OKV
-         cL+qRkpGsXXpZiddHZKc5Ajpb6NBYrRGxMnUfXgquQH+RYjCIEgDgMr8QqHnX63opT
-         RQQVNId6AD1hvtqqh1coI9z+hO4x5HH1pTRJfDnd3QiXAUUMWyUYsKhxFGsM7tiPVn
-         KMK/iJgpzM2ag==
-Received: by mail-oi1-f170.google.com with SMTP id s2so19952873oij.2
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 04:33:15 -0800 (PST)
-X-Gm-Message-State: AOAM532K0VEKXsoAI/0H9gYKYedc8QbX014B0HUKoj1s94ctgEHrhpjy
-        K9jiGW+VCTpWudkTYz5wPKFZv1Qs0GGx47qO7l4=
-X-Google-Smtp-Source: ABdhPJwg0xCZhOMudD1jN7Qzr5yMYHVlTwVmqGCcjFEU/lh7xdcaeMJ07+Dk8nP/y61I2n4L4OA27cjMHbngG1WAzMI=
-X-Received: by 2002:aca:44d:: with SMTP id 74mr10251000oie.4.1610368394083;
- Mon, 11 Jan 2021 04:33:14 -0800 (PST)
+        id S1726743AbhAKMfB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 11 Jan 2021 07:35:01 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2303 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726151AbhAKMe7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 07:34:59 -0500
+Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DDtNn4cw6z67WP5;
+        Mon, 11 Jan 2021 20:31:21 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 11 Jan 2021 13:34:17 +0100
+Received: from localhost (10.47.69.27) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 11 Jan
+ 2021 12:34:16 +0000
+Date:   Mon, 11 Jan 2021 12:33:38 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Jyoti Bhayana <jbhayana@google.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        "Lukas Bulwahn" <lukas.bulwahn@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Enrico Granata <egranata@google.com>,
+        Mikhail Golubev <mikhail.golubev@opensynergy.com>,
+        Igor Skalkin <Igor.Skalkin@opensynergy.com>,
+        Peter Hilber <Peter.hilber@opensynergy.com>,
+        Ankit Arora <ankitarora@google.com>
+Subject: Re: Reply to [RFC PATCH v2 0/1] Adding support for IIO SCMI based
+ sensors
+Message-ID: <20210111123338.00007c06@Huawei.com>
+In-Reply-To: <CA+=V6c3f5Z4_JOr+KzvxpL9nOcPrNAZYmG_VpUF+QAW4=cfy=Q@mail.gmail.com>
+References: <20210106161233.GA44413@e120937-lin>
+        <20210106212353.951807-1-jbhayana@google.com>
+        <20210109190133.61051fab@archlinux>
+        <CA+=V6c3f5Z4_JOr+KzvxpL9nOcPrNAZYmG_VpUF+QAW4=cfy=Q@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <67171E13-6786-4B44-A8C2-3302963B055F@gmail.com> <CAK8P3a0o=1KjPtp0Ah8Afe5vvG1b72+77HRFh4Z06HUGwN6+Ew@mail.gmail.com>
- <1702853.1557dWfJA4@linux-e202.suse.de> <CACRpkdYaMASWWDTX7hTt+xQnVPA=WTWNFk2eDnTjKoJF=LA7LQ@mail.gmail.com>
- <20210111003320.GQ1551@shell.armlinux.org.uk>
-In-Reply-To: <20210111003320.GQ1551@shell.armlinux.org.uk>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 11 Jan 2021 13:32:57 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3C0mWHm+7GvtK92Nw0unZ8NTViXUVd_QysYgot8tuM7A@mail.gmail.com>
-Message-ID: <CAK8P3a3C0mWHm+7GvtK92Nw0unZ8NTViXUVd_QysYgot8tuM7A@mail.gmail.com>
-Subject: Re: Old platforms: bring out your dead
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Fabian Vogt <fabian@ritter-vogt.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        Jamie Iles <jamie@jamieiles.com>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Alex Elder <elder@linaro.org>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Mark Salter <msalter@redhat.com>,
-        Shawn Guo <shawnguo@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [10.47.69.27]
+X-ClientProxiedBy: lhreml722-chm.china.huawei.com (10.201.108.73) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 1:33 AM Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
-> On Sun, Jan 10, 2021 at 10:33:56PM +0100, Linus Walleij wrote:
-> > On Sun, Jan 10, 2021 at 7:16 PM Fabian Vogt <fabian@ritter-vogt.de> wrote:
-> > > Am Samstag, 9. Januar 2021, 23:20:48 CET schrieb Arnd Bergmann:
-> > > (https://lore.kernel.org/linux-arm-kernel/20190805085847.25554-1-linus.walleij@linaro.org)
-> > > was the biggest required change so far.
+On Sun, 10 Jan 2021 22:44:44 -0800
+Jyoti Bhayana <jbhayana@google.com> wrote:
+
+> Hi Jonathan,
+> 
+> In section 4.7.2.5.1 of the specification, the following exponent is
+> the scale value
+> 
+> uint32 axis_attributes_high
+> Bits[15:11] Exponent: The power-of-10 multiplier in two’s-complement
+> format that is applied to the sensor unit
+> specified by the SensorType field.
+> 
+> and the resolution is
+> 
+> uint32 axis_resolution
+> Bits[31:27] Exponent: The power-of-10 multiplier in two’s-complement format
+> that is applied to the Res field. Bits[26:0] Res: The resolution of
+> the sensor axis.
+> 
+> From code in scmi_protocol.h
+> /**
+>  * scmi_sensor_axis_info  - describes one sensor axes
+>  * @id: The axes ID.
+>  * @type: Axes type. Chosen amongst one of @enum scmi_sensor_class.
+>  * @scale: Power-of-10 multiplier applied to the axis unit.
+>  * @name: NULL-terminated string representing axes name as advertised by
+>  *  SCMI platform.
+>  * @extended_attrs: Flag to indicate the presence of additional extended
+>  *    attributes for this axes.
+>  * @resolution: Extended attribute representing the resolution of the axes.
+>  * Set to 0 if not reported by this axes.
+>  * @exponent: Extended attribute representing the power-of-10 multiplier that
+>  *      is applied to the resolution field. Set to 0 if not reported by
+>  *      this axes.
+>  * @attrs: Extended attributes representing minimum and maximum values
+>  *   measurable by this axes. Set to 0 if not reported by this sensor.
+>  */
+> 
+> struct scmi_sensor_axis_info {
+> unsigned int id;
+> unsigned int type;
+> int scale; //This is the scale used for min/max range
+> char name[SCMI_MAX_STR_SIZE];
+> bool extended_attrs;
+> unsigned int resolution;
+> int exponent; // This is the scale used in resolution
+> struct scmi_range_attrs attrs;
+> };
+> 
+> The scale above  is the Power-of-10 multiplier which is applied to the min range
+> and the max range value
+> but the resolution is equal to resolution and multiplied by
+> Power-of-10 multiplier
+> of exponent in the above struct.
+> So as can be seen above the value of the power of 10 multiplier used
+> for min/max range
+> can be different than the value of the power of 10 multiplier used for
+> the resolution.
+> Hence, if I have to use IIO_AVAIL_RANGE to specify min/max range and as well
+> as resolution, then I have to use the float format with the scale applied.
+> 
+> If there is another way which you know of and prefer, please let me know.
+I'll confess I've gotten a bit lost here.
+
+So I think where we are is how to describe the range of the sensor and why we can't
+use in_accel_x_raw_available to provide the 
+
+Understood that the resolution can have different scaling.  That is presumably
+to allow for the case where a device is reporting values at a finer scale than
+it's real resolution.  Resolution might take into account expected noise for
+example.  So it should be decoupled from the scaling of both the actual measurements
+and the axis high / low limits.
+
+However, I'd read that as saying the axis high / low limits and the actual sensor
+readings should be scaled by the exponent in axis_attributes_high.
+So I think we are fine for the range, but my earlier assumption that resolution
+was equivalent to scale in IIO (real world value for 1LSB) may be completely wrong
+as resolution may be unconnected to how you convert to a real world value?
+
+If nothing else I'd like to suggest the spec needs to be tightened a bit here
+to say exactly how we convert a value coming in to real world units (maybe
+I'm just missing it).
+
+Anyhow, I suspect we've been looking at this the wrong way and what we actually
+need is non standard ABI for resolution.
+
+Jonathan
+
+
+
+
+> 
+> Thanks,
+> Jyoti
+> 
+> 
+> 
+> 
+> Thanks,
+> Jyoti
+> 
+> On Sat, Jan 9, 2021 at 11:01 AM Jonathan Cameron <jic23@kernel.org> wrote:
 > >
-> > What we're seeing here is actually a port that is:
-> > - Finished
-> > - Has a complete set of working drivers
-> > - Supported
-> > - Just works
+> > On Wed,  6 Jan 2021 21:23:53 +0000
+> > Jyoti Bhayana <jbhayana@google.com> wrote:
+> >  
+> > > Hi Jonathan,
+> > >
+> > > Instead of adding IIO_VAL_INT_H32_L32, I am thinking of adding IIO_VAL_FRACTIONAL_LONG
+> > > or IIO_VAL_FRACTIONAL_64 as the scale/exponent used for min/max range can be different
+> > > than the one used in resolution according to specification.  
 > >
-> > I.e. it doesn't see much patches because it is pretty much perfect.
+> > That's somewhat 'odd'.  Given min/max are inherently values the sensor is supposed to
+> > be able to return why give them different resolutions?  Can you point me at a specific
+> > section of the spec?  The axis_min_range_low etc fields don't seem to have units specified
+> > but I assumed they were in sensor units and so same scale factors?
+> >  
+> > >
+> > > I am planning to use read_avail for IIO_CHAN_INFO_PROCESSED using IIO_AVAIL_RANGE
+> > > and this new IIO_VAL_FRACTIONAL_64 for min range,max range and resolution.
+> > > Instead of two values used in IIO_VAL_FRACTIONAL, IIO_VAL_FRACTIONAL_64 will use 4 values
+> > > val_high,val_low,and val2_high and val2_low.  
 > >
-> > We are so unused to this situation that it can be mistaken for
-> > the device being abandoned.
+> > I'm not keen on the changing that internal kernel interface unless we absolutely
+> > have to.  read_avail() is called from consumer drivers and they won't know anything
+> > about this new variant.
+> >  
+> > >
+> > > Let me know if that is an acceptable solution.  
 > >
-> > I think it was Russell who first pointed out that this is actually
-> > the case for a few machines.
->
-> Yes indeed. I find it utterly rediculous that there is a perception
-> that you constantly need to be patching a bit of software for it to
-> not be seen as abandoned. If a piece of software works and does what
-> it needs to do, why does it need to be continually patched? It makes
-> no sense to me.
+> > Hmm. It isn't a standard use of the ABI given the value in the buffer is (I assume)
+> > raw (needs scale applied).  However, it isn't excluded by the ABI docs.  Whether
+> > a standard userspace is going to expect it is not clear to me.
+> >
+> > I don't want to end up in a position where we end up with available being generally
+> > added for processed when what most people care about is what the value range they
+> > might get from a polled read is (rather than via a buffer).
+> >
+> > So I'm not that keen on this solution but if we can find a way to avoid it.
+> >
+> > Jonathan
+> >
+> >  
+> > >
+> > >
+> > > Thanks,
+> > > Jyoti
+> > >  
+> >  
 
-I don't know where you got the impression that this is what I
-want to do. I used this as a first approximation because it reduced
-the number of platforms to look at from 71 to under 20, just by
-looking at what patches went into the kernel. I could further get the
-number down to the 14 platforms listed in this email by knowing
-some of the users of platforms that did not see a lot of updates but
-are well supported, like highbank or dove.
-
-We have already confirmed axxia, digicolor, kona and nspire
-as platforms that we want to keep for now, and a new volunteer
-to maintain axxia, and I did not get the impression that any of
-the maintainers were overly stressed out by being sent an
-email inquiry five years after the last contact. I would prefer
-an occasional Tested-by tag for the cleanup patches that did make
-it in (yes, I counted those as activity), but I understand that
-everyone is busy and these are low-maintenance platforms.
-
-> I have my xf86-video-armada which I use on the Dove Cubox and iMX6
-> platforms. It does what I need it to, and I haven't updated the
-> userspace on these platforms for a while. Therefore, I've no reason
-> to patch that code, and no one has sent me patches. Does that mean
-> it's abandoned? Absolutely not.
-
-I listed the dove platform in the first table specifically because the
-plan back in 2014 was to completely remove the platform once that
-hardware is working with the modern mach-mvebu platform, and
-I hoped that the transition had finished by now.
-
-      Arnd
