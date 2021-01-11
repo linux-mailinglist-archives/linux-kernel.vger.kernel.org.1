@@ -2,91 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442082F10EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:17:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EE42F10F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 12:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729546AbhAKLQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 06:16:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52500 "EHLO
+        id S1729154AbhAKLR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 06:17:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727747AbhAKLQX (ORCPT
+        with ESMTP id S1728658AbhAKLRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 06:16:23 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B8BC061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 03:15:43 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id f26so14257224qka.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 03:15:43 -0800 (PST)
+        Mon, 11 Jan 2021 06:17:55 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C2DBC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 03:17:15 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id y12so3366981pji.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 03:17:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=07jVVaRVyq5aozxWNXLFWFjmN6KjLrqrOzqL/0QRu9w=;
-        b=W+q+OmcQ/0EhY8lol5ozzXnDL4vttxLXTvCiOGZ0RVIXgIsKazQ9nb1lH7pg6A9Kys
-         cPbKquKsKFllOelUMfGU4wjWjlXfj30uqaR72Y8MXxNQ5cokRc9HBPhpV8TUXQh/wD3+
-         BqzFQPDhv0jcjaBngCg7gF9hR/snQp64NDE1XMoqrwgmZf/UudK3XZNFFb6csUAL+g+h
-         uaY6/mlwpItvCmpbaC6lBySHizGAzlBSUczX4rQ7wyL81V6zxxL0yo8fmqIKvkQR1o3x
-         s3O4vmgYChOGKxaMI/Mh1HcW1H7S/HdNJaO6qyw1sFoav8uOv2pVU+cau2IMAL/5X7Al
-         ln7w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vBU9e6qyBvT5ZyCJomv4xriQsn7W38v5x67CwrScjsY=;
+        b=nYSrbnM/SnogBIYP8F8QIZmbgrUADTNeZxHozvUNmjqEjOIqHbwP6EdZageFoUCpbp
+         RlFDS1YbJSKKIYteN71fcaSAxssopABgaek9Dp7ZuCaQLYrnB2Bbw+SN/q7uTDK5kP6U
+         WIZ64yWIGwm+vYX2Gh3d8diTBeb46C7C4HhNWm5eNMPpcKJPMnsQ3w9k+/tFlmGlpcsO
+         ubmPWOj6PNYow3oURddjaOKgO1moyoGDB5fM2F5jjMRHZyfDad0nN0n9YUYNmYDEbP9U
+         9AQ3LQqPleAHxKEzp2N4ouXkCvhywR+I05n5ohiQbmYi6u4c68wvJ0J/A+uU5f2NwwmN
+         +dtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=07jVVaRVyq5aozxWNXLFWFjmN6KjLrqrOzqL/0QRu9w=;
-        b=L73pbm6aOtVrSxxR4Xr6bThffOaMsDyVD1oY1VcqACEdr+fs4Ipwxlp0cO7L8aU42j
-         eLxzfMmht2MFZw7Z/tMdaT+lQzff/E0W25X6ubebb9YO17Neiiqo/7XlTnRuPtrByaAy
-         AQq+OdxZXQkmCtEcsTqvb8Oio6d/LegWSNc3bsrGL/yxbio9XmWkEt6JShietZNIPUGX
-         D+F8WN7JWgb2TljtEwsDKtfxg4gl8O/G0/LyFabVqAJkUotVRofw03EwkrYhOcEzraRG
-         SdCmQ6Fx3ltTkzvOcgBLScN86XmuOkF0dvFB/bKP4+thUtkF/1r3mwjOCVBMeIVR+TPJ
-         vduA==
-X-Gm-Message-State: AOAM5309kw1xxfFtiP8oIlfaNAGH20Rcrxy02CcEfwFPuUCU1gI0Ld3X
-        3EN2X30Abf5Peu5PEcjfyh0VyKVLzh5fN7qb3mzYxXqflruMsQ==
-X-Google-Smtp-Source: ABdhPJzFH7Ffg54k/2Bp9Tqeq4wAtDMmwzROOvlcJmb4ErqZLcrCQxWkeWhUID9OcWMoXH7vKJw3x4b8eTtWu+JeJeY=
-X-Received: by 2002:a37:9a97:: with SMTP id c145mr15628129qke.350.1610363742672;
- Mon, 11 Jan 2021 03:15:42 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vBU9e6qyBvT5ZyCJomv4xriQsn7W38v5x67CwrScjsY=;
+        b=SlrXHiQU6yGnqcJzsVvlfFKh/JgI6GBB+fCBVtcQes951uLK4kDSjM2OD8PqImmb1J
+         autvty1NE4DPwL1H7/Cq10ZiO9bYAdsRF3VYkABIpCnjADKm3j+OQ4DHI/BoZShf72rs
+         uLJdEg7Hx5JaLk8EtvS+dwP4SCvYEKvBC3i4e9VEv7QN5Cufd7cKYVXTAAxFkZUvjPow
+         Ad5/0WDDKyRZzt9Tuq1iSUQKupdVv/1BiodoW67Vj39FgOod0Jss1D00hPposBttSvJH
+         LqLob+ubISFI0F3IFnQJF8Q1rGkW2OqrzJRgqxCaf/YLtFWQDHF5MlDWeVdG/uEL0Pse
+         5csA==
+X-Gm-Message-State: AOAM533Wg5mSYAvtbL8EL6WqyGmZDFide1SZbkmfcR79tDP0k+4RvmvN
+        zwdJ+Kykk+52IuRP47IxuiHMohvy5g7aNg==
+X-Google-Smtp-Source: ABdhPJxt34tCOBXDfUJk3pPZ0yxAGN7NW92b+4hhJvRSg1GMXrG/sPu4+TJ2kUlBUKmqgX1XaFfS3w==
+X-Received: by 2002:a17:902:9a90:b029:da:ba07:efdc with SMTP id w16-20020a1709029a90b02900daba07efdcmr16068115plp.1.1610363834824;
+        Mon, 11 Jan 2021 03:17:14 -0800 (PST)
+Received: from localhost ([122.172.85.111])
+        by smtp.gmail.com with ESMTPSA id y21sm20500535pfr.90.2021.01.11.03.17.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 11 Jan 2021 03:17:14 -0800 (PST)
+Date:   Mon, 11 Jan 2021 16:47:11 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Olof Johansson <olof@lixom.net>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, tero.kristo@gmail.com
+Subject: Re: [RFC 0/2] kbuild: Add support to build overlays (%.dtbo)
+Message-ID: <20210111111711.r2xesydzhq5js2nf@vireshk-i7>
+References: <cover.1609844956.git.viresh.kumar@linaro.org>
+ <CAL_JsqJMr3vfz2B29vzvFALCt_5-J__eJv2TZHJ0sR9nM=xXaw@mail.gmail.com>
+ <CAK7LNAR9fdjZ7iWKSWvJ9etGZkd+n87cmXKN-Hah8DBDYbuAwA@mail.gmail.com>
 MIME-Version: 1.0
-References: <000000000000eba11705afd3d759@google.com> <000000000000ac50ae05b862040d@google.com>
-In-Reply-To: <000000000000ac50ae05b862040d@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 11 Jan 2021 12:15:31 +0100
-Message-ID: <CACT4Y+b0ZwjFXBe5woU+eNzkbuWNgE37i3vU2vFk0PGNjVHiZw@mail.gmail.com>
-Subject: Re: kernel BUG at fs/reiserfs/prints.c:LINE!
-To:     syzbot <syzbot+1541a3226994c0781b29@syzkaller.appspotmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        reiserfs-devel@vger.kernel.org, rkovhaev@gmail.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        zhengbin13@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK7LNAR9fdjZ7iWKSWvJ9etGZkd+n87cmXKN-Hah8DBDYbuAwA@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 12:40 PM syzbot
-<syzbot+1541a3226994c0781b29@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit d24396c5290ba8ab04ba505176874c4e04a2d53c
-> Author: Rustam Kovhaev <rkovhaev@gmail.com>
-> Date:   Sun Nov 1 14:09:58 2020 +0000
->
->     reiserfs: add check for an invalid ih_entry_count
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1731e8f7500000
-> start commit:   521b619a Merge tag 'linux-kselftest-kunit-fixes-5.10-rc3' ..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=4e93228e2f17fb12
-> dashboard link: https://syzkaller.appspot.com/bug?extid=1541a3226994c0781b29
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1446e7a8500000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15c56f5c500000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: reiserfs: add check for an invalid ih_entry_count
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+On 07-01-21, 14:28, Masahiro Yamada wrote:
+> Viresh's patch is not enough.
+> 
+> We will need to change .gitignore
+> and scripts/Makefile.dtbinst as well.
+> 
+> In my understanding, the build rule is completely the same
+> between .dtb and .dtbo
+> As Rob mentioned, I am not sure if we really need/want
+> a separate extension.
+> 
+> A counter approach is to use an extension like '.ovl.dtb'
+> It clarifies it is an overlay fragment without changing
+> anything in our build system or the upstream DTC project.
 
-Looks realistic
+By the time you gave feedback, I have already sent the dtbo change for
+DTC to the device-tree-compiler list (based on Rob's suggestion).
 
-#syz fix: reiserfs: add check for an invalid ih_entry_count
+And it got merged today by David:
+
+https://github.com/dgibson/dtc/commit/163f0469bf2ed8b2fe5aa15bc796b93c70243ddc
+
+Can we please finalize what we need to do with naming here and be done
+with it, so I can rework my patches and get going ?
+
+Thanks.
+
+-- 
+viresh
