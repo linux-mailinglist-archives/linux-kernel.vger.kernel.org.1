@@ -2,140 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E8F2F2271
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1A82F227C
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 23:12:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389027AbhAKWKH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 17:10:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726945AbhAKWKG (ORCPT
+        id S2389532AbhAKWMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 17:12:49 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:35456 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726945AbhAKWMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:10:06 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 051DFC061786;
-        Mon, 11 Jan 2021 14:09:26 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id f26so322574qka.0;
-        Mon, 11 Jan 2021 14:09:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bkdZMl6OGK98rEoB/jBOOQZays6LlSDi9TZj1JcXftU=;
-        b=jk8XAzDVg4MhTJ+szkwwLufGwtc7NaMRZQkNlf46Cp1tCFgbd57fmmry+4hUmfdTeZ
-         wM7M0YLXAfH300Y48ZGzMl/ax9gi5Di0FrGg+QL+1J1zsBsTI7LPD2yTMv8N15B1a3MU
-         uWpT6NLQNmxfJEC6SaHCCKP+sIvEV4bcKBJ+T3687gMoCrOhxL9n5Mb1GKEsPfkzThGO
-         Zz6NKObG7dSuGDcEsMghqKWgkHRxguny6IDx6Jq5uViXHssJeqB3OY4VWoRtkbmMxhKr
-         Azuuh3Rkl1zJONYiirHvil+SfNeLnYyoPTPPfUU8Bd2DTBaTDxf7Ra/tiKFaNtdcQRcm
-         TOBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bkdZMl6OGK98rEoB/jBOOQZays6LlSDi9TZj1JcXftU=;
-        b=he4otDKNnE/soplJaTlf/9y0RbYm8FpJvfTsmlvDN8anh7NB3kxrqoCq9/niEbE+4Q
-         sd04KTs2OAt/TYp4sC/dsfOOXIEnvFhPVf6OsDjcZSESkEecE4EtONpkG/U3j4s6MHTU
-         gIbNX7zH2lbaoRwuiX5tu5e/kqu2y23gyAcNcS12H73bvYxkVRTVT/WmhGqfUOf2PPBI
-         HItWOlD+uFInvTh0uwE8Et5jKKe4fe+4SI133uWENzb5I7THcYoRewmKj9K5YtZKvMBL
-         HDX5VFEiXhrcisv2PjKpuodI5OpG0AUek2U9VJ6XsMdZEQtdiHhDEyX6WL3UHoLDpQrA
-         9Ygw==
-X-Gm-Message-State: AOAM530To2o8lLVcxvzyd43KbXS0doUKCnV1q61XOLcH2LUw7p1hAXu+
-        gqzd+9K1I8U7DL1mV1EI9zM=
-X-Google-Smtp-Source: ABdhPJwH7l+PRWhKuRNOvbkDBJJcVkuQ9+opIN9dnq3DCOhh26JosEIFvnIyL2yplOZ8RMy+Ub92zQ==
-X-Received: by 2002:a37:7fc2:: with SMTP id a185mr1576175qkd.202.1610402965307;
-        Mon, 11 Jan 2021 14:09:25 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id w34sm439026qtd.89.2021.01.11.14.09.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 14:09:25 -0800 (PST)
-Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
-To:     Rob Herring <robh+dt@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
- <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
- <CAL_JsqLpbSOk-OST8Oi7uyFVjekX-15713F1FbDCQWfVWgikMw@mail.gmail.com>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <0efa1ea9-1a51-af18-ad9a-b13f9c362b1c@gmail.com>
-Date:   Mon, 11 Jan 2021 16:09:24 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 11 Jan 2021 17:12:48 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10BM9g6t000777;
+        Mon, 11 Jan 2021 22:11:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=qKII6CRwHxF6zi5JdH7+fTS9ebZYq9tFI4FIuyAD8ws=;
+ b=L+q/q2onFVPovRvpx2VhhSK2tW9y/BHHSBokxogqmEDwiyonDpAuuxL3VKyaD/rqybVe
+ uPWLv9FC5vApFJWnXlH8ZM+nKFwNvhXkiLj5daTyhF4YrJezCl8dUVcUntSXXkSavUdC
+ /QaRa/U8D4NFF6Ubotas68D01go6q+2hXLysU+j9tWgb0xCK8guEW8UrOqAC5qKYh98l
+ oAXj2ywph1q0VBL1YaUKa3woE5/+qY/u+gsDK5tvv8bqOXksYMn+tdOCm+QPCxD6kBgQ
+ WJICZGSUg9LkFF0uvvf39sDWNh5DmoUOKFXaqTL12yyzwSsrncVxmWvLxJNIYHjfov/o ww== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 360kcykkxe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 11 Jan 2021 22:11:58 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10BM6SaB101267;
+        Mon, 11 Jan 2021 22:09:58 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 360keftbsv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 11 Jan 2021 22:09:57 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10BM9uUV017394;
+        Mon, 11 Jan 2021 22:09:56 GMT
+Received: from [10.39.223.157] (/10.39.223.157)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 11 Jan 2021 14:09:56 -0800
+Subject: Re: [PATCH] xen/privcmd: allow fetching resource sizes
+To:     Roger Pau Monne <roger.pau@citrix.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Paul Durrant <paul.durrant@citrix.com>,
+        xen-devel@lists.xenproject.org
+References: <20210111152958.7166-1-roger.pau@citrix.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <555ba53c-1b6b-6cf7-9887-52d4179f7456@oracle.com>
+Date:   Mon, 11 Jan 2021 17:09:54 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqLpbSOk-OST8Oi7uyFVjekX-15713F1FbDCQWfVWgikMw@mail.gmail.com>
+In-Reply-To: <20210111152958.7166-1-roger.pau@citrix.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 spamscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101110123
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1011 mlxlogscore=999 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101110123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/11/21 9:46 AM, Rob Herring wrote:
-> On Fri, Jan 8, 2021 at 2:41 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->>
->> Now that fdtoverlay is part of the kernel build, start using it to test
->> the unitest overlays we have by applying them statically.
-> 
-> Nice idea.
-> 
->> The file overlay_base.dtb have symbols of its own and we need to apply
->> overlay.dtb to overlay_base.dtb alone first to make it work, which gives
->> us intermediate-overlay.dtb file.
-> 
-> Okay? If restructuring things helps we should do that. Frank?
 
-I'm a little slow responding to this thread.  After seeing this question, I
-responded to the patch email with a NACK (with further explanation in that
-response).
+On 1/11/21 10:29 AM, Roger Pau Monne wrote:
+>  
+> +	xdata.domid = kdata.dom;
+> +	xdata.type = kdata.type;
+> +	xdata.id = kdata.id;
+> +
+> +	if (!kdata.addr && !kdata.num) {
 
--Frank
 
-> 
->> The intermediate-overlay.dtb file along with all other overlays is them
-> 
-> s/them/then/
-> 
->> applied to testcases.dtb to generate the master.dtb file.
->>
->> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
->>
->> ---
->> Depends on:
->>
->> https://lore.kernel.org/lkml/be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org/
->>
->> I have kept the .dtb naming for overlays for now, lets see how we do it
->> eventually.
->>
->> Rob/Frank, this doesn't work properly right now. Maybe I missed how
->> these overlays must be applied or there is a bug in fdtoverlay.
->>
->> The master.dtb doesn't include any nodes from overlay_base.dtb or
->> overlay.dtb probably because 'testcase-data-2' node isn't present in
->> testcases.dtb and fdtoverlay doesn't allow applying new nodes to the
->> root node, i.e. allows new sub-nodes once it gets phandle to the parent
->> but nothing can be added to the root node itself. Though I get a feel
->> that it works while applying the nodes dynamically and it is expected to
->> work here as well.
-> 
-> Sounds like a bug in fdtoverlay to me. Though maybe you need an empty
-> base tree. An overlay serving as the base is a bit odd so it's
-> somewhat understandable fdtoverlay couldn't handle that. OTOH,
-> combining 2 overlays together seems like a valid use.
-> 
->>
->> (And yeah, this is my first serious attempt at updating Makefiles, I am
->> sure there is a scope of improvement here :))
-> 
-> Usually I write something and Masahiro rewrites it for me. :)
-> 
-> Rob
-> 
+I think we should not allow only one of them to be zero. If it's only kdata.num then we will end up with pfns array set to ZERO_SIZE_PTR (which is 0x10). We seem to be OK in that we are not derefencing pfns (either in kernel or in hypervisor) if number of frames is zero but IMO we shouldn't be tempting the fate.
+
+
+(And if it's only kdata.addr then we will get a vma but I am not sure it will do what we want.)
+
+
+-boris
+
 
