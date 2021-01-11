@@ -2,100 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 082AB2F2042
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 21:00:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9932F2032
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 20:59:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404142AbhAKUAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 15:00:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56928 "EHLO mail.kernel.org"
+        id S2391435AbhAKT66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 14:58:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404093AbhAKUAE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 15:00:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9949322D01
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 19:59:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610395163;
-        bh=DkYBZDbPhgJvDOak3NtotnviFgu1SawdXOAitWkbLx4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GSso80L150gxh6tIHamwhq21TTt2W1HOSSor8S52GBa87W34hmS+G0MZMUoB/vKBl
-         XVmcb/tl5O/14uiw7ymugunVQel8bxctJdImLwU4urMBVchUrnBAqqYRRTl/wSNBbA
-         0RIDSuYW3Fy+BkgT/1M4gp87TgMxPrSizwi/+1nHGop5nioJvP6BttV3zHrFQALBTM
-         E816OBdbdm5BYG23e50x01xij5cXMP3VZSgnhgUYzjW7wBPZXlULTVp6L92O0HpJCD
-         wMWWww6eaCvq0g4B9KQAOz21UM4jcwVeKaQp3uCGRic/gW4qKE+vTgRkGmbTjPHVYD
-         lUoWb1vhQ0xCw==
-Received: by mail-oi1-f173.google.com with SMTP id q25so580055oij.10
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 11:59:23 -0800 (PST)
-X-Gm-Message-State: AOAM533TSWyF6nayq/fOvTz9Up5SrEQ8gBh/uQ+kMl6CP45sU5cpdNZm
-        FVCaZ1N/QbXNQXu9xZ+lBhUyiH6DJtjZeV6xyGs=
-X-Google-Smtp-Source: ABdhPJz4IXUsfuLdcfFiNnOZMxx8IEUq3eLQdK4STom3WhKVkD9BNtBQ9RrGmk3a7msTWRj0U0TZRWXsGd1dG3wafSM=
-X-Received: by 2002:aca:e103:: with SMTP id y3mr283995oig.11.1610395162789;
- Mon, 11 Jan 2021 11:59:22 -0800 (PST)
+        id S1727096AbhAKT65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 14:58:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D9B522B51;
+        Mon, 11 Jan 2021 19:58:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610395096;
+        bh=tNemm3d00HEoWxEcgrioF9dHm3Egmglo6jR1U8qw9Vs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GDs8td86YmFvCFTx0riW4WaZBPn/hOl0rpr6C671fpnz07LDmqXtL/XAYjgAAaBMh
+         d7xV2cecnYL3iww4o5n13Fbv2Mkqryf6cqGjiwHC3LdmTKuR1HsgVVrtA09axwUo6z
+         SzkfdUZWerYeFS8fBrf9QJvBBMNAT77R0muYvTJc=
+Date:   Mon, 11 Jan 2021 20:59:27 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Petr Machata <me@pmachata.org>
+Subject: Re: [PATCH 5.10 018/145] net: dcb: Validate netlink message in DCB
+ handler
+Message-ID: <X/yuH4+l0IJ8bFDh@kroah.com>
+References: <20210111130048.499958175@linuxfoundation.org>
+ <20210111130049.387370344@linuxfoundation.org>
+ <20210111093616.552f84da@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <20210111111047.mgrdho7frjukxfze@vireshk-i7>
-In-Reply-To: <20210111111047.mgrdho7frjukxfze@vireshk-i7>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 11 Jan 2021 20:59:05 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0j2XrV9a0Rm_3LaKAgKW8Kzneu-KXcfSU0zHS6S9ou8w@mail.gmail.com>
-Message-ID: <CAK8P3a0j2XrV9a0Rm_3LaKAgKW8Kzneu-KXcfSU0zHS6S9ou8w@mail.gmail.com>
-Subject: Re: Old platforms: bring out your dead
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Mattias Wallin <mattias.wallin@se.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Mark Salter <msalter@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111093616.552f84da@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 12:10 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> On 08-01-21, 23:55, Arnd Bergmann wrote:
-> > * spear -- added in 2010, no notable changes since 2015
->
-> I started an email chain with the ST folks to see if there are any
-> concerns with this getting removed and it was confirmed by Mattias
-> (Cc'd) from Schneider Electric (one of SPEAr's customers) that they
-> indeed use mainline on spear320s and the spear1380 boards, while they
-> also have access to spear1310 board which they don't use that often.
+On Mon, Jan 11, 2021 at 09:36:16AM -0800, Jakub Kicinski wrote:
+> On Mon, 11 Jan 2021 14:00:42 +0100 Greg Kroah-Hartman wrote:
+> > From: Petr Machata <me@pmachata.org>
+> > 
+> > [ Upstream commit 826f328e2b7e8854dd42ea44e6519cd75018e7b1 ]
+> > 
+> > DCB uses the same handler function for both RTM_GETDCB and RTM_SETDCB
+> > messages. dcb_doit() bounces RTM_SETDCB mesasges if the user does not have
+> > the CAP_NET_ADMIN capability.
+> > 
+> > However, the operation to be performed is not decided from the DCB message
+> > type, but from the DCB command. Thus DCB_CMD_*_GET commands are used for
+> > reading DCB objects, the corresponding SET and DEL commands are used for
+> > manipulation.
+> > 
+> > The assumption is that set-like commands will be sent via an RTM_SETDCB
+> > message, and get-like ones via RTM_GETDCB. However, this assumption is not
+> > enforced.
+> > 
+> > It is therefore possible to manipulate DCB objects without CAP_NET_ADMIN
+> > capability by sending the corresponding command in an RTM_GETDCB message.
+> > That is a bug. Fix it by validating the type of the request message against
+> > the type used for the response.
+> > 
+> > Fixes: 2f90b8657ec9 ("ixgbe: this patch adds support for DCB to the kernel and ixgbe driver")
+> > Signed-off-by: Petr Machata <me@pmachata.org>
+> > Link: https://lore.kernel.org/r/a2a9b88418f3a58ef211b718f2970128ef9e3793.1608673640.git.me@pmachata.org
+> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> Unfortunately we need to call backsies on this one.
+> 
+> A fix up was just posted:
+> 
+> https://patchwork.kernel.org/project/netdevbpf/patch/a3edcfda0825f2aa2591801c5232f2bbf2d8a554.1610384801.git.me@pmachata.org/
+> 
+> I'll resend both in the next submission.
 
-Thank you for reaching out to them!
+No worries, thanks for letting me know, I've now dropped it from all
+stable tree queues.
 
-Do we actually support spear1380 with the mainline kernel? I've
-never seen anything other than 1310 and 1340 models mentioned.
-If Schneider have additional patches on top of mainline for this,
-it would be good to get those merged as well. Is there a kernel
-source tree available somewhere?
+thanks,
 
-Rob Herring had mentioned that it would be nice to see SPEAr
-get removed eventually because it was only partially converted
-to devicetree, with some AUXDATA() (on 300/310/320/6xx) and
-some dmaengine channel data still in source format. These need
-to be finished before we can kill off AUXDATA.
-
-      Arnd
+greg k-h
