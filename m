@@ -2,33 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E53302F1729
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C74D22F1755
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:05:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728615AbhAKNFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:05:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52294 "EHLO mail.kernel.org"
+        id S1730167AbhAKNEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:04:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730263AbhAKNFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:05:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8705821973;
-        Mon, 11 Jan 2021 13:04:29 +0000 (UTC)
+        id S1729984AbhAKNDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:03:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2982C22515;
+        Mon, 11 Jan 2021 13:03:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370270;
-        bh=ClJ9H9FOqJnkDYApMEJA5YxL3HjzC6sbza/3mTXxBJQ=;
+        s=korg; t=1610370205;
+        bh=DGjqeSzhmZONKmlP3RH4AQsxitnDkiXln9C4V30Kcok=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ORZHWmY20ehCzAOL/4ZXKECsXsTIrIAZqSYmWqKztVcrMquwLOABVTG8YXN/pnzlR
-         JBtL94VhhxwZu0k3Cpy04hD/chpdqFPLNFQvUz3/L+dKQ4hXmyWscJyyoVG7uc2CoD
-         NPgX7Os338TnPQj4kzWlMI9sgaCN8wx28TqYhV5A=
+        b=wjW4vKqy29or1SEoJsUt6z7RKrLsA0u61z3+6Wcu+kNEms676vXq78CBhgN54Atel
+         vnaxVG8NlH5TqqgwiPgaiPnEFnCRfHmJTJBsokZUNXz+M5Ka149pP1CNtXfXWrOdrG
+         lMMiRum3xybUbueJ1S/sRJowehF6lt4PGibajnr0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Georgi Bakalski <georgi.bakalski@gmail.com>,
-        Sean Young <sean@mess.org>, Oliver Neukum <oneukum@suse.com>
-Subject: [PATCH 4.9 23/45] USB: cdc-acm: blacklist another IR Droid device
-Date:   Mon, 11 Jan 2021 14:01:01 +0100
-Message-Id: <20210111130034.773927338@linuxfoundation.org>
+        stable@vger.kernel.org, Yu Kuai <yukuai3@huawei.com>
+Subject: [PATCH 4.9 24/45] usb: chipidea: ci_hdrc_imx: add missing put_device() call in usbmisc_get_init_data()
+Date:   Mon, 11 Jan 2021 14:01:02 +0100
+Message-Id: <20210111130034.822910169@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210111130033.676306636@linuxfoundation.org>
 References: <20210111130033.676306636@linuxfoundation.org>
@@ -40,35 +38,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Young <sean@mess.org>
+From: Yu Kuai <yukuai3@huawei.com>
 
-commit 0ffc76539e6e8d28114f95ac25c167c37b5191b3 upstream.
+commit 83a43ff80a566de8718dfc6565545a0080ec1fb5 upstream.
 
-This device is supported by the IR Toy driver.
+if of_find_device_by_node() succeed, usbmisc_get_init_data() doesn't have
+a corresponding put_device(). Thus add put_device() to fix the exception
+handling for this function implementation.
 
-Reported-by: Georgi Bakalski <georgi.bakalski@gmail.com>
-Signed-off-by: Sean Young <sean@mess.org>
-Acked-by: Oliver Neukum <oneukum@suse.com>
+Fixes: ef12da914ed6 ("usb: chipidea: imx: properly check for usbmisc")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201227134502.4548-2-sean@mess.org
+Link: https://lore.kernel.org/r/20201117011430.642589-1-yukuai3@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/usb/class/cdc-acm.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/usb/chipidea/ci_hdrc_imx.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -1849,6 +1849,10 @@ static const struct usb_device_id acm_id
- 	{ USB_DEVICE(0x04d8, 0x0083),	/* Bootloader mode */
- 	.driver_info = IGNORE_DEVICE,
- 	},
-+
-+	{ USB_DEVICE(0x04d8, 0xf58b),
-+	.driver_info = IGNORE_DEVICE,
-+	},
- #endif
+--- a/drivers/usb/chipidea/ci_hdrc_imx.c
++++ b/drivers/usb/chipidea/ci_hdrc_imx.c
+@@ -133,9 +133,13 @@ static struct imx_usbmisc_data *usbmisc_
+ 	misc_pdev = of_find_device_by_node(args.np);
+ 	of_node_put(args.np);
  
- 	/*Samsung phone in firmware update mode */
+-	if (!misc_pdev || !platform_get_drvdata(misc_pdev))
++	if (!misc_pdev)
+ 		return ERR_PTR(-EPROBE_DEFER);
+ 
++	if (!platform_get_drvdata(misc_pdev)) {
++		put_device(&misc_pdev->dev);
++		return ERR_PTR(-EPROBE_DEFER);
++	}
+ 	data->dev = &misc_pdev->dev;
+ 
+ 	if (of_find_property(np, "disable-over-current", NULL))
 
 
