@@ -2,171 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323002F1A31
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:54:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A2412F1A36
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:54:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388569AbhAKPxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:53:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55518 "EHLO
+        id S2388590AbhAKPxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:53:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733284AbhAKPxB (ORCPT
+        with ESMTP id S1727996AbhAKPx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:53:01 -0500
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 345C6C061786;
-        Mon, 11 Jan 2021 07:52:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=NqDVkTYbg8Kl34pjG1mAKbMpd/CjudU1qP8KEuOj/+Y=; b=T1FBeHz3xwT+m9t5JqWfKv+TZf
-        YORCE9GpHgX/hYQtv8n1+LlBF5TE0BUgA0k9zO1WAyenVmN2BM8P+/2LUtJs2sXwwavfliXNsKBDZ
-        9b1Ya0IrAm61d7L2wx2TY/jd8Ca1l2qqP0KUGubyJnTsrB4QCq5rmgnEIHLic7IG5hU0wjIVAUGWd
-        DcnfU9ZF6Cu6ctvvHTW/8qRPAvjThl5dN5oN0EJ4DVk260Q+Kg1ESYCk034x+APiQha9q1GFcn698
-        46+3jTp+4wEzsRFJDT7+XzaDYbxq+epZNefRA0uYU8o0y6BCJ3cQLOACEV59wc+3qWL4x4MLhW9QP
-        /7rc9TxQ==;
-Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=[192.168.1.10])
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <cyndis@kapsi.fi>)
-        id 1kyzUR-0004Sw-Np; Mon, 11 Jan 2021 17:52:19 +0200
-Subject: Re: [PATCH] i2c: tegra: Wait for config load atomically while in ISR
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>, ldewangan@nvidia.com,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, wsa@kernel.org
-Cc:     linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20210111135547.3613092-1-mperttunen@nvidia.com>
- <b7f69fb9-2960-f994-51d8-afd86af26bba@gmail.com>
-From:   Mikko Perttunen <cyndis@kapsi.fi>
-Message-ID: <a180bd42-2cd9-87b6-1848-61058f198d63@kapsi.fi>
-Date:   Mon, 11 Jan 2021 17:52:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Mon, 11 Jan 2021 10:53:28 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA475C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:52:47 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id h16so7575067qvu.8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:52:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DTtX5CQ79mvCElDxODO77cVTuyuq22GdoAJZjW803s4=;
+        b=PP5P9Js+hVVOM2eTY6pAKi4aMnJ/nRqExT3Coc1R4TFDgp6o81GIvIAF45yGnE5EdU
+         n/S/92pNpsBAj2aX5b/s4lAozrka3jVUmUIGgnoqI+ZX9dCIfwYhxNHy4b5vtKSKsAE0
+         mgMRxsb5f2T4K+xe2zmXwStNx17ucbYwtLOZxxPNl00kCpj5n15TLGNq0J8QrCyIuOaK
+         btbXvNMhsVa1pl6NvWQwlaq4KuScx/2dlraYITujsK5duvl9f8itQxUw8TDMmwMGOeBE
+         xEU0jAEkUHuScctGS4ZMweae+n8CLHQ+VgnGf4j3jJWZEe5QbyyhAva/ECM9vKEUyfns
+         e3UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DTtX5CQ79mvCElDxODO77cVTuyuq22GdoAJZjW803s4=;
+        b=jCFk68BjvLyZ8wrabmjReEuJg4+YbUJc81+LfZQcFmEtgBprP8l9j1mBxJQNYlZsEw
+         JIwhhZ7XEeyuzWadutdpWi63Y4BNagFhXKkvOM/3MPp8ef8e+au+2/atSulPYgSwHG84
+         7SJ/WhLj/kVGAk0Gm9E2gax56/YGWwOUTQJZ8EBK7WObz4Re3N76aR9sa7dDRnmI5KtU
+         VrHm7jGgeliE634gE6KDtIRrr5oKAjGNRth97lAdCDuyjJ9CFEk0aI5rSFM2joWhaZ6b
+         BzkDcqf3IdrXDIePanmTViX+IZb5uWgSu3ptHVJx9y/DZEVjKd7s1JnPdwwlRbBPa3md
+         6Jzg==
+X-Gm-Message-State: AOAM5315AGUJU/3CVP0EtL9qPB75dyotItCx1PmjiMqqnH6bhgjbBat8
+        s+RlA9xroapRfqmzldRjNtMMaA==
+X-Google-Smtp-Source: ABdhPJyKYjAT3LmoVbBTtIHwrAxf+Io6skqOJi1oDcms79ORoN0cLhj8cmluyb8xaWTDdeJLBNsZAw==
+X-Received: by 2002:a05:6214:14af:: with SMTP id bo15mr249528qvb.19.1610380367039;
+        Mon, 11 Jan 2021 07:52:47 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id r6sm67695qkk.127.2021.01.11.07.52.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 07:52:46 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kyzUr-005YBj-Kq; Mon, 11 Jan 2021 11:52:45 -0400
+Date:   Mon, 11 Jan 2021 11:52:45 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
+Message-ID: <20210111155245.GM504133@ziepe.ca>
+References: <20210110004435.26382-1-aarcange@redhat.com>
+ <CAHk-=wghqNywtf=sRv_5FmG=+hPGqj=KWakw34tNeoZ1wPuaHg@mail.gmail.com>
+ <CAHk-=wj5=1DKbQut1-21EwQbMSghNL3KOSd82rNrBhuG9+eekA@mail.gmail.com>
+ <X/prosulFrEoNnoF@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <b7f69fb9-2960-f994-51d8-afd86af26bba@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 84.249.134.236
-X-SA-Exim-Mail-From: cyndis@kapsi.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/prosulFrEoNnoF@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/11/21 5:14 PM, Dmitry Osipenko wrote:
-> 11.01.2021 16:55, Mikko Perttunen пишет:
->> Upon a communication error, the interrupt handler can call
->> tegra_i2c_disable_packet_mode. This causes a sleeping poll to happen
->> unless the current transaction was marked atomic. Since
->> tegra_i2c_disable_packet_mode is only called from the interrupt path,
->> make it use atomic waiting always.
->>
->> Fixes: ede2299f7101 ("i2c: tegra: Support atomic transfers")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
->> ---
->> This fixes constant spew for me while HDMI is connected to a
->> powered off television.
->>
->>   drivers/i2c/busses/i2c-tegra.c | 16 ++++++++--------
->>   1 file changed, 8 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
->> index 6f08c0c3238d..4a7ff1840565 100644
->> --- a/drivers/i2c/busses/i2c-tegra.c
->> +++ b/drivers/i2c/busses/i2c-tegra.c
->> @@ -528,12 +528,12 @@ static void tegra_i2c_vi_init(struct tegra_i2c_dev *i2c_dev)
->>   
->>   static int tegra_i2c_poll_register(struct tegra_i2c_dev *i2c_dev,
->>   				   u32 reg, u32 mask, u32 delay_us,
->> -				   u32 timeout_us)
->> +				   u32 timeout_us, bool force_atomic)
->>   {
->>   	void __iomem *addr = i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg);
->>   	u32 val;
->>   
->> -	if (!i2c_dev->atomic_mode)
->> +	if (!i2c_dev->atomic_mode && !force_atomic)
->>   		return readl_relaxed_poll_timeout(addr, val, !(val & mask),
->>   						  delay_us, timeout_us);
->>   
->> @@ -560,7 +560,7 @@ static int tegra_i2c_flush_fifos(struct tegra_i2c_dev *i2c_dev)
->>   	val |= mask;
->>   	i2c_writel(i2c_dev, val, offset);
->>   
->> -	err = tegra_i2c_poll_register(i2c_dev, offset, mask, 1000, 1000000);
->> +	err = tegra_i2c_poll_register(i2c_dev, offset, mask, 1000, 1000000, false);
->>   	if (err) {
->>   		dev_err(i2c_dev->dev, "failed to flush FIFO\n");
->>   		return err;
->> @@ -569,7 +569,7 @@ static int tegra_i2c_flush_fifos(struct tegra_i2c_dev *i2c_dev)
->>   	return 0;
->>   }
->>   
->> -static int tegra_i2c_wait_for_config_load(struct tegra_i2c_dev *i2c_dev)
->> +static int tegra_i2c_wait_for_config_load(struct tegra_i2c_dev *i2c_dev, bool force_atomic)
->>   {
->>   	int err;
->>   
->> @@ -579,7 +579,7 @@ static int tegra_i2c_wait_for_config_load(struct tegra_i2c_dev *i2c_dev)
->>   	i2c_writel(i2c_dev, I2C_MSTR_CONFIG_LOAD, I2C_CONFIG_LOAD);
->>   
->>   	err = tegra_i2c_poll_register(i2c_dev, I2C_CONFIG_LOAD, 0xffffffff,
->> -				      1000, I2C_CONFIG_LOAD_TIMEOUT);
->> +				      1000, I2C_CONFIG_LOAD_TIMEOUT, force_atomic);
->>   	if (err) {
->>   		dev_err(i2c_dev->dev, "failed to load config\n");
->>   		return err;
->> @@ -684,7 +684,7 @@ static int tegra_i2c_init(struct tegra_i2c_dev *i2c_dev)
->>   	if (i2c_dev->multimaster_mode && i2c_dev->hw->has_slcg_override_reg)
->>   		i2c_writel(i2c_dev, I2C_MST_CORE_CLKEN_OVR, I2C_CLKEN_OVERRIDE);
->>   
->> -	err = tegra_i2c_wait_for_config_load(i2c_dev);
->> +	err = tegra_i2c_wait_for_config_load(i2c_dev, false);
->>   	if (err)
->>   		return err;
->>   
->> @@ -707,7 +707,7 @@ static int tegra_i2c_disable_packet_mode(struct tegra_i2c_dev *i2c_dev)
->>   	if (cnfg & I2C_CNFG_PACKET_MODE_EN)
->>   		i2c_writel(i2c_dev, cnfg & ~I2C_CNFG_PACKET_MODE_EN, I2C_CNFG);
->>   
->> -	return tegra_i2c_wait_for_config_load(i2c_dev);
->> +	return tegra_i2c_wait_for_config_load(i2c_dev, true);
->>   }
->>   
->>   static int tegra_i2c_empty_rx_fifo(struct tegra_i2c_dev *i2c_dev)
->> @@ -1090,7 +1090,7 @@ static int tegra_i2c_issue_bus_clear(struct i2c_adapter *adap)
->>   	      I2C_BC_TERMINATE;
->>   	i2c_writel(i2c_dev, val, I2C_BUS_CLEAR_CNFG);
->>   
->> -	err = tegra_i2c_wait_for_config_load(i2c_dev);
->> +	err = tegra_i2c_wait_for_config_load(i2c_dev, false);
->>   	if (err)
->>   		return err;
->>   
->>
-> 
-> What about a simpler variant:
-> 
-> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
-> index 6f08c0c3238d..0727383f4940 100644
-> --- a/drivers/i2c/busses/i2c-tegra.c
-> +++ b/drivers/i2c/busses/i2c-tegra.c
-> @@ -533,7 +533,7 @@ static int tegra_i2c_poll_register(struct
-> tegra_i2c_dev *i2c_dev,
->   	void __iomem *addr = i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg);
->   	u32 val;
-> 
-> -	if (!i2c_dev->atomic_mode)
-> +	if (!i2c_dev->atomic_mode && !in_irq())
->   		return readl_relaxed_poll_timeout(addr, val, !(val & mask),
->   						  delay_us, timeout_us);
-> 
+On Sat, Jan 09, 2021 at 09:51:14PM -0500, Andrea Arcangeli wrote:
 
-Yep, I'll post a v2 with that.
+> Are we spending 32bit in mm_struct atomic_t just to call atomic_set(1)
+> on it? Why isn't it a MMF_HAS_PINNED that already can be set
+> atomically under mmap_read_lock too? There's bit left free there, we
+> didn't run out yet to justify wasting another 31 bits. I hope I'm
+> overlooking something.
 
-Mikko
+It needs to be atomic because it is set under gup fast, no mmap
+lock. Peter and myself did not find another place to put this that was
+already atomic
+
+> The existence of FOLL_LONGTERM is good and makes a difference at times
+> for writeback if it's on a MAP_SHARED, or it makes difference during
+> GUP to do a page_migrate before taking the pin, but for the whole rest
+> of the VM it's irrelevant if it's long or short term, so I'm also
+> concerned from what Jason mentioned about long term pins being treated
+> differently within the VM. 
+
+Why? They are different. write protect doesn't stop modification of
+the data. How is that not a relavent and real difference?
+
+Jason
