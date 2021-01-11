@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD09D2F16AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:56:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77BBB2F15FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731244AbhAKNz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:55:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54854 "EHLO mail.kernel.org"
+        id S1731171AbhAKNKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:10:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730563AbhAKNHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:07:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EC0C22A84;
-        Mon, 11 Jan 2021 13:06:38 +0000 (UTC)
+        id S1729199AbhAKNJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:09:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D097D22795;
+        Mon, 11 Jan 2021 13:08:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370399;
-        bh=WekDsdLuuAVgarGa/JDddt4ocFNlWU4+ClsF8CDsbBk=;
+        s=korg; t=1610370530;
+        bh=3unA2aH1cv86A809m8H2K1/M6D13W8/QeBRBZ1NsYs8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oIwH08AHmMQ5sbib6ID2eSwAifaObW3nff3D5h0AEFsOusoJ6xAJi53tMl6BTWBgI
-         eh0n5BN/l9TSPYhwlKdoEo3EpT5oG1DHr1+baM+oOhCI6wfqlqdXG9J8IMm2mAQf79
-         UkhALluAWJDlJTMKCIsSw8ScPFyCPivsllODKrbY=
+        b=HtTrer9Qwl4Wbvb1o1Sqz3bsWCsBp0PYFAhfi9Kfyq0x6bTdi+JQDIQgTvlLfflfy
+         P2cFmsHG9/340g/mvuISI6p3GTYN/jqJxzZzTd4DuwXwQKkdBmLQIyLec78KKyzNSS
+         Xm74chrCokXA/w88GQxdJsAGk7VmRxL3CUQqDYgk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 22/57] vhost_net: fix ubuf refcount incorrectly when sendmsg fails
+Subject: [PATCH 4.19 32/77] net: usb: qmi_wwan: add Quectel EM160R-GL
 Date:   Mon, 11 Jan 2021 14:01:41 +0100
-Message-Id: <20210111130034.793721707@linuxfoundation.org>
+Message-Id: <20210111130037.942198052@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130033.715773309@linuxfoundation.org>
-References: <20210111130033.715773309@linuxfoundation.org>
+In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
+References: <20210111130036.414620026@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,57 +40,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunjian Wang <wangyunjian@huawei.com>
+From: "Bjørn Mork" <bjorn@mork.no>
 
-[ Upstream commit 01e31bea7e622f1890c274f4aaaaf8bccd296aa5 ]
+[ Upstream commit cfd82dfc9799c53ef109343a23af006a0f6860a9 ]
 
-Currently the vhost_zerocopy_callback() maybe be called to decrease
-the refcount when sendmsg fails in tun. The error handling in vhost
-handle_tx_zerocopy() will try to decrease the same refcount again.
-This is wrong. To fix this issue, we only call vhost_net_ubuf_put()
-when vq->heads[nvq->desc].len == VHOST_DMA_IN_PROGRESS.
+New modem using ff/ff/30 for QCDM, ff/00/00 for  AT and NMEA,
+and ff/ff/ff for RMNET/QMI.
 
-Fixes: bab632d69ee4 ("vhost: vhost TX zero-copy support")
-Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Link: https://lore.kernel.org/r/1609207308-20544-1-git-send-email-wangyunjian@huawei.com
+T: Bus=02 Lev=01 Prnt=01 Port=00 Cnt=01 Dev#= 2 Spd=5000 MxCh= 0
+D: Ver= 3.20 Cls=ef(misc ) Sub=02 Prot=01 MxPS= 9 #Cfgs= 1
+P: Vendor=2c7c ProdID=0620 Rev= 4.09
+S: Manufacturer=Quectel
+S: Product=EM160R-GL
+S: SerialNumber=e31cedc1
+C:* #Ifs= 5 Cfg#= 1 Atr=a0 MxPwr=896mA
+I:* If#= 0 Alt= 0 #EPs= 2 Cls=ff(vend.) Sub=ff Prot=30 Driver=(none)
+E: Ad=81(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E: Ad=01(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+I:* If#= 1 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+E: Ad=83(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
+E: Ad=82(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E: Ad=02(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+E: Ad=85(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
+E: Ad=84(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E: Ad=03(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+I:* If#= 3 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=00 Driver=(none)
+E: Ad=87(I) Atr=03(Int.) MxPS= 10 Ivl=32ms
+E: Ad=86(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E: Ad=04(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+I:* If#= 4 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=ff Prot=ff Driver=(none)
+E: Ad=88(I) Atr=03(Int.) MxPS= 8 Ivl=32ms
+E: Ad=8e(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E: Ad=0f(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+
+Signed-off-by: BjÃ¸rn Mork <bjorn@mork.no>
+Link: https://lore.kernel.org/r/20201230152451.245271-1-bjorn@mork.no
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/vhost/net.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/usb/qmi_wwan.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/vhost/net.c
-+++ b/drivers/vhost/net.c
-@@ -466,6 +466,7 @@ static void handle_tx(struct vhost_net *
- 	size_t hdr_size;
- 	struct socket *sock;
- 	struct vhost_net_ubuf_ref *uninitialized_var(ubufs);
-+	struct ubuf_info *ubuf;
- 	bool zcopy, zcopy_used;
- 	int sent_pkts = 0;
+--- a/drivers/net/usb/qmi_wwan.c
++++ b/drivers/net/usb/qmi_wwan.c
+@@ -995,6 +995,7 @@ static const struct usb_device_id produc
+ 	{QMI_MATCH_FF_FF_FF(0x2c7c, 0x0125)},	/* Quectel EC25, EC20 R2.0  Mini PCIe */
+ 	{QMI_MATCH_FF_FF_FF(0x2c7c, 0x0306)},	/* Quectel EP06/EG06/EM06 */
+ 	{QMI_MATCH_FF_FF_FF(0x2c7c, 0x0512)},	/* Quectel EG12/EM12 */
++	{QMI_MATCH_FF_FF_FF(0x2c7c, 0x0620)},	/* Quectel EM160R-GL */
+ 	{QMI_MATCH_FF_FF_FF(0x2c7c, 0x0800)},	/* Quectel RM500Q-GL */
  
-@@ -532,9 +533,7 @@ static void handle_tx(struct vhost_net *
- 
- 		/* use msg_control to pass vhost zerocopy ubuf info to skb */
- 		if (zcopy_used) {
--			struct ubuf_info *ubuf;
- 			ubuf = nvq->ubuf_info + nvq->upend_idx;
--
- 			vq->heads[nvq->upend_idx].id = cpu_to_vhost32(vq, head);
- 			vq->heads[nvq->upend_idx].len = VHOST_DMA_IN_PROGRESS;
- 			ubuf->callback = vhost_zerocopy_callback;
-@@ -563,7 +562,8 @@ static void handle_tx(struct vhost_net *
- 		err = sock->ops->sendmsg(sock, &msg, len);
- 		if (unlikely(err < 0)) {
- 			if (zcopy_used) {
--				vhost_net_ubuf_put(ubufs);
-+				if (vq->heads[ubuf->desc].len == VHOST_DMA_IN_PROGRESS)
-+					vhost_net_ubuf_put(ubufs);
- 				nvq->upend_idx = ((unsigned)nvq->upend_idx - 1)
- 					% UIO_MAXIOV;
- 			}
+ 	/* 3. Combined interface devices matching on interface number */
 
 
