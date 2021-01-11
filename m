@@ -2,113 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9EA2F0FFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:24:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D371A2F1006
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 11:25:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729155AbhAKKXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 05:23:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726018AbhAKKXB (ORCPT
+        id S1729022AbhAKKY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 05:24:57 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:45854 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728664AbhAKKY4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 05:23:01 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDC5C061786;
-        Mon, 11 Jan 2021 02:22:21 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id a12so15766515wrv.8;
-        Mon, 11 Jan 2021 02:22:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=q7Ut8wyd+vcrdq5TTR35m8gBt8Gz8AEpFHytc1d7o3o=;
-        b=X6z5Ie2/PoLrjneF7/9zRg9FK3zHBOoBKJj44ntLsUEn4+kX0kiAWOrumhDW70sUJP
-         PZpk5Zg3goIRX6HMnWCc8w6+33kxfrTv3SMRIzcaU/ukXvSTb08GXdMg+6X6l3X3EZja
-         2uc/52BDjYSHW/p53bQ1r8UIrwovpF0VfLW7U6GqaptZ+rVo2XvVbWXgPNRc0T9HifRG
-         cCogC5Jn/kf4RBKQBK3KPW4EtOOCbluZFeNv6A3Kk9PQ1ZM8wjIfhkj7mk3LTs7+eRzX
-         tbmx3wfU+nUX2IBLV9JHMNVBvs9XNzcdmOGKDuz+5ggVehsTfN6lNZ0r2sWTs1udwoa9
-         eSkA==
+        Mon, 11 Jan 2021 05:24:56 -0500
+Received: by mail-io1-f71.google.com with SMTP id x7so12112569ion.12
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 02:24:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=q7Ut8wyd+vcrdq5TTR35m8gBt8Gz8AEpFHytc1d7o3o=;
-        b=SDDifoXphnmK8mlDbkWPZNfqlkZZJeuJ1Jirtvv9d6Bz2fAts0KG7gNMdQfffP/4zR
-         Ovis2om9O3ajMeQzfY9aHEaWq2+J8/FZ4RZlp4J8lP7eTIlNoXiBTJCS8sVpJFhB/e24
-         urVB18BOJ9Qbs3IoIg1jbK/BxMb5dm5UZv/pySJ3WW8hbcClIY20H++zk521ZBEYBDh2
-         V1BXsvp9stGILS/w+6BghKxHF8NnpdVJbCmAG/tmb2oVZs/1rDdASbgNoO6VXSGVF8m4
-         jEUFtjaXzmsKQkpwli92GjNANYGw5+8LwjGl56devFlb1N70f/9lQQlhJomg8VhMVYMp
-         FGag==
-X-Gm-Message-State: AOAM533Wwl+En0zTDugpjO6DwbZpTvw+FSfm6ReTVFDNxL/2BgDJgGCL
-        u1dcJ5tSkLMGkgB/asZqzgw=
-X-Google-Smtp-Source: ABdhPJyV/RPT9lqtiYfVdLtTlc/+U9FXDn+2X4J5n0EhwjjTPRKrolDp81kRQ00Jy04M5oAWJy/gpw==
-X-Received: by 2002:adf:e452:: with SMTP id t18mr14927572wrm.177.1610360539822;
-        Mon, 11 Jan 2021 02:22:19 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2d2f:cf00:597a:a5a4:31de:992e])
-        by smtp.gmail.com with ESMTPSA id m11sm20879996wmi.16.2021.01.11.02.22.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 02:22:19 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Adrian Hunter <adrian.hunter@intel.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org
-Cc:     linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH -next] scsi: docs: ABI: sysfs-driver-ufs: rectify table formatting
-Date:   Mon, 11 Jan 2021 11:22:12 +0100
-Message-Id: <20210111102212.19377-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=UEm4iYaUHKutrveM2lkyBJqkbr/xk2Rk6V2j+DK2EEg=;
+        b=HBU2ndv2Ig5P8HewDseIJ4Hld9ISzgxx4W56FpAya7cXi0qyqNiSDbKVuKUdyvnaWc
+         GXkqHqzsXiRQ/9iTZCqn3yqUv/CcnjAy70GQlx4Apu8tRq2WOwvNGNUO1yd+JofUBrKs
+         Zt05XrImV5Jj6ASOl+J3MoWypz0ukH2I9r3+53Lb3rkiC4zphHBrdJTnVhGAHRq+sGV3
+         7/c4ykbCMUe74MMyipzwgEaDOEMdSGOacJUCyoYkB/AAxmbW3nRGOKHxiZGUNqcuZ9kX
+         eYX+bXcHQh3lMmEfxgcGD0e/SHlzOxdoBMrBqjRHvRJ1pG7pJlJy1RcDhzJZw3JkxN+X
+         Dy1Q==
+X-Gm-Message-State: AOAM533OWWAWe4w1RnbL5f4hkobQVY/DoMO3MdiUA7ESok0nbaeTBMKw
+        WoSqqgV4uz+xEJrD8HCaCs4/bk8b0mLGC6wKCVjSuyx9IVwY
+X-Google-Smtp-Source: ABdhPJw0uBHY1ferNPHbLFK91HAI3ve9fd/g8jcrcV0UCZe48GFwbyhUSSY3YOQlhaDkuIRXsB3FJ/8yRFMaq7woDbUCixAvHKTl
+MIME-Version: 1.0
+X-Received: by 2002:a5d:9252:: with SMTP id e18mr14273514iol.146.1610360655560;
+ Mon, 11 Jan 2021 02:24:15 -0800 (PST)
+Date:   Mon, 11 Jan 2021 02:24:15 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d5ca2305b89d4efe@google.com>
+Subject: KASAN: use-after-free Read in hci_dev_do_open
+From:   syzbot <syzbot+8bf62d95824d213104fa@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 0b2894cd0fdf ("scsi: docs: ABI: sysfs-driver-ufs: Add DeepSleep
-power mode") adds new entries in tables of sysfs-driver-ufs ABI
-documentation, but formatted the table incorrectly.
+Hello,
 
-Hence, make htmldocs warns:
+syzbot found the following issue on:
 
-  ./Documentation/ABI/testing/sysfs-driver-ufs:{915,956}:
-  WARNING: Malformed table. Text in column margin in table line 15.
+HEAD commit:    71c061d2 Merge tag 'for-5.11-rc2-tag' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1612b248d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8aa30b9da402d224
+dashboard link: https://syzkaller.appspot.com/bug?extid=8bf62d95824d213104fa
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-Rectify table formatting for DeepSleep power mode.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8bf62d95824d213104fa@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_read include/linux/instrumented.h:71 [inline]
+BUG: KASAN: use-after-free in atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
+BUG: KASAN: use-after-free in refcount_read include/linux/refcount.h:147 [inline]
+BUG: KASAN: use-after-free in skb_unref include/linux/skbuff.h:1051 [inline]
+BUG: KASAN: use-after-free in kfree_skb+0x2e/0x3f0 net/core/skbuff.c:697
+Read of size 4 at addr ffff888022dacc1c by task syz-executor.2/13757
+
+CPU: 0 PID: 13757 Comm: syz-executor.2 Not tainted 5.11.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
+ __kasan_report mm/kasan/report.c:396 [inline]
+ kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
+ check_memory_region_inline mm/kasan/generic.c:179 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
+ instrument_atomic_read include/linux/instrumented.h:71 [inline]
+ atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
+ refcount_read include/linux/refcount.h:147 [inline]
+ skb_unref include/linux/skbuff.h:1051 [inline]
+ kfree_skb+0x2e/0x3f0 net/core/skbuff.c:697
+ hci_dev_do_open+0xa4a/0x1a00 net/bluetooth/hci_core.c:1619
+ hci_dev_open+0x132/0x300 net/bluetooth/hci_core.c:1685
+ hci_sock_ioctl+0x5b6/0x840 net/bluetooth/hci_sock.c:1025
+ sock_do_ioctl+0xcb/0x2d0 net/socket.c:1037
+ sock_ioctl+0x477/0x6a0 net/socket.c:1177
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45e087
+Code: 48 83 c4 08 48 89 d8 5b 5d c3 66 0f 1f 84 00 00 00 00 00 48 89 e8 48 f7 d8 48 39 c3 0f 92 c0 eb 92 66 90 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 6d b5 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fffdcd39c88 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e087
+RDX: 0000000000000002 RSI: 00000000400448c9 RDI: 0000000000000003
+RBP: 00007fffdcd39ca0 R08: 0000000000000000 R09: 00007f60a0a24700
+R10: 00007f60a0a249d0 R11: 0000000000000246 R12: 000000000310e914
+R13: 0000000000000004 R14: 0000000000000000 R15: 0000000000000000
+
+Allocated by task 8498:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:401 [inline]
+ ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
+ kasan_slab_alloc include/linux/kasan.h:205 [inline]
+ slab_post_alloc_hook mm/slab.h:512 [inline]
+ slab_alloc_node mm/slub.c:2891 [inline]
+ slab_alloc mm/slub.c:2899 [inline]
+ kmem_cache_alloc+0x1c6/0x440 mm/slub.c:2904
+ skb_clone+0x14f/0x3c0 net/core/skbuff.c:1449
+ hci_cmd_work+0x18f/0x390 net/bluetooth/hci_core.c:5007
+ process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Freed by task 2042:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:356
+ ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:362
+ kasan_slab_free include/linux/kasan.h:188 [inline]
+ slab_free_hook mm/slub.c:1547 [inline]
+ slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1580
+ slab_free mm/slub.c:3142 [inline]
+ kmem_cache_free+0x82/0x350 mm/slub.c:3158
+ kfree_skbmem+0xef/0x1b0 net/core/skbuff.c:627
+ __kfree_skb net/core/skbuff.c:684 [inline]
+ kfree_skb net/core/skbuff.c:701 [inline]
+ kfree_skb+0x140/0x3f0 net/core/skbuff.c:695
+ hci_cmd_work+0x182/0x390 net/bluetooth/hci_core.c:5005
+ process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+The buggy address belongs to the object at ffff888022dacb40
+ which belongs to the cache skbuff_head_cache of size 232
+The buggy address is located 220 bytes inside of
+ 232-byte region [ffff888022dacb40, ffff888022dacc28)
+The buggy address belongs to the page:
+page:00000000530f5d7f refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x22dac
+flags: 0xfff00000000200(slab)
+raw: 00fff00000000200 dead000000000100 dead000000000122 ffff888010cb4c80
+raw: 0000000000000000 00000000000c000c 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888022dacb00: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
+ ffff888022dacb80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888022dacc00: fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc
+                            ^
+ ffff888022dacc80: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888022dacd00: fb fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc
+==================================================================
+
+
 ---
-Adrian, please ack.
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Martin, please pick on your scsi-next tree.
-
- Documentation/ABI/testing/sysfs-driver-ufs | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/ABI/testing/sysfs-driver-ufs b/Documentation/ABI/testing/sysfs-driver-ufs
-index e77fa784d6d8..75ccc5c62b3c 100644
---- a/Documentation/ABI/testing/sysfs-driver-ufs
-+++ b/Documentation/ABI/testing/sysfs-driver-ufs
-@@ -932,8 +932,9 @@ Description:	This entry could be used to set or show the UFS device
- 		5   UFS device will be powered off, UIC link will
- 		    be powered off
- 		6   UFS device will be moved to deep sleep, UIC link
--		will be powered off. Note, deep sleep might not be
--		supported in which case this value will not be accepted
-+		    will be powered off. Note, deep sleep might not be
-+		    supported in which case this value will not be
-+		    accepted
- 		==  ====================================================
- 
- What:		/sys/bus/platform/drivers/ufshcd/*/rpm_target_dev_state
-@@ -973,8 +974,9 @@ Description:	This entry could be used to set or show the UFS device
- 		5   UFS device will be powered off, UIC link will
- 		    be powered off
- 		6   UFS device will be moved to deep sleep, UIC link
--		will be powered off. Note, deep sleep might not be
--		supported in which case this value will not be accepted
-+		    will be powered off. Note, deep sleep might not be
-+		    supported in which case this value will not be
-+		    accepted
- 		==  ====================================================
- 
- What:		/sys/bus/platform/drivers/ufshcd/*/spm_target_dev_state
--- 
-2.17.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
