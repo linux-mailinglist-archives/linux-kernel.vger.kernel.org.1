@@ -2,138 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C852F245F
+	by mail.lfdr.de (Postfix) with ESMTP id 11F112F245E
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:16:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729700AbhALAYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2389979AbhALAYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 11 Jan 2021 19:24:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390750AbhAKWpn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 17:45:43 -0500
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020FDC06179F
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:45:03 -0800 (PST)
-Received: by mail-oo1-xc34.google.com with SMTP id n127so133891ooa.13
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 14:45:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O6kpvfJukcSfzCE8pUQQCjHIT6O76tXxg9rP/f6B+4o=;
-        b=p1aPlWShuhKkImVn7MGucoVZAZix8VzDlfAzzEinRVGv+R4jXCLuH4buasWXMvHN8u
-         p57itQKrg0IiSRt08vLyEpcZnCMOcYS2PfCM1cXymUb4rkiWMF3JIKt/NnIlBqMk/29k
-         Guc04C9Q27972coInhcL2+HafSp/onmNdGzDPwIPeAay3qZtuU8vnznOoxDBbdvBIzfP
-         sPafwQqEM5c9wi46verEsT5u7122qmDkjpnHjvlsgDWGYKXSfolsrAr8JCGbu3R+B36s
-         6MBakNPiacJm3HjXc5xHpHQ3K5vP0z9DzIE6GxH1U3ByJx1qSubOQpFngerO30sgjPyX
-         g7TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O6kpvfJukcSfzCE8pUQQCjHIT6O76tXxg9rP/f6B+4o=;
-        b=F+T65lgDR3j24whwn28lJ0S1JwY0NmGXv5bXkRtTVVXvJi99/fonZ5+8JOOl3wJF3e
-         MKotyg6MD4LV4hTiVwEqFcribRC3FEdIBP0Fm9PYFsoQY4DBkQGP5T698DSz7wVxc0J6
-         ZmzbPDz8RKxK1aaZ+wJUIAJt98Nq0EVkaL58vJU029K5hR4FIDKHzbMILrXXYt9BSaZO
-         jwY9B+w7y07ku9XFnwLpk0i5zFygOmAUKm7mP8v3s6Hhynm9xEQWGDBmfgvOnvFGMXil
-         xe9yxWmiMmVXcguWqZdg49dZ+Bz1pRYqt+LIkeA6jUDJbySwkme7O60PSwsdNBv3pHCp
-         CBRw==
-X-Gm-Message-State: AOAM533Y9AGzDdlac2i2qQOwOy3J4nOPry/chkcl1EgmjTsglFRrU+AV
-        EemPSjDy+azY0TyMQL1mpNoJA0Kr4oqsaMStFb/C2w==
-X-Google-Smtp-Source: ABdhPJzkhny7kvYdHxhBKmqcMFa1AfruRGU61uyaRwGVzukCfaf+okOYn9JpZnSnjjewZU6Ogd5CB9JmmBniRlmn8Wo=
-X-Received: by 2002:a4a:e294:: with SMTP id k20mr966042oot.82.1610405102002;
- Mon, 11 Jan 2021 14:45:02 -0800 (PST)
+Received: from mail.kernel.org ([198.145.29.99]:58608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390752AbhAKWpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 17:45:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5E6222CAF;
+        Mon, 11 Jan 2021 22:45:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610405105;
+        bh=chIuNkxQOqz1a6QXqkz+qMeyAZzOJBFgOOVyoy2AHg4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lXVSvkmweExnqRTKLa4hpHUhuJffG6JpHvCiOnlK86JHt7ENw9EteCKmdUipxAR0J
+         v9yc3z0R6Tb0vKtcvrbJCcEFhAiaWp6us0g7wJo06bmKcI4j3FKVmFlEHWwHF+0iqh
+         OhM/aLkcLfIApH8H3zQbBNjLpbsF8pkMz2XLda9nJ4rGteA6tzhxHnJwWnn55ZPYRU
+         WHIvLyQAS5mVXZx+jKx/Zo143FY44JUZG0ajrJN0RFhwRWSxQJy6KnfK2hXyYf81W/
+         TXJ7pNJoRCmyXXhQUzQqWNsvk8ag1wfFpq83ZDE1KU5w5IC7iXRV8Ru7HD99vKSqNE
+         5fb44Pgt8gEPQ==
+Date:   Mon, 11 Jan 2021 14:45:02 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Bean Huo <huobean@gmail.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        john.garry@huawei.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, satyat@google.com,
+        shipujin.t@gmail.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bean Huo <beanhuo@micron.com>
+Subject: Re: [PATCH 2/2] scsi: ufs: Remove unnecessary devm_kfree
+Message-ID: <X/zU7uWK5s22th4B@sol.localdomain>
+References: <20210111223202.26369-1-huobean@gmail.com>
+ <20210111223202.26369-3-huobean@gmail.com>
 MIME-Version: 1.0
-References: <000000000000d5173d05b7097755@google.com>
-In-Reply-To: <000000000000d5173d05b7097755@google.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Mon, 11 Jan 2021 14:44:50 -0800
-Message-ID: <CALMp9eSKrn0zcmSuOE6GFi400PMgK+yeypS7+prtwBckgdW0vQ@mail.gmail.com>
-Subject: Re: UBSAN: shift-out-of-bounds in kvm_vcpu_after_set_cpuid
-To:     syzbot <syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com>
-Cc:     Borislav Petkov <bp@alien8.de>, "H . Peter Anvin" <hpa@zytor.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111223202.26369-3-huobean@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It looks like userspace can possibly induce this by providing guest
-CPUID information with a "physical address width" of 64 in leaf
-0x80000008.
-
-Perhaps cpuid_query_maxphyaddr() should just look at the low 5 bits of
-CPUID.80000008H:EAX? Better would be to return an error for
-out-of-range values, but I understand that the kvm community's stance
-is that, in general, guest CPUID information should not be validated
-by kvm.
-
-On Tue, Dec 22, 2020 at 12:36 AM syzbot
-<syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    5e60366d Merge tag 'fallthrough-fixes-clang-5.11-rc1' of g..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=11c7046b500000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=db720fe37a6a41d8
-> dashboard link: https://syzkaller.appspot.com/bug?extid=e87846c48bf72bc85311
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> userspace arch: i386
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com
->
-> ================================================================================
-> UBSAN: shift-out-of-bounds in arch/x86/kvm/mmu.h:52:16
-> shift exponent 64 is too large for 64-bit type 'long long unsigned int'
-> CPU: 1 PID: 11156 Comm: syz-executor.1 Not tainted 5.10.0-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x107/0x163 lib/dump_stack.c:120
->  ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
->  __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
->  rsvd_bits arch/x86/kvm/mmu.h:52 [inline]
->  kvm_vcpu_after_set_cpuid.cold+0x35/0x3a arch/x86/kvm/cpuid.c:181
->  kvm_vcpu_ioctl_set_cpuid+0x28e/0x970 arch/x86/kvm/cpuid.c:273
->  kvm_arch_vcpu_ioctl+0x1091/0x2d70 arch/x86/kvm/x86.c:4699
->  kvm_vcpu_ioctl+0x7b9/0xdb0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3386
->  kvm_vcpu_compat_ioctl+0x1a2/0x340 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3430
->  __do_compat_sys_ioctl+0x1d3/0x230 fs/ioctl.c:842
->  do_syscall_32_irqs_on arch/x86/entry/common.c:78 [inline]
->  __do_fast_syscall_32+0x56/0x80 arch/x86/entry/common.c:137
->  do_fast_syscall_32+0x2f/0x70 arch/x86/entry/common.c:160
->  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-> RIP: 0023:0xf7fe8549
-> Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
-> RSP: 002b:00000000f55e20cc EFLAGS: 00000296 ORIG_RAX: 0000000000000036
-> RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 000000004008ae8a
-> RDX: 00000000200000c0 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> ================================================================================
->
->
+On Mon, Jan 11, 2021 at 11:32:02PM +0100, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
+> 
+> The memory allocated with devm_kzalloc() is freed automatically
+> no need to explicitly call devm_kfree.
+> 
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>  drivers/scsi/ufs/ufshcd-crypto.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd-crypto.c b/drivers/scsi/ufs/ufshcd-crypto.c
+> index 07310b12a5dc..ec80ec83cf85 100644
+> --- a/drivers/scsi/ufs/ufshcd-crypto.c
+> +++ b/drivers/scsi/ufs/ufshcd-crypto.c
+> @@ -182,7 +182,7 @@ int ufshcd_hba_init_crypto_capabilities(struct ufs_hba *hba)
+>  	err = blk_ksm_init(&hba->ksm,
+>  			   hba->crypto_capabilities.config_count + 1);
+>  	if (err)
+> -		goto out_free_caps;
+> +		goto out;
+>  
+>  	hba->ksm.ksm_ll_ops = ufshcd_ksm_ops;
+>  	/* UFS only supports 8 bytes for any DUN */
+> @@ -208,8 +208,6 @@ int ufshcd_hba_init_crypto_capabilities(struct ufs_hba *hba)
+>  
+>  	return 0;
+>  
+> -out_free_caps:
+> -	devm_kfree(hba->dev, hba->crypto_cap_array);
+>  out:
+>  	/* Indicate that init failed by clearing UFSHCD_CAP_CRYPTO */
+>  	hba->caps &= ~UFSHCD_CAP_CRYPTO;
+
+Looks fine, feel free to add:
+
+	Reviewed-by: Eric Biggers <ebiggers@google.com>
+
+I think this was here to free the memory in the case where the crypto support
+gets disabled but the UFS host initialization still continues, so that the space
+wouldn't be wasted.  But that's not what happens, as this is only reached on
+ENOMEM which is a fatal error.
+
+- Eric
