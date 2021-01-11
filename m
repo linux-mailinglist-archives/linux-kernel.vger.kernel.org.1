@@ -2,141 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C8E2F19AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:31:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 604B02F19AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 16:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730599AbhAKPa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 10:30:57 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:38068 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729194AbhAKPa4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 10:30:56 -0500
-Received: by mail-io1-f71.google.com with SMTP id q140so12782712iod.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 07:30:40 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=yDdM1YuzlRSxHmushVuEYsuGmbOyLKabLgjSNNrBhjc=;
-        b=WAOcLIezucqdbyjPN6KZjCFoJgslDNfoEAAVg+Ld8hoFq5YHthOnDdzL6W8XviyB28
-         /mkiKdPdSAIU/JBY1iQBRvrZOqPDtSyCFB5uPvI3K/i4uJ134VnYyiP64UyNO8lJemI0
-         HNy0/5uq+mXCXdS5YM+F43GQnzT7mVMSycF6W0tLBJxD6rzmO18ZK9idw7FkPOz0eJNY
-         lJpWd0W1Ov1ZxYzzb8n7sIoPMj9eE+aXJALxRUHbZcpoK2MCSWjscJleE7bar26gX4pI
-         aZ0SgfMUdTAYcHNPY/aVkIk8EOoslQBcqSIaDqTkDZYvnix2FydMDZJbaZTpWkMoMTNl
-         F65A==
-X-Gm-Message-State: AOAM530FglQTnYVIo6DSoG35ePJitlI7PdD6jXolECK0HHM/DhXLs4e2
-        GjthymQ0s84Umnwu645CCF1FAKFAgFB00BFmu8s7sYOsUt3c
-X-Google-Smtp-Source: ABdhPJzZ+3a0xbrJgD3OkN1v1dn3EycFYpNWWAsHBUQt32IhJnImsR5xZJXY35DagJYk6/HKQpuwOgZ8fj3xsusPnrFHsYg3D3pG
+        id S1730876AbhAKPbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 10:31:13 -0500
+Received: from mail-dm6nam11on2063.outbound.protection.outlook.com ([40.107.223.63]:25313
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727824AbhAKPbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 10:31:12 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Uv+WkrxMHudJAomvERu3sv1rX7q1fy+j1nJ9ZDpmwETj+E3tguiSU50GLv8GqbZrV7zeEect375mDWNFjz/ulAN5Hr1mqEv8URElDtl/CO0g8PqfQ/Q0ABkbKOfpfdhZ6IIZpNIuYG5hIzx9SU8fGigLUxAUNx1Uwp/caTux9RdnFq7LbtHs/eBx8ptF4to1SE1lkI0jhQdr/kePxivLK+Ij2qtPHSZCDQQTVY0Z6Tjxv0hfsAN7QR8cNtQ6sw9q/ZrRGnfSrrnWKBtZ5Xb6ojwaGD+ew4VsORgXdvD/9gMEdopUOMG/AC7UUBjo6lsWQavdGT3x6cwsot0jpMgxDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qtkFJvIVYxXxO69PdWAXKYBK6E/s/rLqISBggdd8h3s=;
+ b=j8hiQ6q1FYFvMYSpV0nTG7UIC8EyVqmBcz16jGyhmu3s2dhcp/vpWb2GLgpGezbJ1r8ECUR1fP64irYE7IR4/Ghi3q4WU2wcJ93jNmfL78IBnBr4UttpP4ScUo+qGMf1EtcfhYcBjvnmJ1q4snQH91jBakBIsyd0T+zsiazcIhLLbCBqiZDIWpOO82VREfvOR8h30TnupPYhZmSZCaSB0IW6yFhEvo4HzRtI3U1zp6UDnByh2mGtuvrWz7CEQet7qktdZeWpuNIu5Vi7ITMBNqoPUwkNMHPSiEYYP2SeHLiG1guA3FtV8nEHHESVHuvdBOLn8ae5Ua3juc0j1gwMpg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qtkFJvIVYxXxO69PdWAXKYBK6E/s/rLqISBggdd8h3s=;
+ b=y6PFIZ9bL1W0fkIQonvccz2GM2heWsjLzKevk+bkYbkjLUkjjTQ+W/SRL1WWWRAgElWlFo43zTJEV0OsRIEcSXKAb2+KJNAwBZZ3xxx//igXoQLEX4sX5d9z5vMldHTSVDnA04zkpcT4MtjA2xFtY4VfrgRyOcZSY1ZCNEcf4wU=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM6PR12MB3468.namprd12.prod.outlook.com (2603:10b6:5:38::33) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3742.9; Mon, 11 Jan 2021 15:30:19 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::d95e:b9d:1d6a:e845]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::d95e:b9d:1d6a:e845%12]) with mapi id 15.20.3742.012; Mon, 11 Jan 2021
+ 15:30:19 +0000
+Subject: Re: [PATCH 03/13] KVM: SVM: Move SEV module params/variables to sev.c
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <20210109004714.1341275-1-seanjc@google.com>
+ <20210109004714.1341275-4-seanjc@google.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <9b121aeb-2aad-7581-088e-a8f0a85ef85f@amd.com>
+Date:   Mon, 11 Jan 2021 09:30:16 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210109004714.1341275-4-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [67.79.209.213]
+X-ClientProxiedBy: SN1PR12CA0052.namprd12.prod.outlook.com
+ (2603:10b6:802:20::23) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
 MIME-Version: 1.0
-X-Received: by 2002:a92:d44e:: with SMTP id r14mr12393751ilm.299.1610379015503;
- Mon, 11 Jan 2021 07:30:15 -0800 (PST)
-Date:   Mon, 11 Jan 2021 07:30:15 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002c458f05b8a195cf@google.com>
-Subject: KMSAN: uninit-value in __nla_validate_parse (2)
-From:   syzbot <syzbot+2624e3778b18fc497c92@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, glider@google.com, jhs@mojatatu.com,
-        jiri@resnulli.us, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from office-linux.texastahm.com (67.79.209.213) by SN1PR12CA0052.namprd12.prod.outlook.com (2603:10b6:802:20::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Mon, 11 Jan 2021 15:30:17 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: f672334f-8123-4245-0014-08d8b645cdb3
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3468:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3468AA7D1B0A7A39B006694FECAB0@DM6PR12MB3468.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: baxS4nDzYYxPEOJ6KiP8DReJ6D504cxbJ8d4cgEurCl5cDILnmHdhYk/wxVHhVBwVAiuDvODzfuop2eJLz0HE3rGzJr9hVAyj8T2KYbYJM3BGNFrfUsr4Ao5BI/8IoBr+hEPSOlotcaXp6gsseWHzvOzKr6mbtmuMOBQYmlrZQeM5wiDD0mOBEHElzVTaTTrpetqWwDUla7469V8HJU1Kqo0ZEznD6GuF1WUg1rw8Lv5+Ev5iujzQ/h/WzLQZ31+mnhhkrETQgV7WhBi/RfVT0VVZJ0rIZFm7TNBVMAe5immqFG79YhUuYxSLdimaCvdqixyUUUC1RX8bav70Md5SDQvOix5Wxjypu6fl0vkTg3eEagJqE7JOVBpR/fc3fLIOqFUOyqxJqEkQT0BFgAfGoEpTGrlN0bob7C2wCRSTFZxvHeJeqz1P/nFp3NJKoqCD3vz1geXUcmPotRlEq7/YXb3HtaomVE53PfM3Hwv1Go=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(376002)(366004)(396003)(36756003)(6512007)(2616005)(53546011)(52116002)(186003)(478600001)(5660300002)(316002)(6506007)(6486002)(31696002)(8936002)(956004)(31686004)(83380400001)(66556008)(110136005)(54906003)(66946007)(86362001)(26005)(4326008)(2906002)(7416002)(66476007)(8676002)(16526019)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?KzA4YWhndm9zMk8yU1RXNVFYTjVjK2MxQzBsQkZDZU5ldmwzU0R2bkEwR2ZF?=
+ =?utf-8?B?dFAzaisrVjAzL2M4bjNUVzhHY0FrSkQvTThReTJwRDRTeVpvd2wwTVlsamZq?=
+ =?utf-8?B?emFwdzNxc01DcWFsUFZ0YXBVdlhLZ1ByNHN3ZlFqbFR5N2ZnWUJ2QWc3TUVz?=
+ =?utf-8?B?YTdnOTV0SUM5cTZWRTF3c3ZxbzIrcW5JQlNWNGJkZktJM0xSMlNtQkxIM2cv?=
+ =?utf-8?B?TXcvWWdjZWIrNER6aG5jTG5QdWNFKzFQSThxb3Y5QXFWanZQdXcycWt5NXNq?=
+ =?utf-8?B?U1hrQUM0MmEraU1qbEE4VUpnZ01nbzBrRk9PMFRqbGhOUm8yM0swb1E4OVJ4?=
+ =?utf-8?B?UGsyOVRXb1ZHbnM0TjZwMnRuYlNaaEJPODZFSitWNlA0cktZTUJOQVA2VzVt?=
+ =?utf-8?B?ZmFpVVppbVprcGhUMkZ4dk9rMUpvUnlDdUE1T05yN1cxamhLQW0xZlFxYUpi?=
+ =?utf-8?B?M2lKMlhldzc0VVVhTyt5NnVCaDI5M0RCZkR2SndWYVdvWXRDeWNUdWYvSDg4?=
+ =?utf-8?B?ekhmNFgrYXdaTWQ4THoyZFZVOEhxVHBYOW9DRHNlOGk1eXBPRHlhUE9oVHE3?=
+ =?utf-8?B?Zk5MV0tRQmV4eFNyWnpkaGFQS0w2cDBSSGNQRG9jdW52YzNLMmtsK3lCUVVH?=
+ =?utf-8?B?b1VGS2Q5U1FsTFB2Rkc2QTJYNkxkWjgrQ1ZYSEZTREJmdklFeEptdkNIaVhW?=
+ =?utf-8?B?T2lmK2Y5bVRVeW9WWG44cDBFNHcya0dHaUxMZGNkMmpDdFFIRXBCOWcwNXI4?=
+ =?utf-8?B?V2VLeGFXekhFS1pkQk5YVGpGclRyNkVxT003anhyaEFTakZDc0ZVenNGSll4?=
+ =?utf-8?B?d0NkU1B0VEMrNTJybkw2WUdCWFBBZHVoc1hKWkVkbmhuTm1VZ3FhRGZ5MGFm?=
+ =?utf-8?B?TTdyS2IrYVRKWi8xV1Q1MjNJNzZhZnJYeXBoTTdISVNhMTdlR2cyeCtMa2VS?=
+ =?utf-8?B?Z0NpYlZMbjM0SkFReFFSYlZMTTg2SW9tTzU3R2hvUkgxSEFUYWw0RUI3bG9m?=
+ =?utf-8?B?c2p6R0wwZG5lK3VGUitiTTF4M2JFRENKYjlvMXZhakdTSjhnUEs0dVlaR01v?=
+ =?utf-8?B?bVp2SHB6TjhtSzI5L1dmNXpKand4T2p5eTJHK0lGL1JaWDBPVG1UOWxkNDIx?=
+ =?utf-8?B?N3dSTE1UUm5jTjEzcmVOV1lEUFBUNlpzVC9VNzRWeFhnT1pCdXdzZUJueWo3?=
+ =?utf-8?B?NStlV1BKb2VNdTJlRFdOVEVVemp3WDNZcWk2TlI1R2pHTFRWZjVtN2dYWnVk?=
+ =?utf-8?B?ODltTzNUTWUyN1VoSlQ2RTdaS0l0NkRIL1NuWHR4WlpYUFBHUHhxSmh2ank2?=
+ =?utf-8?Q?ltMoiwkUJNlCdE/631r7M8cNp8eAGMdD92?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2021 15:30:19.1764
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: f672334f-8123-4245-0014-08d8b645cdb3
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AIV/qFM2VBd0ioQKbANh0vOqtUQIFeDfqr46wl0Fq1/kQeckM9ER5LNcwWvG4ksWD0Juzt0hAhTKaDWATYMFBA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3468
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 1/8/21 6:47 PM, Sean Christopherson wrote:
+> Unconditionally invoke sev_hardware_setup() when configuring SVM and
+> handle clearing the module params/variable 'sev' and 'sev_es' in
+> sev_hardware_setup().  This allows making said variables static within
+> sev.c and reduces the odds of a collision with guest code, e.g. the guest
+> side of things has already laid claim to 'sev_enabled'.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/kvm/svm/sev.c | 11 +++++++++++
+>   arch/x86/kvm/svm/svm.c | 15 +--------------
+>   arch/x86/kvm/svm/svm.h |  2 --
+>   3 files changed, 12 insertions(+), 16 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 0eeb6e1b803d..8ba93b8fa435 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -27,6 +27,14 @@
+>   
+>   #define __ex(x) __kvm_handle_fault_on_reboot(x)
+>   
+> +/* enable/disable SEV support */
+> +static int sev = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
+> +module_param(sev, int, 0444);
+> +
+> +/* enable/disable SEV-ES support */
+> +static int sev_es = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
+> +module_param(sev_es, int, 0444);
+> +
+>   static u8 sev_enc_bit;
+>   static int sev_flush_asids(void);
+>   static DECLARE_RWSEM(sev_deactivate_lock);
+> @@ -1249,6 +1257,9 @@ void __init sev_hardware_setup(void)
+>   	bool sev_es_supported = false;
+>   	bool sev_supported = false;
+>   
+> +	if (!IS_ENABLED(CONFIG_KVM_AMD_SEV) || !sev)
+> +		goto out;
+> +
+>   	/* Does the CPU support SEV? */
+>   	if (!boot_cpu_has(X86_FEATURE_SEV))
+>   		goto out;
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index ccf52c5531fb..f89f702b2a58 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -189,14 +189,6 @@ module_param(vls, int, 0444);
+>   static int vgif = true;
+>   module_param(vgif, int, 0444);
+>   
+> -/* enable/disable SEV support */
+> -int sev = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
+> -module_param(sev, int, 0444);
+> -
+> -/* enable/disable SEV-ES support */
+> -int sev_es = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
+> -module_param(sev_es, int, 0444);
+> -
+>   bool __read_mostly dump_invalid_vmcb;
+>   module_param(dump_invalid_vmcb, bool, 0644);
+>   
+> @@ -976,12 +968,7 @@ static __init int svm_hardware_setup(void)
+>   		kvm_enable_efer_bits(EFER_SVME | EFER_LMSLE);
+>   	}
+>   
+> -	if (IS_ENABLED(CONFIG_KVM_AMD_SEV) && sev) {
+> -		sev_hardware_setup();
+> -	} else {
+> -		sev = false;
+> -		sev_es = false;
+> -	}
+> +	sev_hardware_setup();
 
-syzbot found the following issue on:
+I believe the reason for the original if statement was similar to:
 
-HEAD commit:    73d62e81 kmsan: random: prevent boot-time reports in _mix_..
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=153a38f7500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2cdf4151c9653e32
-dashboard link: https://syzkaller.appspot.com/bug?extid=2624e3778b18fc497c92
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17ef8c3f500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12bee8f7500000
+  853c110982ea ("KVM: x86: support CONFIG_KVM_AMD=y with CONFIG_CRYPTO_DEV_CCP_DD=m")
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2624e3778b18fc497c92@syzkaller.appspotmail.com
+But with the removal of sev_platform_status() from sev_hardware_setup(),
+I think it's ok to call sev_hardware_setup() no matter what now.
 
-netlink: 4 bytes leftover after parsing attributes in process `syz-executor224'.
-=====================================================
-BUG: KMSAN: uninit-value in nla_ok include/net/netlink.h:1159 [inline]
-BUG: KMSAN: uninit-value in __nla_validate_parse+0x5fd/0x4e00 lib/nlattr.c:576
-CPU: 0 PID: 8270 Comm: syz-executor224 Not tainted 5.10.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
- __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
- nla_ok include/net/netlink.h:1159 [inline]
- __nla_validate_parse+0x5fd/0x4e00 lib/nlattr.c:576
- __nla_parse+0x141/0x150 lib/nlattr.c:685
- nla_parse_nested include/net/netlink.h:1212 [inline]
- fl_set_erspan_opt+0x39a/0xe60 net/sched/cls_flower.c:1206
- fl_set_enc_opt net/sched/cls_flower.c:1365 [inline]
- fl_set_key+0x810d/0xbb60 net/sched/cls_flower.c:1642
- fl_set_parms net/sched/cls_flower.c:1880 [inline]
- fl_change+0x1226/0x7ae0 net/sched/cls_flower.c:1979
- tc_new_tfilter+0x37c1/0x58e0 net/sched/cls_api.c:2129
- rtnetlink_rcv_msg+0xe94/0x18b0 net/core/rtnetlink.c:5553
- netlink_rcv_skb+0x70a/0x820 net/netlink/af_netlink.c:2494
- rtnetlink_rcv+0x50/0x60 net/core/rtnetlink.c:5580
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x11da/0x14b0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x173c/0x1840 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg net/socket.c:671 [inline]
- ____sys_sendmsg+0xc7a/0x1240 net/socket.c:2353
- ___sys_sendmsg net/socket.c:2407 [inline]
- __sys_sendmmsg+0xa56/0x1060 net/socket.c:2497
- __do_sys_sendmmsg net/socket.c:2526 [inline]
- __se_sys_sendmmsg+0xbd/0xe0 net/socket.c:2523
- __x64_sys_sendmmsg+0x56/0x70 net/socket.c:2523
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x441739
-Code: e8 5c ad 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 bb 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffca52cefc8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000441739
-RDX: 010efe10675dec16 RSI: 0000000020000200 RDI: 0000000000000003
-RBP: 00007ffca52cefd0 R08: 0000000120080522 R09: 0000000120080522
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004a2a70
-R13: 0000000000402610 R14: 0000000000000000 R15: 0000000000000000
+Thanks,
+Tom
 
-Uninit was created at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
- kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
- kmsan_slab_alloc+0x8d/0xe0 mm/kmsan/kmsan_hooks.c:76
- slab_alloc_node mm/slub.c:2906 [inline]
- __kmalloc_node_track_caller+0xc61/0x15f0 mm/slub.c:4512
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0x309/0xae0 net/core/skbuff.c:210
- alloc_skb include/linux/skbuff.h:1094 [inline]
- netlink_alloc_large_skb net/netlink/af_netlink.c:1176 [inline]
- netlink_sendmsg+0xdb8/0x1840 net/netlink/af_netlink.c:1894
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg net/socket.c:671 [inline]
- ____sys_sendmsg+0xc7a/0x1240 net/socket.c:2353
- ___sys_sendmsg net/socket.c:2407 [inline]
- __sys_sendmmsg+0xa56/0x1060 net/socket.c:2497
- __do_sys_sendmmsg net/socket.c:2526 [inline]
- __se_sys_sendmmsg+0xbd/0xe0 net/socket.c:2523
- __x64_sys_sendmmsg+0x56/0x70 net/socket.c:2523
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+>   
+>   	svm_adjust_mmio_mask();
+>   
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 0fe874ae5498..8e169835f52a 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -408,8 +408,6 @@ static inline bool gif_set(struct vcpu_svm *svm)
+>   #define MSR_CR3_LONG_MBZ_MASK			0xfff0000000000000U
+>   #define MSR_INVALID				0xffffffffU
+>   
+> -extern int sev;
+> -extern int sev_es;
+>   extern bool dump_invalid_vmcb;
+>   
+>   u32 svm_msrpm_offset(u32 msr);
+> 
