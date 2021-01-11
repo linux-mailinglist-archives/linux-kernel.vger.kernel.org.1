@@ -2,91 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E062F1872
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:40:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 515D22F187E
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 15:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388345AbhAKOkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 09:40:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729285AbhAKOkX (ORCPT
+        id S1731237AbhAKOl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 09:41:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42875 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730148AbhAKOl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 09:40:23 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6BABC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:39:42 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id u21so3818268lja.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:39:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=a+vkcHsiAqswgM9MUlspMKBKOzyC4WpGMlRs5sRsV94=;
-        b=gtfDv0DTmxcgQyGM5dFRLwMQ1L1sDYTjaAYhwgMBTRaKAVMZcno6eWHnO9cNrkSaae
-         wi7zBfHEqacEAvTQKockZxaIu1bdRZ32ao8z3j1TYi05DGOKGBlTCpdJ6iYwpdEbwSn+
-         eV9uEXYLylQo19h0lNSDaYxupYbAD8HBK3mpactKaU4uFRlT4Srj3C0j0HJsKm7N/EMj
-         NNTj9duGYmApdDNRq954LDNFEMoM6ZqU+r2spypaL2ku2ymBA2WQga/TRLL49oSnlNp/
-         Q99UQ/jlU/Mh8yOAJUBa2Kcu/r2YR6Je4/0Jlc6D5PODqKQstK6ID37UowpWKBoE/pKh
-         T/aw==
+        Mon, 11 Jan 2021 09:41:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610376030;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WKAWuquRO7icbSu42Bo9pe6imSnG/5np8OZXbVqms+s=;
+        b=OMAIuNMhXFUsWZJutlc+oy5HT2LyFHfHOx14FAHRl9hxB/sotlqUAMDt26ck9xFQUGyppO
+        gCBP3sadnOWRoKvvW93xchQopivtNLNbVvaejbNZVB2DEE/FPCBjDiFPZwB1lZUh5mMyYQ
+        GXrV/Jbfmz+WufXOBNbyxN2KPRYiCq8=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-512-YDomjV03PA6jmbzQfvEJ2Q-1; Mon, 11 Jan 2021 09:40:28 -0500
+X-MC-Unique: YDomjV03PA6jmbzQfvEJ2Q-1
+Received: by mail-io1-f70.google.com with SMTP id l5so12645326ioj.17
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 06:40:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=a+vkcHsiAqswgM9MUlspMKBKOzyC4WpGMlRs5sRsV94=;
-        b=OOY1eMTG9vmRhDN07y3DDoj7Qlo/4qR5r1mnJ/YJzUFEwuNMUC4Ote/IRuxGKqVibC
-         akkPdA3Z7QiaRdBF/yMcH0ywFaiT4pk/phViKQcNRTYW+cOVzVta3iq9AnUsnpnZ0nbk
-         byJuHF2PwsXZ1591mBdc+z7xOsMSDN5SbqqZYMK0mLrmCNLmzYu7+jyVwEVDruiKk9Zv
-         Jgz/dfMf1bWTh6M4wj/9W2uvLDFS7uRDovBvsXksYOsxumCo4H5FUtCkzHzVqU4UZl/C
-         aqSnUIt4dpKZPRPk1tw9bpdsuqGxvrznLsX4UsBl3De+aSrj0W1/ji0K8baBjhcYUlqv
-         yatg==
-X-Gm-Message-State: AOAM532hlZusOy7baTifVYNIo9ccF/gvLN/p69yGWduE9zwloD3aPNGb
-        WYYIXu0ov9tB95qRbsdGe6qTP3DSS1fMSnQq9+uCHA==
-X-Google-Smtp-Source: ABdhPJwudvHcNGRWcUJycLu57rDSTV0lI86xj/Mc4NZOWgfOwiTAovNbt55DmReaufGCsbLUokwbJgaaHQReBSZ4UbU=
-X-Received: by 2002:a05:651c:20b:: with SMTP id y11mr7013834ljn.176.1610375981282;
- Mon, 11 Jan 2021 06:39:41 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=WKAWuquRO7icbSu42Bo9pe6imSnG/5np8OZXbVqms+s=;
+        b=qZUKG5iF03oAmI6mvw2POMUVaNMiNAHwpxc1YepZ9jLKyJ+QzSUEvvhf8zU87HBQ1z
+         62X1hx7JESXaCTLiRyVFKQQrGdogSxq+OIx7Zx2y5pDCLYsKjBCSe93CLA7LJ0z8rucf
+         Fwj2ReaviYMzpByblcl6igV9Yvz37fs7m9UvsnBFHmdSBSjYqWWvHDLQ3dhdI8vj7cOz
+         YIA0Mac7IohoWZmPqqVGLKJ7nmPdl05FU51x92tuePc4LxsWItMfEaDHJWfJq7hDxeKm
+         Jg0Ltm4kMKEutxLa4LzAdiKMxD9UlcB40QJNOtmwX6nWpamKZp+HtmXWydviz/enFWIJ
+         fWQw==
+X-Gm-Message-State: AOAM530XVApNj89ONnbYISAXhpui5/0n+3OM9PUVgJel9Be727uWOiiM
+        /d89GV87C+Z6T32Psv69+11ASajCaDCDTdweTyPdnECdz9pCOy5psyGNbPdIB5TxyR7av1htyOA
+        hezxCBOJPBYRyIPhdhRw5NQUa
+X-Received: by 2002:a92:79c7:: with SMTP id u190mr15260296ilc.140.1610376028280;
+        Mon, 11 Jan 2021 06:40:28 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxhLMyR1k9jCSaUTWzlhfrsjSuduZ0K7D0iVFUL/V58jWOVgaNKoNa5+Cj7Bwlb88GgLj/f6g==
+X-Received: by 2002:a92:79c7:: with SMTP id u190mr15260279ilc.140.1610376028147;
+        Mon, 11 Jan 2021 06:40:28 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id t14sm11580602iof.23.2021.01.11.06.40.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 06:40:27 -0800 (PST)
+Subject: Re: [PATCH 0/8] FPGA DFL Changes for 5.12
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Moritz Fischer <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, moritzf@google.com,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Russ Weight <russell.h.weight@intel.com>,
+        "Gerlach, Matthew" <matthew.gerlach@intel.com>,
+        Sonal Santan <sonal.santan@xilinx.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Richard Gong <richard.gong@intel.com>
+References: <20210107043714.991646-1-mdf@kernel.org>
+ <80b29715-aa0a-b2ac-03af-904fc8f8be98@redhat.com>
+ <e1d30642-ce85-b9b7-e8b2-5ad4fe6338e5@redhat.com> <X/sz6lDq8WFzrRUJ@archbook>
+ <95af46d6-d123-f610-2f21-6d6de6f248e9@redhat.com>
+ <X/v2xs5Rnfw9F18E@kroah.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <9bc01a73-726f-a979-1246-6ea048961670@redhat.com>
+Date:   Mon, 11 Jan 2021 06:40:24 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20201214164822.402812729@infradead.org> <20201214170017.877557652@infradead.org>
- <c4e31235-e1fb-52ac-99a8-ae943ee0de54@linux.intel.com> <20201215075911.GA3040@hirez.programming.kicks-ass.net>
- <20210108102738.GB3592@techsingularity.net> <CAKfTPtD5R1S=rwp9C-jyMg8bAB-37FCe3qrqad9KEeyR7mOmkw@mail.gmail.com>
- <20210108144058.GD3592@techsingularity.net> <CAKfTPtCGCmCv0yXSUmYUh6=8uzd0n9xFPqC0cW4sm-FqDvjvCQ@mail.gmail.com>
- <X/i2aIKmeyi5SZ7g@hirez.programming.kicks-ass.net>
-In-Reply-To: <X/i2aIKmeyi5SZ7g@hirez.programming.kicks-ass.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 11 Jan 2021 15:39:29 +0100
-Message-ID: <CAKfTPtDk3+96ZuytRAPA3ZBqW-whzn3cbGmwgS7ZfyoPaTTKnA@mail.gmail.com>
-Subject: Re: [RFC][PATCH 1/5] sched/fair: Fix select_idle_cpu()s cost accounting
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Jiang Biao <benbjiang@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <X/v2xs5Rnfw9F18E@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Jan 2021 at 20:45, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Fri, Jan 08, 2021 at 04:10:51PM +0100, Vincent Guittot wrote:
-> > Also, there is another problem (that I'm investigating)  which is that
-> > this_rq()->avg_idle is stalled when your cpu is busy. Which means that
-> > this avg_idle can just be a very old and meaningless value. I think
-> > that we should decay it periodically to reflect there is less and less
->
-> https://lkml.kernel.org/r/20180530143105.977759909@infradead.org
->
-> :-)
 
-:-)
+On 1/10/21 10:57 PM, Greg KH wrote:
+> On Sun, Jan 10, 2021 at 11:43:54AM -0800, Tom Rix wrote:
+>> On 1/10/21 9:05 AM, Moritz Fischer wrote:
+>>> Tom,
+>>>
+>>> On Sun, Jan 10, 2021 at 07:46:29AM -0800, Tom Rix wrote:
+>>>> On 1/7/21 8:09 AM, Tom Rix wrote:
+>>>>> On 1/6/21 8:37 PM, Moritz Fischer wrote:
+>>>>>> This is a resend of the previous (unfortunately late) patchset of
+>>>>>> changes for FPGA DFL.
+>>>>> Is there something I can do to help ?
+>>>>>
+>>>>> I am paid to look after linux-fpga, so i have plenty of time.
+>>>>>
+>>>>> Some ideas of what i am doing now privately i can do publicly.
+>>>>>
+>>>>> 1. keep linux-fpga sync-ed to greg's branch so linux-fpga is normally in a pullable state.
+>>> Is it not? It currently points to v5.11-rc1. If I start applying patches
+>>> that require the changes that went into Greg's branch I can merge.
+>> I mean the window between when we have staged patches and when they go into Greg's branch.
+>>
+>> We don't have any now, maybe those two trival ones.
+>>
+>> Since Greg's branch moves much faster than ours, our staging branch needs to be rebased regularly until its merge.
+> Ick, no!  NEVER rebase a public branch.  Why does it matter the speed of
+> my branch vs. anyone elses?  Git handles merges very well.
+>
+> Just like Linus's branches move much faster than mine, and I don't
+> rebase my branches, you shouldn't rebase yours.
+>
+> Becides, I'm only taking _PATCHES_ for fpga changes at the moment, no
+> git pulls, so why does it matter at all for any of this?
+>
+> What is the problem you are trying to solve here?
 
-I was more thinking of something like decaying avg_idle during
-tick_fair but at leat we all agree that we can't stay with a stalled
-avg_idle value
+This 5.12 fpga patchset not making it into 5.11.
+
+At some point before the 5.11 window, I tried it on next and it failed to merge.
+
+This points to needing some c/i so it does not happen again.
+
+Tom
+
+>
+> thanks,
+>
+> greg k-h
+>
+
