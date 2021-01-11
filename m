@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 517252F13B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B22B22F13FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:18:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731907AbhAKNNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:13:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59254 "EHLO mail.kernel.org"
+        id S1732747AbhAKNSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:18:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731521AbhAKNMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:12:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C8E22253A;
-        Mon, 11 Jan 2021 13:12:30 +0000 (UTC)
+        id S1732697AbhAKNRt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 08:17:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFA692229C;
+        Mon, 11 Jan 2021 13:17:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610370751;
-        bh=Lx5D2+uK7b3CwnDygVD/eA/l7MCVcjIHAbmAGA2crVc=;
+        s=korg; t=1610371054;
+        bh=P7348G7f5k9qf6yyaJ9W3CJJGjlJaAXMT0h0uPG1Kok=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IwL2B0J/lrUwD6sdc/euSg92TBNHpbWiAqKQCMOQ0zFg8DYvv8sN2tq9+Amc8IpHb
-         UEPe9gKfIUzlY5gH/P0iuTvalaxR5fhBNRGRODYYPcwhWchj3BFSLiALbcTcVWIjV7
-         JoI+HDh/fbvd7haWvHaWj97FHHd+fj3W1mEkMv4s=
+        b=CmZYnkCdwVhjRrBtc59207dfPjQUjgLKTwu60g6EwZFWeDJPe1/EPAlWS3+pziP4C
+         zqS2h5bi0G9LvURlboviFN0w7lnPpPruke3oLfSCIAndfGsn/uJh4K7DFrdtOamjLk
+         F4l6+dMS2q//pp/WVVcHMh5rgk1J2UcmVRSniTBY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        =?UTF-8?q?Manuel=20Jim=C3=A9nez?= <mjbfm99@me.com>,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 81/92] ALSA: hda/realtek: Enable mute and micmute LED on HP EliteBook 850 G7
+Subject: [PATCH 5.10 121/145] ALSA: hda/realtek: Add mute LED quirk for more HP laptops
 Date:   Mon, 11 Jan 2021 14:02:25 +0100
-Message-Id: <20210111130043.057877299@linuxfoundation.org>
+Message-Id: <20210111130054.326163264@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
-References: <20210111130039.165470698@linuxfoundation.org>
+In-Reply-To: <20210111130048.499958175@linuxfoundation.org>
+References: <20210111130048.499958175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,16 +40,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Manuel Jiménez <mjbfm99@me.com>
 
-commit a598098cc9737f612dbab52294433fc26c51cc9b upstream.
+commit 484229585a5e91eeb00ee10e05d5204e1ca6c481 upstream.
 
-HP EliteBook 850 G7 uses the same GPIO pins as ALC285_FIXUP_HP_GPIO_LED
-to enable mute and micmute LED. So apply the quirk to enable the LEDs.
+HP Pavilion 13-bb0000 (SSID 103c:87c8) needs the same
+quirk as other models with ALC287.
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Manuel Jiménez <mjbfm99@me.com>
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20201230125636.45028-1-kai.heng.feng@canonical.com
+Link: https://lore.kernel.org/r/X+s/gKNydVrI6nLj@HP-Pavilion-13
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
@@ -59,13 +59,13 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -7880,6 +7880,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x103c, 0x8497, "HP Envy x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
- 	SND_PCI_QUIRK(0x103c, 0x84e7, "HP Pavilion 15", ALC269_FIXUP_HP_MUTE_LED_MIC3),
- 	SND_PCI_QUIRK(0x103c, 0x869d, "HP", ALC236_FIXUP_HP_MUTE_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8724, "HP EliteBook 850 G7", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8729, "HP", ALC285_FIXUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8736, "HP", ALC285_FIXUP_HP_GPIO_AMP_INIT),
+@@ -7969,6 +7969,7 @@ static const struct snd_pci_quirk alc269
  	SND_PCI_QUIRK(0x103c, 0x8760, "HP", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x877a, "HP", ALC285_FIXUP_HP_MUTE_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x877d, "HP", ALC236_FIXUP_HP_MUTE_LED),
++	SND_PCI_QUIRK(0x103c, 0x87c8, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f4, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x87f5, "HP", ALC287_FIXUP_HP_GPIO_LED),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
 
 
