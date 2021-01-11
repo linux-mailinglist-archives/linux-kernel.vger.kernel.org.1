@@ -2,102 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BCB2F15B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 828202F15C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 14:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387584AbhAKNoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 08:44:14 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:38844 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730854AbhAKNoK (ORCPT
+        id S2387653AbhAKNoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 08:44:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731796AbhAKNoe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 08:44:10 -0500
-Date:   Mon, 11 Jan 2021 14:43:26 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610372608;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  in-reply-to:in-reply-to;
-        bh=XXEpb/1XA17ogo7lUTa7yQBilRqOhvGnHCcPc/kwuO8=;
-        b=PEDDXpI5MGauU/Q3kUklds+LqI/JV1pzt3GgKFx/9HyVap0BD0Q70WJoeqfnTjUOGmrDKr
-        qqL7Lgo+qv185OdGwFFOL4eDEL1x2EgazjlyNUsQvRiHWI2QhBMC/2s+yQ0dDEayWYQQmh
-        8jxgAkclulG4NqyVFbU0Cn02bknmul/Uqbp8IdEXLermzcx2KrRWD9OkTqm8Fhgw9Wfojy
-        LZjr/tyWZ7TlPLmty9kxuRgFwy8AsiEpohsq9lxTrdwhSVryDazXfNt2G6EY3z15w4UqiU
-        GVJwmCRPTgPLc5CvTYnhibpqhU9JWrdyEi8bDmhsCL2SmStS0fHK0z3ER+zSeg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610372608;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  in-reply-to:in-reply-to;
-        bh=XXEpb/1XA17ogo7lUTa7yQBilRqOhvGnHCcPc/kwuO8=;
-        b=TZPbDTl3OAvltlwmjetw+XJ5VlthKf6sYpPa++UsCnvjGoQy/F9kowe85hFsZ+CJKJBxbg
-        keMX0W4Slxs0cWDQ==
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     John Garry <john.garry@huawei.com>, Jason Yan <yanaijie@huawei.com>
-Cc:     Hannes Reinecke <hare@suse.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        linux-scsi@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>
-Subject: Re: [PATCH 00/11] scsi: libsas: Remove in_interrupt() check
-Message-ID: <X/xV/uR77a9JLZ4v@lx-t490>
+        Mon, 11 Jan 2021 08:44:34 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FC3C061786;
+        Mon, 11 Jan 2021 05:43:53 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id jx16so24741983ejb.10;
+        Mon, 11 Jan 2021 05:43:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=TqQMMmVG//s097FZcK6S1d+MUdnJBT3N8IWJdlGCSdY=;
+        b=vQ7xg/NMs8B/jW9COLAiIpNiEJ+21BdjvoLnazkLt9/lR13If2ikF5RZJksFN0Dkoo
+         C0zqtI4JCm9GWfi/CnjsDhI23DQE22A6bgR9PF4vRW7MkpPcJj/AfIk/3yfLeBcsdnrl
+         Yxa9K6+wwF493HZ7SArizr69FpCLfQl6lpgliMFGI+kKl21Gl8bYrR6g9FSUpBY5PsE3
+         tGUj1wkuFyjj1ZdM3ORq7/uzV+J+9E46Sk41CqgvwrUGYV7JHTTfAzR2DYg1oKwxXg5l
+         95cO6WK6GrEoNp+J3zEoxppuEPX80yVLWxK08AgEQL/vFBuUgkRl+BMTYNyireUNYVig
+         F/YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TqQMMmVG//s097FZcK6S1d+MUdnJBT3N8IWJdlGCSdY=;
+        b=dA886S/8gKGJScICiiMhsQDVcDs7yXMRws7AodAdW6A34rnzYKHqBAPeMc1OnbSxIN
+         /y8w0V5f23i2OV/eqi96ipfpildcKQjqrx3Cq44UmCADUdkDoqKE0NtUorPL1apoYAvm
+         vPqeaSevdY1ZuV6hTcYqDB+7vgyxrf8Q05zOTo/lbaA1c0WkBODsuWRpwfBuLiGe/wQT
+         s7ddCkFscOyvLccnb+6zvpKNR8kRrZrpw/aO0nB1Hl5j8hH+b3jyYHe+MfWtZ1FLcJQF
+         04mBDeZ/vqP5H8ocYZezmzTmHxM01ihtQECiG9YxqpR4RXBs3WSCOCNiGz8LRQJ53aSK
+         eamg==
+X-Gm-Message-State: AOAM532/2G4h2sMoeaAjxhcE9Rq5fZ+Z0TQEVqv09bvUporakHisUWXT
+        6rn/hdi8c5GxqC4ExXReOV0=
+X-Google-Smtp-Source: ABdhPJxqhexf4kPL914wqbd3XhrF0WLk2Dmhk3wPJ0oFcVMccX9vwvzyZgV6p+0xwhhjVShAmlSr8g==
+X-Received: by 2002:a17:906:7689:: with SMTP id o9mr5102315ejm.324.1610372632156;
+        Mon, 11 Jan 2021 05:43:52 -0800 (PST)
+Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
+        by smtp.gmail.com with ESMTPSA id t26sm7120228eji.22.2021.01.11.05.43.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 05:43:51 -0800 (PST)
+Date:   Mon, 11 Jan 2021 15:43:49 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Frank Wunderlich <frank-w@public-files.de>,
+        =?utf-8?B?UmVuw6k=?= van Dorst <opensource@vdorst.com>
+Subject: Re: [PATCH net-next 0/2] dsa: add MT7530 GPIO support
+Message-ID: <20210111134349.vdhyebdllbaakukk@skbuf>
+References: <20210111054428.3273-1-dqfext@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2672812e-91bd-4c60-696d-4000b1914ac6@huawei.com>
+In-Reply-To: <20210111054428.3273-1-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John, Jason,
+On Mon, Jan 11, 2021 at 01:44:26PM +0800, DENG Qingfang wrote:
+> MT7530's LED controller can be used as GPIO controller. Add support for
+> it.
+> 
+> DENG Qingfang (2):
+>   dt-bindings: net: dsa: add MT7530 GPIO controller binding
+>   drivers: net: dsa: mt7530: MT7530 optional GPIO support
+> 
+>  .../devicetree/bindings/net/dsa/mt7530.txt    |  6 ++
+>  drivers/net/dsa/mt7530.c                      | 96 +++++++++++++++++++
+>  drivers/net/dsa/mt7530.h                      | 20 ++++
+>  3 files changed, 122 insertions(+)
+> 
+> -- 
+> 2.25.1
 
-On Tue, Dec 22, 2020 at 12:54:58PM +0000, John Garry wrote:
-> On 22/12/2020 12:30, Jason Yan wrote:
-> > >      return event;
-> > >
-> > >
-> > > So default for phy->ha->event_thres is 32, and I can't imagine that
-> >
-> > The default value is 1024.
->
-> Ah, 32 is the minimum allowed set via sysfs.
->
-> >
-> > > anyone has ever reconfigured this via sysfs or even required a value
-> > > that large. Maybe Jason (cc'ed) knows better. It's an arbitrary
-> > > value to say that the PHY is malfunctioning. I do note that there is
-> > > the circular path sas_alloc_event() -> sas_notify_phy_event() ->
-> > > sas_alloc_event() there also.
-> > >
-> > > Anyway, if the 32x event memories were per-allocated, maybe there is
-> > > a clean method to manage this memory, which even works in atomic
-> > > context, so we could avoid this rework (ignoring the context bugs
-> > > you reported for a moment). I do also note that the sas_event_cache
-> > > size is not huge.
-> > >
-> >
-> > Pre-allocated memory is an option.(Which we have tried at the very
-> > beginnig by Wang Yijing.)
->
-> Right, I remember this, but I think the concern was having a proper method
-> to manage this pre-allocated memory then. And same problem now.
->
-> >
-> > Or directly use GFP_ATOMIC is maybe better than passing flags from lldds.
-> >
->
-> I think that if we don't really need this, then should not use it.
->
-
-Kind reminder. Do we have any consensus here?
-
-Thanks,
-
---
-Ahmed S. Darwish
-Linutronix GmbH
+Adding GPIO and LED maintainers to also have a look.
+https://patchwork.kernel.org/project/netdevbpf/cover/20210111054428.3273-1-dqfext@gmail.com/
