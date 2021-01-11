@@ -2,160 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EEDC2F0BC7
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 05:25:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 636E52F0BD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 05:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726573AbhAKEZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 23:25:16 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:52084 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726029AbhAKEZP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 23:25:15 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610339091; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=YjLVjY//RNNWhBt038pBhnPhk7W2XO47G1a0lqsYg4I=;
- b=xWQQ6/6nICUxjdb2RVJvYYPN/hMNuOVA92j3AePlgYj/8252+7Gv82ldN6jtOyTYPGRxd1Q2
- fzpD6a3orCUlxg4F1cBx7GpXeFdEl+7a/XC5p+L/jOMUpFsX6Rl2gySuUossqQ0Yxg75M1Qv
- Cg3FNofb/oJVuT8UFLqWqAra3E0=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5ffbd2eec88af06107b8d304 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 11 Jan 2021 04:24:14
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DDC15C433CA; Mon, 11 Jan 2021 04:24:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A8D5CC433C6;
-        Mon, 11 Jan 2021 04:24:12 +0000 (UTC)
+        id S1726605AbhAKE3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 23:29:45 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42110 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725797AbhAKE3p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 23:29:45 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 60140AC95;
+        Mon, 11 Jan 2021 04:29:03 +0000 (UTC)
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     balbi@kernel.org
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dave@stgolabs.net,
+        Takashi Iwai <tiwai@suse.de>, Davidlohr Bueso <dbueso@suse.de>
+Subject: [PATCH] usb/gadget: f_midi: Replace tasklet with work
+Date:   Sun, 10 Jan 2021 20:28:55 -0800
+Message-Id: <20210111042855.73289-1-dave@stgolabs.net>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 11 Jan 2021 09:54:12 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Sean Paul <sean@poorly.run>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Jonathan <jonathan@marek.ca>, David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        martin.botka@somainline.org,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        marijn.suijten@somainline.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Daniel Vetter <daniel@ffwll.ch>,
-        angelogioacchino.delregno@somainline.org,
-        Dave Airlie <airlied@redhat.com>, phone-devel@vger.kernel.org,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [Freedreno] [PATCH] drm/msm: Only enable A6xx LLCC code on A6xx
-In-Reply-To: <CAF6AEGsd5B0R7H1noO+=LByx4zkdVvu1LALZWnevGbMRj76m2w@mail.gmail.com>
-References: <CAF6AEGu0Sv6nYNDn0z61pXRjNyFLpLw5S4_O3opmrQ-UVNR_MA@mail.gmail.com>
- <20210108122601.14993-1-saiprakash.ranjan@codeaurora.org>
- <fa091855-8096-6377-e173-ce1cd02f74ec@somainline.org>
- <43c8779bc5f03be2e8072c6484dfcabb@codeaurora.org>
- <CAF6AEGsd5B0R7H1noO+=LByx4zkdVvu1LALZWnevGbMRj76m2w@mail.gmail.com>
-Message-ID: <73609df52188588bf7d023e16a706a7a@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Currently a tasklet is used to transmit input substream buffer
+data. However, tasklets have long been deprecated as being too
+heavy on the system by running in irq context - and this is not
+a performance critical path. If a higher priority process wants
+to run, it must wait for the tasklet to finish before doing so.
 
-On 2021-01-08 22:16, Rob Clark wrote:
-> On Fri, Jan 8, 2021 at 6:05 AM Sai Prakash Ranjan
-> <saiprakash.ranjan@codeaurora.org> wrote:
->> 
->> On 2021-01-08 19:09, Konrad Dybcio wrote:
->> >> Konrad, can you please test this below change without your change?
->> >
->> > This brings no difference, a BUG still happens. We're still calling
->> > to_a6xx_gpu on ANY device that's probed! Too bad it won't turn my A330
->> > into an A640..
->> >
->> > Also, relying on disabling LLCC in the config is out of question as it
->> > makes the arm32 kernel not compile with DRM/MSM and it just removes
->> > the functionality on devices with a6xx.. (unless somebody removes the
->> > dependency on it, which in my opinion is even worse and will cause
->> > more problems for developers!).
->> >
->> 
->> Disabling LLCC is not the suggestion, I was under the impression that
->> was the cause here for the smmu bug. Anyways, the check for llc slice
->> in case llcc is disabled is not correct as well. I will send a patch 
->> for
->> that as well.
->> 
->> > The bigger question is how and why did that piece of code ever make it
->> > to adreno_gpu.c and not a6xx_gpu.c?
->> >
->> 
->> My mistake, I will move it.
-> 
-> Thanks, since we don't have kernel-CI coverage for gpu, and there
-> probably isn't one person who has all the different devices supported
-> (or enough hours in the day to test them all), it is probably
-> better/safer to keep things in the backend code that is specific to a
-> given generation.
-> 
+Deferring work to a workqueue and executing in process context
+should be fine considering the callback already does
+f_midi_do_transmit() under the transmit_lock and thus changes in
+semantics are ok regarding concurrency - tasklets being serialized
+against itself.
 
-Agreed, I will post this change soon and will introduce some feature
-check as well because we will need it for iommu prot flag as per 
-discussion
-here - 
-https://lore.kernel.org/lkml/20210108181830.GA5457@willie-the-truck/
+Cc: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+---
+ drivers/usb/gadget/function/f_midi.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
->> > To solve it in a cleaner way I propose to move it to an a6xx-specific
->> > file, or if it's going to be used with next-gen GPUs, perhaps manage
->> > calling of this code via an adreno quirk/feature in adreno_device.c.
->> > Now that I think about it, A5xx GPMU en/disable could probably managed
->> > like that, instead of using tons of if-statements for each GPU model
->> > that has it..
->> >
->> > While we're at it, do ALL (and I truly do mean ALL, including the
->> > low-end ones, this will be important later on) A6xx GPUs make use of
->> > that feature?
->> >
->> 
->> I do not have a list of all A6XX GPUs with me currently, but from what
->> I know, A618, A630, A640, A650 has the support.
->> 
-> 
-> From the PoV of bringing up new a6xx, we should probably consider that
-> some of them may not *yet* have LLCC enabled.  I have an 8cx laptop
-> and once I find time to get the display working, the next step would
-> be bringing up a680.. and I'd probably like to start without LLCC..
-> 
-
-Right, once I move the LLCC code to a6xx specific address space 
-creation,
-without LLCC slices for GPU specified in qcom llcc driver, we will not
-be using it.
-
-Thanks,
-Sai
-
+diff --git a/drivers/usb/gadget/function/f_midi.c b/drivers/usb/gadget/function/f_midi.c
+index 8fff995b8dd5..71a1a26e85c7 100644
+--- a/drivers/usb/gadget/function/f_midi.c
++++ b/drivers/usb/gadget/function/f_midi.c
+@@ -87,7 +87,7 @@ struct f_midi {
+ 	struct snd_rawmidi_substream *out_substream[MAX_PORTS];
+ 
+ 	unsigned long		out_triggered;
+-	struct tasklet_struct	tasklet;
++	struct work_struct	work;
+ 	unsigned int in_ports;
+ 	unsigned int out_ports;
+ 	int index;
+@@ -698,9 +698,11 @@ static void f_midi_transmit(struct f_midi *midi)
+ 	f_midi_drop_out_substreams(midi);
+ }
+ 
+-static void f_midi_in_tasklet(struct tasklet_struct *t)
++static void f_midi_in_work(struct work_struct *work)
+ {
+-	struct f_midi *midi = from_tasklet(midi, t, tasklet);
++	struct f_midi *midi;
++
++	midi = container_of(work, struct f_midi, work);
+ 	f_midi_transmit(midi);
+ }
+ 
+@@ -737,7 +739,7 @@ static void f_midi_in_trigger(struct snd_rawmidi_substream *substream, int up)
+ 	VDBG(midi, "%s() %d\n", __func__, up);
+ 	midi->in_ports_array[substream->number].active = up;
+ 	if (up)
+-		tasklet_hi_schedule(&midi->tasklet);
++		queue_work(system_highpri_wq, &midi->work);
+ }
+ 
+ static int f_midi_out_open(struct snd_rawmidi_substream *substream)
+@@ -875,7 +877,7 @@ static int f_midi_bind(struct usb_configuration *c, struct usb_function *f)
+ 	int status, n, jack = 1, i = 0, endpoint_descriptor_index = 0;
+ 
+ 	midi->gadget = cdev->gadget;
+-	tasklet_setup(&midi->tasklet, f_midi_in_tasklet);
++	INIT_WORK(&midi->work, f_midi_in_work);
+ 	status = f_midi_register_card(midi);
+ 	if (status < 0)
+ 		goto fail_register;
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.26.2
+
