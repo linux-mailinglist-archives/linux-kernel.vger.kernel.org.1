@@ -2,103 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DED2F371A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:29:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B27B2F371B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392284AbhALR3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:29:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388300AbhALR3d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:29:33 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60021C061795
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:28:53 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id m25so4518324lfc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:28:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OqpF9m8Ie7h14NS62Or0oMAWtodm7MvHcM9nCVl5hwY=;
-        b=GoLT4gtWkFQzxysE0FG1990pw92x+A+KYUUxNjKBXuEcavd4IzBOYB2y1Ih6O3FQQA
-         u4qohDIAC5MRsuNuXKSw6NqhtOI03AoPDeIsiuvh8ZPfrLyWugFTKK7Q6Iqr3CtdG7N6
-         RF2iI2e3VCJkSIBRtrw2oE8igcSnQqwxsmmk8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OqpF9m8Ie7h14NS62Or0oMAWtodm7MvHcM9nCVl5hwY=;
-        b=r2ZzQlWJumNT0efr76rsGxpPOErtByeajvooyNqV61UkCuvI0mndGSwQNXstCN4kpc
-         AW9EddlzPMY8IvgF8i6Go1EIsIZC0czkSvFG9LpCdpJqYsvvhN/C6MOFF5zGjwzSNKLv
-         3pUh0CdBKbvcn4sfAqBIsL1U8Bv/+4b8erItbz1qNkhIbPtYO+A1JMty/JNFzUry2zYC
-         jOuuj7jGMXlodAQQjwHum9DRoTab0Hpa7mRPVzV4yqzkWzaL93V886aQ966VceFM2jry
-         sQZlQRxHwlqQ9b87ePDPN+snkv6sSxlv+IhGFyrkQchh8GYlFn/5KRTG8/jMcD/EoLG5
-         /FUA==
-X-Gm-Message-State: AOAM533wdc/LGN3K0wnZefsbpXs59wt66BVm+lEUNtSuiI4hT7levqk0
-        2v56Hb/E05PPOUk/DnCHPaklRiOdOhH8sA==
-X-Google-Smtp-Source: ABdhPJwN19grPQC57F+pS7Vk73pgYy1Du8UM5FcF7eVrBzHlFvXCcadMf5iDfMC7T/0yqz0B2ifBTA==
-X-Received: by 2002:a05:6512:2009:: with SMTP id a9mr2499067lfb.575.1610472531387;
+        id S2405077AbhALR3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:29:39 -0500
+Received: from foss.arm.com ([217.140.110.172]:50124 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388300AbhALR3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 12:29:37 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E72FA101E;
         Tue, 12 Jan 2021 09:28:51 -0800 (PST)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id n133sm467360lfd.152.2021.01.12.09.28.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 09:28:48 -0800 (PST)
-Received: by mail-lj1-f181.google.com with SMTP id w26so3746317ljo.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:28:48 -0800 (PST)
-X-Received: by 2002:a2e:9d89:: with SMTP id c9mr149709ljj.220.1610472527992;
- Tue, 12 Jan 2021 09:28:47 -0800 (PST)
+Received: from [192.168.0.110] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 655A13F719;
+        Tue, 12 Jan 2021 09:28:50 -0800 (PST)
+Subject: Re: [PATCH 8/9] KVM: arm64: vgic-v3: Expose GICR_TYPER.Last for
+ userspace
+To:     Eric Auger <eric.auger@redhat.com>, eric.auger.pro@gmail.com,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, maz@kernel.org, drjones@redhat.com
+Cc:     james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com, shuah@kernel.org, pbonzini@redhat.com
+References: <20201212185010.26579-1-eric.auger@redhat.com>
+ <20201212185010.26579-9-eric.auger@redhat.com>
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+Message-ID: <fe0a3415-0c7b-be13-6438-89e82fe4c281@arm.com>
+Date:   Tue, 12 Jan 2021 17:28:52 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210106172033.GA2165@willie-the-truck> <20210106223223.GM1551@shell.armlinux.org.uk>
- <20210107111841.GN1551@shell.armlinux.org.uk> <20210107124506.GO1551@shell.armlinux.org.uk>
- <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
- <20210107133747.GP1551@shell.armlinux.org.uk> <CAK8P3a2J8fLjPhyV0XUeuRBdSo6rz1gU4wrQRyfzKQvwhf22ag@mail.gmail.com>
- <X/gkMmObbkI4+ip/@hirez.programming.kicks-ass.net> <20210108092655.GA4031@willie-the-truck>
- <CAHk-=whnKkj5CSbj-uG_MVVUsPZ6ppd_MFhZf_kpXDkh2MAVRA@mail.gmail.com> <20210112132049.GA26096@wunner.de>
-In-Reply-To: <20210112132049.GA26096@wunner.de>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 12 Jan 2021 09:28:32 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wiHaVWUKQ9wvHe5D=JrV3MDehfRi_FL7KXGbi6=S7=jUA@mail.gmail.com>
-Message-ID: <CAHk-=wiHaVWUKQ9wvHe5D=JrV3MDehfRi_FL7KXGbi6=S7=jUA@mail.gmail.com>
-Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
- ordering issues
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        linux-toolchains@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201212185010.26579-9-eric.auger@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 5:20 AM Lukas Wunner <lukas@wunner.de> wrote:
+Hi Eric,
+
+On 12/12/20 6:50 PM, Eric Auger wrote:
+> Commit 23bde34771f1 ("KVM: arm64: vgic-v3: Drop the
+> reporting of GICR_TYPER.Last for userspace") temporarily fixed
+> a bug identified when attempting to access the GICR_TYPER
+> register before the redistributor region setting but dropped
+> the support of the LAST bit. This patch restores its
+> support (if the redistributor region was set) while keeping the
+> code safe.
+
+If I understand your patch correctly, it is possible for the GICR_TYPER.Last bit
+to be transiently 1 if the register is accessed before all the redistributors
+regions have been configured.
+
+Arm IHI 0069F states that accesses to the GICR_TYPER register are RO. I haven't
+found exactly what RO means (please point me to the definition if you find it in
+the architecture!), but I assume it means read-only and I'm not sure how correct
+(from an architectural point of view) it is for two subsequent reads of this
+register to return different values. Maybe Marc can shed some light on this.
+
+Thanks,
+Alex
 >
-> > Variable declarations in for-loops is the only one I can think of. I
-> > think that would clean up some code (and some macros), but might not
-> > be compelling on its own.
+> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+> ---
+>  arch/arm64/kvm/vgic/vgic-mmio-v3.c | 7 ++++++-
+>  include/kvm/arm_vgic.h             | 1 +
+>  2 files changed, 7 insertions(+), 1 deletion(-)
 >
-> Anonymous structs/unions.  I used to have a use case for that in
-> struct efi_dev_path in include/linux/efi.h, but Ard Biesheuvel
-> refactored it in a gnu89-compatible way for v5.7 with db8952e7094f.
-
-We use anonymous structs/unions extensively and all over the place already.
-
-We've had a couple of special cases where some versions of gcc didn't
-do things right iirc (it was something like "nested anonymous struct"
-or similar), but those weren't actually about the feature itself.
-
-Was it perhaps the nested case you were thinking of? If so, I think
-that's not really a --std=gun11 thing, it's more of a "certain
-versions of gcc didn't do it at all".
-
-               Linus
+> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> index 581f0f490000..2f9ef6058f6e 100644
+> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> @@ -277,6 +277,8 @@ static unsigned long vgic_uaccess_read_v3r_typer(struct kvm_vcpu *vcpu,
+>  						 gpa_t addr, unsigned int len)
+>  {
+>  	unsigned long mpidr = kvm_vcpu_get_mpidr_aff(vcpu);
+> +	struct vgic_cpu *vgic_cpu = &vcpu->arch.vgic_cpu;
+> +	struct vgic_redist_region *rdreg = vgic_cpu->rdreg;
+>  	int target_vcpu_id = vcpu->vcpu_id;
+>  	u64 value;
+>  
+> @@ -286,7 +288,9 @@ static unsigned long vgic_uaccess_read_v3r_typer(struct kvm_vcpu *vcpu,
+>  	if (vgic_has_its(vcpu->kvm))
+>  		value |= GICR_TYPER_PLPIS;
+>  
+> -	/* reporting of the Last bit is not supported for userspace */
+> +	if (rdreg && (vgic_cpu->rdreg_index == (rdreg->free_index - 1)))
+> +		value |= GICR_TYPER_LAST;
+> +
+>  	return extract_bytes(value, addr & 7, len);
+>  }
+>  
+> @@ -714,6 +718,7 @@ int vgic_register_redist_iodev(struct kvm_vcpu *vcpu)
+>  		return -EINVAL;
+>  
+>  	vgic_cpu->rdreg = rdreg;
+> +	vgic_cpu->rdreg_index = rdreg->free_index;
+>  
+>  	rd_base = rdreg->base + rdreg->free_index * KVM_VGIC_V3_REDIST_SIZE;
+>  
+> diff --git a/include/kvm/arm_vgic.h b/include/kvm/arm_vgic.h
+> index a8d8fdcd3723..596c069263a7 100644
+> --- a/include/kvm/arm_vgic.h
+> +++ b/include/kvm/arm_vgic.h
+> @@ -322,6 +322,7 @@ struct vgic_cpu {
+>  	 */
+>  	struct vgic_io_device	rd_iodev;
+>  	struct vgic_redist_region *rdreg;
+> +	u32 rdreg_index;
+>  
+>  	/* Contains the attributes and gpa of the LPI pending tables. */
+>  	u64 pendbaser;
