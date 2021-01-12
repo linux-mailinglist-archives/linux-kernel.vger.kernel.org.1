@@ -2,91 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F742F2C48
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:09:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FD22F2C4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:11:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392969AbhALKIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:08:13 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:48204 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390366AbhALKIM (ORCPT
+        id S2404381AbhALKJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:09:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52640 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392755AbhALKJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:08:12 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10C9tJ6j063075;
-        Tue, 12 Jan 2021 10:07:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=qke5d5/aNaSSKkThN5FT7wSxphV5md/SPNTgBKloGFo=;
- b=LKqXS39KXK3pfLIXVuq47zf+WMd80DpW7E++m/8GDK0B/jkmjAQHFPn1MT8a6zwoP+LF
- 5i4NRUTgCZKWIuCdx6XuS/7sY6D3SDs+uyMi/sgvQPNt/RzTaPiNcqC5Mi6EEwEoMqGO
- F5WOIgDoR3n0bjYcpBUCdKqumTZ/s1l+lWLRnorlRhDGy0AVj6QQTihbgpmwvn8GsR72
- f6M2b6czEpm4tPKHpScyN4Lkebo5SS7aAy7RgKdlBzjTwKyE/YMSJlrRJCLt88GfkEwD
- AEAwHIKLdc/gSuuNG5OBelqsrENCfWboBrbUax8yDIu5hFJPBNGGrE7cvBIc44zf4aWf BQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 360kvjwfsr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 12 Jan 2021 10:07:24 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10C9pjg3181291;
-        Tue, 12 Jan 2021 10:07:24 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 360ke69p35-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jan 2021 10:07:24 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10CA7JpG003574;
-        Tue, 12 Jan 2021 10:07:20 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 12 Jan 2021 02:07:18 -0800
-Date:   Tue, 12 Jan 2021 13:07:06 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Xiaojian Du <Xiaojian.Du@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] drm/amdgpu: Add missing BOOTUP_DEFAULT to
- profile_name[]
-Message-ID: <20210112100706.GF5083@kadam>
-References: <20210111114638.16530-1-colin.king@canonical.com>
+        Tue, 12 Jan 2021 05:09:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610446097;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5NbcmgwaYrjavDDzcTR+11B6XNHE1NWBigHknZI2YPE=;
+        b=QYdIfN51MKIDcFZRoMXCpP/wY1jhfycldLdPPkXMOBr4eGFf5G5rd3vdpyFQpZ55WzQWeh
+        2ejY1QjVynXdKFPovMu087XLtR9gMDtcErzHnIo1uiPp4YzAWDurydwr4h9IUqDotQVlEM
+        MuMXSeatHU0SytY+swZtT1bsjr9Zhzo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-264-Y4uS8_oHNOyKY4TR6rJ7cA-1; Tue, 12 Jan 2021 05:08:12 -0500
+X-MC-Unique: Y4uS8_oHNOyKY4TR6rJ7cA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B64F5100C660;
+        Tue, 12 Jan 2021 10:08:10 +0000 (UTC)
+Received: from krava (unknown [10.40.195.50])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4229D60BE2;
+        Tue, 12 Jan 2021 10:08:08 +0000 (UTC)
+Date:   Tue, 12 Jan 2021 11:08:07 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v2] perf stat: Append to default list if use -e +event
+Message-ID: <20210112100807.GB1273297@krava>
+References: <20210104021837.30473-1-yao.jin@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210111114638.16530-1-colin.king@canonical.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101120054
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
- clxscore=1011 impostorscore=0 spamscore=0 mlxscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101120054
+In-Reply-To: <20210104021837.30473-1-yao.jin@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 11:46:38AM +0000, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Mon, Jan 04, 2021 at 10:18:37AM +0800, Jin Yao wrote:
+> The default event list includes the most common events which are widely
+> used by users. But with -e option, the current perf only counts the events
+> assigned by -e option. Users may want to collect some extra events with
+> the default list. For this case, users have to manually add all the events
+> from the default list. It's inconvenient. Also, users may don't know how to
+> get the default list.
 > 
-> A recent change added a new BOOTUP_DEFAULT power profile mode
-> to the PP_SMC_POWER_PROFILE enum but omitted updating the
-> corresponding profile_name array.  Fix this by adding in the
-> missing BOOTUP_DEFAULT to profile_name[].
+> Now it supports a simple syntax: -e +event
 > 
+> The prefix '+' tells perf to append this event (or event list) to default
+> event list.
+> 
+> Before:
+> 
+> root@kbl-ppc:~# ./perf stat -e power/energy-pkg/ -a -- sleep 1
+> 
+>  Performance counter stats for 'system wide':
+> 
+>               2.04 Joules power/energy-pkg/
+> 
+>        1.000863884 seconds time elapsed
+> 
+> After:
+> 
+> root@kbl-ppc:~# ./perf stat -e +power/energy-pkg/ -a -- sleep 1
+> 
+>  Performance counter stats for 'system wide':
+> 
+>               2.11 Joules +power/energy-pkg/        #    0.000 K/sec
 
-Still not enough to prevent the array overflow.  It needs POWERSAVE as
-well.
+I dont think we should print the extra '+' prefix
 
-regards,
-dan carpenter
+jirka
+
+>           8,007.17 msec   cpu-clock                 #    7.993 CPUs utilized
+>                125        context-switches          #    0.016 K/sec
+>                  8        cpu-migrations            #    0.001 K/sec
+>                  2        page-faults               #    0.000 K/sec
+>          8,520,084        cycles                    #    0.001 GHz
+>          2,808,302        instructions              #    0.33  insn per cycle
+>            555,427        branches                  #    0.069 M/sec
+>             59,005        branch-misses             #   10.62% of all branches
+> 
+>        1.001832003 seconds time elapsed
+> 
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 
