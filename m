@@ -2,97 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A44AC2F2A87
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D6D2F2AA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:06:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405814AbhALJCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:02:04 -0500
-Received: from mail-lj1-f171.google.com ([209.85.208.171]:35620 "EHLO
-        mail-lj1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405799AbhALJCD (ORCPT
+        id S2405854AbhALJCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:02:14 -0500
+Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:57069 "EHLO
+        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405818AbhALJCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:02:03 -0500
-Received: by mail-lj1-f171.google.com with SMTP id p13so2021199ljg.2;
-        Tue, 12 Jan 2021 01:01:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=haCXkiEdHtQn5zcL0eeYqZrMblZ/rhEiT3dh2wlTt4U=;
-        b=sYcwzjav/fBkwBvxLlTLdjkPWbCvlRweeQ/WV7IQALoRgJaKglrw6QbkIZhX2ioWbM
-         +NP8tf+aFdeTcpe7wvGOiUt81LDFO4rGoLl3Qkb3sU8XUcc7ivQfoz2bUwq2sqqvbU75
-         ZTqSnGOEHmFjfj4621yI1dYYoApWkBB2cNVPc1exgn6Fk6VcablSXGE0jTOXukWaS4sq
-         c6fXClviYHSMGS/xHR0yHIPRFJe3T9Q1qSdjPlFs08USsoQafTDfzTpDo7lfr84eKSvi
-         7A2P+AkMNjf1dWk26wlWSyW0AkMlD4y+KGQACsKGXB+W9yLvEFfWgkxY3uOtx7Opy571
-         qygg==
-X-Gm-Message-State: AOAM531V5WbljG7Qz9xd1IWbhX2FD9CU1R30JeLg9344HvcGv4BxblLe
-        h8yq+HC8n6H4cxvilwqNeDx8r7d+dv3cpw==
-X-Google-Smtp-Source: ABdhPJzEBGdx89BKmB8bHuXXvLUiH6SB24L853o2jEqMjVRy/Ew7V1ZW7ayyhebCIrjUC82DPP8toQ==
-X-Received: by 2002:a2e:9d95:: with SMTP id c21mr1620526ljj.51.1610442080558;
-        Tue, 12 Jan 2021 01:01:20 -0800 (PST)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id l84sm310130lfd.75.2021.01.12.01.01.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 01:01:19 -0800 (PST)
-Received: by mail-lf1-f46.google.com with SMTP id u25so2232066lfc.2;
-        Tue, 12 Jan 2021 01:01:19 -0800 (PST)
-X-Received: by 2002:a19:c783:: with SMTP id x125mr1692517lff.303.1610442079205;
- Tue, 12 Jan 2021 01:01:19 -0800 (PST)
+        Tue, 12 Jan 2021 04:02:13 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id zFYLkDEFWVfyLzFYOkoont; Tue, 12 Jan 2021 10:01:30 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1610442090; bh=PLv5Zm/5yN/UlNFm/B3Y5TFJb1kCSq8q5lmCw3WqoN0=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=Xvn8QPL/2GqTGjKTDvZ5aXGKZUY9JJwRXiTASA53aRVvV1OjHlLpEvPo7M8uJhxxR
+         dbznOruhgE2nO4vA6xL2AHjOz2wdzc2uOK9SqOQJjlO0QOjvNoq3SDnavWjuDEPrrg
+         llNOUwdByDv7jZrAqdSpKx4H/q2moxOESMZomWjWi5Ap0p4583bNpu29E1AXmOQHcl
+         GyZWq01k+7ybeKNXBfWQZZuWRF2AhXfZf3jeVeRNdQw4i2VkOxLaXg8Gs/rNzIEiR5
+         lrUfk528HJSRb4mr2PbuRRaB+7r0KBfmReWBt7Au+UBtEr8U+uwl9aZnGiDXjKJhOv
+         4Zf9TVylexEoQ==
+Subject: Re: [PATCH v5 1/2] media: v4l2-ctrl: add control for long term
+ reference.
+To:     Dikshita Agarwal <dikshita@codeaurora.org>,
+        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org
+References: <1609736971-14454-1-git-send-email-dikshita@codeaurora.org>
+ <1609736971-14454-2-git-send-email-dikshita@codeaurora.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <28e89e0c-3fd4-4d19-e4d2-5014e2be9398@xs4all.nl>
+Date:   Tue, 12 Jan 2021 10:01:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210106134617.391-1-wens@kernel.org> <20210106134617.391-3-wens@kernel.org>
-In-Reply-To: <20210106134617.391-3-wens@kernel.org>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Tue, 12 Jan 2021 17:01:07 +0800
-X-Gmail-Original-Message-ID: <CAGb2v67qXN1FX7cupTvVZrM8XRA4LWxVkfFbWh220CWrU7tyAg@mail.gmail.com>
-Message-ID: <CAGb2v67qXN1FX7cupTvVZrM8XRA4LWxVkfFbWh220CWrU7tyAg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] dt-bindings: arm: rockchip: Add FriendlyARM NanoPi M4B
-To:     Chen-Yu Tsai <wens@kernel.org>
-Cc:     Shawn Lin <shawn.lin@rock-chips.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Johan Jonker <jbx6244@gmail.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1609736971-14454-2-git-send-email-dikshita@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfNTpl36iStQ8onR9MKi02JJTNL/r26c3ARVETgkBPILENvbEPhrZF6/v0HXd58vR5IJNUNMuXjVSV1kWXKty0cy46WBfiOPqYo7ccrWiHuXnegmWcg6j
+ reJDjAK+Ywn/ZmRr25yfPwIIgssDJg/Gju7p3ZgLJmYRtYaM5jkhxXC4akElDJ8Fjmi59P996fu7nbHIe1irUldGivzrggIJA/moVztYgUSrozQnz2Sz+Ka7
+ SyzaZ5VZ0qK6YKMN/TAZTdBSkXaLIM8qRceI9RPCyl1A9BZdan+Y4gKd7k6i+gWWc/qWnBeG010VBlRpS5LKE2L9cYzt4OvG3Z97PhZfnGWGWYouEhhxu/2j
+ uJxpxOJVL4BWuCdJJjlsFSsi0q6RoCZuZM65Zb84uVq9l90IKtA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 9:46 PM Chen-Yu Tsai <wens@kernel.org> wrote:
->
-> From: Chen-Yu Tsai <wens@csie.org>
->
-> The NanoPi M4B is a minor revision of the original M4.
->
-> The differences against the original Nanopi M4 that are common with the
-> other M4V2 revision include:
->
->   - microphone header removed
->   - power button added
->   - recovery button added
->
-> Additional changes specific to the M4B:
->
->   - USB 3.0 hub removed; board now has 2x USB 3.0 type-A ports and 2x
->     USB 2.0 ports
->   - ADB toggle switch added; this changes the top USB 3.0 host port to
->     a peripheral port
->   - Type-C port no longer supports data or PD
->   - WiFi/Bluetooth combo chip switched to AP6256, which supports BT 5.0
->     but only 1T1R (down from 2T2R) for WiFi
->
-> Add a compatible string for the new board revision.
->
-> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+On 04/01/2021 06:09, Dikshita Agarwal wrote:
+> Long Term Reference (LTR) frames are the frames that are encoded
+> sometime in the past and stored in the DPB buffer list to be used
+> as reference to encode future frames.
+> This change adds controls to enable this feature.
+> 
+> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+> ---
+>  .../userspace-api/media/v4l/ext-ctrls-codec.rst        | 18 ++++++++++++++++++
+>  drivers/media/v4l2-core/v4l2-ctrls.c                   | 14 ++++++++++++++
+>  include/uapi/linux/v4l2-controls.h                     |  3 +++
+>  3 files changed, 35 insertions(+)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index 400774c..1675bcf 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -3637,3 +3637,21 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
+>        - Selecting this value specifies that HEVC slices are expected
+>          to be prefixed by Annex B start codes. According to :ref:`hevc`
+>          valid start codes can be 3-bytes 0x000001 or 4-bytes 0x00000001.
+> +
+> +``V4L2_CID_MPEG_VIDEO_LTR_COUNT (integer)``
+> +       Specifies the number of Long Term Reference (LTR) frames encoder needs
+> +       to generate or keep. This is applicable to H264 and HEVC encoder.
 
-This was
+This is applicable to the H264 and HEVC encoders.
 
-Acked-by: Rob Herring <robh@kernel.org>
+> +
+> +``V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX (integer)``
+> +       The current frame is marked as a Long Term Reference (LTR) frame
+> +       and given this LTR index which ranges from 0 to LTR_COUNT-1.
+> +       This is applicable to H264 and HEVC encoder and can be applied using
+> +       Request Api.
 
-back in v2.
+This is applicable to the H264 and HEVC encoders
+
+Request Api -> the Request API
+
+> +       Source Rec. ITU-T H.264 (06/2019); Table 7.9
+> +
+> +``V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES (bitmask)``
+> +       Specifies the Long Term Reference (LTR) frame(s) to be used for
+> +       encoding the current frame.
+> +       This provides a bitmask which consists of bits [0, LTR_COUNT-1].
+> +       This is applicable to H264 and HEVC encoder and can be applied using
+> +       Request Api.
+
+This is applicable to the H264 and HEVC encoders
+
+Request Api -> the Request API
+
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+> index 16ab54f..2ad6b5a 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+> @@ -950,6 +950,9 @@ const char *v4l2_ctrl_get_name(u32 id)
+>  	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:		return "Vertical MV Search Range";
+>  	case V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER:		return "Repeat Sequence Header";
+>  	case V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME:		return "Force Key Frame";
+> +	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:			return "LTR Count";
+> +	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:		return "frame LTR index";
+
+Use proper capitals:
+
+"Frame LTR Index"
+
+> +	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:		return "Use LTR Frames";
+>  	case V4L2_CID_MPEG_VIDEO_MPEG2_SLICE_PARAMS:		return "MPEG-2 Slice Parameters";
+>  	case V4L2_CID_MPEG_VIDEO_MPEG2_QUANTIZATION:		return "MPEG-2 Quantization Matrices";
+>  	case V4L2_CID_FWHT_I_FRAME_QP:				return "FWHT I-Frame QP Value";
+> @@ -1277,6 +1280,17 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>  	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:
+>  		*type = V4L2_CTRL_TYPE_INTEGER;
+>  		break;
+> +	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:
+> +		*type = V4L2_CTRL_TYPE_INTEGER;
+> +		break;
+> +	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:
+> +		*type = V4L2_CTRL_TYPE_INTEGER;
+> +		*flags |= V4L2_CTRL_FLAG_EXECUTE_ON_WRITE;
+> +		break;
+> +	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:
+> +		*type = V4L2_CTRL_TYPE_BITMASK;
+> +		*flags |= V4L2_CTRL_FLAG_EXECUTE_ON_WRITE;
+> +		break;
+>  	case V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME:
+>  	case V4L2_CID_PAN_RESET:
+>  	case V4L2_CID_TILT_RESET:
+> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> index af8dda2..c0bb87b 100644
+> --- a/include/uapi/linux/v4l2-controls.h
+> +++ b/include/uapi/linux/v4l2-controls.h
+> @@ -422,6 +422,9 @@ enum v4l2_mpeg_video_multi_slice_mode {
+>  #define V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE		(V4L2_CID_CODEC_BASE+227)
+>  #define V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE		(V4L2_CID_CODEC_BASE+228)
+>  #define V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME		(V4L2_CID_CODEC_BASE+229)
+> +#define V4L2_CID_MPEG_VIDEO_LTR_COUNT			(V4L2_CID_CODEC_BASE+230)
+> +#define V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX		(V4L2_CID_CODEC_BASE+231)
+> +#define V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES		(V4L2_CID_CODEC_BASE+232)
+>  
+>  /* CIDs for the MPEG-2 Part 2 (H.262) codec */
+>  #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_CODEC_BASE+270)
+> 
+
+Regards,
+
+	Hans
