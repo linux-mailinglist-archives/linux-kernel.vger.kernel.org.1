@@ -2,97 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C952F2F3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:38:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EF72F2F43
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:40:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388105AbhALMi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:38:28 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39110 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727570AbhALMi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:38:27 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610455060; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=38R9LgWGn4HEbk8lBrJ1162Zlh+4fmrREhjPSswCAzI=;
-        b=N7O1JFwWEvZ23+2FUC5qF2sVBZeBWItKxBIalOcY9CTay4lcsHp+Nc1Qv/jJhOXZ0CgXO0
-        i239RmMfoqjUxt2+iW75dpQMiO+QV+40IBMc4p0PbqjwxlNM0rtKvMYLHTRQV9b0jFuf4U
-        SY7AsDPptkXSQWlSymYDRmMyS7h13T4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DCDF9ACF5;
-        Tue, 12 Jan 2021 12:37:39 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 13:37:38 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v3 3/6] mm: hugetlb: fix a race between
- freeing and dissolving the page
-Message-ID: <20210112123738.GQ22493@dhcp22.suse.cz>
-References: <20210110124017.86750-1-songmuchun@bytedance.com>
- <20210110124017.86750-4-songmuchun@bytedance.com>
- <20210112100213.GK22493@dhcp22.suse.cz>
- <CAMZfGtVJVsuL39owkT+Sp8A7ywXJLhbiQ6zYgL9FKhqSeAvy=w@mail.gmail.com>
- <20210112111712.GN22493@dhcp22.suse.cz>
- <CAMZfGtWt5+03Pne9QjLn53kqUbZWSmi0f-iEOisHO6LjohdXFA@mail.gmail.com>
+        id S1731154AbhALMji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:39:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726223AbhALMjh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:39:37 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D507C061786;
+        Tue, 12 Jan 2021 04:38:56 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0e8c004f0317ef2d68091d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8c00:4f03:17ef:2d68:91d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 053191EC0249;
+        Tue, 12 Jan 2021 13:38:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1610455135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=lURGhY+Iv5XxPLBY60nqF2mu5aZ9mPyUntpgmLiCz5M=;
+        b=Y6jRwXbkPF6Zrx2LAZ3Ujt/c25wOxBRyzkUDo7pIu3ABZCUPNHevapYd8ucYMSfbYYV3t9
+        JessYM7sPkBy9HDPfbRWyRfZDveHdIyyNvPn4bqbqkItxSkZl2lWBCjmiJ1vib+FxX0m6e
+        rc2eRyaTa3f8mT6icwPYFSzUxQqu5Yw=
+Date:   Tue, 12 Jan 2021 13:38:54 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: Re: [PATCH v17 04/26] x86/cpufeatures: Introduce X86_FEATURE_CET and
+ setup functions
+Message-ID: <20210112123854.GE13086@zn.tnic>
+References: <20201229213053.16395-5-yu-cheng.yu@intel.com>
+ <20210111230900.5916-1-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAMZfGtWt5+03Pne9QjLn53kqUbZWSmi0f-iEOisHO6LjohdXFA@mail.gmail.com>
+In-Reply-To: <20210111230900.5916-1-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 12-01-21 19:43:21, Muchun Song wrote:
-> On Tue, Jan 12, 2021 at 7:17 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Tue 12-01-21 18:13:02, Muchun Song wrote:
-> > > On Tue, Jan 12, 2021 at 6:02 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Sun 10-01-21 20:40:14, Muchun Song wrote:
-> > > > [...]
-> > > > > @@ -1770,6 +1788,14 @@ int dissolve_free_huge_page(struct page *page)
-> > > > >               int nid = page_to_nid(head);
-> > > > >               if (h->free_huge_pages - h->resv_huge_pages == 0)
-> > > > >                       goto out;
-> > > > > +
-> > > > > +             /*
-> > > > > +              * We should make sure that the page is already on the free list
-> > > > > +              * when it is dissolved.
-> > > > > +              */
-> > > > > +             if (unlikely(!PageHugeFreed(head)))
-> > > > > +                     goto out;
-> > > > > +
-> > > >
-> > > > Do you really want to report EBUSY in this case? This doesn't make much
-> > > > sense to me TBH. I believe you want to return 0 same as when you race
-> > > > and the page is no longer PageHuge.
-> > >
-> > > Return 0 is wrong. Because the page is not freed to the buddy allocator.
-> > > IIUC, dissolve_free_huge_page returns 0 when the page is already freed
-> > > to the buddy allocator. Right?
-> >
-> > 0 is return when the page is either dissolved or it doesn't need
-> > dissolving. If there is a race with somebody else freeing the page then
-> > there is nothing to dissolve. Under which condition it makes sense to
-> > report the failure and/or retry dissolving?
-> 
-> If there is a race with somebody else freeing the page, the page
-> can be freed to the hugepage pool not the buddy allocator. Do
-> you think that this page is dissolved?
+On Mon, Jan 11, 2021 at 03:09:00PM -0800, Yu-cheng Yu wrote:
+> @@ -1252,6 +1260,16 @@ static void __init cpu_parse_early_param(void)
+>  	if (cmdline_find_option_bool(boot_command_line, "noxsaves"))
+>  		setup_clear_cpu_cap(X86_FEATURE_XSAVES);
+>  
+> +	/*
+> +	 * CET states are XSAVES states and options must be parsed early.
+> +	 */
 
-OK, I see what you mean. Effectively the page would be in a limbo, not
-yet in the pool nor in the allocator but it can find its way to the
-either of the two. But I still dislike returning a failure because that
-would mean e.g. memory hotplug to fail. Can you simply retry inside this
-code path (drop the lock, cond_resched and retry)?
+That comment is redundant - look at the containing function's name.
+
+Otherwise patch looks just as it should.
+
+Thx.
+
 -- 
-Michal Hocko
-SUSE Labs
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
