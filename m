@@ -2,116 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F243A2F2945
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 08:54:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 776A02F2991
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 08:59:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392063AbhALHyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 02:54:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729397AbhALHyQ (ORCPT
+        id S2392207AbhALH6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 02:58:33 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:36154 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2387692AbhALH6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 02:54:16 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA4DBC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 23:53:35 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id v126so1112556qkd.11
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 23:53:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mGCAtyq15j5iLbAyhIjgwA3t0EKUEm8gTtrvCf4O7jE=;
-        b=VcB+5Bvj/ofJcXzkKhp77cob5rnsxkzexfwEJOngzvRnRecyLQUXAIbrwPwzj506Be
-         y3L1S5y5m44HWw8JN3cmOpeJ8O+2+Wd0NLUmfAWCKak27ouvHG3G+AIUKAUtTrN0fppm
-         +EtfI4ldLLfUQr2GU/G1KNEfw7qHhyuReFqwhzHU42ClLbGKQDpAQRWTbf7IxHfK2BZf
-         GrTgZFqhs/xLCwOhvMeVU1NWhTQgMBMEl8jIzt4s4GWWZNnRW39B7RKu5G+7ivhHaOze
-         MFxAoVdjzH4XQbx76qPwKDkemgIYI60UdlzBjKnVCyE73yLsZ9t6wKsH0aHil5eNfnul
-         aviQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mGCAtyq15j5iLbAyhIjgwA3t0EKUEm8gTtrvCf4O7jE=;
-        b=q1dDyPee4fg5q8PabNPHvUdzKWUrBW0+oMPxCtqOuHn+aaypDog2zuhNPnCZF/ne4f
-         +gChMUxorNM/eyfen0trmuleOcVUilFiNNYz5UXVqhG1bNw2HSxeIaZMuunZH5oecR7f
-         9+ZOFFHGd6aPlVxg1/JFmYlk3gbIAT8DYJTJlum5kNrETAi0bmnLCxfrZGFBs+QRUZZ2
-         aLgaN0CN5Eurmc1FUYa9fmi65XK6OkrbTN+cgnjUkxy7wSfHum5H5GI4BIYAxUo3E7z5
-         7/AmYT0Lk8np5yyPburqPmfW95gCbf1hOIJdu0kCRNyax0IkSqNdU8gc8bSAEmH9R1fx
-         CImA==
-X-Gm-Message-State: AOAM531GPbEkcCJ6REzW5+34Mik/YjNkBS+nMCWaEQdB/ONfWDuMGB0R
-        NgKpVUT0qlP/0D+DxVo7IXMJd3obCQlT56462Qvhlg==
-X-Google-Smtp-Source: ABdhPJxKeO3yf8gX2ix6pPQZam2M1Q3zyFWoMsaCr5u8zLo/CrTR7MPDM49aEmBX/1ACLC6VwPF8L+gKK62yeZUuWHQ=
-X-Received: by 2002:a37:a747:: with SMTP id q68mr3233844qke.352.1610438014849;
- Mon, 11 Jan 2021 23:53:34 -0800 (PST)
-MIME-Version: 1.0
-References: <cover.1609871239.git.andreyknvl@google.com> <cb4e610c6584251aa2397b56c46e278da0050a25.1609871239.git.andreyknvl@google.com>
-In-Reply-To: <cb4e610c6584251aa2397b56c46e278da0050a25.1609871239.git.andreyknvl@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Tue, 12 Jan 2021 08:53:22 +0100
-Message-ID: <CAG_fn=VDPR2bkHA_CeDP-m8vwr3rTH+3-qwMNHNUQA2g6VghKA@mail.gmail.com>
-Subject: Re: [PATCH 03/11] kasan: clean up comments in tests
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Tue, 12 Jan 2021 02:58:32 -0500
+X-UUID: f297533def6b4cdda96ff3839445077d-20210112
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=MSCj26hBYC5yhFYlqz1zDqlpvUKDf/hx4JpIFhfQLI4=;
+        b=W16oFPTeJaN1RA97Wu0YZIKaA88aXNvJ7EUm4Ixma6NxFTB2TVNI3KWFd8Wf/yQHBeJfTVVabbqcYS7tPLbn7ock6OCnIovZ4XFok0xgUI3ffeSMuP9ctEggoZiaVVVbswBz4FpQivOwyMYMNTxsy1DhsgWJLfus87XjjoWFB7M=;
+X-UUID: f297533def6b4cdda96ff3839445077d-20210112
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
+        (envelope-from <henryc.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 557589570; Tue, 12 Jan 2021 15:57:46 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 12 Jan 2021 15:57:44 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 12 Jan 2021 15:57:44 +0800
+Message-ID: <1610438264.31838.1.camel@mtksdaap41>
+Subject: Re: [PATCH V7 01/13] dt-bindings: soc: Add dvfsrc driver bindings
+From:   Henry Chen <henryc.chen@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Fan Chen <fan.chen@mediatek.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        James Liao <jamesjj.liao@mediatek.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ryan Case <ryandcase@chromium.org>,
+        Arvin Wang <arvin.wang@mediatek.com>,
+        "Nicolas Boichat" <drinkcat@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        "Mark Brown" <broonie@kernel.org>, <devicetree@vger.kernel.org>
+Date:   Tue, 12 Jan 2021 15:57:44 +0800
+In-Reply-To: <CAL_Jsq+W3UL4-s6ezFJrhUYko2EBPsO9nMOGzGR1nQT3x_VtdQ@mail.gmail.com>
+References: <1610092095-5113-1-git-send-email-henryc.chen@mediatek.com>
+         <1610092095-5113-2-git-send-email-henryc.chen@mediatek.com>
+         <1610163019.789930.3762037.nullmailer@robh.at.kernel.org>
+         <1610333553.2992.7.camel@mtksdaap41>
+         <CAL_Jsq+W3UL4-s6ezFJrhUYko2EBPsO9nMOGzGR1nQT3x_VtdQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: E12981678A47B5256F94D79B6C1A2E72C722F0897B9519C75472F6B9F7E0D2322000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 7:28 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> Clarify and update comments and info messages in KASAN tests.
->
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/I6c816c51fa1e0eb7aa3dead6bda1f339d2af46c8
+T24gTW9uLCAyMDIxLTAxLTExIGF0IDA5OjQyIC0wNjAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
+T24gU3VuLCBKYW4gMTAsIDIwMjEgYXQgODo1MiBQTSBIZW5yeSBDaGVuIDxoZW5yeWMuY2hlbkBt
+ZWRpYXRlay5jb20+IHdyb3RlOg0KPiA+DQo+ID4gSGkgUm9iLA0KPiA+DQo+ID4gT24gRnJpLCAy
+MDIxLTAxLTA4IGF0IDIwOjMwIC0wNzAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4gPiA+IE9uIEZy
+aSwgMDggSmFuIDIwMjEgMTU6NDg6MDMgKzA4MDAsIEhlbnJ5IENoZW4gd3JvdGU6DQo+ID4gPiA+
+IERvY3VtZW50IHRoZSBiaW5kaW5nIGZvciBlbmFibGluZyBkdmZzcmMgb24gTWVkaWFUZWsgU29D
+Lg0KPiA+ID4gPg0KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBIZW5yeSBDaGVuIDxoZW5yeWMuY2hl
+bkBtZWRpYXRlay5jb20+DQo+ID4gPiA+IC0tLQ0KPiA+ID4gPiAgLi4uL2RldmljZXRyZWUvYmlu
+ZGluZ3Mvc29jL21lZGlhdGVrL2R2ZnNyYy55YW1sICAgfCA2NyArKysrKysrKysrKysrKysrKysr
+KysrDQo+ID4gPiA+ICAxIGZpbGUgY2hhbmdlZCwgNjcgaW5zZXJ0aW9ucygrKQ0KPiA+ID4gPiAg
+Y3JlYXRlIG1vZGUgMTAwNjQ0IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb2Mv
+bWVkaWF0ZWsvZHZmc3JjLnlhbWwNCj4gPiA+ID4NCj4gPiA+DQo+ID4gPiBNeSBib3QgZm91bmQg
+ZXJyb3JzIHJ1bm5pbmcgJ21ha2UgZHRfYmluZGluZ19jaGVjaycgb24geW91ciBwYXRjaDoNCj4g
+PiA+DQo+ID4gPiB5YW1sbGludCB3YXJuaW5ncy9lcnJvcnM6DQo+ID4gPg0KPiA+ID4gZHRzY2hl
+bWEvZHRjIHdhcm5pbmdzL2Vycm9yczoNCj4gPiA+IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
+aW5kaW5ncy9zb2MvbWVkaWF0ZWsvZHZmc3JjLmV4YW1wbGUuZHRzOjE5OjE4OiBmYXRhbCBlcnJv
+cjogZHQtYmluZGluZ3MvaW50ZXJjb25uZWN0L210ayxtdDgxODMtZW1pLmg6IE5vIHN1Y2ggZmls
+ZSBvciBkaXJlY3RvcnkNCj4gPiA+ICAgIDE5IHwgICAgICAgICAjaW5jbHVkZSA8ZHQtYmluZGlu
+Z3MvaW50ZXJjb25uZWN0L210ayxtdDgxODMtZW1pLmg+DQo+ID4gPiAgICAgICB8ICAgICAgICAg
+ICAgICAgICAgXn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fg0KPiA+
+IFNvcnJ5LCBiZWNhdXNlIHRoaXMgaGVhZGVyIGZpbGUgaXMgYWRkZWQgb24gIltWNywwNy8xM10g
+ZHQtYmluZGluZ3M6DQo+ID4gaW50ZXJjb25uZWN0OiBhZGQgTVQ4MTgzIGludGVyY29ubmVjdCBk
+dC1iaW5kaW5ncyIuDQo+ID4gU2hvdWxkIEkgY2hhbmdlIHRoZSBvcmRlciBvZiB0aGUgcGF0Y2hz
+ZXQgKGxldCB0aGUgeWFtbCBwYXRoYyBiZWhpbmQgdGhlDQo+ID4gaGVhZGVyKSB0byBmaXhlZCB0
+aGF0ID8NCj4gDQo+IERUIGhlYWRlcnMgc2hvdWxkIGJlIHBhcnQgb2YgdGhlIGJpbmRpbmcgc2No
+ZW1hIHBhdGNoLiAoT3IgYXQgbGVhc3QgY29tZSBmaXJzdCkuDQpPSywgSSB3aWxsIG1lcmdlIERU
+IGhlYWRlciBhbmQgYmluZGluZyBzY2hlbWEgcGF0Y2ggaW50byBhIHNpbmdsZSBwYXRjaC4NCg0K
+SGVucnkNCj4gDQo+IFJvYg0KDQo=
 
-
->  void *kasan_ptr_result;
->  int kasan_int_result;
-Shouldn't these two variables be static, by the way?
->
-> @@ -39,14 +38,13 @@ static struct kunit_resource resource;
->  static struct kunit_kasan_expectation fail_data;
->  static bool multishot;
->
-> +/*
-> + * Temporarily enable multi-shot mode. Otherwise, KASAN would only report the
-> + * first detected bug and panic the kernel if panic_on_warn is enabled.
-> + */
-
-YMMV, but I think this comment was at its place already.
-
->  static int kasan_test_init(struct kunit *test)
->  {
-> -       /*
-> -        * Temporarily enable multi-shot mode and set panic_on_warn=0.
-> -        * Otherwise, we'd only get a report for the first case.
-> -        */
->         multishot = kasan_save_enable_multi_shot();
-
-Unrelated to this change, but have you considered storing
-test-specific data in test->priv instead of globals?
-
->         if (!IS_ENABLED(CONFIG_SLUB)) {
-> -               kunit_info(test, "CONFIG_SLUB is not enabled.");
-> +               kunit_info(test, "skipping, CONFIG_SLUB required");
->                 return;
->         }
-
-You may want to introduce a macro that takes a config name and prints
-the warning/returns if it's not enabled.
-
-Alex
