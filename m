@@ -2,113 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A19262F3D1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BBB12F3D1C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437764AbhALVef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2437752AbhALVef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Jan 2021 16:34:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437028AbhALUpp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:45:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C5A322DFA;
-        Tue, 12 Jan 2021 20:45:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610484304;
-        bh=6EV3PSRRIdASeuowUAFkcXsesrpHli+gEefyPnm+dvY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mZYw9S7JwjZ2GBclKbnznUziE9VCzkI10RYictFpWWLU/3cq2mtd9VT3xq4Vt1gc+
-         03JCn5nskTb5MZRwDY23aAA3rSoPcL7NO9YTWkYBDpNlgIdhwn2jyGKJTI0KmcG8Tw
-         GcKqSLYybezYqcsz8tKmfEhowVjK0oiYepXsbxtoGvK92pbEVfqouw+uAbte3GOOnz
-         ln5oFNLXa6RUEdYwcUCG6AZLWrWg+/IQeQQKM8o9rgMt9QWKaT/oKAtuzawGsnmVkR
-         0uoX6l2fMbtrmpwxydD/60fX2moN8VupeYNQPJQF2slYF1EyTqJVZ6ZolFQ0I0N4VT
-         HZNd5LXsIRvIQ==
-Date:   Tue, 12 Jan 2021 20:44:31 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, timur@kernel.org,
-        nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: imx-hdmi: Fix warning of the uninitialized
- variable ret
-Message-ID: <20210112204431.GH4646@sirena.org.uk>
-References: <1608115464-18710-1-git-send-email-shengjiu.wang@nxp.com>
- <20210112181949.GA3241630@ubuntu-m3-large-x86>
- <20210112184848.GG4646@sirena.org.uk>
- <20210112190921.GA3561911@ubuntu-m3-large-x86>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437027AbhALUpe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:45:34 -0500
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EBA1C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:44:48 -0800 (PST)
+Received: by mail-oo1-xc35.google.com with SMTP id o5so903237oop.12
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:44:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pAFi2ACShEEwDuDwGJeG0H9FjZSu3Y9r6b+Xx+tXzqU=;
+        b=mxuxprPUMNMN0bRcfMWca+SUG9pa6eREsDnoZnR7sx2N9j/2jizblIlsK/AeGYu04s
+         mFcYy5zg5UY6wN5uWFYzrDa7P0rbebZiECf2rJ2lMoTeZwQ5mOTQQF4HpOIpHo5bHtV4
+         6HGy9DHUDQnxP5zfKO4k/tzWzDMgsbn+pQdayYnPWauC8U3tAfg+hxL4Qjk7SNRE8Q0V
+         6/TJPoX7EbxWTe1Q/T0YOo8brd5niAk32mmj33wbXV7Ycv/sJr8DJw7x1wbfzwjCD//I
+         Am6wb2qDwDZV54EsuaCEmfQVul4nGL6Z4gAqNEgIXrPdwrCWpWKYwYZ3ERLnIWc5kzTA
+         ACAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pAFi2ACShEEwDuDwGJeG0H9FjZSu3Y9r6b+Xx+tXzqU=;
+        b=cTXRiAHxsQUPaBkra6OSvFmp34jLJSrmQ4NrOYqXwJ4gWdATdp9zd4JVTSQmqq0f6Z
+         qqxaIa41J7t+y9fKXuAiVMVWPQDK41d+es0kqUk8iFdPsxnuTnqV6NaTlwjoZcG7dnbd
+         S5S+ny2BLifSnZ48NAESb096gDSGFKp0qbiokipx4VbaWWBAp7/ZGFku0gmEQeZTSs2e
+         VdQi0be8d797RLypqOMDhdG3q6c6rKDOIfudGDN6b7acNAUnx1pTV0ALjTFNjMVxY8Vy
+         JUR/d1vgUIY2WfxfTrEvnbolBNzUEimwJ1V6kQcTY+SkomIzBLZJkL3eHS4ZoIjItFun
+         HIPQ==
+X-Gm-Message-State: AOAM531HjB+MY7p/IrY7tH+gMX9ejzuW0knWXvIZKjitOah1wdbUBg94
+        6hPMj+I1nqZnYJXF0MsgQ6euhQ6qG9cDrFgMr8iTZw==
+X-Google-Smtp-Source: ABdhPJyWkD0DxQFRnZrRO9k80ixiu7VuSLPi0uYF4X61MMlX651tGs6qyEK0ayA7wcT7gOZRxDjkhMy5ekaDckgAafA=
+X-Received: by 2002:a4a:a11a:: with SMTP id i26mr592188ool.54.1610484287636;
+ Tue, 12 Jan 2021 12:44:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cfJ13FhsvNR/yOpm"
-Content-Disposition: inline
-In-Reply-To: <20210112190921.GA3561911@ubuntu-m3-large-x86>
-X-Cookie: Stay away from hurricanes for a while.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <0000000000004a33a005b8b8eaab@google.com> <20210112194058.GA200254@ubuntu-m3-large-x86>
+ <20210112203226.GA1055929@ubuntu-m3-large-x86>
+In-Reply-To: <20210112203226.GA1055929@ubuntu-m3-large-x86>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 12 Jan 2021 21:44:35 +0100
+Message-ID: <CANpmjNMu9zeNYEv8bpYo=uuvh8Atcbtf8JfeBQkXrBRj9DEtKw@mail.gmail.com>
+Subject: Re: upstream build error (12)
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     syzbot <syzbot+76880518931d755473cf@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 12 Jan 2021 at 21:32, Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> On Tue, Jan 12, 2021 at 12:40:58PM -0700, Nathan Chancellor wrote:
+> > On Tue, Jan 12, 2021 at 11:20:27AM -0800, syzbot wrote:
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    e609571b Merge tag 'nfs-for-5.11-2' of git://git.linux-nfs..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=15965a00d00000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=6157970d0a91b812
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=76880518931d755473cf
+> > > compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+76880518931d755473cf@syzkaller.appspotmail.com
+> > >
+> > > clang-11: error: unable to execute command: Aborted (core dumped)
+> > > clang-11: error: clang frontend command failed due to signal (use -v to see invocation)
+> > >
+> > > ---
+> > > This report is generated by a bot. It may contain errors.
+> > > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > >
+> > > syzbot will keep track of this issue. See:
+> > > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> >
+> > Would it be possible for clang-built-linux@googlegroups.com to be CC'd
+> > when there is a build error and the compiler is clang? Especially if
+> > clang is hitting an assertion.
+>
+> I cannot reproduce this with clang 11.0.1. I did a reverse bisect on
+> LLVM and found commit 4b0aa5724fea ("Change the INLINEASM_BR MachineInstr
+> to be a non-terminating instruction.") as the fix (which makes sense,
+> that commit has direct kernel implications). It is probably worth
+> upgrading syzkaller's clang to 11.0.1, where I have not seen any
+> assertions across all of the configurations that I test.
+>
+> Ccing Dmitry and Marco directly.
 
---cfJ13FhsvNR/yOpm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'll upgrade syzbot's clang 11. I think the version we use right now
+was still a pre-release.
 
-On Tue, Jan 12, 2021 at 12:09:21PM -0700, Nathan Chancellor wrote:
-> On Tue, Jan 12, 2021 at 06:48:48PM +0000, Mark Brown wrote:
-
-> > This is a random warning fix, why would you expect it to be sent as a
-> > bug fix?  This is the first indication I've seen that anyone is seeing
-> > it in mainline, in general the people who report and fix warnings are
-> > doing so based on -next and the patch seems to be from a month ago.  I
-> > don't have this in my inbox so I assume it's applied already or needs to
-> > be resubmitted anyway.
-
-> Well, I consider compiler warnings bugs. I have had plenty of my
-> compiler warning patches sent as bug fixes for an -rc. Furthermore, this
-> patch was sent three times by different people, that should give you some
-> indication that people are tripping over it.
-
-I really don't have that good a recall of what warning fixes people are
-sending, I might notice if I get two versions of the same thing that I
-look at at roughly the same time but even with a few hours between it's
-most likely that I'll have completely forgotten.  Warning fixes are in
-general not memorable, it's not a good sign if they are.  The default
-assumption for any warning fix that doesn't say anything else is going
-to be that either the issue or the toolchain is very new.
-
-For any kind of fix if you think that things are in some way urgent you
-should say something promptly (or provide some indication of this in the
-submission if you're sending the fix yourself, such as with a fixes
-tag).  If nobody says anything then you should assume that nobody else
-is going to be aware of any urgency and that this will affect handling.
-Should it happen that things aren't flagged up then of course do so but
-consider that this may well be the first time people will be aware
-there's any urgency, don't assume that people will have been operating
-with information they didn't have.
-
-> The first version was sent on December 11th, it looks like your pull for
-> 5.11 went on the December 14th, then the second version was applied on
-> December 16th so I figured it might be destined for 5.11 but I could not
-> tell (your for-next branch is a merge of your for-5.11 and for-5.12):
-
-If it's on the for-5.11 branch then it will be for 5.11, which it must
-be if it was applied then.  If it was and it was applied that long ago
-it'll already be queued in Takashi's tree and I guess he didn't send it
-on yet.
-
---cfJ13FhsvNR/yOpm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/+Ci4ACgkQJNaLcl1U
-h9AqTQf9Hd+NaLX8SdaivLSggl2+aq3vh152OKzmXnxVAeMvwXXPL5/73LMlierc
-POZ+45qPlmd5XO5IXdmwjCgQ9TWEacSSYKvK66n9taQq2sExQqIOBFtEuC9P/brJ
-GwIDJFjHSqdpLHOq9aiqH4/gPHR9bIDQbpXJiQrcib2EPKJzRnq43vSDH705EgUS
-QZga5MEbDI3FimHW0j5Q7PMtwDHm0WnDDRqwFFYAABdal9ZQcLQdQnUpSEfLAa6t
-Ai8DRIPPXe9JVllrS7TsG911f2XMK/EB/oiTSa+6jBCszuFJRd8wSLZeFIYdxqdV
-74KXV6vlSh4JfXlHUbk/Mz4XeuUbuw==
-=wfLB
------END PGP SIGNATURE-----
-
---cfJ13FhsvNR/yOpm--
+Thanks,
+-- Marco
