@@ -2,85 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7072F2B73
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C3D2F2B68
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392739AbhALJfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:35:46 -0500
-Received: from mga04.intel.com ([192.55.52.120]:27807 "EHLO mga04.intel.com"
+        id S2392653AbhALJe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:34:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392715AbhALJfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:35:44 -0500
-IronPort-SDR: hQVrSipWi1753H5bqOW6loq9qg2aye7L7HEyfkokPoUWxbj/bCbrK5Yr77kJdXl66qDJZpQ67S
- ciPDy7Nklamw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="175431872"
-X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
-   d="scan'208";a="175431872"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 01:35:04 -0800
-IronPort-SDR: HVZqNl53V65Tso0tlSZDAki2BhNRCeDvuLlb4LwKZ9nWDLF/vuZHYg39G/jHHA2AHqRaEJUf/a
- rqUR72lW1F8A==
-X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
-   d="scan'208";a="381355078"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 01:35:04 -0800
-Subject: [PATCH v2 5/5] libnvdimm/namespace: Fix visibility of namespace
- resource attribute
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     linux-mm@kvack.org
-Cc:     Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, stable@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
-Date:   Tue, 12 Jan 2021 01:35:03 -0800
-Message-ID: <161044410393.1482714.2866941280476392381.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <161044407603.1482714.16630477578392768273.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <161044407603.1482714.16630477578392768273.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S1731123AbhALJe6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 04:34:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FE2222D58;
+        Tue, 12 Jan 2021 09:34:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610444057;
+        bh=hkzbzs0K+f9nm5q4R4p5N9bYRD7QnTBmMG5Q4kjH+Vg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t8u/x5dqKIj2udvVn4cUROXMiNEWhp/ixI854A8coQTzCZSUSkAaCbYn3POtWuXV2
+         99/tqddpre/RlZfzGlyt8x9h7Vi2j5a4Kvs4zapFl55ZMlMfpjB6z+iRpjbgYTWrUA
+         3kwr4M+mdurQpR15CGCEUk8C+dF9atsNeeV4+jog=
+Date:   Tue, 12 Jan 2021 10:35:26 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] char_dev: replace cdev_map with an xarray
+Message-ID: <X/1tXpCfzMrTUhDQ@kroah.com>
+References: <20210111170513.1526780-1-hch@lst.de>
+ <20210111205818.GJ35215@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111205818.GJ35215@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Legacy pmem namespaces lost support for the "resource" attribute when
-the code was cleaned up to put the permission visibility in the
-declaration. Restore this by listing 'resource' in the default
-attributes.
+On Mon, Jan 11, 2021 at 08:58:18PM +0000, Matthew Wilcox wrote:
+> On Mon, Jan 11, 2021 at 06:05:13PM +0100, Christoph Hellwig wrote:
+> > @@ -486,14 +491,22 @@ int cdev_add(struct cdev *p, dev_t dev, unsigned count)
+> >  	if (WARN_ON(dev == WHITEOUT_DEV))
+> >  		return -EBUSY;
+> >  
+> > -	error = kobj_map(cdev_map, dev, count, NULL,
+> > -			 exact_match, exact_lock, p);
+> > -	if (error)
+> > -		return error;
+> > +	mutex_lock(&chrdevs_lock);
+> > +	for (i = 0; i < count; i++) {
+> > +		error = xa_insert(&cdev_map, dev + i, p, GFP_KERNEL);
+> > +		if (error)
+> > +			goto out_unwind;
+> > +	}
+> > +	mutex_unlock(&chrdevs_lock);
+> 
+> Looking at some of the users ...
+> 
+> #define BSG_MAX_DEVS            32768
+> ...
+>         ret = cdev_add(&bsg_cdev, MKDEV(bsg_major, 0), BSG_MAX_DEVS);
+> 
+> So this is going to allocate 32768 entries; at 8 bytes each, that's 256kB.
+> With XArray overhead, it works out to 73 pages or 292kB.  While I don't
+> have bsg loaded on my laptop, I imagine a lot of machines do.
+> 
+> drivers/net/tap.c:#define TAP_NUM_DEVS (1U << MINORBITS)
+> include/linux/kdev_t.h:#define MINORBITS        20
+> drivers/net/tap.c:      err = cdev_add(tap_cdev, *tap_major, TAP_NUM_DEVS);
+> 
+> That's going to be even worse -- 8MB plus the overhead to be closer to 9MB.
+> 
+> I think we do need to implement the 'store a range' option ;-(
 
-A new ndctl regression test for pfn_to_online_page() corner cases builds
-on this fix.
+Looks like it will be needed here.
 
-Fixes: bfd2e9140656 ("libnvdimm: Simplify root read-only definition for the 'resource' attribute")
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- drivers/nvdimm/namespace_devs.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Wow that's a lot of tap devices allocated all at once, odd...
 
-diff --git a/drivers/nvdimm/namespace_devs.c b/drivers/nvdimm/namespace_devs.c
-index 6da67f4d641a..2403b71b601e 100644
---- a/drivers/nvdimm/namespace_devs.c
-+++ b/drivers/nvdimm/namespace_devs.c
-@@ -1635,11 +1635,11 @@ static umode_t namespace_visible(struct kobject *kobj,
- 		return a->mode;
- 	}
- 
--	if (a == &dev_attr_nstype.attr || a == &dev_attr_size.attr
--			|| a == &dev_attr_holder.attr
--			|| a == &dev_attr_holder_class.attr
--			|| a == &dev_attr_force_raw.attr
--			|| a == &dev_attr_mode.attr)
-+	/* base is_namespace_io() attributes */
-+	if (a == &dev_attr_nstype.attr || a == &dev_attr_size.attr ||
-+	    a == &dev_attr_holder.attr || a == &dev_attr_holder_class.attr ||
-+	    a == &dev_attr_force_raw.attr || a == &dev_attr_mode.attr ||
-+	    a == &dev_attr_resource.attr)
- 		return a->mode;
- 
- 	return 0;
+Note, we will get some additional savings when this goes in as I can
+delete the kobject from the cdev (after cleaning up the misguided
+drivers that tried to set it thinking it was used), which will help out
+a lot for the individual structures being created, but not for these
+ranges.
 
+thanks,
+
+greg k-h
