@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047772F4065
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5802F4066
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389877AbhALXkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 18:40:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43460 "EHLO
+        id S2390120AbhALXmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 18:42:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388481AbhALXkL (ORCPT
+        with ESMTP id S2389939AbhALXmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 18:40:11 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2721C061575;
-        Tue, 12 Jan 2021 15:39:31 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id m6so64979pfm.6;
-        Tue, 12 Jan 2021 15:39:31 -0800 (PST)
+        Tue, 12 Jan 2021 18:42:31 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FB3EC061575;
+        Tue, 12 Jan 2021 15:41:51 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id l23so2725817pjg.1;
+        Tue, 12 Jan 2021 15:41:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Z1JTaErEPrP1NDii1O59Lox44MzvMpWGpFox9KE1gVY=;
-        b=UKePpehyURF8t+N2rQ5ZHAhDwXpyKRgmiyV5YUyxDySmCwajsK6hrTUsMtjo+YsyNw
-         N5kxarVDgFdxzmC2AQZM1P4GzsUArih2cguOAiQ0uZi57ZcEeEdGXk0PGC5+6R0rdJTN
-         uayI09AMBs7G3DsdYfNiCIG09zpVbRgXFE2ew7+NBckBvqHNkZmDbMixyI+j4Y/V4WsG
-         iCIt+EGp1TxyHM2FUsJ5ZsNd4OBN+ss4jXhcW7f8vd/chbDgmVolI+2PoxCgabTEtyoK
-         /Iy+otUvMiDfP5HrvoTupYn9OBARRP5yAgas5cHeO56WsXTDDuHtTSiyHCu8Ex3k7ERz
-         xA9g==
+        bh=jiJJEd6NpHk7kCu6CYi0ZOx+ayTWk5LzTwqK3Nr8GN4=;
+        b=MNrJSs5yR5TAV4nJFeyDAe0GGDw0/pTlXcrpyP0L7R3V+gr2Lk4hfPKWiwiFM+qx5/
+         Smd8qlJ6dgU/DkKE3VnYw7ycSyr3o3UOv5bYo8SJ9vbaOZ6C4EhheS1DWAVWe278M1Ra
+         1/X1N0cW/V6Wrv/8AaK6vyArWm2laMHdai7WRr7xxU2dcC3M4OCik/jeSbsqQDC623p1
+         OToEnPGssKkEVG3tgVrBMhwTqCNRIxsvviwAUlsrSTNMPVdeOUTDaflEPg8bLmOk4j2T
+         KYYIO63SDSa0mLFCDcHwHvVZ0DBmyOtl8oBp1BarP4CUElETFdI85krO8+INBge5NN0a
+         NQ2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=Z1JTaErEPrP1NDii1O59Lox44MzvMpWGpFox9KE1gVY=;
-        b=CGAcqattOFRyaaoxpqEoMvnEHiwYl/Jp9aqAo2cOU5F7PZI6MYdfOY0Wp7D5xQHqiD
-         B3YfXfYUNO6SjUK9FkEoDEKOcOA9DiXhALx/OTiGFp1tAj6Lrf+xeREhbqFoRrikJ0rd
-         gWEQwPAF52ZgIkZubL/A0UDrR9S/WOwTUD0nUMd/grfzEfq5pgkWbQaEpZLjyieiw1Fa
-         c1JMtHOecLMfuhBJEr3H4Ay4AxT1pcyiwURJOmGKBYzEFzVc0ezMtsXp3Dj3VdqIX6Je
-         PbRc3lgSygsQ2GMs7qqDqm/lwkmguvP3/3CaswM4MSszvn4qPvovT5rN6Ou7Rgfs7X0n
-         IDjA==
-X-Gm-Message-State: AOAM530upY+tBr7QvJ48F78gSm24B8QEPIi10kFz/KvWsKmNEhBnJhvi
-        l2u3swLb4WQ75DBBRd1gN+L6KXlbhGI=
-X-Google-Smtp-Source: ABdhPJyArjqVLqeIkvjKKBsKMdQRC3Og1Bx7l3Wh1YJGTJpOBPi6m2rYNCjntb6GGu54j6vcfyrGWA==
-X-Received: by 2002:a63:585a:: with SMTP id i26mr1465672pgm.330.1610494771102;
-        Tue, 12 Jan 2021 15:39:31 -0800 (PST)
+        bh=jiJJEd6NpHk7kCu6CYi0ZOx+ayTWk5LzTwqK3Nr8GN4=;
+        b=Eo/o55LuydE2enTNdTb/qCu3Vwnhv8R6LMjs8x3Krwp+ih6VE0UzhNMDWsqRdhWH2Q
+         jIACYnReZP5bsWhRbZ55PCLovfEi6z1QoEHXepkTEwgbIOO4lYpjU9aqlTtRnHSIW7fJ
+         y8VTPz0loPjSofxezsS47vmhfXEGErRedl/6EoRXHYbCEWUFX7uVEa1WIB03cwOljJ3T
+         0Tda7j4nVmV64D260UQ0SXLkf9bAeZkXSx+w9DYpVh6UxVANyLlVadSu5E4zomhRZsIp
+         9VNbF2o3L5oPpfY+y0UNwXDCG/AouLaBqEVwdihZdpVR8pqDtSeOxudk6FLkvXWlDzTU
+         D8vQ==
+X-Gm-Message-State: AOAM532euAyRtOu0vMlq09sCkHJoM8BFhR1EsegV3+L8OdOHyAJonuus
+        0imo+QQn3ejMUL9Ov/Ha1KU=
+X-Google-Smtp-Source: ABdhPJwrt/Z/EmHNy2d3yoZ568Za3OrumA7har7HRFuVqqkJomUyFjrO1CFroe8EilBTG4QSlZLX5w==
+X-Received: by 2002:a17:90a:5802:: with SMTP id h2mr137566pji.68.1610494910815;
+        Tue, 12 Jan 2021 15:41:50 -0800 (PST)
 Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id v125sm88579pgv.6.2021.01.12.15.39.26
+        by smtp.googlemail.com with ESMTPSA id q2sm149460pjd.33.2021.01.12.15.41.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 15:39:30 -0800 (PST)
-Subject: Re: [RFC PATCH v3 3/6] swiotlb: Use restricted DMA pool if available
+        Tue, 12 Jan 2021 15:41:50 -0800 (PST)
+Subject: Re: [RFC PATCH v3 4/6] swiotlb: Add restricted DMA alloc/free
+ support.
 To:     Claire Chang <tientzu@chromium.org>, robh+dt@kernel.org,
         mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
         joro@8bytes.org, will@kernel.org, frowand.list@gmail.com,
@@ -67,7 +68,7 @@ Cc:     grant.likely@arm.com, xypron.glpk@gmx.de, treding@nvidia.com,
         xen-devel@lists.xenproject.org, tfiga@chromium.org,
         drinkcat@chromium.org
 References: <20210106034124.30560-1-tientzu@chromium.org>
- <20210106034124.30560-4-tientzu@chromium.org>
+ <20210106034124.30560-5-tientzu@chromium.org>
 From:   Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
  mQGiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
@@ -123,12 +124,12 @@ Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
  caxTGgc5zzQHeX67eMzrGomG3ZnIxmd1sAbgvJUDaD2GrYlulfwGWwWyTNbWRvMighVdPkSF
  6XFgQaosWxkV0OELLy2N485YrTr2Uq64VKyxpncLh50e2RnyAJ9Za0Dx0yyp44iD1OvHtkEI
  M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <7b9b598c-5ccd-f897-a962-14c0ed7af6de@gmail.com>
-Date:   Tue, 12 Jan 2021 15:39:23 -0800
+Message-ID: <cc23b28f-4ebf-3183-cb4c-7c6fd17f5663@gmail.com>
+Date:   Tue, 12 Jan 2021 15:41:46 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210106034124.30560-4-tientzu@chromium.org>
+In-Reply-To: <20210106034124.30560-5-tientzu@chromium.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -137,24 +138,28 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 1/5/21 7:41 PM, Claire Chang wrote:
-> Regardless of swiotlb setting, the restricted DMA pool is preferred if
-> available.
-> 
-> The restricted DMA pools provide a basic level of protection against
-> the DMA overwriting buffer contents at unexpected times. However, to
-> protect against general data leakage and system memory corruption, the
-> system needs to provide a way to restrict the DMA to a predefined memory
-> region.
+> Add the functions, swiotlb_alloc and swiotlb_free to support the
+> memory allocation from restricted DMA pool.
 > 
 > Signed-off-by: Claire Chang <tientzu@chromium.org>
+> ---
 
-You could probably split this patch into two:
+[snip]
 
-- one that introduces the get_io_tlb_mem() getter, updates all callers
-of is_swiotlb_buffer() to gain a 'struct device' argument
-- another one that does add support for a non-default swiotlb pool and
-adds dev->dma_io_tlb_mem
+> diff --git a/kernel/dma/direct.c b/kernel/dma/direct.c
+> index 30ccbc08e229..126e9b3354d6 100644
+> --- a/kernel/dma/direct.c
+> +++ b/kernel/dma/direct.c
+> @@ -137,6 +137,11 @@ void *dma_direct_alloc(struct device *dev, size_t size,
+>  	void *ret;
+>  	int err;
+>  
+> +#ifdef CONFIG_SWIOTLB
+> +	if (unlikely(dev->dma_io_tlb_mem))
+> +		return swiotlb_alloc(dev, size, dma_handle, attrs);
+> +#endif
 
-Other than that, LGTM!
+While this is potentially a hot path, I am not sure of the unkikely is
+warranted, maybe best left as a plain conditional.
 -- 
 Florian
