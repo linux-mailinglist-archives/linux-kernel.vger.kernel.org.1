@@ -2,214 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3669A2F4076
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 992EE2F4075
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:56:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392623AbhAMAmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2393007AbhAMAmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Jan 2021 19:42:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44396 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390246AbhALXoe (ORCPT
+        with ESMTP id S2390303AbhALXor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 18:44:34 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A56C061795;
-        Tue, 12 Jan 2021 15:43:54 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id r9so421164ioo.7;
-        Tue, 12 Jan 2021 15:43:54 -0800 (PST)
+        Tue, 12 Jan 2021 18:44:47 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A6BFC06179F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:44:07 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id g10so1926811wmh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:44:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=UjqLWBff2oAK5ITVU1oqIMtLhE5XUJaVTO6IhzmEgyE=;
-        b=EDsfLPV4vrt/W4PZd9DRhmCdwvvtq0w8+LEJLTfx8FZ7u6W+EKIBGr3mNgEXS0fIdt
-         DME307Wmd//3s8MtFDgFZNieHuREheLUMaZpaszuUxowqdlO5186D4oVDy8uBcnwR/E6
-         CGTYOcB6lgTTpv6NsOi9yuzEBg7V7C30GMxqFYjTKlDQmsWcU/vlmnPC1/yZO7/fmEIN
-         ujt4qss+0ZM96XwUYT7vQb2gAhYFXdE7sGIHC9ySdZB1PFO7TAGIlylHRZdsIS8UqVO+
-         YTugWGVwN9RyIAsam1CD990I1dDIVqP/dEnh8ZsHwexc8Sq/aFUtc+RZwPJBu/vDSriF
-         b8zw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=13Pl4XAMUhez0jbUfywZeknBjZz6BXpikXW9lK4IWSQ=;
+        b=DxOMUV/AwzsU8Bxxho9X9o2mffHav5+nYYGjmOjHu0UF64RmP6BGE69vwTkoAbNCV3
+         UlTwohTzPOqfFZfVUm7p8I77E/zXdBmSgIjycKvDbzpYnTTLRfRpR2HUWRBuTRXkDsQg
+         2fxh+3OYqQZPtTfbCARmDBJUTrXkpl25QrrSST4rZpKWLForEuJJX7G6mc9N1MlnlW3Q
+         xyF1lfEZ+Jl+txKx8Qg+qSjVjsIF+hqpiSVsAnAFLNbROhjRbSPpwYib9yN0g/OHNhBF
+         JBKQM/4+2FXsKmEDqI9V17fZ4p0aJ/+E+YIFu5b6TPtEu56+SPo9+Fwd1frxl9MpKnuF
+         IvIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=UjqLWBff2oAK5ITVU1oqIMtLhE5XUJaVTO6IhzmEgyE=;
-        b=H2EIO6xaSalF47N8qqCqcWzyyTJxwLflfgp6AQJw6W3YkUgxinLybXY4wRq1HLr26y
-         mVMIG3jhXL8+3ei6cEorEnvVyaoIUUoLjrhPkZv50OfxXE3a7WZzLKfrlSjRcIecYLrw
-         cJ3wLRs1BAmmv2AEFuc/CKy3ar8Dg5T7KvyjR4cIbFw2xhX9UKBcw98BnVCUbv4GW7vu
-         8gjbNIS6XQP1KfAbTyjDw0K/RVCBQb97hbY6Lp9VMrj7ixUeSb+5phyLhshOHCHI+Kqo
-         rnVJq0Ki0z/v0mqthfHD+4fo95ZQPGtoau0NP8kmJKEhTZeMyFJlXcQkm5dHjL+Sgo3W
-         D4lw==
-X-Gm-Message-State: AOAM530fVR9ZSfiBVAEhp9hOHtXlc3N00NmFiTNO1xgrXYFXGt8CxW3X
-        8L8LedwKUthCOGiebOdaImj/qCMDiE4hWuzmMnZXtpMcz6eI2g==
-X-Google-Smtp-Source: ABdhPJz5UQydtVFyQkapceVkeXgXLEU2zu+TJjfwekFMpYmQxv1TC9yWVtHQPhujSFXyn2UUDF3SeyLd/mAI0bhV7Ug=
-X-Received: by 2002:a5e:d70e:: with SMTP id v14mr1247099iom.75.1610495033522;
- Tue, 12 Jan 2021 15:43:53 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=13Pl4XAMUhez0jbUfywZeknBjZz6BXpikXW9lK4IWSQ=;
+        b=m88+MhNu/W0cRTcYL8CRY/DE7BAsg0d4OCu0Em06+6+xeXBUJmdrvLFTbpRUNV698x
+         dDXSKCw+mAKYB9e0Yk/bl/xwbV1Kq1ET8ZUOs+ahFOaBLHTnBYVf+fweG8zSPVKwYrUi
+         JrE9LzPaB0FbnXPURBAeSHJw1c0JdteEfkxxMlNsbcfcLsGrTkP3rytGYeK8rYCCV6hp
+         z4945FRg3fWsTIsRCz/PJ8AlEWjaaCiUslJVpAsDi9MDgJOobbKXVNCVUv08XSS5b6+C
+         +tWZ5aidULv2KNcJC2vYRqdiIBkmiWenZ8RA4kqIGyQDfCXdJnemsIyBWHJcyySHPHfY
+         wP0w==
+X-Gm-Message-State: AOAM532AWc2o09J+03YqUFaMgL7dAFJ1DxMJMKlQ4Hmp/QSU2Yl+9Wbw
+        Qn0+UBkcLzPQvTeSZotnKlgy1SV58Atomsbl8fAEOQ==
+X-Google-Smtp-Source: ABdhPJx06ofU6hqy2BlI6NNCevuMzXNikWqi5FxP+z9XcarFcWeXXiYfhd7bVr6n+PKXss2BXMbSmbKtwTTaLjlhncE=
+X-Received: by 2002:a7b:c184:: with SMTP id y4mr92985wmi.92.1610495045888;
+ Tue, 12 Jan 2021 15:44:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20210111180609.713998-1-natechancellor@gmail.com>
-In-Reply-To: <20210111180609.713998-1-natechancellor@gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 13 Jan 2021 00:43:41 +0100
-Message-ID: <CA+icZUXcsjwXOcoHRL3HSDMbE9thq7G3A9Uvzeg8tbNfLP7dfw@mail.gmail.com>
-Subject: Re: [PATCH] bpf: Hoise pahole version checks into Kconfig
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
+References: <20210109074435.626855-1-leo.yan@linaro.org> <20210109074435.626855-2-leo.yan@linaro.org>
+ <CAJ9a7VgTqsa4_W0bmfS1BPYnKyvToyVLD=fk85_t9-yehCY9Lw@mail.gmail.com>
+ <20210112085826.GC18965@leoy-ThinkPad-X240s> <CAJ9a7VgYt-JemRaJn_KtO-X729jo-0y0OO5hCm=tHay31Q6msw@mail.gmail.com>
+ <20210112141458.GF18965@leoy-ThinkPad-X240s>
+In-Reply-To: <20210112141458.GF18965@leoy-ThinkPad-X240s>
+From:   Mike Leach <mike.leach@linaro.org>
+Date:   Tue, 12 Jan 2021 23:43:55 +0000
+Message-ID: <CAJ9a7Vj5Yz_2pXzwSgwou2Uq3O9CZ77VWDaPbohdy0-aeJXOxA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/7] coresight: etm-perf: Add support for PID tracing
+ for kernel at EL2
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Daniel Kiss <Daniel.Kiss@arm.com>,
+        Denis Nikitin <denik@chromium.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Al Grant <al.grant@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 7:06 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
->
-> After commit da5fb18225b4 ("bpf: Support pre-2.25-binutils objcopy for
-> vmlinux BTF"), having CONFIG_DEBUG_INFO_BTF enabled but lacking a valid
-> copy of pahole results in a kernel that will fully compile but fail to
-> link. The user then has to either install pahole or disable
-> CONFIG_DEBUG_INFO_BTF and rebuild the kernel but only after their build
-> has failed, which could have been a significant amount of time depending
-> on the hardware.
->
-> Avoid a poor user experience and require pahole to be installed with an
-> appropriate version to select and use CONFIG_DEBUG_INFO_BTF, which is
-> standard for options that require a specific tools version.
->
-> Suggested-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Hi Leo,
 
-Thanks for the patch, Nathan,
+On Tue, 12 Jan 2021 at 14:15, Leo Yan <leo.yan@linaro.org> wrote:
+>
+> Hi Mike,
+>
+> On Tue, Jan 12, 2021 at 11:23:03AM +0000, Mike Leach wrote:
+> > Hi Leo,
+> >
+> > On Tue, 12 Jan 2021 at 08:58, Leo Yan <leo.yan@linaro.org> wrote:
+> > >
+> > > Hi Mike,
+> > >
+> > > On Mon, Jan 11, 2021 at 04:22:39PM +0000, Mike Leach wrote:
+> > >
+> > > [...]
+> > >
+> > > > > diff --git a/include/linux/coresight-pmu.h b/include/linux/coresight-pmu.h
+> > > > > index b0e35eec6499..927c6285ce5d 100644
+> > > > > --- a/include/linux/coresight-pmu.h
+> > > > > +++ b/include/linux/coresight-pmu.h
+> > > > > @@ -11,16 +11,19 @@
+> > > > >  #define CORESIGHT_ETM_PMU_SEED  0x10
+> > > > >
+> > > > >  /* ETMv3.5/PTM's ETMCR config bit */
+> > > > > -#define ETM_OPT_CYCACC  12
+> > > > > -#define ETM_OPT_CTXTID 14
+> > > > > -#define ETM_OPT_TS      28
+> > > > > -#define ETM_OPT_RETSTK 29
+> > > > > +#define ETM_OPT_CYCACC         12
+> > > > > +#define ETM_OPT_CTXTID         14
+> > > > > +#define ETM_OPT_CTXTID_IN_VMID 15
+> > > >
+> > > > Minor issue here - ETMv3.x / PTM cannot trace CXTID in VMID so this
+> > > > may better be named ETM4_OPT_CTXTID_IN_VMID, rather than be grouped
+> > > > with the ETM3.5 options?
+> > >
+> > > I looked into this suggestion but found it's complex than I assumed.
+> > > This config bits are not only used for ETMv3.x / PTM, it's also used
+> > > as an configuration interface between user space in Perf and kernel
+> > > drivers.
+> > >
+> > > For example, in the userspace, perf tool sets bit ETM_OPT_TS to enable
+> > > timestamp [1], this is same for ETMv3 and ETMv4.  In the kernel side,
+> > > the configuration is directly used ETMv3 (in coresight-etm3x-core.c),
+> > > but the configuration bits are converted for ETMv4 in the function
+> > > etm4_parse_event_config() [2].
+> > >
+> > > So this is a historical issue, at the early period ETMv3 and ETMv4 can
+> > > be compatible with each other for configurations, but after evoluation,
+> > > some configs only belong to ETMv4 and cannot be applied on ETMv3
+> > > anymore, but we still use ETMv3.5 config bits as the interface between
+> > > kernel and userspace.
+> > >
+> >
+> > I was aware that etm3/ptm used these bits as both the options and the
+> > bit values for direct writing to the ETMCR register for ETMv3, and
+> > re-mapped to appropriate register values in ETMv4.
+> > In the past we have re-used etmv3.5 bit definitions ETM_xxx  when
+> > appropriate, but where unique to ETM4 we  have used a ETM4_xxx naming
+> > convention.
+>
+> I am concern this approach is not friendly for extension; for example,
+> let's say IP ETM5 with defined bit 28 as CTXTID, if add a new option
+> for it, we need to define macro as:
+>
+>         #define ETM5_OPT_CTXTID         28
+>
+> This will result in confliction with the existed option ETM_OPT_TS
+> and it is hard for maintenance for options, since there have different
+> prefixes (like ETM_OPT_xxx, ETM4_OPT_xxx, ETM5_OPT_xxx, etc).
+>
 
-Might be good to gave a hint to the user if pahole version does not
-match requirements?
-
-Feel free to add my:
-
-Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
-
-- Sedat -
+No it will not - we don't need a new option for CTXTID in a
+hypothetical ETM5 - as we use the existing one for ETM3 and map it to
+the correct bit, just as ETM4 does.
 
 
+> I'd like to take option as knob to enable or disable hardware
+> feature; the low level drivers should set the appropriate values for
+> registers based on different options.
+>
+> Furthermore, ETM driver should report error when detect any option is
+> not supported, I.e. ETM3 driver should report failure if user wrongly
+> set the option ETM_OPT_CTXTID_IN_VMID.
+>
+> > I am not suggesting re-factoring the options completely, just
+> > re-naming this single option to make it clear it is unique to ETM4+.
+>
+> Here I perfer Suzuki's suggestion to simply refine comments, something
+> like below:
+>
+> /*
+>  * Below are bit offsets for perf options, most of them are orignally
+>  * coming from ETMv3.5/PTM's ETMCR config bits (so far except
+>  * ETM_OPT_CTXTID_IN_VMID is only used for ETMv4).
+>  *
+>  * ETMv3.5/PTM doesn't define ETMCR config bits with prefix "ETM3_" and
+>  * directly use below macros as config bits.
+>  */
+> #define ETM_OPT_CYCACC          12
+> #define ETM_OPT_CTXTID          14
+> #define ETM_OPT_CTXTID_IN_VMID  15
+> #define ETM_OPT_TS              28
+> #define ETM_OPT_RETSTK          29
+>
+> > Looking at the etmv3 driver, at present it does not actually appear to
+> > support contextid tracing - and when it does, both bits 14 and 15 will
+> > be required to be used - as ETMCR defines these bits as ContextID
+> > size.
+> > Should this ever get fixed.
+>
+> Good catch!  Seems to me, this is a good example that we should
+> distinguish the definition between Perf options and config bits :)
+>
+> > then having an overlapping option bit -
+> > that appears to be valid for ETMv3 will be confusing.
+>
+> I hope the the proposed change can avoid the confusion, if have
+> concern, please let me know.
+>
+> Thanks a lot for suggestions,
+> Leo
 
-> ---
->  MAINTAINERS               |  1 +
->  init/Kconfig              |  4 ++++
->  lib/Kconfig.debug         |  6 ++----
->  scripts/link-vmlinux.sh   | 13 -------------
->  scripts/pahole-version.sh | 16 ++++++++++++++++
->  5 files changed, 23 insertions(+), 17 deletions(-)
->  create mode 100755 scripts/pahole-version.sh
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index b8db7637263a..6f6e24285a94 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3282,6 +3282,7 @@ F:        net/core/filter.c
->  F:     net/sched/act_bpf.c
->  F:     net/sched/cls_bpf.c
->  F:     samples/bpf/
-> +F:     scripts/pahole-version.sh
->  F:     tools/bpf/
->  F:     tools/lib/bpf/
->  F:     tools/testing/selftests/bpf/
-> diff --git a/init/Kconfig b/init/Kconfig
-> index b77c60f8b963..872c61b5d204 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -74,6 +74,10 @@ config TOOLS_SUPPORT_RELR
->  config CC_HAS_ASM_INLINE
->         def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
->
-> +config PAHOLE_VERSION
-> +       int
-> +       default $(shell,$(srctree)/scripts/pahole-version.sh $(PAHOLE))
-> +
->  config CONSTRUCTORS
->         bool
->         depends on !UML
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 7937265ef879..70c446af9664 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -267,6 +267,7 @@ config DEBUG_INFO_DWARF4
->
->  config DEBUG_INFO_BTF
->         bool "Generate BTF typeinfo"
-> +       depends on PAHOLE_VERSION >= 116
->         depends on !DEBUG_INFO_SPLIT && !DEBUG_INFO_REDUCED
->         depends on !GCC_PLUGIN_RANDSTRUCT || COMPILE_TEST
->         help
-> @@ -274,12 +275,9 @@ config DEBUG_INFO_BTF
->           Turning this on expects presence of pahole tool, which will convert
->           DWARF type info into equivalent deduplicated BTF type info.
->
-> -config PAHOLE_HAS_SPLIT_BTF
-> -       def_bool $(success, test `$(PAHOLE) --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'` -ge "119")
-> -
->  config DEBUG_INFO_BTF_MODULES
->         def_bool y
-> -       depends on DEBUG_INFO_BTF && MODULES && PAHOLE_HAS_SPLIT_BTF
-> +       depends on DEBUG_INFO_BTF && MODULES && PAHOLE_VERSION >= 119
->         help
->           Generate compact split BTF type information for kernel modules.
->
-> diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-> index 6eded325c837..eef40fa9485d 100755
-> --- a/scripts/link-vmlinux.sh
-> +++ b/scripts/link-vmlinux.sh
-> @@ -139,19 +139,6 @@ vmlinux_link()
->  # ${2} - file to dump raw BTF data into
->  gen_btf()
->  {
-> -       local pahole_ver
-> -
-> -       if ! [ -x "$(command -v ${PAHOLE})" ]; then
-> -               echo >&2 "BTF: ${1}: pahole (${PAHOLE}) is not available"
-> -               return 1
-> -       fi
-> -
-> -       pahole_ver=$(${PAHOLE} --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/')
-> -       if [ "${pahole_ver}" -lt "116" ]; then
-> -               echo >&2 "BTF: ${1}: pahole version $(${PAHOLE} --version) is too old, need at least v1.16"
-> -               return 1
-> -       fi
-> -
->         vmlinux_link ${1}
->
->         info "BTF" ${2}
-> diff --git a/scripts/pahole-version.sh b/scripts/pahole-version.sh
-> new file mode 100755
-> index 000000000000..6de6f734a345
-> --- /dev/null
-> +++ b/scripts/pahole-version.sh
-> @@ -0,0 +1,16 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# Usage: $ ./scripts/pahole-version.sh pahole
-> +#
-> +# Print the pahole version as a three digit string
-> +# such as `119' for pahole v1.19 etc.
-> +
-> +pahole="$*"
-> +
-> +if ! [ -x "$(command -v $pahole)" ]; then
-> +    echo 0
-> +    exit 1
-> +fi
-> +
-> +$pahole --version | sed -E 's/v([0-9]+)\.([0-9]+)/\1\2/'
->
-> base-commit: e22d7f05e445165e58feddb4e40cc9c0f94453bc
-> --
-> 2.30.0
->
+If you think that clarification via comment is better than a change of
+name then go ahead.
+
+Regards
+
+Mike
+
+-- 
+Mike Leach
+Principal Engineer, ARM Ltd.
+Manchester Design Centre. UK
