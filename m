@@ -2,96 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53EFF2F35FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84ACE2F3604
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:44:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390169AbhALQmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:42:22 -0500
-Received: from www.zeus03.de ([194.117.254.33]:37382 "EHLO mail.zeus03.de"
+        id S2403882AbhALQn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:43:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388969AbhALQmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:42:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=k1; bh=CsQikiLEh7z44L
-        KHTLDrKDuRYsf5V+chOq0ijqTAgJ4=; b=hJit5hJnfmEMXn9OMj6NsKv6CCVLA3
-        J5lviJslZ9durafVrq+ZzkpLXBXZlL0/WCUIfL49xOt/7S/YMQET3OxwIeAvUhFb
-        g4tbnbvw0Hbe37cxsZKKJ9oWATtSpDyJkgJlF0huLXUfZHzO06ZA5E6nP3xmpLQ1
-        mg2E1/KJ9w40o=
-Received: (qmail 2812505 invoked from network); 12 Jan 2021 17:41:36 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 12 Jan 2021 17:41:36 +0100
-X-UD-Smtp-Session: l3s3148p1@GLUwsra4TNEgAwDPXwxzAHrEwO71dOp2
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-i2c@vger.kernel.org
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Corey Minyard <minyard@acm.org>,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH RFC 3/3] ipmi: remove open coded version of SMBus block write
-Date:   Tue, 12 Jan 2021 17:41:29 +0100
-Message-Id: <20210112164130.47895-4-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210112164130.47895-1-wsa+renesas@sang-engineering.com>
-References: <20210112164130.47895-1-wsa+renesas@sang-engineering.com>
+        id S1727590AbhALQn0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 11:43:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C9C323107;
+        Tue, 12 Jan 2021 16:42:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610469766;
+        bh=kvA6EzFMifrlgziq/mCenSbkFpe3vuE+zD9SvpBIBaM=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=M0NwxyZWDCsqKIT+E54qzEYbDdNlntT1M1W5fTrJyP+jIpl0OFHTEVxN/whiq73E/
+         xcD7w6H9LBMJD2vPvqmnuxzkq3gHfmNSBK/0z4BCSXX9ZKpQuyySQXQ9ZnDxT41xVc
+         quyJgpdqcY6wIdoUk0ZbbDxfDDEZpNhDj0HBcW9CqaVwy6bPRwFE5f+gXLM38fR/3x
+         f3bXRNQy7uT07YdbOG9iV9FESo8Xt7s1/9ujpoJw6w8AveL6y+gBdK5oKh1AC9HFOf
+         przWUtEHRPNJQxrBrb9eJhOV/rMeRz4wo2XXnQAUob22t7GtX7Ua0qgLsqfuft6G4Z
+         Wvoor/7v/f6Yw==
+From:   Mark Brown <broonie@kernel.org>
+To:     nuno.sa@analog.com, Xu Wang <vulab@iscas.ac.cn>,
+        alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com,
+        perex@perex.cz, lars@metafoo.de
+Cc:     linux-kernel@vger.kernel.org
+In-Reply-To: <20210108084456.6603-1-vulab@iscas.ac.cn>
+References: <20210108084456.6603-1-vulab@iscas.ac.cn>
+Subject: Re: [PATCH] ASoC: adau17x1: Remove redundant null check before clk_disable_unprepare
+Message-Id: <161046972100.805.6254857210248726641.b4-ty@kernel.org>
+Date:   Tue, 12 Jan 2021 16:42:01 +0000
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The block-write function of the core was not used because there was no
-client-struct to use. However, in this case it seems apropriate to use a
-temporary client struct. Because we are answering a request we recieved
-when being a client ourselves. So, convert the code to use a temporary
-client and use the block-write function of the I2C core.
+On Fri, 8 Jan 2021 08:44:56 +0000, Xu Wang wrote:
+> Because clk_disable_unprepare() already checked NULL clock parameter,
+> so the additional check is unnecessary, just remove it.
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
- drivers/char/ipmi/ipmb_dev_int.c | 21 ++++++++-------------
- 1 file changed, 8 insertions(+), 13 deletions(-)
+Applied to
 
-diff --git a/drivers/char/ipmi/ipmb_dev_int.c b/drivers/char/ipmi/ipmb_dev_int.c
-index 382b28f1cf2f..10d89886e5f3 100644
---- a/drivers/char/ipmi/ipmb_dev_int.c
-+++ b/drivers/char/ipmi/ipmb_dev_int.c
-@@ -137,7 +137,7 @@ static ssize_t ipmb_write(struct file *file, const char __user *buf,
- {
- 	struct ipmb_dev *ipmb_dev = to_ipmb_dev(file);
- 	u8 rq_sa, netf_rq_lun, msg_len;
--	union i2c_smbus_data data;
-+	struct i2c_client temp_client;
- 	u8 msg[MAX_MSG_LEN];
- 	ssize_t ret;
- 
-@@ -160,21 +160,16 @@ static ssize_t ipmb_write(struct file *file, const char __user *buf,
- 	}
- 
- 	/*
--	 * subtract rq_sa and netf_rq_lun from the length of the msg passed to
--	 * i2c_smbus_xfer
-+	 * subtract rq_sa and netf_rq_lun from the length of the msg. Fill the
-+	 * temporary client. Note that its use is an exception for IPMI.
- 	 */
- 	msg_len = msg[IPMB_MSG_LEN_IDX] - SMBUS_MSG_HEADER_LENGTH;
--	if (msg_len > I2C_SMBUS_BLOCK_MAX)
--		msg_len = I2C_SMBUS_BLOCK_MAX;
-+	memcpy(&temp_client, ipmb_dev->client, sizeof(temp_client));
-+	temp_client.addr = rq_sa;
- 
--	data.block[0] = msg_len;
--	memcpy(&data.block[1], msg + SMBUS_MSG_IDX_OFFSET, msg_len);
--	ret = i2c_smbus_xfer(ipmb_dev->client->adapter, rq_sa,
--			     ipmb_dev->client->flags,
--			     I2C_SMBUS_WRITE, netf_rq_lun,
--			     I2C_SMBUS_BLOCK_DATA, &data);
--
--	return ret ? : count;
-+	ret = i2c_smbus_write_block_data(&temp_client, netf_rq_lun, msg_len,
-+					 msg + SMBUS_MSG_IDX_OFFSET);
-+	return ret < 0 ? ret : count;
- }
- 
- static __poll_t ipmb_poll(struct file *file, poll_table *wait)
--- 
-2.29.2
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: adau17x1: Remove redundant null check before clk_disable_unprepare
+      commit: 554a1b00957ec1033994a2d03b5b8eac59a24f3c
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
