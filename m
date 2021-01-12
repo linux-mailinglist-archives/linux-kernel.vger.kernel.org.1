@@ -2,101 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236532F2750
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 05:47:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DE22F2757
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 05:49:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732833AbhALEqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 23:46:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52654 "EHLO
+        id S1733172AbhALEtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 23:49:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731559AbhALEqh (ORCPT
+        with ESMTP id S1727713AbhALEta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 23:46:37 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72A7C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 20:45:48 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id z21so627216pgj.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 20:45:48 -0800 (PST)
+        Mon, 11 Jan 2021 23:49:30 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A66C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 20:48:50 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id q20so645177pfu.8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 20:48:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=lSnLP0cWAgAS1pcWb+CrLNNfSZnSuE1Fm2GJHIQSDOg=;
-        b=XozVgz+mp3eWVqaXXdIpVz1Hry6+ZRxOkoib2yzsTGXdTZ+wIShDqsAxUnKu8+Myvx
-         E6ZaZM0JsH3cRcZsQ1xXQ+V8pqRJ1JBwVyGfbiIviUee68ivmf3LZ7DX2TV3F1y2OAjz
-         7M6kGuaCBvcGk6+pBv/ROLJoDm6T7OMaZTVPftIR06U6mhSfxbw/mIM2ZZJ9n8AkURCW
-         C7STgye5lM1hadznW35C8AogpPmER7SjVHYh+yNX6pGjMDu7fmDm1TyOTj8LsFK5wzwt
-         dVuR4M/6xvABu6U8WulQcQdroLMXBiesHhrq0H92dmKrKCDN3y8HVUnWZAdDxquFZnQu
-         6XJA==
+        bh=6XEbGkPVwRDanX/I2P6uhWlodWlqXcGCFNj2dY44RU0=;
+        b=e+ZX8khPSgjivRpNFVdUaQFDkJbcVIohhxpJnLap07MwZXlSquRgCeTkiPp2YTxEte
+         maItIY05EXnSPWvSAO8KXFMKq5xouooO3HE/0SM8Z5ZNNnDSb9POp5C0RsIBRkBiPnd8
+         qBlvE6/H7aATiHRxnniZlQu+smiiMr1PMCiAHDsgzS+2Bntt4EpALyDlMHf1BRcyhwkm
+         Xk6FrTQotrnboRGhHO29VBnE7TYd0/skUZtl8wm0nfALqD9hcjGGFmSVmgxXYKEybgsY
+         w+uUdjb0J6xPLwi+0wFK8LY9plf2rDzXR+Q9aZd8h4OJDafTnol0+blIJWqPVnyFaTqN
+         GFdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lSnLP0cWAgAS1pcWb+CrLNNfSZnSuE1Fm2GJHIQSDOg=;
-        b=d6kjrlxXCXWop6ogqWH80e1DgXIAS/BXDoeOeCWxKLQInTlg8cxYY1zG7jF+UFmAQp
-         KmZtz+4TTFb7sndPBZzmfqk3vNU+2CWZLIDJuJh1dsIv9cFMyqYoXzY50jbL9VDgOJl6
-         19JYoN8mwhenSRs4WPLMlK8mOJjceTPAI9r2p602JHcj8cf/q914S1ydaJwTPizD1Ssd
-         JVoLydOIkfiBiE9ynkQ8k4s2lIEOLCu0HX3YKYE+fTrrLfiOFXu1m7ymAScG+GtSh1NP
-         znxx8qCzn5Tf5zV1yTztFSneo0qqYkODTCk0du9sk5BxyE27n8GG4tzozl/wBfs40raF
-         zjtQ==
-X-Gm-Message-State: AOAM532iWZIAwkshKrN8sfXgEyth3WI1X0LWL1Bt2zENx+bLFEXCoGnv
-        yM1BSq9H0qgSmhHlNCzdNEuvdQ==
-X-Google-Smtp-Source: ABdhPJydjdmJh6nciwHmgyqVF2VriQ4hgVHmiBm3aWTQVQTRpdIuzCa32pbA1jJvOpSY/s0fZE93SQ==
-X-Received: by 2002:aa7:9846:0:b029:1ae:7f23:c5 with SMTP id n6-20020aa798460000b02901ae7f2300c5mr2818477pfq.44.1610426748334;
-        Mon, 11 Jan 2021 20:45:48 -0800 (PST)
+        bh=6XEbGkPVwRDanX/I2P6uhWlodWlqXcGCFNj2dY44RU0=;
+        b=GnuPhmv1eEfbh8FzTNPWqXm4zl30zAuPgO1vRxnL4bALh2BThoOguNP9GL48KQI3oP
+         vzeGYJTRRBcLQDLL/HPUL9gqI0gSNhMSHc13Uo9BPSvAO21PDp4euTWIQwaA3pFBEwes
+         cITKgjsom5xnsmnDXIdL40WuK3HWlcvtLKyoXeHEWhJTzIYQ2wGAd7dIi7AcUoaCV7Gl
+         qTcUFW8obZ0DS80t/Hj42uLxMwA4bk6WfhVaJL1t4ncNxAkFihBAMI5nVGu38YARZZGY
+         pgiRODEs8l24/t1o5Z2VC73Xm1zz7Yu75a5lmigBdzQHYr8xT5bDnjNM6216kS1goc/y
+         3Row==
+X-Gm-Message-State: AOAM533b0xxq+OU4d4BHFRUqwIsE9xYnbysTAu5tr23Lm2Nd8EaGrchb
+        c2raStvRs0epBkK0GgpBt1TOSw==
+X-Google-Smtp-Source: ABdhPJzQPpAHrtaGK4/DtxiUE2mB5Qyjs5gxlhcr/XuwWqjBx8Li6i+JvRM3AMei68AePo/MRKvs3Q==
+X-Received: by 2002:a65:494f:: with SMTP id q15mr2854002pgs.367.1610426930315;
+        Mon, 11 Jan 2021 20:48:50 -0800 (PST)
 Received: from localhost ([122.172.85.111])
-        by smtp.gmail.com with ESMTPSA id d4sm1293665pfo.127.2021.01.11.20.45.47
+        by smtp.gmail.com with ESMTPSA id p8sm1172317pjf.11.2021.01.11.20.48.49
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 11 Jan 2021 20:45:47 -0800 (PST)
-Date:   Tue, 12 Jan 2021 10:15:45 +0530
+        Mon, 11 Jan 2021 20:48:49 -0800 (PST)
+Date:   Tue, 12 Jan 2021 10:18:47 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Frank Rowand <frowand.list@gmail.com>
 Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org
-Subject: Re: [PATCH V2 1/2] scripts: dtc: Add fdtoverlay.c and fdtdump.c to
- DTC_SOURCE
-Message-ID: <20210112044545.pqz3yxpccnvp6rrd@vireshk-i7>
-References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
- <f346aea6-b97f-484f-6371-965831fc06fc@gmail.com>
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH V3 2/2] scripts: dtc: Build fdtoverlay and fdtdump tools
+Message-ID: <20210112044847.e6aiaskvllgcll6z@vireshk-i7>
+References: <CAK7LNAQT5nVHGAZDhj4dct0v8UMzQ+-mdfBXJsfedR-7mZTnyA@mail.gmail.com>
+ <72c3a4f63dde3c172c11153e9a5b19fb6cdb4498.1610000585.git.viresh.kumar@linaro.org>
+ <94990759-34ff-0f4a-c913-dbcc679219be@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f346aea6-b97f-484f-6371-965831fc06fc@gmail.com>
+In-Reply-To: <94990759-34ff-0f4a-c913-dbcc679219be@gmail.com>
 User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-01-21, 16:13, Frank Rowand wrote:
+On 11-01-21, 18:55, Frank Rowand wrote:
 > Hi Viresh,
 > 
-> On 1/6/21 11:15 PM, Viresh Kumar wrote:
-> > We will start building overlays for platforms soon in the kernel and
-> > would need these tools going forward. Lets start fetching them.
-> > 
-> > Note that a copy of fdtdump.c was already copied back in the year 2012,
-> > but was never updated or built for some reason.
-> > 
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > ---
-> > V2: Separate out this change from Makefile one.
-> > 
-> > This needs to be followed by invocation of the ./update-dtc-source.sh
-> > script so the relevant files can be copied before the Makefile is
-> > updated in the next patch.
-> 
-> Just an FYI that Rob will do the ./update-dtc-source.sh step at the appropriate
-> time, creating a commit to be submitted in his pull request to Linus.
-> 
-> That way Rob will ensure that all of the updates from the parent project are
-> updated in a careful manner.
+> I may have an email hiccup,
 
-Right, this is what I expected. I still wrote this in the patch
-description to make sure others, who may want to try this stuff,
-understand how this works.
+No you don't, I just sent the 2nd patch alone.
+
+> but I don't see a "[PATCH V3 1/2]" email, I
+> only see this "V3 2/2" email.
+> 
+> Please start each new version of a patch series as a stand alone email
+> instead of a reply to an email in a previous version of the series.
+> That way each patch series discussion stands out as a separate thread.
+> 
+> Also each version of the patch series needs to include all of the patches
+> in the current version, even if they are unchanged from the previous
+> version.
+
+Sure, just that some people like to just bump individual patches until
+the time there is an agreement and then send the whole stuff together.
+
+I will send the whole stuff going forward whenever the versions
+change.
+
+Thanks Frank.
 
 -- 
 viresh
