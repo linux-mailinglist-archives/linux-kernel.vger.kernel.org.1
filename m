@@ -2,89 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 194972F34EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:03:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE00E2F34F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:03:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392529AbhALQAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:00:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31860 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392090AbhALQAq (ORCPT
+        id S2405611AbhALQCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:02:51 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2320 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405500AbhALQCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:00:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610467160;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=RaGBKJaRxbpqH/rWxG6TwS7YqZeKFqoXKDauHdmaBc0=;
-        b=f8TOSr/IbzBCZIrR58tpJo1ysbaExxpuq6O7MtCE2YHm56ayuymRwMefEkNdQqr+zVCOXM
-        tfpcON9njCyhUffvkXEaM6mHoDDCnLndR+cfLA4cw671XueHKOTwieWp9pQ4pBL3JjONE/
-        rpvJM6Y8z+k6CFCutIb9trrpEC4rz50=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-282-OoP4vModPr-V1J7geuVelA-1; Tue, 12 Jan 2021 10:59:18 -0500
-X-MC-Unique: OoP4vModPr-V1J7geuVelA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2DEB618C8C00;
-        Tue, 12 Jan 2021 15:59:17 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2AC7218B42;
-        Tue, 12 Jan 2021 15:59:16 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH net] rxrpc: Call state should be read with READ_ONCE() under
- some circumstances
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     Baptiste Lepers <baptiste.lepers@gmail.com>,
-        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        dhowells@redhat.com
-Date:   Tue, 12 Jan 2021 15:59:15 +0000
-Message-ID: <161046715522.2450566.488819910256264150.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Tue, 12 Jan 2021 11:02:50 -0500
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DFZvg048rz67Z23;
+        Tue, 12 Jan 2021 23:57:03 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 12 Jan 2021 17:02:08 +0100
+Received: from [10.210.171.61] (10.210.171.61) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 12 Jan 2021 16:02:05 +0000
+Subject: Re: [PATCH v2 00/19] scsi: libsas: Remove in_interrupt() check
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+CC:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        <linux-scsi@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>
+References: <20210112110647.627783-1-a.darwish@linutronix.de>
+ <8683f401-29b6-4067-af51-7b518ad3a10f@huawei.com> <X/2h0yNqtmgoLIb+@lx-t490>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <e9bc0c89-a4d6-1e5b-793d-3c246882210e@huawei.com>
+Date:   Tue, 12 Jan 2021 16:00:57 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <X/2h0yNqtmgoLIb+@lx-t490>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Originating-IP: [10.210.171.61]
+X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Baptiste Lepers <baptiste.lepers@gmail.com>
+- intel-linux-scu@intel.com
 
-The call state may be changed at any time by the data-ready routine in
-response to received packets, so if the call state is to be read and acted
-upon several times in a function, READ_ONCE() must be used unless the call
-state lock is held.
+On 12/01/2021 13:19, Ahmed S. Darwish wrote:
+> On Tue, Jan 12, 2021 at 11:53:50AM +0000, John Garry wrote:
+>> On 12/01/2021 11:06, Ahmed S. Darwish wrote:
+>>> Hi,
+>>>
+>>> Changelog v2
+>>> ------------
+> ...
+>>
+>> I'll give this a spin today and help review also then.
+>>
 
-As it happens, we used READ_ONCE() to read the state a few lines above the
-unmarked read in rxrpc_input_data(), so use that value rather than
-re-reading it.
+I boot-tested on my machines which have hisi_sas v2 and v3 hw, and it's 
+ok. I will ask some guys to test a bit more.
 
-Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+And generally the changes look ok. But I just have a slight concern that 
+we don't pass the gfp_flags all the way from the origin caller.
 
- net/rxrpc/input.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So we have some really long callchains, for example:
 
-diff --git a/net/rxrpc/input.c b/net/rxrpc/input.c
-index 667c44aa5a63..dc201363f2c4 100644
---- a/net/rxrpc/input.c
-+++ b/net/rxrpc/input.c
-@@ -430,7 +430,7 @@ static void rxrpc_input_data(struct rxrpc_call *call, struct sk_buff *skb)
- 		return;
- 	}
- 
--	if (call->state == RXRPC_CALL_SERVER_RECV_REQUEST) {
-+	if (state == RXRPC_CALL_SERVER_RECV_REQUEST) {
- 		unsigned long timo = READ_ONCE(call->next_req_timo);
- 		unsigned long now, expect_req_by;
- 
+host.c: sci_controller_error_handler(): atomic, irq handler     (*)
+OR host.c: sci_controller_completion_handler(), atomic, tasklet (*)
+   -> sci_controller_process_completions()
+     -> sci_controller_unsolicited_frame()
+       -> phy.c: sci_phy_frame_handler()
+         -> sci_change_state(SCI_PHY_SUB_AWAIT_SAS_POWER)
+           -> sci_phy_starting_await_sas_power_substate_enter()
+             -> host.c: sci_controller_power_control_queue_insert()
+               -> phy.c: sci_phy_consume_power_handler()
+                 -> sci_change_state(SCI_PHY_SUB_FINAL)
+         -> sci_change_state(SCI_PHY_SUB_FINAL)
+     -> sci_controller_event_completion()
+       -> phy.c: sci_phy_event_handler()
+         -> sci_phy_start_sata_link_training()
+           -> sci_change_state(SCI_PHY_SUB_AWAIT_SATA_POWER)
+             -> sci_phy_starting_await_sata_power_substate_enter
+               -> host.c: sci_controller_power_control_queue_insert()
+                 -> phy.c: sci_phy_consume_power_handler()
+                   -> sci_change_state(SCI_PHY_SUB_FINAL)
 
+So if someone rearranges the code later, adds new callchains, etc., it 
+could be missed that the context may have changed than what we assume at 
+the bottom. But then passing the flags everywhere is cumbersome, and all 
+the libsas users see little or no significant changes anyway, apart from 
+a couple.
+
+Thanks,
+John
 
