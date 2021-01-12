@@ -2,100 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D42732F269C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 04:19:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D662F269F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 04:23:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbhALDSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 22:18:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25472 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726389AbhALDSg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 22:18:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610421429;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vdL9xijqYhEmBrknuY6rf1ZBEjGj8lHKRm8qxVj2FtM=;
-        b=aUdccw8NJp5L6FBcKOF5NWBoCjSsCEg4sL5A5Gu788DFtRkHw9JhgliEUivi0ueXWaqbJJ
-        tnxiQiMxRRIhuMUTLQBF/XnFbss9Gsmd7jjoCI/q9N+TG06k/Q++iIMXKzaqFrb+GF+tyz
-        NhNCRV42S8/hCeAi2LNVskVTztgj97M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-573-vEyIChIWN3OhI1Lu5P_qaA-1; Mon, 11 Jan 2021 22:17:07 -0500
-X-MC-Unique: vEyIChIWN3OhI1Lu5P_qaA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 70C15107ACFB;
-        Tue, 12 Jan 2021 03:17:06 +0000 (UTC)
-Received: from [10.72.12.225] (ovpn-12-225.pek2.redhat.com [10.72.12.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 45FA96A8F9;
-        Tue, 12 Jan 2021 03:17:03 +0000 (UTC)
-Subject: Re: [PATCH v1] vhost_vdpa: fix the problem in
- vhost_vdpa_set_config_call
-To:     Cindy Lu <lulu@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        lingshan.zhu@intel.com
-References: <20210112024648.31428-1-lulu@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <7045438c-2f8b-b804-81bd-f9a5cf6e20bb@redhat.com>
-Date:   Tue, 12 Jan 2021 11:17:02 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726602AbhALDVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 22:21:15 -0500
+Received: from mail.v3.sk ([167.172.186.51]:35964 "EHLO shell.v3.sk"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726008AbhALDVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 22:21:14 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id A7BBADF242;
+        Tue, 12 Jan 2021 03:16:46 +0000 (UTC)
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id DIWAVnSiqYGb; Tue, 12 Jan 2021 03:16:45 +0000 (UTC)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id BC4C0DF890;
+        Tue, 12 Jan 2021 03:16:44 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at zimbra.v3.sk
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id gWyR4YWaQsRt; Tue, 12 Jan 2021 03:16:44 +0000 (UTC)
+Received: from localhost (unknown [109.183.109.54])
+        by zimbra.v3.sk (Postfix) with ESMTPSA id 930C7DF242;
+        Tue, 12 Jan 2021 03:16:43 +0000 (UTC)
+Date:   Tue, 12 Jan 2021 04:20:28 +0100
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Souptick Joarder <jrdr.linux@gmail.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] input: ariel-pwrbutton.c: Remove unused variable
+ ariel_pwrbutton_id_table[]
+Message-ID: <20210112032028.GB1503339@demiurge.local>
+References: <1608581041-4354-1-git-send-email-jrdr.linux@gmail.com>
+ <CAFqt6zb2O3SFx6xDtwdSgHYH-zeGXwuf1=Hr5yYXnCDqAza9KQ@mail.gmail.com>
+ <X/OQZcsD15Fl/XVw@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210112024648.31428-1-lulu@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/OQZcsD15Fl/XVw@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 04, 2021 at 02:02:13PM -0800, Dmitry Torokhov wrote:
+> On Tue, Dec 29, 2020 at 01:15:10PM +0530, Souptick Joarder wrote:
+> > On Tue, Dec 22, 2020 at 1:34 AM Souptick Joarder <jrdr.linux@gmail.com> wrote:
+> > >
+> > > Kernel test robot throws below warning ->
+> > >
+> > > >> drivers/input/misc/ariel-pwrbutton.c:152:35: warning: unused variable
+> > > >> 'ariel_pwrbutton_id_table' [-Wunused-const-variable]
+> > >    static const struct spi_device_id ariel_pwrbutton_id_table[] = {
+> > >                                      ^
+> > >    1 warning generated.
+> > >
+> > > Remove unused variable ariel_pwrbutton_id_table[] if no plan to use
+> > > it further.
+> > >
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> > 
+> > Any comment on this patch ?
+> 
+> Lubomir, would you prefer to remove the table or add it to the driver
+> structure as ariel_pwrbutton_driver->id_table?
 
-On 2021/1/12 上午10:46, Cindy Lu wrote:
-> in vhost_vdpa_set_config_call, the cb.private should be vhost_vdpa.
+I believe it can be safely dropped, as the OF match seems to be
+sufficient.
 
+Thank you for the patch Souptick.
 
-Should be "In"
+Reviewed-by: Lubomir Rintel <lkundrak@v3.sk>
 
-
-> this cb.private will finally use in vhost_vdpa_config_cb as
-> vhost_vdpa.Fix this issue
-
-
-An whitespace is needed before Fix and a full stop after "issue"
-
-Fixes: 776f395004d82 ("vhost_vdpa: Support config interrupt in vdpa")
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-Please post a V2 with the above fixed and cc stable.
-
-Thanks
-
-
->
-> Signed-off-by: Cindy Lu <lulu@redhat.com>
-> ---
->   drivers/vhost/vdpa.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> index ef688c8c0e0e..3fbb9c1f49da 100644
-> --- a/drivers/vhost/vdpa.c
-> +++ b/drivers/vhost/vdpa.c
-> @@ -319,7 +319,7 @@ static long vhost_vdpa_set_config_call(struct vhost_vdpa *v, u32 __user *argp)
->   	struct eventfd_ctx *ctx;
->   
->   	cb.callback = vhost_vdpa_config_cb;
-> -	cb.private = v->vdpa;
-> +	cb.private = v;
->   	if (copy_from_user(&fd, argp, sizeof(fd)))
->   		return  -EFAULT;
->   
-
+> 
+> Thanks.
+> 
+> -- 
+> Dmitry
