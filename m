@@ -2,109 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E812F39E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D722F39E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:19:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436519AbhALTTH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Jan 2021 14:19:07 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2327 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406399AbhALTTG (ORCPT
+        id S2436507AbhALTSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:18:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436478AbhALTSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:19:06 -0500
-Received: from fraeml742-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DFgHX1G61z67TR3;
-        Wed, 13 Jan 2021 03:14:32 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml742-chm.china.huawei.com (10.206.15.223) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 12 Jan 2021 20:18:24 +0100
-Received: from localhost (10.47.65.219) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 12 Jan
- 2021 19:18:23 +0000
-Date:   Tue, 12 Jan 2021 19:17:44 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org, Ira Weiny" <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Vishal Verma" <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        "Bjorn Helgaas" <helgaas@kernel.org>,
-        Jon Masters <jcm@jonmasters.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        <daniel.lll@alibaba-inc.com>
-Subject: Re: [RFC PATCH v3 06/16] cxl/mem: Find device capabilities
-Message-ID: <20210112191744.00007d61@Huawei.com>
-In-Reply-To: <20210111225121.820014-7-ben.widawsky@intel.com>
-References: <20210111225121.820014-1-ben.widawsky@intel.com>
-        <20210111225121.820014-7-ben.widawsky@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Tue, 12 Jan 2021 14:18:50 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B0CC06179F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 11:18:10 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id w2so1947485pfc.13
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 11:18:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=y3BN6cdHxTPioMesR4FBydVJOaDJxTOw5Es7yLBlgtQ=;
+        b=Bjo+TQpWX3cDqpcuJkY96UOghaTmpGhXsI+LVtsfjQ6+BGjFmU06v1fGF9UcFMlPBz
+         cExL1+MMhC2VIRF2TbJJTVcTx3bDc0tXzyjtUq2FAZTrDTZkRv8Netu3/zmUvbgfGoDH
+         8AJVAUh9EUHvhqCdaQ6uA2V5efeqP1dK6U9TAQ92hqmHVFE8f1iIUKJzF/AmBc8LmGmD
+         kVTDW9Lc+CF9eYTWLAUrrpUWAlr00YeIuqbRRtdCIZjFIuo+49ZCd4ScgIkb3D7mqrvr
+         fhFRDZoP81lqG4HeWPalex0+TgKjrW2O5VN4Y6ucoUdDHE7peJwqXc3AWy3l1XdZr6Gx
+         t3Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=y3BN6cdHxTPioMesR4FBydVJOaDJxTOw5Es7yLBlgtQ=;
+        b=Ywgp08QkXXGRjZs+AGpPKA2Vy4Toh14v3B0n/Eigu8zq4dne+f7Hi5UhOfe5KMJ58S
+         lik2NdATh1Opc4nbM36rzb9AnhA9TCwlYeZBSI3JFnGimKb6SkmeQYhCIbhUXblH+vBy
+         Z75Hu4xPjOk9CxRN5dQSZwZnENpMldCtxt97WXRbCTmnqBxlHFnwi+zbjtMPiQx1Bx+Q
+         HEX9Jx3KdAJGVWT27kFdC6Xcr2GTgq9NppviitQRn/V6FWmundAYh0HOIzIIvR7qCKbs
+         e2p7aulR4fE2G1SnAkVYvZctqW7E5VG64FMeTANptCPcJXIIv8zhMfTv5VPdLSXhDoue
+         SxeA==
+X-Gm-Message-State: AOAM530IqKGA4tCFg0Z6mYHdXHih9oAejMNysZj6txgAK/4ZkeXOtxUp
+        VMwGhJWtJxEjl0+TldqjGR/vlQ==
+X-Google-Smtp-Source: ABdhPJw2cjhmkHAzXKnmpwEFKsmWLUpJQuEDmFw0r2VJArhupFouvew9WPFjuAS2lmY15rrfyGHyMg==
+X-Received: by 2002:a62:5e44:0:b029:1a4:daae:e765 with SMTP id s65-20020a625e440000b02901a4daaee765mr757856pfb.8.1610479089830;
+        Tue, 12 Jan 2021 11:18:09 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id g26sm3995862pfo.35.2021.01.12.11.18.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 11:18:09 -0800 (PST)
+Date:   Tue, 12 Jan 2021 11:18:02 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wei Huang <wei.huang2@amd.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, vkuznets@redhat.com, joro@8bytes.org,
+        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
+        dgilbert@redhat.com, mlevitsk@redhat.com
+Subject: Re: [PATCH 2/2] KVM: SVM: Add support for VMCB address check change
+Message-ID: <X/316tCByxsBQP5t@google.com>
+References: <20210112063703.539893-1-wei.huang2@amd.com>
+ <20210112063703.539893-2-wei.huang2@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [10.47.65.219]
-X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112063703.539893-2-wei.huang2@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Jan 2021 14:51:10 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
-
-> CXL devices contain an array of capabilities that describe the
-> interactions software can have with the device or firmware running on
-> the device. A CXL compliant device must implement the device status and
-> the mailbox capability. A CXL compliant memory device must implement the
-> memory device capability.
+On Tue, Jan 12, 2021, Wei Huang wrote:
+> New AMD CPUs have a change that checks VMEXIT intercept on special SVM
+> instructions before checking their EAX against reserved memory region.
+> This change is indicated by CPUID_0x8000000A_EDX[28]. If it is 1, KVM
+> doesn't need to intercept and emulate #GP faults for such instructions
+> because #GP isn't supposed to be triggered.
 > 
-> Each of the capabilities can [will] provide an offset within the MMIO
-> region for interacting with the CXL device.
+> Co-developed-by: Bandan Das <bsd@redhat.com>
+> Signed-off-by: Bandan Das <bsd@redhat.com>
+> Signed-off-by: Wei Huang <wei.huang2@amd.com>
+> ---
+>  arch/x86/include/asm/cpufeatures.h | 1 +
+>  arch/x86/kvm/svm/svm.c             | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
 > 
-> For more details see 8.2.8 of the CXL 2.0 specification.
-> 
-> Link: Link: https://www.computeexpresslink.org/download-the-specification
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index 84b887825f12..ea89d6fdd79a 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -337,6 +337,7 @@
+>  #define X86_FEATURE_AVIC		(15*32+13) /* Virtual Interrupt Controller */
+>  #define X86_FEATURE_V_VMSAVE_VMLOAD	(15*32+15) /* Virtual VMSAVE VMLOAD */
+>  #define X86_FEATURE_VGIF		(15*32+16) /* Virtual GIF */
+> +#define X86_FEATURE_SVME_ADDR_CHK	(15*32+28) /* "" SVME addr check */
 
+Heh, KVM should advertise this to userspace by setting the kvm_cpu_cap bit.  KVM
+KVM forwards relevant VM-Exits to L1 without checking if rAX points at an
+invalid L1 GPA.
 
-...
-
->  /**
->   * cxl_mem_create() - Create a new &struct cxl_mem.
->   * @pdev: The pci device associated with the new &struct cxl_mem.
-> @@ -129,8 +214,20 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  	if (rc)
->  		return rc;
+>  /* Intel-defined CPU features, CPUID level 0x00000007:0 (ECX), word 16 */
+>  #define X86_FEATURE_AVX512VBMI		(16*32+ 1) /* AVX512 Vector Bit Manipulation instructions*/
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 74620d32aa82..451b82df2eab 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -311,7 +311,7 @@ int svm_set_efer(struct kvm_vcpu *vcpu, u64 efer)
+>  	svm->vmcb->save.efer = efer | EFER_SVME;
+>  	vmcb_mark_dirty(svm->vmcb, VMCB_CR);
+>  	/* Enable GP interception for SVM instructions if needed */
+> -	if (efer & EFER_SVME)
+> +	if ((efer & EFER_SVME) && !boot_cpu_has(X86_FEATURE_SVME_ADDR_CHK))
+>  		set_exception_intercept(svm, GP_VECTOR);
 >  
-> +	rc = cxl_mem_setup_regs(cxlm);
-> +	if (rc)
-> +		goto err;
-> +
-> +	rc = cxl_mem_setup_mailbox(cxlm);
-> +	if (rc)
-> +		goto err;
-> +
->  	pci_set_drvdata(pdev, cxlm);
 >  	return 0;
-> +
-> +err:
-> +	kfree(cxlm);
-
-From previous patch that was created using devm_kzalloc in which case
-this free just introduced a double free if you hit this error path.
-Having go rid of that you can do direct returns instead of goto.
-
-
-> +	return rc;
->  }
->  
->  static void cxl_mem_remove(struct pci_dev *pdev)
-
+> -- 
+> 2.27.0
+> 
