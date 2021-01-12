@@ -2,88 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1238A2F3CC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E47CD2F3CC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437176AbhALVeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:34:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39422 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406963AbhALUBs (ORCPT
+        id S2437191AbhALVeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 16:34:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436557AbhALUEq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:01:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610481621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YFXb4Pk6zkZotZ7QFJdBiZxTuzhscJ3Ufo92Lo64mQQ=;
-        b=afZOpGs9VO/ZBnxEWtJjPnwqaLvvK2JkTN6YTDLN8309EzJizjePxiWOgDvUJSZp5wUPj3
-        ydSRcYvsQIRUEH/GlRpmNlPGB9XIomqaqaAqxi5gbq8EutiFn13d9BApwI4OX7On79Qqbg
-        aHufEHDLMi2ImJA77rK5e1tuEvFlSqg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-576-FbFMmpNeNgW9eXHRb0esVQ-1; Tue, 12 Jan 2021 15:00:18 -0500
-X-MC-Unique: FbFMmpNeNgW9eXHRb0esVQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 632211DE0E;
-        Tue, 12 Jan 2021 20:00:11 +0000 (UTC)
-Received: from gigantic.usersys.redhat.com (helium.bos.redhat.com [10.18.17.132])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C5BB378206;
-        Tue, 12 Jan 2021 20:00:09 +0000 (UTC)
-From:   Bandan Das <bsd@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        vkuznets@redhat.com, joro@8bytes.org, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        jmattson@google.com, wanpengli@tencent.com, dgilbert@redhat.com,
-        mlevitsk@redhat.com
-Subject: Re: [PATCH 1/2] KVM: x86: Add emulation support for #GP triggered by VM instructions
-References: <20210112063703.539893-1-wei.huang2@amd.com>
-        <X/37QBMHxH8otaMa@google.com>
-Date:   Tue, 12 Jan 2021 15:00:09 -0500
-In-Reply-To: <X/37QBMHxH8otaMa@google.com> (Sean Christopherson's message of
-        "Tue, 12 Jan 2021 11:40:48 -0800")
-Message-ID: <jpgsg76kjsm.fsf@linux.bootlegged.copy>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        Tue, 12 Jan 2021 15:04:46 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D56A2C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:04:05 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id i24so3731279edj.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:04:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zdxtVLMD51rvFAUy0uouYzv2JNuR8PLKzsDJKh3c7Cc=;
+        b=CgpDpWy/pkuZnqaYJDLuySEgBXiA4xKvWHC6DDiTgu764C6H2UCvCPUgHrlwGCzNgn
+         fUPc1JLbqFUNBeCqrSEzGK8bJsHxrYcGVhvWQ61okYi8XBqIFrRUo/7g7pMkXeEDHvCa
+         MyeA+dDYsLk+ftkMn3+9QPWX7bV5ijeBGChWSoAyKPKc9q42zWa9VlQF0vBw0z2xw9f9
+         vWDACqEUBquj/+PzQCjr+uwpecPRHxBT/oDEcZt5AzrxJ4HfTHhe46p36xDJ/Bp+lxM0
+         /5mQZHjY9h9MRqM4jAEgXFCkH91me6ItJ+CUCFgE+bTMLqtnIHXlIxnl6dDyQksB2VhH
+         vsBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zdxtVLMD51rvFAUy0uouYzv2JNuR8PLKzsDJKh3c7Cc=;
+        b=EFVFTlLXrQcyC05wY6tSwrg2ubFM15H2t75gJa+YaPQzsqR2jwujdc8ts4fCbFLeGq
+         4YdqRQ4bkj3yxLucyb0pAfKGiOJyxOW6STyV/mgvk4iE5l9pR4PjYHHXtmOxDw6TBkMX
+         VbN/gDNDR2g4mXo9kvE48tlsmeuDxKNjpOfNmn0v2cy7lXqCscgWir6QjBkUk5+E3sJG
+         ITnUs3uINovI4MbGG9jKrN3q77ooeLqN/Wt+EefvUbH7Lb2MbDVAtjwN1GIZ4sa+6wYo
+         iWdl9KjAXyIVPBPPj+4xSOE810Qe+ZrP7/n94qKokZ3wFjObHEUwfpIwud0RJA4MgiLX
+         qnXA==
+X-Gm-Message-State: AOAM5333oDxlxtghKP1VhhXBFVyME+DpliDiIuaY6qEl1uKFT8eNtjBm
+        Zobn5o3x462pD9CB+PlLGwxITJ1K4TT0uE+5iI0d4w==
+X-Google-Smtp-Source: ABdhPJx9xG3m3PHJqgK6syqsFY+KpasjAjyzludTeiiipSmlClrjWTgEwzevdI3KyXO0/VPNMVZJDuulLjmGdX6Q/p0=
+X-Received: by 2002:aa7:c2d8:: with SMTP id m24mr661543edp.300.1610481844483;
+ Tue, 12 Jan 2021 12:04:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <161044407603.1482714.16630477578392768273.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <161044409809.1482714.11965583624142790079.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20210112095345.GA12534@linux>
+In-Reply-To: <20210112095345.GA12534@linux>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 12 Jan 2021 12:03:55 -0800
+Message-ID: <CAPcyv4gb3t+QDqYXacgL-5npQ3ieL8XG9PvmgBSjZ5cdr_hF+A@mail.gmail.com>
+Subject: Re: [PATCH v2 4/5] mm: Fix page reference leak in soft_offline_page()
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <nao.horiguchi@gmail.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
-...
->> -	if ((emulation_type & EMULTYPE_VMWARE_GP) &&
->> -	    !is_vmware_backdoor_opcode(ctxt)) {
->> -		kvm_queue_exception_e(vcpu, GP_VECTOR, 0);
->> -		return 1;
->> +	if (emulation_type & EMULTYPE_PARAVIRT_GP) {
->> +		vminstr = is_vm_instr_opcode(ctxt);
->> +		if (!vminstr && !is_vmware_backdoor_opcode(ctxt)) {
->> +			kvm_queue_exception_e(vcpu, GP_VECTOR, 0);
->> +			return 1;
->> +		}
->> +		if (vminstr)
->> +			return vminstr;
+On Tue, Jan 12, 2021 at 1:54 AM Oscar Salvador <osalvador@suse.de> wrote:
 >
-> I'm pretty sure this doesn't correctly handle a VM-instr in L2 that hits a bad
-> L0 GPA and that L1 wants to intercept.  The intercept bitmap isn't checked until
-> x86_emulate_insn(), and the vm*_interception() helpers expect nested VM-Exits to
-> be handled further up the stack.
+> On Tue, Jan 12, 2021 at 01:34:58AM -0800, Dan Williams wrote:
+> > The conversion to move pfn_to_online_page() internal to
+> > soft_offline_page() missed that the get_user_pages() reference needs to
+> > be dropped when pfn_to_online_page() fails.
 >
-So, the condition is that L2 executes a vmload and #GPs on a reserved address, jumps to L0 - L0 doesn't
-check if L1 has asked for the instruction to be intercepted and goes on with emulating
-vmload and returning back to L2 ?
+> I would be more specific here wrt. get_user_pages (madvise).
+> soft_offline_page gets called from more places besides madvise_*.
 
->>  	}
->>  
->>  	/*
->> -- 
->> 2.27.0
->> 
+Sure.
 
+>
+> > When soft_offline_page() is handed a pfn_valid() &&
+> > !pfn_to_online_page() pfn the kernel hangs at dax-device shutdown due to
+> > a leaked reference.
+> >
+> > Fixes: feec24a6139d ("mm, soft-offline: convert parameter to pfn")
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: Naoya Horiguchi <nao.horiguchi@gmail.com>
+> > Cc: David Hildenbrand <david@redhat.com>
+> > Cc: Michal Hocko <mhocko@kernel.org>
+> > Cc: Oscar Salvador <osalvador@suse.de>
+> > Cc: <stable@vger.kernel.org>
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+>
+> LGTM, thanks for catching this:
+>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+>
+> A nit below.
+>
+> > ---
+> >  mm/memory-failure.c |   20 ++++++++++++++++----
+> >  1 file changed, 16 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> > index 5a38e9eade94..78b173c7190c 100644
+> > --- a/mm/memory-failure.c
+> > +++ b/mm/memory-failure.c
+> > @@ -1885,6 +1885,12 @@ static int soft_offline_free_page(struct page *page)
+> >       return rc;
+> >  }
+> >
+> > +static void put_ref_page(struct page *page)
+> > +{
+> > +     if (page)
+> > +             put_page(page);
+> > +}
+>
+> I am not sure this warrants a function.
+> I would probably go with "if (ref_page).." in the two corresponding places,
+> but not feeling strong here.
+
+I'll take another look, it felt cluttered...
+
+>
+> > +
+> >  /**
+> >   * soft_offline_page - Soft offline a page.
+> >   * @pfn: pfn to soft-offline
+> > @@ -1910,20 +1916,26 @@ static int soft_offline_free_page(struct page *page)
+> >  int soft_offline_page(unsigned long pfn, int flags)
+> >  {
+> >       int ret;
+> > -     struct page *page;
+> >       bool try_again = true;
+> > +     struct page *page, *ref_page = NULL;
+> > +
+> > +     WARN_ON_ONCE(!pfn_valid(pfn) && (flags & MF_COUNT_INCREASED));
+>
+> Did you see any scenario where this could happen? I understand that you are
+> adding this because we will leak a reference in case pfn is not valid anymore.
+>
+
+I did not, more future proofing / documenting against refactoring that
+fails to consider that case.
