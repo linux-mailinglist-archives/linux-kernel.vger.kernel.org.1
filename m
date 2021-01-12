@@ -2,112 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA4E2F2A4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:48:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C1F2F2A52
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:50:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405596AbhALIrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 03:47:49 -0500
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:46871 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732738AbhALIrs (ORCPT
+        id S2405728AbhALIt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 03:49:27 -0500
+Received: from mail-m964.mail.126.com ([123.126.96.4]:55452 "EHLO
+        mail-m964.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727917AbhALIt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 03:47:48 -0500
-Received: by mail-oi1-f173.google.com with SMTP id q205so1544799oig.13
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:47:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D79yAvxFkBso3i6vK6yIO4bEcxdNj8cx5BWEVmuRDLo=;
-        b=VUJPK4pU03Pedm0UiUda30x3YSY43Tk2PKjThMPxOZRk2+fbJ0uxL43te2hzbFZssK
-         JB/9JOpCvBcZ9E6tuJURUibIIgdVwFQ5u3I5vfL/28pnuCDo09eZYDGeL2oOlql+BIOo
-         CvKAJa2eoHGCHCQ5x36ieDXZGTj7v+izEztzUVLWhvAlTtJ9GP0mNRI3vfNaj4YH2Y7U
-         ACkcsTh3cbpnwME4ugTPSodOmjfVJEpEX0ZSNPzBi+XAJjM0wGM3dEjbC+HjuLss3QNP
-         xF6sZ05ihltzokotjYXsoiQp/huWrHbtzHvBjAD9S2jnaakkjsAUzMDms2P+JFFwGBXS
-         yLQA==
-X-Gm-Message-State: AOAM532RIQMQM5btr8PRRQobmFUd8W1qrB7P09cInVDVmx+9KJ6DnAnK
-        /zWAG6i2aH9tx3v/seCFSqADEf2aFgimKCl4I1o=
-X-Google-Smtp-Source: ABdhPJwpEXUQy50oYlHo5BtbF9034MvmIwzn2LxzbtoY0yQ++MTL5s0bBXWpwFRvz+Lqlo3gwrddRJosW6EMo6hPB/4=
-X-Received: by 2002:aca:4b16:: with SMTP id y22mr1719601oia.148.1610441227636;
- Tue, 12 Jan 2021 00:47:07 -0800 (PST)
-MIME-Version: 1.0
-References: <20210111125702.360745-1-geert+renesas@glider.be> <X/0nmQ/XBpj6PJAh@pendragon.ideasonboard.com>
-In-Reply-To: <X/0nmQ/XBpj6PJAh@pendragon.ideasonboard.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 12 Jan 2021 09:46:56 +0100
-Message-ID: <CAMuHMdVaJgHv0kRSLaFfPzD5hiJKQCg30D=7SAv0cPwR9j5DZw@mail.gmail.com>
-Subject: Re: [PATCH] drm/bridge: nwl-dsi: Avoid potential multiplication
- overflow on 32-bit
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 12 Jan 2021 03:49:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=cqruJVwkrblbTyarRV
+        FSbVbRTcJ/ToavTJieQEH/wc4=; b=pat0A4m7wWt3t7i0+CpeTD6g/HD4jNkeQY
+        DEEeyUJ+oi1qaTa7zJl4V0AAeS+pvzmtNjiSbgz/QkXBllOOn0HLA1sdvBAozHI6
+        V+LqTMtt/J+hCkqOmzK3oaKPR4ghBYIKhL5L0RNvEJZbiL4xXeTL8l+StCgul9l8
+        etLqQIBOg=
+Received: from localhost.localdomain (unknown [116.162.2.123])
+        by smtp9 (Coremail) with SMTP id NeRpCgC3BS4uYv1ftHE7Qw--.4196S2;
+        Tue, 12 Jan 2021 16:47:43 +0800 (CST)
+From:   wangyingjie55@126.com
+To:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        kuba@kernel.org, wangyingjie55@126.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] net/ipv4: add IPv4_is_multicast() check in ip_mc_leave_group().
+Date:   Tue, 12 Jan 2021 00:47:09 -0800
+Message-Id: <1610441229-13195-1-git-send-email-wangyingjie55@126.com>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: NeRpCgC3BS4uYv1ftHE7Qw--.4196S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtF15Zw1xArWDAFW5GF1DAwb_yoWkGrX_t3
+        Z8Zr18XrW7Jr4Ikw47Z3ZxJa98W398Arn3Xr4I9a43Ja4Fyr1DCas3XrySvr1xJa9rGrWU
+        uasrtry5Ga10yjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8imitUUUUU==
+X-Originating-IP: [116.162.2.123]
+X-CM-SenderInfo: 5zdqw5xlqjyxrhvvqiyswou0bp/1tbiVw8Yp1pECb9aSAAAsd
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+From: Yingjie Wang <wangyingjie55@126.com>
 
-On Tue, Jan 12, 2021 at 5:38 AM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
-> On Mon, Jan 11, 2021 at 01:57:02PM +0100, Geert Uytterhoeven wrote:
-> > As nwl_dsi.lanes is u32, and NSEC_PER_SEC is 1000000000L, the second
-> > multiplication in
-> >
-> >     dsi->lanes * 8 * NSEC_PER_SEC
-> >
-> > will overflow on a 32-bit platform.  Fix this by making the constant
-> > unsigned long long, forcing 64-bit arithmetic.
-> >
-> > While iMX8 is arm64, this driver is currently used on 64-bit platforms
-> > only, where long is 64-bit, so this cannot happen.  But the issue may
-> > start to happen when the driver is reused for a 32-bit SoC, or when code
-> > is copied for a new driver.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+There is no IPv4_is_multicast() check added to ip_mc_leave_group()
+to determine whether imr->imr_multiaddr.s_addr is a multicast address.
+If not a multicast address, it may result in an error.
+In some cases, the callers of ip_mc_leave_group don't check
+whether it is multicast address or not such as do_ip_setsockopt().
+So I suggest added the ipv4_is_multicast() check to the
+ip_mc_leave_group function to prevent this from happening.
 
-> > --- a/drivers/gpu/drm/bridge/nwl-dsi.c
-> > +++ b/drivers/gpu/drm/bridge/nwl-dsi.c
-> > @@ -195,7 +195,7 @@ static u32 ps2bc(struct nwl_dsi *dsi, unsigned long long ps)
-> >       u32 bpp = mipi_dsi_pixel_format_to_bpp(dsi->format);
-> >
-> >       return DIV64_U64_ROUND_UP(ps * dsi->mode.clock * bpp,
-> > -                               dsi->lanes * 8 * NSEC_PER_SEC);
-> > +                               dsi->lanes * 8ULL * NSEC_PER_SEC);
->
-> I wonder if we could get rid of a whole class of bugs by turning
-> NSEC_PER_SEC into a ULL, but I suppose there are valid cases where a
-> 32-bit integer is enough.
+Fixes: d519aa299494 ("net/ipv4: add IPv4_is_multicast() check in ip_mc_leave_group().")
+Signed-off-by: Yingjie Wang <wangyingjie55@126.com>
+---
+ net/ipv4/igmp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Indeed, and 64-bit arithmetic is more expensive on 32-bit platforms.
-I considered that change, but doing so would require updates all over
-the place (e.g. printing a value derived from NSEC_PER_SEC, divisions
- that need to be changed to do_div or div_u64(), ...)
-
-Note that the selftests already use such a definition.
-
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-Thanks!
-
-> How did you come across this by the way ?
-
-https://lore.kernel.org/linux-renesas-soc/CAMuHMdXQvPY_mYicjPKjDSCwdO_rP-9PJOvqD0J6=S3Opr1ycg@mail.gmail.com/
-and of course I grepped for similar use patterns...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/net/ipv4/igmp.c b/net/ipv4/igmp.c
+index 7b272bbed2b4..1b6f91271cfd 100644
+--- a/net/ipv4/igmp.c
++++ b/net/ipv4/igmp.c
+@@ -2248,6 +2248,9 @@ int ip_mc_leave_group(struct sock *sk, struct ip_mreqn *imr)
+ 	u32 ifindex;
+ 	int ret = -EADDRNOTAVAIL;
+ 
++	if (!ipv4_is_multicast(group))
++		return -EINVAL;
++
+ 	ASSERT_RTNL();
+ 
+ 	in_dev = ip_mc_find_dev(net, imr);
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.7.4
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
