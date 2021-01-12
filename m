@@ -2,82 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8162F3726
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:32:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B86AA2F372D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:32:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392760AbhALRab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:30:31 -0500
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:45783 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388033AbhALRab (ORCPT
+        id S2392936AbhALRbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:31:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388033AbhALRbt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:30:31 -0500
-X-Originating-IP: 86.202.109.140
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id A87CF40015;
-        Tue, 12 Jan 2021 17:29:48 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 18:29:48 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Bruno Thomsen <bruno.thomsen@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Bruno Thomsen <bth@kamstrup.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Subject: Re: [PATCH] ARM: dts: imx7d-flex-concentrator: fix pcf2127 reset
-Message-ID: <20210112172948.GI3654@piout.net>
-References: <20210111151537.12530-1-bruno.thomsen@gmail.com>
+        Tue, 12 Jan 2021 12:31:49 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91342C06179F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:31:08 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id o144so2915851ybc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:31:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wHYTNknkwpoy6JOyEuCZUTiQpYW6RiiwwNhsMpLX55E=;
+        b=pfLR8VAgFLpM47Rq2XgngC7O/byRzQBN7LWsU7dwftmjBfR1hSUwOemHF+NV3KVedJ
+         lLrLAxv48acZ3mWwdNn1i4cx4moq8c1SPh3mV44btJ7m+WwTZHRKjHnlasTaIZEO+gZu
+         PBOto0xadIXtWKogT16sOxjLSfD/jV4WceQM9ti/okToMAX/atSZWPj6dSrRkO1FDqrz
+         qeeGQqKN6hYl1q9pUjxRJN/PRQcX4oEfw1Wmda5cGXjnroPye1ePSA/RGEE1z7HxoRuv
+         cz51TP3gfd6YzwPvdAThNdN/wP8+/rf3Wch6Jn6vbYzVBooAn6EUCZ20poFxoN1lO9Bw
+         Xc2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wHYTNknkwpoy6JOyEuCZUTiQpYW6RiiwwNhsMpLX55E=;
+        b=RS/JpOycnGwj+gNd5C4TDqdfQSAFnKkwkcxas3bj5kJZbljImMHyfyeROyrs5+1HwR
+         A5o8ykzizHLVjC20ZZSCq4zDEikgn5KSAyjXjKiP11pYljVqJHTeV/RHyNBlQBiTYnih
+         sFdWyPGscq7VAoBiUBjTsWo1+y7sL+rlSuYB2kJSCbl661GjiiE3EfrzbarEKisoih2y
+         bAUEOs39OjYEwLc8bdOwYUxoqRhAMKMC2UPDhIjL2OoCM2tEH+ymTmLlcl4F7W5Zn3mS
+         aa8Z8PX+63u02nbWvk1xnjxT7mtUJGiY3+ZyoTV0yUpyHz8X2/1iyByxM5H83vq9XqrN
+         MnsA==
+X-Gm-Message-State: AOAM532NLLq0IBld5Sd+tI4XzXvGGSzYb6vgfWBFhRs85UDv3iADGjND
+        gBYIYBcy3d0WchtyvJnn1iOOUMCDf04PcTQQu38hFA==
+X-Google-Smtp-Source: ABdhPJzvX3Y98ulgvyKO0IFzPTIajC5tpI1HRnZnbzV4hlHG99AxqbDl7sUpsC3YuFe0UJcG/cLXCmnMw+AW7TR7a1E=
+X-Received: by 2002:a25:6604:: with SMTP id a4mr739710ybc.412.1610472667507;
+ Tue, 12 Jan 2021 09:31:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210111151537.12530-1-bruno.thomsen@gmail.com>
+References: <20210112134054.342-1-calvin.johnson@oss.nxp.com> <20210112134054.342-10-calvin.johnson@oss.nxp.com>
+In-Reply-To: <20210112134054.342-10-calvin.johnson@oss.nxp.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 12 Jan 2021 09:30:31 -0800
+Message-ID: <CAGETcx-7JVz=QLCMWicHqoagWYjeBXdFJmSv1v6MQhtPt2RS=Q@mail.gmail.com>
+Subject: Re: [net-next PATCH v3 09/15] device property: Introduce fwnode_get_id()
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux.cj@gmail.com,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/01/2021 16:15:37+0100, Bruno Thomsen wrote:
-> RTC pcf2127 device driver has changed default behaviour of the watchdog
-> feature in v5.11-rc1. Now you need to explicitly enable it with a
-> device tree property, "reset-source", when used in the board design.
-> 
-> Fixes: 71ac13457d9d ("rtc: pcf2127: only use watchdog when explicitly available")
-> 
-> Signed-off-by: Bruno Thomsen <bruno.thomsen@gmail.com>
-> Cc: Bruno Thomsen <bth@kamstrup.com>
-> Cc: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> Cc: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-> Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-
+On Tue, Jan 12, 2021 at 5:42 AM Calvin Johnson
+<calvin.johnson@oss.nxp.com> wrote:
+>
+> Using fwnode_get_id(), get the reg property value for DT node
+> or get the _ADR object value for ACPI node.
+>
+> Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
 > ---
->  arch/arm/boot/dts/imx7d-flex-concentrator.dts | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm/boot/dts/imx7d-flex-concentrator.dts b/arch/arm/boot/dts/imx7d-flex-concentrator.dts
-> index 84b095279e65..bd6b5285aa8d 100644
-> --- a/arch/arm/boot/dts/imx7d-flex-concentrator.dts
-> +++ b/arch/arm/boot/dts/imx7d-flex-concentrator.dts
-> @@ -115,6 +115,7 @@ pcf2127: rtc@0 {
->  		compatible = "nxp,pcf2127";
->  		reg = <0>;
->  		spi-max-frequency = <2000000>;
-> +		reset-source;
->  	};
->  };
->  
-> 
-> base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
-> -- 
-> 2.29.2
-> 
+>
+> Changes in v3:
+> - Modified to retrieve reg property value for ACPI as well
+> - Resolved compilation issue with CONFIG_ACPI = n
+> - Added more info into documentation
+>
+> Changes in v2: None
+>
+>  drivers/base/property.c  | 33 +++++++++++++++++++++++++++++++++
+>  include/linux/property.h |  1 +
+>  2 files changed, 34 insertions(+)
+>
+> diff --git a/drivers/base/property.c b/drivers/base/property.c
+> index 35b95c6ac0c6..2d51108cb936 100644
+> --- a/drivers/base/property.c
+> +++ b/drivers/base/property.c
+> @@ -580,6 +580,39 @@ const char *fwnode_get_name_prefix(const struct fwnode_handle *fwnode)
+>         return fwnode_call_ptr_op(fwnode, get_name_prefix);
+>  }
+>
+> +/**
+> + * fwnode_get_id - Get the id of a fwnode.
+> + * @fwnode: firmware node
+> + * @id: id of the fwnode
+> + *
+> + * This function provides the id of a fwnode which can be either
+> + * DT or ACPI node. For ACPI, "reg" property value, if present will
+> + * be provided or else _ADR value will be provided.
+> + * Returns 0 on success or a negative errno.
+> + */
+> +int fwnode_get_id(struct fwnode_handle *fwnode, u32 *id)
+> +{
+> +#ifdef CONFIG_ACPI
+> +       unsigned long long adr;
+> +       acpi_status status;
+> +#endif
+> +       int ret;
+> +
+> +       ret = fwnode_property_read_u32(fwnode, "reg", id);
+> +       if (!(ret && is_acpi_node(fwnode)))
+> +               return ret;
+> +
+> +#ifdef CONFIG_ACPI
+> +       status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(fwnode),
+> +                                      METHOD_NAME__ADR, NULL, &adr);
+> +       if (ACPI_FAILURE(status))
+> +               return -EINVAL;
+> +       *id = (u32)adr;
+> +#endif
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(fwnode_get_id);
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Please don't do it this way. The whole point of fwnode_operations is
+to avoid conditional stuff at the fwnode level. Also ACPI and DT
+aren't mutually exclusive if I'm not mistaken.
+
+Also, can you CC me on the entire series please? I want to reply to
+some of your other patches too. Most of the fwnode changes don't seem
+right. fwnode is lower level that the device-driver framework. Making
+it aware of busses like mdio, etc doesn't sound right. Also, there's
+already get_dev_from_fwnode() which is a much more efficient way to
+look up/get a device from a fwnode instead of looping through a bus.
+
+-Saravana
