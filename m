@@ -2,114 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB3A2F2880
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:49:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D612F2886
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388247AbhALGtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 01:49:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729891AbhALGtE (ORCPT
+        id S2387832AbhALGuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 01:50:21 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:31442 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728453AbhALGuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 01:49:04 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC2EEC061575;
-        Mon, 11 Jan 2021 22:48:23 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id m13so1611710ljo.11;
-        Mon, 11 Jan 2021 22:48:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=y6E8pJAG2xNBc207S+ylj91Gue5AgH8ypGOMKjlMFkg=;
-        b=TfqXdSK2nUn8Ilb5i0ApAX3yamw5Gh+PXZ9+051NRsoZ3rZXgAcLS5mZ9hPUP+6cQK
-         Qnc38xo6NCOor8W1s4FhxxRwz+gmZm2X6IE9AXSh5zwVbGPnDff7MWfeOZ6Iizji0T0N
-         GOjfav5/i3pMne9g0b/77IM/DFGzX+TINJvzAisnAOOwQ60xHpKJN6SqcZ1Dy20A7Jto
-         SbweUE40q1aO9ItN0JtpxAqnodAVeRTxjvV0NGRneVtN7LTXNm7xFD1OQodTt9QbGp7Q
-         aVLC2CZvoH/tf5tdcI6lE1JB8Kuyxy4c4TLciAHRVtTGFn+9pPprdW4Lw6e2sgcIdiEa
-         JyPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=y6E8pJAG2xNBc207S+ylj91Gue5AgH8ypGOMKjlMFkg=;
-        b=NHTqkTxAEK8CnJPhUF/vJyWDEs/WwsZCudSjAWVY5oV/5sNBs/nW5Lo0UtTxOymW/h
-         rWTZAZAokM0G1z9GP0QMvevNxv5Uwv2JLg1xrkHm7aDlc+imo3pXM2DnXlLHLAMJeyHR
-         61QirU/NFlYdrBGPjpzZ/fWCOLC77HKQXZsReqewzQdAe3PkvmYYW3GZX9f6+wh1DFEN
-         h2YVmv8P0toHHGyLvw0cVzvoqvN0UPpasPnfo6G/AIyeKTe9Tzi1Ue8wgaWOKmX8BxeH
-         4TebwEjTVNDeH0uzEwhaOOZa/OoLQExlJXplNT+i/TS0ZjnkvEtxGXCl+Za7O/wOkiEi
-         ngVQ==
-X-Gm-Message-State: AOAM53313TgnYP0d9kaS8adgRztXTUrjwQtFbqbNbaMgFC0scOIbA0+f
-        z8hxdNOtDuXCVIYNaB6WICRP+Z/9GbU=
-X-Google-Smtp-Source: ABdhPJyQQ3QGu8coMULH0iUFbesygnM5VHn9NN8VGXF8Mqd2Lf05odYHvGCEaLFhQ7covX6IIgM2xA==
-X-Received: by 2002:a2e:8250:: with SMTP id j16mr1455053ljh.354.1610434102294;
-        Mon, 11 Jan 2021 22:48:22 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id s8sm273037lfi.21.2021.01.11.22.48.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 11 Jan 2021 22:48:21 -0800 (PST)
-Subject: Re: [PATCH v2] i2c: tegra: Wait for config load atomically while in
- ISR
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Mikko Perttunen <mperttunen@nvidia.com>, ldewangan@nvidia.com,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, wsa@kernel.org
-Cc:     linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20210111160832.3669873-1-mperttunen@nvidia.com>
- <a3b6944a-7c1e-54bf-664d-0ee6a6de4deb@gmail.com>
-Message-ID: <cb37f001-da0d-fcef-dea8-258caf5687fe@gmail.com>
-Date:   Tue, 12 Jan 2021 09:48:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Tue, 12 Jan 2021 01:50:20 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610434194; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=J/gXo0SfG2tE4eEiy9hfkib22kuMNt3ssI4CovuJIXE=;
+ b=J8dAYNeVIKpku5Ssk09/ecJcxvfulB3n3FAdR3WszVLZBAEZ2u5hx1Xgf8HH/ZrwL/9ili+S
+ ik3lqH2abeObiT8jVkmK4SWDBXfjNaO7WI0AEMn0afIScajBy7CqISPk2kbDvnxcjdc2oKOB
+ FnRLv6XgStdDSlhRJv7797Eoz0Q=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 5ffd4678415a6293c5d551e8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Jan 2021 06:49:28
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7826FC43467; Tue, 12 Jan 2021 06:49:28 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2B029C433CA;
+        Tue, 12 Jan 2021 06:49:27 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <a3b6944a-7c1e-54bf-664d-0ee6a6de4deb@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 12 Jan 2021 12:19:27 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Jordan Crouse <jcrouse@codeaurora.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Sean Paul <sean@poorly.run>, Jonathan <jonathan@marek.ca>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        martin.botka@somainline.org,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        marijn.suijten@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Daniel Vetter <daniel@ffwll.ch>,
+        angelogioacchino.delregno@somainline.org,
+        Dave Airlie <airlied@redhat.com>, phone-devel@vger.kernel.org,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [Freedreno] [PATCH] drm/msm: Only enable A6xx LLCC code on A6xx
+In-Reply-To: <20210111161115.GB29638@jcrouse1-lnx.qualcomm.com>
+References: <CAF6AEGu0Sv6nYNDn0z61pXRjNyFLpLw5S4_O3opmrQ-UVNR_MA@mail.gmail.com>
+ <20210108122601.14993-1-saiprakash.ranjan@codeaurora.org>
+ <fa091855-8096-6377-e173-ce1cd02f74ec@somainline.org>
+ <43c8779bc5f03be2e8072c6484dfcabb@codeaurora.org>
+ <CAF6AEGsd5B0R7H1noO+=LByx4zkdVvu1LALZWnevGbMRj76m2w@mail.gmail.com>
+ <73609df52188588bf7d023e16a706a7a@codeaurora.org>
+ <20210111161115.GB29638@jcrouse1-lnx.qualcomm.com>
+Message-ID: <bfa4a5e84e427b6dca429136daa94693@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-11.01.2021 22:31, Dmitry Osipenko пишет:
-> 11.01.2021 19:08, Mikko Perttunen пишет:
->> Upon a communication error, the interrupt handler can call
->> tegra_i2c_disable_packet_mode. This causes a sleeping poll to happen
->> unless the current transaction was marked atomic. Fix this by
->> making the poll happen atomically if we are in an IRQ.
->>
->> This matches the behavior prior to the patch mentioned
->> in the Fixes tag.
->>
->> Fixes: ede2299f7101 ("i2c: tegra: Support atomic transfers")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
->> ---
->> v2:
->> * Use in_irq() instead of passing a flag from the ISR.
->>   Thanks to Dmitry for the suggestion.
->> * Update commit message.
->> ---
->>  drivers/i2c/busses/i2c-tegra.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegra.c
->> index 6f08c0c3238d..0727383f4940 100644
->> --- a/drivers/i2c/busses/i2c-tegra.c
->> +++ b/drivers/i2c/busses/i2c-tegra.c
->> @@ -533,7 +533,7 @@ static int tegra_i2c_poll_register(struct tegra_i2c_dev *i2c_dev,
->>  	void __iomem *addr = i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg);
->>  	u32 val;
->>  
->> -	if (!i2c_dev->atomic_mode)
->> +	if (!i2c_dev->atomic_mode && !in_irq())
->>  		return readl_relaxed_poll_timeout(addr, val, !(val & mask),
->>  						  delay_us, timeout_us);
->>  
->>
+Hi Jordan,
+
+On 2021-01-11 21:41, Jordan Crouse wrote:
+> On Mon, Jan 11, 2021 at 09:54:12AM +0530, Sai Prakash Ranjan wrote:
+>> Hi Rob,
+>> 
+>> On 2021-01-08 22:16, Rob Clark wrote:
+>> >On Fri, Jan 8, 2021 at 6:05 AM Sai Prakash Ranjan
+>> ><saiprakash.ranjan@codeaurora.org> wrote:
+>> >>
+>> >>On 2021-01-08 19:09, Konrad Dybcio wrote:
+>> >>>> Konrad, can you please test this below change without your change?
+>> >>>
+>> >>> This brings no difference, a BUG still happens. We're still calling
+>> >>> to_a6xx_gpu on ANY device that's probed! Too bad it won't turn my A330
+>> >>> into an A640..
+>> >>>
+>> >>> Also, relying on disabling LLCC in the config is out of question as it
+>> >>> makes the arm32 kernel not compile with DRM/MSM and it just removes
+>> >>> the functionality on devices with a6xx.. (unless somebody removes the
+>> >>> dependency on it, which in my opinion is even worse and will cause
+>> >>> more problems for developers!).
+>> >>>
+>> >>
+>> >>Disabling LLCC is not the suggestion, I was under the impression that
+>> >>was the cause here for the smmu bug. Anyways, the check for llc slice
+>> >>in case llcc is disabled is not correct as well. I will send a patch for
+>> >>that as well.
+>> >>
+>> >>> The bigger question is how and why did that piece of code ever make it
+>> >>> to adreno_gpu.c and not a6xx_gpu.c?
+>> >>>
+>> >>
+>> >>My mistake, I will move it.
+>> >
+>> >Thanks, since we don't have kernel-CI coverage for gpu, and there
+>> >probably isn't one person who has all the different devices supported
+>> >(or enough hours in the day to test them all), it is probably
+>> >better/safer to keep things in the backend code that is specific to a
+>> >given generation.
+>> >
+>> 
+>> Agreed, I will post this change soon and will introduce some feature
+>> check as well because we will need it for iommu prot flag as per 
+>> discussion
+>> here - 
+>> https://lore.kernel.org/lkml/20210108181830.GA5457@willie-the-truck/
+>> 
+>> >>> To solve it in a cleaner way I propose to move it to an a6xx-specific
+>> >>> file, or if it's going to be used with next-gen GPUs, perhaps manage
+>> >>> calling of this code via an adreno quirk/feature in adreno_device.c.
+>> >>> Now that I think about it, A5xx GPMU en/disable could probably managed
+>> >>> like that, instead of using tons of if-statements for each GPU model
+>> >>> that has it..
+>> >>>
+>> >>> While we're at it, do ALL (and I truly do mean ALL, including the
+>> >>> low-end ones, this will be important later on) A6xx GPUs make use of
+>> >>> that feature?
+>> >>>
+>> >>
+>> >>I do not have a list of all A6XX GPUs with me currently, but from what
+>> >>I know, A618, A630, A640, A650 has the support.
+>> >>
+>> >
+>> >From the PoV of bringing up new a6xx, we should probably consider that
+>> >some of them may not *yet* have LLCC enabled.  I have an 8cx laptop
+>> >and once I find time to get the display working, the next step would
+>> >be bringing up a680.. and I'd probably like to start without LLCC..
+>> >
+>> 
+>> Right, once I move the LLCC code to a6xx specific address space 
+>> creation,
+>> without LLCC slices for GPU specified in qcom llcc driver, we will not
+>> be using it.
 > 
-> Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+> Right. The problem here was that we were assuming an a6xx container in 
+> generic
+> code. Testing the existence of LLCC or not is a different problem but 
+> it is my
+> understanding that if we set the attribute without LLCC enabled it just 
+> gets
+> ignored. Is that correct Sai?
 > 
 
-Perhaps a follow up change could be to use a threaded interrupt context,
-I'll type a patch for that.
+Yes that is correct, I just confirmed now with LLCC team.
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
