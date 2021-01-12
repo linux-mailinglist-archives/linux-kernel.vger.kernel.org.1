@@ -2,81 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9702F348E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:48:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E542F349B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:51:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405100AbhALPro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 10:47:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44854 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391909AbhALPrn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:47:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50F622312F;
-        Tue, 12 Jan 2021 15:47:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610466423;
-        bh=q+Pofp8jRp2xcjOfvDsfHdXfGkS6TiOxj2EkcvZcE/Q=;
-        h=From:To:Cc:Subject:Date:From;
-        b=nB+GV/Ao2FJGa2/qsd2aioGTA73tsL+Fy/ISjrGuCxwlH3VH2Dptb5oF/HLziXRZv
-         0A/cNKn9jDxot8d7A1iO9c5LtFQ2Wk5Fy57NM4dDhtMqG8L7c5hLrdXeYk0mSIr4GG
-         F6xbxhfqw3a+mKXEZjQTMEcwZM+Fug8Mpus8ZWb3eVd1SQ6XgUEpIoHwBkjUAvbpMr
-         hCaQMpC5KNeTRkGN6AqE9X+EvnCRaGhCiIwdZH4c3osj8yWXfGrrzpcu7p40dPo3n1
-         2ZQqpWsI6Q5XNMJ7Os++Lt4j5/craDsVmER3KFWEqsu098FZKF+qhMoaP/xBvutnyY
-         sIgydXBZWPbgw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Russell King <linux@armlinux.org.uk>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vladimir Murzin <vladimir.murzin@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH] ARM: fix link warning with XIP + frame-pointer
-Date:   Tue, 12 Jan 2021 16:46:40 +0100
-Message-Id: <20210112154658.850192-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S2405807AbhALPsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 10:48:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405742AbhALPsJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 10:48:09 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C20C061786;
+        Tue, 12 Jan 2021 07:47:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UKM0jxJzjj7aZZaUpjoPtSaloslyeAwT5PAA2KS1qPw=; b=sfoDpnQpTy15YMXkKej9WwbmtA
+        oT79dKefFx8gZXg1glqjV0U6ETsrwvcf3jwSDwYr1otHR+umhbzkCqx6rlEzX5NPMuHPsX+GCTrLS
+        n3Yd99v3qS9hmzmcHrFhYx8QsOKGHyzMotAl4/gH6WwJswte8e36vlaHcoewe7AiRRGacMSzg11pO
+        sQo6pwNf33lMicwFnqZFlxFkv+eQQi4pv83DoQkCnrtc59it5Q/zWw7CJICQ6uDhbyxy1OxOIzYgl
+        WiHp4LSi9zeb7akNA/cGqRcOQ+W4k3a4qUHKM2Sp8Yh5BwmJb3T8D3kfU3MVwBQfd1+3WLrUeHu74
+        pO2JunnQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1kzLsY-004yr9-AY; Tue, 12 Jan 2021 15:46:49 +0000
+Date:   Tue, 12 Jan 2021 15:46:42 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        John Garry <john.garry@huawei.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        linux-scsi@vger.kernel.org, intel-linux-scu@intel.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>
+Subject: Re: [PATCH v2 04/19] scsi: mvsas: Pass gfp_t flags to libsas event
+ notifiers
+Message-ID: <20210112154642.GC1185705@infradead.org>
+References: <20210112110647.627783-1-a.darwish@linutronix.de>
+ <20210112110647.627783-5-a.darwish@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112110647.627783-5-a.darwish@linutronix.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+>  	} else if (mwq->handler & EXP_BRCT_CHG) {
+>  		phy->phy_event &= ~EXP_BRCT_CHG;
+> -		sas_notify_port_event(sas_phy, PORTE_BROADCAST_RCVD);
+> +		sas_notify_port_event_gfp(sas_phy, PORTE_BROADCAST_RCVD, GFP_ATOMIC);
 
-When frame pointers are used instead of the ARM unwinder,
-and the kernel is built using clang with an external assembler
-and CONFIG_XIP_KERNEL, every file produces two warnings
-like:
-
-arm-linux-gnueabi-ld: warning: orphan section `.ARM.extab' from `net/mac802154/util.o' being placed in section `.ARM.extab'
-arm-linux-gnueabi-ld: warning: orphan section `.ARM.exidx' from `net/mac802154/util.o' being placed in section `.ARM.exidx'
-
-The same fix was already merged for the normal (non-XIP)
-linker script, with a longer description.
-
-Fixes: c39866f268f8 ("arm/build: Always handle .ARM.exidx and .ARM.extab sections")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/arm/kernel/vmlinux-xip.lds.S | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/arm/kernel/vmlinux-xip.lds.S b/arch/arm/kernel/vmlinux-xip.lds.S
-index 4d0b0cd9222e..ddb70c65d525 100644
---- a/arch/arm/kernel/vmlinux-xip.lds.S
-+++ b/arch/arm/kernel/vmlinux-xip.lds.S
-@@ -43,6 +43,10 @@ SECTIONS
- 		ARM_DISCARD
- 		*(.alt.smp.init)
- 		*(.pv_table)
-+#ifndef CONFIG_ARM_UNWIND
-+		*(.ARM.exidx) *(.ARM.exidx.*)
-+		*(.ARM.extab) *(.ARM.extab.*)
-+#endif
- 	}
- 
- 	. = XIP_VIRT_ADDR(CONFIG_XIP_PHYS_ADDR);
--- 
-2.29.2
-
+Please don't add pointless lines > 80 chars.  This seems to happen a lot
+more in the series.
