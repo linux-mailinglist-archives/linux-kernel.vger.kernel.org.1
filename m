@@ -2,83 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE63D2F250D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:18:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 100252F2509
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:18:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731093AbhALAps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 19:45:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730302AbhALAnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 19:43:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3790D224F9;
-        Tue, 12 Jan 2021 00:42:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610412179;
-        bh=V1ISx3UpwubAVP3VrthvSzNceUsLdgzNuhLnw1EVqSA=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=UiOEFGMbKJCr0ufmgdT4VLfbaOFtlkK0CF7PO1CYxUFLM7ueRo0GD7Q+QoqpjTa8X
-         uLLKLdi3YMGIUZXIvzeL/6POZcL/4eO7btbuBoYkGsmsyNdAf9NgBEC9h/4ryqyrtb
-         08qiO3S19sGxORYNCZx0oOMlLJCNjyPKseCYfJLhV7a87PwONkkGOD2moEwEa/qyvV
-         RN+56GPd0cFbkQYcIJWk7VNmOv1pDy2irQctAmj9JqLzbQowr4uu0WuVQjcxGz7XNQ
-         FYGOmEPT0VOzG0RuclSj9KV4Y8oTcYzqSVaXd7mxd4P/ga9q9Zcam5OAkIjcAWWnrW
-         aao14W/mhwfrA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id F222B3522A7B; Mon, 11 Jan 2021 16:42:58 -0800 (PST)
-Date:   Mon, 11 Jan 2021 16:42:58 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     john.stultz@linaro.org, tglx@linutronix.de, sboyd@kernel.org,
-        corbet@lwn.net, Mark.Rutland@arm.com, maz@kernel.org,
-        kernel-team@fb.com, neeraju@codeaurora.org
-Subject: [PATCH v2 clocksource] Do not mark clocks unstable due to delays
-Message-ID: <20210112004258.GA23158@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210106004013.GA11179@paulmck-ThinkPad-P72>
+        id S1728018AbhALApU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 19:45:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726655AbhALApQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 19:45:16 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8B0C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 16:44:35 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id x13so703002oto.8
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 16:44:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=bI5isbHsIMG1DeC1iKJ9N4yCisPBZV9Gz2XLsNHbC2k=;
+        b=mwRiQ0k3oRDBBm+/k4IoixgEDt7lVzrL9vj+XrAcjPAje6+iJqSyN/uzdnU8gh2L/G
+         fNSARI+K1hwhOcRMCYCW+y2JJRldNJgn/XXkoDPp8mZqYc9vMxNmRdxDMEd9QhNpzN0b
+         8Y8fnImvsHXN/L8kUTrXnQVYw4kx8PO+RZj/6jG/RFbeSPSa6VEPn08h6s83yA8G1hCA
+         lfU3qtbCgtcEN8yGyJW7olfsaHSdVnKx3C8Gz1SHtNWsZZ4F4SuzVu3O4fkDp466Ab2Z
+         ykXmx/CeaxEVAgCWue9htyItW8EMkTXscG0mULVJpwWUpESKWijTDuXfpguELSVEtA0B
+         F8fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=bI5isbHsIMG1DeC1iKJ9N4yCisPBZV9Gz2XLsNHbC2k=;
+        b=SlYFjiC8J65fiIui51WZWeAJ39Ml8RESdZ2uRkVbQPo7DiVEYMAd25XowmYHxzC6Q7
+         5MPr1HpCCtUkbPUuh7dTtN1NOZmqJTzZIW9oPvygpFXi2oaMRaYLPVpfswAYr9mojci0
+         DxVzLSnB+l7Hk5RsgSrQF30fLQVbH9kNe6xH2Cmv7GCt951J0ynuoQ0zh4l8XEvR0tVx
+         FGh86gNGtfTKIOcwJ0uoF52vialqUVZ8crWwS9xZ4GAD+8Od/s6faqFu/LHgXUbgLBgB
+         vHXRYvB3Tx64K2sY+wLt5XnRMo/vIFBUeZVrIlc4oC+srgRSi95JuVQ7OZVrP0AG4lxd
+         NZEw==
+X-Gm-Message-State: AOAM530qNVFxBPt4340VR4AMBftgwQtt8CEB6OLe//6qwh/W0uQZQBPC
+        vgTyBmNXfZmRx3MLQnUzQS4oRQ==
+X-Google-Smtp-Source: ABdhPJxH59M61dNaafSElROY/MJR04BTorQ9DyF+MbdXoWzA+l2M4L5OIw6uCeRiryKJWBJtv7mkvA==
+X-Received: by 2002:a9d:453:: with SMTP id 77mr1153492otc.91.1610412274718;
+        Mon, 11 Jan 2021 16:44:34 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id e17sm312549otf.32.2021.01.11.16.44.33
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 11 Jan 2021 16:44:34 -0800 (PST)
+Date:   Mon, 11 Jan 2021 16:44:21 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Saravana Kannan <saravanak@google.com>
+cc:     Hugh Dickins <hughd@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vincent Huang <vincent.huang@tw.synaptics.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andrew Duggan <aduggan@synaptics.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: Re: 5.11-rc device reordering breaks ThinkPad rmi4 suspend
+In-Reply-To: <CAGETcx-gPA3HeSKS6XW1zYj_imjDH_86897Jub56b9ctBOqmwg@mail.gmail.com>
+Message-ID: <alpine.LSU.2.11.2101111637330.2964@eggly.anvils>
+References: <alpine.LSU.2.11.2101102010200.25762@eggly.anvils> <X/xV7ZV5jzI7RvAe@ulmo> <CAJZ5v0iriRkEN8dVJ9gE3+Wyn_96=SNhav1QaQ59i9O0genTNQ@mail.gmail.com> <X/x49o3EtrUh6vuO@ulmo> <CAJZ5v0hyvdcKsPJ7U5WioXb1c8Pg_F1BLC_dbKesFBLTUSiVaw@mail.gmail.com>
+ <CAGETcx_odme9ufTps6tctOW+zfOox6iXgTx_9GAjoYn=+jy1BQ@mail.gmail.com> <alpine.LSU.2.11.2101111539070.2728@eggly.anvils> <CAGETcx-gPA3HeSKS6XW1zYj_imjDH_86897Jub56b9ctBOqmwg@mail.gmail.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106004013.GA11179@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Mon, 11 Jan 2021, Saravana Kannan wrote:
+> On Mon, Jan 11, 2021 at 3:42 PM Hugh Dickins <hughd@google.com> wrote:
+> > On Mon, 11 Jan 2021, Saravana Kannan wrote:
+> > >
+> > > I happen to have an X1 Carbon (different gen though) lying around and
+> > > I poked at its /sys folders. None of the devices in the rmi4_smbus are
+> > > considered the grandchildren of the i2c device. I think the real
+> > > problem is rmi_register_transport_device() [1] not setting up the
+> > > parent for any of the new devices it's adding.
+> > >
+> > > Hugh, can you try this patch?
+> >
+> > Just tried, but no, this patch does not help; but I bet
+> > you're along the right lines, and something as simple will do it.
+> 
+> Did you see this patch change the organization of devices under /sys/devices/?
+> The rmi* devices need to be under one of the i2c devices after this
+> patch. Is that not the case? Or is that the case, but you are still
+> seeing suspend/resume issues?
 
-If there is a sufficient delay between reading the watchdog clock and the
-clock under test, the clock under test will be marked unstable through no
-fault of its own.  This series checks for this, doing limited retries
-to get a good set of clock reads.  If the clock is marked unstable
-and is marked as being per-CPU, cross-CPU synchronization is checked.
-This series also provides delay injection, which may be enabled via
-kernel boot parameters to test the checking for delays.
+Now that I look, yes, that patch has moved the directory
+/sys/devices/rmi4-00
+to
+/sys/devices/pci0000:00/0000:00:1f.4/i2c-6/6-002c/rmi4-00
 
-1.	Provide module parameters to inject delays in watchdog.
+But I still see the same suspend issues despite that.
 
-2.	Retry clock read if long delays detected.
-
-3.	Check per-CPU clock synchronization when marked unstable.
-
-4.	Provide a module parameter to fuzz per-CPU clock checking.
-
-5.	Do pairwise clock-desynchronization checking.
-
-Changes since v1:
-
-o	Applied feedback from Rik van Riel.
-
-o	Rebased to v5.11-rc3.
-
-o	Stripped "RFC" from the subject lines.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- Documentation/admin-guide/kernel-parameters.txt |   31 ++++
- arch/x86/kernel/kvmclock.c                      |    2 
- arch/x86/kernel/tsc.c                           |    3 
- include/linux/clocksource.h                     |    2 
- kernel/time/clocksource.c                       |  174 +++++++++++++++++++++---
- 5 files changed, 188 insertions(+), 24 deletions(-)
+Hugh
