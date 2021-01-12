@@ -2,87 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C3D2F2B68
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE0C92F2B7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392653AbhALJe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:34:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731123AbhALJe6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:34:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FE2222D58;
-        Tue, 12 Jan 2021 09:34:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610444057;
-        bh=hkzbzs0K+f9nm5q4R4p5N9bYRD7QnTBmMG5Q4kjH+Vg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t8u/x5dqKIj2udvVn4cUROXMiNEWhp/ixI854A8coQTzCZSUSkAaCbYn3POtWuXV2
-         99/tqddpre/RlZfzGlyt8x9h7Vi2j5a4Kvs4zapFl55ZMlMfpjB6z+iRpjbgYTWrUA
-         3kwr4M+mdurQpR15CGCEUk8C+dF9atsNeeV4+jog=
-Date:   Tue, 12 Jan 2021 10:35:26 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] char_dev: replace cdev_map with an xarray
-Message-ID: <X/1tXpCfzMrTUhDQ@kroah.com>
-References: <20210111170513.1526780-1-hch@lst.de>
- <20210111205818.GJ35215@casper.infradead.org>
+        id S2391211AbhALJg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:36:58 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:33057 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726211AbhALJg5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 04:36:57 -0500
+X-UUID: 5c86277b71ba40838df4e9af34201d29-20210112
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Iu8lnmjN/TPe2FBwqAQYsax0J6qOLIwwrgKQk5YJHOg=;
+        b=VKT6yj2cNfO9ljSkWFvDmKsvgQXy20VAalgAHc9Hm7xHcVabldaE2sYUxHJ91EtjO4o04XHM+aWSpNzseN/PrZRG0fdFg+jaAhMyPLm9WYyLzK29popoBTtD9xvKSJYGdICFGNnC23oMlwcRjprTF9p01AbM6E23iLLaZ1cShuE=;
+X-UUID: 5c86277b71ba40838df4e9af34201d29-20210112
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1150739987; Tue, 12 Jan 2021 17:36:10 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 12 Jan 2021 17:36:09 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 12 Jan 2021 17:36:09 +0800
+Message-ID: <1610444169.17820.11.camel@mtkswgap22>
+Subject: Re: [PATCH 2/2] scsi: ufs: Protect PM ops and err_handler from user
+ access through sysfs
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Can Guo <cang@codeaurora.org>
+CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
+        <hongwus@codeaurora.org>, <ziqichen@codeaurora.org>,
+        <rnayak@codeaurora.org>, <linux-scsi@vger.kernel.org>,
+        <kernel-team@android.com>, <saravanak@google.com>,
+        <salyzyn@google.com>, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Nitin Rawat <nitirawa@codeaurora.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Satya Tangirala" <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Tue, 12 Jan 2021 17:36:09 +0800
+In-Reply-To: <1609595975-12219-3-git-send-email-cang@codeaurora.org>
+References: <1609595975-12219-1-git-send-email-cang@codeaurora.org>
+         <1609595975-12219-3-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111205818.GJ35215@casper.infradead.org>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 08:58:18PM +0000, Matthew Wilcox wrote:
-> On Mon, Jan 11, 2021 at 06:05:13PM +0100, Christoph Hellwig wrote:
-> > @@ -486,14 +491,22 @@ int cdev_add(struct cdev *p, dev_t dev, unsigned count)
-> >  	if (WARN_ON(dev == WHITEOUT_DEV))
-> >  		return -EBUSY;
-> >  
-> > -	error = kobj_map(cdev_map, dev, count, NULL,
-> > -			 exact_match, exact_lock, p);
-> > -	if (error)
-> > -		return error;
-> > +	mutex_lock(&chrdevs_lock);
-> > +	for (i = 0; i < count; i++) {
-> > +		error = xa_insert(&cdev_map, dev + i, p, GFP_KERNEL);
-> > +		if (error)
-> > +			goto out_unwind;
-> > +	}
-> > +	mutex_unlock(&chrdevs_lock);
-> 
-> Looking at some of the users ...
-> 
-> #define BSG_MAX_DEVS            32768
-> ...
->         ret = cdev_add(&bsg_cdev, MKDEV(bsg_major, 0), BSG_MAX_DEVS);
-> 
-> So this is going to allocate 32768 entries; at 8 bytes each, that's 256kB.
-> With XArray overhead, it works out to 73 pages or 292kB.  While I don't
-> have bsg loaded on my laptop, I imagine a lot of machines do.
-> 
-> drivers/net/tap.c:#define TAP_NUM_DEVS (1U << MINORBITS)
-> include/linux/kdev_t.h:#define MINORBITS        20
-> drivers/net/tap.c:      err = cdev_add(tap_cdev, *tap_major, TAP_NUM_DEVS);
-> 
-> That's going to be even worse -- 8MB plus the overhead to be closer to 9MB.
-> 
-> I think we do need to implement the 'store a range' option ;-(
+T24gU2F0LCAyMDIxLTAxLTAyIGF0IDA1OjU5IC0wODAwLCBDYW4gR3VvIHdyb3RlOg0KPiBVc2Vy
+IGxheWVyIG1heSBhY2Nlc3Mgc3lzZnMgbm9kZXMgd2hlbiBzeXN0ZW0gUE0gb3BzIG9yIGVycm9y
+IGhhbmRsaW5nDQo+IGlzIHJ1bm5pbmcsIHdoaWNoIGNhbiBjYXVzZSB2YXJpb3VzIHByb2JsZW1z
+LiBSZW5hbWUgZWhfc2VtIHRvIGhvc3Rfc2VtDQo+IGFuZCB1c2UgaXQgdG8gcHJvdGVjdCBQTSBv
+cHMgYW5kIGVycm9yIGhhbmRsaW5nIGZyb20gdXNlciBsYXllciBpbnRlcnZlbmUuDQo+IA0KPiBT
+aWduZWQtb2ZmLWJ5OiBDYW4gR3VvIDxjYW5nQGNvZGVhdXJvcmEub3JnPg0KPiANCg0KTG9va3Mg
+Z29vZCB0byBtZS4NCg0KRmVlbCBmcmVlIHRvIGFkZA0KUmV2aWV3ZWQtYnk6IFN0YW5sZXkgQ2h1
+IDxzdGFubGV5LmNodUBtZWRpYXRlay5jb20+DQoNCg0K
 
-Looks like it will be needed here.
-
-Wow that's a lot of tap devices allocated all at once, odd...
-
-Note, we will get some additional savings when this goes in as I can
-delete the kobject from the cdev (after cleaning up the misguided
-drivers that tried to set it thinking it was used), which will help out
-a lot for the individual structures being created, but not for these
-ranges.
-
-thanks,
-
-greg k-h
