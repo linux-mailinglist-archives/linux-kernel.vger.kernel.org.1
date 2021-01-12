@@ -2,111 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0A72F2C26
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:05:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DC112F2C29
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392915AbhALKDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:03:41 -0500
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:60656 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725877AbhALKDk (ORCPT
+        id S2390158AbhALKEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:04:42 -0500
+Received: from esa1.hc3370-68.iphmx.com ([216.71.145.142]:5005 "EHLO
+        esa1.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726781AbhALKEl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:03:40 -0500
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10C9wVex011901;
-        Tue, 12 Jan 2021 11:02:47 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=E546pFVq1ta2uBxokyZK/xre7E5ZXuq5jUCSw1MfC58=;
- b=Y6hRWkg+NBgd9p/YBnc5aYcGBj8SOazNom2XLz6UjT5dZsCRpML6xGkCKcR7uxyikqCt
- 0gEczWtKdLTpnUTV7Rc/gY+YnCQ1IY0bCGoedHt+CeoQlr6kh4x5Uj057yPjhO+lOcyz
- txdAEejI3mMUo6fdP4eLMxYMimOcksWU+O5PIHQv2TxzXtlLCHqjQ6+9UqCa9eE9K5ko
- V7cxz7MkPp4dUcOVgYrLZgtfudRn69OVx7bElHz4VCuUm56zYjXSHg2Q7mNW7FmEiOHK
- N38FqA5hTo4NK45u7FSz2a/mU6S8eoJjmk7+oywUeeTSl5+qCwXxmb+Pu8LjwTpQx7W4 Ow== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 35y5kyfpxq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 11:02:47 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 607BF100034;
-        Tue, 12 Jan 2021 11:02:45 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4E0F323770C;
-        Tue, 12 Jan 2021 11:02:45 +0100 (CET)
-Received: from lmecxl0566.lme.st.com (10.75.127.44) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 12 Jan
- 2021 11:02:44 +0100
-Subject: Re: [PATCH v2 2/8] serial: stm32: fix code cleaning warnings and
- checks
-To:     Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     <linux-serial@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Valentin Caron <valentin.caron@foss.st.com>
-References: <20210106162203.28854-1-erwan.leray@foss.st.com>
- <20210106162203.28854-3-erwan.leray@foss.st.com>
- <72c81157-4bd1-6a3e-2415-92a2fb29ab6d@kernel.org>
-From:   Erwan LE RAY <erwan.leray@foss.st.com>
-Message-ID: <667eb6bd-b612-fd78-0b09-d61eff72d139@foss.st.com>
-Date:   Tue, 12 Jan 2021 11:02:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <72c81157-4bd1-6a3e-2415-92a2fb29ab6d@kernel.org>
-Content-Type: text/plain; charset="iso-8859-2"; format=flowed
-Content-Language: en-US
+        Tue, 12 Jan 2021 05:04:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1610445881;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=Z6ypfUf35RhbFi1swGPSYCLgLO6hnkQFIhw9cDZ5eaA=;
+  b=doWLvTCqa+SQ937HnJZsR87jK2b/AoCGYKMgidFek0cx3pCcT8OPRnKz
+   93sr4AFty1ulGWyJDZGg/eDBPH9/bySHuY/Sg1mmiIQE77Rq6VA+w36vK
+   VFFuwkVabVxykeomVUHaICh/Vic+b+3ew8jvXAzcy4pIg4q0VH2NpueeR
+   k=;
+Authentication-Results: esa1.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
+IronPort-SDR: 6/zImbji96Tlg28r5IFrvYd+x8aqpv+tT+tIyASGf3VSLNLU8emddp2uNMUiKfEo7y8ceQ2n6R
+ 1fu2t768SReLbxnEpVg02Q/K9xHOSRiV4yS50WMEqZfGlSZva5ZucmVbl5eBHO1k94/fZiaacG
+ TbI87UKzuv4Ak9bdrtyW6xDDNFHQwaJaNuRtgQk7SiFf6f4W63wp8phY3o6wSTHX+A6LD9kB0+
+ JIFbpdso2xLXlJJvDhd9vRvc3bgFVTnETfeJSzqxFKtU8MzYlUhGni+9immIRYxj227J4wZO9D
+ gSg=
+X-SBRS: 5.2
+X-MesageID: 35268229
+X-Ironport-Server: esa1.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.156.83
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.79,341,1602561600"; 
+   d="scan'208";a="35268229"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IG8txY4Ucn51KwyOOyo85P2q59jXaZhKp5RQG/WYXftCS2BHkjrBQoUtPV9rjvVZPA+G6ZouUHHy9csElQBodgRHixkFv9LGxqXxO4jhfUrobKtMJ89z1sPgCRZxw5Yr2dHFh2tHiP+6Lc7MWNdYrjjs2Kk4TM3/gG1XYAdc+HI2E+PcY+Qfi/UB3vMoDUgBfKd8o5hAoBhfmbkvzx1gXCupAHSVhfdpBymIZNsaeVXx08BaO9e/8zuWHegibE1ajEoIptWLTQoK7g3c6adD9e/DZZFjJhdR9dEa1EtfL4064zroadyHpOWGaofR98dD+ZR4QvfqW5JRqDu9ZJslTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rBkuX8FT5jUzq1WN/uGEa7TYFFxYQ7VC9+egvnGrTXM=;
+ b=UK4PmxIg82NaO9SYSvpTwCA4K4eAgKRfTv3Po2OWPboY3NQWYJKig4mP+u/3PrKYz9u6FTe2GMF9D7/19whzg52QUJtoUZ1B4rEuJjCUtwdyYIyWM5OMOm+b6oianL69OKArCJGjC6o689Wyf/rJXxE3wMsLxiWFm8thVT4kJl4r7Q6LsT5ez8ZfMUml7O2Fto9D/VhqTAcuujurdYCo+yHAZGFcI4XRvcPe87vFrS8NFGUkepYIvbYG5tkCBE3+R224/L3VbKoFmv21Gg5wxQlRmgoyUhu8gStIoeDSwkNxMga7kO19X4Arc9QSP83ZTmR1xNjdqbUk5oK6Qa1LNw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
+ dkim=pass header.d=citrix.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rBkuX8FT5jUzq1WN/uGEa7TYFFxYQ7VC9+egvnGrTXM=;
+ b=EceCWQJbRhyM7jsLTr741a2ufCFpt1gfcOEgC7A8/1o5vuAqtVJ6g4U3PmLeD8UJ4o94yofWfTbi0xNFjrtcX3UFNatjporzD0fRl3NPyKI0LCAVhqWwRVnZJwBLK3vFrYMur7YoexFDddf4KX0UiPlaYxJnPESACeOtA6pjipg=
+Date:   Tue, 12 Jan 2021 11:03:24 +0100
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Paul Durrant <paul.durrant@citrix.com>,
+        <xen-devel@lists.xenproject.org>
+Subject: Re: [PATCH] xen/privcmd: allow fetching resource sizes
+Message-ID: <20210112100324.ii34oqldfrtmfd2f@Air-de-Roger>
+References: <20210111152958.7166-1-roger.pau@citrix.com>
+ <5063e696-5a7f-4429-048e-2bf0d14881d7@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-12_06:2021-01-11,2021-01-12 signatures=0
+In-Reply-To: <5063e696-5a7f-4429-048e-2bf0d14881d7@suse.com>
+X-ClientProxiedBy: FRYP281CA0004.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::14)
+ To DS7PR03MB5608.namprd03.prod.outlook.com (2603:10b6:5:2c9::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 258f526b-88be-47cd-264a-08d8b6e15165
+X-MS-TrafficTypeDiagnostic: DM5PR03MB3211:
+X-Microsoft-Antispam-PRVS: <DM5PR03MB32116760A46925B19DEF67728FAA0@DM5PR03MB3211.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Bm8JnEDaY6MavGHY/OD2UinDJ0GYaijQlr8+QpFWgekbO5TqSJHGwzAd2N8lISQCbgU5GObrESfiVJ81kfFhZkRXD8tGyD2WPv4I39Ea831AgnP3v0jbN3CSkrEA3Scg92jP8D/Y3Kt3koFSy2GN3MnsgX8cGS0cjIVbH6KxRHOWDyamSbOgaAGtCdwSph8wMjA/asEL/jWEfaUmqrkOxU4GYdHQ+SwM8gEChWnvH1E66+vbSsKnzbmUiA3/78Tcy5Rree4MVy6JJFLkZtfg5IKnFA+sbih8977/ebinpg4Ox0FPvFIouUqlEif60bNmFtOlb8r39aItyAPFbnlxd/Q/d9WJOovEe/JemV+bod+T0S69txZc7CMt2FG/EGK2ypo5b9eKPW/+fkVHglh5vw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR03MB5608.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(346002)(366004)(396003)(39860400002)(376002)(136003)(478600001)(66574015)(8676002)(8936002)(316002)(6496006)(956004)(16526019)(6666004)(9686003)(66946007)(4744005)(86362001)(5660300002)(83380400001)(66476007)(33716001)(6916009)(4326008)(53546011)(85182001)(6486002)(66556008)(186003)(1076003)(26005)(54906003)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RU5SY2tuWVNOakpvNEtWVkZEWXFtZVpiVjBWOWUyN2Y2cUNLMDU0S0NuclY5?=
+ =?utf-8?B?TVFKVlR0WDJUVk5kRVVvR0g0VUtqdXRrVUQwcnIveU5LcEgzaXV1bVlEMUVM?=
+ =?utf-8?B?cUNEUFpJOUJaS1JWM3BuUTdxVWk2bnFnTUZ6eW5JQ21ZZEo0NzU0ekVkV1pG?=
+ =?utf-8?B?QTFXbWREK1BJR3BXcW1aek9EaG1NbTlKK0RIRmgyNitHbUx5U1JEaGI0Mm1T?=
+ =?utf-8?B?MHlwcmlScWYwV1RSZ2I4TVZjdkRRSXRtcGFYMG1rZ1BwTHJLVS9kbktQQjRM?=
+ =?utf-8?B?WGtab1BEd2UrUUt1TWdqNDVQZXFJam4wY2grc2FxQ2xiV0luYjQ1TmdidXRP?=
+ =?utf-8?B?TklNbWtFTGZRUGVUUHpRZ2NFaW4xL1BnSVR5Y2U2Qk12R2I4TUxJNjlOUGpv?=
+ =?utf-8?B?ankwQVFobFdRT0k2aVFkTHY4YlFCZTJENHYvYXBIZUs4bE0zb3kxYy9nK2lV?=
+ =?utf-8?B?Zm9MWTM1WFZKLzljT3BrYkd2eWEvS09LbnVrM1NlakRkRC9iTEhRTmZEQXdC?=
+ =?utf-8?B?UHEwUUdjZ0oxSnA0QVhiSEdkeTRCTlVPZjA0SXdLU2pZKzR1K04xd1ZhdWs0?=
+ =?utf-8?B?aDlBK0s0NC9iSEUzV3g2dkt0RVZmc3NzZlhLYVd0M0pXdzVGUitHVHVLRk0r?=
+ =?utf-8?B?THh3cWdEaW0wQncyMUgxMmFDaWRLbyt4UGRaaGJJdy8wTEdvbW5sdk1DcTBt?=
+ =?utf-8?B?OGFvWWllYTBCTCtrbG9UcGRKb3lmOUxPSGZMaXRwWjFVeFd1amIrSm1jandC?=
+ =?utf-8?B?eGJack1Oalo3YmszYWFheGJxV3ZTWDIxTGduVXhmNzliUW11Z3U4RVhxemxz?=
+ =?utf-8?B?b0xqYm9FWG9tV2d0UFVBZmhPRi8wR3JUcEptMmNzQ01xamVlQjRrcWdhSUlF?=
+ =?utf-8?B?ZXloV3NINFVwbkM2MjdMWG54dUpDa283Q0YxZTZ4dmhyRHF6cTUvdjhSaXh6?=
+ =?utf-8?B?K1h2Nm43OXhnNzc5VnAxK3g1TmFWeUQvZmwyaVZCdHdaenNBeXFyaE43NjBM?=
+ =?utf-8?B?ZDA2ZUVvanBhSllLS0JpS1ovYUUrMmF0RjBZWWx5cU1xWmRmUmZpNXpOY0gy?=
+ =?utf-8?B?eFlqcTBrZjRTNHBNLzFYL2RZWDdHMEVlV3ZBQXdJN0szeEdTTWJiRUFoTllv?=
+ =?utf-8?B?NXdZbHZ2WGF4RFVWdFd0V051Umordnhwa1BrQ09TZ0p5ZElWWmdldXFOUEw3?=
+ =?utf-8?B?dGxNbEpGUFJ6b2Jrc3hNbFZkSWtrQXpveGVNRk9aY2NSZ3VycWwzVkErdDNs?=
+ =?utf-8?B?ZStWZDhMOS8vVDkvREE5ZVVZYzVQemdrQi8xSnRSUmVNd1NtOVd5UkdCRHU4?=
+ =?utf-8?Q?GXpsYoCPuymxvkkb0mbOryoz1+X12kjpDh?=
+X-MS-Exchange-Transport-Forked: True
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR03MB5608.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 10:03:32.1379
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 258f526b-88be-47cd-264a-08d8b6e15165
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LBS+GAX51Ek58stk/qIMW4HcGj+r4Ydq0Gw0y6+qfJVne+9diX4TVB8uafA/rAPC3IbQn6sy9M46fcKwRnoNeg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR03MB3211
+X-OriginatorOrg: citrix.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Greg,
-
-As the V2 is already in your tty-next branch, how do want me to proceed 
-to deliver the fix for Jiri remark ?
-Do you expect a V3 or a new fix ?
-
-Best Regards, Erwan.
-
-
-On 1/11/21 10:58 AM, Jiri Slaby wrote:
-> On 06. 01. 21, 17:21, Erwan Le Ray wrote:
->> --- a/drivers/tty/serial/stm32-usart.c
->> +++ b/drivers/tty/serial/stm32-usart.c
-> ...
->> @@ -973,18 +971,17 @@ static int stm32_init_port(struct stm32_port 
->> *stm32port,
->>       struct resource *res;
->>       int ret;
->> +    ret = platform_get_irq(pdev, 0);
->> +    if (ret <= 0)
->> +        return ret ? : -ENODEV;
->> +
->>       port->iotype    = UPIO_MEM;
->>       port->flags    = UPF_BOOT_AUTOCONF;
->>       port->ops    = &stm32_uart_ops;
->>       port->dev    = &pdev->dev;
->>       port->fifosize    = stm32port->info->cfg.fifosize;
->>       port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_STM32_CONSOLE);
->> -
->> -    ret = platform_get_irq(pdev, 0);
->> -    if (ret <= 0)
->> -        return ret ? : -ENODEV;
->>       port->irq = ret;
+On Tue, Jan 12, 2021 at 06:57:30AM +0100, JÃ¼rgen GroÃŸ wrote:
+> On 11.01.21 16:29, Roger Pau Monne wrote:
+> > Allow issuing an IOCTL_PRIVCMD_MMAP_RESOURCE ioctl with num = 0 and
+> > addr = 0 in order to fetch the size of a specific resource.
+> > 
+> > Add a shortcut to the default map resource path, since fetching the
+> > size requires no address to be passed in, and thus no VMA to setup.
+> > 
+> > Fixes: 3ad0876554caf ('xen/privcmd: add IOCTL_PRIVCMD_MMAP_RESOURCE')
 > 
-> I would move this set from ret above too. Or introduce a new variable, 
-> e.g. "irq".
-> 
-> thanks,
+> I don't think this addition is a reason to add a "Fixes:" tag. This is
+> clearly new functionality.
+
+It could be argued that not allowing to query the resource size was a
+shortcoming of the original implementation, but a backport request to
+stable would be more appropriate than a fixes tag I think. Will drop
+on next version and add a backport request if you agree.
+
+Thanks, Roger.
