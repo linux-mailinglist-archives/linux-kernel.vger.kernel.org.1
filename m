@@ -2,96 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71652F31D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:34:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF662F31D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:34:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730433AbhALNdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:33:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47608 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727691AbhALNdW (ORCPT
+        id S1730958AbhALNeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:34:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728281AbhALNeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:33:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610458316;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zKKsToTCsHKK+pVPuk9zw5RNKK0D4uDQCytCR/8mFAA=;
-        b=VHytFgskteiEUCdP6W35LZt72g+ISRLNTrhuOso+hV1G/8IQIBwExqu8xhG6HZtahcslyh
-        oc9KmUbjf7WS+lNkyc5JMsayzeWjLEYR20jhmo8kvS3E94L7M7P5/cquuMT2Ya6Tc0wyNV
-        F3RXlVWvRrHD5S+LSn+I48N22CaZhok=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-236-za5grBJhMtGTUsXh0knBLw-1; Tue, 12 Jan 2021 08:31:52 -0500
-X-MC-Unique: za5grBJhMtGTUsXh0knBLw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5A1BE107ACF7;
-        Tue, 12 Jan 2021 13:31:50 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-114-67.ams2.redhat.com [10.36.114.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 55DF35D9D2;
-        Tue, 12 Jan 2021 13:31:47 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        linux-toolchains@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak
- memory ordering issues
-References: <20210106172033.GA2165@willie-the-truck>
-        <20210106223223.GM1551@shell.armlinux.org.uk>
-        <20210107111841.GN1551@shell.armlinux.org.uk>
-        <20210107124506.GO1551@shell.armlinux.org.uk>
-        <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
-        <20210107133747.GP1551@shell.armlinux.org.uk>
-        <CAK8P3a2J8fLjPhyV0XUeuRBdSo6rz1gU4wrQRyfzKQvwhf22ag@mail.gmail.com>
-        <X/gkMmObbkI4+ip/@hirez.programming.kicks-ass.net>
-        <20210108092655.GA4031@willie-the-truck>
-        <CAHk-=whnKkj5CSbj-uG_MVVUsPZ6ppd_MFhZf_kpXDkh2MAVRA@mail.gmail.com>
-        <20210112132049.GA26096@wunner.de>
-Date:   Tue, 12 Jan 2021 14:31:45 +0100
-In-Reply-To: <20210112132049.GA26096@wunner.de> (Lukas Wunner's message of
-        "Tue, 12 Jan 2021 14:20:49 +0100")
-Message-ID: <877doii8n2.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Tue, 12 Jan 2021 08:34:21 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1615C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:33:40 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id d26so2484889wrb.12
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:33:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qMb9wiTztKRoS07hzB3mhdKsb+sq4X1Trw3VZKDYs14=;
+        b=LulKNfPy6RVKeuhuvL+21DkViXqm+xoh01+ZKNpfO8NcjO0tSBaITJinrbdfENlRvO
+         iiiFj9B0zakXBmdRrGQpq8QPe++CE5K8M8Yq68gCWH/jAvR1iAOL0C8UNi/f75vtG7GI
+         B8+rXYakqo+ZXricrDxC2lsa6jKFHT4TxSBqO0ZsGTZgYOtwuHQzRB4ff7zKkR795Aps
+         ym4/FFqVJS5TlHhjSbFKfKQB9hOf2Omg7HihXK6NpglMTkh97VAg35jyAF+id3eJ3TDN
+         kjBRTl4GCIxqWWdMqYdbc9/SkACGesAJlWAdCSPT8tirP2P0pi4PnVDzZiAdn3GJPgcF
+         a+QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qMb9wiTztKRoS07hzB3mhdKsb+sq4X1Trw3VZKDYs14=;
+        b=Axe43/ObTnZOE/ENOihtVNGOZE14W0WqxH3A2UqRxJMqyF3BeRi/7ye0C0EFvbvYAo
+         AzU/RxwQE6L9zlBALks34pT+oc1y+T4ozwwyt4YSgobz64zRkLbXcsnTt2LnlbTI1+H4
+         OGInmz92sb98GwpXE8vKMYpksbsAI+DGKdimW6e7+XyaYzI/zNw51bYtiEdC4Df1pAgQ
+         ejFsTtZcDO8zm0NXdc3op/+f0HnlU0F88LqT59qXi/6AYRMLeTFH4B0IPSiaON4F8BDh
+         7d38facCroMAkgCWgHw0CgfkjlT/xo6e6pWTAt7NYpHknfS9iLnITyyhgXmj4mMad7Za
+         KA+A==
+X-Gm-Message-State: AOAM531ERXFDA5RD62aRoooLtXwq6wv3Dy3ENmH4uH8gDEXGIB6KK2Wr
+        4i7UTXo1EPsKU6vfVL5Ve4Peyg==
+X-Google-Smtp-Source: ABdhPJyOFVSdyqq6SQpZ2Zd2KjwyKoBsv1vg0JznjxGBL8fPkpmpDog+P9sm1N8NGWAeBFVPwKAHag==
+X-Received: by 2002:a5d:4712:: with SMTP id y18mr4402827wrq.229.1610458419201;
+        Tue, 12 Jan 2021 05:33:39 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id s63sm4156014wms.18.2021.01.12.05.33.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 05:33:38 -0800 (PST)
+Date:   Tue, 12 Jan 2021 14:33:32 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 06/11] kasan: rename CONFIG_TEST_KASAN_MODULE
+Message-ID: <X/2lLAOWi4PHJh/Q@elver.google.com>
+References: <cover.1609871239.git.andreyknvl@google.com>
+ <ae666d8946f586cfc250205cea4ae0b729d818fa.1609871239.git.andreyknvl@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ae666d8946f586cfc250205cea4ae0b729d818fa.1609871239.git.andreyknvl@google.com>
+User-Agent: Mutt/2.0.2 (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Lukas Wunner:
+On Tue, Jan 05, 2021 at 07:27PM +0100, Andrey Konovalov wrote:
+> Rename CONFIG_TEST_KASAN_MODULE to CONFIG_KASAN_MODULE_TEST.
+> 
+> This naming is more consistent with the existing CONFIG_KASAN_KUNIT_TEST.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Link: https://linux-review.googlesource.com/id/Id347dfa5fe8788b7a1a189863e039f409da0ae5f
 
-> On Fri, Jan 08, 2021 at 12:02:53PM -0800, Linus Torvalds wrote:
->> I appreciate Arnd pointing out "--std=gnu11", though. What are the
->> actual relevant language improvements?
->> 
->> Variable declarations in for-loops is the only one I can think of. I
->> think that would clean up some code (and some macros), but might not
->> be compelling on its own.
->
-> Anonymous structs/unions.  I used to have a use case for that in
-> struct efi_dev_path in include/linux/efi.h, but Ard Biesheuvel
-> refactored it in a gnu89-compatible way for v5.7 with db8952e7094f.
+Reviewed-by: Marco Elver <elver@google.com>
 
-Aren't those a GNU extension supported since GCC 3.0?
+For this patch, as-is. But we could potentially do better in future --
+see below.
+
+> ---
+>  Documentation/dev-tools/kasan.rst | 6 +++---
+>  lib/Kconfig.kasan                 | 2 +-
+>  lib/Makefile                      | 2 +-
+>  3 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+> index 26c99852a852..72535816145d 100644
+> --- a/Documentation/dev-tools/kasan.rst
+> +++ b/Documentation/dev-tools/kasan.rst
+> @@ -374,8 +374,8 @@ unmapped. This will require changes in arch-specific code.
+>  This allows ``VMAP_STACK`` support on x86, and can simplify support of
+>  architectures that do not have a fixed module region.
+>  
+> -CONFIG_KASAN_KUNIT_TEST & CONFIG_TEST_KASAN_MODULE
+> ---------------------------------------------------
+> +CONFIG_KASAN_KUNIT_TEST and CONFIG_KASAN_MODULE_TEST
+> +----------------------------------------------------
+>  
+>  KASAN tests consist on two parts:
+>  
+> @@ -384,7 +384,7 @@ KASAN tests consist on two parts:
+>  automatically in a few different ways, see the instructions below.
+>  
+>  2. Tests that are currently incompatible with KUnit. Enabled with
+> -``CONFIG_TEST_KASAN_MODULE`` and can only be run as a module. These tests can
+> +``CONFIG_KASAN_MODULE_TEST`` and can only be run as a module. These tests can
+>  only be verified manually, by loading the kernel module and inspecting the
+>  kernel log for KASAN reports.
+>  
+> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+> index 3091432acb0a..624ae1df7984 100644
+> --- a/lib/Kconfig.kasan
+> +++ b/lib/Kconfig.kasan
+> @@ -192,7 +192,7 @@ config KASAN_KUNIT_TEST
+>  	  For more information on KUnit and unit tests in general, please refer
+>  	  to the KUnit documentation in Documentation/dev-tools/kunit.
+>  
+> -config TEST_KASAN_MODULE
+> +config KASAN_MODULE_TEST
+>  	tristate "KUnit-incompatible tests of KASAN bug detection capabilities"
+>  	depends on m && KASAN && !KASAN_HW_TAGS
+>  	help
+> diff --git a/lib/Makefile b/lib/Makefile
+> index afeff05fa8c5..122f25d6407e 100644
+> --- a/lib/Makefile
+> +++ b/lib/Makefile
+> @@ -68,7 +68,7 @@ obj-$(CONFIG_TEST_IDA) += test_ida.o
+>  obj-$(CONFIG_KASAN_KUNIT_TEST) += test_kasan.o
+>  CFLAGS_test_kasan.o += -fno-builtin
+>  CFLAGS_test_kasan.o += $(call cc-disable-warning, vla)
+> -obj-$(CONFIG_TEST_KASAN_MODULE) += test_kasan_module.o
+> +obj-$(CONFIG_KASAN_MODULE_TEST) += test_kasan_module.o
+>  CFLAGS_test_kasan_module.o += -fno-builtin
+
+[1] https://www.kernel.org/doc/html/latest/dev-tools/kunit/style.html#test-file-and-module-names
+
+Do we eventually want to rename the tests to follow the style
+recommendation more closely?
+
+Option 1: Rename the KUnit test to kasan_test.c? And then
+also rename test_kasan_module.c -> kasan_module_test.c?  Then the file
+names would be mostly consistent with the config names.
+
+Option 2: The style guide [1] also mentions where there are non-KUnit
+tests around to use _kunit for KUnit test, and _test (or similar) for
+the non-KUnit test. So here we'd end up with kasan_kunit.c and
+kasan_test.c. That would get rid of the confusing "module" part. The
+config variable could either remain CONFIG_KASAN_MODULE_TEST, or simply
+become CONFIG_KASAN_TEST, since we already have CONFIG_KASAN_KUNIT_TEST
+to distinguish.
+
+But I won't bikeshed further. If you do a v2, I leave it to your
+judgement to decide what is most appropriate.
 
 Thanks,
-Florian
--- 
-Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-Commercial register: Amtsgericht Muenchen, HRB 153243,
-Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
-
+-- Marco
