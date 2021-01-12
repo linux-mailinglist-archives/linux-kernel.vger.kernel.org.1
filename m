@@ -2,204 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DFB12F270F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 05:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8382F271D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 05:34:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730661AbhALE2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 23:28:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48810 "EHLO
+        id S1730310AbhALEd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 23:33:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730406AbhALE2r (ORCPT
+        with ESMTP id S1730216AbhALEd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 23:28:47 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62D4C061794;
-        Mon, 11 Jan 2021 20:28:06 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id iq13so819130pjb.3;
-        Mon, 11 Jan 2021 20:28:06 -0800 (PST)
+        Mon, 11 Jan 2021 23:33:56 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E69C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 20:33:15 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id q137so1362351iod.9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 20:33:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=ED4ZTcgH+L6zZjCMNVfxWMC//gKIptz3jtsYKqnT/Lk=;
-        b=o1hP0hubgQkovujeTlHJ756uTpGLM8a3tX7Oq+9Zl4FEdxbTkwYm2kvCrBl0pmjWP5
-         7krNeSPYy0QPwPQWACSc4mab3Twte29MwGhye5EFJhW+Ysbo7LoUgHPsxFtOkKrC33ms
-         iAPWW58ZoKs1rW6CSsEy9jaSoUq+/MRg9KyGwjq78U4d6jKnZSFffGHBTzPiRIXK8hgR
-         Q/7k1AFg2sXAI+ymYECIgo+knUu0Ra2Rr+bdpxzcg1BdBYtLVhIuv23wPGro1ibyg65R
-         hryiPa/TcRhMwmKP/Cdv8+NYOkeOsVH6rhmaNgspPhniSBrITyx0onGmGBgBQEvta4Jk
-         Skzw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ubSy8FA8Cm0Wvh4KGL5pEI5FTj3nDO3yFAipNoj+fNY=;
+        b=XCr50NqX0ZCIUYYQieDJ9kF/pIaCU8NUvD+e5I4IhTJpk0+Zy9Db8iDd0AnE1T3uxR
+         Cy7PWlpVzJzhB9Llz8SWfG8SE4RSAR3S9ShaCexgEdwpPYfa2r/xDUOlxbIbdk9gh4Re
+         k9ZjxUAQio45raDDX9zXMMIjOpR+Ehtg8Cuu9G2aXUtzyuqOi6isGHJp4yNdrQdlwySl
+         7tFmM1YIURKHyzzSYsC/hY4dbar1dShYkF6YjViO5gEAtZS3PY+HXCjpgFwFqnlJkCQ/
+         sJ73YmMd9EHZnpNt8H5TYgXGT7t1l2l1el3PoAoK2L3+JdRq8FD2V5xn9URJltpW7fVO
+         lk8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ED4ZTcgH+L6zZjCMNVfxWMC//gKIptz3jtsYKqnT/Lk=;
-        b=n/h+062iBC4UMs1uny9FYBiGNXe04kqBDuUBOAvwyJsK8Mrkshbe5y1t2bqilmFn7t
-         cofaBO/I0EzjltfRwwwMx6GAd7bA8Zwsl1p0oFqaA2z+TgS0BpkHjB/r1m5lt+y3gd6W
-         0QzomLS9dCj+aGRi1WIWSPHEHyIaEZZ6xx5tiSnAynWRrr+w0TRxTGq3eSlKoP1lXbr7
-         FYzc3DMmlsJfhs/2oeuoQ9mhN3r35W++RUKMhQZwVRqqGSkEkf+0EpOoo3yLp76WqO2M
-         rZfB5VKXdZ7iMAca8cOHb2RIPQHo4mxRd4MdPBOyzbth+XFFAltvbpfZfC71WOVRKCoP
-         oFFA==
-X-Gm-Message-State: AOAM533iBOM3AmJghe56xHHeGPGY64Wma5qVlfw1v4QNwg2HYBiO245b
-        jR56QNM62vjxfYli6WZUJwNxahuXXAV7tLOsgaU=
-X-Google-Smtp-Source: ABdhPJwnNaCNAb3PeaSznqZ3hRx6rxRcY2LzF2emc6mhk58YfVmlK4UvyL2zsqzY8Joc4UgozBHQlw==
-X-Received: by 2002:a17:90b:8d5:: with SMTP id ds21mr2352167pjb.5.1610425685916;
-        Mon, 11 Jan 2021 20:28:05 -0800 (PST)
-Received: from android.asia-east2-a.c.savvy-summit-295307.internal (204.60.92.34.bc.googleusercontent.com. [34.92.60.204])
-        by smtp.googlemail.com with ESMTPSA id b1sm1036174pjh.54.2021.01.11.20.28.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 20:28:05 -0800 (PST)
-From:   Bui Quang Minh <minhquangbui99@gmail.com>
-To:     linux-usb@vger.kernel.org
-Cc:     oneukum@suse.de, a.darwish@linutronix.de, bigeasy@linutronix.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, minhquangbui99@gmail.com
-Subject: [PATCH v3] can: mcba_usb: Fix memory leak when cancelling urb
-Date:   Tue, 12 Jan 2021 04:27:55 +0000
-Message-Id: <20210112042755.21421-1-minhquangbui99@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ubSy8FA8Cm0Wvh4KGL5pEI5FTj3nDO3yFAipNoj+fNY=;
+        b=GxEH+8aWUQGZauM4x9LgmPnAoU+TmhEr/ImR8oZvbNuudF7mtaMfaiMTDJX5iBqRSx
+         besQjU2RN2yRdpkiDWZ7wSs3lQrB8c6AxUWFOXJhprA3gCAuwnedkcC4stSZgTLRGx7x
+         /jm9UjfnbH6uuHF+pMN9+03RLv4kEh6FC2SKbtg6drAL45qEavRWjSMmS08eSIG+WcAs
+         qgGQhryybgpnb3ZsU82oneSpB1CcL6LXv3xEZtAhgMfSsl2NMWu97jmNzzV7vMNgn1g5
+         izNZj/t6VYDlS241KSJ952asl3lh0KNccR42Sz45oDTU1sDrU94UuYo61wjys+mPDL37
+         65aA==
+X-Gm-Message-State: AOAM531Cjokds5cEp6XwAid4N/9RyWSQKhdxtypRKEU56dnmKwf/jEyF
+        flvcuxA5+VjblUbmVILghEAfIa7WZWqFHG4p0/k=
+X-Google-Smtp-Source: ABdhPJyxtyM0e2hl805nEUS6k0siOA/lKHE4v2Cn9dHeBLCoozZSu/XoqQ/LLi58T4EWJa+qxA457TQ55hCzLN1bH84=
+X-Received: by 2002:a5d:8c85:: with SMTP id g5mr1894913ion.154.1610425994991;
+ Mon, 11 Jan 2021 20:33:14 -0800 (PST)
+MIME-Version: 1.0
+References: <20201226025117.2770-1-jiangshanlai@gmail.com> <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net>
+ <87o8hv7pnd.fsf@nanos.tec.linutronix.de> <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net>
+ <X/yH9+MGa1JCNZ8x@hirez.programming.kicks-ass.net> <jhj7doj1dr1.mognet@arm.com>
+ <X/yzrJw4UbQsK3KB@hirez.programming.kicks-ass.net>
+In-Reply-To: <X/yzrJw4UbQsK3KB@hirez.programming.kicks-ass.net>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Tue, 12 Jan 2021 12:33:03 +0800
+Message-ID: <CAJhGHyA0rfR92W7T7RnhPrmLMkmV4Mb7fUSeG2VEHhsH-pSxsw@mail.gmail.com>
+Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jens Axboe <axboe@kernel.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In mcba_usb_read_bulk_callback(), when we don't resubmit or fails to
-resubmit the urb, we need to deallocate the transfer buffer that is
-allocated in mcba_usb_start().
+> Well yes, but afaict the workqueue stuff hasn't been settled yet, and
+> the rcutorture patch Paul did was just plain racy and who knows what
+> other daft kthread users are out there. That and we're at -rc3.
 
-On some architectures, usb_free_coherent() cannot be called in interrupt
-context, create a usb_anchor to keep track of these urbs and free them
-later.
+I just send the V4 patchset for the workqueue.  Please take a look.
 
-Reported-by: syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com
-Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
----
-v1: add memory leak fix when not resubmitting urb
-v2: add memory leak fix when failing to resubmit urb
-v3: remove usb_free_coherent() calls in interrupt context
+> @@ -1861,6 +1861,8 @@ static void worker_attach_to_pool(struct worker *worker,
+>         */
+>         if (pool->flags & POOL_DISASSOCIATED)
+>                 worker->flags |= WORKER_UNBOUND;
+> +       else
+> +               kthread_set_per_cpu(worker->task, true);
 
- drivers/net/can/usb/mcba_usb.c | 48 +++++++++++++++++++++++++++-------
- 1 file changed, 39 insertions(+), 9 deletions(-)
+I think kthread_set_per_cpu(worker->task, false) is also needed for
+worker_detach_from_pool() or at least rescuer_thread() who doesn't
+go to die after detached from the pool.
 
-diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
-index df54eb7d4b36..8025db484a22 100644
---- a/drivers/net/can/usb/mcba_usb.c
-+++ b/drivers/net/can/usb/mcba_usb.c
-@@ -77,6 +77,7 @@ struct mcba_priv {
- 	struct net_device *netdev;
- 	struct usb_anchor tx_submitted;
- 	struct usb_anchor rx_submitted;
-+	struct usb_anchor urbs_cleanup;
- 	struct can_berr_counter bec;
- 	bool usb_ka_first_pass;
- 	bool can_ka_first_pass;
-@@ -220,14 +221,17 @@ static void mcba_usb_write_bulk_callback(struct urb *urb)
- {
- 	struct mcba_usb_ctx *ctx = urb->context;
- 	struct net_device *netdev;
-+	struct mcba_priv *priv;
- 
- 	WARN_ON(!ctx);
- 
- 	netdev = ctx->priv->netdev;
-+	priv = netdev_priv(netdev);
- 
--	/* free up our allocated buffer */
--	usb_free_coherent(urb->dev, urb->transfer_buffer_length,
--			  urb->transfer_buffer, urb->transfer_dma);
-+	/* On some architectures, usb_free_coherent() cannot be called in
-+	 * interrupt context, queue the urb for later cleanup
-+	 */
-+	usb_anchor_urb(urb, &priv->urbs_cleanup);
- 
- 	if (ctx->can) {
- 		if (!netif_device_present(netdev))
-@@ -291,8 +295,11 @@ static netdev_tx_t mcba_usb_xmit(struct mcba_priv *priv,
- 
- failed:
- 	usb_unanchor_urb(urb);
--	usb_free_coherent(priv->udev, MCBA_USB_TX_BUFF_SIZE, buf,
--			  urb->transfer_dma);
-+
-+	/* On some architectures, usb_free_coherent() cannot be called in
-+	 * interrupt context, queue the urb for later cleanup
-+	 */
-+	usb_anchor_urb(urb, &priv->urbs_cleanup);
- 
- 	if (err == -ENODEV)
- 		netif_device_detach(priv->netdev);
-@@ -584,7 +591,7 @@ static void mcba_usb_read_bulk_callback(struct urb *urb)
- 	case -EPIPE:
- 	case -EPROTO:
- 	case -ESHUTDOWN:
--		return;
-+		goto free;
- 
- 	default:
- 		netdev_info(netdev, "Rx URB aborted (%d)\n", urb->status);
-@@ -615,11 +622,20 @@ static void mcba_usb_read_bulk_callback(struct urb *urb)
- 
- 	retval = usb_submit_urb(urb, GFP_ATOMIC);
- 
--	if (retval == -ENODEV)
--		netif_device_detach(netdev);
--	else if (retval)
-+	if (retval < 0) {
- 		netdev_err(netdev, "failed resubmitting read bulk urb: %d\n",
- 			   retval);
-+		if (retval == -ENODEV)
-+			netif_device_detach(netdev);
-+		goto free;
-+	}
-+
-+	return;
-+free:
-+	/* On some architectures, usb_free_coherent() cannot be called in
-+	 * interrupt context, queue the urb for later cleanup
-+	 */
-+	usb_anchor_urb(urb, &priv->urbs_cleanup);
- }
- 
- /* Start USB device */
-@@ -706,6 +722,17 @@ static int mcba_usb_open(struct net_device *netdev)
- 	return 0;
- }
- 
-+static void mcba_urb_cleanup(struct mcba_priv *priv)
-+{
-+	struct urb *urb;
-+
-+	while ((urb = usb_get_from_anchor(&priv->urbs_cleanup))) {
-+		usb_free_coherent(urb->dev, urb->transfer_buffer_length,
-+				  urb->transfer_buffer, urb->transfer_dma);
-+		usb_free_urb(urb);
-+	}
-+}
-+
- static void mcba_urb_unlink(struct mcba_priv *priv)
- {
- 	usb_kill_anchored_urbs(&priv->rx_submitted);
-@@ -723,6 +750,7 @@ static int mcba_usb_close(struct net_device *netdev)
- 
- 	/* Stop polling */
- 	mcba_urb_unlink(priv);
-+	mcba_urb_cleanup(priv);
- 
- 	close_candev(netdev);
- 	can_led_event(netdev, CAN_LED_EVENT_STOP);
-@@ -812,6 +840,7 @@ static int mcba_usb_probe(struct usb_interface *intf,
- 
- 	init_usb_anchor(&priv->rx_submitted);
- 	init_usb_anchor(&priv->tx_submitted);
-+	init_usb_anchor(&priv->urbs_cleanup);
- 
- 	usb_set_intfdata(intf, priv);
- 
-@@ -877,6 +906,7 @@ static void mcba_usb_disconnect(struct usb_interface *intf)
- 
- 	unregister_candev(priv->netdev);
- 	mcba_urb_unlink(priv);
-+	mcba_urb_cleanup(priv);
- 	free_candev(priv->netdev);
- }
- 
--- 
-2.17.1
+> I thought only pcpu pools would get the POOL_DISASSOCIATED flag on
+> offline, but it seems unbound pools also get it at init time. Did I get
+> that right?
 
+You are right.
+
+The POOL_DISASSOCIATED flag indicates whether the pool is concurrency
+management or not (negative way, POOL_DISASSOCIATED means "not concurrency
+management"). So it should be applied for all unbound pools.
+
+When !POOL_DISASSOCIATED means it is a percpu pool, and the pool->cpu
+is online and the offline callback has not been called yet even the pool->cpu
+is going to be offline.  So !POOL_DISASSOCIATED is used a lot in the code.
