@@ -2,99 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BEF52F24CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8751E2F24CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405205AbhALAZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2405229AbhALAZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 11 Jan 2021 19:25:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404240AbhALANo (ORCPT
+Received: from aserp2120.oracle.com ([141.146.126.78]:52950 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404251AbhALAPp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 19:13:44 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9303C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 16:13:03 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id c22so218482pgg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 16:13:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O0LU5ZswwTCJKm0ifYQA74K9PKuPMTkTpEKcptV47c8=;
-        b=fTRWWqx9e8Az3Is+SwJeweEueiHH1K6iIJWo+y6HcsWR7NYRY0e7X0OW88ialGbn6r
-         SRw3Vokb/9Ic/nebzngGm0cOV9lR5mereHanT53ruvCPacYpLG67oRMsffthEXUQYuak
-         bOoad+2qkXMXFNtiLJZg/D/dVy0X5tXAfvQfM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O0LU5ZswwTCJKm0ifYQA74K9PKuPMTkTpEKcptV47c8=;
-        b=k9b0nz2l36Ieea867Aq4yqOkYvu8ziQCKqjuveaMaVKLAu6N0zQfmFMEcS2jf77DJ4
-         /gx7kKyLJVHxzmYx8qmmuGezu0wtunfDHcYjBJwTT5P+Hzwr4t9lvSgIAt9+nwwBE9tv
-         IM194oEpObA9eh/HlPjajaVKMGYS4VJSD1LE0x8ZyI0tH6MRwwqNrJPoCDHIirSqfhBo
-         D7O9BCR4iYCCJszaLgT6gqr1OAmHJeadFM+OkgIXVwhscJg6/shF5ljrFjR5GIjI/yPQ
-         QC9PzOgkpCV2mpYXMXyvqL+DHEizD78nYKC1n7a/Do+xvx00qMUc/Nz84O4F3DliTHfV
-         nyPA==
-X-Gm-Message-State: AOAM531qukYIzCzZQxsnKYZxeQZjWxGoGZJnYVd8A4al7mqICM01gcm4
-        eL9ZUArWZsttOqzLKmIIHWlWrw==
-X-Google-Smtp-Source: ABdhPJzl19kwY6GZo/KlpQ5s+4aLpeSkGxR+LgQ4X8j2U29ON0ID5doeXzjRwTwK6v8H4uBA9iAh4A==
-X-Received: by 2002:aa7:8708:0:b029:19e:924:345a with SMTP id b8-20020aa787080000b029019e0924345amr1867834pfo.54.1610410383239;
-        Mon, 11 Jan 2021 16:13:03 -0800 (PST)
-Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id a131sm820570pfd.171.2021.01.11.16.13.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 16:13:02 -0800 (PST)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Mukesh Kumar Savaliya <msavaliy@codeaurora.org>,
-        Akash Asthana <akashast@codeaurora.org>
-Subject: [PATCH v2] spi: spi-qcom-qspi: Use irq trigger flags from firmware
-Date:   Mon, 11 Jan 2021 16:13:01 -0800
-Message-Id: <20210112001301.687628-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+        Mon, 11 Jan 2021 19:15:45 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10C03xQl195908;
+        Tue, 12 Jan 2021 00:13:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=g98Oc2l6CX7Vawq4qdGkbD1zcPlN3W0CHY7TJH65Nko=;
+ b=O86sQ++WtQMSepFVfhOY5zlN0XgY7WiQ3VGEoHqOkiTFw0dSJ+ty/b4gdF6an6ax0OSM
+ NqucrDqxkke4MZ62MfrSh4nHXnnUlaiQkhv2qVgF1SWXkC/n1ylsr+rS8lWVWeXXBSyL
+ iBeR64iGtFGoyYwgam3GlVuv31DsVA/RMheBs8G+Wr+WLkkoLlHN5HiAVILDC0NccOaz
+ sHJO0UNyyBeFO3kkvb1JG3kvdQaQ3l1ku7zEqB1+EP3/s/rEvxHCz83p3PjVrlMupWMA
+ O7XRP1vb2rLrVl4Btd62PcS9zuUZu/c+8IsCyByX0tPY73aqXKEeOtHmnJs31nNU8b8N 0Q== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 360kcykwec-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 12 Jan 2021 00:13:59 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10C05wGo073452;
+        Tue, 12 Jan 2021 00:13:59 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 360kex2drg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Jan 2021 00:13:59 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10C0DjXO018290;
+        Tue, 12 Jan 2021 00:13:45 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 11 Jan 2021 16:13:44 -0800
+Subject: Re: [RFC PATCH 0/2] userfaultfd: handle minor faults, add
+ UFFDIO_CONTINUE
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Oliver Upton <oupton@google.com>
+References: <20210107190453.3051110-1-axelrasmussen@google.com>
+ <48f4f43f-eadd-f37d-bd8f-bddba03a7d39@oracle.com>
+ <20210111230848.GA588752@xz-x1>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <2b31c1ad-2b61-32e7-e3e5-63a3041eabfd@oracle.com>
+Date:   Mon, 11 Jan 2021 16:13:41 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210111230848.GA588752@xz-x1>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
+ suspectscore=0 adultscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101110138
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101110138
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't need to force this to be trigger high here, as the firmware
-properly configures the irq flags already. Drop it to save a line.
+On 1/11/21 3:08 PM, Peter Xu wrote:
+> On Mon, Jan 11, 2021 at 02:42:48PM -0800, Mike Kravetz wrote:
+>> On 1/7/21 11:04 AM, Axel Rasmussen wrote:
+>>> Overview
+>>> ========
+>>>
+>>> This series adds a new userfaultfd registration mode,
+>>> UFFDIO_REGISTER_MODE_MINOR. This allows userspace to intercept "minor" faults.
+>>> By "minor" fault, I mean the following situation:
+>>>
+>>> Let there exist two mappings (i.e., VMAs) to the same page(s) (shared memory).
+>>> One of the mappings is registered with userfaultfd (in minor mode), and the
+>>> other is not. Via the non-UFFD mapping, the underlying pages have already been
+>>> allocated & filled with some contents. The UFFD mapping has not yet been
+>>> faulted in; when it is touched for the first time, this results in what I'm
+>>> calling a "minor" fault. As a concrete example, when working with hugetlbfs, we
+>>> have huge_pte_none(), but find_lock_page() finds an existing page.
+>>>
+>>> We also add a new ioctl to resolve such faults: UFFDIO_CONTINUE. The idea is,
+>>> userspace resolves the fault by either a) doing nothing if the contents are
+>>> already correct, or b) updating the underlying contents using the second,
+>>> non-UFFD mapping (via memcpy/memset or similar, or something fancier like RDMA,
+>>> or etc...). In either case, userspace issues UFFDIO_CONTINUE to tell the kernel
+>>> "I have ensured the page contents are correct, carry on setting up the mapping".
+>>>
+>>
+>> One quick thought.
+>>
+>> This is not going to work as expected with hugetlbfs pmd sharing.  If you
+>> are not familiar with hugetlbfs pmd sharing, you are not alone. :)
+>>
+>> pmd sharing is enabled for x86 and arm64 architectures.  If there are multiple
+>> shared mappings of the same underlying hugetlbfs file or shared memory segment
+>> that are 'suitably aligned', then the PMD pages associated with those regions
+>> are shared by all the mappings.  Suitably aligned means 'on a 1GB boundary'
+>> and 1GB in size.
+>>
+>> When pmds are shared, your mappings will never see a 'minor fault'.  This
+>> is because the PMD (page table entries) is shared.
+> 
+> Thanks for raising this, Mike.
+> 
+> I've got a few patches that plan to disable huge pmd sharing for uffd in
+> general, e.g.:
+> 
+> https://github.com/xzpeter/linux/commit/f9123e803d9bdd91bf6ef23b028087676bed1540
+> https://github.com/xzpeter/linux/commit/aa9aeb5c4222a2fdb48793cdbc22902288454a31
+> 
+> I believe we don't want that for missing mode too, but it's just not extremely
+> important for missing mode yet, because in missing mode we normally monitor all
+> the processes that will be using the registered mm range.  For example, in QEMU
+> postcopy migration with vhost-user hugetlbfs files as backends, we'll monitor
+> both the QEMU process and the DPDK program, so that either of the programs will
+> trigger a missing fault even if pmd shared between them.  However again I think
+> it's not ideal since uffd (even if missing mode) is pgtable-based, so sharing
+> could always be too tricky.
+> 
+> They're not yet posted to public yet since that's part of uffd-wp support for
+> hugetlbfs (along with shmem).  So just raise this up to avoid potential
+> duplicated work before I post the patchset.
+> 
+> (Will read into details soon; probably too many things piled up...)
 
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: Rajendra Nayak <rnayak@codeaurora.org>
-Cc: Mukesh Kumar Savaliya <msavaliy@codeaurora.org>
-Cc: Akash Asthana <akashast@codeaurora.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
+Thanks for the heads up about this Peter.
 
-Changes from v1:
- * Rebased onto v5.11-rc1
+I know Oracle DB really wants shared pmds -and- UFFD.  I need to get details
+of their exact usage model.  I know they primarily use SIGBUS, but use
+MISSING_HUGETLBFS as well.  We may need to be more selective in when to
+disable.
 
- drivers/spi/spi-qcom-qspi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/spi/spi-qcom-qspi.c b/drivers/spi/spi-qcom-qspi.c
-index 8863be370884..1dbcc410cd35 100644
---- a/drivers/spi/spi-qcom-qspi.c
-+++ b/drivers/spi/spi-qcom-qspi.c
-@@ -511,8 +511,7 @@ static int qcom_qspi_probe(struct platform_device *pdev)
- 	ret = platform_get_irq(pdev, 0);
- 	if (ret < 0)
- 		return ret;
--	ret = devm_request_irq(dev, ret, qcom_qspi_irq,
--			IRQF_TRIGGER_HIGH, dev_name(dev), ctrl);
-+	ret = devm_request_irq(dev, ret, qcom_qspi_irq, 0, dev_name(dev), ctrl);
- 	if (ret) {
- 		dev_err(dev, "Failed to request irq %d\n", ret);
- 		return ret;
-
-base-commit: 5c8fe583cce542aa0b84adc939ce85293de36e5e
 -- 
-https://chromeos.dev
-
+Mike Kravetz
