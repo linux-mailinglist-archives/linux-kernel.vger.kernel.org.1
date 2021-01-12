@@ -2,197 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5F002F2998
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:01:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C09402F299A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392219AbhALH7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 02:59:31 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:26887 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729258AbhALH7b (ORCPT
+        id S2392227AbhALH7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 02:59:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729258AbhALH7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 02:59:31 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 10C7rL15067704;
-        Tue, 12 Jan 2021 15:53:21 +0800 (GMT-8)
-        (envelope-from kuohsiang_chou@aspeedtech.com)
-Received: from localhost.localdomain.com (192.168.2.206) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 12 Jan
- 2021 15:58:18 +0800
-From:   KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
-To:     <tzimmermann@suse.de>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <airlied@redhat.com>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <jenmin_yuan@aspeedtech.com>, <kuohsiang_chou@aspeedtech.com>,
-        <arc_sung@aspeedtech.com>, <tommy_huang@aspeedtech.com>
-Subject: [PATCH v2] drm/ast: Disable fast reset after DRAM initial
-Date:   Tue, 12 Jan 2021 15:58:11 +0800
-Message-ID: <20210112075811.9354-1-kuohsiang_chou@aspeedtech.com>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <88f197b6-4df8-76ca-ec31-7f8f739f161e@suse.de>
-References: <88f197b6-4df8-76ca-ec31-7f8f739f161e@suse.de>
+        Tue, 12 Jan 2021 02:59:43 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2009C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 23:59:02 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kzEZr-0008LY-HB; Tue, 12 Jan 2021 08:58:55 +0100
+Received: from [IPv6:2a03:f580:87bc:d400:6421:fa79:a26c:5f73] (unknown [IPv6:2a03:f580:87bc:d400:6421:fa79:a26c:5f73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 089BB5C189C;
+        Tue, 12 Jan 2021 07:58:51 +0000 (UTC)
+To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+        Richard Cochran <richardcochran@gmail.com>
+Cc:     linux-can <linux-can@vger.kernel.org>,
+        Jeroen Hofstee <jhofstee@victronenergy.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210110124903.109773-1-mailhol.vincent@wanadoo.fr>
+ <20210110124903.109773-2-mailhol.vincent@wanadoo.fr>
+ <20210111171152.GB11715@hoboy.vegasvil.org>
+ <CAMZ6RqJqWOGVb_oAhk+CSZAvsej_xSDR6jqktU_nwLgFpWTb9Q@mail.gmail.com>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ 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
+Subject: Re: [PATCH v3 1/1] can: dev: add software tx timestamps
+Message-ID: <0de66e27-8ac3-c2fe-a986-dc4a00ebcb00@pengutronix.de>
+Date:   Tue, 12 Jan 2021 08:58:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.2.206]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 10C7rL15067704
+In-Reply-To: <CAMZ6RqJqWOGVb_oAhk+CSZAvsej_xSDR6jqktU_nwLgFpWTb9Q@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="hk1CPQ4EoZvofhd2dIJtDIZFMrKZUCma3"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Bug][AST2500]
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--hk1CPQ4EoZvofhd2dIJtDIZFMrKZUCma3
+Content-Type: multipart/mixed; boundary="GDZSuzYxoFa4m1aE5oDMijUehd9TCGHDQ";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Vincent MAILHOL <mailhol.vincent@wanadoo.fr>,
+ Richard Cochran <richardcochran@gmail.com>
+Cc: linux-can <linux-can@vger.kernel.org>,
+ Jeroen Hofstee <jhofstee@victronenergy.com>,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>
+Message-ID: <0de66e27-8ac3-c2fe-a986-dc4a00ebcb00@pengutronix.de>
+Subject: Re: [PATCH v3 1/1] can: dev: add software tx timestamps
+References: <20210110124903.109773-1-mailhol.vincent@wanadoo.fr>
+ <20210110124903.109773-2-mailhol.vincent@wanadoo.fr>
+ <20210111171152.GB11715@hoboy.vegasvil.org>
+ <CAMZ6RqJqWOGVb_oAhk+CSZAvsej_xSDR6jqktU_nwLgFpWTb9Q@mail.gmail.com>
+In-Reply-To: <CAMZ6RqJqWOGVb_oAhk+CSZAvsej_xSDR6jqktU_nwLgFpWTb9Q@mail.gmail.com>
 
-V1:
-When AST2500 acts as stand-alone VGA so that DRAM and DVO initialization
-have to be achieved by VGA driver with P2A (PCI to AHB) enabling.
-However, HW suggests disable Fast reset mode after DRAM initializaton,
-because fast reset mode is mainly designed for ARM ICE debugger.
-Once Fast reset is checked as enabling, WDT (Watch Dog Timer) should be
-first enabled to avoid system deadlock before disable fast reset mode.
+--GDZSuzYxoFa4m1aE5oDMijUehd9TCGHDQ
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
-V2:
-Use to_pci_dev() to get revision of PCI configuration.
+On 1/12/21 1:00 AM, Vincent MAILHOL wrote:
+[...]
 
-Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
----
- drivers/gpu/drm/ast/ast_drv.h  |  1 +
- drivers/gpu/drm/ast/ast_main.c |  5 +++
- drivers/gpu/drm/ast/ast_post.c | 71 +++++++++++++++++++++-------------
- 3 files changed, 51 insertions(+), 26 deletions(-)
+> Mark: do you want me to send a v4 of that patch with above
+> comment removed or can you directly do the change in your testing
+> branch?
 
-diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_drv.h
-index da6dfb677540..a2cf5fef2399 100644
---- a/drivers/gpu/drm/ast/ast_drv.h
-+++ b/drivers/gpu/drm/ast/ast_drv.h
-@@ -320,6 +320,7 @@ bool ast_is_vga_enabled(struct drm_device *dev);
- void ast_post_gpu(struct drm_device *dev);
- u32 ast_mindwm(struct ast_private *ast, u32 r);
- void ast_moutdwm(struct ast_private *ast, u32 r, u32 v);
-+void ast_patch_ahb_2500(struct ast_private *ast);
- /* ast dp501 */
- void ast_set_dp501_video_output(struct drm_device *dev, u8 mode);
- bool ast_backup_fw(struct drm_device *dev, u8 *addr, u32 size);
-diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_main.c
-index 3775fe26f792..0e4dfcc25623 100644
---- a/drivers/gpu/drm/ast/ast_main.c
-+++ b/drivers/gpu/drm/ast/ast_main.c
-@@ -69,6 +69,7 @@ static void ast_detect_config_mode(struct drm_device *dev, u32 *scu_rev)
- {
- 	struct device_node *np = dev->pdev->dev.of_node;
- 	struct ast_private *ast = to_ast_private(dev);
-+	struct pci_dev *pdev = to_pci_dev(dev->dev);
- 	uint32_t data, jregd0, jregd1;
+Please send a patch on-top of linux-can-next/testing
 
- 	/* Defaults */
-@@ -96,6 +97,10 @@ static void ast_detect_config_mode(struct drm_device *dev, u32 *scu_rev)
- 	jregd0 = ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff);
- 	jregd1 = ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd1, 0xff);
- 	if (!(jregd0 & 0x80) || !(jregd1 & 0x10)) {
-+		/* Patch AST2500 */
-+		if (((pdev->revision & 0xF0) == 0x40) && ((jregd0 & 0xC0) == 0))
-+			ast_patch_ahb_2500(ast);
-+
- 		/* Double check it's actually working */
- 		data = ast_read32(ast, 0xf004);
- 		if (data != 0xFFFFFFFF) {
-diff --git a/drivers/gpu/drm/ast/ast_post.c b/drivers/gpu/drm/ast/ast_post.c
-index 8902c2f84bf9..1f0007daa005 100644
---- a/drivers/gpu/drm/ast/ast_post.c
-+++ b/drivers/gpu/drm/ast/ast_post.c
-@@ -2026,6 +2026,33 @@ static bool ast_dram_init_2500(struct ast_private *ast)
- 	return true;
- }
+Marc
 
-+void ast_patch_ahb_2500(struct ast_private *ast)
-+{
-+	u32	data;
-+
-+patch_ahb_lock:
-+	/* Clear bus lock condition */
-+	ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
-+	ast_moutdwm(ast, 0x1e600084, 0x00010000);
-+	ast_moutdwm(ast, 0x1e600088, 0x00000000);
-+	ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
-+	data = ast_mindwm(ast, 0x1e6e2070);
-+	if (data & 0x08000000) {					/* check fast reset */
-+
-+		ast_moutdwm(ast, 0x1E785004, 0x00000010);
-+		ast_moutdwm(ast, 0x1E785008, 0x00004755);
-+		ast_moutdwm(ast, 0x1E78500c, 0x00000033);
-+		udelay(1000);
-+	}
-+	ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
-+	do {
-+		data = ast_mindwm(ast, 0x1e6e2000);
-+		if (data == 0xffffffff)
-+			goto patch_ahb_lock;
-+	}	while (data != 1);
-+	ast_moutdwm(ast, 0x1e6e207c, 0x08000000);	/* clear fast reset */
-+}
-+
- void ast_post_chip_2500(struct drm_device *dev)
- {
- 	struct ast_private *ast = to_ast_private(dev);
-@@ -2033,39 +2060,31 @@ void ast_post_chip_2500(struct drm_device *dev)
- 	u8 reg;
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
- 	reg = ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff);
--	if ((reg & 0x80) == 0) {/* vga only */
-+	if ((reg & 0xC0) == 0) {/* vga only */
- 		/* Clear bus lock condition */
--		ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
--		ast_moutdwm(ast, 0x1e600084, 0x00010000);
--		ast_moutdwm(ast, 0x1e600088, 0x00000000);
--		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
--		ast_write32(ast, 0xf004, 0x1e6e0000);
--		ast_write32(ast, 0xf000, 0x1);
--		ast_write32(ast, 0x12000, 0x1688a8a8);
--		while (ast_read32(ast, 0x12000) != 0x1)
--			;
--
--		ast_write32(ast, 0x10000, 0xfc600309);
--		while (ast_read32(ast, 0x10000) != 0x1)
--			;
-+		ast_patch_ahb_2500(ast);
-+
-+		/* Disable watchdog */
-+		ast_moutdwm(ast, 0x1E78502C, 0x00000000);
-+		ast_moutdwm(ast, 0x1E78504C, 0x00000000);
-+		/* Reset USB port */
-+		ast_moutdwm(ast, 0x1E6E2090, 0x20000000);
-+		ast_moutdwm(ast, 0x1E6E2094, 0x00004000);
-+		if (ast_mindwm(ast, 0x1E6E2070) & 0x00800000) {
-+			ast_moutdwm(ast, 0x1E6E207C, 0x00800000);
-+			mdelay(100);
-+			ast_moutdwm(ast, 0x1E6E2070, 0x00800000);
-+		}
-+		/* Modify eSPI reset pin */
-+		temp = ast_mindwm(ast, 0x1E6E2070);
-+		if (temp & 0x02000000)
-+			ast_moutdwm(ast, 0x1E6E207C, 0x00004000);
 
- 		/* Slow down CPU/AHB CLK in VGA only mode */
- 		temp = ast_read32(ast, 0x12008);
- 		temp |= 0x73;
- 		ast_write32(ast, 0x12008, temp);
+--GDZSuzYxoFa4m1aE5oDMijUehd9TCGHDQ--
 
--		/* Reset USB port to patch USB unknown device issue */
--		ast_moutdwm(ast, 0x1e6e2090, 0x20000000);
--		temp  = ast_mindwm(ast, 0x1e6e2094);
--		temp |= 0x00004000;
--		ast_moutdwm(ast, 0x1e6e2094, temp);
--		temp  = ast_mindwm(ast, 0x1e6e2070);
--		if (temp & 0x00800000) {
--			ast_moutdwm(ast, 0x1e6e207c, 0x00800000);
--			mdelay(100);
--			ast_moutdwm(ast, 0x1e6e2070, 0x00800000);
--		}
--
- 		if (!ast_dram_init_2500(ast))
- 			drm_err(dev, "DRAM init failed !\n");
+--hk1CPQ4EoZvofhd2dIJtDIZFMrKZUCma3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
---
-2.18.4
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl/9VrgACgkQqclaivrt
+76kbKAf/TdWxOucZ2H+zRMUDnVF9ajXFBptOQF4ExCETeUTJGO5myBmWwo1xjZLo
+oy60SEAqfesijgKvcOy+i5uBHyHQ6QqwufXjMhTlDFvV2/iufRBsxSj1nzJkYXK/
+1dnULNzGIfWX1s/57UtHDnu5nHS9BJf+E/QvcQxu9iTaF1PihEETNqdK6swlkTWv
+nMS1Jx44q1CikaEf2x8Z8YayE+9aC30cc1vTcwTQ6I9Oqyi0Nxujf7CL+T7L25hC
+GGJiFtmfIktFg6irbrwLGzXpLQ/lTdi6UADwaL537b0sXn5aKFby3BIsMXV49Wag
+rtJUGeDvgrFcdFg1Vbe6Xm69eoXejw==
+=t5m9
+-----END PGP SIGNATURE-----
+
+--hk1CPQ4EoZvofhd2dIJtDIZFMrKZUCma3--
