@@ -2,113 +2,426 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D152F392F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:50:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05AAA2F3931
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392249AbhALSsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 13:48:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726352AbhALSsC (ORCPT
+        id S2392684AbhALSuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 13:50:03 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2324 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727673AbhALSuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 13:48:02 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB067C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:47:21 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id c132so2025903pga.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:47:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Hdo2CjRwL8l2YWwyDwjd6+MgVOQ7mgZAA3i8urJGhbs=;
-        b=M7by6JufEKLMDzLaTd9vXvZ011hDGrFfmfhsiu43IfW2HxVOGStBIW9F3E88Xh9/qy
-         vzmBj60x2fAxPecxBgOFK94HGWsTVNFT4gNJ12v78cdQIx5sUgnjlh7EhKNlBHhfnfk2
-         ADrrAYQwMEwi6Koach7FWR1kahAyBHEbnUttN2ME24++f+NPeIvuq5UwdkqJ10N4U/Yo
-         nG7TLaoCZ00uuoEYZ4fPjty3zZuahaNHrpvQSxq/ArnxdMkI5PqStFwk9EFXOJ26/Ffb
-         A6HaClwNU2keIsV0oLyUAasROLqWA9HqNo2UrdH71w35DvtxXsc/5874wATh99EjT5j1
-         nUfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Hdo2CjRwL8l2YWwyDwjd6+MgVOQ7mgZAA3i8urJGhbs=;
-        b=WOHe3bpCBqZAdW4lBT1Rok65FFHcqGnNaKaJUxePbhUlmGM9gmSGZRERTeny2FWx4V
-         +sh560aKf1Hh7Zk+amW1daQ3akm6TwZdKgZX5+vgxa2cWSoA7T6JGFaqOD4L9yMy/6wx
-         KzUrtFWq0iRuCfvEGE6cuSOVVY0/gIv1iXBQuehgUreIq5HqSw+lmzKaWDemMAY/Afpt
-         JvLJtylMGNmDXLa4656FQNwkVATToYezi1Y6cbufq6LRysOOE5rkbG2MUha/cQMKPqya
-         4D4wpX9PDMztaUkWtvocbnqfJk3I+R3uL2G6XrO7gvKRMpvPdzssPvCBLCMq90hQcwHl
-         2SVg==
-X-Gm-Message-State: AOAM532iqZ0FFn0xvgHJAyvV2XDQTSi0vDpo8ltwLXeyCH2MqXKNKe7N
-        I4oQEjpLNwTUjjw2+tO6kijl8g==
-X-Google-Smtp-Source: ABdhPJx3WV1fspkF5IuWOsxX9UJmiyz/NBcYcrWSuy8EAXWCwzWIutcGrOHywQxiPAJQNi5fPb/lgQ==
-X-Received: by 2002:a63:e:: with SMTP id 14mr410657pga.426.1610477241277;
-        Tue, 12 Jan 2021 10:47:21 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id 32sm4498081pgq.80.2021.01.12.10.47.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 10:47:20 -0800 (PST)
-Date:   Tue, 12 Jan 2021 11:47:18 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     peng.fan@nxp.com
-Cc:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        o.rempel@pengutronix.de, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        paul@crapouillou.net, matthias.bgg@gmail.com, agross@kernel.org,
-        patrice.chotard@st.com
-Subject: Re: [PATCH V6 05/10] remoteproc: imx_rproc: correct err message
-Message-ID: <20210112184718.GB186830@xps15>
-References: <1610444359-1857-1-git-send-email-peng.fan@nxp.com>
- <1610444359-1857-6-git-send-email-peng.fan@nxp.com>
+        Tue, 12 Jan 2021 13:50:02 -0500
+Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DFfcY48dpz67QFM;
+        Wed, 13 Jan 2021 02:44:13 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Tue, 12 Jan 2021 19:49:19 +0100
+Received: from localhost (10.47.65.219) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 12 Jan
+ 2021 18:49:18 +0000
+Date:   Tue, 12 Jan 2021 18:48:40 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+CC:     <linux-cxl@vger.kernel.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org, Ira Weiny" <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Jon Masters <jcm@jonmasters.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        <daniel.lll@alibaba-inc.com>
+Subject: Re: [RFC PATCH v3 03/16] cxl/acpi: add OSC support
+Message-ID: <20210112184840.00002195@Huawei.com>
+In-Reply-To: <20210111225121.820014-4-ben.widawsky@intel.com>
+References: <20210111225121.820014-1-ben.widawsky@intel.com>
+        <20210111225121.820014-4-ben.widawsky@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610444359-1857-6-git-send-email-peng.fan@nxp.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.65.219]
+X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 05:39:14PM +0800, peng.fan@nxp.com wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> It is using devm_ioremap, so not devm_ioremap_resource. Correct
-> the error message and print out sa/size.
-> 
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+On Mon, 11 Jan 2021 14:51:07 -0800
+Ben Widawsky <ben.widawsky@intel.com> wrote:
 
-That was a finger problem on my side, no need to add my RB twice.
+> From: Vishal Verma <vishal.l.verma@intel.com>
+> 
+> Add support to advertise OS capabilities, and request OS control for CXL
+> features using the ACPI _OSC mechanism. Advertise support for all
+> possible CXL features, and attempt to request control for all possible
+> features.
+> 
+> Based on a patch by Sean Kelley.
+> 
+> Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
 
+Whilst I understand the reasoning behind not just sharing this code with PCI,
+it might be worth adding a comment to the code somewhere on that.
+
+Otherwise, I suspect you'll very rapidly see patches cleaning up this duplication :)
+
+Otherwise LGTM.
+
+J
 > ---
->  drivers/remoteproc/imx_rproc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  Documentation/cxl/memory-devices.rst |  15 ++
+>  drivers/cxl/acpi.c                   | 260 ++++++++++++++++++++++++++-
+>  drivers/cxl/acpi.h                   |  20 +++
+>  3 files changed, 292 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-> index 6603e00bb6f4..2a093cea4997 100644
-> --- a/drivers/remoteproc/imx_rproc.c
-> +++ b/drivers/remoteproc/imx_rproc.c
-> @@ -268,7 +268,7 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
->  		priv->mem[b].cpu_addr = devm_ioremap(&pdev->dev,
->  						     att->sa, att->size);
->  		if (!priv->mem[b].cpu_addr) {
-> -			dev_err(dev, "devm_ioremap_resource failed\n");
-> +			dev_err(dev, "failed to remap %#x bytes from %#x\n", att->size, att->sa);
->  			return -ENOMEM;
->  		}
->  		priv->mem[b].sys_addr = att->sa;
-> @@ -298,7 +298,7 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
+> diff --git a/Documentation/cxl/memory-devices.rst b/Documentation/cxl/memory-devices.rst
+> index aa4262280c67..6ce88f9d5f4f 100644
+> --- a/Documentation/cxl/memory-devices.rst
+> +++ b/Documentation/cxl/memory-devices.rst
+> @@ -13,3 +13,18 @@ Driver Infrastructure
+>  =====================
 >  
->  		priv->mem[b].cpu_addr = devm_ioremap_resource(&pdev->dev, &res);
->  		if (IS_ERR(priv->mem[b].cpu_addr)) {
-> -			dev_err(dev, "devm_ioremap_resource failed\n");
-> +			dev_err(dev, "failed to remap %pr\n", &res);
->  			err = PTR_ERR(priv->mem[b].cpu_addr);
->  			return err;
->  		}
-> -- 
-> 2.28.0
-> 
+>  This sections covers the driver infrastructure for a CXL memory device.
+> +
+> +ACPI CXL
+> +--------
+> +
+> +.. kernel-doc:: drivers/cxl/acpi.c
+> +   :doc: cxl acpi
+> +
+> +.. kernel-doc:: drivers/cxl/acpi.c
+> +   :internal:
+> +
+> +External Interfaces
+> +===================
+> +
+> +.. kernel-doc:: drivers/cxl/acpi.c
+> +   :export:
+> diff --git a/drivers/cxl/acpi.c b/drivers/cxl/acpi.c
+> index 0f1ba9b3f1ed..af9c0dfdee20 100644
+> --- a/drivers/cxl/acpi.c
+> +++ b/drivers/cxl/acpi.c
+> @@ -11,7 +11,258 @@
+>  #include <linux/pci.h>
+>  #include "acpi.h"
+>  
+> -/*
+> +/**
+> + * DOC: cxl acpi
+> + *
+> + * ACPI _OSC setup: The exported function cxl_bus_acquire() sets up ACPI
+> + * Operating System Capabilities (_OSC) for the CXL bus. It declares support
+> + * for all CXL capabilities, and attempts to request control for all possible
+> + * capabilities. The resulting support and control sets are saved in global
+> + * variables cxl_osc_support_set and cxl_osc_control_set. The internal
+> + * functions cxl_osc_declare_support(), and cxl_osc_request_control() can be
+> + * used to update the support and control sets in accordance with the ACPI
+> + * rules for _OSC evaluation - most importantly, capabilities already granted
+> + * should not be rescinded by either the OS or firmware.
+> + */
+> +
+> +static u32 cxl_osc_support_set;
+> +static u32 cxl_osc_control_set;
+> +static DEFINE_MUTEX(acpi_desc_lock);
+> +
+> +struct pci_osc_bit_struct {
+> +	u32 bit;
+> +	char *desc;
+> +};
+> +
+> +static struct pci_osc_bit_struct cxl_osc_support_bit[] = {
+> +	{ CXL_OSC_PORT_REG_ACCESS_SUPPORT, "CXLPortRegAccess" },
+> +	{ CXL_OSC_PORT_DEV_REG_ACCESS_SUPPORT, "CXLPortDevRegAccess" },
+> +	{ CXL_OSC_PER_SUPPORT, "CXLProtocolErrorReporting" },
+> +	{ CXL_OSC_NATIVE_HP_SUPPORT, "CXLNativeHotPlug" },
+> +};
+> +
+> +static struct pci_osc_bit_struct cxl_osc_control_bit[] = {
+> +	{ CXL_OSC_MEM_ERROR_CONTROL, "CXLMemErrorReporting" },
+> +};
+> +
+> +static u8 cxl_osc_uuid_str[] = "68F2D50B-C469-4d8A-BD3D-941A103FD3FC";
+> +
+> +static void decode_osc_bits(struct device *dev, char *msg, u32 word,
+> +			    struct pci_osc_bit_struct *table, int size)
+> +{
+> +	char buf[80];
+> +	int i, len = 0;
+> +	struct pci_osc_bit_struct *entry;
+> +
+> +	buf[0] = '\0';
+> +	for (i = 0, entry = table; i < size; i++, entry++)
+> +		if (word & entry->bit)
+> +			len += scnprintf(buf + len, sizeof(buf) - len, "%s%s",
+> +					 len ? " " : "", entry->desc);
+> +
+> +	dev_info(dev, "_OSC: %s [%s]\n", msg, buf);
+> +}
+> +
+> +static void decode_cxl_osc_support(struct device *dev, char *msg, u32 word)
+> +{
+> +	decode_osc_bits(dev, msg, word, cxl_osc_support_bit,
+> +			ARRAY_SIZE(cxl_osc_support_bit));
+> +}
+> +
+> +static void decode_cxl_osc_control(struct device *dev, char *msg, u32 word)
+> +{
+> +	decode_osc_bits(dev, msg, word, cxl_osc_control_bit,
+> +			ARRAY_SIZE(cxl_osc_control_bit));
+> +}
+> +
+> +static acpi_status acpi_cap_run_osc(acpi_handle handle, const u32 *capbuf,
+> +				    u8 *uuid_str, u32 *retval)
+> +{
+> +	struct acpi_osc_context context = {
+> +		.uuid_str = uuid_str,
+> +		.rev = 1,
+> +		.cap.length = 20,
+> +		.cap.pointer = (void *)capbuf,
+> +	};
+> +	acpi_status status;
+> +
+> +	status = acpi_run_osc(handle, &context);
+> +	if (ACPI_SUCCESS(status)) {
+> +		/* pointer + offset to DWORD 5 */
+> +		*retval = *((u32 *)(context.ret.pointer + 16));
+> +		kfree(context.ret.pointer);
+> +	}
+> +	return status;
+> +}
+> +
+> +static acpi_status cxl_query_osc(acpi_handle handle, u32 support, u32 *control)
+> +{
+> +	struct acpi_pci_root *root;
+> +	acpi_status status;
+> +	u32 result, capbuf[5];
+> +
+> +	root = acpi_pci_find_root(handle);
+> +	if (!root)
+> +		return -ENXIO;
+> +
+> +	support &= CXL_OSC_SUPPORT_VALID_MASK;
+> +	support |= cxl_osc_support_set;
+> +
+> +	capbuf[OSC_QUERY_DWORD] = OSC_QUERY_ENABLE;
+> +	capbuf[PCI_OSC_SUPPORT_DWORD] = root->osc_support_set;
+> +	capbuf[PCI_OSC_CONTROL_DWORD] = root->osc_control_set;
+> +	capbuf[CXL_OSC_SUPPORT_DWORD] = support;
+> +	if (control) {
+> +		*control &= CXL_OSC_CONTROL_VALID_MASK;
+> +		capbuf[CXL_OSC_CONTROL_DWORD] = *control | cxl_osc_control_set;
+> +	} else {
+> +		/* Run _OSC query only with existing controls. */
+> +		capbuf[CXL_OSC_CONTROL_DWORD] = cxl_osc_control_set;
+> +	}
+> +
+> +	status = acpi_cap_run_osc(handle, capbuf, cxl_osc_uuid_str, &result);
+> +	if (ACPI_SUCCESS(status)) {
+> +		cxl_osc_support_set = support;
+> +		if (control)
+> +			*control = result;
+> +	}
+> +	return status;
+> +}
+> +
+> +/**
+> + * cxl_osc_declare_support - Declare support for CXL root _OSC features.
+> + * @handle: ACPI device handle for the PCI root bridge (or PCIe Root Complex).
+> + * @flags: The _OSC bits to declare support for.
+> + *
+> + * The PCI specific DWORDS are obtained from the pci root port device, and
+> + * used as-is. The resulting CXL support set is saved in cxl_osc_support_set.
+> + * Any future calls to this are forced to be strictly incremental from the
+> + * existing cxl_osc_support_set.
+> + */
+> +static acpi_status cxl_osc_declare_support(acpi_handle handle, u32 flags)
+> +{
+> +	acpi_status status;
+> +
+> +	mutex_lock(&acpi_desc_lock);
+> +	status = cxl_query_osc(handle, flags, NULL);
+> +	mutex_unlock(&acpi_desc_lock);
+> +	return status;
+> +}
+> +
+> +/**
+> + * cxl_osc_request_control - Request control of CXL root _OSC features.
+> + * @adev: ACPI device for the PCI root bridge (or PCIe Root Complex).
+> + * @mask: Mask of _OSC bits to request control of, place to store control mask.
+> + * @req: Mask of _OSC bits the control of is essential to the caller.
+> + *
+> + * The PCI specific DWORDS are obtained from the pci root port device, and
+> + * used as-is. The resulting CXL control set is saved in cxl_osc_control_set.
+> + * Any future calls to this are forced to be strictly incremental from the
+> + * existing cxl_osc_control_set.
+> + */
+> +static acpi_status cxl_osc_request_control(struct acpi_device *adev, u32 *mask,
+> +					   u32 req)
+> +{
+> +	acpi_handle handle = adev->handle;
+> +	struct device *dev = &adev->dev;
+> +	struct acpi_pci_root *root;
+> +	acpi_status status = AE_OK;
+> +	u32 ctrl, capbuf[5];
+> +
+> +	if (!mask)
+> +		return AE_BAD_PARAMETER;
+> +
+> +	ctrl = *mask & CXL_OSC_MEM_ERROR_CONTROL;
+> +	if ((ctrl & req) != req)
+> +		return AE_TYPE;
+> +
+> +	root = acpi_pci_find_root(handle);
+> +	if (!root)
+> +		return -ENXIO;
+> +
+> +	mutex_lock(&acpi_desc_lock);
+> +
+> +	*mask = ctrl | cxl_osc_control_set;
+> +	/* No need to evaluate _OSC if the control was already granted. */
+> +	if ((cxl_osc_control_set & ctrl) == ctrl)
+> +		goto out;
+> +
+> +	/* Need to check the available controls bits before requesting them. */
+> +	while (*mask) {
+> +		status = cxl_query_osc(handle, cxl_osc_support_set, mask);
+> +		if (ACPI_FAILURE(status))
+> +			goto out;
+> +		if (ctrl == *mask)
+> +			break;
+> +		decode_cxl_osc_control(dev, "platform does not support",
+> +				       ctrl & ~(*mask));
+> +		ctrl = *mask;
+> +	}
+> +
+> +	if ((ctrl & req) != req) {
+> +		decode_cxl_osc_control(dev,
+> +				       "not requesting control; platform does not support",
+> +				       req & ~(ctrl));
+> +		status = AE_SUPPORT;
+> +		goto out;
+> +	}
+> +
+> +	capbuf[OSC_QUERY_DWORD] = 0;
+> +	capbuf[PCI_OSC_SUPPORT_DWORD] = root->osc_support_set;
+> +	capbuf[PCI_OSC_CONTROL_DWORD] = root->osc_control_set;
+> +	capbuf[CXL_OSC_SUPPORT_DWORD] = cxl_osc_support_set;
+> +	capbuf[CXL_OSC_CONTROL_DWORD] = ctrl;
+> +	status = acpi_cap_run_osc(handle, capbuf, cxl_osc_uuid_str, mask);
+> +	if (ACPI_SUCCESS(status))
+> +		cxl_osc_control_set = *mask;
+> +out:
+> +	mutex_unlock(&acpi_desc_lock);
+> +	return status;
+> +}
+> +
+> +static int cxl_negotiate_osc(struct acpi_device *adev)
+> +{
+> +	u32 cxl_support, cxl_control, requested;
+> +	acpi_handle handle = adev->handle;
+> +	struct device *dev = &adev->dev;
+> +	acpi_status status;
+> +
+> +	/* Declare support for everything */
+> +	cxl_support = CXL_OSC_SUPPORT_VALID_MASK;
+> +	decode_cxl_osc_support(dev, "OS supports", cxl_support);
+> +	status = cxl_osc_declare_support(handle, cxl_support);
+> +	if (ACPI_FAILURE(status)) {
+> +		dev_info(dev, "CXL_OSC failed (%s)\n",
+> +			 acpi_format_exception(status));
+> +		return -ENXIO;
+> +	}
+> +
+> +	/* Request control for everything */
+> +	cxl_control = CXL_OSC_CONTROL_VALID_MASK;
+> +	requested = cxl_control;
+> +	status = cxl_osc_request_control(adev, &cxl_control,
+> +					 CXL_OSC_MEM_ERROR_CONTROL);
+> +	if (ACPI_SUCCESS(status)) {
+> +		decode_cxl_osc_control(dev, "OS now controls", cxl_control);
+> +	} else {
+> +		decode_cxl_osc_control(dev, "OS requested", requested);
+> +		decode_cxl_osc_control(dev, "platform willing to grant",
+> +				       cxl_control);
+> +		dev_info(dev, "_OSC failed (%s)\n",
+> +			 acpi_format_exception(status));
+> +	}
+> +	return 0;
+> +}
+> +
+> +/**
+> + * cxl_bus_acquire - Perform platform-specific bus operations
+> + * @pdev: pci_dev associated with the CXL device
+> + *
+> + * This performs bus-specific operations such as ACPI _OSC to ensure that
+> + * the bus is 'prepared'. Since the CXL definition of _OSC depends on the
+> + * existing PCI _OSC DWORDS in 'Arg3', pull those in from the pci root port
+> + * device, and merge those into the new CXL-augmented _OSC calls.
+> + *
+>   * If/when CXL support is defined by other platform firmware the kernel
+>   * will need a mechanism to select between the platform specific version
+>   * of this routine, until then, hard-code ACPI assumptions
+> @@ -21,6 +272,7 @@ int cxl_bus_acquire(struct pci_dev *pdev)
+>  	struct acpi_device *adev;
+>  	struct pci_dev *root_port;
+>  	struct device *root;
+> +	int rc;
+>  
+>  	root_port = pcie_find_root_port(pdev);
+>  	if (!root_port)
+> @@ -34,9 +286,11 @@ int cxl_bus_acquire(struct pci_dev *pdev)
+>  	if (!adev)
+>  		return -ENXIO;
+>  
+> -	/* TODO: OSC enabling */
+> +	rc = cxl_negotiate_osc(adev);
+> +	if (rc)
+> +		dev_err(&pdev->dev, "Failed to negotiate OSC\n");
+>  
+> -	return 0;
+> +	return rc;
+>  }
+>  EXPORT_SYMBOL_GPL(cxl_bus_acquire);
+>  
+> diff --git a/drivers/cxl/acpi.h b/drivers/cxl/acpi.h
+> index d638f8886ab7..6ef154021745 100644
+> --- a/drivers/cxl/acpi.h
+> +++ b/drivers/cxl/acpi.h
+> @@ -12,4 +12,24 @@ struct cxl_acpi_desc {
+>  
+>  int cxl_bus_acquire(struct pci_dev *pci_dev);
+>  
+> +/* Indexes into _OSC Capabilities Buffer */
+> +#define PCI_OSC_SUPPORT_DWORD			1	/* DWORD 2 */
+> +#define PCI_OSC_CONTROL_DWORD			2	/* DWORD 3 */
+> +#define CXL_OSC_SUPPORT_DWORD			3	/* DWORD 4 */
+> +#define CXL_OSC_CONTROL_DWORD			4	/* DWORD 5 */
+> +
+> +/* CXL Host Bridge _OSC: Capabilities DWORD 4: Support Field */
+> +#define CXL_OSC_PORT_REG_ACCESS_SUPPORT		0x00000001
+> +#define CXL_OSC_PORT_DEV_REG_ACCESS_SUPPORT	0x00000002
+> +#define CXL_OSC_PER_SUPPORT			0x00000004
+> +#define CXL_OSC_NATIVE_HP_SUPPORT		0x00000008
+> +#define CXL_OSC_SUPPORT_VALID_MASK		(CXL_OSC_PORT_REG_ACCESS_SUPPORT |	\
+> +						 CXL_OSC_PORT_DEV_REG_ACCESS_SUPPORT |	\
+> +						 CXL_OSC_PER_SUPPORT |			\
+> +						 CXL_OSC_NATIVE_HP_SUPPORT)
+> +
+> +/* CXL Host Bridge _OSC: Capabilities DWORD 5: Control Field */
+> +#define CXL_OSC_MEM_ERROR_CONTROL		0x00000001
+> +#define CXL_OSC_CONTROL_VALID_MASK		(CXL_OSC_MEM_ERROR_CONTROL)
+> +
+>  #endif	/* __CXL_ACPI_H__ */
+
