@@ -2,121 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECBA2F2CA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:24:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC80B2F2CAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:24:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406075AbhALKXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:23:51 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:1590 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405053AbhALKXu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:23:50 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10CAMmHR018269;
-        Tue, 12 Jan 2021 04:22:48 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=PODMain02222019;
- bh=OupojVahqqyY5lVkMconfNlsBdRPPIj670tlMIkeqSA=;
- b=F6O2oVM+kN3gmqHvoV70TTQtsXlbp4eDtmPYJbY9NOpqCIFUwxnApIUN9Kh+ycoRorOO
- 5syvvkYC+j+NHIW5C3clSxlPmoMLXrEjHsHYjWgcZp8FCjupzFhVpgtpb31SYoTBf0Lh
- TkycOzAYwWkmj0FoA0dlwekgjuQeT8pwprZzM9kdgxUf1jDc2UNP7SvigIshVkQJMICj
- 4zSV99QYRlI7f8OGtF3mt+MW5+PerI7vxtpO+VLQhcz76LLZ+8PGdNoToo2D792g55Ix
- P6pBJoz4E/G/4nVuPCNWfUQ8JN1zYDmuOTZfO/5XDM1/6LGdadMXROL1bIhXhGZ2uss9 zQ== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 35y9sru8tj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 12 Jan 2021 04:22:48 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 12 Jan
- 2021 10:22:46 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Tue, 12 Jan 2021 10:22:46 +0000
-Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.57])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1B80045;
-        Tue, 12 Jan 2021 10:22:46 +0000 (UTC)
-Subject: Re: [PATCH v4 3/6] ASoC: audio-graph-card: Support setting component
- plls and sysclks
-To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-CC:     <broonie@kernel.org>, <robh+dt@kernel.org>,
-        <nsaenzjulienne@suse.de>, <f.fainelli@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <bcm-kernel-feedback-list@broadcom.com>,
-        <linux-rpi-kernel@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210108160501.7638-1-rf@opensource.cirrus.com>
- <20210108160501.7638-4-rf@opensource.cirrus.com>
- <87y2gzymc5.wl-kuninori.morimoto.gx@renesas.com>
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-Message-ID: <762d798c-bd75-e24a-40fd-263f68f1a5f1@opensource.cirrus.com>
-Date:   Tue, 12 Jan 2021 10:22:46 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S2406109AbhALKYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:24:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:43514 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404201AbhALKYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 05:24:04 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 28AF231B;
+        Tue, 12 Jan 2021 02:23:18 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.57.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EFF373F719;
+        Tue, 12 Jan 2021 02:23:14 -0800 (PST)
+Date:   Tue, 12 Jan 2021 10:23:12 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] arm64: make atomic helpers __always_inline
+Message-ID: <20210112102312.GC34326@C02TD0UTHF1T.local>
+References: <20210108092024.4034860-1-arnd@kernel.org>
+ <20210108093258.GB4031@willie-the-truck>
+ <X/jDGbwDNcVrZdDJ@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <87y2gzymc5.wl-kuninori.morimoto.gx@renesas.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
- phishscore=0 spamscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
- adultscore=0 mlxlogscore=899 impostorscore=0 clxscore=1015 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101120056
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/jDGbwDNcVrZdDJ@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/01/2021 01:35, Kuninori Morimoto wrote:
+On Fri, Jan 08, 2021 at 09:39:53PM +0100, Peter Zijlstra wrote:
+> On Fri, Jan 08, 2021 at 09:32:58AM +0000, Will Deacon wrote:
+> > Hi Arnd,
+> > 
+> > On Fri, Jan 08, 2021 at 10:19:56AM +0100, Arnd Bergmann wrote:
+> > > From: Arnd Bergmann <arnd@arndb.de>
+> > > 
+> > > With UBSAN enabled and building with clang, there are occasionally
+> > > warnings like
+> > > 
+> > > WARNING: modpost: vmlinux.o(.text+0xc533ec): Section mismatch in reference from the function arch_atomic64_or() to the variable .init.data:numa_nodes_parsed
+> > > The function arch_atomic64_or() references
+> > > the variable __initdata numa_nodes_parsed.
+> > > This is often because arch_atomic64_or lacks a __initdata
+> > > annotation or the annotation of numa_nodes_parsed is wrong.
+> > > 
+> > > for functions that end up not being inlined as intended but operating
+> > > on __initdata variables. Mark these as __always_inline, along with
+> > > the corresponding asm-generic wrappers.
+> > 
+> > Hmm, I don't fully grok this. Why does it matter if a non '__init' function
+> > is called with a pointer to some '__initdata'? Or is the reference coming
+> > from somewhere else? (where?).
 > 
-> Hi Richard
-> 
->> Some codecs need plls and/or sysclks to be configured using the
->> snd_soc_component_set_[sysclk|pll] functions. These drivers cannot
->> necessarily be converted to use the clock framework. If the codec is on
->> a I2C/SPI bus, a nested clk_get would be needed to enable the bus clock.
->> But the clock framework does not support nested operations and this would
->> deadlock.
->>
->> This patch adds new dt properties that list phandles of components with
->> the pll/sysclk settings to be applied. Multiple settings can be given for
->> the same phandle to allow for components with multiple clocks and plls.
->> The plls and sysclks are enabled when the card bias level moves to STANDBY
->> and disabled when it moves to OFF.
->>
->> The implementation does not attempt to handle specifying complex clock
->> ordering interdependencies between components. The plls and sysclks are
->> applied to a component as it is passed to the card set_bias_level/
->> set_bias_level_post callbacks. It follows from this that the order
->> components are configured is the order that they are passed to those
->> callbacks.
->>
->> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
->> ---
-> 
-> As I mentioned in v3, adding *general* pll to common card driver is
-> maybe difficult.
+> FWIW the x86 atomics are __always_inline in part due to the noinstr
+> crud, which I imagine resulted in much the same 'fun'.
 
-You did say that. But you did not say why.
-Can you be more specific about what problem you see with adding it
-to the generic driver?
+FWIW, I was planning on doing the same here as part of making arm64
+noinstr safe, so I reckon we should probably do this regardless of
+whether it's a complete fix for the section mismatch issue.
 
-> Using your own customized audio-graph-card driver is better idea,
-> instead of adding code to common driver.
-
-I just don't want to duplicate code without good reason.
-
-> 
-> I think Sameer's Tegra driver (= [3/6]) is good sample for you ?
-> 
-> 	https://lore.kernel.org/r/1606413823-19885-1-git-send-email-spujar@nvidia.com
-> 
-> Thank you for your help !!
-> 
-> Best regards
-> ---
-> Kuninori Morimoto
-> 
+Mark.
