@@ -2,99 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671AC2F2786
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 06:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A4E2F2788
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 06:09:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727144AbhALFIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 00:08:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57462 "EHLO
+        id S1730206AbhALFJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 00:09:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725888AbhALFIu (ORCPT
+        with ESMTP id S1727083AbhALFJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 00:08:50 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D8EC061786;
-        Mon, 11 Jan 2021 21:08:10 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id y8so759817plp.8;
-        Mon, 11 Jan 2021 21:08:10 -0800 (PST)
+        Tue, 12 Jan 2021 00:09:02 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135F3C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 21:08:22 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id n7so671446pgg.2
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 21:08:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=P6VkIs8Z9QcqFUhAseTLLApJ3FGgMyLE0KYVlCffRwo=;
-        b=GjydUO3i/ZcQI60CsRb5319uTp8zN70+HAjUKxruILdh6s2g1uMhhGVaTywDWxVUvQ
-         TjSPCL9LNBw3wg7bh2e+SnnJHDdgsFE/2U4RZFFvFFy8as4SQImMdAVB7y2w+OjRYZ+s
-         WvU0L/b9NuVCrg4zWirHAOQyhUj16xqvjflf76+ZcU5TgbgxFXHdtNXEGkT59rXYba3a
-         NQ29bYfPHZzJG5S0XulTh5h8oHKNxrI8MmvP/MsMbJPLZBLDInCdBuGy5EydQ3/Srw2z
-         0Nql2UIYg1O9U+oL/g2Ptdc9Tqnf35Bq/kWvrgBsAMUGZ2B6+RRc/Js0PtkGB0gc/eRe
-         0XUw==
+         :content-disposition:in-reply-to:user-agent;
+        bh=Sd4SGwEbhz9BejbXxxhTvp1jezaj6wrGznpvA69dFNM=;
+        b=FJbWFSIOzDLDXHpm+2p7dB9rOBqikORVq+WjR4YvYFVJUnyv7JFnr+pPbfKoyplaNm
+         A25p+ZadVEMbnaLgMrbpNoXB0a6DYVkfoaPq2en3qMUgPD93v2XecQtY5I9OcA/LJmi5
+         5eNKVafv1OjCkDGmB54ZYUVY3S1bt+9y1Y02NmUcxBdrKs9AzN1Q3lrlDmVeBRTggKAo
+         4AcydnlJ0jvnc7hlfaHp86JbgqmyvHIa9467lJvr7fddhbMHaIyRF6tc4V/rTZTPHp1h
+         21u2dHYGglkyb5wkdjXOF0/1EzXaVyk/kxjOUro6Suha2YUne1ntEn+4T9JnsokCBaAh
+         FQcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P6VkIs8Z9QcqFUhAseTLLApJ3FGgMyLE0KYVlCffRwo=;
-        b=ZWMl9suQOCAhtx62dds54Ec1/kz0a9peXBgIiKbXAvUS28MSDUU++AdyF4ADDftkG0
-         PmOQJChjkfAdpeoG9BjfTwMvVm7QwJ3yGHE+ixTWGihr1xRHdKxgfwadHM84iGlL/o0p
-         aGkLlBgGlyPKatWlZg8VsS4jhqecCc49Jaw1GreajxA5LHqVfICZWeyyHGE4RcE2dp5Z
-         gOQouKFbgNXRlehMDydHHiBMYQagfEoKiptrV+Rfi7AAbWgLLQPIeOoiKODuF7nEa6L2
-         NviYNWYSDq+NNOQvdbjFZC4GE/U3HXyTJSos6axfbSjuQzaVnHiKaT521sUGs5xdDayb
-         5mHA==
-X-Gm-Message-State: AOAM533D7zdUiYIGAPDzphf4/vpwlgEoye0tkFEgD0BWVmWLl+oKLLoe
-        AK2l39VfufdYrSuPUXm4AkE=
-X-Google-Smtp-Source: ABdhPJxoEBeHVu15OUO+CwBO028RDuQgVgmRzsnK78KZGGpFOR+ogTH4vjhkDJhm/ysvM3u13puaCQ==
-X-Received: by 2002:a17:90a:a608:: with SMTP id c8mr2377355pjq.61.1610428089565;
-        Mon, 11 Jan 2021 21:08:09 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id h1sm1691512pgj.59.2021.01.11.21.08.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 21:08:08 -0800 (PST)
-Date:   Mon, 11 Jan 2021 21:08:05 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Radim Pavlik <radim.pavlik@tbs-biometrics.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Heiko Stuebner <heiko@sntech.de>
-Subject: Re: [PATCH] input: auo_pixcir_ts - add missing check for gpio
-Message-ID: <X/0utdv13PT0ipTs@google.com>
-References: <20210107093217.2499-1-radim.pavlik@tbs-biometrics.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Sd4SGwEbhz9BejbXxxhTvp1jezaj6wrGznpvA69dFNM=;
+        b=pSGqnMowS/O3iFNHbE5GLE09vVeZjSmX20ceMYuA4AcVkOgZL13xZXxgSbMPWXrrOp
+         vNCXS2s+SAXj1SXBVCiYNqL1lhA1U1QJNCFJVgFVl6Tcvc/OGMnTycex90NKUvLxl8/d
+         SsllkQcchgDhw9kASqUROTYFwtdqT8n2ugaoBnhsEhPbLI91kFCkZl+oonjHeT37h4lN
+         9yGPyWTIIjKnpci/ALXJO/WuqgK80p/OsVvqZGNH4ZOz9pPERTbrUfGCM71Zk2lCdgrl
+         4TNMXg53o/y7tXSBd90jhR3BeyRy+k0S5KPSI6ItauwMooWRW+uWILtz0LLVHhNvAf9l
+         qSfw==
+X-Gm-Message-State: AOAM533XxCJ7NV7cpqPSHVAUExHND85qR0kp7vkqjau6t3jgYqUQ/PC4
+        YJAzMuhSHhJk9Z6Lesk+555GaA==
+X-Google-Smtp-Source: ABdhPJw3HyNAMIKQrv5kZzTiCGKJplCtA3NLocDcpeShiHtImIa/ka1z27mK+6DyT04gjY/Z1lqyqw==
+X-Received: by 2002:a62:fc4b:0:b029:1a8:4d9b:9767 with SMTP id e72-20020a62fc4b0000b02901a84d9b9767mr3154035pfh.22.1610428101592;
+        Mon, 11 Jan 2021 21:08:21 -0800 (PST)
+Received: from localhost ([122.172.85.111])
+        by smtp.gmail.com with ESMTPSA id x125sm1736517pgb.35.2021.01.11.21.08.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 11 Jan 2021 21:08:20 -0800 (PST)
+Date:   Tue, 12 Jan 2021 10:38:18 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Frank Rowand <frowand.list@gmail.com>
+Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH V3 2/2] scripts: dtc: Build fdtoverlay and fdtdump tools
+Message-ID: <20210112050818.s6ctvd6ihd2dt2d2@vireshk-i7>
+References: <CAK7LNAQT5nVHGAZDhj4dct0v8UMzQ+-mdfBXJsfedR-7mZTnyA@mail.gmail.com>
+ <72c3a4f63dde3c172c11153e9a5b19fb6cdb4498.1610000585.git.viresh.kumar@linaro.org>
+ <1d9369aa-b7aa-6d06-0d44-6ef21bc639e3@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210107093217.2499-1-radim.pavlik@tbs-biometrics.com>
+In-Reply-To: <1d9369aa-b7aa-6d06-0d44-6ef21bc639e3@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Radim,
-
-On Thu, Jan 07, 2021 at 10:32:17AM +0100, Radim Pavlik wrote:
-> The of_get_gpio() may return error, so check it immediately. The old
-> code might fail with EPROBE_DEFER which was masked by the
-> folowing gpio_is_valid() and returned EINVAL.
+On 11-01-21, 18:44, Frank Rowand wrote:
+> On 1/7/21 12:25 AM, Viresh Kumar wrote:
+> > We will start building overlays for platforms soon in the kernel and
+> > would need these tools going forward. Lets start building them.
+> > 
+> > The fdtoverlay program applies (or merges) one ore more overlay dtb
+> > blobs to a base dtb blob. The kernel build system would later use
+> > fdtoverlay to generate the overlaid blobs based on platform specific
+> > configurations.
+> > 
+> > The fdtdump program prints a readable version of a flat device-tree
+> > file. This is a very useful tool to analyze the details of the overlay's
+> > dtb and the final dtb produced by fdtoverlay after applying the
+> > overlay's dtb to a base dtb.
 > 
-> Signed-off-by: Radim Pavlik <radim.pavlik@tbs-biometrics.com>
-> ---
->  drivers/input/touchscreen/auo-pixcir-ts.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> You can calso dump an FDT with:
 > 
-> diff --git a/drivers/input/touchscreen/auo-pixcir-ts.c b/drivers/input/touchscreen/auo-pixcir-ts.c
-> index c33e63ca6142..8f3cfd743bdd 100644
-> --- a/drivers/input/touchscreen/auo-pixcir-ts.c
-> +++ b/drivers/input/touchscreen/auo-pixcir-ts.c
-> @@ -479,12 +479,16 @@ static struct auo_pixcir_ts_platdata *auo_pixcir_parse_dt(struct device *dev)
->  		return ERR_PTR(-ENOMEM);
->  
->  	pdata->gpio_int = of_get_gpio(np, 0);
-> +	if (pdata->gpio_int < 0)
-> +		return ERR_PTR(pdata->gpio_int);
+>    dtc -O dts XXX.dtb
+> 
+> Is this sufficient for the desired functionality, or is there something
+> additional in fdtdump that is needed?
 
-Hmm, while this check might make sense it definitely renders the next
-one unnecessary.
+Not for my usecase at least.
 
-BTW, do you have a device that uses this touch panel? This driver could
-use more improvements, such as switching to gpiod API and generic device
-properties, and dropping the platform data support.
+> If nothing additional needed, and there is no other justification for adding
+> another program, I would prefer to leave fdtdump out.
 
-Thanks.
+Okay, then I will also remove the stale version of fdtdump which is
+already there in kernel since a long time.
 
 -- 
-Dmitry
+viresh
