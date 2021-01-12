@@ -2,140 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D86762F3768
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7CA82F376F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:44:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390136AbhALRlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:41:16 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:29969 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727201AbhALRlO (ORCPT
+        id S2391316AbhALRmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:42:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390845AbhALRmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:41:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1610473274; x=1642009274;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=Qltq/w8iNNwRkRBFrGK73/KaGwLU1qpKTAVsaUfIqtI=;
-  b=CvvMMfqbS2p81ozphdYkaX2x1UpNSZijaiZT+Dhaf8EPYeSl3xS9KOiU
-   VdF5j+594rzg6Zf3Lw+MOHix8jSy3BhPFhmTxKnF44++ZKtaWZx9wBmFV
-   UwqM4mYBA+qgLMMXHYsGePWZkSKDhhUGqrJP9AkCg6/SmgdBLiCoVPJIp
-   5RpehisZEmlCliTRAsdI9Gkc8K33p84TphJLLh0xFVg/tzNUo7TQXJq8V
-   rV9YHwCVrb8+GlCza87JT4UWu9eYxOcNvjGdbO6RZ1p42OINlstsmaTB6
-   SiFfgv7heHHNIE7Hyj3yRA9vMDYKPKXuhjmrztafo8hXYWZNd1NJF49G8
-   Q==;
-IronPort-SDR: 6yFPfVgr/AaSPpHtAsytXFJOUfCw8AlzPc/9jmAS4MP6qEQMMsHLkROFGuk2nd6EpewQxm5qMT
- fHzwpToG0Cr9WHE/jhO5Ce0qWAW8T7a0/4iT5XCKUbVExaU1YjcVwLH4hKiuw/wR3ItBJbWYlF
- RNiYNDk3zXIDH0Gwh7mYn/P+LRnGonPV3n0s87S6prwl1Q2+UaIR5xxxrfqldGEBo6+yVdtiIH
- bKNXoBWCradmvUDiiFnzJWa+/INmltXW/43GKtphvCsakdXXeaWR9BhqsB2kDBukPk0MIWcKVi
- LMg=
-X-IronPort-AV: E=Sophos;i="5.79,342,1602518400"; 
-   d="scan'208";a="158436723"
-Received: from mail-dm6nam08lp2043.outbound.protection.outlook.com (HELO NAM04-DM6-obe.outbound.protection.outlook.com) ([104.47.73.43])
-  by ob1.hgst.iphmx.com with ESMTP; 13 Jan 2021 01:40:08 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=npCI5JinFvHYP+ykr1QIk2FpdaV3KO9hGru0lpJNAlLciF0lu085tbQtPzFLEvhV7dN9t4mA/zLudb4Qjcwykiwu7WFxU0UdtEqdAsfs/j4KkLT++9VOUEZtVQ5Kx2Qx5CcJCWH5xcMHzjURoyfmVYKmvKVsVQ74a4DaWS2n0wGm/AAIyuiPhiUd0pRnFBLu4kMB3V9CrekvmezMGw3HeKO/r/XXm7+QT6B0ra0ABMr+0my4TLhMAiWB5F38NoroYIbP+i4Rrg4pg1Ca74XND0WZd4UjH9M1WYy+RmgbA9rkVKree3u60Y2ZH9oQlgSEWCBcw7s+4ZN8AgzMJmkmGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OjPJ2RyiXJVJG4/rdWTgOTAhH6lhXNZObETjGqYiSW8=;
- b=n3O5Zao4I5cLY3L7snd3FbnYknP6n4brKodvMKQDAoPnnKSvFsBS2uIIargUGnFcJH5vd6BEBuEwVJioGcyltIyLhRKp6MhnLN2f8w/v1kCDSCkx6wogrXC5P5myGY4tpCZQ1wCKa9lkMJ7+Rw5jqExIb+3O+IdwuuYFcheCxlohmahmVegoiU+fbFHj0tJT0s175xEj4/2AHVIuF/c0l4KknDaukKdj19m7hCNtna+ZmYBMDDtGvwnxrE01EN+yJy0p7xvTdyhQ9X2ObeoQaCG8uXpH662Ly6zzhYfx1OoT+hTRPnqgbNzZpi75DdWh369slxmDgG94tGX38gHunQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Tue, 12 Jan 2021 12:42:54 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF6CC061795
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:42:14 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id h10so1801856pfo.9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:42:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OjPJ2RyiXJVJG4/rdWTgOTAhH6lhXNZObETjGqYiSW8=;
- b=TcKcTxf73l1SLGfIQk0kfIPd5hzdMIlNAhej6EO5ruRloCga08jbz5Ie1x5s1M0md17F2JfuFvaFpUnYSiutFYNs7RrTwVXOlQO2X2NSQ6E7ZiajXpPCMHyyMHebSpTn6+iC/PlDyAXFQ4v9s2JRwfLVggRRQ3eaUBHvM2HrR4Y=
-Received: from DM5PR0401MB3591.namprd04.prod.outlook.com (2603:10b6:4:7e::15)
- by DM6PR04MB4218.namprd04.prod.outlook.com (2603:10b6:5:9e::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9; Tue, 12 Jan
- 2021 17:40:07 +0000
-Received: from DM5PR0401MB3591.namprd04.prod.outlook.com
- ([fe80::61b3:1707:5b14:6b59]) by DM5PR0401MB3591.namprd04.prod.outlook.com
- ([fe80::61b3:1707:5b14:6b59%5]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
- 17:40:07 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Joe Perches <joe@perches.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     "MPT-FusionLinux.pdl@broadcom.com" <MPT-FusionLinux.pdl@broadcom.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] scsi: mpt3sas: Simplify _base_display_OEMs_branding
-Thread-Topic: [PATCH] scsi: mpt3sas: Simplify _base_display_OEMs_branding
-Thread-Index: AQHW6Qmw275IgTBBHkaQuKGUJRLK6g==
-Date:   Tue, 12 Jan 2021 17:40:07 +0000
-Message-ID: <DM5PR0401MB3591D23001DAC0AFB4F11D589BAA0@DM5PR0401MB3591.namprd04.prod.outlook.com>
-References: <b4a0b8c97a95f56c64532eff83289831449e2b0d.camel@perches.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: perches.com; dkim=none (message not signed)
- header.d=none;perches.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:15c4:1c01:38c1:d5fb:3079:ba93]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: c5cf3b44-77a2-4dc2-5dff-08d8b7211a36
-x-ms-traffictypediagnostic: DM6PR04MB4218:
-x-microsoft-antispam-prvs: <DM6PR04MB4218CCCDE1E880822F34DBD69BAA0@DM6PR04MB4218.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:2043;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: MszP9te8CuAxItvtIbwH2Y8bS8AW3mz+a69wHgRvg67x14+77oVmhcBOFrzjVIohZu3Z6uxumZ+sbfCnMbmCn6aXkzX1gd9WhF3Xvndg7bCYJ4qh6PcwATVLiNr2qU/IKkW3PS+0BWX3eC3yuhZMt4C356mt08osBdiTQrb0bf8i69loggCxlEbGy2NWTI1Hzv0NAuMJ2UiHU2xmZBkiZWMEz9OThF0hbvAdRbFptjqRxkpf83CwL6P+GAvYJPz/IzSJaTBQwOjxvHtVZmn7i1ZUvbWNJ0XxhvZ7gt9PfwPEhxZu1AmfAkbt50BGepCummLGY7yLfYOXpeemNAHTfmYUzdMDHsXG/wp0IqSPOo93z4Eaw1nxAxItfog+hL/HSQ/ZA4Lc/UAycrLM4yOYJCFlmUv1feNy53r4UexLe8gSQwwbJb3F1T2OAbdKY3UB
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0401MB3591.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(136003)(396003)(39850400004)(71200400001)(4326008)(7696005)(53546011)(8676002)(316002)(6506007)(558084003)(186003)(478600001)(9686003)(55016002)(2906002)(110136005)(54906003)(52536014)(66946007)(91956017)(66476007)(86362001)(76116006)(33656002)(66556008)(64756008)(5660300002)(66446008)(8936002)(32563001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?wNnWy3hlCqvEt11LHbTatmjMJ2HEwuDnQT4WOHYQzE3Yxkuu2ZuwpKF/aiUE?=
- =?us-ascii?Q?P9W1DA5VYmIP06E6j/flb41ZTonW2UYl2r1uLZqOmRHh5g1bnNc6Jdih1KhU?=
- =?us-ascii?Q?uk0s02mEJYD1jnf1ukFdNL+K4DQtFf5TYsqrD61uF4OkEHPknpjplwkE6ide?=
- =?us-ascii?Q?xHEqkqhqD12fd+InNbs3sWb3/O0OfR3dzMSQJ5PVkeyZ/JVqcEnKevasIs3m?=
- =?us-ascii?Q?bhaSQ6+XNm8VT7jm8eTazMacVfJ5nntSHww1rCLq74WBRPiPKDLxBIRvIAu8?=
- =?us-ascii?Q?6sa4PHb4uW3oUNXDjEwWnpUC39KDpm65phdLdo5WpCpN+4XgX1sh91eV35fJ?=
- =?us-ascii?Q?6l3hL5ZXSShBAsFxop4BXhSUlRBZDSTTgCNVxWAVxnoqdCd7Kk/7/FUkQmOb?=
- =?us-ascii?Q?uOzFRmRZTVbUFXRWGHjQVRHh2JvHKISKCCj0SKdAGfPr2GlKq6J3TyDrQvKB?=
- =?us-ascii?Q?8Qw6UzngDUf7GF3zYsJa1vdgynvFB9aAr+KZ36qjfWy1UUcVO8UFItnvqsxr?=
- =?us-ascii?Q?gV790MQoAA50nBW1q22TQ/CgAFMWV7cdZ4Y6PGLWwSiKi23Gj1m5QmJXYHH4?=
- =?us-ascii?Q?VzNypNOPQtSpZBTANnQ3Evz4+zESa9Q2AY9I4MOgb/XDcaH0036ATkXNureX?=
- =?us-ascii?Q?a77Iev42hHsXoXsmTqs+bAb5gGij3q6BL/ODZpgpaTKSCQlEkioIpels4E4S?=
- =?us-ascii?Q?XrKMnhIlMTfZL1ScO63bxEH46J/hIN6tQ3SBvCAINBmCal8ySB8LRVl4WizN?=
- =?us-ascii?Q?FwBsZNC9+IRxVA1l3oj+2ZD+zuIq+lv0nScG1XOOawDvJKZ9Nwwc+6PEnrnp?=
- =?us-ascii?Q?lij+PFWdz/dF/YH4vpov15gsC4IyryOhMfN9cfleZvR19PM9H4oSSF/HI3+K?=
- =?us-ascii?Q?2PpM9JmiLhUnTdIMnHkMk3ytn3ebUDKXHocStXyWaq8GqEc50oTD1kj0bqOB?=
- =?us-ascii?Q?YlDJsfmVgUOaNelr3+wUZUy3sENzIuoE1AnQ/Q19aKTSFkn4dn3cW8sFcyvZ?=
- =?us-ascii?Q?IpNO+qVK0GnCU2Wt4LomDh98HHfwpJPm771n9wBurK1xYY0zosO9I90AhFp7?=
- =?us-ascii?Q?n6psP161?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=s31IkhAz2nWDObQ5y1qk010QUglbb2JaCz6paHFbgKE=;
+        b=ua53268TZsH8TsHxFaEpE3Lg38Obz2bJP4oWXSdDQ3eDw2YOCRWhARGn0Rb1Rf0Auw
+         TtLaGqIvDQcsU6PinS85yVOCI23qw0qdoAeiNyFCeUupmIvS/D0EwslofU1OfJp+5Nr9
+         RdOfGVyn1o9B3rsJcU1JwJgn895dz+lxPubshGzX0GziRzBrnxat/6eNuHXzhumCQxfQ
+         MNEgc4DQT0+5MeEzMPrYC7Dd4HPwoDJi9tgkfW5RAE0qNXK106rmLg9fsOT+om26SptI
+         9wA1Gor3x2F4n27lSQ51xEL0motMhUf0C2EZi/42mJqUdH5myNu29lByLdWu6nZzqhKk
+         b7XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=s31IkhAz2nWDObQ5y1qk010QUglbb2JaCz6paHFbgKE=;
+        b=Sb/4h1IOjM1rA4h4nZq+aPNY8V32wuzoLVmlkLGYZIKMyNStda19QUGIEqB8MdVzNg
+         gwRFVclFrQhJWrsTYewNGedgJw92/dg9NhJnT/E9PStir705DcEhGIIwVvv1q/mGDhHp
+         Rvmns/FFuSD8vVtBiAuFNqRLaYkjpEn4TRGau0oT5R4OGJw9MXtIuyfKh8wbRYJzpi6U
+         yrdsCSHpoeBeWVJFbQ6U6t0xN2+AWMbG8s1SuVqIP4+UsN63I0ps62DkaNq3zg2xbOs9
+         3euXKJ+zQ3Kj5Zr5VGpIgZZMStWwM5cuTdYd2QbGQ56d8lAYvgBAOQgPeuUWGU0SpoJU
+         UTWg==
+X-Gm-Message-State: AOAM533o42zno4Rgns0lUg5swa/wPnnvr3XHJwYuu6cHbryPNQzYCjOG
+        /gxjG+kJhu1kbJePbwKHiJXL5A==
+X-Google-Smtp-Source: ABdhPJzVO5KIL0Bbdp4cP/dveCjEiVGXuDYxY1LjLiCENCJSSZtyZGJ5CtUindfKmib6RkB3GMEZ8g==
+X-Received: by 2002:a62:1896:0:b029:197:491c:be38 with SMTP id 144-20020a6218960000b0290197491cbe38mr246893pfy.15.1610473333520;
+        Tue, 12 Jan 2021 09:42:13 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id a23sm4163925pju.31.2021.01.12.09.42.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 09:42:12 -0800 (PST)
+Date:   Tue, 12 Jan 2021 09:42:05 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, vkuznets@redhat.com, joro@8bytes.org,
+        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
+        dgilbert@redhat.com, mlevitsk@redhat.com
+Subject: Re: [PATCH 1/2] KVM: x86: Add emulation support for #GP triggered by
+ VM instructions
+Message-ID: <X/3fbaO1ZarMdjft@google.com>
+References: <20210112063703.539893-1-wei.huang2@amd.com>
+ <090232a9-7a87-beb9-1402-726bb7cab7e6@redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR0401MB3591.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c5cf3b44-77a2-4dc2-5dff-08d8b7211a36
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2021 17:40:07.3500
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: IrnQk7FJofQCVDahzppycwNIRfM1f/olIO+qCG4cYTlbr+YXmxJuI96IEs1lvmAx/mmavb5zDGdBZYUcYN3jpFx/n9/rtHDkdjK0clXjVp4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB4218
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <090232a9-7a87-beb9-1402-726bb7cab7e6@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/01/2021 18:38, Joe Perches wrote:=0A=
->  static void=0A=
->  _base_display_OEMs_branding(struct MPT3SAS_ADAPTER *ioc)=0A=
->  {=0A=
-> +	const char *b =3D NULL;	/* brand */=0A=
-> +	const char *v =3D NULL;	/* vendor */=0A=
-=0A=
-Any reason you didn't spell out brand and vendor as the variable names?=0A=
+On Tue, Jan 12, 2021, Paolo Bonzini wrote:
+> On 12/01/21 07:37, Wei Huang wrote:
+> >   static int gp_interception(struct vcpu_svm *svm)
+> >   {
+> >   	struct kvm_vcpu *vcpu = &svm->vcpu;
+> >   	u32 error_code = svm->vmcb->control.exit_info_1;
+> > -
+> > -	WARN_ON_ONCE(!enable_vmware_backdoor);
+> > +	int rc;
+> >   	/*
+> > -	 * VMware backdoor emulation on #GP interception only handles IN{S},
+> > -	 * OUT{S}, and RDPMC, none of which generate a non-zero error code.
+> > +	 * Only VMware backdoor and SVM VME errata are handled. Neither of
+> > +	 * them has non-zero error codes.
+> >   	 */
+> >   	if (error_code) {
+> >   		kvm_queue_exception_e(vcpu, GP_VECTOR, error_code);
+> >   		return 1;
+> >   	}
+> > -	return kvm_emulate_instruction(vcpu, EMULTYPE_VMWARE_GP);
+> > +
+> > +	rc = kvm_emulate_instruction(vcpu, EMULTYPE_PARAVIRT_GP);
+> > +	if (rc > 1)
+> > +		rc = svm_emulate_vm_instr(vcpu, rc);
+> > +	return rc;
+> >   }
+> 
+> Passing back the third byte is quick hacky.  Instead of this change to
+> kvm_emulate_instruction, I'd rather check the instruction bytes in
+> gp_interception before calling kvm_emulate_instruction.
+
+Agreed.  And I'd also prefer that any pure refactoring is done in separate
+patch(es) so that the actual functional change is better isolated.
+
+On a related topic, it feels like nested should be disabled by default on SVM
+until it's truly ready for primetime, with the patch tagged for stable.  That
+way we don't have to worry about crafting non-trivial fixes (like this one) to
+make them backport-friendly.
