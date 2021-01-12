@@ -2,219 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D982F375E
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3F92F375D
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391487AbhALRiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:38:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727395AbhALRiV (ORCPT
+        id S2389380AbhALRiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:38:16 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:18983 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726241AbhALRiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:38:21 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E66AC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:37:41 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id d9so5753807iob.6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:37:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NAxlQKvrdS5yrFwFBQveOuSAj/TgVa80OtygrRtytek=;
-        b=psue1+5emNwzRBP5lFlcypQibb13jqpMBYklmRW43IxYPa/IQFV/phMHjmDGZ/DAdw
-         b3Mj4VuigTJyj40pqVFGEPSuoWlNW9SU6/Nl6dMUbTQiVtbTc6YaL7TnwIx/X9Hj0i87
-         a/DcO8DMJcX4amvXNN2DsJYD6t3zmn/RYY8xcdE/BEDv1AXFWelMewTE62Au8ezUm92F
-         Q+oRLxHA4lzlomFBES0Kpx/86/Le2/xwL7kIlucL0lqkdZEeWMksopm3et1n4qLDV3lx
-         rdlwdD9Sj9fH2D6KZilphgorsMll+bRxaCsR+dvKXgN3/5i1nus1M20SvwHvsGd29TkF
-         ywRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NAxlQKvrdS5yrFwFBQveOuSAj/TgVa80OtygrRtytek=;
-        b=CR9r5O0F6+hHAN/j83439VlEZgHkDiWPAUV4GAzPxEFb8C2VW2atwMVAFAv9jtVyXS
-         nHzcmFwb60G3JMa9rDG0GdnWaOzThtWpZpb6xDQc6RDahxsBCmTcykzNySImyS6+IQi3
-         cJ74/ERArKk8aRPyIvrJLZysex5oH+LfvNAzP5UieYxQ8tPKqaCQAEFuFUqYuVcEDCtM
-         gJAwgcD5/7rxeaJ33vENtqCNpUxN3x6Doy3uTfLpd6Ea5CVL69mnkYjJmttZvZ/sx3yu
-         Gcz1L64Az4BBhuZZIet1sCZsU1ngGDBjD7k2/hUs3+2FKgm79e5EZGY00jB77q0qPRNK
-         NJcg==
-X-Gm-Message-State: AOAM531l5dKgmngLY7o8v2TXIfvjJtJdgXY5necWlp+3eLYFqHNyDyis
-        NCU3gd39T4mn3tRfJFAGzqwfwRR4UQtPuYcMpgcsMQ==
-X-Google-Smtp-Source: ABdhPJxThQsGNk+2kONDfFVQqHwWGj7TdamfH4LwZLZu/MW1poRbFzb+kzi2EI5iklgTUj4VOgSO2ujUxoHYZrcCX3Y=
-X-Received: by 2002:a5e:840d:: with SMTP id h13mr918688ioj.23.1610473060271;
- Tue, 12 Jan 2021 09:37:40 -0800 (PST)
+        Tue, 12 Jan 2021 12:38:13 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5ffdde5c0000>; Tue, 12 Jan 2021 09:37:32 -0800
+Received: from localhost (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 12 Jan
+ 2021 17:37:31 +0000
+Date:   Tue, 12 Jan 2021 18:37:28 +0100
+From:   Thierry Reding <treding@nvidia.com>
+To:     Saravana Kannan <saravanak@google.com>
+CC:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vincent Huang <vincent.huang@tw.synaptics.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andrew Duggan <aduggan@synaptics.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Subject: Re: 5.11-rc device reordering breaks ThinkPad rmi4 suspend
+Message-ID: <X/3eWOHJ7lxtGFOa@ulmo>
+References: <alpine.LSU.2.11.2101102010200.25762@eggly.anvils>
+ <X/xV7ZV5jzI7RvAe@ulmo>
+ <CAJZ5v0iriRkEN8dVJ9gE3+Wyn_96=SNhav1QaQ59i9O0genTNQ@mail.gmail.com>
+ <X/x49o3EtrUh6vuO@ulmo>
+ <CAJZ5v0hyvdcKsPJ7U5WioXb1c8Pg_F1BLC_dbKesFBLTUSiVaw@mail.gmail.com>
+ <CAGETcx_odme9ufTps6tctOW+zfOox6iXgTx_9GAjoYn=+jy1BQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210107190453.3051110-1-axelrasmussen@google.com>
- <48f4f43f-eadd-f37d-bd8f-bddba03a7d39@oracle.com> <20210111230848.GA588752@xz-x1>
- <2b31c1ad-2b61-32e7-e3e5-63a3041eabfd@oracle.com> <20210112014934.GB588752@xz-x1>
-In-Reply-To: <20210112014934.GB588752@xz-x1>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Tue, 12 Jan 2021 09:37:03 -0800
-Message-ID: <CAJHvVcgoqO5XQjqOVe3y5XHSBS4pjqmMPGKD35t-YaB0P1aL2g@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/2] userfaultfd: handle minor faults, add UFFDIO_CONTINUE
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Oliver Upton <oupton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="LgYo5ll47cbXIsmU"
+Content-Disposition: inline
+In-Reply-To: <CAGETcx_odme9ufTps6tctOW+zfOox6iXgTx_9GAjoYn=+jy1BQ@mail.gmail.com>
+X-NVConfidentiality: public
+User-Agent: Mutt/2.0.4 (26f41dd1) (2020-12-30)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1610473052; bh=slej2DaJ9zju4MRmJY1Qzxg5dRFLVFuQVzHACuduIVw=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:X-NVConfidentiality:
+         User-Agent:X-Originating-IP:X-ClientProxiedBy;
+        b=gPe9uxc40qgSBiNNhsl6j0QLsRG9LjrhO22fSHUoEzMQvOtEZVdhxPs0Q4ckV3jLe
+         +agm34VbOCA7268X/HezwwOf5OMuvfOAFuF+14ZXLMRln9REblrSAV09x2bwglgJti
+         0AB7AVArGBOddjLtYlc1nlV8vAAAdBAMu/1rf0qJwFeGSLX7bgR8kWLPbzytNO2HS2
+         UGVArcACETPIzHYBV/gj2sN74zb38mKzTT1CTDO0sE3usPG0EwpIvFej9KzDNGubPj
+         1xkhRew9Iqbnr25XD+GnGBAS71Ma5J7ge9e/ar2cirYU6qdyyL2u6lxGCvLy2wvBVC
+         6G65ANU6puk3w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 5:49 PM Peter Xu <peterx@redhat.com> wrote:
->
-> On Mon, Jan 11, 2021 at 04:13:41PM -0800, Mike Kravetz wrote:
-> > On 1/11/21 3:08 PM, Peter Xu wrote:
-> > > On Mon, Jan 11, 2021 at 02:42:48PM -0800, Mike Kravetz wrote:
-> > >> On 1/7/21 11:04 AM, Axel Rasmussen wrote:
-> > >>> Overview
-> > >>> ========
-> > >>>
-> > >>> This series adds a new userfaultfd registration mode,
-> > >>> UFFDIO_REGISTER_MODE_MINOR. This allows userspace to intercept "minor" faults.
-> > >>> By "minor" fault, I mean the following situation:
-> > >>>
-> > >>> Let there exist two mappings (i.e., VMAs) to the same page(s) (shared memory).
-> > >>> One of the mappings is registered with userfaultfd (in minor mode), and the
-> > >>> other is not. Via the non-UFFD mapping, the underlying pages have already been
-> > >>> allocated & filled with some contents. The UFFD mapping has not yet been
-> > >>> faulted in; when it is touched for the first time, this results in what I'm
-> > >>> calling a "minor" fault. As a concrete example, when working with hugetlbfs, we
-> > >>> have huge_pte_none(), but find_lock_page() finds an existing page.
-> > >>>
-> > >>> We also add a new ioctl to resolve such faults: UFFDIO_CONTINUE. The idea is,
-> > >>> userspace resolves the fault by either a) doing nothing if the contents are
-> > >>> already correct, or b) updating the underlying contents using the second,
-> > >>> non-UFFD mapping (via memcpy/memset or similar, or something fancier like RDMA,
-> > >>> or etc...). In either case, userspace issues UFFDIO_CONTINUE to tell the kernel
-> > >>> "I have ensured the page contents are correct, carry on setting up the mapping".
-> > >>>
-> > >>
-> > >> One quick thought.
-> > >>
-> > >> This is not going to work as expected with hugetlbfs pmd sharing.  If you
-> > >> are not familiar with hugetlbfs pmd sharing, you are not alone. :)
-> > >>
-> > >> pmd sharing is enabled for x86 and arm64 architectures.  If there are multiple
-> > >> shared mappings of the same underlying hugetlbfs file or shared memory segment
-> > >> that are 'suitably aligned', then the PMD pages associated with those regions
-> > >> are shared by all the mappings.  Suitably aligned means 'on a 1GB boundary'
-> > >> and 1GB in size.
-> > >>
-> > >> When pmds are shared, your mappings will never see a 'minor fault'.  This
-> > >> is because the PMD (page table entries) is shared.
-> > >
-> > > Thanks for raising this, Mike.
-> > >
-> > > I've got a few patches that plan to disable huge pmd sharing for uffd in
-> > > general, e.g.:
-> > >
-> > > https://github.com/xzpeter/linux/commit/f9123e803d9bdd91bf6ef23b028087676bed1540
-> > > https://github.com/xzpeter/linux/commit/aa9aeb5c4222a2fdb48793cdbc22902288454a31
-> > >
-> > > I believe we don't want that for missing mode too, but it's just not extremely
-> > > important for missing mode yet, because in missing mode we normally monitor all
-> > > the processes that will be using the registered mm range.  For example, in QEMU
-> > > postcopy migration with vhost-user hugetlbfs files as backends, we'll monitor
-> > > both the QEMU process and the DPDK program, so that either of the programs will
-> > > trigger a missing fault even if pmd shared between them.  However again I think
-> > > it's not ideal since uffd (even if missing mode) is pgtable-based, so sharing
-> > > could always be too tricky.
-> > >
-> > > They're not yet posted to public yet since that's part of uffd-wp support for
-> > > hugetlbfs (along with shmem).  So just raise this up to avoid potential
-> > > duplicated work before I post the patchset.
-> > >
-> > > (Will read into details soon; probably too many things piled up...)
+--LgYo5ll47cbXIsmU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jan 11, 2021 at 02:44:03PM -0800, Saravana Kannan wrote:
+> On Mon, Jan 11, 2021 at 8:57 AM Rafael J. Wysocki <rafael@kernel.org> wro=
+te:
 > >
-> > Thanks for the heads up about this Peter.
+> > On Mon, Jan 11, 2021 at 5:12 PM Thierry Reding <treding@nvidia.com> wro=
+te:
+> > >
+> > > On Mon, Jan 11, 2021 at 03:57:37PM +0100, Rafael J. Wysocki wrote:
+> > > > On Mon, Jan 11, 2021 at 2:43 PM Thierry Reding <treding@nvidia.com>=
+ wrote:
+> > > > >
+> > > > > On Sun, Jan 10, 2021 at 08:44:13PM -0800, Hugh Dickins wrote:
+> > > > > > Hi Rafael,
+> > > > > >
+> > > > > > Synaptics RMI4 SMBus touchpad on ThinkPad X1 Carbon (5th genera=
+tion)
+> > > > > > fails to suspend when running 5.11-rc kernels: bisected to
+> > > > > > 5b6164d3465f ("driver core: Reorder devices on successful probe=
+"),
+> > > > > > and reverting that fixes it.  dmesg.xz attached, but go ahead a=
+nd ask
+> > > > > > me to switch on a debug option to extract further info if that =
+may help.
+> > > > >
+> > > > > Hi Hugh,
+> > > > >
+> > > > > Quoting what I think are the relevant parts of that log:
+> > > > >
+> > > > > [   34.373742] printk: Suspending console(s) (use no_console_susp=
+end to debug)
+> > > > > [   34.429015] rmi4_physical rmi4-00: Failed to read irqs, code=
+=3D-6
+> > > > > [   34.474973] rmi4_f01 rmi4-00.fn01: Failed to write sleep mode:=
+ -6.
+> > > > > [   34.474994] rmi4_f01 rmi4-00.fn01: Suspend failed with code -6.
+> > > > > [   34.475001] rmi4_physical rmi4-00: Failed to suspend functions=
+: -6
+> > > > > [   34.475105] rmi4_smbus 6-002c: Failed to suspend device: -6
+> > > > > [   34.475113] PM: dpm_run_callback(): rmi_smb_suspend+0x0/0x3c r=
+eturns -6
+> > > > > [   34.475130] PM: Device 6-002c failed to suspend: error -6
+> > > > > [   34.475187] PM: Some devices failed to suspend, or early wake =
+event detected
+> > > > > [   34.480324] rmi4_f03 rmi4-00.fn03: rmi_f03_pt_write: Failed to=
+ write to F03 TX register (-6).
+> > > > > [   34.480748] rmi4_f03 rmi4-00.fn03: rmi_f03_pt_write: Failed to=
+ write to F03 TX register (-6).
+> > > > > [   34.481558] rmi4_physical rmi4-00: rmi_driver_clear_irq_bits: =
+Failed to change enabled interrupts!
+> > > > > [   34.487935] acpi LNXPOWER:02: Turning OFF
+> > > > > [   34.488707] acpi LNXPOWER:01: Turning OFF
+> > > > > [   34.489554] rmi4_physical rmi4-00: rmi_driver_set_irq_bits: Fa=
+iled to change enabled interrupts!
+> > > > > [   34.489669] psmouse: probe of serio2 failed with error -1
+> > > > > [   34.489882] OOM killer enabled.
+> > > > > [   34.489891] Restarting tasks ... done.
+> > > > > [   34.589183] PM: suspend exit
+> > > > > [   34.589839] PM: suspend entry (s2idle)
+> > > > > [   34.605884] Filesystems sync: 0.017 seconds
+> > > > > [   34.607594] Freezing user space processes ... (elapsed 0.006 s=
+econds) done.
+> > > > > [   34.613645] OOM killer disabled.
+> > > > > [   34.613650] Freezing remaining freezable tasks ... (elapsed 0.=
+001 seconds) done.
+> > > > > [   34.615482] printk: Suspending console(s) (use no_console_susp=
+end to debug)
+> > > > > [   34.653097] rmi4_f01 rmi4-00.fn01: Failed to write sleep mode:=
+ -6.
+> > > > > [   34.653108] rmi4_f01 rmi4-00.fn01: Suspend failed with code -6.
+> > > > > [   34.653115] rmi4_physical rmi4-00: Failed to suspend functions=
+: -6
+> > > > > [   34.653123] rmi4_smbus 6-002c: Failed to suspend device: -6
+> > > > > [   34.653129] PM: dpm_run_callback(): rmi_smb_suspend+0x0/0x3c r=
+eturns -6
+> > > > > [   34.653160] PM: Device 6-002c failed to suspend: error -6
+> > > > > [   34.653174] PM: Some devices failed to suspend, or early wake =
+event detected
+> > > > > [   34.660515] OOM killer enabled.
+> > > > > [   34.660524] Restarting tasks ...
+> > > > > [   34.661456] rmi4_physical rmi4-00: rmi_driver_set_irq_bits: Fa=
+iled to change enabled interrupts!
+> > > > > [   34.661591] psmouse: probe of serio2 failed with error -1
+> > > > > [   34.669469] done.
+> > > > > [   34.748386] PM: suspend exit
+> > > > >
+> > > > > I think what might be happening here is that the offending patch =
+causes
+> > > > > some devices to be reordered in a way different to how they were =
+ordered
+> > > > > originally and the rmi4 driver currently depends on that implicit=
+ order.
+> > > >
+> > > > Actually, the only possible case in which the commit in question can
+> > > > introduce suspend failures like this is when some dependency
+> > > > information is missing and so the reordering causes the ordering to
+> > > > change from the (working) implicit one.
+> > > >
+> > > > > Interestingly one of the bugs that the offending patch fixes is s=
+imilar
+> > > > > in the failure mode but for the reverse reason: the implicit order
+> > > > > causes suspend/resume to fail.
+> > > >
+> > > > And that happens because some dependency information is missing.
+> > > >
+> > > > So we have failing cases when dependency information is missing, so
+> > > > instead of fixing those we have tried to make the core change the
+> > > > ordering after every successful probe in the hope that this will ta=
+ke
+> > > > care of the problem without introducing new breakage.
+> > > >
+> > > > However, it evidently has introduced new breakage and in order to f=
+ix
+> > > > it we need to figure out what dependency information is missing in =
+the
+> > > > failing cases and put that information in, but we may as well do the
+> > > > same for the cases that are failing without the offending change.
+> > > >
+> > > > So why don't we revert the commit in question and do just that?
+> > >
+> > > Unfortunately it isn't that easy. In fact, all the dependency
+> > > information already exists in the case that I cited in 5b6164d3465f
+> > > ("driver core: Reorder devices on successful probe"), but it's the
+> > > driver core that suspends/resumes the devices in the wrong order.
+> > >
+> > > The reason is because the ACONNECT device depends on the BPMP device
+> > > (via a power-domains property), but it's also instantiated before the
+> > > BPMP device (because it is listed earlier in device tree, which is
+> > > sorted by unit-address first, then alphabetically). BPMP being a CPU
+> > > non-addressable device it doesn't have a unit-address and hence is
+> > > listed very late in device tree (by convention). Normally this is wou=
+ld
+> > > not be a problem because deferred probe would take care of it. But th=
+ere
+> > > is one corner-case which happens when the BPMP is built into the kern=
+el
+> > > (which it usually is, as it provides access to resources necessary for
+> > > booting, such as clocks and resets) and ACONNECT is built as a loadab=
+le
+> > > module. In that case, BPMP gets probed before ACONNECT and hence when
+> > > ACONNECT does eventually get loaded, the BPMP is already there, meani=
+ng
+> > > ACONNECT won't defer probe and hence the DPM suspend/resume order is =
+not
+> > > fixed up by the deferred probe code.
 > >
-> > I know Oracle DB really wants shared pmds -and- UFFD.  I need to get details
-> > of their exact usage model.  I know they primarily use SIGBUS, but use
-> > MISSING_HUGETLBFS as well.  We may need to be more selective in when to
-> > disable.
->
-> After a second thought, indeed it's possible to use it that way with pmd
-> sharing.  Actually we don't need to generate the fault for every page, if what
-> we want to do is simply "initializing the pages using some data" on the
-> registered ranges.  Should also be the case even for qemu+dpdk, because if
-> e.g. qemu faulted in a page, then it'll be nicer if dpdk can avoid faulting in
-> again (so when huge pmd sharing enabled we can even avoid the PF irq to install
-> the pte if at last page cache existed).  It should be similarly beneficial if
-> the other process is not faulting in but proactively filling the holes using
-> UFFDIO_COPY either for the current process or for itself; sounds like a valid
-> scenario for Google too when VM migrates.
+> > What about using a device link to enforce the right ordering, then?
+> >
+> > Deferred probing is not a way to ensure the suitable suspend/resume ord=
+ering.
+>=20
+> Thierry,
+>=20
+> Can you try booting with fw_devlink=3Don with this series? It's queued
+> up for 5.12-rc1
+> https://lore.kernel.org/lkml/20201218031703.3053753-1-saravanak@google.co=
+m/
+>=20
+> It might solve your issue, but I think your patch still addresses a real =
+issue.
 
-Exactly right, but I'm a little unsure how to get it to work. There
-are two different cases:
+I've tried booting next-20210112 on the Jetson AGX Xavier device where
+the suspend/resume problem with ACONNECT was happening and even if I
+revert the reordering patch, ACONNECT resumes correctly.
 
-- Allocate + populate a page in the background (not on demand) during
-postcopy (i.e., after the VM has started executing on the migration
-target). In this case, we can be certain that the page contents are up
-to date, since execution on the source was already paused. In this
-case PMD sharing would actually be nice, because it would mean the VM
-would never fault on this page going forward.
+Interestingly, and I don't know if that's expected or not, even setting
+fw_devlink=3Doff on today's linux-next no longer exhibits the problem. My
+impression from going through the fw_devlink code was that switching it
+off would disable any reordering that was going on, so I'm not sure I
+understand why the initial problem is fixed even in that case.
 
-- Allocate + populate a page during precopy (i.e., while the VM is
-still executing on the migration source). In this case, we *don't*
-want PMD sharing, because we need to intercept the first time this
-page is touched, verify it's up to date, and copy over the updated
-data if not.
+> > > And that's precisely what the offending commit addresses. However, the
+> > > downside is, and we did discuss this during review, that it operates
+> > > under the (somewhat optimistic) assumption that all the dependency
+> > > information exists. This is because reordering on successful probe can
+> > > potentially introduce regressions for dependencies that were previous=
+ly
+> > > implicit. So if a system has component B that depends on component A =
+but
+> > > doesn't model that dependency via some child/parent relationship or an
+> > > explicit relationship that would be flagged by deferred probe,
+> >
+> > Again, deferred probing may not help here.
+> >
+> > > then this implicit dependency can break by the new reordering on succ=
+essful probe.
+> > >
+> > > I very much suspect that that's exactly what's going on here. This RM=
+I4
+> > > device very likely implicitly depends on some other resource getting
+> > > enabled but doesn't properly model that dependency. If we find out wh=
+at
+> > > that dependency is and return -EPROBE_DEFER when that dependency has =
+not
+> > > probed yet, then deferred probe will automatically take care of order=
+ing
+> > > everything correctly again (or, in fact, ordering by successful probe
+> > > will take care of it already because RMI4 would initially fail with
+> > > -EPROBE_DEFER).
+> > >
+> > > Adding Vincent, Jason, Andrew and Lucas (who have recently worked on
+> > > this driver), perhaps they have some better understanding of what
+> > > missing dependencies might be causing the above errors.
+> >
+> > IMV it is a mistake to believe that deferred probing can get
+> > everything right for you in every case, with or without the offending
+> > commit.  Sometimes you need to tell the core what the right ordering
+> > is and that's what device links are for.
+>=20
+> IMHO, Thierry's patch is the right way to imply dependencies when
+> device links aren't explicitly calling out dependencies. It's not
+> really depending on deferred probe to imply dependency order. Rather,
+> it's saying that the order in which devices probe is a better way to
+> imply dependency than relying on the order in which devices are added.
+>=20
+> For Thierry's case, fw_devlink=3Don might solve his problem, but that's
+> solving the problem by explicitly calling out the dependency (by
+> getting it from DT where the dependency is explicitly called out). For
+> implicit cases, we still need his patch. I wonder how
 
-Another related situation to consider is, at some point on the target
-machine, we'll receive the "dirty map" indicating which pages are out
-of date or not. My original thinking was, when the VM faults on any of
-these pages, from this point forward we'd just look at the map and
-then UFFDIO_CONTINUE if things were up to date. But you're right that
-a possible optimization is, once we receive the map, just immediately
-"enable PMD sharing" on these pages, so the VM will never fault on
-them.
+Yes, I think reordering on probe is logically the right thing to do.
+However, I also understand Rafael's argument that this can now cause
+failures that were not there before.
 
-But, this is all kind of speculative. I don't know of any existing API
-for *userspace* to take an existing shared memory mapping without PMD
-sharing, and "turn on" PMD sharing for particular page(s).
+I do think that any failures exposed by this patch are in fact bugs
+caused by missing explicit dependencies that are hidden right now by
+mere chance because devices are instantiated in an order that makes
+them work. If for any reason the instantiation order changes these
+can easily break again.
 
-For now, I'll plan on disabling PMD sharing for MINOR registered
-ranges. Thanks, Peter and Mike!
+> > As it stands today, that commit doesn't improve the situation and it
+> > adds overhead and complexity.
+>=20
+> I'm okay if we revert it for now, but that doesn't solve the
+> overarching ordering issues though.
 
+Given that the ACONNECT problem seems to have been solved I don't have
+any objections to reverting this either. On the other hand, perhaps we
+can stage this in by tying it to a command-line option? I'm not sure how
+helpful that would be, because if it isn't a default, people are
+unlikely to go and test with it enabled and report issues.
 
->
-> I've modified my local tree to only disable pmd sharing for uffd-wp but keep
-> missing mode as-is [1].  A new helper uffd_disable_huge_pmd_share() is
-> introduced in patch "hugetlb/userfaultfd: Forbid huge pmd sharing when uffd
-> enabled", so should be easier if we would like to add minor mode too.
->
-> Thanks!
->
-> [1] https://github.com/xzpeter/linux/commits/uffd-wp-shmem-hugetlbfs
->
-> --
-> Peter Xu
->
+I suppose it's also not a perfect solution because it doesn't weed out
+all of the missing dependencies. Besides the implied dependencies that
+can now get jumbled, I'm sure there are lots of implied dependencies
+that won't get jumbled and therefore will still go unnoticed.
+
+And perhaps that's fine. We only need to fix the bugs that are actually
+causing problems, right?
+
+Thierry
+
+--LgYo5ll47cbXIsmU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/93lQACgkQ3SOs138+
+s6FF3A//W3m/cuCcyqO8mMKtAfoifYKXwGD/4ylFy4F+tyqUWBX/geqoh8IxxY4q
+mD56eO2sexSF1WfLiIFBBMaxxvgmANZ3pwjEE/HbrAQ4DpJzLEibPplws7uCrNxC
+7P+MaCunuMDC7h210Ilx0TajGenHY4O5ggD4PWjN5hW8hJMbvXC8PYuCw9H8/jqN
+eYPC1kI24vULslvPzjiWVzUHpq8Ct5CpRJaO5lr/DaNs4W8fphonBsKjlWmKDItR
+SGNlQBKGS07oIqYRZ9vJgPz28kfm8K8HMyHH9tu+I+dtVCgB6vw5uFQRvxQzCCwT
+STcVKfpQHyXCkKkicz5xQcEZkzMTa5Yks+GlpcKH5vsPI44XILbpO3WPKxXmzS96
+xN6mkT3BTPK0RJkSwaN/jY06mTiL8ekH3utCR+/2JNfJJBiFH3ZZLUaZQWbAsEac
+UymEtSTWyJv1RsIVBxBYDKRcke8Ol5a/YxYQV2gpQw/rmN20iLYAmz+RuvGIngdY
+VTm4ouNFFFJLztLA2OGLBWFGsBC9Su359ZjswIdeDrhCV0Fi715dyJk04Qx5BX/f
+mpHOtH7TcMaJoA0TrOjftXyNZTQomxcAnxUWFqyOrRj1Jl9O7PmxWFoxSIH9KWYN
+PpHb25FFfdrSHYtJDehvRU/owihkH+rtqQ5yUetbDthxQVeYYj4=
+=bBFF
+-----END PGP SIGNATURE-----
+
+--LgYo5ll47cbXIsmU--
