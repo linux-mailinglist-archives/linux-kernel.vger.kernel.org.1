@@ -2,158 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5252F24CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A238A2F24C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389095AbhALAZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2391660AbhALAZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 11 Jan 2021 19:25:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39062 "EHLO mail.kernel.org"
+Received: from mail.skyhub.de ([5.9.137.197]:56758 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404233AbhALAI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 19:08:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8301922D2C;
-        Tue, 12 Jan 2021 00:08:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610410096;
-        bh=ZewBbOKkpJFchFbmCZ2t2HXICe9jRma7+PRcg0QLhoM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZrOF6SWwnRq/819rEVH+s39VkacuDYLuubjg/DrDZ/6zuEkUUobNKLtiDVOu1D26w
-         ORYfCTgoXSyNyFkN1uWDQWDg3lCKzNTjRut3BJvESRSMD9G2GBTgaZE+Gv7rW+xdjl
-         RIwZorjRk9Yrvs2oaLkMNzOhTpOmhqjP+y8Cicq8ic/Dug9CGfwEzFHxnVZZbo59Ko
-         42rQ5S8XEksXQooA26IilkYH4Y5yeBIZZtyJppEbRjl0F7utl2H8rWOVYE6TxGNlBB
-         Ix5M14NXnAvMt2IiBo1z/Of1txMoWLtqFOxTLkCNGPMtaNtnE1EN/c/8mLJ+YO1dbu
-         F5QfDGTcOWmyw==
-Date:   Tue, 12 Jan 2021 02:08:10 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>
-Subject: Re: [PATCH v3] x86/sgx: Synchronize encl->srcu in sgx_encl_release().
-Message-ID: <X/zoarV7gd/LNo4A@kernel.org>
-References: <20201216134920.21161-1-jarkko@kernel.org>
- <20210105145749.GF28649@zn.tnic>
+        id S2404235AbhALAKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 19:10:09 -0500
+Received: from zn.tnic (p200300ec2f088f0064dd88f751605e0c.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:8f00:64dd:88f7:5160:5e0c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E011C1EC04CB;
+        Tue, 12 Jan 2021 01:09:27 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1610410168;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=hiQ2aT0sAgvveKCKw+n+ctbke87ZB3mfcJ48rJ15WaA=;
+        b=NsLcVrbXvB8OcvgEN8y1ZJhIB4cKQy1qxYzOGUW0gOgqXZBZw9fhwTrH4s3Ab8Ys9vAmKC
+        ETk1YqW4/5NjMpkALcoZxvI+YzsxaEQZiqLmXUYShLWlgItlAbAgGMRQrg9eU3i46ENf8L
+        bkO8j99EZtA1GiOIuXGUs0+76MEHRJ4=
+Date:   Tue, 12 Jan 2021 01:09:23 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Krzysztof Mazur <krzysiek@podlesie.net>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] x86/lib: don't use MMX before FPU initialization
+Message-ID: <20210112000923.GK25645@zn.tnic>
+References: <20201228160631.32732-1-krzysiek@podlesie.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210105145749.GF28649@zn.tnic>
+In-Reply-To: <20201228160631.32732-1-krzysiek@podlesie.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 03:57:49PM +0100, Borislav Petkov wrote:
-> On Wed, Dec 16, 2020 at 03:49:20PM +0200, Jarkko Sakkinen wrote:
-> > Add synchronize_srcu_expedited() to sgx_encl_release() to catch a grace
-> > period initiated by sgx_mmu_notifier_release().
-> > 
-> > A trivial example of a failing sequence with tasks A and B:
-> > 
-> > 1. A: -> sgx_release()
-> > 2. B: -> sgx_mmu_notifier_release()
-> > 3. B: -> list_del_rcu()
-> > 3. A: -> sgx_encl_release()
-> > 4. A: -> cleanup_srcu_struct()
-> > 
-> > The loop in sgx_release() observes an empty list because B has removed its
-> > entry in the middle, and calls cleanup_srcu_struct() before B has a chance
-> > to calls synchronize_srcu().
-> 
-> Leading to what? NULL ptr?
-> 
-> https://lkml.kernel.org/r/X9e2jOWz1hfXVpQ5@google.com
-> 
-> already suggested that you should explain the bug better and add the
-> splat but I'm still missing that explanation.
+On Mon, Dec 28, 2020 at 05:06:31PM +0100, Krzysztof Mazur wrote:
+> When enabled, the MMX 3DNow! optimized memcpy() is used very early,
+> even before FPU is initialized. It worked fine, but commit
+> 7ad816762f9bf89e940e618ea40c43138b479e10 ("x86/fpu: Reset MXCSR
+> to default in kernel_fpu_begin()") broke that. After that commit
+> the kernel crashes just after "Booting the kernel." message.
 
-OK, I'll try to explain it how I understand the issue.
+Have you figured out in the meantime what exactly is causing the
+breakage?
 
-Consider this loop in the VFS release hook (sgx_release):
+Does it boot if you comment out
 
-	/*
-	 * Drain the remaining mm_list entries. At this point the list contains
-	 * entries for processes, which have closed the enclave file but have
-	 * not exited yet. The processes, which have exited, are gone from the
-	 * list by sgx_mmu_notifier_release().
-	 */
-	for ( ; ; )  {
-		spin_lock(&encl->mm_lock);
++       if (boot_cpu_has(X86_FEATURE_FPU))
++               asm volatile ("fninit");
 
-		if (list_empty(&encl->mm_list)) {
-			encl_mm = NULL;
-		} else {
-			encl_mm = list_first_entry(&encl->mm_list,
-						   struct sgx_encl_mm, list);
-			list_del_rcu(&encl_mm->list);
-		}
+in kernel_fpu_begin()?
 
-		spin_unlock(&encl->mm_lock);
+I'm guessing K7 doesn't have X86_FEATURE_XMM so the LDMXCSR won't
+matter...
 
-		/* The enclave is no longer mapped by any mm. */
-		if (!encl_mm)
-			break;
+Thx.
 
-		synchronize_srcu(&encl->srcu);
-		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
-		kfree(encl_mm);
-	}
+-- 
+Regards/Gruss,
+    Boris.
 
-
-At this point all processes have closed the enclave file, but that doesn't
-mean that they all have exited yet.
-
-Now, let's imagine that there is exactly one entry in the encl->mm_list.
-and sgx_release() execution gets scheduled right after returning from
-synchronize_srcu().
-
-With some bad luck, some process comes and removes that last entry befoe
-sgx_release() acquires mm_lock. The loop in sgx_release() just leaves
-
-		/* The enclave is no longer mapped by any mm. */
-		if (!encl_mm)
-			break;
-
-No synchronize_srcu().
-
-After writing this, I think that the placement for synchronize_srcu()
-in this patch is not best possible. It should be rather that the
-above loop would also call synchronize_srcu() when leaving.
-
-I.e. the code change would result:
-
-	for ( ; ; )  {
-		spin_lock(&encl->mm_lock);
-
-		if (list_empty(&encl->mm_list)) {
-			encl_mm = NULL;
-		} else {
-			encl_mm = list_first_entry(&encl->mm_list,
-						   struct sgx_encl_mm, list);
-			list_del_rcu(&encl_mm->list);
-		}
-
-		spin_unlock(&encl->mm_lock);
-
-                /* 
-                 * synchronize_srcu() is mandatory *even* when the list was
-                 * empty, in order make sure that grace periods stays in
-                 * sync even when another task took away the last entry
-                 * (i.e. exiting process when it deletes its mm_list).
-                 */
-		synchronize_srcu(&encl->srcu);
-
-		/* The enclave is no longer mapped by any mm. */
-		if (!encl_mm)
-			break;
-
-		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
-		kfree(encl_mm);
-	}
-
-What do you think? Does this start to make more sense now?
-I don't have logs for this but the bug can be also reasoned.
-
-/Jarkko
+https://people.kernel.org/tglx/notes-about-netiquette
