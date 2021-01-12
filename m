@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29EF52F3816
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:14:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B13772F3815
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:14:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406076AbhALSMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 13:12:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56874 "EHLO
+        id S2405818AbhALSMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 13:12:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405980AbhALSMW (ORCPT
+        with ESMTP id S2405515AbhALSMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 13:12:22 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3793BC0617BB
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:11:00 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id e14so2053420qtr.8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:11:00 -0800 (PST)
+        Tue, 12 Jan 2021 13:12:12 -0500
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50B3C0617BC
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:11:01 -0800 (PST)
+Received: by mail-pg1-x54a.google.com with SMTP id l2so2144020pgi.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:11:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=uJIhZwyTggvAIsz1r7Cjfa0SqM+enCeDole0gREFf2c=;
-        b=kI2M99CFZuMrZy2Pp6gDd3rhx8uwKAp6t4NbQ8xEzvlxXrEe6lyhpSSaps8IyM4nho
-         N++QVOOag0/KeQ+RbSiJD7jJ+lGRDAdEh08SMwjwy58bYGACGJSEsA6ztWoTu6QSJR6T
-         bdAZcHbqSlJ6hzu5xSz7LHFKlla+eDePrpeJAuBTKJmI2E7dc8f3EJzYz03+8z2xCbFC
-         66o7+BiUOs2LPKXK/xzLkgrjwuhxUehpnJTDEVm8AKAm/7DPziC5+tspyHN0OFyrDPbu
-         OPP8UODwyqzbPbR3n2TG1l8vifPwddCUaR0x/NbT1MbT/NE+LuPXF/Vu1pDMLnnF3NUJ
-         Fj0A==
+        bh=W0JHfjmfnxHKf2KI8mDZYKQfzNwrieJpg4TDviTJuJA=;
+        b=OZR2XS2wu1SIfSOY7z9UqFZW6+1Ao4td++fjUL/YO0IpVbUC8TW7X8LfQv20YCjHZc
+         jTNW5MV5uqC1dSRZUkTaO7IXSG8sBQAGIcrabx16Nw2I18yXHS2/J9Q6J83ay93xEott
+         3fTyxv6mLtQvMzdx5e+s8wYklZKZ49NhTOP/Tt47BLJCdnxDOsmGNDFDFc+fVL7wPp+J
+         5dsiPi5J7zTNwkhBDVlvqJZXBdQOyM2N8jp0b3LVSgBLdSxwhJjhgoNWGrpqeFiG2Bmg
+         JVLq01gBFKyooNNabQ28AP6AxcB0LQoQoxqVQ0JwsHR7F65da4Y/J9xgTQeCInCyh63R
+         fnUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=uJIhZwyTggvAIsz1r7Cjfa0SqM+enCeDole0gREFf2c=;
-        b=cpdtqf5fYkTFkHYF6JV2kjoVQwFoVZ9rDNkEs5VvHAwztV0auIwqHtbJMlJYEcCAQ/
-         JNwDQ0jG92Ugpb/eU5JpJzv0wZLrMIcXCvNCspuRnSITaFYoD0R59R2n8naIEvd6DbSV
-         oqH5/igVgoGfsS1BgsPbfsiR4A/0MOSgsn4odeCGCAfw1/X5jqDMbZVQ+TzOeU/ozqxm
-         X/By+u/aXEK3gXxzu1jHyuN+XkzAsGFktlp7DxdrftLjvqf3w6RCj6cCyuPkIA1rBbZm
-         xAHBfmeLuoZ30Irn5KanI+zVxQa6kAHWFlgg5GGD8pk3JZDf8TZ+9qIimRbrWzYAA2TY
-         AgMw==
-X-Gm-Message-State: AOAM532StB8SRo1Sgs8cRJumQ45uWyab4ZwYERxwfdkf4njlYz+InE4x
-        3/gQ4H7Mkc6JeIHHVLrxv8KEP/1wZXUgj+kVKB59AAVgAV17iXVXvD3yaUwmWxzdEsj2IxqNzrT
-        71BwBRSIu1m+6CJt+huCjeE/o2jaSEnS6g62vHg8y73RAmRcp5K6temmFUzce+kr8h/PIBqhA
-X-Google-Smtp-Source: ABdhPJwQUuuKOtixV5Ldw9Q4x8pMIL/6dkmC+Mnk58e2Azlqio5Z+jZ+cPrDV8xvPzyeUT5gPymeTeesiWuE
+        bh=W0JHfjmfnxHKf2KI8mDZYKQfzNwrieJpg4TDviTJuJA=;
+        b=gYg44o6FzXxpEZ9wy1+QNU2YwD2STAaxGWuAFvGwNk8JuySDTrLHEc3OQi6na6P4Gy
+         ouXxwZo4C6zT0UQsE6gFvr8g2EF1brXqypunonQ//10ESO155L6kPeINFGV1ahvLj069
+         V9ez+EygqCVL//WppUZ0age5FsWVtObczqUOgxuRoBKD+/KIW4oycmGStQTJ3iS7KWg0
+         ptLqnaQqJLKZ8QVhlEd/Lla0i8gHBYcHvD3BWYoH846gMO2EHlEI3EJIHv86dV1FuJpM
+         9B2uKmKmojHfj90Dio2NjGi4Do6HB5jE7TDA8sIQIJpOo1G0GI0pSia8wbFQueWVwX6Z
+         CfjA==
+X-Gm-Message-State: AOAM533U65n9UOf2COQyEPtU3eTF6M5VXeDaHrsALuf16ciLxPpCGSJp
+        2brzQ2OLstP7uIMsG8iMZ5hBbswOBvoYy0S4WCBn8s0ZWQnSfSsKdwICC5OqgrisSPmKwxrBxYS
+        6Qz1gm7l3/6FG1ZdO4MYX/VOWjZYoLgQ/CAuBpB/Hfn759wA+kPrUHhuN/CfUADhWEyfl59jR
+X-Google-Smtp-Source: ABdhPJwW40lcFfs/Thl05pWnSw40XLyYUcm72yWABZV24LMePwMOXTV9j9umbwRl2OuKGbF6tDxbT6+LVNR9
 Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:f693:9fff:fef4:a293])
- (user=bgardon job=sendgmr) by 2002:ad4:4e09:: with SMTP id
- dl9mr221822qvb.44.1610475059257; Tue, 12 Jan 2021 10:10:59 -0800 (PST)
-Date:   Tue, 12 Jan 2021 10:10:25 -0800
+ (user=bgardon job=sendgmr) by 2002:a17:902:724b:b029:de:229a:47f1 with SMTP
+ id c11-20020a170902724bb02900de229a47f1mr427024pll.10.1610475061143; Tue, 12
+ Jan 2021 10:11:01 -0800 (PST)
+Date:   Tue, 12 Jan 2021 10:10:26 -0800
 In-Reply-To: <20210112181041.356734-1-bgardon@google.com>
-Message-Id: <20210112181041.356734-9-bgardon@google.com>
+Message-Id: <20210112181041.356734-10-bgardon@google.com>
 Mime-Version: 1.0
 References: <20210112181041.356734-1-bgardon@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH 08/24] kvm: x86/mmu: Add lockdep when setting a TDP MMU SPTE
+Subject: [PATCH 09/24] kvm: x86/mmu: Don't redundantly clear TDP MMU pt memory
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
@@ -72,9 +73,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add lockdep to __tdp_mmu_set_spte to ensure that SPTEs are only modified
-under the MMU lock. This lockdep will be updated in future commits to
-reflect and validate changes to the TDP MMU's synchronization strategy.
+The KVM MMU caches already guarantee that shadow page table memory will
+be zeroed, so there is no reason to re-zero the page in the TDP MMU page
+fault handler.
 
 No functional change intended.
 
@@ -82,22 +83,21 @@ Reviewed-by: Peter Feiner <pfeiner@google.com>
 
 Signed-off-by: Ben Gardon <bgardon@google.com>
 ---
- arch/x86/kvm/mmu/tdp_mmu.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kvm/mmu/tdp_mmu.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index b033da8243fc..411938e97a00 100644
+index 411938e97a00..55df596696c7 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -381,6 +381,8 @@ static inline void __tdp_mmu_set_spte(struct kvm *kvm, struct tdp_iter *iter,
- 	struct kvm_mmu_page *root = sptep_to_sp(root_pt);
- 	int as_id = kvm_mmu_page_as_id(root);
+@@ -665,7 +665,6 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+ 			sp = alloc_tdp_mmu_page(vcpu, iter.gfn, iter.level);
+ 			list_add(&sp->link, &vcpu->kvm->arch.tdp_mmu_pages);
+ 			child_pt = sp->spt;
+-			clear_page(child_pt);
+ 			new_spte = make_nonleaf_spte(child_pt,
+ 						     !shadow_accessed_mask);
  
-+	lockdep_assert_held(&kvm->mmu_lock);
-+
- 	WRITE_ONCE(*iter->sptep, new_spte);
- 
- 	__handle_changed_spte(kvm, as_id, iter->gfn, iter->old_spte, new_spte,
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
