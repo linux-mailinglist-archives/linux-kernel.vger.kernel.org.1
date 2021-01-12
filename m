@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190BA2F3603
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:44:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0270C2F3612
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390392AbhALQnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:43:24 -0500
-Received: from mga12.intel.com ([192.55.52.136]:49184 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727590AbhALQnX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:43:23 -0500
-IronPort-SDR: kLYv/rMaoWqcbVBOC7qqj4mX6pwiew8yILKywFbTRQ6Vmb5DkU/DDQKAgUGV8kY+wrfQSyP+sQ
- LXTMWTy3BOaA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="157247720"
-X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
-   d="scan'208";a="157247720"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 08:42:42 -0800
-IronPort-SDR: KCTlQPGjM95+co2GTQQk/P/Rt7sC5Ar41/WTcgTm3+Y1P73g2kqk3fAq6imoUx/gNOrsAkzbXk
- fy15Qj09f2wA==
-X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
-   d="scan'208";a="348510141"
-Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.254.43.43]) ([10.254.43.43])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 08:42:41 -0800
-Subject: Re: [PATCH V3] arch: x86: kernel: cpu: Takes a letter away and append
- a colon to match below stuc member
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, fenghua.yu@intel.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, linux-kernel@vger.kernel.org, gustavo@embeddedor.com
-Cc:     rdunlap@infradead.org
-References: <20210112110131.23378-1-unixbhaskar@gmail.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <6964dc91-f87d-22c8-002d-164cf9da52b5@intel.com>
-Date:   Tue, 12 Jan 2021 08:42:40 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S2405344AbhALQor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:44:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39931 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389375AbhALQop (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 11:44:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610469799;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=RUslB6q7RxjLtV6kH7HKHwCBZnZvPnq5E+zwqql6G8Y=;
+        b=LmiwaapTO9ttbVVYeIk4j+VmTi8+OkpWv1wjZ9CvkJUpG2L136LrcbYXyzLk23osGUPwfv
+        pawfk/s2XcKAH6teFwZJmrCggfbU8VlI4HOHbyrXVjDiXfx3WwvAOeUFpQFLk8hz3u7EIx
+        C5ILmvRnJO/EPyZec0gJ9NaMmNuNwNU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-565-mwIeKspGNryfQOsFEelNyw-1; Tue, 12 Jan 2021 11:43:15 -0500
+X-MC-Unique: mwIeKspGNryfQOsFEelNyw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5A72B51F7;
+        Tue, 12 Jan 2021 16:43:14 +0000 (UTC)
+Received: from virtlab710.virt.lab.eng.bos.redhat.com (virtlab710.virt.lab.eng.bos.redhat.com [10.19.152.252])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BC9435C1B4;
+        Tue, 12 Jan 2021 16:43:13 +0000 (UTC)
+From:   Cathy Avery <cavery@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        pbonzini@redhat.com
+Cc:     vkuznets@redhat.com, wei.huang2@amd.com,
+        sean.j.christopherson@intel.com
+Subject: [PATCH 0/2] KVM: SVM: Track physical cpu and asid_generation via the vmcb
+Date:   Tue, 12 Jan 2021 11:43:11 -0500
+Message-Id: <20210112164313.4204-1-cavery@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210112110131.23378-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhaskar,
+In the cases where vmcbs change processors from one vmrun to another updated
+information in the vmcb from a prior run can potentially be lost. By tracking
+the physical cpu and asid_generation per vmcb instead of svm->vcpu the following
+scenario illustrated by Paolo can be avoided.
 
-Thank you for fixing this.
+     ---------------------          ---------------------
+     pCPU 1                         pCPU 2
+     ---------------------          ---------------------
+     run VMCB02
+                                    run VMCB02 (*)
+                                    run VMCB01
+     run VMCB01 (**)
+     run VMCB02 (***)
+     ---------------------          ---------------------
 
-Could you please fix the subject line to:
-1) have correct prefix of "x86/resctrl:". You can see the custom by 
-running "git log arch/x86/kernel/cpu/resctrl".
-2) fix the typo: stuc -> struct
+     After the point marked (*), while L2 runs, some fields change in VMCB02.
+     When the processor vmexits back to L0, VMCB02 is marked clean.
 
-On 1/12/2021 3:01 AM, Bhaskar Chowdhury wrote:
-> s/kernlfs/kernfs/
-> s/@mon_data_kn/@mon_data_kn:/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
-> Changes from V2: Modified the subject line to match exact change description
-> 
->   arch/x86/kernel/cpu/resctrl/internal.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> index ee71c47844cb..ef9e2c0809b8 100644
-> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -142,7 +142,7 @@ enum rdtgrp_mode {
-> 
->   /**
->    * struct mongroup - store mon group's data in resctrl fs.
-> - * @mon_data_kn		kernlfs node for the mon_data directory
-> + * @mon_data_kn:		kernfs node for the mon_data directory
->    * @parent:			parent rdtgrp
->    * @crdtgrp_list:		child rdtgroup node list
->    * @rmid:			rmid for this rdtgroup
-> --
-> 2.26.2
-> 
+     At the point marked (**), svm->vcpu.cpu becomes 1 again.
 
-Thank you
+     Therefore, at the point marked (***) you will get svm->vcpu.cpu == cpu
+     and the VMCB02 will not be marked dirty.  The processor can then incorrectly
+     use some data that is cached from before point (*).
 
-Reinette
+Theses patches are intended for the kvm nested-svm branch.
+
+The patches have been tested on nested fedora VMs, kvm self tests, and kvm-unit-tests.
+They have not been tested on SEV.
+
+Cathy Avery (2):
+  KVM: nSVM: Track the physical cpu of the vmcb vmrun through the vmcb
+  KVM: nSVM: Track the ASID generation of the vmcb vmrun through the
+    vmcb
+
+ arch/x86/kvm/svm/svm.c | 45 +++++++++++++++++++++++-------------------
+ arch/x86/kvm/svm/svm.h |  3 ++-
+ 2 files changed, 27 insertions(+), 21 deletions(-)
+
+-- 
+2.20.1
+
