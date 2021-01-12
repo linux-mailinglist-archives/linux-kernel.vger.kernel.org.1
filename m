@@ -2,213 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A75B2F38E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:29:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7F02F38E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406168AbhALS27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 13:28:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60540 "EHLO
+        id S2406504AbhALS3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 13:29:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391612AbhALS26 (ORCPT
+        with ESMTP id S2406307AbhALS3Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 13:28:58 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FB78C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:28:18 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id x12so1841004plr.10
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:28:18 -0800 (PST)
+        Tue, 12 Jan 2021 13:29:16 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1BAC06179F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:28:36 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id b8so1365130plh.12
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:28:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=hBl72B4VL07Hx5CGjKmye5AII9u875v7ci2HOvfOuck=;
-        b=NIqVUqAQ1QBtxAY7s7myP6ga5+mfeXuDgVU2eI2R8FIQyodEAr2qjRF7S4TTbkEz54
-         xmKdcIU+pHn045bbrX59A0fE8RnYAYZVbc8Y91i0ZIfkscHS5AXvNjmpDdeHj+4U3Z5a
-         pgwJqfRt9l0wisbHWy+40Lx9oTfyJdzSZbuDU=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rph5/YWztZo7f+7iLQyy6pT5CxZC682xIlOwCUdZJGU=;
+        b=NbtgBBkA5zfh3973/gq4Qp8Ucu8SRBX+BAdV+P8GMTk5pMqtL7sRaUycC3sdKBFjiH
+         AeU+3ZRkzNdfnhrpqfo98zwCrH5svzw9CEec2/EibcELKdFBLBDg5SLhAlL+f4nXMuC/
+         vkNuQ1b+PaumfFDAZB1T2pYh+HNG3x9z2/jhGc17uUo2ecgD9QLR04a09KmoVnlG4Hh0
+         V4OnatAg3Q37PUDOO1GdHAJIbMYLjmtowyqYKmqVkDVgZoIBq4uub4So8glCNQ8/pu21
+         9krZwyK/adxxKRXQF9JskoyjuO4Iyyzmcc+iaUubQfuB1WWAkNuvZH7SzgXH2iueUmaZ
+         xl9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=hBl72B4VL07Hx5CGjKmye5AII9u875v7ci2HOvfOuck=;
-        b=eCoY+WOn2SuSJn1V+XmNTHZCR/E8g66dO2hC7Ve5PJWhS7BB33yB/hlgqxkvv2beWX
-         PR8lMSAJlWLWubBNY6jN7skW07fpoPC4iRxonnc9Je/Uel3bkkxFOcYDh1FOAaoBi+P9
-         g0tiUIXXwxJwseXzFDQ8y8GDpKV4x3DXO5+He2Ql4mHrHLgd2kVdIezOZTZ3k3bFsOMO
-         bgZwQG5aeSolycy6g2naouna5xqqwZBdJiSm3Bd+7tnkfXkttN+G/cXoMzPnC4YbHsGP
-         KsZCorTHJiEMvN4EVZ9hRyV1HtU9WSukXwpP9zOvO5RTJvLXFZh+G6MbXILzad9oiuiw
-         AAmg==
-X-Gm-Message-State: AOAM533h5l5DiTq+DaWMJgiUu1wE74qKSO/R1Rk1U/odIPl0sSHkJvU/
-        VjpfjYwPio4OZ47Tk+cxwF4rLg==
-X-Google-Smtp-Source: ABdhPJzOYWFNzF04eCSj8+ciQZIAHyyqDq49g/OBlf/3N4Rm6XXoWEv0P58OitE3+vs6ln7VJW9Beg==
-X-Received: by 2002:a17:902:b717:b029:dc:3e69:6dd5 with SMTP id d23-20020a170902b717b02900dc3e696dd5mr270587pls.70.1610476097238;
-        Tue, 12 Jan 2021 10:28:17 -0800 (PST)
-Received: from rj-aorus.ric.broadcom.com ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id gx21sm3795082pjb.31.2021.01.12.10.28.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 10:28:16 -0800 (PST)
-Subject: Re: [PATCH v2 1/2] arm64: dts: broadcom: clear the warnings caused by
- empty dma-ranges
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Bharat Gooty <bharat.gooty@broadcom.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Scott Branden <sbranden@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20201016090833.1892-1-thunder.leizhen@huawei.com>
- <20201016090833.1892-2-thunder.leizhen@huawei.com>
- <20201128045328.2411772-1-f.fainelli@gmail.com>
- <CAK8P3a1_5RgcPz+bgo1bbUBk8NTJd=1-Y5-=CsQYkFgLfTE3_A@mail.gmail.com>
- <9c6c6b7e-8c39-8c49-5c87-9b560c027841@broadcom.com>
- <CAK8P3a2XYk8D80XARrpUSBHk1yye3KHXOdaQge4HNSZZOC=xKw@mail.gmail.com>
- <CACvutz9v+TBUbrCo3X-u5ebbs04nR0y0yQN3qWfSAyZVy9RM2g@mail.gmail.com>
- <c38cf11a-ed1d-d150-52fb-e3b4a0a30712@gmail.com>
- <CAK8P3a1TViQopQNFE4+Dtac0v2CneGiy22WYu5BuYv8HX2r8Lg@mail.gmail.com>
-From:   Ray Jui <ray.jui@broadcom.com>
-Message-ID: <18112862-a42e-95b1-39a3-2e414667f39b@broadcom.com>
-Date:   Tue, 12 Jan 2021 10:28:13 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rph5/YWztZo7f+7iLQyy6pT5CxZC682xIlOwCUdZJGU=;
+        b=d67zo42Z6MBvlzTV6uL6IpYsUqjk3AWudqmOVQCXk/BwZshGlrVADl5By9DdlfDJRj
+         dEj7IuRTxv4euoEkgaJMOO/lB8Q5iK/b/cKUknYsqgNrSC68ke+xBfTkokrC4nTkI8zy
+         h44TzfHaMxuo4wguHGlRTV5smG024naX3V10TH9i7/2vYRlrchOPkOdbhzO2DN8n9GRr
+         5LYa0kffCaT/qZk9hIO2S2cke5G7xRxa3Yxmu8fbotpTw5Ag6KCxQMOh9xEPG3HTYjtl
+         2QhUuETF2BeKYykSaUcgpvfT7mTCxC08Whm8Ejdv04OS53x4jZY2gWCJLPlKs9ju6lG0
+         4aDA==
+X-Gm-Message-State: AOAM533U27kKoKswjAAHFeRZ/rBVv9QFBLexyp6Y+JM1EI2rPZTxUjCw
+        zdWlO1qZvymaxZVMmNQRmcb2hgSJb9TkESQa/FrJLw==
+X-Google-Smtp-Source: ABdhPJz6jRq4so9Kku93b/xI4raH9teGz3t3kzluP1hOCGGalLxXVDra8crnobJ/ukY/Q1M04nnYt4HCSk9dpWgnvrQ=
+X-Received: by 2002:a17:90b:1087:: with SMTP id gj7mr421423pjb.41.1610476115545;
+ Tue, 12 Jan 2021 10:28:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1TViQopQNFE4+Dtac0v2CneGiy22WYu5BuYv8HX2r8Lg@mail.gmail.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000bb440205b8b82f32"
+References: <cover.1609871239.git.andreyknvl@google.com> <ae666d8946f586cfc250205cea4ae0b729d818fa.1609871239.git.andreyknvl@google.com>
+ <X/2lLAOWi4PHJh/Q@elver.google.com>
+In-Reply-To: <X/2lLAOWi4PHJh/Q@elver.google.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 12 Jan 2021 19:28:24 +0100
+Message-ID: <CAAeHK+z0z4gvbBvyPYnG3bRqcsHD88byMAzzWDQ8H4mb0ZYuYA@mail.gmail.com>
+Subject: Re: [PATCH 06/11] kasan: rename CONFIG_TEST_KASAN_MODULE
+To:     Marco Elver <elver@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000bb440205b8b82f32
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+On Tue, Jan 12, 2021 at 2:33 PM Marco Elver <elver@google.com> wrote:
+>
+> On Tue, Jan 05, 2021 at 07:27PM +0100, Andrey Konovalov wrote:
+> > Rename CONFIG_TEST_KASAN_MODULE to CONFIG_KASAN_MODULE_TEST.
+> >
+> > This naming is more consistent with the existing CONFIG_KASAN_KUNIT_TEST.
+> >
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > Link: https://linux-review.googlesource.com/id/Id347dfa5fe8788b7a1a189863e039f409da0ae5f
+>
+> Reviewed-by: Marco Elver <elver@google.com>
+>
+> For this patch, as-is. But we could potentially do better in future --
+> see below.
+>
+> > ---
+> >  Documentation/dev-tools/kasan.rst | 6 +++---
+> >  lib/Kconfig.kasan                 | 2 +-
+> >  lib/Makefile                      | 2 +-
+> >  3 files changed, 5 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/Documentation/dev-tools/kasan.rst b/Documentation/dev-tools/kasan.rst
+> > index 26c99852a852..72535816145d 100644
+> > --- a/Documentation/dev-tools/kasan.rst
+> > +++ b/Documentation/dev-tools/kasan.rst
+> > @@ -374,8 +374,8 @@ unmapped. This will require changes in arch-specific code.
+> >  This allows ``VMAP_STACK`` support on x86, and can simplify support of
+> >  architectures that do not have a fixed module region.
+> >
+> > -CONFIG_KASAN_KUNIT_TEST & CONFIG_TEST_KASAN_MODULE
+> > ---------------------------------------------------
+> > +CONFIG_KASAN_KUNIT_TEST and CONFIG_KASAN_MODULE_TEST
+> > +----------------------------------------------------
+> >
+> >  KASAN tests consist on two parts:
+> >
+> > @@ -384,7 +384,7 @@ KASAN tests consist on two parts:
+> >  automatically in a few different ways, see the instructions below.
+> >
+> >  2. Tests that are currently incompatible with KUnit. Enabled with
+> > -``CONFIG_TEST_KASAN_MODULE`` and can only be run as a module. These tests can
+> > +``CONFIG_KASAN_MODULE_TEST`` and can only be run as a module. These tests can
+> >  only be verified manually, by loading the kernel module and inspecting the
+> >  kernel log for KASAN reports.
+> >
+> > diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+> > index 3091432acb0a..624ae1df7984 100644
+> > --- a/lib/Kconfig.kasan
+> > +++ b/lib/Kconfig.kasan
+> > @@ -192,7 +192,7 @@ config KASAN_KUNIT_TEST
+> >         For more information on KUnit and unit tests in general, please refer
+> >         to the KUnit documentation in Documentation/dev-tools/kunit.
+> >
+> > -config TEST_KASAN_MODULE
+> > +config KASAN_MODULE_TEST
+> >       tristate "KUnit-incompatible tests of KASAN bug detection capabilities"
+> >       depends on m && KASAN && !KASAN_HW_TAGS
+> >       help
+> > diff --git a/lib/Makefile b/lib/Makefile
+> > index afeff05fa8c5..122f25d6407e 100644
+> > --- a/lib/Makefile
+> > +++ b/lib/Makefile
+> > @@ -68,7 +68,7 @@ obj-$(CONFIG_TEST_IDA) += test_ida.o
+> >  obj-$(CONFIG_KASAN_KUNIT_TEST) += test_kasan.o
+> >  CFLAGS_test_kasan.o += -fno-builtin
+> >  CFLAGS_test_kasan.o += $(call cc-disable-warning, vla)
+> > -obj-$(CONFIG_TEST_KASAN_MODULE) += test_kasan_module.o
+> > +obj-$(CONFIG_KASAN_MODULE_TEST) += test_kasan_module.o
+> >  CFLAGS_test_kasan_module.o += -fno-builtin
+>
+> [1] https://www.kernel.org/doc/html/latest/dev-tools/kunit/style.html#test-file-and-module-names
+>
+> Do we eventually want to rename the tests to follow the style
+> recommendation more closely?
+>
+> Option 1: Rename the KUnit test to kasan_test.c? And then
+> also rename test_kasan_module.c -> kasan_module_test.c?  Then the file
+> names would be mostly consistent with the config names.
+>
+> Option 2: The style guide [1] also mentions where there are non-KUnit
+> tests around to use _kunit for KUnit test, and _test (or similar) for
+> the non-KUnit test. So here we'd end up with kasan_kunit.c and
+> kasan_test.c. That would get rid of the confusing "module" part. The
+> config variable could either remain CONFIG_KASAN_MODULE_TEST, or simply
+> become CONFIG_KASAN_TEST, since we already have CONFIG_KASAN_KUNIT_TEST
+> to distinguish.
+>
+> But I won't bikeshed further. If you do a v2, I leave it to your
+> judgement to decide what is most appropriate.
 
-Hi Arnd,
+Most tests in lib/ start with test_, so not using that pattern for
+KASAN tests could be confusing. Maybe we can move them to mm/kasan.
+Anyway, I won't look into this right now.
 
-On 2020-12-15 7:49 a.m., Arnd Bergmann wrote:
-> On Tue, Dec 15, 2020 at 4:41 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
->>
->> On 12/15/2020 5:19 AM, Bharat Gooty wrote:
->>> Since the IOMMU is disabled and DMA engine is on 32-bit bus, We can not
->>> give the complete DDR for the USB DMA.
->>> So restricting the usable DAM size to 4GB.
->>
->> Thanks, can you make this a proper patch submission along with a Fixes:
->> tag that is:
->>
->> Fixes: 2013a4b684b6 ("arm64: dts: broadcom: clear the warnings caused by
->> empty dma-ranges")
-> 
-> Yes, that would be helpful, though I would appreciate a better description
-> that explains what is actually going on: is it the device or the bus that
-> has the 32-bit limitation, and if it is indeed a bug in the device, why do
-> you pretend that this is a 64-bit device on a 32-bit bus instead (this
-> could also use a comment in the dts file)?
-> 
->         Arnd
-> 
-
-Sorry for the delay in reply. Bharat finally got time to do some 
-investigation to confirm the following:
-
-These USB controllers indeed can address 64-bit. However, on the bus 
-internally, only 40-bits are connected to the interconnect of CCN. As a 
-result, the 'dma-ranges' should be modified to address 40-bit in size.
-
-We also have a somewhat related question, is it true that since v5.10, 
-defining of 'dma-ranges' on the bus node where its child device node has 
-implication of IOMMU usage (through 'iommus' or 'iommu-map') is now 
-mandatory? My understanding is that the 'dma-ranges' in this scheme will 
-define the IOVA address to system address mapping required by all 
-devices on that bus. Please help to confirm if my understanding is correct.
-
-Thanks,
-
-Ray
-
---000000000000bb440205b8b82f32
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-Gp3tsmw0Vz7IMJs6DQIm7T8CfIzeId1IIHcH02MbpO7m1Btzyz625FoBWF8CAwEAAaOCAcswggHH
-MA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUHMAKGQWh0dHA6Ly9z
-ZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNoYTJnM29jc3AuY3J0
-MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24y
-c2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3
-dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWG
-M2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczLmNybDAfBgNV
-HREEGDAWgRRyYXkuanVpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSME
-GDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUvUTLkCwFvnpejW/KGvdaDA31b+sw
-DQYJKoZIhvcNAQELBQADggEBACMny/9Y1OPK7qwiBKBMt478eBgXnTlJ0J0HNebYcxN/l7fKIKMb
-/eX/AQKIDsHeshmV2ekPU4yY/04veXx3QTgmE1bb4ksKEFEbU0LXlVPrnlgNn8M75cPymegn/2yU
-r1+htd2eve3obmKc5Lrl0GP+4m72XxAOL687Aw5vRa4Lf294s+x4d+VRwUjoFTj9zyLhexWQuJv/
-yX1HjSkrlIsRwi6DN0/ieL04O9aD1UNPlCC6akGnv4tgwlESh51M564qhonlfSW6La+L/aTIuQc0
-88lq8s/VMBBGdc7176/v5TbNwEC/c5QYbp2n76rAmKKjhjwWmBk64yLT7CoIxk0xggJvMIICawIB
-ATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypH
-bG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDCUMagLNLily51ao1jAN
-BglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgr+wGq1qsOC6FNDHnHX6UlfGvTe3Ihel7
-ZzbtrF3TVmEwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEwMTEy
-MTgyODE3WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZI
-AWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIB
-MA0GCSqGSIb3DQEBAQUABIIBAFGaQVqpbBzx6bxDBVQs5sgYs8vPJfpUgnYPVhsjDKYJ44lH2UfG
-Z9dGhjrhmH/dGNw3nE2FgQ0K3HzKJcZbqxYUnvfZTgKgp6MEBhXet7aEKUSZFIuBe/d9ciQPVKY7
-Xf/FVyI2ic3XlX1L57u9dwq6ICdqFGXhcXha++L/oWxH5tgN1SHqRmTybrUXvToX42FztyHhY0b7
-LzrtPeeqqnwO5J+jsivKavxXzRUbIpr7EP60V3AcxiBJ/CEhc6aoZ7bmIr4vJKjbj5rYL2kTrUtr
-9+gkrKGDMmje6aHMyzDDgAF5Z9vbGD3XIbdHwI4ZkOOkmyFk26TmJReol/OIQUw=
---000000000000bb440205b8b82f32--
+Thanks!
