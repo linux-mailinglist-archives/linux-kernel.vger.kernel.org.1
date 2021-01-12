@@ -2,76 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC80B2F2CAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:24:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A963B2F2CB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:24:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406109AbhALKYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:24:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:43514 "EHLO foss.arm.com"
+        id S2406120AbhALKYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:24:23 -0500
+Received: from mga02.intel.com ([134.134.136.20]:22804 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404201AbhALKYE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:24:04 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 28AF231B;
-        Tue, 12 Jan 2021 02:23:18 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.57.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EFF373F719;
-        Tue, 12 Jan 2021 02:23:14 -0800 (PST)
-Date:   Tue, 12 Jan 2021 10:23:12 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] arm64: make atomic helpers __always_inline
-Message-ID: <20210112102312.GC34326@C02TD0UTHF1T.local>
-References: <20210108092024.4034860-1-arnd@kernel.org>
- <20210108093258.GB4031@willie-the-truck>
- <X/jDGbwDNcVrZdDJ@hirez.programming.kicks-ass.net>
+        id S1730230AbhALKYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 05:24:23 -0500
+IronPort-SDR: d7Ly89wBkFDEm7DyHg1v3mP7abA9Lkm4TiTqZlqDW0irwUcSWnnrBa2Dn4CMQeoW+H4OWVZN8V
+ GE5DgoFBgVjQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="165100680"
+X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
+   d="scan'208";a="165100680"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 02:23:42 -0800
+IronPort-SDR: cjILx6JghTB+Ny13NlPb2xrtXziGCVW1HRvKDRvCM6boccj4Osv75C9pPZqozQM5C66rXoTHiX
+ gmsuciABpiew==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
+   d="scan'208";a="345168618"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.149]) ([10.237.72.149])
+  by fmsmga007.fm.intel.com with ESMTP; 12 Jan 2021 02:23:40 -0800
+Subject: Re: [PATCH] mmc: sdhci-brcmstb: Fix mmc timeout errors on S5 suspend
+To:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>
+References: <20210107221509.6597-1-alcooperx@gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <fcb0cb27-a32a-fb13-68e4-fb4e6432723b@intel.com>
+Date:   Tue, 12 Jan 2021 12:23:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/jDGbwDNcVrZdDJ@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210107221509.6597-1-alcooperx@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 09:39:53PM +0100, Peter Zijlstra wrote:
-> On Fri, Jan 08, 2021 at 09:32:58AM +0000, Will Deacon wrote:
-> > Hi Arnd,
-> > 
-> > On Fri, Jan 08, 2021 at 10:19:56AM +0100, Arnd Bergmann wrote:
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > > 
-> > > With UBSAN enabled and building with clang, there are occasionally
-> > > warnings like
-> > > 
-> > > WARNING: modpost: vmlinux.o(.text+0xc533ec): Section mismatch in reference from the function arch_atomic64_or() to the variable .init.data:numa_nodes_parsed
-> > > The function arch_atomic64_or() references
-> > > the variable __initdata numa_nodes_parsed.
-> > > This is often because arch_atomic64_or lacks a __initdata
-> > > annotation or the annotation of numa_nodes_parsed is wrong.
-> > > 
-> > > for functions that end up not being inlined as intended but operating
-> > > on __initdata variables. Mark these as __always_inline, along with
-> > > the corresponding asm-generic wrappers.
-> > 
-> > Hmm, I don't fully grok this. Why does it matter if a non '__init' function
-> > is called with a pointer to some '__initdata'? Or is the reference coming
-> > from somewhere else? (where?).
+On 8/01/21 12:15 am, Al Cooper wrote:
+> Commit e7b5d63a82fe ("mmc: sdhci-brcmstb: Add shutdown callback")
+> that added a shutdown callback to the diver, is causing "mmc timeout"
+> errors on S5 suspend. The problem was that the "remove" was queuing
+> additional MMC commands after the "shutdown" and these caused
+> timeouts as the MMC queues were cleaned up for "remove". The
+> shutdown callback will be changed to calling sdhci-pltfm_suspend
+> which should get better power savings because the clocks will be
+> shutdown.
 > 
-> FWIW the x86 atomics are __always_inline in part due to the noinstr
-> crud, which I imagine resulted in much the same 'fun'.
+> Fixes: e7b5d63a82fe ("mmc: sdhci-brcmstb: Add shutdown callback")
+> Signed-off-by: Al Cooper <alcooperx@gmail.com>
 
-FWIW, I was planning on doing the same here as part of making arm64
-noinstr safe, so I reckon we should probably do this regardless of
-whether it's a complete fix for the section mismatch issue.
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-Mark.
+> ---
+>  drivers/mmc/host/sdhci-brcmstb.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-brcmstb.c b/drivers/mmc/host/sdhci-brcmstb.c
+> index bbf3496f4495..f9780c65ebe9 100644
+> --- a/drivers/mmc/host/sdhci-brcmstb.c
+> +++ b/drivers/mmc/host/sdhci-brcmstb.c
+> @@ -314,11 +314,7 @@ static int sdhci_brcmstb_probe(struct platform_device *pdev)
+>  
+>  static void sdhci_brcmstb_shutdown(struct platform_device *pdev)
+>  {
+> -	int ret;
+> -
+> -	ret = sdhci_pltfm_unregister(pdev);
+> -	if (ret)
+> -		dev_err(&pdev->dev, "failed to shutdown\n");
+> +	sdhci_pltfm_suspend(&pdev->dev);
+>  }
+>  
+>  MODULE_DEVICE_TABLE(of, sdhci_brcm_of_match);
+> 
+
