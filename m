@@ -2,93 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6989D2F2DA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3ACB2F2DA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:15:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727243AbhALLM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 06:12:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50972 "EHLO
+        id S1726777AbhALLNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:13:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbhALLMz (ORCPT
+        with ESMTP id S1726377AbhALLNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:12:55 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A26BC061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 03:12:14 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id r5so1813224eda.12
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 03:12:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=ua+Z0odgaolBOHm42/0uflOhkiX55mBY8iH4eNMyuf8=;
-        b=G3gRKAcmFjtbjul0XJsGRDCH0+x2kCYGDqL47lXK1xKKqWkiF2AIloi4udYoQIFO36
-         GM7kemAXySrUu/AYlwg1WmihxnMh0XmSOkRZPz1Wtj21XoqFWI4aPiuBBwplg3OcIh/I
-         RxxyxxT7RlNsvfMTUzfW4vS9mo3av3VqvtpyLlCJ73lTS9oQnBAri4c5NJIhEBUjMScl
-         UDGTMMEj/qxrqYwNJqguw8+AXvhd6dkVuMOmv+UnanwIdvhDPZs0FWQeFL55TjKp1oXa
-         h9AlUVpm9Q03ylr8cvJ3WsXvTfG7J41t+BE6MnrUe+X64o73Ea4+YFlNgV0FZ5o3BIFC
-         OUQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ua+Z0odgaolBOHm42/0uflOhkiX55mBY8iH4eNMyuf8=;
-        b=EpmxWELwYAZDcJcdtsWmKL3ScnSUJUnWINfb4wSMoJjBb/00TSnQlQwNIVSVgqgDk/
-         mn7f8p3ADhg0c1prCq8FkiRiEGkHh8H6f0ulamjmdS8Tkj/10jPt1MdAorJ0PI4Zs08G
-         cJjxLbM3y11kvoBKM3iKeoGg3V6q+sUmljig059cRZJzOt3xV+hiBS//lC1NxvcMra+d
-         AbQSTmTJR+FBH4cwpsAAHiaqSFEcj/67DZj4aEgTbYLwBgiSrmEo/3mnFFAXq2FJI/p7
-         0accdEeZBPW/PavNZCE/I4g22R85Zy8BREh8FwAUq9RBhFn0Zlpb9dldtuD2nvCRL6BQ
-         1u6Q==
-X-Gm-Message-State: AOAM533XqK5JTxHagGyWxgzqjuluN0Klmnt2GL6TYBqe6uXmq37hqTUm
-        h7kzP4HjreqJQQDDAl35KbYOqRQKMx4=
-X-Google-Smtp-Source: ABdhPJw++Jci34el8JYECKtej9bq1iOuo7UAsxjKl9baOgu+mJlneP+ADjwY2cAK1CPkg0Jjdo0eyg==
-X-Received: by 2002:aa7:c151:: with SMTP id r17mr2916892edp.106.1610449931533;
-        Tue, 12 Jan 2021 03:12:11 -0800 (PST)
-Received: from localhost.localdomain (ip5f5bfcff.dynamic.kabel-deutschland.de. [95.91.252.255])
-        by smtp.gmail.com with ESMTPSA id k2sm1066045ejp.6.2021.01.12.03.12.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 03:12:11 -0800 (PST)
-From:   Bean Huo <huobean@gmail.com>
-To:     rostedt@goodmis.org, mingo@redhat.com, beanhuo@micron.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] tracing: Fix two compiling warnings
-Date:   Tue, 12 Jan 2021 12:12:02 +0100
-Message-Id: <20210112111202.23508-1-huobean@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 12 Jan 2021 06:13:21 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9543AC061575;
+        Tue, 12 Jan 2021 03:12:41 -0800 (PST)
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8AE1E58E;
+        Tue, 12 Jan 2021 12:12:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1610449958;
+        bh=nxwVkILG5Muy2w73FYXJgibdri3T1ViT49g+RDYx6n8=;
+        h=Subject:To:Cc:References:From:Reply-To:Date:In-Reply-To:From;
+        b=d5d1EzrZcpROge3DrlgyGK3t2qOv8nQitkRk7H16/oYPWYm+wDnHRn/addvIYB2jh
+         93yMO/2uhZpiuoV3A3n2SSXRc5NvGJDezPOVwj9HYkLq+3cWCLRzoNFBtyBO6PpbZc
+         k2uZRyurgWhb6j/vG+6XSztASqjR9d3L6sf+gRwg=
+Subject: Re: [PATCH 7/9] media: ti-vpe: Do not zero reserved fields
+To:     Ricardo Ribalda <ribalda@chromium.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Benoit Parrot <bparrot@ti.com>
+References: <20210111145445.28854-1-ribalda@chromium.org>
+ <20210111145445.28854-8-ribalda@chromium.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Organization: Ideas on Board
+Message-ID: <4dce6a1a-f4dc-53b4-7e87-7066936fd2d0@ideasonboard.com>
+Date:   Tue, 12 Jan 2021 11:12:36 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210111145445.28854-8-ribalda@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+Hi Ricardo,
 
-Add description for two function parameters, to fix below two warnings:
+On 11/01/2021 14:54, Ricardo Ribalda wrote:
+> Core code already clears reserved fields of struct
+> v4l2_pix_format_mplane, check: 4e1e0eb0e074 ("media: v4l2-ioctl: Zero
+> v4l2_plane_pix_format reserved fields").
 
-kernel/trace/trace.c:464: warning: Function parameter or member 'this_tr' not described in 'trace_array_put'
-kernel/trace/trace.c:543: warning: Function parameter or member 'filtered_no_pids' not described in 'trace_ignore_this_task'
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- kernel/trace/trace.c | 2 ++
- 1 file changed, 2 insertions(+)
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index b8a2d786b503..8edcd91ed172 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -454,6 +454,7 @@ static void __trace_array_put(struct trace_array *this_tr)
- 
- /**
-  * trace_array_put - Decrement the reference counter for this trace array.
-+ * @this_tr : pointer to the trace array
-  *
-  * NOTE: Use this when we no longer need the trace array returned by
-  * trace_array_get_by_name(). This ensures the trace array can be later
-@@ -530,6 +531,7 @@ trace_find_filtered_pid(struct trace_pid_list *filtered_pids, pid_t search_pid)
- /**
-  * trace_ignore_this_task - should a task be ignored for tracing
-  * @filtered_pids: The list of pids to check
-+ * @filtered_no_pids: The list of pids that not be traced by the function tracer
-  * @task: The task that should be ignored if not filtered
-  *
-  * Checks if @task should be traced or not from @filtered_pids.
--- 
-2.17.1
+> Cc: Benoit Parrot <bparrot@ti.com>
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  drivers/media/platform/ti-vpe/vpe.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/media/platform/ti-vpe/vpe.c b/drivers/media/platform/ti-vpe/vpe.c
+> index 779dd74b82d0..10251b787674 100644
+> --- a/drivers/media/platform/ti-vpe/vpe.c
+> +++ b/drivers/media/platform/ti-vpe/vpe.c
+> @@ -1683,7 +1683,6 @@ static int __vpe_try_fmt(struct vpe_ctx *ctx, struct v4l2_format *f,
+>  		}
+>  	}
+>  
+> -	memset(pix->reserved, 0, sizeof(pix->reserved));
+>  	for (i = 0; i < pix->num_planes; i++) {
+>  		plane_fmt = &pix->plane_fmt[i];
+>  		depth = fmt->vpdma_fmt[i]->depth;
+> @@ -1713,7 +1712,6 @@ static int __vpe_try_fmt(struct vpe_ctx *ctx, struct v4l2_format *f,
+>  					       plane_fmt->bytesperline *
+>  					       depth) >> 3;
+>  		}
+> -		memset(plane_fmt->reserved, 0, sizeof(plane_fmt->reserved));
+>  	}
+>  
+>  	return 0;
+> 
 
