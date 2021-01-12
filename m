@@ -2,120 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E38B2F3741
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:36:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 602072F3744
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:36:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405494AbhALRdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:33:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48484 "EHLO
+        id S2391532AbhALRes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:34:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389692AbhALRdt (ORCPT
+        with ESMTP id S2391323AbhALRer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:33:49 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408A8C061575;
-        Tue, 12 Jan 2021 09:33:09 -0800 (PST)
-Date:   Tue, 12 Jan 2021 18:33:06 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610472787;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LAolnOXmE55ZGWKDi1ZWtF/yiYKdSoWGTb8A4N47mNc=;
-        b=D7X8h0loH2jqm2j9VY0Fe4Ez9zyjMZ5SS1CzWUwz+T+TWfHLLvL+NDgnrOYvP5Efb5UcNk
-        Z7KA/yf0lWyuM3foAjm+e5MMzXbMhF7nkTOYoBxSnc3uzFYDt1fvahRdjUgmEd0ckcXg2W
-        erYJvLLUO5nMuretieFN8QCuQkJbuMQR6kx8DGPgTkt4m2OfKra7qTPNQcEs81XcpG7d06
-        n+pPpf+DqmuUubIiVz5a6AcbsYDlH9p4WYSKL7x+39pY8KJEUPn/++e2r02bGTGJoQrVJa
-        +s4Ze11j5JFxge+KBXdUtK+zdLrBGIUZQl/5pWjVdwJm28uSGswQNp80nZJfrA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610472787;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LAolnOXmE55ZGWKDi1ZWtF/yiYKdSoWGTb8A4N47mNc=;
-        b=TezOMx8W2Z5YRX92l2k+O/anNGRYXpdMVxdknEAHVv20GwgQtERN6Bs4my/9OjvoNLYT1Y
-        gJYHmsGS2boO7WCA==
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     John Garry <john.garry@huawei.com>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        linux-scsi@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>
-Subject: Re: [PATCH v2 00/19] scsi: libsas: Remove in_interrupt() check
-Message-ID: <X/3dUkPCC1SrLT4m@lx-t490>
-References: <20210112110647.627783-1-a.darwish@linutronix.de>
- <8683f401-29b6-4067-af51-7b518ad3a10f@huawei.com>
- <X/2h0yNqtmgoLIb+@lx-t490>
- <e9bc0c89-a4d6-1e5b-793d-3c246882210e@huawei.com>
+        Tue, 12 Jan 2021 12:34:47 -0500
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 088FEC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:34:07 -0800 (PST)
+Received: by mail-qv1-xf32.google.com with SMTP id l14so1267400qvh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:34:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0jjRjcy5y5g0bN5WHaiBZUIDIdTZTHlmLz4qx2gqPo8=;
+        b=V606eUVnhzjsDRWQQe/O3xvnm+xCWx24X1otDy3i8V5CB38noAZO3WLITvvGP3K7RK
+         /j6CCCO/7J2+g5KEGIMzQdQYFA5vBNSAHElcQ3wm5y7Up8QmC+p9sklh7a8dZHetIM5p
+         kSi7Z8MzBjTgEQ7qHrulGkfDzIXo3bW8L5E9I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0jjRjcy5y5g0bN5WHaiBZUIDIdTZTHlmLz4qx2gqPo8=;
+        b=KUaNTOgjbEmKtgffHIiYeW8cKJc3LAnF7K8TFuPiOpj2RkxLMkzM9ZP48PKH5CZP0l
+         PXXxQB1MTsB2pZBg2As9cb8oDgCbHVfXVAA5a+zbXzwt+IemI7ItwLA0CXX7WpU7yjof
+         BWsk6nW/j+XlNog18Ng2dgHCRNnISojiNQeBJPlNEe9gjhuhHYToDJG5fQlbjOt/y3F3
+         TCej9PG+EZXPjixLAVI2SJu9cVg0Ya7rdQZiLKVV+MO5EWhtaWGIPh3xlF8BWsyDdMF1
+         yUSf+VWkMh1sjR1qq3NP6yHJsz98dQk/+CdVs9uQK25otVgaOEL4W2cNHYlh3hT+MHo/
+         VVqQ==
+X-Gm-Message-State: AOAM533ciINl6tsflV6d4Xn3yVdGO6p6L/1X3jEUPIKN8U+cUEdEB/Zy
+        kjJMN+JhuQE7jk3jQV5W7vpUQrnLx91G/A==
+X-Google-Smtp-Source: ABdhPJzFZynUDuHf0VBRdf97AjJfU83UhDDBwVuzQft03MOxmZkp9PSN2SLosxm3DGfsWKQ6kpc5Qg==
+X-Received: by 2002:a05:6214:14ef:: with SMTP id k15mr450406qvw.45.1610472845934;
+        Tue, 12 Jan 2021 09:34:05 -0800 (PST)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id p58sm1481132qte.38.2021.01.12.09.34.04
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jan 2021 09:34:05 -0800 (PST)
+Received: by mail-yb1-f177.google.com with SMTP id y4so2903059ybn.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:34:04 -0800 (PST)
+X-Received: by 2002:a25:f54:: with SMTP id 81mr758087ybp.76.1610472844077;
+ Tue, 12 Jan 2021 09:34:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e9bc0c89-a4d6-1e5b-793d-3c246882210e@huawei.com>
+References: <1610090618-30070-1-git-send-email-dikshita@codeaurora.org>
+In-Reply-To: <1610090618-30070-1-git-send-email-dikshita@codeaurora.org>
+From:   Fritz Koenig <frkoenig@chromium.org>
+Date:   Tue, 12 Jan 2021 09:33:52 -0800
+X-Gmail-Original-Message-ID: <CAMfZQbyBXt2A=yRNd7j-qTTrs8VKkciEknbCLkS+H1MEh4PisQ@mail.gmail.com>
+Message-ID: <CAMfZQbyBXt2A=yRNd7j-qTTrs8VKkciEknbCLkS+H1MEh4PisQ@mail.gmail.com>
+Subject: Re: [PATCH RESEND v3] venus: venc: set inband mode property to FW.
+To:     Dikshita Agarwal <dikshita@codeaurora.org>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org,
+        Vikash Garodia <vgarodia@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 04:00:57PM +0000, John Garry wrote:
-...
+On Thu, Jan 7, 2021 at 11:26 PM Dikshita Agarwal
+<dikshita@codeaurora.org> wrote:
 >
-> I boot-tested on my machines which have hisi_sas v2 and v3 hw, and it's ok.
-> I will ask some guys to test a bit more.
+> set HFI_PROPERTY_CONFIG_VENC_SYNC_FRAME_SEQUENCE_HEADER to FW
+> to support inband sequence header mode.
 >
-
-Thanks a lot!
-
-> And generally the changes look ok. But I just have a slight concern that we
-> don't pass the gfp_flags all the way from the origin caller.
+> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
 >
-> So we have some really long callchains, for example:
+> Changes since v2:
+> - fixed Null pointer dereference (Stanimir, Fritz)
+> - added set property call at correct place.
+> ---
+>  drivers/media/platform/qcom/venus/venc.c       | 14 ++++++++++++++
+>  drivers/media/platform/qcom/venus/venc_ctrls.c | 17 ++++++++++++++++-
+>  2 files changed, 30 insertions(+), 1 deletion(-)
 >
-> host.c: sci_controller_error_handler(): atomic, irq handler     (*)
-> OR host.c: sci_controller_completion_handler(), atomic, tasklet (*)
->   -> sci_controller_process_completions()
->     -> sci_controller_unsolicited_frame()
->       -> phy.c: sci_phy_frame_handler()
->         -> sci_change_state(SCI_PHY_SUB_AWAIT_SAS_POWER)
->           -> sci_phy_starting_await_sas_power_substate_enter()
->             -> host.c: sci_controller_power_control_queue_insert()
->               -> phy.c: sci_phy_consume_power_handler()
->                 -> sci_change_state(SCI_PHY_SUB_FINAL)
->         -> sci_change_state(SCI_PHY_SUB_FINAL)
->     -> sci_controller_event_completion()
->       -> phy.c: sci_phy_event_handler()
->         -> sci_phy_start_sata_link_training()
->           -> sci_change_state(SCI_PHY_SUB_AWAIT_SATA_POWER)
->             -> sci_phy_starting_await_sata_power_substate_enter
->               -> host.c: sci_controller_power_control_queue_insert()
->                 -> phy.c: sci_phy_consume_power_handler()
->                   -> sci_change_state(SCI_PHY_SUB_FINAL)
+> diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+> index 3a2e449..ae21a7c 100644
+> --- a/drivers/media/platform/qcom/venus/venc.c
+> +++ b/drivers/media/platform/qcom/venus/venc.c
+> @@ -536,6 +536,7 @@ static int venc_set_properties(struct venus_inst *inst)
+>         struct hfi_idr_period idrp;
+>         struct hfi_quantization quant;
+>         struct hfi_quantization_range quant_range;
+> +       struct hfi_enable en;
+>         u32 ptype, rate_control, bitrate;
+>         u32 profile, level;
+>         int ret;
+> @@ -655,6 +656,19 @@ static int venc_set_properties(struct venus_inst *inst)
+>         if (ret)
+>                 return ret;
 >
-> So if someone rearranges the code later, adds new callchains, etc., it could
-> be missed that the context may have changed than what we assume at the
-> bottom. But then passing the flags everywhere is cumbersome, and all the
-> libsas users see little or no significant changes anyway, apart from a
-> couple.
+> +       if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_H264 ||
+> +           inst->fmt_cap->pixfmt == V4L2_PIX_FMT_HEVC) {
+
+nit: declare |struct hfi_enable en| in this scope
+
+Reviewed-by: Fritz Koenig <frkoenig@chromium.org>
+
+> +               ptype = HFI_PROPERTY_CONFIG_VENC_SYNC_FRAME_SEQUENCE_HEADER;
+> +               if (ctr->header_mode == V4L2_MPEG_VIDEO_HEADER_MODE_SEPARATE)
+> +                       en.enable = 0;
+> +               else
+> +                       en.enable = 1;
+> +
+> +               ret = hfi_session_set_property(inst, ptype, &en);
+> +               if (ret)
+> +                       return ret;
+> +       }
+> +
+>         if (!ctr->bitrate_peak)
+>                 bitrate *= 2;
+>         else
+> diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
+> index cf860e6..3ce02ad 100644
+> --- a/drivers/media/platform/qcom/venus/venc_ctrls.c
+> +++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
+> @@ -158,6 +158,20 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
+>                 break;
+>         case V4L2_CID_MPEG_VIDEO_HEADER_MODE:
+>                 ctr->header_mode = ctrl->val;
+> +               mutex_lock(&inst->lock);
+> +               if (inst->streamon_out && inst->streamon_cap) {
+> +                       if (ctrl->val == V4L2_MPEG_VIDEO_HEADER_MODE_SEPARATE)
+> +                               en.enable = 0;
+> +                       else
+> +                               en.enable = 1;
+> +                       ptype = HFI_PROPERTY_CONFIG_VENC_SYNC_FRAME_SEQUENCE_HEADER;
+> +                       ret = hfi_session_set_property(inst, ptype, &en);
+> +                       if (ret) {
+> +                               mutex_unlock(&inst->lock);
+> +                               return ret;
+> +                       }
+> +               }
+> +               mutex_unlock(&inst->lock);
+>                 break;
+>         case V4L2_CID_MPEG_VIDEO_CYCLIC_INTRA_REFRESH_MB:
+>                 break;
+> @@ -289,7 +303,8 @@ int venc_ctrl_init(struct venus_inst *inst)
+>         v4l2_ctrl_new_std_menu(&inst->ctrl_handler, &venc_ctrl_ops,
+>                 V4L2_CID_MPEG_VIDEO_HEADER_MODE,
+>                 V4L2_MPEG_VIDEO_HEADER_MODE_JOINED_WITH_1ST_FRAME,
+> -               1 << V4L2_MPEG_VIDEO_HEADER_MODE_JOINED_WITH_1ST_FRAME,
+> +               ~((1 << V4L2_MPEG_VIDEO_HEADER_MODE_SEPARATE) |
+> +               (1 << V4L2_MPEG_VIDEO_HEADER_MODE_JOINED_WITH_1ST_FRAME)),
+>                 V4L2_MPEG_VIDEO_HEADER_MODE_SEPARATE);
 >
-
-The deep call chains like the one you've quoted are all within the isci
-Intel driver (patches #5 => #7), due to the *massive* state transitions
-that driver has. But as the commit logs of these three patches show,
-almost all of such transitions happened under atomic context anyway and
-GFP_ATOMIC was thus used.
-
-The GFP_KERNEL call-chains were all very simple: a workqueue, functions
-already calling msleep() or wait_event_timeout() two or three lines
-nearby, and so on.
-
-All the other libsas clients (that is, except isci) also had normal call
-chains that were IMHO easy to follow.
-
-Thanks,
-
---
-Ahmed S. Darwish
-Linutronix GmbH
+>         v4l2_ctrl_new_std_menu(&inst->ctrl_handler, &venc_ctrl_ops,
+> --
+> 2.7.4
+>
