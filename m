@@ -2,92 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0A82F2A61
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0029C2F2A62
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:54:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392324AbhALIx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 03:53:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
+        id S2404885AbhALIyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 03:54:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729189AbhALIx4 (ORCPT
+        with ESMTP id S1729189AbhALIx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 03:53:56 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED27C0617A2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:52:54 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id e7so1953168ljg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:52:54 -0800 (PST)
+        Tue, 12 Jan 2021 03:53:59 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF2CEC061575;
+        Tue, 12 Jan 2021 00:53:18 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id 15so992699pgx.7;
+        Tue, 12 Jan 2021 00:53:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JsEm4I1NOjMflpIR4jGgdH1VuxMujPdLvKb9dS5688I=;
-        b=Q91v3fKmkv7yHp1jk+4mrPGmxbo1mWWCFs3xqcg8gV6QkcBpp7MYlMrLJMzA6sAk3V
-         +oxxHVrn2m9yBMl4cBHI/AtzRTMwdyn5YfhGjKZOcqvX353YR3GlZO3wOkqqoDu84OHp
-         UtKzUTaQ3c9AurzzutPndd4sWUqZoDXDNZd+/S/fFRANW38PzxnDJtJxYfj1fA1L8pAp
-         3ROnz5lQOdpGRyugwbAyMVZMu0e0vBWa+ogqp/NR40TBd3ZrwcemjrL5HVTHESrkrfzA
-         CxE3a+YKPsNMNt8oHMV2Olajf4EUW+eIIVbM5Ohmqil0m/pTkn8loynxCUkWS849IJCu
-         lHLg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=iCD56C5pg1d1NTNumNDFp4t2vfpUV33Zv3uz34vtHcM=;
+        b=cgvc90vIzF3OIyMlOfnqqxO/AsGLIEc5lSv8L3t2RrsXjaJSpeCOzyADwRMLDX80mh
+         XpILvChB1UGanSwSh6JXbZ8EScoCziyl+K42gASbMI+uL3K0M5xenZza2PmsE8rxiewr
+         RmrdDkT78NsO6+6ElPSNuO05ompOuvhNXk0PiqqbSUs27UsWrZIvvWL1WFTD5Es//tkj
+         /REpahA1UzM1SenWXb0wydnkdyTr1V3jNmT/sK4JbxNp5RolCN6t4fWA8PWmch0bwevM
+         5Pm0JULrnTj4LU7tpifvD5+Yq4FbhTHKF9P8iL02bH7IJIP8r55DIomBY10uwBILvvXi
+         YBOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JsEm4I1NOjMflpIR4jGgdH1VuxMujPdLvKb9dS5688I=;
-        b=VVamxot/6/I6Z4xJFnmFnHm3NCerLdeiKi3NDQHD24QqKBLszh41FGw0WIEYajP4vD
-         /8CdCJGDoAYRRPTM12K+vSEszaMtPISK1lqwpOtuF1Dg8S5+GLuyTmM99YKTIhcGUlJX
-         j1GTnMNXPwwk87nbkJ5H6cUdsIckGSgfbgR2fUpDp+wLq1h8CD+QEpGCSV3G3s8lsyjV
-         DTnJobjE5Udkb8KPQrINZzoxYTAY5pudSce9/aqXMYFUDz3X9SQufP1CNRBJyAVK64Er
-         h9GCp+xPDzjqpqAiczaqUwQWsJH1fybFRQYkdyH0m8VIqXbDyXV/ufDVdckwieLgHzkU
-         YcRw==
-X-Gm-Message-State: AOAM533EDk68aohuC6WBO/kyS/3Y0oGZJPPQH1BPQmotlDaFa5q3eXfT
-        iCXBEwb5TWqFGZylC/J+3ilXbhT70zqSf6se5GPrqw==
-X-Google-Smtp-Source: ABdhPJxOVHEfMGqQL+Ee1Z/8lgjxVni/8qnA2F4LQjPU+qNuigb/gJQdyNRG9FDpz+vW65Ij7oQxSE3HlbzgqvVsz7Q=
-X-Received: by 2002:a05:651c:1312:: with SMTP id u18mr1556193lja.200.1610441573181;
- Tue, 12 Jan 2021 00:52:53 -0800 (PST)
-MIME-Version: 1.0
-References: <20201211164801.7838-1-nsaenzjulienne@suse.de> <47b4dbc7a70d8f900789608e753be6faa36cebeb.camel@suse.de>
-In-Reply-To: <47b4dbc7a70d8f900789608e753be6faa36cebeb.camel@suse.de>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 12 Jan 2021 09:52:42 +0100
-Message-ID: <CACRpkdZCR=_KpPpb2o4e_OvQtJPYZ5qwcxa8MOC7UFvcjm6FUw@mail.gmail.com>
-Subject: Re: [PATCH v6 00/11] Raspberry Pi PoE HAT fan support
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-pwm@vger.kernel.org,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Stefan Wahren <wahrenst@gmx.net>,
-        Linux Input <linux-input@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Eric Anholt <eric@anholt.net>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=iCD56C5pg1d1NTNumNDFp4t2vfpUV33Zv3uz34vtHcM=;
+        b=qrsnneYKzWKAzcioR+UyKw2l0q8J38Cwnv7iiCbNZ/A64XpsMAag1VtB/VNAUdXPMP
+         fUQfu48YqAmLHnHkm0xUUssscB1ERbsMsWW4xj0AmHDotVlWXdEaPF63N/q5IICRnAzY
+         /a6AGWkKfLqW2q3v5w/hiGh0io/pOGy5oRw35N5UpO1VilvVTj7vfxgCsJ8IwCmRyGth
+         qHavq66stWXidFCd4Nuh5m+ihfJKB9eXt4NvAfltaAMwh6LfLNxc642dTx5kV4HpvaAb
+         6cpIHfksDDowJHJKPNGzhYoqaGjKfqMNGQ4f7uDcqIkrbgedsVYJG0FkXfERyRDSaFaj
+         fRLQ==
+X-Gm-Message-State: AOAM533bm9jaDHbUtzIBenkLCkxg8aBHyTx+H1/91frtYMPd3fiO1uiN
+        3p7m+V27og4kl+j5GPBFLXQ=
+X-Google-Smtp-Source: ABdhPJwWcJw4BGKctgBn3fXpdsTZXyGdlSBNAKK3KdVpgrKCr7T/XRv51DVD9EnvtC9WsP84zj53Ww==
+X-Received: by 2002:a63:d246:: with SMTP id t6mr3727099pgi.283.1610441598288;
+        Tue, 12 Jan 2021 00:53:18 -0800 (PST)
+Received: from localhost.localdomain ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id 198sm2392803pfw.29.2021.01.12.00.53.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 00:53:17 -0800 (PST)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     pierre-yves.mordret@st.com
+Cc:     mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        linux-i2c@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: [PATCH] i2c: remove redundant error print in stm32f7_i2c_probe
+Date:   Tue, 12 Jan 2021 00:53:11 -0800
+Message-Id: <20210112085311.7308-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 10:02 PM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-> I'd say at this point the series is pretty clean and, AFAIK, there aren't any
-> objections. I'm not so sure who should take it, given that it covers numerous
-> subsystems. Any suggestions on how to handle it?
+Coccinelle reports a redundant error print in stm32f7_i2c_probe.
+As 'platform_get_irq' already prints the error message, error
+print here is redundant and can be removed.
 
-This is one of those cases where I would suggest collect ACKs
-from affected subsystem maintainers and send a pull request
-to the SoC tree for this hairy bundle.
+Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+---
+ drivers/i2c/busses/i2c-stm32f7.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-Yours,
-Linus Walleij
+diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
+index 9aa8e65b511e..adba496e1e31 100644
+--- a/drivers/i2c/busses/i2c-stm32f7.c
++++ b/drivers/i2c/busses/i2c-stm32f7.c
+@@ -2026,12 +2026,8 @@ static int stm32f7_i2c_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	irq_error = platform_get_irq(pdev, 1);
+-	if (irq_error <= 0) {
+-		if (irq_error != -EPROBE_DEFER)
+-			dev_err(&pdev->dev, "Failed to get IRQ error: %d\n",
+-				irq_error);
++	if (irq_error <= 0)
+ 		return irq_error ? : -ENOENT;
+-	}
+ 
+ 	i2c_dev->wakeup_src = of_property_read_bool(pdev->dev.of_node,
+ 						    "wakeup-source");
+-- 
+2.17.1
+
