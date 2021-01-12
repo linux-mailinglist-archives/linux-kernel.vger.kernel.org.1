@@ -2,113 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BD52F2F1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:32:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C402F2F1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388009AbhALMab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:30:31 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:34332 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387535AbhALMaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:30:07 -0500
-Received: from loongson.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx6L0dlv1fsycDAA--.5569S6;
-        Tue, 12 Jan 2021 20:29:19 +0800 (CST)
-From:   Jinyang He <hejinyang@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Burton <paulburton@kernel.org>,
-        Jun-Ru Chang <jrjang@realtek.com>
-Subject: [PATCH 4/4] MIPS: Add is_jr_ra_ins() to end the loop early
-Date:   Tue, 12 Jan 2021 20:29:17 +0800
-Message-Id: <1610454557-25867-5-git-send-email-hejinyang@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1610454557-25867-1-git-send-email-hejinyang@loongson.cn>
-References: <1610454557-25867-1-git-send-email-hejinyang@loongson.cn>
-X-CM-TRANSID: AQAAf9Dx6L0dlv1fsycDAA--.5569S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFW8Wr15ur1kWr15Jr1xuFg_yoW8CFy3pF
-        43AFZYkr4rKr93GrZ3Ja95JFy3trs5uwsxKFW7trW0qwn8Wry5ZFySkr9ak3ykGr98K3W8
-        WFyYyr4jkwnrA3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBIb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28C
-        jxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI
-        8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E
-        87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64
-        kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm
-        72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6ryUMxAIw28Icx
-        kI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2Iq
-        xVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42
-        IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY
-        6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aV
-        CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUYe6wtUUUUU==
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+        id S1733242AbhALMbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:31:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47988 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726405AbhALMbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:31:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D25421D93;
+        Tue, 12 Jan 2021 12:31:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610454670;
+        bh=EptgfiHYt6xGNsbmNtRX9LOhlDhS7JjIKitMyr9pz1U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rz8SebBY2hyY6tSaQrcbqEsiBzn1EKAhAK4cQ+pVHn/zT2Q2Ui+OqCztY6/aw5mZ/
+         ZXvIwNXq/fhrH2A1Jd6oj8mBbe9VzaPoue/fixkHEEG67C1PPJ26nXrAkV63fXhRq1
+         11EGaPLBAGxyezGWYkXR3l4AMEPH+iemdXaEDFXLrWdeESvUoQ8q/XlRjGO5M+p+Vx
+         8Jfbr5q0NywitAdQnUoMSHQ4T4KKnDGSPgsivxkHH+06jxjF0ufLmnRrzLk4OQYpR8
+         T2GHrCZVz/Yog5uWOkCc9XTG9JkN/uLvccgGVFRwcS0zKSyr24fZ5P7C9nVb+2yRgK
+         WnND0THzJXZfw==
+Date:   Tue, 12 Jan 2021 18:00:57 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     leoyang.li@nxp.com, zw@zh-kernel.org, dan.j.williams@intel.com,
+        timur@freescale.com, linuxppc-dev@lists.ozlabs.org,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH 1/2] dmaengine: fsldma: Fix a resource leak in the remove
+ function
+Message-ID: <20210112123057.GS2771@vkoul-mobl>
+References: <20201212160516.92515-1-christophe.jaillet@wanadoo.fr>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201212160516.92515-1-christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For those leaf functions, they are likely to have no stack operations.
-Add is_jr_ra_ins() to determine whether jr ra has been touched before
-the frame_size is found. Without this patch, the get frame_size operation
-may be out of range and get the frame_size from the next nested function.
+On 12-12-20, 17:05, Christophe JAILLET wrote:
+> A 'irq_dispose_mapping()' call is missing in the remove function.
+> Add it.
+> 
+> This is needed to undo the 'irq_of_parse_and_map() call from the probe
+> function and already part of the error handling path of the probe function.
+> 
+> It was added in the probe function only in commit d3f620b2c4fe ("fsldma:
+> simplify IRQ probing and handling")
 
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
----
- arch/mips/kernel/process.c | 34 +++++++++++++++++++++++++++++++++-
- 1 file changed, 33 insertions(+), 1 deletion(-)
+Applied both, thanks
 
-diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
-index bef8f8d..9e6f194 100644
---- a/arch/mips/kernel/process.c
-+++ b/arch/mips/kernel/process.c
-@@ -205,6 +205,36 @@ struct mips_frame_info {
- #define J_TARGET(pc,target)	\
- 		(((unsigned long)(pc) & 0xf0000000) | ((target) << 2))
- 
-+static inline int is_jr_ra_ins(union mips_instruction *ip)
-+{
-+#ifdef CONFIG_CPU_MICROMIPS
-+	/*
-+	 * jr16 ra
-+	 * jr ra
-+	 */
-+	if (mm_insn_16bit(ip->word >> 16)) {
-+		if (ip->mm16_r5_format.opcode == mm_pool16c_op &&
-+		    ip->mm16_r5_format.rt == mm_jr16_op &&
-+		    ip->mm16_r5_format.imm == 31)
-+			return 1;
-+		return 0;
-+	}
-+
-+	if (ip->r_format.opcode == mm_pool32a_op &&
-+	    ip->r_format.func == mm_pool32axf_op &&
-+	    ((ip->u_format.uimmediate >> 6) & GENMASK(9,0)) == mm_jalr_op &&
-+            ip->r_format.rs == 31)
-+		return 1;
-+	return 0;
-+#else
-+	if (ip->r_format.opcode == spec_op &&
-+	    ip->r_format.func == jr_op &&
-+	    ip->r_format.rs == 31)
-+		return 1;
-+	return 0;
-+#endif
-+}
-+
- static inline int is_ra_save_ins(union mips_instruction *ip, int *poff)
- {
- #ifdef CONFIG_CPU_MICROMIPS
-@@ -417,7 +447,9 @@ static int get_frame_info(struct mips_frame_info *info)
- 			last_insn_size = 4;
- 		}
- 
--		if (!info->frame_size) {
-+		if (is_jr_ra_ins(ip)) {
-+			break;
-+		} else if (!info->frame_size) {
- 			is_sp_move_ins(&insn, &info->frame_size);
- 			continue;
- 		} else if (!saw_jump && is_jump_ins(ip)) {
 -- 
-2.1.0
-
+~Vinod
