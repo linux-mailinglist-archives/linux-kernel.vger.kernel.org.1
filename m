@@ -2,129 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 648042F24D1
+	by mail.lfdr.de (Postfix) with ESMTP id D0B132F24D2
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405267AbhALAZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 19:25:19 -0500
-Received: from pi3.com.pl ([185.238.74.129]:60368 "EHLO pi3.com.pl"
+        id S2405316AbhALAZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 19:25:20 -0500
+Received: from mga07.intel.com ([134.134.136.100]:8886 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404257AbhALAQp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 19:16:45 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by pi3.com.pl (Postfix) with ESMTP id 4EA244C0DF8;
-        Tue, 12 Jan 2021 01:16:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=pi3.com.pl; s=default;
-        t=1610410562; bh=OHpR0K0IgBU2a06QtHh8pGoN8dPNwrLGRPh/L04z/E0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LQp5oGgzsYuG+dCD1BCYRyR7+n6y1icUn8NgMMmGp0frXnPlPfiwiVNqzHpT3vl6y
-         WB/PvMn3W4laZNosIPeIVMjL0uZRKUclGcu1iHJYKAM6BPO6hFy1gVaim6hhaRoPnH
-         GyqShoFgvVoi/Grz0D80CKKfCzzS6zRbC4QzJdk6XWb2vZh4ANrGZngBHWVHc6n0Qs
-         dcTWRw/91XOYyltcS2GsM0ML4jpNMHAEGTr2AVotA8Hkdq2YunTuSm2Cj0d6Ei53Sy
-         uSO2aVNS0pAaeoFTZce7O6EO6Y8+Yk8xCXXNH1cIJRgi02iQjCdtL2NU9EqSbeJRht
-         1wzMWXulb+/kg==
-X-Virus-Scanned: Debian amavisd-new at pi3.com.pl
-Received: from pi3.com.pl ([127.0.0.1])
-        by localhost (pi3.com.pl [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 389cfCoIXqaD; Tue, 12 Jan 2021 01:15:59 +0100 (CET)
-Received: by pi3.com.pl (Postfix, from userid 1000)
-        id 767834C05F3; Tue, 12 Jan 2021 01:15:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=pi3.com.pl; s=default;
-        t=1610410559; bh=OHpR0K0IgBU2a06QtHh8pGoN8dPNwrLGRPh/L04z/E0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NtHMMF1Z+8dHgAmYNK+hizTexGKtxHpi5AZboFoOmIbjrnxiwCElkOE9xPsx2X1zP
-         jKV2l8wDHgNDmxBQ8awKxrwIr3krDZdCVQBv0L9/Ziuie1HssxYhDM05Hp6QmE5UKP
-         CwvbXQ8kjCugiEeQIYWHq1ZTq2lIxYMnc3zw6pGZdbnVbn7PIxEL31pJrImeIf5QVs
-         40qJrD6TfiG8A9v2bqrQvQ3Nlae4Id5J+74qsAtsqkErcHuumGibxzWJx8Sdi/lDdB
-         38dDzcje6sPfr1GiZP6Xk27wmXquziRmPiQb2P4yNHr6JtqC5A86AdAgjSfgKwDzt3
-         QyEfhga6MyFsQ==
-Date:   Tue, 12 Jan 2021 01:15:59 +0100
-From:   Adam Zabrocki <pi3@pi3.com.pl>
-To:     Jessica Yu <jeyu@kernel.org>
-Cc:     Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Solar Designer <solar@openwall.com>
-Subject: Re: Linux Kernel module notification bug
-Message-ID: <20210112001559.GA20073@pi3.com.pl>
-References: <20210110175401.GB32505@pi3.com.pl>
- <20210111142048.GA27038@linux-8ccs>
+        id S2404269AbhALAVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 19:21:50 -0500
+IronPort-SDR: 01arME6wnvGyxAU40lLDk7LFD7ao+RyZDBZEF/1lNaoqU3fDPkLSqYSZtxgL6ICdthDsIpE3/4
+ y6YWpQ7MTO4A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="242029401"
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="242029401"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 16:21:08 -0800
+IronPort-SDR: PSibfXkV2hizFArsysXCiC5SudZv2ZBqRUgnvPs8R6FkG+AComMJUx9Ef1Asa4YULfa+InAK++
+ iK3HKzOGKZNQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="423970879"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga001.jf.intel.com with ESMTP; 11 Jan 2021 16:21:06 -0800
+Date:   Tue, 12 Jan 2021 08:16:15 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Tom Rix <trix@redhat.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        lgoncalv@redhat.com, hao.wu@intel.com, yilun.xu@intel.com
+Subject: Re: [PATCH v5 1/2] fpga: dfl: add the userspace I/O device support
+  for DFL devices
+Message-ID: <20210112001615.GA2775@yilunxu-OptiPlex-7050>
+References: <1609557182-20787-1-git-send-email-yilun.xu@intel.com>
+ <1609557182-20787-2-git-send-email-yilun.xu@intel.com>
+ <X/tfZQz8tCGkabMZ@archbook>
+ <20210111061602.GA13963@yilunxu-OptiPlex-7050>
+ <dae0308c-c991-e079-73c5-68d602005c33@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210111142048.GA27038@linux-8ccs>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <dae0308c-c991-e079-73c5-68d602005c33@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On Mon, Jan 11, 2021 at 03:20:48PM +0100, Jessica Yu wrote:
-> +++ Adam Zabrocki [10/01/21 18:54 +0100]:
-> > Hello,
-> > 
-> > I believe that the following commit does introduce a gentle "functionality
-> > bug":
-> > 
-> > "module: delay kobject uevent until after module init call":
-> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/kernel/module.c?id=38dc717e97153e46375ee21797aa54777e5498f3
-> > 
-> > The official Linux Kernel API for the kernel module activities notification has
-> > been divided based on the readiness 'stage' for such module. We have the
-> > following stages:
-> > 
-> >        MODULE_STATE_LIVE,      /* Normal state. */
-> >        MODULE_STATE_COMING,    /* Full formed, running module_init. */
-> >        MODULE_STATE_GOING,     /* Going away. */
-> >        MODULE_STATE_UNFORMED,  /* Still setting it up. */
-> > 
-> > LIVE means that the kernel module is correctly running and all initialization
-> > work has been already done. Otherwise, we have event 'COMING' or 'UNFORMED'.
-> > 
-> > In the described commit, creation of the KOBJECT has been moved after invoking
-> > a notficiation of the newly formed kernel module state (LIVE). That's somehow
-> > inconsistent from my understanding of the kernel modules notifiers logic.
-> > Creation of the new objects (like KOBJ) should be done before notification of
-> > the stage LIVE is invoked.
+On Mon, Jan 11, 2021 at 06:59:10AM -0800, Tom Rix wrote:
 > 
-> I'm confused. We're not creating any kobjects here. That is all done
-> in mod_sysfs_setup(), which is called while the module is still
-> COMING.  What that commit does is delay telling userspace about the
-> module (specifically, systemd/udev) until the module is basically
-> ready. Systemd was basically receiving the uevent too early, before
-> the module has initialized, hence we decided to delay the uevent [1].
+> On 1/10/21 10:16 PM, Xu Yilun wrote:
+> > On Sun, Jan 10, 2021 at 12:11:17PM -0800, Moritz Fischer wrote:
+> >> On Sat, Jan 02, 2021 at 11:13:01AM +0800, Xu Yilun wrote:
+> >>> This patch supports the DFL drivers be written in userspace. This is
+> >>> realized by exposing the userspace I/O device interfaces.
+> >>>
+> >>> The driver leverages the uio_pdrv_genirq, it adds the uio_pdrv_genirq
+> >>> platform device with the DFL device's resources, and let the generic UIO
+> >>> platform device driver provide support to userspace access to kernel
+> >>> interrupts and memory locations.
+> >>>
+> >>> The driver now supports the ether group feature. To support a new DFL
+> >>> feature been directly accessed via UIO, its feature id should be added to
+> >>> the driver's id_table.
+> >>>
+> >>> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> >>> Reviewed-by: Tom Rix <trix@redhat.com>
+> >>> ---
+> >>> v2: switch to the new matching algorithem. It matches DFL devices which
+> >>>      could not be handled by other DFL drivers.
+> >>>     refacor the code about device resources filling.
+> >>>     fix some comments.
+> >>> v3: split the dfl.c changes out of this patch.
+> >>>     some minor fixes
+> >>> v4: drop the idea of a generic matching algorithem, instead we specify
+> >>>      each matching device in id_table.
+> >>>     to make clear that only one irq is supported, the irq handling code
+> >>>      is refactored.
+> >>> v5: refactor the irq resource code.
+> >>> ---
+> >>>  drivers/fpga/Kconfig        | 10 +++++
+> >>>  drivers/fpga/Makefile       |  1 +
+> >>>  drivers/fpga/dfl-uio-pdev.c | 91 +++++++++++++++++++++++++++++++++++++++++++++
+> >>>  3 files changed, 102 insertions(+)
+> >>>  create mode 100644 drivers/fpga/dfl-uio-pdev.c
+> >>>
+> >>> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+> >>> index 5ff9438..61445be 100644
+> >>> --- a/drivers/fpga/Kconfig
+> >>> +++ b/drivers/fpga/Kconfig
+> >>> @@ -203,6 +203,16 @@ config FPGA_DFL_NIOS_INTEL_PAC_N3000
+> >>>  	  the card. It also instantiates the SPI master (spi-altera) for
+> >>>  	  the card's BMC (Board Management Controller).
+> >>>  
+> >>> +config FPGA_DFL_UIO_PDEV
+> >>> +	tristate "FPGA DFL Driver for Userspace I/O platform devices"
+> >>> +	depends on FPGA_DFL && UIO_PDRV_GENIRQ
+> >>> +	help
+> >>> +	  Enable this to allow some DFL drivers be written in userspace. It
+> >>> +	  adds the uio_pdrv_genirq platform device with the DFL feature's
+> >>> +	  resources, and lets the generic UIO platform device driver provide
+> >>> +	  support for userspace access to kernel interrupts and memory
+> >>> +	  locations.
+> >>> +
+> >>>  config FPGA_DFL_PCI
+> >>>  	tristate "FPGA DFL PCIe Device Driver"
+> >>>  	depends on PCI && FPGA_DFL
+> >>> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
+> >>> index 18dc9885..8847fe0 100644
+> >>> --- a/drivers/fpga/Makefile
+> >>> +++ b/drivers/fpga/Makefile
+> >>> @@ -45,6 +45,7 @@ dfl-afu-objs := dfl-afu-main.o dfl-afu-region.o dfl-afu-dma-region.o
+> >>>  dfl-afu-objs += dfl-afu-error.o
+> >>>  
+> >>>  obj-$(CONFIG_FPGA_DFL_NIOS_INTEL_PAC_N3000)	+= dfl-n3000-nios.o
+> >>> +obj-$(CONFIG_FPGA_DFL_UIO_PDEV)		+= dfl-uio-pdev.o
+> >>>  
+> >>>  # Drivers for FPGAs which implement DFL
+> >>>  obj-$(CONFIG_FPGA_DFL_PCI)		+= dfl-pci.o
+> >>> diff --git a/drivers/fpga/dfl-uio-pdev.c b/drivers/fpga/dfl-uio-pdev.c
+> >>> new file mode 100644
+> >>> index 0000000..a4cd581
+> >>> --- /dev/null
+> >>> +++ b/drivers/fpga/dfl-uio-pdev.c
+> >>> @@ -0,0 +1,91 @@
+> >>> +// SPDX-License-Identifier: GPL-2.0
+> >>> +/*
+> >>> + * DFL driver for Userspace I/O platform devices
+> >>> + *
+> >>> + * Copyright (C) 2020 Intel Corporation, Inc.
+> >>> + */
+> >>> +#include <linux/dfl.h>
+> >>> +#include <linux/errno.h>
+> >>> +#include <linux/kernel.h>
+> >>> +#include <linux/module.h>
+> >>> +#include <linux/platform_device.h>
+> >>> +#include <linux/slab.h>
+> >>> +#include <linux/uio_driver.h>
+> >>> +
+> >>> +#define DRIVER_NAME "dfl-uio-pdev"
+> >>> +
+> >>> +static int dfl_uio_pdev_probe(struct dfl_device *ddev)
+> >>> +{
+> >>> +	struct platform_device_info pdevinfo = { 0 };
+> >>> +	struct uio_info uio_pdata = { 0 };
+> >>> +	struct platform_device *uio_pdev;
+> >>> +	struct device *dev = &ddev->dev;
+> >>> +	unsigned int num_res = 1;
+> >>> +	struct resource res[2];
+> >>> +
+> >>> +	res[0].parent = &ddev->mmio_res;
+> >>> +	res[0].flags = IORESOURCE_MEM;
+> >>> +	res[0].start = ddev->mmio_res.start;
+> >>> +	res[0].end = ddev->mmio_res.end;
+> >>> +
+> >>> +	if (ddev->num_irqs) {
+> >>> +		if (ddev->num_irqs > 1)
+> >>> +			dev_warn(&ddev->dev,
+> >>> +				 "%d irqs for %s, but UIO only supports the first one\n",
+> >>> +				 ddev->num_irqs, dev_name(&ddev->dev));
+> >>> +
+> >>> +		res[1].flags = IORESOURCE_IRQ;
+> >>> +		res[1].start = ddev->irqs[0];
+> >>> +		res[1].end = ddev->irqs[0];
+> >>> +		num_res++;
+> >>> +	}
+> >>> +
+> >>> +	uio_pdata.name = DRIVER_NAME;
+> >>> +	uio_pdata.version = "0";
+> >>> +
+> >>> +	pdevinfo.name = "uio_pdrv_genirq";
+> >>> +	pdevinfo.res = res;
+> >>> +	pdevinfo.num_res = num_res;
+> >>> +	pdevinfo.parent = &ddev->dev;
+> >>> +	pdevinfo.id = PLATFORM_DEVID_AUTO;
+> >>> +	pdevinfo.data = &uio_pdata;
+> >>> +	pdevinfo.size_data = sizeof(uio_pdata);
+> >>> +
+> >>> +	uio_pdev = platform_device_register_full(&pdevinfo);
+> >>> +	if (!IS_ERR(uio_pdev))
+> >>> +		dev_set_drvdata(dev, uio_pdev);
+> >> I'm not sure if this is more readable than:
+> >>
+> >>    	uio_pdev = platform_device_register_full(&pdevinfo);
+> >>    	if (IS_ERR(uio_pdev))
+> >>    		return PTR_ERR(uio_pdev);
+> >>
+> >> 	dev_set_drvdata(dev, uio_pdev);
+> >> 	return 0;
+> >>
+> >> No strong preference, though ... :)
+> > I think your version is more readable, I'll change it.
+> >
+> >>> +
+> >>> +	return PTR_ERR_OR_ZERO(uio_pdev);
+> >>> +}
+> >>> +
+> >>> +static void dfl_uio_pdev_remove(struct dfl_device *ddev)
+> >>> +{
+> >>> +	struct platform_device *uio_pdev = dev_get_drvdata(&ddev->dev);
+> >>> +
+> >>> +	platform_device_unregister(uio_pdev);
+> >>> +}
+> >>> +
+> >>> +#define FME_FEATURE_ID_ETH_GROUP	0x10
+> >>> +
+> >>> +static const struct dfl_device_id dfl_uio_pdev_ids[] = {
+> >>> +	{ FME_ID, FME_FEATURE_ID_ETH_GROUP },
+> >> Will you want to always bind FME_FEATURE_ID_ETH_GROUP? If not I'd suggest not
+> >> to add it here.
+> > Actually this is not the most preferable to me. I'm always looking for a
+> > generic way to bind the uio driver to user assigned dfl devices. But there
+> > is concern that userspace should not be responsible for the device driver
+> > matching in previous mail thread:
+> >
+> > https://lore.kernel.org/linux-fpga/1602828151-24784-2-git-send-email-yilun.xu@intel.com/
+> >
+> > But TBH I still didn't figure out why driver_override is not OK in this
+> > case.
+> >
+> >> If you want to provide an option to somewhat non-ABI fixed bind things
+> >> you could look at what vfio-pci does (provide a module parameter),
+> >> otherwise use sysfs 'new_id' or 'bind'.
+> > I would like to have a "new_id" for dfl bus driver. It is not generic to
+> > all drivers, I need to add the attr for dfl drivers like pci do.
+> >
+> > My concern is how the module param or "new_id" is different from
+> > "driver_override", seems userspace is also taking part in the device
+> > matching.
+> >
+> > But since we've restarted the discussion, I'm very much willing to have
+> > a try on the "new_id".
 > 
-
-Sorry for the confusion on my side. I was referring to the internal state of 
-the KOBJ itself which is being actively modified when uevent is sent. During 
-the module creation KOBJ_ADD modifies 'kobj->state_add_uevent_sent'. Until 
-recent commit, kernel didn't modify KOBJ after sending LIVE notification.
-
-> > This commit breaks some of the projects that rely on the LIVE notification to
-> > monitor when the newly loaded module is ready.
+> I don't believe there is any problem with the basic platform uio driver.
 > 
-> Hm, could you please explain specifically what is the issue you're seeing?
-> What projects is it breaking?
-> 
+> Can we split it out and work the new_id change in parallel ?
 
-I'm specifically referencing these projects which are tracking kernel modules
-for integrity purpose (e.g. anti-rootkit tools) like Linux Kernel Runtime 
-Guard.
-It is possible to modify these tools to adopt and take into account 
-modification of KOBJ after LIVE state notification. However, from my 
-understanding of the kernel modules notifiers logic, KOBJ should be fully 
-formed at this stage.
+Yes. The Ether Group is always bind to the uio driver for Intel PAC
+N3000. So this patch works properly now. We could have a separate patch
+for the new_id.
 
 Thanks,
-Adam
-
-> Thanks,
-> 
-> Jessica
-> 
-> [1] https://github.com/systemd/systemd/issues/17586
-
--- 
-pi3 (pi3ki31ny) - pi3 (at) itsec pl
-http://pi3.com.pl
-
+Yilun
