@@ -2,144 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5527B2F3215
+	by mail.lfdr.de (Postfix) with ESMTP id C28712F3216
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:46:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388593AbhALNoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:44:15 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:42883 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388323AbhALNoL (ORCPT
+        id S2388736AbhALNoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:44:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732978AbhALNoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Jan 2021 08:44:11 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7C6D95C01D6;
-        Tue, 12 Jan 2021 08:43:04 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Tue, 12 Jan 2021 08:43:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=4OnyMZBP3xdS7J3G7RqbMtjxsfB
-        6houuqw2q1oOqhp0=; b=br3p1BvMwiHbXihsb9loRMpTHYznGsbWZH9N+LJRK3e
-        sNwhOhAtUXQyOKYc1kipzgeFCm7qBxinbm0Kplt61uztJSfCcxL0prXkVV3Nydhs
-        RXMxbwdGsCcn5mQ6hEM8LWuBGzpU9r/gTfxPeHa+YwcqfH3h0Q8HP5jc3dKrRJM2
-        MUMRXZ/B59SyiwEKpyOhHcD+N9gBWMjVKXZ0oR1/sd8+DkScfpPbdMi3PIyGbJTR
-        ChVqmaFbk2ULVddIRj0Q5KlVY+S2rV+CBrbvndY2wc5uEI4qHNWsJtjhQgotOBXe
-        j/QO0BhVEWFluER2yWiB4Q0+UOifXIMxTXrYoXP4s9A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=4OnyMZ
-        BP3xdS7J3G7RqbMtjxsfB6houuqw2q1oOqhp0=; b=e5+aVboHLxqcQp8O4XeAwM
-        rE6GYf1QPxzXwFbjxUkGC83ntFKwJTnLpCJB94bERT2oA5APKfGezCK+XqLUL5Ey
-        TnEglBBGpk/I8A1JmfVakGTo0mH2nMKX5LYKgr9Ka/to0Nw96S2XwsNrY/ZkksyT
-        6pptJT8Y+mNgt240YBTalQa/0vOr9S+HdrXIWVDXRO4eXTYOFP46V+dKE4ziN0Sj
-        kEAv5HM0z0twEB15kN59Ht3zjM8ZMNPTZHt8YB3N7Te4PEPzaUH52oMzL728mFAZ
-        p9WB2T7TPOIzxvjXx0aKNkmW/2PlOzNUw8T0x96Jv7jYP/jvJi472k9Vt5yuYNRQ
-        ==
-X-ME-Sender: <xms:Z6f9XyxuayZujUl-QvEjv_wC1gKH8weyG3JUI84vziYFbNs4NMU5WA>
-    <xme:Z6f9X-SMP-EwH9xIo2XR5_p0GCPdyzOx9zo79VkOYXcUVkq5TbvZfPAIHEivT_RKp
-    6RN6HayenmQ4LgGuMA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtddtgddvfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgrshhh
-    ihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-    eqnecuggftrfgrthhtvghrnhepjeegieefueevueefieeggeejledvgfejgeffjefgvdek
-    leehgfdtfeetjeelkeejnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucfkphepud
-    dukedrvdegfedrjeekrdehkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
-    mhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:Z6f9X0UtNJIj4lVLcuaXXJwnTpG_WbeSyHIMIzfuhkO5Cis3u6JO4A>
-    <xmx:Z6f9X4iwYveNfs5zRUI7c9EZLYTwLq6Ab-DR3UqMWdW409hertBwdg>
-    <xmx:Z6f9X0AeQ-mj1F2ZcWScIsN2MDnys6-b-kbmWn2VxvVJQAxeUxayOA>
-    <xmx:aKf9X3PD52cGLbqmJNwtG-WACSF4DeNWMLqjK88ELeq6h-VV8S9Q9A>
-Received: from workstation (y078058.dynamic.ppp.asahi-net.or.jp [118.243.78.58])
-        by mail.messagingengine.com (Postfix) with ESMTPA id DE939108005C;
-        Tue, 12 Jan 2021 08:43:01 -0500 (EST)
-Date:   Tue, 12 Jan 2021 22:42:59 +0900
-From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Clemens Ladisch <clemens@ladisch.de>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH/RFC 2/2] ALSA: firewire-tascam: Fix integer overflow in
- midi_port_work()
-Message-ID: <20210112134259.GA44140@workstation>
-Mail-Followup-To: Geert Uytterhoeven <geert+renesas@glider.be>,
-        Clemens Ladisch <clemens@ladisch.de>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20210111130251.361335-1-geert+renesas@glider.be>
- <20210111130251.361335-3-geert+renesas@glider.be>
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF84C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:43:31 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id m4so1182891wrx.9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:43:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=7GPaHBbgnyk5B3N5fI+9q+MKf1p8x47yjYJoIegUJJE=;
+        b=T0X7tbY2aa3ykx2c3EoOKFFN975w4TkCn4oK8TOIwtqXxVudL1OJaJ+cg2vjxG8mwN
+         GofBdRyGaZ4y5Gd3vxwsigr5+FZA8wi3W5mOBbhaATFC/gVgf7+EscxFQ4Sj2ZLR88rR
+         NVlJaHKlMmGMB13G23xEISd67laLcqzvwgyL8qP0zesmcqjSC5DTehToKlfqAID7zRQQ
+         +5/04pzaCpIIqYkPqGsVm+e8T8UfX3e3pKkrXS1emn/Ri42Jt+8dhBkZ8xw6FoQKk5tR
+         pjEjoTPD4Hp2ywks+xsjWhqYGZq2Q4NLbp0GFFp0iilLiIK/AQm9BDoKUvPtYq6rISAA
+         JgFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=7GPaHBbgnyk5B3N5fI+9q+MKf1p8x47yjYJoIegUJJE=;
+        b=eH3urEADMFpkGWuZBGdoMaTm/Qv5Ly97AKKyzw/ywxQ6g4HcicDNI7JLzZ3OlWtwu1
+         YU+xj1AJWtvmLls6aue46ZqZZykg73edKMN6Jmo/7Ts0FQaxVnHe7WRqSb5Th4v7aoCs
+         c/bgtGvHlpwq+fjtfkiLIttSx3oCZF6d4gX2Yc4giGMg0C2jb6q3zywD3a8YzOfQxjgI
+         1dCG0s5IF8e9wkm8PHHGxGxcoTMrinldS8VKeUbQzV6sgKihIusztWuRwXlqLa9mDpJ/
+         De2wEi74utehGQDs2qIvDtRA6lqeBRXce+kEkWsXVZnfJLqCD19cxGbsqFL+JYgLO/rJ
+         hggA==
+X-Gm-Message-State: AOAM531BF2ED/GyJ+hbSdOBTGkAQ4KR4gmwCD2lw6EBKTfbEci6wBaEs
+        5KS18s7KHrzdDY7UFUuvIrT4DwpFmJaXPMm5
+X-Google-Smtp-Source: ABdhPJw5kBWvWbhmvaWdRe/7kzStPjXQq/PxsdoyNcKzNP+Z+LDSIlF/LpVp1cQg7r47k3Cb+8STSA==
+X-Received: by 2002:adf:e406:: with SMTP id g6mr4433015wrm.255.1610459009830;
+        Tue, 12 Jan 2021 05:43:29 -0800 (PST)
+Received: from dell ([91.110.221.229])
+        by smtp.gmail.com with ESMTPSA id p15sm5033694wrt.15.2021.01.12.05.43.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 05:43:28 -0800 (PST)
+Date:   Tue, 12 Jan 2021 13:43:27 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     linux-kernel@vger.kernel.org,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 14/40] drm/amd/display/dc/calcs/dce_calcs: Remove some
+ large variables from the stack
+Message-ID: <20210112134327.GC3575260@dell>
+References: <20210111191926.3688443-1-lee.jones@linaro.org>
+ <20210111191926.3688443-15-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210111130251.361335-3-geert+renesas@glider.be>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210111191926.3688443-15-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 11 Jan 2021, Lee Jones wrote:
 
-On Mon, Jan 11, 2021 at 02:02:51PM +0100, Geert Uytterhoeven wrote:
-> As snd_fw_async_midi_port.consume_bytes is unsigned int, and
-> NSEC_PER_SEC is 1000000000L, the second multiplication in
+> Fixes the following W=1 kernel build warning(s):
 > 
->     port->consume_bytes * 8 * NSEC_PER_SEC / 31250
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c: In function ‘bw_calcs_init’:
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:2726:1: warning: the frame size of 1336 bytes is larger than 1024 bytes [-Wframe-larger-than=]
 > 
-> always overflows on 32-bit platforms, truncating the result.  Fix this
-> by precalculating "NSEC_PER_SEC / 31250", which is an integer constant.
-> 
-> Note that this assumes port->consume_bytes <= 16777.
-> 
-> Fixes: 531f471834227d03 ("ALSA: firewire-lib/firewire-tascam: localize async midi port")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian König" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 > ---
-> Compile-tested only.
+>  .../gpu/drm/amd/display/dc/calcs/dce_calcs.c  | 1115 +++++++++--------
+>  1 file changed, 560 insertions(+), 555 deletions(-)
 > 
-> I don't know the maximum transfer length of MIDI, but given it's an old
-> standard, I guess it's rather small.  If it is larger than 16777, the
-> constant "8" should be replaced by "8ULL", to force 64-bit arithmetic.
-> ---
->  sound/firewire/tascam/tascam-transaction.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
- 
-Indeed. The calculation brings integer overflow of 32 bit storage. Thanks
-for your care and proposal of the patch. I agree with the intension of
-patch, however I have a nitpicking that the consume_bytes member is
-defined as 'int', not 'unsigned int' in your commit comment.
-
-The member has value returned from the call of 'fill_message()'[1] for the
-length of byte messages in buffer to process, or for error code. The
-error code is checked immediately. The range of value is equal to
-or less than 3 when reaching the calculation, thus it should be less than
-16777.
-
-Regardless of the type of 'int' or 'unsigned int', this patch can fix
-the issued problem. Feel free to add my tag when you post second version
-with comment fix.
-
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-
-> diff --git a/sound/firewire/tascam/tascam-transaction.c b/sound/firewire/tascam/tascam-transaction.c
-> index 90288b4b46379526..a073cece4a7d5e3a 100644
-> --- a/sound/firewire/tascam/tascam-transaction.c
-> +++ b/sound/firewire/tascam/tascam-transaction.c
-> @@ -209,7 +209,7 @@ static void midi_port_work(struct work_struct *work)
+> diff --git a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c b/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
+> index a0c69fae40ced..f69c2b84d432b 100644
+> --- a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
+> +++ b/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
+> @@ -2035,707 +2035,712 @@ void bw_calcs_init(struct bw_calcs_dceip *bw_dceip,
+>  	struct bw_calcs_vbios *bw_vbios,
+>  	struct hw_asic_id asic_id)
+>  {
+> -	struct bw_calcs_dceip dceip = { 0 };
+> -	struct bw_calcs_vbios vbios = { 0 };
+> +	struct bw_calcs_dceip *dceip;
+> +	struct bw_calcs_vbios *vbios;
 >  
->  	/* Set interval to next transaction. */
->  	port->next_ktime = ktime_add_ns(ktime_get(),
-> -				port->consume_bytes * 8 * NSEC_PER_SEC / 31250);
-> +			port->consume_bytes * 8 * (NSEC_PER_SEC / 31250));
+>  	enum bw_calcs_version version = bw_calcs_version_from_asic_id(asic_id);
 >  
->  	/* Start this transaction. */
->  	port->idling = false;
-> -- 
-> 2.25.1
+> -	dceip.version = version;
+> +	dceip = kzalloc(sizeof(dceip), GFP_KERNEL);
+> +	vbios = kzalloc(sizeof(vbios), GFP_KERNEL);
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/tree/sound/firewire/tascam/tascam-transaction.c#n197
+Please don't review/merge this yet.  I missed some error checking.
 
-Thanks
-
-Takashi Sakamoto
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
