@@ -2,91 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00BB82F29DD
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7112F29DE
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392291AbhALITT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 03:19:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41768 "EHLO
+        id S2392303AbhALITp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 03:19:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392247AbhALITS (ORCPT
+        with ESMTP id S1732825AbhALITo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 03:19:18 -0500
-Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44205C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:18:36 -0800 (PST)
-Received: by mail-qt1-x832.google.com with SMTP id z20so1069482qtq.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:18:36 -0800 (PST)
+        Tue, 12 Jan 2021 03:19:44 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC05C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:19:04 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id m13so1842145ljo.11
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:19:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2O4oVCcY5rd2IeP/z10VBhkIJpOFPjzFWez+q+L4HJw=;
-        b=vUtmN33he1absWSIk8T5Hy/Rn2xKLJBbD3vu62LbyvKvQrutrL+COtZNriH2/oqwKb
-         +1T4Ds7sEblVyoTZRJvoYXkCy/bCMZbotiya2xYYphm6bW96Ok1+MInaL/093FxWbdu1
-         DJmP+uPuvS/rGfZ21DJEdwRMPjbBxGRMUtXY0d/xX+GqqYSZ7SpsFf9/VIyUEB5zNY2N
-         yfcZFwZeGPWz6hUDq/VV+3qnU9AdllYux0Cy/9h8WS6gxk8gPKRzU4P02Zop1h3PprjH
-         viczQ1ojLSDC6A5Fhdbfxezk9ovpaFTADg/6fMoKRhTl08ThOFOL1S3IdBmVWijZLH4x
-         kdcA==
+        bh=oEYwmc3G8F2SI0zKsqUFCRO5ynw/Nc8fZS+jyp0Vcxk=;
+        b=smN0x4+EfNbQcST1EEmM5ryTTNIVW++c5Gfzkm8WxwfJWZE8iCKRq2f0NxuS27+4sP
+         yaB+qzAASLJdsMAej1Gu2V87qS5TWeo3t0Y6oyQho6szn5M74IQDkd39LND6JLWOchnt
+         iXVmHVYE25+gLTDXzxQuLYtWFdu54dN9PKKX/rMGJWsn1aMMw9NKjmud8R0hEZ7vxsI9
+         4d7JOI/e4qlWo9aVxjO+e8EvdWekCtDIH+6WM6VMOkjrDeTTFoD6snuMlDs/sBtzcz+F
+         2dGrVLB5IwWIgzy0b+HZWaBXekdVCq9/vSAZbRU0/VbtQgraVUZVJu0fqu98lL/YDkoR
+         rnjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2O4oVCcY5rd2IeP/z10VBhkIJpOFPjzFWez+q+L4HJw=;
-        b=gBStDHquZOrLPYQwep+xmphVUS8BiOVBePzIX+I7o7/XLTUNw44LTr4zjptJQGAtqL
-         4yQieREtoNKuc8Qu1Vv8zOdBLmHKPDo/dg2kPkIae7EkD1RrtwG4QKPVlG2I2tn2RkwP
-         USSE+Cs990JIxKU/w4x1eV+cH0/0mJa6kCska+ReYCQ0ebWzYooNt3mKSdAoWHIevPX+
-         aKKsowf9Up4tYepcfn91EogTcLsjlSizjtmZZ6WiAiqFyhMttcpH4i1O8dYReBOJwT4d
-         I1/bJPDu0RnT1bfR0I9jnG2ir/ng9XiUrYz9myk8OhpMvvREGVRaHYggPYO/qauWWf2Y
-         eK5Q==
-X-Gm-Message-State: AOAM531opo4hQvvA6aDzgD/Ft1EjWxXNWfV5YSQETCN8KGTK2H/Agj22
-        zXEG8O0CX5bDH8IujJasgWIrBwhlLeY08TzNG9H79g==
-X-Google-Smtp-Source: ABdhPJwDvS6XK8nVNZVXoR6ZYl97fk9N3dt0lEOcbwDGnr9y6hCPY5xR/Akfv7n+oIdi7Btxwd7tfnhfavX3rRpl01g=
-X-Received: by 2002:ac8:7512:: with SMTP id u18mr3452445qtq.300.1610439515331;
- Tue, 12 Jan 2021 00:18:35 -0800 (PST)
+        bh=oEYwmc3G8F2SI0zKsqUFCRO5ynw/Nc8fZS+jyp0Vcxk=;
+        b=Uq8NBIzoiAp9CpjXiPZ5KCjpRIsd8F0iN4mF/jvOA/VXhdFcu7iQNVFHxkx7l9thgG
+         ZyuRCQ3/KBhxAXhoITEwW/tjHdTrmbhnieYjuX/8eqUi1Rc+hOqVKcbvIw9Kfq0C4Qlv
+         ieXY6s+SF+VTodPIKWNWGH3L63nrVlLgVYG0AIrB8ruGq/N9plVZARvxzIxUv18FSzl3
+         ZEjFVWweq/mO73Tko4SHkL2OQH2F/IRUXr3nUO9GqVo8E2Sxw9NlMEfEfFplPXH69FL7
+         2dsPibCiU7/73oI4PsEMi3JTJuD+MKiQLF/1UnqxfPJXBDgWrdQsXLaEAzGSucE295A5
+         bhPg==
+X-Gm-Message-State: AOAM5313TBZmXsJHwg/aZ9s1VXU8aR5eyjTsVigv3V3l7o+ZAC4x31TW
+        GaMcvtnk80QAfKH+ibp5f100KxY9t2rwlGI6G5H/0w==
+X-Google-Smtp-Source: ABdhPJyM8XVzWgLsU+yIzNScNsXLTtOCVV9yYd+ZGmXQo9n5zleiOPRH6ExuAg+FXyxdpeoemFQP9N+uXaqoV/4Dw6o=
+X-Received: by 2002:a05:651c:20b:: with SMTP id y11mr1443010ljn.176.1610439542317;
+ Tue, 12 Jan 2021 00:19:02 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1609871239.git.andreyknvl@google.com> <a37dab02f89ad93cc986a87866da74fb8be1850d.1609871239.git.andreyknvl@google.com>
-In-Reply-To: <a37dab02f89ad93cc986a87866da74fb8be1850d.1609871239.git.andreyknvl@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Tue, 12 Jan 2021 09:18:24 +0100
-Message-ID: <CAG_fn=Uqp6dt5VGF8Dt6FeQzDgcEbVY8fs+5+wyMp2d1Z98sEw@mail.gmail.com>
-Subject: Re: [PATCH 07/11] kasan: add compiler barriers to KUNIT_EXPECT_KASAN_FAIL
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <1608710968-31475-1-git-send-email-ultrachin@163.com>
+ <CAKfTPtA9zdU76Q6AyjB8_gqvAm8SP_N0rJuydQdNFbDAKSb2jw@mail.gmail.com>
+ <1fefea2e.70bf.176f08d9fae.Coremail.ultrachin@163.com> <CAKfTPtDWARbx=xqwr47iFkEMVo7=+5_o_gMX+h=gAcXZP341oA@mail.gmail.com>
+ <61e22917.538b.176f56231f6.Coremail.ultrachin@163.com>
+In-Reply-To: <61e22917.538b.176f56231f6.Coremail.ultrachin@163.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 12 Jan 2021 09:18:51 +0100
+Message-ID: <CAKfTPtCSra_kfncR7J_7ona+8MoO0ZX8uTEXvZ7PU7C0pYiM5w@mail.gmail.com>
+Subject: Re: [PATCH] sched: pull tasks when CPU is about to run SCHED_IDLE tasks
+To:     chin <ultrachin@163.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        heddchen@tencent.com,
+        =?UTF-8?B?eGlhb2dnY2hlbijpmYjlsI/lhYkp?= <xiaoggchen@tencent.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 7:28 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+On Tue, 12 Jan 2021 at 07:59, chin <ultrachin@163.com> wrote:
 >
-> It might not be obvious to the compiler that the expression must be
-> executed between writing and reading to fail_data. In this case, the
-> compiler might reorder or optimize away some of the accesses, and
-> the tests will fail.
+>
+>
+>
+> At 2021-01-11 19:04:19, "Vincent Guittot" <vincent.guittot@linaro.org> wrote:
+> >On Mon, 11 Jan 2021 at 09:27, chin <ultrachin@163.com> wrote:
+> >>
+> >>
+> >> At 2020-12-23 19:30:26, "Vincent Guittot" <vincent.guittot@linaro.org> wrote:
+> >> >On Wed, 23 Dec 2020 at 09:32, <ultrachin@163.com> wrote:
+> >> >>
+> >> >> From: Chen Xiaoguang <xiaoggchen@tencent.com>
+> >> >>
+> >> >> Before a CPU switches from running SCHED_NORMAL task to
+> >> >> SCHED_IDLE task, trying to pull SCHED_NORMAL tasks from other
+> >> >
+> >> >Could you explain more in detail why you only care about this use case
+> >>
+> >> >in particular and not the general case?
+> >>
+> >>
+> >> We want to run online tasks using SCHED_NORMAL policy and offline tasks
+> >> using SCHED_IDLE policy. The online tasks and the offline tasks run in
+> >> the same computer in order to use the computer efficiently.
+> >> The online tasks are in sleep in most times but should responce soon once
+> >> wake up. The offline tasks are in low priority and will run only when no online
+> >> tasks.
+> >>
+> >> The online tasks are more important than the offline tasks and are latency
+> >> sensitive we should make sure the online tasks preempt the offline tasks
+> >> as soon as possilbe while there are online tasks waiting to run.
+> >> So in our situation we hope the SCHED_NORMAL to run if has any.
+> >>
+> >> Let's assume we have 2 CPUs,
+> >> In CPU1 we got 2 SCHED_NORMAL tasks.
+> >> in CPU2 we got 1 SCHED_NORMAL task and 2 SCHED_IDLE tasks.
+> >>
+> >>              CPU1                      CPU2
+> >>         curr       rq1            curr          rq2
+> >>       +------+ | +------+       +------+ | +----+ +----+
+> >> t0    |NORMAL| | |NORMAL|       |NORMAL| | |IDLE| |IDLE|
+> >>       +------+ | +------+       +------+ | +----+ +----+
+> >>
+> >>                                  NORMAL exits or blocked
+> >>       +------+ | +------+                | +----+ +----+
+> >> t1    |NORMAL| | |NORMAL|                | |IDLE| |IDLE|
+> >>       +------+ | +------+                | +----+ +----+
+> >>
+> >>                                  pick_next_task_fair
+> >>       +------+ | +------+         +----+ | +----+
+> >> t2    |NORMAL| | |NORMAL|         |IDLE| | |IDLE|
+> >>       +------+ | +------+         +----+ | +----+
+> >>
+> >>                                  SCHED_IDLE running
+> >> t3    +------+ | +------+        +----+  | +----+
+> >>       |NORMAL| | |NORMAL|        |IDLE|  | |IDLE|
+> >>       +------+ | +------+        +----+  | +----+
+> >>
+> >>                                  run_rebalance_domains
+> >>       +------+ |                +------+ | +----+ +----+
+> >> t4    |NORMAL| |                |NORMAL| | |IDLE| |IDLE|
+> >>       +------+ |                +------+ | +----+ +----+
+> >>
+> >> As we can see
+> >> t1: NORMAL task in CPU2 exits or blocked
+> >> t2: CPU2 pick_next_task_fair would pick a SCHED_IDLE to run while
+> >> another SCHED_NORMAL in rq1 is waiting.
+> >> t3: SCHED_IDLE run in CPU2 while a SCHED_NORMAL wait in CPU1.
+> >> t4: after a short time, periodic load_balance triggerd and pull
+> >> SCHED_NORMAL in rq1 to rq2, and SCHED_NORMAL likely preempts SCHED_IDLE.
+> >>
+> >> In this scenario, SCHED_IDLE is running while SCHED_NORMAL is waiting to run.
+> >> The latency of this SCHED_NORMAL will be high which is not acceptble.
+> >>
+> >> Do a load_balance before running the SCHED_IDLE may fix this problem.
+> >>
+> >> This patch works as below:
+> >>
+> >>              CPU1                      CPU2
+> >>         curr       rq1            curr          rq2
+> >>       +------+ | +------+       +------+ | +----+ +----+
+> >> t0    |NORMAL| | |NORMAL|       |NORMAL| | |IDLE| |IDLE|
+> >>       +------+ | +------+       +------+ | +----+ +----+
+> >>
+> >>                                  NORMAL exits or blocked
+> >>       +------+ | +------+                | +----+ +----+
+> >> t1    |NORMAL| | |NORMAL|                | |IDLE| |IDLE|
+> >>       +------+ | +------+                | +----+ +----+
+> >>
+> >> t2                            pick_next_task_fair (all se are SCHED_IDLE)
+> >>
+> >>                                  newidle_balance
+> >>       +------+ |                 +------+ | +----+ +----+
+> >> t3    |NORMAL| |                 |NORMAL| | |IDLE| |IDLE|
+> >>       +------+ |                 +------+ | +----+ +----+
+> >>
+> >>
+> >> t1: NORMAL task in CPU2 exits or blocked
+> >> t2: pick_next_task_fair check all se in rbtree are SCHED_IDLE and calls
+> >> newidle_balance who tries to pull a SCHED_NORMAL(if has).
+> >> t3: pick_next_task_fair would pick a SCHED_NORMAL to run instead of
+> >> SCHED_IDLE(likely).
+> >>
+> >> >
+> >> >> CPU by doing load_balance first.
+> >> >>
+> >> >> Signed-off-by: Chen Xiaoguang <xiaoggchen@tencent.com>
+> >> >> Signed-off-by: Chen He <heddchen@tencent.com>
+> >> >> ---
+> >> >>  kernel/sched/fair.c | 5 +++++
+> >> >>  1 file changed, 5 insertions(+)
+> >> >>
+> >> >> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> >> >> index ae7ceba..0a26132 100644
+> >> >> --- a/kernel/sched/fair.c
+> >> >> +++ b/kernel/sched/fair.c
+> >> >> @@ -7004,6 +7004,11 @@ struct task_struct *
+> >> >>         struct task_struct *p;
+> >> >>         int new_tasks;
+> >> >>
+> >> >> +       if (prev &&
+> >> >> +           fair_policy(prev->policy) &&
+> >> >
+> >> >Why do you need a prev and fair task  ? You seem to target the special
+> >> >case of pick_next_task  but in this case why not only testing rf!=null
+> >> > to make sure to not return immediately after jumping to the idle
+> >>
+> >> >label?
+> >> We just want to do load_balance only when CPU switches from SCHED_NORMAL
+> >> to SCHED_IDLE.
+> >> If not check prev, when the running tasks are all SCHED_IDLE, we would
+> >> do newidle_balance everytime in pick_next_task_fair, it makes no sense
+> >> and kind of wasting.
+> >
+> >I agree that calling newidle_balance every time pick_next_task_fair is
+> >called when there are only sched_idle tasks is useless.
+> >But you also have to take into account cases where there was another
+> >class of task running on the cpu like RT one. In your example above,
+> >if you replace the normal task on CPU2 by a RT task, you still want to
+>
+> >pick the normal task on CPU1 once RT task goes to sleep.
+> Sure, this case should be taken into account,  we should also try to
+> pick normal task in this case.
+>
+> >
+> >Another point that you will have to consider the impact on
+> >rq->idle_stamp because newidle_balance is assumed to be called before
+>
+> >going idle which is not the case anymore with your use case
+> Yes. rq->idle_stamp should not be changed in this case.
+>
+>
+>
+> Actually we want to pull a SCHED_NORMAL task (if possible) to run when a cpu is
+> about to run SCHED_IDLE task. But currently newidle_balance is not
+> designed for SCHED_IDLE  so SCHED_IDLE can also be pulled which
+> is useless in our situation.
 
-Have you seen this happen in practice?
-Are these accesses to fail_data that are optimized (in which case we
-could make it volatile), or some part of the expression?
-Note that compiler barriers won't probably help against removing
-memory accesses, they only prevent reordering.
+newidle_balance will pull a sched_idle task only if there is an
+imbalance which is the right thing to do IMO to ensure fairness
+between sched_idle tasks.  Being a sched_idle task doesn't mean that
+we should break the fairness
 
-> +       barrier();                                              \
->         expression;                                             \
-> +       barrier();                                              \
+>
+> So we plan to add a new function sched_idle_balance which only try to
+> pull SCHED_NORMAL tasks from the busiest cpu. And we will call
+> sched_idle_balance when the previous task is normal or RT and
+> hoping we can pull a SCHED_NORMAL task to run.
+>
+> Do you think it is ok to add a new sched_idle_balance?
 
-The need for barriers is not obvious to the reader, so a comment in
-the code clarifying that would be nice.
+I don't see any reason why the scheduler should not pull a sched_idle
+task if there is an imbalance. That will happen anyway during the next
+periodic load balance
+
+>
+> >
+> >>
+> >> >
+> >>
+> >> >Also why not doing that for default case too ? i.e. balance_fair() ?
+> >> You are right, if you think this scenario makes sense, we will send a
+> >> refined patch soon :-)
+> >>
+> >> >
+> >> >> +           sched_idle_cpu(rq->cpu))
+> >> >> +               goto idle;
+> >> >> +
+> >> >>  again:
+> >> >>         if (!sched_fair_runnable(rq))
+> >> >>                 goto idle;
+> >> >> --
+> >> >> 1.8.3.1
+> >> >>
+> >> >>
