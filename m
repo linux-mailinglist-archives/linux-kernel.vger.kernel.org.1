@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B722F2FA4
+	by mail.lfdr.de (Postfix) with ESMTP id 900E62F2FA5
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:58:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403832AbhALM5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:57:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53814 "EHLO mail.kernel.org"
+        id S2403934AbhALM5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:57:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390236AbhALM5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:57:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98F692313C;
-        Tue, 12 Jan 2021 12:56:21 +0000 (UTC)
+        id S2403844AbhALM5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:57:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3433B23339;
+        Tue, 12 Jan 2021 12:56:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610456182;
-        bh=AR00w8oAd+3YM+3Yohx10hcG4J7Jqsm4OVgaDygvR5k=;
+        s=k20201202; t=1610456192;
+        bh=atM/We5CsFzw3dFfBXTIftb+fTP0t+mUCTgaENwNCyA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dD+UVgT0IdIEHIG6kIHO3gziaLD6jvEPvbRVDPuMjEo/A2oUUjwsPC4+j7qTOwa1X
-         jYr418dfXkCv+RASnxfTvsi6vk8GAJZzEN8SIX3CLazbL4hm4Tcm3B9fXmbp+LJ5xA
-         vAILyGZfgwBbNUGqzwh6qEKtEEm7UHp36JBsQaL3+XR+IM1zbA4woVS/kB++9yg5+1
-         7c81BvuLITtmLH4mNhcQ+hV1pmbImLGIJr3AYxSnSc3Ic+RcP3a6O85D41S45ZYM0r
-         pDOAouxEZmZh5oHuARrgUyrzJP6ACTZsw9378y2LKQ87khiD+WsfoZNZkHni8+SHzC
-         x72TRhVZkT7bA==
+        b=FEZZ8B2NN1srkM4m/lUuwASw+1abM0tKgK8x9j7n2s/M/ci8S3sQSLSpYAZtMVGE8
+         MYDSEZ8kX4Sk6BLnSNss5sf7MVsRTFH2/Opm0Y5O3A7ZzP6owWV2mCsdgU80dJgVO0
+         4ClJRWXFZtBjLiyAQpXzD9XZCrDpRfAdfkTlNcbsAfAGCG9PdCo9i4ag0xapfDi8b8
+         yFB+01Al7mSIxFG770IkvT6qxhAw0lwyNSbxikPGC8FnrJv4wrBMMceFYZcL3XbfE2
+         vIjdJc53op/Hkl+bB68JYLXtxvZcNnqmac+9icMS+G+eyqkF+RLpgLBSqBgmUqxAdS
+         c6gLD19RwXmqw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 36/51] net: ethernet: fs_enet: Add missing MODULE_LICENSE
-Date:   Tue, 12 Jan 2021 07:55:18 -0500
-Message-Id: <20210112125534.70280-36-sashal@kernel.org>
+Cc:     Xiaojian Du <Xiaojian.Du@amd.com>, Huang Rui <ray.huang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.10 43/51] drm/amd/pm: fix the failure when change power profile for renoir
+Date:   Tue, 12 Jan 2021 07:55:25 -0500
+Message-Id: <20210112125534.70280-43-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210112125534.70280-1-sashal@kernel.org>
 References: <20210112125534.70280-1-sashal@kernel.org>
@@ -44,46 +43,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Xiaojian Du <Xiaojian.Du@amd.com>
 
-[ Upstream commit 445c6198fe7be03b7d38e66fe8d4b3187bc251d4 ]
+[ Upstream commit 44cb39e19a05ca711bcb6e776e0a4399223204a0 ]
 
-Since commit 1d6cd3929360 ("modpost: turn missing MODULE_LICENSE()
-into error") the ppc32_allmodconfig build fails with:
+This patch is to fix the failure when change power profile to
+"profile_peak" for renoir.
 
-  ERROR: modpost: missing MODULE_LICENSE() in drivers/net/ethernet/freescale/fs_enet/mii-fec.o
-  ERROR: modpost: missing MODULE_LICENSE() in drivers/net/ethernet/freescale/fs_enet/mii-bitbang.o
-
-Add the missing MODULE_LICENSEs to fix the build. Both files include a
-copyright header indicating they are GPL v2.
-
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Xiaojian Du <Xiaojian.Du@amd.com>
+Reviewed-by: Huang Rui <ray.huang@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c | 1 +
- drivers/net/ethernet/freescale/fs_enet/mii-fec.c     | 1 +
+ drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c | 1 +
+ drivers/gpu/drm/amd/pm/swsmu/smu12/smu_v12_0.c  | 1 +
  2 files changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c b/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
-index c8e5d889bd81f..21de56345503f 100644
---- a/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
-+++ b/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
-@@ -223,3 +223,4 @@ static struct platform_driver fs_enet_bb_mdio_driver = {
- };
- 
- module_platform_driver(fs_enet_bb_mdio_driver);
-+MODULE_LICENSE("GPL");
-diff --git a/drivers/net/ethernet/freescale/fs_enet/mii-fec.c b/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
-index 8b51ee142fa3c..152f4d83765aa 100644
---- a/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
-+++ b/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
-@@ -224,3 +224,4 @@ static struct platform_driver fs_enet_fec_mdio_driver = {
- };
- 
- module_platform_driver(fs_enet_fec_mdio_driver);
-+MODULE_LICENSE("GPL");
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c
+index 66c1026489bee..425c48e100e4f 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c
++++ b/drivers/gpu/drm/amd/pm/swsmu/smu12/renoir_ppt.c
+@@ -188,6 +188,7 @@ static int renoir_get_dpm_clk_limited(struct smu_context *smu, enum smu_clk_type
+ 			return -EINVAL;
+ 		*freq = clk_table->SocClocks[dpm_level].Freq;
+ 		break;
++	case SMU_UCLK:
+ 	case SMU_MCLK:
+ 		if (dpm_level >= NUM_FCLK_DPM_LEVELS)
+ 			return -EINVAL;
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu12/smu_v12_0.c b/drivers/gpu/drm/amd/pm/swsmu/smu12/smu_v12_0.c
+index 660f403d5770c..7907c9e0b5dec 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/smu12/smu_v12_0.c
++++ b/drivers/gpu/drm/amd/pm/swsmu/smu12/smu_v12_0.c
+@@ -222,6 +222,7 @@ int smu_v12_0_set_soft_freq_limited_range(struct smu_context *smu, enum smu_clk_
+ 	break;
+ 	case SMU_FCLK:
+ 	case SMU_MCLK:
++	case SMU_UCLK:
+ 		ret = smu_cmn_send_smc_msg_with_param(smu, SMU_MSG_SetHardMinFclkByFreq, min, NULL);
+ 		if (ret)
+ 			return ret;
 -- 
 2.27.0
 
