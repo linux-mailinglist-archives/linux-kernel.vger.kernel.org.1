@@ -2,183 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E2F2F3495
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F304D2F34AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:52:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405624AbhALPsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 10:48:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53802 "EHLO
+        id S2392149AbhALPwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 10:52:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404991AbhALPsB (ORCPT
+        with ESMTP id S2392116AbhALPwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:48:01 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA2AC061575;
-        Tue, 12 Jan 2021 07:47:21 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id v3so1581082plz.13;
-        Tue, 12 Jan 2021 07:47:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LUV6Ra+1gHnPMGTHHEeVWGU6ZIJCwcoEdn1PhsWkOrY=;
-        b=dsGYO+bwa60VxX6utSG9a9nnvGP7WNVoZloNeeNVK0TOm6xhw+uUIyEqGPC5l8+shy
-         6ppMTxcuLP3anazWBVH5sX431LU3VAFipuJC/EhaQBFGxSysebfY18DWbzCo1ytXkv5I
-         CWUTAFidBOb8QHj1gTAJKutpHf19cLzsUcCaW1SOMfeJtMsIZzIBOUtoBYXjxJlEDE/H
-         yFN+0fU7dXwj+GxvKUgA3RpDgy1/OcWdj4rC6rxXsvhV00BKiy0/YcgJ+FjLsylSx0Jr
-         bmXTyNDNGjzLTp2qFzSCk/HnssfBk9c/f8ZG8msauGUk8xqG9iqqCyfY/K8UWGPlRnsr
-         +4nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LUV6Ra+1gHnPMGTHHEeVWGU6ZIJCwcoEdn1PhsWkOrY=;
-        b=LMraMia9BKXxq+jnNdbNQWi3DOsqQmPQ6/1q13n7N5N62U+seCoaPy44qe1ST9giKO
-         2WOdvjf/JPo4XJQIZKhrkHYor3OHY2wqR6YRCRsQlWNyjQJT6X6Gdo+zJz0SN/Jx5kqc
-         cjI1SmK48dBBKM6zBIvaaBOecqNxK14fESkT6Tvk2/GqGz7Sc09PGqBNKoLODfYhkG/g
-         81btQibZfN+N7oIZjaK9xZEL3O0h09bspuhU7khcyPVgYw2bvUKc4oMEdl9+3t5KKP5g
-         4dMT7yNVpiM40CTFmB5VKrpC7WYY/x5RDChsFllo4YUunoXOVi7sKDVczNaC0Mm0vbnD
-         WYMg==
-X-Gm-Message-State: AOAM5306FXTIDnDwESi0E9ipRIfiR9ewIN2fSV0/aARYVHSSpOVEsw8y
-        bbk47XBz4kPMmYQrsxvmZ5NXYEEwKtNWRjkLNjI=
-X-Google-Smtp-Source: ABdhPJwrpjrkIkwoENuRFLz4GRvxuPBgIcvj3r9erx9frMs2YOytFtMOsVoKAR4bANCHlXYIisd7EHA1QBXNEPjseZQ=
-X-Received: by 2002:a17:902:c244:b029:da:e63c:cede with SMTP id
- 4-20020a170902c244b02900dae63ccedemr48014plg.0.1610466440771; Tue, 12 Jan
- 2021 07:47:20 -0800 (PST)
+        Tue, 12 Jan 2021 10:52:36 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD54FC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 07:51:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gim+qVUIy+YTuGbuf9gtf9FkJhhXyt5UHhPAjQDuG0Q=; b=GvaZoBBCHnTovmb2kCHXIDg2yI
+        fqdDk8VFVdxvIZI2hB2zlRJw6vxIbRdnLNw3fzSBAe82dlDmB5ovke4Fc8l6Xa+yC3L9bIW3apdro
+        LTgNzijrHiYCVAzDkWY+6WxUn2chSHr0KKWx+JJX/RTK1U/VCSxfM9p6iBn1qi2W6AunFe1mOgmUd
+        33dznP3iYL/WMQTt7yMvupuNcPm2SFr816U66yHld6vuh/5CC2lbqAyjg1uwKApyEfe6O/cdXXJuQ
+        ArA4OmK3CshRnCJLduWhfUdBrLNZA71E6gbR1miLBYbyvbUrDE2PS1yoynAfymcmj2nuP9gnsJf2e
+        oMaix2cg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1kzLwp-004zBk-7n; Tue, 12 Jan 2021 15:51:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4FA5C30015A;
+        Tue, 12 Jan 2021 16:51:06 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1124520C228D1; Tue, 12 Jan 2021 16:51:06 +0100 (CET)
+Date:   Tue, 12 Jan 2021 16:51:06 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org, Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
+Message-ID: <X/3FaoV0K/U7ZuY4@hirez.programming.kicks-ass.net>
+References: <20201226025117.2770-1-jiangshanlai@gmail.com>
+ <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net>
+ <87o8hv7pnd.fsf@nanos.tec.linutronix.de>
+ <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net>
+ <X/yH9+MGa1JCNZ8x@hirez.programming.kicks-ass.net>
+ <jhj7doj1dr1.mognet@arm.com>
+ <f5b0f650-5dc1-c67d-f548-340e7ca54d41@kernel.dk>
 MIME-Version: 1.0
-References: <20210112134054.342-1-calvin.johnson@oss.nxp.com> <20210112134054.342-10-calvin.johnson@oss.nxp.com>
-In-Reply-To: <20210112134054.342-10-calvin.johnson@oss.nxp.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 12 Jan 2021 17:48:09 +0200
-Message-ID: <CAHp75VdyPWD-cM5Q_9k8yRAutMSjm-3kwE0pQT3+ztKGwcU+4A@mail.gmail.com>
-Subject: Re: [net-next PATCH v3 09/15] device property: Introduce fwnode_get_id()
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "linux.cj" <linux.cj@gmail.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Saravana Kannan <saravanak@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f5b0f650-5dc1-c67d-f548-340e7ca54d41@kernel.dk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 3:42 PM Calvin Johnson
-<calvin.johnson@oss.nxp.com> wrote:
->
-> Using fwnode_get_id(), get the reg property value for DT node
-> or get the _ADR object value for ACPI node.
->
-> Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-> ---
->
-> Changes in v3:
-> - Modified to retrieve reg property value for ACPI as well
-> - Resolved compilation issue with CONFIG_ACPI = n
-> - Added more info into documentation
->
-> Changes in v2: None
->
->  drivers/base/property.c  | 33 +++++++++++++++++++++++++++++++++
->  include/linux/property.h |  1 +
->  2 files changed, 34 insertions(+)
->
-> diff --git a/drivers/base/property.c b/drivers/base/property.c
-> index 35b95c6ac0c6..2d51108cb936 100644
-> --- a/drivers/base/property.c
-> +++ b/drivers/base/property.c
-> @@ -580,6 +580,39 @@ const char *fwnode_get_name_prefix(const struct fwnode_handle *fwnode)
->         return fwnode_call_ptr_op(fwnode, get_name_prefix);
->  }
->
-> +/**
-> + * fwnode_get_id - Get the id of a fwnode.
-> + * @fwnode: firmware node
-> + * @id: id of the fwnode
-> + *
-> + * This function provides the id of a fwnode which can be either
-> + * DT or ACPI node. For ACPI, "reg" property value, if present will
-> + * be provided or else _ADR value will be provided.
-> + * Returns 0 on success or a negative errno.
-> + */
-> +int fwnode_get_id(struct fwnode_handle *fwnode, u32 *id)
-> +{
-> +#ifdef CONFIG_ACPI
-> +       unsigned long long adr;
-> +       acpi_status status;
-> +#endif
-> +       int ret;
-> +
-> +       ret = fwnode_property_read_u32(fwnode, "reg", id);
-> +       if (!(ret && is_acpi_node(fwnode)))
-> +               return ret;
-> +
-> +#ifdef CONFIG_ACPI
-> +       status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(fwnode),
-> +                                      METHOD_NAME__ADR, NULL, &adr);
-> +       if (ACPI_FAILURE(status))
-> +               return -EINVAL;
-> +       *id = (u32)adr;
+On Tue, Jan 12, 2021 at 07:57:26AM -0700, Jens Axboe wrote:
+> On 1/11/21 12:21 PM, Valentin Schneider wrote:
+> > On 11/01/21 18:16, Peter Zijlstra wrote:
+> >> Sadly it appears like io_uring() uses kthread_create_on_cpu() without
+> >> then having any hotplug crud on, so that needs additinoal frobbing.
+> >>
+> > 
+> > I noticed that as well sometime ago, and I believed then (still do) this
+> > usage is broken. I don't think usage of kthread_create_on_cpu() outside
+> > of smpboot makes sense, because without any hotplug step to park the
+> > thread, its affinity can end up being reset after its dedicated CPU gets
+> > offlined.
+> > 
+> > I'm clueless about io_uring, but if it *actually* has a good reason to
+> > use some pcpu kthreads (it seems it doesn't have to be on all CPUs?),
+> > then it needs to register some hotplug step to park them / do something
+> > sensible on hotplug.
+> 
+> For io_uring, it's purely used by the SQPOLL mode, which sets aside a
+> kernel thread for submissions so the application doesn't have to do
+> anything but write new SQE entries to submit. The thread then notices
+> these, and submits them. There's an option to affinitize that thread
+> to a single CPU, which often makes sense for setups like that. Think
+> of it like a strong hint.
 
-Shouldn't be
+OK, that matches what I could make of it earlier today.
 
-       return 0;
-#else
-       return -EINVAL;
-#endif
+> Things aren't going to break if this CPU goes away and we end up being
+> affinitized to some other CPU, though it is suboptimal. So I guess we
+> might need some notifiers to ensure that we reset the CPU back again
+> if it's gone offline+online again? I can take a look at that.
 
-?
+Indeed, that would make sense.
 
-Yes, it's a theoretical case when is_acpi_node() returns true when
-CONFIG_ACPI=n.
-
-> +#endif
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(fwnode_get_id);
-> +
->  /**
->   * fwnode_get_parent - Return parent firwmare node
->   * @fwnode: Firmware whose parent is retrieved
-> diff --git a/include/linux/property.h b/include/linux/property.h
-> index 0a9001fe7aea..3f41475f010b 100644
-> --- a/include/linux/property.h
-> +++ b/include/linux/property.h
-> @@ -82,6 +82,7 @@ struct fwnode_handle *fwnode_find_reference(const struct fwnode_handle *fwnode,
->
->  const char *fwnode_get_name(const struct fwnode_handle *fwnode);
->  const char *fwnode_get_name_prefix(const struct fwnode_handle *fwnode);
-> +int fwnode_get_id(struct fwnode_handle *fwnode, u32 *id);
->  struct fwnode_handle *fwnode_get_parent(const struct fwnode_handle *fwnode);
->  struct fwnode_handle *fwnode_get_next_parent(
->         struct fwnode_handle *fwnode);
-> --
-> 2.17.1
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks!
