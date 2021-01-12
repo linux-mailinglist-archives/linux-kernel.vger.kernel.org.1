@@ -2,70 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FCB72F3D22
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6002F3D28
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437800AbhALVeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:34:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38182 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437043AbhALUus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:50:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id D4BB52311F;
-        Tue, 12 Jan 2021 20:50:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610484607;
-        bh=0YEmzDOMnvTqrqLfgLY4y0hKwNvcY5DzN9rDYiXnhmg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=tCBs8jVbnPeNZ5P73ToDiO+R425PUBJootf90ftRosrjXt2IK6JK39y83SlU6Qhkn
-         IWA1sNzXqh42nGrEdlv+a7bOI3TEAgzRw2awG0pg4F3kOkVgSDsBdb2CBEUwhxfz5v
-         fi4U0jFxJ0WFw2KI2RLrIlHSUSnnZvXIGhM2MMhgoP9fTPETLU4xa9USfEnxtnmh2a
-         XOK0KMKLZ7CF0bfTLmbvr5N5yyDt9F2N8y96wH8sC8EVmOrIzXGDMvxvskd7Pvc0CL
-         psKQD8rLuB1NpCv/3nrGZEKFWBjFFZ5IpURfE1AqDFrDLb7jL5mwZVWwn2sapcdrwP
-         L/HZJC2DvAZ6Q==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id CA01F60354;
-        Tue, 12 Jan 2021 20:50:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S2437838AbhALVeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 16:34:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437057AbhALUxP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:53:15 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E660CC061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:52:34 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id b64so27868ybg.7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:52:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4wcVuL2JHWUe2OSC6B91qspF/lz9pUiODDoT4Xqa+iM=;
+        b=fed1BSmonr4i0CFVaM7ytMeRTJ0XmCOw0lrfX1w8MkrlzJ/jTr3wSOTfPJMC/BhzrG
+         IPiCSToYZw6m67DQ89vmJAIuFJjQcL29aabYVT70HujxJ/GXS3I3EnOqTq0FLIJO2XyT
+         jReE/+Co++NPwvk1Tx3nwfaahWsxyX0yE4wcINKNUMMTjI0DYplMXX6mQfy8qxMB02N2
+         UfYxXQrmYBacTtXmDzJ3u28CYuDeqJA9rh7cTNw9WFVOmQn5HcJcs90M37kgo3aYAVUP
+         tivk+yniUKXPqRzVoIO5YMtvCSKfaRLqHxyTVfXSKDUpWBwwt90a0WP+803Ic+nXXfca
+         eRVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4wcVuL2JHWUe2OSC6B91qspF/lz9pUiODDoT4Xqa+iM=;
+        b=faPOv9W02m50NVVdZOczG/KrWZfPna4D9L39TXngpWwCbxLHtt8Gvlao0sQFG1swOX
+         6dZLyKDmd8ao6j0sd2CUIknJGkIqib/vBDtG5WOo9HyDxuU5upGGOKlSziO88fhALzIz
+         tqSeFv6voJrb3hKR8Io0rY6bTdqBWPIJnX2E778wosOdi5nN3uGC+MJh00tZNHfav0KD
+         Tv2yD5JYYa8vs5yFx5X9G5fwOCqRxD4pnB+UUq4Dg2yGbdSO9gY2TaPH8O40yOi3gFt/
+         cZlvkeaxkHlgHDzEaPA1nSGRhxznuCeBZkEVWKY+50ZS9TtJUWfBb9vPGRZMs3u0kuAU
+         i3MQ==
+X-Gm-Message-State: AOAM530CXoJSo1yS09r8cPs45dUcuiD4iYIBkwrOcJJdOOQY4pzGwuVT
+        XnFIXNQjnYaI38IPxH7D5JnQMVCJhpbpdNQMT2olXw==
+X-Google-Smtp-Source: ABdhPJwuTLLKnhlFDp3a9Qtnh3e6/seLDPR0sx8XyZk1MST52u3yoogdil8l1bS4/yhombgc6jNKobTh/Qr2ubS0YGs=
+X-Received: by 2002:a25:b703:: with SMTP id t3mr2191805ybj.96.1610484753991;
+ Tue, 12 Jan 2021 12:52:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: Fix a verifier message for alloc size helper
- arg
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161048460782.12742.11835000205533148789.git-patchwork-notify@kernel.org>
-Date:   Tue, 12 Jan 2021 20:50:07 +0000
-References: <20210112123913.2016804-1-jackmanb@google.com>
-In-Reply-To: <20210112123913.2016804-1-jackmanb@google.com>
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii.nakryiko@gmail.com, kpsingh@chromium.org,
-        revest@chromium.org, linux-kernel@vger.kernel.org
+References: <20201218031703.3053753-1-saravanak@google.com>
+ <20201218031703.3053753-6-saravanak@google.com> <CGME20210111141814eucas1p1f388df07b789693a999042b27f0d8c2a@eucas1p1.samsung.com>
+ <5484316b-0f27-6c36-9259-5c765bb6b96c@samsung.com> <2556a69b-5da5-bf80-e051-df2d02fbc40f@samsung.com>
+ <CAGETcx8-1YzF2Br0sszJROLAWo3DSm27K071Md9wY5SOwUeLdw@mail.gmail.com> <fde65185-fd00-1f79-0f80-245eaa6c95cb@samsung.com>
+In-Reply-To: <fde65185-fd00-1f79-0f80-245eaa6c95cb@samsung.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 12 Jan 2021 12:51:58 -0800
+Message-ID: <CAGETcx_QY3h83q1fSr=h_vMQdH-TMhVYPozPuSr=q4uv2Lr48w@mail.gmail.com>
+Subject: Re: [PATCH v1 5/5] driver core: Set fw_devlink=on by default
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Mon, Jan 11, 2021 at 11:11 PM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+>
+> On 11.01.2021 22:47, Saravana Kannan wrote:
+> > On Mon, Jan 11, 2021 at 6:18 AM Marek Szyprowski
+> > <m.szyprowski@samsung.com> wrote:
+> >> On 11.01.2021 12:12, Marek Szyprowski wrote:
+> >>> On 18.12.2020 04:17, Saravana Kannan wrote:
+> >>>> Cyclic dependencies in some firmware was one of the last remaining
+> >>>> reasons fw_devlink=on couldn't be set by default. Now that cyclic
+> >>>> dependencies don't block probing, set fw_devlink=on by default.
+> >>>>
+> >>>> Setting fw_devlink=on by default brings a bunch of benefits (currently,
+> >>>> only for systems with device tree firmware):
+> >>>> * Significantly cuts down deferred probes.
+> >>>> * Device probe is effectively attempted in graph order.
+> >>>> * Makes it much easier to load drivers as modules without having to
+> >>>>     worry about functional dependencies between modules (depmod is still
+> >>>>     needed for symbol dependencies).
+> >>>>
+> >>>> If this patch prevents some devices from probing, it's very likely due
+> >>>> to the system having one or more device drivers that "probe"/set up a
+> >>>> device (DT node with compatible property) without creating a struct
+> >>>> device for it.  If we hit such cases, the device drivers need to be
+> >>>> fixed so that they populate struct devices and probe them like normal
+> >>>> device drivers so that the driver core is aware of the devices and their
+> >>>> status. See [1] for an example of such a case.
+> >>>>
+> >>>> [1] -
+> >>>> https://lore.kernel.org/lkml/CAGETcx9PiX==mLxB9PO8Myyk6u2vhPVwTMsA5NkD-ywH5xhusw@mail.gmail.com/
+> >>>> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> >>> This patch landed recently in linux next-20210111 as commit
+> >>> e590474768f1 ("driver core: Set fw_devlink=on by default"). Sadly it
+> >>> breaks Exynos IOMMU operation, what causes lots of devices being
+> >>> deferred and not probed at all. I've briefly checked and noticed that
+> >>> exynos_sysmmu_probe() is never called after this patch. This is really
+> >>> strange for me, as the SYSMMU controllers on Exynos platform are
+> >>> regular platform devices registered by the OF code. The driver code is
+> >>> here: drivers/iommu/exynos-iommu.c, example dts:
+> >>> arch/arm/boot/dts/exynos3250.dtsi (compatible = "samsung,exynos-sysmmu").
+> >> Okay, I found the source of this problem. It is caused by Exynos power
+> >> domain driver, which is not platform driver yet. I will post a patch,
+> >> which converts it to the platform driver.
+> > Thanks Marek! Hopefully the debug logs I added were sufficient to
+> > figure out the reason.
+>
+> Frankly, it took me a while to figure out that device core waits for the
+> power domain devices. Maybe it would be possible to add some more debug
+> messages or hints? Like the reason of the deferred probe in
+> /sys/kernel/debug/devices_deferred ?
 
-This patch was applied to bpf/bpf-next.git (refs/heads/master):
+There's already a /sys/devices/.../<device>/waiting_for_supplier file
+that tells you if the device is waiting for a supplier device to be
+added. That file goes away once the device probes. If the file has 1,
+then it's waiting for the supplier device to be added (like your
+case). If it's 0, then the device is just waiting on one of the
+existing suppliers to probe. You can find the existing suppliers
+through /sys/devices/.../<device>/supplier:*/supplier. Also, flip
+these dev_dbg() to dev_info() if you need more details about deferred
+probing.
 
-On Tue, 12 Jan 2021 12:39:13 +0000 you wrote:
-> The error message here is misleading, the argument will be rejected
-> unless it is a known constant.
-> 
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
->  kernel/bpf/verifier.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> [...]
+https://lore.kernel.org/lkml/20201218031703.3053753-2-saravanak@google.com/
 
-Here is the summary with links:
-  - [bpf-next] bpf: Fix a verifier message for alloc size helper arg
-    https://git.kernel.org/bpf/bpf-next/c/28a8add64181
+Hopefully this meets what you are looking for?
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+-Saravana
