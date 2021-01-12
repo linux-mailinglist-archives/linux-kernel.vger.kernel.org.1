@@ -2,127 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCBE2F2FC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FC42F30EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:16:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404859AbhALM6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:58:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404205AbhALM5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:57:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A94F23341;
-        Tue, 12 Jan 2021 12:56:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610456203;
-        bh=96kcUeeVfBtCkWLjFvAMr+Zk9U/z11oxm4TPo3Pg69w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lVwR8GLmlHEbKLN4gc+U4R8G/DZic5kB8hZ0BJF0btnc9Phi4O6lS9QtlA5Y9/joH
-         lsfzaIDjzP2tHnXXhMRyr/ps0fxEZk1Izq60Bbu9cs9ykJ15pe5nPHWHsip0lCCHIt
-         xOhTtK73xgaMFgljSBQE0QN+t9h5RhlUTMMvgzW7peDuwXfAIBjrLtcPwvttTKtOoP
-         EX+NWY2JIm+OpIvWilEZ30qeGKYRrZM+nfsJ3KlGKbc14xuuLmVC8O0UH7nLbG9Q3t
-         Fzq9fPXL3XPSBFNmTzDz5TqdeU22T91G4xJ4Ty5yFxo1PB5gOSqErDu7wjIx9wzilH
-         Y4USnAFY11PMQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Laight <David.Laight@aculab.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>, linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 51/51] poll: fix performance regression due to out-of-line __put_user()
-Date:   Tue, 12 Jan 2021 07:55:33 -0500
-Message-Id: <20210112125534.70280-51-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210112125534.70280-1-sashal@kernel.org>
-References: <20210112125534.70280-1-sashal@kernel.org>
+        id S1729199AbhALNN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:13:27 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10714 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404179AbhALM5w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:57:52 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DFVtQ6zYVzl4CW;
+        Tue, 12 Jan 2021 20:55:42 +0800 (CST)
+Received: from huawei.com (10.174.28.241) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Tue, 12 Jan 2021
+ 20:56:49 +0800
+From:   Bixuan Cui <cuibixuan@huawei.com>
+To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <john.wanghui@huawei.com>
+Subject: [PATCH 0/2] perf tools: add 'perf irq' to measure the hardware interrupts
+Date:   Tue, 12 Jan 2021 20:55:56 +0800
+Message-ID: <20210112125558.72989-1-cuibixuan@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.174.28.241]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+When the hardware interrupt processing function is executed, the interrupt and 
+preemption of current cpu are disabled. As a result, the task is suspended.
+The execution of the hardware processing function takes a long time
+(for example 5 ms), will affect the task scheduling performance.
 
-[ Upstream commit ef0ba05538299f1391cbe097de36895bb36ecfe6 ]
+This patches provides the 'perf irq' command to trace and calculate the time
+consumed of the hardware irq function.
 
-The kernel test robot reported a -5.8% performance regression on the
-"poll2" test of will-it-scale, and bisected it to commit d55564cfc222
-("x86: Make __put_user() generate an out-of-line call").
 
-I didn't expect an out-of-line __put_user() to matter, because no normal
-core code should use that non-checking legacy version of user access any
-more.  But I had overlooked the very odd poll() usage, which does a
-__put_user() to update the 'revents' values of the poll array.
+[verse]
+'perf irq' {record|timeconsume|script}
 
-Now, Al Viro correctly points out that instead of updating just the
-'revents' field, it would be much simpler to just copy the _whole_
-pollfd entry, and then we could just use "copy_to_user()" on the whole
-array of entries, the same way we use "copy_from_user()" a few lines
-earlier to get the original values.
+There are several variants of 'perf irq':
 
-But that is not what we've traditionally done, and I worry that threaded
-applications might be concurrently modifying the other fields of the
-pollfd array.  So while Al's suggestion is simpler - and perhaps worth
-trying in the future - this instead keeps the "just update revents"
-model.
+  'perf irq record <command>' to record the irq handler events
+  of an arbitrary workload.
 
-To fix the performance regression, use the modern "unsafe_put_user()"
-instead of __put_user(), with the proper "user_write_access_begin()"
-guarding in place. This improves code generation enormously.
+  'perf irq script' to see a detailed trace of the workload that
+   was recorded (aliased to 'perf script' for now).
 
-Link: https://lore.kernel.org/lkml/20210107134723.GA28532@xsang-OptiPlex-9020/
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Tested-by: Oliver Sang <oliver.sang@intel.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: David Laight <David.Laight@aculab.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/select.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+  'perf irq timeconsume' to calculate the time consumed by each
+   hardware interrupt processing function.
 
-diff --git a/fs/select.c b/fs/select.c
-index ebfebdfe5c69a..37aaa8317f3ae 100644
---- a/fs/select.c
-+++ b/fs/select.c
-@@ -1011,14 +1011,17 @@ static int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,
- 	fdcount = do_poll(head, &table, end_time);
- 	poll_freewait(&table);
- 
-+	if (!user_write_access_begin(ufds, nfds * sizeof(*ufds)))
-+		goto out_fds;
-+
- 	for (walk = head; walk; walk = walk->next) {
- 		struct pollfd *fds = walk->entries;
- 		int j;
- 
--		for (j = 0; j < walk->len; j++, ufds++)
--			if (__put_user(fds[j].revents, &ufds->revents))
--				goto out_fds;
-+		for (j = walk->len; j; fds++, ufds++, j--)
-+			unsafe_put_user(fds->revents, &ufds->revents, Efault);
-   	}
-+	user_write_access_end();
- 
- 	err = fdcount;
- out_fds:
-@@ -1030,6 +1033,11 @@ static int do_sys_poll(struct pollfd __user *ufds, unsigned int nfds,
- 	}
- 
- 	return err;
-+
-+Efault:
-+	user_write_access_end();
-+	err = -EFAULT;
-+	goto out_fds;
- }
- 
- static long do_restart_poll(struct restart_block *restart_block)
+    Example usage:
+        perf irq record -- sleep 1
+        perf irq timeconsume
+
+   By default it shows the individual irq events, including the irq name,
+   cpu(execute the hardware interrupt processing function), time consumed,
+   entry time and exit time for the each hardware irq:
+
+   -------------------------------------------------------------------------------------------------------------------------------------------
+     Irq name         |  CPU   | Time consume us | Handler entry time | Handler exit time
+   -------------------------------------------------------------------------------------------------------------------------------------------
+     enp2s0f2-tx-0    | [0006] |      0.000001 s |   6631263.313329 s |   6631263.313330 s
+
+   -------------------------------------------------------------------------------------------------------------------------------------------
+     Irq name         |  CPU   | Time consume us | Handler entry time | Handler exit time
+   -------------------------------------------------------------------------------------------------------------------------------------------
+     megasas          | [0013] |      0.000003 s |   6631263.209564 s |   6631263.209567 s
+
+   -------------------------------------------------------------------------------------------------------------------------------------------
+     Irq name         |  CPU   | Time consume us | Handler entry time | Handler exit time
+   -------------------------------------------------------------------------------------------------------------------------------------------
+     acpi             | [0016] |      0.000018 s |   6631263.085787 s |   6631263.085805 s
+
+Bixuan Cui (2):
+  perf tools: add 'perf irq' to measure the hardware interrupts
+  perf tools: Add documentation for 'perf irq' command
+
+ tools/perf/Build                      |   1 +
+ tools/perf/Documentation/perf-irq.txt |  58 ++++++
+ tools/perf/builtin-irq.c              | 288 ++++++++++++++++++++++++++
+ tools/perf/builtin.h                  |   1 +
+ tools/perf/command-list.txt           |   1 +
+ tools/perf/perf.c                     |   1 +
+ 6 files changed, 350 insertions(+)
+ create mode 100644 tools/perf/Documentation/perf-irq.txt
+ create mode 100644 tools/perf/builtin-irq.c
+
 -- 
-2.27.0
+2.17.1
 
