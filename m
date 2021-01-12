@@ -2,135 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9262F3CFA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1162F3D04
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437580AbhALVea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:34:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436953AbhALUa3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:30:29 -0500
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7CAC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:29:49 -0800 (PST)
-Received: by mail-qv1-xf34.google.com with SMTP id a13so1550807qvv.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:29:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jpVWwEPUmolljz0bygjZEnHC+kQY90YrQfm8bas35/A=;
-        b=ZqQdSWXFn78oCcz2KV8xPQb/CHeriM/t6XdeHAXl1kQ4+L8e/qR1NGczyGd3R3Bwyi
-         9EHz54uNMI3JmuBvRKrRakJ3b/872Qg5FcN3akkPTEbUhn0UM0R6hEz5mt4sUXmxfnIb
-         +2UeLZiJy6CTbsdGdlcV1rtBzFHjf09ZCKM9mOcoHeJyWX74H9n8Tysgs2xCIRApPCF4
-         nfVWVyzKeAYocOGxP+wtA7+ucMHZ1CZ8JhvUxQnI/VAvNjDMAdMKtS9SIMXXzP+rByL9
-         3DGwsTlgE91BMPPlS/ZK1rbWXwXSH4T2KTT4oJ4vPc8X0gnB14fgOF1UIWY97mMsPv1n
-         jwag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jpVWwEPUmolljz0bygjZEnHC+kQY90YrQfm8bas35/A=;
-        b=tLJ2z1aNW/ip+eWoKE5qB4XtiFHeQXv0dPacVjJDpcsll5eiWoITzlrtPurpIlMqSW
-         dl70SxqgAhsDv4wVyxYatFja4GpM6/tVheGOMAvUulyK3SN5mJzqKqWBFg1cxCplH1UA
-         cC0okOV3BaOrVtRmnPiu7N0GHx2V+fFe3pqRQbUGCo23eijugUv6wenlloaa8rKuAGnD
-         JRtc4STktFijIxzYeOI+rqH0/pJm9C+Bjgbcc8berMKFFEVd8GcL3s7FtgTzZiMR/egy
-         R/ydJehSpAQ++eVIHsf+IJ80CwaYAQkaBcuBnZt4/TdwR8SCC1pQTv6phyBMe4QdCiD5
-         sI6Q==
-X-Gm-Message-State: AOAM531mvhy9CqPA0myRYYaxUXlzV5bcoP0PwUWRasiy5z8I2uuh/d77
-        VoA9RqJMDQSYmoqYzeVbJWeHbZKaoyUyxrOjX64=
-X-Google-Smtp-Source: ABdhPJzzNhvbzPuZ+g8DPiRoyU2S3Jx0eslstzY3LMxX8uPmaKtgx3akxR8UHh8ZXD5kye0yZ/rgJu7U9xupBM3WwpU=
-X-Received: by 2002:a0c:cc12:: with SMTP id r18mr845366qvk.51.1610483388234;
- Tue, 12 Jan 2021 12:29:48 -0800 (PST)
+        id S2437592AbhALVeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 16:34:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36134 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436954AbhALUch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:32:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E53EB23120
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 20:31:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610483517;
+        bh=GY2dA0tnQaLR9kEC3NT4xt1yRQpDneTbZbrAIKrMDus=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NECVjxVoRln3d4p1r5Ulst7EhYowHP8qioQf/sAQDaOxnilA1DmINtX3aRy0F6gG1
+         Irc41z9hx6ObGoAEx03mWjl7VrIDzHgMJ6dgZsRQLqPbutbM9LH1er+Wmb4YQ+Jaqy
+         yasUDIprrPZebVSs8YRhihGkJCasksBWNrqM0HR0lk353Ux40ffjjqYJHaEEuPgVrQ
+         kXYFG6rxaEKJsf7DusfkIZ3wuK9fFo20Jo/QqcUuAWVj99SxoJpLLlv1EwiUQpabni
+         yXxwmaVTPFGobikiujLpi7njtrQkUEztji41fImb5SAGLnkDpn+uSD0I6rYf/pM7yY
+         vmReBAbI6nmOQ==
+Received: by mail-oi1-f172.google.com with SMTP id s2so3760838oij.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:31:56 -0800 (PST)
+X-Gm-Message-State: AOAM531LVXE/TgZV3Y/9Xx1c2ZE6ddYiTVGhhwtv5hl29kjVztBkkqC8
+        GSLaH3B5ycEMenaZBVFeHD0GrzUC6u37XXTfnJ4=
+X-Google-Smtp-Source: ABdhPJzUs07y/E2oEl4yvSU0ct0rH7Wcp5EwXovXPevceHZU7X0QfVzhdASEM7Yl9Iad9GELmZOfgrhXc42/sMTWcZU=
+X-Received: by 2002:aca:44d:: with SMTP id 74mr629231oie.4.1610483516212; Tue,
+ 12 Jan 2021 12:31:56 -0800 (PST)
 MIME-Version: 1.0
-References: <CGME20210107092826epcas5p100f2c57a63715baa2b3fa7219ab58c7b@epcas5p1.samsung.com>
- <20210107093340.15279-1-ajaykumar.rs@samsung.com> <20210107130319.GA2986@willie-the-truck>
- <5e047da1-6619-c716-927c-ae07a90f1597@arm.com>
-In-Reply-To: <5e047da1-6619-c716-927c-ae07a90f1597@arm.com>
-From:   Ajay Kumar <ajaykumar.rs1989@gmail.com>
-Date:   Wed, 13 Jan 2021 01:59:37 +0530
-Message-ID: <CADe9J7Er0wnP5ZZbWM1CkUx7ry0znKr05Lvx7PEMdHuwKr_RZQ@mail.gmail.com>
-Subject: Re: [PATCH] iommu/arm-smmu-v3: Handle duplicated Stream IDs from
- other masters
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Ajay Kumar <ajaykumar.rs@samsung.com>, mark.rutland@arm.com,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
+References: <CAK8P3a0PXXHXLK36SB_4eia6z0u3nbBPanATwZEhposKOScqcw@mail.gmail.com>
+ <20210105190808.613050-1-arnd@kernel.org> <59a36212-2412-2dd3-62f2-69c6f65312b1@linux.intel.com>
+ <s5hv9c2qmy4.wl-tiwai@suse.de> <ed4b4b5b-0cde-3d08-bbbf-3f0d90ce46ea@linux.intel.com>
+In-Reply-To: <ed4b4b5b-0cde-3d08-bbbf-3f0d90ce46ea@linux.intel.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 12 Jan 2021 21:31:40 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3eOt_5cYsJQuTtFJqLpX0ZS_GGk=x-pJk4Lg=mdVX-_g@mail.gmail.com>
+Message-ID: <CAK8P3a3eOt_5cYsJQuTtFJqLpX0ZS_GGk=x-pJk4Lg=mdVX-_g@mail.gmail.com>
+Subject: Re: [Sound-open-firmware] [PATCH] ASoC: SOF: Intel: avoid reverse
+ module dependency
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel @ vger . kernel . org" <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Mark Brown <broonie@kernel.org>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        sound-open-firmware@alsa-project.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 12:57 AM Robin Murphy <robin.murphy@arm.com> wrote:
+On Tue, Jan 12, 2021 at 9:17 PM Pierre-Louis Bossart
+<pierre-louis.bossart@linux.intel.com> wrote:
 >
-> On 2021-01-07 13:03, Will Deacon wrote:
-> > On Thu, Jan 07, 2021 at 03:03:40PM +0530, Ajay Kumar wrote:
-> >> When PCI function drivers(ex:pci-endpoint-test) are probed for already
-> >> initialized PCIe-RC(Root Complex), and PCIe-RC is already bound to SMMU,
-> >> then we encounter a situation where the function driver tries to attach
-> >> itself to the smmu with the same stream-id as PCIe-RC and re-initialize
-> >> an already initialized STE. This causes ste_live BUG_ON() in the driver.
 >
-> Note that this is actually expected behaviour, since Stream ID aliasing
-> has remained officially not supported until a sufficiently compelling
-> reason to do so appears. I always thought the most likely scenario would
-> be a legacy PCI bridge with multiple devices behind it, but even that
-> seems increasingly improbable for a modern SMMUv3-based system to ever see.
-Thanks to Will and Robin for reviewing this. I am pretty new to PCI,
-sorry about that.
-I assumed that the support for stream-id alias is already handled as
-part of this patch:
-https://www.spinics.net/lists/arm-kernel/msg626087.html
-which prevents STE re-initialization. But, what I do not understand is
-why the path
-taken by the arm-smmu-v3 driver misses the aforementioned check for my usecase.
-
-> > I don't understand why the endpoint is using the same stream ID as the root
-> > complex in this case. Why is that? Is the grouping logic not working
-> > properly?
->
-> It's not so much that it isn't working properly, it's more that it needs
-> to be implemented at all ;)
-The pci_endpoint_test picks up the same of_ DMA config node as the PCI RC
-because they sit on the same PCI bus [via pci_dma_configure( )]
-While in the arm-smmu-v3 driver, I can see that the pci_device_group( ) hands
-over the same iommu group as the Root Complex to the newly added master
-device (pci_endpoint_test in our case) because they share the same stream ID.
-Shouldn't they?
-
-> >> There is an already existing check in the driver to manage duplicated ids
-> >> if duplicated ids are added in same master device, but there can be
-> >> scenarios like above where we need to extend the check for other masters
-> >> using the same stream-id.
-> >>
-> >> Signed-off-by: Ajay Kumar <ajaykumar.rs@samsung.com>
-> >> ---
-> >>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 33 +++++++++++++++++++++
-> >>   1 file changed, 33 insertions(+)
+> >> Since this is going to be a really invasive change, and past
+> >> experience shows that mucking with Kconfigs will invariably raise a
+> >> number of broken corner cases, if there is support from
+> >> Mark/Takashi/Jaroslav on this idea, we should first test it in the SOF
+> >> tree so that we get a good test coverage and don't break too many eggs
+> >> in Mark's tree. We would also need to concurrently change our CI
+> >> scripts which are dependent on module names.
 > >
-> > It doesn't feel like the driver is the right place to fix this, as the same
-> > issue could surely occur for other IOMMUs too, right? In which case, I think
-> > we should avoid getting into the situation where different groups have
-> > overlapping stream IDs.
+> > I'm in favor of the way Arnd proposed.  It's more straightforward and
+> > less code.
 >
-> Yes, this patch does not represent the correct thing to do either way.
-> The main reason that Stream ID aliasing hasn't been supported so far is
-> that the required Stream ID to group lookup is rather awkward, and
-> adding all of that complexity just for the sake of a rather unlikely
-> possibility seemed dubious. However, PRI support has always had a more
-> pressing need to implement almost the same thing (Stream ID to device),
-> so once that lands we can finally get round to adding the rest of proper
-> group support relatively easily.
-I hope the support will be added soon. Also, can you point me to few drivers
-which already handle this type of stream-ID aliasing?
+> Thanks Takashi for the feedback.
+>
+> Since yesterday I looked at another problem where we can have unmet
+> dependencies between SoundWire (m) and SOF (y), so we probably need to
+> rethink all this. We had similar issue with SOF and HDaudio before, it's
+> time to revisit all this.
 
-Thanks,
-Ajay Kumar
-> ______________________________________________
-> iommu mailing list
-> iommu@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+I think I ran into the same thing yesterday, and came up with a patch for
+that one as well. I think it should be independent of the other one but I did
+not try it by itself.
+
+I'll send it along with a fixed version of the one in this thread, together the
+have now survived a few hundred randconfig builds.
+
+       Arnd
