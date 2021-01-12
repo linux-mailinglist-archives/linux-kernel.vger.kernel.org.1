@@ -2,97 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C599C2F2670
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:58:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8CF92F2674
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:58:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730821AbhALCza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 21:55:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55183 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728044AbhALCza (ORCPT
+        id S1733151AbhALC4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 21:56:35 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:57297 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728044AbhALC4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 21:55:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610420043;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hBNIZoVEFYnZolBPXDxQvsKxura8sTWXxEYo+kfOlYs=;
-        b=cFXmGcYHNd0t2am0TZqWM+DQwdlLteKst4A3LNRpecda3PWWh+faEsix2j/a8Y2Xg1P9Hn
-        OZZl/r+JaB4TXZSuAtx/cPZ4eg9rr2annuqcgr9pPXlAPCiUhWb9pKP0e6bUvULIdbAh1u
-        nY2vaaqHzHIPsX/8sIpR2XUpRLy09C8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-354-NeFrT79jM9uRKsLdnRlk2A-1; Mon, 11 Jan 2021 21:54:02 -0500
-X-MC-Unique: NeFrT79jM9uRKsLdnRlk2A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0DAF0107ACF8;
-        Tue, 12 Jan 2021 02:54:01 +0000 (UTC)
-Received: from [10.72.12.225] (ovpn-12-225.pek2.redhat.com [10.72.12.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B3E094F3C6;
-        Tue, 12 Jan 2021 02:53:56 +0000 (UTC)
-Subject: Re: [PATCH] mlx5: vdpa: fix possible uninitialized var
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210108082443.5609-1-jasowang@redhat.com>
- <20210110063955.GA115874@mtl-vdi-166.wap.labs.mlnx>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <ae775c12-65d1-6623-be54-8d9e9be08fd0@redhat.com>
-Date:   Tue, 12 Jan 2021 10:53:54 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 11 Jan 2021 21:56:33 -0500
+X-IronPort-AV: E=Sophos;i="5.79,340,1602518400"; 
+   d="scan'208";a="103383793"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 12 Jan 2021 10:55:38 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id C0A054CE602D;
+        Tue, 12 Jan 2021 10:55:35 +0800 (CST)
+Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
+ (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 12 Jan
+ 2021 10:55:36 +0800
+Subject: Re: [PATCH 04/10] mm, fsdax: Refactor memory-failure handler for dax
+ mapping
+To:     Jan Kara <jack@suse.cz>
+CC:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-mm@kvack.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-raid@vger.kernel.org>,
+        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
+        <david@fromorbit.com>, <hch@lst.de>, <song@kernel.org>,
+        <rgoldwyn@suse.de>, <qi.fuli@fujitsu.com>, <y-goto@fujitsu.com>
+References: <20201230165601.845024-1-ruansy.fnst@cn.fujitsu.com>
+ <20201230165601.845024-5-ruansy.fnst@cn.fujitsu.com>
+ <20210106154132.GC29271@quack2.suse.cz>
+From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
+Message-ID: <75164044-bfdf-b2d6-dff0-d6a8d56d1f62@cn.fujitsu.com>
+Date:   Tue, 12 Jan 2021 10:55:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210110063955.GA115874@mtl-vdi-166.wap.labs.mlnx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210106154132.GC29271@quack2.suse.cz>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.167.225.141]
+X-ClientProxiedBy: G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) To
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
+X-yoursite-MailScanner-ID: C0A054CE602D.AADE7
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2021/1/10 下午2:39, Eli Cohen wrote:
-> On Fri, Jan 08, 2021 at 04:24:43PM +0800, Jason Wang wrote:
->> Upstream: posted
+
+On 2021/1/6 下午11:41, Jan Kara wrote:
+> On Thu 31-12-20 00:55:55, Shiyang Ruan wrote:
+>> The current memory_failure_dev_pagemap() can only handle single-mapped
+>> dax page for fsdax mode.  The dax page could be mapped by multiple files
+>> and offsets if we let reflink feature & fsdax mode work together.  So,
+>> we refactor current implementation to support handle memory failure on
+>> each file and offset.
 >>
->> When compiling with -Werror=maybe-uninitialized, gcc may complains the
->> possible uninitialized umem. Fix that.
->>
->> Signed-off-by: Jason Wang <jasowang@redhat.com>
+>> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+> 
+> Overall this looks OK to me, a few comments below.
+> 
 >> ---
->>   drivers/vdpa/mlx5/net/mlx5_vnet.c | 3 +++
->>   1 file changed, 3 insertions(+)
->>
->> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->> index f1d54814db97..a6ad83d8d8e2 100644
->> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
->> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->> @@ -706,6 +706,9 @@ static void umem_destroy(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue
->>   	case 3:
->>   		umem = &mvq->umem3;
->>   		break;
->> +	default:
->> +		WARN(1, "unsupported umem num %d\n", num);
->> +		return;
+>>   fs/dax.c            | 21 +++++++++++
+>>   include/linux/dax.h |  1 +
+>>   include/linux/mm.h  |  9 +++++
+>>   mm/memory-failure.c | 91 ++++++++++++++++++++++++++++++++++-----------
+>>   4 files changed, 100 insertions(+), 22 deletions(-)
+
+...
+
+>>   
+>> @@ -345,9 +348,12 @@ static void add_to_kill(struct task_struct *tsk, struct page *p,
 >>   	}
 >>   
->>   	MLX5_SET(destroy_umem_in, in, opcode, MLX5_CMD_OP_DESTROY_UMEM);
-> Since the "default" case will never be executed, maybe it's better to
-> just change "case 3:" to "default:" and avoid the WARN().
+>>   	tk->addr = page_address_in_vma(p, vma);
+>> -	if (is_zone_device_page(p))
+>> -		tk->size_shift = dev_pagemap_mapping_shift(p, vma);
+>> -	else
+>> +	if (is_zone_device_page(p)) {
+>> +		if (is_device_fsdax_page(p))
+>> +			tk->addr = vma->vm_start +
+>> +					((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
+> 
+> It seems strange to use 'pgoff' for dax pages and not for any other page.
+> Why? I'd rather pass correct pgoff from all callers of add_to_kill() and
+> avoid this special casing...
+
+Because one fsdax page can be shared by multiple pgoffs.  I have to pass 
+each pgoff in each iteration to calculate the address in vma (for 
+tk->addr).  Other kinds of pages don't need this.  They can get their 
+unique address by calling "page_address_in_vma()".
+
+So, I added this fsdax case here.  This patchset only implemented the 
+fsdax case, other cases also need to be added here if to be implemented.
 
 
-Fine with me. Will do that in V3.
+--
+Thanks,
+Ruan Shiyang.
 
-Thanks
+> 
+>> +		tk->size_shift = dev_pagemap_mapping_shift(p, vma, tk->addr);
+>> +	} else
+>>   		tk->size_shift = page_shift(compound_head(p));
+>>   
+>>   	/*
+>> @@ -495,7 +501,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
+>>   			if (!page_mapped_in_vma(page, vma))
+>>   				continue;
+>>   			if (vma->vm_mm == t->mm)
+>> -				add_to_kill(t, page, vma, to_kill);
+>> +				add_to_kill(t, page, NULL, 0, vma, to_kill);
+>>   		}
+>>   	}
+>>   	read_unlock(&tasklist_lock);
+>> @@ -505,24 +511,19 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
+>>   /*
+>>    * Collect processes when the error hit a file mapped page.
+>>    */
+>> -static void collect_procs_file(struct page *page, struct list_head *to_kill,
+>> -				int force_early)
+>> +static void collect_procs_file(struct page *page, struct address_space *mapping,
+>> +		pgoff_t pgoff, struct list_head *to_kill, int force_early)
+>>   {
+>>   	struct vm_area_struct *vma;
+>>   	struct task_struct *tsk;
+>> -	struct address_space *mapping = page->mapping;
+>> -	pgoff_t pgoff;
+>>   
+>>   	i_mmap_lock_read(mapping);
+>>   	read_lock(&tasklist_lock);
+>> -	pgoff = page_to_pgoff(page);
+>>   	for_each_process(tsk) {
+>>   		struct task_struct *t = task_early_kill(tsk, force_early);
+>> -
+>>   		if (!t)
+>>   			continue;
+>> -		vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff,
+>> -				      pgoff) {
+>> +		vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff, pgoff) {
+>>   			/*
+>>   			 * Send early kill signal to tasks where a vma covers
+>>   			 * the page but the corrupted page is not necessarily
+>> @@ -531,7 +532,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
+>>   			 * to be informed of all such data corruptions.
+>>   			 */
+>>   			if (vma->vm_mm == t->mm)
+>> -				add_to_kill(t, page, vma, to_kill);
+>> +				add_to_kill(t, page, mapping, pgoff, vma, to_kill);
+>>   		}
+>>   	}
+>>   	read_unlock(&tasklist_lock);
+>> @@ -550,7 +551,8 @@ static void collect_procs(struct page *page, struct list_head *tokill,
+>>   	if (PageAnon(page))
+>>   		collect_procs_anon(page, tokill, force_early);
+>>   	else
+>> -		collect_procs_file(page, tokill, force_early);
+>> +		collect_procs_file(page, page->mapping, page_to_pgoff(page),
+> 
+> Why not use page_mapping() helper here? It would be safer for THPs if they
+> ever get here...
+> 
+> 								Honza
+> 
 
-
->
->> -- 
->> 2.25.1
->>
 
