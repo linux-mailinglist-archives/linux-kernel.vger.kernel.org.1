@@ -2,134 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB0D2F2514
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:18:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C72752F251C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731667AbhALAqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 19:46:55 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:12547 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731480AbhALAqf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 19:46:35 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610412370; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Nv/zP2h6yHmultnitPDgLlwcKLI62F6LDdyCUTp686A=;
- b=uukft+lCOJ+3a63Qz055xp2svanPRdAr2a9kXDm2DP6uVdRGhBL+jdauCCuwcj0Tf6yu7Sla
- dlAk0vLCnVucmiM0Ycr14zyChPp1QP+z1Cm652oX7xP+GWtlp2ez1T27IH7ewfkveytipJSV
- eGZYl3q1yDObVu4rHhtVrCktibk=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5ffcf12bd84bad3547658e9e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Jan 2021 00:45:31
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DC9DEC43478; Tue, 12 Jan 2021 00:45:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7F5D2C433C6;
-        Tue, 12 Jan 2021 00:45:29 +0000 (UTC)
+        id S1732804AbhALAsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 19:48:18 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:34566 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732594AbhALAsP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 19:48:15 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kz7qJ-000385-LG; Tue, 12 Jan 2021 01:47:27 +0100
+Date:   Tue, 12 Jan 2021 01:47:27 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     stefanc@marvell.com, netdev@vger.kernel.org,
+        thomas.petazzoni@bootlin.com, davem@davemloft.net,
+        nadavh@marvell.com, ymarkman@marvell.com,
+        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
+        mw@semihalf.com, rmk+kernel@armlinux.org.uk, atenart@kernel.org
+Subject: Re: [PATCH net ] net: mvpp2: Remove Pause and Asym_Pause support
+Message-ID: <X/zxnyyTRf0xsYmd@lunn.ch>
+References: <1610306582-16641-1-git-send-email-stefanc@marvell.com>
+ <20210111163653.6483ae82@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 12 Jan 2021 08:45:29 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bean Huo <huobean@gmail.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        rjw@rjwysocki.net, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Nitin Rawat <nitirawa@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] scsi: ufs: Protect PM ops and err_handler from user
- access through sysfs
-In-Reply-To: <6eaa5c51c0b17968e0169b8a16bdbfa4934af5d8.camel@gmail.com>
-References: <1609595975-12219-1-git-send-email-cang@codeaurora.org>
- <1609595975-12219-3-git-send-email-cang@codeaurora.org>
- <80a15afab8024d0b61d312b57585c9322ac91958.camel@gmail.com>
- <7d49c1dfc3f648c484076f3c3a7f4e1e@codeaurora.org>
- <1514403adf486ac8069253c09f45b021bad32e00.camel@gmail.com>
- <f814b71d1d4ea87a72df4851a8190807@codeaurora.org>
- <cb388d8ea15b2c80a072dec74d9ededecb183a08.camel@gmail.com>
- <e69bd5a6b73d5c652130bf4fa077aac0@codeaurora.org>
- <606774efd4d89f0ea78cefeb428cc9e1@codeaurora.org>
- <146b46a5c38f4582a9a8e6df1d87cdfc0684f549.camel@gmail.com>
- <fa0e976387070c64752c972d32ce15df@codeaurora.org>
- <976641f42211af23d90464d0c4841cc40740b0d7.camel@gmail.com>
- <7f193fe5abfb41aa72d17f7884cbd113@codeaurora.org>
- <6eaa5c51c0b17968e0169b8a16bdbfa4934af5d8.camel@gmail.com>
-Message-ID: <9d74b57f9a26878705b7162a36b2bceb@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111163653.6483ae82@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-11 18:04, Bean Huo wrote:
-> On Mon, 2021-01-11 at 17:22 +0800, Can Guo wrote:
->> > > meaning you are tring to access a register when clocks are
->> > > disabled.
->> > > This
->> > > leads to system CRASH.
->> > >
->> >
->> > OK, let it simple, share this kind of crash log becuase of access
->> > sysfs
->> > node in the shutdown flow.
->> >
->> >
->> > > [2] OCP is over current protection. While UFS shutting down, you
->> > > may
->> > > have put UFS regulators to LPM. After that, if you are still
->> > > trying
->> > > to
->> > > talk to UFS, OCP can happen on VCCQ/VCCQ2. This leads to system
->> > > CRASH
->> > > too.
->> >
->> > the same as above, share the crash log.
->> >
->> 
->> If you have hand-on experiences on NoC and/or OCP issues, you won't
->> ask
->> for the crash log. The tricky parts about critial NoC and OCP issues
->> is
+On Mon, Jan 11, 2021 at 04:36:53PM -0800, Jakub Kicinski wrote:
+> On Sun, 10 Jan 2021 21:23:02 +0200 stefanc@marvell.com wrote:
+> > From: Stefan Chulski <stefanc@marvell.com>
+> > 
+> > Packet Processor hardware not connected to MAC flow control unit and
+> > cannot support TX flow control.
+> > This patch disable flow control support.
+> > 
+> > Fixes: 3f518509dedc ("ethernet: Add new driver for Marvell Armada 375 network unit")
+> > Signed-off-by: Stefan Chulski <stefanc@marvell.com>
 > 
-> OK, interesting. would you tell me which register access node in ufs-
-> sysfs.c can trigger this crash? let me verify your statement.
-> 
-> 
+> I'm probably missing something, but why not 4bb043262878 ("net: mvpp2:
+> phylink support")?
 
-I believe I have explained enough to prove we need this change.
+Hi Jakub
 
-If you are really interested in NoC and OCP, feel free to ping me
-on teams, I will show you how to trigger one and what is it like
-on my setup.
+Before that change, it used phylib. The same is true with phylib, you
+need to tell phylib it should not advertise pause. How you do it is
+different, but the basic issue is the same. Anybody doing a backport
+past 4bb043262878is going to need a different fix, but the basic issue
+is there all the way back to when the driver was added.
 
-Can Guo.
-
-> Bean
-> 
->> 
+      Andrew
