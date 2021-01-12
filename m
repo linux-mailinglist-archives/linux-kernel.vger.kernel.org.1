@@ -2,63 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EFE2F2EAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:09:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0952F2EB6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:11:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732388AbhALMI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:08:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732304AbhALMI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:08:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9536C23107;
-        Tue, 12 Jan 2021 12:07:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610453268;
-        bh=1aWrOOyg0JxWPnnqIi9uvg2WDcbjP/AP9FtMiiGQS9g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sG71MVQ9OvPrJxV60dDgds2ed1/vImX2EVNze96ndwtiNKNLI20fQ7+kC5u1wb5My
-         y81oQ09OD3/WiXV1jIAKRjl01iN8cLgItDQ5s7gI6a1TdXFcJT2WWiZl7bJTY0e9rY
-         wYjA9BZfzEoCYr4o6XnS1l5+pxQYVgr+xAwxZ9js=
-Date:   Tue, 12 Jan 2021 13:08:57 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Pintu Agarwal <pintu.ping@gmail.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>, landy.gross@linaro.org,
-        David Brown <david.brown@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        indranilghsh428@gmail.com
-Subject: Re: [BUG]: Kernel 4.9: Kernel crash at fs/sysfs/file.c :
- sysfs_kf_seq_show
-Message-ID: <X/2RWUWvteqlGxiS@kroah.com>
-References: <CAOuPNLiUBhJdsgw9bjQxxhkeBHQFoE_vN_Na6kw3ksr89r+HOg@mail.gmail.com>
+        id S1732444AbhALMJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:09:50 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:45708 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732067AbhALMJu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:09:50 -0500
+Date:   Tue, 12 Jan 2021 13:09:06 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610453348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OKoDSC87wBJ/q7tk2afi6RH/hGLuq+/LxTP4N37BM5E=;
+        b=WoTM0EQMX+E98si1mt2VtvXkIt8F9pq7dB0X8V2csa96u0FNNMo6msAnBY2TmtVWRwXBpx
+        PB2DtNVD88zmechuvuID8f53rk7bumOvxj5lK4ZaUm2vf+aHzIzETTAm7uSX+XXQg12+P6
+        iJmfTc5MR15/ioXz7r2JlNpDGLgwOMSkm2ckTruklStLUlRMpPMQQaFz5CETPR7Ok5gSUg
+        UNI+I4GxlDo+VdP8fzVeN7toh1sEwtO8DuKrYce9va9ac0KOiIYN9EZARgV/+5UqRxvHYa
+        qTGy2Gu+g3bxIAHpBBsD33OnXJJvE6xfUaJT/tKpMZm+HI3qBdcE7ssycLYz6g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610453348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OKoDSC87wBJ/q7tk2afi6RH/hGLuq+/LxTP4N37BM5E=;
+        b=vNjGBZNVrBVTt9jpPkkUqVGa22ypbKA0FdGR+HBFM7KuHLsGbGzf2TV23WMwa0gVfnXk8h
+        qeDfBgjMGbxy9qCw==
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     John Garry <john.garry@huawei.com>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>,
+        linux-scsi@vger.kernel.org, intel-linux-scu@intel.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>
+Subject: Re: [PATCH v2 02/19] scsi: libsas and users: Remove notifier
+ indirection
+Message-ID: <X/2RYvDDmMs61Uen@lx-t490>
+References: <20210112110647.627783-1-a.darwish@linutronix.de>
+ <20210112110647.627783-3-a.darwish@linutronix.de>
+ <21eefa9b-7ff5-b418-6db4-7e0039c24473@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOuPNLiUBhJdsgw9bjQxxhkeBHQFoE_vN_Na6kw3ksr89r+HOg@mail.gmail.com>
+In-Reply-To: <21eefa9b-7ff5-b418-6db4-7e0039c24473@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 05:31:54PM +0530, Pintu Agarwal wrote:
-> Hi,
-> 
-> I am using Kernel: 4.9.217 for one of the ARM32 boards for Qualcomm SOC.
-> https://github.com/android-linux-stable/msm-4.9
-> 
-> But I think this is a general bug applicable to :Kernel 4.9 under
-> fs/sysfs/file.c
-> So, I wanted to quickly check here if others are familiar with this
-> issue and if it is fixed already.
-> Note, this issue does not occur in 4.14 Kernel.
+On Tue, Jan 12, 2021 at 11:36:21AM +0000, John Garry wrote:
+> On 12/01/2021 11:06, Ahmed S. Darwish wrote:
+> > From: John Garry<john.garry@huawei.com>
+> >
+> > The LLDDs report events to libsas with .notify_port_event and
+> > .notify_phy_event callbacks.
+> >
+> > These callbacks are fixed and so there is no reason why we cannot call the
+> > functions directly, so do that.
+> >
+> > This neatens the code slightly.
+> >
+> > [a.darwish@linutronix.de: Remove the now unused "sas_ha" local variables]
+> > Signed-off-by: John Garry<john.garry@huawei.com>
+>
+> Don't forget your signed-off-by :)
+>
 
-As you are using a _HEAVILY_ modified 4.9 kernel release, you are going
-to have to get support from the vendor that provided you with this
-kernel, as they are the only ones that really know what is in there,
-_AND_ you are already paying them for that support.  So take advantage
-of it :)
+Oh, yes.
 
-good luck!
+> >
+> > diff --git a/Documentation/scsi/libsas.rst b/Documentation/scsi/libsas.rst
+> > index f9b77c7879db..a183b1d84713 100644
+> > --- a/Documentation/scsi/libsas.rst
+> > +++ b/Documentation/scsi/libsas.rst
+> > @@ -189,8 +189,8 @@ num_phys
+> >   The event interface::
+> >   	/* LLDD calls these to notify the class of an event. */
+> > -	void (*notify_port_event)(struct sas_phy *, enum port_event);
+> > -	void (*notify_phy_event)(struct sas_phy *, enum phy_event);
+> > +	void sas_notify_port_event(struct sas_phy *, enum port_event);
+> > +	void sas_notify_phy_event(struct sas_phy *, enum phy_event);
+> >   When sas_register_ha() returns, those are set and can be
+> >   called by the LLDD to notify the SAS layer of such events
+>
+> Maybe this was missed in the rebase, but I think that this comment can go/be
+> changed at some stage.
+>
 
-greg k-h
+Yeah, I pulled the patch yesterday from:
+
+  https://github.com/hisilicon/kernel-dev/commit/87fcd7e113dc05b7933260e7fa4588dc3730cc2a
+
+Lemme check if there are any other differences.
+
+Thanks,
+--
+Ahmed S. Darwish
