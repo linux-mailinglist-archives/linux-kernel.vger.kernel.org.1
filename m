@@ -2,86 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3812F3A68
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:29:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF9D2F3A55
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:29:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436713AbhALT22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 14:28:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
+        id S2393043AbhALT1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:27:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406888AbhALT20 (ORCPT
+        with ESMTP id S2392745AbhALT13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:28:26 -0500
-Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CCA4C0617A7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 11:26:50 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id EE4AC3EB8B;
-        Tue, 12 Jan 2021 20:26:48 +0100 (CET)
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, phone-devel@vger.kernel.org,
-        robdclark@gmail.com, sean@poorly.run,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: [PATCH v2 7/7] drm/msm/dpu: Remove unused call in wait_for_commit_done
-Date:   Tue, 12 Jan 2021 20:26:32 +0100
-Message-Id: <20210112192632.502897-8-angelogioacchino.delregno@somainline.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210112192632.502897-1-angelogioacchino.delregno@somainline.org>
-References: <20210112192632.502897-1-angelogioacchino.delregno@somainline.org>
+        Tue, 12 Jan 2021 14:27:29 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D08C06179F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 11:26:49 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kzPJK-0006u3-Rt; Tue, 12 Jan 2021 20:26:34 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kzPJJ-0002zj-Df; Tue, 12 Jan 2021 20:26:33 +0100
+Date:   Tue, 12 Jan 2021 20:26:33 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Philipp Rosenberger <p.rosenberger@kunbus.com>
+Cc:     linux-rtc@vger.kernel.org, dan.carpenter@oracle.com,
+        biwen.li@nxp.com, lvb@xiphos.com, bruno.thomsen@gmail.com,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] rtc: pcf2127: Disable Power-On Reset Override
+Message-ID: <20210112192633.yl7nx474r6njfynd@pengutronix.de>
+References: <20210104161910.9144-1-p.rosenberger@kunbus.com>
+ <20210104161910.9144-2-p.rosenberger@kunbus.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="svmvd7gj24gqtrwm"
+Content-Disposition: inline
+In-Reply-To: <20210104161910.9144-2-p.rosenberger@kunbus.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The call to dpu_encoder_phys_cmd_prepare_for_kickoff is useless as
-it's unused because the serialize_wait4pp variable is never set to
-true by .. anything, literally: remove the call.
-While at it, also reduce indentation by inverting the check for
-dpu_encoder_phys_cmd_is_master.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+--svmvd7gj24gqtrwm
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-index 665eb1d4cb8a..b2be39b9144e 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-@@ -685,20 +685,15 @@ static int dpu_encoder_phys_cmd_wait_for_tx_complete(
- static int dpu_encoder_phys_cmd_wait_for_commit_done(
- 		struct dpu_encoder_phys *phys_enc)
- {
--	int rc = 0;
- 	struct dpu_encoder_phys_cmd *cmd_enc;
- 
- 	cmd_enc = to_dpu_encoder_phys_cmd(phys_enc);
- 
- 	/* only required for master controller */
--	if (dpu_encoder_phys_cmd_is_master(phys_enc))
--		rc = _dpu_encoder_phys_cmd_wait_for_ctl_start(phys_enc);
--
--	/* required for both controllers */
--	if (!rc && cmd_enc->serialize_wait4pp)
--		dpu_encoder_phys_cmd_prepare_for_kickoff(phys_enc);
-+	if (!dpu_encoder_phys_cmd_is_master(phys_enc))
-+		return 0;
- 
--	return rc;
-+	return _dpu_encoder_phys_cmd_wait_for_ctl_start(phys_enc);
- }
- 
- static int dpu_encoder_phys_cmd_wait_for_vblank(
--- 
-2.29.2
+Hello,
 
+On Mon, Jan 04, 2021 at 05:19:09PM +0100, Philipp Rosenberger wrote:
+> If the PCF2127/2129 has lost all power and is then powered again it goes
+> into "Power-On Reset Override" mode. In this mode the RTC seems to work
+> fine. Also the watchdog can be configured. The watchdog timer counts as
+> expected and the WDTF (watchdog timer flag) gets set. But no interrupt
+> is generated on the INT pin. The same applies to the alarm function.
+>=20
+> The POR_OVRD bit on the Control_1 register must be cleared first. In
+> some cases the bootloader or firmware might have done this already. But
+> we clear the bit nevertheless to guarantee correct behavior the
+> watchdog and alarm function.
+
+I don't understand this. The reference manual tells us about this bit:
+
+| The POR duration is directly related to the crystal oscillator
+| start-up time. Due to the long start-up times experienced by these
+| types of circuits, a mechanism has been built in to disable the POR
+| and therefore speed up the on-board test of the device.
+| The setting of the PORO mode requires that POR_OVRD in register
+| Control_1 is set logic 1 and that the signals at the interface pins
+| SDA/CE and SCL are toggled as illustrated in Figure 18.
+
+So this means that with the bit set (i.e. with this patch added) after a
+power-on the oscillator isn't properly reset. This means the chip might
+not work correctly, right? Does "speed up the on-board test" suggest,
+this is a feature that is to be used while testing the chip and not for
+production use? You missed to ensure that the requested toggling is
+done. Did you test how much time this actually saves? I doubt it is
+worth to trade correct operation for quicker startup time is the thing
+we want here.
+
+If you still think this is a good idea I guess you need a much better
+commit log (and code comment).
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--svmvd7gj24gqtrwm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/99+YACgkQwfwUeK3K
+7AkGUgf8DEkEJIIoQUMH3qnEjBn/MzV6B6syv2Nsl4yfa+IjiO1q3f3oOXVnos2P
+iERLxJJhn9YUAmK8b8eexbHinCVXprHpyVYM8XsFNz0lPAZ3uxoAzVRxgSVb4dAW
+YAJTB4eDIBkQ0AKS0k1lWZ0x9fTAZWXAQZE9+7KTJNZWzQ1k+ftfQlEkVJc/CYQm
+Nnm1vA7MiAq3UEGqIrEO4lsbZlGLNwViZzdCEwvyM6JHYmyyVXWLYHj4LEfDCf72
+s26zMBa+6khOZISYWz9nJprR6KnRKT4f1WBT/lujtUYtmHvevYMtJ6jkCH9nrhn0
+v+iT3Y6h0HexrAL0Ij3IN+pqrdlFYA==
+=l0DM
+-----END PGP SIGNATURE-----
+
+--svmvd7gj24gqtrwm--
