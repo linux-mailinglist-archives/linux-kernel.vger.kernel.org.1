@@ -2,179 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354C92F2B16
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:19:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D372C2F2B1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392555AbhALJTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:19:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54724 "EHLO
+        id S2392565AbhALJTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:19:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729760AbhALJTL (ORCPT
+        with ESMTP id S1731326AbhALJT3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:19:11 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78CE2C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 01:18:30 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id g12so300430ejf.8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 01:18:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qfe9Npb8wm8W3Nx6KHLBI0GR4sRyQOFWZ/Gy5vmV5F4=;
-        b=iMGd/9IaaW7DBT3wuCuI8RIBPTq7yxq3pCSYH0KcQ39YaQ6ohaPykce+qOJozTZN9a
-         RtAV3ithfeDnvSazKxyis+cAREsMrIiu16kHBjA1AXcmcMi/PIPpSewly2nT/yY0pcc6
-         4nFwZJeVB3OzmfLdyku60ZPE2/48YEFdzsMGcdhcUn6qI0kOakIqTxXkm+odu8LPA3Ie
-         yWqwy/JPr4iQlLpU1f8B/q3wKQsNSyyOpIrAXQt7b4TiFtFj5L8a8vvpiyxIDAc2E/Lb
-         QOJhXNR52So2+AKv2MrJesjPyd0iLCO0PdtBc4v9tyF84+JAV4GW9j00F7YfIlRu3FC7
-         kSIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qfe9Npb8wm8W3Nx6KHLBI0GR4sRyQOFWZ/Gy5vmV5F4=;
-        b=olx8wj6Cwu+Fvks8j0ihHgyl0XMxT0VIwzY8a/Recj8zNDkloyUy1/8hLIFuTlnlZ8
-         xk5fhsUI35Khu+77IEadbConr/PYxP9P7+tEuNplxvJyhZwahw2VDwXD/QtNLinabJey
-         QvaZXmbTPl5MAxZxPjdsth6Pbh9jpaWYprWgAgOEfWv8ebUlFUmpJ4Ddgwg0MABoPRK+
-         +jjmOIZZ3OXoBZk2OydbEw7VMuuUkcPX7aaCubTzIvqzYTVIO2PmG/V7x7lz+H67Qmr3
-         jWvd0Epce0ZI9v3NC8i11k/qVFuWhgjqmQKuP+KZSFwgHaJjFeQYZ/jfVGK5NjpwrYbj
-         A+ug==
-X-Gm-Message-State: AOAM532RZBAdB1X9W55jol3+Ahy2dOWbgs5anvFRsXTKz/xwsTkQMdLP
-        d5vSwWnyJ9ne48P0+13rark1yBcO8SzMauvpmLYIg1vLX80=
-X-Google-Smtp-Source: ABdhPJzkznHTCYSLSjiYmRel+KVPA3sXYSdVro4Pf4T5plbbh+OR4IiAuYOMAdliSvGBh57bfxP5X1lqUIRGY0XG2jE=
-X-Received: by 2002:a17:906:a3c7:: with SMTP id ca7mr2614585ejb.523.1610443109228;
- Tue, 12 Jan 2021 01:18:29 -0800 (PST)
+        Tue, 12 Jan 2021 04:19:29 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4414FC061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 01:18:49 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kzFp7-0000pF-8e; Tue, 12 Jan 2021 10:18:45 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kzFp4-0006Im-L6; Tue, 12 Jan 2021 10:18:42 +0100
+Date:   Tue, 12 Jan 2021 10:18:42 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     linux-kernel@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, f.fainelli@gmail.com,
+        linux-pwm@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        wahrenst@gmx.net, linux-input@vger.kernel.org,
+        dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
+        devel@driverdev.osuosl.org, p.zabel@pengutronix.de,
+        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
+        linux-clk@vger.kernel.org, sboyd@kernel.org,
+        linux-rpi-kernel@lists.infradead.org, bgolaszewski@baylibre.com,
+        andy.shevchenko@gmail.com
+Subject: Re: [PATCH v6 11/11] pwm: Add Raspberry Pi Firmware based PWM bus
+Message-ID: <20210112091842.3th64ardbqjafvuq@pengutronix.de>
+References: <20201211164801.7838-1-nsaenzjulienne@suse.de>
+ <20201211164801.7838-12-nsaenzjulienne@suse.de>
 MIME-Version: 1.0
-References: <160990599013.2430134.11556277600719835946.stgit@dwillia2-desk3.amr.corp.intel.com>
- <785b9095-eca4-8100-33ea-6ae84e02a92e@redhat.com> <20210106104255.GK13207@dhcp22.suse.cz>
- <7d7c5dc4-7784-5dcc-fc00-4fe99f0a4a90@redhat.com> <CAPcyv4iN4t2P_rQS23E7Bb-eLUAt389Y5t4X-yoRQrxvsN3DWQ@mail.gmail.com>
- <75bb1429-d133-d303-a67a-be16c654ada8@redhat.com>
-In-Reply-To: <75bb1429-d133-d303-a67a-be16c654ada8@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 12 Jan 2021 01:18:20 -0800
-Message-ID: <CAPcyv4gXaUswZS_a4-oiQZWVZ4QDJrKps4XGs=xxLE0Ls=PSmg@mail.gmail.com>
-Subject: Re: [PATCH] mm: Teach pfn_to_online_page() about ZONE_DEVICE section collisions
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="r23z722cpflr6wgz"
+Content-Disposition: inline
+In-Reply-To: <20201211164801.7838-12-nsaenzjulienne@suse.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 1:16 AM David Hildenbrand <david@redhat.com> wrote:
->
+
+--r23z722cpflr6wgz
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Nicolas,
+
+On Fri, Dec 11, 2020 at 05:48:00PM +0100, Nicolas Saenz Julienne wrote:
+> diff --git a/drivers/pwm/pwm-raspberrypi-poe.c b/drivers/pwm/pwm-raspberr=
+ypi-poe.c
+> new file mode 100644
+> index 000000000000..24b498839fcc
+> --- /dev/null
+> +++ b/drivers/pwm/pwm-raspberrypi-poe.c
+> @@ -0,0 +1,216 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright 2020 Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> + * For more information on Raspberry Pi's PoE hat see:
+> + * https://www.raspberrypi.org/products/poe-hat/
+> + *
+> + * Limitations:
+> + *  - No disable bit, so a disabled PWM is simulated by duty_cycle 0
+> + *  - Only normal polarity
+> + *  - Fixed 12.5 kHz period
+> + *
+> + * The current period is completed when HW is reconfigured.
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pwm.h>
+> +
+> +#include <soc/bcm2835/raspberrypi-firmware.h>
+> +#include <dt-bindings/pwm/raspberrypi,firmware-poe-pwm.h>
+> +
+> +#define RPI_PWM_MAX_DUTY		255
+> +#define RPI_PWM_PERIOD_NS		80000 /* 12.5 kHz */
+> +
+> +#define RPI_PWM_CUR_DUTY_REG		0x0
+> +#define RPI_PWM_DEF_DUTY_REG		0x1
+> +
+> +struct raspberrypi_pwm {
+> +	struct rpi_firmware *firmware;
+> +	struct pwm_chip chip;
+> +	unsigned int duty_cycle;
+> +};
+> +
+> +struct raspberrypi_pwm_prop {
+> +	__le32 reg;
+> +	__le32 val;
+> +	__le32 ret;
+> +} __packed;
+> +
+> +static inline struct raspberrypi_pwm *to_raspberrypi_pwm(struct pwm_chip=
+ *chip)
+
+I'd like to see this function use the same prefix as the other
+functions. I suggest "raspberrypi_pwm_from_chip".
+
+> +{
+> +	return container_of(chip, struct raspberrypi_pwm, chip);
+> +}
+> +
+> +static int raspberrypi_pwm_set_property(struct rpi_firmware *firmware,
+> +					u32 reg, u32 val)
+> +{
+> +	struct raspberrypi_pwm_prop msg =3D {
+> +		.reg =3D cpu_to_le32(reg),
+> +		.val =3D cpu_to_le32(val),
+> +	};
+> +	int ret;
+> +
+> +	ret =3D rpi_firmware_property(firmware, RPI_FIRMWARE_SET_POE_HAT_VAL,
+> +				    &msg, sizeof(msg));
+> +	if (ret)
+> +		return ret;
+> +	if (msg.ret)
+> +		return -EIO;
+> +
+> +	return 0;
+> +}
+> +
+> +static int raspberrypi_pwm_get_property(struct rpi_firmware *firmware,
+> +					u32 reg, u32 *val)
+> +{
+> +	struct raspberrypi_pwm_prop msg =3D {
+> +		.reg =3D reg
+> +	};
+> +	int ret;
+> +
+> +	ret =3D rpi_firmware_property(firmware, RPI_FIRMWARE_GET_POE_HAT_VAL,
+> +				    &msg, sizeof(msg));
+> +	if (ret)
+> +		return ret;
+> +	if (msg.ret)
+> +		return -EIO;
+> +
+> +	*val =3D le32_to_cpu(msg.val);
+> +
+> +	return 0;
+> +}
+> +
+> +static void raspberrypi_pwm_get_state(struct pwm_chip *chip,
+> +				      struct pwm_device *pwm,
+> +				      struct pwm_state *state)
+> +{
+> +	struct raspberrypi_pwm *rpipwm =3D to_raspberrypi_pwm(chip);
+> +
+> +	state->period =3D RPI_PWM_PERIOD_NS;
+> +	state->duty_cycle =3D DIV_ROUND_CLOSEST(rpipwm->duty_cycle * RPI_PWM_PE=
+RIOD_NS,
+> +					      RPI_PWM_MAX_DUTY);
+
+Please round up here ...
+
+> +	state->enabled =3D !!(rpipwm->duty_cycle);
+> +	state->polarity =3D PWM_POLARITY_NORMAL;
+> +}
+> +
+> +static int raspberrypi_pwm_apply(struct pwm_chip *chip, struct pwm_devic=
+e *pwm,
+> +			         const struct pwm_state *state)
+> +{
+> +	struct raspberrypi_pwm *rpipwm =3D to_raspberrypi_pwm(chip);
+> +	unsigned int duty_cycle;
+> +	int ret;
+> +
+> +        if (state->period < RPI_PWM_PERIOD_NS ||
+> +            state->polarity !=3D PWM_POLARITY_NORMAL)
+> +                return -EINVAL;
+> +
+> +        if (!state->enabled)
+> +                duty_cycle =3D 0;
+> +        else if (state->duty_cycle < RPI_PWM_PERIOD_NS)
+> +                duty_cycle =3D DIV_ROUND_CLOSEST_ULL(state->duty_cycle *=
+ RPI_PWM_MAX_DUTY,
+> +					           RPI_PWM_PERIOD_NS);
+
+=2E.. and round down here.
+
+Just to be sure: writing RPI_PWM_MAX_DUTY (i.e. 255) yields 100% duty
+cycle, right?
+
+> +        else
+> +                duty_cycle =3D RPI_PWM_MAX_DUTY;
+> +
+> +	if (duty_cycle =3D=3D rpipwm->duty_cycle)
+> +		return 0;
+> +
+> +	ret =3D raspberrypi_pwm_set_property(rpipwm->firmware, RPI_PWM_CUR_DUTY=
+_REG,
+> +					   duty_cycle);
+> +	if (ret) {
+> +		dev_err(chip->dev, "Failed to set duty cycle: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/*
+> +	 * This sets the default duty cycle after resetting the board, we
+> +	 * updated it every time to mimic Raspberry Pi's downstream's driver
+> +	 * behaviour.
+> +	 */
+> +	ret =3D raspberrypi_pwm_set_property(rpipwm->firmware, RPI_PWM_DEF_DUTY=
+_REG,
+> +					   duty_cycle);
+> +	if (ret) {
+> +		dev_err(chip->dev, "Failed to set default duty cycle: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +        rpipwm->duty_cycle =3D duty_cycle;
+
+Please use tabs for indention. (The general hint is to use checkpatch
+which (I hope) tells you about problems like this.)
+
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct pwm_ops raspberrypi_pwm_ops =3D {
+> +	.get_state =3D raspberrypi_pwm_get_state,
+> +	.apply =3D raspberrypi_pwm_apply,
+> +	.owner =3D THIS_MODULE,
+> +};
+> +
+> +static int raspberrypi_pwm_probe(struct platform_device *pdev)
+> +{
+> +	struct device_node *firmware_node;
+> +	struct device *dev =3D &pdev->dev;
+> +	struct rpi_firmware *firmware;
+> +	struct raspberrypi_pwm *rpipwm;
+> +	int ret;
+> +
+> +	firmware_node =3D of_get_parent(dev->of_node);
+> +	if (!firmware_node) {
+> +		dev_err(dev, "Missing firmware node\n");
+> +		return -ENOENT;
+> +	}
+> +
+> +	firmware =3D devm_rpi_firmware_get(&pdev->dev, firmware_node);
+> +	of_node_put(firmware_node);
+> +	if (!firmware)
+> +		return -EPROBE_DEFER;
+
+Please use dev_err_probe to benefit from recording an error message in
+this case.
+
+> +	rpipwm =3D devm_kzalloc(&pdev->dev, sizeof(*rpipwm), GFP_KERNEL);
+> +	if (!rpipwm)
+> +		return -ENOMEM;
+> +
+> +	rpipwm->firmware =3D firmware;
+> +	rpipwm->chip.dev =3D dev;
+> +	rpipwm->chip.ops =3D &raspberrypi_pwm_ops;
+> +	rpipwm->chip.base =3D -1;
+> +	rpipwm->chip.npwm =3D RASPBERRYPI_FIRMWARE_PWM_NUM;
+> +
+> +	platform_set_drvdata(pdev, rpipwm);
+> +
+> +	ret =3D raspberrypi_pwm_get_property(rpipwm->firmware, RPI_PWM_CUR_DUTY=
+_REG,
+> +					   &rpipwm->duty_cycle);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to get duty cycle: %d\n", ret);
+
+Please use %pe for the error codes (directly or still better by using
+dev_err_probe here, too).
+
+> +		return ret;
+> +	}
+> +
+> +	return pwmchip_add(&rpipwm->chip);
+> +}
 > [...]
->
-> >>> Well, I would love to have no surprises either. So far there was not
-> >>> actual argument why the pmem reserved space cannot be fully initialized.
-> >>
-> >> Yes, I'm still hoping Dan can clarify that.
-> >
-> > Complexity and effective utility (once pfn_to_online_page() is fixed)
-> > are the roadblocks in my mind. The altmap is there to allow for PMEM
-> > capacity to be used as memmap space, so there would need to be code to
-> > break that circular dependency and allocate a memmap for the metadata
-> > space from DRAM and the rest of the memmap space for the data capacity
-> > from pmem itself. That memmap-for-pmem-metadata will still represent
-> > offline pages. So once pfn_to_online_page() is fixed, what pfn-walker
-> > is going to be doing pfn_to_page() on PMEM metadata? Secondly, there
->
-> Assume I do
->
-> pgmap = get_dev_pagemap(pfn, NULL);
-> if (pgmap)
->         return pfn_to_page(pfn);
-> return NULL;
->
-> on a random pfn because I want to inspect ZONE_DEVICE PFNs.
 
-I keep getting hung up on the motivation to do random pfn inspection?
+Best regards
+Uwe
 
-The problems we have found to date have required different solutions.
-The KVM bug didn't use get_dev_pagemap() to inspect the pfn because it
-could rely on the fact that the page already had an elevated reference
-count. The get_user_pages() path only looks up ZONE_DEVICE pfns when
-it see {pte,pmd,pud}_devmap set in the page table entry. pfn walkers
-have been a problem, but with pfn_to_online_page() fixed what is the
-remaining motivation to inspect ZONE_DEVICE pfns?
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-> IIUC, the memmap I get might usually be initialized, except we're
-> hitting a PFN in the reserved altmap space. Correct?
+--r23z722cpflr6wgz
+Content-Type: application/pgp-signature; name="signature.asc"
 
-The pagemap currently returns true for every pfn in the range
-including those in the altmap.
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/9aW8ACgkQwfwUeK3K
+7AkKmAf/X43HuzDS2E9bHa7KzzW9+7rOPBmL3wmZt/Ab01mgp1yRp2gC+qtv7BPT
+0n138wPi5O+rOAxm/iC9Uc4Y1s0bpvndj05noMRAK2X+XLXxwWhLARqf63uCvxIr
+sa6Dl6PDQsOj9ucrNUJPWFNYkjm4YGLmKJQrqjr8lEyydl7j8S4e2IGryiMs+sSV
+nL9CkhaIA0cFiritdv3THxRfhxnzMLkcG2E3ePHA2eq91FuV1DHqfZpgYwSd0eDf
+w1egR/8M6Lup6AxF7B5IzSzaBf+XFZi5k5Wj0LuRXNSpUBcL7nv81l0e+A8+fCF5
+ZmpW6QOoovobVNxANzKLcZ4hfKwybw==
+=J/5G
+-----END PGP SIGNATURE-----
 
-
->
-> Do we expect this handling to not be valid - i.e., initialization to be
-> of no utility? (to make it fly we would have to explicitly check for
-> PFNs in the altmap reserved space, which wouldn't be too problematic)
->
-> > is a PMEM namespace mode called "raw" that eschews DAX and 'struct
-> > page' for pmem and just behaves like a memory-backed block device. The
-> > end result is still that pfn walkers need to discover if a PMEM pfn
-> > has a page, so I don't see what "sometimes there's an
-> > memmap-for-pmem-metadata" buys us?
->
-> Right, but that's as easy as doing a pfn_valid() first.
->
->
-> Let me try to express what I (and I think Michal) mean:
->
-> In pagemap_range(), we
->
-> 1. move_pfn_range_to_zone()->memmap_init_zone(): initialize the memmap
-> of the PMEM device used as memmap itself ("self host", confusing). We
-> skip initializing the memmap for the the reserved altmap space.
->
-> 2. memmap_init_zone_device(): initialize the memmap of everything
-> outside of the altmap space.
->
-> IIUC, the memmap of the reserved altmap space remains uninitialized.
-> What speaks against just initializing that part in e.g., 2. or similarly
-> after 1.?
->
->
-> I'm planning on documenting the result of this discussion in the code,
-> so people don't have to scratch their head whenever stumbling over the
-> altmap reserved space.
->
-> >
-> >>
-> >>> On the other hand making sure that pfn_to_online_page sounds like the
-> >>> right thing to do. And having an explicit check for zone device there in
-> >>> a slow path makes sense to me.
-> >>
-> >> As I said, I'd favor to simplify and just get rid of the special case,
-> >> instead of coming up with increasingly complex ways to deal with it.
-> >> pfn_to_online_page() used to be simple, essentially checking a single
-> >> flag was sufficient in most setups.
-> >
-> > I think the logic to throw away System RAM that might collide with
-> > PMEM and soft-reserved memory within a section is on the order of the
-> > same code complexity as the patch proposed here, no? Certainly the
-> > throw-away concept itself is easier to grasp, but I don't think that
-> > would be reflected in the code patch to achieve it... willing to be
-> > proved wrong with a patch.
->
-> Well, at least it sounds easier to go over memblock holes and
-> align-up/down some relevant PFNs to section boundaries, ending up with
-> no affect to runtime performance later (e.g., pfn_to_online_page()). But
-> I agree that most probably the devil is in the detail - e.g., handling
-> different kind of holes (different flavors of "reserved") and syncing up
-> other data structures (e.g., resource tree).
->
-> I don't have time to look into that right now, but might look into it in
-> the future. For now I'm fine with this approach, assuming we don't
-> discover other corner cases that turn it even more complex. I'm happy
-> that we finally talk about it and fix it!
->
->
-> --
-> Thanks,
->
-> David / dhildenb
->
+--r23z722cpflr6wgz--
