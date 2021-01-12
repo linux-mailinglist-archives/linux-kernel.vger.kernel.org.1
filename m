@@ -2,186 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20CC22F3FB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A952F3FC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394659AbhALWct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:32:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59440 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729736AbhALWcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:32:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 370D823122;
-        Tue, 12 Jan 2021 22:32:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610490727;
-        bh=Edb7TSIfoEMpB72O6Vi1J0l6qdjuWpB/rW1mUCmfsUw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d50z2AvXNW3iNSLdPC5ZFMB6HpVxIax+yygsLqJb3E5qOIbAvI2qKKoYaUfIaFpPt
-         m+E5jHyJHIzbFc+kZ4ZojjJB4V09IFB0zG/aZMRs0dyei2tZ9z4LoxvQozTqBIWB40
-         GsEDw/5Xh3jFnPRd9CglEIvNw3m361G+zGzLkkDvCQ4kqrMSpUMY4oAixgHNqQ6gPD
-         BgBnrw9hx7EueL7h8j4Q6r61G7T1L5I/qjSqju03ia/2B5YjM7jx1zEty+6xl5+HSS
-         QphP+0rVk9XFWSOm28PQBB25YH7a80pU5SWqo0M88WeRCT0KcG1Mo/KEZvCB57s7nA
-         BtvcI7FU7ghTw==
-Date:   Tue, 12 Jan 2021 14:32:05 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: fix to keep isolation of atomic write
-Message-ID: <X/4jZY0bzkTCbDTY@google.com>
-References: <20201230075557.108818-1-yuchao0@huawei.com>
- <X/Y5pJr4Aaf0bBqj@google.com>
- <X/ZAS6oyFiudshe2@google.com>
- <X/x9kTlL8E1Wj4Dd@google.com>
- <d146348b-3bbd-c1a5-72eb-b054cbcf0b13@huawei.com>
+        id S2405214AbhALWdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:33:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29457 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726475AbhALWdu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 17:33:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610490743;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Fks7S4sWATCTrvgOGnefCKrK3VzEzfrq2t139PnWz5s=;
+        b=Kp5AGdTN3bRnOzGOBP6D9hnzVUzdOfuyRP6+ylWB3i/7XeI4XcIaqxRhZ7vPgxv+on1O0R
+        3ZIzojxVNbHlgadqn77JeslMuM5WxEVSXgpRVdm2b73b4vrxWtwqiF2c4GILIUbDWmoXWA
+        kZS07BcNPOwBcq4+nI0jS0si6wJeqdg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-588-Z82Ggr4cMQy_P00oAJMsZg-1; Tue, 12 Jan 2021 17:32:19 -0500
+X-MC-Unique: Z82Ggr4cMQy_P00oAJMsZg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0380BE75C;
+        Tue, 12 Jan 2021 22:32:18 +0000 (UTC)
+Received: from redhat.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C098D1F0;
+        Tue, 12 Jan 2021 22:32:16 +0000 (UTC)
+Date:   Tue, 12 Jan 2021 17:32:14 -0500
+From:   Jarod Wilson <jarod@redhat.com>
+To:     Jay Vosburgh <jay.vosburgh@canonical.com>
+Cc:     linux-kernel@vger.kernel.org, Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [RFC PATCH net-next] bonding: add a vlan+srcmac tx hashing option
+Message-ID: <20210112223214.GJ476710@redhat.com>
+References: <20201218193033.6138-1-jarod@redhat.com>
+ <21784.1608337139@famine>
+ <20210108000340.GC29828@redhat.com>
+ <20210112211216.GI476710@redhat.com>
+ <30207.1610487550@famine>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d146348b-3bbd-c1a5-72eb-b054cbcf0b13@huawei.com>
+In-Reply-To: <30207.1610487550@famine>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/12, Chao Yu wrote:
-> On 2021/1/12 0:32, Jaegeuk Kim wrote:
-> > On 01/06, Jaegeuk Kim wrote:
-> > > On 01/06, Jaegeuk Kim wrote:
-> > > > Hi Chao,
-> > > > 
-> > > > With a quick test, this patch causes down_write failure resulting in blocking
-> > > > process. I didn't dig in the bug so, please check the code again. :P
-> > > 
-> > > nvm. I can see it works now.
-> > 
-> > Hmm, this gives a huge perf regression when running sqlite. :(
-> > We may need to check the lock coverage. Thoughts?
+On Tue, Jan 12, 2021 at 01:39:10PM -0800, Jay Vosburgh wrote:
+> Jarod Wilson <jarod@redhat.com> wrote:
 > 
-> I added i_mmap_sem lock only, so it can cause atomic_{start,commit,finish}
-> race with mmap and truncation operations in additionally.
+> >On Thu, Jan 07, 2021 at 07:03:40PM -0500, Jarod Wilson wrote:
+> >> On Fri, Dec 18, 2020 at 04:18:59PM -0800, Jay Vosburgh wrote:
+> >> > Jarod Wilson <jarod@redhat.com> wrote:
+> >> > 
+> >> > >This comes from an end-user request, where they're running multiple VMs on
+> >> > >hosts with bonded interfaces connected to some interest switch topologies,
+> >> > >where 802.3ad isn't an option. They're currently running a proprietary
+> >> > >solution that effectively achieves load-balancing of VMs and bandwidth
+> >> > >utilization improvements with a similar form of transmission algorithm.
+> >> > >
+> >> > >Basically, each VM has it's own vlan, so it always sends its traffic out
+> >> > >the same interface, unless that interface fails. Traffic gets split
+> >> > >between the interfaces, maintaining a consistent path, with failover still
+> >> > >available if an interface goes down.
+> >> > >
+> >> > >This has been rudimetarily tested to provide similar results, suitable for
+> >> > >them to use to move off their current proprietary solution.
+> >> > >
+> >> > >Still on the TODO list, if these even looks sane to begin with, is
+> >> > >fleshing out Documentation/networking/bonding.rst.
+> >> > 
+> >> > 	I'm sure you're aware, but any final submission will also need
+> >> > to include netlink and iproute2 support.
+> >> 
+> >> I believe everything for netlink support is already included, but I'll
+> >> double-check that before submitting something for inclusion consideration.
+> >
+> >I'm not certain if what you actually meant was that I'd have to patch
+> >iproute2 as well, which I've definitely stumbled onto today, but it's a
+> >2-line patch, and everything seems to be working fine with it:
 > 
-> I'd like to know what's your sqlite testcase?
+> 	Yes, that's what I meant.
+> 
+> >$ sudo ip link set bond0 type bond xmit_hash_policy 5
+> 
+> 	Does the above work with the text label (presumably "vlansrc")
+> as well as the number, and does "ip link add test type bond help" print
+> the correct text for XMIT_HASH_POLICY?
 
-Nothing special. Just generating multiple sqlite transactions to the same db.
+All of the above looks correct to me, output below. Before submitting...
+Could rename it from vlansrc to vlan+srcmac or some variation thereof if
+it's desired. I tried to keep it relatively short, but it's perhaps a bit
+less succinct like I have it now, and other modes include a +.
 
-> 
-> Thanks,
-> 
-> > 
-> > > 
-> > > > 
-> > > > On 12/30, Chao Yu wrote:
-> > > > > ThreadA					ThreadB
-> > > > > - f2fs_ioc_start_atomic_write
-> > > > > - write
-> > > > > - f2fs_ioc_commit_atomic_write
-> > > > >   - f2fs_commit_inmem_pages
-> > > > >   - f2fs_drop_inmem_pages
-> > > > >   - f2fs_drop_inmem_pages
-> > > > >    - __revoke_inmem_pages
-> > > > > 					- f2fs_vm_page_mkwrite
-> > > > > 					 - set_page_dirty
-> > > > > 					  - tag ATOMIC_WRITTEN_PAGE and add page
-> > > > > 					    to inmem_pages list
-> > > > >    - clear_inode_flag(FI_ATOMIC_FILE)
-> > > > > 					- f2fs_vm_page_mkwrite
-> > > > > 					  - set_page_dirty
-> > > > > 					   - f2fs_update_dirty_page
-> > > > > 					    - f2fs_trace_pid
-> > > > > 					     - tag inmem page private to pid
-> > > > > 					- truncate
-> > > > > 					 - f2fs_invalidate_page
-> > > > > 					 - set page->mapping to NULL
-> > > > > 					  then it will cause panic once we
-> > > > > 					  access page->mapping
-> > > > > 
-> > > > > The root cause is we missed to keep isolation of atomic write in the case
-> > > > > of commit_atomic_write vs mkwrite, let commit_atomic_write helds i_mmap_sem
-> > > > > lock to avoid this issue.
-> > > > > 
-> > > > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> > > > > ---
-> > > > > v2:
-> > > > > - use i_mmap_sem to avoid mkwrite racing with below flows:
-> > > > >   * f2fs_ioc_start_atomic_write
-> > > > >   * f2fs_drop_inmem_pages
-> > > > >   * f2fs_commit_inmem_pages
-> > > > > 
-> > > > >   fs/f2fs/file.c    | 3 +++
-> > > > >   fs/f2fs/segment.c | 7 +++++++
-> > > > >   2 files changed, 10 insertions(+)
-> > > > > 
-> > > > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> > > > > index 4e6d4b9120a8..a48ec650d691 100644
-> > > > > --- a/fs/f2fs/file.c
-> > > > > +++ b/fs/f2fs/file.c
-> > > > > @@ -2050,6 +2050,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
-> > > > >   		goto out;
-> > > > >   	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-> > > > > +	down_write(&F2FS_I(inode)->i_mmap_sem);
-> > > > >   	/*
-> > > > >   	 * Should wait end_io to count F2FS_WB_CP_DATA correctly by
-> > > > > @@ -2060,6 +2061,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
-> > > > >   			  inode->i_ino, get_dirty_pages(inode));
-> > > > >   	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
-> > > > >   	if (ret) {
-> > > > > +		up_write(&F2FS_I(inode)->i_mmap_sem);
-> > > > >   		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-> > > > >   		goto out;
-> > > > >   	}
-> > > > > @@ -2073,6 +2075,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
-> > > > >   	/* add inode in inmem_list first and set atomic_file */
-> > > > >   	set_inode_flag(inode, FI_ATOMIC_FILE);
-> > > > >   	clear_inode_flag(inode, FI_ATOMIC_REVOKE_REQUEST);
-> > > > > +	up_write(&F2FS_I(inode)->i_mmap_sem);
-> > > > >   	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-> > > > >   	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
-> > > > > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> > > > > index d8570b0359f5..dab870d9faf6 100644
-> > > > > --- a/fs/f2fs/segment.c
-> > > > > +++ b/fs/f2fs/segment.c
-> > > > > @@ -327,6 +327,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
-> > > > >   	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> > > > >   	struct f2fs_inode_info *fi = F2FS_I(inode);
-> > > > > +	down_write(&F2FS_I(inode)->i_mmap_sem);
-> > > > > +
-> > > > >   	while (!list_empty(&fi->inmem_pages)) {
-> > > > >   		mutex_lock(&fi->inmem_lock);
-> > > > >   		__revoke_inmem_pages(inode, &fi->inmem_pages,
-> > > > > @@ -344,6 +346,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
-> > > > >   		sbi->atomic_files--;
-> > > > >   	}
-> > > > >   	spin_unlock(&sbi->inode_lock[ATOMIC_FILE]);
-> > > > > +
-> > > > > +	up_write(&F2FS_I(inode)->i_mmap_sem);
-> > > > >   }
-> > > > >   void f2fs_drop_inmem_page(struct inode *inode, struct page *page)
-> > > > > @@ -467,6 +471,7 @@ int f2fs_commit_inmem_pages(struct inode *inode)
-> > > > >   	f2fs_balance_fs(sbi, true);
-> > > > >   	down_write(&fi->i_gc_rwsem[WRITE]);
-> > > > > +	down_write(&F2FS_I(inode)->i_mmap_sem);
-> > > > >   	f2fs_lock_op(sbi);
-> > > > >   	set_inode_flag(inode, FI_ATOMIC_COMMIT);
-> > > > > @@ -478,6 +483,8 @@ int f2fs_commit_inmem_pages(struct inode *inode)
-> > > > >   	clear_inode_flag(inode, FI_ATOMIC_COMMIT);
-> > > > >   	f2fs_unlock_op(sbi);
-> > > > > +
-> > > > > +	up_write(&F2FS_I(inode)->i_mmap_sem);
-> > > > >   	up_write(&fi->i_gc_rwsem[WRITE]);
-> > > > >   	return err;
-> > > > > -- 
-> > > > > 2.29.2
-> > > > 
-> > > > 
-> > > > _______________________________________________
-> > > > Linux-f2fs-devel mailing list
-> > > > Linux-f2fs-devel@lists.sourceforge.net
-> > > > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> > > 
-> > > 
-> > > _______________________________________________
-> > > Linux-f2fs-devel mailing list
-> > > Linux-f2fs-devel@lists.sourceforge.net
-> > > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> > .
-> > 
+$ sudo modprobe bonding mode=2 max_bonds=1 xmit_hash_policy=0
+$ sudo ip link set bond0 type bond xmit_hash_policy vlansrc
+$ cat /proc/net/bonding/bond0
+Ethernet Channel Bonding Driver: v4.18.0-272.el8.vstx.x86_64
+
+Bonding Mode: load balancing (xor)
+Transmit Hash Policy: vlansrc (5)
+MII Status: down
+MII Polling Interval (ms): 0
+Up Delay (ms): 0
+Down Delay (ms): 0
+Peer Notification Delay (ms): 0
+
+$ sudo ip link add test type bond help
+Usage: ... bond [ mode BONDMODE ] [ active_slave SLAVE_DEV ]
+                [ clear_active_slave ] [ miimon MIIMON ]
+                [ updelay UPDELAY ] [ downdelay DOWNDELAY ]
+                [ peer_notify_delay DELAY ]
+                [ use_carrier USE_CARRIER ]
+                [ arp_interval ARP_INTERVAL ]
+                [ arp_validate ARP_VALIDATE ]
+                [ arp_all_targets ARP_ALL_TARGETS ]
+                [ arp_ip_target [ ARP_IP_TARGET, ... ] ]
+                [ primary SLAVE_DEV ]
+                [ primary_reselect PRIMARY_RESELECT ]
+                [ fail_over_mac FAIL_OVER_MAC ]
+                [ xmit_hash_policy XMIT_HASH_POLICY ]
+                [ resend_igmp RESEND_IGMP ]
+                [ num_grat_arp|num_unsol_na NUM_GRAT_ARP|NUM_UNSOL_NA ]
+                [ all_slaves_active ALL_SLAVES_ACTIVE ]
+                [ min_links MIN_LINKS ]
+                [ lp_interval LP_INTERVAL ]
+                [ packets_per_slave PACKETS_PER_SLAVE ]
+                [ tlb_dynamic_lb TLB_DYNAMIC_LB ]
+                [ lacp_rate LACP_RATE ]
+                [ ad_select AD_SELECT ]
+                [ ad_user_port_key PORTKEY ]
+                [ ad_actor_sys_prio SYSPRIO ]
+                [ ad_actor_system LLADDR ]
+
+BONDMODE := balance-rr|active-backup|balance-xor|broadcast|802.3ad|balance-tlb|balance-alb
+ARP_VALIDATE := none|active|backup|all
+ARP_ALL_TARGETS := any|all
+PRIMARY_RESELECT := always|better|failure
+FAIL_OVER_MAC := none|active|follow
+XMIT_HASH_POLICY := layer2|layer2+3|layer3+4|encap2+3|encap3+4|vlansrc
+LACP_RATE := slow|fast
+AD_SELECT := stable|bandwidth|count
+
+
+-- 
+Jarod Wilson
+jarod@redhat.com
+
