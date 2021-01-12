@@ -2,38 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36BF2F29FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:29:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A582F2A01
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:29:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405067AbhALI1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 03:27:44 -0500
-Received: from verein.lst.de ([213.95.11.211]:54385 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725988AbhALI1n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 03:27:43 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 856D268B02; Tue, 12 Jan 2021 09:27:01 +0100 (CET)
-Date:   Tue, 12 Jan 2021 09:27:01 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        James Smart <james.smart@broadcom.com>,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvme: Constify static attribute_group structs
-Message-ID: <20210112082701.GC25502@lst.de>
-References: <20210108234147.42151-1-rikard.falkeborn@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108234147.42151-1-rikard.falkeborn@gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S2405398AbhALI2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 03:28:52 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:33013 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725988AbhALI2w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 03:28:52 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0ULVUsv2_1610440082;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0ULVUsv2_1610440082)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 12 Jan 2021 16:28:09 +0800
+From:   YANG LI <abaci-bugfix@linux.alibaba.com>
+To:     linus.walleij@linaro.org
+Cc:     orsonzhai@gmail.com, baolin.wang7@gmail.com, zhang.lyra@gmail.com,
+        linhua.xu@unisoc.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        YANG LI <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] pinctrl: sprd: style: Simplify bool comparison
+Date:   Tue, 12 Jan 2021 16:28:00 +0800
+Message-Id: <1610440080-68600-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks,
+Fix the following coccicheck warning:
+./drivers/pinctrl/sprd/pinctrl-sprd.c:690:8-23: WARNING: Comparison to
+bool
 
-applied to nvme-5.11.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
+---
+ drivers/pinctrl/sprd/pinctrl-sprd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/pinctrl/sprd/pinctrl-sprd.c b/drivers/pinctrl/sprd/pinctrl-sprd.c
+index 08dc193..dca7a50 100644
+--- a/drivers/pinctrl/sprd/pinctrl-sprd.c
++++ b/drivers/pinctrl/sprd/pinctrl-sprd.c
+@@ -687,7 +687,7 @@ static int sprd_pinconf_set(struct pinctrl_dev *pctldev, unsigned int pin_id,
+ 				shift = INPUT_SCHMITT_SHIFT;
+ 				break;
+ 			case PIN_CONFIG_BIAS_PULL_UP:
+-				if (is_sleep_config == true) {
++				if (is_sleep_config) {
+ 					val |= SLEEP_PULL_UP;
+ 					mask = SLEEP_PULL_UP_MASK;
+ 					shift = SLEEP_PULL_UP_SHIFT;
+-- 
+1.8.3.1
+
