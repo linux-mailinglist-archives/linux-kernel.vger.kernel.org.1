@@ -2,129 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1A32F3EBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 002002F3EE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:45:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394150AbhALWEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:04:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393964AbhALWEM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:04:12 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D909BC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:03:31 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id x13so4020502oic.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:03:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/H028Wwjfvv9ucACM/DZ/rVBlomdfpbrk8WUZizz2Vs=;
-        b=aHzNGV51B70g68q+osW4guQZlA2SPBmfpEfOkq7fZkXQoakwzlr6xu6YhmCMjJnjkM
-         VtqaetZFw7ntjVk3o8watdpn0CN9ObBziXNCLskyRTcv3ylwFfov+alT8XTKxCsbdm7k
-         30NfnkHx0zYv8zD2AIpj0jLPRkt4W9Wor2BAIbgaPWwRMWHsh4xit369viFPJ9GYuRcM
-         0cd5LBcwNAYsQt5AFcp4xqa87LhvbXLukxjkG3nXDUAGYQicqCUo/J9aZy4KsUrH5g8x
-         WlGyqSIaUV9liOnpvvUzHrW3WtEDSor/Re56fdaUbgg0fRWxgsHhqBfaW0j5NB9ivZ19
-         6uqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/H028Wwjfvv9ucACM/DZ/rVBlomdfpbrk8WUZizz2Vs=;
-        b=cYsaWycAtEsLRPpKfQ0dqGeEBtfnx3c93t3OhyIQ2bzFTU2sG0v9VAQGQAWRH77HkI
-         YUbQVcA4CwpTSI9RE6PwKoI5kdtn6sUdE/TzOyoU7/VOk5EJuALKeJqmNexEU50x5rdd
-         FG1xs7TUeCkWgMsMBFO2NktuiMo0EkYOT5DxIhQeUQilJJQQByUWdAsQpJHi6Ylpi1HW
-         uewbO8EZm+4Wa+HqyI4EPlvfUWQz9xUPOU/UmbTpxWs5EowkV858LewsC32XicoWoRN6
-         F68upmZO+xUbRPdWCIzGA6pQdnuSEEsWrfIT74Nd8ZoXno9AEh7D5yNDKLctEnIaWw0q
-         qqiA==
-X-Gm-Message-State: AOAM531E3VJ8n+0u677QQnsVsyiY48MGC2ZgWvFyqwUtCjNhkDFzqjoP
-        yV6aqI0xPY7yJIHXGSY9RikbVtkn5h9vP4Rscfs=
-X-Google-Smtp-Source: ABdhPJwKnqQekjYfdmWGfwn2owS4YfLiNSbIsA3whxDogbBuG2uZywR7fQBh87ZLY3GC3QoavsICftjeeyBcrFoVQo0=
-X-Received: by 2002:aca:4f97:: with SMTP id d145mr760461oib.123.1610489011339;
- Tue, 12 Jan 2021 14:03:31 -0800 (PST)
+        id S2394187AbhALWE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:04:59 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:36903 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394154AbhALWEj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 17:04:39 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DFl314rW1z9t17;
+        Wed, 13 Jan 2021 09:03:57 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610489037;
+        bh=pxLiU/M2TGTxCMd5N+CfJQC5UInIoBytPrlkfev10a0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=TnTQx73XP6Wlp7tH0CSqsnG0YFDXjmoWQieAm/RJ7IVhLo8Jod5ckS4LoceyfA2Ma
+         KB1yb6h71Pkyn3kw56MPsOUsjoqSfsBln/0uybQsrtVUBg5iV81hKmdU1cF2OsVaVr
+         DoSTDi7wLc9ErFRE5GjV6AW5HWZFyVS9ZXDleoShL0VLcdXFX4RoeHJtMGz72SD2Yy
+         kD/Z8QFXIR1ZUWxVTCLfCe6Pf2DsGlldL1rwNcRfo+Yo3N4VTwpOSYQ5MI3HO3dgAb
+         tVb8aHtD+8t96QmJhuGSnRpgSEPXLIafxYHP2Ll+nLIGjRqLgRuhgb+WuuloR1xS5U
+         VFp5Q55aH3ZQQ==
+Date:   Wed, 13 Jan 2021 09:03:56 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commits in the rcu tree
+Message-ID: <20210113090356.3ef1b139@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-9-lee.jones@linaro.org>
-In-Reply-To: <20210111191926.3688443-9-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 12 Jan 2021 17:03:20 -0500
-Message-ID: <CADnq5_PD_eocbg8-bfdrrF_GDOSeakZfj6dc4JGU+D9puo_beQ@mail.gmail.com>
-Subject: Re: [PATCH 08/40] drm/amd/display/dc/gpio/diagnostics/hw_factory_diag:
- Fix struct declared inside parameter list error
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/b3t3rRs5p5zVsKNPZp419su";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 2:19 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../display/dc/gpio/diagnostics/hw_factory_dia=
-g.h:30:43: warning: =E2=80=98struct hw_factory=E2=80=99 declared inside par=
-ameter list will not be visible outside of this definition or declaration
->  drivers/gpu/drm/amd/amdgpu/../display/dc/gpio/diagnostics/hw_factory_dia=
-g.h:30:6: note: previous declaration of =E2=80=98dal_hw_factory_diag_fpga_i=
-nit=E2=80=99 was here
->  drivers/gpu/drm/amd/amdgpu/../display/dc/gpio/diagnostics/hw_factory_dia=
-g.h:30:43: warning: =E2=80=98struct hw_factory=E2=80=99 declared inside par=
-ameter list will not be visible outside of this definition or declaration
->  drivers/gpu/drm/amd/amdgpu/../display/dc/gpio/diagnostics/hw_factory_dia=
-g.h:30:6: note: previous declaration of =E2=80=98dal_hw_factory_diag_fpga_i=
-nit=E2=80=99 was here
->  drivers/gpu/drm/amd/amdgpu/../display/dc/gpio/diagnostics/hw_factory_dia=
-g.h:30:43: warning: =E2=80=98struct hw_factory=E2=80=99 declared inside par=
-ameter list will not be visible outside of this definition or declaration
->  drivers/gpu/drm/amd/amdgpu/../display/dc/gpio/diagnostics/hw_factory_dia=
-g.h:30:6: note: previous declaration of =E2=80=98dal_hw_factory_diag_fpga_i=
-nit=E2=80=99 was here
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+--Sig_/b3t3rRs5p5zVsKNPZp419su
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Applied.  Thanks!
+Hi all,
 
-Alex
+Commits
 
-> ---
->  .../gpu/drm/amd/display/dc/gpio/diagnostics/hw_factory_diag.h   | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/gpio/diagnostics/hw_factory_d=
-iag.h b/drivers/gpu/drm/amd/display/dc/gpio/diagnostics/hw_factory_diag.h
-> index 8a74f6adb8eee..bf68eb1d9a1d2 100644
-> --- a/drivers/gpu/drm/amd/display/dc/gpio/diagnostics/hw_factory_diag.h
-> +++ b/drivers/gpu/drm/amd/display/dc/gpio/diagnostics/hw_factory_diag.h
-> @@ -26,6 +26,8 @@
->  #ifndef __DAL_HW_FACTORY_DIAG_FPGA_H__
->  #define __DAL_HW_FACTORY_DIAG_FPGA_H__
->
-> +struct hw_factory;
-> +
->  /* Initialize HW factory function pointers and pin info */
->  void dal_hw_factory_diag_fpga_init(struct hw_factory *factory);
->
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+  32678deac9cd ("timer: Report ignored local enqueue in nohz mode")
+  8beeef08bd76 ("entry: Report local wake up on resched blind zone while re=
+suming to user")
+  7b3f45a1ad1f ("sched: Report local wake up on resched blind zone within i=
+dle loop")
+  4d19f38bb06c ("entry: Explicitly flush pending rcuog wakeup before last r=
+escheduling points")
+  a5b60c670b22 ("rcu/nocb: Trigger self-IPI on late deferred wake up before=
+ user resume")
+  679a2750284c ("rcu/nocb: Perform deferred wake up before last idle's need=
+_resched() check")
+  785ff6abc514 ("rcu: Pull deferred rcuog wake up to rcu_eqs_enter() caller=
+s")
+  d32f638a57e4 ("rcu: Remove superfluous rdp fetch")
+  97e90370b8f3 ("rcu/nocb: Detect unsafe checks for offloaded rdp")
+
+are missing a Signed-off-by from their committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/b3t3rRs5p5zVsKNPZp419su
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/+HMwACgkQAVBC80lX
+0GyYkQf/UUnn1SicAqRoLdrHj0uVSTE2IgSaehKGHwkPZT5bMT5Yk6h7t+eVrhzo
+F9GScpc3VsAg3IPYQ1RuQ+ZsWt+ssLLD4Kek8cgwsflqY0Q/P2NdgXxUQIzqTjhF
+BBmsJEdC69aYRtpRNLmi9yRGVQlx7s00yFhQa1hrE80VWGu5kL0HGFe5WxQazFU0
+SCYzI8uE/fiWAC0roIsz2cXH4r766XFXKzJhEdYs8SrGDYRI5ppKdPei5+ODAmj1
+LhouAyqNciE/lnRQ8c/g/KU7/TXTvsen0sQTifxjL4i+6loABhb7Smmw0kMtO914
+AAON3hCQ4wfP8Bjc4+bfdR7yb0MwHA==
+=lnsI
+-----END PGP SIGNATURE-----
+
+--Sig_/b3t3rRs5p5zVsKNPZp419su--
