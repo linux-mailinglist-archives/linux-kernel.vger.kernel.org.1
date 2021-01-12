@@ -2,96 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386A42F2921
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 08:47:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49F3F2F28EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 08:33:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392041AbhALHrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 02:47:02 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:16999 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728301AbhALHrC (ORCPT
+        id S2391993AbhALHbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 02:31:50 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:49993 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726949AbhALHbu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 02:47:02 -0500
-X-UUID: 24e798f4b0ea4cce96fdcb61e9f4df16-20210112
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=QbDUDErbElo9ALLdM2zsuGqQjEHnckJhZ/HcIVbACVo=;
-        b=YnEnpfKLUzlzFsCJU57SyXdYsE9u2kGaw4zQUU9hv5NepmInCSsBPM61BKKX8vgB0pkh70SVJHN3TWjDORay/xscQayvc2dRqgnlDKDNnmfUzi16AgOXyeJQSR1ugktU6VjlKgL0sDvGvJgXdUcoQLK0v5WSX+OZMt7FeaIyzXE=;
-X-UUID: 24e798f4b0ea4cce96fdcb61e9f4df16-20210112
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <mingchuang.qiao@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 297226364; Tue, 12 Jan 2021 15:35:33 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 12 Jan
- 2021 15:35:27 +0800
-Received: from mcddlt001.mediatek.inc (10.19.240.15) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 12 Jan 2021 15:35:26 +0800
-From:   <mingchuang.qiao@mediatek.com>
-To:     <bhelgaas@google.com>, <matthias.bgg@gmail.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <mingchuang.qiao@mediatek.com>, <haijun.liu@mediatek.com>,
-        <lambert.wang@mediatek.com>, <kerun.zhu@mediatek.com>
-Subject: [PATCH] pci: avoid unsync of LTR mechanism configuration
-Date:   Tue, 12 Jan 2021 15:27:39 +0800
-Message-ID: <20210112072739.31624-1-mingchuang.qiao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Tue, 12 Jan 2021 02:31:50 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610436690; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=cBjd+mxvdRBq+9OHv7BDdff4Bs/on3l7fhAHwfVcq+o=; b=W/dxks3Ft5+PWKaz3pvDZHs3IO1uFY+ZXjtACZMWzGnCTb74iHa4DpJQHB5cFHRWW9DKb69y
+ bzF7Eduj0iCZWBzwrf9k8r1XlpbSA12QgEduphRZ1LaqcOty+0jVLQoPrn+VX0tTZ5eFr3wU
+ 4IAQFET+tXJKMbGmBYGJw6UErw0=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5ffd5033c88af06107ba80ce (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Jan 2021 07:30:59
+ GMT
+Sender: akashast=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 06417C43463; Tue, 12 Jan 2021 07:30:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.43.98] (unknown [223.225.121.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akashast)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D9486C433C6;
+        Tue, 12 Jan 2021 07:30:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D9486C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akashast@codeaurora.org
+Subject: Re: [PATCH V8 1/1] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+To:     Roja Rani Yarubandi <rojay@codeaurora.org>, wsa@kernel.org
+Cc:     swboyd@chromium.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
+References: <20210108150545.2018-1-rojay@codeaurora.org>
+ <20210108150545.2018-2-rojay@codeaurora.org>
+From:   Akash Asthana <akashast@codeaurora.org>
+Message-ID: <1cf28a5a-6de0-1f4e-4cd0-3a1f8125c1ca@codeaurora.org>
+Date:   Tue, 12 Jan 2021 13:00:40 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 138AEC170CF7C40068F5BD0D97B5ACAE2C5FB55A940A1E8A4148BCCA5D1A30852000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20210108150545.2018-2-rojay@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTWluZ2NodWFuZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29tPg0KDQpJ
-biBwY2kgYnVzIHNjYW4gZmxvdywgdGhlIExUUiBtZWNoYW5pc20gZW5hYmxlIGJpdCBvZiBERVZD
-VEwyIHJlZ2lzdGVyDQppcyBjb25maWd1cmVkIGluIHBjaV9jb25maWd1cmVfbHRyKCkuIElmIGRl
-dmljZSBhbmQgaXQncyBicmlkZ2UgYm90aA0Kc3VwcG9ydCBMVFIgbWVjaGFuaXNtLCBMVFIgbWVj
-aGFuaXNtIG9mIGRldmljZSBhbmQgaXQncyBicmlkZ2Ugd2lsbA0KYmUgZW5hYmxlZCBpbiBERVZD
-VEwyIHJlZ2lzdGVyLiBBbmQgdGhlIGZsYWcgcGNpX2Rldi0+bHRyX3BhdGggd2lsbA0KYmUgc2V0
-IGFzIDEuDQoNCkZvciBzb21lIHBjaWUgcHJvZHVjdHMsIHBjaWUgbGluayBiZWNvbWVzIGRvd24g
-d2hlbiBkZXZpY2UgcmVzZXQuIEFuZCB0aGVuDQp0aGUgTFRSIG1lY2hhbmlzbSBlbmFibGUgYml0
-IG9mIGJyaWRnZSB3aWxsIGJlY29tZSAwIGJhc2VkIG9uIGRlc2NyaXB0aW9uDQppbiBQQ0lFIHI0
-LjAsIHNlYyA3LjguMTYuIEhvd2V2ZXIsIHRoZSBwY2lfZGV2LT5sdHJfcGF0aCB2YWx1ZSBvZiBi
-cmlkZ2UNCmlzIHN0aWxsIDEuIFJlbW92ZSBhbmQgcmVzY2FuIGZsb3cgY291bGQgYmUgdHJpZ2dl
-cmVkIHRvIHJlY292ZXIgYWZ0ZXINCmRldmljZSByZXNldC4gSW4gdGhlIGJ1cyByZXNjYW4gZmxv
-dywgdGhlIExUUiBtZWNoYW5pc20gb2YgZGV2aWNlIHdpbGwgYmUNCmVuYWJsZWQgaW4gcGNpX2Nv
-bmZpZ3VyZV9sdHIoKSBkdWUgdG8gbHRyX3BhdGggb2YgaXRzIGJyaWRnZSBpcyBzdGlsbCAxLg0K
-DQpXaGVuIGRldmljZSdzIExUUiBtZWNoYW5pc20gaXMgZW5hYmxlZCwgZGV2aWNlIHdpbGwgc2Vu
-ZCBMVFIgbWVzc2FnZSB0bw0KYnJpZGdlLiBCcmlkZ2UgcmVjZWl2ZXMgdGhlIGRldmljZSdzIExU
-UiBtZXNzYWdlIGFuZCBmb3VuZCBicmlkZ2UncyBMVFINCm1lY2hhbmlzbSBpcyBkaXNhYmxlZC4g
-VGhlbiB0aGUgYnJpZGdlIHdpbGwgZ2VuZXJhdGUgdW5zdXBwb3J0ZWQgcmVxdWVzdA0KYW5kIG90
-aGVyIGVycm9yIGhhbmRsaW5nIGZsb3cgd2lsbCBiZSB0cmlnZ2VyZWQgc3VjaCBhcyBBRVIgTm9u
-LUZhdGFsDQplcnJvciBoYW5kbGluZy4NCg0KVGhpcyBwYXRjaCBpcyB1c2VkIHRvIGF2b2lkIHRo
-aXMgdW5zdXBwb3J0ZWQgcmVxdWVzdCBhbmQgbWFrZSB0aGUgYnJpZGdlJ3MNCmx0cl9wYXRoIHZh
-bHVlIGlzIGFsaWduZWQgd2l0aCBERVZDVEwyIHJlZ2lzdGVyIHZhbHVlLiBDaGVjayBicmlkZ2UN
-CnJlZ2lzdGVyIHZhbHVlIGlmIGFsaWduZWQgd2l0aCBsdHJfcGF0aCBpbiBwY2lfY29uZmlndXJl
-X2x0cigpLiBJZg0KcmVnaXN0ZXIgdmFsdWUgaXMgZGlzYWJsZSBhbmQgdGhlIGx0cl9wYXRoIGlz
-IDEsIHdlIG5lZWQgY29uZmlndXJlDQp0aGUgcmVnaXN0ZXIgdmFsdWUgYXMgZW5hYmxlLg0KDQpT
-aWduZWQtb2ZmLWJ5OiBNaW5nY2h1YW5nIFFpYW8gPG1pbmdjaHVhbmcucWlhb0BtZWRpYXRlay5j
-b20+DQotLS0NCiBkcml2ZXJzL3BjaS9wcm9iZS5jIHwgMTggKysrKysrKysrKysrKysrLS0tDQog
-MSBmaWxlIGNoYW5nZWQsIDE1IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQoNCmRpZmYg
-LS1naXQgYS9kcml2ZXJzL3BjaS9wcm9iZS5jIGIvZHJpdmVycy9wY2kvcHJvYmUuYw0KaW5kZXgg
-OTUzZjE1YWJjODUwLi40OTM1NWNmNGFmNTQgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3BjaS9wcm9i
-ZS5jDQorKysgYi9kcml2ZXJzL3BjaS9wcm9iZS5jDQpAQCAtMjEzMiw5ICsyMTMyLDIxIEBAIHN0
-YXRpYyB2b2lkIHBjaV9jb25maWd1cmVfbHRyKHN0cnVjdCBwY2lfZGV2ICpkZXYpDQogCSAqIENv
-bXBsZXggYW5kIGFsbCBpbnRlcm1lZGlhdGUgU3dpdGNoZXMgaW5kaWNhdGUgc3VwcG9ydCBmb3Ig
-TFRSLg0KIAkgKiBQQ0llIHI0LjAsIHNlYyA2LjE4Lg0KIAkgKi8NCi0JaWYgKHBjaV9wY2llX3R5
-cGUoZGV2KSA9PSBQQ0lfRVhQX1RZUEVfUk9PVF9QT1JUIHx8DQotCSAgICAoKGJyaWRnZSA9IHBj
-aV91cHN0cmVhbV9icmlkZ2UoZGV2KSkgJiYNCi0JICAgICAgYnJpZGdlLT5sdHJfcGF0aCkpIHsN
-CisJaWYgKHBjaV9wY2llX3R5cGUoZGV2KSA9PSBQQ0lfRVhQX1RZUEVfUk9PVF9QT1JUKSB7DQor
-CQlwY2llX2NhcGFiaWxpdHlfc2V0X3dvcmQoZGV2LCBQQ0lfRVhQX0RFVkNUTDIsDQorCQkJCQkg
-UENJX0VYUF9ERVZDVEwyX0xUUl9FTik7DQorCQlkZXYtPmx0cl9wYXRoID0gMTsNCisJCXJldHVy
-bjsNCisJfQ0KKw0KKwlicmlkZ2UgPSBwY2lfdXBzdHJlYW1fYnJpZGdlKGRldik7DQorCWlmIChi
-cmlkZ2UgJiYgYnJpZGdlLT5sdHJfcGF0aCkgew0KKwkJcGNpZV9jYXBhYmlsaXR5X3JlYWRfZHdv
-cmQoYnJpZGdlLCBQQ0lfRVhQX0RFVkNUTDIsICZjdGwpOw0KKwkJaWYgKCEoY3RsICYgUENJX0VY
-UF9ERVZDVEwyX0xUUl9FTikpIHsNCisJCQlwY2llX2NhcGFiaWxpdHlfc2V0X3dvcmQoYnJpZGdl
-LCBQQ0lfRVhQX0RFVkNUTDIsDQorCQkJCQkJIFBDSV9FWFBfREVWQ1RMMl9MVFJfRU4pOw0KKwkJ
-fQ0KKw0KIAkJcGNpZV9jYXBhYmlsaXR5X3NldF93b3JkKGRldiwgUENJX0VYUF9ERVZDVEwyLA0K
-IAkJCQkJIFBDSV9FWFBfREVWQ1RMMl9MVFJfRU4pOw0KIAkJZGV2LT5sdHJfcGF0aCA9IDE7DQot
-LSANCjIuMTguMA0K
+
+On 1/8/2021 8:35 PM, Roja Rani Yarubandi wrote:
+> If the hardware is still accessing memory after SMMU translation
+> is disabled (as part of smmu shutdown callback), then the
+> IOVAs (I/O virtual address) which it was using will go on the bus
+> as the physical addresses which will result in unknown crashes
+> like NoC/interconnect errors.
+>
+> So, implement shutdown callback to i2c driver to stop on-going transfer
+> and unmap DMA mappings during system "reboot" or "shutdown".
+>
+> Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm GENI I2C controller")
+> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
+Reviewed-by: Akash Asthana <akashast@codeaurora.org>
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
 
