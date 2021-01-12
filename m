@@ -2,135 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A31E12F323F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:54:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 494782F324B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:56:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733164AbhALNyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:54:19 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:37337 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726043AbhALNyS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:54:18 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 97DD85C022A;
-        Tue, 12 Jan 2021 08:53:12 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 12 Jan 2021 08:53:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=wQHIBUX95kd7FYyqstLD3bY3Dfr
-        sn25GzthoZs7X/Ac=; b=V3pcoxQUY0rNSzsaAGAOloFEq5Kotrg6LPGKrQ19BVF
-        dUVtjFJpcSPZ1FwJUOohF9HssfcrtJqkAN2pH77HJJAfoxlFBA4RPhMBY5f+7u7w
-        qONdTzBh3NC1dQFTuJoO4cXZhoVxIkPmR/LZsK9D9GU/sbFCHmp7T5gtgCTd3KOw
-        IwDm17LPmK6Mn+ATY8HsPuT7WaDBZ+dkYH3hjWiL0E7YSC7WYwNI6X94gQ2SQWsh
-        y/Wad4yjdaX0c/GXAE/Zrrcjfj7UDp/ANAft0O2YCTM2FZT84PRBTupiFop3zrJS
-        pvqLUK6IoMh4JwJSWhOwHSosPHapvcEA2EnMjJgBXLQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=wQHIBU
-        X95kd7FYyqstLD3bY3Dfrsn25GzthoZs7X/Ac=; b=pBe707M//5xjdT8ZRSsjYE
-        LkvmOU+vZuy1W4idgKBGkLkBIuIrhqQRCj3UYm+Kw3oJvJsGeZy7krfjmzeQTIcE
-        HNz10EnTdcO/9PwEDQjGnvFsaTyctl1UfMkgiA2slP+zVDStnB7FmnFsEGL1K7Ua
-        SNDy5bUPGFknT3CwbcGPCr58gCR6rsK5hJxD+iiPXmJ5fhZo7nkZ43DyeyyJK3x3
-        7mseWsmxZuAbu3Mq6TDmhEEQrqkFVoQmszejCz1XenLhTAEQm7eU2jPZ4oR4BO7I
-        BNQ45yTR2P8tZER9h9b7hIU5PFEPKCYW/TfWniO3qMweYxfKPYFb54j5GoKuvnsQ
-        ==
-X-ME-Sender: <xms:x6n9XzvUfpg0fwn8fVLWE68C5GEpeuEBQ8rw_Cp52yQmZlYcj5nxQQ>
-    <xme:x6n9X0d7B_knLaOTdUr6rbdw2WP2fZPWWKHcCrDhJ3u9ASVl91h1rUx3PySEJXWR2
-    _LEh6MHztMsoG2W-9w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtddtgddvhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgrshhh
-    ihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-    eqnecuggftrfgrthhtvghrnheplefhueegvdejgfejgfdukeefudetvddtuddtueeivedt
-    tdegteejkedvfeegfefhnecukfhppeduudekrddvgeefrdejkedrheeknecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihes
-    shgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:x6n9X2yfxe9W3LbFBicMNaJgOTmuRhKIJ_SAEwxXNIOekUD-ywRefw>
-    <xmx:x6n9XyNV04gig9rmkPyzBMpxWJ-PFQH8Ag4RCfKOVb5KM_mrmkroiw>
-    <xmx:x6n9Xz92ADNDaoWaCNBZ1LhrHR-4dWXwOkx9gnaBrI0li8H8eJcG6w>
-    <xmx:yKn9X2bUhDQhG-oiwzBAh0FKL8JCFoRYbY24rCDSspXmU6qqjBt4lg>
-Received: from workstation (y078058.dynamic.ppp.asahi-net.or.jp [118.243.78.58])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A60C924005D;
-        Tue, 12 Jan 2021 08:53:09 -0500 (EST)
-Date:   Tue, 12 Jan 2021 22:53:06 +0900
-From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Clemens Ladisch <clemens@ladisch.de>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH/RFC 1/2] ALSA: fireface: Fix integer overflow in
- transmit_midi_msg()
-Message-ID: <20210112135306.GB44140@workstation>
-Mail-Followup-To: Geert Uytterhoeven <geert+renesas@glider.be>,
-        Clemens Ladisch <clemens@ladisch.de>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20210111130251.361335-1-geert+renesas@glider.be>
- <20210111130251.361335-2-geert+renesas@glider.be>
+        id S1729782AbhALN4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:56:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726184AbhALN4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 08:56:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EA9523125;
+        Tue, 12 Jan 2021 13:55:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610459719;
+        bh=JtgDus3RlRKCNLMJU5n8LTJwheyPVPV3P1FCNE/3hDQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UUHNrIoGgg39yGyWAmKBqQE3T7Nc2vpJdJBqK8PNMSXEC/xPTRzwN+q83W5WmsvJm
+         ln71BYNMEsnE6Aim3WTmcVwKzctUfdolP5Rqd+9/3naBgHTyHhyOgb+mqxg+6zd7Cs
+         l/vGKpCWAaRXoJHA2a2DqsdRxowq2yCYTiuJdVAxh1R6AfxkdNBJTQmX54HFH10bay
+         NciPc0Sokd/GAfj9nIUG8jnMwkeqnFRUgpiEckP74+GRCvYfkeGTLqlCkW01kvD4qN
+         6Bl7nz9Gc/eYPI72KeZk6mzYxH6IK8TFVU+tSg3xN2IX0Mk+HLc8Jrl3skKJcjZVh4
+         MJzFKRHLHqmoQ==
+Received: by mail-ot1-f54.google.com with SMTP id j20so2302257otq.5;
+        Tue, 12 Jan 2021 05:55:19 -0800 (PST)
+X-Gm-Message-State: AOAM532pvUPDbTcCmM3S70cMUinyCzMCGJhswaGvm6m/LueQWEyDGBRu
+        Ku62uUqEZovcoDOmTrnHGXxrXekQZejvIJ6ZZuk=
+X-Google-Smtp-Source: ABdhPJyjfW3VIxHOGv1CcXu0RcKWWw84/dtZP4ZYXG4Ahn9W5rp0DQ0WHXCtgyU0xjgg5DHlYP5JPWYtXgwzRqdK8IE=
+X-Received: by 2002:a9d:7a4b:: with SMTP id z11mr2830989otm.305.1610459718264;
+ Tue, 12 Jan 2021 05:55:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111130251.361335-2-geert+renesas@glider.be>
+References: <20210112015602.497-1-thunder.leizhen@huawei.com>
+ <20210112015602.497-3-thunder.leizhen@huawei.com> <CAK8P3a0VcLtOrvXKEd2dDuP8HhKzU+uB0U6OiJXtefQQYjTheg@mail.gmail.com>
+ <a11515e2-1fc6-be7d-f50c-8e3ad20f9e6c@huawei.com>
+In-Reply-To: <a11515e2-1fc6-be7d-f50c-8e3ad20f9e6c@huawei.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 12 Jan 2021 14:55:02 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1jcg3CEP0QhtTP4gES9MHLdrHPZffkSxtxbr78FScrrg@mail.gmail.com>
+Message-ID: <CAK8P3a1jcg3CEP0QhtTP4gES9MHLdrHPZffkSxtxbr78FScrrg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] dt-bindings: arm: hisilicon: Add binding for L3
+ cache controller
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Cc:     Russell King <rmk+kernel@arm.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Jan 12, 2021 at 1:35 PM Leizhen (ThunderTown)
+<thunder.leizhen@huawei.com> wrote:
+> On 2021/1/12 16:46, Arnd Bergmann wrote:
+> > On Tue, Jan 12, 2021 at 2:56 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+> >
+> >> +---
+> >> +$id: http://devicetree.org/schemas/arm/hisilicon/l3cache.yaml#
+> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >> +
+> >> +title: Hisilicon L3 cache controller
+> >> +
+> >> +maintainers:
+> >> +  - Wei Xu <xuwei5@hisilicon.com>
+> >> +
+> >> +description: |
+> >> +  The Hisilicon L3 outer cache controller supports a maximum of 36-bit physical
+> >> +  addresses. The data cached in the L3 outer cache can be operated based on the
+> >> +  physical address range or the entire cache.
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    items:
+> >> +      - const: hisilicon,l3cache
+> >> +
+> >
+> > The compatible string needs to be a little more specific, I'm sure
+> > you cannot guarantee that this is the only L3 cache controller ever
+> > designed in the past or future by HiSilicon.
+> >
+> > Normally when you have an IP block that is itself unnamed but that is specific
+> > to one or a few SoCs but that has no na, the convention is to include the name
+> > of the first SoC that contained it.
+>
+> Right, thanks for your suggestion, I will rename it to "hisilicon,hi1381-l3cache"
+> and "hisilicon,hi1215-l3cache".
 
-On Mon, Jan 11, 2021 at 02:02:50PM +0100, Geert Uytterhoeven wrote:
-> As snd_ff.rx_bytes[] is unsigned int, and NSEC_PER_SEC is 1000000000L,
-> the second multiplication in
-> 
->     ff->rx_bytes[port] * 8 * NSEC_PER_SEC / 31250
-> 
-> always overflows on 32-bit platforms, truncating the result.  Fix this
-> by precalculating "NSEC_PER_SEC / 31250", which is an integer constant.
-> 
-> Note that this assumes ff->rx_bytes[port] <= 16777.
-> 
-> Fixes: 19174295788de77d ("ALSA: fireface: add transaction support")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> Compile-tested only.
-> 
-> I don't know the maximum transfer length of MIDI, but given it's an old
-> standard, I guess it's rather small.  If it is larger than 16777, the
-> constant "8" should be replaced by "8ULL", to force 64-bit arithmetic.
-> ---
->  sound/firewire/fireface/ff-transaction.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Sounds good.
 
-The rx_bytes member has value for the length of byte messages to
-process. The range of value differs depending on Fireface protocol
-version. For former protocol, the value is equals to or less than
-SND_FF_MAXIMIM_MIDI_QUADS (= 9). For latter protocol, the value is
-equals to or less than 3. Anyway, the value should not be larger
-than 16777 and the calculation can be done without ULL suffix.
+> > Can you share which products actually use this L3 cache controller?
+>
+> This L3 cache controller is used on Hi1381 and Hi1215 board. I don't know where
+> these two boards are used. Our company is too large. Software is delivered level
+> by level. I'm only involved in the Kernel-related part.
+>
+> >
+> > On a related note, what does the memory map look like on this chip?
+>
+> memory@a00000 {
+>      device_type = "memory";
+>      reg = <0x0 0xa00000 0x0 0x1aa00000>, <0x1 0xe0000000 0x0 0x1d000000>, <0x0 0x1f400000 0x0 0xb5c00000>;
+> };
+>
+> Currently, the DTS is being maintained by ourselves, I'll try to upstream it later.
+>
+> > Do you support more than 4GB of total installed memory? If you
+>
+> Currently, the total size does not exceed 4 GB. However, the physical address is wider than 32 bits.
 
-Reviewd-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Ok, so it appears that the memory is actually contiguous in the first
+3.5GB (with a few holes), plus the remaining 0.5GB being offset in
+the physical memory by 4GB (starting at 0x1e0000000 instead of
+0xe0000000), presumably to allow the use of 32-bit DMA addresses.
 
-> diff --git a/sound/firewire/fireface/ff-transaction.c b/sound/firewire/fireface/ff-transaction.c
-> index 7f82762ccc8c80ba..ee7122c461d46f44 100644
-> --- a/sound/firewire/fireface/ff-transaction.c
-> +++ b/sound/firewire/fireface/ff-transaction.c
-> @@ -88,7 +88,7 @@ static void transmit_midi_msg(struct snd_ff *ff, unsigned int port)
->  
->  	/* Set interval to next transaction. */
->  	ff->next_ktime[port] = ktime_add_ns(ktime_get(),
-> -				ff->rx_bytes[port] * 8 * NSEC_PER_SEC / 31250);
-> +			ff->rx_bytes[port] * 8 * (NSEC_PER_SEC / 31250));
->  
->  	if (quad_count == 1)
->  		tcode = TCODE_WRITE_QUADLET_REQUEST;
-> -- 
-> 2.25.1
+This works fine for the moment, but it does require support for
+a nonlinear virt_to_phys()/phys_to_virt() translation after highmem
+gets removed, and you would get at most 3.75GB anyway, so it
+might be easier at that point to just drop the entire last block at
+0x1e0000000, but this will depend on how well we get the 4G:4G
+code to work, and whether the users will still need kernel updates for
+this platform then.
 
-
-Thanks
-
-Takashi Sakamoto
+     Arnd
