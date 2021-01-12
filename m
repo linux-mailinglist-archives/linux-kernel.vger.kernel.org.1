@@ -2,89 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DF32F3CFE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6022F3CFC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437555AbhALVea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2437567AbhALVea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Jan 2021 16:34:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35722 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436944AbhALUaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:30:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEF462311F;
-        Tue, 12 Jan 2021 20:29:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610483366;
-        bh=MGuTtXoLe99kX/sbH8vTCXKT8YVod7BidDBwx8FWAUg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=uuYnMGWDZ1PxZ2i52hZuv+LpFhlIwJ7VB4bTeoJTiZ/GB/7IGlKgh71HM5l6SqDXP
-         +V5EQsP6mH0dX++5wjSmh8Ku36E2a7Y+VHXrvCGaD5Ir66On6g1lSZOazhwW8B5E0j
-         obZ1cZRIdUFLfjAIa0LIiCwUNd7xFwhS+ZeSmX4ilpOneLpVtheKks7RTdbPHW6p9e
-         zag8ceTis3kieR8wgUfV1ekAC3IONGSmKGtKwuqI0762Q5D94edpYQhdiQm68zsYsP
-         qyb9AQu5M4spNKWApdaoLv0mjG56fK7/uSK6cV2Q9PveykMLB4MczgcwEqQQq9TTjL
-         Dzcww37qE0YNw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Marco Elver <elver@google.com>,
-        George Popescu <georgepope@android.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH] [v2] ubsan: disable unsigned-overflow check for i386
-Date:   Tue, 12 Jan 2021 21:29:15 +0100
-Message-Id: <20210112202922.2454435-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58644 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436947AbhALUaS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:30:18 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E451BC06179F;
+        Tue, 12 Jan 2021 12:29:37 -0800 (PST)
+Date:   Tue, 12 Jan 2021 20:29:35 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610483376;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XeqVsDioK3lQgkhcnCI1f5fYDadLxqsi6t2A7TUygYo=;
+        b=mYIFuslZlIFWoOdWT6SLMlGORtHlI8tDbP4qr4RAPccFAOPa/xfyldIYdrCh28iYVZmpOb
+        X1aLnQQ7MAUjKL0x0FL+ZnvrheJLiYqPJ6No/BHr1daYXMPU+BjaTCVLmh11XPKfQowvEJ
+        4i4rzfJeaj4t5Th3Kn5j9GZyLrsMU7i7s8w2M2u/7iWpeqiG6E7+Ft/F9D5VmfZYhWhgRB
+        kVukYST/bDrWh8WXQ+8VHQNUw98lWRfkx7Z0olKS8C6bfXECC5sTusi0dbfjIqKpOQqhkE
+        uXc9r79qYBIOe/PbOQLnnGRAEIdmX5abMvf7GgAUIOjk78TjHw99sVPCeNSD9A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610483376;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XeqVsDioK3lQgkhcnCI1f5fYDadLxqsi6t2A7TUygYo=;
+        b=dSM8CAMddp1XtZ3y5jJsoyaCnckyinbe7V0B/+YvxWx22xZUYsiu4fYWGzanXfp/7vKKC2
+        9MfrwwVJ+nmbhgBQ==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: irq/urgent] Merge tag 'irqchip-fixes-5.11-1' of
+ git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into
+ irq/urgent
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
+In-Reply-To: <20210110110001.2328708-1-maz@kernel.org>
+References: <20210110110001.2328708-1-maz@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <161048337540.414.10902407884598163996.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+The following commit has been merged into the irq/urgent branch of tip:
 
-Building ubsan kernels even for compile-testing introduced these
-warnings in my randconfig environment:
+Commit-ID:     4bae052dde14c5538eca39592777b1d1987234ba
+Gitweb:        https://git.kernel.org/tip/4bae052dde14c5538eca39592777b1d1987234ba
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Tue, 12 Jan 2021 21:23:55 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 12 Jan 2021 21:23:55 +01:00
 
-crypto/blake2b_generic.c:98:13: error: stack frame size of 9636 bytes in function 'blake2b_compress' [-Werror,-Wframe-larger-than=]
-static void blake2b_compress(struct blake2b_state *S,
-crypto/sha512_generic.c:151:13: error: stack frame size of 1292 bytes in function 'sha512_generic_block_fn' [-Werror,-Wframe-larger-than=]
-static void sha512_generic_block_fn(struct sha512_state *sst, u8 const *src,
-lib/crypto/curve25519-fiat32.c:312:22: error: stack frame size of 2180 bytes in function 'fe_mul_impl' [-Werror,-Wframe-larger-than=]
-static noinline void fe_mul_impl(u32 out[10], const u32 in1[10], const u32 in2[10])
-lib/crypto/curve25519-fiat32.c:444:22: error: stack frame size of 1588 bytes in function 'fe_sqr_impl' [-Werror,-Wframe-larger-than=]
-static noinline void fe_sqr_impl(u32 out[10], const u32 in1[10])
+Merge tag 'irqchip-fixes-5.11-1' of git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into irq/urgent
 
-Further testing showed that this is caused by
--fsanitize=unsigned-integer-overflow, but is isolated to the 32-bit
-x86 architecture.
+Pull irqchip fixes from Marc Zyngier:
 
-The one in blake2b immediately overflows the 8KB stack area architectures,
-so better ensure this never happens by disabling the option for 32-bit
-x86.
+ - Fix the MIPS CPU interrupt controller hierarchy
+ - Simplify the PRUSS Kconfig entry
+ - Eliminate trivial build warnings on the MIPS Loongson liointc
+ - Fix error path in devm_platform_get_irqs_affinity()
+ - Turn the BCM2836 IPI irq_eoi callback into irq_ack
+ - Fix initialisation of on-stack msi_alloc_info
+ - Cleanup spurious comma in irq-sl28cpld
 
-Fixes: d0a3ac549f38 ("ubsan: enable for all*config builds")
-Link: https://lore.kernel.org/lkml/20201230154749.746641-1-arnd@kernel.org/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20210110110001.2328708-1-maz@kernel.org
 ---
-v2: only turn it off for i386 as discussed
----
- lib/Kconfig.ubsan | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
-index 8b635fd75fe4..3a0b1c930733 100644
---- a/lib/Kconfig.ubsan
-+++ b/lib/Kconfig.ubsan
-@@ -123,6 +123,7 @@ config UBSAN_SIGNED_OVERFLOW
- config UBSAN_UNSIGNED_OVERFLOW
- 	bool "Perform checking for unsigned arithmetic overflow"
- 	depends on $(cc-option,-fsanitize=unsigned-integer-overflow)
-+	depends on !X86_32 # avoid excessive stack usage on x86-32/clang
- 	help
- 	  This option enables -fsanitize=unsigned-integer-overflow which checks
- 	  for overflow of any arithmetic operations with unsigned integers. This
--- 
-2.29.2
-
