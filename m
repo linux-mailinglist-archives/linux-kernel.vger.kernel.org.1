@@ -2,136 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2892F3FD5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6542F3F9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437105AbhALWh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:37:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727062AbhALWhz (ORCPT
+        id S2394914AbhALW4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:56:01 -0500
+Received: from mailfilter03-out40.webhostingserver.nl ([195.211.72.99]:55105
+        "EHLO mailfilter03-out40.webhostingserver.nl" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730650AbhALW4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:37:55 -0500
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06CBBC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:37:15 -0800 (PST)
-Received: by mail-oo1-xc32.google.com with SMTP id k9so32330oop.6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:37:15 -0800 (PST)
+        Tue, 12 Jan 2021 17:56:00 -0500
+X-Greylist: delayed 1042 seconds by postgrey-1.27 at vger.kernel.org; Tue, 12 Jan 2021 17:55:59 EST
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=xERaZ+cRvJ1AT75s/Sd6NIg2My+pi/GZJ6ju2r6RLE8=;
-        b=QNPZH26ZvfUFMYziW93/hi8p2JHjeYFMXyOqtHCSl6HRwlxhQ1bRgywJFpfFw2uKhp
-         xsc/dRFV8i3s0dh4z4jUm1il9YFJLk+xyrfGWGCywpE8/UxKDoMlVVc1P5cLF/SuLxr0
-         3MABguwvuVZurAXIOPdu9tDM9gfCfRrnGGm9g7zHZdlF3HBd0ljF0xEYrCWVomf6KhSd
-         ZIpwm3v5EmKiOl/3gxzmGyz2BXzCndgBh4XHFIut5KxBjbum4mqlJMqnjBjbryN2+fzO
-         oa5n1y2uzE8ZoXlqy5SJMNWbNz8tQlNWFG3GyFK/BTKTmbH8txCQMBPSS9xNg4W+bQlC
-         VeoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=xERaZ+cRvJ1AT75s/Sd6NIg2My+pi/GZJ6ju2r6RLE8=;
-        b=cdrHfMQC8g81psTDE6ykf/O5kPiP84HR9b0DCFc5uutBvN3SEjFGmbIH7M7TmqX6Gj
-         WuhcdrKOF/Y8R3C9Rnsvl1cnQh0BVGqg3oTmSEZux7e+cnRG7WqnWrMyTYsqDEkQ2Ie0
-         wuYIMD7VxJlENsTkXHeTMV1GQLwjVxcDIuZpZulkyp1xOQhhqMQOqmyMMADbzO1Kp5i2
-         1+Kvvm8NRvb2GD243SIlvgoA2oC8gLLH/Zea5t4qCdebsS/Ixx/CAFmVV4YoRorW794c
-         nJA9OYQHri3aM3acdKfohbxWgAOdfelxrpso357KPtBGfCXZRLSvQLTD02GeqC7HdKyN
-         f1jQ==
-X-Gm-Message-State: AOAM5302vcLVAwaxS0c8g1ma9K7b5wgEigIhii5s+Yk+Afz93b0MXW1g
-        YmGV3mZu8z2bpyID8s+nPGOHpiYhx5VFHOTYxN4=
-X-Google-Smtp-Source: ABdhPJzqty4NpJdahSeM0tH4SU0UCXsnxmA3UxbVuNbJz1jQK8zoul1Fp2qrga9yxisZ2HVa+zpoB5DJQxuNzVw/2dE=
-X-Received: by 2002:a4a:330b:: with SMTP id q11mr800770ooq.90.1610491034444;
- Tue, 12 Jan 2021 14:37:14 -0800 (PST)
+        d=exalondelft.nl; s=whs1;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc:to:from:
+         from;
+        bh=/iLZF5+MWd8vc9Sg3Pst1Rp9cFBVj8ZZ9VL2up/kMKs=;
+        b=ZK0eN8yJwV5QnmjWRSYbhQ6LQ7c22ilEnMsNsHqsJY2FRyRjwC7Ud+WWIdVoUj22o0BDEQdDdD9Cq
+         3ABIVt+0QlzGtCl4TgQAKHVhy9vwNsIA5bIcTZmgqB5XFlWEy+OWPljkfafUkQPp8quG4+sQKu6SXF
+         cR7Xle6Wx9U/jzRLN7HHVd6vt2SKnSzDJLRPJKEvUQny0QKBaQaXn3nUTc1SjPNFGy6OE6RP8F/zFQ
+         lOe4iXm+/qRTOPZiomiSmiv5rKUrz10yE5rtR4Xe7P3mztFQ0ZQBwPyQ5vck/W2LvkzWXwN1EQpKpc
+         Z4Krh/P/lJgJSASAwq+ZYPF83KMuXXA==
+X-Halon-ID: cfb8d4a0-5526-11eb-bfeb-001a4a4cb9a5
+Received: from s198.webhostingserver.nl (s198.webhostingserver.nl [141.138.168.154])
+        by mailfilter03.webhostingserver.nl (Halon) with ESMTPSA
+        id cfb8d4a0-5526-11eb-bfeb-001a4a4cb9a5;
+        Tue, 12 Jan 2021 23:37:54 +0100 (CET)
+Received: from [2001:981:6fec:1:228:9916:35b6:34c4] (helo=delfion.fritz.box)
+        by s198.webhostingserver.nl with esmtpa (Exim 4.93.0.4)
+        (envelope-from <ftoth@exalondelft.nl>)
+        id 1kzSIU-000WqI-Dy; Tue, 12 Jan 2021 23:37:54 +0100
+From:   Ferry Toth <ftoth@exalondelft.nl>
+To:     Ferry Toth <ftoth@exalondelft.nl>, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] hsu_dma_pci: disable spurious interrupt
+Date:   Tue, 12 Jan 2021 23:37:49 +0100
+Message-Id: <20210112223749.97036-1-ftoth@exalondelft.nl>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-35-lee.jones@linaro.org>
-In-Reply-To: <20210111191926.3688443-35-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 12 Jan 2021 17:37:02 -0500
-Message-ID: <CADnq5_PK9aukXtdcqcS-ELn9jB=Vysj+Gp0iL5nUcLXiQM=hfQ@mail.gmail.com>
-Subject: Re: [PATCH 34/40] drm/amd/display/dc/dce110/dce110_transform_v:
- Demote kernel-doc abuse
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Antivirus-Scanner: Clean mail though you should still use an Antivirus
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 2:20 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_transform_v.c:228=
-: warning: bad line:    void
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_transform_v.c:233=
-: warning: Function parameter or member 'xfm_dce' not described in 'program=
-_overscan'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_transform_v.c:233=
-: warning: Function parameter or member 'data' not described in 'program_ov=
-erscan'
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Intel Tangier B0 and Anniedale the interrupt line, disregarding
+to have different numbers, is shared between HSU DMA and UART IPs.
+Thus on such SoCs we are expecting that IRQ handler is called in
+UART driver only. hsu_pci_irq was handling the spurious interrupt
+from HSU DMA by returning immediately. This wastes CPU time and
+since HSU DMA and HSU UART interrupt occur simultaneously they race
+to be handled causing delay to the HSU UART interrupt handling.
+Fix this by disabling the interrupt entirely.
 
-Applied.  Thanks!
+Fixes: 4831e0d9054c ("serial: 8250_mid: handle interrupt correctly in DMA case")
+Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
+---
+ drivers/dma/hsu/pci.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-Alex
+diff --git a/drivers/dma/hsu/pci.c b/drivers/dma/hsu/pci.c
+index 07cc7320a614..9045a6f7f589 100644
+--- a/drivers/dma/hsu/pci.c
++++ b/drivers/dma/hsu/pci.c
+@@ -26,22 +26,12 @@
+ static irqreturn_t hsu_pci_irq(int irq, void *dev)
+ {
+ 	struct hsu_dma_chip *chip = dev;
+-	struct pci_dev *pdev = to_pci_dev(chip->dev);
+ 	u32 dmaisr;
+ 	u32 status;
+ 	unsigned short i;
+ 	int ret = 0;
+ 	int err;
+ 
+-	/*
+-	 * On Intel Tangier B0 and Anniedale the interrupt line, disregarding
+-	 * to have different numbers, is shared between HSU DMA and UART IPs.
+-	 * Thus on such SoCs we are expecting that IRQ handler is called in
+-	 * UART driver only.
+-	 */
+-	if (pdev->device == PCI_DEVICE_ID_INTEL_MRFLD_HSU_DMA)
+-		return IRQ_HANDLED;
+-
+ 	dmaisr = readl(chip->regs + HSU_PCI_DMAISR);
+ 	for (i = 0; i < chip->hsu->nr_channels; i++) {
+ 		if (dmaisr & 0x1) {
+@@ -105,6 +95,17 @@ static int hsu_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	if (ret)
+ 		goto err_register_irq;
+ 
++	/*
++	 * On Intel Tangier B0 and Anniedale the interrupt line, disregarding
++	 * to have different numbers, is shared between HSU DMA and UART IPs.
++	 * Thus on such SoCs we are expecting that IRQ handler is called in
++	 * UART driver only. Instead of handling the spurious interrupt
++	 * from HSU DMA here and waste CPU time and delay HSU UART interrupt
++	 * handling, disable the interrupt entirely.
++	 */
++	if (pdev->device == PCI_DEVICE_ID_INTEL_MRFLD_HSU_DMA)
++		disable_irq_nosync(chip->irq);
++
+ 	pci_set_drvdata(pdev, chip);
+ 
+ 	return 0;
+-- 
+2.27.0
 
-> ---
->  .../display/dc/dce110/dce110_transform_v.c    | 19 +++++++++----------
->  1 file changed, 9 insertions(+), 10 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_transform_v.c b=
-/drivers/gpu/drm/amd/display/dc/dce110/dce110_transform_v.c
-> index b1aaab5590cc6..29438c6050dbb 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_transform_v.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_transform_v.c
-> @@ -217,16 +217,15 @@ static bool setup_scaling_configuration(
->         return is_scaling_needed;
->  }
->
-> -/**
-> -* Function:
-> -* void program_overscan
-> -*
-> -* Purpose: Programs overscan border
-> -* Input:   overscan
-> -*
-> -* Output:
-> -   void
-> -*/
-> +/*
-> + * Function:
-> + * void program_overscan
-> + *
-> + * Purpose: Programs overscan border
-> + * Input:   overscan
-> + *
-> + * Output: void
-> + */
->  static void program_overscan(
->                 struct dce_transform *xfm_dce,
->                 const struct scaler_data *data)
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
