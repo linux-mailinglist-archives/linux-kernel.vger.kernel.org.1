@@ -2,193 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D847D2F4081
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F27F02F407F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393462AbhAMAmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2393481AbhAMAmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Jan 2021 19:42:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392015AbhALXxE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 18:53:04 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E04C061575;
-        Tue, 12 Jan 2021 15:52:23 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id b5so7192pjl.0;
-        Tue, 12 Jan 2021 15:52:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MGKtVppVEFe28L6FHuDZ+KXC/KQUieJpXieI89QBq84=;
-        b=IJQOFIMT3nopzu5tpGieKI5azx9Y0NH8Vhc2K59m4HhkC/m3oEAcrRYKlNYQsJeEkK
-         zP7eMmny6mAVPcoNorjivTXPpDujTFpzqCpQ9id/XL5Ceg9EwJGYx6ESFXkRY/ONim8w
-         Un7cc0LO4YpbvY/dAE7zeXmdQcdFUDj9KUSRIifjRk0lFFREb/mD+2H/zBfkU4cfy5k2
-         sDPmSUtFCg9gGGVsWrwuH3YDuaE+4fYg9dn6Ow9lsTujOw+kIHhQX9WjYOmoaACKDs5K
-         m/VTzIIU8JjmYiTY6EUtIFD18hj+JVVpk+Rd1rayW3K4ik+vA0P1BtLE6njaiudNCh3R
-         5ipw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=MGKtVppVEFe28L6FHuDZ+KXC/KQUieJpXieI89QBq84=;
-        b=Vhex7uNupqxHoSEjqaOWOvSE+6lB+wRaZIqf5L37ZNERagvsmudKbbvGu9uDhsccty
-         +xtab3H92L68Rxlqr7iNjocs98AHm+SYZK3ghjIdIL1UtWsu4/bIONiJn2KEHneM0IYc
-         YhxnBytkj4vCpsPuH2jR0MkTbr2DjnuT52vWHXh07a4oaJxjuVHVlJarTpP0qNSVRurQ
-         0FeGM6bc2RcUe6d7jqw1by4cDsr/mV4EcKCr2Ae/Raazd9Rat+jKYF9gnvpvArnu62cb
-         9FVcRypu/98ebxv7M5JCuOLMZMTNohjNwZEbEwo6mvdVb6PhmCf7ThlNF+i+594ZHIiH
-         QT1w==
-X-Gm-Message-State: AOAM5312eBl+nua0XcrySfMbamEdmWKMGlWA0XgwKQInRQkDJkqSF/c1
-        BtQjhRO7BSSkKCMj9WDr5hmzjYwUiJ0=
-X-Google-Smtp-Source: ABdhPJy/60v+IQ3/cilUlX0Bj9E3m068HNwymQXPaKD3vpsxumTJ8rKuRYQYOicISQFL+EQw1gn6ww==
-X-Received: by 2002:a17:902:c1cc:b029:da:dd7c:2ac7 with SMTP id c12-20020a170902c1ccb02900dadd7c2ac7mr1401040plc.25.1610495543441;
-        Tue, 12 Jan 2021 15:52:23 -0800 (PST)
-Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id a136sm234808pfd.149.2021.01.12.15.52.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 15:52:22 -0800 (PST)
-Subject: Re: [RFC PATCH v3 2/6] swiotlb: Add restricted DMA pool
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Claire Chang <tientzu@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>, will@kernel.org,
-        Frank Rowand <frowand.list@gmail.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
-        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
-        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        rafael.j.wysocki@intel.com, heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        rdunlap@infradead.org, dan.j.williams@intel.com,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Tomasz Figa <tfiga@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>
-References: <20210106034124.30560-1-tientzu@chromium.org>
- <20210106034124.30560-3-tientzu@chromium.org>
- <20210106185241.GA109735@localhost.localdomain>
- <CALiNf2-HDf6tFcvVgCttr-ta=88ZMH=OvB5XoryTPc6MNvwV+Q@mail.gmail.com>
- <20210107175740.GA16519@char.us.oracle.com>
- <aa5af7d1-779e-f0f6-e6ba-8040e603523f@gmail.com>
- <20210107211937.GA19460@char.us.oracle.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
- 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
- M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <bb25fac5-94ee-ff61-9afb-0024b5047f94@gmail.com>
-Date:   Tue, 12 Jan 2021 15:52:16 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Received: from mail.kernel.org ([198.145.29.99]:46554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392016AbhALXyF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 18:54:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3E1223131;
+        Tue, 12 Jan 2021 23:53:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610495605;
+        bh=+h7b3rUIhPENc+HKyVs0iLZILMk5fdaMSiKtpgPVn/4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ERpl4Hyq9+BN8HkaEcKE990bsUf1e38Srxlu2/3bzTq2iFH+/k69MOmBDPurReBal
+         L1+i39xkWqwWlByAkif98cUnDjnpJTXw09OqbRtHtUUfcZArFHD0hLuenhLNCPS0qe
+         49ODgHHu0Zl7et4DknxnVgfA6ljt0opD6T1GAwNZnxxFqy+/S7XCsNZrCMXQIw+wKN
+         q7zjWt44xXLqc3u2NOohADQio2hAH85OvGbMUMilOblAkv0xEqcDMBFg/JKPaL+NSb
+         7z+NevUu4fAl7FhMJ/6mYT+0sbhc0WYGTgRMpNnMt8DUqolhjtSSTVmyO2gb+DY57s
+         axMbKC2XeY3DA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id B027A3522AC3; Tue, 12 Jan 2021 15:53:24 -0800 (PST)
+Date:   Tue, 12 Jan 2021 15:53:24 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
+Message-ID: <20210112235324.GA17895@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201226025117.2770-1-jiangshanlai@gmail.com>
+ <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net>
+ <87o8hv7pnd.fsf@nanos.tec.linutronix.de>
+ <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net>
+ <X/yH9+MGa1JCNZ8x@hirez.programming.kicks-ass.net>
+ <20210111180907.GE2743@paulmck-ThinkPad-P72>
+ <20210111215052.GA19589@paulmck-ThinkPad-P72>
+ <20210112171411.GA22823@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <20210107211937.GA19460@char.us.oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112171411.GA22823@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/7/21 1:19 PM, Konrad Rzeszutek Wilk wrote:
-> On Thu, Jan 07, 2021 at 10:09:14AM -0800, Florian Fainelli wrote:
->> On 1/7/21 9:57 AM, Konrad Rzeszutek Wilk wrote:
->>> On Fri, Jan 08, 2021 at 01:39:18AM +0800, Claire Chang wrote:
->>>> Hi Greg and Konrad,
->>>>
->>>> This change is intended to be non-arch specific. Any arch that lacks DMA access
->>>> control and has devices not behind an IOMMU can make use of it. Could you share
->>>> why you think this should be arch specific?
->>>
->>> The idea behind non-arch specific code is it to be generic. The devicetree
->>> is specific to PowerPC, Sparc, and ARM, and not to x86 - hence it should
->>> be in arch specific code.
->>
->> In premise the same code could be used with an ACPI enabled system with
->> an appropriate service to identify the restricted DMA regions and unlock
->> them.
+On Tue, Jan 12, 2021 at 09:14:11AM -0800, Paul E. McKenney wrote:
+> On Mon, Jan 11, 2021 at 01:50:52PM -0800, Paul E. McKenney wrote:
+> > On Mon, Jan 11, 2021 at 10:09:07AM -0800, Paul E. McKenney wrote:
+> > > On Mon, Jan 11, 2021 at 06:16:39PM +0100, Peter Zijlstra wrote:
+> > > > 
+> > > > While thinking more about this, I'm thinking a big part of the problem
+> > > > is that we're not dinstinguishing between geniuine per-cpu kthreads and
+> > > > kthreads that just happen to be per-cpu.
+> > > > 
+> > > > Geniuine per-cpu kthreads are kthread_bind() and have PF_NO_SETAFFINITY,
+> > > > but sadly a lot of non-per-cpu kthreads, that might happen to still be
+> > > > per-cpu also have that -- again workqueue does that even to it's unbound
+> > > > workers :-(
+> > > > 
+> > > > Now, anything created by smpboot, is created through
+> > > > kthread_create_on_cpu() and that additionally sets to_kthread(p)->flags
+> > > > KTHREAD_IS_PER_CPU.
+> > > > 
+> > > > And I'm thinking that might be sufficient, if we modify
+> > > > is_per_cpu_kthread() to check that, then we only match smpboot threads
+> > > > (which include the hotplug and stopper threads, but notably not the idle
+> > > > thread)
+> > > > 
+> > > > Sadly it appears like io_uring() uses kthread_create_on_cpu() without
+> > > > then having any hotplug crud on, so that needs additinoal frobbing.
+> > > > 
+> > > > Also, init_task is PF_KTHREAD but doesn't have a struct kthread on.. and
+> > > > I suppose bound workqueues don't go through this either.
+> > > > 
+> > > > Let me rummage around a bit...
+> > > > 
+> > > > This seems to not insta-explode... opinions?
+> > > 
+> > > It passes quick tests on -rcu both with and without the rcutorture fixes,
+> > > which is encouraging.  I will start a more vigorous test in about an hour.
+> > 
+> > And 672 ten-minute instances of RUDE01 passed with this patch applied
+> > and with my rcutorture patch reverted.  So looking good, thank you!!!
 > 
-> Which this patchset is not.
-
-ACPI is not included, but the comment about Device Tree being specific
-to PowerPC, SPARC and ARM is x86 is not quite correct. There is an
-architecture specific part to obtaining where the Device Tree lives in
-memory, but the implementation itself is architecture agnostic (with
-some early SPARC/OpenFirmware shenanigans), and x86 does, or rather did
-support Device Tree to a very small extent with the CE4100 platform.
-
-Would you prefer that an swiotlb_of.c file be created instead or
-something along those lines to better encapsulate where the OF specific
-code lives?
-
+> Still on the yesterday's patch, an overnight 12-hour run hit workqueue
+> warnings in three of four instances of the SRCU-P scenario, two
+> at not quite three hours in and the third at about ten hours in.
+> All runs were otherwise successful.  One of the runs also had "BUG:
+> using __this_cpu_read() in preemptible" as well, so that is the warning
+> shown below.  There was a series of these BUGs, then things settled down.
 > 
->>
->> More than 1 architecture requiring this function (ARM and ARM64 are the
->> two I can think of needing this immediately) sort of calls for making
->> the code architecture agnostic since past 2, you need something that scales.
+> This is the warning at the end of process_one_work() that is complaining
+> about being on the wrong CPU.
 > 
-> I believe the use-case is for ARM64 at this moment.
+> I will fire up some tests on the new series.
 
-For the platforms that Claire uses, certainly for the ones we use, ARM
-and ARM64 are in scope.
--- 
-Florian
+An SRCU-P run on the new series reproduced the warning below.  Repeat-by:
+
+tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10 --configs "112*SRCU-P" --bootargs "rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcutree.softirq=0" --trust-make
+
+A RUDE01 run on the new series completed without incident.  Repeat-by:
+
+tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 10 --configs "672*RUDE01" --bootargs "rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcutree.softirq=0" --trust-make
+
+I will be doing an overnight (PST) run having more variety and longer durations.
+
+							Thanx, Paul
+
+> ------------------------------------------------------------------------
+> 
+> WARNING: CPU: 0 PID: 413 at kernel/workqueue.c:2193 process_one_work+0x8c/0x5f0
+> Modules linked in:
+> CPU: 0 PID: 413 Comm: kworker/3:3 Not tainted 5.11.0-rc3+ #1104
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.11.0-2.el7 04/01/2014
+> Workqueue:  0x0 (events)
+> RIP: 0010:process_one_work+0x8c/0x5f0
+> Code: 48 8b 46 38 41 83 e6 20 48 89 45 c0 48 8b 46 40 48 89 45 c8 41 f6 44 24 4c 04 75 10 65 8b 05 eb 5d 78 59 41 39 44 24 40 74 02 <0f> 0b 48 ba eb 83 b5 80 46 86 c8 61 48 0f af d3 48 c1 ea 3a 49 8b
+> RSP: 0018:ffffb5a540847e70 EFLAGS: 00010006
+> RAX: 0000000000000000 RBX: ffff8fcc5f4f27e0 RCX: 2b970af959bb2a7d
+> RDX: ffff8fcc5f4f27e8 RSI: ffff8fcc5f4f27e0 RDI: ffff8fcc4306e3c0
+> RBP: ffffb5a540847ed0 R08: 0000000000000001 R09: ffff8fcc425e4680
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffff8fcc5f4eadc0
+> R13: ffff8fcc5f4ef700 R14: 0000000000000000 R15: ffff8fcc4306e3c0
+> FS:  0000000000000000(0000) GS:ffff8fcc5f400000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00000000004001e1 CR3: 0000000003084000 CR4: 00000000000006f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  ? process_one_work+0x5f0/0x5f0
+>  worker_thread+0x28/0x3c0
+>  ? process_one_work+0x5f0/0x5f0
+>  kthread+0x13b/0x160
+>  ? kthread_insert_work_sanity_check+0x50/0x50
+>  ret_from_fork+0x22/0x30
+> irq event stamp: 138141554
+> hardirqs last  enabled at (138141553): [<ffffffffa74a928f>] _raw_spin_unlock_irq+0x1f/0x40
+> hardirqs last disabled at (138141554): [<ffffffffa74a9071>] _raw_spin_lock_irq+0x41/0x50
+> softirqs last  enabled at (138140828): [<ffffffffa68ece37>] srcu_invoke_callbacks+0xe7/0x1a0
+> softirqs last disabled at (138140824): [<ffffffffa68ece37>] srcu_invoke_callbacks+0xe7/0x1a0
+> ---[ end trace e31d6dded2c52564 ]---
+> kvm-guest: stealtime: cpu 3, msr 1f4d7b00
+> BUG: using __this_cpu_read() in preemptible [00000000] code: kworker/3:3/413
+> caller is refresh_cpu_vm_stats+0x1a6/0x320
+> CPU: 5 PID: 413 Comm: kworker/3:3 Tainted: G        W         5.11.0-rc3+ #1104
+> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.11.0-2.el7 04/01/2014
+> Workqueue: mm_percpu_wq vmstat_update
+> Call Trace:
+>  dump_stack+0x77/0x97
+>  check_preemption_disabled+0xb6/0xd0
+>  refresh_cpu_vm_stats+0x1a6/0x320
+>  vmstat_update+0xe/0x60
+>  process_one_work+0x2a0/0x5f0
+>  ? process_one_work+0x5f0/0x5f0
+>  worker_thread+0x28/0x3c0
+>  ? process_one_work+0x5f0/0x5f0
+>  kthread+0x13b/0x160
+>  ? kthread_insert_work_sanity_check+0x50/0x50
+>  ret_from_fork+0x22/0x30
