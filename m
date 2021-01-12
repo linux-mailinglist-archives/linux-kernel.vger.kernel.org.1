@@ -2,171 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B153E2F2621
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17DAF2F263E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:25:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728181AbhALCND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 21:13:03 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10708 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727940AbhALCNC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 21:13:02 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DFDZb0Nhwzl3KW;
-        Tue, 12 Jan 2021 10:11:03 +0800 (CST)
-Received: from huawei.com (10.174.176.179) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Tue, 12 Jan 2021
- 10:12:13 +0800
-From:   wangbin <wangbin224@huawei.com>
-To:     <adobriyan@gmail.com>, <akpm@linux-foundation.org>, <guro@fb.com>,
-        <shakeelb@google.com>, <hannes@cmpxchg.org>, <will@kernel.org>,
-        <wangbin224@huawei.com>, <feng.tang@intel.com>, <neilb@suse.de>,
-        <kirill.shutemov@linux.intel.com>, <samitolvanen@google.com>,
-        <rppt@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <hushiyuan@huawei.com>
-Subject: [PATCH] mm: thp: introduce NR_PARTIAL_THPS
-Date:   Tue, 12 Jan 2021 10:12:08 +0800
-Message-ID: <20210112021208.1875-1-wangbin224@huawei.com>
-X-Mailer: git-send-email 2.29.2.windows.3
+        id S1730098AbhALCZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 21:25:25 -0500
+Received: from mga07.intel.com ([134.134.136.100]:3978 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726645AbhALCZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 21:25:25 -0500
+IronPort-SDR: HBvjqQw+qmT8B2VPezNAmfGXZJP8VMTFx3jayVp762W55HauBFPYis8GmzcJI+2t+03Fafthla
+ RxhHwf+RlPhA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="242040056"
+X-IronPort-AV: E=Sophos;i="5.79,340,1602572400"; 
+   d="scan'208";a="242040056"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 18:24:44 -0800
+IronPort-SDR: nL9ruWuxWD/nCSoKNLHntIVgvGs+7b30LkClJCvHR6ZkTXHJz13vYx27RQZ0c2k9D+YvWkrFH0
+ DQVKUMA3cIXA==
+X-IronPort-AV: E=Sophos;i="5.79,340,1602572400"; 
+   d="scan'208";a="381240943"
+Received: from yangzhon-virtual.bj.intel.com (HELO yangzhon-Virtual) ([10.238.144.101])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA256; 11 Jan 2021 18:24:40 -0800
+Date:   Tue, 12 Jan 2021 10:13:21 +0800
+From:   Yang Zhong <yang.zhong@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        hpa@zytor.com, tony.luck@intel.com, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, kyung.min.park@intel.com, x86@kernel.org,
+        yang.zhong@intel.com
+Subject: Re: [PATCH 1/2] Enumerate AVX Vector Neural Network instructions
+Message-ID: <20210112021321.GA9922@yangzhon-Virtual>
+References: <20210105004909.42000-1-yang.zhong@intel.com>
+ <20210105004909.42000-2-yang.zhong@intel.com>
+ <8fa46290-28d8-5f61-1ce4-8e83bf911106@redhat.com>
+ <20210105121456.GE28649@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.176.179]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105121456.GE28649@zn.tnic>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bin Wang <wangbin224@huawei.com>
+On Tue, Jan 05, 2021 at 01:14:56PM +0100, Borislav Petkov wrote:
+> On Tue, Jan 05, 2021 at 12:47:23PM +0100, Paolo Bonzini wrote:
+> > On 05/01/21 01:49, Yang Zhong wrote:
+> > > From: Kyung Min Park <kyung.min.park@intel.com>
+> > > 
+> > > Add AVX version of the Vector Neural Network (VNNI) Instructions.
+> > > 
+> > > A processor supports AVX VNNI instructions if CPUID.0x07.0x1:EAX[4] is
+> > > present. The following instructions are available when this feature is
+> > > present.
+> > >    1. VPDPBUS: Multiply and Add Unsigned and Signed Bytes
+> > >    2. VPDPBUSDS: Multiply and Add Unsigned and Signed Bytes with Saturation
+> > >    3. VPDPWSSD: Multiply and Add Signed Word Integers
+> > >    4. VPDPWSSDS: Multiply and Add Signed Integers with Saturation
+> > > 
+> > > The only in-kernel usage of this is kvm passthrough. The CPU feature
+> > > flag is shown as "avx_vnni" in /proc/cpuinfo.
+> > > 
+> > > This instruction is currently documented in the latest "extensions"
+> > > manual (ISE). It will appear in the "main" manual (SDM) in the future.
+> > > 
+> > > Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
+> > > Signed-off-by: Yang Zhong <yang.zhong@intel.com>
+> > > Reviewed-by: Tony Luck <tony.luck@intel.com>
+> > > ---
+> > >   arch/x86/include/asm/cpufeatures.h | 1 +
+> > >   1 file changed, 1 insertion(+)
+> > > 
+> > > diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> > > index f5ef2d5b9231..d10d9962bd9b 100644
+> > > --- a/arch/x86/include/asm/cpufeatures.h
+> > > +++ b/arch/x86/include/asm/cpufeatures.h
+> > > @@ -293,6 +293,7 @@
+> > >   #define X86_FEATURE_PER_THREAD_MBA	(11*32+ 7) /* "" Per-thread Memory Bandwidth Allocation */
+> > >   /* Intel-defined CPU features, CPUID level 0x00000007:1 (EAX), word 12 */
+> > > +#define X86_FEATURE_AVX_VNNI		(12*32+ 4) /* AVX VNNI instructions */
+> > >   #define X86_FEATURE_AVX512_BF16		(12*32+ 5) /* AVX512 BFLOAT16 instructions */
+> > >   /* AMD-defined CPU features, CPUID level 0x80000008 (EBX), word 13 */
+> > > 
+> > 
+> > Boris, is it possible to have a topic branch for this patch?
+> 
+> Just take it through your tree pls.
+> 
+> Acked-by: Borislav Petkov <bp@suse.de>
+>
+  
+  Paolo, Boris has acked this kernel patch, and if i need send new patchset to add this 
+  acked-by info ? or kvm tree will directly pull this patchset? thanks.
 
-Currently we don't split transhuge pages on partial unmap. After using the
-deferred_split_huge_page() to solve the memory overhead, we still have a
-problem with memory count. We have no idea about how much partial unmap
-memory there is because the partial unmap memory is covered in transhuge
-pages until the pages are split.
+  Yang  
 
-Why should we know this? Just image that there is a process, which does the
-following:
-1)Mmap() 1GB memory and all the memory is transferred to transhuge pages by
-kernel.
-What happened: System free memory decreases 1GB. AnonHugePages increases
-1GB.
-2)Call madvise() don't need 1MB per transhuge page.
-What happened: Rss of the process decreases 512MB. AnonHugePages decreases
-1GB. System free memory doesn't increase.
-
-It's confusing that the system free memory is less than expected. And this
-is because that we just call split_huge_pmd() on partial unmap. I think we
-shouldn't roll back to split_huge_page(), but we can add NR_PARTIAL_THPS
-in node_stat_item to show the count of partial unmap pages.
-
-We can follow the deferred_split_huge_page() codepath to record the
-partial unmap pages. And reduce the count when transhuge pages are split
-eventually.
-
-Signed-off-by: Bin Wang <wangbin224@huawei.com>
----
- fs/proc/meminfo.c      | 2 ++
- include/linux/mmzone.h | 1 +
- mm/huge_memory.c       | 7 ++++++-
- mm/rmap.c              | 9 +++++++--
- mm/vmstat.c            | 1 +
- 5 files changed, 17 insertions(+), 3 deletions(-)
-
-diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-index d6fc74619625..f6f02469dd9e 100644
---- a/fs/proc/meminfo.c
-+++ b/fs/proc/meminfo.c
-@@ -138,6 +138,8 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
- 		    global_node_page_state(NR_FILE_THPS) * HPAGE_PMD_NR);
- 	show_val_kb(m, "FilePmdMapped:  ",
- 		    global_node_page_state(NR_FILE_PMDMAPPED) * HPAGE_PMD_NR);
-+	show_val_kb(m, "PartFreePages:  ",
-+		    global_node_page_state(NR_PARTIAL_THPS));
- #endif
- 
- #ifdef CONFIG_CMA
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index b593316bff3d..cc417c9870ad 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -194,6 +194,7 @@ enum node_stat_item {
- 	NR_FILE_THPS,
- 	NR_FILE_PMDMAPPED,
- 	NR_ANON_THPS,
-+	NR_PARTIAL_THPS,	/* partial free pages of transhuge pages */
- 	NR_VMSCAN_WRITE,
- 	NR_VMSCAN_IMMEDIATE,	/* Prioritise for reclaim when writeback ends */
- 	NR_DIRTIED,		/* page dirtyings since bootup */
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 9237976abe72..2f2856cf1ed0 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2788,6 +2788,8 @@ void free_transhuge_page(struct page *page)
- 	if (!list_empty(page_deferred_list(page))) {
- 		ds_queue->split_queue_len--;
- 		list_del(page_deferred_list(page));
-+		__mod_node_page_state(page_pgdat(page), NR_PARTIAL_THPS,
-+				      -HPAGE_PMD_NR);
- 	}
- 	spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
- 	free_compound_page(page);
-@@ -2880,8 +2882,11 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
- 		if (!trylock_page(page))
- 			goto next;
- 		/* split_huge_page() removes page from list on success */
--		if (!split_huge_page(page))
-+		if (!split_huge_page(page)) {
- 			split++;
-+			__mod_node_page_state(page_pgdat(page),
-+					      NR_PARTIAL_THPS, -HPAGE_PMD_NR);
-+		}
- 		unlock_page(page);
- next:
- 		put_page(page);
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 08c56aaf72eb..269edf41ccd7 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1309,8 +1309,11 @@ static void page_remove_anon_compound_rmap(struct page *page)
- 		 * page of the compound page is unmapped, but at least one
- 		 * small page is still mapped.
- 		 */
--		if (nr && nr < thp_nr_pages(page))
-+		if (nr && nr < thp_nr_pages(page)) {
-+			__mod_node_page_state(page_pgdat(page),
-+					      NR_PARTIAL_THPS, nr);
- 			deferred_split_huge_page(page);
-+		}
- 	} else {
- 		nr = thp_nr_pages(page);
- 	}
-@@ -1357,8 +1360,10 @@ void page_remove_rmap(struct page *page, bool compound)
- 	if (unlikely(PageMlocked(page)))
- 		clear_page_mlock(page);
- 
--	if (PageTransCompound(page))
-+	if (PageTransCompound(page)) {
-+		__inc_node_page_state(page, NR_PARTIAL_THPS);
- 		deferred_split_huge_page(compound_head(page));
-+	}
- 
- 	/*
- 	 * It would be tidy to reset the PageAnon mapping here,
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index f8942160fc95..93459dde0dcd 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1203,6 +1203,7 @@ const char * const vmstat_text[] = {
- 	"nr_file_hugepages",
- 	"nr_file_pmdmapped",
- 	"nr_anon_transparent_hugepages",
-+	"nr_partial_free_pages",
- 	"nr_vmscan_write",
- 	"nr_vmscan_immediate_reclaim",
- 	"nr_dirtied",
--- 
-2.23.0
-
+   
+> Thx.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
