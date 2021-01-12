@@ -2,340 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB19C2F26A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 04:27:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE662F26A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 04:27:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbhALDZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 22:25:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725885AbhALDZa (ORCPT
+        id S1726742AbhALDZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 22:25:43 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:42936 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725885AbhALDZm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 22:25:30 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6AAC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 19:24:44 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id y12so751718pji.1
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 19:24:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=88MhZZkiTYL095y5cHODK9nBa0PLN1eNKk834Xx6AoM=;
-        b=Eyr6gw/Epnsk9y/QALUwVMBevbVdAn5qUe+kORbqBChkh1+fGQFCnSg23wmKH9KsZa
-         9CLY+umsk+8PXjdkeOZzOf5936NRqKSpINERFlzigO+Nk327B0HU4xI323iQkZuj7r5s
-         KjpCoqd62SqX+5ksBnAUOE3E+ziJFKA9kDYjVpS2P9+Zno/9HeFGlwfclozCcsuDnqmM
-         +Fa4Ar27rbNK8pMQchfs607b3ZeS/72x92XIMhSSyutsjvkp26zS16nkxep8372zZRX0
-         Y8VWxVdt0UILIM/0q+w2Zb4rdPhud+U2KYFmsdG08RdgsJX7n0pgV2cs0CQkkh6jJN0W
-         aFmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=88MhZZkiTYL095y5cHODK9nBa0PLN1eNKk834Xx6AoM=;
-        b=YHFKQc9PnVVGDY+N4/bIjWjMdmUlhkA7XDGDVlofJIqYPgBlEFJ9CuUsRvqXfftW28
-         ImFNh2jKiGoltQBLFsix2jRDviHSP5Nq8LCO+ltnoPwnpiQCLzbgGXGuUONpgNjc3+Wy
-         D3NZAEBAbxu3gw1l7V8MpLg7BKheBoP8bi8i7336tl7XJ4iLqhYKga2godTzVq5XSgvt
-         9d0lyOtkkHzm0LpbBjgIjszOArcAoBLpY/Jk+5cjpeAGoFr/RDBA9bIuLBYUFzCudiT9
-         7uYxSs0rFMAN3MnGUWh+vMNrNI9Pz2GHEvTSPLucoP10nk6CMSjaizv15D4rn9Q0f9qE
-         fghA==
-X-Gm-Message-State: AOAM532DtOZowlsxHi3Fdw02MeHrPMIPwvzlF0dS8f2xcKtO7iaAjFH7
-        4XlePUtvCp8g2uqszTOejF2qdz2RGlMKO7vyUie0QqSSkrHWVwJCLzQ=
-X-Google-Smtp-Source: ABdhPJz1Vbh21hprw7xZT0rhB3RJxFLThTGKPEcsKVs3HixxOQYFziJO9zs8iO3CyuJb5AsnFXWl+AD7Uh+OgNBIGCU=
-X-Received: by 2002:a17:90a:c588:: with SMTP id l8mr2143656pjt.147.1610421883700;
- Mon, 11 Jan 2021 19:24:43 -0800 (PST)
+        Mon, 11 Jan 2021 22:25:42 -0500
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10C3BeQ4030704;
+        Mon, 11 Jan 2021 19:24:29 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=OzRt5NIIrblVP31wasPvF8YVDTkweHdWigIWCHfi2L0=;
+ b=Uz4Dk9rN6JL7Zki6Fq/xegPYbuDIjmwuh3g7w5fyZ2vyYjFFo3F2g4cPmOaMOBHqlb1E
+ 1jpjzf9Ud99Wh0MVa0PrdyeR6brN66+2SUeSyrnL/vZdWXpg5mhtXY2lF/IV4PF8zmSH
+ VuDWVKyki/oNqvJrm0VSFKPqD91/cR8ARgQ= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 35yw1pgk38-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 11 Jan 2021 19:24:29 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 11 Jan 2021 19:24:28 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l8CI8ZDOxrqdYsDTSxHeVIJfIMVYVym/9dWzcv7w3NvCh5LfNMny+FEfcRR4stw+txF2e5+W+49HCGof8Ylfc3oGoT+RvHGkOaKP4hyAI2nrkAJmJbza1E/vOrUKcrVqMKEhl9uLek4nJhcptH+clY19V3ApFit+ZteffiWgzLYt52K6ytRNpzHVyUsueeE/XyvAZp4AQaJfgR3+Jf4h4dDnb658I8hg7n+MGDF4W4J7JF5px9Wq1QI1EA4G1gLODVXnBIlMNHL45wFZKqzHcwYKlSCKhvt48uh+qi6o0sQImWZB555kEe1+vQgnvTP93C5JEeoXZG0NwFaPP6KNsw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OzRt5NIIrblVP31wasPvF8YVDTkweHdWigIWCHfi2L0=;
+ b=nWlds5Opd4PpibQA5ytD766ljWXFq/wF0bB1rvmPS9UD4XR0cZ/Byb9HRMh+d4+pjDJawyfFL5YUzQc/gnD2KB6k33ojT+n6b+TxA6aTRA26cr0JFEU3qJP1zXGLsrUaihVGdPh3sbw6Qsg3NSDwK5eop6pOOYD3i31gCwIPFgrdJF6dbfBRaJcwgWwdCxETYxbWDxkLP5k9VS7EJ4QG64HhQuuhKCV3MtvgduSCGyJX49prUyOK91X2+ezrvYfMBxuPcNQTFQEkm6HBy5NOeRPW7cBevI4hjddzRUgZQIzRAPXtPy1qdb6CmQ/veEqNsWwFYZY61eWa1NHoXF3bAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OzRt5NIIrblVP31wasPvF8YVDTkweHdWigIWCHfi2L0=;
+ b=c3axWr7Uh8lDOVgAJUjeTKmmeCNHE15emSZWXne/s4/vWTW5xbJNJ0cwwUeOzy1coikvtfiV79sZiosUWmmVIp4AMQe0omgn57VpJpyKHgrIaf3GQoLH6+1EIuenQhPNyvmHOZPZZpvAtSuI4o0ebgg8lHh+Rjvl+m9g6oxWjWM=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
+ by BYAPR15MB2838.namprd15.prod.outlook.com (2603:10b6:a03:b4::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Tue, 12 Jan
+ 2021 03:24:25 +0000
+Received: from BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
+ ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
+ 03:24:25 +0000
+Subject: Re: [PATCH bpf-next 4/4] bpf: runqslower: use task local storage
+To:     Song Liu <songliubraving@fb.com>
+CC:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "ast@kernel.org" <ast@kernel.org>,
+        "daniel@iogearbox.net" <daniel@iogearbox.net>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+        "kpsingh@chromium.org" <kpsingh@chromium.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "haoluo@google.com" <haoluo@google.com>
+References: <20210108231950.3844417-1-songliubraving@fb.com>
+ <20210108231950.3844417-5-songliubraving@fb.com>
+ <ad40d69d-9c0f-8205-26df-c5a755778f9e@fb.com>
+ <352FED72-11B3-44F0-9B1C-92552AEB4AE8@fb.com>
+From:   Yonghong Song <yhs@fb.com>
+Message-ID: <e890e08e-99d0-9d81-b835-c3a1b4b8bbbf@fb.com>
+Date:   Mon, 11 Jan 2021 19:24:23 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.0
+In-Reply-To: <352FED72-11B3-44F0-9B1C-92552AEB4AE8@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2620:10d:c090:400::5:3aac]
+X-ClientProxiedBy: MWHPR2001CA0017.namprd20.prod.outlook.com
+ (2603:10b6:301:15::27) To BYAPR15MB4088.namprd15.prod.outlook.com
+ (2603:10b6:a02:c3::18)
 MIME-Version: 1.0
-References: <20210111210152.118394-1-mike.kravetz@oracle.com> <20210111210152.118394-2-mike.kravetz@oracle.com>
-In-Reply-To: <20210111210152.118394-2-mike.kravetz@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 12 Jan 2021 11:24:05 +0800
-Message-ID: <CAMZfGtW=y=SESn_M7TC_N=hAVDQJXJkSSswmcy68XKw_KqDD2w@mail.gmail.com>
-Subject: Re: [External] [RFC PATCH 1/3] hugetlb: use page.private for hugetlb
- specific page flags
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2620:10d:c085:21e1::190b] (2620:10d:c090:400::5:3aac) by MWHPR2001CA0017.namprd20.prod.outlook.com (2603:10b6:301:15::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Tue, 12 Jan 2021 03:24:24 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f6e376a2-753f-4a96-bca1-08d8b6a99044
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2838:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2838A938FFFE5599087BD690D3AA0@BYAPR15MB2838.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: kybGvUynuyv9o65/ESK1SsdL/NnfnCkgiIBdf3ZToACeqc0UB5IRJEnBZk/vlTEepkUum+gYrS3z1Q+fuy0RppkvbBQw1lOquFOB+6pjbbSUwIGbnthKkP2ysZQZ129TzfqKUxqI5N8zOv9ARG9oLT4labGRhPRt2iyGlGmm+xZ2ayWQlQ/34CWaG1go40Snj1aQpwovGD/xk9vZmGuBS0nBNLWSC7NLZbCfNma1Gg2GBbwN6or2n9ZXFXDXpjxiYPyCIZeO3yCDbc2w95ZjANgMunaTzfPqem4Tnn1Vd2lg1EiyB9ojvMBIaa/5qtZZLEhLMmP3uJSkcZion7LldE5G+nMZp48Mt5OoYaiHJ7tBgrx7bSsfAM8po4SCtb9UvnLV7TplSct4+h6HpAuD5nEO0Ap73YFHdOLPe+96HeLU4j3rGSkhRdPGmR7WQdaf/DE+fiToXkuPEfD99jPYSM4Qhl+OHSzk8o68NLiTPjw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(136003)(396003)(376002)(39860400002)(31696002)(54906003)(6636002)(5660300002)(31686004)(4326008)(53546011)(186003)(37006003)(8936002)(86362001)(16526019)(316002)(66476007)(6486002)(83380400001)(66946007)(66556008)(6862004)(8676002)(52116002)(2616005)(36756003)(7416002)(2906002)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?QTFPV2ZNeGhXQ1BtYU5MdHlvZDVYZ3BxbVNvZ2hHZnVPOFF6clhiQ0EyME1H?=
+ =?utf-8?B?T1AxaG54SHBuckswM3U4c1VTV3IyUXVkYlNhelBvdGZ6aWs2aXJONENKaVlB?=
+ =?utf-8?B?RTZFS1RETnhtUHRSZWdUZ2JRT2NBa2dBNzNrZTUwQjU5dDZMMXpmaE05YkEr?=
+ =?utf-8?B?RTVPeTI2cW42b2l0VlpPbUlhamVTMGRHUjBxek5LZ3BqRzFiM0d3YUZoMVpj?=
+ =?utf-8?B?Y2JPVjBDMU1zSTNXZFFGRTllU05yeDZxcm9CRk0vd1VGNHNLTUxoZGNEVHRy?=
+ =?utf-8?B?UzM3aTFvOXJOYjNUYk5vTmxibWozdjZ4ZXJVVDlWYXFXMFF4TGdXenRWOUht?=
+ =?utf-8?B?Vnc1RjdMRWQ1dGRxN1ZyVWxlUi84Wk1oempyVHlpMnV6MUVJNzhubmNOelA1?=
+ =?utf-8?B?Vyt3czRRdFc1M0VnQTVEdHRPNGRmanJ2cDJ1VlYzWmR2ckhyWWhGMzNHOC9C?=
+ =?utf-8?B?VkU1L0dXWFFRNDBINGczeTdUMkREQTJpTGxHbmJSQllkeEx2ODMybGVWN1Rq?=
+ =?utf-8?B?ZHNMeHd4blBqbnFIWS9ucDh1YTk5U1k5cm1tWkExRlpaczZWZFVBZ0ZNbDBX?=
+ =?utf-8?B?K2FpR2pXNnZCUnFkSkY3UHBlUW1SeXFick5kWHFLY0x4WTExYlpWWEJicnpw?=
+ =?utf-8?B?cldHOVZiTFJvbGVsVXVPWHAvWXlQemRTRVhGOTBXaHVSdTlCYWtLMVJVUDAx?=
+ =?utf-8?B?b25uT1c4V242ZmswcmFOVUYrSWRQVlFhRFQ0ajc1TEExb3gzdHpvTmhDV0Za?=
+ =?utf-8?B?SDJ1SGwvbm8vZ0phaGduaEtxZkFOL0NFQVIwQ1JrQyttM1d6bUd6M3ZFNTND?=
+ =?utf-8?B?aVFrV2o2SnZUNXVRNEJUVWZnd09zNlBZSi8wRjRvckwzU3pWa0hwTzZtVHpk?=
+ =?utf-8?B?c0NOdElBbTNYTGdOSU1PN25QRGV3OHJxbFgzVDdia2Nmd3FjQ2cvMWkyMGhp?=
+ =?utf-8?B?alV5ZG9mYjBOZDAyeTB1ZFdBUjZITi9CR2NFK3o4eTQ1a0pnc3VDcjArRFlZ?=
+ =?utf-8?B?MW1YZkRMSi81RWwrZFoxY2dqdjIrdGRNcTUwTXNtODhxSXdoSHdndTVkQnpI?=
+ =?utf-8?B?NnBsSEpFZENvYkVHT3BRWHR2SmJOSHR2NHhpajYwaUVZYmo4QksyNTdMaUQ2?=
+ =?utf-8?B?cDZDcmF3Y0hTd0VMemxieDg1OVYvMTRXK0FWVE1ibm9ZYmdhNU5oTlF1dVc5?=
+ =?utf-8?B?VzNnU2NXZmNBU0xlelFiVlgrclBHK2hMSksrUk5WbGZwOU5ia2M5WHZHMGF1?=
+ =?utf-8?B?d2IwWnpoZWFaNWFUNitBVlYzV1I1ZEtKRUZ6Tyt4V3JTN2hhOHNZSm9Vdjc4?=
+ =?utf-8?B?aDY5eFVPaUcwTjdJYnRNMWpzelZQeUViS3ZlY0Nja1V6cHIzTEdOTTRTcm05?=
+ =?utf-8?B?M0dpdHVOSUM4eUE9PQ==?=
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 03:24:25.7997
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: f6e376a2-753f-4a96-bca1-08d8b6a99044
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vxTqQX7aez4kmXjF4Ba0xIGfZDtaIzU2fwNdiBZKT+2+IKmoUBpBP9qf3OBft7FI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2838
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-12_01:2021-01-11,2021-01-12 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 bulkscore=0
+ phishscore=0 priorityscore=1501 impostorscore=0 adultscore=0
+ malwarescore=0 clxscore=1015 suspectscore=0 mlxlogscore=999 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101120017
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 5:04 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> As hugetlbfs evolved, state information about hugetlb pages was added.
-> One 'convenient' way of doing this was to use available fields in tail
-> pages.  Over time, it has become difficult to know the meaning or contents
-> of fields simply be looking at a small bit of code.  Sometimes, the
-> naming is just confusing.  For example: The PagePrivate flag indicates
-> a huge page reservation was consumed and needs to be restored if an error
-> is encountered and the page is freed before it is instantiated.  The
-> page.private field contains the pointer to a subpool if the page is
-> associated with one.
->
-> In an effort to make the code more readable, use page.private to contain
-> hugetlb specific flags.  These flags will have test, set and clear functions
-> similar to those used for 'normal' page flags.  More importantly, the
-> flags will have names which actually reflect their purpose.
->
-> In this patch,
-> - Create infrastructure for huge page flag functions
-> - Move subpool pointer to page[1].private to make way for flags
->   Create routines with meaningful names to modify subpool field
-> - Use new HPageRestoreReserve reserve flag instead of PagePrivate
->
-> Conversion of other state information will happen in subsequent patches.
 
-Great. We can add more meta information easily in the feature.
-And it also makes the code more readable. Thanks.
 
->
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
->  fs/hugetlbfs/inode.c    | 11 +++---
->  include/linux/hugetlb.h |  2 ++
->  mm/hugetlb.c            | 80 +++++++++++++++++++++++++++++++----------
->  3 files changed, 67 insertions(+), 26 deletions(-)
->
-> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-> index b5c109703daa..8bfb80bc6e96 100644
-> --- a/fs/hugetlbfs/inode.c
-> +++ b/fs/hugetlbfs/inode.c
-> @@ -966,14 +966,11 @@ static int hugetlbfs_migrate_page(struct address_space *mapping,
->                 return rc;
->
->         /*
-> -        * page_private is subpool pointer in hugetlb pages.  Transfer to
-> -        * new page.  PagePrivate is not associated with page_private for
-> -        * hugetlb pages and can not be set here as only page_huge_active
-> -        * pages can be migrated.
-> +        * Transfer any subpool pointer to the new page.
->          */
-> -       if (page_private(page)) {
-> -               set_page_private(newpage, page_private(page));
-> -               set_page_private(page, 0);
-> +       if (hpage_spool(page)) {
-> +               set_hpage_spool(newpage, hpage_spool(page));
-> +               set_hpage_spool(page, 0);
->         }
->
->         if (mode != MIGRATE_SYNC_NO_COPY)
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index ebca2ef02212..4f0159f1b9cc 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -104,6 +104,8 @@ extern int hugetlb_max_hstate __read_mostly;
->  struct hugepage_subpool *hugepage_new_subpool(struct hstate *h, long max_hpages,
->                                                 long min_hpages);
->  void hugepage_put_subpool(struct hugepage_subpool *spool);
-> +struct hugepage_subpool *hpage_spool(struct page *hpage);
-> +void set_hpage_spool(struct page *hpage, struct hugepage_subpool *spool);
->
->  void reset_vma_resv_huge_pages(struct vm_area_struct *vma);
->  int hugetlb_sysctl_handler(struct ctl_table *, int, void *, size_t *, loff_t *);
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 3b38ea958e95..3eb3b102c589 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -52,6 +52,49 @@ static struct cma *hugetlb_cma[MAX_NUMNODES];
->  #endif
->  static unsigned long hugetlb_cma_size __initdata;
->
-> +/*
-> + * hugetlb specific state flags located in hpage.private
-> + */
-> +enum htlb_page_flags {
-> +       HPAGE_RestoreReserve = 0,
+On 1/11/21 2:54 PM, Song Liu wrote:
+> 
+> 
+>> On Jan 11, 2021, at 9:49 AM, Yonghong Song <yhs@fb.com> wrote:
+>>
+>>
+>>
+>> On 1/8/21 3:19 PM, Song Liu wrote:
+>>> Replace hashtab with task local storage in runqslower. This improves the
+>>> performance of these BPF programs. The following table summarizes average
+>>> runtime of these programs, in nanoseconds:
+>>>                            task-local   hash-prealloc   hash-no-prealloc
+>>> handle__sched_wakeup             125             340               3124
+>>> handle__sched_wakeup_new        2812            1510               2998
+>>> handle__sched_switch             151             208                991
+>>> Note that, task local storage gives better performance than hashtab for
+>>> handle__sched_wakeup and handle__sched_switch. On the other hand, for
+>>> handle__sched_wakeup_new, task local storage is slower than hashtab with
+>>> prealloc. This is because handle__sched_wakeup_new accesses the data for
+>>> the first time, so it has to allocate the data for task local storage.
+>>> Once the initial allocation is done, subsequent accesses, as those in
+>>> handle__sched_wakeup, are much faster with task local storage. If we
+>>> disable hashtab prealloc, task local storage is much faster for all 3
+>>> functions.
+>>> Signed-off-by: Song Liu <songliubraving@fb.com>
+>>> ---
+>>>   tools/bpf/runqslower/runqslower.bpf.c | 26 +++++++++++++++-----------
+>>>   1 file changed, 15 insertions(+), 11 deletions(-)
+>>> diff --git a/tools/bpf/runqslower/runqslower.bpf.c b/tools/bpf/runqslower/runqslower.bpf.c
+>>> index 1f18a409f0443..c4de4179a0a17 100644
+>>> --- a/tools/bpf/runqslower/runqslower.bpf.c
+>>> +++ b/tools/bpf/runqslower/runqslower.bpf.c
+>>> @@ -11,9 +11,9 @@ const volatile __u64 min_us = 0;
+>>>   const volatile pid_t targ_pid = 0;
+>>>     struct {
+>>> -	__uint(type, BPF_MAP_TYPE_HASH);
+>>> -	__uint(max_entries, 10240);
+>>> -	__type(key, u32);
+>>> +	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
+>>> +	__uint(map_flags, BPF_F_NO_PREALLOC);
+>>> +	__type(key, int);
+>>>   	__type(value, u64);
+>>>   } start SEC(".maps");
+>>>   @@ -25,15 +25,19 @@ struct {
+>>>     /* record enqueue timestamp */
+>>>   __always_inline
+>>> -static int trace_enqueue(u32 tgid, u32 pid)
+>>> +static int trace_enqueue(struct task_struct *t)
+>>>   {
+>>> -	u64 ts;
+>>> +	u32 pid = t->pid;
+>>> +	u64 ts, *ptr;
+>>>     	if (!pid || (targ_pid && targ_pid != pid))
+>>>   		return 0;
+>>>     	ts = bpf_ktime_get_ns();
+>>> -	bpf_map_update_elem(&start, &pid, &ts, 0);
+>>> +	ptr = bpf_task_storage_get(&start, t, 0,
+>>> +				   BPF_LOCAL_STORAGE_GET_F_CREATE);
+>>> +	if (ptr)
+>>> +		*ptr = ts;
+>>>   	return 0;
+>>>   }
+>>>   @@ -43,7 +47,7 @@ int handle__sched_wakeup(u64 *ctx)
+>>>   	/* TP_PROTO(struct task_struct *p) */
+>>>   	struct task_struct *p = (void *)ctx[0];
+>>>   -	return trace_enqueue(p->tgid, p->pid);
+>>> +	return trace_enqueue(p);
+>>>   }
+>>>     SEC("tp_btf/sched_wakeup_new")
+>>> @@ -52,7 +56,7 @@ int handle__sched_wakeup_new(u64 *ctx)
+>>>   	/* TP_PROTO(struct task_struct *p) */
+>>>   	struct task_struct *p = (void *)ctx[0];
+>>>   -	return trace_enqueue(p->tgid, p->pid);
+>>> +	return trace_enqueue(p);
+>>>   }
+>>>     SEC("tp_btf/sched_switch")
+>>> @@ -70,12 +74,12 @@ int handle__sched_switch(u64 *ctx)
+>>>     	/* ivcsw: treat like an enqueue event and store timestamp */
+>>>   	if (prev->state == TASK_RUNNING)
+>>> -		trace_enqueue(prev->tgid, prev->pid);
+>>> +		trace_enqueue(prev);
+>>>     	pid = next->pid;
+>>>     	/* fetch timestamp and calculate delta */
+>>> -	tsp = bpf_map_lookup_elem(&start, &pid);
+>>> +	tsp = bpf_task_storage_get(&start, next, 0, 0);
+>>>   	if (!tsp)
+>>>   		return 0;   /* missed enqueue */
+>>
+>> Previously, hash table may overflow so we may have missed enqueue.
+>> Here with task local storage, is it possible to add additional pid
+>> filtering in the beginning of handle__sched_switch such that
+>> missed enqueue here can be treated as an error?
+> 
+> IIUC, hashtab overflow is not the only reason of missed enqueue. If the
+> wakeup (which calls trace_enqueue) happens before runqslower starts, we
+> may still get missed enqueue in sched_switch, no?
 
-IMHO, can we rename it to HPG_restore_reserve? I just want to
-make the name consistent with the page flags (see enum pageflags
-in include/linux/page-flags.h).
+the wakeup won't happen before runqslower starts since runqslower needs
+to start to do attachment first and then trace_enqueue() can run.
 
-May we also should add a __NR_HPAGEFLAGS to indicate
-how many bits that we already used. And add a BUILD_BUG_ON
-to check whether the used bits exceed sizeof(unsigned long).
-Although it is not necessary now. If we can check it, I think it
-would be better.
+For the current implementation trace_enqueue() will happen for any non-0 
+pid before setting test_progs tgid, and will happen for any non-0 and 
+test_progs tgid if it is set, so this should be okay if we do filtering
+in handle__sched_switch. Maybe you can do an experiment to prove whether
+my point is correct or not.
 
-> +};
-> +
-> +/*
-> + * Macros to create function definitions for hpage flags
-> + */
-> +#define TESTHPAGEFLAG(flname)                                  \
-> +static inline int HPage##flname(struct page *page)             \
-> +       { return test_bit(HPAGE_##flname, &(page->private)); }
-> +
-> +#define SETHPAGEFLAG(flname)                                   \
-> +static inline void SetHPage##flname(struct page *page)         \
-> +       { set_bit(HPAGE_##flname, &(page->private)); }
-> +
-> +#define CLEARHPAGEFLAG(flname)                                 \
-> +static inline void ClearHPage##flname(struct page *page)       \
-> +       { clear_bit(HPAGE_##flname, &(page->private)); }
-> +
-> +#define HPAGEFLAG(flname)                                      \
-> +       TESTHPAGEFLAG(flname)                                   \
-> +       SETHPAGEFLAG(flname)                                    \
-> +       CLEARHPAGEFLAG(flname)
-> +
-> +HPAGEFLAG(RestoreReserve)
-> +
-> +/*
-> + * hugetlb page subpool pointer located in hpage[1].private
-> + */
-> +struct hugepage_subpool *hpage_spool(struct page *hpage)
-> +{
-> +       return (struct hugepage_subpool *)(hpage+1)->private;
-> +}
-> +
-> +void set_hpage_spool(struct page *hpage,
-> +               struct hugepage_subpool *spool)
-> +{
-> +       set_page_private(hpage+1, (unsigned long)spool);
-> +}
-> +
->  /*
->   * Minimum page order among possible hugepage sizes, set to a proper value
->   * at boot time.
-> @@ -1116,7 +1159,7 @@ static struct page *dequeue_huge_page_vma(struct hstate *h,
->         nid = huge_node(vma, address, gfp_mask, &mpol, &nodemask);
->         page = dequeue_huge_page_nodemask(h, gfp_mask, nid, nodemask);
->         if (page && !avoid_reserve && vma_has_reserves(vma, chg)) {
-> -               SetPagePrivate(page);
-> +               SetHPageRestoreReserve(page);
->                 h->resv_huge_pages--;
->         }
->
-> @@ -1391,20 +1434,19 @@ static void __free_huge_page(struct page *page)
->          */
->         struct hstate *h = page_hstate(page);
->         int nid = page_to_nid(page);
-> -       struct hugepage_subpool *spool =
-> -               (struct hugepage_subpool *)page_private(page);
-> +       struct hugepage_subpool *spool = hpage_spool(page);
->         bool restore_reserve;
->
->         VM_BUG_ON_PAGE(page_count(page), page);
->         VM_BUG_ON_PAGE(page_mapcount(page), page);
->
-> -       set_page_private(page, 0);
-> +       set_hpage_spool(page, 0);
->         page->mapping = NULL;
-> -       restore_reserve = PagePrivate(page);
-> -       ClearPagePrivate(page);
-> +       restore_reserve = HPageRestoreReserve(page);
-> +       ClearHPageRestoreReserve(page);
->
->         /*
-> -        * If PagePrivate() was set on page, page allocation consumed a
-> +        * If RestoreReserve was set on page, page allocation consumed a
->          * reservation.  If the page was associated with a subpool, there
->          * would have been a page reserved in the subpool before allocation
->          * via hugepage_subpool_get_pages().  Since we are 'restoring' the
-> @@ -2213,9 +2255,9 @@ static long vma_add_reservation(struct hstate *h,
->   * This routine is called to restore a reservation on error paths.  In the
->   * specific error paths, a huge page was allocated (via alloc_huge_page)
->   * and is about to be freed.  If a reservation for the page existed,
-> - * alloc_huge_page would have consumed the reservation and set PagePrivate
-> + * alloc_huge_page would have consumed the reservation and set RestoreReserve
->   * in the newly allocated page.  When the page is freed via free_huge_page,
-> - * the global reservation count will be incremented if PagePrivate is set.
-> + * the global reservation count will be incremented if RestoreReserve is set.
->   * However, free_huge_page can not adjust the reserve map.  Adjust the
->   * reserve map here to be consistent with global reserve count adjustments
->   * to be made by free_huge_page.
-> @@ -2224,13 +2266,13 @@ static void restore_reserve_on_error(struct hstate *h,
->                         struct vm_area_struct *vma, unsigned long address,
->                         struct page *page)
->  {
-> -       if (unlikely(PagePrivate(page))) {
-> +       if (unlikely(HPageRestoreReserve(page))) {
->                 long rc = vma_needs_reservation(h, vma, address);
->
->                 if (unlikely(rc < 0)) {
->                         /*
->                          * Rare out of memory condition in reserve map
-> -                        * manipulation.  Clear PagePrivate so that
-> +                        * manipulation.  Clear RestoreReserve so that
->                          * global reserve count will not be incremented
->                          * by free_huge_page.  This will make it appear
->                          * as though the reservation for this page was
-> @@ -2239,7 +2281,7 @@ static void restore_reserve_on_error(struct hstate *h,
->                          * is better than inconsistent global huge page
->                          * accounting of reserve counts.
->                          */
-> -                       ClearPagePrivate(page);
-> +                       ClearHPageRestoreReserve(page);
->                 } else if (rc) {
->                         rc = vma_add_reservation(h, vma, address);
->                         if (unlikely(rc < 0))
-> @@ -2247,7 +2289,7 @@ static void restore_reserve_on_error(struct hstate *h,
->                                  * See above comment about rare out of
->                                  * memory condition.
->                                  */
-> -                               ClearPagePrivate(page);
-> +                               ClearHPageRestoreReserve(page);
->                 } else
->                         vma_end_reservation(h, vma, address);
->         }
-> @@ -2328,7 +2370,7 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
->                 if (!page)
->                         goto out_uncharge_cgroup;
->                 if (!avoid_reserve && vma_has_reserves(vma, gbl_chg)) {
-> -                       SetPagePrivate(page);
-> +                       SetHPageRestoreReserve(page);
->                         h->resv_huge_pages--;
->                 }
->                 spin_lock(&hugetlb_lock);
-> @@ -2346,7 +2388,7 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
->
->         spin_unlock(&hugetlb_lock);
->
-> -       set_page_private(page, (unsigned long)spool);
-> +       set_hpage_spool(page, spool);
->
->         map_commit = vma_commit_reservation(h, vma, addr);
->         if (unlikely(map_chg > map_commit)) {
-> @@ -4150,7 +4192,7 @@ static vm_fault_t hugetlb_cow(struct mm_struct *mm, struct vm_area_struct *vma,
->         spin_lock(ptl);
->         ptep = huge_pte_offset(mm, haddr, huge_page_size(h));
->         if (likely(ptep && pte_same(huge_ptep_get(ptep), pte))) {
-> -               ClearPagePrivate(new_page);
-> +               ClearHPageRestoreReserve(new_page);
->
->                 /* Break COW */
->                 huge_ptep_clear_flush(vma, haddr, ptep);
-> @@ -4217,7 +4259,7 @@ int huge_add_to_page_cache(struct page *page, struct address_space *mapping,
->
->         if (err)
->                 return err;
-> -       ClearPagePrivate(page);
-> +       ClearHPageRestoreReserve(page);
->
->         /*
->          * set page dirty so that it will not be removed from cache/file
-> @@ -4379,7 +4421,7 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
->                 goto backout;
->
->         if (anon_rmap) {
-> -               ClearPagePrivate(page);
-> +               ClearHPageRestoreReserve(page);
->                 hugepage_add_new_anon_rmap(page, vma, haddr);
->         } else
->                 page_dup_rmap(page, true);
-> @@ -4693,7 +4735,7 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
->         if (vm_shared) {
->                 page_dup_rmap(page, true);
->         } else {
-> -               ClearPagePrivate(page);
-> +               ClearHPageRestoreReserve(page);
->                 hugepage_add_new_anon_rmap(page, dst_vma, dst_addr);
->         }
->
-> --
-> 2.29.2
->
+> 
+> Thanks,
+> Song
+> 
