@@ -2,130 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 494782F324B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:56:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB002F324E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729782AbhALN4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:56:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726184AbhALN4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:56:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EA9523125;
-        Tue, 12 Jan 2021 13:55:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610459719;
-        bh=JtgDus3RlRKCNLMJU5n8LTJwheyPVPV3P1FCNE/3hDQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UUHNrIoGgg39yGyWAmKBqQE3T7Nc2vpJdJBqK8PNMSXEC/xPTRzwN+q83W5WmsvJm
-         ln71BYNMEsnE6Aim3WTmcVwKzctUfdolP5Rqd+9/3naBgHTyHhyOgb+mqxg+6zd7Cs
-         l/vGKpCWAaRXoJHA2a2DqsdRxowq2yCYTiuJdVAxh1R6AfxkdNBJTQmX54HFH10bay
-         NciPc0Sokd/GAfj9nIUG8jnMwkeqnFRUgpiEckP74+GRCvYfkeGTLqlCkW01kvD4qN
-         6Bl7nz9Gc/eYPI72KeZk6mzYxH6IK8TFVU+tSg3xN2IX0Mk+HLc8Jrl3skKJcjZVh4
-         MJzFKRHLHqmoQ==
-Received: by mail-ot1-f54.google.com with SMTP id j20so2302257otq.5;
-        Tue, 12 Jan 2021 05:55:19 -0800 (PST)
-X-Gm-Message-State: AOAM532pvUPDbTcCmM3S70cMUinyCzMCGJhswaGvm6m/LueQWEyDGBRu
-        Ku62uUqEZovcoDOmTrnHGXxrXekQZejvIJ6ZZuk=
-X-Google-Smtp-Source: ABdhPJyjfW3VIxHOGv1CcXu0RcKWWw84/dtZP4ZYXG4Ahn9W5rp0DQ0WHXCtgyU0xjgg5DHlYP5JPWYtXgwzRqdK8IE=
-X-Received: by 2002:a9d:7a4b:: with SMTP id z11mr2830989otm.305.1610459718264;
- Tue, 12 Jan 2021 05:55:18 -0800 (PST)
-MIME-Version: 1.0
-References: <20210112015602.497-1-thunder.leizhen@huawei.com>
- <20210112015602.497-3-thunder.leizhen@huawei.com> <CAK8P3a0VcLtOrvXKEd2dDuP8HhKzU+uB0U6OiJXtefQQYjTheg@mail.gmail.com>
- <a11515e2-1fc6-be7d-f50c-8e3ad20f9e6c@huawei.com>
-In-Reply-To: <a11515e2-1fc6-be7d-f50c-8e3ad20f9e6c@huawei.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 12 Jan 2021 14:55:02 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1jcg3CEP0QhtTP4gES9MHLdrHPZffkSxtxbr78FScrrg@mail.gmail.com>
-Message-ID: <CAK8P3a1jcg3CEP0QhtTP4gES9MHLdrHPZffkSxtxbr78FScrrg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] dt-bindings: arm: hisilicon: Add binding for L3
- cache controller
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Russell King <rmk+kernel@arm.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S1730817AbhALN4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:56:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726098AbhALN4H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 08:56:07 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30DAC061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:55:26 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id n16so1801281wmc.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:55:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jU0ycsEdEyG12FaOCf2AucocFaDBPHhikig1gZJxSS0=;
+        b=USJ1WbcWVHmg2KSm7+bUEzehLqCHcu05wPWW5iCMzg1JSkfogd/hwH3PLqgNwxvMG3
+         Z9eVLK1cbDNbGe8O3NaAPY4txG7GvekAuYF3gyCqpKmDxvnh0Ma2SJ/ZjPdVMrBLp8fw
+         a+LQEEj0dX9Ku/1f3KkSKWN8hCj5iC0Uu+1fUT0m3uUOB7099dNFfFQ1tNuUTryo3+vz
+         DJhboxbrHi81fU7gB641owMu7izhJ/9ZBCcgPQWaHU3bCU/Cx0uIyqCVHSPxPeIOG5Gz
+         +YGtNCVdzNRTuBRMNvTkEX6k5qJIZBQHuKQSgQn+M4xayTc9D/A/OUXAiYhZvVuQLgiP
+         /00Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jU0ycsEdEyG12FaOCf2AucocFaDBPHhikig1gZJxSS0=;
+        b=gRdYokLY83WCqdXjh8kOA1RiRA+WzH3r72JVjVHxR4J5Nnl/rzST1R0A78whUCZY7E
+         aenx40tEOGXzpNi+AP+peYfCPBRCmuqw+6135Jp8S76B+FO7t7i/SBaOlyulnVm4RDWi
+         N6fOtNlsSwRuicDa0dc8H0jGQbM3bJBBKjcHaCvusnDittExRl6w+LaofuOdyb2SsMUp
+         awkVeR/pJmqUuiHhEqj98kGOEbQe0obsHl+P+zxoFlzzAcafFWjzfl97M+5q2VWZhMzb
+         Ac4RbBZpY0Vh1uxjTHXFXIzMBLkQ/d2c1NijJ9PuOuJIuFDvejpZ4DkZfjDGZjxi3lgJ
+         4tWA==
+X-Gm-Message-State: AOAM531dQKv4Ngc2ZuF/lD+gq1q/i0QcdNAjXIX+NBTONZ2R/OkG7Puo
+        8mgMh9esuvUJcLfwmDhZgUDKSg==
+X-Google-Smtp-Source: ABdhPJyt+xXTspVy3CyA7gxyG4tW/TsByXZ/HU6iwQNJNQ5hYjqVXPCO++la/5WhHGqluSbZl24okw==
+X-Received: by 2002:a1c:356:: with SMTP id 83mr3856521wmd.31.1610459725577;
+        Tue, 12 Jan 2021 05:55:25 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id w21sm4052524wmi.45.2021.01.12.05.55.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 05:55:24 -0800 (PST)
+Date:   Tue, 12 Jan 2021 14:55:18 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Will Deacon <will.deacon@arm.com>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 09/11] kasan: fix memory corruption in kasan_bitops_tags
+ test
+Message-ID: <X/2qRlGsBj06ellk@elver.google.com>
+References: <cover.1609871239.git.andreyknvl@google.com>
+ <0c51a7266ea851797dc9816405fc40d860a48db1.1609871239.git.andreyknvl@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0c51a7266ea851797dc9816405fc40d860a48db1.1609871239.git.andreyknvl@google.com>
+User-Agent: Mutt/2.0.2 (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 1:35 PM Leizhen (ThunderTown)
-<thunder.leizhen@huawei.com> wrote:
-> On 2021/1/12 16:46, Arnd Bergmann wrote:
-> > On Tue, Jan 12, 2021 at 2:56 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
-> >
-> >> +---
-> >> +$id: http://devicetree.org/schemas/arm/hisilicon/l3cache.yaml#
-> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> >> +
-> >> +title: Hisilicon L3 cache controller
-> >> +
-> >> +maintainers:
-> >> +  - Wei Xu <xuwei5@hisilicon.com>
-> >> +
-> >> +description: |
-> >> +  The Hisilicon L3 outer cache controller supports a maximum of 36-bit physical
-> >> +  addresses. The data cached in the L3 outer cache can be operated based on the
-> >> +  physical address range or the entire cache.
-> >> +
-> >> +properties:
-> >> +  compatible:
-> >> +    items:
-> >> +      - const: hisilicon,l3cache
-> >> +
-> >
-> > The compatible string needs to be a little more specific, I'm sure
-> > you cannot guarantee that this is the only L3 cache controller ever
-> > designed in the past or future by HiSilicon.
-> >
-> > Normally when you have an IP block that is itself unnamed but that is specific
-> > to one or a few SoCs but that has no na, the convention is to include the name
-> > of the first SoC that contained it.
->
-> Right, thanks for your suggestion, I will rename it to "hisilicon,hi1381-l3cache"
-> and "hisilicon,hi1215-l3cache".
+On Tue, Jan 05, 2021 at 07:27PM +0100, Andrey Konovalov wrote:
+> Since the hardware tag-based KASAN mode might not have a redzone that
+> comes after an allocated object (when kasan.mode=prod is enabled), the
+> kasan_bitops_tags() test ends up corrupting the next object in memory.
+> 
+> Change the test so it always accesses the redzone that lies within the
+> allocated object's boundaries.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Link: https://linux-review.googlesource.com/id/I67f51d1ee48f0a8d0fe2658c2a39e4879fe0832a
 
-Sounds good.
+Reviewed-by: Marco Elver <elver@google.com>
 
-> > Can you share which products actually use this L3 cache controller?
->
-> This L3 cache controller is used on Hi1381 and Hi1215 board. I don't know where
-> these two boards are used. Our company is too large. Software is delivered level
-> by level. I'm only involved in the Kernel-related part.
->
-> >
-> > On a related note, what does the memory map look like on this chip?
->
-> memory@a00000 {
->      device_type = "memory";
->      reg = <0x0 0xa00000 0x0 0x1aa00000>, <0x1 0xe0000000 0x0 0x1d000000>, <0x0 0x1f400000 0x0 0xb5c00000>;
-> };
->
-> Currently, the DTS is being maintained by ourselves, I'll try to upstream it later.
->
-> > Do you support more than 4GB of total installed memory? If you
->
-> Currently, the total size does not exceed 4 GB. However, the physical address is wider than 32 bits.
-
-Ok, so it appears that the memory is actually contiguous in the first
-3.5GB (with a few holes), plus the remaining 0.5GB being offset in
-the physical memory by 4GB (starting at 0x1e0000000 instead of
-0xe0000000), presumably to allow the use of 32-bit DMA addresses.
-
-This works fine for the moment, but it does require support for
-a nonlinear virt_to_phys()/phys_to_virt() translation after highmem
-gets removed, and you would get at most 3.75GB anyway, so it
-might be easier at that point to just drop the entire last block at
-0x1e0000000, but this will depend on how well we get the 4G:4G
-code to work, and whether the users will still need kernel updates for
-this platform then.
-
-     Arnd
+> ---
+>  lib/test_kasan.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+> index b67da7f6e17f..3ea52da52714 100644
+> --- a/lib/test_kasan.c
+> +++ b/lib/test_kasan.c
+> @@ -771,17 +771,17 @@ static void kasan_bitops_tags(struct kunit *test)
+>  
+>  	/* This test is specifically crafted for the tag-based mode. */
+>  	if (IS_ENABLED(CONFIG_KASAN_GENERIC)) {
+> -		kunit_info(test, "skipping, CONFIG_KASAN_SW_TAGS required");
+> +		kunit_info(test, "skipping, CONFIG_KASAN_SW/HW_TAGS required");
+>  		return;
+>  	}
+>  
+> -	/* Allocation size will be rounded to up granule size, which is 16. */
+> -	bits = kzalloc(sizeof(*bits), GFP_KERNEL);
+> +	/* kmalloc-64 cache will be used and the last 16 bytes will be the redzone. */
+> +	bits = kzalloc(48, GFP_KERNEL);
+>  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, bits);
+>  
+> -	/* Do the accesses past the 16 allocated bytes. */
+> -	kasan_bitops_modify(test, BITS_PER_LONG, &bits[1]);
+> -	kasan_bitops_test_and_modify(test, BITS_PER_LONG + BITS_PER_BYTE, &bits[1]);
+> +	/* Do the accesses past the 48 allocated bytes, but within the redone. */
+> +	kasan_bitops_modify(test, BITS_PER_LONG, (void *)bits + 48);
+> +	kasan_bitops_test_and_modify(test, BITS_PER_LONG + BITS_PER_BYTE, (void *)bits + 48);
+>  
+>  	kfree(bits);
+>  }
+> -- 
+> 2.29.2.729.g45daf8777d-goog
+> 
