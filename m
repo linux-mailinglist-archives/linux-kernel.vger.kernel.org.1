@@ -2,111 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C75E2F27D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 06:26:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 937D02F27A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 06:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388716AbhALF0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 00:26:30 -0500
-Received: from bgp198.corpemail.net ([222.73.254.198]:13758 "EHLO
-        bgp198.corpemail.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732060AbhALF0a (ORCPT
+        id S2388356AbhALFU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 00:20:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725859AbhALFU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 00:26:30 -0500
-Received: from ([183.47.25.45])
-        by support.corp-email.com ((LNX1044)) with ASMTP (SSL) id FWG00039;
-        Tue, 12 Jan 2021 13:20:39 +0800
-Received: from GCY-EXS-15.TCL.com (10.74.128.165) by GCY-EXS-05.TCL.com
- (10.74.128.155) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 12 Jan
- 2021 13:20:40 +0800
-Received: from localhost.localdomain (172.16.34.38) by GCY-EXS-15.TCL.com
- (10.74.128.165) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 12 Jan
- 2021 13:20:24 +0800
-From:   Rokudo Yan <wu-yan@tcl.com>
-To:     <vbabka@suse.cz>
-CC:     <aarcange@redhat.com>, <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <mgorman@techsingularity.net>, <rientjes@google.com>,
-        <tang.ding@tcl.com>, <haiwang.fu@tcl.com>, <xiushui.ye@tcl.com>,
-        <wu-yan@tcl.com>
-Subject: [PATCH] mm, compaction: make sure we isolate a valid freepage when high_pfn is used
-Date:   Tue, 12 Jan 2021 13:19:55 +0800
-Message-ID: <20210112051955.1221914-1-wu-yan@tcl.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <81e45dc0-c107-015b-e167-19d7ca4b6374@suse.cz>
-References: <81e45dc0-c107-015b-e167-19d7ca4b6374@suse.cz>
+        Tue, 12 Jan 2021 00:20:58 -0500
+Received: from NAM04-CO1-obe.outbound.protection.outlook.com (mail-co1nam04on0729.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe4d::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150FEC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 21:20:13 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I/DPX61yThfu/0YvUwlGpjboD+DvX52Z93MhbyOmmFYU2XbHURnaFQ+dfLdZ2jD6kZH48xGoPJpIg++NFCiv80kRz27vl+JHGxtPSmRZ6tH7mfNyIzHUu8Q+kL6yYLWfUYkwXXd2g66r527smK9zYsuRiZgSRLI6kEL+uBON7txHQqP2N5EBZBWvDk0QXovdg2GbYsrssZeHLXwihX20vgxTyo6u30OxcSkou74f/doROE5UuA+6bBYwjoYyi6dDJJVFNWSsxiwGMUGNINFbCDFnvkFN5adzfTUw7EXrEQcO+MhAbb614ZOZ2hAjJnhkAsU5Ue6LdQBz9Hzl5OKLHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dhP7H1UZ4Auqo36nece2UFbVExG3Wbw0gLQBGQdSu1M=;
+ b=KA5BIUZ382vjh85A596lXhXApde8/Na+TBN2OpLeGO0hyqUMW02TTmv/naBFT5LofFYnIR0tdkT7pvwdtk3jVmDo41pYu0V1gFIcv9JwujVGjp92wCxqKei3TUB4K8ioTwgkvd0Abcw33Ad+C/buyIwmtEE9uX1OLeI1+5FafVOlJzNP5Pq8YDNb1i9TYT5C7VTpwA43v2R2Ys8PrhPTaa9erlD7MYOrt8YG4FpjFruLYn7D5kf+KWUVsUZKO8rCTmtV5Wb7pT/Fmtj5PqM9Q5WeMZ93lP9ewBeGlqPZ/1GB8zO6XeIepokkQpl99MOGNs7udAdNQUMNlzC7C0GKHQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dhP7H1UZ4Auqo36nece2UFbVExG3Wbw0gLQBGQdSu1M=;
+ b=em6gzHB//6CNEAuXweMJQij5F14pFb3HtdLtZO8M5hWGjRVMdZOeH9Gvhai9paFGB3dRSJckG/Ji1dQBObQEkHGTg7xZUAbfVMeNt2mr71IvLyWl/LEjt+mucYwUePof7HsX2Ck7A2swdQEJACqb4PFskASpz0F+ky9cQ9tLLaA=
+Authentication-Results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none
+ header.from=os.amperecomputing.com;
+Received: from BYAPR01MB4293.prod.exchangelabs.com (2603:10b6:a03:12::18) by
+ BY5PR01MB5763.prod.exchangelabs.com (2603:10b6:a03:1cd::25) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3742.12; Tue, 12 Jan 2021 05:20:07 +0000
+Received: from BYAPR01MB4293.prod.exchangelabs.com
+ ([fe80::1854:ce25:a13:e381]) by BYAPR01MB4293.prod.exchangelabs.com
+ ([fe80::1854:ce25:a13:e381%2]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
+ 05:20:07 +0000
+Date:   Mon, 11 Jan 2021 21:20:03 -0800
+From:   Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        patches@amperecomputing.com
+Subject: Re: [PATCH] arm64: Kconfig: Increase NR_CPUS default to 512
+Message-ID: <20210112052003.eeg725mmnyv67eop@con01sys-r111.scc-lab.amperecomputing.com>
+References: <20210110053615.3594358-1-vanshikonda@os.amperecomputing.com>
+ <20210111105636.GA7071@willie-the-truck>
+ <20210111175741.ldifmv7uhdekbq5d@con01sys-r111.scc-lab.amperecomputing.com>
+ <fb9542df-19cf-4db7-d112-0917e5b65e9f@infradead.org>
+ <20210111182526.GB17941@gaia>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210111182526.GB17941@gaia>
+X-Originating-IP: [4.28.12.214]
+X-ClientProxiedBy: CY4PR06CA0031.namprd06.prod.outlook.com
+ (2603:10b6:903:77::17) To BYAPR01MB4293.prod.exchangelabs.com
+ (2603:10b6:a03:12::18)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.16.34.38]
-X-ClientProxiedBy: GCY-EXS-01.TCL.com (10.74.128.151) To GCY-EXS-15.TCL.com
- (10.74.128.165)
-tUid:   20211121320399c8403f36c678069a60c87198e36496d
-X-Abuse-Reports-To: service@corp-email.com
-Abuse-Reports-To: service@corp-email.com
-X-Complaints-To: service@corp-email.com
-X-Report-Abuse-To: service@corp-email.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (4.28.12.214) by CY4PR06CA0031.namprd06.prod.outlook.com (2603:10b6:903:77::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Tue, 12 Jan 2021 05:20:06 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9946b2cf-f398-4851-7b99-08d8b6b9b9ca
+X-MS-TrafficTypeDiagnostic: BY5PR01MB5763:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR01MB5763EBC8793FDD9CC31184A09DAA0@BY5PR01MB5763.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hbyicGUnb4hFLiHgTds68KlN2PSfCPA2MIQWFz/n1N6JiAIEzzVMt7DERC1+VNLuMkxwA2ChXz9txPpPu2VSBdUn7aWWrjKZ4iej5usB2xt5xI94jK5hSKQNZpnmJfqmk8zZr/nrFCCeRJ2MKWpoK8aRef86QWLczXn2LWj7cnGhNFnjynB1Kuwi4Tof4VM6Eyrk+tcO58JzG+V4DclGhiXGCd4FIVMwRTcEAYDic57UUmlVcIgY4Sse+tPDRcAiGO1fHFA3IyXP7gfxTIu2iToh2qPYs+QRSk547G4BDrmL9kEej5f0kG/yk8iWZ/a5bpyy5iyvw7AmsMZUD6usT7KKL5W2fKVh6cBXXDCKoAXj7K7M+c6lKQ33gtRe+gWhALQ6u1koItQqMAqdldCqlQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR01MB4293.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(136003)(396003)(376002)(346002)(366004)(66556008)(66476007)(6916009)(16526019)(316002)(1076003)(956004)(66946007)(86362001)(52116002)(6486002)(107886003)(53546011)(9686003)(8936002)(186003)(26005)(2906002)(6666004)(54906003)(8676002)(83380400001)(478600001)(6496006)(5660300002)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?bL9wH7k3IpoRn+GmQH3LiFysjbF5wmDM2wdL7vboJr9kI01LyXREuiIx29Yw?=
+ =?us-ascii?Q?C1Zp/mWoRHkQBBdOB8uV8hx87O+7miBIVcowu/tpACiWXaM/S9Pb8b3SkRNL?=
+ =?us-ascii?Q?DqfWjN9aJCJF0o++fg7dcTrIZsDHtOERr8MLpDcHzAng6sdBIiBQb4i2QDQt?=
+ =?us-ascii?Q?H+b9oW7B7ADxBiL7e23b826d6sDpSgFiVZ2gUen7f2u4B9yy6r1Nc3g0GA3s?=
+ =?us-ascii?Q?HsJbH+b8Y1jqEVFPmWrqU1/dkz3Oj40oztKGV31sGCkKRkWmdnzQC1UBRMcN?=
+ =?us-ascii?Q?K9swdOzOci+EV2MOsi9UUq/QKpPeW/frfFquIJ5LpniukQqxHIA8yS6XHhZ2?=
+ =?us-ascii?Q?nS5DnTIv18q3rV7EA3+5QSs1t24WRmvrgBc96WOEXf95uzcbfEzc9n/DzBNF?=
+ =?us-ascii?Q?RFHnCuoSKI4kW2O3jLj1KXQb4+Rjeyq+HGd6uuX3Vs5bZhra5twIaCBvlNyA?=
+ =?us-ascii?Q?EPrgvnKojsBUUSQEUTosDrqqR6seTy7q5/bZzWS88V2EKuDvBmhJ8GYlIa0z?=
+ =?us-ascii?Q?kml/uOXgOojbAOUJ0nwqp+vkr1p9HNAs8wXJeAEcjwYsUTEP7PKn5HB07Oi+?=
+ =?us-ascii?Q?a+lQ3NGtZUcTmQu5QniZ8c6jMSNkgrRAK+ylL4IG5FNhgingNTLByp1ENaf+?=
+ =?us-ascii?Q?Qp/Aog5KscP5wCWolotz/eV7wdRYG2CAdLeWM4PgGXNzME7s9MWY5DmUMFde?=
+ =?us-ascii?Q?0WFR9piZe5FhlZ74f8Wx+bCrjak2kFUIQiNzgoHVD3nBtPOJOOigqwp9Y/al?=
+ =?us-ascii?Q?9LY2xgM4UmMsdXFT0WMoc9onPN48C9RSmWnNJUtpMZNGhPoAEj/6U8IBQaKZ?=
+ =?us-ascii?Q?qB+VA+J0IDBrNiMLde/x5SF3QOWqMYiuouheddFxBTw2FX4DKHVdZrdsaaO4?=
+ =?us-ascii?Q?J65Mzl7QJwH4ZjULmRJwIHjeU5l5gqfeVdmK/pKrKzVn0yHDhThL1lI6nA47?=
+ =?us-ascii?Q?NZktHTcZoZKFI24LV3eRyRevVBxojjI6LN5jvj30VRI=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR01MB4293.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 05:20:07.2386
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9946b2cf-f398-4851-7b99-08d8b6b9b9ca
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uZCT1Eq1xfTys41m6+z8pyppTSlPrEWtoVZcbYZOYvej9JnZYeZs4c1W8hS1iHTioImFnz6oAvTHFoU1g4wo3Oq2Uud+jx0C2ihLvkWK+RUhZ3xya5EvyqWiiriuWNTA
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR01MB5763
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In fast_isolate_freepages, high_pfn will be used if a prefered one(PFN >= low_fn) not found. But the high_pfn
-is not reset before searching an free area, so when it was used as freepage, it may from another free area searched before.
-And move_freelist_head(freelist, freepage) will have unexpected behavior(eg. corrupt the MOVABLE freelist)
+On Mon, Jan 11, 2021 at 06:25:27PM +0000, Catalin Marinas wrote:
+>On Mon, Jan 11, 2021 at 10:03:18AM -0800, Randy Dunlap wrote:
+>> On 1/11/21 9:57 AM, Vanshidhar Konda wrote:
+>> > On Mon, Jan 11, 2021 at 10:56:36AM +0000, Will Deacon wrote:
+>> >> On Sat, Jan 09, 2021 at 09:36:15PM -0800, vanshikonda@os.amperecomputing.com wrote:
+>> >>> From: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+>> >>>
+>> >>> Increase the default value of NR_CPUS to 512 from 256. This will
+>> >>> enable the defconfig kernel to support platforms that have upto
+>> >>> 512 cores.
+>> >>
+>> >> Do we already support such a platform, and what is it? I'm fine with bumping.
+>> >> the number, it's just nice to be able to say specifically _why_ we're dong
+>> >> it.
+>> >
+>> > I'm not aware of any publicly available systems that run into the 256
+>> > core limitation. At Ampere we have internal systems that would benefit
+>> > from this change as they support more than 256 cores.
+>>
+>> But what does that have to do with the default value?
+>> Do you expect to run defconfig kernels?
+>> I don't ever expect that.
+>
+>We still aim for the arm64 defconfig to run on all supported SoCs, even
+>if not optimally. Distros indeed tweak the config to their needs.
 
-Unable to handle kernel paging request at virtual address dead000000000200
-Mem abort info:
-  ESR = 0x96000044
-  Exception class = DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-Data abort info:
-  ISV = 0, ISS = 0x00000044
-  CM = 0, WnR = 1
-[dead000000000200] address between user and kernel address ranges
+Would "all supported SoCs" mean only SoCs that are currently available
+publicly? Could we include support for SoCs/systems in development but
+to be available publicly in the next few years?
 
--000|list_cut_before(inline)
--000|move_freelist_head(inline)
--000|fast_isolate_freepages(inline)
--000|isolate_freepages(inline)
--000|compaction_alloc(?, ?)
--001|unmap_and_move(inline)
--001|migrate_pages([NSD:0xFFFFFF80088CBBD0] from = 0xFFFFFF80088CBD88, [NSD:0xFFFFFF80088CBBC8] get_new_p
--002|__read_once_size(inline)
--002|static_key_count(inline)
--002|static_key_false(inline)
--002|trace_mm_compaction_migratepages(inline)
--002|compact_zone(?, [NSD:0xFFFFFF80088CBCB0] capc = 0x0)
--003|kcompactd_do_work(inline)
--003|kcompactd([X19] p = 0xFFFFFF93227FBC40)
--004|kthread([X20] _create = 0xFFFFFFE1AFB26380)
--005|ret_from_fork(asm)
----|end of frame
+Thanks,
+Vanshi
 
-The issue was reported on an smart phone product with 6GB ram and 3GB zram as swap device.
-
-This patch fixes the issue by reset high_pfn before searching each free area, which ensure
-freepage and freelist match when call move_freelist_head in fast_isolate_freepages().
-
-Link: http://lkml.kernel.org/r/1558711908-15688-1-git-send-email-suzuki.poulose@arm.com
-Fixes: 5a811889de10f1eb ("mm, compaction: use free lists to quickly locate a migration target")
----
- mm/compaction.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/mm/compaction.c b/mm/compaction.c
-index cc1a7f600a86..6754229f4213 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -1352,6 +1352,7 @@ fast_isolate_freepages(struct compact_control *cc)
- 		if (!area->nr_free)
- 			continue;
- 
-+		high_pfn = 0;
- 		spin_lock_irqsave(&cc->zone->lock, flags);
- 		freelist = &area->free_list[MIGRATE_MOVABLE];
- 		list_for_each_entry_reverse(freepage, freelist, lru) {
--- 
-2.25.1
-
+>
+>-- 
+>Catalin
