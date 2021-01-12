@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85D92F305F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:15:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EE52F3110
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404229AbhALM5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:57:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53866 "EHLO mail.kernel.org"
+        id S1731923AbhALNPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:15:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403837AbhALM5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:57:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9FA1023333;
-        Tue, 12 Jan 2021 12:56:29 +0000 (UTC)
+        id S2403938AbhALM5j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:57:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EBED2333C;
+        Tue, 12 Jan 2021 12:56:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610456190;
-        bh=Y0s+VaqXDL8DvN9FddpkCa98zsrkK/PYMkRYZ9XQmC8=;
+        s=k20201202; t=1610456194;
+        bh=7PNVpt0bs4C3ppvChJsT06lyVnFeUnRA9JLauqQi+oo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I9D8yXXLC1WGl9HYMiyKmu6zc3X5XmKfMOD+ozH7/HTiyII1uP//ST6o/5XxJAR0m
-         BbcjQqtsisAnGdwX8azRVdxAhmEfF4x1xUg1R1bkmubiI+U81oOXbi4xlRGHET4JlM
-         ha5Lr9b7kwQ4rs+U4exNzPDijbQmrwjrKMWDN9A4a2cIm+EGyNg0CiSFkcyzkHeCWl
-         jJyB4sWQ2m3LS7IGpalFPmic2EDI9WWAnbnQWT5+/livYkK1unPEdA3RSzAgcMlFwU
-         +AiNLGQy8DZE7r+96cjncfsfdOjeWK9gpwhLcxnDnIpGdJu2NtN/WnaWclAjnSYsCK
-         JzxuN07nK5YSA==
+        b=NvGFPP+J7vPfWLglSiP1xf+dZ1Hl/EPAFikGZG/nDRgDxjktsYlKpn0IWiD51mlU8
+         qgHDBqX6OqG16LlF4yaoLhp/zxax7qQqiLNaFelmiHCBwHjI27YVVPtJmi4M1VZkYX
+         kblhQNVW58RWNkcotpDwd8ZmBdUKl2yMsoVxEMmlXl7Y8ZpKzqg32qWPHHBb+UvBh9
+         Ei9yOMYAPBVAY1peZ1wk8LwQVWDDk9dOG0jI4VGKToNh7LLAbQUyJHmvAOCtYw6Te8
+         pB+8qI/lX6DJuu4JaQkctFjvf69Tt1YgUJj+XIAaDBhQeqP6Rs14GJ1P6Avd/IFHxZ
+         oezLgzQAnD/3g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dennis Li <Dennis.Li@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.10 42/51] drm/amdgpu: fix a GPU hang issue when remove device
-Date:   Tue, 12 Jan 2021 07:55:24 -0500
-Message-Id: <20210112125534.70280-42-sashal@kernel.org>
+Cc:     =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 45/51] gcc-plugins: fix gcc 11 indigestion with plugins...
+Date:   Tue, 12 Jan 2021 07:55:27 -0500
+Message-Id: <20210112125534.70280-45-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210112125534.70280-1-sashal@kernel.org>
 References: <20210112125534.70280-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dennis Li <Dennis.Li@amd.com>
+From: Valdis Klētnieks <valdis.kletnieks@vt.edu>
 
-[ Upstream commit 88e21af1b3f887d217f2fb14fc7e7d3cd87ebf57 ]
+[ Upstream commit 67a5a68013056cbcf0a647e36cb6f4622fb6a470 ]
 
-When GFXOFF is enabled and GPU is idle, driver will fail to access some
-registers. Therefore change to disable power gating before all access
-registers with MMIO.
+Fedora Rawhide has started including gcc 11,and the g++ compiler
+throws a wobbly when it hits scripts/gcc-plugins:
 
-Dmesg log is as following:
-amdgpu 0000:03:00.0: amdgpu: amdgpu: finishing device.
-amdgpu: cp queue pipe 4 queue 0 preemption failed
-amdgpu 0000:03:00.0: amdgpu: failed to write reg 2890 wait reg 28a2
-amdgpu 0000:03:00.0: amdgpu: failed to write reg 1a6f4 wait reg 1a706
-amdgpu 0000:03:00.0: amdgpu: failed to write reg 2890 wait reg 28a2
-amdgpu 0000:03:00.0: amdgpu: failed to write reg 1a6f4 wait reg 1a706
+  HOSTCXX scripts/gcc-plugins/latent_entropy_plugin.so
+In file included from /usr/include/c++/11/type_traits:35,
+                 from /usr/lib/gcc/x86_64-redhat-linux/11/plugin/include/system.h:244,
+                 from /usr/lib/gcc/x86_64-redhat-linux/11/plugin/include/gcc-plugin.h:28,
+                 from scripts/gcc-plugins/gcc-common.h:7,
+                 from scripts/gcc-plugins/latent_entropy_plugin.c:78:
+/usr/include/c++/11/bits/c++0x_warning.h:32:2: error: #error This file requires compiler and library support for the ISO
+ C++ 2011 standard. This support must be enabled with the -std=c++11 or -std=gnu++11 compiler options.
+   32 | #error This file requires compiler and library support \
 
-Signed-off-by: Dennis Li <Dennis.Li@amd.com>
-Reviewed-by: Hawking Zhang <Hawking.Zhang@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+In fact, it works just fine with c++11, which has been in gcc since 4.8,
+and we now require 4.9 as a minimum.
+
+Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/82487.1609006918@turing-police
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 4 ++--
+ scripts/gcc-plugins/Makefile | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-index 026789b466db9..30c9d60c9b515 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
-@@ -2524,11 +2524,11 @@ static int amdgpu_device_ip_fini(struct amdgpu_device *adev)
- 	if (adev->gmc.xgmi.num_physical_nodes > 1)
- 		amdgpu_xgmi_remove_device(adev);
+diff --git a/scripts/gcc-plugins/Makefile b/scripts/gcc-plugins/Makefile
+index d66949bfeba45..b5487cce69e8e 100644
+--- a/scripts/gcc-plugins/Makefile
++++ b/scripts/gcc-plugins/Makefile
+@@ -22,9 +22,9 @@ always-y += $(GCC_PLUGIN)
+ GCC_PLUGINS_DIR = $(shell $(CC) -print-file-name=plugin)
  
--	amdgpu_amdkfd_device_fini(adev);
--
- 	amdgpu_device_set_pg_state(adev, AMD_PG_STATE_UNGATE);
- 	amdgpu_device_set_cg_state(adev, AMD_CG_STATE_UNGATE);
+ plugin_cxxflags	= -Wp,-MMD,$(depfile) $(KBUILD_HOSTCXXFLAGS) -fPIC \
+-		   -I $(GCC_PLUGINS_DIR)/include -I $(obj) -std=gnu++98 \
++		   -I $(GCC_PLUGINS_DIR)/include -I $(obj) -std=gnu++11 \
+ 		   -fno-rtti -fno-exceptions -fasynchronous-unwind-tables \
+-		   -ggdb -Wno-narrowing -Wno-unused-variable -Wno-c++11-compat \
++		   -ggdb -Wno-narrowing -Wno-unused-variable \
+ 		   -Wno-format-diag
  
-+	amdgpu_amdkfd_device_fini(adev);
-+
- 	/* need to disable SMC first */
- 	for (i = 0; i < adev->num_ip_blocks; i++) {
- 		if (!adev->ip_blocks[i].status.hw)
+ plugin_ldflags	= -shared
 -- 
 2.27.0
 
