@@ -2,126 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB002F324E
+	by mail.lfdr.de (Postfix) with ESMTP id B61D62F324F
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730817AbhALN4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:56:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726098AbhALN4H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:56:07 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30DAC061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:55:26 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id n16so1801281wmc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:55:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jU0ycsEdEyG12FaOCf2AucocFaDBPHhikig1gZJxSS0=;
-        b=USJ1WbcWVHmg2KSm7+bUEzehLqCHcu05wPWW5iCMzg1JSkfogd/hwH3PLqgNwxvMG3
-         Z9eVLK1cbDNbGe8O3NaAPY4txG7GvekAuYF3gyCqpKmDxvnh0Ma2SJ/ZjPdVMrBLp8fw
-         a+LQEEj0dX9Ku/1f3KkSKWN8hCj5iC0Uu+1fUT0m3uUOB7099dNFfFQ1tNuUTryo3+vz
-         DJhboxbrHi81fU7gB641owMu7izhJ/9ZBCcgPQWaHU3bCU/Cx0uIyqCVHSPxPeIOG5Gz
-         +YGtNCVdzNRTuBRMNvTkEX6k5qJIZBQHuKQSgQn+M4xayTc9D/A/OUXAiYhZvVuQLgiP
-         /00Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jU0ycsEdEyG12FaOCf2AucocFaDBPHhikig1gZJxSS0=;
-        b=gRdYokLY83WCqdXjh8kOA1RiRA+WzH3r72JVjVHxR4J5Nnl/rzST1R0A78whUCZY7E
-         aenx40tEOGXzpNi+AP+peYfCPBRCmuqw+6135Jp8S76B+FO7t7i/SBaOlyulnVm4RDWi
-         N6fOtNlsSwRuicDa0dc8H0jGQbM3bJBBKjcHaCvusnDittExRl6w+LaofuOdyb2SsMUp
-         awkVeR/pJmqUuiHhEqj98kGOEbQe0obsHl+P+zxoFlzzAcafFWjzfl97M+5q2VWZhMzb
-         Ac4RbBZpY0Vh1uxjTHXFXIzMBLkQ/d2c1NijJ9PuOuJIuFDvejpZ4DkZfjDGZjxi3lgJ
-         4tWA==
-X-Gm-Message-State: AOAM531dQKv4Ngc2ZuF/lD+gq1q/i0QcdNAjXIX+NBTONZ2R/OkG7Puo
-        8mgMh9esuvUJcLfwmDhZgUDKSg==
-X-Google-Smtp-Source: ABdhPJyt+xXTspVy3CyA7gxyG4tW/TsByXZ/HU6iwQNJNQ5hYjqVXPCO++la/5WhHGqluSbZl24okw==
-X-Received: by 2002:a1c:356:: with SMTP id 83mr3856521wmd.31.1610459725577;
-        Tue, 12 Jan 2021 05:55:25 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id w21sm4052524wmi.45.2021.01.12.05.55.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 05:55:24 -0800 (PST)
-Date:   Tue, 12 Jan 2021 14:55:18 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/11] kasan: fix memory corruption in kasan_bitops_tags
- test
-Message-ID: <X/2qRlGsBj06ellk@elver.google.com>
-References: <cover.1609871239.git.andreyknvl@google.com>
- <0c51a7266ea851797dc9816405fc40d860a48db1.1609871239.git.andreyknvl@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0c51a7266ea851797dc9816405fc40d860a48db1.1609871239.git.andreyknvl@google.com>
-User-Agent: Mutt/2.0.2 (2020-11-20)
+        id S1731438AbhALN4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:56:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54458 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730630AbhALN4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 08:56:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5B24AAC8F;
+        Tue, 12 Jan 2021 13:55:32 +0000 (UTC)
+Date:   Tue, 12 Jan 2021 14:55:31 +0100
+Message-ID: <s5hv9c2qmy4.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Takashi Iwai <tiwai@suse.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
+        "linux-kernel @ vger . kernel . org" <linux-kernel@vger.kernel.org>,
+        sound-open-firmware@alsa-project.org,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: Re: [PATCH] ASoC: SOF: Intel: avoid reverse module dependency
+In-Reply-To: <59a36212-2412-2dd3-62f2-69c6f65312b1@linux.intel.com>
+References: <CAK8P3a0PXXHXLK36SB_4eia6z0u3nbBPanATwZEhposKOScqcw@mail.gmail.com>
+        <20210105190808.613050-1-arnd@kernel.org>
+        <59a36212-2412-2dd3-62f2-69c6f65312b1@linux.intel.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 07:27PM +0100, Andrey Konovalov wrote:
-> Since the hardware tag-based KASAN mode might not have a redzone that
-> comes after an allocated object (when kasan.mode=prod is enabled), the
-> kasan_bitops_tags() test ends up corrupting the next object in memory.
+On Mon, 11 Jan 2021 20:54:17 +0100,
+Pierre-Louis Bossart wrote:
 > 
-> Change the test so it always accesses the redzone that lies within the
-> allocated object's boundaries.
 > 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/I67f51d1ee48f0a8d0fe2658c2a39e4879fe0832a
+> 
+> On 1/5/21 1:07 PM, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> >
+> > The SOF-ACPI driver is backwards from the normal Linux model, it has a
+> > generic driver that knows about all the specific drivers, as opposed to
+> > having hardware specific drivers that link against a common framework.
+> >
+> > This requires ugly Kconfig magic and leads to missed dependencies as
+> > seen in this link error:
+> >
+> > arm-linux-gnueabi-ld: sound/soc/sof/sof-pci-dev.o: in function `sof_acpi_probe':
+> > sof-pci-dev.c:(.text+0x1c): undefined reference to `snd_intel_dsp_driver_probe'
+> >
+> > Change it to use the normal probe order of starting with a specific
+> > device in a driver, turning the sof-acpi-dev.c driver into a library.
+> 
+> Thanks Arnd for reporting all this, much appreciated.
+> 
+> The initial design was that we would have one generic platform_driver
+> (ACPI) and one generic PCI driver that would deal with all known IDs,
+> with descriptors that would point ops and callbacks defined in
+> device-specific drivers. It's how all Intel drivers worked so far,
+> from HDaudio to Atom/SST and Skylake.
+> 
+> It's not that ugly, but to Arnd's point we do have a lot of #if
+> IS_ENABLED at the top level with a larger and larger table of IDs,
+> along with Kconfig magic indeed to propagate constraints from
+> top-level to device-specific drivers. The error with DSP_CONFIG comes
+> from the fact that this never belonged at the top-level, or should
+> have been conditionally invoked, as noted by Takashi.
+> 
+> That said, the initial design which dates from 2017 can be revisited
+> now that we start having quite a few platforms and more coming. What
+> Arnd suggests isn't without merits, it would indeed turn the generic
+> code into generic helpers, and have all the platform IDs maintained in
+> device-specific drivers. It's a more distributed/scalable solution,
+> the only minor drawback I see is that it would require multiple
+> instances of the 'platform_driver' and 'pci_driver' structures.
+> 
+> I would also want to keep the top-level selection so that ACPI/PCI/DT
+> modules can be disabled in one shot, that would mean an additional
+> change to the Makefiles since e.g.
+> obj-$(CONFIG_SND_SOC_SOF_ACPI) += snd-sof-acpi.o
+> would need to be set somehow.
+> 
+> Since this is going to be a really invasive change, and past
+> experience shows that mucking with Kconfigs will invariably raise a
+> number of broken corner cases, if there is support from
+> Mark/Takashi/Jaroslav on this idea, we should first test it in the SOF
+> tree so that we get a good test coverage and don't break too many eggs
+> in Mark's tree. We would also need to concurrently change our CI
+> scripts which are dependent on module names.
 
-Reviewed-by: Marco Elver <elver@google.com>
+I'm in favor of the way Arnd proposed.  It's more straightforward and
+less code.
 
-> ---
->  lib/test_kasan.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-> index b67da7f6e17f..3ea52da52714 100644
-> --- a/lib/test_kasan.c
-> +++ b/lib/test_kasan.c
-> @@ -771,17 +771,17 @@ static void kasan_bitops_tags(struct kunit *test)
->  
->  	/* This test is specifically crafted for the tag-based mode. */
->  	if (IS_ENABLED(CONFIG_KASAN_GENERIC)) {
-> -		kunit_info(test, "skipping, CONFIG_KASAN_SW_TAGS required");
-> +		kunit_info(test, "skipping, CONFIG_KASAN_SW/HW_TAGS required");
->  		return;
->  	}
->  
-> -	/* Allocation size will be rounded to up granule size, which is 16. */
-> -	bits = kzalloc(sizeof(*bits), GFP_KERNEL);
-> +	/* kmalloc-64 cache will be used and the last 16 bytes will be the redzone. */
-> +	bits = kzalloc(48, GFP_KERNEL);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, bits);
->  
-> -	/* Do the accesses past the 16 allocated bytes. */
-> -	kasan_bitops_modify(test, BITS_PER_LONG, &bits[1]);
-> -	kasan_bitops_test_and_modify(test, BITS_PER_LONG + BITS_PER_BYTE, &bits[1]);
-> +	/* Do the accesses past the 48 allocated bytes, but within the redone. */
-> +	kasan_bitops_modify(test, BITS_PER_LONG, (void *)bits + 48);
-> +	kasan_bitops_test_and_modify(test, BITS_PER_LONG + BITS_PER_BYTE, (void *)bits + 48);
->  
->  	kfree(bits);
->  }
-> -- 
-> 2.29.2.729.g45daf8777d-goog
-> 
+If you find the number of modules or the too much cutting out being
+problematic, you can create a module snd-sof-intel-acpi and
+snd-sof-intel-pci containing the driver table entries for all Intel
+devices, too.  In the case, you'll still need some conditional calls
+of intel-dsp-config there, but it's a good step for reducing the
+Kconfig complexity.
+
+> Also maybe in a first pass we can remove the compilation error with
+> IS_REACHABLE and in a second pass do more invasive surgery?
+
+Agreed, we'd like to keep less changes for 5.11 for now.
+
+
+thanks,
+
+Takashi
