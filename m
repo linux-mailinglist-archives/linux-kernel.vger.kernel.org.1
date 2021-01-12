@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D90042F3D12
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F582F3D1E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437728AbhALVee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:34:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437018AbhALUmG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:42:06 -0500
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15798C0617A3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:40:56 -0800 (PST)
-Received: by mail-oo1-xc31.google.com with SMTP id s19so916244oos.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:40:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GOqyNTF7gtUKPVXIMkVFT3geI3snsFvpWMRi06NItYY=;
-        b=ZhmlJV62BeU9fJsGlfyvETF+LCKlVC2NajZUVYu+YTBpcA7oEZg+f+cRZvbeGR/wRn
-         OE8OA5J2WD9Pyviogsk4vAUx0oNQmVzR8vJjuNxc6R/JAdYYrMuliwJOKaeispULA4s3
-         Paz/kpI+jzpctNP+2Igp6sNge3FY1sSX/OxQO1Mm77d4BSdi0VixLEpB9NM9zsJDNE17
-         nTGyKfNHi0f22Ba4gFcYkm4igDeQKN59JTV5QfhwG9iHkwNEih7lMpfyyre20lo295AS
-         5hblNfZ5Rfz6/jFNkOzYEb9rWjcEeyiCbtE5JTqFWgE0Ik2pVEOWGwT+0JfXpFcHqAKJ
-         wqOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GOqyNTF7gtUKPVXIMkVFT3geI3snsFvpWMRi06NItYY=;
-        b=BTeQjF5Qwhk72kFe914WUHm9YvJLxF+ex/NZCID6kFp2LkexbQX626XGuFgkWslfjW
-         vgmsZ5uK9lOyiQDgKz0rDwVj7wUzzNne66nda5Pvi3UKUNnqOXK4nGnx9Y+r0Rbt5yFu
-         BEK+FM8j3ivQaq9KRVzfIzZ9RFi43ly/u0SyW/G0ZvVXFPVU0aPQERr20nmsVn8L0XPM
-         rYlEVqpEKeHZguW9tO0kz4kE5U0DUr9iB+qgtmrdxQ/0XBTyxlBmYn2VMNFyMg1d/flM
-         e1Ei4BqZ4A2jB5aloUzQxnfzsSAAADQlQsm+0v4PhGBrbuasr/nWlAEY20mEYATQ5w2y
-         I80g==
-X-Gm-Message-State: AOAM532RXdkew+9LOSua9UfHwiimFApFfQww3u1pyq5FKZD7/uifVjsX
-        jYibsXSwmFxoBahpgyHowjznIHj+0+715AoLrP5Vsw==
-X-Google-Smtp-Source: ABdhPJz/+VG3D8S0Su6wBVIT9oU9vLMwvxqzB/oumqqIsu0lWVXQRoNiE9y/Wv8b1dAsLKpTLLAHvt9lQNMSp/UwXic=
-X-Received: by 2002:a4a:d396:: with SMTP id i22mr552498oos.55.1610484054385;
- Tue, 12 Jan 2021 12:40:54 -0800 (PST)
+        id S2437739AbhALVef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 16:34:35 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:46429 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437026AbhALUpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:45:01 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DFjH60767z9t0G;
+        Wed, 13 Jan 2021 07:44:17 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610484259;
+        bh=yqCpSAk8Sc1V2NH2uugA0JZeTYMnho1fhkaaYPpYzV4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fAbopmsNEiS5sva8a4lF2Dh1UYSCzMGEw7fdiPBSC7Mwq2SNChaKEtecrHtzG5E5s
+         MEFXXwG6zsazNnrqmJIrhs8wbqfO7j/efoPXu+6hxaFG35DI80MkPPTy1ACzmofmFc
+         NxJzlOJYOD+GREeG9IDMPnwSecKu6ZayvMM2lgp7PwUfHm0GvLU121qJkWqbmec26M
+         28HALYiN/q7sUoDXsS1fUq6gI64bPB2nC7iyUtwfls0LFBKWajM9g7hyCjVZQNh5Fq
+         aMuqVvEE9yzwBRuaU8zzZY3J8fbFRjY81pQkXkJjgs5I5lII1LAMxqbhSuF9QCQNLt
+         977EJqzprjS1g==
+Date:   Wed, 13 Jan 2021 07:44:17 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Naushir Patuck <naush@raspberrypi.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the v4l-dvb-fixes tree
+Message-ID: <20210113074417.4ba59594@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210112194143.1494-1-yuri.benditovich@daynix.com> <20210112194143.1494-4-yuri.benditovich@daynix.com>
-In-Reply-To: <20210112194143.1494-4-yuri.benditovich@daynix.com>
-From:   Yuri Benditovich <yuri.benditovich@daynix.com>
-Date:   Tue, 12 Jan 2021 22:40:42 +0200
-Message-ID: <CAOEp5Ocz-xGq5=e=WY0aipEYHEhN-wxekNaAiqAS+HsOF8TcDQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/7] tun: allow use of BPF_PROG_TYPE_SCHED_CLS program type
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, rdunlap@infradead.org,
-        willemb@google.com, gustavoars@kernel.org,
-        herbert@gondor.apana.org.au, steffen.klassert@secunet.com,
-        pablo@netfilter.org, decui@microsoft.com, cai@lca.pw,
-        jakub@cloudflare.com, elver@google.com, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        bpf@vger.kernel.org
-Cc:     Yan Vugenfirer <yan@daynix.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/xcjI6mp_f__drN++xQURaG1";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 9:42 PM Yuri Benditovich
-<yuri.benditovich@daynix.com> wrote:
->
-> This program type can set skb hash value. It will be useful
-> when the tun will support hash reporting feature if virtio-net.
->
-> Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
-> ---
->  drivers/net/tun.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> index 7959b5c2d11f..455f7afc1f36 100644
-> --- a/drivers/net/tun.c
-> +++ b/drivers/net/tun.c
-> @@ -2981,6 +2981,8 @@ static int tun_set_ebpf(struct tun_struct *tun, struct tun_prog __rcu **prog_p,
->                 prog = NULL;
->         } else {
->                 prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SOCKET_FILTER);
-> +               if (IS_ERR(prog))
-> +                       prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SCHED_CLS);
->                 if (IS_ERR(prog))
->                         return PTR_ERR(prog);
->         }
+--Sig_/xcjI6mp_f__drN++xQURaG1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Comment from Alexei Starovoitov:
-Patches 1 and 2 are missing for me, so I couldn't review properly,
-but this diff looks odd.
-It allows sched_cls prog type to attach to tun.
-That means everything that sched_cls progs can do will be done from tun hook?
-sched_cls assumes l2 and can modify the packet.
-I think crashes are inevitable.
+Hi all,
 
-> --
-> 2.17.1
->
+In commit
+
+  95e9295daa84 ("media: Revert "media: videobuf2: Fix length check for sing=
+le plane dmabuf queueing"")
+
+Fixes tag
+
+  Fixes: 961d3b27 ("media: videobuf2: Fix length check for single plane dma=
+buf queueing")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/xcjI6mp_f__drN++xQURaG1
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/+CiEACgkQAVBC80lX
+0Gyefgf/WGj3z88wyhQUJh2GW/lGx6p3Xc77z+aEjJcZkOwAQSEJ1GH2oJ+PwcwP
+Hp2YLiFEvbgBJG5JhEwPNvhCfD2D9W49UHn8clgGk+rnd6DXeKxQGIm1cYeQr1e+
+24Munl5m6DYO356ge41OLk5VXzLdBCtfzFG3rSKeCvQu/e6eqLmWQS9lRR42E8Zv
+IZRdAJy7dmFi5xdWNfrY5bi1l9yEI0yVkp9nMW7Bbboac6NLXeuBjlvYY57BG5wY
+mpgz5PMqyFAZH1owrUgDtKllLqYfQJszDZbExVL3hgj3E3RB1oqlFnGU9ajrj0ff
+wc+XX47zqMGYLUT9RvQZu9Xm0UCyIg==
+=8LCk
+-----END PGP SIGNATURE-----
+
+--Sig_/xcjI6mp_f__drN++xQURaG1--
