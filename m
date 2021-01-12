@@ -2,401 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A12432F3FAF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4282F3FA9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394634AbhALWbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:31:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
+        id S1732727AbhALWao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:30:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728225AbhALWah (ORCPT
+        with ESMTP id S1727908AbhALWaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:30:37 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 064EBC061795
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:29:57 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id i6so58637otr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:29:56 -0800 (PST)
+        Tue, 12 Jan 2021 17:30:35 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAF6C061786;
+        Tue, 12 Jan 2021 14:29:55 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id q4so2215333plr.7;
+        Tue, 12 Jan 2021 14:29:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zqgSs5YA1N4P5qw6TX1amzxNau3S2NsbER/l85K2hbo=;
-        b=IHsnhu+DCbXPmU/M9sbJ18QTjFnMV9YXipbUdi1/RnHwOE55hDIuyoApG+XCI6t7y6
-         AyxkRqCULNSRNqIlIjFxbfAY7O6ErrR9G7MCEneFNPIsPJ419DF5ZIXB9rKupQhG3749
-         tc7oAOeX+F5rSibwBPh02stpcALEeLdMW2tPvZJY6ItmIRzkFdB/mOxPt7hpQQ3KNlKp
-         PIwk1kZU+c++amsrEh/kCpfxYT1ykTzuZ/C+cWUIz53PwgcLGRJRex+q+2QZ6vKFN9Qn
-         u8PD+epq8iOWogGfKxB/s8DajRnzFFNK3uzNhoRLxaUanWXTk9cgVzHepHXLq7N7WU/N
-         1Mhg==
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=Y/mkD5de8m+mpayBIjRORwwldrvzEhn8Mi4jJftRcDI=;
+        b=oyY3aNW7Pxb69vz+utmtcU2GPYOyJ5SqNAKAGKIP+laTePuc60PlelsK58yw4wUUf0
+         vWjJOEysHeU7IHh/rBzXBPENyRO9f3bUhDjNmSpAYEVpCygIR53iaVWtBfeZlaPPjvqe
+         X4vYUEQ/fMIUh4e4y6FxOmwJXrmI75HrmpiNK+mlBem0QnasUc2Nt3i2O/vaO5K71Y++
+         ziIXBzxFcbNLl9OIcmaNhr9zsF3zckpj4QliylL8hPGfzwyXmUcq9jehHNIkoyS2aDGS
+         IqiUWiOhhNveeQCjbYSituV2lfZeFWnnYpFZXZA1Cn1+xlnlImCjEywAw9PGsvLi1/nj
+         Rt7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zqgSs5YA1N4P5qw6TX1amzxNau3S2NsbER/l85K2hbo=;
-        b=P5Y911djO8TKLw4GwqewaJGxAfi+bkaaDVS5i1ec7Mpjzs0rVofBP9rYpsQIS1dI+8
-         CIup0GT9MSpnwMCv+slbKX0xtjkd2kbEO3DgTtvtKpzPSJDbwr1KMNhXAkxAsmzPHyVW
-         79XGOGE5DW0/e1ylkKC4j/UVHmPcCYevukc7zmTonBnT6fAoRPPSo1hrHVdUCmed8eZz
-         2JPC/4opdE7u1dak4EILRL4K0Up8uDejJcDhszcx+hiJJipn71nu7pmGnzCmIJyYKjUN
-         vARnq/nKE+8zO8S3uKdaKz4vEeVMcjRdyxl3+gGg7XORFkPXtDTtVfcIBFlrsPWDJ0rF
-         RSdw==
-X-Gm-Message-State: AOAM531UDThir5yMLwNE4Wh/SN+y5G+xi0/JT9iPBSTQ1FQRr2twcXJ7
-        AJo4jdaKwb4+AzKrwND1nz04Ogz6Yhg5WtWBLeChPa0g
-X-Google-Smtp-Source: ABdhPJxncpEJztvvar/ck9ystEIB4WhkWvcJRUv+mtBzsU6p56GdYF0ipSWizZC5y+ToIbb1ZnS5LUpN3ga7szu8erk=
-X-Received: by 2002:a9d:75d4:: with SMTP id c20mr1042650otl.311.1610490596442;
- Tue, 12 Jan 2021 14:29:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-27-lee.jones@linaro.org>
-In-Reply-To: <20210111191926.3688443-27-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 12 Jan 2021 17:29:43 -0500
-Message-ID: <CADnq5_OqT44rxMaaLQatKDs79G-v4D-yshuDwTZqHWh7pF0XcQ@mail.gmail.com>
-Subject: Re: [PATCH 26/40] drm/amd/display/dc/dce110/dce110_timing_generator:
- Demote kernel-doc abuses to standard function headers
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, Anthony Koo <Anthony.Koo@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=Y/mkD5de8m+mpayBIjRORwwldrvzEhn8Mi4jJftRcDI=;
+        b=Igvqyio71+VuAUChmHvyX3DIQfNOpUSOp6yRuOn+Unawk07V7ybtEHEDUlRBxkfezn
+         BZCQEW3EDBuH/k1n/7qaYZxGfPZp5dVmArQiGRvjhIpagxQ5j2PtFwf1KB+vOnYXemqH
+         j4QiZHabpLDoHR3gxcvg/GRNKIVysgzVTsNdjZygQs4izM4SGXL9xq4LbKI5umR45MAK
+         5DdKRNKGtSQESGUG8HDV9NO8oLdNPd13yyInnoxhxjRVUZLcLOde+8WKU4eTphyCo8sT
+         SXCEx6xfHKQRD+2urZBr5JYMEEz6D7tp75pVeK/yS4iV+KLjRnWg6lO6CmsVIL2m9i9+
+         PNYg==
+X-Gm-Message-State: AOAM530NG/0VWPDDjWDfVdvY5zaS5nJ3usEGW+BVa/cgcBbtj5eqMZQs
+        4q2JlGsoHo0QOpLF05siXcM=
+X-Google-Smtp-Source: ABdhPJwpwMojoG1gozfbdfaGyrRQLqLKWPh3Cerp91arRFH/VdZndTffb9MzyH9D6diub2eZ4EAqBQ==
+X-Received: by 2002:a17:902:bcc6:b029:dc:44a5:c363 with SMTP id o6-20020a170902bcc6b02900dc44a5c363mr1515847pls.5.1610490594619;
+        Tue, 12 Jan 2021 14:29:54 -0800 (PST)
+Received: from [192.168.88.245] (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id v10sm32697pjr.47.2021.01.12.14.29.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 12 Jan 2021 14:29:53 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <20210112214337.GA10434@willie-the-truck>
+Date:   Tue, 12 Jan 2021 14:29:51 -0800
+Cc:     Yu Zhao <yuzhao@google.com>,
+        Laurent Dufour <ldufour@linux.vnet.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>, surenb@google.com
+Content-Transfer-Encoding: 7bit
+Message-Id: <F33D2DD9-97D5-44A0-890B-35FE686E36DC@gmail.com>
+References: <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
+ <CAHk-=wj=CcOHQpG0cUGfoMCt2=Uaifpqq-p-mMOmW8XmrBn4fQ@mail.gmail.com>
+ <20210105153727.GK3040@hirez.programming.kicks-ass.net>
+ <bfb1cbe6-a705-469d-c95a-776624817e33@codeaurora.org>
+ <0201238b-e716-2a3c-e9ea-d5294ff77525@linux.vnet.ibm.com>
+ <X/3VE64nr91WCtuM@hirez.programming.kicks-ass.net>
+ <ec912505-ed4d-a45d-2ed4-7586919da4de@linux.vnet.ibm.com>
+ <C7D5A74C-25BF-458A-AAD9-61E484B9F225@gmail.com>
+ <X/3+6ZnRCNOwhjGT@google.com>
+ <2C7AE23B-ACA3-4D55-A907-AF781C5608F0@gmail.com>
+ <20210112214337.GA10434@willie-the-truck>
+To:     Will Deacon <will@kernel.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 2:20 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:79: warning: Cannot understand  *****************************************=
-************************************
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:124: warning: Function parameter or member 'tg' not described in 'dce110_=
-timing_generator_enable_crtc'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:179: warning: Cannot understand  ****************************************=
-*************************************
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:233: warning: Function parameter or member 'tg' not described in 'dce110_=
-timing_generator_disable_crtc'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:258: warning: Function parameter or member 'tg' not described in 'program=
-_horz_count_by_2'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:258: warning: Function parameter or member 'timing' not described in 'pro=
-gram_horz_count_by_2'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:284: warning: Function parameter or member 'tg' not described in 'dce110_=
-timing_generator_program_timing_generator'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:284: warning: Function parameter or member 'dc_crtc_timing' not described=
- in 'dce110_timing_generator_program_timing_generator'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:356: warning: Cannot understand  ****************************************=
-*************************************
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:525: warning: Cannot understand  ****************************************=
-*************************************
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:561: warning: Cannot understand  ****************************************=
-*************************************
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:1118: warning: Function parameter or member 'tg' not described in 'dce110=
-_timing_generator_validate_timing'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:1118: warning: Function parameter or member 'timing' not described in 'dc=
-e110_timing_generator_validate_timing'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:1118: warning: Function parameter or member 'signal' not described in 'dc=
-e110_timing_generator_validate_timing'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:1174: warning: Function parameter or member 'tg' not described in 'dce110=
-_timing_generator_wait_for_vblank'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:1198: warning: Function parameter or member 'tg' not described in 'dce110=
-_timing_generator_wait_for_vactive'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:1208: warning: Cannot understand  ***************************************=
-**************************************
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:1386: warning: Cannot understand  ***************************************=
-**************************************
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:1768: warning: Cannot understand  ***************************************=
-**************************************
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:1801: warning: Function parameter or member 'tg' not described in 'dce110=
-_timing_generator_disable_vga'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:1851: warning: Function parameter or member 'tg' not described in 'dce110=
-_timing_generator_set_overscan_color_black'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:1851: warning: Function parameter or member 'color' not described in 'dce=
-110_timing_generator_set_overscan_color_black'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator.=
-c:1851: warning: Excess function parameter 'param' description in 'dce110_t=
-iming_generator_set_overscan_color_black'
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Anthony Koo <Anthony.Koo@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> On Jan 12, 2021, at 1:43 PM, Will Deacon <will@kernel.org> wrote:
+> 
+> On Tue, Jan 12, 2021 at 12:38:34PM -0800, Nadav Amit wrote:
+>>> On Jan 12, 2021, at 11:56 AM, Yu Zhao <yuzhao@google.com> wrote:
+>>> On Tue, Jan 12, 2021 at 11:15:43AM -0800, Nadav Amit wrote:
+>>>> I will send an RFC soon for per-table deferred TLB flushes tracking.
+>>>> The basic idea is to save a generation in the page-struct that tracks
+>>>> when deferred PTE change took place, and track whenever a TLB flush
+>>>> completed. In addition, other users - such as mprotect - would use
+>>>> the tlb_gather interface.
+>>>> 
+>>>> Unfortunately, due to limited space in page-struct this would only
+>>>> be possible for 64-bit (and my implementation is only for x86-64).
+>>> 
+>>> I don't want to discourage you but I don't think this would end up
+>>> well. PPC doesn't necessarily follow one-page-struct-per-table rule,
+>>> and I've run into problems with this before while trying to do
+>>> something similar.
+>> 
+>> Discourage, discourage. Better now than later.
+>> 
+>> It will be relatively easy to extend the scheme to be per-VMA instead of
+>> per-table for architectures that prefer it this way. It does require
+>> TLB-generation tracking though, which Andy only implemented for x86, so I
+>> will focus on x86-64 right now.
+> 
+> Can you remind me of what we're missing on arm64 in this area, please? I'm
+> happy to help get this up and running once you have something I can build
+> on.
 
-Applied.  Thanks!
-
-Alex
-
-
-> ---
->  .../dc/dce110/dce110_timing_generator.c       | 71 +++++++++----------
->  1 file changed, 34 insertions(+), 37 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_timing_generato=
-r.c b/drivers/gpu/drm/amd/display/dc/dce110/dce110_timing_generator.c
-> index 9a6c411bb7fe6..d88a74559edd7 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_timing_generator.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_timing_generator.c
-> @@ -75,7 +75,7 @@ static void dce110_timing_generator_apply_front_porch_w=
-orkaround(
->         }
->  }
->
-> -/**
-> +/*
->   ***********************************************************************=
-******
->   *  Function: is_in_vertical_blank
->   *
-> @@ -116,7 +116,7 @@ void dce110_timing_generator_set_early_control(
->         dm_write_reg(tg->ctx, address, regval);
->  }
->
-> -/**
-> +/*
->   * Enable CRTC
->   * Enable CRTC - call ASIC Control Object to enable Timing generator.
->   */
-> @@ -175,7 +175,7 @@ void dce110_timing_generator_program_blank_color(
->         dm_write_reg(tg->ctx, addr, value);
->  }
->
-> -/**
-> +/*
->   ***********************************************************************=
-******
->   *  Function: disable_stereo
->   *
-> @@ -226,7 +226,7 @@ static void disable_stereo(struct timing_generator *t=
-g)
->  }
->  #endif
->
-> -/**
-> +/*
->   * disable_crtc - call ASIC Control Object to disable Timing generator.
->   */
->  bool dce110_timing_generator_disable_crtc(struct timing_generator *tg)
-> @@ -247,11 +247,10 @@ bool dce110_timing_generator_disable_crtc(struct ti=
-ming_generator *tg)
->         return result =3D=3D BP_RESULT_OK;
->  }
->
-> -/**
-> -* program_horz_count_by_2
-> -* Programs DxCRTC_HORZ_COUNT_BY2_EN - 1 for DVI 30bpp mode, 0 otherwise
-> -*
-> -*/
-> +/*
-> + * program_horz_count_by_2
-> + * Programs DxCRTC_HORZ_COUNT_BY2_EN - 1 for DVI 30bpp mode, 0 otherwise
-> + */
->  static void program_horz_count_by_2(
->         struct timing_generator *tg,
->         const struct dc_crtc_timing *timing)
-> @@ -273,7 +272,7 @@ static void program_horz_count_by_2(
->                         CRTC_REG(mmCRTC_COUNT_CONTROL), regval);
->  }
->
-> -/**
-> +/*
->   * program_timing_generator
->   * Program CRTC Timing Registers - DxCRTC_H_*, DxCRTC_V_*, Pixel repetit=
-ion.
->   * Call ASIC Control Object to program Timings.
-> @@ -352,7 +351,7 @@ bool dce110_timing_generator_program_timing_generator=
-(
->         return result =3D=3D BP_RESULT_OK;
->  }
->
-> -/**
-> +/*
->   ***********************************************************************=
-******
->   *  Function: set_drr
->   *
-> @@ -521,7 +520,7 @@ uint32_t dce110_timing_generator_get_vblank_counter(s=
-truct timing_generator *tg)
->         return field;
->  }
->
-> -/**
-> +/*
->   ***********************************************************************=
-******
->   *  Function: dce110_timing_generator_get_position
->   *
-> @@ -557,7 +556,7 @@ void dce110_timing_generator_get_position(struct timi=
-ng_generator *tg,
->                         CRTC_VERT_COUNT_NOM);
->  }
->
-> -/**
-> +/*
->   ***********************************************************************=
-******
->   *  Function: get_crtc_scanoutpos
->   *
-> @@ -1106,11 +1105,11 @@ void dce110_timing_generator_set_test_pattern(
->         }
->  }
->
-> -/**
-> -* dce110_timing_generator_validate_timing
-> -* The timing generators support a maximum display size of is 8192 x 8192=
- pixels,
-> -* including both active display and blanking periods. Check H Total and =
-V Total.
-> -*/
-> +/*
-> + * dce110_timing_generator_validate_timing
-> + * The timing generators support a maximum display size of is 8192 x 819=
-2 pixels,
-> + * including both active display and blanking periods. Check H Total and=
- V Total.
-> + */
->  bool dce110_timing_generator_validate_timing(
->         struct timing_generator *tg,
->         const struct dc_crtc_timing *timing,
-> @@ -1167,9 +1166,9 @@ bool dce110_timing_generator_validate_timing(
->         return true;
->  }
->
-> -/**
-> -* Wait till we are at the beginning of VBlank.
-> -*/
-> +/*
-> + * Wait till we are at the beginning of VBlank.
-> + */
->  void dce110_timing_generator_wait_for_vblank(struct timing_generator *tg=
-)
->  {
->         /* We want to catch beginning of VBlank here, so if the first try=
- are
-> @@ -1191,9 +1190,9 @@ void dce110_timing_generator_wait_for_vblank(struct=
- timing_generator *tg)
->         }
->  }
->
-> -/**
-> -* Wait till we are in VActive (anywhere in VActive)
-> -*/
-> +/*
-> + * Wait till we are in VActive (anywhere in VActive)
-> + */
->  void dce110_timing_generator_wait_for_vactive(struct timing_generator *t=
-g)
->  {
->         while (dce110_timing_generator_is_in_vertical_blank(tg)) {
-> @@ -1204,7 +1203,7 @@ void dce110_timing_generator_wait_for_vactive(struc=
-t timing_generator *tg)
->         }
->  }
->
-> -/**
-> +/*
->   ***********************************************************************=
-******
->   *  Function: dce110_timing_generator_setup_global_swap_lock
->   *
-> @@ -1215,7 +1214,6 @@ void dce110_timing_generator_wait_for_vactive(struc=
-t timing_generator *tg)
->   *  @param [in] gsl_params: setup data
->   ***********************************************************************=
-******
->   */
-> -
->  void dce110_timing_generator_setup_global_swap_lock(
->         struct timing_generator *tg,
->         const struct dcp_gsl_params *gsl_params)
-> @@ -1382,7 +1380,7 @@ void dce110_timing_generator_tear_down_global_swap_=
-lock(
->
->         dm_write_reg(tg->ctx, address, value);
->  }
-> -/**
-> +/*
->   ***********************************************************************=
-******
->   *  Function: is_counter_moving
->   *
-> @@ -1764,7 +1762,7 @@ void dce110_timing_generator_disable_reset_trigger(
->         dm_write_reg(tg->ctx, CRTC_REG(mmCRTC_TRIGB_CNTL), value);
->  }
->
-> -/**
-> +/*
->   ***********************************************************************=
-******
->   *  @brief
->   *     Checks whether CRTC triggered reset occurred
-> @@ -1791,7 +1789,7 @@ bool dce110_timing_generator_did_triggered_reset_oc=
-cur(
->         return (force || vert_sync);
->  }
->
-> -/**
-> +/*
->   * dce110_timing_generator_disable_vga
->   * Turn OFF VGA Mode and Timing  - DxVGA_CONTROL
->   * VGA Mode and VGA Timing is used by VBIOS on CRT Monitors;
-> @@ -1837,14 +1835,13 @@ void dce110_timing_generator_disable_vga(
->         dm_write_reg(tg->ctx, addr, value);
->  }
->
-> -/**
-> -* set_overscan_color_black
-> -*
-> -* @param :black_color is one of the color space
-> -*    :this routine will set overscan black color according to the color =
-space.
-> -* @return none
-> -*/
-> -
-> +/*
-> + * set_overscan_color_black
-> + *
-> + * @param :black_color is one of the color space
-> + *    :this routine will set overscan black color according to the color=
- space.
-> + * @return none
-> + */
->  void dce110_timing_generator_set_overscan_color_black(
->         struct timing_generator *tg,
->         const struct tg_color *color)
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Let me first finish making something that we can use as a basis for a
+discussion. I do not waste your time before I have something ready.
