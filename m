@@ -2,167 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75E902F39D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:18:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 594CD2F39D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406646AbhALTQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 14:16:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42550 "EHLO
+        id S2392774AbhALTRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:17:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404141AbhALTQ2 (ORCPT
+        with ESMTP id S1727474AbhALTRQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:16:28 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D10C8C061794;
-        Tue, 12 Jan 2021 11:15:47 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id v3so1909493plz.13;
-        Tue, 12 Jan 2021 11:15:47 -0800 (PST)
+        Tue, 12 Jan 2021 14:17:16 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E20C061575;
+        Tue, 12 Jan 2021 11:16:36 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id r63so3185868ybf.5;
+        Tue, 12 Jan 2021 11:16:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=0tRaNGrEjZ7VVI8rFnwR+cCsJ6NqUdiRrcFX266r1hA=;
-        b=nZvzMKx81n2G28HYoQ/+aIE94yv+8MT80iS8KL/p+cZogpTMtg7LEaE6IaLKjN5npw
-         P45Xye1qNiJqZXvZIHqwdvJl4tls1lzIkP271lsxVIWqNfaZ2m7ZUVPzR9nwLs6Yeqn+
-         wUfy7GVR6z4Ljy52m2pZHBUbVZ+1OqAjgvsYGJDuBJVPP9vep2XnhENByI5DyI6iRPRQ
-         qs6Iu8ulYLuLYuh7u+13QGzHWBDvIHilrTtOdDCZfYHXFfuPuhEd9HcJpEyY46uY/E57
-         NBOWxhWnB911wOM1z9imVOIf0uGy/3ORlYD0wwFDlfTxQGYW1ex4FmAN0MDzn/kQLzOC
-         IlFA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TNPja6jXIGq6+WeUuKATWjnFXyMnNMz8ngrg6c9AKD0=;
+        b=uu1jt8YOQDPTwOiEnroeayfpLf1D92LEYOVacbYjPt7p1jd1Bvcazv++l6w76EcvQl
+         8Ri5Nrg1mP+zTo3mOK1ffdacadGEQc1nX5JwphjAYug/LqWFJLoUugg6g1sxqakQL/7O
+         bnLWHRE7q2JsHX21JKEr7axULwLP33NkO4hGyhKV+cn8k+OsZfydt9jNdAxTlgpgbbLY
+         ul8Kp6VqDzBBeazvgy++vwNbMq91IWBHQMh42KM8BQofGjU5icKldisJjcgvnwhpd4bK
+         PcJ2a21kBGwuq/xtaQSW+lNBX1ZlAua8LTMks2aXJwJaN4wwO9k/9GbBevIsuCad/hKT
+         fEtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=0tRaNGrEjZ7VVI8rFnwR+cCsJ6NqUdiRrcFX266r1hA=;
-        b=qKqAWJZTTmeR7v8rIkrghgS6XTfZhtELb1AO1HCB3Ds7QsEVXQw9CKWVlQhNq5N8kZ
-         h/yNharW/ZVsG849YryznR4iov0maxlTmcR8kFPiSwDU5qVQrVsVsmLSCtm0hmokYMol
-         L4kA48CigMmIdfqQann1zJnR8dxFlFYFOH0Pz6MOpVwh4Znam7kiOv/hYkByRyPZ+t9N
-         d2plV1r/WiD916TDyhzWe/+O5Bmipbm7sROuPzmbPlJo3aAUnanzKMmsk6HiWnB/999j
-         2WNyUw1GkC9EbhgVMFNHDe4WtCST3jqoBLPAwl+cQboJ6Cn5YO8NTow76CiNLcYnXqK5
-         7Vjg==
-X-Gm-Message-State: AOAM532o/uMPCZCRGKs9vsnNVlMLf4AN5VuQLtae4hZfippTyU85sjLM
-        CPRhZC9bfRBazBcDR9w1BU0=
-X-Google-Smtp-Source: ABdhPJzTSMc3aE7AVU9T1WA+JTz7FKFYlJFbcpHt9QckdzpjexzJv1H5KVXZm87aONq1oi7Qirw0nA==
-X-Received: by 2002:a17:90b:3892:: with SMTP id mu18mr602891pjb.143.1610478947197;
-        Tue, 12 Jan 2021 11:15:47 -0800 (PST)
-Received: from [192.168.88.245] (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id iw4sm4194789pjb.55.2021.01.12.11.15.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 12 Jan 2021 11:15:46 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <ec912505-ed4d-a45d-2ed4-7586919da4de@linux.vnet.ibm.com>
-Date:   Tue, 12 Jan 2021 11:15:43 -0800
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>, Yu Zhao <yuzhao@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>, surenb@google.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <C7D5A74C-25BF-458A-AAD9-61E484B9F225@gmail.com>
-References: <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
- <X+ESkna2z3WjjniN@google.com>
- <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
- <20201221223041.GL6640@xz-x1>
- <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
- <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
- <CAHk-=wj=CcOHQpG0cUGfoMCt2=Uaifpqq-p-mMOmW8XmrBn4fQ@mail.gmail.com>
- <20210105153727.GK3040@hirez.programming.kicks-ass.net>
- <bfb1cbe6-a705-469d-c95a-776624817e33@codeaurora.org>
- <0201238b-e716-2a3c-e9ea-d5294ff77525@linux.vnet.ibm.com>
- <X/3VE64nr91WCtuM@hirez.programming.kicks-ass.net>
- <ec912505-ed4d-a45d-2ed4-7586919da4de@linux.vnet.ibm.com>
-To:     Laurent Dufour <ldufour@linux.vnet.ibm.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TNPja6jXIGq6+WeUuKATWjnFXyMnNMz8ngrg6c9AKD0=;
+        b=hO9ty3cVPQ2zhtyy2cBn7pVoPlGTse8w3MBixyvpdfCwiQNmtDRoWE4Rz5qR91UEg4
+         D2ZdTYP3kt+VU/MsAFlsEVUpsDQmFlMFNBN5b7l7IBBOI61gCLv30EuNWLS3IpzD40Sa
+         Y+wm1zOwUr1KHGxDBGjcbaHOhtYbYOxMR3SVS7IT6OdnelPqzek6yQtiU0WEl3c/OD0F
+         Xmo3UC7nFa/KANbWRSjrDfbT/oZSFXTZ3q0DedEJ5x+UM5U3qqELinw9pq2t9Fjrxtoc
+         XoE5gZ4SrQSwaAmq2RyphM04OFjijIRyewpDuHR2eC18fRdvUfGkrd1HQ9Hr5RvJ63Pf
+         J1OQ==
+X-Gm-Message-State: AOAM531dOoEz7VE+b0NE5Ojvfn3JJNZNrnM55PMtxcP4uQgVHLSDGLDl
+        7yT2XSKpyIFnL2OBp5A4ThYlTe4DT67ZMQQiIEQ=
+X-Google-Smtp-Source: ABdhPJzTE6XLD/0GklQqhkz7rye4/VfeOf2y6g9GJzivBRrxewispiOrvdTApjZZOWVE9JPafLpEoj49Wa3GkV6FN2c=
+X-Received: by 2002:a25:9882:: with SMTP id l2mr1232712ybo.425.1610478995598;
+ Tue, 12 Jan 2021 11:16:35 -0800 (PST)
+MIME-Version: 1.0
+References: <20210112123913.2016804-1-jackmanb@google.com>
+In-Reply-To: <20210112123913.2016804-1-jackmanb@google.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 12 Jan 2021 11:16:24 -0800
+Message-ID: <CAEf4BzYoJ4oAH8UL0n4_RWsxCiPiC04KALvf0Gpy+t-AzS26rg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Fix a verifier message for alloc size
+ helper arg
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Jan 12, 2021, at 11:02 AM, Laurent Dufour =
-<ldufour@linux.vnet.ibm.com> wrote:
->=20
-> Le 12/01/2021 =C3=A0 17:57, Peter Zijlstra a =C3=A9crit :
->> On Tue, Jan 12, 2021 at 04:47:17PM +0100, Laurent Dufour wrote:
->>> Le 12/01/2021 =C3=A0 12:43, Vinayak Menon a =C3=A9crit :
->>>> Possibility of race against other PTE modifiers
->>>>=20
->>>> 1) Fork - We have seen a case of SPF racing with fork marking PTEs =
-RO and that
->>>> is described and fixed here =
-https://lore.kernel.org/patchwork/patch/1062672/
->> Right, that's exactly the kind of thing I was worried about.
->>>> 2) mprotect - change_protection in mprotect which does the deferred =
-flush is
->>>> marked under vm_write_begin/vm_write_end, thus SPF bails out on =
-faults
->>>> on those VMAs.
->> Sure, mprotect also changes vm_flags, so it really needs that anyway.
->>>> 3) userfaultfd - mwriteprotect_range is not protected unlike in (2) =
-above.
->>>> But SPF does not take UFFD faults.
->>>> 4) hugetlb - hugetlb_change_protection - called from mprotect and =
-covered by
->>>> (2) above.
->>>> 5) Concurrent faults - SPF does not handle all faults. Only anon =
-page faults.
->> What happened to shared/file-backed stuff? ISTR I had that working.
->=20
-> File-backed mappings are not processed in a speculative way, there =
-were options to manage some of them depending on the underlying file =
-system but that's still not done.
->=20
-> Shared anonymous mapping, are also not yet handled in a speculative =
-way (vm_ops is not null).
->=20
->>>> Of which do_anonymous_page and do_swap_page are =
-NONE/NON-PRESENT->PRESENT
->>>> transitions without tlb flush. And I hope do_wp_page with RO->RW is =
-fine as well.
->> The tricky one is demotion, specifically write to non-write.
->>>> I could not see a case where speculative path cannot see a PTE =
-update done via
->>>> a fault on another CPU.
->> One you didn't mention is the NUMA balancing scanning crud; although =
-I
->> think that's fine, loosing a PTE update there is harmless. But I've =
-not
->> thought overly hard on it.
->=20
-> That's a good point, I need to double check on that side.
->=20
->>> You explained it fine. Indeed SPF is handling deferred TLB =
-invalidation by
->>> marking the VMA through vm_write_begin/end(), as for the fork case =
-you
->>> mentioned. Once the PTL is held, and the VMA's seqcount is checked, =
-the PTE
->>> values read are valid.
->> That should indeed work, but are we really sure we covered them all?
->> Should we invest in better TLBI APIs to make sure we can't get this
->> wrong?
->=20
-> That may be a good option to identify deferred TLB invalidation but =
-I've no clue on what this API would look like.
+On Tue, Jan 12, 2021 at 4:39 AM Brendan Jackman <jackmanb@google.com> wrote:
+>
+> The error message here is misleading, the argument will be rejected
+> unless it is a known constant.
+>
+> Signed-off-by: Brendan Jackman <jackmanb@google.com>
+> ---
 
-I will send an RFC soon for per-table deferred TLB flushes tracking.
-The basic idea is to save a generation in the page-struct that tracks
-when deferred PTE change took place, and track whenever a TLB flush
-completed. In addition, other users - such as mprotect - would use
-the tlb_gather interface.
+LGTM.
 
-Unfortunately, due to limited space in page-struct this would only
-be possible for 64-bit (and my implementation is only for x86-64).
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-It would still require to do the copying while holding the PTL though.
-
+>  kernel/bpf/verifier.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 17270b8404f1..5534e667bdb1 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -4319,7 +4319,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
+>                         err = mark_chain_precision(env, regno);
+>         } else if (arg_type_is_alloc_size(arg_type)) {
+>                 if (!tnum_is_const(reg->var_off)) {
+> -                       verbose(env, "R%d unbounded size, use 'var &= const' or 'if (var < const)'\n",
+> +                       verbose(env, "R%d is not a known constant'\n",
+>                                 regno);
+>                         return -EACCES;
+>                 }
+>
+> base-commit: e22d7f05e445165e58feddb4e40cc9c0f94453bc
+> --
+> 2.30.0.284.gd98b1dd5eaa7-goog
+>
