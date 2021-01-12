@@ -2,91 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B230C2F2B92
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BD02F2B97
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388425AbhALJpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:45:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387410AbhALJpA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:45:00 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2476BC061795
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 01:44:20 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id w10so646495edu.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 01:44:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5KZS3oEWwc8UiVa/WStbmjJky91Sx8kkOWesTtdtVNM=;
-        b=DwhTdum5YsD9yMVyTaObRK3HUeEOs2BOuqj0ZWpLMfW/7+nGdHmph8sVoNHzuz3/85
-         JuCbKiv/hwGa4RZhyEn16y0uTXs+3QqdeAj9cAIuunZ8mAiA9tA5luF8TCZ/JA7Vwvst
-         bRWo0z0EpLcEp/8tLMLlCXm7osD6+EsbrcupssopEyF/m12sbzqD0qC4UzhEkRtm9XW4
-         SUxy3VKh5jtxp37fF7d7EaZivtOSnOCaFWEfNsJtCxWT8L987agqZ2e4/yT3vc/gYddu
-         JtoME8An8A2FNqH7D67C44g0tvKWVE4iFdx5Y+PRDTHztcIPMDYk++5VfGt1J3/w0/W4
-         whrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5KZS3oEWwc8UiVa/WStbmjJky91Sx8kkOWesTtdtVNM=;
-        b=IHMXYZ2wInOAf1PA4SqS19u9k2L/MqjRhF4PaD5fPtrggIBgtY1y1H77CO16waLhDg
-         VS8U3WJ77J0kzpckuOmzIkZrJu/f7goZZZqiOhIzQaMH+mezYi/bRgppJQ4HK26/wdk1
-         IzzzDEK4pZM27vFP8KAJ1fmD222/zTyaVvsdJYUpOvPj7qcyER0tGywB+m5qpNpJvoQ9
-         lKJC0jzQft9Xet+7IEqlp5UCVAmtYXHsgFVvV7BgoKMUfyRCWDtGkWCMppdi1gxVxmz2
-         LuEj/kzlGIvW/8zZZc0PjdoAbcVPmbsz3WTJR8px0YuAnIfNenR07NnKfqN81ml4gkKQ
-         0dug==
-X-Gm-Message-State: AOAM533vwn30+k+rQPpyDhFa1rLabRJ+Shf9wkzqaY8gG8V4LtNFmfg6
-        qUBz8nRpCEvORPkW1yBCO+sUdOfwtJozQghuisw=
-X-Google-Smtp-Source: ABdhPJxYIhgb9NbYU1QUxQqZeeQVCSMUgvkCLjX2BuHgYfsyhf1PwHoB6JRbQwrrD8dzff/8mmUUvg==
-X-Received: by 2002:a50:b746:: with SMTP id g64mr2716178ede.33.1610444658903;
-        Tue, 12 Jan 2021 01:44:18 -0800 (PST)
-Received: from [192.168.0.3] ([84.238.208.208])
-        by smtp.googlemail.com with ESMTPSA id z12sm985237ejr.17.2021.01.12.01.44.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 01:44:18 -0800 (PST)
-Subject: Re: [PATCH v4 2/2] venus: venc : Add support for priority ID control.
-To:     Dikshita Agarwal <dikshita@codeaurora.org>,
-        linux-media@vger.kernel.org, hverkuil-cisco@xs4all.nl,
-        stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org
-References: <1609738914-22769-1-git-send-email-dikshita@codeaurora.org>
- <1609738914-22769-3-git-send-email-dikshita@codeaurora.org>
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Message-ID: <9b3ab98a-f369-9235-1217-9e195a402114@linaro.org>
-Date:   Tue, 12 Jan 2021 11:44:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2389490AbhALJqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:46:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56478 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730148AbhALJqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 04:46:36 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610444749; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dA3k4t4NuRzP2rImbNYwbp5ThBFOnm8mec1oBsfxQUQ=;
+        b=BUaJWqP9XW/TSzwKi8DEekpPSmcyhrX/viSiS/h2epyh/76Bogh/dVC18jHfq//hUYmGuk
+        e3OFgU9dA4MOaGd5JZE8V1pLDxMq2PikOzCKeTZ2Wd9v9gpLZQD/es06UmOjMFaIiJRpaT
+        hvN+7+NocU82RowqSurESFkl8SrepjA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C232BAD19;
+        Tue, 12 Jan 2021 09:45:49 +0000 (UTC)
+Date:   Tue, 12 Jan 2021 10:45:49 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
+        n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3 2/6] mm: hugetlbfs: fix cannot migrate the fallocated
+ HugeTLB page
+Message-ID: <20210112094549.GJ22493@dhcp22.suse.cz>
+References: <20210110124017.86750-1-songmuchun@bytedance.com>
+ <20210110124017.86750-3-songmuchun@bytedance.com>
 MIME-Version: 1.0
-In-Reply-To: <1609738914-22769-3-git-send-email-dikshita@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210110124017.86750-3-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/4/21 7:41 AM, Dikshita Agarwal wrote:
-> Add support for base layer priority ID control in
-> encoder.
-> This is a preparation patch to support v6.
+On Sun 10-01-21 20:40:13, Muchun Song wrote:
+> If a new hugetlb page is allocated during fallocate it will not be
+> marked as active (set_page_huge_active) which will result in a later
+> isolate_huge_page failure when the page migration code would like to
+> move that page. Such a failure would be unexpected and wrong.
 > 
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+> Only export set_page_huge_active, just leave clear_page_huge_active
+> as static. Because there are no external users.
+> 
+> Fixes: 70c3547e36f5 (hugetlbfs: add hugetlbfs_fallocate())
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Cc: stable@vger.kernel.org
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+Thanks!
+
 > ---
->  drivers/media/platform/qcom/venus/core.h       | 2 ++
->  drivers/media/platform/qcom/venus/venc_ctrls.c | 9 ++++++++-
->  2 files changed, 10 insertions(+), 1 deletion(-)
-
-Acked-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-
+>  fs/hugetlbfs/inode.c    | 3 ++-
+>  include/linux/hugetlb.h | 2 ++
+>  mm/hugetlb.c            | 2 +-
+>  3 files changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+> index b5c109703daa..21c20fd5f9ee 100644
+> --- a/fs/hugetlbfs/inode.c
+> +++ b/fs/hugetlbfs/inode.c
+> @@ -735,9 +735,10 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
+>  
+>  		mutex_unlock(&hugetlb_fault_mutex_table[hash]);
+>  
+> +		set_page_huge_active(page);
+>  		/*
+>  		 * unlock_page because locked by add_to_page_cache()
+> -		 * page_put due to reference from alloc_huge_page()
+> +		 * put_page() due to reference from alloc_huge_page()
+>  		 */
+>  		unlock_page(page);
+>  		put_page(page);
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index ebca2ef02212..b5807f23caf8 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -770,6 +770,8 @@ static inline void huge_ptep_modify_prot_commit(struct vm_area_struct *vma,
+>  }
+>  #endif
+>  
+> +void set_page_huge_active(struct page *page);
+> +
+>  #else	/* CONFIG_HUGETLB_PAGE */
+>  struct hstate {};
+>  
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 1f3bf1710b66..4741d60f8955 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1348,7 +1348,7 @@ bool page_huge_active(struct page *page)
+>  }
+>  
+>  /* never called for tail page */
+> -static void set_page_huge_active(struct page *page)
+> +void set_page_huge_active(struct page *page)
+>  {
+>  	VM_BUG_ON_PAGE(!PageHeadHuge(page), page);
+>  	SetPagePrivate(&page[1]);
+> -- 
+> 2.11.0
 
 -- 
-regards,
-Stan
+Michal Hocko
+SUSE Labs
