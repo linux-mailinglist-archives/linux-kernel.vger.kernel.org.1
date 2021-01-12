@@ -2,88 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C28B42F3AA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AABD52F3AA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437125AbhALTbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 14:31:34 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:45418 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406789AbhALTbb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:31:31 -0500
-Received: by mail-ot1-f45.google.com with SMTP id n42so3351644ota.12;
-        Tue, 12 Jan 2021 11:31:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=579ECh+/HPGB6zPxi5v2gvgBTd45mQ9S7oiP7Tpxxs0=;
-        b=boTBcaMQ9a7BZoFetO214WHPKE46bWyHllWGC+m1TiSot4CsMzyif7sCOGRGy8gvHc
-         TvbbKKnjbEO10oyUspEfZTQY/CA59tNKSVISXbG70Mn7lo1zi1u7N9/n4AbbXiy9Q6jz
-         cxY4e9875LLKQdL9lY17Yqi06Lzx2WXQMIcvySDD/inqueVMNDXzNVyPbRkrYIxkmBtV
-         QJ8wINdRo8OVVPo//grmSKOTaeFIaKlojR81QdivIyq7zUTnUlYphXLC7bmRTHYjI3KJ
-         miUI+ZMRxL4c6KLMjJcGfvjLgmVAUOXVv0762Zga4tzcpHRHLmIXTcJt0vUf4CRflXOX
-         wRzA==
-X-Gm-Message-State: AOAM530npBbYJXLiTBdLsxGEIVmRBrXnJCvHlurYbDShw8NOLSsTPAff
-        Pa2LrqGPV2+LspekoMuUyZajaWKTpQA4GO+oZ5Q=
-X-Google-Smtp-Source: ABdhPJxGA5IXl+9x5eDMWOnGLjUhZhSzMHVZQan/08pLnADl6k3O6Pp4B7jpWz37P7At+vFZy8gXnHqGI5YooREy480=
-X-Received: by 2002:a05:6830:4b5:: with SMTP id l21mr530252otd.321.1610479850617;
- Tue, 12 Jan 2021 11:30:50 -0800 (PST)
+        id S2437139AbhALTbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:31:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436646AbhALTbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 14:31:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3258E22DFA;
+        Tue, 12 Jan 2021 19:30:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610479855;
+        bh=WgolaYx4rbZPxU9P/Bog8n07DJNfBjkIOY5FfolVGxc=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=Zpnc6rQZzjvCYiEHol8suiAMvF0vOx+97yUuUWWFutEcu4qx/cvo7BXgRbcuwZcLu
+         RX3wphPp5+kxOTNcd3mmqtr8B2TGiM78jdUdQUDGFAHkiYeD994md2jefjQhZ/CwVP
+         aneOWtmr+dK+YM/3TPBzBYIRisFjQPPfoqSCk4xesj4/uVlLtFmKtZOt/tJZw1pl1J
+         OC6NxG5x4tnFfV7zi8KiXyUfjpqpAGZSl262mJVtaTHLpGYobc2G94GjQHJ6F4qPAt
+         FqrRZ+Y3MWc42kabd9OfQTuF8+pTvhGu9ByvKdYPGwsq3CZpzaxHCKNTtjCEo4sRJy
+         qL+IdinB3XNVw==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210107132838.396641-1-djrscally@gmail.com> <20210107132838.396641-8-djrscally@gmail.com>
- <X/kPck60UO/NYuRa@pendragon.ideasonboard.com>
-In-Reply-To: <X/kPck60UO/NYuRa@pendragon.ideasonboard.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 12 Jan 2021 20:30:39 +0100
-Message-ID: <CAJZ5v0jH3vXwqAh4qqhTVmAoYxrY=S0GDST1kdkfwhQxbFv58Q@mail.gmail.com>
-Subject: Re: [PATCH v5 07/15] device property: Define format macros for ports
- and endpoints
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        yong.zhi@intel.com, Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>, tian.shu.qiu@intel.com,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        hverkuil-cisco@xs4all.nl, m.felsch@pengutronix.de,
-        Niklas Soderlund <niklas.soderlund+renesas@ragnatech.se>,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210107023304.24442-1-rdunlap@infradead.org>
+References: <20210107023304.24442-1-rdunlap@infradead.org>
+Subject: Re: [PATCH] linux/clk.h: use correct kernel-doc notation for 2 functions
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Mike Turquette <mturquette@linaro.org>,
+        Russell King <linux@armlinux.org.uk>, linux-clk@vger.kernel.org
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Date:   Tue, 12 Jan 2021 11:30:54 -0800
+Message-ID: <161047985402.3661239.16161443773537998218@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 3:06 AM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Rafael,
->
-> Could you please let us know with an Acked-by
+Quoting Randy Dunlap (2021-01-06 18:33:04)
+> Fix kernel-doc notation for 2 functions so that the generated
+> html is correct. Currently it skips all text between the
+> ':' and the '-', so "[un]register a clock rate" is missing.
+>=20
+> Fixes: 86bcfa2e87c4 ("clk: add pr_debug & kerneldoc around clk notifiers")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Mike Turquette <mturquette@linaro.org>
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: linux-clk@vger.kernel.org
+> ---
 
-Done, sorry for the delay.
-
-> if this patch can be merged through the linux-media tree for v5.12 ?
-
-Yes, it can.
-
-Thanks!
+Applied to clk-next
