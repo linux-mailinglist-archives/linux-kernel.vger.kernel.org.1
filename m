@@ -2,166 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B825A2F3624
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 030482F3629
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:51:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390571AbhALQuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:50:25 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41420 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728583AbhALQuZ (ORCPT
+        id S2390803AbhALQu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:50:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390718AbhALQu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:50:25 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10CGhYHD049845;
-        Tue, 12 Jan 2021 11:49:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=CPMisSnatD+99YHPEmUR1gJHKPbc6b/P6VGnKEl2XEg=;
- b=WIxRtdVJkgC2F1P0pAbAhstw5Fm4CSpnf+4WSbX0PmlNljQKYP62l2Q4kIX5xLduynUb
- FRSqWGwEHWFOXAlWbGXPUGUGNyPdNypz8Q6BEbcQBPRYWuS3hUHGyDNBF5JzKBiv2aWO
- JBou5WE3pNT/BqhYfJ47oaks4Z0XvFa1CeGXs+yujgMhdPypssRIVUQARh1dDBPXZhYS
- mvXoLIVNUPtPT7L2dZF2sYpQhESrmM+c2p5C3sUoAwpzcZtP4W1DqKBstW/eBm2lsmnt
- xFNKAnmp3iwwJp5DO0F3m36VfhVdbcl3uIq70gdpsw/JhLK1QhUsG1upaYFeY/1hmAzq ww== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 361fhr85um-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 11:49:44 -0500
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10CGiosU057090;
-        Tue, 12 Jan 2021 11:49:44 -0500
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 361fhr85tr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 11:49:43 -0500
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10CGmwKT027605;
-        Tue, 12 Jan 2021 16:49:41 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma01fra.de.ibm.com with ESMTP id 35y44820qm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 16:49:41 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10CGncTG40829412
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jan 2021 16:49:38 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 633EC5204E;
-        Tue, 12 Jan 2021 16:49:38 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.60.135])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id A848352050;
-        Tue, 12 Jan 2021 16:49:37 +0000 (GMT)
-Date:   Tue, 12 Jan 2021 17:49:35 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Matthew Rosato <mjrosato@linux.ibm.com>
-Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        freude@linux.ibm.com, borntraeger@de.ibm.com, cohuck@redhat.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v13 11/15] s390/vfio-ap: implement in-use callback for
- vfio_ap driver
-Message-ID: <20210112174935.41cbda87.pasic@linux.ibm.com>
-In-Reply-To: <d717a554-6d0c-6075-38fd-e725b9622437@linux.ibm.com>
-References: <20201223011606.5265-1-akrowiak@linux.ibm.com>
-        <20201223011606.5265-12-akrowiak@linux.ibm.com>
-        <20210112022012.4bad464f.pasic@linux.ibm.com>
-        <d717a554-6d0c-6075-38fd-e725b9622437@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Tue, 12 Jan 2021 11:50:57 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06E6C061795
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 08:50:16 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id t30so3253896wrb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 08:50:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=90x7bSE6XP8JZlzynOLHF7U7UF119XCh3OM9LGBjMTs=;
+        b=VeV7Bhbi83JAOnTWd71Dy939nVpu0J42s1sPM4bsu44fgHA910w59T24ByGjHj2k7B
+         WWcR3YELkWLB8XK50PnnLR4gfbh2NKfaOsRVUn+dnMDddWD94eB53iViry2J/gyWkcs0
+         iJrpCk9E/iZdoRBdsSr9jcGh+i1jdxEbRpW0iuqqpLPYkphnlVHvQJvcrnltVRybFdOn
+         CeiDSnZKMNQkaEQtyGiNRx725KRfnaSPh9WtwkAxESUeeR0pz2L2tqZWhAy0q+Vck8Sb
+         fQIfk204viOE/LY5i8CJlXl4RXPqVJXSoZKPs933VKUmcHwgdQIcOmDmjiDThspf0U0c
+         /gCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=90x7bSE6XP8JZlzynOLHF7U7UF119XCh3OM9LGBjMTs=;
+        b=tj87UUhobA2YFl5DCoy3t5LwhyckhUcgAoKxxPNyJRUM4ffUpGTsZnO9zSBLnikvtJ
+         a2G981e7EOtvXAK3++dfVTLJEEcCO4IAdFwc9PKdpfSqIu0Kr4dvWPaeHCuGHHPuNXVI
+         +2DO0gHEwxws6x5kSjKADSQfz+B+ObuLbLIaxWgwKlSuio9TBG3WmmmHA4x9EJQUiB9j
+         UqzpQL04EZ2l0KEFkJ4TJFYZFgEMrb7VbFcmN9+yKDkCg3vRO5dQklztmI/MlqDtQOpa
+         drMxaxJzXxIpjhj+c8ovqFBqGiWv8OPlXTuWDDS5TvmWzRCVOT4iYiatmjeNfMWnrmva
+         G4ZA==
+X-Gm-Message-State: AOAM5327z+NffHRRuBREb56f4aXG2gBco/DNkigx8ioUv9shLjKrI9Nu
+        dUA/tl12CcqmBniQC+lAQ7pVJw==
+X-Google-Smtp-Source: ABdhPJzS5AdRFcljD6Jz7OxKl5NJ+IEYr2nuZgQOpFTfBMfhhk81jA6ozUI57bPy8UvCQiWftyNS0g==
+X-Received: by 2002:a05:6000:2c1:: with SMTP id o1mr5334917wry.264.1610470215396;
+        Tue, 12 Jan 2021 08:50:15 -0800 (PST)
+Received: from google.com (49.222.77.34.bc.googleusercontent.com. [34.77.222.49])
+        by smtp.gmail.com with ESMTPSA id n10sm4133998wrx.21.2021.01.12.08.50.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 08:50:14 -0800 (PST)
+Date:   Tue, 12 Jan 2021 16:50:12 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, android-kvm@google.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
+        <kvmarm@lists.cs.columbia.edu>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Fuad Tabba <tabba@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>
+Subject: Re: [RFC PATCH v2 15/26] of/fdt: Introduce
+ early_init_dt_add_memory_hyp()
+Message-ID: <X/3TRIkakv9mSHSQ@google.com>
+References: <20210108121524.656872-1-qperret@google.com>
+ <20210108121524.656872-16-qperret@google.com>
+ <CAL_JsqLmzFWmTc=6JSRMofSEVRx9GCrwGxEsYog9dC16EMGdvQ@mail.gmail.com>
+ <X/1xN2UxiUxkzAiN@google.com>
+ <CAL_Jsq+5d+Ox_-m_Rd83R9xoZb6e2cxCNfbL8YPzKdwj=y0M8Q@mail.gmail.com>
+ <X/2xlxx9Ucp4UZvL@google.com>
+ <CAL_Jsq+o+t4YYXEW_nYqMsT4ubYJWe6Kdhu614RtrCqsHBtfLw@mail.gmail.com>
+ <X/3LIGgx83XJ+U0F@google.com>
+ <CAL_Jsq+SeOrn4qFyFuPUmXdnM1oMNMLWLsDzrYgUt9Ts3hyoNg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-12_12:2021-01-12,2021-01-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- priorityscore=1501 clxscore=1015 malwarescore=0 lowpriorityscore=0
- impostorscore=0 spamscore=0 suspectscore=0 phishscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101120091
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_Jsq+SeOrn4qFyFuPUmXdnM1oMNMLWLsDzrYgUt9Ts3hyoNg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Jan 2021 09:14:07 -0500
-Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+On Tuesday 12 Jan 2021 at 10:45:56 (-0600), Rob Herring wrote:
+> Umm, yes you are right. But both are dealing with nomap. So someone
+> needs to sort out what the right thing to do here is. No one cared
+> enough to follow up in a year and a half.
 
-> On 1/11/21 8:20 PM, Halil Pasic wrote:
-> > On Tue, 22 Dec 2020 20:16:02 -0500
-> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-> >   
-> >> Let's implement the callback to indicate when an APQN
-> >> is in use by the vfio_ap device driver. The callback is
-> >> invoked whenever a change to the apmask or aqmask would
-> >> result in one or more queue devices being removed from the driver. The
-> >> vfio_ap device driver will indicate a resource is in use
-> >> if the APQN of any of the queue devices to be removed are assigned to
-> >> any of the matrix mdevs under the driver's control.
-> >>
-> >> There is potential for a deadlock condition between the matrix_dev->lock
-> >> used to lock the matrix device during assignment of adapters and domains
-> >> and the ap_perms_mutex locked by the AP bus when changes are made to the
-> >> sysfs apmask/aqmask attributes.
-> >>
-> >> Consider following scenario (courtesy of Halil Pasic):
-> >> 1) apmask_store() takes ap_perms_mutex
-> >> 2) assign_adapter_store() takes matrix_dev->lock
-> >> 3) apmask_store() calls vfio_ap_mdev_resource_in_use() which tries
-> >>     to take matrix_dev->lock
-> >> 4) assign_adapter_store() calls ap_apqn_in_matrix_owned_by_def_drv
-> >>     which tries to take ap_perms_mutex
-> >>
-> >> BANG!
-> >>
-> >> To resolve this issue, instead of using the mutex_lock(&matrix_dev->lock)
-> >> function to lock the matrix device during assignment of an adapter or
-> >> domain to a matrix_mdev as well as during the in_use callback, the
-> >> mutex_trylock(&matrix_dev->lock) function will be used. If the lock is not
-> >> obtained, then the assignment and in_use functions will terminate with
-> >> -EBUSY.
-> >>
-> >> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> >> ---
-> >>   drivers/s390/crypto/vfio_ap_drv.c     |  1 +
-> >>   drivers/s390/crypto/vfio_ap_ops.c     | 21 ++++++++++++++++++---
-> >>   drivers/s390/crypto/vfio_ap_private.h |  2 ++
-> >>   3 files changed, 21 insertions(+), 3 deletions(-)
-> >>  
-> > [..]  
-> >>   }
-> >> +
-> >> +int vfio_ap_mdev_resource_in_use(unsigned long *apm, unsigned long *aqm)
-> >> +{
-> >> +	int ret;
-> >> +
-> >> +	if (!mutex_trylock(&matrix_dev->lock))
-> >> +		return -EBUSY;
-> >> +	ret = vfio_ap_mdev_verify_no_sharing(NULL, apm, aqm);  
-> > 
-> > If we detect that resources are in use, then we spit warnings to the
-> > message log, right?
-> > 
-> > @Matt: Is your userspace tooling going to guarantee that this will never
-> > happen?  
-> 
-> Yes, but only when using the tooling to modify apmask/aqmask.  You would 
-> still be able to create such a scenario by bypassing the tooling and 
-> invoking the sysfs interfaces directly.
-> 
-> 
+Fair enough, happy to do that. I'll send a small series with these two
+patches independently from this series which may take a while to land.
 
-Since, I suppose, the tooling is going to catch this anyway, and produce
-much better feedback to the user, I believe we should be fine degrading
-the severity to info or debug. 
-
-I would prefer not producing a warning here, because I believe it is
-likely to do more harm, than good (by implying a kernel problem, as I
-don't think based on the message one will think that it is an userspace
-problem). But if everybody else agrees, that we want a warning here, then
-I can live with that as well.
-
-Regards,
-Halil
+Thanks,
+Quentin
