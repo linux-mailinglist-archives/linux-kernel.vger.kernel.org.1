@@ -2,142 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7807E2F3683
+	by mail.lfdr.de (Postfix) with ESMTP id E5F472F3684
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391786AbhALRDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:03:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47622 "EHLO mail.kernel.org"
+        id S2391882AbhALRDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:03:22 -0500
+Received: from foss.arm.com ([217.140.110.172]:49878 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391743AbhALRDM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:03:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 941122311B;
-        Tue, 12 Jan 2021 17:02:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610470951;
-        bh=u3YAk8tJDd0MtgxLEfhIWKvQfuFzbUKBa4f66KHwhYg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=ZJ+2sq2qTWeWBLWHzkhOhPkTtz2MfYFGSJ1KT564skIqTBB3kYFrVjm1ID3tou+WI
-         HjkUofZqZsN1Uv3HWOJEJW9bXlxa/PrOhFW1LEzkGlljSLFJfolE59yPCQBg3EJnmr
-         giCItS/4Zrs/UI0o1Bp9rLxw6PoQdhRJ60ZQiVamAZ8zBXhefkcz7AVaDDFAjopqW5
-         0DttEnHBUoXZIRamgeIwyJ+V5+npbmfKikTCn4vmb3QpgL4UqjeYlX/hGWMZKkIPf4
-         iu9/oRNbKzQrvbE97FXQhNmDmp2zfpuIlxashxw7qXZdtuZ5/g7czup2anEA+fR4n/
-         igVdxT9nFoexA==
-Date:   Tue, 12 Jan 2021 11:02:30 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Zhangfei Gao <zhangfei.gao@linaro.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        jean-philippe <jean-philippe@linaro.org>,
-        kenneth-lee-2012@foxmail.com, wangzhou1@hisilicon.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: Add a quirk to enable SVA for HiSilicon chip
-Message-ID: <20210112170230.GA1838341@bjorn-Precision-5520>
+        id S2390860AbhALRDV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 12:03:21 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D9557101E;
+        Tue, 12 Jan 2021 09:02:35 -0800 (PST)
+Received: from [192.168.0.110] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D4C213F719;
+        Tue, 12 Jan 2021 09:02:33 -0800 (PST)
+Subject: Re: [PATCH 8/9] KVM: arm64: vgic-v3: Expose GICR_TYPER.Last for
+ userspace
+To:     Eric Auger <eric.auger@redhat.com>, eric.auger.pro@gmail.com,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, maz@kernel.org, drjones@redhat.com
+Cc:     james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com, shuah@kernel.org, pbonzini@redhat.com
+References: <20201212185010.26579-1-eric.auger@redhat.com>
+ <20201212185010.26579-9-eric.auger@redhat.com>
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+Message-ID: <45a364ec-eac6-a04b-9654-e97970186839@arm.com>
+Date:   Tue, 12 Jan 2021 17:02:36 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610434192-27995-1-git-send-email-zhangfei.gao@linaro.org>
+In-Reply-To: <20201212185010.26579-9-eric.auger@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 02:49:52PM +0800, Zhangfei Gao wrote:
-> HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
-> actually on the AMBA bus. These fake PCI devices can not support tlp
-> and have to enable SMMU stall mode to use the SVA feature.
-> 
-> Add a quirk to set dma-can-stall property and enable tlp for these devices.
+Hi Eric,
 
-s/tlp/TLP/
+On 12/12/20 6:50 PM, Eric Auger wrote:
+> Commit 23bde34771f1 ("KVM: arm64: vgic-v3: Drop the
+> reporting of GICR_TYPER.Last for userspace") temporarily fixed
+> a bug identified when attempting to access the GICR_TYPER
+> register before the redistributor region setting but dropped
+> the support of the LAST bit. This patch restores its
+> support (if the redistributor region was set) while keeping the
+> code safe.
 
-I don't think "enable TLP" really captures what's going on here.  You
-must be referring to the fact that you set pdev->eetlp_prefix_path.
+I suppose the reason for emulating GICR_TYPER.Last is for architecture compliance,
+right? I think that should be in the commit message.
 
-That is normally set by pci_configure_eetlp_prefix() if the Device
-Capabilities 2 register has the End-End TLP Prefix Supported bit set
-*and* all devices in the upstream path also have it set.
-
-The only place we currently test eetlp_prefix_path is in
-pci_enable_pasid().  In PCIe, PASID is implemented using the PASID TLP
-prefix, so we only enable PASID if TLP prefixes are supported.
-
-If I understand correctly, a PASID-like feature is implemented on AMBA
-without using TLP prefixes, and setting eetlp_prefix_path makes that
-work.
-
-I don't think you should do this by setting eetlp_prefix_path because
-TLP prefixes are used for other features, e.g., TPH.  Setting
-eetlp_prefix_path implies these devices can also support things like
-TLP, and I don't think that's necessarily true.
-
-Apparently these devices have a PASID capability.  I think you should
-add a new pci_dev bit that is specific to this idea of "PASID works
-without TLP prefixes" and then change pci_enable_pasid() to look at
-that bit as well as eetlp_prefix_path.
-
-It seems like dma-can-stall is a separate thing from PASID?  If so,
-this should be two separate patches.
-
-If they can be separated, I would probably make the PASID thing the
-first patch, and then the "dma-can-stall" can be on its own as a
-broken DT workaround (if that's what it is) and it's easier to remove
-that if it become obsolete.
-
-> Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
-> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
-> Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
+>
+> Signed-off-by: Eric Auger <eric.auger@redhat.com>
 > ---
-> Property dma-can-stall depends on patchset
-> https://lore.kernel.org/linux-iommu/20210108145217.2254447-1-jean-philippe@linaro.org/
-> 
-> drivers/pci/quirks.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index 653660e..a27f327 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -1825,6 +1825,31 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL,	PCI_DEVICE_ID_INTEL_E7525_MCH,	quir
+>  arch/arm64/kvm/vgic/vgic-mmio-v3.c | 7 ++++++-
+>  include/kvm/arm_vgic.h             | 1 +
+>  2 files changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> index 581f0f490000..2f9ef6058f6e 100644
+> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> @@ -277,6 +277,8 @@ static unsigned long vgic_uaccess_read_v3r_typer(struct kvm_vcpu *vcpu,
+>  						 gpa_t addr, unsigned int len)
+>  {
+>  	unsigned long mpidr = kvm_vcpu_get_mpidr_aff(vcpu);
+> +	struct vgic_cpu *vgic_cpu = &vcpu->arch.vgic_cpu;
+> +	struct vgic_redist_region *rdreg = vgic_cpu->rdreg;
+>  	int target_vcpu_id = vcpu->vcpu_id;
+>  	u64 value;
 >  
->  DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_HUAWEI, 0x1610, PCI_CLASS_BRIDGE_PCI, 8, quirk_pcie_mch);
+> @@ -286,7 +288,9 @@ static unsigned long vgic_uaccess_read_v3r_typer(struct kvm_vcpu *vcpu,
+>  	if (vgic_has_its(vcpu->kvm))
+>  		value |= GICR_TYPER_PLPIS;
 >  
-> +static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
-> +{
-> +	struct property_entry properties[] = {
-> +		PROPERTY_ENTRY_BOOL("dma-can-stall"),
-> +		{},
-> +	};
+> -	/* reporting of the Last bit is not supported for userspace */
+> +	if (rdreg && (vgic_cpu->rdreg_index == (rdreg->free_index - 1)))
+> +		value |= GICR_TYPER_LAST;
 > +
-> +	if ((pdev->revision != 0x21) && (pdev->revision != 0x30))
-> +		return;
-> +
-> +	pdev->eetlp_prefix_path = 1;
-> +
-> +	/* Device-tree can set the stall property */
-> +	if (!pdev->dev.of_node &&
-> +	    device_add_properties(&pdev->dev, properties))
+>  	return extract_bytes(value, addr & 7, len);
+>  }
+>  
+> @@ -714,6 +718,7 @@ int vgic_register_redist_iodev(struct kvm_vcpu *vcpu)
+>  		return -EINVAL;
+>  
+>  	vgic_cpu->rdreg = rdreg;
+> +	vgic_cpu->rdreg_index = rdreg->free_index;
 
-Does this mean "dma-can-stall" *can* be set via DT, and if it is, this
-quirk is not needed?  So is this quirk basically a workaround for an
-old or broken DT?
+What happens if the next redistributor region we register has the base address
+adjacent to this one?
 
-> +		pci_warn(pdev, "could not add stall property");
-> +}
-> +
+I'm really not familiar with the code, but is it not possible to create two
+Redistributor regions (via
+KVM_DEV_ARM_VGIC_GRP_ADDR(KVM_VGIC_V3_ADDR_TYPE_REDIST)) where the second
+Redistributor region start address is immediately after the last Redistributor in
+the preceding region?
 
-Remove this blank line to follow the style of the rest of the file.
-
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa250, quirk_huawei_pcie_sva);
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa251, quirk_huawei_pcie_sva);
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa255, quirk_huawei_pcie_sva);
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa256, quirk_huawei_pcie_sva);
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa258, quirk_huawei_pcie_sva);
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa259, quirk_huawei_pcie_sva);
-> +
->  /*
->   * It's possible for the MSI to get corrupted if SHPC and ACPI are used
->   * together on certain PXH-based systems.
-> -- 
-> 2.7.4
-> 
+Thanks,
+Alex
+>  
+>  	rd_base = rdreg->base + rdreg->free_index * KVM_VGIC_V3_REDIST_SIZE;
+>  
+> diff --git a/include/kvm/arm_vgic.h b/include/kvm/arm_vgic.h
+> index a8d8fdcd3723..596c069263a7 100644
+> --- a/include/kvm/arm_vgic.h
+> +++ b/include/kvm/arm_vgic.h
+> @@ -322,6 +322,7 @@ struct vgic_cpu {
+>  	 */
+>  	struct vgic_io_device	rd_iodev;
+>  	struct vgic_redist_region *rdreg;
+> +	u32 rdreg_index;
+>  
+>  	/* Contains the attributes and gpa of the LPI pending tables. */
+>  	u64 pendbaser;
