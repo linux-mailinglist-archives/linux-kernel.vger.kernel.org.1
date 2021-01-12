@@ -2,144 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260E92F2F58
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:49:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F462F2F66
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:54:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388612AbhALMtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:49:24 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:15547 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388564AbhALMtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:49:24 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DFVkJ0RNnz9v0Sq;
-        Tue, 12 Jan 2021 13:48:40 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id YFDVF7N0fjGd; Tue, 12 Jan 2021 13:48:39 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DFVkH6bZ9z9v0Sp;
-        Tue, 12 Jan 2021 13:48:39 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2E7448B7B3;
-        Tue, 12 Jan 2021 13:48:41 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id O_W_5-EMbScS; Tue, 12 Jan 2021 13:48:41 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3A1678B7AB;
-        Tue, 12 Jan 2021 13:48:40 +0100 (CET)
-Subject: Re: [PATCH v2] powerpc/vdso: fix clock_gettime_fallback for vdso32
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, schwab@linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <77cb8f5e668a2f6e00ea6e90d5f4f37763957b5b.1610383963.git.christophe.leroy@csgroup.eu>
- <87v9c3j6u5.fsf@mpe.ellerman.id.au>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <0f34729c-38bb-1de5-bfa1-20e1d661a68a@csgroup.eu>
-Date:   Tue, 12 Jan 2021 13:48:06 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S2388635AbhALMwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:52:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56579 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727998AbhALMwb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:52:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610455864;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3di3WiIDCT0haTp37A4dlkvRPB/If8ZucUraJvNLxLM=;
+        b=T5zBIKSq8jeWg2IfnOkl8PIuY7IhH25GSnw5nO6JkAWlOy5PenBohwvbz0/oJ/J0dpPa8x
+        5L3yEp4cjHm+P9ZkeHQ9GRrtZCJQa8rbiDdIaO2tYEXJNu026qL8mi3Rq60QKMRA1zflNN
+        6b+nc6cRb37g9B7e0iRUjbpbrKkvx/I=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-18-gX1JbrTHNbiy-eXXv6JE5Q-1; Tue, 12 Jan 2021 07:48:34 -0500
+X-MC-Unique: gX1JbrTHNbiy-eXXv6JE5Q-1
+Received: by mail-wr1-f70.google.com with SMTP id z8so1117331wrh.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 04:48:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=3di3WiIDCT0haTp37A4dlkvRPB/If8ZucUraJvNLxLM=;
+        b=CzZiLoODAJC8BOWVVBMX0fR99Rs67kDPtY+T2NSR790fZ4PewF0NOVb0gNAMUho8HA
+         iffdldLPuRvfSV8IKNawj2AbeMgnXkJ4kW2tqjLZ2K3/4+RUmVBqG4j8xK46u41WuxrM
+         PuW3GG/TnweUXZSbvJo1Qkn6lACHiM5bDTlbgwBhDBiPAP98BlA1QfOvTXMtk6ofDHFr
+         sxsAguPw75CJeH+UeYUnmsArSLOILLNCsVOd9OF60dckIEUWTcW9MPLPg3LxXMKxMpVU
+         P3uCsAwdy2KHrHNbrEhMdubAWkp1DvsWPWP4pu+2+YzFRBgwIvnQTRtAP6emIfhMBjvv
+         WslA==
+X-Gm-Message-State: AOAM532XGPzoPyG2vYITaW/0JHIsZUcAAD1zbTodXrZjFHwRvsRcsWBH
+        +6akkwRZAFcUoeyywkYD9YIFNheay0pzI3rXw+QkrLzNizWTW/TWPRMcm0FqivyW5KzWlVUFkSY
+        kD91/SdQa1dlDpx6QXJ1fRmqa
+X-Received: by 2002:a5d:6204:: with SMTP id y4mr4195221wru.48.1610455713439;
+        Tue, 12 Jan 2021 04:48:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzjLRoOBZSP/z6909MxSjSSPfO+4mnMDOjffdHUYYKda5rFiHxPiZst9Fk7g0GNmnbF8Daesw==
+X-Received: by 2002:a5d:6204:: with SMTP id y4mr4195206wru.48.1610455713246;
+        Tue, 12 Jan 2021 04:48:33 -0800 (PST)
+Received: from redhat.com (bzq-79-178-32-166.red.bezeqint.net. [79.178.32.166])
+        by smtp.gmail.com with ESMTPSA id b10sm4019102wmj.5.2021.01.12.04.48.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 04:48:32 -0800 (PST)
+Date:   Tue, 12 Jan 2021 07:48:27 -0500
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Adrian Catangiu <acatan@amazon.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        qemu-devel@nongnu.org, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, gregkh@linuxfoundation.org,
+        graf@amazon.com, arnd@arndb.de, ebiederm@xmission.com,
+        rppt@kernel.org, 0x7f454c46@gmail.com, borntraeger@de.ibm.com,
+        Jason@zx2c4.com, jannh@google.com, w@1wt.eu, colmmacc@amazon.com,
+        luto@kernel.org, tytso@mit.edu, ebiggers@kernel.org,
+        dwmw@amazon.co.uk, bonzini@gnu.org, sblbir@amazon.com,
+        raduweis@amazon.com, corbet@lwn.net, mhocko@kernel.org,
+        rafael@kernel.org, pavel@ucw.cz, mpe@ellerman.id.au,
+        areber@redhat.com, ovzxemul@gmail.com, avagin@gmail.com,
+        ptikhomirov@virtuozzo.com, gil@azul.com, asmehra@redhat.com,
+        dgunigun@redhat.com, vijaysun@ca.ibm.com, oridgar@gmail.com,
+        ghammer@redhat.com
+Subject: Re: [PATCH v4 0/2] System Generation ID driver and VMGENID backend
+Message-ID: <20210112074658-mutt-send-email-mst@kernel.org>
+References: <1610453760-13812-1-git-send-email-acatan@amazon.com>
 MIME-Version: 1.0
-In-Reply-To: <87v9c3j6u5.fsf@mpe.ellerman.id.au>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1610453760-13812-1-git-send-email-acatan@amazon.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 12/01/2021 à 02:13, Michael Ellerman a écrit :
-> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
->> From: Andreas Schwab <schwab@linux-m68k.org>
->>
->> The second argument of __kernel_clock_gettime64 points to a struct
->> __kernel_timespec, with 64-bit time_t, so use the clock_gettime64 syscall
->> in the fallback function for the 32-bit vdso.  Similarily,
->> clock_getres_fallback should use the clock_getres_time64 syscall, though
->> it isn't yet called from the 32-bit vdso.
->>
->> Signed-off-by: Andreas Schwab <schwab@linux-m68k.org>
->> [chleroy: Moved into the #ifdef CONFIG_VDSO32 block]
+On Tue, Jan 12, 2021 at 02:15:58PM +0200, Adrian Catangiu wrote:
+> This feature is aimed at virtualized or containerized environments
+> where VM or container snapshotting duplicates memory state, which is a
+> challenge for applications that want to generate unique data such as
+> request IDs, UUIDs, and cryptographic nonces.
 > 
-> That doesn't build for 64-bit with compat VDSO. Should I just take
-> Andreas' version, or do you want to send a v3?
-
-Yes, that #ifdef CONFIG_VDSO32 is crazy, should use __powerpc64__ instead, or __VDSO32__ but that 
-one is defined in asflags-y so not sure we have it in C.
-
-I sent v3 just before lunch.
-
-Christophe
-
+> The patch set introduces a mechanism that provides a userspace
+> interface for applications and libraries to be made aware of uniqueness
+> breaking events such as VM or container snapshotting, and allow them to
+> react and adapt to such events.
 > 
-> cheers
+> Solving the uniqueness problem strongly enough for cryptographic
+> purposes requires a mechanism which can deterministically reseed
+> userspace PRNGs with new entropy at restore time. This mechanism must
+> also support the high-throughput and low-latency use-cases that led
+> programmers to pick a userspace PRNG in the first place; be usable by
+> both application code and libraries; allow transparent retrofitting
+> behind existing popular PRNG interfaces without changing application
+> code; it must be efficient, especially on snapshot restore; and be
+> simple enough for wide adoption.
 > 
->> Fixes: d0e3fc69d00d ("powerpc/vdso: Provide __kernel_clock_gettime64() on vdso32")
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->>   arch/powerpc/include/asm/vdso/gettimeofday.h | 27 +++++++++++++++-----
->>   1 file changed, 21 insertions(+), 6 deletions(-)
->>
->> diff --git a/arch/powerpc/include/asm/vdso/gettimeofday.h b/arch/powerpc/include/asm/vdso/gettimeofday.h
->> index 7a215cc5da77..3ecddd9c6302 100644
->> --- a/arch/powerpc/include/asm/vdso/gettimeofday.h
->> +++ b/arch/powerpc/include/asm/vdso/gettimeofday.h
->> @@ -102,22 +102,22 @@ int gettimeofday_fallback(struct __kernel_old_timeval *_tv, struct timezone *_tz
->>   	return do_syscall_2(__NR_gettimeofday, (unsigned long)_tv, (unsigned long)_tz);
->>   }
->>   
->> +#ifdef CONFIG_VDSO32
->> +
->> +#define BUILD_VDSO32		1
->> +
->>   static __always_inline
->>   int clock_gettime_fallback(clockid_t _clkid, struct __kernel_timespec *_ts)
->>   {
->> -	return do_syscall_2(__NR_clock_gettime, _clkid, (unsigned long)_ts);
->> +	return do_syscall_2(__NR_clock_gettime64, _clkid, (unsigned long)_ts);
->>   }
->>   
->>   static __always_inline
->>   int clock_getres_fallback(clockid_t _clkid, struct __kernel_timespec *_ts)
->>   {
->> -	return do_syscall_2(__NR_clock_getres, _clkid, (unsigned long)_ts);
->> +	return do_syscall_2(__NR_clock_getres_time64, _clkid, (unsigned long)_ts);
->>   }
->>   
->> -#ifdef CONFIG_VDSO32
->> -
->> -#define BUILD_VDSO32		1
->> -
->>   static __always_inline
->>   int clock_gettime32_fallback(clockid_t _clkid, struct old_timespec32 *_ts)
->>   {
->> @@ -129,6 +129,21 @@ int clock_getres32_fallback(clockid_t _clkid, struct old_timespec32 *_ts)
->>   {
->>   	return do_syscall_2(__NR_clock_getres, _clkid, (unsigned long)_ts);
->>   }
->> +
->> +#else
->> +
->> +static __always_inline
->> +int clock_gettime_fallback(clockid_t _clkid, struct __kernel_timespec *_ts)
->> +{
->> +	return do_syscall_2(__NR_clock_gettime, _clkid, (unsigned long)_ts);
->> +}
->> +
->> +static __always_inline
->> +int clock_getres_fallback(clockid_t _clkid, struct __kernel_timespec *_ts)
->> +{
->> +	return do_syscall_2(__NR_clock_getres, _clkid, (unsigned long)_ts);
->> +}
->> +
->>   #endif
->>   
->>   static __always_inline u64 __arch_get_hw_counter(s32 clock_mode,
->> -- 
->> 2.25.0
+> The first patch in the set implements a device driver which exposes a
+> read-only device /dev/sysgenid to userspace, which contains a
+> monotonically increasing u32 generation counter. Libraries and
+> applications are expected to open() the device, and then call read()
+> which blocks until the SysGenId changes. Following an update, read()
+> calls no longer block until the application acknowledges the new
+> SysGenId by write()ing it back to the device. Non-blocking read() calls
+> return EAGAIN when there is no new SysGenId available. Alternatively,
+> libraries can mmap() the device to get a single shared page which
+> contains the latest SysGenId at offset 0.
+
+Looking at some specifications, the gen ID might actually be located
+at an arbitrary address. How about instead of hard-coding the offset,
+we expose it e.g. in sysfs?
+
+
+> SysGenId also supports a notification mechanism exposed as two IOCTLs
+> on the device. SYSGENID_GET_OUTDATED_WATCHERS immediately returns the
+> number of file descriptors to the device that were open during the last
+> SysGenId change but have not yet acknowledged the new id.
+> SYSGENID_WAIT_WATCHERS blocks until there are no open file handles on
+> the device which haven’t acknowledged the new id. These two interfaces
+> are intended for serverless and container control planes, which want to
+> confirm that all application code has detected and reacted to the new
+> SysGenId before sending an invoke to the newly-restored sandbox.
+> 
+> The second patch in the set adds a VmGenId driver which makes use of
+> the ACPI vmgenid device to drive SysGenId and to reseed kernel entropy
+> on VM snapshots.
+> 
+> ---
+> 
+> v3 -> v4:
+> 
+>   - split functionality in two separate kernel modules: 
+>     1. drivers/misc/sysgenid.c which provides the generic userspace
+>        interface and mechanisms
+>     2. drivers/virt/vmgenid.c as VMGENID acpi device driver that seeds
+>        kernel entropy and acts as a driving backend for the generic
+>        sysgenid
+>   - renamed /dev/vmgenid -> /dev/sysgenid
+>   - renamed uapi header file vmgenid.h -> sysgenid.h
+>   - renamed ioctls VMGENID_* -> SYSGENID_*
+>   - added ‘min_gen’ parameter to SYSGENID_FORCE_GEN_UPDATE ioctl
+>   - fixed races in documentation examples
+>   - various style nits
+>   - rebased on top of linus latest
+> 
+> v2 -> v3:
+> 
+>   - separate the core driver logic and interface, from the ACPI device.
+>     The ACPI vmgenid device is now one possible backend.
+>   - fix issue when timeout=0 in VMGENID_WAIT_WATCHERS
+>   - add locking to avoid races between fs ops handlers and hw irq
+>     driven generation updates
+>   - change VMGENID_WAIT_WATCHERS ioctl so if the current caller is
+>     outdated or a generation change happens while waiting (thus making
+>     current caller outdated), the ioctl returns -EINTR to signal the
+>     user to handle event and retry. Fixes blocking on oneself.
+>   - add VMGENID_FORCE_GEN_UPDATE ioctl conditioned by
+>     CAP_CHECKPOINT_RESTORE capability, through which software can force
+>     generation bump.
+> 
+> v1 -> v2:
+> 
+>   - expose to userspace a monotonically increasing u32 Vm Gen Counter
+>     instead of the hw VmGen UUID
+>   - since the hw/hypervisor-provided 128-bit UUID is not public
+>     anymore, add it to the kernel RNG as device randomness
+>   - insert driver page containing Vm Gen Counter in the user vma in
+>     the driver's mmap handler instead of using a fault handler
+>   - turn driver into a misc device driver to auto-create /dev/vmgenid
+>   - change ioctl arg to avoid leaking kernel structs to userspace
+>   - update documentation
+>   - various nits
+>   - rebase on top of linus latest
+> 
+> Adrian Catangiu (2):
+>   drivers/misc: sysgenid: add system generation id driver
+>   drivers/virt: vmgenid: add vm generation id driver
+> 
+>  Documentation/misc-devices/sysgenid.rst | 240 +++++++++++++++++++++++++
+>  Documentation/virt/vmgenid.rst          |  34 ++++
+>  drivers/misc/Kconfig                    |  16 ++
+>  drivers/misc/Makefile                   |   1 +
+>  drivers/misc/sysgenid.c                 | 298 ++++++++++++++++++++++++++++++++
+>  drivers/virt/Kconfig                    |  14 ++
+>  drivers/virt/Makefile                   |   1 +
+>  drivers/virt/vmgenid.c                  | 153 ++++++++++++++++
+>  include/uapi/linux/sysgenid.h           |  18 ++
+>  9 files changed, 775 insertions(+)
+>  create mode 100644 Documentation/misc-devices/sysgenid.rst
+>  create mode 100644 Documentation/virt/vmgenid.rst
+>  create mode 100644 drivers/misc/sysgenid.c
+>  create mode 100644 drivers/virt/vmgenid.c
+>  create mode 100644 include/uapi/linux/sysgenid.h
+> 
+> -- 
+> 2.7.4
+> 
+> 
+> 
+> 
+> Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+
