@@ -2,152 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F8B2F32F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:31:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C74A42F32F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:33:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730676AbhALOaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:30:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:34721 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725957AbhALO37 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:29:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610461712;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Sqqrc9MHCImT3FqMOgxcNyYnN8HnQccjuF8KQxEVLmU=;
-        b=JNH4SM+g/sHNXw+0VsC+4X0CzzypxPp/jhYqDu9S68NfU0uhV7xHvzAf4VgZqs0xOCdCJu
-        rperA1Z+L/FrZM+heZUr3IvqzRQfyZI1GE5elOtCv6d/EWU+ErEVm/TZYhen7Hhj/3VpL3
-        okfqnomvfsD7Xz0Bk+NIexdk4JKcVDI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-578-v4rIJzhQNjyxl0G1b_-msQ-1; Tue, 12 Jan 2021 09:28:30 -0500
-X-MC-Unique: v4rIJzhQNjyxl0G1b_-msQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A658C73A5;
-        Tue, 12 Jan 2021 14:28:28 +0000 (UTC)
-Received: from [10.36.115.140] (ovpn-115-140.ams2.redhat.com [10.36.115.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4CA2F2BFE7;
-        Tue, 12 Jan 2021 14:28:26 +0000 (UTC)
-Subject: Re: [External] Re: [PATCH v3 1/6] mm: migrate: do not migrate HugeTLB
- page whose refcount is one
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>, mhocko@suse.cz,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Yang Shi <shy828301@gmail.com>
-References: <20210110124017.86750-1-songmuchun@bytedance.com>
- <20210110124017.86750-2-songmuchun@bytedance.com>
- <1b39d654-0b8c-de3a-55d1-6ab8c2b2e0ba@redhat.com>
- <c6eddfc6-8e15-4a28-36ff-64bfa65cca8e@redhat.com>
- <CAMZfGtWnATsqgdqVONgAFWAAJU=KGxVJQEt38b8JTV+UtRzkYw@mail.gmail.com>
- <423ee403-bba7-acf6-8934-9db36d3a719a@redhat.com>
- <CAMZfGtXfA6JA3eYLhT8YGLJJocopix_mp7uSDPfcmooFEE7xNA@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <3386dc6d-5f68-c1e3-ba27-d0e95364aa3e@redhat.com>
-Date:   Tue, 12 Jan 2021 15:28:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <CAMZfGtXfA6JA3eYLhT8YGLJJocopix_mp7uSDPfcmooFEE7xNA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+        id S1729485AbhALOcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:32:07 -0500
+Received: from mail-mw2nam12on2128.outbound.protection.outlook.com ([40.107.244.128]:42368
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727033AbhALOcG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 09:32:06 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OEYJdK5w0kgNl1kY/iLlxJTaOYZyKbu1KkDwaFYTt1co4dINoeLfmKSd0BSqnHwSbLgzEuYQuRzMAUprohUoYy6hbOL54CDM+bsMzxR10nLoPSubM3HDxFa8A1TLkMBGt6AuE3Ya1N7a4o8SLySKRTiX/emAWRWjgClveuNjluFbT4djCE27qyEtm194C6gCuRgogo8qcuN4pofWe0H0U5z4iz0ulLdKx6zCxbA8kCeRtjhF5c8m+yNyDnMigbDJ05DLwy38wIKTb4c7JubDUQchCLQBnjKDIA/1GW9qBJU0ZcROXUERYzr0nZek4Z9XJtMyTSrAxGS8ihcd3C8fLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l14Ui8t721gegBJNbZ3A5xzu9QaTAI7fspg/+qopT3Q=;
+ b=OlRT/rSF53YNag9V07bKYrHKbyiPhgU1W9bLMlYLFxLiRAC/ZlVZnPB1mr2BDwq20nAXZhKlw1emBOt5oWP33GlzAgYMrQ5u0ROHPgLbalTfjAc9imaBMLW44LDmowssIg22ZOk27scfNUimcxu6jTEty++kdqlLZyg76xCVW3HHWb4bbt86rD04BOvlFx1rvN563bBFw+f50eHalIYTv+JwnPtyRhu4pJCoXiRUOBVrXDz8FAKdEtoQvDPfLQfdMs/S/qrMqIbffAgVBCNqsDR5/n49BYuVYUqTbA0doYpd9YPeaEZV5kVEQ8y2sgELm1eQEFlaUHHmaSy1s9BgtA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hammerspace.com; dmarc=pass action=none
+ header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l14Ui8t721gegBJNbZ3A5xzu9QaTAI7fspg/+qopT3Q=;
+ b=c+C5RnBQAwFHC3q2NkC46uVv9iW8r+0GnPTHUz6OWwSW2/Gl1v1HDx0VyPHZjS2HQRh37Zrtu+zFn7lyec0TT17Xhu8ahJbNN712XmJ9FW1e6lY5xw0uc77GfF6uXoYr1FkfoT+GfF9eCxwAShIY+E+WIV+NEIiiVLujgZe2ZG4=
+Received: from CH2PR13MB3525.namprd13.prod.outlook.com (2603:10b6:610:21::29)
+ by CH2PR13MB3784.namprd13.prod.outlook.com (2603:10b6:610:91::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.6; Tue, 12 Jan
+ 2021 14:31:12 +0000
+Received: from CH2PR13MB3525.namprd13.prod.outlook.com
+ ([fe80::f9a6:6c23:4015:b7fc]) by CH2PR13MB3525.namprd13.prod.outlook.com
+ ([fe80::f9a6:6c23:4015:b7fc%6]) with mapi id 15.20.3763.009; Tue, 12 Jan 2021
+ 14:31:12 +0000
+From:   Trond Myklebust <trondmy@hammerspace.com>
+To:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
+CC:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] Please pull NFS client bugfixes
+Thread-Topic: [GIT PULL] Please pull NFS client bugfixes
+Thread-Index: AQHW6O+T968aSUv5BEuskih09s91eQ==
+Date:   Tue, 12 Jan 2021 14:31:12 +0000
+Message-ID: <6c2dd95f73b0fcb9715e985bdde7dfb640ce8795.camel@hammerspace.com>
+Accept-Language: en-US, en-GB
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=hammerspace.com;
+x-originating-ip: [68.36.133.222]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f0cff9d3-1880-4bc7-3dbd-08d8b706b61b
+x-ms-traffictypediagnostic: CH2PR13MB3784:
+x-microsoft-antispam-prvs: <CH2PR13MB37840036B55B007F74142E90B8AA0@CH2PR13MB3784.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2201;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UzYvLn4Ts2D3ojQlrSfRYgn+61oYehfLGjGxHy7e2DMSs5EB+FCnKLAQ3ZIvvJZmXKHfAiAgxm46JMC61BLT3CHwk6JebCkmbJ+DxEJAgNAssmMngVLL3P6haom3Ex4MFlWz6A7r3VoM9OMGrZTKHNgKv8pcVs+fst1pXbToyt3fnqxwJy/PzcxBH2v2kaEj8ouIeq393S0mUaItmJl71EsiR6d/BAiEzLVpnNk+IXyuoayJbyuFfw+7R6k7br6aklPGTjt5LZ3hgfjjaunB0VQg8u+jUe0d82rZQgHHbrgFkVm8SkYynkRsnIIjDvtc6cLFIwSMLQbll7ayTXy+pc8dCdj2P7TP5SmpZkW5TKfw8bsFVb7HJPNXSafDDgYUfTJM4pQFngQhhD/iuy42kA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR13MB3525.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(136003)(366004)(39840400004)(5660300002)(54906003)(26005)(478600001)(66446008)(6486002)(76116006)(2906002)(316002)(66556008)(6916009)(86362001)(64756008)(6512007)(66476007)(66946007)(8676002)(6506007)(83380400001)(4326008)(71200400001)(186003)(8936002)(36756003)(2616005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?UU5sblJJLzJXL0ZNTzM1OGFSaEJpOFlkWGhTM1hpTjNrWXpTS3hXS1VEbUIz?=
+ =?utf-8?B?ckJxalJIcXRpZVdrZUxnaWcxZDlOdHlaNlV1QkxhV2h4UmVwOVdXUWVPcUU0?=
+ =?utf-8?B?TmtobUpJVHpHY3lSZTQ5b1QwZU1pWEpCSnlZV25NdXhvZWJVWXNzWGRYRkhV?=
+ =?utf-8?B?Y0RzdjNFUGs4K2FLWFY0bTlXR0NpeHRtaEk3WVgvZ0VBcEl1R2d1VDRXbWVy?=
+ =?utf-8?B?THRleFl4bzlvODFwNHl2SFNoQzFYMzdueXlZTmpwdi9EcXl3WFIwSXJ5clh2?=
+ =?utf-8?B?ZlVqV1NpaUh6UU93VXE2VGtZR1FzQndVN0tnaWdubXRJWXgvTklqMXpvRnpo?=
+ =?utf-8?B?Vk5rQWg4QkRRWmJwZzBSemFnM01SMDBsT0V5R3d2L2VHTkN6TWtSeDZVSXE3?=
+ =?utf-8?B?NjIzOWlPZ0svVlVXVGJSOGJndkxXS1JXUlFCSVdhditNUXQrbTlxZ2lZSmxW?=
+ =?utf-8?B?OHN0RWZWMm45NWNSRHorRHMxVW9ESDQ2MHAraHBtR3FaeVFFL3pvOE9FR0xn?=
+ =?utf-8?B?Si8wSCtsQ0swMVBhMnVTVWdoSDdla0tvSUJDRVVORUR3Rml4MWx5ZGdqSlZu?=
+ =?utf-8?B?eXVnODg5elFTaE1HUlF4eXhxYVBaMnREek1maG1PMGhRMjJmLzcvR3c3SE5B?=
+ =?utf-8?B?WTMxMjU3dlFOQjVsVFFzUlVBd3ljelZXLzRXZ1dZZExOWEg5QzNlN2psMGd0?=
+ =?utf-8?B?cHl2NDNyVXFobzMxUGxUbWFLcVl0Wis3RHZXTjNMc3pMRnBNSlk5VE8rNkk4?=
+ =?utf-8?B?QkxaSjFEdVY1Z0ovcG5iWGR3K3ZFM0RUVGhpWms5Z3VXUzcyQzB4VDFXMlk2?=
+ =?utf-8?B?c1gvWlJtOCtRYkg0RWY0RmlOYTFIY1IzWUdWclRVcitrNnQ5Z0V1aW5rSytm?=
+ =?utf-8?B?S1A3cVlBOGFOMGlQMW9oL3h2Sy80aWk0WU1qVndUUlJ1a09DNm9GeURSRGZW?=
+ =?utf-8?B?dkRyZW8wTXdFdFZvUXVORklWWExWRFAxNmVFdG8zdHExUTB6Y0tWMnp5RUdh?=
+ =?utf-8?B?bjFFaW9hSEFob1J4UEdoTWx0emphVWt1Z1pJeEx6Nzc0TjVxRjVEbzdoT1Yx?=
+ =?utf-8?B?OVlCVDFvUmtqRWc3R3hpVFdsUzdqUkRlTUxQUFY1U05jL1VZZXpKdGJOWDVl?=
+ =?utf-8?B?c3RCRlhTMHRPYmcvem12TktVS0F2d3I3Zk1ITDc0dDUzVEN6RXhISWh1Mkh0?=
+ =?utf-8?B?OWxmNjI5eTV4M01sWC9JNG5BMGhGQUFYV1IrSGt1RDY5WWV4aGNxNGxlUkd2?=
+ =?utf-8?B?YW1oMEx4Rk1HU1lpSXpIenpxWHdGKzRNYXNUSU95aTJ6T2h3Y1RTaVpURkdM?=
+ =?utf-8?Q?R7P2x8zg0MGY7AGgF+OCrZ6dit2qBeruDA?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <28FFE11BF964DB43907413F65B18EBAE@namprd13.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: hammerspace.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR13MB3525.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0cff9d3-1880-4bc7-3dbd-08d8b706b61b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2021 14:31:12.4641
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cxvFSsjxoon1rsJy+lZ2z2JANqisDhETfBo7rjkw0Rwx8AgCHErjOvuhoWG3ynVHSBo8ewi+nwydsBDrfzz76w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR13MB3784
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.01.21 15:17, Muchun Song wrote:
-> On Tue, Jan 12, 2021 at 9:51 PM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 12.01.21 14:40, Muchun Song wrote:
->>> On Tue, Jan 12, 2021 at 7:11 PM David Hildenbrand <david@redhat.com> wrote:
->>>>
->>>> On 12.01.21 12:00, David Hildenbrand wrote:
->>>>> On 10.01.21 13:40, Muchun Song wrote:
->>>>>> If the refcount is one when it is migrated, it means that the page
->>>>>> was freed from under us. So we are done and do not need to migrate.
->>>>>>
->>>>>> This optimization is consistent with the regular pages, just like
->>>>>> unmap_and_move() does.
->>>>>>
->>>>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->>>>>> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
->>>>>> Acked-by: Yang Shi <shy828301@gmail.com>
->>>>>> ---
->>>>>>  mm/migrate.c | 6 ++++++
->>>>>>  1 file changed, 6 insertions(+)
->>>>>>
->>>>>> diff --git a/mm/migrate.c b/mm/migrate.c
->>>>>> index 4385f2fb5d18..a6631c4eb6a6 100644
->>>>>> --- a/mm/migrate.c
->>>>>> +++ b/mm/migrate.c
->>>>>> @@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
->>>>>>              return -ENOSYS;
->>>>>>      }
->>>>>>
->>>>>> +    if (page_count(hpage) == 1) {
->>>>>> +            /* page was freed from under us. So we are done. */
->>>>>> +            putback_active_hugepage(hpage);
->>>>>> +            return MIGRATEPAGE_SUCCESS;
->>>>>> +    }
->>>>>> +
->>>>>>      new_hpage = get_new_page(hpage, private);
->>>>>>      if (!new_hpage)
->>>>>>              return -ENOMEM;
->>>>>>
->>>>>
->>>>> Question: What if called via alloc_contig_range() where we even want to
->>>>> "migrate" free pages, meaning, relocate it?
->>>>>
->>>>
->>>> To be more precise:
->>>>
->>>> a) We don't have dissolve_free_huge_pages() calls on the
->>>> alloc_contig_range() path. So we *need* migration IIUC.
->>>
->>> Without this patch, if you want to migrate a HUgeTLB page,
->>> the page is freed to the hugepage pool. With this patch,
->>> the page is also freed to the hugepage pool.
->>> I didn't see any different. I am missing something?
->>
->> I am definitely not an expert on hugetlb pools, that's why I am asking.
->>
->> Isn't it, that with your code, no new page is allocated - so
->> dissolve_free_huge_pages() might just refuse to dissolve due to
->> reservations, bailing out, no?
-> 
-> Without this patch, the new page can be allocated from the
-> hugepage pool. The dissolve_free_huge_pages() also
-> can refuse to dissolve due to reservations. Right?
-
-Oh, you mean the migration target might be coming from the pool? I guess
-yes, looking at alloc_migration_target()->alloc_huge_page_nodemask().
-
-In that case, yes, I think we run into a similar issue already.
-
-Instead of trying to allocate new huge pages in
-dissolve_free_huge_pages() to "relocate free pages", we bail out.
-
-This all feels kind of wrong. After we migrated a huge page we should
-free it back to the buddy, so most of our machinery just keeps working
-without caring about free huge pages.
-
-
-I can see how your patch will not change the current (IMHO broken) behavior.
-
--- 
-Thanks,
-
-David / dhildenb
-
+SGkgTGludXMsDQoNClRoZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQgZTcxYmE5NDUy
+ZjBiNWIyZThkYzhhYTU0NDUxOThjZDkyMTRhNmE2MjoNCg0KICBMaW51eCA1LjExLXJjMiAoMjAy
+MS0wMS0wMyAxNTo1NTozMCAtMDgwMCkNCg0KYXJlIGF2YWlsYWJsZSBpbiB0aGUgR2l0IHJlcG9z
+aXRvcnkgYXQ6DQoNCiAgZ2l0Oi8vZ2l0LmxpbnV4LW5mcy5vcmcvcHJvamVjdHMvdHJvbmRteS9s
+aW51eC1uZnMuZ2l0IHRhZ3MvbmZzLWZvci01LjExLTINCg0KZm9yIHlvdSB0byBmZXRjaCBjaGFu
+Z2VzIHVwIHRvIDg5NjU2N2VlN2YxN2E4YTczNmNkYThhMjhjYzk4NzIyODQxMGEyYWM6DQoNCiAg
+TkZTOiBuZnNfaWdyYWJfYW5kX2FjdGl2ZSBtdXN0IGZpcnN0IHJlZmVyZW5jZSB0aGUgc3VwZXJi
+bG9jayAoMjAyMS0wMS0xMCAxNjoyOToyOCAtMDUwMCkNCg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KTkZTIGNsaWVudCBi
+dWdmaXhlcyBmb3IgTGludXggNS4xMQ0KDQpIaWdobGlnaHRzIGluY2x1ZGU6DQoNCkJ1Z2ZpeGVz
+Og0KLSBGaXggcGFyc2luZyBvZiBsaW5rLWxvY2FsIElQdjYgYWRkcmVzc2VzDQotIEZpeCBjb25m
+dXNpbmcgbG9nZ2luZyBvZiBtb3VudCBlcnJvcnMgdGhhdCB3YXMgaW50cm9kdWNlZCBieSB0aGUN
+CiAgZnNvcGVuKCkgcGF0Y2hzZXQuDQotIEZpeCBhIHRyYWNpbmcgdXNlIGFmdGVyIGZyZWUgaW4g
+X25mczRfZG9fc2V0bGsoKQ0KLSBMYXlvdXQgcmV0dXJuLW9uLWNsb3NlIGZpeGVzIHdoZW4gY2Fs
+bGVkIGZyb20gbmZzNF9ldmljdF9pbm9kZSgpDQotIExheW91dCBzZWdtZW50cyB3ZXJlIGJlaW5n
+IGxlYWtlZCBpbiBwbmZzX2dlbmVyaWNfY2xlYXJfcmVxdWVzdF9jb21taXQoKQ0KLSBEb24ndCBs
+ZWFrIERTIGNvbW1pdHMgaW4gcG5mc19nZW5lcmljX3JldHJ5X2NvbW1pdCgpDQotIEZpeCBhbiBP
+b3BzYWJsZSB1c2UtYWZ0ZXItZnJlZSB3aGVuIG5mc19kZWxlZ2F0aW9uX2ZpbmRfaW5vZGVfc2Vy
+dmVyKCkNCiAgY2FsbHMgaXB1dCgpIG9uIGFuIGlub2RlIGFmdGVyIHRoZSBzdXBlciBibG9jayBo
+YXMgZ29uZSBhd2F5Lg0KDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQpEYXZlIFd5c29jaGFuc2tpICgxKToNCiAgICAgIE5G
+UzQ6IEZpeCB1c2UtYWZ0ZXItZnJlZSBpbiB0cmFjZV9ldmVudF9yYXdfZXZlbnRfbmZzNF9zZXRf
+bG9jaw0KDQpTY290dCBNYXloZXcgKDEpOg0KICAgICAgTkZTOiBBZGp1c3QgZnNfY29udGV4dCBl
+cnJvciBsb2dnaW5nDQoNClRyb25kIE15a2xlYnVzdCAoOSk6DQogICAgICBwTkZTOiBNYXJrIGxh
+eW91dCBmb3IgcmV0dXJuIGlmIHJldHVybi1vbi1jbG9zZSB3YXMgbm90IHNlbnQNCiAgICAgIHBO
+RlM6IFdlIHdhbnQgcmV0dXJuLW9uLWNsb3NlIHRvIGNvbXBsZXRlIHdoZW4gZXZpY3RpbmcgdGhl
+IGlub2RlDQogICAgICBwTkZTOiBDbGVhbiB1cCBwbmZzX2xheW91dHJldHVybl9mcmVlX2xzZWdz
+KCkNCiAgICAgIHBORlM6IFN0cmljdGVyIG9yZGVyaW5nIG9mIGxheW91dGdldCBhbmQgbGF5b3V0
+cmV0dXJuDQogICAgICBORlMvcE5GUzogRG9uJ3QgY2FsbCBwbmZzX2ZyZWVfYnVja2V0X2xzZWco
+KSBiZWZvcmUgcmVtb3ZpbmcgdGhlIHJlcXVlc3QNCiAgICAgIE5GUy9wTkZTOiBEb24ndCBsZWFr
+IERTIGNvbW1pdHMgaW4gcG5mc19nZW5lcmljX3JldHJ5X2NvbW1pdCgpDQogICAgICBORlMvcE5G
+UzogRml4IGEgbGVhayBvZiB0aGUgbGF5b3V0ICdwbGhfb3V0c3RhbmRpbmcnIGNvdW50ZXINCiAg
+ICAgIE5GUzogbmZzX2RlbGVnYXRpb25fZmluZF9pbm9kZV9zZXJ2ZXIgbXVzdCBmaXJzdCByZWZl
+cmVuY2UgdGhlIHN1cGVyYmxvY2sNCiAgICAgIE5GUzogbmZzX2lncmFiX2FuZF9hY3RpdmUgbXVz
+dCBmaXJzdCByZWZlcmVuY2UgdGhlIHN1cGVyYmxvY2sNCg0Kai5uaXhkb3JmQGF2bS5kZSAoMSk6
+DQogICAgICBuZXQ6IHN1bnJwYzogaW50ZXJwcmV0IHRoZSByZXR1cm4gdmFsdWUgb2Yga3N0cnRv
+dTMyIGNvcnJlY3RseQ0KDQogZnMvbmZzL2RlbGVnYXRpb24uYyB8IDEyICsrKysrKy0tLS0NCiBm
+cy9uZnMvaW50ZXJuYWwuaCAgIHwgMzggKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tDQog
+ZnMvbmZzL25mczRwcm9jLmMgICB8IDI4ICsrKysrKysrKy0tLS0tLS0tLS0tLS0NCiBmcy9uZnMv
+bmZzNHN1cGVyLmMgIHwgIDQgKystLQ0KIGZzL25mcy9wbmZzLmMgICAgICAgfCA2NyArKysrKysr
+KysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KIGZzL25mcy9w
+bmZzLmggICAgICAgfCAgOCArKystLS0tDQogZnMvbmZzL3BuZnNfbmZzLmMgICB8IDIyICsrKysr
+KysrLS0tLS0tLS0tLQ0KIG5ldC9zdW5ycGMvYWRkci5jICAgfCAgMiArLQ0KIDggZmlsZXMgY2hh
+bmdlZCwgOTkgaW5zZXJ0aW9ucygrKSwgODIgZGVsZXRpb25zKC0pDQoNCi0tIA0KVHJvbmQgTXlr
+bGVidXN0DQpMaW51eCBORlMgY2xpZW50IG1haW50YWluZXIsIEhhbW1lcnNwYWNlDQp0cm9uZC5t
+eWtsZWJ1c3RAaGFtbWVyc3BhY2UuY29tDQoNCg0K
