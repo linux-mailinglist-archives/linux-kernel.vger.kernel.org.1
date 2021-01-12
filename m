@@ -2,145 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 035DB2F2A0A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A38F22F2A07
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405229AbhALI37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 03:29:59 -0500
-Received: from mail-dm6nam12on2097.outbound.protection.outlook.com ([40.107.243.97]:45536
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731604AbhALI36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 03:29:58 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UMtrmMGobkSxHP1MnEw6gXesbjbwxv6CGYLsYBqqGehPD/ugWKCQxeM7OSPyKsiyKSpwbUo2P7u1I9UrWVn6EoWN8cXRH7RRL+/TIz1FeVWTVF54HYDqUyBoz6XLqADI1DqD1+f4BAHhsmB3FNmTqtJUsU8je30O2n3COUs28Cgz5ETFlhP5vWwX+9yVeJ37MV7igOA61i06wZAPupzecswN5hL92qJzxIk4k/e/FeastbM52yMaOoggoy33cK3xwP3gy//0PlmwmpLvb08LUHKLLHhc+Nbzpv03nxEcS7LZt7IGN7lOGczvP1b12exNtZ7G8PS8yRaNSjOp7oTg5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8GgPiNXiVuBpzGbi7AtrQy9O8vS5DAE5SaScCeXPoMw=;
- b=FNDsHtfOluydXRGeMJzPQN0b7JY6RG0t+Wxzz+n+pY/hknVSSlnwgMAUYhz6yE6ZurAQqdsFACEh3xoxOR8MwUWAr+SeC2wEQi+ygdEk7FL5G9X4LmOmUpRTMauK8VUTCPZoyqJeHwimD/DdnoqOWLFsQw+1baY4nwbtj9tlelv5bCOLeKpQWkmXRPzeTyXtwZCBrvTFJFB8YTDIC09qthBTYwhogNDEJGnYYiYtOelcddXHEv482O24MFFoHdpa9aEDgtnpdZFNG26Xl9ppXi/vyk3BllT5KVYqzw/o08CoefV700hC0jZgtvx1cObBEE+LudOtXQ6+e+Eu8p7OWA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+        id S2405460AbhALI3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 03:29:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731604AbhALI3u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 03:29:50 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A935CC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:29:09 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id 15so956105pgx.7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:29:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8GgPiNXiVuBpzGbi7AtrQy9O8vS5DAE5SaScCeXPoMw=;
- b=sOfVUhlOKyhQD6g1Ovq4vEFs9qGNTGSEr+KKQudgqxsOkBGOUjHO7H8dz/NKk/fAoQoHsgrxLUH/sxLZ+nnRROGV39VlbJScpCtz6TYu1KgzDMTCmq3QXQh8C9eitGQKh5XBGsJQiR1flmu2tUC3mb5419r0lfASzRZR8Hyz4q8=
-Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
- header.d=none;driverdev.osuosl.org; dmarc=none action=none
- header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by BY5PR04MB6913.namprd04.prod.outlook.com (2603:10b6:a03:22e::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.9; Tue, 12 Jan
- 2021 08:28:49 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::b59c:9ae:6e98:5e1e]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::b59c:9ae:6e98:5e1e%8]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
- 08:28:49 +0000
-Date:   Tue, 12 Jan 2021 16:28:43 +0800
-From:   Xin Ji <xji@analogixsemi.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Nicolas Boichat <drinkcat@google.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sheng Pan <span@analogixsemi.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org
-Subject: Re: [PATCH v2 2/2] drm/bridge: anx7625: add MIPI DPI input feature
- support
-Message-ID: <20210112082843.GB5827@pc-user>
-References: <cover.1609380663.git.xji@analogixsemi.com>
- <f7fce2657d3c98a4d705f88eb9684f97b646793e.1609380663.git.xji@analogixsemi.com>
- <20210105141701.GG2809@kadam>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210105141701.GG2809@kadam>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [61.148.116.10]
-X-ClientProxiedBy: HK2PR02CA0142.apcprd02.prod.outlook.com
- (2603:1096:202:16::26) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CrBTMwuCocMXNaZlBloj14p7TaV3dUqyAg3ZjdKSdtQ=;
+        b=SheSm7pPzbdgKTGIS5Wbrtm+EyLFpf3IdIFMHUhJjjd5RQsq61KHB9elZRuoTCC2Eu
+         LhpDn7kN9a6R63hOsxSvvK9hDTeYJ7SEtf4ru2381HGPyfNGlGMggNq+C+T5igUUdWu4
+         3AR0la2JlukQLl4bU9bpUeZiz/TW1WQ8YQ6KDxI2/405yKKJT4JB+qRx+zwCY+FDMvKM
+         8LQe6n459ZQlGeYxWMcdJBvgCrPcDPRqS0Uzgeh8X/lACZyHl2RjwmWzCdtqDCelh1qM
+         pidA75ympxCe2WCGm3+XyvVw2REGMrrOcPYYuF70ZbeLxzJGg3UX7qhSjISoshlYIikH
+         eNCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CrBTMwuCocMXNaZlBloj14p7TaV3dUqyAg3ZjdKSdtQ=;
+        b=Wc3ZVIkpgjCpsd+VrSz7IXqjY4NXAV1gRecQRTYqnVF98/ioVy8MdFqk5f5jNXcLEw
+         eyf3lRhnrHJek0uWJQy1XyoTMgBDOqhtnnv7PfLPu8h9AIIcixyDa5vJnDD0WpLB/RrO
+         JREzTX0AdFf65Jq/3S/gbzy5K2ni1X4rd/188j+IAssEHJtcqrnCtnhZsDEyzbrzN0eH
+         248Rx/P9ArRW0Z/LVpWmL0T3r9v3xV2ei0PW3UWHrsZ/cFTdBUGzI90CTSln74kAafCy
+         CkmKmWNFk/s3lsRRtIojR7C7KPMssvuF4P6oAkjGjn8p5oH5lZkFHJCaaxw95Akk0KHZ
+         MdVA==
+X-Gm-Message-State: AOAM530Qo/9oEvXPlUZTkdRmAopXir3dhyBjODwkI8OSIoztULwnEGIe
+        Q+kqMDMSXgK4UjelR/93sRkT+Q==
+X-Google-Smtp-Source: ABdhPJweEioWpVtvQX71VyotDntXRJ0bZz1J7VJsaDO6OCrG4WuPO1/Yj0aac3RBFhQPfdcf3jYj+g==
+X-Received: by 2002:a63:d601:: with SMTP id q1mr3608947pgg.417.1610440149194;
+        Tue, 12 Jan 2021 00:29:09 -0800 (PST)
+Received: from localhost ([122.172.85.111])
+        by smtp.gmail.com with ESMTPSA id r79sm2187433pfc.166.2021.01.12.00.29.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 12 Jan 2021 00:29:08 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH V4 0/3] scripts: dtc: Build fdtoverlay
+Date:   Tue, 12 Jan 2021 13:58:59 +0530
+Message-Id: <cover.1610431620.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc-user (61.148.116.10) by HK2PR02CA0142.apcprd02.prod.outlook.com (2603:1096:202:16::26) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3742.6 via Frontend Transport; Tue, 12 Jan 2021 08:28:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f8f6d433-1bfb-4b79-8345-08d8b6d4166f
-X-MS-TrafficTypeDiagnostic: BY5PR04MB6913:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR04MB691386013D71BD93ED60B8C1C7AA0@BY5PR04MB6913.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Rr9CU9Si9miXZjOdbDdeXqz5fMS7S6o52qCnaAEz9nYXStXTaWEzgvmhZbAnLHkDEYReKPopNe53Z76w5X05gJPpmP6iFk/PpHKDwMCEnNPUaCgO4y2V6uzUDrHr0DMCvrldpgGLpAw0xPBJiN0qjMKNwyWEpHHyHm3I5zy8ITGrBQBNr8axO/Gu6HNU+IqPcxOm4egoUKjfYsmCJrMna1xQihhlFhyr0lTr2tLQV5e5+p+FXK3ReCX/XomfeHCY/CeHJIfijLhJ4pMUrX3x/RFcKYwwuq+1K9G9FoJVhWKt9nA3NqIajUs4lD/8sCmXVY1kkvjYM2yi1LezuXPc/Mz2SYVVwSjtM5VMj8uxZI0Sf5ve+ALLZSTC69UwiBSt/SpIdyMGhNJ4zzvIneSNEA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(39840400004)(136003)(396003)(366004)(66946007)(4744005)(66556008)(54906003)(66476007)(9686003)(316002)(186003)(33716001)(6666004)(86362001)(26005)(55016002)(52116002)(7416002)(6496006)(6916009)(4326008)(5660300002)(1076003)(8936002)(956004)(2906002)(16526019)(8676002)(33656002)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?YuHBD+wwH9/9pZLDgU1nibExIcA5OtI8ZK54Fo7+LF36QHfJsOJGoc2N/Ptt?=
- =?us-ascii?Q?Q3yopSagLbBkkS3TVdZ2dZaGgPO9mSaV+/Sk+zjx3oGxCDtsdf54fe7ECbND?=
- =?us-ascii?Q?ofdWD1vkRNb9zUyr9OX6tS0uUuiNGSMTbZwIU9CAjijfdcZKfnpHwp/PPl73?=
- =?us-ascii?Q?77U6LMURmad6o5LnsOQTjdv55H7dULaySXl+iYu+HWhpBgoM+Cc5s7ruMgfX?=
- =?us-ascii?Q?6cCmDywLulDA7mwlF445YfPjchDJ7VKE5fDozsdBDVG9YTKWqHQKacksKqWs?=
- =?us-ascii?Q?8SFuMlsxtL09PktjTUfHPKaE7xfv8BXZmmPLRj43AiIqzAdaVIaMdl5t1Ptg?=
- =?us-ascii?Q?ATA2P27GqYm0UD/Zw6jINx/DZ6DblMrnlJ/AUTg5yjhtg3qqA53/RxxpgUOI?=
- =?us-ascii?Q?mDLXjftpXGFfI21SQARNAZoa+ry295tmSKORJ8jligfB3eQPGwQOBnI7IagX?=
- =?us-ascii?Q?hCi4jnJPg3c79XP8TdVUW68iW95Kk33QpOU/Oj24vFosKYP5sRNFMoab+sFr?=
- =?us-ascii?Q?fjCXDby94d93EnANxNh+cFy0gDuby9/XKTk896FZrD2D/9WMkbrLpA0rrcVa?=
- =?us-ascii?Q?72yxef1ZTGdNzn4ZahnHkxp7Y7rrGqrGa/OtcXthSIsphfIai03Sf9JgRSOs?=
- =?us-ascii?Q?mNZOhidFoIOdsOLCIquI3VfNF/0AsYoFpS0q4I+xuHVD33wZJddUl1Q4a0iQ?=
- =?us-ascii?Q?ke2CLHAsVGjj2oFFliasZ2Hz7ts+4oX3hjlhHJixYR9MKp8XLukCI1bZSTOQ?=
- =?us-ascii?Q?3BVx9wXb9OHRAOS7aljp/Yy9U0FgtdzJs7jPq0sP2rOpq7RBYhPyjklVQB/1?=
- =?us-ascii?Q?KnKNZduJcs+Ir0jy5chmJabev3CLVJHUVZm5NpgOUiEdpM8PH8xLinRu6+kA?=
- =?us-ascii?Q?vYD1zWEX91+GC9N7cDrDz05I29B3kMrr6dclyJ0y0nW6TnPfMhOFbC+uIrg4?=
- =?us-ascii?Q?QVwg3mKY8uGY9nE1CunObW9uhS0mY2T6v2fsWFLIRYzHH4ywYZOgB8sxwS30?=
- =?us-ascii?Q?BhO+?=
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 08:28:49.7628
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-Network-Message-Id: f8f6d433-1bfb-4b79-8345-08d8b6d4166f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: m7zfdtef52SHD3GRKj1kIgC4mUw/DwGvqaMKb6kuUV97GQX5ky7ro5NDbEpjP/lR/dsg+boI94bXsALS2UAgUQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6913
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 05:17:01PM +0300, Dan Carpenter wrote:
-> On Thu, Dec 31, 2020 at 10:22:36AM +0800, Xin Ji wrote:
-> >  static int anx7625_read_ctrl_status_p0(struct anx7625_data *ctx)
-> >  {
-> >  	return anx7625_reg_read(ctx, ctx->i2c.rx_p0_client, AP_AUX_CTRL_STATUS);
-> > @@ -189,10 +203,64 @@ static int wait_aux_op_finish(struct anx7625_data *ctx)
-> >  			       AP_AUX_CTRL_STATUS);
-> >  	if (val < 0 || (val & 0x0F)) {
-> >  		DRM_DEV_ERROR(dev, "aux status %02x\n", val);
-> > -		val = -EIO;
-> > +		return -EIO;
-> >  	}
-> >  
-> > -	return val;
-> > +	return 0;
-> 
-> This s/val/0/ change seems like a bug fix.  Could you please send that
-> as a separate patch at the start of the patch set?
-Hi Dan Carpenter, OK, I'll send this as a separate patch.
-Thanks,
-Xin
-> 
-> > +}
-> 
-> regards,
-> dan carpenter
+We will start building overlays for platforms soon in the kernel and
+would need fdtoverlay tool going forward. Lets start fetching and
+building it.
+
+While at it, also remove fdtdump.c file, which isn't used by the kernel.
+
+V4:
+- Don't fetch and build fdtdump.c
+- Remove fdtdump.c
+
+Viresh Kumar (3):
+  scripts: dtc: Add fdtoverlay.c to DTC_SOURCE
+  scripts: dtc: Build fdtoverlay tool
+  scripts: dtc: Remove the unused fdtdump.c file
+
+ scripts/dtc/Makefile             |   6 +-
+ scripts/dtc/fdtdump.c            | 163 -------------------------------
+ scripts/dtc/update-dtc-source.sh |   6 +-
+ 3 files changed, 8 insertions(+), 167 deletions(-)
+ delete mode 100644 scripts/dtc/fdtdump.c
+
+-- 
+2.25.0.rc1.19.g042ed3e048af
+
