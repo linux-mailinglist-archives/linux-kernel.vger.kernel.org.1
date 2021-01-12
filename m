@@ -2,175 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8CF92F2674
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:58:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A692F267D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 04:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733151AbhALC4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 21:56:35 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:57297 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728044AbhALC4d (ORCPT
+        id S1733213AbhALC7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 21:59:49 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10709 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728044AbhALC7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 21:56:33 -0500
-X-IronPort-AV: E=Sophos;i="5.79,340,1602518400"; 
-   d="scan'208";a="103383793"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 12 Jan 2021 10:55:38 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id C0A054CE602D;
-        Tue, 12 Jan 2021 10:55:35 +0800 (CST)
-Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
- (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 12 Jan
- 2021 10:55:36 +0800
-Subject: Re: [PATCH 04/10] mm, fsdax: Refactor memory-failure handler for dax
- mapping
-To:     Jan Kara <jack@suse.cz>
-CC:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-raid@vger.kernel.org>,
-        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
-        <david@fromorbit.com>, <hch@lst.de>, <song@kernel.org>,
-        <rgoldwyn@suse.de>, <qi.fuli@fujitsu.com>, <y-goto@fujitsu.com>
-References: <20201230165601.845024-1-ruansy.fnst@cn.fujitsu.com>
- <20201230165601.845024-5-ruansy.fnst@cn.fujitsu.com>
- <20210106154132.GC29271@quack2.suse.cz>
-From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
-Message-ID: <75164044-bfdf-b2d6-dff0-d6a8d56d1f62@cn.fujitsu.com>
-Date:   Tue, 12 Jan 2021 10:55:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 11 Jan 2021 21:59:49 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DFFcZ1vlpzkqyC;
+        Tue, 12 Jan 2021 10:57:50 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 12 Jan
+ 2021 10:59:03 +0800
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: fix to keep isolation of atomic write
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <20201230075557.108818-1-yuchao0@huawei.com>
+ <X/Y5pJr4Aaf0bBqj@google.com> <X/ZAS6oyFiudshe2@google.com>
+ <X/x9kTlL8E1Wj4Dd@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <d146348b-3bbd-c1a5-72eb-b054cbcf0b13@huawei.com>
+Date:   Tue, 12 Jan 2021 10:59:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <20210106154132.GC29271@quack2.suse.cz>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+In-Reply-To: <X/x9kTlL8E1Wj4Dd@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.167.225.141]
-X-ClientProxiedBy: G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) To
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
-X-yoursite-MailScanner-ID: C0A054CE602D.AADE7
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
-X-Spam-Status: No
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/1/6 下午11:41, Jan Kara wrote:
-> On Thu 31-12-20 00:55:55, Shiyang Ruan wrote:
->> The current memory_failure_dev_pagemap() can only handle single-mapped
->> dax page for fsdax mode.  The dax page could be mapped by multiple files
->> and offsets if we let reflink feature & fsdax mode work together.  So,
->> we refactor current implementation to support handle memory failure on
->> each file and offset.
+On 2021/1/12 0:32, Jaegeuk Kim wrote:
+> On 01/06, Jaegeuk Kim wrote:
+>> On 01/06, Jaegeuk Kim wrote:
+>>> Hi Chao,
+>>>
+>>> With a quick test, this patch causes down_write failure resulting in blocking
+>>> process. I didn't dig in the bug so, please check the code again. :P
 >>
->> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+>> nvm. I can see it works now.
 > 
-> Overall this looks OK to me, a few comments below.
-> 
->> ---
->>   fs/dax.c            | 21 +++++++++++
->>   include/linux/dax.h |  1 +
->>   include/linux/mm.h  |  9 +++++
->>   mm/memory-failure.c | 91 ++++++++++++++++++++++++++++++++++-----------
->>   4 files changed, 100 insertions(+), 22 deletions(-)
+> Hmm, this gives a huge perf regression when running sqlite. :(
+> We may need to check the lock coverage. Thoughts?
 
-...
+I added i_mmap_sem lock only, so it can cause atomic_{start,commit,finish}
+race with mmap and truncation operations in additionally.
 
->>   
->> @@ -345,9 +348,12 @@ static void add_to_kill(struct task_struct *tsk, struct page *p,
->>   	}
->>   
->>   	tk->addr = page_address_in_vma(p, vma);
->> -	if (is_zone_device_page(p))
->> -		tk->size_shift = dev_pagemap_mapping_shift(p, vma);
->> -	else
->> +	if (is_zone_device_page(p)) {
->> +		if (is_device_fsdax_page(p))
->> +			tk->addr = vma->vm_start +
->> +					((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
-> 
-> It seems strange to use 'pgoff' for dax pages and not for any other page.
-> Why? I'd rather pass correct pgoff from all callers of add_to_kill() and
-> avoid this special casing...
+I'd like to know what's your sqlite testcase?
 
-Because one fsdax page can be shared by multiple pgoffs.  I have to pass 
-each pgoff in each iteration to calculate the address in vma (for 
-tk->addr).  Other kinds of pages don't need this.  They can get their 
-unique address by calling "page_address_in_vma()".
-
-So, I added this fsdax case here.  This patchset only implemented the 
-fsdax case, other cases also need to be added here if to be implemented.
-
-
---
 Thanks,
-Ruan Shiyang.
 
 > 
->> +		tk->size_shift = dev_pagemap_mapping_shift(p, vma, tk->addr);
->> +	} else
->>   		tk->size_shift = page_shift(compound_head(p));
->>   
->>   	/*
->> @@ -495,7 +501,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
->>   			if (!page_mapped_in_vma(page, vma))
->>   				continue;
->>   			if (vma->vm_mm == t->mm)
->> -				add_to_kill(t, page, vma, to_kill);
->> +				add_to_kill(t, page, NULL, 0, vma, to_kill);
->>   		}
->>   	}
->>   	read_unlock(&tasklist_lock);
->> @@ -505,24 +511,19 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
->>   /*
->>    * Collect processes when the error hit a file mapped page.
->>    */
->> -static void collect_procs_file(struct page *page, struct list_head *to_kill,
->> -				int force_early)
->> +static void collect_procs_file(struct page *page, struct address_space *mapping,
->> +		pgoff_t pgoff, struct list_head *to_kill, int force_early)
->>   {
->>   	struct vm_area_struct *vma;
->>   	struct task_struct *tsk;
->> -	struct address_space *mapping = page->mapping;
->> -	pgoff_t pgoff;
->>   
->>   	i_mmap_lock_read(mapping);
->>   	read_lock(&tasklist_lock);
->> -	pgoff = page_to_pgoff(page);
->>   	for_each_process(tsk) {
->>   		struct task_struct *t = task_early_kill(tsk, force_early);
->> -
->>   		if (!t)
->>   			continue;
->> -		vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff,
->> -				      pgoff) {
->> +		vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff, pgoff) {
->>   			/*
->>   			 * Send early kill signal to tasks where a vma covers
->>   			 * the page but the corrupted page is not necessarily
->> @@ -531,7 +532,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
->>   			 * to be informed of all such data corruptions.
->>   			 */
->>   			if (vma->vm_mm == t->mm)
->> -				add_to_kill(t, page, vma, to_kill);
->> +				add_to_kill(t, page, mapping, pgoff, vma, to_kill);
->>   		}
->>   	}
->>   	read_unlock(&tasklist_lock);
->> @@ -550,7 +551,8 @@ static void collect_procs(struct page *page, struct list_head *tokill,
->>   	if (PageAnon(page))
->>   		collect_procs_anon(page, tokill, force_early);
->>   	else
->> -		collect_procs_file(page, tokill, force_early);
->> +		collect_procs_file(page, page->mapping, page_to_pgoff(page),
+>>
+>>>
+>>> On 12/30, Chao Yu wrote:
+>>>> ThreadA					ThreadB
+>>>> - f2fs_ioc_start_atomic_write
+>>>> - write
+>>>> - f2fs_ioc_commit_atomic_write
+>>>>   - f2fs_commit_inmem_pages
+>>>>   - f2fs_drop_inmem_pages
+>>>>   - f2fs_drop_inmem_pages
+>>>>    - __revoke_inmem_pages
+>>>> 					- f2fs_vm_page_mkwrite
+>>>> 					 - set_page_dirty
+>>>> 					  - tag ATOMIC_WRITTEN_PAGE and add page
+>>>> 					    to inmem_pages list
+>>>>    - clear_inode_flag(FI_ATOMIC_FILE)
+>>>> 					- f2fs_vm_page_mkwrite
+>>>> 					  - set_page_dirty
+>>>> 					   - f2fs_update_dirty_page
+>>>> 					    - f2fs_trace_pid
+>>>> 					     - tag inmem page private to pid
+>>>> 					- truncate
+>>>> 					 - f2fs_invalidate_page
+>>>> 					 - set page->mapping to NULL
+>>>> 					  then it will cause panic once we
+>>>> 					  access page->mapping
+>>>>
+>>>> The root cause is we missed to keep isolation of atomic write in the case
+>>>> of commit_atomic_write vs mkwrite, let commit_atomic_write helds i_mmap_sem
+>>>> lock to avoid this issue.
+>>>>
+>>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>>>> ---
+>>>> v2:
+>>>> - use i_mmap_sem to avoid mkwrite racing with below flows:
+>>>>   * f2fs_ioc_start_atomic_write
+>>>>   * f2fs_drop_inmem_pages
+>>>>   * f2fs_commit_inmem_pages
+>>>>
+>>>>   fs/f2fs/file.c    | 3 +++
+>>>>   fs/f2fs/segment.c | 7 +++++++
+>>>>   2 files changed, 10 insertions(+)
+>>>>
+>>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>>>> index 4e6d4b9120a8..a48ec650d691 100644
+>>>> --- a/fs/f2fs/file.c
+>>>> +++ b/fs/f2fs/file.c
+>>>> @@ -2050,6 +2050,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+>>>>   		goto out;
+>>>>   
+>>>>   	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>>>> +	down_write(&F2FS_I(inode)->i_mmap_sem);
+>>>>   
+>>>>   	/*
+>>>>   	 * Should wait end_io to count F2FS_WB_CP_DATA correctly by
+>>>> @@ -2060,6 +2061,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+>>>>   			  inode->i_ino, get_dirty_pages(inode));
+>>>>   	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
+>>>>   	if (ret) {
+>>>> +		up_write(&F2FS_I(inode)->i_mmap_sem);
+>>>>   		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>>>>   		goto out;
+>>>>   	}
+>>>> @@ -2073,6 +2075,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+>>>>   	/* add inode in inmem_list first and set atomic_file */
+>>>>   	set_inode_flag(inode, FI_ATOMIC_FILE);
+>>>>   	clear_inode_flag(inode, FI_ATOMIC_REVOKE_REQUEST);
+>>>> +	up_write(&F2FS_I(inode)->i_mmap_sem);
+>>>>   	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+>>>>   
+>>>>   	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
+>>>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+>>>> index d8570b0359f5..dab870d9faf6 100644
+>>>> --- a/fs/f2fs/segment.c
+>>>> +++ b/fs/f2fs/segment.c
+>>>> @@ -327,6 +327,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
+>>>>   	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>>>>   	struct f2fs_inode_info *fi = F2FS_I(inode);
+>>>>   
+>>>> +	down_write(&F2FS_I(inode)->i_mmap_sem);
+>>>> +
+>>>>   	while (!list_empty(&fi->inmem_pages)) {
+>>>>   		mutex_lock(&fi->inmem_lock);
+>>>>   		__revoke_inmem_pages(inode, &fi->inmem_pages,
+>>>> @@ -344,6 +346,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
+>>>>   		sbi->atomic_files--;
+>>>>   	}
+>>>>   	spin_unlock(&sbi->inode_lock[ATOMIC_FILE]);
+>>>> +
+>>>> +	up_write(&F2FS_I(inode)->i_mmap_sem);
+>>>>   }
+>>>>   
+>>>>   void f2fs_drop_inmem_page(struct inode *inode, struct page *page)
+>>>> @@ -467,6 +471,7 @@ int f2fs_commit_inmem_pages(struct inode *inode)
+>>>>   	f2fs_balance_fs(sbi, true);
+>>>>   
+>>>>   	down_write(&fi->i_gc_rwsem[WRITE]);
+>>>> +	down_write(&F2FS_I(inode)->i_mmap_sem);
+>>>>   
+>>>>   	f2fs_lock_op(sbi);
+>>>>   	set_inode_flag(inode, FI_ATOMIC_COMMIT);
+>>>> @@ -478,6 +483,8 @@ int f2fs_commit_inmem_pages(struct inode *inode)
+>>>>   	clear_inode_flag(inode, FI_ATOMIC_COMMIT);
+>>>>   
+>>>>   	f2fs_unlock_op(sbi);
+>>>> +
+>>>> +	up_write(&F2FS_I(inode)->i_mmap_sem);
+>>>>   	up_write(&fi->i_gc_rwsem[WRITE]);
+>>>>   
+>>>>   	return err;
+>>>> -- 
+>>>> 2.29.2
+>>>
+>>>
+>>> _______________________________________________
+>>> Linux-f2fs-devel mailing list
+>>> Linux-f2fs-devel@lists.sourceforge.net
+>>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>>
+>>
+>> _______________________________________________
+>> Linux-f2fs-devel mailing list
+>> Linux-f2fs-devel@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> .
 > 
-> Why not use page_mapping() helper here? It would be safer for THPs if they
-> ever get here...
-> 
-> 								Honza
-> 
-
-
