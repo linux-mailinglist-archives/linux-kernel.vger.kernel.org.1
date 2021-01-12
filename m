@@ -2,147 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 622212F2503
+	by mail.lfdr.de (Postfix) with ESMTP id CE5772F2504
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728299AbhALAjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 19:39:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728974AbhALAiq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 19:38:46 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41588C0617A4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 16:38:06 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id 6so1023064ejz.5
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 16:38:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AAGK7QJnpAigixBsDwJOzFarQpa+uBn1LCtFQ6nqZOg=;
-        b=Zj+qOLhHhCXzhbKC6BIAew+AX4ps5bw/ov5suzZPwzPwiHyKHAlZpPGpfXEv10EV0C
-         f+u28iptdt6p3p/fA/LMgRUvZ0kd2jfsUajM6UJUSBoPn2lAtcEaVibSRudyHVAG4Dsh
-         5wbu9vfoEfHtNNaSfcndmEfzD+b2I4KevWgCKhp795ZOltdJO0dx3nFQahcQtqyMYYOD
-         C+m5v5SJZNDC8hJ4kQip8/63FIZVNzGX83A1ZZhSRmCpE6039rjwpXxqRHRMtjE9QYc0
-         9ucW1UVi0j32EE9Iam8Z1bs/Sa6LKBX/qLkboU4v1MA6+NRGJrzDgARi25KLBaPpYdf+
-         oFWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AAGK7QJnpAigixBsDwJOzFarQpa+uBn1LCtFQ6nqZOg=;
-        b=pNT0CSama+mdAITspqK7lT2f0rN/5xIJ+eV/DIiI68LbAWp/8cL9LH4Kxunxo1Y5gF
-         ASLTtOuww1n7HaZkkTlIfhl98qqhWour0foELTG/RI8ToJYEuy4hvCzJ6Qxzju/x2t5N
-         DyMRgEnh3puIgJQNpmI3+eNZFh2i0cVU8tdQ3B4UqdSRAyWtEbof9gpBad+sgcIo+1/G
-         N0mJaIcOsEcyqkYg21P/z0jhGbWUmePpmKrq/OZOD1qnMfDvkqXBi6vcJBlXWt2dSxCa
-         NhDTb2PlpGvWsDJQzGO8maVK14Ntl3W3KKVWl7jryEoAr9DPcmMqinPPb2YvOz0jTmgX
-         2geg==
-X-Gm-Message-State: AOAM532eK74HSkKg6XGF8wywCOLC7QaT4lqmbd+TcM5HqXRg8fUUQ6uT
-        5PbcDMikNjxs7xITbedhebwB2PVf4dkyevbPSo44
-X-Google-Smtp-Source: ABdhPJxzGLv08AscXEmZjjVg2gsLIwKeoO6Prumvngl5LoIbvGS5MQiYEFtsPvhL3T6YwqPt/MFDm1VJuygtgOcJAMM=
-X-Received: by 2002:a17:906:1194:: with SMTP id n20mr1301510eja.269.1610411884658;
- Mon, 11 Jan 2021 16:38:04 -0800 (PST)
-MIME-Version: 1.0
-References: <20210111081821.3041587-1-morbo@google.com> <20210111201224.l5r2zxuyd7ayszke@google.com>
- <CAGG=3QWo5_wwTMHtif4BzFssByaW1ScvpaEH1p1nZ6ymVggLjA@mail.gmail.com> <20210111203120.daeef4yuwgmk5em4@google.com>
-In-Reply-To: <20210111203120.daeef4yuwgmk5em4@google.com>
-From:   Bill Wendling <morbo@google.com>
-Date:   Mon, 11 Jan 2021 16:37:53 -0800
-Message-ID: <CAGG=3QVs8dUaqcnuHYiaqccMhp7OmkxewZ_PAhAr96todNJhfQ@mail.gmail.com>
-Subject: Re: [PATCH] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Fangrui Song <maskray@google.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        id S1728839AbhALAjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 19:39:41 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:60880 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726719AbhALAjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 19:39:24 -0500
+Received: from zn.tnic (p200300ec2f088f0064dd88f751605e0c.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:8f00:64dd:88f7:5160:5e0c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 337F81EC04CB;
+        Tue, 12 Jan 2021 01:38:43 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1610411923;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=7qCToIItDiX616kW0snCkYrX5Hh3lczpxY8UpXzRiL4=;
+        b=qELD7kpeooLqFfuuHKSuAc2XCS7HDR9jqeC2SUdlNfQuB/NfL5Azb15dNOn7ToNeRuHEV6
+        3GUcHJ+5JZojNiGYvXNLSpY7kkYWnamrAd0/n3xdklB98i26HJZh8RHLPbj3x0vS4igzNd
+        FeEIq0eM0QaOmYz3vtmY5rWZaF1hL4A=
+Date:   Tue, 12 Jan 2021 01:38:39 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
         Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v3] x86/entry: emit a symbol for register restoring thunk
+Message-ID: <20210112003839.GL25645@zn.tnic>
+References: <20210106015810.5p6crnh7jqtmjtv4@treble>
+ <20210111203807.3547278-1-ndesaulniers@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210111203807.3547278-1-ndesaulniers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 12:31 PM Fangrui Song <maskray@google.com> wrote:
-> On 2021-01-11, Bill Wendling wrote:
-> >On Mon, Jan 11, 2021 at 12:12 PM Fangrui Song <maskray@google.com> wrote:
-> >>
-> >> On 2021-01-11, 'Bill Wendling' via Clang Built Linux wrote:
-> >> >From: Sami Tolvanen <samitolvanen@google.com>
-> >> >
-> >> >Enable the use of clang's Profile-Guided Optimization[1]. To generate a
-> >> >profile, the kernel is instrumented with PGO counters, a representative
-> >> >workload is run, and the raw profile data is collected from
-> >> >/sys/kernel/debug/pgo/profraw.
-> >> >
-> >> >The raw profile data must be processed by clang's "llvm-profdata" tool before
-> >> >it can be used during recompilation:
-> >> >
-> >> >  $ cp /sys/kernel/debug/pgo/profraw vmlinux.profraw
-> >> >  $ llvm-profdata merge --output=vmlinux.profdata vmlinux.profraw
-> >> >
-> >> >Multiple raw profiles may be merged during this step.
-> >> >
-> >> >The data can be used either by the compiler if LTO isn't enabled:
-> >> >
-> >> >    ... -fprofile-use=vmlinux.profdata ...
-> >> >
-> >> >or by LLD if LTO is enabled:
-> >> >
-> >> >    ... -lto-cs-profile-file=vmlinux.profdata ...
-> >>
-> >> This LLD option does not exist.
-> >> LLD does have some `--lto-*` options but the `-lto-*` form is not supported
-> >> (it clashes with -l) https://reviews.llvm.org/D79371
-> >>
-> >That's strange. I've been using that option for years now. :-) Is this
-> >a recent change?
->
-> The more frequently used options (specifyed by the clang driver) are
-> -plugin-opt=... (options implemented by LLVMgold.so).
-> `-lto-*` is rare.
->
-> >> (There is an earlier -fprofile-instr-generate which does
-> >> instrumentation in Clang, but the option does not have broad usage.
-> >> It is used more for code coverage, not for optimization.
-> >> Noticeably, it does not even implement the Kirchhoff's current law
-> >> optimization)
-> >>
-> >Right. I've been told outside of this email that -fprofile-generate is
-> >the prefered flag to use.
-> >
-> >> -fprofile-use= is used by both regular PGO and context-sensitive PGO (CSPGO).
-> >>
-> >> clang -flto=thin -fprofile-use= passes -plugin-opt=cs-profile-path= to the linker.
-> >> For regular PGO, this option is effectively a no-op (confirmed with CSPGO main developer).
-> >>
-> >> So I think the "or by LLD if LTO is enabled:" part should be removed.
-> >
-> >But what if you specify the linking step explicitly? Linux doesn't
-> >call "clang" when linking, but "ld.lld".
->
-> Regular PGO+LTO does not need -plugin-opt=cs-profile-path=
-> CSPGO+LTO needs it.
-> Because -fprofile-use= may be used by both, Clang driver adds it.
-> CSPGO is relevant in this this patch, so the linker option does not need to be mentioned.
+On Mon, Jan 11, 2021 at 12:38:06PM -0800, Nick Desaulniers wrote:
+> Arnd found a randconfig that produces the warning:
+> 
+> arch/x86/entry/thunk_64.o: warning: objtool: missing symbol for insn at
+> offset 0x3e
+> 
+> when building with LLVM_IAS=1 (use Clang's integrated assembler). Josh
+> notes:
+> 
+>   With the LLVM assembler stripping the .text section symbol, objtool
+>   has no way to reference this code when it generates ORC unwinder
+>   entries, because this code is outside of any ELF function.
+> 
+> Fangrui notes that this optimization is helpful for reducing images size
+> when compiling with -ffunction-sections and -fdata-sections. I have
+> observerd on the order of tens of thousands of symbols for the kernel
+> images built with those flags. A patch has been authored against GNU
+> binutils to match this behavior, with a new flag
+> --generate-unused-section-symbols=[yes|no].
+> 
+> We can omit the .L prefix on a label to emit an entry into the symbol
+> table for the label, with STB_LOCAL binding.  This enables objtool to
+> generate proper unwind info here with LLVM_IAS=1.
+> 
+> Cc: Fangrui Song <maskray@google.com>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1209
+> Link: https://reviews.llvm.org/D93783
+> Link: https://sourceware.org/binutils/docs/as/Symbol-Names.html
+> Link: https://sourceware.org/pipermail/binutils/2020-December/114671.html
+> Reported-by: Arnd Bergmann <arnd@arndb.de>
+> Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> ---
+> Changes v2 -> v3:
+> * rework to use STB_LOCAL rather than STB_GLOBAL by dropping .L prefix,
+>   as per Josh.
 
-I'm still a bit confused. Are you saying that when clang uses
-`-flto=thin -fprofile-use=foo` that the profile file "foo" is embedded
-into the bitcode file so that when the linker's run it'll be used?
+Ok so I read a bit around those links above...
 
-This is the workflow:
+Are you trying to tell me here that we can't use .L-prefixed local
+labels anymore because, well, clang's assembler is way too overzealous
+when stripping symbols to save whopping KiBs of memory?!
 
-clang ... -fprofile-use=vmlinux.profdata ... -c -o foo.o foo.c
-clang ... -fprofile-use=vmlinux.profdata ... -c -o bar.o bar.c
-ld.lld ... <output file> foo.o bar.o
+Btw Josh made sense to me when asking for a flag or so to keep .text.
 
-Are you saying that we don't need to have
-"-plugin-opt=cs-profile-path=vmlinux.profdata" on the "ld.lld ..."
-line?
+And I see --generate-unused-section-symbols=[yes|no] for binutils.
 
--bw
+So why isn't there a patch using that switch on clang too instead of the
+kernel having to dance yet again for some tool?
+
+:-\
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
