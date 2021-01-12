@@ -2,117 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 222B42F38C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:25:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7578C2F38C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406664AbhALSXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 13:23:47 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:34538 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406562AbhALSXo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 13:23:44 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A918D20B6C40;
-        Tue, 12 Jan 2021 10:23:01 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A918D20B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1610475782;
-        bh=Mlkm80b1f8WhkhKW/H3c/Y4XQPYYHF6vKJ3RtWh8Y0w=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=V562zflJfRe3jaD/HTEifNXj5laof02eB2huBdBAMJ0x1CFhujbrGFcpof3oBoHb3
-         nAjuo1l1FSwpGj74KTO6fjNZnc/SWfozEOPCiQZAvtmcQw6DLO9PZVgoiGKjXH9b3F
-         ef+zWPe16tSjZbbw5jIoJL8N3xEJ71/IFMSWOjpo=
-Subject: Re: [PATCH v14 0/6] Carry forward IMA measurement log on kexec on
- ARM64
-To:     Rob Herring <robh@kernel.org>
-Cc:     zohar@linux.ibm.com, bauerman@linux.ibm.com,
-        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
-        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au,
-        james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-References: <20210104192602.10131-1-nramas@linux.microsoft.com>
- <20210112144248.GA256955@robh.at.kernel.org>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <c661ce17-a5a6-0aa0-ed9d-eab99020d98a@linux.microsoft.com>
-Date:   Tue, 12 Jan 2021 10:23:01 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2406241AbhALSYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 13:24:40 -0500
+Received: from mga18.intel.com ([134.134.136.126]:9648 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406161AbhALSYj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 13:24:39 -0500
+IronPort-SDR: 8UZWU7DFyj7TgU+9cNiRjuWSQIvc5g8iJhXCbPgstmLjJ5pcMwXV/z57MNMUB4XENWU2eXvQpB
+ CWpHoGdLp7sA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="165764966"
+X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
+   d="scan'208";a="165764966"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 10:23:58 -0800
+IronPort-SDR: ohLXLssT4T57MYIoJBHSlpn4WHeghfurRajLgrIXE/VuuJ6lqmocvtLygDAzEJMDKX5wobDyWj
+ PlGu+p9zMXzA==
+X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
+   d="scan'208";a="381521649"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 10:23:58 -0800
+Date:   Tue, 12 Jan 2021 10:23:57 -0800
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-edac <linux-edac@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH v2 1/3] x86/mce: Avoid infinite loop for copy from user
+ recovery
+Message-ID: <20210112182357.GA16390@agluck-desk2.amr.corp.intel.com>
+References: <20210111214452.1826-2-tony.luck@intel.com>
+ <E1FCB534-9149-437A-971E-F93C009F99C3@amacapital.net>
+ <20210111222057.GA2369@agluck-desk2.amr.corp.intel.com>
+ <CALCETrVhRF0H+R1aiy-rdguL3A_9M35R3roVAgRGaEAMCJVW0Q@mail.gmail.com>
+ <20210112171628.GA15664@agluck-desk2.amr.corp.intel.com>
+ <CALCETrWijyKoopqAHjohMbvfX191GhmMVQCQjKWx1s3+SA+-uA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210112144248.GA256955@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrWijyKoopqAHjohMbvfX191GhmMVQCQjKWx1s3+SA+-uA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/12/21 6:42 AM, Rob Herring wrote:
-> On Mon, Jan 04, 2021 at 11:25:56AM -0800, Lakshmi Ramasubramanian wrote:
->> On kexec file load Integrity Measurement Architecture (IMA) subsystem
->> may verify the IMA signature of the kernel and initramfs, and measure
->> it. The command line parameters passed to the kernel in the kexec call
->> may also be measured by IMA. A remote attestation service can verify
->> a TPM quote based on the TPM event log, the IMA measurement list, and
->> the TPM PCR data. This can be achieved only if the IMA measurement log
->> is carried over from the current kernel to the next kernel across
->> the kexec call.
->>
->> powerpc already supports carrying forward the IMA measurement log on
->> kexec. This patch set adds support for carrying forward the IMA
->> measurement log on kexec on ARM64.
->>
->> This patch set moves the platform independent code defined for powerpc
->> such that it can be reused for other platforms as well. A chosen node
->> "linux,ima-kexec-buffer" is added to the DTB for ARM64 to hold
->> the address and the size of the memory reserved to carry
->> the IMA measurement log.
->>
->> This patch set has been tested for ARM64 platform using QEMU.
->> I would like help from the community for testing this change on powerpc.
->> Thanks.
->>
->> This patch set is based on
->> commit a29a64445089 ("powerpc: Use common of_kexec_setup_new_fdt()")
->> in https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git
->> "dt/kexec" branch.
+On Tue, Jan 12, 2021 at 09:21:21AM -0800, Andy Lutomirski wrote:
+> Well, we need to do *something* when the first __get_user() trips the
+> #MC.  It would be nice if we could actually fix up the page tables
+> inside the #MC handler, but, if we're in a pagefault_disable() context
+> we might have locks held.  Heck, we could have the pagetable lock
+> held, be inside NMI, etc.  Skipping the task_work_add() might actually
+> make sense if we get a second one.
 > 
-> This all looks good to me. I'd suggest you send the above patches out as
-> part of this series because I don't plan to do so.
+> We won't actually infinite loop in pagefault_disable() context -- if
+> we would, then we would also infinite loop just from a regular page
+> fault, too.
 
-Thanks for reviewing the patches Rob.
+Fixing the page tables inside the #MC handler to unmap the poison
+page would indeed be a good solution. But, as you point out, not possible
+because of locks.
 
-Sure - I'll add your patches to this series.
+Could we take a more drastic approach? We know that this case the kernel
+is accessing a user address for the current process. Could the machine
+check handler just re-write %cr3 to point to a kernel-only page table[1].
+I.e. unmap the entire current user process.
 
-> I would like to also resolve the vmalloc vs. kmalloc difference for
-> allocating the FDT. Then we can further consolidate the DT kexec code.
+Then any subsequent access to user space will page fault. Maybe have a
+flag in the task structure to help the #PF handler understand what just
+happened.
 
-I think FDT allocation using vmalloc for ARM64 can be changed to 
-kmalloc. What are the other changes you'd like me to do in arm64/powerpc 
-DT kexec code in this patch series?
+The code we execute in the task_work handler can restore %cr3
 
-@AKASHI Takahiro - could you please let me know if the above sounds right?
+-Tony
 
-> 
-> It all needs some acks from arm64 and powerpc maintainers. As far as
-> merging, I think via the integrity tree makes the most sense.
-
-I'll create the patch series in "next-integrity" branch.
-
-Thiago/Mimi have acked some of the patches. Please review the remaining 
-patches in this version.
-
-Could arm64 maintainers please review the patches and respond?
-
-thanks,
-  -lakshmi
-
-
+[1] Does such a thing already exist? If not, I'd need some help/pointers
+to create it.
