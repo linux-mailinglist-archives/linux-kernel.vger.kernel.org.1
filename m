@@ -2,121 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36652F34E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:00:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D68A2F34E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:00:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405367AbhALP61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 10:58:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732573AbhALP60 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:58:26 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE850C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 07:57:45 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id b24so2722857otj.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 07:57:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ipPU2vUc+BFfUi92jCI9tLYRCUYmdD6X+lgC1SjK0wc=;
-        b=N/kJEm00glSMDkxyusQwQrXuK/TuEczkrU13epKkLv4ZujV7CmBMz7zExMyAmD/c8V
-         fn4UuIte+aoF6LalD6gqyintU4Sx+9Y/524JjdnFYzLFIXD1OIRHQoZuytPVhhhbEBOD
-         cC7OkVGttZF6yeiEnyVnJ+Dirk1yKpLg3XsWM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ipPU2vUc+BFfUi92jCI9tLYRCUYmdD6X+lgC1SjK0wc=;
-        b=L/b2LecvUTVaGCh0idgzGJrEpDnTs5Kduk3SjTWRn06DrXg1BGzC55biAfB5kg699q
-         FpH4Buza7AQPnpJT4xed/kHPU56dp6nfifSBrx9xdl/3lMIBM1asAg+ICH0R0WoFhVMM
-         NG3aILNps2L4Fund24SS5fkWeAFPaicrVpXj23XDb0d8wB8rZsrBqEPWpOrdBa7PXRgX
-         nf3MS7Pf/irYuipKoMOAAN2Oqzn6qxf04Nni3h+D1FMLRP6WfcygPXwoHj2zKjlzb9vW
-         5IHlwMQurrLe7IXMXi2R2G3kmcCz9R8oyIvZRZboVyJHF5DI4gZhke355hSAP/86K41I
-         RkJw==
-X-Gm-Message-State: AOAM532/VmMXer5DJkkHns5WZQQwauzbsknwZ9oDaT9DtxSX+qq+DVOf
-        ZVxEf9fZsCWMq/KS3WOkrMkzwO21+zyWOL5nftXycg==
-X-Google-Smtp-Source: ABdhPJzXSshJQKExSJsT5ioLk9EsBQSNfGxfM3kxQUxKh+G7AoddxywtMTAUCL44UVcbxALZuyaFQc/OpgMmBHp1mPc=
-X-Received: by 2002:a05:6830:1bef:: with SMTP id k15mr8948otb.303.1610467065202;
- Tue, 12 Jan 2021 07:57:45 -0800 (PST)
-MIME-Version: 1.0
-References: <20200916205434.GA10389@duo.ucw.cz> <87czyf5jjp.fsf@vps.thesusis.net>
- <CAHk-=wjsjC1h7fskwYaaRLykN1ms6ZtxGvucQgmL-zZTfxPdBA@mail.gmail.com>
-In-Reply-To: <CAHk-=wjsjC1h7fskwYaaRLykN1ms6ZtxGvucQgmL-zZTfxPdBA@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Tue, 12 Jan 2021 16:57:34 +0100
-Message-ID: <CAKMK7uEGXOC_ci=Drm=Hz+xPGdcoxv8YZ-gcOckoPmu2XijiSA@mail.gmail.com>
-Subject: Re: fbcon: remove soft scrollback code (missing Doc. patch)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Phillip Susi <phill@thesusis.net>, Pavel Machek <pavel@ucw.cz>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S2392427AbhALQAL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:00:11 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45076 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392090AbhALQAK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 11:00:10 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C46DEABD6;
+        Tue, 12 Jan 2021 15:59:28 +0000 (UTC)
+Date:   Tue, 12 Jan 2021 16:59:28 +0100
+Message-ID: <s5h7doiqh7j.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Michal Kubecek <mkubecek@suse.cz>, linux-wireless@vger.kernel.org,
+        Mordechay Goodstein <mordechay.goodstein@intel.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arjen de Korte <suse+build@de-korte.org>,
+        Luca Coelho <luciano.coelho@intel.com>
+Subject: Re: regression in iwlwifi: page fault in iwl_dbg_tlv_alloc_region() (commit ba8f6f4ae254)
+In-Reply-To: <8735z6taya.fsf@codeaurora.org>
+References: <20201228115814.GA5880@lion.mk-sys.cz>
+        <87v9c2qtj9.fsf@tynnyri.adurom.net>
+        <s5ha6tes58m.wl-tiwai@suse.de>
+        <87v9c2ias2.fsf@codeaurora.org>
+        <s5h5z42s44x.wl-tiwai@suse.de>
+        <8735z6taya.fsf@codeaurora.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 12:11 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Fri, Jan 8, 2021 at 11:13 AM Phillip Susi <phill@thesusis.net> wrote:
+On Tue, 12 Jan 2021 16:46:21 +0100,
+Kalle Valo wrote:
+> 
+> Takashi Iwai <tiwai@suse.de> writes:
+> 
+> > On Tue, 12 Jan 2021 13:45:33 +0100,
+> > Kalle Valo wrote:
+> >> 
+> >> Takashi Iwai <tiwai@suse.de> writes:
+> >> 
+> >> > On Tue, 12 Jan 2021 12:33:14 +0100,
+> >> > Kalle Valo wrote:
+> >> >> 
+> >> >> (adding luca)
+> >> >> 
+> >> >> Michal Kubecek <mkubecek@suse.cz> writes:
+> >> >> 
+> >> >> > FYI, there is a regression in iwlwifi driver caused by commit
+> >> >> > ba8f6f4ae254 ("iwlwifi: dbg: add dumping special device memory")
+> >> >> > reported at
+> >> >> >
+> >> >> >   https://bugzilla.kernel.org/show_bug.cgi?id=210733
+> >> >> >   https://bugzilla.suse.com/show_bug.cgi?id=1180344
+> >> >> >
+> >> >> > The problem seems to be an attempt to write terminating null character
+> >> >> > into a string which may be read only. There is also a proposed fix.
+> >> >> 
+> >> >> Can someone submit a proper patch, please? See instructions below how to
+> >> >> submit.
+> >> >> 
+> >> >> And please add Fixes tag to the commit log:
+> >> >> 
+> >> >> Fixes: ba8f6f4ae254 ("iwlwifi: dbg: add dumping special device memory")
+> >> >
+> >> > OK, I'll do it for my own
+> >> 
+> >> Thanks.
+> >> 
+> >> > but really I hoped that someone would have reacted on the bugzilla
+> >> > report before the official patch submission. So far no one from the
+> >> > upstream devs showed interest in the bug at all, unfortunately.
+> >> 
+> >> Bugzilla is problematic as I don't know if anyone tracks it actively, at
+> >> least I don't have time for that. I recommend reporting all wireless
+> >> issues to mailing lists to make sure everyone see it.
 > >
-> > > Could we pause this madness? Scrollback is still useful. I needed it
-> > > today... it was too small, so command results I was looking for
-> > > already scrolled away, but... life will be really painful with 0
-> > > scrollback.
-> >
-> > > You'll need it, too... as soon as you get oops and will want to see
-> > > errors just prior to that oops.
-> >
-> > > If it means I get to maintain it... I'm not happy about it but that's
-> > > better than no scrollback.
-> >
-> > Amen!  What self respecting admin installs a gui on servers?  What do we
-> > have to do to get this back in?  What was so buggy with this code that
-> > it needed to be removed?  Why was it such a burden to just leave it be?
->
-> It really was buggy, with security implications. And we have no maintainers.
->
-> So the scroll-back code can't come back until we have a maintainer and
-> a cleaner and simpler implementation.
->
-> And no, maintaining it really doesn't mean "just get it back to the
-> old broken state".
->
-> So far I haven't actually seen any patches, which means that it's not
-> coming back.
->
-> The good news? If you have an actual text VGA console, that should
-> still work just fine.
+> > I share your feeling as a subsystem maintainer, but at the same time,
+> > I see it's a big problem if the whole bugzilla reports are just
+> > silently ignored.  If it's a void, shouldn't we rather shut it down?
+> 
+> I'm all for shutting down bugzilla.kernel.org as silent bug reports are
+> frustrating the users. But I don't know what others would think about
+> that, maybe some subsystems use it actively?
 
-Also on anything that is remotely modern (i.e. runs a drm kernel
-modesetting driver undearneath the fbdev/fbcon stack) there's a pile
-more issues on top of just the scrollback/fbcon code being a mess.
-Specifically the locking is somewhere between yolo and outright
-deadlocks. This holds even more so if the use case here is "I want
-scrollback for an oops". There's rough sketches for how it could be
-solved, but it's all very tricky work.
+Yes, I'm still checking bugzilla.kernel.org for sound bug reports.
+Not always promptly reacting like the distro bugzilla, but it's
+regularly scanned and covered in the best effort basis.
 
-Also, we need testcases for this, both in-kernel unit-test style stuff
-and uapi testcases. Especially the full interaction on a modern stack
-between /dev/fb/0, /dev/drm/card0, vt ioctls and the console is a pure
-nightmare.
+Graphics people already moved out of bugzilla to gitlab Issues in
+their own gitlab.freedesktop.org.  Not sure about others.
 
-Altogether this is a few years of full time hacking to get this back
-into shape, and until that's happening and clearly getting somewhere
-the only reasonable thing to do is to delete features in response to
-syzkaller crashes.
+> At least there should be a big warning for wireless bugs.
 
-Also adding dri-devel since defacto that's the only place where
-display people hang out nowadays.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Maybe we can ask Konstantin about that at least for wireless
+components?
+
+> > And, although a mailing list is fine to report via only some texts or
+> > some patches, it's not suitable to attach large logs or such, which is
+> > often essential for debugging.  Thanks to lore, the archivability is
+> > no longer a problem with ML recently, but the lack of data assignment
+> > is another problem, IMO.
+> 
+> Sure, I fully agree on the benefits of a bug tracker. The issue here is
+> the lack of people managing bug reports, not the tool.
+
+Yeah, it's not only about wireless but true in general: handling bug
+reports is a tough task and often annoying.  Moreover, everyone of
+course wants to believe that their driver is bug free :)
+
+
+Takashi
