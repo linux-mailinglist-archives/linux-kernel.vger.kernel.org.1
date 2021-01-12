@@ -2,257 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548F02F2846
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:17:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F02A2F284B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:17:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732388AbhALGPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 01:15:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731792AbhALGPX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 01:15:23 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C29ECC061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 22:14:42 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id iq13so953237pjb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 22:14:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wN9pLJiwK94HF3eBalWpr7E3v2RrQ3uXi1ew2mIgxXg=;
-        b=FB5divKvTIkY6EikiTSJ3/yMthNyLFHWrU5gMwC/250lcG6oyKY23nrdwZRt9kMpEP
-         hf8TAwHTW6P6Rpjv+lHrnawRSqTZvRhgtsKFdnMGCBM5H9BWDfALhNHCxQb8NsVihnL/
-         ERjayeMOG92dYfLzwQkFffGanV08HFCJfbN57ZsQsRpCrmPGheLmMjdoXuWy7FCf0tY8
-         9l47EJdiFlnga8IvfZZwzDxhuXl+puTdhoajP9HF9a+KYTDflVFS9NKmlBG2lnJw2UrV
-         hwm39ogCO6+s7gfaqQfu2+nD7PR2ORpWMpbM1hnj8yNrdtVBVmczlmWAylSZtA6ksvje
-         zdFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=wN9pLJiwK94HF3eBalWpr7E3v2RrQ3uXi1ew2mIgxXg=;
-        b=n6tjqGkxcWzS9pPPDKUg2E7qM9Q+BeKo9WfiExXO7pJRICpc+BtA05z1wMlXd3Lvnr
-         l239W4WijC88pWSOk0DaCDYDfQcW0011YgoZetUWXPr0OkSBH8BFEWqV4iL3rspudbEY
-         DBq7QRkrAtQeroJHp9C4mzYKQr8YqBggavs+bPULVCH5jVmCDwfm+vSkfB5V2tHclfK4
-         owTN8wXPr9zb3nkqPauYPTmkmp+AkPwI+2/kmA9DuYQmLRe10t/OPvCdz4c+ZfyTho4G
-         xRXGglhAy3mNepaZM9LB1KUJtPSeY/xqiPXPtwLcqNgW/+CMPb2xlj7KddZ70lmixKPy
-         Zd8A==
-X-Gm-Message-State: AOAM533+Jh61KLObZCoe0h3xwt1D8qyUFM8jwCFaoleQFH1chRoIqu+/
-        onZiNIEh/Y+KZ48UIZxVTM4=
-X-Google-Smtp-Source: ABdhPJwODX+GZkcqJEnvaeMu/3G0PJt8tdbT6OPbVqnomFj3dNlIkJghnfz6aSxLySLb6KhLgdu+Rg==
-X-Received: by 2002:a17:90a:5a86:: with SMTP id n6mr208504pji.65.1610432082344;
-        Mon, 11 Jan 2021 22:14:42 -0800 (PST)
-Received: from balhae.roam.corp.google.com ([114.129.115.223])
-        by smtp.gmail.com with ESMTPSA id a19sm1616514pfi.130.2021.01.11.22.14.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 22:14:41 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH v2 2/2] perf stat: Take cgroups into account for shadow stats
-Date:   Tue, 12 Jan 2021 15:14:31 +0900
-Message-Id: <20210112061431.1122838-2-namhyung@kernel.org>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-In-Reply-To: <20210112061431.1122838-1-namhyung@kernel.org>
-References: <20210112061431.1122838-1-namhyung@kernel.org>
+        id S1733038AbhALGQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 01:16:26 -0500
+Received: from mga07.intel.com ([134.134.136.100]:52779 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732765AbhALGQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 01:16:24 -0500
+IronPort-SDR: kMnzUcUrpscmZIC3mds28ZT6PAi188JJ7BA7JiZq058Zx2NiSytzaeZILRrB1S1334QL/LUCJ9
+ 1ZVHZBBlkrcQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="242061087"
+X-IronPort-AV: E=Sophos;i="5.79,340,1602572400"; 
+   d="scan'208";a="242061087"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 22:15:43 -0800
+IronPort-SDR: Lwzll5SxgfuJX278Sat3r7KsJbNup75Ra6FCSG/LQptrzc8GuRIMYHxji+I9QacQluA7jPPYOA
+ gKTeWl3TTOqg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,340,1602572400"; 
+   d="scan'208";a="345118829"
+Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
+  by fmsmga007.fm.intel.com with ESMTP; 11 Jan 2021 22:15:42 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 11 Jan 2021 22:15:41 -0800
+Received: from orsmsx604.amr.corp.intel.com (10.22.229.17) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 11 Jan 2021 22:15:40 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Mon, 11 Jan 2021 22:15:40 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.44) by
+ edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Mon, 11 Jan 2021 22:15:40 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RCkYJwwKl0gP4iEQ+tXmDoABbT+38eDZzLyP+7OmT2HmM4VQi0UgB/m7L7sH444R8y6tD9wM9AyiqGuI4wf5FC9i4GGZW2bhzvLwoWsTp6hzPaOq2Yn6gKH1WEg1KZf53001NL9jA5WhjoD/SF5ZnKIBts7dCzbOFXZcp8t9Rfl6SZYbtCg6tCUVx8EyJGsufaQmb89K/t99tkl+xvi6yS+/RXfXkSKJQQdKcGd3+Te9C72Z1tYifR0XLDxveu4EG3L0XQgfRjG7DST8+cfDyhAlzKwgjUYeyFvWHYOstMJyNqDw6wqhTwglAT3Pp2ZeNEOX+f6cRvtdQkIzoThQyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0foxNFKItpLsOCKsyZbN1HilRbmLTCbXCxQsipZ3uzE=;
+ b=fJh2j6WYMa0/+rHe+JQZzTa0oybVnsk5ytSanvd2taxmMRF/5L8Ws11xYkt255bNUDRJTgXrT6jRY37ED0JDcfIK26x43H1XJMp8HmnVkQNlExtuAfxFHaDdpMS2AwzharHzCUR5gRHTRCcNpcyI1/9Z5ZOKiWfFSLaCF9Sb3eB5J6giuBrqtddkPqdm0A44LaRfBOAh2hvQAdtTV6W04ZvhfXFZP5oDQh9rpiDgWqMz0cwOxoQBwzF2SUEF0J/cMll/jp/ytumESy0vnLppcx6eNGG/aXzLAP/4NZwphJOR3UPWHUT+pIVjWi+Hg2Pt+uAsR6w2gLsmoHSrRNnIzA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0foxNFKItpLsOCKsyZbN1HilRbmLTCbXCxQsipZ3uzE=;
+ b=lJVXKVvFf3x0shRzDP2E9NN84wTJ/SBmE73ihtHes8vC7UJkudi0AIwsyoLk6Jihj0I2GBkzjbVYVrEH6lLTgd1apADwtAXTKs/Rv49w4aHSt+c+h0bXifUTW3SPS2vuDeNW21b/XbD5VgFCOQdYFHOdFuBq3yVwtU0JwlhUprU=
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
+ by PH0PR11MB4917.namprd11.prod.outlook.com (2603:10b6:510:32::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Tue, 12 Jan
+ 2021 06:15:40 +0000
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::d8ce:8971:4d20:c430]) by PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::d8ce:8971:4d20:c430%6]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
+ 06:15:40 +0000
+From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
+To:     "Lutomirski, Andy" <luto@amacapital.net>
+CC:     Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
+        "tdevries@suse.com" <tdevries@suse.com>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "Metzger, Markus T" <markus.t.metzger@intel.com>
+Subject: Re: gdbserver + fsgsbase kaputt
+Thread-Topic: gdbserver + fsgsbase kaputt
+Thread-Index: AQHW6EXGGSDS0D32IEu+vSvpt9UFe6oizxgAgAAJLICAABKQAIAAmVKA
+Date:   Tue, 12 Jan 2021 06:15:39 +0000
+Message-ID: <5B5C1F0A-9780-4E42-BC65-742BAEE920BF@intel.com>
+References: <20210111200027.GH25645@zn.tnic>
+ <E74AC970-CFCF-4CFD-A71F-F719F5BCE2DC@amacapital.net>
+In-Reply-To: <E74AC970-CFCF-4CFD-A71F-F719F5BCE2DC@amacapital.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: amacapital.net; dkim=none (message not signed)
+ header.d=none;amacapital.net; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [73.189.248.82]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 169c2b0d-edd6-432a-0006-08d8b6c17c2c
+x-ms-traffictypediagnostic: PH0PR11MB4917:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR11MB49177A5E95BE13F2B2C07888D8AA0@PH0PR11MB4917.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KOoAHNj4XWTRN/9OlwIi1pixniCTFy2yE/NuaZDN8E8EWyxgk3sA6EL8k1+V8oBZoFLtcGZnb/G9Cvzlf/ghyexX9jllMzJPszRQRiuH1w4truHBiropQS8A7+TcLYr1RYuS7YBt/vODvJdyQFMXatJepV1+doM7hXCM4WAiNIsyLcvKK9n9tXoUGCi4gfmsA03pSFApfGk/xqfVOyrPjdoZBH9uU1GxfBtS/znSL73b+XhiDAUxsM36ucjcyfpSROYquhCl3JFby3Vcf/OR2k2QkZwTK0MBjSUJaVd/VqCE2ka56L1HhQU9R0R+5lYFk8piPNPAJow0P05aK3rfh1BI78c0TXs/yo7cWq2tnfwGtGKDuAC1JUpN1Mf/OVrMD7HOcmU0YgY8aFDcAmFGWzY7tdE+38cT2Gh5hs0Wijwa6Maz+EsmEGJPSb9pd6aw
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(366004)(39860400002)(396003)(376002)(66556008)(6512007)(66446008)(66476007)(5660300002)(66946007)(64756008)(33656002)(6506007)(6916009)(8936002)(107886003)(6486002)(26005)(53546011)(71200400001)(2906002)(54906003)(8676002)(36756003)(186003)(478600001)(2616005)(86362001)(76116006)(4326008)(316002)(4744005)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?+S2mLaSYE9htJQyDYvnXkZGHbrIvjFjBXL6jRAGFJhwo63V3Vpzop3p4wa57?=
+ =?us-ascii?Q?3J19ktspPP2cjdcmxojqVBmqdaizkvTiMk1OLk80BmZywcybyTj0jTk92q9W?=
+ =?us-ascii?Q?iv3L1YeCUKj40arHkkncViN9Bsl0+ft/djGoPkMauSloNG4ojVGPDoMp1EzL?=
+ =?us-ascii?Q?iFSOOC7g8FxAnFBg+aQ6yCkj0Au3V4vMQcpq3cDL4o9Cy+2SGGd9JeFJ49ki?=
+ =?us-ascii?Q?kZ04HI9RNIF7n7FD19oNPXDq9iL6JpIfoGUumHdCA4RqZ3my+p1C5ISMUHw/?=
+ =?us-ascii?Q?VYuXupMWsulebtq0m8EElGJw7p7c/p4XADmvZpetP/uKin6Ei4otN68ZkpFl?=
+ =?us-ascii?Q?u/MM5npfDYNDX9w52Xk+pdOwwpkhxY5Zkv30CLgcM/SWV22PJ4KjE9nbFjvC?=
+ =?us-ascii?Q?7BdNPSO2hWRyNyjCX7MQcY2GOAe4hH4jNsZD3/McQ0c9lTkHJSlbRP2e1bli?=
+ =?us-ascii?Q?ub4/vusnvkeOyqVdU1yVcsgey40cwS4g3621Y9ZY2Y2Kw2FZEjHGr3w1ppUR?=
+ =?us-ascii?Q?pfqX92Uh03chPOZD6cbkkKy10RM1THAfuyjGr/yoFOhgw6C1psXS2hcgGSMD?=
+ =?us-ascii?Q?UvTs/swaWw6Pz3K371NZBoRHnNWnaTr3YVGJMKeGNjicVX/umIy4yPzBxvrn?=
+ =?us-ascii?Q?0vUET4vo9kWZgdbYEW9dxoKEbGQLc22R7rLwoz5s2b2zFWIADAr2CqoX9xjw?=
+ =?us-ascii?Q?9t56hhZ3QbMdh3vJXVFX+9YR9S8YpyWw6fswDb/3ZYnCp30TVFOKxZh1oFLo?=
+ =?us-ascii?Q?o09XTYdzBXNsYUJdE9919OPaiKXAVOpHoRU3pprDKjCJ9v+myw5zM5lZ/YR/?=
+ =?us-ascii?Q?Hjzjk/Z78AtHYmtSBz0bnirL0iHc+hPte4zRKRABJjaXIulHZT8ZH/Ft0gQX?=
+ =?us-ascii?Q?SFy2NYFpLRDtfur0MhetXVhxxqPZmx/uLgWwwFZD6YsQK41PXSwZHvvXoRPK?=
+ =?us-ascii?Q?m/4lqZba7jCck0x8Cx4f33xVaQrILNNWPegGwzNgB8roEA19NyN1DNy6mzQp?=
+ =?us-ascii?Q?YUr1?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <9C1DD6E9B24AA642B97CF772D98C9AF6@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 169c2b0d-edd6-432a-0006-08d8b6c17c2c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2021 06:15:39.9683
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vXLSeNNxnkGRUBJADuO1VsxMCEf/OcrJwd00GsPVgG49ajpxGYGqdMPHN7NCq39/yhpTnrD10EItgFhT/hRF7ZpxaZOhu2WUWkPU8H4/jWo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4917
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As of now it doesn't consider cgroups when collecting shadow stats and
-metrics so counter values from different cgroups will be saved in a
-same slot.  This resulted in an incorrect numbers when those cgroups
-have different workloads.
 
-For example, let's look at the below - the cgroup A and C runs same
-workload which burns a cpu while cgroup B runs a light workload.
+> On Jan 11, 2021, at 13:06, Andy Lutomirski <luto@amacapital.net> wrote:
+>=20
+>> On Jan 11, 2021, at 12:00 PM, Borislav Petkov <bp@alien8.de> wrote:
+>>=20
+>> Or do you mean I should add "unsafe_fsgsbase" to grub cmdline and bisect
+>> with fsgsbase enabled in all test kernels?
+>=20
+> Yes. But I can also look myself in a bit.
 
-  $ perf stat -a -e cycles,instructions --for-each-cgroup A,B,C  sleep 1
+I was able to find this patch in that way:
 
-   Performance counter stats for 'system wide':
+commit 0bf7e460361c703333f3a82e50e7871465fe20f9
+Author: Andy Lutomirski <luto@kernel.org>
+Date:   Thu May 28 16:13:51 2020 -0400
 
-     3,958,116,522      cycles                A
-     6,722,650,929      instructions          A #    2.53  insn per cycle
-         1,132,741      cycles                B
-           571,743      instructions          B #    0.00  insn per cycle
-     4,007,799,935      cycles                C
-     6,793,181,523      instructions          C #    2.56  insn per cycle
+    x86/process/64: Use FSBSBASE in switch_to() if available
 
-       1.001050869 seconds time elapsed
 
-When I run perf stat with single workload, it usually shows IPC around 1.7.
-We can verify it (6,722,650,929.0 / 3,958,116,522 = 1.698) for cgroup A.
+The GDB behavior looks to be different between the two cases -- with vs
+without gdb server, when I checked the GS/GSBASE values on the ptrace front=
+.
 
-But in this case, since cgroups are ignored, cycles are averaged so it
-used the lower value for IPC calculation and resulted in around 2.5.
+It set the correct GSBASE (e.g.,=3D0xf7fcf0c0) of GS=3D0x63 without running=
+ the
+server. But GSBASE=3D0 with the server. When I forced to set the correct ba=
+se,
+it exited normally.
 
-  avg cycle: (3958116522 + 1132741 + 4007799935) / 3 = 2655683066
-  IPC (A)  :  6722650929 / 2655683066 = 2.531
-  IPC (B)  :      571743 / 2655683066 = 0.0002
-  IPC (C)  :  6793181523 / 2655683066 = 2.557
-
-We can simply compare cgroup pointers in the evsel and it'll be NULL
-when cgroups are not specified.  With this patch, I can see correct
-numbers like below:
-
-  $ perf stat -a -e cycles,instructions --for-each-cgroup A,B,C  sleep 1
-
-  Performance counter stats for 'system wide':
-
-     4,171,051,687      cycles                A
-     7,219,793,922      instructions          A #    1.73  insn per cycle
-         1,051,189      cycles                B
-           583,102      instructions          B #    0.55  insn per cycle
-     4,171,124,710      cycles                C
-     7,192,944,580      instructions          C #    1.72  insn per cycle
-
-       1.007909814 seconds time elapsed
-
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/util/stat-shadow.c | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
-
-diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
-index a1565b6e38f2..12eafd12a693 100644
---- a/tools/perf/util/stat-shadow.c
-+++ b/tools/perf/util/stat-shadow.c
-@@ -8,6 +8,7 @@
- #include "evlist.h"
- #include "expr.h"
- #include "metricgroup.h"
-+#include "cgroup.h"
- #include <linux/zalloc.h>
- 
- /*
-@@ -28,6 +29,7 @@ struct saved_value {
- 	enum stat_type type;
- 	int ctx;
- 	int cpu;
-+	struct cgroup *cgrp;
- 	struct runtime_stat *stat;
- 	struct stats stats;
- 	u64 metric_total;
-@@ -57,6 +59,9 @@ static int saved_value_cmp(struct rb_node *rb_node, const void *entry)
- 	if (a->ctx != b->ctx)
- 		return a->ctx - b->ctx;
- 
-+	if (a->cgrp != b->cgrp)
-+		return (char *)a->cgrp < (char *)b->cgrp ? -1 : +1;
-+
- 	if (a->evsel == NULL && b->evsel == NULL) {
- 		if (a->stat == b->stat)
- 			return 0;
-@@ -100,7 +105,8 @@ static struct saved_value *saved_value_lookup(struct evsel *evsel,
- 					      bool create,
- 					      enum stat_type type,
- 					      int ctx,
--					      struct runtime_stat *st)
-+					      struct runtime_stat *st,
-+					      struct cgroup *cgrp)
- {
- 	struct rblist *rblist;
- 	struct rb_node *nd;
-@@ -110,6 +116,7 @@ static struct saved_value *saved_value_lookup(struct evsel *evsel,
- 		.type = type,
- 		.ctx = ctx,
- 		.stat = st,
-+		.cgrp = cgrp,
- 	};
- 
- 	rblist = &st->value_list;
-@@ -197,6 +204,7 @@ void perf_stat__reset_shadow_per_stat(struct runtime_stat *st)
- 
- struct runtime_stat_data {
- 	int ctx;
-+	struct cgroup *cgrp;
- };
- 
- static void update_runtime_stat(struct runtime_stat *st,
-@@ -205,7 +213,7 @@ static void update_runtime_stat(struct runtime_stat *st,
- 				struct runtime_stat_data *rsd)
- {
- 	struct saved_value *v = saved_value_lookup(NULL, cpu, true, type,
--						   rsd->ctx, st);
-+						   rsd->ctx, st, rsd->cgrp);
- 
- 	if (v)
- 		update_stats(&v->stats, count);
-@@ -223,6 +231,7 @@ void perf_stat__update_shadow_stats(struct evsel *counter, u64 count,
- 	struct saved_value *v;
- 	struct runtime_stat_data rsd = {
- 		.ctx = evsel_context(counter),
-+		.cgrp = counter->cgrp,
- 	};
- 
- 	count *= counter->scale;
-@@ -290,13 +299,14 @@ void perf_stat__update_shadow_stats(struct evsel *counter, u64 count,
- 		update_runtime_stat(st, STAT_APERF, cpu, count, &rsd);
- 
- 	if (counter->collect_stat) {
--		v = saved_value_lookup(counter, cpu, true, STAT_NONE, 0, st);
-+		v = saved_value_lookup(counter, cpu, true, STAT_NONE, 0, st,
-+				       rsd.cgrp);
- 		update_stats(&v->stats, count);
- 		if (counter->metric_leader)
- 			v->metric_total += count;
- 	} else if (counter->metric_leader) {
- 		v = saved_value_lookup(counter->metric_leader,
--				       cpu, true, STAT_NONE, 0, st);
-+				       cpu, true, STAT_NONE, 0, st, rsd.cgrp);
- 		v->metric_total += count;
- 		v->metric_other++;
- 	}
-@@ -438,7 +448,7 @@ static double runtime_stat_avg(struct runtime_stat *st,
- {
- 	struct saved_value *v;
- 
--	v = saved_value_lookup(NULL, cpu, false, type, rsd->ctx, st);
-+	v = saved_value_lookup(NULL, cpu, false, type, rsd->ctx, st, rsd->cgrp);
- 	if (!v)
- 		return 0.0;
- 
-@@ -451,7 +461,7 @@ static double runtime_stat_n(struct runtime_stat *st,
- {
- 	struct saved_value *v;
- 
--	v = saved_value_lookup(NULL, cpu, false, type, rsd->ctx, st);
-+	v = saved_value_lookup(NULL, cpu, false, type, rsd->ctx, st, rsd->cgrp);
- 	if (!v)
- 		return 0.0;
- 
-@@ -805,7 +815,8 @@ static int prepare_metric(struct evsel **metric_events,
- 			scale = 1e-9;
- 		} else {
- 			v = saved_value_lookup(metric_events[i], cpu, false,
--					       STAT_NONE, 0, st);
-+					       STAT_NONE, 0, st,
-+					       metric_events[i]->cgrp);
- 			if (!v)
- 				break;
- 			stats = &v->stats;
-@@ -933,6 +944,7 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
- 	const char *color = NULL;
- 	struct runtime_stat_data rsd = {
- 		.ctx = evsel_context(evsel),
-+		.cgrp = evsel->cgrp,
- 	};
- 	struct metric_event *me;
- 	int num = 1;
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
+Thanks,
+Chang
 
