@@ -2,114 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B642A2F3903
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5192F3908
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406168AbhALSj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 13:39:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38289 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390101AbhALSj0 (ORCPT
+        id S2391780AbhALSkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 13:40:36 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62642 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726110AbhALSkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 13:39:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610476679;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=opNx5wYPreAGLB0h8OM+jsyPJRNOl+U0BtgbfxWf+EM=;
-        b=N1lJvs+oqkjDEDJep/DilWxBiA7q8albolfNzW+zWrO/laEtoMCuJIS3bdhRixzTnycH2b
-        sjOnpDtAidVfZ0d1gAY2sYW13OdnyYKn1mPdUQvNmWc0jkO9BYR6jDm95pMSAZngxYXzLf
-        SeijtBcj3l3KsnNm3HzJR+ErhUpyjHU=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-447-6aVbq9enNtG5Km_ZOkXwAA-1; Tue, 12 Jan 2021 13:37:58 -0500
-X-MC-Unique: 6aVbq9enNtG5Km_ZOkXwAA-1
-Received: by mail-ej1-f71.google.com with SMTP id gs3so1332688ejb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:37:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=opNx5wYPreAGLB0h8OM+jsyPJRNOl+U0BtgbfxWf+EM=;
-        b=ofKtpcACFYWywLk9oFTReVHBkLGeo+RbpvmxzmD2uOzEPp9wv8dJnXr6t/y3HSgrY2
-         MLEHNhijCClTs17Zmc4Lpd4DcRsvXj97rhTpe5LQlYriMx0Ox5JOCtGecDHhhw81257K
-         Ka0MVg2oAYvM4OIlj2I638VUCXWEABrHnbc2/bfePsgi0PD9xpwWsT+wkM/tOKai03Ny
-         najH3ZnUf7bZwrf2Gyvrpz1Iv5S0B5JAh4wOAlLNE1ObaQbzVJp5ilHBZixF3j01QObR
-         /SoaPHC3Qt5+RI/9kIze77STlYblQraHcUcOq0+LE7Y5efxsB8Sk1mn8xh4ko0NEYixu
-         eWQw==
-X-Gm-Message-State: AOAM531G62fTvhVhl1p5Te397gccaJx6BXyepFfKGXGuuSUnSyJZia2W
-        jFBcjwCSkl8rh7Ot/Zvk/ytr9W4Ko7DSRHplh+7LSZDXcFVMxF5+sxpLcqAS2kKgut9VeDXpDJu
-        +z+lJONNZnRmFQXq8wByJzN7C
-X-Received: by 2002:a17:907:104c:: with SMTP id oy12mr97434ejb.503.1610476676847;
-        Tue, 12 Jan 2021 10:37:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz1zlG/vvxotr6BIhf0GkjiHxokuholFcp3aGpgAVLgK4qTq2J6gL1gkW/Vi7LEwoM2lkqYmA==
-X-Received: by 2002:a17:907:104c:: with SMTP id oy12mr97428ejb.503.1610476676716;
-        Tue, 12 Jan 2021 10:37:56 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id a2sm1506236ejt.46.2021.01.12.10.37.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 10:37:56 -0800 (PST)
-Subject: Re: [PATCH v2 1/2] platform/x86: dell-privacy: Add support for Dell
- hardware privacy
-To:     Perry Yuan <perry979106@gmail.com>,
-        =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>,
-        Perry Yuan <Perry.Yuan@dell.com>
-Cc:     "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Limonciello Mario <Mario.Limonciello@dell.com>
-References: <20201228132855.17544-1-Perry_Yuan@Dell.com>
- <mXtNUreCVsPKizG-fnNKPId9_lQGit0S6pYEpk-aNT1hGQjVwblZDiO4E-YX3hxnrbbNN1-6hSntiv13wz66RxbhXjPJhpAVOIlZmmwUI7w=@protonmail.com>
- <7def1cdc-e275-9ae6-4941-55517359bb1e@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <ce598a92-73ef-e9a6-d772-59f5da3d251e@redhat.com>
-Date:   Tue, 12 Jan 2021 19:37:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 12 Jan 2021 13:40:35 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10CIX43S105985;
+        Tue, 12 Jan 2021 13:39:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=0mUUZ0luBZVApEnrMUbFupnm3Xl8YZxqNAYcYOKcSiE=;
+ b=lUusMNjQ1MW0/7yYF96aH7YJwJ2ylfy4lwp9fiyM4xegUkXXY4N/GX97KLHTgyA3uAZh
+ J2KqF5060DYF0aflfgg14mHXIT3QmmhV6/V+ED+UT6tSgMDss3HSIv5G2U0bmhrzaANt
+ ISmH+sB7JGuWoA/hkHDD5Th55FSMQi175fCTuwmwTTsFSdEVgNMm3ru1uAPJDjA6W7Iq
+ bbPS35w7uThtZHkFXOXhkIvWr8t/6HDi4qOLA8SDrJ6tt2TIerO8vc0E13pf1EXW9t65
+ F3EMxmZlXM4tT2AUcu347gA6JMo+2pESt29c5i0FP8CMJsLWtl20Zei22xxLIBzalr05 dg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 361gxxrf2n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 13:39:54 -0500
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10CIXNh1107194;
+        Tue, 12 Jan 2021 13:39:53 -0500
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 361gxxrf1g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 13:39:53 -0500
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10CIc360025377;
+        Tue, 12 Jan 2021 18:39:51 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04fra.de.ibm.com with ESMTP id 3604h99c0k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 18:39:51 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10CIdmgo46334452
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Jan 2021 18:39:48 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 44B6F11C050;
+        Tue, 12 Jan 2021 18:39:48 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8E3FC11C04C;
+        Tue, 12 Jan 2021 18:39:47 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.60.135])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Tue, 12 Jan 2021 18:39:47 +0000 (GMT)
+Date:   Tue, 12 Jan 2021 19:39:45 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v13 13/15] s390/vfio-ap: handle host AP config change
+ notification
+Message-ID: <20210112193945.0050139e.pasic@linux.ibm.com>
+In-Reply-To: <20201223011606.5265-14-akrowiak@linux.ibm.com>
+References: <20201223011606.5265-1-akrowiak@linux.ibm.com>
+        <20201223011606.5265-14-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <7def1cdc-e275-9ae6-4941-55517359bb1e@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-12_15:2021-01-12,2021-01-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ suspectscore=0 bulkscore=0 priorityscore=1501 phishscore=0 spamscore=0
+ impostorscore=0 clxscore=1015 lowpriorityscore=0 mlxscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101120108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, 22 Dec 2020 20:16:04 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-I know there already is a v3 out and I will try to get around to reviewing
-that soon, still 1 remark about the discussion surrounding v2:
+> The motivation for config change notification is to enable the vfio_ap
+> device driver to handle hot plug/unplug of AP queues for a KVM guest as a
+> bulk operation. For example, if a new APID is dynamically assigned to the
+> host configuration, then a queue device will be created for each APQN that
+> can be formulated from the new APID and all APQIs already assigned to the
+> host configuration. Each of these new queue devices will get bound to their
+> respective driver one at a time, as they are created. In the case of the
+> vfio_ap driver, if the APQN of the queue device being bound to the driver
+> is assigned to a matrix mdev in use by a KVM guest, it will be hot plugged
+> into the guest if possible. Given that the AP architecture allows for 256
+> adapters and 256 domains, one can see the possibility of the vfio_ap
+> driver's probe/remove callbacks getting invoked an inordinate number of
+> times when the host configuration changes. Keep in mind that in order to
+> plug/unplug an AP queue for a guest, the guest's VCPUs must be suspended,
+> then the guest's AP configuration must be updated followed by the VCPUs
+> being resumed. If this is done each time the probe or remove callback is
+> invoked and there are hundreds or thousands of queues to be probed or
+> removed, this would be incredibly inefficient and could have a large impact
+> on guest performance. What the config notification does is allow us to
+> make the changes to the guest in a single operation.
+> 
+> This patch implements the on_cfg_changed callback which notifies the
+> AP device drivers that the host AP configuration has changed (i.e.,
+> adapters, domains and/or control domains are added to or removed from the
+> host AP configuration).
+> 
+> Adapters added to host configuration:
+> * The APIDs of the adapters added will be stored in a bitmap contained
+>   within the struct representing the matrix device which is the parent
+>   device of all matrix mediated devices.
+> * When a queue is probed, if the APQN of the queue being probed is
+>   assigned to an mdev in use by a guest, the queue may get hot plugged
+>   into the guest; however, if the APID of the adapter is contained in the
+>   bitmap of adapters added, the queue hot plug operation will be skipped
+>   until the AP bus notifies the driver that its scan operation has
+>   completed (another patch).
 
-On 1/11/21 2:42 PM, Perry Yuan wrote:
+I guess, I should be able to find this in patch 14. But I can't.
 
-<snip>
+> * When the vfio_ap driver is notified that the AP bus scan has completed,
+>   the guest's APCB will be refreshed by filtering the mdev's matrix by
+>   APID.
+> 
+> Domains added to host configuration:
+> * The APQIs of the domains added will be stored in a bitmap contained
+>   within the struct representing the matrix device which is the parent
+>   device of all matrix mediated devices.
+> * When a queue is probed, if the APQN of the queue being probed is
+>   assigned to an mdev in use by a guest, the queue may get hot plugged
+>   into the guest; however, if the APQI of the domain is contained in the
+>   bitmap of domains added, the queue hot plug operation will be skipped
+>   until the AP bus notifies the driver that its scan operation has
+>   completed (another patch).
+> 
+> Control domains added to the host configuration:
+> * The domain numbers of the domains added will be stored in a bitmap
+>   contained within the struct representing the matrix device which is the
+>   parent device of all matrix mediated devices.
+> 
+> When the vfio_ap device driver is notified that the AP bus scan has
+> completed, the APCB for each matrix mdev to which the adapters, domains
+> and control domains added are assigned will be refreshed. If a KVM guest is
+> using the matrix mdev, the APCB will be hot plugged into the guest to
+> refresh its AP configuration.
+> 
+> Adapters removed from configuration:
+> * Each queue device with the APID identifying an adapter removed from
+>   the host AP configuration will be unlinked from the matrix mdev to which
+>   the queue's APQN is assigned.
+> * When the vfio_ap driver's remove callback is invoked, if the queue
+>   device is not linked to the matrix mdev, the refresh of the guest's
+>   APCB will be skipped.
+> 
+> Domains removed from configuration:
+> * Each queue device with the APQI identifying a domain removed from
+>   the host AP configuration will be unlinked from the matrix mdev to which
+>   the queue's APQN is assigned.
+> * When the vfio_ap driver's remove callback is invoked, if the queue
+>   device is not linked to the matrix mdev, the refresh of the guest's
+>   APCB will be skipped.
+> 
+> If any queues with an APQN assigned to a given matrix mdev have been
+> unlinked or any control domains assigned to a given matrix mdev have been
+> removed from the host AP configuration, the APCB of the matrix mdev will
+> be refreshed. If a KVM guest is using the matrix mdev, the APCB will be hot
+> plugged into the guest to refresh its AP configuration.
+> 
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> ---
+[..]
+> +static void vfio_ap_mdev_on_cfg_add(void)
+> +{
+> +	unsigned long *cur_apm, *cur_aqm, *cur_adm;
+> +	unsigned long *prev_apm, *prev_aqm, *prev_adm;
+> +
+> +	cur_apm = (unsigned long *)matrix_dev->config_info.apm;
+> +	cur_aqm = (unsigned long *)matrix_dev->config_info.aqm;
+> +	cur_adm = (unsigned long *)matrix_dev->config_info.adm;
+> +
+> +	prev_apm = (unsigned long *)matrix_dev->config_info_prev.apm;
+> +	prev_aqm = (unsigned long *)matrix_dev->config_info_prev.aqm;
+> +	prev_adm = (unsigned long *)matrix_dev->config_info_prev.adm;
+> +
+> +	bitmap_andnot(matrix_dev->ap_add, cur_apm, prev_apm, AP_DEVICES);
+> +	bitmap_andnot(matrix_dev->aq_add, cur_aqm, prev_aqm, AP_DOMAINS);
+> +	bitmap_andnot(matrix_dev->ad_add, cur_adm, prev_adm, AP_DOMAINS);
+> +}
 
->>> *The flow is like this:
->>> 1) User presses key. HW does stuff with this key (timeout is started)
->>> 2) Event is emitted from FW
->>> 3) Event received by dell-privacy
->>> 4) KEY_MICMUTE emitted from dell-privacy
->>> 5) Userland picks up key and modifies kcontrol for SW mute
->>> 6) Codec kernel driver catches and calls ledtrig_audio_set, like this:
->>> 	ledtrig_audio_set(LED_AUDIO_MICMUTE,
->>> 		rt715->micmute_led ? LED_ON :LED_OFF);
->>> 7) If "LED" is set to on dell-privacy notifies ec,
->>>   and timeout is cancelled,HW mic mute activated.
->>>
->> Please proofread the commit message again, and pay attention to capitalization
->> and spacing.
-> I want to reformat it and move the commit info to cover letter.
-
-Please also put a copy of this as a comment in either the wmi or the
-acpi driver (with a comment pointing to the comment in the other) this is
-important info to have for someone reading the code and trying to understand
-how this all fits together.
+This function seems useless without the next patch, but I don't mind, it
+can stay here.
 
 Regards,
-
-Hans
-
+Halil
+[..]
