@@ -2,126 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 592422F2ABD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:06:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BABA32F2AC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:06:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389260AbhALJFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:05:17 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2310 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727916AbhALJFI (ORCPT
+        id S2389447AbhALJFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:05:25 -0500
+Received: from lb3-smtp-cloud9.xs4all.net ([194.109.24.30]:60527 "EHLO
+        lb3-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388856AbhALJFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:05:08 -0500
-Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DFPg63dQ9z67Zyp;
-        Tue, 12 Jan 2021 17:00:34 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 12 Jan 2021 10:04:25 +0100
-Received: from [10.210.171.61] (10.210.171.61) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 12 Jan 2021 09:04:24 +0000
-Subject: Re: [PATCH v2 1/2] scsi: hisi_sas: Remove unnecessary devm_kfree
-To:     Bean Huo <huobean@gmail.com>, <alim.akhtar@samsung.com>,
-        <avri.altman@wdc.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <ebiggers@google.com>,
-        <satyat@google.com>, <shipujin.t@gmail.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Bean Huo <beanhuo@micron.com>
-References: <20210111231058.14559-1-huobean@gmail.com>
- <20210111231058.14559-2-huobean@gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <b34eac20-e194-783b-f29e-83eec8bb127c@huawei.com>
-Date:   Tue, 12 Jan 2021 09:03:17 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Tue, 12 Jan 2021 04:05:18 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id zFbIkDFNAVfyLzFbLkopWg; Tue, 12 Jan 2021 10:04:31 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1610442271; bh=w+eQNhQZnKJAllfIzv3g8UL7ixvpbCSLuEatvY5u/XI=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=KBbY/P7mJw0U7W6AdLzOqfUcXsIvbj3VuzH2QfSeFCuPeFlsDUbPo321JOY711RVQ
+         jkVL714w1GHgf3zdqlU+8jjm3z/wPele3KaPgZrrFDvGJszmpnG/y4OdOCdl3Q2BBL
+         6KubodHq54gb5Wc+vBOb8RPTdVq1cHDrliCD58s/V7mcf+UwSQOPR7fAD8R3pZdWAG
+         BZE9VkyCXq70RoctikkJA+MnS0PxLBklpoH3t6CL0gH3iHqVBaSMjrwCzXc9XAOwLr
+         rnSh57fRdo4Z/3D0kS+LNrC1X4FA2NUP3aWSsL5GJyxDYPxsUr3fq2E/n0qvLKGc6N
+         +Bi48mk0NsNpA==
+Subject: Re: [PATCH v5 2/2] venus: venc: Add support for Long Term Reference
+ (LTR) controls
+To:     Dikshita Agarwal <dikshita@codeaurora.org>,
+        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org
+References: <1609736971-14454-1-git-send-email-dikshita@codeaurora.org>
+ <1609736971-14454-3-git-send-email-dikshita@codeaurora.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <e11a4e78-8e41-c7f4-4947-76d27f0fa2ed@xs4all.nl>
+Date:   Tue, 12 Jan 2021 10:04:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210111231058.14559-2-huobean@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <1609736971-14454-3-git-send-email-dikshita@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.171.61]
-X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+X-CMAE-Envelope: MS4xfNfNVDt7xI9xuvE28pakTe/RciRNCg7GGlZTvFiXs8nhuSsM/ARLZqkNolvXYjUWI8q6xAPEXTm2qTPk6C+KMppHZhHyxC90OftYJ9yerdRsdF9oqWS3
+ cnhrppwA5Tyqp9piHy0BO39n0rDMTTwJpHnjX+8VLuWA8W6+XxcTPbGZTzySN0FD29Y8BqVsCPDMBtn1U+Zc9pdr/iKbZAscijqEPHsBI8gFzOJJqZGC+1QD
+ YOv8U9x+XdRYDX/aE7WMhaFPd7xrtrkI2lrdbasAIL1hLn5U6aEdTqzFEyirJAWY29nnGnCZpjvHJ4BjdFB2nJRcWPwzaeC47fb2nxTvqmPpmjDp77JGbzJS
+ E1AcqhLtfOJjLWXky8GiDXcF8QutnMX7n4fbCntvmVGw2YQleis=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/01/2021 23:10, Bean Huo wrote:
-> From: Bean Huo <beanhuo@micron.com>
+On 04/01/2021 06:09, Dikshita Agarwal wrote:
+> Add support for below LTR controls in encoder:
+> - V4L2_CID_MPEG_VIDEO_LTR_COUNT
+> - V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX
+> - V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES
+
+This patch does not add any Request API support to the venus driver,
+so it makes no sense to merge this series. It's incomplete.
+
+The other two series (priority ID and QP and layer bitrate) look good
+to be merged.
+
+Regards,
+
+	Hans
+
 > 
-> The memory allocated with devm_kzalloc() is freed automatically
-> no need to explicitly call devm_kfree.
-> 
-
-This change is not right - we use devm_kfree() to manually release the 
-devm-allocated debugfs memories upon memory allocation failure for 
-driver debugfs feature during probe. The reason is that we allow the 
-driver probe can still continue (for this failure).
-
-Thanks,
-John
-
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
 > ---
->   drivers/scsi/hisi_sas/hisi_sas_v3_hw.c | 28 +-------------------------
->   1 file changed, 1 insertion(+), 27 deletions(-)
+>  drivers/media/platform/qcom/venus/venc_ctrls.c | 49 +++++++++++++++++++++++++-
+>  1 file changed, 48 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-> index 91a7286e8102..5600411a0820 100644
-> --- a/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-> +++ b/drivers/scsi/hisi_sas/hisi_sas_v3_hw.c
-> @@ -4172,30 +4172,6 @@ static void debugfs_work_handler_v3_hw(struct work_struct *work)
->   	hisi_hba->debugfs_dump_index++;
->   }
->   
-> -static void debugfs_release_v3_hw(struct hisi_hba *hisi_hba, int dump_index)
-> -{
-> -	struct device *dev = hisi_hba->dev;
-> -	int i;
-> -
-> -	devm_kfree(dev, hisi_hba->debugfs_iost_cache[dump_index].cache);
-> -	devm_kfree(dev, hisi_hba->debugfs_itct_cache[dump_index].cache);
-> -	devm_kfree(dev, hisi_hba->debugfs_iost[dump_index].iost);
-> -	devm_kfree(dev, hisi_hba->debugfs_itct[dump_index].itct);
-> -
-> -	for (i = 0; i < hisi_hba->queue_count; i++)
-> -		devm_kfree(dev, hisi_hba->debugfs_dq[dump_index][i].hdr);
-> -
-> -	for (i = 0; i < hisi_hba->queue_count; i++)
-> -		devm_kfree(dev,
-> -			   hisi_hba->debugfs_cq[dump_index][i].complete_hdr);
-> -
-> -	for (i = 0; i < DEBUGFS_REGS_NUM; i++)
-> -		devm_kfree(dev, hisi_hba->debugfs_regs[dump_index][i].data);
-> -
-> -	for (i = 0; i < hisi_hba->n_phy; i++)
-> -		devm_kfree(dev, hisi_hba->debugfs_port_reg[dump_index][i].data);
-> -}
-> -
->   static const struct hisi_sas_debugfs_reg *debugfs_reg_array_v3_hw[DEBUGFS_REGS_NUM] = {
->   	[DEBUGFS_GLOBAL] = &debugfs_global_reg,
->   	[DEBUGFS_AXI] = &debugfs_axi_reg,
-> @@ -4206,7 +4182,7 @@ static int debugfs_alloc_v3_hw(struct hisi_hba *hisi_hba, int dump_index)
->   {
->   	const struct hisi_sas_hw *hw = hisi_hba->hw;
->   	struct device *dev = hisi_hba->dev;
-> -	int p, c, d, r, i;
-> +	int p, c, d, r;
->   	size_t sz;
->   
->   	for (r = 0; r < DEBUGFS_REGS_NUM; r++) {
-> @@ -4286,8 +4262,6 @@ static int debugfs_alloc_v3_hw(struct hisi_hba *hisi_hba, int dump_index)
->   
->   	return 0;
->   fail:
-> -	for (i = 0; i < hisi_sas_debugfs_dump_count; i++)
-> -		debugfs_release_v3_hw(hisi_hba, i);
->   	return -ENOMEM;
->   }
->   
+> diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
+> index 496ad4d..7d010d8 100644
+> --- a/drivers/media/platform/qcom/venus/venc_ctrls.c
+> +++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
+> @@ -20,6 +20,7 @@
+>  #define INTRA_REFRESH_MBS_MAX	300
+>  #define AT_SLICE_BOUNDARY	\
+>  	V4L2_MPEG_VIDEO_H264_LOOP_FILTER_MODE_DISABLED_AT_SLICE_BOUNDARY
+> +#define MAX_LTR_FRAME_COUNT 4
+>  
+>  static int venc_calc_bpframes(u32 gop_size, u32 conseq_b, u32 *bf, u32 *pf)
+>  {
+> @@ -72,6 +73,9 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
+>  	struct venc_controls *ctr = &inst->controls.enc;
+>  	struct hfi_enable en = { .enable = 1 };
+>  	struct hfi_bitrate brate;
+> +	struct hfi_ltr_use ltr_use;
+> +	struct hfi_ltr_mark ltr_mark;
+> +	struct hfi_ltr_mode ltr_mode;
+>  	u32 bframes;
+>  	u32 ptype;
+>  	int ret;
+> @@ -259,6 +263,37 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
+>  	case V4L2_CID_MPEG_VIDEO_FRAME_SKIP_MODE:
+>  		ctr->frame_skip_mode = ctrl->val;
+>  		break;
+> +	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:
+> +		ptype = HFI_PROPERTY_PARAM_VENC_LTRMODE;
+> +		ltr_mode.ltr_count = ctrl->val;
+> +		ltr_mode.ltr_mode = HFI_LTR_MODE_MANUAL;
+> +		ltr_mode.trust_mode = 1;
+> +		ret = hfi_session_set_property(inst, ptype, &ltr_mode);
+> +		if (ret) {
+> +			mutex_unlock(&inst->lock);
+> +			return ret;
+> +		}
+> +		break;
+> +	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:
+> +		ptype = HFI_PROPERTY_CONFIG_VENC_MARKLTRFRAME;
+> +		ltr_mark.mark_frame = ctrl->val;
+> +		ret = hfi_session_set_property(inst, ptype, &ltr_mark);
+> +		if (ret) {
+> +			mutex_unlock(&inst->lock);
+> +			return ret;
+> +		}
+> +		break;
+> +	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:
+> +		ptype = HFI_PROPERTY_CONFIG_VENC_USELTRFRAME;
+> +		ltr_use.ref_ltr = ctrl->val;
+> +		ltr_use.use_constrnt = true;
+> +		ltr_use.frames = 0;
+> +		ret = hfi_session_set_property(inst, ptype, &ltr_use);
+> +		if (ret) {
+> +			mutex_unlock(&inst->lock);
+> +			return ret;
+> +		}
+> +		break;
+>  	default:
+>  		return -EINVAL;
+>  	}
+> @@ -274,7 +309,7 @@ int venc_ctrl_init(struct venus_inst *inst)
+>  {
+>  	int ret;
+>  
+> -	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 50);
+> +	ret = v4l2_ctrl_handler_init(&inst->ctrl_handler, 53);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -476,6 +511,18 @@ int venc_ctrl_init(struct venus_inst *inst)
+>  			       (1 << V4L2_MPEG_VIDEO_FRAME_SKIP_MODE_BUF_LIMIT)),
+>  			       V4L2_MPEG_VIDEO_FRAME_SKIP_MODE_DISABLED);
+>  
+> +	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
+> +			  V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES, 0,
+> +			  (MAX_LTR_FRAME_COUNT - 1), 1, 0);
+> +
+> +	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
+> +			  V4L2_CID_MPEG_VIDEO_LTR_COUNT, 0,
+> +			  MAX_LTR_FRAME_COUNT, 1, 0);
+> +
+> +	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
+> +			  V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX, 0,
+> +			  (MAX_LTR_FRAME_COUNT - 1), 1, 0);
+> +
+>  	ret = inst->ctrl_handler.error;
+>  	if (ret)
+>  		goto err;
 > 
 
