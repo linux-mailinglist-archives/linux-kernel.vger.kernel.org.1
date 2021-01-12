@@ -2,79 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB8802F32A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3132F3295
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388435AbhALOGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:06:17 -0500
-Received: from mga17.intel.com ([192.55.52.151]:17894 "EHLO mga17.intel.com"
+        id S1733099AbhALOFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:05:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727727AbhALOGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:06:17 -0500
-IronPort-SDR: KPs+p94FnryyHSlb+O3gI7AJNWePi4gII+z9RBcD9UAOY8SV8UlWHTEYQ/SV/1Pku+lrKjAjLP
- OSfP0/WQqinQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="157820138"
-X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
-   d="scan'208";a="157820138"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 06:04:30 -0800
-IronPort-SDR: 8Dd/RSc3xp6wapTxT4+kF6eCM2PnnkCGvOUlE2GeZC01qpNKszGMLreGrml+bLzxIguQ/MUn3i
- 5sR8KX83q2Sg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
-   d="scan'208";a="464533456"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 12 Jan 2021 06:04:27 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 12 Jan 2021 16:04:26 +0200
-Date:   Tue, 12 Jan 2021 16:04:26 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org,
-        hdegoede@redhat.com, badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/3] AMS, Collision Avoidance, and Protocol Error
-Message-ID: <20210112140426.GE2020859@kuha.fi.intel.com>
-References: <20210105163927.1376770-1-kyletso@google.com>
+        id S1727954AbhALOFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 09:05:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EFF423102;
+        Tue, 12 Jan 2021 14:05:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610460309;
+        bh=hEyF8u1jTp1PdY2BgjCeEQOjkCa4GQKBP+Ai0lRFwnI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZAkvt9t8Aor96P99OppfBioEuqN08bN/qqHnCLPzBFsvHwmv+TS5L8y1SfDjvkb6Z
+         XFZX5vBv7oYPhEdmv8k5dra3x9f96FoJg4SPVBSKq/f8uJKTa26JsEUf3UDBvCdSt8
+         8i4IOG28IJ62lXksW63gSRG5A0QTggaL/riLMgJE6f6WqZMHx7yMvtNPCMAwYdDz7F
+         LO5NUok+6iBA7bs1wo0ggXTchXqxQEUm5k1mNuiXRj0bv1JXHa48RH6GnQ3GDZjsaf
+         hEU76Wzmzvelqd7vTZ2wVCp2qRXE4QAGzB6Uzbpzzt8j7JVJ1CUp0O6zAlNDNCAzAA
+         FtrPayBvBq32w==
+Received: by mail-ed1-f44.google.com with SMTP id b2so2439674edm.3;
+        Tue, 12 Jan 2021 06:05:09 -0800 (PST)
+X-Gm-Message-State: AOAM53316nN7HgC7KDeycUKipurB+TP2owX5sEGSKLRWTdJWChSp7zdU
+        xIaqTYV4IxcUX05D3SfV4rA/Al8KmkCDGlrL9Q==
+X-Google-Smtp-Source: ABdhPJzjVbF8BgyTS7DJvzisOGRLdNi2IpAmco42wRjcHhwS40VmHg7+FIb+DgXEMB/Ze3HWtm2nQceT3ldNB4rsaeE=
+X-Received: by 2002:a50:f404:: with SMTP id r4mr3569989edm.62.1610460307833;
+ Tue, 12 Jan 2021 06:05:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210105163927.1376770-1-kyletso@google.com>
+References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
+ <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
+ <23e16d20-36eb-87d9-4473-142504ad8a95@gmail.com>
+In-Reply-To: <23e16d20-36eb-87d9-4473-142504ad8a95@gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 12 Jan 2021 08:04:55 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKqSVGCjcue=ka2=bB1Os9pczNTCqDeaoFPFfRxnvsteQ@mail.gmail.com>
+Message-ID: <CAL_JsqKqSVGCjcue=ka2=bB1Os9pczNTCqDeaoFPFfRxnvsteQ@mail.gmail.com>
+Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
+To:     Frank Rowand <frowand.list@gmail.com>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 12:39:24AM +0800, Kyle Tso wrote:
-> This series include previous patch "[v4] AMS and Collision Avoidance"
-> https://lore.kernel.org/r/20201217030632.903718-1-kyletso@google.com
-> and two more patches "Protocol Error handling" and "Respond Wait if...".
-> 
-> The patch "AMS and Collision Avoidance" in [v5] is the same as the one
-> in [v4] (only rebased to ToT).
-> 
-> The patch "Protocol Error handling" is based on PD3 6.8.1 to fix the
-> wrong handling.
-> 
-> The patch "Respond Wait if..." is to fix a conflict when 
-> DR/PR/VCONN_SWAP occurs just after the state machine enters Ready State.
-> 
-> Kyle Tso (3):
->   usb: typec: tcpm: AMS and Collision Avoidance
->   usb: typec: tcpm: Protocol Error handling
->   usb: typec: tcpm: Respond Wait if VDM state machine is running
-> 
->  drivers/usb/typec/tcpm/tcpm.c | 925 +++++++++++++++++++++++++++++-----
->  include/linux/usb/pd.h        |   2 +
->  include/linux/usb/tcpm.h      |   4 +
->  3 files changed, 792 insertions(+), 139 deletions(-)
+On Mon, Jan 11, 2021 at 4:06 PM Frank Rowand <frowand.list@gmail.com> wrote:
+>
+> On 1/8/21 2:41 AM, Viresh Kumar wrote:
+> > Now that fdtoverlay is part of the kernel build, start using it to test
+> > the unitest overlays we have by applying them statically.
+> >
+> > The file overlay_base.dtb have symbols of its own and we need to apply
+> > overlay.dtb to overlay_base.dtb alone first to make it work, which gives
+> > us intermediate-overlay.dtb file.
+> >
+> > The intermediate-overlay.dtb file along with all other overlays is them
+> > applied to testcases.dtb to generate the master.dtb file.
+> >
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+>
+> NACK to this specific patch, in its current form.
+>
+> There are restrictions on applying an overlay at runtime that do not apply
+> to applying an overlay to an FDT that will be loaded by the kernel during
+> early boot.  Thus the unittest overlays _must_ be applied using the kernel
+> overlay loading methods to test the kernel runtime overlay loading feature.
 
-These are OK by me. The few comments I had were all minor nitpicks,
-but I would appreciate if you could fix them in any case. After that,
-FWIW:
+This patch doesn't take away from any of that and it completely orthogonal.
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> I agree that testing fdtoverlay is a good idea.  I have not looked at the
+> parent project to see how much testing of fdtoverlay occurs there, but I
+> would prefer that fdtoverlay tests reside in the parent project if practical
+> and reasonable.  If there is some reason that some fdtoverlay tests are
+> more practical in the Linux kernel repository then I am open to adding
+> them to the Linux kernel tree.
 
+If you (or more importantly someone else sending us patches) make
+changes to the overlays, you can test that they apply at build time
+rather than runtime. I'll take it! So please help on fixing the issue
+because I want to apply this.
 
-thanks,
+And yes, dtc has fdtoverlay tests. But this patch shows there's at
+least 2 issues. fdtoverlay can't apply overlays to the root and using
+an overlay as the base tree in UML is odd IMO.
 
--- 
-heikki
+Rob
