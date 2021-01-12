@@ -2,175 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 430862F3F5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A37A2F3F63
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438316AbhALWSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:18:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
+        id S2438326AbhALWS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:18:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730212AbhALWSi (ORCPT
+        with ESMTP id S2404672AbhALWSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:18:38 -0500
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B63CC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:17:58 -0800 (PST)
-Received: by mail-ot1-x333.google.com with SMTP id x5so3537465otp.9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:17:58 -0800 (PST)
+        Tue, 12 Jan 2021 17:18:55 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA128C0617A3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:18:14 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id n7so133678pgg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:18:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HvUmJxi/g8blsoQI26oqN2rM0SAy7RtATDDau+9vtBg=;
-        b=V1VvugWsKg02SnRwM/ZoIpIdve/zHjFD0Y4LFtgV4T7KnxkqTyVdld2O6v4RZ78iAg
-         fiXUwKUNVQEKyB7L812A0aIr98YO44lGQ+Mzw35rhaEjqZbi3/v9DwScmxJtZAg3QxvG
-         ImhtGjfecYHIpoiHlNxVMqbasuYx9GUdBIVT1eazYRu8rD1WJv1y5bH2uSJjKss/pzWn
-         +gjZfG3R7f319fSnqQ9NIIyR39nMm2YNC8LzZCMhi1Mg1WO/AuzqloJQUQoM1+4m7GgH
-         3CY7Tjp4xvW8ZHdZ23vTR5ufQxc6qih4AyWeLZ71m5VpbNXuiUszJwwT+eE2Ci8u/RIk
-         7BHg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=D94bTQz9Dscjb4392yuJLnozu8co+6TjlHWNTrMYHUs=;
+        b=k2fC4CfRFE5cZ37SaYKA95nYdU+VpqUqDsjI5gAEa9XKBzDbJ1Z9d2qi0gbwvkGL4d
+         eSZD5/+O8UbjZWTzVdOS/0NjZWx/5tC4zN7cc321WLZ0Y9jAP47bqBR2CsY3MS9u0ApS
+         ior7i82v4r8gohZZMyAb42LLZw6tp3B11zMQVhL+cYYZ3BSdqopUuvb8XABFlF+jGRJU
+         2A7O0jlAm1Zd0Fd1KPMzRtFUBH3Lp3aDKVy0QfSTsrFxd/L35bIyO/7n5YtKx5OHZ2iI
+         jVTh4nXuh5oP2LEf+gp8ZxVqmzxsbT3CBsILk2/UM8THWUs50NCErnu/zs57rzPO1MhE
+         O/QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HvUmJxi/g8blsoQI26oqN2rM0SAy7RtATDDau+9vtBg=;
-        b=sN8oBpbpbAbp8RQ5WAD7rxfEdfQ2ZvUYH9pOtiB64wQNcp05x0paLHta97i4YPAskd
-         +tXmSrK64EW633upYhvFucWGHxNniDhcjsqGpQeCTGXk5gr7Lb5z5hGKKCdFnHLhcRNT
-         w2Y+xd9XokP97MA73ftgmknBPvyp9RjbT6rFuevxvBIS5DpzGanwqu5iIBKYrrxaq8fb
-         D8uKB5Hs4o7myvYPxVot18xXadCnZSGaJS0cYykzYVcEH3xR5NZdmxwkluEdJRBoPNUm
-         vhMyWXRAH9yODHVqSGl/BUwo8ea04LOqlgGQ+RsdIjnL7ENWacYuj1YgSEhk1d80Us41
-         bcOg==
-X-Gm-Message-State: AOAM532qGfW1hke194tZe/6YbQAHPzaB03kA0EUcKD5saxyMBfLc3gas
-        grQJ1MMEPh0fYmJKdyots2CgRL6qPiIcJ9ssiDoB9dn0
-X-Google-Smtp-Source: ABdhPJxGM6vKfRyjIjVJ+tzwpnd5zKmX94O0o8s9X/BqallXC62zfkCYcOvfDzbX7lxCumFm5kKTObterRb+gA1ypmc=
-X-Received: by 2002:a9d:2ac2:: with SMTP id e60mr1034057otb.23.1610489877610;
- Tue, 12 Jan 2021 14:17:57 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=D94bTQz9Dscjb4392yuJLnozu8co+6TjlHWNTrMYHUs=;
+        b=ld+MnYOQ9mTES+x8A/LQH76mPCe3F+ywmpuUOro/r2KKZ7TAe7e+5ZfCJ94SskJMZI
+         NWt5AJ4UX3N4lAkPYoJk81Y3mBKm9djex51SVcK4pUP4abHePTzQptxVarzf1stbrg/q
+         OwwT2XZbPTxhHNTJHhIcf+rP7lQZkMfQ+yYfeU9G6ZhtTqIamQmM6zMR7t0yE4Wt2Gbr
+         NxrxsACXFTkBUXvjgeQ8wn/VJwyIJsl6oGx3xU3eOwa6LAUFme7wgDosRWQzJcZt2vM6
+         LoSTi7G/tdDMsb6jddR2/EKRARs3bP4R07ti3BtRH2kPX1/AFKKarF2VEYe+yO0eXbvZ
+         J2lQ==
+X-Gm-Message-State: AOAM530GBRQZFKtBIHiFOzhxUzMn9RxLcikunQbbWwo2vTmFcNqfOy4o
+        ybL1SfYlEkMs0SpQo/+/ZR9+DQ==
+X-Google-Smtp-Source: ABdhPJwWcpIo/snHBo4kb/9Uw+4uUANJIxOEc3Cus4Jg5b2/fhTbAYanYjbKe2gibQWUFHCx61E8+A==
+X-Received: by 2002:a63:4082:: with SMTP id n124mr1200591pga.340.1610489894074;
+        Tue, 12 Jan 2021 14:18:14 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id 77sm122040pfv.16.2021.01.12.14.18.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 14:18:13 -0800 (PST)
+Date:   Tue, 12 Jan 2021 14:18:06 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 03/13] KVM: SVM: Move SEV module params/variables to sev.c
+Message-ID: <X/4gHlZJvpem8SLd@google.com>
+References: <20210109004714.1341275-1-seanjc@google.com>
+ <20210109004714.1341275-4-seanjc@google.com>
+ <87sg7792l3.fsf@vitty.brq.redhat.com>
+ <672e86f7-86c7-0377-c544-fe52c8d7c1b9@amd.com>
+ <87k0sj8l77.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-20-lee.jones@linaro.org>
-In-Reply-To: <20210111191926.3688443-20-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 12 Jan 2021 17:17:43 -0500
-Message-ID: <CADnq5_NtPZs4cCypB0nphJqEVVQp7OojJVGLzNH0hP=+JWrr6g@mail.gmail.com>
-Subject: Re: [PATCH 19/40] drm/amd/display/dc/dce/dce_opp: Remove duplicate
- entries causing 'field overwritten' issues
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, Mauro Rossi <issor.oruam@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87k0sj8l77.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 2:20 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dc=
-e112_resource.c:59:
->  drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_11_2_sh_mask.h:10=
-480:62: warning: initialized field overwritten [-Woverride-init]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:96:16: note: in e=
-xpansion of macro =E2=80=98FMT_BIT_DEPTH_CONTROL__FMT_TEMPORAL_DITHER_EN__S=
-HIFT=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:114:2: note: in e=
-xpansion of macro =E2=80=98OPP_SF=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:148:2: note: in e=
-xpansion of macro =E2=80=98OPP_COMMON_MASK_SH_LIST_DCE_COMMON_BASE=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:321:2:=
- note: in expansion of macro =E2=80=98OPP_COMMON_MASK_SH_LIST_DCE_112=E2=80=
-=99
->  drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_11_2_sh_mask.h:10=
-480:62: note: (near initialization for =E2=80=98opp_shift.FMT_TEMPORAL_DITH=
-ER_EN=E2=80=99)
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:96:16: note: in e=
-xpansion of macro =E2=80=98FMT_BIT_DEPTH_CONTROL__FMT_TEMPORAL_DITHER_EN__S=
-HIFT=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:114:2: note: in e=
-xpansion of macro =E2=80=98OPP_SF=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:148:2: note: in e=
-xpansion of macro =E2=80=98OPP_COMMON_MASK_SH_LIST_DCE_COMMON_BASE=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:321:2:=
- note: in expansion of macro =E2=80=98OPP_COMMON_MASK_SH_LIST_DCE_112=E2=80=
-=99
->  drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_11_2_sh_mask.h:10=
-479:60: warning: initialized field overwritten [-Woverride-init]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:96:16: note: in e=
-xpansion of macro =E2=80=98FMT_BIT_DEPTH_CONTROL__FMT_TEMPORAL_DITHER_EN_MA=
-SK=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:114:2: note: in e=
-xpansion of macro =E2=80=98OPP_SF=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:148:2: note: in e=
-xpansion of macro =E2=80=98OPP_COMMON_MASK_SH_LIST_DCE_COMMON_BASE=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:325:2:=
- note: in expansion of macro =E2=80=98OPP_COMMON_MASK_SH_LIST_DCE_112=E2=80=
-=99
->  drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_11_2_sh_mask.h:10=
-479:60: note: (near initialization for =E2=80=98opp_mask.FMT_TEMPORAL_DITHE=
-R_EN=E2=80=99)
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:96:16: note: in e=
-xpansion of macro =E2=80=98FMT_BIT_DEPTH_CONTROL__FMT_TEMPORAL_DITHER_EN_MA=
-SK=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:114:2: note: in e=
-xpansion of macro =E2=80=98OPP_SF=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:148:2: note: in e=
-xpansion of macro =E2=80=98OPP_COMMON_MASK_SH_LIST_DCE_COMMON_BASE=E2=80=99
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Mauro Rossi <issor.oruam@gmail.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Mon, Jan 11, 2021, Vitaly Kuznetsov wrote:
+> Tom Lendacky <thomas.lendacky@amd.com> writes:
+> 
+> > On 1/11/21 4:42 AM, Vitaly Kuznetsov wrote:
+> >> Sean Christopherson <seanjc@google.com> writes:
+> >> 
+> >>> Unconditionally invoke sev_hardware_setup() when configuring SVM and
+> >>> handle clearing the module params/variable 'sev' and 'sev_es' in
+> >>> sev_hardware_setup().  This allows making said variables static within
+> >>> sev.c and reduces the odds of a collision with guest code, e.g. the guest
+> >>> side of things has already laid claim to 'sev_enabled'.
+> >>>
+> >>> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> >>> ---
+> >>>   arch/x86/kvm/svm/sev.c | 11 +++++++++++
+> >>>   arch/x86/kvm/svm/svm.c | 15 +--------------
+> >>>   arch/x86/kvm/svm/svm.h |  2 --
+> >>>   3 files changed, 12 insertions(+), 16 deletions(-)
+> >>>
+> >>> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> >>> index 0eeb6e1b803d..8ba93b8fa435 100644
+> >>> --- a/arch/x86/kvm/svm/sev.c
+> >>> +++ b/arch/x86/kvm/svm/sev.c
+> >>> @@ -27,6 +27,14 @@
+> >>>   
+> >>>   #define __ex(x) __kvm_handle_fault_on_reboot(x)
+> >>>   
+> >>> +/* enable/disable SEV support */
+> >>> +static int sev = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
+> >>> +module_param(sev, int, 0444);
+> >>> +
+> >>> +/* enable/disable SEV-ES support */
+> >>> +static int sev_es = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
+> >>> +module_param(sev_es, int, 0444);
+> >> 
+> >> Two stupid questions (and not really related to your patch) for
+> >> self-eduacation if I may:
+> >> 
+> >> 1) Why do we rely on CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT (which
+> >> sound like it control the guest side of things) to set defaults here?
+> >
+> > I thought it was a review comment, but I'm not able to find it now.
+> >
+> > Brijesh probably remembers better than me.
+> >
+> >> 
+> >> 2) It appears to be possible to do 'modprobe kvm_amd sev=0 sev_es=1' and
+> >> this looks like a bogus configuration, should we make an effort to
+> >> validate the correctness upon module load?
+> >
+> > This will still result in an overall sev=0 sev_es=0. Is the question just 
+> > about issuing a message based on the initial values specified?
+> >
+> 
+> Yes, as one may expect the result will be that SEV-ES guests work and
+> plain SEV don't.
 
-Applied.  Thanks!
+KVM doesn't issue messages when it overrides other module params due to
+disable requirements, e.g. ept=0 unrestricted_guest=1 is roughly equivalent.
+Not that what KVM currently does is right, but at least it's consistent. :-)
 
-Alex
-
-> ---
->  drivers/gpu/drm/amd/display/dc/dce/dce_opp.h | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_opp.h b/drivers/gpu/d=
-rm/amd/display/dc/dce/dce_opp.h
-> index 4d484ef60f357..bf1ffc3629c7f 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dce/dce_opp.h
-> +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_opp.h
-> @@ -111,7 +111,6 @@ enum dce110_opp_reg_type {
->         OPP_SF(FMT_DITHER_RAND_R_SEED, FMT_RAND_R_SEED, mask_sh),\
->         OPP_SF(FMT_DITHER_RAND_G_SEED, FMT_RAND_G_SEED, mask_sh),\
->         OPP_SF(FMT_DITHER_RAND_B_SEED, FMT_RAND_B_SEED, mask_sh),\
-> -       OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_EN, mask_sh),\
->         OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_RESET, mask_sh)=
-,\
->         OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_OFFSET, mask_sh=
-),\
->         OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_DEPTH, mask_sh)=
-,\
-> @@ -219,7 +218,6 @@ enum dce110_opp_reg_type {
->         OPP_SF(FMT_DITHER_RAND_R_SEED, FMT_RAND_R_SEED, mask_sh),\
->         OPP_SF(FMT_DITHER_RAND_G_SEED, FMT_RAND_G_SEED, mask_sh),\
->         OPP_SF(FMT_DITHER_RAND_B_SEED, FMT_RAND_B_SEED, mask_sh),\
-> -       OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_EN, mask_sh),\
->         OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_RESET, mask_sh)=
-,\
->         OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_OFFSET, mask_sh=
-),\
->         OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_DEPTH, mask_sh)=
-,\
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+And on the other hand, I think it's reasonable to expect that specifying only
+sev=0 is sufficient to disable both SEV and SEV-ES, e.g. to turn them off when
+they're enabled by default.
