@@ -2,141 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3007A2F4010
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E882F3F6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438466AbhALWrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:47:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436769AbhALWq6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:46:58 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3455DC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:46:18 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id n11so365930lji.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:46:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=g5sjkYmyNIlLJA59o61REHb8AKH1ySCBTcd6TLDoHDc=;
-        b=xk4F4JXWKJvoVpvkPcSF5eOSsKbrWU8dsBWmaz4aN0AbwvRerrH5HBxxf1LHNcBIGw
-         QhkRj0JMG3aU9rPaPuRZAbObV5TkPpyUjtw9Atlzn4WvUP/tOd7Qvu3iEP6FF0YSPnjz
-         yxorRvN3uiBmfI4ZHIvy5wSjUoAMzaKln49FJjB4+1y0WhrIgn+zw0LEFpuJAK1kOGjk
-         r3xeX+Zii+h4Tl0n3Tz8DkUcXZWP93xTFyEmftDLFhsDxQfgncMphsP7ACU0SaSXAQHl
-         J80ndUCEZfp2SvAiNRhNy8aBidHGFJ8u/EN1yXphTHrlSc+qcgh8Mv89Knes1Te+jiIv
-         WBmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=g5sjkYmyNIlLJA59o61REHb8AKH1ySCBTcd6TLDoHDc=;
-        b=GFlaeaVyllEe/JO3qqcTQXxl8OSSE0xGeZ7ltFVSmW76W2mFjEPUzj3lmrYq2Rxbw0
-         mOorb6/Jp4RTcL3FXYCda48ckK1FyEZrJa9sokKOLyoHkXmbqcMGTwZxwxaIaBNyb/eV
-         oSxGvpkVlpzGmwhfHClZVTGZGyncXOIQAzcNElMd1wubAS1Gvf8VyNTHsG4J+N9XxoL0
-         nYDXff+o6RL6ohbmJw6PM0V1hXyu1eBnCYHTWqHaCZzdB3UC3NPkYlM2iPldDSKjEuqA
-         SvB2lyJQ78nbkjFCWIMD5s6qS1K9eIfKKhWZnmpDazSfQ8K2/8Pjajp9bBzQ3WayTapk
-         Dfwg==
-X-Gm-Message-State: AOAM5329yxxPcc5DEcEllC9jkq35JiR4hCn1Jw7+stnX36IScDXSfQXo
-        STYb3w1I5jv9dDxv6lnXBcZnVmiHVO/oZQ4+088L8yx0Mhnq7Q==
-X-Google-Smtp-Source: ABdhPJwB3XyCjodEyq4bELvSnFhLnKRKxthkfxIxeufYbeb5jjdzhJQrfu4eGAlRygt4g3EP31A/7cLluJ99FomQpIc=
-X-Received: by 2002:a2e:586:: with SMTP id 128mr634078ljf.273.1610491576669;
- Tue, 12 Jan 2021 14:46:16 -0800 (PST)
+        id S2438480AbhALWrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:47:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2436769AbhALWrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 17:47:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3B4A230F9;
+        Tue, 12 Jan 2021 22:46:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610491583;
+        bh=Rqin12tOcaSlTV0JXx5zAMTAIc0/hFy8RZqaB/MNwdY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Cg8lDoFec4nxn4ii7SgesxmcAdK/ZNLOi6F8E53v1gyb6dhcaSQ3/EepChN1EE7ri
+         PdHcEkZ4wmBKZVHZXlAR0Axg/WiQVXdc9BAgfZlNjb4rGDaiu4kRyocGIMv/T7wBMR
+         MxflRnIiu+vwQRcw+whzQ6OjfrlMmmT5Oa4PGt+Mx/IwfxlQzhohMkWUbRi3u6hd1q
+         Wba5BkCe3gusMjnr7aThGGrqpYpkTjqDM+ezRikDJbRcfCFU/zxb4n4Tt7PawBBTnr
+         bIEh4ze/hUCI1EpS+8TP0sdQx+TIiTj/9ChoepX5Fy9MB5aenX7Gf61IBY9dTCarAp
+         eMmy7vyDn1kNA==
+Date:   Tue, 12 Jan 2021 22:46:17 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Yu Zhao <yuzhao@google.com>,
+        Laurent Dufour <ldufour@linux.vnet.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>, surenb@google.com
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <20210112224616.GA10512@willie-the-truck>
+References: <20210105153727.GK3040@hirez.programming.kicks-ass.net>
+ <bfb1cbe6-a705-469d-c95a-776624817e33@codeaurora.org>
+ <0201238b-e716-2a3c-e9ea-d5294ff77525@linux.vnet.ibm.com>
+ <X/3VE64nr91WCtuM@hirez.programming.kicks-ass.net>
+ <ec912505-ed4d-a45d-2ed4-7586919da4de@linux.vnet.ibm.com>
+ <C7D5A74C-25BF-458A-AAD9-61E484B9F225@gmail.com>
+ <X/3+6ZnRCNOwhjGT@google.com>
+ <2C7AE23B-ACA3-4D55-A907-AF781C5608F0@gmail.com>
+ <20210112214337.GA10434@willie-the-truck>
+ <F33D2DD9-97D5-44A0-890B-35FE686E36DC@gmail.com>
 MIME-Version: 1.0
-References: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
- <f48bcf43-9dcc-e48b-d29d-f75f3814398b@gmx.net> <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
-In-Reply-To: <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 12 Jan 2021 23:46:04 +0100
-Message-ID: <CACRpkda4E2NwNw29J7x5gehtqn_m3M_Z2dHpc7xRgvb0b-p22A@mail.gmail.com>
-Subject: Re: Old platforms: bring out your dead
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Gerhard Pircher <gerhard_pircher@gmx.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Sparc kernel list <sparclinux@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <F33D2DD9-97D5-44A0-890B-35FE686E36DC@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 3:45 PM John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
+On Tue, Jan 12, 2021 at 02:29:51PM -0800, Nadav Amit wrote:
+> > On Jan 12, 2021, at 1:43 PM, Will Deacon <will@kernel.org> wrote:
+> > 
+> > On Tue, Jan 12, 2021 at 12:38:34PM -0800, Nadav Amit wrote:
+> >>> On Jan 12, 2021, at 11:56 AM, Yu Zhao <yuzhao@google.com> wrote:
+> >>> On Tue, Jan 12, 2021 at 11:15:43AM -0800, Nadav Amit wrote:
+> >>>> I will send an RFC soon for per-table deferred TLB flushes tracking.
+> >>>> The basic idea is to save a generation in the page-struct that tracks
+> >>>> when deferred PTE change took place, and track whenever a TLB flush
+> >>>> completed. In addition, other users - such as mprotect - would use
+> >>>> the tlb_gather interface.
+> >>>> 
+> >>>> Unfortunately, due to limited space in page-struct this would only
+> >>>> be possible for 64-bit (and my implementation is only for x86-64).
+> >>> 
+> >>> I don't want to discourage you but I don't think this would end up
+> >>> well. PPC doesn't necessarily follow one-page-struct-per-table rule,
+> >>> and I've run into problems with this before while trying to do
+> >>> something similar.
+> >> 
+> >> Discourage, discourage. Better now than later.
+> >> 
+> >> It will be relatively easy to extend the scheme to be per-VMA instead of
+> >> per-table for architectures that prefer it this way. It does require
+> >> TLB-generation tracking though, which Andy only implemented for x86, so I
+> >> will focus on x86-64 right now.
+> > 
+> > Can you remind me of what we're missing on arm64 in this area, please? I'm
+> > happy to help get this up and running once you have something I can build
+> > on.
+> 
+> Let me first finish making something that we can use as a basis for a
+> discussion. I do not waste your time before I have something ready.
 
-> Yeah, I have the same impression that's the strong commercial interest pu=
-shes
-> hobbyist use of the Linux kernel a bit down. A lot of these changes feel =
-like
-> they're motivated by corporate decisions.
->
-> There has to be a healthy balance between hobbyist and commercial use. I =
-understand
-> that from a commercial point of view, it doesn't make much sense to run L=
-inux
-> on a 30-year-old computer. But it's a hobbyist project for many people an=
-d hacking
-> Linux stuff for these old machines has a very entertaining and educationa=
-l factor.
+Sure thing! Give me a shout when you're ready.
 
-This is actually one of the most interesting things written in this discuss=
-ion.
-
-I have both revamped and deleted subarchitectures in the ARM tree. We
-never deleted anyone's pet project *unless* they were clearly unwilling to
-work on it (such as simply testning new patches) and agreed that it will
-not go on.
-
-At multiple occasions I actually found it easier to fix stuff than
-delete it, both because it is a nicer thing to do and because it
-simply creates less social problems, often to the point that the time
-(man hours) spent trying to solve the resulting social problems from
-deleting a platform would be longer than the time spent actually acquiring
-the physical platform and fixing it.
-
-Corporate entities can be a bit deletionist (using Wikipedia terminology)
-and as in this thread there is always a strong inclusionist stance pushing
-back to that.
-
-The explanation is in my mind very simply that running Linux
-on a 35-yo or so Amiga, Atari or Apollo Workstation is pretty impressive an=
-d
-fun. And I think that fits Mr. Torvalds own sociological-or-something
-explanation in the autobiographical "Just for fun" as to why to write it
-in the first place. And we are very protective of that quality of the
-kernel. (At least I am.)
-
-That said there are a three things that people should really be doing if th=
-ey
-want to keep their pet archs/subarchs around as good community
-members, and they are in essence to:
-
-1. Test and review/ack patches that others make
-
-2. Migrate existing drivers to newly appeared and
-    appropriate subsystems (I think there are some hacky heartbeat LED
-    drivers down in arch/* for example) there is also the feature matrix
-    core maintainers like and which appears if you type
-    Documentation/features/list-arch.sh <archname>
-    would be nice if you work on them if you can support them!
-    Or at least take a look.
-
-3. Migrate old systems to use the
-   contemporary hardware descriptions (such as device tree or ACPI)
-   because it makes things so much easier to maintain. Some
-   upfront work, but a great win for everyone. Especially for
-   subsystem maintainers.
-
-And if your arch uses highmem then please get rid of highmem. I'm
-trying to do this a bit right now for ARM let's see how it goes.
-
-I understand that for some maintainers time is a factor and this list
-feels stressful. I'd say relax, but it'd be nice if you have a TODO that
-you cross items off of.
-
-Just my =E2=82=AC0.01
-Linus Walleij
+Will
