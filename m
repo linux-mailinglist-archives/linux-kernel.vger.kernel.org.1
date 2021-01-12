@@ -2,184 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DFA2F3D36
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B906D2F3D34
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407009AbhALVej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2437911AbhALVej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Jan 2021 16:34:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36606 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437094AbhALU7D (ORCPT
+        with ESMTP id S2437100AbhALVCR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:59:03 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BADAC061575;
-        Tue, 12 Jan 2021 12:58:23 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id d17so5437454ejy.9;
-        Tue, 12 Jan 2021 12:58:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2488YfIKw2/IPkOU3jNJR+xLgk8bwBEm0EMuKAKYdtE=;
-        b=r+7U1RgXJGA5UAOTqwDP6UL0+Qi7sfZ73exStFoFDpTEiR6aKOE5DcB5y6NaDIlH7W
-         9eb4xzc9BLBdVVNB5eTriTQMOmGqaA+uEuASwVTCHuUeeqJA4wMAw/o9sYpHRMpv4FHC
-         K24MzipXIz4HRSsDVeBnNjd75HEf2tP3lYmDUJJtg9dnq69AaKvc3uA0PKvZMC847DzF
-         4qBpMwiInB5opME2tonWYmB9vo7vVBTxxls3tDZRpPQROsfvWRVZPeyAtDxrwEvhVyp6
-         f+gyJJFejYSdW6pkitd/La9X5P+E/R0FTVxLOIFs1j1vJGDymh5xJQHsutbcLwhljkUb
-         XbeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2488YfIKw2/IPkOU3jNJR+xLgk8bwBEm0EMuKAKYdtE=;
-        b=GzeSpDkXKQaYaEt3Vek2dTT0bjB17zEFDvLJuC4ddqW0xqxat4mlSwBdUgWSoGQstx
-         gWROH8KGfJP1088Jqscea6xUUp/E6KQBrBR8+9PG5wpgBlmrEN0PwAjAipqn2A/mZ+Iu
-         bKU81kpsfVOvwuv2+vdXRG4wkJLy+Li5iUpSc6dpsyFaqoV1H4Gf5ulUwf5/SmW4qOVD
-         p6rJYKTqsRYSs8eX7ElDW75hr6wTPZcnwKx5jCS4eqboIxfTJiIaX/pi19oz/edTaRKg
-         BjzADpRvF+iISTZUev7KZUn9QnV51+MgVWrBXj+DpvGQ5qW6GEr/Gnf3+BnCBnjBO1US
-         trgA==
-X-Gm-Message-State: AOAM530KzNY9VzpNFR0PiDepy+FIlLWIQWj2//i/O45kHokL/4etF3+v
-        PuKraDy9RtWL4oUY8Ucqk7Bg9Hcc0tvo7lBVJ9I=
-X-Google-Smtp-Source: ABdhPJywiChfAqj+hTD+lWNPDRLSpKCj8jiEW6HWfM7CeSy44afF60mxJ8fD+ZgkFhrLb+rqeT2kS7vvOifHe5uef6U=
-X-Received: by 2002:a17:906:6a45:: with SMTP id n5mr486085ejs.514.1610485101796;
- Tue, 12 Jan 2021 12:58:21 -0800 (PST)
+        Tue, 12 Jan 2021 16:02:17 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A1ACC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:01:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=uIIB/9cfeqlWr6Lp0d8MywbmP5I2scIpmOMhS14mfRc=; b=xcoDKMZVEJVI7SUFyi62vnfvj/
+        y/b1lKn+mWml4KUwIa4X1tFp/Hpivd9ChUzwYmsGZaHRurcT/KeKX+4Pou6rCUOczBA0d1AxFtkL6
+        kn6eRxX8KZSEIHG4doeSHNVDru1gFjDF+O31pCCsNQXCzl6bqnsBUDDSaLdd/5FcwAqu3VjjlFVEF
+        o+5wsR3pvBpXdxOAFGMuyq33qcqdig6vQcQzImdm/Z7e5G1j8VYCW50bnXyVl4OsNI9qKXzOKuuar
+        MbzpMbFTym0L2yf9PhW+Ld3sSPn9smWQX5Ty8/nPtavx0MHsjVR8NF4Hb3pmLVvRDbU8AJTEhyIwR
+        xbWs31LA==;
+Received: from [2601:1c0:6280:3f0::79df]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kzQmv-0000zn-3T; Tue, 12 Jan 2021 21:01:13 +0000
+Subject: Re: [PATCH v2 08/70] mm/mmap: Change find_vma() to use the maple tree
+To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+        maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@google.com>, Song Liu <songliubraving@fb.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rik van Riel <riel@surriel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20210112161240.2024684-1-Liam.Howlett@Oracle.com>
+ <20210112161240.2024684-9-Liam.Howlett@Oracle.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <cf85f917-4f91-8757-8f4f-e8ac5e57a793@infradead.org>
+Date:   Tue, 12 Jan 2021 13:01:04 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20210105225817.1036378-1-shy828301@gmail.com> <20210105225817.1036378-6-shy828301@gmail.com>
- <bdf650e0-6728-4481-3454-c865649bbdcf@virtuozzo.com> <CAHbLzkqZ7Hmo7DSQijrgoKaDQDaOb3+tTGeJ2xU8drFKZ6jv4A@mail.gmail.com>
- <ff0d1ed1-e2ae-3e0c-e780-e8d2287cc99b@virtuozzo.com>
-In-Reply-To: <ff0d1ed1-e2ae-3e0c-e780-e8d2287cc99b@virtuozzo.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 12 Jan 2021 12:58:10 -0800
-Message-ID: <CAHbLzkrOfSSMDhHyemSFWdQ4aSGLytM+9u=s2-BNWsKkLVGgEg@mail.gmail.com>
-Subject: Re: [v3 PATCH 05/11] mm: vmscan: use a new flag to indicate shrinker
- is registered
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc:     Roman Gushchin <guro@fb.com>, Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210112161240.2024684-9-Liam.Howlett@Oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 1:38 PM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
->
-> On 11.01.2021 21:17, Yang Shi wrote:
-> > On Wed, Jan 6, 2021 at 2:22 AM Kirill Tkhai <ktkhai@virtuozzo.com> wrote:
-> >>
-> >> On 06.01.2021 01:58, Yang Shi wrote:
-> >>> Currently registered shrinker is indicated by non-NULL shrinker->nr_deferred.
-> >>> This approach is fine with nr_deferred at the shrinker level, but the following
-> >>> patches will move MEMCG_AWARE shrinkers' nr_deferred to memcg level, so their
-> >>> shrinker->nr_deferred would always be NULL.  This would prevent the shrinkers
-> >>> from unregistering correctly.
-> >>>
-> >>> Signed-off-by: Yang Shi <shy828301@gmail.com>
-> >>> ---
-> >>>  include/linux/shrinker.h |  7 ++++---
-> >>>  mm/vmscan.c              | 13 +++++++++----
-> >>>  2 files changed, 13 insertions(+), 7 deletions(-)
-> >>>
-> >>> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
-> >>> index 0f80123650e2..1eac79ce57d4 100644
-> >>> --- a/include/linux/shrinker.h
-> >>> +++ b/include/linux/shrinker.h
-> >>> @@ -79,13 +79,14 @@ struct shrinker {
-> >>>  #define DEFAULT_SEEKS 2 /* A good number if you don't know better. */
-> >>>
-> >>>  /* Flags */
-> >>> -#define SHRINKER_NUMA_AWARE  (1 << 0)
-> >>> -#define SHRINKER_MEMCG_AWARE (1 << 1)
-> >>> +#define SHRINKER_REGISTERED  (1 << 0)
-> >>> +#define SHRINKER_NUMA_AWARE  (1 << 1)
-> >>> +#define SHRINKER_MEMCG_AWARE (1 << 2)
-> >>>  /*
-> >>>   * It just makes sense when the shrinker is also MEMCG_AWARE for now,
-> >>>   * non-MEMCG_AWARE shrinker should not have this flag set.
-> >>>   */
-> >>> -#define SHRINKER_NONSLAB     (1 << 2)
-> >>> +#define SHRINKER_NONSLAB     (1 << 3)
-> >>>
-> >>>  extern int prealloc_shrinker(struct shrinker *shrinker);
-> >>>  extern void register_shrinker_prepared(struct shrinker *shrinker);
-> >>> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> >>> index 8da765a85569..9761c7c27412 100644
-> >>> --- a/mm/vmscan.c
-> >>> +++ b/mm/vmscan.c
-> >>> @@ -494,6 +494,7 @@ void register_shrinker_prepared(struct shrinker *shrinker)
-> >>>       if (shrinker->flags & SHRINKER_MEMCG_AWARE)
-> >>>               idr_replace(&shrinker_idr, shrinker, shrinker->id);
-> >>>  #endif
-> >>> +     shrinker->flags |= SHRINKER_REGISTERED;
-> >>
-> >> In case of we introduce this new flag, we should kill old flag SHRINKER_REGISTERING,
-> >> which are not needed anymore (we should you the new flag instead of that).
-> >
-> > The only think that I'm confused with is the check in
-> > shrink_slab_memcg, it does:
-> >
-> > shrinker = idr_find(&shrinker_idr, i);
-> > if (unlikely(!shrinker || shrinker == SHRINKER_REGISTERING)) {
-> >
-> > When allocating idr, the shrinker is associated with
-> > SHRINKER_REGISTERING. But, shrink_slab_memcg does acquire read
-> > shrinker_rwsem, and idr_alloc is called with holding write
-> > shrinker_rwsem, so I'm supposed shrink_slab_memcg should never see
-> > shrinker is registering.
->
-> After prealloc_shrinker() shrinker is visible for shrink_slab_memcg().
-> This is the moment shrink_slab_memcg() sees SHRINKER_REGISTERED.
+Hi,
+Please adjust the kernel-doc to be correct :)
 
-Yes, this exactly is what I'm supposed.
+On 1/12/21 8:11 AM, Liam R. Howlett wrote:
+> Start using the maple tree to find VMA entries in an mm_struct.
+> 
+> Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+> ---
+>  mm/mmap.c | 29 +++++++++++------------------
+>  1 file changed, 11 insertions(+), 18 deletions(-)
+> 
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 65789b188c380..ab1cb0efc4c65 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -2474,10 +2474,17 @@ get_unmapped_area(struct file *file, unsigned long addr, unsigned long len,
+>  
+>  EXPORT_SYMBOL(get_unmapped_area);
+>  
+> -/* Look up the first VMA which satisfies  addr < vm_end,  NULL if none. */
+> +/**
+> + * find_vma() - Find the VMA for a given address, or the next vma.  May return
+> + * NULL in the case of no vma at addr or above
 
->
-> > If so it seems easy to remove
-> > SHRINKER_REGISTERING.
-> >
-> > We just need change that check to:
-> > !shrinker || !(shrinker->flags & SHRINKER_REGISTERED)
-> >
-> >>>       up_write(&shrinker_rwsem);
-> >>>  }
-> >>>
-> >>> @@ -513,13 +514,17 @@ EXPORT_SYMBOL(register_shrinker);
-> >>>   */
-> >>>  void unregister_shrinker(struct shrinker *shrinker)
-> >>>  {
-> >>> -     if (!shrinker->nr_deferred)
-> >>> -             return;
-> >>> -     if (shrinker->flags & SHRINKER_MEMCG_AWARE)
-> >>> -             unregister_memcg_shrinker(shrinker);
-> >>>       down_write(&shrinker_rwsem);
-> >>
-> >> I do not think there are some users which registration may race with unregistration.
-> >> So, I think we should check SHRINKER_REGISTERED unlocked similar to we used to check
-> >> shrinker->nr_deferred unlocked.
-> >
-> > Yes, I agree.
-> >
-> >>
-> >>> +     if (!(shrinker->flags & SHRINKER_REGISTERED)) {
-> >>> +             up_write(&shrinker_rwsem);
-> >>> +             return;
-> >>> +     }
-> >>>       list_del(&shrinker->list);
-> >>> +     shrinker->flags &= ~SHRINKER_REGISTERED;
-> >>>       up_write(&shrinker_rwsem);
-> >>> +
-> >>> +     if (shrinker->flags & SHRINKER_MEMCG_AWARE)
-> >>> +             unregister_memcg_shrinker(shrinker);
-> >>>       kfree(shrinker->nr_deferred);
-> >>>       shrinker->nr_deferred = NULL;
-> >>>  }
-> >>>
-> >>
-> >>
->
->
+      %NULL
+
+> + * @mm The mm_struct to check
+
+    * @mm: ...
+
+> + * @addr: The address
+> + *
+> + * Returns: The VMA assoicated with addr, or the next vma.
+
+                       associated
+
+> + * May return NULL in the case of no vma at addr or above.
+
+                 %NULL
+
+> + */
+>  struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
+>  {
+
+
+thanks.
+-- 
+~Randy
+
