@@ -2,111 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2282D2F2D34
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:51:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4282F2D36
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728484AbhALKth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:49:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50286 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727357AbhALKtg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:49:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BAC31ADE0;
-        Tue, 12 Jan 2021 10:48:55 +0000 (UTC)
-Subject: Re: [PATCH] mm, compaction: move high_pfn to the for loop scope.
-To:     Rokudo Yan <wu-yan@tcl.com>, mgorman@techsingularity.net
-Cc:     aarcange@redhat.com, akpm@linux-foundation.org, haiwang.fu@tcl.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        rientjes@google.com, tang.ding@tcl.com, xiushui.ye@tcl.com
-References: <20210112091041.GJ3592@techsingularity.net>
- <20210112094720.1238444-1-wu-yan@tcl.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <c8f7c205-d5ae-fd9c-efa5-50ea0fd80b6f@suse.cz>
-Date:   Tue, 12 Jan 2021 11:48:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1728493AbhALKun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:50:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727740AbhALKum (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 05:50:42 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D65BC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 02:50:01 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id g3so1206872plp.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 02:50:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j6hOZRhr6lM1qFIJTkdoya6lHwDoxk8ZO60XJ7q+5ys=;
+        b=vi+crJBdaq2Sz6WZnM5jf9qWYETFaFFQMhnrk5Zi18ejf3zZGhiBBZXRbMhYgnIKfp
+         ABV31ETb3qIp9zyDU9K02NSUcS+I0WFHCqxM2zrxmySLIN7Z11DaWiN1F4bUrhsiqDC+
+         2fn7qbNzs41a03EJXq5vvBQMjpKGjjt37sddYaYrXfRTNDhTbhyAvFHk5X3PsOzgIKai
+         TwEf4sDpKQrwPKnkgItUwshQD5/NYC9wGuTFcp4lgpmH+lfMFhmrDowLfv3A8DhPaCMW
+         GtZnf/aLpufpLNP0UbWukc6ClsAAOAg3aGEGhoN9RNpZnUgRr1SNPyVYe0vUogWdBk4h
+         W1AQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j6hOZRhr6lM1qFIJTkdoya6lHwDoxk8ZO60XJ7q+5ys=;
+        b=CFho9TexFt0OCC/9wVZH1dfDXaGcjXfy1FYzW4uw0bw9rxmgq/hT9HJLsnYbxdh5k7
+         gs0P0QC4JEuXyYaWqoE2zwS/9UaUumsyQvNgJwHxDiiTgwC6k0XrU24SbTFMKDrmD2zF
+         teuOL6i0sgM98mY8Ovk2MJwjTyFW6KtgU1GL3vPBT8s0OYOvrO0/7joL+4MAdZKRfU9h
+         0DLN+zqMAWf6Xoqd1h4B1a5D05jx2c1nIFk5dw7vahCWLlR1FuQPcnrtAU2wVKGRiVWK
+         QPriHA2Jaw3rPHAE7RgEoeV9Fe4p+mNJBtEvJ+yhsCkk0YtZU2CKoZ2hHEso/ewRl+0+
+         1ZwQ==
+X-Gm-Message-State: AOAM5332B8qCJCARAkY3DHvTYRj0/hGrWSHrijoXJ4vZBFozL8mvCLzd
+        1Ig5KZtry9tEsUFuioGis1sE3srUncoilKEzvt9qBw==
+X-Google-Smtp-Source: ABdhPJwYg/d8Ey5S+NTEOtv5UjN8J2XLJeVXg45ipl3li1Kcb9t0pPL0IRxxqWfrG1PuGGR9+o0w94TB7OGPxCTUoAo=
+X-Received: by 2002:a17:902:8503:b029:dc:44f:62d8 with SMTP id
+ bj3-20020a1709028503b02900dc044f62d8mr4197756plb.34.1610448600939; Tue, 12
+ Jan 2021 02:50:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210112094720.1238444-1-wu-yan@tcl.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210110124017.86750-1-songmuchun@bytedance.com>
+ <20210110124017.86750-5-songmuchun@bytedance.com> <c61cdf1d-2feb-ecb3-393d-ca25175c73f4@oracle.com>
+ <20210112083335.GH22493@dhcp22.suse.cz> <CAMZfGtVCntwNM=2RHHp=qDLN3L71ouQy=9V_e=VTNHtCDHsmWA@mail.gmail.com>
+ <20210112100602.GL22493@dhcp22.suse.cz>
+In-Reply-To: <20210112100602.GL22493@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 12 Jan 2021 18:49:17 +0800
+Message-ID: <CAMZfGtVvrMegtXhZbPxgX_6ryJGoU6B64coLkBBUe4yf0jG-9A@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3 4/6] mm: hugetlb: add return -EAGAIN for dissolve_free_huge_page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/12/21 10:47 AM, Rokudo Yan wrote:
-> In fast_isolate_freepages, high_pfn will be used if a prefered one(PFN >= low_fn) not found. But the high_pfn
-> is not reset before searching an free area, so when it was used as freepage, it may from another free area searched before.
-> And move_freelist_head(freelist, freepage) will have unexpected behavior(eg. corrupt the MOVABLE freelist)
-> 
-> Unable to handle kernel paging request at virtual address dead000000000200
-> Mem abort info:
->   ESR = 0x96000044
->   Exception class = DABT (current EL), IL = 32 bits
->   SET = 0, FnV = 0
->   EA = 0, S1PTW = 0
-> Data abort info:
->   ISV = 0, ISS = 0x00000044
->   CM = 0, WnR = 1
-> [dead000000000200] address between user and kernel address ranges
-> 
-> -000|list_cut_before(inline)
-> -000|move_freelist_head(inline)
-> -000|fast_isolate_freepages(inline)
-> -000|isolate_freepages(inline)
-> -000|compaction_alloc(?, ?)
-> -001|unmap_and_move(inline)
-> -001|migrate_pages([NSD:0xFFFFFF80088CBBD0] from = 0xFFFFFF80088CBD88, [NSD:0xFFFFFF80088CBBC8] get_new_p
-> -002|__read_once_size(inline)
-> -002|static_key_count(inline)
-> -002|static_key_false(inline)
-> -002|trace_mm_compaction_migratepages(inline)
-> -002|compact_zone(?, [NSD:0xFFFFFF80088CBCB0] capc = 0x0)
-> -003|kcompactd_do_work(inline)
-> -003|kcompactd([X19] p = 0xFFFFFF93227FBC40)
-> -004|kthread([X20] _create = 0xFFFFFFE1AFB26380)
-> -005|ret_from_fork(asm)
-> ---|end of frame
-> 
-> The issue was reported on an smart phone product with 6GB ram and 3GB zram as swap device.
-> 
-> This patch fixes the issue by reset high_pfn before searching each free area, which ensure
-> freepage and freelist match when call move_freelist_head in fast_isolate_freepages().
-> 
-> Link: http://lkml.kernel.org/r/20190118175136.31341-12-mgorman@techsingularity.net
-> Fixes: 5a811889de10f1eb ("mm, compaction: use free lists to quickly locate a migration target")
+On Tue, Jan 12, 2021 at 6:06 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Tue 12-01-21 17:51:05, Muchun Song wrote:
+> > On Tue, Jan 12, 2021 at 4:33 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Mon 11-01-21 17:20:51, Mike Kravetz wrote:
+> > > > On 1/10/21 4:40 AM, Muchun Song wrote:
+> > > > > There is a race between dissolve_free_huge_page() and put_page(),
+> > > > > and the race window is quite small. Theoretically, we should return
+> > > > > -EBUSY when we encounter this race. In fact, we have a chance to
+> > > > > successfully dissolve the page if we do a retry. Because the race
+> > > > > window is quite small. If we seize this opportunity, it is an
+> > > > > optimization for increasing the success rate of dissolving page.
+> > > > >
+> > > > > If we free a HugeTLB page from a non-task context, it is deferred
+> > > > > through a workqueue. In this case, we need to flush the work.
+> > > > >
+> > > > > The dissolve_free_huge_page() can be called from memory hotplug,
+> > > > > the caller aims to free the HugeTLB page to the buddy allocator
+> > > > > so that the caller can unplug the page successfully.
+> > > > >
+> > > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > > > ---
+> > > > >  mm/hugetlb.c | 26 +++++++++++++++++++++-----
+> > > > >  1 file changed, 21 insertions(+), 5 deletions(-)
+> > > >
+> > > > I am unsure about the need for this patch.  The code is OK, there are no
+> > > > issues with the code.
+> > > >
+> > > > As mentioned in the commit message, this is an optimization and could
+> > > > potentially cause a memory offline operation to succeed instead of fail.
+> > > > However, we are very unlikely to ever exercise this code.  Adding an
+> > > > optimization that is unlikely to be exercised is certainly questionable.
+> > > >
+> > > > Memory offline is the only code that could benefit from this optimization.
+> > > > As someone with more memory offline user experience, what is your opinion
+> > > > Michal?
+> > >
+> > > I am not a great fun of optimizations without any data to back them up.
+> > > I do not see any sign this code has been actually tested and the
+> > > condition triggered.
+> >
+> > This race is quite small. I only trigger this only once on my server.
+> > And then the kernel panic. So I sent this patch series to fix some
+> > bugs.
+>
+> Memory hotplug shouldn't panic when this race happens. Are you sure you
+> have seen a race that is directly related to this patch?
 
-Sounds serious enough. Wonder how it wasn't reported sooner.
+I mean the panic is fixed by:
 
-Cc: <stable@vger.kernel.org>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+  [PATCH v3 3/6] mm: hugetlb: fix a race between freeing and dissolving the page
 
-> ---
->  mm/compaction.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index cc1a7f600a86..75f0e550b18f 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1303,7 +1303,7 @@ fast_isolate_freepages(struct compact_control *cc)
->  {
->  	unsigned int limit = min(1U, freelist_scan_limit(cc) >> 1);
->  	unsigned int nr_scanned = 0;
-> -	unsigned long low_pfn, min_pfn, high_pfn = 0, highest = 0;
-> +	unsigned long low_pfn, min_pfn, highest = 0;
->  	unsigned long nr_isolated = 0;
->  	unsigned long distance;
->  	struct page *page = NULL;
-> @@ -1348,6 +1348,7 @@ fast_isolate_freepages(struct compact_control *cc)
->  		struct page *freepage;
->  		unsigned long flags;
->  		unsigned int order_scanned = 0;
-> +		unsigned long high_pfn = 0;
->  
->  		if (!area->nr_free)
->  			continue;
-> 
+>
+> > > Besides that I have requested to have an explanation of why blocking on
+> > > the WQ is safe and that hasn't happened.
+> >
+> > I have seen all the caller of dissolve_free_huge_page, some caller is under
+> > page lock (via lock_page). Others are also under a sleep context.
+> >
+> > So I think that blocking on the WQ is safe. Right?
+>
+> I have requested to explicitly write your thinking why this is safe so
+> that we can double check it. Dependency on a work queue progress is much
+> more complex than any other locks because there is no guarantee that WQ
+> will make forward progress (all workers might be stuck, new workers not
+> able to be created etc.).
 
+OK. I know about your concern. How about setting the page as temporary
+when hitting this race?
+
+ int dissolve_free_huge_page(struct page *page)
+ {
+@@ -1793,8 +1794,10 @@ int dissolve_free_huge_page(struct page *page)
+                 * We should make sure that the page is already on the free list
+                 * when it is dissolved.
+                 */
+-               if (unlikely(!PageHugeFreed(head)))
++               if (unlikely(!PageHugeFreed(head))) {
++                       SetPageHugeTemporary(page)
+                        goto out;
++               }
+
+Setting the page as temporary and just return -EBUSY (do not flush
+the work). __free_huge_page() will free it to the buddy allocator later.
+
+> --
+> Michal Hocko
+> SUSE Labs
