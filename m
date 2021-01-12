@@ -2,112 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 431FE2F2C37
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:07:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 296292F2C39
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:07:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391093AbhALKGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:06:50 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45952 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390409AbhALKGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:06:50 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610445963; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RHdSnnGmXTWqWhEM7prug3O03a1r9bZU4cr4+Pqj7zo=;
-        b=VkMMdobLpWMBdDJI9kg5/mNdrZjqd/kRaTtvWQCHKIp8N7/Bf+CChct089lPa7lCEdxJzz
-        X/6d24udMOJyDqzFidgh1/wB9VqaT0l7QAJXJqdgbW1gop8lYRDbvFeblKgAIj0ul97Qwn
-        7qr3ww50TkIor29cndwzzZoeElVg1Jo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 36A79ADC4;
-        Tue, 12 Jan 2021 10:06:03 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 11:06:02 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v3 4/6] mm: hugetlb: add return -EAGAIN
- for dissolve_free_huge_page
-Message-ID: <20210112100602.GL22493@dhcp22.suse.cz>
-References: <20210110124017.86750-1-songmuchun@bytedance.com>
- <20210110124017.86750-5-songmuchun@bytedance.com>
- <c61cdf1d-2feb-ecb3-393d-ca25175c73f4@oracle.com>
- <20210112083335.GH22493@dhcp22.suse.cz>
- <CAMZfGtVCntwNM=2RHHp=qDLN3L71ouQy=9V_e=VTNHtCDHsmWA@mail.gmail.com>
+        id S2404279AbhALKG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:06:58 -0500
+Received: from lb3-smtp-cloud9.xs4all.net ([194.109.24.30]:49439 "EHLO
+        lb3-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390366AbhALKG6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 05:06:58 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id zGZ1kDb08VfyLzGZ5kp3UZ; Tue, 12 Jan 2021 11:06:15 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1610445975; bh=9gjTF/3gD6d81SgCtPxdN5K9QJXqD4wWTa2DmR9v9u8=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=QggJrsmJbSzg8dVGA4/xf1lH4EhIlL6wgAMIvSIQNEXvSH3nOHsd+5nJSBEC1J/Bj
+         A7TxwMpfIeXsuWyKmbuq/k9sd4v6vOWQv7+5lhjV8y9XfcnnJTsiVGUQ7EVulcXHJY
+         yF7IY7s8z5vvzIv0SFing6e9PzUoOMH8d5cyYuIX2z90a8Spa5QVfnVbL2CifGqLjY
+         SL83cwaNvOt/VzMD/zCAc47nHwocfDkj7wuuA+nf/Uj0AhqgLwo4/N0yxAl5f7oplU
+         r/nnau7oQKk5z9eI8JdBs5egeqapUoL9nEArrcyWQheBTgPNsq/dujhnQbrILmTqDh
+         db75dulO2F0kw==
+Subject: Re: [PATCH v2 3/4] media: v4l2-ctrls: Add control for AUD generation
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Maheshwar Ajja <majja@codeaurora.org>
+References: <20201206102717.19000-1-stanimir.varbanov@linaro.org>
+ <20201206102717.19000-4-stanimir.varbanov@linaro.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <1b46d938-4a8c-148e-70ba-b49816a0ee95@xs4all.nl>
+Date:   Tue, 12 Jan 2021 11:06:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtVCntwNM=2RHHp=qDLN3L71ouQy=9V_e=VTNHtCDHsmWA@mail.gmail.com>
+In-Reply-To: <20201206102717.19000-4-stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfKxisxu4M+r3Nm3ajkdo4n1m6fBsNiOApuYZ9Wn28b5up+iY49WAOAC7DcDpbyuxwc4/RxNR3dcfVzlQkzIYdFRtCdIz31UUxK6J5dyHILilXYhH3McJ
+ W7I3e83Lsmz/t/FLakYcJ3n0JgSE4CNv8liyu1pDzTYkSySTJ7X09m5OXKUUFS72gglVaz99/t9EYeZaBy7BibhVlHiEaUnZi0tC58QJXnWwC0GkKkctt0z6
+ 7SQ7vpLFk+Pmt/ZUpHBrnp2Y+RLk08MIt5NU5UbwvS0/UlfS0EKn2JSwHzAJ9rlU7nTQVcLDgq2kpa1Mgsw00WSUl8o1Gqex9XoP0ffGo2rGAUKE8eEWwqZM
+ jPdmbVkLkms27A/gtkOiu4yMMVHdzxLFDLCNxeRAc4RTxE5avBtIs7MkJdHL/+/Z+r4CH8aTxxKhSaRzbPXe0jv8qSSRRQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 12-01-21 17:51:05, Muchun Song wrote:
-> On Tue, Jan 12, 2021 at 4:33 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 11-01-21 17:20:51, Mike Kravetz wrote:
-> > > On 1/10/21 4:40 AM, Muchun Song wrote:
-> > > > There is a race between dissolve_free_huge_page() and put_page(),
-> > > > and the race window is quite small. Theoretically, we should return
-> > > > -EBUSY when we encounter this race. In fact, we have a chance to
-> > > > successfully dissolve the page if we do a retry. Because the race
-> > > > window is quite small. If we seize this opportunity, it is an
-> > > > optimization for increasing the success rate of dissolving page.
-> > > >
-> > > > If we free a HugeTLB page from a non-task context, it is deferred
-> > > > through a workqueue. In this case, we need to flush the work.
-> > > >
-> > > > The dissolve_free_huge_page() can be called from memory hotplug,
-> > > > the caller aims to free the HugeTLB page to the buddy allocator
-> > > > so that the caller can unplug the page successfully.
-> > > >
-> > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > > ---
-> > > >  mm/hugetlb.c | 26 +++++++++++++++++++++-----
-> > > >  1 file changed, 21 insertions(+), 5 deletions(-)
-> > >
-> > > I am unsure about the need for this patch.  The code is OK, there are no
-> > > issues with the code.
-> > >
-> > > As mentioned in the commit message, this is an optimization and could
-> > > potentially cause a memory offline operation to succeed instead of fail.
-> > > However, we are very unlikely to ever exercise this code.  Adding an
-> > > optimization that is unlikely to be exercised is certainly questionable.
-> > >
-> > > Memory offline is the only code that could benefit from this optimization.
-> > > As someone with more memory offline user experience, what is your opinion
-> > > Michal?
-> >
-> > I am not a great fun of optimizations without any data to back them up.
-> > I do not see any sign this code has been actually tested and the
-> > condition triggered.
+On 06/12/2020 11:27, Stanimir Varbanov wrote:
+> Add a control to enable inserting of AUD NALU into encoded
+> bitstream.
 > 
-> This race is quite small. I only trigger this only once on my server.
-> And then the kernel panic. So I sent this patch series to fix some
-> bugs.
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
 
-Memory hotplug shouldn't panic when this race happens. Are you sure you
-have seen a race that is directly related to this patch?
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 
-> > Besides that I have requested to have an explanation of why blocking on
-> > the WQ is safe and that hasn't happened.
+Looks good!
+
+	Hans
+
+> ---
+>  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 5 +++++
+>  drivers/media/v4l2-core/v4l2-ctrls.c                      | 2 ++
+>  include/uapi/linux/v4l2-controls.h                        | 1 +
+>  3 files changed, 8 insertions(+)
 > 
-> I have seen all the caller of dissolve_free_huge_page, some caller is under
-> page lock (via lock_page). Others are also under a sleep context.
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> index d65d7c1381b7..32eb233ee089 100644
+> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
+> @@ -679,6 +679,11 @@ enum v4l2_mpeg_video_frame_skip_mode -
+>      otherwise the decoder expects a single frame in per buffer.
+>      Applicable to the decoder, all codecs.
+>  
+> +``V4L2_CID_MPEG_VIDEO_AU_DELIMITER (boolean)``
+> +    If enabled then, AUD (Access Unit Delimiter) NALUs will be generated.
+> +    That could be useful to find the start of a frame without having to
+> +    fully parse each NALU. Applicable to the H264 and HEVC encoders.
+> +
+>  ``V4L2_CID_MPEG_VIDEO_H264_VUI_SAR_ENABLE (boolean)``
+>      Enable writing sample aspect ratio in the Video Usability
+>      Information. Applicable to the H264 encoder.
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
+> index ac44848d2d6e..ea2de8b51e29 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
+> @@ -875,6 +875,7 @@ const char *v4l2_ctrl_get_name(u32 id)
+>  	case V4L2_CID_MPEG_VIDEO_HEADER_MODE:			return "Sequence Header Mode";
+>  	case V4L2_CID_MPEG_VIDEO_MAX_REF_PIC:			return "Max Number of Reference Pics";
+>  	case V4L2_CID_MPEG_VIDEO_FRAME_SKIP_MODE:		return "Frame Skip Mode";
+> +	case V4L2_CID_MPEG_VIDEO_AU_DELIMITER:			return "Generate Access Unit Delimiters";
+>  	case V4L2_CID_MPEG_VIDEO_H263_I_FRAME_QP:		return "H263 I-Frame QP Value";
+>  	case V4L2_CID_MPEG_VIDEO_H263_P_FRAME_QP:		return "H263 P-Frame QP Value";
+>  	case V4L2_CID_MPEG_VIDEO_H263_B_FRAME_QP:		return "H263 B-Frame QP Value";
+> @@ -1232,6 +1233,7 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
+>  	case V4L2_CID_MPEG_VIDEO_H264_VUI_SAR_ENABLE:
+>  	case V4L2_CID_MPEG_VIDEO_MPEG4_QPEL:
+>  	case V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER:
+> +	case V4L2_CID_MPEG_VIDEO_AU_DELIMITER:
+>  	case V4L2_CID_WIDE_DYNAMIC_RANGE:
+>  	case V4L2_CID_IMAGE_STABILIZATION:
+>  	case V4L2_CID_RDS_RECEPTION:
+> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
+> index 54b9072ac49d..1fb1a3ba3985 100644
+> --- a/include/uapi/linux/v4l2-controls.h
+> +++ b/include/uapi/linux/v4l2-controls.h
+> @@ -423,6 +423,7 @@ enum v4l2_mpeg_video_multi_slice_mode {
+>  #define V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE		(V4L2_CID_CODEC_BASE+228)
+>  #define V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME		(V4L2_CID_CODEC_BASE+229)
+>  #define V4L2_CID_MPEG_VIDEO_INTRA_REFRESH_PERIOD	(V4L2_CID_CODEC_BASE+230)
+> +#define V4L2_CID_MPEG_VIDEO_AU_DELIMITER		(V4L2_CID_CODEC_BASE+231)
+>  
+>  /* CIDs for the MPEG-2 Part 2 (H.262) codec */
+>  #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_CODEC_BASE+270)
 > 
-> So I think that blocking on the WQ is safe. Right?
 
-I have requested to explicitly write your thinking why this is safe so
-that we can double check it. Dependency on a work queue progress is much
-more complex than any other locks because there is no guarantee that WQ
-will make forward progress (all workers might be stuck, new workers not
-able to be created etc.).
--- 
-Michal Hocko
-SUSE Labs
