@@ -2,58 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AA732F3251
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB11B2F3258
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732067AbhALN4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:56:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726901AbhALN4U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:56:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D5EF22B30;
-        Tue, 12 Jan 2021 13:55:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610459739;
-        bh=EKrAC0Tw+nL4XMv/WuPU6vITqgesKFiVtHTkrfAfpSM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T25BP46HhPwtZiY7NSrzC0Z7zzJ0++WUQlf23zDqyFkIeAyLlo3NtpS8eyd98rVYQ
-         C6aWL3efcorVYjH+136Y+7gHYAl0XR3k2LaDOxXdMe0Z06mzaSSobNVoSPp/HlMM9T
-         425rjPE4taxuE9pw/xu9NA77qufwHugjp2uCuvxIxv2j6awjTu1C6UmUf8hbda6bpD
-         v7PPBK1cPR1GR3rhQqv9/rbBDvtLzf+qjF/i1ufAwW6jxsP/Cyk+H4si/Lj2ELJwWV
-         uTf5Hm1Cw6jQQbwtimxiTdsZo5gNLIvswGa3AUOFPgZmYk8G/RVWpHs7oOTDN+kFVO
-         l5D2YnCK0cKPQ==
-Date:   Tue, 12 Jan 2021 13:55:35 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] arm64: add grace period when rebooting
-Message-ID: <20210112135534.GA9277@willie-the-truck>
-References: <20201219143648.56217-1-wsa+renesas@sang-engineering.com>
- <20201219143648.56217-2-wsa+renesas@sang-engineering.com>
+        id S2387685AbhALN4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:56:51 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:58132 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732957AbhALN4u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 08:56:50 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10CDtfWZ076642;
+        Tue, 12 Jan 2021 07:55:41 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610459741;
+        bh=OAyPA6z9ikgZ1vPPSEge+i7syzFzsS9b3mIxvoCVb34=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=Jzwzc2Sm8/r3TzGG5fieMUR4kzMjSKhKZiJ4QPp14CjHbMxRsmBJn/CnyFJkaF/Xh
+         D+sJ5KlVgDtKB5Z9bmygotbvQbguQLlBFBCZbnAnVAhY8H6APXwLRaA5sjLbGucJ6S
+         K3Fjlb2YvRlr4Der9mD1kDJHVx2rLW6iTHZimpbw=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10CDtecq071677
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 12 Jan 2021 07:55:41 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 12
+ Jan 2021 07:55:40 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 12 Jan 2021 07:55:40 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10CDteBh098573;
+        Tue, 12 Jan 2021 07:55:40 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     <linux-kernel@vger.kernel.org>, Tero Kristo <kristo@kernel.org>
+CC:     Nishanth Menon <nm@ti.com>, Borislav Petkov <bp@alien8.de>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Tony Luck <tony.luck@intel.com>, SoC <soc@kernel.org>,
+        linux-arm <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] MAINTAINERS: Update my email address and maintainer level status
+Date:   Tue, 12 Jan 2021 07:55:39 -0600
+Message-ID: <161045957072.21611.7195965911464128734.b4-ty@ti.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20201217130721.23555-1-t-kristo@ti.com>
+References: <20201217130721.23555-1-t-kristo@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201219143648.56217-2-wsa+renesas@sang-engineering.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 19, 2020 at 03:36:46PM +0100, Wolfram Sang wrote:
-> I work on a system where I currently need to reboot via watchdog.
-> Because the watchdog needs a bit of time to fire, add a grace period
-> like on arm32 to avoid the false positive warning message.
+On Thu, 17 Dec 2020 15:07:21 +0200, Tero Kristo wrote:
+> My employment with TI is ending tomorrow, so update the email address
+> entry in the maintainers file. Also, I don't expect to spend that much
+> time with maintaining TI code anymore, so downgrade the status level to
+> odd fixes only on areas where I remain as the main contact point for
+> now, and move myself as secondary contact point where someone else has
+> taken over the maintainership.
 
-Please can you elaborate a bit on the control flow here, specifically
-from the part which arms the watchdog to how we end up in at the mdelay()?
+Hi Tero Kristo,
 
-Ideally, the mdelay() would live in some code that knows about the watchdog,
-and therefore can choose the appropriate delay.
+I have applied the following to branch ti-k3-maintainer-next on [1].
+Thank you!
 
-Thanks,
+[1/1] MAINTAINERS: Update my email address and maintainer level status
+      commit: 2672b94d730c4b69a17ce297dc3fa60b980e72dc
 
-Will
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Original patch reference [2].
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
+[2] lore.kernel.org/r/20201217130721.23555-1-t-kristo@ti.com
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+
