@@ -2,168 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F8B12F2FDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 909C72F2FF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:05:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405964AbhALM7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:59:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405751AbhALM7H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:59:07 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F8FBC061795
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 04:58:26 -0800 (PST)
-Date:   Tue, 12 Jan 2021 13:58:23 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610456304;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VrkRg6OJzto/BZQ96RH2YXsxq/t8Namm3ZrsEbabhiw=;
-        b=x8/kYgYsMP/WeSGE10AyHDgxQj2SU6H9B9+t75Iu6DlPJNC9OybHrwUZxbV6dJ4B8gNHH8
-        z1FdoQ2pHPFTpRsRH7CPF7gpiAPf+DbbnVcA9OmLjDPy+XVHe4unKr9zaw3SFBj58ncl2U
-        wHpuZ6R0aTkD5vZW3MjLF54dcvfp0qMjYV1A1hQmGkr7EZf22WIuRXwu53S8MaEFQl6TwG
-        dh0GF3oQbgFU8UxekJB7co2AMlvDyms40JpLRZHEnFHxbO+EpD2a4YIGsokdvokyS+ZcaE
-        wUiPKuL/S67xHsHOt+iENAdZHvmTQVhloKCIulT6zQ81yJZlx6n3mIzsHwcjqw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610456304;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VrkRg6OJzto/BZQ96RH2YXsxq/t8Namm3ZrsEbabhiw=;
-        b=hrMVKQ6erlyJt+NiXI4ptodMJD4P9L4FFnlplS/8NkrrcTJuQFHGVwUA6O6UiigqWbVfma
-        XgADLk+U8iy+aBAw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [RFC PATCH] tracing: Merge irqflags + preemt counter, add RT bits
-Message-ID: <20210112125823.gyrqof6frjtgccgm@linutronix.de>
-References: <20201216172205.gvpizdw4kzpn326q@linutronix.de>
- <20210111180436.475bab08@gandalf.local.home>
+        id S2390934AbhALNAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:00:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405552AbhALM6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:58:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFFF923134;
+        Tue, 12 Jan 2021 12:58:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610456315;
+        bh=wBuEtDlE34cZvhKg94tf1u3hkx6HmvCvGAV4hgroIIM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=oUF679jwdPtSRVm9sKawnTicaIns5dvvV49nSdO32BKFW1I/eY8oGQ7DraPNGNY/C
+         uvm7ES1ZhVHLjS6LP8mvCc4XDUQkWqwQ7vS4OwMH93KmSc5KJCHl8GaVhtEZJ3SJnK
+         pmOS1H+EU2l0XErUGhvcvwU6702Xhb0AloxV0Q4wOjECGEQvJARdwx4lLkFtxTV6xd
+         0iMwoVjUvCSOs5kRYwexIrriQF8zNR2sUr8YC9lWGFjuEW76kOZabIK3GvSrylrECD
+         WyyofTA/iofAijHf6K+EswHBIpr8ROdkbJ90MWjplqHm+46nt+FO0jv38/smL7s5mu
+         2AS30o22lqhlQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, Jamie Iles <jamie@jamieiles.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.4 8/8] ARM: picoxcell: fix missing interrupt-parent properties
+Date:   Tue, 12 Jan 2021 07:58:23 -0500
+Message-Id: <20210112125823.71463-8-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210112125823.71463-1-sashal@kernel.org>
+References: <20210112125823.71463-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210111180436.475bab08@gandalf.local.home>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-11 18:04:36 [-0500], Steven Rostedt wrote:
-> > The actual preemption value is not used except for the tracing record.
-> > The `irqflags' is also not used except for the _irqsave() locking in a
-> > few spots.
-> 
-> Which spots?
+From: Arnd Bergmann <arnd@arndb.de>
 
-Hmm. So I had memory of code sequences like
-	spin_lock_irqsave(, flags);
-	trace_buffer_lock_reserve(,, flags);
+[ Upstream commit bac717171971176b78c72d15a8b6961764ab197f ]
 
-but I can't find them anymore. The only users of
-_tracing_gen_ctx_flags() pass `0' as irqflags so I kept that instead
-reading the actual irqfalgs.
+dtc points out that the interrupts for some devices are not parsable:
 
-> > As part of the patch I added __ to trace_event_buffer_commit() while
-> > evaluating trace_event_buffer() for the struct trace_event_buffer usage
-> > regarding the `pc' and `flags' members. It appears that those two can
-> > also be merged into the `trace_ctx' integer.
-> 
-> Looks like you did change the trace_event_buffer. I don't understand why
-> the "__" was added?
+picoxcell-pc3x2.dtsi:45.19-49.5: Warning (interrupts_property): /paxi/gem@30000: Missing interrupt-parent
+picoxcell-pc3x2.dtsi:51.21-55.5: Warning (interrupts_property): /paxi/dmac@40000: Missing interrupt-parent
+picoxcell-pc3x2.dtsi:57.21-61.5: Warning (interrupts_property): /paxi/dmac@50000: Missing interrupt-parent
+picoxcell-pc3x2.dtsi:233.21-237.5: Warning (interrupts_property): /rwid-axi/axi2pico@c0000000: Missing interrupt-parent
 
-I added __ to trace_event_buffer_commit__() to ensure that I covered
-every user and have not overseen one (which would result in a compile
-error). This can can be reverted in the final submission.
+There are two VIC instances, so it's not clear which one needs to be
+used. I found the BSP sources that reference VIC0, so use that:
 
-> > -void
-> > -tracing_generic_entry_update(struct trace_entry *entry, unsigned short type,
-> > -			     unsigned long flags, int pc)
-> > +static unsigned int __tracing_gen_ctx_flags(unsigned long irqflags)
-> >  {
-> > -	struct task_struct *tsk = current;
-> > +	unsigned int trace_flags = 0;
-> > +	unsigned int pc;
-> > +
-> > +	pc = preempt_count();
-> >  
-> > -	entry->preempt_count		= pc & 0xff;
-> > -	entry->pid			= (tsk) ? tsk->pid : 0;
-> > -	entry->type			= type;
-> > -	entry->flags =
-> >  #ifdef CONFIG_TRACE_IRQFLAGS_SUPPORT
-> > -		(irqs_disabled_flags(flags) ? TRACE_FLAG_IRQS_OFF : 0) |
-> > +	if (irqs_disabled_flags(irqflags))
-> > +		trace_flags |= TRACE_FLAG_IRQS_OFF;
-> >  #else
-> > -		TRACE_FLAG_IRQS_NOSUPPORT |
-> > +		trace_flags |= TRACE_FLAG_IRQS_NOSUPPORT;
-> >  #endif
-> > -		((pc & NMI_MASK    ) ? TRACE_FLAG_NMI     : 0) |
-> > -		((pc & HARDIRQ_MASK) ? TRACE_FLAG_HARDIRQ : 0) |
-> > -		((pc & SOFTIRQ_OFFSET) ? TRACE_FLAG_SOFTIRQ : 0) |
-> > -		(tif_need_resched() ? TRACE_FLAG_NEED_RESCHED : 0) |
-> > -		(test_preempt_need_resched() ? TRACE_FLAG_PREEMPT_RESCHED : 0);
-> 
-> Note, the above was a result of playing around with seeing how the compiler
-> optimized the above. Have you seen how the below logic looks as assembly?
-> This is a very hot path.
+https://github.com/r1mikey/meta-picoxcell/blob/master/recipes-kernel/linux/linux-picochip-3.0/0001-picoxcell-support-for-Picochip-picoXcell-SoC.patch
 
-So it does what it did before but differently in different spots.
-tracing_generic_entry_update() itself got smaller since it has been
-reduced to value assignment only. The trace flags computing changed /
-moved to a different place.
+Acked-by: Jamie Iles <jamie@jamieiles.com>
+Link: https://lore.kernel.org/r/20201230152010.3914962-1-arnd@kernel.org'
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/arm/boot/dts/picoxcell-pc3x2.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-The old tracing_generic_entry_update() went from 0x1da0 to 0x1e25 which
-are 0x85 bytes. The new __tracing_gen_ctx_flags() (without any of the RT
-bits) goes from 0x1f70 to 0x1ff1 which are 0x81 bytes (x86-64, gcc-10).
+diff --git a/arch/arm/boot/dts/picoxcell-pc3x2.dtsi b/arch/arm/boot/dts/picoxcell-pc3x2.dtsi
+index 533919e96eaee..f22a6b4363177 100644
+--- a/arch/arm/boot/dts/picoxcell-pc3x2.dtsi
++++ b/arch/arm/boot/dts/picoxcell-pc3x2.dtsi
+@@ -54,18 +54,21 @@ paxi {
+ 		emac: gem@30000 {
+ 			compatible = "cadence,gem";
+ 			reg = <0x30000 0x10000>;
++			interrupt-parent = <&vic0>;
+ 			interrupts = <31>;
+ 		};
+ 
+ 		dmac1: dmac@40000 {
+ 			compatible = "snps,dw-dmac";
+ 			reg = <0x40000 0x10000>;
++			interrupt-parent = <&vic0>;
+ 			interrupts = <25>;
+ 		};
+ 
+ 		dmac2: dmac@50000 {
+ 			compatible = "snps,dw-dmac";
+ 			reg = <0x50000 0x10000>;
++			interrupt-parent = <&vic0>;
+ 			interrupts = <26>;
+ 		};
+ 
+@@ -243,6 +246,7 @@ ebi@50000000 {
+ 		axi2pico@c0000000 {
+ 			compatible = "picochip,axi2pico-pc3x2";
+ 			reg = <0xc0000000 0x10000>;
++			interrupt-parent = <&vic0>;
+ 			interrupts = <13 14 15 16 17 18 19 20 21>;
+ 		};
+ 	};
+-- 
+2.27.0
 
-On x86 the preemption counter is read twice. Once due to preempt_count()
-at the top and once due to tif_need_resched(). This did not change.
-It reads the `current' pointer once due to test_preempt_need_resched().
-Previously it was read twice as well, once due to
-test_preempt_need_resched() and another time due to current->pid. The
-pid assignment moved to the other function.
-The old code seemed to `or' the results into `eax' before the
-assignment. Now there are a few `cmove' instructions stretched across
-the whole function and returned at the end.
-
-While looking at it just now I don't understand why it checks for
-current == NULL. I traced it back to commit
-   72829bc3d63cd ("ftrace: move enums to ftrace.h and make helper function global")
-
-and it might have been added by accident.
-
-> > +
-> > +	if (pc & NMI_MASK)
-> > +		trace_flags |= TRACE_FLAG_NMI;
-> > +	if (pc & HARDIRQ_MASK)
-> > +		trace_flags |= TRACE_FLAG_HARDIRQ;
-> > +
-> > +	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
-> > +		if (in_serving_softirq())
-> > +			trace_flags |= TRACE_FLAG_SOFTIRQ;
-> > +	} else {
-> > +		if (pc & SOFTIRQ_OFFSET)
-> > +			trace_flags |= TRACE_FLAG_SOFTIRQ;
-> > +	}
-> > +	if (tif_need_resched())
-> > +		trace_flags |= TRACE_FLAG_NEED_RESCHED;
-> > +	if (test_preempt_need_resched())
-> > +		trace_flags |= TRACE_FLAG_PREEMPT_RESCHED;
-> > +	return (trace_flags << 16) | (pc & 0xff);
-> > +}
-> 
-> Can you break this into two patches. One that adds the trace_ctx and merges
-> the flags and pc, and another patch that only updates to add the RT bits.
-
-Sure, I just wanted you to see the whole picture.
-Thank you.
-
-> Thanks!
-> 
-> -- Steve
-
-Sebastian
