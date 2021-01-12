@@ -2,95 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0D02F311D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E3DF2F3153
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730724AbhALNQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:16:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729688AbhALNQP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:16:15 -0500
-Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F1CC061795
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:15:35 -0800 (PST)
-Received: by mail-vk1-xa32.google.com with SMTP id l187so586940vki.6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:15:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5HpMs+jCpJzoPRIbYnU0PyBRGtPP8EGNAQbQZ0ET0Ds=;
-        b=AyME6//aH7d68kpuy53gkf0yT+homN08EXAa1jRCaXJ1voVHWWJE9r55hi0gBe/aWJ
-         lkNj/zXBO8mhqgkP3Le07X+KHFblOCL2iqt0aqBcDk3O07ZHfBKZiYUPvXLwyn8Z9jh5
-         R0DBW/XwGdRtp3IIFHBW8tq5VoZZ7ft4joCSXFoOYRaU9UPQWM+8zw5UdNbmzwT4OR8m
-         E8IS1PLkFo25t2onizMYhvRegLdXqHZoc5XN1rg41M3nMcxc1HudOceS2MVhDASwEomP
-         IBcNImExW2m6LyuH+CkAACnGG3EypJH9I2Q6jr6Fn6NMjInG9Aj8MqDQ3yXdOZJpcm/g
-         Qu6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5HpMs+jCpJzoPRIbYnU0PyBRGtPP8EGNAQbQZ0ET0Ds=;
-        b=rQKLBytIs2RDqiSTfFPfbTN64K8h8MhsJIEb6j5k2nFmFRgPXdplwMs8DSzpermwP9
-         +lDoMB4iJ3Gq/aDFJ1BHW00TKVhCiRZwyRL6WT1YrxAm/gT5jz1Zuhrbwq309zI8RFLq
-         4ueKOFpAAFH1Z2ZUaiNXGwt6LU5PEnZRDjP2JYWfm5IDzuSEjrGaFnmQFtQyBndTmAbf
-         FIx+P94xjcleCkBx2vddP/PnXcXwsDXwPcJbsE3+x7zlOhEbLZax6VzgCvZVjb44rwJs
-         c3FpJ1IA4+iXVnrI1K/956SNGegojIYYqIUlaevdnE5jTmv1S/h/PkmAUTdyRgFWeudL
-         G1zw==
-X-Gm-Message-State: AOAM533xgGzHc8FFJa/TIFan95dxW9/DllK4zKeGkw3fqkGynMqtwbAb
-        yjUur1S+jJAklzDrdl9N56/CMdIv3SB2pTqO/7E5Eg==
-X-Google-Smtp-Source: ABdhPJxpeToFNXmVF5EOp8LQuUWhZY6LZRFRS/aCJFPpFJxHDA+kG9y0TIy8xtJ4sbiaWUVfE0BPNeCHrqX9ZK8Ruz4=
-X-Received: by 2002:a1f:5fd5:: with SMTP id t204mr3877910vkb.6.1610457334247;
- Tue, 12 Jan 2021 05:15:34 -0800 (PST)
-MIME-Version: 1.0
-References: <20201214180743.14584-1-zajec5@gmail.com> <20201214180743.14584-3-zajec5@gmail.com>
- <4c80450f-cf38-190f-0a0f-83f8f116b373@gmail.com>
-In-Reply-To: <4c80450f-cf38-190f-0a0f-83f8f116b373@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 12 Jan 2021 14:14:58 +0100
-Message-ID: <CAPDyKFpAGN8kCigpq4c_9zWiceyR4hCxiz5+1vo8KodTjHJnmA@mail.gmail.com>
-Subject: Re: [PATCH V2 2/2] soc: bcm: add PM driver for Broadcom's PMB
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1732288AbhALNRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:17:48 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47132 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727200AbhALNRo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 08:17:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 409A7B92B;
+        Tue, 12 Jan 2021 13:17:01 +0000 (UTC)
+Date:   Tue, 12 Jan 2021 14:16:56 +0100
+Message-ID: <s5h1reqs3av.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
+        lgirdwood@gmail.com, ranjani.sridharan@linux.intel.com,
+        kai.vehmanen@linux.intel.com, daniel.baluta@nxp.com,
+        broonie@kernel.org, Jaroslav Kysela <perex@perex.cz>,
+        Kailang Yang <kailang@realtek.com>,
+        Jian-Hong Pan <jhp@endlessos.org>,
+        Hui Wang <hui.wang@canonical.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Thomas Hebb <tommyhebb@gmail.com>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH v3 1/4] ALSA: hda/realtek: Power up codec when setting LED via COEF and GPIO
+In-Reply-To: <20210112130704.1201406-1-kai.heng.feng@canonical.com>
+References: <20210112130704.1201406-1-kai.heng.feng@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Dec 2020 at 19:24, Florian Fainelli <f.fainelli@gmail.com> wrote=
-:
->
->
->
-> On 12/14/2020 10:07 AM, Rafa=C5=82 Mi=C5=82ecki wrote:
-> > From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
-> >
-> > PMB originally comes from BCM63138 but can be also found on many other
-> > chipsets (e.g. BCM4908). It's needed to power on and off SoC blocks lik=
-e
-> > PCIe, SATA, USB.
-> >
-> > Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
->
-> From a driver perspective this looks good to me and thanks for putting
-> it under drivers/soc/bcm/bcm63xx. Ulf, Kevin, I would need an Ack from
-> you so I can carry this through the Broadcom SoCs pull requests for
-> v5.12, thanks!
+On Tue, 12 Jan 2021 14:06:59 +0100,
+Kai-Heng Feng wrote:
+> 
+> System takes a very long time to suspend after commit 215a22ed31a1
+> ("ALSA: hda: Refactor codec PM to use direct-complete optimization"):
+> [   90.065964] PM: suspend entry (s2idle)
+> [   90.067337] Filesystems sync: 0.001 seconds
+> [   90.185758] Freezing user space processes ... (elapsed 0.002 seconds) done.
+> [   90.188713] OOM killer disabled.
+> [   90.188714] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+> [   90.190024] printk: Suspending console(s) (use no_console_suspend to debug)
+> [   90.904912] intel_pch_thermal 0000:00:12.0: CPU-PCH is cool [49C], continue to suspend
+> [  321.262505] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
+> [  328.426919] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
+> [  329.490933] ACPI: EC: interrupt blocked
+> 
+> That commit keeps the codec suspended during the system suspend. However,
+> led_suspend() for mute and micmute led writes codec register, triggers
+> a pending wake up. The wakeup is then handled in __device_suspend() by
+> the following:
+> - pm_runtime_disable() to handle the wakeup event.
+> - device is no longer is suspended state, direct-complete isn't taken.
+> - pm_runtime_enable() to balance disable_depth.
+> 
+> if (dev->power.direct_complete) {
+> 	if (pm_runtime_status_suspended(dev)) {
+> 		pm_runtime_disable(dev);
+> 		if (pm_runtime_status_suspended(dev)) {
+> 			pm_dev_dbg(dev, state, "direct-complete ");
+> 			goto Complete;
+> 		}
+> 
+> 		pm_runtime_enable(dev);
+> 	}
+> 	dev->power.direct_complete = false;
+> }
+> 
+> Since direct-complete doens't apply anymore, the codec's system suspend
+> routine is used.
+> 
+> This doesn't play well with SOF driver. When its runtime resume is
+> called for system suspend, hda_codec_jack_check() schedules
+> jackpoll_work which uses snd_hdac_is_power_on() to check whether codec
+> is suspended. Because of the previous pm_runtime_enable(),
+> snd_hdac_is_power_on() returns false and jackpoll continues to run, and
+> snd_hda_power_up_pm() cannot power up an already suspended codec in
+> multiple attempts, causes the long delay on system suspend.
+> 
+> When direct-complete path is taken, snd_hdac_is_power_on() returns true
+> and hda_jackpoll_work() is skipped by accident. This is still not
+> correct, and it will be addressed by later patch.
+> 
+> Explicitly runtime resume codec on setting LED to solve the issue.
+> 
+> Fixes: 215a22ed31a1 ("ALSA: hda: Refactor codec PM to use direct-complete optimization")
 
-Apologize for the delay!
+Hmm, I really don't get this.
 
-Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+alc_update_gpio_data() calls snd_hda_codec_write() in the end, and
+this function goes over bus->exec_verb call.  And for the legacy HDA
+codec, it's codec_exec_verb in hda_codec.c, which has already
+snd_hda_power_up_pm().
 
-Kind regards
-Uffe
+What's the missing piece?
+
+
+
+thanks,
+
+Takashi
+
+> ---
+> v3:
+>  New patch.
+> 
+>  sound/pci/hda/patch_realtek.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index 3c1d2a3fb1a4..304a7bc89fcd 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -4164,7 +4164,10 @@ static void alc_update_gpio_led(struct hda_codec *codec, unsigned int mask,
+>  {
+>  	if (polarity)
+>  		enabled = !enabled;
+> +	/* temporarily power up/down for setting GPIO */
+> +	snd_hda_power_up_pm(codec);
+>  	alc_update_gpio_data(codec, mask, !enabled); /* muted -> LED on */
+> +	snd_hda_power_down_pm(codec);
+>  }
+>  
+>  /* turn on/off mute LED via GPIO per vmaster hook */
+> @@ -4287,8 +4290,10 @@ static void alc_update_coef_led(struct hda_codec *codec,
+>  	if (polarity)
+>  		on = !on;
+>  	/* temporarily power up/down for setting COEF bit */
+> +	snd_hda_power_up_pm(codec);
+>  	alc_update_coef_idx(codec, led->idx, led->mask,
+>  			    on ? led->on : led->off);
+> +	snd_hda_power_down_pm(codec);
+>  }
+>  
+>  /* update mute-LED according to the speaker mute state via COEF bit */
+> -- 
+> 2.29.2
+> 
