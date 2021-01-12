@@ -2,85 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FDD2F3172
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:26:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C6E2F3175
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732715AbhALNUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:20:05 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:46084 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726766AbhALNUD (ORCPT
+        id S1732122AbhALNVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:21:24 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:34460 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728281AbhALNVX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:20:03 -0500
-Date:   Tue, 12 Jan 2021 14:19:15 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610457561;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=g/VWB0fCsPvUGFSmikizfqSo7xug3MKhclkhQ+H6pyM=;
-        b=ZjV09O//O6L5Np6VcjV6OCFjGiy+gjje329oC9V6HINakAy8L4DtvMl/eztN6MzycZsM7T
-        Cii13gDpyyliCRgQYykazLp3vLYJFxiI4dcHXJKoEHye262D6m2ZnzP4aNyDqmIOHIUmQp
-        fVP4juy7SbtE2TZWaVwdvFjd6OBoCOs955qM+zfo0ASAJwAkKVOuPWVku2qJIdSXOscrKE
-        qAa+KNPKyQMSpz3x+6I/vg79YzB0SBe2iV93kc944GamAfGObANs2a4gVu+dostZNE8gW5
-        HwihEKIG6jatFNsSFKtTxksMNSbqw7aMNN5yXv/qXIOiqFAIE3pICN7CHMax4w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610457561;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=g/VWB0fCsPvUGFSmikizfqSo7xug3MKhclkhQ+H6pyM=;
-        b=+Krcyb89Ggw/SfxKIn+0DMxbJRzKXOPBv0vr82K6SsheaIJnADyju6UJaB799YeeRovM6f
-        EOa73gUeOjsSCLAA==
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     John Garry <john.garry@huawei.com>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        linux-scsi@vger.kernel.org, intel-linux-scu@intel.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>
-Subject: Re: [PATCH v2 00/19] scsi: libsas: Remove in_interrupt() check
-Message-ID: <X/2h0yNqtmgoLIb+@lx-t490>
-References: <20210112110647.627783-1-a.darwish@linutronix.de>
- <8683f401-29b6-4067-af51-7b518ad3a10f@huawei.com>
+        Tue, 12 Jan 2021 08:21:23 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10CDKMWC0013545, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmbs01.realtek.com.tw[172.21.6.94])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10CDKMWC0013545
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 12 Jan 2021 21:20:22 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 12 Jan 2021 21:20:22 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::ecca:80ca:53:e833]) by
+ RTEXMBS04.realtek.com.tw ([fe80::ecca:80ca:53:e833%12]) with mapi id
+ 15.01.2106.006; Tue, 12 Jan 2021 21:20:22 +0800
+From:   Pkshih <pkshih@realtek.com>
+To:     "abaci-bugfix@linux.alibaba.com" <abaci-bugfix@linux.alibaba.com>
+CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH] rtlwifi: rtl8821ae: style: Simplify bool comparison
+Thread-Topic: [PATCH] rtlwifi: rtl8821ae: style: Simplify bool comparison
+Thread-Index: AQHW6L2orBBpKoBBgkeYxkTWwRIaRaojc5qA
+Date:   Tue, 12 Jan 2021 13:20:21 +0000
+Message-ID: <1610457587.2793.2.camel@realtek.com>
+References: <1610440409-73330-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+In-Reply-To: <1610440409-73330-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [125.224.66.71]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A6A38BB325AB144790D7DFD15CA130C6@realtek.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8683f401-29b6-4067-af51-7b518ad3a10f@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 11:53:50AM +0000, John Garry wrote:
-> On 12/01/2021 11:06, Ahmed S. Darwish wrote:
-> > Hi,
-> >
-> > Changelog v2
-> > ------------
-...
->
-> I'll give this a spin today and help review also then.
->
-> There's 18 patches here - it would be very convenient if they were on a
-> public branch :)
->
-
-Konstantin's "b4" is your friend:
-
-  https://people.kernel.org/monsieuricon/introducing-b4-and-patch-attestation
-
-It boils down to:
-
-  $ pip install b4
-  $ b4 am -v2 20210112110647.627783-1-a.darwish@linutronix.de
-
-Kind regards,
-
---
-Ahmed S. Darwish
-Linutronix GmbH
+T24gVHVlLCAyMDIxLTAxLTEyIGF0IDE2OjMzICswODAwLCBZQU5HIExJIHdyb3RlOg0KPiBGaXgg
+dGhlIGZvbGxvd2luZyBjb2NjaWNoZWNrIHdhcm5pbmc6DQo+IC4vZHJpdmVycy9uZXQvd2lyZWxl
+c3MvcmVhbHRlay9ydGx3aWZpL3J0bDg4MjFhZS9waHkuYzozODUzOjctMTc6DQo+IFdBUk5JTkc6
+IENvbXBhcmlzb24gb2YgMC8xIHRvIGJvb2wgdmFyaWFibGUNCj4gDQo+IFJlcG9ydGVkLWJ5OiBB
+YmFjaSBSb2JvdCA8YWJhY2lAbGludXguYWxpYmFiYS5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IFlB
+TkcgTEkgPGFiYWNpLWJ1Z2ZpeEBsaW51eC5hbGliYWJhLmNvbT4NCj4gDQoNCkkgdGhpbmsgeW91
+ciBuYW1lIG9mIFNpZ25lZC1vZmYtYnkgc2hvdWxkIGJlICJZYW5nIExpIi4NCg0KQW5kLCB0aGUg
+c3ViamVjdCBwcmVmaXggInJ0bHdpZmk6ICIgaXMgcHJlZmVycmVkLg0KDQotLS0NClBpbmctS2UN
+Cg==
