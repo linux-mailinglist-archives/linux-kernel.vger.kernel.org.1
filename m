@@ -2,127 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 258E42F3953
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4B12F3952
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405888AbhALTAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 14:00:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
+        id S2392633AbhALTAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:00:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390934AbhALTAw (ORCPT
+        with ESMTP id S2390101AbhALTAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Jan 2021 14:00:52 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A5D3C061795
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73A52C0617A2
         for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 11:00:12 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id e7so4040714ljg.10
+Received: by mail-qk1-x749.google.com with SMTP id k126so2261468qkf.8
         for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 11:00:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cY7LiOljtRpl7NP8koJL4MoVHQoaXBOmsr02Iq9gODY=;
-        b=oS8itD4fagD9W0NDK8IL/kpF+AARyhuR4yh5nmMvhIUGA47rDp5coomF6EJpC62Dyw
-         ToCn3gbqEFz6X1QbaUx5S/wUB4rwXFX3vIQLHosV8OKDpieZPjmIQFrlOot9id0T2ty3
-         4eewXDIOfQ4y0CgYEJX/eHqHPQb2R2M1PU4iwsmW28SYKQTGiNSVZ9sMsdT68+7Pypmd
-         K0vqQbdjwoua0+2ReyH6Wdu6+4Sl2BzxuQCtyf2H7rjiQy47dBC1majpefS2fz3Uq7mk
-         bECOoYxXCtMKsol4oYi1r02vng0JwkyNbQNUqRuDsdNNLj+zirPpWCI/85QKmQyHEumQ
-         KaPw==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=du3R7iRmdec/w5kxDbSTvmDNCkwRqHc5juEchBaOuOU=;
+        b=ZblB180mccBYrovpgd1D6ISjiyDBNyLP/3g8tETtMbLsQymkjUa3uM8nsPM1MJvO7M
+         pn6Pz26vNA5jNgBeHUyQ0I1pydprO/tC2T1qki4sxIEqHTbYgU4SJZ6MKbIJL6IkepTm
+         J+zJcZkj5P00fl/q4GzjLQ9mn1iOey423gnXVn79nT+CU5qMlbhnyh6unND7mTBxCEaS
+         xqk/4bCQPziV76nVclQ8LPiGgQE+LcXw+qvY1rKGtZ3JdxrZRDylYUjwDrqbz696KvVU
+         zMmCwNMIKZlabY852y6pt2vCALPcJXt/d/wIQvcvh/y2NMEHxpTiZpmAnIADOaF1/VmH
+         9Aew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cY7LiOljtRpl7NP8koJL4MoVHQoaXBOmsr02Iq9gODY=;
-        b=bt+VgQVeTNMR1dzP49X2wOfGMc2A8Mk3v+OH2UhUF7q2hBfNRHlarOZ9tC5O6O572X
-         n2afdkMK3DyPenxmK87BKUS8NVB89P0a2k+Avc2jIHX78weeZkXwND6gxKentXMPN/KJ
-         zWc3Ip7RseP8Km/TjAGLmez/MfQJPK9eTxptvzvY78VfycfTZnnsi1LYQ8tyOzQnTeB7
-         Jf41JObeyXMLg7PBmnWShI5dadr1g3Y5I+KlncFj79YPj/k5uEigj5LvAJxoCQckQJuO
-         pmI17WtqRLBlXzTBYk+SfhxG4OiiBxVXsgwJL9YepBg9/KhesdZ3x4kvEvlYNjTzNu8/
-         fYUw==
-X-Gm-Message-State: AOAM531eOhXDfQk6mdmPpDZdmP4yUQWu8Q15oA96ZHQ5PS0Ru541ywVn
-        lu+F1OyZtVcR34PCWmnP8jUr6LCU9Lep9yKC0rwLQg==
-X-Google-Smtp-Source: ABdhPJyeoR+rXzzgDzQiOMYj/rsdGmCt6Tdsk+6ir6pLcQbcgrKoCWr+GiQTGW/dIXR+H2ZOnjM+Tx/49XaFMo599FA=
-X-Received: by 2002:a2e:850f:: with SMTP id j15mr287189lji.34.1610478009184;
- Tue, 12 Jan 2021 11:00:09 -0800 (PST)
-MIME-Version: 1.0
-References: <20210112163011.127833-1-hannes@cmpxchg.org>
-In-Reply-To: <20210112163011.127833-1-hannes@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 12 Jan 2021 10:59:58 -0800
-Message-ID: <CALvZod4VFA52dsdkW79-gUbiCf2ONfFJj6LkRU+3-fQpvYXL+A@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcontrol: prevent starvation when writing memory.high
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Michal Hocko <mhocko@suse.com>, Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=du3R7iRmdec/w5kxDbSTvmDNCkwRqHc5juEchBaOuOU=;
+        b=bLhOkdHGp1NFnlMoVFrttDSUb83IOBfVBKI796kIDdM6+t7hm5YRcxiVaDZ2dgbg8A
+         r8Teo5F9yHn7X1t4twbEN1xgqZyhNWtzVdMDQhceWw0tNcaOcLoUVrxdHrA7JTwiqy8w
+         Q+pNddCwWwQAhThU3Uf+67BiwCsy8chxxDzUKkoAErkob608lSMumefrFAwSun4sIu8D
+         f0m9my+fJVamUpHnR+1MvWc/vFR6kjJCnNSgDVkRUp4BdRGEC26pB2hTJtfLhGuMH7v/
+         0S/Khc1adri3c2LHOCnQNtQCsFezQ2fpQkwHdLannrrTMt0F0AcG69KU5c41RE/EtU3w
+         64ew==
+X-Gm-Message-State: AOAM53088nbX3/p3nyWn4r13kaxNkF/A7kxoHCIaMWPIWqexqiSiGz3O
+        w7oHM4Q8u1OwYPKnjvh7o+82jDhMaaYNLwTz+AUrUv770qoRU4ceetAWWXJk2ExdZpRnMpif+YM
+        q5IxuKyD4iTHWdUiTkZjHKpoQGL56jxapPquiQ417fS7Zqap2x5n1wTPzZtxQhW9KgQjtvw==
+X-Google-Smtp-Source: ABdhPJwS4w63VpDxU48YOxssc/xJ2vCdPiDNIAbr8leFpk4ztLs039S22IaT7VTNYAd6o0qwzEOBgD3+SqE=
+Sender: "adelva via sendgmr" <adelva@uslicht.c.googlers.com>
+X-Received: from uslicht.c.googlers.com ([fda3:e722:ac3:10:2b:ff92:c0a8:24])
+ (user=adelva job=sendgmr) by 2002:a0c:fb0d:: with SMTP id c13mr531526qvp.1.1610478011340;
+ Tue, 12 Jan 2021 11:00:11 -0800 (PST)
+Date:   Tue, 12 Jan 2021 19:00:10 +0000
+Message-Id: <20210112190010.1582888-1-adelva@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH] kbuild: improve libelf detection
+From:   Alistair Delva <adelva@google.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel-team@android.com, linux-kbuild@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Rolf Eike Beer <eb@emlix.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 9:12 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> When a value is written to a cgroup's memory.high control file, the
-> write() context first tries to reclaim the cgroup to size before
-> putting the limit in place for the workload. Concurrent charges from
-> the workload can keep such a write() looping in reclaim indefinitely.
->
+When `pkg-config --libs' wasn't used or didn't return anything useful,
+the test for libelf would fail even if the headers and libraries were
+available to kbuild via KBUILD_HOSTCFLAGS and KBUILD_HOSTLDFLAGS.
 
-Is this observed on real workload?
+This makes the check in the core Makefile match the check that is done
+in tools/objtool/Makefile. Specifically, the C compiler is passed the
+full KBUILD_HOSTCFLAGS and KBUILD_HOSTLDFLAGS, which may have set up
+additional sysroot/include/library search paths to find libelf.
 
->
-> In the past, a write to memory.high would first put the limit in place
-> for the workload, then do targeted reclaim until the new limit has
-> been met - similar to how we do it for memory.max. This wasn't prone
-> to the described starvation issue. However, this sequence could cause
-> excessive latencies in the workload, when allocating threads could be
-> put into long penalty sleeps on the sudden memory.high overage created
-> by the write(), before that had a chance to work it off.
->
-> Now that memory_high_write() performs reclaim before enforcing the new
-> limit, reflect that the cgroup may well fail to converge due to
-> concurrent workload activity. Bail out of the loop after a few tries.
->
-> Fixes: 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering memory.high")
-> Cc: <stable@vger.kernel.org> # 5.8+
-> Reported-by: Tejun Heo <tj@kernel.org>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> ---
->  mm/memcontrol.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 605f671203ef..63a8d47c1cd3 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6275,7 +6275,6 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
->
->         for (;;) {
->                 unsigned long nr_pages = page_counter_read(&memcg->memory);
-> -               unsigned long reclaimed;
->
->                 if (nr_pages <= high)
->                         break;
-> @@ -6289,10 +6288,10 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
->                         continue;
->                 }
->
-> -               reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
-> -                                                        GFP_KERNEL, true);
-> +               try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
-> +                                            GFP_KERNEL, true);
->
-> -               if (!reclaimed && !nr_retries--)
+Cc: kernel-team@android.com
+Cc: linux-kbuild@vger.kernel.org
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Rolf Eike Beer <eb@emlix.com>
+Signed-off-by: Alistair Delva <adelva@google.com>
+---
+ Makefile | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Any particular reason to remove !reclaimed?
+diff --git a/Makefile b/Makefile
+index 9e73f82e0d86..3269e155fbe4 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1074,8 +1074,9 @@ export mod_sign_cmd
+ 
+ HOST_LIBELF_LIBS = $(shell pkg-config libelf --libs 2>/dev/null || echo -lelf)
+ 
+-has_libelf = $(call try-run,\
+-               echo "int main() {}" | $(HOSTCC) -xc -o /dev/null $(HOST_LIBELF_LIBS) -,1,0)
++has_libelf := $(call try-run,\
++                echo "int main() {}" | \
++                $(HOSTCC) $(KBUILD_HOSTCFLAGS) -xc -o /dev/null $(KBUILD_HOSTLDFLAGS) $(HOST_LIBELF_LIBS) -,1,0)
+ 
+ ifdef CONFIG_STACK_VALIDATION
+   ifeq ($(has_libelf),1)
+-- 
+2.29.2
 
-> +               if (!nr_retries--)
->                         break;
->         }
->
-> --
-> 2.30.0
->
