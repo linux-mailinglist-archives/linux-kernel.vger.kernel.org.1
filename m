@@ -2,129 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 004FB2F36F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 771132F36FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:24:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392832AbhALRWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:22:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392469AbhALRWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:22:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8535723125
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 17:21:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610472094;
-        bh=ELOARBBiofdYIx02xC2M8PkPXYlHSTVJmEKHZzgBULE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kM63G85GYcDem7lfwRdnJAqLP1ebW9sR8qmat/Ayek+uF749MSGlAaBYStRjg5TBD
-         b2zNPH5RoM2/8UgPTWlOiLgKPSqlq9ZTGoOIo9c2o5+OBt6VUQR/TqupvBv9QHcEzm
-         CPDDnw6RxTjerTu1EQDG6pkwb4zqEp8vvHbI37wZ+x0YNxDCVVb5bRID+Yl53YiPwg
-         +59dFtO4wISZG6pDx6fqTnTCVo8dkOhqitf1oBt18J/pGzVWC/Kjcl2pv2fAGY99T2
-         VvsHxXEpTFdAotUwGFio7bHOhxC9LOEVA52Oen5psYp6uJmB0qOgUGdZfU5VxHtri7
-         pm3S2EOLos/ig==
-Received: by mail-ej1-f45.google.com with SMTP id d17so4593358ejy.9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:21:34 -0800 (PST)
-X-Gm-Message-State: AOAM5310DBLjSuoY0dw0vTy01+TOthbPsB8/CvRyI4weXWzG2/r8z1NW
-        D7chUqFbPKSl2dNVQsGu16lA4T0zNaHRgHg4dWWYSw==
-X-Google-Smtp-Source: ABdhPJzG45Q6mZpr5OuQGqeovuqrQr66d54Wzrwvejj9Io/dicJpF2AjAct15P9qtUGkYrC3a/347ZsTPv1uM0FABxU=
-X-Received: by 2002:a17:906:351a:: with SMTP id r26mr3767359eja.204.1610472092963;
- Tue, 12 Jan 2021 09:21:32 -0800 (PST)
-MIME-Version: 1.0
-References: <20210111214452.1826-2-tony.luck@intel.com> <E1FCB534-9149-437A-971E-F93C009F99C3@amacapital.net>
- <20210111222057.GA2369@agluck-desk2.amr.corp.intel.com> <CALCETrVhRF0H+R1aiy-rdguL3A_9M35R3roVAgRGaEAMCJVW0Q@mail.gmail.com>
- <20210112171628.GA15664@agluck-desk2.amr.corp.intel.com>
-In-Reply-To: <20210112171628.GA15664@agluck-desk2.amr.corp.intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 12 Jan 2021 09:21:21 -0800
-X-Gmail-Original-Message-ID: <CALCETrWijyKoopqAHjohMbvfX191GhmMVQCQjKWx1s3+SA+-uA@mail.gmail.com>
-Message-ID: <CALCETrWijyKoopqAHjohMbvfX191GhmMVQCQjKWx1s3+SA+-uA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] x86/mce: Avoid infinite loop for copy from user recovery
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>,
+        id S2392838AbhALRXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:23:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391167AbhALRXV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 12:23:21 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52B8C061786;
+        Tue, 12 Jan 2021 09:22:40 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id 19so2513716qkm.8;
+        Tue, 12 Jan 2021 09:22:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Cekwa6Gg8tFAQMdvQMX54ozrri2M75odcKtK/zwsgg0=;
+        b=dm6lBlHFrKWfvEFQDoGKdvc8cGFBVbyku1WFw7oWjrIWT9iA9Uv7hEr7klthM8iI8V
+         Jqmds2eSlencuXDnTe6vOf0sG7ZEupGgYbjt7HRQyUDXiFSqmm7pGGKKU+bF78vNe1Tt
+         aoJIFzfjFvYPJwgsjih3xIo8bsf2b/gwcfu/zBaBzq5+zCRSLPYBRyto+8M2p1vehT/Y
+         OeJLwQPPtHl04LNdTNj0K0WaIVtrSixICog5eHOENN0Ny2OCKMtVxIloBVlX0rYDDB41
+         bB+09QjiiXmTi8l2P0XXvKbwJgtCMbEuVwOWak+47L29fXqltJp0oyqE11RwyBA36/Iu
+         CNdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Cekwa6Gg8tFAQMdvQMX54ozrri2M75odcKtK/zwsgg0=;
+        b=IP2I33ntToO+iOs7IUVgzpWaDBJ06G5bvPizQzwPQHq2TDOTHwKGZO0NqfJWCARLsb
+         sZE/TpxhlEfDBfnYgYud+yfvsoEylVdekYm/Ehxkvtj6F27tiTpstnvWwfxcZGFS50/B
+         J3OyBAHykik1fWWfClxoGt14xMZGXwnbQy5dApKQuYsZvLXIdON4MG4Lz1y4afd1ckoP
+         MSDJ6kPcAGUP1Upu0t/HP+XDJUWo3hXXUqiOXSDaGtxd3BxqM4isci7nEYae1xMcQ/PP
+         a5a7rEehvo8zJ/OsDcIppkM13RVjj+ROnn4p+yEHRqopb8+EnJye+j+sMNytEcF3xmrq
+         0njA==
+X-Gm-Message-State: AOAM532JMQKtHojGBQ01NHTX2iuYWxmJyLo5SeIdpGQXitkyWFSDOkyc
+        VlHrsvYm4RrkkSWAAuLeSrc=
+X-Google-Smtp-Source: ABdhPJxR9EN4Bi/GC/cHsHL0Wklo8RdvqQuhoTzQlheMI5t1BVqMwTVoYpHa3hRgayKDRCupixQOIw==
+X-Received: by 2002:ae9:c010:: with SMTP id u16mr352562qkk.346.1610472159841;
+        Tue, 12 Jan 2021 09:22:39 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id d1sm1628462qkf.102.2021.01.12.09.22.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 09:22:38 -0800 (PST)
+Date:   Tue, 12 Jan 2021 10:22:37 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Bill Wendling <morbo@google.com>, Jonathan Corbet <corbet@lwn.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
         Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-edac <linux-edac@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        kbuild-all@lists.01.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Subject: Re: [PATCH v3] pgo: add clang's Profile Guided Optimization
+ infrastructure
+Message-ID: <20210112172237.GA1792840@ubuntu-m3-large-x86>
+References: <20210112053113.4180271-1-morbo@google.com>
+ <202101121755.pyYoRozB-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202101121755.pyYoRozB-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 9:16 AM Luck, Tony <tony.luck@intel.com> wrote:
->
-> On Tue, Jan 12, 2021 at 09:00:14AM -0800, Andy Lutomirski wrote:
-> > > On Jan 11, 2021, at 2:21 PM, Luck, Tony <tony.luck@intel.com> wrote:
-> > >
-> > > =EF=BB=BFOn Mon, Jan 11, 2021 at 02:11:56PM -0800, Andy Lutomirski wr=
-ote:
-> > >>
-> > >>>> On Jan 11, 2021, at 1:45 PM, Tony Luck <tony.luck@intel.com> wrote=
-:
-> > >>>
-> > >>> =EF=BB=BFRecovery action when get_user() triggers a machine check u=
-ses the fixup
-> > >>> path to make get_user() return -EFAULT.  Also queue_task_work() set=
-s up
-> > >>> so that kill_me_maybe() will be called on return to user mode to se=
-nd a
-> > >>> SIGBUS to the current process.
-> > >>>
-> > >>> But there are places in the kernel where the code assumes that this
-> > >>> EFAULT return was simply because of a page fault. The code takes so=
-me
-> > >>> action to fix that, and then retries the access. This results in a =
-second
-> > >>> machine check.
-> > >>>
-> > >>> While processing this second machine check queue_task_work() is cal=
-led
-> > >>> again. But since this uses the same callback_head structure that
-> > >>> was used in the first call, the net result is an entry on the
-> > >>> current->task_works list that points to itself.
-> > >>
-> > >> Is this happening in pagefault_disable context or normal sleepable f=
-ault context?  If the latter, maybe we should reconsider finding a way for =
-the machine check code to do its work inline instead of deferring it.
-> > >
-> > > The first machine check is in pagefault_disable() context.
-> > >
-> > > static int get_futex_value_locked(u32 *dest, u32 __user *from)
-> > > {
-> > >        int ret;
-> > >
-> > >        pagefault_disable();
-> > >        ret =3D __get_user(*dest, from);
-> >
-> > I have very mixed feelings as to whether we should even try to recover
-> > from the first failure like this.  If we actually want to try to
-> > recover, perhaps we should instead arrange for the second MCE to
-> > recover successfully instead of panicking.
->
-> Well we obviously have to "recover" from the first machine check
-> in order to get to the second. Are you saying you don't like the
-> different return value from get_user()?
->
-> In my initial playing around with this I just had the second machine
-> check simply skip the task_work_add(). This worked for this case, but
-> only because there wasn't a third, fourth, etc. access to the poisoned
-> data. If the caller keeps peeking, then we'll keep taking more machine
-> checks - possibly forever.
->
-> Even if we do recover with just one extra machine check ... that's one
-> more than was necessary.
+On Tue, Jan 12, 2021 at 05:10:04PM +0800, kernel test robot wrote:
+> Hi Bill,
+> 
+> I love your patch! Perhaps something to improve:
+> 
+> [auto build test WARNING on linus/master]
+> [also build test WARNING on v5.11-rc3]
+> [cannot apply to powerpc/next s390/features tip/x86/core next-20210111]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Bill-Wendling/pgo-add-clang-s-Profile-Guided-Optimization-infrastructure/20210112-133315
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git a0d54b4f5b219fb31f0776e9f53aa137e78ae431
+> config: x86_64-allyesconfig (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
 
-Well, we need to do *something* when the first __get_user() trips the
-#MC.  It would be nice if we could actually fix up the page tables
-inside the #MC handler, but, if we're in a pagefault_disable() context
-we might have locks held.  Heck, we could have the pagetable lock
-held, be inside NMI, etc.  Skipping the task_work_add() might actually
-make sense if we get a second one.
+Hmmm... This should probably be gated on CC_IS_CLANG? Or even better
+CLANG_VERSION >= 120000 due to
+https://github.com/ClangBuiltLinux/linux/issues/1252?
 
-We won't actually infinite loop in pagefault_disable() context -- if
-we would, then we would also infinite loop just from a regular page
-fault, too.
+> reproduce (this is a W=1 build):
+>         # https://github.com/0day-ci/linux/commit/6ab85bae7667afd0aa68c6442b7ca5c369fa1088
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Bill-Wendling/pgo-add-clang-s-Profile-Guided-Optimization-infrastructure/20210112-133315
+>         git checkout 6ab85bae7667afd0aa68c6442b7ca5c369fa1088
+>         # save the attached .config to linux build tree
+>         make W=1 ARCH=x86_64 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>    kernel/pgo/instrument.c:72:6: warning: no previous prototype for '__llvm_profile_instrument_target' [-Wmissing-prototypes]
+>       72 | void __llvm_profile_instrument_target(u64 target_value, void *data, u32 index)
+>          |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    kernel/pgo/instrument.c:135:6: warning: no previous prototype for '__llvm_profile_instrument_range' [-Wmissing-prototypes]
+>      135 | void __llvm_profile_instrument_range(u64 target_value, void *data,
+>          |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >> kernel/pgo/instrument.c:179:6: warning: no previous prototype for '__llvm_profile_instrument_memop' [-Wmissing-prototypes]
+>      179 | void __llvm_profile_instrument_memop(u64 target_value, void *data,
+>          |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+
+I still think that this warning will show up with clang at W=1. Given
+that these are compiler inserted functions, the prototypes don't matter
+but we could shut it up by just putting the prototypes right above the
+functions like was done in commit 1e1b6d63d634 ("lib/string.c: implement
+stpcpy").
+
+Cheers,
+Nathan
