@@ -2,130 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6FE2F3F94
+	by mail.lfdr.de (Postfix) with ESMTP id BDB7C2F3F96
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394887AbhALWze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:55:34 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:5512 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730636AbhALWze (ORCPT
+        id S2394900AbhALWzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:55:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394889AbhALWzg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:55:34 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10CMfcBH081848;
-        Tue, 12 Jan 2021 17:54:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=VySuknCdRYrl/Kuiqjz7iBvWmozseQlh3kZ9bh90Zm0=;
- b=kronnr2g7UZOx0/ns/LbuSkG/pkCXeoJ3M+aG52UqpxyhjDt33yhiNInMK8Mx4Z+U3oW
- z4ZCkWZ6eHzh73VQPgTHTQlmcheVntCCXUCX55adBFlyuf3CaHHJDtGgPK4nEhenPUHC
- 7sdQsjukH2jU+GiPBsjtv82XmbZ7wmc23bH9ocsF6BWQGkP5RZa9QffZitlVNXgizBug
- eYhoXeVcwT78j3raiFGjyiZW1wzMZj9K6mlN14GYeMdJrh0Fyr8cU1kwTE8E8bKgWojG
- 5MMNRQwcsryYBhj+i379a3iGCEjzZzRnsIc2o+rkuhjkg30BFCyTTPnkL4ZrMBrkusI6 YQ== 
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 361mshr6ca-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 17:54:41 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10CMhVqm015346;
-        Tue, 12 Jan 2021 22:54:39 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma04wdc.us.ibm.com with ESMTP id 35y4491a4r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 22:54:39 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10CMscHC11534774
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jan 2021 22:54:38 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 67D4B6E5B8;
-        Tue, 12 Jan 2021 22:54:38 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D987D6E5B7;
-        Tue, 12 Jan 2021 22:54:37 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.211.156.88])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 12 Jan 2021 22:54:37 +0000 (GMT)
-Subject: Re: [PATCH v4 01/21] ibmvfc: add vhost fields and defaults for MQ
- enablement
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com, james.smart@broadcom.com
-References: <20210111231225.105347-1-tyreld@linux.ibm.com>
- <20210111231225.105347-2-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <0525bee7-433f-dcc7-9e35-e8706d6edee5@linux.vnet.ibm.com>
-Date:   Tue, 12 Jan 2021 16:54:37 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 12 Jan 2021 17:55:36 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82067C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:54:55 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id o11so105526ote.4
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:54:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/vYKtRUvIW2ynJjXb8EKOHINwCaI0vhIQWTSSZNFGWc=;
+        b=Ww3KXfMqu1sID+h6joR8rNOtxPU4PNA7tn8XQ8NBQKSBnKwNcJ6+X9lq3PpgN+hH5C
+         eAVVZ27v93yjtmKeKXFIUb5YpFgwY2sQVx6nMZ/K/nz+d7jZgnft0bnPIKAo07hmdX7J
+         qbHJVc9RSX4qi+51lMX4wjcktwZk7Yk/hAGcsbs/yRKDvMJfFPaI4/DqV2cu84/SRYFA
+         shVTnQRqHvqvXPEQuPPvZNWU8mD2p+mplAQHF/36TQLzIcLVCbvzbD2rhirHROBQ9T/l
+         kGt5XvlCgeXjbrLIOMyKiG9+XIqT8r+iT+JwiyfHZq12hQBLJTa/QDWoUy8F1abiwCD4
+         hZAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/vYKtRUvIW2ynJjXb8EKOHINwCaI0vhIQWTSSZNFGWc=;
+        b=Umpv6A0HVxt4vavOZanjeRmIojCvg6PYBteZDWQd+72IbSx9g9c+Ws+/pfgsj0mPQc
+         xoV0Yekh2Zi0XvZvJNZrld7/y93JCki7qGyggkvJYFneP/To/8rtNNTNzR137NFZ9SAj
+         f1GC/ztPTORlB8RrBd5+kdYchoKhNZQuGagYttptInaBQJqJ1t9jWG81+DunNJ6WztEf
+         hIfp0uZGQTqCgLNi6GZBr99clMTW+sCQ8siSvuqKwP40VHgfFqHSH4jGPcYKq1I6VcOV
+         ap1uyOn7UnV8tBI35MoqS61EouO7EPIoDYV2YcQapBjpDcQMk5DIYIpQUfHOAMGAFnuc
+         N2Ig==
+X-Gm-Message-State: AOAM533bKedNXWbbHVVv1MtStT73xXLNsG7gkAtM1BYcfc83vZd1vdXA
+        /ujyv43zaKevnMdOW21NMxdyE/ul8E+W9WKCvXu8Rw==
+X-Google-Smtp-Source: ABdhPJzwgdUScBJYneAEXMBmswPtj1jt0k0m1Q8bFyR9znqR0OjkiLU8szsYkKQ3VBpF3LCBnWH9up1VjI4lQJISCQ8=
+X-Received: by 2002:a05:6830:19ca:: with SMTP id p10mr1108587otp.233.1610492094692;
+ Tue, 12 Jan 2021 14:54:54 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210111231225.105347-2-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-12_19:2021-01-12,2021-01-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 phishscore=0 impostorscore=0 mlxlogscore=999 clxscore=1011
- mlxscore=0 bulkscore=0 spamscore=0 suspectscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101120128
+References: <cover.1609871239.git.andreyknvl@google.com> <a83aa371e2ef96e79cbdefceebaa960a34957a79.1609871239.git.andreyknvl@google.com>
+ <X/2zBibnd/zCBFa/@elver.google.com> <CAAeHK+y0nmeDEWG8ZMX9KmE3-MhWCtrssDJi5oHG2PFNtrDK_g@mail.gmail.com>
+In-Reply-To: <CAAeHK+y0nmeDEWG8ZMX9KmE3-MhWCtrssDJi5oHG2PFNtrDK_g@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 12 Jan 2021 23:54:43 +0100
+Message-ID: <CANpmjNNfLG-iCJY9=ogiozYGmEat0U=huMpTO4RrC0LebOdmkQ@mail.gmail.com>
+Subject: Re: [PATCH 10/11] kasan: fix bug detection via ksize for HW_TAGS mode
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/11/21 5:12 PM, Tyrel Datwyler wrote:
-> Introduce several new vhost fields for managing MQ state of the adapter
-> as well as initial defaults for MQ enablement.
-> 
-> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-> ---
->  drivers/scsi/ibmvscsi/ibmvfc.c | 8 ++++++++
->  drivers/scsi/ibmvscsi/ibmvfc.h | 9 +++++++++
->  2 files changed, 17 insertions(+)
-> 
-> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-> index ba95438a8912..9200fe49c57e 100644
-> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
-> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-> @@ -3302,6 +3302,7 @@ static struct scsi_host_template driver_template = {
->  	.max_sectors = IBMVFC_MAX_SECTORS,
->  	.shost_attrs = ibmvfc_attrs,
->  	.track_queue_depth = 1,
-> +	.host_tagset = 1,
+On Tue, 12 Jan 2021 at 22:16, Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> On Tue, Jan 12, 2021 at 3:32 PM Marco Elver <elver@google.com> wrote:
+> >
+> > > +/*
+> > > + * Unlike kasan_check_read/write(), kasan_check_byte() is performed even for
+> > > + * the hardware tag-based mode that doesn't rely on compiler instrumentation.
+> > > + */
+> >
+> > We have too many check-functions, and the name needs to be more precise.
+> > Intuitively, I would have thought this should have access-type, i.e.
+> > read or write, effectively mirroring a normal access.
+> >
+> > Would kasan_check_byte_read() be better (and just not have a 'write'
+> > variant because we do not need it)? This would restore ksize() closest
+> > to what it was before (assuming reporting behaviour is fixed, too).
+>
+> > >  void kasan_poison(const void *address, size_t size, u8 value);
+> > >  void kasan_unpoison(const void *address, size_t size);
+> > > -bool kasan_check_invalid_free(void *addr);
+> > > +bool kasan_check(const void *addr);
+> >
+> > Definitely prefer shorted names, but we're in the unfortunate situation
+> > of having numerous kasan_check-functions, so we probably need to be more
+> > precise.
+> >
+> > kasan_check() makes me think this also does reporting, but it does not
+> > (it seems to only check the metadata for validity).
+> >
+> > The internal function could therefore be kasan_check_allocated() (it's
+> > now the inverse of kasan_check_invalid_free()).
+>
+> Re: kasan_check_byte():
+>
+> I think the _read suffix is only making the name longer. ksize() isn't
+> checking that the memory is readable (or writable), it's checking that
+> it's addressable. At least that's the intention of the annotation, so
+> it makes sense to name it correspondingly despite the implementation.
+>
+> Having all kasan_check_*() functions both checking and reporting makes
+> sense, so let's keep the kasan_check_ prefix.
+>
+> What isn't obvious from the name is that this function is present for
+> every kasan mode. Maybe kasan_check_byte_always()? Although it also
+> seems too long.
+>
+> But I'm OK with keeping kasan_check_byte().
 
-This doesn't seem right. You are setting host_tagset, which means you want a
-shared, host wide, tag set for commands. It also means that the total
-queue depth for the host is can_queue. However, it looks like you are allocating
-max_requests events for each sub crq, which means you are over allocating memory.
+This is fine.
 
-Looking at this closer, we might have bigger problems. There is a host wide
-max number of commands that the VFC host supports, which gets returned on
-NPIV Login. This value can change across a live migration event. 
+> Re kasan_check():
+>
+> Here we can use Andrew's suggestion about the name being related to
+> what the function returns. And also drop the kasan_check_ prefix as
+> this function only does the checking.
+>
+> Let's use kasan_byte_accessible() instead of kasan_check().
 
-The ibmvfc driver, which does the same thing the lpfc driver does, modifies
-can_queue on the scsi_host *after* the tag set has been allocated. This looks
-to be a concern with ibmvfc, not sure about lpfc, as it doesn't look like
-we look at can_queue once the tag set is setup, and I'm not seeing a good way
-to dynamically change the host queue depth once the tag set is setup. 
-
-Unless I'm missing something, our best options appear to either be to implement
-our own host wide busy reference counting, which doesn't sound very good, or
-we need to add some API to block / scsi that allows us to dynamically change
-can_queue.
+Sounds reasonable to me.
 
 Thanks,
-
-Brian
-
-
--- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
-
+-- Marco
