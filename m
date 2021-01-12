@@ -2,79 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFD62F3750
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 320332F3751
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389851AbhALRgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:36:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727513AbhALRgt (ORCPT
+        id S2390718AbhALRhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:37:05 -0500
+Received: from smtprelay0167.hostedemail.com ([216.40.44.167]:37548 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2390050AbhALRhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:36:49 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B54C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:36:09 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id v1so2039114pjr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:36:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kBoeCrqN2k6hVDBNDBFoP9slGG3T38BN8I1wekGgzs8=;
-        b=IJk767It+WkeZlRni4t1QJT6YRO2W0GVVlNuXV5L3VtoFJdJ1V7YbFOINLcHmAX1/5
-         qW/ibvQZpy1IyiOqbK89qYW2OT1KM8G7IRF5XTzyfjEKQhlfYOq9yRSpN/iD4M7hBpNS
-         LesTKJ0bftCKfPOKD6lojIyze730MgROX19414sH9yuOIPOK3dVuzX2SMc3eVDa+7Eff
-         7XYJ35X0Ggqxqp44fWXM9hp60v/rhvLMPkBpJ65qAEZLU/TBR9SGV///ysv0W9sSWDgs
-         e57Cu84YuOOI5mC0V5cJXdvCNIFVT0kZHOqpQnFahYAzULSSWKoZR8V2YdUEFRwYHIcV
-         VPDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kBoeCrqN2k6hVDBNDBFoP9slGG3T38BN8I1wekGgzs8=;
-        b=GXwdqF1WZmdIKXuFPxk81/CBOpF8ALsn6CnVO3BnRGXUWcFRwlJNt1rrT6uJULc+1I
-         S8jR4h/k9eXOfqy51gFpcAQdE9Z7mgHwG0T66jrbzPhGUoO8iKttTc89tTSMqEH2tSqo
-         YKHPx3XKo/An5D+E+zYsNbK2SwlzCr5WuPqSAOqYS/Wuhlx5EPbJ9VRFKsh2Wb/Fs3Gl
-         bHVZcQFC9IO2+hkoQfYR29u2ixZka/29dcrgU0oCjlSWtc+8d2nLbvHwEwxO9tgsXppn
-         Cjg0I8HO0vgjcF0pC1iNaJezurMOGgSAxPfQCc+sd9peKgR629pphtvb3J047dTdIxl6
-         bVnw==
-X-Gm-Message-State: AOAM5327ZK6j6diAbqnvyAiq87QDxTPvaHXvjdJE3lK+LrFSaksuvQ9i
-        ieggVhFOxVksG8tHAjM03QKmZA==
-X-Google-Smtp-Source: ABdhPJycyDGJ7mjxh6atJ3kxaqss3ug8XgjvQHIftL9wwPSdeemCp+9hFzYCBh03Etv8hBGv+BDTqA==
-X-Received: by 2002:a17:90a:5298:: with SMTP id w24mr199739pjh.182.1610472968667;
-        Tue, 12 Jan 2021 09:36:08 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id p9sm4032823pjb.3.2021.01.12.09.36.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 09:36:07 -0800 (PST)
-Date:   Tue, 12 Jan 2021 09:36:01 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Wei Huang <wei.huang2@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, vkuznets@redhat.com, joro@8bytes.org,
-        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
-        dgilbert@redhat.com, mlevitsk@redhat.com
-Subject: Re: [PATCH 1/2] KVM: x86: Add emulation support for #GP triggered by
- VM instructions
-Message-ID: <X/3eAX4ZyqwCmyFi@google.com>
-References: <20210112063703.539893-1-wei.huang2@amd.com>
+        Tue, 12 Jan 2021 12:37:05 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 3FBC7100E7B43;
+        Tue, 12 Jan 2021 17:36:23 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:1:41:69:355:379:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1437:1515:1516:1518:1593:1594:1605:1730:1747:1777:1792:2393:2553:2559:2562:2636:2828:3138:3139:3140:3141:3142:3867:3868:5007:6119:7652:7809:7903:8603:10004:10848:11026:11473:11658:11914:12043:12048:12114:12297:12438:12555:12683:12760:12986:13439:14093:14097:14394:14659:21080:21433:21451:21627:21939:21990:30012:30054:30055:30080:30090,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:14,LUA_SUMMARY:none
+X-HE-Tag: view24_5f0000b27517
+X-Filterd-Recvd-Size: 11211
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 12 Jan 2021 17:36:21 +0000 (UTC)
+Message-ID: <b4a0b8c97a95f56c64532eff83289831449e2b0d.camel@perches.com>
+Subject: [PATCH] scsi: mpt3sas: Simplify _base_display_OEMs_branding
+From:   Joe Perches <joe@perches.com>
+To:     Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 12 Jan 2021 09:36:17 -0800
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210112063703.539893-1-wei.huang2@amd.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021, Wei Huang wrote:
-> From: Bandan Das <bsd@redhat.com>
-> 
-> While running VM related instructions (VMRUN/VMSAVE/VMLOAD), some AMD
-> CPUs check EAX against reserved memory regions (e.g. SMM memory on host)
-> before checking VMCB's instruction intercept.
+Simplify code by using char pointers and not individual calls to
+ioc_info() when identifying OEMs branding.
 
-It would be very helpful to list exactly which CPUs are/aren't affected, even if
-that just means stating something like "all CPUs before XYZ".  Given patch 2/2,
-I assume it's all CPUs without the new CPUID flag?
+Reduces object size a bit too:
+
+$ size drivers/scsi/mpt3sas/mpt3sas_base.o*
+   text	   data	    bss	    dec	    hex	filename
+  72024	     88	    288	  72400	  11ad0	drivers/scsi/mpt3sas/mpt3sas_base.o.new
+  72285	     88	    288	  72661	  11bd5	drivers/scsi/mpt3sas/mpt3sas_base.o.old
+
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ drivers/scsi/mpt3sas/mpt3sas_base.c | 144 ++++++++++++++----------------------
+ 1 file changed, 54 insertions(+), 90 deletions(-)
+
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
+index 6e23dc3209fe..1ffed396d91f 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_base.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
+@@ -4192,6 +4192,9 @@ _base_put_smid_default_atomic(struct MPT3SAS_ADAPTER *ioc, u16 smid)
+ static void
+ _base_display_OEMs_branding(struct MPT3SAS_ADAPTER *ioc)
+ {
++	const char *b = NULL;	/* brand */
++	const char *v = NULL;	/* vendor */
++
+ 	if (ioc->pdev->subsystem_vendor != PCI_VENDOR_ID_INTEL)
+ 		return;
+ 
+@@ -4201,87 +4204,69 @@ _base_display_OEMs_branding(struct MPT3SAS_ADAPTER *ioc)
+ 		case MPI2_MFGPAGE_DEVID_SAS2008:
+ 			switch (ioc->pdev->subsystem_device) {
+ 			case MPT2SAS_INTEL_RMS2LL080_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_INTEL_RMS2LL080_BRANDING);
++				b = MPT2SAS_INTEL_RMS2LL080_BRANDING;
+ 				break;
+ 			case MPT2SAS_INTEL_RMS2LL040_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_INTEL_RMS2LL040_BRANDING);
++				b = MPT2SAS_INTEL_RMS2LL040_BRANDING;
+ 				break;
+ 			case MPT2SAS_INTEL_SSD910_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_INTEL_SSD910_BRANDING);
++				b = MPT2SAS_INTEL_SSD910_BRANDING;
+ 				break;
+ 			default:
+-				ioc_info(ioc, "Intel(R) Controller: Subsystem ID: 0x%X\n",
+-					 ioc->pdev->subsystem_device);
++				v = "Intel(R) Controller";
+ 				break;
+ 			}
+ 			break;
+ 		case MPI2_MFGPAGE_DEVID_SAS2308_2:
+ 			switch (ioc->pdev->subsystem_device) {
+ 			case MPT2SAS_INTEL_RS25GB008_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_INTEL_RS25GB008_BRANDING);
++				b = MPT2SAS_INTEL_RS25GB008_BRANDING;
+ 				break;
+ 			case MPT2SAS_INTEL_RMS25JB080_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_INTEL_RMS25JB080_BRANDING);
++				b = MPT2SAS_INTEL_RMS25JB080_BRANDING;
+ 				break;
+ 			case MPT2SAS_INTEL_RMS25JB040_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_INTEL_RMS25JB040_BRANDING);
++				b = MPT2SAS_INTEL_RMS25JB040_BRANDING;
+ 				break;
+ 			case MPT2SAS_INTEL_RMS25KB080_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_INTEL_RMS25KB080_BRANDING);
++				b = MPT2SAS_INTEL_RMS25KB080_BRANDING;
+ 				break;
+ 			case MPT2SAS_INTEL_RMS25KB040_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_INTEL_RMS25KB040_BRANDING);
++				b = MPT2SAS_INTEL_RMS25KB040_BRANDING;
+ 				break;
+ 			case MPT2SAS_INTEL_RMS25LB040_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_INTEL_RMS25LB040_BRANDING);
++				b = MPT2SAS_INTEL_RMS25LB040_BRANDING;
+ 				break;
+ 			case MPT2SAS_INTEL_RMS25LB080_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_INTEL_RMS25LB080_BRANDING);
++				b = MPT2SAS_INTEL_RMS25LB080_BRANDING;
+ 				break;
+ 			default:
+-				ioc_info(ioc, "Intel(R) Controller: Subsystem ID: 0x%X\n",
+-					 ioc->pdev->subsystem_device);
++				v = "Intel(R) Controller";
+ 				break;
+ 			}
+ 			break;
+ 		case MPI25_MFGPAGE_DEVID_SAS3008:
+ 			switch (ioc->pdev->subsystem_device) {
+ 			case MPT3SAS_INTEL_RMS3JC080_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT3SAS_INTEL_RMS3JC080_BRANDING);
++				b = MPT3SAS_INTEL_RMS3JC080_BRANDING;
+ 				break;
+ 
+ 			case MPT3SAS_INTEL_RS3GC008_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT3SAS_INTEL_RS3GC008_BRANDING);
++				b = MPT3SAS_INTEL_RS3GC008_BRANDING;
+ 				break;
+ 			case MPT3SAS_INTEL_RS3FC044_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT3SAS_INTEL_RS3FC044_BRANDING);
++				b = MPT3SAS_INTEL_RS3FC044_BRANDING;
+ 				break;
+ 			case MPT3SAS_INTEL_RS3UC080_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT3SAS_INTEL_RS3UC080_BRANDING);
++				b = MPT3SAS_INTEL_RS3UC080_BRANDING;
+ 				break;
+ 			default:
+-				ioc_info(ioc, "Intel(R) Controller: Subsystem ID: 0x%X\n",
+-					 ioc->pdev->subsystem_device);
++				v = "Intel(R) Controller";
+ 				break;
+ 			}
+ 			break;
+ 		default:
+-			ioc_info(ioc, "Intel(R) Controller: Subsystem ID: 0x%X\n",
+-				 ioc->pdev->subsystem_device);
++			v = "Intel(R) Controller";
+ 			break;
+ 		}
+ 		break;
+@@ -4290,54 +4275,43 @@ _base_display_OEMs_branding(struct MPT3SAS_ADAPTER *ioc)
+ 		case MPI2_MFGPAGE_DEVID_SAS2008:
+ 			switch (ioc->pdev->subsystem_device) {
+ 			case MPT2SAS_DELL_6GBPS_SAS_HBA_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_DELL_6GBPS_SAS_HBA_BRANDING);
++				b = MPT2SAS_DELL_6GBPS_SAS_HBA_BRANDING;
+ 				break;
+ 			case MPT2SAS_DELL_PERC_H200_ADAPTER_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_DELL_PERC_H200_ADAPTER_BRANDING);
++				b = MPT2SAS_DELL_PERC_H200_ADAPTER_BRANDING;
+ 				break;
+ 			case MPT2SAS_DELL_PERC_H200_INTEGRATED_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_DELL_PERC_H200_INTEGRATED_BRANDING);
++				b = MPT2SAS_DELL_PERC_H200_INTEGRATED_BRANDING;
+ 				break;
+ 			case MPT2SAS_DELL_PERC_H200_MODULAR_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_DELL_PERC_H200_MODULAR_BRANDING);
++				b = MPT2SAS_DELL_PERC_H200_MODULAR_BRANDING;
+ 				break;
+ 			case MPT2SAS_DELL_PERC_H200_EMBEDDED_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_DELL_PERC_H200_EMBEDDED_BRANDING);
++				b = MPT2SAS_DELL_PERC_H200_EMBEDDED_BRANDING;
+ 				break;
+ 			case MPT2SAS_DELL_PERC_H200_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_DELL_PERC_H200_BRANDING);
++				b = MPT2SAS_DELL_PERC_H200_BRANDING;
+ 				break;
+ 			case MPT2SAS_DELL_6GBPS_SAS_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_DELL_6GBPS_SAS_BRANDING);
++				b = MPT2SAS_DELL_6GBPS_SAS_BRANDING;
+ 				break;
+ 			default:
+-				ioc_info(ioc, "Dell 6Gbps HBA: Subsystem ID: 0x%X\n",
+-					 ioc->pdev->subsystem_device);
++				v = "Dell 6Gbps HBA";
+ 				break;
+ 			}
+ 			break;
+ 		case MPI25_MFGPAGE_DEVID_SAS3008:
+ 			switch (ioc->pdev->subsystem_device) {
+ 			case MPT3SAS_DELL_12G_HBA_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT3SAS_DELL_12G_HBA_BRANDING);
++				b = MPT3SAS_DELL_12G_HBA_BRANDING;
+ 				break;
+ 			default:
+-				ioc_info(ioc, "Dell 12Gbps HBA: Subsystem ID: 0x%X\n",
+-					 ioc->pdev->subsystem_device);
++				v = "Dell 12Gbps HBA";
+ 				break;
+ 			}
+ 			break;
+ 		default:
+-			ioc_info(ioc, "Dell HBA: Subsystem ID: 0x%X\n",
+-				 ioc->pdev->subsystem_device);
++			v = "Dell HBA";
+ 			break;
+ 		}
+ 		break;
+@@ -4346,42 +4320,34 @@ _base_display_OEMs_branding(struct MPT3SAS_ADAPTER *ioc)
+ 		case MPI25_MFGPAGE_DEVID_SAS3008:
+ 			switch (ioc->pdev->subsystem_device) {
+ 			case MPT3SAS_CISCO_12G_8E_HBA_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT3SAS_CISCO_12G_8E_HBA_BRANDING);
++				b = MPT3SAS_CISCO_12G_8E_HBA_BRANDING;
+ 				break;
+ 			case MPT3SAS_CISCO_12G_8I_HBA_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT3SAS_CISCO_12G_8I_HBA_BRANDING);
++				b = MPT3SAS_CISCO_12G_8I_HBA_BRANDING;
+ 				break;
+ 			case MPT3SAS_CISCO_12G_AVILA_HBA_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT3SAS_CISCO_12G_AVILA_HBA_BRANDING);
++				b = MPT3SAS_CISCO_12G_AVILA_HBA_BRANDING;
+ 				break;
+ 			default:
+-				ioc_info(ioc, "Cisco 12Gbps SAS HBA: Subsystem ID: 0x%X\n",
+-					 ioc->pdev->subsystem_device);
++				v = "Cisco 12Gbps SAS HBA";
+ 				break;
+ 			}
+ 			break;
+ 		case MPI25_MFGPAGE_DEVID_SAS3108_1:
+ 			switch (ioc->pdev->subsystem_device) {
+ 			case MPT3SAS_CISCO_12G_AVILA_HBA_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT3SAS_CISCO_12G_AVILA_HBA_BRANDING);
++				b = MPT3SAS_CISCO_12G_AVILA_HBA_BRANDING;
+ 				break;
+ 			case MPT3SAS_CISCO_12G_COLUSA_MEZZANINE_HBA_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT3SAS_CISCO_12G_COLUSA_MEZZANINE_HBA_BRANDING);
++				b = MPT3SAS_CISCO_12G_COLUSA_MEZZANINE_HBA_BRANDING;
+ 				break;
+ 			default:
+-				ioc_info(ioc, "Cisco 12Gbps SAS HBA: Subsystem ID: 0x%X\n",
+-					 ioc->pdev->subsystem_device);
++				v = "Cisco 12Gbps SAS HBA";
+ 				break;
+ 			}
+ 			break;
+ 		default:
+-			ioc_info(ioc, "Cisco SAS HBA: Subsystem ID: 0x%X\n",
+-				 ioc->pdev->subsystem_device);
++			v = "Cisco SAS HBA";
+ 			break;
+ 		}
+ 		break;
+@@ -4390,47 +4356,45 @@ _base_display_OEMs_branding(struct MPT3SAS_ADAPTER *ioc)
+ 		case MPI2_MFGPAGE_DEVID_SAS2004:
+ 			switch (ioc->pdev->subsystem_device) {
+ 			case MPT2SAS_HP_DAUGHTER_2_4_INTERNAL_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_HP_DAUGHTER_2_4_INTERNAL_BRANDING);
++				b = MPT2SAS_HP_DAUGHTER_2_4_INTERNAL_BRANDING;
+ 				break;
+ 			default:
+-				ioc_info(ioc, "HP 6Gbps SAS HBA: Subsystem ID: 0x%X\n",
+-					 ioc->pdev->subsystem_device);
++				v = "HP 6Gbps SAS HBA";
+ 				break;
+ 			}
+ 			break;
+ 		case MPI2_MFGPAGE_DEVID_SAS2308_2:
+ 			switch (ioc->pdev->subsystem_device) {
+ 			case MPT2SAS_HP_2_4_INTERNAL_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_HP_2_4_INTERNAL_BRANDING);
++				b = MPT2SAS_HP_2_4_INTERNAL_BRANDING;
+ 				break;
+ 			case MPT2SAS_HP_2_4_EXTERNAL_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_HP_2_4_EXTERNAL_BRANDING);
++				b = MPT2SAS_HP_2_4_EXTERNAL_BRANDING;
+ 				break;
+ 			case MPT2SAS_HP_1_4_INTERNAL_1_4_EXTERNAL_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_HP_1_4_INTERNAL_1_4_EXTERNAL_BRANDING);
++				b = MPT2SAS_HP_1_4_INTERNAL_1_4_EXTERNAL_BRANDING;
+ 				break;
+ 			case MPT2SAS_HP_EMBEDDED_2_4_INTERNAL_SSDID:
+-				ioc_info(ioc, "%s\n",
+-					 MPT2SAS_HP_EMBEDDED_2_4_INTERNAL_BRANDING);
++				b = MPT2SAS_HP_EMBEDDED_2_4_INTERNAL_BRANDING;
+ 				break;
+ 			default:
+-				ioc_info(ioc, "HP 6Gbps SAS HBA: Subsystem ID: 0x%X\n",
+-					 ioc->pdev->subsystem_device);
++				v = "HP 6Gbps SAS HBA";
+ 				break;
+ 			}
+ 			break;
+ 		default:
+-			ioc_info(ioc, "HP SAS HBA: Subsystem ID: 0x%X\n",
+-				 ioc->pdev->subsystem_device);
++			v = "HP SAS HBA";
+ 			break;
+ 		}
+ 	default:
+ 		break;
+ 	}
++
++	if (b)
++		ioc_info(ioc, "%s\n", b);
++	else if (v)
++		ioc_info(ioc, "%s: Subsystem ID: 0x%X\n",
++			 v, ioc->pdev->subsystem_device);
+ }
+ 
+ /**
+
