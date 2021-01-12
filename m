@@ -2,170 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7B72F2D8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:09:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4FB2F2D83
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390824AbhALLJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 06:09:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390300AbhALLJD (ORCPT
+        id S1731524AbhALLIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:08:34 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:43730 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731064AbhALLI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:09:03 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB58C0617A5;
-        Tue, 12 Jan 2021 03:08:22 -0800 (PST)
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610449701;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JCZqbzWzFklPRkLfWg0UFOf5QwGiL2pMpZBSv06l/GU=;
-        b=wMewkP1o8vTtb3PrUDte9nQ23UaFjV0TxAedAJ4IVaMvGv3kJ+nVQR5o3D8S68ifIMY3Dh
-        hKJGeVRmY1ftZw2KgFkQGZZfFrV1wt6der2vLHno9dm7Y4KDzkA/rGo5iPqCTSYkFaceYN
-        l7Q+SsG/DJ9s/qRSbgGhjtMOhml4TUl0Vsxk7UlKLZa/ZjJLMEBRMf7lSZYk7gShpIWycN
-        0+XsNTeVgyIoiG3EJHmOgf5+lROVdvRxC7GF6PTMyZWh/WLCPJDQOoDuJMskGsVVSHIj0k
-        hsKnIl+0i4R5SJOqbGjUjp5Ac3UzCjpgmXOjxYm4PgEVcHZ8U6UN96UawO8+Qg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610449701;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JCZqbzWzFklPRkLfWg0UFOf5QwGiL2pMpZBSv06l/GU=;
-        b=R7bvtEWKnm6C3vK3w7WShFYcu94H6QIx7VDBHU2vhfBW+PnXltmxdLgiBcwgW2inWI5g8o
-        1mc/lHg4L/fU1HBw==
-To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        John Garry <john.garry@huawei.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-Cc:     linux-scsi@vger.kernel.org, intel-linux-scu@intel.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Subject: [PATCH v2 19/19] scsi: libsas: Remove temporarily-added _gfp() API variants
-Date:   Tue, 12 Jan 2021 12:06:47 +0100
-Message-Id: <20210112110647.627783-20-a.darwish@linutronix.de>
-In-Reply-To: <20210112110647.627783-1-a.darwish@linutronix.de>
-References: <20210112110647.627783-1-a.darwish@linutronix.de>
+        Tue, 12 Jan 2021 06:08:28 -0500
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CED0E3E;
+        Tue, 12 Jan 2021 12:07:45 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1610449666;
+        bh=ZXHJqHx687OGkTEkTUMaYuXfRgVAqjIzIvGWhKthUeg=;
+        h=Subject:To:Cc:References:From:Reply-To:Date:In-Reply-To:From;
+        b=ZQvCFO44RQGciA0k3/5jTy0j7BbKXrUsOO1XYa7KPoGOHZl9ACbbaxwr2JUNAZC70
+         KTRCI0VFMZ8brFcPi7QZqHpGHlwPjZW2OCJXbss4zLW8AD4g8M/OBeyGZdNYEe3OOD
+         SMLSBS1LaHO+SbGctzZ6fowoer1xwUQH4HlsFWyY=
+Subject: Re: [PATCH 5/9] media: jpu: Do not zero reserved fields
+To:     Ricardo Ribalda <ribalda@chromium.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Mikhail Ulyanov <mikhail.ulyanov@cogentembedded.com>
+References: <20210111145445.28854-1-ribalda@chromium.org>
+ <20210111145445.28854-6-ribalda@chromium.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Organization: Ideas on Board
+Message-ID: <faacd5b3-949e-54bd-0ab8-bd43100809b0@ideasonboard.com>
+Date:   Tue, 12 Jan 2021 11:07:42 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210111145445.28854-6-ribalda@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These variants were added for bisectability. Remove them, as all call
-sites have now been convertd to use the original API.
+Hi Ricardo,
 
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
----
- Documentation/scsi/libsas.rst      |  2 --
- drivers/scsi/libsas/sas_event.c    | 14 --------------
- drivers/scsi/libsas/sas_init.c     |  7 -------
- drivers/scsi/libsas/sas_internal.h |  2 --
- include/scsi/libsas.h              |  4 ----
- 5 files changed, 29 deletions(-)
+On 11/01/2021 14:54, Ricardo Ribalda wrote:
+> Core code already clears reserved fields of struct
+> v4l2_pix_format_mplane, check: 4e1e0eb0e074 ("media: v4l2-ioctl: Zero
+> v4l2_plane_pix_format reserved fields").
+> 
+> Cc: Mikhail Ulyanov <mikhail.ulyanov@cogentembedded.com>
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+> ---
+>  drivers/media/platform/rcar_jpu.c | 5 -----
+>  1 file changed, 5 deletions(-)
+> 
+> diff --git a/drivers/media/platform/rcar_jpu.c b/drivers/media/platform/rcar_jpu.c
+> index 9b99ff368698..2bddc957cb87 100644
+> --- a/drivers/media/platform/rcar_jpu.c
+> +++ b/drivers/media/platform/rcar_jpu.c
 
-diff --git a/Documentation/scsi/libsas.rst b/Documentation/scsi/libsas.rst
-index 73020c1cb019..e31800d9a1ac 100644
---- a/Documentation/scsi/libsas.rst
-+++ b/Documentation/scsi/libsas.rst
-@@ -191,8 +191,6 @@ The event interface::
- 	/* LLDD calls these to notify the class of an event. */
- 	void sas_notify_port_event(struct sas_phy *, enum port_event, gfp_t);
- 	void sas_notify_phy_event(struct sas_phy *, enum phy_event, gfp_t);
--	void sas_notify_port_event_gfp(struct sas_phy *, enum port_event, gfp_t);
--	void sas_notify_phy_event_gfp(struct sas_phy *, enum phy_event, gfp_t);
- 
- When sas_register_ha() returns, those are set and can be
- called by the LLDD to notify the SAS layer of such events
-diff --git a/drivers/scsi/libsas/sas_event.c b/drivers/scsi/libsas/sas_event.c
-index 542831887769..f703115e7a25 100644
---- a/drivers/scsi/libsas/sas_event.c
-+++ b/drivers/scsi/libsas/sas_event.c
-@@ -155,13 +155,6 @@ int sas_notify_port_event(struct asd_sas_phy *phy, enum port_event event,
- }
- EXPORT_SYMBOL_GPL(sas_notify_port_event);
- 
--int sas_notify_port_event_gfp(struct asd_sas_phy *phy, enum port_event event,
--			      gfp_t gfp_flags)
--{
--	return sas_notify_port_event(phy, event, gfp_flags);
--}
--EXPORT_SYMBOL_GPL(sas_notify_port_event_gfp);
--
- int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event,
- 			 gfp_t gfp_flags)
- {
-@@ -184,10 +177,3 @@ int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event,
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(sas_notify_phy_event);
--
--int sas_notify_phy_event_gfp(struct asd_sas_phy *phy, enum phy_event event,
--			     gfp_t gfp_flags)
--{
--	return sas_notify_phy_event(phy, event, gfp_flags);
--}
--EXPORT_SYMBOL_GPL(sas_notify_phy_event_gfp);
-diff --git a/drivers/scsi/libsas/sas_init.c b/drivers/scsi/libsas/sas_init.c
-index 30dd35eb9449..6bfbf5fbd989 100644
---- a/drivers/scsi/libsas/sas_init.c
-+++ b/drivers/scsi/libsas/sas_init.c
-@@ -617,13 +617,6 @@ struct asd_sas_event *sas_alloc_event(struct asd_sas_phy *phy,
- 	return event;
- }
- 
--struct asd_sas_event *sas_alloc_event_gfp(struct asd_sas_phy *phy,
--					  gfp_t gfp_flags)
--{
--
--	return sas_alloc_event(phy, gfp_flags);
--}
--
- void sas_free_event(struct asd_sas_event *event)
- {
- 	struct asd_sas_phy *phy = event->phy;
-diff --git a/drivers/scsi/libsas/sas_internal.h b/drivers/scsi/libsas/sas_internal.h
-index 9b39fd478328..5eef5a1c1997 100644
---- a/drivers/scsi/libsas/sas_internal.h
-+++ b/drivers/scsi/libsas/sas_internal.h
-@@ -49,7 +49,6 @@ int  sas_register_phys(struct sas_ha_struct *sas_ha);
- void sas_unregister_phys(struct sas_ha_struct *sas_ha);
- 
- struct asd_sas_event *sas_alloc_event(struct asd_sas_phy *phy, gfp_t gfp_flags);
--struct asd_sas_event *sas_alloc_event_gfp(struct asd_sas_phy *phy, gfp_t gfp_flags);
- void sas_free_event(struct asd_sas_event *event);
- 
- int  sas_register_ports(struct sas_ha_struct *sas_ha);
-@@ -78,7 +77,6 @@ int sas_smp_phy_control(struct domain_device *dev, int phy_id,
- int sas_smp_get_phy_events(struct sas_phy *phy);
- 
- int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event, gfp_t flags);
--int sas_notify_phy_event_gfp(struct asd_sas_phy *phy, enum phy_event event, gfp_t flags);
- void sas_device_set_phy(struct domain_device *dev, struct sas_port *port);
- struct domain_device *sas_find_dev_by_rphy(struct sas_rphy *rphy);
- struct domain_device *sas_ex_to_ata(struct domain_device *ex_dev, int phy_id);
-diff --git a/include/scsi/libsas.h b/include/scsi/libsas.h
-index fda56e151695..9271d7a49b90 100644
---- a/include/scsi/libsas.h
-+++ b/include/scsi/libsas.h
-@@ -706,9 +706,5 @@ int sas_notify_port_event(struct asd_sas_phy *phy, enum port_event event,
- 			  gfp_t gfp_flags);
- int sas_notify_phy_event(struct asd_sas_phy *phy, enum phy_event event,
- 			 gfp_t gfp_flags);
--int sas_notify_port_event_gfp(struct asd_sas_phy *phy, enum port_event event,
--			      gfp_t gfp_flags);
--int sas_notify_phy_event_gfp(struct asd_sas_phy *phy, enum phy_event event,
--			     gfp_t gfp_flags);
- 
- #endif /* _SASLIB_H_ */
--- 
-2.30.0
+There's a memset(cap->reserved...) in jpu_querycap()
+
+Is that also applicable and covered by the core?
+
+Looking at v4l_querycap() it doesn't seem to be so:
+
+
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+> @@ -793,7 +793,6 @@ static int __jpu_try_fmt(struct jpu_ctx *ctx, struct jpu_fmt **fmtinfo,
+>  	pix->colorspace = fmt->colorspace;
+>  	pix->field = V4L2_FIELD_NONE;
+>  	pix->num_planes = fmt->num_planes;
+> -	memset(pix->reserved, 0, sizeof(pix->reserved));
+>  
+>  	jpu_bound_align_image(&pix->width, JPU_WIDTH_MIN, JPU_WIDTH_MAX,
+>  			      fmt->h_align, &pix->height, JPU_HEIGHT_MIN,
+> @@ -808,8 +807,6 @@ static int __jpu_try_fmt(struct jpu_ctx *ctx, struct jpu_fmt **fmtinfo,
+>  			pix->plane_fmt[0].sizeimage = JPU_JPEG_HDR_SIZE +
+>  				(JPU_JPEG_MAX_BYTES_PER_PIXEL * w * h);
+>  		pix->plane_fmt[0].bytesperline = 0;
+> -		memset(pix->plane_fmt[0].reserved, 0,
+> -		       sizeof(pix->plane_fmt[0].reserved));
+>  	} else {
+>  		unsigned int i, bpl = 0;
+>  
+> @@ -822,8 +819,6 @@ static int __jpu_try_fmt(struct jpu_ctx *ctx, struct jpu_fmt **fmtinfo,
+>  		for (i = 0; i < pix->num_planes; ++i) {
+>  			pix->plane_fmt[i].bytesperline = bpl;
+>  			pix->plane_fmt[i].sizeimage = bpl * h * fmt->bpp[i] / 8;
+> -			memset(pix->plane_fmt[i].reserved, 0,
+> -			       sizeof(pix->plane_fmt[i].reserved));
+>  		}
+>  	}
+>  
+> 
 
