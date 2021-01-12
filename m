@@ -2,150 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0240F2F2EEE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:22:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B7772F2EEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:22:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733231AbhALMVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:21:45 -0500
-Received: from foss.arm.com ([217.140.110.172]:45128 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727687AbhALMVo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:21:44 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A082E1042;
+        id S1733144AbhALMVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:21:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727687AbhALMVk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:21:40 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8060BC06179F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 04:20:59 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id e25so1941656wme.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 04:20:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MbuUq4P3EHTaRZRZIMbCktw9khedoDm+hM+zJy1KsqI=;
+        b=LhTgig3W3sY07dXxslzsfjFFIfbXnY40C8dWqKXdoxjaCsPK6Sxr2e7t/oPOPZPYHs
+         1eQoNC/fomQriaKt2PO/gTKRdDmMUUQiU7zqiqNWSzRgRVB7LXj+orqSFahMBEglKJCA
+         NUFevB0PHOengYR/AUjkRLCQ40QEEWx7YblPk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MbuUq4P3EHTaRZRZIMbCktw9khedoDm+hM+zJy1KsqI=;
+        b=QQwkifg0kPOONwnSrFkpIr9+FgZ70+DGe2/au1yZ4l3cCrP0A405epOunU3rOu08rl
+         60W4Wt+XudFAgiaiL32ny4KBHPynF3HuV1q1yZjiPGgxDH0w5fKtsY5gGKtCgvkF5TEu
+         OT7Ya8y96OcOaNEyS26C2q4sTkhn/u4yxeIXkZINuASvra1zmEsHmB1HX13LrfmXmeWa
+         0EodS4NzWgeck0V8rS6zVcTChfPaqYU4vWgNZGbfEzhJ1Iu5AuEd+uiQxMj/XMz0dRFu
+         rQUyF2DEKWnYRe1DFYuJe7ODjzuniL+8hyvcQKqq3d3j6IfeaFHf/j+BP0xeVVVWieKa
+         Y9aA==
+X-Gm-Message-State: AOAM532J5XbpHP/07BIu4j7q3ldZngxIFyFvfpjjPhyzhj3JgDCxC9Ox
+        meOqSwReM0NCJ8wLN2k/TEQ1XA==
+X-Google-Smtp-Source: ABdhPJyIhFnoExJgUM6FYKub4zkfWO30jYVL5KHqYAuyL6Hn09FJ/56mq3n40ebrt+ImoKxV+BRInQ==
+X-Received: by 2002:a1c:7217:: with SMTP id n23mr3243366wmc.167.1610454058331;
         Tue, 12 Jan 2021 04:20:58 -0800 (PST)
-Received: from [10.57.39.145] (unknown [10.57.39.145])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 180C23F66E;
-        Tue, 12 Jan 2021 04:20:54 -0800 (PST)
-Subject: Re: [PATCH v3 09/21] arm64: cpufeature: Add global feature override
- facility
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        kernel-team@android.com
-References: <20210111132811.2455113-1-maz@kernel.org>
- <20210111132811.2455113-10-maz@kernel.org> <20210111184154.GC17941@gaia>
- <129db8bd3913a90c96d4cfe4f55e27a0@kernel.org>
- <a122aa5c-4af9-e236-db82-db0ed885e0a5@arm.com>
- <d98aed718a26d0455d5549d53f97db06@kernel.org>
- <a477277b3941dc6650571f8fe29fe4f6@kernel.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <7720a317-2591-3b60-41ce-772bf168bee7@arm.com>
-Date:   Tue, 12 Jan 2021 12:20:45 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Received: from alco.lan ([80.71.134.83])
+        by smtp.gmail.com with ESMTPSA id w189sm3781384wmg.31.2021.01.12.04.20.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 04:20:57 -0800 (PST)
+From:   Ricardo Ribalda <ribalda@chromium.org>
+To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kieran.bingham+renesas@ideasonboard.com,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Subject: [PATCH v2 6/9] media: sun4i-csi: Do not zero reserved fields
+Date:   Tue, 12 Jan 2021 13:20:52 +0100
+Message-Id: <20210112122053.10372-1-ribalda@chromium.org>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 MIME-Version: 1.0
-In-Reply-To: <a477277b3941dc6650571f8fe29fe4f6@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/12/21 11:51 AM, Marc Zyngier wrote:
-> On 2021-01-12 11:50, Marc Zyngier wrote:
->> Hi Suzuki,
->>
->> On 2021-01-12 09:17, Suzuki K Poulose wrote:
->>> Hi Marc,
->>>
->>> On 1/11/21 7:48 PM, Marc Zyngier wrote:
->>
->> [...]
->>
->>>> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
->>>> index 894af60b9669..00d99e593b65 100644
->>>> --- a/arch/arm64/kernel/cpufeature.c
->>>> +++ b/arch/arm64/kernel/cpufeature.c
->>>> @@ -774,6 +774,7 @@ static void __init init_cpu_ftr_reg(u32 sys_reg, u64 new)
->>>>       u64 strict_mask = ~0x0ULL;
->>>>       u64 user_mask = 0;
->>>>       u64 valid_mask = 0;
->>>> +    u64 override_val = 0, override_mask = 0;
->>>>
->>>>       const struct arm64_ftr_bits *ftrp;
->>>>       struct arm64_ftr_reg *reg = get_arm64_ftr_reg(sys_reg);
->>>> @@ -781,9 +782,35 @@ static void __init init_cpu_ftr_reg(u32 sys_reg, u64 new)
->>>>       if (!reg)
->>>>           return;
->>>>
->>>> +    if (reg->override_mask && reg->override_val) {
->>>> +        override_mask = *reg->override_mask;
->>>> +        override_val = *reg->override_val;
->>>> +    }
->>>> +
->>>>       for (ftrp = reg->ftr_bits; ftrp->width; ftrp++) {
->>>>           u64 ftr_mask = arm64_ftr_mask(ftrp);
->>>>           s64 ftr_new = arm64_ftr_value(ftrp, new);
->>>> +        s64 ftr_ovr = arm64_ftr_value(ftrp, override_val);
->>>> +
->>>> +        if ((ftr_mask & override_mask) == ftr_mask) {
->>>> +            if (ftr_ovr < ftr_new) {
->>>
->>> Here we assume that all the features are FTR_LOWER_SAFE. We could
->>> probably use arm64_ftr_safe_value(ftrp, ftr_new, ftr_ovr) here ?
->>> That would cover us for both HIGHER_SAFE and LOWER_SAFE features.
->>> However that may be restrictive for FTR_EXACT, as we the safe
->>> value would be set to "ftr->safe_val". I guess that may be better
->>> than forcing to use an unsafe value for the boot CPU, which could
->>> anyway conflict with the other CPUs and eventually trigger the
->>> ftr alue to be safe_val.
->>
->> I like the idea of using the helper, as it cleanups up the code a bit.
->> However, not being to set a feature to a certain value could be restrictive,
->> as in general, it means that we can only disable a feature and not adjust
->> its level of support.
->>
->> Take PMUVER for example: with the helper, I can't override it from v8.4 to
->> v8.1. I can only go to v8.0.
-> 
-> Actually, we can only *disable* the PMU altogether. Same question though...
+Core code already clears reserved fields of struct
+v4l2_pix_format_mplane, check: 4e1e0eb0e074 ("media: v4l2-ioctl: Zero
+v4l2_plane_pix_format reserved fields").
 
-It depends on two things :
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Chen-Yu Tsai <wens@csie.org>
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+ drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-1) What is the safe value for an EXACT typed feature ?
-Usually, that means either disabled, or the lowest possible value.
-
-2) How is this value consumed ?
-   a) i.e, Do we use the per-CPU value
-	Then none of these changes have any effect
-   b) System wide value ?
-       Then we get the safe value as "influenced" by the infrastructure.
-
-The safe value we use for EXACT features is exclusively for making sure
-that the system uses the safe assumption and thus should be the best
-option.
-
-To answer your question, for PMU, it is 0, implies, v8.0. Or we could
-update the safe value to -1 (0xf) as the safe value, which is a bit more safer,
-kind of implying that the PMU is not a standard one.
-
-
-Cheers
-Suzuki
-
-
-
-> 
->          M.
-> 
->>
->> Is it something we care about?
->>
->> Thanks,
->>
->>         M.
-> 
+diff --git a/drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c b/drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c
+index 1a2f65d83a6c..4785faddf630 100644
+--- a/drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c
++++ b/drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c
+@@ -113,8 +113,6 @@ static void _sun4i_csi_try_fmt(struct sun4i_csi *csi,
+ 	pix->num_planes = _fmt->num_planes;
+ 	pix->pixelformat = _fmt->fourcc;
+ 
+-	memset(pix->reserved, 0, sizeof(pix->reserved));
+-
+ 	/* Align the width and height on the subsampling */
+ 	width = ALIGN(pix->width, _fmt->hsub);
+ 	height = ALIGN(pix->height, _fmt->vsub);
+@@ -131,8 +129,6 @@ static void _sun4i_csi_try_fmt(struct sun4i_csi *csi,
+ 		bpl = pix->width / hsub * _fmt->bpp[i] / 8;
+ 		pix->plane_fmt[i].bytesperline = bpl;
+ 		pix->plane_fmt[i].sizeimage = bpl * pix->height / vsub;
+-		memset(pix->plane_fmt[i].reserved, 0,
+-		       sizeof(pix->plane_fmt[i].reserved));
+ 	}
+ }
+ 
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
 
