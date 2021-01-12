@@ -2,93 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745612F3CEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 240362F3CE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437470AbhALVe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:34:27 -0500
-Received: from mga09.intel.com ([134.134.136.24]:13240 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436839AbhALUSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:18:55 -0500
-IronPort-SDR: u491VDRj4HXfcFgT8yXG92iAok2Br31hugqFxQgzKmFgo3d0cyOLb+BNAI0yQCa1UappsbfjT2
- jwnNzJjOsFrA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="178250782"
-X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
-   d="scan'208";a="178250782"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 12:17:10 -0800
-IronPort-SDR: 29Hbz6FgfIXaFdwmqBXeJT+DW03oBkD+FjOq44WsfUZaY9DMsF/rZx4feKfuCJmvFQIxRlIBdF
- fVgvRuqyFHJg==
-X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
-   d="scan'208";a="404593879"
-Received: from clinton1-mobl1.amr.corp.intel.com (HELO [10.212.214.129]) ([10.212.214.129])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 12:17:08 -0800
-Subject: Re: [Sound-open-firmware] [PATCH] ASoC: SOF: Intel: avoid reverse
- module dependency
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel @ vger . kernel . org" <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Mark Brown <broonie@kernel.org>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        sound-open-firmware@alsa-project.org
-References: <CAK8P3a0PXXHXLK36SB_4eia6z0u3nbBPanATwZEhposKOScqcw@mail.gmail.com>
- <20210105190808.613050-1-arnd@kernel.org>
- <59a36212-2412-2dd3-62f2-69c6f65312b1@linux.intel.com>
- <s5hv9c2qmy4.wl-tiwai@suse.de>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <ed4b4b5b-0cde-3d08-bbbf-3f0d90ce46ea@linux.intel.com>
-Date:   Tue, 12 Jan 2021 14:17:05 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2437444AbhALVe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 16:34:26 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:48390 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436824AbhALUSw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:18:52 -0500
+Date:   Tue, 12 Jan 2021 20:18:08 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610482689;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9AG036gacMsJ7cOPhUuL8X5chuyKH0VZhcXObnW7ezY=;
+        b=zmbI6ecMD/1zj5wHe7Sf+zLdBZFgB7QAJkl/4MQndn1nleIMPqPWms6pHzd4Tsv90pO6D7
+        6dbe5H5e+/Pai1zikR9VZn3qUTNVeUS+/UDQkIGZTZhCfwEZqtGjRcCtz9lhzeYRtkB7D+
+        tSaxmoC/3a6XzYH2wOtuhGjPWNr0RC+ZiDgTtLNgzA0H06P1UrrUp1T5G1Z4cdUeHBFdFA
+        ycGtGJB5E5MIf86chcRjuKrGSj25QEGkiFogt+182KdM7HQUyBHZrpcqmJAdgU+8vLQ8H8
+        5IXVIlttHD8Mx6mKrROq3Z/3Y37NgCS0pnZx3DQnWOO0HbDhdh3IR0Rq47P3PQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610482689;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9AG036gacMsJ7cOPhUuL8X5chuyKH0VZhcXObnW7ezY=;
+        b=NJ79J10ejnFV5VzMEsLvdjVqwRqDYHI/QlL0tM7OxPnw+heRaM/YxIKY1Jd9Km7rvhXwpP
+        nwkw1ZcYlxVOPmDw==
+From:   "tip-bot2 for Chunguang Xu" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/urgent] timekeeping: Remove unused get_seconds()
+Cc:     Chunguang Xu <brookxu@tencent.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <1606816351-26900-1-git-send-email-brookxu@tencent.com>
+References: <1606816351-26900-1-git-send-email-brookxu@tencent.com>
 MIME-Version: 1.0
-In-Reply-To: <s5hv9c2qmy4.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Message-ID: <161048268887.414.15933446514318366457.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the timers/urgent branch of tip:
 
->> Since this is going to be a really invasive change, and past
->> experience shows that mucking with Kconfigs will invariably raise a
->> number of broken corner cases, if there is support from
->> Mark/Takashi/Jaroslav on this idea, we should first test it in the SOF
->> tree so that we get a good test coverage and don't break too many eggs
->> in Mark's tree. We would also need to concurrently change our CI
->> scripts which are dependent on module names.
-> 
-> I'm in favor of the way Arnd proposed.  It's more straightforward and
-> less code.
+Commit-ID:     aba428a0c612bb259891307da12e22efd0fab14c
+Gitweb:        https://git.kernel.org/tip/aba428a0c612bb259891307da12e22efd0fab14c
+Author:        Chunguang Xu <brookxu@tencent.com>
+AuthorDate:    Tue, 01 Dec 2020 17:52:31 +08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 12 Jan 2021 21:13:01 +01:00
 
-Thanks Takashi for the feedback.
+timekeeping: Remove unused get_seconds()
 
-Since yesterday I looked at another problem where we can have unmet 
-dependencies between SoundWire (m) and SOF (y), so we probably need to 
-rethink all this. We had similar issue with SOF and HDaudio before, it's 
-time to revisit all this.
+The get_seconds() cleanup seems to have been completed, now it is
+time to delete the legacy interface to avoid misuse later.
 
-> 
-> If you find the number of modules or the too much cutting out being
-> problematic, you can create a module snd-sof-intel-acpi and
-> snd-sof-intel-pci containing the driver table entries for all Intel
-> devices, too.  In the case, you'll still need some conditional calls
-> of intel-dsp-config there, but it's a good step for reducing the
-> Kconfig complexity.
-> 
->> Also maybe in a first pass we can remove the compilation error with
->> IS_REACHABLE and in a second pass do more invasive surgery?
-> 
-> Agreed, we'd like to keep less changes for 5.11 for now.
+Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/1606816351-26900-1-git-send-email-brookxu@tencent.com
 
-Ack, we'll send smaller changes first.
+---
+ include/linux/ktime.h         |  1 -
+ include/linux/timekeeping32.h | 14 --------------
+ kernel/time/timekeeping.c     |  3 +--
+ 3 files changed, 1 insertion(+), 17 deletions(-)
+ delete mode 100644 include/linux/timekeeping32.h
 
+diff --git a/include/linux/ktime.h b/include/linux/ktime.h
+index a12b552..73f20de 100644
+--- a/include/linux/ktime.h
++++ b/include/linux/ktime.h
+@@ -230,6 +230,5 @@ static inline ktime_t ms_to_ktime(u64 ms)
+ }
+ 
+ # include <linux/timekeeping.h>
+-# include <linux/timekeeping32.h>
+ 
+ #endif
+diff --git a/include/linux/timekeeping32.h b/include/linux/timekeeping32.h
+deleted file mode 100644
+index 266017f..0000000
+--- a/include/linux/timekeeping32.h
++++ /dev/null
+@@ -1,14 +0,0 @@
+-#ifndef _LINUX_TIMEKEEPING32_H
+-#define _LINUX_TIMEKEEPING32_H
+-/*
+- * These interfaces are all based on the old timespec type
+- * and should get replaced with the timespec64 based versions
+- * over time so we can remove the file here.
+- */
+-
+-static inline unsigned long get_seconds(void)
+-{
+-	return ktime_get_real_seconds();
+-}
+-
+-#endif
+diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
+index a45cedd..6aee576 100644
+--- a/kernel/time/timekeeping.c
++++ b/kernel/time/timekeeping.c
+@@ -991,8 +991,7 @@ EXPORT_SYMBOL_GPL(ktime_get_seconds);
+ /**
+  * ktime_get_real_seconds - Get the seconds portion of CLOCK_REALTIME
+  *
+- * Returns the wall clock seconds since 1970. This replaces the
+- * get_seconds() interface which is not y2038 safe on 32bit systems.
++ * Returns the wall clock seconds since 1970.
+  *
+  * For 64bit systems the fast access to tk->xtime_sec is preserved. On
+  * 32bit systems the access must be protected with the sequence
