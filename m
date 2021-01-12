@@ -2,70 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A238A2F24C9
+	by mail.lfdr.de (Postfix) with ESMTP id 35D632F24C8
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:17:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391660AbhALAZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2391673AbhALAZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 11 Jan 2021 19:25:16 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:56758 "EHLO mail.skyhub.de"
+Received: from mga14.intel.com ([192.55.52.115]:29965 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404235AbhALAKJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 19:10:09 -0500
-Received: from zn.tnic (p200300ec2f088f0064dd88f751605e0c.dip0.t-ipconnect.de [IPv6:2003:ec:2f08:8f00:64dd:88f7:5160:5e0c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E011C1EC04CB;
-        Tue, 12 Jan 2021 01:09:27 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1610410168;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=hiQ2aT0sAgvveKCKw+n+ctbke87ZB3mfcJ48rJ15WaA=;
-        b=NsLcVrbXvB8OcvgEN8y1ZJhIB4cKQy1qxYzOGUW0gOgqXZBZw9fhwTrH4s3Ab8Ys9vAmKC
-        ETk1YqW4/5NjMpkALcoZxvI+YzsxaEQZiqLmXUYShLWlgItlAbAgGMRQrg9eU3i46ENf8L
-        bkO8j99EZtA1GiOIuXGUs0+76MEHRJ4=
-Date:   Tue, 12 Jan 2021 01:09:23 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Krzysztof Mazur <krzysiek@podlesie.net>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] x86/lib: don't use MMX before FPU initialization
-Message-ID: <20210112000923.GK25645@zn.tnic>
-References: <20201228160631.32732-1-krzysiek@podlesie.net>
+        id S2404238AbhALAK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 19:10:26 -0500
+IronPort-SDR: 4WkjVdCVtSs4tpYTIl+Oru/a85CxppNMem/874N/QAWKFowtW91gsdxpnkxHf6q9HiJ2x3jM9/
+ wWCRfLfdI+Jg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="177183523"
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="177183523"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 16:09:46 -0800
+IronPort-SDR: MZ6o279zdJ2hukSqNJAelzE0N3EoPSuST80JVMJ0lG7cLsw+cOmSn4be9Fxg2PwEjeSvp7bcPZ
+ 612cCvl1Cu1Q==
+X-IronPort-AV: E=Sophos;i="5.79,339,1602572400"; 
+   d="scan'208";a="352799931"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.197.241]) ([10.212.197.241])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 16:09:43 -0800
+Subject: Re: [PATCH v17 04/26] x86/cpufeatures: Introduce X86_FEATURE_CET and
+ setup functions
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <20201229213053.16395-5-yu-cheng.yu@intel.com>
+ <20210111230900.5916-1-yu-cheng.yu@intel.com>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <f88d2211-d314-5d9c-9471-a54c412525e0@intel.com>
+Date:   Mon, 11 Jan 2021 16:09:42 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201228160631.32732-1-krzysiek@podlesie.net>
+In-Reply-To: <20210111230900.5916-1-yu-cheng.yu@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 05:06:31PM +0100, Krzysztof Mazur wrote:
-> When enabled, the MMX 3DNow! optimized memcpy() is used very early,
-> even before FPU is initialized. It worked fine, but commit
-> 7ad816762f9bf89e940e618ea40c43138b479e10 ("x86/fpu: Reset MXCSR
-> to default in kernel_fpu_begin()") broke that. After that commit
-> the kernel crashes just after "Booting the kernel." message.
+This is a minor revision of the original [PATCH v17 04/26] patch.  The 
+purpose of the revision is to address Boris' comment earlier by doing 
+setup_force_cpu_cap(X86_FEATURE_CET) in bsp_init_intel().
 
-Have you figured out in the meantime what exactly is causing the
-breakage?
-
-Does it boot if you comment out
-
-+       if (boot_cpu_has(X86_FEATURE_FPU))
-+               asm volatile ("fninit");
-
-in kernel_fpu_begin()?
-
-I'm guessing K7 doesn't have X86_FEATURE_XMM so the LDMXCSR won't
-matter...
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--
+Yu-cheng
