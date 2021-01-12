@@ -2,73 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA192F2D2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:49:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8CE82F2D22
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:47:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727915AbhALKrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:47:49 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:40060 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726673AbhALKrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:47:49 -0500
-Received: from zhangzhijie.loongson.cn (unknown [10.20.41.29])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Axhbwafv1f4hsDAA--.2816S2;
-        Tue, 12 Jan 2021 18:46:50 +0800 (CST)
-From:   "ZhiJie.Zhang" <zhangzhijie@loongson.cn>
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        zhangzhijie@loongson.cn
-Subject: [PATCH] drm: Improve the output_poll_changed  description
-Date:   Tue, 12 Jan 2021 18:46:44 +0800
-Message-Id: <20210112104644.341345-1-zhangzhijie@loongson.cn>
-X-Mailer: git-send-email 2.29.2
+        id S1727810AbhALKrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:47:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726673AbhALKrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 05:47:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FAE0222B3;
+        Tue, 12 Jan 2021 10:46:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610448419;
+        bh=LF14sBfNBSl94pggkqnlnA7pe2NKw2VA5pU0Mec5zfQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hSRR0xJEqbLFtE6o58p/RtA9dAwhp5JhSqtWSWLeidNcBXOEUxc24GRvveNOfIanU
+         pPySJGyAscseShPAhN6gcD+uQWabszFozziYt+r56238QPFVuug/jIprqGI1H/wbkk
+         yF/bwRpUNvke1pHvEF6+3xnkTcn2M06q20xQGuuO3zi5iu1uWGhQCkS1XxUYKy9EA7
+         lJtJoeeXr/88FYNyEiEd7e4U2YdtwRv2gZIBXXkRPOEHlQf7ucPwzI6fBUnp203zCv
+         7N909H8KOcKUF2wOl/yuQkB5X9gIRIX88HlDEaFmNY1sTVvhb/bzjvXQ/zhXTVIBx5
+         UXeDLQ1qJueHw==
+Date:   Tue, 12 Jan 2021 11:46:55 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Adam Zabrocki <pi3@pi3.com.pl>
+Cc:     Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Solar Designer <solar@openwall.com>
+Subject: Re: Linux Kernel module notification bug
+Message-ID: <20210112104654.GA26122@linux-8ccs>
+References: <20210110175401.GB32505@pi3.com.pl>
+ <20210111142048.GA27038@linux-8ccs>
+ <20210112001559.GA20073@pi3.com.pl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Axhbwafv1f4hsDAA--.2816S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKw17uw47tFy5XFWUWF48WFg_yoW3Kwb_uF
-        yxXrZ7Gr1kZasxCF48Zan5tr4293W8urs5u3s5KFZxXa9xt3W3Awn5tryfZrW5W3WUGrn0
-        9a93X3sFvw1xKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2xFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-        1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVCm-wCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
-        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: x2kd0wx2klyx3h6o00pqjv00gofq/1tbiAQATAF3QvM1wCAAAsW
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210112001559.GA20073@pi3.com.pl>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.28-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zhangzhijie <zhangzhijie@loongson.cn>
++++ Adam Zabrocki [12/01/21 01:15 +0100]:
+>Hello,
+>
+>On Mon, Jan 11, 2021 at 03:20:48PM +0100, Jessica Yu wrote:
+>> +++ Adam Zabrocki [10/01/21 18:54 +0100]:
+>> > Hello,
+>> >
+>> > I believe that the following commit does introduce a gentle "functionality
+>> > bug":
+>> >
+>> > "module: delay kobject uevent until after module init call":
+>> > https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/kernel/module.c?id=38dc717e97153e46375ee21797aa54777e5498f3
+>> >
+>> > The official Linux Kernel API for the kernel module activities notification has
+>> > been divided based on the readiness 'stage' for such module. We have the
+>> > following stages:
+>> >
+>> >        MODULE_STATE_LIVE,      /* Normal state. */
+>> >        MODULE_STATE_COMING,    /* Full formed, running module_init. */
+>> >        MODULE_STATE_GOING,     /* Going away. */
+>> >        MODULE_STATE_UNFORMED,  /* Still setting it up. */
+>> >
+>> > LIVE means that the kernel module is correctly running and all initialization
+>> > work has been already done. Otherwise, we have event 'COMING' or 'UNFORMED'.
+>> >
+>> > In the described commit, creation of the KOBJECT has been moved after invoking
+>> > a notficiation of the newly formed kernel module state (LIVE). That's somehow
+>> > inconsistent from my understanding of the kernel modules notifiers logic.
+>> > Creation of the new objects (like KOBJ) should be done before notification of
+>> > the stage LIVE is invoked.
+>>
+>> I'm confused. We're not creating any kobjects here. That is all done
+>> in mod_sysfs_setup(), which is called while the module is still
+>> COMING.  What that commit does is delay telling userspace about the
+>> module (specifically, systemd/udev) until the module is basically
+>> ready. Systemd was basically receiving the uevent too early, before
+>> the module has initialized, hence we decided to delay the uevent [1].
+>>
+>
+>Sorry for the confusion on my side. I was referring to the internal state of
+>the KOBJ itself which is being actively modified when uevent is sent. During
+>the module creation KOBJ_ADD modifies 'kobj->state_add_uevent_sent'. Until
+>recent commit, kernel didn't modify KOBJ after sending LIVE notification.
+>
+>> > This commit breaks some of the projects that rely on the LIVE notification to
+>> > monitor when the newly loaded module is ready.
+>>
+>> Hm, could you please explain specifically what is the issue you're seeing?
+>> What projects is it breaking?
+>>
+>
+>I'm specifically referencing these projects which are tracking kernel modules
+>for integrity purpose (e.g. anti-rootkit tools) like Linux Kernel Runtime
+>Guard.
+>It is possible to modify these tools to adopt and take into account
+>modification of KOBJ after LIVE state notification. However, from my
+>understanding of the kernel modules notifiers logic, KOBJ should be fully
+>formed at this stage.
 
-codeview the implementation of few Drivers.
-this callback was used by drm_kms_helper_hotplug_event()
+Ah I see, thanks for the clarification. I was under the impression
+that kobj->state_add_uevent_sent is an internal field interesting
+only to lib/kobject.c, and did not know tools like you mention are
+implicitly tracking that.
 
-Signed-off-by: zhangzhijie <zhangzhijie@loongson.cn>
----
- include/drm/drm_mode_config.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+In any case, I think your suggested change doesn't affect the
+systemd/udev issue we were trying to fix, as long as the uevent is
+sent after module init(). Would you mind sending a patch? (with a
+Fixes: tag and including the explanations you've provided in this
+thread in the changelog)
 
-diff --git a/include/drm/drm_mode_config.h b/include/drm/drm_mode_config.h
-index ab424ddd7665..e01c4d0f07d1 100644
---- a/include/drm/drm_mode_config.h
-+++ b/include/drm/drm_mode_config.h
-@@ -104,7 +104,7 @@ struct drm_mode_config_funcs {
- 	 * changes.
- 	 *
- 	 * Drivers implementing fbdev emulation with the helpers can call
--	 * drm_fb_helper_hotplug_changed from this hook to inform the fbdev
-+	 * drm_kms_helper_hotplug_event() from this hook to inform the fbdev
- 	 * helper of output changes.
- 	 *
- 	 * FIXME:
--- 
-2.29.2
+Thanks!
+
+Jessica
+
+
+
+
 
