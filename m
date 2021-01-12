@@ -2,111 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88B892F29D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:17:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB5972F29D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:18:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731998AbhALIQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 03:16:25 -0500
-Received: from mail-oo1-f51.google.com ([209.85.161.51]:44543 "EHLO
-        mail-oo1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727530AbhALIQY (ORCPT
+        id S2392246AbhALIR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 03:17:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727990AbhALIR3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 03:16:24 -0500
-Received: by mail-oo1-f51.google.com with SMTP id j21so392408oou.11;
-        Tue, 12 Jan 2021 00:16:08 -0800 (PST)
+        Tue, 12 Jan 2021 03:17:29 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C447AC061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:16:48 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id d17so2211465ejy.9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:16:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wLnLCvk9v39pek1MIDVV95VomZ0S6QWBwikCBxFTKTQ=;
+        b=xC3M6EnbXkwGMraBH0nfEAF4EKBJ2JUTHVFfmpggSy54535fFWp5+fdA37X6hqgo4j
+         PBSkGGRLrBB3gFuziwZkwDQQ+IwuyG5Z14q3Av07PQiTzKzC6MDW+0/4bW6djyeybnaa
+         ldLpNjpPg0m28MFBQ0RT0FXv3uBcKp0TCsnRy6hINWBpvMAJIi846aM5MeZgGZtBiZtP
+         I+s1G67TD+h/ablC+k+ihsyTtTN6jO/rXqDyNMouNXHMhKEMdGy+XLUvtEIeczpLtn1S
+         lUL5KfP7Xb2T8RfrmZ77W8xPokml6LRJAdlVyJWapBQJJdEefPaMaKy6JQ5EbdV4HOJk
+         aniA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/Nhlg5QFisRejoMRT0fRkCjf1tfZAoZTP+NYQ9XWWTI=;
-        b=n/vfu7mlx5LWqfvBki9+vJ2b/NmCqGongVh/fDH443fhh5J8icdO69uODNDA53IDbW
-         f69I3EVr0igS7Vd8ATCaJ4BV3ZCgtuF8q9DRyV4bFytwXXhjWTCfpFIvjdDI4w5yqZz/
-         6HrDKMFt3QaKjXMWJkm14QQPoqX3Bf1epaesSoMrn8KOZlElNjSOA4XjIneYJaTTochC
-         +4m/FVckKVLdOyZDf05kcHYyipWmaXCgX6VKEunwFYbO519VZ105IMcZ6ws3rXtTy2sU
-         OXQDrts8X2hr6lVkZYm19vqP2o0iVJ7Q5CNkQ7FpEpWXbb4SbZ8mwzakG9ESBcvgmLZa
-         HvQg==
-X-Gm-Message-State: AOAM530lRzP4EF5Q8Yvu5MJZpFQ8GTlPEj5P+zEOiIY/M4F6/vfr2SeJ
-        F2RvigPjVlWM7QRrYZgDhHIraHCZrjo8tnntaUDnLluC4EA=
-X-Google-Smtp-Source: ABdhPJzhw0U1zIBEQrFXqk95oraRyz21olHqiCGRIYe8zn+mcG0n6joZw4PcgZ2qh7iXazilL7snXv87+Ko+tcclmaw=
-X-Received: by 2002:a4a:c191:: with SMTP id w17mr2117914oop.1.1610439343492;
- Tue, 12 Jan 2021 00:15:43 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wLnLCvk9v39pek1MIDVV95VomZ0S6QWBwikCBxFTKTQ=;
+        b=g5GAMfWPmhJS7gBj57Xp4QEQrR+PnCTSFXi+GVc5jFjMmxtWbgmJIUPdjOYOgqgGUK
+         qvrt3+4BgUtbW01yE9N6PNT64sZG6xlj3cYy75B9DA1MGuoukITt072ooaejFIZYLDJq
+         XPnHdU+uEZxAOJGedFJaPQLocegYYZUHwsdvGIABuqGV2mOI8sb1XRwlwDNWyVXD71Gz
+         sdyin350rw8xyHWko2Vc+pKHoms2xsPmmjOa3rOI55hwyyHF1k2DtLVKOgKgCjA3nHjZ
+         uGsMmHWcFooPjcE5JedFjayB6/Dl0h8EAOlSm0w0/8zNgtq07seP3HHVAqJC/xN+6wcx
+         id2w==
+X-Gm-Message-State: AOAM533PZYeG11200qws9yvUSvzROOmYYAoE+VnhlhEC+bUG6QuCUQio
+        2SFirEouR6altn47yQQqw7LZeoVnOtbxjRr7/NjeuQ==
+X-Google-Smtp-Source: ABdhPJyGBMXoedRpz3XWyghhcjUsySPEMW0Cb7/xw/AZB3zbcNSzZ+kVWTpsm5e0gWnkx0E/6PWgJXnNcFoRx3ASHdw=
+X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr2334315eju.375.1610439407158;
+ Tue, 12 Jan 2021 00:16:47 -0800 (PST)
 MIME-Version: 1.0
-References: <20210111144226.16372-1-pawell@cadence.com>
-In-Reply-To: <20210111144226.16372-1-pawell@cadence.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 12 Jan 2021 09:15:32 +0100
-Message-ID: <CAMuHMdXQE+eFV51HdLHF7QfN-A2qXSKZsP6ofZzvOwNZ_N2jHQ@mail.gmail.com>
-Subject: Re: [PATCH] usb: cdnsp: fixes undefined reference to cdns_remove
-To:     Pawel Laszczak <pawell@cadence.com>
-Cc:     Peter Chen <peter.chen@nxp.com>,
-        Randy Dunlap <rdunlap@infradead.org>, a-govindraju@ti.com,
-        Greg KH <gregkh@linuxfoundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kurahul@cadence.com
+References: <20210111130033.676306636@linuxfoundation.org>
+In-Reply-To: <20210111130033.676306636@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 12 Jan 2021 13:46:35 +0530
+Message-ID: <CA+G9fYuU7eysELa0vBXJHCYuwq_rU2wLvim2MsQ2C6b8jUk+dw@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/45] 4.9.251-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        John Stultz <john.stultz@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pawel,
-
-On Tue, Jan 12, 2021 at 8:17 AM Pawel Laszczak <pawell@cadence.com> wrote:
-> Patch fixes the following errors:
-> ld: drivers/usb/cdns3/cdnsp-pci.o: in function `cdnsp_pci_remove':
-> cdnsp-pci.c:(.text+0x80): undefined reference to `cdns_remove'
-> ld: drivers/usb/cdns3/cdnsp-pci.o: in function `cdnsp_pci_probe':
-> cdnsp-pci.c:(.text+0x34c): undefined reference to `cdns_init'
+On Mon, 11 Jan 2021 at 18:33, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Issue occurs for USB/CDNS3/CDNSP kernel configuration:
-> CONFIG_USB=m
-> CONFIG_USB_CDNS_SUPPORT=y
-> CONFIG_USB_CDNS3=m
-> CONFIG_USB_CDNS3_PCI_WRAP=m
-> CONFIG_USB_CDNSP_PCI=y
+> This is the start of the stable review cycle for the 4.9.251 release.
+> There are 45 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
-
-Thanks for your patch!
-
-noreply@ellerman.id.au reports for m68k-allmodconfig:
-
-drivers/usb/cdns3/cdnsp-pci.c:92:6: error: implicit declaration of
-function 'pci_is_enabled'; did you mean 'pci_acs_enabled'?
-[-Werror=implicit-function-declaration]
-drivers/usb/cdns3/cdnsp-pci.c:166:6: error: implicit declaration of
-function 'pci_dev_run_wake'; did you mean 'pci_enable_wake'?
-[-Werror=implicit-function-declaration]
-drivers/usb/cdns3/cdnsp-pci.c:248:1: error: type defaults to 'int' in
-declaration of 'module_pci_driver' [-Werror=implicit-int]
-
-> --- a/drivers/usb/cdns3/Makefile
-> +++ b/drivers/usb/cdns3/Makefile
-> @@ -26,7 +26,11 @@ obj-$(CONFIG_USB_CDNS3_TI)                   += cdns3-ti.o
->  obj-$(CONFIG_USB_CDNS3_IMX)                    += cdns3-imx.o
+> Responses should be made by Wed, 13 Jan 2021 13:00:19 +0000.
+> Anything received after that time might be too late.
 >
->  cdnsp-udc-pci-y                                        := cdnsp-pci.o
-> +ifeq ($(CONFIG_USB),m)
-> +obj-m                                          += cdnsp-udc-pci.o
-
-This includes cdnsp-udc-pci.o even if CONFIG_USB_CDNSP_PCI=n,
-causing the aforementioned build failure.
-
-> +else
->  obj-$(CONFIG_USB_CDNSP_PCI)                    += cdnsp-udc-pci.o
-> +endif
->  cdnsp-udc-pci-$(CONFIG_USB_CDNSP_GADGET)       += cdnsp-ring.o cdnsp-gadget.o \
->                                                    cdnsp-mem.o cdnsp-ep0.o
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.251-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
 >
+> thanks,
+>
+> greg k-h
 
-Gr{oetje,eeting}s,
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-                        Geert
+NOTE:
+The following BUG noticed while booting on arm64 Hikey 6220 platform
+from v4.9.249 onwards. We will bisect this and get back to you.
+This issue is platform specific.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+BUG: scheduling while atomic: kworker/u16:3/81/0x00000002
+       Workqueue: dwc2 dwc2_conn_id_status_change
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+BUG: workqueue leaked lock or atomic: kworker/u16:3/0xffffffff/81
+      last function: dwc2_conn_id_status_change
+
+Full test log,
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
+50-46-g6d954ea12bd6/testrun/3726871/suite/linux-log-parser/test/check-kerne=
+l-bug-2131647/log
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.9.251-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.9.y
+git commit: 6d954ea12bd6f384f3129de8f74bb0a30baffa7b
+git describe: v4.9.250-46-g6d954ea12bd6
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
+y/build/v4.9.250-46-g6d954ea12bd6
+
+No regressions (compared to build v4.9.250)
+
+No fixes (compared to build v4.9.250)
+
+Ran 38830 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cve-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* v4l2-compliance
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-tracing-tests
+* network-basic-tests
+* ltp-mm-tests
+* ltp-open-posix-tests
+* kvm-unit-tests
+* fwts
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
