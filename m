@@ -2,121 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E162F38F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:35:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1A12F38F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:37:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391891AbhALSfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 13:35:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726110AbhALSfO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 13:35:14 -0500
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E39C061794;
-        Tue, 12 Jan 2021 10:34:34 -0800 (PST)
-Received: by mail-qt1-x82e.google.com with SMTP id g24so2225469qtq.12;
-        Tue, 12 Jan 2021 10:34:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/J2zRKmxDhbKwQ+cfEQ7FFvcXxU4+VcYyyS0jtn1t5w=;
-        b=hTmtqD49IHqYo6y9+uVUT5pF8sFes0PsFMkiwXMXGte4it0LnQe0hoHtnzVSs4P+to
-         0CMAU7e/u7QIIZe7u5FhiBVd/+akyn0m5RU0BDPBDb4EhJ3Dhu8lNZghw8s3q4YK+NVd
-         vEHU283U89Q1xMYp+VhOd76hy+pq96JfPqdQG5/dbX8qeDJrjv+fV2/h5Rs1iCGPwreV
-         MdU+G9gyzr6GJ/Rjm8jfhoydLlCgzjdsoVaoqcDKdQSYEhirQn6GFQ5Mwwl1VyIem0O7
-         3lWcgE9MLcki4KUoPGjD2V4FBpFAdmvPSGVv1Bug5uN81oLTAt4iODvTxz5L1H3tukMw
-         F2Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/J2zRKmxDhbKwQ+cfEQ7FFvcXxU4+VcYyyS0jtn1t5w=;
-        b=jOh2duqpP8sIbfcWFzvr+e824qgbxXQyrFLPefbZ3SNaPeZ6dVwQhl9zk2QRs/0pwX
-         RqsuB5FPeurezZPnC+JV5euSDPGuarOX9ZthyYsQAj1tum+7JXLS1ZKeNT4kZv2GWFVA
-         9Nhd/6bPVdr1ypzUvxrvpjrBdY9QYuvzuiCr/TRT6yCUDZolVOgDXwSI2UcpsSSdeJc2
-         KqZ4qth3cWBOitV+jAfZSH8NLTs8gFccw7j1RVzfP4pDJZODo0xoOSNEId2Yg7m0UFbE
-         OvmCdYDSz5g5arACiZzZoQ07vHEkmGB15+DDnJ/uUbAz3ey4GOnlGyQkcI9OL0pTe3yy
-         spuA==
-X-Gm-Message-State: AOAM531mSKKfFGQJzsBJ43IKcExVPVShxeVpUnTonV5WdaDBbzmKF8Hq
-        s4jiDRPEmMCOs4K7G6LNnIk=
-X-Google-Smtp-Source: ABdhPJz/vD5kjzn92FMPZ/llPyVvX8A0FIz2K1glfJREBebfwvWosIVccSoYynEfKa+j9US1MJefGQ==
-X-Received: by 2002:ac8:4cda:: with SMTP id l26mr298115qtv.213.1610476472849;
-        Tue, 12 Jan 2021 10:34:32 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id 70sm1779957qkk.10.2021.01.12.10.34.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 10:34:32 -0800 (PST)
-Subject: Re: [PATCH V3 2/2] scripts: dtc: Build fdtoverlay and fdtdump tools
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-References: <CAK7LNAQT5nVHGAZDhj4dct0v8UMzQ+-mdfBXJsfedR-7mZTnyA@mail.gmail.com>
- <72c3a4f63dde3c172c11153e9a5b19fb6cdb4498.1610000585.git.viresh.kumar@linaro.org>
- <1d9369aa-b7aa-6d06-0d44-6ef21bc639e3@gmail.com>
- <20210112050818.s6ctvd6ihd2dt2d2@vireshk-i7>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <3f0c733a-641f-290f-41b8-62ca22e355b7@gmail.com>
-Date:   Tue, 12 Jan 2021 12:34:31 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2392346AbhALSgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 13:36:39 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:58318 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392178AbhALSgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 13:36:38 -0500
+Received: from zn.tnic (p200300ec2f0e8c00c6af2066566de43f.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8c00:c6af:2066:566d:e43f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D26E01EC05D1;
+        Tue, 12 Jan 2021 19:35:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1610476557;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=8ewCXROtelgxCjKkS72wMIEx2jAuhJ0XY23mMMysgdk=;
+        b=D2EdN9d94gJJzsALxHhZpvIXQpjcwjD00kvBv/ok8NWwS4T1e5bCob+NLHGQKL2VKtnEkT
+        XRYZRPeeduvxj28PnD68h5/ormAb1b7pjvugX8RE85PtgYCsODGIVG5VgwCTQk1fU24RZx
+        EGY1JfpF2qpbdKtKsjeghqLKRl4tMUs=
+Date:   Tue, 12 Jan 2021 19:35:50 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-sgx@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH v3] x86/sgx: Synchronize encl->srcu in sgx_encl_release().
+Message-ID: <20210112183550.GK13086@zn.tnic>
+References: <20201216134920.21161-1-jarkko@kernel.org>
+ <20210105145749.GF28649@zn.tnic>
+ <X/zoarV7gd/LNo4A@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210112050818.s6ctvd6ihd2dt2d2@vireshk-i7>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <X/zoarV7gd/LNo4A@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/11/21 11:08 PM, Viresh Kumar wrote:
-> On 11-01-21, 18:44, Frank Rowand wrote:
->> On 1/7/21 12:25 AM, Viresh Kumar wrote:
->>> We will start building overlays for platforms soon in the kernel and
->>> would need these tools going forward. Lets start building them.
->>>
->>> The fdtoverlay program applies (or merges) one ore more overlay dtb
->>> blobs to a base dtb blob. The kernel build system would later use
->>> fdtoverlay to generate the overlaid blobs based on platform specific
->>> configurations.
->>>
->>> The fdtdump program prints a readable version of a flat device-tree
->>> file. This is a very useful tool to analyze the details of the overlay's
->>> dtb and the final dtb produced by fdtoverlay after applying the
->>> overlay's dtb to a base dtb.
->>
->> You can calso dump an FDT with:
->>
->>    dtc -O dts XXX.dtb
->>
->> Is this sufficient for the desired functionality, or is there something
->> additional in fdtdump that is needed?
++ paulmck.
+
+On Tue, Jan 12, 2021 at 02:08:10AM +0200, Jarkko Sakkinen wrote:
+> On Tue, Jan 05, 2021 at 03:57:49PM +0100, Borislav Petkov wrote:
+> > On Wed, Dec 16, 2020 at 03:49:20PM +0200, Jarkko Sakkinen wrote:
+> > > Add synchronize_srcu_expedited() to sgx_encl_release() to catch a grace
+> > > period initiated by sgx_mmu_notifier_release().
+> > > 
+> > > A trivial example of a failing sequence with tasks A and B:
+> > > 
+> > > 1. A: -> sgx_release()
+> > > 2. B: -> sgx_mmu_notifier_release()
+> > > 3. B: -> list_del_rcu()
+> > > 3. A: -> sgx_encl_release()
+> > > 4. A: -> cleanup_srcu_struct()
+> > > 
+> > > The loop in sgx_release() observes an empty list because B has removed its
+> > > entry in the middle, and calls cleanup_srcu_struct() before B has a chance
+> > > to calls synchronize_srcu().
+> > 
+> > Leading to what? NULL ptr?
+> > 
+> > https://lkml.kernel.org/r/X9e2jOWz1hfXVpQ5@google.com
+> > 
+> > already suggested that you should explain the bug better and add the
+> > splat but I'm still missing that explanation.
 > 
-
-comment 1:
-
-> Not for my usecase at least.
-
+> OK, I'll try to explain it how I understand the issue.
 > 
->> If nothing additional needed, and there is no other justification for adding
->> another program, I would prefer to leave fdtdump out.
+> Consider this loop in the VFS release hook (sgx_release):
 > 
-
-comment 2:
-
-> Okay, then I will also remove the stale version of fdtdump which is
-> already there in kernel since a long time.
+> 	/*
+> 	 * Drain the remaining mm_list entries. At this point the list contains
+> 	 * entries for processes, which have closed the enclave file but have
+> 	 * not exited yet. The processes, which have exited, are gone from the
+> 	 * list by sgx_mmu_notifier_release().
+> 	 */
+> 	for ( ; ; )  {
+> 		spin_lock(&encl->mm_lock);
 > 
+> 		if (list_empty(&encl->mm_list)) {
+> 			encl_mm = NULL;
+> 		} else {
+> 			encl_mm = list_first_entry(&encl->mm_list,
+> 						   struct sgx_encl_mm, list);
+> 			list_del_rcu(&encl_mm->list);
+> 		}
+> 
+> 		spin_unlock(&encl->mm_lock);
+> 
+> 		/* The enclave is no longer mapped by any mm. */
+> 		if (!encl_mm)
+> 			break;
+> 
+> 		synchronize_srcu(&encl->srcu);
+> 		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
+> 		kfree(encl_mm);
+> 	}
+> 
+> 
+> At this point all processes have closed the enclave file, but that doesn't
+> mean that they all have exited yet.
+> 
+> Now, let's imagine that there is exactly one entry in the encl->mm_list.
+> and sgx_release() execution gets scheduled right after returning from
+> synchronize_srcu().
+> 
+> With some bad luck, some process comes and removes that last entry befoe
+> sgx_release() acquires mm_lock. The loop in sgx_release() just leaves
+> 
+> 		/* The enclave is no longer mapped by any mm. */
+> 		if (!encl_mm)
+> 			break;
+> 
+> No synchronize_srcu().
+> 
+> After writing this, I think that the placement for synchronize_srcu()
+> in this patch is not best possible. It should be rather that the
+> above loop would also call synchronize_srcu() when leaving.
+> 
+> I.e. the code change would result:
+> 
+> 	for ( ; ; )  {
+> 		spin_lock(&encl->mm_lock);
+> 
+> 		if (list_empty(&encl->mm_list)) {
+> 			encl_mm = NULL;
+> 		} else {
+> 			encl_mm = list_first_entry(&encl->mm_list,
+> 						   struct sgx_encl_mm, list);
+> 			list_del_rcu(&encl_mm->list);
+> 		}
+> 
+> 		spin_unlock(&encl->mm_lock);
+> 
+>                 /* 
+>                  * synchronize_srcu() is mandatory *even* when the list was
+>                  * empty, in order make sure that grace periods stays in
+>                  * sync even when another task took away the last entry
+>                  * (i.e. exiting process when it deletes its mm_list).
+>                  */
+> 		synchronize_srcu(&encl->srcu);
+> 
+> 		/* The enclave is no longer mapped by any mm. */
+> 		if (!encl_mm)
+> 			break;
+> 
+> 		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
+> 		kfree(encl_mm);
+> 	}
+> 
+> What do you think? Does this start to make more sense now?
+> I don't have logs for this but the bug can be also reasoned.
 
-I'm confused.  I read comment 1 as saying that fdtdump does provide a feature
-that you need to analyze the dtb created by fdtoverlay.  But I read comment 2
-as implying that you are accepting that fdtdump will not be added to the
-Linux kernel source.
+It does. Now you need to write it up in a detailed form so that it is
+clear to readers months/years from now what exactly can happen. You can
+use a two-column format like
 
--Frank
+	CPU A				CPU B
+
+Bla
+					Blu
+
+This happens now here
+					But this needs to happen there
+
+and so on.
+
+Also, from reading up a bit on this, Documentation/RCU/checklist.rst says
+
+"Use of the expedited primitives should be restricted to rare
+configuration-change operations that would not normally be undertaken
+while a real-time workload is running."
+
+so why are you using synchronize_srcu_expedited()? Grepping the tree
+reveals only a couple of call sites only... but I've almost no clue of
+RCU so lemme CC Paul.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
