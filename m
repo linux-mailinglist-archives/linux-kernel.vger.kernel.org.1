@@ -2,160 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7FD2F3D44
+	by mail.lfdr.de (Postfix) with ESMTP id 105662F3D43
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393221AbhALVfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:35:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437129AbhALVOg (ORCPT
+        id S1732745AbhALVfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 16:35:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51342 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2437127AbhALVNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 16:14:36 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A465C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:13:55 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id p14so3250985qke.6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:13:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aIy5x+1VD8v0XL/QyWpF14P/+yjwNedjhAL+yga2UPc=;
-        b=YHfwauVIxc5r9PQVvXLF0Ptk/bZelgyuHn2/RbdJAmQcqlYKNCnDhPPF78earV1OJU
-         eLuKfwV9RGNyuF8hJtIyqKXgzk/0cNDU8QMRiPwKLs+B8Re8SZUe7Jsfjk0oTpOHSVGw
-         kQzL7pV5us/Y4Fw2Kn0L717G6kDF5pGfCRxyNRl/x1wolCOm+jtXKNSIR/NFNAQxnUB1
-         eSePrcH24+SIWwgI/6/cs6XhctXCuo0fqeEPmXStoLyQTR6iHKNNe3u0vFaz3zcoSfCB
-         zKiuEQhoPaiNTD9VQGJOfm3Ju9a5FTQcfyDqVv+tgqFFT0y5nLPsRtRZh8eu2tqkoGRl
-         i7RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aIy5x+1VD8v0XL/QyWpF14P/+yjwNedjhAL+yga2UPc=;
-        b=NBPi/J8LG/SOiJRh4k88bmdMuPiC2kb4Wy8feizpFAdX1Dg6M9ghlngRpUA3rfZZ/W
-         K93L0To3SCOrRfPiRDNh1casFLd0G6JmysJWwpdRoFHGm/LyFtwqYJDli0OYZvaw3tGb
-         vrkL2ZVzoHRdKDdn7EukzKLBvYJ+Zxove+aoPoUAwmk0jxRwMenItMJp9omC3pxWbDH3
-         TM5ADBL0gTdb825TnGDzxNAXnV8w81X3P9zC8CeFtUkyKyCVJInbpEnrFuAXAy0HF8qb
-         b6qTNSlHNVd9uuif6jKSZoe+wSK4BPISELLs63Esg8N87ikdHkH82++NcvViRd8VZwk5
-         fLmA==
-X-Gm-Message-State: AOAM530GpAumuwbnwVT/oz5SAyXTavN9aeuV1ulaKZk7vAX+MooT/Alc
-        47jA0Y/KPNGySns4dEqBvPZRtQ==
-X-Google-Smtp-Source: ABdhPJwtcyul1odUGeo+GDyNTpKzGN5r8NxTsSdgEKBg6DDycyvGV4AIq1tspzWibNEqRKtcsmkPUw==
-X-Received: by 2002:a37:8703:: with SMTP id j3mr1414393qkd.455.1610486034803;
-        Tue, 12 Jan 2021 13:13:54 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:1fb4])
-        by smtp.gmail.com with ESMTPSA id i3sm1779278qtd.95.2021.01.12.13.13.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 13:13:53 -0800 (PST)
-Date:   Tue, 12 Jan 2021 16:11:27 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: prevent starvation when writing
- memory.high
-Message-ID: <X/4Qfxe1OKXACDLM@cmpxchg.org>
-References: <20210112163011.127833-1-hannes@cmpxchg.org>
- <20210112170322.GA99586@carbon.dhcp.thefacebook.com>
- <X/38ZwyOE96SAfa9@cmpxchg.org>
- <20210112201237.GB99586@carbon.dhcp.thefacebook.com>
+        Tue, 12 Jan 2021 16:13:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610485945;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WovaxjFL+2/INxiHqZ8PGQNi33N0CO0yRS5E4jp/8rU=;
+        b=RBgTISRaQSzWJdQ3Jz0/UKkW/ULKkfTMP8DK2nicNmEL2oHIO1F14v2fMotkpdw+P0pDDB
+        DMQOHu4EswgtDsDMQMpQ0GET2F17FqxvlcFFzmFoEDMXixo+p7X/24ql/YUjEb3vQUUsk4
+        SIg3XHU1bEhSZ+Z4PTjq9b9/ZkUwi9o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-90-5SVhPJB4P4e29EdjMkSy-A-1; Tue, 12 Jan 2021 16:12:22 -0500
+X-MC-Unique: 5SVhPJB4P4e29EdjMkSy-A-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E6ED6107ACF7;
+        Tue, 12 Jan 2021 21:12:19 +0000 (UTC)
+Received: from redhat.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A2EAE10013BD;
+        Tue, 12 Jan 2021 21:12:18 +0000 (UTC)
+Date:   Tue, 12 Jan 2021 16:12:16 -0500
+From:   Jarod Wilson <jarod@redhat.com>
+To:     Jay Vosburgh <jay.vosburgh@canonical.com>
+Cc:     linux-kernel@vger.kernel.org, Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [RFC PATCH net-next] bonding: add a vlan+srcmac tx hashing option
+Message-ID: <20210112211216.GI476710@redhat.com>
+References: <20201218193033.6138-1-jarod@redhat.com>
+ <21784.1608337139@famine>
+ <20210108000340.GC29828@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210112201237.GB99586@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20210108000340.GC29828@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 12:12:37PM -0800, Roman Gushchin wrote:
-> On Tue, Jan 12, 2021 at 02:45:43PM -0500, Johannes Weiner wrote:
-> > On Tue, Jan 12, 2021 at 09:03:22AM -0800, Roman Gushchin wrote:
-> > > On Tue, Jan 12, 2021 at 11:30:11AM -0500, Johannes Weiner wrote:
-> > > > When a value is written to a cgroup's memory.high control file, the
-> > > > write() context first tries to reclaim the cgroup to size before
-> > > > putting the limit in place for the workload. Concurrent charges from
-> > > > the workload can keep such a write() looping in reclaim indefinitely.
-> > > > 
-> > > > In the past, a write to memory.high would first put the limit in place
-> > > > for the workload, then do targeted reclaim until the new limit has
-> > > > been met - similar to how we do it for memory.max. This wasn't prone
-> > > > to the described starvation issue. However, this sequence could cause
-> > > > excessive latencies in the workload, when allocating threads could be
-> > > > put into long penalty sleeps on the sudden memory.high overage created
-> > > > by the write(), before that had a chance to work it off.
-> > > > 
-> > > > Now that memory_high_write() performs reclaim before enforcing the new
-> > > > limit, reflect that the cgroup may well fail to converge due to
-> > > > concurrent workload activity. Bail out of the loop after a few tries.
-> > > > 
-> > > > Fixes: 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering memory.high")
-> > > > Cc: <stable@vger.kernel.org> # 5.8+
-> > > > Reported-by: Tejun Heo <tj@kernel.org>
-> > > > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> > > > ---
-> > > >  mm/memcontrol.c | 7 +++----
-> > > >  1 file changed, 3 insertions(+), 4 deletions(-)
-> > > > 
-> > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > > index 605f671203ef..63a8d47c1cd3 100644
-> > > > --- a/mm/memcontrol.c
-> > > > +++ b/mm/memcontrol.c
-> > > > @@ -6275,7 +6275,6 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
-> > > >  
-> > > >  	for (;;) {
-> > > >  		unsigned long nr_pages = page_counter_read(&memcg->memory);
-> > > > -		unsigned long reclaimed;
-> > > >  
-> > > >  		if (nr_pages <= high)
-> > > >  			break;
-> > > > @@ -6289,10 +6288,10 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
-> > > >  			continue;
-> > > >  		}
-> > > >  
-> > > > -		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
-> > > > -							 GFP_KERNEL, true);
-> > > > +		try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
-> > > > +					     GFP_KERNEL, true);
-> > > >  
-> > > > -		if (!reclaimed && !nr_retries--)
-> > > > +		if (!nr_retries--)
-> > > 
-> > > Shouldn't it be (!reclaimed || !nr_retries) instead?
-> > > 
-> > > If reclaimed == 0, it probably doesn't make much sense to retry.
+On Thu, Jan 07, 2021 at 07:03:40PM -0500, Jarod Wilson wrote:
+> On Fri, Dec 18, 2020 at 04:18:59PM -0800, Jay Vosburgh wrote:
+> > Jarod Wilson <jarod@redhat.com> wrote:
 > > 
-> > We usually allow nr_retries worth of no-progress reclaim cycles to
-> > make up for intermittent reclaim failures.
+> > >This comes from an end-user request, where they're running multiple VMs on
+> > >hosts with bonded interfaces connected to some interest switch topologies,
+> > >where 802.3ad isn't an option. They're currently running a proprietary
+> > >solution that effectively achieves load-balancing of VMs and bandwidth
+> > >utilization improvements with a similar form of transmission algorithm.
+> > >
+> > >Basically, each VM has it's own vlan, so it always sends its traffic out
+> > >the same interface, unless that interface fails. Traffic gets split
+> > >between the interfaces, maintaining a consistent path, with failover still
+> > >available if an interface goes down.
+> > >
+> > >This has been rudimetarily tested to provide similar results, suitable for
+> > >them to use to move off their current proprietary solution.
+> > >
+> > >Still on the TODO list, if these even looks sane to begin with, is
+> > >fleshing out Documentation/networking/bonding.rst.
 > > 
-> > The difference to OOMs/memory.max is that we don't want to loop
-> > indefinitely on forward progress, but we should allow the usual number
-> > of no-progress loops.
+> > 	I'm sure you're aware, but any final submission will also need
+> > to include netlink and iproute2 support.
 > 
-> Re memory.max: trying really hard makes sense because we are OOMing otherwise.
-> With memory.high such an idea is questionable: if were not able to reclaim
-> a single page from the first attempt, it's unlikely that we can reclaim many
-> from repeating 16 times.
-> 
-> My concern here is that we can see CPU regressions in some cases when there is
-> no reclaimable memory. Do you think we can win something by trying harder?
-> If so, it's worth mentioning in the commit log. Because it's really a separate
-> change to what's described in the log, to some extent it's a move into an opposite
-> direction.
+> I believe everything for netlink support is already included, but I'll
+> double-check that before submitting something for inclusion consideration.
 
-Hm, I'm confused what change you are referring to.
+I'm not certain if what you actually meant was that I'd have to patch
+iproute2 as well, which I've definitely stumbled onto today, but it's a
+2-line patch, and everything seems to be working fine with it:
 
-Current upstream allows:
+$ sudo ip link set bond0 type bond xmit_hash_policy 5
+$ ip -d link show bond0
+11: bond0: <BROADCAST,MULTICAST,MASTER> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether ce:85:5e:24:ce:90 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 68 maxmtu 65535
+    bond mode balance-xor miimon 0 updelay 0 downdelay 0 peer_notify_delay 0 use_carrier 1 arp_interval 0 arp_validate none arp_all_targets any primary_reselect always fail_over_mac none xmit_hash_policy vlansrc resend_igmp 1 num_grat_arp 1 all_slaves_active 0 min_links 0 lp_interval 1 packets_per_slave 1 lacp_rate slow ad_select stable tlb_dynamic_lb 1 addrgenmode eui64 numtxqueues 16 numrxqueues 16 gso_max_size 65536 gso_max_segs 65535
+$ grep Hash /proc/net/bonding/bond0
+Transmit Hash Policy: vlansrc (5)
 
-    a. unlimited progress loops
-    b. 16 no-progress loops
+Nothing bad seems to happen on an older kernel if one tries to set the new
+hash, you just get told that it's an invalid argument.
 
-My patch is fixing the issue resulting from the unlimited progress
-loops in a). This is described in the changelog.
+I *think* this is all ready for submission then, so I'll get both the kernel
+and iproute2 patches out soon.
 
-You seem to be advocating for an unrelated change to the no-progress
-loops condition in b).
+-- 
+Jarod Wilson
+jarod@redhat.com
 
-Am I missing something?
