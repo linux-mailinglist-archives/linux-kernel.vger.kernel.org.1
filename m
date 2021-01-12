@@ -2,114 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8ADA2F30DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:16:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D53E2F30CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:16:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727146AbhALNMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:12:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34888 "EHLO mail.kernel.org"
+        id S1730543AbhALNL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:11:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726386AbhALNMf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:12:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E76E2311D;
-        Tue, 12 Jan 2021 13:11:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610457114;
-        bh=vP2DCagVtAMu9x56EKZAmURKgDbYatteSbiEwLNkbDc=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=VtmmSSY2umtEYzqFZ97n8qo1zKpm2Q/ov5UyeApaJAOCFKVKtbv6QoOwErR68J5i8
-         J0TcbtmwpjzN13nNYzNrXmUH5G4ZCyHhYYeFhhlgW46WKYqEwA/+l7SYi1CDGS8Z5l
-         QcJ7wYW3hDLfJTB0qIokccmUbQjNTkt0C6KFc1hbF42t2CeiD+AfVEBXk1HNkqYXg/
-         PQYYRyoKFnMz9qW23cbQtFYM6DzdGlbWizGUDrqxN8R2G9YxnElWzrefWvtRD79qQq
-         lmnBBRKN0lv80UzGCREXpvTL2+XmFo/4GZxyx9MBszv4ihPIhctyG/I/cB0jCgzECM
-         kn8y3tXwiRuag==
-Subject: Re: [PATCHv1] video: omapfb2: Make standard and custom DSI command
- mode panel driver mutually exclusive
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        kernel@collabora.com
-References: <20210108122540.657501b2@canb.auug.org.au>
- <20210108112441.14609-1-sebastian.reichel@collabora.com>
- <20210108195839.GA1429715@ravnborg.org>
- <20210112120246.ujhjyylrlgfrfvig@earth.universe>
-From:   Tomi Valkeinen <tomba@kernel.org>
-Message-ID: <4b39c036-fb70-4a5b-ddda-08ce2f0a6db5@kernel.org>
-Date:   Tue, 12 Jan 2021 15:10:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726224AbhALNLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 08:11:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E902A23104;
+        Tue, 12 Jan 2021 13:10:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610457044;
+        bh=+I0/CAlCSgREEqQUkT62aVbfKK8iKlEIHmnPI9Xh+LU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oBRMoK91OPAtO51gk8exkl4tg1E+5bRaxZssSyfLuIrpFG/yq0ZO7NIiD9g1gjYxY
+         wRPw5f//p2rico1l2rTePxE8qvR7/ymw6MlxhHqHYYvfDLrvYM7TwbcwaGz6lMJ6Eh
+         NPcuF4XJPGTSasFb64QSpYyoyli1TAHm2oLJ8HSA=
+Date:   Tue, 12 Jan 2021 14:11:53 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Roland Dreier <roland@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.10 23/51] CDC-NCM: remove "connected" log
+ message
+Message-ID: <X/2gGVG7Dn4nvj2V@kroah.com>
+References: <20210112125534.70280-1-sashal@kernel.org>
+ <20210112125534.70280-23-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210112120246.ujhjyylrlgfrfvig@earth.universe>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112125534.70280-23-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 12/01/2021 14:02, Sebastian Reichel wrote:
-> [replace Tomi's TI mail address with something working]
+On Tue, Jan 12, 2021 at 07:55:05AM -0500, Sasha Levin wrote:
+> From: Roland Dreier <roland@kernel.org>
 > 
-> Hi,
+> [ Upstream commit 59b4a8fa27f5a895582ada1ae5034af7c94a57b5 ]
 > 
-> On Fri, Jan 08, 2021 at 08:58:39PM +0100, Sam Ravnborg wrote:
->> Hi Sebastian,
->>
->> On Fri, Jan 08, 2021 at 12:24:41PM +0100, Sebastian Reichel wrote:
->>> Standard DRM panel driver for DSI command mode panel used by omapfb2 is also
->>> available now. Just like the other panels its module name clashes with the
->>> module from drivers/video/fbdev/omap2/omapfb/displays, part of the deprecated
->>> omapfb2 fbdev driver. As omapfb2 can only be compiled when the omapdrm driver
->>> is disabled, and the DRM panel drivers are useless in that case, make the
->>> omapfb2 panel depend on the standard DRM panels being disabled to fix
->>> the name clash.
->>>
->>> Fixes: cf64148abcfd ("drm/panel: Move OMAP's DSI command mode panel driver")
->>> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
->>> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
->>
->> For a backport this looks good:
->> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> The cdc_ncm driver passes network connection notifications up to
+> usbnet_link_change(), which is the right place for any logging.
+> Remove the netdev_info() duplicating this from the driver itself.
 > 
-> Thanks.
-
-Thanks. I'll push to drm-misc-next, as that's where the commit that
-breaks this is.
-
->> But why is it it we need omapfb at all when we have omapdrm?
+> This stops devices such as my "TRENDnet USB 10/100/1G/2.5G LAN"
+> (ID 20f4:e02b) adapter from spamming the kernel log with
 > 
-> I think there are two reasons omapfb has not been killed yet. One
-> reason was missing support for manually updated DSI panels, which
-> have been working since 1 or 2 kernel releases now. The other reason
-> is some people using it in combination with an out-of-tree PowerVR
-> kernel driver. There is currently work going on to use a more recent
-> PowerVR driver based on omapdrm driven by Maemo Leste people.
-
-omapfb also has a custom sysfw API, so applications that depend on it
-would not work anymore. I don't know if there are such applications, though.
-
->> Can we sunset all or some parts of omap support in video/?
->> If not, what is missing to do so.
+>     cdc_ncm 2-2:2.0 enp0s2u2c2: network connection: connected
 > 
-> IDK the exact status of the PowerVR work and have not been using
-> omapfb myself for years. I don't think there is a reason to rush
-> this, so my suggestion is removing it in 3 steps giving people
-> the chance to complain:
+> messages every 60 msec or so.
 > 
-> 1. Add 'depends on EXPERT' to 'FB_OMAP2' and add deprecation notice
->    referencing omapdrm in help text in 5.12
-> 2. Add 'depends on BROKEN' in 5.13
-> 3. Drop drivers/video/fbdev/omap2 afterwards
+> Signed-off-by: Roland Dreier <roland@kernel.org>
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Link: https://lore.kernel.org/r/20201224032116.2453938-1-roland@kernel.org
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/net/usb/cdc_ncm.c | 3 ---
+>  1 file changed, 3 deletions(-)
 
-I'd love to remove omapfb, but I also fear that there are still people
-using it. We can try the above sequence, but it's probably better to go
-slower, as people may not be using the latest kernels.
+This is already queued up to be in the next round of stable releases, so
+no need to queue it up again :)
 
- Tomi
+thanks,
+
+greg k-h
