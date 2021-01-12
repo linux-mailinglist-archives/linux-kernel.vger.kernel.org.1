@@ -2,33 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A476A2F2F9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:58:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 553B82F2FAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:58:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390030AbhALM5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:57:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53820 "EHLO mail.kernel.org"
+        id S2390356AbhALM5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:57:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389785AbhALM5O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:57:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A549423131;
-        Tue, 12 Jan 2021 12:56:01 +0000 (UTC)
+        id S2403960AbhALM5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:57:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE28523130;
+        Tue, 12 Jan 2021 12:56:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610456162;
-        bh=BLAwquNKZXLn8diNN8LutklPMIW3oudpGbujxE4AkKs=;
+        s=k20201202; t=1610456165;
+        bh=mxrOyx50zYnD+PXA6krjmpAE9+v/G6l9keQzUlXiBY4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sqfI9v5R7NX03E4V3UyhYgbw+VqK4H4eWE4luU2htmHXZZe8mUynEpS2luU4a4zOq
-         iyQpLf9NxZOGt3/QAGMkKz8LW19xBpiNB2IqyemuI1tlu6DcKwSr2hGuNbN3VJAmEJ
-         lAsOZN4tYCQvimYWBg2M1J85Fs9x4l2i8hQ/ROekrS8EJTLBonCjxf/FxZ43pmtuM/
-         7sFNWVXou5Qh1k/rmZC4wo2I/fD74fs48xMCzOYgyxOHi9D4aygo4NXhyYYxx0dkRz
-         QlGY9PQtvQVnP1UdqYUgu1b3EmZzcNkuHjVpNlmOGZGsd5lLprfRIe9ByN7Sf49dRL
-         TquB9s5hBrzFA==
+        b=mRHkipXskZ0uTmiq2QYMw+NWJ9VGWb8b2/eBMYYclSYFizf0xroz/qu/Ne2HtfJAT
+         iwYGJiFBvr9vkbLRUjZg/LMAO3Al2Y1FMYcWKEVgkjnTmCN8Rf1KKdhysrdscT6DZS
+         BP+mxodFMASv0mrxniggJ8KC3016gIMGEZ7iwV6aToKgpz0jtbmBex9uQzCE68s4+U
+         OhgLfe+0Xvt53d3m6F8wpIXkJqXVNYvf3rkFml8DDzoAwyzcRePM90ZSFm8mu+368R
+         Yu8R3/TvQiXnjZsWz++0XAYn8qWl6iTsSdIuNFNBzvo/eFvRO5OcSaGW8szn2RyezI
+         YPQTDzPbe0yPg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Oded Gabbay <ogabbay@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.10 20/51] habanalabs/gaudi: retry loading TPC f/w on -EINTR
-Date:   Tue, 12 Jan 2021 07:55:02 -0500
-Message-Id: <20210112125534.70280-20-sashal@kernel.org>
+Cc:     Roland Dreier <roland@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 23/51] CDC-NCM: remove "connected" log message
+Date:   Tue, 12 Jan 2021 07:55:05 -0500
+Message-Id: <20210112125534.70280-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210112125534.70280-1-sashal@kernel.org>
 References: <20210112125534.70280-1-sashal@kernel.org>
@@ -40,43 +44,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oded Gabbay <ogabbay@kernel.org>
+From: Roland Dreier <roland@kernel.org>
 
-[ Upstream commit 98e8781f008372057bd5cb059ca6b507371e473d ]
+[ Upstream commit 59b4a8fa27f5a895582ada1ae5034af7c94a57b5 ]
 
-If loading the firmware file for the TPC f/w was interrupted, try
-to do it again, up to 5 times.
+The cdc_ncm driver passes network connection notifications up to
+usbnet_link_change(), which is the right place for any logging.
+Remove the netdev_info() duplicating this from the driver itself.
 
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+This stops devices such as my "TRENDnet USB 10/100/1G/2.5G LAN"
+(ID 20f4:e02b) adapter from spamming the kernel log with
+
+    cdc_ncm 2-2:2.0 enp0s2u2c2: network connection: connected
+
+messages every 60 msec or so.
+
+Signed-off-by: Roland Dreier <roland@kernel.org>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20201224032116.2453938-1-roland@kernel.org
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/gaudi/gaudi.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/net/usb/cdc_ncm.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 36f0bb7154ab9..ed1bd41262ecd 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -754,11 +754,17 @@ static int gaudi_init_tpc_mem(struct hl_device *hdev)
- 	size_t fw_size;
- 	void *cpu_addr;
- 	dma_addr_t dma_handle;
--	int rc;
-+	int rc, count = 5;
+diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
+index e04f588538ccb..5dc1365dc1f9a 100644
+--- a/drivers/net/usb/cdc_ncm.c
++++ b/drivers/net/usb/cdc_ncm.c
+@@ -1863,9 +1863,6 @@ static void cdc_ncm_status(struct usbnet *dev, struct urb *urb)
+ 		 * USB_CDC_NOTIFY_NETWORK_CONNECTION notification shall be
+ 		 * sent by device after USB_CDC_NOTIFY_SPEED_CHANGE.
+ 		 */
+-		netif_info(dev, link, dev->net,
+-			   "network connection: %sconnected\n",
+-			   !!event->wValue ? "" : "dis");
+ 		usbnet_link_change(dev, !!event->wValue, 0);
+ 		break;
  
-+again:
- 	rc = request_firmware(&fw, GAUDI_TPC_FW_FILE, hdev->dev);
-+	if (rc == -EINTR && count-- > 0) {
-+		msleep(50);
-+		goto again;
-+	}
-+
- 	if (rc) {
--		dev_err(hdev->dev, "Firmware file %s is not found!\n",
-+		dev_err(hdev->dev, "Failed to load firmware file %s\n",
- 				GAUDI_TPC_FW_FILE);
- 		goto out;
- 	}
 -- 
 2.27.0
 
