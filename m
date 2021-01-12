@@ -2,219 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A49E22F36E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 004FB2F36F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392791AbhALRTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:19:07 -0500
-Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:2798 "EHLO
-        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391734AbhALRTH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:19:07 -0500
-Received: from pps.filterd (m0170391.ppops.net [127.0.0.1])
-        by mx0a-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10CHHUZ0001479;
-        Tue, 12 Jan 2021 12:18:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=smtpout1; bh=en0SHBQNYzb3EbnemJYrirxBLqwj0SMrc1Fn+QdTzss=;
- b=QFxuR0Fu/0PvGWNGvyMp8ZPL8tMcQxEf1CFVLijEiuhpKsn5VOCVEe8ws3xLOSiIYAye
- NPTyTmuv0ZxncaTyMPoSar9lXGfab8+Og0ebwfgj6rRR6hS3gb/ZTDL7n1P2mN7eWV68
- nmaYPqe9ZzclT3q2wXfGJhXbGS1paepFD3Ekrrkc5y564c9zwZNwAsE+p6M5w/bBKxlL
- SfShVoJ0sf7g82MEauyNsgaReycvI4Vm1rLWq9RP4mnerD7hsc0ZY1SqBEomCCktxw56
- XHiLVwVgdHavPpht2Dd5+bi20bHedz/6QynMS+b3Sk5JIpyunfysM16jVJd/L7/xrn5g 8g== 
-Received: from mx0b-00154901.pphosted.com (mx0b-00154901.pphosted.com [67.231.157.37])
-        by mx0a-00154904.pphosted.com with ESMTP id 361fyb80t6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 12:18:26 -0500
-Received: from pps.filterd (m0144103.ppops.net [127.0.0.1])
-        by mx0b-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10CHBdAE099119;
-        Tue, 12 Jan 2021 12:18:25 -0500
-Received: from ausc60pc101.us.dell.com (ausc60pc101.us.dell.com [143.166.85.206])
-        by mx0b-00154901.pphosted.com with ESMTP id 361fqe0qba-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jan 2021 12:18:25 -0500
-X-LoopCount0: from 10.69.132.19
-X-PREM-Routing: D-Outbound
-X-IronPort-AV: E=Sophos;i="5.79,341,1602565200"; 
-   d="scan'208";a="1653628701"
-From:   Perry Yuan <Perry.Yuan@dell.com>
-To:     oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com,
-        hdegoede@redhat.com, mgross@linux.intel.com
-Cc:     lgirdwood@gmail.com, broonie@kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, Perry.Yuan@dell.com,
-        Mario.Limonciello@dell.com
-Subject: [PATCH v3 3/3] ASoC: rt715:add micmute led state control supports
-Date:   Wed, 13 Jan 2021 01:18:14 +0800
-Message-Id: <20210112171814.5404-1-Perry_Yuan@Dell.com>
-X-Mailer: git-send-email 2.19.2.windows.1
+        id S2392832AbhALRWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:22:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392469AbhALRWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 12:22:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8535723125
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 17:21:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610472094;
+        bh=ELOARBBiofdYIx02xC2M8PkPXYlHSTVJmEKHZzgBULE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kM63G85GYcDem7lfwRdnJAqLP1ebW9sR8qmat/Ayek+uF749MSGlAaBYStRjg5TBD
+         b2zNPH5RoM2/8UgPTWlOiLgKPSqlq9ZTGoOIo9c2o5+OBt6VUQR/TqupvBv9QHcEzm
+         CPDDnw6RxTjerTu1EQDG6pkwb4zqEp8vvHbI37wZ+x0YNxDCVVb5bRID+Yl53YiPwg
+         +59dFtO4wISZG6pDx6fqTnTCVo8dkOhqitf1oBt18J/pGzVWC/Kjcl2pv2fAGY99T2
+         VvsHxXEpTFdAotUwGFio7bHOhxC9LOEVA52Oen5psYp6uJmB0qOgUGdZfU5VxHtri7
+         pm3S2EOLos/ig==
+Received: by mail-ej1-f45.google.com with SMTP id d17so4593358ejy.9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:21:34 -0800 (PST)
+X-Gm-Message-State: AOAM5310DBLjSuoY0dw0vTy01+TOthbPsB8/CvRyI4weXWzG2/r8z1NW
+        D7chUqFbPKSl2dNVQsGu16lA4T0zNaHRgHg4dWWYSw==
+X-Google-Smtp-Source: ABdhPJzG45Q6mZpr5OuQGqeovuqrQr66d54Wzrwvejj9Io/dicJpF2AjAct15P9qtUGkYrC3a/347ZsTPv1uM0FABxU=
+X-Received: by 2002:a17:906:351a:: with SMTP id r26mr3767359eja.204.1610472092963;
+ Tue, 12 Jan 2021 09:21:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-12_12:2021-01-12,2021-01-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 malwarescore=0 bulkscore=0 phishscore=0
- spamscore=0 lowpriorityscore=0 adultscore=0 priorityscore=1501
- clxscore=1015 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2101120100
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
- bulkscore=0 phishscore=0 spamscore=0 adultscore=0 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101120101
+References: <20210111214452.1826-2-tony.luck@intel.com> <E1FCB534-9149-437A-971E-F93C009F99C3@amacapital.net>
+ <20210111222057.GA2369@agluck-desk2.amr.corp.intel.com> <CALCETrVhRF0H+R1aiy-rdguL3A_9M35R3roVAgRGaEAMCJVW0Q@mail.gmail.com>
+ <20210112171628.GA15664@agluck-desk2.amr.corp.intel.com>
+In-Reply-To: <20210112171628.GA15664@agluck-desk2.amr.corp.intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Tue, 12 Jan 2021 09:21:21 -0800
+X-Gmail-Original-Message-ID: <CALCETrWijyKoopqAHjohMbvfX191GhmMVQCQjKWx1s3+SA+-uA@mail.gmail.com>
+Message-ID: <CALCETrWijyKoopqAHjohMbvfX191GhmMVQCQjKWx1s3+SA+-uA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] x86/mce: Avoid infinite loop for copy from user recovery
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-edac <linux-edac@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Perry Yuan <perry_yuan@dell.com>
+On Tue, Jan 12, 2021 at 9:16 AM Luck, Tony <tony.luck@intel.com> wrote:
+>
+> On Tue, Jan 12, 2021 at 09:00:14AM -0800, Andy Lutomirski wrote:
+> > > On Jan 11, 2021, at 2:21 PM, Luck, Tony <tony.luck@intel.com> wrote:
+> > >
+> > > =EF=BB=BFOn Mon, Jan 11, 2021 at 02:11:56PM -0800, Andy Lutomirski wr=
+ote:
+> > >>
+> > >>>> On Jan 11, 2021, at 1:45 PM, Tony Luck <tony.luck@intel.com> wrote=
+:
+> > >>>
+> > >>> =EF=BB=BFRecovery action when get_user() triggers a machine check u=
+ses the fixup
+> > >>> path to make get_user() return -EFAULT.  Also queue_task_work() set=
+s up
+> > >>> so that kill_me_maybe() will be called on return to user mode to se=
+nd a
+> > >>> SIGBUS to the current process.
+> > >>>
+> > >>> But there are places in the kernel where the code assumes that this
+> > >>> EFAULT return was simply because of a page fault. The code takes so=
+me
+> > >>> action to fix that, and then retries the access. This results in a =
+second
+> > >>> machine check.
+> > >>>
+> > >>> While processing this second machine check queue_task_work() is cal=
+led
+> > >>> again. But since this uses the same callback_head structure that
+> > >>> was used in the first call, the net result is an entry on the
+> > >>> current->task_works list that points to itself.
+> > >>
+> > >> Is this happening in pagefault_disable context or normal sleepable f=
+ault context?  If the latter, maybe we should reconsider finding a way for =
+the machine check code to do its work inline instead of deferring it.
+> > >
+> > > The first machine check is in pagefault_disable() context.
+> > >
+> > > static int get_futex_value_locked(u32 *dest, u32 __user *from)
+> > > {
+> > >        int ret;
+> > >
+> > >        pagefault_disable();
+> > >        ret =3D __get_user(*dest, from);
+> >
+> > I have very mixed feelings as to whether we should even try to recover
+> > from the first failure like this.  If we actually want to try to
+> > recover, perhaps we should instead arrange for the second MCE to
+> > recover successfully instead of panicking.
+>
+> Well we obviously have to "recover" from the first machine check
+> in order to get to the second. Are you saying you don't like the
+> different return value from get_user()?
+>
+> In my initial playing around with this I just had the second machine
+> check simply skip the task_work_add(). This worked for this case, but
+> only because there wasn't a third, fourth, etc. access to the poisoned
+> data. If the caller keeps peeking, then we'll keep taking more machine
+> checks - possibly forever.
+>
+> Even if we do recover with just one extra machine check ... that's one
+> more than was necessary.
 
-Some new Dell system is going to support audio internal micphone
-privacy setting from hardware level with micmute led state changing
-When micmute hotkey pressed by user, soft mute will need to be enabled
-firstly in case of pop noise, and codec driver need to react to mic
-mute event to EC(embedded controller) notifying that SW mute is completed
-Then EC will do the hardware mute physically within the timeout reached
+Well, we need to do *something* when the first __get_user() trips the
+#MC.  It would be nice if we could actually fix up the page tables
+inside the #MC handler, but, if we're in a pagefault_disable() context
+we might have locks held.  Heck, we could have the pagetable lock
+held, be inside NMI, etc.  Skipping the task_work_add() might actually
+make sense if we get a second one.
 
-This patch allow codec rt715 driver to ack EC when micmute key pressed
-through this micphone led control interface like hda_generic provided
-ACPI method defined in dell-privacy micmute led trigger will be called
-for notifying the EC that software mute has been completed
-
-Signed-off-by: Perry Yuan <perry_yuan@dell.com>
-
---------
-v2 -> v3
-* simplify the patch to reuse some val value
-* add more detail to the commit info
-
-v1 -> v2:
-* fix some format issue
---------
----
- sound/soc/codecs/rt715-sdca.c | 16 ++++++++++++++++
- sound/soc/codecs/rt715-sdca.h |  1 +
- sound/soc/codecs/rt715.c      | 14 ++++++++++++++
- sound/soc/codecs/rt715.h      |  1 +
- 4 files changed, 32 insertions(+)
-
-diff --git a/sound/soc/codecs/rt715-sdca.c b/sound/soc/codecs/rt715-sdca.c
-index b43ac8559e45..861a0d2a8957 100644
---- a/sound/soc/codecs/rt715-sdca.c
-+++ b/sound/soc/codecs/rt715-sdca.c
-@@ -12,6 +12,7 @@
- #include <linux/version.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
-+#include <linux/leds.h>
- #include <linux/pm_runtime.h>
- #include <linux/pm.h>
- #include <linux/soundwire/sdw.h>
-@@ -244,6 +245,7 @@ static int rt715_sdca_get_volsw(struct snd_kcontrol *kcontrol,
- 	unsigned int max = mc->max;
- 	int val;
- 
-+	pr_err("++++++rt715_sdca_get_volsw++\n");
- 	val = snd_soc_component_read(component, mc->reg);
- 	if (val < 0)
- 		return -EINVAL;
-@@ -261,6 +263,7 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-+	struct rt715_sdca_priv *rt715 = snd_soc_component_get_drvdata(component);
- 	struct soc_mixer_control *mc =
- 		(struct soc_mixer_control *)kcontrol->private_value;
- 	unsigned int val, val2, loop_cnt = 2, i;
-@@ -268,6 +271,7 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol *kcontrol,
- 	unsigned int reg2 = mc->rreg;
- 	unsigned int reg = mc->reg;
- 	unsigned int max = mc->max;
-+	unsigned int val0, val1;
- 	int err;
- 
- 	val = ucontrol->value.integer.value[0];
-@@ -287,6 +291,18 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol *kcontrol,
- 			return err;
- 	}
- 
-+#if IS_ENABLED(CONFIG_DELL_PRIVACY)
-+	/* dell privacy LED trigger state changed by muted/unmute switch */
-+	if (mc->invert) {
-+		if (ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1]) {
-+			rt715->micmute_led = LED_OFF;
-+		} else {
-+			rt715->micmute_led = LED_ON;
-+		}
-+		ledtrig_audio_set(LED_AUDIO_MICMUTE, rt715->micmute_led);
-+	}
-+#endif
-+
- 	return 0;
- }
- 
-diff --git a/sound/soc/codecs/rt715-sdca.h b/sound/soc/codecs/rt715-sdca.h
-index 840c237895dd..f8988ab88f80 100644
---- a/sound/soc/codecs/rt715-sdca.h
-+++ b/sound/soc/codecs/rt715-sdca.h
-@@ -31,6 +31,7 @@ struct rt715_sdca_priv {
- 	int l_is_unmute;
- 	int r_is_unmute;
- 	int hw_sdw_ver;
-+	bool micmute_led;
- };
- 
- struct rt715_sdw_stream_data {
-diff --git a/sound/soc/codecs/rt715.c b/sound/soc/codecs/rt715.c
-index cdcba70146da..b4e480744c94 100644
---- a/sound/soc/codecs/rt715.c
-+++ b/sound/soc/codecs/rt715.c
-@@ -13,6 +13,7 @@
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/i2c.h>
-+#include <linux/leds.h>
- #include <linux/pm_runtime.h>
- #include <linux/pm.h>
- #include <linux/soundwire/sdw.h>
-@@ -88,6 +89,7 @@ static int rt715_set_amp_gain_put(struct snd_kcontrol *kcontrol,
- 		RT715_SET_GAIN_MIX_ADC2_L};
- 	unsigned int addr_h, addr_l, val_h, val_ll, val_lr;
- 	unsigned int read_ll, read_rl, i, j, loop_cnt;
-+	unsigned int val0, val1;
- 
- 	if (strstr(ucontrol->id.name, "Main Capture Switch") ||
- 		strstr(ucontrol->id.name, "Main Capture Volume"))
-@@ -95,6 +97,18 @@ static int rt715_set_amp_gain_put(struct snd_kcontrol *kcontrol,
- 	else
- 		loop_cnt = 1;
- 
-+#if IS_ENABLED(CONFIG_DELL_PRIVACY)
-+	/* Micmute LED state changed by muted/unmute switch */
-+	if (mc->invert) {
-+		if (ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1]) {
-+			rt715->micmute_led = LED_OFF;
-+		} else {
-+			rt715->micmute_led = LED_ON;
-+		}
-+		ledtrig_audio_set(LED_AUDIO_MICMUTE, rt715->micmute_led);
-+	}
-+#endif
-+
- 	for (j = 0; j < loop_cnt; j++) {
- 		/* Can't use update bit function, so read the original value first */
- 		if (loop_cnt == 1) {
-diff --git a/sound/soc/codecs/rt715.h b/sound/soc/codecs/rt715.h
-index 009a8266f606..57c9af041181 100644
---- a/sound/soc/codecs/rt715.h
-+++ b/sound/soc/codecs/rt715.h
-@@ -22,6 +22,7 @@ struct rt715_priv {
- 	struct sdw_bus_params params;
- 	bool hw_init;
- 	bool first_hw_init;
-+	bool micmute_led;
- };
- 
- struct sdw_stream_data {
--- 
-2.25.1
-
+We won't actually infinite loop in pagefault_disable() context -- if
+we would, then we would also infinite loop just from a regular page
+fault, too.
