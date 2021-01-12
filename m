@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8EC2F32C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:17:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCAC2F32C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:17:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728742AbhALOP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:15:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725613AbhALOP2 (ORCPT
+        id S1729809AbhALOPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:15:33 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:46422 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725613AbhALOPd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:15:28 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52458C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:14:48 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0e8c004f0317ef2d68091d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:8c00:4f03:17ef:2d68:91d])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EA1FA1EC0472;
-        Tue, 12 Jan 2021 15:14:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1610460885;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=hngORQgRG46QizXwWrP2zHg2kjdLhdRg1OBJMju8KYI=;
-        b=mYIyGVoKQfsLI67uWiDlasNdLA69eE1ZXhHBk3BaKMOmPWZUxfz2gnZWKIx4CSAbJcOQRk
-        MZa3627NRyKGCd3ReUzQu7sx52TU2AeMfdDNx8EEyBDSBaBtSZljeLosObEGixqB/PJgZ2
-        benk2sNsrcExVJe2qLGV+vB9nX+JuTQ=
-Date:   Tue, 12 Jan 2021 15:14:38 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Jonathan Lemon <bsd@fb.com>, Tony Luck <tony.luck@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        lkp@lists.01.org, lkp@intel.com, ying.huang@intel.com,
-        feng.tang@intel.com, zhengjun.xing@intel.com
-Subject: Re: [x86/mce]  7bb39313cd:  netperf.Throughput_tps -4.5% regression
-Message-ID: <20210112141438.GF13086@zn.tnic>
-References: <20210112142109.GE30747@xsang-OptiPlex-9020>
+        Tue, 12 Jan 2021 09:15:33 -0500
+Date:   Tue, 12 Jan 2021 14:14:49 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610460890;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=M/jFzWa0BcooDpIR8auJzgjzenvo/u0Q391Wtg/QO3Y=;
+        b=MJE6PAhw9TP/gvD50FfB2xwkYT+QyBUgvUNcu+g/bgLU8IJXzetEWhNAHxHi4aeeYFB0qn
+        SoBLoJctnLpee1VysLTK2fELFGVvdzy14nF4YuWkeZINTpovtqLmwi3ckrC3b2zCqEZ4+z
+        xGWNDy5+y47BnSTFOMKjt7ypHbZZOl2AX1Tc1xealn3gAYkHnTlnTD8lJATgka5zUjf0SE
+        YHMczVfmDU81h3pTwvH4iOana4XEsfRP40Q2uL/I9sy8FvEHTTeSQcMHm31jBKUkOeaTIJ
+        7ez57DqpusK8jyLaNG5vGlOjLpxGhKmYgYcMuFMrwcDJuxALQniTLCnjOnQcJw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610460890;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=M/jFzWa0BcooDpIR8auJzgjzenvo/u0Q391Wtg/QO3Y=;
+        b=OqTMpI1yKj9u1SknJLeLja53sarl/H0K4mUBNIiwx+oxQJeOA7+p4G47hAyNG5cJ9jjiLf
+        xVi3YUIfmoisnTDA==
+From:   "tip-bot2 for Hao Lee" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/entry: Remove now unused do_IRQ() declaration
+Cc:     Hao Lee <haolee.swjtu@gmail.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210103030834.GA15432@haolee.github.io>
+References: <20210103030834.GA15432@haolee.github.io>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210112142109.GE30747@xsang-OptiPlex-9020>
+Message-ID: <161046088982.414.245132272230243029.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 10:21:09PM +0800, kernel test robot wrote:
-> 
-> Greeting,
-> 
-> FYI, we noticed a -4.5% regression of netperf.Throughput_tps due to commit:
-> 
-> 
-> commit: 7bb39313cd6239e7eb95198950a02b4ad2a08316 ("x86/mce: Make mce_timed_out() identify holdout CPUs")
-> https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git ras/core
-> 
-> 
-> in testcase: netperf
-> on test machine: 192 threads Intel(R) Xeon(R) Platinum 9242 CPU @ 2.30GHz with 192G memory
-> with following parameters:
-> 
-> 	ip: ipv4
-> 	runtime: 300s
-> 	nr_threads: 16
-> 	cluster: cs-localhost
-> 	test: TCP_CRR
-> 	cpufreq_governor: performance
-> 	ucode: 0x5003003
-> 
-> test-description: Netperf is a benchmark that can be use to measure various aspect of networking performance.
-> test-url: http://www.netperf.org/netperf/
+The following commit has been merged into the x86/cleanups branch of tip:
 
-I'm very very sceptical this thing benchmarks #MC exception handler
-performance. Because the code this patch adds gets run only during a MCE
-exception.
+Commit-ID:     11aa1415d8bd2920ce884356479eabbd64b1df2a
+Gitweb:        https://git.kernel.org/tip/11aa1415d8bd2920ce884356479eabbd64b1df2a
+Author:        Hao Lee <haolee.swjtu@gmail.com>
+AuthorDate:    Sun, 03 Jan 2021 03:08:34 
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 12 Jan 2021 14:37:37 +01:00
 
-So unless I'm missing something obvious please check your setup.
+x86/entry: Remove now unused do_IRQ() declaration
 
--- 
-Regards/Gruss,
-    Boris.
+do_IRQ() has been replaced by common_interrupt() in
 
-https://people.kernel.org/tglx/notes-about-netiquette
+  fa5e5c409213 ("x86/entry: Use idtentry for interrupts")
+
+Remove its now unused declaration.
+
+Signed-off-by: Hao Lee <haolee.swjtu@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20210103030834.GA15432@haolee.github.io
+---
+ arch/x86/include/asm/irq.h | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/arch/x86/include/asm/irq.h b/arch/x86/include/asm/irq.h
+index 528c8a7..76d3896 100644
+--- a/arch/x86/include/asm/irq.h
++++ b/arch/x86/include/asm/irq.h
+@@ -40,8 +40,6 @@ extern void native_init_IRQ(void);
+ 
+ extern void __handle_irq(struct irq_desc *desc, struct pt_regs *regs);
+ 
+-extern __visible void do_IRQ(struct pt_regs *regs, unsigned long vector);
+-
+ extern void init_ISA_irqs(void);
+ 
+ extern void __init init_IRQ(void);
