@@ -2,97 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CA0B2F3435
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:34:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3004D2F343E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391712AbhALPev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 10:34:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726113AbhALPev (ORCPT
+        id S2403908AbhALPfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 10:35:39 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:2780 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391542AbhALPfi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:34:51 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA041C061786;
-        Tue, 12 Jan 2021 07:34:33 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id m6so1591917pfm.6;
-        Tue, 12 Jan 2021 07:34:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RVuECvNPbIKct0vhZG5VyO5CR6uluO/0d3yC7WXia4s=;
-        b=HI6KrNCZhlvK/P2qwujoTxU0dyNl5pO+ERhl880VC3ZVmWHdnc12/FRplsiLALoLpQ
-         DhGkfCuPNcyLdO0o+BV8mBdHOR67to4FsoCHW6mGidBLSNyQzRnsFuYcUjddoWc8qp/X
-         mSm2U5ogYTCfHrAAVhJa95mYde/LzrjP3GVho/e/KE7qR4b6G3VEQTCpYJg320TBX4ZR
-         kIL04T8+LYWtMVWqjZXR39BkJH9/W8V0LT7uitSCHmMMCupW1KyRIe1zdfZ+m4Aoz7ja
-         FjIrb0pPeAR9vv546OQDXz3ZZKBl5Vo6MAE+wCn7LQdfyyTryBzJ5zHaj6pWD06JJDkj
-         9NUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RVuECvNPbIKct0vhZG5VyO5CR6uluO/0d3yC7WXia4s=;
-        b=eOXSDRx+jA4ejXpqWmGtPEPFpzCGGHwI0/1LwIR7IRiXCqB/DlYLj1ah7XxSSSY/7W
-         2DRbzYRIYwonmjQV3cA5xSQyxaKYAgTS+Z+xGnEj4elEi2A6uqdv4pVUYsbzNarcrlsP
-         kFtAs7syo7eMo4bH5xnyq5nGtcD2azqfG6o7syN/GrBHZF9cDBcDrqttRe9R5VhjyA+K
-         Um+KvvZsYI9lKAn8ilxdXVEsdP6eOVNei34kVSu+ZBJkARWrySyQkQzvc7JqLw4r0zSx
-         iwL8wSodxI/gZik3HJOrHipsXaHp71Ap5qozVED358vIQ1/Rl438wWNjkdqb5Mcp38W5
-         Gz2w==
-X-Gm-Message-State: AOAM530IQ2GQD2GHFE+NqRHVuljEaId1OdXp940pQKBF9YrOwAHekJm6
-        HnOnlTW5nLqi9M5QEg4N9bgsQ2jbXW2DbLMvByg=
-X-Google-Smtp-Source: ABdhPJyfFCMrM1pHAKnzaAFF1beFe+dz5Z6vWGzaTwLXdBSrj4ozRSeA8/h3TjrVLExyI3jqCackj2GYCzNhAtd+6yo=
-X-Received: by 2002:a65:48cb:: with SMTP id o11mr5198353pgs.121.1610465673155;
- Tue, 12 Jan 2021 07:34:33 -0800 (PST)
-MIME-Version: 1.0
-References: <20210112152951.154024-1-fengli@smartx.com>
-In-Reply-To: <20210112152951.154024-1-fengli@smartx.com>
-From:   Feng Li <lifeng1519@gmail.com>
-Date:   Tue, 12 Jan 2021 23:34:06 +0800
-Message-ID: <CAEK8JBD68oTcuV+Cf-S1Vv-n6nyr5UM_zWA5iJFHP=UvQ14AZg@mail.gmail.com>
-Subject: Re: [PATCH] blk: avoid divide-by-zero with zero granularity
-To:     Li Feng <fengli@smartx.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+        Tue, 12 Jan 2021 10:35:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1610465739; x=1642001739;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=QyGWuPqLtbiZ4Sx64HpU/v/Ruq4xAC5p6ggIJuivk+s=;
+  b=lIacRtONk1BGSZmweluysCTNaERdz4/bL3lB4kUtykaOBHEvHBLgxUBx
+   fhAU7pk4eWVCJNmq/E7IOIEFkosHDky0PVnBCYeGs7abb9Sg0DORJVuOJ
+   MN2wHIP5eJJ92522iQMCxlaskccAmfqWTVCWmuHtZNCq4etyjUPHZDj4V
+   FEqoUlGUUTq2kTwqliaIR0nVxOugUCxloyncIRt0yFI//hYcAGqdi1BM4
+   Ao0k0kZf6KM9577M+HVwyjO8umwe4buhukl9p4ck+QumZKS7DDiJH2fRE
+   dwq6GLBXDNe1FVZVEsWtnv25B4hgaHOlzZYRbUvoH0ol3B28zywTJ5yha
+   Q==;
+IronPort-SDR: 110ZQelFImbkW/oUe53p+ndZm1cnNMb1cJvC9OfeOqQ/nFtCsuZc0WfvVgyZebrypJhzfbPEkc
+ i/5q+0aWKDS041JK5M2Aqg9zMlYIbrYyl51OH5vEsG/g7wa8asRiVEwllmjJ5lklSB0pYFf7Hi
+ E7I92vxCrQ+ImyAMKmqHQrN4XxGo9BNXJxYRB3scTONZ1Viyqmo5Y0CAFWMStDmjodqVysSnUX
+ xqlDJL4E8UQD1mg5MPW2nmEr2thJgsSoG2bu9XmF8ySL0lsU+km1jtlSkveLpja5mkh2C+ls5G
+ mrY=
+X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
+   d="scan'208";a="105149176"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Jan 2021 08:34:23 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 12 Jan 2021 08:34:22 -0700
+Received: from soft-dev2 (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 12 Jan 2021 08:34:20 -0700
+Message-ID: <4080678764ff0abfb7491e9b34fc4f46bf3262a8.camel@microchip.com>
+Subject: Re: [PATCH v1 1/2] net: phy: Add 100 base-x mode
+From:   Bjarni Jonasson <bjarni.jonasson@microchip.com>
+To:     =?UTF-8?Q?Micha=C5=82_Miros=C5=82aw?= <mirqus@gmail.com>
+CC:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
+        "Heiner Kallweit" <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "Linux Kernel" <linux-kernel@vger.kernel.org>,
+        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
+Date:   Tue, 12 Jan 2021 16:34:19 +0100
+In-Reply-To: <CAHXqBFJSgebLn9GxgdYGdVR6_+i76uX5YyjHw5niOet9BuYj6A@mail.gmail.com>
+References: <20210111130657.10703-1-bjarni.jonasson@microchip.com>
+         <20210111130657.10703-2-bjarni.jonasson@microchip.com>
+         <CAHXqBFJSgebLn9GxgdYGdVR6_+i76uX5YyjHw5niOet9BuYj6A@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm sorry, ignore this one.
+On Mon, 2021-01-11 at 20:37 +0100, Michał Mirosław wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you
+> know the content is safe
+> 
+> pon., 11 sty 2021 o 14:54 Bjarni Jonasson
+> <bjarni.jonasson@microchip.com> napisał(a):
+> > Sparx-5 supports this mode and it is missing in the PHY core.
+> > 
+> > Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
+> > ---
+> >  include/linux/phy.h | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/include/linux/phy.h b/include/linux/phy.h
+> > index 56563e5e0dc7..dce867222d58 100644
+> > --- a/include/linux/phy.h
+> > +++ b/include/linux/phy.h
+> > @@ -111,6 +111,7 @@ extern const int phy_10gbit_features_array[1];
+> >   * @PHY_INTERFACE_MODE_10GBASER: 10G BaseR
+> >   * @PHY_INTERFACE_MODE_USXGMII:  Universal Serial 10GE MII
+> >   * @PHY_INTERFACE_MODE_10GKR: 10GBASE-KR - with Clause 73 AN
+> > + * @PHY_INTERFACE_MODE_100BASEX: 100 BaseX
+> >   * @PHY_INTERFACE_MODE_MAX: Book keeping
+> 
+> [...]
+> 
+> This is kernel-internal interface, so maybe the new mode can be
+> inserted before 1000baseX for easier lookup?
+> 
+> Best Regards
+> Michał Mirosław
 
-Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B41=E6=9C=8812=E6=97=A5=E5=
-=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=8811:30=E5=86=99=E9=81=93=EF=BC=9A
->
-> If the physical_block_size and io_min is less than a sector, the
-> 'granularity >> SECTOR_SHIFT' will be zero.
->
-> Signed-off-by: Li Feng <fengli@smartx.com>
-> ---
->  include/linux/blkdev.h | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> index f94ee3089e01..4d029e95adb4 100644
-> --- a/include/linux/blkdev.h
-> +++ b/include/linux/blkdev.h
-> @@ -1485,6 +1485,10 @@ static inline int queue_alignment_offset(const str=
-uct request_queue *q)
->  static inline int queue_limit_alignment_offset(struct queue_limits *lim,=
- sector_t sector)
->  {
->         unsigned int granularity =3D max(lim->physical_block_size, lim->i=
-o_min);
-> +       granularity =3D granularity >> SECTOR_SHIFT;
-> +       if (!granularity)
-> +               return 0;
-> +
->         unsigned int alignment =3D sector_div(sector, granularity >> SECT=
-OR_SHIFT)
->                 << SECTOR_SHIFT;
->
-> --
-> 2.29.2
->
+Yes, will do that.
+--
+Bjarni Jonasson
+Microchip
+
+
