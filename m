@@ -2,104 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA732F3B46
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF992F3B4B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393223AbhALTza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 14:55:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51172 "EHLO
+        id S2406643AbhALTz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:55:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729360AbhALTz3 (ORCPT
+        with ESMTP id S2390432AbhALTz6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:55:29 -0500
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B45FC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 11:54:49 -0800 (PST)
-Received: by mail-lj1-x242.google.com with SMTP id b10so4238552ljp.6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 11:54:49 -0800 (PST)
+        Tue, 12 Jan 2021 14:55:58 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29E0C061575;
+        Tue, 12 Jan 2021 11:55:17 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id x18so1985603pln.6;
+        Tue, 12 Jan 2021 11:55:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=fWnEd9QMcS2jsgBPZmkL+oQ2gsCL7mhfd27lmgzb5Mo=;
-        b=CXBvJ0FrysGd/37CElNT+gLiFa3VxTTftmmRNxLAkKBz9xfCGYMDsSQ73LHFWFhptM
-         XDhcPGmk+ns/obK3wumVQrPiSbS3pu4s8sKnaw/VZsVGr37zHEau9Wu/G0zgu4/zaIHF
-         4H1So2ZyoGqt/QcuS4bkHbjVH/I3XlD8ajcIdJOACSqEaNkl3JVQSVGZxoYlFJX/7jZP
-         aZb1Es9TDwsqf8pIKVmWTawtNWp/fVNhrKhZeD1BDtDbaP9734XSCFCEYDj/7QGoYMOS
-         eb2L0PIwRashi7mxGvL+2jyVAHr7u7K/BGEEWqnBhd2eC0V8iw4huzOxWP+KAQE0lRt+
-         YOXw==
+        bh=OHxfZefJp5DVb6I/g654zOX0kdQvKWlVA9tkXuzjllI=;
+        b=E8p8MbbFOX87Tzd29VAlYQ94npIDgPk6BOQXPjg5q4rz9vI9cL5EgwkamLkQr2tp/t
+         KTp7/g+3JZr5opWsE/zCm4OH9mrxWHUjLeGgvXlvsgvRG0gmOiaOqncJ2lD8WUn0FRH5
+         omFHVaj5MzfxJq9YqJbGkuHqGVr89ATX3zTNkdGvheskX5UOLOB57HslDbdVhAI4hDVl
+         8rvIiSDxPBOYv4GLsQYlzCkPERh2YGRR7Yrvoe+oxwzg+uf3rVmjAgfE3qb8SENG2qr4
+         +4j3RhFhe9x8Bq9ZMRdz/8l1e9cxze8ec4R/ygNk5bJ1lc+aRDKsZl6sEl9DM1WymfAW
+         ZTRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=fWnEd9QMcS2jsgBPZmkL+oQ2gsCL7mhfd27lmgzb5Mo=;
-        b=q0NJ8vzulRe28oKXWPg/WaPLqA9NUA26jah+wZ2GfUydfwqkqPud0LYCDRlqQYfi/r
-         ApQpdjtDwq9ov5TJVaAUdptn5Nbvz+JeEw+0OsWN9dXcoarK81H4HiOs9fxBSF6ExkXK
-         Y1YKQFThIrZcBjzOPtY/GrG7OYVbQwt73T40sZVYsd4pbzKyfmsAVR7astjWlzRfYoOG
-         JaehRIThXuysdDmocqUBkAeSFrbSIrPENAfXaUzMrhdv3h2tgmDVUYjO6i5Iq97xlPUC
-         6Ty0l8/dQ4xPy0FyuvYicd1NxKP17D0K/RNsn2eknpzZCgXXp+WiavMtQr5gbUpp7fEM
-         zy7A==
-X-Gm-Message-State: AOAM532lqfT/5mcsMSFoonr3M1+kFeNbwjeAUOJ7tY9eLHQOl8mpTVB/
-        xKOcRoiYdTtzeQbgkgPT0M4TB1X7QdV2U3qk9gA=
-X-Google-Smtp-Source: ABdhPJwgfBzfVEzazvFXa7K2ZmNx5XOvOw90zVjCeLwp2Glm7DI/7ZLyfAHtx/NF9X+voBSHyKnocehl7Wd0Far6kBM=
-X-Received: by 2002:a2e:3503:: with SMTP id z3mr398957ljz.74.1610481287629;
- Tue, 12 Jan 2021 11:54:47 -0800 (PST)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=OHxfZefJp5DVb6I/g654zOX0kdQvKWlVA9tkXuzjllI=;
+        b=ZRfL5HelAAGdv3yqjDJDrTJSzMOCN0DRxuG7peef5qrllVhHxKye9psy3TWzsrkWpv
+         XABKILiqqgtFcO1KCefvnvluumbNtNGTZFWc0+6bMxur93FmqjP/XZbLisxhANNkZAna
+         HFpor7Qm5g1pSgleTPrPbnCeMvhWLt1lRVsVJsQ1MzBENpTPAhG/m1ZQVHZvU7MtxiuI
+         wS0L+C3kt8hW64H1Fx0Is6V3AphPAJHkxo6NRmfQjQSF2H2gwKemqE5Q8Hc36x3B2Ggu
+         fjhvMHyyn7GTFXPvU7KmeqBMpuMBvpl9MNINHvamkpd3tzoL2QHKMFegUCPq+0Mw4ocv
+         pxdQ==
+X-Gm-Message-State: AOAM530BkR9lZnRY1H2ZoDICzg48DOm9nzPIbw1Yzbh4eWrsEzaxEvoz
+        yF+gJaBuXiGWCroRMuIfjyhsgSzNpSD7
+X-Google-Smtp-Source: ABdhPJyh4OgXheUX+DS6PXdtvQs2YW4vSjLZHQhggjATer9UQzyWYabHVV6R2AH78V8m5+hWE8XQ1g==
+X-Received: by 2002:a17:90a:454e:: with SMTP id r14mr809933pjm.194.1610481317402;
+        Tue, 12 Jan 2021 11:55:17 -0800 (PST)
+Received: from localhost.localdomain ([216.52.21.4])
+        by smtp.gmail.com with ESMTPSA id c62sm3874039pfa.116.2021.01.12.11.55.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 12 Jan 2021 11:55:16 -0800 (PST)
+From:   Praveen Chaudhary <praveen5582@gmail.com>
+X-Google-Original-From: Praveen Chaudhary <pchaudhary@linkedin.com>
+To:     davem@davemloft.net, kuba@kernel.org, corbet@lwn.net,
+        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: RE: [PATCH v0 net-next 1/1] Allow user to set metric on default route learned via Router Advertisement.
+Date:   Tue, 12 Jan 2021 11:55:11 -0800
+Message-Id: <20210112195511.13235-1-pchaudhary@linkedin.com>
+X-Mailer: git-send-email 2.29.0
+In-Reply-To: <20210111151650.41ac7532@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <20210111151650.41ac7532@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Sender: fredmartins1111@gmail.com
-Received: by 2002:a2e:8156:0:0:0:0:0 with HTTP; Tue, 12 Jan 2021 11:54:47
- -0800 (PST)
-From:   Mrs Nicole Marois <nicolemarois6@gmail.com>
-Date:   Tue, 12 Jan 2021 11:54:47 -0800
-X-Google-Sender-Auth: odWwlF1aNJ7xIISoq2AC6AjbQrQ
-Message-ID: <CAJ649Cg0n99ddqP9p3O3Y1XWCJ08k9-eNQanXfVKMiRpiP-p-Q@mail.gmail.com>
-Subject: I'AM SUFFERING FROM CANCER OF THE HEART
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'AM SUFFERING FROM CANCER OF THE HEART
+Hi Jakub
 
-Dear Friend.
+Thanks for the review,
 
-Greetings to you in the name of the Lord God Almighty am MRS NICOLE
-MAROIS From (Paris) France, but am based in Burkina Faso Africa for
-eight years now as a business woman dealing on gold exportation and
-cotton Sales. But I have been suffering from this deadly disease
-called cancer for long and the doctor just said I have just few weeks
-to live. I know it will be difficult for you to believe my story now,
-but this is the situation I found myself in, it=E2=80=99s not my desire to =
-be
-on a sick bed today but God knows best,
+Sure, I will reraise the patch (again v0i, sonce no code changes) after adding space before '<'.
 
-Now that I am about to end the race like this, without any family
-Members and no child. I have $5.8 Million US DOLLARS in BANK OF AFRICA
-(B.O.A) Burkina Faso it=E2=80=99s all my life savings, I instructed the Ban=
-k
-to give it to St Andrews Missionary and Home Kizito Orphanage in
-Burkina Faso. But my mind is not at rest because i do not trust them,
-I am writing this letter now through the help of my computer beside my
-sick bed.
-
-I will instruct the bank to transfer this fund to you as a foreigner
-but you have to promise me that you will take 40 Percent(%) of the
-total money for your personal use While 60 Percent (%) of the money
-will go to charity, Orphanage and less Privileges" people in the
-street and helping the Needy. I grew up as an Orphan and I don't have
-anybody as my family member, just to Endeavour that the house of God
-is maintained. Am doing this so that God will forgive my sins and
-accept my soul because this sickness has suffered me so much.
-
-As soon as I receive your reply I shall give you the contact of the
-bank and I will also instruct my Bank Manager to issue you an
-authority letter that will prove you the present beneficiary of the
-money in the bank that is if you assure me that you will act
-accordingly as I Stated herein.
-
-I look forward to getting a reply from you.
-
-Thanks and God bless you,
-
-Mrs NICOLE MAROIS.
+This patch adds lines in 'include/uapi/', that requires ABI version changes for debian build. I am not sure, if we need any such changes to avoid breaking allmodconfig. It will be really helpful, if you can look at the patch once 'https://lkml.org/lkml/2021/1/11/1668' and suggest on this. Thanks a lot again.
