@@ -2,87 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F3F2F28EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 08:33:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 152162F28F6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 08:33:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391993AbhALHbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 02:31:50 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:49993 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726949AbhALHbu (ORCPT
+        id S2392035AbhALHcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 02:32:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391921AbhALHco (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 02:31:50 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610436690; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=cBjd+mxvdRBq+9OHv7BDdff4Bs/on3l7fhAHwfVcq+o=; b=W/dxks3Ft5+PWKaz3pvDZHs3IO1uFY+ZXjtACZMWzGnCTb74iHa4DpJQHB5cFHRWW9DKb69y
- bzF7Eduj0iCZWBzwrf9k8r1XlpbSA12QgEduphRZ1LaqcOty+0jVLQoPrn+VX0tTZ5eFr3wU
- 4IAQFET+tXJKMbGmBYGJw6UErw0=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5ffd5033c88af06107ba80ce (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Jan 2021 07:30:59
- GMT
-Sender: akashast=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 06417C43463; Tue, 12 Jan 2021 07:30:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.43.98] (unknown [223.225.121.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: akashast)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D9486C433C6;
-        Tue, 12 Jan 2021 07:30:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D9486C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akashast@codeaurora.org
-Subject: Re: [PATCH V8 1/1] i2c: i2c-qcom-geni: Add shutdown callback for i2c
-To:     Roja Rani Yarubandi <rojay@codeaurora.org>, wsa@kernel.org
-Cc:     swboyd@chromium.org, dianders@chromium.org,
-        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
-        mka@chromium.org, msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
-        rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org
-References: <20210108150545.2018-1-rojay@codeaurora.org>
- <20210108150545.2018-2-rojay@codeaurora.org>
-From:   Akash Asthana <akashast@codeaurora.org>
-Message-ID: <1cf28a5a-6de0-1f4e-4cd0-3a1f8125c1ca@codeaurora.org>
-Date:   Tue, 12 Jan 2021 13:00:40 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 12 Jan 2021 02:32:44 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C235C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 23:32:04 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id ga15so2094658ejb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 23:32:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4oLu2sfu7T6rmbtDucSQghvGdmQoaOx677hR+mIWqSY=;
+        b=cE/hq3RNKR7NvZ1Y7OPmkA1ZpixGafxQaZkhxbSJmopqjCBpEGC7lIMl8R4Otyzf+W
+         ncgHQvponhR57+93ve2JGEsNS0ZyAZVpaeWChTim5BWtzjLPkeTF7GM3XDoyWdrFS29r
+         x18VOLYpGAR/KGDmGyGD4RE6RF0Apm6g3whOCY0UM4Kgwh4TTBKRtDt2YOM7MhRyW7os
+         N6jbqVitk5ccZjE0ks8jmcZxrjn7aYa3sLAE8poBOlu+7Sjv4uNRs+kC+ZUYDSpFPzYX
+         czkUDN/5EGcHBZVcK6hx2WJ3dD3RkBY7nw7LeOEnoVhgXNZT6KiNMgqehnz40hDIF0im
+         +eOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4oLu2sfu7T6rmbtDucSQghvGdmQoaOx677hR+mIWqSY=;
+        b=H8iKPRaqWU6GpDMMCg1oPxeNAslqTcavax5SkDJQs0bqR1wtlgMQPswjA4NEI2f1AS
+         qzwgeA0qqx4wZshgdNfZVHSku/8poXK6MToSWCWwmnu29UlNLyojw6HfJpZXTSbhUnHV
+         uB9o5Iav+YIwZRhYkj0XsBLPN4eBP2v78q70rumtUMvQgoUuJ8VFFXqUtu/WJ3ANyUSP
+         4bQgCEgLtq9Sn7XZlxUMSHaXszhr+nlEQDgiROCxSGEDSbPppkEP9pcDmOSVcZbbJkX2
+         ovO8OvsNtfT86CaeZ40dKQ06l3LW/nxb5ZlSz0N8EIQRLgiMUgztsZR2eNxZBHhm8ECY
+         nz4w==
+X-Gm-Message-State: AOAM530+gtBnfv1kW/yGIUhZHD8x6nZeP5QiegnMKDem7zEvYuHO+FTH
+        XM1wyJQXhs//wu0zo9Tq8EjcDFTUTJLL161ur02F7g==
+X-Google-Smtp-Source: ABdhPJxh338pyZzG1XIMYqb2eJIRGX5SCJaT+Z8XZC3dnltGpUongxJyxLupyLTI2+WbOKp7NFt3seQokN1sulTXf9c=
+X-Received: by 2002:a17:906:1498:: with SMTP id x24mr2191163ejc.170.1610436722776;
+ Mon, 11 Jan 2021 23:32:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210108150545.2018-2-rojay@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210111130036.414620026@linuxfoundation.org>
+In-Reply-To: <20210111130036.414620026@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 12 Jan 2021 13:01:51 +0530
+Message-ID: <CA+G9fYvt7Bo2nq1KGhnRw=wap1-L2G9rw4K8DkQV1V+yvqSLDg@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/77] 4.19.167-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 1/8/2021 8:35 PM, Roja Rani Yarubandi wrote:
-> If the hardware is still accessing memory after SMMU translation
-> is disabled (as part of smmu shutdown callback), then the
-> IOVAs (I/O virtual address) which it was using will go on the bus
-> as the physical addresses which will result in unknown crashes
-> like NoC/interconnect errors.
+On Mon, 11 Jan 2021 at 18:38, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> So, implement shutdown callback to i2c driver to stop on-going transfer
-> and unmap DMA mappings during system "reboot" or "shutdown".
+> This is the start of the stable review cycle for the 4.19.167 release.
+> There are 77 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Fixes: 37692de5d523 ("i2c: i2c-qcom-geni: Add bus driver for the Qualcomm GENI I2C controller")
-> Signed-off-by: Roja Rani Yarubandi <rojay@codeaurora.org>
-Reviewed-by: Akash Asthana <akashast@codeaurora.org>
+> Responses should be made by Wed, 13 Jan 2021 13:00:19 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.167-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.19.167-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: 7f0a1a1d4ba925eedec5669d52d6ed7da84084da
+git describe: v4.19.166-78-g7f0a1a1d4ba9
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
+.y/build/v4.19.166-78-g7f0a1a1d4ba9
+
+No regressions (compared to build v4.19.166)
+
+No fixes (compared to build v4.19.166)
+
+Ran 46273 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- s390
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* ltp-controllers-tests
+* ltp-dio-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-mm-tests
+* ltp-sched-tests
+* fwts
+* kselftest
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* v4l2-compliance
+* ltp-fs-tests
+* ltp-open-posix-tests
+* kvm-unit-tests
+* rcutorture
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-native
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
