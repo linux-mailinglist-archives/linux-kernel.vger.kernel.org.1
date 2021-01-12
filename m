@@ -2,127 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7832F2923
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 08:47:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E84272F294F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 08:56:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392056AbhALHrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 02:47:17 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37624 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728301AbhALHrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 02:47:17 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610437590; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yBGTtO60lRhzhjBUzaj4i2s5sW7EfXTuKGnmunlohWE=;
-        b=hwvbKiO/E+NP9QqEauVNDAoXqNTjumZS4MLitpiS9HlpLmF/1Yfxx5GZBSvryW5wwOIx5i
-        aPe3gN854YKDgcGGxg7pMMKmlKDwomzFnegh8MQ78X/ZT2s+vLlhl5UtDI+d1i66gmCFHd
-        zDf6PbuIUWr9KLvxPrgtSHGkeBnbUv0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 87EF3AB92;
-        Tue, 12 Jan 2021 07:46:30 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 08:46:29 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Suren Baghdasaryan <surenb@google.com>
-Cc:     akpm@linux-foundation.org, jannh@google.com, keescook@chromium.org,
-        jeffv@google.com, minchan@kernel.org, shakeelb@google.com,
-        rientjes@google.com, edgararriaga@google.com, timmurray@google.com,
-        linux-mm@kvack.org, selinux@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [PATCH v2 1/1] mm/madvise: replace ptrace attach requirement for
- process_madvise
-Message-ID: <20210112074629.GG22493@dhcp22.suse.cz>
-References: <20210111170622.2613577-1-surenb@google.com>
+        id S2392146AbhALH4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 02:56:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731058AbhALH4K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 02:56:10 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA318C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 23:55:29 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id e15so1017377qte.9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 23:55:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j7gLFMlxBCQENVWtNxS2npLHFlF1Oh0HPmJ2b4uXz4E=;
+        b=Muj3J6AUcKeWXk2QVKpBxfCJmD1ZNU3ECoTrLMhnZ3l10BcmT1KWV3KJZVJiyjnmgp
+         tXnYNLGybukalejR/JL4Ccq0hthA+yksiWl3Xj9n38DlJXhcHL4x7k7Hi60j74u9oC5X
+         xVXg0JvakYs/Mgnk3DB5tWgDJ2Wm5qz5NT8oI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j7gLFMlxBCQENVWtNxS2npLHFlF1Oh0HPmJ2b4uXz4E=;
+        b=LakH1Re7u16u1XGHpOzDSpsRb/UOlB04HTlKbJ6lO5L7k06CW65SN/xqI1ieV/qyaN
+         ZvkopHLqYEs0RyDEbNAvgS6N5ZUFCIU0xn8cJToC6VT41sWkDu6S4zmS7owANMMtHqVc
+         7lQmVu0/859vmh03FwJ7LCjjI9IpgdCP69N4/MhFIDP+OyXBMOmn+rRUE2MnWJWXlOEe
+         cAD1cYHrIoo0n6/bfgHPqeHS4oUZhc2VV+5FFoVuVm/YZqPcKfenoGPmw//Cb/VCfz8G
+         W0DrvF2wwUGK1gowL3gobVi0+k3DXzm15+SxwgnV+RLI2Cv4ylAYsqVMmqSS9VQFP8V5
+         lfIA==
+X-Gm-Message-State: AOAM530tma8ba3fFS5xeb6ZoUrWrzJfmLhKU+2AY/7bbXkMdxVIDGTUf
+        C2uQKqMZKLO4+zVce84E2GctW/CZrgKFZpdK
+X-Google-Smtp-Source: ABdhPJyf0dKIDuXfeOX/A2mx1ErYVRAC4nx/jlfMjwhDmw1r0O8/HePbwWulvWUCZRREFTMyw1rogg==
+X-Received: by 2002:aed:2d83:: with SMTP id i3mr3422782qtd.248.1610438127818;
+        Mon, 11 Jan 2021 23:55:27 -0800 (PST)
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com. [209.85.222.169])
+        by smtp.gmail.com with ESMTPSA id d25sm990574qkl.97.2021.01.11.23.55.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 23:55:27 -0800 (PST)
+Received: by mail-qk1-f169.google.com with SMTP id h4so1153704qkk.4
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 23:55:27 -0800 (PST)
+X-Received: by 2002:a05:6638:c52:: with SMTP id g18mr3073726jal.84.1610437670186;
+ Mon, 11 Jan 2021 23:47:50 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111170622.2613577-1-surenb@google.com>
+References: <20210106034124.30560-1-tientzu@chromium.org> <20210106034124.30560-6-tientzu@chromium.org>
+ <20210106185757.GB109735@localhost.localdomain> <CALiNf2_dV13jbHqLt-r1eK+dtOcAKBGcWQCVMQn+eL6MuOrETQ@mail.gmail.com>
+ <20210107180032.GB16519@char.us.oracle.com> <4cce7692-7184-9b25-70f2-b821065f3b25@gmail.com>
+In-Reply-To: <4cce7692-7184-9b25-70f2-b821065f3b25@gmail.com>
+From:   Claire Chang <tientzu@chromium.org>
+Date:   Tue, 12 Jan 2021 15:47:39 +0800
+X-Gmail-Original-Message-ID: <CALiNf29Kqr1WP3BEjX-y5Xtife7AinqiXAcRD2g4eB9isTaXfQ@mail.gmail.com>
+Message-ID: <CALiNf29Kqr1WP3BEjX-y5Xtife7AinqiXAcRD2g4eB9isTaXfQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 5/6] dt-bindings: of: Add restricted DMA pool
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>, will@kernel.org,
+        Frank Rowand <frowand.list@gmail.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
+        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
+        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        rafael.j.wysocki@intel.com, heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        rdunlap@infradead.org, dan.j.williams@intel.com,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Tomasz Figa <tfiga@chromium.org>,
+        Nicolas Boichat <drinkcat@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 11-01-21 09:06:22, Suren Baghdasaryan wrote:
-> process_madvise currently requires ptrace attach capability.
-> PTRACE_MODE_ATTACH gives one process complete control over another
-> process. It effectively removes the security boundary between the
-> two processes (in one direction). Granting ptrace attach capability
-> even to a system process is considered dangerous since it creates an
-> attack surface. This severely limits the usage of this API.
-> The operations process_madvise can perform do not affect the correctness
-> of the operation of the target process; they only affect where the data
-> is physically located (and therefore, how fast it can be accessed).
+On Fri, Jan 8, 2021 at 2:15 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>
+> On 1/7/21 10:00 AM, Konrad Rzeszutek Wilk wrote:
+> >>>
+> >>>
+> >>>  - Nothing stops the physical device from bypassing the SWIOTLB buffer.
+> >>>    That is if an errant device screwed up the length or DMA address, the
+> >>>    SWIOTLB would gladly do what the device told it do?
+> >>
+> >> So the system needs to provide a way to lock down the memory access, e.g. MPU.
+> >
+> > OK! Would it be prudent to have this in the description above perhaps?
+>
+> Yes this is something that must be documented as a requirement for the
+> restricted DMA pool users, otherwise attempting to do restricted DMA
+> pool is no different than say, using a device private CMA region.
+> Without the enforcement, this is just a best effort.
 
-Yes it doesn't influence the correctness but it is still a very
-sensitive operation because it can allow a targeted side channel timing
-attacks so we should be really careful.
+Will add in the next version.
 
-> What we want is the ability for one process to influence another process
-> in order to optimize performance across the entire system while leaving
-> the security boundary intact.
-> Replace PTRACE_MODE_ATTACH with a combination of PTRACE_MODE_READ
-> and CAP_SYS_NICE. PTRACE_MODE_READ to prevent leaking ASLR metadata
-> and CAP_SYS_NICE for influencing process performance.
-
-I have to say that ptrace modes are rather obscure to me. So I cannot
-really judge whether MODE_READ is sufficient. My understanding has
-always been that this is requred to RO access to the address space. But
-this operation clearly has a visible side effect. Do we have any actual
-documentation for the existing modes?
-
-I would be really curious to hear from Jann and Oleg (now Cced).
-
-Is CAP_SYS_NICE requirement really necessary?
-
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> Acked-by: Minchan Kim <minchan@kernel.org>
-> Acked-by: David Rientjes <rientjes@google.com>
-> ---
->  mm/madvise.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index 6a660858784b..a9bcd16b5d95 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -1197,12 +1197,22 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
->  		goto release_task;
->  	}
->  
-> -	mm = mm_access(task, PTRACE_MODE_ATTACH_FSCREDS);
-> +	/* Require PTRACE_MODE_READ to avoid leaking ASLR metadata. */
-> +	mm = mm_access(task, PTRACE_MODE_READ_FSCREDS);
->  	if (IS_ERR_OR_NULL(mm)) {
->  		ret = IS_ERR(mm) ? PTR_ERR(mm) : -ESRCH;
->  		goto release_task;
->  	}
->  
-> +	/*
-> +	 * Require CAP_SYS_NICE for influencing process performance. Note that
-> +	 * only non-destructive hints are currently supported.
-> +	 */
-> +	if (!capable(CAP_SYS_NICE)) {
-> +		ret = -EPERM;
-> +		goto release_mm;
-> +	}
-> +
->  	total_len = iov_iter_count(&iter);
->  
->  	while (iov_iter_count(&iter)) {
-> @@ -1217,6 +1227,7 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
->  	if (ret == 0)
->  		ret = total_len - iov_iter_count(&iter);
->  
-> +release_mm:
->  	mmput(mm);
->  release_task:
->  	put_task_struct(task);
-> -- 
-> 2.30.0.284.gd98b1dd5eaa7-goog
-> 
-
--- 
-Michal Hocko
-SUSE Labs
+> --
+> Florian
