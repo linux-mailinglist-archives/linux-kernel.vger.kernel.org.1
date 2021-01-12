@@ -2,222 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A45A2F3617
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:46:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6BB52F361C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:48:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405428AbhALQp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:45:56 -0500
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:44433 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728150AbhALQp4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:45:56 -0500
-Received: from [185.56.157.72] (port=32796 helo=[192.168.101.73])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1kzMn9-0031SN-97; Tue, 12 Jan 2021 17:45:11 +0100
-Subject: Re: [RFC 2/2] clk: vc5: Add support for optional load capacitance
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-clk <linux-clk@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210106173900.388758-1-aford173@gmail.com>
- <20210106173900.388758-2-aford173@gmail.com>
- <c5a97aca-ce74-bbd3-e99d-358e079c4c4a@lucaceresoli.net>
- <CAHCN7x+gUQwv4cWgg7Jt2oca1n4KW=o08rzoK9TB1Z_rKE0qog@mail.gmail.com>
- <e64a590d-1b3a-73cd-fb93-970013385224@lucaceresoli.net>
- <CAHCN7x+NFTn9Jqzbdm7d2UZt68DSAZ9Z-r+7Txwqi1=eE=W3Ug@mail.gmail.com>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <e50740b9-4ab1-bb14-da51-acd3f98fab1b@lucaceresoli.net>
-Date:   Tue, 12 Jan 2021 17:45:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2405445AbhALQqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:46:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39906 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726184AbhALQqv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 11:46:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 89F3123121;
+        Tue, 12 Jan 2021 16:46:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610469970;
+        bh=G8QgmioLPowngS9PnWyS0qJ4GW5plz/qHFNOJiaPmLM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=utv8poqFkjEP20anauzkLWewiDee9vsGsy6vyLsmr3EPv7IlXm1g/fNO0INTpvRm1
+         v2PgImEiKX8ztyABczzpBOEhbzIyaJpAccHLb8IFEW20WPjtZQFRKzdvQh24GDVYXF
+         QuOrbf+4HF22PlWuAsAGgo7uxImKpfLnfNIMp63kcHLBVpAqkMg0JoW9xDlto6ZL4f
+         dr9likG3mnT/AFbPWPkR+C/qxNxQ4CLS9lsSaOTfi0RyVGFDEGYp/mFrN3GUXVI+tz
+         CVbb5KMFAirL9ETDQiHejG2L/6L62nC5eHgxduPHFT6jesN0HpHTDuzM+nFwhw3rRt
+         6dDhJZqR7ju3A==
+Received: by mail-ej1-f42.google.com with SMTP id q22so4483952eja.2;
+        Tue, 12 Jan 2021 08:46:10 -0800 (PST)
+X-Gm-Message-State: AOAM531In9V2Fe9Og97hD4mrGgbzRtC/UyxxZD1MKOP5dKcnhoMtlN9M
+        99GyN47oe4PUV0YDEhEDAh5roYNx7Rxx021nGA==
+X-Google-Smtp-Source: ABdhPJwpatqtscFinSdtYUrvRElGEmeizOIFHtAttZVKAEASK6GUt12WCxKJxKuZKsgMiopOcpPvL1kPhiZ1kgVNx0g=
+X-Received: by 2002:a17:906:ae43:: with SMTP id lf3mr3526825ejb.130.1610469968932;
+ Tue, 12 Jan 2021 08:46:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAHCN7x+NFTn9Jqzbdm7d2UZt68DSAZ9Z-r+7Txwqi1=eE=W3Ug@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+References: <20210108121524.656872-1-qperret@google.com> <20210108121524.656872-16-qperret@google.com>
+ <CAL_JsqLmzFWmTc=6JSRMofSEVRx9GCrwGxEsYog9dC16EMGdvQ@mail.gmail.com>
+ <X/1xN2UxiUxkzAiN@google.com> <CAL_Jsq+5d+Ox_-m_Rd83R9xoZb6e2cxCNfbL8YPzKdwj=y0M8Q@mail.gmail.com>
+ <X/2xlxx9Ucp4UZvL@google.com> <CAL_Jsq+o+t4YYXEW_nYqMsT4ubYJWe6Kdhu614RtrCqsHBtfLw@mail.gmail.com>
+ <X/3LIGgx83XJ+U0F@google.com>
+In-Reply-To: <X/3LIGgx83XJ+U0F@google.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 12 Jan 2021 10:45:56 -0600
+X-Gmail-Original-Message-ID: <CAL_Jsq+SeOrn4qFyFuPUmXdnM1oMNMLWLsDzrYgUt9Ts3hyoNg@mail.gmail.com>
+Message-ID: <CAL_Jsq+SeOrn4qFyFuPUmXdnM1oMNMLWLsDzrYgUt9Ts3hyoNg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 15/26] of/fdt: Introduce early_init_dt_add_memory_hyp()
+To:     Quentin Perret <qperret@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, android-kvm@google.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
+        <kvmarm@lists.cs.columbia.edu>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Fuad Tabba <tabba@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
+On Tue, Jan 12, 2021 at 10:15 AM Quentin Perret <qperret@google.com> wrote:
+>
+> On Tuesday 12 Jan 2021 at 09:53:36 (-0600), Rob Herring wrote:
+> > On Tue, Jan 12, 2021 at 8:26 AM Quentin Perret <qperret@google.com> wrote:
+> > >
+> > > On Tuesday 12 Jan 2021 at 08:10:47 (-0600), Rob Herring wrote:
+> > > > On Tue, Jan 12, 2021 at 3:51 AM Quentin Perret <qperret@google.com> wrote:
+> > > > >
+> > > > > On Monday 11 Jan 2021 at 08:45:10 (-0600), Rob Herring wrote:
+> > > > > > On Fri, Jan 8, 2021 at 6:16 AM Quentin Perret <qperret@google.com> wrote:
+> > > > > > >
+> > > > > > > Introduce early_init_dt_add_memory_hyp() to allow KVM to conserve a copy
+> > > > > > > of the memory regions parsed from DT. This will be needed in the context
+> > > > > > > of the protected nVHE feature of KVM/arm64 where the code running at EL2
+> > > > > > > will be cleanly separated from the host kernel during boot, and will
+> > > > > > > need its own representation of memory.
+> > > > > >
+> > > > > > What happened to doing this with memblock?
+> > > > >
+> > > > > I gave it a go, but as mentioned in v1, I ran into issues for nomap
+> > > > > regions. I want the hypervisor to know about these memory regions (it's
+> > > > > possible some of those will be given to protected guests for instance)
+> > > > > but these seem to be entirely removed from the memblocks when using DT:
+> > > > >
+> > > > > https://elixir.bootlin.com/linux/latest/source/drivers/of/fdt.c#L1153
+> > > > >
+> > > > > EFI appears to do things differently, though, as it 'just' uses
+> > > > > memblock_mark_nomap() instead of actively removing the memblock. And that
+> > > > > means I could actually use the memblock API for EFI, but I'd rather
+> > > > > have a common solution. I tried to understand why things are done
+> > > > > differently but couldn't find an answer and kept things simple and
+> > > > > working for now.
+> > > > >
+> > > > > Is there a good reason for not using memblock_mark_nomap() with DT? If
+> > > > > not, I'm happy to try that.
+> > > >
+> > > > There were 2 patches to do that, but it never got resolved. See here[1].
+> > >
+> > > Thanks. So the DT stuff predates the introduction of memblock_mark_nomap,
+> > > that's why...
+> > >
+> > > By reading the discussions, [1] still looks a sensible patch on its own,
+> > > independently from the issue Nicolas tried to solve. Any reason for not
+> > > applying it?
+> >
+> > As I mentioned in the thread, same patch with 2 different reasons. So
+> > I just wanted a better commit message covering both.
+>
+> Sorry if I'm being thick, but I'm not seeing it. How are they the same?
+> IIUC, as per Nicolas' last reply, using memblock_mark_nomap() does not
+> solve his issue with a broken DT. These 2 patches address two completely
+> separate issues no?
 
-On 11/01/21 17:40, Adam Ford wrote:
-> On Sat, Jan 9, 2021 at 12:02 PM Luca Ceresoli <luca@lucaceresoli.net> wrote:
->>
->> Hi Adam,
->>
->> On 09/01/21 04:00, Adam Ford wrote:
->>> On Fri, Jan 8, 2021 at 4:49 PM Luca Ceresoli <luca@lucaceresoli.net> wrote:
->>>>
->>>> Hi Adam,
->>>>
->>>> On 06/01/21 18:39, Adam Ford wrote:
->>>>> There are two registers which can set the load capacitance for
->>>>> XTAL1 and XTAL2. These are optional registers when using an
->>>>> external crystal.  Parse the device tree and set the
->>>>> corresponding registers accordingly.
->>>>
->>>> No need to repeat the first 2 sentences, they are already in patch 1.
->>>
->>> The reason I did that was because if someone does a git log on the
->>> individual file, they'd see the comment.  While it's redundant not, it
->>> might not be as obvious in the future when looking back.   Not
->>> everyone reviews the history of the binding, but the source files' git
->>> logs usually have some value.   However, if you want me to drop it or
->>> rephrase it, I can do that.
->>
->> Makes sense, I had never considered that before.
->>
->>>>> +static int vc5_map_cap_value(u32 femtofarads)
->>>>> +{
->>>>> +     int mapped_value;
->>>>> +
->>>>> +     /* The datasheet explicitly states 9000 - 25000 */
->>>>> +     if ((femtofarads < 9000) || (femtofarads > 25000))
->>>>> +             return -EINVAL;
->>>>> +
->>>>> +     /* The lowest target we can hit is 9430, so exit if it's less */
->>>>> +     if (femtofarads < 9430)
->>>>> +             return 0;
->>>>> +
->>>>> +     /*
->>>>> +      * According to VersaClock 6E Programming Guide, there are 6
->>>>> +      * bits which translate to 64 entries in XTAL registers 12 and
->>>>> +      * 13. Because bits 0 and 1 increase the capacitance the
->>>>> +      * same, some of the values can be repeated.  Plugging this
->>>>> +      * into a spreadsheet and generating a trendline, the output
->>>>> +      * equation becomes x = (y-9098.29) / 216.44, where 'y' is
->>>>> +      * the desired capacitance in femtofarads, and x is the value
->>>>> +      * of XTAL[5:0].
->>>>> +      * To help with rounding, do fixed point math
->>>>> +      */
->>>>> +     femtofarads *= 100;
->>>>> +     mapped_value = (femtofarads - 909829) / 21644;
->>>>
->>>> Thanks for the extensive comment, but I am confused. Not by your code
->>>> which is very clean and readable, but by the chip documentation
->>>> (disclaimer: I haven't read it in full depth).
->>>
->>> I was confused too since the datasheet and programmers manual differ a bit.
->>>>
->>>> The 5P49V6965 datasheet at page 17 clearly states capacitance can be
->>>> increased in 0.5 pF steps. The "VersaClock 6E Family Register
->>>> Descriptions and Programming Guide" at page 18 shows a table that allows
->>>> 0.43 pF. Can you clarify how the thing works?
->>>
->>> I used the Versaclock 6E doc which is based on the following:
->>>
->>> BIT 5 - Add 6.92pF
->>> BIT 4 - Add 3.46pF
->>> BIT 3 - Add 1.73pF
->>> BIT 2 - Add 0.86pF
->>> Bit 1 - Add 0.43pF
->>> Bit 0 - Add 0.43pF
->>>
->>> Because the Datasheet starts at 9pF, the math I used, assumes these
->>> numbers are added to 9pF.
->>> Because the datasheet shows the increments are in .5pF increments, the
->>> 430nF seems close.  The datasheet shows 9pF - 25pF and based on the
->>> programmer table, we could get close to 25pF by enabling all bits and
->>> adding 9pF, however the math doesn't quite hit 25pF.
->>>
->>> For what it's worth I needed around 11.5pF, and with this patch, the
->>> hardware engineer said our ppm went from around 70 ppm to around 4ppm.
->>
->> Did he measure what happens if you set the register according to the 0.5
->> pF interpretation? Does it improve? I understand the difference is
->> probably olwer than the noise, but who knows.
->>
->>>>> +
->>>>> +     /*
->>>>> +      * The datasheet states, the maximum capacitance is 25000,
->>>>> +      * but the programmer guide shows a max value is 22832,
->>>>> +      * so values higher values could overflow, so cap it.
->>>>> +      */
->>>>
->>>> The 22832 limit is if you assume 0.43 pF steps. Assuming 0.5 pF steps
->>>> leads to 25000. Now I am more confused than before.
->>>
->>> I agree.  It would be nice to get some clarification from Renesas.
->>
->> Definitely. Do you have access to some support from them?
-> 
-> Luca,
-> 
-> We reached out to  Renesas with the following questions:
-> 
-> 1)
-> I'm seeing a discrepancy between the datasheet and programming guide
-> we have for the Versaclock 6e in regard to the crystal load
-> programming registers.  The datasheet for the 5P49V6965A000NLGI
-> indicates a 9pF minimum with 0.5pF steps, while the programming guide
-> says that the lower two register bits both add 0.43pF, which would
-> make the equation:
-> 
-> Ci = 9pF + 0.43pF * XTAL[5:1] instead of
-> Ci = 9pF + 0.5pF * XTAL[5:0] as is published in the datasheet.
-> 
-> 2)  The programming guide shows that the default setting is 01b, but
-> the note says it's reserved, use D1 D0 = 00.  Can you confirm that we
-> should set switch mode to 00 instead of the default 01?
-> 
-> And we got the following answers:
-> 
-> 1)
->      The first one with 0.43pF steps is the correct one. Ci = 9pF +
-> 0.43pF * XTAL[5:1]
->      0.5pF steps was the design target.  When measuring actual
-> silicon, we found 0.43pF steps.
-> 
->      There are 6 bits reserved for the CL setting but bits 0 and 1
-> have the same 0.43pF step.  So it is actually 5 bits with an extra LSB
-> of 0.43pF.
-> 
-> 2)
->       Please use D1 D0 = 01.   The “00” is a typo…..
+Umm, yes you are right. But both are dealing with nomap. So someone
+needs to sort out what the right thing to do here is. No one cared
+enough to follow up in a year and a half.
 
-Great thing you got all those info from Renesas!
-
-> 
-> Based on the above response I think we should always assume XTAL bit 0
-> is 0, and only use XTAL[5:1] which should make the math go easier,
-> because the desired value in femtofarads would just be offset by 9000
-> and divided by 430 and that value would be shifted 3 places instead fo
-> two, and the  fixed-point math calculation can go away.
-> 
-> In addition to that, I would also need to make sure that D0 is set to
-> 1, so instead of just writing the shifted XTAL value, I would also
-> have to do a logic OR with 1 to set the low bit.
-> 
-> I talked with the hardware guys from work who also suggested that we
-> always write the same value to X1 and X2, so I can remove the X1 and
-> X2 references from the bindings.
-> 
-> Does that work for you?
-
-Yes.
-
-We are only losing the ability to set 9 + (0.43 * 32) pF using all bits.
-I'm OK with that. Should it be needed in the future we can just add it
-as a special case, maybe just add a comment saying that, like "XTAL[5:0]
-= b111111 not supported".
-
--- 
-Luca
+Rob
