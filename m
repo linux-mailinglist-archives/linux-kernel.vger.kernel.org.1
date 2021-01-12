@@ -2,125 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D0CE2F2CAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:24:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D55BA2F2CA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:24:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406089AbhALKXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:23:54 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:39952 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406067AbhALKXv (ORCPT
+        id S2404992AbhALKX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:23:27 -0500
+Received: from bmail1.ministro.hu ([5.249.150.236]:42984 "EHLO
+        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730233AbhALKX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:23:51 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CAFkdF109075;
-        Tue, 12 Jan 2021 10:22:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=NRQDdhTGtnTTrpO9FnIJpdb3eQWLHU5Bkcmb0yFI+AY=;
- b=zHv5eZFXwOnIJDLvbc8iAFW0u7fewFHY7RiWQtExujibYF7JKVDhL3XLrVbSoLE5LiXU
- OgZfl68vUVQp+upANn8CyDywLfUT7EWtIjgGjFUrnlRove67+SniNPVtSnnd4BhByA2M
- 7XS6SpPsTqmsu7xebx7vnDEr2TWfFv3GI+aum4Wcam9h5/u/BjM6aHMGivc4O/c90261
- Kbu4sB70XyI2D+kuKGd66ojzX+MKpqcWq2XN/CoO5VTvxO+OiJzAvcFYOblOGJFXH8Jt
- QvWgBE9EBOyw3ttQaVsM6IXrKWYBLSa8vhFXRahOZnnSyfxbgaQ6tYqRYMtHUC4g+l8j Nw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 360kvjwhcv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 12 Jan 2021 10:22:18 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CAGiEB018798;
-        Tue, 12 Jan 2021 10:22:17 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 360kf561e3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jan 2021 10:22:17 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10CAMDCd011228;
-        Tue, 12 Jan 2021 10:22:13 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 12 Jan 2021 02:22:12 -0800
-Date:   Tue, 12 Jan 2021 13:22:04 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        =?utf-8?B?5pyx54G/54G/?= <zhucancan@vivo.com>,
-        alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+        Tue, 12 Jan 2021 05:23:26 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTP id 6025011FFA6;
+        Tue, 12 Jan 2021 11:22:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1610446964;
+        bh=6ZmQ4K4IK4r/5AhzLPeguGG1gL7UqmrMEnjNlnN7NDQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nk1ka4EAG4sgjzLsGcKbRwkh5mLBl7A3el1Db1+YTR3cLEyZJ8EC2D79cg2h87L1W
+         qAy41W5/4r09PpUA4QS1+LtLuAlTyeb+8gLiOzal9zGj3If3wR/fnX0Of652oegVcd
+         GP8hZRSm+8Rf9w7a8rMf7Kitu4cXQfXMGxToCqcVhOlqyTL0t39JrmbEFOY8pwoAWf
+         HgS5gISj6c/ny03/Rt4SxijSaM3LuYwT+sW3ARIW8IogSkz/c+1gjScDmkwPG/3CXi
+         Gv/zQIptQR8DpI2SoN/aBrKVDpfPEHTS7iXPcB4N9Wim9FjJCUtDhm8IqO/LEtpwMi
+         vNCsssDg0PCyA==
+X-Virus-Scanned: Debian amavisd-new at ministro.hu
+Received: from bmail1.ministro.hu ([127.0.0.1])
+        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id DtMLH2blwxaI; Tue, 12 Jan 2021 11:22:17 +0100 (CET)
+Received: from dev (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTPSA id 166AD11FFA3;
+        Tue, 12 Jan 2021 11:22:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1610446937;
+        bh=6ZmQ4K4IK4r/5AhzLPeguGG1gL7UqmrMEnjNlnN7NDQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q9ZRbowxzbNmq9Clk37PT8/DS/WZK4S81KcWpRrk6PVTEkM6G5agaSSwKFzaXjm7T
+         d/ghdCnNH3r4/KNDMYZdjaaDd1lSiLHn5td+nR+sPi6a7X2R2vb70+sOd8IJMClX57
+         0NOGgAUJ7csIbOoaWW5IynD4sgAOl9kd8XdsaDeMBgCwsjjzREUc4CKYGFYAq3B+2g
+         x0tDoKlWz/65oIq8If/KA/C5v0kntQkxiSgS7p3t9i5M3Ig4kYdvvVJFZjOliCgLdQ
+         WqCjVvXYXP/ML2dmAMNavJKdkp/7kBhHXP4sx/hfm9pT4PMpDkyVLPYX3g5UT2rwLf
+         NxM8nI5aajYCA==
+Date:   Tue, 12 Jan 2021 10:22:15 +0000
+From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+To:     Rob Herring <robh@kernel.org>
+Cc:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>,
+        'Jiri Slaby' <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] ASoC: soc-pcm: Fix uninitialised return value in
- variable ret
-Message-ID: <20210112102204.GG5083@kadam>
-References: <20210108123546.19601-1-colin.king@canonical.com>
- <20210111163551.GA33269@sirena.org.uk>
- <9bef4fe5-0eed-03f8-9505-909b669ba49b@canonical.com>
+Subject: Re: [PATCH v7,2/2] dt: bindings: add silabs,si4455 schema
+Message-ID: <20210112102215.GA14292@dev>
+References: <20210105103027.GA15137@dev>
+ <20210111233048.GA3252430@robh.at.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <9bef4fe5-0eed-03f8-9505-909b669ba49b@canonical.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210111233048.GA3252430@robh.at.kernel.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- mlxlogscore=999 phishscore=0 bulkscore=0 spamscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101120055
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
- clxscore=1015 impostorscore=0 spamscore=0 mlxscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101120055
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 05:37:36PM +0000, Colin Ian King wrote:
-> On 11/01/2021 16:35, Mark Brown wrote:
-> > On Fri, Jan 08, 2021 at 12:35:46PM +0000, Colin King wrote:
-> >> From: Colin Ian King <colin.king@canonical.com>
-> >>
-> >> Currently when attempting to start the BE fails because the
-> >> FE is not started the error return variable ret is not initialized
-> >> and garbage is returned.  Fix this by setting it to 0 so the
+On Mon, Jan 11, 2021 at 05:30:48PM -0600, Rob Herring wrote:
+> On Tue, Jan 05, 2021 at 10:30:29AM +0000, József Horváth wrote:
+> > This is a device tree schema for serial port driver for
+> >  Silicon Labs Si4455 Sub-GHz transciver.
 > > 
-> > This doesn't apply against current code, please check and resend.
+> > Datasheet: https://www.silabs.com/documents/public/data-sheets/Si4455.pdf
 > > 
+> > Guide: https://github.com/dministro/linux-serial-si4455
+> > 
+> > Signed-off-by: Jozsef Horvath <info@ministro.hu>
+> > ---
+> > 
+> > changes v1:
+> >  - fixed: dt: bindings: rename sdn-gpios to shutdown-gpios
+> > 
+> > changes v3:
+> >  - fixed: dt: bindings: silabs,si4455: more detailed description
+> >  - added: dt: bindings: silabs,si4455: properties silabs,package-size,
+> >    silabs,tx-channel, silabs,rx-channel, silabs,ez-config
+> > 
+> > changes v4:
+> >  - fixed: dt: bindings: silabs,si4455: $id
+> >    from http://devicetree.org/schemas/serial/silabs,si4455.yaml
+> >    to http://devicetree.org/schemas/staging/serial/silabs,si4455.yaml
+> > 
+> > changes v5:
+> >  - fixed: dt: bindings: silabs,si4455: $id
+> >    from http://devicetree.org/schemas/staging/serial/silabs,si4455.yaml
+> >    to http://devicetree.org/schemas/serial/silabs,si4455.yaml
+> >  - fixed: dt: bindings: silabs,si4455: serial.yaml reference added
+> > 
+> > changes v7:
+> >  - added: dt: bindings: silabs,si4455: silabs,tx-timeout property definition
+> > ---
+> >  .../bindings/serial/silabs,si4455.yaml        | 105 ++++++++++++++++++
+> >  1 file changed, 105 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/serial/silabs,si4455.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/serial/silabs,si4455.yaml b/Documentation/devicetree/bindings/serial/silabs,si4455.yaml
+> > new file mode 100644
+> > index 000000000000..8ba4956064b4
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/serial/silabs,si4455.yaml
+> > @@ -0,0 +1,105 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: "http://devicetree.org/schemas/serial/silabs,si4455.yaml#"
+> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> > +
+> > +title: Silicon Labs Si4455 device tree bindings
+> > +
+> > +  silabs,rx-channel:
+> > +    description:
+> > +      Radio receive channel selection.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    maximum: 255
+> > +    minimum: 0
+> > +
+> > +  silabs,tx-timeout:
+> > +    description:
+> > +      Radio transmit timeout(ms)
 > 
-> Current ASoC tree now has two commits:
+> Use a unit suffix as defined in property-units.txt.
 > 
-> commit 4eeed5f40354735c4e68e71904db528ed19c9cbb
-> Author: Souptick Joarder <jrdr.linux@gmail.com>
-> Date:   Sat Jan 9 09:15:01 2021 +0530
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
 > 
->     ASoC: soc-pcm: return correct -ERRNO in failure path
-> 
-> commit e91b65b36fde0690f1c694f17dd1b549295464a7
-> Author: Dan Carpenter <dan.carpenter@oracle.com>
-> Date:   Mon Jan 11 12:50:21 2021 +0300
-> 
->     ASoC: soc-pcm: Fix an uninitialized error code
-> 
-> ..both set ret to non-zero, which I believe will throw a subsequent
-> warning messagethat's not strictly related.
+> With that, you can drop the type.
+>
 
-My patch restored the original behavior.  And I think that errors should
-return error codes.  What you're saying is basically "Returning an error
-is a bug because it will trigger an error message in the caller".  So
-then we have to have a debate about printks as a layering violation.
+Thank you for suggestion.
+ 
+> > +    maximum: 1000
+> > +    minimum: 1
+> > +
+> > +  firmware-name:
+> > +    description:
+> > +      Radio configuration data file name.
+> > +    $ref: /schemas/types.yaml#/definitions/string
+> > +    items:
+> > +      pattern: ^[0-9a-z\._\-]{1,255}$
+> > +
+> > +    };
+> > +...
+> > -- 
+> > 2.17.1
+> > 
 
-I don't like error messages generally, because I think they make the
-code messy.  A lot of people put error messages for impossible things.
-Or if a kmalloc() fails or whatever.  There are too many error messages
-which people add in an auto-pilot way without considering whether it's
-necessary.
-
-But some people think, and maybe they're correct, that it's best if
-every function in the call tree prints a message.  That way you can
-trace the error path easily.
-
-regards,
-dan carpenter
+Üdvözlettel / Best regards:
+József Horváth
 
