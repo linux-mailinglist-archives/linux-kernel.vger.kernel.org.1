@@ -2,127 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0870B2F36D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:17:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5D02F36D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392446AbhALRQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:16:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390525AbhALRQS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:16:18 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3FBC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:15:37 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id lt17so4625394ejb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:15:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tlN+SR1GxJrZealRnBj4IK5rirhuxkSGuR3XMgHjbM8=;
-        b=2JSJLgjjYoRmh4WKyhvwd7P5EYDVodgao689juYrDTUOryxHHdbBFMvk6F49hQeANI
-         0ncsHC6TWKiQttECpHZrIyibJPz+veA90aIDcBmWL8CoCxSzcbVkT+1W9ZlazKYMz/h2
-         1U+NJdpU2NaPSMv/3Vcpq2YAuJEHuqV6eG6jOOiBvDIozHbxI3BklrmCl45uL2220jUW
-         ESl6nOXuVqKatMmHbrqSdiXJkN9Pim4J5Ue8lUTHALCuTETNbMgXoLGGXl/x8o30mu7E
-         c4TyKsipejVO9TqPCAFj2Ot6gBV0ui2tytc4Nb1V65qr081j32kxNtvVrCJ0L/mppkvw
-         eXHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tlN+SR1GxJrZealRnBj4IK5rirhuxkSGuR3XMgHjbM8=;
-        b=fUPxnCp6L+NpRWoeX6s8coHoi110pEdOjvWOZs4W/4d6Lbph+2kA3v9+J/Yjzy8hJ4
-         4WV5xo3HXzFEaG9Dj+EtHdcXM5epHwiPhEKCQP5A986C+6Q3s/0RDiTcE48ng3RT6uG2
-         J92E/IrcwQNXgEfE9W3LfeWsaZErNxP3OWxaMs5+rw1zrQ+YmlWTBekgaPahN+pxoiFr
-         GTQOxBnB/9GddtwfFW86a7e8zksMNeD6Be+Tn0TWthFN9ycu7koC7aS+LFIlNzPt9ab8
-         NpQBPwzf0sxFvfw8Cf1zRJGa1szeoDpJ9R1PewD8tTiRAVnd0SjssEYkMx0B4dypYg8G
-         qBIg==
-X-Gm-Message-State: AOAM532jSdV8ePnG1RolObl9xGJYdXCQ0ZFu+EsDosgquluqCFrolPqW
-        566wuVpzHE05UrKnPOa/2QdmCbv5KohuurtupTAV
-X-Google-Smtp-Source: ABdhPJzveLbKd2/fd+yW9COqHniIV8xf3qTx7Ia1dcnpsn0rSIKQjLxMysH9YBtmMRiS0RAcwMxpM8nudC4fcrMjxEQ=
-X-Received: by 2002:a17:906:1393:: with SMTP id f19mr3814197ejc.431.1610471735707;
- Tue, 12 Jan 2021 09:15:35 -0800 (PST)
+        id S2392752AbhALRRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:17:12 -0500
+Received: from mga01.intel.com ([192.55.52.88]:26129 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389992AbhALRRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 12:17:11 -0500
+IronPort-SDR: wnZd2c5MTbR7FakyilgLnAnwk9hlZxNmT1j3YB+yDp5nBo5VnodFd//vHskndkjKqpYpDg0q2B
+ 2C0syTMrEJlQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="196702364"
+X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
+   d="scan'208";a="196702364"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 09:16:30 -0800
+IronPort-SDR: vpimsz8mu85mY/VhZ8BIsMQYhxifw2vOGImwkg53nHRI2ExwVgofbs4i2tC/j7jIwT1GpJtDWx
+ vKAsEzaVeUUg==
+X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
+   d="scan'208";a="353104671"
+Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 09:16:30 -0800
+Date:   Tue, 12 Jan 2021 09:16:28 -0800
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-edac <linux-edac@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH v2 1/3] x86/mce: Avoid infinite loop for copy from user
+ recovery
+Message-ID: <20210112171628.GA15664@agluck-desk2.amr.corp.intel.com>
+References: <20210111214452.1826-2-tony.luck@intel.com>
+ <E1FCB534-9149-437A-971E-F93C009F99C3@amacapital.net>
+ <20210111222057.GA2369@agluck-desk2.amr.corp.intel.com>
+ <CALCETrVhRF0H+R1aiy-rdguL3A_9M35R3roVAgRGaEAMCJVW0Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210108222223.952458-1-lokeshgidra@google.com>
-In-Reply-To: <20210108222223.952458-1-lokeshgidra@google.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 12 Jan 2021 12:15:24 -0500
-Message-ID: <CAHC9VhSLFUyeo8he4t7rFoHgRHfpB=URoAioF+a3+xjZP8JdSQ@mail.gmail.com>
-Subject: Re: [PATCH v15 0/4] SELinux support for anonymous inodes and UFFD
-To:     Lokesh Gidra <lokeshgidra@google.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Daniel Colascione <dancol@dancol.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        KP Singh <kpsingh@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Adrian Reber <areber@redhat.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        kaleshsingh@google.com, calin@google.com, surenb@google.com,
-        jeffv@google.com, kernel-team@android.com, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>, hch@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALCETrVhRF0H+R1aiy-rdguL3A_9M35R3roVAgRGaEAMCJVW0Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 5:22 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
->
-> Userfaultfd in unprivileged contexts could be potentially very
-> useful. We'd like to harden userfaultfd to make such unprivileged use
-> less risky. This patch series allows SELinux to manage userfaultfd
-> file descriptors and in the future, other kinds of
-> anonymous-inode-based file descriptor.
+On Tue, Jan 12, 2021 at 09:00:14AM -0800, Andy Lutomirski wrote:
+> > On Jan 11, 2021, at 2:21 PM, Luck, Tony <tony.luck@intel.com> wrote:
+> >
+> > ﻿On Mon, Jan 11, 2021 at 02:11:56PM -0800, Andy Lutomirski wrote:
+> >>
+> >>>> On Jan 11, 2021, at 1:45 PM, Tony Luck <tony.luck@intel.com> wrote:
+> >>>
+> >>> ﻿Recovery action when get_user() triggers a machine check uses the fixup
+> >>> path to make get_user() return -EFAULT.  Also queue_task_work() sets up
+> >>> so that kill_me_maybe() will be called on return to user mode to send a
+> >>> SIGBUS to the current process.
+> >>>
+> >>> But there are places in the kernel where the code assumes that this
+> >>> EFAULT return was simply because of a page fault. The code takes some
+> >>> action to fix that, and then retries the access. This results in a second
+> >>> machine check.
+> >>>
+> >>> While processing this second machine check queue_task_work() is called
+> >>> again. But since this uses the same callback_head structure that
+> >>> was used in the first call, the net result is an entry on the
+> >>> current->task_works list that points to itself.
+> >>
+> >> Is this happening in pagefault_disable context or normal sleepable fault context?  If the latter, maybe we should reconsider finding a way for the machine check code to do its work inline instead of deferring it.
+> >
+> > The first machine check is in pagefault_disable() context.
+> >
+> > static int get_futex_value_locked(u32 *dest, u32 __user *from)
+> > {
+> >        int ret;
+> >
+> >        pagefault_disable();
+> >        ret = __get_user(*dest, from);
+> 
+> I have very mixed feelings as to whether we should even try to recover
+> from the first failure like this.  If we actually want to try to
+> recover, perhaps we should instead arrange for the second MCE to
+> recover successfully instead of panicking.
 
-...
+Well we obviously have to "recover" from the first machine check
+in order to get to the second. Are you saying you don't like the
+different return value from get_user()?
 
-> Daniel Colascione (3):
->   fs: add LSM-supporting anon-inode interface
->   selinux: teach SELinux about anonymous inodes
->   userfaultfd: use secure anon inodes for userfaultfd
->
-> Lokesh Gidra (1):
->   security: add inode_init_security_anon() LSM hook
->
->  fs/anon_inodes.c                    | 150 ++++++++++++++++++++--------
->  fs/libfs.c                          |   5 -
->  fs/userfaultfd.c                    |  19 ++--
->  include/linux/anon_inodes.h         |   5 +
->  include/linux/lsm_hook_defs.h       |   2 +
->  include/linux/lsm_hooks.h           |   9 ++
->  include/linux/security.h            |  10 ++
->  security/security.c                 |   8 ++
->  security/selinux/hooks.c            |  57 +++++++++++
->  security/selinux/include/classmap.h |   2 +
->  10 files changed, 213 insertions(+), 54 deletions(-)
+In my initial playing around with this I just had the second machine
+check simply skip the task_work_add(). This worked for this case, but
+only because there wasn't a third, fourth, etc. access to the poisoned
+data. If the caller keeps peeking, then we'll keep taking more machine
+checks - possibly forever.
 
-With several rounds of reviews done and the corresponding SELinux test
-suite looking close to being ready I think it makes sense to merge
-this via the SELinux tree.  VFS folks, if you have any comments or
-objections please let me know soon.  If I don't hear anything within
-the next day or two I'll go ahead and merge this for linux-next.
+Even if we do recover with just one extra machine check ... that's one
+more than was necessary.
 
-Thanks.
-
--- 
-paul moore
-www.paul-moore.com
+-Tony
