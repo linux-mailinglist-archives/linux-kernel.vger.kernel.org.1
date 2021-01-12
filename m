@@ -2,107 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A132F3D32
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7845C2F3D3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437923AbhALVej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:34:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39682 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437101AbhALVDJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 16:03:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BB2D2311F;
-        Tue, 12 Jan 2021 21:02:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610485349;
-        bh=mqgTIR/4dJzxefUyLCCyIKX0u33hmXbXJc7zpzyVpNM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uAFq5wox3wQldNptnu9tUBsbKiL86oesVKz60jCJMEzSkloJmFkWMq9fRpIxgiju9
-         6nkj6ecrUCKnOhFiBxrVfYul+ViCovg9HpZFpunr5jJqJQ9Vqru+5jnu0SwUW1kIfS
-         RSyrSzyTQgr78e6fgmJF+REHDf+1MhEBoqFAwZTOVS8aeXoNhGKzU+uYEqN4ru8HoB
-         XgCRoATzV37Kf/t432esHrqdpF6VFHG4h12youy7ZibFbTA/7W5z+xXaAXBWEHSXkc
-         Ij13HTgALGiuu9WtiQaU8sNFlDxO2c7fyeDqYa6RusOHo9boZr9IgzpGwhM1wCQX9h
-         XLba3/yFFt7QQ==
-Date:   Tue, 12 Jan 2021 21:01:54 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Fangrui Song <maskray@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Joe Perches <joe@perches.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v4] x86/entry: emit a symbol for register restoring thunk
-Message-ID: <20210112210154.GI4646@sirena.org.uk>
-References: <20210112115421.GB13086@zn.tnic>
- <20210112194625.4181814-1-ndesaulniers@google.com>
+        id S2437947AbhALVek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 16:34:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437104AbhALVEH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 16:04:07 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F18C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:03:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=WsOgljZN11s48vyCDI4F4Mld1I0ggb1VBYdNIdrE2J0=; b=l3Ljf04thYjGmN+3zqr/EYdgUN
+        GjCuacKqOIEjIwqrBsWV3dnEojmmuVfYBKikIZjZTgmDW+K5v+6WPEcohu46nFwzhCulbfPhdk5eH
+        kE+CFG+HZv5luCPTzlVlznC20ioaa4njS8rLvh/+4qk9S3YHFI0arguODPC3KAwuW3u7SXbFuSKIo
+        KSD4LcjbOQRfAUJM0ci7tDUztR2fCIrI4UxfcN9mecJl5WIARfaGYgIXI4wyV1kasKGmcYuTFi3JB
+        423vL9vVpnvehuCgFZC3FzjxyYdp2siU9aB66q7lTFa6fixQ3xA28DqOoomOUJiFjZcFtfPQjYDtO
+        Dtetf8yg==;
+Received: from [2601:1c0:6280:3f0::79df]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kzQop-0001fP-Vt; Tue, 12 Jan 2021 21:03:12 +0000
+Subject: Re: [PATCH v2 09/70] mm/mmap: Change find_vma_prev() to use maple
+ tree
+To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
+        maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@google.com>, Song Liu <songliubraving@fb.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rik van Riel <riel@surriel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20210112161240.2024684-1-Liam.Howlett@Oracle.com>
+ <20210112161240.2024684-10-Liam.Howlett@Oracle.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <74b9865e-a807-cfa3-d099-ed1c5c1cea0c@infradead.org>
+Date:   Tue, 12 Jan 2021 13:03:03 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mXDO3udm/xYWQeMQ"
-Content-Disposition: inline
-In-Reply-To: <20210112194625.4181814-1-ndesaulniers@google.com>
-X-Cookie: Stay away from hurricanes for a while.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210112161240.2024684-10-Liam.Howlett@Oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Please see kernel-doc fixes below:
 
---mXDO3udm/xYWQeMQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, Jan 12, 2021 at 11:46:24AM -0800, Nick Desaulniers wrote:
+On 1/12/21 8:11 AM, Liam R. Howlett wrote:
+> Change the implementation of find_vma_prev to use the new maple tree
+> data structure.
+> 
+> Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+> ---
+>  mm/mmap.c | 27 +++++++++++++++++----------
+>  1 file changed, 17 insertions(+), 10 deletions(-)
+> 
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index ab1cb0efc4c65..f123f9c97dfe8 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -2500,23 +2500,30 @@ struct vm_area_struct *find_vma(struct mm_struct *mm, unsigned long addr)
+>  }
+>  EXPORT_SYMBOL(find_vma);
+>  
+> -/*
+> - * Same as find_vma, but also return a pointer to the previous VMA in *pprev.
+> +/**
+> + * find_vma_prev() - Find the VMA for a given address, or the next vma and
+> + * sets %pprev to the previous VMA, if any.
 
-This:
+    * set @pprev
 
-> when building with LLVM_IAS=1 (Clang's integrated assembler). Josh
-> notes:
+> + * @mm The mm_struct to check
 
->   So basically, you can use an .L symbol *inside* a function or a code
->   segment, you just can't use the .L symbol to contain the code using a
->   SYM_*_START/END annotation pair.
+    * @mm: ...
 
-is a stronger statement than this:
+> + * @addr: The address
+> + * @pprev: The pointer to set to the previous VMA
+> + *
+> + * Returns: The VMA associated with @addr, or the next vma.
+> + * May return NULL in the case of no vma at addr or above.
 
-> +  Developers should avoid using local symbol names that are prefixed with
-> +  ``.L``, as this has special meaning for the assembler; a symbol entry will
-> +  not be emitted into the symbol table. This can prevent ``objtool`` from
-> +  generating correct unwind info. Symbols with STB_LOCAL binding may still be
-> +  used, and ``.L`` prefixed local symbol names are still generally useable
-> +  within a function, but ``.L`` prefixed local symbol names should not be used
-> +  to denote the beginning or end of code regions via
-> +  ``SYM_CODE_START_LOCAL``/``SYM_CODE_END``.
+                 %NULL
 
-and seems more what I'd expect - SYM_FUNC* is also affected for example.
-Even though other usages are probably not very likely it seems better to
-keep the stronger statement in case someone comes up with one, and to
-stop anyone spending time wondering why only SYM_CODE_START_LOCAL is
-affected.
+>   */
+>  struct vm_area_struct *
+>  find_vma_prev(struct mm_struct *mm, unsigned long addr,
 
-This also looks like a good candiate for a checkpatch rule, but that can
-be done separately of course.
 
---mXDO3udm/xYWQeMQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/+DkEACgkQJNaLcl1U
-h9Cq7wf/T25FXiQQZ1vqQuvuSs9y7UidITjNn00or2An/9AZvjd7fNSIGitE6JZF
-ulLa3Dnm6DnJ8IHxCom/f9HA0Bhqduottun00gPpRE4yYnc6I6rs4+jD3D3yaM+e
-P48KYy2zaNF6Xgud3wdMdBWrO6wHbpk/FtrGu9myxKXbPoaWXCc/2JO+lQGHy2Ld
-stRoPLzuNHGsqiiQyQVFUCJcva6y2q5UTYqWG21loFirQ0khEI1aHwVuifeddpjE
-JamhRqQhmlTD8qRrnf8c4iVj6oexQsKzjOKkaKX2qpyYhK8bxdgvG8r0kwJfnuZM
-LObeotMsynR86MF2K/fVFTw7r4fXMw==
-=H9dS
------END PGP SIGNATURE-----
-
---mXDO3udm/xYWQeMQ--
+thanks.
+-- 
+~Randy
