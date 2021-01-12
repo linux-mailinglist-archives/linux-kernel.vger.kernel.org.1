@@ -2,202 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34DBE2F2B37
+	by mail.lfdr.de (Postfix) with ESMTP id A2DB22F2B38
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:25:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390828AbhALJYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:24:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58977 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390426AbhALJYD (ORCPT
+        id S2405840AbhALJZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:25:14 -0500
+Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:33519 "EHLO
+        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390337AbhALJZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:24:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610443356;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DbZ2mWidhHIHDmUCebTkUysNh5Tf6lzfSjTlizkeo6w=;
-        b=JnaHm2SDKaMc+1u4sWkLOqHecQo3gevoSt0CI31Ra+Cf9iL93f9ymBEeCxwKTdqGqoNGoP
-        BYnfOsG18FEhDSkcLo+UjWUlFr8mj786FqL8fCNJGT3AUp3cYg7fQwIFCVl1QKl4sSUBqE
-        LirsM4OZ/8VIKaflUlim19CcPf9sSAY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-64-P3YtZOg-PiazdadSrJHIKA-1; Tue, 12 Jan 2021 04:22:32 -0500
-X-MC-Unique: P3YtZOg-PiazdadSrJHIKA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F419E180A092;
-        Tue, 12 Jan 2021 09:22:30 +0000 (UTC)
-Received: from [10.36.114.62] (ovpn-114-62.ams2.redhat.com [10.36.114.62])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id F017160BE2;
-        Tue, 12 Jan 2021 09:22:22 +0000 (UTC)
-Subject: Re: [RFC v3 2/2] vfio/platform: msi: add Broadcom platform devices
-To:     Vikas Gupta <vikas.gupta@broadcom.com>, alex.williamson@redhat.com,
-        cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     vikram.prakash@broadcom.com, srinath.mannam@broadcom.com,
-        ashwin.kamath@broadcom.com, zachary.schroff@broadcom.com,
-        manish.kurup@broadcom.com
-References: <20201124161646.41191-1-vikas.gupta@broadcom.com>
- <20201214174514.22006-1-vikas.gupta@broadcom.com>
- <20201214174514.22006-3-vikas.gupta@broadcom.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <b3dcbca3-c85a-d327-e64e-5830286dfbba@redhat.com>
-Date:   Tue, 12 Jan 2021 10:22:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Tue, 12 Jan 2021 04:25:13 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id zFuakDMEzVfyLzFudkotlu; Tue, 12 Jan 2021 10:24:30 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1610443470; bh=fuKTNVAkiAAEwBv+wXjfXmq3m2doY0q5noem0/4/cDI=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=uB2dQkJHlgAwdkJo/VuOkp2Z1kISiVGyYUab9xF7CR3HdAtT7ERQUjwe/xDJEnQAS
+         I58uWdWjqNI4mzH4m8OweJaJyGqixeRdZk4Q7Ngv8JfLItUsMXOEVY4WDCsPFLr866
+         Q2by4C7QIA8AHW6+Y6xI0bBAHzryEyi+sOmYuWi6Y7XYpcwlbDzXrTp73APTo+ybUy
+         Urd+bKL62qdXMqLKyaoFbsRIe83kV8aM8R4DztSWktChM9Hx5XvMNLrb5nAmNMcVek
+         zxLWFKMyUQlShSBH+6drvOiiwTsS/Dw67WwHUGgXv2XUfMpB0BpRNP+/W40oHjrH5G
+         HpG9hJ5BYLSYw==
+Subject: Re: [PATCH v3 1/4] dp/dp_mst: Add support for sink event notify
+ messages
+To:     Sam McNally <sammc@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+References: <20200923121320.v3.1.I8693156f555875e5c8342e86ab37ce968dfdd277@changeid>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <62e32c43-29b0-9818-a4dc-ba4fb3fd1a89@xs4all.nl>
+Date:   Tue, 12 Jan 2021 10:24:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20201214174514.22006-3-vikas.gupta@broadcom.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20200923121320.v3.1.I8693156f555875e5c8342e86ab37ce968dfdd277@changeid>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-CMAE-Envelope: MS4xfIBHV4edXTbrAFG0pk7q65yir5OEFuV5YZScQ2zlFzK1NCh2DiQZj75l6i8Y4Y4AuGi1mbY4Q92eA0L6DQ/nFlpU/jLDA2/3h/ZS8xRLwQWGuxS2L2t0
+ vLKIU9VUGq09jYUA0ii2s/O9nQgY3qQFQOAX92RUczzu1lIi/pgIQf4TlopHVJpzBPyDULrvWVolF4S7Qs3Sj7gmpj3iyOXETzxj4XIWj/dorv2JCFZNoDYB
+ XPZ2tmAaufDAGZ2qnJkGcKRWHWX9dd2EUYO6Rvslar8dY50Vyt+t/IsQC0Z3B7tHVeE4IU3aaOA+HIfZ1vU6EW4pCc1bP7mGS0U8H7oI8DIdIusWnB5utygS
+ Et0aJuV2t1qY6V6YUHMJ8r5KyuRZcrnepOOAC2FXGi9EYEz46KL/cRcuZ6d8Bgx8WpAHQpicXYVGN81pF0qK67ezUaQDuA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vikas,
+Hi Sam,
 
-On 12/14/20 6:45 PM, Vikas Gupta wrote:
-> Add msi support for Broadcom platform devices
+This series still hasn't been merged. It still applies cleanly to v5.11-rc1.
+
+Daniel, can you merge this series for 5.12? Or Ack this series so I can merge it?
+
+The first three patches deal with DP MST support, and this needs review from
+you or David.
+
+Regards,
+
+	Hans
+
+On 23/09/2020 04:13, Sam McNally wrote:
+> Sink event notify messages are used for MST CEC IRQs. Add parsing
+> support for sink event notify messages in preparation for handling MST
+> CEC IRQs.
 > 
-> Signed-off-by: Vikas Gupta <vikas.gupta@broadcom.com>
+> Signed-off-by: Sam McNally <sammc@chromium.org>
 > ---
->  drivers/vfio/platform/Kconfig                 |  1 +
->  drivers/vfio/platform/Makefile                |  1 +
->  drivers/vfio/platform/msi/Kconfig             |  9 ++++
->  drivers/vfio/platform/msi/Makefile            |  2 +
->  .../vfio/platform/msi/vfio_platform_bcmplt.c  | 49 +++++++++++++++++++
->  5 files changed, 62 insertions(+)
->  create mode 100644 drivers/vfio/platform/msi/Kconfig
->  create mode 100644 drivers/vfio/platform/msi/Makefile
->  create mode 100644 drivers/vfio/platform/msi/vfio_platform_bcmplt.c
-what does plt mean?
 > 
-> diff --git a/drivers/vfio/platform/Kconfig b/drivers/vfio/platform/Kconfig
-> index dc1a3c44f2c6..7b8696febe61 100644
-> --- a/drivers/vfio/platform/Kconfig
-> +++ b/drivers/vfio/platform/Kconfig
-> @@ -21,3 +21,4 @@ config VFIO_AMBA
->  	  If you don't know what to do here, say N.
+> (no changes since v1)
+> 
+>  drivers/gpu/drm/drm_dp_mst_topology.c | 37 ++++++++++++++++++++++++++-
+>  include/drm/drm_dp_mst_helper.h       | 14 ++++++++++
+>  2 files changed, 50 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+> index 17dbed0a9800..15b6cc39a754 100644
+> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+> @@ -1027,6 +1027,30 @@ static bool drm_dp_sideband_parse_resource_status_notify(struct drm_dp_sideband_
+>  	return false;
+>  }
 >  
->  source "drivers/vfio/platform/reset/Kconfig"
-> +source "drivers/vfio/platform/msi/Kconfig"
-> diff --git a/drivers/vfio/platform/Makefile b/drivers/vfio/platform/Makefile
-> index 3f3a24e7c4ef..9ccdcdbf0e7e 100644
-> --- a/drivers/vfio/platform/Makefile
-> +++ b/drivers/vfio/platform/Makefile
-> @@ -5,6 +5,7 @@ vfio-platform-y := vfio_platform.o
->  obj-$(CONFIG_VFIO_PLATFORM) += vfio-platform.o
->  obj-$(CONFIG_VFIO_PLATFORM) += vfio-platform-base.o
->  obj-$(CONFIG_VFIO_PLATFORM) += reset/
-> +obj-$(CONFIG_VFIO_PLATFORM) += msi/
->  
->  vfio-amba-y := vfio_amba.o
->  
-> diff --git a/drivers/vfio/platform/msi/Kconfig b/drivers/vfio/platform/msi/Kconfig
-> new file mode 100644
-> index 000000000000..54d6b70e1e32
-> --- /dev/null
-> +++ b/drivers/vfio/platform/msi/Kconfig
-> @@ -0,0 +1,9 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +config VFIO_PLATFORM_BCMPLT_MSI
-> +	tristate "MSI support for Broadcom platform devices"
-> +	depends on VFIO_PLATFORM && (ARCH_BCM_IPROC || COMPILE_TEST)
-> +	default ARCH_BCM_IPROC
-> +	help
-> +	  Enables the VFIO platform driver to handle msi for Broadcom devices
-> +
-> +	  If you don't know what to do here, say N.
-> diff --git a/drivers/vfio/platform/msi/Makefile b/drivers/vfio/platform/msi/Makefile
-> new file mode 100644
-> index 000000000000..27422d45cecb
-> --- /dev/null
-> +++ b/drivers/vfio/platform/msi/Makefile
-> @@ -0,0 +1,2 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +obj-$(CONFIG_VFIO_PLATFORM_BCMPLT_MSI) += vfio_platform_bcmplt.o
-> diff --git a/drivers/vfio/platform/msi/vfio_platform_bcmplt.c b/drivers/vfio/platform/msi/vfio_platform_bcmplt.c
-> new file mode 100644
-> index 000000000000..a074b5e92d77
-> --- /dev/null
-> +++ b/drivers/vfio/platform/msi/vfio_platform_bcmplt.c
-> @@ -0,0 +1,49 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright 2020 Broadcom.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/device.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/msi.h>
-> +#include <linux/vfio.h>
-> +
-> +#include "../vfio_platform_private.h"
-> +
-> +#define RING_SIZE		(64 << 10)
-> +
-> +#define RING_MSI_ADDR_LS	0x03c
-> +#define RING_MSI_ADDR_MS	0x040
-> +#define RING_MSI_DATA_VALUE	0x064
-Those 3 defines would not be needed anymore with that implementation option.
-> +
-> +static u32 bcm_num_msi(struct vfio_platform_device *vdev)
+> +static bool drm_dp_sideband_parse_sink_event_notify(
+> +	struct drm_dp_sideband_msg_rx *raw,
+> +	struct drm_dp_sideband_msg_req_body *msg)
 > +{
-> +	struct vfio_platform_region *reg = &vdev->regions[0];
+> +	int idx = 1;
 > +
-> +	return (reg->size / RING_SIZE);
+> +	msg->u.sink_event.port_number = (raw->msg[idx] & 0xf0) >> 4;
+> +	idx++;
+> +	if (idx > raw->curlen)
+> +		goto fail_len;
+> +
+> +	memcpy(msg->u.sink_event.guid, &raw->msg[idx], 16);
+> +	idx += 16;
+> +	if (idx > raw->curlen)
+> +		goto fail_len;
+> +
+> +	msg->u.sink_event.event_id = (raw->msg[idx] << 8) | (raw->msg[idx + 1]);
+> +	idx++;
+> +	return true;
+> +fail_len:
+> +	DRM_DEBUG_KMS("sink event notify parse length fail %d %d\n", idx, raw->curlen);
+> +	return false;
 > +}
 > +
-> +static struct vfio_platform_msi_node vfio_platform_bcmflexrm_msi_node = {
-> +	.owner = THIS_MODULE,
-> +	.compat = "brcm,iproc-flexrm-mbox",
-> +	.of_get_msi = bcm_num_msi,
+>  static bool drm_dp_sideband_parse_req(struct drm_dp_sideband_msg_rx *raw,
+>  				      struct drm_dp_sideband_msg_req_body *msg)
+>  {
+> @@ -1038,6 +1062,8 @@ static bool drm_dp_sideband_parse_req(struct drm_dp_sideband_msg_rx *raw,
+>  		return drm_dp_sideband_parse_connection_status_notify(raw, msg);
+>  	case DP_RESOURCE_STATUS_NOTIFY:
+>  		return drm_dp_sideband_parse_resource_status_notify(raw, msg);
+> +	case DP_SINK_EVENT_NOTIFY:
+> +		return drm_dp_sideband_parse_sink_event_notify(raw, msg);
+>  	default:
+>  		DRM_ERROR("Got unknown request 0x%02x (%s)\n", msg->req_type,
+>  			  drm_dp_mst_req_type_str(msg->req_type));
+> @@ -3875,6 +3901,8 @@ drm_dp_mst_process_up_req(struct drm_dp_mst_topology_mgr *mgr,
+>  			guid = msg->u.conn_stat.guid;
+>  		else if (msg->req_type == DP_RESOURCE_STATUS_NOTIFY)
+>  			guid = msg->u.resource_stat.guid;
+> +		else if (msg->req_type == DP_SINK_EVENT_NOTIFY)
+> +			guid = msg->u.sink_event.guid;
+>  
+>  		if (guid)
+>  			mstb = drm_dp_get_mst_branch_device_by_guid(mgr, guid);
+> @@ -3948,7 +3976,8 @@ static int drm_dp_mst_handle_up_req(struct drm_dp_mst_topology_mgr *mgr)
+>  	drm_dp_sideband_parse_req(&mgr->up_req_recv, &up_req->msg);
+>  
+>  	if (up_req->msg.req_type != DP_CONNECTION_STATUS_NOTIFY &&
+> -	    up_req->msg.req_type != DP_RESOURCE_STATUS_NOTIFY) {
+> +	    up_req->msg.req_type != DP_RESOURCE_STATUS_NOTIFY &&
+> +	    up_req->msg.req_type != DP_SINK_EVENT_NOTIFY) {
+>  		DRM_DEBUG_KMS("Received unknown up req type, ignoring: %x\n",
+>  			      up_req->msg.req_type);
+>  		kfree(up_req);
+> @@ -3976,6 +4005,12 @@ static int drm_dp_mst_handle_up_req(struct drm_dp_mst_topology_mgr *mgr)
+>  		DRM_DEBUG_KMS("Got RSN: pn: %d avail_pbn %d\n",
+>  			      res_stat->port_number,
+>  			      res_stat->available_pbn);
+> +	} else if (up_req->msg.req_type == DP_SINK_EVENT_NOTIFY) {
+> +		const struct drm_dp_sink_event_notify *sink_event =
+> +			&up_req->msg.u.sink_event;
+> +
+> +		DRM_DEBUG_KMS("Got SEN: pn: %d event_id %d\n",
+> +			      sink_event->port_number, sink_event->event_id);
+>  	}
+>  
+>  	up_req->hdr = mgr->up_req_recv.initial_hdr;
+> diff --git a/include/drm/drm_dp_mst_helper.h b/include/drm/drm_dp_mst_helper.h
+> index 6ae5860d8644..c7c79e0ced18 100644
+> --- a/include/drm/drm_dp_mst_helper.h
+> +++ b/include/drm/drm_dp_mst_helper.h
+> @@ -402,6 +402,19 @@ struct drm_dp_resource_status_notify {
+>  	u16 available_pbn;
+>  };
+>  
+> +#define DP_SINK_EVENT_PANEL_REPLAY_ACTIVE_FRAME_CRC_ERROR	BIT(0)
+> +#define DP_SINK_EVENT_PANEL_REPLAY_RFB_STORAGE_ERROR		BIT(1)
+> +#define DP_SINK_EVENT_DSC_RC_BUFFER_UNDER_RUN			BIT(2)
+> +#define DP_SINK_EVENT_DSC_RC_BUFFER_OVERFLOW			BIT(3)
+> +#define DP_SINK_EVENT_DSC_CHUNK_LENGTH_ERROR			BIT(4)
+> +#define DP_SINK_EVENT_CEC_IRQ_EVENT				BIT(5)
+> +
+> +struct drm_dp_sink_event_notify {
+> +	u8 port_number;
+> +	u8 guid[16];
+> +	u16 event_id;
 > +};
 > +
-> +static int __init vfio_platform_bcmflexrm_msi_module_init(void)
-> +{
-> +	__vfio_platform_register_msi(&vfio_platform_bcmflexrm_msi_node);
-> +
-> +	return 0;
-> +}
-> +
-> +static void __exit vfio_platform_bcmflexrm_msi_module_exit(void)
-> +{
-> +	vfio_platform_unregister_msi("brcm,iproc-flexrm-mbox");
-> +}
-> +
-> +module_init(vfio_platform_bcmflexrm_msi_module_init);
-> +module_exit(vfio_platform_bcmflexrm_msi_module_exit);
-One thing I would like to discuss with Alex.
-
-As the reset module is mandated (except if reset_required is forced to
-0), I am wondering if we shouldn't try to turn the reset module into a
-"specialization" module and put the msi hooks there. I am afraid we may
-end up having modules for each and every vfio platform feature
-specialization. At the moment that's fully bearable but I can't predict
-what's next.
-
-As the mandated feature is the reset capability maybe we could just keep
-the config/module name terminology, tune the kconfig help message to
-mention the msi support in case of flex-rm?
-
-What do you think?
-
-Thanks
-
-Eric
-
-
-
-
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_AUTHOR("Broadcom");
+>  struct drm_dp_query_payload_ack_reply {
+>  	u8 port_number;
+>  	u16 allocated_pbn;
+> @@ -413,6 +426,7 @@ struct drm_dp_sideband_msg_req_body {
+>  		struct drm_dp_connection_status_notify conn_stat;
+>  		struct drm_dp_port_number_req port_num;
+>  		struct drm_dp_resource_status_notify resource_stat;
+> +		struct drm_dp_sink_event_notify sink_event;
+>  
+>  		struct drm_dp_query_payload query_payload;
+>  		struct drm_dp_allocate_payload allocate_payload;
 > 
 
