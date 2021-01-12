@@ -2,139 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0282F3D51
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 746632F3D59
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393306AbhALVgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:36:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437134AbhALVRa (ORCPT
+        id S2393325AbhALVgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 16:36:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49214 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2437144AbhALVT5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 16:17:30 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5133DC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:16:50 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id j1so2121780pld.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:16:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1LiS/Ah7gWBCj+VqG26e57TUr+FTn3EftEs4Z008F6g=;
-        b=Tte5vz34Ez295H9ux5RiqtzRXjKmLGKaImkiavOzuENuH8a2CsP3SmS92MtBal8eUp
-         sYDUR+bThu/Q5yWFGkJvZ2OKhjN5KcIGfqgtA6GQl9braYM0IWn3jsvE/mLYMC1o03ge
-         h6rq9fDZshnS8HfvQ6HP7G9TV6SXofpF0/1RWFQMsyIxwDl+ajLsVOIXj3/Z57NghYDd
-         Dn6ca1dOeV51P6owuT+ORL/XRhoQJL1KJiQdjtLklX+tlJCBA3hXi8a9a/rP06MEVe6C
-         TMTkhQ2IvCJYfLX6Y/4ZDCPSsECnId8AVHQ2pibJAbnDZOtBGQ+MNrgRKDQaVY65qwsT
-         u1Ew==
+        Tue, 12 Jan 2021 16:19:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610486308;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Zev1V4IEYN2T8EpZeRCPa6fmYw4qRqzooHdjCIonddU=;
+        b=N5FgN8xdWBuKRFOR+YvLxkJimint2dFFJGWzvI/DT8Ji3L05fvCaGHmdnm3vAoGZNfIx8f
+        /ioQl60q8mI2Cb4WcLDBzFPoz/4QoQ7OsWhgTFRhEzovBN9boOSOFReU2iTJ8otY9zXlUF
+        YGbL6BQu9T+wvN0LwASL6u16/SO0SGc=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-588-5rHMk_eoOiSLD3_1neXf0Q-1; Tue, 12 Jan 2021 16:18:27 -0500
+X-MC-Unique: 5rHMk_eoOiSLD3_1neXf0Q-1
+Received: by mail-ed1-f69.google.com with SMTP id a9so1610049edy.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:18:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1LiS/Ah7gWBCj+VqG26e57TUr+FTn3EftEs4Z008F6g=;
-        b=QqZNhyy7pIGE55IMSRVHgfkSenP4iHH1nl65j80i2O2ddGYQ9Z5ETr7hqq9xCN7uTu
-         Po0AA7x10v78M+m2KPhP1zXfb/c6OBfrZBHetarrxT+uI8GETaCMXlxPb0OWQ0Qu7hL6
-         ICDDFQocH3gAKbA2Ldt+GSC12HmvtphHdHxI5Vb/0OvR05yK83KTzQdJcfJutadA4WHC
-         9Kztc0xIxQXhzwXHiR/397dwT40nd91tfzjJtY42MEzWqBd2Ek9uCSnaVBLe6uGIiNHY
-         IrXiU/A0Gdi6upu6Q+vrxY+teTP9rbvk3tC+S2XBdGk4aCwm6Qh0VDtNEZRny5ImMwa3
-         OVww==
-X-Gm-Message-State: AOAM532GfHsNNR47/Ho0iaKABoO9WVwdj76KkNaeVmtn3NE/9yyYYVKZ
-        0kUVaSeBbziEtGxREgMJArUlCbuGN2/lX5ckIBlVCQ==
-X-Google-Smtp-Source: ABdhPJwg8P4BII9dX3v26wdnHYhmLKAAAuqTIhWoAo7A3cJC9jHhaKbbI8B4c56F3QMnTil996ruTXdtanNOKjipg9w=
-X-Received: by 2002:a17:90b:1087:: with SMTP id gj7mr1070271pjb.41.1610486209574;
- Tue, 12 Jan 2021 13:16:49 -0800 (PST)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=Zev1V4IEYN2T8EpZeRCPa6fmYw4qRqzooHdjCIonddU=;
+        b=hX81vV9/pR41sGx69uj4R1DtUpDj+n1uFKhqi71pSvpCT8NPk09HMJnxhnM9rCzrF8
+         vAv4bT4yfCJi9BuJPXO8+FyqYz5JHWN5cARIILnF2aagCvzNh+ZUYPqmJqu2hntV+bil
+         soSAmINwXttdrsVQJfBqJD87VBMxDWT4iG/LgsxSoJGFgNvNGjGlDiOM0TAdqEYM6Lnh
+         Xn7k67ylJv60bV0htMQDZilPPK3CRZAcvAav7WFv27sQeIhHxoJxEtWfbnwOVEIiuo4S
+         TGSSUcPqGtMuSFcudPx9moslhWqBvLWz1FX7Tm7Ix6AMnv5BCGuO3Y6O1j3RAZ/n93mk
+         W+Jg==
+X-Gm-Message-State: AOAM531PM46LzgPXEyzbdPWBDx6CcQpzN5oWFTESiTHprSa1VoBmajdw
+        JAVVOHlzv0OIEueDLVqmJ+1KaZjw/t6DTmaPLUudITh0f9EMw2hfTpX0E6ZXOAw1SEkt9wUqcYM
+        kYxSQyaFbo2M8DGCeJ2mMcFNtCTfUhSS7Uiwwe2TGicQSuBWMpnezBUeNtxkIEDK8/YtxqSam3t
+        23
+X-Received: by 2002:a17:907:1047:: with SMTP id oy7mr542447ejb.134.1610486305260;
+        Tue, 12 Jan 2021 13:18:25 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxCxrUrw3bZ4C4NBEhE4ey1Ebb1yDz9G/qnkbLh9PxS9t2MRYDtFOCx/igQEBIw8Nf3RbK/VA==
+X-Received: by 2002:a17:907:1047:: with SMTP id oy7mr542425ejb.134.1610486304893;
+        Tue, 12 Jan 2021 13:18:24 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id pv24sm1626732ejb.101.2021.01.12.13.18.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jan 2021 13:18:24 -0800 (PST)
+To:     Jens Axboe <axboe@kernel.dk>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>
+Cc:     linux-ide@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   Hans de Goede <hdegoede@redhat.com>
+Subject: 5.11 new lockdep warning related to led-class code (also may involve
+ ata / piix controller)
+Message-ID: <b204637d-3b72-8320-8a62-f075467d8681@redhat.com>
+Date:   Tue, 12 Jan 2021 22:18:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <cover.1609871239.git.andreyknvl@google.com> <a83aa371e2ef96e79cbdefceebaa960a34957a79.1609871239.git.andreyknvl@google.com>
- <X/2zBibnd/zCBFa/@elver.google.com>
-In-Reply-To: <X/2zBibnd/zCBFa/@elver.google.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Tue, 12 Jan 2021 22:16:38 +0100
-Message-ID: <CAAeHK+y0nmeDEWG8ZMX9KmE3-MhWCtrssDJi5oHG2PFNtrDK_g@mail.gmail.com>
-Subject: Re: [PATCH 10/11] kasan: fix bug detection via ksize for HW_TAGS mode
-To:     Marco Elver <elver@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 3:32 PM Marco Elver <elver@google.com> wrote:
->
-> > +/*
-> > + * Unlike kasan_check_read/write(), kasan_check_byte() is performed even for
-> > + * the hardware tag-based mode that doesn't rely on compiler instrumentation.
-> > + */
->
-> We have too many check-functions, and the name needs to be more precise.
-> Intuitively, I would have thought this should have access-type, i.e.
-> read or write, effectively mirroring a normal access.
->
-> Would kasan_check_byte_read() be better (and just not have a 'write'
-> variant because we do not need it)? This would restore ksize() closest
-> to what it was before (assuming reporting behaviour is fixed, too).
+Hi All,
 
-> >  void kasan_poison(const void *address, size_t size, u8 value);
-> >  void kasan_unpoison(const void *address, size_t size);
-> > -bool kasan_check_invalid_free(void *addr);
-> > +bool kasan_check(const void *addr);
->
-> Definitely prefer shorted names, but we're in the unfortunate situation
-> of having numerous kasan_check-functions, so we probably need to be more
-> precise.
->
-> kasan_check() makes me think this also does reporting, but it does not
-> (it seems to only check the metadata for validity).
->
-> The internal function could therefore be kasan_check_allocated() (it's
-> now the inverse of kasan_check_invalid_free()).
+Booting a 5.11-rc2 kernel with lockdep enabled inside a virtualbox vm (which still
+emulates good old piix ATA controllers) I get the below lockdep splat early on during boot:
 
-Re: kasan_check_byte():
+This seems to be led-class related but also seems to have a (P)ATA
+part to it. To the best of my knowledge this is a new problem in 5.11 .
 
-I think the _read suffix is only making the name longer. ksize() isn't
-checking that the memory is readable (or writable), it's checking that
-it's addressable. At least that's the intention of the annotation, so
-it makes sense to name it correspondingly despite the implementation.
+Regards,
 
-Having all kasan_check_*() functions both checking and reporting makes
-sense, so let's keep the kasan_check_ prefix.
+Hans
 
-What isn't obvious from the name is that this function is present for
-every kasan mode. Maybe kasan_check_byte_always()? Although it also
-seems too long.
 
-But I'm OK with keeping kasan_check_byte().
+And here is the promised lockdep log:
 
-Re kasan_check():
+[    1.133779] ata3.00: ATAPI: VBOX CD-ROM, 1.0, max UDMA/133
 
-Here we can use Andrew's suggestion about the name being related to
-what the function returns. And also drop the kasan_check_ prefix as
-this function only does the checking.
+[    1.137293] ========================================================
+[    1.137819] WARNING: possible irq lock inversion dependency detected
+[    1.138329] 5.11.0-rc2+ #187 Not tainted
+[    1.138843] --------------------------------------------------------
+[    1.139353] kworker/0:0/5 just changed the state of lock:
+[    1.139862] ffff8be5c721c218 (&host->lock){-...}-{2:2}, at: ata_bmdma_interrupt+0x24/0x200
+[    1.140399] but this lock took another, HARDIRQ-READ-unsafe lock in the past:
+[    1.140932]  (&trig->leddev_list_lock){.+.?}-{2:2}
+[    1.140934] 
+               
+               and interrupts could create inverse lock ordering between them.
 
-Let's use kasan_byte_accessible() instead of kasan_check().
+[    1.143434] 
+               other info that might help us debug this:
+[    1.144362]  Possible interrupt unsafe locking scenario:
 
-> > +bool __kasan_check_byte(const void *address, unsigned long ip)
-> > +{
-> > +     if (!kasan_check(address)) {
-> > +             kasan_report_invalid_free((void *)address, ip);
->
-> This is strange: why does it report an invalid free? Should this be a
-> use-after-free? I think this could just call kasan_report(....) for 1
-> byte, and we'd get the right report.
+[    1.145291]        CPU0                    CPU1
+[    1.145753]        ----                    ----
+[    1.146214]   lock(&trig->leddev_list_lock);
+[    1.146654]                                local_irq_disable();
+[    1.147112]                                lock(&host->lock);
+[    1.147569]                                lock(&trig->leddev_list_lock);
+[    1.148037]   <Interrupt>
+[    1.148486]     lock(&host->lock);
+[    1.148920] 
+                *** DEADLOCK ***
 
-Will fix in v2.
+[    1.150187] no locks held by kworker/0:0/5.
+[    1.150616] 
+               the shortest dependencies between 2nd lock and 1st lock:
+[    1.151452]  -> (&trig->leddev_list_lock){.+.?}-{2:2} {
+[    1.151872]     HARDIRQ-ON-R at:
+[    1.152275]                       lock_acquire+0x116/0x370
+[    1.152690]                       _raw_read_lock+0x38/0x70
+[    1.153092]                       led_trigger_event+0x26/0x70
+[    1.153502]                       kbd_bh+0x98/0xc0
+[    1.153897]                       tasklet_action_common.constprop.0+0xe5/0x100
+[    1.154302]                       __do_softirq+0xdd/0x489
+[    1.154704]                       run_ksoftirqd+0x3a/0x70
+[    1.155094]                       smpboot_thread_fn+0x10b/0x1e0
+[    1.155486]                       kthread+0x137/0x150
+[    1.155872]                       ret_from_fork+0x22/0x30
+[    1.156257]     IN-SOFTIRQ-R at:
+[    1.156641]                       lock_acquire+0x116/0x370
+[    1.157030]                       _raw_read_lock+0x38/0x70
+[    1.157419]                       led_trigger_event+0x26/0x70
+[    1.157800]                       kbd_bh+0x98/0xc0
+[    1.158175]                       tasklet_action_common.constprop.0+0xe5/0x100
+[    1.158560]                       __do_softirq+0xdd/0x489
+[    1.158933]                       run_ksoftirqd+0x3a/0x70
+[    1.159304]                       smpboot_thread_fn+0x10b/0x1e0
+[    1.159667]                       kthread+0x137/0x150
+[    1.160022]                       ret_from_fork+0x22/0x30
+[    1.160372]     SOFTIRQ-ON-R at:
+[    1.160705]                       lock_acquire+0x116/0x370
+[    1.161040]                       _raw_read_lock+0x5d/0x70
+[    1.161377]                       led_trigger_event+0x26/0x70
+[    1.161716]                       power_supply_update_leds+0x4b/0x1b0
+[    1.162057]                       power_supply_changed_work+0x70/0xf0
+[    1.162382]                       process_one_work+0x26e/0x570
+[    1.162709]                       worker_thread+0x55/0x3c0
+[    1.163033]                       kthread+0x137/0x150
+[    1.163359]                       ret_from_fork+0x22/0x30
+[    1.163677]     INITIAL USE at:
+[    1.163993]                      lock_acquire+0x116/0x370
+[    1.164327]                      _raw_write_lock_irqsave+0x48/0x60
+[    1.164657]                      led_trigger_set+0x184/0x2e0
+[    1.164982]                      led_trigger_set_default+0x96/0xc0
+[    1.165312]                      led_classdev_register_ext+0x29e/0x370
+[    1.165642]                      input_leds_connect+0x146/0x280
+[    1.165969]                      input_attach_handler+0x7a/0xa0
+[    1.166299]                      input_register_device.cold+0xa1/0x153
+[    1.166630]                      atkbd_connect+0x269/0x340
+[    1.166963]                      serio_driver_probe+0x38/0x50
+[    1.167303]                      really_probe+0x205/0x460
+[    1.167639]                      driver_probe_device+0xe1/0x150
+[    1.167974]                      device_driver_attach+0xa8/0xb0
+[    1.168309]                      __driver_attach+0x8c/0x150
+[    1.168635]                      bus_for_each_dev+0x67/0x90
+[    1.168960]                      serio_handle_event+0x124/0x2d0
+[    1.169285]                      process_one_work+0x26e/0x570
+[    1.169608]                      worker_thread+0x55/0x3c0
+[    1.169929]                      kthread+0x137/0x150
+[    1.170254]                      ret_from_fork+0x22/0x30
+[    1.170572]     INITIAL READ USE at:
+[    1.170884]                           lock_acquire+0x116/0x370
+[    1.171210]                           _raw_read_lock+0x38/0x70
+[    1.171532]                           led_trigger_event+0x26/0x70
+[    1.171854]                           kbd_bh+0x98/0xc0
+[    1.172180]                           tasklet_action_common.constprop.0+0xe5/0x100
+[    1.172507]                           __do_softirq+0xdd/0x489
+[    1.172831]                           run_ksoftirqd+0x3a/0x70
+[    1.173156]                           smpboot_thread_fn+0x10b/0x1e0
+[    1.173480]                           kthread+0x137/0x150
+[    1.173811]                           ret_from_fork+0x22/0x30
+[    1.174126]   }
+[    1.174429]   ... key      at: [<ffffffff8b09e530>] __key.0+0x0/0x10
+[    1.174789]   ... acquired at:
+[    1.175110]    _raw_read_lock+0x5d/0x70
+[    1.175429]    led_trigger_blink_oneshot+0x30/0x80
+[    1.175752]    ledtrig_disk_activity+0x28/0x70
+[    1.176081]    ata_qc_complete+0x21/0x440
+[    1.176415]    ata_sff_hsm_move+0x16b/0x760
+[    1.176746]    ata_sff_pio_task+0xbf/0x1a0
+[    1.177062]    process_one_work+0x26e/0x570
+[    1.177370]    worker_thread+0x55/0x3c0
+[    1.177692]    kthread+0x137/0x150
+[    1.177989]    ret_from_fork+0x22/0x30
 
-Thanks!
+[    1.178598] -> (&host->lock){-...}-{2:2} {
+[    1.178892]    IN-HARDIRQ-W at:
+[    1.179185]                     lock_acquire+0x116/0x370
+[    1.179479]                     _raw_spin_lock_irqsave+0x48/0x60
+[    1.179781]                     ata_bmdma_interrupt+0x24/0x200
+[    1.180074]                     __handle_irq_event_percpu+0xcd/0x2b0
+[    1.180369]                     handle_irq_event+0x45/0x90
+[    1.180662]                     handle_edge_irq+0x87/0x220
+[    1.180954]                     asm_call_irq_on_stack+0x12/0x20
+[    1.181256]                     common_interrupt+0xf2/0x1a0
+[    1.181550]                     asm_common_interrupt+0x1e/0x40
+[    1.181842]                     _raw_spin_unlock_irq+0x2b/0x40
+[    1.182143]                     finish_task_switch.isra.0+0xa0/0x2c0
+[    1.182434]                     __schedule+0x375/0xaf0
+[    1.182723]                     schedule+0x5b/0xc0
+[    1.183014]                     schedule_timeout+0x15b/0x1c0
+[    1.183302]                     wait_for_completion_killable+0xbb/0x140
+[    1.183594]                     __kthread_create_on_node+0xe5/0x1a0
+[    1.183887]                     kthread_create_on_node+0x39/0x40
+[    1.184184]                     create_worker+0xff/0x1e0
+[    1.184477]                     worker_thread+0x2e0/0x3c0
+[    1.184772]                     kthread+0x137/0x150
+[    1.185069]                     ret_from_fork+0x22/0x30
+[    1.185360]    INITIAL USE at:
+[    1.185643]                    lock_acquire+0x116/0x370
+[    1.185934]                    _raw_spin_lock_irqsave+0x48/0x60
+[    1.186255]                    ata_dev_init+0x4d/0xe0
+[    1.186549]                    ata_link_init+0x86/0xd0
+[    1.186837]                    ata_port_alloc+0x1e6/0x200
+[    1.187128]                    ata_host_alloc+0xf3/0x130
+[    1.187413]                    ata_host_alloc_pinfo+0x10/0xa0
+[    1.187697]                    ahci_init_one+0x4f9/0xa20
+[    1.187984]                    local_pci_probe+0x42/0x80
+[    1.188275]                    pci_device_probe+0xd9/0x190
+[    1.188558]                    really_probe+0x205/0x460
+[    1.188838]                    driver_probe_device+0xe1/0x150
+[    1.189137]                    device_driver_attach+0xa8/0xb0
+[    1.189437]                    __driver_attach+0x8c/0x150
+[    1.189750]                    bus_for_each_dev+0x67/0x90
+[    1.190094]                    bus_add_driver+0x12e/0x1f0
+[    1.190393]                    driver_register+0x8b/0xe0
+[    1.190698]                    do_one_initcall+0x5b/0x2d0
+[    1.191043]                    kernel_init_freeable+0x261/0x2aa
+[    1.191367]                    kernel_init+0xa/0x111
+[    1.191669]                    ret_from_fork+0x22/0x30
+[    1.192009]  }
+[    1.192313]  ... key      at: [<ffffffff8b098b90>] __key.6+0x0/0x10
+[    1.192611]  ... acquired at:
+[    1.192947]    __lock_acquire+0x93f/0x1e10
+[    1.193258]    lock_acquire+0x116/0x370
+[    1.193585]    _raw_spin_lock_irqsave+0x48/0x60
+[    1.193896]    ata_bmdma_interrupt+0x24/0x200
+[    1.194193]    __handle_irq_event_percpu+0xcd/0x2b0
+[    1.194506]    handle_irq_event+0x45/0x90
+[    1.194840]    handle_edge_irq+0x87/0x220
+[    1.195155]    asm_call_irq_on_stack+0x12/0x20
+[    1.195445]    common_interrupt+0xf2/0x1a0
+[    1.195745]    asm_common_interrupt+0x1e/0x40
+[    1.196067]    _raw_spin_unlock_irq+0x2b/0x40
+[    1.196371]    finish_task_switch.isra.0+0xa0/0x2c0
+[    1.196664]    __schedule+0x375/0xaf0
+[    1.196993]    schedule+0x5b/0xc0
+[    1.197300]    schedule_timeout+0x15b/0x1c0
+[    1.197606]    wait_for_completion_killable+0xbb/0x140
+[    1.197915]    __kthread_create_on_node+0xe5/0x1a0
+[    1.198223]    kthread_create_on_node+0x39/0x40
+[    1.198558]    create_worker+0xff/0x1e0
+[    1.198889]    worker_thread+0x2e0/0x3c0
+[    1.199189]    kthread+0x137/0x150
+[    1.199520]    ret_from_fork+0x22/0x30
+
+[    1.200186] 
+               stack backtrace:
+[    1.200804] CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.11.0-rc2+ #187
+[    1.201141] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+[    1.201495] Workqueue:  0x0 (ipv6_addrconf)
+[    1.201856] Call Trace:
+[    1.202211]  <IRQ>
+[    1.202585]  dump_stack+0x8b/0xb0
+[    1.202943]  mark_lock.cold+0x58/0xe9
+[    1.203297]  __lock_acquire+0x93f/0x1e10
+[    1.203647]  ? lockdep_hardirqs_on_prepare+0x78/0x180
+[    1.204035]  ? slab_free_freelist_hook+0xdf/0x160
+[    1.204405]  lock_acquire+0x116/0x370
+[    1.204774]  ? ata_bmdma_interrupt+0x24/0x200
+[    1.205150]  ? __lock_acquire+0x382/0x1e10
+[    1.205509]  ? mark_held_locks+0x10/0x70
+[    1.205898]  _raw_spin_lock_irqsave+0x48/0x60
+[    1.206272]  ? ata_bmdma_interrupt+0x24/0x200
+[    1.206687]  ata_bmdma_interrupt+0x24/0x200
+[    1.207076]  __handle_irq_event_percpu+0xcd/0x2b0
+[    1.207452]  handle_irq_event+0x45/0x90
+[    1.207870]  handle_edge_irq+0x87/0x220
+[    1.208231]  asm_call_irq_on_stack+0x12/0x20
+[    1.208610]  </IRQ>
+[    1.208999]  common_interrupt+0xf2/0x1a0
+[    1.209375]  asm_common_interrupt+0x1e/0x40
+[    1.209756] RIP: 0010:_raw_spin_unlock_irq+0x2b/0x40
+[    1.210136] Code: 1f 44 00 00 55 48 8b 74 24 08 48 89 fd 48 8d 7f 18 e8 e9 0f 46 ff 48 89 ef e8 a1 50 46 ff e8 5c f2 51 ff fb 66 0f 1f 44 00 00 <65> ff 0d 8e 55 32 77 5d c3 66 66 2e 0f 1f 84 00 00 00 00 00 90 0f
+[    1.210948] RSP: 0018:ffffb1164003bc18 EFLAGS: 00000206
+[    1.211363] RAX: 0000000000000071 RBX: 0000000000000002 RCX: 0000000000000000
+[    1.211803] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff88cf2824
+[    1.212216] RBP: ffff8be5dbc2bd80 R08: 0000000000000001 R09: 0000000000000001
+[    1.212642] R10: 0000000000000046 R11: 0000000000000000 R12: ffff8be5dbc2bd80
+[    1.213092] R13: ffff8be5c7393140 R14: 0000000000000000 R15: ffff8be5c0293140
+[    1.213544]  ? _raw_spin_unlock_irq+0x24/0x40
+[    1.213972]  ? _raw_spin_unlock_irq+0x24/0x40
+[    1.214354]  finish_task_switch.isra.0+0xa0/0x2c0
+[    1.214745]  ? finish_task_switch.isra.0+0x6a/0x2c0
+[    1.215130]  __schedule+0x375/0xaf0
+[    1.215513]  ? process_one_work+0x570/0x570
+[    1.215902]  schedule+0x5b/0xc0
+[    1.216281]  schedule_timeout+0x15b/0x1c0
+[    1.216665]  ? wait_for_completion_killable+0xb3/0x140
+[    1.217051]  ? lockdep_hardirqs_on_prepare+0xff/0x180
+[    1.217439]  ? _raw_spin_unlock_irq+0x24/0x40
+[    1.217836]  wait_for_completion_killable+0xbb/0x140
+[    1.218231]  __kthread_create_on_node+0xe5/0x1a0
+[    1.218638]  kthread_create_on_node+0x39/0x40
+[    1.219042]  create_worker+0xff/0x1e0
+[    1.219440]  worker_thread+0x2e0/0x3c0
+[    1.219830]  ? process_one_work+0x570/0x570
+[    1.220209]  kthread+0x137/0x150
+[    1.220589]  ? __kthread_bind_mask+0x60/0x60
+[    1.220972]  ret_from_fork+0x22/0x30
+[    1.241802] input: ImExPS/2 Generic Explorer Mouse as /devices/platform/i8042/serio1/input/input4
+[    1.325338] ata1: SATA link up 3.0 Gbps (SStatus 123 SControl 300)
+[    1.326970] ata1.00: ATA-6: VBOX HARDDISK, 1.0, max UDMA/133
+[    1.327339] ata1.00: 41943040 sectors, multi 128: LBA48 NCQ (depth 32)
+[    1.327980] ata1.00: configured for UDMA/133
+
