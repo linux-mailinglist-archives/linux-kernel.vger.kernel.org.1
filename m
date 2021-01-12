@@ -2,191 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B68CD2F25DA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:53:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB03F2F25D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:51:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730567AbhALBvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 20:51:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33547 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728759AbhALBvK (ORCPT
+        id S1730130AbhALBul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 20:50:41 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10704 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728381AbhALBuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 20:51:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610416183;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=X7I3t60OzDuClLBrgXB9TFcroHckA8JyuUi8Px53LWc=;
-        b=aiQPHryeAuMB7eyiLF2PPwB5Ssi+fWqupqPpXE2wtgFIPCmZvbP9NrmmlcOkRsi6e+Jq/T
-        ehYh6/uxPBXET9K5ccOdA2zd7wTYKsuSDcdlJGzIOvR/t1NbDWI69hwo53kGaIG0v9mCFq
-        6LM4M70WwP+/Q0PZHj8zc3i+pxKIgYw=
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
- [209.85.166.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-255-PfCcRIAfPTmtwl3BuB8bWg-1; Mon, 11 Jan 2021 20:49:39 -0500
-X-MC-Unique: PfCcRIAfPTmtwl3BuB8bWg-1
-Received: by mail-io1-f72.google.com with SMTP id c7so528277iob.10
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 17:49:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X7I3t60OzDuClLBrgXB9TFcroHckA8JyuUi8Px53LWc=;
-        b=i6wQ40+1IEFKiZQ2wPnkBV00w0gx4sksmVpOqpiNhLOx4r3iq3j4TVMwBzLAqwgsM/
-         GSEM+PUBq4KEqJeFFxVv2oy217lXsk21uiXFpDFz5NbV5z2z05zjCKJPFveLm4mX7LF+
-         lV0cTJJCFS8+7Yg7kwV5aHoBNpkYo/nZz7OGAXVf9Wl3w+qVdB6itrsZYD8evai1mxHd
-         PHuVGzEBiWbTED55txcbo9ZSrlQwaklE1NI/vArcqCczzEjeqB3rKV/kNh5u1Zf+OVVJ
-         ksRUds0M3swlEYwZ7qjx3FIdpfmSgVIF+1irCBYCD10OdFdGmyUn2ChSVBlvKoj44GFK
-         iX4Q==
-X-Gm-Message-State: AOAM533RZilXscGxiBQDBASsRbzIQVPmbGNXKOjwA1+3wQXlmL/YHv6r
-        75HoQry/71tvVR8Jt5H4n/hE5xTsCdM4bXykhcxUZz8dByad7vpyB4x/v71Ye11nj38P/P+3vAf
-        mLGSz8gb77EpuYwzZbB0CJ/mY
-X-Received: by 2002:a92:bbc1:: with SMTP id x62mr1769167ilk.73.1610416178318;
-        Mon, 11 Jan 2021 17:49:38 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzec8+pABMEvXdhqkPqUGOWTzGirXjybA6kOBRXBjFiE6no2H02vg1btC7WPO4Dy7RifLB+Sw==
-X-Received: by 2002:a92:bbc1:: with SMTP id x62mr1769133ilk.73.1610416178036;
-        Mon, 11 Jan 2021 17:49:38 -0800 (PST)
-Received: from xz-x1 ([142.126.83.202])
-        by smtp.gmail.com with ESMTPSA id y13sm858351iop.14.2021.01.11.17.49.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 17:49:37 -0800 (PST)
-Date:   Mon, 11 Jan 2021 20:49:34 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [RFC PATCH 0/2] userfaultfd: handle minor faults, add
- UFFDIO_CONTINUE
-Message-ID: <20210112014934.GB588752@xz-x1>
-References: <20210107190453.3051110-1-axelrasmussen@google.com>
- <48f4f43f-eadd-f37d-bd8f-bddba03a7d39@oracle.com>
- <20210111230848.GA588752@xz-x1>
- <2b31c1ad-2b61-32e7-e3e5-63a3041eabfd@oracle.com>
+        Mon, 11 Jan 2021 20:50:40 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DFD4p2B94zl3rc;
+        Tue, 12 Jan 2021 09:48:42 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 12 Jan 2021 09:49:49 +0800
+Subject: Re: [PATCH v2] USB:ehci:fix an interrupt calltrace error
+To:     Alan Stern <stern@rowland.harvard.edu>
+CC:     <gregkh@linuxfoundation.org>, <yisen.zhuang@huawei.com>,
+        <kong.kongxinwei@hisilicon.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1610364577-11617-1-git-send-email-liulongfang@huawei.com>
+ <20210111170703.GD1196682@rowland.harvard.edu>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <e8de5c15-af3c-c850-03f2-643a580134f1@huawei.com>
+Date:   Tue, 12 Jan 2021 09:49:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2b31c1ad-2b61-32e7-e3e5-63a3041eabfd@oracle.com>
+In-Reply-To: <20210111170703.GD1196682@rowland.harvard.edu>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 04:13:41PM -0800, Mike Kravetz wrote:
-> On 1/11/21 3:08 PM, Peter Xu wrote:
-> > On Mon, Jan 11, 2021 at 02:42:48PM -0800, Mike Kravetz wrote:
-> >> On 1/7/21 11:04 AM, Axel Rasmussen wrote:
-> >>> Overview
-> >>> ========
-> >>>
-> >>> This series adds a new userfaultfd registration mode,
-> >>> UFFDIO_REGISTER_MODE_MINOR. This allows userspace to intercept "minor" faults.
-> >>> By "minor" fault, I mean the following situation:
-> >>>
-> >>> Let there exist two mappings (i.e., VMAs) to the same page(s) (shared memory).
-> >>> One of the mappings is registered with userfaultfd (in minor mode), and the
-> >>> other is not. Via the non-UFFD mapping, the underlying pages have already been
-> >>> allocated & filled with some contents. The UFFD mapping has not yet been
-> >>> faulted in; when it is touched for the first time, this results in what I'm
-> >>> calling a "minor" fault. As a concrete example, when working with hugetlbfs, we
-> >>> have huge_pte_none(), but find_lock_page() finds an existing page.
-> >>>
-> >>> We also add a new ioctl to resolve such faults: UFFDIO_CONTINUE. The idea is,
-> >>> userspace resolves the fault by either a) doing nothing if the contents are
-> >>> already correct, or b) updating the underlying contents using the second,
-> >>> non-UFFD mapping (via memcpy/memset or similar, or something fancier like RDMA,
-> >>> or etc...). In either case, userspace issues UFFDIO_CONTINUE to tell the kernel
-> >>> "I have ensured the page contents are correct, carry on setting up the mapping".
-> >>>
-> >>
-> >> One quick thought.
-> >>
-> >> This is not going to work as expected with hugetlbfs pmd sharing.  If you
-> >> are not familiar with hugetlbfs pmd sharing, you are not alone. :)
-> >>
-> >> pmd sharing is enabled for x86 and arm64 architectures.  If there are multiple
-> >> shared mappings of the same underlying hugetlbfs file or shared memory segment
-> >> that are 'suitably aligned', then the PMD pages associated with those regions
-> >> are shared by all the mappings.  Suitably aligned means 'on a 1GB boundary'
-> >> and 1GB in size.
-> >>
-> >> When pmds are shared, your mappings will never see a 'minor fault'.  This
-> >> is because the PMD (page table entries) is shared.
-> > 
-> > Thanks for raising this, Mike.
-> > 
-> > I've got a few patches that plan to disable huge pmd sharing for uffd in
-> > general, e.g.:
-> > 
-> > https://github.com/xzpeter/linux/commit/f9123e803d9bdd91bf6ef23b028087676bed1540
-> > https://github.com/xzpeter/linux/commit/aa9aeb5c4222a2fdb48793cdbc22902288454a31
-> > 
-> > I believe we don't want that for missing mode too, but it's just not extremely
-> > important for missing mode yet, because in missing mode we normally monitor all
-> > the processes that will be using the registered mm range.  For example, in QEMU
-> > postcopy migration with vhost-user hugetlbfs files as backends, we'll monitor
-> > both the QEMU process and the DPDK program, so that either of the programs will
-> > trigger a missing fault even if pmd shared between them.  However again I think
-> > it's not ideal since uffd (even if missing mode) is pgtable-based, so sharing
-> > could always be too tricky.
-> > 
-> > They're not yet posted to public yet since that's part of uffd-wp support for
-> > hugetlbfs (along with shmem).  So just raise this up to avoid potential
-> > duplicated work before I post the patchset.
-> > 
-> > (Will read into details soon; probably too many things piled up...)
+On 2021/1/12 1:07, Alan Stern Wrote:
+> On Mon, Jan 11, 2021 at 07:29:37PM +0800, Longfang Liu wrote:
+>> The system that use Synopsys USB host controllers goes to suspend
+>> when using USB audio player. This causes the USB host controller
+>> continuous send interrupt signal to system, When the number of
+>> interrupts exceeds 100000, the system will forcibly close the
+>> interrupts and output a calltrace error.
+>>
+>> When the system goes to suspend, the last interrupt is reported to
+>> the driver. At this time, the system has set the state to suspend.
+>> This causes the last interrupt to not be processed by the system and
+>> not clear the interrupt flag. This uncleared interrupt flag constantly
+>> triggers new interrupt event. This causing the driver to receive more
+>> than 100,000 interrupts, which causes the system to forcibly close the
+>> interrupt report and report the calltrace error.
+>>
+>> so, when the driver goes to sleep and changes the system state to
+>> suspend, the interrupt flag needs to be cleared.
+>>
+>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
 > 
-> Thanks for the heads up about this Peter.
+> Acked-by: Alan Stern <stern@rowland.harvard.edu>
+> OK, I will add it on the next patch
+Thanks,
+Longfang
+>> ---
+>>
+>> Changes in v2:
+>> - updated cleared registers
+>>
+>>  drivers/usb/host/ehci-hub.c | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>>
+>> diff --git a/drivers/usb/host/ehci-hub.c b/drivers/usb/host/ehci-hub.c
+>> index ce0eaf7..a99c1ac 100644
+>> --- a/drivers/usb/host/ehci-hub.c
+>> +++ b/drivers/usb/host/ehci-hub.c
+>> @@ -346,8 +346,12 @@ static int ehci_bus_suspend (struct usb_hcd *hcd)
+>>  
+>>  	unlink_empty_async_suspended(ehci);
+>>  
+>> +	/* Some Synopsys controllers mistakenly leave IAA turned on */
+>> +	ehci_writel(ehci, STS_IAA, &ehci->regs->status);
+>> +
+>>  	/* Any IAA cycle that started before the suspend is now invalid */
+>>  	end_iaa_cycle(ehci);
+>> +
+>>  	ehci_handle_start_intr_unlinks(ehci);
+>>  	ehci_handle_intr_unlinks(ehci);
+>>  	end_free_itds(ehci);
+>> -- 
+>> 2.8.1
+>>
+> .
 > 
-> I know Oracle DB really wants shared pmds -and- UFFD.  I need to get details
-> of their exact usage model.  I know they primarily use SIGBUS, but use
-> MISSING_HUGETLBFS as well.  We may need to be more selective in when to
-> disable.
-
-After a second thought, indeed it's possible to use it that way with pmd
-sharing.  Actually we don't need to generate the fault for every page, if what
-we want to do is simply "initializing the pages using some data" on the
-registered ranges.  Should also be the case even for qemu+dpdk, because if
-e.g. qemu faulted in a page, then it'll be nicer if dpdk can avoid faulting in
-again (so when huge pmd sharing enabled we can even avoid the PF irq to install
-the pte if at last page cache existed).  It should be similarly beneficial if
-the other process is not faulting in but proactively filling the holes using
-UFFDIO_COPY either for the current process or for itself; sounds like a valid
-scenario for Google too when VM migrates.
-
-I've modified my local tree to only disable pmd sharing for uffd-wp but keep
-missing mode as-is [1].  A new helper uffd_disable_huge_pmd_share() is
-introduced in patch "hugetlb/userfaultfd: Forbid huge pmd sharing when uffd
-enabled", so should be easier if we would like to add minor mode too.
-
-Thanks!
-
-[1] https://github.com/xzpeter/linux/commits/uffd-wp-shmem-hugetlbfs
-
--- 
-Peter Xu
-
