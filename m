@@ -2,93 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991D02F2DD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:24:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0102F2DDB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:26:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbhALLYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 06:24:25 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11095 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbhALLYY (ORCPT
+        id S1728017AbhALLZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:25:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727886AbhALLZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:24:24 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DFSpp2Ql6zMHGt;
-        Tue, 12 Jan 2021 19:22:26 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Tue, 12 Jan 2021
- 19:23:39 +0800
-Subject: Re: [PATCH 1/1] spi: cadence-quadspi: Fix a compilation warning for
- 64-bit platform
-To:     Pratyush Yadav <p.yadav@ti.com>
-CC:     Mark Brown <broonie@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>
-References: <20210112100637.747-1-thunder.leizhen@huawei.com>
- <20210112100637.747-2-thunder.leizhen@huawei.com>
- <20210112101634.ikmhj4au6eogkhoq@ti.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <6612b888-63aa-9d8f-c663-3b2857b79b70@huawei.com>
-Date:   Tue, 12 Jan 2021 19:23:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Tue, 12 Jan 2021 06:25:50 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B819DC061575;
+        Tue, 12 Jan 2021 03:25:09 -0800 (PST)
+Date:   Tue, 12 Jan 2021 12:25:01 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610450708;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Tmprvas6jLxhRPYSF5LVYJr9paTJThYHwOQ+vhudxDc=;
+        b=eW2a3CKYys8xrKKpS7bxW64hXTyUcHzt+2r2lymEhZMhHGaCz5ksjb5THZTDS872Up9nQ0
+        SCBbUiO7hWD9N7vHE9rt0E4VwnEfxyuRCfU0+NtPjIfALdXh8N+3nVFMzYaLJ8lgprZE5L
+        XuE7FuMT5fDQNdQJxNIy/INXEUFVUUONdNzbs669nwf0j00UvbrRKOdADD1DFl9ztYMX7C
+        iiHDdIcDtV+lyjqB7AaIaSJhTcNxeHk/j9m3M01G4PCP8eQeCzZ9/AbJ2BHUqo1pSLz5h7
+        iLs5/kn+zIEtTd0TEwTmphfiHVIhCvQGqW7eAaQFLVjHmjAN7Yf/l0fnee/x7g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610450708;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Tmprvas6jLxhRPYSF5LVYJr9paTJThYHwOQ+vhudxDc=;
+        b=5cH2Sow1zY6BCPZBHZiseV4wlUnR6fz0e6NQ9qHAHyXHTiLPJdxOyKbsAfOQQ6tB/fCjO1
+        xpGHvCiYwbXQgVAw==
+From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
+To:     John Garry <john.garry@huawei.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        artur.paszkiewicz@intel.com, jinpu.wang@cloud.ionos.com,
+        corbet@lwn.net, yanaijie@huawei.com, bigeasy@linutronix.de,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        intel-linux-scu@intel.com, linux-doc@vger.kernel.org
+Subject: Re: [PATCH] scsi: libsas and users: Remove notifier indirection
+Message-ID: <X/2HDUmb8L8LPELG@lx-t490>
+References: <1610386112-132641-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210112101634.ikmhj4au6eogkhoq@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1610386112-132641-1-git-send-email-john.garry@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi John,
 
+On Tue, Jan 12, 2021 at 01:28:32AM +0800, John Garry wrote:
+> LLDDs report events to libsas with .notify_port_event and
+> .notify_phy_event callbacks.
+>
+> These callbacks are fixed and so there is no reason why the functions
+> cannot be called directly, so do that.
+>
+> This neatens the code slightly, makes it more obvious, and reduces
+> function pointer usage, which is generally a good thing. Downside is that
+> there are 2x more symbol exports.
+>
+> Signed-off-by: John Garry <john.garry@huawei.com>
+>
 
-On 2021/1/12 18:16, Pratyush Yadav wrote:
-> Hi Zhen,
-> 
-> On 12/01/21 06:06PM, Zhen Lei wrote:
->> The __typecheck() requires that the two arguments of max() must be of the
->> same type. For the current max(), the type of the first parameter "len" is
->> size_t. But the type of size_t is not fixed, it's "unsigned int" on 32-bit
->> platforms and "unsigned long" on 64-bit platforms. So both the suffix "U"
->> and "UL" are not appropriate for the second constant parameter. Therefore,
->> forcible type conversion is used.
->>
->> Fixes: 8728a81b8f10 ("spi: Fix distinct pointer types warning for ARCH=mips")
->> Fixes: 0920a32cf6f2 ("spi: cadence-quadspi: Wait at least 500 ms for direct reads")
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> ---
->>  drivers/spi/spi-cadence-quadspi.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
->> index 576610ba11184c6..eb40b8d46b56b0c 100644
->> --- a/drivers/spi/spi-cadence-quadspi.c
->> +++ b/drivers/spi/spi-cadence-quadspi.c
->> @@ -1150,7 +1150,7 @@ static int cqspi_direct_read_execute(struct cqspi_flash_pdata *f_pdata,
->>
->>  	dma_async_issue_pending(cqspi->rx_chan);
->>  	if (!wait_for_completion_timeout(&cqspi->rx_dma_complete,
->> -					 msecs_to_jiffies(max(len, 500U)))) {
->> +				 msecs_to_jiffies(max_t(size_t, len, 500)))) {
-> 
-> I sent a patch with this exact fix already [0]. It has made it in Mark's 
-> for-next branch.
+Since this patch necessitates a careful manual rebase of _every_ patch
+in my series, I've included it at the top of my v2 submission and
+rebased everything on top:
 
-OK，I don't known it.
+    https://lkml.kernel.org/r/20210112110647.627783-1-a.darwish@linutronix.de
 
-> 
-> [0] https://lore.kernel.org/linux-spi/20210108181457.30291-1-p.yadav@ti.com/
-> 
->>  		dmaengine_terminate_sync(cqspi->rx_chan);
->>  		dev_err(dev, "DMA wait_for_completion_timeout\n");
->>  		ret = -ETIMEDOUT;
->> --
->> 1.8.3
->>
->>
-> 
+Some left-over 'sas_ha' local variables were removed, and I've mentioned
+that in the commit log of course.
 
+Thanks!
+
+--
+Ahmed S. Darwish
+Linutronix GmbH
