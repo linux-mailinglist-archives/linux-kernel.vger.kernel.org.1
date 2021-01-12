@@ -2,97 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030482F3629
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:51:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 740AC2F362F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390803AbhALQu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:50:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390718AbhALQu5 (ORCPT
+        id S2404284AbhALQvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:51:09 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:9532 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729923AbhALQvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:50:57 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C06E6C061795
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 08:50:16 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id t30so3253896wrb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 08:50:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=90x7bSE6XP8JZlzynOLHF7U7UF119XCh3OM9LGBjMTs=;
-        b=VeV7Bhbi83JAOnTWd71Dy939nVpu0J42s1sPM4bsu44fgHA910w59T24ByGjHj2k7B
-         WWcR3YELkWLB8XK50PnnLR4gfbh2NKfaOsRVUn+dnMDddWD94eB53iViry2J/gyWkcs0
-         iJrpCk9E/iZdoRBdsSr9jcGh+i1jdxEbRpW0iuqqpLPYkphnlVHvQJvcrnltVRybFdOn
-         CeiDSnZKMNQkaEQtyGiNRx725KRfnaSPh9WtwkAxESUeeR0pz2L2tqZWhAy0q+Vck8Sb
-         fQIfk204viOE/LY5i8CJlXl4RXPqVJXSoZKPs933VKUmcHwgdQIcOmDmjiDThspf0U0c
-         /gCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=90x7bSE6XP8JZlzynOLHF7U7UF119XCh3OM9LGBjMTs=;
-        b=tj87UUhobA2YFl5DCoy3t5LwhyckhUcgAoKxxPNyJRUM4ffUpGTsZnO9zSBLnikvtJ
-         a2G981e7EOtvXAK3++dfVTLJEEcCO4IAdFwc9PKdpfSqIu0Kr4dvWPaeHCuGHHPuNXVI
-         +2DO0gHEwxws6x5kSjKADSQfz+B+ObuLbLIaxWgwKlSuio9TBG3WmmmHA4x9EJQUiB9j
-         UqzpQL04EZ2l0KEFkJ4TJFYZFgEMrb7VbFcmN9+yKDkCg3vRO5dQklztmI/MlqDtQOpa
-         drMxaxJzXxIpjhj+c8ovqFBqGiWv8OPlXTuWDDS5TvmWzRCVOT4iYiatmjeNfMWnrmva
-         G4ZA==
-X-Gm-Message-State: AOAM5327z+NffHRRuBREb56f4aXG2gBco/DNkigx8ioUv9shLjKrI9Nu
-        dUA/tl12CcqmBniQC+lAQ7pVJw==
-X-Google-Smtp-Source: ABdhPJzS5AdRFcljD6Jz7OxKl5NJ+IEYr2nuZgQOpFTfBMfhhk81jA6ozUI57bPy8UvCQiWftyNS0g==
-X-Received: by 2002:a05:6000:2c1:: with SMTP id o1mr5334917wry.264.1610470215396;
-        Tue, 12 Jan 2021 08:50:15 -0800 (PST)
-Received: from google.com (49.222.77.34.bc.googleusercontent.com. [34.77.222.49])
-        by smtp.gmail.com with ESMTPSA id n10sm4133998wrx.21.2021.01.12.08.50.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 08:50:14 -0800 (PST)
-Date:   Tue, 12 Jan 2021 16:50:12 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, android-kvm@google.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Fuad Tabba <tabba@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>
-Subject: Re: [RFC PATCH v2 15/26] of/fdt: Introduce
- early_init_dt_add_memory_hyp()
-Message-ID: <X/3TRIkakv9mSHSQ@google.com>
-References: <20210108121524.656872-1-qperret@google.com>
- <20210108121524.656872-16-qperret@google.com>
- <CAL_JsqLmzFWmTc=6JSRMofSEVRx9GCrwGxEsYog9dC16EMGdvQ@mail.gmail.com>
- <X/1xN2UxiUxkzAiN@google.com>
- <CAL_Jsq+5d+Ox_-m_Rd83R9xoZb6e2cxCNfbL8YPzKdwj=y0M8Q@mail.gmail.com>
- <X/2xlxx9Ucp4UZvL@google.com>
- <CAL_Jsq+o+t4YYXEW_nYqMsT4ubYJWe6Kdhu614RtrCqsHBtfLw@mail.gmail.com>
- <X/3LIGgx83XJ+U0F@google.com>
- <CAL_Jsq+SeOrn4qFyFuPUmXdnM1oMNMLWLsDzrYgUt9Ts3hyoNg@mail.gmail.com>
+        Tue, 12 Jan 2021 11:51:08 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10CGjLKb116183;
+        Tue, 12 Jan 2021 11:50:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=+xDJ/GwXzqZnZwWAa2hTpBrf6xeezV+MBDuicE0JjlQ=;
+ b=JPuFuNr8vASY2+cmA/WpN4fKyt9oTubScEL07X58eYPhHl4WDNx1R6cAnzO5X0p+2pYf
+ Rs4MvFQDfdzUHyIPAEjbqxBByVBB6HgTYYvq1q89JY5tchuLrn2+Ez2nubsqqSgGQ6jw
+ FlwFz7iD4ET4rG5pnIGsGsUqWQynLys6dvZmo7Cqu+e8K95bSsu02naueBNDBCcI5zsD
+ R/Gc85ns3T8X9ICMOh4L4CfY9CbIteRt87a0pda21fbGbT2+ZlyLMGRSYpKudu0noIhA
+ CcTu5K1FHotXujSeOWaeQSXruquNYwN63ScZlQQ5AcZzx2JW035zs9sMpHSf6b4vSmjp qg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 361fjp03bh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 11:50:26 -0500
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10CGm0n4121443;
+        Tue, 12 Jan 2021 11:50:26 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 361fjp03ag-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 11:50:26 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10CGmCDY019800;
+        Tue, 12 Jan 2021 16:50:24 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 35ydrdbgc8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 16:50:24 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10CGoGF731588636
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Jan 2021 16:50:16 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7FC805204F;
+        Tue, 12 Jan 2021 16:50:21 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.60.135])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id BF42852052;
+        Tue, 12 Jan 2021 16:50:20 +0000 (GMT)
+Date:   Tue, 12 Jan 2021 17:50:19 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v13 10/15] s390/zcrypt: driver callback to indicate
+ resource in use
+Message-ID: <20210112175019.3e8de88c.pasic@linux.ibm.com>
+In-Reply-To: <20201223011606.5265-11-akrowiak@linux.ibm.com>
+References: <20201223011606.5265-1-akrowiak@linux.ibm.com>
+        <20201223011606.5265-11-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_Jsq+SeOrn4qFyFuPUmXdnM1oMNMLWLsDzrYgUt9Ts3hyoNg@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-12_12:2021-01-12,2021-01-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ mlxscore=0 suspectscore=0 phishscore=0 mlxlogscore=999 priorityscore=1501
+ malwarescore=0 spamscore=0 bulkscore=0 lowpriorityscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101120091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 12 Jan 2021 at 10:45:56 (-0600), Rob Herring wrote:
-> Umm, yes you are right. But both are dealing with nomap. So someone
-> needs to sort out what the right thing to do here is. No one cared
-> enough to follow up in a year and a half.
+On Tue, 22 Dec 2020 20:16:01 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-Fair enough, happy to do that. I'll send a small series with these two
-patches independently from this series which may take a while to land.
+> Introduces a new driver callback to prevent a root user from unbinding
+> an AP queue from its device driver if the queue is in use. The callback
+> will be invoked whenever a change to the AP bus's sysfs apmask or aqmask
+> attributes would result in one or more AP queues being removed from its
+> driver. If the callback responds in the affirmative for any driver
+> queried, the change to the apmask or aqmask will be rejected with a device
+> busy error.
+> 
+> For this patch, only non-default drivers will be queried. Currently,
+> there is only one non-default driver, the vfio_ap device driver. The
+> vfio_ap device driver facilitates pass-through of an AP queue to a
+> guest. The idea here is that a guest may be administered by a different
+> sysadmin than the host and we don't want AP resources to unexpectedly
+> disappear from a guest's AP configuration (i.e., adapters and domains
+> assigned to the matrix mdev). This will enforce the proper procedure for
+> removing AP resources intended for guest usage which is to
+> first unassign them from the matrix mdev, then unbind them from the
+> vfio_ap device driver.
+> 
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> Reviewed-by: Harald Freudenberger <freude@linux.ibm.com>
 
-Thanks,
-Quentin
+Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
