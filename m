@@ -2,129 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77D422F2E1A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 525412F2E1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:38:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730131AbhALLgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 06:36:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730028AbhALLgm (ORCPT
+        id S1728818AbhALLiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:38:18 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2316 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730185AbhALLiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:36:42 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC723C061786;
-        Tue, 12 Jan 2021 03:36:01 -0800 (PST)
-Date:   Tue, 12 Jan 2021 11:35:59 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610451360;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a5sjhOmifIrT2Py3V1i0s3HcR5HfPZJwj/KHXhMNUJI=;
-        b=qNyGfdZpuksBJie/gUlDBuKKlm9cn/SRUm7PZrK+DH3pxpjmG5gc6GRc6F6D+0NaOTGMZX
-        4KRGDdFXwIRLi/LN/4YLuHKUNaEjL4H9uPUyAbLkQy3KgM+UeyY4Gk1VjaAxqOIQgtjE+x
-        5qHolfy0zWRCixu0GTbBqBfTyv0hRgfid/oTB9d0JbTgLgbP1CxlzofT4Me35xMYtgujWJ
-        jztSeJ838pWf+8y+L1GHmCGgtyQARvmsU8maf1H88IQiZ5tfy2Sa2RyBc/oKIG+9Qotli3
-        Gs/50XbgOqkfnkOpIFG4GZYyTYLMPljPjDbyDlVGoBU6JgOEtB/G659lx9rMRA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610451360;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a5sjhOmifIrT2Py3V1i0s3HcR5HfPZJwj/KHXhMNUJI=;
-        b=zcVQmoUjNplPtfsLUYh9vKUfP48DDhUxL/bDcFcXDojtZi5rUat1D4vOhMr+wpxkNn2Sy/
-        V0RtwKjaJg7irjDg==
-From:   "tip-bot2 for Andy Lutomirski" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/misc] selftests/x86: Use __builtin_ia32_read/writeeflags
-Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <aee4b1cdfc56083eb779ce927b7d3459aad2af76.1604346818.git.luto@kernel.org>
-References: <aee4b1cdfc56083eb779ce927b7d3459aad2af76.1604346818.git.luto@kernel.org>
+        Tue, 12 Jan 2021 06:38:12 -0500
+Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DFT2K44xSz67ZV9;
+        Tue, 12 Jan 2021 19:32:25 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 12 Jan 2021 12:37:30 +0100
+Received: from [10.210.171.61] (10.210.171.61) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 12 Jan 2021 11:37:29 +0000
+Subject: Re: [PATCH v2 02/19] scsi: libsas and users: Remove notifier
+ indirection
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        "Artur Paszkiewicz" <artur.paszkiewicz@intel.com>,
+        Jack Wang <jinpu.wang@cloud.ionos.com>
+CC:     <linux-scsi@vger.kernel.org>, <intel-linux-scu@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Sebastian A. Siewior" <bigeasy@linutronix.de>
+References: <20210112110647.627783-1-a.darwish@linutronix.de>
+ <20210112110647.627783-3-a.darwish@linutronix.de>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <21eefa9b-7ff5-b418-6db4-7e0039c24473@huawei.com>
+Date:   Tue, 12 Jan 2021 11:36:21 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Message-ID: <161045135928.414.3841470312504984374.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210112110647.627783-3-a.darwish@linutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.171.61]
+X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/misc branch of tip:
+On 12/01/2021 11:06, Ahmed S. Darwish wrote:
+> From: John Garry<john.garry@huawei.com>
+> 
+> The LLDDs report events to libsas with .notify_port_event and
+> .notify_phy_event callbacks.
+> 
+> These callbacks are fixed and so there is no reason why we cannot call the
+> functions directly, so do that.
+> 
+> This neatens the code slightly.
+> 
+> [a.darwish@linutronix.de: Remove the now unused "sas_ha" local variables]
+> Signed-off-by: John Garry<john.garry@huawei.com>
 
-Commit-ID:     9297e602adf8d5587d83941c48e4dbae46c8df5f
-Gitweb:        https://git.kernel.org/tip/9297e602adf8d5587d83941c48e4dbae46c8df5f
-Author:        Andy Lutomirski <luto@kernel.org>
-AuthorDate:    Mon, 02 Nov 2020 11:54:02 -08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 12 Jan 2021 12:31:28 +01:00
+Don't forget your signed-off-by :)
 
-selftests/x86: Use __builtin_ia32_read/writeeflags
+> ---
+>   Documentation/scsi/libsas.rst          |  4 +--
+>   drivers/scsi/aic94xx/aic94xx_scb.c     | 20 ++++++-------
+>   drivers/scsi/hisi_sas/hisi_sas_main.c  | 12 +++-----
+>   drivers/scsi/hisi_sas/hisi_sas_v1_hw.c |  3 +-
+>   drivers/scsi/hisi_sas/hisi_sas_v2_hw.c |  3 +-
+>   drivers/scsi/hisi_sas/hisi_sas_v3_hw.c |  3 +-
+>   drivers/scsi/isci/port.c               |  7 ++---
+>   drivers/scsi/libsas/sas_event.c        | 13 +++------
+>   drivers/scsi/libsas/sas_init.c         |  6 ----
+>   drivers/scsi/libsas/sas_internal.h     |  1 -
+>   drivers/scsi/mvsas/mv_sas.c            | 14 ++++-----
+>   drivers/scsi/pm8001/pm8001_hwi.c       | 40 ++++++++++++--------------
+>   drivers/scsi/pm8001/pm8001_sas.c       |  7 ++---
+>   drivers/scsi/pm8001/pm80xx_hwi.c       | 35 ++++++++++------------
+>   include/scsi/libsas.h                  |  7 ++---
+>   15 files changed, 69 insertions(+), 106 deletions(-)
+> 
+> diff --git a/Documentation/scsi/libsas.rst b/Documentation/scsi/libsas.rst
+> index f9b77c7879db..a183b1d84713 100644
+> --- a/Documentation/scsi/libsas.rst
+> +++ b/Documentation/scsi/libsas.rst
+> @@ -189,8 +189,8 @@ num_phys
+>   The event interface::
+>   
+>   	/* LLDD calls these to notify the class of an event. */
+> -	void (*notify_port_event)(struct sas_phy *, enum port_event);
+> -	void (*notify_phy_event)(struct sas_phy *, enum phy_event);
+> +	void sas_notify_port_event(struct sas_phy *, enum port_event);
+> +	void sas_notify_phy_event(struct sas_phy *, enum phy_event);
+>   
+>   When sas_register_ha() returns, those are set and can be
+>   called by the LLDD to notify the SAS layer of such events
 
-The asm to read and write EFLAGS from userspace is horrible.  The
-compiler builtins are now available on all supported compilers, so
-use them instead.
+Maybe this was missed in the rebase, but I think that this comment can 
+go/be changed at some stage.
 
-(The compiler builtins are also unnecessarily ugly, but that's a
- more manageable level of ugliness.)
-
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/aee4b1cdfc56083eb779ce927b7d3459aad2af76.1604346818.git.luto@kernel.org
----
- tools/testing/selftests/x86/helpers.h | 24 ++++--------------------
- 1 file changed, 4 insertions(+), 20 deletions(-)
-
-diff --git a/tools/testing/selftests/x86/helpers.h b/tools/testing/selftests/x86/helpers.h
-index f5ff2a2..4ef42c4 100644
---- a/tools/testing/selftests/x86/helpers.h
-+++ b/tools/testing/selftests/x86/helpers.h
-@@ -6,36 +6,20 @@
- 
- static inline unsigned long get_eflags(void)
- {
--	unsigned long eflags;
--
--	asm volatile (
- #ifdef __x86_64__
--		"subq $128, %%rsp\n\t"
--		"pushfq\n\t"
--		"popq %0\n\t"
--		"addq $128, %%rsp"
-+	return __builtin_ia32_readeflags_u64();
- #else
--		"pushfl\n\t"
--		"popl %0"
-+	return __builtin_ia32_readeflags_u32();
- #endif
--		: "=r" (eflags) :: "memory");
--
--	return eflags;
- }
- 
- static inline void set_eflags(unsigned long eflags)
- {
--	asm volatile (
- #ifdef __x86_64__
--		"subq $128, %%rsp\n\t"
--		"pushq %0\n\t"
--		"popfq\n\t"
--		"addq $128, %%rsp"
-+	__builtin_ia32_writeeflags_u64(eflags);
- #else
--		"pushl %0\n\t"
--		"popfl"
-+	__builtin_ia32_writeeflags_u32(eflags);
- #endif
--		:: "r" (eflags) : "flags", "memory");
- }
- 
- #endif /* __SELFTESTS_X86_HELPERS_H */
+Thanks,
+John
