@@ -2,72 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5572F2C42
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:09:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 209A82F2C45
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391345AbhALKHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:07:42 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:10958 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725877AbhALKHl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:07:41 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DFR6q1dkgzj5Pf;
-        Tue, 12 Jan 2021 18:06:11 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.176.220) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 12 Jan 2021 18:06:49 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Mark Brown <broonie@kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Pratyush Yadav <p.yadav@ti.com>
-Subject: [PATCH 1/1] spi: cadence-quadspi: Fix a compilation warning for 64-bit platform
-Date:   Tue, 12 Jan 2021 18:06:37 +0800
-Message-ID: <20210112100637.747-2-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210112100637.747-1-thunder.leizhen@huawei.com>
-References: <20210112100637.747-1-thunder.leizhen@huawei.com>
+        id S2392942AbhALKHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:07:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45738 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390366AbhALKHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 05:07:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28AB923107;
+        Tue, 12 Jan 2021 10:07:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610446026;
+        bh=vdwmtnjiAMvviv26hOvbYr6Ik1Q7vOUq5UUucWiEegc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EdL2vLx3V3nkkoVBN39WY2dZbTEsYPI7oeFJd/yzffxDzveGK4Pq71jmTWpdGN98K
+         ypzt/DPi8AkAYmHcyOR8Tz4Wmu5IBW5L4+V/PgXL3A4EdJeON8vq+3LyV1rQKxjmoW
+         rjFkH274nXB8FGArd1sKLcfkVzjJFcURfchKqhDDzjhSvHQtGne19SG099O7YE88zP
+         m2YhxHaQdzREhXVYlwkGvgtWLTU8W+qXjOFiLk86RfsaBSa+inZNPSBFw3ibTM9DHk
+         X1Ks4jTEaI7IL/ZJ0yeShaemKro4DGilTDJPBciLV4jb8C+lU8PkhHjBRkDPbcYpN8
+         AEqJBDSWNPYgg==
+From:   matthias.bgg@kernel.org
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        Axel Lin <axel.lin@ingics.com>,
+        Chen Zhong <chen.zhong@mediatek.com>,
+        Gene Chen <gene_chen@richtek.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matthias Brugger <mbrugger@suse.com>
+Subject: [PATCH v3 1/2] regulator: mt6358: Add OF match table
+Date:   Tue, 12 Jan 2021 11:06:57 +0100
+Message-Id: <20210112100659.19350-1-matthias.bgg@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The __typecheck() requires that the two arguments of max() must be of the
-same type. For the current max(), the type of the first parameter "len" is
-size_t. But the type of size_t is not fixed, it's "unsigned int" on 32-bit
-platforms and "unsigned long" on 64-bit platforms. So both the suffix "U"
-and "UL" are not appropriate for the second constant parameter. Therefore,
-forcible type conversion is used.
+From: Matthias Brugger <mbrugger@suse.com>
 
-Fixes: 8728a81b8f10 ("spi: Fix distinct pointer types warning for ARCH=mips")
-Fixes: 0920a32cf6f2 ("spi: cadence-quadspi: Wait at least 500 ms for direct reads")
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+The binding documentation mentions that a compatible is required for the
+MT6358 device node. But the driver does not provide a OF match table.
+This way auto-loading is broken as the MFD driver that registers the
+device has a .of_compatible set which makes the platform .uevent
+callback report a OF modalias, but that's not in the module.
+
+Fixes: f67ff1bd58f0 ("regulator: mt6358: Add support for MT6358 regulator")
+Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+
 ---
- drivers/spi/spi-cadence-quadspi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-index 576610ba11184c6..eb40b8d46b56b0c 100644
---- a/drivers/spi/spi-cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -1150,7 +1150,7 @@ static int cqspi_direct_read_execute(struct cqspi_flash_pdata *f_pdata,
+Changes in v3:
+- drop mt6360 patch
 
- 	dma_async_issue_pending(cqspi->rx_chan);
- 	if (!wait_for_completion_timeout(&cqspi->rx_dma_complete,
--					 msecs_to_jiffies(max(len, 500U)))) {
-+				 msecs_to_jiffies(max_t(size_t, len, 500)))) {
- 		dmaengine_terminate_sync(cqspi->rx_chan);
- 		dev_err(dev, "DMA wait_for_completion_timeout\n");
- 		ret = -ETIMEDOUT;
---
-1.8.3
+Changes in v2:
+- check for CONFIG_OF
+- add Fixes tag
 
+ drivers/regulator/mt6358-regulator.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/regulator/mt6358-regulator.c b/drivers/regulator/mt6358-regulator.c
+index 13cb6ac9a892..a4ed19a54ec6 100644
+--- a/drivers/regulator/mt6358-regulator.c
++++ b/drivers/regulator/mt6358-regulator.c
+@@ -534,9 +534,18 @@ static const struct platform_device_id mt6358_platform_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(platform, mt6358_platform_ids);
+ 
++#ifdef CONFIG_OF
++static const struct of_device_id mt6358_of_match[] = {
++	{ .compatible = "mediatek,mt6358-regulator", },
++	{ /* sentinel */ },
++};
++MODULE_DEVICE_TABLE(of, mt6358_of_match);
++#endif
++
+ static struct platform_driver mt6358_regulator_driver = {
+ 	.driver = {
+ 		.name = "mt6358-regulator",
++		.of_match_table = of_match_ptr(mt6358_of_match),
+ 	},
+ 	.probe = mt6358_regulator_probe,
+ 	.id_table = mt6358_platform_ids,
+-- 
+2.29.2
 
