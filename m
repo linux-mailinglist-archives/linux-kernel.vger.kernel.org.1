@@ -2,80 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA5A2F2C9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECBA2F2CA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:24:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392771AbhALKXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:23:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387616AbhALKXP (ORCPT
+        id S2406075AbhALKXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:23:51 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:1590 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405053AbhALKXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:23:15 -0500
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52AFDC061575;
-        Tue, 12 Jan 2021 02:22:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
-        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=v7oVYvihYS1NhEyMk0M3W6mT8S/xbaNytTvYyF+QUrk=; b=WRYre6xL9UjMvS045nYyetetx9
-        zluESmmBaKYWLfTuwMxQ60ENSEGEHKOq9+SZktm7sg2izizsIqdT217Zr0u/zYuKHcVEO13RmCr36
-        ynx2S1GSRJwmCpK0dxnyCCAlaYFmF4U6RDAInHwKT1r0ea68gd/M80cUN95elP9v+I1/D8LsooMnw
-        spes5jl7nAZkdKcUEgCV3o3wMwu2Dxa+SR55YTzoGzlUu1Tel/B4bhMT7TO1XRgMqLGzcPZUWFt9k
-        Sp4Z7HF5DoNMsdTWxnukJeClK7gMmF9TJV720d6ogL9fPCmy9xEYiCHQ8ZR1zV8FI130wUxrfcDbq
-        ceW5lDdA==;
-Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=toshino.localdomain)
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <mperttunen@nvidia.com>)
-        id 1kzGor-0007UE-Gt; Tue, 12 Jan 2021 12:22:33 +0200
-From:   Mikko Perttunen <mperttunen@nvidia.com>
-To:     thierry.reding@gmail.com, jonathanh@nvidia.com
-Cc:     talho@nvidia.com, linux-i2c@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mikko Perttunen <mperttunen@nvidia.com>, stable@vger.kernel.org
-Subject: [PATCH v3] i2c: bpmp-tegra: Ignore unknown I2C_M flags
-Date:   Tue, 12 Jan 2021 12:22:25 +0200
-Message-Id: <20210112102225.3737326-1-mperttunen@nvidia.com>
-X-Mailer: git-send-email 2.30.0
+        Tue, 12 Jan 2021 05:23:50 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10CAMmHR018269;
+        Tue, 12 Jan 2021 04:22:48 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=PODMain02222019;
+ bh=OupojVahqqyY5lVkMconfNlsBdRPPIj670tlMIkeqSA=;
+ b=F6O2oVM+kN3gmqHvoV70TTQtsXlbp4eDtmPYJbY9NOpqCIFUwxnApIUN9Kh+ycoRorOO
+ 5syvvkYC+j+NHIW5C3clSxlPmoMLXrEjHsHYjWgcZp8FCjupzFhVpgtpb31SYoTBf0Lh
+ TkycOzAYwWkmj0FoA0dlwekgjuQeT8pwprZzM9kdgxUf1jDc2UNP7SvigIshVkQJMICj
+ 4zSV99QYRlI7f8OGtF3mt+MW5+PerI7vxtpO+VLQhcz76LLZ+8PGdNoToo2D792g55Ix
+ P6pBJoz4E/G/4nVuPCNWfUQ8JN1zYDmuOTZfO/5XDM1/6LGdadMXROL1bIhXhGZ2uss9 zQ== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 35y9sru8tj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 12 Jan 2021 04:22:48 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 12 Jan
+ 2021 10:22:46 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Tue, 12 Jan 2021 10:22:46 +0000
+Received: from [10.0.2.15] (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.57])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 1B80045;
+        Tue, 12 Jan 2021 10:22:46 +0000 (UTC)
+Subject: Re: [PATCH v4 3/6] ASoC: audio-graph-card: Support setting component
+ plls and sysclks
+To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+CC:     <broonie@kernel.org>, <robh+dt@kernel.org>,
+        <nsaenzjulienne@suse.de>, <f.fainelli@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        <linux-rpi-kernel@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20210108160501.7638-1-rf@opensource.cirrus.com>
+ <20210108160501.7638-4-rf@opensource.cirrus.com>
+ <87y2gzymc5.wl-kuninori.morimoto.gx@renesas.com>
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+Message-ID: <762d798c-bd75-e24a-40fd-263f68f1a5f1@opensource.cirrus.com>
+Date:   Tue, 12 Jan 2021 10:22:46 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 84.249.134.236
-X-SA-Exim-Mail-From: mperttunen@nvidia.com
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+In-Reply-To: <87y2gzymc5.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
+ phishscore=0 spamscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
+ adultscore=0 mlxlogscore=899 impostorscore=0 clxscore=1015 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101120056
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to not to start returning errors when new I2C_M flags are
-added, change behavior to just ignore all flags that we don't know
-about. This includes the I2C_M_DMA_SAFE flag that already exists.
+On 12/01/2021 01:35, Kuninori Morimoto wrote:
+> 
+> Hi Richard
+> 
+>> Some codecs need plls and/or sysclks to be configured using the
+>> snd_soc_component_set_[sysclk|pll] functions. These drivers cannot
+>> necessarily be converted to use the clock framework. If the codec is on
+>> a I2C/SPI bus, a nested clk_get would be needed to enable the bus clock.
+>> But the clock framework does not support nested operations and this would
+>> deadlock.
+>>
+>> This patch adds new dt properties that list phandles of components with
+>> the pll/sysclk settings to be applied. Multiple settings can be given for
+>> the same phandle to allow for components with multiple clocks and plls.
+>> The plls and sysclks are enabled when the card bias level moves to STANDBY
+>> and disabled when it moves to OFF.
+>>
+>> The implementation does not attempt to handle specifying complex clock
+>> ordering interdependencies between components. The plls and sysclks are
+>> applied to a component as it is passed to the card set_bias_level/
+>> set_bias_level_post callbacks. It follows from this that the order
+>> components are configured is the order that they are passed to those
+>> callbacks.
+>>
+>> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+>> ---
+> 
+> As I mentioned in v3, adding *general* pll to common card driver is
+> maybe difficult.
 
-Cc: stable@vger.kernel.org # v4.19+
-Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
----
-v3:
-- Ignore all unknown flags instead of just I2C_M_DMA_SAFE
----
- drivers/i2c/busses/i2c-tegra-bpmp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+You did say that. But you did not say why.
+Can you be more specific about what problem you see with adding it
+to the generic driver?
 
-diff --git a/drivers/i2c/busses/i2c-tegra-bpmp.c b/drivers/i2c/busses/i2c-tegra-bpmp.c
-index ec7a7e917edd..c0c7d01473f2 100644
---- a/drivers/i2c/busses/i2c-tegra-bpmp.c
-+++ b/drivers/i2c/busses/i2c-tegra-bpmp.c
-@@ -80,7 +80,7 @@ static int tegra_bpmp_xlate_flags(u16 flags, u16 *out)
- 		flags &= ~I2C_M_RECV_LEN;
- 	}
- 
--	return (flags != 0) ? -EINVAL : 0;
-+	return 0;
- }
- 
- /**
--- 
-2.30.0
+> Using your own customized audio-graph-card driver is better idea,
+> instead of adding code to common driver.
 
+I just don't want to duplicate code without good reason.
+
+> 
+> I think Sameer's Tegra driver (= [3/6]) is good sample for you ?
+> 
+> 	https://lore.kernel.org/r/1606413823-19885-1-git-send-email-spujar@nvidia.com
+> 
+> Thank you for your help !!
+> 
+> Best regards
+> ---
+> Kuninori Morimoto
+> 
