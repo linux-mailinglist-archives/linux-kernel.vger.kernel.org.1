@@ -2,89 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09EF32F3D20
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 939532F3D26
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437813AbhALVeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:34:36 -0500
-Received: from mga07.intel.com ([134.134.136.100]:31105 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437054AbhALUwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:52:49 -0500
-IronPort-SDR: 2MDHTGdpGN4jXtezKKdvrIKrtSpBanrMCI52zNVmPbZ+pd1vWjAopTWbxBlTHrkZ8RVRlum+kC
- OhjB4JfyGXXw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="242177171"
-X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
-   d="scan'208";a="242177171"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 12:52:08 -0800
-IronPort-SDR: Wu6WoLc2o2d/j/ii4THsm2ucwjV0kUfST7rA1MiUlyzowea2bvapCYZNw2rQl2PSo/C2o3sWdV
- 8noJcyh/p2KQ==
-X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
-   d="scan'208";a="363643267"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 12:52:08 -0800
-Date:   Tue, 12 Jan 2021 12:52:07 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-edac <linux-edac@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Subject: Re: [PATCH v2 1/3] x86/mce: Avoid infinite loop for copy from user
- recovery
-Message-ID: <20210112205207.GA18195@agluck-desk2.amr.corp.intel.com>
-References: <20210111214452.1826-2-tony.luck@intel.com>
- <E1FCB534-9149-437A-971E-F93C009F99C3@amacapital.net>
- <20210111222057.GA2369@agluck-desk2.amr.corp.intel.com>
- <CALCETrVhRF0H+R1aiy-rdguL3A_9M35R3roVAgRGaEAMCJVW0Q@mail.gmail.com>
- <20210112171628.GA15664@agluck-desk2.amr.corp.intel.com>
- <CALCETrWijyKoopqAHjohMbvfX191GhmMVQCQjKWx1s3+SA+-uA@mail.gmail.com>
- <20210112182357.GA16390@agluck-desk2.amr.corp.intel.com>
- <CALCETrXw59WDTwfoZHVtDrveMpFF=Eh4jaOF7vFsF02Zk54mDw@mail.gmail.com>
+        id S2437850AbhALVeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 16:34:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437068AbhALU4A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:56:00 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F671C061795
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:55:20 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id o11so3661246ote.4
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:55:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uD2LwoNsLHO2bQTapcwBrSqoHTZzd1YmNCw2S92ag9Q=;
+        b=Y43uZ7bLVKMqH9GbZ4BYcx2lvxcJ2i103HsmZiv7+g4ZppufN2r5P61wpRmKjQtDm+
+         6Iw5P4Q3jCWLRJntB2VAsKmOyFWepWSPdDNfMwp7rBHOArihxsXGpviAmbLDbLReNp5T
+         1GsQFLXpkPd3O8YBg1d9ys2pl+Y2iRrBcQPXibs/a8PG64RIBsakJm4UbXN4O3AmUBMB
+         LcWcVtFHbgPEspus3oJa8xqqPKE6R8KJiuW56r+SCcE5YMmlzY88EwbtWXVIvz2bjoYL
+         9avkyk50tPvH0NmYp6atvBDNCPwlyY5Wzt+QY/5vlJHqedpwjVB5eQYvs1hgfE8jwBFg
+         z4Cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uD2LwoNsLHO2bQTapcwBrSqoHTZzd1YmNCw2S92ag9Q=;
+        b=B7aGvFeE67QdOzx1kyFCE69fyT61MVMx74yeQhAp/0ZxDtApPZ5RdNl9FTr1YWCTs8
+         ARIw3U+BR9F5PA/eWZMysG9jO38aXiZI63m2rRAqIIrQkzspcdDZ08/LRJ+84YeK04kr
+         jNtSHQmTgaqfkebTN6PtYpbCidph7PcBhci1RhaMsyD+8FeiPWuMFj6uPGJpU4zAG0q6
+         1zU9v1n0QEW3hgetx5nv1mAVUO+1wgnRZYOoOJ2XesRQoTDtOhoD8rJqoA2mq3WYN5CD
+         Oi4Hq6YTurrceAgoujz1LUza4EBYCUVievCDJulOMHtrSYA+s/XxQtISdGZ36N+GLQ2J
+         G1bw==
+X-Gm-Message-State: AOAM531cmxnaukJSf4lr6JWecc2wk4g0chlnL2ZI7hSWOywpci1lz52d
+        VQSqr7H8biVZa/1dHGfgls+wUgB8y5BjvFSSVttBFQ==
+X-Google-Smtp-Source: ABdhPJyg8eUeNmxDa4BkruWI0L3XjU5KjUa3gveljnrKGwGHBS2TJW6ZNkMgbXD0kYdCRDnkUgmQJ6NHb8T8kPmTb+c=
+X-Received: by 2002:a05:6830:572:: with SMTP id f18mr874911otc.109.1610484919603;
+ Tue, 12 Jan 2021 12:55:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrXw59WDTwfoZHVtDrveMpFF=Eh4jaOF7vFsF02Zk54mDw@mail.gmail.com>
+References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
+ <20210112194143.1494-4-yuri.benditovich@daynix.com> <CAOEp5Ocz-xGq5=e=WY0aipEYHEhN-wxekNaAiqAS+HsOF8TcDQ@mail.gmail.com>
+In-Reply-To: <CAOEp5Ocz-xGq5=e=WY0aipEYHEhN-wxekNaAiqAS+HsOF8TcDQ@mail.gmail.com>
+From:   Yuri Benditovich <yuri.benditovich@daynix.com>
+Date:   Tue, 12 Jan 2021 22:55:07 +0200
+Message-ID: <CAOEp5OevYR5FWVMfQ_esmWTKtz9_ddTupbe7FtBFQ=sv2kEt2w@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/7] tun: allow use of BPF_PROG_TYPE_SCHED_CLS program type
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, rdunlap@infradead.org,
+        willemb@google.com, gustavoars@kernel.org,
+        herbert@gondor.apana.org.au, steffen.klassert@secunet.com,
+        pablo@netfilter.org, decui@microsoft.com, cai@lca.pw,
+        jakub@cloudflare.com, elver@google.com, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        bpf@vger.kernel.org
+Cc:     Yan Vugenfirer <yan@daynix.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 10:57:07AM -0800, Andy Lutomirski wrote:
-> On Tue, Jan 12, 2021 at 10:24 AM Luck, Tony <tony.luck@intel.com> wrote:
+On Tue, Jan 12, 2021 at 10:40 PM Yuri Benditovich
+<yuri.benditovich@daynix.com> wrote:
+>
+> On Tue, Jan 12, 2021 at 9:42 PM Yuri Benditovich
+> <yuri.benditovich@daynix.com> wrote:
 > >
-> > On Tue, Jan 12, 2021 at 09:21:21AM -0800, Andy Lutomirski wrote:
-> > > Well, we need to do *something* when the first __get_user() trips the
-> > > #MC.  It would be nice if we could actually fix up the page tables
-> > > inside the #MC handler, but, if we're in a pagefault_disable() context
-> > > we might have locks held.  Heck, we could have the pagetable lock
-> > > held, be inside NMI, etc.  Skipping the task_work_add() might actually
-> > > make sense if we get a second one.
-> > >
-> > > We won't actually infinite loop in pagefault_disable() context -- if
-> > > we would, then we would also infinite loop just from a regular page
-> > > fault, too.
+> > This program type can set skb hash value. It will be useful
+> > when the tun will support hash reporting feature if virtio-net.
 > >
-> > Fixing the page tables inside the #MC handler to unmap the poison
-> > page would indeed be a good solution. But, as you point out, not possible
-> > because of locks.
+> > Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
+> > ---
+> >  drivers/net/tun.c | 2 ++
+> >  1 file changed, 2 insertions(+)
 > >
-> > Could we take a more drastic approach? We know that this case the kernel
-> > is accessing a user address for the current process. Could the machine
-> > check handler just re-write %cr3 to point to a kernel-only page table[1].
-> > I.e. unmap the entire current user process.
-> 
-> That seems scary, especially if we're in the middle of a context
-> switch when this happens.  We *could* make it work, but I'm not at all
-> convinced it's wise.
+> > diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+> > index 7959b5c2d11f..455f7afc1f36 100644
+> > --- a/drivers/net/tun.c
+> > +++ b/drivers/net/tun.c
+> > @@ -2981,6 +2981,8 @@ static int tun_set_ebpf(struct tun_struct *tun, struct tun_prog __rcu **prog_p,
+> >                 prog = NULL;
+> >         } else {
+> >                 prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SOCKET_FILTER);
+> > +               if (IS_ERR(prog))
+> > +                       prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SCHED_CLS);
+> >                 if (IS_ERR(prog))
+> >                         return PTR_ERR(prog);
+> >         }
+>
+> Comment from Alexei Starovoitov:
+> Patches 1 and 2 are missing for me, so I couldn't review properly,
+> but this diff looks odd.
+> It allows sched_cls prog type to attach to tun.
+> That means everything that sched_cls progs can do will be done from tun hook?
 
-Scary? It's terrifying!
+We do not have an intention to modify the packet in this steering eBPF.
+There is just one function that unavailable for BPF_PROG_TYPE_SOCKET_FILTER
+that the eBPF needs to make possible to deliver the hash to the guest
+VM - it is 'bpf_set_hash'
 
-But we know that the fault happend in a get_user() or copy_from_user() call
-(i.e. an RIP with an extable recovery address).  Does context switch
-access user memory?
+Does it mean that we need to define a new eBPF type for socket filter
+operations + set_hash?
 
--Tony
+Our problem is that the eBPF calculates 32-bit hash, 16-bit queue
+index and 8-bit of hash type.
+But it is able to return only 32-bit integer, so in this set of
+patches the eBPF returns
+queue index and hash type and saves the hash in skb->hash using bpf_set_hash().
+
+If this is unacceptable, can you please recommend a better solution?
+
+> sched_cls assumes l2 and can modify the packet.
+
+The steering eBPF in TUN module also assumes l2.
+
+> I think crashes are inevitable.
+>
+> > --
+> > 2.17.1
+> >
