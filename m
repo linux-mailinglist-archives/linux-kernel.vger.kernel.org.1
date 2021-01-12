@@ -2,115 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B27B2F371B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 069CF2F3723
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405077AbhALR3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:29:39 -0500
-Received: from foss.arm.com ([217.140.110.172]:50124 "EHLO foss.arm.com"
+        id S2405525AbhALR3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:29:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42042 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388300AbhALR3h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:29:37 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E72FA101E;
-        Tue, 12 Jan 2021 09:28:51 -0800 (PST)
-Received: from [192.168.0.110] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 655A13F719;
-        Tue, 12 Jan 2021 09:28:50 -0800 (PST)
-Subject: Re: [PATCH 8/9] KVM: arm64: vgic-v3: Expose GICR_TYPER.Last for
- userspace
-To:     Eric Auger <eric.auger@redhat.com>, eric.auger.pro@gmail.com,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, maz@kernel.org, drjones@redhat.com
-Cc:     james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com, shuah@kernel.org, pbonzini@redhat.com
-References: <20201212185010.26579-1-eric.auger@redhat.com>
- <20201212185010.26579-9-eric.auger@redhat.com>
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-Message-ID: <fe0a3415-0c7b-be13-6438-89e82fe4c281@arm.com>
-Date:   Tue, 12 Jan 2021 17:28:52 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S2388300AbhALR3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 12:29:49 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4594BABD6;
+        Tue, 12 Jan 2021 17:29:08 +0000 (UTC)
+Date:   Tue, 12 Jan 2021 09:29:01 -0800
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Shuo A Liu <shuo.a.liu@intel.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+Subject: Re: [PATCH v7 09/18] virt: acrn: Introduce I/O request management
+Message-ID: <20210112172901.ilp7vf3hqmbvav7y@offworld>
+References: <20210106075055.47226-1-shuo.a.liu@intel.com>
+ <20210106075055.47226-10-shuo.a.liu@intel.com>
+ <20210111215219.l44yfpyqh4m2mcbl@offworld>
+ <20210112060527.GF22447@shuo-intel.sh.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201212185010.26579-9-eric.auger@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210112060527.GF22447@shuo-intel.sh.intel.com>
+User-Agent: NeoMutt/20201120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+On Tue, 12 Jan 2021, Shuo A Liu wrote:
 
-On 12/12/20 6:50 PM, Eric Auger wrote:
-> Commit 23bde34771f1 ("KVM: arm64: vgic-v3: Drop the
-> reporting of GICR_TYPER.Last for userspace") temporarily fixed
-> a bug identified when attempting to access the GICR_TYPER
-> register before the redistributor region setting but dropped
-> the support of the LAST bit. This patch restores its
-> support (if the redistributor region was set) while keeping the
-> code safe.
+>On Mon 11.Jan'21 at 13:52:19 -0800, Davidlohr Bueso wrote:
+>>Could this not be done in process context instead?
+>
+>It could be. The original consideration with tasklet was more about
+>performance as the I/O requests dispatching is a hot code path. I think
+>irq thread has little performance impact? I can have a try to convert
+>the tasklet to irq thread.
 
-If I understand your patch correctly, it is possible for the GICR_TYPER.Last bit
-to be transiently 1 if the register is accessed before all the redistributors
-regions have been configured.
-
-Arm IHI 0069F states that accesses to the GICR_TYPER register are RO. I haven't
-found exactly what RO means (please point me to the definition if you find it in
-the architecture!), but I assume it means read-only and I'm not sure how correct
-(from an architectural point of view) it is for two subsequent reads of this
-register to return different values. Maybe Marc can shed some light on this.
+Yes, there is some added latency between when the work is scheduled and
+actually executed - however this should not be a problem for this scenario,
+and furthermore consider that tasklets do not guarantee performance as
+ksoftirqd comes in the picture under heavy load.
 
 Thanks,
-Alex
->
-> Signed-off-by: Eric Auger <eric.auger@redhat.com>
-> ---
->  arch/arm64/kvm/vgic/vgic-mmio-v3.c | 7 ++++++-
->  include/kvm/arm_vgic.h             | 1 +
->  2 files changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-> index 581f0f490000..2f9ef6058f6e 100644
-> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
-> @@ -277,6 +277,8 @@ static unsigned long vgic_uaccess_read_v3r_typer(struct kvm_vcpu *vcpu,
->  						 gpa_t addr, unsigned int len)
->  {
->  	unsigned long mpidr = kvm_vcpu_get_mpidr_aff(vcpu);
-> +	struct vgic_cpu *vgic_cpu = &vcpu->arch.vgic_cpu;
-> +	struct vgic_redist_region *rdreg = vgic_cpu->rdreg;
->  	int target_vcpu_id = vcpu->vcpu_id;
->  	u64 value;
->  
-> @@ -286,7 +288,9 @@ static unsigned long vgic_uaccess_read_v3r_typer(struct kvm_vcpu *vcpu,
->  	if (vgic_has_its(vcpu->kvm))
->  		value |= GICR_TYPER_PLPIS;
->  
-> -	/* reporting of the Last bit is not supported for userspace */
-> +	if (rdreg && (vgic_cpu->rdreg_index == (rdreg->free_index - 1)))
-> +		value |= GICR_TYPER_LAST;
-> +
->  	return extract_bytes(value, addr & 7, len);
->  }
->  
-> @@ -714,6 +718,7 @@ int vgic_register_redist_iodev(struct kvm_vcpu *vcpu)
->  		return -EINVAL;
->  
->  	vgic_cpu->rdreg = rdreg;
-> +	vgic_cpu->rdreg_index = rdreg->free_index;
->  
->  	rd_base = rdreg->base + rdreg->free_index * KVM_VGIC_V3_REDIST_SIZE;
->  
-> diff --git a/include/kvm/arm_vgic.h b/include/kvm/arm_vgic.h
-> index a8d8fdcd3723..596c069263a7 100644
-> --- a/include/kvm/arm_vgic.h
-> +++ b/include/kvm/arm_vgic.h
-> @@ -322,6 +322,7 @@ struct vgic_cpu {
->  	 */
->  	struct vgic_io_device	rd_iodev;
->  	struct vgic_redist_region *rdreg;
-> +	u32 rdreg_index;
->  
->  	/* Contains the attributes and gpa of the LPI pending tables. */
->  	u64 pendbaser;
+Davidlohr
