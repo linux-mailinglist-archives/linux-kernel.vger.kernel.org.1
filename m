@@ -2,85 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C16A2F3FCB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B36472F3FD4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395102AbhALXBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 18:01:46 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:48932 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730595AbhALXBo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 18:01:44 -0500
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610492462;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7ScsfJIzxSa6NiYKubN0cGbswUB5FVUDdRx6xbWjqok=;
-        b=rgP4QV5ufIsNcuoPssU8REPcbojGJxN3db2jabEB563h7MUcECIABnJV8qCv2kXNGtCMf1
-        WOlXALKLX+skxkBGA5GzFwTK69Wwwm3m6+sdiz+ADTUyk1vTe57enUCPSDeNIHaQfClvA4
-        FE0p5wYx6RzrbTNLnp5Ojvud7v0l9T1uNaglVjyvEIIpQZ8lxS9bLDGXSHF9NQa9kTDqMG
-        P3MyQM2EMyKBXCmTMCWgGlvHLE4EL/ZYIgSN31iSy/FMfLIFRpaOvYoUMmVyS11tpFm1ku
-        hvaGjpkdO6Z3K2CLGBFGSfzAjf4e4JtbVEmyxHskkx6wZ27NTs4f3YFv8jj6AQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610492462;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7ScsfJIzxSa6NiYKubN0cGbswUB5FVUDdRx6xbWjqok=;
-        b=i2AOOt25IEBUU5zKipVxtfgA4G7hNYV3Wd0wSXkPXOrRJ4P+mhqqKo+yq5rWc+jfAvLxrV
-        JOv924qVLkrMzIBw==
-To:     linux-kernel@vger.kernel.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
+        id S2395119AbhALXCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 18:02:31 -0500
+Received: from mga11.intel.com ([192.55.52.93]:32015 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729320AbhALXCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 18:02:30 -0500
+IronPort-SDR: RMO7RHKhKv9vip0YRrOcKlfQwRyvynVK/ATTUSKiWao9mEzs9qo3o3K2UEj9SFapyh8qf84MB4
+ sy+Drv0cPZYw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="174611842"
+X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
+   d="scan'208";a="174611842"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 15:02:07 -0800
+IronPort-SDR: zBMMKHAiBobVrLDfrDcDdJSqGxiTSdD34PT5PSkJ0OlBLjoAwyPye77F//xOR069fHpa7ys6T0
+ P6adA37XOpHQ==
+X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
+   d="scan'208";a="571845814"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.89.212]) ([10.212.89.212])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 15:02:06 -0800
+Subject: Re: [PATCH v17 04/26] x86/cpufeatures: Introduce X86_FEATURE_CET and
+ setup functions
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 3/3] tracing: Remove NULL check from current in tracing_generic_entry_update().
-Date:   Wed, 13 Jan 2021 00:00:57 +0100
-Message-Id: <20210112230057.2374308-4-bigeasy@linutronix.de>
-In-Reply-To: <20210112230057.2374308-1-bigeasy@linutronix.de>
-References: <20210112230057.2374308-1-bigeasy@linutronix.de>
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+References: <20201229213053.16395-5-yu-cheng.yu@intel.com>
+ <20210111230900.5916-1-yu-cheng.yu@intel.com>
+ <20210112123854.GE13086@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <0b144668-a989-6bc7-0b0d-2195d2d73397@intel.com>
+Date:   Tue, 12 Jan 2021 15:02:06 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210112123854.GE13086@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I can't imagine when or why `current' would return a NULL pointer. This
-check was added in commit
-      72829bc3d63cd ("ftrace: move enums to ftrace.h and make helper functi=
-on global")
+On 1/12/2021 4:38 AM, Borislav Petkov wrote:
+> On Mon, Jan 11, 2021 at 03:09:00PM -0800, Yu-cheng Yu wrote:
+>> @@ -1252,6 +1260,16 @@ static void __init cpu_parse_early_param(void)
+>>   	if (cmdline_find_option_bool(boot_command_line, "noxsaves"))
+>>   		setup_clear_cpu_cap(X86_FEATURE_XSAVES);
+>>   
+>> +	/*
+>> +	 * CET states are XSAVES states and options must be parsed early.
+>> +	 */
+> 
+> That comment is redundant - look at the containing function's name.
+> 
+> Otherwise patch looks just as it should.
+> 
+> Thx.
+> 
 
-but it doesn't give me hint why it was needed.
+Should I send an updated patch?  Thanks!
 
-Assume `current' never returns a NULL pointer and remove the check.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- include/linux/trace_events.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index aa9123878e126..252dfcabda3c1 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -152,10 +152,8 @@ static inline void tracing_generic_entry_update(struct=
- trace_entry *entry,
- 						unsigned short type,
- 						unsigned int trace_ctx)
- {
--	struct task_struct *tsk =3D current;
--
- 	entry->preempt_count		=3D trace_ctx & 0xff;
--	entry->pid			=3D (tsk) ? tsk->pid : 0;
-+	entry->pid			=3D current->pid;
- 	entry->type			=3D type;
- 	entry->flags =3D			trace_ctx >> 16;
- }
---=20
-2.30.0
-
+--
+Yu-cheng
