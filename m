@@ -2,89 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 573712F2F2B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:35:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1A502F2F30
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:36:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388248AbhALMdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:33:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40122 "EHLO
+        id S1729295AbhALMfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:35:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388134AbhALMds (ORCPT
+        with ESMTP id S1726501AbhALMfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:33:48 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 604E3C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 04:33:08 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id z5so3528828iob.11
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 04:33:08 -0800 (PST)
+        Tue, 12 Jan 2021 07:35:22 -0500
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026E9C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 04:34:42 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id w204so445931wmb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 04:34:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Of78Vmc8hauFqd9I7zupUdsPMLB4WSeLIFBQZhkt6D0=;
-        b=MKW2IKppYfWC8TX5Q9Cc26aDS0tUhLFPNRZ8DYFW6JKZxT9nhFFRNcoxJFp26Q997M
-         GIAsw6oPGFbk+L12zZRfygAWffLL/ik6B7anx9Zo3V303ga1AwpRUJVwF3N9BcWrupBw
-         2O8riPClVVLPU0baIWY7uACtS9lnME9uNhnVveUAkjLxeTy6Qek5bYLvuf8Ep1SUairF
-         CznXKsoePlneK0AxhyXfMYoH73CuH91FGivryh1zTuYaVDBCWQXp1Vu2bogGFmr+re5b
-         CrQRe7GFvBB+/LCcG+6OyWS/kcCd+yIN9ekfHj4ZJmvfprAgyl3skiRIjINvkCV+7Zbf
-         1wyQ==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=pU2TD0vHzJMOEXt8gPn4RurzqWNYxl51610uNTFZEgc=;
+        b=FpRsluB+WQNzSpcn2oBDxF4pnB7gSgIte+V69x6+EXwPE9aAwIfjrCtScG7gBxwfuh
+         cC9EZH6eRaOenzBj8p5IvQ8KpokVaV/5rDVvuxgPjh+TtgimAbcZUCDtip1k+YtlCuys
+         51gLgakYwh0MvLiITSMHNI6bOO3wQPKziNYpxfIpYerqK/Zm18mmNScXxi2dxin+rQMr
+         eb2YIeH084l1rvj4OgGWpP3eQ3RZ8uGLlO/LtL8a2fpPhH4YW6bu2isnSYX+482HmpTH
+         pmoOR8z7htAckAZ5wItUZ3PUtNrUvv22bXjYXD9q4Qx++ghRotqEYcRrwIEXwe8bBEJC
+         C84w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Of78Vmc8hauFqd9I7zupUdsPMLB4WSeLIFBQZhkt6D0=;
-        b=PNFdJ3pFwaJw5HHvGNeJ8iaVDCwopWwKWo//X1QPtTA5XUhKE/nGZSIHr1cDMYSzpD
-         p6vm5udJw8Q6aJmq2hBdUxGIeVAL7SFhbGNCnKoFjIV2auWArDcFeTH5+5oQtefdkSy2
-         kfoc5ZsIVKHcYBgodCY96aGcO3AJlw5Pzsfwpm+7BuJSdvHYjwLy/PzKMKnft1aNLZv5
-         SMptqrj8Hvirg8GQ6Tbs3Xuzwaux4b8hDeFusz5r83G9IfamhZkwwvzC+IQQ0fhMKYo8
-         OLf39Xc7qVXbNnZKgPKY03gsdJs1FoJWnkWvcfbkaI26qTMYWFFWHWfakm7sJXBs++Kk
-         kPuw==
-X-Gm-Message-State: AOAM533x4Rip3pdf7viYYdlGz/51JOsNjcv/NlQw5VGkKBR6r92XNR4K
-        u2fYJ0grVUQLRMKTvG1FEbGvuflR90sUwCYflGx4UA==
-X-Google-Smtp-Source: ABdhPJycqY3rswN9NW/Vo08dGf7zIPK57Sy6wLEU25pmLm88I4BVOLs+rK/QLeFQiypa3Okwur/TwYIwhW8Uo+Z+/78=
-X-Received: by 2002:a92:9153:: with SMTP id t80mr3776680ild.216.1610454787513;
- Tue, 12 Jan 2021 04:33:07 -0800 (PST)
-MIME-Version: 1.0
-References: <20210111182655.12159-1-alobakin@pm.me> <CANn89iKceTG_Mm4RrF+WVg-EEoFBD48gwpWX=GQiNdNnj2R8+A@mail.gmail.com>
- <20210112105529.3592-1-alobakin@pm.me>
-In-Reply-To: <20210112105529.3592-1-alobakin@pm.me>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 12 Jan 2021 13:32:56 +0100
-Message-ID: <CANn89i+2VC3ZH5_fyWZvJA_6QrJLzaSupusQ1rXe8CqVffCB1Q@mail.gmail.com>
-Subject: Re: [PATCH net-next 0/5] skbuff: introduce skbuff_heads bulking and reusing
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Edward Cree <ecree@solarflare.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=pU2TD0vHzJMOEXt8gPn4RurzqWNYxl51610uNTFZEgc=;
+        b=Z0h/9L1dMcPDZg5tsx9oIUhW4eJXYi+TCNWJyBx5/KchoS7HouZozKX09dbgcLaMuK
+         a0OoDx2/799udDgkxSXqZcTMwBOyL6fFwQuc4LVicv9b+bGfMQQXE0oFla2nLFoPMBQk
+         BSrYWz3wRb5SXEs4Ap6o7gqg3B0HNOmH9PAXr9Mjnn1Z0q0Y1p79/+2nSv6twVahKqor
+         KOjSEfg75W0zPQUfQExXOTlumpdFwu7PoLJAFW2WHpMlKyE6mtWDEAN5zUkHJi3njHwT
+         fvtPs3yjs3JG+xI0LvorE6gRvitb2jOTkl3VyR+eyLNK2JgmKGfit4lZyBTjWPQJr+BJ
+         8XCQ==
+X-Gm-Message-State: AOAM533ttnLRg4VNQ9teEi02VmDILqJUUP4+hgKPEkwHv2kPhzvE2rpf
+        zn1qgNT4QU/W0G1Sn43PgkIhFZE+r8IsrQ==
+X-Google-Smtp-Source: ABdhPJyVzH2vHwtrz088JpONtQgIlsJac7eMd4o2O2YP+YmvRQGj35xZOoAbCdLsV1t1496eZLiNRqQ2b1AWWg==
+Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a7b:c2e8:: with SMTP id
+ e8mr3341182wmk.103.1610454880590; Tue, 12 Jan 2021 04:34:40 -0800 (PST)
+Date:   Tue, 12 Jan 2021 12:34:22 +0000
+Message-Id: <20210112123422.2011234-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH bpf-next] bpf: Clarify return value of probe str helpers
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 11:56 AM Alexander Lobakin <alobakin@pm.me> wrote:
->
+When the buffer is too small to contain the input string, these
+helpers return the length of the buffer, not the length of the
+original string. This tries to make the docs totally clear about
+that, since "the length of the [copied ]string" could also refer to
+the length of the input.
 
->
-> Ah, I should've mentioned that I use UDP GRO Fraglists, so these
-> numbers are for GRO.
->
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
+---
+ include/uapi/linux/bpf.h       | 10 +++++-----
+ tools/include/uapi/linux/bpf.h | 10 +++++-----
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
-Right, this suggests UDP GRO fraglist is a pathological case of GRO,
-not saving memory.
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 77d7c1bb2923..a1ad32456f89 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -2993,10 +2993,10 @@ union bpf_attr {
+  * 		string length is larger than *size*, just *size*-1 bytes are
+  * 		copied and the last byte is set to NUL.
+  *
+- * 		On success, the length of the copied string is returned. This
+- * 		makes this helper useful in tracing programs for reading
+- * 		strings, and more importantly to get its length at runtime. See
+- * 		the following snippet:
++ * 		On success, returns the number of bytes that were written,
++ * 		including the terminal NUL. This makes this helper useful in
++ * 		tracing programs for reading strings, and more importantly to
++ * 		get its length at runtime. See the following snippet:
+  *
+  * 		::
+  *
+@@ -3024,7 +3024,7 @@ union bpf_attr {
+  * 		**->mm->env_start**: using this helper and the return value,
+  * 		one can quickly iterate at the right offset of the memory area.
+  * 	Return
+- * 		On success, the strictly positive length of the string,
++ * 		On success, the strictly positive length of the output string,
+  * 		including the trailing NUL character. On error, a negative
+  * 		value.
+  *
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 77d7c1bb2923..a1ad32456f89 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -2993,10 +2993,10 @@ union bpf_attr {
+  * 		string length is larger than *size*, just *size*-1 bytes are
+  * 		copied and the last byte is set to NUL.
+  *
+- * 		On success, the length of the copied string is returned. This
+- * 		makes this helper useful in tracing programs for reading
+- * 		strings, and more importantly to get its length at runtime. See
+- * 		the following snippet:
++ * 		On success, returns the number of bytes that were written,
++ * 		including the terminal NUL. This makes this helper useful in
++ * 		tracing programs for reading strings, and more importantly to
++ * 		get its length at runtime. See the following snippet:
+  *
+  * 		::
+  *
+@@ -3024,7 +3024,7 @@ union bpf_attr {
+  * 		**->mm->env_start**: using this helper and the return value,
+  * 		one can quickly iterate at the right offset of the memory area.
+  * 	Return
+- * 		On success, the strictly positive length of the string,
++ * 		On success, the strictly positive length of the output string,
+  * 		including the trailing NUL character. On error, a negative
+  * 		value.
+  *
 
-Real GRO (TCP in most cases) will consume one skb, and have page
-fragments for each segment.
+base-commit: e22d7f05e445165e58feddb4e40cc9c0f94453bc
+--
+2.30.0.284.gd98b1dd5eaa7-goog
 
-Having skbs linked together is not cache friendly.
-
-So I would try first to make this case better, instead of trying to
-work around the real issue.
