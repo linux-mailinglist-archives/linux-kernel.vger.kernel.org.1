@@ -2,103 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 878AA2F29DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00BB82F29DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:20:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392280AbhALISs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 03:18:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41662 "EHLO
+        id S2392291AbhALITT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 03:19:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729017AbhALISr (ORCPT
+        with ESMTP id S2392247AbhALITS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 03:18:47 -0500
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0233DC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:18:07 -0800 (PST)
-Received: by mail-io1-xd32.google.com with SMTP id y19so2291922iov.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:18:06 -0800 (PST)
+        Tue, 12 Jan 2021 03:19:18 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44205C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:18:36 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id z20so1069482qtq.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:18:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LbpidrRYCyxn/Boo+Mnw7fCYz2z4a2W9yfy+reOhTtI=;
-        b=irh1MNudW5++QFQkK9wYg3b4JSFoPpJuSa96vD8+3KArO1qwg/nvqPAo3puDqLcnOL
-         Qt8zQxyopi8QR49rCc10xPEiWWJW/qVkawMVrSc19dhjK6VIXFla/GRYfjBV+VLs3J/j
-         PCEOkNx58uCzYZbphmnTSSzzUf18vyL0SIdkE=
+        bh=2O4oVCcY5rd2IeP/z10VBhkIJpOFPjzFWez+q+L4HJw=;
+        b=vUtmN33he1absWSIk8T5Hy/Rn2xKLJBbD3vu62LbyvKvQrutrL+COtZNriH2/oqwKb
+         +1T4Ds7sEblVyoTZRJvoYXkCy/bCMZbotiya2xYYphm6bW96Ok1+MInaL/093FxWbdu1
+         DJmP+uPuvS/rGfZ21DJEdwRMPjbBxGRMUtXY0d/xX+GqqYSZ7SpsFf9/VIyUEB5zNY2N
+         yfcZFwZeGPWz6hUDq/VV+3qnU9AdllYux0Cy/9h8WS6gxk8gPKRzU4P02Zop1h3PprjH
+         viczQ1ojLSDC6A5Fhdbfxezk9ovpaFTADg/6fMoKRhTl08ThOFOL1S3IdBmVWijZLH4x
+         kdcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LbpidrRYCyxn/Boo+Mnw7fCYz2z4a2W9yfy+reOhTtI=;
-        b=T9wCfdHeRdH70b9zB+X7rZNAFJ4+XydthIgtTwfBZoXKekXrNOAB4VqU8sVvt1QDoR
-         TpcUV0E17C1VzYU8JC2/AZV1Iy3YJF2f1/aEq2coxGVQ1ELOhlEOWnAgxhJFEMxzwZYD
-         BW+XERwvnqaq02DyBDXU/hmJ8dqOHAIBcWzKQsZbkfymZXcQD7GPuFITOf80jdbrzvOe
-         JkEf1EUOuhOcHHhcY+06wgt4vUKOETc5jHergV7NF8xBM1fK75IA+EOiK/y2Lov6vos7
-         4Wsy1Hq4NwhrAguJl3HOoyDlpy72h5K2EPFr1U5ll3Rj1sElljgn19qjQhebsNFbGwh2
-         UHlA==
-X-Gm-Message-State: AOAM531v2xvYReUFdxlORPEZj5pkgzF6XupzrX/kVRvskWpcfxnxM6SO
-        hjVaXUn2lxu6pQJt3qNy09RqJ7kjJss2QtJ4lDsU
-X-Google-Smtp-Source: ABdhPJyTfOUQm2SQX5x8heSHTT4WGxDATytLmMi3Xt03IMwgr+v5SF1qMvKgbhiOoDcK8/6NoVk7SGsiFEW/I8iQlgc=
-X-Received: by 2002:a6b:b74e:: with SMTP id h75mr2453290iof.0.1610439486459;
- Tue, 12 Jan 2021 00:18:06 -0800 (PST)
+        bh=2O4oVCcY5rd2IeP/z10VBhkIJpOFPjzFWez+q+L4HJw=;
+        b=gBStDHquZOrLPYQwep+xmphVUS8BiOVBePzIX+I7o7/XLTUNw44LTr4zjptJQGAtqL
+         4yQieREtoNKuc8Qu1Vv8zOdBLmHKPDo/dg2kPkIae7EkD1RrtwG4QKPVlG2I2tn2RkwP
+         USSE+Cs990JIxKU/w4x1eV+cH0/0mJa6kCska+ReYCQ0ebWzYooNt3mKSdAoWHIevPX+
+         aKKsowf9Up4tYepcfn91EogTcLsjlSizjtmZZ6WiAiqFyhMttcpH4i1O8dYReBOJwT4d
+         I1/bJPDu0RnT1bfR0I9jnG2ir/ng9XiUrYz9myk8OhpMvvREGVRaHYggPYO/qauWWf2Y
+         eK5Q==
+X-Gm-Message-State: AOAM531opo4hQvvA6aDzgD/Ft1EjWxXNWfV5YSQETCN8KGTK2H/Agj22
+        zXEG8O0CX5bDH8IujJasgWIrBwhlLeY08TzNG9H79g==
+X-Google-Smtp-Source: ABdhPJwDvS6XK8nVNZVXoR6ZYl97fk9N3dt0lEOcbwDGnr9y6hCPY5xR/Akfv7n+oIdi7Btxwd7tfnhfavX3rRpl01g=
+X-Received: by 2002:ac8:7512:: with SMTP id u18mr3452445qtq.300.1610439515331;
+ Tue, 12 Jan 2021 00:18:35 -0800 (PST)
 MIME-Version: 1.0
-References: <20210112023534.117354-1-guoren@kernel.org>
-In-Reply-To: <20210112023534.117354-1-guoren@kernel.org>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Tue, 12 Jan 2021 00:17:55 -0800
-Message-ID: <CAOnJCUK89rwjfnpMtavbaf-pwBndnS-=kVwsdP2yJnJAwJi-kg@mail.gmail.com>
-Subject: Re: [PATCH] riscv: Remove duplicate definition in pagtable.h
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+References: <cover.1609871239.git.andreyknvl@google.com> <a37dab02f89ad93cc986a87866da74fb8be1850d.1609871239.git.andreyknvl@google.com>
+In-Reply-To: <a37dab02f89ad93cc986a87866da74fb8be1850d.1609871239.git.andreyknvl@google.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Tue, 12 Jan 2021 09:18:24 +0100
+Message-ID: <CAG_fn=Uqp6dt5VGF8Dt6FeQzDgcEbVY8fs+5+wyMp2d1Z98sEw@mail.gmail.com>
+Subject: Re: [PATCH 07/11] kasan: add compiler barriers to KUNIT_EXPECT_KASAN_FAIL
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 6:38 PM <guoren@kernel.org> wrote:
+On Tue, Jan 5, 2021 at 7:28 PM Andrey Konovalov <andreyknvl@google.com> wrote:
 >
-> From: Guo Ren <guoren@linux.alibaba.com>
->
-> PAGE_KERNEL_EXEC has been defined above.
->
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Pekka Enberg <penberg@kernel.org>
-> ---
->  arch/riscv/include/asm/pgtable.h | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-> index 41a72861987c..dff51a84e52e 100644
-> --- a/arch/riscv/include/asm/pgtable.h
-> +++ b/arch/riscv/include/asm/pgtable.h
-> @@ -101,7 +101,6 @@
->  #define PAGE_KERNEL            __pgprot(_PAGE_KERNEL)
->  #define PAGE_KERNEL_EXEC       __pgprot(_PAGE_KERNEL | _PAGE_EXEC)
->  #define PAGE_KERNEL_READ       __pgprot(_PAGE_KERNEL & ~_PAGE_WRITE)
-> -#define PAGE_KERNEL_EXEC       __pgprot(_PAGE_KERNEL | _PAGE_EXEC)
->  #define PAGE_KERNEL_READ_EXEC  __pgprot((_PAGE_KERNEL & ~_PAGE_WRITE) \
->                                          | _PAGE_EXEC)
->
-> --
-> 2.17.1
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> It might not be obvious to the compiler that the expression must be
+> executed between writing and reading to fail_data. In this case, the
+> compiler might reorder or optimize away some of the accesses, and
+> the tests will fail.
 
-It's already on the fixes.
+Have you seen this happen in practice?
+Are these accesses to fail_data that are optimized (in which case we
+could make it volatile), or some part of the expression?
+Note that compiler barriers won't probably help against removing
+memory accesses, they only prevent reordering.
 
-http://lists.infradead.org/pipermail/linux-riscv/2021-January/004134.html
+> +       barrier();                                              \
+>         expression;                                             \
+> +       barrier();                                              \
 
-
--- 
-Regards,
-Atish
+The need for barriers is not obvious to the reader, so a comment in
+the code clarifying that would be nice.
