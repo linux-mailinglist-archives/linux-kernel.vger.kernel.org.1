@@ -2,192 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 816792F2897
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:56:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E11C2F289B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388833AbhALGzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 01:55:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52100 "EHLO
+        id S2391686AbhALG5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 01:57:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730028AbhALGzh (ORCPT
+        with ESMTP id S1726814AbhALG5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 01:55:37 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2535C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 22:54:56 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id lt17so1988989ejb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 22:54:56 -0800 (PST)
+        Tue, 12 Jan 2021 01:57:22 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B2EC061575;
+        Mon, 11 Jan 2021 22:56:41 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id u11so1610336ljo.13;
+        Mon, 11 Jan 2021 22:56:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HFUW6YIdb+QGr5644vCV9zETWEFQM+cW7iz1T1KNU7c=;
-        b=hxILZSPSntWbwHo+PktBcenkNIxubreqmoBxSKjRwe9O8wANsvx+lCQWGwWgtoeoht
-         xa54TX+qbBgl1IKaYS3TAAMglTn6JpU+J1RO1L7TTNo1QZGcoQoDGvcYaEmaOFULqllY
-         d4ZA/370BYju4HdON3FJ9V8WMDBymFwBN4tXinycK6zIZ2Tdo61uuPj84OcCiBJEpLJl
-         5RvPa3ivoZZQnBvJ9enQW7MOPy8pDdxV3UPhl2t5dDatGf1/VDC4HY3Z+joZ9lP0u2xt
-         R3xKo092AUWgn6DNwaq5ehoo8UuUol7/lz8QjejIbQI3TK5BZtTEnoy6UJSlx+KVLKP0
-         BeEQ==
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+mcGfBDh2HaL2D1G9xE8gCCyle1yTK3SDdAW7IN4ZiQ=;
+        b=Oexi8t3aHxziEeTcB022ZXJtY7b6aDckY/m92s8/xdzPhgqrdZcf49P7amEmSe5wR+
+         XVrOrmIGT+G5/7BW9jcTOqMrNJFF1kTv7fYAqMKckKy5KsNmtA6/K/2jAcVdpydmZSPV
+         qieiC6KpquDdbWfrdKH8803mRO6mJFJxQaTrXPs5/mCwg+wyt9FyN89krHon4UIveBr9
+         HZ7lrglMic2Am0sLisAB2RYSIX4tD1Vx+A+ZjdQYRUMImFLJF24Pmud+Y/NHTomW0AOs
+         oChVVTAYuVveQFmOafLJQYyFiHwSZH4YixcWSOnfep9OiCi8TtTmpKmDiTO2ugTE1inL
+         UUSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HFUW6YIdb+QGr5644vCV9zETWEFQM+cW7iz1T1KNU7c=;
-        b=hpgkwmBQQEf0rLwMLFWG9VRSQCJ2nFf2j2NU0hqYeNRCj068uwyd1CNLbt29iGxnsh
-         Xgi1IBm2tulW5ztC/F1LJZIPWSZRVHasmSnuIILPIwe8/qVL8oIJkyijes4EnE80mPzX
-         Ahm4uI+t5uDgycx+gcU5OewQIIiPrTw66mogSOLzxe85dqD5C5lHIVRIQYpbP1VHP42X
-         Yq3U2fZOW3aOis6Hh12A7ioTgCAOdRtob1pNc1Y1iiEJkhBBUjnKQvh/nQGaO5Jdryh/
-         DASUwB4YT4JDjEYlPDjEKgpNpoHe2MYXaBUgHt3tP8l3bpsR7nkjpxR+d4AizBlUe/4q
-         aldA==
-X-Gm-Message-State: AOAM532hhVjwIHAtCUBapO36TBvlxlvsnoc7qLqVA4Ki1r3fbm5WkCWw
-        Yw1+9KNIRjOQF/aIX+KZ+p81z++3gSbbelnjvx2Zyg==
-X-Google-Smtp-Source: ABdhPJz25Gzh9Qlfm0PSj+6KL9TtcXDWIb97CM1mRsi75E+q0SaCFm0Iny79STQnszUTE6u7hmp37MmhNczniGyhUaM=
-X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr2133114eju.375.1610434495370;
- Mon, 11 Jan 2021 22:54:55 -0800 (PST)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+mcGfBDh2HaL2D1G9xE8gCCyle1yTK3SDdAW7IN4ZiQ=;
+        b=MnsYyNY1CTtDS9FbCqrgS7tzDhhFRD/eKLOLpYHlSW40Ds5+KmX1HSN1cTPdkl2grA
+         W3tKc8qWo/Ataje0opW8nk0fDgqcSVtEWsMbrdvIaX6b3xCYTBpocenAafYV0rq9utwe
+         N6D8DDd2VgOEbS5MM89vC64URvUuybskukLxMoEwFq3Fw+cGaW1nwCANFtp7VO3LSLut
+         aWppdkMRK55DYxahnPa5Ley4ABBlcQUvewIZnuOLMMSBCHlKOBi5CZqkY9Kyml8o1MrT
+         CBlkO4qWhmGVcvLfG4UHVip4akpdawqY5R3Y9x9mYeqMkRFJxKckRpY64XrBFsAyNjDB
+         mNEw==
+X-Gm-Message-State: AOAM530kQP5cuCLqPBIbZ+dgIuRqgH/qqLzm11ZuZq7NeoDrVtcq11Qn
+        LD4puzPAKgygMIGe7xKdril5RdIIxII=
+X-Google-Smtp-Source: ABdhPJxV4KMH5KWxYxRKGXp85MQcxBFQnS2rkLTJJOz6otCaiJaIUvdP/f7PFgl368JfvPRtBbtSVA==
+X-Received: by 2002:a2e:9b47:: with SMTP id o7mr1361983ljj.99.1610434598666;
+        Mon, 11 Jan 2021 22:56:38 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id a9sm271890lfl.143.2021.01.11.22.56.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 22:56:37 -0800 (PST)
+Subject: Re: [PATCH v3 0/9] Support Runtime PM and host mode by Tegra ChipIdea
+ USB driver
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Peter Chen <peter.chen@nxp.com>, Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Ion Agorria <ion@agorria.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20201218120246.7759-1-digetx@gmail.com>
+ <20201229051615.GA5823@b29397-desktop>
+ <b2c21687-4cb9-ba0a-a724-3a82ddd8daff@gmail.com>
+Message-ID: <713c4b1a-a4b3-41ad-7aad-c49e594f778b@gmail.com>
+Date:   Tue, 12 Jan 2021 09:56:37 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-References: <20210111130039.165470698@linuxfoundation.org>
-In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 12 Jan 2021 12:24:43 +0530
-Message-ID: <CA+G9fYsNByrDQvgXpaaaUHJa95xvwT75MZQtj_3QqGdWxPc1Xg@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/92] 5.4.89-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <b2c21687-4cb9-ba0a-a724-3a82ddd8daff@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Jan 2021 at 18:41, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.89 release.
-> There are 92 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 13 Jan 2021 13:00:19 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.89-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+29.12.2020 17:26, Dmitry Osipenko пишет:
+> 29.12.2020 08:16, Peter Chen пишет:
+>> On 20-12-18 15:02:37, Dmitry Osipenko wrote:
+>>> This series implements Runtime PM support for the Tegra ChipIdea USB driver.
+>>> It also squashes the older ehci-tegra driver into the ChipIdea driver, hence
+>>> the RPM is supported by both UDC and host controllers, secondly this opens
+>>> opportunity for implementing OTG support in the future.
+>>>
+>>> Patchset was tested on various Tegra20, Tegra30 and Tegra124 devices.
+>>> Thanks to Peter Geis, Matt Merhar, Nicolas Chauvet and Ion Agorria for
+>>> helping with the extensive and productive testing!
+>>>
+>>> Changelog:
+>>>
+>>> v3: - Replaced "goto" with if-statements as was suggested by Thierry Reding.
+>>>
+>>>     - Improved wording of the deprecated Kconfig entry as was suggested
+>>>       by Alan Stern.
+>>>
+>>>     - Added ACKs from Thierry Reding and Alan Stern.
+>>>
+>>>     - Added a new minor patch "Specify TX FIFO threshold in UDC SoC info"
+>>>       just for completeness, since we can now switch OTG to host mode in
+>>>       the ChipIdea driver. Although, OTG support remains a work-in-progress
+>>>       for now.
+>>>
+>>> v2: - Improved comments in the code as it was suggested by Peter Chen and
+>>>       Sergei Shtylyov for v1.
+>>>
+>>>     - Replaced mdelay() with fsleep() and made ci->hdc to reset to NULL in
+>>>       a error code path, like it was suggested by Peter Chen.
+>>>
+>>>     - Redirected deprecated USB_EHCI_TEGRA Kconfig entry to USB_CHIPIDEA_TEGRA
+>>>       as was suggested by Alan Stern.
+>>>
+>>>     - Improved commit message and added ACK from Thierry Reding to the patch
+>>>       that removes MODULE_ALIAS.
+>>>
+>>>     - Fixed UDC PHY waking up on ASUS TF201 tablet device by utilizing
+>>>       additional VBUS sensor. This was reported and tested by Ion Agorria.
+>>>
+>>>     - Added t-b from Ion Agorria.
+>>>
+>>> Dmitry Osipenko (8):
+>>>   usb: phy: tegra: Add delay after power up
+>>>   usb: phy: tegra: Support waking up from a low power mode
+>>>   usb: chipidea: tegra: Remove MODULE_ALIAS
+>>>   usb: chipidea: tegra: Rename UDC to USB
+>>>   usb: chipidea: tegra: Support runtime PM
+>>>   usb: chipidea: tegra: Specify TX FIFO threshold in UDC SoC info
+>>>   usb: host: ehci-tegra: Remove the driver
+>>>   ARM: tegra_defconfig: Enable USB_CHIPIDEA_HOST and remove
+>>>     USB_EHCI_TEGRA
+>>>
+>>> Peter Geis (1):
+>>>   usb: chipidea: tegra: Support host mode
+>>
+>> Chipidea related (patch 3-7) are applied, thanks.
+> 
+> Hello Peter,
+> 
+> Thank you for applying the patches.
+> 
+> Who will apply the remaining patches?
+> 
+> The Chipidea patch #6 depends on the PHY changes, otherwise USB will
+> suspend and never resume.
+> 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Peter, could you please apply the PHY and defconfig patches along with
+the CI patches to -next? I.e. the whole series. Preferentially in
+original ordering of patches should be preserved.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.4.89-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.4.y
-git commit: cdbc5a73c7f4b2b8796ceea91083a4ad1ebfd113
-git describe: v5.4.88-93-gcdbc5a73c7f4
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y/build/v5.4.88-93-gcdbc5a73c7f4
-
-No regressions (compared to build v5.4.88)
-
-No fixes (compared to build v5.4.88)
-
-Ran 49720 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest
-* kvm-unit-tests
-* ltp-controllers-tests
-* ltp-cve-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-ipc-tests
-* ltp-mm-tests
-* ltp-tracing-tests
-* perf
-* fwts
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-io-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* network-basic-tests
-* v4l2-compliance
-* ltp-commands-tests
-* ltp-math-tests
-* ltp-open-posix-tests
-* ltp-syscalls-tests
-* rcutorture
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+Thanks in advance.
