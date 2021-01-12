@@ -2,152 +2,389 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74A42F32F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:33:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D8F2F32FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729485AbhALOcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:32:07 -0500
-Received: from mail-mw2nam12on2128.outbound.protection.outlook.com ([40.107.244.128]:42368
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727033AbhALOcG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:32:06 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OEYJdK5w0kgNl1kY/iLlxJTaOYZyKbu1KkDwaFYTt1co4dINoeLfmKSd0BSqnHwSbLgzEuYQuRzMAUprohUoYy6hbOL54CDM+bsMzxR10nLoPSubM3HDxFa8A1TLkMBGt6AuE3Ya1N7a4o8SLySKRTiX/emAWRWjgClveuNjluFbT4djCE27qyEtm194C6gCuRgogo8qcuN4pofWe0H0U5z4iz0ulLdKx6zCxbA8kCeRtjhF5c8m+yNyDnMigbDJ05DLwy38wIKTb4c7JubDUQchCLQBnjKDIA/1GW9qBJU0ZcROXUERYzr0nZek4Z9XJtMyTSrAxGS8ihcd3C8fLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l14Ui8t721gegBJNbZ3A5xzu9QaTAI7fspg/+qopT3Q=;
- b=OlRT/rSF53YNag9V07bKYrHKbyiPhgU1W9bLMlYLFxLiRAC/ZlVZnPB1mr2BDwq20nAXZhKlw1emBOt5oWP33GlzAgYMrQ5u0ROHPgLbalTfjAc9imaBMLW44LDmowssIg22ZOk27scfNUimcxu6jTEty++kdqlLZyg76xCVW3HHWb4bbt86rD04BOvlFx1rvN563bBFw+f50eHalIYTv+JwnPtyRhu4pJCoXiRUOBVrXDz8FAKdEtoQvDPfLQfdMs/S/qrMqIbffAgVBCNqsDR5/n49BYuVYUqTbA0doYpd9YPeaEZV5kVEQ8y2sgELm1eQEFlaUHHmaSy1s9BgtA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hammerspace.com; dmarc=pass action=none
- header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l14Ui8t721gegBJNbZ3A5xzu9QaTAI7fspg/+qopT3Q=;
- b=c+C5RnBQAwFHC3q2NkC46uVv9iW8r+0GnPTHUz6OWwSW2/Gl1v1HDx0VyPHZjS2HQRh37Zrtu+zFn7lyec0TT17Xhu8ahJbNN712XmJ9FW1e6lY5xw0uc77GfF6uXoYr1FkfoT+GfF9eCxwAShIY+E+WIV+NEIiiVLujgZe2ZG4=
-Received: from CH2PR13MB3525.namprd13.prod.outlook.com (2603:10b6:610:21::29)
- by CH2PR13MB3784.namprd13.prod.outlook.com (2603:10b6:610:91::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.6; Tue, 12 Jan
- 2021 14:31:12 +0000
-Received: from CH2PR13MB3525.namprd13.prod.outlook.com
- ([fe80::f9a6:6c23:4015:b7fc]) by CH2PR13MB3525.namprd13.prod.outlook.com
- ([fe80::f9a6:6c23:4015:b7fc%6]) with mapi id 15.20.3763.009; Tue, 12 Jan 2021
- 14:31:12 +0000
-From:   Trond Myklebust <trondmy@hammerspace.com>
-To:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
-CC:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] Please pull NFS client bugfixes
-Thread-Topic: [GIT PULL] Please pull NFS client bugfixes
-Thread-Index: AQHW6O+T968aSUv5BEuskih09s91eQ==
-Date:   Tue, 12 Jan 2021 14:31:12 +0000
-Message-ID: <6c2dd95f73b0fcb9715e985bdde7dfb640ce8795.camel@hammerspace.com>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=hammerspace.com;
-x-originating-ip: [68.36.133.222]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f0cff9d3-1880-4bc7-3dbd-08d8b706b61b
-x-ms-traffictypediagnostic: CH2PR13MB3784:
-x-microsoft-antispam-prvs: <CH2PR13MB37840036B55B007F74142E90B8AA0@CH2PR13MB3784.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2201;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UzYvLn4Ts2D3ojQlrSfRYgn+61oYehfLGjGxHy7e2DMSs5EB+FCnKLAQ3ZIvvJZmXKHfAiAgxm46JMC61BLT3CHwk6JebCkmbJ+DxEJAgNAssmMngVLL3P6haom3Ex4MFlWz6A7r3VoM9OMGrZTKHNgKv8pcVs+fst1pXbToyt3fnqxwJy/PzcxBH2v2kaEj8ouIeq393S0mUaItmJl71EsiR6d/BAiEzLVpnNk+IXyuoayJbyuFfw+7R6k7br6aklPGTjt5LZ3hgfjjaunB0VQg8u+jUe0d82rZQgHHbrgFkVm8SkYynkRsnIIjDvtc6cLFIwSMLQbll7ayTXy+pc8dCdj2P7TP5SmpZkW5TKfw8bsFVb7HJPNXSafDDgYUfTJM4pQFngQhhD/iuy42kA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR13MB3525.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(136003)(366004)(39840400004)(5660300002)(54906003)(26005)(478600001)(66446008)(6486002)(76116006)(2906002)(316002)(66556008)(6916009)(86362001)(64756008)(6512007)(66476007)(66946007)(8676002)(6506007)(83380400001)(4326008)(71200400001)(186003)(8936002)(36756003)(2616005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?UU5sblJJLzJXL0ZNTzM1OGFSaEJpOFlkWGhTM1hpTjNrWXpTS3hXS1VEbUIz?=
- =?utf-8?B?ckJxalJIcXRpZVdrZUxnaWcxZDlOdHlaNlV1QkxhV2h4UmVwOVdXUWVPcUU0?=
- =?utf-8?B?TmtobUpJVHpHY3lSZTQ5b1QwZU1pWEpCSnlZV25NdXhvZWJVWXNzWGRYRkhV?=
- =?utf-8?B?Y0RzdjNFUGs4K2FLWFY0bTlXR0NpeHRtaEk3WVgvZ0VBcEl1R2d1VDRXbWVy?=
- =?utf-8?B?THRleFl4bzlvODFwNHl2SFNoQzFYMzdueXlZTmpwdi9EcXl3WFIwSXJ5clh2?=
- =?utf-8?B?ZlVqV1NpaUh6UU93VXE2VGtZR1FzQndVN0tnaWdubXRJWXgvTklqMXpvRnpo?=
- =?utf-8?B?Vk5rQWg4QkRRWmJwZzBSemFnM01SMDBsT0V5R3d2L2VHTkN6TWtSeDZVSXE3?=
- =?utf-8?B?NjIzOWlPZ0svVlVXVGJSOGJndkxXS1JXUlFCSVdhditNUXQrbTlxZ2lZSmxW?=
- =?utf-8?B?OHN0RWZWMm45NWNSRHorRHMxVW9ESDQ2MHAraHBtR3FaeVFFL3pvOE9FR0xn?=
- =?utf-8?B?Si8wSCtsQ0swMVBhMnVTVWdoSDdla0tvSUJDRVVORUR3Rml4MWx5ZGdqSlZu?=
- =?utf-8?B?eXVnODg5elFTaE1HUlF4eXhxYVBaMnREek1maG1PMGhRMjJmLzcvR3c3SE5B?=
- =?utf-8?B?WTMxMjU3dlFOQjVsVFFzUlVBd3ljelZXLzRXZ1dZZExOWEg5QzNlN2psMGd0?=
- =?utf-8?B?cHl2NDNyVXFobzMxUGxUbWFLcVl0Wis3RHZXTjNMc3pMRnBNSlk5VE8rNkk4?=
- =?utf-8?B?QkxaSjFEdVY1Z0ovcG5iWGR3K3ZFM0RUVGhpWms5Z3VXUzcyQzB4VDFXMlk2?=
- =?utf-8?B?c1gvWlJtOCtRYkg0RWY0RmlOYTFIY1IzWUdWclRVcitrNnQ5Z0V1aW5rSytm?=
- =?utf-8?B?S1A3cVlBOGFOMGlQMW9oL3h2Sy80aWk0WU1qVndUUlJ1a09DNm9GeURSRGZW?=
- =?utf-8?B?dkRyZW8wTXdFdFZvUXVORklWWExWRFAxNmVFdG8zdHExUTB6Y0tWMnp5RUdh?=
- =?utf-8?B?bjFFaW9hSEFob1J4UEdoTWx0emphVWt1Z1pJeEx6Nzc0TjVxRjVEbzdoT1Yx?=
- =?utf-8?B?OVlCVDFvUmtqRWc3R3hpVFdsUzdqUkRlTUxQUFY1U05jL1VZZXpKdGJOWDVl?=
- =?utf-8?B?c3RCRlhTMHRPYmcvem12TktVS0F2d3I3Zk1ITDc0dDUzVEN6RXhISWh1Mkh0?=
- =?utf-8?B?OWxmNjI5eTV4M01sWC9JNG5BMGhGQUFYV1IrSGt1RDY5WWV4aGNxNGxlUkd2?=
- =?utf-8?B?YW1oMEx4Rk1HU1lpSXpIenpxWHdGKzRNYXNUSU95aTJ6T2h3Y1RTaVpURkdM?=
- =?utf-8?Q?R7P2x8zg0MGY7AGgF+OCrZ6dit2qBeruDA?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <28FFE11BF964DB43907413F65B18EBAE@namprd13.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1730071AbhALOcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:32:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725957AbhALOcx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 09:32:53 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A501C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:32:12 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id 23so3634285lfg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:32:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=antmicro.com; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=xpCveEKXq//QXL4c5UmcBDGbJR1Teqb+RM7TzhErMoc=;
+        b=Vuc3tdhchFhahccdMZj8X8qcoec9tYBH3eeIeIiipY6k1YWd4Ds0b+dbk6Lu9jMD5A
+         eJIv1poaTSwOqrFYoxNb0aMujTSB4JXPMmZgdop8mczviptjIFHvqEPePsCo7zrfHD8L
+         B4fZ49u4BJhh3OcnPDYItQSPsZJiqz5+246V8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=xpCveEKXq//QXL4c5UmcBDGbJR1Teqb+RM7TzhErMoc=;
+        b=eU1eUedjPVkq0QjTC2knMNC6JN+/2h6HLcnM1G0xKMo/ts3R0Pjgiorwl0UZODr4bd
+         TIZvcvyeZSo+7PEGpFEcVP19DtFOo0zQJFKAhltu1oaPHAPR7JKutfdffshsZh4Tk5e2
+         kczhoG11vfXs2Qw0eO7wQrmCZSB7tM+LAJtGrVO0H6fF2l9MNYo78M5r7zRnMxzkEJJn
+         5yMLRradd5VUfy4qnxzgmh84CK0T+/11Jhk8HIDsDKGHOwdbNNsaiGlRuU1ZxRLvSnkm
+         92xtXjmpiWGMLfORrw+1pcfUuCgqSF0VGxE4URpr2iTJcaWx1p1y0+vZyH/cgXrpqpcN
+         DhJw==
+X-Gm-Message-State: AOAM532Pa6itOQIN1mZ3rPamkQgQxWgVyH1hBvedPs3XtW1K73dAq1Gj
+        7R8Ko60ziWXk3b//SNyTI3SsWNKDi1zsJh7XdXThbA==
+X-Google-Smtp-Source: ABdhPJyjGy53QDhTQ0az5hIuTqEIE2Qu9d8FiJU+mT8UFH+/+VqFknRsZfEkxc/wytet/gwIb56huMJP0FJyrQeqCA0=
+X-Received: by 2002:a19:5058:: with SMTP id z24mr2167898lfj.603.1610461930660;
+ Tue, 12 Jan 2021 06:32:10 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: hammerspace.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR13MB3525.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f0cff9d3-1880-4bc7-3dbd-08d8b706b61b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2021 14:31:12.4641
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cxvFSsjxoon1rsJy+lZ2z2JANqisDhETfBo7rjkw0Rwx8AgCHErjOvuhoWG3ynVHSBo8ewi+nwydsBDrfzz76w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR13MB3784
+From:   Mateusz Holenko <mholenko@antmicro.com>
+Date:   Tue, 12 Jan 2021 15:31:59 +0100
+Message-ID: <CAPk366Tyj13foMsdTk-Mkp-7jrkfnba8spAHm14uUMtH0GLOwQ@mail.gmail.com>
+Subject: Re: [PATCH v5 3/4] drivers/soc/litex: support 32-bit subregisters,
+ 64-bit CPUs
+To:     gsomlo@gmail.com
+Cc:     f.kermarrec@gmail.com, gregkh@linuxfoundation.org,
+        kgugala@antmicro.com, linux-kernel@vger.kernel.org,
+        mholenko@antmicro.com, pczarnecki@internships.antmicro.com,
+        shorne@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTGludXMsDQoNClRoZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQgZTcxYmE5NDUy
-ZjBiNWIyZThkYzhhYTU0NDUxOThjZDkyMTRhNmE2MjoNCg0KICBMaW51eCA1LjExLXJjMiAoMjAy
-MS0wMS0wMyAxNTo1NTozMCAtMDgwMCkNCg0KYXJlIGF2YWlsYWJsZSBpbiB0aGUgR2l0IHJlcG9z
-aXRvcnkgYXQ6DQoNCiAgZ2l0Oi8vZ2l0LmxpbnV4LW5mcy5vcmcvcHJvamVjdHMvdHJvbmRteS9s
-aW51eC1uZnMuZ2l0IHRhZ3MvbmZzLWZvci01LjExLTINCg0KZm9yIHlvdSB0byBmZXRjaCBjaGFu
-Z2VzIHVwIHRvIDg5NjU2N2VlN2YxN2E4YTczNmNkYThhMjhjYzk4NzIyODQxMGEyYWM6DQoNCiAg
-TkZTOiBuZnNfaWdyYWJfYW5kX2FjdGl2ZSBtdXN0IGZpcnN0IHJlZmVyZW5jZSB0aGUgc3VwZXJi
-bG9jayAoMjAyMS0wMS0xMCAxNjoyOToyOCAtMDUwMCkNCg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KTkZTIGNsaWVudCBi
-dWdmaXhlcyBmb3IgTGludXggNS4xMQ0KDQpIaWdobGlnaHRzIGluY2x1ZGU6DQoNCkJ1Z2ZpeGVz
-Og0KLSBGaXggcGFyc2luZyBvZiBsaW5rLWxvY2FsIElQdjYgYWRkcmVzc2VzDQotIEZpeCBjb25m
-dXNpbmcgbG9nZ2luZyBvZiBtb3VudCBlcnJvcnMgdGhhdCB3YXMgaW50cm9kdWNlZCBieSB0aGUN
-CiAgZnNvcGVuKCkgcGF0Y2hzZXQuDQotIEZpeCBhIHRyYWNpbmcgdXNlIGFmdGVyIGZyZWUgaW4g
-X25mczRfZG9fc2V0bGsoKQ0KLSBMYXlvdXQgcmV0dXJuLW9uLWNsb3NlIGZpeGVzIHdoZW4gY2Fs
-bGVkIGZyb20gbmZzNF9ldmljdF9pbm9kZSgpDQotIExheW91dCBzZWdtZW50cyB3ZXJlIGJlaW5n
-IGxlYWtlZCBpbiBwbmZzX2dlbmVyaWNfY2xlYXJfcmVxdWVzdF9jb21taXQoKQ0KLSBEb24ndCBs
-ZWFrIERTIGNvbW1pdHMgaW4gcG5mc19nZW5lcmljX3JldHJ5X2NvbW1pdCgpDQotIEZpeCBhbiBP
-b3BzYWJsZSB1c2UtYWZ0ZXItZnJlZSB3aGVuIG5mc19kZWxlZ2F0aW9uX2ZpbmRfaW5vZGVfc2Vy
-dmVyKCkNCiAgY2FsbHMgaXB1dCgpIG9uIGFuIGlub2RlIGFmdGVyIHRoZSBzdXBlciBibG9jayBo
-YXMgZ29uZSBhd2F5Lg0KDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQpEYXZlIFd5c29jaGFuc2tpICgxKToNCiAgICAgIE5G
-UzQ6IEZpeCB1c2UtYWZ0ZXItZnJlZSBpbiB0cmFjZV9ldmVudF9yYXdfZXZlbnRfbmZzNF9zZXRf
-bG9jaw0KDQpTY290dCBNYXloZXcgKDEpOg0KICAgICAgTkZTOiBBZGp1c3QgZnNfY29udGV4dCBl
-cnJvciBsb2dnaW5nDQoNClRyb25kIE15a2xlYnVzdCAoOSk6DQogICAgICBwTkZTOiBNYXJrIGxh
-eW91dCBmb3IgcmV0dXJuIGlmIHJldHVybi1vbi1jbG9zZSB3YXMgbm90IHNlbnQNCiAgICAgIHBO
-RlM6IFdlIHdhbnQgcmV0dXJuLW9uLWNsb3NlIHRvIGNvbXBsZXRlIHdoZW4gZXZpY3RpbmcgdGhl
-IGlub2RlDQogICAgICBwTkZTOiBDbGVhbiB1cCBwbmZzX2xheW91dHJldHVybl9mcmVlX2xzZWdz
-KCkNCiAgICAgIHBORlM6IFN0cmljdGVyIG9yZGVyaW5nIG9mIGxheW91dGdldCBhbmQgbGF5b3V0
-cmV0dXJuDQogICAgICBORlMvcE5GUzogRG9uJ3QgY2FsbCBwbmZzX2ZyZWVfYnVja2V0X2xzZWco
-KSBiZWZvcmUgcmVtb3ZpbmcgdGhlIHJlcXVlc3QNCiAgICAgIE5GUy9wTkZTOiBEb24ndCBsZWFr
-IERTIGNvbW1pdHMgaW4gcG5mc19nZW5lcmljX3JldHJ5X2NvbW1pdCgpDQogICAgICBORlMvcE5G
-UzogRml4IGEgbGVhayBvZiB0aGUgbGF5b3V0ICdwbGhfb3V0c3RhbmRpbmcnIGNvdW50ZXINCiAg
-ICAgIE5GUzogbmZzX2RlbGVnYXRpb25fZmluZF9pbm9kZV9zZXJ2ZXIgbXVzdCBmaXJzdCByZWZl
-cmVuY2UgdGhlIHN1cGVyYmxvY2sNCiAgICAgIE5GUzogbmZzX2lncmFiX2FuZF9hY3RpdmUgbXVz
-dCBmaXJzdCByZWZlcmVuY2UgdGhlIHN1cGVyYmxvY2sNCg0Kai5uaXhkb3JmQGF2bS5kZSAoMSk6
-DQogICAgICBuZXQ6IHN1bnJwYzogaW50ZXJwcmV0IHRoZSByZXR1cm4gdmFsdWUgb2Yga3N0cnRv
-dTMyIGNvcnJlY3RseQ0KDQogZnMvbmZzL2RlbGVnYXRpb24uYyB8IDEyICsrKysrKy0tLS0NCiBm
-cy9uZnMvaW50ZXJuYWwuaCAgIHwgMzggKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tDQog
-ZnMvbmZzL25mczRwcm9jLmMgICB8IDI4ICsrKysrKysrKy0tLS0tLS0tLS0tLS0NCiBmcy9uZnMv
-bmZzNHN1cGVyLmMgIHwgIDQgKystLQ0KIGZzL25mcy9wbmZzLmMgICAgICAgfCA2NyArKysrKysr
-KysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KIGZzL25mcy9w
-bmZzLmggICAgICAgfCAgOCArKystLS0tDQogZnMvbmZzL3BuZnNfbmZzLmMgICB8IDIyICsrKysr
-KysrLS0tLS0tLS0tLQ0KIG5ldC9zdW5ycGMvYWRkci5jICAgfCAgMiArLQ0KIDggZmlsZXMgY2hh
-bmdlZCwgOTkgaW5zZXJ0aW9ucygrKSwgODIgZGVsZXRpb25zKC0pDQoNCi0tIA0KVHJvbmQgTXlr
-bGVidXN0DQpMaW51eCBORlMgY2xpZW50IG1haW50YWluZXIsIEhhbW1lcnNwYWNlDQp0cm9uZC5t
-eWtsZWJ1c3RAaGFtbWVyc3BhY2UuY29tDQoNCg0K
+> Upstream LiteX now defaults to using 32-bit CSR subregisters
+> (see https://github.com/enjoy-digital/litex/commit/a2b71fde).
+>
+> This patch expands on commit 22447a99c97e ("drivers/soc/litex: add
+> LiteX SoC Controller driver"), adding support for handling both 8-
+> and 32-bit LiteX CSR (MMIO) subregisters, as determined by the
+> LITEX_SUBREG_SIZE Kconfig option.
+
+This sounds like a great feature!
+
+> NOTE that while LITEX_SUBREG_SIZE could theoretically be a device
+> tree property, defining it as a compile-time constant allows for
+> much better optimization of the resulting code. This is further
+> supported by the low expected usefulness of deploying the same
+> kernel across LiteX SoCs built with different CSR-Bus data widths.
+>
+> The constant LITEX_REG_SIZE is renamed to the more descriptive
+> LITEX_SUBREG_ALIGN (LiteX CSR subregisters are located at 32-bit
+> aligned MMIO addresses).
+
+Should it go to a separate commit? I have no strong opinions about that,
+but it looks like an independent change.
+
+> Finally, the litex_[read|write][8|16|32|64]() accessors are
+> redefined in terms of litex_[get|set]_reg(), which, after compiler
+> optimization, will result in code as efficient as hardcoded shifts,
+> but with the added benefit of automatically matching the appropriate
+> LITEX_SUBREG_SIZE.
+>
+> NOTE that litex_[get|set]_reg() nominally operate on 64-bit data,
+> but that will also be optimized by the compiler in situations where
+> narrower data is used from a call site.
+>
+> Signed-off-by: Gabriel Somlo <gsomlo@gmail.com>
+> ---
+>
+> Changes since v4:
+>     - tighter, more optimized implementation of 'litex_set_reg()'
+>
+> Changes since v3:
+>     - improved legibility, fixed typos in commit blurb
+>     - fixed instance of "disgusting" commit style :)
+>     - litex_[get|set]_reg() now using size_t for 'reg_size' argument
+>     - slightly tighter shift calculation in litex_set_reg()
+>
+> Changes since v2:
+>     - more detailed comomit blurb
+
+Just a nitpick - there is a typo.
+
+>     - eliminate compiler warning caused by shift in litex_set_reg()
+>
+> Changes since v1:
+>     - fix typo (s/u32/u64/) in litex_read64().
+>
+>  drivers/soc/litex/Kconfig          |  12 +++
+>  drivers/soc/litex/litex_soc_ctrl.c |   3 +-
+>  include/linux/litex.h              | 139 ++++++++++++-----------------
+>  3 files changed, 70 insertions(+), 84 deletions(-)
+>
+> diff --git a/drivers/soc/litex/Kconfig b/drivers/soc/litex/Kconfig
+> index 7c6b009b6f6c..973f8d2fe1a7 100644
+> --- a/drivers/soc/litex/Kconfig
+> +++ b/drivers/soc/litex/Kconfig
+> @@ -16,4 +16,16 @@ config LITEX_SOC_CONTROLLER
+>       All drivers that use functions from litex.h must depend on
+>       LITEX.
+>
+> +config LITEX_SUBREG_SIZE
+> +   int "Size of a LiteX CSR subregister, in bytes"
+> +   depends on LITEX
+> +   range 1 4
+> +   default 4
+> +   help
+> +   LiteX MMIO registers (referred to as Configuration and Status
+> +   registers, or CSRs) are spread across adjacent 8- or 32-bit
+> +   subregisters, located at 32-bit aligned MMIO addresses. Use
+> +   this to select the appropriate size (1 or 4 bytes) matching
+> +   your particular LiteX build.
+> +
+>  endmenu
+> diff --git a/drivers/soc/litex/litex_soc_ctrl.c b/drivers/soc/litex/litex_soc_ctrl.c
+> index 65977526d68e..da17ba56b795 100644
+> --- a/drivers/soc/litex/litex_soc_ctrl.c
+> +++ b/drivers/soc/litex/litex_soc_ctrl.c
+> @@ -58,7 +58,8 @@ static int litex_check_csr_access(void __iomem *reg_addr)
+>     /* restore original value of the SCRATCH register */
+>     litex_write32(reg_addr + SCRATCH_REG_OFF, SCRATCH_REG_VALUE);
+>
+> -   pr_info("LiteX SoC Controller driver initialized");
+> +   pr_info("LiteX SoC Controller driver initialized: subreg:%d, align:%d",
+> +       LITEX_SUBREG_SIZE, LITEX_SUBREG_ALIGN);
+>
+>     return 0;
+>  }
+> diff --git a/include/linux/litex.h b/include/linux/litex.h
+> index 918bab45243c..3456d527f644 100644
+> --- a/include/linux/litex.h
+> +++ b/include/linux/litex.h
+> @@ -10,20 +10,19 @@
+>  #define _LINUX_LITEX_H
+>
+>  #include <linux/io.h>
+> -#include <linux/types.h>
+> -#include <linux/compiler_types.h>
+>
+> -/*
+> - * The parameters below are true for LiteX SoCs configured for 8-bit CSR Bus,
+> - * 32-bit aligned.
+> - *
+> - * Supporting other configurations will require extending the logic in this
+> - * header and in the LiteX SoC controller driver.
+> - */
+> -#define LITEX_REG_SIZE   0x4
+> -#define LITEX_SUBREG_SIZE  0x1
+> +/* LiteX SoCs support 8- or 32-bit CSR Bus data width (i.e., subreg. size) */
+> +#if defined(CONFIG_LITEX_SUBREG_SIZE) && \
+> +   (CONFIG_LITEX_SUBREG_SIZE == 1 || CONFIG_LITEX_SUBREG_SIZE == 4)
+> +#define LITEX_SUBREG_SIZE      CONFIG_LITEX_SUBREG_SIZE
+> +#else
+> +#error LiteX subregister size (LITEX_SUBREG_SIZE) must be 4 or 1!
+> +#endif
+>  #define LITEX_SUBREG_SIZE_BIT   (LITEX_SUBREG_SIZE * 8)
+>
+> +/* LiteX subregisters of any width are always aligned on a 4-byte boundary */
+> +#define LITEX_SUBREG_ALIGN   0x4
+> +
+>  static inline void _write_litex_subregister(u32 val, void __iomem *addr)
+>  {
+>     writel((u32 __force)cpu_to_le32(val), addr);
+> @@ -34,25 +33,32 @@ static inline u32 _read_litex_subregister(void __iomem *addr)
+>     return le32_to_cpu((__le32 __force)readl(addr));
+>  }
+>
+> -#define WRITE_LITEX_SUBREGISTER(val, base_offset, subreg_id) \
+> -   _write_litex_subregister(val, (base_offset) + \
+> -                   LITEX_REG_SIZE * (subreg_id))
+> -
+> -#define READ_LITEX_SUBREGISTER(base_offset, subreg_id) \
+> -   _read_litex_subregister((base_offset) + \
+> -                   LITEX_REG_SIZE * (subreg_id))
+> -
+>  /*
+>   * LiteX SoC Generator, depending on the configuration, can split a single
+>   * logical CSR (Control&Status Register) into a series of consecutive physical
+>   * registers.
+>   *
+> - * For example, in the configuration with 8-bit CSR Bus, 32-bit aligned (the
+> - * default one for 32-bit CPUs) a 32-bit logical CSR will be generated as four
+> - * 32-bit physical registers, each one containing one byte of meaningful data.
+> + * For example, in the configuration with 8-bit CSR Bus, a 32-bit aligned,
+> + * 32-bit wide logical CSR will be laid out as four 32-bit physical
+> + * subregisters, each one containing one byte of meaningful data.
+>   *
+>   * For details see: https://github.com/enjoy-digital/litex/wiki/CSR-Bus
+> - *
+> + */
+> +
+> +/* number of LiteX subregisters needed to store a register of given reg_size */
+> +#define _litex_num_subregs(reg_size) \
+> +   (((reg_size) - 1) / LITEX_SUBREG_SIZE + 1)
+> +
+> +/*
+> + * since the number of 4-byte aligned subregisters required to store a single
+> + * LiteX CSR (MMIO) register varies with LITEX_SUBREG_SIZE, the offset of the
+> + * next adjacent LiteX CSR register w.r.t. the offset of the current one also
+> + * depends on how many subregisters the latter is spread across
+> + */
+> +#define _next_reg_off(off, size) \
+> +   ((off) + _litex_num_subregs(size) * LITEX_SUBREG_ALIGN)
+
+This could be used in the LiteX UART driver (but in a separate patch ofc).
+
+> +/*
+>   * The purpose of `litex_set_reg`/`litex_get_reg` is to implement the logic
+>   * of writing to/reading from the LiteX CSR in a single place that can be
+>   * then reused by all LiteX drivers.
+> @@ -64,22 +70,17 @@ static inline u32 _read_litex_subregister(void __iomem *addr)
+>   * @reg_size: The width of the CSR expressed in the number of bytes
+>   * @val: Value to be written to the CSR
+>   *
+> - * In the currently supported LiteX configuration (8-bit CSR Bus, 32-bit aligned),
+> - * a 32-bit LiteX CSR is generated as 4 consecutive 32-bit physical registers,
+> - * each one containing one byte of meaningful data.
+> - *
+> - * This function splits a single possibly multi-byte write into a series of
+> - * single-byte writes with a proper offset.
+> + * This function splits a single (possibly multi-byte) LiteX CSR write into
+> + * a series of subregister writes with a proper offset.
+>   */
+> -static inline void litex_set_reg(void __iomem *reg, ulong reg_size, ulong val)
+> +static inline void litex_set_reg(void __iomem *reg, size_t reg_size, u64 val)
+>  {
+> -   ulong shifted_data, shift, i;
+> +   u8 shift = _litex_num_subregs(reg_size) * LITEX_SUBREG_SIZE_BIT;
+>
+> -   for (i = 0; i < reg_size; ++i) {
+> -       shift = ((reg_size - i - 1) * LITEX_SUBREG_SIZE_BIT);
+> -       shifted_data = val >> shift;
+> -
+> -       WRITE_LITEX_SUBREGISTER(shifted_data, reg, i);
+> +   while (shift > 0) {
+> +       shift -= LITEX_SUBREG_SIZE_BIT;
+> +       _write_litex_subregister(val >> shift, reg);
+> +       reg += LITEX_SUBREG_ALIGN;
+>     }
+>  }
+>
+> @@ -90,89 +91,61 @@ static inline void litex_set_reg(void __iomem *reg, ulong reg_size, ulong val)
+>   *
+>   * Return: Value read from the CSR
+>   *
+> - * In the currently supported LiteX configuration (8-bit CSR Bus, 32-bit aligned),
+> - * a 32-bit LiteX CSR is generated as 4 consecutive 32-bit physical registers,
+> - * each one containing one byte of meaningful data.
+> - *
+> - * This function generates a series of single-byte reads with a proper offset
+> - * and joins their results into a single multi-byte value.
+> + * This function generates a series of subregister reads with a proper offset
+> + * and joins their results into a single (possibly multi-byte) LiteX CSR value.
+>   */
+> -static inline ulong litex_get_reg(void __iomem *reg, ulong reg_size)
+> +static inline u64 litex_get_reg(void __iomem *reg, size_t reg_size)
+>  {
+> -   ulong shifted_data, shift, i;
+> -   ulong result = 0;
+> +   u64 r;
+> +   u8 i;
+>
+> -   for (i = 0; i < reg_size; ++i) {
+> -       shifted_data = READ_LITEX_SUBREGISTER(reg, i);
+> -
+> -       shift = ((reg_size - i - 1) * LITEX_SUBREG_SIZE_BIT);
+> -       result |= (shifted_data << shift);
+> +   r = _read_litex_subregister(reg);
+> +   for (i = 1; i < _litex_num_subregs(reg_size); i++) {
+> +       r <<= LITEX_SUBREG_SIZE_BIT;
+> +       reg += LITEX_SUBREG_ALIGN;
+> +       r |= _read_litex_subregister(reg);
+>     }
+> -
+> -   return result;
+> +   return r;
+>  }
+>
+> -
+>  static inline void litex_write8(void __iomem *reg, u8 val)
+>  {
+> -   WRITE_LITEX_SUBREGISTER(val, reg, 0);
+> +   litex_set_reg(reg, sizeof(u8), val);
+>  }
+>
+>  static inline void litex_write16(void __iomem *reg, u16 val)
+>  {
+> -   WRITE_LITEX_SUBREGISTER(val >> 8, reg, 0);
+> -   WRITE_LITEX_SUBREGISTER(val, reg, 1);
+> +   litex_set_reg(reg, sizeof(u16), val);
+>  }
+>
+>  static inline void litex_write32(void __iomem *reg, u32 val)
+>  {
+> -   WRITE_LITEX_SUBREGISTER(val >> 24, reg, 0);
+> -   WRITE_LITEX_SUBREGISTER(val >> 16, reg, 1);
+> -   WRITE_LITEX_SUBREGISTER(val >> 8, reg, 2);
+> -   WRITE_LITEX_SUBREGISTER(val, reg, 3);
+> +   litex_set_reg(reg, sizeof(u32), val);
+>  }
+>
+>  static inline void litex_write64(void __iomem *reg, u64 val)
+>  {
+> -   WRITE_LITEX_SUBREGISTER(val >> 56, reg, 0);
+> -   WRITE_LITEX_SUBREGISTER(val >> 48, reg, 1);
+> -   WRITE_LITEX_SUBREGISTER(val >> 40, reg, 2);
+> -   WRITE_LITEX_SUBREGISTER(val >> 32, reg, 3);
+> -   WRITE_LITEX_SUBREGISTER(val >> 24, reg, 4);
+> -   WRITE_LITEX_SUBREGISTER(val >> 16, reg, 5);
+> -   WRITE_LITEX_SUBREGISTER(val >> 8, reg, 6);
+> -   WRITE_LITEX_SUBREGISTER(val, reg, 7);
+> +   litex_set_reg(reg, sizeof(u64), val);
+>  }
+
+I'm wondering about the CPU optimization here.
+litex_set_reg() contains a loop - will it be unfolded during the compilation?
+I see that all important arguments are constant and known at the compilation
+time, so there is a chance, but I have no experience in this field.
+
+>
+>  static inline u8 litex_read8(void __iomem *reg)
+>  {
+> -   return READ_LITEX_SUBREGISTER(reg, 0);
+> +   return litex_get_reg(reg, sizeof(u8));
+>  }
+>
+>  static inline u16 litex_read16(void __iomem *reg)
+>  {
+> -   return (READ_LITEX_SUBREGISTER(reg, 0) << 8)
+> -       | (READ_LITEX_SUBREGISTER(reg, 1));
+> +   return litex_get_reg(reg, sizeof(u16));
+>  }
+>
+>  static inline u32 litex_read32(void __iomem *reg)
+>  {
+> -   return (READ_LITEX_SUBREGISTER(reg, 0) << 24)
+> -       | (READ_LITEX_SUBREGISTER(reg, 1) << 16)
+> -       | (READ_LITEX_SUBREGISTER(reg, 2) << 8)
+> -       | (READ_LITEX_SUBREGISTER(reg, 3));
+> +   return litex_get_reg(reg, sizeof(u32));
+>  }
+>
+>  static inline u64 litex_read64(void __iomem *reg)
+>  {
+> -   return ((u64)READ_LITEX_SUBREGISTER(reg, 0) << 56)
+> -       | ((u64)READ_LITEX_SUBREGISTER(reg, 1) << 48)
+> -       | ((u64)READ_LITEX_SUBREGISTER(reg, 2) << 40)
+> -       | ((u64)READ_LITEX_SUBREGISTER(reg, 3) << 32)
+> -       | ((u64)READ_LITEX_SUBREGISTER(reg, 4) << 24)
+> -       | ((u64)READ_LITEX_SUBREGISTER(reg, 5) << 16)
+> -       | ((u64)READ_LITEX_SUBREGISTER(reg, 6) << 8)
+> -       | ((u64)READ_LITEX_SUBREGISTER(reg, 7));
+> +   return litex_get_reg(reg, sizeof(u64));
+>  }
+>
+>  #endif /* _LINUX_LITEX_H */
+> --
+> 2.26.2
+
+Best,
+Mateusz
+
+-- 
+Mateusz Holenko
+Antmicro Ltd | www.antmicro.com
+Roosevelta 22, 60-829 Poznan, Poland
