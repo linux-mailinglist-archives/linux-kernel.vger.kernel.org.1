@@ -2,202 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B882F2A75
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:00:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 324F52F2A76
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:00:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405626AbhALI6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 03:58:40 -0500
-Received: from mail-dm6nam12on2107.outbound.protection.outlook.com ([40.107.243.107]:43169
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727916AbhALI6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 03:58:39 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CEk20uS7ho1XfRGvatXq1kwoxlPHIPTwcB5Ku+WmH9YsUv92n1+8v0PY3qYsWTh2xa4wk6ZvMkFoj8ib0C3Dmv7ZZqGcfj287W3wz68ok1GOttxIWpmx4iEASMJjR613p73Wle+mjKORnn7zVaAbtkaVtnqpXA6KNPufm9NY+qaMQoN7+H6M1BITmM/jUtEj2tNzeyYFCjObc9g9SznpAGWow5JGeUQbJkkYYU31FLW4ug3dJKpcWCSpumJhHQ9m4GaLL2EUc4ZpjrLIXNS1D7zaGlUsgBt1QD5pBvVnK7iY5fy7A+za5t98qZ8q//xj7/swhIEowf7DGiCBDvxhdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2o2xK03t4sqDgpWZYk3HgHRyqmFDJ+1zILwkNrjEyKE=;
- b=HgUscuojrxv+kAKHUh4hhgD0gvJJDpOsURLLttHhwty2ktpP4Ed8LYB3qKA/i0iOZRJuktyQJiU/QFwQ6eAfmRkYAGdI5a6e+SN8aWsjPQeJiuWFA9Xc1oYMj/L4/v2uZwTnUYg4vbknhopzWWpIaqk/78W/lziSbzCanRNrJQ+dm1bo9JEWWf+NXHMlENdQm5pGvudL7yu9vkvMZqfaxTttSjmSRrshGm1+Q6tNvkKoxQPPeFdqQNkZTleMJDJTBaLg05J/q56mUAekjsXB8a+dM9STJ1jXO7SSRRFdv+n1IComXwBXajBVegsFD2KGDgni1jBiXkDZlGJ4WnabPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+        id S2405650AbhALI7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 03:59:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727916AbhALI7N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 03:59:13 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9550C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:58:32 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id r4so1036533pls.11
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:58:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2o2xK03t4sqDgpWZYk3HgHRyqmFDJ+1zILwkNrjEyKE=;
- b=vq7umOqJPzMN+PVp6h+iadp2oC2jN1xS/+JgFqk/XNAkmdEW21ggovAH4VHtRyjvykKzXxNkUpK+isY1NTYRkUsf2+gP3M+KkYUdbMowLvY8Tu61aS/+YxFQb4zr0AgtuISmejQU04jhRQJyUIGqvhQchtW/926sDUf+WJbKxt8=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by BYAPR04MB4744.namprd04.prod.outlook.com (2603:10b6:a03:16::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.12; Tue, 12 Jan
- 2021 08:57:43 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::b59c:9ae:6e98:5e1e]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::b59c:9ae:6e98:5e1e%8]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
- 08:57:42 +0000
-Date:   Tue, 12 Jan 2021 16:57:37 +0800
-From:   Xin Ji <xji@analogixsemi.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= 
-        <ricardo.canuelo@collabora.com>, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, Sheng Pan <span@analogixsemi.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: drm/bridge: anx7625: add DPI flag
- and swing setting
-Message-ID: <20210112085737.GC5827@pc-user>
-References: <cover.1609380663.git.xji@analogixsemi.com>
- <d13442f84fefccc992d6c5e48ac1e6129882af31.1609380663.git.xji@analogixsemi.com>
- <20210111221435.GA3138373@robh.at.kernel.org>
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BffoWkdajidn6mUZtfPUrCN8QNfUBikkzP+rt9hLCqQ=;
+        b=Lj2Taz3w0I4tL70yscixADOB70IZyBveEKsSFXVGhNPLcrUEcl8eXffpp48Mq4IfXG
+         2W1guTJczu81hSbtXSU8ZucWF5wKDc1h63YEIc6h0Za1J6AOfCGVkCMahpT+Awu8SgpI
+         qxhCfelccdYmsEJG7dBCNlr8+stvk7Na/am5AiU/cGOjUcAMUR+Fse702hOzWvcpkJQT
+         tQKeuKHnosIY04skDZJ7Be+osUF47V0W+He3UTJndOZAsuxCziaBXiFUx0tr8UWs/0ch
+         bEdiVjCFmIaUXaODo2KifBdX6wxkGpbq8JR/6U7tAjXsBFLdmsqrwSYCFZuNc3WS0xzp
+         Pcag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BffoWkdajidn6mUZtfPUrCN8QNfUBikkzP+rt9hLCqQ=;
+        b=BSfoLxYJhchRwncjMzJstHO9H8BZPLhODRpHXlpOVmapE3xaaTu02P3tmdSlfWSEOg
+         gzDfqMw5nnhk99ChoJzM/M3bUxnx0iUVpCO/6NCLWeRR3x0pW0W7UqOJAGp2bzDQ9hhY
+         5wwoRCnMNs2xMfVfEPcDpMq5wDJlx4q5OlqKn1j2cwqdfCYL2AUUZOEBh28u+7RUYqfU
+         8lyl4zt32v+zzuk9nMQaK2jin/52hEuT82zEBACzUUZQ+nqMcYo8LaS+oISZjx3OZ4QM
+         7aySmsbVoF7umDxTulFnFP+nc4ntWX8tXqyS/9OiFKcdZP3M68c5xNLM67TjzgTGyRbb
+         lJNw==
+X-Gm-Message-State: AOAM530jpdlXPEU2Sv/7RFeaUCZnDse5nlSzqVMIMaPIhoq6XHUZpvik
+        T6dWO9agw7iCB0bLi2nCFDK76g==
+X-Google-Smtp-Source: ABdhPJx+5Y6TruDKBvo7P98iPsMFNkjQBUIUGc/yn/TCf4ZvyWf+Hu0y46hVvRbuupDFS2oyqSk6SA==
+X-Received: by 2002:a17:90a:bb83:: with SMTP id v3mr3536246pjr.28.1610441912386;
+        Tue, 12 Jan 2021 00:58:32 -0800 (PST)
+Received: from leoy-ThinkPad-X240s ([202.155.204.36])
+        by smtp.gmail.com with ESMTPSA id v10sm2228716pjr.47.2021.01.12.00.58.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 00:58:31 -0800 (PST)
+Date:   Tue, 12 Jan 2021 16:58:26 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Mike Leach <mike.leach@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Daniel Kiss <Daniel.Kiss@arm.com>,
+        Denis Nikitin <denik@chromium.org>,
+        Coresight ML <coresight@lists.linaro.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Al Grant <al.grant@arm.com>
+Subject: Re: [PATCH v1 1/7] coresight: etm-perf: Add support for PID tracing
+ for kernel at EL2
+Message-ID: <20210112085826.GC18965@leoy-ThinkPad-X240s>
+References: <20210109074435.626855-1-leo.yan@linaro.org>
+ <20210109074435.626855-2-leo.yan@linaro.org>
+ <CAJ9a7VgTqsa4_W0bmfS1BPYnKyvToyVLD=fk85_t9-yehCY9Lw@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210111221435.GA3138373@robh.at.kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [61.148.116.10]
-X-ClientProxiedBy: HK0PR01CA0066.apcprd01.prod.exchangelabs.com
- (2603:1096:203:a6::30) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc-user (61.148.116.10) by HK0PR01CA0066.apcprd01.prod.exchangelabs.com (2603:1096:203:a6::30) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3742.6 via Frontend Transport; Tue, 12 Jan 2021 08:57:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e5d8db33-a72c-429d-86d0-08d8b6d81f56
-X-MS-TrafficTypeDiagnostic: BYAPR04MB4744:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR04MB4744B7061B3251BC8B727862C7AA0@BYAPR04MB4744.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YhaAjRz82v+nsHZvtIlxYk8e2APMl3S4uHxxNRonMYAGrtIXlS9N8TkUGuxeMkmGKRrS6Lz7t5trL6qQ1rCPNedZjxpk0gpnzQFNhYyqFoASXRCTMBt5GcHx+2Y8zaN9JHCU46/rhvkVita6UWjWvBoAWSHg0YNDjTks2Y5aFdNv2O65ERQYqo/YFE78nN3EzNrQOn9RUpZvumzAAD+hqaTZjknM2k+0CwzTtB3vNCmKON9AaE6NQGcvfnCrji/c+nFQTiO7BoKNJE/hUr0Vx/Ci1KY8S74Re6Rr5A98mq3bVvFvgXr1loGUrRSt813HoExSCsy+xkKDlaqbmDm3BwBtJZbMPrGXfjVpM9l3v2SUNIp0rjEYLXU32RNgcvmGCHzL4Vmofc9B28KZ7iGr0Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(376002)(366004)(346002)(396003)(136003)(66476007)(9686003)(66556008)(6666004)(478600001)(55016002)(16526019)(54906003)(186003)(8936002)(4326008)(83380400001)(86362001)(6496006)(52116002)(33716001)(1076003)(316002)(6916009)(8676002)(26005)(7416002)(5660300002)(2906002)(956004)(66946007)(33656002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?2Y+igmaKLGLR3OOUMF7vy+nDkpznNS7ItLGZEGrp+Ta2904bmA7OP2udvC28?=
- =?us-ascii?Q?fPR5eStiICGBnVQPyTNwnx3u21p3/KpYoXT4O4pAqQ0wtOhPNckTUvN7/q8x?=
- =?us-ascii?Q?MjLZwkuGSL+1782NTqiaMXMxdkgRzD1opZ5LVwUN3NFxfXiEvWJ5lMxpzl2y?=
- =?us-ascii?Q?s2iNsB94SzD0LZ5Z6ELm8414C9mMJtJbwfPyxQoOxXAVbovEriAbR9bNVnjg?=
- =?us-ascii?Q?WfyA0vP1n/3jzGPeYnHkWKYT2aylLRELen+i4y/4nBivJ5NAH1CIYDQ59SK/?=
- =?us-ascii?Q?EHi954u+dRGVeNlxkGKxUKCNOAROVtyVe/BUNiVOlseTZXdY/ObTNC7lU80X?=
- =?us-ascii?Q?/Lbar7ed7oIq3EvbFRYSRK1WtBsIw+9dx/KC+osHLBZ7yFa4gVckk5uDgqqi?=
- =?us-ascii?Q?P9UPdiTYS+eLcJKTYQqIkfxjYaNlGL65iWT7Iqro7W3GfX0Kio6SxhiQulDh?=
- =?us-ascii?Q?CZb/X21qeNaB+cix1l3hLVLLPW8LhglfNkVmGu00rXiyfwo5FlO/B8fMUEPi?=
- =?us-ascii?Q?N+9Ca2Cl5uIvfl7fWaUk8iwPwjhtlMMIA9Ljt5V6HSSOmxdGfaQZR7HleSxE?=
- =?us-ascii?Q?1MT3Lyq/RDNl9kB4dsbMQY2mKgJiNvqkLfWt144dIybWH+8228II1pWlSliq?=
- =?us-ascii?Q?rdz0fu0ydz8TWpuczA28/ilskjd4ahgSl1BonQkccpaMhzkjDDIFxFPWUol9?=
- =?us-ascii?Q?C9Nmid1NeFRAOJIhaKwaMmQpyH+V9czUYqQgJ54M/mvL6yXAF5vw/ZMV085C?=
- =?us-ascii?Q?4coG0rdkxvNzrtUHc9PEspMhD7K/fy8ronrtbEe4uXKHoJTQpcGsk4lFm2Lu?=
- =?us-ascii?Q?IuaGJyiuErLmDTKD08hfjZnmDByD7yXqW9EbBkWeDiNWBuKXBUJt6wnCxO4w?=
- =?us-ascii?Q?D2r2lXByuNI+TwJjrKMylpvWRm64wJhX7sHrZj+n0Woa2kt6rRggGcZMMZOv?=
- =?us-ascii?Q?EhDz/DuZInNnApbP25XKXQsnhDv775ySsVR7+UaBijXDaa26U56xSS/KWkp1?=
- =?us-ascii?Q?XzdK?=
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 08:57:42.6128
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5d8db33-a72c-429d-86d0-08d8b6d81f56
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: C++vXsUIa5eXaE2UKV2JiYQONLENSCDbhaVgtVY7OuZd7KCwXqMtmM5v2J0krwXVcKJ0/5jqWq5Dje7ndILw+g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4744
+In-Reply-To: <CAJ9a7VgTqsa4_W0bmfS1BPYnKyvToyVLD=fk85_t9-yehCY9Lw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob Herring, thanks for the comments.
+Hi Mike,
 
-On Mon, Jan 11, 2021 at 04:14:35PM -0600, Rob Herring wrote:
-> On Thu, Dec 31, 2020 at 10:21:12AM +0800, Xin Ji wrote:
-> > Add DPI flag for distinguish MIPI input signal type, DSI or DPI. Add
-> > swing setting for adjusting DP tx PHY swing
-> > 
-> > Signed-off-by: Xin Ji <xji@analogixsemi.com>
-> > ---
-> >  .../bindings/display/bridge/analogix,anx7625.yaml  | 25 ++++++++++++++++++++--
-> >  1 file changed, 23 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> > index 60585a4..4eb0ea3 100644
-> > --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> > +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> > @@ -34,6 +34,16 @@ properties:
-> >      description: used for reset chip control, RESET_N pin B7.
-> >      maxItems: 1
-> >  
-> > +  analogix,swing-setting:
-> > +    type: uint8-array
+On Mon, Jan 11, 2021 at 04:22:39PM +0000, Mike Leach wrote:
+
+[...]
+
+> > diff --git a/include/linux/coresight-pmu.h b/include/linux/coresight-pmu.h
+> > index b0e35eec6499..927c6285ce5d 100644
+> > --- a/include/linux/coresight-pmu.h
+> > +++ b/include/linux/coresight-pmu.h
+> > @@ -11,16 +11,19 @@
+> >  #define CORESIGHT_ETM_PMU_SEED  0x10
+> >
+> >  /* ETMv3.5/PTM's ETMCR config bit */
+> > -#define ETM_OPT_CYCACC  12
+> > -#define ETM_OPT_CTXTID 14
+> > -#define ETM_OPT_TS      28
+> > -#define ETM_OPT_RETSTK 29
+> > +#define ETM_OPT_CYCACC         12
+> > +#define ETM_OPT_CTXTID         14
+> > +#define ETM_OPT_CTXTID_IN_VMID 15
 > 
-> Humm, this should have be rejected by the meta-schema.
-We needs define an array to adjust DP tx PHY swing, the developer hopes these
-settings are changeable, so I moved the register data to DT. Can you
-give me some suggestion if it is rejected by the meta-schema?
-> 
-> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> 
-> This is how types are defined other than boolean or nodes (object).
-> 
-> > +    description: an array of swing register setting for DP tx PHY
-> > +
-> > +  analogix,mipi-dpi-in:
-> > +    type: int
-> > +    $ref: /schemas/types.yaml#/definitions/uint32
-> > +    description: indicate the MIPI rx signal type is DPI or DSI
-> 
-> Why does this need to be in DT, you should be able to determine this 
-> based on what you are connected to.
-As the anx7625 can receive MIPI DSI and DPI data (depends on hardware
-implement, we have a project which have two anx7625, one is DSI input,
-the other is DPI input), we needs to let driver know what kind of MIPI
-rx signal input. And there is no other way to tell driver the MIPI rx
-signal type, we needs define this flag.
-> 
-> > +
-> >    ports:
-> >      type: object
-> >  
-> > @@ -49,8 +59,8 @@ properties:
-> >            Video port for panel or connector.
-> >  
-> >      required:
-> > -        - port@0
-> > -        - port@1
-> > +      - port@0
-> > +      - port@1
-> >  
-> >  required:
-> >    - compatible
-> > @@ -72,6 +82,17 @@ examples:
-> >              reg = <0x58>;
-> >              enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
-> >              reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
-> > +            analogix,swing-setting = <0x00 0x14>, <0x01 0x54>,
-> > +                <0x02 0x64>, <0x03 0x74>, <0x04 0x29>,
-> > +                <0x05 0x7b>, <0x06 0x77>, <0x07 0x5b>,
-> > +                <0x08 0x7f>, <0x0c 0x20>, <0x0d 0x60>,
-> > +                <0x10 0x60>, <0x12 0x40>, <0x13 0x60>,
-> > +                <0x14 0x14>, <0x15 0x54>, <0x16 0x64>,
-> > +                <0x17 0x74>, <0x18 0x29>, <0x19 0x7b>,
-> > +                <0x1a 0x77>, <0x1b 0x5b>, <0x1c 0x7f>,
-> > +                <0x20 0x20>, <0x21 0x60>, <0x24 0x60>,
-> > +                <0x26 0x40>, <0x27 0x60>;
-> 
-> This is a matrix, which is different from an array type.
-OK, I'll change to array if this vendor define has been accepted.
-> 
-> > +            analogix,mipi-dpi-in = <0>;
-> >  
-> >              ports {
-> >                  #address-cells = <1>;
-> > -- 
-> > 2.7.4
-> > 
+> Minor issue here - ETMv3.x / PTM cannot trace CXTID in VMID so this
+> may better be named ETM4_OPT_CTXTID_IN_VMID, rather than be grouped
+> with the ETM3.5 options?
+
+I looked into this suggestion but found it's complex than I assumed.
+This config bits are not only used for ETMv3.x / PTM, it's also used
+as an configuration interface between user space in Perf and kernel
+drivers.
+
+For example, in the userspace, perf tool sets bit ETM_OPT_TS to enable
+timestamp [1], this is same for ETMv3 and ETMv4.  In the kernel side,
+the configuration is directly used ETMv3 (in coresight-etm3x-core.c),
+but the configuration bits are converted for ETMv4 in the function
+etm4_parse_event_config() [2].
+
+So this is a historical issue, at the early period ETMv3 and ETMv4 can
+be compatible with each other for configurations, but after evoluation,
+some configs only belong to ETMv4 and cannot be applied on ETMv3
+anymore, but we still use ETMv3.5 config bits as the interface between
+kernel and userspace.
+
+I'd like suggest we use a saperate patch set to refactor the
+configuration bits, e.g. define the arbitrary configuration bits as
+interface between user space and kernel, these bits are neutral for any
+ETM version, in the kernel ETM drivers need to convert to its own
+configuration formats.  For this patch, I want to keep current
+change as it is, is this okay for you?
+
+Thanks,
+Leo
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/arch/arm/util/cs-etm.c?h=v5.11-rc3#n152
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/hwtracing/coresight/coresight-etm4x-core.c?h=v5.11-rc3#n422
