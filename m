@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685782F272A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 05:38:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C872F272C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 05:39:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730866AbhALEiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 23:38:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730730AbhALEiI (ORCPT
+        id S1731027AbhALEim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 23:38:42 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:40570 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728687AbhALEil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 23:38:08 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12053C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 20:37:28 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id q20so631074pfu.8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 20:37:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=rbilBSVbbXRhMniJ880rYaxIbYDyKirjuZYOZwkmcWA=;
-        b=zvT18tdFpQ/pRdt6LlFHrPSrnVnGmGNGvUTAJ+9ubbkUbPvfMD+LxfzwLfjyDcoAyg
-         FCKI/OAA08wU0Tw/qngcGX7S+6ehUOuZ5JnfNqEWveHjonwBxKP9i8Suwlx6tO2MvHV6
-         /j1JVJyeLgmpF6uKgg+ElGJZtkAZ5km/x3sPtQvVP7C795boOKyeX459Xn7NDljjXXRK
-         zAurjT5Z65+GM9HFJDBGYD0wM+IU/m++9SeqUVdkOtLeejFzbc6EjeCfjXY5d0mxrc55
-         6j8DQpzzPp0ehMZ5c6zijGW4hAWxJbVv2hjf/l3bFLeXCtiJn74pwSAvm6ax0Wo60zl/
-         1lww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=rbilBSVbbXRhMniJ880rYaxIbYDyKirjuZYOZwkmcWA=;
-        b=tdZtH2fz1CqUbCMja+1E0Eazp5umxnaGxME3tmoTXhRnYrXJ/X9IFFZdI/KcJT7eEu
-         StW8Z2hvNZxpLE92gtx+rbavND2rTFf4RF0Srs0VMY85Z4Jyh8xjCefwZRKmIlcU57mw
-         HkDLV+O5Q5n5Q6PaNrKYk3ciBeMcjGhBn9l6aZ20BhjR4bvcXFtOxZ+uld5H25vN6QOQ
-         TbQUxjZsRABcH/1Xr9J7sDr0s6l2OW2KsrUAqHV/f4cW5SzhVlOnVMjj2AQpYsQMViEq
-         U6dzot4haCEhkbxGqA+YCo/h6r3LmJCAKrMKc/DHjEL4O+8qtsIaXVuDDzd9wplgup7M
-         p9KQ==
-X-Gm-Message-State: AOAM532LgqXuPy9l2+/mb8yGi3q29tWTwI1zYK5QOsguHf6eTrGae0AK
-        fmhDwWJlsEzc9VNbt9M30/nMvw==
-X-Google-Smtp-Source: ABdhPJzqT038Q1NS6gUqh3U5M0rY1V8A6yUPOxIXzvLah9euNeTgLW5cROBqwrBWy95Ytl8MKEUOzw==
-X-Received: by 2002:a05:6a00:10:b029:18b:2cde:d747 with SMTP id h16-20020a056a000010b029018b2cded747mr2812217pfk.60.1610426247395;
-        Mon, 11 Jan 2021 20:37:27 -0800 (PST)
-Received: from localhost ([122.172.85.111])
-        by smtp.gmail.com with ESMTPSA id j12sm1161108pjd.8.2021.01.11.20.37.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 11 Jan 2021 20:37:26 -0800 (PST)
-Date:   Tue, 12 Jan 2021 10:07:24 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V1 resend] dcookies: Make dcookies depend on
- CONFIG_OPROFILE
-Message-ID: <20210112043724.3pbpsmxn7yl65psk@vireshk-i7>
-References: <fd68dae71cbc1df1bd4f8705732f53e292be8859.1610343153.git.viresh.kumar@linaro.org>
- <CAHk-=wi6ri9S7Nj1VZuA_pKOV3mEfH=-magLf_J_F=qhiFcKdw@mail.gmail.com>
+        Mon, 11 Jan 2021 23:38:41 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EBFB63E;
+        Tue, 12 Jan 2021 05:37:58 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1610426279;
+        bh=JXMwIpyboCcKzCJXsNtKWX/esNzMw9e7pfIvcu3n2vE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rEkgccxGm3jhwLQrWHkwt00pU9LMdLL4/NwfyadZHiYkyKbsC0/gpEw40yCrLzOWX
+         aUV1UsghW7ijFQThJLPscXA7hCcdTgB5x6wtcUvMhEv8EXcb7jyyGuMa3uQWSlGL5+
+         agrb6waRf06ib+OX9eLqkj8sn0wYAYmVtybJY1Ys=
+Date:   Tue, 12 Jan 2021 06:37:45 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/bridge: nwl-dsi: Avoid potential multiplication
+ overflow on 32-bit
+Message-ID: <X/0nmQ/XBpj6PJAh@pendragon.ideasonboard.com>
+References: <20210111125702.360745-1-geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wi6ri9S7Nj1VZuA_pKOV3mEfH=-magLf_J_F=qhiFcKdw@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210111125702.360745-1-geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-01-21, 11:28, Linus Torvalds wrote:
-> On Sun, Jan 10, 2021 at 10:02 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > The dcookies stuff is used only with OPROFILE and there is no need to
-> > build it if CONFIG_OPROFILE isn't enabled. Build it depending on
-> > CONFIG_OPROFILE instead of CONFIG_PROFILING.
+Hi Geert,
+
+Thank you for the patch.
+
+On Mon, Jan 11, 2021 at 01:57:02PM +0100, Geert Uytterhoeven wrote:
+> As nwl_dsi.lanes is u32, and NSEC_PER_SEC is 1000000000L, the second
+> multiplication in
 > 
-> Umm. I think we should remove CONFIG_OPROFILE entirely, and then
-> dcookies as part of it.
+>     dsi->lanes * 8 * NSEC_PER_SEC
 > 
-> We discussed removing CONFIG_OPROFILE for 5.9 (I htink) already - the
-> oprofile user land tools don't use the kernel OPROFILE support any
-> more, and haven't in a long time. User land has been converted to the
-> perf interfaces.
+> will overflow on a 32-bit platform.  Fix this by making the constant
+> unsigned long long, forcing 64-bit arithmetic.
+> 
+> While iMX8 is arm64, this driver is currently used on 64-bit platforms
+> only, where long is 64-bit, so this cannot happen.  But the issue may
+> start to happen when the driver is reused for a 32-bit SoC, or when code
+> is copied for a new driver.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> Compile-tested only.
+> ---
+>  drivers/gpu/drm/bridge/nwl-dsi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/nwl-dsi.c b/drivers/gpu/drm/bridge/nwl-dsi.c
+> index 66b67402f1acd57d..a8da3081efdcc84e 100644
+> --- a/drivers/gpu/drm/bridge/nwl-dsi.c
+> +++ b/drivers/gpu/drm/bridge/nwl-dsi.c
+> @@ -195,7 +195,7 @@ static u32 ps2bc(struct nwl_dsi *dsi, unsigned long long ps)
+>  	u32 bpp = mipi_dsi_pixel_format_to_bpp(dsi->format);
+>  
+>  	return DIV64_U64_ROUND_UP(ps * dsi->mode.clock * bpp,
+> -				  dsi->lanes * 8 * NSEC_PER_SEC);
+> +				  dsi->lanes * 8ULL * NSEC_PER_SEC);
 
-Right, I followed that discussion but I wasn't sure if this patch will
-go in first and then the later ones will follow. And since I couldn't
-see a reply from Alexander for it, I thought it is best to resend it
-to get merged first.
+I wonder if we could get rid of a whole class of bugs by turning
+NSEC_PER_SEC into a ULL, but I suppose there are valid cases where a
+32-bit integer is enough.
 
-Okay, I will try to send some patches to get rid of OPROFILE and
-dcookies now.
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-Thanks.
+How did you come across this by the way ?
+
+>  }
+>  
+>  /*
 
 -- 
-viresh
+Regards,
+
+Laurent Pinchart
