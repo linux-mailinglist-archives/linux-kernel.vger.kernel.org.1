@@ -2,158 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E1A2F3003
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:05:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF7172F3024
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:05:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729982AbhALNB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:01:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726780AbhALNBW (ORCPT
+        id S1726901AbhALND4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:03:56 -0500
+Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:59564 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726262AbhALNDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:01:22 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DC42C061575;
-        Tue, 12 Jan 2021 05:00:42 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id d9so3724169iob.6;
-        Tue, 12 Jan 2021 05:00:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Bl6G1rAuVb/adOj0Od9vL1lMatTSfI2ajKlBHjpw74Y=;
-        b=i4/OO+X/N2LqDVoD/jUzcozf+EvAiReaJZr5ICPWBOpNFleYALweAck7rcfG2NxIs7
-         2englFESSMpZ6PFu5aS2ADPGCn9ndkqC8dfrKUr88qZiJeES4MV7s8SLpdpmdETnP5IR
-         6YjpCWXl6mUWgBTQvI6VaPMGu040n2dZ9BgLjPTCVENHAAPvj3dEB4dVK9ChWO2wgndx
-         Pc1rx8lUB/BM1pock/z3EdMURVFH149yiBw+IBpq41j5KSTSG64dTDb01Tt58/GYAOBO
-         FdhNgiQsazyihjhW/rlAlWuo1ExObV54m6S2E2AMdVRvjM+e0llFMreb77i85dAL4CYs
-         SbGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Bl6G1rAuVb/adOj0Od9vL1lMatTSfI2ajKlBHjpw74Y=;
-        b=OB3gkmrY9TlCxbiueVOB7ZBXKcmC0PZIoFfpbjBh8COu82s81q4yCWYc5LZPZusURI
-         qkv33kkG8zk6K1WN7X30K9/xsHgsO8mf7WRgsNC9vQJWAdch6p4Dp+YFne6ZIIWvF8an
-         kfcd+9CAi0EJUp7g8RKzyumGJRDavyRMoZFpZqoGT8F70YktZAmPXN6hx+WVNNxCNA/e
-         k2cZOp5kpJDhxgBXf7Brwuva+W+YyqVzIXO0eI01JOS9IqRS31zw62/6HNCSUNt9wwiM
-         WGqzqnsdpXcT02aJqxFehUKk1WnAcx9j3amwB+0ftYHFh/pY4SLtQFPdHA2azA8YhWPo
-         9dhg==
-X-Gm-Message-State: AOAM531PrwNuOYSknLKCVlU43c2s/gi6tALoUBm4heBuD8Zaw9iyJkuQ
-        Pyd8I2eomzFZfj9hJTwMMMI=
-X-Google-Smtp-Source: ABdhPJx2M5LbtmFtPAAXjJ5AseYWFasODAQS6NYgRqyuHb72NP/iLxCMNlDew00AMwFldJQUdkJ6zA==
-X-Received: by 2002:a92:c104:: with SMTP id p4mr3814264ile.228.1610456441534;
-        Tue, 12 Jan 2021 05:00:41 -0800 (PST)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id j12sm2801519ili.48.2021.01.12.05.00.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 05:00:40 -0800 (PST)
-Date:   Tue, 12 Jan 2021 14:00:37 +0100
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Peter Geis <pgwipeout@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Mohan Kumar <mkumard@nvidia.com>, linux-clk@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH v2 0/2] fix tegra-hda on tegra30 devices
-Message-ID: <X/2ddbamUzXECZDT@ulmo>
-References: <20210108135913.2421585-1-pgwipeout@gmail.com>
- <s5hv9c2sgxd.wl-tiwai@suse.de>
+        Tue, 12 Jan 2021 08:03:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1610456562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fK5r7uxJp7khU8wYpOUbsek3+XXxkbrtxPAHFXoYrKc=;
+        b=gXZARi3ihos9Cg2bs41ZRz2Frg3KUXeTpRSWH4kJDtUFIHtq+KVjOMeEFlUxT+xRcHaeC3
+        VrqCrPgd50W6GhihVe0SDCaTEuxVFgqxNQfpPN64wleAuKyOBlxwvuZJKlHuBMCwSabzSK
+        lq01OEkbt7SE9j0L1nSzL1wJRFcn26k=
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com
+ (mail-am6eur05lp2105.outbound.protection.outlook.com [104.47.18.105])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-36-8Nhw74rSPHCL8NQxWhSP5w-1; Tue, 12 Jan 2021 14:02:41 +0100
+X-MC-Unique: 8Nhw74rSPHCL8NQxWhSP5w-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HzYBLBH9MDtX/aMkAPjNJJ4iAY0Rtaz4lxTQrG8a2Jimj9SLrgg0rZPYrfa3/5Nn2KICVc8PBHHZTps6JqW4wgFJnNThaPbFkuoV1fuWgmxommTgym8rU5rX4cB+2HPRr+g1aPi1mNNt8gDGKUivjlwXmZ0fTsK7spkwG4jGJszXMgAYDKR34jZlRqd2CWgqNGdObYcvr2pCmrYJSSpp71l2SSCZrsQd3rzbxqJoYemqRQTXxzWK6J5uIqKmOqw0Kg+NzvKFDmHyR2NiP75qayrViZg3wY632Q41+1TB4auWkEr/iQxA/3LOURAPUcuwXQMKjtec22SbzYgMV9rOwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fK5r7uxJp7khU8wYpOUbsek3+XXxkbrtxPAHFXoYrKc=;
+ b=mN3zaZQUFnqHspL+Sh2l53ZA8WhHDa9hQAP8G6jQEuLUxxBKM6AlZStWdsAsZ8CGSWk/s6OygTU4NmO9nDJalU62BNvhfv5DZmkHrqowGScBx0lCSw0k6nHwmTxUpo3LdGFIXMui6OhQmrHIGfvZaBQ5KjSV4s38qmly10smh8UFMbVhGdoH7v/oOYAJPE/Ta54OtUZaOkl7AjKJQJyJuXJsy/NTvB/CLStiJyCYcJDGEPyRAtenDLztATwrUwbB/fe0tqLCGs8LiOr5lQqxFOKTQZinrquPJVog/bZrh1w+dTtx7SYTYGSQNH3EFCBcIJsd8SxK5bjsPljgIZ24ig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR0402MB3359.eurprd04.prod.outlook.com (2603:10a6:803:3::28)
+ by VI1PR04MB3278.eurprd04.prod.outlook.com (2603:10a6:802:4::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.12; Tue, 12 Jan
+ 2021 13:02:39 +0000
+Received: from VI1PR0402MB3359.eurprd04.prod.outlook.com
+ ([fe80::9c1d:89de:a08e:ccc9]) by VI1PR0402MB3359.eurprd04.prod.outlook.com
+ ([fe80::9c1d:89de:a08e:ccc9%3]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
+ 13:02:39 +0000
+From:   =?utf-8?Q?Aur=C3=A9lien?= Aptel <aaptel@suse.com>
+To:     menglong8.dong@gmail.com, sfrench@samba.org
+Cc:     linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: Re: [PATCH] fs: cifs: remove unneeded variable in smb3_fs_context_dup
+In-Reply-To: <20210112091340.7500-1-dong.menglong@zte.com.cn>
+References: <20210112091340.7500-1-dong.menglong@zte.com.cn>
+Date:   Tue, 12 Jan 2021 14:02:37 +0100
+Message-ID: <87im82l34i.fsf@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [2003:fa:705:9f85:a5b8:801b:5f46:ca87]
+X-ClientProxiedBy: GVAP278CA0009.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:710:20::19) To VI1PR0402MB3359.eurprd04.prod.outlook.com
+ (2603:10a6:803:3::28)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="drqTfn9TqBQMdij7"
-Content-Disposition: inline
-In-Reply-To: <s5hv9c2sgxd.wl-tiwai@suse.de>
-User-Agent: Mutt/2.0.3 (a51f058f) (2020-12-04)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost (2003:fa:705:9f85:a5b8:801b:5f46:ca87) by GVAP278CA0009.CHEP278.PROD.OUTLOOK.COM (2603:10a6:710:20::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Tue, 12 Jan 2021 13:02:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d2ef6382-5570-46c5-2519-08d8b6fa5742
+X-MS-TrafficTypeDiagnostic: VI1PR04MB3278:
+X-Microsoft-Antispam-PRVS: <VI1PR04MB327871F346335F633356B798A8AA0@VI1PR04MB3278.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: //FoZCXlHXIAsxC/cX2sOYKFmDSnFQbkLZ2QiS6+Lwt7A4Ire37D0oTSBAB5cGgi6qLVsXj7yaRXg/FpYp1lATtDhls2IIkQ3rOLnyhGSvi3o3Ek1RYvFeUhCOh3y3EpEmE93joHgh89I7vjxwMGDQOnR1YsHuPSx9+BXxsWe3Z7aw36D/vwrNVR2ZV/WEfBZbA1f0yp83uC6JlPp3QQjwVUKW/FMU+DwxNKW3zWT7SfUeUGyW3cx11ScvNO0+ytfBQW/UOTrcJT51c3f33QxHbm+7oOASo2I+pEQcDGt3tjXkFFMk4OoTOu7C7sz1x3Km70Z4yNqEclpj4u5pfxhB8M69wGm/itBmn6vwQK/XVltZioQF/cVYOz3TvuqPZTbRdZFtiogCzWW2PEX6/TiQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3359.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(346002)(136003)(366004)(376002)(52116002)(478600001)(316002)(6486002)(2616005)(186003)(16526019)(558084003)(8936002)(8676002)(36756003)(86362001)(66556008)(2906002)(5660300002)(4326008)(66476007)(66946007)(6496006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?V00vRXdlOGhXR0xZUjBjOGlDS3AzTFRINERLZnprSUVHL2dZR2ltay9VMFZw?=
+ =?utf-8?B?SEIrU2cxWnYxMTkranZBd0ZQcXBIeUREbzYrUllPRnFYOTRPM09EaC9DWFFv?=
+ =?utf-8?B?ZEluU2VXcGlFakNCSkRUWW4xSzFvZFZoL29DY3Vsa2lxdFRLUXY2SFZSQnUr?=
+ =?utf-8?B?a2VWd2htakRMUCtPZCtxb09pcjVjMjdNMVdFVVRXK0V6VVdxM000ZFBrcHZX?=
+ =?utf-8?B?YmhJTFdkWDU0NDAyOVZ4WHB6OVZRVmQ4ZHd5QVNlWjdwanF4RTRSOUViZ2JH?=
+ =?utf-8?B?TUNHa015QVNoOVErTmwrSEJPLzVhWm9uL08weVN0M3hnWGYwNC92c0hKaEdS?=
+ =?utf-8?B?U2M4bTdqVmlUeW1OSEViaGZ1b3hyWEcxNUkvRlNvT0tjSmZITnpJdmdibVN4?=
+ =?utf-8?B?TmlmbVNTUTlvTm9wMkpISDd1SFN4WG1tSUhBWGxQT0VpUW8wMVlhRTJ6VFRr?=
+ =?utf-8?B?eWt0Um9GYmphZndYZWhlNzhRaDJ3YlZwRUZ1OU5qeDE2QmxWdXdZRzNHZ1cv?=
+ =?utf-8?B?bXo4VEZuT1lrSUJmTVdoOFF4WUt3ejF0cmEydHNsMXVQV1RoelQ5dWozREhU?=
+ =?utf-8?B?bUlmQjh5dmEybG8vRUs4NndEWnlpaDF6NStzYTN0R3Q0Z2FpQURpTVdGdU1l?=
+ =?utf-8?B?UFkzdTZ2cWRVbzRwdkk2T05mYU42dXAwNUFEbWM2cjBTcjVEZTdYRVV0Q216?=
+ =?utf-8?B?Qk1zVURDY2J6VUpWU3BOM3BjZHB4MUF6MXZXQ292amhUTU53U3pUeEVOOVcy?=
+ =?utf-8?B?U0dObFllTnBNa2VMUlBnMTdFZ0d2Ujdwd01IcU05RWltNmNZS3dLQVI5d2c0?=
+ =?utf-8?B?MFp6VUUrNWhzVjFxL0pFT2hlMVpTQTZVS1ZLUmNXdXRiMlZDSkdvMy9SYTVh?=
+ =?utf-8?B?Wm1XaWRaMGxDWGQ1STJmTVk2TEEweGdEcWpmbXUrVTBUMDJpQnRhYmhLMGxO?=
+ =?utf-8?B?N3o3Y2hPR2tZbXNPYy96ampCYjVJVnNpQ0VBV0dpbGJPQ0FPMFpoNC9ZOE1S?=
+ =?utf-8?B?WEp2T25kcFMxY20zUGsrTDF6cDFoSFpWWGZXMkYwcmlTUDZzRWV6STdHM2Vs?=
+ =?utf-8?B?Z3EvTk9lMEJXeHRhRjZIZFhtQTJDLzR6WHMrTGIvMndhUCtRendNS1ExRTlY?=
+ =?utf-8?B?M1J0TTZ3Tk9Nd0xHSXJvTGFpeHRvbFk1SnR6Vm50STV0VHdML1hZWHl6RWJx?=
+ =?utf-8?B?TlVRVURSdXRwSVFqc2lRbEZ4dFM2M05Rblk5TXUyUWpPRllXU2pmK1ZrMUdF?=
+ =?utf-8?B?NTJjNHRvL2g3WjJNSGI5NzVjWGZVaWliaE1ONkg4emRaU0J6WDlCVldoeGRj?=
+ =?utf-8?B?ZE91NThkcXphMDg0WWl5RFNOcEdVd1EvaEpHUVJhZHJGSVA3djRQRkpHWTRs?=
+ =?utf-8?Q?KlltFTZjOqGV336q+HgwA9UcDmNFAtOs=3D?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3359.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 13:02:39.4167
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-Network-Message-Id: d2ef6382-5570-46c5-2519-08d8b6fa5742
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rMk5M5+CKCldEGeGhDnsddcBDnHMYbgMCzFGnuBbQgUKU3MltHcVBCT/8Xh/KSUu
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3278
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---drqTfn9TqBQMdij7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Aurelien Aptel <aaptel@suse.com>
 
-On Tue, Jan 12, 2021 at 09:22:38AM +0100, Takashi Iwai wrote:
-> On Fri, 08 Jan 2021 14:59:11 +0100,
-> Peter Geis wrote:
-> >=20
-> > The following patches fix tegra-hda on legacy tegra devices.
-> > Two issues were discovered preventing tegra-hda from functioning:
-> > -The hda clocks on tegra30 were assigned to clk_m and running at too low
-> > of a rate to function.
-> > -The tegra-hda encounters an input/output error when opening a stream.
-> >=20
-> > Since the only mainline device that used tegra-hda until recently was t=
-he
-> > t124, it is unknown exactly when this was broken. Fortunately a recent
-> > patch was submitted that fixed the issue only on t194 devices. We can
-> > apply it to the tegra30-hda device to resolve the issue across the boar=
-d.
-> > Note that downstream devices used the spdif device instead of hda for h=
-dmi
-> > audio. The spdif device lacks a driver on mainline.
-> >=20
-> > -Checkpatch seems to have issues finding [1], but git show has no issue.
-> > [1] commit 60019d8c650d ("ALSA: hda/tegra: workaround playback failure =
-on
-> > Tegra194")
-> >=20
-> > Changelog:
-> >=20
-> > v2:
-> > -Added ack and reviewed-by from Jon
-> > -Updated fix to apply to tegra30-hda vice universally (Thanks Jon)
-> > -Updated commit to include comments from hardware team (Thanks Sameer)
-> > -Cleaned up commit messages
-> >=20
-> > Peter Geis (2):
-> >   clk: tegra30: Add hda clock default rates to clock driver
-> >   ALSA: hda/tegra: fix tegra-hda on tegra30 soc
->=20
-> Shall I apply both patches via sound git tree?
->=20
-> Or, if you want to take through clk tree, let me know.  In that case,
-> feel free to take my ack:
-> Acked-by: Takashi Iwai <tiwai@suse.de>
+Thanks,
+--=20
+Aur=C3=A9lien Aptel / SUSE Labs Samba Team
+GPG: 1839 CB5F 9F5B FB9B AA97  8C99 03C8 A49B 521B D5D3
+SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg, D=
+E
+GF: Felix Imend=C3=B6rffer, Mary Higgins, Sri Rasiah HRB 247165 (AG M=C3=BC=
+nchen)
 
-There doesn't seem to be a build-time (or even runtime) dependency
-between the two patches and they fix two independent issues, so they
-could also go in separately.
-
-I'm fine either way. From a Tegra perspective, the Tegra30 clock driver
-is very low activity, so I don't expect any conflicts with between this
-and some other patches that might go in through the clock tree.
-
-Thierry
-
---drqTfn9TqBQMdij7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl/9nXUACgkQ3SOs138+
-s6GqTg/+OADUywchD2A60VkcQ2urUoARq6t0hydg25Ly37rjRWhl92PWQ9V3YULd
-HZAA38q+/PzszkSs0ivCRKPV9QPz/YjOjpJgR3XX0GSOCxXMzxcni4GKQ5p06BsG
-hCadEe1K+YXSznQn1hX6hjuuPWjSs2ZijMM/yTILil0fAd5P4LTxkbuGgxwFPXPf
-/g2j/KY1IYwPotwYuOdn9eakJJaHTZJAV3pO6eDiJ+WYC4u0tPZLiCtozSSPxCAF
-IZJZuBzFiMgurxjTMIlQW82Mn0R7Bpr9ERlAGIVGaPMKOugajQV/lg9223SHPlei
-4tnGIU6Ven7HhFQYWxvzV32GFiuNorsSDMbCAqObPglo30Qt0jSW+DDEn9ymb9rg
-owNjg8+7+uckLTRggIWoMv5eG2gh+inGOE31uNx5umn0U72JVAqjjM2YgCA5+nB4
-G8lHQXFsEM4phFj+SwH1mT1u8xBeEQ5FB++hHZGX6Q3UQe4XN8w2JRAwroGRsupS
-oan0d5kY0aSxzRxqXRbAFFt6SmkV+1vH1Qt0NrjAji9k9jEw/8kHcgeEEG52mHZe
-c4ykdSeLwM40vCLLjAH5frO0mCGwy87y7epP8fq9t2mAFhnE6te1JZZh2d66mH7k
-y3qIffocs2VEyxyMnK+EPceKMMDCg09LerCkt7ON2gde9ymVANk=
-=csJX
------END PGP SIGNATURE-----
-
---drqTfn9TqBQMdij7--
