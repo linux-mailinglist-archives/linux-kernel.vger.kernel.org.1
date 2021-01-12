@@ -2,190 +2,863 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2B9E2F2843
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:17:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C292F2845
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731784AbhALGPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 01:15:15 -0500
-Received: from mail-eopbgr00043.outbound.protection.outlook.com ([40.107.0.43]:57855
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726478AbhALGPK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 01:15:10 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cU7AzlCId0pbOdEzGsVb3F0Ix3+YYCtdDNsuMjcvvl9OraOsh8pWvWbAgOYZV+gyYymO0+OwCv2oD/DGJFafgAy5WKsSWuHA4u+7Mo5BSs9BQjcS2cIFrNxfh3KqRdxU4sZG6vXuCVWbuqYIYpZjrQIwuXeg8Pbicm92AyDTYMAEnbutjWKa5vb6c9rFAXy/9lHOFsrz89ZgqZyG0Ci3L6EoiS5xul+Nco1ezGIjLP/pb1+V2SqNVM9a3/I7cUeqyIsnYg7nNPXKKpElvQdj/dYv7MQS3lX+G4JsvYjMcMpFxh+eK4xUw73CvaZlmqurtEB+eL4FT3S3r2hHoGj5TA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=goBAPrB0rBSWiFds7LvpXkqAvencYSMqvTXFKWi+wME=;
- b=hYMNqeOBEDvbTc4zrwFUUGVXHIO5Of3a2OF4MQzgDn3q4CSpYZ8WWGSZJv+A+u3UwuS7WnI4t2h1gwMXWYBSsmYZ58Yk9owoYViUV5ZRwg6m3l1qCkD6XQSfc2U2vvz2YdHPQDv+A/SyGiA1E1MtG1lPccHyStiW1pQ7tMrIPYajQ6R3II7i4x8G5eazq4KxBk6dEYmhPXyy/qlelzQPMJpDM5HDYF5o7huH36sUdhLsjCwG2qAIbNsRrnzXi+H3/wVx1m/K4ySIMcWzVGTGoQYz2z/cYWl12GY/dnT1WymEquwjdCTOHvqx3tDGG7YKQ3To6Jf4yqHrOF22w5OEXg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
- header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
+        id S1732025AbhALGPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 01:15:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731792AbhALGPT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 01:15:19 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB764C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 22:14:38 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id t6so862056plq.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 22:14:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=rohmsemiconductoreurope.onmicrosoft.com;
- s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=goBAPrB0rBSWiFds7LvpXkqAvencYSMqvTXFKWi+wME=;
- b=s0Zwy7YmuWk+E+YWDI1270uuQcvV3rQDErMqIteG2kwVqlsKOhQpDeFDFe/K9SKkMCAF920Rjg+i7ja4onMX8hZR8YZjKqdKc1p8fi4AuS8/bZ+ZQLsuXizPRUtgVsgM+0MR1U02CNDybx0yHaAwfJc8czgsavYe/JFkvwH0MIY=
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
- HE1PR0301MB2315.eurprd03.prod.outlook.com (2603:10a6:3:23::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3763.9; Tue, 12 Jan 2021 06:14:21 +0000
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::6558:57bb:5293:f3d3]) by HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::6558:57bb:5293:f3d3%3]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
- 06:14:21 +0000
-From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-To:     "robh@kernel.org" <robh@kernel.org>
-CC:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-        "a.zummo@towertech.it" <a.zummo@towertech.it>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "sboyd@kernel.org" <sboyd@kernel.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 05/15] dt_bindings: mfd: Add ROHM BD71815 PMIC
-Thread-Topic: [PATCH 05/15] dt_bindings: mfd: Add ROHM BD71815 PMIC
-Thread-Index: AQHW5cMSW/wZL3Vm9UCNrh7KPrXJ5qoizlKAgAC6ewA=
-Date:   Tue, 12 Jan 2021 06:14:21 +0000
-Message-ID: <e1cfcc1222c9c78f3e5bff5059ad7ad3ee6f3c09.camel@fi.rohmeurope.com>
-References: <cover.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
-         <4b3a868c07312d630de32e85d31dee7501627b73.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
-         <20210111190653.GA2890911@robh.at.kernel.org>
-In-Reply-To: <20210111190653.GA2890911@robh.at.kernel.org>
-Reply-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Accept-Language: fi-FI, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none
- header.from=fi.rohmeurope.com;
-x-originating-ip: [62.78.225.252]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cf3850e5-a774-4d20-0fce-08d8b6c14d2e
-x-ms-traffictypediagnostic: HE1PR0301MB2315:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HE1PR0301MB2315E5359D0737DBCC40092CADAA0@HE1PR0301MB2315.eurprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: yEleUNJbnBYLoyVUrITR+gGozulItbXL+Qm2t2a08h3514/UpcHX5vOAI02yjFKvwC8tHp28VP9VQ+8MNHXteZIkw9p5IniRiYmbPBr6ic83TMZCoMtXVVm4ZAL5g0WZahET4hFWoiAhhwb1er/SRphjdBf91cu+Ijt5Gx/Tboa0/PO4VGZBtHJUkj1Z8Yqe7Wa0IuZWS//txDVW+tkUm5lSCyHE6vLGxcnG8C0VJpyc6kDHbNBpy9H3WPYo9Db+DdFc+5B1bXHb4wMSWX+U4ZQy7XePOoal97aoNIjJGLH8lCEOFfrpdhVgHGxJRPKTnim3bWtofii9fMiYm3fUEQREefh+Frb+AiJbM395CwTvoLjUFX/prgHM4iWklpgKYH4MTz7yLJ9M7oX/wWT09ZXMgDsV4foDMQNEe87bTKSE9WFPkE2/suzjTyE1TdxCKIGWjsKXzy9jUnyIqBlEtA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39830400003)(396003)(366004)(136003)(376002)(346002)(54906003)(316002)(2616005)(7416002)(2906002)(478600001)(3450700001)(86362001)(4326008)(966005)(76116006)(66476007)(66556008)(64756008)(66446008)(66946007)(6486002)(6506007)(71200400001)(186003)(26005)(8936002)(6512007)(8676002)(6916009)(5660300002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?ak9vaHROR2R5RkV5QjN2OG9pMEptRkQwSnhrUk5xWDV4U2FSYWRsbUh2YWRG?=
- =?utf-8?B?Um1NbnN3dTZVQXVTMkRSVm9iajRXS0tSUU1oYjRTdmpxWnkra0NUa05CcktS?=
- =?utf-8?B?MU9rNDlvejV3ZzlFbWxXalNCRis1MGhCb2hRdkMxQTRrVmJzNk5YU1lkM1pm?=
- =?utf-8?B?MDczTklrcUhEUldpSGhncG9NVmlWbzJ6YWdIeTgramppb0sxSHZoWUFsVGxC?=
- =?utf-8?B?ZUtVeURER0Y5VWE4OGx1U04rT0d6alRmMUxaZ0lCdzRaRldtb2Q2ekpJRitB?=
- =?utf-8?B?Z0dwUmxQZzRsa1ZnTmhvc0NiSG5YU0d4cXJaRzl5Y25QY2JzSDBxYlI1c1I0?=
- =?utf-8?B?UUd1ZEo2cU9iMzZEME9IVVBKRm5rT2l3QjBYSVVDK0pXUm5IUUErc0luRnhk?=
- =?utf-8?B?bVRiUHFWcEZtQ3I5Uk9BaTd5eVJXRjVEcElSL2lpeGM3R3FXNGxPQUpBR05o?=
- =?utf-8?B?VkVrb0VVOWZjUlRCVlNWU0NEMWVBVUw2UlVUeTNGL0ZtNFQ4MmhVeTFmb1NP?=
- =?utf-8?B?T2dOSEJUQldtQzI3MEFxbVAvVEtmVnBZRFdobnprNkt2WmxFR0F3NmJCK0cv?=
- =?utf-8?B?QVROMkxNRjc2ZzM4R3FQTHdtOWJaWHNsZ3FLQ251UCtDa2d5OU5UZFB6d3d0?=
- =?utf-8?B?MU9zQXhNODNYc0pUL0JzcHp3Y3JCaDJqZWVLQ29XZHk2T1RRK1NWOTVpS01i?=
- =?utf-8?B?UEd0Uy9obStLNXpQbVRsSTJOeGFhb1dCUHZsdEEvOWw3bGJSZ0kzL0taa1Z3?=
- =?utf-8?B?Y2xLV3hzTGlIZ2ZzMEN4OERSZmttRElETkszQTJHTEo2OFphaTRrVWNESlkw?=
- =?utf-8?B?dnY4WU14NTFRcVZ6TDZzZ2cvZmx2d2diOExha1RPRlhiL1dwZ3Npa0dSWWpK?=
- =?utf-8?B?VWhUczdTZnE1TWdDalR0RFczSU9OeUZUVk1HbEdCbEZQdVlQNnc2aHJ4NjRS?=
- =?utf-8?B?a3R1UDdsRnk1N055RDhZOEZhcTN1QnVvaTlPZHBIODNWUGZBTit5NXBMeGwv?=
- =?utf-8?B?SVg4cllzVDFYUTB5c28vUG05N3B5UmM0c1ZmR3doQno1clhKdGlsQkZVRHF4?=
- =?utf-8?B?L1lnWmR4K0VVNmtSVVlwZW9zeE8zYjNDOXRqOXpWaFBGY1BHZWlmeWJYU3dT?=
- =?utf-8?B?T0ZDcStmRXovQkg5c3U1S1k1WFZta1dMK0lYbFZ5RVBRZG9qUlZiV1lsOGY3?=
- =?utf-8?B?azVudE83UWVwS1l2YUhlVXFmOFI3cnh4WU5EMStBTlBuM1UrMmR4UFhkbUNn?=
- =?utf-8?B?dGNZdVdkV1NveXNkbC9GZ0pwc0lSUkZtVkZCaDdwNTlQbEkwMmxMOWRPTUNK?=
- =?utf-8?Q?XcchF5YR8ITzJWMlzulPP8p1p1eCPswB0s?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <59E20D8DD3F7FF4FBC0D7979E00091D3@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3IYXA3RCideG0d140xH2EeaTJg7O4Z6IDJPC0XyJu0A=;
+        b=sPGsP8/4OznOC7BfViyvRFvwfMfx+onSzpD3jkqUA5niJnMsmZpMbAmYqRyAGp5vIy
+         gDxSYK8NuWK4QDHpXB8vICHeoB2KlAZrDVavmoe206GShVG8RDFbfiAzLXHJLsdZraEM
+         DI67FMm9Fpm5xHBd6HcT4tH0pJzFFX1Hia7x0Yker5a6XQtin2A9AmC+EENScNMOPWxw
+         Nh/hb470x5xAMK60W7elYc6LBRc7tiXhBJsv26Ku7h2cDlI1ZLEPeE35ooWwKX9wWg77
+         GqHr+Zx7hTDp5ZVKTwEf5eySGesyQ7QtMrgG1Wn7+VzgWOccZiegVL8niB5tAhZL69g0
+         GZ4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=3IYXA3RCideG0d140xH2EeaTJg7O4Z6IDJPC0XyJu0A=;
+        b=Igewub8AMzmWHz0+C/q253U9D0W2062dvtqqjDZpnl5MkXbdhUbqYucU5DadJrKq23
+         DNZCOAsdjr1PsCS0+KAqo7pdpxUCxRIphb02Brpgw2mG1HrDbjFHpgBgT9DlU4SVIhbA
+         Iwf4K3KDeZu32e60DzLQ3OkcTDk6Fxs88QJM6Va685DPnjKJoFfg3C6sJuJwxBNGsFYP
+         4wxzA9uKnfVKV1VWzE5S2RLvsv15CSNDKigoUGGB07kWKmZqdAYn0S8trUTFxsGTSB9S
+         ILt0EM9zHzhtX5GR1EnLC7KyQqK2ovvtfWmZc9l12woNoEKcHlIfAXUiMZnVZGP4zuNX
+         VJXA==
+X-Gm-Message-State: AOAM532970+4X5TRqd8f+s3h9/SOuUf8MBEHwt/JJW+pG5zMlwOVUQKK
+        OZXAWEAkQHCVFT4yAmar7J8=
+X-Google-Smtp-Source: ABdhPJyO/bvAHqg82ZfjVbTEVtGsu3YHVZ27HySwAjlYMej6/Qh4ar3UnU6RNcIDyKJdQnPCtaSwHw==
+X-Received: by 2002:a17:90a:5993:: with SMTP id l19mr2786642pji.203.1610432078317;
+        Mon, 11 Jan 2021 22:14:38 -0800 (PST)
+Received: from balhae.roam.corp.google.com ([114.129.115.223])
+        by smtp.gmail.com with ESMTPSA id a19sm1616514pfi.130.2021.01.11.22.14.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 22:14:37 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: [PATCH v2 1/2] perf stat: Introduce struct runtime_stat_data
+Date:   Tue, 12 Jan 2021 15:14:30 +0900
+Message-Id: <20210112061431.1122838-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 MIME-Version: 1.0
-X-OriginatorOrg: fi.rohmeurope.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf3850e5-a774-4d20-0fce-08d8b6c14d2e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2021 06:14:21.2013
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: W0VO1I9fN36kqFd83F1qtTj+czxIncLdUX3tYPhFGQsqbEXiXNPa5OBwZUbJ6KOEP5IY4Aorc9WyRt61A8+EEJl47nQ9MtaQJHE+TL2qtsjAsd1sU82gpS1Yz/1/eGa7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0301MB2315
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiBNb24sIDIwMjEtMDEtMTEgYXQgMTM6MDYgLTA2MDAsIFJvYiBIZXJyaW5nIHdyb3RlOg0K
-PiBPbiBGcmksIEphbiAwOCwgMjAyMSBhdCAwMzozNDo1MlBNICswMjAwLCBNYXR0aSBWYWl0dGlu
-ZW4gd3JvdGU6DQo+ID4gRG9jdW1lbnQgRFQgYmluZGluZ3MgZm9yIFJPSE0gQkQ3MTgxNS4NCj4g
-PiANCj4gPiBCRDcxODE1IGlzIGEgc2luZ2xlLWNoaXAgcG93ZXIgbWFuYWdlbWVudCBJQyBtYWlu
-bHkgZm9yIGJhdHRlcnktDQo+ID4gcG93ZXJlZA0KPiA+IHBvcnRhYmxlIGRldmljZXMuIFRoZSBJ
-QyBpbnRlZ3JhdGVzIDUgYnVja3MsIDcgTERPcywgYSBib29zdCBkcml2ZXINCj4gPiBmb3INCj4g
-PiBMRUQsIGEgYmF0dGVyeSBjaGFyZ2VyIHdpdGggYSBDb3Vsb21iIGNvdW50ZXIsIGEgcmVhbC10
-aW1lIGNsb2NrLCBhDQo+ID4gMzJrSHoNCj4gPiBjbG9jayBhbmQgdHdvIGdlbmVyYWwtcHVycG9z
-ZSBvdXRwdXRzIGFsdGhvdWdoIG9ubHkgb25lIGlzDQo+ID4gZG9jdW1lbnRlZCBieQ0KPiA+IHRo
-ZSBkYXRhLXNoZWV0Lg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IE1hdHRpIFZhaXR0aW5lbiA8
-bWF0dGkudmFpdHRpbmVuQGZpLnJvaG1ldXJvcGUuY29tPg0KPiA+IC0tLQ0KPiA+ICAuLi4vYmlu
-ZGluZ3MvbWZkL3JvaG0sYmQ3MTgxNS1wbWljLnlhbWwgICAgICAgfCAxOTgNCj4gPiArKysrKysr
-KysrKysrKysrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDE5OCBpbnNlcnRpb25zKCspDQo+ID4g
-IGNyZWF0ZSBtb2RlIDEwMDY0NA0KPiA+IERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
-cy9tZmQvcm9obSxiZDcxODE1LXBtaWMueWFtbA0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWZkL3JvaG0sYmQ3MTgxNS0NCj4gPiBwbWlj
-LnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWZkL3JvaG0sYmQ3MTgx
-NS0NCj4gPiBwbWljLnlhbWwNCj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiA+IGluZGV4IDAw
-MDAwMDAwMDAwMC4uMjIwNmIyMDA4YWNkDQo+ID4gLS0tIC9kZXYvbnVsbA0KPiA+ICsrKyBiL0Rv
-Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9tZmQvcm9obSxiZDcxODE1LXBtaWMueWFt
-bA0KPiA+IEBAIC0wLDAgKzEsMTk4IEBADQo+ID4gKyMgU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6
-IEdQTC0yLjAtb25seSBPUiBCU0QtMi1DbGF1c2UNCj4gPiArJVlBTUwgMS4yDQo+ID4gKy0tLQ0K
-PiA+ICskaWQ6IGh0dHA6Ly9kZXZpY2V0cmVlLm9yZy9zY2hlbWFzL21mZC9yb2htLGJkNzE4MTUt
-cG1pYy55YW1sIw0KPiA+ICskc2NoZW1hOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvbWV0YS1zY2hl
-bWFzL2NvcmUueWFtbCMNCj4gPiArDQo+ID4gK3RpdGxlOiBST0hNIEJENzE4MTUgUG93ZXIgTWFu
-YWdlbWVudCBJbnRlZ3JhdGVkIENpcmN1aXQgYmluZGluZ3MNCj4gPiArDQo+ID4gK21haW50YWlu
-ZXJzOg0KPiA+ICsgIC0gTWF0dGkgVmFpdHRpbmVuIDxtYXR0aS52YWl0dGluZW5AZmkucm9obWV1
-cm9wZS5jb20+DQo+ID4gKw0KPiA+ICtkZXNjcmlwdGlvbjogfA0KPiA+ICsgIEJENzE4MTVBR1cg
-aXMgYSBzaW5nbGUtY2hpcCBwb3dlciBtYW5hZ2VtZW50IElDcyBmb3IgYmF0dGVyeS0NCj4gPiBw
-b3dlcmVkDQo+ID4gKyAgcG9ydGFibGUgZGV2aWNlcy4gSXQgaW50ZWdyYXRlcyA1IGJ1Y2sgY29u
-dmVydGVycywgOCBMRE9zLCBhDQo+ID4gYm9vc3QgZHJpdmVyDQo+ID4gKyAgZm9yIExFRCBhbmQg
-YSA1MDAgbUEgc2luZ2xlLWNlbGwgbGluZWFyIGNoYXJnZXIuIEFsc28gaW5jbHVkZWQNCj4gPiBp
-cyBhIENvdWxvbWINCj4gPiArICBjb3VudGVyLCBhIHJlYWwtdGltZSBjbG9jayAoUlRDKSwgYW5k
-IGEgMzIuNzY4IGtIeiBjbG9jayBnYXRlDQo+ID4gYW5kIHR3byBHUE9zLg0KPiA+ICsNCj4gPiAr
-cHJvcGVydGllczoNCj4gPiArICBjb21wYXRpYmxlOg0KPiA+ICsgICAgY29uc3Q6IHJvaG0sYmQ3
-MTgxNQ0KPiA+ICsNCj4gPiArICByZWc6DQo+ID4gKyAgICBkZXNjcmlwdGlvbjoNCj4gPiArICAg
-ICAgSTJDIHNsYXZlIGFkZHJlc3MuDQo+ID4gKyAgICBtYXhJdGVtczogMQ0KPiA+ICsNCj4gPiAr
-ICBpbnRlcnJ1cHRzOg0KPiA+ICsgICAgbWF4SXRlbXM6IDENCj4gPiArDQo+ID4gKyAgZ3Bpby1j
-b250cm9sbGVyOiB0cnVlDQo+IA0KPiBBZGQgYSBibGFuayBsaW5lIGhlcmUuDQo+IA0KPiA+ICsg
-ICIjZ3Bpby1jZWxscyI6DQo+ID4gKyAgICBjb25zdDogMg0KPiA+ICsgICAgZGVzY3JpcHRpb246
-IHwNCj4gPiArICAgICAgVGhlIGZpcnN0IGNlbGwgaXMgdGhlIHBpbiBudW1iZXIgYW5kIHRoZSBz
-ZWNvbmQgY2VsbCBpcyB1c2VkDQo+ID4gdG8gc3BlY2lmeQ0KPiA+ICsgICAgICBmbGFncy4gU2Vl
-IC4uL2dwaW8vZ3Bpby50eHQgZm9yIG1vcmUgaW5mb3JtYXRpb24uDQo+ID4gKw0KPiA+ICsgIGNs
-b2NrczoNCj4gPiArICAgIG1heEl0ZW1zOiAxDQo+IA0KPiBBbmQgaGVyZS4NCj4gDQo+ID4gKyAg
-IiNjbG9jay1jZWxscyI6DQo+ID4gKyAgICBjb25zdDogMA0KPiANCj4gQW5kIGhlcmUuDQo+IA0K
-PiA+ICsgIGNsb2NrLW91dHB1dC1uYW1lczoNCj4gPiArICAgIGNvbnN0OiBiZDcxODE1LTMyay1v
-dXQNCj4gPiArDQo+ID4gKyAgcm9obSxjbGtvdXQtbW9kZToNCj4gPiArICAgIGRlc2NyaXB0aW9u
-OiBjbGszMmtvdXQgbW9kZS4gQ2FuIGJlIHNldCB0byAib3Blbi1kcmFpbiIgb3INCj4gPiAiY21v
-cyIuDQo+ID4gKyAgICAkcmVmOiAiL3NjaGVtYXMvdHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvc3Ry
-aW5nIg0KPiA+ICsgICAgZW51bToNCj4gPiArICAgICAgLSBvcGVuLWRyYWluDQo+ID4gKyAgICAg
-IC0gY21vcw0KPiA+ICsNCj4gPiArICByb2htLGNoYXJnZXItc2Vuc2UtcmVzaXN0b3Itb2htczoN
-Cj4gPiArICAgIG1pbmltdW06IDEwMDAwMDAwDQo+ID4gKyAgICBtYXhpbXVtOiA1MDAwMDAwMA0K
-PiA+ICsgICAgZGVzY3JpcHRpb246IHwNCj4gPiArICAgICAgQkQ3MTgyNyBhbmQgQkQ3MTgyOCBo
-YXZlIFNBUiBBREMgZm9yIG1lYXN1cmluZyBjaGFyZ2luZw0KPiA+IGN1cnJlbnRzLg0KPiA+ICsg
-ICAgICBFeHRlcm5hbCBzZW5zZSByZXNpc3RvciAoUlNFTlNFIGluIGRhdGEgc2hlZXQpIHNob3Vs
-ZCBiZQ0KPiA+IHVzZWQuIElmIHNvbWUNCj4gPiArICAgICAgb3RoZXIgYnV0IDMwTU9obSByZXNp
-c3RvciBpcyB1c2VkIHRoZSByZXNpc3RhbmNlIHZhbHVlDQo+ID4gc2hvdWxkIGJlIGdpdmVuDQo+
-IA0KPiAnc29tZXRoaW5nIG90aGVyJw0KPiANCj4gVGhvdWdoIHRoaXMgY2FuIGJlIGV4cHJlc3Nl
-ZCBhcyAnZGVmYXVsdDogMzAwMDAwMDAnDQoNCkkgZ3Vlc3MgSSdsbCB1c2UgYm90aCAnc29tZXRo
-aW5nIG90aGVyJyBhbmQgJ2RlZmF1bHQ6IDMwMDAwMDAwJyBpbiBuZXh0DQp2ZXJzaW9uLiAnZGVm
-YXVsdDogMzAwMDAwMDAnIGlzIG5pY2UgZm9yIG1hY2hpbmUgcGFyc2VyIC0gYnV0IGZvciBodW1h
-bg0KcmVhZGVyIHRoZSAnc29tZXRoaW5nIG90aGVyJyBpcyBsaWtlbHkgdG8gYmUgc3VwZXJpb3Iu
-IChObyBzY2llbnRpZmljDQp0ZXN0IGNvbmR1Y3RlZCB0byBiYWNrIG9mZiB0aGlzIHN0YXRlbWVu
-dCB0aG91Z2gpLg0KDQpUaGFua3MgUm9iIQ0KDQpCZXN0IFJlZ2FyZHMNCglNYXR0aSBWYWl0dGlu
-ZW4NCg==
+To pass more info to the saved_value in the runtime_stat, add a new
+struct runtime_stat_data.  Currently it only has 'ctx' field but later
+patch will add more.
+
+Suggested-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/stat-shadow.c | 346 +++++++++++++++++-----------------
+ 1 file changed, 173 insertions(+), 173 deletions(-)
+
+diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
+index 901265127e36..a1565b6e38f2 100644
+--- a/tools/perf/util/stat-shadow.c
++++ b/tools/perf/util/stat-shadow.c
+@@ -114,6 +114,10 @@ static struct saved_value *saved_value_lookup(struct evsel *evsel,
+ 
+ 	rblist = &st->value_list;
+ 
++	/* don't use context info for clock events */
++	if (type == STAT_NSECS)
++		dm.ctx = 0;
++
+ 	nd = rblist__find(rblist, &dm);
+ 	if (nd)
+ 		return container_of(nd, struct saved_value, rb_node);
+@@ -191,12 +195,17 @@ void perf_stat__reset_shadow_per_stat(struct runtime_stat *st)
+ 	reset_stat(st);
+ }
+ 
++struct runtime_stat_data {
++	int ctx;
++};
++
+ static void update_runtime_stat(struct runtime_stat *st,
+ 				enum stat_type type,
+-				int ctx, int cpu, u64 count)
++				int cpu, u64 count,
++				struct runtime_stat_data *rsd)
+ {
+-	struct saved_value *v = saved_value_lookup(NULL, cpu, true,
+-						   type, ctx, st);
++	struct saved_value *v = saved_value_lookup(NULL, cpu, true, type,
++						   rsd->ctx, st);
+ 
+ 	if (v)
+ 		update_stats(&v->stats, count);
+@@ -210,73 +219,75 @@ static void update_runtime_stat(struct runtime_stat *st,
+ void perf_stat__update_shadow_stats(struct evsel *counter, u64 count,
+ 				    int cpu, struct runtime_stat *st)
+ {
+-	int ctx = evsel_context(counter);
+ 	u64 count_ns = count;
+ 	struct saved_value *v;
++	struct runtime_stat_data rsd = {
++		.ctx = evsel_context(counter),
++	};
+ 
+ 	count *= counter->scale;
+ 
+ 	if (evsel__is_clock(counter))
+-		update_runtime_stat(st, STAT_NSECS, 0, cpu, count_ns);
++		update_runtime_stat(st, STAT_NSECS, cpu, count_ns, &rsd);
+ 	else if (evsel__match(counter, HARDWARE, HW_CPU_CYCLES))
+-		update_runtime_stat(st, STAT_CYCLES, ctx, cpu, count);
++		update_runtime_stat(st, STAT_CYCLES, cpu, count, &rsd);
+ 	else if (perf_stat_evsel__is(counter, CYCLES_IN_TX))
+-		update_runtime_stat(st, STAT_CYCLES_IN_TX, ctx, cpu, count);
++		update_runtime_stat(st, STAT_CYCLES_IN_TX, cpu, count, &rsd);
+ 	else if (perf_stat_evsel__is(counter, TRANSACTION_START))
+-		update_runtime_stat(st, STAT_TRANSACTION, ctx, cpu, count);
++		update_runtime_stat(st, STAT_TRANSACTION, cpu, count, &rsd);
+ 	else if (perf_stat_evsel__is(counter, ELISION_START))
+-		update_runtime_stat(st, STAT_ELISION, ctx, cpu, count);
++		update_runtime_stat(st, STAT_ELISION, cpu, count, &rsd);
+ 	else if (perf_stat_evsel__is(counter, TOPDOWN_TOTAL_SLOTS))
+ 		update_runtime_stat(st, STAT_TOPDOWN_TOTAL_SLOTS,
+-				    ctx, cpu, count);
++				    cpu, count, &rsd);
+ 	else if (perf_stat_evsel__is(counter, TOPDOWN_SLOTS_ISSUED))
+ 		update_runtime_stat(st, STAT_TOPDOWN_SLOTS_ISSUED,
+-				    ctx, cpu, count);
++				    cpu, count, &rsd);
+ 	else if (perf_stat_evsel__is(counter, TOPDOWN_SLOTS_RETIRED))
+ 		update_runtime_stat(st, STAT_TOPDOWN_SLOTS_RETIRED,
+-				    ctx, cpu, count);
++				    cpu, count, &rsd);
+ 	else if (perf_stat_evsel__is(counter, TOPDOWN_FETCH_BUBBLES))
+ 		update_runtime_stat(st, STAT_TOPDOWN_FETCH_BUBBLES,
+-				    ctx, cpu, count);
++				    cpu, count, &rsd);
+ 	else if (perf_stat_evsel__is(counter, TOPDOWN_RECOVERY_BUBBLES))
+ 		update_runtime_stat(st, STAT_TOPDOWN_RECOVERY_BUBBLES,
+-				    ctx, cpu, count);
++				    cpu, count, &rsd);
+ 	else if (perf_stat_evsel__is(counter, TOPDOWN_RETIRING))
+ 		update_runtime_stat(st, STAT_TOPDOWN_RETIRING,
+-				    ctx, cpu, count);
++				    cpu, count, &rsd);
+ 	else if (perf_stat_evsel__is(counter, TOPDOWN_BAD_SPEC))
+ 		update_runtime_stat(st, STAT_TOPDOWN_BAD_SPEC,
+-				    ctx, cpu, count);
++				    cpu, count, &rsd);
+ 	else if (perf_stat_evsel__is(counter, TOPDOWN_FE_BOUND))
+ 		update_runtime_stat(st, STAT_TOPDOWN_FE_BOUND,
+-				    ctx, cpu, count);
++				    cpu, count, &rsd);
+ 	else if (perf_stat_evsel__is(counter, TOPDOWN_BE_BOUND))
+ 		update_runtime_stat(st, STAT_TOPDOWN_BE_BOUND,
+-				    ctx, cpu, count);
++				    cpu, count, &rsd);
+ 	else if (evsel__match(counter, HARDWARE, HW_STALLED_CYCLES_FRONTEND))
+ 		update_runtime_stat(st, STAT_STALLED_CYCLES_FRONT,
+-				    ctx, cpu, count);
++				    cpu, count, &rsd);
+ 	else if (evsel__match(counter, HARDWARE, HW_STALLED_CYCLES_BACKEND))
+ 		update_runtime_stat(st, STAT_STALLED_CYCLES_BACK,
+-				    ctx, cpu, count);
++				    cpu, count, &rsd);
+ 	else if (evsel__match(counter, HARDWARE, HW_BRANCH_INSTRUCTIONS))
+-		update_runtime_stat(st, STAT_BRANCHES, ctx, cpu, count);
++		update_runtime_stat(st, STAT_BRANCHES, cpu, count, &rsd);
+ 	else if (evsel__match(counter, HARDWARE, HW_CACHE_REFERENCES))
+-		update_runtime_stat(st, STAT_CACHEREFS, ctx, cpu, count);
++		update_runtime_stat(st, STAT_CACHEREFS, cpu, count, &rsd);
+ 	else if (evsel__match(counter, HW_CACHE, HW_CACHE_L1D))
+-		update_runtime_stat(st, STAT_L1_DCACHE, ctx, cpu, count);
++		update_runtime_stat(st, STAT_L1_DCACHE, cpu, count, &rsd);
+ 	else if (evsel__match(counter, HW_CACHE, HW_CACHE_L1I))
+-		update_runtime_stat(st, STAT_L1_ICACHE, ctx, cpu, count);
++		update_runtime_stat(st, STAT_L1_ICACHE, cpu, count, &rsd);
+ 	else if (evsel__match(counter, HW_CACHE, HW_CACHE_LL))
+-		update_runtime_stat(st, STAT_LL_CACHE, ctx, cpu, count);
++		update_runtime_stat(st, STAT_LL_CACHE, cpu, count, &rsd);
+ 	else if (evsel__match(counter, HW_CACHE, HW_CACHE_DTLB))
+-		update_runtime_stat(st, STAT_DTLB_CACHE, ctx, cpu, count);
++		update_runtime_stat(st, STAT_DTLB_CACHE, cpu, count, &rsd);
+ 	else if (evsel__match(counter, HW_CACHE, HW_CACHE_ITLB))
+-		update_runtime_stat(st, STAT_ITLB_CACHE, ctx, cpu, count);
++		update_runtime_stat(st, STAT_ITLB_CACHE, cpu, count, &rsd);
+ 	else if (perf_stat_evsel__is(counter, SMI_NUM))
+-		update_runtime_stat(st, STAT_SMI_NUM, ctx, cpu, count);
++		update_runtime_stat(st, STAT_SMI_NUM, cpu, count, &rsd);
+ 	else if (perf_stat_evsel__is(counter, APERF))
+-		update_runtime_stat(st, STAT_APERF, ctx, cpu, count);
++		update_runtime_stat(st, STAT_APERF, cpu, count, &rsd);
+ 
+ 	if (counter->collect_stat) {
+ 		v = saved_value_lookup(counter, cpu, true, STAT_NONE, 0, st);
+@@ -422,11 +433,12 @@ void perf_stat__collect_metric_expr(struct evlist *evsel_list)
+ }
+ 
+ static double runtime_stat_avg(struct runtime_stat *st,
+-			       enum stat_type type, int ctx, int cpu)
++			       enum stat_type type, int cpu,
++			       struct runtime_stat_data *rsd)
+ {
+ 	struct saved_value *v;
+ 
+-	v = saved_value_lookup(NULL, cpu, false, type, ctx, st);
++	v = saved_value_lookup(NULL, cpu, false, type, rsd->ctx, st);
+ 	if (!v)
+ 		return 0.0;
+ 
+@@ -434,11 +446,12 @@ static double runtime_stat_avg(struct runtime_stat *st,
+ }
+ 
+ static double runtime_stat_n(struct runtime_stat *st,
+-			     enum stat_type type, int ctx, int cpu)
++			     enum stat_type type, int cpu,
++			     struct runtime_stat_data *rsd)
+ {
+ 	struct saved_value *v;
+ 
+-	v = saved_value_lookup(NULL, cpu, false, type, ctx, st);
++	v = saved_value_lookup(NULL, cpu, false, type, rsd->ctx, st);
+ 	if (!v)
+ 		return 0.0;
+ 
+@@ -446,16 +459,15 @@ static double runtime_stat_n(struct runtime_stat *st,
+ }
+ 
+ static void print_stalled_cycles_frontend(struct perf_stat_config *config,
+-					  int cpu,
+-					  struct evsel *evsel, double avg,
++					  int cpu, double avg,
+ 					  struct perf_stat_output_ctx *out,
+-					  struct runtime_stat *st)
++					  struct runtime_stat *st,
++					  struct runtime_stat_data *rsd)
+ {
+ 	double total, ratio = 0.0;
+ 	const char *color;
+-	int ctx = evsel_context(evsel);
+ 
+-	total = runtime_stat_avg(st, STAT_CYCLES, ctx, cpu);
++	total = runtime_stat_avg(st, STAT_CYCLES, cpu, rsd);
+ 
+ 	if (total)
+ 		ratio = avg / total * 100.0;
+@@ -470,16 +482,15 @@ static void print_stalled_cycles_frontend(struct perf_stat_config *config,
+ }
+ 
+ static void print_stalled_cycles_backend(struct perf_stat_config *config,
+-					 int cpu,
+-					 struct evsel *evsel, double avg,
++					 int cpu, double avg,
+ 					 struct perf_stat_output_ctx *out,
+-					 struct runtime_stat *st)
++					 struct runtime_stat *st,
++					 struct runtime_stat_data *rsd)
+ {
+ 	double total, ratio = 0.0;
+ 	const char *color;
+-	int ctx = evsel_context(evsel);
+ 
+-	total = runtime_stat_avg(st, STAT_CYCLES, ctx, cpu);
++	total = runtime_stat_avg(st, STAT_CYCLES, cpu, rsd);
+ 
+ 	if (total)
+ 		ratio = avg / total * 100.0;
+@@ -490,17 +501,15 @@ static void print_stalled_cycles_backend(struct perf_stat_config *config,
+ }
+ 
+ static void print_branch_misses(struct perf_stat_config *config,
+-				int cpu,
+-				struct evsel *evsel,
+-				double avg,
++				int cpu, double avg,
+ 				struct perf_stat_output_ctx *out,
+-				struct runtime_stat *st)
++				struct runtime_stat *st,
++				struct runtime_stat_data *rsd)
+ {
+ 	double total, ratio = 0.0;
+ 	const char *color;
+-	int ctx = evsel_context(evsel);
+ 
+-	total = runtime_stat_avg(st, STAT_BRANCHES, ctx, cpu);
++	total = runtime_stat_avg(st, STAT_BRANCHES, cpu, rsd);
+ 
+ 	if (total)
+ 		ratio = avg / total * 100.0;
+@@ -511,18 +520,15 @@ static void print_branch_misses(struct perf_stat_config *config,
+ }
+ 
+ static void print_l1_dcache_misses(struct perf_stat_config *config,
+-				   int cpu,
+-				   struct evsel *evsel,
+-				   double avg,
++				   int cpu, double avg,
+ 				   struct perf_stat_output_ctx *out,
+-				   struct runtime_stat *st)
+-
++				   struct runtime_stat *st,
++				   struct runtime_stat_data *rsd)
+ {
+ 	double total, ratio = 0.0;
+ 	const char *color;
+-	int ctx = evsel_context(evsel);
+ 
+-	total = runtime_stat_avg(st, STAT_L1_DCACHE, ctx, cpu);
++	total = runtime_stat_avg(st, STAT_L1_DCACHE, cpu, rsd);
+ 
+ 	if (total)
+ 		ratio = avg / total * 100.0;
+@@ -533,18 +539,15 @@ static void print_l1_dcache_misses(struct perf_stat_config *config,
+ }
+ 
+ static void print_l1_icache_misses(struct perf_stat_config *config,
+-				   int cpu,
+-				   struct evsel *evsel,
+-				   double avg,
++				   int cpu, double avg,
+ 				   struct perf_stat_output_ctx *out,
+-				   struct runtime_stat *st)
+-
++				   struct runtime_stat *st,
++				   struct runtime_stat_data *rsd)
+ {
+ 	double total, ratio = 0.0;
+ 	const char *color;
+-	int ctx = evsel_context(evsel);
+ 
+-	total = runtime_stat_avg(st, STAT_L1_ICACHE, ctx, cpu);
++	total = runtime_stat_avg(st, STAT_L1_ICACHE, cpu, rsd);
+ 
+ 	if (total)
+ 		ratio = avg / total * 100.0;
+@@ -554,17 +557,15 @@ static void print_l1_icache_misses(struct perf_stat_config *config,
+ }
+ 
+ static void print_dtlb_cache_misses(struct perf_stat_config *config,
+-				    int cpu,
+-				    struct evsel *evsel,
+-				    double avg,
++				    int cpu, double avg,
+ 				    struct perf_stat_output_ctx *out,
+-				    struct runtime_stat *st)
++				    struct runtime_stat *st,
++				    struct runtime_stat_data *rsd)
+ {
+ 	double total, ratio = 0.0;
+ 	const char *color;
+-	int ctx = evsel_context(evsel);
+ 
+-	total = runtime_stat_avg(st, STAT_DTLB_CACHE, ctx, cpu);
++	total = runtime_stat_avg(st, STAT_DTLB_CACHE, cpu, rsd);
+ 
+ 	if (total)
+ 		ratio = avg / total * 100.0;
+@@ -574,17 +575,15 @@ static void print_dtlb_cache_misses(struct perf_stat_config *config,
+ }
+ 
+ static void print_itlb_cache_misses(struct perf_stat_config *config,
+-				    int cpu,
+-				    struct evsel *evsel,
+-				    double avg,
++				    int cpu, double avg,
+ 				    struct perf_stat_output_ctx *out,
+-				    struct runtime_stat *st)
++				    struct runtime_stat *st,
++				    struct runtime_stat_data *rsd)
+ {
+ 	double total, ratio = 0.0;
+ 	const char *color;
+-	int ctx = evsel_context(evsel);
+ 
+-	total = runtime_stat_avg(st, STAT_ITLB_CACHE, ctx, cpu);
++	total = runtime_stat_avg(st, STAT_ITLB_CACHE, cpu, rsd);
+ 
+ 	if (total)
+ 		ratio = avg / total * 100.0;
+@@ -594,17 +593,15 @@ static void print_itlb_cache_misses(struct perf_stat_config *config,
+ }
+ 
+ static void print_ll_cache_misses(struct perf_stat_config *config,
+-				  int cpu,
+-				  struct evsel *evsel,
+-				  double avg,
++				  int cpu, double avg,
+ 				  struct perf_stat_output_ctx *out,
+-				  struct runtime_stat *st)
++				  struct runtime_stat *st,
++				  struct runtime_stat_data *rsd)
+ {
+ 	double total, ratio = 0.0;
+ 	const char *color;
+-	int ctx = evsel_context(evsel);
+ 
+-	total = runtime_stat_avg(st, STAT_LL_CACHE, ctx, cpu);
++	total = runtime_stat_avg(st, STAT_LL_CACHE, cpu, rsd);
+ 
+ 	if (total)
+ 		ratio = avg / total * 100.0;
+@@ -662,56 +659,61 @@ static double sanitize_val(double x)
+ 	return x;
+ }
+ 
+-static double td_total_slots(int ctx, int cpu, struct runtime_stat *st)
++static double td_total_slots(int cpu, struct runtime_stat *st,
++			     struct runtime_stat_data *rsd)
+ {
+-	return runtime_stat_avg(st, STAT_TOPDOWN_TOTAL_SLOTS, ctx, cpu);
++	return runtime_stat_avg(st, STAT_TOPDOWN_TOTAL_SLOTS, cpu, rsd);
+ }
+ 
+-static double td_bad_spec(int ctx, int cpu, struct runtime_stat *st)
++static double td_bad_spec(int cpu, struct runtime_stat *st,
++			  struct runtime_stat_data *rsd)
+ {
+ 	double bad_spec = 0;
+ 	double total_slots;
+ 	double total;
+ 
+-	total = runtime_stat_avg(st, STAT_TOPDOWN_SLOTS_ISSUED, ctx, cpu) -
+-		runtime_stat_avg(st, STAT_TOPDOWN_SLOTS_RETIRED, ctx, cpu) +
+-		runtime_stat_avg(st, STAT_TOPDOWN_RECOVERY_BUBBLES, ctx, cpu);
++	total = runtime_stat_avg(st, STAT_TOPDOWN_SLOTS_ISSUED, cpu, rsd) -
++		runtime_stat_avg(st, STAT_TOPDOWN_SLOTS_RETIRED, cpu, rsd) +
++		runtime_stat_avg(st, STAT_TOPDOWN_RECOVERY_BUBBLES, cpu, rsd);
+ 
+-	total_slots = td_total_slots(ctx, cpu, st);
++	total_slots = td_total_slots(cpu, st, rsd);
+ 	if (total_slots)
+ 		bad_spec = total / total_slots;
+ 	return sanitize_val(bad_spec);
+ }
+ 
+-static double td_retiring(int ctx, int cpu, struct runtime_stat *st)
++static double td_retiring(int cpu, struct runtime_stat *st,
++			  struct runtime_stat_data *rsd)
+ {
+ 	double retiring = 0;
+-	double total_slots = td_total_slots(ctx, cpu, st);
++	double total_slots = td_total_slots(cpu, st, rsd);
+ 	double ret_slots = runtime_stat_avg(st, STAT_TOPDOWN_SLOTS_RETIRED,
+-					    ctx, cpu);
++					    cpu, rsd);
+ 
+ 	if (total_slots)
+ 		retiring = ret_slots / total_slots;
+ 	return retiring;
+ }
+ 
+-static double td_fe_bound(int ctx, int cpu, struct runtime_stat *st)
++static double td_fe_bound(int cpu, struct runtime_stat *st,
++			  struct runtime_stat_data *rsd)
+ {
+ 	double fe_bound = 0;
+-	double total_slots = td_total_slots(ctx, cpu, st);
++	double total_slots = td_total_slots(cpu, st, rsd);
+ 	double fetch_bub = runtime_stat_avg(st, STAT_TOPDOWN_FETCH_BUBBLES,
+-					    ctx, cpu);
++					    cpu, rsd);
+ 
+ 	if (total_slots)
+ 		fe_bound = fetch_bub / total_slots;
+ 	return fe_bound;
+ }
+ 
+-static double td_be_bound(int ctx, int cpu, struct runtime_stat *st)
++static double td_be_bound(int cpu, struct runtime_stat *st,
++			  struct runtime_stat_data *rsd)
+ {
+-	double sum = (td_fe_bound(ctx, cpu, st) +
+-		      td_bad_spec(ctx, cpu, st) +
+-		      td_retiring(ctx, cpu, st));
++	double sum = (td_fe_bound(cpu, st, rsd) +
++		      td_bad_spec(cpu, st, rsd) +
++		      td_retiring(cpu, st, rsd));
+ 	if (sum == 0)
+ 		return 0;
+ 	return sanitize_val(1.0 - sum);
+@@ -722,15 +724,15 @@ static double td_be_bound(int ctx, int cpu, struct runtime_stat *st)
+  * the ratios we need to recreate the sum.
+  */
+ 
+-static double td_metric_ratio(int ctx, int cpu,
+-			      enum stat_type type,
+-			      struct runtime_stat *stat)
++static double td_metric_ratio(int cpu, enum stat_type type,
++			      struct runtime_stat *stat,
++			      struct runtime_stat_data *rsd)
+ {
+-	double sum = runtime_stat_avg(stat, STAT_TOPDOWN_RETIRING, ctx, cpu) +
+-		runtime_stat_avg(stat, STAT_TOPDOWN_FE_BOUND, ctx, cpu) +
+-		runtime_stat_avg(stat, STAT_TOPDOWN_BE_BOUND, ctx, cpu) +
+-		runtime_stat_avg(stat, STAT_TOPDOWN_BAD_SPEC, ctx, cpu);
+-	double d = runtime_stat_avg(stat, type, ctx, cpu);
++	double sum = runtime_stat_avg(stat, STAT_TOPDOWN_RETIRING, cpu, rsd) +
++		runtime_stat_avg(stat, STAT_TOPDOWN_FE_BOUND, cpu, rsd) +
++		runtime_stat_avg(stat, STAT_TOPDOWN_BE_BOUND, cpu, rsd) +
++		runtime_stat_avg(stat, STAT_TOPDOWN_BAD_SPEC, cpu, rsd);
++	double d = runtime_stat_avg(stat, type, cpu, rsd);
+ 
+ 	if (sum)
+ 		return d / sum;
+@@ -742,34 +744,33 @@ static double td_metric_ratio(int ctx, int cpu,
+  * We allow two missing.
+  */
+ 
+-static bool full_td(int ctx, int cpu,
+-		    struct runtime_stat *stat)
++static bool full_td(int cpu, struct runtime_stat *stat,
++		    struct runtime_stat_data *rsd)
+ {
+ 	int c = 0;
+ 
+-	if (runtime_stat_avg(stat, STAT_TOPDOWN_RETIRING, ctx, cpu) > 0)
++	if (runtime_stat_avg(stat, STAT_TOPDOWN_RETIRING, cpu, rsd) > 0)
+ 		c++;
+-	if (runtime_stat_avg(stat, STAT_TOPDOWN_BE_BOUND, ctx, cpu) > 0)
++	if (runtime_stat_avg(stat, STAT_TOPDOWN_BE_BOUND, cpu, rsd) > 0)
+ 		c++;
+-	if (runtime_stat_avg(stat, STAT_TOPDOWN_FE_BOUND, ctx, cpu) > 0)
++	if (runtime_stat_avg(stat, STAT_TOPDOWN_FE_BOUND, cpu, rsd) > 0)
+ 		c++;
+-	if (runtime_stat_avg(stat, STAT_TOPDOWN_BAD_SPEC, ctx, cpu) > 0)
++	if (runtime_stat_avg(stat, STAT_TOPDOWN_BAD_SPEC, cpu, rsd) > 0)
+ 		c++;
+ 	return c >= 2;
+ }
+ 
+-static void print_smi_cost(struct perf_stat_config *config,
+-			   int cpu, struct evsel *evsel,
++static void print_smi_cost(struct perf_stat_config *config, int cpu,
+ 			   struct perf_stat_output_ctx *out,
+-			   struct runtime_stat *st)
++			   struct runtime_stat *st,
++			   struct runtime_stat_data *rsd)
+ {
+ 	double smi_num, aperf, cycles, cost = 0.0;
+-	int ctx = evsel_context(evsel);
+ 	const char *color = NULL;
+ 
+-	smi_num = runtime_stat_avg(st, STAT_SMI_NUM, ctx, cpu);
+-	aperf = runtime_stat_avg(st, STAT_APERF, ctx, cpu);
+-	cycles = runtime_stat_avg(st, STAT_CYCLES, ctx, cpu);
++	smi_num = runtime_stat_avg(st, STAT_SMI_NUM, cpu, rsd);
++	aperf = runtime_stat_avg(st, STAT_APERF, cpu, rsd);
++	cycles = runtime_stat_avg(st, STAT_CYCLES, cpu, rsd);
+ 
+ 	if ((cycles == 0) || (aperf == 0))
+ 		return;
+@@ -930,12 +931,14 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+ 	print_metric_t print_metric = out->print_metric;
+ 	double total, ratio = 0.0, total2;
+ 	const char *color = NULL;
+-	int ctx = evsel_context(evsel);
++	struct runtime_stat_data rsd = {
++		.ctx = evsel_context(evsel),
++	};
+ 	struct metric_event *me;
+ 	int num = 1;
+ 
+ 	if (evsel__match(evsel, HARDWARE, HW_INSTRUCTIONS)) {
+-		total = runtime_stat_avg(st, STAT_CYCLES, ctx, cpu);
++		total = runtime_stat_avg(st, STAT_CYCLES, cpu, &rsd);
+ 
+ 		if (total) {
+ 			ratio = avg / total;
+@@ -945,12 +948,11 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+ 			print_metric(config, ctxp, NULL, NULL, "insn per cycle", 0);
+ 		}
+ 
+-		total = runtime_stat_avg(st, STAT_STALLED_CYCLES_FRONT,
+-					 ctx, cpu);
++		total = runtime_stat_avg(st, STAT_STALLED_CYCLES_FRONT, cpu, &rsd);
+ 
+ 		total = max(total, runtime_stat_avg(st,
+ 						    STAT_STALLED_CYCLES_BACK,
+-						    ctx, cpu));
++						    cpu, &rsd));
+ 
+ 		if (total && avg) {
+ 			out->new_line(config, ctxp);
+@@ -960,8 +962,8 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+ 					ratio);
+ 		}
+ 	} else if (evsel__match(evsel, HARDWARE, HW_BRANCH_MISSES)) {
+-		if (runtime_stat_n(st, STAT_BRANCHES, ctx, cpu) != 0)
+-			print_branch_misses(config, cpu, evsel, avg, out, st);
++		if (runtime_stat_n(st, STAT_BRANCHES, cpu, &rsd) != 0)
++			print_branch_misses(config, cpu, avg, out, st, &rsd);
+ 		else
+ 			print_metric(config, ctxp, NULL, NULL, "of all branches", 0);
+ 	} else if (
+@@ -970,8 +972,8 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+ 					((PERF_COUNT_HW_CACHE_OP_READ) << 8) |
+ 					 ((PERF_COUNT_HW_CACHE_RESULT_MISS) << 16))) {
+ 
+-		if (runtime_stat_n(st, STAT_L1_DCACHE, ctx, cpu) != 0)
+-			print_l1_dcache_misses(config, cpu, evsel, avg, out, st);
++		if (runtime_stat_n(st, STAT_L1_DCACHE, cpu, &rsd) != 0)
++			print_l1_dcache_misses(config, cpu, avg, out, st, &rsd);
+ 		else
+ 			print_metric(config, ctxp, NULL, NULL, "of all L1-dcache accesses", 0);
+ 	} else if (
+@@ -980,8 +982,8 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+ 					((PERF_COUNT_HW_CACHE_OP_READ) << 8) |
+ 					 ((PERF_COUNT_HW_CACHE_RESULT_MISS) << 16))) {
+ 
+-		if (runtime_stat_n(st, STAT_L1_ICACHE, ctx, cpu) != 0)
+-			print_l1_icache_misses(config, cpu, evsel, avg, out, st);
++		if (runtime_stat_n(st, STAT_L1_ICACHE, cpu, &rsd) != 0)
++			print_l1_icache_misses(config, cpu, avg, out, st, &rsd);
+ 		else
+ 			print_metric(config, ctxp, NULL, NULL, "of all L1-icache accesses", 0);
+ 	} else if (
+@@ -990,8 +992,8 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+ 					((PERF_COUNT_HW_CACHE_OP_READ) << 8) |
+ 					 ((PERF_COUNT_HW_CACHE_RESULT_MISS) << 16))) {
+ 
+-		if (runtime_stat_n(st, STAT_DTLB_CACHE, ctx, cpu) != 0)
+-			print_dtlb_cache_misses(config, cpu, evsel, avg, out, st);
++		if (runtime_stat_n(st, STAT_DTLB_CACHE, cpu, &rsd) != 0)
++			print_dtlb_cache_misses(config, cpu, avg, out, st, &rsd);
+ 		else
+ 			print_metric(config, ctxp, NULL, NULL, "of all dTLB cache accesses", 0);
+ 	} else if (
+@@ -1000,8 +1002,8 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+ 					((PERF_COUNT_HW_CACHE_OP_READ) << 8) |
+ 					 ((PERF_COUNT_HW_CACHE_RESULT_MISS) << 16))) {
+ 
+-		if (runtime_stat_n(st, STAT_ITLB_CACHE, ctx, cpu) != 0)
+-			print_itlb_cache_misses(config, cpu, evsel, avg, out, st);
++		if (runtime_stat_n(st, STAT_ITLB_CACHE, cpu, &rsd) != 0)
++			print_itlb_cache_misses(config, cpu, avg, out, st, &rsd);
+ 		else
+ 			print_metric(config, ctxp, NULL, NULL, "of all iTLB cache accesses", 0);
+ 	} else if (
+@@ -1010,27 +1012,27 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+ 					((PERF_COUNT_HW_CACHE_OP_READ) << 8) |
+ 					 ((PERF_COUNT_HW_CACHE_RESULT_MISS) << 16))) {
+ 
+-		if (runtime_stat_n(st, STAT_LL_CACHE, ctx, cpu) != 0)
+-			print_ll_cache_misses(config, cpu, evsel, avg, out, st);
++		if (runtime_stat_n(st, STAT_LL_CACHE, cpu, &rsd) != 0)
++			print_ll_cache_misses(config, cpu, avg, out, st, &rsd);
+ 		else
+ 			print_metric(config, ctxp, NULL, NULL, "of all LL-cache accesses", 0);
+ 	} else if (evsel__match(evsel, HARDWARE, HW_CACHE_MISSES)) {
+-		total = runtime_stat_avg(st, STAT_CACHEREFS, ctx, cpu);
++		total = runtime_stat_avg(st, STAT_CACHEREFS, cpu, &rsd);
+ 
+ 		if (total)
+ 			ratio = avg * 100 / total;
+ 
+-		if (runtime_stat_n(st, STAT_CACHEREFS, ctx, cpu) != 0)
++		if (runtime_stat_n(st, STAT_CACHEREFS, cpu, &rsd) != 0)
+ 			print_metric(config, ctxp, NULL, "%8.3f %%",
+ 				     "of all cache refs", ratio);
+ 		else
+ 			print_metric(config, ctxp, NULL, NULL, "of all cache refs", 0);
+ 	} else if (evsel__match(evsel, HARDWARE, HW_STALLED_CYCLES_FRONTEND)) {
+-		print_stalled_cycles_frontend(config, cpu, evsel, avg, out, st);
++		print_stalled_cycles_frontend(config, cpu, avg, out, st, &rsd);
+ 	} else if (evsel__match(evsel, HARDWARE, HW_STALLED_CYCLES_BACKEND)) {
+-		print_stalled_cycles_backend(config, cpu, evsel, avg, out, st);
++		print_stalled_cycles_backend(config, cpu, avg, out, st, &rsd);
+ 	} else if (evsel__match(evsel, HARDWARE, HW_CPU_CYCLES)) {
+-		total = runtime_stat_avg(st, STAT_NSECS, 0, cpu);
++		total = runtime_stat_avg(st, STAT_NSECS, cpu, &rsd);
+ 
+ 		if (total) {
+ 			ratio = avg / total;
+@@ -1039,7 +1041,7 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+ 			print_metric(config, ctxp, NULL, NULL, "Ghz", 0);
+ 		}
+ 	} else if (perf_stat_evsel__is(evsel, CYCLES_IN_TX)) {
+-		total = runtime_stat_avg(st, STAT_CYCLES, ctx, cpu);
++		total = runtime_stat_avg(st, STAT_CYCLES, cpu, &rsd);
+ 
+ 		if (total)
+ 			print_metric(config, ctxp, NULL,
+@@ -1049,8 +1051,8 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+ 			print_metric(config, ctxp, NULL, NULL, "transactional cycles",
+ 				     0);
+ 	} else if (perf_stat_evsel__is(evsel, CYCLES_IN_TX_CP)) {
+-		total = runtime_stat_avg(st, STAT_CYCLES, ctx, cpu);
+-		total2 = runtime_stat_avg(st, STAT_CYCLES_IN_TX, ctx, cpu);
++		total = runtime_stat_avg(st, STAT_CYCLES, cpu, &rsd);
++		total2 = runtime_stat_avg(st, STAT_CYCLES_IN_TX, cpu, &rsd);
+ 
+ 		if (total2 < avg)
+ 			total2 = avg;
+@@ -1060,21 +1062,19 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+ 		else
+ 			print_metric(config, ctxp, NULL, NULL, "aborted cycles", 0);
+ 	} else if (perf_stat_evsel__is(evsel, TRANSACTION_START)) {
+-		total = runtime_stat_avg(st, STAT_CYCLES_IN_TX,
+-					 ctx, cpu);
++		total = runtime_stat_avg(st, STAT_CYCLES_IN_TX, cpu, &rsd);
+ 
+ 		if (avg)
+ 			ratio = total / avg;
+ 
+-		if (runtime_stat_n(st, STAT_CYCLES_IN_TX, ctx, cpu) != 0)
++		if (runtime_stat_n(st, STAT_CYCLES_IN_TX, cpu, &rsd) != 0)
+ 			print_metric(config, ctxp, NULL, "%8.0f",
+ 				     "cycles / transaction", ratio);
+ 		else
+ 			print_metric(config, ctxp, NULL, NULL, "cycles / transaction",
+ 				      0);
+ 	} else if (perf_stat_evsel__is(evsel, ELISION_START)) {
+-		total = runtime_stat_avg(st, STAT_CYCLES_IN_TX,
+-					 ctx, cpu);
++		total = runtime_stat_avg(st, STAT_CYCLES_IN_TX, cpu, &rsd);
+ 
+ 		if (avg)
+ 			ratio = total / avg;
+@@ -1087,28 +1087,28 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+ 		else
+ 			print_metric(config, ctxp, NULL, NULL, "CPUs utilized", 0);
+ 	} else if (perf_stat_evsel__is(evsel, TOPDOWN_FETCH_BUBBLES)) {
+-		double fe_bound = td_fe_bound(ctx, cpu, st);
++		double fe_bound = td_fe_bound(cpu, st, &rsd);
+ 
+ 		if (fe_bound > 0.2)
+ 			color = PERF_COLOR_RED;
+ 		print_metric(config, ctxp, color, "%8.1f%%", "frontend bound",
+ 				fe_bound * 100.);
+ 	} else if (perf_stat_evsel__is(evsel, TOPDOWN_SLOTS_RETIRED)) {
+-		double retiring = td_retiring(ctx, cpu, st);
++		double retiring = td_retiring(cpu, st, &rsd);
+ 
+ 		if (retiring > 0.7)
+ 			color = PERF_COLOR_GREEN;
+ 		print_metric(config, ctxp, color, "%8.1f%%", "retiring",
+ 				retiring * 100.);
+ 	} else if (perf_stat_evsel__is(evsel, TOPDOWN_RECOVERY_BUBBLES)) {
+-		double bad_spec = td_bad_spec(ctx, cpu, st);
++		double bad_spec = td_bad_spec(cpu, st, &rsd);
+ 
+ 		if (bad_spec > 0.1)
+ 			color = PERF_COLOR_RED;
+ 		print_metric(config, ctxp, color, "%8.1f%%", "bad speculation",
+ 				bad_spec * 100.);
+ 	} else if (perf_stat_evsel__is(evsel, TOPDOWN_SLOTS_ISSUED)) {
+-		double be_bound = td_be_bound(ctx, cpu, st);
++		double be_bound = td_be_bound(cpu, st, &rsd);
+ 		const char *name = "backend bound";
+ 		static int have_recovery_bubbles = -1;
+ 
+@@ -1121,43 +1121,43 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+ 
+ 		if (be_bound > 0.2)
+ 			color = PERF_COLOR_RED;
+-		if (td_total_slots(ctx, cpu, st) > 0)
++		if (td_total_slots(cpu, st, &rsd) > 0)
+ 			print_metric(config, ctxp, color, "%8.1f%%", name,
+ 					be_bound * 100.);
+ 		else
+ 			print_metric(config, ctxp, NULL, NULL, name, 0);
+ 	} else if (perf_stat_evsel__is(evsel, TOPDOWN_RETIRING) &&
+-			full_td(ctx, cpu, st)) {
+-		double retiring = td_metric_ratio(ctx, cpu,
+-						  STAT_TOPDOWN_RETIRING, st);
+-
++		   full_td(cpu, st, &rsd)) {
++		double retiring = td_metric_ratio(cpu,
++						  STAT_TOPDOWN_RETIRING, st,
++						  &rsd);
+ 		if (retiring > 0.7)
+ 			color = PERF_COLOR_GREEN;
+ 		print_metric(config, ctxp, color, "%8.1f%%", "retiring",
+ 				retiring * 100.);
+ 	} else if (perf_stat_evsel__is(evsel, TOPDOWN_FE_BOUND) &&
+-			full_td(ctx, cpu, st)) {
+-		double fe_bound = td_metric_ratio(ctx, cpu,
+-						  STAT_TOPDOWN_FE_BOUND, st);
+-
++		   full_td(cpu, st, &rsd)) {
++		double fe_bound = td_metric_ratio(cpu,
++						  STAT_TOPDOWN_FE_BOUND, st,
++						  &rsd);
+ 		if (fe_bound > 0.2)
+ 			color = PERF_COLOR_RED;
+ 		print_metric(config, ctxp, color, "%8.1f%%", "frontend bound",
+ 				fe_bound * 100.);
+ 	} else if (perf_stat_evsel__is(evsel, TOPDOWN_BE_BOUND) &&
+-			full_td(ctx, cpu, st)) {
+-		double be_bound = td_metric_ratio(ctx, cpu,
+-						  STAT_TOPDOWN_BE_BOUND, st);
+-
++		   full_td(cpu, st, &rsd)) {
++		double be_bound = td_metric_ratio(cpu,
++						  STAT_TOPDOWN_BE_BOUND, st,
++						  &rsd);
+ 		if (be_bound > 0.2)
+ 			color = PERF_COLOR_RED;
+ 		print_metric(config, ctxp, color, "%8.1f%%", "backend bound",
+ 				be_bound * 100.);
+ 	} else if (perf_stat_evsel__is(evsel, TOPDOWN_BAD_SPEC) &&
+-			full_td(ctx, cpu, st)) {
+-		double bad_spec = td_metric_ratio(ctx, cpu,
+-						  STAT_TOPDOWN_BAD_SPEC, st);
+-
++		   full_td(cpu, st, &rsd)) {
++		double bad_spec = td_metric_ratio(cpu,
++						  STAT_TOPDOWN_BAD_SPEC, st,
++						  &rsd);
+ 		if (bad_spec > 0.1)
+ 			color = PERF_COLOR_RED;
+ 		print_metric(config, ctxp, color, "%8.1f%%", "bad speculation",
+@@ -1165,11 +1165,11 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+ 	} else if (evsel->metric_expr) {
+ 		generic_metric(config, evsel->metric_expr, evsel->metric_events, NULL,
+ 				evsel->name, evsel->metric_name, NULL, 1, cpu, out, st);
+-	} else if (runtime_stat_n(st, STAT_NSECS, 0, cpu) != 0) {
++	} else if (runtime_stat_n(st, STAT_NSECS, cpu, &rsd) != 0) {
+ 		char unit = 'M';
+ 		char unit_buf[10];
+ 
+-		total = runtime_stat_avg(st, STAT_NSECS, 0, cpu);
++		total = runtime_stat_avg(st, STAT_NSECS, cpu, &rsd);
+ 
+ 		if (total)
+ 			ratio = 1000.0 * avg / total;
+@@ -1180,7 +1180,7 @@ void perf_stat__print_shadow_stats(struct perf_stat_config *config,
+ 		snprintf(unit_buf, sizeof(unit_buf), "%c/sec", unit);
+ 		print_metric(config, ctxp, NULL, "%8.3f", unit_buf, ratio);
+ 	} else if (perf_stat_evsel__is(evsel, SMI_NUM)) {
+-		print_smi_cost(config, cpu, evsel, out, st);
++		print_smi_cost(config, cpu, out, st, &rsd);
+ 	} else {
+ 		num = 0;
+ 	}
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
+
