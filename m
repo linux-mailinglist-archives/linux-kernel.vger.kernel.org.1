@@ -2,102 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51FA42F3480
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:46:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3869D2F3482
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405428AbhALPov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 10:44:51 -0500
-Received: from bmail1.ministro.hu ([5.249.150.236]:50358 "EHLO
-        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405331AbhALPou (ORCPT
+        id S2405450AbhALPpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 10:45:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728629AbhALPpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:44:50 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTP id D345411FFAC;
-        Tue, 12 Jan 2021 16:44:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1610466246;
-        bh=3TX/Z1vZrcZZBHoWafk0q6dH5DN3BAFkYepRrsCGr/o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t8cbdjLQ89rbUgkVk9z8PkgZbbgYAW9vl0Dv86mTiCWcGPv/Dj+pjOqBi3NB0fTuF
-         /n//kQ/AnGo4DFvJBiCXlFTTcVcY0M6ri8+lXudkIgazZncXR/wCs52vhF3FiRnFPY
-         zO0b9jEl/fYuA+3fHGjCjvlaFThBs4uNzCxvQo/IDgNKOGx9OUF1YOYW+No0MDJCue
-         mLLCwlYmW3h2VjEdg7C39pTjCXrAPGd/dO4PMag3xn1jteZQG4qBroUMhkgmkBaIXO
-         tNdZHqgbBRsRGbNKs2cfhBfau/50277SpWg/XbEylRhYYRW4XrfEYuV51ljaH+JI88
-         gvjowQCXU4XxQ==
-X-Virus-Scanned: Debian amavisd-new at ministro.hu
-Received: from bmail1.ministro.hu ([127.0.0.1])
-        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id qA9P9RacV8pr; Tue, 12 Jan 2021 16:43:25 +0100 (CET)
-Received: from dev (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTPSA id 8D76A11FFA8;
-        Tue, 12 Jan 2021 16:43:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1610466205;
-        bh=3TX/Z1vZrcZZBHoWafk0q6dH5DN3BAFkYepRrsCGr/o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZvX6vEAsQW6sv3luqhPCO4dntvcSBoApIDmmhuOe/X2Pvd6adOcnL0p1V3hKnFxiL
-         YPXVKqXdWwEiJYsLD3S6qFcl9ZB8Hu24tkuo0PHJMWXSWuyBR2iZEXt1r3KWXwF3nY
-         Id4VIat0lElQKqr+9FZEGYgqLvYdNNC3LAzAsxqDvI0y3f96PoOZAzeercRqasHNgO
-         WExnH9NWMoZx6SUTg+Jez5Dw1kZWPFHfTyl87RXAxAgvf1GxirDaPLmRoi94XaajOA
-         ME9ddlIBh6AoNcM6CQQ4syNI75sZorCwDCKj9GVavBUsP9CPp3i2exlbO7E6/T3oyj
-         pZ4MF8hrdKdOg==
-Date:   Tue, 12 Jan 2021 15:43:22 +0000
-From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-Cc:     'Rob Herring' <robh+dt@kernel.org>,
-        'Jiri Slaby' <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 1/2] Serial: silabs si4455 serial driver
-Message-ID: <20210112154322.GA31198@dev>
-References: <20210112101831.GA12483@dev>
- <X/15uOstG/7bj2Lm@kroah.com>
+        Tue, 12 Jan 2021 10:45:16 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA4DC061575;
+        Tue, 12 Jan 2021 07:44:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=l2WBiCb5duYJRA9nKpihqrJOH1Qjg6utSrFiu8qAdtc=; b=l14dJC5AhKsY3MiSPibwbmUFTP
+        bBNZrt+HEK4MzxzFu3AmgGKD87aIImibORm3X+8/96rk+VgbjcGqnWa7N2PRaNyipPiV0fb7xVGuc
+        GAXBpgnHxOVKDPpjdcl/6GudvTxYbbtqTvunPgnWjyrzUpUCiLCRB8ac9+g/CrmD/cTBG6wf6tucv
+        s/3cIUg9VpUKeEnv8+no9NBll7ooPrgOQNqRHUIbjXhYSNpp8T4u4jZE/cJhGISuYsKHF9apO0asm
+        Bhosv+s2s5iNu+56K7XyxmFgBLd71lcuGlvCN4V9rzmzt1Y7v42IsbHCu+s9lgKb4zRZScfKDPnoF
+        S2NzvH4w==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1kzLpi-004yZk-Od; Tue, 12 Jan 2021 15:43:49 +0000
+Date:   Tue, 12 Jan 2021 15:43:46 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc:     john.garry@huawei.com, artur.paszkiewicz@intel.com,
+        bigeasy@linutronix.de, dwagner@suse.de, intel-linux-scu@intel.com,
+        jejb@linux.ibm.com, jinpu.wang@cloud.ionos.com,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        martin.petersen@oracle.com, tglx@linutronix.de, yanaijie@huawei.com
+Subject: Re: [PATCH v3 02/19] scsi: libsas and users: Remove notifier
+ indirection
+Message-ID: <20210112154346.GA1185705@infradead.org>
+References: <21eefa9b-7ff5-b418-6db4-7e0039c24473@huawei.com>
+ <20210112130708.705792-1-a.darwish@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <X/15uOstG/7bj2Lm@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210112130708.705792-1-a.darwish@linutronix.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 11:28:08AM +0100, 'Greg Kroah-Hartman' wrote:
-> On Tue, Jan 12, 2021 at 10:18:33AM +0000, Jozsef Horvath wrote:
-> > --- a/include/uapi/linux/serial_core.h
-> > +++ b/include/uapi/linux/serial_core.h
-> > @@ -279,4 +279,7 @@
-> >  /* Freescale LINFlexD UART */
-> >  #define PORT_LINFLEXUART	122
-> >  
-> > +/* Silicon Labs SI4455 */
-> > +#define PORT_SI4455     123
-> 
-> What userspace tool is going to need this value?
+Looks good,
 
-The PORT_SI4455 is defined for using as port type value in struct uart_port.
-I checked other serial drivers under drivers/tty/serial and the port types
-used by serial drivers are defined in two places:
-
-include/uapi/linux/serial_core.h
-include/uapi/linux/serial.h
-
-The port type is required by serial_core, and its value goes back to
-user space with TIOCGSERIAL ioctl call.
-
-I can't set port type value to 0(PORT_UNKNOWN).
-I think my drivers source is not the best place to defining PORT_SI4455,
- but I can't find better place then include/uapi/linux/serial_core.h
-
-Could you please help me where is the correct location for this definition?
-
-
-> 
-> thanks,
-> 
-> greg k-h
-
-Üdvözlettel / Best regards:
-József Horváth
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
