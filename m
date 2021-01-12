@@ -2,149 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0FB2F3F7A
+	by mail.lfdr.de (Postfix) with ESMTP id E7F3A2F3F7C
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394770AbhALWtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:49:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732390AbhALWtU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:49:20 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F59C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:48:40 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id g25so2586505wmh.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:48:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ArlcvqJC9q51hscbwB0x0D1UTjuMUpHLsr6hfqKDboU=;
-        b=Z+UVCsDEuZ+jOvAGZqP7xaXkuN3UW1kYQK/efl9+WKHVo5u+O5SwRfH9Gsl0sizrYu
-         PWd1gJIoe+vCvbB8U2ExGkGY14jFqmrYonaEsAABcHzAF7RvqVXwIIsMU8HCsfCiUcAR
-         jIA8E6eIoa7S+WSV/y3R3DB3b+kd271uJz+/uQWxIhENojaxqCrWLwd9Ydu/bYIdDYRe
-         Lqk9g0KZysiZrjQc99BSYfvFWea4LcZGJQ0oj1euEnZxafWG7VOV4PQIP0EdkiOJu1C+
-         rlCGXPpqFwNAp45H833PPgC6zYSs97/jdS6WV7CH59XPci3wFJacCMv1/vXLXQUyC+/v
-         /Nbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ArlcvqJC9q51hscbwB0x0D1UTjuMUpHLsr6hfqKDboU=;
-        b=pdowDf+JJmfnktq5LIaoQNAkUwwY+k88Y42RKvVz50lfQocc6BtTbQp2h3nXbOK/tn
-         sfNuaGV2j8NFL0/6Dbg83EHazWmhu2SEls7fOEavjCZtN0OtiZhtEoY0gtHOORLv1NCw
-         34tVju/6dBDbL1yXgcV/KEzLYakH95EcWp1si4+wsvWMxgLu2zhv7Z16VE+txA1gXol1
-         XY2murU01IieHoZPhsd/2or4zG96sCqLGCCAgSbGSj03f3ADDnP15xOfqgPBU59HTnVL
-         gOLlpVt8x3OmM7jNBwfu3M3INFcoMWH3LGc+8W+lhh95A6aKNaVV/E3jLa6zwElsMotk
-         C4Eg==
-X-Gm-Message-State: AOAM5304keQLv6o0/aZ2mILIgUzDBPnT3j4Q0iyp8H40yhu0GRJULW4c
-        p+xHiRVE9FUBg46JxSEUdb3Ng9Meds+79duCb+jTag==
-X-Google-Smtp-Source: ABdhPJwew+56qPJeIfkyBnlXq2O9bDLp34KDvagCCtYIVTv+EkeaGP52WgQjDqtOJ//+AAhFTUAj/0b/MVRTcygrODc=
-X-Received: by 2002:a1c:4907:: with SMTP id w7mr967923wma.118.1610491718575;
- Tue, 12 Jan 2021 14:48:38 -0800 (PST)
+        id S2394783AbhALWt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:49:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34266 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732390AbhALWtZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 17:49:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2A5823122;
+        Tue, 12 Jan 2021 22:48:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610491724;
+        bh=fWxXcxqHEI+KsLZg+QH/ku9lOvit7R1hyoKrLJ/10dI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=B1c8aG435fUbuC1xPq3IcCLLYNeEtR6V71UVoKA0CRGj6sk4ilrfp7b0fcCebrM6X
+         WU3CR8kyi/yFTWvYk4NHtAdLQ8tNY24nf970YY8Cnr81uD4FDFic2bhthnkfot3+ko
+         3wNV5OAccljPV5wcopvGGzHG/Wms3aXdAFpTBW+fRGwTiv6NWhQlnAV3gSJD31lHz2
+         VjYFGj/z/3GvIWjbUP7QodBBU1rlhiKV1/rKIldqFoUyo3xsTmfai3rdguqPDDaieB
+         IYQZW+W6JTRl6/9YKKiZfV5OonxmEcbo/E4em1hpOVX7mBukuiQJo5i1u0qEfdp4TD
+         FYZBdsB/G/GDA==
+From:   Will Deacon <will@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     kernel-team@android.com, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@kernel.org>
+Subject: [PATCH] compiler.h: Raise minimum version of GCC to 5.1 for arm64
+Date:   Tue, 12 Jan 2021 22:48:32 +0000
+Message-Id: <20210112224832.10980-1-will@kernel.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210112192544.GA12209@localhost.localdomain>
-In-Reply-To: <20210112192544.GA12209@localhost.localdomain>
-From:   Yuchung Cheng <ycheng@google.com>
-Date:   Tue, 12 Jan 2021 14:48:01 -0800
-Message-ID: <CAK6E8=fq6Jec94FDmDHGWhsmjtZQmt3AwQB0-tLcpJpvJ=oLgg@mail.gmail.com>
-Subject: Re: [PATCH] tcp: keepalive fixes
-To:     Enke Chen <enkechen2020@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Neal Cardwell <ncardwell@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 2:31 PM Enke Chen <enkechen2020@gmail.com> wrote:
->
-> From: Enke Chen <enchen@paloaltonetworks.com>
->
-> In this patch two issues with TCP keepalives are fixed:
->
-> 1) TCP keepalive does not timeout when there are data waiting to be
->    delivered and then the connection got broken. The TCP keepalive
->    timeout is not evaluated in that condition.
-hi enke
-Do you have an example to demonstrate this issue -- in theory when
-there is data inflight, an RTO timer should be pending (which
-considers user-timeout setting). based on the user-timeout description
-(man tcp), the user timeout should abort the socket per the specified
-time after data commences. some data would help to understand the
-issue.
+GCC versions >= 4.9 and < 5.1 have been shown to emit memory references
+beyond the stack pointer, resulting in memory corruption if an interrupt
+is taken after the stack pointer has been adjusted but before the
+reference has been executed. This leads to subtle, infrequent data
+corruption such as the EXT4 problems reported by Russell King at the
+link below.
 
->
->    The fix is to remove the code that prevents TCP keepalive from
->    being evaluated for timeout.
->
-> 2) With the fix for #1, TCP keepalive can erroneously timeout after
->    the 0-window probe kicks in. The 0-window probe counter is wrongly
->    applied to TCP keepalives.
->
->    The fix is to use the elapsed time instead of the 0-window probe
->    counter in evaluating TCP keepalive timeout.
->
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Enke Chen <enchen@paloaltonetworks.com>
-> ---
->  net/ipv4/tcp_timer.c | 15 +++------------
->  1 file changed, 3 insertions(+), 12 deletions(-)
->
-> diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
-> index 6c62b9ea1320..40953aa40d53 100644
-> --- a/net/ipv4/tcp_timer.c
-> +++ b/net/ipv4/tcp_timer.c
-> @@ -696,12 +696,6 @@ static void tcp_keepalive_timer (struct timer_list *t)
->             ((1 << sk->sk_state) & (TCPF_CLOSE | TCPF_SYN_SENT)))
->                 goto out;
->
-> -       elapsed = keepalive_time_when(tp);
-> -
-> -       /* It is alive without keepalive 8) */
-> -       if (tp->packets_out || !tcp_write_queue_empty(sk))
-> -               goto resched;
-> -
->         elapsed = keepalive_time_elapsed(tp);
->
->         if (elapsed >= keepalive_time_when(tp)) {
-> @@ -709,16 +703,15 @@ static void tcp_keepalive_timer (struct timer_list *t)
->                  * to determine when to timeout instead.
->                  */
->                 if ((icsk->icsk_user_timeout != 0 &&
-> -                   elapsed >= msecs_to_jiffies(icsk->icsk_user_timeout) &&
-> -                   icsk->icsk_probes_out > 0) ||
-> +                    elapsed >= msecs_to_jiffies(icsk->icsk_user_timeout)) ||
->                     (icsk->icsk_user_timeout == 0 &&
-> -                   icsk->icsk_probes_out >= keepalive_probes(tp))) {
-> +                    (elapsed >= keepalive_time_when(tp) +
-> +                     keepalive_intvl_when(tp) * keepalive_probes(tp)))) {
->                         tcp_send_active_reset(sk, GFP_ATOMIC);
->                         tcp_write_err(sk);
->                         goto out;
->                 }
->                 if (tcp_write_wakeup(sk, LINUX_MIB_TCPKEEPALIVE) <= 0) {
-> -                       icsk->icsk_probes_out++;
->                         elapsed = keepalive_intvl_when(tp);
->                 } else {
->                         /* If keepalive was lost due to local congestion,
-> @@ -732,8 +725,6 @@ static void tcp_keepalive_timer (struct timer_list *t)
->         }
->
->         sk_mem_reclaim(sk);
-> -
-> -resched:
->         inet_csk_reset_keepalive_timer (sk, elapsed);
->         goto out;
->
-> --
-> 2.29.2
->
+Life is too short for buggy compilers, so raise the minimum GCC version
+required by arm64 to 5.1.
+
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Florian Weimer <fweimer@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Reported-by: Russell King <linux@armlinux.org.uk>
+Suggested-by: Arnd Bergmann <arnd@kernel.org>
+Link: https://lore.kernel.org/r/20210105154726.GD1551@shell.armlinux.org.uk
+Signed-off-by: Will Deacon <will@kernel.org>
+---
+ include/linux/compiler-gcc.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/include/linux/compiler-gcc.h b/include/linux/compiler-gcc.h
+index 74c6c0486eed..555ab0fddbef 100644
+--- a/include/linux/compiler-gcc.h
++++ b/include/linux/compiler-gcc.h
+@@ -13,6 +13,12 @@
+ /* https://gcc.gnu.org/bugzilla/show_bug.cgi?id=58145 */
+ #if GCC_VERSION < 40900
+ # error Sorry, your version of GCC is too old - please use 4.9 or newer.
++#elif defined(CONFIG_ARM64) && GCC_VERSION < 50100
++/*
++ * https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
++ * https://lore.kernel.org/r/20210107111841.GN1551@shell.armlinux.org.uk
++ */
++# error Sorry, your version of GCC is too old - please use 5.1 or newer.
+ #endif
+ 
+ /*
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
+
