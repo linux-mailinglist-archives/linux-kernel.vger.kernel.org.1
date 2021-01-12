@@ -2,145 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146262F336E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13FCF2F3378
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389547AbhALO7M convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Jan 2021 09:59:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43220 "EHLO
+        id S2388663AbhALPA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 10:00:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732459AbhALO7M (ORCPT
+        with ESMTP id S1726236AbhALPAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:59:12 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C544BC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:58:31 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kzL7j-00020s-4W; Tue, 12 Jan 2021 15:58:19 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kzL7h-0007qp-JE; Tue, 12 Jan 2021 15:58:17 +0100
-Message-ID: <c47df7713b41d2714a36c0c17b9d01aa90a72601.camel@pengutronix.de>
-Subject: Re: [PATCH v7 6/9] media: Add parsing for APP14 data segment in
- jpeg helpers
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Mirela Rabulea <mirela.rabulea@oss.nxp.com>, mchehab@kernel.org,
-        hverkuil-cisco@xs4all.nl, shawnguo@kernel.org, robh+dt@kernel.org
-Cc:     paul.kocialkowski@bootlin.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
-        s.hauer@pengutronix.de, aisheng.dong@nxp.com,
-        daniel.baluta@nxp.com, robert.chiras@nxp.com,
-        laurentiu.palcu@nxp.com, mark.rutland@arm.com,
-        devicetree@vger.kernel.org, ezequiel@collabora.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se,
-        dafna.hirschfeld@collabora.com
-Date:   Tue, 12 Jan 2021 15:58:17 +0100
-In-Reply-To: <20210111192822.12178-7-mirela.rabulea@oss.nxp.com>
-References: <20210111192822.12178-1-mirela.rabulea@oss.nxp.com>
-         <20210111192822.12178-7-mirela.rabulea@oss.nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        Tue, 12 Jan 2021 10:00:25 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F377C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:59:45 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id m5so1830542pjv.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:59:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a38rsa+oJPxhFV5dbDxkGdFt7ckWx72VOIR5CzRWxbo=;
+        b=ilkHdplTgxpRIFCuJ9bYoUCQXd+TBCSuJci7gKx14NEBzoudleiWjfE0mwbWobGHD4
+         xm5b3PA51/3AzeMI4TPFL4zjJbrl4NnMiV7gEH4wGo+AMcHZLIfj0X5+jdhoToPELku0
+         N68QTvRmLjft4vpxZOtTrmBqYVu2DURPZEsn9je984dLKgrXnnKzJZVox0djshEuxRwn
+         8L44CZrYM47qMXZMvRO+Hyqxhna9NgFKwDNVHSNouzc87HJYUWLSe2fJi0NpUIDMA3Bn
+         GKqj2JG9AoTumN840MLj10h//aMdc70jin9/wVvqP5ocBHEojg3lYEnY/peX139tU/0H
+         185Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a38rsa+oJPxhFV5dbDxkGdFt7ckWx72VOIR5CzRWxbo=;
+        b=hHDrbg+T/yJ2Cl3/gmCZP7rWwyJ54MZVXguLjG0CSCkWmMsRqcvf3ME3QVGxcbEgYl
+         eqFNuhKYE51dMQO9SQYUMWnWyndVR/VknM0UpUQCkwLcAaL/7bYiT8KI1Jh7WfuoyLbY
+         UIG8KCKgWO14YMJmviQsjZZaiL+QNkSDwecWKj0/dok35MTfX/fxvS3BIkxeeKkcj6k1
+         2UZm4X6NhpN5LzZiMXUpTdmYIouEpE8cpaVyr3CrB5SW/KOXUKcnQO9vNQHNMA6T1uy5
+         CDiag+zB3GxM9cIK4vaLUwwsZX3oKVnZm3Ez5sFKqlU+JbH/gXlXfQzHUad1yYocWWpc
+         elHA==
+X-Gm-Message-State: AOAM533k+gT2OBR2zF54sRlQVaEUpDUbc0eofzod/5ks30I3mmiuEodO
+        OFLAyrzBX+1nYcChiRAzblLCLUV1GKbt2ocrpFGrTA==
+X-Google-Smtp-Source: ABdhPJyhgal5NozlKzbp3qJRFGeaEGAi1pquLRa2OCtb3h3QSICphnx0otTEbid82VuZT2Ef6+XbTfkLI/VLRG1q+zQ=
+X-Received: by 2002:a17:90a:5405:: with SMTP id z5mr5238068pjh.13.1610463585073;
+ Tue, 12 Jan 2021 06:59:45 -0800 (PST)
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210110124017.86750-1-songmuchun@bytedance.com>
+ <20210110124017.86750-2-songmuchun@bytedance.com> <1b39d654-0b8c-de3a-55d1-6ab8c2b2e0ba@redhat.com>
+ <c6eddfc6-8e15-4a28-36ff-64bfa65cca8e@redhat.com> <CAMZfGtWnATsqgdqVONgAFWAAJU=KGxVJQEt38b8JTV+UtRzkYw@mail.gmail.com>
+ <423ee403-bba7-acf6-8934-9db36d3a719a@redhat.com> <CAMZfGtXfA6JA3eYLhT8YGLJJocopix_mp7uSDPfcmooFEE7xNA@mail.gmail.com>
+ <3386dc6d-5f68-c1e3-ba27-d0e95364aa3e@redhat.com>
+In-Reply-To: <3386dc6d-5f68-c1e3-ba27-d0e95364aa3e@redhat.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 12 Jan 2021 22:59:03 +0800
+Message-ID: <CAMZfGtVfZYxVCZQAkyx__F7+=UhOYyW=iC_=bGpc8d8BaaeXkQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3 1/6] mm: migrate: do not migrate HugeTLB
+ page whose refcount is one
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>, mhocko@suse.cz,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-01-11 at 21:28 +0200, Mirela Rabulea wrote:
-> From: Mirela Rabulea <mirela.rabulea@nxp.com>
-> 
-> According to Rec. ITU-T T.872 (06/2012) 6.5.3
-> APP14 segment is for color encoding, it contains a transform flag, which
-> may have values of 0, 1 and 2 and are interpreted as follows:
-> 0 - CMYK for images that are encoded with four components
->   - RGB for images that are encoded with three components
-> 1 - An image encoded with three components using YCbCr colour encoding.
-> 2 - An image encoded with four components using YCCK colour encoding.
-> 
-> This is used in imx-jpeg decoder, to distinguish between
-> YUV444 and RGB24.
-> 
-> Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
-> ---
-> Changes in v7:
->   Check there are 6 bytes available in the stream before checking for "Adobe\0"
->   Change jpeg_parse_app14_data function to differentiate between the 3 scenarios: app14 missing, or app14 present but with/without parsing errors:
->     App14 missing => Added V4L2_JPEG_APP14_TF_UNKNOWN to the enum v4l2_jpeg_app14_tf, use it to indicate app14 & TF is missing
-> 	App14 present without parsing errors => Return the transform flag value as enum v4l2_jpeg_app14_tf (new paramater of jpeg_parse_app14_data function)
->     App14 present with parsing errors => Return -EINVAL from jpeg_parse_app14_data, also return from calling function (v4l2_jpeg_parse_header) when this error is met.
+On Tue, Jan 12, 2021 at 10:28 PM David Hildenbrand <david@redhat.com> wrote:
 >
->  drivers/media/v4l2-core/v4l2-jpeg.c | 47 +++++++++++++++++++++++++++--
->  include/media/v4l2-jpeg.h           | 20 ++++++++++++
->  2 files changed, 65 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-jpeg.c b/drivers/media/v4l2-core/v4l2-jpeg.c
-> index 8947fd95c6f1..8d5fedb136dd 100644
-> --- a/drivers/media/v4l2-core/v4l2-jpeg.c
-> +++ b/drivers/media/v4l2-core/v4l2-jpeg.c
-> @@ -45,6 +45,7 @@ MODULE_LICENSE("GPL");
->  #define DHP	0xffde	/* hierarchical progression */
->  #define EXP	0xffdf	/* expand reference */
->  #define APP0	0xffe0	/* application data */
-> +#define APP14	0xffee	/* application data for colour encoding */
->  #define APP15	0xffef
->  #define JPG0	0xfff0	/* extensions */
->  #define JPG13	0xfffd
-> @@ -444,8 +445,44 @@ static int jpeg_skip_segment(struct jpeg_stream *stream)
->  	return jpeg_skip(stream, len - 2);
->  }
->  
-> +/* Rec. ITU-T T.872 (06/2012) 6.5.3 */
-> +static int jpeg_parse_app14_data(struct jpeg_stream *stream,
-> +				 enum v4l2_jpeg_app14_tf *tf)
-> +{
-> +	int ret;
-> +	int lp;
-> +	int skip;
-> +
-> +	lp = jpeg_get_word_be(stream);
-> +	if (lp < 0)
-> +		return lp;
-> +
-> +	/* Check for "Adobe\0" in Ap1..6 */
-> +	if (stream->curr + 6 > stream->end ||
-> +	    strncmp(stream->curr, "Adobe\0", 6))
-> +		return -EINVAL;
-> +
-> +	/* get to Ap12 */
-> +	ret = jpeg_skip(stream, 11);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = jpeg_get_byte(stream);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	*tf = ret;
-> +
-> +	skip = lp - 2 - 11;
+> On 12.01.21 15:17, Muchun Song wrote:
+> > On Tue, Jan 12, 2021 at 9:51 PM David Hildenbrand <david@redhat.com> wrote:
+> >>
+> >> On 12.01.21 14:40, Muchun Song wrote:
+> >>> On Tue, Jan 12, 2021 at 7:11 PM David Hildenbrand <david@redhat.com> wrote:
+> >>>>
+> >>>> On 12.01.21 12:00, David Hildenbrand wrote:
+> >>>>> On 10.01.21 13:40, Muchun Song wrote:
+> >>>>>> If the refcount is one when it is migrated, it means that the page
+> >>>>>> was freed from under us. So we are done and do not need to migrate.
+> >>>>>>
+> >>>>>> This optimization is consistent with the regular pages, just like
+> >>>>>> unmap_and_move() does.
+> >>>>>>
+> >>>>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> >>>>>> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+> >>>>>> Acked-by: Yang Shi <shy828301@gmail.com>
+> >>>>>> ---
+> >>>>>>  mm/migrate.c | 6 ++++++
+> >>>>>>  1 file changed, 6 insertions(+)
+> >>>>>>
+> >>>>>> diff --git a/mm/migrate.c b/mm/migrate.c
+> >>>>>> index 4385f2fb5d18..a6631c4eb6a6 100644
+> >>>>>> --- a/mm/migrate.c
+> >>>>>> +++ b/mm/migrate.c
+> >>>>>> @@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
+> >>>>>>              return -ENOSYS;
+> >>>>>>      }
+> >>>>>>
+> >>>>>> +    if (page_count(hpage) == 1) {
+> >>>>>> +            /* page was freed from under us. So we are done. */
+> >>>>>> +            putback_active_hugepage(hpage);
+> >>>>>> +            return MIGRATEPAGE_SUCCESS;
+> >>>>>> +    }
+> >>>>>> +
+> >>>>>>      new_hpage = get_new_page(hpage, private);
+> >>>>>>      if (!new_hpage)
+> >>>>>>              return -ENOMEM;
+> >>>>>>
+> >>>>>
+> >>>>> Question: What if called via alloc_contig_range() where we even want to
+> >>>>> "migrate" free pages, meaning, relocate it?
+> >>>>>
+> >>>>
+> >>>> To be more precise:
+> >>>>
+> >>>> a) We don't have dissolve_free_huge_pages() calls on the
+> >>>> alloc_contig_range() path. So we *need* migration IIUC.
+> >>>
+> >>> Without this patch, if you want to migrate a HUgeTLB page,
+> >>> the page is freed to the hugepage pool. With this patch,
+> >>> the page is also freed to the hugepage pool.
+> >>> I didn't see any different. I am missing something?
+> >>
+> >> I am definitely not an expert on hugetlb pools, that's why I am asking.
+> >>
+> >> Isn't it, that with your code, no new page is allocated - so
+> >> dissolve_free_huge_pages() might just refuse to dissolve due to
+> >> reservations, bailing out, no?
+> >
+> > Without this patch, the new page can be allocated from the
+> > hugepage pool. The dissolve_free_huge_pages() also
+> > can refuse to dissolve due to reservations. Right?
+>
+> Oh, you mean the migration target might be coming from the pool? I guess
+> yes, looking at alloc_migration_target()->alloc_huge_page_nodemask().
 
-> +	ret = jpeg_skip(stream, skip);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return 0;
+Yeah, you are right. If we want to free a HugeTLB page to
+the buddy allocator, we should dissolve_free_huge_page()
+to do that. Migrating cannot guarantee this at least now.
 
-This could be simplified to
-
-	return jpeg_skip(stream, skip);
-
-although it would be better style to move the *tf = ... assignment down
-past the last error return instead. Either way,
-
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
-
-regards
-Philipp
+>
+> In that case, yes, I think we run into a similar issue already.
+>
+> Instead of trying to allocate new huge pages in
+> dissolve_free_huge_pages() to "relocate free pages", we bail out.
+>
+> This all feels kind of wrong. After we migrated a huge page we should
+> free it back to the buddy, so most of our machinery just keeps working
+> without caring about free huge pages.
+>
+>
+> I can see how your patch will not change the current (IMHO broken) behavior.
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
