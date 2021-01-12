@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 150A42F3551
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA48A2F3568
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:21:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393071AbhALQPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:15:12 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:54934 "EHLO
+        id S2406317AbhALQRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:17:18 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:57340 "EHLO
         aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392494AbhALQPK (ORCPT
+        with ESMTP id S2406235AbhALQRP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:15:10 -0500
+        Tue, 12 Jan 2021 11:17:15 -0500
 Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CG9VrO086407;
-        Tue, 12 Jan 2021 16:14:14 GMT
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CGFX1h107499;
+        Tue, 12 Jan 2021 16:16:16 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=X1laCS1qyl+Ha6Uv84ahJ2RSsynQhrhTHNB+fwVd1m4=;
- b=ZMcGL7hhOUJ1KlLBg9HpOpf3Ob296/LOOCTHLxQt1OqlovbkvkizBA7SxUN04+U2S48N
- 5zjGsFTJcderyjLVAz1s/4mHe9a7sHtDWXtXXbAs4p9k5m/6w7b6kl+6AfeDnSJlV2mi
- RPSVN5ZkSbDfzSITwiIjgDn7OIKN2lLJ+UhzhkmrrMc0VYBwLjbAKRoAKPC8kPcgOHzP
- EnSLXCgh/jRWT70/60X9iHMxxtabADWfm+UMc93R7EC28iMGSFSXvv7gr2yrXhQGxV+W
- ABrZPW7QvvA+/n8Xancghyct+2tMKprVEkdltynD+orZuGuGNEfEOSUFjIt9kMbisB4F DQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 360kg1q50e-1
+ bh=tyPOyHcy0C0fk2HmVXtPsBQXwI8CIVo0QoSlzxuxY88=;
+ b=kHvzxbBKC8yk12meq4QTYW8Ht7qBO4cfvZdq7Zx52z2ODYq9N5nUiXbzD5UHkksI+NH0
+ wIPZMuJ2ieFz+OQ6xu3Ho2aqqjCf8plwxD9/cI9EaSzPYFbAV7MMbxQROtRWu7Eoqy+N
+ Iwg1eRAZpPajKK0o6sRgZ8p6zCcoICDvBdUerbcALQpUryqWYs1RQqWkm1YmOqSVdB8L
+ cxn1CXUJD6cQpkcR5eoXIKslIag7oHWjvqVtleoXb+5oCxNCJh89Y+NfMfpnEUF9Z+lL
+ jW7tXWFh0XCzul6AmmUqcMCor3KncUtJ7HMjrrBxwc+gHF+CxXEjnvHM+5jxl1hINAJn 1g== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 360kg1q5ek-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jan 2021 16:14:13 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CGA2Vh094583;
-        Tue, 12 Jan 2021 16:14:13 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 360key136y-1
+        Tue, 12 Jan 2021 16:16:16 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CGAWF1161603;
+        Tue, 12 Jan 2021 16:14:15 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 360kf5q5bj-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jan 2021 16:14:13 +0000
+        Tue, 12 Jan 2021 16:14:15 +0000
 Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10CGECdb020000;
-        Tue, 12 Jan 2021 16:14:12 GMT
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10CGEE6l018218;
+        Tue, 12 Jan 2021 16:14:14 GMT
 Received: from revolver.jebus.ca (/23.233.25.87)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 12 Jan 2021 08:14:12 -0800
+        with ESMTP ; Tue, 12 Jan 2021 08:14:14 -0800
 From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
 To:     maple-tree@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
@@ -55,72 +55,66 @@ Cc:     Andrew Morton <akpm@google.com>, Song Liu <songliubraving@fb.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         Rik van Riel <riel@surriel.com>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v2 49/70] kernel/events/uprobes: Use maple tree iterators instead of linked list
-Date:   Tue, 12 Jan 2021 11:12:19 -0500
-Message-Id: <20210112161240.2024684-50-Liam.Howlett@Oracle.com>
+Subject: [PATCH v2 50/70] kernel/sched/fair: Use maple tree iterators instead of linked list
+Date:   Tue, 12 Jan 2021 11:12:20 -0500
+Message-Id: <20210112161240.2024684-51-Liam.Howlett@Oracle.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20210112161240.2024684-1-Liam.Howlett@Oracle.com>
 References: <20210112161240.2024684-1-Liam.Howlett@Oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
- suspectscore=0 adultscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101120092
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 bulkscore=0 spamscore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101120092
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
  clxscore=1015 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
  phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101120092
+ definitions=main-2101120093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 ---
- kernel/events/uprobes.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ kernel/sched/fair.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 00b0358739ab3..b0aa05be2a61d 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -356,8 +356,9 @@ static struct vm_area_struct *
- find_ref_ctr_vma(struct uprobe *uprobe, struct mm_struct *mm)
- {
- 	struct vm_area_struct *tmp;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index ae7ceba8fd4f2..1cb3a245ffd85 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -2723,6 +2723,7 @@ static void task_numa_work(struct callback_head *work)
+ 	unsigned long start, end;
+ 	unsigned long nr_pte_updates = 0;
+ 	long pages, virtpages;
 +	MA_STATE(mas, &mm->mm_mt, 0, 0);
  
--	for (tmp = mm->mmap; tmp; tmp = tmp->vm_next)
-+	mas_for_each(&mas, tmp, ULONG_MAX)
- 		if (valid_ref_ctr_vma(uprobe, tmp))
- 			return tmp;
+ 	SCHED_WARN_ON(p != container_of(work, struct task_struct, numa_work));
  
-@@ -1239,9 +1240,10 @@ static int unapply_uprobe(struct uprobe *uprobe, struct mm_struct *mm)
- {
- 	struct vm_area_struct *vma;
- 	int err = 0;
-+	MA_STATE(mas, &mm->mm_mt, 0, 0);
+@@ -2775,13 +2776,16 @@ static void task_numa_work(struct callback_head *work)
  
- 	mmap_read_lock(mm);
--	for (vma = mm->mmap; vma; vma = vma->vm_next) {
+ 	if (!mmap_read_trylock(mm))
+ 		return;
+-	vma = find_vma(mm, start);
++
++	mas_set(&mas, start);
++	vma = mas_walk(&mas);
+ 	if (!vma) {
+ 		reset_ptenuma_scan(p);
+ 		start = 0;
+-		vma = mm->mmap;
++		mas_set(&mas, start);
+ 	}
+-	for (; vma; vma = vma->vm_next) {
++
 +	mas_for_each(&mas, vma, ULONG_MAX) {
- 		unsigned long vaddr;
- 		loff_t offset;
- 
-@@ -1990,8 +1992,9 @@ bool uprobe_deny_signal(void)
- static void mmf_recalc_uprobes(struct mm_struct *mm)
- {
- 	struct vm_area_struct *vma;
-+	MA_STATE(mas, &mm->mm_mt, 0, 0);
- 
--	for (vma = mm->mmap; vma; vma = vma->vm_next) {
-+	mas_for_each(&mas, vma, ULONG_MAX) {
- 		if (!valid_vma(vma, false))
+ 		if (!vma_migratable(vma) || !vma_policy_mof(vma) ||
+ 			is_vm_hugetlb_page(vma) || (vma->vm_flags & VM_MIXEDMAP)) {
  			continue;
- 		/*
 -- 
 2.28.0
 
