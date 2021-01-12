@@ -2,211 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 788BB2F3CC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C24D12F3CCC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437203AbhALVeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:34:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33254 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436603AbhALUFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:05:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B16E22202;
-        Tue, 12 Jan 2021 20:04:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610481882;
-        bh=1o0zWRYsMorIJrlcWqTCOm9k7CjaC5powyIbGNDUSIc=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=AnopuI6J0LhWnmI8L1bEZ8ia+Vw3oUmaBznZXvhyfhSdtV/illGVxvcbfbO/kVOgo
-         +RcjCCvUvwIR6FB7QIDXbLzcq0NhSjk1oWj18FDYYqaucHmEEhG3TiJTBXaYYffvn7
-         AhThGRDDw35XMKzaTLdDYEd+8XJOiJuoJPKX3XgOr6po3ZKMIHFYosD8wwPAo1p6xk
-         Y8o5SwxOWvj7GUtYrJm3X0wdLbHzJ1EEnwFk+MxiPhiXUYx6ricL8n1zle8Qivz+p9
-         QN6qdpgPNThI/vaHSjIvm+knus3qOCHuRrKM/y5WXMKWp+IIbrbG+VPoDz3LpzrKIS
-         hQELyJbH1UI6g==
-Content-Type: text/plain; charset="utf-8"
+        id S2437241AbhALVeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 16:34:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436636AbhALUGJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:06:09 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D020C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:05:29 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id y12so2305221pji.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:05:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zL6WgU5Xs4gBKlOeTyyYJxfsUDm2s7KXGqsTMwbacGQ=;
+        b=wPsXp3Ms+9EG1G2s8Vph8Xwk1B8VZYND0uude8zcWLUg4+owazggV+vpjAf+tzTgdC
+         W8z3dx3wqpnqzj+clMUqZ5w32P12JqYLB7GGqKQS20jYZUYXLbBPX+nWFcoS+ytaCgfa
+         ps9VzSsZn4MKGUaHATXr6ILJ1S41IjhM9JP1Z6sZj2SmTTb1Y0zl640U45qm+Bo5Hu4M
+         U/ysBYw5lPnASZUCeG4IppqXWhMinJNkXvYVH8dIrQQBUgOFXvVB1SFZuyquAdrPSXXZ
+         IIXjjQrJrG1GtenX2Ohzzx4r5y0UQTJQV50f04e+n/urAEsIXZxxDOldEga5JSxuu6WB
+         U+MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zL6WgU5Xs4gBKlOeTyyYJxfsUDm2s7KXGqsTMwbacGQ=;
+        b=BRwt+hZyOfyme2uRY+3m+Zl9zGLUi0Dq5Hw2AFu3mH6VuWNNf+G159BizyCS0XZ8Oq
+         nXzbtp2W1xleMS7Z9a2jY7k4+xOIREFbzX9Ohb6ZGmr6DibbioAtLFVPeLxAkyuF1o/+
+         7o3ZiY7ZdIMquPaHhR5eN5PWIYL2k5TwX7dEL9Z18EksuRx6ZgmNnSo9ocE5t6CzACht
+         Cg5DYsCSyV6IYNa4nhDn8kIKwfa9l7Ypz6k3NCuFEgkz1Y5opuw+CYmeM7UKAqH0HMM/
+         XaqcPolBoeDld8Df/awUlLXo0rKF4QlZpUZEg/wOe8RtMnPnkzf9wP9mXCyBMFtYpnK1
+         tILQ==
+X-Gm-Message-State: AOAM531sbW5b+6Etqymg1NhnLBpQUCcyFlMwUhO2grV5K904SfEe07kJ
+        qm/Mq2KE9hMETxjveOIl7oMXWceGAw9SMySpQRy7gQ==
+X-Google-Smtp-Source: ABdhPJwYQTFzqikue18gpW9umL0WcFvbyoNK1QEUuE6kEZf85DaGVaLKgmWEvox10SpVBdo9Ni4n/BW0mjJiejzq8OY=
+X-Received: by 2002:a17:90b:1087:: with SMTP id gj7mr814111pjb.41.1610481928938;
+ Tue, 12 Jan 2021 12:05:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1608058114-29025-3-git-send-email-tdas@codeaurora.org>
-References: <1608058114-29025-1-git-send-email-tdas@codeaurora.org> <1608058114-29025-3-git-send-email-tdas@codeaurora.org>
-Subject: Re: [PATCH v1 2/2] clk: qcom: Add Global Clock controller (GCC) driver for SC7280
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org, robh+dt@kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Taniya Das <tdas@codeaurora.org>
-Date:   Tue, 12 Jan 2021 12:04:41 -0800
-Message-ID: <161048188125.3661239.13161942092910464158@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <cover.1609871239.git.andreyknvl@google.com> <9a4f47fe8717b4b249591b307cdd1f26c46dcb82.1609871239.git.andreyknvl@google.com>
+ <X/2md4h0Nki8RNW0@elver.google.com>
+In-Reply-To: <X/2md4h0Nki8RNW0@elver.google.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 12 Jan 2021 21:05:18 +0100
+Message-ID: <CAAeHK+w0_WmVZ9kh1QM4vmn3-0oBeWWV3BaLj2+-uh0xj8_BnA@mail.gmail.com>
+Subject: Re: [PATCH 08/11] kasan: adopt kmalloc_uaf2 test to HW_TAGS mode
+To:     Marco Elver <elver@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Taniya Das (2020-12-15 10:48:34)
-> diff --git a/drivers/clk/qcom/gcc-sc7280.c b/drivers/clk/qcom/gcc-sc7280.c
-> new file mode 100644
-> index 0000000..74a3151
-> --- /dev/null
-> +++ b/drivers/clk/qcom/gcc-sc7280.c
-> @@ -0,0 +1,3361 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2020, The Linux Foundation. All rights reserved.
-> + */
-> +
-> +#include <linux/clk-provider.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/of.h>
-> +#include <linux/regmap.h>
-> +
-> +#include <dt-bindings/clock/qcom,gcc-sc7280.h>
-> +
-> +#include "clk-alpha-pll.h"
-> +#include "clk-branch.h"
-> +#include "clk-rcg.h"
-> +#include "clk-regmap-divider.h"
-> +#include "clk-regmap-mux.h"
-> +#include "common.h"
-> +#include "gdsc.h"
-> +#include "reset.h"
-> +
-[...]
-> +static const struct freq_tbl ftbl_gcc_sdcc1_apps_clk_src[] =3D {
-> +       F(144000, P_BI_TCXO, 16, 3, 25),
-> +       F(400000, P_BI_TCXO, 12, 1, 4),
-> +       F(20000000, P_GCC_GPLL0_OUT_EVEN, 5, 1, 3),
-> +       F(25000000, P_GCC_GPLL0_OUT_EVEN, 12, 0, 0),
-> +       F(50000000, P_GCC_GPLL0_OUT_EVEN, 6, 0, 0),
-> +       F(100000000, P_GCC_GPLL0_OUT_EVEN, 3, 0, 0),
-> +       F(192000000, P_GCC_GPLL10_OUT_MAIN, 2, 0, 0),
-> +       F(384000000, P_GCC_GPLL10_OUT_MAIN, 1, 0, 0),
-> +       { }
-> +};
-> +
-> +static struct clk_rcg2 gcc_sdcc1_apps_clk_src =3D {
-> +       .cmd_rcgr =3D 0x7500c,
-> +       .mnd_width =3D 8,
-> +       .hid_width =3D 5,
-> +       .parent_map =3D gcc_parent_map_8,
-> +       .freq_tbl =3D ftbl_gcc_sdcc1_apps_clk_src,
-> +       .clkr.hw.init =3D &(struct clk_init_data){
-> +               .name =3D "gcc_sdcc1_apps_clk_src",
-> +               .parent_data =3D gcc_parent_data_8,
-> +               .num_parents =3D ARRAY_SIZE(gcc_parent_data_8),
-> +               .flags =3D CLK_SET_RATE_PARENT,
-> +               .ops =3D &clk_rcg2_ops,
+On Tue, Jan 12, 2021 at 2:39 PM Marco Elver <elver@google.com> wrote:
+>
+> On Tue, Jan 05, 2021 at 07:27PM +0100, Andrey Konovalov wrote:
+> > In the kmalloc_uaf2() test, the pointers to the two allocated memory
+> > blocks might be the same, and the test will fail. With the software
+> > tag-based mode, the probability of the that happening is 1/254, so it's
+> > hard to observe the failure. For the hardware tag-based mode though,
+> > the probablity is 1/14, which is quite noticable.
+> >
+> > Allow up to 4 attempts at generating different tags for the tag-based
+> > modes.
+> >
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > Link: https://linux-review.googlesource.com/id/Ibfa458ef2804ff465d8eb07434a300bf36388d55
+> > ---
+> >  lib/test_kasan.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> >
+> > diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+> > index b5077a47b95a..b67da7f6e17f 100644
+> > --- a/lib/test_kasan.c
+> > +++ b/lib/test_kasan.c
+> > @@ -375,7 +375,9 @@ static void kmalloc_uaf2(struct kunit *test)
+> >  {
+> >       char *ptr1, *ptr2;
+> >       size_t size = 43;
+> > +     int counter = 0;
+> >
+> > +again:
+> >       ptr1 = kmalloc(size, GFP_KERNEL);
+> >       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr1);
+> >
+> > @@ -384,6 +386,13 @@ static void kmalloc_uaf2(struct kunit *test)
+> >       ptr2 = kmalloc(size, GFP_KERNEL);
+> >       KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr2);
+> >
+> > +     /*
+> > +      * For tag-based KASAN ptr1 and ptr2 tags might happen to be the same.
+> > +      * Allow up to 4 attempts at generating different tags.
+> > +      */
+> > +     if (!IS_ENABLED(CONFIG_KASAN_GENERIC) && ptr1 == ptr2 && counter++ < 4)
+> > +             goto again;
+> > +
+>
+> Why do we even need a limit? Why not retry until ptr1 != ptr2?
 
-This needs to use floor clk ops?
-
-> +       },
-> +};
-> +
-> +static const struct freq_tbl ftbl_gcc_sdcc1_ice_core_clk_src[] =3D {
-> +       F(100000000, P_GCC_GPLL0_OUT_EVEN, 3, 0, 0),
-> +       F(150000000, P_GCC_GPLL0_OUT_EVEN, 2, 0, 0),
-> +       F(300000000, P_GCC_GPLL0_OUT_EVEN, 1, 0, 0),
-> +       { }
-> +};
-> +
-> +static struct clk_rcg2 gcc_sdcc1_ice_core_clk_src =3D {
-> +       .cmd_rcgr =3D 0x7502c,
-> +       .mnd_width =3D 0,
-> +       .hid_width =3D 5,
-> +       .parent_map =3D gcc_parent_map_1,
-> +       .freq_tbl =3D ftbl_gcc_sdcc1_ice_core_clk_src,
-> +       .clkr.hw.init =3D &(struct clk_init_data){
-> +               .name =3D "gcc_sdcc1_ice_core_clk_src",
-> +               .parent_data =3D gcc_parent_data_1,
-> +               .num_parents =3D ARRAY_SIZE(gcc_parent_data_1),
-> +               .flags =3D CLK_SET_RATE_PARENT,
-> +               .ops =3D &clk_rcg2_ops,
-
-Same.
-
-> +       },
-> +};
-> +
-> +static const struct freq_tbl ftbl_gcc_sdcc2_apps_clk_src[] =3D {
-> +       F(400000, P_BI_TCXO, 12, 1, 4),
-> +       F(19200000, P_BI_TCXO, 1, 0, 0),
-> +       F(25000000, P_GCC_GPLL0_OUT_EVEN, 12, 0, 0),
-> +       F(50000000, P_GCC_GPLL0_OUT_EVEN, 6, 0, 0),
-> +       F(100000000, P_GCC_GPLL0_OUT_EVEN, 3, 0, 0),
-> +       F(202000000, P_GCC_GPLL9_OUT_MAIN, 4, 0, 0),
-> +       { }
-> +};
-> +
-> +static struct clk_rcg2 gcc_sdcc2_apps_clk_src =3D {
-> +       .cmd_rcgr =3D 0x1400c,
-> +       .mnd_width =3D 8,
-> +       .hid_width =3D 5,
-> +       .parent_map =3D gcc_parent_map_9,
-> +       .freq_tbl =3D ftbl_gcc_sdcc2_apps_clk_src,
-> +       .clkr.hw.init =3D &(struct clk_init_data){
-> +               .name =3D "gcc_sdcc2_apps_clk_src",
-> +               .parent_data =3D gcc_parent_data_9,
-> +               .num_parents =3D ARRAY_SIZE(gcc_parent_data_9),
-> +               .flags =3D CLK_SET_RATE_PARENT,
-> +               .ops =3D &clk_rcg2_ops,
-
-Same.
-
-> +       },
-> +};
-> +
-> +static const struct freq_tbl ftbl_gcc_sdcc4_apps_clk_src[] =3D {
-> +       F(400000, P_BI_TCXO, 12, 1, 4),
-> +       F(19200000, P_BI_TCXO, 1, 0, 0),
-> +       F(25000000, P_GCC_GPLL0_OUT_EVEN, 12, 0, 0),
-> +       F(50000000, P_GCC_GPLL0_OUT_EVEN, 6, 0, 0),
-> +       F(100000000, P_GCC_GPLL0_OUT_EVEN, 3, 0, 0),
-> +       { }
-> +};
-> +
-> +static struct clk_rcg2 gcc_sdcc4_apps_clk_src =3D {
-> +       .cmd_rcgr =3D 0x1600c,
-> +       .mnd_width =3D 8,
-> +       .hid_width =3D 5,
-> +       .parent_map =3D gcc_parent_map_1,
-> +       .freq_tbl =3D ftbl_gcc_sdcc4_apps_clk_src,
-> +       .clkr.hw.init =3D &(struct clk_init_data){
-> +               .name =3D "gcc_sdcc4_apps_clk_src",
-> +               .parent_data =3D gcc_parent_data_1,
-> +               .num_parents =3D ARRAY_SIZE(gcc_parent_data_1),
-> +               .flags =3D CLK_SET_RATE_PARENT,
-> +               .ops =3D &clk_rcg2_ops,
-
-Same.
-
-> +       },
-> +};
-> +
-[...]
-> +static struct clk_branch gcc_cpuss_ahb_clk =3D {
-> +       .halt_reg =3D 0x48000,
-> +       .halt_check =3D BRANCH_HALT_VOTED,
-> +       .hwcg_reg =3D 0x48000,
-> +       .hwcg_bit =3D 1,
-> +       .clkr =3D {
-> +               .enable_reg =3D 0x52000,
-> +               .enable_mask =3D BIT(21),
-> +               .hw.init =3D &(struct clk_init_data){
-> +                       .name =3D "gcc_cpuss_ahb_clk",
-> +                       .parent_data =3D &(const struct clk_parent_data){
-> +                               .hw =3D &gcc_cpuss_ahb_postdiv_clk_src.cl=
-kr.hw,
-> +                       },
-> +                       .num_parents =3D 1,
-> +                       .flags =3D CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
-
-Why is it critical? Please add a comment like sc7180.
-
-> +                       .ops =3D &clk_branch2_ops,
-> +               },
-> +       },
-> +};
-> +
+Then the test will hang if it's failing. Let's do up to 16 attempts,
+it should be more than enough in practice. Thanks!
