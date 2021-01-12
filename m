@@ -2,76 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AC82F2E39
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:44:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A58812F2E3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:45:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730412AbhALLnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 06:43:21 -0500
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:33617 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730081AbhALLnU (ORCPT
+        id S1730790AbhALLpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:45:07 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2317 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727959AbhALLpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:43:20 -0500
-Received: by mail-oi1-f169.google.com with SMTP id d203so2040613oia.0;
-        Tue, 12 Jan 2021 03:43:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gvSXzvnGVXDaviH1zuRAMAGJuMaNfjyn5ekNZGjpQ50=;
-        b=tUl+664ChepvxMaoy81l8P/DDMc8C6lg081orKo75qi9pToDOZXopVfPtIOw9ug5lJ
-         2DYSN9+3whqA9WSCIBefP4I8CfZx18l4T9HU/RjOrq0kxBv2yN8TMcJBrw7l+n8tiBBU
-         PT1RbagQUkSxYagicKlnqk9Im6/T3eSa2xiX3s5R/RGAMhj6hyzW6HOKap+f8F5trFOS
-         tUmjVOSZ0nxOeeVs271XJNxLOpb1k1EjdQ4UIQQA5sqjY91z7W3SU6OPRgK93x/gmgFI
-         xvKoftIT3hcOSP66w/gaTHSTuhxjP+zPcYDyDVSbl72vm2MTbZqRgNfhpIfeT9Y3DFO9
-         4AsQ==
-X-Gm-Message-State: AOAM531YoivvXOeg/CIn8NBh8O+BnDAen2TmxoQNeez+w90izg40uxi3
-        AVem5Ua11qW/7W7YpFiQrymeQXScgsKepJcMKIA=
-X-Google-Smtp-Source: ABdhPJzGBEZ0VKoVq2/frzInDE9dRaRt+nGC6OvXRLt05DwD5bHCz9xBQJCBK9c/MB63RSKJoCPjhtWJVNIWpP/+Trw=
-X-Received: by 2002:aca:3cc5:: with SMTP id j188mr2054826oia.54.1610451759483;
- Tue, 12 Jan 2021 03:42:39 -0800 (PST)
+        Tue, 12 Jan 2021 06:45:06 -0500
+Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DFTBH5127z67Zll;
+        Tue, 12 Jan 2021 19:39:19 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Tue, 12 Jan 2021 12:44:24 +0100
+Received: from [10.210.171.61] (10.210.171.61) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 12 Jan 2021 11:44:23 +0000
+Subject: Re: [PATCH v4 01/21] ibmvfc: add vhost fields and defaults for MQ
+ enablement
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
+        <james.bottomley@hansenpartnership.com>
+CC:     <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <brking@linux.ibm.com>
+References: <20210111231225.105347-1-tyreld@linux.ibm.com>
+ <20210111231225.105347-2-tyreld@linux.ibm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <b9b2f3c0-0d88-6c64-8b45-fe2ce6d581fd@huawei.com>
+Date:   Tue, 12 Jan 2021 11:43:15 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <20201228112715.14947-1-wsa+renesas@sang-engineering.com>
- <20201228112715.14947-3-wsa+renesas@sang-engineering.com> <CAMuHMdVzQVBvsUhpZF5A9qoijA=thVPq4tBiRnAVyFrX2aD+5w@mail.gmail.com>
-In-Reply-To: <CAMuHMdVzQVBvsUhpZF5A9qoijA=thVPq4tBiRnAVyFrX2aD+5w@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 12 Jan 2021 12:42:28 +0100
-Message-ID: <CAMuHMdUg44u_Tpg-4sVwTkOXVWQWBWrm08Vg__=u8-xBFnK9-g@mail.gmail.com>
-Subject: Re: [PATCH 2/6] arm64: dts: renesas: falcon: add SCIF0 nodes
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210111231225.105347-2-tyreld@linux.ibm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.210.171.61]
+X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+On 11/01/2021 23:12, Tyrel Datwyler wrote:
+> Introduce several new vhost fields for managing MQ state of the adapter
+> as well as initial defaults for MQ enablement.
+> 
+> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
+> ---
+>   drivers/scsi/ibmvscsi/ibmvfc.c | 8 ++++++++
+>   drivers/scsi/ibmvscsi/ibmvfc.h | 9 +++++++++
+>   2 files changed, 17 insertions(+)
+> 
+> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+> index ba95438a8912..9200fe49c57e 100644
+> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
+> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+> @@ -3302,6 +3302,7 @@ static struct scsi_host_template driver_template = {
+>   	.max_sectors = IBMVFC_MAX_SECTORS,
+>   	.shost_attrs = ibmvfc_attrs,
+>   	.track_queue_depth = 1,
+> +	.host_tagset = 1,
 
-On Tue, Jan 5, 2021 at 7:12 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Mon, Dec 28, 2020 at 12:27 PM Wolfram Sang
-> <wsa+renesas@sang-engineering.com> wrote:
-> > SCIF0 has been enabled by the firmware, so it worked already. Still, add
-> > the proper nodes to make it work in any case.
-> >
-> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
->
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Good to see another user :)
 
-Upon second look, this should be added to r8a779a0-falcon-cpu.dtsi,
-which already extends the scif0 node.
+I didn't check the whole series very thoroughly, but I guess that you 
+only need to set this when shost->nr_hw_queues > 1. Having said that, it 
+should be fine when shost->nr_hw_queues = 0 or 1.
 
-Gr{oetje,eeting}s,
+Thanks,
+John
 
-                        Geert
+>   };
+>   
+>   /**
+> @@ -5290,6 +5291,7 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+>   	shost->max_sectors = IBMVFC_MAX_SECTORS;
+>   	shost->max_cmd_len = IBMVFC_MAX_CDB_LEN;
+>   	shost->unique_id = shost->host_no;
+> +	shost->nr_hw_queues = IBMVFC_MQ ? IBMVFC_SCSI_HW_QUEUES : 1;
+>   
+>   	vhost = shost_priv(shost);
+>   	INIT_LIST_HEAD(&vhost->targets);
+> @@ -5300,6 +5302,12 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+>   	vhost->partition_number = -1;
+>   	vhost->log_level = log_level;
+>   	vhost->task_set = 1;
+> +
+> +	vhost->mq_enabled = IBMVFC_MQ;
+> +	vhost->client_scsi_channels = IBMVFC_SCSI_CHANNELS;
+> +	vhost->using_channels = 0;
+> +	vhost->do_enquiry = 1;
+> +
+>   	strcpy(vhost->partition_name, "UNKNOWN");
+>   	init_waitqueue_head(&vhost->work_wait_q);
+>   	init_waitqueue_head(&vhost->init_wait_q);
+> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.h b/drivers/scsi/ibmvscsi/ibmvfc.h
+> index 632e977449c5..dd6d89292867 100644
+> --- a/drivers/scsi/ibmvscsi/ibmvfc.h
+> +++ b/drivers/scsi/ibmvscsi/ibmvfc.h
+> @@ -41,6 +41,11 @@
+>   #define IBMVFC_DEFAULT_LOG_LEVEL	2
+>   #define IBMVFC_MAX_CDB_LEN		16
+>   #define IBMVFC_CLS3_ERROR		0
+> +#define IBMVFC_MQ			0
+> +#define IBMVFC_SCSI_CHANNELS		0
+> +#define IBMVFC_SCSI_HW_QUEUES		1
+> +#define IBMVFC_MIG_NO_SUB_TO_CRQ	0
+> +#define IBMVFC_MIG_NO_N_TO_M		0
+>   
+>   /*
+>    * Ensure we have resources for ERP and initialization:
+> @@ -840,6 +845,10 @@ struct ibmvfc_host {
+>   	int delay_init;
+>   	int scan_complete;
+>   	int logged_in;
+> +	int mq_enabled;
+> +	int using_channels;
+> +	int do_enquiry;
+> +	int client_scsi_channels;
+>   	int aborting_passthru;
+>   	int events_to_log;
+>   #define IBMVFC_AE_LINKUP	0x0001
+> 
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
