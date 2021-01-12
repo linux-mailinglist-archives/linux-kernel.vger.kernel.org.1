@@ -2,109 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E07062F2D44
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:57:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 674D92F2D4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:00:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729008AbhALK5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:57:04 -0500
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:58637 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725922AbhALK5D (ORCPT
+        id S1729330AbhALK7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:59:23 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:43652 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728408AbhALK7X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:57:03 -0500
-Date:   Tue, 12 Jan 2021 10:56:06 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610448975; bh=o4WjqD8WRsgGX3zA0kQjiOkl+6TXdpW90sXH0o/3bao=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=mpXD/HtGnvzYArAWrxjXJJC6+7EgBZTl4SI5oarD8YmnknRdQ+vrY3gRp6AQdaUHY
-         Eh8KFg8WnJg0Mpsv7OUGKokRP1CSj5arakiy47gN6YjJVgxPgUYNhFk76nJ5ykwUMG
-         +6tjYUIvWEXzS9jmtf8MBVsc9KKYPJsy3wyznQxmH4YnuRSbmL7GjHUV5YhSORarh7
-         JBfDQzq8jkWok3U67UA4H3b7aS+iZiCosw/h7oPNM0u32dSwJs5/KaFNG1pPDQJPXa
-         sF46v1qJO0+OzKzC/IDGUFEhdGSesX6P0wMquQqx7/h5CVeyQaxkr4WHzdceuO86DU
-         It+dsY+WdgkpA==
-To:     Eric Dumazet <edumazet@google.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Edward Cree <ecree@solarflare.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH net-next 0/5] skbuff: introduce skbuff_heads bulking and reusing
-Message-ID: <20210112105529.3592-1-alobakin@pm.me>
-In-Reply-To: <CANn89iKceTG_Mm4RrF+WVg-EEoFBD48gwpWX=GQiNdNnj2R8+A@mail.gmail.com>
-References: <20210111182655.12159-1-alobakin@pm.me> <CANn89iKceTG_Mm4RrF+WVg-EEoFBD48gwpWX=GQiNdNnj2R8+A@mail.gmail.com>
+        Tue, 12 Jan 2021 05:59:23 -0500
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A64FB3E;
+        Tue, 12 Jan 2021 11:58:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1610449121;
+        bh=CCfbuA+r2tIMrlA1E/LBA6v26EJY+NUVPeqpdub5tew=;
+        h=Subject:To:Cc:References:From:Reply-To:Date:In-Reply-To:From;
+        b=mavKWEhJ2IgFbc6cgxi6IW7rJdGPqpQzSOn8vvw+f3sJ5UB4qe7vTGdz4ucMBoRac
+         2yZ0kIwHBe9pbWk5PflCHkxeqDvPC2o3iyxwuw7lAppW8avA5jx4Mgo7mYph4ifocM
+         3Xtzz5jV4u1tQ1o7pF5Jixy51hIk5rpL0+ucbxxU=
+Subject: Re: [PATCH 4/9] media: fdp1: Do not zero reserved fields
+To:     Ricardo Ribalda <ribalda@chromium.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org
+References: <20210111145445.28854-1-ribalda@chromium.org>
+ <20210111145445.28854-5-ribalda@chromium.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Organization: Ideas on Board
+Message-ID: <c0f4e1ad-ffb9-5d0c-dfed-4c0772b2097b@ideasonboard.com>
+Date:   Tue, 12 Jan 2021 10:58:38 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210111145445.28854-5-ribalda@chromium.org>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
-Date: Tue, 12 Jan 2021 09:20:39 +0100
+Hi Ricardo,
 
-> On Mon, Jan 11, 2021 at 7:27 PM Alexander Lobakin <alobakin@pm.me> wrote:
->>
->> Inspired by cpu_map_kthread_run() and _kfree_skb_defer() logics.
->>
->> Currently, all sorts of skb allocation always do allocate
->> skbuff_heads one by one via kmem_cache_alloc().
->> On the other hand, we have percpu napi_alloc_cache to store
->> skbuff_heads queued up for freeing and flush them by bulks.
->>
->> We can use this struct to cache and bulk not only freeing, but also
->> allocation of new skbuff_heads, as well as to reuse cached-to-free
->> heads instead of allocating the new ones.
->> As accessing napi_alloc_cache implies NAPI softirq context, do this
->> only for __napi_alloc_skb() and its derivatives (napi_alloc_skb()
->> and napi_get_frags()). The rough amount of their call sites are 69,
->> which is quite a number.
->>
->> iperf3 showed a nice bump from 910 to 935 Mbits while performing
->> UDP VLAN NAT on 1.2 GHz MIPS board. The boost is likely to be
->> way bigger on more powerful hosts and NICs with tens of Mpps.
->
-> What is the latency cost of these bulk allocations, and for TCP traffic
-> on which GRO is the norm ?
->
-> Adding caches is increasing cache foot print when the cache is populated.
->
-> I wonder if your iperf3 numbers are simply wrong because of lack of
-> GRO in this UDP VLAN NAT case.
+On 11/01/2021 14:54, Ricardo Ribalda wrote:
+> Core code already clears reserved fields of struct
+> v4l2_pix_format_mplane, check: 4e1e0eb0e074 ("media: v4l2-ioctl: Zero
+> v4l2_plane_pix_format reserved fields").
+> 
+> Cc: linux-renesas-soc@vger.kernel.org
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 
-Ah, I should've mentioned that I use UDP GRO Fraglists, so these
-numbers are for GRO.
+I love a good cleanup series.
 
-My board gives full 1 Gbps (link speed) for TCP for more than a year,
-so I can't really rely on TCP passthrough to measure the gains or
-regressions.
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 
-> We are adding a log of additional code, thus icache pressure, that
-> iperf3 tests can not really measure.
-
-Not sure if MIPS arch can provide enough debug information to measure
-icache pressure, but I'll try to catch this.
-
-> Most linus devices simply handle one packet at a time (one packet per int=
-errupt)
-
-I disagree here, most modern NICs usually handle thousands of packets
-per single interrupt due to NAPI, hardware interrupt moderation and so
-on, at least in cases with high traffic load.
-
-Al
+> ---
+>  drivers/media/platform/rcar_fdp1.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/drivers/media/platform/rcar_fdp1.c b/drivers/media/platform/rcar_fdp1.c
+> index c9448de885b6..01c1fbb97bf6 100644
+> --- a/drivers/media/platform/rcar_fdp1.c
+> +++ b/drivers/media/platform/rcar_fdp1.c
+> @@ -1439,8 +1439,6 @@ static void fdp1_compute_stride(struct v4l2_pix_format_mplane *pix,
+>  		pix->plane_fmt[i].sizeimage = pix->plane_fmt[i].bytesperline
+>  					    * pix->height / vsub;
+>  
+> -		memset(pix->plane_fmt[i].reserved, 0,
+> -		       sizeof(pix->plane_fmt[i].reserved));
+>  	}
+>  
+>  	if (fmt->num_planes == 3) {
+> @@ -1448,8 +1446,6 @@ static void fdp1_compute_stride(struct v4l2_pix_format_mplane *pix,
+>  		pix->plane_fmt[2].bytesperline = pix->plane_fmt[1].bytesperline;
+>  		pix->plane_fmt[2].sizeimage = pix->plane_fmt[1].sizeimage;
+>  
+> -		memset(pix->plane_fmt[2].reserved, 0,
+> -		       sizeof(pix->plane_fmt[2].reserved));
+>  	}
+>  }
+>  
+> 
 
