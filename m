@@ -2,72 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA35F2F3486
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B50F2F3492
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405494AbhALPqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 10:46:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405024AbhALPqa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:46:30 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D9F7C061794;
-        Tue, 12 Jan 2021 07:45:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tfwxIDtMqAgAUDQmeJmrWGnzpnGwIT85fqp5Ou8YLLs=; b=XUvZ+bTpFqTYLNZZcVSxa8sa3V
-        lvGTwXTf1bM05tkVLrOg+7/aOIZyhFss9DbJOBa5er3YjzzVPxr34RwxV/rh2BrF4SYEkhBvAFQQ4
-        aU6HbNuG0hNWi0Sk9n55yid+MEY7ymcpmtkzjCiz7IaKA7RwSbiltmvMd0Y1zJpDT8utFJ1UMjZ8d
-        hGES9mU5RjqOGStOcRkKBQVkAG73P8nyvA08cBRQRVn7CZZzrZTtCYcXQYljNDvBpRfghmTRyKauK
-        JvuFO388o5TXpRFrwB5MG3i7d+mEZCmThvWi03yhn0KkmqP00obN+JMhkZ7EMc+s7UePs/Ir/0IqJ
-        D0A7G20A==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1kzLr6-004ykN-S4; Tue, 12 Jan 2021 15:45:16 +0000
-Date:   Tue, 12 Jan 2021 15:45:12 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        John Garry <john.garry@huawei.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        linux-scsi@vger.kernel.org, intel-linux-scu@intel.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>
-Subject: Re: [PATCH v2 03/19] scsi: libsas: Introduce a _gfp() variant of
- event notifiers
-Message-ID: <20210112154512.GB1185705@infradead.org>
-References: <20210112110647.627783-1-a.darwish@linutronix.de>
- <20210112110647.627783-4-a.darwish@linutronix.de>
+        id S2405715AbhALPsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 10:48:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36772 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405550AbhALPsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 10:48:03 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E6FCEAC24;
+        Tue, 12 Jan 2021 15:47:21 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 93EADDA87C; Tue, 12 Jan 2021 16:45:29 +0100 (CET)
+Date:   Tue, 12 Jan 2021 16:45:29 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        =?iso-8859-1?Q?Ren=E9?= Rebe <rene@exactcode.de>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@intel.com, linux-btrfs@vger.kernel.org
+Subject: Re: [btrfs]  e076ab2a2c:  fio.write_iops -18.3% regression
+Message-ID: <20210112154529.GT6430@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        kernel test robot <oliver.sang@intel.com>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        =?iso-8859-1?Q?Ren=E9?= Rebe <rene@exactcode.de>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@intel.com, linux-btrfs@vger.kernel.org
+References: <20210112153614.GA2015@xsang-OptiPlex-9020>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210112110647.627783-4-a.darwish@linutronix.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210112153614.GA2015@xsang-OptiPlex-9020>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 12:06:31PM +0100, Ahmed S. Darwish wrote:
-> sas_alloc_event() uses in_interrupt() to decide which allocation should
-> be used.
+On Tue, Jan 12, 2021 at 11:36:14PM +0800, kernel test robot wrote:
 > 
-> The usage of in_interrupt() in drivers is phased out and Linus clearly
-> requested that code which changes behaviour depending on context should
-> either be separated or the context be conveyed in an argument passed by
-> the caller, which usually knows the context.
+> Greeting,
 > 
-> The in_interrupt() check is also only partially correct, because it
-> fails to choose the correct code path when just preemption or interrupts
-> are disabled. For example, as in the following call chain:
+> FYI, we noticed a -18.3% regression of fio.write_iops due to commit:
+> 
+> 
+> commit: e076ab2a2ca70a0270232067cd49f76cd92efe64 ("btrfs: shrink delalloc pages instead of full inodes")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> 
+> in testcase: fio-basic
+> on test machine: 192 threads Intel(R) Xeon(R) CPU @ 2.20GHz with 192G memory
+> with following parameters:
+> 
+> 	disk: 1SSD
+> 	fs: btrfs
+> 	runtime: 300s
+> 	nr_task: 8
+> 	rw: randwrite
+> 	bs: 4k
+> 	ioengine: sync
+> 	test_size: 256g
 
-What is the problem with simply adding a gfp_t argument to the existing
-calls?  The end result of this series looks fine, but the way we get
-there looks extremely cumbersome.
+Though I do a similar test (emulating bit torrent workload), it's a bit
+extreme as it's 4k synchronous on a huge file. It always takes a lot of
+time but could point out some concurrency issues namely on faster
+devices. There are 8 threads possibly competing for the same inode lock
+or other locks related to it.
+
+The mentioned commit fixed another perf regression on a much more common
+workload (untgrring files), so at this point drop in this fio workload
+is inevitable.
