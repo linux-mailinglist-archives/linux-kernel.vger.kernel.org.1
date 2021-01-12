@@ -2,87 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B43E22F3434
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1062F3433
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391689AbhALPeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 10:34:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731029AbhALPeK (ORCPT
+        id S2391603AbhALPdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 10:33:17 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:24472 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391179AbhALPdQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:34:10 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E38C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 07:33:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IidWsm3K3031BfekPBZ8zSws05SHAizn385jOXLdDos=; b=gKOt7w1et6e7bA+pKojtARVyP6
-        hweCd32OtX8RoWxTxp1YxPOn8tV6Gj+d7QJRXl77g4s+bY+CUJu0jH32atLDDGpzU6IPiVifWWmyh
-        +kkOrWxig6X3B9filmPFSQc1zm28wZhwO7YQGorHEqBfMgqqu+Dh6BNWe7ta+sxZHJfyGvRp2ffaZ
-        wE9KUZ1qfOO3bDU2YwTtGLomJFMzzrAgIQndAikWRcQbizPafTmHBmawaIdu9HrkQRu0mWKcHsx0e
-        Oz8bXP9ROOHoBpfUkq6tQJ+AnOSfG9BpH22Trx8XP7wgnT+KXPKqBBb/gWhp1N6vbjByFOLVI8HQr
-        zRNX1yLQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1kzLep-004xsL-Cc; Tue, 12 Jan 2021 15:32:48 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C1BD13006E0;
-        Tue, 12 Jan 2021 16:32:30 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B4CC0210710A6; Tue, 12 Jan 2021 16:32:30 +0100 (CET)
-Date:   Tue, 12 Jan 2021 16:32:30 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Will Deacon <will@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [RFC] perf/x86: Only expose userspace rdpmc for events on
- current CPU
-Message-ID: <X/3BDlQxTCYd2HJs@hirez.programming.kicks-ass.net>
-References: <20210108000136.1556129-1-robh@kernel.org>
+        Tue, 12 Jan 2021 10:33:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1610465596; x=1642001596;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=JDPIKNpUfMouZDE35ymGPDTmPuZB5DYUz5cKwyz4ctY=;
+  b=E7yLHDVoPlHGE/jXnRQl7PFtbIzsk6R54Tu5WOL/J5WKhtSJkhe3uDKm
+   x7rYAGgxZnwfn/nEyE+oVIo7lDXuZnPH0VdBA0iMZzluQotZs8Lt62G6n
+   uSHWj7Zw7um5I/synML3z7/i0WL4nLPEnPLxH85ueZsneU+DzvNzOEOPk
+   w8DXbGyO7OCwygaKUkaoaUvR5KzLMH4/mD3qqz7xzrZEcHmcJdNWkSaQ4
+   0u7wgmE8eDgNCoF2MTihWj8dwP+2aRnUEr7vxzLY7BxpgVBS+yHIA+zXY
+   wQebM0XFIR5Je/5rFtPAcWwq7G28b31zAzGsy1patPL+EwiuO02Z44Ih2
+   Q==;
+IronPort-SDR: ApxVNn76jNN4P13tTDERPXdYhwY8j2KRBhuNneIbdAm5KfQj4XztuqoJmEBmrofAmKMqeiI3pp
+ hAEi/BZvTgO1WRWhJdKIlszekLqCIX1add59XAHn44goNTejgwKqyGLbu+HHT5tSNCn2HPFOWj
+ ZdqEp0w25+rmlaIX+J7Totut4h0bwiXdCmy5D1z0RW8u7vjbaIahhKVycI8ZHu4b+vgzHXYoPt
+ 4YxobQ13Q0ZXsE7pyvMwW+8Ecg5b+V9KdbRQE9g54hcAoRXHVojj02ji+atqbRITWpFwNeKpgQ
+ eFk=
+X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
+   d="scan'208";a="105694336"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Jan 2021 08:32:55 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 12 Jan 2021 08:32:55 -0700
+Received: from soft-dev2 (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 12 Jan 2021 08:32:53 -0700
+Message-ID: <8c4296f5500be69ad0d8e2662f37d97a17aaa3e5.camel@microchip.com>
+Subject: Re: [PATCH v1 1/2] net: phy: Add 100 base-x mode
+From:   Bjarni Jonasson <bjarni.jonasson@microchip.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+CC:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
+Date:   Tue, 12 Jan 2021 16:32:52 +0100
+In-Reply-To: <20210111164704.GX1551@shell.armlinux.org.uk>
+References: <20210111130657.10703-1-bjarni.jonasson@microchip.com>
+         <20210111130657.10703-2-bjarni.jonasson@microchip.com>
+         <20210111164704.GX1551@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108000136.1556129-1-robh@kernel.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 05:01:36PM -0700, Rob Herring wrote:
-> Userspace access using rdpmc only makes sense if the event is valid for
-> the current CPU. However, cap_user_rdpmc is currently set no matter which
-> CPU the event is associated with. The result is userspace reading another
-> CPU's event thinks it can use rdpmc to read the counter. In doing so, the
-> wrong counter will be read.
+On Mon, 2021-01-11 at 16:47 +0000, Russell King - ARM Linux admin
+wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you
+> know the content is safe
+> 
+> On Mon, Jan 11, 2021 at 02:06:56PM +0100, Bjarni Jonasson wrote:
+> > Sparx-5 supports this mode and it is missing in the PHY core.
+> > 
+> > Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
+> 
+> Oh, I forgot - please can we have the new PHY mode documented in
+> Documentation/networking/phy.rst under the "PHY interface modes"
+> section. Thanks.
+> --
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
 
-Don't do that then?
+Will do that.
+--
+Bjarni Jonasson
 
-> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-> index a88c94d65693..6e6d4c1d03ca 100644
-> --- a/arch/x86/events/core.c
-> +++ b/arch/x86/events/core.c
-> @@ -2490,7 +2490,8 @@ void arch_perf_update_userpage(struct perf_event *event,
->  	userpg->cap_user_time = 0;
->  	userpg->cap_user_time_zero = 0;
->  	userpg->cap_user_rdpmc =
-> -		!!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED);
-> +		!!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED) &&
-> +		(event->oncpu == smp_processor_id());
->  	userpg->pmc_width = x86_pmu.cntval_bits;
->  
->  	if (!using_native_sched_clock() || !sched_clock_stable())
-
-Isn't that a nop? That is, from the few sites I checked, we're always
-calling this on the event's CPU.
