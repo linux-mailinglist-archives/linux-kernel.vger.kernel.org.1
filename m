@@ -2,296 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C88062F25FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:03:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3502F25F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:01:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732224AbhALCBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 21:01:39 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11092 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730698AbhALCBh (ORCPT
+        id S1729879AbhALCAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 21:00:17 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10650 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726076AbhALCAQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 21:01:37 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DFDKR0Jr4zMJ6R;
-        Tue, 12 Jan 2021 09:59:39 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.176.220) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 12 Jan 2021 10:00:45 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Russell King <rmk+kernel@arm.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        "Haojian Zhuang" <haojian.zhuang@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v3 3/3] ARM: Add Hisilicon L3 cache controller support
-Date:   Tue, 12 Jan 2021 09:56:02 +0800
-Message-ID: <20210112015602.497-4-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210112015602.497-1-thunder.leizhen@huawei.com>
-References: <20210112015602.497-1-thunder.leizhen@huawei.com>
+        Mon, 11 Jan 2021 21:00:16 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DFDJC24Dgz15rhs;
+        Tue, 12 Jan 2021 09:58:35 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Tue, 12 Jan 2021
+ 09:59:28 +0800
+From:   Longfang Liu <liulongfang@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <stern@rowland.harvard.edu>
+CC:     <linux-usb@vger.kernel.org>, <yisen.zhuang@huawei.com>,
+        <kong.kongxinwei@hisilicon.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] USB:ehci:fix an interrupt calltrace error
+Date:   Tue, 12 Jan 2021 09:57:27 +0800
+Message-ID: <1610416647-45774-1-git-send-email-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.176.220]
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support for the Hisilicon L3 cache controller as used with Hi1215 and
-Hi1381.
+The system that use Synopsys USB host controllers goes to suspend
+when using USB audio player. This causes the USB host controller
+continuous send interrupt signal to system, When the number of
+interrupts exceeds 100000, the system will forcibly close the
+interrupts and output a calltrace error.
 
-These Hisilicon SoCs support LPAE, so the physical addresses is wider than
-32-bits, but the actual bit width does not exceed 36 bits. When the cache
-operation is performed based on the address range, the upper 30 bits of
-the physical address are recorded in registers L3_MAINT_START and
-L3_MAINT_END, and ignore the lower 6 bits cacheline offset.
+When the system goes to suspend, the last interrupt is reported to
+the driver. At this time, the system has set the state to suspend.
+This causes the last interrupt to not be processed by the system and
+not clear the interrupt flag. This uncleared interrupt flag constantly
+triggers new interrupt event. This causing the driver to receive more
+than 100,000 interrupts, which causes the system to forcibly close the
+interrupt report and report the calltrace error.
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+so, when the driver goes to sleep and changes the system state to
+suspend, the interrupt flag needs to be cleared.
+
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+Acked-by: Alan Stern <stern@rowland.harvard.edu>
 ---
- arch/arm/mm/Kconfig         |   9 +++
- arch/arm/mm/Makefile        |   1 +
- arch/arm/mm/cache-hisi-l3.c | 153 ++++++++++++++++++++++++++++++++++++
- arch/arm/mm/cache-hisi-l3.h |  30 +++++++
- 4 files changed, 193 insertions(+)
- create mode 100644 arch/arm/mm/cache-hisi-l3.c
- create mode 100644 arch/arm/mm/cache-hisi-l3.h
 
-diff --git a/arch/arm/mm/Kconfig b/arch/arm/mm/Kconfig
-index 02692fbe2db5c59..73cd28419d731df 100644
---- a/arch/arm/mm/Kconfig
-+++ b/arch/arm/mm/Kconfig
-@@ -1070,6 +1070,15 @@ config CACHE_XSC3L2
- 	help
- 	  This option enables the L2 cache on XScale3.
+Changes in v2:
+- updated cleared registers
+
+ drivers/usb/host/ehci-hub.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/usb/host/ehci-hub.c b/drivers/usb/host/ehci-hub.c
+index ce0eaf7..6dfbba1 100644
+--- a/drivers/usb/host/ehci-hub.c
++++ b/drivers/usb/host/ehci-hub.c
+@@ -346,6 +346,9 @@ static int ehci_bus_suspend (struct usb_hcd *hcd)
  
-+config CACHE_HISI_L3
-+	bool "Enable the L3 cache on Hisilicon SoCs"
-+	depends on ARCH_HISI && OF
-+	default y
-+	select OUTER_CACHE
-+	help
-+	  This option enables the L3 cache on Hisilicon SoCs. It supports a maximum
-+	  of 36-bit physical addresses.
-+
- config ARM_L1_CACHE_SHIFT_6
- 	bool
- 	default y if CPU_V7
-diff --git a/arch/arm/mm/Makefile b/arch/arm/mm/Makefile
-index 3510503bc5e688b..745d55ecb2ed4fd 100644
---- a/arch/arm/mm/Makefile
-+++ b/arch/arm/mm/Makefile
-@@ -112,6 +112,7 @@ obj-$(CONFIG_CACHE_L2X0_PMU)	+= cache-l2x0-pmu.o
- obj-$(CONFIG_CACHE_XSC3L2)	+= cache-xsc3l2.o
- obj-$(CONFIG_CACHE_TAUROS2)	+= cache-tauros2.o
- obj-$(CONFIG_CACHE_UNIPHIER)	+= cache-uniphier.o
-+obj-$(CONFIG_CACHE_HISI_L3)	+= cache-hisi-l3.o
+ 	unlink_empty_async_suspended(ehci);
  
- KASAN_SANITIZE_kasan_init.o	:= n
- obj-$(CONFIG_KASAN)		+= kasan_init.o
-diff --git a/arch/arm/mm/cache-hisi-l3.c b/arch/arm/mm/cache-hisi-l3.c
-new file mode 100644
-index 000000000000000..7aa590f378a1ef3
---- /dev/null
-+++ b/arch/arm/mm/cache-hisi-l3.c
-@@ -0,0 +1,153 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2021 Hisilicon Limited.
-+ */
++	/* Some Synopsys controllers mistakenly leave IAA turned on */
++	ehci_writel(ehci, STS_IAA, &ehci->regs->status);
 +
-+#include <linux/init.h>
-+#include <linux/spinlock.h>
-+#include <linux/io.h>
-+#include <linux/of_address.h>
-+
-+#include <asm/cacheflush.h>
-+
-+#include "cache-hisi-l3.h"
-+
-+static DEFINE_SPINLOCK(l3cache_lock);
-+static void __iomem *l3_ctrl_base;
-+
-+
-+static void l3cache_maint_common(u32 range, u32 op_type)
-+{
-+	u32 reg;
-+
-+	reg = readl(l3_ctrl_base + L3_MAINT_CTRL);
-+	reg &= ~(L3_MAINT_RANGE_MASK | L3_MAINT_TYPE_MASK);
-+	reg |= range | op_type;
-+	reg |= L3_MAINT_STATUS_START;
-+	writel(reg, l3_ctrl_base + L3_MAINT_CTRL);
-+
-+	/* Wait until the hardware maintenance operation is complete. */
-+	do {
-+		cpu_relax();
-+		reg = readl(l3_ctrl_base + L3_MAINT_CTRL);
-+	} while ((reg & L3_MAINT_STATUS_MASK) != L3_MAINT_STATUS_END);
-+}
-+
-+static void l3cache_maint_range(phys_addr_t start, phys_addr_t end, u32 op_type)
-+{
-+	start = start >> L3_CACHE_LINE_SHITF;
-+	end = ((end - 1) >> L3_CACHE_LINE_SHITF) + 1;
-+
-+	writel(start, l3_ctrl_base + L3_MAINT_START);
-+	writel(end, l3_ctrl_base + L3_MAINT_END);
-+
-+	l3cache_maint_common(L3_MAINT_RANGE_ADDR, op_type);
-+}
-+
-+static inline void l3cache_flush_all_nolock(void)
-+{
-+	l3cache_maint_common(L3_MAINT_RANGE_ALL, L3_MAINT_TYPE_FLUSH);
-+}
-+
-+static void l3cache_flush_all(void)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&l3cache_lock, flags);
-+	l3cache_flush_all_nolock();
-+	spin_unlock_irqrestore(&l3cache_lock, flags);
-+}
-+
-+static void l3cache_inv_range(phys_addr_t start, phys_addr_t end)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&l3cache_lock, flags);
-+	l3cache_maint_range(start, end, L3_MAINT_TYPE_INV);
-+	spin_unlock_irqrestore(&l3cache_lock, flags);
-+}
-+
-+static void l3cache_clean_range(phys_addr_t start, phys_addr_t end)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&l3cache_lock, flags);
-+	l3cache_maint_range(start, end, L3_MAINT_TYPE_CLEAN);
-+	spin_unlock_irqrestore(&l3cache_lock, flags);
-+}
-+
-+static void l3cache_flush_range(phys_addr_t start, phys_addr_t end)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&l3cache_lock, flags);
-+	l3cache_maint_range(start, end, L3_MAINT_TYPE_FLUSH);
-+	spin_unlock_irqrestore(&l3cache_lock, flags);
-+}
-+
-+static void l3cache_disable(void)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&l3cache_lock, flags);
-+	l3cache_flush_all_nolock();
-+	writel(L3_CTRL_DISABLE, l3_ctrl_base + L3_CTRL);
-+	spin_unlock_irqrestore(&l3cache_lock, flags);
-+}
-+
-+static const struct of_device_id l3cache_ids[] __initconst = {
-+	{.compatible = "hisilicon,l3cache", .data = NULL},
-+	{}
-+};
-+
-+static int __init l3cache_init(void)
-+{
-+	u32 reg;
-+	struct device_node *node;
-+
-+	node = of_find_matching_node(NULL, l3cache_ids);
-+	if (!node)
-+		return -ENODEV;
-+
-+	l3_ctrl_base = of_iomap(node, 0);
-+	if (!l3_ctrl_base) {
-+		pr_err("failed to map l3cache control registers\n");
-+		return -ENOMEM;
-+	}
-+
-+	reg = readl(l3_ctrl_base + L3_CTRL);
-+	if (!(reg & L3_CTRL_ENABLE)) {
-+		unsigned long flags;
-+
-+		spin_lock_irqsave(&l3cache_lock, flags);
-+
-+		/*
-+		 * Ensure that no L3 cache hardware maintenance operations are
-+		 * being performed before enabling the L3 cache. Wait for it to
-+		 * finish.
-+		 */
-+		do {
-+			cpu_relax();
-+			reg = readl(l3_ctrl_base + L3_MAINT_CTRL);
-+		} while ((reg & L3_MAINT_STATUS_MASK) != L3_MAINT_STATUS_END);
-+
-+		reg = readl(l3_ctrl_base + L3_AUCTRL);
-+		reg |= L3_AUCTRL_EVENT_EN | L3_AUCTRL_ECC_EN;
-+		writel(reg, l3_ctrl_base + L3_AUCTRL);
-+
-+		writel(L3_CTRL_ENABLE, l3_ctrl_base + L3_CTRL);
-+
-+		spin_unlock_irqrestore(&l3cache_lock, flags);
-+	}
-+
-+	outer_cache.inv_range = l3cache_inv_range;
-+	outer_cache.clean_range = l3cache_clean_range;
-+	outer_cache.flush_range = l3cache_flush_range;
-+	outer_cache.flush_all = l3cache_flush_all;
-+	outer_cache.disable = l3cache_disable;
-+
-+	pr_info("Hisilicon l3cache controller enabled\n");
-+
-+	return 0;
-+}
-+arch_initcall(l3cache_init);
-diff --git a/arch/arm/mm/cache-hisi-l3.h b/arch/arm/mm/cache-hisi-l3.h
-new file mode 100644
-index 000000000000000..6ec3ee21ae01417
---- /dev/null
-+++ b/arch/arm/mm/cache-hisi-l3.h
-@@ -0,0 +1,30 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __CACHE_HISI_L3_H
-+#define __CACHE_HISI_L3_H
-+
-+#define L3_CACHE_LINE_SHITF		6
-+
-+#define L3_CTRL				0x0
-+#define L3_CTRL_ENABLE			(1U << 0)
-+#define L3_CTRL_DISABLE			(0U << 0)
-+
-+#define L3_AUCTRL			0x4
-+#define L3_AUCTRL_EVENT_EN		BIT(23)
-+#define L3_AUCTRL_ECC_EN		BIT(8)
-+
-+#define L3_MAINT_CTRL			0x20
-+#define L3_MAINT_RANGE_MASK		GENMASK(3, 3)
-+#define L3_MAINT_RANGE_ALL		(0U << 3)
-+#define L3_MAINT_RANGE_ADDR		(1U << 3)
-+#define L3_MAINT_TYPE_MASK		GENMASK(2, 1)
-+#define L3_MAINT_TYPE_CLEAN		(1U << 1)
-+#define L3_MAINT_TYPE_INV		(2U << 1)
-+#define L3_MAINT_TYPE_FLUSH		(3U << 1)
-+#define L3_MAINT_STATUS_MASK		GENMASK(0, 0)
-+#define L3_MAINT_STATUS_START		(1U << 0)
-+#define L3_MAINT_STATUS_END		(0U << 0)
-+
-+#define L3_MAINT_START			0x24
-+#define L3_MAINT_END			0x28
-+
-+#endif
+ 	/* Any IAA cycle that started before the suspend is now invalid */
+ 	end_iaa_cycle(ehci);
+ 	ehci_handle_start_intr_unlinks(ehci);
 -- 
-2.26.0.106.g9fadedd
-
+2.8.1
 
