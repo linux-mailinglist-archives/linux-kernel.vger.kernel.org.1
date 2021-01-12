@@ -2,80 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E17A2F346F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:46:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51FA42F3480
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:46:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405080AbhALPoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 10:44:07 -0500
-Received: from www62.your-server.de ([213.133.104.62]:56640 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404536AbhALPoD (ORCPT
+        id S2405428AbhALPov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 10:44:51 -0500
+Received: from bmail1.ministro.hu ([5.249.150.236]:50358 "EHLO
+        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405331AbhALPou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:44:03 -0500
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kzLpI-000Dp0-KM; Tue, 12 Jan 2021 16:43:20 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kzLpI-000KzU-Bo; Tue, 12 Jan 2021 16:43:20 +0100
-Subject: Re: [PATCH 2/2] selftests/bpf: add verifier test for PTR_TO_MEM spill
-To:     Gilad Reti <gilad.reti@gmail.com>, KP Singh <kpsingh@kernel.org>
-Cc:     bpf <bpf@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kselftest@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210112091545.10535-1-gilad.reti@gmail.com>
- <CACYkzJ69serkHRymzDEAcQ-_KAdHA+RxP4qpAwzGmppWUxYeQQ@mail.gmail.com>
- <CANaYP3G_39cWx_L5Xs3tf1k4Vj9JSHcsr+qzNQN-dcY3qvT8Yg@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <60034a79-573f-125c-76b0-17e04941a155@iogearbox.net>
-Date:   Tue, 12 Jan 2021 16:43:19 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Tue, 12 Jan 2021 10:44:50 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTP id D345411FFAC;
+        Tue, 12 Jan 2021 16:44:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1610466246;
+        bh=3TX/Z1vZrcZZBHoWafk0q6dH5DN3BAFkYepRrsCGr/o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t8cbdjLQ89rbUgkVk9z8PkgZbbgYAW9vl0Dv86mTiCWcGPv/Dj+pjOqBi3NB0fTuF
+         /n//kQ/AnGo4DFvJBiCXlFTTcVcY0M6ri8+lXudkIgazZncXR/wCs52vhF3FiRnFPY
+         zO0b9jEl/fYuA+3fHGjCjvlaFThBs4uNzCxvQo/IDgNKOGx9OUF1YOYW+No0MDJCue
+         mLLCwlYmW3h2VjEdg7C39pTjCXrAPGd/dO4PMag3xn1jteZQG4qBroUMhkgmkBaIXO
+         tNdZHqgbBRsRGbNKs2cfhBfau/50277SpWg/XbEylRhYYRW4XrfEYuV51ljaH+JI88
+         gvjowQCXU4XxQ==
+X-Virus-Scanned: Debian amavisd-new at ministro.hu
+Received: from bmail1.ministro.hu ([127.0.0.1])
+        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id qA9P9RacV8pr; Tue, 12 Jan 2021 16:43:25 +0100 (CET)
+Received: from dev (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTPSA id 8D76A11FFA8;
+        Tue, 12 Jan 2021 16:43:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1610466205;
+        bh=3TX/Z1vZrcZZBHoWafk0q6dH5DN3BAFkYepRrsCGr/o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZvX6vEAsQW6sv3luqhPCO4dntvcSBoApIDmmhuOe/X2Pvd6adOcnL0p1V3hKnFxiL
+         YPXVKqXdWwEiJYsLD3S6qFcl9ZB8Hu24tkuo0PHJMWXSWuyBR2iZEXt1r3KWXwF3nY
+         Id4VIat0lElQKqr+9FZEGYgqLvYdNNC3LAzAsxqDvI0y3f96PoOZAzeercRqasHNgO
+         WExnH9NWMoZx6SUTg+Jez5Dw1kZWPFHfTyl87RXAxAgvf1GxirDaPLmRoi94XaajOA
+         ME9ddlIBh6AoNcM6CQQ4syNI75sZorCwDCKj9GVavBUsP9CPp3i2exlbO7E6/T3oyj
+         pZ4MF8hrdKdOg==
+Date:   Tue, 12 Jan 2021 15:43:22 +0000
+From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
+Cc:     'Rob Herring' <robh+dt@kernel.org>,
+        'Jiri Slaby' <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 1/2] Serial: silabs si4455 serial driver
+Message-ID: <20210112154322.GA31198@dev>
+References: <20210112101831.GA12483@dev>
+ <X/15uOstG/7bj2Lm@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <CANaYP3G_39cWx_L5Xs3tf1k4Vj9JSHcsr+qzNQN-dcY3qvT8Yg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26047/Tue Jan 12 13:33:56 2021)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <X/15uOstG/7bj2Lm@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/12/21 4:35 PM, Gilad Reti wrote:
-> On Tue, Jan 12, 2021 at 4:56 PM KP Singh <kpsingh@kernel.org> wrote:
->> On Tue, Jan 12, 2021 at 10:16 AM Gilad Reti <gilad.reti@gmail.com> wrote:
->>>
->>> Add test to check that the verifier is able to recognize spilling of
->>> PTR_TO_MEM registers.
->>
->> It would be nice to have some explanation of what the test does to
->> recognize the spilling of the PTR_TO_MEM registers in the commit
->> log as well.
->>
->> Would it be possible to augment an existing test_progs
->> program like tools/testing/selftests/bpf/progs/test_ringbuf.c to test
->> this functionality?
-
-How would you guarantee that LLVM generates the spill/fill, via inline asm?
-
-> It may be possible, but from what I understood from Daniel's comment here
+On Tue, Jan 12, 2021 at 11:28:08AM +0100, 'Greg Kroah-Hartman' wrote:
+> On Tue, Jan 12, 2021 at 10:18:33AM +0000, Jozsef Horvath wrote:
+> > --- a/include/uapi/linux/serial_core.h
+> > +++ b/include/uapi/linux/serial_core.h
+> > @@ -279,4 +279,7 @@
+> >  /* Freescale LINFlexD UART */
+> >  #define PORT_LINFLEXUART	122
+> >  
+> > +/* Silicon Labs SI4455 */
+> > +#define PORT_SI4455     123
 > 
-> https://lore.kernel.org/bpf/17629073-4fab-a922-ecc3-25b019960f44@iogearbox.net/
-> 
-> the test should be a part of the verifier tests (which is reasonable
-> to me since it is
-> a verifier bugfix)
+> What userspace tool is going to need this value?
 
-Yeah, the test_verifier case as you have is definitely the most straight
-forward way to add coverage in this case.
+The PORT_SI4455 is defined for using as port type value in struct uart_port.
+I checked other serial drivers under drivers/tty/serial and the port types
+used by serial drivers are defined in two places:
+
+include/uapi/linux/serial_core.h
+include/uapi/linux/serial.h
+
+The port type is required by serial_core, and its value goes back to
+user space with TIOCGSERIAL ioctl call.
+
+I can't set port type value to 0(PORT_UNKNOWN).
+I think my drivers source is not the best place to defining PORT_SI4455,
+ but I can't find better place then include/uapi/linux/serial_core.h
+
+Could you please help me where is the correct location for this definition?
+
+
+> 
+> thanks,
+> 
+> greg k-h
+
+Üdvözlettel / Best regards:
+József Horváth
+
