@@ -2,44 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4D052F2B6E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D84A2F2B6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:36:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392666AbhALJfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:35:19 -0500
-Received: from mga11.intel.com ([192.55.52.93]:28605 "EHLO mga11.intel.com"
+        id S2392688AbhALJf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:35:28 -0500
+Received: from mga18.intel.com ([134.134.136.126]:57028 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387724AbhALJfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:35:18 -0500
-IronPort-SDR: s1KZ1Rjbm6Kc2JrVjf/N+RsKgHj8mIAMjSXhiBTMPZVW8MXCTL2RGvtpLb/9WXm4wFZmVnKZFv
- QBGIQDRF9Gvw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="174503021"
+        id S2387724AbhALJfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 04:35:23 -0500
+IronPort-SDR: P8w34Cw7qQJMumANlJJucebqVzbCLWkOO5ino8aCFBtHIoGwXts0eLGyuLkZnADQ9GirTBNkWM
+ gNQiA5mzMPhA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="165691342"
 X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
-   d="scan'208";a="174503021"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 01:34:37 -0800
-IronPort-SDR: B4o+/ciPzlr45jWPFCMxT/2CPpQmmQQCCI4RCNc6hkk4ShdXdoYjAaUysR+2M53gnVdca6eSyz
- b9FQAcucoTBg==
+   d="scan'208";a="165691342"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 01:34:42 -0800
+IronPort-SDR: KALVxv4kl/bC4nRvYL9sEK1WXA26sL3/CdeeJ3rm/UmQykRn2Gr0fhm/Mye3XZZQOzQd5XOq+3
+ yjZ5udYclLiw==
 X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
-   d="scan'208";a="464460801"
+   d="scan'208";a="363445952"
 Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 01:34:36 -0800
-Subject: [PATCH v2 0/5] mm: Fix pfn_to_online_page() with respect to
- ZONE_DEVICE
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 01:34:42 -0800
+Subject: [PATCH v2 1/5] mm: Move pfn_to_online_page() out of line
 From:   Dan Williams <dan.j.williams@intel.com>
 To:     linux-mm@kvack.org
 Cc:     David Hildenbrand <david@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, stable@vger.kernel.org,
-        Naoya Horiguchi <nao.horiguchi@gmail.com>,
-        Qian Cai <cai@lca.pw>, Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>, vishal.l.verma@intel.com,
         linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
-Date:   Tue, 12 Jan 2021 01:34:36 -0800
-Message-ID: <161044407603.1482714.16630477578392768273.stgit@dwillia2-desk3.amr.corp.intel.com>
+Date:   Tue, 12 Jan 2021 01:34:42 -0800
+Message-ID: <161044408207.1482714.1125458890762969867.stgit@dwillia2-desk3.amr.corp.intel.com>
+In-Reply-To: <161044407603.1482714.16630477578392768273.stgit@dwillia2-desk3.amr.corp.intel.com>
+References: <161044407603.1482714.16630477578392768273.stgit@dwillia2-desk3.amr.corp.intel.com>
 User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -48,56 +42,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes since v1 [1]:
-- Clarify the failing condition in patch 3 (Michal)
-- Clarify how subsection collisions manifest in shipping systems
-  (Michal)
-- Use zone_idx() (Michal)
-- Move section_taint_zone_device() conditions to
-  move_pfn_range_to_zone() (Michal)
-- Fix pfn_to_online_page() to account for pfn_valid() vs
-  pfn_section_valid() confusion (David)
+pfn_to_online_page() is already too large to be a macro or an inline
+function. In anticipation of further logic changes / growth, move it out
+of line.
 
-[1]: http://lore.kernel.org/r/160990599013.2430134.11556277600719835946.stgit@dwillia2-desk3.amr.corp.intel.com
+No functional change, just code movement.
 
+Cc: David Hildenbrand <david@redhat.com>
+Reported-by: Michal Hocko <mhocko@kernel.org>
+Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 ---
+ include/linux/memory_hotplug.h |   17 +----------------
+ mm/memory_hotplug.c            |   16 ++++++++++++++++
+ 2 files changed, 17 insertions(+), 16 deletions(-)
 
-Michal reminds that the discussion about how to ensure pfn-walkers do
-not get confused by ZONE_DEVICE pages never resolved. A pfn-walker that
-uses pfn_to_online_page() may inadvertently translate a pfn as online
-and in the page allocator, when it is offline managed by a ZONE_DEVICE
-mapping (details in Patch 3: ("mm: Teach pfn_to_online_page() about
-ZONE_DEVICE section collisions")).
+diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
+index 15acce5ab106..3d99de0db2dd 100644
+--- a/include/linux/memory_hotplug.h
++++ b/include/linux/memory_hotplug.h
+@@ -16,22 +16,7 @@ struct resource;
+ struct vmem_altmap;
+ 
+ #ifdef CONFIG_MEMORY_HOTPLUG
+-/*
+- * Return page for the valid pfn only if the page is online. All pfn
+- * walkers which rely on the fully initialized page->flags and others
+- * should use this rather than pfn_valid && pfn_to_page
+- */
+-#define pfn_to_online_page(pfn)					   \
+-({								   \
+-	struct page *___page = NULL;				   \
+-	unsigned long ___pfn = pfn;				   \
+-	unsigned long ___nr = pfn_to_section_nr(___pfn);	   \
+-								   \
+-	if (___nr < NR_MEM_SECTIONS && online_section_nr(___nr) && \
+-	    pfn_valid_within(___pfn))				   \
+-		___page = pfn_to_page(___pfn);			   \
+-	___page;						   \
+-})
++struct page *pfn_to_online_page(unsigned long pfn);
+ 
+ /*
+  * Types for free bootmem stored in page->lru.next. These have to be in
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index f9d57b9be8c7..55a69d4396e7 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -300,6 +300,22 @@ static int check_hotplug_memory_addressable(unsigned long pfn,
+ 	return 0;
+ }
+ 
++/*
++ * Return page for the valid pfn only if the page is online. All pfn
++ * walkers which rely on the fully initialized page->flags and others
++ * should use this rather than pfn_valid && pfn_to_page
++ */
++struct page *pfn_to_online_page(unsigned long pfn)
++{
++	unsigned long nr = pfn_to_section_nr(pfn);
++
++	if (nr < NR_MEM_SECTIONS && online_section_nr(nr) &&
++	    pfn_valid_within(pfn))
++		return pfn_to_page(pfn);
++	return NULL;
++}
++EXPORT_SYMBOL_GPL(pfn_to_online_page);
++
+ /*
+  * Reasonably generic function for adding memory.  It is
+  * expected that archs that support memory hotplug will
 
-The 2 proposals under consideration are teach pfn_to_online_page() to be
-precise in the presence of mixed-zone sections, or teach the memory-add
-code to drop the System RAM associated with ZONE_DEVICE collisions. In
-order to not regress memory capacity by a few 10s to 100s of MiB the
-approach taken in this set is to add precision to pfn_to_online_page().
-
-In the course of validating pfn_to_online_page() a couple other fixes
-fell out:
-
-1/ soft_offline_page() fails to drop the reference taken in the
-   madvise(..., MADV_SOFT_OFFLINE) case.
-
-2/ The libnvdimm sysfs attribute visibility code was failing to publish
-   the resource base for memmap=ss!nn defined namespaces. This is needed
-   for the regression test for soft_offline_page().
-
----
-
-Dan Williams (5):
-      mm: Move pfn_to_online_page() out of line
-      mm: Teach pfn_to_online_page() to consider subsection validity
-      mm: Teach pfn_to_online_page() about ZONE_DEVICE section collisions
-      mm: Fix page reference leak in soft_offline_page()
-      libnvdimm/namespace: Fix visibility of namespace resource attribute
-
-
- drivers/nvdimm/namespace_devs.c |   10 +++---
- include/linux/memory_hotplug.h  |   17 +----------
- include/linux/mmzone.h          |   22 +++++++++-----
- mm/memory-failure.c             |   20 ++++++++++---
- mm/memory_hotplug.c             |   62 +++++++++++++++++++++++++++++++++++++++
- 5 files changed, 99 insertions(+), 32 deletions(-)
