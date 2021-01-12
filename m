@@ -2,76 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D56CD2F2D58
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 955942F2D5E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:02:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729134AbhALLBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 06:01:12 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55310 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725922AbhALLBM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:01:12 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1D567AD18;
-        Tue, 12 Jan 2021 11:00:31 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 12:00:28 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>, vishal.l.verma@intel.com,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] mm: Teach pfn_to_online_page() about ZONE_DEVICE
- section collisions
-Message-ID: <20210112110028.GB12956@linux>
-References: <161044407603.1482714.16630477578392768273.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161044409294.1482714.434561066315039753.stgit@dwillia2-desk3.amr.corp.intel.com>
+        id S1729794AbhALLCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:02:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbhALLCv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 06:02:51 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBF61C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 03:02:10 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id u17so3078219iow.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 03:02:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+EW3A5b9Qfm71A7R5e2DVuGK+dJkYonq6m8LtxtzCIo=;
+        b=pWOW4aBDdcbZOaitsfnsoIAlbh/HjVoZbPbqOl67YErSFXP92YAgjjPbjXwL2Dq7Kv
+         PIPEgNBttfXyruCTnBPvz8HO77BefJJZ8lyqk+Ven89bpC11tt6EXxeoTSdFt2VDjFIN
+         0glyf5oXc6OLOOfyGgHaob2JkK/r3ZVw6iCkyB6C1wxbvQpUEvxrBcwbT44hN5R23tXe
+         bYxwuMZcHGdz+ohWoOIvmm1RY5PahW9ODfsBqesVhemB1fLzf2CfqJwG1+VfqYQQ4MDg
+         kLxthR8kddgFeS04G/C9K4zoF87IGxeXaBGZBk8NoexsO0+KfjMqCkmc595hPo2xu/6L
+         Np3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+EW3A5b9Qfm71A7R5e2DVuGK+dJkYonq6m8LtxtzCIo=;
+        b=eQW3TLiLJT3uGB0DIHC1H8tNNd5QP2gBPoFh+t4yYz5fjYTJF3PqAxV9LhtrZzuV94
+         l2DM4qkz9KQm4hJccq9ttsTZujlgiPEXbT5QkC3EMoudK9t/+tV3ClPdjjnhsRVY0Czi
+         3SK5YddX8OYzSqIvH9frYLotz5LRMDk+NrIqhqx54BYWq++aH33/ATLTd/R4vPvZ9FCl
+         dQHVZOcpJGxqCIThKCZu7FielQUinYafdlNHHfIuUhFnQeO47o2tQYvsyRj0glR1alqz
+         pNjg+yo/4ry7f2HLquUAY9a9ksxec9RU1VhN9i04hegQ4k3UCKUYYR90asMPrKJS1n+m
+         +dvA==
+X-Gm-Message-State: AOAM532mSmWgzmlsYaKgDHrTrTYVlQv/bCp8auy7jSC2E0CMN53Xo4Qp
+        s80yw4s6EkmafZyLT3L6lpo=
+X-Google-Smtp-Source: ABdhPJzhQiiSGxoLf1TesAerbFcgwtqDSf2wpPeFPVSm258as10LauPCqwzbgul7YYUOBahCucwJRg==
+X-Received: by 2002:a6b:fd03:: with SMTP id c3mr2893370ioi.64.1610449330332;
+        Tue, 12 Jan 2021 03:02:10 -0800 (PST)
+Received: from localhost.localdomain ([143.244.44.199])
+        by smtp.gmail.com with ESMTPSA id o195sm2254549ila.38.2021.01.12.03.02.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 03:02:09 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     fenghua.yu@intel.com, reinette.chatre@intel.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-kernel@vger.kernel.org, gustavo@embeddedor.com
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH V3] arch: x86: kernel: cpu: Takes a letter away and append a colon to match below stuc member
+Date:   Tue, 12 Jan 2021 16:31:31 +0530
+Message-Id: <20210112110131.23378-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161044409294.1482714.434561066315039753.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 01:34:53AM -0800, Dan Williams wrote:
-> While pfn_to_online_page() is able to determine pfn_valid() at
-> subsection granularity it is not able to reliably determine if a given
-> pfn is also online if the section is mixes ZONE_{NORMAL,MOVABLE} with
-> ZONE_DEVICE. This means that pfn_to_online_page() may return invalid
-> @page objects. For example with a memory map like:
-> 
-> 100000000-1fbffffff : System RAM
->   142000000-143002e16 : Kernel code
->   143200000-143713fff : Kernel rodata
->   143800000-143b15b7f : Kernel data
->   144227000-144ffffff : Kernel bss
-> 1fc000000-2fbffffff : Persistent Memory (legacy)
->   1fc000000-2fbffffff : namespace0.0
-> 
-> This command:
-> 
-> echo 0x1fc000000 > /sys/devices/system/memory/soft_offline_page
-> 
-> ...succeeds when it should fail. When it succeeds it touches
-> an uninitialized page and may crash or cause other damage (see
-> dissolve_free_huge_page()).
+s/kernlfs/kernfs/
+s/@mon_data_kn/@mon_data_kn:/
 
-[...]
- 
-> Because the collision case is rare, and for simplicity, the
-> SECTION_TAINT_ZONE_DEVICE flag is never cleared once set.
-> 
-> Fixes: ba72b4c8cf60 ("mm/sparsemem: support sub-section hotplug")
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Reported-by: Michal Hocko <mhocko@suse.com>
-> Reported-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+Changes from V2: Modified the subject line to match exact change description
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+ arch/x86/kernel/cpu/resctrl/internal.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--- 
-Oscar Salvador
-SUSE L3
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index ee71c47844cb..ef9e2c0809b8 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -142,7 +142,7 @@ enum rdtgrp_mode {
+
+ /**
+  * struct mongroup - store mon group's data in resctrl fs.
+- * @mon_data_kn		kernlfs node for the mon_data directory
++ * @mon_data_kn:		kernfs node for the mon_data directory
+  * @parent:			parent rdtgrp
+  * @crdtgrp_list:		child rdtgroup node list
+  * @rmid:			rmid for this rdtgroup
+--
+2.26.2
+
