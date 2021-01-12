@@ -2,100 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99FF72F2703
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 05:26:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DFB12F270F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 05:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730196AbhALEZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 23:25:58 -0500
-Received: from foss.arm.com ([217.140.110.172]:39824 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726488AbhALEZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 23:25:58 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D9A31042;
-        Mon, 11 Jan 2021 20:25:12 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7EDA23F66E;
-        Mon, 11 Jan 2021 20:25:06 -0800 (PST)
-Subject: Re: [PATCH RFC] virtio-mem: check against memhp_get_pluggable_range()
- which memory we can hotplug
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        catalin.marinas@arm.com, teawater <teawaterz@linux.alibaba.com>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        hca@linux.ibm.com, Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <1608218912-28932-1-git-send-email-anshuman.khandual@arm.com>
- <20210111124140.11423-1-david@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <0d5b797b-8a1c-7ee5-c821-99e065e9c489@arm.com>
-Date:   Tue, 12 Jan 2021 09:55:26 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210111124140.11423-1-david@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1730661AbhALE2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 23:28:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730406AbhALE2r (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 23:28:47 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62D4C061794;
+        Mon, 11 Jan 2021 20:28:06 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id iq13so819130pjb.3;
+        Mon, 11 Jan 2021 20:28:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=ED4ZTcgH+L6zZjCMNVfxWMC//gKIptz3jtsYKqnT/Lk=;
+        b=o1hP0hubgQkovujeTlHJ756uTpGLM8a3tX7Oq+9Zl4FEdxbTkwYm2kvCrBl0pmjWP5
+         7krNeSPYy0QPwPQWACSc4mab3Twte29MwGhye5EFJhW+Ysbo7LoUgHPsxFtOkKrC33ms
+         iAPWW58ZoKs1rW6CSsEy9jaSoUq+/MRg9KyGwjq78U4d6jKnZSFffGHBTzPiRIXK8hgR
+         Q/7k1AFg2sXAI+ymYECIgo+knUu0Ra2Rr+bdpxzcg1BdBYtLVhIuv23wPGro1ibyg65R
+         hryiPa/TcRhMwmKP/Cdv8+NYOkeOsVH6rhmaNgspPhniSBrITyx0onGmGBgBQEvta4Jk
+         Skzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ED4ZTcgH+L6zZjCMNVfxWMC//gKIptz3jtsYKqnT/Lk=;
+        b=n/h+062iBC4UMs1uny9FYBiGNXe04kqBDuUBOAvwyJsK8Mrkshbe5y1t2bqilmFn7t
+         cofaBO/I0EzjltfRwwwMx6GAd7bA8Zwsl1p0oFqaA2z+TgS0BpkHjB/r1m5lt+y3gd6W
+         0QzomLS9dCj+aGRi1WIWSPHEHyIaEZZ6xx5tiSnAynWRrr+w0TRxTGq3eSlKoP1lXbr7
+         FYzc3DMmlsJfhs/2oeuoQ9mhN3r35W++RUKMhQZwVRqqGSkEkf+0EpOoo3yLp76WqO2M
+         rZfB5VKXdZ7iMAca8cOHb2RIPQHo4mxRd4MdPBOyzbth+XFFAltvbpfZfC71WOVRKCoP
+         oFFA==
+X-Gm-Message-State: AOAM533iBOM3AmJghe56xHHeGPGY64Wma5qVlfw1v4QNwg2HYBiO245b
+        jR56QNM62vjxfYli6WZUJwNxahuXXAV7tLOsgaU=
+X-Google-Smtp-Source: ABdhPJwnNaCNAb3PeaSznqZ3hRx6rxRcY2LzF2emc6mhk58YfVmlK4UvyL2zsqzY8Joc4UgozBHQlw==
+X-Received: by 2002:a17:90b:8d5:: with SMTP id ds21mr2352167pjb.5.1610425685916;
+        Mon, 11 Jan 2021 20:28:05 -0800 (PST)
+Received: from android.asia-east2-a.c.savvy-summit-295307.internal (204.60.92.34.bc.googleusercontent.com. [34.92.60.204])
+        by smtp.googlemail.com with ESMTPSA id b1sm1036174pjh.54.2021.01.11.20.28.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 20:28:05 -0800 (PST)
+From:   Bui Quang Minh <minhquangbui99@gmail.com>
+To:     linux-usb@vger.kernel.org
+Cc:     oneukum@suse.de, a.darwish@linutronix.de, bigeasy@linutronix.de,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, minhquangbui99@gmail.com
+Subject: [PATCH v3] can: mcba_usb: Fix memory leak when cancelling urb
+Date:   Tue, 12 Jan 2021 04:27:55 +0000
+Message-Id: <20210112042755.21421-1-minhquangbui99@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In mcba_usb_read_bulk_callback(), when we don't resubmit or fails to
+resubmit the urb, we need to deallocate the transfer buffer that is
+allocated in mcba_usb_start().
 
+On some architectures, usb_free_coherent() cannot be called in interrupt
+context, create a usb_anchor to keep track of these urbs and free them
+later.
 
-On 1/11/21 6:11 PM, David Hildenbrand wrote:
-> Right now, we only check against MAX_PHYSMEM_BITS - but turns out there
-> are more restrictions of which memory we can actually hotplug, especially
-> om arm64 or s390x once we support them: we might receive something like
-> -E2BIG or -ERANGE from add_memory_driver_managed(), stopping device
-> operation.
-> 
-> So, check right when initializing the device which memory we can add,
-> warning the user. Try only adding actually pluggable ranges: in the worst
-> case, no memory provided by our device is pluggable.
-> 
-> In the usual case, we expect all device memory to be pluggable, and in
-> corner cases only some memory at the end of the device-managed memory
-> region to not be pluggable.
-> 
-> Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> Cc: Jason Wang <jasowang@redhat.com>
-> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: catalin.marinas@arm.com
-> Cc: teawater <teawaterz@linux.alibaba.com>
-> Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-> Cc: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-> Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Cc: hca@linux.ibm.com
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
-> 
-> This is an example how virito-mem intends to use an interface like
-> memhp_get_pluggable_range() once around. See:
-> 
-> "[PATCH V2 0/3] mm/hotplug: Pre-validate the address range with platform"
-> https://lkml.kernel.org/r/1608218912-28932-1-git-send-email-anshuman.khandual@arm.com
-> 
-> @Anshuman, feel free to pick up and carry this patch. I'll retest the final
-> result / new versions of you series.
+Reported-by: syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com
+Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+---
+v1: add memory leak fix when not resubmitting urb
+v2: add memory leak fix when failing to resubmit urb
+v3: remove usb_free_coherent() calls in interrupt context
 
-Makes sense, will carry this patch in the series.
+ drivers/net/can/usb/mcba_usb.c | 48 +++++++++++++++++++++++++++-------
+ 1 file changed, 39 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
+index df54eb7d4b36..8025db484a22 100644
+--- a/drivers/net/can/usb/mcba_usb.c
++++ b/drivers/net/can/usb/mcba_usb.c
+@@ -77,6 +77,7 @@ struct mcba_priv {
+ 	struct net_device *netdev;
+ 	struct usb_anchor tx_submitted;
+ 	struct usb_anchor rx_submitted;
++	struct usb_anchor urbs_cleanup;
+ 	struct can_berr_counter bec;
+ 	bool usb_ka_first_pass;
+ 	bool can_ka_first_pass;
+@@ -220,14 +221,17 @@ static void mcba_usb_write_bulk_callback(struct urb *urb)
+ {
+ 	struct mcba_usb_ctx *ctx = urb->context;
+ 	struct net_device *netdev;
++	struct mcba_priv *priv;
+ 
+ 	WARN_ON(!ctx);
+ 
+ 	netdev = ctx->priv->netdev;
++	priv = netdev_priv(netdev);
+ 
+-	/* free up our allocated buffer */
+-	usb_free_coherent(urb->dev, urb->transfer_buffer_length,
+-			  urb->transfer_buffer, urb->transfer_dma);
++	/* On some architectures, usb_free_coherent() cannot be called in
++	 * interrupt context, queue the urb for later cleanup
++	 */
++	usb_anchor_urb(urb, &priv->urbs_cleanup);
+ 
+ 	if (ctx->can) {
+ 		if (!netif_device_present(netdev))
+@@ -291,8 +295,11 @@ static netdev_tx_t mcba_usb_xmit(struct mcba_priv *priv,
+ 
+ failed:
+ 	usb_unanchor_urb(urb);
+-	usb_free_coherent(priv->udev, MCBA_USB_TX_BUFF_SIZE, buf,
+-			  urb->transfer_dma);
++
++	/* On some architectures, usb_free_coherent() cannot be called in
++	 * interrupt context, queue the urb for later cleanup
++	 */
++	usb_anchor_urb(urb, &priv->urbs_cleanup);
+ 
+ 	if (err == -ENODEV)
+ 		netif_device_detach(priv->netdev);
+@@ -584,7 +591,7 @@ static void mcba_usb_read_bulk_callback(struct urb *urb)
+ 	case -EPIPE:
+ 	case -EPROTO:
+ 	case -ESHUTDOWN:
+-		return;
++		goto free;
+ 
+ 	default:
+ 		netdev_info(netdev, "Rx URB aborted (%d)\n", urb->status);
+@@ -615,11 +622,20 @@ static void mcba_usb_read_bulk_callback(struct urb *urb)
+ 
+ 	retval = usb_submit_urb(urb, GFP_ATOMIC);
+ 
+-	if (retval == -ENODEV)
+-		netif_device_detach(netdev);
+-	else if (retval)
++	if (retval < 0) {
+ 		netdev_err(netdev, "failed resubmitting read bulk urb: %d\n",
+ 			   retval);
++		if (retval == -ENODEV)
++			netif_device_detach(netdev);
++		goto free;
++	}
++
++	return;
++free:
++	/* On some architectures, usb_free_coherent() cannot be called in
++	 * interrupt context, queue the urb for later cleanup
++	 */
++	usb_anchor_urb(urb, &priv->urbs_cleanup);
+ }
+ 
+ /* Start USB device */
+@@ -706,6 +722,17 @@ static int mcba_usb_open(struct net_device *netdev)
+ 	return 0;
+ }
+ 
++static void mcba_urb_cleanup(struct mcba_priv *priv)
++{
++	struct urb *urb;
++
++	while ((urb = usb_get_from_anchor(&priv->urbs_cleanup))) {
++		usb_free_coherent(urb->dev, urb->transfer_buffer_length,
++				  urb->transfer_buffer, urb->transfer_dma);
++		usb_free_urb(urb);
++	}
++}
++
+ static void mcba_urb_unlink(struct mcba_priv *priv)
+ {
+ 	usb_kill_anchored_urbs(&priv->rx_submitted);
+@@ -723,6 +750,7 @@ static int mcba_usb_close(struct net_device *netdev)
+ 
+ 	/* Stop polling */
+ 	mcba_urb_unlink(priv);
++	mcba_urb_cleanup(priv);
+ 
+ 	close_candev(netdev);
+ 	can_led_event(netdev, CAN_LED_EVENT_STOP);
+@@ -812,6 +840,7 @@ static int mcba_usb_probe(struct usb_interface *intf,
+ 
+ 	init_usb_anchor(&priv->rx_submitted);
+ 	init_usb_anchor(&priv->tx_submitted);
++	init_usb_anchor(&priv->urbs_cleanup);
+ 
+ 	usb_set_intfdata(intf, priv);
+ 
+@@ -877,6 +906,7 @@ static void mcba_usb_disconnect(struct usb_interface *intf)
+ 
+ 	unregister_candev(priv->netdev);
+ 	mcba_urb_unlink(priv);
++	mcba_urb_cleanup(priv);
+ 	free_candev(priv->netdev);
+ }
+ 
+-- 
+2.17.1
+
