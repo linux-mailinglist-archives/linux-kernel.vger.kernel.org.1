@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 200022F3820
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:14:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB882F3833
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:14:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392335AbhALSMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 13:12:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56828 "EHLO
+        id S2406549AbhALSNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 13:13:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406307AbhALSMl (ORCPT
+        with ESMTP id S2392305AbhALSMp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 13:12:41 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA64C06134B
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:11:25 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id q11so3263757ybm.21
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:11:25 -0800 (PST)
+        Tue, 12 Jan 2021 13:12:45 -0500
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21613C06134D
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:11:27 -0800 (PST)
+Received: by mail-pj1-x104a.google.com with SMTP id gj22so2031624pjb.6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:11:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=l+I+bLoy5utbOpCikl2L8mHdXXvFsr/pgAIn4+WfC5A=;
-        b=FyNjxbQGAv0YdqOhXA4BwEs4JKTkEI1PzhKb4+kP6NRE66OJcfyF82O1fFyGtyddtE
-         d+q+x+Z/vncrFRscx7imQbNPcGuIK1UJpHX8hcR+m1UbroJaFgSKIcsrtt0sTGyNWakK
-         qYNJM+PBLdNCcgfu0zjAGPIfEgvzPV8yp3szhLGiM+VQlaArXNZnM4mdl6R2nB4xtWNT
-         leRU2wZNhyaMnHjF3e8AfjAOZOFwLTvt5RH55oQwF5GBw6xpFe56J/D6X0bDkXTnHLlP
-         1OkpJK/+q1ZflkJ7I74Vxuhtxrcf/sFHEon9NCtw/8CegZ/sifROxAswsaxOZPJRISsK
-         oAcQ==
+        bh=VFeIbs3EEJfmUmShc5b4NHNzxuz8HmBwtr3zdhFPFdU=;
+        b=TeQ6xmCyxzPNvf9GuBnToRKMeXIiYDGUqc2kFUphQnu7K32zcBxTsE4DjcCEtVaQtF
+         lxKWr9yPhKG2FGGHjgsCSIBPMJA4dyDdMVf5sTBzD7p1ahOTIpmQ7LhLCrK0PxWigKIF
+         uu6Tkpi31fo2Lo/dEZk8IHrMQt6p+m5VUGPJuKifLnVGDxhCw6q2FUpEu/cYwxIMCVro
+         amu9jXCRsdub9C6BjU94sgGJW4ljCn7uswFFhhAMg5o0RQ9ZzW9LI55j6YpC4DZ8E2jL
+         2aCsZmfSrHQnNJWOJOOKPBuipQNTsHqsBczTJGoDARaVkzc2xG6QLTyKncQbLo8baEz/
+         vuZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=l+I+bLoy5utbOpCikl2L8mHdXXvFsr/pgAIn4+WfC5A=;
-        b=Va4yIsGh6ge++82cmm00ok4g9XXqHNpk9WpuUtk4yKebwmdziiQ3YF6HVcBjtdeB4D
-         E/PDYYXcTN9lIpRa6b3vsBIfwtK/g7/RRMlDwIYBaf4lffINBDrsjtBPSCYCJSMjhifX
-         MfJ3XKhgSsP63B+nIOILSYSRzhd3MDaJDsSVCuguF6831qNMYYpOG8HCNvaI7kmACd05
-         7dtMpem+QB8S2d9z9FwyK4OisJe3g87LCuBxu6l//G3KlE1HsCqV7nY8pfgFYWiW/b6X
-         3pc8VCsP05lRMhrBfbKrkjlP1+kSGlhK2b+xJCNE1gPCbnlKtwVgf3cJ3BCafxpMM/Wh
-         IVEA==
-X-Gm-Message-State: AOAM533vINSTzau0/Ny0MJwFqgEXtTj+IDUpdXTeOIdnwv00yfZyAC21
-        t9UqMSYGVVtYV8C7gWoPxry2ULzXCiyFdBPBakP9CxG+ni6HSzgKXWOcQ0By9mMeZ53FTzPf9Sd
-        lfHAsrmFSd+gtgnGOA2EKaoctpWmheSbB5U10PTlOTsnjo11X+bqFUskKRJU5BUPd5aB6VPmz
-X-Google-Smtp-Source: ABdhPJxak5SYdNqV732YONbr/FySR+NrMxiKTt7HH0qlBQi0b4+BbB3dDDdCXWYuEMGlUxh/dNEzD59+9Moj
+        bh=VFeIbs3EEJfmUmShc5b4NHNzxuz8HmBwtr3zdhFPFdU=;
+        b=o1IY7i96HLG7oqLsuAT11zl3yG4t5LYra6hNnK2SlHZw0a5MHX0MN89hKoXFSFEmaJ
+         b2A03Cna9p/cEgI1ETwb1NFnxHkuqKl23/VmSL9WaqLf7aC1+KyEhOpHunRCZ9dUZV7R
+         g2t3t3URvTEOXA8Xzr5LKWKgf+a1yASQi/aXSBAX/mM7n17naIcEv/bIMA3RtEZaSDCG
+         BJfwtrz/4mbohlkfWduE8yptEEXINoCHw2wq+76rcLV2HABcWUtEG3iF9d/g/qqmDbCk
+         /i0CmhChfw3g/fBul4Nc4oCUadC5IRJoT2eNbiNgiW3tGM7+76T0R22tNY07w0B0JnrF
+         1urA==
+X-Gm-Message-State: AOAM530rAolxxlWS0BluO5A88zJnZhR2avGSV8xc87aN6hY64gX9G3IZ
+        T3pORdnUqQp2XUYPwVZoDIic2tssWyMNnKdnz5U2KUGPS+KVzFCPcYhnaKgiw39y7zlSvVMYO/p
+        L6xPpALfnJaiJ8etRq3fk5VV/nfvj1g4P7IvNknWpJYjA2GexoW7fzXRTNjC3GaHZatbmhSVR
+X-Google-Smtp-Source: ABdhPJyH+TC4ZouRxYz2W9PZwrMT+08RUoyoMahT/o8Q9ng3T9TJlcsgSogRAenAdozCUMNfLeSakPbwEyYb
 Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:f693:9fff:fef4:a293])
- (user=bgardon job=sendgmr) by 2002:a25:40d:: with SMTP id 13mr1054607ybe.422.1610475084759;
- Tue, 12 Jan 2021 10:11:24 -0800 (PST)
-Date:   Tue, 12 Jan 2021 10:10:39 -0800
+ (user=bgardon job=sendgmr) by 2002:a17:90b:298:: with SMTP id
+ az24mr381970pjb.128.1610475086556; Tue, 12 Jan 2021 10:11:26 -0800 (PST)
+Date:   Tue, 12 Jan 2021 10:10:40 -0800
 In-Reply-To: <20210112181041.356734-1-bgardon@google.com>
-Message-Id: <20210112181041.356734-23-bgardon@google.com>
+Message-Id: <20210112181041.356734-24-bgardon@google.com>
 Mime-Version: 1.0
 References: <20210112181041.356734-1-bgardon@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH 22/24] kvm: x86/mmu: Flush TLBs after zap in TDP MMU PF handler
+Subject: [PATCH 23/24] kvm: x86/mmu: Freeze SPTEs in disconnected pages
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
@@ -72,162 +72,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the TDP MMU is allowed to handle page faults in parallel there is
-the possiblity of a race where an SPTE is cleared and then imediately
-replaced with a present SPTE pointing to a different PFN, before the
-TLBs can be flushed. This race would violate architectural specs. Ensure
-that the TLBs are flushed properly before other threads are allowed to
-install any present value for the SPTE.
+When clearing TDP MMU pages what have been disconnected from the paging
+structure root, set the SPTEs to a special non-present value which will
+not be overwritten by other threads. This is needed to prevent races in
+which a thread is clearing a disconnected page table, but another thread
+has already acquired a pointer to that memory and installs a mapping in
+an already cleared entry. This can lead to memory leaks and accounting
+errors.
 
 Reviewed-by: Peter Feiner <pfeiner@google.com>
 
 Signed-off-by: Ben Gardon <bgardon@google.com>
 ---
- arch/x86/kvm/mmu/spte.h    | 16 +++++++++-
- arch/x86/kvm/mmu/tdp_mmu.c | 62 ++++++++++++++++++++++++++++++++------
- 2 files changed, 68 insertions(+), 10 deletions(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 35 +++++++++++++++++++++++++++++------
+ 1 file changed, 29 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
-index 2b3a30bd38b0..ecd9bfbccef4 100644
---- a/arch/x86/kvm/mmu/spte.h
-+++ b/arch/x86/kvm/mmu/spte.h
-@@ -130,6 +130,20 @@ extern u64 __read_mostly shadow_nonpresent_or_rsvd_mask;
- 					  PT64_EPT_EXECUTABLE_MASK)
- #define SHADOW_ACC_TRACK_SAVED_BITS_SHIFT PT64_SECOND_AVAIL_BITS_SHIFT
- 
-+/*
-+ * If a thread running without exclusive control of the MMU lock must perform a
-+ * multi-part operation on an SPTE, it can set the SPTE to FROZEN_SPTE as a
-+ * non-present intermediate value. This will guarantee that other threads will
-+ * not modify the spte.
-+ *
-+ * This constant works because it is considered non-present on both AMD and
-+ * Intel CPUs and does not create a L1TF vulnerability because the pfn section
-+ * is zeroed out.
-+ *
-+ * Only used by the TDP MMU.
-+ */
-+#define FROZEN_SPTE (1ull << 59)
-+
- /*
-  * In some cases, we need to preserve the GFN of a non-present or reserved
-  * SPTE when we usurp the upper five bits of the physical address space to
-@@ -187,7 +201,7 @@ static inline bool is_access_track_spte(u64 spte)
- 
- static inline int is_shadow_present_pte(u64 pte)
- {
--	return (pte != 0) && !is_mmio_spte(pte);
-+	return (pte != 0) && !is_mmio_spte(pte) && (pte != FROZEN_SPTE);
- }
- 
- static inline int is_large_pte(u64 pte)
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 7b12a87a4124..5c9d053000ad 100644
+index 5c9d053000ad..45160ff84e91 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -429,15 +429,19 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 	 */
- 	if (!was_present && !is_present) {
- 		/*
--		 * If this change does not involve a MMIO SPTE, it is
--		 * unexpected. Log the change, though it should not impact the
--		 * guest since both the former and current SPTEs are nonpresent.
-+		 * If this change does not involve a MMIO SPTE or FROZEN_SPTE,
-+		 * it is unexpected. Log the change, though it should not
-+		 * impact the guest since both the former and current SPTEs
-+		 * are nonpresent.
- 		 */
--		if (WARN_ON(!is_mmio_spte(old_spte) && !is_mmio_spte(new_spte)))
-+		if (WARN_ON(!is_mmio_spte(old_spte) &&
-+			    !is_mmio_spte(new_spte) &&
-+			    new_spte != FROZEN_SPTE))
- 			pr_err("Unexpected SPTE change! Nonpresent SPTEs\n"
- 			       "should not be replaced with another,\n"
- 			       "different nonpresent SPTE, unless one or both\n"
--			       "are MMIO SPTEs.\n"
-+			       "are MMIO SPTEs, or the new SPTE is\n"
-+			       "FROZEN_SPTE.\n"
- 			       "as_id: %d gfn: %llx old_spte: %llx new_spte: %llx level: %d",
- 			       as_id, gfn, old_spte, new_spte, level);
- 		return;
-@@ -488,6 +492,13 @@ static inline bool tdp_mmu_set_spte_atomic(struct kvm *kvm,
+@@ -333,13 +333,14 @@ static void handle_disconnected_tdp_mmu_page(struct kvm *kvm, u64 *pt,
+ {
+ 	struct kvm_mmu_page *sp;
+ 	gfn_t gfn;
++	gfn_t base_gfn;
+ 	int level;
+ 	u64 *sptep;
+ 	u64 old_child_spte;
+ 	int i;
  
- 	kvm_mmu_lock_assert_held_shared(kvm);
+ 	sp = sptep_to_sp(pt);
+-	gfn = sp->gfn;
++	base_gfn = sp->gfn;
+ 	level = sp->role.level;
  
-+	/*
-+	 * Do not change FROZEN_SPTEs. Only the thread that froze the SPTE
-+	 * may modify it.
-+	 */
-+	if (iter->old_spte == FROZEN_SPTE)
-+		return false;
+ 	trace_kvm_mmu_prepare_zap_page(sp);
+@@ -348,16 +349,38 @@ static void handle_disconnected_tdp_mmu_page(struct kvm *kvm, u64 *pt,
+ 
+ 	for (i = 0; i < PT64_ENT_PER_PAGE; i++) {
+ 		sptep = pt + i;
++		gfn = base_gfn + (i * KVM_PAGES_PER_HPAGE(level - 1));
+ 
+ 		if (atomic) {
+-			old_child_spte = xchg(sptep, 0);
++			/*
++			 * Set the SPTE to a nonpresent value that other
++			 * threads will not overwrite. If the SPTE was already
++			 * frozen then another thread handling a page fault
++			 * could overwrite it, so set the SPTE until it is set
++			 * from nonfrozen -> frozen.
++			 */
++			for (;;) {
++				old_child_spte = xchg(sptep, FROZEN_SPTE);
++				if (old_child_spte != FROZEN_SPTE)
++					break;
++				cpu_relax();
++			}
+ 		} else {
+ 			old_child_spte = READ_ONCE(*sptep);
+-			WRITE_ONCE(*sptep, 0);
 +
- 	if (cmpxchg64(iter->sptep, iter->old_spte, new_spte) != iter->old_spte)
- 		return false;
++			/*
++			 * Setting the SPTE to FROZEN_SPTE is not strictly
++			 * necessary here as the MMU lock should stop other
++			 * threads from concurrentrly modifying this SPTE.
++			 * Using FROZEN_SPTE keeps the atomic and
++			 * non-atomic cases consistent and simplifies the
++			 * function.
++			 */
++			WRITE_ONCE(*sptep, FROZEN_SPTE);
+ 		}
+-		handle_changed_spte(kvm, kvm_mmu_page_as_id(sp),
+-			gfn + (i * KVM_PAGES_PER_HPAGE(level - 1)),
+-			old_child_spte, 0, level - 1, atomic);
++		handle_changed_spte(kvm, kvm_mmu_page_as_id(sp), gfn,
++				    old_child_spte, FROZEN_SPTE, level - 1,
++				    atomic);
+ 	}
  
-@@ -497,6 +508,34 @@ static inline bool tdp_mmu_set_spte_atomic(struct kvm *kvm,
- 	return true;
- }
- 
-+static inline bool tdp_mmu_zap_spte_atomic(struct kvm *kvm,
-+					   struct tdp_iter *iter)
-+{
-+	/*
-+	 * Freeze the SPTE by setting it to a special,
-+	 * non-present value. This will stop other threads from
-+	 * immediately installing a present entry in its place
-+	 * before the TLBs are flushed.
-+	 */
-+	if (!tdp_mmu_set_spte_atomic(kvm, iter, FROZEN_SPTE))
-+		return false;
-+
-+	kvm_flush_remote_tlbs_with_address(kvm, iter->gfn,
-+					   KVM_PAGES_PER_HPAGE(iter->level));
-+
-+	/*
-+	 * No other thread can overwrite the frozen SPTE as they
-+	 * must either wait on the MMU lock or use
-+	 * tdp_mmu_set_spte_atomic which will not overrite the
-+	 * special frozen SPTE value. No bookkeeping is needed
-+	 * here since the SPTE is going from non-present
-+	 * to non-present.
-+	 */
-+	WRITE_ONCE(*iter->sptep, 0);
-+
-+	return true;
-+}
-+
- 
- /*
-  * __tdp_mmu_set_spte - Set a TDP MMU SPTE and handle the associated bookkeeping
-@@ -524,6 +563,14 @@ static inline void __tdp_mmu_set_spte(struct kvm *kvm, struct tdp_iter *iter,
- 
- 	kvm_mmu_lock_assert_held_exclusive(kvm);
- 
-+	/*
-+	 * No thread should be using this function to set SPTEs to FROZEN_SPTE.
-+	 * If operating under the MMU lock in read mode, tdp_mmu_set_spte_atomic
-+	 * should be used. If operating under the MMU lock in write mode, the
-+	 * use of FROZEN_SPTE should not be necessary.
-+	 */
-+	WARN_ON(iter->old_spte == FROZEN_SPTE);
-+
- 	WRITE_ONCE(*iter->sptep, new_spte);
- 
- 	__handle_changed_spte(kvm, as_id, iter->gfn, iter->old_spte, new_spte,
-@@ -801,12 +848,9 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
- 		 */
- 		if (is_shadow_present_pte(iter.old_spte) &&
- 		    is_large_pte(iter.old_spte)) {
--			if (!tdp_mmu_set_spte_atomic(vcpu->kvm, &iter, 0))
-+			if (!tdp_mmu_zap_spte_atomic(vcpu->kvm, &iter))
- 				break;
- 
--			kvm_flush_remote_tlbs_with_address(vcpu->kvm, iter.gfn,
--					KVM_PAGES_PER_HPAGE(iter.level));
--
- 			/*
- 			 * The iter must explicitly re-read the spte here
- 			 * because the new value informs the !present
+ 	kvm_flush_remote_tlbs_with_address(kvm, gfn,
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
