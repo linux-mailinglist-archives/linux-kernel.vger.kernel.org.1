@@ -2,164 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B47862F2DD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 991D02F2DD6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:24:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727756AbhALLX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 06:23:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbhALLX4 (ORCPT
+        id S1727804AbhALLYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:24:25 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11095 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725648AbhALLYY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:23:56 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D11BC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 03:23:15 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id t30so2131032wrb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 03:23:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dzofRgscToXHiyum2Z+jxt17ev79BRTc3KWqhsJgxzc=;
-        b=zSfknHy2GEsWrZaD49O8+1+49wKuNzIb25gMdQJDsm4LKZB9QL8qdERpEAP13+FnN2
-         aZnp5+Rj8IRxOkhYu0m2zkyhJycYg+Rav3Gfd8b5zZL9dpxLMt+1p51Mc+Cd1p/vHvTf
-         T5GiTIPDRzjZUChhX3PH/H5LKp/d5JTmjlq5m1l+tlmusHK8jz4dnqA+lpdI/rD1kS/H
-         lDbRWcr8nYRGk7hxnSY9aVX0x44GnZCShW3TQePAn8LUUahr2SLLlJgeaQNyymX4JHe2
-         +GejQ4A2eflSvqoi3hy8a4ft3MVw1BIIWsiHLUCSqHkZZ90GcT0vSmQhVbGYmoUSt9Qr
-         LFmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dzofRgscToXHiyum2Z+jxt17ev79BRTc3KWqhsJgxzc=;
-        b=nwi6mK/9GtQXl3zeOU23NgvAqcwrpv/eWoqPEX/Ax/GjtoVg+JAQ9+pxQYMA4bDDtq
-         Quvr1zENw5MGm/F+DEcTO/FE2dO23+8l6FnCPbgpEW9+muWRW8qjlfCKpk1kqJlES/TY
-         4mqT5/HRS6uLseynrGKOZycydkvLiK9KA8SbM1y4rxPvzgkTvmOwomz6ii0U2HfvUlQz
-         TODHFKrNNCWzlGx2hDuslfs6DDkjBkSHIfWQuxOMye+wNJGbCUCAY3oByobFZNgthBQh
-         fxDXGA1kF/2pp2jPZCw7JUi8FTVcu8q7amBXVx1EciA6YWguqa73bIj68XpZ07qb+iND
-         1/mA==
-X-Gm-Message-State: AOAM533IdBPRS3rECdNARzzH+FiGTlb/Cg5Rg/wPWsSHHy7NxdtteKTg
-        UYOPStXpTbufvkx5IDjIYsW43BdxsIG/ekD2qwZZog==
-X-Google-Smtp-Source: ABdhPJyrPHY57MMsYow40VMZ7CMKrRRfsy3qRSwS9eCyvpoKJjjD4xy63lH4x9O/aeXW3HnSYJHWrJ1ki/GFkXOdF5c=
-X-Received: by 2002:a05:6000:114e:: with SMTP id d14mr3086415wrx.176.1610450594112;
- Tue, 12 Jan 2021 03:23:14 -0800 (PST)
+        Tue, 12 Jan 2021 06:24:24 -0500
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DFSpp2Ql6zMHGt;
+        Tue, 12 Jan 2021 19:22:26 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.220) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Tue, 12 Jan 2021
+ 19:23:39 +0800
+Subject: Re: [PATCH 1/1] spi: cadence-quadspi: Fix a compilation warning for
+ 64-bit platform
+To:     Pratyush Yadav <p.yadav@ti.com>
+CC:     Mark Brown <broonie@kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>
+References: <20210112100637.747-1-thunder.leizhen@huawei.com>
+ <20210112100637.747-2-thunder.leizhen@huawei.com>
+ <20210112101634.ikmhj4au6eogkhoq@ti.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <6612b888-63aa-9d8f-c663-3b2857b79b70@huawei.com>
+Date:   Tue, 12 Jan 2021 19:23:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-References: <20210109074435.626855-1-leo.yan@linaro.org> <20210109074435.626855-2-leo.yan@linaro.org>
- <CAJ9a7VgTqsa4_W0bmfS1BPYnKyvToyVLD=fk85_t9-yehCY9Lw@mail.gmail.com> <20210112085826.GC18965@leoy-ThinkPad-X240s>
-In-Reply-To: <20210112085826.GC18965@leoy-ThinkPad-X240s>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Tue, 12 Jan 2021 11:23:03 +0000
-Message-ID: <CAJ9a7VgYt-JemRaJn_KtO-X729jo-0y0OO5hCm=tHay31Q6msw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/7] coresight: etm-perf: Add support for PID tracing
- for kernel at EL2
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <Daniel.Kiss@arm.com>,
-        Denis Nikitin <denik@chromium.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Al Grant <al.grant@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210112101634.ikmhj4au6eogkhoq@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
-
-On Tue, 12 Jan 2021 at 08:58, Leo Yan <leo.yan@linaro.org> wrote:
->
-> Hi Mike,
->
-> On Mon, Jan 11, 2021 at 04:22:39PM +0000, Mike Leach wrote:
->
-> [...]
->
-> > > diff --git a/include/linux/coresight-pmu.h b/include/linux/coresight-pmu.h
-> > > index b0e35eec6499..927c6285ce5d 100644
-> > > --- a/include/linux/coresight-pmu.h
-> > > +++ b/include/linux/coresight-pmu.h
-> > > @@ -11,16 +11,19 @@
-> > >  #define CORESIGHT_ETM_PMU_SEED  0x10
-> > >
-> > >  /* ETMv3.5/PTM's ETMCR config bit */
-> > > -#define ETM_OPT_CYCACC  12
-> > > -#define ETM_OPT_CTXTID 14
-> > > -#define ETM_OPT_TS      28
-> > > -#define ETM_OPT_RETSTK 29
-> > > +#define ETM_OPT_CYCACC         12
-> > > +#define ETM_OPT_CTXTID         14
-> > > +#define ETM_OPT_CTXTID_IN_VMID 15
-> >
-> > Minor issue here - ETMv3.x / PTM cannot trace CXTID in VMID so this
-> > may better be named ETM4_OPT_CTXTID_IN_VMID, rather than be grouped
-> > with the ETM3.5 options?
->
-> I looked into this suggestion but found it's complex than I assumed.
-> This config bits are not only used for ETMv3.x / PTM, it's also used
-> as an configuration interface between user space in Perf and kernel
-> drivers.
->
-> For example, in the userspace, perf tool sets bit ETM_OPT_TS to enable
-> timestamp [1], this is same for ETMv3 and ETMv4.  In the kernel side,
-> the configuration is directly used ETMv3 (in coresight-etm3x-core.c),
-> but the configuration bits are converted for ETMv4 in the function
-> etm4_parse_event_config() [2].
->
-> So this is a historical issue, at the early period ETMv3 and ETMv4 can
-> be compatible with each other for configurations, but after evoluation,
-> some configs only belong to ETMv4 and cannot be applied on ETMv3
-> anymore, but we still use ETMv3.5 config bits as the interface between
-> kernel and userspace.
->
-
-I was aware that etm3/ptm used these bits as both the options and the
-bit values for direct writing to the ETMCR register for ETMv3, and
-re-mapped to appropriate register values in ETMv4.
-In the past we have re-used etmv3.5 bit definitions ETM_xxx  when
-appropriate, but where unique to ETM4 we  have used a ETM4_xxx naming
-convention.
-
-I am not suggesting re-factoring the options completely, just
-re-naming this single option to make it clear it is unique to ETM4+.
-
-Looking at the etmv3 driver, at present it does not actually appear to
-support contextid tracing - and when it does, both bits 14 and 15 will
-be required to be used - as ETMCR defines these bits as ContextID
-size.
-Should this ever get fixed. then having an overlapping option bit -
-that appears to be valid for ETMv3 will be confusing.
-
-Regards
-
-Mike
-
-> I'd like suggest we use a saperate patch set to refactor the
-> configuration bits, e.g. define the arbitrary configuration bits as
-> interface between user space and kernel, these bits are neutral for any
-> ETM version, in the kernel ETM drivers need to convert to its own
-> configuration formats.  For this patch, I want to keep current
-> change as it is, is this okay for you?
->
-> Thanks,
-> Leo
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/tools/perf/arch/arm/util/cs-etm.c?h=v5.11-rc3#n152
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/hwtracing/coresight/coresight-etm4x-core.c?h=v5.11-rc3#n422
 
 
---
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+On 2021/1/12 18:16, Pratyush Yadav wrote:
+> Hi Zhen,
+> 
+> On 12/01/21 06:06PM, Zhen Lei wrote:
+>> The __typecheck() requires that the two arguments of max() must be of the
+>> same type. For the current max(), the type of the first parameter "len" is
+>> size_t. But the type of size_t is not fixed, it's "unsigned int" on 32-bit
+>> platforms and "unsigned long" on 64-bit platforms. So both the suffix "U"
+>> and "UL" are not appropriate for the second constant parameter. Therefore,
+>> forcible type conversion is used.
+>>
+>> Fixes: 8728a81b8f10 ("spi: Fix distinct pointer types warning for ARCH=mips")
+>> Fixes: 0920a32cf6f2 ("spi: cadence-quadspi: Wait at least 500 ms for direct reads")
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>  drivers/spi/spi-cadence-quadspi.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+>> index 576610ba11184c6..eb40b8d46b56b0c 100644
+>> --- a/drivers/spi/spi-cadence-quadspi.c
+>> +++ b/drivers/spi/spi-cadence-quadspi.c
+>> @@ -1150,7 +1150,7 @@ static int cqspi_direct_read_execute(struct cqspi_flash_pdata *f_pdata,
+>>
+>>  	dma_async_issue_pending(cqspi->rx_chan);
+>>  	if (!wait_for_completion_timeout(&cqspi->rx_dma_complete,
+>> -					 msecs_to_jiffies(max(len, 500U)))) {
+>> +				 msecs_to_jiffies(max_t(size_t, len, 500)))) {
+> 
+> I sent a patch with this exact fix already [0]. It has made it in Mark's 
+> for-next branch.
+
+OK，I don't known it.
+
+> 
+> [0] https://lore.kernel.org/linux-spi/20210108181457.30291-1-p.yadav@ti.com/
+> 
+>>  		dmaengine_terminate_sync(cqspi->rx_chan);
+>>  		dev_err(dev, "DMA wait_for_completion_timeout\n");
+>>  		ret = -ETIMEDOUT;
+>> --
+>> 1.8.3
+>>
+>>
+> 
+
