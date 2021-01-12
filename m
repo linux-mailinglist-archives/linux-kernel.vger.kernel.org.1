@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E54592F3FBD
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5AE2F3FB9
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395066AbhALW75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:59:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34592 "EHLO
+        id S2395042AbhALW7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:59:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2395005AbhALW6y (ORCPT
+        with ESMTP id S2395028AbhALW72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:58:54 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A545C06179F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:58:14 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id c17so174688qvv.9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:58:14 -0800 (PST)
+        Tue, 12 Jan 2021 17:59:28 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 503C6C0617A2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:58:16 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id c9so334784ybs.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:58:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=TQKpF27OKaJrLhzB0E/KYO+NtISrl8WbRDi4mdJ+984=;
-        b=eguTgVngGMGXg2oz2Tap4Yuf4f3V3oeI4dTFGlL4sSCZcm/s0WM9FzTugiwj5942Ok
-         67lmykISN0mEfkAld/gL/ztkXJK9LgRkN+OypBqJE0/pdx/S7WXI/Swb4+yTnAg9zN9C
-         ejZbCXFxtC3d9UQlpF8ueqkIApRZYXXlHsrhQwvc+e5FxF8z4TVQq1jqSI4KNEwRPaAA
-         C6lo4SNyCxgceMLwXQnvYBJfhkOeKupfLIfztv/Zgu2fit8xM2FKa6TLT/IjmZolAfiW
-         NM08XPbvg1eVaTouNXWIIwLLMWCXWCaANvOjRNZjEuSKNBhztQQKCjJz3xsPdVJj908r
-         Ghjw==
+        bh=vvDrmsvcVNz1FbapYNhTZGtF3lj070VoX0Pg+ylxzz8=;
+        b=f6Ro1JIrfbCTK8+fJlbNv7K7CvIhuWwUfyFrSn6dJ7cmG9FrrSvHbWDEQM4OyKvyFV
+         FFa7YZHJmOO7sKuSc8oaBQ5wgK9lRBEyP1Tbyzw6/CdmhVZmQzYa5h/9MaRy86SCa79l
+         IhukKVKQUHLL/nnXAiIQ3tZ80cq0eNt0RIySU7hbz/xl1kQmxMGWVSJrdMWfT4F/3XRS
+         KsQ11iOGI/ymb4T2njQZL7/Y8tC+YJYuEUF0MQKFJkfo9oGLjni4cA9iI4322Q+0jL8n
+         AXvDCuR0xQtmQfUSt7D/Bl21KQnAyaX9AXu9lYpbdugEzbdcffxH1CO9pGxBmqOpA3ry
+         UdWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=TQKpF27OKaJrLhzB0E/KYO+NtISrl8WbRDi4mdJ+984=;
-        b=szIxt1mBOlnn4trkw2buRVaUoZLZR+/eskCUUJmJag8nR5WeX7KEoh70DJm/iL+TWA
-         ZnsEVdvQZGsSgs26jY0LJhpVqWR6XkNgXpVmn++PAn7hTOPEQbVJ3VOlFdTrZGcDpTvn
-         mKV4UP0tfI42nd5pz1TC/GD+aUUBEY/6emfY26V7G5tZDxlXG0GJkdeX3NaeEkwSBg7B
-         WtpT1TyvHkLT4loDw6OCnRDHAR8O786IibR9PxakoXexoqvzUngG7aXwQQTXHGVgvK6v
-         FW0tNGRy7hrLROVWkmkiwnWRugo2VYdFA+IVW7sG/QX0lySD0K7u2ibnfIEP07qq+dhL
-         mnkA==
-X-Gm-Message-State: AOAM530EFWXeJjc4alE3qFP+zAN1uHBIHc+O/J9PTD0W3F8dqSKXoa9r
-        Kt0A/XJSB0FFNUUoz/pZ/h41mvFrr4CM
-X-Google-Smtp-Source: ABdhPJzVJDJJu8MOA5/foEKQudpmwWE0NJ7UdCkOt8yZYUldSTkyVWWJh2NfO9vBfTZ6PC9RhwMrzAtutdhH
+        bh=vvDrmsvcVNz1FbapYNhTZGtF3lj070VoX0Pg+ylxzz8=;
+        b=gGSH7J0dawcqk2TkIjw+0s7KYVnI6dgf/LF5zSfoRbTvbbBzlbIswt7NoEoEKuIhOi
+         pW/N5TsSZOeRXjGXV2TJFQLb4oesl1ugoxvEx6DGhlQ69GyaFrX4jagr22zrJwNTDuSf
+         qsmW+2aeARlOGLS+LpWNhLLqKgpIsSzR0ycIdIljM65vbH91J0m+HqATOPiSYEPnL5Ex
+         bzvHz/BuvQwcPDdVvnRB0gnhsGEuroSC9paMH68OAsEPqNLdoz4TiCBVimvqIXlhBWhJ
+         Nsy3gwjGDQndZPjwDNa0iMPydtK9dfXP92dcOsNENnyJlV5HaF+ECnSz+uIJMkmWpi8u
+         e1yg==
+X-Gm-Message-State: AOAM533s9otXFmANrvud2jaUliHv5A1NHa9OuIsmi3KKQ2ZiWP+InOMF
+        p2jdD5RaWmv3R/islGA6EUGcuRv7hSqr
+X-Google-Smtp-Source: ABdhPJwemcpSiS5eHaDVBhHFnJ4uIUyHYd1t2NvnfEMuEAZqF9XraJEmNJt955Np/pmE1NfPZFfEJL4l1hj3
 Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
- (user=irogers job=sendgmr) by 2002:a0c:f74a:: with SMTP id
- e10mr1977699qvo.47.1610492293555; Tue, 12 Jan 2021 14:58:13 -0800 (PST)
-Date:   Tue, 12 Jan 2021 14:58:00 -0800
+ (user=irogers job=sendgmr) by 2002:a25:c655:: with SMTP id
+ k82mr2611033ybf.153.1610492295434; Tue, 12 Jan 2021 14:58:15 -0800 (PST)
+Date:   Tue, 12 Jan 2021 14:58:01 -0800
 In-Reply-To: <20210112225802.2613039-1-irogers@google.com>
-Message-Id: <20210112225802.2613039-4-irogers@google.com>
+Message-Id: <20210112225802.2613039-5-irogers@google.com>
 Mime-Version: 1.0
 References: <20210112225802.2613039-1-irogers@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v6 3/5] perf metric: Rename expr__find_other.
+Subject: [PATCH v6 4/5] perf metric: Add utilities to work on ids map.
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -73,147 +73,234 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A later change will remove the notion of other, rename the function to
-expr__find_ids as this is what it populates.
+Add utilities to new/free an ids hashmap, as well as to union. Add
+testing of the union. Unioning hashmaps will be used when parsing the
+metric, if a value is known then the hashmap is unnecessary, otherwise
+we need to union together all the event ids to compute their values for
+reporting.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/expr.c       | 26 +++++++++++++-------------
- tools/perf/tests/pmu-events.c |  9 ++++-----
- tools/perf/util/expr.c        |  4 ++--
- tools/perf/util/expr.h        |  2 +-
- tools/perf/util/metricgroup.c |  2 +-
- tools/perf/util/stat-shadow.c |  6 +++---
- 6 files changed, 24 insertions(+), 25 deletions(-)
+ tools/perf/tests/expr.c | 47 ++++++++++++++++++++++
+ tools/perf/util/expr.c  | 87 +++++++++++++++++++++++++++++++++++++++--
+ tools/perf/util/expr.h  | 13 ++++++
+ 3 files changed, 143 insertions(+), 4 deletions(-)
 
 diff --git a/tools/perf/tests/expr.c b/tools/perf/tests/expr.c
-index b0a3b5fd0c00..7ccb97c73347 100644
+index 7ccb97c73347..1c881bea7fca 100644
 --- a/tools/perf/tests/expr.c
 +++ b/tools/perf/tests/expr.c
-@@ -64,25 +64,25 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
- 	TEST_ASSERT_VAL("missing operand", ret == -1);
+@@ -6,6 +6,51 @@
+ #include <string.h>
+ #include <linux/zalloc.h>
  
- 	expr__ctx_clear(ctx);
--	TEST_ASSERT_VAL("find other",
--			expr__find_other("FOO + BAR + BAZ + BOZO", "FOO",
--					 ctx, 1) == 0);
--	TEST_ASSERT_VAL("find other", hashmap__size(ctx->ids) == 3);
--	TEST_ASSERT_VAL("find other", hashmap__find(ctx->ids, "BAR",
-+	TEST_ASSERT_VAL("find ids",
-+			expr__find_ids("FOO + BAR + BAZ + BOZO", "FOO",
-+					ctx, 1) == 0);
-+	TEST_ASSERT_VAL("find ids", hashmap__size(ctx->ids) == 3);
-+	TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, "BAR",
- 						    (void **)&val_ptr));
--	TEST_ASSERT_VAL("find other", hashmap__find(ctx->ids, "BAZ",
-+	TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, "BAZ",
- 						    (void **)&val_ptr));
--	TEST_ASSERT_VAL("find other", hashmap__find(ctx->ids, "BOZO",
-+	TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, "BOZO",
- 						    (void **)&val_ptr));
++static int test_ids_union(void)
++{
++	struct hashmap *ids1, *ids2;
++
++	/* Empty union. */
++	ids1 = ids__new();
++	TEST_ASSERT_VAL("ids__new", ids1);
++	ids2 = ids__new();
++	TEST_ASSERT_VAL("ids__new", ids2);
++
++	ids1 = ids__union(ids1, ids2);
++	TEST_ASSERT_EQUAL("union", (int)hashmap__size(ids1), 0);
++
++	/* Union {foo, bar} against {}. */
++	ids2 = ids__new();
++	TEST_ASSERT_VAL("ids__new", ids2);
++
++	TEST_ASSERT_EQUAL("ids__insert", ids__insert(ids1, strdup("foo"), NULL), 0);
++	TEST_ASSERT_EQUAL("ids__insert", ids__insert(ids1, strdup("bar"), NULL), 0);
++
++	ids1 = ids__union(ids1, ids2);
++	TEST_ASSERT_EQUAL("union", (int)hashmap__size(ids1), 2);
++
++	/* Union {foo, bar} against {foo}. */
++	ids2 = ids__new();
++	TEST_ASSERT_VAL("ids__new", ids2);
++	TEST_ASSERT_EQUAL("ids__insert", ids__insert(ids2, strdup("foo"), NULL), 0);
++
++	ids1 = ids__union(ids1, ids2);
++	TEST_ASSERT_EQUAL("union", (int)hashmap__size(ids1), 2);
++
++	/* Union {foo, bar} against {bar,baz}. */
++	ids2 = ids__new();
++	TEST_ASSERT_VAL("ids__new", ids2);
++	TEST_ASSERT_EQUAL("ids__insert", ids__insert(ids2, strdup("bar"), NULL), 0);
++	TEST_ASSERT_EQUAL("ids__insert", ids__insert(ids2, strdup("baz"), NULL), 0);
++
++	ids1 = ids__union(ids1, ids2);
++	TEST_ASSERT_EQUAL("union", (int)hashmap__size(ids1), 3);
++
++	ids__free(ids1);
++
++	return 0;
++}
++
+ static int test(struct expr_parse_ctx *ctx, const char *e, double val2)
+ {
+ 	double val;
+@@ -24,6 +69,8 @@ int test__expr(struct test *t __maybe_unused, int subtest __maybe_unused)
+ 	int ret;
+ 	struct expr_parse_ctx *ctx;
  
- 	expr__ctx_clear(ctx);
--	TEST_ASSERT_VAL("find other",
--			expr__find_other("EVENT1\\,param\\=?@ + EVENT2\\,param\\=?@",
--					 NULL, ctx, 3) == 0);
--	TEST_ASSERT_VAL("find other", hashmap__size(ctx->ids) == 2);
--	TEST_ASSERT_VAL("find other", hashmap__find(ctx->ids, "EVENT1,param=3/",
-+	TEST_ASSERT_VAL("find ids",
-+			expr__find_ids("EVENT1\\,param\\=?@ + EVENT2\\,param\\=?@",
-+					NULL, ctx, 3) == 0);
-+	TEST_ASSERT_VAL("find ids", hashmap__size(ctx->ids) == 2);
-+	TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, "EVENT1,param=3/",
- 						    (void **)&val_ptr));
--	TEST_ASSERT_VAL("find other", hashmap__find(ctx->ids, "EVENT2,param=3/",
-+	TEST_ASSERT_VAL("find ids", hashmap__find(ctx->ids, "EVENT2,param=3/",
- 						    (void **)&val_ptr));
- 
- 	expr__ctx_free(ctx);
-diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-index cf5afd126934..d14a42406549 100644
---- a/tools/perf/tests/pmu-events.c
-+++ b/tools/perf/tests/pmu-events.c
-@@ -502,9 +502,8 @@ static int test_parsing(void)
- 			if (!pe->metric_expr)
- 				continue;
- 			expr__ctx_clear(ctx);
--			if (expr__find_other(pe->metric_expr, NULL, ctx, 0)
--				  < 0) {
--				expr_failure("Parse other failed", map, pe);
-+			if (expr__find_ids(pe->metric_expr, NULL, ctx, 0) < 0) {
-+				expr_failure("Parse find ids failed", map, pe);
- 				ret++;
- 				continue;
- 			}
-@@ -559,8 +558,8 @@ static int metric_parse_fake(const char *str)
- 	pr_debug("parsing '%s'\n", str);
- 
++	TEST_ASSERT_EQUAL("ids_union", test_ids_union(), 0);
++
  	ctx = expr__ctx_new();
--	if (expr__find_other(str, NULL, ctx, 0) < 0) {
--		pr_err("expr__find_other failed\n");
-+	if (expr__find_ids(str, NULL, ctx, 0) < 0) {
-+		pr_err("expr__find_ids failed\n");
- 		return -1;
- 	}
- 
+ 	TEST_ASSERT_VAL("expr__ctx_new", ctx);
+ 	expr__add_id_val(ctx, strdup("FOO"), 1);
 diff --git a/tools/perf/util/expr.c b/tools/perf/util/expr.c
-index e0623d38e6ee..a248d14882cc 100644
+index a248d14882cc..1adb6cd202e0 100644
 --- a/tools/perf/util/expr.c
 +++ b/tools/perf/util/expr.c
-@@ -287,8 +287,8 @@ int expr__parse(double *final_val, struct expr_parse_ctx *ctx,
- 	return __expr__parse(final_val, ctx, expr, EXPR_PARSE, runtime) ? -1 : 0;
+@@ -59,8 +59,48 @@ static bool key_equal(const void *key1, const void *key2,
+ 	return !strcmp((const char *)key1, (const char *)key2);
  }
  
--int expr__find_other(const char *expr, const char *one,
--		     struct expr_parse_ctx *ctx, int runtime)
-+int expr__find_ids(const char *expr, const char *one,
-+		   struct expr_parse_ctx *ctx, int runtime)
+-/* Caller must make sure id is allocated */
+-int expr__add_id(struct expr_parse_ctx *ctx, const char *id)
++struct hashmap *ids__new(void)
++{
++	return hashmap__new(key_hash, key_equal, NULL);
++}
++
++void ids__free(struct hashmap *ids)
++{
++	struct hashmap_entry *cur;
++	size_t bkt;
++
++	if (ids == NULL)
++		return;
++
++#ifdef PARSER_DEBUG
++	fprintf(stderr, "freeing ids: ");
++	ids__print(ids);
++	fprintf(stderr, "\n");
++#endif
++
++	hashmap__for_each_entry(ids, cur, bkt) {
++		free((char *)cur->key);
++		free(cur->value);
++	}
++
++	hashmap__free(ids);
++}
++
++void ids__print(struct hashmap *ids)
++{
++	size_t bkt;
++	struct hashmap_entry *cur;
++
++	if (!ids)
++		return;
++
++	hashmap__for_each_entry(ids, cur, bkt) {
++		fprintf(stderr, "key:%s, ", (const char *)cur->key);
++	}
++}
++
++int ids__insert(struct hashmap *ids, const char *id,
++		struct expr_id *parent)
  {
- 	int ret = __expr__parse(NULL, ctx, expr, EXPR_OTHER, runtime);
+ 	struct expr_id_data *data_ptr = NULL, *old_data = NULL;
+ 	char *old_key = NULL;
+@@ -70,10 +110,10 @@ int expr__add_id(struct expr_parse_ctx *ctx, const char *id)
+ 	if (!data_ptr)
+ 		return -ENOMEM;
  
+-	data_ptr->parent = ctx->parent;
++	data_ptr->parent = parent;
+ 	data_ptr->kind = EXPR_ID_DATA__PARENT;
+ 
+-	ret = hashmap__set(ctx->ids, id, data_ptr,
++	ret = hashmap__set(ids, id, data_ptr,
+ 			   (const void **)&old_key, (void **)&old_data);
+ 	if (ret)
+ 		free(data_ptr);
+@@ -82,6 +122,45 @@ int expr__add_id(struct expr_parse_ctx *ctx, const char *id)
+ 	return ret;
+ }
+ 
++struct hashmap *ids__union(struct hashmap *ids1, struct hashmap *ids2)
++{
++	size_t bkt;
++	struct hashmap_entry *cur;
++	int ret;
++	struct expr_id_data *old_data = NULL;
++	char *old_key = NULL;
++
++	if (!ids1)
++		return ids2;
++
++	if (!ids2)
++		return ids1;
++
++	if (hashmap__size(ids1) <  hashmap__size(ids2)) {
++		struct hashmap *tmp = ids1;
++
++		ids1 = ids2;
++		ids2 = tmp;
++	}
++	hashmap__for_each_entry(ids2, cur, bkt) {
++		ret = hashmap__set(ids1, cur->key, cur->value,
++				(const void **)&old_key, (void **)&old_data);
++		free(old_key);
++		free(old_data);
++
++		if (ret)
++			break;
++	}
++	hashmap__free(ids2);
++	return ids1;
++}
++
++/* Caller must make sure id is allocated */
++int expr__add_id(struct expr_parse_ctx *ctx, const char *id)
++{
++	return ids__insert(ctx->ids, id, ctx->parent);
++}
++
+ /* Caller must make sure id is allocated */
+ int expr__add_id_val(struct expr_parse_ctx *ctx, const char *id, double val)
+ {
 diff --git a/tools/perf/util/expr.h b/tools/perf/util/expr.h
-index 00b941cfe6a6..955d5adb7ca4 100644
+index 955d5adb7ca4..f201889d1136 100644
 --- a/tools/perf/util/expr.h
 +++ b/tools/perf/util/expr.h
-@@ -43,7 +43,7 @@ int expr__resolve_id(struct expr_parse_ctx *ctx, const char *id,
+@@ -30,9 +30,20 @@ struct expr_scanner_ctx {
+ 	int runtime;
+ };
+ 
++struct hashmap *ids__new(void);
++void ids__free(struct hashmap *ids);
++void ids__print(struct hashmap *ids);
++int ids__insert(struct hashmap *ids, const char *id, struct expr_id *parent);
++/*
++ * Union two sets of ids (hashmaps) and construct a third, freeing ids1 and
++ * ids2.
++ */
++struct hashmap *ids__union(struct hashmap *ids1, struct hashmap *ids2);
++
+ struct expr_parse_ctx *expr__ctx_new(void);
+ void expr__ctx_clear(struct expr_parse_ctx *ctx);
+ void expr__ctx_free(struct expr_parse_ctx *ctx);
++
+ void expr__del_id(struct expr_parse_ctx *ctx, const char *id);
+ int expr__add_id(struct expr_parse_ctx *ctx, const char *id);
+ int expr__add_id_val(struct expr_parse_ctx *ctx, const char *id, double val);
+@@ -41,8 +52,10 @@ int expr__get_id(struct expr_parse_ctx *ctx, const char *id,
+ 		 struct expr_id_data **data);
+ int expr__resolve_id(struct expr_parse_ctx *ctx, const char *id,
  		     struct expr_id_data **datap);
++
  int expr__parse(double *final_val, struct expr_parse_ctx *ctx,
  		const char *expr, int runtime);
--int expr__find_other(const char *expr, const char *one,
-+int expr__find_ids(const char *expr, const char *one,
++
+ int expr__find_ids(const char *expr, const char *one,
  		struct expr_parse_ctx *ids, int runtime);
  
- double expr_id_data__value(const struct expr_id_data *data);
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 014c0fd7d670..69cfd717ab05 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -851,7 +851,7 @@ static int __add_metric(struct list_head *metric_list,
- 	 * For both the parent and referenced metrics, we parse
- 	 * all the metric's IDs and add it to the parent context.
- 	 */
--	if (expr__find_other(pe->metric_expr, NULL, m->pctx, runtime) < 0) {
-+	if (expr__find_ids(pe->metric_expr, NULL, m->pctx, runtime) < 0) {
- 		if (m->metric_refs_cnt == 0) {
- 			expr__ctx_free(m->pctx);
- 			free(m);
-diff --git a/tools/perf/util/stat-shadow.c b/tools/perf/util/stat-shadow.c
-index bea7b5c6b1c0..91bb7245f8b1 100644
---- a/tools/perf/util/stat-shadow.c
-+++ b/tools/perf/util/stat-shadow.c
-@@ -357,9 +357,9 @@ void perf_stat__collect_metric_expr(struct evlist *evsel_list)
- 		expr__ctx_clear(ctx);
- 		metric_events = counter->metric_events;
- 		if (!metric_events) {
--			if (expr__find_other(counter->metric_expr,
--					     counter->name,
--					     ctx, 1) < 0)
-+			if (expr__find_ids(counter->metric_expr,
-+					   counter->name,
-+					   ctx, 1) < 0)
- 				continue;
- 
- 			metric_events = calloc(sizeof(struct evsel *),
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
