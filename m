@@ -2,145 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094702F3926
+	by mail.lfdr.de (Postfix) with ESMTP id E70CA2F3928
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406264AbhALSqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 13:46:54 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:24518 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726636AbhALSqy (ORCPT
+        id S2406319AbhALSrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 13:47:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391672AbhALSrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 13:46:54 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10CIh4CD135115;
-        Tue, 12 Jan 2021 13:45:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=8dn5n5mw4OQtpzK0N/CimN+ip41q9EcXbMAGPd2ftlk=;
- b=iExWTgecsIiGBmbNrC/PYfhGTtrXC/8EKM6P5HDKCDPQLWHvoIKiahPkjVV2EoA+jxGm
- NDgJF/LXnP80Aqngd/zz11WRrxEr3xz/lSDhyNyd80W/0sOtNw1KzMrs6zpTfLlu+0Qu
- M4POJJaw2qkJqY8Jps1A06eXPa/QGPczhovDzC6npQj88Tub9bCW4KT+BwLy/aajyvv0
- bCV9GTxEeaEnvGqde4OdBPtMLnbusdsX3CApW1RX7crA2aZmtNSqFAmtj+A8rvy+fSrb
- In5jw2rqezPJltGjvlDw924Z5szE2MkiKVqldnR9oUYivhyfKbYaU7fENWHJCMm1QJU9 Qw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 361h9pg1fr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 13:45:21 -0500
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10CIimKQ142380;
-        Tue, 12 Jan 2021 13:45:21 -0500
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 361h9pg1f0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 13:45:20 -0500
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10CIb8D2011352;
-        Tue, 12 Jan 2021 18:45:19 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma03wdc.us.ibm.com with ESMTP id 35y449031x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 18:45:19 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10CIjIX19175636
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jan 2021 18:45:18 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A900EAC062;
-        Tue, 12 Jan 2021 18:45:18 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3CC7BAC059;
-        Tue, 12 Jan 2021 18:45:11 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.85.136.171])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Tue, 12 Jan 2021 18:45:10 +0000 (GMT)
-References: <20210104192602.10131-1-nramas@linux.microsoft.com>
- <20210112144248.GA256955@robh.at.kernel.org>
- <601825013d67584b0d2de7a973b806ec3cbc05ca.camel@linux.ibm.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
-        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au,
-        james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v14 0/6] Carry forward IMA measurement log on kexec on
- ARM64
-In-reply-to: <601825013d67584b0d2de7a973b806ec3cbc05ca.camel@linux.ibm.com>
-Date:   Tue, 12 Jan 2021 15:45:08 -0300
-Message-ID: <87eeiqro3v.fsf@manicouagan.localdomain>
+        Tue, 12 Jan 2021 13:47:14 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC14C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:46:33 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id c79so1921941pfc.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:46:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Mo28dVJ2HUEV0IicF3MnVVdQ/UP47bf6/LOz74G0NV4=;
+        b=n0Rv5jgnsLM1fdHpmyREatiuc98/6FgLXI2u3Dfjn6JkFVDSt5K/DJYSW3AOA3dpNd
+         TaVTPEG8+PSg7Y/loQ41zxKMEkN3JDsv8Rv7UKVx9Ww9e7FVJjezzvUqgap6inF1VAlG
+         ESQlzGvRc2WwnmtIcSDBznngMx4NTnPy5a638LkfJxGH7BKjiuIgG8gDiWM29Z4fY1yM
+         K3kcR6buEPDVC/r+XbO9Uvc2IlNX8eX7633wJBJRrJ+W0jWAmEw9hiBh/A6NOjU5udMK
+         W4XSe0j58MNwisiRQuMWSpk0I9LGrahN17GBJ3Kh1PqFbCq1L0ymPWlyDHcHXfXrBClR
+         9Lwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Mo28dVJ2HUEV0IicF3MnVVdQ/UP47bf6/LOz74G0NV4=;
+        b=nN0jenWV+VbTmFv6VQRbKKvq508LBLdSz8mqqAQruWWubRH0xBMeq0fgHtqq/OIgt0
+         XmiNIiko8NBAiWYSqQWCJ62+MF+hwD1f3bZ27YxQz8Klj8O9LViQEJgKhgaE65pPQWEX
+         7FPHJooXdeFi4D9slAnz3caYVI5niQJCJceSn1OpxzUDmxfinT0olM/iZ9At8gutFTvq
+         DTmHjfW/FPfHVNmv5jVGFAhl8bxwibuJl9yBwNrfU2YQ8FMxcRBf04TrsjGpYdYRNSzj
+         GeaZfPdD1gcfAg9SZbEG9qDNvehhchDzQHagW29y9a5fFRIMP64RJZVvPJgOmJLEfTcr
+         9M9Q==
+X-Gm-Message-State: AOAM530e4HBS3jKkzRmB3EElhri0hBjPJx7uN9X2/Yq4ECOUd1+I6TT+
+        iIm0eETRxocztHMHS/h88CA5LA==
+X-Google-Smtp-Source: ABdhPJz8XWM22lS5/WksANilqkHFtMYS6BIYme4NOzR0qdTnrXuJ5cjK3YDb9upeK00P9L+S++dfJQ==
+X-Received: by 2002:a62:7711:0:b029:1aa:3203:73c9 with SMTP id s17-20020a6277110000b02901aa320373c9mr454876pfc.65.1610477192542;
+        Tue, 12 Jan 2021 10:46:32 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id h3sm4362007pgm.67.2021.01.12.10.46.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 10:46:31 -0800 (PST)
+Date:   Tue, 12 Jan 2021 11:46:29 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Peng Fan <peng.fan@nxp.com>
+Cc:     "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "paul@crapouillou.net" <paul@crapouillou.net>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "agross@kernel.org" <agross@kernel.org>,
+        "patrice.chotard@st.com" <patrice.chotard@st.com>
+Subject: Re: [PATCH V5 7/8] remoteproc: imx_rproc: ignore mapping vdev regions
+Message-ID: <20210112184629.GA186830@xps15>
+References: <20201229033019.25899-1-peng.fan@nxp.com>
+ <20201229033019.25899-8-peng.fan@nxp.com>
+ <20210111215023.GJ144935@xps15>
+ <DB6PR0402MB2760F6F982C32B6557467C9188AA0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-12_15:2021-01-12,2021-01-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 mlxlogscore=999 spamscore=0 clxscore=1015
- adultscore=0 impostorscore=0 phishscore=0 mlxscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101120106
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DB6PR0402MB2760F6F982C32B6557467C9188AA0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 12, 2021 at 09:41:12AM +0000, Peng Fan wrote:
+> > Subject: Re: [PATCH V5 7/8] remoteproc: imx_rproc: ignore mapping vdev
+> > regions
+> > 
+> > On Tue, Dec 29, 2020 at 11:30:18AM +0800, peng.fan@nxp.com wrote:
+> > > From: Peng Fan <peng.fan@nxp.com>
+> > >
+> > > vdev regions are vdev0vring0, vdev0vring1, vdevbuffer and similar.
+> > > They are handled by remoteproc common code, no need to map in imx
+> > > rproc driver.
+> > >
+> > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > > ---
+> > >  drivers/remoteproc/imx_rproc.c | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > >
+> > > diff --git a/drivers/remoteproc/imx_rproc.c
+> > > b/drivers/remoteproc/imx_rproc.c index f80428afb8a7..e62a53ee128e
+> > > 100644
+> > > --- a/drivers/remoteproc/imx_rproc.c
+> > > +++ b/drivers/remoteproc/imx_rproc.c
+> > > @@ -417,6 +417,9 @@ static int imx_rproc_addr_init(struct imx_rproc
+> > *priv,
+> > >  		struct resource res;
+> > >
+> > >  		node = of_parse_phandle(np, "memory-region", a);
+> > > +		/* Not map vdev region */
+> > > +		if (!strcmp(node->name, "vdev"))
+> > > +			continue;
+> > 
+> > I am very confused and because I don't see an example for the DT in the
+> > bindings document I have to guess what is going on.
+> 
+> V6 will include the DT yaml.
+> 
+> > 
+> > So I am guessing that you have laid out the memory regions for the vrings and
+> > the vdev0buffer in the DT "memory-region".
+> 
+> The dts part will be similar as following:
+> 
+> +    #include <dt-bindings/clock/imx8mm-clock.h>
+> +    rsc_table: rsc_table@550ff000 {
+> +      no-map;
+> +      reg = <0x550ff000 0x1000>;
+> +    };
+> +
+> +    vdev0vring0: vdev0vring0@55000000 {
+> +      no-map;
+> +      reg = <0x55000000 0x8000>;
+> +    };
+> +
+> +    vdev0vring1: vdev0vring1@55008000 {
+> +      reg = <0x55008000 0x8000>;
+> +      no-map;
+> +    };
+> +
+> +    vdevbuffer: vdevbuffer@55400000 {
+> +      compatible = "shared-dma-pool";
+> +      reg = <0x55400000 0x100000>;
+> +      no-map;
+> +    };
+> +
+> +    imx8mm-cm4 {
+> +      compatible = "fsl,imx8mm-cm4";
+> +      clocks = <&clk IMX8MM_CLK_M4_DIV>;
+> +      mbox-names = "tx", "rx", "rxdb";
+> +      mboxes = <&mu 0 1
+> +                &mu 1 1
+> +                &mu 3 1>;
+> +      memory-region = <&vdevbuffer>, <&vdev0vring0>, <&vdev0vring1>, <&rsc_table>;
+> +      syscon = <&src>;
+> +    };
+> 
+> > 
+> > For the vrings I don't see the allocation of a carveout, which means that you
+> > will take the memory out of the DMA pool and the reserve memory will be
+> > wasted.
+> 
+> imx_rproc_parse_memory_regions will alloc carveout.
 
-Mimi Zohar <zohar@linux.ibm.com> writes:
+They _will_ but for now they don't and as such there a discrepancy between the
+bindings and the code that was published in V6.  At this point you can either
+drop the vrings in the DT or send another revision with the carveouts
+allocated.  I would definitely prefer the latter because it wouldn't involve yet
+another modification of the bindings.  
 
-> On Tue, 2021-01-12 at 08:42 -0600, Rob Herring wrote:
->> On Mon, Jan 04, 2021 at 11:25:56AM -0800, Lakshmi Ramasubramanian wrote:
->> > On kexec file load Integrity Measurement Architecture (IMA) subsystem
->> > may verify the IMA signature of the kernel and initramfs, and measure
->> > it. The command line parameters passed to the kernel in the kexec call
->> > may also be measured by IMA. A remote attestation service can verify
->> > a TPM quote based on the TPM event log, the IMA measurement list, and
->> > the TPM PCR data. This can be achieved only if the IMA measurement log
->> > is carried over from the current kernel to the next kernel across
->> > the kexec call.
->> > 
->> > powerpc already supports carrying forward the IMA measurement log on
->> > kexec. This patch set adds support for carrying forward the IMA
->> > measurement log on kexec on ARM64. 
->> > 
->> > This patch set moves the platform independent code defined for powerpc
->> > such that it can be reused for other platforms as well. A chosen node
->> > "linux,ima-kexec-buffer" is added to the DTB for ARM64 to hold
->> > the address and the size of the memory reserved to carry
->> > the IMA measurement log.
->> > 
->> > This patch set has been tested for ARM64 platform using QEMU.
->> > I would like help from the community for testing this change on powerpc.
->> > Thanks.
->> > 
->> > This patch set is based on
->> > commit a29a64445089 ("powerpc: Use common of_kexec_setup_new_fdt()")
->> > in https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git
->> > "dt/kexec" branch.
->> 
->> This all looks good to me. I'd suggest you send the above patches out as 
->> part of this series because I don't plan to do so.
->> 
->> I would like to also resolve the vmalloc vs. kmalloc difference for 
->> allocating the FDT. Then we can further consolidate the DT kexec code.
->> 
->> It all needs some acks from arm64 and powerpc maintainers. As far as 
->> merging, I think via the integrity tree makes the most sense.
->
-> Thanks, Rob.  Lakshmi,  please update Rob's patches to include patch
-> descriptions before re-posting.
-
-Also please update the powerpc mailing list address to
-linuxppc-dev@lists.ozlabs.org
-
--- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+> 
+> > 
+> > For the vdev0buffer, what you have will work *only* if that entry is the first
+> > one in the list of memory regions, as we agreed here [2].
+> 
+> Yes. I agree and follow this rule from then.
+> 
+> Thanks,
+> Peng.
+> 
+> > 
+> > [1].
+> > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Felixir.b
+> > ootlin.com%2Flinux%2Fv5.11-rc3%2Fsource%2Fdrivers%2Fremoteproc%2Fre
+> > moteproc_core.c%23L321&amp;data=04%7C01%7Cpeng.fan%40nxp.com%7
+> > C581784529b1646b9d34b08d8b67ae8c7%7C686ea1d3bc2b4c6fa92cd99c5c
+> > 301635%7C0%7C0%7C637459986311799770%7CUnknown%7CTWFpbGZsb3
+> > d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0
+> > %3D%7C1000&amp;sdata=Qur6YiTWlak0ZRnrUZRzawfoO38EBrAItqZm66b4
+> > m20%3D&amp;reserved=0
+> > [2].
+> > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpatch
+> > work.kernel.org%2Fproject%2Flinux-remoteproc%2Fpatch%2F202007221315
+> > 43.7024-1-peng.fan%40nxp.com%2F&amp;data=04%7C01%7Cpeng.fan%40n
+> > xp.com%7C581784529b1646b9d34b08d8b67ae8c7%7C686ea1d3bc2b4c6fa9
+> > 2cd99c5c301635%7C0%7C0%7C637459986311799770%7CUnknown%7CTW
+> > FpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJX
+> > VCI6Mn0%3D%7C1000&amp;sdata=b%2F8muWtb3yxKIsnXmKmRGYYV33%2
+> > FHjwA6a8x58geY7eE%3D&amp;reserved=0
+> > 
+> > >  		err = of_address_to_resource(node, 0, &res);
+> > >  		if (err) {
+> > >  			dev_err(dev, "unable to resolve memory region\n");
+> > > --
+> > > 2.28.0
+> > >
