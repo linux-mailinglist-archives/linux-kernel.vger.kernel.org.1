@@ -2,168 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A538F2F2E16
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:38:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B79D2F2E10
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729990AbhALLgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 06:36:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729831AbhALLgJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:36:09 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6822FC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 03:35:29 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id be12so1265849plb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 03:35:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4QLLdsmjlUXD8ZcmN6OfppjkNNypBTtU+sGe4+bM98Y=;
-        b=HatddMj3Nb+5ix0xm5HiDy9AAbfoiZeBVH4pXzG70aFjUn13J/ansi0iyM9h8zgV9B
-         5Jf0XMRvh3nkOq9KyGKbPR9eoqf95+ZUlAvzEA3z6qDQ89RR8dDxqarfbXvIs6oemqQU
-         itw2ayQ2h9cb49gWKsJiTJ04zZ28AXwMtTfDU1Fm72BzYX6Hew1QaLZsg6Exah+G2qdN
-         b0WfiVOlqbIH+UHi4ObUPbDppUuAM3Pkh1Ihs4FfMW9uQt6BFKkTFpSiBKKk9wFz5qWU
-         O9u4nl2hEGA9taENgivAmW3tKE69I7DMk5p2NOP8p2RVSkvFcGkVVb0ERZqqwaTFfAed
-         zXwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4QLLdsmjlUXD8ZcmN6OfppjkNNypBTtU+sGe4+bM98Y=;
-        b=VynYDjbsWeJaUmS1EULYX8Ol0A7Q9/+JMDYx0vin8yRVwMA9lcS136rN0EmEwJInSd
-         gaKncff+3xwppYzQqrJD10iQHVdvRooczCw3wMtvVIaip9LzN9xtKoKCyHY2k2yBMRV1
-         wcSUHX9UkTBjue+6oIia0bFX255rXQ94utY730svfytOoE0Jd9pgI1h5RlzPL3vn1+Zl
-         g8i4qcQxuDlNGi1u1VHvSZHqUxTjS8NhxBl92yx2OmR166F3ob76vyFiaIep3ZipOALt
-         27/BdTMhMCkT61A0/ZkpEMc0F//qqXQkuQZTTQI2BdgmJhBr4HfJsHReWB4R6KYV0NA+
-         D++A==
-X-Gm-Message-State: AOAM531RE9VlMyOFvdeWZn30Hztwo+DclzmmNguwVF30c6W/ws8F6Nca
-        uQ1AdvlRmadMNlNkAEX1MKC7GA+eaxC8/D8iAuORvA==
-X-Google-Smtp-Source: ABdhPJxx1CVCheR6Stp3vqmoxoihh85LIgzCfQUCw04RbIpBz5X+OfH/Fs4Vj4t2NU/KXdMU/qKfpjoBThxmeHzrUyw=
-X-Received: by 2002:a17:90a:5405:: with SMTP id z5mr4290338pjh.13.1610451329003;
- Tue, 12 Jan 2021 03:35:29 -0800 (PST)
-MIME-Version: 1.0
-References: <20210110124017.86750-1-songmuchun@bytedance.com>
- <20210110124017.86750-5-songmuchun@bytedance.com> <c61cdf1d-2feb-ecb3-393d-ca25175c73f4@oracle.com>
- <20210112083335.GH22493@dhcp22.suse.cz> <CAMZfGtVCntwNM=2RHHp=qDLN3L71ouQy=9V_e=VTNHtCDHsmWA@mail.gmail.com>
- <20210112100602.GL22493@dhcp22.suse.cz> <CAMZfGtVvrMegtXhZbPxgX_6ryJGoU6B64coLkBBUe4yf0jG-9A@mail.gmail.com>
- <20210112111158.GM22493@dhcp22.suse.cz>
-In-Reply-To: <20210112111158.GM22493@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 12 Jan 2021 19:34:45 +0800
-Message-ID: <CAMZfGtXRRC-G=vOw9q=bCmyst=acXsM98A+u-v8ZVL8Nxi1h=g@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v3 4/6] mm: hugetlb: add return -EAGAIN for dissolve_free_huge_page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729588AbhALLfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:35:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60918 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729394AbhALLfc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 06:35:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB8B0223C8;
+        Tue, 12 Jan 2021 11:34:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610451291;
+        bh=7/XId5NhEq1APEPyve+TGYzRs2gNaIVaD41Ez620soU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dW9gCLPHLUHqJ0mpgIreVGsKGUTnDtP1IQZkzwzL643wsyWtsuar9TRg4CE3jsEb3
+         FYWVS7y8oPjS21gkW5rbe/OlvmrDXhSdedd6uaGrczTlWPYmDoUx6qIXKAKVTbTPyQ
+         2B05MeJQZR8S9qhKlrnI4zKJcqQVi7Hur/Mf+ZYszVU2WYdxXZ3YbZ8XRa1wW4/1Jt
+         YA+Nsg6B5w8luGs6UKvkkPnlFyC7uuLIkXpIWuGYDlo5rWOZLtTiMCqkq70335DYVa
+         jlJpETyaZg3yiz2qO+VMXNGYSlsuu4b/fpbK+bQkxWJxU7N3X0y59gaB3TDake057w
+         4XSIoApOodfMg==
+Date:   Tue, 12 Jan 2021 20:34:46 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Andy Lutomirski <luto@amacapital.net>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH v1 03/19] x86/insn: Add an insn_decode() API
+Message-Id: <20210112203446.04c37db1cbb329f37b4b4a5c@kernel.org>
+In-Reply-To: <20210108185950.GG4042@zn.tnic>
+References: <20201223174233.28638-1-bp@alien8.de>
+        <20201223174233.28638-4-bp@alien8.de>
+        <20201228101510.49082d470ed328d81486ef04@kernel.org>
+        <20201229200654.GF29947@zn.tnic>
+        <20201230180052.7e1931b4e1b17079023b65b7@kernel.org>
+        <20201230092833.GE22022@zn.tnic>
+        <20210106142114.5e9ce2cc107f6386e36b4ff4@kernel.org>
+        <20210108185950.GG4042@zn.tnic>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 7:12 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Tue 12-01-21 18:49:17, Muchun Song wrote:
-> > On Tue, Jan 12, 2021 at 6:06 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Tue 12-01-21 17:51:05, Muchun Song wrote:
-> > > > On Tue, Jan 12, 2021 at 4:33 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > >
-> > > > > On Mon 11-01-21 17:20:51, Mike Kravetz wrote:
-> > > > > > On 1/10/21 4:40 AM, Muchun Song wrote:
-> > > > > > > There is a race between dissolve_free_huge_page() and put_page(),
-> > > > > > > and the race window is quite small. Theoretically, we should return
-> > > > > > > -EBUSY when we encounter this race. In fact, we have a chance to
-> > > > > > > successfully dissolve the page if we do a retry. Because the race
-> > > > > > > window is quite small. If we seize this opportunity, it is an
-> > > > > > > optimization for increasing the success rate of dissolving page.
-> > > > > > >
-> > > > > > > If we free a HugeTLB page from a non-task context, it is deferred
-> > > > > > > through a workqueue. In this case, we need to flush the work.
-> > > > > > >
-> > > > > > > The dissolve_free_huge_page() can be called from memory hotplug,
-> > > > > > > the caller aims to free the HugeTLB page to the buddy allocator
-> > > > > > > so that the caller can unplug the page successfully.
-> > > > > > >
-> > > > > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > > > > > ---
-> > > > > > >  mm/hugetlb.c | 26 +++++++++++++++++++++-----
-> > > > > > >  1 file changed, 21 insertions(+), 5 deletions(-)
-> > > > > >
-> > > > > > I am unsure about the need for this patch.  The code is OK, there are no
-> > > > > > issues with the code.
-> > > > > >
-> > > > > > As mentioned in the commit message, this is an optimization and could
-> > > > > > potentially cause a memory offline operation to succeed instead of fail.
-> > > > > > However, we are very unlikely to ever exercise this code.  Adding an
-> > > > > > optimization that is unlikely to be exercised is certainly questionable.
-> > > > > >
-> > > > > > Memory offline is the only code that could benefit from this optimization.
-> > > > > > As someone with more memory offline user experience, what is your opinion
-> > > > > > Michal?
-> > > > >
-> > > > > I am not a great fun of optimizations without any data to back them up.
-> > > > > I do not see any sign this code has been actually tested and the
-> > > > > condition triggered.
-> > > >
-> > > > This race is quite small. I only trigger this only once on my server.
-> > > > And then the kernel panic. So I sent this patch series to fix some
-> > > > bugs.
-> > >
-> > > Memory hotplug shouldn't panic when this race happens. Are you sure you
-> > > have seen a race that is directly related to this patch?
-> >
-> > I mean the panic is fixed by:
-> >
-> >   [PATCH v3 3/6] mm: hugetlb: fix a race between freeing and dissolving the page
->
-> OK, so the answer is that this is not really triggered by any real life
-> problem. Can you actually trigger it intentionally?
->
-> > > > > Besides that I have requested to have an explanation of why blocking on
-> > > > > the WQ is safe and that hasn't happened.
-> > > >
-> > > > I have seen all the caller of dissolve_free_huge_page, some caller is under
-> > > > page lock (via lock_page). Others are also under a sleep context.
-> > > >
-> > > > So I think that blocking on the WQ is safe. Right?
-> > >
-> > > I have requested to explicitly write your thinking why this is safe so
-> > > that we can double check it. Dependency on a work queue progress is much
-> > > more complex than any other locks because there is no guarantee that WQ
-> > > will make forward progress (all workers might be stuck, new workers not
-> > > able to be created etc.).
-> >
-> > OK. I know about your concern. How about setting the page as temporary
-> > when hitting this race?
-> >
-> >  int dissolve_free_huge_page(struct page *page)
-> >  {
-> > @@ -1793,8 +1794,10 @@ int dissolve_free_huge_page(struct page *page)
-> >                  * We should make sure that the page is already on the free list
-> >                  * when it is dissolved.
-> >                  */
-> > -               if (unlikely(!PageHugeFreed(head)))
-> > +               if (unlikely(!PageHugeFreed(head))) {
-> > +                       SetPageHugeTemporary(page)
-> >                         goto out;
-> > +               }
-> >
-> > Setting the page as temporary and just return -EBUSY (do not flush
-> > the work). __free_huge_page() will free it to the buddy allocator later.
->
-> Can we stop these subtle hacks please? Temporary page is meant to
-> represent unaccounted temporary page for migration. This has nothing to
-> do with it.
+On Fri, 8 Jan 2021 19:59:50 +0100
+Borislav Petkov <bp@alien8.de> wrote:
 
-Sure. Can drop this patch.
+> On Wed, Jan 06, 2021 at 02:21:14PM +0900, Masami Hiramatsu wrote:
+> > So I think it is possible to introduce a keyword in a comment
+> > for ignoring sync check something like below. This will allow us
+> > a generic pattern matching.
+> > 
+> > The keyword is just an example, "no-sync-check" etc. is OK.
+> > 
+> > What would you think about it?
+> 
+> Yeah, I'd prefer a single keyword which to slap everywhere, see below.
+> The patch is only for demonstration, though, it is not complete.
 
-> --
-> Michal Hocko
-> SUSE Labs
+Yes, that looks good to me too.
+
+> 
+> And while playing with that after having commented out INSN_MODE_KERN in
+> the tools/ version, I realized that the build would always fail because
+> insn.c references it:
+> 
+> In file included from arch/x86/decode.c:12:
+> arch/x86/../../../arch/x86/lib/insn.c: In function ‘insn_decode’:
+> arch/x86/../../../arch/x86/lib/insn.c:751:11: error: ‘INSN_MODE_KERN’ undeclared (first use in this function); did you mean ‘INSN_MODE_64’?
+>   751 |  if (m == INSN_MODE_KERN)
+>       |           ^~~~~~~~~~~~~~
+>       |           INSN_MODE_64
+> 
+> and making that work would turn pretty ugly because I wanna avoid
+> slapping that __ignore_sync_check__ or whatever on more than one line.
+> 
+> So I need to think about a better solution here... 
+
+Hmm, instead of removing INSN_MODE_KERN, if you just return an error,
+it will change one line.
+
+	if (m == INSN_MODE_KERN)
+		return -EINVAL;	/* __ignore_sync_check__ */
+	else
+		insn_init(insn, kaddr, buf_len, m == INSN_MODE_64);
+
+Or, add one definition before that line.
+
+#define INSN_MODE_KERN -1	/* __ignore_sync_check__ */
+
+Thank you,
+
+
+> 
+> ---
+> diff --git a/arch/x86/include/asm/inat.h b/arch/x86/include/asm/inat.h
+> index 4cf2ad521f65..b56c5741581a 100644
+> --- a/arch/x86/include/asm/inat.h
+> +++ b/arch/x86/include/asm/inat.h
+> @@ -6,7 +6,7 @@
+>   *
+>   * Written by Masami Hiramatsu <mhiramat@redhat.com>
+>   */
+> -#include <asm/inat_types.h>
+> +#include <asm/inat_types.h> /* __ignore_sync_check__ */
+>  
+>  /*
+>   * Internal bits. Don't use bitmasks directly, because these bits are
+> diff --git a/arch/x86/include/asm/insn.h b/arch/x86/include/asm/insn.h
+> index 9f1910284861..601eac7a4973 100644
+> --- a/arch/x86/include/asm/insn.h
+> +++ b/arch/x86/include/asm/insn.h
+> @@ -8,7 +8,7 @@
+>   */
+>  
+>  /* insn_attr_t is defined in inat.h */
+> -#include <asm/inat.h>
+> +#include <asm/inat.h> /* __ignore_sync_check__ */
+>  
+>  struct insn_field {
+>  	union {
+> @@ -99,7 +99,7 @@ enum insn_mode {
+>  	INSN_MODE_32,
+>  	INSN_MODE_64,
+>  	/* Mode is determined by the current kernel build. */
+> -	INSN_MODE_KERN,
+> +	INSN_MODE_KERN, /* __ignore_sync_check__ */
+>  	INSN_NUM_MODES,
+>  };
+>  
+> diff --git a/arch/x86/lib/inat.c b/arch/x86/lib/inat.c
+> index 12539fca75c4..b0f3b2a62ae2 100644
+> --- a/arch/x86/lib/inat.c
+> +++ b/arch/x86/lib/inat.c
+> @@ -4,7 +4,7 @@
+>   *
+>   * Written by Masami Hiramatsu <mhiramat@redhat.com>
+>   */
+> -#include <asm/insn.h>
+> +#include <asm/insn.h> /* __ignore_sync_check__ */
+>  
+>  /* Attribute tables are generated from opcode map */
+>  #include "inat-tables.c"
+> diff --git a/arch/x86/lib/insn.c b/arch/x86/lib/insn.c
+> index 2ab1d0256313..1295003fb4f7 100644
+> --- a/arch/x86/lib/insn.c
+> +++ b/arch/x86/lib/insn.c
+> @@ -10,13 +10,13 @@
+>  #else
+>  #include <string.h>
+>  #endif
+> -#include <asm/inat.h>
+> -#include <asm/insn.h>
+> +#include <asm/inat.h> /*__ignore_sync_check__ */
+> +#include <asm/insn.h> /* __ignore_sync_check__ */
+>  
+>  #include <linux/errno.h>
+>  #include <linux/kconfig.h>
+>  
+> -#include <asm/emulate_prefix.h>
+> +#include <asm/emulate_prefix.h> /* __ignore_sync_check__ */
+>  
+>  /* Verify next sizeof(t) bytes can be on the same instruction */
+>  #define validate_next(t, insn, n)	\
+> diff --git a/tools/arch/x86/include/asm/inat.h b/tools/arch/x86/include/asm/inat.h
+> index 877827b7c2c3..a61051400311 100644
+> --- a/tools/arch/x86/include/asm/inat.h
+> +++ b/tools/arch/x86/include/asm/inat.h
+> @@ -6,7 +6,7 @@
+>   *
+>   * Written by Masami Hiramatsu <mhiramat@redhat.com>
+>   */
+> -#include "inat_types.h"
+> +#include "inat_types.h" /* __ignore_sync_check__ */
+>  
+>  /*
+>   * Internal bits. Don't use bitmasks directly, because these bits are
+> diff --git a/tools/arch/x86/include/asm/insn.h b/tools/arch/x86/include/asm/insn.h
+> index f8772b371452..b12329de4e6e 100644
+> --- a/tools/arch/x86/include/asm/insn.h
+> +++ b/tools/arch/x86/include/asm/insn.h
+> @@ -8,7 +8,7 @@
+>   */
+>  
+>  /* insn_attr_t is defined in inat.h */
+> -#include "inat.h"
+> +#include "inat.h" /* __ignore_sync_check__ */
+>  
+>  struct insn_field {
+>  	union {
+> @@ -99,7 +99,7 @@ enum insn_mode {
+>  	INSN_MODE_32,
+>  	INSN_MODE_64,
+>  	/* Mode is determined by the current kernel build. */
+> -	INSN_MODE_KERN,
+> +	/* INSN_MODE_KERN, __ignore_sync_check__ */
+>  	INSN_NUM_MODES,
+>  };
+>  
+> diff --git a/tools/arch/x86/lib/inat.c b/tools/arch/x86/lib/inat.c
+> index 4f5ed49e1b4e..dfbcc6405941 100644
+> --- a/tools/arch/x86/lib/inat.c
+> +++ b/tools/arch/x86/lib/inat.c
+> @@ -4,7 +4,7 @@
+>   *
+>   * Written by Masami Hiramatsu <mhiramat@redhat.com>
+>   */
+> -#include "../include/asm/insn.h"
+> +#include "../include/asm/insn.h" /* __ignore_sync_check__ */
+>  
+>  /* Attribute tables are generated from opcode map */
+>  #include "inat-tables.c"
+> diff --git a/tools/arch/x86/lib/insn.c b/tools/arch/x86/lib/insn.c
+> index c224e1569034..0824ae531019 100644
+> --- a/tools/arch/x86/lib/insn.c
+> +++ b/tools/arch/x86/lib/insn.c
+> @@ -10,13 +10,13 @@
+>  #else
+>  #include <string.h>
+>  #endif
+> -#include "../include/asm/inat.h"
+> -#include "../include/asm/insn.h"
+> +#include "../include/asm/inat.h" /* __ignore_sync_check__ */
+> +#include "../include/asm/insn.h" /* __ignore_sync_check__ */
+>  
+>  #include <linux/errno.h>
+>  #include <linux/kconfig.h>
+>  
+> -#include "../include/asm/emulate_prefix.h"
+> +#include "../include/asm/emulate_prefix.h" /* __ignore_sync_check__ */
+>  
+>  /* Verify next sizeof(t) bytes can be on the same instruction */
+>  #define validate_next(t, insn, n)	\
+> diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
+> index dded93a2bc89..46ee37c87a80 100755
+> --- a/tools/perf/check-headers.sh
+> +++ b/tools/perf/check-headers.sh
+> @@ -75,6 +75,13 @@ include/uapi/asm-generic/mman-common.h
+>  include/uapi/asm-generic/unistd.h
+>  '
+>  
+> +SYNC_CHECK_FILES='
+> +arch/x86/include/asm/inat.h
+> +arch/x86/include/asm/insn.h
+> +arch/x86/lib/inat.c
+> +arch/x86/lib/insn.c
+> +'
+> +
+>  # These copies are under tools/perf/trace/beauty/ as they are not used to in
+>  # building object files only by scripts in tools/perf/trace/beauty/ to generate
+>  # tables that then gets included in .c files for things like id->string syscall
+> @@ -129,6 +136,10 @@ for i in $FILES; do
+>    check $i -B
+>  done
+>  
+> +for i in $SYNC_CHECK_FILES; do
+> +  check $i '-I "^.*\/*.*__ignore_sync_check__ \*/.*$"'
+> +done
+> +
+>  # diff with extra ignore lines
+>  check arch/x86/lib/memcpy_64.S        '-I "^EXPORT_SYMBOL" -I "^#include <asm/export.h>" -I"^SYM_FUNC_START\(_LOCAL\)*(memcpy_\(erms\|orig\))"'
+>  check arch/x86/lib/memset_64.S        '-I "^EXPORT_SYMBOL" -I "^#include <asm/export.h>" -I"^SYM_FUNC_START\(_LOCAL\)*(memset_\(erms\|orig\))"'
+> @@ -137,10 +148,6 @@ check include/uapi/linux/mman.h       '-I "^#include <\(uapi/\)*asm/mman.h>"'
+>  check include/linux/build_bug.h       '-I "^#\(ifndef\|endif\)\( \/\/\)* static_assert$"'
+>  check include/linux/ctype.h	      '-I "isdigit("'
+>  check lib/ctype.c		      '-I "^EXPORT_SYMBOL" -I "^#include <linux/export.h>" -B'
+> -check arch/x86/include/asm/inat.h     '-I "^#include [\"<]\(asm/\)*inat_types.h[\">]"'
+> -check arch/x86/include/asm/insn.h     '-I "^#include [\"<]\(asm/\)*inat.h[\">]"'
+> -check arch/x86/lib/inat.c	      '-I "^#include [\"<]\(../include/\)*asm/insn.h[\">]"'
+> -check arch/x86/lib/insn.c             '-I "^#include [\"<]\(../include/\)*asm/in\(at\|sn\).h[\">]" -I "^#include [\"<]\(../include/\)*asm/emulate_prefix.h[\">]"'
+>  
+>  # diff non-symmetric files
+>  check_2 tools/perf/arch/x86/entry/syscalls/syscall_64.tbl arch/x86/entry/syscalls/syscall_64.tbl
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
