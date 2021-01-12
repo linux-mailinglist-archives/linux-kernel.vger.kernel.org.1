@@ -2,88 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA372F2BEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:55:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E88A62F2BF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:55:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392883AbhALJyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:54:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730628AbhALJys (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:54:48 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1ECC061786;
-        Tue, 12 Jan 2021 01:54:07 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id y23so1487306wmi.1;
-        Tue, 12 Jan 2021 01:54:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4C7koV7P9bGKc+8BN3L92y65XqnLENV7qQnrXi9vunM=;
-        b=IPMh9X5BrV1/JjonSuaCs7E9x+6WGO3aAUl8ReIGobx3T/2p8PMuEQyPwietoLfCcq
-         L7LKDtMh2FziyR+3kuPAOJlo58Lne9hMVRZa64gMAgD5IevPqRxBw9QsNZbHHeIByGcc
-         MD90h7SbWm+29I1ka3vigZpIz6a0OvFhK3C/byqpcjOk6pT8cxuO+aE4Ij4Ue3emWBWi
-         dnABj7jE+tJSp7tOKpOhLauRhfhAxolnyWAvD5GEy6+QIKRvthXvpqGw9m4xuqjaQUon
-         ts8uPeBCgr+zHVw3ROEiP1R1QNNnvLSo+Qa+pOneP3QGRmeAR69K2lPHs06CNRizr3L+
-         gfxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4C7koV7P9bGKc+8BN3L92y65XqnLENV7qQnrXi9vunM=;
-        b=DRW5CEEHNbCNCWl0wkpQG0BnfHr0um9LWiOCOGhOorE7Td6HXhI+XLyTTBA2nRaNd1
-         HtIonQf56GZxwVKnq0LcX4vKkGyTs1WmpY8IaQ8yT54LgFcEecl8w1V8+haru/HyY7D+
-         CknAs1JIzm9Q0cbms2nZOwsImYd2mvTP35nErCgLN54KPDadal1xo9gvG/R8XRXFBeEZ
-         Xxx7Kn5/OtJXt+WqpLg9vomPaJBrdPBluwHNzIOso2buTcxh8o8bGdrvmAlU4VM15FC0
-         yu2OtYavS90z+KzoGVY4AwyqwkqOvqURjHccZ3UhRZ/V75/R0s/k4jy7zFT1pZBYxv0V
-         953w==
-X-Gm-Message-State: AOAM530QdPTXeHHMmijI7ursggQNVYY3xeL8sfhcxUUbNqzuFaG+eZsv
-        QsOgBnh1pq8+Q85HpKBuLks16tXeMiZHkA==
-X-Google-Smtp-Source: ABdhPJwF18MLwhoD3WVUiTBmIGtZqMEi6VY8eAKww2tvohbjOuX3m6HHG3M+2ZsIqRLEd+GpZGgtwA==
-X-Received: by 2002:a1c:e342:: with SMTP id a63mr2804716wmh.64.1610445246608;
-        Tue, 12 Jan 2021 01:54:06 -0800 (PST)
-Received: from [192.168.1.122] (cpc159425-cmbg20-2-0-cust403.5-4.cable.virginm.net. [86.7.189.148])
-        by smtp.gmail.com with ESMTPSA id s13sm2876036wmj.28.2021.01.12.01.54.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 01:54:05 -0800 (PST)
-Subject: Re: [PATCH net-next 0/5] skbuff: introduce skbuff_heads bulking and
- reusing
-To:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210111182655.12159-1-alobakin@pm.me>
-From:   Edward Cree <ecree.xilinx@gmail.com>
-Message-ID: <d4f4b6ba-fb3b-d873-23b2-4b5ba9cf4db8@gmail.com>
-Date:   Tue, 12 Jan 2021 09:54:04 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2392857AbhALJzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:55:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42546 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389287AbhALJze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 04:55:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 695F4225AC;
+        Tue, 12 Jan 2021 09:54:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610445294;
+        bh=dLHHGgqFtP2uYlc3nf/+6zFYdSZckeor1gxlC8d7+Wo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WP0xcDMahQfhRGfx/Bx1c+9YNeQMFKo/yoF2P8ReATf8uspiVer2xQ20rN6FQZwN3
+         O5KweDgEz07AaPsRO6c7rVKrEOQvbf4bbeo0lE+FaFvXDWTkmK38bl4pBe7HYR1pfL
+         IKy6lgt9YeEAzw1tFLZz7sFYd0X+u9H7K0FlHo9S2dhK76Z2n4QemdXdqNG3GKh6B7
+         KYwKeMeM0UN16CPDKBkIz/u9KV1u0Szjb4ux8kbUxxnu0dhpQQ4CnFYv0qBidd+JXO
+         f9SAELuFk9G66M1fmWxD/w5HrQ6dcz5/iQwdVPb2lV01aP0miP7BzH7S9+ZhMMIRLd
+         qbOGP3/Q41Y0g==
+Date:   Tue, 12 Jan 2021 10:54:47 +0100
+From:   Matthias Brugger <matthias.bgg@kernel.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Gene Chen <gene_chen@richtek.com>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Axel Lin <axel.lin@ingics.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Chen Zhong <chen.zhong@mediatek.com>,
+        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Subject: Re: [PATCH v2 1/3] regulator: mt6360: Add OF match table
+Message-ID: <X/1x56kY+21B9fvR@ziggy.stardust>
+References: <20210109112612.1221-1-matthias.bgg@kernel.org>
+ <20210111164118.GE4728@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20210111182655.12159-1-alobakin@pm.me>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210111164118.GE4728@sirena.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Without wishing to weigh in on whether this caching is a good idea...
-Wouldn't it be simpler, rather than having two separate "alloc" and "flush"
- caches, to have a single larger cache, such that whenever it becomes full
- we bulk flush the top half, and when it's empty we bulk alloc the bottom
- half?  That should mean fewer branches, fewer instructions etc. than
- having to decide which cache to act upon every time.
+On Mon, Jan 11, 2021 at 04:41:18PM +0000, Mark Brown wrote:
+> On Sat, Jan 09, 2021 at 12:26:09PM +0100, matthias.bgg@kernel.org wrote:
+> > From: Matthias Brugger <mbrugger@suse.com>
+> > 
+> > Binding documentation mentions that a compatible is required for the
+> > MT6360 device node, but the driver doesn't provide a OF match table.
+> 
+> The binding should be fixed to remove the requirement for a compatible
+> here, this is both redundant since we already know we have a mt6380 from
+> the core MFD and encoding details of how Linux implements things into
+> the DT bindings.
 
--ed
+Ok, I'll leave that to the driver author to fix this.
+Just be aware that there is series for the MFD part which adds
+OF_MFD_CELL for the regulator.
+
+Regards,
+Matthias
+
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+
