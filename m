@@ -2,222 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621862F31BC
+	by mail.lfdr.de (Postfix) with ESMTP id CFD992F31BD
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729649AbhALN26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:28:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726509AbhALN24 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:28:56 -0500
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1194EC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:28:16 -0800 (PST)
-Received: by mail-oo1-xc36.google.com with SMTP id i18so583823ooh.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:28:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/5PClQYptOKzf4VGuYg6zpVPuHDySmC7+0H8PzNXzBk=;
-        b=C11mfkBoxNn1MArI0Umb8nOkUtYdOxntZOXmnhseYbzmPd1+Beq9jgs/ZE4dUyW9Wy
-         EBszhT9WOwiUvqu5UjpMPjCoIUnvX009RS4knk8Dc76w7NDI8tq1ViX8IT6w202QO9wA
-         PDP9MvZL3ZssDHzqaEfuVOHw1KRw5KKKlWr40=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/5PClQYptOKzf4VGuYg6zpVPuHDySmC7+0H8PzNXzBk=;
-        b=VeLdeo7IhM2se3xT17Y1NCeJdw8YGtXlUpxawhGBtfIwCWyxNynU2DV96g/7MJJC94
-         pd/m9xbmUEkFgPLkRKQK9d2/544bZu6z6mn9WGxKPz+7Ux8cjZptB6RgTm5nd4ibzUvn
-         CQf7W2WLP9JYzMbt1Pz/zimAkB6brXmdai7nFtTDCfLMpILQYxMAm9+K1dqy0bwz/Nh0
-         mEv7Ah1Xxn3B5PP/2DtLMQjVf2H/9hjhdNHogT2G+hI1tA0yUMChaQRdpnm4XbB6yvyR
-         UW5+XEaBEzIK7qJGZtRkkGTSw9m5ho06hOWlm+BpCcFBn0CCS8TZGzPZwr7dWQRaZ3TA
-         FBpA==
-X-Gm-Message-State: AOAM53217wssN5Ni/QRWrnOFHa0WJzMJt6JeRlazaO8xlhz/IFcmz/fh
-        PuFKlAI1hUocsYJ2F8wv6vlaZIt4oMsoH7NOssoFxpJh5HEOqg==
-X-Google-Smtp-Source: ABdhPJyVQXbd3o888VMoH+BoaA1wz0JVD78ufYjTNXTQUKQEYRQd1kyAD91V/rdI3kY7T5DbkT7sXRCWoIshBiPnLQo=
-X-Received: by 2002:a4a:9722:: with SMTP id u31mr2784698ooi.28.1610458095399;
- Tue, 12 Jan 2021 05:28:15 -0800 (PST)
+        id S1730809AbhALN3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:29:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728100AbhALN3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 08:29:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06EF922E03;
+        Tue, 12 Jan 2021 13:28:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610458106;
+        bh=BgmXOmhB4SO2UGr1hcUsI1jWHWhAohBufvGcpIqsYlc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tA5sL9LxMoOr4UX5ETiwJ11S1yUVLKDtVP6PygWPVz18jfURemuvCenp7Df0JdFUN
+         9nhIV6NzqpAF7tM8nV/Zw3x3UNmtgOLBDGH1IgS96JbPClwcqoQBu24qwrqr3V02QO
+         +i4udaOb+TRTB/PBfPmiyb3/K0H7euC/VZoPdrUmj2PsMkxjHWkl1kIgtgLOa4WHVI
+         ETSwZK5IYQ9ASMvRq0NONKfekizdz8Gawi1kscOKAitAIPCaS6M8x2MwHAvTTRzpP4
+         bCplgnZotPS6PL/YSSf51/3fyugTAT1BMMgc4uu5lCRzRsnAn7y3Azyu9xo2KfPbdz
+         lQq2ov2bDI9aQ==
+Date:   Tue, 12 Jan 2021 13:28:22 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] locking/rtmutex: add missed kernel-doc markup
+Message-ID: <20210112132821.GA9087@willie-the-truck>
+References: <1605257895-5536-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1605257895-5536-2-git-send-email-alex.shi@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20201127164131.2244124-1-daniel.vetter@ffwll.ch> <X/2jC9kBBQCfbC3d@phenom.ffwll.local>
-In-Reply-To: <X/2jC9kBBQCfbC3d@phenom.ffwll.local>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Tue, 12 Jan 2021 14:28:03 +0100
-Message-ID: <CAKMK7uH_H7EPo_5ZZ17xp+2Nc+ikRUY8Rm34np6t6Yt5VZCWzQ@mail.gmail.com>
-Subject: Re: [PATCH v7 00/17] follow_pfn and other iomap races
-To:     DRI Development <dri-devel@lists.freedesktop.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1605257895-5536-2-git-send-email-alex.shi@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 2:24 PM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Fri, Nov 27, 2020 at 05:41:14PM +0100, Daniel Vetter wrote:
-> > Hi all
-> >
-> > Another update of my patch series to clamp down a bunch of races and gaps
-> > around follow_pfn and other access to iomem mmaps. Previous version:
-> >
-> > v1: https://lore.kernel.org/dri-devel/20201007164426.1812530-1-daniel.vetter@ffwll.ch/
-> > v2: https://lore.kernel.org/dri-devel/20201009075934.3509076-1-daniel.vetter@ffwll.ch
-> > v3: https://lore.kernel.org/dri-devel/20201021085655.1192025-1-daniel.vetter@ffwll.ch/
-> > v4: https://lore.kernel.org/dri-devel/20201026105818.2585306-1-daniel.vetter@ffwll.ch/
-> > v5: https://lore.kernel.org/dri-devel/20201030100815.2269-1-daniel.vetter@ffwll.ch/
-> > v6: https://lore.kernel.org/dri-devel/20201119144146.1045202-1-daniel.vetter@ffwll.ch/
-> >
-> > And the discussion that sparked this journey:
-> >
-> > https://lore.kernel.org/dri-devel/20201007164426.1812530-1-daniel.vetter@ffwll.ch/
-> >
-> > I think the first 12 patches are ready for landing. The parts starting
-> > with "mm: Add unsafe_follow_pfn" probably need more baking time.
-> >
-> > Andrew, can you please pick these up, or do you prefer I do a topic branch
-> > and send them to Linus directly in the next merge window?
-> >
-> > Changes in v7:
-> > - more acks/reviews
-> > - reordered with the ready pieces at the front
-> > - simplified the new follow_pfn function as Jason suggested
-> >
-> > Changes in v6:
-> > - Tested v4l userptr as Tomasz suggested. No boom observed
-> > - Added RFC for locking down follow_pfn, per discussion with Christoph and
-> >   Jason.
-> > - Explain why pup_fast is safe in relevant patches, there was a bit a
-> >   confusion when discussing v5.
-> > - Fix up the resource patch, with CONFIG_IO_STRICT_DEVMEM it crashed on
-> >   boot due to an unintended change (reported by John)
-> >
-> > Changes in v5:
-> > - Tomasz found some issues in the media patches
-> > - Polish suggested by Christoph for the unsafe_follow_pfn patch
-> >
-> > Changes in v4:
-> > - Drop the s390 patch, that was very stand-alone and now queued up to land
-> >   through s390 trees.
-> > - Comment polish per Dan's review.
-> >
-> > Changes in v3:
-> > - Bunch of polish all over, no functional changes aside from one barrier
-> >   in the resource code, for consistency.
-> > - A few more r-b tags.
-> >
-> > Changes in v2:
-> > - tons of small polish&fixes all over, thanks to all the reviewers who
-> >   spotted issues
-> > - I managed to test at least the generic_access_phys and pci mmap revoke
-> >   stuff with a few gdb sessions using our i915 debug tools (hence now also
-> >   the drm/i915 patch to properly request all the pci bar regions)
-> > - reworked approach for the pci mmap revoke: Infrastructure moved into
-> >   kernel/resource.c, address_space mapping is now set up at open time for
-> >   everyone (which required some sysfs changes). Does indeed look a lot
-> >   cleaner and a lot less invasive than I feared at first.
-> >
-> > Coments and review on the remaining bits very much welcome, especially
-> > from the kvm and vfio side.
-> >
-> > Cheers, Daniel
-> >
-> > Daniel Vetter (17):
-> >   drm/exynos: Stop using frame_vector helpers
-> >   drm/exynos: Use FOLL_LONGTERM for g2d cmdlists
-> >   misc/habana: Stop using frame_vector helpers
-> >   misc/habana: Use FOLL_LONGTERM for userptr
-> >   mm/frame-vector: Use FOLL_LONGTERM
-> >   media: videobuf2: Move frame_vector into media subsystem
-> >   mm: Close race in generic_access_phys
-> >   PCI: Obey iomem restrictions for procfs mmap
-> >   /dev/mem: Only set filp->f_mapping
-> >   resource: Move devmem revoke code to resource framework
-> >   sysfs: Support zapping of binary attr mmaps
-> >   PCI: Revoke mappings like devmem
->
-> As Jason suggested, I've pulled the first 1 patches into a topic branch.
+On Fri, Nov 13, 2020 at 04:58:11PM +0800, Alex Shi wrote:
+> To fix the following issues:
+> kernel/locking/rtmutex.c:1612: warning: Function parameter or member
+> 'lock' not described in '__rt_mutex_futex_unlock'
+> kernel/locking/rtmutex.c:1612: warning: Function parameter or member
+> 'wake_q' not described in '__rt_mutex_futex_unlock'
+> kernel/locking/rtmutex.c:1675: warning: Function parameter or member
+> 'name' not described in '__rt_mutex_init'
+> kernel/locking/rtmutex.c:1675: warning: Function parameter or member
+> 'key' not described in '__rt_mutex_init'
+> 
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Peter Zijlstra <peterz@infradead.org> 
+> Cc: Ingo Molnar <mingo@redhat.com> 
+> Cc: Will Deacon <will@kernel.org> 
+> Cc: linux-kernel@vger.kernel.org 
+> ---
+>  kernel/locking/rtmutex.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+> index cfdd5b93264d..50fa521fe767 100644
+> --- a/kernel/locking/rtmutex.c
+> +++ b/kernel/locking/rtmutex.c
+> @@ -1604,8 +1604,11 @@ void __sched rt_mutex_unlock(struct rt_mutex *lock)
+>  EXPORT_SYMBOL_GPL(rt_mutex_unlock);
+>  
+>  /**
+> - * Futex variant, that since futex variants do not use the fast-path, can be
+> - * simple and will not need to retry.
+> + * __rt_mutex_futex_unlock - Futex variant, that since futex variants
+> + * do not use the fast-path, can be simple and will not need to retry.
+> + *
+> + * @lock: the rt_mutex to be unlocked
+> + * @wake_q: wake queue head from which get the next lock waiter
 
-Uh this was meant to read "first _12_ patches" ofc.
--Daniel
+missing word: from which *to* get
 
->
-> Stephen, can you please add the below to linux-next for the 5.12 merge
-> window?
->
-> git://anongit.freedesktop.org/drm/drm topic/iomem-mmap-vs-gup
->
-> Once this part has landed I'll see what to do with the below part.
->
-> Thanks, Daniel
->
-> >   mm: Add unsafe_follow_pfn
-> >   media/videobuf1|2: Mark follow_pfn usage as unsafe
-> >   vfio/type1: Mark follow_pfn as unsafe
-> >   kvm: pass kvm argument to follow_pfn callsites
-> >   mm: add mmu_notifier argument to follow_pfn
-> >
-> >  arch/powerpc/kvm/book3s_64_mmu_hv.c           |   2 +-
-> >  arch/powerpc/kvm/book3s_64_mmu_radix.c        |   2 +-
-> >  arch/powerpc/kvm/e500_mmu_host.c              |   2 +-
-> >  arch/x86/kvm/mmu/mmu.c                        |   8 +-
-> >  drivers/char/mem.c                            |  86 +-------------
-> >  drivers/gpu/drm/exynos/Kconfig                |   1 -
-> >  drivers/gpu/drm/exynos/exynos_drm_g2d.c       |  48 ++++----
-> >  drivers/media/common/videobuf2/Kconfig        |   1 -
-> >  drivers/media/common/videobuf2/Makefile       |   1 +
-> >  .../media/common/videobuf2}/frame_vector.c    |  57 ++++-----
-> >  .../media/common/videobuf2/videobuf2-memops.c |   3 +-
-> >  drivers/media/platform/omap/Kconfig           |   1 -
-> >  drivers/media/v4l2-core/videobuf-dma-contig.c |   2 +-
-> >  drivers/misc/habanalabs/Kconfig               |   1 -
-> >  drivers/misc/habanalabs/common/habanalabs.h   |   6 +-
-> >  drivers/misc/habanalabs/common/memory.c       |  52 +++-----
-> >  drivers/pci/pci-sysfs.c                       |   4 +
-> >  drivers/pci/proc.c                            |   6 +
-> >  drivers/vfio/vfio_iommu_type1.c               |   4 +-
-> >  fs/sysfs/file.c                               |  11 ++
-> >  include/linux/ioport.h                        |   6 +-
-> >  include/linux/kvm_host.h                      |   9 +-
-> >  include/linux/mm.h                            |  50 +-------
-> >  include/linux/sysfs.h                         |   2 +
-> >  include/media/frame_vector.h                  |  47 ++++++++
-> >  include/media/videobuf2-core.h                |   1 +
-> >  kernel/resource.c                             |  98 ++++++++++++++-
-> >  mm/Kconfig                                    |   3 -
-> >  mm/Makefile                                   |   1 -
-> >  mm/memory.c                                   | 112 +++++++++++++++---
-> >  mm/nommu.c                                    |  16 ++-
-> >  security/Kconfig                              |  13 ++
-> >  virt/kvm/kvm_main.c                           |  56 +++++----
-> >  33 files changed, 413 insertions(+), 299 deletions(-)
-> >  rename {mm => drivers/media/common/videobuf2}/frame_vector.c (84%)
-> >  create mode 100644 include/media/frame_vector.h
-> >
-> > --
-> > 2.29.2
-> >
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+With that fixed,
 
+Acked-by: Will Deacon <will@kernel.org>
 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Will
