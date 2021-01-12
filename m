@@ -2,147 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 564992F3CCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D406A2F3CC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437253AbhALVeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2437266AbhALVeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Jan 2021 16:34:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33476 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436645AbhALUG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:06:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A514F22202;
-        Tue, 12 Jan 2021 20:06:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610481975;
-        bh=R+BCcR/MhTRR2NIT8E6o0tV4cFGyb+NeUAwC/5Db1G0=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=OXhkcmnTMOIvFLE9z0buC5FPpYL2xv2ml8Fakg+DacUYTxSLbXKyenyZduopjiXyS
-         uaoYqRkym9u+DfdHam7knTDRZNwmMxhTu7ip2HOXwQC5ap2KKBe135sAphKAlvY0BZ
-         Hl/LRH93XXEHS4+4USHQEKAdLnpWej45tRUb7zndk6wiqfKgAavMMAoLL6djHa6XZ+
-         ysF6IZXwW/5OzMmJn99CNmw9Ji5FoavD1s9UPbAZrvhLF12zVuP9uJnQ+YAspjsKRQ
-         tF1Vx0ntBWLQZNo01+rLVUofXV8plxKFf3LEMwsdeQYmjJRSUzTKMwuFnRT6tf927P
-         KJLwiqzg4qcYw==
-Content-Type: text/plain; charset="utf-8"
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436656AbhALUHV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:07:21 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D56C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:06:40 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id w1so5234981ejf.11
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:06:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8/Bid2Bzf98jE1/ALAKGTMu2+XIpeX//lGOiyhOAPLE=;
+        b=vhrrzDmitO32JAO3cpPHjbqdMSMUZDuwupYPaErRNdmyLCV9CGhPdYK6oTrgJG74+m
+         I9dA7oEIptk1EhB30sBwuzhsn5ped+8hrj1SEpOIehrqgvt9hLGZusi5QYNsLyb0Ojr7
+         B5CZvlBXkQak1yX5cCoTDYZjpURO/BDj90CBV2xV11nCqustJMw6QGBur7B+HWFMThJz
+         1UOpx1uPYSC7PIQzDXmNwWVBl2xqVAawLUUMn5pIwD3C/PuDUKVuv9cePx/NSJz7tGiC
+         JaIZx/W2kwjLwrF97+S1fQrkm406AotYB5qwe5dQ+9CSge06C4wEogikQR+XPc1DtPae
+         9wSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8/Bid2Bzf98jE1/ALAKGTMu2+XIpeX//lGOiyhOAPLE=;
+        b=k1wxRCM0cslW9W3INaPenb3+S21kyt7XYGBzg5jbcALgTPJatf7IMPlDgXi6uEhfnr
+         Vo1/2Q4Fi6iPCZTBoTFeGkRnVMZAem2hPvi4ZCjO6Hlos1dgIIX6kNNwSIxGjvZLl9+N
+         gq8K/Bh0YdWvnIC/hbWT1gMnnqlMxFsHDL1auHazhjvkQkbZ+JrDHN2jELrbg4pjjNMW
+         8PWv/W+BeQmg8suTEc0gp3xHaLUh4pe6BfDvugW30pVXMMeZo64ot9NyQzTNvWbronzl
+         nixpXV00TF5Uobj9ZEuGqZdqCFP8jsce+JBtMx/DDGod7TdBFOlvJJdk39N4+bTNX0kv
+         PS4A==
+X-Gm-Message-State: AOAM532gn9QDj+KaI02qfiaXA5G7wRYE/RV6ciHHohu47Aw223iVnvyY
+        N5Hulwi8hVn4lCTHz/rZKX4WUC46da/YI9tzY4FEpw==
+X-Google-Smtp-Source: ABdhPJyfN4mVkZqUgmpVifgODbiKiUV7zPHfN/mvTykoOz6wGwySd2pfuLRTAFzoWqiTJ14Yjd/67QsQSjvEqEh7UX8=
+X-Received: by 2002:a17:906:2707:: with SMTP id z7mr357027ejc.418.1610481999273;
+ Tue, 12 Jan 2021 12:06:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1608058114-29025-2-git-send-email-tdas@codeaurora.org>
-References: <1608058114-29025-1-git-send-email-tdas@codeaurora.org> <1608058114-29025-2-git-send-email-tdas@codeaurora.org>
-Subject: Re: [PATCH v1 1/2] dt-bindings: clock: Add SC7280 GCC clock binding
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org, robh+dt@kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Taniya Das <tdas@codeaurora.org>
-Date:   Tue, 12 Jan 2021 12:06:14 -0800
-Message-ID: <161048197433.3661239.10431667618674179787@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20210111225121.820014-1-ben.widawsky@intel.com>
+ <20210111225121.820014-5-ben.widawsky@intel.com> <20210112190103.00004644@Huawei.com>
+In-Reply-To: <20210112190103.00004644@Huawei.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 12 Jan 2021 12:06:30 -0800
+Message-ID: <CAPcyv4iGVPgu_c0GOYTuAQyFJgfMuU5S45Ukd968+DV--Y6miw@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 04/16] cxl/mem: Introduce a driver for
+ CXL-2.0-Type-3 endpoints
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org, Ira Weiny" <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Jon Masters <jcm@jonmasters.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        daniel.lll@alibaba-inc.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Taniya Das (2020-12-15 10:48:33)
-> diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc-sc7280.yaml=
- b/Documentation/devicetree/bindings/clock/qcom,gcc-sc7280.yaml
-> new file mode 100644
-> index 0000000..79c64d8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/qcom,gcc-sc7280.yaml
-> @@ -0,0 +1,85 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/qcom,gcc-sc7280.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Global Clock & Reset Controller Binding for SC7280
-> +
-> +maintainers:
-> +  - Taniya Das <tdas@codeaurora.org>
-> +
-> +description: |
-> +  Qualcomm global clock control module which supports the clocks, resets=
- and
-> +  power domains on SC7280.
-> +
-> +  See also:
-> +  - dt-bindings/clock/qcom,gcc-sc7280.h
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,gcc-sc7280
-> +
-> +  clocks:
-> +    items:
-> +      - description: Board XO source
-> +      - description: Board active XO source
-> +      - description: Sleep clock source
-> +      - description: PCIE-0 pipe clock source
-> +      - description: PCIE-1 pipe clock source
-> +      - description: USB30 phy wrapper pipe clock source
-> +
-> +  clock-names:
-> +    items:
-> +      - const: bi_tcxo
-> +      - const: bi_tcxo_ao
-> +      - const: sleep_clk
-> +      - const: pcie_0_pipe_clk
-> +      - const: pcie_1_pipe_clk
-> +      - const: usb3_phy_wrapper_gcc_usb30_pipe_clk
+On Tue, Jan 12, 2021 at 11:03 AM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+>
+> On Mon, 11 Jan 2021 14:51:08 -0800
+> Ben Widawsky <ben.widawsky@intel.com> wrote:
+>
+> > From: Dan Williams <dan.j.williams@intel.com>
+> >
+> > The CXL.mem protocol allows a device to act as a provider of "System
+> > RAM" and/or "Persistent Memory" that is fully coherent as if the memory
+> > was attached to the typical CPU memory controller.
+> >
+> > With the CXL-2.0 specification a PCI endpoint can implement a "Type-3"
+> > device interface and give the operating system control over "Host
+> > Managed Device Memory". See section 2.3 Type 3 CXL Device.
+> >
+> > The memory range exported by the device may optionally be described by
+> > the platform firmware memory map, or by infrastructure like LIBNVDIMM to
+> > provision persistent memory capacity from one, or more, CXL.mem devices.
+> >
+> > A pre-requisite for Linux-managed memory-capacity provisioning is this
+> > cxl_mem driver that can speak the mailbox protocol defined in section
+> > 8.2.8.4 Mailbox Registers.
+> >
+> > For now just land the driver boiler-plate and fill it in with
+> > functionality in subsequent commits.
+> >
+> > Link: https://www.computeexpresslink.org/download-the-specification
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+>
+> Just one passing comment inline.
+>
+> > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> > new file mode 100644
+> > index 000000000000..005404888942
+> > --- /dev/null
+> > +++ b/drivers/cxl/mem.c
+> > @@ -0,0 +1,69 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/* Copyright(c) 2020 Intel Corporation. All rights reserved. */
+> > +#include <linux/module.h>
+> > +#include <linux/pci.h>
+> > +#include <linux/io.h>
+> > +#include "acpi.h"
+> > +#include "pci.h"
+> > +
+> > +static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+>
+> Is it worth pulling this out to a utility library now as we are going
+> to keep needing this for CXL devices?
+> Arguably, with a vendor_id parameter it might make sense to have
+> it as a utility function for pci rather than CXL alone.
 
-Don't ufs phy clks also go into gcc?
-
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +
-> +  '#reset-cells':
-> +    const: 1
-> +
-> +  '#power-domain-cells':
-> +    const: 1
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  protected-clocks:
-> +    description:
-> +      Protected clock specifier list as per common clock binding.
-
-I suppose this is fine.
-
-> +
-> +required:
-> +  - compatible
-> +  - clocks
-> +  - clock-names
-> +  - reg
-> +  - '#clock-cells'
-> +  - '#reset-cells'
-> +  - '#power-domain-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/qcom,rpmh.h>
-> +    clock-controller@100000 {
-> +      compatible =3D "qcom,gcc-sc7280";
-> +      reg =3D <0x00100000 0x1f0000>;
-> +      clocks =3D <&rpmhcc RPMH_CXO_CLK>,
-> +               <&rpmhcc RPMH_CXO_CLK_A>,
-> +               <&sleep_clk>,
-> +               <&pcie_0_pipe_clk>, <&pcie_1_pipe_clk>,
-> +               <&usb3_phy_wrapper_gcc_usb30_pipe_clk>;
-> +      clock-names =3D "bi_tcxo", "bi_tcxo_ao", "sleep_clk", "pcie_0_pipe=
-_clk",
-> +                     "pcie_1_pipe_clk", "usb3_phy_wrapper_gcc_usb30_pipe=
-_clk";
-> +      #clock-cells =3D <1>;
-> +      #reset-cells =3D <1>;
-> +      #power-domain-cells =3D <1>;
-> +    };
-> +...
+Sure, cxl_mem_dvsec() can move to a central location, but I'd wait for
+the first incremental user to split it out.
