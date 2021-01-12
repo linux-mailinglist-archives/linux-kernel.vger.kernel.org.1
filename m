@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FF2D2F356F
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8FD2F3570
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406411AbhALQRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:17:36 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:37670 "EHLO
+        id S2406424AbhALQRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:17:41 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:37680 "EHLO
         aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406373AbhALQR1 (ORCPT
+        with ESMTP id S2406355AbhALQR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:17:27 -0500
+        Tue, 12 Jan 2021 11:17:28 -0500
 Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CGDrks162468;
-        Tue, 12 Jan 2021 16:16:28 GMT
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CGDmah162423;
+        Tue, 12 Jan 2021 16:16:31 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=s5wOQs4E2UMANYKBguwi8PhZn25BJquE5iaO2T91ll4=;
- b=DxQ5liZ6HGTgU7D0IHExsN6T+fwfBLnhWpqlCxgifgOWQJGRAwZ+ggDOj8V/epzq1N8w
- Vepd2QTdx4nhNW3SLtCfTXNgUJtAImqGOVhl0YaFtTi8UDQKqZxWP0G2Zmon8viEmlrh
- MC0TeL23WOw4NqmpBq2J3XSbvXCZEyW//GjPTDyK6rznBy+tmzKw7KZ5aH/kygE4sDxE
- 77H6bOL9zbCkcMsuRWfFu3P5rQNeT6Uexm6OUvW7TtosoEdFL8JyWw6ZumkibAPr66mk
- +zLKo69vTo7/JqejVIMxr9FL5aIbC0iDPV3HTXR9Cb/MlpDtQgzLFta7wTxcRiOB3mc6 cw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 360kcyq5y9-1
+ bh=ag0OboaKwJiod+HfP6HsLvol3F/ZvYOkZp32m0fdIfA=;
+ b=xGH09AU3d9OmHhHF8066c1l4n0gJb1zsLZDzuG0IPsdI62DmBAU66bTkMoIHOzojyjAY
+ gr977AXBnEXPI3IYDwqBNqcgOz5Vet5llCDWmN/f3QKjc3qtpAI9UAyaSP64gYixjy8N
+ kU/UlubunkVs0iT/Xrc7j0UqoRl9p/Lvx39KZ8S0iBRrb+ERoILossszjeDYHYfmlXcI
+ He0agMWNzrJ0Ome8P3ezptkVPF0pWNfdmAs9tB1rF2rtrtaOjL3DCcKuCV3ONJXzCztD
+ LqG373a+ZRJrlRJKkH77akQEaWHdbL1aT6Or6kkR69kBb/lmS6AO3TnGPTIhgmrjCSTy bw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 360kcyq5yf-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jan 2021 16:16:28 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CGA3ix094766;
-        Tue, 12 Jan 2021 16:14:28 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 360key13gb-1
+        Tue, 12 Jan 2021 16:16:31 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CGBYqf142775;
+        Tue, 12 Jan 2021 16:14:31 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 360ke6rjex-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jan 2021 16:14:28 +0000
+        Tue, 12 Jan 2021 16:14:31 +0000
 Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10CGER2X005062;
-        Tue, 12 Jan 2021 16:14:27 GMT
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10CGETQe030651;
+        Tue, 12 Jan 2021 16:14:29 GMT
 Received: from revolver.jebus.ca (/23.233.25.87)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 12 Jan 2021 08:14:27 -0800
+        with ESMTP ; Tue, 12 Jan 2021 08:14:29 -0800
 From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
 To:     maple-tree@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
@@ -55,17 +55,17 @@ Cc:     Andrew Morton <akpm@google.com>, Song Liu <songliubraving@fb.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         Rik van Riel <riel@surriel.com>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v2 59/70] mm/mlock: Use maple tree iterators instead of vma linked list
-Date:   Tue, 12 Jan 2021 11:12:29 -0500
-Message-Id: <20210112161240.2024684-60-Liam.Howlett@Oracle.com>
+Subject: [PATCH v2 60/70] mm/mprotect: Use maple tree navigation instead of vma linked list
+Date:   Tue, 12 Jan 2021 11:12:30 -0500
+Message-Id: <20210112161240.2024684-61-Liam.Howlett@Oracle.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20210112161240.2024684-1-Liam.Howlett@Oracle.com>
 References: <20210112161240.2024684-1-Liam.Howlett@Oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
- suspectscore=0 adultscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2101120092
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
@@ -80,88 +80,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 ---
- mm/mlock.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ mm/mprotect.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/mm/mlock.c b/mm/mlock.c
-index 884b1216da6a6..2c27597ebcf6b 100644
---- a/mm/mlock.c
-+++ b/mm/mlock.c
-@@ -591,6 +591,7 @@ static int apply_vma_lock_flags(unsigned long start, size_t len,
- 	unsigned long nstart, end, tmp;
- 	struct vm_area_struct * vma, * prev;
- 	int error;
+diff --git a/mm/mprotect.c b/mm/mprotect.c
+index 56c02beb60414..a6208b872336e 100644
+--- a/mm/mprotect.c
++++ b/mm/mprotect.c
+@@ -518,6 +518,7 @@ static int do_mprotect_pkey(unsigned long start, size_t len,
+ 	const int grows = prot & (PROT_GROWSDOWN|PROT_GROWSUP);
+ 	const bool rier = (current->personality & READ_IMPLIES_EXEC) &&
+ 				(prot & PROT_READ);
 +	MA_STATE(mas, &current->mm->mm_mt, start, start);
  
- 	VM_BUG_ON(offset_in_page(start));
- 	VM_BUG_ON(len != PAGE_ALIGN(len));
-@@ -599,11 +600,11 @@ static int apply_vma_lock_flags(unsigned long start, size_t len,
- 		return -EINVAL;
- 	if (end == start)
- 		return 0;
--	vma = find_vma(current->mm, start);
--	if (!vma || vma->vm_start > start)
-+	vma = mas_walk(&mas);
-+	if (!vma)
- 		return -ENOMEM;
+ 	start = untagged_addr(start);
  
+@@ -549,11 +550,12 @@ static int do_mprotect_pkey(unsigned long start, size_t len,
+ 	if ((pkey != -1) && !mm_pkey_is_allocated(current->mm, pkey))
+ 		goto out;
+ 
+-	vma = find_vma(current->mm, start);
++	mas_set(&mas, start);
++	vma = mas_walk(&mas);
+ 	error = -ENOMEM;
+ 	if (!vma)
+ 		goto out;
 -	prev = vma->vm_prev;
 +	prev = mas_prev(&mas, 0);
- 	if (start > vma->vm_start)
- 		prev = vma;
- 
-@@ -625,7 +626,7 @@ static int apply_vma_lock_flags(unsigned long start, size_t len,
+ 	if (unlikely(grows & PROT_GROWSDOWN)) {
+ 		if (vma->vm_start >= end)
+ 			goto out;
+@@ -626,7 +628,7 @@ static int do_mprotect_pkey(unsigned long start, size_t len,
  		if (nstart >= end)
- 			break;
+ 			goto out;
  
 -		vma = prev->vm_next;
-+		vma = vma_next(prev->vm_mm, prev);
++		vma = mas_next(&mas, ULONG_MAX);
  		if (!vma || vma->vm_start != nstart) {
  			error = -ENOMEM;
- 			break;
-@@ -646,15 +647,12 @@ static unsigned long count_mm_mlocked_page_nr(struct mm_struct *mm,
- {
- 	struct vm_area_struct *vma;
- 	unsigned long count = 0;
-+	MA_STATE(mas, &mm->mm_mt, start, start);
- 
- 	if (mm == NULL)
- 		mm = current->mm;
- 
--	vma = find_vma(mm, start);
--	if (vma == NULL)
--		vma = mm->mmap;
--
--	for (; vma ; vma = vma->vm_next) {
-+	mas_for_each(&mas, vma, start + len) {
- 		if (start >= vma->vm_end)
- 			continue;
- 		if (start + len <=  vma->vm_start)
-@@ -769,6 +767,7 @@ static int apply_mlockall_flags(int flags)
- {
- 	struct vm_area_struct * vma, * prev = NULL;
- 	vm_flags_t to_add = 0;
-+	MA_STATE(mas, &current->mm->mm_mt, 0, 0);
- 
- 	current->mm->def_flags &= VM_LOCKED_CLEAR_MASK;
- 	if (flags & MCL_FUTURE) {
-@@ -787,7 +786,7 @@ static int apply_mlockall_flags(int flags)
- 			to_add |= VM_LOCKONFAULT;
- 	}
- 
--	for (vma = current->mm->mmap; vma ; vma = prev->vm_next) {
-+	mas_for_each(&mas, vma, ULONG_MAX) {
- 		vm_flags_t newflags;
- 
- 		newflags = vma->vm_flags & VM_LOCKED_CLEAR_MASK;
-@@ -795,6 +794,7 @@ static int apply_mlockall_flags(int flags)
- 
- 		/* Ignore errors */
- 		mlock_fixup(vma, &prev, vma->vm_start, vma->vm_end, newflags);
-+		mas_pause(&mas);
- 		cond_resched();
- 	}
- out:
+ 			goto out;
 -- 
 2.28.0
 
