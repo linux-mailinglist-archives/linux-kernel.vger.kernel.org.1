@@ -2,64 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6452F2852
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:28:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78BC52F2856
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:32:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732646AbhALG2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 01:28:15 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:48707 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730221AbhALG2O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 01:28:14 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10C6RNNP0027770, This message is accepted by code: ctloc85258
-Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10C6RNNP0027770
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 12 Jan 2021 14:27:24 +0800
-Received: from RSEXMBS01.realsil.com.cn (172.29.17.195) by
- RSEXMBS01.realsil.com.cn (172.29.17.195) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Tue, 12 Jan 2021 14:27:23 +0800
-Received: from RSEXMBS01.realsil.com.cn ([fe80::99a3:1f5e:db86:65df]) by
- RSEXMBS01.realsil.com.cn ([fe80::99a3:1f5e:db86:65df%7]) with mapi id
- 15.01.2044.004; Tue, 12 Jan 2021 14:27:23 +0800
-From:   =?utf-8?B?546L5p2w5riFW2phc29uX3dhbmdd?= 
-        <jason_wang@realsil.com.cn>
-To:     "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "jason.root.w@gamil.com" <jason.root.w@gamil.com>
-Subject: [PATCH] media:dvb-core: add .compat_ioctl define for dmx-dvr
-Thread-Topic: [PATCH] media:dvb-core: add .compat_ioctl define for dmx-dvr
-Thread-Index: Adboq2ai/clZ45L8Snip7ZLCACySVA==
-Date:   Tue, 12 Jan 2021 06:27:23 +0000
-Message-ID: <fbeef6e6cb3f4c23baef8fb7a07462af@realsil.com.cn>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.29.52.88]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+        id S1733137AbhALG32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 01:29:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733070AbhALG31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 01:29:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54790229CA;
+        Tue, 12 Jan 2021 06:28:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1610432926;
+        bh=66Qx1gj4EzTEeVhhLDcGKAc/ygvdzEvNrer5sghrXJ4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WFj9SeW+PsLybv3ux9riWrJaLAdMXDXKXz7KO+2WGT560uhpeR/6TKnzEuChPHvLc
+         iT6R7pT6h6duplxwdDpwAo0C3uDu9tzJU3HGG0pcHydpL9QMzv9qVv1S6J2HjTUDmr
+         JJMBPFJeJUT078kuTfy6+m+HsDPGx2Jdon+YmDkE=
+Date:   Mon, 11 Jan 2021 22:28:45 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Xiaoming Ni <nixiaoming@huawei.com>
+Cc:     <linux-kernel@vger.kernel.org>, <mcgrof@kernel.org>,
+        <keescook@chromium.org>, <yzaikin@google.com>,
+        <adobriyan@gmail.com>, <linux-fsdevel@vger.kernel.org>,
+        <vbabka@suse.cz>, <mhocko@suse.com>, <andy.shevchenko@gmail.com>,
+        <wangle6@huawei.com>
+Subject: Re: [PATCH v3] proc_sysctl: fix oops caused by incorrect command
+ parameters.
+Message-Id: <20210111222845.67ceb4e3c7f64f267756e4e8@linux-foundation.org>
+In-Reply-To: <89d1369e-f0a8-66f2-c0ea-3aac3a55e2c1@huawei.com>
+References: <20210112033155.91502-1-nixiaoming@huawei.com>
+        <20210111203340.98dd3c8fa675b709bcf6d49e@linux-foundation.org>
+        <89d1369e-f0a8-66f2-c0ea-3aac3a55e2c1@huawei.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSmFzb25fd2FuZyA8SmFzb25fd2FuZ0ByZWFsc2lsLmNvbS5jbj4NCg0KaWYgQ09ORklH
-X0NPTVBBVCBpcyBlbmFibGVkLiBkdnIgaW9jdGwgY2FuIG5vdCBiZQ0KaW52b2tlZCBieSB1c2Vy
-LiBuZWVkIC5jb21wYXRfaW9jdGwgdG8gaWRlbnRpZnkgdGhlDQppb2N0bCBmdW5jdGlvbi4NCg0K
-U2lnbmVkLW9mZi1ieTogamFzb25fd2FuZyA8bWFpbHRvOmphc29uX3dhbmdAcmVhbHNpbC5jb20u
-Y24+DQotLS0NCsKgZHJpdmVycy9tZWRpYS9kdmItY29yZS9kbXhkZXYuYyB8IDEgKw0KwqAxIGZp
-bGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWVkaWEv
-ZHZiLWNvcmUvZG14ZGV2LmMgYi9kcml2ZXJzL21lZGlhL2R2Yi1jb3JlL2RteGRldi5jDQppbmRl
-eCBmMTRhODcyZDEyNjguLjRhOWUwMjdkZTgyNyAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbWVkaWEv
-ZHZiLWNvcmUvZG14ZGV2LmMNCisrKyBiL2RyaXZlcnMvbWVkaWEvZHZiLWNvcmUvZG14ZGV2LmMN
-CkBAIC0xMzkzLDYgKzEzOTMsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGZpbGVfb3BlcmF0aW9u
-cyBkdmJfZHZyX2ZvcHMgPSB7DQrCoCAucmVhZCA9IGR2Yl9kdnJfcmVhZCwNCsKgIC53cml0ZSA9
-IGR2Yl9kdnJfd3JpdGUsDQrCoCAudW5sb2NrZWRfaW9jdGwgPSBkdmJfZHZyX2lvY3RsLA0KKyAu
-Y29tcGF0X2lvY3RsID0gZHZiX2R2cl9pb2N0bCwNCsKgIC5vcGVuID0gZHZiX2R2cl9vcGVuLA0K
-wqAgLnJlbGVhc2UgPSBkdmJfZHZyX3JlbGVhc2UsDQrCoCAucG9sbCA9IGR2Yl9kdnJfcG9sbCwN
-Ci0tIA0KMi4yNS4xDQoNCg==
+On Tue, 12 Jan 2021 14:24:05 +0800 Xiaoming Ni <nixiaoming@huawei.com> wrote:
+
+> On 2021/1/12 12:33, Andrew Morton wrote:
+> > On Tue, 12 Jan 2021 11:31:55 +0800 Xiaoming Ni <nixiaoming@huawei.com> wrote:
+> > 
+> >> The process_sysctl_arg() does not check whether val is empty before
+> >>   invoking strlen(val). If the command line parameter () is incorrectly
+> >>   configured and val is empty, oops is triggered.
+> >>
+> >> --- a/fs/proc/proc_sysctl.c
+> >> +++ b/fs/proc/proc_sysctl.c
+> >> @@ -1770,6 +1770,9 @@ static int process_sysctl_arg(char *param, char *val,
+> >>   			return 0;
+> >>   	}
+> >>   
+> >> +	if (!val)
+> >> +		return -EINVAL;
+> >> +
+> > 
+> > I think v2 (return 0) was preferable.  Because all the other error-out
+> > cases in process_sysctl_arg() also do a `return 0'.
+> 
+> https://lore.kernel.org/lkml/bc098af4-c0cd-212e-d09d-46d617d0acab@huawei.com/
+> 
+> patch4:
+>      +++ b/fs/proc/proc_sysctl.c
+>      @@ -1757,6 +1757,9 @@ static int process_sysctl_arg(char *param, 
+> char *val,
+>              loff_t pos = 0;
+>              ssize_t wret;
+> 
+>      +       if (!val)
+>      +               return 0;
+>      +
+>              if (strncmp(param, "sysctl", sizeof("sysctl") - 1) == 0) {
+>                      param += sizeof("sysctl") - 1;
+> 
+> Is this the version you're talking about?
+
+yes, but as a separate patch.  The bugfix comes first.
+
+> > 
+> > If we're going to do a separate "patch: make process_sysctl_arg()
+> > return an errno instead of 0" then fine, we can discuss that.  But it's
+> > conceptually a different work from fixing this situation.
+> > .
+> > 
+> However, are the logs generated by process_sysctl_arg() clearer and more 
+> accurate than parse_args()? Should the logs generated by 
+> process_sysctl_arg() be deleted?
+
+I think the individual logs are very useful and should be retained.
