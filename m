@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0659D2F2F11
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6712F2F19
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:32:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730349AbhALM3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:29:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47142 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728906AbhALM3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:29:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C1E522BE9;
-        Tue, 12 Jan 2021 12:29:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610454550;
-        bh=LIsCQTbTPde4ob3CZxrHmTmiyaoceJIArgT8rJ/3efE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P+hQnf0S3qagBiYRgCiXIvgQZZ6971so0QrIg+hMYt+ziFBfIBQbZJ1wLPs7hObFk
-         8XqhlT9BYLvIBS6ynEe/5/h9VZhvoS/ktw53f9l2c0vr4A0TFzD3uOuQO2KRSldNgY
-         LapwQG5Mx2vB7jh5/Si5A2G1ATZ0YL8fw0LawU3DIFQ+Cu0oa81dDXbfH+8XDG9vtv
-         r08teePlH42FMsrKLk1sCJQxljSiqUDpot8Xcg2xOjJBuaUYjQ+2lmeB8t/IJjN7Tu
-         xtbquNAs1xr6NqHHVrNByaGN2z4XdbIRGVV1yV4hoowp5XVi4TthfBQ49LKiTWeddW
-         rht0BDsq/kvQg==
-Date:   Tue, 12 Jan 2021 17:59:05 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Amireddy Mallikarjuna reddy <mallikarjunax.reddy@linux.intel.com>
-Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        andriy.shevchenko@intel.com, chuanhua.lei@linux.intel.com,
-        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        malliamireddy009@gmail.com, peter.ujfalusi@ti.com
-Subject: Re: [PATCH v10 0/2] Add Intel LGM SoC DMA support
-Message-ID: <20210112122905.GR2771@vkoul-mobl>
-References: <cover.1606905330.git.mallikarjunax.reddy@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1606905330.git.mallikarjunax.reddy@linux.intel.com>
+        id S2387971AbhALMaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:30:21 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:34340 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387420AbhALMaN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:30:13 -0500
+Received: from loongson.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx6L0dlv1fsycDAA--.5569S2;
+        Tue, 12 Jan 2021 20:29:17 +0800 (CST)
+From:   Jinyang He <hejinyang@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Burton <paulburton@kernel.org>,
+        Jun-Ru Chang <jrjang@realtek.com>
+Subject: [PATCH 0/4] MIPS: process: Some fixes and improvements about get_frame_info()
+Date:   Tue, 12 Jan 2021 20:29:13 +0800
+Message-Id: <1610454557-25867-1-git-send-email-hejinyang@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dx6L0dlv1fsycDAA--.5569S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY07k0a2IF6w1UM7kC6x804xWl14x267AK
+        xVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGw
+        A2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r4j
+        6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Cr
+        1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv
+        0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z2
+        80aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxE
+        wVAFwVW5JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v2
+        6r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
+        j7F4iUUUUU=
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03-12-20, 12:10, Amireddy Mallikarjuna reddy wrote:
-> Add DMA controller driver for Lightning Mountain (LGM) family of SoCs.
-> 
-> The main function of the DMA controller is the transfer of data from/to any
-> peripheral to/from the memory. A memory to memory copy capability can also
-> be configured. This ldma driver is used for configure the device and channnels
-> for data and control paths.
-> 
-> These controllers provide DMA capabilities for a variety of on-chip
-> devices such as SSC, HSNAND and GSWIP (Gigabit Switch IP).
+Not familiar with microMIPS. Not test on microMIPS.
 
+Jinyang He (4):
+  MIPS: process: Reorder header files
+  MIPS: microMIPS: Fix the judgment of mm_jr16_op and mm_jalr_op
+  MIPS: Fix get_frame_info() handing of function size
+  MIPS: Add is_jr_ra_ins() to end the loop early
 
-Applied after fixing tag on driver patch, thanks
+ arch/mips/kernel/process.c | 92 +++++++++++++++++++++++++++++++---------------
+ 1 file changed, 62 insertions(+), 30 deletions(-)
 
 -- 
-~Vinod
+2.1.0
+
