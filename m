@@ -2,94 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C69B2F286C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5FE2F2870
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:44:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387720AbhALGkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 01:40:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48800 "EHLO
+        id S2387737AbhALGnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 01:43:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387624AbhALGkU (ORCPT
+        with ESMTP id S1728072AbhALGnZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 01:40:20 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128FFC061786;
-        Mon, 11 Jan 2021 22:39:40 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id r3so1254695wrt.2;
-        Mon, 11 Jan 2021 22:39:40 -0800 (PST)
+        Tue, 12 Jan 2021 01:43:25 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5960FC061786;
+        Mon, 11 Jan 2021 22:42:45 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id p187so1865953iod.4;
+        Mon, 11 Jan 2021 22:42:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=9LsugDW569FjBERoyKSAR4XOY8TthJz1AKh7ZpXlyG4=;
-        b=o7c/bYOmrUdWx+iCTWh+kH1oq89qd9Xh5NfDK6HsSCIjg7JuVOwXKxXBJX9ip9BOc9
-         ZskNAZidSRtJ9VysTj22wEoCVydOfJ+gIWfB3wotcX9tcJWywlkHq/uZSxdsMMcGxlhE
-         xADGyS7eVQldGtjrUv0fIAzBM7XiFJpzfSmLRvu02/moPgtggmOMPUBWXcwsMYS0uTtw
-         +Cwq1h0E8HRqtqwtAv4HNTII117qYCsJtuqUpvuMbEi1saGfedJvVRlkoFH1s2OSXi/d
-         Z5cCZC1H4uhoYSnTk1ZTUiV5+RB3K1DvKUuJHKpMRVLf2ONKcHU1Y4LJdXATM4WEBeR+
-         CwrQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bzQDoKieRWjb9Oo3b8L2/tnj6Z9GSRsyxzx9Q4knxlg=;
+        b=s9lXI/isxUg9fOOOTK7v3Fe2AfUuHy7sNxFCRk47FQIBN19Kt2TsKtDFw0V9IDNJoU
+         zICUaEYKakF8VZscWGIfYRNifWBao6QqSHI3exXqK1rRcF+h2Pch+QVR0iTmBqWFuWci
+         AJnKlUOCDu2hKP4RYL3D/wr11tgP4F2o6xiA3o6Xd91+6DKCwC941hMQWO7nraq5CZMY
+         IeV5kw7LLNBDiFMv5nFUfur0YZLzXo7qo7A5YvS5r+CSYl74MIxjLGztWqL4LBejjbs1
+         yvLxUg5Hb85T3MZevU7aTe4zSF32Nk/DTXmHFE86McJwCivZJWmz1Jjb0JkBTWamPd1I
+         Yvng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=9LsugDW569FjBERoyKSAR4XOY8TthJz1AKh7ZpXlyG4=;
-        b=CiBWR0nf90WrojUSl2FtbSDRcL1eN260tzt3jus/R0oyscgVoHbqWM2FdaMG7MWQCB
-         HahHubURrrvBsl4Q/oOqYlN5L+uzYLr1U/PiExibd+mnxqWRzEgepw3Sq7qT2nAhFX1V
-         qbutR/dNwG4GDRMZXfvXiufC3GD1in49g7+wZT2FOUj/BpqwGgGppgLQQ8U5YBLKFivG
-         RZUj5QMlNpuVKYsaL8xJ5znxPE6NUj43gGHy1NgMdNYWwycc4GJpOANNW8Mri1m7/pbV
-         iqnn8NndPsR9dltFTznxBMt3s0gDX7/mZ3/O+3v9c+ou7CcL1bHE9eWQ6SgZBEAu7tJc
-         8rSg==
-X-Gm-Message-State: AOAM532P2Emvo3XG/r4ppZhhZS3kSCv0QFoa94gvSoGi2/j4TT2XSe6T
-        E+r6KZe2uU/kVVsync2bVr4=
-X-Google-Smtp-Source: ABdhPJxmxnoUy1ilxFUvRx/TYVyRWFgEsFRgYTw1CmU8AGC0C9eLPx269jY+DZ/mtB/gxGvJupAEUQ==
-X-Received: by 2002:a5d:4d50:: with SMTP id a16mr2466183wru.43.1610433578801;
-        Mon, 11 Jan 2021 22:39:38 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2d98:7500:f93f:dcaf:eddb:2c7c])
-        by smtp.gmail.com with ESMTPSA id k1sm3024760wrn.46.2021.01.11.22.39.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 22:39:38 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bzQDoKieRWjb9Oo3b8L2/tnj6Z9GSRsyxzx9Q4knxlg=;
+        b=P60+VDZoFgMmYwdsI6OAiElFg7aryQXQWQC8vahWWngvV4yyW8Ri3orWv+1s1kDgVK
+         BcCPS1KVex63DRilQ6b980W7Nkj3EIVWw8L7olIcxLVvmedbnHn5fimU8G6t+FCGbn9E
+         Omk5G97mNa+7dm64MOds1KfjXNP6+scJb7VAnWZr827pCWWvGxHpVArhGEJY2amULVeG
+         7LkWGOtqVS2oTqGWU3HvPyGJZCualPHQl0T6uL4OBrrOatsGa++V76/Fq7uLCih1wOmJ
+         /BmHLZiiOUcozZ/q2kXFTb6fjUTTp1fusZ2xRAuAEysMnG2qtAT46UEnTqGVwrrI4ePf
+         6dgA==
+X-Gm-Message-State: AOAM531HqB58NTai+yTb94fIVLDjzahVptuUrrsNex90Rzfp2+Yv6Jzt
+        WypfXyKOP9aaO3suf3hrBz+uukC9qxwcRDnAnOY=
+X-Google-Smtp-Source: ABdhPJxF/DgVB4iihPD4eX+IDDS8yEeLdAguj2QPVdJCwDG+681NBiyEC5Hch0SLUvynq/YW+1gQz1OSYBnqxMurbqI=
+X-Received: by 2002:a02:b709:: with SMTP id g9mr3027995jam.90.1610433764709;
+ Mon, 11 Jan 2021 22:42:44 -0800 (PST)
+MIME-Version: 1.0
+References: <20210111104927.2561-1-minhquangbui99@gmail.com>
+ <7d6dc09fedc84f9fce942d85c34d5cd41931bbf6.camel@suse.de> <20210111143120.GA2769@minh>
+In-Reply-To: <20210111143120.GA2769@minh>
+From:   =?UTF-8?Q?Minh_B=C3=B9i_Quang?= <minhquangbui99@gmail.com>
+Date:   Tue, 12 Jan 2021 13:42:33 +0700
+Message-ID: <CACtPs=FB_=JMEymLHE0_ko4ZF5zj9NBCHkRC7O3tj6pkSp3oiA@mail.gmail.com>
+Subject: Re: [PATCH v2] can: mcba_usb: Fix memory leak when cancelling urb
+To:     Oliver Neukum <oneukum@suse.de>
+Cc:     linux-usb@vger.kernel.org, a.darwish@linutronix.de,
+        bigeasy@linutronix.de,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH -next] f2fs: docs: rectify the table header in sysfs-fs-f2fs
-Date:   Tue, 12 Jan 2021 07:39:30 +0100
-Message-Id: <20210112063930.20525-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Alan Stern <stern@rowland.harvard.edu>,
+        syzkaller-bugs@googlegroups.com,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 969945899a35 ("f2fs: introduce sb_status sysfs node") documents the
-sb_status values in a table in ./Documentation/ABI/testing/sysfs-fs-f2fs,
-but the table header of the first column has a wrong length.
+On Mon, Jan 11, 2021 at 9:31 PM Bui Quang Minh <minhquangbui99@gmail.com> wrote:
+>
+> On Mon, Jan 11, 2021 at 01:00:31PM +0100, Oliver Neukum wrote:
+> > Am Montag, den 11.01.2021, 10:49 +0000 schrieb Bui Quang Minh:
+> > > In mcba_usb_read_bulk_callback(), when we don't resubmit or fails to
+> > > resubmit the urb, we need to deallocate the transfer buffer that is
+> > > allocated in mcba_usb_start().
+> > >
+> > > Reported-by: syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com
+> > > Signed-off-by: Bui Quang Minh <minhquangbui99@gmail.com>
+> > > ---
+> > > v1: add memory leak fix when not resubmitting urb
+> > > v2: add memory leak fix when failing to resubmit urb
+> > >
+> > >  drivers/net/can/usb/mcba_usb.c | 11 ++++++++---
+> > >  1 file changed, 8 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
+> > > index df54eb7d4b36..30236e640116 100644
+> > > --- a/drivers/net/can/usb/mcba_usb.c
+> > > +++ b/drivers/net/can/usb/mcba_usb.c
+> > > @@ -584,6 +584,8 @@ static void mcba_usb_read_bulk_callback(struct urb *urb)
+> > >     case -EPIPE:
+> > >     case -EPROTO:
+> > >     case -ESHUTDOWN:
+> > > +           usb_free_coherent(urb->dev, urb->transfer_buffer_length,
+> > > +                             urb->transfer_buffer, urb->transfer_dma);
+> > >             return;
+> > >
+> >
+> > Can you call usb_free_coherent() in what can be hard IRQ context?
+>
+> You are right, I digged in the code and saw some comments that on some
+> architectures, usb_free_coherent() cannot be called in hard IRQ context.
+> I see the usb_free_coherent() is called in write_bulk_callback too. I will
+> send a patch that uses usb_anchor to keep track of these urbs and cleanup
+> the transfer buffer later in disconnect().
 
-Hence, make htmldocs warns:
+Hi, I have sent a version 3 patch. However, I found out that usb_free_coherent()
+is ok in this situation. In usb_free_coherent(), if the buffer is allocated via
+dma_alloc_coherent() in usb_alloc_coherent(), dma_free_coherent() is called.
+In dma_free_coherent(), ops->free() may be called in some cases which may
+contains calls to vunmap() that is not permitted in interrupt context. However,
+in usb_alloc_coherent(), buffer can be allocated from dma pool if the
+size is less
+than 2048 and the buffer size in mcba_usb is obviously less than 2048.
+As a result,
+usb_free_coherent() will at most fall in the path that calls
+dma_pool_free(), which is
+safe. Am I right?
 
-  Documentation/ABI/testing/sysfs-fs-f2fs:382: WARNING: Malformed table.
-
-Rectify the table header.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20210112
-
- Documentation/ABI/testing/sysfs-fs-f2fs | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
-index e5918c93f3bf..362803901614 100644
---- a/Documentation/ABI/testing/sysfs-fs-f2fs
-+++ b/Documentation/ABI/testing/sysfs-fs-f2fs
-@@ -383,7 +383,7 @@ Date:		December 2020
- Contact:	"Chao Yu" <yuchao0@huawei.com>
- Description:	Show status of f2fs superblock in real time.
- 
--		=====  ===================== =================================
-+		====== ===================== =================================
- 		value  sb status macro       description
- 		0x1    SBI_IS_DIRTY          dirty flag for checkpoint
- 		0x2    SBI_IS_CLOSE          specify unmounting
--- 
-2.17.1
-
+Thanks,
+Quang Minh.
