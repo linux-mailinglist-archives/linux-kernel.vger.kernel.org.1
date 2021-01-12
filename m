@@ -2,144 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2002C2F3797
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:49:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A1B2F379D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:51:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391882AbhALRr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:47:28 -0500
-Received: from bmail1.ministro.hu ([5.249.150.236]:47494 "EHLO
-        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389660AbhALRr0 (ORCPT
+        id S2390336AbhALRtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:49:43 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:50484 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725843AbhALRtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:47:26 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTP id E40B411FFB1;
-        Tue, 12 Jan 2021 18:46:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1610473602;
-        bh=//DIcFXDZIAYmFU2LDqtdLkGc3tYcmYhiwmP/GcTx3w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mv0LnyYFLowUG3bUX6y6qwcecYBu/ZTnMRD4vmpYc55ZESt3n4JMETbLiE7EYRGip
-         EFMIj7jzpTzb5bT0JxW1APTCEPjThwXqYKuv0L4MVsICsIjKX+Un4LQZawyHnYGB+n
-         ygPd3byxsTn/SeysROoq7+QTlkEJdqLeAgLBdd6tQApvWGXslf+0C/RWLcmZFilAb/
-         b8gR7c2EKZpGc07zwsjj9vI5WxDUq0wGTeQehQySa4pRVjKUS6k2JPC2Oln28T53Ez
-         xjVjH9I6eNhf4tW4/AHsTZiksZLwV39SvCEf1bgib55VU5lF3ZdxXGtgbqfMzAQCDK
-         ILBgRNZn5vwig==
-X-Virus-Scanned: Debian amavisd-new at ministro.hu
-Received: from bmail1.ministro.hu ([127.0.0.1])
-        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 2wTmrbJY3-u0; Tue, 12 Jan 2021 18:46:16 +0100 (CET)
-Received: from dev (localhost [127.0.0.1])
-        by bmail1.ministro.hu (Postfix) with ESMTPSA id 88B7C11FFAC;
-        Tue, 12 Jan 2021 18:46:15 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
-        s=201804; t=1610473576;
-        bh=//DIcFXDZIAYmFU2LDqtdLkGc3tYcmYhiwmP/GcTx3w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tig1Hp130I94YYjJ3L3vecbHhZfPopyLIwHPEs2A2BuGOjU3eBHsomv65WJUnhGZ1
-         GDXQAHBA5v3SJ0syJB++lRkcyTKe1PUoLxHc+aCrWViMgNYXhwhdTB+vJ7wNlAvSrs
-         h5EXQfBqmeLenBOsG2GtlzWYhr2ejUhdZI7lk9OJh40qPacYYC/wZTLlTENIFbzQYh
-         ZL235ajM+rkOyqBxdVbabcoK1ypkQeFsVkZoAdtHzd/KPvULQT7A7BF8m96pKQrnhf
-         8poKXE9lEvxVip/CkgdLe2ieuHOef4oc1VdwD7EEGkCY8yELL6r+RXMH3QQmhiWKU8
-         IINC7SEZqhbwg==
-Date:   Tue, 12 Jan 2021 17:46:13 +0000
-From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
-To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
-Cc:     'Rob Herring' <robh+dt@kernel.org>,
-        'Jiri Slaby' <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 1/2] Serial: silabs si4455 serial driver
-Message-ID: <20210112174613.GA8782@dev>
-References: <20210112101831.GA12483@dev>
- <X/15uOstG/7bj2Lm@kroah.com>
- <20210112154322.GA31198@dev>
- <X/3KnP3S4siAxTfG@kroah.com>
+        Tue, 12 Jan 2021 12:49:43 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CHhqU4084670;
+        Tue, 12 Jan 2021 17:48:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=LaYMYmFBazu6rgt78i7ijyWIA1QSrTdzkOJH9Vb/Gvs=;
+ b=g8DO47JgwPZtGpzmpi1JwrGqpz3yynQyUaLEOTHDszxjjKtWzzALH41u+0M9SzzJaJmc
+ KAkbYxIIcpR9v/ZsOd4ZOAr/ZvkVng7+vXwggSzDvNsTxvYuNGZCbbxPqYqTOU2LNYrR
+ FmsDgh34GW5xwrbL9VHCuf5scUZOKAasplGH5UfdJ40EGCMuZ1/F/UeAr19g3ipTVAf6
+ KfBONEnO4oLFlKjb+nx54j532gUvqO3xzV/6a3mVbt7yHXbneq7yxhkWO4akoktpfTyT
+ zd5MmBa9bI0moxW4nG2spFzNt0TG1Q8JrO0+X3Vgnz7FaxBJ/vcphbzTqPssssqU5jS6 fQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 360kg1qmrp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Jan 2021 17:48:56 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CHk2ms048184;
+        Tue, 12 Jan 2021 17:46:56 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
+        by aserp3030.oracle.com with ESMTP id 360key5brr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Jan 2021 17:46:56 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LLisHdVISBNWE2Ch0mWxrgfJvX2IOrARpv8ILH74Q+7B2aygCROhoUUNY8uTaqBuvxhawOx/yF/amkk+nAdk92wNIouIpbY7XE1ASXF15docdIxsjPOm22TV78pwNKrkDyUqlq5hiZ4XwTeXqGxKZbCcjxSZLen6GiFhbn369hoBHcwyKDZw7pIegqBUTcC0+RTOXnx7voqC2GaA+JdTAUiVCc7up2Y1pMfRy340TFJj/or3UfHGeixv1wRd/EScG225uuXmfpmS9npLi0l4QZrFOjFKKmIifMVa/7+9oouKZNvyZGnWcBu1aYUgKMBLFeNHmcSPGXviDOVoQl06yQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LaYMYmFBazu6rgt78i7ijyWIA1QSrTdzkOJH9Vb/Gvs=;
+ b=NFrgQMsl/DcfmQzG3ifq7hwuNydSeeBs+oiqCuzz+r3+ZHuE+ikC30l/V4xZ04evuVOKoL5PMrHVYGfHH5bzUNFVypUoptLJigavj8S0auhzGEvjWRm+YlaCDwuUGoS71zQJV2LDiI7VRwf83VbI3pD558GA+LOUvEGRDDXbQMCRCEQfcaENAoElQqxTxrfHU8QRI42fRQQYnTL9xhdwatkQtpSqUo6316D7WGZXEo3XgU6mLz6oJ8LkJpz47wW3eUoGtgA9aMrOnjqJOajewbgiTG+DYzyDwaR6R2uQ0zdSBGoiO0VUtaW/EQUkuV0B8C8hrYrWJQiFIBcHZjztTg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LaYMYmFBazu6rgt78i7ijyWIA1QSrTdzkOJH9Vb/Gvs=;
+ b=dP7SUR/NjBruLKF8Ai8PWg3T6hORPPyAlWwQGusb1fHQXwTL7NfmAw27mL2gNWKAKtUIGxO3BR+RlE/CyP7xxE2kEXMgzaI9BFHaJb/e1amPRDPlnxNdi0lWWFxg+kZ4yDqko9zsC2gc9UWFav0ptHH7D5PL69l+5cIUEW9ggjY=
+Authentication-Results: wdc.com; dkim=none (message not signed)
+ header.d=none;wdc.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4614.namprd10.prod.outlook.com (2603:10b6:510:42::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10; Tue, 12 Jan
+ 2021 17:46:53 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3763.009; Tue, 12 Jan 2021
+ 17:46:52 +0000
+To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc:     Feng Li <lifeng1519@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Li Feng <fengli@smartx.com>, Jens Axboe <axboe@kernel.dk>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] blk: avoid divide-by-zero with zero granularity
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1pn2a59u3.fsf@ca-mkp.ca.oracle.com>
+References: <20210112152951.154024-1-fengli@smartx.com>
+        <20210112155502.426331-1-fengli@smartx.com>
+        <yq1v9c25bm1.fsf@ca-mkp.ca.oracle.com>
+        <CAEK8JBALYE0_OzfhrppF38=dD7HKSn-U0ggPJTGgx5849Gfiiw@mail.gmail.com>
+        <DM5PR0401MB3591FDAC44CD5665D6CEBDC39BAA0@DM5PR0401MB3591.namprd04.prod.outlook.com>
+Date:   Tue, 12 Jan 2021 12:46:49 -0500
+In-Reply-To: <DM5PR0401MB3591FDAC44CD5665D6CEBDC39BAA0@DM5PR0401MB3591.namprd04.prod.outlook.com>
+        (Johannes Thumshirn's message of "Tue, 12 Jan 2021 17:36:01 +0000")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: SN4PR0501CA0096.namprd05.prod.outlook.com
+ (2603:10b6:803:22::34) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <X/3KnP3S4siAxTfG@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SN4PR0501CA0096.namprd05.prod.outlook.com (2603:10b6:803:22::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.4 via Frontend Transport; Tue, 12 Jan 2021 17:46:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 78b0b1e2-d6bc-4eff-01be-08d8b7220bee
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4614:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB4614F8CD1F88EDC0A8BFF7E28EAA0@PH0PR10MB4614.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PskM3j634n4VRI7EiR1yz1tqgJgeAT0F/2xWhjuyDZEEMbxSITkBWOx+xpyLSwzzWl+nreyxDc9IIzPlPRVimPl80M8q+KF9uq9csMugKngF8OE1yhcR68KNY1HpEDUMDptxOWRwzN4jFrw/DLLjFaMKVz2GvUGkQCMKTdkvxj4kWORqtTG6eZQpymwIFjgw3xYKZE3tEMfGnfGAQ5o/TApS+cvVm6viotlKHl1i7xN12+dBiCTwi+tcVIXKGG7IjgTTDsNP4mM4GChFw/tv8Qm+9kAZVvElM17YqZDWXx7hlX1G2B0eSHzs1ClI34HE5P2uYzZJvejaE2gD2w46u1FWzfYY+mkWalwwN0f2SASKuFYZxr4kjZTSNfDI8H/WLAxN2T2nUiVr3UdE+IKevg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39840400004)(136003)(366004)(346002)(376002)(4744005)(5660300002)(26005)(54906003)(2906002)(956004)(8676002)(8936002)(86362001)(316002)(4326008)(52116002)(83380400001)(66556008)(66946007)(7696005)(66476007)(55016002)(16526019)(478600001)(186003)(6666004)(6916009)(36916002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?GLjuMiEBpsm++lbbog98EWxWWlSd8nd6zi4RvMC6cu4igO4UvtX/HXMGDUKe?=
+ =?us-ascii?Q?00DN82VaKrd0GRsWhpZ30ZcbNAOEbYUXPnDO1sTlQeC2AcgwqWHiwe20xHCu?=
+ =?us-ascii?Q?E3MUGwsbR2b80MtQi+s8YArUtcuGcqq31t/AMF644SsUbs16IQzUhzu9hEUY?=
+ =?us-ascii?Q?Uhv6dFsaKXHswRYWMde4lTkKZmUpRbGDFCQgs9LJ5fAyzHvHEAPKprTX/6F7?=
+ =?us-ascii?Q?QbRKIbxT/2VJPzUU2Rib3HVoYtJRPKdwSRUQPpWO2KpxHjSzcFZjT34Bf1y/?=
+ =?us-ascii?Q?kjmc/9zuQTW4D8rvIJ1GsSMGVB4rVF8P3Y+oJmGistAmFiqLwF6MVQCLZrOV?=
+ =?us-ascii?Q?RPTpxYKdJ2ptS7WaTmih22W8eeHIPFI2EqTKJwYftNpHHoTG8732dFIun+e7?=
+ =?us-ascii?Q?OCdWrtIbXraARG72ePNzGhddYe/hUQV/WOPQI6mksIsipVKl6Dk75PsEz2JO?=
+ =?us-ascii?Q?+U/Mo/VecJ9EdH8UVWH7m7WV+oztcVyD8xpncZd6jGP5Ts0qGf32QIx8cM0T?=
+ =?us-ascii?Q?N2MUGRbSzzYGcqn5O5IYPMZxlG4o2B25tUsdcE70v1Iro1RkdLtDgYImQ0sO?=
+ =?us-ascii?Q?S/3fTb2o69p2VSzNRljDELIz1qgzwxSLSKsUtIaEUe03zCnanZKrWocQOzoQ?=
+ =?us-ascii?Q?bIm5mJi+dz16ajR08vL5Hh5tXvNjF8AwoSvIZX+PnRdwCUdFqd8U9qHHcucz?=
+ =?us-ascii?Q?VnBMxnQAqcHk1hDpGnshcGQ7wN4OFsNtv+c+O2T9cNpFA4oK6KNBtkvzCLOA?=
+ =?us-ascii?Q?xRG+Zi41AP+A0v+sBG/QhUBXLxLZiY08cElPpYWLIHP9eaRy2kjCKY2ycrtv?=
+ =?us-ascii?Q?xoemRf6wl/YcmPxiqRZfjp+ehUmxFd3wPD1B468iaRf3TPV/pPQNIN44NEI2?=
+ =?us-ascii?Q?ehNGE4Vopm8nUbXblGKpKC3DZVbpfzuIdukKN/T0cGYWXOYZH4FODqWMlmmC?=
+ =?us-ascii?Q?/uCPbkcGzPawvWnFvbIdV5ElVcrRznQ/CaBBckcvUhtomaJdL06ZiBznI7IB?=
+ =?us-ascii?Q?xSLW?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 17:46:52.8907
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78b0b1e2-d6bc-4eff-01be-08d8b7220bee
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UJJuCULuNo27qk5m4j0vRf8L5zPAdw9BQX1XifRJVISQkzFSge2+I75ZJQhFQ6iEl0mLbclYLlY8tRQUrHYjC4KmaMiR/yc7ezfgpPAu+Sc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4614
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
+ suspectscore=0 adultscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101120104
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ clxscore=1015 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101120104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 05:13:16PM +0100, 'Greg Kroah-Hartman' wrote:
-> On Tue, Jan 12, 2021 at 03:43:22PM +0000, József Horváth wrote:
-> > On Tue, Jan 12, 2021 at 11:28:08AM +0100, 'Greg Kroah-Hartman' wrote:
-> > > On Tue, Jan 12, 2021 at 10:18:33AM +0000, Jozsef Horvath wrote:
-> > > > --- a/include/uapi/linux/serial_core.h
-> > > > +++ b/include/uapi/linux/serial_core.h
-> > > > @@ -279,4 +279,7 @@
-> > > >  /* Freescale LINFlexD UART */
-> > > >  #define PORT_LINFLEXUART	122
-> > > >  
-> > > > +/* Silicon Labs SI4455 */
-> > > > +#define PORT_SI4455     123
-> > > 
-> > > What userspace tool is going to need this value?
-> > 
-> > The PORT_SI4455 is defined for using as port type value in struct uart_port.
-> > I checked other serial drivers under drivers/tty/serial and the port types
-> > used by serial drivers are defined in two places:
-> > 
-> > include/uapi/linux/serial_core.h
-> > include/uapi/linux/serial.h
-> > 
-> > The port type is required by serial_core, and its value goes back to
-> > user space with TIOCGSERIAL ioctl call.
-> 
-> What is it required for?  Who uses this?
-> 
-> > I can't set port type value to 0(PORT_UNKNOWN).
-> 
-> Why not?
 
-In drivers/tty/serial/serial_core.c
-1784:	uart_port_activate(...)
-1799:		->	uart_startup(...)
-260:			->	uart_port_startup(...)
+Johannes,
 
-183:	static int uart_port_startup(struct tty_struct *tty, struct uart_state *state,
-184:			int init_hw)
-...
-191:		if (uport->type == PORT_UNKNOWN)
-192:			return 1;
-...
-221:		retval = uport->ops->startup(uport);	<--This is the reason. The drivers
- startup function is not get called if type==PORT_UNKNOWN
-...
+>> I use the nvme-tcp as the host, the target is spdk nvme-tcp target,
+>> and set a wrong block size(i.g. bs=8), then the host prints this oops:
+>
+> I think the better fix here is to reject devices which report a block size
+> small than a sector.
 
-> 
-> > I think my drivers source is not the best place to defining PORT_SI4455,
-> >  but I can't find better place then include/uapi/linux/serial_core.h
-> > 
-> > Could you please help me where is the correct location for this definition?
-> 
-> I ask as I am trying to figure out why we keep adding these ids, yet no
-> tool that i know of seems to actually use them.
-> 
-> If you don't have a tool that needs to use a new id, then I would
-> recommend not adding it, right?
+Yep, Linux doesn't support logical block sizes < 512 bytes.
 
-This definition is not my requirement, but I would avoid collision with other
- drivers port type value.
-At this point as I understand your words, these definitions will be obsolete
- or optional soon and I can choose any value for drivers port type.
+Also, the NVMe spec states:
 
-Right?
+	"A value smaller than 9 (i.e., 512 bytes) is not supported."
 
-I would ask you about dev name (ttySSi).
-Is it okay?
-
-I didnt find any similar.
-
-> 
-> thanks,
-> 
-> greg k-h
-
-Üdvözlettel / Best regards:
-József Horváth
-
+-- 
+Martin K. Petersen	Oracle Linux Engineering
