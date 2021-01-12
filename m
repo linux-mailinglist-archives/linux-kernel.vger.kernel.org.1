@@ -2,175 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 359732F3D18
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 033012F3D24
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437777AbhALVef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:34:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37926 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437035AbhALUrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:47:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5F4822DFA;
-        Tue, 12 Jan 2021 20:46:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610484399;
-        bh=6C4FcXaTex9YSJhTt/hDbVABmaMZGgd5xL/KaWRt3iY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RehPUdGa+mBVp0ZUVaEOPx1noJiGroSWcESAiiR4uz6CLTaZd4YjLjgKovIkkivcd
-         xjV02oeA6iZFg2KTyU2At7vjDB3tnRDPJVlEjhxgik1b5dnUa1BCHrW0v4pI48DlRb
-         1Qv3ROg7LijMPadsxZtldjWhxQFylhy4560fpq9dQiZtfKKhKdS45P7s2XgzWTsMv8
-         cr3lWv5qyeydCccj4cm6qr72u307nqHKP+ffjhG0PwrGASJaIfV0aHRWLwxZYIxNNq
-         4F/xfNWU2jlVMODd4z6k4eW5fi6Ezmaza7PqzQ/GEpXzyU5GUXKh27xjn1tq5o2/6v
-         68QFCT+Q/Mziw==
-Received: by mail-ed1-f52.google.com with SMTP id h16so3864335edt.7;
-        Tue, 12 Jan 2021 12:46:38 -0800 (PST)
-X-Gm-Message-State: AOAM5300WqA+F1VF9IWkhi7KgcJGEEGavzIARx/j2Z7/sJHtzvL9YhKj
-        kHc7UBJBSufP6Ch/Mq7uanvB3WK1XSfFLuk0Bg==
-X-Google-Smtp-Source: ABdhPJzHL8hEzkUMk94Hn1de+iimXy75BRTADHer8kKo3ydsZMgHK9uauUzifJrV5kKxlyNzhM/pJo24SVcTyeuLeBk=
-X-Received: by 2002:a05:6402:541:: with SMTP id i1mr786962edx.289.1610484397247;
- Tue, 12 Jan 2021 12:46:37 -0800 (PST)
+        id S2437789AbhALVeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 16:34:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34730 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437042AbhALUu3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:50:29 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69ACEC061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:49:49 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id o6so6961454iob.10
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:49:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=iz948zq6frbZj4yrO0gxVPBCgl3MtZVScrUscJeCONc=;
+        b=mUfnl+ylyuef1eqF5Au0U+9hQqR6rirDJC+wgHZcgeX+Y10zfQZesA2JPpjOJfAwem
+         vfs+NxTNB2oiy4I0ee8RoLt4IE+0c+o5nLK90UCmAQK7dhkSy3ls0KrVTtKWUgNXuXb5
+         g7LHX6knzedxFCigXXZZGKIoxMKlKMXXixLEgghpQ58zLLUDEXh8bGqmg6m8EohhZXCq
+         upbCvoy9vWALYnMM0dKDsIEVb0JfVESkH3xlqpVmKlzYCIgOoPTe0Gx0XYFA5K6aG9zs
+         l/LGSWC7dnBdNRSZZSNZDH53xSE4hgYKK53yQCXD41+6n1eKibYkRL85GBD+3hwXkkkz
+         Sc2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=iz948zq6frbZj4yrO0gxVPBCgl3MtZVScrUscJeCONc=;
+        b=E57SiQ5lBw54FWvCzFLeDukwkGNgXqRzNmYnYct9mvBztlgapYhZlgkWRA+jfSTjz0
+         AC/PgZZk+6oPSzS23EHLy7NndqjnEOpZc16TUlIi32kaVgJVhBqHfgZZndGl0cOfwmEq
+         eny1NoztHT2/BU26Sax5wJ+1SBYACOopClfzh/OkB+ArENSOc/x7pzwRAk0Pda/5xh7V
+         2wodroY0F6y4ZTB8p8gK164vsv5LrI4AW6m4VHzdrxxJQnR6lA49j1SyweI7XDTcrVLa
+         FNCv/dpwps6DYQNFsJxch5xuShbbtgeP56f18Z018SDmpjyKT3yXqJM/FwrGRCLxjiEB
+         wyNA==
+X-Gm-Message-State: AOAM531zt/QJSIA1QkPf9jj1o518WkMUa+lGQAeDp2msaDLmqDxf7tUT
+        ZdEA0yVlShRpbz/cZZ/B0R24oQ==
+X-Google-Smtp-Source: ABdhPJxA3ncb6sVXiU6rEnsOvA2T2v/R2etdfaiCr1nJnYQmxuLz2uwDw9LnJAyOGuJmsZNIrdy1uw==
+X-Received: by 2002:a5e:8202:: with SMTP id l2mr724009iom.106.1610484588372;
+        Tue, 12 Jan 2021 12:49:48 -0800 (PST)
+Received: from google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
+        by smtp.gmail.com with ESMTPSA id n11sm2412446ioh.37.2021.01.12.12.49.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 12:49:47 -0800 (PST)
+Date:   Tue, 12 Jan 2021 13:49:43 -0700
+From:   Yu Zhao <yuzhao@google.com>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Laurent Dufour <ldufour@linux.vnet.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>, surenb@google.com
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X/4LZ5NpCwYLgW1s@google.com>
+References: <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
+ <CAHk-=wj=CcOHQpG0cUGfoMCt2=Uaifpqq-p-mMOmW8XmrBn4fQ@mail.gmail.com>
+ <20210105153727.GK3040@hirez.programming.kicks-ass.net>
+ <bfb1cbe6-a705-469d-c95a-776624817e33@codeaurora.org>
+ <0201238b-e716-2a3c-e9ea-d5294ff77525@linux.vnet.ibm.com>
+ <X/3VE64nr91WCtuM@hirez.programming.kicks-ass.net>
+ <ec912505-ed4d-a45d-2ed4-7586919da4de@linux.vnet.ibm.com>
+ <C7D5A74C-25BF-458A-AAD9-61E484B9F225@gmail.com>
+ <X/3+6ZnRCNOwhjGT@google.com>
+ <2C7AE23B-ACA3-4D55-A907-AF781C5608F0@gmail.com>
 MIME-Version: 1.0
-References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
- <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
- <23e16d20-36eb-87d9-4473-142504ad8a95@gmail.com> <CAL_JsqKqSVGCjcue=ka2=bB1Os9pczNTCqDeaoFPFfRxnvsteQ@mail.gmail.com>
- <e549c7ce-d01e-08a3-9ed0-7325a34e9c29@gmail.com> <CAL_Jsq+W4X5H2myCzX1bGTEqJG9dpwLXdmqbpq6oGm5wpF7WMQ@mail.gmail.com>
- <de50f7a5-d0d7-86b0-a1eb-84a91438b586@gmail.com>
-In-Reply-To: <de50f7a5-d0d7-86b0-a1eb-84a91438b586@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 12 Jan 2021 14:46:25 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqLMeX_f-TpX4j5tgxJOxDafP9tiunvcF_Ed4MGV90982A@mail.gmail.com>
-Message-ID: <CAL_JsqLMeX_f-TpX4j5tgxJOxDafP9tiunvcF_Ed4MGV90982A@mail.gmail.com>
-Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2C7AE23B-ACA3-4D55-A907-AF781C5608F0@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 2:05 PM Frank Rowand <frowand.list@gmail.com> wrote:
->
-> On 1/12/21 1:41 PM, Rob Herring wrote:
-> > On Tue, Jan 12, 2021 at 1:06 PM Frank Rowand <frowand.list@gmail.com> wrote:
-> >>
-> >> On 1/12/21 8:04 AM, Rob Herring wrote:
-> >>> On Mon, Jan 11, 2021 at 4:06 PM Frank Rowand <frowand.list@gmail.com> wrote:
-> >>>>
-> >>>> On 1/8/21 2:41 AM, Viresh Kumar wrote:
-> >>>>> Now that fdtoverlay is part of the kernel build, start using it to test
-> >>>>> the unitest overlays we have by applying them statically.
-> >>>>>
-> >>>>> The file overlay_base.dtb have symbols of its own and we need to apply
-> >>>>> overlay.dtb to overlay_base.dtb alone first to make it work, which gives
-> >>>>> us intermediate-overlay.dtb file.
-> >>>>>
-> >>>>> The intermediate-overlay.dtb file along with all other overlays is them
-> >>>>> applied to testcases.dtb to generate the master.dtb file.
-> >>>>>
-> >>>>> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> >>>>
-> >>>> NACK to this specific patch, in its current form.
-> >>>>
-> >>>> There are restrictions on applying an overlay at runtime that do not apply
-> >>>> to applying an overlay to an FDT that will be loaded by the kernel during
-> >>>> early boot.  Thus the unittest overlays _must_ be applied using the kernel
-> >>>> overlay loading methods to test the kernel runtime overlay loading feature.
-> >>>
-> >>> This patch doesn't take away from any of that and it completely orthogonal.
-> >>
-> >> Mea culpa.  I took the patch header comment at face value, and read more into
-> >> the header comment than what was written there.  I then skimmed the patch
-> >> instead of actually reading what it was doing.
-> >>
-> >> I incorrectly _assumed_ (bad!) that the intent was to replace applying the
-> >> individual overlay dtb's with the master.dtb.  Reading more closely, I see
-> >> that the assumed final step of actually _using_ master.dtb does not exist.
-> >>
-> >> So, yes, I agree that the patch as written is orthogonal to my concern.
-> >>
-> >> My updated understanding is that this patch is attempting to use the existing
-> >> unittest overlay dts files as source to test fdtoverlay.  And that the resulting
-> >> dtb from fdtoverlay is not intended to be consumed by the kernel unittest.
-> >
-> > The goal is not to test fdtoverlay. dtc unittests do that. The goal is
-> > testing overlays we expect to be able to apply can actually apply and
-> > doing this at build time. That's also the goal for all the 'real'
-> > overlays which get added.
-> >
-> >> I do not agree that this is a good approach to testing fdtoverlay.  The
-> >> unittest overlay dts files are constructed specifically to test various
-> >> parts of the kernel overlay code and dynamic OF code.  Some of the content
-> >> of the overlays is constructed to trigger error conditions in that code,
-> >> and thus will not be able to be processed without error by fdtoverlay.
-> >
-> > Then those should be omitted.
-> >
-> >> Trying to use overlay dts files that are constructed to test runtime kernel
-> >> code as fdtoverlay input data mixes two different test environments and
-> >> objectives.  If fdtoverlay test cases are desired, then fdtoverlay specific
-> >> dts files should be created.
-> >>
-> >>>
-> >>>> I agree that testing fdtoverlay is a good idea.  I have not looked at the
-> >>>> parent project to see how much testing of fdtoverlay occurs there, but I
-> >>>> would prefer that fdtoverlay tests reside in the parent project if practical
-> >>>> and reasonable.  If there is some reason that some fdtoverlay tests are
-> >>>> more practical in the Linux kernel repository then I am open to adding
-> >>>> them to the Linux kernel tree.
-> >>>
-> >>> If you (or more importantly someone else sending us patches) make
-> >>> changes to the overlays, you can test that they apply at build time
-> >>> rather than runtime. I'll take it! So please help on fixing the issue
-> >>> because I want to apply this.
-> >>
-> >> If the tests can be added to the upstream project, I would much prefer
-> >> they reside there.  If there is some reason a certain test is more
-> >> suited to be in the Linux kernel source tree then I also would like
-> >> it to be accepted here.
-> >
-> > Again, this is just about doing sanity checks at build time rather
-> > than *only* rely on runtime.
->
-> I'm fine with adding tests for applying overlays at build time (in
-> other words, tests of fdtoverlay).
+On Tue, Jan 12, 2021 at 12:38:34PM -0800, Nadav Amit wrote:
+> > On Jan 12, 2021, at 11:56 AM, Yu Zhao <yuzhao@google.com> wrote:
+> > 
+> > On Tue, Jan 12, 2021 at 11:15:43AM -0800, Nadav Amit wrote:
+> >>> On Jan 12, 2021, at 11:02 AM, Laurent Dufour <ldufour@linux.vnet.ibm.com> wrote:
+> >>> 
+> >>> Le 12/01/2021 à 17:57, Peter Zijlstra a écrit :
+> >>>> On Tue, Jan 12, 2021 at 04:47:17PM +0100, Laurent Dufour wrote:
+> >>>>> Le 12/01/2021 à 12:43, Vinayak Menon a écrit :
+> >>>>>> Possibility of race against other PTE modifiers
+> >>>>>> 
+> >>>>>> 1) Fork - We have seen a case of SPF racing with fork marking PTEs RO and that
+> >>>>>> is described and fixed here https://lore.kernel.org/patchwork/patch/1062672/
+> >>>> Right, that's exactly the kind of thing I was worried about.
+> >>>>>> 2) mprotect - change_protection in mprotect which does the deferred flush is
+> >>>>>> marked under vm_write_begin/vm_write_end, thus SPF bails out on faults
+> >>>>>> on those VMAs.
+> >>>> Sure, mprotect also changes vm_flags, so it really needs that anyway.
+> >>>>>> 3) userfaultfd - mwriteprotect_range is not protected unlike in (2) above.
+> >>>>>> But SPF does not take UFFD faults.
+> >>>>>> 4) hugetlb - hugetlb_change_protection - called from mprotect and covered by
+> >>>>>> (2) above.
+> >>>>>> 5) Concurrent faults - SPF does not handle all faults. Only anon page faults.
+> >>>> What happened to shared/file-backed stuff? ISTR I had that working.
+> >>> 
+> >>> File-backed mappings are not processed in a speculative way, there were options to manage some of them depending on the underlying file system but that's still not done.
+> >>> 
+> >>> Shared anonymous mapping, are also not yet handled in a speculative way (vm_ops is not null).
+> >>> 
+> >>>>>> Of which do_anonymous_page and do_swap_page are NONE/NON-PRESENT->PRESENT
+> >>>>>> transitions without tlb flush. And I hope do_wp_page with RO->RW is fine as well.
+> >>>> The tricky one is demotion, specifically write to non-write.
+> >>>>>> I could not see a case where speculative path cannot see a PTE update done via
+> >>>>>> a fault on another CPU.
+> >>>> One you didn't mention is the NUMA balancing scanning crud; although I
+> >>>> think that's fine, loosing a PTE update there is harmless. But I've not
+> >>>> thought overly hard on it.
+> >>> 
+> >>> That's a good point, I need to double check on that side.
+> >>> 
+> >>>>> You explained it fine. Indeed SPF is handling deferred TLB invalidation by
+> >>>>> marking the VMA through vm_write_begin/end(), as for the fork case you
+> >>>>> mentioned. Once the PTL is held, and the VMA's seqcount is checked, the PTE
+> >>>>> values read are valid.
+> >>>> That should indeed work, but are we really sure we covered them all?
+> >>>> Should we invest in better TLBI APIs to make sure we can't get this
+> >>>> wrong?
+> >>> 
+> >>> That may be a good option to identify deferred TLB invalidation but I've no clue on what this API would look like.
+> >> 
+> >> I will send an RFC soon for per-table deferred TLB flushes tracking.
+> >> The basic idea is to save a generation in the page-struct that tracks
+> >> when deferred PTE change took place, and track whenever a TLB flush
+> >> completed. In addition, other users - such as mprotect - would use
+> >> the tlb_gather interface.
+> >> 
+> >> Unfortunately, due to limited space in page-struct this would only
+> >> be possible for 64-bit (and my implementation is only for x86-64).
+> > 
+> > I don't want to discourage you but I don't think this would end up
+> > well. PPC doesn't necessarily follow one-page-struct-per-table rule,
+> > and I've run into problems with this before while trying to do
+> > something similar.
+> 
+> Discourage, discourage. Better now than later.
+> 
+> It will be relatively easy to extend the scheme to be per-VMA instead of
+> per-table for architectures that prefer it this way. It does require
+> TLB-generation tracking though, which Andy only implemented for x86, so I
+> will focus on x86-64 right now.
+> 
+> [ For per-VMA it would require an additional cmpxchg, I presume to save the
+> last deferred generation though. ]
+> 
+> > I'd recommend per-vma and per-category (unmapping, clearing writable
+> > and clearing dirty) tracking, which only rely on arch-independent data
+> > structures, i.e., vm_area_struct and mm_struct.
+> 
+> I think that tracking changes on “what was changed” granularity is harder
+> and more fragile.
+> 
+> Let me finish trying the clean up the mess first, since fullmm and
+> need_flush_all semantics were mixed; there are 3 different flushing schemes
+> for mprotect(), munmap() and try_to_unmap(); there are missing memory
+> barriers; mprotect() performs TLB flushes even when permissions are
+> promoted; etc.
+> 
+> There are also some optimizations that we discussed before, such on x86 - 
+> RW->RO does not require a TLB flush if a PTE is not dirty, etc.
+> 
+> I am trying to finish something so you can say how terrible it is, so I will
+> not waste too much time. ;-)
+> 
+> >> It would still require to do the copying while holding the PTL though.
+> > 
+> > IMO, this is unacceptable. Most archs don't support per-table PTL, and
+> > even x86_64 can be configured to use per-mm PTL. What if we want to
+> > support a larger page size in the feature?
+> > 
+> > It seems to me the only way to solve the problem with self-explanatory
+> > code and without performance impact is to check mm_tlb_flush_pending
+> > and the writable bit (and two other cases I mentioned above) at the
+> > same time. Of course, this requires a lot of effort to audit the
+> > existing uses, clean them up and properly wrap them up with new
+> > primitives, BUG_ON all invalid cases and document the exact workflow
+> > to prevent misuses.
+> > 
+> > I've mentioned the following before -- it only demonstrates the rough
+> > idea.
+> > 
+> > diff --git a/mm/memory.c b/mm/memory.c
+> > index 5e9ca612d7d7..af38c5ee327e 100644
+> > --- a/mm/memory.c
+> > +++ b/mm/memory.c
+> > @@ -4403,8 +4403,11 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+> > 		goto unlock;
+> > 	}
+> > 	if (vmf->flags & FAULT_FLAG_WRITE) {
+> > -		if (!pte_write(entry))
+> > +		if (!pte_write(entry)) {
+> > +			if (mm_tlb_flush_pending(vmf->vma->vm_mm))
+> > +				flush_tlb_page(vmf->vma, vmf->address);
+> > 			return do_wp_page(vmf);
+> > +		}
+> > 		entry = pte_mkdirty(entry);
+> > 	}
+> > 	entry = pte_mkyoung(entry);
+> 
+> I understand. This might be required, regardless of the deferred flushes
+> detection scheme. If we assume that no write-unprotect requires a COW (which
+> should be true in this case, since we take a reference on the page), your
+> proposal should be sufficient.
+> 
+> Still, I think that there are many unnecessary TLB flushes right now,
+> and others that might be missed due to the overly complicated invalidation
+> schemes. 
+> 
+> Regardless, as Andrea pointed, this requires first to figure out the
+> semantics of mprotect() and friends when pages are pinned.
 
-Again, it's not tests of fdtoverlay. It's a test of the dts files. We
-are testing that an overlay dts can apply to the base dts we claim it
-applies. If the overlay dts has crap then we'll catch it.
-
-We shouldn't accept overlays that can't apply to a base in the kernel
-tree. That's either because it's broken or because the base doesn't
-exist. With the exception of overlays designed to fail for tests,
-unittest overlays should not be any different.
-
-> But the constraints on applying an overlay at build time are different
-> than the runtime constraints.
-
-Like what specifically? Runtime is more constrained than build time.
-Or at least it should be. It's not really and that's why we have
-limited runtime applied overlay support.
-
-> The existing unittest overlay dts files are not designed to test applying
-> overlays at build time.  Tests for fdtoverlay should be designed to test
-> that overlays that meet the build time constraints can be applied
-> properly by fdtoverlay, and that overlays that fail to meet those
-> constraints are rejected by fdtoverlay.
->
-> Trying to use the same data (dts) files for tests that have different
-> constraints is likely to make both tests more fragile when a data file
-> is modified for one environment without careful consideration of the
-> other environment.
-
-We're not changing nor constraining the data files. Just adding
-another sanity test on them.
-
-Rob
+Thanks, I appreciate your effort. I'd be glad to review whatever you
+come up with.
