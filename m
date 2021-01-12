@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23262F2669
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:53:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9202F266E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:58:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733021AbhALCvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 21:51:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728044AbhALCvf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 21:51:35 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C12C061786;
-        Mon, 11 Jan 2021 18:50:55 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id u17so1027334iow.1;
-        Mon, 11 Jan 2021 18:50:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=5w78tzUXX0I8RLg/o+73uKu20yriP3eTMDkxoUSEBt8=;
-        b=NHJNCgjrOquzygHREJEL8tOelgSod+g5e14cUUQBq3m6q9Tz7J7kiFWgiqScncNVa7
-         VtHn9W+sU/HKdfD3qR7v5xRLrKMbfNHHzzpC+dPGuA6ZVNhDN5GiTHPAdTX/GWIgL7Zk
-         ZSqwdCu8uD4NTwENzTRv2gLX9uyzmLvoH+s958GGTh6A3pDLE5iw+rlFMt9azCpqzhPt
-         lQ7W1L010BxxiDvfV29HppOK5smgJ3xRPGWdLQrN4kexe7ZVHxZZ+rpTK43nSC51xLYg
-         6McdgrO73jIn+GCdIEab7GPB4pEvCTaXPLwtEnoISDVaBuXHuQH4eL9KDpTjz9lpejyx
-         VtMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5w78tzUXX0I8RLg/o+73uKu20yriP3eTMDkxoUSEBt8=;
-        b=jakVDGrwAWHbvKgFHBJW98NmyNViYjAHmfsGXf7cKctsqlxWnCYsFIKxEc7lId9AUE
-         FFR10TKZhylYcp9ufYDu9vsLBOVoCwVUlTDT0YlNQmBhhl4+naFMD9kYeSk4sKW1Dtc3
-         eE7OvVvfLDar1S3VrkVSpwubC/Bc2zh1OeOLOQi40xqo97TfPdfXiM2T6JkPyAXVgjg5
-         0fszSPvoa0HatgdVj0zsLk0BHKa7LGChGrVVO4vcWB7MEp7omHvrGr4gitII5hy0Wwlm
-         A2clEtxNBrZFdG8gu3AOh5EMLTDeI0UZsCvIBSFFw3cDwoFP1iv2n0PSxj/pSpjrzvRb
-         X+Fg==
-X-Gm-Message-State: AOAM531v7zZ5M+sg1PB+nSJuxWW7w+uYtUYW+wk5AS0s/5uifHpAJuXr
-        6waRX/+QnrWX1ldOifi2k0ew1pL5pvAjotBzcwU=
-X-Google-Smtp-Source: ABdhPJz0j5BLfPgmG13n4HxFvJkNZxPuemZywJs7U1swOc8i0mMqZy/C2uAL4yRDpNC/M7qFtc/loQ/5mbS5Plf+tnI=
-X-Received: by 2002:a6b:b5d2:: with SMTP id e201mr1630874iof.111.1610419854594;
- Mon, 11 Jan 2021 18:50:54 -0800 (PST)
+        id S1733089AbhALCyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 21:54:21 -0500
+Received: from mga04.intel.com ([192.55.52.120]:58725 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728830AbhALCyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 21:54:21 -0500
+IronPort-SDR: 4opLHpNOh0jRWf611QCsbm8aP1E0kBfwsFEzxolLqEi3WsgNjRl3jk8EOGdamQwPtbJTjO2luN
+ cqXLsE7EC9vQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="175392299"
+X-IronPort-AV: E=Sophos;i="5.79,340,1602572400"; 
+   d="scan'208";a="175392299"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 18:52:35 -0800
+IronPort-SDR: AnDGpi7IZBTKrjNs84H2+rdVKVqrWnTGTGy9pIqS4NklnD9HFHM+3ExZLRM/YRbPEqoDxygMQi
+ 8RfV9BxQ4/GQ==
+X-IronPort-AV: E=Sophos;i="5.79,340,1602572400"; 
+   d="scan'208";a="381250515"
+Received: from liujing-mobl.ccr.corp.intel.com (HELO [10.238.130.147]) ([10.238.130.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 18:52:31 -0800
+Subject: Re: [PATCH v3 10/21] x86/fpu/xstate: Update xstate save function to
+ support dynamic xstate
+To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        "Liu, Jing2" <jing2.liu@intel.com>
+Cc:     "bp@suse.de" <bp@suse.de>, "luto@kernel.org" <luto@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+References: <20201223155717.19556-1-chang.seok.bae@intel.com>
+ <20201223155717.19556-11-chang.seok.bae@intel.com>
+ <BYAPR11MB3256BBBB24F9131D99CF7EF5A9AF0@BYAPR11MB3256.namprd11.prod.outlook.com>
+ <29CB32F5-1E73-46D4-BF92-18AD05F53E8E@intel.com>
+From:   "Liu, Jing2" <jing2.liu@linux.intel.com>
+Message-ID: <0361132a-c088-331b-de1f-e0de23d729ab@linux.intel.com>
+Date:   Tue, 12 Jan 2021 10:52:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210111054428.3273-1-dqfext@gmail.com> <20210111164616.1947d779@kernel.org>
-In-Reply-To: <20210111164616.1947d779@kernel.org>
-From:   DENG Qingfang <dqfext@gmail.com>
-Date:   Tue, 12 Jan 2021 10:50:54 +0800
-Message-ID: <CALW65jboizW2J1S0BYBrOM_xNEzpFM-gdJ6OF33+65vMiJtmWg@mail.gmail.com>
-Subject: Re: [PATCH net-next 0/2] dsa: add MT7530 GPIO support
-To:     =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Russell King <linux@armlinux.org.uk>,
-        netdev <netdev@vger.kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, linux-kernel@vger.kernel.org,
-        Frank Wunderlich <frank-w@public-files.de>,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <29CB32F5-1E73-46D4-BF92-18AD05F53E8E@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marek,
 
-On Mon, Jan 11, 2021 at 11:46 PM Marek Beh=C3=BAn <kabel@kernel.org> wrote:
+On 1/8/2021 2:40 AM, Bae, Chang Seok wrote:
+>> On Jan 7, 2021, at 17:41, Liu, Jing2 <jing2.liu@intel.com> wrote:
+>>
+>> static void kvm_save_current_fpu(struct fpu *fpu)  {
+>> +	struct fpu *src_fpu = &current->thread.fpu;
+>> +
+>> 	/*
+>> 	 * If the target FPU state is not resident in the CPU registers, just
+>> 	 * memcpy() from current, else save CPU state directly to the target.
+>> 	 */
+>> -	if (test_thread_flag(TIF_NEED_FPU_LOAD))
+>> -		memcpy(&fpu->state, &current->thread.fpu.state,
+>> +	if (test_thread_flag(TIF_NEED_FPU_LOAD)) {
+>> +		memcpy(&fpu->state, &src_fpu->state,
+>> 		       fpu_kernel_xstate_min_size);
+>> For kvm, if we assume that it does not support dynamic features until this series,
+>> memcpy for only fpu->state is correct.
+>> I think this kind of assumption is reasonable and we only make original xstate work.
+>>
+>> -	else
+>> +	} else {
+>> +		if (fpu->state_mask != src_fpu->state_mask)
+>> +			fpu->state_mask = src_fpu->state_mask;
+>>
+>> Though dynamic feature is not supported in kvm now, this function still need
+>> consider more things for fpu->state_mask.
+> Can you elaborate this? Which path might be affected by fpu->state_mask
+> without dynamic state supported in KVM?
 >
-> what modes does the LED support? Does it support blinking on rx/tx?
-> What about link status?
+>> I suggest that we can set it before if...else (for both cases) and not change other.
+> I tried a minimum change here.  The fpu->state_mask value does not impact the
+> memcpy(). So, why do we need to change it for both?
 
-Yes. But unfortunately they cannot be controlled individually, unless
-on GPIO mode.
+Sure, what I'm considering is that "mask" is the first time introduced 
+into "fpu",
 
-> I'd like to know because I am still working on patches which add
-> ethernet PHY/switch LEDs, with transparent offloading of netdev trigger.
->
-> Marek
+representing the usage, so not only set it when needed, but also make it 
+as a
+
+representation, in case of anywhere using it (especially between the 
+interval
+
+of this series and kvm series in future).
+
+Thanks,
+
+Jing
+
+> Thanks,
+> Chang
