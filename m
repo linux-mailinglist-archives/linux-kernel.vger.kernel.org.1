@@ -2,282 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110402F39D1
+	by mail.lfdr.de (Postfix) with ESMTP id 891582F39D2
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:16:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406510AbhALTPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 14:15:05 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2326 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406329AbhALTPE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:15:04 -0500
-Received: from fraeml744-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DFg9S12ZNz67Xf7;
-        Wed, 13 Jan 2021 03:09:16 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml744-chm.china.huawei.com (10.206.15.225) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 12 Jan 2021 20:14:22 +0100
-Received: from localhost (10.47.65.219) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 12 Jan
- 2021 19:14:21 +0000
-Date:   Tue, 12 Jan 2021 19:13:42 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org, Ira Weiny" <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Vishal Verma" <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        "Bjorn Helgaas" <helgaas@kernel.org>,
-        Jon Masters <jcm@jonmasters.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        <daniel.lll@alibaba-inc.com>
-Subject: Re: [RFC PATCH v3 05/16] cxl/mem: Map memory device registers
-Message-ID: <20210112191342.00006aad@Huawei.com>
-In-Reply-To: <20210111225121.820014-6-ben.widawsky@intel.com>
-References: <20210111225121.820014-1-ben.widawsky@intel.com>
-        <20210111225121.820014-6-ben.widawsky@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S2406659AbhALTPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:15:33 -0500
+Received: from mga12.intel.com ([192.55.52.136]:62358 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727622AbhALTPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 14:15:32 -0500
+IronPort-SDR: jDMAi8MhEqPfKOQ+0Sax510H3MARt7WIl8XAjW/k8W8/B8I+K+zPYAv/e0f9g7ZIPCFLVP/zxQ
+ A16Tv2x4WMFw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="157272331"
+X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
+   d="scan'208";a="157272331"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 11:13:47 -0800
+IronPort-SDR: VS2hOt0hHHehWXVlRGNmpnBvf+z4R8Od1Y9UJ//JETgmKtM8FsPwB9+g73fpO+16ffXKN2Umin
+ XkepVrR9B39w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
+   d="scan'208";a="381539456"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga008.jf.intel.com with ESMTP; 12 Jan 2021 11:13:47 -0800
+Received: from [10.255.230.93] (kliang2-MOBL.ccr.corp.intel.com [10.255.230.93])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id C39055808F1;
+        Tue, 12 Jan 2021 11:13:45 -0800 (PST)
+Subject: Re: [PATCH V4 0/6] Add the page size in the perf record (user tools)
+To:     Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@redhat.com>,
+        namhyung@kernel.org, eranian@google.com, ak@linux.intel.com,
+        mark.rutland@arm.com, will@kernel.org, mpe@ellerman.id.au,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20210105195752.43489-1-kan.liang@linux.intel.com>
+ <0F170D59-1C3D-4719-BF51-9AC306DB862D@linux.vnet.ibm.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <1f45cebf-1f89-2c4c-f2b3-dbdb623576ae@linux.intel.com>
+Date:   Tue, 12 Jan 2021 14:13:44 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.65.219]
-X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+In-Reply-To: <0F170D59-1C3D-4719-BF51-9AC306DB862D@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Jan 2021 14:51:09 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
 
-> All the necessary bits are initialized in order to find and map the
-> register space for CXL Memory Devices. This is accomplished by using the
-> Register Locator DVSEC (CXL 2.0 - 8.1.9.1) to determine which PCI BAR to
-> use, and how much of an offset from that BAR should be added.
+
+On 1/12/2021 12:24 AM, Athira Rajeev wrote:
 > 
-> If the memory device registers are found and mapped a new internal data
-> structure tracking device state is allocated.
 > 
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-
-Some issues with managed allocations being manually freed in remove.
-It shouldn't be necessary to do that.
-
-> ---
->  drivers/cxl/cxl.h |  17 ++++++++
->  drivers/cxl/mem.c | 100 +++++++++++++++++++++++++++++++++++++++++++++-
->  drivers/cxl/pci.h |  14 +++++++
->  3 files changed, 130 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/cxl/cxl.h
+>> On 06-Jan-2021, at 1:27 AM, kan.liang@linux.intel.com wrote:
+>>
+>> From: Kan Liang <kan.liang@linux.intel.com>
+>>
+>> Changes since V3:
+>> - Rebase on top of acme's perf/core branch
+>>   commit c07b45a355ee ("perf record: Tweak "Lowering..." warning in record_opts__config_freq")
+>>
+>> Changes since V2:
+>> - Rebase on top of acme perf/core branch
+>>   commit eec7b53d5916 ("perf test: Make sample-parsing test aware of PERF_SAMPLE_{CODE,DATA}_PAGE_SIZE")
+>> - Use unit_number__scnprintf() in get_page_size_name()
+>> - Emit warning about kernel not supporting the code page size sample_type bit
+>>
+>> Changes since V1:
+>> - Fix the compile warning with GCC 10
+>> - Add Acked-by from Namhyung Kim
+>>
+>> Current perf can report both virtual addresses and physical addresses,
+>> but not the page size. Without the page size information of the utilized
+>> page, users cannot decide whether to promote/demote large pages to
+>> optimize memory usage.
+>>
+>> The kernel patches have been merged into tip perf/core branch,
+>> commit 8d97e71811aa ("perf/core: Add PERF_SAMPLE_DATA_PAGE_SIZE")
+>> commit 76a5433f95f3 ("perf/x86/intel: Support PERF_SAMPLE_DATA_PAGE_SIZE")
+>> commit 4cb6a42e4c4b ("powerpc/perf: Support PERF_SAMPLE_DATA_PAGE_SIZE")
+>> commit 995f088efebe ("perf/core: Add support for PERF_SAMPLE_CODE_PAGE_SIZE")
+>> commit 51b646b2d9f8 ("perf,mm: Handle non-page-table-aligned hugetlbfs")
+>>
+>> and Peter's perf/core branch
+>> commit 524680ce47a1 ("mm/gup: Provide gup_get_pte() more generic")
+>> commit 44a35d6937d2 ("mm: Introduce pXX_leaf_size()")
+>> commit 2f1e2f091ad0 ("perf/core: Fix arch_perf_get_page_size()")
+>> commit 7649e44aacdd ("arm64/mm: Implement pXX_leaf_size() support")
+>> commit 1df1ae7e262c ("sparc64/mm: Implement pXX_leaf_size() support")
+>>
+>> This patch set is to enable the page size support in user tools.
 > 
-> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> new file mode 100644
-> index 000000000000..d81d0ba4617c
-> --- /dev/null
-> +++ b/drivers/cxl/cxl.h
-> @@ -0,0 +1,17 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/* Copyright(c) 2020 Intel Corporation. */
-> +
-> +#ifndef __CXL_H__
-> +#define __CXL_H__
-> +
-> +/**
-> + * struct cxl_mem - A CXL memory device
-> + * @pdev: The PCI device associated with this CXL device.
-> + * @regs: IO mappings to the device's MMIO
-> + */
-> +struct cxl_mem {
-> +	struct pci_dev *pdev;
-> +	void __iomem *regs;
-> +};
-> +
-> +#endif
-> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> index 005404888942..8301db34d2ff 100644
-> --- a/drivers/cxl/mem.c
-> +++ b/drivers/cxl/mem.c
-> @@ -5,6 +5,58 @@
->  #include <linux/io.h>
->  #include "acpi.h"
->  #include "pci.h"
-> +#include "cxl.h"
-> +
-> +/**
-> + * cxl_mem_create() - Create a new &struct cxl_mem.
-> + * @pdev: The pci device associated with the new &struct cxl_mem.
-> + * @reg_lo: Lower 32b of the register locator
-> + * @reg_hi: Upper 32b of the register locator.
-> + *
-> + * Return: The new &struct cxl_mem on success, NULL on failure.
-> + *
-> + * Map the BAR for a CXL memory device. This BAR has the memory device's
-> + * registers for the device as specified in CXL specification.
-> + */
-> +static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev, u32 reg_lo,
-> +				      u32 reg_hi)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct cxl_mem *cxlm;
-> +	void __iomem *regs;
-> +	u64 offset;
-> +	u8 bar;
-> +	int rc;
-> +
-> +	offset = ((u64)reg_hi << 32) | (reg_lo & CXL_REGLOC_ADDR_MASK);
-> +	bar = (reg_lo >> CXL_REGLOC_BIR_SHIFT) & CXL_REGLOC_BIR_MASK;
-> +
-> +	/* Basic sanity check that BAR is big enough */
-> +	if (pci_resource_len(pdev, bar) < offset) {
-> +		dev_err(dev, "BAR%d: %pr: too small (offset: %#llx)\n", bar,
-> +			&pdev->resource[bar], (unsigned long long)offset);
-> +		return NULL;
-> +	}
-> +
-> +	rc = pcim_iomap_regions(pdev, BIT(bar), pci_name(pdev));
-> +	if (rc != 0) {
-> +		dev_err(dev, "failed to map registers\n");
-> +		return NULL;
-> +	}
-> +
-> +	cxlm = devm_kzalloc(&pdev->dev, sizeof(*cxlm), GFP_KERNEL);
-> +	if (!cxlm) {
-> +		dev_err(dev, "No memory available\n");
-> +		return NULL;
-> +	}
-> +
-> +	regs = pcim_iomap_table(pdev)[bar];
-> +	cxlm->pdev = pdev;
-> +	cxlm->regs = regs + offset;
-> +
-> +	dev_dbg(dev, "Mapped CXL Memory Device resource\n");
-> +	return cxlm;
-> +}
->  
->  static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
->  {
-> @@ -33,7 +85,8 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
->  static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  {
->  	struct device *dev = &pdev->dev;
-> -	int rc, regloc;
-> +	struct cxl_mem *cxlm;
-> +	int rc, regloc, i;
->  
->  	rc = cxl_bus_acquire(pdev);
->  	if (rc != 0) {
-> @@ -41,15 +94,59 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  		return rc;
->  	}
->  
-> +	rc = pcim_enable_device(pdev);
-> +	if (rc)
-> +		return rc;
-> +
->  	regloc = cxl_mem_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC);
->  	if (!regloc) {
->  		dev_err(dev, "register location dvsec not found\n");
->  		return -ENXIO;
->  	}
-> +	regloc += 0xc; /* Skip DVSEC + reserved fields */
-> +
-> +	rc = -ENXIO;
-> +	for (i = regloc; i < regloc + 0x24; i += 8) {
-> +		u32 reg_lo, reg_hi;
-> +		u8 reg_type;
-> +
-> +		/* "register low and high" contain other bits */
-> +		pci_read_config_dword(pdev, i, &reg_lo);
-> +		pci_read_config_dword(pdev, i + 4, &reg_hi);
-> +
-> +		reg_type =
-> +			(reg_lo >> CXL_REGLOC_RBI_SHIFT) & CXL_REGLOC_RBI_MASK;
-> +
-> +		if (reg_type == CXL_REGLOC_RBI_MEMDEV) {
-> +			rc = 0;
-> +			cxlm = cxl_mem_create(pdev, reg_lo, reg_hi);
-> +			if (!cxlm)
-> +				rc = -ENODEV;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (rc)
-> +		return rc;
->  
-> +	pci_set_drvdata(pdev, cxlm);
-After below cleanup, not needed yet..
+> Hi Kan Liang,
+> 
+> I am trying to check this series on powerpc.
+> 
+> # perf mem --phys-data --data-page-size record <workload>
+> 
+> To my observation, some of the samples returned zero size and comes as ’N/A’ in the perf report
+> 
+> # perf mem --phys-data --data-page-size report
+> 
+> For fetching the page size, though initially there was a weak function added ( as arch_perf_get_page_size ) here:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/commit/?h=perf/core&id=51b646b2d9f84d6ff6300e3c1d09f2be4329a424
+> 
+> later I see it got removed here:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/commit/?h=perf/core&id=8af26be062721e52eba1550caf50b712f774c5fd
+> 
+> I picked kernel changes from git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git , or I am missing something ?
 
->  	return 0;
->  }
->  
-> +static void cxl_mem_remove(struct pci_dev *pdev)
-> +{
-> +	struct cxl_mem *cxlm;
-> +
-> +	cxlm = pci_get_drvdata(pdev);
-> +	if (!cxlm)
-> +		return;
-> +
-> +	kfree(cxlm);
+I believe all the kernel changes have been merged.
 
-There is bunch of unwinding here that I'd expect to see in error paths
-for probe but it's not there...  Which made me wonder.
-So pcim_iounmap_regions is a managed interface, why are call it by
-hand?  Same is true of the allocation of cxlm above.  So currently this
-remove isn't doing anything useful.
+According to the commit message of the recent changes, only Power/8xxx 
+is supported for power for now. I guess that may be the reason of some 
+'N/A's.
+https://lore.kernel.org/patchwork/cover/1345521/
 
-> +
-> +	pcim_iounmap_regions(pdev, ~0);
-> +	pci_set_drvdata(pdev, NULL);
+Thanks,
+Kan
 
-This hasn't been needed for a long time. Example of removal of similar...
-http://patchwork.ozlabs.org/project/netdev/patch/005801ceaec1$6b8d3320$42a79960$%25han@samsung.com/
- 
-> +}
-> +
->  static const struct pci_device_id cxl_mem_pci_tbl[] = {
->  	/* PCI class code for CXL.mem Type-3 Devices */
->  	{ PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
-> @@ -62,6 +159,7 @@ static struct pci_driver cxl_mem_driver = {
->  	.name			= KBUILD_MODNAME,
->  	.id_table		= cxl_mem_pci_tbl,
->  	.probe			= cxl_mem_probe,
-> +	.remove			= cxl_mem_remove,
->  };
->  
->  MODULE_LICENSE("GPL v2");
-> diff --git a/drivers/cxl/pci.h b/drivers/cxl/pci.h
-> index a8a9935fa90b..df222edb6ac3 100644
-> --- a/drivers/cxl/pci.h
-> +++ b/drivers/cxl/pci.h
-> @@ -17,4 +17,18 @@
->  
->  #define PCI_DVSEC_ID_CXL_REGLOC		0x8
->  
-> +/* BAR Indicator Register (BIR) */
-> +#define CXL_REGLOC_BIR_SHIFT 0
-> +#define CXL_REGLOC_BIR_MASK 0x7
-> +
-> +/* Register Block Identifier (RBI) */
-> +#define CXL_REGLOC_RBI_SHIFT 8
-> +#define CXL_REGLOC_RBI_MASK 0xff
-> +#define CXL_REGLOC_RBI_EMPTY 0
-> +#define CXL_REGLOC_RBI_COMPONENT 1
-> +#define CXL_REGLOC_RBI_VIRT 2
-> +#define CXL_REGLOC_RBI_MEMDEV 3
-> +
-> +#define CXL_REGLOC_ADDR_MASK 0xffff0000
-> +
->  #endif /* __CXL_PCI_H__ */
 
+> 
+> Thanks
+> Athira
+> 
+>>
+>> Kan Liang (3):
+>>   perf mem: Clean up output format
+>>   perf mem: Support data page size
+>>   perf tools: Add support for PERF_SAMPLE_CODE_PAGE_SIZE
+>>
+>> Stephane Eranian (3):
+>>   perf script: Add support for PERF_SAMPLE_CODE_PAGE_SIZE
+>>   perf report: Add support for PERF_SAMPLE_CODE_PAGE_SIZE
+>>   perf test: Add test case for PERF_SAMPLE_CODE_PAGE_SIZE
+>>
+>> tools/perf/Documentation/perf-mem.txt     |   3 +
+>> tools/perf/Documentation/perf-record.txt  |   3 +
+>> tools/perf/Documentation/perf-report.txt  |   1 +
+>> tools/perf/Documentation/perf-script.txt  |   2 +-
+>> tools/perf/builtin-mem.c                  | 111 +++++++++++-----------
+>> tools/perf/builtin-record.c               |   2 +
+>> tools/perf/builtin-script.c               |  13 ++-
+>> tools/perf/tests/sample-parsing.c         |   4 +
+>> tools/perf/util/event.h                   |   1 +
+>> tools/perf/util/evsel.c                   |  18 +++-
+>> tools/perf/util/evsel.h                   |   1 +
+>> tools/perf/util/hist.c                    |   2 +
+>> tools/perf/util/hist.h                    |   1 +
+>> tools/perf/util/perf_event_attr_fprintf.c |   2 +-
+>> tools/perf/util/record.h                  |   1 +
+>> tools/perf/util/session.c                 |   3 +
+>> tools/perf/util/sort.c                    |  26 +++++
+>> tools/perf/util/sort.h                    |   2 +
+>> tools/perf/util/synthetic-events.c        |   8 ++
+>> 19 files changed, 144 insertions(+), 60 deletions(-)
+>>
+>> -- 
+>> 2.25.1
+>>
+>>
+>>
+> 
