@@ -2,86 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 887AD2F3CC4
+	by mail.lfdr.de (Postfix) with ESMTP id 1238A2F3CC3
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406996AbhALVeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2437176AbhALVeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Jan 2021 16:34:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59910 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406940AbhALT6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:58:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 824A5206C3;
-        Tue, 12 Jan 2021 19:57:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610481469;
-        bh=z2DPQkl8j3oNPm3GhJ8TMRR7bamYAtVZ1voeLiWbMM8=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=NMenzqaWfNOWIcxf5UoRPKmW/Qc4ecdCxabu0U4W1H9MccT0Z9wNL6P73LKufTcKT
-         YnjLp7gRbSks9kfkPR3OvrAc7I2dd8q7fQLhmgNcQ2YmHgEyRFqkBq2M+NrG9otogt
-         8FqA+Xd1dqSkqDLjH5nZDEhFjoe74xygFmoPOuYnclBrKzjQCyturU24uwRcqTeijq
-         65tMAMwwYTvRRA0h5nEkj+mkeGrCD4XVl/PpAg005fXDhkF5glZk8E7tsxj/f103OU
-         K1N0kf0ccBZF0ZsVLmdQyX9fKlFtGBpF9Q+7XBqcYi68vN0z2dP6n1VUWZEnDBPTMU
-         VnELaShy2mpsg==
-Content-Type: text/plain; charset="utf-8"
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39422 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406963AbhALUBs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:01:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610481621;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YFXb4Pk6zkZotZ7QFJdBiZxTuzhscJ3Ufo92Lo64mQQ=;
+        b=afZOpGs9VO/ZBnxEWtJjPnwqaLvvK2JkTN6YTDLN8309EzJizjePxiWOgDvUJSZp5wUPj3
+        ydSRcYvsQIRUEH/GlRpmNlPGB9XIomqaqaAqxi5gbq8EutiFn13d9BApwI4OX7On79Qqbg
+        aHufEHDLMi2ImJA77rK5e1tuEvFlSqg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-576-FbFMmpNeNgW9eXHRb0esVQ-1; Tue, 12 Jan 2021 15:00:18 -0500
+X-MC-Unique: FbFMmpNeNgW9eXHRb0esVQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 632211DE0E;
+        Tue, 12 Jan 2021 20:00:11 +0000 (UTC)
+Received: from gigantic.usersys.redhat.com (helium.bos.redhat.com [10.18.17.132])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C5BB378206;
+        Tue, 12 Jan 2021 20:00:09 +0000 (UTC)
+From:   Bandan Das <bsd@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        vkuznets@redhat.com, joro@8bytes.org, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        jmattson@google.com, wanpengli@tencent.com, dgilbert@redhat.com,
+        mlevitsk@redhat.com
+Subject: Re: [PATCH 1/2] KVM: x86: Add emulation support for #GP triggered by VM instructions
+References: <20210112063703.539893-1-wei.huang2@amd.com>
+        <X/37QBMHxH8otaMa@google.com>
+Date:   Tue, 12 Jan 2021 15:00:09 -0500
+In-Reply-To: <X/37QBMHxH8otaMa@google.com> (Sean Christopherson's message of
+        "Tue, 12 Jan 2021 11:40:48 -0800")
+Message-ID: <jpgsg76kjsm.fsf@linux.bootlegged.copy>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201226140934.89856-1-konrad.dybcio@somainline.org>
-References: <20201226140934.89856-1-konrad.dybcio@somainline.org>
-Subject: Re: [PATCH] clk: qcom: mmcc-msm8974: Fix mmss_s0_axi clock
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Mike Turquette <mturquette@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        phone-devel@vger.kernel.org
-Date:   Tue, 12 Jan 2021 11:57:46 -0800
-Message-ID: <161048146613.3661239.17638637385414531449@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Konrad Dybcio (2020-12-26 06:09:34)
-> On boards without cont_splash the clock wouldn't get enabled.
-> Reparent it and strongly depend on the parent to make sure
-> it's accessible. Access to MMSS depends on mmss_s0_axi being
+Sean Christopherson <seanjc@google.com> writes:
+...
+>> -	if ((emulation_type & EMULTYPE_VMWARE_GP) &&
+>> -	    !is_vmware_backdoor_opcode(ctxt)) {
+>> -		kvm_queue_exception_e(vcpu, GP_VECTOR, 0);
+>> -		return 1;
+>> +	if (emulation_type & EMULTYPE_PARAVIRT_GP) {
+>> +		vminstr = is_vm_instr_opcode(ctxt);
+>> +		if (!vminstr && !is_vmware_backdoor_opcode(ctxt)) {
+>> +			kvm_queue_exception_e(vcpu, GP_VECTOR, 0);
+>> +			return 1;
+>> +		}
+>> +		if (vminstr)
+>> +			return vminstr;
+>
+> I'm pretty sure this doesn't correctly handle a VM-instr in L2 that hits a bad
+> L0 GPA and that L1 wants to intercept.  The intercept bitmap isn't checked until
+> x86_emulate_insn(), and the vm*_interception() helpers expect nested VM-Exits to
+> be handled further up the stack.
+>
+So, the condition is that L2 executes a vmload and #GPs on a reserved address, jumps to L0 - L0 doesn't
+check if L1 has asked for the instruction to be intercepted and goes on with emulating
+vmload and returning back to L2 ?
 
-It's not a dependency. The parent is supposed to be the actual parent
-clk that is directly upstream of the clk. I understand that some
-dependency isn't enabled but maybe that just means we need to write some
-enable bit when this driver probes instead?
+>>  	}
+>>  
+>>  	/*
+>> -- 
+>> 2.27.0
+>> 
 
-> up and alive.
->=20
-> Fixes: d8b212014e69 ("clk: qcom: Add support for MSM8974's multimedia clo=
-ck controller (MMCC)")
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> ---
->  drivers/clk/qcom/mmcc-msm8974.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/clk/qcom/mmcc-msm8974.c b/drivers/clk/qcom/mmcc-msm8=
-974.c
-> index 015426262d08..6220b62ece1e 100644
-> --- a/drivers/clk/qcom/mmcc-msm8974.c
-> +++ b/drivers/clk/qcom/mmcc-msm8974.c
-> @@ -2101,11 +2101,11 @@ static struct clk_branch mmss_s0_axi_clk =3D {
->                 .hw.init =3D &(struct clk_init_data){
->                         .name =3D "mmss_s0_axi_clk",
->                         .parent_names =3D (const char *[]){
-> -                               "mmss_axi_clk_src",
-> +                               "mmss_mmssnoc_axi_clk",
->                         },
->                         .num_parents =3D 1,
->                         .ops =3D &clk_branch2_ops,
-> -                       .flags =3D CLK_IGNORE_UNUSED,
-> +                       .flags =3D CLK_IGNORE_UNUSED | CLK_SET_RATE_PAREN=
-T | CLK_OPS_PARENT_ENABLE,
->                 },
->         },
