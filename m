@@ -2,98 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29EEB2F3286
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:04:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8802F32A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:07:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387622AbhALODK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:03:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727129AbhALODJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:03:09 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B972C061575;
-        Tue, 12 Jan 2021 06:02:29 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id 15so1506622pgx.7;
-        Tue, 12 Jan 2021 06:02:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0buxRjdYD4f8cL7qow2W4WpAsmOr6gsWW/0sTs03Xnk=;
-        b=m0sETLpDNbyN9tueISl+cM7CvSzSzYmByTddfxbFiMoebNN3LMAvH4FpFn6W9X1oKk
-         cN9jv0TIeaKpUNH0OUzEESRSO0j7czCUKq2C38IsrtffkP5nRPnuIp/WQNr4/eDi1xx0
-         SZ/EeFm4Zr32DGuDoZ4as/uC0YWerSkWka52L58p8p+pVDN3aUwiIjegJfCwEgrXtMrT
-         BohMUgb/dDqGI4YSy6g3+KE/qd/UsPrcmgR6hDMVqpuhCSbnv+F99ilNPoAWy99aR6dT
-         kk7MMsgyvwIn0sDiuY5oyXSZ+/QhJxaKPAMz6o4HWXjbuJdHd8ASj9Pv1IuCw3e2uFSy
-         E9nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0buxRjdYD4f8cL7qow2W4WpAsmOr6gsWW/0sTs03Xnk=;
-        b=MZyKP8vyU85M71tZKY26BEW5kgvWKEVmVlF0y8S55ut3cT87ZN2cXZyh3/Ea5+6nnF
-         s8OSyWSokAXxSRdIFYe8rZXR47FWCOoJRDuoxG5zKwZAK57PDnvbgu3pKwtffHgPoZB9
-         GLCE2Nlk6k8SpQRKsHV2pdIJsYQSXNMEy/5DXGODgudjpO2XaDHGEHQZfde54zgDrazX
-         ZsaTqW6jdvIiqg1J3+DJIjAgfTLtLt6ELn5kWyZmisZCwshc2pa9P0i6q2XbomchWoe/
-         uL6ju+aFzxb4npnKOt8t0nBCuEdOUnEQvMm2WmihOcepAfhyLj+eBL+C6fUY9sOnGMAi
-         WVwQ==
-X-Gm-Message-State: AOAM530YxJXRxQLOe471DeEvZJWNs7DZQHk6+Pn7lUD6ZINJWaDl2Mpu
-        zLW0XolytTWFIPXrSnbMzZCRteL3HjPEQpqSeRg=
-X-Google-Smtp-Source: ABdhPJym52oUWBpQ+zduyu/fJy5AQTwkx/FJL8unVPx9Tix4Z4Jt545pwu/2wmRtGFmrJqYjrCtAh7+muMgsEBk8dYQ=
-X-Received: by 2002:a62:5a86:0:b029:1ae:6b45:b6a9 with SMTP id
- o128-20020a625a860000b02901ae6b45b6a9mr4684461pfb.7.1610460148614; Tue, 12
- Jan 2021 06:02:28 -0800 (PST)
+        id S2388435AbhALOGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:06:17 -0500
+Received: from mga17.intel.com ([192.55.52.151]:17894 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727727AbhALOGR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 09:06:17 -0500
+IronPort-SDR: KPs+p94FnryyHSlb+O3gI7AJNWePi4gII+z9RBcD9UAOY8SV8UlWHTEYQ/SV/1Pku+lrKjAjLP
+ OSfP0/WQqinQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="157820138"
+X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
+   d="scan'208";a="157820138"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 06:04:30 -0800
+IronPort-SDR: 8Dd/RSc3xp6wapTxT4+kF6eCM2PnnkCGvOUlE2GeZC01qpNKszGMLreGrml+bLzxIguQ/MUn3i
+ 5sR8KX83q2Sg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
+   d="scan'208";a="464533456"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 12 Jan 2021 06:04:27 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 12 Jan 2021 16:04:26 +0200
+Date:   Tue, 12 Jan 2021 16:04:26 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Kyle Tso <kyletso@google.com>
+Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org,
+        hdegoede@redhat.com, badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/3] AMS, Collision Avoidance, and Protocol Error
+Message-ID: <20210112140426.GE2020859@kuha.fi.intel.com>
+References: <20210105163927.1376770-1-kyletso@google.com>
 MIME-Version: 1.0
-References: <202101122015.Umynt19J-lkp@intel.com>
-In-Reply-To: <202101122015.Umynt19J-lkp@intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 12 Jan 2021 16:03:17 +0200
-Message-ID: <CAHp75VdWzdjOuhamFSd5XUwnmuWF5gm=iQSXkDaWDFBtGNc-sQ@mail.gmail.com>
-Subject: Re: drivers/media/pci/intel/ipu3/ipu3-cio2.c:163:63: sparse: sparse:
- cast truncates bits from constant value (20000 becomes 0)
-To:     kernel test robot <lkp@intel.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        kbuild-all@lists.01.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105163927.1376770-1-kyletso@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 3:07 PM kernel test robot <lkp@intel.com> wrote:
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   a0d54b4f5b219fb31f0776e9f53aa137e78ae431
-> commit: 7b285f41f7376dc37e7fad1e803995fd39f42848 media: ipu3-cio2: Introduce CIO2_LOP_ENTRIES constant
-> date:   4 months ago
-> config: ia64-randconfig-s031-20210112 (attached as .config)
-> compiler: ia64-linux-gcc (GCC) 9.3.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # apt-get install sparse
->         # sparse version: v0.6.3-208-g46a52ca4-dirty
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7b285f41f7376dc37e7fad1e803995fd39f42848
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 7b285f41f7376dc37e7fad1e803995fd39f42848
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=ia64
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
->
-> "sparse warnings: (new ones prefixed by >>)"
-> >> drivers/media/pci/intel/ipu3/ipu3-cio2.c:163:63: sparse: sparse: cast truncates bits from constant value (20000 becomes 0)
+On Wed, Jan 06, 2021 at 12:39:24AM +0800, Kyle Tso wrote:
+> This series include previous patch "[v4] AMS and Collision Avoidance"
+> https://lore.kernel.org/r/20201217030632.903718-1-kyletso@google.com
+> and two more patches "Protocol Error handling" and "Respond Wait if...".
+> 
+> The patch "AMS and Collision Avoidance" in [v5] is the same as the one
+> in [v4] (only rebased to ToT).
+> 
+> The patch "Protocol Error handling" is based on PD3 6.8.1 to fix the
+> wrong handling.
+> 
+> The patch "Respond Wait if..." is to fix a conflict when 
+> DR/PR/VCONN_SWAP occurs just after the state machine enters Ready State.
+> 
+> Kyle Tso (3):
+>   usb: typec: tcpm: AMS and Collision Avoidance
+>   usb: typec: tcpm: Protocol Error handling
+>   usb: typec: tcpm: Respond Wait if VDM state machine is running
+> 
+>  drivers/usb/typec/tcpm/tcpm.c | 925 +++++++++++++++++++++++++++++-----
+>  include/linux/usb/pd.h        |   2 +
+>  include/linux/usb/tcpm.h      |   4 +
+>  3 files changed, 792 insertions(+), 139 deletions(-)
 
-Patch should be somewhere on its way to upstream.
+These are OK by me. The few comments I had were all minor nitpicks,
+but I would appreciate if you could fix them in any case. After that,
+FWIW:
+
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+
+thanks,
 
 -- 
-With Best Regards,
-Andy Shevchenko
+heikki
