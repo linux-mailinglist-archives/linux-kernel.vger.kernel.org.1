@@ -2,138 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6053B2F2ED7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:18:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55AE92F2EE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733015AbhALMRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:17:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53926 "EHLO mx2.suse.de"
+        id S1733121AbhALMSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:18:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55748 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732299AbhALMRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:17:32 -0500
+        id S1729397AbhALMSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:18:21 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610453805; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1610453853; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=2Yax5WNLXRTSjvCXHc37CSKXaoJG1nBrAta+imtbsRI=;
-        b=a5lBnBz4DinnwHGHPeJBBY7PyscE5k/wYljLZXw7zmIQ2DOpt6QvyqCpdE83sGGzFDTIE6
-        wzoVPz9fUMnpTW0wl6vHk/25fSusfg7cymBbgPxR6Ps1V9UlrUuaTFZKFPinLBRDdXDh/K
-        ynoO+frbGqdvAw5uV+W/9e6oDPxE9pI=
+        bh=eNi+94E66uio2OkQC2ZDsis31fIDKcqJUOSlzyn0qcA=;
+        b=aH1VBqKDJ+LW343MjZUDL4/nexSBTOxJpHWwEcH0uCC9uBnfpbA8oQSZ77gstr9a6l3HNj
+        go1kToU9kqspFfyzynv5cLMe3kw2EKZ+xvoWkvgenXHa/TCulKaI6sQ6cS4uRPLgGMddwS
+        l7wUJd2nwRxpD3FA79k8um0bpVmX6os=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 499BBB8EE;
-        Tue, 12 Jan 2021 12:16:45 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 13:16:43 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>, mike.kravetz@oracle.com,
-        akpm@linux-foundation.org, n-horiguchi@ah.jp.nec.com,
-        ak@linux.intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Yang Shi <shy828301@gmail.com>
-Subject: Re: [PATCH v3 1/6] mm: migrate: do not migrate HugeTLB page whose
- refcount is one
-Message-ID: <20210112121643.GP22493@dhcp22.suse.cz>
-References: <20210110124017.86750-1-songmuchun@bytedance.com>
- <20210110124017.86750-2-songmuchun@bytedance.com>
- <1b39d654-0b8c-de3a-55d1-6ab8c2b2e0ba@redhat.com>
- <c6eddfc6-8e15-4a28-36ff-64bfa65cca8e@redhat.com>
- <20210112112709.GO22493@dhcp22.suse.cz>
- <d00da0ca-8a2b-f144-b455-2887fd269ed7@redhat.com>
+        by mx2.suse.de (Postfix) with ESMTP id 5F9C5AE47;
+        Tue, 12 Jan 2021 12:17:33 +0000 (UTC)
+Subject: Re: [PATCH v2] xen/privcmd: allow fetching resource sizes
+To:     Roger Pau Monne <roger.pau@citrix.com>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Paul Durrant <paul.durrant@citrix.com>, amc96@cam.ac.uk,
+        andrew.cooper3@citrix.com, xen-devel@lists.xenproject.org
+References: <20210112115358.23346-1-roger.pau@citrix.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <2d853ee1-b671-78ad-f634-0fd1c4f7d2ce@suse.com>
+Date:   Tue, 12 Jan 2021 13:17:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d00da0ca-8a2b-f144-b455-2887fd269ed7@redhat.com>
+In-Reply-To: <20210112115358.23346-1-roger.pau@citrix.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="jYtKnRD9tmvDLXLmmkPIFC3p72jUfy0Qw"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 12-01-21 12:34:01, David Hildenbrand wrote:
-> On 12.01.21 12:27, Michal Hocko wrote:
-> > On Tue 12-01-21 12:11:21, David Hildenbrand wrote:
-> >> On 12.01.21 12:00, David Hildenbrand wrote:
-> >>> On 10.01.21 13:40, Muchun Song wrote:
-> >>>> If the refcount is one when it is migrated, it means that the page
-> >>>> was freed from under us. So we are done and do not need to migrate.
-> >>>>
-> >>>> This optimization is consistent with the regular pages, just like
-> >>>> unmap_and_move() does.
-> >>>>
-> >>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> >>>> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-> >>>> Acked-by: Yang Shi <shy828301@gmail.com>
-> >>>> ---
-> >>>>  mm/migrate.c | 6 ++++++
-> >>>>  1 file changed, 6 insertions(+)
-> >>>>
-> >>>> diff --git a/mm/migrate.c b/mm/migrate.c
-> >>>> index 4385f2fb5d18..a6631c4eb6a6 100644
-> >>>> --- a/mm/migrate.c
-> >>>> +++ b/mm/migrate.c
-> >>>> @@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
-> >>>>  		return -ENOSYS;
-> >>>>  	}
-> >>>>  
-> >>>> +	if (page_count(hpage) == 1) {
-> >>>> +		/* page was freed from under us. So we are done. */
-> >>>> +		putback_active_hugepage(hpage);
-> >>>> +		return MIGRATEPAGE_SUCCESS;
-> >>>> +	}
-> >>>> +
-> >>>>  	new_hpage = get_new_page(hpage, private);
-> >>>>  	if (!new_hpage)
-> >>>>  		return -ENOMEM;
-> >>>>
-> >>>
-> >>> Question: What if called via alloc_contig_range() where we even want to
-> >>> "migrate" free pages, meaning, relocate it?
-> >>>
-> >>
-> >> To be more precise:
-> >>
-> >> a) We don't have dissolve_free_huge_pages() calls on the
-> >> alloc_contig_range() path. So we *need* migration IIUC.
-> >>
-> >> b) dissolve_free_huge_pages() will fail if going below the reservation.
-> >> In that case we really want to migrate free pages. This even applies to
-> >> memory offlining.
-> >>
-> >> Either I am missing something important or this patch is more dangerous
-> >> than it looks like.
-> > 
-> > This is an interesting point. But do we try to migrate hugetlb pages in
-> > alloc_contig_range? isolate_migratepages_block !PageLRU need to be
-> 
-> I didn't test it so far (especially in the context of virtio-mem or
-> CMA), but have a TODO item on my long list of things to look at in the
-> future.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--jYtKnRD9tmvDLXLmmkPIFC3p72jUfy0Qw
+Content-Type: multipart/mixed; boundary="B1LoI9kgvEq0QWqZ5ZOnbTlbSLww2g5kl";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Roger Pau Monne <roger.pau@citrix.com>, linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org, Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>,
+ Paul Durrant <paul.durrant@citrix.com>, amc96@cam.ac.uk,
+ andrew.cooper3@citrix.com, xen-devel@lists.xenproject.org
+Message-ID: <2d853ee1-b671-78ad-f634-0fd1c4f7d2ce@suse.com>
+Subject: Re: [PATCH v2] xen/privcmd: allow fetching resource sizes
+References: <20210112115358.23346-1-roger.pau@citrix.com>
+In-Reply-To: <20210112115358.23346-1-roger.pau@citrix.com>
 
-I have looked around and it seems this would more work than just to
-allow the migration in a-c-r. migrate_huge_page_move_mapping resp.
-hugetlbfs_migrate_page would need to special case pool pages. Likely a
-non trivial work and potentially another land mine territory.
+--B1LoI9kgvEq0QWqZ5ZOnbTlbSLww2g5kl
+Content-Type: multipart/mixed;
+ boundary="------------E8CFA5CA18BF14542689ABC5"
+Content-Language: en-US
 
-> 
-> > marked as PageMovable AFAICS. This would be quite easy to implement but
-> > a more fundamental question is whether we really want to mess with
-> > existing pools for alloc_contig_range.
-> 
-> Can these pages fall onto ZONE_MOVABLE or even MIGRATE_CMA? If yes, we
-> really want to. And I think both is the case for "ordinary" huge pages
-> allocated via the buddy.
+This is a multi-part message in MIME format.
+--------------E8CFA5CA18BF14542689ABC5
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Yes movable hugetlb pages can sit in movable zone and CMA as well (see
-htlb_modify_alloc_mask).
- 
-> > Anyway you are quite right that this change has more side effects than
-> > it is easy to see while it doesn't really bring any major advantage
-> > other than the consistency.
-> 
-> Free hugetlbfs pages are special. E.g., they cannot simply be skipped
-> when offlining. So I don't think consistency actually really applies.
+On 12.01.21 12:53, Roger Pau Monne wrote:
+> Allow issuing an IOCTL_PRIVCMD_MMAP_RESOURCE ioctl with num =3D 0 and
+> addr =3D 0 in order to fetch the size of a specific resource.
+>=20
+> Add a shortcut to the default map resource path, since fetching the
+> size requires no address to be passed in, and thus no VMA to setup.
+>=20
+> This is missing from the initial implementation, and causes issues
+> when mapping resources that don't have fixed or known sizes.
+>=20
+> Signed-off-by: Roger Pau Monn=C3=A9 <roger.pau@citrix.com>
+> Cc: stable@vger.kernel.org # >=3D 4.18
 
-Well, currently pool pages are not migrateable but you are right that
-this is likely something that we will need to look into in the future
-and this optimization would stand in the way.
--- 
-Michal Hocko
-SUSE Labs
+Reviewed-by: Juergen Gross <jgross@suse.com>
+
+
+Juergen
+
+--------------E8CFA5CA18BF14542689ABC5
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------E8CFA5CA18BF14542689ABC5--
+
+--B1LoI9kgvEq0QWqZ5ZOnbTlbSLww2g5kl--
+
+--jYtKnRD9tmvDLXLmmkPIFC3p72jUfy0Qw
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/9k1wFAwAAAAAACgkQsN6d1ii/Ey/t
+TAf/bSNR706+IWIFGfbldW858fOvX2OZk0SEk8/VVvQ19exmbqLWpNVz7FKoe+vwD1Sy4dqvtozv
+xqgbwsXSWWQEODWvoZce4ffdmkWGZzxxY795AwfFMMlhpuqIUFGd1yQl1CLTJi/MVFd3KGm0ADok
+rGBxcblckAA6sZoV0oYyRtqpRNpy0rWvLl5J8jZsBLZD8xKSP3e8R0emEt2MeYRxtxNjHxVM+tHH
+p+YoksQBQIAa6NM19Z5+IQDUMNMiLC6NkXPUkKCD3jeN971TP1+YCncobUUAaNOaN5pYjBAm62nt
+S1yULIE/WrLa9vS8J+TvRNGZgX44YO3u/00Lk0pnsg==
+=hZk7
+-----END PGP SIGNATURE-----
+
+--jYtKnRD9tmvDLXLmmkPIFC3p72jUfy0Qw--
