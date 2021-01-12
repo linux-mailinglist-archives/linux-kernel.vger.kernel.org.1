@@ -2,107 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 500A52F38E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 157B02F38EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:33:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406406AbhALS3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 13:29:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406163AbhALS3M (ORCPT
+        id S2406123AbhALScV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 13:32:21 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:62363 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391612AbhALScU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 13:29:12 -0500
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EB79C061795;
-        Tue, 12 Jan 2021 10:28:32 -0800 (PST)
-Received: by mail-lj1-x22c.google.com with SMTP id y22so3930840ljn.9;
-        Tue, 12 Jan 2021 10:28:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2YD7WmNM8qnNwZubIsxZz9m/eBN1TOpp41xnsGgqsBA=;
-        b=byTKUlRzRnCEQMTcxu3/A7PtaLo3WmmNVgyQTKBV42/o8XdmBnxbv4hHcVkB4ikhfH
-         IIELx4zkK0upHMkYKk9r5cVRr3i0w0T6f7W9w0I1cVwKwg1GQBilWO11Kdw+kiO9AZBh
-         i/HI4AV9k9idzvQXjIeuJP2qleVf2FbyDKsekzLy8kmCfh6TqlyKavOmgotI5Q6jZUxn
-         B028k19ORfE4Tkr7FoqwUjAYlN0PYPOplIbF5IJTdSFLZDKZIbdnQ2KR9ieRIXDJLaLa
-         1XqHRfKy/2c/2A5mRvhOEBSEc72WGOmBdHjJ7hKumGXZAWIPMJL3HuWGt1loWFluXEKK
-         r6wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2YD7WmNM8qnNwZubIsxZz9m/eBN1TOpp41xnsGgqsBA=;
-        b=f68WI2e2XZhGLkb/UR3ObHR9nx+gZBR9YjjRR2aZbMV/iEWvBU7JdvRqdqWpACqHhv
-         XIipAk9Hmc4EeBD9BQ7Q81jXgojwl2n9/hPxdFSA8Gdzni12YcLyhlEo74GUSZIcre3l
-         ubnbkXQEqqjwUXXOSAfXt/sM60MZxnuhEJd0HdYiAc/7Cz1vu1pq6TSjvnRjsYiNj2Qx
-         BtZ8Lkghusd8xJyoQZJ/FcLLbZl8MNKrYs8xXdx2X0AYqWf2nf2JxsfVIvhTDFKKNHfL
-         cceFggLeeBeKmgKtNSZJz6m3ebbhO3jiiYkau7vVgJKeQc3RRSuZZf0IxS6mAvG9dD4L
-         MyaA==
-X-Gm-Message-State: AOAM530Nh3OW0zkGlojZ35TppQnEAsjzzyscdzCtE3n/1zt19IRP60Xn
-        cf5MCsBBGk36UCjpyvTTm8DQ2BZyDwbdew==
-X-Google-Smtp-Source: ABdhPJx3ml1Qc0rHyDgLf7XM2B6Waq12EH9xvzTE1a8E1Tc0QSWg8Kptf1dFz8Ka/LP4cDf7mSOMHA==
-X-Received: by 2002:a05:651c:cb:: with SMTP id 11mr206216ljr.509.1610476110465;
-        Tue, 12 Jan 2021 10:28:30 -0800 (PST)
-Received: from [10.0.0.127] (91-157-87-152.elisa-laajakaista.fi. [91.157.87.152])
-        by smtp.gmail.com with ESMTPSA id t28sm444828ljo.45.2021.01.12.10.28.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 10:28:29 -0800 (PST)
-Subject: Re: [PATCH] dmaengine: ti: k3-udma: Set rflow count for BCDMA split
- channels
-To:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210112141403.30286-1-vigneshr@ti.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-Message-ID: <dc598197-6aa0-f9f9-dadc-54d1e6fb7361@gmail.com>
-Date:   Tue, 12 Jan 2021 20:29:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Tue, 12 Jan 2021 13:32:20 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610476314; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=TUzx4xA1ScWYvWi9Xn7goti+UFU5enmnZ4wQmA91pBw=; b=D+fPG3HqmOxTcDBebUEm2igr4q4HsGToknW8KonVaXeU4x11RZHCrLZ4EHW6Uhv7RcdPUchb
+ Fu1Ll/OlMiB1V1DOqvEGu1GosSLjoob5pYpMaa2yXwGB++umE5mzycDdE5MnxZpo8ncF+fI+
+ y5ZRQWgjhcX21tc1QzpWOFf9eO0=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5ffdeb008fb3cda82f9f79b7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Jan 2021 18:31:28
+ GMT
+Sender: sidgup=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B21B8C433CA; Tue, 12 Jan 2021 18:31:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.10] (cpe-75-83-25-192.socal.res.rr.com [75.83.25.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E80B9C433ED;
+        Tue, 12 Jan 2021 18:31:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E80B9C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+Subject: Re: PROBLEM: Firmware loader fallback mechanism no longer works with
+ sendfile
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     mcgrof@kernel.org, rafael@kernel.org, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "psodagud@codeaurora.org" <psodagud@codeaurora.org>
+References: <7e6f44b1-a0d2-d1d1-9c11-dcea163f8f03@codeaurora.org>
+ <X/QJCgoLPhfECEmP@kroah.com>
+ <180bdfaf-8c84-6946-b46f-3729d4eb17cc@codeaurora.org>
+ <X/WSA7nmsUSrpsfr@kroah.com>
+ <62583aaa-d557-8c9a-5959-52c9efad1fe3@codeaurora.org>
+ <X/hv634I9JOoHZRk@kroah.com>
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+Message-ID: <1adf9aa4-ed7e-8f05-a354-57419d61ec18@codeaurora.org>
+Date:   Tue, 12 Jan 2021 10:31:26 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210112141403.30286-1-vigneshr@ti.com>
+In-Reply-To: <X/hv634I9JOoHZRk@kroah.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vignesh,
 
-On 1/12/21 4:14 PM, Vignesh Raghavendra wrote:
-> BCDMA RX channels have one flow per channel, therefore set the rflow_cnt
-> to rchan_cnt.
-> 
-> Without this patch, request for BCDMA RX channel allocation fails as
-> rflow_cnt is 0 thus fails to reserve a rflow for the channel.
+On 1/8/2021 6:44 AM, Greg KH wrote:
+> On Thu, Jan 07, 2021 at 02:03:47PM -0800, Siddharth Gupta wrote:
+>> On 1/6/2021 2:33 AM, Greg KH wrote:
+>>>>>> Since the binary attributes don't support splice_{read,write} functions the
+>>>>>> calls to splice_{read,write} used the default kernel_{read,write} functions.
+>>>>>> With the above change this results in an -EINVAL return from
+>>>>>> do_splice_from[4].
+>>>>>>
+>>>>>> This essentially means that sendfile will not work for any binary attribute
+>>>>>> in the sysfs.
+>>>>> Have you tried fixing this with a patch much like what we did for the
+>>>>> proc files that needed this?  If not, can you?
+>>>> I am not aware of this fix, could you provide me a link for reference? I
+>>>> will try it out.
+>>> Look at the series of commits starting at fe33850ff798 ("proc: wire up
+>>> generic_file_splice_read for iter ops") for how this was fixed in procfs
+>>> as an example of what also needs to be done for binary sysfs files.
+>> I tried to follow these fixes, but I am unfamiliar with fs code. I don't see
+>> the generic_file_splice_write function anymore on newer kernels, also AFAICT
+>> kernfs_ops does not define {read,write}_iter operations. If the solution is
+>> simple and someone could provide the patches I would be happy to test them
+>> out. If not, some more information about how to proceed would be nice.
+> Can you try this tiny patch out below?
+Sorry for the delay, I tried out the patch, but I am still seeing the 
+error. Please take a look at these logs with
+android running in the userspace[1]:
 
-Good catch, thank you!
+[   62.295056][  T249] remoteproc remoteproc1: powering up 
+xxxxxxxx.remoteproc-cdsp
+[   62.304138][  T249] remoteproc remoteproc1: Direct firmware load for 
+cdsp.mdt failed with error -2
+[   62.312976][  T249] remoteproc remoteproc1: Falling back to sysfs 
+fallback for: cdsp.mdt
+[   62.469748][  T394] ueventd: firmware: loading 'cdsp.mdt' for 
+'/devices/platform/soc/xxxxxxxx.remoteproc-cdsp/remoteproc/remoteproc1/cdsp.mdt'
+[   62.498700][  T394] ueventd: firmware: sendfile failed { 
+'/sys/devices/platform/soc/xxxxxxxx.remoteproc-cdsp/remoteproc/remoteproc1/cdsp.mdt', 
+'cdsp.mdt' }: Invalid argument
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Thanks,
+Sid
 
-> 
-> Fixes: 8844898028d4 ("dmaengine: ti: k3-udma: Add support for BCDMA channel TPL handling")
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> ---
->   drivers/dma/ti/k3-udma.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
-> index 298460438bb4..a1af59d901be 100644
-> --- a/drivers/dma/ti/k3-udma.c
-> +++ b/drivers/dma/ti/k3-udma.c
-> @@ -4305,6 +4305,7 @@ static int udma_get_mmrs(struct platform_device *pdev, struct udma_dev *ud)
->   		ud->bchan_cnt = BCDMA_CAP2_BCHAN_CNT(cap2);
->   		ud->tchan_cnt = BCDMA_CAP2_TCHAN_CNT(cap2);
->   		ud->rchan_cnt = BCDMA_CAP2_RCHAN_CNT(cap2);
-> +		ud->rflow_cnt = ud->rchan_cnt;
->   		break;
->   	case DMA_TYPE_PKTDMA:
->   		cap4 = udma_read(ud->mmrs[MMR_GCFG], 0x30);
-> 
-
--- 
-Péter
+[1]: 
+https://android.googlesource.com/platform/system/core/+/refs/heads/master/init/firmware_handler.cpp#57
+>
+> thanks,
+>
+> greg k-h
+>
+> diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+> index f277d023ebcd..113bc816d430 100644
+> --- a/fs/kernfs/file.c
+> +++ b/fs/kernfs/file.c
+> @@ -968,6 +968,8 @@ const struct file_operations kernfs_file_fops = {
+>   	.release	= kernfs_fop_release,
+>   	.poll		= kernfs_fop_poll,
+>   	.fsync		= noop_fsync,
+> +	.splice_read	= generic_file_splice_read,
+> +	.splice_write	= iter_file_splice_write,
+>   };
+>   
+>   /**
