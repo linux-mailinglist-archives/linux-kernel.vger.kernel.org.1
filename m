@@ -2,95 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 951672F379A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 157482F37A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:51:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404981AbhALRtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:49:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731303AbhALRtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:49:17 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2390846AbhALRuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:50:39 -0500
+Received: from relay02.th.seeweb.it ([5.144.164.163]:51053 "EHLO
+        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726387AbhALRui (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 12:50:38 -0500
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 93C2D23107;
-        Tue, 12 Jan 2021 17:48:36 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kzNmU-0072aN-89; Tue, 12 Jan 2021 17:48:34 +0000
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 5D1791F9F3;
+        Tue, 12 Jan 2021 18:49:54 +0100 (CET)
+Subject: Re: [PATCH 5/7] regulator: qcom-labibb: Implement short-circuit and
+ over-current IRQs
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        robh+dt@kernel.org, sumit.semwal@linaro.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org
+References: <20210109132921.140932-1-angelogioacchino.delregno@somainline.org>
+ <20210109132921.140932-6-angelogioacchino.delregno@somainline.org>
+ <20210111135745.GC4728@sirena.org.uk>
+ <6dee36e4-fc78-c21b-daf8-120ee44535a3@somainline.org>
+ <8115a574-ad43-d3c6-70d4-28c8a2f4a5f6@somainline.org>
+ <09d70d24-5d0d-f1cd-d99e-5c213c8ea98c@somainline.org>
+ <20210112172919.GD4646@sirena.org.uk>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <e872bc39-a941-d552-5145-49f40d6fa657@somainline.org>
+Date:   Tue, 12 Jan 2021 18:49:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210112172919.GD4646@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 12 Jan 2021 17:48:34 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Alexandru Elisei <alexandru.elisei@arm.com>
-Cc:     Eric Auger <eric.auger@redhat.com>, eric.auger.pro@gmail.com,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, drjones@redhat.com,
-        james.morse@arm.com, julien.thierry.kdev@gmail.com,
-        suzuki.poulose@arm.com, shuah@kernel.org, pbonzini@redhat.com
-Subject: Re: [PATCH 8/9] KVM: arm64: vgic-v3: Expose GICR_TYPER.Last for
- userspace
-In-Reply-To: <fe0a3415-0c7b-be13-6438-89e82fe4c281@arm.com>
-References: <20201212185010.26579-1-eric.auger@redhat.com>
- <20201212185010.26579-9-eric.auger@redhat.com>
- <fe0a3415-0c7b-be13-6438-89e82fe4c281@arm.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <1a06be3153927f1051fcbc87f0e52e98@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: alexandru.elisei@arm.com, eric.auger@redhat.com, eric.auger.pro@gmail.com, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, drjones@redhat.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, shuah@kernel.org, pbonzini@redhat.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-12 17:28, Alexandru Elisei wrote:
-> Hi Eric,
+Il 12/01/21 18:29, Mark Brown ha scritto:
+> On Mon, Jan 11, 2021 at 10:06:18PM +0100, AngeloGioacchino Del Regno wrote:
 > 
-> On 12/12/20 6:50 PM, Eric Auger wrote:
->> Commit 23bde34771f1 ("KVM: arm64: vgic-v3: Drop the
->> reporting of GICR_TYPER.Last for userspace") temporarily fixed
->> a bug identified when attempting to access the GICR_TYPER
->> register before the redistributor region setting but dropped
->> the support of the LAST bit. This patch restores its
->> support (if the redistributor region was set) while keeping the
->> code safe.
+>> ...which was already a requirement before I touched it.
+>> Now, this leaves two options here:
+>> 1. Keep the of_get_irq way, or
+>> 2. Move the interrupts, change the documentation (currently, only
+>> pmi8998.dtsi) and also fix pmi8998.dtsi to reflect the new changes.
 > 
-> If I understand your patch correctly, it is possible for the 
-> GICR_TYPER.Last bit
-> to be transiently 1 if the register is accessed before all the 
-> redistributors
-> regions have been configured.
+>> I am asking before proceeding because I know that changing a schema that is
+>> already set sometimes gets "negated".
 > 
-> Arm IHI 0069F states that accesses to the GICR_TYPER register are RO. I 
-> haven't
-> found exactly what RO means (please point me to the definition if you 
-> find it in
-> the architecture!), but I assume it means read-only and I'm not sure 
-> how correct
-> (from an architectural point of view) it is for two subsequent reads of 
-> this
-> register to return different values. Maybe Marc can shed some light on 
-> this.
+> Well, if the binding isn't actually used changing it is a possibility.
+> If we keep the current binding you can still continue to use
+> of_get_irq() even from within the probe function, you know the name of
+> the node it's supposed to be in so you don't need to iterate or anything
+> to get it so not really any reason to use the callback.
+> 
 
-RO = Read-Only indeed. Not sure that's documented anywhere in the 
-architecture,
-but this is enough of a well known acronym that even the ARM ARM doesn't 
-feel
-the need to invent a new definition for it.
+I had understood that you didn't want to see of_* functions used in the 
+driver, that's why I was hesitant about the first one.
 
-As for your concern, I don't think it is a problem to return different 
-values
-if the HW has changed in between. This may need to be documented though.
+I would be more for keeping the binding (that, by the way, is not really 
+used, the interrupts weren't implemented at all in the driver before me 
+doing that) for just one reason, which I'm going to explain with "sort 
+of" pseudocode (just to be shorter):
+
+EXAMPLE 1:
+labibb {
+     interrupts = <0 0>, <1 0>, <2 0>, <3 0>;
+     interrupt-names = "lab-sc", "lab-ocp", "ibb-sc", "ibb-ocp";
+     lab { };
+     ibb { };
+};
+
+for (i = 0; i < max_vregs; i++) {
+     short_circuit = platform_get_irq(pdev, i * 2);
+     overcurrent = platform_get_irq(pdev, ((i * 2) + 1));
+}
+
+EXAMPLE 2:
+
+snprintf strings for {lab,ibb}_{shortcircuit,overcurrent}, use 
+platform_get_irq_byname
+(pdev, blah);
+
+EXAMPLE 3:
+labibb {
+
+     lab {
+       interrupts = <0 0>, <1 0>;
+
+
+       interrupt-names = "sc", "ocp";
+
+     };
+
+     ibb {
+
+       interrupts = <2 0>, <3 0>;
+
+
+       interrupt-names = "sc", "ocp";
+
+
+     };
+
+};
+
+
+
+for (i = 0; i < max_vregs; i++) {
+
+     short_circuit = of_irq_get_byname(node, "sc");
+
+     overcurrent = of_irq_get_byname(node, "ocp");
+
+}
+
+
+First of all, in the *EXAMPLE 1*, we may be declaring interrupts for 
+both LAB and IBB, but actually disabling one of the two regulators: in 
+this specific case (I have no idea why anyone would want to do that, but 
+evaluating all the cases anyway) the human readability would be way 
+lower, in my opinion, as that'd add a possible layer of confusion.
+Also, I don't really like having to preallocate an array of chars and 
+snprintf names here and there (EXAMPLE 2) on the fly: in my eyes, it 
+looks a bit of a mess, but that's a highly personal opinion, many may 
+disagree.
+
+In *EXAMPLE 3* everything looks more human readable and, in some way, 
+less error-prone, as we can just use two fixed strings and that's it, 
+without multiplying this and adding that.
+
+
+I would go for keeping the current binding for the aforementioned 
+reasons. Before I go on sending a V2, I would like to know your opinion.
+Do you agree?
 
 Thanks,
-
-        M.
--- 
-Jazz is not dead. It just smells funny...
+-- Angelo
