@@ -2,133 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 419112F2DF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:33:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C542F2DF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728486AbhALLdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 06:33:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728144AbhALLdG (ORCPT
+        id S1728876AbhALLeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:34:10 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:53125 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726330AbhALLeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:33:06 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF97C061575;
-        Tue, 12 Jan 2021 03:32:25 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id dk8so1934870edb.1;
-        Tue, 12 Jan 2021 03:32:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8Itw7Iqb4CKG85NKNT+SCan+dDCLWRY6hWBAQ4hMnJc=;
-        b=J8hBndB4qSsaiPyCsjidck82eOuN3NM74IKPNWD56FfpcdDyZ2XtuAhv76YVDyUtVs
-         IC00AtWsVcaIapNgdXQ53OvYa9gF1oSxm1TkbXfW6h7nbVz/xGeY6wPx4vgpEPGO8ZIP
-         3AprwnZV88HJHZzci51G8FAg7pVmKc+VyZ8+kqGlfLwsL+9bkHVIL0IjIwCfsk/eiP6k
-         XCO49B9OiFImC5es6A4ZMicySci7luFATQ/k/Z4rZtT1fV9/ZkbvFlY8/KzpYGpRc48o
-         WEe2dd+0CAPNPADOaoOTyOTgZFUJz/jxXFeZNt721VfhDRhVy0JxoTRSgnFgpmn63Gko
-         Qh/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=8Itw7Iqb4CKG85NKNT+SCan+dDCLWRY6hWBAQ4hMnJc=;
-        b=LTpNP/qPDl+cNAhytOr9LQ8NeDNmFdUJfFryCNEHBxtncprb+CHpTtoaGr7y1G090t
-         QwvPtbyi8ni/VgsKS8rlaX7QQXxahn60mac2U0O9iAGsO1Mwrz03SIf89jrvGn+UQbJ8
-         zt+lbFl92Lc3shNOFfT7Ooz1odrzui818ngQ2vUSKALZwHqh8x2ayapcE/TM6BoNyilu
-         GPUIDswcslEDpFo3HGc0eYoIP1cBGKdlqls8b6CtEpzJnfLVF+D3/oDblwi9qwGQXpL1
-         B+oVWcYvHpTNq8YWbI2A5OwImHV0C4czZJ32PdPRqCrd1zlpdrmykIJjIh7rurBl3k2H
-         I6Hg==
-X-Gm-Message-State: AOAM53009mF9TsEdMkgdpOdtiq9HpmsYx7bIINjMCn618Ae2Q9BJWVy9
-        xATexlz9HmklTYP+jCdGOKc=
-X-Google-Smtp-Source: ABdhPJwdXaX/tjzpovrurNwgVRIiQAkcPLLK76mgq5Cp2NajeS+zH4fPZH61v/8lZ6GDuTHCL8y4aw==
-X-Received: by 2002:a50:fd10:: with SMTP id i16mr3052047eds.331.1610451144573;
-        Tue, 12 Jan 2021 03:32:24 -0800 (PST)
-Received: from ubuntu-laptop (ip5f5bfcff.dynamic.kabel-deutschland.de. [95.91.252.255])
-        by smtp.googlemail.com with ESMTPSA id k23sm1064441ejs.100.2021.01.12.03.32.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 12 Jan 2021 03:32:24 -0800 (PST)
-Message-ID: <e5213ef0c3d0040903db92c84abd538ab860ed5b.camel@gmail.com>
-Subject: Re: [PATCH 2/2] scsi: ufs: Protect PM ops and err_handler from user
- access through sysfs
-From:   Bean Huo <huobean@gmail.com>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        rjw@rjwysocki.net, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Nitin Rawat <nitirawa@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Tue, 12 Jan 2021 12:32:22 +0100
-In-Reply-To: <9d74b57f9a26878705b7162a36b2bceb@codeaurora.org>
-References: <1609595975-12219-1-git-send-email-cang@codeaurora.org>
-         <1609595975-12219-3-git-send-email-cang@codeaurora.org>
-         <80a15afab8024d0b61d312b57585c9322ac91958.camel@gmail.com>
-         <7d49c1dfc3f648c484076f3c3a7f4e1e@codeaurora.org>
-         <1514403adf486ac8069253c09f45b021bad32e00.camel@gmail.com>
-         <f814b71d1d4ea87a72df4851a8190807@codeaurora.org>
-         <cb388d8ea15b2c80a072dec74d9ededecb183a08.camel@gmail.com>
-         <e69bd5a6b73d5c652130bf4fa077aac0@codeaurora.org>
-         <606774efd4d89f0ea78cefeb428cc9e1@codeaurora.org>
-         <146b46a5c38f4582a9a8e6df1d87cdfc0684f549.camel@gmail.com>
-         <fa0e976387070c64752c972d32ce15df@codeaurora.org>
-         <976641f42211af23d90464d0c4841cc40740b0d7.camel@gmail.com>
-         <7f193fe5abfb41aa72d17f7884cbd113@codeaurora.org>
-         <6eaa5c51c0b17968e0169b8a16bdbfa4934af5d8.camel@gmail.com>
-         <9d74b57f9a26878705b7162a36b2bceb@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Tue, 12 Jan 2021 06:34:09 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610451228; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=PwKYlg6+zfHY5jZuggieGsUBveo3C3f0CdcDg4Doxeo=; b=AX3SOda6KN9/t/s7hgFO1nxLCl0ORAgfTZBbYusNjPPT3X2iZr9Q7/3KDUitg2cLtlTCP7QY
+ 0cEU3oCvyN5IVtGv6eJUxWfyC9TQg2tH8Lbf5W68CLfaUAjjrWUNeEqfrGW9WKfniKYQ1Xey
+ jLdPQJINWUbEn6LUeyLtwD0IvYI=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5ffd8902c88af0610730eb8d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Jan 2021 11:33:22
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 15700C433C6; Tue, 12 Jan 2021 11:33:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AD082C433C6;
+        Tue, 12 Jan 2021 11:33:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AD082C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Michal Kubecek <mkubecek@suse.cz>
+Cc:     linux-wireless@vger.kernel.org,
+        Mordechay Goodstein <mordechay.goodstein@intel.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.de>,
+        Arjen de Korte <suse+build@de-korte.org>,
+        Luca Coelho <luciano.coelho@intel.com>
+Subject: Re: regression in iwlwifi: page fault in iwl_dbg_tlv_alloc_region() (commit ba8f6f4ae254)
+References: <20201228115814.GA5880@lion.mk-sys.cz>
+Date:   Tue, 12 Jan 2021 13:33:14 +0200
+In-Reply-To: <20201228115814.GA5880@lion.mk-sys.cz> (Michal Kubecek's message
+        of "Mon, 28 Dec 2020 12:58:14 +0100")
+Message-ID: <87v9c2qtj9.fsf@tynnyri.adurom.net>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-01-12 at 08:45 +0800, Can Guo wrote:
-> > > > > to
-> > > > > talk to UFS, OCP can happen on VCCQ/VCCQ2. This leads to
-> > > > > system
-> > > > > CRASH
-> > > > > too.
-> > > > 
-> > > > the same as above, share the crash log.
-> > > > 
-> > > 
-> > > If you have hand-on experiences on NoC and/or OCP issues, you
-> > > won't
-> > > ask
-> > > for the crash log. The tricky parts about critial NoC and OCP
-> > > issues
-> > > is
-> > 
-> > OK, interesting. would you tell me which register access node in
-> > ufs-
-> > sysfs.c can trigger this crash? let me verify your statement.
-> > 
-> > 
-> 
-> I believe I have explained enough to prove we need this change.
-> 
-> If you are really interested in NoC and OCP, feel free to ping me
-> on teams, I will show you how to trigger one and what is it like
-> on my setup.
-> 
-> Can Guo.
+(adding luca)
 
-Ok, I no meant to stop or slow down your patch merging,
-meant to avoid redundant instruction cycles.
+Michal Kubecek <mkubecek@suse.cz> writes:
 
-Avri and Stanley have been convinced. let it go at that and merge.
+> FYI, there is a regression in iwlwifi driver caused by commit
+> ba8f6f4ae254 ("iwlwifi: dbg: add dumping special device memory")
+> reported at
+>
+>   https://bugzilla.kernel.org/show_bug.cgi?id=210733
+>   https://bugzilla.suse.com/show_bug.cgi?id=1180344
+>
+> The problem seems to be an attempt to write terminating null character
+> into a string which may be read only. There is also a proposed fix.
 
-Thanks,
-Bean
+Can someone submit a proper patch, please? See instructions below how to
+submit.
 
+And please add Fixes tag to the commit log:
+
+Fixes: ba8f6f4ae254 ("iwlwifi: dbg: add dumping special device memory")
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
