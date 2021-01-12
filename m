@@ -2,96 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AA252F3DF0
+	by mail.lfdr.de (Postfix) with ESMTP id 769F82F3DF2
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389412AbhALV4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:56:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49198 "EHLO
+        id S2393687AbhALV4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 16:56:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387474AbhALV4W (ORCPT
+        with ESMTP id S2389967AbhALV4X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 16:56:22 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB351C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:55:41 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id o19so5684470lfo.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:55:41 -0800 (PST)
+        Tue, 12 Jan 2021 16:56:23 -0500
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81079C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:55:43 -0800 (PST)
+Received: by mail-ot1-x335.google.com with SMTP id x13so3807895oto.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:55:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=391/aBiA2qochS6pTL8d1JkuyejrSRQMbWVrhMmzLt4=;
-        b=ZeUW+1KZ7ytFAsajUvvMyuN2NCPY10FGts1P2BzghpaXEX3swAyDSiTYsoGa3AhWHI
-         Q2Wxu7FmcMBQCZku/xesxcNmU3SNmg44700bqnq+/UIiLR618puVTmfY8J8gk8fDNPj3
-         Nm434rNrraYgh8Dz+YMyTwPUCEpXjdSKZTtbc=
+        bh=znljSH1AVX8WCZj65lTt4Z1+9uZGjTLRkQMrZFvuyb0=;
+        b=CV4VfIRWfi0R9/UOm+paur3SzGdcvRbnkHekd5JubxUHCQAkXkIK2Z9cPb8PyhpTvZ
+         haIsTianWtYzprVnfWkrnh82ZIrr166EBK7zYtipvKQ5n9NNGntN7JLbKaq4gZJ948xt
+         nN+TjGiXHKayMml9rDHdyTDexB6e+r6R6G7CBHE1lI5H4h4iKTSaHZCrknbDrNv0qjXu
+         w0iqKcPKP2cg8Ua4vQsnKKJJoboI9vZH/xTWJJy4AcWJx0Fiaj46mMyBV/igT4sYxqcb
+         VLTYIN/3uOEIVFlTkSCJjPKOqMpP+3QNeyPBUqcxB0n6+PGLbBGrCFnrA3DybcUqRzK1
+         avFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=391/aBiA2qochS6pTL8d1JkuyejrSRQMbWVrhMmzLt4=;
-        b=W6VeO0E9lVs8vUeHWt5tIoZf6DDfNoSoJos5/MTestG9bg7ZgtTVbBntboSGO64aYu
-         iMKR24xPfA+MEgVyQng5Au05jXnBbZNiUbDQEEWVRPuznFVgjlInQcPMX+z/ZSvieLJ7
-         8a4uzoIdes/0SpwNBb/NeUTva5e1s1jjgjA9KMSyvr3sYstDv1hAWSwrCOCyz3MUWj2f
-         lFoK/remPBc5v+tXmLt5Ref2ABYe0XsasgKs8m0iKJxqd/kfbyf0pIsk9iJwtCyqTgb2
-         ypfg9IMCwEsq1x6Mnbk4Y4d7d/FfeVSYKaidEqoKloTQ0iu68+2/aJritejgG6oZ437t
-         FmKg==
-X-Gm-Message-State: AOAM532taCip7/CDZct0zJF8nl7ZNU4wJd9PXUrvwpBRW8fPU60ycPe8
-        aNFBjwowxsj8C2rWUIig+2f+GgJAILlBSw==
-X-Google-Smtp-Source: ABdhPJzMe3jX0N9ic8HJGDr6E5eSp24+tcYTttBa6k5/HflfzHAjMtqE+C6r50CverOnkMsMtyt1AQ==
-X-Received: by 2002:ac2:50d0:: with SMTP id h16mr392980lfm.300.1610488539865;
-        Tue, 12 Jan 2021 13:55:39 -0800 (PST)
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com. [209.85.208.170])
-        by smtp.gmail.com with ESMTPSA id k10sm493148ljg.13.2021.01.12.13.55.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 13:55:39 -0800 (PST)
-Received: by mail-lj1-f170.google.com with SMTP id e7so205495ljg.10
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:55:38 -0800 (PST)
-X-Received: by 2002:a2e:6f17:: with SMTP id k23mr525749ljc.411.1610488538323;
- Tue, 12 Jan 2021 13:55:38 -0800 (PST)
+        bh=znljSH1AVX8WCZj65lTt4Z1+9uZGjTLRkQMrZFvuyb0=;
+        b=DqPCLDTfGAs8h3GHSeDFjCUVkquoclAcqRRSPYEvp0yreaJm9Htpi8+8ZyCrqn0VAX
+         gIBBd9qaPmxnYYGrp4HloTgj6cqRpoBsUMFV8Dt6fjUAHlGXIb/j+xqBCoh4lFkMKc2c
+         vgIrxVpVidw68LbRmiUiQ+dhk4HVzPRW3ugOIUMJ7rT6H/Kx6s+Lu7BzmoaIg4Y3w9yX
+         mmNIBz0iShiDJsZ0iV+/JACya7XDooYiykHeT98e0cxAKIGiiMVWY93vPf5U9bTcocqp
+         lhVzqmnbdh7TgLad+Xq1yQKl9pVW0o0rg62IPhzwum2sUHEzPrRweLezYPea1vM/fGhL
+         5bsA==
+X-Gm-Message-State: AOAM531SATR42LfU6sTmbTiiW0RV+tqBRey7U8lJ7DYPMSLU0QfFsBrF
+        VCTMyzMrXV2SP8G+6hgsavXWUUCU6pLPoLNFZZo=
+X-Google-Smtp-Source: ABdhPJwR/ymc04CZJMQdWGDMKno7UUdM4OLE4UWCwA6cNKKLq9gjW0kQ1EOAWWo6yQOox74aWqAH8fBH3/5czIA5ZxE=
+X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr1050326ote.132.1610488542949;
+ Tue, 12 Jan 2021 13:55:42 -0800 (PST)
 MIME-Version: 1.0
-References: <20210108171517.5290-1-will@kernel.org> <CAHk-=wg3UkUdiTbqWFx3zBLXv9VJHuNZAa5QyDvXiSmD4gX94A@mail.gmail.com>
- <20210111142402.6euyktmcnpemanf7@box> <CAHk-=whYs9XsO88iqJzN6NC=D-dp2m0oYXuOoZ=eWnvv=5OA+w@mail.gmail.com>
- <20210112214759.GC10434@willie-the-truck>
-In-Reply-To: <20210112214759.GC10434@willie-the-truck>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 12 Jan 2021 13:55:22 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wi4tws9Haoccs+_D841tAh+5TdvdZyX+0T6gOKV_Fd3SA@mail.gmail.com>
-Message-ID: <CAHk-=wi4tws9Haoccs+_D841tAh+5TdvdZyX+0T6gOKV_Fd3SA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] Create 'old' ptes for faultaround mappings on
- arm64 with hardware access flag
-To:     Will Deacon <will@kernel.org>
-Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Hugh Dickins <hughd@google.com>,
-        Android Kernel Team <kernel-team@android.com>
+References: <1610481442-6606-1-git-send-email-jrdr.linux@gmail.com>
+In-Reply-To: <1610481442-6606-1-git-send-email-jrdr.linux@gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 12 Jan 2021 16:55:31 -0500
+Message-ID: <CADnq5_OtfqEHXopb=CiY7YQ4otGoR_DUF8Sirv0Yob=Fe4Nv+A@mail.gmail.com>
+Subject: Re: [PATCH] drm: amdgpu: pm: Mark vangogh_clk_dpm_is_enabled() as static
+To:     Souptick Joarder <jrdr.linux@gmail.com>
+Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        Huang Rui <ray.huang@amd.com>,
+        "Quan, Evan" <evan.quan@amd.com>,
+        "Lazar, Lijo" <lijo.lazar@amd.com>, Jinzhou.Su@amd.com,
+        Xiaomeng.Hou@amd.com,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 1:48 PM Will Deacon <will@kernel.org> wrote:
+On Tue, Jan 12, 2021 at 3:23 PM Souptick Joarder <jrdr.linux@gmail.com> wrote:
 >
-> > And then if somebody actually needs to pass in "modified fault state"
-> > (ie that whole "I'm doing fault-around, so I'll use multiple
-> > addresses") they'd never modify the address in the fault info, they'd
-> > just pass the address as an explicit argument (like most cases already
-> > do - the "change addr or flags in vmf" is actually already _fairly_
-> > rare).
+> kernel test robot throws below warnings ->
 >
-> Alright then, I'll take another crack at this for v3 and see how far I
-> get.
+> drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:594:6:
+> warning: no previous prototype for 'vangogh_clk_dpm_is_enabled'
+> [-Wmissing-prototypes]
+> drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:594:6:
+> warning: no previous prototype for function 'vangogh_clk_dpm_is_enabled'
+> [-Wmissing-prototypes]
+>
+> Mark vangogh_clk_dpm_is_enabled() as static.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
 
-But please do keep it as a separate patch, and if it turns out to be
-ugly for whatever reason, treat it as just a "maybe that would help"
-suggestion rather than anything stronger..
+Applied.  Thanks!
 
-           Linus
+Alex
+
+
+> ---
+>  drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+> index 75ddcad..3ffe56e 100644
+> --- a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+> @@ -610,7 +610,7 @@ static int vangogh_get_profiling_clk_mask(struct smu_context *smu,
+>         return 0;
+>  }
+>
+> -bool vangogh_clk_dpm_is_enabled(struct smu_context *smu,
+> +static bool vangogh_clk_dpm_is_enabled(struct smu_context *smu,
+>                                 enum smu_clk_type clk_type)
+>  {
+>         enum smu_feature_mask feature_id = 0;
+> --
+> 1.9.1
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
