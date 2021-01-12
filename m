@@ -2,201 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9667D2F25EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 011A42F25F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729621AbhALCAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 21:00:02 -0500
-Received: from foss.arm.com ([217.140.110.172]:38868 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726076AbhALCAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 21:00:02 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3A293101E;
-        Mon, 11 Jan 2021 17:59:16 -0800 (PST)
-Received: from net-arm-thunderx2-02.shanghai.arm.com (net-arm-thunderx2-02.shanghai.arm.com [10.169.208.215])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A70F83F70D;
-        Mon, 11 Jan 2021 17:59:11 -0800 (PST)
-From:   Jianlin Lv <Jianlin.Lv@arm.com>
-To:     catalin.marinas@arm.com, will@kernel.org, maz@kernel.org,
-        keescook@chromium.org, vincenzo.frascino@arm.com,
-        mark.rutland@arm.com, kristina.martsenko@arm.com,
-        dbrazdil@google.com, samitolvanen@google.com, broonie@kernel.org,
-        hayashi.kunihiko@socionext.com, ardb@kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Jianlin.Lv@arm.com, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: rename S_FRAME_SIZE to PT_REGS_SIZE
-Date:   Tue, 12 Jan 2021 09:58:13 +0800
-Message-Id: <20210112015813.2340969-1-Jianlin.Lv@arm.com>
-X-Mailer: git-send-email 2.25.1
+        id S1729269AbhALCB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 21:01:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25851 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725957AbhALCB1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 21:01:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610416801;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OavUnJ3v/lGFi5ijff6RJv5HrBBprqBfJamMYtY2KXQ=;
+        b=N8G1GiaXgoTUD/i9sM43KI8SqqlbwGZ3ULwu9IUK1jqn/4MIUSaG2pyoVdfsNxCIIWsvHe
+        4609oUqCZzHxlqSq7DQTu7/pWXJtzjLf83XNl7RJKE+R1OVhRHS6U0yYEPOOlb0dE9I5jm
+        RLQub4sqghViB/oCbvTKwZ9PEbpBbQU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-296-H8oABsysMYWAmo0_0k7Rmw-1; Mon, 11 Jan 2021 20:59:57 -0500
+X-MC-Unique: H8oABsysMYWAmo0_0k7Rmw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EA7321009456;
+        Tue, 12 Jan 2021 01:59:55 +0000 (UTC)
+Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B0CF51349A;
+        Tue, 12 Jan 2021 01:59:54 +0000 (UTC)
+Date:   Mon, 11 Jan 2021 19:59:52 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH v3] x86/entry: emit a symbol for register restoring thunk
+Message-ID: <20210112015952.jdystnwkvuxsrwa2@treble>
+References: <20210106015810.5p6crnh7jqtmjtv4@treble>
+ <20210111203807.3547278-1-ndesaulniers@google.com>
+ <20210112003839.GL25645@zn.tnic>
+ <CAFP8O3+uEE4Lity-asyFLN6_+8qRUD3hgcZVapXwk6EfmGM+DA@mail.gmail.com>
+ <20210112010010.GA8239@zn.tnic>
+ <CAKwvOdmGS97e4Rj_oW+RnkYAMjycTFQiiPJAfCvKTdxgv2KfEA@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKwvOdmGS97e4Rj_oW+RnkYAMjycTFQiiPJAfCvKTdxgv2KfEA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-S_FRAME_SIZE is the size of the pt_regs structure, no longer the size of
-the kernel stack frame, the name is misleading. In keeping with arm32,
-rename S_FRAME_SIZE to PT_REGS_SIZE.
+On Mon, Jan 11, 2021 at 05:13:16PM -0800, Nick Desaulniers wrote:
+> On Mon, Jan 11, 2021 at 5:00 PM Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > On Mon, Jan 11, 2021 at 04:41:52PM -0800, Fāng-ruì Sòng wrote:
+> > > To be fair: we cannot use
+> >
+> > Who's "we"?
+> >
+> > > .L-prefixed local because of the objtool limitation.
+> >
+> > What objtool limitation? I thought clang's assembler removes .text which
+> > objtool uses. It worked fine with GNU as so far.
+> 
+> I don't think we need to completely stop using .L prefixes in the
+> kernel, just this one location since tracking the control flow seems a
+> little tricky for objtool. Maybe Josh can clarify more if needed?
 
-Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
----
- arch/arm64/kernel/asm-offsets.c               |  2 +-
- arch/arm64/kernel/entry-ftrace.S              | 12 ++++++------
- arch/arm64/kernel/entry.S                     | 14 +++++++-------
- arch/arm64/kernel/probes/kprobes_trampoline.S |  6 +++---
- 4 files changed, 17 insertions(+), 17 deletions(-)
+Right.  In the vast majority of cases, .L symbols are totally fine.
 
-diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
-index f42fd9e33981..301784463587 100644
---- a/arch/arm64/kernel/asm-offsets.c
-+++ b/arch/arm64/kernel/asm-offsets.c
-@@ -75,7 +75,7 @@ int main(void)
-   DEFINE(S_SDEI_TTBR1,		offsetof(struct pt_regs, sdei_ttbr1));
-   DEFINE(S_PMR_SAVE,		offsetof(struct pt_regs, pmr_save));
-   DEFINE(S_STACKFRAME,		offsetof(struct pt_regs, stackframe));
--  DEFINE(S_FRAME_SIZE,		sizeof(struct pt_regs));
-+  DEFINE(PT_REGS_SIZE,		sizeof(struct pt_regs));
-   BLANK();
- #ifdef CONFIG_COMPAT
-   DEFINE(COMPAT_SIGFRAME_REGS_OFFSET,		offsetof(struct compat_sigframe, uc.uc_mcontext.arm_r0));
-diff --git a/arch/arm64/kernel/entry-ftrace.S b/arch/arm64/kernel/entry-ftrace.S
-index a338f40e64d3..b3e4f9a088b1 100644
---- a/arch/arm64/kernel/entry-ftrace.S
-+++ b/arch/arm64/kernel/entry-ftrace.S
-@@ -35,7 +35,7 @@
-  */
- 	.macro  ftrace_regs_entry, allregs=0
- 	/* Make room for pt_regs, plus a callee frame */
--	sub	sp, sp, #(S_FRAME_SIZE + 16)
-+	sub	sp, sp, #(PT_REGS_SIZE + 16)
- 
- 	/* Save function arguments (and x9 for simplicity) */
- 	stp	x0, x1, [sp, #S_X0]
-@@ -61,15 +61,15 @@
- 	.endif
- 
- 	/* Save the callsite's SP and LR */
--	add	x10, sp, #(S_FRAME_SIZE + 16)
-+	add	x10, sp, #(PT_REGS_SIZE + 16)
- 	stp	x9, x10, [sp, #S_LR]
- 
- 	/* Save the PC after the ftrace callsite */
- 	str	x30, [sp, #S_PC]
- 
- 	/* Create a frame record for the callsite above pt_regs */
--	stp	x29, x9, [sp, #S_FRAME_SIZE]
--	add	x29, sp, #S_FRAME_SIZE
-+	stp	x29, x9, [sp, #PT_REGS_SIZE]
-+	add	x29, sp, #PT_REGS_SIZE
- 
- 	/* Create our frame record within pt_regs. */
- 	stp	x29, x30, [sp, #S_STACKFRAME]
-@@ -120,7 +120,7 @@ ftrace_common_return:
- 	ldr	x9, [sp, #S_PC]
- 
- 	/* Restore the callsite's SP */
--	add	sp, sp, #S_FRAME_SIZE + 16
-+	add	sp, sp, #PT_REGS_SIZE + 16
- 
- 	ret	x9
- SYM_CODE_END(ftrace_common)
-@@ -130,7 +130,7 @@ SYM_CODE_START(ftrace_graph_caller)
- 	ldr	x0, [sp, #S_PC]
- 	sub	x0, x0, #AARCH64_INSN_SIZE	// ip (callsite's BL insn)
- 	add	x1, sp, #S_LR			// parent_ip (callsite's LR)
--	ldr	x2, [sp, #S_FRAME_SIZE]	   	// parent fp (callsite's FP)
-+	ldr	x2, [sp, #PT_REGS_SIZE]	   	// parent fp (callsite's FP)
- 	bl	prepare_ftrace_return
- 	b	ftrace_common_return
- SYM_CODE_END(ftrace_graph_caller)
-diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-index a8c3e7aaca74..c9bae73f2621 100644
---- a/arch/arm64/kernel/entry.S
-+++ b/arch/arm64/kernel/entry.S
-@@ -75,7 +75,7 @@ alternative_else_nop_endif
- 	.endif
- #endif
- 
--	sub	sp, sp, #S_FRAME_SIZE
-+	sub	sp, sp, #PT_REGS_SIZE
- #ifdef CONFIG_VMAP_STACK
- 	/*
- 	 * Test whether the SP has overflowed, without corrupting a GPR.
-@@ -96,7 +96,7 @@ alternative_else_nop_endif
- 	 * userspace, and can clobber EL0 registers to free up GPRs.
- 	 */
- 
--	/* Stash the original SP (minus S_FRAME_SIZE) in tpidr_el0. */
-+	/* Stash the original SP (minus PT_REGS_SIZE) in tpidr_el0. */
- 	msr	tpidr_el0, x0
- 
- 	/* Recover the original x0 value and stash it in tpidrro_el0 */
-@@ -253,7 +253,7 @@ alternative_else_nop_endif
- 
- 	scs_load tsk, x20
- 	.else
--	add	x21, sp, #S_FRAME_SIZE
-+	add	x21, sp, #PT_REGS_SIZE
- 	get_current_task tsk
- 	.endif /* \el == 0 */
- 	mrs	x22, elr_el1
-@@ -377,7 +377,7 @@ alternative_else_nop_endif
- 	ldp	x26, x27, [sp, #16 * 13]
- 	ldp	x28, x29, [sp, #16 * 14]
- 	ldr	lr, [sp, #S_LR]
--	add	sp, sp, #S_FRAME_SIZE		// restore sp
-+	add	sp, sp, #PT_REGS_SIZE		// restore sp
- 
- 	.if	\el == 0
- alternative_insn eret, nop, ARM64_UNMAP_KERNEL_AT_EL0
-@@ -580,12 +580,12 @@ __bad_stack:
- 
- 	/*
- 	 * Store the original GPRs to the new stack. The orginal SP (minus
--	 * S_FRAME_SIZE) was stashed in tpidr_el0 by kernel_ventry.
-+	 * PT_REGS_SIZE) was stashed in tpidr_el0 by kernel_ventry.
- 	 */
--	sub	sp, sp, #S_FRAME_SIZE
-+	sub	sp, sp, #PT_REGS_SIZE
- 	kernel_entry 1
- 	mrs	x0, tpidr_el0
--	add	x0, x0, #S_FRAME_SIZE
-+	add	x0, x0, #PT_REGS_SIZE
- 	str	x0, [sp, #S_SP]
- 
- 	/* Stash the regs for handle_bad_stack */
-diff --git a/arch/arm64/kernel/probes/kprobes_trampoline.S b/arch/arm64/kernel/probes/kprobes_trampoline.S
-index 890ca72c5a51..288a84e253cc 100644
---- a/arch/arm64/kernel/probes/kprobes_trampoline.S
-+++ b/arch/arm64/kernel/probes/kprobes_trampoline.S
-@@ -25,7 +25,7 @@
- 	stp x24, x25, [sp, #S_X24]
- 	stp x26, x27, [sp, #S_X26]
- 	stp x28, x29, [sp, #S_X28]
--	add x0, sp, #S_FRAME_SIZE
-+	add x0, sp, #PT_REGS_SIZE
- 	stp lr, x0, [sp, #S_LR]
- 	/*
- 	 * Construct a useful saved PSTATE
-@@ -62,7 +62,7 @@
- 	.endm
- 
- SYM_CODE_START(kretprobe_trampoline)
--	sub sp, sp, #S_FRAME_SIZE
-+	sub sp, sp, #PT_REGS_SIZE
- 
- 	save_all_base_regs
- 
-@@ -76,7 +76,7 @@ SYM_CODE_START(kretprobe_trampoline)
- 
- 	restore_all_base_regs
- 
--	add sp, sp, #S_FRAME_SIZE
-+	add sp, sp, #PT_REGS_SIZE
- 	ret
- 
- SYM_CODE_END(kretprobe_trampoline)
+The limitation now being imposed by objtool (due to these assembler
+changes) is that all code must be contained in an ELF symbol.  And .L
+symbols don't create such symbols.
+
+So basically, you can use an .L symbol *inside* a function or a code
+segment, you just can't use the .L symbol to contain the code using a
+SYM_*_START/END annotation pair.
+
+It only affects a tiny fraction of all .L usage.  Just a handful of code
+sites I think.
+
 -- 
-2.25.1
+Josh
 
