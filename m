@@ -2,98 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 011A42F25F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 439AE2F25F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:01:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729269AbhALCB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 21:01:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25851 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725957AbhALCB1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 21:01:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610416801;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OavUnJ3v/lGFi5ijff6RJv5HrBBprqBfJamMYtY2KXQ=;
-        b=N8G1GiaXgoTUD/i9sM43KI8SqqlbwGZ3ULwu9IUK1jqn/4MIUSaG2pyoVdfsNxCIIWsvHe
-        4609oUqCZzHxlqSq7DQTu7/pWXJtzjLf83XNl7RJKE+R1OVhRHS6U0yYEPOOlb0dE9I5jm
-        RLQub4sqghViB/oCbvTKwZ9PEbpBbQU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-296-H8oABsysMYWAmo0_0k7Rmw-1; Mon, 11 Jan 2021 20:59:57 -0500
-X-MC-Unique: H8oABsysMYWAmo0_0k7Rmw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EA7321009456;
-        Tue, 12 Jan 2021 01:59:55 +0000 (UTC)
-Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B0CF51349A;
-        Tue, 12 Jan 2021 01:59:54 +0000 (UTC)
-Date:   Mon, 11 Jan 2021 19:59:52 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH v3] x86/entry: emit a symbol for register restoring thunk
-Message-ID: <20210112015952.jdystnwkvuxsrwa2@treble>
-References: <20210106015810.5p6crnh7jqtmjtv4@treble>
- <20210111203807.3547278-1-ndesaulniers@google.com>
- <20210112003839.GL25645@zn.tnic>
- <CAFP8O3+uEE4Lity-asyFLN6_+8qRUD3hgcZVapXwk6EfmGM+DA@mail.gmail.com>
- <20210112010010.GA8239@zn.tnic>
- <CAKwvOdmGS97e4Rj_oW+RnkYAMjycTFQiiPJAfCvKTdxgv2KfEA@mail.gmail.com>
+        id S1730100AbhALCAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 21:00:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32930 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726198AbhALCAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 21:00:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 069F7239CF;
+        Tue, 12 Jan 2021 02:00:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610416809;
+        bh=LrgX1ZCbyuuq7kQhKdxsUPQpCaUk3QGE4/HTzRzvuzA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=TfbwjhgY2jQEXUy1ogv5kiC0thNUvV4e1u52AjogPlL2kndcXSWzondkf3sAGbdwi
+         +4Q4xVyCtLeo6p0hvxGXqYxVHX2lcJkja3afgiF53gxoCHpGflxpvVC9uvrcG8YrxM
+         XLNkdu/bCEDhOAzNqM/XslMd4/SIz8Zp5vIw4IQd+4JO/Dci12tTc0TN1Oy1NNBG5X
+         FOcpaxxNpNs6voSR8qY/vRR4ypAl/2TN9yibhxcD9dDiv8bHPnqEgOhJPBAu8yLnPu
+         ogs71qo6uwfNkac+M38PCmAGerGpXbdi9Of8y5iCaKtQ2NuvD+VP0oEr4E4McU0RLn
+         VAimK4XzwG40g==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id F2DC06026B;
+        Tue, 12 Jan 2021 02:00:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKwvOdmGS97e4Rj_oW+RnkYAMjycTFQiiPJAfCvKTdxgv2KfEA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Subject: Re: [PATCH net-next] net: mvpp2: prs: improve ipv4 parse flow
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161041680898.7943.13175555467776041590.git-patchwork-notify@kernel.org>
+Date:   Tue, 12 Jan 2021 02:00:08 +0000
+References: <1610289059-14962-1-git-send-email-stefanc@marvell.com>
+In-Reply-To: <1610289059-14962-1-git-send-email-stefanc@marvell.com>
+To:     Stefan Chulski <stefanc@marvell.com>
+Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
+        linux-kernel@vger.kernel.org, kuba@kernel.org,
+        linux@armlinux.org.uk, mw@semihalf.com, andrew@lunn.ch,
+        rmk+kernel@armlinux.org.uk, atenart@kernel.org, liron@marvell.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 05:13:16PM -0800, Nick Desaulniers wrote:
-> On Mon, Jan 11, 2021 at 5:00 PM Borislav Petkov <bp@alien8.de> wrote:
-> >
-> > On Mon, Jan 11, 2021 at 04:41:52PM -0800, Fāng-ruì Sòng wrote:
-> > > To be fair: we cannot use
-> >
-> > Who's "we"?
-> >
-> > > .L-prefixed local because of the objtool limitation.
-> >
-> > What objtool limitation? I thought clang's assembler removes .text which
-> > objtool uses. It worked fine with GNU as so far.
+Hello:
+
+This patch was applied to netdev/net-next.git (refs/heads/master):
+
+On Sun, 10 Jan 2021 16:30:59 +0200 you wrote:
+> From: Stefan Chulski <stefanc@marvell.com>
 > 
-> I don't think we need to completely stop using .L prefixes in the
-> kernel, just this one location since tracking the control flow seems a
-> little tricky for objtool. Maybe Josh can clarify more if needed?
+> Patch didn't fix any issue, just improve parse flow
+> and align ipv4 parse flow with ipv6 parse flow.
+> 
+> Currently ipv4 kenguru parser first check IP protocol(TCP/UDP)
+> and then destination IP address.
+> Patch introduce reverse ipv4 parse, first destination IP address parsed
+> and only then IP protocol.
+> This would allow extend capability for packet L4 parsing and align ipv4
+> parsing flow with ipv6.
+> 
+> [...]
 
-Right.  In the vast majority of cases, .L symbols are totally fine.
+Here is the summary with links:
+  - [net-next] net: mvpp2: prs: improve ipv4 parse flow
+    https://git.kernel.org/netdev/net-next/c/c73a45965dd5
 
-The limitation now being imposed by objtool (due to these assembler
-changes) is that all code must be contained in an ELF symbol.  And .L
-symbols don't create such symbols.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-So basically, you can use an .L symbol *inside* a function or a code
-segment, you just can't use the .L symbol to contain the code using a
-SYM_*_START/END annotation pair.
-
-It only affects a tiny fraction of all .L usage.  Just a handful of code
-sites I think.
-
--- 
-Josh
 
