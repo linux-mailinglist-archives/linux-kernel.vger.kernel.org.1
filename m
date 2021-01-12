@@ -2,90 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8924D2F2CEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:33:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CD42F2CF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:35:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404511AbhALKcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:32:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729786AbhALKcp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:32:45 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449D3C061786;
-        Tue, 12 Jan 2021 02:32:05 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id m6so1150573pfk.1;
-        Tue, 12 Jan 2021 02:32:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WyIEw//6LTZ4+K3k1L3A+4gXmL9AEDWs69yfo4jVc/o=;
-        b=b4KLR/KTlQfTCN2uxIcE9VDQgq+34FPHCsfrWruEE+CBFFZfeuezvTqd3NJJvNq4W4
-         82ui9LLV1tBvIMzsDcsVntr7UmPFCnmSxG4lcUFINJ2cH00t89cwBEfMaWIWCEgaSsdq
-         J1UmJ8wv/l2fQxcbubCPXRjwAksFDtRI6uqgsTfaLHltZgcVTKdHb00VQorhk/FwgrVz
-         IXa2+7ADOBMxDaiGuG8AfEh6za6oF9J/EZ8pC6hA/rumcksC8nxpa6b7yeNr9pbo3I/n
-         sULO9gdp+IrGQfnaKBtRvDpF0JDdJM8Bc1BTpgaCi7CWryBfzYZASd7MQ8vUeNCLk9I9
-         CE9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WyIEw//6LTZ4+K3k1L3A+4gXmL9AEDWs69yfo4jVc/o=;
-        b=c6PFyFsbL7jXacafM4z9IYiHoxgxW+bl4DDXNueWj7Bg4t5hHOJhbki/6S7eQYBRLp
-         Eokl8s7T8obklmVj49keRFkzcScuNBVDcrAbiKWgkFK2N9fTTX3wNZLhE7R/SQcOM5nA
-         N5Wj2Q4CpFF6QaJZPJP+LVLkqjmJY0A3XE1dIvRSsJ2aroRUX400FbNlwIHa1faGUFBs
-         0148wiQ4qHXDcik5VD9PzsOVRmyE8B71hDH2Xkya8b3ZpSZ/vS/MD7qqIkS+O9CxNQIM
-         21OaO2vEMuJOWoL6DN/xBYtBKFNcJOzdw7+wbPbXNYskFhQUkQ80/ug8OoVzHqc8fi8T
-         Yn6A==
-X-Gm-Message-State: AOAM5317vVjKGFDIIo1xFUCyU2wuOHC0k04/4hwERJJAodYqf5viyKhV
-        1Upf+3/X6G7Acp/1jN399bU=
-X-Google-Smtp-Source: ABdhPJynuEsWgWuFjs9a07gDF0FJKcvxJ5EbXId+ECk2pkVZ0YHOxZDhzi+m5irwV3I9ynVrlSjiuA==
-X-Received: by 2002:a63:e:: with SMTP id 14mr4071751pga.426.1610447524785;
-        Tue, 12 Jan 2021 02:32:04 -0800 (PST)
-Received: from localhost.localdomain ([103.66.11.206])
-        by smtp.gmail.com with ESMTPSA id f193sm2822960pfa.81.2021.01.12.02.32.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 02:32:03 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     mw@semihalf.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gustavo@embeddedor.com
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH V3] drivers: net: marvell: Fixed two spellings,controling to controlling and oen to one
-Date:   Tue, 12 Jan 2021 16:01:52 +0530
-Message-Id: <20210112103152.13222-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S2390752AbhALKfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:35:04 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43218 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729925AbhALKfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 05:35:04 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610447657; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SFZZDpfF7iQgyLB64Gjy2Ec9M50ve9zfNS2JavecGYQ=;
+        b=Bhvj3wcMfvAoe4ex0UbCsOIaj5S8seJzu2rAgpLKZlrwBtboWVJ4Vn7elSdYfakXoj3Zzp
+        cLOqwgpUu1DsEdo2LT8Jpk6RMexkdN2et408qMOSPVgpLAcdn5cjFtzh07O+kpicUVXP90
+        OwO23nPE7Lj+K7EX2r2Dp1qgsI40IAI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 17F14ACB0;
+        Tue, 12 Jan 2021 10:34:17 +0000 (UTC)
+Subject: Re: [PATCH] xen/privcmd: allow fetching resource sizes
+To:     =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Paul Durrant <paul.durrant@citrix.com>,
+        xen-devel@lists.xenproject.org
+References: <20210111152958.7166-1-roger.pau@citrix.com>
+ <5063e696-5a7f-4429-048e-2bf0d14881d7@suse.com>
+ <20210112100324.ii34oqldfrtmfd2f@Air-de-Roger>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <67725689-2eab-fd17-d330-626f3505c6c1@suse.com>
+Date:   Tue, 12 Jan 2021 11:34:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210112100324.ii34oqldfrtmfd2f@Air-de-Roger>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="UxwirFONVMB8JJkV5PFLwVBx0yZsMxDDs"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/oen/one/
-s/controling/controlling/
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--UxwirFONVMB8JJkV5PFLwVBx0yZsMxDDs
+Content-Type: multipart/mixed; boundary="RLMrMBUN4PwnA8AozxpnEc9O4jRLfXPBz";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>
+Cc: linux-kernel@vger.kernel.org, Boris Ostrovsky
+ <boris.ostrovsky@oracle.com>, Stefano Stabellini <sstabellini@kernel.org>,
+ Paul Durrant <paul.durrant@citrix.com>, xen-devel@lists.xenproject.org
+Message-ID: <67725689-2eab-fd17-d330-626f3505c6c1@suse.com>
+Subject: Re: [PATCH] xen/privcmd: allow fetching resource sizes
+References: <20210111152958.7166-1-roger.pau@citrix.com>
+ <5063e696-5a7f-4429-048e-2bf0d14881d7@suse.com>
+ <20210112100324.ii34oqldfrtmfd2f@Air-de-Roger>
+In-Reply-To: <20210112100324.ii34oqldfrtmfd2f@Air-de-Roger>
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
-Changes from V2 : Correct the versioning,mentioned both the changes
+--RLMrMBUN4PwnA8AozxpnEc9O4jRLfXPBz
+Content-Type: multipart/mixed;
+ boundary="------------51AE5625E0FB982B0C9D67DA"
+Content-Language: en-US
 
- drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is a multi-part message in MIME format.
+--------------51AE5625E0FB982B0C9D67DA
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.h
-index 8867f25afab4..663157dc8062 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.h
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.h
-@@ -143,7 +143,7 @@ struct mvpp2_cls_c2_entry {
- /* Number of per-port dedicated entries in the C2 TCAM */
- #define MVPP22_CLS_C2_PORT_N_FLOWS	MVPP2_N_RFS_ENTRIES_PER_FLOW
+On 12.01.21 11:03, Roger Pau Monn=C3=A9 wrote:
+> On Tue, Jan 12, 2021 at 06:57:30AM +0100, J=C3=BCrgen Gro=C3=9F wrote:
+>> On 11.01.21 16:29, Roger Pau Monne wrote:
+>>> Allow issuing an IOCTL_PRIVCMD_MMAP_RESOURCE ioctl with num =3D 0 and=
 
--/* Each port has oen range per flow type + one entry controling the global RSS
-+/* Each port has one range per flow type + one entry controlling the global RSS
-  * setting and the default rx queue
-  */
- #define MVPP22_CLS_C2_PORT_RANGE	(MVPP22_CLS_C2_PORT_N_FLOWS + 1)
-./--
-2.26.2
+>>> addr =3D 0 in order to fetch the size of a specific resource.
+>>>
+>>> Add a shortcut to the default map resource path, since fetching the
+>>> size requires no address to be passed in, and thus no VMA to setup.
+>>>
+>>> Fixes: 3ad0876554caf ('xen/privcmd: add IOCTL_PRIVCMD_MMAP_RESOURCE')=
 
+>>
+>> I don't think this addition is a reason to add a "Fixes:" tag. This is=
+
+>> clearly new functionality.
+>=20
+> It could be argued that not allowing to query the resource size was a
+> shortcoming of the original implementation, but a backport request to
+> stable would be more appropriate than a fixes tag I think. Will drop
+> on next version and add a backport request if you agree.
+
+Yes, please.
+
+
+Juergen
+
+--------------51AE5625E0FB982B0C9D67DA
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------51AE5625E0FB982B0C9D67DA--
+
+--RLMrMBUN4PwnA8AozxpnEc9O4jRLfXPBz--
+
+--UxwirFONVMB8JJkV5PFLwVBx0yZsMxDDs
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/9eygFAwAAAAAACgkQsN6d1ii/Ey9W
+9wf/SlRDkyc7MfvskNQS68Enzp7CN4wYqum4ecVl4Z3K/agV/7NRcM63knd9fQZGroZRW5+zY6Df
+RGtoOdbzKD+3sg4XM1xilmPqFZqdJQcGnI6FW8C3qjFkxiQLMhkf803KYQfLxoFHROLOsrXrdCL5
+VxwfoJbEfggJY4jmU+ijnGDt8tc5lrOznsnho5lc+/aJjtGuJAPPW+RdSkcxFwwuIUA8iADm5X7k
+fKPpYzxbYG5yrFVXXQigPsxpsn+fazX1+UiUJtkZbQu1a3ISQQxD/vdm/9R3QdgdD0UzVZHZcpNc
+AkD8EEPyezYo7zcFuCB5mHlHXx2Er+nLlJzTdF8Ccw==
+=gOyn
+-----END PGP SIGNATURE-----
+
+--UxwirFONVMB8JJkV5PFLwVBx0yZsMxDDs--
