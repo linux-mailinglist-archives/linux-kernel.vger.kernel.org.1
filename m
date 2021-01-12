@@ -2,105 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB922F3374
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:00:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 146262F336E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:00:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387648AbhALO7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:59:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26450 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725843AbhALO7Y (ORCPT
+        id S2389547AbhALO7M convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Jan 2021 09:59:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732459AbhALO7M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:59:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610463478;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XlUm2JYDUqrCFaqRZjf68KX2pnc8iKtDpFI9TKkiM18=;
-        b=CivmYjR8C9bdFnQin+wimDMaVBgo7eGgcZgSTakvN/g5DOR6S25Aj2TZoL7mc5eImFRus/
-        VXqxSDVN8eghU+MeG4RZSZUNXbFK4AB3vEbUBAhet+kcOavK/PkTRA89+jq9df2d95kE7r
-        O9+OBrS3gbXCg+RTiTqVBCRrCxsFO/0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-323-mlPyzESvNF2x4AJowppFGg-1; Tue, 12 Jan 2021 09:57:54 -0500
-X-MC-Unique: mlPyzESvNF2x4AJowppFGg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C3DD8803F4C;
-        Tue, 12 Jan 2021 14:57:49 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9EA5D6B540;
-        Tue, 12 Jan 2021 14:57:45 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <E090372C-06A3-4991-8FC3-F06A0DA60729@oracle.com>
-References: <E090372C-06A3-4991-8FC3-F06A0DA60729@oracle.com> <20200916004927.64276-1-eric.snowberg@oracle.com> <1360578.1607593748@warthog.procyon.org.uk>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     dhowells@redhat.com, dwmw2@infradead.org,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        jmorris@namei.org, serge@hallyn.com, nayna@linux.ibm.com,
-        Mimi Zohar <zohar@linux.ibm.com>, erichte@linux.ibm.com,
-        mpe@ellerman.id.au, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v4] certs: Add EFI_CERT_X509_GUID support for dbx entries
+        Tue, 12 Jan 2021 09:59:12 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C544BC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:58:31 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kzL7j-00020s-4W; Tue, 12 Jan 2021 15:58:19 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kzL7h-0007qp-JE; Tue, 12 Jan 2021 15:58:17 +0100
+Message-ID: <c47df7713b41d2714a36c0c17b9d01aa90a72601.camel@pengutronix.de>
+Subject: Re: [PATCH v7 6/9] media: Add parsing for APP14 data segment in
+ jpeg helpers
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Mirela Rabulea <mirela.rabulea@oss.nxp.com>, mchehab@kernel.org,
+        hverkuil-cisco@xs4all.nl, shawnguo@kernel.org, robh+dt@kernel.org
+Cc:     paul.kocialkowski@bootlin.com, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
+        s.hauer@pengutronix.de, aisheng.dong@nxp.com,
+        daniel.baluta@nxp.com, robert.chiras@nxp.com,
+        laurentiu.palcu@nxp.com, mark.rutland@arm.com,
+        devicetree@vger.kernel.org, ezequiel@collabora.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se,
+        dafna.hirschfeld@collabora.com
+Date:   Tue, 12 Jan 2021 15:58:17 +0100
+In-Reply-To: <20210111192822.12178-7-mirela.rabulea@oss.nxp.com>
+References: <20210111192822.12178-1-mirela.rabulea@oss.nxp.com>
+         <20210111192822.12178-7-mirela.rabulea@oss.nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 12 Jan 2021 14:57:39 +0000
-Message-ID: <2442460.1610463459@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eric Snowberg <eric.snowberg@oracle.com> wrote:
+On Mon, 2021-01-11 at 21:28 +0200, Mirela Rabulea wrote:
+> From: Mirela Rabulea <mirela.rabulea@nxp.com>
+> 
+> According to Rec. ITU-T T.872 (06/2012) 6.5.3
+> APP14 segment is for color encoding, it contains a transform flag, which
+> may have values of 0, 1 and 2 and are interpreted as follows:
+> 0 - CMYK for images that are encoded with four components
+>   - RGB for images that are encoded with three components
+> 1 - An image encoded with three components using YCbCr colour encoding.
+> 2 - An image encoded with four components using YCCK colour encoding.
+> 
+> This is used in imx-jpeg decoder, to distinguish between
+> YUV444 and RGB24.
+> 
+> Signed-off-by: Mirela Rabulea <mirela.rabulea@nxp.com>
+> ---
+> Changes in v7:
+>   Check there are 6 bytes available in the stream before checking for "Adobe\0"
+>   Change jpeg_parse_app14_data function to differentiate between the 3 scenarios: app14 missing, or app14 present but with/without parsing errors:
+>     App14 missing => Added V4L2_JPEG_APP14_TF_UNKNOWN to the enum v4l2_jpeg_app14_tf, use it to indicate app14 & TF is missing
+> 	App14 present without parsing errors => Return the transform flag value as enum v4l2_jpeg_app14_tf (new paramater of jpeg_parse_app14_data function)
+>     App14 present with parsing errors => Return -EINVAL from jpeg_parse_app14_data, also return from calling function (v4l2_jpeg_parse_header) when this error is met.
+>
+>  drivers/media/v4l2-core/v4l2-jpeg.c | 47 +++++++++++++++++++++++++++--
+>  include/media/v4l2-jpeg.h           | 20 ++++++++++++
+>  2 files changed, 65 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/v4l2-core/v4l2-jpeg.c b/drivers/media/v4l2-core/v4l2-jpeg.c
+> index 8947fd95c6f1..8d5fedb136dd 100644
+> --- a/drivers/media/v4l2-core/v4l2-jpeg.c
+> +++ b/drivers/media/v4l2-core/v4l2-jpeg.c
+> @@ -45,6 +45,7 @@ MODULE_LICENSE("GPL");
+>  #define DHP	0xffde	/* hierarchical progression */
+>  #define EXP	0xffdf	/* expand reference */
+>  #define APP0	0xffe0	/* application data */
+> +#define APP14	0xffee	/* application data for colour encoding */
+>  #define APP15	0xffef
+>  #define JPG0	0xfff0	/* extensions */
+>  #define JPG13	0xfffd
+> @@ -444,8 +445,44 @@ static int jpeg_skip_segment(struct jpeg_stream *stream)
+>  	return jpeg_skip(stream, len - 2);
+>  }
+>  
+> +/* Rec. ITU-T T.872 (06/2012) 6.5.3 */
+> +static int jpeg_parse_app14_data(struct jpeg_stream *stream,
+> +				 enum v4l2_jpeg_app14_tf *tf)
+> +{
+> +	int ret;
+> +	int lp;
+> +	int skip;
+> +
+> +	lp = jpeg_get_word_be(stream);
+> +	if (lp < 0)
+> +		return lp;
+> +
+> +	/* Check for "Adobe\0" in Ap1..6 */
+> +	if (stream->curr + 6 > stream->end ||
+> +	    strncmp(stream->curr, "Adobe\0", 6))
+> +		return -EINVAL;
+> +
+> +	/* get to Ap12 */
+> +	ret = jpeg_skip(stream, 11);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = jpeg_get_byte(stream);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	*tf = ret;
+> +
+> +	skip = lp - 2 - 11;
 
-> > On Dec 10, 2020, at 2:49 AM, David Howells <dhowells@redhat.com> wrote:
-> >=20
-> > Eric Snowberg <eric.snowberg@oracle.com> wrote:
-> >=20
-> >> Add support for EFI_CERT_X509_GUID dbx entries. When a EFI_CERT_X509_G=
-UID
-> >> is found, it is added as an asymmetrical key to the .blacklist keyring.
-> >> Anytime the .platform keyring is used, the keys in the .blacklist keyr=
-ing
-> >> are referenced, if a matching key is found, the key will be rejected.
-> >=20
-> > Ummm...  Why this way and not as a blacklist key which takes up less sp=
-ace?
-> > I'm guessing that you're using the key chain matching logic.  We really=
- only
-> > need to blacklist the key IDs.
->=20
-> I implemented it this way so that certs in the dbx would only impact=20
-> the .platform keyring. I was under the impression we didn=E2=80=99t want =
-to have=20
-> Secure Boot UEFI db/dbx certs dictate keyring functionality within the ke=
-rnel
-> itself. Meaning if we have a matching dbx cert in any other keyring (buil=
-tin,
-> secondary, ima, etc.), it would be allowed. If that is not how you=E2=80=
-=99d like to=20
-> see it done, let me know and I=E2=80=99ll make the change.
+> +	ret = jpeg_skip(stream, skip);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return 0;
 
-I wonder if that is that the right thing to do.  I guess this is a policy
-decision and may depend on the particular user.
+This could be simplified to
 
-> > Also, what should happen if a revocation cert rejected by the blacklist?
->=20
-> I=E2=80=99m not sure I understand the question. How would it be rejected?
+	return jpeg_skip(stream, skip);
 
-The SHA256 of a revocation cert being loaded could match an
-already-blacklisted SHA256 sum, either compiled in or already loaded from
-UEFI.
+although it would be better style to move the *tf = ... assignment down
+past the last error return instead. Either way,
 
-David
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
 
+regards
+Philipp
