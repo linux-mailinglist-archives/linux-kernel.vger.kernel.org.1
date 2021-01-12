@@ -2,111 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BDAF2F37BE
+	by mail.lfdr.de (Postfix) with ESMTP id 770CF2F37BF
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390350AbhALR4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:56:45 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62268 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731029AbhALR4o (ORCPT
+        id S2391180AbhALR4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:56:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389851AbhALR4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:56:44 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10CHYrMh038909;
-        Tue, 12 Jan 2021 12:55:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=MHWdrGw14uYtb4TGJ5A7+n2JEJmQ4jGo6SgmNA4cpFk=;
- b=SfzK4ajuPVM373mTedmtjd5b0ooqMqreOnkpGPfihUZie7VQh9tn57digjIYRr/oiu7S
- fn4KSzU+VMn3lCfDDXk6W+MglybbwafN5hAA83g9MOJp14zU2vdLGc4k/f/jTYy+UVJ8
- bTMztPnwCH35PZqf9mRaLwxmXLh56X9ol23VIH26zb4fgUykihcQROFw9Z7dY86Q7wB1
- Z7SIN+WOFp27caRBgxbuEDThhbC74+fxvos0mq6gQYtR5NRjdqJy337kaD7KBJkUx2Pf
- PYFtnDpzbgAFNe/2pXBlzfGKIaWejBcrxHOjBucfzhGUrGTtVfFQz6TV15F+GmJnOo+K dg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 361g9y0dte-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 12:55:59 -0500
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10CHYw5M038995;
-        Tue, 12 Jan 2021 12:55:58 -0500
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 361g9y0dsu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 12:55:58 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10CHq942021951;
-        Tue, 12 Jan 2021 17:55:56 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 35ydrdbjrh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 17:55:56 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10CHtr4K42992000
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jan 2021 17:55:53 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6BC334C040;
-        Tue, 12 Jan 2021 17:55:53 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ADBA44C04E;
-        Tue, 12 Jan 2021 17:55:52 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.60.135])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue, 12 Jan 2021 17:55:52 +0000 (GMT)
-Date:   Tue, 12 Jan 2021 18:55:50 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v13 09/15] s390/vfio-ap: allow hot plug/unplug of AP
- resources using mdev device
-Message-ID: <20210112185550.1ac49768.pasic@linux.ibm.com>
-In-Reply-To: <20210112021251.0d989225.pasic@linux.ibm.com>
-References: <20201223011606.5265-1-akrowiak@linux.ibm.com>
-        <20201223011606.5265-10-akrowiak@linux.ibm.com>
-        <20210112021251.0d989225.pasic@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Tue, 12 Jan 2021 12:56:45 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD96CC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:56:04 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id 15so1920891pgx.7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:56:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Upx2oTWYrPXCgwMubh2XCOEphSc2BQiSntB9Zcy4eo4=;
+        b=cFM44SJt4abZ2k0N/V/wvcE+AypSBPzNcoOxxYjffEcM2P8o375Gcpk0hRg//m2AyP
+         B8MBGDmbE93WM/ABHzmES0GG7vJ8kr0Ca6WpeiTHfnweGBO+ADGfM1oS8DiycWfgiC05
+         nvnBP8uU4QZYD/yUH0Yklwuby9KJ0qwxkGzSusHtCPYkJuAIFU2u+mTN8Olwfa65edko
+         7Q9JzlDJWZLHf706c0q0ztV8AaXE6lK/IBUA0arTGFyaBA249HkJCNl8b9bOdAhFaQk/
+         3c9Oj6HZKVnZAGPijvbvnUTfxG6XY48a5Q6joR1mdHNVE1idU4/BwmiZY6M7cY3KE09P
+         Pq2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Upx2oTWYrPXCgwMubh2XCOEphSc2BQiSntB9Zcy4eo4=;
+        b=MHO+1TPmYlRhL5ZbxV0qVZWkemVssBlrm/PlG4epQb75oDNd8Kjm+YOCYzhaHGXeG4
+         1+F+W1sLl9GSYYwozDtv+i1GLH5GiogNHE2Bbh70BXC8/nEmFoG/rHHWz2UhKhzbKZCd
+         uMbh+88T3mFDV/Sm1K7/EE7r6eXaMydVXM6RxsK+7GEB0I2YQADThADOUAi4rZ/AHyhG
+         lCMf/EwZzMMwLBQjOLvC8FoUcWPGveRHZAHUGH1CnxaO8ZV6syh1AgG+L+AoGxFp5yQ1
+         CjXyQDHiehzhzJ7GzzBWxDTEz1NTPaunq7dSaqYI2rgYxbHi2swJT0RgrsE3WYm8jnju
+         FHHg==
+X-Gm-Message-State: AOAM531wTftUbfVtuOVV86OiuwCLOJOVj6u4+mrgNCp9wEIuAo2bDq5K
+        xP6cdYlEk4nxNeptkmC9vkHJ8XvIETVgTis9rYI/hA==
+X-Google-Smtp-Source: ABdhPJwjRRI5HrAEIHOrVyzD1kiLcgKTLsKMByfy+UQlsos5Ug2vA6ueDXrnXl6mdKeyh958GyNLYgxd4T1U3qSPUl4=
+X-Received: by 2002:a62:e309:0:b029:1ae:5b4a:3199 with SMTP id
+ g9-20020a62e3090000b02901ae5b4a3199mr435587pfh.24.1610474164246; Tue, 12 Jan
+ 2021 09:56:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-12_12:2021-01-12,2021-01-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 impostorscore=0 clxscore=1015 lowpriorityscore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2101120099
+References: <cover.1609871239.git.andreyknvl@google.com> <cb4e610c6584251aa2397b56c46e278da0050a25.1609871239.git.andreyknvl@google.com>
+ <CAG_fn=VDPR2bkHA_CeDP-m8vwr3rTH+3-qwMNHNUQA2g6VghKA@mail.gmail.com>
+In-Reply-To: <CAG_fn=VDPR2bkHA_CeDP-m8vwr3rTH+3-qwMNHNUQA2g6VghKA@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 12 Jan 2021 18:55:53 +0100
+Message-ID: <CAAeHK+yJ=fLMXtH0o0YEri+pn0k+zN_YSY9a93DeYZL0wrLzow@mail.gmail.com>
+Subject: Re: [PATCH 03/11] kasan: clean up comments in tests
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Jan 2021 02:12:51 +0100
-Halil Pasic <pasic@linux.ibm.com> wrote:
+On Tue, Jan 12, 2021 at 8:53 AM Alexander Potapenko <glider@google.com> wrote:
+>
+> On Tue, Jan 5, 2021 at 7:28 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+> >
+> > Clarify and update comments and info messages in KASAN tests.
+> >
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > Link: https://linux-review.googlesource.com/id/I6c816c51fa1e0eb7aa3dead6bda1f339d2af46c8
+>
+> >  void *kasan_ptr_result;
+> >  int kasan_int_result;
+> Shouldn't these two variables be static, by the way?
 
-> > @@ -1347,8 +1437,11 @@ void vfio_ap_mdev_remove_queue(struct ap_device *apdev)
-> >  	apqi = AP_QID_QUEUE(q->apqn);
-> >  	vfio_ap_mdev_reset_queue(apid, apqi, 1);
-> >  
-> > -	if (q->matrix_mdev)
-> > +	if (q->matrix_mdev) {
-> > +		matrix_mdev = q->matrix_mdev;
-> >  		vfio_ap_mdev_unlink_queue(q);
-> > +		vfio_ap_mdev_refresh_apcb(matrix_mdev);
-> > +	}
-> >  
-> >  	kfree(q);
-> >  	mutex_unlock(&matrix_dev->lock);  
+No, then the compiler starts eliminating accesses.
 
-Shouldn't we first remove the queue from the APCB and then
-reset? Sorry, I missed this one yesterday.
+> > @@ -39,14 +38,13 @@ static struct kunit_resource resource;
+> >  static struct kunit_kasan_expectation fail_data;
+> >  static bool multishot;
+> >
+> > +/*
+> > + * Temporarily enable multi-shot mode. Otherwise, KASAN would only report the
+> > + * first detected bug and panic the kernel if panic_on_warn is enabled.
+> > + */
+>
+> YMMV, but I think this comment was at its place already.
 
-Regards,
-Halil
+It gets updated by one of the subsequent patches.
+
+> >  static int kasan_test_init(struct kunit *test)
+> >  {
+> > -       /*
+> > -        * Temporarily enable multi-shot mode and set panic_on_warn=0.
+> > -        * Otherwise, we'd only get a report for the first case.
+> > -        */
+> >         multishot = kasan_save_enable_multi_shot();
+>
+> Unrelated to this change, but have you considered storing
+> test-specific data in test->priv instead of globals?
+
+I'd say that test->priv is for some per-test data that's used in the
+tests, and multishot is not a part of that.
+
+> >         if (!IS_ENABLED(CONFIG_SLUB)) {
+> > -               kunit_info(test, "CONFIG_SLUB is not enabled.");
+> > +               kunit_info(test, "skipping, CONFIG_SLUB required");
+> >                 return;
+> >         }
+>
+> You may want to introduce a macro that takes a config name and prints
+> the warning/returns if it's not enabled.
+
+Good idea, will do in v2.
+
+Thanks!
