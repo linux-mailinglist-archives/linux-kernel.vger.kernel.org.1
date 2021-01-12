@@ -2,84 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44BCC2F323C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:54:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 360FB2F323E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:54:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729496AbhALNxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:53:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45186 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726236AbhALNxb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:53:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2C9723109;
-        Tue, 12 Jan 2021 13:52:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610459570;
-        bh=ybnUi5z0HlJzczbJA/zh6uzuqgX4GFPAw52BtZ5QGco=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eLTEal0MLhseZ2IUmbvd6fG9MhUsW6e92TBqhjx1uAIGDHX2UsTV1hQZRCbp5Txu5
-         QHs/MV2EA3E7JwjqrfdktJOsNMkey2/bQVi5YOtoBljF0nbYgHlX1sKo2JKvr/ACAV
-         80I94tDJbAe4I/s7jwiyJziWwNiB9tWt/h+jcGF+0925g0I52Hp81YKnbtkya37EFC
-         i0a4xs8wO4Y8oe2aL5I6iNDL9g7Buy/lMgAaINOKxiIE6Pg7JoGjakPWlC8uvxzU4B
-         FdeIyB3smoGIz4FJ1JCKC4Addiz95vElWTJKXbXngHtYwsqrFLksQg1ZMkPY02B8J1
-         1s5AeLoRWCSJg==
-Date:   Tue, 12 Jan 2021 13:52:17 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     matthias.bgg@kernel.org
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        Axel Lin <axel.lin@ingics.com>,
-        Chen Zhong <chen.zhong@mediatek.com>,
-        Gene Chen <gene_chen@richtek.com>,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matthias Brugger <mbrugger@suse.com>
-Subject: Re: [PATCH v3 1/2] regulator: mt6358: Add OF match table
-Message-ID: <20210112135217.GB4646@sirena.org.uk>
-References: <20210112100659.19350-1-matthias.bgg@kernel.org>
+        id S1732921AbhALNxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:53:42 -0500
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:43307 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732266AbhALNxl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 08:53:41 -0500
+Received: by mail-ot1-f43.google.com with SMTP id q25so2265016otn.10;
+        Tue, 12 Jan 2021 05:53:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4Uv3tHz4SVDQ8ChUOK2jqRxCBNv/7IX85UqJB4CJwco=;
+        b=R5FOtwxQS2aZioOK9x350fo1IjWDBgeWLUtY5Z0ZIUB0Bs7QvsMj/Xgw6MYgDEyc5G
+         guM4D5U/n9gwgD+OR+dqzcGINfn8BX2AE5L2rvL5G+G0/4EmASE+LW0CE8SNz5vycgVg
+         xnZhcU8zHLkxxGI0AgoE155XDTVlxtOi9r2My4RExTFXYZMXPVX0weZ9e18CAFvFWaSi
+         PJCHmHdR6G+IaGo6pLF+DAETT/hGLZ6VGeUygK8Us7pRGuwGCaTXuFyt83PNn84Q6B4r
+         h5XjKV/5FRO8rZrA5h4JIaPqiT4oSuhOcgpT7csxMyOUInnuO23usQf/E9+d2HbISelW
+         VjfA==
+X-Gm-Message-State: AOAM531kLxVfmZmwA1En4gUdmNQXJTQ1uRhg4OhWWCWg+/aQWMVCoD+T
+        Mrx3x4ngFipyf4azxk00CdfWQN12LONG0rdxAoE=
+X-Google-Smtp-Source: ABdhPJw8z6PmPcN4jbSqyN/xmXo4Xqs1o5eZdsLVM8HqAMwOmnWm41qyyZPPCklrikWgkDtdJUMOZvfHD8134QhgGDM=
+X-Received: by 2002:a9d:7191:: with SMTP id o17mr2837075otj.321.1610459581014;
+ Tue, 12 Jan 2021 05:53:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="QTprm0S8XgL7H0Dt"
-Content-Disposition: inline
-In-Reply-To: <20210112100659.19350-1-matthias.bgg@kernel.org>
-X-Cookie: Stay away from hurricanes for a while.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210112052127.4557-1-yu.c.chen@intel.com>
+In-Reply-To: <20210112052127.4557-1-yu.c.chen@intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 12 Jan 2021 14:52:50 +0100
+Message-ID: <CAJZ5v0i5jdp6YcpvVuLyxGePRAsFPUPL6=iQC7PEFSzjNRUJLw@mail.gmail.com>
+Subject: Re: [PATCH][v3] cpufreq: intel_pstate: Get percpu max freq via HWP
+ MSR register if available
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 12, 2021 at 6:19 AM Chen Yu <yu.c.chen@intel.com> wrote:
+>
+> Currently when turbo is disabled(either by BIOS or by the user), the
+> intel_pstate driver reads the max non-turbo frequency from the package-wide
+> MSR_PLATFORM_INFO(0xce) register. However on asymmetric platforms it is
+> possible in theory that small and big core with HWP enabled might have
+> different max non-turbo cpu frequency, because the MSR_HWP_CAPABILITIES
+> is percpu scope according to Intel Software Developer Manual.
+>
+> The turbo max freq is already percpu basis in current code, thus make
+> similar change to the max non-turbo frequency as well.
+>
+> Reported-by: Wendy Wang <wendy.wang@intel.com>
+> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> ---
+> v2: Per Srinivas' suggestion, avoid duplicated assignment of max_pstate.
+> v3: Per Rafael's suggestion, do not add new argument in intel_pstate_get_hwp_max()
+>     to avoid redundant local vars.
+>     Per Srinivas' suggestion, refined the commit log to reflect the 'non-turbo'
+>     max frequency.
 
---QTprm0S8XgL7H0Dt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Looks good now, thanks!
 
-On Tue, Jan 12, 2021 at 11:06:57AM +0100, matthias.bgg@kernel.org wrote:
+Is it needed in -stable and if so, which -stable series should it go into?
 
-> The binding documentation mentions that a compatible is required for the
-> MT6358 device node. But the driver does not provide a OF match table.
-> This way auto-loading is broken as the MFD driver that registers the
-> device has a .of_compatible set which makes the platform .uevent
-> callback report a OF modalias, but that's not in the module.
-
-As previously discussed it'd be better to fix the binding document to
-deprecate the requirement for the compatible and remove the usage from
-the MFD.
-
---QTprm0S8XgL7H0Dt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/9qZAACgkQJNaLcl1U
-h9AvHQf/dZnoemzOHIqA+LE6lhqqLgw9NX1cTsb4oncHJaYArCHM3ThlY46CGnLD
-Syjh2P+iIa92uQfKgQ+MT6m0mUbAsm+tCf73biTyC1pklvnQm3gxwGLkOAWLngI1
-QQxwoHfK8y/KLSg9ZS4w0m4zygVA2QP+BwVv0XbfHI7yd3ZTWDHOU61hSACdjDM8
-b6D2UvgsPDHhMOygohWy3N9hlZaRN6oU85vqKBmM4JnlkRtk3+XaVZEj+gmpl+tw
-zi9wc42wGDkCcaCGDWOEAKKY/a5ZalRdOfooNvU1zyUtndiEUbzHb4bLnFZVTkYJ
-J/GpwTyz30GmsTOmFVCeoH2dtnFzdA==
-=+RD0
------END PGP SIGNATURE-----
-
---QTprm0S8XgL7H0Dt--
+> --
+>  drivers/cpufreq/intel_pstate.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+> index eaf32ef7a030..99e180f644c3 100644
+> --- a/drivers/cpufreq/intel_pstate.c
+> +++ b/drivers/cpufreq/intel_pstate.c
+> @@ -1724,11 +1724,9 @@ static void intel_pstate_max_within_limits(struct cpudata *cpu)
+>  static void intel_pstate_get_cpu_pstates(struct cpudata *cpu)
+>  {
+>         cpu->pstate.min_pstate = pstate_funcs.get_min();
+> -       cpu->pstate.max_pstate = pstate_funcs.get_max();
+>         cpu->pstate.max_pstate_physical = pstate_funcs.get_max_physical();
+>         cpu->pstate.turbo_pstate = pstate_funcs.get_turbo();
+>         cpu->pstate.scaling = pstate_funcs.get_scaling();
+> -       cpu->pstate.max_freq = cpu->pstate.max_pstate * cpu->pstate.scaling;
+>
+>         if (hwp_active && !hwp_mode_bdw) {
+>                 unsigned int phy_max, current_max;
+> @@ -1736,9 +1734,12 @@ static void intel_pstate_get_cpu_pstates(struct cpudata *cpu)
+>                 intel_pstate_get_hwp_max(cpu, &phy_max, &current_max);
+>                 cpu->pstate.turbo_freq = phy_max * cpu->pstate.scaling;
+>                 cpu->pstate.turbo_pstate = phy_max;
+> +               cpu->pstate.max_pstate = HWP_GUARANTEED_PERF(READ_ONCE(cpu->hwp_cap_cached));
+>         } else {
+>                 cpu->pstate.turbo_freq = cpu->pstate.turbo_pstate * cpu->pstate.scaling;
+> +               cpu->pstate.max_pstate = pstate_funcs.get_max();
+>         }
+> +       cpu->pstate.max_freq = cpu->pstate.max_pstate * cpu->pstate.scaling;
+>
+>         if (pstate_funcs.get_aperf_mperf_shift)
+>                 cpu->aperf_mperf_shift = pstate_funcs.get_aperf_mperf_shift();
+> --
+> 2.17.1
+>
