@@ -2,131 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2B3C2F3F77
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD662F3F79
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404890AbhALWVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:21:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54720 "EHLO
+        id S2405000AbhALWWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:22:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404847AbhALWVb (ORCPT
+        with ESMTP id S2403885AbhALWV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:21:31 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3A4C06179F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:20:50 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id ga15so237730ejb.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:20:50 -0800 (PST)
+        Tue, 12 Jan 2021 17:21:56 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05FA7C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:21:15 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id d189so4037319oig.11
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:21:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eTIoaNVkYWwgsEp9LMpgcyP45XmLf/k0fgDnsh1vc7Q=;
-        b=OixaNP0KdqpjiYzt/2c0kRVvoc3YdMlU0G7M1jrAHP+WZLnsjLBn2HI2a4KD49XU8k
-         QOksFhFZvPS61lNudfnotINI5/cED2AEfo/wlKhLUj45QyiV9pMKxNRMNo/5EuhDU4j8
-         EPbnWKZ/3CdJIIUTRFjW/ZcaC6of0+NgM8eBCYsOhdMFQdiDdlNFsUvrib8myhSkD5hh
-         MswOsS5zCgxRwd2dIJPjTXvxwv7PmuV9u48+GD+XLG9Zc1m6IZNtxZFD3yickfaAsUgo
-         dg/vxNFR2H+MEZuwdoll7yOfU8nPSmp4m9DB+yASQzXhOC5Hg8KcoG0rXJHqK/awpiL/
-         MN2g==
+         :cc:content-transfer-encoding;
+        bh=l7Y0duFp1C4lw+E+Nzfmj0+WgSI2yLq1yZ1r2Jd4oJQ=;
+        b=nXbX9TIhOYo3owiFsiD4pDz/CGmBtv7vaR2Mr+twRXbhbA0/4xxNTkQpUYKr0Rx7FW
+         KAUTGT42Qi0G1N1/3m3N3JW+uAHGoEWyGL0slDq3UCUpVLuZcpWitXD92husg/0kG9My
+         jFUc6upfUIU+tF8JDpXeT16C0fsJNYxBXCFlG/ALJUUNVl76wDgQAICTL813QulIpgz2
+         f5JEAmCjmIxGzkIYR/cqgR9LLCLw4HPDQRB7NiSanJnpOhf50Spx4VMmtHCGLdE0T7HE
+         4LAJ/6pc4aNGuZ9UkhJ+2yjQRuqMhl8WhECtubae+pnBfIqzr2vBml5UW+NNTiVF5pSr
+         su3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eTIoaNVkYWwgsEp9LMpgcyP45XmLf/k0fgDnsh1vc7Q=;
-        b=nfZkrBQxIeXDzRAGamAri2AwdZO3BD5Fc/XhTbQDNdMkHeZ3tUbHeZX5TGJHliEE+e
-         /3lmVSJunJHXRo7bMAL9Lca59BEE0Tcb3tYJqTS9fVfEMGz8PWRn16cRE8R57s324e0E
-         fDvqyyWSeCUJvEmr6HpYVugHwqfove0D14Y3ZPk7xKrhOzN+bRX9ap8BiG9NRKiGEnPg
-         vhltexu+KVSNALqwvjRUsz6Eeet3IiH69AJqXDWDtD7U87TqNQd3E2idU2qw/LQQLKhl
-         6vXJbxSW9AUon7c1QoOns9q/lucm6a5H+VUN1IyNRMN8Vrk7zSr5fWf9fY6SG0iM2kgH
-         HPig==
-X-Gm-Message-State: AOAM533HrGZVPwTRvIqhKWO5MDt3z/+BaCy7OQG4reqJD6ZCx2hJalC+
-        UAOJ3dDWG29aDxXJqh171qXrPcZDWCifWcXf4oxIgg==
-X-Google-Smtp-Source: ABdhPJw+Gi32iWw2zRGAmyQWdcoaZTNn+kztXT/ZCK7VAyrtTePrZuY+wMdQpD/H7tRkOKeEi/FfHmD3PDqzCNyOS5A=
-X-Received: by 2002:a17:906:a29a:: with SMTP id i26mr647229ejz.45.1610490049654;
- Tue, 12 Jan 2021 14:20:49 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=l7Y0duFp1C4lw+E+Nzfmj0+WgSI2yLq1yZ1r2Jd4oJQ=;
+        b=OqTxnY6Gz4MbMZypAEciBz1vJSSn5MMej2cpzVOrC8Jo8is76ZxE1l8mExgTgotIR6
+         i9W0LxKCBbMUxePFm8990RRDMZNSQg3D/CifgAlUhsJi+UxoH3OueUSADFIeRraXoxwf
+         G7C5aMQSkh0AviO5FRb3eK7SBYIzcWPgu7CHpVfw5LsHuG3YIGu7XozzLRGb/LWPkLAC
+         WpQ0MTJyMVB9UvHq6G7RaSx8UY1u0xtQzxjfp0emdpetNUIK50RAsH1TNdqTaJxHhsD9
+         pVUa9rd/qDv7proFEGtKTnbvUKOhgNp4881x/S8nNTZs1hu3t4kGHEc7TYj9gpgqo8hP
+         mQyg==
+X-Gm-Message-State: AOAM531oYeBEd9HgZt+Bk/odI2Q/t337v9/4SK+cIORR8yp4p1X/yjaM
+        QhPXxeWyd3DTPb+mpapTUkU5ogy2guxHj0u6Klg=
+X-Google-Smtp-Source: ABdhPJxc5anMDvnjB+DYgVroZJaGh8IVQ/N4EE42+1GEuf5KCxPaap0rjwGvZsYy5PBdgItNxBVoosG7fY3rOW6L+Qo=
+X-Received: by 2002:a54:4083:: with SMTP id i3mr812054oii.120.1610490075337;
+ Tue, 12 Jan 2021 14:21:15 -0800 (PST)
 MIME-Version: 1.0
-References: <161044407603.1482714.16630477578392768273.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161044408728.1482714.9086710868634042303.stgit@dwillia2-desk3.amr.corp.intel.com>
- <0586c562-787c-4872-4132-18a49c3ffc8e@redhat.com>
-In-Reply-To: <0586c562-787c-4872-4132-18a49c3ffc8e@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 12 Jan 2021 14:20:40 -0800
-Message-ID: <CAPcyv4hd_Bt-krepaV2rVaKLQEKEWK+gGvk_ZbeD-_tk2+hn8w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] mm: Teach pfn_to_online_page() to consider
- subsection validity
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Linux MM <linux-mm@kvack.org>, Qian Cai <cai@lca.pw>,
-        Michal Hocko <mhocko@suse.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
+References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-23-lee.jones@linaro.org>
+In-Reply-To: <20210111191926.3688443-23-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 12 Jan 2021 17:21:03 -0500
+Message-ID: <CADnq5_MddJZ8EFERTXZp8OfzZxmyHaevd9PZ9VhB+29N557O9g@mail.gmail.com>
+Subject: Re: [PATCH 22/40] drm/amd/display/dc/dce110/dce110_hw_sequencer:
+ Demote non-conformant kernel-doc header
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 1:53 AM David Hildenbrand <david@redhat.com> wrote:
+On Mon, Jan 11, 2021 at 2:20 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> On 12.01.21 10:34, Dan Williams wrote:
-> > pfn_section_valid() determines pfn validity on subsection granularity.
-> >
-> > pfn_valid_within() internally uses pfn_section_valid(), but gates it
-> > with early_section() to preserve the traditional behavior of pfn_valid()
-> > before subsection support was added.
-> >
-> > pfn_to_online_page() wants the explicit precision that pfn_valid() does
-> > not offer, so use pfn_section_valid() directly. Since
-> > pfn_to_online_page() already open codes the validity of the section
-> > number vs NR_MEM_SECTIONS, there's not much value to using
-> > pfn_valid_within(), just use pfn_section_valid(). This loses the
-> > valid_section() check that pfn_valid_within() was performing, but that
-> > was already redundant with the online check.
-> >
-> > Fixes: b13bc35193d9 ("mm/hotplug: invalid PFNs from pfn_to_online_page()")
-> > Cc: Qian Cai <cai@lca.pw>
-> > Cc: Michal Hocko <mhocko@suse.com>
-> > Reported-by: David Hildenbrand <david@redhat.com>
-> > ---
-> >  mm/memory_hotplug.c |   16 ++++++++++++----
-> >  1 file changed, 12 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> > index 55a69d4396e7..a845b3979bc0 100644
-> > --- a/mm/memory_hotplug.c
-> > +++ b/mm/memory_hotplug.c
-> > @@ -308,11 +308,19 @@ static int check_hotplug_memory_addressable(unsigned long pfn,
-> >  struct page *pfn_to_online_page(unsigned long pfn)
-> >  {
-> >       unsigned long nr = pfn_to_section_nr(pfn);
-> > +     struct mem_section *ms;
-> > +
-> > +     if (nr >= NR_MEM_SECTIONS)
-> > +             return NULL;
-> > +
-> > +     ms = __nr_to_section(nr);
-> > +     if (!online_section(ms))
-> > +             return NULL;
-> > +
-> > +     if (!pfn_section_valid(ms, pfn))
-> > +             return NULL;
+> Fixes the following W=3D1 kernel build warning(s):
 >
-> That's not sufficient for alternative implementations of pfn_valid().
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_hw_sequencer.c:16=
+39: warning: Function parameter or member 'dc' not described in 'dce110_ena=
+ble_accelerated_mode'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_hw_sequencer.c:16=
+39: warning: Function parameter or member 'context' not described in 'dce11=
+0_enable_accelerated_mode'
 >
-> You still need some kind of pfn_valid(pfn) for alternative versions of
-> pfn_valid(). Consider arm64 memory holes in the memmap. See their
-> current (yet to be fixed/reworked) pfn_valid() implementation.
-> (pfn_valid_within() is implicitly active on arm64)
->
-> Actually, I think we should add something like the following, to make
-> this clearer (pfn_valid_within() is confusing)
->
-> #ifdef CONFIG_HAVE_ARCH_PFN_VALID
->         /* We might have to check for holes inside the memmap. */
->         if (!pfn_valid())
->                 return NULL;
-> #endif
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Looks good to me, I'll take Oscar's version that uses IS_ENABLED().
+Applied.  Thanks!
 
-Skipping the call to pfn_valid() saves 16-bytes of code text on x86_64.
+Alex
+
+> ---
+>  drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c =
+b/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
+> index 4c230f1de9a30..c57405fa4bebc 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_hw_sequencer.c
+> @@ -1628,7 +1628,7 @@ static struct dc_link *get_edp_link_with_sink(
+>         return link;
+>  }
+>
+> -/**
+> +/*
+>   * When ASIC goes from VBIOS/VGA mode to driver/accelerated mode we need=
+:
+>   *  1. Power down all DC HW blocks
+>   *  2. Disable VGA engine on all controllers
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
