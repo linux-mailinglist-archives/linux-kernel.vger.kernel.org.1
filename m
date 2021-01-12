@@ -2,187 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085752F2DBF
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:19:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 369152F2D5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:02:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728271AbhALLSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 06:18:43 -0500
-Received: from m13101.mail.163.com ([220.181.13.101]:48503 "EHLO
-        m13101.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727288AbhALLSg (ORCPT
+        id S1729637AbhALLBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:01:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35819 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725922AbhALLBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:18:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=DS0BY
-        D6EZwH9Ic/l1F0VIkVS8tUWq+fD6E1FXz6DZ94=; b=DiK3nAKjB37jvrgrydx8m
-        9+cbyrAHLFUF9qajux87Yiy96zdnAtvaBfkBqAYAgre3fN7p6KccUJLfT8WUD30Q
-        YTQbn6kZdaUSq+QLiKB3pj49JScV1yfiDdCVq/Ehz3Xjh+XD8t4Viy0Nyymenptv
-        YAQ5WB5kvF5wbGnGIz145E=
-Received: from ultrachin$163.com ( [111.206.145.43] ) by
- ajax-webmail-wmsvr101 (Coremail) ; Tue, 12 Jan 2021 14:57:01 +0800 (CST)
-X-Originating-IP: [111.206.145.43]
-Date:   Tue, 12 Jan 2021 14:57:01 +0800 (CST)
-From:   chin <ultrachin@163.com>
-To:     "Vincent Guittot" <vincent.guittot@linaro.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        "Juri Lelli" <juri.lelli@redhat.com>,
-        "Dietmar Eggemann" <dietmar.eggemann@arm.com>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        "Ben Segall" <bsegall@google.com>, "Mel Gorman" <mgorman@suse.de>,
-        "Daniel Bristot de Oliveira" <bristot@redhat.com>,
-        heddchen@tencent.com,
-        =?UTF-8?Q?xiaoggchen=28=E9=99=88=E5=B0=8F=E5=85=89=29?= 
-        <xiaoggchen@tencent.com>
-Subject: Re: [PATCH] sched: pull tasks when CPU is about to run SCHED_IDLE
- tasks
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20201118(ab4b390f)
- Copyright (c) 2002-2021 www.mailtech.cn 163com
-In-Reply-To: <CAKfTPtDWARbx=xqwr47iFkEMVo7=+5_o_gMX+h=gAcXZP341oA@mail.gmail.com>
-References: <1608710968-31475-1-git-send-email-ultrachin@163.com>
- <CAKfTPtA9zdU76Q6AyjB8_gqvAm8SP_N0rJuydQdNFbDAKSb2jw@mail.gmail.com>
- <1fefea2e.70bf.176f08d9fae.Coremail.ultrachin@163.com>
- <CAKfTPtDWARbx=xqwr47iFkEMVo7=+5_o_gMX+h=gAcXZP341oA@mail.gmail.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Tue, 12 Jan 2021 06:01:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610449211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TwmTniM+7kVYyugXIEZJDHDJkrnveOX+TbTjK+S1Icw=;
+        b=fvsqB41Ts3y8JTra6DfxQPun/0WPpFKlcM76B1jGm86sJ86phMcij5LlXmpaUIqUzjEmmT
+        +U8aebWU+I9CMfPVDf7slNdQhyPhrQFQyGEtmBSf2qRo5z9Q+cvAkAqJIew4U0KkFe9Lqk
+        C+CI8JmnbDYy/jGFeG6Ysu8jaNnF0So=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-402-1IS5DurONPK7Lnj9-DmAZA-1; Tue, 12 Jan 2021 06:00:07 -0500
+X-MC-Unique: 1IS5DurONPK7Lnj9-DmAZA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4708118C89E0;
+        Tue, 12 Jan 2021 11:00:06 +0000 (UTC)
+Received: from [10.36.115.140] (ovpn-115-140.ams2.redhat.com [10.36.115.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D589F5D9CD;
+        Tue, 12 Jan 2021 11:00:03 +0000 (UTC)
+Subject: Re: [PATCH v3 1/6] mm: migrate: do not migrate HugeTLB page whose
+ refcount is one
+To:     Muchun Song <songmuchun@bytedance.com>, mike.kravetz@oracle.com,
+        akpm@linux-foundation.org
+Cc:     n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Yang Shi <shy828301@gmail.com>
+References: <20210110124017.86750-1-songmuchun@bytedance.com>
+ <20210110124017.86750-2-songmuchun@bytedance.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <1b39d654-0b8c-de3a-55d1-6ab8c2b2e0ba@redhat.com>
+Date:   Tue, 12 Jan 2021 12:00:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Message-ID: <61e22917.538b.176f56231f6.Coremail.ultrachin@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: ZcGowAB3f889SP1f_Y4BAQ--.37462W
-X-CM-SenderInfo: xxow2thfkl0qqrwthudrp/1tbiJR8YWFUMbIFuNwABsW
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+In-Reply-To: <20210110124017.86750-2-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgoKQXQgMjAyMS0wMS0xMSAxOTowNDoxOSwgIlZpbmNlbnQgR3VpdHRvdCIgPHZpbmNlbnQuZ3Vp
-dHRvdEBsaW5hcm8ub3JnPiB3cm90ZToKPk9uIE1vbiwgMTEgSmFuIDIwMjEgYXQgMDk6MjcsIGNo
-aW4gPHVsdHJhY2hpbkAxNjMuY29tPiB3cm90ZToKPj4KPj4KPj4gQXQgMjAyMC0xMi0yMyAxOToz
-MDoyNiwgIlZpbmNlbnQgR3VpdHRvdCIgPHZpbmNlbnQuZ3VpdHRvdEBsaW5hcm8ub3JnPiB3cm90
-ZToKPj4gPk9uIFdlZCwgMjMgRGVjIDIwMjAgYXQgMDk6MzIsIDx1bHRyYWNoaW5AMTYzLmNvbT4g
-d3JvdGU6Cj4+ID4+Cj4+ID4+IEZyb206IENoZW4gWGlhb2d1YW5nIDx4aWFvZ2djaGVuQHRlbmNl
-bnQuY29tPgo+PiA+Pgo+PiA+PiBCZWZvcmUgYSBDUFUgc3dpdGNoZXMgZnJvbSBydW5uaW5nIFND
-SEVEX05PUk1BTCB0YXNrIHRvCj4+ID4+IFNDSEVEX0lETEUgdGFzaywgdHJ5aW5nIHRvIHB1bGwg
-U0NIRURfTk9STUFMIHRhc2tzIGZyb20gb3RoZXIKPj4gPgo+PiA+Q291bGQgeW91IGV4cGxhaW4g
-bW9yZSBpbiBkZXRhaWwgd2h5IHlvdSBvbmx5IGNhcmUgYWJvdXQgdGhpcyB1c2UgY2FzZQo+Pgo+
-PiA+aW4gcGFydGljdWxhciBhbmQgbm90IHRoZSBnZW5lcmFsIGNhc2U/Cj4+Cj4+Cj4+IFdlIHdh
-bnQgdG8gcnVuIG9ubGluZSB0YXNrcyB1c2luZyBTQ0hFRF9OT1JNQUwgcG9saWN5IGFuZCBvZmZs
-aW5lIHRhc2tzCj4+IHVzaW5nIFNDSEVEX0lETEUgcG9saWN5LiBUaGUgb25saW5lIHRhc2tzIGFu
-ZCB0aGUgb2ZmbGluZSB0YXNrcyBydW4gaW4KPj4gdGhlIHNhbWUgY29tcHV0ZXIgaW4gb3JkZXIg
-dG8gdXNlIHRoZSBjb21wdXRlciBlZmZpY2llbnRseS4KPj4gVGhlIG9ubGluZSB0YXNrcyBhcmUg
-aW4gc2xlZXAgaW4gbW9zdCB0aW1lcyBidXQgc2hvdWxkIHJlc3BvbmNlIHNvb24gb25jZQo+PiB3
-YWtlIHVwLiBUaGUgb2ZmbGluZSB0YXNrcyBhcmUgaW4gbG93IHByaW9yaXR5IGFuZCB3aWxsIHJ1
-biBvbmx5IHdoZW4gbm8gb25saW5lCj4+IHRhc2tzLgo+Pgo+PiBUaGUgb25saW5lIHRhc2tzIGFy
-ZSBtb3JlIGltcG9ydGFudCB0aGFuIHRoZSBvZmZsaW5lIHRhc2tzIGFuZCBhcmUgbGF0ZW5jeQo+
-PiBzZW5zaXRpdmUgd2Ugc2hvdWxkIG1ha2Ugc3VyZSB0aGUgb25saW5lIHRhc2tzIHByZWVtcHQg
-dGhlIG9mZmxpbmUgdGFza3MKPj4gYXMgc29vbiBhcyBwb3NzaWxiZSB3aGlsZSB0aGVyZSBhcmUg
-b25saW5lIHRhc2tzIHdhaXRpbmcgdG8gcnVuLgo+PiBTbyBpbiBvdXIgc2l0dWF0aW9uIHdlIGhv
-cGUgdGhlIFNDSEVEX05PUk1BTCB0byBydW4gaWYgaGFzIGFueS4KPj4KPj4gTGV0J3MgYXNzdW1l
-IHdlIGhhdmUgMiBDUFVzLAo+PiBJbiBDUFUxIHdlIGdvdCAyIFNDSEVEX05PUk1BTCB0YXNrcy4K
-Pj4gaW4gQ1BVMiB3ZSBnb3QgMSBTQ0hFRF9OT1JNQUwgdGFzayBhbmQgMiBTQ0hFRF9JRExFIHRh
-c2tzLgo+Pgo+PiAgICAgICAgICAgICAgQ1BVMSAgICAgICAgICAgICAgICAgICAgICBDUFUyCj4+
-ICAgICAgICAgY3VyciAgICAgICBycTEgICAgICAgICAgICBjdXJyICAgICAgICAgIHJxMgo+PiAg
-ICAgICArLS0tLS0tKyB8ICstLS0tLS0rICAgICAgICstLS0tLS0rIHwgKy0tLS0rICstLS0tKwo+
-PiB0MCAgICB8Tk9STUFMfCB8IHxOT1JNQUx8ICAgICAgIHxOT1JNQUx8IHwgfElETEV8IHxJRExF
-fAo+PiAgICAgICArLS0tLS0tKyB8ICstLS0tLS0rICAgICAgICstLS0tLS0rIHwgKy0tLS0rICst
-LS0tKwo+Pgo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBOT1JNQUwgZXhpdHMg
-b3IgYmxvY2tlZAo+PiAgICAgICArLS0tLS0tKyB8ICstLS0tLS0rICAgICAgICAgICAgICAgIHwg
-Ky0tLS0rICstLS0tKwo+PiB0MSAgICB8Tk9STUFMfCB8IHxOT1JNQUx8ICAgICAgICAgICAgICAg
-IHwgfElETEV8IHxJRExFfAo+PiAgICAgICArLS0tLS0tKyB8ICstLS0tLS0rICAgICAgICAgICAg
-ICAgIHwgKy0tLS0rICstLS0tKwo+Pgo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBwaWNrX25leHRfdGFza19mYWlyCj4+ICAgICAgICstLS0tLS0rIHwgKy0tLS0tLSsgICAgICAg
-ICArLS0tLSsgfCArLS0tLSsKPj4gdDIgICAgfE5PUk1BTHwgfCB8Tk9STUFMfCAgICAgICAgIHxJ
-RExFfCB8IHxJRExFfAo+PiAgICAgICArLS0tLS0tKyB8ICstLS0tLS0rICAgICAgICAgKy0tLS0r
-IHwgKy0tLS0rCj4+Cj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFNDSEVEX0lE
-TEUgcnVubmluZwo+PiB0MyAgICArLS0tLS0tKyB8ICstLS0tLS0rICAgICAgICArLS0tLSsgIHwg
-Ky0tLS0rCj4+ICAgICAgIHxOT1JNQUx8IHwgfE5PUk1BTHwgICAgICAgIHxJRExFfCAgfCB8SURM
-RXwKPj4gICAgICAgKy0tLS0tLSsgfCArLS0tLS0tKyAgICAgICAgKy0tLS0rICB8ICstLS0tKwo+
-Pgo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBydW5fcmViYWxhbmNlX2RvbWFp
-bnMKPj4gICAgICAgKy0tLS0tLSsgfCAgICAgICAgICAgICAgICArLS0tLS0tKyB8ICstLS0tKyAr
-LS0tLSsKPj4gdDQgICAgfE5PUk1BTHwgfCAgICAgICAgICAgICAgICB8Tk9STUFMfCB8IHxJRExF
-fCB8SURMRXwKPj4gICAgICAgKy0tLS0tLSsgfCAgICAgICAgICAgICAgICArLS0tLS0tKyB8ICst
-LS0tKyArLS0tLSsKPj4KPj4gQXMgd2UgY2FuIHNlZQo+PiB0MTogTk9STUFMIHRhc2sgaW4gQ1BV
-MiBleGl0cyBvciBibG9ja2VkCj4+IHQyOiBDUFUyIHBpY2tfbmV4dF90YXNrX2ZhaXIgd291bGQg
-cGljayBhIFNDSEVEX0lETEUgdG8gcnVuIHdoaWxlCj4+IGFub3RoZXIgU0NIRURfTk9STUFMIGlu
-IHJxMSBpcyB3YWl0aW5nLgo+PiB0MzogU0NIRURfSURMRSBydW4gaW4gQ1BVMiB3aGlsZSBhIFND
-SEVEX05PUk1BTCB3YWl0IGluIENQVTEuCj4+IHQ0OiBhZnRlciBhIHNob3J0IHRpbWUsIHBlcmlv
-ZGljIGxvYWRfYmFsYW5jZSB0cmlnZ2VyZCBhbmQgcHVsbAo+PiBTQ0hFRF9OT1JNQUwgaW4gcnEx
-IHRvIHJxMiwgYW5kIFNDSEVEX05PUk1BTCBsaWtlbHkgcHJlZW1wdHMgU0NIRURfSURMRS4KPj4K
-Pj4gSW4gdGhpcyBzY2VuYXJpbywgU0NIRURfSURMRSBpcyBydW5uaW5nIHdoaWxlIFNDSEVEX05P
-Uk1BTCBpcyB3YWl0aW5nIHRvIHJ1bi4KPj4gVGhlIGxhdGVuY3kgb2YgdGhpcyBTQ0hFRF9OT1JN
-QUwgd2lsbCBiZSBoaWdoIHdoaWNoIGlzIG5vdCBhY2NlcHRibGUuCj4+Cj4+IERvIGEgbG9hZF9i
-YWxhbmNlIGJlZm9yZSBydW5uaW5nIHRoZSBTQ0hFRF9JRExFIG1heSBmaXggdGhpcyBwcm9ibGVt
-Lgo+Pgo+PiBUaGlzIHBhdGNoIHdvcmtzIGFzIGJlbG93Ogo+Pgo+PiAgICAgICAgICAgICAgQ1BV
-MSAgICAgICAgICAgICAgICAgICAgICBDUFUyCj4+ICAgICAgICAgY3VyciAgICAgICBycTEgICAg
-ICAgICAgICBjdXJyICAgICAgICAgIHJxMgo+PiAgICAgICArLS0tLS0tKyB8ICstLS0tLS0rICAg
-ICAgICstLS0tLS0rIHwgKy0tLS0rICstLS0tKwo+PiB0MCAgICB8Tk9STUFMfCB8IHxOT1JNQUx8
-ICAgICAgIHxOT1JNQUx8IHwgfElETEV8IHxJRExFfAo+PiAgICAgICArLS0tLS0tKyB8ICstLS0t
-LS0rICAgICAgICstLS0tLS0rIHwgKy0tLS0rICstLS0tKwo+Pgo+PiAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBOT1JNQUwgZXhpdHMgb3IgYmxvY2tlZAo+PiAgICAgICArLS0tLS0t
-KyB8ICstLS0tLS0rICAgICAgICAgICAgICAgIHwgKy0tLS0rICstLS0tKwo+PiB0MSAgICB8Tk9S
-TUFMfCB8IHxOT1JNQUx8ICAgICAgICAgICAgICAgIHwgfElETEV8IHxJRExFfAo+PiAgICAgICAr
-LS0tLS0tKyB8ICstLS0tLS0rICAgICAgICAgICAgICAgIHwgKy0tLS0rICstLS0tKwo+Pgo+PiB0
-MiAgICAgICAgICAgICAgICAgICAgICAgICAgICBwaWNrX25leHRfdGFza19mYWlyIChhbGwgc2Ug
-YXJlIFNDSEVEX0lETEUpCj4+Cj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG5l
-d2lkbGVfYmFsYW5jZQo+PiAgICAgICArLS0tLS0tKyB8ICAgICAgICAgICAgICAgICArLS0tLS0t
-KyB8ICstLS0tKyArLS0tLSsKPj4gdDMgICAgfE5PUk1BTHwgfCAgICAgICAgICAgICAgICAgfE5P
-Uk1BTHwgfCB8SURMRXwgfElETEV8Cj4+ICAgICAgICstLS0tLS0rIHwgICAgICAgICAgICAgICAg
-ICstLS0tLS0rIHwgKy0tLS0rICstLS0tKwo+Pgo+Pgo+PiB0MTogTk9STUFMIHRhc2sgaW4gQ1BV
-MiBleGl0cyBvciBibG9ja2VkCj4+IHQyOiBwaWNrX25leHRfdGFza19mYWlyIGNoZWNrIGFsbCBz
-ZSBpbiByYnRyZWUgYXJlIFNDSEVEX0lETEUgYW5kIGNhbGxzCj4+IG5ld2lkbGVfYmFsYW5jZSB3
-aG8gdHJpZXMgdG8gcHVsbCBhIFNDSEVEX05PUk1BTChpZiBoYXMpLgo+PiB0MzogcGlja19uZXh0
-X3Rhc2tfZmFpciB3b3VsZCBwaWNrIGEgU0NIRURfTk9STUFMIHRvIHJ1biBpbnN0ZWFkIG9mCj4+
-IFNDSEVEX0lETEUobGlrZWx5KS4KPj4KPj4gPgo+PiA+PiBDUFUgYnkgZG9pbmcgbG9hZF9iYWxh
-bmNlIGZpcnN0Lgo+PiA+Pgo+PiA+PiBTaWduZWQtb2ZmLWJ5OiBDaGVuIFhpYW9ndWFuZyA8eGlh
-b2dnY2hlbkB0ZW5jZW50LmNvbT4KPj4gPj4gU2lnbmVkLW9mZi1ieTogQ2hlbiBIZSA8aGVkZGNo
-ZW5AdGVuY2VudC5jb20+Cj4+ID4+IC0tLQo+PiA+PiAga2VybmVsL3NjaGVkL2ZhaXIuYyB8IDUg
-KysrKysKPj4gPj4gIDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKykKPj4gPj4KPj4gPj4g
-ZGlmZiAtLWdpdCBhL2tlcm5lbC9zY2hlZC9mYWlyLmMgYi9rZXJuZWwvc2NoZWQvZmFpci5jCj4+
-ID4+IGluZGV4IGFlN2NlYmEuLjBhMjYxMzIgMTAwNjQ0Cj4+ID4+IC0tLSBhL2tlcm5lbC9zY2hl
-ZC9mYWlyLmMKPj4gPj4gKysrIGIva2VybmVsL3NjaGVkL2ZhaXIuYwo+PiA+PiBAQCAtNzAwNCw2
-ICs3MDA0LDExIEBAIHN0cnVjdCB0YXNrX3N0cnVjdCAqCj4+ID4+ICAgICAgICAgc3RydWN0IHRh
-c2tfc3RydWN0ICpwOwo+PiA+PiAgICAgICAgIGludCBuZXdfdGFza3M7Cj4+ID4+Cj4+ID4+ICsg
-ICAgICAgaWYgKHByZXYgJiYKPj4gPj4gKyAgICAgICAgICAgZmFpcl9wb2xpY3kocHJldi0+cG9s
-aWN5KSAmJgo+PiA+Cj4+ID5XaHkgZG8geW91IG5lZWQgYSBwcmV2IGFuZCBmYWlyIHRhc2sgID8g
-WW91IHNlZW0gdG8gdGFyZ2V0IHRoZSBzcGVjaWFsCj4+ID5jYXNlIG9mIHBpY2tfbmV4dF90YXNr
-ICBidXQgaW4gdGhpcyBjYXNlIHdoeSBub3Qgb25seSB0ZXN0aW5nIHJmIT1udWxsCj4+ID4gdG8g
-bWFrZSBzdXJlIHRvIG5vdCByZXR1cm4gaW1tZWRpYXRlbHkgYWZ0ZXIganVtcGluZyB0byB0aGUg
-aWRsZQo+Pgo+PiA+bGFiZWw/Cj4+IFdlIGp1c3Qgd2FudCB0byBkbyBsb2FkX2JhbGFuY2Ugb25s
-eSB3aGVuIENQVSBzd2l0Y2hlcyBmcm9tIFNDSEVEX05PUk1BTAo+PiB0byBTQ0hFRF9JRExFLgo+
-PiBJZiBub3QgY2hlY2sgcHJldiwgd2hlbiB0aGUgcnVubmluZyB0YXNrcyBhcmUgYWxsIFNDSEVE
-X0lETEUsIHdlIHdvdWxkCj4+IGRvIG5ld2lkbGVfYmFsYW5jZSBldmVyeXRpbWUgaW4gcGlja19u
-ZXh0X3Rhc2tfZmFpciwgaXQgbWFrZXMgbm8gc2Vuc2UKPj4gYW5kIGtpbmQgb2Ygd2FzdGluZy4K
-Pgo+SSBhZ3JlZSB0aGF0IGNhbGxpbmcgbmV3aWRsZV9iYWxhbmNlIGV2ZXJ5IHRpbWUgcGlja19u
-ZXh0X3Rhc2tfZmFpciBpcwo+Y2FsbGVkIHdoZW4gdGhlcmUgYXJlIG9ubHkgc2NoZWRfaWRsZSB0
-YXNrcyBpcyB1c2VsZXNzLgo+QnV0IHlvdSBhbHNvIGhhdmUgdG8gdGFrZSBpbnRvIGFjY291bnQg
-Y2FzZXMgd2hlcmUgdGhlcmUgd2FzIGFub3RoZXIKPmNsYXNzIG9mIHRhc2sgcnVubmluZyBvbiB0
-aGUgY3B1IGxpa2UgUlQgb25lLiBJbiB5b3VyIGV4YW1wbGUgYWJvdmUsCj5pZiB5b3UgcmVwbGFj
-ZSB0aGUgbm9ybWFsIHRhc2sgb24gQ1BVMiBieSBhIFJUIHRhc2ssIHlvdSBzdGlsbCB3YW50IHRv
-Cgo+cGljayB0aGUgbm9ybWFsIHRhc2sgb24gQ1BVMSBvbmNlIFJUIHRhc2sgZ29lcyB0byBzbGVl
-cC4KU3VyZSzCoHRoaXPCoGNhc2XCoHNob3VsZMKgYmXCoHRha2VuwqBpbnRvwqBhY2NvdW50LMKg
-wqB3ZcKgc2hvdWxkwqBhbHNvwqB0cnnCoHRvCnBpY2vCoG5vcm1hbMKgdGFza8KgaW7CoHRoaXPC
-oGNhc2UuCgo+Cj5Bbm90aGVyIHBvaW50IHRoYXQgeW91IHdpbGwgaGF2ZSB0byBjb25zaWRlciB0
-aGUgaW1wYWN0IG9uCj5ycS0+aWRsZV9zdGFtcCBiZWNhdXNlIG5ld2lkbGVfYmFsYW5jZSBpcyBh
-c3N1bWVkIHRvIGJlIGNhbGxlZCBiZWZvcmUKCj5nb2luZyBpZGxlIHdoaWNoIGlzIG5vdCB0aGUg
-Y2FzZSBhbnltb3JlIHdpdGggeW91ciB1c2UgY2FzZQpZZXMuwqBycS0+aWRsZV9zdGFtcMKgc2hv
-dWxkwqBub3TCoGJlwqBjaGFuZ2VkwqBpbsKgdGhpc8KgY2FzZS4KCgoKQWN0dWFsbHnCoHdlwqB3
-YW50wqB0b8KgcHVsbMKgYcKgU0NIRURfTk9STUFMIHRhc2vCoChpZsKgcG9zc2libGUpwqB0b8Kg
-cnVuwqB3aGVuwqBhwqBjcHXCoGlzCmFib3V0wqB0b8KgcnVuwqBTQ0hFRF9JRExFwqB0YXNrLsKg
-QnV0wqBjdXJyZW50bHnCoG5ld2lkbGVfYmFsYW5jZcKgaXPCoG5vdApkZXNpZ25lZMKgZm9ywqBT
-Q0hFRF9JRExFwqDCoHNvwqBTQ0hFRF9JRExFwqBjYW7CoGFsc2/CoGJlwqBwdWxsZWTCoHdoaWNo
-CmlzwqB1c2VsZXNzwqBpbsKgb3VywqBzaXR1YXRpb24uCgpTb8Kgd2XCoHBsYW7CoHRvwqBhZGTC
-oGHCoG5ld8KgZnVuY3Rpb27CoHNjaGVkX2lkbGVfYmFsYW5jZcKgd2hpY2jCoG9ubHnCoHRyecKg
-dG8KcHVsbMKgU0NIRURfTk9STUFMwqB0YXNrc8KgZnJvbcKgdGhlwqBidXNpZXN0wqBjcHUuIEFu
-ZMKgd2XCoHdpbGwgY2FsbMKgCnNjaGVkX2lkbGVfYmFsYW5jZcKgd2hlbsKgdGhlwqBwcmV2aW91
-c8KgdGFza8KgaXPCoG5vcm1hbMKgb3LCoFJUwqBhbmQKaG9waW5nwqB3ZcKgY2FuwqBwdWxswqBh
-wqBTQ0hFRF9OT1JNQUzCoHRhc2vCoHRvwqBydW4uCgpEb8KgeW91wqB0aGlua8KgaXTCoGlzwqBv
-a8KgdG/CoGFkZMKgYcKgbmV3wqBzY2hlZF9pZGxlX2JhbGFuY2U/Cgo+Cj4+Cj4+ID4KPj4KPj4g
-PkFsc28gd2h5IG5vdCBkb2luZyB0aGF0IGZvciBkZWZhdWx0IGNhc2UgdG9vID8gaS5lLiBiYWxh
-bmNlX2ZhaXIoKSA/Cj4+IFlvdSBhcmUgcmlnaHQsIGlmIHlvdSB0aGluayB0aGlzIHNjZW5hcmlv
-IG1ha2VzIHNlbnNlLCB3ZSB3aWxsIHNlbmQgYQo+PiByZWZpbmVkIHBhdGNoIHNvb24gOi0pCj4+
-Cj4+ID4KPj4gPj4gKyAgICAgICAgICAgc2NoZWRfaWRsZV9jcHUocnEtPmNwdSkpCj4+ID4+ICsg
-ICAgICAgICAgICAgICBnb3RvIGlkbGU7Cj4+ID4+ICsKPj4gPj4gIGFnYWluOgo+PiA+PiAgICAg
-ICAgIGlmICghc2NoZWRfZmFpcl9ydW5uYWJsZShycSkpCj4+ID4+ICAgICAgICAgICAgICAgICBn
-b3RvIGlkbGU7Cj4+ID4+IC0tCj4+ID4+IDEuOC4zLjEKPj4gPj4KPj4gPj4K
+On 10.01.21 13:40, Muchun Song wrote:
+> If the refcount is one when it is migrated, it means that the page
+> was freed from under us. So we are done and do not need to migrate.
+> 
+> This optimization is consistent with the regular pages, just like
+> unmap_and_move() does.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Acked-by: Yang Shi <shy828301@gmail.com>
+> ---
+>  mm/migrate.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index 4385f2fb5d18..a6631c4eb6a6 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
+>  		return -ENOSYS;
+>  	}
+>  
+> +	if (page_count(hpage) == 1) {
+> +		/* page was freed from under us. So we are done. */
+> +		putback_active_hugepage(hpage);
+> +		return MIGRATEPAGE_SUCCESS;
+> +	}
+> +
+>  	new_hpage = get_new_page(hpage, private);
+>  	if (!new_hpage)
+>  		return -ENOMEM;
+> 
+
+Question: What if called via alloc_contig_range() where we even want to
+"migrate" free pages, meaning, relocate it?
+
+-- 
+Thanks,
+
+David / dhildenb
+
