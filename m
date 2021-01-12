@@ -2,122 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 078112F3732
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55DC12F373B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731029AbhALRcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:32:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48154 "EHLO
+        id S2390291AbhALRcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:32:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725846AbhALRcU (ORCPT
+        with ESMTP id S2387717AbhALRcb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:32:20 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992C3C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:31:40 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id l23so2129691pjg.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:31:40 -0800 (PST)
+        Tue, 12 Jan 2021 12:32:31 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3EDC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:31:51 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id 2so2067198qtt.10
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:31:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=gszL2E3VdL8RsIgnFpVUkcrAEKhs/wMGNVMIkIbtCio=;
-        b=kXriF6lXXgicCw5/Lb3CqFuEtYLcY/CIJbgbkwvRS82DfY2tqQoot3SCGYJmO+caZc
-         DlsJizP1kcplvgKi2Kxlnwio7DPWXT1k8qtzDAesiJCdc++uwb9iJa9Q1otIrNOpuhV0
-         vjEsgrkFMeOj8tkTeSppZ2fh8AfPQpkrrx8fw=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7zjx3/LiMGAYPnDegQb+uMAhjW6hE3F/ETI3bW5nmzg=;
+        b=YNnxezCX2onJSEI5/+TvLtF8n8bnTmgRCUP/jWZoMcUaP4BBZeIRQQQfE8xcVk3OLC
+         GM++XK13FstnX6BTO8JMf3oC75aUvl5GBfaydDvbCYpKz7LYBPQgMH9uGE9oyMt7aDN/
+         7ZjyTTDRbQepSHRXdEktzZJ0MpuPSqsSe/c7BnOgp8rGKFRZ+O8vT2wm9Z6Y2Ln5/6o2
+         xq5RVGmlMGxhIqL4V000cUEKdckClx9OOm0WzAx9C18aWEzMj8DPNPAFcqCkA8FpSG9U
+         wbikeEC7QyJ6oFMGsQ2oOscBCyg145uh2n6jgQR3MSJ7+siB2W8IGK+hN3LZJnlaDBEe
+         r+OA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=gszL2E3VdL8RsIgnFpVUkcrAEKhs/wMGNVMIkIbtCio=;
-        b=I7VNW5Z7hosVxFKa1tz84ylVLYK/BFMsEQldFL+fk/KOd8yce39+vj/HFbHlUUuHd2
-         XHcY1s+3URqsmUSY5Pd7oXV58fabSbSPdUP4eqzxK2uOf5QO8slyRxAT/rPvzxwWN7L6
-         xXRl062N0aFuvQjtVkuzu05G+mGyo6Eykam9eOTn0uO1eOhZc0t0FgGAsCwrgBxPjYc1
-         ksiEIrSJE3kyajQN5n5ya6gMw5Ai/0t7F+Kfs+AXH9bsUXplNf8pzO9gpR0TbUy//Fyh
-         WXmAPYaF7TaWmdNe8Vk/sPxRITS533towPjrY9mmE/r8JO5Xsx+TtEHYIXisDq0uxUIL
-         lnvg==
-X-Gm-Message-State: AOAM533YwJSwIc5/z/alC6WYVs54HFLKi8Tw3w2K+KO6fQusfXzdV1c6
-        Hq1NQcq0CaKfJ8jY2+AvsU0wKg==
-X-Google-Smtp-Source: ABdhPJzrXTULtYCmxU7ZcNLU+k1uU5R8ekYs05eVYzYNSKiNNUMcSUwzfdVTV8Hd2GEWEO5pt7JrwA==
-X-Received: by 2002:a17:90a:bf88:: with SMTP id d8mr194231pjs.124.1610472700173;
-        Tue, 12 Jan 2021 09:31:40 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k125sm4726237pga.57.2021.01.12.09.31.39
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7zjx3/LiMGAYPnDegQb+uMAhjW6hE3F/ETI3bW5nmzg=;
+        b=mahptJ7CXzfkGPx3inVeJiIKy70bMe+91hJeBq5HWQaC7GOXWUiiiHCtEE0NfmqsQ3
+         b3NGShZqG8yXYxdHVV8OqqRvPA0DgS/t566cNnqkVxkl7PxLOeIHZwOe+N87wxl6tBSX
+         VqByvONB9obqqfN5gaahb9JGWYZrquIjksCOIcXCIjUWFb8LgMa2kRJCTnQ92m4hJ6Ah
+         ZsqdFdvZyewerklMj9eNyDDORJNLIxisxEdcpZ92AjP/quIVOITCnP2H4/5jv1vQqL1s
+         SI7t/7VgDAV29R55TKfOFDuBykTpEBOsHl7Sts5wjoGLvggE9IiAo+TO3pGPYkvwFdd7
+         euPA==
+X-Gm-Message-State: AOAM531CTNcZTNZi87vM4Xw1u6dllhbyB6b0H1mq4SsHv1iWC1yCtrDW
+        DQgIEsmP7XP2XAADFBEb/8M=
+X-Google-Smtp-Source: ABdhPJwczDNr/BhkzhP+138wDhh80o2IC/nxqNCbbUKT8+YbLU9UpLcBd2bwoSVE5L/JypSRQelxJA==
+X-Received: by 2002:ac8:1184:: with SMTP id d4mr18950qtj.103.1610472710791;
+        Tue, 12 Jan 2021 09:31:50 -0800 (PST)
+Received: from glsvmlin.ini.cmu.edu (GLSVMLIN.INI.CMU.EDU. [128.2.16.9])
+        by smtp.gmail.com with ESMTPSA id k7sm1453512qtg.65.2021.01.12.09.31.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 09:31:39 -0800 (PST)
-Date:   Tue, 12 Jan 2021 09:31:38 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.10 45/51] gcc-plugins: fix gcc 11 indigestion
- with plugins...
-Message-ID: <202101120931.61C1F0B@keescook>
-References: <20210112125534.70280-1-sashal@kernel.org>
- <20210112125534.70280-45-sashal@kernel.org>
+        Tue, 12 Jan 2021 09:31:49 -0800 (PST)
+From:   Gabriel Somlo <gsomlo@gmail.com>
+To:     shorne@gmail.com, mholenko@antmicro.com, kgugala@antmicro.com
+Cc:     linux-kernel@vger.kernel.org, pczarnecki@internships.antmicro.com,
+        f.kermarrec@gmail.com, gregkh@linuxfoundation.org, gsomlo@gmail.com
+Subject: [PATCH v6 0/5] drivers/soc/litex: support 32-bit subregisters, 64-bit CPUs
+Date:   Tue, 12 Jan 2021 12:31:39 -0500
+Message-Id: <20210112173144.4002594-1-gsomlo@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210112125534.70280-45-sashal@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This will need an additional fix, so please don't backport it yet.
+This series expands on commit 22447a99c97e ("drivers/soc/litex: add LiteX
+SoC Controller driver"), adding support for handling both 8- and 32-bit
+LiteX CSR (MMIO) subregisters, on both 32- and 64-bit CPUs.
 
-On Tue, Jan 12, 2021 at 07:55:27AM -0500, Sasha Levin wrote:
-> From: Valdis Klētnieks <valdis.kletnieks@vt.edu>
-> 
-> [ Upstream commit 67a5a68013056cbcf0a647e36cb6f4622fb6a470 ]
-> 
-> Fedora Rawhide has started including gcc 11,and the g++ compiler
-> throws a wobbly when it hits scripts/gcc-plugins:
-> 
->   HOSTCXX scripts/gcc-plugins/latent_entropy_plugin.so
-> In file included from /usr/include/c++/11/type_traits:35,
->                  from /usr/lib/gcc/x86_64-redhat-linux/11/plugin/include/system.h:244,
->                  from /usr/lib/gcc/x86_64-redhat-linux/11/plugin/include/gcc-plugin.h:28,
->                  from scripts/gcc-plugins/gcc-common.h:7,
->                  from scripts/gcc-plugins/latent_entropy_plugin.c:78:
-> /usr/include/c++/11/bits/c++0x_warning.h:32:2: error: #error This file requires compiler and library support for the ISO
->  C++ 2011 standard. This support must be enabled with the -std=c++11 or -std=gnu++11 compiler options.
->    32 | #error This file requires compiler and library support \
-> 
-> In fact, it works just fine with c++11, which has been in gcc since 4.8,
-> and we now require 4.9 as a minimum.
-> 
-> Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
-> Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> Link: https://lore.kernel.org/r/82487.1609006918@turing-police
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  scripts/gcc-plugins/Makefile | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/scripts/gcc-plugins/Makefile b/scripts/gcc-plugins/Makefile
-> index d66949bfeba45..b5487cce69e8e 100644
-> --- a/scripts/gcc-plugins/Makefile
-> +++ b/scripts/gcc-plugins/Makefile
-> @@ -22,9 +22,9 @@ always-y += $(GCC_PLUGIN)
->  GCC_PLUGINS_DIR = $(shell $(CC) -print-file-name=plugin)
->  
->  plugin_cxxflags	= -Wp,-MMD,$(depfile) $(KBUILD_HOSTCXXFLAGS) -fPIC \
-> -		   -I $(GCC_PLUGINS_DIR)/include -I $(obj) -std=gnu++98 \
-> +		   -I $(GCC_PLUGINS_DIR)/include -I $(obj) -std=gnu++11 \
->  		   -fno-rtti -fno-exceptions -fasynchronous-unwind-tables \
-> -		   -ggdb -Wno-narrowing -Wno-unused-variable -Wno-c++11-compat \
-> +		   -ggdb -Wno-narrowing -Wno-unused-variable \
->  		   -Wno-format-diag
->  
->  plugin_ldflags	= -shared
-> -- 
-> 2.27.0
-> 
+Notes v6:
+	- split out s/LITEX_REG_SIZE/LITEX_SUBREG_ALIGN/g change
+	  into its own dedicated (cosmetic-only) patch (3/5).
+	- fixed typos in "main patch" (now 4/5) changelog.
+	- fixed typos in comments added via patch 5/5.
+
+Notes v5:
+	- added patch (4/4) taking 'litex_[set|get]_reg()' private
+	- additional optimization of [_]litex_set_reg() in 3/4
+
+Notes v4:
+	- improved "eloquence" of some 3/3 commit blurb paragraphs
+	- fixed instance of "disgusting" comment style :)
+	- litex_[get|set]_reg() now using size_t for 'reg_size' argument
+	- slightly tighter shift calculation in litex_set_reg()
+
+Notes v3:
+	- split into smaller, more self-explanatory patches
+	- more detailed commit blurb for "main payload" (3/3) patch
+	- eliminate compiler warning on 32-bit architectures
+
+Notes v2:
+	- fix typo (s/u32/u64/) in litex_read64().
+
+Notes v1:
+	- LITEX_SUBREG_SIZE now provided by Kconfig.
+	- it's not LITEX_REG_SIZE, but rather LITEX_SUBREG_ALIGN!
+	- move litex_[get|set]_reg() to include/linux/litex.h and mark
+	  them as "static inline";
+	- redo litex_[read|write][8|16|32|64]() using litex_[get|set]_reg()
+	  (compiler should produce code as efficient as hardcoded shifts,
+	  but also automatically matching LITEX_SUBREG_SIZE).
+
+Gabriel Somlo (5):
+  drivers/soc/litex: move generic accessors to litex.h
+  drivers/soc/litex: separate MMIO from subregister offset calculation
+  drivers/soc/litex: rename LITEX_REG_SIZE to LITEX_SUBREG_ALIGN
+  drivers/soc/litex: support 32-bit subregisters, 64-bit CPUs
+  drivers/soc/litex: make 'litex_[set|get]_reg()' methods private
+
+ drivers/soc/litex/Kconfig          |  14 ++-
+ drivers/soc/litex/litex_soc_ctrl.c |  76 +-------------
+ include/linux/litex.h              | 154 +++++++++++++++++++----------
+ 3 files changed, 119 insertions(+), 125 deletions(-)
 
 -- 
-Kees Cook
+2.26.2
+
