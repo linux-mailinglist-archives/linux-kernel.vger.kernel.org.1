@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC832F358E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D65732F3590
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:21:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406693AbhALQUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:20:44 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:35088 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392994AbhALQPG (ORCPT
+        id S2393006AbhALQPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:15:02 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:54798 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392987AbhALQPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:15:06 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CGDn4M162430;
+        Tue, 12 Jan 2021 11:15:00 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CG9ZPi086506;
         Tue, 12 Jan 2021 16:13:59 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=efm5Qo8sMnfNkUEZI2BtdTwiszHBoNWwLnT4vdpoihU=;
- b=OhnKnJ0HSlqLrhLEWr+C5AJsf+6v3B6rJs7nP/9OdjfWtxf+wVoj+y468kJ8HDZihkEe
- Gjn65QhYtn33Lsa38bUiiqpd3R1LSy6EcaIHC7/AeFognmrBZTVDDvHeXTud7zAJ8bdn
- icdf6AXyh3Pb3Mp917RcuRyoOaGk0kETIcT4yaf6Oi2R5YVMtjDoGmWr9opes9m/ythw
- eK3ZFyhsoZpacLSnvEiMesXE7/2Pazi9XWVJALNHtNHRAiS2ZmBFrAppz3Fmchgaw8Om
- 7qou/7lai/OtoyxcAuurbxWfFO4uaKhz3zp3IwvR2F6Cr6vymYKrPby9lwxARqnjuCzo tg== 
+ bh=1dXdaNMkQ9ht1Yl969Ei1/05Yx6TSU8Ts6Eld26isIU=;
+ b=fk4VzTQVsbMvG2GKU+A18L9zddMqfm+6T7u4FpAxFs0l7gWtxngJCvUi06leiScaZlHv
+ 4iqz/rlG3EG63tjWc5OrLDEeo1Yl4iLBkQgZPQnrMEaydqGGdygAjrZeIJT9h8fo6ovi
+ bRq+7am3Mepn0M6NNLjkMdcL6dYoAmHao14/mTOY7Z33GDfHt4efDuVUZNIpB4nQ/mJE
+ jyPYRjBPIqbn+gcfeQaMQE6w+SZ5i8fFyKpH9npBv7buYc4UC3toVe1OgjLKCmpJrYM1
+ kr9ByRcP+kywh1rccZt9o6t0dM6DJk43zshPcmhuHJWQII95SSqhbCE3witkjd2HIICy Pw== 
 Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 360kcyq5fw-1
+        by aserp2130.oracle.com with ESMTP id 360kg1q4xs-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Tue, 12 Jan 2021 16:13:59 +0000
 Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CGA3if094766;
-        Tue, 12 Jan 2021 16:13:58 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 360key12rg-1
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CGA2av094680;
+        Tue, 12 Jan 2021 16:13:59 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 360key12s5-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Tue, 12 Jan 2021 16:13:58 +0000
 Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10CGDuvN030282;
-        Tue, 12 Jan 2021 16:13:56 GMT
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10CGDwf8019815;
+        Tue, 12 Jan 2021 16:13:58 GMT
 Received: from revolver.jebus.ca (/23.233.25.87)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 12 Jan 2021 08:13:55 -0800
+        with ESMTP ; Tue, 12 Jan 2021 08:13:57 -0800
 From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
 To:     maple-tree@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
@@ -55,9 +55,9 @@ Cc:     Andrew Morton <akpm@google.com>, Song Liu <songliubraving@fb.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         Rik van Riel <riel@surriel.com>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v2 39/70] drivers/tee/optee: Use maple tree iterators for __check_mem_type()
-Date:   Tue, 12 Jan 2021 11:12:09 -0500
-Message-Id: <20210112161240.2024684-40-Liam.Howlett@Oracle.com>
+Subject: [PATCH v2 40/70] fs/binfmt_elf: Use maple tree iterators for fill_files_note()
+Date:   Tue, 12 Jan 2021 11:12:10 -0500
+Message-Id: <20210112161240.2024684-41-Liam.Howlett@Oracle.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20210112161240.2024684-1-Liam.Howlett@Oracle.com>
 References: <20210112161240.2024684-1-Liam.Howlett@Oracle.com>
@@ -69,45 +69,40 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulk
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2101120092
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
- impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101120093
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ clxscore=1015 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101120092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 ---
- drivers/tee/optee/call.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ fs/binfmt_elf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-index c981757ba0d40..94acf379eaeeb 100644
---- a/drivers/tee/optee/call.c
-+++ b/drivers/tee/optee/call.c
-@@ -545,12 +545,17 @@ static bool is_normal_memory(pgprot_t p)
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index fa50e8936f5fc..92b67b914bf96 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -1609,6 +1609,7 @@ static int fill_files_note(struct memelfnote *note)
+ 	user_long_t *data;
+ 	user_long_t *start_end_ofs;
+ 	char *name_base, *name_curpos;
++	MA_STATE(mas, &mm->mm_mt, 0, 0);
  
- static int __check_mem_type(struct vm_area_struct *vma, unsigned long end)
- {
--	while (vma && is_normal_memory(vma->vm_page_prot)) {
--		if (vma->vm_end >= end)
--			return 0;
--		vma = vma->vm_next;
-+	MA_STATE(mas, &vma->vm_mm->mm_mt, vma->vm_start, vma->vm_start);
-+
-+
-+	mas_for_each(&mas, vma, end) {
-+		if (!is_normal_memory(vma->vm_page_prot))
-+		    break;
- 	}
- 
-+	if (!vma)
-+		return 0;
-+
- 	return -EINVAL;
- }
+ 	/* *Estimated* file count and total data size needed */
+ 	count = mm->map_count;
+@@ -1633,7 +1634,7 @@ static int fill_files_note(struct memelfnote *note)
+ 	name_base = name_curpos = ((char *)data) + names_ofs;
+ 	remaining = size - names_ofs;
+ 	count = 0;
+-	for (vma = mm->mmap; vma != NULL; vma = vma->vm_next) {
++	mas_for_each(&mas, vma, ULONG_MAX) {
+ 		struct file *file;
+ 		const char *filename;
  
 -- 
 2.28.0
