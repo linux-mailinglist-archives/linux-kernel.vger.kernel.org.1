@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A3F2F3F89
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 029922F3F8F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731529AbhALW05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:26:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55838 "EHLO
+        id S2391679AbhALW1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:27:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729804AbhALW0n (ORCPT
+        with ESMTP id S1731556AbhALW1k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:26:43 -0500
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78932C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:26:03 -0800 (PST)
-Received: by mail-oo1-xc36.google.com with SMTP id n127so16605ooa.13
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:26:03 -0800 (PST)
+        Tue, 12 Jan 2021 17:27:40 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED57BC061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:26:59 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id x13so19553oto.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:26:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=SNbCI8QXsw68f7cArm3g7fzx51ypEltbTSdK1JYnPSE=;
-        b=rvB9yn151kICpyUsGCIqOBZDBv/QMlydvjzDatPpjwhMAi5h887EeYglO0YrS60Bug
-         TADqyb9R1oD8GPT3BR3IuQZamXvr3s7P2He1HZWLlekMpfDzQR+hiVlb90yGC/SXHX6T
-         X/Bn4AgH8eZqvA/nrm/X5OugRdmCQ/YWmx6c2XA1Rn1uxMyGkGKzmWA41iM+k4ddK+vq
-         y4YPI5i84iT3PUz+u7k8lXJb5NTUWDqXi5tK0Ix3xWYSKO6NhkzzKJTtreASboCL/wbn
-         7TOYFRfi4u6uBl/pGjvYt12jxCUQsyrHLGm95L+hBFdz8Iv3+8YnWGj0E0ml5bq/CJus
-         jUug==
+        bh=trCTWdvjHMkvPDEDmT3pUIVTBrdeeOfcyXQgZDcVJx4=;
+        b=muS1YPhlz4qgL7ceLFn6pIbbjGWGMgOZza+OnaaW7VlWYR3J2M2OjcCZo3pIV+yafO
+         Vf6+DMKqkoS9l84JDL2Yq6/BjkJsySedrz2NXMqRl3eSpop5oU8CLmPzCvyjNvGK+NtE
+         Oiw1/e7+KvH9IIYv6as3G6b6zYkXRs0J+PmQ/gpQfXMQLW0Fmz9D0vy4RlebIjHOPnfE
+         4hVTAczfzJ7/FStB42OlahmmaPC9AK/b6BPpOVOLy25Yt2VBSwWQfJRFTOSA8OI8Dz1t
+         rt+EE1JtqwD1bvCSfcjHw0v1SAuokEG52nhSxuCIj/X0lwdhNcGUQgfhGTAAGwxqc+u/
+         6EOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=SNbCI8QXsw68f7cArm3g7fzx51ypEltbTSdK1JYnPSE=;
-        b=B4qOzTuovEnMef0RPlTIiFbQhq354iw7xeUhtmGrMAo9vTPThZKWp3ELXQ2sV438ly
-         GNzorB39MRAkdZr5nf2RCmZHgO+cWZwnUfWmJsZiEN6wl0i7i5ZanmbXE6GWBVPgYDHu
-         qcX/YTrPhRy2pjL/FOqoBiAhvIqWkQuPFLmRtOPBrHpgLtgRztut7QocB4oKvsqFe56h
-         d3me18GqO3Cwz5myVkibG7mUqjKpeBXHrc8wUYBejNn7HrKPSCbXRcch3x6fvFCRjmHR
-         mlkV3liEodmq3a4q+DVvOxvgCVcsdh7xUoguHoE2AnFGmqLGYk5+hQmm7QVk4Czb4vj4
-         P6cQ==
-X-Gm-Message-State: AOAM531KUTQaBHxSLPWnhG3J4mWqhErDEGnn5VA6B854O5fhgzqb4l74
-        ky7SE2X3eTWuKwostJOwoY63CrPYrjGcpiAWYKE=
-X-Google-Smtp-Source: ABdhPJwl82AhUlOj+8xTD00jkCRkRwEUvm+f6rSMzzMnuxSDkDI6yDrzeHf+3NyTqb+2neWNTj3xNpDc8ungkzhghtA=
-X-Received: by 2002:a4a:a2c5:: with SMTP id r5mr786480ool.72.1610490362947;
- Tue, 12 Jan 2021 14:26:02 -0800 (PST)
+        bh=trCTWdvjHMkvPDEDmT3pUIVTBrdeeOfcyXQgZDcVJx4=;
+        b=AnIFaU9GlLJeZKrBKn5RT5USzdYgfi/VunbgOk14WyXKVeQGNLPTqdWWAWlHJVFreH
+         oHJSJQiCkqZnZ/RCHwbWKcdRQ2VWgGjLH0U9q8l4Kja1dnDswjbwS3WUpbnfjCqzIfhb
+         /8uKtBOMeqQbN4qOj1IAx3Z/PtJ10QVvhrT1mJcHvZOIA0oGTiWb+0EIPWqOJAcJQqbJ
+         d+4LAf5FM2zN5GI4zvPbdPJwHIMR+IFipWUNKq4jHF1hrW3d+h4RxkJvP4g/YynA5dj9
+         epIwWyNwTjwnS+V5hKOtFNDytP3XdteecBlWIBgFKjWQ37sKNfCQUBudGeyArDpnZYM6
+         4pMQ==
+X-Gm-Message-State: AOAM5330ZsSezB0hUpOhsUPy0Bf1ci8dXeLfcuRrurZlpFtmqygkRMID
+        2RRgQJwMHuA1AiIyE80UnJYhqQpaFCAlP3UP86U=
+X-Google-Smtp-Source: ABdhPJwLdnpdw0ja1Ltjtm14wSKYzVapg2AKCaNpZpS7lOKMqBsG7IHq4Nher6CTSy1VnNs1FVkIKuBYnjRMgAjviFI=
+X-Received: by 2002:a9d:2ac2:: with SMTP id e60mr1051458otb.23.1610490419441;
+ Tue, 12 Jan 2021 14:26:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-25-lee.jones@linaro.org>
-In-Reply-To: <20210111191926.3688443-25-lee.jones@linaro.org>
+References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-26-lee.jones@linaro.org>
+In-Reply-To: <20210111191926.3688443-26-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 12 Jan 2021 17:25:51 -0500
-Message-ID: <CADnq5_PEmMUY8G8Yetd5t6g3KPMyNSz4vcp4rXk5+6reXjtyeg@mail.gmail.com>
-Subject: Re: [PATCH 24/40] drm/amd/pm/swsmu/smu11/vangogh_ppt: Make local
- function 'vangogh_clk_dpm_is_enabled' static
+Date:   Tue, 12 Jan 2021 17:26:47 -0500
+Message-ID: <CADnq5_MDnYtb_zxUQfqgbDKvzHuPRdBPDj=BRBGPPme_6aa30A@mail.gmail.com>
+Subject: Re: [PATCH 25/40] drm/amd/display/dc/dce120/dce120_timing_generator:
+ Remove unused function 'dce120_timing_generator_get_position'
 To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Xiaojian Du <Xiaojian.Du@amd.com>, David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
+Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
         Maling list - DRI developers 
         <dri-devel@lists.freedesktop.org>,
         Alex Deucher <alexander.deucher@amd.com>,
@@ -70,44 +70,87 @@ On Mon, Jan 11, 2021 at 2:20 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:613:6: warnin=
-g: no previous prototype for =E2=80=98vangogh_clk_dpm_is_enabled=E2=80=99 [=
--Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce120/dce120_timing_generator.=
+c:602:13: warning: =E2=80=98dce120_timing_generator_get_position=E2=80=99 d=
+efined but not used [-Wunused-function]
 >
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
 > Cc: Alex Deucher <alexander.deucher@amd.com>
 > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Xiaojian Du <Xiaojian.Du@amd.com>
+> Cc: Lee Jones <lee.jones@linaro.org>
 > Cc: amd-gfx@lists.freedesktop.org
 > Cc: dri-devel@lists.freedesktop.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Applied the same patch from someone else earlier today.  Thanks!
+Applied.  Thanks!
 
 Alex
 
 > ---
->  drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  .../dc/dce120/dce120_timing_generator.c       | 43 -------------------
+>  1 file changed, 43 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c b/drivers/g=
-pu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-> index 75ddcadf3802a..37bd4c647418d 100644
-> --- a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-> +++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-> @@ -610,8 +610,8 @@ static int vangogh_get_profiling_clk_mask(struct smu_=
-context *smu,
->         return 0;
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce120/dce120_timing_generato=
+r.c b/drivers/gpu/drm/amd/display/dc/dce120/dce120_timing_generator.c
+> index d02ecb983c9cd..b57c466124e76 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce120/dce120_timing_generator.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce120/dce120_timing_generator.c
+> @@ -589,49 +589,6 @@ static void dce120_timing_generator_set_drr(
+>         }
 >  }
 >
-> -bool vangogh_clk_dpm_is_enabled(struct smu_context *smu,
-> -                               enum smu_clk_type clk_type)
-> +static bool vangogh_clk_dpm_is_enabled(struct smu_context *smu,
-> +                                      enum smu_clk_type clk_type)
->  {
->         enum smu_feature_mask feature_id =3D 0;
->
+> -/*
+> - ***********************************************************************=
+******
+> - *  Function: dce120_timing_generator_get_position
+> - *
+> - *  @brief
+> - *     Returns CRTC vertical/horizontal counters
+> - *
+> - *  @param [out] position
+> - ***********************************************************************=
+******
+> - */
+> -static void dce120_timing_generator_get_position(struct timing_generator=
+ *tg,
+> -       struct crtc_position *position)
+> -{
+> -       uint32_t value;
+> -       struct dce110_timing_generator *tg110 =3D DCE110TG_FROM_TG(tg);
+> -
+> -       value =3D dm_read_reg_soc15(
+> -                       tg->ctx,
+> -                       mmCRTC0_CRTC_STATUS_POSITION,
+> -                       tg110->offsets.crtc);
+> -
+> -       position->horizontal_count =3D get_reg_field_value(
+> -                       value,
+> -                       CRTC0_CRTC_STATUS_POSITION,
+> -                       CRTC_HORZ_COUNT);
+> -
+> -       position->vertical_count =3D get_reg_field_value(
+> -                       value,
+> -                       CRTC0_CRTC_STATUS_POSITION,
+> -                       CRTC_VERT_COUNT);
+> -
+> -       value =3D dm_read_reg_soc15(
+> -                       tg->ctx,
+> -                       mmCRTC0_CRTC_NOM_VERT_POSITION,
+> -                       tg110->offsets.crtc);
+> -
+> -       position->nominal_vcount =3D get_reg_field_value(
+> -                       value,
+> -                       CRTC0_CRTC_NOM_VERT_POSITION,
+> -                       CRTC_VERT_COUNT_NOM);
+> -}
+> -
+> -
+>  static void dce120_timing_generator_get_crtc_scanoutpos(
+>         struct timing_generator *tg,
+>         uint32_t *v_blank_start,
 > --
 > 2.25.1
 >
