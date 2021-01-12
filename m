@@ -2,85 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0A32F32F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C082F32F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:29:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730108AbhALO1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:27:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54184 "EHLO mail.kernel.org"
+        id S1732422AbhALO3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:29:14 -0500
+Received: from www.zeus03.de ([194.117.254.33]:59978 "EHLO mail.zeus03.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726546AbhALO1u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:27:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3DE52312D;
-        Tue, 12 Jan 2021 14:27:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610461629;
-        bh=/eN3KoLz22U1MG1qJgPw2OYCxxPzd1K/ODjHtsXMphI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ja8kyZGvcx4qgPbScf0gV2J8dQiRInzFqM3ZXY2FTIfDEuBaXeTVv0MKbNPB7aBVG
-         719SrKgdh/PJv2XMVDrdM71WxkVKFaedgYLGJy2Ny53qXhElQpa2dP2+CFLmn7oMAY
-         21cvUJSbcu2yDQYM4j5NUPhb8qyIFitglyZ0RCa560gHNnz5lkpmRlgY6WwqmitaWH
-         1VBLPQOr2jQPP1OwTakdPn1JfmbFUFkN43T0qMJNVLk6lokrpcB7xEka/JQGTngsDM
-         fCQKuS3wBuJg/l97OEh4Bd33hhoSnuBwuiQsJYk1e4PRGn8zCoK/NIQRqW0C6vggqH
-         YNMibbCNOT3IQ==
-Date:   Tue, 12 Jan 2021 14:27:05 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        patches@amperecomputing.com
-Subject: Re: [PATCH] arm64: Kconfig: Increase NR_CPUS default to 512
-Message-ID: <20210112142705.GB9524@willie-the-truck>
-References: <20210110053615.3594358-1-vanshikonda@os.amperecomputing.com>
- <20210111105636.GA7071@willie-the-truck>
- <20210111175741.ldifmv7uhdekbq5d@con01sys-r111.scc-lab.amperecomputing.com>
- <fb9542df-19cf-4db7-d112-0917e5b65e9f@infradead.org>
- <20210111182526.GB17941@gaia>
- <20210112052003.eeg725mmnyv67eop@con01sys-r111.scc-lab.amperecomputing.com>
+        id S1727244AbhALO3O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 09:29:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=KAQHmQ1LgTod0o0SSNeIdVcY3K1q
+        bJ0cV/hGHTftq5U=; b=MfouD1RycVIBILjWWqTNginBeN4njDnBxZrx4Mvk/uYi
+        wfuN3FVsVLFOi9AeTexssbQBRhXGjysetI+vQl6IkGdJXuI+ChgH9XlhO5KonFlR
+        5K5udKDmnjnl/lRxCYArih5Ow0g8aGtiDJ2N1SPQZ8eJKXnWNEtMRd3goVRUB1Q=
+Received: (qmail 2772388 invoked from network); 12 Jan 2021 15:28:31 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 12 Jan 2021 15:28:31 +0100
+X-UD-Smtp-Session: l3s3148p1@HMk31rS48LwgAwDPXwxzAXsl+VVkdePs
+Date:   Tue, 12 Jan 2021 15:28:30 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] arm64: add grace period when rebooting
+Message-ID: <20210112142830.GA42688@kunai>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org
+References: <20201219143648.56217-1-wsa+renesas@sang-engineering.com>
+ <20201219143648.56217-2-wsa+renesas@sang-engineering.com>
+ <20210112135534.GA9277@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zhXaljGHf11kAtnf"
 Content-Disposition: inline
-In-Reply-To: <20210112052003.eeg725mmnyv67eop@con01sys-r111.scc-lab.amperecomputing.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210112135534.GA9277@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 09:20:03PM -0800, Vanshidhar Konda wrote:
-> On Mon, Jan 11, 2021 at 06:25:27PM +0000, Catalin Marinas wrote:
-> > On Mon, Jan 11, 2021 at 10:03:18AM -0800, Randy Dunlap wrote:
-> > > On 1/11/21 9:57 AM, Vanshidhar Konda wrote:
-> > > > On Mon, Jan 11, 2021 at 10:56:36AM +0000, Will Deacon wrote:
-> > > >> On Sat, Jan 09, 2021 at 09:36:15PM -0800, vanshikonda@os.amperecomputing.com wrote:
-> > > >>> From: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-> > > >>>
-> > > >>> Increase the default value of NR_CPUS to 512 from 256. This will
-> > > >>> enable the defconfig kernel to support platforms that have upto
-> > > >>> 512 cores.
-> > > >>
-> > > >> Do we already support such a platform, and what is it? I'm fine with bumping.
-> > > >> the number, it's just nice to be able to say specifically _why_ we're dong
-> > > >> it.
-> > > >
-> > > > I'm not aware of any publicly available systems that run into the 256
-> > > > core limitation. At Ampere we have internal systems that would benefit
-> > > > from this change as they support more than 256 cores.
-> > > 
-> > > But what does that have to do with the default value?
-> > > Do you expect to run defconfig kernels?
-> > > I don't ever expect that.
-> > 
-> > We still aim for the arm64 defconfig to run on all supported SoCs, even
-> > if not optimally. Distros indeed tweak the config to their needs.
-> 
-> Would "all supported SoCs" mean only SoCs that are currently available
-> publicly? Could we include support for SoCs/systems in development but
-> to be available publicly in the next few years?
 
-I don't really see the need to rush that into defconfig, so I'd prefer
-to make the update when something actually exists otherwise it's really
-hard to keep track of why we made the decision (especially as unreleased
-hardware is liable to change).
+--zhXaljGHf11kAtnf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Will
+Hi Will,
+
+> Ideally, the mdelay() would live in some code that knows about the watchdog,
+> and therefore can choose the appropriate delay.
+
+Agreed. I'll put the delay into the watchdog driver.
+
+Thanks,
+
+   Wolfram
+
+
+--zhXaljGHf11kAtnf
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/9sgoACgkQFA3kzBSg
+KbZHtA/+KseZZszhJNWlDyDtUKSZNk3T3+GR0fmAdM4YIoU5u7lHGQNEKdwABGSH
+QDYuIAsNBAZUNXU7omTPWGpqug6+xEb0hpca06ADv8f/hkYHhlkB5BpPRZJf3fU9
+wOHIx7BJ88VpKKmWBu0lEgxLRYas8qxbkQGxWhZrErqhsORZjgODoFiN5Va3q8zK
+0S1lp2RqAhfYZ+ICm8IgEn7tw5suG1RQyc0wByEhBVcH+59BwjTgVqStXAPxox5/
+6m/knyAYyek+r4eNC+/Ho5ltskW4yBaRYfNn3kHJgsJPOSXtB+nxB2fgrjZoNXbN
+kro1wppIim4Ng6KbXaq+PJ6uLhousw0/CIfLddd0QlIFx9JWZx1zl8ZhU0POzQZW
+JwsUeatWvJSf032jREvw8bF2bO45f2xadUhh1jI+s8bJ4wRrJrHC7MjedLa7MINT
+fMYN4kNWDcoRPfAxk4oX9a3Dv9KzcvLcbniNrmAE2rW7LWFaQGKM7U+VoOmvMtu4
+o5wCD6WXak/Hvn0/uhDFCTx8UFmZl5XFCNWf3/afIEp5E89Y6Vu2Ylh5Shpc01qp
+DDQI1fQ+BTX5Mk00zfCSYFZw1BbPNmbsfFTZ171GgOxz4eTD/Micr6XcgRjDv018
+VZWUgJV3tctwlNuBUUN1NKftdfElIWigHTVfQ/4ZYEeMgvlUFRA=
+=6rKt
+-----END PGP SIGNATURE-----
+
+--zhXaljGHf11kAtnf--
