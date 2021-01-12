@@ -2,63 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C6E2F3175
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:26:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5C12F3177
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:26:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732122AbhALNVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:21:24 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:34460 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728281AbhALNVX (ORCPT
+        id S1731954AbhALNVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:21:33 -0500
+Received: from bmailout2.hostsharing.net ([83.223.78.240]:49391 "EHLO
+        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732265AbhALNVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:21:23 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10CDKMWC0013545, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs01.realtek.com.tw[172.21.6.94])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10CDKMWC0013545
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 12 Jan 2021 21:20:22 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS01.realtek.com.tw (172.21.6.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 12 Jan 2021 21:20:22 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::ecca:80ca:53:e833]) by
- RTEXMBS04.realtek.com.tw ([fe80::ecca:80ca:53:e833%12]) with mapi id
- 15.01.2106.006; Tue, 12 Jan 2021 21:20:22 +0800
-From:   Pkshih <pkshih@realtek.com>
-To:     "abaci-bugfix@linux.alibaba.com" <abaci-bugfix@linux.alibaba.com>
-CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
+        Tue, 12 Jan 2021 08:21:32 -0500
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout2.hostsharing.net (Postfix) with ESMTPS id E08F82800B3D8;
+        Tue, 12 Jan 2021 14:20:49 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id D48D850D7E; Tue, 12 Jan 2021 14:20:49 +0100 (CET)
+Date:   Tue, 12 Jan 2021 14:20:49 +0100
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        linux-toolchains@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Theodore Ts'o <tytso@mit.edu>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [PATCH] rtlwifi: rtl8821ae: style: Simplify bool comparison
-Thread-Topic: [PATCH] rtlwifi: rtl8821ae: style: Simplify bool comparison
-Thread-Index: AQHW6L2orBBpKoBBgkeYxkTWwRIaRaojc5qA
-Date:   Tue, 12 Jan 2021 13:20:21 +0000
-Message-ID: <1610457587.2793.2.camel@realtek.com>
-References: <1610440409-73330-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-In-Reply-To: <1610440409-73330-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Accept-Language: en-US, zh-TW
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [125.224.66.71]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <A6A38BB325AB144790D7DFD15CA130C6@realtek.com>
-Content-Transfer-Encoding: base64
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
+ ordering issues
+Message-ID: <20210112132049.GA26096@wunner.de>
+References: <20210106172033.GA2165@willie-the-truck>
+ <20210106223223.GM1551@shell.armlinux.org.uk>
+ <20210107111841.GN1551@shell.armlinux.org.uk>
+ <20210107124506.GO1551@shell.armlinux.org.uk>
+ <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
+ <20210107133747.GP1551@shell.armlinux.org.uk>
+ <CAK8P3a2J8fLjPhyV0XUeuRBdSo6rz1gU4wrQRyfzKQvwhf22ag@mail.gmail.com>
+ <X/gkMmObbkI4+ip/@hirez.programming.kicks-ass.net>
+ <20210108092655.GA4031@willie-the-truck>
+ <CAHk-=whnKkj5CSbj-uG_MVVUsPZ6ppd_MFhZf_kpXDkh2MAVRA@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whnKkj5CSbj-uG_MVVUsPZ6ppd_MFhZf_kpXDkh2MAVRA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTAxLTEyIGF0IDE2OjMzICswODAwLCBZQU5HIExJIHdyb3RlOg0KPiBGaXgg
-dGhlIGZvbGxvd2luZyBjb2NjaWNoZWNrIHdhcm5pbmc6DQo+IC4vZHJpdmVycy9uZXQvd2lyZWxl
-c3MvcmVhbHRlay9ydGx3aWZpL3J0bDg4MjFhZS9waHkuYzozODUzOjctMTc6DQo+IFdBUk5JTkc6
-IENvbXBhcmlzb24gb2YgMC8xIHRvIGJvb2wgdmFyaWFibGUNCj4gDQo+IFJlcG9ydGVkLWJ5OiBB
-YmFjaSBSb2JvdCA8YWJhY2lAbGludXguYWxpYmFiYS5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IFlB
-TkcgTEkgPGFiYWNpLWJ1Z2ZpeEBsaW51eC5hbGliYWJhLmNvbT4NCj4gDQoNCkkgdGhpbmsgeW91
-ciBuYW1lIG9mIFNpZ25lZC1vZmYtYnkgc2hvdWxkIGJlICJZYW5nIExpIi4NCg0KQW5kLCB0aGUg
-c3ViamVjdCBwcmVmaXggInJ0bHdpZmk6ICIgaXMgcHJlZmVycmVkLg0KDQotLS0NClBpbmctS2UN
-Cg==
+On Fri, Jan 08, 2021 at 12:02:53PM -0800, Linus Torvalds wrote:
+> I appreciate Arnd pointing out "--std=gnu11", though. What are the
+> actual relevant language improvements?
+> 
+> Variable declarations in for-loops is the only one I can think of. I
+> think that would clean up some code (and some macros), but might not
+> be compelling on its own.
+
+Anonymous structs/unions.  I used to have a use case for that in
+struct efi_dev_path in include/linux/efi.h, but Ard Biesheuvel
+refactored it in a gnu89-compatible way for v5.7 with db8952e7094f.
+
+[The above was copy-pasted from last time this discussion came up
+in July 2020.  Back then, Kirill Shutemov likewise mentioned the
+local variables in loops feature:
+https://lore.kernel.org/lkml/20200710111724.m4jaci73pykalxys@wunner.de/
+]
+
+Thanks,
+
+Lukas
