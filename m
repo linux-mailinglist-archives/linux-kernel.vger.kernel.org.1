@@ -2,139 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B7E2F2C33
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:07:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 431FE2F2C37
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:07:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392811AbhALKF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:05:56 -0500
-Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:56427 "EHLO
-        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725877AbhALKF4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:05:56 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id zGY1kDacoVfyLzGY5kp3Fs; Tue, 12 Jan 2021 11:05:13 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1610445913; bh=rWROg1JHwbdQ8ZfUE0XIhGOm+anaMeiAqHnUFTzVV8M=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=pWJ7+TAztdKzsf6cOU/3xilYiYruFpOny48JFxGLZ1IQimvtRcEtR8oeEUDOcuuZb
-         +bxoI/LOvbxqK05YAMTDH+CnfFRFHz60QEJcuQGt3E8NTxx7n24wNwTL/v20yPi55b
-         bnKGp8tGyGAmMhoFKywevP7VVzLS48fnFmVGUjtZ2NNOGQ8TJcYv/MP07dR1jlTrbu
-         uoq3su8d4UJVjAacwPYeM31NziVONhnpJsGPZllSf2gpQk+pc4mwjyLm88AI8SE95d
-         3nfKDwskM8joXV8KNmvfKrs/aeOtl7Nr2ZUmbZAgh0gNc7C6s4Yzc9cdfca+dMK4Qt
-         JYCPdB1cK99FQ==
-Subject: Re: [PATCH v2 1/4] media: v4l2-ctrls: Add intra-refresh period
- control
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Maheshwar Ajja <majja@codeaurora.org>
-References: <20201206102717.19000-1-stanimir.varbanov@linaro.org>
- <20201206102717.19000-2-stanimir.varbanov@linaro.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <6eb7ea37-e460-2884-9e07-6ff6f9a15414@xs4all.nl>
-Date:   Tue, 12 Jan 2021 11:05:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S2391093AbhALKGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:06:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45952 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390409AbhALKGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 05:06:50 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610445963; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RHdSnnGmXTWqWhEM7prug3O03a1r9bZU4cr4+Pqj7zo=;
+        b=VkMMdobLpWMBdDJI9kg5/mNdrZjqd/kRaTtvWQCHKIp8N7/Bf+CChct089lPa7lCEdxJzz
+        X/6d24udMOJyDqzFidgh1/wB9VqaT0l7QAJXJqdgbW1gop8lYRDbvFeblKgAIj0ul97Qwn
+        7qr3ww50TkIor29cndwzzZoeElVg1Jo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 36A79ADC4;
+        Tue, 12 Jan 2021 10:06:03 +0000 (UTC)
+Date:   Tue, 12 Jan 2021 11:06:02 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v3 4/6] mm: hugetlb: add return -EAGAIN
+ for dissolve_free_huge_page
+Message-ID: <20210112100602.GL22493@dhcp22.suse.cz>
+References: <20210110124017.86750-1-songmuchun@bytedance.com>
+ <20210110124017.86750-5-songmuchun@bytedance.com>
+ <c61cdf1d-2feb-ecb3-393d-ca25175c73f4@oracle.com>
+ <20210112083335.GH22493@dhcp22.suse.cz>
+ <CAMZfGtVCntwNM=2RHHp=qDLN3L71ouQy=9V_e=VTNHtCDHsmWA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201206102717.19000-2-stanimir.varbanov@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfHT90d7mhin5WWalSTuhUnYSQEdOPpmkWhnTETeXwNN5wBrsM3gIxVIBrMg+5MtMk07eXeu9fj8EHgvwMkjghZcXlxMaE4103ZkxX3cAkKJMljoJ28jI
- ksAbbeReM2Ljc/wY+E38rYvoD/VRinP1SggYvxuY6o8VgEc2gUqngxu/mF33JOwhqPI4NUwnyvrOwXCNA0sXtfHKsb7oA1gpBCCyxySIlFStGn7qOC7QV4fS
- +LEAzIziuLr5FEeK1rPYL062Xwie3egc/arSVuRVshkzR2rG0igmq8mk+1PAniCEJJ4Z+W4itVhxvb7/cgc2ihbb3KlRIArvlRqNIpxlLna7HAWV7r0cL0Nc
- NW4uTcogtp39bQC6Rh/NCbcmz8omJnnsbe05RjNVjvzekSe4Tws2DL0lWBNp6DgCalNj31ofMKkXp4jEMTyOb7z1MWxq2w==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtVCntwNM=2RHHp=qDLN3L71ouQy=9V_e=VTNHtCDHsmWA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/2020 11:27, Stanimir Varbanov wrote:
-> Add a control to set intra-refresh period.
+On Tue 12-01-21 17:51:05, Muchun Song wrote:
+> On Tue, Jan 12, 2021 at 4:33 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Mon 11-01-21 17:20:51, Mike Kravetz wrote:
+> > > On 1/10/21 4:40 AM, Muchun Song wrote:
+> > > > There is a race between dissolve_free_huge_page() and put_page(),
+> > > > and the race window is quite small. Theoretically, we should return
+> > > > -EBUSY when we encounter this race. In fact, we have a chance to
+> > > > successfully dissolve the page if we do a retry. Because the race
+> > > > window is quite small. If we seize this opportunity, it is an
+> > > > optimization for increasing the success rate of dissolving page.
+> > > >
+> > > > If we free a HugeTLB page from a non-task context, it is deferred
+> > > > through a workqueue. In this case, we need to flush the work.
+> > > >
+> > > > The dissolve_free_huge_page() can be called from memory hotplug,
+> > > > the caller aims to free the HugeTLB page to the buddy allocator
+> > > > so that the caller can unplug the page successfully.
+> > > >
+> > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > > ---
+> > > >  mm/hugetlb.c | 26 +++++++++++++++++++++-----
+> > > >  1 file changed, 21 insertions(+), 5 deletions(-)
+> > >
+> > > I am unsure about the need for this patch.  The code is OK, there are no
+> > > issues with the code.
+> > >
+> > > As mentioned in the commit message, this is an optimization and could
+> > > potentially cause a memory offline operation to succeed instead of fail.
+> > > However, we are very unlikely to ever exercise this code.  Adding an
+> > > optimization that is unlikely to be exercised is certainly questionable.
+> > >
+> > > Memory offline is the only code that could benefit from this optimization.
+> > > As someone with more memory offline user experience, what is your opinion
+> > > Michal?
+> >
+> > I am not a great fun of optimizations without any data to back them up.
+> > I do not see any sign this code has been actually tested and the
+> > condition triggered.
 > 
-> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
-> ---
->  .../userspace-api/media/v4l/ext-ctrls-codec.rst       | 11 +++++++++++
->  drivers/media/v4l2-core/v4l2-ctrls.c                  |  2 ++
->  include/uapi/linux/v4l2-controls.h                    |  1 +
->  3 files changed, 14 insertions(+)
+> This race is quite small. I only trigger this only once on my server.
+> And then the kernel panic. So I sent this patch series to fix some
+> bugs.
+
+Memory hotplug shouldn't panic when this race happens. Are you sure you
+have seen a race that is directly related to this patch?
+
+> > Besides that I have requested to have an explanation of why blocking on
+> > the WQ is safe and that hasn't happened.
 > 
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> index 454ecd9a0f83..d65d7c1381b7 100644
-> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> @@ -1104,6 +1104,17 @@ enum v4l2_mpeg_video_h264_entropy_mode -
->      macroblocks is refreshed until the cycle completes and starts from
->      the top of the frame. Applicable to H264, H263 and MPEG4 encoder.
->  
-> +``V4L2_CID_MPEG_VIDEO_INTRA_REFRESH_PERIOD (integer)``
-> +    Intra macroblock refresh period. This sets the period to refresh
-> +    the whole frame. With other words, this defines the number of frames
-
-With -> In
-
-> +    for which the whole frame will be intra-refreshed.  An example:
-> +    setting period to 1 means that the whole frame will be refreshed,
-> +    setting period to 2 means that the half of macroblocks will be
-> +    intra-refreshed on frameX and the other half of macroblocks
-> +    will be refreshed in frameX + 1 and so on. Setting period to zero
-> +    means no period is specified.
-> +    Applicable to H264 and HEVC encoders.
-
-I'm confused. Isn't this the same as V4L2_CID_MPEG_VIDEO_CYCLIC_INTRA_REFRESH_MB?
-Except that here you don't give the number of macroblocks but instead the number
-of frames it will take to fully refresh a frame and leave it to the driver to
-calculate the number of macroblocks?
-
-If I am right, then you need to clearly document the relationship between the
-two controls, and what happens if you set them both.
-
-It seems the venus driver already supports V4L2_CID_MPEG_VIDEO_CYCLIC_INTRA_REFRESH_MB,
-so why add this control as well?
-
-Regards,
-
-	Hans
-
-> +
->  ``V4L2_CID_MPEG_VIDEO_FRAME_RC_ENABLE (boolean)``
->      Frame level rate control enable. If this control is disabled then
->      the quantization parameter for each frame type is constant and set
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
-> index 5cbe0ffbf501..ac44848d2d6e 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-> @@ -869,6 +869,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->  	case V4L2_CID_MPEG_VIDEO_DECODER_SLICE_INTERFACE:	return "Decoder Slice Interface";
->  	case V4L2_CID_MPEG_VIDEO_DECODER_MPEG4_DEBLOCK_FILTER:	return "MPEG4 Loop Filter Enable";
->  	case V4L2_CID_MPEG_VIDEO_CYCLIC_INTRA_REFRESH_MB:	return "Number of Intra Refresh MBs";
-> +	case V4L2_CID_MPEG_VIDEO_INTRA_REFRESH_PERIOD:		return "Intra Refresh Period";
->  	case V4L2_CID_MPEG_VIDEO_FRAME_RC_ENABLE:		return "Frame Level Rate Control Enable";
->  	case V4L2_CID_MPEG_VIDEO_MB_RC_ENABLE:			return "H264 MB Level Rate Control";
->  	case V4L2_CID_MPEG_VIDEO_HEADER_MODE:			return "Sequence Header Mode";
-> @@ -1260,6 +1261,7 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
->  		break;
->  	case V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE:
->  	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:
-> +	case V4L2_CID_MPEG_VIDEO_INTRA_REFRESH_PERIOD:
->  		*type = V4L2_CTRL_TYPE_INTEGER;
->  		break;
->  	case V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME:
-> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-> index 823b214aac0c..54b9072ac49d 100644
-> --- a/include/uapi/linux/v4l2-controls.h
-> +++ b/include/uapi/linux/v4l2-controls.h
-> @@ -422,6 +422,7 @@ enum v4l2_mpeg_video_multi_slice_mode {
->  #define V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE		(V4L2_CID_CODEC_BASE+227)
->  #define V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE		(V4L2_CID_CODEC_BASE+228)
->  #define V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME		(V4L2_CID_CODEC_BASE+229)
-> +#define V4L2_CID_MPEG_VIDEO_INTRA_REFRESH_PERIOD	(V4L2_CID_CODEC_BASE+230)
->  
->  /* CIDs for the MPEG-2 Part 2 (H.262) codec */
->  #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_CODEC_BASE+270)
+> I have seen all the caller of dissolve_free_huge_page, some caller is under
+> page lock (via lock_page). Others are also under a sleep context.
 > 
+> So I think that blocking on the WQ is safe. Right?
 
+I have requested to explicitly write your thinking why this is safe so
+that we can double check it. Dependency on a work queue progress is much
+more complex than any other locks because there is no guarantee that WQ
+will make forward progress (all workers might be stuck, new workers not
+able to be created etc.).
+-- 
+Michal Hocko
+SUSE Labs
