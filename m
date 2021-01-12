@@ -2,70 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01BB42F284C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A527A2F284D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:26:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732045AbhALGTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 01:19:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50644 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731090AbhALGTE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 01:19:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6CEA206E9;
-        Tue, 12 Jan 2021 06:18:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1610432303;
-        bh=qxj8fQLkntKVxCcGJcU7r9nfQRnnPazB5pQvXYx8tj0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tTzdjp9Pz47/jh+vLvK/GfbdSveEsVxsdQIajgKXsHaCqc/dE/7Mt7HXsRMWc+IKT
-         /gbPlY/tHgQ7Lcm4ozd/siHRDFP9L/z+6FjGYu+iktdd+2oQ4ar1b3kbQyGM4KSeFU
-         cE3BAoDDX3FjlszGeQLf3BNn3WKjQQ0smfjfALiE=
-Date:   Mon, 11 Jan 2021 22:18:20 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     hailong <hailongliiu@yeah.net>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Ziliang Guo <guo.ziliang@zte.com.cn>,
-        Hailong Liu <liu.hailong6@zte.com.cn>,
-        Russell King <linux@armlinux.org.uk>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] arm/kasan:fix the arry size of kasan_early_shadow_pte
-Message-Id: <20210111221820.b252f44de1e0bf4add506776@linux-foundation.org>
-In-Reply-To: <CACRpkdY7eYyVNvqMRYvTQsLNrXa+fzPsWA5JHDuS4nqry+CHcw@mail.gmail.com>
-References: <20210109044622.8312-1-hailongliiu@yeah.net>
-        <CACRpkdb73diprma9Z1-4nm5A9OTQMeGVK=Hcqiwny9VOVdA=QQ@mail.gmail.com>
-        <4c009d78.4e1.176ebcf8bc9.Coremail.hailongliiu@yeah.net>
-        <CACRpkdY7eYyVNvqMRYvTQsLNrXa+fzPsWA5JHDuS4nqry+CHcw@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1732388AbhALGZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 01:25:00 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10710 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730742AbhALGY7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 01:24:59 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DFL9J4Jz5zl43b;
+        Tue, 12 Jan 2021 14:23:00 +0800 (CST)
+Received: from [10.67.102.197] (10.67.102.197) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 12 Jan 2021 14:24:10 +0800
+Subject: Re: [PATCH v3] proc_sysctl: fix oops caused by incorrect command
+ parameters.
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <mcgrof@kernel.org>,
+        <keescook@chromium.org>, <yzaikin@google.com>,
+        <adobriyan@gmail.com>, <linux-fsdevel@vger.kernel.org>,
+        <vbabka@suse.cz>, <mhocko@suse.com>, <andy.shevchenko@gmail.com>,
+        <wangle6@huawei.com>
+References: <20210112033155.91502-1-nixiaoming@huawei.com>
+ <20210111203340.98dd3c8fa675b709bcf6d49e@linux-foundation.org>
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+Message-ID: <89d1369e-f0a8-66f2-c0ea-3aac3a55e2c1@huawei.com>
+Date:   Tue, 12 Jan 2021 14:24:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0.1
+MIME-Version: 1.0
+In-Reply-To: <20210111203340.98dd3c8fa675b709bcf6d49e@linux-foundation.org>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.197]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 10 Jan 2021 13:03:49 +0100 Linus Walleij <linus.walleij@linaro.org> wrote:
+On 2021/1/12 12:33, Andrew Morton wrote:
+> On Tue, 12 Jan 2021 11:31:55 +0800 Xiaoming Ni <nixiaoming@huawei.com> wrote:
+> 
+>> The process_sysctl_arg() does not check whether val is empty before
+>>   invoking strlen(val). If the command line parameter () is incorrectly
+>>   configured and val is empty, oops is triggered.
+>>
+>> --- a/fs/proc/proc_sysctl.c
+>> +++ b/fs/proc/proc_sysctl.c
+>> @@ -1770,6 +1770,9 @@ static int process_sysctl_arg(char *param, char *val,
+>>   			return 0;
+>>   	}
+>>   
+>> +	if (!val)
+>> +		return -EINVAL;
+>> +
+> 
+> I think v2 (return 0) was preferable.  Because all the other error-out
+> cases in process_sysctl_arg() also do a `return 0'.
 
-> On Sun, Jan 10, 2021 at 11:21 AM hailong <hailongliiu@yeah.net> wrote:
-> 
-> > >> +#ifndef PTE_HWTABLE_PTRS
-> > >> +#define PTE_HWTABLE_PTRS 0
-> > >> +#endif
-> > >
-> > >Can this even happen? We have either pgtable-2level.h or
-> > >pgtable-3level.h, both of which define PTE_HWTABLE_PTRS.
-> > >
-> >
-> > I guess not for arm. But I'm not sure for other ARCHs.
-> 
-> Oh it's a generic include. Sorry for the confusion.
-> 
-> All good then!
-> 
+https://lore.kernel.org/lkml/bc098af4-c0cd-212e-d09d-46d617d0acab@huawei.com/
 
-This code is 2+ years old.  Do we think it warrants a cc:stable?
+patch4:
+     +++ b/fs/proc/proc_sysctl.c
+     @@ -1757,6 +1757,9 @@ static int process_sysctl_arg(char *param, 
+char *val,
+             loff_t pos = 0;
+             ssize_t wret;
+
+     +       if (!val)
+     +               return 0;
+     +
+             if (strncmp(param, "sysctl", sizeof("sysctl") - 1) == 0) {
+                     param += sizeof("sysctl") - 1;
+
+Is this the version you're talking about?
+
+> 
+> If we're going to do a separate "patch: make process_sysctl_arg()
+> return an errno instead of 0" then fine, we can discuss that.  But it's
+> conceptually a different work from fixing this situation.
+> .
+> 
+However, are the logs generated by process_sysctl_arg() clearer and more 
+accurate than parse_args()? Should the logs generated by 
+process_sysctl_arg() be deleted?
+
+Thanks
+Xiaoming Ni
+
