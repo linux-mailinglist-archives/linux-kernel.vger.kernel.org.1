@@ -2,169 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DA52F2E78
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAE642F2E6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731786AbhALLzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 06:55:42 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2318 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728310AbhALLzl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:55:41 -0500
-Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DFTRw17Nzz67ZPZ;
-        Tue, 12 Jan 2021 19:51:08 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 12 Jan 2021 12:54:59 +0100
-Received: from [10.210.171.61] (10.210.171.61) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 12 Jan 2021 11:54:57 +0000
-Subject: Re: [PATCH v2 00/19] scsi: libsas: Remove in_interrupt() check
-To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        "Artur Paszkiewicz" <artur.paszkiewicz@intel.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>
-CC:     <linux-scsi@vger.kernel.org>, <intel-linux-scu@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>
-References: <20210112110647.627783-1-a.darwish@linutronix.de>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <8683f401-29b6-4067-af51-7b518ad3a10f@huawei.com>
-Date:   Tue, 12 Jan 2021 11:53:50 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1731348AbhALLx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:53:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725888AbhALLx2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 06:53:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA04623104;
+        Tue, 12 Jan 2021 11:52:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610452367;
+        bh=OcFaWpuTodeRxcFu2GL87awHeAEwzBs2cjEtv5TrCFc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Q2OeiarAprAPllUQOSeJA9dGvko+wUDr2wDM9EaL4Q5zeax4RxWS9lht6dSUxkGsY
+         V7o1TYhe38682Te7SEWtXukbZX2yHX82e+HAEhCaohb6nwonXOfeOiXeZGoGZalp0b
+         1ILshKksWTSiWLDx6noLu+3ZHF4RZQ5zi/y+X2Vs=
+Date:   Tue, 12 Jan 2021 12:53:56 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Kyle Tso <kyletso@google.com>
+Cc:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        hdegoede@redhat.com, badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 0/3] AMS, Collision Avoidance, and Protocol Error
+Message-ID: <X/2N1LAgNRCSkWrw@kroah.com>
+References: <20210105163927.1376770-1-kyletso@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210112110647.627783-1-a.darwish@linutronix.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.171.61]
-X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105163927.1376770-1-kyletso@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/01/2021 11:06, Ahmed S. Darwish wrote:
-> Hi,
+On Wed, Jan 06, 2021 at 12:39:24AM +0800, Kyle Tso wrote:
+> This series include previous patch "[v4] AMS and Collision Avoidance"
+> https://lore.kernel.org/r/20201217030632.903718-1-kyletso@google.com
+> and two more patches "Protocol Error handling" and "Respond Wait if...".
 > 
-> Changelog v2
-> ------------
+> The patch "AMS and Collision Avoidance" in [v5] is the same as the one
+> in [v4] (only rebased to ToT).
 > 
-> - Rebase on top of v5.11-rc3
+> The patch "Protocol Error handling" is based on PD3 6.8.1 to fix the
+> wrong handling.
 > 
-> - Rebase on top of John's patch "scsi: libsas and users: Remove notifier
->    indirection", as it affects every other patch. Include it in this
->    series (patch #2).
+> The patch "Respond Wait if..." is to fix a conflict when 
+> DR/PR/VCONN_SWAP occurs just after the state machine enters Ready State.
 > 
-> - Introduce patches #13 => #19, which modify call sites back to use the
->    original libsas notifier function names without _gfp() suffix.
+> Kyle Tso (3):
+>   usb: typec: tcpm: AMS and Collision Avoidance
+>   usb: typec: tcpm: Protocol Error handling
+>   usb: typec: tcpm: Respond Wait if VDM state machine is running
 > 
-> - Collect r-b tags
-> 
-> v1 Submission
-> -------------
-> 
->    https://lkml.kernel.org/r/20201218204354.586951-1-a.darwish@linutronix.de
-> 
-> Cover letter
-> ------------
-> 
-> In the discussion about preempt count consistency across kernel
-> configurations:
-> 
->    https://lkml.kernel.org/r/20200914204209.256266093@linutronix.de
-> 
-> it was concluded that the usage of in_interrupt() and related context
-> checks should be removed from non-core code.
-> 
-> This includes memory allocation mode decisions (GFP_*). In the long run,
-> usage of in_interrupt() and its siblings should be banned from driver
-> code completely.
-> 
-> This series addresses SCSI libsas. Basically, the function:
-> 
->    => drivers/scsi/libsas/sas_init.c:
->    struct asd_sas_event *sas_alloc_event(struct asd_sas_phy *phy)
->    {
->          ...
->          gfp_t flags = in_interrupt() ? GFP_ATOMIC : GFP_KERNEL;
->          event = kmem_cache_zalloc(sas_event_cache, flags);
->          ...
->    }
-> 
-> is transformed so that callers explicitly pass the gfp_t memory
-> allocation flags. Affected libsas clients are modified accordingly.
-> 
-> Patches #1, #2 => #7 have "Fixes: " tags and address bugs the were
-> noticed during the context analysis.
-> 
-> Thanks!
-> 
-> 8<--------------
-> 
-> Ahmed S. Darwish (18):
->    Documentation: scsi: libsas: Remove notify_ha_event()
->    scsi: libsas: Introduce a _gfp() variant of event notifiers
->    scsi: mvsas: Pass gfp_t flags to libsas event notifiers
->    scsi: isci: port: link down: Pass gfp_t flags
->    scsi: isci: port: link up: Pass gfp_t flags
->    scsi: isci: port: broadcast change: Pass gfp_t flags
->    scsi: libsas: Pass gfp_t flags to event notifiers
->    scsi: pm80xx: Pass gfp_t flags to libsas event notifiers
->    scsi: aic94xx: Pass gfp_t flags to libsas event notifiers
->    scsi: hisi_sas: Pass gfp_t flags to libsas event notifiers
->    scsi: libsas: event notifiers API: Add gfp_t flags parameter
->    scsi: hisi_sas: Switch back to original libsas event notifiers
->    scsi: aic94xx: Switch back to original libsas event notifiers
->    scsi: pm80xx: Switch back to original libsas event notifiers
->    scsi: libsas: Switch back to original event notifiers API
->    scsi: isci: Switch back to original libsas event notifiers
->    scsi: mvsas: Switch back to original libsas event notifiers
->    scsi: libsas: Remove temporarily-added _gfp() API variants
+>  drivers/usb/typec/tcpm/tcpm.c | 925 +++++++++++++++++++++++++++++-----
+>  include/linux/usb/pd.h        |   2 +
+>  include/linux/usb/tcpm.h      |   4 +
+>  3 files changed, 792 insertions(+), 139 deletions(-)
 
-I'll give this a spin today and help review also then.
+Heikki, any thoughts about this series?
 
-There's 18 patches here - it would be very convenient if they were on a 
-public branch :)
+thanks,
 
-Cheers,
-John
-
-> 
-> John Garry (1):
->    scsi: libsas and users: Remove notifier indirection
-> 
->   Documentation/scsi/libsas.rst          |  5 ++--
->   drivers/scsi/aic94xx/aic94xx_scb.c     | 20 ++++++-------
->   drivers/scsi/hisi_sas/hisi_sas.h       |  3 +-
->   drivers/scsi/hisi_sas/hisi_sas_main.c  | 29 +++++++++----------
->   drivers/scsi/hisi_sas/hisi_sas_v1_hw.c |  6 ++--
->   drivers/scsi/hisi_sas/hisi_sas_v2_hw.c |  6 ++--
->   drivers/scsi/hisi_sas/hisi_sas_v3_hw.c |  6 ++--
->   drivers/scsi/isci/port.c               | 11 +++----
->   drivers/scsi/libsas/sas_event.c        | 27 ++++++++---------
->   drivers/scsi/libsas/sas_init.c         | 17 ++++-------
->   drivers/scsi/libsas/sas_internal.h     |  5 ++--
->   drivers/scsi/mvsas/mv_sas.c            | 24 +++++++---------
->   drivers/scsi/pm8001/pm8001_hwi.c       | 40 ++++++++++++--------------
->   drivers/scsi/pm8001/pm8001_sas.c       | 12 +++-----
->   drivers/scsi/pm8001/pm80xx_hwi.c       | 37 +++++++++++-------------
->   include/scsi/libsas.h                  |  9 +++---
->   16 files changed, 115 insertions(+), 142 deletions(-)
-> 
-> base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
-> --
-> 2.30.0
-> .
-> 
-
+greg k-h
