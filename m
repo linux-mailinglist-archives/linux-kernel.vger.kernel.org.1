@@ -2,90 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CAF2F2E5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:49:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8332F2E64
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731453AbhALLsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 06:48:54 -0500
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:59943 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730298AbhALLsw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:48:52 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 4DAD81B95;
-        Tue, 12 Jan 2021 06:48:06 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 12 Jan 2021 06:48:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=+0raSlTIzNkLMCFR2yLILgKMSCS
-        KbehTs+cuZNkVTrY=; b=EXg3Za3twIMX3AwbWEsCzx/xfUIOfZTR9DLCU4izfOt
-        lX/fZn8hKQQvh2os+uEIzTJg7Y2Go87bB3gqW+sRINKDFgTLcjXvDaAFSPQuFGLQ
-        u2zKTv5ttk0IhG7zZWanzl0XjxN7kHJtY2JVVfZSeNPff4EpETGYdu+ZqfrZ6WW/
-        Ev4/bAffXd3YKjQ3hbTvqiHpN1sHAPmSQkUgan7bu92s8sbBRgb1o06zwWtpXbnS
-        TlLFIB9DJFrsN0XqIfic66UhjEclApTdiDtKsQhg+0ZD1GYs0RfOdTRccmIGYoU4
-        mUzmKcIBwkT+tdRI1Ox34UuPimBYDl6jLPAf6JbtYuw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=+0raSl
-        TIzNkLMCFR2yLILgKMSCSKbehTs+cuZNkVTrY=; b=lhsJEGxLA2b5i+S8d5B60F
-        Kqk9z6DORyiiRf7CIttiz+z9JxO3Au97YGSHfsx8r1faa6rr96polJ5DJJfDaYLM
-        Wq22Qfe1+1zELh4cMTD2qGoQQ4FRMqGxNk2MH7b1PebahoH59wT3GqUnOAQtke9k
-        3Fy0N7Q06JvbWugZErryt2Fb1Jh3ZFmMYqo5HF3VZHiBJvjyLxF49+2wUZFTnk1W
-        fHDjHUIanbhiamvXY4ChQ6fAK26uNnyz2z3p6DBCXiowkuZQ8dgT292BEDZNlv6Y
-        3uCJVfa3Mb70e40u1PqPbAIlCgJuCZlrprAVbQx3DyQ6KAMekD4zBRta/Yq+bMwA
-        ==
-X-ME-Sender: <xms:dYz9XzuQb34-H43YxRCMT7xeRM6Q-o2PKEfwvKbiKMoyiQeBxxl_Qg>
-    <xme:dYz9X0eHb3lYHuy1N-kKNjAWO1Z1C923od2FxRo_ge1WGCsfFEEetJm9cmq2ibSO2
-    wTzU180rW8mwg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtddtucetufdoteggodetrfdotffvucfrrh
-    hofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgenuceurghi
-    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
-    epfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcumffjuceo
-    ghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehjefgfffgie
-    dvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeefrdekiedr
-    jeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:dYz9X2y72iaDCn0QicxgDETWNbb-4tadmZLbX77voI2ecN2G9iKljQ>
-    <xmx:dYz9XyNB-MPQ7OzZNsZ-D-ICT5Mq76fP6xCBiwdixDGcTke3-6yNuw>
-    <xmx:dYz9Xz_ywB21mAf9YbAou0r_JerzBOOcsbt2Ue1FlY7uJB_TXgK4Lw>
-    <xmx:dYz9X_YOyJ_SH3EzyZNU7jXzTnWUcjqisuNysXwaUm-5EUEwH-uCtA>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3FC2A24005C;
-        Tue, 12 Jan 2021 06:48:05 -0500 (EST)
-Date:   Tue, 12 Jan 2021 12:49:14 +0100
-From:   Greg KH <greg@kroah.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] Remove one more platform_device_add_properties()
- call
-Message-ID: <X/2MupFIWVI5DTUe@kroah.com>
-References: <20210111141045.14027-1-heikki.krogerus@linux.intel.com>
+        id S1731262AbhALLu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:50:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730146AbhALLu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 06:50:58 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 05C6F23104;
+        Tue, 12 Jan 2021 11:50:17 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kzIBi-006wqv-RB; Tue, 12 Jan 2021 11:50:14 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111141045.14027-1-heikki.krogerus@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Tue, 12 Jan 2021 11:50:14 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 09/21] arm64: cpufeature: Add global feature override
+ facility
+In-Reply-To: <a122aa5c-4af9-e236-db82-db0ed885e0a5@arm.com>
+References: <20210111132811.2455113-1-maz@kernel.org>
+ <20210111132811.2455113-10-maz@kernel.org> <20210111184154.GC17941@gaia>
+ <129db8bd3913a90c96d4cfe4f55e27a0@kernel.org>
+ <a122aa5c-4af9-e236-db82-db0ed885e0a5@arm.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <d98aed718a26d0455d5549d53f97db06@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: suzuki.poulose@arm.com, catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, will@kernel.org, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 05:10:42PM +0300, Heikki Krogerus wrote:
-> Hi Felipe, Rafael,
+Hi Suzuki,
+
+On 2021-01-12 09:17, Suzuki K Poulose wrote:
+> Hi Marc,
 > 
-> This is the second version of this series. There are no real changes,
-> but I added the Tiger Lake ID patch to this series in hope that it
-> will make your life a bit easier, assuming that Rafael will still pick
-> these.
+> On 1/11/21 7:48 PM, Marc Zyngier wrote:
 
-I can take all 3 of these if that makes it easier.  Rafael, let me know
-what you want to do, either is fine with me.
+[...]
 
-thanks,
+>> diff --git a/arch/arm64/kernel/cpufeature.c 
+>> b/arch/arm64/kernel/cpufeature.c
+>> index 894af60b9669..00d99e593b65 100644
+>> --- a/arch/arm64/kernel/cpufeature.c
+>> +++ b/arch/arm64/kernel/cpufeature.c
+>> @@ -774,6 +774,7 @@ static void __init init_cpu_ftr_reg(u32 sys_reg, 
+>> u64 new)
+>>       u64 strict_mask = ~0x0ULL;
+>>       u64 user_mask = 0;
+>>       u64 valid_mask = 0;
+>> +    u64 override_val = 0, override_mask = 0;
+>> 
+>>       const struct arm64_ftr_bits *ftrp;
+>>       struct arm64_ftr_reg *reg = get_arm64_ftr_reg(sys_reg);
+>> @@ -781,9 +782,35 @@ static void __init init_cpu_ftr_reg(u32 sys_reg, 
+>> u64 new)
+>>       if (!reg)
+>>           return;
+>> 
+>> +    if (reg->override_mask && reg->override_val) {
+>> +        override_mask = *reg->override_mask;
+>> +        override_val = *reg->override_val;
+>> +    }
+>> +
+>>       for (ftrp = reg->ftr_bits; ftrp->width; ftrp++) {
+>>           u64 ftr_mask = arm64_ftr_mask(ftrp);
+>>           s64 ftr_new = arm64_ftr_value(ftrp, new);
+>> +        s64 ftr_ovr = arm64_ftr_value(ftrp, override_val);
+>> +
+>> +        if ((ftr_mask & override_mask) == ftr_mask) {
+>> +            if (ftr_ovr < ftr_new) {
+> 
+> Here we assume that all the features are FTR_LOWER_SAFE. We could
+> probably use arm64_ftr_safe_value(ftrp, ftr_new, ftr_ovr) here ?
+> That would cover us for both HIGHER_SAFE and LOWER_SAFE features.
+> However that may be restrictive for FTR_EXACT, as we the safe
+> value would be set to "ftr->safe_val". I guess that may be better
+> than forcing to use an unsafe value for the boot CPU, which could
+> anyway conflict with the other CPUs and eventually trigger the
+> ftr alue to be safe_val.
 
-greg k-h
+I like the idea of using the helper, as it cleanups up the code a bit.
+However, not being to set a feature to a certain value could be 
+restrictive,
+as in general, it means that we can only disable a feature and not 
+adjust
+its level of support.
+
+Take PMUVER for example: with the helper, I can't override it from v8.4 
+to
+v8.1. I can only go to v8.0.
+
+Is it something we care about?
+
+Thanks,
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
