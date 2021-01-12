@@ -2,92 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B2C2F3727
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:32:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A86E2F3724
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:32:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406001AbhALRae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:30:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34084 "EHLO mail.kernel.org"
+        id S2405725AbhALRaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:30:08 -0500
+Received: from foss.arm.com ([217.140.110.172]:50140 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392771AbhALRad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:30:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BCE222AED;
-        Tue, 12 Jan 2021 17:29:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610472592;
-        bh=/okVfTyIj/1mLwVi8GFdAvJo0sfLP8xwmTZIQcrLdeM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C2SF9Uqr2+SKWfy7pcG1YN9iKQ38GXT50DMyyDI2jNVqN34HNYQ67oYh5pcCW9DB7
-         QDVpgd5uO1GTuiHMAuSLP0koYJ3Fqv6CsIuOT1JZaxvEmH8BCl27rDWEiiXvEmLP+D
-         nQG2NoGqi7UxLXDkf0+1AzjAGCX0/Mp1jN0ScvW+36IHz0aWJIiKnuBqK3EvNpxdNk
-         WZMuiXKwXeBCM+M0P5vc5HaTpFXqqZkaGMKK5m+15t8XaPfsM4gggwn37zVpRSXEyo
-         XKHbn+F+h2muoqx+q9hClctvzD7lGQSlyZLrVsPZZPsvUO91hZQ8GEwmL3r3zQzxF0
-         j1JHf5SR/UZKw==
+        id S1728956AbhALRaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 12:30:07 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 83E6B1063;
+        Tue, 12 Jan 2021 09:29:21 -0800 (PST)
+Received: from [10.57.56.43] (unknown [10.57.56.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8BC073F719;
+        Tue, 12 Jan 2021 09:29:20 -0800 (PST)
+Subject: Re: [PATCH] iommu: check for the deferred attach when attaching a
+ device
+To:     lijiang <lijiang@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     "Lendacky, Thomas" <thomas.lendacky@amd.com>, jroedel@suse.de,
+        iommu@lists.linux-foundation.org, will@kernel.org
+References: <20201226053959.4222-1-lijiang@redhat.com>
+ <33b6f925-71e6-5d9e-74c3-3e1eaf13398e@redhat.com>
+ <b385db3b-4506-6d75-49e1-e11064e65d6a@redhat.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <8273ce28-5ba6-2a39-5073-ec0f2b12dd2f@arm.com>
 Date:   Tue, 12 Jan 2021 17:29:19 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     linux-arm-msm@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        robh+dt@kernel.org, sumit.semwal@linaro.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org
-Subject: Re: [PATCH 5/7] regulator: qcom-labibb: Implement short-circuit and
- over-current IRQs
-Message-ID: <20210112172919.GD4646@sirena.org.uk>
-References: <20210109132921.140932-1-angelogioacchino.delregno@somainline.org>
- <20210109132921.140932-6-angelogioacchino.delregno@somainline.org>
- <20210111135745.GC4728@sirena.org.uk>
- <6dee36e4-fc78-c21b-daf8-120ee44535a3@somainline.org>
- <8115a574-ad43-d3c6-70d4-28c8a2f4a5f6@somainline.org>
- <09d70d24-5d0d-f1cd-d99e-5c213c8ea98c@somainline.org>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="n2Pv11Ogg/Ox8ay5"
-Content-Disposition: inline
-In-Reply-To: <09d70d24-5d0d-f1cd-d99e-5c213c8ea98c@somainline.org>
-X-Cookie: Stay away from hurricanes for a while.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <b385db3b-4506-6d75-49e1-e11064e65d6a@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-01-05 07:52, lijiang wrote:
+> 在 2021年01月05日 11:55, lijiang 写道:
+>> Hi,
+>>
+>> Also add Joerg to cc list.
+>>
+> 
+> Also add more people to cc list, Jerry Snitselaar and Tom Lendacky.
+> 
+> Thanks.
+> 
+>> Thanks.
+>> Lianbo
+>> 在 2020年12月26日 13:39, Lianbo Jiang 写道:
+>>> Currently, because domain attach allows to be deferred from iommu
+>>> driver to device driver, and when iommu initializes, the devices
+>>> on the bus will be scanned and the default groups will be allocated.
+>>>
+>>> Due to the above changes, some devices could be added to the same
+>>> group as below:
+>>>
+>>> [    3.859417] pci 0000:01:00.0: Adding to iommu group 16
+>>> [    3.864572] pci 0000:01:00.1: Adding to iommu group 16
+>>> [    3.869738] pci 0000:02:00.0: Adding to iommu group 17
+>>> [    3.874892] pci 0000:02:00.1: Adding to iommu group 17
+>>>
+>>> But when attaching these devices, it doesn't allow that a group has
+>>> more than one device, otherwise it will return an error. This conflicts
+>>> with the deferred attaching. Unfortunately, it has two devices in the
+>>> same group for my side, for example:
+>>>
+>>> [    9.627014] iommu_group_device_count(): device name[0]:0000:01:00.0
+>>> [    9.633545] iommu_group_device_count(): device name[1]:0000:01:00.1
+>>> ...
+>>> [   10.255609] iommu_group_device_count(): device name[0]:0000:02:00.0
+>>> [   10.262144] iommu_group_device_count(): device name[1]:0000:02:00.1
+>>>
+>>> Finally, which caused the failure of tg3 driver when tg3 driver calls
+>>> the dma_alloc_coherent() to allocate coherent memory in the tg3_test_dma().
+>>>
+>>> [    9.660310] tg3 0000:01:00.0: DMA engine test failed, aborting
+>>> [    9.754085] tg3: probe of 0000:01:00.0 failed with error -12
+>>> [    9.997512] tg3 0000:01:00.1: DMA engine test failed, aborting
+>>> [   10.043053] tg3: probe of 0000:01:00.1 failed with error -12
+>>> [   10.288905] tg3 0000:02:00.0: DMA engine test failed, aborting
+>>> [   10.334070] tg3: probe of 0000:02:00.0 failed with error -12
+>>> [   10.578303] tg3 0000:02:00.1: DMA engine test failed, aborting
+>>> [   10.622629] tg3: probe of 0000:02:00.1 failed with error -12
+>>>
+>>> In addition, the similar situations also occur in other drivers such
+>>> as the bnxt_en driver. That can be reproduced easily in kdump kernel
+>>> when SME is active.
+>>>
+>>> Add a check for the deferred attach in the iommu_attach_device() and
+>>> allow to attach the deferred device regardless of how many devices
+>>> are in a group.
 
---n2Pv11Ogg/Ox8ay5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Is this iommu_attach_device() call is coming from iommu-dma? (if not, 
+then whoever's calling it probably shouldn't be)
 
-On Mon, Jan 11, 2021 at 10:06:18PM +0100, AngeloGioacchino Del Regno wrote:
+Assuming so, then probably what should happen is to move the handling 
+currently in iommu_dma_deferred_attach() into the core so that it can 
+call __iommu_attach_device() directly - the intent is just to replay 
+that exact call skipped in iommu_group_add_device(), so the legacy 
+external iommu_attach_device() interface isn't really the right tool for 
+the job anyway. That's just slightly awkward since ideally it wants to 
+be done in a way that doesn't result in a redundant out-of-line call for 
+!kdump.
 
-> ...which was already a requirement before I touched it.
-> Now, this leaves two options here:
-> 1. Keep the of_get_irq way, or
-> 2. Move the interrupts, change the documentation (currently, only
-> pmi8998.dtsi) and also fix pmi8998.dtsi to reflect the new changes.
+Alternatively I suppose it *could* just call ops->attach_dev directly, 
+but then we miss out on the tracepoint, and deferred attach is arguably 
+one of the cases where that's most useful :/
 
-> I am asking before proceeding because I know that changing a schema that is
-> already set sometimes gets "negated".
+Robin.
 
-Well, if the binding isn't actually used changing it is a possibility.
-If we keep the current binding you can still continue to use
-of_get_irq() even from within the probe function, you know the name of
-the node it's supposed to be in so you don't need to iterate or anything
-to get it so not really any reason to use the callback.
-
---n2Pv11Ogg/Ox8ay5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/93G4ACgkQJNaLcl1U
-h9CCJQf/XQpVoAeBxaPWks++Bdxf1rAlHECDuS/el7BrR98BEMGZ65QEz1Pi1fO7
-4+abqstgMzY3phe3BzzS/Qf0FpwoSAW71k+L2RWNa1K+5an2uiCbQhW1UvXjqhwy
-VRmurbOyG1RmmNfg9r+q3GnRwqmdZK7f2Uip0OQTQq/PRFZkW/cQfuFg6HWebaSb
-trUCLU81jUQLuyBJF/Cc7na4+PaIbhNPIDfuxzcsV7fVVdebtXADHPU+7thHbnw5
-3BgSpSBfYVdkHnEU1Zix/c67tJXRqOSAf5WujVnOXNG5XJL7eCGwUgrPOnjRo3sZ
-xf7/xKVSKeZQhSNTgjcEbvasnE2GKw==
-=sGHd
------END PGP SIGNATURE-----
-
---n2Pv11Ogg/Ox8ay5--
+>>>
+>>> Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
+>>> ---
+>>>   drivers/iommu/iommu.c | 5 ++++-
+>>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>>> index ffeebda8d6de..dccab7b133fb 100644
+>>> --- a/drivers/iommu/iommu.c
+>>> +++ b/drivers/iommu/iommu.c
+>>> @@ -1967,8 +1967,11 @@ int iommu_attach_device(struct iommu_domain *domain, struct device *dev)
+>>>   	 */
+>>>   	mutex_lock(&group->mutex);
+>>>   	ret = -EINVAL;
+>>> -	if (iommu_group_device_count(group) != 1)
+>>> +	if (!iommu_is_attach_deferred(domain, dev) &&
+>>> +	    iommu_group_device_count(group) != 1) {
+>>> +		dev_err_ratelimited(dev, "Group has more than one device\n");
+>>>   		goto out_unlock;
+>>> +	}
+>>>   
+>>>   	ret = __iommu_attach_group(domain, group);
+>>>   
+>>>
+> 
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+> 
