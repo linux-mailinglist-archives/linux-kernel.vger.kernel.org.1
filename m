@@ -2,127 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9A82F3289
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:04:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B47A22F3283
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:04:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388261AbhALODO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:03:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45169 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387752AbhALODM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:03:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610460106;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g5hRSkHHWOdbmUsMs75Gf2Bt4kYflDDkT2OYvb6EzB8=;
-        b=T6v3xVNHXd6PLearnOH2shNfWJNeqf52cCHbHhb5VeAIevCv5lFv0Gw1fBGSmA/1rXMpwe
-        9lvc0nHJTOplN1KMFMlcTA0sVJWeYtxQoW3acPTUBqlxId4d9KCle0wae0iqzOfoKFK4W5
-        RHAfqe/3Ay4JA3/uGDin+m+rt/2stRA=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-566-2Xekcf8MN_OUc3YC9ZDwjA-1; Tue, 12 Jan 2021 09:01:43 -0500
-X-MC-Unique: 2Xekcf8MN_OUc3YC9ZDwjA-1
-Received: by mail-ej1-f72.google.com with SMTP id lw15so1037236ejb.7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:01:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=g5hRSkHHWOdbmUsMs75Gf2Bt4kYflDDkT2OYvb6EzB8=;
-        b=VT6oim26dG8/y6b3XtzbAYkZ6OJfITzGiM88nDcqmq7rBqQl3xheCkBxiZE4XrqLpZ
-         vmqJyAxhat889ctZzUWQVL1APxiAPyde25skgUPKtcnmQe0IVuy9ENgJpXkl3yf/uMFB
-         sNzENO/XCEFABHQhCNB9VLcsNUaCzNvJEaMOXnOqusSChPXbZpmNmWuUCETOJOgjbUk0
-         FDzkFRm1pM9KcRzOAtutdqCIbvV9jGf+EyhVp5op6anazMWy/3x3+W60omdQxHD+2Sn0
-         0na0La/idc4WKR2Yt2cbnhVcFkgQ4x5k3uzXGTi4kW8XiHxLtNvlYnGXoBWXs4Y+DG/T
-         HmNA==
-X-Gm-Message-State: AOAM530FPpYKTkq6wbtw5E4Mi456X+uO4uvPilCdvaaP+baArWufCcos
-        ChpQwy3uyPfIbaM0Np9jAXv64sWmqwEH97L4JpvYCLL4HQenxULEF8+DUD2LDWSEIPhl2oAM+8x
-        d2/3Uscz7TmvUzAPa5GNDa/IS
-X-Received: by 2002:a50:fe0e:: with SMTP id f14mr3606953edt.159.1610460102384;
-        Tue, 12 Jan 2021 06:01:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxap/eHgcmvgWYqAcOrKRYNkiV+MI52ktIVcm0XqSPw9F27Ri+yoLTHdHtjOHHLYJvKzknNVA==
-X-Received: by 2002:a50:fe0e:: with SMTP id f14mr3606930edt.159.1610460102224;
-        Tue, 12 Jan 2021 06:01:42 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id dd12sm1497632edb.6.2021.01.12.06.01.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 06:01:41 -0800 (PST)
-To:     Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, vkuznets@redhat.com,
-        seanjc@google.com, joro@8bytes.org, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
-        dgilbert@redhat.com, mlevitsk@redhat.com
-References: <20210112063703.539893-1-wei.huang2@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 1/2] KVM: x86: Add emulation support for #GP triggered by
- VM instructions
-Message-ID: <090232a9-7a87-beb9-1402-726bb7cab7e6@redhat.com>
-Date:   Tue, 12 Jan 2021 15:01:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S2387526AbhALOCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:02:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727836AbhALOCt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 09:02:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C9CC2310E;
+        Tue, 12 Jan 2021 14:02:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610460128;
+        bh=197eIm3QcYcnlpX6+Ihqh4zYVko6lSXitDPlicqbmNU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lRTAQNkhfpEqmUQ4mvHC9E/j8JnDE8szs5C9n9rf0Jepjr2lnxz0ZJwbvrqU6ttTY
+         h+a0z9lnJ5a0/d9qr/Lsd6sS6ibuXoNe45/VXZ1uoA8YKdUQRLua1G2sDeU5V8KiTr
+         93J4OsajTsju8AgrQqH35lJyqiNKNFFNRSzzmjQeyO2ZsUoYDPpgV/ZJteNjvJNXLV
+         V5uY1f5F3/Uu9YMACX9Igjoml8exXFgtzX0Z/lMnYSiSbHJLJ4DqM+qqx3EhbP06u1
+         8U4sc6xtaUr1ky12ozUsU3QvYNFM+QnwahMraJ9zhc6QBlUoMSfUFOsEWRwS+Vbi9/
+         2mu6h1njuZ/Ew==
+Date:   Tue, 12 Jan 2021 14:02:00 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        takahiro.akashi@linaro.org, catalin.marinas@arm.com,
+        mpe@ellerman.id.au, Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        zohar@linux.ibm.com, james.morse@arm.com, sashal@kernel.org,
+        benh@kernel.crashing.org, paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
+Subject: Re: [RFC PATCH 3/4] arm64: Use common of_kexec_setup_new_fdt()
+Message-ID: <20210112140159.GB9277@willie-the-truck>
+References: <20201211221006.1052453-1-robh@kernel.org>
+ <20201211221006.1052453-4-robh@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210112063703.539893-1-wei.huang2@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201211221006.1052453-4-robh@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/01/21 07:37, Wei Huang wrote:
->   static int gp_interception(struct vcpu_svm *svm)
->   {
->   	struct kvm_vcpu *vcpu = &svm->vcpu;
->   	u32 error_code = svm->vmcb->control.exit_info_1;
-> -
-> -	WARN_ON_ONCE(!enable_vmware_backdoor);
-> +	int rc;
->   
->   	/*
-> -	 * VMware backdoor emulation on #GP interception only handles IN{S},
-> -	 * OUT{S}, and RDPMC, none of which generate a non-zero error code.
-> +	 * Only VMware backdoor and SVM VME errata are handled. Neither of
-> +	 * them has non-zero error codes.
->   	 */
->   	if (error_code) {
->   		kvm_queue_exception_e(vcpu, GP_VECTOR, error_code);
->   		return 1;
->   	}
-> -	return kvm_emulate_instruction(vcpu, EMULTYPE_VMWARE_GP);
-> +
-> +	rc = kvm_emulate_instruction(vcpu, EMULTYPE_PARAVIRT_GP);
-> +	if (rc > 1)
-> +		rc = svm_emulate_vm_instr(vcpu, rc);
-> +	return rc;
->   }
->   
+On Fri, Dec 11, 2020 at 04:10:05PM -0600, Rob Herring wrote:
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
 
-Passing back the third byte is quick hacky.  Instead of this change to 
-kvm_emulate_instruction, I'd rather check the instruction bytes in 
-gp_interception before calling kvm_emulate_instruction.  That would be 
-something like:
+-ENOCOMMITMSG
 
-- move "kvm_clear_exception_queue(vcpu);" inside the "if 
-(!(emulation_type & EMULTYPE_NO_DECODE))".  It doesn't apply when you 
-are coming back from userspace.
+>  arch/arm64/kernel/machine_kexec_file.c | 123 +------------------------
+>  1 file changed, 3 insertions(+), 120 deletions(-)
 
-- extract the "if (!(emulation_type & EMULTYPE_NO_DECODE))" body to a 
-new function x86_emulate_decoded_instruction.  Call it from 
-gp_interception, we know this is not a pagefault and therefore 
-vcpu->arch.write_fault_to_shadow_pgtable must be false.
+But I can't argue with that diffstat, so:
 
-- check ctxt->insn_bytes for an SVM instruction
+Acked-by: Will Deacon <will@kernel.org>
 
-- if not an SVM instruction, call kvm_emulate_instruction(vcpu, 
-EMULTYPE_VMWARE_GP|EMULTYPE_NO_DECODE).
-
-Thanks,
-
-Paolo
-
+Will
