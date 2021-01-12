@@ -2,161 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0892F32CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:18:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBAF2F32D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728386AbhALOSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:18:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34376 "EHLO
+        id S1728787AbhALOTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:19:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726220AbhALOSC (ORCPT
+        with ESMTP id S1725372AbhALOTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:18:02 -0500
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C6B7C06179F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:17:22 -0800 (PST)
-Received: by mail-ua1-x930.google.com with SMTP id p2so866585uac.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:17:22 -0800 (PST)
+        Tue, 12 Jan 2021 09:19:06 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA1AC061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:18:26 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id z21so1543190pgj.4
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:18:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rLiwQ7Aisx/Fct40RlEWj5FexYeUpewbEHaYhQmapwI=;
-        b=BUyDdDviQzrGZtoD8G/L9ZZzmGO6GemK7todlsnlbd0rVa7KTW3u8IrJKPqb/8RHKL
-         xt2iSJp/n2fSg29NSed4RkVMbmCY64pJk4yh7AVcQfnvne84NBA9w56RGBVMYKqI3fRE
-         Tq7hdSv4A9tFde3hyUPmWis4D9CECTR5ZOdPSK7wSCCE/6MsIM8KvytoZYs0X7OeeIYd
-         fmFiJFHJmrcC10fGMedE740yhIxTmzk+SKoFVsQfpm5CfXLl1A5hCR0uMvRGQOAhZ2GM
-         UH1T8K+YAivhtItsg+Q8OspPcDBKzVVBbLJNw/kjIV6J/m/IQ3Xey0Xy8SDGNdYBm/26
-         yoYw==
+        bh=ZP/OKsBTHa1Ku/1C8+jY1uZ9XXWnbjWQbbJ1iqiQI90=;
+        b=KXJDcyT04KY1E1/QvWwWjUF36RQI+5Bu+t3pUk2IHBywPVmHdqc+vzoj6oysXqV9RT
+         U357Xxhes9/2bjHM8hT2AKu97rn+qbyiAC/hTrSSHupPcpPEzGvuaHx9KHUY1bXWOSWI
+         FdXitRT2Wj6V+xJFgjqWpqzgGrumEPB12ESZ0NYtdDoaV9weEiBbEmuHNkblO/dquesr
+         3fA21BrKCYy262yV7usZurMZwsjpyKY1apcI9hJU2/DyA/k+Kl4kWvrUPNoViA6SC0nL
+         dfgI2d1OHb15tB2ry8KHen2cQEqXwIF5i6RViXC68QYIq0e7WE8m23+vXPKXUyJ4v0lE
+         Vjwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rLiwQ7Aisx/Fct40RlEWj5FexYeUpewbEHaYhQmapwI=;
-        b=FTNH7bguRTSAg5I8w43CbGecKVbD7Olg6Uup0ZuktK/rqGEq7nNwOJxzkQ0dQsOkLi
-         /0a32puH2U9gORKzXbNBiVeJtS8EIL3Iy10iHg3/yEYUEGJuJsuOmQGB2sNpjfDsqZI2
-         CHS8EYy4phUipzDSBIBDfnj2g4IjMhxnMOnyP4IfcwT2Ppqoln9za/ClqoYub64/9xBZ
-         W7PlvxqopgbVmyhjtDy2j42WK+PuTpzq8jV0ZaMQ7tA8wuCjjMUr1zkPgAY04gFfzmRE
-         lR9BvZzDupVEnH3RWL2QHbcOJTQZ+WXOrCTWbSOqWWg1hcGr5zaBuD9cCt5SDbiuuLnM
-         P5xA==
-X-Gm-Message-State: AOAM530s/fhI220C8arVDkgLPf9JDsEMDDMoJ9YMHAWsd9ZmQEsa3HBE
-        QwTzK8b0G8AYmujQ5RSHuTpQiNHqBfYK3TPWs2QIzNxWWEJp1lVK
-X-Google-Smtp-Source: ABdhPJwERNzz9D9S6H23pmXXFcX/wNzEGNdMuoeIpmrclPBW5Q0rU9hEo0YNznVcrhbk/kGGj8fHyudcoc/ZIKkrLR4=
-X-Received: by 2002:ab0:2e99:: with SMTP id f25mr3740445uaa.104.1610461041138;
- Tue, 12 Jan 2021 06:17:21 -0800 (PST)
+        bh=ZP/OKsBTHa1Ku/1C8+jY1uZ9XXWnbjWQbbJ1iqiQI90=;
+        b=TQjE5m0dYDxNK2IhgvEz1Pisbfas4kNJ/XfxSe3BxKGblBcaVlXY/wjAftb4pzUBUA
+         mDBwLcEbXRO4xPTSb/Bx6ghJiJzoiS/J8d/7Kc4bIRE188M5ctdIlvjH8JRvYo5j3O1H
+         H531e1birOwtrPc+jV8aR5FXShhskZJ4seEyzVMTgYIZomBqJSltwJcE7NENtwJ8hrU1
+         6Z7MlSbaJquySWgBc6CTdqND02NvW9pf2uqonc59vEnb4xVi2wWrc5LrepyCrjcFIJnz
+         KJmM6i4BtpMxeFjDKmjfSXtivjtD0XUMlkhojZzsXMNfd9ndzBjTLGdT6DslnTi1i7UO
+         DQlg==
+X-Gm-Message-State: AOAM5313r7Gj/Tf2bWOjvGYv9Vy0E4sJz6SHhaFgcEBRWhl+nrAxIcpm
+        av/LFcdubz4OTLs/dx34yIK2tCzPIKImbnSndz/cZw==
+X-Google-Smtp-Source: ABdhPJymg7ZZpekPq1atCLekTkcjQv4GQ0IAuUDaK2XbFHH8P04lOSQ9bOJNTYSLi5qlu4NStP7+Xv+mzMDUmx1MI+I=
+X-Received: by 2002:a63:50a:: with SMTP id 10mr4974342pgf.273.1610461106114;
+ Tue, 12 Jan 2021 06:18:26 -0800 (PST)
 MIME-Version: 1.0
-References: <20201217180638.22748-1-digetx@gmail.com> <20201217180638.22748-36-digetx@gmail.com>
-In-Reply-To: <20201217180638.22748-36-digetx@gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Tue, 12 Jan 2021 15:16:44 +0100
-Message-ID: <CAPDyKFpQUFTYJ8K2hPMeQCCbQTF_TCE_B+xkXpcL4Fi7h2ReHw@mail.gmail.com>
-Subject: Re: [PATCH v2 35/48] drm/tegra: dc: Support OPP and SoC core voltage scaling
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>
+References: <20210110124017.86750-1-songmuchun@bytedance.com>
+ <20210110124017.86750-2-songmuchun@bytedance.com> <1b39d654-0b8c-de3a-55d1-6ab8c2b2e0ba@redhat.com>
+ <c6eddfc6-8e15-4a28-36ff-64bfa65cca8e@redhat.com> <CAMZfGtWnATsqgdqVONgAFWAAJU=KGxVJQEt38b8JTV+UtRzkYw@mail.gmail.com>
+ <423ee403-bba7-acf6-8934-9db36d3a719a@redhat.com>
+In-Reply-To: <423ee403-bba7-acf6-8934-9db36d3a719a@redhat.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 12 Jan 2021 22:17:42 +0800
+Message-ID: <CAMZfGtXfA6JA3eYLhT8YGLJJocopix_mp7uSDPfcmooFEE7xNA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3 1/6] mm: migrate: do not migrate HugeTLB
+ page whose refcount is one
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>, mhocko@suse.cz,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- trimmed cc-list
-
-On Thu, 17 Dec 2020 at 19:08, Dmitry Osipenko <digetx@gmail.com> wrote:
+On Tue, Jan 12, 2021 at 9:51 PM David Hildenbrand <david@redhat.com> wrote:
 >
-> Add OPP and SoC core voltage scaling support to the display controller
-> driver. This is required for enabling system-wide DVFS on pre-Tegra186
-> SoCs.
+> On 12.01.21 14:40, Muchun Song wrote:
+> > On Tue, Jan 12, 2021 at 7:11 PM David Hildenbrand <david@redhat.com> wrote:
+> >>
+> >> On 12.01.21 12:00, David Hildenbrand wrote:
+> >>> On 10.01.21 13:40, Muchun Song wrote:
+> >>>> If the refcount is one when it is migrated, it means that the page
+> >>>> was freed from under us. So we are done and do not need to migrate.
+> >>>>
+> >>>> This optimization is consistent with the regular pages, just like
+> >>>> unmap_and_move() does.
+> >>>>
+> >>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> >>>> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+> >>>> Acked-by: Yang Shi <shy828301@gmail.com>
+> >>>> ---
+> >>>>  mm/migrate.c | 6 ++++++
+> >>>>  1 file changed, 6 insertions(+)
+> >>>>
+> >>>> diff --git a/mm/migrate.c b/mm/migrate.c
+> >>>> index 4385f2fb5d18..a6631c4eb6a6 100644
+> >>>> --- a/mm/migrate.c
+> >>>> +++ b/mm/migrate.c
+> >>>> @@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
+> >>>>              return -ENOSYS;
+> >>>>      }
+> >>>>
+> >>>> +    if (page_count(hpage) == 1) {
+> >>>> +            /* page was freed from under us. So we are done. */
+> >>>> +            putback_active_hugepage(hpage);
+> >>>> +            return MIGRATEPAGE_SUCCESS;
+> >>>> +    }
+> >>>> +
+> >>>>      new_hpage = get_new_page(hpage, private);
+> >>>>      if (!new_hpage)
+> >>>>              return -ENOMEM;
+> >>>>
+> >>>
+> >>> Question: What if called via alloc_contig_range() where we even want to
+> >>> "migrate" free pages, meaning, relocate it?
+> >>>
+> >>
+> >> To be more precise:
+> >>
+> >> a) We don't have dissolve_free_huge_pages() calls on the
+> >> alloc_contig_range() path. So we *need* migration IIUC.
+> >
+> > Without this patch, if you want to migrate a HUgeTLB page,
+> > the page is freed to the hugepage pool. With this patch,
+> > the page is also freed to the hugepage pool.
+> > I didn't see any different. I am missing something?
 >
-> Tested-by: Peter Geis <pgwipeout@gmail.com>
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/gpu/drm/tegra/dc.c | 66 +++++++++++++++++++++++++++++++++++++-
->  1 file changed, 65 insertions(+), 1 deletion(-)
+> I am definitely not an expert on hugetlb pools, that's why I am asking.
 >
-> diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
-> index b6676f1fe358..105ad786e432 100644
-> --- a/drivers/gpu/drm/tegra/dc.c
-> +++ b/drivers/gpu/drm/tegra/dc.c
-> @@ -11,9 +11,12 @@
->  #include <linux/interconnect.h>
->  #include <linux/module.h>
->  #include <linux/of_device.h>
-> +#include <linux/pm_domain.h>
-> +#include <linux/pm_opp.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/reset.h>
+> Isn't it, that with your code, no new page is allocated - so
+> dissolve_free_huge_pages() might just refuse to dissolve due to
+> reservations, bailing out, no?
+
+Without this patch, the new page can be allocated from the
+hugepage pool. The dissolve_free_huge_pages() also
+can refuse to dissolve due to reservations. Right?
+
 >
-> +#include <soc/tegra/common.h>
->  #include <soc/tegra/pmc.h>
+> (as discussed, looks like alloc_contig_range() needs to be fixed to
+> handle this correctly)
 >
->  #include <drm/drm_atomic.h>
-> @@ -1699,6 +1702,48 @@ int tegra_dc_state_setup_clock(struct tegra_dc *dc,
->         return 0;
->  }
+> --
+> Thanks,
 >
-> +static void tegra_dc_update_voltage_state(struct tegra_dc *dc,
-> +                                         struct tegra_dc_state *state)
-> +{
-> +       unsigned long rate, pstate;
-> +       struct dev_pm_opp *opp;
-> +       int err;
-> +
-> +       /* calculate actual pixel clock rate which depends on internal divider */
-> +       rate = DIV_ROUND_UP(clk_get_rate(dc->clk) * 2, state->div + 2);
-> +
-> +       /* find suitable OPP for the rate */
-> +       opp = dev_pm_opp_find_freq_ceil(dc->dev, &rate);
-> +
-> +       if (opp == ERR_PTR(-ERANGE))
-> +               opp = dev_pm_opp_find_freq_floor(dc->dev, &rate);
-> +
-> +       /* -ENOENT means that this device-tree doesn't have OPP table */
-> +       if (opp == ERR_PTR(-ENOENT))
-> +               return;
-> +
-> +       if (IS_ERR(opp)) {
-> +               dev_err(dc->dev, "failed to find OPP for %luHz: %pe\n",
-> +                       rate, opp);
-> +               return;
-> +       }
-> +
-> +       pstate = dev_pm_opp_get_voltage(opp);
-> +       dev_pm_opp_put(opp);
-> +
-> +       /*
-> +        * The minimum core voltage depends on the pixel clock rate (which
-> +        * depends on internal clock divider of the CRTC) and not on the
-> +        * rate of the display controller clock. This is why we're not using
-> +        * dev_pm_opp_set_rate() API and instead controlling the power domain
-> +        * directly.
-> +        */
-> +       err = dev_pm_genpd_set_performance_state(dc->dev, pstate);
-
-As you state above, in general we should not need to call the
-dev_pm_genpd_set_performance_state() directly for the consumer driver.
-
-Even if this looks like a special case to me, I would appreciate a
-confirmation from Viresh that this is the way he also would like to
-move forward from the opp library perspective.
-
-> +       if (err)
-> +               dev_err(dc->dev, "failed to set power domain state to %lu: %d\n",
-> +                       pstate, err);
-> +}
-> +
-
-[...]
-
-Kind regards
-Uffe
+> David / dhildenb
+>
