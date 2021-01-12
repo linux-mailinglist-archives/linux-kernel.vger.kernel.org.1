@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D1062F3433
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:34:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBFC32F343B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391603AbhALPdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 10:33:17 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:24472 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391179AbhALPdQ (ORCPT
+        id S2391733AbhALPfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 10:35:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391715AbhALPfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:33:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1610465596; x=1642001596;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=JDPIKNpUfMouZDE35ymGPDTmPuZB5DYUz5cKwyz4ctY=;
-  b=E7yLHDVoPlHGE/jXnRQl7PFtbIzsk6R54Tu5WOL/J5WKhtSJkhe3uDKm
-   x7rYAGgxZnwfn/nEyE+oVIo7lDXuZnPH0VdBA0iMZzluQotZs8Lt62G6n
-   uSHWj7Zw7um5I/synML3z7/i0WL4nLPEnPLxH85ueZsneU+DzvNzOEOPk
-   w8DXbGyO7OCwygaKUkaoaUvR5KzLMH4/mD3qqz7xzrZEcHmcJdNWkSaQ4
-   0u7wgmE8eDgNCoF2MTihWj8dwP+2aRnUEr7vxzLY7BxpgVBS+yHIA+zXY
-   wQebM0XFIR5Je/5rFtPAcWwq7G28b31zAzGsy1patPL+EwiuO02Z44Ih2
-   Q==;
-IronPort-SDR: ApxVNn76jNN4P13tTDERPXdYhwY8j2KRBhuNneIbdAm5KfQj4XztuqoJmEBmrofAmKMqeiI3pp
- hAEi/BZvTgO1WRWhJdKIlszekLqCIX1add59XAHn44goNTejgwKqyGLbu+HHT5tSNCn2HPFOWj
- ZdqEp0w25+rmlaIX+J7Totut4h0bwiXdCmy5D1z0RW8u7vjbaIahhKVycI8ZHu4b+vgzHXYoPt
- 4YxobQ13Q0ZXsE7pyvMwW+8Ecg5b+V9KdbRQE9g54hcAoRXHVojj02ji+atqbRITWpFwNeKpgQ
- eFk=
-X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
-   d="scan'208";a="105694336"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Jan 2021 08:32:55 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 12 Jan 2021 08:32:55 -0700
-Received: from soft-dev2 (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 12 Jan 2021 08:32:53 -0700
-Message-ID: <8c4296f5500be69ad0d8e2662f37d97a17aaa3e5.camel@microchip.com>
-Subject: Re: [PATCH v1 1/2] net: phy: Add 100 base-x mode
-From:   Bjarni Jonasson <bjarni.jonasson@microchip.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-CC:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
-Date:   Tue, 12 Jan 2021 16:32:52 +0100
-In-Reply-To: <20210111164704.GX1551@shell.armlinux.org.uk>
-References: <20210111130657.10703-1-bjarni.jonasson@microchip.com>
-         <20210111130657.10703-2-bjarni.jonasson@microchip.com>
-         <20210111164704.GX1551@shell.armlinux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Tue, 12 Jan 2021 10:35:04 -0500
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8295CC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 07:34:13 -0800 (PST)
+Received: by mail-ua1-x92c.google.com with SMTP id j59so943584uad.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 07:34:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qxCZhN0HPYWVbJAFHzviClBBvfiktQzKxiUuI/WHb64=;
+        b=JwBBAAjWC19z8UsuWqxUc5kVg0wMb6EWFRHoz7kkGUngbEhRU+C6/MCHia57wDr8X9
+         Jd86Mt63DQEmW6eSaffdLzO7z7LiNnNGMHUe46zYzJcyQA6RGLKr4Kmg011Z0Emovi4/
+         at0IHPfJVaNEMbSJ/B0M5S6vGzvw1vRl459Eo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qxCZhN0HPYWVbJAFHzviClBBvfiktQzKxiUuI/WHb64=;
+        b=shFvkIugjCiFoYJkMneVSTVpV0TtJArWkq0kuEUZbwv/F7T/7Xs6nIOugIWJYgteGx
+         AATApRV/7J3xoI3HCJ5Er+Sa1pY7usEhDh18li+t6/5Kc8rhAupR7G47wbAcRjWT1hpo
+         W4oBd7r7vC+Stex7fobareaNw6HHucWKgPZqa3O2n9uqlUvVoPUwqgZpapeoQKKoeseK
+         aGClwlR0kg38Zhpc4Wu7BepHtfaSyBQ6TVt5fjOue/+z26BCZHPRxTNkkENAXVRHQkvx
+         Ufhjr0QFqgNb0JPcWy8SIT5+7h+cY+oJCiUgoIdMh3QRr5NXwxr5h0cGaiChZ66xmozT
+         IT6Q==
+X-Gm-Message-State: AOAM533G9gBCYLZO1RghrNbS1mge+g65xGXPe4bBO2P5S4y+WL/MfdvF
+        7H5MHJ2UJ7z7wCldPW2rl0MBrmbyqU4bpA==
+X-Google-Smtp-Source: ABdhPJwwIqzmFYvRuKbNJpn4uky1eDZLvO3f8aNt7/sh2WClA/lFfpKwI6kTS9tX0yU5pKL4szupdw==
+X-Received: by 2002:a9f:2213:: with SMTP id 19mr4065405uad.15.1610465652553;
+        Tue, 12 Jan 2021 07:34:12 -0800 (PST)
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com. [209.85.221.174])
+        by smtp.gmail.com with ESMTPSA id z18sm480087vkd.13.2021.01.12.07.34.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jan 2021 07:34:11 -0800 (PST)
+Received: by mail-vk1-f174.google.com with SMTP id a6so692427vkb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 07:34:11 -0800 (PST)
+X-Received: by 2002:ac5:cde4:: with SMTP id v4mr4651199vkn.21.1610465651285;
+ Tue, 12 Jan 2021 07:34:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210112001301.687628-1-swboyd@chromium.org>
+In-Reply-To: <20210112001301.687628-1-swboyd@chromium.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 12 Jan 2021 07:33:59 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WRx2+jh7P5rM5S+C2shwbJiZSJxpf_fe57D+KpB4bijw@mail.gmail.com>
+Message-ID: <CAD=FV=WRx2+jh7P5rM5S+C2shwbJiZSJxpf_fe57D+KpB4bijw@mail.gmail.com>
+Subject: Re: [PATCH v2] spi: spi-qcom-qspi: Use irq trigger flags from firmware
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-spi <linux-spi@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Mukesh Kumar Savaliya <msavaliy@codeaurora.org>,
+        Akash Asthana <akashast@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-01-11 at 16:47 +0000, Russell King - ARM Linux admin
-wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you
-> know the content is safe
-> 
-> On Mon, Jan 11, 2021 at 02:06:56PM +0100, Bjarni Jonasson wrote:
-> > Sparx-5 supports this mode and it is missing in the PHY core.
-> > 
-> > Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
-> 
-> Oh, I forgot - please can we have the new PHY mode documented in
-> Documentation/networking/phy.rst under the "PHY interface modes"
-> section. Thanks.
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Hi,
 
-Will do that.
---
-Bjarni Jonasson
+On Mon, Jan 11, 2021 at 4:13 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> We don't need to force this to be trigger high here, as the firmware
+> properly configures the irq flags already. Drop it to save a line.
+>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: Rajendra Nayak <rnayak@codeaurora.org>
+> Cc: Mukesh Kumar Savaliya <msavaliy@codeaurora.org>
+> Cc: Akash Asthana <akashast@codeaurora.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>
+> Changes from v1:
+>  * Rebased onto v5.11-rc1
+>
+>  drivers/spi/spi-qcom-qspi.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
