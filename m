@@ -2,65 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4992F3FBC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5E02F3FC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405074AbhALWdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:33:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57322 "EHLO
+        id S2405300AbhALWe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:34:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726475AbhALWdf (ORCPT
+        with ESMTP id S1727080AbhALWeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:33:35 -0500
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C3AC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:32:55 -0800 (PST)
-Received: by mail-oo1-xc2a.google.com with SMTP id q6so26810ooo.8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:32:55 -0800 (PST)
+        Tue, 12 Jan 2021 17:34:25 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E3FC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:33:45 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id d189so15687oig.11
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:33:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=d6RWIlOsuqJ/TIlP0QjP2tJnm5LowJ9Amebw00PcgQU=;
-        b=Ywoe/yE6yhtOg3qXDxfkx59u01f48X3yOxfas5ZzA5ca4V5vCKroAWarMdmpvfQZxw
-         CSTPO+c9G2LMI2Dtlu58/cZIoe1mNzBdJ4C8sr30wdlkip3x5E9Pr8uCP0jNiqHfzkQR
-         Tj8RxiQN+iRDloI+ylSHJI0ZndhWTw4NgAQJqofd8iOmi2Whg+yVciMXn1zicqTvdo3I
-         LJYQXN5qwo37QUl3dTF6DjDVddsQxI0i2EgqqQZFl2n31nbLrrN6RNeNdoHBSmQUn3j4
-         otCgdzEUE0PTuN1Wz954BXh7rETBHZUmQs5nHmhojjJpYq4I/gkaU0u2AO6KJhstOtZC
-         5CUA==
+        bh=CnsNnPy+bsfMKTYrwaIqDDLsmnzZ6j8Zf4XsN63EhlU=;
+        b=sfDjIrahyO+tZlCCvhLOVmMHfJXby6n+dOfQGqUYDpWNA+HJRItI7sIA6glJ+oQQLW
+         cprmEzHiZbtgc78VCt60Y9ydiqhmgvRLdI2weafm4pkSNHG8o4X9jJLrUwavl2ZD+Z6H
+         EuI+Ry1ENElnH/toY9rJFu5Ez4KtLJ92YM7BtWDqxapmvH+YV3ikppZikdpyQzqydESj
+         qqcsyyuueeYEzdwSnCVI3hXKTnu1kU1DiOyJBxrZ1eTMWg7sVVuAJmr6ui2C73jV2qBK
+         tv36MBk9FgSJBrJ0U3TxyiMZavkC+PCAaYO62yzKhqj4nEq84lQkxmIp9j+wtXbKMpqM
+         RMTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=d6RWIlOsuqJ/TIlP0QjP2tJnm5LowJ9Amebw00PcgQU=;
-        b=ZL/tdBVmd8iAOatvUedB2Yoyf7UQmc1DgH4uzSZY/GKx3u94lQ0CxGwBE8Z6rkcSlk
-         3lzDCI6NUSCN2beRQPj6G2sfPUw8MnAfYn53xD//r1r+J2Riaqeg8/hThyw0jqEGeqNK
-         PijGfaXpP6SY7EtjVemKJXI2EDP03fygFDHrQZDSI3HxY5s/XX+APXgFkz76EnTOy/sC
-         qgjrUlkpJwjfC7tf+E8x2uNaAhM0eXR9FkkrTxO7pisE0CxvveIk+qBdjZmD2WqA6Gy7
-         5lmZjzRl9Gk5o32gzZHmRHUJw8khO1xYVoUnz63d4OUQpo8ZohwVVNwlEqU1cz44aS0Y
-         oJqw==
-X-Gm-Message-State: AOAM531XqtQVfUfVEwbvXCx+YaPxlc+9ZBRmiEidLJ7rmZrwJiP01xQ0
-        pg32rEQVMhFG8d0l3UT5Ver1WuyWlt20lsUtzYc=
-X-Google-Smtp-Source: ABdhPJyd0OcPPEjXW5gJ5zgyvbByVfmAy4OAwvodY5Ls1Oztu/0LjanK+ZslyjpTSJkx3YtVo5mzvGzUJa1/nwD5TZs=
-X-Received: by 2002:a4a:a2c5:: with SMTP id r5mr798229ool.72.1610490774723;
- Tue, 12 Jan 2021 14:32:54 -0800 (PST)
+        bh=CnsNnPy+bsfMKTYrwaIqDDLsmnzZ6j8Zf4XsN63EhlU=;
+        b=n0XcD/oI7XK8ADXWdWX9DZhBeU0RFCTfJrUyF0gWMmo5qPYtyRyCfbjiAdgJG3me2N
+         DEJxM8Wlprf1A1emGNNQ9EW3obF+3DEsVFSiCjXQTruJHLkAGsTdrdq1Ggp3mjZLGgO6
+         gRAAGiEQQtWGKWZemPQuazTHjyz5Wqw1f5EkoJD5IEeAdLAvHMJj69Ec0jKZlm1SFxR6
+         YmO3jNYLFAbU2d9vDIsESpQK1/3+FMaL5S8+SR1uzJRdGtno2ZAkeSmjxIuA2VUhA7Qo
+         c/EPzFg4GgGtHz8R8x/zDWHAj0LEMM922mripyBVtHqb/ojWMLMz1Wx5/aLEsrUe4Hlo
+         e1jg==
+X-Gm-Message-State: AOAM532ZJg/tKj2YAmOpYPpwxpnjQiMKNFSKbHa30FCpi6uGElBJI8Sl
+        0dKYCRyL6k6SpIlSoBy0SxHciHfiCt2ZXNmconk=
+X-Google-Smtp-Source: ABdhPJzUHHy22Etzqthjkdgc52meKfKSSamolFRvdaCr+cih6G1UX/Tr9FYEO3Q+fi35oSwYDecSCNaszYOd2c03Opk=
+X-Received: by 2002:a54:4083:: with SMTP id i3mr833397oii.120.1610490825155;
+ Tue, 12 Jan 2021 14:33:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-30-lee.jones@linaro.org>
-In-Reply-To: <20210111191926.3688443-30-lee.jones@linaro.org>
+References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-31-lee.jones@linaro.org>
+In-Reply-To: <20210111191926.3688443-31-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 12 Jan 2021 17:32:43 -0500
-Message-ID: <CADnq5_ONz+ncvkPkw1pKzWi81_RR-yX7+adGP7rvuUX=RM-LPA@mail.gmail.com>
-Subject: Re: [PATCH 29/40] drm/amd/display/dc/dce112/dce112_resource: Make
- local functions and ones called by reference static
+Date:   Tue, 12 Jan 2021 17:33:33 -0500
+Message-ID: <CADnq5_OrAqWKEz1dRDectDDuRz4d+LoizAfYd4-OpOEfYADYAQ@mail.gmail.com>
+Subject: Re: [PATCH 30/40] drm/amd/display/dc/dce110/dce110_timing_generator_v:
+ Demote kernel-doc abuse and line up comments
 To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, Anthony Koo <Anthony.Koo@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
+Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
         David Airlie <airlied@linux.ie>,
         Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
+        <dri-devel@lists.freedesktop.org>,
         Alex Deucher <alexander.deucher@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
         =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
@@ -68,34 +66,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 2:55 PM Lee Jones <lee.jones@linaro.org> wrote:
+On Mon, Jan 11, 2021 at 2:20 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:620:22=
-: warning: no previous prototype for =E2=80=98dce112_link_encoder_create=E2=
-=80=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:674:32=
-: warning: no previous prototype for =E2=80=98dce112_opp_create=E2=80=99 [-=
-Wmissing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:689:17=
-: warning: no previous prototype for =E2=80=98dce112_aux_engine_create=E2=
-=80=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:727:20=
-: warning: no previous prototype for =E2=80=98dce112_i2c_hw_create=E2=80=99=
- [-Wmissing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:742:22=
-: warning: no previous prototype for =E2=80=98dce112_clock_source_create=E2=
-=80=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:766:6:=
- warning: no previous prototype for =E2=80=98dce112_clock_source_destroy=E2=
-=80=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:1027:1=
-6: warning: no previous prototype for =E2=80=98dce112_validate_global=E2=80=
-=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:1205:2=
-9: warning: no previous prototype for =E2=80=98dce112_resource_cap=E2=80=99=
- [-Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator_=
+v.c:54: warning: Function parameter or member 'tg' not described in 'dce110=
+_timing_generator_v_enable_crtc'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_timing_generator_=
+v.c:216: warning: Function parameter or member 'tg' not described in 'dce11=
+0_timing_generator_v_wait_for_vactive'
 >
 > Cc: Harry Wentland <harry.wentland@amd.com>
 > Cc: Leo Li <sunpeng.li@amd.com>
@@ -103,7 +83,6 @@ Wmissing-prototypes]
 > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Anthony Koo <Anthony.Koo@amd.com>
 > Cc: amd-gfx@lists.freedesktop.org
 > Cc: dri-devel@lists.freedesktop.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
@@ -112,94 +91,63 @@ Applied.  Thanks!
 
 Alex
 
+
 > ---
->  .../drm/amd/display/dc/dce112/dce112_resource.c  | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+>  .../dc/dce110/dce110_timing_generator_v.c     | 19 +++++++++----------
+>  1 file changed, 9 insertions(+), 10 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c b/dr=
-ivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
-> index f99b1c0845908..c68e576a21990 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
-> @@ -617,7 +617,7 @@ static const struct encoder_feature_support link_enc_=
-feature =3D {
->                 .flags.bits.IS_TPS4_CAPABLE =3D true
->  };
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_timing_generato=
+r_v.c b/drivers/gpu/drm/amd/display/dc/dce110/dce110_timing_generator_v.c
+> index a13a2f58944e3..c509384fff543 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_timing_generator_v.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_timing_generator_v.c
+> @@ -46,17 +46,16 @@
+>   *
+>   ***********************************************************************=
+***********/
 >
-> -struct link_encoder *dce112_link_encoder_create(
-> +static struct link_encoder *dce112_link_encoder_create(
->         const struct encoder_init_data *enc_init_data)
+> -/**
+> -* Enable CRTCV
+> -*/
+> +/*
+> + * Enable CRTCV
+> + */
+>
+>  static bool dce110_timing_generator_v_enable_crtc(struct timing_generato=
+r *tg)
 >  {
->         struct dce110_link_encoder *enc110 =3D
-> @@ -671,7 +671,7 @@ static struct input_pixel_processor *dce112_ipp_creat=
-e(
->         return &ipp->base;
+>  /*
+> -* Set MASTER_UPDATE_MODE to 0
+> -* This is needed for DRR, and also suggested to be default value by Syed=
+.
+> -*/
+> -
+> + * Set MASTER_UPDATE_MODE to 0
+> + * This is needed for DRR, and also suggested to be default value by Sye=
+d.
+> + */
+>         uint32_t value;
+>
+>         value =3D 0;
+> @@ -209,9 +208,9 @@ static void dce110_timing_generator_v_wait_for_vblank=
+(struct timing_generator *t
+>         }
 >  }
 >
-> -struct output_pixel_processor *dce112_opp_create(
-> +static struct output_pixel_processor *dce112_opp_create(
->         struct dc_context *ctx,
->         uint32_t inst)
+> -/**
+> -* Wait till we are in VActive (anywhere in VActive)
+> -*/
+> +/*
+> + * Wait till we are in VActive (anywhere in VActive)
+> + */
+>  static void dce110_timing_generator_v_wait_for_vactive(struct timing_gen=
+erator *tg)
 >  {
-> @@ -686,7 +686,7 @@ struct output_pixel_processor *dce112_opp_create(
->         return &opp->base;
->  }
->
-> -struct dce_aux *dce112_aux_engine_create(
-> +static struct dce_aux *dce112_aux_engine_create(
->         struct dc_context *ctx,
->         uint32_t inst)
->  {
-> @@ -724,7 +724,7 @@ static const struct dce_i2c_mask i2c_masks =3D {
->                 I2C_COMMON_MASK_SH_LIST_DCE110(_MASK)
->  };
->
-> -struct dce_i2c_hw *dce112_i2c_hw_create(
-> +static struct dce_i2c_hw *dce112_i2c_hw_create(
->         struct dc_context *ctx,
->         uint32_t inst)
->  {
-> @@ -739,7 +739,7 @@ struct dce_i2c_hw *dce112_i2c_hw_create(
->
->         return dce_i2c_hw;
->  }
-> -struct clock_source *dce112_clock_source_create(
-> +static struct clock_source *dce112_clock_source_create(
->         struct dc_context *ctx,
->         struct dc_bios *bios,
->         enum clock_source_id id,
-> @@ -763,7 +763,7 @@ struct clock_source *dce112_clock_source_create(
->         return NULL;
->  }
->
-> -void dce112_clock_source_destroy(struct clock_source **clk_src)
-> +static void dce112_clock_source_destroy(struct clock_source **clk_src)
->  {
->         kfree(TO_DCE110_CLK_SRC(*clk_src));
->         *clk_src =3D NULL;
-> @@ -1024,7 +1024,7 @@ enum dc_status dce112_add_stream_to_ctx(
->         return result;
->  }
->
-> -enum dc_status dce112_validate_global(
-> +static enum dc_status dce112_validate_global(
->                 struct dc *dc,
->                 struct dc_state *context)
->  {
-> @@ -1202,7 +1202,7 @@ static void bw_calcs_data_update_from_pplib(struct =
-dc *dc)
->         dm_pp_notify_wm_clock_changes(dc->ctx, &clk_ranges);
->  }
->
-> -const struct resource_caps *dce112_resource_cap(
-> +static const struct resource_caps *dce112_resource_cap(
->         struct hw_asic_id *asic_id)
->  {
->         if (ASIC_REV_IS_POLARIS11_M(asic_id->hw_internal_rev) ||
+>         while (dce110_timing_generator_v_is_in_vertical_blank(tg)) {
 > --
 > 2.25.1
 >
 > _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
