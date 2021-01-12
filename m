@@ -2,159 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A952F3FC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 712D32F3FBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405214AbhALWdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:33:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29457 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726475AbhALWdu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:33:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610490743;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Fks7S4sWATCTrvgOGnefCKrK3VzEzfrq2t139PnWz5s=;
-        b=Kp5AGdTN3bRnOzGOBP6D9hnzVUzdOfuyRP6+ylWB3i/7XeI4XcIaqxRhZ7vPgxv+on1O0R
-        3ZIzojxVNbHlgadqn77JeslMuM5WxEVSXgpRVdm2b73b4vrxWtwqiF2c4GILIUbDWmoXWA
-        kZS07BcNPOwBcq4+nI0jS0si6wJeqdg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-588-Z82Ggr4cMQy_P00oAJMsZg-1; Tue, 12 Jan 2021 17:32:19 -0500
-X-MC-Unique: Z82Ggr4cMQy_P00oAJMsZg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0380BE75C;
-        Tue, 12 Jan 2021 22:32:18 +0000 (UTC)
-Received: from redhat.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C098D1F0;
-        Tue, 12 Jan 2021 22:32:16 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 17:32:14 -0500
-From:   Jarod Wilson <jarod@redhat.com>
-To:     Jay Vosburgh <jay.vosburgh@canonical.com>
-Cc:     linux-kernel@vger.kernel.org, Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH net-next] bonding: add a vlan+srcmac tx hashing option
-Message-ID: <20210112223214.GJ476710@redhat.com>
-References: <20201218193033.6138-1-jarod@redhat.com>
- <21784.1608337139@famine>
- <20210108000340.GC29828@redhat.com>
- <20210112211216.GI476710@redhat.com>
- <30207.1610487550@famine>
+        id S2405001AbhALWdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:33:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59584 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729184AbhALWdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 17:33:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC3782312E;
+        Tue, 12 Jan 2021 22:32:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610490750;
+        bh=HbhpXWVmhkkfnSvFBX49OI5jxpkPszC60LZh3cJi1Fk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=bpj8BSauJKq3YXIavFPhJPoAz74GKaMOc/RTpP1iTffeuVvsdUAErdnV/Vew4NB/5
+         sjZWaEqvcd5iqv60Gwp7oXKQNB6l6utqo8URcvUCSpwBHpaEILZd3fhtJVa7okanB5
+         kLVMJHDc2fGIwwC0p/WJ29PitwS2cIaLxUUOI0A70LXWfPK0dOgBIHsu3N7feK1yCR
+         0AEx3TcBXm0Q+To5+f8G8XpiBinPit0h6bsEcdH8YbTrOJxlWBCNrx1T+zDdD0I16F
+         WISC61JQwEutfJAVaGhFynC5boos/XsitMbyPGHQmQRF+vicZnPzsYpkpXYTJCCjH8
+         cgnvzpwyMUblQ==
+Date:   Tue, 12 Jan 2021 16:32:28 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Victor Ding <victording@google.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-mmc@vger.kernel.org, Alex Levin <levinale@google.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "Saheed O. Bolarinwa" <refactormyself@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Sukumar Ghorai <sukumar.ghorai@intel.com>,
+        Yicong Yang <yangyicong@hisilicon.com>
+Subject: Re: [PATCH 1/2] PCI/ASPM: Disable ASPM until its LTR and L1ss state
+ is restored
+Message-ID: <20210112223228.GA1857596@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <30207.1610487550@famine>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210112040146.1.I9aa2b9dd39a6ac9235ec55a8c56020538aa212fb@changeid>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 01:39:10PM -0800, Jay Vosburgh wrote:
-> Jarod Wilson <jarod@redhat.com> wrote:
+Hi Victor,
+
+Thanks for the patch.  Improving suspend/resume performance is always
+a good thing!
+
+On Tue, Jan 12, 2021 at 04:02:04AM +0000, Victor Ding wrote:
+> Right after powering up, the device may have ASPM enabled; however,
+> its LTR and/or L1ss controls may not be in the desired states; hence,
+> the device may enter L1.2 undesirably and cause resume performance
+> penalty. This is especially problematic if ASPM related control
+> registers are modified before a suspension.
+
+s/L1ss/L1SS/ (several occurrences) to match existing usage.
+
+> Therefore, ASPM should disabled until its LTR and L1ss states are
+> fully restored.
 > 
-> >On Thu, Jan 07, 2021 at 07:03:40PM -0500, Jarod Wilson wrote:
-> >> On Fri, Dec 18, 2020 at 04:18:59PM -0800, Jay Vosburgh wrote:
-> >> > Jarod Wilson <jarod@redhat.com> wrote:
-> >> > 
-> >> > >This comes from an end-user request, where they're running multiple VMs on
-> >> > >hosts with bonded interfaces connected to some interest switch topologies,
-> >> > >where 802.3ad isn't an option. They're currently running a proprietary
-> >> > >solution that effectively achieves load-balancing of VMs and bandwidth
-> >> > >utilization improvements with a similar form of transmission algorithm.
-> >> > >
-> >> > >Basically, each VM has it's own vlan, so it always sends its traffic out
-> >> > >the same interface, unless that interface fails. Traffic gets split
-> >> > >between the interfaces, maintaining a consistent path, with failover still
-> >> > >available if an interface goes down.
-> >> > >
-> >> > >This has been rudimetarily tested to provide similar results, suitable for
-> >> > >them to use to move off their current proprietary solution.
-> >> > >
-> >> > >Still on the TODO list, if these even looks sane to begin with, is
-> >> > >fleshing out Documentation/networking/bonding.rst.
-> >> > 
-> >> > 	I'm sure you're aware, but any final submission will also need
-> >> > to include netlink and iproute2 support.
-> >> 
-> >> I believe everything for netlink support is already included, but I'll
-> >> double-check that before submitting something for inclusion consideration.
-> >
-> >I'm not certain if what you actually meant was that I'd have to patch
-> >iproute2 as well, which I've definitely stumbled onto today, but it's a
-> >2-line patch, and everything seems to be working fine with it:
+> Signed-off-by: Victor Ding <victording@google.com>
+> ---
 > 
-> 	Yes, that's what I meant.
+>  drivers/pci/pci.c       | 11 +++++++++++
+>  drivers/pci/pci.h       |  2 ++
+>  drivers/pci/pcie/aspm.c |  2 +-
+>  3 files changed, 14 insertions(+), 1 deletion(-)
 > 
-> >$ sudo ip link set bond0 type bond xmit_hash_policy 5
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index eb323af34f1e..428de433f2e6 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -1660,6 +1660,17 @@ void pci_restore_state(struct pci_dev *dev)
+>  	if (!dev->state_saved)
+>  		return;
+>  
+> +	/*
+> +	 * Right after powering up, the device may have ASPM enabled;
+
+I think this could be stated more precisely.  "Right after powering
+up," ASPM should be *disabled* because ASPM Control in the Link
+Control register powers up as zero (disabled).
+
+> +	 * however, its LTR and/or L1ss controls may not be in the desired
+> +	 * states; as a result, the device may enter L1.2 undesirably and
+> +	 * cause resume performance penalty.
+> +	 * Therefore, ASPM is disabled until its LTR and L1ss states are
+> +	 * fully restored.
+> +	 * (enabling ASPM is part of pci_restore_pcie_state)
+
+If we're enabling L1.2 before LTR has been configured, that's
+definitely a bug.  But I don't see how that happens.  The current code
+looks like:
+
+  pci_restore_state
+    pci_restore_ltr_state
+      pci_write_config_word(dev, ltr + PCI_LTR_MAX_SNOOP_LAT, *cap++)
+      pci_write_config_word(dev, ltr + PCI_LTR_MAX_NOSNOOP_LAT, *cap++)
+    pci_restore_aspm_l1ss_state
+      pci_write_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL1, *cap++)
+    pci_restore_pcie_state
+      pcie_capability_write_word(dev, PCI_EXP_LNKCTL, cap[i++])
+
+We *do* restore PCI_L1SS_CTL1, which contains "ASPM L1.2 Enable",
+before we restore PCI_EXP_LNKCTL, which contains "ASPM Control", but I
+don't think "ASPM L1.2 Enable" by itself should be enough to allow
+hardware to enter L1.2.
+
+Reading PCIe r5.0, sec 5.5.1, it seems like hardware should ignore the
+PCI_L1SS_CTL1 bits unless ASPM L1 entry is enabled in PCI_EXP_LNKCTL.
+
+What am I missing?
+
+> +	 */
+> +	pcie_config_aspm_dev(dev, 0);
+> +
+>  	/*
+>  	 * Restore max latencies (in the LTR capability) before enabling
+>  	 * LTR itself (in the PCIe capability).
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index e9ea5dfaa3e0..f774bd6d2555 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -564,6 +564,7 @@ void pcie_aspm_init_link_state(struct pci_dev *pdev);
+>  void pcie_aspm_exit_link_state(struct pci_dev *pdev);
+>  void pcie_aspm_pm_state_change(struct pci_dev *pdev);
+>  void pcie_aspm_powersave_config_link(struct pci_dev *pdev);
+> +void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val);
+>  void pci_save_aspm_l1ss_state(struct pci_dev *dev);
+>  void pci_restore_aspm_l1ss_state(struct pci_dev *dev);
+>  #else
+> @@ -571,6 +572,7 @@ static inline void pcie_aspm_init_link_state(struct pci_dev *pdev) { }
+>  static inline void pcie_aspm_exit_link_state(struct pci_dev *pdev) { }
+>  static inline void pcie_aspm_pm_state_change(struct pci_dev *pdev) { }
+>  static inline void pcie_aspm_powersave_config_link(struct pci_dev *pdev) { }
+> +static inline void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val) { }
+>  static inline void pci_save_aspm_l1ss_state(struct pci_dev *dev) { }
+>  static inline void pci_restore_aspm_l1ss_state(struct pci_dev *dev) { }
+>  #endif
+> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> index a08e7d6dc248..45535b4e1595 100644
+> --- a/drivers/pci/pcie/aspm.c
+> +++ b/drivers/pci/pcie/aspm.c
+> @@ -778,7 +778,7 @@ void pci_restore_aspm_l1ss_state(struct pci_dev *dev)
+>  	pci_write_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL2, *cap++);
+>  }
+>  
+> -static void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val)
+> +void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val)
+>  {
+>  	pcie_capability_clear_and_set_word(pdev, PCI_EXP_LNKCTL,
+>  					   PCI_EXP_LNKCTL_ASPMC, val);
+> -- 
+> 2.30.0.284.gd98b1dd5eaa7-goog
 > 
-> 	Does the above work with the text label (presumably "vlansrc")
-> as well as the number, and does "ip link add test type bond help" print
-> the correct text for XMIT_HASH_POLICY?
-
-All of the above looks correct to me, output below. Before submitting...
-Could rename it from vlansrc to vlan+srcmac or some variation thereof if
-it's desired. I tried to keep it relatively short, but it's perhaps a bit
-less succinct like I have it now, and other modes include a +.
-
-$ sudo modprobe bonding mode=2 max_bonds=1 xmit_hash_policy=0
-$ sudo ip link set bond0 type bond xmit_hash_policy vlansrc
-$ cat /proc/net/bonding/bond0
-Ethernet Channel Bonding Driver: v4.18.0-272.el8.vstx.x86_64
-
-Bonding Mode: load balancing (xor)
-Transmit Hash Policy: vlansrc (5)
-MII Status: down
-MII Polling Interval (ms): 0
-Up Delay (ms): 0
-Down Delay (ms): 0
-Peer Notification Delay (ms): 0
-
-$ sudo ip link add test type bond help
-Usage: ... bond [ mode BONDMODE ] [ active_slave SLAVE_DEV ]
-                [ clear_active_slave ] [ miimon MIIMON ]
-                [ updelay UPDELAY ] [ downdelay DOWNDELAY ]
-                [ peer_notify_delay DELAY ]
-                [ use_carrier USE_CARRIER ]
-                [ arp_interval ARP_INTERVAL ]
-                [ arp_validate ARP_VALIDATE ]
-                [ arp_all_targets ARP_ALL_TARGETS ]
-                [ arp_ip_target [ ARP_IP_TARGET, ... ] ]
-                [ primary SLAVE_DEV ]
-                [ primary_reselect PRIMARY_RESELECT ]
-                [ fail_over_mac FAIL_OVER_MAC ]
-                [ xmit_hash_policy XMIT_HASH_POLICY ]
-                [ resend_igmp RESEND_IGMP ]
-                [ num_grat_arp|num_unsol_na NUM_GRAT_ARP|NUM_UNSOL_NA ]
-                [ all_slaves_active ALL_SLAVES_ACTIVE ]
-                [ min_links MIN_LINKS ]
-                [ lp_interval LP_INTERVAL ]
-                [ packets_per_slave PACKETS_PER_SLAVE ]
-                [ tlb_dynamic_lb TLB_DYNAMIC_LB ]
-                [ lacp_rate LACP_RATE ]
-                [ ad_select AD_SELECT ]
-                [ ad_user_port_key PORTKEY ]
-                [ ad_actor_sys_prio SYSPRIO ]
-                [ ad_actor_system LLADDR ]
-
-BONDMODE := balance-rr|active-backup|balance-xor|broadcast|802.3ad|balance-tlb|balance-alb
-ARP_VALIDATE := none|active|backup|all
-ARP_ALL_TARGETS := any|all
-PRIMARY_RESELECT := always|better|failure
-FAIL_OVER_MAC := none|active|follow
-XMIT_HASH_POLICY := layer2|layer2+3|layer3+4|encap2+3|encap3+4|vlansrc
-LACP_RATE := slow|fast
-AD_SELECT := stable|bandwidth|count
-
-
--- 
-Jarod Wilson
-jarod@redhat.com
-
