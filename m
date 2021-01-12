@@ -2,110 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8FEE2F2D3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:54:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E07062F2D44
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:57:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728707AbhALKya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:54:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727976AbhALKya (ORCPT
+        id S1729008AbhALK5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:57:04 -0500
+Received: from mail-40133.protonmail.ch ([185.70.40.133]:58637 "EHLO
+        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725922AbhALK5D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:54:30 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB610C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 02:53:49 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id DC3B61F413F8
-Subject: Re: kernelci/staging-next bisection: sleep.login on
- rk3288-rock2-square #2286-staging
-To:     Mike Rapoport <rppt@linux.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        kernelci-results-staging@groups.io,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@kernel.org>, Baoquan He <bhe@redhat.com>
-References: <5fd3e5d9.1c69fb81.f9e69.5028@mx.google.com>
- <127999c4-7d56-0c36-7f88-8e1a5c934cae@collabora.com>
- <20201213082314.GA198221@linux.ibm.com>
- <0633d44a-3796-8a1b-e5dc-99fc62aa4dc7@collabora.com>
- <20210103134753.GC832698@linux.ibm.com> <X/Ikalm2CLln2alz@redhat.com>
- <20210105091330.GD832698@linux.ibm.com>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <28e59120-f8b9-7256-325a-1e4ca90887b5@collabora.com>
-Date:   Tue, 12 Jan 2021 10:53:45 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 12 Jan 2021 05:57:03 -0500
+Date:   Tue, 12 Jan 2021 10:56:06 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1610448975; bh=o4WjqD8WRsgGX3zA0kQjiOkl+6TXdpW90sXH0o/3bao=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=mpXD/HtGnvzYArAWrxjXJJC6+7EgBZTl4SI5oarD8YmnknRdQ+vrY3gRp6AQdaUHY
+         Eh8KFg8WnJg0Mpsv7OUGKokRP1CSj5arakiy47gN6YjJVgxPgUYNhFk76nJ5ykwUMG
+         +6tjYUIvWEXzS9jmtf8MBVsc9KKYPJsy3wyznQxmH4YnuRSbmL7GjHUV5YhSORarh7
+         JBfDQzq8jkWok3U67UA4H3b7aS+iZiCosw/h7oPNM0u32dSwJs5/KaFNG1pPDQJPXa
+         sF46v1qJO0+OzKzC/IDGUFEhdGSesX6P0wMquQqx7/h5CVeyQaxkr4WHzdceuO86DU
+         It+dsY+WdgkpA==
+To:     Eric Dumazet <edumazet@google.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Edward Cree <ecree@solarflare.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yadu Kishore <kyk.segfault@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH net-next 0/5] skbuff: introduce skbuff_heads bulking and reusing
+Message-ID: <20210112105529.3592-1-alobakin@pm.me>
+In-Reply-To: <CANn89iKceTG_Mm4RrF+WVg-EEoFBD48gwpWX=GQiNdNnj2R8+A@mail.gmail.com>
+References: <20210111182655.12159-1-alobakin@pm.me> <CANn89iKceTG_Mm4RrF+WVg-EEoFBD48gwpWX=GQiNdNnj2R8+A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210105091330.GD832698@linux.ibm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/01/2021 09:13, Mike Rapoport wrote:
-> On Sun, Jan 03, 2021 at 03:09:14PM -0500, Andrea Arcangeli wrote:
->> Hello Mike,
->>
->> On Sun, Jan 03, 2021 at 03:47:53PM +0200, Mike Rapoport wrote:
->>> Thanks for the logs, it seems that implicitly adding reserved regions to
->>> memblock.memory wasn't that bright idea :)
->>
->> Would it be possible to somehow clean up the hack then?
->>
->> The only difference between the clean solution and the hack is that
->> the hack intended to achieved the exact same, but without adding the
->> reserved regions to memblock.memory.
-> 
-> I didn't consider adding reserved regions to memblock.memory as a clean
-> solution, this was still a hack, but I didn't think that things are that
-> fragile.
-> 
-> I still think we cannot rely on memblock.reserved to detect
-> memory/zone/node sizes and the boot failure reported here confirms this.
->  
->> The comment on that problematic area says the reserved area cannot be
->> used for DMA because of some unexplained hw issue, and that doing so
->> prevents booting, but since the area got reserved, even with the clean
->> solution, it shouldn't have never been used for DMA?
->>
->> So I can only imagine that the physical memory region is way more
->> problematic than just for DMA. It sounds like that anything that
->> touches it, including the CPU, will hang the system, not just DMA. It
->> sounds somewhat similar to the other e820 direct mapping issue on x86?
-> 
-> My understanding is that the boot failed because when I implicitly added
-> the reserved region to memblock.memory the memory size seen by
-> free_area_init() jumped from 2G to 4G because the reserved area was close
-> to 4G. The very first allocation would get a chunk from slightly below of
-> 4G and as there is no real memory there, the kernel would crash.
->  
->> If you want to test the hack on the arm board to check if it boots you
->> can use the below commit:
->>
->> https://git.kernel.org/pub/scm/linux/kernel/git/andrea/aa.git/commit/?id=c3ea2633015104ce0df33dcddbc36f57de1392bc
-> 
-> My take is your solution would boot with this memory configuration, but I
-> still don't think that using memblock.reserved for zone/node sizing is
-> correct.
+From: Eric Dumazet <edumazet@google.com>
+Date: Tue, 12 Jan 2021 09:20:39 +0100
 
-The rk3288 platform has now been failing to boot for nearly a
-month on linux-next:
+> On Mon, Jan 11, 2021 at 7:27 PM Alexander Lobakin <alobakin@pm.me> wrote:
+>>
+>> Inspired by cpu_map_kthread_run() and _kfree_skb_defer() logics.
+>>
+>> Currently, all sorts of skb allocation always do allocate
+>> skbuff_heads one by one via kmem_cache_alloc().
+>> On the other hand, we have percpu napi_alloc_cache to store
+>> skbuff_heads queued up for freeing and flush them by bulks.
+>>
+>> We can use this struct to cache and bulk not only freeing, but also
+>> allocation of new skbuff_heads, as well as to reuse cached-to-free
+>> heads instead of allocating the new ones.
+>> As accessing napi_alloc_cache implies NAPI softirq context, do this
+>> only for __napi_alloc_skb() and its derivatives (napi_alloc_skb()
+>> and napi_get_frags()). The rough amount of their call sites are 69,
+>> which is quite a number.
+>>
+>> iperf3 showed a nice bump from 910 to 935 Mbits while performing
+>> UDP VLAN NAT on 1.2 GHz MIPS board. The boost is likely to be
+>> way bigger on more powerful hosts and NICs with tens of Mpps.
+>
+> What is the latency cost of these bulk allocations, and for TCP traffic
+> on which GRO is the norm ?
+>
+> Adding caches is increasing cache foot print when the cache is populated.
+>
+> I wonder if your iperf3 numbers are simply wrong because of lack of
+> GRO in this UDP VLAN NAT case.
 
-  https://kernelci.org/test/case/id/5ffbed0a31ad81239bc94cdb/
+Ah, I should've mentioned that I use UDP GRO Fraglists, so these
+numbers are for GRO.
 
-Until a fix or a new version of this patch is made, would it be
-possible to drop it or revert it so the platform become usable
-again?
+My board gives full 1 Gbps (link speed) for TCP for more than a year,
+so I can't really rely on TCP passthrough to measure the gains or
+regressions.
 
-Or if you want, I can make a cleaned-up version of my hack to
-ignore the problematic region if you still need your patch to be
-on linux-next, but that would probably be less than ideal.
+> We are adding a log of additional code, thus icache pressure, that
+> iperf3 tests can not really measure.
 
-Thanks,
-Guillaume
+Not sure if MIPS arch can provide enough debug information to measure
+icache pressure, but I'll try to catch this.
+
+> Most linus devices simply handle one packet at a time (one packet per int=
+errupt)
+
+I disagree here, most modern NICs usually handle thousands of packets
+per single interrupt due to NAPI, hardware interrupt moderation and so
+on, at least in cases with high traffic load.
+
+Al
+
