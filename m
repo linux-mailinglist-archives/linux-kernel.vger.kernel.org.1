@@ -2,86 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFEC2F3F93
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F182F3FA3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394562AbhALW2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:28:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731556AbhALW1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:27:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F3C9923120;
-        Tue, 12 Jan 2021 22:27:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1610490432;
-        bh=xxQ8MfqyAklnD0AulIQNNMFIA3u/PTYanCkpNaTjiYA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pU67xGihUoOUdUglxIEJzItDAKZw0YIAbhe1AHc4leSkc/6MSGmkv58lLqZunhlXn
-         PS7FupmFacuRuwH30+MHwSnvmGG+n0ouuipCw+mPFe6kSc51PAzAL//1E2M/nG8TTy
-         1rNSX5qGFw+HkLTMJ40Nzl4Boknm7e5KZeg6F+cY=
-Date:   Tue, 12 Jan 2021 14:27:11 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Rokudo Yan <wu-yan@tcl.com>
-Cc:     <mgorman@techsingularity.net>, <aarcange@redhat.com>,
-        <haiwang.fu@tcl.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <rientjes@google.com>, <tang.ding@tcl.com>,
-        <vbabka@suse.cz>, <xiushui.ye@tcl.com>
-Subject: Re: [PATCH] mm, compaction: move high_pfn to the for loop scope.
-Message-Id: <20210112142711.b82cf36abaa7ff04773e212f@linux-foundation.org>
-In-Reply-To: <20210112094720.1238444-1-wu-yan@tcl.com>
-References: <20210112091041.GJ3592@techsingularity.net>
-        <20210112094720.1238444-1-wu-yan@tcl.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S2404125AbhALW3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:29:44 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:33426 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394599AbhALW3Y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 17:29:24 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id B5A061C0B8B; Tue, 12 Jan 2021 23:28:40 +0100 (CET)
+Date:   Tue, 12 Jan 2021 23:28:40 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: Re: Malicious fs images was Re: ext4 regression in v5.9-rc2 from
+ e7bfb5c9bb3d on ro fs with overlapped bitmaps
+Message-ID: <20210112222840.GA28214@duo.ucw.cz>
+References: <20201006050306.GA8098@localhost>
+ <20201006133533.GC5797@mit.edu>
+ <20201007080304.GB1112@localhost>
+ <20201007143211.GA235506@mit.edu>
+ <20201007201424.GB15049@localhost>
+ <20201008021017.GD235506@mit.edu>
+ <20201008222259.GA45658@localhost>
+ <20201009143732.GJ235506@mit.edu>
+ <20210110184101.GA4625@amd>
+ <X/4YArRJMgGjSyZY@mit.edu>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="T4sUOijqQbZv57TR"
+Content-Disposition: inline
+In-Reply-To: <X/4YArRJMgGjSyZY@mit.edu>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Jan 2021 17:47:20 +0800 Rokudo Yan <wu-yan@tcl.com> wrote:
 
-> In fast_isolate_freepages, high_pfn will be used if a prefered one(PFN >= low_fn) not found. But the high_pfn
-> is not reset before searching an free area, so when it was used as freepage, it may from another free area searched before.
-> And move_freelist_head(freelist, freepage) will have unexpected behavior(eg. corrupt the MOVABLE freelist)
-> 
-> Unable to handle kernel paging request at virtual address dead000000000200
-> Mem abort info:
->   ESR = 0x96000044
->   Exception class = DABT (current EL), IL = 32 bits
->   SET = 0, FnV = 0
->   EA = 0, S1PTW = 0
-> Data abort info:
->   ISV = 0, ISS = 0x00000044
->   CM = 0, WnR = 1
-> [dead000000000200] address between user and kernel address ranges
-> 
-> -000|list_cut_before(inline)
-> -000|move_freelist_head(inline)
-> -000|fast_isolate_freepages(inline)
-> -000|isolate_freepages(inline)
-> -000|compaction_alloc(?, ?)
-> -001|unmap_and_move(inline)
-> -001|migrate_pages([NSD:0xFFFFFF80088CBBD0] from = 0xFFFFFF80088CBD88, [NSD:0xFFFFFF80088CBBC8] get_new_p
-> -002|__read_once_size(inline)
-> -002|static_key_count(inline)
-> -002|static_key_false(inline)
-> -002|trace_mm_compaction_migratepages(inline)
-> -002|compact_zone(?, [NSD:0xFFFFFF80088CBCB0] capc = 0x0)
-> -003|kcompactd_do_work(inline)
-> -003|kcompactd([X19] p = 0xFFFFFF93227FBC40)
-> -004|kthread([X20] _create = 0xFFFFFFE1AFB26380)
-> -005|ret_from_fork(asm)
-> ---|end of frame
-> 
-> The issue was reported on an smart phone product with 6GB ram and 3GB zram as swap device.
-> 
-> This patch fixes the issue by reset high_pfn before searching each free area, which ensure
-> freepage and freelist match when call move_freelist_head in fast_isolate_freepages().
-> 
-> Link: http://lkml.kernel.org/r/20190118175136.31341-12-mgorman@techsingularity.net
-> Fixes: 5a811889de10f1eb ("mm, compaction: use free lists to quickly locate a migration target")
+--T4sUOijqQbZv57TR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Could you please send a Signed-off-by: for this patch, as per
-Documentation/process/submitting-patches.rst?
+Hi!
+
+> > People want to use USB sticks from time to time. And while I
+> > understand XFS is so complex it is unsuitable for such use, I'd still
+> > expect bugs to be fixed there.
+> >=20
+> > I hope VFAT to be safe to mount, because that is very common on USB.
+> >=20
+> > I also hope ext2/3/4 is safe in that regard.
+>=20
+> Ext4 will fix file system fuzzing attack bugs on a best efforts basis.
+> That is, when I have time, I've been known to stay up late to bugs
+> reported by fuzzers.  I hope ext4 is safe, but I'm not going to make
+> any guarantees that it is Bug-Free(tm).  If you want to trust it in
+> that way, you do so at your risk.
+
+Good.
+
+> > Anyway it would be nice to have documentation explaining this. If I'm
+> > wrong about VFAT being safe, it would be good to know, and I guess
+> > many will be surprised that XFS is using different rules.
+>=20
+> Using USB sticks is fine, so long as you trust the provenance of the
+> drive.  If you take a random USB stick that is handed to you by
+
+Well... That makes passing data between Windows and Linux machines
+using USB stick "interesting", right?
+
+> someone whom you don't trust implicitly, or worse, that you picked up
+> abandoned on the sidewalk, there have been plenty of articles which
+> describe why this is a REALLY BAD IDEA, and even if you ignore
+> OS-level vuleranbilities, there are also firwmare and hardware based
+> vulerabilities that would put your computer at risk.  See [2] and
+> [3]
+
+I know, but bear with me.
+
+> As far as documentation is concerned, how far should we go?  Should
+> there be a warning in the execve(2) system call man page that you
+> shouldn't download random binaries from the network and execute them?  :-)
+
+No need to pull straw men for me.
+
+This thread suggested that kernel is _not_ supposed to be robust
+against corrupt filesystems (because fsck is not integrated in
+kernel). Which was news to me (and I'm not the person that needs
+warning in execve documentation).
+
+I'd certainly like to hear that VFAT and EXT4 _is_ supposed to be
+robust in that way.
+
+And if we have filesystems where corrupt image is known to allow
+arbitrary code execution, we need to
+
+a) document that.
+
+b) disable them when secure boot is enabled.
+
+Because with secure boot, we are supposed to be secure against attacks
+=66rom root, and root can prepare malicious filesystems. ("The problem,
+simply put, is this: the objective of secure boot is to prevent the
+system from running any unsigned code in a privileged mode. So, if one
+boots a Linux system that, in turn, gives access to the machine to
+untrusted code, the entire purpose has been defeated. The consequences
+could hurt both locally (bad code could take control of the machine)
+and globally (the signing key used to boot Linux could be revoked), so
+it is an outcome that is worth avoiding. Doing so, however, requires
+placing limitations in the kernel so that not even root can circumvent
+the secure boot chain of trust." -- https://lwn.net/Articles/514985/
+).
+
+Best regards,
+								Pavel
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--T4sUOijqQbZv57TR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX/4imAAKCRAw5/Bqldv6
+8igbAKCnfyP6mP9AHNkzvIsq1Z/ZDtXU8QCdEyaoLjawtnyub5W2dVUMRLpB6d0=
+=CR7u
+-----END PGP SIGNATURE-----
+
+--T4sUOijqQbZv57TR--
