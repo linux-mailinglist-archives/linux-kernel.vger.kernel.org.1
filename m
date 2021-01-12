@@ -2,111 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5193E2F4045
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C75982F4051
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391123AbhALXaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 18:30:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731617AbhALXaC (ORCPT
+        id S1730141AbhALXcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 18:32:21 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47364 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725804AbhALXcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 18:30:02 -0500
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A230C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:29:22 -0800 (PST)
-Received: by mail-yb1-xb2b.google.com with SMTP id r63so410237ybf.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:29:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x1seuFAYIbhLRjf8D0C4ZsKHbwGrH6A/TbShGVmd5uo=;
-        b=cwO1sEjV1h4NVsOFaISyMfdqqMJfHtXNPyvxr2Gfm6mPYBRO60Zb6pTcwmWCwdT+pb
-         OZNRny2bvukSOjPndOUrsEa68XCe/6fEMIfz2/RJmzym5RtuLTIM+weqi9KiEA3B6U63
-         aIU0VGwFrZ9XKZdofR8gP8ukAmIvjGvwrUszo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x1seuFAYIbhLRjf8D0C4ZsKHbwGrH6A/TbShGVmd5uo=;
-        b=noywChv3dPYB2RduaXOrxUxsBgi7uDZwgaqH9TlTvCnT+tY3Bz1xiNAJng6r7+4XjA
-         jDnIr8iMeCvYGwaCP2CuZZ1Kr6+qInAaMm690skIx6uv2+tmPYjTsBfv9V+he5bKe6gR
-         8UzNxhWO28hTUg61xloIBRY9G3hLu4mtt6BUrOhOLhM4dU6ZTAIHJxrZazIs4btg5hYk
-         guH40A1q8HFOMMVrhYcCwPAnZzZWSzAX1siDmSugdSy3asoOjmlG8TUUhQMrc+MeOcY5
-         Lc1XBIk3cwJ68C7BdFRDxcXVKMjjH52x8oleHwv72chPNKqJ6spafL7dNU8ap4t87fz2
-         s8uw==
-X-Gm-Message-State: AOAM531alCSj7LtFXN4bY8b4Ip+v+mXtk7B+tlOekjdLTbF+0e7E1e4n
-        ZRxbCGKKJaZmPnbhHRfxOMNrGoUxxupUfHOnSCgd0Q==
-X-Google-Smtp-Source: ABdhPJzg3f5FyC7kA1rl+eUDMIlmHup89eW+40+ekVov/RjOLdGoW12i6y4CT4/3T0jTZHB9F3uBtlSmyJMs6PkpKsc=
-X-Received: by 2002:a25:3a04:: with SMTP id h4mr2589314yba.285.1610494161587;
- Tue, 12 Jan 2021 15:29:21 -0800 (PST)
-MIME-Version: 1.0
-References: <20210107154200.v4.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
- <161041741167.3661239.13546059654424804588@swboyd.mtv.corp.google.com>
-In-Reply-To: <161041741167.3661239.13546059654424804588@swboyd.mtv.corp.google.com>
-From:   Philip Chen <philipchen@chromium.org>
-Date:   Tue, 12 Jan 2021 15:29:11 -0800
-Message-ID: <CA+cxXhkXJGYx0SQ-S7B=6iHAWFoCQpokw7huaGTNKbVmP1JDhA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] dt-bindings: input: cros-ec-keyb: Add a new property
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Simon Glass <sjg@chromium.org>, devicetree@vger.kernel.org,
-        linux-input@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 12 Jan 2021 18:32:20 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10CN8lP8015650;
+        Tue, 12 Jan 2021 18:31:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=zcctC6u50OwF40P9bFjCjFt0z0OsHU9Qruu5jchxGwE=;
+ b=dD8ekQZ59kLhhue60rAZvCgDsSBvN4X4ek//NHWpNwFEcyNg1DZVpagQC6GcankUgR13
+ XOPmPudM5F7XZyzL6WqfmiNB0l4rLQy8rOBvKskGT/5np+uNLeEVhe4IUomqKkNa8HwT
+ omckRbVfOEtXnzpQz2uDIWpuC/TLDoA4KGhv1biqnXf7ZBsfLM6J0xRmt4pq9YG6n5C7
+ t3RRk60NhbCCGfwkHQQQ9zWtxkzwRxTsx/iX1eRn+tmUAOsDQ8vUwAqSePloX0oFKVFv
+ X7ezWDwQYxkahe0N3dau39LUOUf2dXSV1IJRscq7nleLY5UfWSJOY1ULngJCf+LHCuty Jw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 361hj4x2aa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 18:31:07 -0500
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10CN9neQ022641;
+        Tue, 12 Jan 2021 18:31:06 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 361hj4x299-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 18:31:06 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10CNRI09010322;
+        Tue, 12 Jan 2021 23:31:03 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 35y447va5d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 23:31:02 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10CNUtAv19136784
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Jan 2021 23:30:55 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 914204203F;
+        Tue, 12 Jan 2021 23:31:00 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A758642047;
+        Tue, 12 Jan 2021 23:30:54 +0000 (GMT)
+Received: from sig-9-65-221-171.ibm.com (unknown [9.65.221.171])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Jan 2021 23:30:54 +0000 (GMT)
+Message-ID: <1f7db82ccf8e18306c9b51312b3e1f5d51f85cdb.camel@linux.ibm.com>
+Subject: Re: [PATCH v14 4/6] powerpc: Delete unused functions
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        bauerman@linux.ibm.com, robh@kernel.org,
+        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
+        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au
+Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
+        paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@vger.kernel.org
+Date:   Tue, 12 Jan 2021 18:30:53 -0500
+In-Reply-To: <20210104192602.10131-5-nramas@linux.microsoft.com>
+References: <20210104192602.10131-1-nramas@linux.microsoft.com>
+         <20210104192602.10131-5-nramas@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-12_19:2021-01-12,2021-01-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ clxscore=1015 adultscore=0 impostorscore=0 mlxlogscore=999 suspectscore=0
+ phishscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101120132
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 6:10 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Philip Chen (2021-01-07 15:42:08)
-> > This patch adds a new property `function-row-physmap` to the
->
-> From Documentation/process/submitting-patches.rst
->
-> Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
-> instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
-> to do frotz", as if you are giving orders to the codebase to change
-> its behaviour.
-I was aware of this guideline, but I thought it only applies to the
-summary line.
-I'll apply the guideline to the whole description.
-Thanks!
->
-> > device tree for the custom keyboard top row design.
-> >
-> > The property describes the rows/columns of the top row keys
-> > from left to right.
-> >
-> > Signed-off-by: Philip Chen <philipchen@chromium.org>
-> > ---
-> > diff --git a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
-> > index 8e50c14a9d778..7acdb33781d30 100644
-> > --- a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
-> > +++ b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
-> > @@ -31,6 +31,16 @@ properties:
-> >        if the EC does not have its own logic or hardware for this.
-> >      type: boolean
-> >
-> > +  function-row-physmap:
->
-> Is there any minimum/maximum number of elements possible?
-The maximum is 15.
-There is no definition for the minimum - we can probably say the minimum is 1.
->
-> > +    $ref: '/schemas/types.yaml#/definitions/uint32-array'
-> > +    description: |
-> > +      An ordered u32 array describing the rows/columns (in the scan matrix)
-> > +      of top row keys from physical left (KEY_F1) to right. Each entry
-> > +      encodes the row/column as:
-> > +      (((row) & 0xFF) << 24) | (((column) & 0xFF) << 16)
-> > +      where the lower 16 bits are reserved. This property is specified only
-> > +      when the keyboard has a custom design for the top row keys.
-> > +
+Hi Lakshmi,
+
+On Mon, 2021-01-04 at 11:26 -0800, Lakshmi Ramasubramanian wrote:
+
+> diff --git a/arch/powerpc/kexec/file_load_64.c b/arch/powerpc/kexec/file_load_64.c
+> index a05c19b3cc60..3cab318aa3b9 100644
+> --- a/arch/powerpc/kexec/file_load_64.c
+> +++ b/arch/powerpc/kexec/file_load_64.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/kexec.h>
+>  #include <linux/of_fdt.h>
+>  #include <linux/libfdt.h>
+> +#include <linux/of.h>
+>  #include <linux/of_device.h>
+>  #include <linux/memblock.h>
+>  #include <linux/slab.h>
+> @@ -944,7 +945,8 @@ int setup_new_fdt_ppc64(const struct kimage *image, void *fdt,
+>  	struct crash_mem *umem = NULL, *rmem = NULL;
+>  	int i, nr_ranges, ret;
+>  
+> -	ret = setup_new_fdt(image, fdt, initrd_load_addr, initrd_len, cmdline);
+> +	ret = of_kexec_setup_new_fdt(image, fdt, initrd_load_addr, initrd_len,
+> +				     cmdline);
+>  	if (ret)
+>  		goto out;
+>  
+
+The "powerpc: Move arch independent ima kexec functions to
+drivers/of/kexec.c" moved setup_ima_buffer() to
+of_kexec_setup_new_fdt().  Defering making the change from
+setup_new_fdt() to of_kexec_setup_new_fdt() here, is not bisect safe.
+
+Mimi
+
