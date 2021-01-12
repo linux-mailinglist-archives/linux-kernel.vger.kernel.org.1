@@ -2,128 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2C12F35AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:26:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27D222F35BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406875AbhALQZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:25:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33700 "EHLO
+        id S2406857AbhALQ2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:28:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406170AbhALQZj (ORCPT
+        with ESMTP id S2406390AbhALQ2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:25:39 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E666DC061794;
-        Tue, 12 Jan 2021 08:24:58 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 4AFFF1F45463
-Received: by earth.universe (Postfix, from userid 1000)
-        id DE9713C0C94; Tue, 12 Jan 2021 17:24:54 +0100 (CET)
-Date:   Tue, 12 Jan 2021 17:24:54 +0100
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Tomi Valkeinen <tomba@kernel.org>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, linux-fbdev@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        kernel@collabora.com
-Subject: omapfb removal (was: Re: [PATCHv1] video: omapfb2: Make standard and
- custom DSI command mode panel driver mutually exclusive)
-Message-ID: <20210112162454.hfzj5bxy7e6zlccl@earth.universe>
-References: <20210108122540.657501b2@canb.auug.org.au>
- <20210108112441.14609-1-sebastian.reichel@collabora.com>
- <20210108195839.GA1429715@ravnborg.org>
- <20210112120246.ujhjyylrlgfrfvig@earth.universe>
- <4b39c036-fb70-4a5b-ddda-08ce2f0a6db5@kernel.org>
+        Tue, 12 Jan 2021 11:28:08 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400DCC0617A3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 08:27:21 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id lt17so4400541ejb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 08:27:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w9XY+SrL1C8QH90qcJqPmDFWdeEzWfdgu1cbhdh73k4=;
+        b=EQ/fT5KTR3MtbCTetUzVn/GWwkD8fDJdMXji5OfxzkRmMlIP58JNlysqqO5iAZ51ta
+         M/v76BBkKQph3OPmuxOLrE56u6UcmQuufbKg0rIHzmYaU9LkndR/x9/rjLDCxLnTDHvK
+         eWFzzz8GVOIFJCCUTh6eMeTaAf6iTx5mqsbkiei8l4Mf1PvTmgPWwwr/4xN1CFMzNgYv
+         Gpk/8WU51A8ksp/8MoHqeJ9c6RmMMVzP1qIxXha4OxZngMLZoQX1Jo1fuC5SZdP5XS9m
+         la+BdHJWU6mKMitROBWVmWqFRKu6fzu0I0CgeXEvwSlZKtn9X0vblx8adBoyLIah5xj9
+         j+Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w9XY+SrL1C8QH90qcJqPmDFWdeEzWfdgu1cbhdh73k4=;
+        b=F72z6Yv4sBQ5wMwXyhIAVG4HMozwCD6Dotc6xM5ftdafA7KAznDJa/VodzZFztnDDS
+         vubwy5lWySvhmA7TAxjVV2c1ECGk82liA2jd7/IWciBnO9v3Kd0GzdG7Ueme2JCBS+Qr
+         7weZp/cj46QOllKugqSvqn3unKIe5G+ASfCxj0kfKv86BVmjajJX58mm21RCipgo0AWY
+         pG5zctcFl5VRSazHbqHncdh80/mzf9OMyMU/ny4Abh9TcldHYUIWDYzMo6efsKX95Aru
+         B5ZNAp9lWY0pYExWip6DNpLEf3BnSGjJT0bX7iZjStwYcy/h0jog7d2j3EC+Wr4p3eSB
+         a2dg==
+X-Gm-Message-State: AOAM531tJxo6BG39fVSHu4oLYBoVBhrv9LGCVS8s/7KuMPFjvWDtISOE
+        O2cw2xlkZEt/JsNpW+AYqeRAuTzm/xzX1xyefGVG
+X-Google-Smtp-Source: ABdhPJzaWEEScvWK9P+Ko5jvJwHXBeyvblFzNT50Hx0stb2MQkmev4pVT/wKA4109kJJ3/oW0KUZbO6cXUICkrswLbM=
+X-Received: by 2002:a17:906:3712:: with SMTP id d18mr3920253ejc.178.1610468839776;
+ Tue, 12 Jan 2021 08:27:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ogcdqsrw7fdsgqmh"
-Content-Disposition: inline
-In-Reply-To: <4b39c036-fb70-4a5b-ddda-08ce2f0a6db5@kernel.org>
+References: <20210108040708.8389-1-tusharsu@linux.microsoft.com> <20210108040708.8389-9-tusharsu@linux.microsoft.com>
+In-Reply-To: <20210108040708.8389-9-tusharsu@linux.microsoft.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Tue, 12 Jan 2021 11:27:08 -0500
+Message-ID: <CAHC9VhSJk0wG=WzO3bwsueiy19mMi9m6MamTrQfH8C=gXUtvGw@mail.gmail.com>
+Subject: Re: [PATCH v10 8/8] selinux: include a consumer of the new IMA
+ critical data hook
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Cc:     zohar@linux.ibm.com,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com, tyhicks@linux.microsoft.com,
+        sashal@kernel.org, James Morris <jmorris@namei.org>,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 7, 2021 at 11:07 PM Tushar Sugandhi
+<tusharsu@linux.microsoft.com> wrote:
+> From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>
+> SELinux stores the active policy in memory, so the changes to this data
+> at runtime would have an impact on the security guarantees provided
+> by SELinux.  Measuring in-memory SELinux policy through IMA subsystem
+> provides a secure way for the attestation service to remotely validate
+> the policy contents at runtime.
+>
+> Measure the hash of the loaded policy by calling the IMA hook
+> ima_measure_critical_data().  Since the size of the loaded policy
+> can be large (several MB), measure the hash of the policy instead of
+> the entire policy to avoid bloating the IMA log entry.
+>
+> To enable SELinux data measurement, the following steps are required:
+>
+> 1, Add "ima_policy=critical_data" to the kernel command line arguments
+>    to enable measuring SELinux data at boot time.
+> For example,
+>   BOOT_IMAGE=/boot/vmlinuz-5.10.0-rc1+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset security=selinux ima_policy=critical_data
+>
+> 2, Add the following rule to /etc/ima/ima-policy
+>    measure func=CRITICAL_DATA label=selinux
+>
+> Sample measurement of the hash of SELinux policy:
+>
+> To verify the measured data with the current SELinux policy run
+> the following commands and verify the output hash values match.
+>
+>   sha256sum /sys/fs/selinux/policy | cut -d' ' -f 1
+>
+>   grep "selinux-policy-hash" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | tail -1 | cut -d' ' -f 6
+>
+> Note that the actual verification of SELinux policy would require loading
+> the expected policy into an identical kernel on a pristine/known-safe
+> system and run the sha256sum /sys/kernel/selinux/policy there to get
+> the expected hash.
+>
+> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
+> Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+> ---
+>  Documentation/ABI/testing/ima_policy |  3 +-
+>  security/selinux/Makefile            |  2 +
+>  security/selinux/ima.c               | 64 ++++++++++++++++++++++++++++
+>  security/selinux/include/ima.h       | 24 +++++++++++
+>  security/selinux/include/security.h  |  3 +-
+>  security/selinux/ss/services.c       | 64 ++++++++++++++++++++++++----
+>  6 files changed, 149 insertions(+), 11 deletions(-)
+>  create mode 100644 security/selinux/ima.c
+>  create mode 100644 security/selinux/include/ima.h
 
---ogcdqsrw7fdsgqmh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I remain concerned about the possibility of bypassing a measurement by
+tampering with the time, but I appear to be the only one who is
+worried about this so I'm not going to block this patch on those
+grounds.
 
-[dropped linux-next from Cc]
+Acked-by: Paul Moore <paul@paul-moore.com>
 
-Hi,
+> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+> index 54fe1c15ed50..8365596cb42b 100644
+> --- a/Documentation/ABI/testing/ima_policy
+> +++ b/Documentation/ABI/testing/ima_policy
+> @@ -52,8 +52,9 @@ Description:
+>                         template:= name of a defined IMA template type
+>                         (eg, ima-ng). Only valid when action is "measure".
+>                         pcr:= decimal value
+> -                       label:= [data_label]
+> +                       label:= [selinux]|[data_label]
+>                         data_label:= a unique string used for grouping and limiting critical data.
+> +                       For example, "selinux" to measure critical data for SELinux.
+>
+>                   default policy:
+>                         # PROC_SUPER_MAGIC
+> diff --git a/security/selinux/Makefile b/security/selinux/Makefile
+> index 4d8e0e8adf0b..776162444882 100644
+> --- a/security/selinux/Makefile
+> +++ b/security/selinux/Makefile
+> @@ -16,6 +16,8 @@ selinux-$(CONFIG_NETLABEL) += netlabel.o
+>
+>  selinux-$(CONFIG_SECURITY_INFINIBAND) += ibpkey.o
+>
+> +selinux-$(CONFIG_IMA) += ima.o
+> +
+>  ccflags-y := -I$(srctree)/security/selinux -I$(srctree)/security/selinux/include
+>
+>  $(addprefix $(obj)/,$(selinux-y)): $(obj)/flask.h
+> diff --git a/security/selinux/ima.c b/security/selinux/ima.c
+> new file mode 100644
+> index 000000000000..0b835bdc3aa9
+> --- /dev/null
+> +++ b/security/selinux/ima.c
+> @@ -0,0 +1,64 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Copyright (C) 2021 Microsoft Corporation
+> + *
+> + * Author: Lakshmi Ramasubramanian (nramas@linux.microsoft.com)
+> + *
+> + * Measure critical data structures maintainted by SELinux
+> + * using IMA subsystem.
+> + */
+> +#include <linux/vmalloc.h>
+> +#include <linux/ktime.h>
+> +#include <linux/ima.h>
+> +#include "security.h"
+> +#include "ima.h"
+> +
+> +/*
+> + * selinux_ima_measure_state - Measure hash of the SELinux policy
+> + *
+> + * @state: selinux state struct
+> + *
+> + * NOTE: This function must be called with policy_mutex held.
+> + */
+> +void selinux_ima_measure_state(struct selinux_state *state)
+> +{
+> +       struct timespec64 cur_time;
+> +       void *policy = NULL;
+> +       char *policy_event_name = NULL;
+> +       size_t policy_len;
+> +       int rc = 0;
+> +
+> +       /*
+> +        * Measure SELinux policy only after initialization is completed.
+> +        */
+> +       if (!selinux_initialized(state))
+> +               return;
+> +
+> +       /*
+> +        * Pass a unique "event_name" to the IMA hook so that IMA subsystem
+> +        * will always measure the given data.
+> +        */
+> +       ktime_get_real_ts64(&cur_time);
+> +       policy_event_name = kasprintf(GFP_KERNEL, "%s-%lld:%09ld",
+> +                                     "selinux-policy-hash",
+> +                                     cur_time.tv_sec, cur_time.tv_nsec);
+> +       if (!policy_event_name) {
+> +               pr_err("SELinux: %s: event name for policy not allocated.\n",
+> +                      __func__);
+> +               goto out;
+> +       }
+> +
+> +       rc = security_read_state_kernel(state, &policy, &policy_len);
+> +       if (rc) {
+> +               pr_err("SELinux: %s: failed to read policy %d.\n", __func__, rc);
+> +               goto out;
+> +       }
+> +
+> +       ima_measure_critical_data("selinux", policy_event_name,
+> +                                 policy, policy_len, true);
+> +
+> +       vfree(policy);
+> +
+> +out:
+> +       kfree(policy_event_name);
+> +}
+> diff --git a/security/selinux/include/ima.h b/security/selinux/include/ima.h
+> new file mode 100644
+> index 000000000000..d69c36611423
+> --- /dev/null
+> +++ b/security/selinux/include/ima.h
+> @@ -0,0 +1,24 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ */
+> +/*
+> + * Copyright (C) 2021 Microsoft Corporation
+> + *
+> + * Author: Lakshmi Ramasubramanian (nramas@linux.microsoft.com)
+> + *
+> + * Measure critical data structures maintainted by SELinux
+> + * using IMA subsystem.
+> + */
+> +
+> +#ifndef _SELINUX_IMA_H_
+> +#define _SELINUX_IMA_H_
+> +
+> +#include "security.h"
+> +
+> +#ifdef CONFIG_IMA
+> +extern void selinux_ima_measure_state(struct selinux_state *selinux_state);
+> +#else
+> +static inline void selinux_ima_measure_state(struct selinux_state *selinux_state)
+> +{
+> +}
+> +#endif
+> +
+> +#endif /* _SELINUX_IMA_H_ */
+> diff --git a/security/selinux/include/security.h b/security/selinux/include/security.h
+> index 3cc8bab31ea8..29cae32d3fc5 100644
+> --- a/security/selinux/include/security.h
+> +++ b/security/selinux/include/security.h
+> @@ -229,7 +229,8 @@ void selinux_policy_cancel(struct selinux_state *state,
+>                         struct selinux_policy *policy);
+>  int security_read_policy(struct selinux_state *state,
+>                          void **data, size_t *len);
+> -
+> +int security_read_state_kernel(struct selinux_state *state,
+> +                              void **data, size_t *len);
+>  int security_policycap_supported(struct selinux_state *state,
+>                                  unsigned int req_cap);
+>
+> diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
+> index 9704c8a32303..cc8dbc4ed8db 100644
+> --- a/security/selinux/ss/services.c
+> +++ b/security/selinux/ss/services.c
+> @@ -65,6 +65,7 @@
+>  #include "ebitmap.h"
+>  #include "audit.h"
+>  #include "policycap_names.h"
+> +#include "ima.h"
+>
+>  /* Forward declaration. */
+>  static int context_struct_to_string(struct policydb *policydb,
+> @@ -2180,6 +2181,7 @@ static void selinux_notify_policy_change(struct selinux_state *state,
+>         selinux_status_update_policyload(state, seqno);
+>         selinux_netlbl_cache_invalidate();
+>         selinux_xfrm_notify_policyload();
+> +       selinux_ima_measure_state(state);
+>  }
+>
+>  void selinux_policy_commit(struct selinux_state *state,
+> @@ -3875,8 +3877,33 @@ int security_netlbl_sid_to_secattr(struct selinux_state *state,
+>  }
+>  #endif /* CONFIG_NETLABEL */
+>
+> +/**
+> + * __security_read_policy - read the policy.
+> + * @policy: SELinux policy
+> + * @data: binary policy data
+> + * @len: length of data in bytes
+> + *
+> + */
+> +static int __security_read_policy(struct selinux_policy *policy,
+> +                                 void *data, size_t *len)
+> +{
+> +       int rc;
+> +       struct policy_file fp;
+> +
+> +       fp.data = data;
+> +       fp.len = *len;
+> +
+> +       rc = policydb_write(&policy->policydb, &fp);
+> +       if (rc)
+> +               return rc;
+> +
+> +       *len = (unsigned long)fp.data - (unsigned long)data;
+> +       return 0;
+> +}
+> +
+>  /**
+>   * security_read_policy - read the policy.
+> + * @state: selinux_state
+>   * @data: binary policy data
+>   * @len: length of data in bytes
+>   *
+> @@ -3885,8 +3912,6 @@ int security_read_policy(struct selinux_state *state,
+>                          void **data, size_t *len)
+>  {
+>         struct selinux_policy *policy;
+> -       int rc;
+> -       struct policy_file fp;
+>
+>         policy = rcu_dereference_protected(
+>                         state->policy, lockdep_is_held(&state->policy_mutex));
+> @@ -3898,14 +3923,35 @@ int security_read_policy(struct selinux_state *state,
+>         if (!*data)
+>                 return -ENOMEM;
+>
+> -       fp.data = *data;
+> -       fp.len = *len;
+> +       return __security_read_policy(policy, *data, len);
+> +}
+>
+> -       rc = policydb_write(&policy->policydb, &fp);
+> -       if (rc)
+> -               return rc;
+> +/**
+> + * security_read_state_kernel - read the policy.
+> + * @state: selinux_state
+> + * @data: binary policy data
+> + * @len: length of data in bytes
+> + *
+> + * Allocates kernel memory for reading SELinux policy.
+> + * This function is for internal use only and should not
+> + * be used for returning data to user space.
+> + *
+> + * This function must be called with policy_mutex held.
+> + */
+> +int security_read_state_kernel(struct selinux_state *state,
+> +                              void **data, size_t *len)
+> +{
+> +       struct selinux_policy *policy;
+>
+> -       *len = (unsigned long)fp.data - (unsigned long)*data;
+> -       return 0;
+> +       policy = rcu_dereference_protected(
+> +                       state->policy, lockdep_is_held(&state->policy_mutex));
+> +       if (!policy)
+> +               return -EINVAL;
+> +
+> +       *len = policy->policydb.len;
+> +       *data = vmalloc(*len);
+> +       if (!*data)
+> +               return -ENOMEM;
+>
+> +       return __security_read_policy(policy, *data, len);
+>  }
+> --
+> 2.17.1
+>
 
-On Tue, Jan 12, 2021 at 03:10:56PM +0200, Tomi Valkeinen wrote:
-> >> But why is it it we need omapfb at all when we have omapdrm?
-> >=20
-> > I think there are two reasons omapfb has not been killed yet. One
-> > reason was missing support for manually updated DSI panels, which
-> > have been working since 1 or 2 kernel releases now. The other reason
-> > is some people using it in combination with an out-of-tree PowerVR
-> > kernel driver. There is currently work going on to use a more recent
-> > PowerVR driver based on omapdrm driven by Maemo Leste people.
->=20
-> omapfb also has a custom sysfs API, so applications that depend on it
-> would not work anymore. I don't know if there are such applications, thou=
-gh.
->=20
-> >> Can we sunset all or some parts of omap support in video/?
-> >> If not, what is missing to do so.
-> >=20
-> > IDK the exact status of the PowerVR work and have not been using
-> > omapfb myself for years. I don't think there is a reason to rush
-> > this, so my suggestion is removing it in 3 steps giving people
-> > the chance to complain:
-> >=20
-> > 1. Add 'depends on EXPERT' to 'FB_OMAP2' and add deprecation notice
-> >    referencing omapdrm in help text in 5.12
-> > 2. Add 'depends on BROKEN' in 5.13
-> > 3. Drop drivers/video/fbdev/omap2 afterwards
->=20
-> I'd love to remove omapfb, but I also fear that there are still people
-> using it. We can try the above sequence, but it's probably better to go
-> slower, as people may not be using the latest kernels.
 
-I thought about this again and I think the best option is to rename
-CONFIG_FB_OMAP2 to something like CONFIG_FB_OMAP2_DEPRECATED and
-update the help text. That way anyone with CONFIG_FB_OMAP2 in
-their .config will definitely notice the change when upgrading to
-a newer kernel, but can easily fix it temporarily. Help text could
-be
-
-"This driver will be removed in 2022, please switch to omapdrm."
-
-and no other intermediate steps are required that way :)
-
-But while looking through CONFIG_FB_OMAP2 references I noticed there
-is also a V4L2 driver (CONFIG_VIDEO_OMAP2_VOUT), which seems to
-only work with omapfb. IIUIC that driver provides display overlays
-to V4L. I guess on omapdrm V4L can use DRM planes instead and no
-driver is needed (i.e. this driver could just go away with omapfb)?
-
--- Sebastian
-
---ogcdqsrw7fdsgqmh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl/9zU8ACgkQ2O7X88g7
-+pr9vQ//Wurb5B8uHiEeZ7CYL8PnEnfSM/2qv06cU38Yqn0Ci4kZGvcZtyfWaKHn
-XZ918kT3MzG8Y5qI8VH67fLF8LbUct0mqNm4sKsTdGy72C8Tw4iaQaWkBLWW7yVc
-Cjti9FbljkYfBI36x1Kj6AMQBAkb0Zfi5vBmCFv0OQs7HnsEO4uD6yeD4b4rXRvl
-4mm8naWndQCKD0yP+YDRfENg1guZuOinGIJBBfMpX4hf6WM31zjclLTBoC5hcY7G
-ZPWjnqFZO0D0gP9opnmfnn3OlQKWO07Cu2CVmD1jikF6eD1KXjMl+eP1vTYdxH/x
-TFrFEcTnNCPqrm0CILZr3xBEG1qeetAnaf16QcqWHMusZFvNLL+f2ltKnhiQ8CUI
-JwjnxVADyCg2185R++ByYfDidGDxW+2Fdx1Ylg17XlSObIX0cMxk+O9v6vBz2K9c
-GAVMWRrE8q+OO5brhPvY9VtqAdyKuGpRrcpFWlVAJK44xo4P0Q8L7+pquANe+PVw
-wINsAPNHp52AewrnCZjnM8QxpTtq+n4gL6c0UhWFrZdyQLxpfTVfNr0dOfTRn6xs
-Aj5wvJ6bSe90PH1XvXzOPIWZdY3G92XoY6op2eZHIewEarlimifMrjFRGgXUww2c
-mjyrTqqhzdRU5UwmtiR4E84Lpdha4nHZ16WgPdZZFDcj/h5FdI0=
-=mgmT
------END PGP SIGNATURE-----
-
---ogcdqsrw7fdsgqmh--
+-- 
+paul moore
+www.paul-moore.com
