@@ -2,92 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD852F3FB1
+	by mail.lfdr.de (Postfix) with ESMTP id A8C1A2F3FB3
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394645AbhALWbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:31:13 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:33584 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393234AbhALWa6 (ORCPT
+        id S2394651AbhALWbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:31:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394647AbhALWbc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:30:58 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id C02F91C0B79; Tue, 12 Jan 2021 23:30:15 +0100 (CET)
-Date:   Tue, 12 Jan 2021 23:30:15 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Dan Murphy <dmurphy@ti.com>,
-        linux-ide@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: 5.11 new lockdep warning related to led-class code (also may
- involve ata / piix controller)
-Message-ID: <20210112223015.GB28214@duo.ucw.cz>
-References: <b204637d-3b72-8320-8a62-f075467d8681@redhat.com>
+        Tue, 12 Jan 2021 17:31:32 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BC1C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:30:52 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id j12so34454ota.7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:30:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=dF0yJHbbjBb5erCUCeH3GN84OQvrBthurVO49Uciku8=;
+        b=guZqN+mctqBHsmD4I1QYDAt214jwEM9rS8OLOeLW+xtLapW6NBfmy6T6Qmer5EXYX5
+         bFU5yxZlS/4SQGnqmm+FYm/toyJAHTqC29K4CBVguL7xxAiV1g2zPhwKR3YDCK6N9fp2
+         rKqtJKywncWwhmwG5qEb8a3O5NnGn7iF4+5PXzfzosPAVNRB14v38jmsRBWPLLizQGWx
+         U/Xl4Xcwc9ySRHWeO3tSyHdy/jk7JpYEns3iU9kn3d8Nd/r7v4S7L3sDjSy9+58NasJq
+         75II5u4p71BsRc0gZKoNzz4AHnbwpvcSYbo9zyURaWmTK5329nKuzDkgA+b4Km5Rh+HA
+         2G2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=dF0yJHbbjBb5erCUCeH3GN84OQvrBthurVO49Uciku8=;
+        b=fblM1sXyY7Y5buLQGbNqWCvmkcR3c4OyTAmNJ1NK9etxWAAwFedLSx+xp9bOQHAE1s
+         5rOggLVFt0ZbTGMea1/w2/sPQZQi8HDhEY2eyrlQG3QkIcj0kYTUXZuijUzo5xJMzIIQ
+         jaqZYJLkczOUYb8JhXdpJc9/hYrbAX7az4EozKNu0q7PF9oLedh2YczumaogUe1GaOhJ
+         7qPAnFXpmE73fqwxngy0QorieCGQDquV1sPc9PfcVuacTBjGpIloRuq2Xc2cLgYKLW48
+         je+B8uXlIpjAQg/FqeRzOTv6c+ucP9u5cdf6IvlzAUFzIVoW2iqHEEy4shssRuH+l8TL
+         Rpgg==
+X-Gm-Message-State: AOAM5310DVmD0RbEOh0I8ypjL53oeCpl3c7n+16b5qItk+Rkj4+X0Sbc
+        Hg34RwIyQ2u5tCHw6q0VCV0ngnmaMVU9vvuuZB4=
+X-Google-Smtp-Source: ABdhPJxzlQ64G4f7mRpozXG0VzDdJ19+FRvpX5WO0g/YmLDMV9Q/xGD8xgDV5U8nKOQwoq2ri/50wVVgpdH0Y6gwfaA=
+X-Received: by 2002:a9d:75d4:: with SMTP id c20mr1044535otl.311.1610490651899;
+ Tue, 12 Jan 2021 14:30:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="JYK4vJDZwFMowpUq"
-Content-Disposition: inline
-In-Reply-To: <b204637d-3b72-8320-8a62-f075467d8681@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-28-lee.jones@linaro.org>
+In-Reply-To: <20210111191926.3688443-28-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 12 Jan 2021 17:30:40 -0500
+Message-ID: <CADnq5_Pk++N2Ary324cEAdUFvFS0QF4VO7DumuiD9rYmF2Jyzg@mail.gmail.com>
+Subject: Re: [PATCH 27/40] drm/amd/display/dc/dce110/dce110_compressor: Strip
+ out unused function 'controller_id_to_index'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jan 11, 2021 at 2:20 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_compressor.c:429:=
+14: warning: no previous prototype for =E2=80=98controller_id_to_index=E2=
+=80=99 [-Wmissing-prototypes]
+>
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
---JYK4vJDZwFMowpUq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied. Thanks!
 
-Hi!
+Alex
 
-> Booting a 5.11-rc2 kernel with lockdep enabled inside a virtualbox vm (wh=
-ich still
-> emulates good old piix ATA controllers) I get the below lockdep splat ear=
-ly on during boot:
->=20
-> This seems to be led-class related but also seems to have a (P)ATA
-> part to it. To the best of my knowledge this is a new problem in
-> 5.11 .
 
-This is on my for-next branch:
-
-commit 9a5ad5c5b2d25508996f10ee6b428d5df91d9160 (HEAD -> for-next, origin/f=
-or-next)
-
-    leds: trigger: fix potential deadlock with libata
-   =20
-    We have the following potential deadlock condition:
-   =20
-     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-     WARNING: possible irq lock inversion dependency detected
-     5.10.0-rc2+ #25 Not tainted
-     --------------------------------------------------------
-     swapper/3/0 just changed the state of lock:
-     ffff8880063bd618 (&host->lock){-...}-{2:2}, at: ata_bmdma_interrupt+0x=
-27/0x200
-     but this lock took another, HARDIRQ-READ-unsafe lock in the past:
-      (&trig->leddev_list_lock){.+.?}-{2:2}
-
-If I'm not mistaken, that should fix your issue.
-
-Best regards,
-
-									Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---JYK4vJDZwFMowpUq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX/4i9wAKCRAw5/Bqldv6
-8jJLAKDBeFjI4ElXoU+bJaEZ869cE7QQNgCgm40OMHnRKot5PDQHviQcJIaObdo=
-=XLEt
------END PGP SIGNATURE-----
-
---JYK4vJDZwFMowpUq--
+> ---
+>  .../amd/display/dc/dce110/dce110_compressor.c | 25 -------------------
+>  1 file changed, 25 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_compressor.c b/=
+drivers/gpu/drm/amd/display/dc/dce110/dce110_compressor.c
+> index 18b0a69b0b1e8..44564a4742b52 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_compressor.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_compressor.c
+> @@ -425,31 +425,6 @@ void get_max_support_fbc_buffersize(unsigned int *ma=
+x_x, unsigned int *max_y)
+>          */
+>  }
+>
+> -
+> -unsigned int controller_id_to_index(enum controller_id controller_id)
+> -{
+> -       unsigned int index =3D 0;
+> -
+> -       switch (controller_id) {
+> -       case CONTROLLER_ID_D0:
+> -               index =3D 0;
+> -               break;
+> -       case CONTROLLER_ID_D1:
+> -               index =3D 1;
+> -               break;
+> -       case CONTROLLER_ID_D2:
+> -               index =3D 2;
+> -               break;
+> -       case CONTROLLER_ID_D3:
+> -               index =3D 3;
+> -               break;
+> -       default:
+> -               break;
+> -       }
+> -       return index;
+> -}
+> -
+> -
+>  static const struct compressor_funcs dce110_compressor_funcs =3D {
+>         .power_up_fbc =3D dce110_compressor_power_up_fbc,
+>         .enable_fbc =3D dce110_compressor_enable_fbc,
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
