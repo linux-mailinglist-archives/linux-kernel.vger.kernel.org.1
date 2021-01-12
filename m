@@ -2,78 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9562F3387
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:02:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 689C92F3385
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:02:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389863AbhALPC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 10:02:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387526AbhALPC0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:02:26 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED33C061575;
-        Tue, 12 Jan 2021 07:01:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0sGgaWxUWbmYiELyfxS8f48aZu+eQped+nqanx8s+sw=; b=ABUwrMYAkyESdjSWcSwybKocQa
-        7Jj9wYYXjerOEETCCXJZxxcA5FN/6ByXmf9Zr3xOKZlqoNPmwMGm+1+dNXxpL7bBrwZl86FbiUDku
-        Em3Ts8uY6lPcEW5GUlGQOViiYmO4WPlS6MnLSU4SleZW/NEs6tHgHljKafTwiRA5g/RZHQmzSJOc9
-        D7paS6Gm5WbiDG2L/pifQ6JAVQNRNIESVpmt1KTh//QBCqCzqjZbWX4JuqCitujoG8e9zh4MmV0ls
-        zQiqoQQise/bRDHPUQWDwPbgS+FQqGS21ehKDOTCkObRrkXa0DTCrec4gCFwn1lHwqQhMyQjoEhAS
-        IGnpYlBQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1kzLAR-004vhr-U3; Tue, 12 Jan 2021 15:01:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 19F70301A32;
-        Tue, 12 Jan 2021 16:01:07 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0647E20C228EB; Tue, 12 Jan 2021 16:01:07 +0100 (CET)
-Date:   Tue, 12 Jan 2021 16:01:06 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        x86 Maintainers <x86@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Giovanni Gherdovich <ggherdovich@suse.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Subject: Re: [PATCH] x86: PM: Register syscore_ops for scale invariance
-Message-ID: <X/25ssA2scFSu+3/@hirez.programming.kicks-ass.net>
-References: <1803209.Mvru99baaF@kreacher>
+        id S2389564AbhALPCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 10:02:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33730 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728901AbhALPCR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 10:02:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA1382313E
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:01:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610463696;
+        bh=Z1rbMQMt/ZBnWtsqUtXo+X1vs3VvV7P3JPZmshyA4oM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ayrt50U/8AdxtQ+n6VVJ/r5hTHYjjFRwmngE3zk7FAZREjhrQ3PgcX4+091dw+akt
+         QRaRtRvgiRMIYCk+dIuB9KZpbcaykNFJOyfB6udsY1ibZ0nsJK1aitQ0Lddw57sots
+         GzZ5Zz3TSjaxYJ+XMwnYA78wFWLTnKVsuPjmf/X/kn/5okYRx+htZbv2Xxo5NSvtKt
+         jEF2+ismvKC7g20z09O0CIUFu6G94F5ME8aFS5Q/PScdTaiAiTiFZuoueilwk/iIAV
+         5EFE3AdKkJvKZNjpXJ0F3D3g25xZ8h/fUXy2bfuWyFBMgZ2DTepgfc6wKG4PFpiZ8T
+         v1duIAcIDiuFg==
+Received: by mail-lf1-f54.google.com with SMTP id h205so3819399lfd.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 07:01:35 -0800 (PST)
+X-Gm-Message-State: AOAM532GCB2y8G1xAqD3sei3qnFGh1H6NksRA+VphrO2FDQ5GtrBJnvi
+        v0xGHY5/pgT1p5WOvImuRNiJsdp7a7za/P+gJtBbCw==
+X-Google-Smtp-Source: ABdhPJzZ4NLevpRLkWnwSQB49m9wwhF09lnH6S37cnqrbOyWIWHGa0wNn2gCoe0+9BfL631exXRbfChV/pqcZKBZFEU=
+X-Received: by 2002:a19:810:: with SMTP id 16mr2427834lfi.233.1610463693714;
+ Tue, 12 Jan 2021 07:01:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1803209.Mvru99baaF@kreacher>
+References: <20210112091403.10458-1-gilad.reti@gmail.com> <CACYkzJ6DJ0NEm+qTBpMSJNFfgNHBFPZc=Ytj4w+4hY=Co4=0yg@mail.gmail.com>
+ <CANaYP3EQhTQ_o6QF_JNffJqHmVWRw6wcc95u8XvDpm+pY8ER3Q@mail.gmail.com>
+In-Reply-To: <CANaYP3EQhTQ_o6QF_JNffJqHmVWRw6wcc95u8XvDpm+pY8ER3Q@mail.gmail.com>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Tue, 12 Jan 2021 16:01:23 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ7KLFKADCH2exaUmg7sPbUu+wxq2OTwUY6iE7cPUb5Z3Q@mail.gmail.com>
+Message-ID: <CACYkzJ7KLFKADCH2exaUmg7sPbUu+wxq2OTwUY6iE7cPUb5Z3Q@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] bpf: support PTR_TO_MEM{,_OR_NULL} register spilling
+To:     Gilad Reti <gilad.reti@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 07:05:59PM +0100, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> On x86 scale invariace tends to be disabled during resume from
-> suspend-to-RAM, because the MPERF or APERF MSR values are not as
-> expected then due to updates taking place after the platform
-> firmware has been invoked to complete the suspend transition.
-> 
-> That, of course, is not desirable, especially if the schedutil
-> scaling governor is in use, because the lack of scale invariance
-> causes it to be less reliable.
-> 
-> To counter that effect, modify init_freq_invariance() to register
-> a syscore_ops object for scale invariance with the ->resume callback
-> pointing to init_counter_refs() which will run on the CPU starting
-> the resume transition (the other CPUs will be taken care of the
-> "online" operations taking place later).
-> 
-> Fixes: e2b0d619b400 ("x86, sched: check for counters overflow in frequency invariant accounting")
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Tue, Jan 12, 2021 at 3:24 PM Gilad Reti <gilad.reti@gmail.com> wrote:
+>
+> On Tue, Jan 12, 2021 at 3:57 PM KP Singh <kpsingh@kernel.org> wrote:
+> >
+> > On Tue, Jan 12, 2021 at 10:14 AM Gilad Reti <gilad.reti@gmail.com> wrote:
+> > >
+> > > Add support for pointer to mem register spilling, to allow the verifier
+> > > to track pointer to valid memory addresses. Such pointers are returned
+> >
+> > nit: pointers
+>
+> Thanks
+>
+> >
+> > > for example by a successful call of the bpf_ringbuf_reserve helper.
+> > >
+> > > This patch was suggested as a solution by Yonghong Song.
+> >
+> > You can use the "Suggested-by:" tag for this.
+>
+> Thanks
+>
+> >
+> > >
+> > > The patch was partially contibuted by CyberArk Software, Inc.
+> >
+> > nit: typo *contributed
+>
+> Thanks. Should I submit a v2 of the patch to correct all of those?
 
-Thanks!, I'll take it through the sched/urgent tree?
+I think it would be nice to do another revision
+which also addresses the comments on the other patch.
+
+
+>
+> >
+> > Also, I was wondering if "partially" here means someone collaborated with you
+> > on the patch? And, in that case:
+> >
+> > "Co-developed-by:" would be a better tag here.
+>
+> No, I did it alone. I mentioned CyberArk since I work there and did some of the
+> coding during my daily work, so they deserve credit.
+>
+> >
+> > Acked-by: KP Singh <kpsingh@kernel.org>
+> >
+> >
+> > >
+> > > Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier
+> > > support for it")
+> > > Signed-off-by: Gilad Reti <gilad.reti@gmail.com>
+> > > ---
+> > >  kernel/bpf/verifier.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > > index 17270b8404f1..36af69fac591 100644
+> > > --- a/kernel/bpf/verifier.c
+> > > +++ b/kernel/bpf/verifier.c
+> > > @@ -2217,6 +2217,8 @@ static bool is_spillable_regtype(enum bpf_reg_type type)
+> > >         case PTR_TO_RDWR_BUF:
+> > >         case PTR_TO_RDWR_BUF_OR_NULL:
+> > >         case PTR_TO_PERCPU_BTF_ID:
+> > > +       case PTR_TO_MEM:
+> > > +       case PTR_TO_MEM_OR_NULL:
+> > >                 return true;
+> > >         default:
+> > >                 return false;
+> > > --
+> > > 2.27.0
+> > >
