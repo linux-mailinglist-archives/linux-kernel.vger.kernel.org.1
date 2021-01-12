@@ -2,90 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6D72F2E36
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:44:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26AC82F2E39
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:44:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729914AbhALLm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 06:42:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34016 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728486AbhALLm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:42:58 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AF00BAFA0;
-        Tue, 12 Jan 2021 11:42:16 +0000 (UTC)
-To:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Xiaoming Ni <nixiaoming@huawei.com>, linux-kernel@vger.kernel.org,
-        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
-        adobriyan@gmail.com, linux-fsdevel@vger.kernel.org,
-        andy.shevchenko@gmail.com, wangle6@huawei.com
-References: <20210112033155.91502-1-nixiaoming@huawei.com>
- <20210111203340.98dd3c8fa675b709bcf6d49e@linux-foundation.org>
- <89d1369e-f0a8-66f2-c0ea-3aac3a55e2c1@huawei.com>
- <20210111222845.67ceb4e3c7f64f267756e4e8@linux-foundation.org>
- <20210112072406.GF22493@dhcp22.suse.cz>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v3] proc_sysctl: fix oops caused by incorrect command
- parameters.
-Message-ID: <afa493f4-f8ab-4039-cb9d-f6b02b3ab1c1@suse.cz>
-Date:   Tue, 12 Jan 2021 12:42:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1730412AbhALLnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:43:21 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:33617 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730081AbhALLnU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 06:43:20 -0500
+Received: by mail-oi1-f169.google.com with SMTP id d203so2040613oia.0;
+        Tue, 12 Jan 2021 03:43:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gvSXzvnGVXDaviH1zuRAMAGJuMaNfjyn5ekNZGjpQ50=;
+        b=tUl+664ChepvxMaoy81l8P/DDMc8C6lg081orKo75qi9pToDOZXopVfPtIOw9ug5lJ
+         2DYSN9+3whqA9WSCIBefP4I8CfZx18l4T9HU/RjOrq0kxBv2yN8TMcJBrw7l+n8tiBBU
+         PT1RbagQUkSxYagicKlnqk9Im6/T3eSa2xiX3s5R/RGAMhj6hyzW6HOKap+f8F5trFOS
+         tUmjVOSZ0nxOeeVs271XJNxLOpb1k1EjdQ4UIQQA5sqjY91z7W3SU6OPRgK93x/gmgFI
+         xvKoftIT3hcOSP66w/gaTHSTuhxjP+zPcYDyDVSbl72vm2MTbZqRgNfhpIfeT9Y3DFO9
+         4AsQ==
+X-Gm-Message-State: AOAM531YoivvXOeg/CIn8NBh8O+BnDAen2TmxoQNeez+w90izg40uxi3
+        AVem5Ua11qW/7W7YpFiQrymeQXScgsKepJcMKIA=
+X-Google-Smtp-Source: ABdhPJzGBEZ0VKoVq2/frzInDE9dRaRt+nGC6OvXRLt05DwD5bHCz9xBQJCBK9c/MB63RSKJoCPjhtWJVNIWpP/+Trw=
+X-Received: by 2002:aca:3cc5:: with SMTP id j188mr2054826oia.54.1610451759483;
+ Tue, 12 Jan 2021 03:42:39 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210112072406.GF22493@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201228112715.14947-1-wsa+renesas@sang-engineering.com>
+ <20201228112715.14947-3-wsa+renesas@sang-engineering.com> <CAMuHMdVzQVBvsUhpZF5A9qoijA=thVPq4tBiRnAVyFrX2aD+5w@mail.gmail.com>
+In-Reply-To: <CAMuHMdVzQVBvsUhpZF5A9qoijA=thVPq4tBiRnAVyFrX2aD+5w@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 12 Jan 2021 12:42:28 +0100
+Message-ID: <CAMuHMdUg44u_Tpg-4sVwTkOXVWQWBWrm08Vg__=u8-xBFnK9-g@mail.gmail.com>
+Subject: Re: [PATCH 2/6] arm64: dts: renesas: falcon: add SCIF0 nodes
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/12/21 8:24 AM, Michal Hocko wrote:
->> > > 
->> > > If we're going to do a separate "patch: make process_sysctl_arg()
->> > > return an errno instead of 0" then fine, we can discuss that.  But it's
->> > > conceptually a different work from fixing this situation.
->> > > .
->> > > 
->> > However, are the logs generated by process_sysctl_arg() clearer and more 
->> > accurate than parse_args()? Should the logs generated by 
->> > process_sysctl_arg() be deleted?
->> 
->> I think the individual logs are very useful and should be retained.
-> 
-> Yes, other sysfs specific error messages are likely useful. I just fail
-> to see why a missing value should be handled here when there is an
-> existing handling in the caller. Not sure whether a complete shadow
-> reporting in process_sysctl_arg is a deliberate decision or not.
-> Vlastimil?
+Hi Wolfram,
 
-Yes, it's a way to have more useful sysctl-specific reports than the generic
-ones. And I think I was inspired by some other existing code, but don't remember
-exactly. The options are:
+On Tue, Jan 5, 2021 at 7:12 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Mon, Dec 28, 2020 at 12:27 PM Wolfram Sang
+> <wsa+renesas@sang-engineering.com> wrote:
+> > SCIF0 has been enabled by the firmware, so it worked already. Still, add
+> > the proper nodes to make it work in any case.
+> >
+> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-1) the current sysctl-specific reports, return 0 as the values are only consumed
-2) be silent and return error, invent new error codes to have generic report be
-more useful for sysctl, but inevitably lose some nuances anyway
-3) a mix where 2) is used for situations where generic report is sufficient
-enough, 1) where not
+Upon second look, this should be added to r8a779a0-falcon-cpu.dtsi,
+which already extends the scif0 node.
 
-Patch v2 went with option 1), v3 with option 3). I think it's down to
-preferences. I would personally go with v2 and message similar to the existing
-ones, i.e.:
+Gr{oetje,eeting}s,
 
-"Failed to set sysctl parameter '%s': no value given\n"
+                        Geert
 
-Also we seem to be silently doing nothing when strlen(val) == 0, i.e.
-"hung_task_panic=" was passed. Worth reporting the same error.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-But v3 is fine with me as well. The generic error message works. We could just
-add "if (!len) return -EINVAL" below the strlen() call.
-
-Also please Cc: stable.
-
-> Anyway one way or the other, all I care about is to have a reporting in
-> place because this shouldn't be a silent failure.
-> 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
