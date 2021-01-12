@@ -2,79 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB272F4022
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC832F403B
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732021AbhALXQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 18:16:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728427AbhALXQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 18:16:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0DD823123;
-        Tue, 12 Jan 2021 23:16:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610493372;
-        bh=FmBwcgX4nGV3TRqHyfBaYi3z5rHJ9QE0r4J31C6lwPw=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=D0UaCFy6Cp0B9wJIytQgXvtJrgBgHrzqNIOV9OzRE5hdzVMY6cnzAPxu+odDgxfov
-         OC1wyAm7vQQHBDahkPgwTZgoBVJcbsoTMNzbigLXrGmqwRPwZdsirNiDt4WX2fPWYM
-         nZr6sgxdHyTAOJOMMzQOdzWLUnlKr0Wf0E/W7u9xokCUb5e0enlT6oK2rVkrVGxTjq
-         ge5aTIz4keb1DsyoTzT96BDD5caJdVGV7l3gRZR3FZNVJOJUY+cy5FO098rpFCGxlS
-         +k517Ls1MT/F2z9/RcehPK/BK4ma6oU3HscJT+LNHOnNYsREIiCl7MCTyTctf0NZSR
-         qV/oPYb3dXwvg==
-Message-ID: <5f140376c36bbe47edeb8784ada3b74fafe05afe.camel@kernel.org>
-Subject: Re: [PATCv4 net-next] octeontx2-pf: Add RSS multi group support
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Geetha sowjanya <gakula@marvell.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     sgoutham@marvell.com, davem@davemloft.net, kuba@kernel.org
-Date:   Tue, 12 Jan 2021 15:16:10 -0800
-In-Reply-To: <20210104072039.27297-1-gakula@marvell.com>
-References: <20210104072039.27297-1-gakula@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S2388274AbhALXT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 18:19:26 -0500
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:57147 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730033AbhALXTY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 18:19:24 -0500
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 9216C20003;
+        Tue, 12 Jan 2021 23:18:41 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     mark.rutland@arm.com, a.zummo@towertech.it, robh+dt@kernel.org,
+        ludovic.desroches@microchip.com,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        nicolas.ferre@microchip.com
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: rtc: at91rm9200: add sama7g5 compatible
+Date:   Wed, 13 Jan 2021 00:18:41 +0100
+Message-Id: <161049349867.350232.16389357056805084271.b4-ty@bootlin.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <1610016372-31784-1-git-send-email-claudiu.beznea@microchip.com>
+References: <1610016372-31784-1-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-01-04 at 12:50 +0530, Geetha sowjanya wrote:
-> Hardware supports 8 RSS groups per interface. Currently we are using
-> only group '0'. This patch allows user to create new RSS
-> groups/contexts
-> and use the same as destination for flow steering rules.
-> 
-> usage:
-> To steer the traffic to RQ 2,3
-> 
-> ethtool -X eth0 weight 0 0 1 1 context new
-> (It will print the allocated context id number)
-> New RSS context is 1
-> 
-> ethtool -N eth0 flow-type tcp4 dst-port 80 context 1 loc 1
-> 
-> To delete the context
-> ethtool -X eth0 context 1 delete
-> 
-> When an RSS context is removed, the active classification
-> rules using this context are also removed.
-> 
-> Change-log:
-> 
-> v4
-> - Fixed compiletime warning.
-> - Address Saeed's comments on v3.
-> 
+On Thu, 7 Jan 2021 12:46:12 +0200, Claudiu Beznea wrote:
+> Add compatible for SAMA7G5 RTC. At the moment the driver is falling
+> back on SAM9X60's compatible but SAMA7G5 doesn't have the tamper mode
+> register and tamper debounce period register thus the need for a new
+> compatible to differentiate b/w these two in case tamper feature will
+> be implemented in future.
 
-This patch is marked as accepted in patchwork
-https://patchwork.kernel.org/project/netdevbpf/patch/20210104072039.27297-1-gakula@marvell.com/
+Applied, thanks!
 
-but it is not actually applied, maybe resend..
+[1/1] dt-bindings: rtc: at91rm9200: add sama7g5 compatible
+      commit: 51f9b1f8ee3a066f2f874cf64afea24ae762ff93
 
-
-you can add:
-Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
-
-
+Best regards,
+-- 
+Alexandre Belloni <alexandre.belloni@bootlin.com>
