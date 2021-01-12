@@ -2,83 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8892F2895
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:56:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 816792F2897
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388500AbhALGzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 01:55:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
+        id S2388833AbhALGzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 01:55:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728453AbhALGzI (ORCPT
+        with ESMTP id S1730028AbhALGzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 01:55:08 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A3A2C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 22:54:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=RiyM0c9j0TR/ZiSHWGyt7mOms657zOtCNK+WQflYxLY=; b=rJZb0wT0PD7Rd6Ba8JF8meP8qm
-        n/+x3fWHp9jMKA0uMwZ3XCxDtlWL3CqIYXZ4ozWBU+8wVPdzFX3E97CEcavQFfXb+1o+bxyydi4xr
-        fUl1PmiMNQkmBrzmV20oHnoVEP6O1271LuEjI/38eOPpl0p+rAsmfcayTEGGL9x8FUmjn94Hk2u5h
-        4ndeSvzt5YpKoKdR0PTcP7AM47/U/aFakuLMUA5eGHfjiNtp08eI88c2PlF6aThZLB4t+KEi08/2+
-        AV2opssIOj7oBLkPs6sUgEUWaDjeIVPt61RMkB0bbBfnxwB3yGX7HG4m+7QL2+Z/wlNKJlxgOL94R
-        rU0luqnw==;
-Received: from [2601:1c0:6280:3f0::79df]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kzDZR-00084H-KP; Tue, 12 Jan 2021 06:54:25 +0000
-Subject: Re: [PATCH V2] arch: x86: kernel: cpu: Takes a letter away and put a
- semicolon too, to match below stuc member
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, fenghua.yu@intel.com,
-        reinette.chatre@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, gustavo@embeddedor.com
-References: <20210112052730.24677-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <ead1d179-d32d-46a7-5783-bc08298a830a@infradead.org>
-Date:   Mon, 11 Jan 2021 22:54:17 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 12 Jan 2021 01:55:37 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2535C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 22:54:56 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id lt17so1988989ejb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 22:54:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=HFUW6YIdb+QGr5644vCV9zETWEFQM+cW7iz1T1KNU7c=;
+        b=hxILZSPSntWbwHo+PktBcenkNIxubreqmoBxSKjRwe9O8wANsvx+lCQWGwWgtoeoht
+         xa54TX+qbBgl1IKaYS3TAAMglTn6JpU+J1RO1L7TTNo1QZGcoQoDGvcYaEmaOFULqllY
+         d4ZA/370BYju4HdON3FJ9V8WMDBymFwBN4tXinycK6zIZ2Tdo61uuPj84OcCiBJEpLJl
+         5RvPa3ivoZZQnBvJ9enQW7MOPy8pDdxV3UPhl2t5dDatGf1/VDC4HY3Z+joZ9lP0u2xt
+         R3xKo092AUWgn6DNwaq5ehoo8UuUol7/lz8QjejIbQI3TK5BZtTEnoy6UJSlx+KVLKP0
+         BeEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=HFUW6YIdb+QGr5644vCV9zETWEFQM+cW7iz1T1KNU7c=;
+        b=hpgkwmBQQEf0rLwMLFWG9VRSQCJ2nFf2j2NU0hqYeNRCj068uwyd1CNLbt29iGxnsh
+         Xgi1IBm2tulW5ztC/F1LJZIPWSZRVHasmSnuIILPIwe8/qVL8oIJkyijes4EnE80mPzX
+         Ahm4uI+t5uDgycx+gcU5OewQIIiPrTw66mogSOLzxe85dqD5C5lHIVRIQYpbP1VHP42X
+         Yq3U2fZOW3aOis6Hh12A7ioTgCAOdRtob1pNc1Y1iiEJkhBBUjnKQvh/nQGaO5Jdryh/
+         DASUwB4YT4JDjEYlPDjEKgpNpoHe2MYXaBUgHt3tP8l3bpsR7nkjpxR+d4AizBlUe/4q
+         aldA==
+X-Gm-Message-State: AOAM532hhVjwIHAtCUBapO36TBvlxlvsnoc7qLqVA4Ki1r3fbm5WkCWw
+        Yw1+9KNIRjOQF/aIX+KZ+p81z++3gSbbelnjvx2Zyg==
+X-Google-Smtp-Source: ABdhPJz25Gzh9Qlfm0PSj+6KL9TtcXDWIb97CM1mRsi75E+q0SaCFm0Iny79STQnszUTE6u7hmp37MmhNczniGyhUaM=
+X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr2133114eju.375.1610434495370;
+ Mon, 11 Jan 2021 22:54:55 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210112052730.24677-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210111130039.165470698@linuxfoundation.org>
+In-Reply-To: <20210111130039.165470698@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 12 Jan 2021 12:24:43 +0530
+Message-ID: <CA+G9fYsNByrDQvgXpaaaUHJa95xvwT75MZQtj_3QqGdWxPc1Xg@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/92] 5.4.89-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/11/21 9:27 PM, Bhaskar Chowdhury wrote:
-> s/kernlfs/kernfs/
-> 
->  A semicolon at the end of member name
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  As pointed out by Gustavo and Randy in version one of this patch
-> 
->  arch/x86/kernel/cpu/resctrl/internal.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> index ee71c47844cb..ef9e2c0809b8 100644
-> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -142,7 +142,7 @@ enum rdtgrp_mode {
-> 
->  /**
->   * struct mongroup - store mon group's data in resctrl fs.
-> - * @mon_data_kn		kernlfs node for the mon_data directory
-> + * @mon_data_kn:		kernfs node for the mon_data directory
->   * @parent:			parent rdtgrp
->   * @crdtgrp_list:		child rdtgroup node list
->   * @rmid:			rmid for this rdtgroup
-> --
+On Mon, 11 Jan 2021 at 18:41, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.89 release.
+> There are 92 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 13 Jan 2021 13:00:19 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.89-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-The patch to internal.h is OK, but as Gustavo pointed out,
-the patch versioning isn't done as expected.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
--- 
-~Randy
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.4.89-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-5.4.y
+git commit: cdbc5a73c7f4b2b8796ceea91083a4ad1ebfd113
+git describe: v5.4.88-93-gcdbc5a73c7f4
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y/build/v5.4.88-93-gcdbc5a73c7f4
+
+No regressions (compared to build v5.4.88)
+
+No fixes (compared to build v5.4.88)
+
+Ran 49720 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arc
+- arm
+- arm64
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- parisc
+- powerpc
+- qemu-arm-clang
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu-x86_64-kcsan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- riscv
+- s390
+- sh
+- sparc
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest
+* kvm-unit-tests
+* ltp-controllers-tests
+* ltp-cve-tests
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-ipc-tests
+* ltp-mm-tests
+* ltp-tracing-tests
+* perf
+* fwts
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* network-basic-tests
+* v4l2-compliance
+* ltp-commands-tests
+* ltp-math-tests
+* ltp-open-posix-tests
+* ltp-syscalls-tests
+* rcutorture
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
