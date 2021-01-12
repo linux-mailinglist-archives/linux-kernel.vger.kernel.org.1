@@ -2,133 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A58812F2E3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:45:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3DC2F2E3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730790AbhALLpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 06:45:07 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2317 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727959AbhALLpG (ORCPT
+        id S1730433AbhALLoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:44:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728431AbhALLoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:45:06 -0500
-Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DFTBH5127z67Zll;
-        Tue, 12 Jan 2021 19:39:19 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 12 Jan 2021 12:44:24 +0100
-Received: from [10.210.171.61] (10.210.171.61) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 12 Jan 2021 11:44:23 +0000
-Subject: Re: [PATCH v4 01/21] ibmvfc: add vhost fields and defaults for MQ
- enablement
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        <james.bottomley@hansenpartnership.com>
-CC:     <martin.petersen@oracle.com>, <linux-scsi@vger.kernel.org>,
-        <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <brking@linux.ibm.com>
-References: <20210111231225.105347-1-tyreld@linux.ibm.com>
- <20210111231225.105347-2-tyreld@linux.ibm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <b9b2f3c0-0d88-6c64-8b45-fe2ce6d581fd@huawei.com>
-Date:   Tue, 12 Jan 2021 11:43:15 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Tue, 12 Jan 2021 06:44:46 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1331C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 03:44:05 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id m5so1490316pjv.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 03:44:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YXgK4lRZ9KFIZd6/lO39RKwyKYxTIqhJvO9L+itxVOY=;
+        b=E1kst2tXTMFQJDZxPRDVfYPneeubPmbOWsFnTQkvuSZg5zvYvD5+0yEDnDF8qkN9BP
+         657+XVe9yrBS8clnMKfyqIIXgqpjvTu0N/NyQaNuLNJWORC4xiZaWRM9xjtlySkNwsM0
+         1sDaGLVgx0CnUDPNjy5TqE+G96ULAOU5uOPodXuDdidheJZcvoiodrTwOG2K7N0AaJnH
+         umaVi13EGBZKbAH1CAhghwHP3x+vry3WyI20ngDXJh+C2FhyftdlH/HWK9MzjKp0pWMC
+         DRZY1fbhTn3YmOVtsOhcJwHFwsJJ/S9l2vvD4t3E6RlAwaVvxDUgBHNNVU9uv28yAzAr
+         4JfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YXgK4lRZ9KFIZd6/lO39RKwyKYxTIqhJvO9L+itxVOY=;
+        b=aERArHy7pJcJ9yafZFFalL4ApI7q607d0hGO1PHT8sKzN0G9+AOSLbsX0tLE5fNFxG
+         cbR1FRkU2Y0SnllUu72OJc1JpaGSAhlmy01OhXa1cAeJd1ITptPPngDJl4bQzjdvtNmW
+         rXOGMVK6/NIdwOO3YIJayv3DuZcWqqGxxVL/qbrhmbdxUgYNTk/8+v+qA4Q9ynhJX/YM
+         MS9voIAQkhkIlJ4hJmZ7RvYxZWz2uv/hP1/c9QxuPA80NnQDYR2PzBrLVaGzp580fiYd
+         KMVqvxmeKk8BJwB6o8Wc+HtWKRhFDT/+EvGJ575kkDwCV6COgnGc/W2sDnvp2vJfOma2
+         5Sfw==
+X-Gm-Message-State: AOAM531NoPCNuG/LAfuI2dn88KmPYj5glXfleXjLfBf8oV5OhBUntsaJ
+        e44m/QavyPlCBUF081mr9PtJUkBRRW3v51CwyIb0Uw==
+X-Google-Smtp-Source: ABdhPJwhJTuvwURefw5F76iCXx8fAufBEOUt+yDBCmtfhDnc12TggdrqEgSGxOoLHs+vnRoKR3Pm9R4V3jihjOTSA1s=
+X-Received: by 2002:a17:90a:ba88:: with SMTP id t8mr4162139pjr.229.1610451844939;
+ Tue, 12 Jan 2021 03:44:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210111231225.105347-2-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.171.61]
-X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+References: <20210110124017.86750-1-songmuchun@bytedance.com>
+ <20210110124017.86750-4-songmuchun@bytedance.com> <20210112100213.GK22493@dhcp22.suse.cz>
+ <CAMZfGtVJVsuL39owkT+Sp8A7ywXJLhbiQ6zYgL9FKhqSeAvy=w@mail.gmail.com> <20210112111712.GN22493@dhcp22.suse.cz>
+In-Reply-To: <20210112111712.GN22493@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 12 Jan 2021 19:43:21 +0800
+Message-ID: <CAMZfGtWt5+03Pne9QjLn53kqUbZWSmi0f-iEOisHO6LjohdXFA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3 3/6] mm: hugetlb: fix a race between
+ freeing and dissolving the page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/01/2021 23:12, Tyrel Datwyler wrote:
-> Introduce several new vhost fields for managing MQ state of the adapter
-> as well as initial defaults for MQ enablement.
-> 
-> Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-> ---
->   drivers/scsi/ibmvscsi/ibmvfc.c | 8 ++++++++
->   drivers/scsi/ibmvscsi/ibmvfc.h | 9 +++++++++
->   2 files changed, 17 insertions(+)
-> 
-> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-> index ba95438a8912..9200fe49c57e 100644
-> --- a/drivers/scsi/ibmvscsi/ibmvfc.c
-> +++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-> @@ -3302,6 +3302,7 @@ static struct scsi_host_template driver_template = {
->   	.max_sectors = IBMVFC_MAX_SECTORS,
->   	.shost_attrs = ibmvfc_attrs,
->   	.track_queue_depth = 1,
-> +	.host_tagset = 1,
+On Tue, Jan 12, 2021 at 7:17 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Tue 12-01-21 18:13:02, Muchun Song wrote:
+> > On Tue, Jan 12, 2021 at 6:02 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Sun 10-01-21 20:40:14, Muchun Song wrote:
+> > > [...]
+> > > > @@ -1770,6 +1788,14 @@ int dissolve_free_huge_page(struct page *page)
+> > > >               int nid = page_to_nid(head);
+> > > >               if (h->free_huge_pages - h->resv_huge_pages == 0)
+> > > >                       goto out;
+> > > > +
+> > > > +             /*
+> > > > +              * We should make sure that the page is already on the free list
+> > > > +              * when it is dissolved.
+> > > > +              */
+> > > > +             if (unlikely(!PageHugeFreed(head)))
+> > > > +                     goto out;
+> > > > +
+> > >
+> > > Do you really want to report EBUSY in this case? This doesn't make much
+> > > sense to me TBH. I believe you want to return 0 same as when you race
+> > > and the page is no longer PageHuge.
+> >
+> > Return 0 is wrong. Because the page is not freed to the buddy allocator.
+> > IIUC, dissolve_free_huge_page returns 0 when the page is already freed
+> > to the buddy allocator. Right?
+>
+> 0 is return when the page is either dissolved or it doesn't need
+> dissolving. If there is a race with somebody else freeing the page then
+> there is nothing to dissolve. Under which condition it makes sense to
+> report the failure and/or retry dissolving?
 
-Good to see another user :)
+If there is a race with somebody else freeing the page, the page
+can be freed to the hugepage pool not the buddy allocator. Do
+you think that this page is dissolved?
 
-I didn't check the whole series very thoroughly, but I guess that you 
-only need to set this when shost->nr_hw_queues > 1. Having said that, it 
-should be fine when shost->nr_hw_queues = 0 or 1.
-
-Thanks,
-John
-
->   };
->   
->   /**
-> @@ -5290,6 +5291,7 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
->   	shost->max_sectors = IBMVFC_MAX_SECTORS;
->   	shost->max_cmd_len = IBMVFC_MAX_CDB_LEN;
->   	shost->unique_id = shost->host_no;
-> +	shost->nr_hw_queues = IBMVFC_MQ ? IBMVFC_SCSI_HW_QUEUES : 1;
->   
->   	vhost = shost_priv(shost);
->   	INIT_LIST_HEAD(&vhost->targets);
-> @@ -5300,6 +5302,12 @@ static int ibmvfc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
->   	vhost->partition_number = -1;
->   	vhost->log_level = log_level;
->   	vhost->task_set = 1;
-> +
-> +	vhost->mq_enabled = IBMVFC_MQ;
-> +	vhost->client_scsi_channels = IBMVFC_SCSI_CHANNELS;
-> +	vhost->using_channels = 0;
-> +	vhost->do_enquiry = 1;
-> +
->   	strcpy(vhost->partition_name, "UNKNOWN");
->   	init_waitqueue_head(&vhost->work_wait_q);
->   	init_waitqueue_head(&vhost->init_wait_q);
-> diff --git a/drivers/scsi/ibmvscsi/ibmvfc.h b/drivers/scsi/ibmvscsi/ibmvfc.h
-> index 632e977449c5..dd6d89292867 100644
-> --- a/drivers/scsi/ibmvscsi/ibmvfc.h
-> +++ b/drivers/scsi/ibmvscsi/ibmvfc.h
-> @@ -41,6 +41,11 @@
->   #define IBMVFC_DEFAULT_LOG_LEVEL	2
->   #define IBMVFC_MAX_CDB_LEN		16
->   #define IBMVFC_CLS3_ERROR		0
-> +#define IBMVFC_MQ			0
-> +#define IBMVFC_SCSI_CHANNELS		0
-> +#define IBMVFC_SCSI_HW_QUEUES		1
-> +#define IBMVFC_MIG_NO_SUB_TO_CRQ	0
-> +#define IBMVFC_MIG_NO_N_TO_M		0
->   
->   /*
->    * Ensure we have resources for ERP and initialization:
-> @@ -840,6 +845,10 @@ struct ibmvfc_host {
->   	int delay_init;
->   	int scan_complete;
->   	int logged_in;
-> +	int mq_enabled;
-> +	int using_channels;
-> +	int do_enquiry;
-> +	int client_scsi_channels;
->   	int aborting_passthru;
->   	int events_to_log;
->   #define IBMVFC_AE_LINKUP	0x0001
-> 
-
+> --
+> Michal Hocko
+> SUSE Labs
