@@ -2,96 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C316B2F2C58
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:12:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D26692F2C56
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404467AbhALKLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:11:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59209 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391148AbhALKLK (ORCPT
+        id S2392983AbhALKLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:11:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392944AbhALKLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:11:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610446184;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DOMRwNgT9qr+9pqPfBttykBmS2K+2o6KQydrMDGzqpk=;
-        b=KQ8uEsYAyvLKrk779W2oHlHXzqcS03NHjwhsgIv+sgRjZn9yjoaFH8uZwqa7CWduXyYsHO
-        vcLblHlGzXj/vzeon8gNxbHp5AatkrWYOqjm83Atq+Jne+JDl/G4pOziRuNCBTKrmLYfdu
-        Iij4QeEgxfchIVvRRyuh3c/k0tmMlAM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-75-Bi2gpNL4Orq9i6DussAoYA-1; Tue, 12 Jan 2021 05:09:40 -0500
-X-MC-Unique: Bi2gpNL4Orq9i6DussAoYA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AB2C31800D42;
-        Tue, 12 Jan 2021 10:09:38 +0000 (UTC)
-Received: from [10.36.115.140] (ovpn-115-140.ams2.redhat.com [10.36.115.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EB9B56A8FD;
-        Tue, 12 Jan 2021 10:09:35 +0000 (UTC)
-Subject: Re: [PATCH V2 1/3] mm/hotplug: Prevalidate the address range being
- added with platform
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Oscar Salvador <osalvador@suse.de>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org, hca@linux.ibm.com,
-        catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <1608218912-28932-1-git-send-email-anshuman.khandual@arm.com>
- <1608218912-28932-2-git-send-email-anshuman.khandual@arm.com>
- <10e733fa-4568-d38f-9b95-2ccc5dc627b8@redhat.com>
- <20210111134303.GA3031@linux> <e2b53f0a-482d-2045-6162-6de2510c9690@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <556a8a62-7bb2-d16b-67ea-57c87c1a6aa7@redhat.com>
-Date:   Tue, 12 Jan 2021 11:09:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 12 Jan 2021 05:11:00 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0CEC061795
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 02:10:19 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id i63so1377871wma.4
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 02:10:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Bkg2PXaK2SWANw8IwP/AMIZLmCDZjaC0dDjfjSGMESw=;
+        b=cxc3zmOOc8O4IH8V6hTkqvkq98jk+G0emPgAZJC4oEe9QTrnrtZqlQ7xqb+AWCjSWI
+         9/CkLrijkGHQKj73HYCupxLFnlL3Y8d+pLHhBschRr/rq048z7ric/I1xr8+8t7AXml5
+         a9v9NRGeeiONW1Cq3IFgq7Ul8aIgEKICYHmkG9N3hfUymD9i1L76tHGA5npX9IEkxyDA
+         WkrP8L2n7ggp3PYaG/Wk8z2h1Kmnl/7q1Yof+15+CzeoQJ1gprctEBD/W3atO5hIirDg
+         zt6HzVfEGQUSDK/rXiIVrXrORi+DKrMIE5Zt3uLM9BXa0vVM+s+UAHxPseo5esWwbBTT
+         BcSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Bkg2PXaK2SWANw8IwP/AMIZLmCDZjaC0dDjfjSGMESw=;
+        b=inYgXUTLG+Eq7s7NOc5Glja7WzaahWHMkhWDYMhUy47ZzkNYFic/9JuBkFyfJ6jZRg
+         NwmM3Nyk7c/1S0rbndOg6fseQqx45xF2TFY8syQ/NZgcbMDBBnLpHWq9btxB4nUVHlgU
+         0iVqabSVb+Dc1kfI0KqVcOLF+YmwV8JXXjQDRedkptskmLkBha5mr0KFSqgtyq56Llrr
+         YQKZ4zdMKoPxRWG3lLz2Z1G1r76k2km3JUZbJXHHxi45NhsT/l5PuKLzm5MLdnZL4jOR
+         nRA7qjtMJo9cQrS+smmjuLPNxkyMU2IXUHDlhGTwbolD0KRgc4/UxRa/ihlXU6NWYxty
+         mb4A==
+X-Gm-Message-State: AOAM533HBTyOhae2ShhwzWr+c5qun7dwKBzDyRUmqAr3OHc8BG6RTJz4
+        jLDPjlBwHP03yadRaAFmhus=
+X-Google-Smtp-Source: ABdhPJxuWOHW4lhj241hPPbd10QF7Z7fViELfDVwFn+N7EUI4aG71W/c6XV/k326Dgsw7Hrg1Tl4fQ==
+X-Received: by 2002:a05:600c:2158:: with SMTP id v24mr2716731wml.129.1610446218465;
+        Tue, 12 Jan 2021 02:10:18 -0800 (PST)
+Received: from smtp.gmail.com (a95-92-181-29.cpe.netcabo.pt. [95.92.181.29])
+        by smtp.gmail.com with ESMTPSA id s133sm3158707wmf.38.2021.01.12.02.10.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 02:10:17 -0800 (PST)
+Date:   Tue, 12 Jan 2021 07:10:12 -0300
+From:   Melissa Wen <melissa.srw@gmail.com>
+To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
+Cc:     rodrigosiqueiramelo@gmail.com, hamohammed.sa@gmail.com,
+        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V5 2/3] drm/vkms: Add support for writeback module
+Message-ID: <20210112101012.a6mjwhtmtj3k34wt@smtp.gmail.com>
+References: <cover.1610391685.git.sylphrenadin@gmail.com>
+ <15802da4f1cdfed2b728c3d35731732f161dd073.1610391685.git.sylphrenadin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <e2b53f0a-482d-2045-6162-6de2510c9690@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <15802da4f1cdfed2b728c3d35731732f161dd073.1610391685.git.sylphrenadin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.01.21 04:51, Anshuman Khandual wrote:
+On 01/12, Sumera Priyadarsini wrote:
+> Add enable_writeback feature to vkms_config as a module.
 > 
+> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+> ---
+>  drivers/gpu/drm/vkms/vkms_drv.c    | 5 +++++
+>  drivers/gpu/drm/vkms/vkms_drv.h    | 1 +
+>  drivers/gpu/drm/vkms/vkms_output.c | 9 ++++++---
+>  3 files changed, 12 insertions(+), 3 deletions(-)
 > 
-> On 1/11/21 7:13 PM, Oscar Salvador wrote:
->> On Mon, Jan 11, 2021 at 11:51:47AM +0100, David Hildenbrand wrote:
->>> AFAIKs, all memhp_get_pluggable_range() users pass "1".
->>>
->>> What about the "add_pages()-only" path?
->>
->> I guess you refer to memremap_pages(), right?
-> 
-> Right, via pagemap_range().
-> 
->> If so, moving the added memhp_range_allowed() check above the if-else might do
->> the trick
->>
-> We had that code in the earlier version. But dropped it, as we did
-> not want to add any new checks in the generic code. Can add it back
-> if that is preferred.
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.c b/drivers/gpu/drm/vkms/vkms_drv.c
+> index 6b33975a5cb2..708f7f54001d 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.c
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.c
+> @@ -40,6 +40,10 @@ static bool enable_cursor = true;
+>  module_param_named(enable_cursor, enable_cursor, bool, 0444);
+>  MODULE_PARM_DESC(enable_cursor, "Enable/Disable cursor support");
+>  
+> +static bool enable_writeback = true;
+> +module_param_named(enable_writeback, enable_writeback, bool, 0444);
+> +MODULE_PARM_DESC(enable_writeback, "Enable/Disable writeback connector support");
+> +
+>  DEFINE_DRM_GEM_FOPS(vkms_driver_fops);
+>  
+>  static void vkms_release(struct drm_device *dev)
+> @@ -189,6 +193,7 @@ static int __init vkms_init(void)
+>  	default_config = config;
+>  
+>  	config->cursor = enable_cursor;
+> +	config->writeback = enable_writeback;
+>  
+>  	return vkms_create(config);
+>  }
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
+> index 6a27bd8875f2..b9b4e2bc11c0 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.h
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
+> @@ -83,6 +83,7 @@ struct vkms_output {
+>  struct vkms_device;
+>  
+>  struct vkms_config {
+> +	bool writeback;
+>  	bool cursor;
+>  	/* only set when instantiated */
+>  	struct vkms_device *dev;
+> diff --git a/drivers/gpu/drm/vkms/vkms_output.c b/drivers/gpu/drm/vkms/vkms_output.c
+> index 8f3ffb28b9d1..f5f6f15c362c 100644
+> --- a/drivers/gpu/drm/vkms/vkms_output.c
+> +++ b/drivers/gpu/drm/vkms/vkms_output.c
+> @@ -41,6 +41,7 @@ int vkms_output_init(struct vkms_device *vkmsdev, int index)
+>  	struct drm_crtc *crtc = &output->crtc;
+>  	struct drm_plane *primary, *cursor = NULL;
+>  	int ret;
+> +	int writeback;
+>  
+>  	primary = vkms_plane_init(vkmsdev, DRM_PLANE_TYPE_PRIMARY, index);
+>  	if (IS_ERR(primary))
+> @@ -80,9 +81,11 @@ int vkms_output_init(struct vkms_device *vkmsdev, int index)
+>  		goto err_attach;
+>  	}
+>  
+> -	ret = vkms_enable_writeback_connector(vkmsdev);
+> -	if (ret)
+> -		DRM_ERROR("Failed to init writeback connector\n");
+> +	if (vkmsdev->config->writeback) {
+> +		writeback = vkms_enable_writeback_connector(vkmsdev);
+> +		if (writeback)
+> +			DRM_ERROR("Failed to init writeback connector\n");
+> +	}
 
-I remember discussing replacing the check in __add_pages() instead. But
-I don't really care where the check ends up being. As discussed, at some
-point, we should provide versions of add_pages() and arch_add_pages()
-that don't immediately end in arch-code.
-
--- 
 Thanks,
 
-David / dhildenb
+Reviewed-by: Melissa Wen <melissa.srw@gmail.com>
 
+>
+>  	drm_mode_config_reset(dev);
+>  
+> -- 
+> 2.25.1
+>
