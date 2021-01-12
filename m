@@ -2,244 +2,527 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4AA2F27FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 06:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E27122F2801
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 06:51:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388961AbhALFu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 00:50:58 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50994 "EHLO mx2.suse.de"
+        id S2389248AbhALFvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 00:51:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728515AbhALFu5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 00:50:57 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610430610; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VtgoMFZgB888IzamX8N+C2j8zaWwxQ6ePnGmtOCMRHg=;
-        b=PnkvWH+vLN1rKN2VLe7kBbvtZjcBhfRoIpAO9hxlIvh1Alz+f8UTdZ+YpZZYJ9My3/pfgn
-        QbYhrvWRRtfZ0+iT2xzE1AJcl0q73idhFm9TZ9nD3B2O3K2fjtevKLUXnclcEbgJgEsrkL
-        iN/gaZexxNtiLmtff5xJcWVZ0ojRwzQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 673C1AB92;
-        Tue, 12 Jan 2021 05:50:10 +0000 (UTC)
-Subject: Re: [PATCH] xen/privcmd: allow fetching resource sizes
-To:     Andrew Cooper <amc96@cam.ac.uk>, boris.ostrovsky@oracle.com,
-        Roger Pau Monne <roger.pau@citrix.com>,
+        id S1728515AbhALFvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 00:51:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13696222B3;
+        Tue, 12 Jan 2021 05:50:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610430627;
+        bh=ztDxWQPKwcCAo9T8qbVZ/zqnzxTIbqjLfHP8mgNU1ls=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e7ANCMi2NcHw6kEp9tl3U+BMxdK7pU7+eDkPxjxy+1Ylzr2xJoQgPZLozpwhgjZs+
+         95vNJhwbKk1oBRb1gG/h+B0ZZVXalT/q3oEuJmOGrdbr8VUb0FU4jN0vvr9ZCxe/PK
+         JDcAeqPRYoY9BuvaziYHsMwcO9LbugXTb7JSaIM4dB23ZHOOgt8CMoHAqe/e6o5nOL
+         v04fnMnvAEgmsymXfBeWCsDTl3LwzAJxqVOmjgizXUuTS4mhEK5jWUcVtGTqj4pkz6
+         uRztgKYWKxpGetmF15gQznKjQqXhgOHmiEP+quWFgQCaJQnzsDqyCRt9x1U0GnV7RU
+         TGftFfcEnJjsQ==
+Date:   Tue, 12 Jan 2021 11:20:22 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@kernel.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        linux-spi@vger.kernel.org, linux-i2c@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        Paul Durrant <paul.durrant@citrix.com>,
-        xen-devel@lists.xenproject.org,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-References: <20210111152958.7166-1-roger.pau@citrix.com>
- <555ba53c-1b6b-6cf7-9887-52d4179f7456@oracle.com>
- <ed089f3f-4950-f3e9-6df6-07ca9148e6a6@cam.ac.uk>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <22da01ad-a345-75b9-5f2d-6f8958f31749@suse.com>
-Date:   Tue, 12 Jan 2021 06:50:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+Subject: Re: [PATCH 5/7] i2c: qcom-geni: Add support for GPI DMA
+Message-ID: <20210112055022.GH2771@vkoul-mobl>
+References: <20210111151651.1616813-1-vkoul@kernel.org>
+ <20210111151651.1616813-6-vkoul@kernel.org>
+ <X/yVeXjQduGYpJjY@builder.lan>
 MIME-Version: 1.0
-In-Reply-To: <ed089f3f-4950-f3e9-6df6-07ca9148e6a6@cam.ac.uk>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="WViTpzlOHrXRoGE4kSSmwp6yjSzhyYiwK"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/yVeXjQduGYpJjY@builder.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---WViTpzlOHrXRoGE4kSSmwp6yjSzhyYiwK
-Content-Type: multipart/mixed; boundary="hVVulcgdyellESi1bJVGzhln6JsYPUbRl";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Andrew Cooper <amc96@cam.ac.uk>, boris.ostrovsky@oracle.com,
- Roger Pau Monne <roger.pau@citrix.com>, linux-kernel@vger.kernel.org
-Cc: Stefano Stabellini <sstabellini@kernel.org>,
- Paul Durrant <paul.durrant@citrix.com>, xen-devel@lists.xenproject.org,
- Andrew Cooper <andrew.cooper3@citrix.com>
-Message-ID: <22da01ad-a345-75b9-5f2d-6f8958f31749@suse.com>
-Subject: Re: [PATCH] xen/privcmd: allow fetching resource sizes
-References: <20210111152958.7166-1-roger.pau@citrix.com>
- <555ba53c-1b6b-6cf7-9887-52d4179f7456@oracle.com>
- <ed089f3f-4950-f3e9-6df6-07ca9148e6a6@cam.ac.uk>
-In-Reply-To: <ed089f3f-4950-f3e9-6df6-07ca9148e6a6@cam.ac.uk>
+On 11-01-21, 12:14, Bjorn Andersson wrote:
+> On Mon 11 Jan 09:16 CST 2021, Vinod Koul wrote:
+> 
+> > This adds capability to use GSI DMA for I2C transfers
+> > 
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > ---
+> >  drivers/i2c/busses/i2c-qcom-geni.c | 246 ++++++++++++++++++++++++++++-
+> >  1 file changed, 244 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+> > index 046d241183c5..6978480fb4d1 100644
+> > --- a/drivers/i2c/busses/i2c-qcom-geni.c
+> > +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+> > @@ -12,7 +12,9 @@
+> >  #include <linux/of.h>
+> >  #include <linux/platform_device.h>
+> >  #include <linux/pm_runtime.h>
+> > +#include <linux/dmaengine.h>
+> >  #include <linux/qcom-geni-se.h>
+> > +#include <linux/dma/qcom-gpi-dma.h>
+> >  #include <linux/spinlock.h>
+> >  
+> >  #define SE_I2C_TX_TRANS_LEN		0x26c
+> > @@ -48,6 +50,8 @@
+> >  #define LOW_COUNTER_SHFT	10
+> >  #define CYCLE_COUNTER_MSK	GENMASK(9, 0)
+> >  
+> > +#define I2C_PACK_EN		(BIT(0) | BIT(1))
+> > +
+> >  enum geni_i2c_err_code {
+> >  	GP_IRQ0,
+> >  	NACK,
+> > @@ -72,6 +76,12 @@ enum geni_i2c_err_code {
+> >  #define XFER_TIMEOUT		HZ
+> >  #define RST_TIMEOUT		HZ
+> >  
+> > +enum i2c_se_mode {
+> > +	UNINITIALIZED,
+> > +	FIFO_SE_DMA,
+> > +	GSI_ONLY,
+> > +};
+> > +
+> >  struct geni_i2c_dev {
+> >  	struct geni_se se;
+> >  	u32 tx_wm;
+> > @@ -86,6 +96,17 @@ struct geni_i2c_dev {
+> >  	u32 clk_freq_out;
+> >  	const struct geni_i2c_clk_fld *clk_fld;
+> >  	int suspended;
+> > +	struct dma_chan *tx_c;
+> > +	struct dma_chan *rx_c;
+> > +	dma_cookie_t rx_cookie, tx_cookie;
+> > +	dma_addr_t tx_ph;
+> > +	dma_addr_t rx_ph;
+> > +	int cfg_sent;
+> 
+> bool?
 
---hVVulcgdyellESi1bJVGzhln6JsYPUbRl
-Content-Type: multipart/mixed;
- boundary="------------45446216254953552C0779E8"
-Content-Language: en-US
+ok
 
-This is a multi-part message in MIME format.
---------------45446216254953552C0779E8
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+> 
+> > +	struct dma_async_tx_descriptor *tx_desc;
+> > +	struct dma_async_tx_descriptor *rx_desc;
+> > +	enum i2c_se_mode se_mode;
+> 
+> bool gsi_only;
 
-On 11.01.21 23:39, Andrew Cooper wrote:
-> On 11/01/2021 22:09, boris.ostrovsky@oracle.com wrote:
->> On 1/11/21 10:29 AM, Roger Pau Monne wrote:
->>>  =20
->>> +	xdata.domid =3D kdata.dom;
->>> +	xdata.type =3D kdata.type;
->>> +	xdata.id =3D kdata.id;
->>> +
->>> +	if (!kdata.addr && !kdata.num) {
->>
->> I think we should not allow only one of them to be zero. If it's only =
-kdata.num then we will end up with pfns array set to ZERO_SIZE_PTR (which=
- is 0x10). We seem to be OK in that we are not derefencing pfns (either i=
-n kernel or in hypervisor) if number of frames is zero but IMO we shouldn=
-'t be tempting the fate.
->>
->>
->> (And if it's only kdata.addr then we will get a vma but I am not sure =
-it will do what we want.)
->=20
-> Passing addr =3D=3D 0 without num being 0 is already an error in Xen, a=
-nd
-> passing num =3D=3D 0 without addr being 0 is bogus and will be an error=
- by
-> the time I'm finished fixing this.
->=20
-> FWIW, the common usecase for non-trivial examples will be:
->=20
-> xenforeignmem_resource_size(domid, type, id, &size);
-> xenforeignmem_map_resource(domid, type, id, NULL, size, ...);
->=20
-> which translates into:
->=20
-> ioctl(MAP_RESOURCE, NULL, 0) =3D> size
-> mmap(NULL, size, ...) =3D> ptr
-> ioctl(MAP_RESOURCE, ptr, size)
->=20
-> from the kernels point of view, and two hypercalls from Xen's point of
-> view.=C2=A0 The NULL's above are expected to be the common case for let=
-ting
-> the kernel chose the vma, but ought to be filled in by the time the
-> second ioctl() occurs.
->=20
-> See
-> https://lore.kernel.org/xen-devel/20200922182444.12350-1-andrew.cooper3=
-@citrix.com/T/#u
-> for all the gory details.
+I think fifo_mode would be more apt... since we check for other modes in
+the code
 
-I don't think the kernel should rely on the hypervisor to return
-an error in case addr !=3D 0 and num =3D=3D 0.
+> 
+> > +	bool cmd_done;
+> 
+> Unused?
 
-The driver should return -EINVAL in that case IMO.
+heh, will remove..
 
+> > +	bool is_shared;
+> 
+> Used but meaningless?
 
-Juergen
+Will drop
 
---------------45446216254953552C0779E8
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+> 
+> >  };
+> >  
+> >  struct geni_i2c_err_log {
+> > @@ -429,6 +450,183 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+> >  	return gi2c->err;
+> >  }
+> >  
+> > +static void i2c_gsi_cb_result(void *cb, const struct dmaengine_result *result)
+> > +{
+> > +	struct geni_i2c_dev *gi2c = cb;
+> > +
+> > +	if (result->result != DMA_TRANS_NOERROR) {
+> > +		dev_err(gi2c->se.dev, "DMA txn failed:%d\n", result->result);
+> > +		return;
+> > +	}
+> > +
+> > +	if (result->residue)
+> > +		dev_dbg(gi2c->se.dev, "DMA xfer has pending: %d\n", result->residue);
+> > +
+> > +	complete(&gi2c->done);
+> > +}
+> > +
+> > +static int geni_i2c_gsi_xfer(struct i2c_adapter *adap, struct i2c_msg msgs[],
+> > +			     int num)
+> > +{
+> > +	struct geni_i2c_dev *gi2c = i2c_get_adapdata(adap);
+> > +	struct dma_slave_config config;
+> > +	struct gpi_i2c_config peripheral;
+> > +	int i, ret = 0, timeout = 0;
+> > +
+> > +	memset(&config, 0, sizeof(config));
+> 
+> Assign {} to config during declaration.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+ok
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+> 
+> > +	memset(&peripheral, 0, sizeof(peripheral));
+> > +	config.peripheral_config = &peripheral;
+> > +	config.peripheral_size = sizeof(peripheral);
+> > +
+> > +	if (!gi2c->tx_c) {
+> > +		gi2c->tx_c = dma_request_slave_channel(gi2c->se.dev, "tx");
+> 
+> So object is reused for all future transfers as well?
+> Seems reasonable, but it should be released on driver removal?
+> 
+> Could it be requested at probe time instead?
 
---------------45446216254953552C0779E8--
+yes it can be done, i would move it..
 
---hVVulcgdyellESi1bJVGzhln6JsYPUbRl--
+> 
+> > +		if (!gi2c->tx_c) {
+> > +			dev_err(gi2c->se.dev, "tx dma_request_slave_channel fail\n");
+> > +			ret = -EIO;
+> > +			goto geni_i2c_gsi_xfer_out;
+> > +		}
+> > +	}
+> > +
+> > +	if (!gi2c->rx_c) {
+> > +		gi2c->rx_c = dma_request_slave_channel(gi2c->se.dev, "rx");
+> > +		if (!gi2c->rx_c) {
+> > +			dev_err(gi2c->se.dev, "rx dma_request_slave_channel fail\n");
+> > +			ret = -EIO;
+> > +			goto geni_i2c_gsi_xfer_out;
+> > +		}
+> > +	}
+> > +
+> > +	if (!gi2c->cfg_sent) {
+> > +		const struct geni_i2c_clk_fld *itr = gi2c->clk_fld;
+> > +
+> > +		peripheral.pack_enable = I2C_PACK_EN;
+> > +		peripheral.cycle_count = itr->t_cycle_cnt;
+> > +		peripheral.high_count = itr->t_high_cnt;
+> > +		peripheral.low_count = itr->t_low_cnt;
+> > +		peripheral.clk_div = itr->clk_div;
+> > +		gi2c->cfg_sent = true;
+> 
+> Is this a bool or an int?
 
---WViTpzlOHrXRoGE4kSSmwp6yjSzhyYiwK
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+Now would be a bool :)
 
------BEGIN PGP SIGNATURE-----
+> 
+> > +		peripheral.set_config =  true;
+> 
+> I find this somewhat ugly, you will always
+> dmaengine_slave_config(&config), but in the case of cfg_sent this will
+> point to an all-zero peripheral and hence will have set_config = false,
+> which will cause the skipping of setting up a configuration TRE.
+> 
+> I would prefer that the value of peripheral.set_config related to
+> cfg_sent in a more explicit fashion.
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/9OJEFAwAAAAAACgkQsN6d1ii/Ey+V
-eQf+J7qLREdmv/jUv6byafuMswKOIaUdKlmTkRYOh/kLwhhP4l/Dc7JQrZBU9V8vBhMUSboZGhQw
-eqXx0sijQKm2X4LNIFW4jU0ptSkHV0T64cvXCLzbt3AtxqId4clQTKaYaT/ppDai7xMbTnIzYJPH
-dEGFQ2E+ozIRI2dHpLbOhvb9RjjpIyvki1ADHhcgpk8MUqw0UVY9XlWr3VVcWdsn+YFNhf1qJfyj
-Gou58b52z06h3lj291RN1vdyFyBB4aFmCxC5c7RXwb5zzC45iFEGytX9q/XCxeAEi0ftmRdVdC/C
-YJecmCUdy4wyNFhWJ3ExABB12VGk8IFgfBfhTQUGLw==
-=oROH
------END PGP SIGNATURE-----
+Sure, i think I can use a single value to do this, will update this
 
---WViTpzlOHrXRoGE4kSSmwp6yjSzhyYiwK--
+> 
+> > +	}
+> > +
+> > +	peripheral.multi_msg = false;
+> > +	for (i = 0; i < num; i++) {
+> > +		struct device *rx_dev = gi2c->se.wrapper->dev;
+> > +		struct device *tx_dev = gi2c->se.wrapper->dev;
+> > +		int stretch = (i < (num - 1));
+> > +		u8 *dma_buf = NULL;
+> 
+> No need to initialize this, first use is an assignment.
+
+ok
+
+> 
+> > +		unsigned int flags;
+> > +
+> > +		gi2c->cur = &msgs[i];
+> > +
+> > +		peripheral.addr = msgs[i].addr;
+> > +		peripheral.stretch = stretch;
+> > +		if (msgs[i].flags & I2C_M_RD)
+> > +			peripheral.op = I2C_READ;
+> > +		else
+> > +			peripheral.op = I2C_WRITE;
+> > +
+> > +		dma_buf = i2c_get_dma_safe_msg_buf(&msgs[i], 1);
+> > +		if (!dma_buf) {
+> > +			ret = -ENOMEM;
+> > +			goto geni_i2c_gsi_xfer_out;
+> > +		}
+> > +
+> > +		if (msgs[i].flags & I2C_M_RD) {
+> > +			gi2c->rx_ph = dma_map_single(rx_dev, dma_buf,
+> > +						     msgs[i].len, DMA_FROM_DEVICE);
+> > +			if (dma_mapping_error(rx_dev, gi2c->rx_ph)) {
+> > +				dev_err(gi2c->se.dev, "dma_map_single for rx failed :%d\n", ret);
+> > +				i2c_put_dma_safe_msg_buf(dma_buf, &msgs[i], false);
+> > +				goto geni_i2c_gsi_xfer_out;
+> > +			}
+> > +
+> > +			peripheral.op = I2C_READ;
+> > +			peripheral.stretch = stretch;
+> > +			ret = dmaengine_slave_config(gi2c->rx_c, &config);
+> > +			if (ret) {
+> > +				dev_err(gi2c->se.dev, "rx dma config error:%d\n", ret);
+> > +				goto geni_i2c_gsi_xfer_out;
+> 
+> Need to unmap rx_ph?
+
+yes will update
+
+> 
+> > +			}
+> > +			peripheral.set_config =  false;
+> > +			peripheral.multi_msg = true;
+> > +			peripheral.rx_len = msgs[i].len;
+> > +
+> > +			flags = DMA_PREP_INTERRUPT | DMA_CTRL_ACK;
+> > +			gi2c->rx_desc = dmaengine_prep_slave_single(gi2c->rx_c, gi2c->rx_ph,
+> > +								    msgs[i].len,
+> > +								    DMA_DEV_TO_MEM, flags);
+> 
+> Is the rx_desc freed by the dmaengine core when
+> dma_async_issue_pending() finishes it's job?
+
+Yes
+
+> If so, why do you need to keep this pointer in gi2c? Wouldn't a local
+> variable suffice?
+
+Yes local should suffice, will update
+
+> 
+> > +			if (!gi2c->rx_desc) {
+> > +				dev_err(gi2c->se.dev, "prep_slave_sg for rx failed\n");
+> > +				gi2c->err = -EIO;
+> > +				goto geni_i2c_err_prep_sg;
+> > +			}
+> > +
+> > +			gi2c->rx_desc->callback_result = i2c_gsi_cb_result;
+> > +			gi2c->rx_desc->callback_param = gi2c;
+> > +
+> > +			/* Issue RX */
+> > +			gi2c->rx_cookie = dmaengine_submit(gi2c->rx_desc);
+> > +			dma_async_issue_pending(gi2c->rx_c);
+> > +		}
+> > +
+> > +		dev_dbg(gi2c->se.dev, "msg[%d].len:%d W\n", i, gi2c->cur->len);
+> > +		gi2c->tx_ph = dma_map_single(tx_dev, dma_buf, msgs[i].len, DMA_TO_DEVICE);
+> 
+> Maybe I've forgotten something important about I2C, but why do we always
+> TX (even if it's a RX transfer)?
+
+I think we need to send the device address for i2c, so even if we want
+to do RX, that will always involve a TX txn as well
+
+> 
+> > +		if (dma_mapping_error(tx_dev, gi2c->tx_ph)) {
+> > +			dev_err(gi2c->se.dev, "dma_map_single for tx failed :%d\n", ret);
+> > +			i2c_put_dma_safe_msg_buf(dma_buf, &msgs[i], false);
+> 
+> Need to unmap rx_ph?
+> 
+> > +			goto geni_i2c_gsi_xfer_out;
+> > +		}
+> > +
+> > +		peripheral.stretch = stretch;
+> > +		peripheral.op = I2C_WRITE;
+> > +		ret = dmaengine_slave_config(gi2c->tx_c, &config);
+> > +		if (ret) {
+> > +			dev_err(gi2c->se.dev, "tx dma config error:%d\n", ret);
+> 
+> Need to unmap rx_ph and tx_ph?
+
+Yeah looks like I missed unrolling, will check and update all these
+
+> 
+> > +			goto geni_i2c_gsi_xfer_out;
+> > +		}
+> > +		peripheral.set_config =  false;
+> > +		peripheral.multi_msg = true;
+> > +		gi2c->tx_desc = dmaengine_prep_slave_single(gi2c->tx_c, gi2c->tx_ph, msgs[i].len,
+> > +							    DMA_MEM_TO_DEV,
+> > +							    (DMA_PREP_INTERRUPT |  DMA_CTRL_ACK));
+> > +		if (!gi2c->tx_desc) {
+> > +			dev_err(gi2c->se.dev, "prep_slave_sg for tx failed\n");
+> > +			gi2c->err = -ENOMEM;
+> > +			goto geni_i2c_err_prep_sg;
+> > +		}
+> > +		gi2c->tx_desc->callback_result = i2c_gsi_cb_result;
+> > +		gi2c->tx_desc->callback_param = gi2c;
+> > +
+> > +		/* Issue TX */
+> > +		gi2c->tx_cookie = dmaengine_submit(gi2c->tx_desc);
+> > +		dma_async_issue_pending(gi2c->tx_c);
+> > +
+> > +		timeout = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
+> > +		if (!timeout) {
+> > +			dev_err(gi2c->se.dev, "I2C timeout gsi flags:%d addr:0x%x\n",
+> > +				gi2c->cur->flags, gi2c->cur->addr);
+> > +			gi2c->err = -ETIMEDOUT;
+> > +		}
+> > +geni_i2c_err_prep_sg:
+> 
+> Perhaps you can break the body of this loop out to a separate function
+> and thereby avoid the goto within the block?
+> 
+> > +		if (gi2c->err) {
+> > +			dmaengine_terminate_all(gi2c->tx_c);
+> > +			gi2c->cfg_sent = 0;
+> 
+> Is this a bool or an int?
+> 
+> > +		}
+> > +		if (msgs[i].flags & I2C_M_RD)
+> > +			dma_unmap_single(rx_dev, gi2c->rx_ph, msgs[i].len, DMA_FROM_DEVICE);
+> 
+> You unconditionally map tx_ph, but you only unmap it on ~I2C_M_RD. This
+> fits better with my expectation, but would mean that the whole tx block
+> above should be in an else.
+> 
+> > +		else
+> > +			dma_unmap_single(tx_dev, gi2c->tx_ph, msgs[i].len, DMA_TO_DEVICE);
+> > +		i2c_put_dma_safe_msg_buf(dma_buf, &msgs[i], !gi2c->err);
+> > +		if (gi2c->err)
+> > +			goto geni_i2c_gsi_xfer_out;
+> 
+> This goto is just a "break" in disguise.
+> 
+> > +	}
+> > +
+> > +geni_i2c_gsi_xfer_out:
+> > +	if (!ret && gi2c->err)
+> > +		ret = gi2c->err;
+> > +	return ret;
+> > +}
+> > +
+> >  static int geni_i2c_xfer(struct i2c_adapter *adap,
+> >  			 struct i2c_msg msgs[],
+> >  			 int num)
+> > @@ -448,6 +646,15 @@ static int geni_i2c_xfer(struct i2c_adapter *adap,
+> >  	}
+> >  
+> >  	qcom_geni_i2c_conf(gi2c);
+> > +
+> > +	if (gi2c->se_mode == GSI_ONLY) {
+> > +		ret = geni_i2c_gsi_xfer(adap, msgs, num);
+> > +		goto geni_i2c_txn_ret;
+> 
+> Rather than goto skip_non_gsi_code; I think you should move the non-gsi
+> part of this function into a separate fifo function and make this
+
+Okay let me take a relook at this whole blob and refactor it..
+
+> 
+> if (GSI_ONLY)
+> 	ret = geni_i2c_gsi_xfer();
+> else
+> 	ret = geni_i2c_fifo_xfer();
+> 
+> > +	} else {
+> > +		/* Don't set shared flag in non-GSI mode */
+> > +		gi2c->is_shared = false;
+> 
+> I don't see this flag being looked at elsewhere.
+> 
+> > +	}
+> > +
+> >  	for (i = 0; i < num; i++) {
+> >  		u32 m_param = i < (num - 1) ? STOP_STRETCH : 0;
+> >  
+> > @@ -462,6 +669,7 @@ static int geni_i2c_xfer(struct i2c_adapter *adap,
+> >  		if (ret)
+> >  			break;
+> >  	}
+> > +geni_i2c_txn_ret:
+> >  	if (ret == 0)
+> >  		ret = num;
+> >  
+> > @@ -628,7 +836,8 @@ static int __maybe_unused geni_i2c_runtime_suspend(struct device *dev)
+> >  	int ret;
+> >  	struct geni_i2c_dev *gi2c = dev_get_drvdata(dev);
+> >  
+> > -	disable_irq(gi2c->irq);
+> > +	if (gi2c->se_mode == FIFO_SE_DMA)
+> > +		disable_irq(gi2c->irq);
+> >  	ret = geni_se_resources_off(&gi2c->se);
+> >  	if (ret) {
+> >  		enable_irq(gi2c->irq);
+> > @@ -653,8 +862,41 @@ static int __maybe_unused geni_i2c_runtime_resume(struct device *dev)
+> >  	ret = geni_se_resources_on(&gi2c->se);
+> >  	if (ret)
+> >  		return ret;
+> > +	if (gi2c->se_mode == UNINITIALIZED) {
+> > +		int proto = geni_se_read_proto(&gi2c->se);
+> > +		u32 se_mode;
+> 
+> Please declare your variables at the top of the function.
+> 
+> > +
+> > +		if (unlikely(proto != GENI_SE_I2C)) {
+> 
+> If this was the case at probe time the driver would never have probed,
+> why has it changed?
+> 
+> This is not a fastpath, so skip the unlikely()
+> 
+> > +			dev_err(gi2c->se.dev, "Invalid proto %d\n", proto);
+> > +			geni_se_resources_off(&gi2c->se);
+> > +			return -ENXIO;
+> > +		}
+> > +
+> > +		se_mode = readl_relaxed(gi2c->se.base + GENI_IF_DISABLE_RO) &
+> > +				FIFO_IF_DISABLE;
+> 
+> se_mode would better be called "fifo_disabled" or perhaps logically
+> suited "gsi_only"?
+
+O think fifo_mode or just mode might be apt
+
+> 
+> Please skip the _relaxed
+
+yes
+
+> 
+> > +		if (se_mode) {
+> > +			gi2c->se_mode = GSI_ONLY;
+> > +			geni_se_select_mode(&gi2c->se, GENI_GPI_DMA);
+> > +			dev_dbg(gi2c->se.dev, "i2c GSI mode\n");
+> > +		} else {
+> > +			int gi2c_tx_depth = geni_se_get_tx_fifo_depth(&gi2c->se);
+> 
+> This variable has an unnecessarily long name.
+
+will shorten
+
+> 
+> > +
+> > +			gi2c->se_mode = FIFO_SE_DMA;
+> > +			gi2c->tx_wm = gi2c_tx_depth - 1;
+> > +			geni_se_init(&gi2c->se, gi2c->tx_wm, gi2c_tx_depth);
+> > +			geni_se_config_packing(&gi2c->se, BITS_PER_BYTE,
+> > +					       PACKING_BYTES_PW, true, true, true);
+> > +			qcom_geni_i2c_conf(gi2c);
+> > +			dev_dbg(gi2c->se.dev,
+> > +				"i2c fifo/se-dma mode. fifo depth:%d\n", gi2c_tx_depth);
+> > +		}
+> > +		dev_dbg(gi2c->se.dev, "i2c-%d: %s\n",
+> > +			gi2c->adap.nr, dev_name(gi2c->se.dev));
+> 
+> dev_dbg() already provides dev_name. What information does this debug
+> print actually try to communicate?
+
+not much am afraid, will update
+
+-- 
+~Vinod
