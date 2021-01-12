@@ -2,245 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C98D2F3798
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:49:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 951672F379A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391944AbhALRrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:47:48 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:58934 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391894AbhALRrr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:47:47 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id AD73B1C0B8F; Tue, 12 Jan 2021 18:47:04 +0100 (CET)
-Date:   Tue, 12 Jan 2021 18:47:04 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, kuninori.morimoto.gx@renesas.com,
-        peter.ujfalusi@ti.com, tony@atomide.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc:     "Arthur D." <spinal.by@gmail.com>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Sebastian Reichel <sre@kernel.org>
-Subject: ASoC: cpcap: Implement set_tdm_slot for voice call support
-Message-ID: <20210112174704.GA13496@duo.ucw.cz>
+        id S2404981AbhALRtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:49:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731303AbhALRtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 12:49:17 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93C2D23107;
+        Tue, 12 Jan 2021 17:48:36 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kzNmU-0072aN-89; Tue, 12 Jan 2021 17:48:34 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="M9NhX3UHpAaciwkO"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 12 Jan 2021 17:48:34 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Alexandru Elisei <alexandru.elisei@arm.com>
+Cc:     Eric Auger <eric.auger@redhat.com>, eric.auger.pro@gmail.com,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, drjones@redhat.com,
+        james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com, shuah@kernel.org, pbonzini@redhat.com
+Subject: Re: [PATCH 8/9] KVM: arm64: vgic-v3: Expose GICR_TYPER.Last for
+ userspace
+In-Reply-To: <fe0a3415-0c7b-be13-6438-89e82fe4c281@arm.com>
+References: <20201212185010.26579-1-eric.auger@redhat.com>
+ <20201212185010.26579-9-eric.auger@redhat.com>
+ <fe0a3415-0c7b-be13-6438-89e82fe4c281@arm.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <1a06be3153927f1051fcbc87f0e52e98@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: alexandru.elisei@arm.com, eric.auger@redhat.com, eric.auger.pro@gmail.com, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, drjones@redhat.com, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, shuah@kernel.org, pbonzini@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-01-12 17:28, Alexandru Elisei wrote:
+> Hi Eric,
+> 
+> On 12/12/20 6:50 PM, Eric Auger wrote:
+>> Commit 23bde34771f1 ("KVM: arm64: vgic-v3: Drop the
+>> reporting of GICR_TYPER.Last for userspace") temporarily fixed
+>> a bug identified when attempting to access the GICR_TYPER
+>> register before the redistributor region setting but dropped
+>> the support of the LAST bit. This patch restores its
+>> support (if the redistributor region was set) while keeping the
+>> code safe.
+> 
+> If I understand your patch correctly, it is possible for the 
+> GICR_TYPER.Last bit
+> to be transiently 1 if the register is accessed before all the 
+> redistributors
+> regions have been configured.
+> 
+> Arm IHI 0069F states that accesses to the GICR_TYPER register are RO. I 
+> haven't
+> found exactly what RO means (please point me to the definition if you 
+> find it in
+> the architecture!), but I assume it means read-only and I'm not sure 
+> how correct
+> (from an architectural point of view) it is for two subsequent reads of 
+> this
+> register to return different values. Maybe Marc can shed some light on 
+> this.
 
---M9NhX3UHpAaciwkO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+RO = Read-Only indeed. Not sure that's documented anywhere in the 
+architecture,
+but this is enough of a well known acronym that even the ARM ARM doesn't 
+feel
+the need to invent a new definition for it.
 
-=46rom: Tony Lindgren <tony@atomide.com>
-   =20
-ASoC: cpcap: Implement set_tdm_slot for voice call support
-   =20
-For using cpcap for voice calls, we need to route audio directly from
-the modem to cpcap for TDM (Time Division Multiplexing). The voice call
-is direct data between the modem and cpcap with no CPU involvment. In
-this mode, the cpcap related audio mixer controls work for the speaker
-selection and volume though.
+As for your concern, I don't think it is a problem to return different 
+values
+if the HW has changed in between. This may need to be documented though.
 
-To do this, we need to implement standard snd_soc_dai_set_tdm_slot()
-for cpcap. Then the modem codec driver can use snd_soc_dai_set_sysclk(),
-snd_soc_dai_set_fmt(), and snd_soc_dai_set_tdm_slot() to configure a
-voice call.
+Thanks,
 
-Let's add cpcap_voice_set_tdm_slot() for this, and cpcap_voice_call()
-helper to configure the additional registers needed for voice call.
-
-Let's also clear CPCAP_REG_VAUDIOC on init in case we have the bit for
-CPCAP_BIT_VAUDIO_MODE0 set on init.
-
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Pavel Machek <pavel@ucw.cz>
-
-
-diff --git a/sound/soc/codecs/cpcap.c b/sound/soc/codecs/cpcap.c
-index f046987ee4cd..e266d993ab2a 100644
---- a/sound/soc/codecs/cpcap.c
-+++ b/sound/soc/codecs/cpcap.c
-@@ -16,6 +16,14 @@
- #include <sound/soc.h>
- #include <sound/tlv.h>
-=20
-+/* Register 512 CPCAP_REG_VAUDIOC --- Audio Regulator and Bias Voltage */
-+#define CPCAP_BIT_AUDIO_LOW_PWR           6
-+#define CPCAP_BIT_AUD_LOWPWR_SPEED        5
-+#define CPCAP_BIT_VAUDIOPRISTBY           4
-+#define CPCAP_BIT_VAUDIO_MODE1            2
-+#define CPCAP_BIT_VAUDIO_MODE0            1
-+#define CPCAP_BIT_V_AUDIO_EN              0
-+
- /* Register 513 CPCAP_REG_CC     --- CODEC */
- #define CPCAP_BIT_CDC_CLK2                15
- #define CPCAP_BIT_CDC_CLK1                14
-@@ -221,6 +229,7 @@ struct cpcap_reg_info {
- };
-=20
- static const struct cpcap_reg_info cpcap_default_regs[] =3D {
-+	{ CPCAP_REG_VAUDIOC, 0x003F, 0x0000 },
- 	{ CPCAP_REG_CC, 0xFFFF, 0x0000 },
- 	{ CPCAP_REG_CC, 0xFFFF, 0x0000 },
- 	{ CPCAP_REG_CDI, 0xBFFF, 0x0000 },
-@@ -1371,8 +1380,121 @@ static int cpcap_voice_set_dai_fmt(struct snd_soc_d=
-ai *codec_dai,
- 	return 0;
- }
-=20
--static int cpcap_voice_set_mute(struct snd_soc_dai *dai,
--				int mute, int direction)
-+
-+/*
-+ * Configure codec for voice call if requested.
-+ *
-+ * We can configure most with snd_soc_dai_set_sysclk(), snd_soc_dai_set_fm=
-t()
-+ * and snd_soc_dai_set_tdm_slot(). This function configures the rest of the
-+ * cpcap related hardware as CPU is not involved in the voice call.
-+ */
-+static int cpcap_voice_call(struct cpcap_audio *cpcap, struct snd_soc_dai =
-*dai,
-+			    bool voice_call)
-+{
-+	int mask, err;
-+
-+	/* Modem to codec VAUDIO_MODE1 */
-+	mask =3D BIT(CPCAP_BIT_VAUDIO_MODE1);
-+	err =3D regmap_update_bits(cpcap->regmap, CPCAP_REG_VAUDIOC,
-+				 mask, voice_call ? mask : 0);
-+	if (err)
-+		return err;
-+
-+	/* Clear MIC1_MUX for call */
-+	mask =3D BIT(CPCAP_BIT_MIC1_MUX);
-+	err =3D regmap_update_bits(cpcap->regmap, CPCAP_REG_TXI,
-+				 mask, voice_call ? 0 : mask);
-+	if (err)
-+		return err;
-+
-+	/* Set MIC2_MUX for call */
-+	mask =3D BIT(CPCAP_BIT_MB_ON1L) | BIT(CPCAP_BIT_MB_ON1R) |
-+		BIT(CPCAP_BIT_MIC2_MUX) | BIT(CPCAP_BIT_MIC2_PGA_EN);
-+	err =3D regmap_update_bits(cpcap->regmap, CPCAP_REG_TXI,
-+				 mask, voice_call ? mask : 0);
-+	if (err)
-+		return err;
-+
-+	/* Enable LDSP for call */
-+	mask =3D BIT(CPCAP_BIT_A2_LDSP_L_EN) | BIT(CPCAP_BIT_A2_LDSP_R_EN);
-+	err =3D regmap_update_bits(cpcap->regmap, CPCAP_REG_RXOA,
-+				 mask, voice_call ? mask : 0);
-+	if (err)
-+		return err;
-+
-+	/* Enable CPCAP_BIT_PGA_CDC_EN for call */
-+	mask =3D BIT(CPCAP_BIT_PGA_CDC_EN);
-+	err =3D regmap_update_bits(cpcap->regmap, CPCAP_REG_RXCOA,
-+				 mask, voice_call ? mask : 0);
-+	if (err)
-+		return err;
-+
-+	/* Unmute voice for call */
-+	if (dai) {
-+		err =3D snd_soc_dai_digital_mute(dai, !voice_call,
-+					       SNDRV_PCM_STREAM_PLAYBACK);
-+		if (err)
-+			return err;
-+	}
-+
-+	/* Set modem to codec mic CDC and HPF for call */
-+	mask =3D BIT(CPCAP_BIT_MIC2_CDC_EN) | BIT(CPCAP_BIT_CDC_EN_RX) |
-+	       BIT(CPCAP_BIT_AUDOHPF_1) | BIT(CPCAP_BIT_AUDOHPF_0) |
-+	       BIT(CPCAP_BIT_AUDIHPF_1) | BIT(CPCAP_BIT_AUDIHPF_0);
-+	err =3D regmap_update_bits(cpcap->regmap, CPCAP_REG_CC,
-+				 mask, voice_call ? mask : 0);
-+	if (err)
-+		return err;
-+
-+	/* Enable modem to codec CDC for call*/
-+	mask =3D BIT(CPCAP_BIT_CDC_CLK_EN);
-+	err =3D regmap_update_bits(cpcap->regmap, CPCAP_REG_CDI,
-+				 mask, voice_call ? mask : 0);
-+
-+	return err;
-+}
-+
-+static int cpcap_voice_set_tdm_slot(struct snd_soc_dai *dai,
-+				    unsigned int tx_mask, unsigned int rx_mask,
-+				    int slots, int slot_width)
-+{
-+	struct snd_soc_component *component =3D dai->component;
-+	struct cpcap_audio *cpcap =3D snd_soc_component_get_drvdata(component);
-+	int err, ts_mask, mask;
-+	bool voice_call;
-+
-+	/*
-+	 * Primitive test for voice call, probably needs more checks
-+	 * later on for 16-bit calls detected, Bluetooth headset etc.
-+	 */
-+	if (tx_mask =3D=3D 0 && rx_mask =3D=3D 1 && slot_width =3D=3D 8)
-+		voice_call =3D true;
-+	else
-+		voice_call =3D false;
-+
-+	ts_mask =3D 0x7 << CPCAP_BIT_MIC2_TIMESLOT0;
-+	ts_mask |=3D 0x7 << CPCAP_BIT_MIC1_RX_TIMESLOT0;
-+
-+	mask =3D (tx_mask & 0x7) << CPCAP_BIT_MIC2_TIMESLOT0;
-+	mask |=3D (rx_mask & 0x7) << CPCAP_BIT_MIC1_RX_TIMESLOT0;
-+
-+	err =3D regmap_update_bits(cpcap->regmap, CPCAP_REG_CDI,
-+				 ts_mask, mask);
-+	if (err)
-+		return err;
-+
-+	err =3D cpcap_set_samprate(cpcap, CPCAP_DAI_VOICE, slot_width * 1000);
-+	if (err)
-+		return err;
-+
-+	err =3D cpcap_voice_call(cpcap, dai, voice_call);
-+	if (err)
-+		return err;
-+
-+	return 0;
-+}
-+
-+static int cpcap_voice_set_mute(struct snd_soc_dai *dai, int mute, int dir=
-ection)
- {
- 	struct snd_soc_component *component =3D dai->component;
- 	struct cpcap_audio *cpcap =3D snd_soc_component_get_drvdata(component);
-@@ -1393,6 +1515,7 @@ static const struct snd_soc_dai_ops cpcap_dai_voice_o=
-ps =3D {
- 	.hw_params	=3D cpcap_voice_hw_params,
- 	.set_sysclk	=3D cpcap_voice_set_dai_sysclk,
- 	.set_fmt	=3D cpcap_voice_set_dai_fmt,
-+	.set_tdm_slot	=3D cpcap_voice_set_tdm_slot,
- 	.mute_stream	=3D cpcap_voice_set_mute,
- 	.no_capture_mute =3D 1,
- };
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---M9NhX3UHpAaciwkO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX/3gmAAKCRAw5/Bqldv6
-8kPjAKDAGEAWqE4nY+zW6WpziwRvYNzRoACghioNh5t5lQB6Biklf82E9uXkong=
-=tA+m
------END PGP SIGNATURE-----
-
---M9NhX3UHpAaciwkO--
+        M.
+-- 
+Jazz is not dead. It just smells funny...
