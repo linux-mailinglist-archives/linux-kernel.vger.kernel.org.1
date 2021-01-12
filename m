@@ -2,74 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FBC2F2666
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 191E22F2667
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731131AbhALCs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 21:48:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21668 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730870AbhALCsZ (ORCPT
+        id S1731842AbhALCun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 21:50:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728792AbhALCum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 21:48:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610419619;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Nd9vrsLoQ4eNomWd4y4aPcW+GO4/2gg4PZxpPi0r3GU=;
-        b=QsM8d8MtzO7Sx/2nAD5EpuhVfTEWkGBinP/FK671elokGZyZm7+otbLWUoESIwzhrTPPg8
-        nwxRz/HssUFW8xrWAy9dn6ppDpaa4s79T92ieUeKRWR0OjqVtHLOcomMKhXs81NCObgDCW
-        3GsEoBEuWuL77LBzkDU8ngLEg8ZSwOo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-360-FNMRMh49NGeqp52gcwiGEw-1; Mon, 11 Jan 2021 21:46:55 -0500
-X-MC-Unique: FNMRMh49NGeqp52gcwiGEw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9B14F107ACF8;
-        Tue, 12 Jan 2021 02:46:54 +0000 (UTC)
-Received: from laptop.redhat.com (ovpn-12-95.pek2.redhat.com [10.72.12.95])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0F71A5B693;
-        Tue, 12 Jan 2021 02:46:51 +0000 (UTC)
-From:   Cindy Lu <lulu@redhat.com>
-To:     lulu@redhat.com, jasowang@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        lingshan.zhu@intel.com
-Subject: [PATCH v1] vhost_vdpa: fix the problem in vhost_vdpa_set_config_call
-Date:   Tue, 12 Jan 2021 10:46:48 +0800
-Message-Id: <20210112024648.31428-1-lulu@redhat.com>
+        Mon, 11 Jan 2021 21:50:42 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7887EC061575
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 18:50:02 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id g15so451604pgu.9
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 18:50:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iYrwCYsagNf39CxLVWCCee16HkC5pk45kJBR8IYUxS8=;
+        b=dIEuJh9pu9Icr+a0xL07U3txvhKDA5pUWOhB8jZAoJmVyYZfU7oQrLyvDA8YB8enNU
+         ZXFr1MLsKXJOF5bUo18cgYmSCHbF5RuahePH125T0pdODoArFgTc8oecYefGUQgjiK+V
+         iHajL3dmuG6Vwr2aFKt+1t0TvbF/ULYcOaVKLDjUQtpTureZnlCykl2kgMgPLC3MhiyG
+         ayKFcjJHaOA4IzectJbJxa23tWssyoNBWy4tjQk/FhJyIFnIG4F+y3yt87ARJzuYsRFk
+         UcNd2/q/U3yJ3X+ybEcF+pyrBcTV5jXWQx8jRGRMpstP/61Q5AJGNWKpC8Ysnsl5ybeA
+         +sIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iYrwCYsagNf39CxLVWCCee16HkC5pk45kJBR8IYUxS8=;
+        b=LtAr2qangHKPfAZx7AZgAP5TI8BjbvtzSz79WJDKnkNKo6uS9OJtBy8SyytKiLc1sA
+         PuJCwNUOKznPNs2BqKaekX4LXK3bs8qW1ac8wn/0tBWGOtZ3DIcpZ0rPJTtRMSYW41Km
+         KG0+fgP8Lhq7U+aSOpuYaeWqXOfjPVDT2IjIadKMj6advpujgUpsZyL1aFyVL1CIKRMA
+         seFae5YZqdVciJh4vHENOt6IrkVc5380vwdUizcHzTRfM5/6Mw4BIGC/bdONEcbNrWG7
+         eaSdeDjnDUw0OtoN1L/StsilIg+Lg7nqY+Q5XvmumvtDFY+pYKcaKMF4Tqlg8idSMHCz
+         +lSA==
+X-Gm-Message-State: AOAM5335aZ47AzSn6+VOWAkj0WCGV8LTPLXrmDjl2n2YWDvcJnV3gcwj
+        iNrUmrB0U4w7U0h9Ig5+wBBqb6Y2SXzQkA==
+X-Google-Smtp-Source: ABdhPJxAX1ODZKUoovFKrQW6rE20OQhp7bU3t37Iqv9IEoxkYczTf1H8GRCG5ezXzTqTAs2bdSwC+Q==
+X-Received: by 2002:a63:ca51:: with SMTP id o17mr2475576pgi.314.1610419802078;
+        Mon, 11 Jan 2021 18:50:02 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:3e79])
+        by smtp.gmail.com with ESMTPSA id a136sm1059219pfd.149.2021.01.11.18.49.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 18:50:00 -0800 (PST)
+Date:   Mon, 11 Jan 2021 18:49:58 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Subject: Re: [PATCHv6 0/4] perf: Add mmap2 build id support
+Message-ID: <20210112024958.4utm7ijkpluu3g36@ast-mbp>
+References: <20210111213823.1249420-1-jolsa@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111213823.1249420-1-jolsa@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-in vhost_vdpa_set_config_call, the cb.private should be vhost_vdpa.
-this cb.private will finally use in vhost_vdpa_config_cb as
-vhost_vdpa.Fix this issue
+On Mon, Jan 11, 2021 at 10:38:19PM +0100, Jiri Olsa wrote:
+> hi,
+> adding the support to have buildid stored in mmap2 event,
+> so we can bypass the final perf record hunt on build ids.
+> 
+> This patchset allows perf to record build ID in mmap2 event,
+> and adds perf tooling to store/download binaries to .debug
+> cache based on these build IDs.
+> 
+> Note that the build id retrieval code is stolen from bpf
+> code, where it's been used (together with file offsets)
+> to replace IPs in user space stack traces. It's now added
+> under lib directory.
+> 
+> v6 changes:
+>   - last 4 patches rebased Arnaldo's perf/core
 
-Signed-off-by: Cindy Lu <lulu@redhat.com>
----
- drivers/vhost/vdpa.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-index ef688c8c0e0e..3fbb9c1f49da 100644
---- a/drivers/vhost/vdpa.c
-+++ b/drivers/vhost/vdpa.c
-@@ -319,7 +319,7 @@ static long vhost_vdpa_set_config_call(struct vhost_vdpa *v, u32 __user *argp)
- 	struct eventfd_ctx *ctx;
- 
- 	cb.callback = vhost_vdpa_config_cb;
--	cb.private = v->vdpa;
-+	cb.private = v;
- 	if (copy_from_user(&fd, argp, sizeof(fd)))
- 		return  -EFAULT;
- 
--- 
-2.21.3
-
+There were no issues with v5 as far as I can remember.
+This is just a resubmit to get it landed ?
+Last time we couldn't quite figure out which tree to go through.
+I think the recommend path was to go via bpf-next.
+Is it still the case?
