@@ -2,65 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B10502F2DBA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:19:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A092F2DBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:19:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726259AbhALLRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 06:17:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39480 "EHLO mx2.suse.de"
+        id S1726974AbhALLSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:18:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39540 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725885AbhALLRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:17:48 -0500
+        id S1726506AbhALLSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 06:18:00 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610450233; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=97KhOYscrblZbMeomBN2OsfHkBm7iceqQ0+tB9TjaiY=;
+        b=UXZKc0r24JAjpfmJUKxmocX34zbM6DppGMqDoKb7eTZqIyVfS/GH/oijAcnD2S2tdqM07q
+        iWKhnvU0aGW9gGLvuDQ8lTe+kHAHq5kWEfBFDFS71YHN1/2JZOzGFnx10P4kGP9Cc8WnHS
+        hkmrILgXO3PFXjfzdJ5z6XAPnfnw8hA=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A69F5AD1E;
-        Tue, 12 Jan 2021 11:17:07 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 12:17:05 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     akpm@linux-foundation.org, mhocko@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz,
-        pasha.tatashin@soleen.com
-Subject: Re: [PATCH 1/5] mm: Introduce ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
-Message-ID: <20210112111700.GA13374@linux>
-References: <20201217130758.11565-1-osalvador@suse.de>
- <20201217130758.11565-2-osalvador@suse.de>
- <21932014-3027-8ad9-2140-f63500c641d7@redhat.com>
- <20210112072643.GA10774@linux>
- <feef406c-105c-138a-b8af-345684876e25@redhat.com>
+        by mx2.suse.de (Postfix) with ESMTP id 55111B7F8;
+        Tue, 12 Jan 2021 11:17:13 +0000 (UTC)
+Date:   Tue, 12 Jan 2021 12:17:12 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v3 3/6] mm: hugetlb: fix a race between
+ freeing and dissolving the page
+Message-ID: <20210112111712.GN22493@dhcp22.suse.cz>
+References: <20210110124017.86750-1-songmuchun@bytedance.com>
+ <20210110124017.86750-4-songmuchun@bytedance.com>
+ <20210112100213.GK22493@dhcp22.suse.cz>
+ <CAMZfGtVJVsuL39owkT+Sp8A7ywXJLhbiQ6zYgL9FKhqSeAvy=w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <feef406c-105c-138a-b8af-345684876e25@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAMZfGtVJVsuL39owkT+Sp8A7ywXJLhbiQ6zYgL9FKhqSeAvy=w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 11:12:30AM +0100, David Hildenbrand wrote:
-> On 12.01.21 08:26, Oscar Salvador wrote:
-> > You mean introducing only mm/Kconfig change in this patch, and then
-> > arch/*/Kconfig changes in separate patches at the end of the series?
+On Tue 12-01-21 18:13:02, Muchun Song wrote:
+> On Tue, Jan 12, 2021 at 6:02 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Sun 10-01-21 20:40:14, Muchun Song wrote:
+> > [...]
+> > > @@ -1770,6 +1788,14 @@ int dissolve_free_huge_page(struct page *page)
+> > >               int nid = page_to_nid(head);
+> > >               if (h->free_huge_pages - h->resv_huge_pages == 0)
+> > >                       goto out;
+> > > +
+> > > +             /*
+> > > +              * We should make sure that the page is already on the free list
+> > > +              * when it is dissolved.
+> > > +              */
+> > > +             if (unlikely(!PageHugeFreed(head)))
+> > > +                     goto out;
+> > > +
+> >
+> > Do you really want to report EBUSY in this case? This doesn't make much
+> > sense to me TBH. I believe you want to return 0 same as when you race
+> > and the page is no longer PageHuge.
 > 
-> Yeah, or squashing the leftovers of this patch (3 LOC) into patch #2.
+> Return 0 is wrong. Because the page is not freed to the buddy allocator.
+> IIUC, dissolve_free_huge_page returns 0 when the page is already freed
+> to the buddy allocator. Right?
 
-Ok, makes sense.
-
-> > I can certainly do that, not sure how much will help with the review,
-> > but it might help when bisecting.
-> 
-> It's usually nicer to explicitly enable stuff per architecture, stating
-> why it works on that architecture (and in the best case, even was
-> tested!). :)
-
-Fine by me.
-I will prepare another re-spin with that in mind then.
-
-It would be great to have some feedback on patch#2 before that (in case you find
-some time ;-).
-
-Thanks!
-
+0 is return when the page is either dissolved or it doesn't need
+dissolving. If there is a race with somebody else freeing the page then
+there is nothing to dissolve. Under which condition it makes sense to
+report the failure and/or retry dissolving?
 -- 
-Oscar Salvador
-SUSE L3
+Michal Hocko
+SUSE Labs
