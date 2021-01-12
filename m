@@ -2,121 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2B92F3DBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C30F32F3DB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:44:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731812AbhALVpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:45:07 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:42051 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388340AbhALVo7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 16:44:59 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 10CLhUgC011740
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 16:43:31 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 8A66015C3453; Tue, 12 Jan 2021 16:43:30 -0500 (EST)
-Date:   Tue, 12 Jan 2021 16:43:30 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        id S2388817AbhALVo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 16:44:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393396AbhALVoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 16:44:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7203B23125;
+        Tue, 12 Jan 2021 21:43:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610487824;
+        bh=fUc8zKy8QlIlGEn9mAZ3xsP8Aqf0/jWjU6oHB+NFKLk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c05oLJZEd+FTQqLS2Eo2hfjCAn+G7eZBr7dKYa2riIT7G3/vBgp4ZcsKCHc0Lra1y
+         8tLY3R1LmgQhja73U7CL6SuyGpVBTADjcIwpbA446H40FAhv5tbgOYxGnQ04qwftMs
+         JvGV0Bz5ZbjKf8H4Mj7NOtogrhbFLMrkLShWm8JfXuZGrVu4Q68Hl2WwhKsyRZjhrv
+         8olhyunFuPBSprrKUicpL3M4iYfP9jKbXyzTDM9NnpM8puXTyLIN9LE6cnfYzwq2BZ
+         GHADmqR6C8LEm5jNT4fdY474RwN7wo8jMwipU+LnbbTQZob5VpEIdtTi469g+pLQJG
+         eG85eCwVIFG+A==
+Date:   Tue, 12 Jan 2021 21:43:38 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Yu Zhao <yuzhao@google.com>,
+        Laurent Dufour <ldufour@linux.vnet.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: Re: Malicious fs images was Re: ext4 regression in v5.9-rc2 from
- e7bfb5c9bb3d on ro fs with overlapped bitmaps
-Message-ID: <X/4YArRJMgGjSyZY@mit.edu>
-References: <20201006031834.GA5797@mit.edu>
- <20201006050306.GA8098@localhost>
- <20201006133533.GC5797@mit.edu>
- <20201007080304.GB1112@localhost>
- <20201007143211.GA235506@mit.edu>
- <20201007201424.GB15049@localhost>
- <20201008021017.GD235506@mit.edu>
- <20201008222259.GA45658@localhost>
- <20201009143732.GJ235506@mit.edu>
- <20210110184101.GA4625@amd>
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>, surenb@google.com
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <20210112214337.GA10434@willie-the-truck>
+References: <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
+ <CAHk-=wj=CcOHQpG0cUGfoMCt2=Uaifpqq-p-mMOmW8XmrBn4fQ@mail.gmail.com>
+ <20210105153727.GK3040@hirez.programming.kicks-ass.net>
+ <bfb1cbe6-a705-469d-c95a-776624817e33@codeaurora.org>
+ <0201238b-e716-2a3c-e9ea-d5294ff77525@linux.vnet.ibm.com>
+ <X/3VE64nr91WCtuM@hirez.programming.kicks-ass.net>
+ <ec912505-ed4d-a45d-2ed4-7586919da4de@linux.vnet.ibm.com>
+ <C7D5A74C-25BF-458A-AAD9-61E484B9F225@gmail.com>
+ <X/3+6ZnRCNOwhjGT@google.com>
+ <2C7AE23B-ACA3-4D55-A907-AF781C5608F0@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210110184101.GA4625@amd>
+In-Reply-To: <2C7AE23B-ACA3-4D55-A907-AF781C5608F0@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 07:41:02PM +0100, Pavel Machek wrote:
-> > >From our perspective (and Darrick and I discussed this on this week's
-> > ext4 video conference, so it represents the ext4 and xfs maintainer's
-> > position) is that the file system format is different.  First, the
-> > on-disk format is not an ABI, and it is several orders more complex
-> > than a system call interface.  Second, we make no guarantees about
-> > what the file system created by malicious tools will do.  For example,
-> > XFS developers reject bug reports from file system fuzzers, because
-> > the v5 format has CRC checks, so randomly corrupted file systems won't
-> > crash the kernel.  Yes, this doesn't protect against maliciously
-> > created file systems where the attacker makes sure the checksums are
-> > valid, but only crazy people who think containers are just as secure
+On Tue, Jan 12, 2021 at 12:38:34PM -0800, Nadav Amit wrote:
+> > On Jan 12, 2021, at 11:56 AM, Yu Zhao <yuzhao@google.com> wrote:
+> > On Tue, Jan 12, 2021 at 11:15:43AM -0800, Nadav Amit wrote:
+> >> I will send an RFC soon for per-table deferred TLB flushes tracking.
+> >> The basic idea is to save a generation in the page-struct that tracks
+> >> when deferred PTE change took place, and track whenever a TLB flush
+> >> completed. In addition, other users - such as mprotect - would use
+> >> the tlb_gather interface.
+> >> 
+> >> Unfortunately, due to limited space in page-struct this would only
+> >> be possible for 64-bit (and my implementation is only for x86-64).
+> > 
+> > I don't want to discourage you but I don't think this would end up
+> > well. PPC doesn't necessarily follow one-page-struct-per-table rule,
+> > and I've run into problems with this before while trying to do
+> > something similar.
 > 
-> Well, it is not just containers. It is also USB sticks. And people who
-> believe secure boot is good idea and try to protect kernel against
-> root. And crazy people who encrypt pointers in dmesg. And...
+> Discourage, discourage. Better now than later.
 > 
-> People want to use USB sticks from time to time. And while I
-> understand XFS is so complex it is unsuitable for such use, I'd still
-> expect bugs to be fixed there.
-> 
-> I hope VFAT to be safe to mount, because that is very common on USB.
-> 
-> I also hope ext2/3/4 is safe in that regard.
+> It will be relatively easy to extend the scheme to be per-VMA instead of
+> per-table for architectures that prefer it this way. It does require
+> TLB-generation tracking though, which Andy only implemented for x86, so I
+> will focus on x86-64 right now.
 
-Ext4 will fix file system fuzzing attack bugs on a best efforts basis.
-That is, when I have time, I've been known to stay up late to bugs
-reported by fuzzers.  I hope ext4 is safe, but I'm not going to make
-any guarantees that it is Bug-Free(tm).  If you want to trust it in
-that way, you do so at your risk.
+Can you remind me of what we're missing on arm64 in this area, please? I'm
+happy to help get this up and running once you have something I can build
+on.
 
-As far as VFS is concerned, I'm not aware of anyone who has been
-working on fuzz-proofing VFAT, and looking at the Vault 2016 for
-"American Fuzzy Lop"[1] while VFAT wasn't specifically tested, for the
-vast majority of file systems, the "time to first bug" typically
-ranged from seconds to minutes, with the exception of XFS and ext4
-(where it was roughly 2 hours).  The specific bugs which triggered in
-the 2016 AFL presentation have been fixed, at least for the file
-systems which get regular maintainer attention, but this is why I try
-to caution people not to count on file systems being proof against
-maliciously formatted images.
-
-[1] https://events.static.linuxfound.org/sites/events/files/slides/AFL%20filesystem%20fuzzing,%20Vault%202016_0.pdf
-
-> Anyway it would be nice to have documentation explaining this. If I'm
-> wrong about VFAT being safe, it would be good to know, and I guess
-> many will be surprised that XFS is using different rules.
-
-Using USB sticks is fine, so long as you trust the provenance of the
-drive.  If you take a random USB stick that is handed to you by
-someone whom you don't trust implicitly, or worse, that you picked up
-abandoned on the sidewalk, there have been plenty of articles which
-describe why this is a REALLY BAD IDEA, and even if you ignore
-OS-level vuleranbilities, there are also firwmare and hardware based
-vulerabilities that would put your computer at risk.  See [2] and [3]
-for more details; there's a reason why I've visited at least one
-financial institution where they put epoxy in USB ports to prevent
-clueless workers from potentially compromising the bank's computers.
-
-[2] https://www.redteamsecure.com/blog/usb-drop-attacks-the-danger-of-lost-and-found-thumb-drives/
-[3] https://www.bleepingcomputer.com/news/security/heres-a-list-of-29-different-types-of-usb-attacks/
-
-As far as documentation is concerned, how far should we go?  Should
-there be a warning in the execve(2) system call man page that you
-shouldn't download random binaries from the network and execute them?  :-)
-
-Cheers,
-
-					- Ted
+Will
