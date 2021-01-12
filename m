@@ -2,161 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E12712F3826
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD3F2F384C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:17:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406390AbhALSM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 13:12:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406360AbhALSMz (ORCPT
+        id S2406670AbhALSOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 13:14:53 -0500
+Received: from smtprelay0018.hostedemail.com ([216.40.44.18]:50280 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404683AbhALSOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 13:12:55 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D89C0617A2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:12:15 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id 190so2753543wmz.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:12:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=smXyl8aMoZOEr9J+WPP+DzU0ZsazRkPgKalBFLKErx4=;
-        b=pIKsGNS7XHejO5gTe8wbn24/35SeJMW+SvSJ/oeKw17yifkmaFlfbY9+v66BJ7um5N
-         jU+IZrFDd6idbjz3QMSPU1pUH3f9jUl95GJRt8W0v+LVJIO+2jf7snXL3mAKC9L//EMK
-         BnBogYSBWvwjxmqPmRhwtpjK/wFUSLWKW4v7cI9+lddzYKjqxtV51WsYOKjn1kJb7Y8i
-         KuYCguZi4+XAkVMo8O93yjXREx8rmKPnAG1WfT9kpAGQOwTBfmpug7TdUsfvnCpc8zVm
-         40fWFaxeCpSkrVd746bx3+hRw39BqL48JDjWwBi8+2hnQtppjAqXxe/1drWSKIMgYa/Z
-         FwdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=smXyl8aMoZOEr9J+WPP+DzU0ZsazRkPgKalBFLKErx4=;
-        b=gx8tnCrCjQ2JMTsbv22y7Hbtqd9omjvLVnKr3+pXuIsJsS4RfhYlJh986nDjcQ5dyH
-         n/tK1pZqJSqwSw1bR++i25EWjHX4u/nyjJoYPFCSMxOkJR1oXnqYGvyLpl+RbFMqc9fU
-         RR+/SGJN5ljHFcY137SQ5T06q3izkwsvEqXaIMrL0467ENmizuDOorK3toG5t1hJeD6C
-         38hamzI3FHtQhDRQidskFXVCH8TOaEfrJrTrHG2AWABGVYNcdPAWHJyZul8eR5VjYM8A
-         vRcW3WL0eN3jh79gU0Z0OVynjsoPIdCZoJkR8kURyCMii2jFvPm/SefZrngyHIF6Zgnj
-         JgpA==
-X-Gm-Message-State: AOAM531uEhTi2KIhvY0SqoLzC+0bVN/W7jkQuPOQdUbbCOfOJXoszt3C
-        8nVpeXCu/mlib78+7JiHMOqs/ET9dMSkfphHDdwPcw==
-X-Google-Smtp-Source: ABdhPJz5caMoBvGVsM71MxbmEH8PEzgl9neSsmGPzQ4gGQozZ+H8IpOItvaPYAYpiMSgpFD+C1qTg+cErr0BdINtfyU=
-X-Received: by 2002:a1c:4e0a:: with SMTP id g10mr502029wmh.88.1610475134449;
- Tue, 12 Jan 2021 10:12:14 -0800 (PST)
+        Tue, 12 Jan 2021 13:14:52 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 06BA2100E7B42;
+        Tue, 12 Jan 2021 18:14:11 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:541:800:960:968:973:988:989:1260:1311:1314:1345:1437:1515:1534:1541:1711:1730:1747:1777:1792:2198:2199:2393:2559:2562:3138:3139:3140:3141:3142:3352:3865:3870:4250:4321:5007:6119:6261:7807:9592:10004:10848:11026:11232:11473:11658:11914:12043:12297:12438:12555:12895:13069:13311:13357:13894:14096:14181:14384:14394:14721:21067:21080:21220:21627:21990:30030:30054:30055:30080,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: veil79_2b0dccb27517
+X-Filterd-Recvd-Size: 1934
+Received: from joe-laptop.perches.com (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf17.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 12 Jan 2021 18:14:09 +0000 (UTC)
+From:   Joe Perches <joe@perches.com>
+To:     Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: mpt3sas: Again output non-intel branding
+Date:   Tue, 12 Jan 2021 10:14:07 -0800
+Message-Id: <0d7a6df3210f114db1caba414b2fb9c864ee8612.1610475094.git.joe@perches.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210111170622.2613577-1-surenb@google.com> <20210112074629.GG22493@dhcp22.suse.cz>
-In-Reply-To: <20210112074629.GG22493@dhcp22.suse.cz>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 12 Jan 2021 10:12:03 -0800
-Message-ID: <CAJuCfpHazLXJ1rpJQ+w9=8-O==rzz3yEVuVtSn-sYMS+a3FoXQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] mm/madvise: replace ptrace attach requirement for process_madvise
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
-        Tim Murray <timmurray@google.com>,
-        linux-mm <linux-mm@kvack.org>, selinux@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>,
-        Oleg Nesterov <oleg@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 11:46 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 11-01-21 09:06:22, Suren Baghdasaryan wrote:
-> > process_madvise currently requires ptrace attach capability.
-> > PTRACE_MODE_ATTACH gives one process complete control over another
-> > process. It effectively removes the security boundary between the
-> > two processes (in one direction). Granting ptrace attach capability
-> > even to a system process is considered dangerous since it creates an
-> > attack surface. This severely limits the usage of this API.
-> > The operations process_madvise can perform do not affect the correctness
-> > of the operation of the target process; they only affect where the data
-> > is physically located (and therefore, how fast it can be accessed).
->
-> Yes it doesn't influence the correctness but it is still a very
-> sensitive operation because it can allow a targeted side channel timing
-> attacks so we should be really careful.
+commit 989e43c7ec34 ("mpt3sas: Added OEM Gen2 PnP ID branding names")
+consolidated individual functions for OEM branding into a single function
+but left a test for intel only at the top so no other vendor branding
+was output.  Remove the test.
 
-Sorry, I missed this comment in my answer. Possibility of affecting
-the target's performance including side channel attack is why we
-require CAP_SYS_NICE.
+Signed-off-by: Joe Perches <joe@perches.com>
+---
 
->
-> > What we want is the ability for one process to influence another process
-> > in order to optimize performance across the entire system while leaving
-> > the security boundary intact.
-> > Replace PTRACE_MODE_ATTACH with a combination of PTRACE_MODE_READ
-> > and CAP_SYS_NICE. PTRACE_MODE_READ to prevent leaking ASLR metadata
-> > and CAP_SYS_NICE for influencing process performance.
->
-> I have to say that ptrace modes are rather obscure to me. So I cannot
-> really judge whether MODE_READ is sufficient. My understanding has
-> always been that this is requred to RO access to the address space. But
-> this operation clearly has a visible side effect. Do we have any actual
-> documentation for the existing modes?
->
-> I would be really curious to hear from Jann and Oleg (now Cced).
->
-> Is CAP_SYS_NICE requirement really necessary?
->
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > Acked-by: Minchan Kim <minchan@kernel.org>
-> > Acked-by: David Rientjes <rientjes@google.com>
-> > ---
-> >  mm/madvise.c | 13 ++++++++++++-
-> >  1 file changed, 12 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/mm/madvise.c b/mm/madvise.c
-> > index 6a660858784b..a9bcd16b5d95 100644
-> > --- a/mm/madvise.c
-> > +++ b/mm/madvise.c
-> > @@ -1197,12 +1197,22 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
-> >               goto release_task;
-> >       }
-> >
-> > -     mm = mm_access(task, PTRACE_MODE_ATTACH_FSCREDS);
-> > +     /* Require PTRACE_MODE_READ to avoid leaking ASLR metadata. */
-> > +     mm = mm_access(task, PTRACE_MODE_READ_FSCREDS);
-> >       if (IS_ERR_OR_NULL(mm)) {
-> >               ret = IS_ERR(mm) ? PTR_ERR(mm) : -ESRCH;
-> >               goto release_task;
-> >       }
-> >
-> > +     /*
-> > +      * Require CAP_SYS_NICE for influencing process performance. Note that
-> > +      * only non-destructive hints are currently supported.
-> > +      */
-> > +     if (!capable(CAP_SYS_NICE)) {
-> > +             ret = -EPERM;
-> > +             goto release_mm;
-> > +     }
-> > +
-> >       total_len = iov_iter_count(&iter);
-> >
-> >       while (iov_iter_count(&iter)) {
-> > @@ -1217,6 +1227,7 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const struct iovec __user *, vec,
-> >       if (ret == 0)
-> >               ret = total_len - iov_iter_count(&iter);
-> >
-> > +release_mm:
-> >       mmput(mm);
-> >  release_task:
-> >       put_task_struct(task);
-> > --
-> > 2.30.0.284.gd98b1dd5eaa7-goog
-> >
->
-> --
-> Michal Hocko
-> SUSE Labs
+If no one noticed in the last 5 years, maybe the whole branding output
+should be deleted instead...
+
+ drivers/scsi/mpt3sas/mpt3sas_base.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
+index 1ffed396d91f..2faea35806b2 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_base.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
+@@ -4195,9 +4195,6 @@ _base_display_OEMs_branding(struct MPT3SAS_ADAPTER *ioc)
+ 	const char *b = NULL;	/* brand */
+ 	const char *v = NULL;	/* vendor */
+ 
+-	if (ioc->pdev->subsystem_vendor != PCI_VENDOR_ID_INTEL)
+-		return;
+-
+ 	switch (ioc->pdev->subsystem_vendor) {
+ 	case PCI_VENDOR_ID_INTEL:
+ 		switch (ioc->pdev->device) {
+-- 
+2.30.0
+
