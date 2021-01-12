@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A702F3526
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:13:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0E62F3562
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:21:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392565AbhALQMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:12:49 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:1791 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392470AbhALQMs (ORCPT
+        id S2406234AbhALQQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:16:46 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:56788 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406204AbhALQQl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:12:48 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ffdca580002>; Tue, 12 Jan 2021 08:12:08 -0800
-Received: from [10.25.100.239] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 12 Jan
- 2021 16:12:05 +0000
-Subject: Re: [PATCH] dt-bindings: Remove plain text OF graph binding
-To:     Rob Herring <robh@kernel.org>, <devicetree@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-References: <20210112154631.406250-1-robh@kernel.org>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <67a0141f-569c-9fce-d21e-4de41baeb8d9@nvidia.com>
-Date:   Tue, 12 Jan 2021 21:41:55 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Tue, 12 Jan 2021 11:16:41 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CGFYtd107553;
+        Tue, 12 Jan 2021 16:15:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=AzqooBRwBbnJpNIiQ68tS4k3MhKCCUe3iSBIYcm5k0w=;
+ b=gvfT2IRBq7eSbzKxK/WkYO0jeyMJPM2IXkdW4LaPLacWXmt+R8VfAJkiPApi81ExazZT
+ stANLCjUvPflqsvE1hHAO0bHg+Qxj65tHOYP0QuJs4gQbN1J03IbzEmFPiZLW6GzyTmC
+ apouHXweIxlZbgimWuOOWOstmN+ME5IY+2f/MXXV8UFtRwZFVbVPKkMlhIdgBugBhzh4
+ g6nWwPJVDRGG2E2cBZSuUgcUJ/x0flz7m7ihHlD6sdgZLrWXuPbae6MCrw+xlXvHOWFQ
+ xPSAV3kxObqBGST4xfX0/F/eJ+XzE+SBH5OeL2UbUc0IZ9XTYJXcIfaM3YJ4FiygbYrd Ow== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 360kg1q57m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Jan 2021 16:15:37 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CGAaaP100387;
+        Tue, 12 Jan 2021 16:13:37 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 360keh7jfx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Jan 2021 16:13:37 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10CGDZTX019617;
+        Tue, 12 Jan 2021 16:13:35 GMT
+Received: from revolver.jebus.ca (/23.233.25.87)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 12 Jan 2021 08:13:35 -0800
+From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
+To:     maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andrew Morton <akpm@google.com>, Song Liu <songliubraving@fb.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rik van Riel <riel@surriel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH v2 26/70] mmap: make remove_vma_list() inline
+Date:   Tue, 12 Jan 2021 11:11:56 -0500
+Message-Id: <20210112161240.2024684-27-Liam.Howlett@Oracle.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20210112161240.2024684-1-Liam.Howlett@Oracle.com>
+References: <20210112161240.2024684-1-Liam.Howlett@Oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20210112154631.406250-1-robh@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610467928; bh=pE1ckwOq4xU4jWcYirvlxe/6tr3etDsHPOoWVwGsw6k=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=ACf6r1TENo9KK91crXjfPgQAHb4C8jZAzRCa33IeejvldKrER37s0l/mfMtuGHfZ9
-         WluKv+SO2iTQv2o+pAp0WJBdxe90n17/+/k+tFHvru+hW1ZUf0LgyN8UvgqWPlJm/e
-         3sLlsa7tx5yLr6n0jvKWSyqTBANvFCy63bd/geeQYiv7EbOmlz9Hep/+ZvVV7PK5L2
-         f1L1TyTK1fU/0+5rOYB04+bdYWwbHXcht4xwKTk1CtkyHZW7su0S4/16UU1PRusSGx
-         TCrPeOybBp6S5pXLALRcLs3Cz0RvBsuyggPtYYyfkgQeLEWQ4HMqn92ceY3OFctWJj
-         Wf7YK1WCLWgBA==
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 spamscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101120092
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ clxscore=1015 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101120093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+---
+ mm/mmap.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/mm/mmap.c b/mm/mmap.c
+index f750e85d4dc2c..964582c0f16ee 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -2294,7 +2294,8 @@ EXPORT_SYMBOL_GPL(find_extend_vma);
+  *
+  * Called with the mm semaphore held.
+  */
+-static void remove_vma_list(struct mm_struct *mm, struct vm_area_struct *vma)
++static inline void remove_vma_list(struct mm_struct *mm,
++				   struct vm_area_struct *vma)
+ {
+ 	unsigned long nr_accounted = 0;
+ 
+-- 
+2.28.0
 
-On 1/12/2021 9:16 PM, Rob Herring wrote:
-> External email: Use caution opening links or attachments
->
->
-> From: Sameer Pujar <spujar@nvidia.com>
->
-> A schema for the OF graph binding has been added to the dt-schema repo
-> based on graph.txt contents. Let's replace graph.txt now duplicated
-> contents with a reference to the schema.
->
-> For users of the graph binding, they should reference to the graph
-> schema from either 'ports' or 'port' property:
->
-> properties:
->    ports:
->      $ref: /schemas/graph.yaml#/properties/ports
->
->      properties:
->        port@0:
->          $ref: /schemas/graph.yaml#/properties/port
->          description: What data this port has
->
->        ...
->
-> Or:
->
-> properties:
->    port:
->      description: What data this port has
->      $ref: /schemas/graph.yaml#/properties/port
->
-> Cc: Sameer Pujar <spujar@nvidia.com>
-> Acked-by: Philipp Zabel <p.zabel@pengutronix.de>
-> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> [robh: moved graph.yaml to dt-schema repo, expanded commit msg]
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->   Documentation/devicetree/bindings/graph.txt | 129 +-------------------
->   1 file changed, 1 insertion(+), 128 deletions(-)
-
-Acked-by: Sameer Pujar <spujar@nvidia.com>
