@@ -2,90 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B419C2F2624
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:15:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 336522F262D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:18:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728920AbhALCPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 21:15:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
+        id S1729645AbhALCRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 21:17:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727426AbhALCPE (ORCPT
+        with ESMTP id S1726852AbhALCRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 21:15:04 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDE7C061575;
-        Mon, 11 Jan 2021 18:14:24 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id v19so392862pgj.12;
-        Mon, 11 Jan 2021 18:14:24 -0800 (PST)
+        Mon, 11 Jan 2021 21:17:54 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE240C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 18:17:13 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id b64so732040ybg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 18:17:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HKwXEUt2KV6yKFtidI9ws3+xlcJfaSAZDwRiqf3lrro=;
-        b=hYKPwKhE2oU3iWkqGCpi/yuf+O+T231tjBRvlO+6Xuu+HiZZQG9uWqHKQ9HHbqY1A2
-         eRVIfiz8M/v9v7O5bbkyxPZoXS2fgBWJ+TGb3j4CZwAaB/qDjDR/fPKl2Cb7GbMMF3Mg
-         UbW7/Wpy3gAOpMn3Th39IycQtbDbx3OkfVF0e9iS4B7oMhteQDfQfFPJLjMAklqxS/G8
-         2bTDftSWBMaKyPUGu4tSigE6dCpa4hch6hTYrjTPssQuYz4CgkBjEeetRkAoo1akqVfx
-         KTwg+kupB2acjFapYmLz0tXVDvKIR7HIJ30yRvuu+kKgijJ2iQGPYnWb3rPvQuAtuO1l
-         fb0w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ujbfpSeu9ErQ/pUTWFlws8N4jsyVnjyJCXYrvwVYCCo=;
+        b=JvkqNlpt6m0qIVjHw0czJhS++ZK7b4BRGcwBHDvGUCt+HM8a4A0I5ZcGcGdcI5iDtu
+         x20OZBkv+ith8aVnzrFcPsPlJBUIjV7BGFxwB8yFfm5FWAqtr2HVWymHWhQv1zkMCeNY
+         BiYU0v9vLUMb+Zja/IlcUnCUSwTzzqafy3M9GlrwXaGfqwBuIynIk45k2G5oHRQ9ET7W
+         ZZCCtKHIfZYld7g94t0f/Ld2tkfWJvgmhDD9KNb0o9a1BTlp4W91kBAmK4njIQAMopB1
+         ONHpE37XGidfsZ2Y8W06zFhYiP3kTcoKDEdDu0NFm4v3F/GO4BhT0H4cIt9mY1YJD+Ls
+         Ww3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HKwXEUt2KV6yKFtidI9ws3+xlcJfaSAZDwRiqf3lrro=;
-        b=UsPk3k6N5ZwnyZZ1r8YQ401zATF4lSHEmnrvXv77MH3D5aZdjnVpjB+sde8xFXcyyn
-         GobG6sngSX5GFWvaTvfCFGaDC03y1XPH5DzDucrZs+mvCXs9OYi/Y3p4QPymGSEXaYOZ
-         b4qsvXY87/dui5Xk35t7apEb4d3UNfMJLJLAoG1WIhYxlFvnyx2diHMurWCYx6y0lB5a
-         Prak/tCHApg7aBs86B8huJoCQRJckPR8PBQuZCX3L5Zw8jDcO2aCy7UsPurwBdkR5dEj
-         2cSK8csVFKEWocCZuR271RpzGyKozrHlKfIxJ7T9YZ+KuFETQY1HM+CnGoYq0TTcV23K
-         9FSA==
-X-Gm-Message-State: AOAM530oRW1cQyRnPxPgwChYPZz2MoOAAKM6uwEzAg9yZGazYuRpFGeq
-        VfKWAfWU3cs1sUUM0+fZmKY=
-X-Google-Smtp-Source: ABdhPJw9slzE8OzBbO4J+eiwaR63/+A8LmJOYK2IcTk2DUpF3XBWYgYkRWdbJ2m7CsHVB3685yLJQA==
-X-Received: by 2002:a62:1ad3:0:b029:19d:cc02:5d07 with SMTP id a202-20020a621ad30000b029019dcc025d07mr2302990pfa.70.1610417663981;
-        Mon, 11 Jan 2021 18:14:23 -0800 (PST)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id i25sm1092775pgb.33.2021.01.11.18.14.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 18:14:22 -0800 (PST)
-Date:   Mon, 11 Jan 2021 18:14:20 -0800
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can <linux-can@vger.kernel.org>,
-        Jeroen Hofstee <jhofstee@victronenergy.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/1] can: dev: add software tx timestamps
-Message-ID: <20210112021420.GA18703@hoboy.vegasvil.org>
-References: <20210110124903.109773-1-mailhol.vincent@wanadoo.fr>
- <20210110124903.109773-2-mailhol.vincent@wanadoo.fr>
- <20210111171152.GB11715@hoboy.vegasvil.org>
- <CAMZ6RqJqWOGVb_oAhk+CSZAvsej_xSDR6jqktU_nwLgFpWTb9Q@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ujbfpSeu9ErQ/pUTWFlws8N4jsyVnjyJCXYrvwVYCCo=;
+        b=WSa9KV3Dr7EwqHVQL9NKstfBuRgWl6eLpd327/jxDRYrmlEFRTqMigPa7DluBgzsd6
+         5sxtCb/KJfWmI/ChVe7G864hvP931ZFAyy4iRQ2X6UOTBafqWujrLh8t7wx5maY7m8yE
+         6SGO7pXFu1W87dvksJdGYe+y7KX2P9uG8H2v8ycO28O3VU9Ulk71Jev9FDepC15kQo5j
+         nW89oDMwZAM68V3qSq5ryLPSCMgum+s32UEVydWeoVb5qB4cp6UvQdFST3QDzsuyrsFC
+         kr/m2hhspOpwqapnzYp7pMfnnQVNpLjWSAQyIfRsmkrqx21Tv9J7kKwdFIncBv/98NvM
+         f6ig==
+X-Gm-Message-State: AOAM531+FS3mcgEPXUDDQhfJQG9XRb28gt59TxradHNvgWA2l5q28gyE
+        b+Hq4AMQbCuE3MG/byUHkSm3QGKCxDbyvX/5fdBjJg==
+X-Google-Smtp-Source: ABdhPJyJyT7aeDxo+KqSJ8e6wPGnmoMaQcDT686Uj+jeZdRtmbS1QU4/iktgAnxjbp7y0NxDVGYwhlZpm7InkSgzIu8=
+X-Received: by 2002:a25:b703:: with SMTP id t3mr4207762ybj.96.1610417832969;
+ Mon, 11 Jan 2021 18:17:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZ6RqJqWOGVb_oAhk+CSZAvsej_xSDR6jqktU_nwLgFpWTb9Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <alpine.LSU.2.11.2101102010200.25762@eggly.anvils>
+ <X/xV7ZV5jzI7RvAe@ulmo> <CAJZ5v0iriRkEN8dVJ9gE3+Wyn_96=SNhav1QaQ59i9O0genTNQ@mail.gmail.com>
+ <X/x49o3EtrUh6vuO@ulmo> <CAJZ5v0hyvdcKsPJ7U5WioXb1c8Pg_F1BLC_dbKesFBLTUSiVaw@mail.gmail.com>
+ <CAGETcx_odme9ufTps6tctOW+zfOox6iXgTx_9GAjoYn=+jy1BQ@mail.gmail.com>
+ <alpine.LSU.2.11.2101111539070.2728@eggly.anvils> <CAGETcx-gPA3HeSKS6XW1zYj_imjDH_86897Jub56b9ctBOqmwg@mail.gmail.com>
+ <alpine.LSU.2.11.2101111637330.2964@eggly.anvils>
+In-Reply-To: <alpine.LSU.2.11.2101111637330.2964@eggly.anvils>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 11 Jan 2021 18:16:37 -0800
+Message-ID: <CAGETcx8mNW=skm-2W6tS20wG1BxJW6ROMqDaktN5udKTeZtNrQ@mail.gmail.com>
+Subject: Re: 5.11-rc device reordering breaks ThinkPad rmi4 suspend
+To:     Hugh Dickins <hughd@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vincent Huang <vincent.huang@tw.synaptics.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andrew Duggan <aduggan@synaptics.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 09:00:33AM +0900, Vincent MAILHOL wrote:
-> Out of curiosity, which programs do you use? I guess wireshark
-> but please let me know if you use any other programs (I just use
-> to write a small C program to do the stuff).
+On Mon, Jan 11, 2021 at 4:44 PM Hugh Dickins <hughd@google.com> wrote:
+>
+> On Mon, 11 Jan 2021, Saravana Kannan wrote:
+> > On Mon, Jan 11, 2021 at 3:42 PM Hugh Dickins <hughd@google.com> wrote:
+> > > On Mon, 11 Jan 2021, Saravana Kannan wrote:
+> > > >
+> > > > I happen to have an X1 Carbon (different gen though) lying around and
+> > > > I poked at its /sys folders. None of the devices in the rmi4_smbus are
+> > > > considered the grandchildren of the i2c device. I think the real
+> > > > problem is rmi_register_transport_device() [1] not setting up the
+> > > > parent for any of the new devices it's adding.
+> > > >
+> > > > Hugh, can you try this patch?
+> > >
+> > > Just tried, but no, this patch does not help; but I bet
+> > > you're along the right lines, and something as simple will do it.
+> >
+> > Did you see this patch change the organization of devices under /sys/devices/?
+> > The rmi* devices need to be under one of the i2c devices after this
+> > patch. Is that not the case? Or is that the case, but you are still
+> > seeing suspend/resume issues?
+>
+> Now that I look, yes, that patch has moved the directory
+> /sys/devices/rmi4-00
+> to
+> /sys/devices/pci0000:00/0000:00:1f.4/i2c-6/6-002c/rmi4-00
 
-I was thinking of PTP over DeviceNET (which, in turn, is over CAN).
-This is specified in Annex G of IEEE 1588.
+What about child devices of rmi4-00? Does it still have the
+rmi4-00.fn* devices as children? I'd think so, but just double
+checking.
 
-The linuxptp stack has modular design and could one day support
-DeviceNET.  It would be much easier for linuxptp if CAN interfaces
-support hardware time stamping in the same way as other network
-interfaces.
+>
+> But I still see the same suspend issues despite that.
 
-Thanks,
-Richard
+Can you please get new logs to see if the failure reasons are still
+the same? I'd think this parent/child relationship would at least
+avoid the "Failed to read irqs" errors that seem to be due to I2C
+dependency.
+
+-Saravana
