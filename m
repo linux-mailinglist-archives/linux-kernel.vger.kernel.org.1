@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4242F2F3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:38:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C952F2F3F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:38:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388049AbhALMh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:37:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732988AbhALMh6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:37:58 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DB0C061575;
-        Tue, 12 Jan 2021 04:37:17 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id y187so1974011wmd.3;
-        Tue, 12 Jan 2021 04:37:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=zMd+XHnFId1Wgsed2jprrzroN/fiYe/FbbKUqXbc1O0=;
-        b=aWA3DhcWQA4MMreD6ZpfYBr9Teauz1ija7KFv0t8RsCuZ3BgBrC4psZs8ddKqaLHB2
-         EO05spt+UYI/Qr+5fbAOB7i9a+iY7CV0ZJjLJzMQYYUPAJihDA0T3QC5Sbfz6lWBCzH/
-         /XAPI0j+Ozy2pTr9of7gGDBbkx0VAmByJleOS+Esmo5Ge8JaHy4ztwrCW64L4agiq/kN
-         HYlBLDRW0h6CdZrfGdwC/3aXBcXuaJlarGOV2kNXaLricmUn+sSztl/+NxdnEA7rT7s2
-         o2f0OOpmiUjX3DPyR7Q18jfa43bLapYMzi7XObUWHV4bcY1GirEU6n2pbcgOn1Lx/mmm
-         gw3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zMd+XHnFId1Wgsed2jprrzroN/fiYe/FbbKUqXbc1O0=;
-        b=i/g/FnNZwdzOqreURI1ozo5qE5zXU3GlHXdfW78wlEfjTvui2HHnH0jTFXrwHaiiVF
-         lkTQ0upMRV4YLgB4xBOEcK5hNtiTOkio5Uq3UTanU4D4dbZvg2fZ4+woDJ+EDAftf371
-         Xb5oAgtPCBFYSrrSRKPncejQnC2oziGHwInGW4CaYfKWTaP0iqoppHOZ0oA88xqWb3yD
-         l3n0RA1OCLg39uUnhF/7DBflatBSRJNFXCi2OWnUFshLOFIS2bDXh/WlmCBSzlBT2XjV
-         7fLTTTXMKRW06BPT4CSdbY7rDmxT36lofENiljlzi5+p+HSjhULp63SjYwp7o4dnX+7k
-         MKng==
-X-Gm-Message-State: AOAM533W5UWo3FXe+2iSZo7Nb05D5/adHP4wLJxrlmopdZUzUI4kMWyy
-        8JmJl/LBzIEzN1UL0utasO4=
-X-Google-Smtp-Source: ABdhPJzZkIBM3vrqBllD/XocErsVNCfAdadbHNNKk+/k3bsFTvdI16XOCSkzqQsfYYoGVSRaasxoaA==
-X-Received: by 2002:a05:600c:20f:: with SMTP id 15mr3446491wmi.36.1610455036332;
-        Tue, 12 Jan 2021 04:37:16 -0800 (PST)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id o74sm4107446wme.36.2021.01.12.04.37.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 04:37:15 -0800 (PST)
-Subject: Re: [PATCH v13 5/5] leds: mt6360: Add LED driver for MT6360
-To:     Gene Chen <gene.chen.richtek@gmail.com>,
-        jacek.anaszewski@gmail.com, pavel@ucw.cz, robh+dt@kernel.org
-Cc:     dmurphy@ti.com, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-References: <1608547554-6602-1-git-send-email-gene.chen.richtek@gmail.com>
- <1608547554-6602-6-git-send-email-gene.chen.richtek@gmail.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <1e752ae6-f973-11c3-1780-d11d2af497be@gmail.com>
-Date:   Tue, 12 Jan 2021 13:37:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S2388105AbhALMi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:38:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39110 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727570AbhALMi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:38:27 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610455060; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=38R9LgWGn4HEbk8lBrJ1162Zlh+4fmrREhjPSswCAzI=;
+        b=N7O1JFwWEvZ23+2FUC5qF2sVBZeBWItKxBIalOcY9CTay4lcsHp+Nc1Qv/jJhOXZ0CgXO0
+        i239RmMfoqjUxt2+iW75dpQMiO+QV+40IBMc4p0PbqjwxlNM0rtKvMYLHTRQV9b0jFuf4U
+        SY7AsDPptkXSQWlSymYDRmMyS7h13T4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DCDF9ACF5;
+        Tue, 12 Jan 2021 12:37:39 +0000 (UTC)
+Date:   Tue, 12 Jan 2021 13:37:38 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v3 3/6] mm: hugetlb: fix a race between
+ freeing and dissolving the page
+Message-ID: <20210112123738.GQ22493@dhcp22.suse.cz>
+References: <20210110124017.86750-1-songmuchun@bytedance.com>
+ <20210110124017.86750-4-songmuchun@bytedance.com>
+ <20210112100213.GK22493@dhcp22.suse.cz>
+ <CAMZfGtVJVsuL39owkT+Sp8A7ywXJLhbiQ6zYgL9FKhqSeAvy=w@mail.gmail.com>
+ <20210112111712.GN22493@dhcp22.suse.cz>
+ <CAMZfGtWt5+03Pne9QjLn53kqUbZWSmi0f-iEOisHO6LjohdXFA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1608547554-6602-6-git-send-email-gene.chen.richtek@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtWt5+03Pne9QjLn53kqUbZWSmi0f-iEOisHO6LjohdXFA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 21/12/2020 11:45, Gene Chen wrote:
-> From: Gene Chen <gene_chen@richtek.com>
-[...]
-> +
-> +static const struct of_device_id __maybe_unused mt6360_led_of_id[] = {
-> +	{ .compatible = "mediatek,mt6360-led", },
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, mt6360_led_of_id);
-> +
-
-I think we should fix MFD code to not need to use a DT binding here. See [1].
-
-Regards,
-Matthias
-
-[1] https://lore.kernel.org/linux-mediatek/20210111164118.GE4728@sirena.org.uk/
-
-
-> +static struct platform_driver mt6360_led_driver = {
-> +	.driver = {
-> +		.name = "mt6360-led",
-> +		.of_match_table = mt6360_led_of_id,
-> +	},
-> +	.probe = mt6360_led_probe,
-> +	.remove = mt6360_led_remove,
-> +};
-> +module_platform_driver(mt6360_led_driver);
-> +
-> +MODULE_AUTHOR("Gene Chen <gene_chen@richtek.com>");
-> +MODULE_DESCRIPTION("MT6360 LED Driver");
-> +MODULE_LICENSE("GPL v2");
+On Tue 12-01-21 19:43:21, Muchun Song wrote:
+> On Tue, Jan 12, 2021 at 7:17 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Tue 12-01-21 18:13:02, Muchun Song wrote:
+> > > On Tue, Jan 12, 2021 at 6:02 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Sun 10-01-21 20:40:14, Muchun Song wrote:
+> > > > [...]
+> > > > > @@ -1770,6 +1788,14 @@ int dissolve_free_huge_page(struct page *page)
+> > > > >               int nid = page_to_nid(head);
+> > > > >               if (h->free_huge_pages - h->resv_huge_pages == 0)
+> > > > >                       goto out;
+> > > > > +
+> > > > > +             /*
+> > > > > +              * We should make sure that the page is already on the free list
+> > > > > +              * when it is dissolved.
+> > > > > +              */
+> > > > > +             if (unlikely(!PageHugeFreed(head)))
+> > > > > +                     goto out;
+> > > > > +
+> > > >
+> > > > Do you really want to report EBUSY in this case? This doesn't make much
+> > > > sense to me TBH. I believe you want to return 0 same as when you race
+> > > > and the page is no longer PageHuge.
+> > >
+> > > Return 0 is wrong. Because the page is not freed to the buddy allocator.
+> > > IIUC, dissolve_free_huge_page returns 0 when the page is already freed
+> > > to the buddy allocator. Right?
+> >
+> > 0 is return when the page is either dissolved or it doesn't need
+> > dissolving. If there is a race with somebody else freeing the page then
+> > there is nothing to dissolve. Under which condition it makes sense to
+> > report the failure and/or retry dissolving?
 > 
+> If there is a race with somebody else freeing the page, the page
+> can be freed to the hugepage pool not the buddy allocator. Do
+> you think that this page is dissolved?
+
+OK, I see what you mean. Effectively the page would be in a limbo, not
+yet in the pool nor in the allocator but it can find its way to the
+either of the two. But I still dislike returning a failure because that
+would mean e.g. memory hotplug to fail. Can you simply retry inside this
+code path (drop the lock, cond_resched and retry)?
+-- 
+Michal Hocko
+SUSE Labs
