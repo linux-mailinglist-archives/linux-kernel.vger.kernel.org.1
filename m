@@ -2,131 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C7F2F3D06
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16DC12F3D02
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437627AbhALVeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2437604AbhALVeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Jan 2021 16:34:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436970AbhALUdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:33:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9635823120;
-        Tue, 12 Jan 2021 20:33:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610483589;
-        bh=TYGoP0e4lWzfWMsLEoepcVFfraVvg0SxO3S88gQBLrc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nNWek36zVFKo7ntNqeLSZASuPLtqfR4fzqFvMignoc0GasY2x7F10w65qOdBK/mMH
-         C1jQOpecLerK3l5C4M3CWDE6fTvijR6uEekAI9JJO0QXAJS0TXHMm93l1Dc4a9ei6I
-         YgrnFuTK0/8loApW5DcBP4UNCM+CXXgIM5YXONM/R31t3eTmyjWdwwSL32IDmYR9v7
-         qrsQD4rJNvEIGOvs/vNZz84lgdQbEjC06nSCfOvSNXz7A+A01qMMx7Sb+dzLy0l9za
-         y5HWz1opIog26drQO1/7SfQqi3shJblHxgCXiyCo5ssKzqX5yF+d+jvPVX+dtVe8WW
-         xhyphVLsf95ng==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        sound-open-firmware@alsa-project.org
-Subject: [PATCH 2/2] ASoC: intel: fix soundwire dependencies
-Date:   Tue, 12 Jan 2021 21:32:18 +0100
-Message-Id: <20210112203250.2576775-2-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210112203250.2576775-1-arnd@kernel.org>
-References: <20210112203250.2576775-1-arnd@kernel.org>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436960AbhALUdK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:33:10 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA92C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:32:30 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id d9so6869099iob.6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:32:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=btCnt2sQ0Zcyyo8rzXgbt+j/5gYam3eBNLgnqdULuEc=;
+        b=m49sd1VzO8+8Ko5TiXvXtt1vhA8wfYRIkrk6kPmcbmw3TF8EvzbpMkh1jp03X2tSzh
+         znmih0gQVRM/t9w7A0oqZNlmi0XIIfDMMNIk4zwsAhk7y/iXjPsWPkopSf/03bxJKYeI
+         r2bNTMi/fLAase/NHfI11voPsaBxTjYU2yS9SzgmGi6QCOLnECvY9gUEkXV0gH974aRm
+         dzLpAwsxByVymcyY5BQY9KoEIEI0FdfjBXCefBXnHoYiBKikoyOgQSU1lhJaQKEAnDnT
+         EVtaYcmmGErDpIsUZd6QEqMpRNV8Vpj3s1sL0W7SUKiY2kMjnoQP3ZDRHOdyNizf+CuS
+         tdtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=btCnt2sQ0Zcyyo8rzXgbt+j/5gYam3eBNLgnqdULuEc=;
+        b=ig7sXwVW6bn8l148D8j49/LJSXrGXehffQS01TBaxRL8DraPA7uqL4X2HPciuuh/du
+         DHwVttYrT8PqFoaSWwTx4OJJ0o7+y52np7IZlRzakhAmCKugidAUdAv/1zCWZr8Gh+PW
+         qpJeKtH6VRnXfVFZwCZKCwHUxV/cZ2pPO4flE4Qql1RE7K2WX48GBk7fw2v38EqZGIRx
+         uRXwnCGjK7SSRaxKl0/2qQ+E4vXawTrWYmb/dKVDzNrAA9CTFcixMEA2L/IMrVaebEg7
+         D3mVn95hMZcdkEETYr5mxJikmg+AT4NAxBAbVMyemW4m6Aa+ukKomM/n8GwzStyYJtcQ
+         Rn/w==
+X-Gm-Message-State: AOAM5305NoOYhluwC6LJ46pLISdE5UsutCA7AbdhFQrapFNowJQKtnBh
+        zbJVVa/7wyIWm2HBlRWubNo=
+X-Google-Smtp-Source: ABdhPJxymHiGb/iXo60o4r4ayfKgHxgUGULh6sa0J7CxWTontJBCxZlFSk8UEcZl0Ihhu+tDlai08w==
+X-Received: by 2002:a02:b60a:: with SMTP id h10mr1116894jam.99.1610483549482;
+        Tue, 12 Jan 2021 12:32:29 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id v3sm3094783ilj.28.2021.01.12.12.32.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 12:32:28 -0800 (PST)
+Date:   Tue, 12 Jan 2021 13:32:26 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     syzbot <syzbot+76880518931d755473cf@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        clang-built-linux@googlegroups.com,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>
+Subject: Re: upstream build error (12)
+Message-ID: <20210112203226.GA1055929@ubuntu-m3-large-x86>
+References: <0000000000004a33a005b8b8eaab@google.com>
+ <20210112194058.GA200254@ubuntu-m3-large-x86>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112194058.GA200254@ubuntu-m3-large-x86>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Tue, Jan 12, 2021 at 12:40:58PM -0700, Nathan Chancellor wrote:
+> On Tue, Jan 12, 2021 at 11:20:27AM -0800, syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    e609571b Merge tag 'nfs-for-5.11-2' of git://git.linux-nfs..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=15965a00d00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=6157970d0a91b812
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=76880518931d755473cf
+> > compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+76880518931d755473cf@syzkaller.appspotmail.com
+> > 
+> > clang-11: error: unable to execute command: Aborted (core dumped)
+> > clang-11: error: clang frontend command failed due to signal (use -v to see invocation)
+> > 
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > 
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> Would it be possible for clang-built-linux@googlegroups.com to be CC'd
+> when there is a build error and the compiler is clang? Especially if
+> clang is hitting an assertion.
 
-The Kconfig logic around SND_SOC_SOF_INTEL_SOUNDWIRE tries to
-ensure that all sound modules can be built with the minimal
-dependencies, but this fails in some configurations:
+I cannot reproduce this with clang 11.0.1. I did a reverse bisect on
+LLVM and found commit 4b0aa5724fea ("Change the INLINEASM_BR MachineInstr
+to be a non-terminating instruction.") as the fix (which makes sense,
+that commit has direct kernel implications). It is probably worth
+upgrading syzkaller's clang to 11.0.1, where I have not seen any
+assertions across all of the configurations that I test.
 
-x86_64-linux-ld: sound/hda/intel-dsp-config.o: in function `snd_intel_dsp_driver_probe':
-intel-dsp-config.c:(.text+0x134): undefined reference to `sdw_intel_acpi_scan'
+Ccing Dmitry and Marco directly.
 
-Specifically, this happens if the dsp-config driver is built-in but does
-not need to use soundwire, while CONFIG_SOUNDWIRE_INTEL is enabled as
-a loadable module.
-
-An easier and more correct way to do this is to remove
-CONFIG_SND_SOC_SOF_INTEL_SOUNDWIRE_LINK and instead have
-the two drivers that can link against SOUNDWIRE_INTEL,
-i.e. DSP_CONFIG and SND_SOC_SOF_HDA, select that driver whenever
-SND_SOC_SOF_INTEL_SOUNDWIRE_LINK is set.
-
-This however means that SND_SOC_SOF_INTEL_SOUNDWIRE cannot be selected
-by users when SOUNDWIRE is only usable by loadable modules and one or
-more drivers using SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE is built-in.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/hda/Kconfig           |  1 +
- sound/soc/sof/intel/Kconfig | 16 ++++++----------
- 2 files changed, 7 insertions(+), 10 deletions(-)
-
-diff --git a/sound/hda/Kconfig b/sound/hda/Kconfig
-index 3bc9224d5e4f..ecab814d7698 100644
---- a/sound/hda/Kconfig
-+++ b/sound/hda/Kconfig
-@@ -44,5 +44,6 @@ config SND_INTEL_NHLT
- config SND_INTEL_DSP_CONFIG
- 	tristate
- 	select SND_INTEL_NHLT if ACPI
-+	select SOUNDWIRE_INTEL if SND_SOC_SOF_INTEL_SOUNDWIRE
- 	# this config should be selected only for Intel DSP platforms.
- 	# A fallback is provided so that the code compiles in all cases.
-diff --git a/sound/soc/sof/intel/Kconfig b/sound/soc/sof/intel/Kconfig
-index 67365ce0d86d..df8f9760870e 100644
---- a/sound/soc/sof/intel/Kconfig
-+++ b/sound/soc/sof/intel/Kconfig
-@@ -330,13 +330,17 @@ config SND_SOC_SOF_HDA
- 	tristate
- 	select SND_HDA_EXT_CORE if SND_SOC_SOF_HDA_LINK
- 	select SND_SOC_HDAC_HDA if SND_SOC_SOF_HDA_AUDIO_CODEC
-+	select SOUNDWIRE_INTEL if SND_SOC_SOF_INTEL_SOUNDWIRE
- 	help
- 	  This option is not user-selectable but automagically handled by
- 	  'select' statements at a higher level.
- 
--config SND_SOC_SOF_INTEL_SOUNDWIRE_LINK
-+config SND_SOC_SOF_INTEL_SOUNDWIRE
- 	bool "SOF support for SoundWire"
--	depends on SOUNDWIRE && ACPI
-+	depends on SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
-+	depends on SOUNDWIRE
-+	depends on ACPI
-+	depends on !(SOUNDWIRE=m && SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE=y)
- 	help
- 	  This adds support for SoundWire with Sound Open Firmware
- 	  for Intel(R) platforms.
-@@ -345,14 +349,6 @@ config SND_SOC_SOF_INTEL_SOUNDWIRE_LINK
- 
- config SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE
- 	tristate
--	select SND_SOC_SOF_INTEL_SOUNDWIRE if SND_SOC_SOF_INTEL_SOUNDWIRE_LINK
--	help
--	  This option is not user-selectable but automagically handled by
--	  'select' statements at a higher level.
--
--config SND_SOC_SOF_INTEL_SOUNDWIRE
--	tristate
--	select SOUNDWIRE_INTEL
- 	help
- 	  This option is not user-selectable but automagically handled by
- 	  'select' statements at a higher level.
--- 
-2.29.2
-
+Cheers,
+Nathan
