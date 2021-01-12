@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C182F3E09
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:44:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17FA62F3E14
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:44:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393818AbhALWBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:01:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50252 "EHLO
+        id S2393834AbhALWB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:01:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730091AbhALWBP (ORCPT
+        with ESMTP id S2391180AbhALWBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:01:15 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE6EC0617A2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:00:26 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id i6so3851277otr.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:00:26 -0800 (PST)
+        Tue, 12 Jan 2021 17:01:54 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27647C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:01:14 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id w3so3784902otp.13
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:01:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=fMOsJ+yCzpE8j0c8U4hOEUgeq7Kka7k0SjEEHdyP6UQ=;
-        b=hycUmKEOzqPiLqOtJxG6D5fkdB9nwjQHK6Dnv6JYYzfh4UG8OCOxXjDs8opMl+BSRz
-         Mw8hWO1kOUOzNstwMqrlvjGCvi41siDx5toR75bKx2CDBEg57yUsFqKpJwalsTBrrniO
-         CnfbdIesuc8qxWfoJSuA7xuMWYzNYq9E42TOc88Nvu1ryorMxoPDcg9mYNQ99y20LBFT
-         2/dGo2jQl9PmgwqBCa0chxKlIFXZrbXslQBxehoEnZFzFYm8f2iDlfwMStQHzy0HNsOi
-         DseN5It17TBH1hoWpX+f9KwIH5IN77khiTzgFDWi0XHrl39thCYVXr8HkYrwEg61FWxm
-         g+UQ==
+        bh=uDgXaAc7GjnI10LhfsoqNmXSnUmmiZemrpWcOnIj94I=;
+        b=M3RVDzYrqIP3u6OHFrOxpLkodlzSq3MDQx6G7IroukGaiphYRgkCtzdK/8Nva5+wNd
+         oKtJUrjMYopz1EY0gMjb93n2sKyRcWtFUoVAh+0LvfjlFPxyXuusuDV8/UqEj7/VYM0G
+         1YiqDM7CkiZHOvD7u5nIL627APi57ywnlAkIGJIV0d7RVFZzpBnIgTH2SgFuax6yJOjm
+         crjYamCIy7B8edeijbnzNnCSua5/9aEfF0FqdCI/v47z+xtugFO/rNwI/T9qI36kI+PF
+         J5czcwkvuUdCW3g3E7vMYdgJhsh/xqx3PBfzqhOF3VRZz3MKAc9D/W+Z7JH/8mkZIsha
+         K6IQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fMOsJ+yCzpE8j0c8U4hOEUgeq7Kka7k0SjEEHdyP6UQ=;
-        b=l3dFxezX9FBprh7s6DiNwRBj53A17lJ4bppHOG4YBJyz+G6UzVOAYbt4VosABeZ0vZ
-         Sx56rd9ZPINkfAG5WrkPURs5ESaCzoF53zVqLaUTi5d8PK9lvUNml9zzO7l4ePxl5sGt
-         xskAQXG59R/CxVazcXDsaABjBfjvVWLvtnh5vXhS8l4tpQPDHaJfSKgvgwVNBYWsFpGo
-         jNQ83EPVRQahyAnH05vlI5T/iz1o+/dnoyrqer+1OhNKtUeU8bweha6GiuO/N4hNO1eb
-         VXk1wSkkWdOeVq8yqpYSvy9F3PtaETgRBE2QhYMoP+wyxaJzy7ltR4++v3anI/VW6w5b
-         q9hg==
-X-Gm-Message-State: AOAM533u+QiXMVYzKFjtYKQ5arolquHfYwQZ0pStXDvJMv0uFXeS82/W
-        zRPqtgtiZ+x8vXlbYEYyxJCpe+6hCldPPsr4k7E=
-X-Google-Smtp-Source: ABdhPJyAhZqfau2mOz0A2k5mOBxg9Wpw5j1oKcrx8V7oeErJ6wBRCxNlUTbw/uW4ABYw01eYzhk1c5lrwph3JharLg0=
-X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr1060690ote.132.1610488825915;
- Tue, 12 Jan 2021 14:00:25 -0800 (PST)
+        bh=uDgXaAc7GjnI10LhfsoqNmXSnUmmiZemrpWcOnIj94I=;
+        b=i8D8uqeXKwvviEBvQ1UBpK4tNYBNnnjPswb9Mpi0Yb70LSnQVZbPxDFFUegJqra1pe
+         YsgRSUjxeIiDqHNzPyTF41pxtAQ8eqXnnfQscfrLs+5b0VkjBgLekdaQYvwtyP1fBxex
+         huroWariNVmy8pznf5BgaZF1vdRWHPKXlYZwZADdIzhD1AIL/kKhYHdpHrqpG8BOBiT9
+         mSY/z6/hL4ZTEYbLdeUhi2viA/gseeWUHnpoclPiahpfR2LVq6TFyDeqKZoHxW2UVvK+
+         RWFzOhJUE0Rnjh9k5B6m9tG4g+VjBShfJsOoBpU1Bi72XyVhxDvWJDb8IR61DK6RQLjL
+         Y0gA==
+X-Gm-Message-State: AOAM532i/aJXY6laMrGwTxVyIBVL/DV6/Y3+IdV0V36i9ELjz9+iB0SW
+        qKr1es2+kxoUFqDwAXr7NR3IW3ODcPV2LLzqAHk=
+X-Google-Smtp-Source: ABdhPJyyLnlZ0c/XFzX5hhTiscgmlUWNQdxYsP5RXf3GqkaPaFyUpzym8bAFtc+UJlYAi8PpkiijKyvYHrZZ/hdhau4=
+X-Received: by 2002:a9d:2ac2:: with SMTP id e60mr993699otb.23.1610488873181;
+ Tue, 12 Jan 2021 14:01:13 -0800 (PST)
 MIME-Version: 1.0
-References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-5-lee.jones@linaro.org>
-In-Reply-To: <20210111191926.3688443-5-lee.jones@linaro.org>
+References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-6-lee.jones@linaro.org>
+In-Reply-To: <20210111191926.3688443-6-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 12 Jan 2021 17:00:15 -0500
-Message-ID: <CADnq5_NMfddmOn_42UVD8XVwXN3Q3Ag219Zz+V1RoremFb9rog@mail.gmail.com>
-Subject: Re: [PATCH 04/40] drm/amd/display/dc/dce/dce_opp: Demote
- non-compliant kernel-doc headers
+Date:   Tue, 12 Jan 2021 17:01:02 -0500
+Message-ID: <CADnq5_P16YPwTUOQMLSbRcM54Wy1yCjO=fiinOwOFmkkV_gd5w@mail.gmail.com>
+Subject: Re: [PATCH 05/40] drm/amd/display/dc/dce/dce_transform: Demote
+ kernel-doc abuse
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     Leo Li <sunpeng.li@amd.com>, Mauro Rossi <issor.oruam@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>,
@@ -69,46 +69,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, Jan 11, 2021 at 2:19 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
+> The header doesn't provide any additional parameter descriptions.
+>
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:109: warning: Fun=
-ction parameter or member 'opp110' not described in 'set_truncation'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:109: warning: Fun=
-ction parameter or member 'params' not described in 'set_truncation'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:154: warning: Fun=
-ction parameter or member 'opp110' not described in 'dce60_set_truncation'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:154: warning: Fun=
-ction parameter or member 'params' not described in 'dce60_set_truncation'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:204: warning: Fun=
-ction parameter or member 'opp110' not described in 'set_spatial_dither'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:204: warning: Fun=
-ction parameter or member 'params' not described in 'set_spatial_dither'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:308: warning: Fun=
-ction parameter or member 'opp110' not described in 'set_temporal_dither'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:308: warning: Fun=
-ction parameter or member 'params' not described in 'set_temporal_dither'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:370: warning: Fun=
-ction parameter or member 'opp110' not described in 'dce110_opp_set_clampin=
-g'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:370: warning: Fun=
-ction parameter or member 'params' not described in 'dce110_opp_set_clampin=
-g'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:430: warning: Fun=
-ction parameter or member 'opp110' not described in 'dce60_opp_set_clamping=
-'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:430: warning: Fun=
-ction parameter or member 'params' not described in 'dce60_opp_set_clamping=
-'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:478: warning: Fun=
-ction parameter or member 'opp110' not described in 'set_pixel_encoding'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:478: warning: Fun=
-ction parameter or member 'params' not described in 'set_pixel_encoding'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:514: warning: Fun=
-ction parameter or member 'opp110' not described in 'dce60_set_pixel_encodi=
-ng'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:514: warning: Fun=
-ction parameter or member 'params' not described in 'dce60_set_pixel_encodi=
-ng'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_transform.c:1104: warni=
+ng: Cannot understand  ****************************************************=
+*************************
 >
 > Cc: Harry Wentland <harry.wentland@amd.com>
 > Cc: Leo Li <sunpeng.li@amd.com>
@@ -117,7 +84,6 @@ ng'
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
 > Cc: Mauro Rossi <issor.oruam@gmail.com>
-> Cc: Lee Jones <lee.jones@linaro.org>
 > Cc: amd-gfx@lists.freedesktop.org
 > Cc: dri-devel@lists.freedesktop.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
@@ -127,87 +93,24 @@ Applied.  Thanks!
 Alex
 
 > ---
->  drivers/gpu/drm/amd/display/dc/dce/dce_opp.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+>  drivers/gpu/drm/amd/display/dc/dce/dce_transform.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_opp.c b/drivers/gpu/d=
-rm/amd/display/dc/dce/dce_opp.c
-> index 2bf8f5a2e0c22..4600231da6cbb 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dce/dce_opp.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_opp.c
-> @@ -97,7 +97,7 @@ enum {
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c b/drivers=
+/gpu/drm/amd/display/dc/dce/dce_transform.c
+> index 6121bb7b009b8..abbaa6b0b2db9 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
+> @@ -1100,7 +1100,7 @@ static void program_gamut_remap(
 >
->
->
-> -/**
-> +/*
->   *     set_truncation
->   *     1) set truncation depth: 0 for 18 bpp or 1 for 24 bpp
->   *     2) enable truncation
-> @@ -142,7 +142,7 @@ static void set_truncation(
->  }
->
->  #if defined(CONFIG_DRM_AMD_DC_SI)
-> -/**
-> +/*
->   *     dce60_set_truncation
->   *     1) set truncation depth: 0 for 18 bpp or 1 for 24 bpp
->   *     2) enable truncation
-> @@ -183,7 +183,7 @@ static void dce60_set_truncation(
->  }
->  #endif
->
-> -/**
-> +/*
->   *     set_spatial_dither
->   *     1) set spatial dithering mode: pattern of seed
->   *     2) set spatial dithering depth: 0 for 18bpp or 1 for 24bpp
-> @@ -291,7 +291,7 @@ static void set_spatial_dither(
->                 FMT_SPATIAL_DITHER_EN, 1);
 >  }
 >
 > -/**
 > +/*
->   *     SetTemporalDither (Frame Modulation)
->   *     1) set temporal dither depth
->   *     2) select pattern: from hard-coded pattern or programmable patter=
-n
-> @@ -355,7 +355,7 @@ static void set_temporal_dither(
->                 FMT_TEMPORAL_DITHER_EN, 1);
->  }
->
-> -/**
-> +/*
->   *     Set Clamping
->   *     1) Set clamping format based on bpc - 0 for 6bpc (No clamping)
->   *             1 for 8 bpc
-> @@ -415,7 +415,7 @@ void dce110_opp_set_clamping(
->  }
->
->  #if defined(CONFIG_DRM_AMD_DC_SI)
-> -/**
-> +/*
->   *     Set Clamping for DCE6 parts
->   *     1) Set clamping format based on bpc - 0 for 6bpc (No clamping)
->   *             1 for 8 bpc
-> @@ -465,7 +465,7 @@ static void dce60_opp_set_clamping(
->  }
->  #endif
->
-> -/**
-> +/*
->   *     set_pixel_encoding
+>   ***********************************************************************=
+******
+>   *  Function: dal_transform_wide_gamut_set_gamut_remap
 >   *
->   *     Set Pixel Encoding
-> @@ -501,7 +501,7 @@ static void set_pixel_encoding(
->  }
->
->  #if defined(CONFIG_DRM_AMD_DC_SI)
-> -/**
-> +/*
->   *     dce60_set_pixel_encoding
->   *     DCE6 has no FMT_SUBSAMPLING_{MODE,ORDER} bits in FMT_CONTROL reg
->   *     Set Pixel Encoding
 > --
 > 2.25.1
 >
