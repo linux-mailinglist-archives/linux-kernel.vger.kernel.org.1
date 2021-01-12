@@ -2,102 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5AE2F2B0E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:19:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 687F92F2B12
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:19:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392496AbhALJSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:18:04 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:41366 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2392480AbhALJSC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:18:02 -0500
-X-UUID: 77b7c95bd0c843278d4ca975ac7d15a8-20210112
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ckkDf189o5v2XiYHPid++E4CFViQu5HHJ+upHqoGF+g=;
-        b=oCdo8jnqUy2M/+Cn+ETmzCAa2mHnb5UxKuVoXW/+gwep10to9PoHwCwvUgjAwLTccJ5VRzasY1t/10A4D+cFO/YeHDFqoegQ2GT9c2o5XkZ8pSmm505YLDU7TwnKkM+AtQpm6FhFK/2r45JNkFQyyr/ab//FfOnabR8/43EgaG4=;
-X-UUID: 77b7c95bd0c843278d4ca975ac7d15a8-20210112
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1644260711; Tue, 12 Jan 2021 17:17:16 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 12 Jan 2021 17:17:14 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 12 Jan 2021 17:17:14 +0800
-Message-ID: <1610443035.17820.9.camel@mtkswgap22>
-Subject: Re: [PATCH 1/2] scsi: ufs: Fix a possible NULL pointer issue
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
-        <hongwus@codeaurora.org>, <ziqichen@codeaurora.org>,
-        <rnayak@codeaurora.org>, <linux-scsi@vger.kernel.org>,
-        <kernel-team@android.com>, <saravanak@google.com>,
-        <salyzyn@google.com>, Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-Date:   Tue, 12 Jan 2021 17:17:15 +0800
-In-Reply-To: <6d03cdacda2f757ba0d0f39ce625eaec@codeaurora.org>
-References: <1609595975-12219-1-git-send-email-cang@codeaurora.org>
-         <1609595975-12219-2-git-send-email-cang@codeaurora.org>
-         <1610433327.17820.5.camel@mtkswgap22>
-         <6d03cdacda2f757ba0d0f39ce625eaec@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S2392534AbhALJSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:18:18 -0500
+Received: from foss.arm.com ([217.140.110.172]:42324 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392481AbhALJSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 04:18:16 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 032B531B;
+        Tue, 12 Jan 2021 01:17:30 -0800 (PST)
+Received: from [10.57.39.145] (unknown [10.57.39.145])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7AA5F3F719;
+        Tue, 12 Jan 2021 01:17:27 -0800 (PST)
+Subject: Re: [PATCH v3 09/21] arm64: cpufeature: Add global feature override
+ facility
+To:     Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        kernel-team@android.com
+References: <20210111132811.2455113-1-maz@kernel.org>
+ <20210111132811.2455113-10-maz@kernel.org> <20210111184154.GC17941@gaia>
+ <129db8bd3913a90c96d4cfe4f55e27a0@kernel.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <a122aa5c-4af9-e236-db82-db0ed885e0a5@arm.com>
+Date:   Tue, 12 Jan 2021 09:17:18 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <129db8bd3913a90c96d4cfe4f55e27a0@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ2FuLA0KDQpPbiBUdWUsIDIwMjEtMDEtMTIgYXQgMTQ6NTIgKzA4MDAsIENhbiBHdW8gd3Jv
-dGU6DQo+IE9uIDIwMjEtMDEtMTIgMTQ6MzUsIFN0YW5sZXkgQ2h1IHdyb3RlOg0KPiA+IEhpIENh
-biwNCj4gPiANCj4gPiBPbiBTYXQsIDIwMjEtMDEtMDIgYXQgMDU6NTkgLTA4MDAsIENhbiBHdW8g
-d3JvdGU6DQo+ID4+IER1cmluZyBzeXN0ZW0gcmVzdW1lL3N1c3BlbmQsIGhiYSBjb3VsZCBiZSBO
-VUxMLiBJbiB0aGlzIGNhc2UsIGRvIG5vdCANCj4gPj4gdG91Y2gNCj4gPj4gZWhfc2VtLg0KPiA+
-PiANCj4gPj4gRml4ZXM6IDg4YTkyZDZhZTRmZSAoInNjc2k6IHVmczogU2VyaWFsaXplIGVoX3dv
-cmsgd2l0aCBzeXN0ZW0gUE0gDQo+ID4+IGV2ZW50cyBhbmQgYXN5bmMgc2NhbiIpDQo+ID4+IA0K
-PiA+PiBTaWduZWQtb2ZmLWJ5OiBDYW4gR3VvIDxjYW5nQGNvZGVhdXJvcmEub3JnPg0KPiA+PiAN
-Cj4gPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMgYi9kcml2ZXJzL3Nj
-c2kvdWZzL3Vmc2hjZC5jDQo+ID4+IGluZGV4IGUyMjFhZGQuLjk4MjljOGQgMTAwNjQ0DQo+ID4+
-IC0tLSBhL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCj4gPj4gKysrIGIvZHJpdmVycy9zY3Np
-L3Vmcy91ZnNoY2QuYw0KPiA+PiBAQCAtOTQsNiArOTQsOCBAQA0KPiA+PiAgCQkgICAgICAgMTYs
-IDQsIGJ1ZiwgX19sZW4sIGZhbHNlKTsgICAgICAgICAgICAgICAgICAgICAgICBcDQo+ID4+ICB9
-IHdoaWxlICgwKQ0KPiA+PiANCj4gPj4gK3N0YXRpYyBib29sIGVhcmx5X3N1c3BlbmQ7DQo+ID4+
-ICsNCj4gPj4gIGludCB1ZnNoY2RfZHVtcF9yZWdzKHN0cnVjdCB1ZnNfaGJhICpoYmEsIHNpemVf
-dCBvZmZzZXQsIHNpemVfdCBsZW4sDQo+ID4+ICAJCSAgICAgY29uc3QgY2hhciAqcHJlZml4KQ0K
-PiA+PiAgew0KPiA+PiBAQCAtODg5Niw4ICs4ODk4LDE0IEBAIGludCB1ZnNoY2Rfc3lzdGVtX3N1
-c3BlbmQoc3RydWN0IHVmc19oYmEgKmhiYSkNCj4gPj4gIAlpbnQgcmV0ID0gMDsNCj4gPj4gIAlr
-dGltZV90IHN0YXJ0ID0ga3RpbWVfZ2V0KCk7DQo+ID4+IA0KPiA+PiArCWlmICghaGJhKSB7DQo+
-ID4+ICsJCWVhcmx5X3N1c3BlbmQgPSB0cnVlOw0KPiA+PiArCQlyZXR1cm4gMDsNCj4gPj4gKwl9
-DQo+ID4+ICsNCj4gPj4gIAlkb3duKCZoYmEtPmVoX3NlbSk7DQo+ID4+IC0JaWYgKCFoYmEgfHwg
-IWhiYS0+aXNfcG93ZXJlZCkNCj4gPj4gKw0KPiA+PiArCWlmICghaGJhLT5pc19wb3dlcmVkKQ0K
-PiA+PiAgCQlyZXR1cm4gMDsNCj4gPj4gDQo+ID4+ICAJaWYgKCh1ZnNfZ2V0X3BtX2x2bF90b19k
-ZXZfcHdyX21vZGUoaGJhLT5zcG1fbHZsKSA9PQ0KPiA+PiBAQCAtODk0NSw5ICs4OTUzLDEyIEBA
-IGludCB1ZnNoY2Rfc3lzdGVtX3Jlc3VtZShzdHJ1Y3QgdWZzX2hiYSAqaGJhKQ0KPiA+PiAgCWlu
-dCByZXQgPSAwOw0KPiA+PiAgCWt0aW1lX3Qgc3RhcnQgPSBrdGltZV9nZXQoKTsNCj4gPj4gDQo+
-ID4+IC0JaWYgKCFoYmEpIHsNCj4gPj4gLQkJdXAoJmhiYS0+ZWhfc2VtKTsNCj4gPj4gKwlpZiAo
-IWhiYSkNCj4gPj4gIAkJcmV0dXJuIC1FSU5WQUw7DQo+ID4+ICsNCj4gPj4gKwlpZiAodW5saWtl
-bHkoZWFybHlfc3VzcGVuZCkpIHsNCj4gPj4gKwkJZWFybHlfc3VzcGVuZCA9IGZhbHNlOw0KPiA+
-PiArCQlkb3duKCZoYmEtPmVoX3NlbSk7DQo+ID4+ICAJfQ0KPiA+IA0KPiA+IEkgZ3Vlc3MgZWFy
-bHlfc3VzcGVuZCBoZXJlIGlzIHRvIGhhbmRsZSB0aGUgY2FzZSB0aGF0IGhiYSBpcyBudWxsIA0K
-PiA+IGR1cmluZw0KPiA+IHVmc2hjZF9zeXN0ZW1fc3VzcGVuZCgpIGJ1dCAhbnVsbCBkdXJpbmcg
-dWZzaGNkX3N5c3RlbV9yZXN1bWUoKS4gSWYgDQo+ID4geWVzLA0KPiA+IHdvdWxkIGl0IGJlIHBv
-c3NpYmxlPyBJZiBubywgbWF5IEkga25vdyB3aGF0IGlzIHRoZSBwdXJwb3NlPw0KPiA+IA0KPiAN
-Cj4gWWVzLCB5b3UgYXJlIHJpZ2h0LiBJIHRoaW5rIGl0IGlzIHBvc3NpYmxlLiBwbGF0Zm9ybV9z
-ZXRfZHJ2ZGF0YSgpDQo+IGlzIGNhbGxlZCBpbiB1ZnNoY2RfcGx0ZnJtX2luaXQoKS4gU2F5IHN1
-c3BlbmQgaGFwcGVucyBiZWZvcmUNCj4gcGxhdGZvcm1fc2V0X2RydmRhdGEoKSBpcyBjYWxsZWQs
-IGJ1dCByZXN1bWUgY29tZXMgYmFjayBhZnRlcg0KPiBwbGF0Zm9ybV9zZXRfZHJ2ZGF0YSgpIGlz
-IGNhbGxlZC4gV2hhdCBkbyB5b3UgdGhpbms/DQoNClRoYW5rcyBmb3IgcmVtaW5kLiBBZnRlciBs
-b29raW5nIGludG8gc3lzdGVtIHN1c3BlbmQgZmxvdywga2VybmVsIHRocmVhZA0KbWF5IGNvbnRp
-bnVlIHJ1bm5pbmcgZXZlbiBhZnRlciBVRlMgc3VzcGVuZCBjYWxsYmFjayBpcyBleGVjdXRlZCBi
-eQ0Kc3VzcGVuZCBmbG93Lg0KDQpGZWVsIGZyZWUgdG8gYWRkDQpBY2tlZC1ieTogU3RhbmxleSBD
-aHUgPHN0YW5sZXkuY2h1QG1lZGlhdGVrLmNvbT4NCg0K
+Hi Marc,
 
+On 1/11/21 7:48 PM, Marc Zyngier wrote:
+> Hi Catalin,
+> 
+> On 2021-01-11 18:41, Catalin Marinas wrote:
+>> Hi Marc,
+>>
+>> On Mon, Jan 11, 2021 at 01:27:59PM +0000, Marc Zyngier wrote:
+>>> Add a facility to globally override a feature, no matter what
+>>> the HW says. Yes, this is dangerous.
+>>
+>> Yeah, it's dangerous. We can make it less so if we only allow safe
+>> values (e.g. lower if FTR_UNSIGNED).
+> 
+> My plan was also to allow non-safe values in order to trigger features
+> that are not advertised by the HW. But I can understand if you are
+> reluctant to allow such thing! :D
+> 
+>>> diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+>>> index 9a555809b89c..465d2cb63bfc 100644
+>>> --- a/arch/arm64/include/asm/cpufeature.h
+>>> +++ b/arch/arm64/include/asm/cpufeature.h
+>>> @@ -75,6 +75,8 @@ struct arm64_ftr_reg {
+>>>      u64                sys_val;
+>>>      u64                user_val;
+>>>      const struct arm64_ftr_bits    *ftr_bits;
+>>> +    u64                *override_val;
+>>> +    u64                *override_mask;
+>>>  };
+>>
+>> At the arm64_ftr_reg level, we don't have any information about the safe
+>> values for a feature. Could we instead move this to arm64_ftr_bits? We
+>> probably only need a single field. When populating the feature values,
+>> we can make sure it doesn't go above the hardware one.
+>>
+>> I attempted a feature modification for MTE here, though I dropped the
+>> entire series in the meantime as we clarified the ARM ARM:
+>>
+>> https://lore.kernel.org/linux-arm-kernel/20200515171612.1020-24-catalin.marinas@arm.com/
+>>
+>> Srinivas copied it in his patch (but forgot to give credit ;)):
+>>
+>> https://lore.kernel.org/linux-arm-msm/1610152163-16554-3-git-send-email-sramana@codeaurora.org/
+>>
+>> The above adds a filter function but, instead, just use your mechanism in
+>> this series for idreg.feature setting via cmdline. The arm64_ftr_value()
+>> function extracts the hardware value and lowers it if a cmdline argument
+>> was passed.
+> 
+> One thing is that it is not always possible to sanitise the value passed
+> if it is required very early on, as I do with VHE. But in that case
+> I actually check that we are VHE capable before starting to poke at
+> VHE-specific state.
+> 
+> I came up with the following patch on top, which preserves the current
+> global approach (no per arm64_ftr_bits state), but checks (and alters)
+> the override as it iterates through the various fields.
+> 
+> For example, if I pass "arm64.nopauth kvm-arm.mode=nvhe id_aa64pfr1.bt=5"
+> to the FVP, I get the following output:
+> 
+> [    0.000000] CPU features: SYS_ID_AA64ISAR1_EL1[31:28]: forced from 1 to 0
+> [    0.000000] CPU features: SYS_ID_AA64ISAR1_EL1[11:8]: forced from 1 to 0
+> [    0.000000] CPU features: SYS_ID_AA64MMFR1_EL1[11:8]: forced from 1 to 0
+> [    0.000000] CPU features: SYS_ID_AA64PFR1_EL1[3:0]: not forcing 1 to 5
+> [    0.000000] CPU features: detected: GIC system register CPU interface
+> [    0.000000] CPU features: detected: Hardware dirty bit management
+> [    0.000000] CPU features: detected: Spectre-v4
+> [    0.000000] CPU features: detected: Branch Target Identification
+> 
+> showing that the PAC features have been downgraded, together with VHE,
+> but that BTI is still detected as value 5 was obviously bogus.
+> 
+> Thoughts?
+> 
+>          M.
+> 
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index 894af60b9669..00d99e593b65 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -774,6 +774,7 @@ static void __init init_cpu_ftr_reg(u32 sys_reg, u64 new)
+>       u64 strict_mask = ~0x0ULL;
+>       u64 user_mask = 0;
+>       u64 valid_mask = 0;
+> +    u64 override_val = 0, override_mask = 0;
+> 
+>       const struct arm64_ftr_bits *ftrp;
+>       struct arm64_ftr_reg *reg = get_arm64_ftr_reg(sys_reg);
+> @@ -781,9 +782,35 @@ static void __init init_cpu_ftr_reg(u32 sys_reg, u64 new)
+>       if (!reg)
+>           return;
+> 
+> +    if (reg->override_mask && reg->override_val) {
+> +        override_mask = *reg->override_mask;
+> +        override_val = *reg->override_val;
+> +    }
+> +
+>       for (ftrp = reg->ftr_bits; ftrp->width; ftrp++) {
+>           u64 ftr_mask = arm64_ftr_mask(ftrp);
+>           s64 ftr_new = arm64_ftr_value(ftrp, new);
+> +        s64 ftr_ovr = arm64_ftr_value(ftrp, override_val);
+> +
+> +        if ((ftr_mask & override_mask) == ftr_mask) {
+> +            if (ftr_ovr < ftr_new) {
+
+Here we assume that all the features are FTR_LOWER_SAFE. We could
+probably use arm64_ftr_safe_value(ftrp, ftr_new, ftr_ovr) here ?
+That would cover us for both HIGHER_SAFE and LOWER_SAFE features.
+However that may be restrictive for FTR_EXACT, as we the safe
+value would be set to "ftr->safe_val". I guess that may be better
+than forcing to use an unsafe value for the boot CPU, which could
+anyway conflict with the other CPUs and eventually trigger the
+ftr alue to be safe_val.
+
+i.e,
+	ftr_val = arm64_ftr_safe_value(ftrp, ftr_ovr, ftr_new);
+
+
+Suzuki
