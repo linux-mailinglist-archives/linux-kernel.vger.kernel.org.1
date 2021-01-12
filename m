@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CFC2F3823
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4039A2F3829
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:14:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406350AbhALSMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 13:12:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56986 "EHLO
+        id S2406425AbhALSNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 13:13:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406318AbhALSMt (ORCPT
+        with ESMTP id S2406282AbhALSMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 13:12:49 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04EC9C061389
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:11:13 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id w19so1321224pll.6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:11:13 -0800 (PST)
+        Tue, 12 Jan 2021 13:12:50 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D84C06138B
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:11:15 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id p20so2061460qtq.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:11:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=bnKGrgv+MMsFcrufi3H/brnDaJ6XjCIFU4yRf/m3uBE=;
-        b=WYSs8lBa9V+nf1FbyXI1n6MSt3USDkeANRkGXZzTaMpDOA1u92XqZ6pwc1BVregNEg
-         H8fdvqA5ZeTkYDT2izYx5Eo4lv1+jiWwGVkcGxkSujtgGr1PyVyDeeURSTpXkdrjX161
-         2WpWmZPBffdkCIvWXqf1y/QLfGjFs8FSQouFxnSV95mE1w38DGcdBJYsbJ6KvbIXa/UN
-         oHOvyH+mG/Ibo1xOfxJU8E60Wkf0AZj284cnWpfGJi4SdP43XvNOygIPSa7OM+gdUbI1
-         XmABly4XJ+jjuJxaC/zdt4MZs7VDXTLErQiN4d3wEr/LQoT2QRDK/j92LO5qNdtQCkhc
-         rj+w==
+        bh=lYSk7MOddYKWjNX3MxEIYz0vLNaYEHnCnR3+/yAINXw=;
+        b=NKHnnTd7jpdNfSK6bP6++NsuIw0k1dByDPu7R62QtqGk9cZov5lC1ZdIKgrHYqkdCq
+         O+2dgK9s8JHUTSGLSBK1za1HRCgZPrMOgbdIcJy/9el/kMdhoQ1sG666QH9DWiGcbJqK
+         SsANBDgOzW+6iREdYcJhDBBTxN5TgtJEdFd4BOJ3xg6Ascaz1j5400bsKZ74pyyZvT8D
+         rsOpa4bVKxZE8qW2zCPRCpEvvJwe6wA/6j/8QYIUFZnx5X0IHqtZexLxW5AiPG+Bf3cv
+         qGBYy9P3zlhf/Tl6W+O0mihrfRTW/R+eKV/cBCTpDyVCAnI8xQ3BpkyfaPGdKG/eauBc
+         HZCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=bnKGrgv+MMsFcrufi3H/brnDaJ6XjCIFU4yRf/m3uBE=;
-        b=ZsHC3vjXPEaMTO92Yp2WZNQO60Wvseqnv7T3rqh+mupQMej0JeZt2EmUVlKrmyjCn3
-         zDBsRt0ryuaLmASTAFW/Vo5ZP3Wr1NWEWZHEZB1J9JphYkHya1JoRz5ko9WF6pkhCuB0
-         3lU/79d68HimzJH63tpVoy5QU9VkJH29BcqBZ+6BixglutwDEB0SEMgB9gKf0VjEisnT
-         PP9wgElgMzytBYA2hxTl05jetDYt8OpmSbFx3/RAUCgl9uunbIYbAJuzq0rucbMbb+5N
-         sED9kfhQT6MDBh+Fti+u0Lfj47Ws8qU1z3R6HhwviWdqbpWJzjJS12TzY3a1xBHmQTkH
-         oFOQ==
-X-Gm-Message-State: AOAM531I1tb8GuAtCNoNVWPiRuSD/tjpGepyHSHjM3KogYFxoM9cAxMx
-        5EY3tIBiEhZ2+NyWpXmZLq7AKVR6iOeqDqPMxIlfJx/6x08i/QvBG5q0bT65AHtf65qYnnPejyZ
-        QJzWN55xLMp6o6iCZzNJkP7M/MrmaZkuB2DrweD9eDjyKR9yRFkMgYQk2ud6Y7OlgviXmtvEY
-X-Google-Smtp-Source: ABdhPJyr+exi/2YCCknuX2QZOplfqGjnQhLn1ubw2DdeqkA3PvtqccfKRMCjGVSsNx3SdyCCHuRoOW1y2Rhh
+        bh=lYSk7MOddYKWjNX3MxEIYz0vLNaYEHnCnR3+/yAINXw=;
+        b=ul1D8Sa/OENB3lnqE1mUUKtufc6ioe8uBGpRFpH0OwWRVWh//XPLNoxkmiH4VUHPZn
+         GCJzLF5KRKrWGx5JrUI/rLA0A+mp14s0agtG6feI8F3F+VaWtvoVOMoiz41YLsofE0sW
+         /mnjmqffaenvRRtumkI9SHG41vmuGzXqWfP6wSmAnLFWF3JcD6L4oVpOaLudKgBC6aao
+         sxQ/cmsnblLnFJPQq2oRsOqcmcI3DXXONMWq51SeAvBPWOSiE9aWMio5/DKg5LVOtqLX
+         SjcVHWEeJGd8Y5JV7mPkdo/4r3AUbi5eDq2axlNzMckmAW5c1AbAbF4FYpnAPoFcoWmJ
+         u9ug==
+X-Gm-Message-State: AOAM530N2FI2qDie9TI9pt5GmvBiyIiyuHZhrldMrGrDK0zXuVtPoD25
+        KqzsVCk0eN+WcQtNBO7ZSaG2aO2IJqQXIjuMWeDLj+xSsvf/pFe2iASyEneMjV5YyHzcKTQtdwq
+        QfRv5qJSDhynOLT7fRW+4D44dyXu9An/gBYgdSvGdT50Yjk/8hRI9e38aamOeYW3BzXcmrXVy
+X-Google-Smtp-Source: ABdhPJwYwzAWMtBQK6mILE8NEYAUYZdTPRPkm/F7Ns0Y++eItf45aU6HhfxEeu4QJg7N1rYh67ntpkm7bfn+
 Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:f693:9fff:fef4:a293])
- (user=bgardon job=sendgmr) by 2002:a62:14d3:0:b029:19e:88c0:8c67 with SMTP id
- 202-20020a6214d30000b029019e88c08c67mr435380pfu.69.1610475072351; Tue, 12 Jan
- 2021 10:11:12 -0800 (PST)
-Date:   Tue, 12 Jan 2021 10:10:32 -0800
+ (user=bgardon job=sendgmr) by 2002:a05:6214:14ee:: with SMTP id
+ k14mr670741qvw.36.1610475074199; Tue, 12 Jan 2021 10:11:14 -0800 (PST)
+Date:   Tue, 12 Jan 2021 10:10:33 -0800
 In-Reply-To: <20210112181041.356734-1-bgardon@google.com>
-Message-Id: <20210112181041.356734-16-bgardon@google.com>
+Message-Id: <20210112181041.356734-17-bgardon@google.com>
 Mime-Version: 1.0
 References: <20210112181041.356734-1-bgardon@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH 15/24] kvm: mmu: Wrap mmu_lock cond_resched and needbreak
+Subject: [PATCH 16/24] kvm: mmu: Wrap mmu_lock assertions
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
@@ -73,157 +72,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wrap the MMU lock cond_reseched and needbreak operations in a function.
-This will support a refactoring to move the lock into the struct
-kvm_arch(s) so that x86 can change the spinlock to a rwlock without
-affecting the performance of other archs.
-
-No functional change intended.
+Wrap assertions and warnings checking the MMU lock state in a function
+which uses lockdep_assert_held. While the existing checks use a few
+different functions to check the lock state, they are all better off
+using lockdep_assert_held. This will support a refactoring to move the
+mmu_lock to struct kvm_arch so that it can be replaced with an rwlock for
+x86.
 
 Reviewed-by: Peter Feiner <pfeiner@google.com>
 
 Signed-off-by: Ben Gardon <bgardon@google.com>
 ---
- arch/arm64/kvm/mmu.c       |  2 +-
- arch/x86/kvm/mmu/mmu.c     | 16 ++++++++--------
- arch/x86/kvm/mmu/tdp_mmu.c |  8 ++++----
- include/linux/kvm_host.h   |  2 ++
- virt/kvm/kvm_main.c        | 10 ++++++++++
- 5 files changed, 25 insertions(+), 13 deletions(-)
+ arch/arm64/kvm/mmu.c                     | 2 +-
+ arch/powerpc/include/asm/kvm_book3s_64.h | 7 +++----
+ arch/powerpc/kvm/book3s_hv_nested.c      | 3 +--
+ arch/x86/kvm/mmu/mmu_internal.h          | 4 ++--
+ arch/x86/kvm/mmu/tdp_mmu.c               | 8 ++++----
+ include/linux/kvm_host.h                 | 1 +
+ virt/kvm/kvm_main.c                      | 5 +++++
+ 7 files changed, 17 insertions(+), 13 deletions(-)
 
 diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 402b1642c944..57ef1ec23b56 100644
+index 57ef1ec23b56..8b54eb58bf47 100644
 --- a/arch/arm64/kvm/mmu.c
 +++ b/arch/arm64/kvm/mmu.c
-@@ -58,7 +58,7 @@ static int stage2_apply_range(struct kvm *kvm, phys_addr_t addr,
- 			break;
+@@ -130,7 +130,7 @@ static void __unmap_stage2_range(struct kvm_s2_mmu *mmu, phys_addr_t start, u64
+ 	struct kvm *kvm = mmu->kvm;
+ 	phys_addr_t end = start + size;
  
- 		if (resched && next != end)
--			cond_resched_lock(&kvm->mmu_lock);
-+			kvm_mmu_lock_cond_resched(kvm);
- 	} while (addr = next, addr != end);
+-	assert_spin_locked(&kvm->mmu_lock);
++	kvm_mmu_lock_assert_held(kvm);
+ 	WARN_ON(size & ~PAGE_MASK);
+ 	WARN_ON(stage2_apply_range(kvm, start, end, kvm_pgtable_stage2_unmap,
+ 				   may_block));
+diff --git a/arch/powerpc/include/asm/kvm_book3s_64.h b/arch/powerpc/include/asm/kvm_book3s_64.h
+index 9bb9bb370b53..db2e437cd97c 100644
+--- a/arch/powerpc/include/asm/kvm_book3s_64.h
++++ b/arch/powerpc/include/asm/kvm_book3s_64.h
+@@ -650,8 +650,8 @@ static inline pte_t *find_kvm_secondary_pte(struct kvm *kvm, unsigned long ea,
+ {
+ 	pte_t *pte;
  
- 	return ret;
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 5a4577830606..659ed0a2875f 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2016,9 +2016,9 @@ static void mmu_sync_children(struct kvm_vcpu *vcpu,
- 			flush |= kvm_sync_page(vcpu, sp, &invalid_list);
- 			mmu_pages_clear_parents(&parents);
- 		}
--		if (need_resched() || spin_needbreak(&vcpu->kvm->mmu_lock)) {
-+		if (need_resched() || kvm_mmu_lock_needbreak(vcpu->kvm)) {
- 			kvm_mmu_flush_or_zap(vcpu, &invalid_list, false, flush);
--			cond_resched_lock(&vcpu->kvm->mmu_lock);
-+			kvm_mmu_lock_cond_resched(vcpu->kvm);
- 			flush = false;
- 		}
- 	}
-@@ -5233,14 +5233,14 @@ slot_handle_level_range(struct kvm *kvm, struct kvm_memory_slot *memslot,
- 		if (iterator.rmap)
- 			flush |= fn(kvm, iterator.rmap);
+-	VM_WARN(!spin_is_locked(&kvm->mmu_lock),
+-		"%s called with kvm mmu_lock not held \n", __func__);
++	kvm_mmu_lock_assert_held(kvm);
++
+ 	pte = __find_linux_pte(kvm->arch.pgtable, ea, NULL, hshift);
  
--		if (need_resched() || spin_needbreak(&kvm->mmu_lock)) {
-+		if (need_resched() || kvm_mmu_lock_needbreak(kvm)) {
- 			if (flush && lock_flush_tlb) {
- 				kvm_flush_remote_tlbs_with_address(kvm,
- 						start_gfn,
- 						iterator.gfn - start_gfn + 1);
- 				flush = false;
- 			}
--			cond_resched_lock(&kvm->mmu_lock);
-+			kvm_mmu_lock_cond_resched(kvm);
- 		}
- 	}
+ 	return pte;
+@@ -662,8 +662,7 @@ static inline pte_t *find_kvm_host_pte(struct kvm *kvm, unsigned long mmu_seq,
+ {
+ 	pte_t *pte;
  
-@@ -5390,7 +5390,7 @@ static void kvm_zap_obsolete_pages(struct kvm *kvm)
- 		 * be in active use by the guest.
- 		 */
- 		if (batch >= BATCH_ZAP_PAGES &&
--		    cond_resched_lock(&kvm->mmu_lock)) {
-+		    kvm_mmu_lock_cond_resched(kvm)) {
- 			batch = 0;
- 			goto restart;
- 		}
-@@ -5688,7 +5688,7 @@ void kvm_mmu_zap_all(struct kvm *kvm)
- 			continue;
- 		if (__kvm_mmu_prepare_zap_page(kvm, sp, &invalid_list, &ign))
- 			goto restart;
--		if (cond_resched_lock(&kvm->mmu_lock))
-+		if (kvm_mmu_lock_cond_resched(kvm))
- 			goto restart;
- 	}
+-	VM_WARN(!spin_is_locked(&kvm->mmu_lock),
+-		"%s called with kvm mmu_lock not held \n", __func__);
++	kvm_mmu_lock_assert_held(kvm);
  
-@@ -6013,9 +6013,9 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
- 			WARN_ON_ONCE(sp->lpage_disallowed);
- 		}
+ 	if (mmu_notifier_retry(kvm, mmu_seq))
+ 		return NULL;
+diff --git a/arch/powerpc/kvm/book3s_hv_nested.c b/arch/powerpc/kvm/book3s_hv_nested.c
+index 18890dca9476..6d5987d1eee7 100644
+--- a/arch/powerpc/kvm/book3s_hv_nested.c
++++ b/arch/powerpc/kvm/book3s_hv_nested.c
+@@ -767,8 +767,7 @@ pte_t *find_kvm_nested_guest_pte(struct kvm *kvm, unsigned long lpid,
+ 	if (!gp)
+ 		return NULL;
  
--		if (need_resched() || spin_needbreak(&kvm->mmu_lock)) {
-+		if (need_resched() || kvm_mmu_lock_needbreak(kvm)) {
- 			kvm_mmu_commit_zap_page(kvm, &invalid_list);
--			cond_resched_lock(&kvm->mmu_lock);
-+			kvm_mmu_lock_cond_resched(kvm);
- 		}
- 	}
- 	kvm_mmu_commit_zap_page(kvm, &invalid_list);
+-	VM_WARN(!spin_is_locked(&kvm->mmu_lock),
+-		"%s called with kvm mmu_lock not held \n", __func__);
++	kvm_mmu_lock_assert_held(kvm);
+ 	pte = __find_linux_pte(gp->shadow_pgtable, ea, NULL, hshift);
+ 
+ 	return pte;
+diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+index 7f599cc64178..cc8268cf28d2 100644
+--- a/arch/x86/kvm/mmu/mmu_internal.h
++++ b/arch/x86/kvm/mmu/mmu_internal.h
+@@ -101,14 +101,14 @@ void kvm_flush_remote_tlbs_with_address(struct kvm *kvm,
+ static inline void kvm_mmu_get_root(struct kvm *kvm, struct kvm_mmu_page *sp)
+ {
+ 	BUG_ON(!sp->root_count);
+-	lockdep_assert_held(&kvm->mmu_lock);
++	kvm_mmu_lock_assert_held(kvm);
+ 
+ 	++sp->root_count;
+ }
+ 
+ static inline bool kvm_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *sp)
+ {
+-	lockdep_assert_held(&kvm->mmu_lock);
++	kvm_mmu_lock_assert_held(kvm);
+ 	--sp->root_count;
+ 
+ 	return !sp->root_count;
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 90807f2d928f..fb911ca428b2 100644
+index fb911ca428b2..1d7c01300495 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -488,10 +488,10 @@ static inline void tdp_mmu_set_spte_no_dirty_log(struct kvm *kvm,
- static bool tdp_mmu_iter_flush_cond_resched(struct kvm *kvm,
- 		struct tdp_iter *iter)
+@@ -117,7 +117,7 @@ void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root)
  {
--	if (need_resched() || spin_needbreak(&kvm->mmu_lock)) {
-+	if (need_resched() || kvm_mmu_lock_needbreak(kvm)) {
- 		kvm_flush_remote_tlbs(kvm);
- 		rcu_read_unlock();
--		cond_resched_lock(&kvm->mmu_lock);
-+		kvm_mmu_lock_cond_resched(kvm);
- 		rcu_read_lock();
- 		tdp_iter_refresh_walk(iter);
- 		return true;
-@@ -512,9 +512,9 @@ static bool tdp_mmu_iter_flush_cond_resched(struct kvm *kvm,
-  */
- static bool tdp_mmu_iter_cond_resched(struct kvm *kvm, struct tdp_iter *iter)
- {
--	if (need_resched() || spin_needbreak(&kvm->mmu_lock)) {
-+	if (need_resched() || kvm_mmu_lock_needbreak(kvm)) {
- 		rcu_read_unlock();
--		cond_resched_lock(&kvm->mmu_lock);
-+		kvm_mmu_lock_cond_resched(kvm);
- 		rcu_read_lock();
- 		tdp_iter_refresh_walk(iter);
- 		return true;
+ 	gfn_t max_gfn = 1ULL << (shadow_phys_bits - PAGE_SHIFT);
+ 
+-	lockdep_assert_held(&kvm->mmu_lock);
++	kvm_mmu_lock_assert_held(kvm);
+ 
+ 	WARN_ON(root->root_count);
+ 	WARN_ON(!root->tdp_mmu_page);
+@@ -425,7 +425,7 @@ static inline void __tdp_mmu_set_spte(struct kvm *kvm, struct tdp_iter *iter,
+ 	struct kvm_mmu_page *root = sptep_to_sp(root_pt);
+ 	int as_id = kvm_mmu_page_as_id(root);
+ 
+-	lockdep_assert_held(&kvm->mmu_lock);
++	kvm_mmu_lock_assert_held(kvm);
+ 
+ 	WRITE_ONCE(*iter->sptep, new_spte);
+ 
+@@ -1139,7 +1139,7 @@ void kvm_tdp_mmu_clear_dirty_pt_masked(struct kvm *kvm,
+ 	struct kvm_mmu_page *root;
+ 	int root_as_id;
+ 
+-	lockdep_assert_held(&kvm->mmu_lock);
++	kvm_mmu_lock_assert_held(kvm);
+ 	for_each_tdp_mmu_root(kvm, root) {
+ 		root_as_id = kvm_mmu_page_as_id(root);
+ 		if (root_as_id != slot->as_id)
+@@ -1324,7 +1324,7 @@ bool kvm_tdp_mmu_write_protect_gfn(struct kvm *kvm,
+ 	int root_as_id;
+ 	bool spte_set = false;
+ 
+-	lockdep_assert_held(&kvm->mmu_lock);
++	kvm_mmu_lock_assert_held(kvm);
+ 	for_each_tdp_mmu_root(kvm, root) {
+ 		root_as_id = kvm_mmu_page_as_id(root);
+ 		if (root_as_id != slot->as_id)
 diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 433d14fdae30..6e2773fc406c 100644
+index 6e2773fc406c..022e3522788f 100644
 --- a/include/linux/kvm_host.h
 +++ b/include/linux/kvm_host.h
-@@ -1497,5 +1497,7 @@ static inline void kvm_handle_signal_exit(struct kvm_vcpu *vcpu)
- 
- void kvm_mmu_lock(struct kvm *kvm);
+@@ -1499,5 +1499,6 @@ void kvm_mmu_lock(struct kvm *kvm);
  void kvm_mmu_unlock(struct kvm *kvm);
-+int kvm_mmu_lock_needbreak(struct kvm *kvm);
-+int kvm_mmu_lock_cond_resched(struct kvm *kvm);
+ int kvm_mmu_lock_needbreak(struct kvm *kvm);
+ int kvm_mmu_lock_cond_resched(struct kvm *kvm);
++void kvm_mmu_lock_assert_held(struct kvm *kvm);
  
  #endif
 diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 32f97ed1188d..b4c49a7e0556 100644
+index b4c49a7e0556..c504f876176b 100644
 --- a/virt/kvm/kvm_main.c
 +++ b/virt/kvm/kvm_main.c
-@@ -442,6 +442,16 @@ void kvm_mmu_unlock(struct kvm *kvm)
- 	spin_unlock(&kvm->mmu_lock);
+@@ -452,6 +452,11 @@ int kvm_mmu_lock_cond_resched(struct kvm *kvm)
+ 	return cond_resched_lock(&kvm->mmu_lock);
  }
  
-+int kvm_mmu_lock_needbreak(struct kvm *kvm)
++void kvm_mmu_lock_assert_held(struct kvm *kvm)
 +{
-+	return spin_needbreak(&kvm->mmu_lock);
-+}
-+
-+int kvm_mmu_lock_cond_resched(struct kvm *kvm)
-+{
-+	return cond_resched_lock(&kvm->mmu_lock);
++	lockdep_assert_held(&kvm->mmu_lock);
 +}
 +
  #if defined(CONFIG_MMU_NOTIFIER) && defined(KVM_ARCH_WANT_MMU_NOTIFIER)
