@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A7D2F2F9E
+	by mail.lfdr.de (Postfix) with ESMTP id D3FD02F2F9F
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:58:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390103AbhALM5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:57:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53894 "EHLO mail.kernel.org"
+        id S2390169AbhALM5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:57:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389896AbhALM5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:57:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36A1B23135;
-        Tue, 12 Jan 2021 12:56:13 +0000 (UTC)
+        id S2389898AbhALM5T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:57:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9DA423159;
+        Tue, 12 Jan 2021 12:56:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610456174;
-        bh=wYJJZ/HtArnsWwAlshvCqcvA9V9//VhtLhQMxbX0esU=;
+        s=k20201202; t=1610456176;
+        bh=t6hn3iAj4nyPAmmxioRCRwnx4oBRPR1LwZj0TXtK6vw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i7ibkV5zAwPA2svHqdnBIMJhHLiplgs3/6CuDQ7LX+x92g+eoYE/F2pvdsEdCIfB7
-         00WFCDHUxhgi6DlZ9FLO89CCTclXBgZtjt8UrAqi+ismjtkq+4NG2bZJgfIYYPF450
-         RxTEEpCCwcquxx326iCbESb+F6YTEat15xGAwt2y9L5TbTxIiN9qVkQm9bdf3Lzx1j
-         QByFtGTFaOCSw6h7hmX3mvKXSsTVfqjsomiGCen751VncB9EXsNEDHph3heVqaqu3d
-         W1U3l03VmVly9oYarbecstgN3V8fBc9yJnths/E6M8wY8aAsuWhz6f3MNIyq5Tz7gZ
-         ouRj16PYP2DGw==
+        b=QPeUQRoH82DFKN8APwrEYsbqKtPCRwffanXdLlVpdVypxWPCXTYdHHg9h0OcwjKft
+         mEWfukFLDdUpMKzojbCFUHyKgmaGMuEsB298njx5iZlBG6i0Uliwza0EVMTI+8T4qB
+         zAr5lazKKfH4R5AYo/vEfckK5SfM/e0OffUKe6kUyKyzDcNDiD7IRhgf2iON+DO4Fd
+         PulA/DsJ4dkCYLBygb6n4R/cXj703v070EtNWUQ4VipytPzutX2ttPNDJDQyHeMDEY
+         eUGtlb3NX+YS3QmKrBeeBdXm6cfnEf3wj6z7lBq9hBMc9gvcBNjLK5xiOm+LHQ3cfT
+         eKe2Tu++QUM5Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Amelie Delaunay <amelie.delaunay@foss.st.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
-        dmaengine@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 30/51] dmaengine: stm32-mdma: fix STM32_MDMA_VERY_HIGH_PRIORITY value
-Date:   Tue, 12 Jan 2021 07:55:12 -0500
-Message-Id: <20210112125534.70280-30-sashal@kernel.org>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 32/51] io_uring: drop file refs after task cancel
+Date:   Tue, 12 Jan 2021 07:55:14 -0500
+Message-Id: <20210112125534.70280-32-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210112125534.70280-1-sashal@kernel.org>
 References: <20210112125534.70280-1-sashal@kernel.org>
@@ -44,33 +42,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amelie Delaunay <amelie.delaunay@foss.st.com>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-[ Upstream commit e1263f9277bad198c2acc8092a41aea1edbea0e4 ]
+[ Upstream commit de7f1d9e99d8b99e4e494ad8fcd91f0c4c5c9357 ]
 
-STM32_MDMA_VERY_HIGH_PRIORITY is b11 not 0x11, so fix it with 0x3.
+io_uring fds marked O_CLOEXEC and we explicitly cancel all requests
+before going through exec, so we don't want to leave task's file
+references to not our anymore io_uring instances.
 
-Signed-off-by: Amelie Delaunay <amelie.delaunay@foss.st.com>
-Link: https://lore.kernel.org/r/20210104142045.25583-1-amelie.delaunay@foss.st.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/dma/stm32-mdma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/io_uring.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/dma/stm32-mdma.c b/drivers/dma/stm32-mdma.c
-index 08cfbfab837bb..ca97cbe433651 100644
---- a/drivers/dma/stm32-mdma.c
-+++ b/drivers/dma/stm32-mdma.c
-@@ -199,7 +199,7 @@
- #define STM32_MDMA_MAX_CHANNELS		63
- #define STM32_MDMA_MAX_REQUESTS		256
- #define STM32_MDMA_MAX_BURST		128
--#define STM32_MDMA_VERY_HIGH_PRIORITY	0x11
-+#define STM32_MDMA_VERY_HIGH_PRIORITY	0x3
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 1f798c5c4213e..aebdbc842a637 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -8807,6 +8807,15 @@ static void io_uring_attempt_task_drop(struct file *file)
+ 		io_uring_del_task_file(file);
+ }
  
- enum stm32_mdma_trigger_mode {
- 	STM32_MDMA_BUFFER,
++static void io_uring_remove_task_files(struct io_uring_task *tctx)
++{
++	struct file *file;
++	unsigned long index;
++
++	xa_for_each(&tctx->xa, index, file)
++		io_uring_del_task_file(file);
++}
++
+ void __io_uring_files_cancel(struct files_struct *files)
+ {
+ 	struct io_uring_task *tctx = current->io_uring;
+@@ -8815,16 +8824,12 @@ void __io_uring_files_cancel(struct files_struct *files)
+ 
+ 	/* make sure overflow events are dropped */
+ 	atomic_inc(&tctx->in_idle);
+-
+-	xa_for_each(&tctx->xa, index, file) {
+-		struct io_ring_ctx *ctx = file->private_data;
+-
+-		io_uring_cancel_task_requests(ctx, files);
+-		if (files)
+-			io_uring_del_task_file(file);
+-	}
+-
++	xa_for_each(&tctx->xa, index, file)
++		io_uring_cancel_task_requests(file->private_data, files);
+ 	atomic_dec(&tctx->in_idle);
++
++	if (files)
++		io_uring_remove_task_files(tctx);
+ }
+ 
+ static s64 tctx_inflight(struct io_uring_task *tctx)
+@@ -8887,6 +8892,8 @@ void __io_uring_task_cancel(void)
+ 
+ 	finish_wait(&tctx->wait, &wait);
+ 	atomic_dec(&tctx->in_idle);
++
++	io_uring_remove_task_files(tctx);
+ }
+ 
+ static int io_uring_flush(struct file *file, void *data)
 -- 
 2.27.0
 
