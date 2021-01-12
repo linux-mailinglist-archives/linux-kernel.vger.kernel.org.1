@@ -2,90 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C27F2F374A
+	by mail.lfdr.de (Postfix) with ESMTP id 8884D2F374B
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:36:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391612AbhALRfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:35:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48782 "EHLO
+        id S1732573AbhALRgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:36:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391487AbhALRfG (ORCPT
+        with ESMTP id S1728051AbhALRgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:35:06 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F5CC06179F;
-        Tue, 12 Jan 2021 09:34:26 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id m10so3791585lji.1;
-        Tue, 12 Jan 2021 09:34:26 -0800 (PST)
+        Tue, 12 Jan 2021 12:36:35 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8627DC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:35:54 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id 23so4562028lfg.10
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:35:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RiW/FLv2FRd7sYgDVBGA2OdRwmdznOMyGqvLQ1X/Wzw=;
-        b=K54w132M65U3eRJXHCnxrtYFZV9OjUhoKEBJd7J1+isRBT9XFEM9oZ/hXDtior3igT
-         kjzJttmYW6KrqXZX4sjwanG/I4AzNQKXJlOpyGU9LtTAMJLKDaPJCilHOp8Hru31yfyn
-         YK8//8ge39n4RrjVg1kdOPLJsuGQP21lgqYw4onH4d5AbQUY0yQ3ErVZM5/SubPsnj3M
-         aNyfaN7kDrqWKBTJDbgnP3h+WnOtcXo6O2rJpvLl5gw3r1eYFxOuJd20br7npeSfhxgr
-         z8SrVHWS7rQn+36ovXTHKqxKbNZhaQEA6PTQ/u3MP7TVMglBf/WAVJIbpNe3mPhbC+uP
-         /XqA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MnIgAhmisz4E0s06xEL4s4qvWxytXtewmzprYh4ynhU=;
+        b=dsjRXi6j2zvSNzyFxrbs/oadYWHhd2Uh46WE/fO/mNqqI6pwHIQT53oQcu0+o7/sK7
+         tnG31hlAZpaUlZNXMbK0WO41csf5opNfR8TXRcJcjtgIRRRITJ6OCMAcSZiYefXA0/PT
+         vKUVDnoYPqW1OTDZFbWCjtCq+vYJEEXgPWowE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RiW/FLv2FRd7sYgDVBGA2OdRwmdznOMyGqvLQ1X/Wzw=;
-        b=KFgDpkU4CAWRVJJH6+eI2LoMLi3MRP7QvCs+tm/jxDCfbg4p6XYNam27o8pWRPKp3z
-         U8V96EwoYP8hzGBSudZhWyx/BhiySx4Lu0LzckBr7XBM/Qr7e+faLi4qYdhIMMWOI2rY
-         G9/L26FaDQLUnHyguWBcpwbNOJwLFwf2fdXZh+BXeJdBAMqvaJye6JPNj8VFARq7PnDZ
-         1OJYFdgy8pBwg1VWEah0s/x82L3WcLeYcQykeAn95reivxiAJJpQmUIRORXb70I5kwLT
-         578rs+d594lWIeT64WG6WPyAlgxb1em9jfsmXhPYLY39rfoYBQKoUzrel+HlR2g0GOld
-         pxOg==
-X-Gm-Message-State: AOAM533fRuuNovXfCp/cvXKQ/HQZO2LjX9JyikmI7iiC+aAmp32vAjIg
-        zl6vT9CeIwR1kTrvvf/3UEX6baB4MZY=
-X-Google-Smtp-Source: ABdhPJyrfGmJx7vMXXqTz23kJXpDyMtyWdyaKxzWqLvTD5TklJdqqjyDx8bhty2Y39153o+yLoIYtg==
-X-Received: by 2002:a2e:870e:: with SMTP id m14mr151998lji.166.1610472864592;
-        Tue, 12 Jan 2021 09:34:24 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id s2sm407794ljj.100.2021.01.12.09.34.23
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MnIgAhmisz4E0s06xEL4s4qvWxytXtewmzprYh4ynhU=;
+        b=WQI5I4LnE23MBTZBvmC/wZoUhtu09EGZZ/f93qA4S2bUiQnqE0kttqZvfT32GlCICh
+         DqiqjctGNkNbLn0bLZw/VBBP2A1dH7Lg6tUpl9pqLbXgMAyZrfCyZwjREf6hMS1lenAh
+         IsSQIZnMaWAg8w0AOsJAK3K8bcz8wvat6riGVv3jDihlPJXsgPGgfOvoYdpvelc7MD5X
+         u0R++Sbanxi54FHEGjdhn9+gYJ6N0EpaqJhzgT99lrDIykQ/p4sVrVdV59+L23DRn0tj
+         M5XJQ4iXLthSYd7ehMXfvQ3f5SIr4q3kZcW+QCKe5XZOZJoTq/O/OSaf4UbGGnP9mPl7
+         dUOw==
+X-Gm-Message-State: AOAM5312TJuUmpsoyXV3H9COICVoS3Xy56JSQx162qJhrBVo8kwbXk+v
+        XdGQCjgpk7QPDpa0O6VsYv0Trl0m1KSobw==
+X-Google-Smtp-Source: ABdhPJy+Iur4SHPkmABU0AYgNQVxwj7YdDt0WV+A9e4NmY2R/HB0iwBkY5VxI/q9C8LVfXFxJJHzfg==
+X-Received: by 2002:a05:6512:242:: with SMTP id b2mr20868lfo.460.1610472952714;
+        Tue, 12 Jan 2021 09:35:52 -0800 (PST)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id 19sm479401lft.90.2021.01.12.09.35.51
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 09:34:23 -0800 (PST)
-Subject: Re: [PATCH v2] i2c: tegra: Create i2c_writesl_vi() to use with VI I2C
- for filling TX FIFO
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        thierry.reding@gmail.com, jonathanh@nvidia.com, wsa@the-dreams.de
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org
-References: <1610424379-23653-1-git-send-email-skomatineni@nvidia.com>
- <1610424379-23653-2-git-send-email-skomatineni@nvidia.com>
- <ae886d28-ef6c-63d3-2cc7-90752ddb8b21@gmail.com>
- <c250dd2d-85fd-75a6-cdae-71e4300007de@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <f9a65bdd-edfa-2935-9f01-90e22e4d6246@gmail.com>
-Date:   Tue, 12 Jan 2021 20:34:23 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Tue, 12 Jan 2021 09:35:51 -0800 (PST)
+Received: by mail-lf1-f50.google.com with SMTP id o19so4627427lfo.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:35:51 -0800 (PST)
+X-Received: by 2002:a05:6512:2287:: with SMTP id f7mr28583lfu.40.1610472950962;
+ Tue, 12 Jan 2021 09:35:50 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <c250dd2d-85fd-75a6-cdae-71e4300007de@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <000000000000886dbd05b7ffa8db@google.com> <20210104124153.0992b1f7fd1a145e193a333f@linux-foundation.org>
+ <CAHk-=wi6hd8ATJ1W90goTxjgyvuoFsf0xZdAJmZ2c0dx5wcJSg@mail.gmail.com>
+ <alpine.LSU.2.11.2101041839440.3466@eggly.anvils> <CAHk-=wi36CBggdRfdggACvf2hG+djM9kKnorrwsByN6uDvPExA@mail.gmail.com>
+ <CAHk-=wh=5kDGukMs2sVZ8uHZJX4VL13oD5+xMAR4HvuY6QckLg@mail.gmail.com>
+ <CAHk-=wgD9GK5CeHopYmRHoYS9cNuCmDMsc=+MbM_KgJ0KB+=ng@mail.gmail.com> <20210112104425.GA8760@quack2.suse.cz>
+In-Reply-To: <20210112104425.GA8760@quack2.suse.cz>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 12 Jan 2021 09:35:34 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whNKdNaBn2SuWa5=gjLNC3iAcG4+Si_TPBF7R8AbkC8tQ@mail.gmail.com>
+Message-ID: <CAHk-=whNKdNaBn2SuWa5=gjLNC3iAcG4+Si_TPBF7R8AbkC8tQ@mail.gmail.com>
+Subject: Re: kernel BUG at mm/page-writeback.c:LINE!
+To:     Jan Kara <jack@suse.cz>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        syzbot <syzbot+2fc0712f8f8b8b8fa0ef@syzkaller.appspotmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-12.01.2021 19:57, Sowjanya Komatineni пишет:
-...
->> @@ -326,6 +326,8 @@ static void i2c_writel(struct tegra_i2c_dev
->> *i2c_dev, u32 val, unsigned int reg)
->>       /* read back register to make sure that register writes
->> completed */
->>       if (reg != I2C_TX_FIFO)
->>           readl_relaxed(i2c_dev->base + tegra_i2c_reg_addr(i2c_dev,
->> reg));
->> +    else
->> +        readl_relaxed(i2c_dev->base + tegra_i2c_reg_addr(i2c_dev,
->> I2C_INT_STATUS));
+On Tue, Jan 12, 2021 at 2:44 AM Jan Kara <jack@suse.cz> wrote:
 >
+> On Fri 08-01-21 18:04:21, Linus Torvalds wrote:
+> >
+> > Oh, and Michael Larabel (of phoronix) reports that that one-liner does
+> > something bad to a few PostgreSQL tests, on the order of 5-10%
+> > regression on some machines (but apparently not others).
+>
+> Do you have more details? From my experience (we do regular pgbench runs
+> for various kernels in various configs in SUSE) PostgreSQL numbers tend to
+> be somewhat noisy and more dependent on CPU scheduling and NUMA locality
+> than anything else. But it very much depends on the exact config passed to
+> pgbench so that's why I'm asking...
 
-Perhaps will be a bit better to replace this "else" with "else if
-(i2c_dev->is_vi)".
+No, I don't really have many more details. I don't have things like
+raw numbers or exact configurations, but Michael has been very
+responsive if you ask, so if you are interested, just email him at
+Michael Larabel <Michael@michaellarabel.com>.
+
+It wasn't NUMA - apparently the machines he saw this on were just
+plain consumer setups, and his larger machines didn't actually show
+the effect. But yes, I suspect it was some scheduling artifact, and
+probably just fairly random noise from just changing the scheduling
+pattern a bit.
+
+            Linus
