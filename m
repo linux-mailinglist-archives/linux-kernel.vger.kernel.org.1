@@ -2,131 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF132F323A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:54:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44BCC2F323C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729081AbhALNxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:53:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30525 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726236AbhALNxH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:53:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610459500;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VqV6xUNCn3zaauF+LhOcuwhDVizk+gj2YN6AZWHRrPo=;
-        b=dBA8uVFMKzgT2VpuOKTnV4EBG/owxfqJMe5FVBlqb94vDzeJ02yol5PaoDCyRoT5cgx4hy
-        JVTbOyP2z9ARHFdqi/YB9ioEdUvbydDJEaI0HvjU/1n3JzDPK9dsz8gLuIalrP5jZQbT+Y
-        n8poSRL2Ytnib0CARlvJc5dJrJg/XrQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-221-C3XE_pOpPASBYhPOkH5WOQ-1; Tue, 12 Jan 2021 08:51:36 -0500
-X-MC-Unique: C3XE_pOpPASBYhPOkH5WOQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1A508144E7;
-        Tue, 12 Jan 2021 13:51:34 +0000 (UTC)
-Received: from [10.36.115.140] (ovpn-115-140.ams2.redhat.com [10.36.115.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EEF455C239;
-        Tue, 12 Jan 2021 13:51:31 +0000 (UTC)
-Subject: Re: [External] Re: [PATCH v3 1/6] mm: migrate: do not migrate HugeTLB
- page whose refcount is one
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>, mhocko@suse.cz,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Yang Shi <shy828301@gmail.com>
-References: <20210110124017.86750-1-songmuchun@bytedance.com>
- <20210110124017.86750-2-songmuchun@bytedance.com>
- <1b39d654-0b8c-de3a-55d1-6ab8c2b2e0ba@redhat.com>
- <c6eddfc6-8e15-4a28-36ff-64bfa65cca8e@redhat.com>
- <CAMZfGtWnATsqgdqVONgAFWAAJU=KGxVJQEt38b8JTV+UtRzkYw@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <423ee403-bba7-acf6-8934-9db36d3a719a@redhat.com>
-Date:   Tue, 12 Jan 2021 14:51:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1729496AbhALNxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:53:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45186 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726236AbhALNxb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 08:53:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2C9723109;
+        Tue, 12 Jan 2021 13:52:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610459570;
+        bh=ybnUi5z0HlJzczbJA/zh6uzuqgX4GFPAw52BtZ5QGco=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eLTEal0MLhseZ2IUmbvd6fG9MhUsW6e92TBqhjx1uAIGDHX2UsTV1hQZRCbp5Txu5
+         QHs/MV2EA3E7JwjqrfdktJOsNMkey2/bQVi5YOtoBljF0nbYgHlX1sKo2JKvr/ACAV
+         80I94tDJbAe4I/s7jwiyJziWwNiB9tWt/h+jcGF+0925g0I52Hp81YKnbtkya37EFC
+         i0a4xs8wO4Y8oe2aL5I6iNDL9g7Buy/lMgAaINOKxiIE6Pg7JoGjakPWlC8uvxzU4B
+         FdeIyB3smoGIz4FJ1JCKC4Addiz95vElWTJKXbXngHtYwsqrFLksQg1ZMkPY02B8J1
+         1s5AeLoRWCSJg==
+Date:   Tue, 12 Jan 2021 13:52:17 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     matthias.bgg@kernel.org
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
+        Axel Lin <axel.lin@ingics.com>,
+        Chen Zhong <chen.zhong@mediatek.com>,
+        Gene Chen <gene_chen@richtek.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matthias Brugger <mbrugger@suse.com>
+Subject: Re: [PATCH v3 1/2] regulator: mt6358: Add OF match table
+Message-ID: <20210112135217.GB4646@sirena.org.uk>
+References: <20210112100659.19350-1-matthias.bgg@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAMZfGtWnATsqgdqVONgAFWAAJU=KGxVJQEt38b8JTV+UtRzkYw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="QTprm0S8XgL7H0Dt"
+Content-Disposition: inline
+In-Reply-To: <20210112100659.19350-1-matthias.bgg@kernel.org>
+X-Cookie: Stay away from hurricanes for a while.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.01.21 14:40, Muchun Song wrote:
-> On Tue, Jan 12, 2021 at 7:11 PM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 12.01.21 12:00, David Hildenbrand wrote:
->>> On 10.01.21 13:40, Muchun Song wrote:
->>>> If the refcount is one when it is migrated, it means that the page
->>>> was freed from under us. So we are done and do not need to migrate.
->>>>
->>>> This optimization is consistent with the regular pages, just like
->>>> unmap_and_move() does.
->>>>
->>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->>>> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
->>>> Acked-by: Yang Shi <shy828301@gmail.com>
->>>> ---
->>>>  mm/migrate.c | 6 ++++++
->>>>  1 file changed, 6 insertions(+)
->>>>
->>>> diff --git a/mm/migrate.c b/mm/migrate.c
->>>> index 4385f2fb5d18..a6631c4eb6a6 100644
->>>> --- a/mm/migrate.c
->>>> +++ b/mm/migrate.c
->>>> @@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
->>>>              return -ENOSYS;
->>>>      }
->>>>
->>>> +    if (page_count(hpage) == 1) {
->>>> +            /* page was freed from under us. So we are done. */
->>>> +            putback_active_hugepage(hpage);
->>>> +            return MIGRATEPAGE_SUCCESS;
->>>> +    }
->>>> +
->>>>      new_hpage = get_new_page(hpage, private);
->>>>      if (!new_hpage)
->>>>              return -ENOMEM;
->>>>
->>>
->>> Question: What if called via alloc_contig_range() where we even want to
->>> "migrate" free pages, meaning, relocate it?
->>>
->>
->> To be more precise:
->>
->> a) We don't have dissolve_free_huge_pages() calls on the
->> alloc_contig_range() path. So we *need* migration IIUC.
-> 
-> Without this patch, if you want to migrate a HUgeTLB page,
-> the page is freed to the hugepage pool. With this patch,
-> the page is also freed to the hugepage pool.
-> I didn't see any different. I am missing something?
 
-I am definitely not an expert on hugetlb pools, that's why I am asking.
+--QTprm0S8XgL7H0Dt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Isn't it, that with your code, no new page is allocated - so
-dissolve_free_huge_pages() might just refuse to dissolve due to
-reservations, bailing out, no?
+On Tue, Jan 12, 2021 at 11:06:57AM +0100, matthias.bgg@kernel.org wrote:
 
-(as discussed, looks like alloc_contig_range() needs to be fixed to
-handle this correctly)
+> The binding documentation mentions that a compatible is required for the
+> MT6358 device node. But the driver does not provide a OF match table.
+> This way auto-loading is broken as the MFD driver that registers the
+> device has a .of_compatible set which makes the platform .uevent
+> callback report a OF modalias, but that's not in the module.
 
--- 
-Thanks,
+As previously discussed it'd be better to fix the binding document to
+deprecate the requirement for the compatible and remove the usage from
+the MFD.
 
-David / dhildenb
+--QTprm0S8XgL7H0Dt
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/9qZAACgkQJNaLcl1U
+h9AvHQf/dZnoemzOHIqA+LE6lhqqLgw9NX1cTsb4oncHJaYArCHM3ThlY46CGnLD
+Syjh2P+iIa92uQfKgQ+MT6m0mUbAsm+tCf73biTyC1pklvnQm3gxwGLkOAWLngI1
+QQxwoHfK8y/KLSg9ZS4w0m4zygVA2QP+BwVv0XbfHI7yd3ZTWDHOU61hSACdjDM8
+b6D2UvgsPDHhMOygohWy3N9hlZaRN6oU85vqKBmM4JnlkRtk3+XaVZEj+gmpl+tw
+zi9wc42wGDkCcaCGDWOEAKKY/a5ZalRdOfooNvU1zyUtndiEUbzHb4bLnFZVTkYJ
+J/GpwTyz30GmsTOmFVCeoH2dtnFzdA==
+=+RD0
+-----END PGP SIGNATURE-----
+
+--QTprm0S8XgL7H0Dt--
