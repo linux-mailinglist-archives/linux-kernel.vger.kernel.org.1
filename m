@@ -2,192 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E5F2F28C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 08:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 346512F28CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 08:17:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391976AbhALHPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 02:15:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56298 "EHLO
+        id S2391988AbhALHQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 02:16:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391911AbhALHPR (ORCPT
+        with ESMTP id S2391849AbhALHP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 02:15:17 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B1DC061575;
-        Mon, 11 Jan 2021 23:14:37 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id r63so1270246ybf.5;
-        Mon, 11 Jan 2021 23:14:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=poqEsJKUqbi5q6gJHl8uXM58SBSZyDT+q0k8szBsA2w=;
-        b=kDk2nqge0hKimd8X+Qyg7wIl2wcFF8bwwqg63vWK0sXmCj7coW6GbO272s0waLNUTV
-         6Uyk7xxB5iTMfoII5kNC8vYJHXOomxU9bfoR/rZOzWU+b1bGCgK4wB1Okh5640UQmk1j
-         FZvuYw1b7tu9GDF8kUfeFQISaPc9ycpPU6a+2NKSci9WQvgTj95w7NR7B1vPgXG58ksn
-         uLyzskJKMAERW5ZBlc+slnslah4AqpfcU4Mb+UkQmRTGtORIRfBOhXK2xCAWvzDh4HB2
-         TJOkVNnltdM7MT9+H3kkc25ITkOtBV7C67Zfw9LIiDP503gAsXcukaFv4IIRRku2WSdN
-         ms2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=poqEsJKUqbi5q6gJHl8uXM58SBSZyDT+q0k8szBsA2w=;
-        b=VN+ezHm52YxB6CVVo51gbg9CJovJI+p/AOzR0gFQnmpORV22XD7LDZRDJN29RlHb9a
-         +jMhmvrra2Th0WZrUo4Mchz5HFS14j4aVYK8XdngMceupMKAXmYTN05YHEACnqKYvHG1
-         ZyOsyOKy/XSkmo3KCcls0PA8V6M0Ielv4IsM4deOS4Kt/KdMj3pmeIBeR8luVGXGzYbn
-         m7cUj+FpfusPCTTPKxiFQEoLZBCcTOl8F2+wMLN/ek2Yn/rw+WkhHOllr5lnb28Ih5v2
-         V4lBXdt0OtnM7nl6TFLj7j9MZm3Wv21Kdt1cM19S+xARS7hfjiUp9fOZyfXiQ6WWB936
-         bxnA==
-X-Gm-Message-State: AOAM5329fzPG1/weyDYmViWM1ft80zP2BLY+nvWoSp9OXJXlFHpLTO16
-        eEBoiGWVI9bXSznBl6iaKQ/9SVtzEERNnK4+CEk=
-X-Google-Smtp-Source: ABdhPJwt0X370NZIjw+4up+qc8Hqzg/eRCuXoaZPO/ERuG2aM1WwHStXQY+RD+xf209idrWL+bOw1ka52PXapZxMsvo=
-X-Received: by 2002:a25:f40e:: with SMTP id q14mr355322ybd.230.1610435676396;
- Mon, 11 Jan 2021 23:14:36 -0800 (PST)
+        Tue, 12 Jan 2021 02:15:59 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F84C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 23:15:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=Mk0eAutEoJveyPAezF2JyS1WJDEYQjBMunxTqsLl6Qg=; b=I7K9rZ77CNRm4pjbqEvN2rH1MP
+        TvAfN50lc4Oz5X6hOUtxwI/g9qJOc4/SLIdYKtthW7OvmgE39D70h1TRersPjNv+FIHld4hgS+Io5
+        4KyPNj8ZsiEt5SII9hpIq2gPhIZUPCOXR84deiYoDr057XO1rlJSOgr0nAt1+4HcdBJ5R4b/9uYu8
+        rFggsi4b1Y684ihHErhJeePQmQmyRNeFWSgjAGLPp9MBuKxY175niOwLG9T69PoPkno+8ceMuLR+g
+        H0x+6JcKBuCjqkUm2wYlG8ICCs372gdMY3wyjADWxSWIIRpE33YcFwPoloxaF3JATz69JcED6zH8o
+        s3t4wOig==;
+Received: from [2601:1c0:6280:3f0::79df]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kzDta-000573-QW; Tue, 12 Jan 2021 07:15:15 +0000
+Subject: Re: [PATCH v2 29/34] Intel tsens i2c slave driver.
+To:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        leonard.crestez@nxp.com, palmerdabbelt@google.com,
+        paul.walmsley@sifive.com, peng.fan@nxp.com, robh+dt@kernel.org,
+        shawnguo@kernel.org, jassisinghbrar@gmail.com
+Cc:     linux-kernel@vger.kernel.org,
+        "C, Udhayakumar" <udhayakumar.c@intel.com>, C@linux.intel.com
+References: <20210108212600.36850-1-mgross@linux.intel.com>
+ <20210108212600.36850-30-mgross@linux.intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <fe1aad31-a536-4f0b-e817-b795890f4b45@infradead.org>
+Date:   Mon, 11 Jan 2021 23:15:06 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20210108231950.3844417-1-songliubraving@fb.com>
- <20210108231950.3844417-5-songliubraving@fb.com> <ad40d69d-9c0f-8205-26df-c5a755778f9e@fb.com>
- <352FED72-11B3-44F0-9B1C-92552AEB4AE8@fb.com> <e890e08e-99d0-9d81-b835-c3a1b4b8bbbf@fb.com>
-In-Reply-To: <e890e08e-99d0-9d81-b835-c3a1b4b8bbbf@fb.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 11 Jan 2021 23:14:25 -0800
-Message-ID: <CAEf4BzZivGBmDbUxfiDwAC3aFoTWNfyWaiZRA4Vu16ZT9kzE8A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 4/4] bpf: runqslower: use task local storage
-To:     Yonghong Song <yhs@fb.com>
-Cc:     Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "haoluo@google.com" <haoluo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210108212600.36850-30-mgross@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 7:24 PM Yonghong Song <yhs@fb.com> wrote:
->
->
->
-> On 1/11/21 2:54 PM, Song Liu wrote:
-> >
-> >
-> >> On Jan 11, 2021, at 9:49 AM, Yonghong Song <yhs@fb.com> wrote:
-> >>
-> >>
-> >>
-> >> On 1/8/21 3:19 PM, Song Liu wrote:
-> >>> Replace hashtab with task local storage in runqslower. This improves the
-> >>> performance of these BPF programs. The following table summarizes average
-> >>> runtime of these programs, in nanoseconds:
-> >>>                            task-local   hash-prealloc   hash-no-prealloc
-> >>> handle__sched_wakeup             125             340               3124
-> >>> handle__sched_wakeup_new        2812            1510               2998
-> >>> handle__sched_switch             151             208                991
-> >>> Note that, task local storage gives better performance than hashtab for
-> >>> handle__sched_wakeup and handle__sched_switch. On the other hand, for
-> >>> handle__sched_wakeup_new, task local storage is slower than hashtab with
-> >>> prealloc. This is because handle__sched_wakeup_new accesses the data for
-> >>> the first time, so it has to allocate the data for task local storage.
-> >>> Once the initial allocation is done, subsequent accesses, as those in
-> >>> handle__sched_wakeup, are much faster with task local storage. If we
-> >>> disable hashtab prealloc, task local storage is much faster for all 3
-> >>> functions.
-> >>> Signed-off-by: Song Liu <songliubraving@fb.com>
-> >>> ---
-> >>>   tools/bpf/runqslower/runqslower.bpf.c | 26 +++++++++++++++-----------
-> >>>   1 file changed, 15 insertions(+), 11 deletions(-)
-> >>> diff --git a/tools/bpf/runqslower/runqslower.bpf.c b/tools/bpf/runqslower/runqslower.bpf.c
-> >>> index 1f18a409f0443..c4de4179a0a17 100644
-> >>> --- a/tools/bpf/runqslower/runqslower.bpf.c
-> >>> +++ b/tools/bpf/runqslower/runqslower.bpf.c
-> >>> @@ -11,9 +11,9 @@ const volatile __u64 min_us = 0;
-> >>>   const volatile pid_t targ_pid = 0;
-> >>>     struct {
-> >>> -   __uint(type, BPF_MAP_TYPE_HASH);
-> >>> -   __uint(max_entries, 10240);
-> >>> -   __type(key, u32);
-> >>> +   __uint(type, BPF_MAP_TYPE_TASK_STORAGE);
-> >>> +   __uint(map_flags, BPF_F_NO_PREALLOC);
-> >>> +   __type(key, int);
-> >>>     __type(value, u64);
-> >>>   } start SEC(".maps");
-> >>>   @@ -25,15 +25,19 @@ struct {
-> >>>     /* record enqueue timestamp */
-> >>>   __always_inline
-> >>> -static int trace_enqueue(u32 tgid, u32 pid)
-> >>> +static int trace_enqueue(struct task_struct *t)
-> >>>   {
-> >>> -   u64 ts;
-> >>> +   u32 pid = t->pid;
-> >>> +   u64 ts, *ptr;
-> >>>             if (!pid || (targ_pid && targ_pid != pid))
-> >>>             return 0;
-> >>>             ts = bpf_ktime_get_ns();
-> >>> -   bpf_map_update_elem(&start, &pid, &ts, 0);
-> >>> +   ptr = bpf_task_storage_get(&start, t, 0,
-> >>> +                              BPF_LOCAL_STORAGE_GET_F_CREATE);
-> >>> +   if (ptr)
-> >>> +           *ptr = ts;
-> >>>     return 0;
-> >>>   }
-> >>>   @@ -43,7 +47,7 @@ int handle__sched_wakeup(u64 *ctx)
-> >>>     /* TP_PROTO(struct task_struct *p) */
-> >>>     struct task_struct *p = (void *)ctx[0];
-> >>>   - return trace_enqueue(p->tgid, p->pid);
-> >>> +   return trace_enqueue(p);
-> >>>   }
-> >>>     SEC("tp_btf/sched_wakeup_new")
-> >>> @@ -52,7 +56,7 @@ int handle__sched_wakeup_new(u64 *ctx)
-> >>>     /* TP_PROTO(struct task_struct *p) */
-> >>>     struct task_struct *p = (void *)ctx[0];
-> >>>   - return trace_enqueue(p->tgid, p->pid);
-> >>> +   return trace_enqueue(p);
-> >>>   }
-> >>>     SEC("tp_btf/sched_switch")
-> >>> @@ -70,12 +74,12 @@ int handle__sched_switch(u64 *ctx)
-> >>>             /* ivcsw: treat like an enqueue event and store timestamp */
-> >>>     if (prev->state == TASK_RUNNING)
-> >>> -           trace_enqueue(prev->tgid, prev->pid);
-> >>> +           trace_enqueue(prev);
-> >>>             pid = next->pid;
-> >>>             /* fetch timestamp and calculate delta */
-> >>> -   tsp = bpf_map_lookup_elem(&start, &pid);
-> >>> +   tsp = bpf_task_storage_get(&start, next, 0, 0);
-> >>>     if (!tsp)
-> >>>             return 0;   /* missed enqueue */
-> >>
-> >> Previously, hash table may overflow so we may have missed enqueue.
-> >> Here with task local storage, is it possible to add additional pid
-> >> filtering in the beginning of handle__sched_switch such that
-> >> missed enqueue here can be treated as an error?
-> >
-> > IIUC, hashtab overflow is not the only reason of missed enqueue. If the
-> > wakeup (which calls trace_enqueue) happens before runqslower starts, we
-> > may still get missed enqueue in sched_switch, no?
->
-> the wakeup won't happen before runqslower starts since runqslower needs
-> to start to do attachment first and then trace_enqueue() can run.
+On 1/8/21 1:25 PM, mgross@linux.intel.com wrote:
+> diff --git a/drivers/misc/intel_tsens/Kconfig b/drivers/misc/intel_tsens/Kconfig
+> index 8b263fdd80c3..c2138339bd89 100644
+> --- a/drivers/misc/intel_tsens/Kconfig
+> +++ b/drivers/misc/intel_tsens/Kconfig
+> @@ -14,6 +14,20 @@ config INTEL_TSENS_LOCAL_HOST
+>  	  Say Y if using a processor that includes the Intel VPU such as
+>  	  Keem Bay.  If unsure, say N.
+>  
+> +config INTEL_TSENS_I2C_SLAVE
+> +	bool "I2C slave driver for intel tsens"
 
-I think Song is right. Given wakeup and sched_switch need to be
-matched, depending at which exact time we attach BPF programs, we can
-end up missing wakeup, but not missing sched_switch, no? So it's not
-an error.
+Why bool instead of tristate?
 
->
-> For the current implementation trace_enqueue() will happen for any non-0
-> pid before setting test_progs tgid, and will happen for any non-0 and
-> test_progs tgid if it is set, so this should be okay if we do filtering
-> in handle__sched_switch. Maybe you can do an experiment to prove whether
-> my point is correct or not.
->
-> >
-> > Thanks,
-> > Song
-> >
+> +	depends on INTEL_TSENS_LOCAL_HOST
+> +	select I2C
+> +	select I2C_SLAVE
+> +	help
+> +	  This option enables tsens i2c slave driver.
+
+	                            I2C
+
+> +
+> +	  This driver is used for reporting thermal data via I2C
+> +	  SMBUS to remote host.
+> +	  Enable this option if you want to have support for thermal
+> +	  management controller
+
+	             controller.
+
+> +	  Say Y if using a processor that includes the Intel VPU such as
+> +	  Keem Bay.  If unsure, say N.
+
+
+-- 
+~Randy
+
