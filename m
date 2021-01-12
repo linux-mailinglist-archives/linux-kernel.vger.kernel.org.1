@@ -2,60 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417862F3355
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:56:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 296082F3357
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388261AbhALOye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:54:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbhALOye (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:54:34 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F7BC061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:53:53 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id h186so1543890pfe.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:53:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=bNRXuqqoQHU0p8CZ+OcYvrCqmjgKTw1omcxHMhjmYT0=;
-        b=sbFOPpa6JTTvwLPvnpvzrXtCySAUKcNmvEwU28a1nz2lc5OPWJuuy4JIZx+AYxRqUC
-         LkgSqgWoegOEDTJJLLiV3pK5a1icndzwiymzkCl2oXrMQGilbnIx2AN2KnAF0YVvU46b
-         vq9syu2l3q5QZrUTqJ5aR/B81YQo5WUZ5sqeHiquCqGXD86e9gbCaZFPzxI1GP4SLEGI
-         xgXZpDUg9XRCSp/EKhOgtPI07a+/JOjTqTIVJgtjajEiB2TzQJPQhEOehn2MeptaTp58
-         iB7fHKGQW5eE6dYQlTLn8aanB1+2Z1iXvwTOcM1tF6dDvYFl5orAz1wtJmguQ7BuOd6B
-         cDNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=bNRXuqqoQHU0p8CZ+OcYvrCqmjgKTw1omcxHMhjmYT0=;
-        b=A4wHh7nsLJpa7Q//wJsB5vmZN2/qzIiIqR/yY+9/UBIY51g4Go1W1ZlreKX0ZO93N6
-         PPpOkuWVu22+qBdho7gju5PCPu4+QS2sHIhaSVBmb5ovIjuB5A2oMDrdNU3J74y+yBJ4
-         WoqVfu3cmgMzPXeNEuWLzk5Ez/cE0D2VmmJbnRpodS5ABFNQvLZTezcHv8CtxHZsnZnq
-         fUON1kK9AIG7T55tPQVxXeplZxLCA9owG1Xe0EthB8I+vwXt5xkk4SFdDM256FzBOJnO
-         aU1A/EAfIURvoRloEXWrui6i+OnbYBiitt+UlVIlGUhkaG9/kw6ltzRgVkCDkSWGYLE3
-         RG7Q==
-X-Gm-Message-State: AOAM531LTBQB15mQuGzl4lHyfk9CoH4c8bUf6YuS4daEdgbAEl6dV6cf
-        bTxKTshsv10tsxXPixYKy7T1MA+VHH4PuiPgDvM=
-X-Google-Smtp-Source: ABdhPJx8DNqwb7dbK/IkE5Of2ouzNgyeMAw9bw8muoBj/o8AokT8F4b1VLcML6hbYBIVhFu8x6JpX/BfU0++DyX2BLI=
-X-Received: by 2002:a65:64ce:: with SMTP id t14mr5209212pgv.36.1610463233644;
- Tue, 12 Jan 2021 06:53:53 -0800 (PST)
+        id S2388512AbhALOyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:54:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726236AbhALOyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 09:54:50 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7AB1320739;
+        Tue, 12 Jan 2021 14:54:09 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kzL3f-006zzO-CO; Tue, 12 Jan 2021 14:54:07 +0000
 MIME-Version: 1.0
-Received: by 2002:a17:90a:9bc5:0:0:0:0 with HTTP; Tue, 12 Jan 2021 06:53:53
- -0800 (PST)
-Reply-To: hkmohammedh@gmail.com
-From:   Mohammed Hossain <rw4602735@gmail.com>
-Date:   Tue, 12 Jan 2021 14:53:53 +0000
-Message-ID: <CALYF9WSFO_6gQFi71eo_uBraGM0GqGc+ViG6bo9=0B81buVx7g@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Tue, 12 Jan 2021 14:54:07 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH v3 09/21] arm64: cpufeature: Add global feature override
+ facility
+In-Reply-To: <168970f2-89d8-4e57-ab8d-59fa52bd830a@arm.com>
+References: <20210111132811.2455113-1-maz@kernel.org>
+ <20210111132811.2455113-10-maz@kernel.org> <20210111184154.GC17941@gaia>
+ <129db8bd3913a90c96d4cfe4f55e27a0@kernel.org>
+ <a122aa5c-4af9-e236-db82-db0ed885e0a5@arm.com>
+ <d98aed718a26d0455d5549d53f97db06@kernel.org>
+ <168970f2-89d8-4e57-ab8d-59fa52bd830a@arm.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <750d69f418b78deb5031da86df119911@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: suzuki.poulose@arm.com, catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, will@kernel.org, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-01-12 11:59, Suzuki K Poulose wrote:
+> On 1/12/21 11:50 AM, Marc Zyngier wrote:
+>> Hi Suzuki,
+>> 
+>> On 2021-01-12 09:17, Suzuki K Poulose wrote:
+>>> Hi Marc,
+>>> 
+>>> On 1/11/21 7:48 PM, Marc Zyngier wrote:
+>> 
+>> [...]
+>> 
+>>>> diff --git a/arch/arm64/kernel/cpufeature.c 
+>>>> b/arch/arm64/kernel/cpufeature.c
+>>>> index 894af60b9669..00d99e593b65 100644
+>>>> --- a/arch/arm64/kernel/cpufeature.c
+>>>> +++ b/arch/arm64/kernel/cpufeature.c
+>>>> @@ -774,6 +774,7 @@ static void __init init_cpu_ftr_reg(u32 sys_reg, 
+>>>> u64 new)
+>>>>       u64 strict_mask = ~0x0ULL;
+>>>>       u64 user_mask = 0;
+>>>>       u64 valid_mask = 0;
+>>>> +    u64 override_val = 0, override_mask = 0;
+>>>> 
+>>>>       const struct arm64_ftr_bits *ftrp;
+>>>>       struct arm64_ftr_reg *reg = get_arm64_ftr_reg(sys_reg);
+>>>> @@ -781,9 +782,35 @@ static void __init init_cpu_ftr_reg(u32 
+>>>> sys_reg, u64 new)
+>>>>       if (!reg)
+>>>>           return;
+>>>> 
+>>>> +    if (reg->override_mask && reg->override_val) {
+>>>> +        override_mask = *reg->override_mask;
+>>>> +        override_val = *reg->override_val;
+>>>> +    }
+>>>> +
+>>>>       for (ftrp = reg->ftr_bits; ftrp->width; ftrp++) {
+>>>>           u64 ftr_mask = arm64_ftr_mask(ftrp);
+>>>>           s64 ftr_new = arm64_ftr_value(ftrp, new);
+>>>> +        s64 ftr_ovr = arm64_ftr_value(ftrp, override_val);
+>>>> +
+>>>> +        if ((ftr_mask & override_mask) == ftr_mask) {
+>>>> +            if (ftr_ovr < ftr_new) {
+>>> 
+>>> Here we assume that all the features are FTR_LOWER_SAFE. We could
+>>> probably use arm64_ftr_safe_value(ftrp, ftr_new, ftr_ovr) here ?
+>>> That would cover us for both HIGHER_SAFE and LOWER_SAFE features.
+>>> However that may be restrictive for FTR_EXACT, as we the safe
+>>> value would be set to "ftr->safe_val". I guess that may be better
+>>> than forcing to use an unsafe value for the boot CPU, which could
+>>> anyway conflict with the other CPUs and eventually trigger the
+>>> ftr alue to be safe_val.
+>> 
+>> I like the idea of using the helper, as it cleanups up the code a bit.
+>> However, not being to set a feature to a certain value could be 
+>> restrictive,
+>> as in general, it means that we can only disable a feature and not 
+>> adjust
+>> its level of support.
+>> 
+>> Take PMUVER for example: with the helper, I can't override it from 
+>> v8.4 to
+>> v8.1. I can only go to v8.0.
+> 
+> My point is, we set this only for the "init" of cpu features. So, even 
+> if we
+> init to a custom , non-(default-safe) value, the secondary CPUs could 
+> scream,
+> and the system wide safe value could fall back to the "safe" value for
+> EXACT features, no matter what you did to init it.
+
+Right. So let's go with the safe value for EXACT features for now,
+and let the override fail if that's not what the user asked for.
+
+After all, there are only so many things we want to support as
+an override, and in all the cases at hand, using the safe value
+actually matches what we want to do.
+
+We can always revisit this if and when we need a different behaviour.
+
+Thanks,
+
+         M.
 -- 
-I have an important message for you get back for more details.
+Jazz is not dead. It just smells funny...
