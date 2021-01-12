@@ -2,147 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B5E22F3D2E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E39B22F3D2C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437875AbhALVei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2437887AbhALVei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Jan 2021 16:34:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437074AbhALU4g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:56:36 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A66BC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:55:56 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id o6so7004176iob.10
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:55:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5xQAjZcdO2TrQnB+fHDjBj7ZI3sRYW3buKazkY/+leg=;
-        b=OR6/VYazAiJwRhCvmQD/WUA+Uv/7S+xpTVUroXDbWJokFA3RJ7g3JGg69IXqW6eE3Q
-         ihZUA7c51NDinZJIZ0tcdKCGwDwD6jWKhryCKSBHdpXyRlIfIqHSo9L4LUO1039t3sao
-         DATsRMBCDdnlQpcClOZeqV+VDVfrwk6oZMjaylbCqWvs1VDWRhzMeOqNwLtWKQsspFua
-         1HzN3eosx75G9W3SqpJM6ujG+J+9vY2baxUjmGFevQ6/xNXUUhlpqy3KEZVpjZOQbfZm
-         FknnkORngUHr/JFJw6jiiawY3OmrRPT9HsWQpCzwUYkroSQwWUQ/Dm94DHTXFJq2kqdq
-         YSiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5xQAjZcdO2TrQnB+fHDjBj7ZI3sRYW3buKazkY/+leg=;
-        b=ktt15q4qNfJIFCCeS+gGHi0XVXCmuy359tXUB8/vCNigh+U7GWfDXjQfr3cvLKYbzB
-         yLRzz+XBeUEa3rGZtuZkDEtog2D6pQ3vOopnej91IEoOoAB7TTNNaXCrQ9nbTZndlcnz
-         jXPUURXHoM8+ifg4BLe1VfcBdEyi7O6VUbDsiY/WeJGN0p3b5LzOvEpJOUaqjbU5pUU9
-         1uxEiAJr4L1qpYUI14cjM5QhUqCYt8Oz+3a1332bU/nf0VGYt7B3kIRd4VLCNnLMy0dL
-         Nkl4JtfBMdJXqT7eMmHA4nQDwzGKYO7L5Rh77gneXjFNa/cX5oxzqF3n49Bjv8or6rK/
-         C1Ww==
-X-Gm-Message-State: AOAM531lSezhWM1WicHqmMai74CCmmIypVhDzurqQ5iywoMC9ZIfIBbv
-        SoOvymSf/Qtvbl3s80OcJD0=
-X-Google-Smtp-Source: ABdhPJzw8qgadJzodJv6KQguGC+urtPsSoipUCh7zja2rMUvNDqq2PfeRoI253H5Eyrx7RedE7Cr+Q==
-X-Received: by 2002:a6b:7a0c:: with SMTP id h12mr745554iom.162.1610484955698;
-        Tue, 12 Jan 2021 12:55:55 -0800 (PST)
-Received: from localhost.localdomain ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id 17sm3193856ilt.15.2021.01.12.12.55.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 12:55:54 -0800 (PST)
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: [PATCH] ubsan: Implement __ubsan_handle_alignment_assumption
-Date:   Tue, 12 Jan 2021 13:55:42 -0700
-Message-Id: <20210112205542.1375847-1-natechancellor@gmail.com>
-X-Mailer: git-send-email 2.30.0
+Received: from ozlabs.org ([203.11.71.1]:58291 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437081AbhALU6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:58:11 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DFjZJ1JDbz9sWk;
+        Wed, 13 Jan 2021 07:57:27 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610485049;
+        bh=oOt9UC3bfgNLTO1XfajBqrAQGTUzyQ0gZrLFC6E3HKU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Hv1aowxpQ+GcGQfyulfIc1P1mB3L6lGbSlN5XXUsET7xYh1wkqDT0x80p8aZPvq1i
+         2HTwdUHTD2S43mwoK7jW08qs/SnxBF6H3u2cIboP5QIwNeyA/jtbs3U8cTknHK78dB
+         Z9OrIql/t1s8V1mzT7RdF+MWtnXevTBc50ONHqDBqstOjaVD+5Z0JHv0NMhr0OKMa2
+         8j4YRR8rOsbQawaCwbtT/qkPG1pWVAj7bBMDgnGP+ILpHLtPEteoU4nM0ZjXkLTgah
+         oyCYQXJCXVN20UCtTuetN/8DKj6mcc5RfIlk0OMEz4J3nOw/7eJWCUGnXDPY7F2gbp
+         olsd3EKG41vFw==
+Date:   Wed, 13 Jan 2021 07:57:26 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc@vger.kernel.org, kvm@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v7 00/17] follow_pfn and other iomap races
+Message-ID: <20210113075726.2ffaef97@canb.auug.org.au>
+In-Reply-To: <X/2jC9kBBQCfbC3d@phenom.ffwll.local>
+References: <20201127164131.2244124-1-daniel.vetter@ffwll.ch>
+        <X/2jC9kBBQCfbC3d@phenom.ffwll.local>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/3kQvshNRwSzGT637_7v3ycs";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building ARCH=mips 32r2el_defconfig with CONFIG_UBSAN_ALIGNMENT:
+--Sig_/3kQvshNRwSzGT637_7v3ycs
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-ld.lld: error: undefined symbol: __ubsan_handle_alignment_assumption
->>> referenced by slab.h:557 (include/linux/slab.h:557)
->>>               main.o:(do_initcalls) in archive init/built-in.a
->>> referenced by slab.h:448 (include/linux/slab.h:448)
->>>               do_mounts_rd.o:(rd_load_image) in archive init/built-in.a
->>> referenced by slab.h:448 (include/linux/slab.h:448)
->>>               do_mounts_rd.o:(identify_ramdisk_image) in archive init/built-in.a
->>> referenced 1579 more times
+Hi Daniel,
 
-Implement this for the kernel based on LLVM's
-handleAlignmentAssumptionImpl because the kernel is not linked against
-the compiler runtime.
+On Tue, 12 Jan 2021 14:24:27 +0100 Daniel Vetter <daniel@ffwll.ch> wrote:
+>=20
+> As Jason suggested, I've pulled the first 1 patches into a topic branch.
+>=20
+> Stephen, can you please add the below to linux-next for the 5.12 merge
+> window?
+>=20
+> git://anongit.freedesktop.org/drm/drm topic/iomem-mmap-vs-gup
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/1245
-Link: https://github.com/llvm/llvm-project/blob/llvmorg-11.0.1/compiler-rt/lib/ubsan/ubsan_handlers.cpp#L151-L190
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
----
- lib/ubsan.c | 28 ++++++++++++++++++++++++++++
- lib/ubsan.h |  6 ++++++
- 2 files changed, 34 insertions(+)
+Added from today.
 
-diff --git a/lib/ubsan.c b/lib/ubsan.c
-index 3e3352f3d0da..a1e6cc9993f8 100644
---- a/lib/ubsan.c
-+++ b/lib/ubsan.c
-@@ -427,3 +427,31 @@ void __ubsan_handle_load_invalid_value(void *_data, void *val)
- 	ubsan_epilogue();
- }
- EXPORT_SYMBOL(__ubsan_handle_load_invalid_value);
-+
-+void __ubsan_handle_alignment_assumption(void *_data, unsigned long ptr,
-+					 unsigned long align,
-+					 unsigned long offset)
-+{
-+	struct alignment_assumption_data *data = _data;
-+	unsigned long real_ptr;
-+
-+	if (suppress_report(&data->location))
-+		return;
-+
-+	ubsan_prologue(&data->location, "alignment-assumption");
-+
-+	if (offset)
-+		pr_err("assumption of %lu byte alignment (with offset of %lu byte) for pointer of type %s failed",
-+		       align, offset, data->type->type_name);
-+	else
-+		pr_err("assumption of %lu byte alignment for pointer of type %s failed",
-+		       align, data->type->type_name);
-+
-+	real_ptr = ptr - offset;
-+	pr_err("%saddress is %lu aligned, misalignment offset is %lu bytes",
-+	       offset ? "offset " : "", BIT(ffs(real_ptr)),
-+	       real_ptr & (align - 1));
-+
-+	ubsan_epilogue();
-+}
-+EXPORT_SYMBOL(__ubsan_handle_alignment_assumption);
-diff --git a/lib/ubsan.h b/lib/ubsan.h
-index 7b56c09473a9..9a0b71c5ff9f 100644
---- a/lib/ubsan.h
-+++ b/lib/ubsan.h
-@@ -78,6 +78,12 @@ struct invalid_value_data {
- 	struct type_descriptor *type;
- };
- 
-+struct alignment_assumption_data {
-+	struct source_location location;
-+	struct source_location assumption_location;
-+	struct type_descriptor *type;
-+};
-+
- #if defined(CONFIG_ARCH_SUPPORTS_INT128)
- typedef __int128 s_max;
- typedef unsigned __int128 u_max;
+Thanks for adding your subsystem tree as a participant of linux-next.  As
+you may know, this is not a judgement of your code.  The purpose of
+linux-next is for integration testing and to lower the impact of
+conflicts between subsystems in the next merge window.=20
 
-base-commit: 7c53f6b671f4aba70ff15e1b05148b10d58c2837
--- 
-2.30.0
+You will need to ensure that the patches/commits in your tree/series have
+been:
+     * submitted under GPL v2 (or later) and include the Contributor's
+        Signed-off-by,
+     * posted to the relevant mailing list,
+     * reviewed by you (or another maintainer of your subsystem tree),
+     * successfully unit tested, and=20
+     * destined for the current or next Linux merge window.
 
+Basically, this should be just what you would send to Linus (or ask him
+to fetch).  It is allowed to be rebased if you deem it necessary.
+
+--=20
+Cheers,
+Stephen Rothwell=20
+sfr@canb.auug.org.au
+
+--Sig_/3kQvshNRwSzGT637_7v3ycs
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/+DTYACgkQAVBC80lX
+0GxNGgf9EtCDsHg2G5ATJxLMpj0++NlXWmIf8gLWRE7OQLpBu+7tP4EgP4BGf0B6
+XKm8FFDJGaYQ+dRRCMllLCFLfjZsxDDRqyQxAZ0TeZNIIW8gBLIHfC73jlqv9i5N
+q43QxSqU2CatsUkqt0P9G4JeE5mvDmgr6p4b4Webza6UBzqVvRNLxctL+OP7h+1f
+p9kM7E1sHfUofXAeBYGp0DBtEPDzxBjwyyQlcIknDJtNwPMUet2tPvL9Z8nUoODF
+z4upF0XEmm4ijYuHOfdxpKg2wHObICkSlbE1sMPs6jb6+DAaW7auRagOsyejlShO
+HQrjuzmMDQGxl5vGPO1+K8ZQFRxudg==
+=AR5e
+-----END PGP SIGNATURE-----
+
+--Sig_/3kQvshNRwSzGT637_7v3ycs--
