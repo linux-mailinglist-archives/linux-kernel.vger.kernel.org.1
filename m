@@ -2,109 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17DAF2F263E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:25:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B419C2F2624
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730098AbhALCZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 21:25:25 -0500
-Received: from mga07.intel.com ([134.134.136.100]:3978 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726645AbhALCZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 21:25:25 -0500
-IronPort-SDR: HBvjqQw+qmT8B2VPezNAmfGXZJP8VMTFx3jayVp762W55HauBFPYis8GmzcJI+2t+03Fafthla
- RxhHwf+RlPhA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="242040056"
-X-IronPort-AV: E=Sophos;i="5.79,340,1602572400"; 
-   d="scan'208";a="242040056"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 18:24:44 -0800
-IronPort-SDR: nL9ruWuxWD/nCSoKNLHntIVgvGs+7b30LkClJCvHR6ZkTXHJz13vYx27RQZ0c2k9D+YvWkrFH0
- DQVKUMA3cIXA==
-X-IronPort-AV: E=Sophos;i="5.79,340,1602572400"; 
-   d="scan'208";a="381240943"
-Received: from yangzhon-virtual.bj.intel.com (HELO yangzhon-Virtual) ([10.238.144.101])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-SHA256; 11 Jan 2021 18:24:40 -0800
-Date:   Tue, 12 Jan 2021 10:13:21 +0800
-From:   Yang Zhong <yang.zhong@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, tony.luck@intel.com, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, kyung.min.park@intel.com, x86@kernel.org,
-        yang.zhong@intel.com
-Subject: Re: [PATCH 1/2] Enumerate AVX Vector Neural Network instructions
-Message-ID: <20210112021321.GA9922@yangzhon-Virtual>
-References: <20210105004909.42000-1-yang.zhong@intel.com>
- <20210105004909.42000-2-yang.zhong@intel.com>
- <8fa46290-28d8-5f61-1ce4-8e83bf911106@redhat.com>
- <20210105121456.GE28649@zn.tnic>
+        id S1728920AbhALCPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 21:15:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727426AbhALCPE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 21:15:04 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDE7C061575;
+        Mon, 11 Jan 2021 18:14:24 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id v19so392862pgj.12;
+        Mon, 11 Jan 2021 18:14:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HKwXEUt2KV6yKFtidI9ws3+xlcJfaSAZDwRiqf3lrro=;
+        b=hYKPwKhE2oU3iWkqGCpi/yuf+O+T231tjBRvlO+6Xuu+HiZZQG9uWqHKQ9HHbqY1A2
+         eRVIfiz8M/v9v7O5bbkyxPZoXS2fgBWJ+TGb3j4CZwAaB/qDjDR/fPKl2Cb7GbMMF3Mg
+         UbW7/Wpy3gAOpMn3Th39IycQtbDbx3OkfVF0e9iS4B7oMhteQDfQfFPJLjMAklqxS/G8
+         2bTDftSWBMaKyPUGu4tSigE6dCpa4hch6hTYrjTPssQuYz4CgkBjEeetRkAoo1akqVfx
+         KTwg+kupB2acjFapYmLz0tXVDvKIR7HIJ30yRvuu+kKgijJ2iQGPYnWb3rPvQuAtuO1l
+         fb0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HKwXEUt2KV6yKFtidI9ws3+xlcJfaSAZDwRiqf3lrro=;
+        b=UsPk3k6N5ZwnyZZ1r8YQ401zATF4lSHEmnrvXv77MH3D5aZdjnVpjB+sde8xFXcyyn
+         GobG6sngSX5GFWvaTvfCFGaDC03y1XPH5DzDucrZs+mvCXs9OYi/Y3p4QPymGSEXaYOZ
+         b4qsvXY87/dui5Xk35t7apEb4d3UNfMJLJLAoG1WIhYxlFvnyx2diHMurWCYx6y0lB5a
+         Prak/tCHApg7aBs86B8huJoCQRJckPR8PBQuZCX3L5Zw8jDcO2aCy7UsPurwBdkR5dEj
+         2cSK8csVFKEWocCZuR271RpzGyKozrHlKfIxJ7T9YZ+KuFETQY1HM+CnGoYq0TTcV23K
+         9FSA==
+X-Gm-Message-State: AOAM530oRW1cQyRnPxPgwChYPZz2MoOAAKM6uwEzAg9yZGazYuRpFGeq
+        VfKWAfWU3cs1sUUM0+fZmKY=
+X-Google-Smtp-Source: ABdhPJw9slzE8OzBbO4J+eiwaR63/+A8LmJOYK2IcTk2DUpF3XBWYgYkRWdbJ2m7CsHVB3685yLJQA==
+X-Received: by 2002:a62:1ad3:0:b029:19d:cc02:5d07 with SMTP id a202-20020a621ad30000b029019dcc025d07mr2302990pfa.70.1610417663981;
+        Mon, 11 Jan 2021 18:14:23 -0800 (PST)
+Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id i25sm1092775pgb.33.2021.01.11.18.14.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 18:14:22 -0800 (PST)
+Date:   Mon, 11 Jan 2021 18:14:20 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can <linux-can@vger.kernel.org>,
+        Jeroen Hofstee <jhofstee@victronenergy.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/1] can: dev: add software tx timestamps
+Message-ID: <20210112021420.GA18703@hoboy.vegasvil.org>
+References: <20210110124903.109773-1-mailhol.vincent@wanadoo.fr>
+ <20210110124903.109773-2-mailhol.vincent@wanadoo.fr>
+ <20210111171152.GB11715@hoboy.vegasvil.org>
+ <CAMZ6RqJqWOGVb_oAhk+CSZAvsej_xSDR6jqktU_nwLgFpWTb9Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210105121456.GE28649@zn.tnic>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <CAMZ6RqJqWOGVb_oAhk+CSZAvsej_xSDR6jqktU_nwLgFpWTb9Q@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 01:14:56PM +0100, Borislav Petkov wrote:
-> On Tue, Jan 05, 2021 at 12:47:23PM +0100, Paolo Bonzini wrote:
-> > On 05/01/21 01:49, Yang Zhong wrote:
-> > > From: Kyung Min Park <kyung.min.park@intel.com>
-> > > 
-> > > Add AVX version of the Vector Neural Network (VNNI) Instructions.
-> > > 
-> > > A processor supports AVX VNNI instructions if CPUID.0x07.0x1:EAX[4] is
-> > > present. The following instructions are available when this feature is
-> > > present.
-> > >    1. VPDPBUS: Multiply and Add Unsigned and Signed Bytes
-> > >    2. VPDPBUSDS: Multiply and Add Unsigned and Signed Bytes with Saturation
-> > >    3. VPDPWSSD: Multiply and Add Signed Word Integers
-> > >    4. VPDPWSSDS: Multiply and Add Signed Integers with Saturation
-> > > 
-> > > The only in-kernel usage of this is kvm passthrough. The CPU feature
-> > > flag is shown as "avx_vnni" in /proc/cpuinfo.
-> > > 
-> > > This instruction is currently documented in the latest "extensions"
-> > > manual (ISE). It will appear in the "main" manual (SDM) in the future.
-> > > 
-> > > Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
-> > > Signed-off-by: Yang Zhong <yang.zhong@intel.com>
-> > > Reviewed-by: Tony Luck <tony.luck@intel.com>
-> > > ---
-> > >   arch/x86/include/asm/cpufeatures.h | 1 +
-> > >   1 file changed, 1 insertion(+)
-> > > 
-> > > diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> > > index f5ef2d5b9231..d10d9962bd9b 100644
-> > > --- a/arch/x86/include/asm/cpufeatures.h
-> > > +++ b/arch/x86/include/asm/cpufeatures.h
-> > > @@ -293,6 +293,7 @@
-> > >   #define X86_FEATURE_PER_THREAD_MBA	(11*32+ 7) /* "" Per-thread Memory Bandwidth Allocation */
-> > >   /* Intel-defined CPU features, CPUID level 0x00000007:1 (EAX), word 12 */
-> > > +#define X86_FEATURE_AVX_VNNI		(12*32+ 4) /* AVX VNNI instructions */
-> > >   #define X86_FEATURE_AVX512_BF16		(12*32+ 5) /* AVX512 BFLOAT16 instructions */
-> > >   /* AMD-defined CPU features, CPUID level 0x80000008 (EBX), word 13 */
-> > > 
-> > 
-> > Boris, is it possible to have a topic branch for this patch?
-> 
-> Just take it through your tree pls.
-> 
-> Acked-by: Borislav Petkov <bp@suse.de>
->
-  
-  Paolo, Boris has acked this kernel patch, and if i need send new patchset to add this 
-  acked-by info ? or kvm tree will directly pull this patchset? thanks.
+On Tue, Jan 12, 2021 at 09:00:33AM +0900, Vincent MAILHOL wrote:
+> Out of curiosity, which programs do you use? I guess wireshark
+> but please let me know if you use any other programs (I just use
+> to write a small C program to do the stuff).
 
-  Yang  
+I was thinking of PTP over DeviceNET (which, in turn, is over CAN).
+This is specified in Annex G of IEEE 1588.
 
-   
-> Thx.
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
+The linuxptp stack has modular design and could one day support
+DeviceNET.  It would be much easier for linuxptp if CAN interfaces
+support hardware time stamping in the same way as other network
+interfaces.
+
+Thanks,
+Richard
