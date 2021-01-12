@@ -2,128 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF7172F3024
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 351192F309F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbhALND4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:03:56 -0500
-Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:59564 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726262AbhALNDv (ORCPT
+        id S1730305AbhALNIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:08:11 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:53975 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728258AbhALNII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:03:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1610456562;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fK5r7uxJp7khU8wYpOUbsek3+XXxkbrtxPAHFXoYrKc=;
-        b=gXZARi3ihos9Cg2bs41ZRz2Frg3KUXeTpRSWH4kJDtUFIHtq+KVjOMeEFlUxT+xRcHaeC3
-        VrqCrPgd50W6GhihVe0SDCaTEuxVFgqxNQfpPN64wleAuKyOBlxwvuZJKlHuBMCwSabzSK
-        lq01OEkbt7SE9j0L1nSzL1wJRFcn26k=
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com
- (mail-am6eur05lp2105.outbound.protection.outlook.com [104.47.18.105])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-36-8Nhw74rSPHCL8NQxWhSP5w-1; Tue, 12 Jan 2021 14:02:41 +0100
-X-MC-Unique: 8Nhw74rSPHCL8NQxWhSP5w-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HzYBLBH9MDtX/aMkAPjNJJ4iAY0Rtaz4lxTQrG8a2Jimj9SLrgg0rZPYrfa3/5Nn2KICVc8PBHHZTps6JqW4wgFJnNThaPbFkuoV1fuWgmxommTgym8rU5rX4cB+2HPRr+g1aPi1mNNt8gDGKUivjlwXmZ0fTsK7spkwG4jGJszXMgAYDKR34jZlRqd2CWgqNGdObYcvr2pCmrYJSSpp71l2SSCZrsQd3rzbxqJoYemqRQTXxzWK6J5uIqKmOqw0Kg+NzvKFDmHyR2NiP75qayrViZg3wY632Q41+1TB4auWkEr/iQxA/3LOURAPUcuwXQMKjtec22SbzYgMV9rOwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fK5r7uxJp7khU8wYpOUbsek3+XXxkbrtxPAHFXoYrKc=;
- b=mN3zaZQUFnqHspL+Sh2l53ZA8WhHDa9hQAP8G6jQEuLUxxBKM6AlZStWdsAsZ8CGSWk/s6OygTU4NmO9nDJalU62BNvhfv5DZmkHrqowGScBx0lCSw0k6nHwmTxUpo3LdGFIXMui6OhQmrHIGfvZaBQ5KjSV4s38qmly10smh8UFMbVhGdoH7v/oOYAJPE/Ta54OtUZaOkl7AjKJQJyJuXJsy/NTvB/CLStiJyCYcJDGEPyRAtenDLztATwrUwbB/fe0tqLCGs8LiOr5lQqxFOKTQZinrquPJVog/bZrh1w+dTtx7SYTYGSQNH3EFCBcIJsd8SxK5bjsPljgIZ24ig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR0402MB3359.eurprd04.prod.outlook.com (2603:10a6:803:3::28)
- by VI1PR04MB3278.eurprd04.prod.outlook.com (2603:10a6:802:4::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.12; Tue, 12 Jan
- 2021 13:02:39 +0000
-Received: from VI1PR0402MB3359.eurprd04.prod.outlook.com
- ([fe80::9c1d:89de:a08e:ccc9]) by VI1PR0402MB3359.eurprd04.prod.outlook.com
- ([fe80::9c1d:89de:a08e:ccc9%3]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
- 13:02:39 +0000
-From:   =?utf-8?Q?Aur=C3=A9lien?= Aptel <aaptel@suse.com>
-To:     menglong8.dong@gmail.com, sfrench@samba.org
-Cc:     linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: Re: [PATCH] fs: cifs: remove unneeded variable in smb3_fs_context_dup
-In-Reply-To: <20210112091340.7500-1-dong.menglong@zte.com.cn>
-References: <20210112091340.7500-1-dong.menglong@zte.com.cn>
-Date:   Tue, 12 Jan 2021 14:02:37 +0100
-Message-ID: <87im82l34i.fsf@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [2003:fa:705:9f85:a5b8:801b:5f46:ca87]
-X-ClientProxiedBy: GVAP278CA0009.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:710:20::19) To VI1PR0402MB3359.eurprd04.prod.outlook.com
- (2603:10a6:803:3::28)
+        Tue, 12 Jan 2021 08:08:08 -0500
+Received: from 36-229-236-11.dynamic-ip.hinet.net ([36.229.236.11] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kzJO9-0008Qs-MG; Tue, 12 Jan 2021 13:07:10 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
+        lgirdwood@gmail.com, ranjani.sridharan@linux.intel.com,
+        kai.vehmanen@linux.intel.com, daniel.baluta@nxp.com
+Cc:     broonie@kernel.org, Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Kailang Yang <kailang@realtek.com>,
+        Jian-Hong Pan <jhp@endlessos.org>,
+        Hui Wang <hui.wang@canonical.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Thomas Hebb <tommyhebb@gmail.com>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v3 1/4] ALSA: hda/realtek: Power up codec when setting LED via COEF and GPIO
+Date:   Tue, 12 Jan 2021 21:06:59 +0800
+Message-Id: <20210112130704.1201406-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost (2003:fa:705:9f85:a5b8:801b:5f46:ca87) by GVAP278CA0009.CHEP278.PROD.OUTLOOK.COM (2603:10a6:710:20::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Tue, 12 Jan 2021 13:02:39 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d2ef6382-5570-46c5-2519-08d8b6fa5742
-X-MS-TrafficTypeDiagnostic: VI1PR04MB3278:
-X-Microsoft-Antispam-PRVS: <VI1PR04MB327871F346335F633356B798A8AA0@VI1PR04MB3278.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: //FoZCXlHXIAsxC/cX2sOYKFmDSnFQbkLZ2QiS6+Lwt7A4Ire37D0oTSBAB5cGgi6qLVsXj7yaRXg/FpYp1lATtDhls2IIkQ3rOLnyhGSvi3o3Ek1RYvFeUhCOh3y3EpEmE93joHgh89I7vjxwMGDQOnR1YsHuPSx9+BXxsWe3Z7aw36D/vwrNVR2ZV/WEfBZbA1f0yp83uC6JlPp3QQjwVUKW/FMU+DwxNKW3zWT7SfUeUGyW3cx11ScvNO0+ytfBQW/UOTrcJT51c3f33QxHbm+7oOASo2I+pEQcDGt3tjXkFFMk4OoTOu7C7sz1x3Km70Z4yNqEclpj4u5pfxhB8M69wGm/itBmn6vwQK/XVltZioQF/cVYOz3TvuqPZTbRdZFtiogCzWW2PEX6/TiQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3359.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(346002)(136003)(366004)(376002)(52116002)(478600001)(316002)(6486002)(2616005)(186003)(16526019)(558084003)(8936002)(8676002)(36756003)(86362001)(66556008)(2906002)(5660300002)(4326008)(66476007)(66946007)(6496006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?V00vRXdlOGhXR0xZUjBjOGlDS3AzTFRINERLZnprSUVHL2dZR2ltay9VMFZw?=
- =?utf-8?B?SEIrU2cxWnYxMTkranZBd0ZQcXBIeUREbzYrUllPRnFYOTRPM09EaC9DWFFv?=
- =?utf-8?B?ZEluU2VXcGlFakNCSkRUWW4xSzFvZFZoL29DY3Vsa2lxdFRLUXY2SFZSQnUr?=
- =?utf-8?B?a2VWd2htakRMUCtPZCtxb09pcjVjMjdNMVdFVVRXK0V6VVdxM000ZFBrcHZX?=
- =?utf-8?B?YmhJTFdkWDU0NDAyOVZ4WHB6OVZRVmQ4ZHd5QVNlWjdwanF4RTRSOUViZ2JH?=
- =?utf-8?B?TUNHa015QVNoOVErTmwrSEJPLzVhWm9uL08weVN0M3hnWGYwNC92c0hKaEdS?=
- =?utf-8?B?U2M4bTdqVmlUeW1OSEViaGZ1b3hyWEcxNUkvRlNvT0tjSmZITnpJdmdibVN4?=
- =?utf-8?B?TmlmbVNTUTlvTm9wMkpISDd1SFN4WG1tSUhBWGxQT0VpUW8wMVlhRTJ6VFRr?=
- =?utf-8?B?eWt0Um9GYmphZndYZWhlNzhRaDJ3YlZwRUZ1OU5qeDE2QmxWdXdZRzNHZ1cv?=
- =?utf-8?B?bXo4VEZuT1lrSUJmTVdoOFF4WUt3ejF0cmEydHNsMXVQV1RoelQ5dWozREhU?=
- =?utf-8?B?bUlmQjh5dmEybG8vRUs4NndEWnlpaDF6NStzYTN0R3Q0Z2FpQURpTVdGdU1l?=
- =?utf-8?B?UFkzdTZ2cWRVbzRwdkk2T05mYU42dXAwNUFEbWM2cjBTcjVEZTdYRVV0Q216?=
- =?utf-8?B?Qk1zVURDY2J6VUpWU3BOM3BjZHB4MUF6MXZXQ292amhUTU53U3pUeEVOOVcy?=
- =?utf-8?B?U0dObFllTnBNa2VMUlBnMTdFZ0d2Ujdwd01IcU05RWltNmNZS3dLQVI5d2c0?=
- =?utf-8?B?MFp6VUUrNWhzVjFxL0pFT2hlMVpTQTZVS1ZLUmNXdXRiMlZDSkdvMy9SYTVh?=
- =?utf-8?B?Wm1XaWRaMGxDWGQ1STJmTVk2TEEweGdEcWpmbXUrVTBUMDJpQnRhYmhLMGxO?=
- =?utf-8?B?N3o3Y2hPR2tZbXNPYy96ampCYjVJVnNpQ0VBV0dpbGJPQ0FPMFpoNC9ZOE1S?=
- =?utf-8?B?WEp2T25kcFMxY20zUGsrTDF6cDFoSFpWWGZXMkYwcmlTUDZzRWV6STdHM2Vs?=
- =?utf-8?B?Z3EvTk9lMEJXeHRhRjZIZFhtQTJDLzR6WHMrTGIvMndhUCtRendNS1ExRTlY?=
- =?utf-8?B?M1J0TTZ3Tk9Nd0xHSXJvTGFpeHRvbFk1SnR6Vm50STV0VHdML1hZWHl6RWJx?=
- =?utf-8?B?TlVRVURSdXRwSVFqc2lRbEZ4dFM2M05Rblk5TXUyUWpPRllXU2pmK1ZrMUdF?=
- =?utf-8?B?NTJjNHRvL2g3WjJNSGI5NzVjWGZVaWliaE1ONkg4emRaU0J6WDlCVldoeGRj?=
- =?utf-8?B?ZE91NThkcXphMDg0WWl5RFNOcEdVd1EvaEpHUVJhZHJGSVA3djRQRkpHWTRs?=
- =?utf-8?Q?KlltFTZjOqGV336q+HgwA9UcDmNFAtOs=3D?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3359.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 13:02:39.4167
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-Network-Message-Id: d2ef6382-5570-46c5-2519-08d8b6fa5742
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rMk5M5+CKCldEGeGhDnsddcBDnHMYbgMCzFGnuBbQgUKU3MltHcVBCT/8Xh/KSUu
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3278
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+System takes a very long time to suspend after commit 215a22ed31a1
+("ALSA: hda: Refactor codec PM to use direct-complete optimization"):
+[   90.065964] PM: suspend entry (s2idle)
+[   90.067337] Filesystems sync: 0.001 seconds
+[   90.185758] Freezing user space processes ... (elapsed 0.002 seconds) done.
+[   90.188713] OOM killer disabled.
+[   90.188714] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+[   90.190024] printk: Suspending console(s) (use no_console_suspend to debug)
+[   90.904912] intel_pch_thermal 0000:00:12.0: CPU-PCH is cool [49C], continue to suspend
+[  321.262505] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
+[  328.426919] snd_hda_codec_realtek ehdaudio0D0: Unable to sync register 0x2b8000. -5
+[  329.490933] ACPI: EC: interrupt blocked
 
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
+That commit keeps the codec suspended during the system suspend. However,
+led_suspend() for mute and micmute led writes codec register, triggers
+a pending wake up. The wakeup is then handled in __device_suspend() by
+the following:
+- pm_runtime_disable() to handle the wakeup event.
+- device is no longer is suspended state, direct-complete isn't taken.
+- pm_runtime_enable() to balance disable_depth.
 
-Thanks,
---=20
-Aur=C3=A9lien Aptel / SUSE Labs Samba Team
-GPG: 1839 CB5F 9F5B FB9B AA97  8C99 03C8 A49B 521B D5D3
-SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg, D=
-E
-GF: Felix Imend=C3=B6rffer, Mary Higgins, Sri Rasiah HRB 247165 (AG M=C3=BC=
-nchen)
+if (dev->power.direct_complete) {
+	if (pm_runtime_status_suspended(dev)) {
+		pm_runtime_disable(dev);
+		if (pm_runtime_status_suspended(dev)) {
+			pm_dev_dbg(dev, state, "direct-complete ");
+			goto Complete;
+		}
+
+		pm_runtime_enable(dev);
+	}
+	dev->power.direct_complete = false;
+}
+
+Since direct-complete doens't apply anymore, the codec's system suspend
+routine is used.
+
+This doesn't play well with SOF driver. When its runtime resume is
+called for system suspend, hda_codec_jack_check() schedules
+jackpoll_work which uses snd_hdac_is_power_on() to check whether codec
+is suspended. Because of the previous pm_runtime_enable(),
+snd_hdac_is_power_on() returns false and jackpoll continues to run, and
+snd_hda_power_up_pm() cannot power up an already suspended codec in
+multiple attempts, causes the long delay on system suspend.
+
+When direct-complete path is taken, snd_hdac_is_power_on() returns true
+and hda_jackpoll_work() is skipped by accident. This is still not
+correct, and it will be addressed by later patch.
+
+Explicitly runtime resume codec on setting LED to solve the issue.
+
+Fixes: 215a22ed31a1 ("ALSA: hda: Refactor codec PM to use direct-complete optimization")
+---
+v3:
+ New patch.
+
+ sound/pci/hda/patch_realtek.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 3c1d2a3fb1a4..304a7bc89fcd 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4164,7 +4164,10 @@ static void alc_update_gpio_led(struct hda_codec *codec, unsigned int mask,
+ {
+ 	if (polarity)
+ 		enabled = !enabled;
++	/* temporarily power up/down for setting GPIO */
++	snd_hda_power_up_pm(codec);
+ 	alc_update_gpio_data(codec, mask, !enabled); /* muted -> LED on */
++	snd_hda_power_down_pm(codec);
+ }
+ 
+ /* turn on/off mute LED via GPIO per vmaster hook */
+@@ -4287,8 +4290,10 @@ static void alc_update_coef_led(struct hda_codec *codec,
+ 	if (polarity)
+ 		on = !on;
+ 	/* temporarily power up/down for setting COEF bit */
++	snd_hda_power_up_pm(codec);
+ 	alc_update_coef_idx(codec, led->idx, led->mask,
+ 			    on ? led->on : led->off);
++	snd_hda_power_down_pm(codec);
+ }
+ 
+ /* update mute-LED according to the speaker mute state via COEF bit */
+-- 
+2.29.2
 
