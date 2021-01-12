@@ -2,178 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDA42F3B43
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:57:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA732F3B46
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:57:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393218AbhALTzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 14:55:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26283 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388019AbhALTzR (ORCPT
+        id S2393223AbhALTza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:55:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729360AbhALTz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:55:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610481230;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jGddw3AEKpcsMt4782p5IEc+z+Jt2DqrmaucsUPFqxQ=;
-        b=bB1gzM9eI+QsSN16XHCj+JZIt12rpjffm8pbFXCetKoORwuCrwSOOY1EiqIWdVnOwnoVEf
-        4YIGoDT2bNwYu4wQFP8q7ruTRdk5O6SDOuW7wfpiyLd/jj5jbu4wjUgZgjDu7jJMyElLpx
-        DhtzfBGN9k6WJ1WSEtkAof7wXrIu1r4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-319-GgrlOiiGOUaQkw9W9zNYKA-1; Tue, 12 Jan 2021 14:53:45 -0500
-X-MC-Unique: GgrlOiiGOUaQkw9W9zNYKA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D877101AFCD;
-        Tue, 12 Jan 2021 19:53:40 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 66C2C100AE4F;
-        Tue, 12 Jan 2021 19:53:32 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 12:53:31 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Keqian Zhu <zhukeqian1@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Will Deacon <will@kernel.org>, "Marc Zyngier" <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        "Robin Murphy" <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-Subject: Re: [PATCH 4/5] vfio/iommu_type1: Carefully use unmap_unpin_all
- during dirty tracking
-Message-ID: <20210112125331.789f47a5@omen.home.shazbot.org>
-In-Reply-To: <198f0afd-343a-9fbc-9556-95670ca76a2c@huawei.com>
-References: <20210107092901.19712-1-zhukeqian1@huawei.com>
-        <20210107092901.19712-5-zhukeqian1@huawei.com>
-        <20210111144913.3092b1b1@omen.home.shazbot.org>
-        <198f0afd-343a-9fbc-9556-95670ca76a2c@huawei.com>
+        Tue, 12 Jan 2021 14:55:29 -0500
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B45FC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 11:54:49 -0800 (PST)
+Received: by mail-lj1-x242.google.com with SMTP id b10so4238552ljp.6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 11:54:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=fWnEd9QMcS2jsgBPZmkL+oQ2gsCL7mhfd27lmgzb5Mo=;
+        b=CXBvJ0FrysGd/37CElNT+gLiFa3VxTTftmmRNxLAkKBz9xfCGYMDsSQ73LHFWFhptM
+         XDhcPGmk+ns/obK3wumVQrPiSbS3pu4s8sKnaw/VZsVGr37zHEau9Wu/G0zgu4/zaIHF
+         4H1So2ZyoGqt/QcuS4bkHbjVH/I3XlD8ajcIdJOACSqEaNkl3JVQSVGZxoYlFJX/7jZP
+         aZb1Es9TDwsqf8pIKVmWTawtNWp/fVNhrKhZeD1BDtDbaP9734XSCFCEYDj/7QGoYMOS
+         eb2L0PIwRashi7mxGvL+2jyVAHr7u7K/BGEEWqnBhd2eC0V8iw4huzOxWP+KAQE0lRt+
+         YOXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=fWnEd9QMcS2jsgBPZmkL+oQ2gsCL7mhfd27lmgzb5Mo=;
+        b=q0NJ8vzulRe28oKXWPg/WaPLqA9NUA26jah+wZ2GfUydfwqkqPud0LYCDRlqQYfi/r
+         ApQpdjtDwq9ov5TJVaAUdptn5Nbvz+JeEw+0OsWN9dXcoarK81H4HiOs9fxBSF6ExkXK
+         Y1YKQFThIrZcBjzOPtY/GrG7OYVbQwt73T40sZVYsd4pbzKyfmsAVR7astjWlzRfYoOG
+         JaehRIThXuysdDmocqUBkAeSFrbSIrPENAfXaUzMrhdv3h2tgmDVUYjO6i5Iq97xlPUC
+         6Ty0l8/dQ4xPy0FyuvYicd1NxKP17D0K/RNsn2eknpzZCgXXp+WiavMtQr5gbUpp7fEM
+         zy7A==
+X-Gm-Message-State: AOAM532lqfT/5mcsMSFoonr3M1+kFeNbwjeAUOJ7tY9eLHQOl8mpTVB/
+        xKOcRoiYdTtzeQbgkgPT0M4TB1X7QdV2U3qk9gA=
+X-Google-Smtp-Source: ABdhPJwgfBzfVEzazvFXa7K2ZmNx5XOvOw90zVjCeLwp2Glm7DI/7ZLyfAHtx/NF9X+voBSHyKnocehl7Wd0Far6kBM=
+X-Received: by 2002:a2e:3503:: with SMTP id z3mr398957ljz.74.1610481287629;
+ Tue, 12 Jan 2021 11:54:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Sender: fredmartins1111@gmail.com
+Received: by 2002:a2e:8156:0:0:0:0:0 with HTTP; Tue, 12 Jan 2021 11:54:47
+ -0800 (PST)
+From:   Mrs Nicole Marois <nicolemarois6@gmail.com>
+Date:   Tue, 12 Jan 2021 11:54:47 -0800
+X-Google-Sender-Auth: odWwlF1aNJ7xIISoq2AC6AjbQrQ
+Message-ID: <CAJ649Cg0n99ddqP9p3O3Y1XWCJ08k9-eNQanXfVKMiRpiP-p-Q@mail.gmail.com>
+Subject: I'AM SUFFERING FROM CANCER OF THE HEART
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Jan 2021 20:04:38 +0800
-Keqian Zhu <zhukeqian1@huawei.com> wrote:
+I'AM SUFFERING FROM CANCER OF THE HEART
 
-> On 2021/1/12 5:49, Alex Williamson wrote:
-> > On Thu, 7 Jan 2021 17:29:00 +0800
-> > Keqian Zhu <zhukeqian1@huawei.com> wrote:
-> >   
-> >> If we detach group during dirty page tracking, we shouldn't remove
-> >> vfio_dma, because dirty log will lose.
-> >>
-> >> But we don't prevent unmap_unpin_all in vfio_iommu_release, because
-> >> under normal procedure, dirty tracking has been stopped.  
-> > 
-> > This looks like it's creating a larger problem than it's fixing, it's
-> > not our job to maintain the dirty bitmap regardless of what the user
-> > does.  If the user detaches the last group in a container causing the
-> > mappings within that container to be deconstructed before the user has
-> > collected dirty pages, that sounds like a user error.  A container with
-> > no groups is de-privileged and therefore loses all state.  Thanks,
-> > 
-> > Alex  
-> 
-> Hi Alex,
-> 
-> This looks good to me ;-). That's a reasonable constraint for user behavior.
-> 
-> What about replacing this patch with an addition to the uapi document of
-> VFIO_GROUP_UNSET_CONTAINER? User should pay attention to this when call this
-> ioctl during dirty tracking.
+Dear Friend.
 
-Here's the current uapi comment:
+Greetings to you in the name of the Lord God Almighty am MRS NICOLE
+MAROIS From (Paris) France, but am based in Burkina Faso Africa for
+eight years now as a business woman dealing on gold exportation and
+cotton Sales. But I have been suffering from this deadly disease
+called cancer for long and the doctor just said I have just few weeks
+to live. I know it will be difficult for you to believe my story now,
+but this is the situation I found myself in, it=E2=80=99s not my desire to =
+be
+on a sick bed today but God knows best,
 
-/**
- * VFIO_GROUP_UNSET_CONTAINER - _IO(VFIO_TYPE, VFIO_BASE + 5)
- *
- * Remove the group from the attached container.  This is the
- * opposite of the SET_CONTAINER call and returns the group to
- * an initial state.  All device file descriptors must be released
- * prior to calling this interface.  When removing the last group
- * from a container, the IOMMU will be disabled and all state lost,
- * effectively also returning the VFIO file descriptor to an initial
- * state.
- * Return: 0 on success, -errno on failure.
- * Availability: When attached to container
- */
+Now that I am about to end the race like this, without any family
+Members and no child. I have $5.8 Million US DOLLARS in BANK OF AFRICA
+(B.O.A) Burkina Faso it=E2=80=99s all my life savings, I instructed the Ban=
+k
+to give it to St Andrews Missionary and Home Kizito Orphanage in
+Burkina Faso. But my mind is not at rest because i do not trust them,
+I am writing this letter now through the help of my computer beside my
+sick bed.
 
-So we already indicate that "all state" of the container is lost when
-removing the last group, I don't see that it's necessarily to
-explicitly include dirty bitmap state beyond that statement.  Without
-mappings there can be no dirty bitmap to track.
+I will instruct the bank to transfer this fund to you as a foreigner
+but you have to promise me that you will take 40 Percent(%) of the
+total money for your personal use While 60 Percent (%) of the money
+will go to charity, Orphanage and less Privileges" people in the
+street and helping the Needy. I grew up as an Orphan and I don't have
+anybody as my family member, just to Endeavour that the house of God
+is maintained. Am doing this so that God will forgive my sins and
+accept my soul because this sickness has suffered me so much.
 
- > And any comments on other patches? thanks.
+As soon as I receive your reply I shall give you the contact of the
+bank and I will also instruct my Bank Manager to issue you an
+authority letter that will prove you the present beneficiary of the
+money in the bank that is if you assure me that you will act
+accordingly as I Stated herein.
 
-I had a difficult time mapping the commit log to the actual code
-change, I'll likely have some wording suggestions.  Is patch 5/5 still
-necessary if this patch is dropped?  Thanks,
+I look forward to getting a reply from you.
 
-Alex
+Thanks and God bless you,
 
-> >> Fixes: d6a4c185660c ("vfio iommu: Implementation of ioctl for dirty pages tracking")
-> >> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-> >> ---
-> >>  drivers/vfio/vfio_iommu_type1.c | 14 ++++++++++++--
-> >>  1 file changed, 12 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> >> index 26b7eb2a5cfc..9776a059904d 100644
-> >> --- a/drivers/vfio/vfio_iommu_type1.c
-> >> +++ b/drivers/vfio/vfio_iommu_type1.c
-> >> @@ -2373,7 +2373,12 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
-> >>  			if (list_empty(&iommu->external_domain->group_list)) {
-> >>  				vfio_sanity_check_pfn_list(iommu);
-> >>  
-> >> -				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu))
-> >> +				/*
-> >> +				 * During dirty page tracking, we can't remove
-> >> +				 * vfio_dma because dirty log will lose.
-> >> +				 */
-> >> +				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu) &&
-> >> +				    !iommu->dirty_page_tracking)
-> >>  					vfio_iommu_unmap_unpin_all(iommu);
-> >>  
-> >>  				kfree(iommu->external_domain);
-> >> @@ -2406,10 +2411,15 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
-> >>  		 * iommu and external domain doesn't exist, then all the
-> >>  		 * mappings go away too. If it's the last domain with iommu and
-> >>  		 * external domain exist, update accounting
-> >> +		 *
-> >> +		 * Note: During dirty page tracking, we can't remove vfio_dma
-> >> +		 * because dirty log will lose. Just update accounting is a good
-> >> +		 * choice.
-> >>  		 */
-> >>  		if (list_empty(&domain->group_list)) {
-> >>  			if (list_is_singular(&iommu->domain_list)) {
-> >> -				if (!iommu->external_domain)
-> >> +				if (!iommu->external_domain &&
-> >> +				    !iommu->dirty_page_tracking)
-> >>  					vfio_iommu_unmap_unpin_all(iommu);
-> >>  				else
-> >>  					vfio_iommu_unmap_unpin_reaccount(iommu);  
-> > 
-> > .
-> >   
-> 
-
+Mrs NICOLE MAROIS.
