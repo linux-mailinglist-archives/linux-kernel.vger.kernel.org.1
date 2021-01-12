@@ -2,126 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 689C92F3385
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:02:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E82692F337E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:02:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389564AbhALPCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 10:02:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33730 "EHLO mail.kernel.org"
+        id S2388991AbhALPBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 10:01:05 -0500
+Received: from mga06.intel.com ([134.134.136.31]:48640 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728901AbhALPCR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:02:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA1382313E
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:01:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610463696;
-        bh=Z1rbMQMt/ZBnWtsqUtXo+X1vs3VvV7P3JPZmshyA4oM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Ayrt50U/8AdxtQ+n6VVJ/r5hTHYjjFRwmngE3zk7FAZREjhrQ3PgcX4+091dw+akt
-         QRaRtRvgiRMIYCk+dIuB9KZpbcaykNFJOyfB6udsY1ibZ0nsJK1aitQ0Lddw57sots
-         GzZ5Zz3TSjaxYJ+XMwnYA78wFWLTnKVsuPjmf/X/kn/5okYRx+htZbv2Xxo5NSvtKt
-         jEF2+ismvKC7g20z09O0CIUFu6G94F5ME8aFS5Q/PScdTaiAiTiFZuoueilwk/iIAV
-         5EFE3AdKkJvKZNjpXJ0F3D3g25xZ8h/fUXy2bfuWyFBMgZ2DTepgfc6wKG4PFpiZ8T
-         v1duIAcIDiuFg==
-Received: by mail-lf1-f54.google.com with SMTP id h205so3819399lfd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 07:01:35 -0800 (PST)
-X-Gm-Message-State: AOAM532GCB2y8G1xAqD3sei3qnFGh1H6NksRA+VphrO2FDQ5GtrBJnvi
-        v0xGHY5/pgT1p5WOvImuRNiJsdp7a7za/P+gJtBbCw==
-X-Google-Smtp-Source: ABdhPJzZ4NLevpRLkWnwSQB49m9wwhF09lnH6S37cnqrbOyWIWHGa0wNn2gCoe0+9BfL631exXRbfChV/pqcZKBZFEU=
-X-Received: by 2002:a19:810:: with SMTP id 16mr2427834lfi.233.1610463693714;
- Tue, 12 Jan 2021 07:01:33 -0800 (PST)
+        id S1728574AbhALPBE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 10:01:04 -0500
+IronPort-SDR: bigQfL0RdZSvw+EWQaaSpXiKIKlc/Pa70HSwZzEIOiQ3PQ6mFkC2WuPLYwWwYSXJ3sVVVATmGf
+ ccCxMfc80g6Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="239592233"
+X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
+   d="scan'208";a="239592233"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 07:00:22 -0800
+IronPort-SDR: 9X8eWtH59RL9xfctl3owzHGS3bEVAKRfaT8ZCCkLMo6joFK2nyLXZ8olC2Oyl4rU4BQBdKaBl2
+ U7Sukbtiy/Yg==
+X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
+   d="scan'208";a="381456283"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 07:00:20 -0800
+Date:   Tue, 12 Jan 2021 23:03:40 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH][v3] cpufreq: intel_pstate: Get percpu max freq via HWP
+ MSR register if available
+Message-ID: <20210112150340.GA17152@chenyu-office.sh.intel.com>
+References: <20210112052127.4557-1-yu.c.chen@intel.com>
+ <CAJZ5v0i5jdp6YcpvVuLyxGePRAsFPUPL6=iQC7PEFSzjNRUJLw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210112091403.10458-1-gilad.reti@gmail.com> <CACYkzJ6DJ0NEm+qTBpMSJNFfgNHBFPZc=Ytj4w+4hY=Co4=0yg@mail.gmail.com>
- <CANaYP3EQhTQ_o6QF_JNffJqHmVWRw6wcc95u8XvDpm+pY8ER3Q@mail.gmail.com>
-In-Reply-To: <CANaYP3EQhTQ_o6QF_JNffJqHmVWRw6wcc95u8XvDpm+pY8ER3Q@mail.gmail.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 12 Jan 2021 16:01:23 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ7KLFKADCH2exaUmg7sPbUu+wxq2OTwUY6iE7cPUb5Z3Q@mail.gmail.com>
-Message-ID: <CACYkzJ7KLFKADCH2exaUmg7sPbUu+wxq2OTwUY6iE7cPUb5Z3Q@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] bpf: support PTR_TO_MEM{,_OR_NULL} register spilling
-To:     Gilad Reti <gilad.reti@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0i5jdp6YcpvVuLyxGePRAsFPUPL6=iQC7PEFSzjNRUJLw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 3:24 PM Gilad Reti <gilad.reti@gmail.com> wrote:
->
-> On Tue, Jan 12, 2021 at 3:57 PM KP Singh <kpsingh@kernel.org> wrote:
+On Tue, Jan 12, 2021 at 02:52:50PM +0100, Rafael J. Wysocki wrote:
+> On Tue, Jan 12, 2021 at 6:19 AM Chen Yu <yu.c.chen@intel.com> wrote:
 > >
-> > On Tue, Jan 12, 2021 at 10:14 AM Gilad Reti <gilad.reti@gmail.com> wrote:
-> > >
-> > > Add support for pointer to mem register spilling, to allow the verifier
-> > > to track pointer to valid memory addresses. Such pointers are returned
+> > Currently when turbo is disabled(either by BIOS or by the user), the
+> > intel_pstate driver reads the max non-turbo frequency from the package-wide
+> > MSR_PLATFORM_INFO(0xce) register. However on asymmetric platforms it is
+> > possible in theory that small and big core with HWP enabled might have
+> > different max non-turbo cpu frequency, because the MSR_HWP_CAPABILITIES
+> > is percpu scope according to Intel Software Developer Manual.
 > >
-> > nit: pointers
->
-> Thanks
->
+> > The turbo max freq is already percpu basis in current code, thus make
+> > similar change to the max non-turbo frequency as well.
 > >
-> > > for example by a successful call of the bpf_ringbuf_reserve helper.
-> > >
-> > > This patch was suggested as a solution by Yonghong Song.
-> >
-> > You can use the "Suggested-by:" tag for this.
+> > Reported-by: Wendy Wang <wendy.wang@intel.com>
+> > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> > ---
+> > v2: Per Srinivas' suggestion, avoid duplicated assignment of max_pstate.
+> > v3: Per Rafael's suggestion, do not add new argument in intel_pstate_get_hwp_max()
+> >     to avoid redundant local vars.
+> >     Per Srinivas' suggestion, refined the commit log to reflect the 'non-turbo'
+> >     max frequency.
+> 
+> Looks good now, thanks!
+> 
+> Is it needed in -stable and if so, which -stable series should it go into?
 >
-> Thanks
->
-> >
-> > >
-> > > The patch was partially contibuted by CyberArk Software, Inc.
-> >
-> > nit: typo *contributed
->
-> Thanks. Should I submit a v2 of the patch to correct all of those?
+Yes, I think so, it should be 
+Cc: stable@vger.kernel.org # 4.18+
+as the HWP reading turbo frequency was firstly introduced in v4.18-rc2 and it
+was easier to be applied.
+BTW, this patch is on top of your previous patch set on intel_pstate clean up:
+https://patchwork.kernel.org/project/linux-pm/list/?series=410797
 
-I think it would be nice to do another revision
-which also addresses the comments on the other patch.
-
-
->
-> >
-> > Also, I was wondering if "partially" here means someone collaborated with you
-> > on the patch? And, in that case:
-> >
-> > "Co-developed-by:" would be a better tag here.
->
-> No, I did it alone. I mentioned CyberArk since I work there and did some of the
-> coding during my daily work, so they deserve credit.
->
-> >
-> > Acked-by: KP Singh <kpsingh@kernel.org>
-> >
-> >
-> > >
-> > > Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier
-> > > support for it")
-> > > Signed-off-by: Gilad Reti <gilad.reti@gmail.com>
-> > > ---
-> > >  kernel/bpf/verifier.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > index 17270b8404f1..36af69fac591 100644
-> > > --- a/kernel/bpf/verifier.c
-> > > +++ b/kernel/bpf/verifier.c
-> > > @@ -2217,6 +2217,8 @@ static bool is_spillable_regtype(enum bpf_reg_type type)
-> > >         case PTR_TO_RDWR_BUF:
-> > >         case PTR_TO_RDWR_BUF_OR_NULL:
-> > >         case PTR_TO_PERCPU_BTF_ID:
-> > > +       case PTR_TO_MEM:
-> > > +       case PTR_TO_MEM_OR_NULL:
-> > >                 return true;
-> > >         default:
-> > >                 return false;
-> > > --
-> > > 2.27.0
-> > >
+thanks,
+Chenyu
