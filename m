@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F65F2F3AC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:42:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0CD62F3ACC
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393148AbhALTln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 14:41:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392138AbhALTlm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:41:42 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8345C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 11:41:01 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id d14so2957160qkc.13
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 11:41:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4JlDN7m/8EgD01qc5jrAlRo8YJFFXTfkl0WAThfYT0Y=;
-        b=nKUt+zfkiJzI0jAnk6dFb5vSH6pTiBqMl50F2rdU+zW+YO+mPTZzKJsLFTqEKd2ir2
-         c2NRQMBtzO3ZC3EpT+lgkVkp/c4/OgGe8m6Qwo9V2tTWU/w1YSIPztYsmBimpblX8iSb
-         je3GRvI78Kk9LqPJjypG2cst4Q+FRC6ZjyAQHlrPBC07i+2zauI6YbP90yzDIblc4HdG
-         QU1Dw5m8LYif45Dg3OoCRvYL07mzd1E3ZvetMH43yTdL1p4ecBbasVhPIN/hEO55Ayw9
-         Mo0jFLfb4haawo5/0EARgqDRs30R+xz9i1QiqWUGGbzeMYT5qHahgrsHvSdG39CY2L7b
-         7FhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4JlDN7m/8EgD01qc5jrAlRo8YJFFXTfkl0WAThfYT0Y=;
-        b=sAFOxkeJHWvPWeqw4lwVpPlR3PdFvqfeH6mfbiKfZbo+resxwLWpz1rbY4tqFxHtz1
-         LZ7917MTyILsNWdx+gpWBLZfkkIeAeelUBOxgFs5VEYWXhIstzcIEiDi34r/cMXUzV3g
-         03ULK5QSId4AP+tEkVvskSEtDcKMo7Q20De26vU/+FiN+usAaF/+Ar1b90yZlxbXbYoO
-         nz7jowALURugztBzba+KlsOzns1t7sq+n8BNJ3MhQeImYsmMxQ3MBTREqP7BXm9FX3Lm
-         YznTC4XnGbtT1OYQfRKLQlVLFqZJUiKwtc33WLwI10yKzrTjcUHFC4THVC266Up36bNz
-         viKw==
-X-Gm-Message-State: AOAM532wSSV8QXXOS0Y6NRmDUpOTplg8yq97RZUETlFWbyNxwEi4uGge
-        DGfp9pQ2lwlIL0AUdQ+9QQs=
-X-Google-Smtp-Source: ABdhPJwQsaa3YPJ4XAaFNoIZTQso4neZOMYoEXIDq0V5ftrUXFwAhOmWllOjuhbx72jHkR9lrNH6sg==
-X-Received: by 2002:a37:a516:: with SMTP id o22mr1025163qke.17.1610480461123;
-        Tue, 12 Jan 2021 11:41:01 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id j7sm1668018qtb.87.2021.01.12.11.41.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 11:41:00 -0800 (PST)
-Date:   Tue, 12 Jan 2021 12:40:58 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     syzbot <syzbot+76880518931d755473cf@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        clang-built-linux@googlegroups.com
-Subject: Re: upstream build error (12)
-Message-ID: <20210112194058.GA200254@ubuntu-m3-large-x86>
-References: <0000000000004a33a005b8b8eaab@google.com>
+        id S2436532AbhALTmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:42:00 -0500
+Received: from www.zeus03.de ([194.117.254.33]:54892 "EHLO mail.zeus03.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393153AbhALTl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 14:41:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=t9XstqtRgrmC0ix2FNPF67k/oNnC
+        JJETaagxYwsHmRE=; b=JaDwonS5UZRK77cksg6+5d/q9duNxG5p8d/FLbtvV5Jz
+        Y11V37KBxCcFyOIRxpCpqbZGfkXY2gaNCCw9HRKhFs1MPFOMTmVvzOaNdakd4Mk7
+        IgSrnsvZutal1lQmf4tTxEBWeXikHBnx8DOQa5A0yj8cbSM4BwT8dJpQDy2GVLY=
+Received: (qmail 2864404 invoked from network); 12 Jan 2021 20:41:17 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 12 Jan 2021 20:41:17 +0100
+X-UD-Smtp-Session: l3s3148p1@ZZq9NLm4qNMgAwDPXwxzAHrEwO71dOp2
+Date:   Tue, 12 Jan 2021 20:41:16 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-i2c@vger.kernel.org
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 2/3] media: i2c: adv7842: remove open coded version
+ of SMBus block read
+Message-ID: <20210112194116.GA50007@kunai>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-i2c@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210112164130.47895-1-wsa+renesas@sang-engineering.com>
+ <20210112164130.47895-3-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="VbJkn9YxBvnuCH5J"
 Content-Disposition: inline
-In-Reply-To: <0000000000004a33a005b8b8eaab@google.com>
+In-Reply-To: <20210112164130.47895-3-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 11:20:27AM -0800, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    e609571b Merge tag 'nfs-for-5.11-2' of git://git.linux-nfs..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15965a00d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=6157970d0a91b812
-> dashboard link: https://syzkaller.appspot.com/bug?extid=76880518931d755473cf
-> compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+76880518931d755473cf@syzkaller.appspotmail.com
-> 
-> clang-11: error: unable to execute command: Aborted (core dumped)
-> clang-11: error: clang frontend command failed due to signal (use -v to see invocation)
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Would it be possible for clang-built-linux@googlegroups.com to be CC'd
-when there is a build error and the compiler is clang? Especially if
-clang is hitting an assertion.
+--VbJkn9YxBvnuCH5J
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Cheers,
-Nathan
+
+> +static int adv7511_edid_rd(struct v4l2_subdev *sd, uint16_t len, uint8_t *buf)
+>  {
+>  	struct adv7511_state *state = get_adv7511_state(sd);
+> +	s32 len;
+
+And 'len' here shadows the function argument :( Ok, I need to resend
+this patch. Still, looking forward to a comment if an approach like this
+is acceptable.
+
+
+--VbJkn9YxBvnuCH5J
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/9+1gACgkQFA3kzBSg
+KbZFzhAAh2Wa1O3n+/gpFeJusi6JllSei7zH9E2v/pWihrudzMC/FhEp4uPzMDOt
+/w9b9ZLzGTZSxx38qyOdZgJBtib6liZQt6Zgsdrbh0kIRvmXDQNxpx8KZa/1ukZy
+0ze1WghkEI1Jalop1FNnbzRVSBctb/lOCWevcwyQ7fbHca5OeLM8Hj2HHQahH+WU
+s6UMddJAr+f7eOCc1eoc2kSjzQWQUexfNMoaYLvUZZdGTb87dd07mZlcoNgvBoeC
+aM9zzBJUhALDOMioMVZujVc8kWerGF3MSPrT3uglbkGR+cdwo8GNQmoAMhgHRNi9
+U2pHugFL7Oi58skehzpFDuJjqDyIpaX11U7VkrU214tEJOKo4avt+XCjpgoKzFaA
+ZYGUoI1I2JQTo7CEz/Akd/vgSi+umhRAm+GTAhPy+I8q4eJaJagR38iC5zdfYW+a
+S5SsHpGG31BOkIiI7heqa66W7H7B8PuCTie+QzF2rlBFJ3JlzgyuJQpTfx7p4Ths
+Z7dCq2XHyyZiFyqaoRHaIKR5L+oGYfxA5U5nVYjn8hAFIkis+pMwi57VK+Kw5l/m
+GLiTtNjbdRFcB3syxsbdtVSMacohOZl4nIdZhwxRbEpTq9UDTiQNFDVkDXwCw9bB
+7ilk+AoO1gTNaVSEm+xPhzj/l5p7Ez0bgkp00ACEwOUEexu7gG4=
+=qSVB
+-----END PGP SIGNATURE-----
+
+--VbJkn9YxBvnuCH5J--
