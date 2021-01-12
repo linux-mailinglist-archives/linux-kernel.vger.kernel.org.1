@@ -2,136 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E8012F2BA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 326B52F2BA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:48:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390013AbhALJsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:48:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43301 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388625AbhALJsW (ORCPT
+        id S2390976AbhALJse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:48:34 -0500
+Received: from relay.corp-email.com ([222.73.234.233]:27474 "EHLO
+        relay.corp-email.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728173AbhALJsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:48:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610444815;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PvyJnSq10lv34KzIUsMYXdt+Iwqvb+rfS/2QN/Oiz50=;
-        b=Gwcf7vT9zsJD2Q5agrog1msmuVsMGAW/NXj89/JZgAl0b5loUE3eyehVq01Q33X6M1tUtc
-        CjnHWhIiLKfFVK3/HaqXAXVnG3+edrX5uxI5MfTGGorTsi6aLQSBk1JWNXzlL57YEAF29A
-        BoAqCna9Pg8YAcgny3pbE/ThR5ZtbRk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-365-X3MvMTgaPCm-Vt0DpjGlVA-1; Tue, 12 Jan 2021 04:46:45 -0500
-X-MC-Unique: X3MvMTgaPCm-Vt0DpjGlVA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2C362107ACF7;
-        Tue, 12 Jan 2021 09:46:44 +0000 (UTC)
-Received: from [10.36.115.140] (ovpn-115-140.ams2.redhat.com [10.36.115.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DBD8960BE2;
-        Tue, 12 Jan 2021 09:46:42 +0000 (UTC)
-Subject: Re: [PATCH v2 1/5] mm: Move pfn_to_online_page() out of line
-To:     Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org
-Cc:     Michal Hocko <mhocko@kernel.org>, vishal.l.verma@intel.com,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
-References: <161044407603.1482714.16630477578392768273.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161044408207.1482714.1125458890762969867.stgit@dwillia2-desk3.amr.corp.intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <a85a1fa0-4ad8-ee63-eab0-de73bc532431@redhat.com>
-Date:   Tue, 12 Jan 2021 10:46:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 12 Jan 2021 04:48:32 -0500
+X-Greylist: delayed 15978 seconds by postgrey-1.27 at vger.kernel.org; Tue, 12 Jan 2021 04:48:30 EST
+Received: from ([183.47.25.45])
+        by relay.corp-email.com ((LNX1044)) with ASMTP (SSL) id GCI00134;
+        Tue, 12 Jan 2021 17:47:34 +0800
+Received: from GCY-EXS-15.TCL.com (10.74.128.165) by GCY-EXS-06.TCL.com
+ (10.74.128.156) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 12 Jan
+ 2021 17:47:35 +0800
+Received: from localhost.localdomain (172.16.34.38) by GCY-EXS-15.TCL.com
+ (10.74.128.165) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 12 Jan
+ 2021 17:47:34 +0800
+From:   Rokudo Yan <wu-yan@tcl.com>
+To:     <mgorman@techsingularity.net>
+CC:     <aarcange@redhat.com>, <akpm@linux-foundation.org>,
+        <haiwang.fu@tcl.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <rientjes@google.com>, <tang.ding@tcl.com>,
+        <vbabka@suse.cz>, <wu-yan@tcl.com>, <xiushui.ye@tcl.com>
+Subject: [PATCH] mm, compaction: move high_pfn to the for loop scope.
+Date:   Tue, 12 Jan 2021 17:47:20 +0800
+Message-ID: <20210112094720.1238444-1-wu-yan@tcl.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210112091041.GJ3592@techsingularity.net>
+References: <20210112091041.GJ3592@techsingularity.net>
 MIME-Version: 1.0
-In-Reply-To: <161044408207.1482714.1125458890762969867.stgit@dwillia2-desk3.amr.corp.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.16.34.38]
+X-ClientProxiedBy: GCY-EXS-01.TCL.com (10.74.128.151) To GCY-EXS-15.TCL.com
+ (10.74.128.165)
+tUid:   202111217473418390f645091c961f367ccb719166ceb
+X-Abuse-Reports-To: service@corp-email.com
+Abuse-Reports-To: service@corp-email.com
+X-Complaints-To: service@corp-email.com
+X-Report-Abuse-To: service@corp-email.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.01.21 10:34, Dan Williams wrote:
-> pfn_to_online_page() is already too large to be a macro or an inline
-> function. In anticipation of further logic changes / growth, move it out
-> of line.
-> 
-> No functional change, just code movement.
-> 
-> Cc: David Hildenbrand <david@redhat.com>
-> Reported-by: Michal Hocko <mhocko@kernel.org>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> ---
->  include/linux/memory_hotplug.h |   17 +----------------
->  mm/memory_hotplug.c            |   16 ++++++++++++++++
->  2 files changed, 17 insertions(+), 16 deletions(-)
-> 
-> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-> index 15acce5ab106..3d99de0db2dd 100644
-> --- a/include/linux/memory_hotplug.h
-> +++ b/include/linux/memory_hotplug.h
-> @@ -16,22 +16,7 @@ struct resource;
->  struct vmem_altmap;
->  
->  #ifdef CONFIG_MEMORY_HOTPLUG
-> -/*
-> - * Return page for the valid pfn only if the page is online. All pfn
-> - * walkers which rely on the fully initialized page->flags and others
-> - * should use this rather than pfn_valid && pfn_to_page
-> - */
-> -#define pfn_to_online_page(pfn)					   \
-> -({								   \
-> -	struct page *___page = NULL;				   \
-> -	unsigned long ___pfn = pfn;				   \
-> -	unsigned long ___nr = pfn_to_section_nr(___pfn);	   \
-> -								   \
-> -	if (___nr < NR_MEM_SECTIONS && online_section_nr(___nr) && \
-> -	    pfn_valid_within(___pfn))				   \
-> -		___page = pfn_to_page(___pfn);			   \
-> -	___page;						   \
-> -})
-> +struct page *pfn_to_online_page(unsigned long pfn);
->  
->  /*
->   * Types for free bootmem stored in page->lru.next. These have to be in
-> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index f9d57b9be8c7..55a69d4396e7 100644
-> --- a/mm/memory_hotplug.c
-> +++ b/mm/memory_hotplug.c
-> @@ -300,6 +300,22 @@ static int check_hotplug_memory_addressable(unsigned long pfn,
->  	return 0;
->  }
->  
-> +/*
-> + * Return page for the valid pfn only if the page is online. All pfn
-> + * walkers which rely on the fully initialized page->flags and others
-> + * should use this rather than pfn_valid && pfn_to_page
-> + */
-> +struct page *pfn_to_online_page(unsigned long pfn)
-> +{
-> +	unsigned long nr = pfn_to_section_nr(pfn);
-> +
-> +	if (nr < NR_MEM_SECTIONS && online_section_nr(nr) &&
-> +	    pfn_valid_within(pfn))
-> +		return pfn_to_page(pfn);
-> +	return NULL;
-> +}
-> +EXPORT_SYMBOL_GPL(pfn_to_online_page);
-> +
->  /*
->   * Reasonably generic function for adding memory.  It is
->   * expected that archs that support memory hotplug will
-> 
+In fast_isolate_freepages, high_pfn will be used if a prefered one(PFN >= low_fn) not found. But the high_pfn
+is not reset before searching an free area, so when it was used as freepage, it may from another free area searched before.
+And move_freelist_head(freelist, freepage) will have unexpected behavior(eg. corrupt the MOVABLE freelist)
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Unable to handle kernel paging request at virtual address dead000000000200
+Mem abort info:
+  ESR = 0x96000044
+  Exception class = DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+Data abort info:
+  ISV = 0, ISS = 0x00000044
+  CM = 0, WnR = 1
+[dead000000000200] address between user and kernel address ranges
 
+-000|list_cut_before(inline)
+-000|move_freelist_head(inline)
+-000|fast_isolate_freepages(inline)
+-000|isolate_freepages(inline)
+-000|compaction_alloc(?, ?)
+-001|unmap_and_move(inline)
+-001|migrate_pages([NSD:0xFFFFFF80088CBBD0] from = 0xFFFFFF80088CBD88, [NSD:0xFFFFFF80088CBBC8] get_new_p
+-002|__read_once_size(inline)
+-002|static_key_count(inline)
+-002|static_key_false(inline)
+-002|trace_mm_compaction_migratepages(inline)
+-002|compact_zone(?, [NSD:0xFFFFFF80088CBCB0] capc = 0x0)
+-003|kcompactd_do_work(inline)
+-003|kcompactd([X19] p = 0xFFFFFF93227FBC40)
+-004|kthread([X20] _create = 0xFFFFFFE1AFB26380)
+-005|ret_from_fork(asm)
+---|end of frame
+
+The issue was reported on an smart phone product with 6GB ram and 3GB zram as swap device.
+
+This patch fixes the issue by reset high_pfn before searching each free area, which ensure
+freepage and freelist match when call move_freelist_head in fast_isolate_freepages().
+
+Link: http://lkml.kernel.org/r/20190118175136.31341-12-mgorman@techsingularity.net
+Fixes: 5a811889de10f1eb ("mm, compaction: use free lists to quickly locate a migration target")
+---
+ mm/compaction.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/mm/compaction.c b/mm/compaction.c
+index cc1a7f600a86..75f0e550b18f 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -1303,7 +1303,7 @@ fast_isolate_freepages(struct compact_control *cc)
+ {
+ 	unsigned int limit = min(1U, freelist_scan_limit(cc) >> 1);
+ 	unsigned int nr_scanned = 0;
+-	unsigned long low_pfn, min_pfn, high_pfn = 0, highest = 0;
++	unsigned long low_pfn, min_pfn, highest = 0;
+ 	unsigned long nr_isolated = 0;
+ 	unsigned long distance;
+ 	struct page *page = NULL;
+@@ -1348,6 +1348,7 @@ fast_isolate_freepages(struct compact_control *cc)
+ 		struct page *freepage;
+ 		unsigned long flags;
+ 		unsigned int order_scanned = 0;
++		unsigned long high_pfn = 0;
+ 
+ 		if (!area->nr_free)
+ 			continue;
 -- 
-Thanks,
-
-David / dhildenb
+2.25.1
 
