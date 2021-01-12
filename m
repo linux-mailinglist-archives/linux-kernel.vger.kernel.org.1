@@ -2,92 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8362F3113
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:16:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0D02F311D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:16:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729611AbhALNQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:16:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730108AbhALNP2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:15:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 096942311B
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:14:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610457287;
-        bh=It8hwsp3kwp1MvkNdVmaMkspUPQDFXCoPYoDzNp0vNM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=o4GysrNUvsz6jY7oQOolIbtbyYa48PoscnI2HyAHnhrUQYJT5vZuOsMQWMC/wKIJT
-         e3I2japtQOKmAckkhR5xWb+gmVB3i2ENbhesUp4y4ako8odS8ySND1cRorSaIF2mZT
-         C2C8M100rRnZj8w7As/XK0Sg10+OEyMdmUqt7QYz7b2RaaUuHUonAl9uMSnr6jT0gb
-         vyF2sh4kc+9FYiWNFGJWrhqcX06swnRiJTySHcIWXRkdJbXR/86w6ipzzuxSUf0CvT
-         +Wn6abfsgjIYYXbHZ9IBKrYJHIFyseY1QMGuoTRyPsofWCbD1id2x663Y2/cAMR0ar
-         ZXDwmqhGsmxcQ==
-Received: by mail-lf1-f52.google.com with SMTP id o17so3308600lfg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:14:46 -0800 (PST)
-X-Gm-Message-State: AOAM531Kkfx7ziMn7uNFOKhVYqxBjyr8bdLrDmi2VSP+LxraN/qPrP7+
-        4iti/rN50MrDo+erY1qAV/Mt4YP//Iz+sAfGjsVs4g==
-X-Google-Smtp-Source: ABdhPJzTTOcnEMQSjDUK8UaKaos3oSZEHBUgqUvMzQpvWIx8CjosYAowjfGBlIlg19oKaPy/y5ODjBk6R+kSNN1Nops=
-X-Received: by 2002:a19:810:: with SMTP id 16mr2237205lfi.233.1610457285057;
- Tue, 12 Jan 2021 05:14:45 -0800 (PST)
+        id S1730724AbhALNQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:16:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729688AbhALNQP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 08:16:15 -0500
+Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F1CC061795
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:15:35 -0800 (PST)
+Received: by mail-vk1-xa32.google.com with SMTP id l187so586940vki.6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:15:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5HpMs+jCpJzoPRIbYnU0PyBRGtPP8EGNAQbQZ0ET0Ds=;
+        b=AyME6//aH7d68kpuy53gkf0yT+homN08EXAa1jRCaXJ1voVHWWJE9r55hi0gBe/aWJ
+         lkNj/zXBO8mhqgkP3Le07X+KHFblOCL2iqt0aqBcDk3O07ZHfBKZiYUPvXLwyn8Z9jh5
+         R0DBW/XwGdRtp3IIFHBW8tq5VoZZ7ft4joCSXFoOYRaU9UPQWM+8zw5UdNbmzwT4OR8m
+         E8IS1PLkFo25t2onizMYhvRegLdXqHZoc5XN1rg41M3nMcxc1HudOceS2MVhDASwEomP
+         IBcNImExW2m6LyuH+CkAACnGG3EypJH9I2Q6jr6Fn6NMjInG9Aj8MqDQ3yXdOZJpcm/g
+         Qu6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5HpMs+jCpJzoPRIbYnU0PyBRGtPP8EGNAQbQZ0ET0Ds=;
+        b=rQKLBytIs2RDqiSTfFPfbTN64K8h8MhsJIEb6j5k2nFmFRgPXdplwMs8DSzpermwP9
+         +lDoMB4iJ3Gq/aDFJ1BHW00TKVhCiRZwyRL6WT1YrxAm/gT5jz1Zuhrbwq309zI8RFLq
+         4ueKOFpAAFH1Z2ZUaiNXGwt6LU5PEnZRDjP2JYWfm5IDzuSEjrGaFnmQFtQyBndTmAbf
+         FIx+P94xjcleCkBx2vddP/PnXcXwsDXwPcJbsE3+x7zlOhEbLZax6VzgCvZVjb44rwJs
+         c3FpJ1IA4+iXVnrI1K/956SNGegojIYYqIUlaevdnE5jTmv1S/h/PkmAUTdyRgFWeudL
+         G1zw==
+X-Gm-Message-State: AOAM533xgGzHc8FFJa/TIFan95dxW9/DllK4zKeGkw3fqkGynMqtwbAb
+        yjUur1S+jJAklzDrdl9N56/CMdIv3SB2pTqO/7E5Eg==
+X-Google-Smtp-Source: ABdhPJxpeToFNXmVF5EOp8LQuUWhZY6LZRFRS/aCJFPpFJxHDA+kG9y0TIy8xtJ4sbiaWUVfE0BPNeCHrqX9ZK8Ruz4=
+X-Received: by 2002:a1f:5fd5:: with SMTP id t204mr3877910vkb.6.1610457334247;
+ Tue, 12 Jan 2021 05:15:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20210112123913.2016804-1-jackmanb@google.com>
-In-Reply-To: <20210112123913.2016804-1-jackmanb@google.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 12 Jan 2021 14:14:33 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ5v6ANJnB0qk7hdEFf+44RH02G22+JFi0OUoJiFLe-RMA@mail.gmail.com>
-Message-ID: <CACYkzJ5v6ANJnB0qk7hdEFf+44RH02G22+JFi0OUoJiFLe-RMA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Fix a verifier message for alloc size
- helper arg
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Florent Revest <revest@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20201214180743.14584-1-zajec5@gmail.com> <20201214180743.14584-3-zajec5@gmail.com>
+ <4c80450f-cf38-190f-0a0f-83f8f116b373@gmail.com>
+In-Reply-To: <4c80450f-cf38-190f-0a0f-83f8f116b373@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 12 Jan 2021 14:14:58 +0100
+Message-ID: <CAPDyKFpAGN8kCigpq4c_9zWiceyR4hCxiz5+1vo8KodTjHJnmA@mail.gmail.com>
+Subject: Re: [PATCH V2 2/2] soc: bcm: add PM driver for Broadcom's PMB
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 1:39 PM Brendan Jackman <jackmanb@google.com> wrote:
+On Tue, 15 Dec 2020 at 19:24, Florian Fainelli <f.fainelli@gmail.com> wrote=
+:
 >
-> The error message here is misleading, the argument will be rejected
-> unless it is a known constant.
 >
-> Signed-off-by: Brendan Jackman <jackmanb@google.com>
-> ---
->  kernel/bpf/verifier.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 17270b8404f1..5534e667bdb1 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -4319,7 +4319,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
->                         err = mark_chain_precision(env, regno);
->         } else if (arg_type_is_alloc_size(arg_type)) {
->                 if (!tnum_is_const(reg->var_off)) {
-> -                       verbose(env, "R%d unbounded size, use 'var &= const' or 'if (var < const)'\n",
-
-Can you check if:
-
-int var = 1000;
-var += 1;
-
-if (var < 2000)
-   // call helper
-
-and then using var in the argument works? If so, the existing error
-message would be correct.
-
-
-> +                       verbose(env, "R%d is not a known constant'\n",
->                                 regno);
->                         return -EACCES;
->                 }
+> On 12/14/2020 10:07 AM, Rafa=C5=82 Mi=C5=82ecki wrote:
+> > From: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
+> >
+> > PMB originally comes from BCM63138 but can be also found on many other
+> > chipsets (e.g. BCM4908). It's needed to power on and off SoC blocks lik=
+e
+> > PCIe, SATA, USB.
+> >
+> > Signed-off-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
 >
-> base-commit: e22d7f05e445165e58feddb4e40cc9c0f94453bc
-> --
-> 2.30.0.284.gd98b1dd5eaa7-goog
->
+> From a driver perspective this looks good to me and thanks for putting
+> it under drivers/soc/bcm/bcm63xx. Ulf, Kevin, I would need an Ack from
+> you so I can carry this through the Broadcom SoCs pull requests for
+> v5.12, thanks!
+
+Apologize for the delay!
+
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+
+Kind regards
+Uffe
