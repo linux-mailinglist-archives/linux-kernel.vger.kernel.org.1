@@ -2,115 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CCD22F3DFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:44:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C182F3E09
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:44:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393796AbhALWAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:00:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50090 "EHLO
+        id S2393818AbhALWBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:01:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727923AbhALWAd (ORCPT
+        with ESMTP id S1730091AbhALWBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:00:33 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6496FC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:59:52 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id n11so245022lji.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:59:52 -0800 (PST)
+        Tue, 12 Jan 2021 17:01:15 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE6EC0617A2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:00:26 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id i6so3851277otr.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:00:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=cRHFA4C63ztEV2JIf4LFaqF2zxgUQvb3Q0QPA2iOSY0=;
-        b=RyKM/ND3OaSVjkewh9Fz3AQZXonM2KCrQo2i2xQPD3+dds2gbnnFqCY3dlrSwf5xx+
-         iiF4spDbAWiHN22NB2K/mxe+kjS4Amic4Fnmk0LtF/HoEWwxbzj364eAnihFkBCdIqs2
-         QbpinVaXb3uaeQIhBuYjhQGRbMfXWaOZr0dSIM37n7VUUxN0xM7F1QStS1HKvxD6EuWV
-         AmFsPkboTVYPH/QKW/NesXcOyXBIoOqbZwjarRsExLdJHcOXnA2X1j0g62f45OoFrV8D
-         KqMkIPesv5wGRUEfRf1zL1Pz66VdVS9MtdS7enJ/0GzAt7jz1vF/efcwuJlMJz5Dvexi
-         JNyw==
+        bh=fMOsJ+yCzpE8j0c8U4hOEUgeq7Kka7k0SjEEHdyP6UQ=;
+        b=hycUmKEOzqPiLqOtJxG6D5fkdB9nwjQHK6Dnv6JYYzfh4UG8OCOxXjDs8opMl+BSRz
+         Mw8hWO1kOUOzNstwMqrlvjGCvi41siDx5toR75bKx2CDBEg57yUsFqKpJwalsTBrrniO
+         CnfbdIesuc8qxWfoJSuA7xuMWYzNYq9E42TOc88Nvu1ryorMxoPDcg9mYNQ99y20LBFT
+         2/dGo2jQl9PmgwqBCa0chxKlIFXZrbXslQBxehoEnZFzFYm8f2iDlfwMStQHzy0HNsOi
+         DseN5It17TBH1hoWpX+f9KwIH5IN77khiTzgFDWi0XHrl39thCYVXr8HkYrwEg61FWxm
+         g+UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cRHFA4C63ztEV2JIf4LFaqF2zxgUQvb3Q0QPA2iOSY0=;
-        b=rfHyrcZ9MUQGOiDNE1zP8ZsXds4VPt2i5z1n2kOWtAdOdGHJxqWYlyKTvcnt/b+46X
-         ic7bJlE9UJKFo/eK5tP0xqG3647UNRuNITdN1nK3qU3ASWDTa0GmVci5iGY7cxjHloaU
-         jgi7aFu19JlR2QJ9NNvunq6LId1WCuymAD84y4mo+Ha+XFBubKY9GEzf9uhKtlVwWVEN
-         d3MxDSN/kB98hAvb0QrN+lpzCq5UQLtdywWvq4568pTapMbaWCMjZkb2Ea9c1zIli/dv
-         lryEWysQS1HnfxOH06iz8PYqFKMw6y8NhdFhKDm0UmBvh9dsuyapFqnrkX6garDpZkru
-         0MbA==
-X-Gm-Message-State: AOAM530KXvi6iuJb2zpEYWtudgtuglgLdfIHYetW39Tz0bTmGApfrbol
-        siisxyWc3lkiBxKV1pw6eNtia9Z/T6lnI3rCN8+CcA==
-X-Google-Smtp-Source: ABdhPJwOQRbnQmQmzaxrSeMY48DkVgG5W+y31u0lUb8/BEz9jaOr8hrUDoAPmHzOrVaamjPz3wtPO3lg/9hV1mJp9ww=
-X-Received: by 2002:a2e:b0d3:: with SMTP id g19mr557003ljl.279.1610488790674;
- Tue, 12 Jan 2021 13:59:50 -0800 (PST)
+        bh=fMOsJ+yCzpE8j0c8U4hOEUgeq7Kka7k0SjEEHdyP6UQ=;
+        b=l3dFxezX9FBprh7s6DiNwRBj53A17lJ4bppHOG4YBJyz+G6UzVOAYbt4VosABeZ0vZ
+         Sx56rd9ZPINkfAG5WrkPURs5ESaCzoF53zVqLaUTi5d8PK9lvUNml9zzO7l4ePxl5sGt
+         xskAQXG59R/CxVazcXDsaABjBfjvVWLvtnh5vXhS8l4tpQPDHaJfSKgvgwVNBYWsFpGo
+         jNQ83EPVRQahyAnH05vlI5T/iz1o+/dnoyrqer+1OhNKtUeU8bweha6GiuO/N4hNO1eb
+         VXk1wSkkWdOeVq8yqpYSvy9F3PtaETgRBE2QhYMoP+wyxaJzy7ltR4++v3anI/VW6w5b
+         q9hg==
+X-Gm-Message-State: AOAM533u+QiXMVYzKFjtYKQ5arolquHfYwQZ0pStXDvJMv0uFXeS82/W
+        zRPqtgtiZ+x8vXlbYEYyxJCpe+6hCldPPsr4k7E=
+X-Google-Smtp-Source: ABdhPJyAhZqfau2mOz0A2k5mOBxg9Wpw5j1oKcrx8V7oeErJ6wBRCxNlUTbw/uW4ABYw01eYzhk1c5lrwph3JharLg0=
+X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr1060690ote.132.1610488825915;
+ Tue, 12 Jan 2021 14:00:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20210112095806.I2Z6as5al%akpm@linux-foundation.org>
- <ac517aa0-2396-321c-3396-13aafba46116@infradead.org> <20210112135010.267508efa85fe98f670ed9e9@linux-foundation.org>
-In-Reply-To: <20210112135010.267508efa85fe98f670ed9e9@linux-foundation.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 12 Jan 2021 13:59:39 -0800
-Message-ID: <CALvZod4qca8SQk-+8iczUjFWZ45=FCA21ZJ4yJmXJQ-MKucRQw@mail.gmail.com>
-Subject: Re: mmotm 2021-01-12-01-57 uploaded (NR_SWAPCACHE in mm/)
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, broonie@kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-5-lee.jones@linaro.org>
+In-Reply-To: <20210111191926.3688443-5-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Tue, 12 Jan 2021 17:00:15 -0500
+Message-ID: <CADnq5_NMfddmOn_42UVD8XVwXN3Q3Ag219Zz+V1RoremFb9rog@mail.gmail.com>
+Subject: Re: [PATCH 04/40] drm/amd/display/dc/dce/dce_opp: Demote
+ non-compliant kernel-doc headers
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Leo Li <sunpeng.li@amd.com>, Mauro Rossi <issor.oruam@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.cz>, mm-commits@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 1:50 PM Andrew Morton <akpm@linux-foundation.org> w=
-rote:
+On Mon, Jan 11, 2021 at 2:19 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> On Tue, 12 Jan 2021 12:38:18 -0800 Randy Dunlap <rdunlap@infradead.org> w=
-rote:
+> Fixes the following W=3D1 kernel build warning(s):
 >
-> > On 1/12/21 1:58 AM, akpm@linux-foundation.org wrote:
-> > > The mm-of-the-moment snapshot 2021-01-12-01-57 has been uploaded to
-> > >
-> > >    https://www.ozlabs.org/~akpm/mmotm/
-> > >
-> > > mmotm-readme.txt says
-> > >
-> > > README for mm-of-the-moment:
-> > >
-> > > https://www.ozlabs.org/~akpm/mmotm/
-> > >
-> > > This is a snapshot of my -mm patch queue.  Uploaded at random hopeful=
-ly
-> > > more than once a week.
-> > >
-> >
-> > on i386 and x86_64:
-> >
-> > when CONFIG_SWAP is not set/enabled:
-> >
-> > ../mm/migrate.c: In function =E2=80=98migrate_page_move_mapping=E2=80=
-=99:
-> > ../mm/migrate.c:504:35: error: =E2=80=98NR_SWAPCACHE=E2=80=99 undeclare=
-d (first use in this function); did you mean =E2=80=98QC_SPACE=E2=80=99?
-> >     __mod_lruvec_state(old_lruvec, NR_SWAPCACHE, -nr);
-> >                                    ^~~~~~~~~~~~
-> >
-> > ../mm/memcontrol.c:1529:20: error: =E2=80=98NR_SWAPCACHE=E2=80=99 undec=
-lared here (not in a function); did you mean =E2=80=98SGP_CACHE=E2=80=99?
-> >   { "swapcached",   NR_SWAPCACHE   },
-> >                     ^~~~~~~~~~~~
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:109: warning: Fun=
+ction parameter or member 'opp110' not described in 'set_truncation'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:109: warning: Fun=
+ction parameter or member 'params' not described in 'set_truncation'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:154: warning: Fun=
+ction parameter or member 'opp110' not described in 'dce60_set_truncation'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:154: warning: Fun=
+ction parameter or member 'params' not described in 'dce60_set_truncation'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:204: warning: Fun=
+ction parameter or member 'opp110' not described in 'set_spatial_dither'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:204: warning: Fun=
+ction parameter or member 'params' not described in 'set_spatial_dither'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:308: warning: Fun=
+ction parameter or member 'opp110' not described in 'set_temporal_dither'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:308: warning: Fun=
+ction parameter or member 'params' not described in 'set_temporal_dither'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:370: warning: Fun=
+ction parameter or member 'opp110' not described in 'dce110_opp_set_clampin=
+g'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:370: warning: Fun=
+ction parameter or member 'params' not described in 'dce110_opp_set_clampin=
+g'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:430: warning: Fun=
+ction parameter or member 'opp110' not described in 'dce60_opp_set_clamping=
+'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:430: warning: Fun=
+ction parameter or member 'params' not described in 'dce60_opp_set_clamping=
+'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:478: warning: Fun=
+ction parameter or member 'opp110' not described in 'set_pixel_encoding'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:478: warning: Fun=
+ction parameter or member 'params' not described in 'set_pixel_encoding'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:514: warning: Fun=
+ction parameter or member 'opp110' not described in 'dce60_set_pixel_encodi=
+ng'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.c:514: warning: Fun=
+ction parameter or member 'params' not described in 'dce60_set_pixel_encodi=
+ng'
 >
-> Thanks.  I did the below.
->
-> But we're still emitting "Node %d SwapCached: 0 kB" in sysfs when
-> CONFIG_SWAP=3Dn, which is probably wrong.  Shakeel, can you please have a
-> think?
->
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Mauro Rossi <issor.oruam@gmail.com>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Thanks Andrew for fixing. Independent of this patch, we already print
-""SwapCached:" in /proc/meminfo for CONFIG_SWAP=3Dn, so I think doing
-the same for per-node meminfo should be fine too.
+Applied.  Thanks!
+
+Alex
+
+> ---
+>  drivers/gpu/drm/amd/display/dc/dce/dce_opp.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_opp.c b/drivers/gpu/d=
+rm/amd/display/dc/dce/dce_opp.c
+> index 2bf8f5a2e0c22..4600231da6cbb 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce/dce_opp.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_opp.c
+> @@ -97,7 +97,7 @@ enum {
+>
+>
+>
+> -/**
+> +/*
+>   *     set_truncation
+>   *     1) set truncation depth: 0 for 18 bpp or 1 for 24 bpp
+>   *     2) enable truncation
+> @@ -142,7 +142,7 @@ static void set_truncation(
+>  }
+>
+>  #if defined(CONFIG_DRM_AMD_DC_SI)
+> -/**
+> +/*
+>   *     dce60_set_truncation
+>   *     1) set truncation depth: 0 for 18 bpp or 1 for 24 bpp
+>   *     2) enable truncation
+> @@ -183,7 +183,7 @@ static void dce60_set_truncation(
+>  }
+>  #endif
+>
+> -/**
+> +/*
+>   *     set_spatial_dither
+>   *     1) set spatial dithering mode: pattern of seed
+>   *     2) set spatial dithering depth: 0 for 18bpp or 1 for 24bpp
+> @@ -291,7 +291,7 @@ static void set_spatial_dither(
+>                 FMT_SPATIAL_DITHER_EN, 1);
+>  }
+>
+> -/**
+> +/*
+>   *     SetTemporalDither (Frame Modulation)
+>   *     1) set temporal dither depth
+>   *     2) select pattern: from hard-coded pattern or programmable patter=
+n
+> @@ -355,7 +355,7 @@ static void set_temporal_dither(
+>                 FMT_TEMPORAL_DITHER_EN, 1);
+>  }
+>
+> -/**
+> +/*
+>   *     Set Clamping
+>   *     1) Set clamping format based on bpc - 0 for 6bpc (No clamping)
+>   *             1 for 8 bpc
+> @@ -415,7 +415,7 @@ void dce110_opp_set_clamping(
+>  }
+>
+>  #if defined(CONFIG_DRM_AMD_DC_SI)
+> -/**
+> +/*
+>   *     Set Clamping for DCE6 parts
+>   *     1) Set clamping format based on bpc - 0 for 6bpc (No clamping)
+>   *             1 for 8 bpc
+> @@ -465,7 +465,7 @@ static void dce60_opp_set_clamping(
+>  }
+>  #endif
+>
+> -/**
+> +/*
+>   *     set_pixel_encoding
+>   *
+>   *     Set Pixel Encoding
+> @@ -501,7 +501,7 @@ static void set_pixel_encoding(
+>  }
+>
+>  #if defined(CONFIG_DRM_AMD_DC_SI)
+> -/**
+> +/*
+>   *     dce60_set_pixel_encoding
+>   *     DCE6 has no FMT_SUBSAMPLING_{MODE,ORDER} bits in FMT_CONTROL reg
+>   *     Set Pixel Encoding
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
