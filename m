@@ -2,87 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 625D72F3639
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9E322F3638
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:55:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405687AbhALQyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:54:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729472AbhALQys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2390866AbhALQys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Jan 2021 11:54:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 501F52311F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:54:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610470447;
-        bh=cIWoPzrWZKqwpLcgp2Lr54R7c9LfFLyCAMdonQt2vgE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tgEWjeXs6AyAnI4Ro6p62pMt7NbBaRs+TJaIbP2M3hvhgd7JapbJDW1TGnrDksu9+
-         YDTXs8x8VheC3DxH3NeMGmED5KeO/EiKE8FT0wiHDNGgS0AmbjWsj7JqLv97KJ9LPY
-         dqN5IBDcJ1fO5WLf2bTBR2hnaFQiKqLgzIThV8v1mFd+JlljYH8luUMgk4ra4KTn7g
-         0t2usReo20GOenehbL2XdPWBe4NOwRRrERy2FR8h8n3YeCbUX2w1VY3uV8Lvvfv24w
-         xaKefDxfACkOf8xXm4YIVpnDSJ3PKDEvGeDvxpx5BGVUO2v5EgWZcAFuRd55ujCFCT
-         Szt27SOiLnnQA==
-Received: by mail-ed1-f50.google.com with SMTP id v26so3044707eds.13
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390500AbhALQys (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 11:54:48 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CDB0C061794
         for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 08:54:07 -0800 (PST)
-X-Gm-Message-State: AOAM5308myxh69MWTbblYiLIaZU6azjsldOpeofkQsjHsatjTmD0OIk2
-        y3xIHIht0XEOZpCZcjQp/9ykApuecop2V1XF+0F5VQ==
-X-Google-Smtp-Source: ABdhPJxq37O3y4EfXgFM1mhi298ZQhVcoSs/RBIgHLO8RRbq93NlZ+KfnWfibO/uMVsn7hxjGYXuHozK/yTY6RRGNPw=
-X-Received: by 2002:aa7:ca55:: with SMTP id j21mr67361edt.172.1610470445858;
- Tue, 12 Jan 2021 08:54:05 -0800 (PST)
-MIME-Version: 1.0
-References: <20210111200027.GH25645@zn.tnic> <E74AC970-CFCF-4CFD-A71F-F719F5BCE2DC@amacapital.net>
- <5B5C1F0A-9780-4E42-BC65-742BAEE920BF@intel.com> <DM5PR11MB1690CB5004CADCE5E9D5A221DEAA0@DM5PR11MB1690.namprd11.prod.outlook.com>
-In-Reply-To: <DM5PR11MB1690CB5004CADCE5E9D5A221DEAA0@DM5PR11MB1690.namprd11.prod.outlook.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 12 Jan 2021 08:53:53 -0800
-X-Gmail-Original-Message-ID: <CALCETrUzsx2gpJGwz4fwLTLTKG4i=izaGRYL-3dLrn389JV17w@mail.gmail.com>
-Message-ID: <CALCETrUzsx2gpJGwz4fwLTLTKG4i=izaGRYL-3dLrn389JV17w@mail.gmail.com>
-Subject: Re: gdbserver + fsgsbase kaputt
-To:     "Metzger, Markus T" <markus.t.metzger@intel.com>
-Cc:     "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+Received: by mail-pj1-x1035.google.com with SMTP id m5so2042691pjv.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 08:54:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BvNPTfqT/5f4cwjyqGfBMaYw7woP/GveWw32QYUqvjQ=;
+        b=m8vzTv31OLpB/Cx5Y7zqFtD1Mg1Ek0UYCQUnr2j8V7D+AXHUCqTa/U5XPzKqj56C1A
+         KBQb7IbW9vKAUk11kd/UY2LKV4ipQijWbWIOShsmgx+Y0TWrzXgKtz+C3eeybAeZ5Bjw
+         2/Mi2/orPtgb6Ezypwnixca4ZUv2FPG6xyKU9Zzry9TA7EwxugDm0HCqeZdBbTv42ziZ
+         1uKFv5F9SzNVPL+ksK08s5q/Gp16+78QSSROeE+/YoG+Z6Y0C13LgnR40ua+ilJ8uFXf
+         i1w7ED7IlE6sOnGL3yfMYWFVmcXFwPxFEMisoFK/3a+XAhYUaeZWODvqj+oSC9VaT9GK
+         C6XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BvNPTfqT/5f4cwjyqGfBMaYw7woP/GveWw32QYUqvjQ=;
+        b=ufjoS7YfwYL9iRVXJPQG1ze1p76hcWoZM5t1y0dd68/TNHCKeSrF+1eE/1D1VUfwzm
+         Bi+yIqEUoUZip1NFPMkCNYd0GUD82sJPqJTeYMMKTK+fxYDMOxydYqtDC3UyEdzeWEEc
+         wuC/0Kb6kNEANFoMx61Yp9o0p6wBF3dw6fQPenp2SXbt7x0pMH2R8tudzOrcBehEFkLd
+         w2XJeb/GdX9ZmoEhEjyfQEzL6zgZuwWsQM0+qfx3vpgDeghqBCEgNCxuBKSQsZNhUd9G
+         ZN1nmTEsecwfvRKuGmVRsNcknFhe0cffhD95OrvP8zyTlcT1amsOoY2KgGmRSuqoAdMl
+         TkWA==
+X-Gm-Message-State: AOAM530MscRZB0ZTgZDLHhZEwlnm7mtxbUbtD7KUUqaSauBA26OhW92J
+        b8FXhHH9w4D23nS14esPzMffNQ==
+X-Google-Smtp-Source: ABdhPJyDT2FjXRhiezNWphPPvJWhCSrfs/NCvloIzCEVdKgu+rtZoKa3mNCAs3vrPbn9eMtLMSYZQQ==
+X-Received: by 2002:a17:902:ee83:b029:da:3483:3957 with SMTP id a3-20020a170902ee83b02900da34833957mr92959pld.38.1610470446670;
+        Tue, 12 Jan 2021 08:54:06 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id 21sm3742730pfx.84.2021.01.12.08.54.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 08:54:05 -0800 (PST)
+Date:   Tue, 12 Jan 2021 08:53:59 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Jim Mattson <jmattson@google.com>,
+        syzbot <syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com>,
         Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        "tdevries@suse.com" <tdevries@suse.com>, x86-ml <x86@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: UBSAN: shift-out-of-bounds in kvm_vcpu_after_set_cpuid
+Message-ID: <X/3UJ7EtyAb2Ww+6@google.com>
+References: <000000000000d5173d05b7097755@google.com>
+ <CALMp9eSKrn0zcmSuOE6GFi400PMgK+yeypS7+prtwBckgdW0vQ@mail.gmail.com>
+ <X/zYsnfXpd6DT34D@google.com>
+ <f1aa1f3c-1dac-2357-ee1c-ab505513382f@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f1aa1f3c-1dac-2357-ee1c-ab505513382f@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 3:39 AM Metzger, Markus T
-<markus.t.metzger@intel.com> wrote:
->
-> > The GDB behavior looks to be different between the two cases -- with vs
-> > without gdb server, when I checked the GS/GSBASE values on the ptrace front.
->
-> 64-bit GDB doesn't support FSGSBASE for 32-bit inferiors and it looks like gdbserver
-> might not support FSGSBASE, at all.
->
-> I had added support for the former as part of the tests I wrote about a year ago [1]
-> but never submitted the patch.  Was the discussion ever concluded?
->
-> The general behavior should be that GDB reads a regset, overwrites the registers it
-> knows about, and writes it back again to preserve the original values of registers it
-> doesn't know about.
->
-> When I log the values that are read and written for FSGSBASE, however, it looks like
-> ptrace is returning a non-zero GS_BASE on a read and gdbserver is writing zero on
-> the next write.
+On Tue, Jan 12, 2021, Paolo Bonzini wrote:
+> On 12/01/21 00:01, Sean Christopherson wrote:
+> > > Perhaps cpuid_query_maxphyaddr() should just look at the low 5 bits of
+> > > CPUID.80000008H:EAX?
+> 
+> The low 6 bits I guess---yes, that would make sense and it would have also
+> fixed the bug.
 
-I instrumented the kernel, and I see:
+No, that wouldn't have fixed this specific bug.  In this case, the issue was
+CPUID.80000008H:AL == 0; masking off bits 7:6 wouldn't have changed anything.
 
-[   26.990644] getreg: gs_base = 0xf7f8e000
-[   26.991694] getreg: GS=0x63, GSBASE=0xf7f8e000
-[   26.993117] PTRACE_SETREGS
-[   26.993813] putreg: change gsbase from 0xf7f8e000 to 0x0
-[   26.995134] putreg: write GS=0x63; old GSBASE=0x0
-[   26.996235] PTRACE_SETREGS done
+And, masking bits 7:6 is architecturally wrong.  Both the SDM and APM state that
+bits 7:0 contain the number of PA bits.
 
-That's gdbserver reading GS and GSBASE and then telling the kernel to
-set GS to the same value and GSBASE to 0.
-
-I can come up with horrible kernel hacks to try to work around this,
-but gdbserver is really giving the kernel bad instructions here.
-
---Andy
+KVM could reject guest.MAXPA > host.MAXPA, but arbitrarily dropping bits would
+be wrong.
