@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DDA22F2FA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:58:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D5292F313A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:25:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404122AbhALM5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:57:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53892 "EHLO mail.kernel.org"
+        id S2389328AbhALM5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:57:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403846AbhALM5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:57:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B22D22333B;
-        Tue, 12 Jan 2021 12:56:32 +0000 (UTC)
+        id S2388644AbhALM46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:56:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 927E02311C;
+        Tue, 12 Jan 2021 12:55:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610456193;
-        bh=IO07lAPmVIHL6U9iLfamBIZXzOpk67bl0Wv3eCpJyL4=;
+        s=k20201202; t=1610456142;
+        bh=NjnX7vpBdEObQj3DwhFQMHbnPeyqEPEVzfFPPN/J79E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KDio7TW/YhbSgh15W+Ct9JQQeZjMT2tk8f4xosGw7S3JGGv3RJkM9GFCPHn/QrU7O
-         4n4WMKf+d44A4rhX48V6PFetMUX0OThQkNLfxezAFDQMWKM2KqpmoqqKA6wyihODSu
-         m6OdbHgeWrt6Pi+Q/9ZKgL8z6MVTgOJKxDBOMO9GIIR+NO6mVT8g4iryq9pkL9Il5c
-         0J1ZnW7YGbukA+j9TWzc27odOSU9COYkTdmVpmGY/0PGOjY3lrUqdKTp2SEi5E3SKb
-         tcVmRgDCmErCx/jjwEqAxzAuiAV7bpB7u+XLqo2OgMmAmIVyDu9QKA+heJM4uI9XSF
-         HvkDV6hCIotpQ==
+        b=LrZFA5NkW+JrBdZU//FW5B0aGq5yuKD0m2yGiIl+bPnXXeBlVSh4DPzuu8T5qA8Qu
+         L6fPmmnPDXyUn/GawuskNvm/N7m2xzrehC/Y3nXpDEEl4PLa4+aDEQFUQW8uVA1Jmc
+         QGSPs3bqGUISiuBjSauKo4VuXk90n0eprd2jxOCutlYuvWfsNM+ENxyYG6oXeE/TbM
+         PzVqnWS+4LaQCof4gz0ra7hOZXctz228xmJXBIdQn6/uq2RaXRoJbILLFyXApw6wUT
+         tmTbqxFVrzRoKFnDZu8TXQt1sJ1FGfcMdGsYzD0bWZtLlENTSo0JC77kgDAdUrr0ty
+         bit2IEIrWGEwg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jiawei Gu <Jiawei.Gu@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.10 44/51] drm/amdgpu: fix potential memory leak during navi12 deinitialization
-Date:   Tue, 12 Jan 2021 07:55:26 -0500
-Message-Id: <20210112125534.70280-44-sashal@kernel.org>
+Cc:     Carl Huang <cjhuang@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>, ath11k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 06/51] ath11k: fix crash caused by NULL rx_channel
+Date:   Tue, 12 Jan 2021 07:54:48 -0500
+Message-Id: <20210112125534.70280-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210112125534.70280-1-sashal@kernel.org>
 References: <20210112125534.70280-1-sashal@kernel.org>
@@ -43,71 +43,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiawei Gu <Jiawei.Gu@amd.com>
+From: Carl Huang <cjhuang@codeaurora.org>
 
-[ Upstream commit e6d5c64efaa34aae3815a9afeb1314a976142e83 ]
+[ Upstream commit 3597010630d0aa96f5778901e691c6068bb86318 ]
 
-Navi12 HDCP & DTM deinitialization needs continue to free bo if already
-created though initialized flag is not set.
+During connect and disconnect stress test, crashed happened
+because ar->rx_channel is NULL. Fix it by checking whether
+ar->rx_channel is NULL.
 
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Jiawei Gu <Jiawei.Gu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Crash stack is as below:
+RIP: 0010:ath11k_dp_rx_h_ppdu+0x110/0x230 [ath11k]
+[ 5028.808963]  ath11k_dp_rx_wbm_err+0x14a/0x360 [ath11k]
+[ 5028.808970]  ath11k_dp_rx_process_wbm_err+0x41c/0x520 [ath11k]
+[ 5028.808978]  ath11k_dp_service_srng+0x25e/0x2d0 [ath11k]
+[ 5028.808982]  ath11k_pci_ext_grp_napi_poll+0x23/0x80 [ath11k_pci]
+[ 5028.808986]  net_rx_action+0x27e/0x400
+[ 5028.808990]  __do_softirq+0xfd/0x2bb
+[ 5028.808993]  irq_exit+0xa6/0xb0
+[ 5028.808995]  do_IRQ+0x56/0xe0
+[ 5028.808997]  common_interrupt+0xf/0xf
+
+Tested-on: QCA6390 hw2.0 PCI WLAN.HST.1.0.1-01740-QCAHSTSWPLZ_V2_TO_X86-1
+
+Signed-off-by: Carl Huang <cjhuang@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20201211055613.9310-1-cjhuang@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath11k/dp_rx.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
-index a6dbe4b83533f..2f47f81a74a57 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
-@@ -1283,8 +1283,12 @@ static int psp_hdcp_terminate(struct psp_context *psp)
- 	if (amdgpu_sriov_vf(psp->adev))
- 		return 0;
+diff --git a/drivers/net/wireless/ath/ath11k/dp_rx.c b/drivers/net/wireless/ath/ath11k/dp_rx.c
+index 01625327eef7c..3638501a09593 100644
+--- a/drivers/net/wireless/ath/ath11k/dp_rx.c
++++ b/drivers/net/wireless/ath/ath11k/dp_rx.c
+@@ -2272,6 +2272,7 @@ static void ath11k_dp_rx_h_ppdu(struct ath11k *ar, struct hal_rx_desc *rx_desc,
+ {
+ 	u8 channel_num;
+ 	u32 center_freq;
++	struct ieee80211_channel *channel;
  
--	if (!psp->hdcp_context.hdcp_initialized)
--		return 0;
-+	if (!psp->hdcp_context.hdcp_initialized) {
-+		if (psp->hdcp_context.hdcp_shared_buf)
-+			goto out;
-+		else
-+			return 0;
-+	}
- 
- 	ret = psp_hdcp_unload(psp);
- 	if (ret)
-@@ -1292,6 +1296,7 @@ static int psp_hdcp_terminate(struct psp_context *psp)
- 
- 	psp->hdcp_context.hdcp_initialized = false;
- 
-+out:
- 	/* free hdcp shared memory */
- 	amdgpu_bo_free_kernel(&psp->hdcp_context.hdcp_shared_bo,
- 			      &psp->hdcp_context.hdcp_shared_mc_addr,
-@@ -1430,8 +1435,12 @@ static int psp_dtm_terminate(struct psp_context *psp)
- 	if (amdgpu_sriov_vf(psp->adev))
- 		return 0;
- 
--	if (!psp->dtm_context.dtm_initialized)
--		return 0;
-+	if (!psp->dtm_context.dtm_initialized) {
-+		if (psp->dtm_context.dtm_shared_buf)
-+			goto out;
-+		else
-+			return 0;
-+	}
- 
- 	ret = psp_dtm_unload(psp);
- 	if (ret)
-@@ -1439,6 +1448,7 @@ static int psp_dtm_terminate(struct psp_context *psp)
- 
- 	psp->dtm_context.dtm_initialized = false;
- 
-+out:
- 	/* free hdcp shared memory */
- 	amdgpu_bo_free_kernel(&psp->dtm_context.dtm_shared_bo,
- 			      &psp->dtm_context.dtm_shared_mc_addr,
+ 	rx_status->freq = 0;
+ 	rx_status->rate_idx = 0;
+@@ -2292,9 +2293,12 @@ static void ath11k_dp_rx_h_ppdu(struct ath11k *ar, struct hal_rx_desc *rx_desc,
+ 		rx_status->band = NL80211_BAND_5GHZ;
+ 	} else {
+ 		spin_lock_bh(&ar->data_lock);
+-		rx_status->band = ar->rx_channel->band;
+-		channel_num =
+-			ieee80211_frequency_to_channel(ar->rx_channel->center_freq);
++		channel = ar->rx_channel;
++		if (channel) {
++			rx_status->band = channel->band;
++			channel_num =
++				ieee80211_frequency_to_channel(channel->center_freq);
++		}
+ 		spin_unlock_bh(&ar->data_lock);
+ 		ath11k_dbg_dump(ar->ab, ATH11K_DBG_DATA, NULL, "rx_desc: ",
+ 				rx_desc, sizeof(struct hal_rx_desc));
 -- 
 2.27.0
 
