@@ -2,160 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 581012F256F
+	by mail.lfdr.de (Postfix) with ESMTP id C60F92F2570
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:48:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729263AbhALBVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 20:21:04 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:28512 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727919AbhALBVD (ORCPT
+        id S1729305AbhALBVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 20:21:47 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:37956 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727919AbhALBVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 20:21:03 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10C11m6r030847;
-        Mon, 11 Jan 2021 20:20:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=IY0FNg71Sd157RzPniY1lE+vTVNWXVrYaKLd5+dZUus=;
- b=pl70X5Brw7oPjuMZR83X6VVo58j+9jtpC9Vsz7ePsqwG5kbgQfMRgJl/RYVP5eEuNmmD
- EPdLY2lKNRAdvjOnRFCiwlfgHcNasP4WyfxIu0/eQhQMzjCRlnKkp6PA3WSE6qg7XfUL
- 5/Xr2a56riF0g/4+B8zh8Mg0dOjQFrOoHHbaQroExTgEpPrXprJfdrIHnu71eT5ndxRn
- EppxVJiMDAOxF09pq2ZEj9dxFRwNqDvdayLgGtkgJ1mWznYY4jWifUGmZj9paS7xjy2s
- h71rXC7iVy6fLpP7ohNrnKS7T576WrCcwBqbTF75tLUMUoqHRX1WFC8qjV4ZvM+SZkNC sg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 361114scr1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Jan 2021 20:20:20 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10C1BAG5071534;
-        Mon, 11 Jan 2021 20:20:20 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 361114scqk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 11 Jan 2021 20:20:20 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10C1Gv59007873;
-        Tue, 12 Jan 2021 01:20:18 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 35y447txp1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 01:20:18 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10C1KFqo38142306
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jan 2021 01:20:15 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 94A0011C052;
-        Tue, 12 Jan 2021 01:20:15 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CB16D11C054;
-        Tue, 12 Jan 2021 01:20:14 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.92.32])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Tue, 12 Jan 2021 01:20:14 +0000 (GMT)
-Date:   Tue, 12 Jan 2021 02:20:12 +0100
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>, mjrosato@linux.ibm.com
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, fiuczy@linux.ibm.com, frankja@linux.ibm.com,
-        david@redhat.com, hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v13 11/15] s390/vfio-ap: implement in-use callback for
- vfio_ap driver
-Message-ID: <20210112022012.4bad464f.pasic@linux.ibm.com>
-In-Reply-To: <20201223011606.5265-12-akrowiak@linux.ibm.com>
-References: <20201223011606.5265-1-akrowiak@linux.ibm.com>
-        <20201223011606.5265-12-akrowiak@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Mon, 11 Jan 2021 20:21:46 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10C1H0uv101564;
+        Tue, 12 Jan 2021 01:20:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=lyZ0U9U2TqkiUJd7YSz9qBPdBQZnd1ZU9TozRTJ89lU=;
+ b=aVRdIeh+y3SL/BbZ2MYWY51JlVQdBfIBTw1bc384uiouNnSrYN13cVEE3962bP5kwQFg
+ Ht+G8D6UWr7iULQ8mk4faKCt48EoOr/DoiaWFlc56x1UHYR5+mx4gS1RdEyP516oTNeq
+ Kro/Hbt2NDkce5OqnhLVTy1Ku7Bz+qo//rAuUEOHasqltBysTEwTll71cvl9JA3QPTmR
+ 8tZOBzF87mvjG0fPuVfO+dy/RTut6YlugIdanH8oKUbqkPq1sK5wE2NtrVudk2f5mlR6
+ QLBHbG7yO4gWxmE/ksODZ739fCZeujb/0TAGtjLfY9EpnUOB1QSSrEQSsoaSwN1cOd4u Vg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 360kg1m0sp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 12 Jan 2021 01:20:55 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10C1GSqw039250;
+        Tue, 12 Jan 2021 01:20:54 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 360kf4jtr0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Jan 2021 01:20:54 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10C1KqRI018722;
+        Tue, 12 Jan 2021 01:20:52 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 11 Jan 2021 17:20:52 -0800
+Subject: Re: [PATCH v3 4/6] mm: hugetlb: add return -EAGAIN for
+ dissolve_free_huge_page
+To:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org,
+        mhocko@suse.cz
+Cc:     n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210110124017.86750-1-songmuchun@bytedance.com>
+ <20210110124017.86750-5-songmuchun@bytedance.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <c61cdf1d-2feb-ecb3-393d-ca25175c73f4@oracle.com>
+Date:   Mon, 11 Jan 2021 17:20:51 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-11_34:2021-01-11,2021-01-11 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 priorityscore=1501 bulkscore=0 spamscore=0 malwarescore=0
- phishscore=0 mlxlogscore=999 impostorscore=0 mlxscore=0 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101120000
+In-Reply-To: <20210110124017.86750-5-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 bulkscore=0 spamscore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101120002
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ clxscore=1015 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101120002
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Dec 2020 20:16:02 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-
-> Let's implement the callback to indicate when an APQN
-> is in use by the vfio_ap device driver. The callback is
-> invoked whenever a change to the apmask or aqmask would
-> result in one or more queue devices being removed from the driver. The
-> vfio_ap device driver will indicate a resource is in use
-> if the APQN of any of the queue devices to be removed are assigned to
-> any of the matrix mdevs under the driver's control.
+On 1/10/21 4:40 AM, Muchun Song wrote:
+> There is a race between dissolve_free_huge_page() and put_page(),
+> and the race window is quite small. Theoretically, we should return
+> -EBUSY when we encounter this race. In fact, we have a chance to
+> successfully dissolve the page if we do a retry. Because the race
+> window is quite small. If we seize this opportunity, it is an
+> optimization for increasing the success rate of dissolving page.
 > 
-> There is potential for a deadlock condition between the matrix_dev->lock
-> used to lock the matrix device during assignment of adapters and domains
-> and the ap_perms_mutex locked by the AP bus when changes are made to the
-> sysfs apmask/aqmask attributes.
+> If we free a HugeTLB page from a non-task context, it is deferred
+> through a workqueue. In this case, we need to flush the work.
 > 
-> Consider following scenario (courtesy of Halil Pasic):
-> 1) apmask_store() takes ap_perms_mutex
-> 2) assign_adapter_store() takes matrix_dev->lock
-> 3) apmask_store() calls vfio_ap_mdev_resource_in_use() which tries
->    to take matrix_dev->lock
-> 4) assign_adapter_store() calls ap_apqn_in_matrix_owned_by_def_drv
->    which tries to take ap_perms_mutex
+> The dissolve_free_huge_page() can be called from memory hotplug,
+> the caller aims to free the HugeTLB page to the buddy allocator
+> so that the caller can unplug the page successfully.
 > 
-> BANG!
-> 
-> To resolve this issue, instead of using the mutex_lock(&matrix_dev->lock)
-> function to lock the matrix device during assignment of an adapter or
-> domain to a matrix_mdev as well as during the in_use callback, the
-> mutex_trylock(&matrix_dev->lock) function will be used. If the lock is not
-> obtained, then the assignment and in_use functions will terminate with
-> -EBUSY.
-> 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 > ---
->  drivers/s390/crypto/vfio_ap_drv.c     |  1 +
->  drivers/s390/crypto/vfio_ap_ops.c     | 21 ++++++++++++++++++---
->  drivers/s390/crypto/vfio_ap_private.h |  2 ++
->  3 files changed, 21 insertions(+), 3 deletions(-)
+>  mm/hugetlb.c | 26 +++++++++++++++++++++-----
+>  1 file changed, 21 insertions(+), 5 deletions(-)
+
+I am unsure about the need for this patch.  The code is OK, there are no
+issues with the code.
+
+As mentioned in the commit message, this is an optimization and could
+potentially cause a memory offline operation to succeed instead of fail.
+However, we are very unlikely to ever exercise this code.  Adding an
+optimization that is unlikely to be exercised is certainly questionable.
+
+Memory offline is the only code that could benefit from this optimization.
+As someone with more memory offline user experience, what is your opinion
+Michal?
+
+-- 
+Mike Kravetz
+
 > 
-[..]
->  }
-> +
-> +int vfio_ap_mdev_resource_in_use(unsigned long *apm, unsigned long *aqm)
-> +{
-> +	int ret;
-> +
-> +	if (!mutex_trylock(&matrix_dev->lock))
-> +		return -EBUSY;
-> +	ret = vfio_ap_mdev_verify_no_sharing(NULL, apm, aqm);
-
-If we detect that resources are in use, then we spit warnings to the
-message log, right?
-
-@Matt: Is your userspace tooling going to guarantee that this will never
-happen?
-
-> +	mutex_unlock(&matrix_dev->lock);
-> +
-> +	return ret;
-> +}
-> diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
-> index d2d26ba18602..15b7cd74843b 100644
-> --- a/drivers/s390/crypto/vfio_ap_private.h
-> +++ b/drivers/s390/crypto/vfio_ap_private.h
-> @@ -107,4 +107,6 @@ struct vfio_ap_queue {
->  int vfio_ap_mdev_probe_queue(struct ap_device *queue);
->  void vfio_ap_mdev_remove_queue(struct ap_device *queue);
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 4a9011e12175..a176ceed55f1 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1763,10 +1763,11 @@ static int free_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
+>   * nothing for in-use hugepages and non-hugepages.
+>   * This function returns values like below:
+>   *
+> - *  -EBUSY: failed to dissolved free hugepages or the hugepage is in-use
+> - *          (allocated or reserved.)
+> - *       0: successfully dissolved free hugepages or the page is not a
+> - *          hugepage (considered as already dissolved)
+> + *  -EAGAIN: race with __free_huge_page() and can do a retry
+> + *  -EBUSY:  failed to dissolved free hugepages or the hugepage is in-use
+> + *           (allocated or reserved.)
+> + *       0:  successfully dissolved free hugepages or the page is not a
+> + *           hugepage (considered as already dissolved)
+>   */
+>  int dissolve_free_huge_page(struct page *page)
+>  {
+> @@ -1793,8 +1794,10 @@ int dissolve_free_huge_page(struct page *page)
+>  		 * We should make sure that the page is already on the free list
+>  		 * when it is dissolved.
+>  		 */
+> -		if (unlikely(!PageHugeFreed(head)))
+> +		if (unlikely(!PageHugeFreed(head))) {
+> +			rc = -EAGAIN;
+>  			goto out;
+> +		}
 >  
-> +int vfio_ap_mdev_resource_in_use(unsigned long *apm, unsigned long *aqm);
+>  		/*
+>  		 * Move PageHWPoison flag from head page to the raw error page,
+> @@ -1813,6 +1816,14 @@ int dissolve_free_huge_page(struct page *page)
+>  	}
+>  out:
+>  	spin_unlock(&hugetlb_lock);
 > +
->  #endif /* _VFIO_AP_PRIVATE_H_ */
-
+> +	/*
+> +	 * If the freeing of the HugeTLB page is put on a work queue, we should
+> +	 * flush the work before retrying.
+> +	 */
+> +	if (unlikely(rc == -EAGAIN))
+> +		flush_work(&free_hpage_work);
+> +
+>  	return rc;
+>  }
+>  
+> @@ -1835,7 +1846,12 @@ int dissolve_free_huge_pages(unsigned long start_pfn, unsigned long end_pfn)
+>  
+>  	for (pfn = start_pfn; pfn < end_pfn; pfn += 1 << minimum_order) {
+>  		page = pfn_to_page(pfn);
+> +retry:
+>  		rc = dissolve_free_huge_page(page);
+> +		if (rc == -EAGAIN) {
+> +			cpu_relax();
+> +			goto retry;
+> +		}
+>  		if (rc)
+>  			break;
+>  	}
+> 
