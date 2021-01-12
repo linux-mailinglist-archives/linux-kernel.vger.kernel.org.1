@@ -2,127 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6089D2F2B8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:46:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5392F2B93
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:46:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387627AbhALJox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:44:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727363AbhALJow (ORCPT
+        id S2389194AbhALJpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:45:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23779 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729295AbhALJpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:44:52 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B52B6C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 01:44:12 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id 15so1078076pgx.7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 01:44:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qhKAvdyLV9ozaBHs7ibd8aRJfyvsfFlYNbqMhqyg060=;
-        b=cbC/HNTUF0dIEuvA/YKvArU6Ak+cJb0cXhRxx830ejv1rNkYMLAQX5DZq+XLl/P2rF
-         I+X1mN8YSVuG8hWZ0N3G5ThmqDczJu5S4W4Hvdxrlb/XeJuYtrzFW7qWDiBoS2vZ1udl
-         xKXI8aNFa8rzyCEO/TYnu7uNHkPNxGQQ8GNVkVWW2gHgZsKWc4HT7V3oZS/c9Q3ik6uF
-         xBKdj4pxtQMEg/nfFDy4YPXZqVuNHpSAwzJwJbty7HUtsTnFui5ne2IQgvMZo7USbpbb
-         SGpu582Zqv30wOZdOcCzKGMWK1yQEKh1uY+Z+WB7APrFtD8kPshhKfCBEDeAk+OPQA5U
-         6nBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qhKAvdyLV9ozaBHs7ibd8aRJfyvsfFlYNbqMhqyg060=;
-        b=mNxYPQX7jtZwbHxmdYwEYxwFhD743z//gsEHl5i/cJwR07mF5S0FqQt4IH0PbYCMIi
-         GJkk8y5rKjKyS42ciZ5geEKUDUD3P9JqB0nJcJ34bDWwFIGTg+J+FJGx/iq3BZ+5Vi0r
-         VYS/wZ4W3WGDqPibhbb8+hLXTxEbs5RDfDhjA1WW2dQv0LbIEB7zCcrG52xG5eepDhGI
-         Ntt5M/5+4C8Pl6VFJsp1+xZsUv1l7FzuHqqRZiUiOYjtbLW+4CNNLyTX0Ysj0pvN+Ytm
-         6vBJOReJhqNAcCUP5svo1nTxIkHpq3YzAJbXAqoGAmGZc43wbLgQJRzkAL/vSPuHSaaU
-         vHZg==
-X-Gm-Message-State: AOAM532mRZ4HN/odPpcGlm6JhaOvKO1u1kEXlF9fFMFU5dtAjs5EnLi3
-        6+ESWVmTH0Mt6eGJCC5etcBmvXAKXd41apJ1oDP8kA==
-X-Google-Smtp-Source: ABdhPJxvDFvvlZabl5kzZ+R1L5yEdMbs49iCNkUUDD0duSQUClowazshDTSh0023giqQ2cNQDuWnlyLk023Il7JCBMs=
-X-Received: by 2002:a63:480f:: with SMTP id v15mr3875523pga.341.1610444652212;
- Tue, 12 Jan 2021 01:44:12 -0800 (PST)
-MIME-Version: 1.0
-References: <20210110124017.86750-1-songmuchun@bytedance.com>
- <20210110124017.86750-2-songmuchun@bytedance.com> <20210112094222.GI22493@dhcp22.suse.cz>
-In-Reply-To: <20210112094222.GI22493@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 12 Jan 2021 17:43:30 +0800
-Message-ID: <CAMZfGtV_b8o3aQgbxrDO0aLi=g6SsEmYfoqjM19o9p_XQNAbUg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v3 1/6] mm: migrate: do not migrate HugeTLB
- page whose refcount is one
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Tue, 12 Jan 2021 04:45:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610444648;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zY/M/u2m2VqNpyWF8thtipjO76Oug+h2dUySxrNjOdk=;
+        b=P9A8IoJIbbZpc7YXMAhT1SRMzwQvBckWlHwv0z/01Ca1pCefHY41XDmyphRIC1GhRbFnaI
+        zxVyha1/YauEQA3A0EKuIE7/I7p2UViqXz+MCSfCYMDbQoYIvGLYoO01ns9tbEjcb3eTdP
+        AMkgK8h/q+NX6sHkyMIQavvMIqFHuN8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-331-nf4rcX7zNN6LhEz-fh6XtQ-1; Tue, 12 Jan 2021 04:44:04 -0500
+X-MC-Unique: nf4rcX7zNN6LhEz-fh6XtQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 317A4100C600;
+        Tue, 12 Jan 2021 09:44:03 +0000 (UTC)
+Received: from [10.36.115.140] (ovpn-115-140.ams2.redhat.com [10.36.115.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D69C910023B7;
+        Tue, 12 Jan 2021 09:44:01 +0000 (UTC)
+Subject: Re: [PATCH] mm: Teach pfn_to_online_page() about ZONE_DEVICE section
+ collisions
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Linux MM <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Yang Shi <shy828301@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <160990599013.2430134.11556277600719835946.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <785b9095-eca4-8100-33ea-6ae84e02a92e@redhat.com>
+ <20210106104255.GK13207@dhcp22.suse.cz>
+ <7d7c5dc4-7784-5dcc-fc00-4fe99f0a4a90@redhat.com>
+ <CAPcyv4iN4t2P_rQS23E7Bb-eLUAt389Y5t4X-yoRQrxvsN3DWQ@mail.gmail.com>
+ <75bb1429-d133-d303-a67a-be16c654ada8@redhat.com>
+ <CAPcyv4gXaUswZS_a4-oiQZWVZ4QDJrKps4XGs=xxLE0Ls=PSmg@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <b12d3dab-b2a0-e274-7eba-e16971067883@redhat.com>
+Date:   Tue, 12 Jan 2021 10:44:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <CAPcyv4gXaUswZS_a4-oiQZWVZ4QDJrKps4XGs=xxLE0Ls=PSmg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 5:42 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Sun 10-01-21 20:40:12, Muchun Song wrote:
-> > If the refcount is one when it is migrated, it means that the page
-> > was freed from under us. So we are done and do not need to migrate.
->
-> I would consider the following easier to understand. Feel free to reuse.
-> "
-> All pages isolated for the migration have an elevated reference count
-> and therefore seeing a reference count equal to 1 means that the last
-> user of the page has dropped the reference and the page has became
-> unused and there doesn't make much sense to migrate it anymore. This has
-> been done for regular pages and this patch does the same for hugetlb
-> pages. Although the likelyhood of the race is rather small for hugetlb
-> pages it makes sense the two code paths in sync.
-> "
+On 12.01.21 10:18, Dan Williams wrote:
+> On Thu, Jan 7, 2021 at 1:16 AM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> [...]
+>>
+>>>>> Well, I would love to have no surprises either. So far there was not
+>>>>> actual argument why the pmem reserved space cannot be fully initialized.
+>>>>
+>>>> Yes, I'm still hoping Dan can clarify that.
+>>>
+>>> Complexity and effective utility (once pfn_to_online_page() is fixed)
+>>> are the roadblocks in my mind. The altmap is there to allow for PMEM
+>>> capacity to be used as memmap space, so there would need to be code to
+>>> break that circular dependency and allocate a memmap for the metadata
+>>> space from DRAM and the rest of the memmap space for the data capacity
+>>> from pmem itself. That memmap-for-pmem-metadata will still represent
+>>> offline pages. So once pfn_to_online_page() is fixed, what pfn-walker
+>>> is going to be doing pfn_to_page() on PMEM metadata? Secondly, there
+>>
+>> Assume I do
+>>
+>> pgmap = get_dev_pagemap(pfn, NULL);
+>> if (pgmap)
+>>         return pfn_to_page(pfn);
+>> return NULL;
+>>
+>> on a random pfn because I want to inspect ZONE_DEVICE PFNs.
+> 
+> I keep getting hung up on the motivation to do random pfn inspection?
+> 
+> The problems we have found to date have required different solutions.
+> The KVM bug didn't use get_dev_pagemap() to inspect the pfn because it
+> could rely on the fact that the page already had an elevated reference
+> count. The get_user_pages() path only looks up ZONE_DEVICE pfns when
+> it see {pte,pmd,pud}_devmap set in the page table entry. pfn walkers
+> have been a problem, but with pfn_to_online_page() fixed what is the
+> remaining motivation to inspect ZONE_DEVICE pfns?
 
-Thanks.
+1) Let's assume we want to implement zone shrinking
+(remove_pfn_range_from_zone()->shrink_zone_span()) for ZONE_DEVICE at
+some point.
 
->
-> >
-> > This optimization is consistent with the regular pages, just like
-> > unmap_and_move() does.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-> > Acked-by: Yang Shi <shy828301@gmail.com>
->
-> Acked-by: Michal Hocko <mhocko@suse.com>
+A simple approach would be going via get_dev_pagemap(pfn,
+NULL)->pfn_to_page(pfn), checking for the zone.
 
-Thanks.
+If that's not possible, then extending dev_pagemap (e.g., indicating the
+nid) might also work (unless there is another way to get the nid).
 
->
-> > ---
-> >  mm/migrate.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/mm/migrate.c b/mm/migrate.c
-> > index 4385f2fb5d18..a6631c4eb6a6 100644
-> > --- a/mm/migrate.c
-> > +++ b/mm/migrate.c
-> > @@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
-> >               return -ENOSYS;
-> >       }
-> >
-> > +     if (page_count(hpage) == 1) {
-> > +             /* page was freed from under us. So we are done. */
-> > +             putback_active_hugepage(hpage);
-> > +             return MIGRATEPAGE_SUCCESS;
-> > +     }
-> > +
-> >       new_hpage = get_new_page(hpage, private);
-> >       if (!new_hpage)
-> >               return -ENOMEM;
-> > --
-> > 2.11.0
->
-> --
-> Michal Hocko
-> SUSE Labs
+
+2) Let's take a look at mm/memory-failure.c:memory_failure_dev_pagemap()
+
+IIUC, we might end up doing pfn_to_page(pfn) on a pfn in the reserved
+altmap space, so one with an uninitialized memmap.
+
+E.g., in dax_lock_page() we access page->mapping, which might just be
+garbage. dax_mapping() will de-reference garbage.
+
+Most probably I am missing something here.
+
+
+
+Question is: what are the expectations regarding the memmap if
+get_dev_pagemap() succeeded.
+
+I'm fine documenting that "get_dev_pagemap() does not guarantee that the
+"struct page" returned by pfn_to_page() was initialized and can safely
+be used. E.g., it might be a pfn in the reserved altmap space, for which
+the memmap is never initialized. Accessing it might be dangerous.".
+
+Then, there has to be a check at relevant places (e.g.,
+memory_failure_dev_pagemap()), checking somehow if the memmap content
+can actually be used.
+
+-- 
+Thanks,
+
+David / dhildenb
+
