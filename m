@@ -2,100 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB1C2F3574
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 464272F357A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406478AbhALQRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:17:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52986 "EHLO mail.kernel.org"
+        id S2406549AbhALQSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:18:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406451AbhALQRp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:17:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAF022222F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:17:04 +0000 (UTC)
+        id S2406511AbhALQSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 11:18:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9E0523121
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:17:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610468225;
-        bh=NkHyc1BkLz30+sbgIVGOr7kZ1HRA45HZcKcwbwOevaA=;
+        s=k20201202; t=1610468260;
+        bh=CoI1g52qNIryGpFWepCTL4prXOBxmbo4WiGrzxRBQlA=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hTCqWeglsHd9t2VCYPlxXCFxlzNrqEOd1LShyhXEcETwvj7KahJyGezqCa6chRZ6b
-         FaNQRwGNgNLu8tJy5bMbXLrR59VqN8SSt/yhH/F82AC9HcrZR3zohzTP2O+h9GUrpc
-         IUNj13fvAtTwsW/W9w8wrL8wsB3QLt02ZhqbiTC7AGk7grEMb9TP+RbN+VZPGfMSdQ
-         6DAQOmc2T6mudOtXbKyosvZbEU2rPdneut6zBhV2ySrWF2RKEBqIAAjbHWhTbe1EhH
-         McQHX6oiINp9uLx/SQQ7f5XSE14W7pxL2++7vBFLDbjxT4ELT6gir6h7Osjn27ajyk
-         hwjuBJwcO3/Bw==
-Received: by mail-ed1-f43.google.com with SMTP id by27so2715800edb.10
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 08:17:04 -0800 (PST)
-X-Gm-Message-State: AOAM532jRfgdaeGJXR00uEowNRMNpNK5MRzzuTKyhLORBvrgo3oWnwDK
-        Rtbf1KBg7xVU77JKPuITv/+0ujtLYPt3rjJD7g==
-X-Google-Smtp-Source: ABdhPJxqKXonHzoCdkUxbtNZm7Q5s+u9NOu0+Xa5ZBqC9SODwMdhisFICXfh6ISdn4FBGuGZN/szv7O7sjaYQOrp70w=
-X-Received: by 2002:a05:6402:1841:: with SMTP id v1mr4131969edy.194.1610468223460;
- Tue, 12 Jan 2021 08:17:03 -0800 (PST)
+        b=JJVzSHdgO1ws6H/D24wVXlrgHNqXtP+dlwOmTRrVvjDaJMavwKl00ORf0Sq7tdDtE
+         n8oulnveMEUZ7FWxrvEbctTohR2Z9hE85YJGMYRYUnkOSTVTPkNSGg7A1NYNAXIvcB
+         O2deKc9s5kBQF7ouaaTvie2lytEIXJ4OENfHkrtNxPHZoXU4NP3ncDwIy9s5ZfMhOy
+         TdsVLPYFJniq2pEuDIvMFUgZO2Hj13yEO4h73mr+gQCt2uN3mBbG1WRRGyLsT5VuWA
+         3R8AEoUCzrwzD7GA2NM9EgeR3t24E5TEGLeZyMkT3H49kBAA82wZt/CLk8NRwdIMOB
+         cUM4L64Fj1wvg==
+Received: by mail-lf1-f41.google.com with SMTP id s26so4195398lfc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 08:17:39 -0800 (PST)
+X-Gm-Message-State: AOAM532mo2kvQAM/fFG3LKPaPLA4EOrj34r4uWbJOwIaPz2UQQlBGLEG
+        uYRPcWn9WPF16cLF9zxKgTup/IbrSLpt0o5xLIJuOQ==
+X-Google-Smtp-Source: ABdhPJyphcIptdvuiusWElNIOsd2UVvUfETzlw5D23qNpR/REKCWs64wDJXdXhm1+cIiNbm+DcFAY8IGibS/or6YFBQ=
+X-Received: by 2002:a19:cbd8:: with SMTP id b207mr2542971lfg.550.1610468257650;
+ Tue, 12 Jan 2021 08:17:37 -0800 (PST)
 MIME-Version: 1.0
-References: <20210108000136.1556129-1-robh@kernel.org> <X/3BDlQxTCYd2HJs@hirez.programming.kicks-ass.net>
-In-Reply-To: <X/3BDlQxTCYd2HJs@hirez.programming.kicks-ass.net>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 12 Jan 2021 10:16:50 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqK+eKef5NaVnBfARCjRE3MYhfBfe54F9YHKbsTnWqLmLw@mail.gmail.com>
-Message-ID: <CAL_JsqK+eKef5NaVnBfARCjRE3MYhfBfe54F9YHKbsTnWqLmLw@mail.gmail.com>
-Subject: Re: [RFC] perf/x86: Only expose userspace rdpmc for events on current CPU
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Will Deacon <will@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
+References: <20210112091545.10535-1-gilad.reti@gmail.com> <CACYkzJ69serkHRymzDEAcQ-_KAdHA+RxP4qpAwzGmppWUxYeQQ@mail.gmail.com>
+ <CANaYP3G_39cWx_L5Xs3tf1k4Vj9JSHcsr+qzNQN-dcY3qvT8Yg@mail.gmail.com> <60034a79-573f-125c-76b0-17e04941a155@iogearbox.net>
+In-Reply-To: <60034a79-573f-125c-76b0-17e04941a155@iogearbox.net>
+From:   KP Singh <kpsingh@kernel.org>
+Date:   Tue, 12 Jan 2021 17:17:26 +0100
+X-Gmail-Original-Message-ID: <CACYkzJ7dK62zbn_z0S=-Xps1=DCEcd1FPYFon-BUeha=N5KnJQ@mail.gmail.com>
+Message-ID: <CACYkzJ7dK62zbn_z0S=-Xps1=DCEcd1FPYFon-BUeha=N5KnJQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] selftests/bpf: add verifier test for PTR_TO_MEM spill
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Gilad Reti <gilad.reti@gmail.com>, bpf <bpf@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-kselftest@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 9:33 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Tue, Jan 12, 2021 at 4:43 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
 >
-> On Thu, Jan 07, 2021 at 05:01:36PM -0700, Rob Herring wrote:
-> > Userspace access using rdpmc only makes sense if the event is valid for
-> > the current CPU. However, cap_user_rdpmc is currently set no matter which
-> > CPU the event is associated with. The result is userspace reading another
-> > CPU's event thinks it can use rdpmc to read the counter. In doing so, the
-> > wrong counter will be read.
+> On 1/12/21 4:35 PM, Gilad Reti wrote:
+> > On Tue, Jan 12, 2021 at 4:56 PM KP Singh <kpsingh@kernel.org> wrote:
+> >> On Tue, Jan 12, 2021 at 10:16 AM Gilad Reti <gilad.reti@gmail.com> wrote:
+> >>>
+> >>> Add test to check that the verifier is able to recognize spilling of
+> >>> PTR_TO_MEM registers.
+> >>
+> >> It would be nice to have some explanation of what the test does to
+> >> recognize the spilling of the PTR_TO_MEM registers in the commit
+> >> log as well.
+> >>
+> >> Would it be possible to augment an existing test_progs
+> >> program like tools/testing/selftests/bpf/progs/test_ringbuf.c to test
+> >> this functionality?
 >
-> Don't do that then?
+> How would you guarantee that LLVM generates the spill/fill, via inline asm?
 
-I could check this in userspace I suppose, but then it's yet another
-thing the rdpmc loop has to check. I think it's better to not add more
-overhead there.
+Yeah, I guess there is no sure-shot way to do it and, adding inline asm would
+just be doing the same thing as this verifier test. You can ignore me
+on this one :)
 
-Or we just ignore this. This issue came up in the referenced thread
-with Jiri. I'm not all that convinced that per CPU events and
-userspace rdpmc is too useful of a combination. It would only reduce
-the overhead on 1 out of N cpus. In this case, we'd have to limit the
-userspace read to per thread events (and ones on any cpu I suppose).
+It would, however, be nice to have a better description about what the test is
+actually doing./
+
 
 >
-> > diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-> > index a88c94d65693..6e6d4c1d03ca 100644
-> > --- a/arch/x86/events/core.c
-> > +++ b/arch/x86/events/core.c
-> > @@ -2490,7 +2490,8 @@ void arch_perf_update_userpage(struct perf_event *event,
-> >       userpg->cap_user_time = 0;
-> >       userpg->cap_user_time_zero = 0;
-> >       userpg->cap_user_rdpmc =
-> > -             !!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED);
-> > +             !!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED) &&
-> > +             (event->oncpu == smp_processor_id());
-> >       userpg->pmc_width = x86_pmu.cntval_bits;
+> > It may be possible, but from what I understood from Daniel's comment here
 > >
-> >       if (!using_native_sched_clock() || !sched_clock_stable())
+> > https://lore.kernel.org/bpf/17629073-4fab-a922-ecc3-25b019960f44@iogearbox.net/
+> >
+> > the test should be a part of the verifier tests (which is reasonable
+> > to me since it is
+> > a verifier bugfix)
 >
-> Isn't that a nop? That is, from the few sites I checked, we're always
-> calling this on the event's CPU.
-
-If cpu0 opens and mmaps an event for cpu1, then cpu0 will see
-cap_user_rdpmc set and think it can use rdpmc.
-
-Rob
+> Yeah, the test_verifier case as you have is definitely the most straight
+> forward way to add coverage in this case.
