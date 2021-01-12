@@ -2,102 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1A12F2D1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AD322F2D21
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:47:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727353AbhALKpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:45:07 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48588 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725971AbhALKpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:45:07 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 616B4AD18;
-        Tue, 12 Jan 2021 10:44:25 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 146D71E084C; Tue, 12 Jan 2021 11:44:25 +0100 (CET)
-Date:   Tue, 12 Jan 2021 11:44:25 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        syzbot <syzbot+2fc0712f8f8b8b8fa0ef@syzkaller.appspotmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: kernel BUG at mm/page-writeback.c:LINE!
-Message-ID: <20210112104425.GA8760@quack2.suse.cz>
-References: <000000000000886dbd05b7ffa8db@google.com>
- <20210104124153.0992b1f7fd1a145e193a333f@linux-foundation.org>
- <CAHk-=wi6hd8ATJ1W90goTxjgyvuoFsf0xZdAJmZ2c0dx5wcJSg@mail.gmail.com>
- <alpine.LSU.2.11.2101041839440.3466@eggly.anvils>
- <CAHk-=wi36CBggdRfdggACvf2hG+djM9kKnorrwsByN6uDvPExA@mail.gmail.com>
- <CAHk-=wh=5kDGukMs2sVZ8uHZJX4VL13oD5+xMAR4HvuY6QckLg@mail.gmail.com>
- <CAHk-=wgD9GK5CeHopYmRHoYS9cNuCmDMsc=+MbM_KgJ0KB+=ng@mail.gmail.com>
+        id S1727740AbhALKqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:46:18 -0500
+Received: from outbound-smtp24.blacknight.com ([81.17.249.192]:50463 "EHLO
+        outbound-smtp24.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726673AbhALKqR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 05:46:17 -0500
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp24.blacknight.com (Postfix) with ESMTPS id 6FAFFC0E08
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:45:25 +0000 (GMT)
+Received: (qmail 6277 invoked from network); 12 Jan 2021 10:45:25 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Jan 2021 10:45:25 -0000
+Date:   Tue, 12 Jan 2021 10:45:23 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Rokudo Yan <wu-yan@tcl.com>
+Cc:     aarcange@redhat.com, akpm@linux-foundation.org, haiwang.fu@tcl.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        rientjes@google.com, tang.ding@tcl.com, vbabka@suse.cz,
+        xiushui.ye@tcl.com
+Subject: Re: [PATCH] mm, compaction: move high_pfn to the for loop scope.
+Message-ID: <20210112104523.GK3592@techsingularity.net>
+References: <20210112091041.GJ3592@techsingularity.net>
+ <20210112094720.1238444-1-wu-yan@tcl.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wgD9GK5CeHopYmRHoYS9cNuCmDMsc=+MbM_KgJ0KB+=ng@mail.gmail.com>
+In-Reply-To: <20210112094720.1238444-1-wu-yan@tcl.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 08-01-21 18:04:21, Linus Torvalds wrote:
-> On Tue, Jan 5, 2021 at 11:53 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > I took your "way to go" statement as an ack, and made it all be commit
-> > c2407cf7d22d ("mm: make wait_on_page_writeback() wait for multiple
-> > pending writebacks").
+On Tue, Jan 12, 2021 at 05:47:20PM +0800, Rokudo Yan wrote:
+> In fast_isolate_freepages, high_pfn will be used if a prefered one(PFN >= low_fn) not found. But the high_pfn
+> is not reset before searching an free area, so when it was used as freepage, it may from another free area searched before.
+> And move_freelist_head(freelist, freepage) will have unexpected behavior(eg. corrupt the MOVABLE freelist)
 > 
-> Oh, and Michael Larabel (of phoronix) reports that that one-liner does
-> something bad to a few PostgreSQL tests, on the order of 5-10%
-> regression on some machines (but apparently not others).
+> Unable to handle kernel paging request at virtual address dead000000000200
+> Mem abort info:
+>   ESR = 0x96000044
+>   Exception class = DABT (current EL), IL = 32 bits
+>   SET = 0, FnV = 0
+>   EA = 0, S1PTW = 0
+> Data abort info:
+>   ISV = 0, ISS = 0x00000044
+>   CM = 0, WnR = 1
+> [dead000000000200] address between user and kernel address ranges
+> 
+> -000|list_cut_before(inline)
+> -000|move_freelist_head(inline)
+> -000|fast_isolate_freepages(inline)
+> -000|isolate_freepages(inline)
+> -000|compaction_alloc(?, ?)
+> -001|unmap_and_move(inline)
+> -001|migrate_pages([NSD:0xFFFFFF80088CBBD0] from = 0xFFFFFF80088CBD88, [NSD:0xFFFFFF80088CBBC8] get_new_p
+> -002|__read_once_size(inline)
+> -002|static_key_count(inline)
+> -002|static_key_false(inline)
+> -002|trace_mm_compaction_migratepages(inline)
+> -002|compact_zone(?, [NSD:0xFFFFFF80088CBCB0] capc = 0x0)
+> -003|kcompactd_do_work(inline)
+> -003|kcompactd([X19] p = 0xFFFFFF93227FBC40)
+> -004|kthread([X20] _create = 0xFFFFFFE1AFB26380)
+> -005|ret_from_fork(asm)
+> ---|end of frame
+> 
+> The issue was reported on an smart phone product with 6GB ram and 3GB zram as swap device.
+> 
+> This patch fixes the issue by reset high_pfn before searching each free area, which ensure
+> freepage and freelist match when call move_freelist_head in fast_isolate_freepages().
+> 
+> Link: http://lkml.kernel.org/r/20190118175136.31341-12-mgorman@techsingularity.net
+> Fixes: 5a811889de10f1eb ("mm, compaction: use free lists to quickly locate a migration target")
 
-Do you have more details? From my experience (we do regular pgbench runs
-for various kernels in various configs in SUSE) PostgreSQL numbers tend to
-be somewhat noisy and more dependent on CPU scheduling and NUMA locality
-than anything else. But it very much depends on the exact config passed to
-pgbench so that's why I'm asking...
+Thanks.
 
-> I suspect that's a sign of instability in the benchmark numbers, but
-> it probably also means that we have some silly condition where
-> multiple threads want to clean the same page.
-> 
-> I sent him a patch to try if it ends up being better to just not wake
-> things up early at all (instead of the "if" -> "while") conversion.
-> That trivial patch appended here in case anybody has comments.
-> 
-> Just the fact that that one-liner made a performance impact makes me
-> go "hmm", though. Michael didn't see the BUG_ON(), so it's presumably
-> some _other_ user of wait_on_page_writeback() than the
-> write_cache_pages() one that causes issues.
-> 
-> Anybody got any suspicions? Honestly, when working on the page wait
-> queues, I was working under the assumption that it's really just the
-> page lock that truly matters.
-> 
-> I'm thinking things like __filemap_fdatawait_range(), which doesn't
-> hold the page lock at all, so it's all kinds of non-serialized, and
-> could now be waiting for any number of IO's ro complete..
-> 
-> Oh well. This email doesn't really have a point, it's more of a
-> heads-up that that "wait to see one or multiple writebacks" thing
-> seems to matter more than I would have expected for some loads..
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
 
-Honestly I'm surprised your patch made a difference as well. It is pretty
-common a page gets redirtied while it's being written back but usually it
-takes time before next writeback of the page is started. But I guess with
-the DB load it is possible e.g. if we frequently flush out some page for
-data consistency reasons (I know PostgreSQL is using sync_file_range(2)
-interface to start flushing pages early and then uses fsync(2) when it
-really needs the pages written which could create a situation with unfair
-treatment of PageWriteback bit).
-
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Mel Gorman
+SUSE Labs
