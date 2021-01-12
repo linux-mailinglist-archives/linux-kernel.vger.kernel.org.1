@@ -2,92 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04552F2D9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:12:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D57912F2DA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:15:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728111AbhALLLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 06:11:22 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:43752 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbhALLLO (ORCPT
+        id S1727745AbhALLM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:12:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34894 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726824AbhALLM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:11:14 -0500
-Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C04A83E;
-        Tue, 12 Jan 2021 12:10:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1610449832;
-        bh=3a6z6DlvigbNZwjdEOITL5jSiNUfEDR/Y9b0dEJsedk=;
-        h=Subject:To:Cc:References:Reply-To:From:Date:In-Reply-To:From;
-        b=nDUFrZaIwtATzadF1Osv6VlgYJsOM1WCy2/HDtwsEJwI1LaFRzEcHNlCy6nQc1GrQ
-         BcM/HFA+HlDvqbUB4ZU6Fk4eOUai+ZfQIYKVnaOVQEbki6Mfc4XdGQ6yVZT/TlEVLm
-         hGjGrWLsXZUmYpoxzijYSjSsqvdxp/gIVz7NSq9w=
-Subject: Re: [PATCH 6/9] media: sum4i-csi: Do not zero reserved fields
-To:     Ricardo Ribalda <ribalda@chromium.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>
-References: <20210111145445.28854-1-ribalda@chromium.org>
- <20210111145445.28854-7-ribalda@chromium.org>
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Organization: Ideas on Board
-Message-ID: <bc3f9c21-26d7-a459-280f-6f5cef180d6a@ideasonboard.com>
-Date:   Tue, 12 Jan 2021 11:10:29 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 12 Jan 2021 06:12:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610449890;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v2hK43Fv/Oxk9V4fKnHoNGXpB/ifj+CAIGy8anHnl48=;
+        b=Zimc1OBq5Z5L/jiqxol+uSKtSoSgka+c+/8JRNFJDMQLuirLKFPmxZMqaA1vyElu0e7ekA
+        Pqqr697nMDwE2WdV2+cmvDaFFmRUBeUVLZ6jtXXRz/4Pxl/rv6JWdzvn2JrDrzqbj9zmQm
+        LG7oad7LoA9XyjkSk+42DJICwfiIEe4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-45-SXf_gtTYOLCxwDdsktvtfw-1; Tue, 12 Jan 2021 06:11:26 -0500
+X-MC-Unique: SXf_gtTYOLCxwDdsktvtfw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C3DA4BBEE1;
+        Tue, 12 Jan 2021 11:11:24 +0000 (UTC)
+Received: from [10.36.115.140] (ovpn-115-140.ams2.redhat.com [10.36.115.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D56AB60BE2;
+        Tue, 12 Jan 2021 11:11:22 +0000 (UTC)
+Subject: Re: [PATCH v3 1/6] mm: migrate: do not migrate HugeTLB page whose
+ refcount is one
+From:   David Hildenbrand <david@redhat.com>
+To:     Muchun Song <songmuchun@bytedance.com>, mike.kravetz@oracle.com,
+        akpm@linux-foundation.org
+Cc:     n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Yang Shi <shy828301@gmail.com>
+References: <20210110124017.86750-1-songmuchun@bytedance.com>
+ <20210110124017.86750-2-songmuchun@bytedance.com>
+ <1b39d654-0b8c-de3a-55d1-6ab8c2b2e0ba@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <c6eddfc6-8e15-4a28-36ff-64bfa65cca8e@redhat.com>
+Date:   Tue, 12 Jan 2021 12:11:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20210111145445.28854-7-ribalda@chromium.org>
+In-Reply-To: <1b39d654-0b8c-de3a-55d1-6ab8c2b2e0ba@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricardo,
-
-Well I've started, so I may as well finish and do the rest too.
-
-On 11/01/2021 14:54, Ricardo Ribalda wrote:
-> Core code already clears reserved fields of struct
-> v4l2_pix_format_mplane, check: 4e1e0eb0e074 ("media: v4l2-ioctl: Zero
-> v4l2_plane_pix_format reserved fields").
-
-Indeed, these are the only memsets here ...
-
-With the $TITLE fixed as spotted by Ezequiel,
-
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-
+On 12.01.21 12:00, David Hildenbrand wrote:
+> On 10.01.21 13:40, Muchun Song wrote:
+>> If the refcount is one when it is migrated, it means that the page
+>> was freed from under us. So we are done and do not need to migrate.
+>>
+>> This optimization is consistent with the regular pages, just like
+>> unmap_and_move() does.
+>>
+>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+>> Acked-by: Yang Shi <shy828301@gmail.com>
+>> ---
+>>  mm/migrate.c | 6 ++++++
+>>  1 file changed, 6 insertions(+)
+>>
+>> diff --git a/mm/migrate.c b/mm/migrate.c
+>> index 4385f2fb5d18..a6631c4eb6a6 100644
+>> --- a/mm/migrate.c
+>> +++ b/mm/migrate.c
+>> @@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
+>>  		return -ENOSYS;
+>>  	}
+>>  
+>> +	if (page_count(hpage) == 1) {
+>> +		/* page was freed from under us. So we are done. */
+>> +		putback_active_hugepage(hpage);
+>> +		return MIGRATEPAGE_SUCCESS;
+>> +	}
+>> +
+>>  	new_hpage = get_new_page(hpage, private);
+>>  	if (!new_hpage)
+>>  		return -ENOMEM;
+>>
 > 
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c | 4 ----
->  1 file changed, 4 deletions(-)
+> Question: What if called via alloc_contig_range() where we even want to
+> "migrate" free pages, meaning, relocate it?
 > 
-> diff --git a/drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c b/drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c
-> index 1a2f65d83a6c..4785faddf630 100644
-> --- a/drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c
-> +++ b/drivers/media/platform/sunxi/sun4i-csi/sun4i_v4l2.c
-> @@ -113,8 +113,6 @@ static void _sun4i_csi_try_fmt(struct sun4i_csi *csi,
->  	pix->num_planes = _fmt->num_planes;
->  	pix->pixelformat = _fmt->fourcc;
->  
-> -	memset(pix->reserved, 0, sizeof(pix->reserved));
-> -
->  	/* Align the width and height on the subsampling */
->  	width = ALIGN(pix->width, _fmt->hsub);
->  	height = ALIGN(pix->height, _fmt->vsub);
-> @@ -131,8 +129,6 @@ static void _sun4i_csi_try_fmt(struct sun4i_csi *csi,
->  		bpl = pix->width / hsub * _fmt->bpp[i] / 8;
->  		pix->plane_fmt[i].bytesperline = bpl;
->  		pix->plane_fmt[i].sizeimage = bpl * pix->height / vsub;
-> -		memset(pix->plane_fmt[i].reserved, 0,
-> -		       sizeof(pix->plane_fmt[i].reserved));
->  	}
->  }
->  
-> 
+
+To be more precise:
+
+a) We don't have dissolve_free_huge_pages() calls on the
+alloc_contig_range() path. So we *need* migration IIUC.
+
+b) dissolve_free_huge_pages() will fail if going below the reservation.
+In that case we really want to migrate free pages. This even applies to
+memory offlining.
+
+Either I am missing something important or this patch is more dangerous
+than it looks like.
+
+-- 
+Thanks,
+
+David / dhildenb
 
