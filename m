@@ -2,757 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96AB12F3259
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:00:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3485B2F3260
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:00:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387783AbhALN62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:58:28 -0500
-Received: from mga07.intel.com ([134.134.136.100]:59229 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727670AbhALN61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:58:27 -0500
-IronPort-SDR: M/L4cYQa6+L/Qf8W/rUjg8b6Nwh1nzqXRZjdKoVw2OV3Emi9/oZrjU6ZI3v2WiX36Xbrtxs9bT
- R6LcLs5nFZpg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="242110557"
-X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
-   d="scan'208";a="242110557"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 05:56:40 -0800
-IronPort-SDR: Sw94kz8kfJxokvvMdtEJBikLcwFZmxQRhvzFmKQqYqLc5QF/8J4SKMQVxO/85+fYNvijdLbtiV
- KVYz2yoaYcyw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
-   d="scan'208";a="464531008"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 12 Jan 2021 05:56:36 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 12 Jan 2021 15:56:36 +0200
-Date:   Tue, 12 Jan 2021 15:56:36 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org,
-        hdegoede@redhat.com, badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Will McVicker <willmcvicker@google.com>
-Subject: Re: [PATCH v5 2/3] usb: typec: tcpm: Protocol Error handling
-Message-ID: <20210112135636.GD2020859@kuha.fi.intel.com>
-References: <20210105163927.1376770-1-kyletso@google.com>
- <20210105163927.1376770-3-kyletso@google.com>
+        id S2387949AbhALN6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:58:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728777AbhALN6u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 08:58:50 -0500
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D1AC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:58:09 -0800 (PST)
+Received: by mail-ua1-x92f.google.com with SMTP id t43so677298uad.7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:58:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6uzmNSw20ft7oRzWqEZqV9S8k/R5ZsdzLcidOw2rxoo=;
+        b=Eg010ubkxaWhfDM0PU8gjarRqkKadjRJQPnOugAHfzhORcyZQXreR7rlmqiFWLZ1MS
+         rhaZm7AQ8DBpTgjK335lku1LdgOiSRDSOB3FXw2P9zkiC3bdTiBkOzdD4zLGNImdvbV0
+         ZhnmkSzmfad41WOlqhog5GrJ8T1lrGf+DpKLjB3eGGZvesGo2NjPcCE5qYccmICtSq0p
+         6KQ6rqtO28fiDVziyS8M+/K2DzxyyRmR0PBDo3xr+0Y3h957EzLDN8Zb/IQ9vuhXUJRF
+         IMtP13hwn7GHEijrFz8nwHKVZTeurovdPf0THi6htBwIqVy30gY0ZZlti0yp2sJMWvBU
+         66Jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6uzmNSw20ft7oRzWqEZqV9S8k/R5ZsdzLcidOw2rxoo=;
+        b=Iyg4ugpTLG4Vex5KUV54pmeekj7uOqYmdKNBPeFfuSkEqVgWJSHoLNpK+MjZwUprC+
+         Z/EuRmDb+k582LgTYK1VsnWBnOeLjABXkvgnF97gulqQuDxdi4ShImODGcOWxWSYYbcg
+         KSSWQwNlWMM31Apyz1sO0L9Apm5w7AcbMO/JYYqB8TvTepFzVrUqVxo4r91nXsjNe64V
+         7Hd0qclmVU/qPulxSuEg2AfWFWg/z0v0txXBCcDa5w0j6L6gqgQRbRaCYCI7Np4Oiwvn
+         MBEJON0y1zS7RCZeCtdDh3Xn8SSYVOb9RuYMYdzJC7MFk1mlAUnlEwtpw6qyr2lE2aPO
+         aoVA==
+X-Gm-Message-State: AOAM533PA79yUenp9qy3COfsInjajb4p9FFdxqq16rgyJ07EtlLEgmAY
+        Wn0ytAimYtLhKBD9B+ExCaBkYGm1OEWWY3de1Vocog==
+X-Google-Smtp-Source: ABdhPJyfLT2NLNzTnsmwlb+x0g4vZDvoZq8BWXVRnnXD9z7+TH2sy1/fRZM2auZwRQ/DbXlSdHtQ2Xso9GuIsW5C8KE=
+X-Received: by 2002:ab0:78d:: with SMTP id c13mr3535166uaf.129.1610459888685;
+ Tue, 12 Jan 2021 05:58:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210105163927.1376770-3-kyletso@google.com>
+References: <20201217180638.22748-1-digetx@gmail.com> <20201217180638.22748-29-digetx@gmail.com>
+In-Reply-To: <20201217180638.22748-29-digetx@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 12 Jan 2021 14:57:32 +0100
+Message-ID: <CAPDyKFpQFyO_Qfoy0-_=+e3Lp8vRx8yaYjmPReT_5WJZSLet-w@mail.gmail.com>
+Subject: Re: [PATCH v2 28/48] soc/tegra: Introduce core power domain driver
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 12:39:26AM +0800, Kyle Tso wrote:
-> PD3.0 Spec 6.8.1 describes how to handle Protocol Error. There are
-> general rules defined in Table 6-61 which regulate incoming Message
-> handling. If the incoming Message is unexpected, unsupported, or
-> unrecognized, Protocol Error occurs. Follow the rules to handle these
-> situations. Also consider PD2.0 connection (PD2.0 Spec Table 6-36) for
-> backward compatibilities.
-> 
-> To know the types of AMS in all the recipient's states, identify those
-> AMS who are initiated by the port partner but not yet recorded in the
-> current code.
-> 
-> Besides, introduce a new state CHUNK_NOT_SUPP to delay the NOT_SUPPORTED
-> message after receiving a chunked message.
+On Thu, 17 Dec 2020 at 19:07, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> NVIDIA Tegra SoCs have multiple power domains, each domain corresponds
+> to an external SoC power rail. Core power domain covers vast majority of
+> hardware blocks within a Tegra SoC. The voltage of a power domain should
+> be set to a value which satisfies all devices within a power domain. Add
+> driver for the core power domain in order to manage the voltage state of
+> the domain. This allows us to support a system-wide DVFS on Tegra.
+>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
-Looks good to me. I put a few style related nitpicks below, but
-nothing major.
+FYI: from a genpd provider driver point of view, this looks good to
+me. However, withholding my ack for the next version, just to make
+sure I take a second look.
 
-> Signed-off-by: Kyle Tso <kyletso@google.com>
-> Signed-off-by: Will McVicker <willmcvicker@google.com>
+Kind regards
+Uffe
+
 > ---
->  drivers/usb/typec/tcpm/tcpm.c | 346 +++++++++++++++++++++++++---------
->  include/linux/usb/pd.h        |   1 +
->  2 files changed, 257 insertions(+), 90 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 9fb3ec176f42..a951307d669d 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -143,7 +143,8 @@
->  	S(PORT_RESET),				\
->  	S(PORT_RESET_WAIT_OFF),			\
->  						\
-> -	S(AMS_START)
-> +	S(AMS_START),				\
-> +	S(CHUNK_NOT_SUPP)
->  
->  #define FOREACH_AMS(S)				\
->  	S(NONE_AMS),				\
-> @@ -433,6 +434,7 @@ struct tcpm_port {
->  	/* Collision Avoidance and Atomic Message Sequence */
->  	enum tcpm_state upcoming_state;
->  	enum tcpm_ams ams;
-> +	enum tcpm_ams next_ams;
->  	bool in_ams;
->  
->  #ifdef CONFIG_DEBUG_FS
-> @@ -1214,7 +1216,8 @@ static int tcpm_ams_start(struct tcpm_port *port, enum tcpm_ams ams)
->  
->  	tcpm_log(port, "AMS %s start", tcpm_ams_str[ams]);
->  
-> -	if (!tcpm_ams_interruptible(port) && ams != HARD_RESET) {
-> +	if (!tcpm_ams_interruptible(port) &&
-> +	    !(ams == HARD_RESET || ams == SOFT_RESET_AMS)) {
->  		port->upcoming_state = INVALID_STATE;
->  		tcpm_log(port, "AMS %s not interruptible, aborting",
->  			 tcpm_ams_str[port->ams]);
-> @@ -1232,11 +1235,10 @@ static int tcpm_ams_start(struct tcpm_port *port, enum tcpm_ams ams)
->  			tcpm_set_state(port, HARD_RESET_START, 0);
->  			return ret;
->  		} else if (ams == SOFT_RESET_AMS) {
-> -			if (!port->explicit_contract) {
-> -				port->upcoming_state = INVALID_STATE;
-> +			if (!port->explicit_contract)
->  				tcpm_set_cc(port, tcpm_rp_cc(port));
-> -				return ret;
-> -			}
-> +			tcpm_set_state(port, SOFT_RESET_SEND, 0);
-> +			return ret;
->  		} else if (tcpm_vdm_ams(port)) {
->  			/* tSinkTx is enforced in vdm_run_state_machine */
->  			if (port->negotiated_rev >= PD_REV30)
-> @@ -1453,6 +1455,9 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
->  	case CMDT_INIT:
->  		switch (cmd) {
->  		case CMD_DISCOVER_IDENT:
-> +			if (PD_VDO_VID(p[0]) != USB_SID_PD)
-> +				break;
+>  drivers/soc/tegra/Kconfig             |   6 ++
+>  drivers/soc/tegra/Makefile            |   1 +
+>  drivers/soc/tegra/core-power-domain.c | 125 ++++++++++++++++++++++++++
+>  include/soc/tegra/common.h            |   6 ++
+>  4 files changed, 138 insertions(+)
+>  create mode 100644 drivers/soc/tegra/core-power-domain.c
+>
+> diff --git a/drivers/soc/tegra/Kconfig b/drivers/soc/tegra/Kconfig
+> index bcd61ae59ba3..fccbc168dd87 100644
+> --- a/drivers/soc/tegra/Kconfig
+> +++ b/drivers/soc/tegra/Kconfig
+> @@ -16,6 +16,7 @@ config ARCH_TEGRA_2x_SOC
+>         select SOC_TEGRA_COMMON
+>         select SOC_TEGRA_FLOWCTRL
+>         select SOC_TEGRA_PMC
+> +       select SOC_TEGRA_CORE_POWER_DOMAIN
+>         select SOC_TEGRA20_VOLTAGE_COUPLER
+>         select TEGRA_TIMER
+>         help
+> @@ -31,6 +32,7 @@ config ARCH_TEGRA_3x_SOC
+>         select SOC_TEGRA_COMMON
+>         select SOC_TEGRA_FLOWCTRL
+>         select SOC_TEGRA_PMC
+> +       select SOC_TEGRA_CORE_POWER_DOMAIN
+>         select SOC_TEGRA30_VOLTAGE_COUPLER
+>         select TEGRA_TIMER
+>         help
+> @@ -170,3 +172,7 @@ config SOC_TEGRA20_VOLTAGE_COUPLER
+>  config SOC_TEGRA30_VOLTAGE_COUPLER
+>         bool "Voltage scaling support for Tegra30 SoCs"
+>         depends on ARCH_TEGRA_3x_SOC || COMPILE_TEST
 > +
->  			/* 6.4.4.3.1: Only respond as UFP (device) */
->  			if (port->data_role == TYPEC_DEVICE &&
->  			    port->nr_snk_vdo) {
-> @@ -1538,22 +1543,37 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
->  				return 0;
->  			}
->  			break;
-> +		case VDO_CMD_VENDOR(0) ... VDO_CMD_VENDOR(15):
-> +			break;
->  		default:
-> +			/* Unrecognized SVDM */
-> +			response[0] = p[0] | VDO_CMDT(CMDT_RSP_NAK);
-> +			rlen = 1;
->  			break;
->  		}
->  		break;
->  	case CMDT_RSP_NAK:
->  		tcpm_ams_finish(port);
->  		switch (cmd) {
-> +		case CMD_DISCOVER_IDENT:
-> +		case CMD_DISCOVER_SVID:
-> +		case CMD_DISCOVER_MODES:
-> +		case VDO_CMD_VENDOR(0) ... VDO_CMD_VENDOR(15):
-> +			break;
->  		case CMD_ENTER_MODE:
->  			/* Back to USB Operation */
->  			*adev_action = ADEV_NOTIFY_USB_AND_QUEUE_VDM;
->  			return 0;
->  		default:
-> +			/* Unrecognized SVDM */
-> +			response[0] = p[0] | VDO_CMDT(CMDT_RSP_NAK);
-> +			rlen = 1;
->  			break;
->  		}
->  		break;
->  	default:
-> +		response[0] = p[0] | VDO_CMDT(CMDT_RSP_NAK);
-> +		rlen = 1;
->  		break;
->  	}
->  
-> @@ -1589,8 +1609,12 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
->  		port->vdm_state = VDM_STATE_DONE;
->  	}
->  
-> -	if (PD_VDO_SVDM(p[0]))
-> +	if (PD_VDO_SVDM(p[0])) {
->  		rlen = tcpm_pd_svdm(port, adev, p, cnt, response, &adev_action);
-> +	} else {
-> +		if (port->negotiated_rev >= PD_REV30)
-> +			tcpm_queue_message(port, PD_MSG_CTRL_NOT_SUPP);
-> +	}
->  
->  	/*
->  	 * We are done with any state stored in the port struct now, except
-> @@ -2042,6 +2066,71 @@ static int tcpm_set_auto_vbus_discharge_threshold(struct tcpm_port *port,
->  	return ret;
->  }
->  
-> +static void tcpm_pd_handle_state(struct tcpm_port *port,
-> +				 enum tcpm_state state,
-> +				 enum tcpm_ams ams,
-> +				 unsigned int delay_ms)
+> +config SOC_TEGRA_CORE_POWER_DOMAIN
+> +       bool
+> +       select PM_GENERIC_DOMAINS
+> diff --git a/drivers/soc/tegra/Makefile b/drivers/soc/tegra/Makefile
+> index 9c809c1814bd..8f1294f954b4 100644
+> --- a/drivers/soc/tegra/Makefile
+> +++ b/drivers/soc/tegra/Makefile
+> @@ -7,3 +7,4 @@ obj-$(CONFIG_SOC_TEGRA_PMC) += pmc.o
+>  obj-$(CONFIG_SOC_TEGRA_POWERGATE_BPMP) += powergate-bpmp.o
+>  obj-$(CONFIG_SOC_TEGRA20_VOLTAGE_COUPLER) += regulators-tegra20.o
+>  obj-$(CONFIG_SOC_TEGRA30_VOLTAGE_COUPLER) += regulators-tegra30.o
+> +obj-$(CONFIG_SOC_TEGRA_CORE_POWER_DOMAIN) += core-power-domain.o
+> diff --git a/drivers/soc/tegra/core-power-domain.c b/drivers/soc/tegra/core-power-domain.c
+> new file mode 100644
+> index 000000000000..7c0cec8c79fd
+> --- /dev/null
+> +++ b/drivers/soc/tegra/core-power-domain.c
+> @@ -0,0 +1,125 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * NVIDIA Tegra SoC Core Power Domain Driver
+> + */
+> +
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pm_domain.h>
+> +#include <linux/pm_opp.h>
+> +#include <linux/slab.h>
+> +
+> +#include <soc/tegra/common.h>
+> +
+> +static struct lock_class_key tegra_core_domain_lock_class;
+> +static bool tegra_core_domain_state_synced;
+> +
+> +static int tegra_genpd_set_performance_state(struct generic_pm_domain *genpd,
+> +                                            unsigned int level)
 > +{
-> +	switch (port->state) {
-> +	case SRC_READY:
-> +	case SNK_READY:
-> +		port->ams = ams;
-> +		tcpm_set_state(port, state, delay_ms);
-> +		break;
-> +	/* 8.3.3.4.1.1 and 6.8.1 power transitioning */
-> +	case SNK_TRANSITION_SINK:
-> +	case SNK_TRANSITION_SINK_VBUS:
-> +	case SRC_TRANSITION_SUPPLY:
-> +		tcpm_set_state(port, HARD_RESET_SEND, 0);
-> +		break;
-> +	default:
-> +		if (!tcpm_ams_interruptible(port)) {
-> +			tcpm_set_state(port, port->pwr_role == TYPEC_SOURCE ?
-> +				       SRC_SOFT_RESET_WAIT_SNK_TX :
-> +				       SNK_SOFT_RESET,
-> +				       0);
-> +		} else {
-> +			/* process the Message 6.8.1 */
-> +			port->upcoming_state = state;
-> +			port->next_ams = ams;
-> +			tcpm_set_state(port, ready_state(port), delay_ms);
-> +		}
-> +		break;
-> +	}
+> +       struct dev_pm_opp *opp;
+> +       int err;
+> +
+> +       opp = dev_pm_opp_find_level_ceil(&genpd->dev, &level);
+> +       if (IS_ERR(opp)) {
+> +               dev_err(&genpd->dev, "failed to find OPP for level %u: %pe\n",
+> +                       level, opp);
+> +               return PTR_ERR(opp);
+> +       }
+> +
+> +       err = dev_pm_opp_set_voltage(&genpd->dev, opp);
+> +       dev_pm_opp_put(opp);
+> +
+> +       if (err) {
+> +               dev_err(&genpd->dev, "failed to set voltage to %duV: %d\n",
+> +                       level, err);
+> +               return err;
+> +       }
+> +
+> +       return 0;
 > +}
 > +
-> +static void tcpm_pd_handle_msg(struct tcpm_port *port,
-> +			       enum pd_msg_request message,
-> +			       enum tcpm_ams ams)
+> +static unsigned int
+> +tegra_genpd_opp_to_performance_state(struct generic_pm_domain *genpd,
+> +                                    struct dev_pm_opp *opp)
 > +{
-> +	switch (port->state) {
-> +	case SRC_READY:
-> +	case SNK_READY:
-> +		port->ams = ams;
-> +		tcpm_queue_message(port, message);
-> +		break;
-> +	/* PD 3.0 Spec 8.3.3.4.1.1 and 6.8.1 */
-> +	case SNK_TRANSITION_SINK:
-> +	case SNK_TRANSITION_SINK_VBUS:
-> +	case SRC_TRANSITION_SUPPLY:
-> +		tcpm_set_state(port, HARD_RESET_SEND, 0);
-> +		break;
-> +	default:
-> +		if (!tcpm_ams_interruptible(port)) {
-> +			tcpm_set_state(port, port->pwr_role == TYPEC_SOURCE ?
-> +				       SRC_SOFT_RESET_WAIT_SNK_TX :
-> +				       SNK_SOFT_RESET,
-> +				       0);
-> +		} else {
-> +			port->next_ams = ams;
-> +			tcpm_set_state(port, ready_state(port), 0);
-> +			/* 6.8.1 process the Message */
-> +			tcpm_queue_message(port, message);
-> +		}
-> +		break;
-> +	}
+> +       return dev_pm_opp_get_level(opp);
 > +}
 > +
->  static void tcpm_pd_data_request(struct tcpm_port *port,
->  				 const struct pd_message *msg)
->  {
-> @@ -2055,9 +2144,6 @@ static void tcpm_pd_data_request(struct tcpm_port *port,
->  
->  	switch (type) {
->  	case PD_DATA_SOURCE_CAP:
-> -		if (port->pwr_role != TYPEC_SINK)
-> -			break;
-> -
->  		for (i = 0; i < cnt; i++)
->  			port->source_caps[i] = le32_to_cpu(msg->payload[i]);
->  
-> @@ -2073,12 +2159,27 @@ static void tcpm_pd_data_request(struct tcpm_port *port,
->  		 * to comply with 6.2.1.1.5 of the USB PD 3.0 spec. We don't
->  		 * support Rev 1.0 so just do nothing in that scenario.
->  		 */
-> -		if (rev == PD_REV10)
-> +		if (rev == PD_REV10) {
-> +			if (port->ams == GET_SOURCE_CAPABILITIES)
-> +				tcpm_ams_finish(port);
->  			break;
-> +		}
->  
->  		if (rev < PD_MAX_REV)
->  			port->negotiated_rev = rev;
->  
-> +		if (port->pwr_role == TYPEC_SOURCE) {
-> +			if (port->ams == GET_SOURCE_CAPABILITIES)
-> +				tcpm_pd_handle_state(port, SRC_READY, NONE_AMS,
-> +						     0);
-> +			/* Unexpected Source Capabilities */
-> +			else
-> +				tcpm_pd_handle_msg(port,
-> +					   port->negotiated_rev < PD_REV30 ?
-> +					   PD_MSG_CTRL_REJECT :
-> +					   PD_MSG_CTRL_NOT_SUPP,
-> +					   NONE_AMS);
-
-You can align that properly:
-
-				tcpm_pd_handle_msg(port,
-					           port->negotiated_rev < PD_REV30 ?
-					           PD_MSG_CTRL_REJECT :
-				                   PD_MSG_CTRL_NOT_SUPP,
-			                           NONE_AMS);
-
-> +		} else if (port->state == SNK_WAIT_CAPABILITIES) {
->  		/*
->  		 * This message may be received even if VBUS is not
->  		 * present. This is quite unexpected; see USB PD
-> @@ -2092,30 +2193,48 @@ static void tcpm_pd_data_request(struct tcpm_port *port,
->  		 * but be prepared to keep waiting for VBUS after it was
->  		 * handled.
->  		 */
-> -		tcpm_set_state(port, SNK_NEGOTIATE_CAPABILITIES, 0);
-> +			port->ams = POWER_NEGOTIATION;
-> +			tcpm_set_state(port, SNK_NEGOTIATE_CAPABILITIES, 0);
-> +		} else {
-> +			if (port->ams == GET_SOURCE_CAPABILITIES)
-> +				tcpm_ams_finish(port);
-> +			tcpm_pd_handle_state(port, SNK_NEGOTIATE_CAPABILITIES,
-> +					     POWER_NEGOTIATION, 0);
-> +		}
->  		break;
->  	case PD_DATA_REQUEST:
-> -		if (port->pwr_role != TYPEC_SOURCE ||
-> -		    cnt != 1) {
-> -			tcpm_queue_message(port, PD_MSG_CTRL_REJECT);
-> -			break;
-> -		}
-> -
->  		/*
->  		 * Adjust revision in subsequent message headers, as required,
->  		 * to comply with 6.2.1.1.5 of the USB PD 3.0 spec. We don't
->  		 * support Rev 1.0 so just reject in that scenario.
->  		 */
->  		if (rev == PD_REV10) {
-> -			tcpm_queue_message(port, PD_MSG_CTRL_REJECT);
-> +			tcpm_pd_handle_msg(port,
-> +					   port->negotiated_rev < PD_REV30 ?
-> +					   PD_MSG_CTRL_REJECT :
-> +					   PD_MSG_CTRL_NOT_SUPP,
-> +					   NONE_AMS);
->  			break;
->  		}
->  
->  		if (rev < PD_MAX_REV)
->  			port->negotiated_rev = rev;
->  
-> +		if (port->pwr_role != TYPEC_SOURCE || cnt != 1) {
-> +			tcpm_pd_handle_msg(port,
-> +					   port->negotiated_rev < PD_REV30 ?
-> +					   PD_MSG_CTRL_REJECT :
-> +					   PD_MSG_CTRL_NOT_SUPP,
-> +					   NONE_AMS);
-> +			break;
-> +		}
+> +static int tegra_core_domain_probe(struct platform_device *pdev)
+> +{
+> +       struct generic_pm_domain *genpd;
+> +       struct opp_table *opp_table;
+> +       const char *rname = "power";
+> +       int err;
 > +
->  		port->sink_request = le32_to_cpu(msg->payload[0]);
-> -		tcpm_set_state(port, SRC_NEGOTIATE_CAPABILITIES, 0);
-> +		if (port->state == SRC_SEND_CAPABILITIES)
-> +			tcpm_set_state(port, SRC_NEGOTIATE_CAPABILITIES, 0);
-> +		else
-> +			tcpm_pd_handle_state(port, SRC_NEGOTIATE_CAPABILITIES,
-> +					     POWER_NEGOTIATION, 0);
->  		break;
->  	case PD_DATA_SINK_CAP:
->  		/* We don't do anything with this at the moment... */
-> @@ -2136,16 +2255,23 @@ static void tcpm_pd_data_request(struct tcpm_port *port,
->  
->  		port->nr_sink_caps = cnt;
->  		port->sink_cap_done = true;
-> -		tcpm_set_state(port, SNK_READY, 0);
-> +		if (port->ams == GET_SINK_CAPABILITIES)
-> +			tcpm_pd_handle_state(port, ready_state(port), NONE_AMS,
-> +					     0);
-> +		/* Unexpected Sink Capabilities */
-> +		else
-> +			tcpm_pd_handle_msg(port,
-> +					   port->negotiated_rev < PD_REV30 ?
-> +					   PD_MSG_CTRL_REJECT :
-> +					   PD_MSG_CTRL_NOT_SUPP,
-> +					   NONE_AMS);
->  		break;
->  	case PD_DATA_VENDOR_DEF:
->  		tcpm_handle_vdm_request(port, msg->payload, cnt);
->  		break;
->  	case PD_DATA_BIST:
-> -		if (port->state == SRC_READY || port->state == SNK_READY) {
-> -			port->bist_request = le32_to_cpu(msg->payload[0]);
-> -			tcpm_set_state(port, BIST_RX, 0);
-> -		}
-> +		port->bist_request = le32_to_cpu(msg->payload[0]);
-> +		tcpm_pd_handle_state(port, BIST_RX, BIST, 0);
->  		break;
->  	case PD_DATA_ALERT:
->  		tcpm_handle_alert(port, msg->payload, cnt);
-> @@ -2153,10 +2279,17 @@ static void tcpm_pd_data_request(struct tcpm_port *port,
->  	case PD_DATA_BATT_STATUS:
->  	case PD_DATA_GET_COUNTRY_INFO:
->  		/* Currently unsupported */
-> -		tcpm_queue_message(port, PD_MSG_CTRL_NOT_SUPP);
-> +		tcpm_pd_handle_msg(port, port->negotiated_rev < PD_REV30 ?
-> +				   PD_MSG_CTRL_REJECT :
-> +				   PD_MSG_CTRL_NOT_SUPP,
-> +				   NONE_AMS);
->  		break;
->  	default:
-> -		tcpm_log(port, "Unhandled data message type %#x", type);
-> +		tcpm_pd_handle_msg(port, port->negotiated_rev < PD_REV30 ?
-> +				   PD_MSG_CTRL_REJECT :
-> +				   PD_MSG_CTRL_NOT_SUPP,
-> +				   NONE_AMS);
-> +		tcpm_log(port, "Unrecognized data message type %#x", type);
->  		break;
->  	}
+> +       genpd = devm_kzalloc(&pdev->dev, sizeof(*genpd), GFP_KERNEL);
+> +       if (!genpd)
+> +               return -ENOMEM;
+> +
+> +       genpd->name = pdev->dev.of_node->name;
+> +       genpd->set_performance_state = tegra_genpd_set_performance_state;
+> +       genpd->opp_to_performance_state = tegra_genpd_opp_to_performance_state;
+> +
+> +       opp_table = devm_pm_opp_set_regulators(&pdev->dev, &rname, 1);
+> +       if (IS_ERR(opp_table))
+> +               return dev_err_probe(&pdev->dev, PTR_ERR(opp_table),
+> +                                    "failed to set OPP regulator\n");
+> +
+> +       err = pm_genpd_init(genpd, NULL, false);
+> +       if (err) {
+> +               dev_err(&pdev->dev, "failed to init genpd: %d\n", err);
+> +               return err;
+> +       }
+> +
+> +       /*
+> +        * We have a "PMC -> Core" hierarchy of the power domains where
+> +        * PMC needs to resume and change performance (voltage) of the
+> +        * Core domain from the PMC GENPD on/off callbacks, hence we need
+> +        * to annotate the lock in order to remove confusion from the
+> +        * lockdep checker when a nested access happens.
+> +        */
+> +       lockdep_set_class(&genpd->mlock, &tegra_core_domain_lock_class);
+> +
+> +       err = of_genpd_add_provider_simple(pdev->dev.of_node, genpd);
+> +       if (err) {
+> +               dev_err(&pdev->dev, "failed to add genpd: %d\n", err);
+> +               goto remove_genpd;
+> +       }
+> +
+> +       return 0;
+> +
+> +remove_genpd:
+> +       pm_genpd_remove(genpd);
+> +
+> +       return err;
+> +}
+> +
+> +bool tegra_soc_core_domain_state_synced(void)
+> +{
+> +       return tegra_core_domain_state_synced;
+> +}
+> +
+> +static void tegra_core_domain_sync_state(struct device *dev)
+> +{
+> +       tegra_core_domain_state_synced = true;
+> +
+> +       dev_pm_opp_sync_regulators(dev);
+> +}
+> +
+> +static const struct of_device_id tegra_core_domain_match[] = {
+> +       { .compatible = "nvidia,tegra20-core-domain", },
+> +       { .compatible = "nvidia,tegra30-core-domain", },
+> +       { }
+> +};
+> +
+> +static struct platform_driver tegra_core_domain_driver = {
+> +       .driver = {
+> +               .name = "tegra-core-power",
+> +               .of_match_table = tegra_core_domain_match,
+> +               .suppress_bind_attrs = true,
+> +               .sync_state = tegra_core_domain_sync_state,
+> +       },
+> +       .probe = tegra_core_domain_probe,
+> +};
+> +builtin_platform_driver(tegra_core_domain_driver);
+> diff --git a/include/soc/tegra/common.h b/include/soc/tegra/common.h
+> index 57b56793a9e5..6c2ccbbbf073 100644
+> --- a/include/soc/tegra/common.h
+> +++ b/include/soc/tegra/common.h
+> @@ -27,6 +27,7 @@ struct tegra_core_opp_params {
+>
+>  #ifdef CONFIG_ARCH_TEGRA
+>  bool soc_is_tegra(void);
+> +bool tegra_soc_core_domain_state_synced(void);
+>  int devm_tegra_core_dev_init_opp_table(struct device *dev,
+>                                        struct tegra_core_opp_params *cfg);
+>  #else
+> @@ -35,6 +36,11 @@ static inline bool soc_is_tegra(void)
+>         return false;
 >  }
-> @@ -2181,26 +2314,12 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  	case PD_CTRL_PING:
->  		break;
->  	case PD_CTRL_GET_SOURCE_CAP:
-> -		switch (port->state) {
-> -		case SRC_READY:
-> -		case SNK_READY:
-> -			tcpm_queue_message(port, PD_MSG_DATA_SOURCE_CAP);
-> -			break;
-> -		default:
-> -			tcpm_queue_message(port, PD_MSG_CTRL_REJECT);
-> -			break;
-> -		}
-> +		tcpm_pd_handle_msg(port, PD_MSG_DATA_SOURCE_CAP,
-> +				   GET_SOURCE_CAPABILITIES);
->  		break;
->  	case PD_CTRL_GET_SINK_CAP:
-> -		switch (port->state) {
-> -		case SRC_READY:
-> -		case SNK_READY:
-> -			tcpm_queue_message(port, PD_MSG_DATA_SINK_CAP);
-> -			break;
-> -		default:
-> -			tcpm_queue_message(port, PD_MSG_CTRL_REJECT);
-> -			break;
-> -		}
-> +		tcpm_pd_handle_msg(port, PD_MSG_DATA_SINK_CAP,
-> +					GET_SINK_CAPABILITIES);
->  		break;
->  	case PD_CTRL_GOTO_MIN:
->  		break;
-> @@ -2239,6 +2358,11 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  			tcpm_set_state(port, FR_SWAP_SNK_SRC_NEW_SINK_READY, 0);
->  			break;
->  		default:
-> +			tcpm_pd_handle_state(port,
-> +					     port->pwr_role == TYPEC_SOURCE ?
-> +					     SRC_SOFT_RESET_WAIT_SNK_TX :
-> +					     SNK_SOFT_RESET,
-> +					     NONE_AMS, 0);
->  			break;
->  		}
->  		break;
-> @@ -2285,6 +2409,11 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  			tcpm_set_state(port, ready_state(port), 0);
->  			break;
->  		default:
-> +			tcpm_pd_handle_state(port,
-> +					     port->pwr_role == TYPEC_SOURCE ?
-> +					     SRC_SOFT_RESET_WAIT_SNK_TX :
-> +					     SNK_SOFT_RESET,
-> +					     NONE_AMS, 0);
->  			break;
->  		}
->  		break;
-> @@ -2301,8 +2430,6 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  			tcpm_set_state(port, SNK_TRANSITION_SINK, 0);
->  			break;
->  		case SOFT_RESET_SEND:
-> -			port->message_id = 0;
-> -			port->rx_msgid = -1;
->  			if (port->ams == SOFT_RESET_AMS)
->  				tcpm_ams_finish(port);
->  			if (port->pwr_role == TYPEC_SOURCE) {
-> @@ -2325,57 +2452,47 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  			tcpm_set_state(port, FR_SWAP_SNK_SRC_TRANSITION_TO_OFF, 0);
->  			break;
->  		default:
-> +			tcpm_pd_handle_state(port,
-> +					     port->pwr_role == TYPEC_SOURCE ?
-> +					     SRC_SOFT_RESET_WAIT_SNK_TX :
-> +					     SNK_SOFT_RESET,
-> +					     NONE_AMS, 0);
->  			break;
->  		}
->  		break;
->  	case PD_CTRL_SOFT_RESET:
-> +		port->ams = SOFT_RESET_AMS;
->  		tcpm_set_state(port, SOFT_RESET, 0);
->  		break;
->  	case PD_CTRL_DR_SWAP:
-> -		if (port->typec_caps.data != TYPEC_PORT_DRD) {
-> -			tcpm_queue_message(port, PD_MSG_CTRL_REJECT);
-> -			break;
-> -		}
->  		/*
->  		 * XXX
->  		 * 6.3.9: If an alternate mode is active, a request to swap
->  		 * alternate modes shall trigger a port reset.
->  		 */
-> -		switch (port->state) {
-> -		case SRC_READY:
-> -		case SNK_READY:
-> -			tcpm_set_state(port, DR_SWAP_ACCEPT, 0);
-> -			break;
-> -		default:
-> -			tcpm_queue_message(port, PD_MSG_CTRL_WAIT);
-> -			break;
-> -		}
-> +		if (port->typec_caps.data != TYPEC_PORT_DRD)
-> +			tcpm_pd_handle_msg(port,
-> +					   port->negotiated_rev < PD_REV30 ?
-> +					   PD_MSG_CTRL_REJECT :
-> +					   PD_MSG_CTRL_NOT_SUPP,
-> +					   NONE_AMS);
-> +		else
-> +			tcpm_pd_handle_state(port, DR_SWAP_ACCEPT,
-> +					     DATA_ROLE_SWAP, 0);
->  		break;
->  	case PD_CTRL_PR_SWAP:
-> -		if (port->port_type != TYPEC_PORT_DRP) {
-> -			tcpm_queue_message(port, PD_MSG_CTRL_REJECT);
-> -			break;
-> -		}
-> -		switch (port->state) {
-> -		case SRC_READY:
-> -		case SNK_READY:
-> -			tcpm_set_state(port, PR_SWAP_ACCEPT, 0);
-> -			break;
-> -		default:
-> -			tcpm_queue_message(port, PD_MSG_CTRL_WAIT);
-> -			break;
-> -		}
-> +		if (port->port_type != TYPEC_PORT_DRP)
-> +			tcpm_pd_handle_msg(port,
-> +					   port->negotiated_rev < PD_REV30 ?
-> +					   PD_MSG_CTRL_REJECT :
-> +					   PD_MSG_CTRL_NOT_SUPP,
-> +					   NONE_AMS);
-> +		else
-> +			tcpm_pd_handle_state(port, PR_SWAP_ACCEPT,
-> +					     POWER_ROLE_SWAP, 0);
->  		break;
->  	case PD_CTRL_VCONN_SWAP:
-> -		switch (port->state) {
-> -		case SRC_READY:
-> -		case SNK_READY:
-> -			tcpm_set_state(port, VCONN_SWAP_ACCEPT, 0);
-> -			break;
-> -		default:
-> -			tcpm_queue_message(port, PD_MSG_CTRL_WAIT);
-> -			break;
-> -		}
-> +		tcpm_pd_handle_state(port, VCONN_SWAP_ACCEPT, VCONN_SWAP, 0);
->  		break;
->  	case PD_CTRL_GET_SOURCE_CAP_EXT:
->  	case PD_CTRL_GET_STATUS:
-> @@ -2383,10 +2500,19 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
->  	case PD_CTRL_GET_PPS_STATUS:
->  	case PD_CTRL_GET_COUNTRY_CODES:
->  		/* Currently not supported */
-> -		tcpm_queue_message(port, PD_MSG_CTRL_NOT_SUPP);
-> +		tcpm_pd_handle_msg(port,
-> +				   port->negotiated_rev < PD_REV30 ?
-> +				   PD_MSG_CTRL_REJECT :
-> +				   PD_MSG_CTRL_NOT_SUPP,
-> +				   NONE_AMS);
->  		break;
->  	default:
-> -		tcpm_log(port, "Unhandled ctrl message type %#x", type);
-> +		tcpm_pd_handle_msg(port,
-> +				   port->negotiated_rev < PD_REV30 ?
-> +				   PD_MSG_CTRL_REJECT :
-> +				   PD_MSG_CTRL_NOT_SUPP,
-> +				   NONE_AMS);
-> +		tcpm_log(port, "Unrecognized ctrl message type %#x", type);
->  		break;
->  	}
->  }
-> @@ -2398,11 +2524,14 @@ static void tcpm_pd_ext_msg_request(struct tcpm_port *port,
->  	unsigned int data_size = pd_ext_header_data_size_le(msg->ext_msg.header);
->  
->  	if (!(msg->ext_msg.header & PD_EXT_HDR_CHUNKED)) {
-> +		tcpm_pd_handle_msg(port, PD_MSG_CTRL_NOT_SUPP, NONE_AMS);
->  		tcpm_log(port, "Unchunked extended messages unsupported");
->  		return;
->  	}
->  
->  	if (data_size > PD_EXT_MAX_CHUNK_DATA) {
-> +		tcpm_pd_handle_state(port, CHUNK_NOT_SUPP, NONE_AMS,
-> +				     PD_T_CHUNK_NOT_SUPP);
->  		tcpm_log(port, "Chunk handling not yet supported");
->  		return;
->  	}
-> @@ -2415,16 +2544,19 @@ static void tcpm_pd_ext_msg_request(struct tcpm_port *port,
->  		 */
->  		if (msg->ext_msg.data[USB_PD_EXT_SDB_EVENT_FLAGS] &
->  		    USB_PD_EXT_SDB_PPS_EVENTS)
-> -			tcpm_set_state(port, GET_PPS_STATUS_SEND, 0);
-> +			tcpm_pd_handle_state(port, GET_PPS_STATUS_SEND,
-> +					     GETTING_SOURCE_SINK_STATUS, 0);
+>
+> +static inline bool tegra_soc_core_domain_state_synced(void)
+> +{
+> +       return false;
+> +}
 > +
->  		else
-> -			tcpm_set_state(port, ready_state(port), 0);
-> +			tcpm_pd_handle_state(port, ready_state(port), NONE_AMS,
-> +					     0);
->  		break;
->  	case PD_EXT_PPS_STATUS:
->  		/*
->  		 * For now the PPS status message is used to clear events
->  		 * and nothing more.
->  		 */
-> -		tcpm_set_state(port, ready_state(port), 0);
-> +		tcpm_pd_handle_state(port, ready_state(port), NONE_AMS, 0);
->  		break;
->  	case PD_EXT_SOURCE_CAP_EXT:
->  	case PD_EXT_GET_BATT_CAP:
-> @@ -2438,10 +2570,11 @@ static void tcpm_pd_ext_msg_request(struct tcpm_port *port,
->  	case PD_EXT_FW_UPDATE_RESPONSE:
->  	case PD_EXT_COUNTRY_INFO:
->  	case PD_EXT_COUNTRY_CODES:
-> -		tcpm_queue_message(port, PD_MSG_CTRL_NOT_SUPP);
-> +		tcpm_pd_handle_msg(port, PD_MSG_CTRL_NOT_SUPP, NONE_AMS);
->  		break;
->  	default:
-> -		tcpm_log(port, "Unhandled extended message type %#x", type);
-> +		tcpm_pd_handle_msg(port, PD_MSG_CTRL_NOT_SUPP, NONE_AMS);
-> +		tcpm_log(port, "Unrecognized extended message type %#x", type);
->  		break;
->  	}
->  }
-> @@ -2554,7 +2687,14 @@ static bool tcpm_send_queued_message(struct tcpm_port *port)
->  			tcpm_pd_send_control(port, PD_CTRL_NOT_SUPP);
->  			break;
->  		case PD_MSG_DATA_SINK_CAP:
-> -			tcpm_pd_send_sink_caps(port);
-> +			ret = tcpm_pd_send_sink_caps(port);
-> +			if (ret < 0) {
-> +				tcpm_log(port,
-> +					 "Unable to send snk caps, ret=%d",
-> +					 ret);
-
-One line is enough:
-
-				tcpm_log(port, "Unable to send snk caps, ret=%d", ret);
-
-> +				tcpm_set_state(port, SNK_SOFT_RESET, 0);
-> +			}
-> +			tcpm_ams_finish(port);
->  			break;
->  		case PD_MSG_DATA_SOURCE_CAP:
->  			ret = tcpm_pd_send_source_caps(port);
-> @@ -2564,8 +2704,11 @@ static bool tcpm_send_queued_message(struct tcpm_port *port)
->  					 ret);
->  				tcpm_set_state(port, SOFT_RESET_SEND, 0);
->  			} else if (port->pwr_role == TYPEC_SOURCE) {
-> +				tcpm_ams_finish(port);
->  				tcpm_set_state(port, HARD_RESET_SEND,
->  					       PD_T_SENDER_RESPONSE);
-> +			} else {
-> +				tcpm_ams_finish(port);
->  			}
->  			break;
->  		default:
-> @@ -3584,6 +3727,11 @@ static void run_state_machine(struct tcpm_port *port)
->  
->  		if (port->ams != NONE_AMS)
->  			tcpm_ams_finish(port);
-> +		if (port->next_ams != NONE_AMS) {
-> +			port->ams = port->next_ams;
-> +			port->next_ams = NONE_AMS;
-> +		}
-> +
->  		/*
->  		 * If previous AMS is interrupted, switch to the upcoming
->  		 * state.
-> @@ -3824,6 +3972,11 @@ static void run_state_machine(struct tcpm_port *port)
->  
->  		if (port->ams != NONE_AMS)
->  			tcpm_ams_finish(port);
-> +		if (port->next_ams != NONE_AMS) {
-> +			port->ams = port->next_ams;
-> +			port->next_ams = NONE_AMS;
-> +		}
-> +
->  		/*
->  		 * If previous AMS is interrupted, switch to the upcoming
->  		 * state.
-> @@ -3971,6 +4124,7 @@ static void run_state_machine(struct tcpm_port *port)
->  		port->message_id = 0;
->  		port->rx_msgid = -1;
->  		tcpm_pd_send_control(port, PD_CTRL_ACCEPT);
-> +		tcpm_ams_finish(port);
->  		if (port->pwr_role == TYPEC_SOURCE) {
->  			port->upcoming_state = SRC_SEND_CAPABILITIES;
->  			tcpm_ams_start(port, POWER_NEGOTIATION);
-> @@ -4007,6 +4161,7 @@ static void run_state_machine(struct tcpm_port *port)
->  		break;
->  	case DR_SWAP_SEND_TIMEOUT:
->  		tcpm_swap_complete(port, -ETIMEDOUT);
-> +		tcpm_ams_finish(port);
->  		tcpm_set_state(port, ready_state(port), 0);
->  		break;
->  	case DR_SWAP_CHANGE_DR:
-> @@ -4019,6 +4174,7 @@ static void run_state_machine(struct tcpm_port *port)
->  				       TYPEC_HOST);
->  			port->send_discover = true;
->  		}
-> +		tcpm_ams_finish(port);
->  		tcpm_set_state(port, ready_state(port), 0);
->  		break;
->  
-> @@ -4146,6 +4302,7 @@ static void run_state_machine(struct tcpm_port *port)
->  
->  	case VCONN_SWAP_ACCEPT:
->  		tcpm_pd_send_control(port, PD_CTRL_ACCEPT);
-> +		tcpm_ams_finish(port);
->  		tcpm_set_state(port, VCONN_SWAP_START, 0);
->  		break;
->  	case VCONN_SWAP_SEND:
-> @@ -4263,6 +4420,13 @@ static void run_state_machine(struct tcpm_port *port)
->  		port->upcoming_state = INVALID_STATE;
->  		tcpm_set_state(port, upcoming_state, 0);
->  		break;
-> +
-> +	/* Chunk state */
-> +	case CHUNK_NOT_SUPP:
-> +		tcpm_pd_send_control(port, PD_CTRL_NOT_SUPP);
-> +		tcpm_set_state(port, port->pwr_role == TYPEC_SOURCE ?
-> +			       SRC_READY : SNK_READY, 0);
-> +		break;
->  	default:
->  		WARN(1, "Unexpected port state %d\n", port->state);
->  		break;
-> @@ -4692,6 +4856,8 @@ static void _tcpm_pd_hard_reset(struct tcpm_port *port)
->  
->  	if (port->ams != NONE_AMS)
->  		port->ams = NONE_AMS;
-> +	if (port->hard_reset_count < PD_N_HARD_RESET_COUNT)
-> +		port->ams = HARD_RESET;
->  	/*
->  	 * If we keep receiving hard reset requests, executing the hard reset
->  	 * must have failed. Revert to error recovery if that happens.
-> diff --git a/include/linux/usb/pd.h b/include/linux/usb/pd.h
-> index 79599b90ba55..272454f9cd67 100644
-> --- a/include/linux/usb/pd.h
-> +++ b/include/linux/usb/pd.h
-> @@ -480,6 +480,7 @@ static inline unsigned int rdo_max_power(u32 rdo)
->  #define PD_T_SWAP_SRC_START	20	/* Minimum of 20ms */
->  #define PD_T_BIST_CONT_MODE	50	/* 30 - 60 ms */
->  #define PD_T_SINK_TX		16	/* 16 - 20 ms */
-> +#define PD_T_CHUNK_NOT_SUPP	42	/* 40 - 50 ms */
->  
->  #define PD_T_DRP_TRY		100	/* 75 - 150 ms */
->  #define PD_T_DRP_TRYWAIT	600	/* 400 - 800 ms */
-> -- 
-> 2.29.2.729.g45daf8777d-goog
-
--- 
-heikki
+>  static inline int
+>  devm_tegra_core_dev_init_opp_table(struct device *dev,
+>                                    struct tegra_core_opp_params *cfg)
+> --
+> 2.29.2
+>
