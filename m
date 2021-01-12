@@ -2,171 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983F52F37D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:02:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D6DE2F37D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:02:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405157AbhALSB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 13:01:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54532 "EHLO
+        id S2405323AbhALSBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 13:01:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404623AbhALSB2 (ORCPT
+        with ESMTP id S2390291AbhALSBx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 13:01:28 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0456C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:00:48 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id b8so1321129plh.12
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 10:00:48 -0800 (PST)
+        Tue, 12 Jan 2021 13:01:53 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80A7CC061786;
+        Tue, 12 Jan 2021 10:01:13 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id m5so2181795pjv.5;
+        Tue, 12 Jan 2021 10:01:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=jpcGDBjFfjSjuM+/XkijfE8T6O5Kz4Wp24MC/icGemw=;
-        b=NsnwAY4Ph8u0u7IHQWVAG5i5SwXl/wv/CE6YzQjhJMKDtsaswqh4nmj/Itq6R/8mub
-         fdeyTu1uO6aCfCSBRh2Z7zQttgOIECixTeMfbK9z6anS6Gb3ux61gkmcnLbInWBy7f7q
-         RZE5dVtMWHkIhiNUGd3uOH/8C9hpbvMb1JT9M=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=va30dobV2cprJIEYRAMJZ0NvTQmJlWLcGFXGaT2vIak=;
+        b=BSgHEVaU+wp7g4SWj2v4eN1mMBviAHg2joarj9Q5PqmN8t6EM2D6f1NyFTwwm/RHI0
+         o530n0t4+JxUQbuS7gDRYOL0VdFusmQMKTAGYtLo1Apuiz1GAX0v7lTywAjArhJbxLd4
+         VkEM/2ERiVdNuyl7zex52LNAJnTL+Ok9EGjto3tvmPt0E4q91je9Jtu1HVekg4QImqlf
+         Ukvg1OjSm3f5QJyWdErQltv+AJ0iHxmXhbNSBnhcqlDKTGZqQv2yVs1sh4hB03PRkf2K
+         /HBV+PIWSsfBRTZM8gmqQSl0rm/5btH8juEfiP+v6pXHCW8BfJFJ1UWGfNakFEpb+yF2
+         kqOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=jpcGDBjFfjSjuM+/XkijfE8T6O5Kz4Wp24MC/icGemw=;
-        b=TKMCFOu1vF9ELpHjj86wxlnciOzwuVM1zVhdhqcF+FAu9Ao7UmufSfNSy6li+jf+MQ
-         Idb16dQIYaWMM4qp+07gSDGrR80ZWY/HU/hnHGDouBcXY1cymX5pyvlMIMPWh+eeRWE2
-         PtOBGdCYzDwhoBSoLb+ILh0QP56kZ2KbZdz0TW9/8mv7Z0wSoUjupfwlWtaI156wmwZu
-         bhxzjXZ4g7Nr/BbqgjEqwOvzqkB6G5hAyX3lnw4IlkE8isl6gxrBm1pXhuioQ2lwEbSS
-         k1OsbiCwLj6FggSjvp1L3XTvZUBuYhHK2wh0P8C6/jYoLTTEXWCPQ5u0RvtjIIDgk84w
-         ajTw==
-X-Gm-Message-State: AOAM5301jUTblV3xAJYY5/Q0hvyy58U2KPe8lbB9qXS5aT3a+43JsOWD
-        61AykWaixYnyG3+uglAINssMmVZlnKiPRMX276gKfCS9jhwvDNVJemb8xJ8+A6k53VdJ577T7Bo
-        ZkhDaWcIacBtDu57Qejsi/NyziwcX+ZHgfdH9dElU2YGoRv9CTl6jZ4fCSYhXG/uVKRcRCBVBJo
-        09LfSzBQ==
-X-Google-Smtp-Source: ABdhPJyW/YgYeF1XrYKlD67QM0EFtlGYfhUIXwTjJf3iQE798296hQvYLnhy5YwklH2NjtKf9lGG7Q==
-X-Received: by 2002:a17:90a:8817:: with SMTP id s23mr290340pjn.67.1610474447405;
-        Tue, 12 Jan 2021 10:00:47 -0800 (PST)
-Received: from [10.69.69.102] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id q70sm4194802pja.39.2021.01.12.10.00.45
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=va30dobV2cprJIEYRAMJZ0NvTQmJlWLcGFXGaT2vIak=;
+        b=Z5yLCk02T216hI6LuixVH0ex+QIcfY+fq5IKRvrHfij4WqM0O9XKv37ENZkL8t91N+
+         n+VI5av2I3kb/OVpUCepxSqdrqzLlkz2VoRDk3tjvcSizOx8e9T3fwvbv5kPuEZmnjZx
+         zaQv+qTINeNngKoO42iaM514qqEMJ04wr4o8DmCXhaL9jLbprqpADGn6lyrfs42J82uw
+         nxpH2XR2NDD2BkuTROrpaVOU0ogr/VCn0u/RPenXrxVtxjsg9q1Bqg7123kvstSXLsuL
+         QuNe4tdgWChWyhEE/WwGTWMwdYHHXhVAVcgHj6+l/MA8oqn35F9A2CeS8taKQdhv8OG1
+         SzEg==
+X-Gm-Message-State: AOAM533IXC+UO4/fDVjgFyCfkVJfRGezu5LWRtGHuq4EzExAyzUJ2YXX
+        1BNYAQdFdvokWLmuRzNaVhpiPmId00k=
+X-Google-Smtp-Source: ABdhPJxLrOwZPK4BbGADYVcldoOiNOJ5fY7nnloJLfhNDEA/ZD8O29mpGXC5Cm138CV7PrM9YNS3vA==
+X-Received: by 2002:a17:902:521:b029:dc:2836:ec17 with SMTP id 30-20020a1709020521b02900dc2836ec17mr258050plf.47.1610474472960;
+        Tue, 12 Jan 2021 10:01:12 -0800 (PST)
+Received: from [10.67.48.230] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id i2sm4230154pjd.21.2021.01.12.10.01.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 10:00:46 -0800 (PST)
-Subject: Re: [PATCH] scsi: lpfc: style: Simplify bool comparison
-To:     YANG LI <abaci-bugfix@linux.alibaba.com>, jejb@linux.ibm.com
-Cc:     martin.petersen@oracle.com, dick.kennedy@broadcom.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1610439893-64872-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-From:   James Smart <james.smart@broadcom.com>
-Message-ID: <2ffd39d8-c77c-c1c0-eed6-38a97dbe2c60@broadcom.com>
-Date:   Tue, 12 Jan 2021 10:00:45 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 12 Jan 2021 10:01:10 -0800 (PST)
+Subject: Re: [RFC PATCH v3 0/6] Restricted DMA
+To:     Claire Chang <tientzu@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>, will@kernel.org,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
+        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
+        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        rafael.j.wysocki@intel.com, heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        rdunlap@infradead.org, dan.j.williams@intel.com,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Tomasz Figa <tfiga@chromium.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>
+References: <20210106034124.30560-1-tientzu@chromium.org>
+ <d7043239-12cf-3636-4726-2e3b90917dc6@gmail.com>
+ <CALiNf28sU1VtGB7LeTXExkMwQiCeg8N5arqyEjw0CPZP72R4dg@mail.gmail.com>
+ <78871151-947d-b085-db03-0d0bd0b55632@gmail.com>
+ <CALiNf29_PmLJTVLksSHp3NFAaL52idqehSMOtatJ=jaM2Muq1g@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
+Message-ID: <23a09b9a-70fc-a7a8-f3ea-b0bfa60507f0@gmail.com>
+Date:   Tue, 12 Jan 2021 10:01:05 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <1610439893-64872-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000658a8d05b8b7cdaf"
+In-Reply-To: <CALiNf29_PmLJTVLksSHp3NFAaL52idqehSMOtatJ=jaM2Muq1g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000658a8d05b8b7cdaf
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+On 1/11/21 11:48 PM, Claire Chang wrote:
+> On Fri, Jan 8, 2021 at 1:59 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>>
+>> On 1/7/21 9:42 AM, Claire Chang wrote:
+>>
+>>>> Can you explain how ATF gets involved and to what extent it does help,
+>>>> besides enforcing a secure region from the ARM CPU's perpsective? Does
+>>>> the PCIe root complex not have an IOMMU but can somehow be denied access
+>>>> to a region that is marked NS=0 in the ARM CPU's MMU? If so, that is
+>>>> still some sort of basic protection that the HW enforces, right?
+>>>
+>>> We need the ATF support for memory MPU (memory protection unit).
+>>> Restricted DMA (with reserved-memory in dts) makes sure the predefined memory
+>>> region is for PCIe DMA only, but we still need MPU to locks down PCIe access to
+>>> that specific regions.
+>>
+>> OK so you do have a protection unit of some sort to enforce which region
+>> in DRAM the PCIE bridge is allowed to access, that makes sense,
+>> otherwise the restricted DMA region would only be a hint but nothing you
+>> can really enforce. This is almost entirely analogous to our systems then.
+> 
+> Here is the example of setting the MPU:
+> https://github.com/ARM-software/arm-trusted-firmware/blob/master/plat/mediatek/mt8183/drivers/emi_mpu/emi_mpu.c#L132
+> 
+>>
+>> There may be some value in standardizing on an ARM SMCCC call then since
+>> you already support two different SoC vendors.
+>>
+>>>
+>>>>
+>>>> On Broadcom STB SoCs we have had something similar for a while however
+>>>> and while we don't have an IOMMU for the PCIe bridge, we do have a a
+>>>> basic protection mechanism whereby we can configure a region in DRAM to
+>>>> be PCIe read/write and CPU read/write which then gets used as the PCIe
+>>>> inbound region for the PCIe EP. By default the PCIe bridge is not
+>>>> allowed access to DRAM so we must call into a security agent to allow
+>>>> the PCIe bridge to access the designated DRAM region.
+>>>>
+>>>> We have done this using a private CMA area region assigned via Device
+>>>> Tree, assigned with a and requiring the PCIe EP driver to use
+>>>> dma_alloc_from_contiguous() in order to allocate from this device
+>>>> private CMA area. The only drawback with that approach is that it
+>>>> requires knowing how much memory you need up front for buffers and DMA
+>>>> descriptors that the PCIe EP will need to process. The problem is that
+>>>> it requires driver modifications and that does not scale over the number
+>>>> of PCIe EP drivers, some we absolutely do not control, but there is no
+>>>> need to bounce buffer. Your approach scales better across PCIe EP
+>>>> drivers however it does require bounce buffering which could be a
+>>>> performance hit.
+>>>
+>>> Only the streaming DMA (map/unmap) needs bounce buffering.
+>>
+>> True, and typically only on transmit since you don't really control
+>> where the sk_buff are allocated from, right? On RX since you need to
+>> hand buffer addresses to the WLAN chip prior to DMA, you can allocate
+>> them from a pool that already falls within the restricted DMA region, right?
+>>
+> 
+> Right, but applying bounce buffering to RX will make it more secure.
+> The device won't be able to modify the content after unmap. Just like what
+> iommu_unmap does.
 
+Sure, however the goals of using bounce buffering equally applies to RX
+and TX in that this is the only layer sitting between a stack (block,
+networking, USB, etc.) and the underlying device driver that scales well
+in order to massage a dma_addr_t to be within a particular physical range.
 
+There is however room for improvement if the drivers are willing to
+change their buffer allocation strategy. When you receive Wi-Fi frames
+you need to allocate buffers for the Wi-Fi device to DMA into, and that
+happens ahead of the DMA transfers by the Wi-Fi device. At buffer
+allocation time you could very well allocate these frames from the
+restricted DMA region without having to bounce buffer them since the
+host CPU is in control over where and when to DMA into.
 
-On 1/12/2021 12:24 AM, YANG LI wrote:
-> Fix the following coccicheck warning:
-> ./drivers/scsi/lpfc/lpfc_bsg.c:5392:5-29: WARNING: Comparison to bool
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
-> ---
->   drivers/scsi/lpfc/lpfc_bsg.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
->
+The issue is that each network driver may implement its own buffer
+allocation strategy, some may simply call netdev_alloc_skb() which gives
+zero control over where the buffer comes from unless you play tricks
+with NUMA node allocations and somehow declare that your restricted DMA
+region is a different NUMA node. If the driver allocates pages and then
+attaches a SKB to that page using build_skb(), then you have much more
+control over where that page comes from, and this is where using a
+device private CMA are helps, because you can just do
+dma_alloc_from_contiguous() and that will ensure that the pages are
+coming from your specific CMA area.
 
-Reviewed-by:  James Smart <james.smart@broadcom.com>
+Few questions on the implementation:
 
--- james
+- is there any warning or error being printed if the restricted DMA
+region is outside of a device's DMA addressable range?
 
+- are there are any helpful statistics that could be shown to indicate
+that the restricted DMA region was sized too small, e.g.: that
+allocation of a DMA buffer failed because we ran out of space in the
+swiotlb pool?
 
---000000000000658a8d05b8b7cdaf
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+> 
+>>> I also added alloc/free support in this series
+>>> (https://lore.kernel.org/patchwork/patch/1360995/), so dma_direct_alloc() will
+>>> try to allocate memory from the predefined memory region.
+>>>
+>>> As for the performance hit, it should be similar to the default swiotlb.
+>>> Here are my experiment results. Both SoCs lack IOMMU for PCIe.
+>>>
+>>> PCIe wifi vht80 throughput -
+>>>
+>>>   MTK SoC                  tcp_tx     tcp_rx    udp_tx   udp_rx
+>>>   w/o Restricted DMA  244.1     134.66   312.56   350.79
+>>>   w/ Restricted DMA    246.95   136.59   363.21   351.99
+>>>
+>>>   Rockchip SoC           tcp_tx     tcp_rx    udp_tx   udp_rx
+>>>   w/o Restricted DMA  237.87   133.86   288.28   361.88
+>>>   w/ Restricted DMA    256.01   130.95   292.28   353.19
+>>
+>> How come you get better throughput with restricted DMA? Is it because
+>> doing DMA to/from a contiguous region allows for better grouping of
+>> transactions from the DRAM controller's perspective somehow?
+> 
+> I'm not sure, but actually, enabling the default swiotlb for wifi also helps the
+> throughput a little bit for me.
 
-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
-AanDaJF6fE9TEzbfn5AWgVgHkbqS3VY3Gq05xkLhRugDQ60IGwT29K1B+wGfcujKSaalhQIDAQAB
-o4IBzzCCAcswDgYDVR0PAQH/BAQDAgWgMIGeBggrBgEFBQcBAQSBkTCBjjBNBggrBgEFBQcwAoZB
-aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNpZ24yc2hhMmcz
-b2NzcC5jcnQwPQYIKwYBBQUHMAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc3BlcnNv
-bmFsc2lnbjJzaGEyZzMwTQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0
-dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwRAYDVR0fBD0w
-OzA5oDegNYYzaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMu
-Y3JsMCMGA1UdEQQcMBqBGGphbWVzLnNtYXJ0QGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEF
-BQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUUXCHNA1n5KXj
-CXL1nHkJ8oKX5wYwDQYJKoZIhvcNAQELBQADggEBAGQDKmIdULu06w+bE15XZJOwlarihiP2PHos
-/4bNU3NRgy/tCQbTpJJr3L7LU9ldcPam9qQsErGZKmb5ypUjVdmS5n5M7KN42mnfLs/p7+lOOY5q
-ZwPZfsjYiUuaCWDGMvVpuBgJtdADOE1v24vgyyLZjtCbvSUzsgKKda3/Z/iwLFCRrIogixS1L6Vg
-2JU2wwirL0Sy5S1DREQmTMAuHL+M9Qwbl+uh/AprkVqaSYuvUzWFwBVgafOl2XgGdn8r6ubxSZhX
-9SybOi1fAXGcISX8GzOd85ygu/3dFqvMyCBpNke4vdweIll52KZIMyWji3y2PKJYfgqO+bxo7BAa
-ROYxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
-MTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDH5i
-rbJ+nCPBux48wjANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgHR58zgs94dmLR7Sh
-tBoLYgq2zb0hkIS05QrsPvpZ55EwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
-CQUxDxcNMjEwMTEyMTgwMDQ4WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgB
-ZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcw
-CwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAIwn2TXrL7eQbtlblC9iegPMkTCGEM/+8fcm
-GwoyrdKat24zRzWxtXmntUgJWTehuHOqrAWYYsbOiXzcprcnmJ/zd8Ee9Sv3BLhfkCPJ06+fjuI1
-W/tAP9EfRKSG0//y9xRb6Z1cW2mT0gF07OA8+yZXL0rvQU1tbdRNr3PTi3TRLe0TiYVymFfLHLpa
-tVdwUNa2iylXhoKcaK024DrnifWHgfpd2RhABnNnRFOaA6jKb2agLg2S/aTw3mJ300UOd9Ld3qCG
-3SeJIVxLAhj0brT+ekVjUrjuhNJS/Cl8ta0WG2OOqFcCG134jO0im/MNpYigAo8AGPdWicAGp+Po
-ivc=
---000000000000658a8d05b8b7cdaf--
+OK, it would be interesting if you could get to the bottom of why
+performance does increase with swiotlb.
+-- 
+Florian
