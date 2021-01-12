@@ -2,127 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0AA22F4060
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A63542F4062
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389574AbhALXgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 18:36:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42634 "EHLO
+        id S2404001AbhALXhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 18:37:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728032AbhALXgU (ORCPT
+        with ESMTP id S2389010AbhALXhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 18:36:20 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FC2C061575;
-        Tue, 12 Jan 2021 15:35:40 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id g8so3382692wme.1;
-        Tue, 12 Jan 2021 15:35:40 -0800 (PST)
+        Tue, 12 Jan 2021 18:37:11 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB879C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:36:30 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id m6so76005pfk.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:36:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=96AFxN9qdBCX705IZeYQUwreVW1FNVIfvYgEDTfoapc=;
-        b=EAcYSikfHZcircFSK78lfI+As4BKckcFYYkxNpU2iWOyM0ORpkrMnjQP4o1uDXXu8d
-         ITcjJNRNM7ou0ysaQOAh9kO4W7DsOXCSyp1WdD9/36bGoApqH4E9DGeA600ja8EgFRYa
-         VESDD4M5SydFu30WecBJL62r9hFe6GR5DsD4WFIwoRa/K4nta9EOpt+Wt3p2R1iVF+uj
-         7T9xSWOM9Ap1DLDLtCzOpVT/o3lCK+syGlKmgQQKbXLF8wzLdE7CP23/6AKAHp4ZsKmx
-         y+QGzxUDE+g755I7++Z9mwkZKtOgqeEjEBynGthZ6wIoOA95cRRf3J5DVracJdVPhxBw
-         kyIQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mEBkOPFW86VPUoCBn9m9fpzpE6sqvzaVXLvlkeB1JaA=;
+        b=UhsCzBkT0GLtG0z8nOtx7zVsEqDFaz2KKP/XtsMOT0Qnl10vOiacfrgKfGl4l8uWXA
+         JxmxX/JcdwS6TWBHbtFkaHEGscp2l1eviDyldmuESpZTgmSuzL3sIA9E+/s32UoAXX7X
+         +SeI5muVXqMZ8tbs/EJ5VWTrQ5eSWncDhujkb4QLozKP4HQ+pqPgACTOX7Xfm65SpSw/
+         LMzfrxyiBElteGS+5fQDLwsRw/T7KoU5mseo3h4ZsZ7SOL8fk8yJlcqc57iRo6waJykT
+         tjit2miQOh67KTApCMsD7GQrbD7vT+qiK00zZf/ZTLNg72AVrGkKhMK4KlZrFpteWmv3
+         D6Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=96AFxN9qdBCX705IZeYQUwreVW1FNVIfvYgEDTfoapc=;
-        b=E4vOCmWBlXhOZBcFtEzTLI40JLf4++pUsFTFF+3dlLt4acCO3jUqV5Ij941cgONxum
-         jEWg/RBkv8SCIHA8j14Nw+gxLhdbyhbltpJ0jQOjsQYaU5HwADXSzZfX9ek4Bv/qqGRD
-         +05Y5sdbO/QnauWR6GzjPxJAMLxkUiQmD7NAOPoyzgF2SRc+bMidEjUWFLoXmKE35pj6
-         0BVjbrJGI5dIeoWVTxQJJLAth8gY7fEzm+9Cl5VsQUYbPTmZD1Z3hRwqd4EWK4NuEBtN
-         C5VP5XZ2YFA8fHHSWJPFqG67U1QajT+QMaeALctaFkLN54tZ5/S24Z1L8hbpJ2faBZr3
-         Nr7w==
-X-Gm-Message-State: AOAM530HGHL6yAsrUhzNEy3Dnrk4zpPuyreUR+GpLSwFgS+Yg0hByvDa
-        BqvDlVH4Vg3r+J5RJbaP35y8zAtzrPR2hg==
-X-Google-Smtp-Source: ABdhPJy6vn2CF1xoE9dKg3jChENtseZXZXzBV2rpYPSMu8O38VXZvrNpwnnRLOqBXOynaXloYJYMcw==
-X-Received: by 2002:a1c:608b:: with SMTP id u133mr65860wmb.140.1610494539312;
-        Tue, 12 Jan 2021 15:35:39 -0800 (PST)
-Received: from [192.168.1.211] ([2.29.208.120])
-        by smtp.gmail.com with ESMTPSA id b127sm135170wmc.45.2021.01.12.15.35.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 15:35:38 -0800 (PST)
-Subject: Re: [PATCH v5 00/15] Add functionality to ipu3-cio2 driver allowing
- software_node connections to sensors on platforms designed for Windows
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        yong.zhi@intel.com, Bingbu Cao <bingbu.cao@intel.com>,
-        tian.shu.qiu@intel.com, Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        hverkuil-cisco@xs4all.nl, m.felsch@pengutronix.de,
-        Niklas Soderlund <niklas.soderlund+renesas@ragnatech.se>,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        Steve Longerbeam <slongerbeam@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-References: <20210107132838.396641-1-djrscally@gmail.com>
- <CAJZ5v0gb9c-kWM4aAKm6UqbVKt7dyp6xJS5E=7yoPRnPP+msbw@mail.gmail.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <9c451747-410e-3c99-c1a5-87336b71aa7b@gmail.com>
-Date:   Tue, 12 Jan 2021 23:35:37 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mEBkOPFW86VPUoCBn9m9fpzpE6sqvzaVXLvlkeB1JaA=;
+        b=AQvoYl2emWx2MjxBEz5SegrXxrAuVAqqbrsup0GFE//1dfnn+/I12fmglliSIB8ugR
+         2Qih2evT26aHfxkC3QTgWjKV+yASMrelo7lWvNh6sc4reRAgT1813yY+/KIMO3YIjjGz
+         LzvTexq+yKvVrIfhaoyO6NyM4vlnhIA4KBtiB5rrgAHa/V1CxwZXgGgrQArN1N+DMmQM
+         VGWTawE2H7RcsJIKnG0oRxYC8DxUCcoub7tSY0oIFjYtLbZfddhURYA26VO62YNs3fO4
+         NkWXrcc0uOKTD2ZPgGZ7h4Q/igYgE5MmY3b6fYENZISamb7j2fwJ9zDCJkvnL8pfPGLm
+         6nYQ==
+X-Gm-Message-State: AOAM5312FDhsp2rFDnEj/PXRomEx32mWX08fZjYq8vsAd/4KunNDu7qx
+        if6j1Ppv1hclmdEPxEGMUpge3ReMXgoFOHMwSV8OH6uld0dPgA==
+X-Google-Smtp-Source: ABdhPJyk5PEF5UHB0B/0evvZXyll9soXfX1sZqruCPvrTzK6detAZyOBlgZXFnC2GV/AFSRanyOMa+5wpsm5ETLC9r8=
+X-Received: by 2002:a63:e:: with SMTP id 14mr1421869pga.253.1610494590037;
+ Tue, 12 Jan 2021 15:36:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0gb9c-kWM4aAKm6UqbVKt7dyp6xJS5E=7yoPRnPP+msbw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210112214105.1440932-1-shakeelb@google.com> <20210112233108.GD99586@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20210112233108.GD99586@carbon.dhcp.thefacebook.com>
+From:   Arjun Roy <arjunroy@google.com>
+Date:   Tue, 12 Jan 2021 15:36:18 -0800
+Message-ID: <CAOFY-A3=mCvfvMYBJvDL1LfjgYgc3kzebRNgeg0F+e=E1hMPXA@mail.gmail.com>
+Subject: Re: [PATCH] mm: net: memcg accounting for TCP rx zerocopy
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael, Sakari
+On Tue, Jan 12, 2021 at 3:31 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Tue, Jan 12, 2021 at 01:41:05PM -0800, Shakeel Butt wrote:
+> > From: Arjun Roy <arjunroy@google.com>
+> >
+> > TCP zerocopy receive is used by high performance network applications to
+> > further scale. For RX zerocopy, the memory containing the network data
+> > filled by network driver is directly mapped into the address space of
+> > high performance applications. To keep the TLB cost low, these
+> > applications unmaps the network memory in big batches. So, this memory
+> > can remain mapped for long time. This can cause memory isolation issue
+> > as this memory becomes unaccounted after getting mapped into the
+> > application address space. This patch adds the memcg accounting for such
+> > memory.
+> >
+> > Accounting the network memory comes with its own unique challenge. The
+> > high performance NIC drivers use page pooling to reuse the pages to
+> > eliminate/reduce the expensive setup steps like IOMMU. These drivers
+> > keep an extra reference on the pages and thus we can not depends on the
+> > page reference for the uncharging. The page in the pool may keep a memcg
+> > pinned for arbitrary long time or may get used by other memcg.
+> >
+> > This patch decouples the uncharging of the page from the refcnt and
+> > associate it with the map count i.e. the page gets uncharged when the
+> > last address space unmaps it. Now the question what if the driver drops
+> > its reference while the page is still mapped. That is fine as the
+> > address space also holds a reference to the page i.e. the reference
+> > count can not drop to zero before the map count.
+> >
+> > Signed-off-by: Arjun Roy <arjunroy@google.com>
+> > Co-developed-by: Shakeel Butt <shakeelb@google.com>
+> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> > ---
+> >  include/linux/memcontrol.h | 34 +++++++++++++++++++--
+> >  mm/memcontrol.c            | 60 ++++++++++++++++++++++++++++++++++++++
+> >  mm/rmap.c                  |  3 ++
+> >  net/ipv4/tcp.c             | 27 +++++++++++++----
+> >  4 files changed, 116 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index 7a38a1517a05..0b0e3b4615cf 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -349,11 +349,13 @@ extern struct mem_cgroup *root_mem_cgroup;
+> >
+> >  enum page_memcg_data_flags {
+> >       /* page->memcg_data is a pointer to an objcgs vector */
+> > -     MEMCG_DATA_OBJCGS = (1UL << 0),
+> > +     MEMCG_DATA_OBJCGS       = (1UL << 0),
+> >       /* page has been accounted as a non-slab kernel page */
+> > -     MEMCG_DATA_KMEM = (1UL << 1),
+> > +     MEMCG_DATA_KMEM         = (1UL << 1),
+> > +     /* page has been accounted as network memory */
+> > +     MEMCG_DATA_SOCK         = (1UL << 2),
+> >       /* the next bit after the last actual flag */
+> > -     __NR_MEMCG_DATA_FLAGS  = (1UL << 2),
+> > +     __NR_MEMCG_DATA_FLAGS   = (1UL << 3),
+> >  };
+> >
+> >  #define MEMCG_DATA_FLAGS_MASK (__NR_MEMCG_DATA_FLAGS - 1)
+> > @@ -444,6 +446,11 @@ static inline bool PageMemcgKmem(struct page *page)
+> >       return page->memcg_data & MEMCG_DATA_KMEM;
+> >  }
+> >
+> > +static inline bool PageMemcgSock(struct page *page)
+> > +{
+> > +     return page->memcg_data & MEMCG_DATA_SOCK;
+> > +}
+> > +
+> >  #ifdef CONFIG_MEMCG_KMEM
+> >  /*
+> >   * page_objcgs - get the object cgroups vector associated with a page
+> > @@ -1095,6 +1102,11 @@ static inline bool PageMemcgKmem(struct page *page)
+> >       return false;
+> >  }
+> >
+> > +static inline bool PageMemcgSock(struct page *page)
+> > +{
+> > +     return false;
+> > +}
+> > +
+> >  static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
+> >  {
+> >       return true;
+> > @@ -1561,6 +1573,10 @@ extern struct static_key_false memcg_sockets_enabled_key;
+> >  #define mem_cgroup_sockets_enabled static_branch_unlikely(&memcg_sockets_enabled_key)
+> >  void mem_cgroup_sk_alloc(struct sock *sk);
+> >  void mem_cgroup_sk_free(struct sock *sk);
+> > +int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg, struct page **pages,
+> > +                              unsigned int nr_pages);
+> > +void mem_cgroup_uncharge_sock_pages(struct page **pages, unsigned int nr_pages);
+> > +
+> >  static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
+> >  {
+> >       if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg->tcpmem_pressure)
+> > @@ -1589,6 +1605,18 @@ static inline void memcg_set_shrinker_bit(struct mem_cgroup *memcg,
+> >                                         int nid, int shrinker_id)
+> >  {
+> >  }
+> > +
+> > +static inline int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg,
+> > +                                            struct page **pages,
+> > +                                            unsigned int nr_pages)
+> > +{
+> > +     return 0;
+> > +}
+> > +
+> > +static inline void mem_cgroup_uncharge_sock_pages(struct page **pages,
+> > +                                               unsigned int nr_pages)
+> > +{
+> > +}
+> >  #endif
+> >
+> >  #ifdef CONFIG_MEMCG_KMEM
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index db9836f4b64b..38e94538e081 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -7061,6 +7061,66 @@ void mem_cgroup_uncharge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages)
+> >       refill_stock(memcg, nr_pages);
+> >  }
+> >
+> > +/**
+> > + * mem_cgroup_charge_sock_pages - charge socket memory
+> > + * @memcg: memcg to charge
+> > + * @pages: array of pages to charge
+> > + * @nr_pages: number of pages
+> > + *
+> > + * Charges all @pages to current's memcg. The caller should have a reference on
+> > + * the given memcg.
+> > + *
+> > + * Returns 0 on success.
+> > + */
+> > +int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg, struct page **pages,
+> > +                              unsigned int nr_pages)
+> > +{
+> > +     int ret = 0;
+> > +
+> > +     if (mem_cgroup_disabled() || mem_cgroup_is_root(memcg))
+> > +             goto out;
+> > +
+> > +     ret = try_charge(memcg, GFP_KERNEL, nr_pages);
+> > +
+> > +     if (!ret) {
+> > +             int i;
+> > +
+> > +             for (i = 0; i < nr_pages; i++)
+> > +                     pages[i]->memcg_data = (unsigned long)memcg |
+> > +                             MEMCG_DATA_SOCK;
+> > +             css_get_many(&memcg->css, nr_pages);
+> > +     }
+> > +out:
+> > +     return ret;
+> > +}
+> > +
+> > +/**
+> > + * mem_cgroup_uncharge_sock_pages - uncharge socket pages
+> > + * @pages: array of pages to uncharge
+> > + * @nr_pages: number of pages
+> > + *
+> > + * This assumes all pages are charged to the same memcg.
+> > + */
+> > +void mem_cgroup_uncharge_sock_pages(struct page **pages, unsigned int nr_pages)
+> > +{
+> > +     int i;
+> > +     struct mem_cgroup *memcg;
+> > +
+> > +     if (mem_cgroup_disabled())
+> > +             return;
+> > +
+> > +     memcg = page_memcg(pages[0]);
+> > +
+> > +     if (unlikely(!memcg))
+> > +             return;
+> > +
+> > +     refill_stock(memcg, nr_pages);
+> > +
+> > +     for (i = 0; i < nr_pages; i++)
+> > +             pages[i]->memcg_data = 0;
+> > +     css_put_many(&memcg->css, nr_pages);
+> > +}
+>
+> What about statistics? Should it be accounted towards "sock", "slab/kmem" or deserves
+> a separate counter? Do we plan to eventually have shrinkers for this type of memory?
+>
 
-On 12/01/2021 19:34, Rafael J. Wysocki wrote:
-> <snip>
->> I'm hopeful that most or all of this series could get picked up for 5.12.
->> We touch a few different areas (listed below), but I think the easiest
->> approach would be to merge everything through media tree. Rafael, Greg,
->> Mauro and Sergey; are you ok with that plan, or would you prefer a
->> different approach? Mauro; if that plan is ok (and of course assuming that
->> the rest of the patches are acked by their respective maintainers) could
->> we get a dedicated feature branch just in case the following series ends
->> up being ready in time too?
->>
->> <snip>
-> Please feel free to add
+While the pages in question are part of an sk_buff, they may be
+accounted towards sockmem. However, that charge is unaccounted when
+the skb is freed after the receive operation. When they are in use by
+the user application I do not think sockmem is the right place to have
+a break-out counter.
+
+To double check, what do you mean by shrinker?
+
+
+> Two functions above do not contain anything network-related,
+> except the MEMCG_DATA_SOCK flag. Can it be merged with the kmem charging path?
 >
-> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> to all of the device properties patches in this series if that helps.
+> Code-wise the patch looks good to me.
 >
 > Thanks!
-
-Thanks very much (and Greg too).
-
-
-Sakari; unless I'm misunderstanding something, I think this series could
-be picked up now, right? Would it be ok to do that through your tree? I
-think the idea of a dedicated feature branch can be dropped, I won't
-have the second series ready in time for this round anyway.
-
-
-First time doing this, so if I've missed something please let me know!
-
