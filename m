@@ -2,153 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 985E52F2838
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:11:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB202F283E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731593AbhALGLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 01:11:01 -0500
-Received: from mail-lf1-f51.google.com ([209.85.167.51]:43144 "EHLO
-        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731262AbhALGLA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 01:11:00 -0500
-Received: by mail-lf1-f51.google.com with SMTP id 23so1578544lfg.10;
-        Mon, 11 Jan 2021 22:10:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
-         :content-transfer-encoding;
-        bh=oRVO+BDWKpeCueQ+kzarXJUcBI/yOauyA0mzezFi66I=;
-        b=kM3TDsoOH/egdTuJtSvE1q2GmFDoxbRgA7Juklwl/5spNN0woOvNjRH4Gy91hP/2E4
-         5CIZCFfuMQfvYSnrS+9xGBeQPLvgdwRyu6xMikARBHftOlIwOdFhAOld3xUBLk6o9Eqo
-         obZhk0QKLH5P88P9VdqL7prxAHy+qA5xlHjiU7g4D4QeIXwgJf4J3f+C7t8TfYI5DgVt
-         sYgnSvSZDMHI892lefcsMmk4l6+eYc0ANmAppdLYcg1/aLKZYAAoOl1HXsOIDAnkWAok
-         b7dScXwg2qJRngTp71e+mAuddmR5Y3YUutkrFJsV46hveZxGigcoZX4OzihezbWxvGjK
-         LkqA==
-X-Gm-Message-State: AOAM530iQXgb34yLl8LG7E2QpJx17HIqWciPl0N9liTQLqIf1tNcLzwf
-        Ps80Gps33GsNppMv97baZ+I=
-X-Google-Smtp-Source: ABdhPJzDhEVzVXXU/b+VKdX3lqsnfNFQEOnx3T+2A4v45B3y+lJ4XjfZoQ2sXonGchrBl8jduy9LNw==
-X-Received: by 2002:a19:6c7:: with SMTP id 190mr1497073lfg.614.1610431818955;
-        Mon, 11 Jan 2021 22:10:18 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id f26sm224806ljg.137.2021.01.11.22.10.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 22:10:18 -0800 (PST)
-Message-ID: <c953405d630efba5377b89931ae4e0aa1abfa4dd.camel@fi.rohmeurope.com>
-Subject: Re: [PATCH 06/15] dt_bindings: regulator: Add ROHM BD71815 PMIC
- regulators
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     Rob Herring <robh@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org
-In-Reply-To: <20210111190953.GB2890911@robh.at.kernel.org>
-References: <cover.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
-         <3ca03c3b76d6898c46ee645ddb5fa25cbfc62367.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
-         <20210111190953.GB2890911@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1731703AbhALGOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 01:14:23 -0500
+Received: from mga05.intel.com ([192.55.52.43]:61892 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726478AbhALGOW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 01:14:22 -0500
+IronPort-SDR: +No4ylfoY8M1VBncxLbQEe/pM0SRpWEPvqcn+KrUtP0ilUvZknNGessteydIovOxmOq+vHJudv
+ QwQowmL7QkEg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9861"; a="262774006"
+X-IronPort-AV: E=Sophos;i="5.79,340,1602572400"; 
+   d="scan'208";a="262774006"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jan 2021 22:13:41 -0800
+IronPort-SDR: kADjeAZA0f7of4Obo7NUehXhDCw//EV19kjeVAAmshn4tAdXlwFmIYvkuGxFIEXqBjGGuA2OQ3
+ ReKkCNAw6wpA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,340,1602572400"; 
+   d="scan'208";a="424046706"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.50])
+  by orsmga001.jf.intel.com with ESMTP; 11 Jan 2021 22:13:37 -0800
+From:   "Huang\, Ying" <ying.huang@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mel Gorman <mgorman@suse.de>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Ingo Molnar" <mingo@redhat.com>, Rik van Riel <riel@surriel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Matthew Wilcox \(Oracle\)" <willy@infradead.org>,
+        "Dave Hansen" <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Michal Hocko" <mhocko@suse.com>,
+        David Rientjes <rientjes@google.com>,
+        <linux-api@vger.kernel.org>
+Subject: Re: [PATCH -V8 1/3] numa balancing: Migrate on fault among multiple bound nodes
+References: <20210106065754.17955-1-ying.huang@intel.com>
+        <20210106065754.17955-2-ying.huang@intel.com>
+Date:   Tue, 12 Jan 2021 14:13:36 +0800
+In-Reply-To: <20210106065754.17955-2-ying.huang@intel.com> (Huang Ying's
+        message of "Wed, 6 Jan 2021 14:57:52 +0800")
+Message-ID: <87bldud6nj.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Date:   Tue, 12 Jan 2021 08:10:14 +0200
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Peter,
 
-On Mon, 2021-01-11 at 13:09 -0600, Rob Herring wrote:
-> On Fri, Jan 08, 2021 at 03:36:38PM +0200, Matti Vaittinen wrote:
-> > Add binding documentation for regulators on ROHM BD71815 PMIC.
-> > 5 bucks, 7 LDOs and a boost for LED.
-> > 
-> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> > ---
-> >  .../regulator/rohm,bd71815-regulator.yaml     | 104
-> > ++++++++++++++++++
-> >  1 file changed, 104 insertions(+)
-> >  create mode 100644
-> > Documentation/devicetree/bindings/regulator/rohm,bd71815-
-> > regulator.yaml
-> > 
-> > diff --git
-> > a/Documentation/devicetree/bindings/regulator/rohm,bd71815-
-> > regulator.yaml
-> > b/Documentation/devicetree/bindings/regulator/rohm,bd71815-
-> > regulator.yaml
-> > new file mode 100644
-> > index 000000000000..2aa21603698c
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/regulator/rohm,bd71815-
-> > regulator.yaml
-> > @@ -0,0 +1,104 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > +%YAML 1.2
-> > +---
-> > +$id: 
-> > http://devicetree.org/schemas/regulator/rohm,bd71815-regulator.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: ROHM BD71815 Power Management Integrated Circuit regulators
-> > +
-> > +maintainers:
-> > +  - Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> > +
-> > +description: |
-> > +  This module is part of the ROHM BD718215 MFD device. For more
-> > details
-> > +  see Documentation/devicetree/bindings/mfd/rohm,bd71815-
-> > pmic.yaml.
-> > +
-> > +  The regulator controller is represented as a sub-node of the
-> > PMIC node
-> > +  on the device tree.
-> > +
-> > +  The valid names for BD71815 regulator nodes are
-> > +  buck1, buck2, buck3, buck4, buck5,
-> > +  ldo1, ldo2, ldo3, ldo4, ldo5,
-> > +  ldodvref, ldolpsr, wled
-> 
-> No schema for the last 3?
+Huang Ying <ying.huang@intel.com> writes:
 
-Thanks Rob. I'm unsure what I have been thinking of :( I'll fix this
-for next version.
+> Now, NUMA balancing can only optimize the page placement among the
+> NUMA nodes if the default memory policy is used.  Because the memory
+> policy specified explicitly should take precedence.  But this seems
+> too strict in some situations.  For example, on a system with 4 NUMA
+> nodes, if the memory of an application is bound to the node 0 and 1,
+> NUMA balancing can potentially migrate the pages between the node 0
+> and 1 to reduce cross-node accessing without breaking the explicit
+> memory binding policy.
+>
+> So in this patch, we add MPOL_F_NUMA_BALANCING mode flag to
+> set_mempolicy() when mode is MPOL_BIND.  With the flag specified, NUMA
+> balancing will be enabled within the thread to optimize the page
+> placement within the constrains of the specified memory binding
+> policy.  With the newly added flag, the NUMA balancing control
+> mechanism becomes,
+>
+> - sysctl knob numa_balancing can enable/disable the NUMA balancing
+>   globally.
+>
+> - even if sysctl numa_balancing is enabled, the NUMA balancing will be
+>   disabled for the memory areas or applications with the explicit memory
+>   policy by default.
+>
+> - MPOL_F_NUMA_BALANCING can be used to enable the NUMA balancing for the
+>   applications when specifying the explicit memory policy (MPOL_BIND).
+>
+> Various page placement optimization based on the NUMA balancing can be
+> done with these flags.  As the first step, in this patch, if the
+> memory of the application is bound to multiple nodes (MPOL_BIND), and
+> in the hint page fault handler the accessing node are in the policy
+> nodemask, the page will be tried to be migrated to the accessing node
+> to reduce the cross-node accessing.
+>
+> If the newly added MPOL_F_NUMA_BALANCING flag is specified by an
+> application on an old kernel version without its support,
+> set_mempolicy() will return -1 and errno will be set to EINVAL.  The
+> application can use this behavior to run on both old and new kernel
+> versions.
+>
+> And if the MPOL_F_NUMA_BALANCING flag is specified for the mode other
+> than MPOL_BIND, set_mempolicy() will return -1 and errno will be set
+> to EINVAL as before.  Because we don't support optimization based on
+> the NUMA balancing for these modes.
+>
+> In the previous version of the patch, we tried to reuse MPOL_MF_LAZY
+> for mbind().  But that flag is tied to MPOL_MF_MOVE.*, so it seems not
+> a good API/ABI for the purpose of the patch.
+>
+> And because it's not clear whether it's necessary to enable NUMA
+> balancing for a specific memory area inside an application, so we only
+> add the flag at the thread level (set_mempolicy()) instead of the
+> memory area level (mbind()).  We can do that when it become necessary.
+>
+> To test the patch, we run a test case as follows on a 4-node machine
+> with 192 GB memory (48 GB per node).
+>
+> 1. Change pmbench memory accessing benchmark to call set_mempolicy()
+>    to bind its memory to node 1 and 3 and enable NUMA balancing.  Some
+>    related code snippets are as follows,
+>
+>      #include <numaif.h>
+>      #include <numa.h>
+>
+> 	struct bitmask *bmp;
+> 	int ret;
+>
+> 	bmp = numa_parse_nodestring("1,3");
+> 	ret = set_mempolicy(MPOL_BIND | MPOL_F_NUMA_BALANCING,
+> 			    bmp->maskp, bmp->size + 1);
+> 	/* If MPOL_F_NUMA_BALANCING isn't supported, fall back to MPOL_BIND */
+> 	if (ret < 0 && errno == EINVAL)
+> 		ret = set_mempolicy(MPOL_BIND, bmp->maskp, bmp->size + 1);
+> 	if (ret < 0) {
+> 		perror("Failed to call set_mempolicy");
+> 		exit(-1);
+> 	}
+>
+> 2. Run a memory eater on node 3 to use 40 GB memory before running pmbench.
+>
+> 3. Run pmbench with 64 processes, the working-set size of each process
+>    is 640 MB, so the total working-set size is 64 * 640 MB = 40 GB.  The
+>    CPU and the memory (as in step 1.) of all pmbench processes is bound
+>    to node 1 and 3. So, after CPU usage is balanced, some pmbench
+>    processes run on the CPUs of the node 3 will access the memory of
+>    the node 1.
+>
+> 4. After the pmbench processes run for 100 seconds, kill the memory
+>    eater.  Now it's possible for some pmbench processes to migrate
+>    their pages from node 1 to node 3 to reduce cross-node accessing.
+>
+> Test results show that, with the patch, the pages can be migrated from
+> node 1 to node 3 after killing the memory eater, and the pmbench score
+> can increase about 17.5%.
+>
+> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+> Acked-by: Mel Gorman <mgorman@suse.de>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Rik van Riel <riel@surriel.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+> Cc: Dave Hansen <dave.hansen@intel.com>
+> Cc: Andi Kleen <ak@linux.intel.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: linux-api@vger.kernel.org
 
-> 
-> > +
-> > +patternProperties:
-> > +  "^(ldo|buck)[1-5]$":
-> > +    type: object
-> > +    description:
-> > +      Properties for single LDO/BUCK regulator.
-> > +    $ref: regulator.yaml#
-> > +
-> > +    properties:
-> > +      regulator-name:
-> > +        pattern: "^(ldo|buck)[1-5]$"
-> > +        description:
-> > +          should be "ldo1", ..., "ldo5" and "buck1", ..., "buck5"
-> > +
-> > +      rohm,vsel-gpios:
-> > +        description:
-> > +          GPIO used to control ldo4 state (when ldo4 is controlled
-> > by GPIO).
-> > +
-> > +      rohm,dvs-run-voltage:
-> 
-> These should have a unit suffix.
+It seems that Andrew has no objection to this patch.  Is it possible for
+you to merge it through your tree?
 
-I know but these are existing properties. I'd like to re-use them as
-they have exported parser helpers - and I am unsure what kind of
-breakages changing them would cause. (The BD71837/BD71847 which
-introduced these properties are one of the PMICs which are pretty
-widely used.)
-
-Best Regards
-	Matti Vaittinen
-
-
+Best Regards,
+Huang, Ying
