@@ -2,282 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0381B2F28FE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 08:35:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 373962F28FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 08:35:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404075AbhALHfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 02:35:05 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:37490 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727959AbhALHfE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 02:35:04 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10C7VtcV013439;
-        Mon, 11 Jan 2021 23:33:54 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=F7pO5LpJvkFs0eKLBj7V3fRpF6y27PkIoc8ZWScoTFE=;
- b=anNpXry5y0VsrH1jvoq8PWDBA2pmZAAJM9LdzMvlBEz2XBqRRNe8ncm38VWDEd6xnwij
- OyPt0wDX9csRxSnM4zN7871z2m9ylRUdIY6Uy0ZS0E7xSm6O+AqFj2hI1ZI0/iIv0jUb
- 842yYBy0GYdLC0ynEcW1DGVbNSdgYUKEiUA= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 35yw1phbe2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 11 Jan 2021 23:33:54 -0800
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 11 Jan 2021 23:33:52 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q3yUhwbB4v1dSOOMUhR2UGa3FM8/3aJU6GTnzgr5+QNMXFQuK5/Fl7NEjkgw4bJihQeFBi2tyJ4C4HU6nBqiu7xN3gw7Kdi+53/qPXTJBtRp7LNkhPgtqxQd0NtqOWHChKD6K3KMoNdbIfFinYFREEd4Pr4hyRyv7PcfJsOJXg47gUff3vkhl1Spq2KaTygbvYF9QHcXbwOcbP+r+YcIS3XXTJdzfiIDw10fsRPIHAFDAw/0BMb0n+mZ1NkYHizAZrURYZgcugSJq4gQpozcU8cOMUcz/6i9SLMABPUJ8paqx8chOal09T/vgLBthqtL0byaa9m14K8ht8la6sCZOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F7pO5LpJvkFs0eKLBj7V3fRpF6y27PkIoc8ZWScoTFE=;
- b=Vrumhf4Gz0TzEcSYbXG1PXOSPDsVNFzU1tPcrLptuuJ+hlrIN117kLXqOQU5zGrCGSojtP4LB3pbZ+gEr5sPs2w8/UgTdOUbjcjYsM36D1WlL17uYoMb+v9ZW6JTv5eFQxcOm5qCbiVLyPPKZmuOvKB1z0+OCa9r9wulyNoWhVnZFaLW2t08gvsW3MdtoQP1ufwQRPbqx0hjDo1Z14XJGRfKlGoTDED3rQHYYDvD9cWqryGgilvJKaYYmjUT7aXemfnj3yV7vQiCq7v2soZyhO/tOxle+/CGzoew5mWRPIsb6VLUFwD/aTUxaNym/tzSftCu2jgr9yNTLpO7Yl2YIQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F7pO5LpJvkFs0eKLBj7V3fRpF6y27PkIoc8ZWScoTFE=;
- b=h4vhMqOQjGa7S2wqMKodr7dy/VDKnNlKrzO02m3IgcIBiZvTcb3FdEnv5siN5yUYKjJ80NAWMwyOmL2ggFShaiKdW+HYz4f5lq+zrS86M+VNMU79PYVbaNhNrqwwdrDkyY+4yIZgSd228hjAmBff4w76/cqIilpTUelhk/B7KY4=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com (2603:10b6:a02:c3::18)
- by BYAPR15MB3191.namprd15.prod.outlook.com (2603:10b6:a03:107::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Tue, 12 Jan
- 2021 07:33:46 +0000
-Received: from BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03]) by BYAPR15MB4088.namprd15.prod.outlook.com
- ([fe80::9ae:1628:daf9:4b03%7]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
- 07:33:46 +0000
-Subject: Re: [PATCH bpf-next 4/4] bpf: runqslower: use task local storage
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-CC:     Song Liu <songliubraving@fb.com>, bpf <bpf@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
+        id S2404238AbhALHfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 02:35:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727959AbhALHfM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 02:35:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AB6522795;
+        Tue, 12 Jan 2021 07:34:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610436870;
+        bh=727P1FZsT+bk8lBL7nX6mSRtF/ZIqumUMC7MWxkp2iE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oN9eLCwjv9/hexb3ui5TaMZb5bvYg4qi2Vxvk2cukovpl6ESE+RvLalBEADkD8MFQ
+         1W9eSeUvWod/wmKkCi/0q68iwR0LaKrOwQQ4zgsPhtXlR+nd9Bpwzd06wPp8dxpQYf
+         64YuOidn+/ZdGeMVy9qaSG4/3g2t0bI/oOAmiYb88dAr27u8S98nGQWO4fpz2bSZ44
+         b7z17pqfeYsmy1iS3ElSP/JKHzPsTp5mnqlrmrJACoE/bqh9fugN+vSRm5h1enc/Sq
+         QoFEp5EmlI0+ksce5bNV+4xjPqr9GvOfDYm9UeHD1iS0h/x84wFWPY7oaDU3SN1otu
+         yUXsMA742eDCg==
+Date:   Tue, 12 Jan 2021 09:34:27 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@chromium.org" <kpsingh@chromium.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "haoluo@google.com" <haoluo@google.com>
-References: <20210108231950.3844417-1-songliubraving@fb.com>
- <20210108231950.3844417-5-songliubraving@fb.com>
- <ad40d69d-9c0f-8205-26df-c5a755778f9e@fb.com>
- <352FED72-11B3-44F0-9B1C-92552AEB4AE8@fb.com>
- <e890e08e-99d0-9d81-b835-c3a1b4b8bbbf@fb.com>
- <CAEf4BzZivGBmDbUxfiDwAC3aFoTWNfyWaiZRA4Vu16ZT9kzE8A@mail.gmail.com>
-From:   Yonghong Song <yhs@fb.com>
-Message-ID: <8d9983c4-2842-e2f8-94ce-1676977bb720@fb.com>
-Date:   Mon, 11 Jan 2021 23:33:42 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.0
-In-Reply-To: <CAEf4BzZivGBmDbUxfiDwAC3aFoTWNfyWaiZRA4Vu16ZT9kzE8A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2620:10d:c090:400::5:4443]
-X-ClientProxiedBy: MW4PR03CA0234.namprd03.prod.outlook.com
- (2603:10b6:303:b9::29) To BYAPR15MB4088.namprd15.prod.outlook.com
- (2603:10b6:a02:c3::18)
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "Hossain, Mona" <mona.hossain@intel.com>,
+        "netanelg@mellanox.com" <netanelg@mellanox.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "shahafs@mellanox.com" <shahafs@mellanox.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>
+Subject: Re: [RFC PATCH v2 1/1] platform-msi: Add platform check for
+ subdevice irq domain
+Message-ID: <20210112073427.GE4678@unreal>
+References: <20210106104017.GV31158@unreal>
+ <20210106152339.GA552508@nvidia.com>
+ <20210106160158.GX31158@unreal>
+ <MWHPR11MB18867EE2F4FA0382DCFEEE2B8CAF0@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210107060916.GY31158@unreal>
+ <MWHPR11MB188629E36439F80AD60900788CAF0@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210107071616.GA31158@unreal>
+ <dfda8933-566c-1ec7-4ed4-427f094cb7c9@linux.intel.com>
+ <20210112055322.GA4678@unreal>
+ <MWHPR11MB188672D9BB76B2C5E04934138CAA0@MWHPR11MB1886.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2620:10d:c085:21e1::190b] (2620:10d:c090:400::5:4443) by MW4PR03CA0234.namprd03.prod.outlook.com (2603:10b6:303:b9::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Tue, 12 Jan 2021 07:33:45 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 08635121-cd66-4d3e-6d53-08d8b6cc65a4
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3191:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3191E04E53250D818AB8E8CDD3AA0@BYAPR15MB3191.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FJNFzMQOjoi4t5V7mDHwU/hdn0N0rUpx/DiKMPPCQbFgrxk8MMoLeLx5lp3NFsWbuEd5q7khmlDcX4f0bd3bZV+zZ8zf81f7webbxjG/9G2O0cfqkXq1OnJIDCw6hqO+NPCJQexAB6+k1eOQD6uXSfB+SLmIB4i6nqndRvh0bAi5FejLE2+zIFGBZdpq3ZjXBILSqvzyh2Hz0UJKJl3F/wVaJgjAlPm+fxvDpUx9ICrzNra2/UAQNSJDVsrcy3txD7pdGOxl3twxqe6Dk2+NiHvC+FwnQydW8xvUNQDNKc3iVD5hDMyIBl46uYNNyPmn+QDJWTVbjIgnIIbs14zpkd5IX8k/MghF+U5vzzPdX7d8BItdhhfu8TtVznbMkKTAzEgJzKPWKID7P12kwjQDaeIUWzZiuJ2Mre6ptkGUXNQi6nr6NrOcKm8LYyLo/Z8XkcRxyStFJG7WF552W1mQydybVGzvLIGMsCUxXQbYtD8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4088.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(39860400002)(376002)(136003)(346002)(6666004)(2616005)(186003)(6486002)(66476007)(16526019)(53546011)(8936002)(52116002)(5660300002)(6916009)(4326008)(31696002)(66556008)(31686004)(478600001)(86362001)(54906003)(316002)(2906002)(7416002)(83380400001)(8676002)(66946007)(36756003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MkdROW5MZXdVQzhSRkpWRmp6R2ltWVp4ZXZqdEYzTEJtN3EvbEJXdjNHUnlE?=
- =?utf-8?B?NnF4ZVo4SXpqT21OV2xBOXFOYnFnVFptNzdycmhCYldHWmhjSFIraU1wclJR?=
- =?utf-8?B?YzlrNE80TUJiZWpwUytMVit0MEpzR3JIV2lRWWwwaUo3RnNEMnNZajUrUzZW?=
- =?utf-8?B?Y3JLUW9OTXlhQThoV3dzeFlFMGxielZCa3dBTTRsbG5vdEpXdG5kaXNxVzlW?=
- =?utf-8?B?Z0xMcHJRRERGYnFPOEw5ZUtxd2RONXVKcUZxMk55ZWJMcGJPaUxHMzNwNGxU?=
- =?utf-8?B?VU9pbkg2TUU3c1llMlc3QktTRy9GeE5KYVRXQ3FNRGwyWWJkT2tDSVB0REht?=
- =?utf-8?B?Zk8xUk5EbXFSRXhBVVVHd2tLcDc0d2tEaHRNTVhvL0Fyd2dJMEUrcG5zRitF?=
- =?utf-8?B?UkJSMDcvdkVqYmZXaXVNWXE2cjUxU1VNb2VyVWtnWUw2MzkvT1dZUmR2VVRw?=
- =?utf-8?B?dEEzbGhBSDl3NXN0ckN6V1lMbmxWWWNWSXFyY0dsTU9pS3F3REEzbFFraXpU?=
- =?utf-8?B?MzgybEtzTG9Pb01VSGJaalRML29hVVZrcUMvOTkvUnhzSHRYcHNhVlFWaHp3?=
- =?utf-8?B?MnZodi90eG1zQ1NvL0ZVV1U1TzMwMU9tMDN1bHkwZGRlZ3NJaEJxWkpTZC9U?=
- =?utf-8?B?NGdrbUZFdFVkd3ZrY2ZTSG1Ub3dXbzFYbmlTVXg0MDhzZEcvd1I3WDFUV1RW?=
- =?utf-8?B?Q0ZzZVJrNVF0aTVOV0VBTUhPQURRR0MwdnZLNzljcGc2Y3RxQlhFQ0xPbkdl?=
- =?utf-8?B?bGREdi9ZYmdacGN3b2tlK0g2TjY4aFNQam1NR3NNcVZtN0J2K0QwS2Z4aHYw?=
- =?utf-8?B?YTQrUFExekNXdzhDMndRd1MwelRQbkRxS3grMWd2ZzRpdDZYN2tXeFlsK0hV?=
- =?utf-8?B?S3JNMWJDMnVWelFmQnlNL2gvVVU4VmF1RHZXbG9HYzRIVURaL3RBTEVaell4?=
- =?utf-8?B?M2h5dnRuQUZRTm50Q01sSHdqVXhmMEN1S3JnOGQzbC9KR2JLU1NGTkh3YzA0?=
- =?utf-8?B?UXhtZE9TeFl4ZkxaWGFmTDEwelJ2WGpmQVdpSUtiTHZJWlAxcW1ZTFdETWJo?=
- =?utf-8?B?K1d0WnY4Mmt5Q2l6SmpLeEdVcVBpRC9OL1E5dUtvL1poZklqOHIvT0RIMGVG?=
- =?utf-8?B?K0g5MzhIZnVUSXQySEtJcjQ3YU1GcmJZRUNjUyt6ZzN3UEc1N2lBM3padWwv?=
- =?utf-8?B?VGJYamZVTEtEL3Jjb2kvL3ZmM3pTbW1JRUZScEpOUjhOZzdqbk81b3pBMkdW?=
- =?utf-8?B?YjVlSUg0VHBMSS9IblFaQ0tYeWhtME1ySFAvbWJjSW9qT2ZxMXhGblVhVVBx?=
- =?utf-8?B?L1gxTHVoWFlrbEZrZmFhZktWUHBwZms1Q2hpUXpQNncwMm5pNnNpQ2Q4ZCtN?=
- =?utf-8?B?dThtRlY2UFpSbEE9PQ==?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4088.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 07:33:46.6114
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 08635121-cd66-4d3e-6d53-08d8b6cc65a4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +M5vEzOdY4FhFBnJWj18S5u+KQdHt9NtWeSCx1Igg7Ogru/HsVuUMD/MNS3SMJ+c
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3191
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-12_03:2021-01-11,2021-01-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 bulkscore=0
- phishscore=0 priorityscore=1501 impostorscore=0 adultscore=0
- malwarescore=0 clxscore=1015 suspectscore=0 mlxlogscore=999 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101120039
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MWHPR11MB188672D9BB76B2C5E04934138CAA0@MWHPR11MB1886.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 12, 2021 at 06:59:35AM +0000, Tian, Kevin wrote:
+> > From: Leon Romanovsky <leon@kernel.org>
+> > Sent: Tuesday, January 12, 2021 1:53 PM
+> >
+> > On Tue, Jan 12, 2021 at 01:17:11PM +0800, Lu Baolu wrote:
+> > > Hi,
+> > >
+> > > On 1/7/21 3:16 PM, Leon Romanovsky wrote:
+> > > > On Thu, Jan 07, 2021 at 06:55:16AM +0000, Tian, Kevin wrote:
+> > > > > > From: Leon Romanovsky <leon@kernel.org>
+> > > > > > Sent: Thursday, January 7, 2021 2:09 PM
+> > > > > >
+> > > > > > On Thu, Jan 07, 2021 at 02:04:29AM +0000, Tian, Kevin wrote:
+> > > > > > > > From: Leon Romanovsky <leon@kernel.org>
+> > > > > > > > Sent: Thursday, January 7, 2021 12:02 AM
+> > > > > > > >
+> > > > > > > > On Wed, Jan 06, 2021 at 11:23:39AM -0400, Jason Gunthorpe
+> > wrote:
+> > > > > > > > > On Wed, Jan 06, 2021 at 12:40:17PM +0200, Leon Romanovsky
+> > wrote:
+> > > > > > > > >
+> > > > > > > > > > I asked what will you do when QEMU will gain needed
+> > functionality?
+> > > > > > > > > > Will you remove QEMU from this list? If yes, how such "new"
+> > kernel
+> > > > > > will
+> > > > > > > > > > work on old QEMU versions?
+> > > > > > > > >
+> > > > > > > > > The needed functionality is some VMM hypercall, so presumably
+> > new
+> > > > > > > > > kernels that support calling this hypercall will be able to discover
+> > > > > > > > > if the VMM hypercall exists and if so superceed this entire check.
+> > > > > > > >
+> > > > > > > > Let's not speculate, do we have well-known path?
+> > > > > > > > Will such patch be taken to stable@/distros?
+> > > > > > > >
+> > > > > > >
+> > > > > > > There are two functions introduced in this patch. One is to detect
+> > whether
+> > > > > > > running on bare metal or in a virtual machine. The other is for
+> > deciding
+> > > > > > > whether the platform supports ims. Currently the two are identical
+> > because
+> > > > > > > ims is supported only on bare metal at current stage. In the future it
+> > will
+> > > > > > look
+> > > > > > > like below when ims can be enabled in a VM:
+> > > > > > >
+> > > > > > > bool arch_support_pci_device_ims(struct pci_dev *pdev)
+> > > > > > > {
+> > > > > > > 	return on_bare_metal() ||
+> > hypercall_irq_domain_supported();
+> > > > > > > }
+> > > > > > >
+> > > > > > > The VMM vendor list is for on_bare_metal, and suppose a vendor
+> > will
+> > > > > > > never be removed once being added to the list since the fact of
+> > running
+> > > > > > > in a VM never changes, regardless of whether this hypervisor
+> > supports
+> > > > > > > extra VMM hypercalls.
+> > > > > >
+> > > > > > This is what I imagined, this list will be forever, and this worries me.
+> > > > > >
+> > > > > > I don't know if it is true or not, but guess that at least Oracle and
+> > > > > > Microsoft bare metal devices and VMs will have same
+> > DMI_SYS_VENDOR.
+> > > > >
+> > > > > It's true. David Woodhouse also said it's the case for Amazon EC2
+> > instances.
+> > > > >
+> > > > > >
+> > > > > > It means that this on_bare_metal() function won't work reliably in
+> > many
+> > > > > > cases. Also being part of include/linux/msi.h, at some point of time,
+> > > > > > this function will be picked by the users outside for the non-IMS cases.
+> > > > > >
+> > > > > > I didn't even mention custom forks of QEMU which are prohibited to
+> > change
+> > > > > > DMI_SYS_VENDOR and private clouds with custom solutions.
+> > > > >
+> > > > > In this case the private QEMU forks are encouraged to set CPUID (X86_
+> > > > > FEATURE_HYPERVISOR) if they do plan to adopt a different vendor
+> > name.
+> > > >
+> > > > Does QEMU set this bit when it runs in host-passthrough CPU model?
+> > > >
+> > > > >
+> > > > > >
+> > > > > > The current array makes DMI_SYS_VENDOR interface as some sort of
+> > ABI. If
+> > > > > > in the future,
+> > > > > > the QEMU will decide to use more hipster name, for example "qEmU",
+> > this
+> > > > > > function
+> > > > > > won't work.
+> > > > > >
+> > > > > > I'm aware that DMI_SYS_VENDOR is used heavily in the kernel code
+> > and
+> > > > > > various names for the same company are good example how not
+> > reliable it.
+> > > > > >
+> > > > > > The most hilarious example is "Dell/Dell Inc./Dell Inc/Dell Computer
+> > > > > > Corporation/Dell Computer",
+> > > > > > but other companies are not far from them.
+> > > > > >
+> > > > > > Luckily enough, this identification is used for hardware product that
+> > > > > > was released to the market and their name will be stable for that
+> > > > > > specific model. It is not the case here where we need to ensure future
+> > > > > > compatibility too (old kernel on new VM emulator).
+> > > > > >
+> > > > > > I'm not in position to say yes or no to this patch and don't have plans
+> > to do it.
+> > > > > > Just expressing my feeling that this solution is too hacky for my taste.
+> > > > > >
+> > > > >
+> > > > > I agree with your worries and solely relying on DMI_SYS_VENDOR is
+> > > > > definitely too hacky. In previous discussions with Thomas there is no
+> > > > > elegant way to handle this situation. It has to be a heuristic approach.
+> > > > > First we hope the CPUID bit is set properly in most cases thus is checked
+> > > > > first. Then other heuristics can be made for the remaining cases. DMI_
+> > > > > SYS_VENDOR is the first hint and more can be added later. For example,
+> > > > > when IOMMU is present there is vendor specific way to detect whether
+> > > > > it's real or virtual. Dave also mentioned some BIOS flag to indicate a
+> > > > > virtual machine. Now probably the real question here is whether people
+> > > > > are OK with CPUID+DMI_SYS_VENDOR combo check for now (and grow
+> > > > > it later) or prefer to having all identified heuristics so far in-place
+> > together...
+> > > >
+> > > > IMHO, it should be as much as possible close to the end result.
+> > >
+> > > Okay! This seems to be a right way to go.
+> > >
+> > > The SMBIOS defines a 'virtual machine' bit in the BIOS characteristics
+> > > extension byte. It could be used as a possible way.
+> > >
+> > > In order to support emulated IOMMU for fully virtualized guest, the
+> > > iommu vendors defined methods to distinguish between bare metal and
+> > VMM
+> > > (caching mode in VT-d for example).
+> > >
+> > > I will go ahead with adding above two methods before checking the block
+> > > list.
+> >
+> > I still curious to hear an answer on my question above:
+> > "Does QEMU set this bit when it runs in host-passthrough CPU model?"
+>
+> Yes, the bit is also set in this model.
 
+Great, thanks.
 
-On 1/11/21 11:14 PM, Andrii Nakryiko wrote:
-> On Mon, Jan 11, 2021 at 7:24 PM Yonghong Song <yhs@fb.com> wrote:
->>
->>
->>
->> On 1/11/21 2:54 PM, Song Liu wrote:
->>>
->>>
->>>> On Jan 11, 2021, at 9:49 AM, Yonghong Song <yhs@fb.com> wrote:
->>>>
->>>>
->>>>
->>>> On 1/8/21 3:19 PM, Song Liu wrote:
->>>>> Replace hashtab with task local storage in runqslower. This improves the
->>>>> performance of these BPF programs. The following table summarizes average
->>>>> runtime of these programs, in nanoseconds:
->>>>>                             task-local   hash-prealloc   hash-no-prealloc
->>>>> handle__sched_wakeup             125             340               3124
->>>>> handle__sched_wakeup_new        2812            1510               2998
->>>>> handle__sched_switch             151             208                991
->>>>> Note that, task local storage gives better performance than hashtab for
->>>>> handle__sched_wakeup and handle__sched_switch. On the other hand, for
->>>>> handle__sched_wakeup_new, task local storage is slower than hashtab with
->>>>> prealloc. This is because handle__sched_wakeup_new accesses the data for
->>>>> the first time, so it has to allocate the data for task local storage.
->>>>> Once the initial allocation is done, subsequent accesses, as those in
->>>>> handle__sched_wakeup, are much faster with task local storage. If we
->>>>> disable hashtab prealloc, task local storage is much faster for all 3
->>>>> functions.
->>>>> Signed-off-by: Song Liu <songliubraving@fb.com>
->>>>> ---
->>>>>    tools/bpf/runqslower/runqslower.bpf.c | 26 +++++++++++++++-----------
->>>>>    1 file changed, 15 insertions(+), 11 deletions(-)
->>>>> diff --git a/tools/bpf/runqslower/runqslower.bpf.c b/tools/bpf/runqslower/runqslower.bpf.c
->>>>> index 1f18a409f0443..c4de4179a0a17 100644
->>>>> --- a/tools/bpf/runqslower/runqslower.bpf.c
->>>>> +++ b/tools/bpf/runqslower/runqslower.bpf.c
->>>>> @@ -11,9 +11,9 @@ const volatile __u64 min_us = 0;
->>>>>    const volatile pid_t targ_pid = 0;
->>>>>      struct {
->>>>> -   __uint(type, BPF_MAP_TYPE_HASH);
->>>>> -   __uint(max_entries, 10240);
->>>>> -   __type(key, u32);
->>>>> +   __uint(type, BPF_MAP_TYPE_TASK_STORAGE);
->>>>> +   __uint(map_flags, BPF_F_NO_PREALLOC);
->>>>> +   __type(key, int);
->>>>>      __type(value, u64);
->>>>>    } start SEC(".maps");
->>>>>    @@ -25,15 +25,19 @@ struct {
->>>>>      /* record enqueue timestamp */
->>>>>    __always_inline
->>>>> -static int trace_enqueue(u32 tgid, u32 pid)
->>>>> +static int trace_enqueue(struct task_struct *t)
->>>>>    {
->>>>> -   u64 ts;
->>>>> +   u32 pid = t->pid;
->>>>> +   u64 ts, *ptr;
->>>>>              if (!pid || (targ_pid && targ_pid != pid))
->>>>>              return 0;
->>>>>              ts = bpf_ktime_get_ns();
->>>>> -   bpf_map_update_elem(&start, &pid, &ts, 0);
->>>>> +   ptr = bpf_task_storage_get(&start, t, 0,
->>>>> +                              BPF_LOCAL_STORAGE_GET_F_CREATE);
->>>>> +   if (ptr)
->>>>> +           *ptr = ts;
->>>>>      return 0;
->>>>>    }
->>>>>    @@ -43,7 +47,7 @@ int handle__sched_wakeup(u64 *ctx)
->>>>>      /* TP_PROTO(struct task_struct *p) */
->>>>>      struct task_struct *p = (void *)ctx[0];
->>>>>    - return trace_enqueue(p->tgid, p->pid);
->>>>> +   return trace_enqueue(p);
->>>>>    }
->>>>>      SEC("tp_btf/sched_wakeup_new")
->>>>> @@ -52,7 +56,7 @@ int handle__sched_wakeup_new(u64 *ctx)
->>>>>      /* TP_PROTO(struct task_struct *p) */
->>>>>      struct task_struct *p = (void *)ctx[0];
->>>>>    - return trace_enqueue(p->tgid, p->pid);
->>>>> +   return trace_enqueue(p);
->>>>>    }
->>>>>      SEC("tp_btf/sched_switch")
->>>>> @@ -70,12 +74,12 @@ int handle__sched_switch(u64 *ctx)
->>>>>              /* ivcsw: treat like an enqueue event and store timestamp */
->>>>>      if (prev->state == TASK_RUNNING)
->>>>> -           trace_enqueue(prev->tgid, prev->pid);
->>>>> +           trace_enqueue(prev);
->>>>>              pid = next->pid;
->>>>>              /* fetch timestamp and calculate delta */
->>>>> -   tsp = bpf_map_lookup_elem(&start, &pid);
->>>>> +   tsp = bpf_task_storage_get(&start, next, 0, 0);
->>>>>      if (!tsp)
->>>>>              return 0;   /* missed enqueue */
->>>>
->>>> Previously, hash table may overflow so we may have missed enqueue.
->>>> Here with task local storage, is it possible to add additional pid
->>>> filtering in the beginning of handle__sched_switch such that
->>>> missed enqueue here can be treated as an error?
->>>
->>> IIUC, hashtab overflow is not the only reason of missed enqueue. If the
->>> wakeup (which calls trace_enqueue) happens before runqslower starts, we
->>> may still get missed enqueue in sched_switch, no?
->>
->> the wakeup won't happen before runqslower starts since runqslower needs
->> to start to do attachment first and then trace_enqueue() can run.
-> 
-> I think Song is right. Given wakeup and sched_switch need to be
-> matched, depending at which exact time we attach BPF programs, we can
-> end up missing wakeup, but not missing sched_switch, no? So it's not
-> an error.
-
-The current approach works fine. What I suggested is to
-tighten sched_switch only for target_pid. wakeup (doing queuing) will
-be more relaxed than sched_switch to ensure task local storage creation
-is always there for target_pid regardless of attachment timing.
-I think it should work, but we have to experiment to see actual
-results...
-
-> 
->>
->> For the current implementation trace_enqueue() will happen for any non-0
->> pid before setting test_progs tgid, and will happen for any non-0 and
->> test_progs tgid if it is set, so this should be okay if we do filtering
->> in handle__sched_switch. Maybe you can do an experiment to prove whether
->> my point is correct or not.
->>
->>>
->>> Thanks,
->>> Song
->>>
+>
+> Thanks
+> Kevin
