@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9535F2F3263
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C252F3264
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:00:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388044AbhALN7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:59:17 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60068 "EHLO mx2.suse.de"
+        id S1731162AbhALN72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:59:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60202 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729714AbhALN7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:59:16 -0500
+        id S1726389AbhALN72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 08:59:28 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 98CDDAC24;
-        Tue, 12 Jan 2021 13:58:35 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 14:58:35 +0100
-Message-ID: <s5hturmqmt0.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 0B353AC8F;
+        Tue, 12 Jan 2021 13:58:47 +0000 (UTC)
+Date:   Tue, 12 Jan 2021 14:58:47 +0100
+Message-ID: <s5hsg76qmso.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Geert Uytterhoeven <geert+renesas@glider.be>
 Cc:     Clemens Ladisch <clemens@ladisch.de>,
@@ -24,10 +24,10 @@ Cc:     Clemens Ladisch <clemens@ladisch.de>,
         Jaroslav Kysela <perex@perex.cz>,
         Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH/RFC 1/2] ALSA: fireface: Fix integer overflow in transmit_midi_msg()
-In-Reply-To: <20210111130251.361335-2-geert+renesas@glider.be>
+Subject: Re: [PATCH/RFC 2/2] ALSA: firewire-tascam: Fix integer overflow in midi_port_work()
+In-Reply-To: <20210111130251.361335-3-geert+renesas@glider.be>
 References: <20210111130251.361335-1-geert+renesas@glider.be>
-        <20210111130251.361335-2-geert+renesas@glider.be>
+        <20210111130251.361335-3-geert+renesas@glider.be>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -37,20 +37,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Jan 2021 14:02:50 +0100,
+On Mon, 11 Jan 2021 14:02:51 +0100,
 Geert Uytterhoeven wrote:
 > 
-> As snd_ff.rx_bytes[] is unsigned int, and NSEC_PER_SEC is 1000000000L,
-> the second multiplication in
+> As snd_fw_async_midi_port.consume_bytes is unsigned int, and
+> NSEC_PER_SEC is 1000000000L, the second multiplication in
 > 
->     ff->rx_bytes[port] * 8 * NSEC_PER_SEC / 31250
+>     port->consume_bytes * 8 * NSEC_PER_SEC / 31250
 > 
 > always overflows on 32-bit platforms, truncating the result.  Fix this
 > by precalculating "NSEC_PER_SEC / 31250", which is an integer constant.
 > 
-> Note that this assumes ff->rx_bytes[port] <= 16777.
+> Note that this assumes port->consume_bytes <= 16777.
 > 
-> Fixes: 19174295788de77d ("ALSA: fireface: add transaction support")
+> Fixes: 531f471834227d03 ("ALSA: firewire-lib/firewire-tascam: localize async midi port")
 > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
 > Compile-tested only.
