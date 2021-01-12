@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1F332F3A32
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:29:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D71D32F3A20
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:24:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406848AbhALTWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 14:22:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:52010 "EHLO foss.arm.com"
+        id S2392980AbhALTYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:24:16 -0500
+Received: from foss.arm.com ([217.140.110.172]:52240 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406742AbhALTWv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:22:51 -0500
+        id S2436799AbhALTXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 14:23:21 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BF141152D;
-        Tue, 12 Jan 2021 11:21:37 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E517A153B;
+        Tue, 12 Jan 2021 11:21:39 -0800 (PST)
 Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D26B03F66E;
-        Tue, 12 Jan 2021 11:21:35 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 00EC63F66E;
+        Tue, 12 Jan 2021 11:21:37 -0800 (PST)
 From:   Cristian Marussi <cristian.marussi@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
@@ -24,9 +24,9 @@ Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
         f.fainelli@gmail.com, etienne.carriere@linaro.org,
         thara.gopinath@linaro.org, vincent.guittot@linaro.org,
         souvik.chakravarty@arm.com, cristian.marussi@arm.com
-Subject: [PATCH v5 18/36] clk: scmi: port driver to the new scmi_clk_proto_ops interface
-Date:   Tue, 12 Jan 2021 19:20:00 +0000
-Message-Id: <20210112192018.34994-19-cristian.marussi@arm.com>
+Subject: [PATCH v5 19/36] firmware: arm_scmi: remove legacy scmi_clk_ops protocol interface
+Date:   Tue, 12 Jan 2021 19:20:01 +0000
+Message-Id: <20210112192018.34994-20-cristian.marussi@arm.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210112192018.34994-1-cristian.marussi@arm.com>
 References: <20210112192018.34994-1-cristian.marussi@arm.com>
@@ -34,115 +34,180 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Port driver to the new SCMI Clock interface based on protocol handles
-and common devm_get_ops().
+Now that all the SCMI driver users have been migrated to the new interface
+remove the legacy interface and all the transient code.
 
 Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
-v4 --> v5
-- using renamed devm_get/put_protocol
----
- drivers/clk/clk-scmi.c | 27 +++++++++++++++++----------
- 1 file changed, 17 insertions(+), 10 deletions(-)
+ drivers/firmware/arm_scmi/clock.c | 67 -------------------------------
+ include/linux/scmi_protocol.h     | 15 -------
+ 2 files changed, 82 deletions(-)
 
-diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-index c754dfbb73fd..f3da3042d09c 100644
---- a/drivers/clk/clk-scmi.c
-+++ b/drivers/clk/clk-scmi.c
-@@ -2,7 +2,7 @@
- /*
-  * System Control and Power Interface (SCMI) Protocol based clock driver
-  *
-- * Copyright (C) 2018 ARM Ltd.
-+ * Copyright (C) 2018-2020 ARM Ltd.
-  */
+diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
+index bf7dcd537fce..a0a6593f464f 100644
+--- a/drivers/firmware/arm_scmi/clock.c
++++ b/drivers/firmware/arm_scmi/clock.c
+@@ -235,16 +235,6 @@ scmi_clock_rate_get(const struct scmi_protocol_handle *ph,
+ 	return ret;
+ }
  
- #include <linux/clk-provider.h>
-@@ -13,11 +13,13 @@
- #include <linux/scmi_protocol.h>
- #include <asm/div64.h>
+-static int
+-__scmi_clock_rate_get(const struct scmi_handle *handle,
+-		      u32 clk_id, u64 *value)
+-{
+-	const struct scmi_protocol_handle *ph =
+-		scmi_map_protocol_handle(handle, SCMI_PROTOCOL_CLOCK);
+-
+-	return scmi_clock_rate_get(ph, clk_id, value);
+-}
+-
+ static int scmi_clock_rate_set(const struct scmi_protocol_handle *ph,
+ 			       u32 clk_id, u64 rate)
+ {
+@@ -280,15 +270,6 @@ static int scmi_clock_rate_set(const struct scmi_protocol_handle *ph,
+ 	return ret;
+ }
  
-+static const struct scmi_clk_proto_ops *clk_ops;
-+
- struct scmi_clk {
- 	u32 id;
- 	struct clk_hw hw;
- 	const struct scmi_clock_info *info;
--	const struct scmi_handle *handle;
-+	const struct scmi_protocol_handle *ph;
+-static int __scmi_clock_rate_set(const struct scmi_handle *handle,
+-				 u32 clk_id, u64 rate)
+-{
+-	const struct scmi_protocol_handle *ph =
+-		scmi_map_protocol_handle(handle, SCMI_PROTOCOL_CLOCK);
+-
+-	return scmi_clock_rate_set(ph, clk_id, rate);
+-}
+-
+ static int
+ scmi_clock_config_set(const struct scmi_protocol_handle *ph, u32 clk_id,
+ 		      u32 config)
+@@ -317,27 +298,11 @@ static int scmi_clock_enable(const struct scmi_protocol_handle *ph, u32 clk_id)
+ 	return scmi_clock_config_set(ph, clk_id, CLOCK_ENABLE);
+ }
+ 
+-static int __scmi_clock_enable(const struct scmi_handle *handle, u32 clk_id)
+-{
+-	const struct scmi_protocol_handle *ph =
+-		scmi_map_protocol_handle(handle, SCMI_PROTOCOL_CLOCK);
+-
+-	return scmi_clock_enable(ph, clk_id);
+-}
+-
+ static int scmi_clock_disable(const struct scmi_protocol_handle *ph, u32 clk_id)
+ {
+ 	return scmi_clock_config_set(ph, clk_id, 0);
+ }
+ 
+-static int __scmi_clock_disable(const struct scmi_handle *handle, u32 clk_id)
+-{
+-	const struct scmi_protocol_handle *ph =
+-		scmi_map_protocol_handle(handle, SCMI_PROTOCOL_CLOCK);
+-
+-	return scmi_clock_disable(ph, clk_id);
+-}
+-
+ static int scmi_clock_count_get(const struct scmi_protocol_handle *ph)
+ {
+ 	struct clock_info *ci = ph->get_priv(ph);
+@@ -345,14 +310,6 @@ static int scmi_clock_count_get(const struct scmi_protocol_handle *ph)
+ 	return ci->num_clocks;
+ }
+ 
+-static int __scmi_clock_count_get(const struct scmi_handle *handle)
+-{
+-	const struct scmi_protocol_handle *ph =
+-		scmi_map_protocol_handle(handle, SCMI_PROTOCOL_CLOCK);
+-
+-	return scmi_clock_count_get(ph);
+-}
+-
+ static const struct scmi_clock_info *
+ scmi_clock_info_get(const struct scmi_protocol_handle *ph, u32 clk_id)
+ {
+@@ -365,24 +322,6 @@ scmi_clock_info_get(const struct scmi_protocol_handle *ph, u32 clk_id)
+ 	return clk;
+ }
+ 
+-static const struct scmi_clock_info *
+-__scmi_clock_info_get(const struct scmi_handle *handle, u32 clk_id)
+-{
+-	const struct scmi_protocol_handle *ph =
+-		scmi_map_protocol_handle(handle, SCMI_PROTOCOL_CLOCK);
+-
+-	return scmi_clock_info_get(ph, clk_id);
+-}
+-
+-static const struct scmi_clk_ops clk_ops = {
+-	.count_get = __scmi_clock_count_get,
+-	.info_get = __scmi_clock_info_get,
+-	.rate_get = __scmi_clock_rate_get,
+-	.rate_set = __scmi_clock_rate_set,
+-	.enable = __scmi_clock_enable,
+-	.disable = __scmi_clock_disable,
+-};
+-
+ static const struct scmi_clk_proto_ops clk_proto_ops = {
+ 	.count_get = scmi_clock_count_get,
+ 	.info_get = scmi_clock_info_get,
+@@ -397,7 +336,6 @@ static int scmi_clock_protocol_init(const struct scmi_protocol_handle *ph)
+ 	u32 version;
+ 	int clkid, ret;
+ 	struct clock_info *cinfo;
+-	struct scmi_handle *handle;
+ 
+ 	ph->xops->version_get(ph, &version);
+ 
+@@ -424,11 +362,6 @@ static int scmi_clock_protocol_init(const struct scmi_protocol_handle *ph)
+ 	}
+ 
+ 	cinfo->version = version;
+-
+-	/* Transient code for legacy ops interface */
+-	handle = scmi_map_scmi_handle(ph);
+-	handle->clk_ops = &clk_ops;
+-
+ 	return ph->set_priv(ph, cinfo);
+ }
+ 
+diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
+index 86e9df9a15f2..fac87fac4b9c 100644
+--- a/include/linux/scmi_protocol.h
++++ b/include/linux/scmi_protocol.h
+@@ -84,19 +84,6 @@ struct scmi_clk_proto_ops {
+ 	int (*disable)(const struct scmi_protocol_handle *ph, u32 clk_id);
  };
  
- #define to_scmi_clk(clk) container_of(clk, struct scmi_clk, hw)
-@@ -29,7 +31,7 @@ static unsigned long scmi_clk_recalc_rate(struct clk_hw *hw,
- 	u64 rate;
- 	struct scmi_clk *clk = to_scmi_clk(hw);
- 
--	ret = clk->handle->clk_ops->rate_get(clk->handle, clk->id, &rate);
-+	ret = clk_ops->rate_get(clk->ph, clk->id, &rate);
- 	if (ret)
- 		return 0;
- 	return rate;
-@@ -69,21 +71,21 @@ static int scmi_clk_set_rate(struct clk_hw *hw, unsigned long rate,
- {
- 	struct scmi_clk *clk = to_scmi_clk(hw);
- 
--	return clk->handle->clk_ops->rate_set(clk->handle, clk->id, rate);
-+	return clk_ops->rate_set(clk->ph, clk->id, rate);
- }
- 
- static int scmi_clk_enable(struct clk_hw *hw)
- {
- 	struct scmi_clk *clk = to_scmi_clk(hw);
- 
--	return clk->handle->clk_ops->enable(clk->handle, clk->id);
-+	return clk_ops->enable(clk->ph, clk->id);
- }
- 
- static void scmi_clk_disable(struct clk_hw *hw)
- {
- 	struct scmi_clk *clk = to_scmi_clk(hw);
- 
--	clk->handle->clk_ops->disable(clk->handle, clk->id);
-+	clk_ops->disable(clk->ph, clk->id);
- }
- 
- static const struct clk_ops scmi_clk_ops = {
-@@ -142,11 +144,16 @@ static int scmi_clocks_probe(struct scmi_device *sdev)
- 	struct device *dev = &sdev->dev;
- 	struct device_node *np = dev->of_node;
- 	const struct scmi_handle *handle = sdev->handle;
-+	struct scmi_protocol_handle *ph;
- 
--	if (!handle || !handle->clk_ops)
-+	if (!handle)
- 		return -ENODEV;
- 
--	count = handle->clk_ops->count_get(handle);
-+	clk_ops = handle->devm_get_protocol(sdev, SCMI_PROTOCOL_CLOCK, &ph);
-+	if (IS_ERR(clk_ops))
-+		return PTR_ERR(clk_ops);
-+
-+	count = clk_ops->count_get(ph);
- 	if (count < 0) {
- 		dev_err(dev, "%pOFn: invalid clock output count\n", np);
- 		return -EINVAL;
-@@ -167,14 +174,14 @@ static int scmi_clocks_probe(struct scmi_device *sdev)
- 		if (!sclk)
- 			return -ENOMEM;
- 
--		sclk->info = handle->clk_ops->info_get(handle, idx);
-+		sclk->info = clk_ops->info_get(ph, idx);
- 		if (!sclk->info) {
- 			dev_dbg(dev, "invalid clock info for idx %d\n", idx);
- 			continue;
- 		}
- 
- 		sclk->id = idx;
--		sclk->handle = handle;
-+		sclk->ph = ph;
- 
- 		err = scmi_clk_ops_init(dev, sclk);
- 		if (err) {
+-struct scmi_clk_ops {
+-	int (*count_get)(const struct scmi_handle *hamdle);
+-
+-	const struct scmi_clock_info *(*info_get)
+-		(const struct scmi_handle *handle, u32 clk_id);
+-	int (*rate_get)(const struct scmi_handle *handle, u32 clk_id,
+-			u64 *rate);
+-	int (*rate_set)(const struct scmi_handle *handle, u32 clk_id,
+-			u64 rate);
+-	int (*enable)(const struct scmi_handle *handle, u32 clk_id);
+-	int (*disable)(const struct scmi_handle *handle, u32 clk_id);
+-};
+-
+ /**
+  * struct scmi_perf_proto_ops - represents the various operations provided
+  *	by SCMI Performance Protocol
+@@ -615,7 +602,6 @@ struct scmi_notify_ops {
+  *
+  * @dev: pointer to the SCMI device
+  * @version: pointer to the structure containing SCMI version information
+- * @clk_ops: pointer to set of clock protocol operations
+  * @sensor_ops: pointer to set of sensor protocol operations
+  * @reset_ops: pointer to set of reset protocol operations
+  * @voltage_ops: pointer to set of voltage protocol operations
+@@ -635,7 +621,6 @@ struct scmi_notify_ops {
+ struct scmi_handle {
+ 	struct device *dev;
+ 	struct scmi_revision_info *version;
+-	const struct scmi_clk_ops *clk_ops;
+ 	const struct scmi_sensor_ops *sensor_ops;
+ 	const struct scmi_reset_ops *reset_ops;
+ 	const struct scmi_voltage_ops *voltage_ops;
 -- 
 2.17.1
 
