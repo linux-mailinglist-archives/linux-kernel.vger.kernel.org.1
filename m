@@ -2,65 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F3092F31B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5BD2F31B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:31:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729081AbhALN1k convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Jan 2021 08:27:40 -0500
-Received: from mx1.emlix.com ([136.243.223.33]:60022 "EHLO mx1.emlix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726766AbhALN1j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:27:39 -0500
-X-Greylist: delayed 439 seconds by postgrey-1.27 at vger.kernel.org; Tue, 12 Jan 2021 08:27:39 EST
-Received: from mailer.emlix.com (p5098be52.dip0.t-ipconnect.de [80.152.190.82])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.emlix.com (Postfix) with ESMTPS id 408DD5F7ED;
-        Tue, 12 Jan 2021 14:19:37 +0100 (CET)
-From:   Rolf Eike Beer <eb@emlix.com>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, trivial@kernel.org
-Subject: [PATCH] Documentation: fix typos in split page table lock description
-Date:   Tue, 12 Jan 2021 14:19:36 +0100
-Message-ID: <2338863.uUFqZTUbry@devpool47>
-Organization: emlix GmbH
+        id S1730938AbhALN0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:26:43 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:34829 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726574AbhALN0l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 08:26:41 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10CDPnxqE013993, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmbs04.realtek.com.tw[172.21.6.97])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10CDPnxqE013993
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 12 Jan 2021 21:25:49 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXMBS04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 12 Jan 2021 21:25:48 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::ecca:80ca:53:e833]) by
+ RTEXMBS04.realtek.com.tw ([fe80::ecca:80ca:53:e833%12]) with mapi id
+ 15.01.2106.006; Tue, 12 Jan 2021 21:25:48 +0800
+From:   Pkshih <pkshih@realtek.com>
+To:     "abaci-bugfix@linux.alibaba.com" <abaci-bugfix@linux.alibaba.com>
+CC:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [PATCH] wireless: realtek: Simplify bool comparison
+Thread-Topic: [PATCH] wireless: realtek: Simplify bool comparison
+Thread-Index: AQHW6L5udHFk7cb9x0SUx7ByFdTlkqojdRmA
+Date:   Tue, 12 Jan 2021 13:25:48 +0000
+Message-ID: <1610457909.2793.7.camel@realtek.com>
+References: <1610440751-79543-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+In-Reply-To: <1610440751-79543-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [125.224.66.71]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6ABC9E9D818E3D4E89EE9F83E8EEF54D@realtek.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Rolf Eike Beer <eb@emlix.com>
----
- Documentation/vm/split_page_table_lock.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/vm/split_page_table_lock.rst b/Documentation/vm/split_page_table_lock.rst
-index ff51f4a5494d..c08919662704 100644
---- a/Documentation/vm/split_page_table_lock.rst
-+++ b/Documentation/vm/split_page_table_lock.rst
-@@ -32,7 +32,7 @@ There are helpers to lock/unlock a table and other accessor functions:
- 
- Split page table lock for PTE tables is enabled compile-time if
- CONFIG_SPLIT_PTLOCK_CPUS (usually 4) is less or equal to NR_CPUS.
--If split lock is disabled, all tables guaded by mm->page_table_lock.
-+If split lock is disabled, all tables are guarded by mm->page_table_lock.
- 
- Split page table lock for PMD tables is enabled, if it's enabled for PTE
- tables and the architecture supports it (see below).
--- 
-2.29.2
-
--- 
-Rolf Eike Beer, emlix GmbH, http://www.emlix.com
-Fon +49 551 30664-0, Fax +49 551 30664-11
-Gothaer Platz 3, 37083 Göttingen, Germany
-Sitz der Gesellschaft: Göttingen, Amtsgericht Göttingen HR B 3160
-Geschäftsführung: Heike Jordan, Dr. Uwe Kracke – Ust-IdNr.: DE 205 198 055
-
-emlix - smart embedded open source
-
-
-
+T24gVHVlLCAyMDIxLTAxLTEyIGF0IDE2OjM5ICswODAwLCBZQU5HIExJIHdyb3RlOg0KPiBGaXgg
+dGhlIGZvbGxvd2luZyBjb2NjaWNoZWNrIHdhcm5pbmc6DQo+IC4vZHJpdmVycy9uZXQvd2lyZWxl
+c3MvcmVhbHRlay9ydGx3aWZpL3BzLmM6ODAzOjctMjE6IFdBUk5JTkc6DQo+IENvbXBhcmlzb24g
+dG8gYm9vbA0KPiANCj4gUmVwb3J0ZWQtYnk6IEFiYWNpIFJvYm90IDxhYmFjaUBsaW51eC5hbGli
+YWJhLmNvbT4NCj4gU2lnbmVkLW9mZi1ieTogWUFORyBMSSA8YWJhY2ktYnVnZml4QGxpbnV4LmFs
+aWJhYmEuY29tPg0KPiAtLS0NCj4gwqBkcml2ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0bHdp
+ZmkvcHMuYyB8IDQgKystLQ0KPiDCoDEgZmlsZSBjaGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDIg
+ZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvcmVh
+bHRlay9ydGx3aWZpL3BzLmMNCj4gYi9kcml2ZXJzL25ldC93aXJlbGVzcy9yZWFsdGVrL3J0bHdp
+ZmkvcHMuYw0KPiBpbmRleCBmOTk4ODIyNS4uNjI5YzAzMiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvcmVhbHRlay9ydGx3aWZpL3BzLmMNCj4gKysrIGIvZHJpdmVycy9uZXQv
+d2lyZWxlc3MvcmVhbHRlay9ydGx3aWZpL3BzLmMNCj4gQEAgLTc5OCw5ICs3OTgsOSBAQCBzdGF0
+aWMgdm9pZCBydGxfcDJwX25vYV9pZShzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywgdm9pZA0KPiAq
+ZGF0YSwNCj4gwqAJCWllICs9IDMgKyBub2FfbGVuOw0KPiDCoAl9DQo+IMKgDQo+IC0JaWYgKGZp
+bmRfcDJwX2llID09IHRydWUpIHsNCj4gKwlpZiAoZmluZF9wMnBfaWUpIHsNCj4gwqAJCWlmICgo
+cDJwaW5mby0+cDJwX3BzX21vZGUgPiBQMlBfUFNfTk9ORSkgJiYNCj4gLQkJwqDCoMKgwqAoZmlu
+ZF9wMnBfcHNfaWUgPT0gZmFsc2UpKQ0KPiArCQnCoMKgwqDCoCghZmluZF9wMnBfcHNfaWUpKQ0K
+PiDCoAkJCXJ0bF9wMnBfcHNfY21kKGh3LCBQMlBfUFNfRElTQUJMRSk7DQo+IMKgCX0NCj4gwqB9
+DQoNClRoZSBzdWJqZWN0IHByZWZpeCBzaG91bGQgYmUgInJ0bHdpZmk6Ii4NCkFuZCwgSSB0aGlu
+ayBpdCdzIG9rIHRvIG1lcmdlIHRoaXMgcGF0Y2ggd2l0aCBhbm90aGVyIHBhdGNowqANCigicnRs
+d2lmaTogcnRsODgyMWFlOiBzdHlsZTogU2ltcGxpZnkgYm9vbCBjb21wYXJpc29uIikuDQpCZWNh
+dXNlIGJvdGggb2YgdGhlbSBhcmUgdHJpdmlhbCBmaXhlcyBhbmQgYmVsb25nIHRvIHJ0bHdpZmku
+DQoNCi0tLQ0KUGluZy1LZQ0KDQo=
