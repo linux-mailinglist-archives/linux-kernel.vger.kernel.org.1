@@ -2,98 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A593B2F4085
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:56:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 047482F408C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:56:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404636AbhAMAm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 19:42:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392021AbhALXyd (ORCPT
+        id S2393502AbhAMAm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 19:42:57 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:47212 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392043AbhALXzf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 18:54:33 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E36DC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:53:53 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id w1so2204279pjc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:53:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XeBDJRibr1ouaq233G4wwpyDOJDmBO5yojbVUYPMv1E=;
-        b=OdmEPx3tjMv+nYuUOrb5L41awBIdb+WpTFqUBYqea0EbMGIBmb6SbVBggV867v1I0T
-         +Zx/F4isyRClevSEpCt4PJjnYA4BQReK8ISW96uNLNVN+JdkpzVSo07Jhy4d6DvP57UY
-         g/8RyuoSgy27smDMXgVKVytkyI7rhFYbrk5uc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XeBDJRibr1ouaq233G4wwpyDOJDmBO5yojbVUYPMv1E=;
-        b=l1D+z38eeDlNE6FtOfNDtU+cHs0yMixvDZ9HNUkiSmY4at6kQ4Jv1nyHAtOGkO38cG
-         sseHhkwBA+x5PEWWQOXJ1EnsyAcaDUxBSrVPCZcIJk0hrXMBDRqd8ghKNIZCaaX4+wOW
-         zszuTlz95Sdf8HeR2vdmRIkvwWZMTxwRj74k40mskw24TiUM4AxvKmXVMDJF7mcyATCF
-         kLcWFXIWZi75dtAValBarPv+YxkCdJxOx0zE57GTXCO0xhmX51lSNba1URtkv0S2+fLh
-         maeFwfwLTz64wDfQL7THScKwcvWdIJ1p9nO5r+5/71xyf7fFTsyY7jCH1FlEwc7KL++V
-         dxug==
-X-Gm-Message-State: AOAM532BZ80yUdTtTm/v/NS2YPqmYdjTI1d8m3zd8bHoB9J5xzj8vMlF
-        AJCCBVnbwTADs2uWRLS5qYizVA==
-X-Google-Smtp-Source: ABdhPJwPJp/60Yfdp456SP6YMVAsmFk7NXZd9zaTvAAODiX/ORa+FKlSRBr4xqTbwYOEQccrvAjQKA==
-X-Received: by 2002:a17:90b:1213:: with SMTP id gl19mr151155pjb.232.1610495633212;
-        Tue, 12 Jan 2021 15:53:53 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id n4sm229667pfu.150.2021.01.12.15.53.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 15:53:52 -0800 (PST)
-Date:   Tue, 12 Jan 2021 15:53:51 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Marco Elver <elver@google.com>,
-        George Popescu <georgepope@android.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] [v2] ubsan: disable unsigned-overflow check for i386
-Message-ID: <202101121553.D0C3B87D5@keescook>
-References: <20210112202922.2454435-1-arnd@kernel.org>
+        Tue, 12 Jan 2021 18:55:35 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 61D1F20B6C40;
+        Tue, 12 Jan 2021 15:54:53 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 61D1F20B6C40
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1610495694;
+        bh=PPvEFYlKw1YG/P3Rr6NSYflDbfN80tOd8sdd+MreVdE=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=eamBIPdPY7NZ8L9C0P2dgoxOnkL/4nPiW47IusIGhqnc21MlvZ5cHj4A9tVcbC72I
+         O9Mcs4SFllqRz8v8FAM/VrSjMxL7728nI3eLZnDJXubZ1h1c0jyrKA+l2+YdXsYuoG
+         Foc5iFdU61xwKCJGamTAwRxxdHOARqnjByyGrQ3U=
+Subject: Re: [PATCH v14 6/6] arm64: Add IMA log information in kimage used for
+ kexec
+To:     Mimi Zohar <zohar@linux.ibm.com>, bauerman@linux.ibm.com,
+        robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, will@kernel.org,
+        catalin.marinas@arm.com, mpe@ellerman.id.au
+Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
+        paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@vger.kernel.org
+References: <20210104192602.10131-1-nramas@linux.microsoft.com>
+ <20210104192602.10131-7-nramas@linux.microsoft.com>
+ <4fef02cb3b330128e6d5d9bc9aab4d7e603d2945.camel@linux.ibm.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <45b60441-eb0d-4c02-6f6c-ea2f02bf1ee3@linux.microsoft.com>
+Date:   Tue, 12 Jan 2021 15:54:52 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210112202922.2454435-1-arnd@kernel.org>
+In-Reply-To: <4fef02cb3b330128e6d5d9bc9aab4d7e603d2945.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 09:29:15PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On 1/12/21 3:28 PM, Mimi Zohar wrote:
+> Hi Lakshmi,
 > 
-> Building ubsan kernels even for compile-testing introduced these
-> warnings in my randconfig environment:
+> On Mon, 2021-01-04 at 11:26 -0800, Lakshmi Ramasubramanian wrote:
+>> Address and size of the buffer containing the IMA measurement log need
+>> to be passed from the current kernel to the next kernel on kexec.
+>>
+>> Any existing "linux,ima-kexec-buffer" property in the device tree
+>> needs to be removed and its corresponding memory reservation in
+>> the currently running kernel needs to be freed. The address and
+>> size of the current kernel's IMA measurement log need to be added
+>> to the device tree's IMA kexec buffer node and memory for the buffer
+>> needs to be reserved for the log to be carried over to the next kernel
+>> on the kexec call.
+>>
+>> Add address and size fields to "struct kimage_arch" for ARM64 platform
+>> to hold the address and size of the IMA measurement log buffer. Remove
+>> any existing "linux,ima-kexec-buffer" property in the device tree and
+>> free the corresponding memory reservation in the currently running
+>> kernel. Add "linux,ima-kexec-buffer" property to the device tree and
+>> reserve the memory for storing the IMA log that needs to be passed from
+>> the current kernel to the next one.
+>>
+>> Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC to indicate
+>> that the IMA measurement log information is present in the device tree
+>> for ARM64.
 > 
-> crypto/blake2b_generic.c:98:13: error: stack frame size of 9636 bytes in function 'blake2b_compress' [-Werror,-Wframe-larger-than=]
-> static void blake2b_compress(struct blake2b_state *S,
-> crypto/sha512_generic.c:151:13: error: stack frame size of 1292 bytes in function 'sha512_generic_block_fn' [-Werror,-Wframe-larger-than=]
-> static void sha512_generic_block_fn(struct sha512_state *sst, u8 const *src,
-> lib/crypto/curve25519-fiat32.c:312:22: error: stack frame size of 2180 bytes in function 'fe_mul_impl' [-Werror,-Wframe-larger-than=]
-> static noinline void fe_mul_impl(u32 out[10], const u32 in1[10], const u32 in2[10])
-> lib/crypto/curve25519-fiat32.c:444:22: error: stack frame size of 1588 bytes in function 'fe_sqr_impl' [-Werror,-Wframe-larger-than=]
-> static noinline void fe_sqr_impl(u32 out[10], const u32 in1[10])
+> Perhaps for some previous version of this patch set, this patch
+> description was appropriate, but for the code below it's kind of
+> overkill.
 > 
-> Further testing showed that this is caused by
-> -fsanitize=unsigned-integer-overflow, but is isolated to the 32-bit
-> x86 architecture.
-> 
-> The one in blake2b immediately overflows the 8KB stack area architectures,
-> so better ensure this never happens by disabling the option for 32-bit
-> x86.
-> 
-> Fixes: d0a3ac549f38 ("ubsan: enable for all*config builds")
-> Link: https://lore.kernel.org/lkml/20201230154749.746641-1-arnd@kernel.org/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Acked-by: Kees Cook <keescook@chromium.org>
+I agree Mimi. Will edit the patch description.
 
--- 
-Kees Cook
+thanks,
+  -lakshmi
+
+>>
+>> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+>> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>> ---
+>>   arch/arm64/Kconfig             | 1 +
+>>   arch/arm64/include/asm/kexec.h | 5 +++++
+>>   2 files changed, 6 insertions(+)
+>>
+>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+>> index a6b5b7ef40ae..312b4d5ad232 100644
+>> --- a/arch/arm64/Kconfig
+>> +++ b/arch/arm64/Kconfig
+>> @@ -1095,6 +1095,7 @@ config KEXEC
+>>   config KEXEC_FILE
+>>   	bool "kexec file based system call"
+>>   	select KEXEC_CORE
+>> +	select HAVE_IMA_KEXEC if IMA
+>>   	help
+>>   	  This is new version of kexec system call. This system call is
+>>   	  file based and takes file descriptors as system call argument
+>> diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
+>> index d24b527e8c00..2bd19ccb6c43 100644
+>> --- a/arch/arm64/include/asm/kexec.h
+>> +++ b/arch/arm64/include/asm/kexec.h
+>> @@ -100,6 +100,11 @@ struct kimage_arch {
+>>   	void *elf_headers;
+>>   	unsigned long elf_headers_mem;
+>>   	unsigned long elf_headers_sz;
+>> +
+>> +#ifdef CONFIG_IMA_KEXEC
+>> +	phys_addr_t ima_buffer_addr;
+>> +	size_t ima_buffer_size;
+>> +#endif
+>>   };
+>>   
+>>   extern const struct kexec_file_ops kexec_image_ops;
+> 
+
