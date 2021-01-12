@@ -2,123 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98D5E2F34AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C69DF2F34A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392089AbhALPwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 10:52:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54686 "EHLO
+        id S2392054AbhALPv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 10:51:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392064AbhALPwD (ORCPT
+        with ESMTP id S1733044AbhALPvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:52:03 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CAB7C061795
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 07:51:23 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id d2so1620315pfq.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 07:51:23 -0800 (PST)
+        Tue, 12 Jan 2021 10:51:55 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27AB2C061786;
+        Tue, 12 Jan 2021 07:51:15 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id r4so1591308pls.11;
+        Tue, 12 Jan 2021 07:51:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=meDQXX3XD75fr/Eh+OZMYbgkflSWbsrFgrToIxKFeB8=;
-        b=RZrg0tk6bQj6DM1AY7MNXKv0DnzfmYK79bq8YdEH9FgAWrXF1PWqAgRIuyDTG2x1Ue
-         Kq7t8LhYNncsed4/aJtjfDjt5Q+/IDfcIfj4z8vImrp9Unrey24ogvuDw6mWPO57GOiY
-         mUeWmw3DU9OI1VrqFTdtR5xqdIGczh/qwfRsIAWMjWXwc9A7IcVBfOCWjcsHORg96squ
-         rfls/Pd0lBtrHN8nyBh9tFE0xy38qWk5fl+z7ZDxucHiM+mFW/NyPqb2DBv3b7YeGoM0
-         Va7/xZNPnjH9fPd5Avq8igc18BEEpC2bEm/kD4ijfDtA17nBo+jSxSDp1xC0AtPa/5vW
-         eAPA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R3JNDoPNmh/xsSk6z7wd+DpVkA7tUE/GQpUzABypsAE=;
+        b=nZ6i5UFfAjxhQv39XnaJ63fnIyBFz4lpd7xk6yh39Qbit4d8OQl+7X7NuumhQ3zMIQ
+         RrYQYwW4SOCqWbC6KmmcVkHoAMc3WSnORK/cBFFsVRXtivb2E0eGpti3cD58qTeYIE/g
+         9wCd85fOYnHJdaaqv9TkEJXz3t+QLQMDwm/Wrnwc07VH3yZoDB46G1j3mkiXJ+jrntxY
+         3JU1qSCe83wmvescrkQOMEi/nmdM6Jwxu6X5QMrHo6oQSor+NUPVjqOJ7ZYE7dV1aZN4
+         WaFf3KJgDbEDC2pDDeUzKS9nhxAW/Z+lkFtrxi4FyBRYj0ImbunPTJrQzUm2r1R4kkPg
+         9pPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=meDQXX3XD75fr/Eh+OZMYbgkflSWbsrFgrToIxKFeB8=;
-        b=Pnq6kEdNGQeI6HhWvyfTmrwnkRP4FPv+w9ZW8pSTEhMk9Ec3Q46gwm7HhhNOqr+SNC
-         MugN9DXQUf4kr9tFl9YCrNO3PXmUMdzWJ6IKFL4hfrxiusFPQdc9E3tnDMLSLEdrtWLe
-         /Wc33k9a1FTJ1PMwT77VWqDLjcnk6HwAyQUN1PbSV4mDShXSbn68Sb3swwF2nDiWYoGR
-         FpIxy1JkpU7qQG3Hx6dRqR96J1zjXNSEhyWbha6FsErofGtlkkhNAb5yGHEiCslHEu4v
-         DDkNhCinm5VHWvNSDrVfYfRoaQ/47cYuNO2KfCFebAsGssjR7zSsA6XZlyMjfk5e3HcJ
-         U/QA==
-X-Gm-Message-State: AOAM5325e2SIlP3kFWuGHOnrLkFFCk5So8E1cXa7ZkkZs6j1XF++P/MY
-        fPJ2e6RwaQzaXkf6LIZiLygWQQ==
-X-Google-Smtp-Source: ABdhPJwa0jFvja1e809QMhaIsVsedI0V1Nmc2CmTBYN6vm75qgQa7r6ag6ohSpXAYbQeMQ/UZSWv9A==
-X-Received: by 2002:a63:2347:: with SMTP id u7mr5279301pgm.189.1610466682707;
-        Tue, 12 Jan 2021 07:51:22 -0800 (PST)
-Received: from ?IPv6:2601:646:c200:1ef2:1d60:88a3:44d6:6b86? ([2601:646:c200:1ef2:1d60:88a3:44d6:6b86])
-        by smtp.gmail.com with ESMTPSA id k15sm3625781pfp.115.2021.01.12.07.51.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 07:51:21 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 1/2] KVM: x86: Add emulation support for #GP triggered by VM instructions
-Date:   Tue, 12 Jan 2021 07:51:19 -0800
-Message-Id: <8FAC639B-5EC6-42EE-B886-33AEF3CD5E26@amacapital.net>
-References: <jpgturmgnu6.fsf@linux.bootlegged.copy>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        seanjc@google.com, joro@8bytes.org, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        jmattson@google.com, wanpengli@tencent.com, dgilbert@redhat.com
-In-Reply-To: <jpgturmgnu6.fsf@linux.bootlegged.copy>
-To:     Bandan Das <bsd@redhat.com>
-X-Mailer: iPhone Mail (18C66)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R3JNDoPNmh/xsSk6z7wd+DpVkA7tUE/GQpUzABypsAE=;
+        b=C4MCWWgMYqY124SZqE+cA7VaI1rMIg0oG3zJalUaeQLiqDrAJJ0lXmhq6rSmrnX0q2
+         P7sI/oxDI5c4cUXVXlSTwGM2JHdhuwFtO5NqgclDJ6ECdrvlslJ9EZA3lRSSS3p/qimI
+         jBZUbcuFarZEzyYlftk9lBE3PK6+e2rtN7TVRW2Lp4ezaydYJAI95snOn57KmnM0ce69
+         QEihMCF6dCAtn1qkLEORnEuIKZ+ITSKXZORTPTeJKrNBek5n7b1DpgPxIvCA/ujHaPWu
+         qS+oxNvweaUfDdEDhHoU0ws52pM2YoJuYqWYCEDFWhDWBFTExV9iEm1apCQ11V+WYbQj
+         rATA==
+X-Gm-Message-State: AOAM531VRuaRv1xp2GbJvGghNULkJxUm8kjCtCYpy/CkiUmJZAInzjUE
+        Fz7Y3SiU8kz6g5i0KX84XK8bL+dr2G03cdmLBhk=
+X-Google-Smtp-Source: ABdhPJx1RgjJc+Q8z63ZB5X0zrYHXbc6AKQYmKuKwzHpaZ26tka8dJ5+Fn9qqkJI6xUWKjywkGZ7Fv8TyMxacNRqiY0=
+X-Received: by 2002:a17:90a:1050:: with SMTP id y16mr5384547pjd.181.1610466674728;
+ Tue, 12 Jan 2021 07:51:14 -0800 (PST)
+MIME-Version: 1.0
+References: <20210112134054.342-1-calvin.johnson@oss.nxp.com> <20210112134054.342-12-calvin.johnson@oss.nxp.com>
+In-Reply-To: <20210112134054.342-12-calvin.johnson@oss.nxp.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 12 Jan 2021 17:52:03 +0200
+Message-ID: <CAHp75Vfdt9CCHY+tpYXf-jPTxkN0v5Jo5CHojgfz=DAb3hcAmg@mail.gmail.com>
+Subject: Re: [net-next PATCH v3 11/15] net: mdiobus: Introduce fwnode_mdiobus_register()
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "linux.cj" <linux.cj@gmail.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 12, 2021 at 3:42 PM Calvin Johnson
+<calvin.johnson@oss.nxp.com> wrote:
+>
+> Introduce fwnode_mdiobus_register() to register PHYs on the  mdiobus.
+> If the fwnode is DT node, then call of_mdiobus_register().
+> If it is an ACPI node, then call acpi_mdiobus_register().
 
-> On Jan 12, 2021, at 7:46 AM, Bandan Das <bsd@redhat.com> wrote:
->=20
-> =EF=BB=BFAndy Lutomirski <luto@amacapital.net> writes:
-> ...
->>>>>> #endif diff --git a/arch/x86/kvm/mmu/mmu.c
->>>>>> b/arch/x86/kvm/mmu/mmu.c index 6d16481aa29d..c5c4aaf01a1a 100644
->>>>>> --- a/arch/x86/kvm/mmu/mmu.c +++ b/arch/x86/kvm/mmu/mmu.c @@
->>>>>> -50,6 +50,7 @@ #include <asm/io.h> #include <asm/vmx.h> #include
->>>>>> <asm/kvm_page_track.h> +#include <asm/e820/api.h> #include
->>>>>> "trace.h"
->>>>>>=20
->>>>>> extern bool itlb_multihit_kvm_mitigation; @@ -5675,6 +5676,12 @@
->>>>>> void kvm_mmu_slot_set_dirty(struct kvm *kvm, }
->>>>>> EXPORT_SYMBOL_GPL(kvm_mmu_slot_set_dirty);
->>>>>>=20
->>>>>> +bool kvm_is_host_reserved_region(u64 gpa) +{ + return
->>>>>> e820__mbapped_raw_any(gpa-1, gpa+1, E820_TYPE_RESERVED); +}
->>>>> While _e820__mapped_any()'s doc says '..  checks if any part of
->>>>> the range <start,end> is mapped ..' it seems to me that the real
->>>>> check is [start, end) so we should use 'gpa' instead of 'gpa-1',
->>>>> no?
->>>> Why do you need to check GPA at all?
->>>>=20
->>> To reduce the scope of the workaround.
->>>=20
->>> The errata only happens when you use one of SVM instructions in the
->>> guest with EAX that happens to be inside one of the host reserved
->>> memory regions (for example SMM).
->>=20
->> This code reduces the scope of the workaround at the cost of
->> increasing the complexity of the workaround and adding a nonsensical
->> coupling between KVM and host details and adding an export that really
->> doesn=E2=80=99t deserve to be exported.
->>=20
->> Is there an actual concrete benefit to this check?
->=20
-> Besides reducing the scope, my intention for the check was that we should
-> know if such exceptions occur for any other undiscovered reasons with othe=
-r
-> memory types rather than hiding them under this workaround.
+...
 
-Ask AMD?
+> +/**
+> + * fwnode_mdiobus_register - Register mii_bus and create PHYs from fwnode
+> + * @mdio: pointer to mii_bus structure
+> + * @fwnode: pointer to fwnode of MDIO bus.
+> + *
+> + * This function returns of_mdiobus_register() for DT and
+> + * acpi_mdiobus_register() for ACPI.
+> + */
+> +int fwnode_mdiobus_register(struct mii_bus *mdio, struct fwnode_handle *fwnode)
+> +{
+> +       if (is_of_node(fwnode))
+> +               return of_mdiobus_register(mdio, to_of_node(fwnode));
+> +       else if (is_acpi_node(fwnode))
 
-I would also believe that someone somewhere has a firmware that simply omits=
- the problematic region instead of listing it as reserved.
+Redundant 'else'
 
->=20
-> Bandan
->=20
->=20
->=20
+> +               return acpi_mdiobus_register(mdio, fwnode);
+> +
+> +       return -EINVAL;
+> +}
+
+-- 
+With Best Regards,
+Andy Shevchenko
