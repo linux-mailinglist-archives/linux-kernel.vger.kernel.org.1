@@ -2,112 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360FB2F323E
+	by mail.lfdr.de (Postfix) with ESMTP id A31E12F323F
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:54:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732921AbhALNxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:53:42 -0500
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:43307 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732266AbhALNxl (ORCPT
+        id S1733164AbhALNyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:54:19 -0500
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:37337 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726043AbhALNyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:53:41 -0500
-Received: by mail-ot1-f43.google.com with SMTP id q25so2265016otn.10;
-        Tue, 12 Jan 2021 05:53:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4Uv3tHz4SVDQ8ChUOK2jqRxCBNv/7IX85UqJB4CJwco=;
-        b=R5FOtwxQS2aZioOK9x350fo1IjWDBgeWLUtY5Z0ZIUB0Bs7QvsMj/Xgw6MYgDEyc5G
-         guM4D5U/n9gwgD+OR+dqzcGINfn8BX2AE5L2rvL5G+G0/4EmASE+LW0CE8SNz5vycgVg
-         xnZhcU8zHLkxxGI0AgoE155XDTVlxtOi9r2My4RExTFXYZMXPVX0weZ9e18CAFvFWaSi
-         PJCHmHdR6G+IaGo6pLF+DAETT/hGLZ6VGeUygK8Us7pRGuwGCaTXuFyt83PNn84Q6B4r
-         h5XjKV/5FRO8rZrA5h4JIaPqiT4oSuhOcgpT7csxMyOUInnuO23usQf/E9+d2HbISelW
-         VjfA==
-X-Gm-Message-State: AOAM531kLxVfmZmwA1En4gUdmNQXJTQ1uRhg4OhWWCWg+/aQWMVCoD+T
-        Mrx3x4ngFipyf4azxk00CdfWQN12LONG0rdxAoE=
-X-Google-Smtp-Source: ABdhPJw8z6PmPcN4jbSqyN/xmXo4Xqs1o5eZdsLVM8HqAMwOmnWm41qyyZPPCklrikWgkDtdJUMOZvfHD8134QhgGDM=
-X-Received: by 2002:a9d:7191:: with SMTP id o17mr2837075otj.321.1610459581014;
- Tue, 12 Jan 2021 05:53:01 -0800 (PST)
+        Tue, 12 Jan 2021 08:54:18 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 97DD85C022A;
+        Tue, 12 Jan 2021 08:53:12 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 12 Jan 2021 08:53:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+         h=date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=wQHIBUX95kd7FYyqstLD3bY3Dfr
+        sn25GzthoZs7X/Ac=; b=V3pcoxQUY0rNSzsaAGAOloFEq5Kotrg6LPGKrQ19BVF
+        dUVtjFJpcSPZ1FwJUOohF9HssfcrtJqkAN2pH77HJJAfoxlFBA4RPhMBY5f+7u7w
+        qONdTzBh3NC1dQFTuJoO4cXZhoVxIkPmR/LZsK9D9GU/sbFCHmp7T5gtgCTd3KOw
+        IwDm17LPmK6Mn+ATY8HsPuT7WaDBZ+dkYH3hjWiL0E7YSC7WYwNI6X94gQ2SQWsh
+        y/Wad4yjdaX0c/GXAE/Zrrcjfj7UDp/ANAft0O2YCTM2FZT84PRBTupiFop3zrJS
+        pvqLUK6IoMh4JwJSWhOwHSosPHapvcEA2EnMjJgBXLQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=wQHIBU
+        X95kd7FYyqstLD3bY3Dfrsn25GzthoZs7X/Ac=; b=pBe707M//5xjdT8ZRSsjYE
+        LkvmOU+vZuy1W4idgKBGkLkBIuIrhqQRCj3UYm+Kw3oJvJsGeZy7krfjmzeQTIcE
+        HNz10EnTdcO/9PwEDQjGnvFsaTyctl1UfMkgiA2slP+zVDStnB7FmnFsEGL1K7Ua
+        SNDy5bUPGFknT3CwbcGPCr58gCR6rsK5hJxD+iiPXmJ5fhZo7nkZ43DyeyyJK3x3
+        7mseWsmxZuAbu3Mq6TDmhEEQrqkFVoQmszejCz1XenLhTAEQm7eU2jPZ4oR4BO7I
+        BNQ45yTR2P8tZER9h9b7hIU5PFEPKCYW/TfWniO3qMweYxfKPYFb54j5GoKuvnsQ
+        ==
+X-ME-Sender: <xms:x6n9XzvUfpg0fwn8fVLWE68C5GEpeuEBQ8rw_Cp52yQmZlYcj5nxQQ>
+    <xme:x6n9X0d7B_knLaOTdUr6rbdw2WP2fZPWWKHcCrDhJ3u9ASVl91h1rUx3PySEJXWR2
+    _LEh6MHztMsoG2W-9w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtddtgddvhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgrshhh
+    ihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+    eqnecuggftrfgrthhtvghrnheplefhueegvdejgfejgfdukeefudetvddtuddtueeivedt
+    tdegteejkedvfeegfefhnecukfhppeduudekrddvgeefrdejkedrheeknecuvehluhhsth
+    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgrkhgrshhhihes
+    shgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:x6n9X2yfxe9W3LbFBicMNaJgOTmuRhKIJ_SAEwxXNIOekUD-ywRefw>
+    <xmx:x6n9XyNV04gig9rmkPyzBMpxWJ-PFQH8Ag4RCfKOVb5KM_mrmkroiw>
+    <xmx:x6n9Xz92ADNDaoWaCNBZ1LhrHR-4dWXwOkx9gnaBrI0li8H8eJcG6w>
+    <xmx:yKn9X2bUhDQhG-oiwzBAh0FKL8JCFoRYbY24rCDSspXmU6qqjBt4lg>
+Received: from workstation (y078058.dynamic.ppp.asahi-net.or.jp [118.243.78.58])
+        by mail.messagingengine.com (Postfix) with ESMTPA id A60C924005D;
+        Tue, 12 Jan 2021 08:53:09 -0500 (EST)
+Date:   Tue, 12 Jan 2021 22:53:06 +0900
+From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Clemens Ladisch <clemens@ladisch.de>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH/RFC 1/2] ALSA: fireface: Fix integer overflow in
+ transmit_midi_msg()
+Message-ID: <20210112135306.GB44140@workstation>
+Mail-Followup-To: Geert Uytterhoeven <geert+renesas@glider.be>,
+        Clemens Ladisch <clemens@ladisch.de>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+References: <20210111130251.361335-1-geert+renesas@glider.be>
+ <20210111130251.361335-2-geert+renesas@glider.be>
 MIME-Version: 1.0
-References: <20210112052127.4557-1-yu.c.chen@intel.com>
-In-Reply-To: <20210112052127.4557-1-yu.c.chen@intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 12 Jan 2021 14:52:50 +0100
-Message-ID: <CAJZ5v0i5jdp6YcpvVuLyxGePRAsFPUPL6=iQC7PEFSzjNRUJLw@mail.gmail.com>
-Subject: Re: [PATCH][v3] cpufreq: intel_pstate: Get percpu max freq via HWP
- MSR register if available
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111130251.361335-2-geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 6:19 AM Chen Yu <yu.c.chen@intel.com> wrote:
->
-> Currently when turbo is disabled(either by BIOS or by the user), the
-> intel_pstate driver reads the max non-turbo frequency from the package-wide
-> MSR_PLATFORM_INFO(0xce) register. However on asymmetric platforms it is
-> possible in theory that small and big core with HWP enabled might have
-> different max non-turbo cpu frequency, because the MSR_HWP_CAPABILITIES
-> is percpu scope according to Intel Software Developer Manual.
->
-> The turbo max freq is already percpu basis in current code, thus make
-> similar change to the max non-turbo frequency as well.
->
-> Reported-by: Wendy Wang <wendy.wang@intel.com>
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+Hi,
+
+On Mon, Jan 11, 2021 at 02:02:50PM +0100, Geert Uytterhoeven wrote:
+> As snd_ff.rx_bytes[] is unsigned int, and NSEC_PER_SEC is 1000000000L,
+> the second multiplication in
+> 
+>     ff->rx_bytes[port] * 8 * NSEC_PER_SEC / 31250
+> 
+> always overflows on 32-bit platforms, truncating the result.  Fix this
+> by precalculating "NSEC_PER_SEC / 31250", which is an integer constant.
+> 
+> Note that this assumes ff->rx_bytes[port] <= 16777.
+> 
+> Fixes: 19174295788de77d ("ALSA: fireface: add transaction support")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 > ---
-> v2: Per Srinivas' suggestion, avoid duplicated assignment of max_pstate.
-> v3: Per Rafael's suggestion, do not add new argument in intel_pstate_get_hwp_max()
->     to avoid redundant local vars.
->     Per Srinivas' suggestion, refined the commit log to reflect the 'non-turbo'
->     max frequency.
+> Compile-tested only.
+> 
+> I don't know the maximum transfer length of MIDI, but given it's an old
+> standard, I guess it's rather small.  If it is larger than 16777, the
+> constant "8" should be replaced by "8ULL", to force 64-bit arithmetic.
+> ---
+>  sound/firewire/fireface/ff-transaction.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Looks good now, thanks!
+The rx_bytes member has value for the length of byte messages to
+process. The range of value differs depending on Fireface protocol
+version. For former protocol, the value is equals to or less than
+SND_FF_MAXIMIM_MIDI_QUADS (= 9). For latter protocol, the value is
+equals to or less than 3. Anyway, the value should not be larger
+than 16777 and the calculation can be done without ULL suffix.
 
-Is it needed in -stable and if so, which -stable series should it go into?
+Reviewd-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-> --
->  drivers/cpufreq/intel_pstate.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-> index eaf32ef7a030..99e180f644c3 100644
-> --- a/drivers/cpufreq/intel_pstate.c
-> +++ b/drivers/cpufreq/intel_pstate.c
-> @@ -1724,11 +1724,9 @@ static void intel_pstate_max_within_limits(struct cpudata *cpu)
->  static void intel_pstate_get_cpu_pstates(struct cpudata *cpu)
->  {
->         cpu->pstate.min_pstate = pstate_funcs.get_min();
-> -       cpu->pstate.max_pstate = pstate_funcs.get_max();
->         cpu->pstate.max_pstate_physical = pstate_funcs.get_max_physical();
->         cpu->pstate.turbo_pstate = pstate_funcs.get_turbo();
->         cpu->pstate.scaling = pstate_funcs.get_scaling();
-> -       cpu->pstate.max_freq = cpu->pstate.max_pstate * cpu->pstate.scaling;
->
->         if (hwp_active && !hwp_mode_bdw) {
->                 unsigned int phy_max, current_max;
-> @@ -1736,9 +1734,12 @@ static void intel_pstate_get_cpu_pstates(struct cpudata *cpu)
->                 intel_pstate_get_hwp_max(cpu, &phy_max, &current_max);
->                 cpu->pstate.turbo_freq = phy_max * cpu->pstate.scaling;
->                 cpu->pstate.turbo_pstate = phy_max;
-> +               cpu->pstate.max_pstate = HWP_GUARANTEED_PERF(READ_ONCE(cpu->hwp_cap_cached));
->         } else {
->                 cpu->pstate.turbo_freq = cpu->pstate.turbo_pstate * cpu->pstate.scaling;
-> +               cpu->pstate.max_pstate = pstate_funcs.get_max();
->         }
-> +       cpu->pstate.max_freq = cpu->pstate.max_pstate * cpu->pstate.scaling;
->
->         if (pstate_funcs.get_aperf_mperf_shift)
->                 cpu->aperf_mperf_shift = pstate_funcs.get_aperf_mperf_shift();
-> --
-> 2.17.1
->
+> diff --git a/sound/firewire/fireface/ff-transaction.c b/sound/firewire/fireface/ff-transaction.c
+> index 7f82762ccc8c80ba..ee7122c461d46f44 100644
+> --- a/sound/firewire/fireface/ff-transaction.c
+> +++ b/sound/firewire/fireface/ff-transaction.c
+> @@ -88,7 +88,7 @@ static void transmit_midi_msg(struct snd_ff *ff, unsigned int port)
+>  
+>  	/* Set interval to next transaction. */
+>  	ff->next_ktime[port] = ktime_add_ns(ktime_get(),
+> -				ff->rx_bytes[port] * 8 * NSEC_PER_SEC / 31250);
+> +			ff->rx_bytes[port] * 8 * (NSEC_PER_SEC / 31250));
+>  
+>  	if (quad_count == 1)
+>  		tcode = TCODE_WRITE_QUADLET_REQUEST;
+> -- 
+> 2.25.1
+
+
+Thanks
+
+Takashi Sakamoto
