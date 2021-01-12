@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 086A92F2AE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:16:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 666012F2AEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:16:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389713AbhALJOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:14:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53716 "EHLO
+        id S2389863AbhALJO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:14:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729821AbhALJOc (ORCPT
+        with ESMTP id S1729821AbhALJO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:14:32 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC63C061786;
-        Tue, 12 Jan 2021 01:13:52 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id s15so1062710plr.9;
-        Tue, 12 Jan 2021 01:13:52 -0800 (PST)
+        Tue, 12 Jan 2021 04:14:57 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6BCCC061794;
+        Tue, 12 Jan 2021 01:14:16 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id d26so1612780wrb.12;
+        Tue, 12 Jan 2021 01:14:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=lyXow/3PC7QTBK6uhoVlenZ4U54g3gv/53mAMDOeC9U=;
-        b=h7JG850Vtnv/nQBRiK4B/cIsS1GNe5+A41CC4vmBOFdypDjFjtF6SNbarNmEVSQZAw
-         f/Bo1DsX/chTWznMw4Nu5gaarXkbSA2EPvTUAW77oP2y1iTIRwBxAU3dyRfWMxORfAwF
-         QGVtr0Fa92UUGu8tKjINM907vEVcf08RHki3G7cMMNbKlRfeZ5iuhQiermbidVq2LSKy
-         us1Bp1D0+pgZ3Vdl+xnVUOUuXZOSp/vUWM9zYZx38iAi6crKd8SiSaK/y+2lHYpHP2sp
-         owszV2lbrTKTnTDR1LuZ3gIghKLdEKtQLRGcISaYXUjSvPgolDegYj0pJPk4BTvsFiEQ
-         JOng==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aLveLxeFrNvjHmoCR9A2oV0J+t8vyyrnKRnubdghhuU=;
+        b=r2ZJ4ok+qcVmu0I2jzjZu0MSgognlZXsiDDUsoUpv+1D3BJAYs2T5/ZLUOcUkxWsgE
+         eGOhsrXNXqcK2NNQObqqK3PuK/Gc9ptXmTSGsNkAC6LZ3hN65ldOXqBri/TAxN5xy3B/
+         h8/4GHSJu7p9xOEoZkyqaLKUaSrHkmIlOtkNAmaBLM39TOz6tfoyxbk6d9EZ8NmV0gCe
+         y38QmY6dKD/wQvpI9nDJqRUJQcmFg9lQpSGaKUCRaYRchqHRzZX5RB84YQYpnixKDmuF
+         HDr2uw9847Ky3yKFsKZlQUnXK2nUYJXSu3YKUQ/Mj5wJsNXlgnzFjOU1soU2/EpbuTNe
+         L7VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=lyXow/3PC7QTBK6uhoVlenZ4U54g3gv/53mAMDOeC9U=;
-        b=g+YgnpHfdkrCpBR+kCqGKQVsjvjfYomZmZuXLcjzWrHQalWOdefQNap/hvzvrIzh6X
-         HZnP+tclSK6cd2LDbt4hhbiXnVD0IefVm39EmFa45CqppLskPW5WdHceLCl4vmhgIri9
-         qzXa6jYZ3aCQyXzv30j8hkmY73tq7nrV3KhAFbkBoUMZaVIFNy/wCQpwUHwQcc4mSEwn
-         afLAU89qdb95P3tsaVtNbx7YnZvpyiAImg4AFq2Qx3j5X5JDQXeO7vtR+HGlT7ZQFZSW
-         5oToZbBz5uZL1MAM0x481s6B4SMxt0hzozryB0z+yHY3etHfoqHTZhyC4WoKXYnh0gt3
-         jSrA==
-X-Gm-Message-State: AOAM533nZM3e1grJQXhzKhKUqi4EloIpvvRWuLqyFa2gOc33qaHimGU/
-        kyDBHldLnXtYXGiHEqTnCKA=
-X-Google-Smtp-Source: ABdhPJw5P9XSSSVDXoCDLeXI7bKGWp6EU0dOa5n/b76hxexr1KLz3hAO+2vjD90uRqX65Sg3Ci+b8w==
-X-Received: by 2002:a17:902:8c8f:b029:dc:425c:e274 with SMTP id t15-20020a1709028c8fb02900dc425ce274mr3786720plo.17.1610442831768;
-        Tue, 12 Jan 2021 01:13:51 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id g5sm2296013pfr.87.2021.01.12.01.13.49
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aLveLxeFrNvjHmoCR9A2oV0J+t8vyyrnKRnubdghhuU=;
+        b=lgaXN//BaqHvzMxNXUQOBU4rXZe5cRyTLc+1YX6vrOUsmaPqcjeSwMvBGjuYfPxOE1
+         ugdpfRoE19cMEOyjoK+GHgpLDiSLIDJEommmsdsswGLqITPhweWh9Vt47UXVKjVNnwvq
+         H3aXCsMYy0iTjUt175N/vS7OueSNVPwStC0oyvyTykei4zqxzLkyIgMqqnKp3v+8CAYP
+         s33YMxefCdzoxOcPDjV7Zqr4JFHV7Yy7ZKrIbE5NsIqlsWSfXEFbOpHpqC2+H5gyvSdq
+         SlPFwRaARELs+A/eeDpBcdCbjhQUq9M78zijuWKWwqS7zVz3UiU+/zvDzSQu3ADKG+4A
+         61Og==
+X-Gm-Message-State: AOAM5332ZiOSLm2BOrI0Q0BShraZGE2MvOndwrTGMI6Up/QAnz/seJbT
+        pSmrgZIpdmxcKkeWY+VWJsyF8bn0qcMlLpsu
+X-Google-Smtp-Source: ABdhPJzm0yhMovj3Ab546X1eJnZs7ddAADGvQziQllXXPgWOqTQca81g/eYkvRZfdq49xeTN3Xm6cw==
+X-Received: by 2002:a05:6000:18a3:: with SMTP id b3mr234261wri.373.1610442855164;
+        Tue, 12 Jan 2021 01:14:15 -0800 (PST)
+Received: from ubuntu.localdomain (bzq-233-168-31-62.red.bezeqint.net. [31.168.233.62])
+        by smtp.googlemail.com with ESMTPSA id b10sm3085995wmj.5.2021.01.12.01.14.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 01:13:51 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     sfrench@samba.org
-Cc:     linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: [PATCH] fs: cifs: remove unneeded variable in smb3_fs_context_dup
-Date:   Tue, 12 Jan 2021 01:13:40 -0800
-Message-Id: <20210112091340.7500-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.17.1
+        Tue, 12 Jan 2021 01:14:14 -0800 (PST)
+From:   Gilad Reti <gilad.reti@gmail.com>
+To:     bpf@vger.kernel.org
+Cc:     gilad.reti@gmail.com, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH bpf 1/2] bpf: support PTR_TO_MEM{,_OR_NULL} register spilling
+Date:   Tue, 12 Jan 2021 11:14:03 +0200
+Message-Id: <20210112091403.10458-1-gilad.reti@gmail.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+Add support for pointer to mem register spilling, to allow the verifier
+to track pointer to valid memory addresses. Such pointers are returned
+for example by a successful call of the bpf_ringbuf_reserve helper.
 
-'rc' in smb3_fs_context_dup is not used and can be removed.
+This patch was suggested as a solution by Yonghong Song.
 
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+The patch was partially contibuted by CyberArk Software, Inc.
+
+Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier
+support for it")
+Signed-off-by: Gilad Reti <gilad.reti@gmail.com>
 ---
- fs/cifs/fs_context.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ kernel/bpf/verifier.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/cifs/fs_context.c b/fs/cifs/fs_context.c
-index 0afccbbed2e6..076bcadc756a 100644
---- a/fs/cifs/fs_context.c
-+++ b/fs/cifs/fs_context.c
-@@ -303,8 +303,6 @@ do {									\
- int
- smb3_fs_context_dup(struct smb3_fs_context *new_ctx, struct smb3_fs_context *ctx)
- {
--	int rc = 0;
--
- 	memcpy(new_ctx, ctx, sizeof(*ctx));
- 	new_ctx->prepath = NULL;
- 	new_ctx->mount_options = NULL;
-@@ -327,7 +325,7 @@ smb3_fs_context_dup(struct smb3_fs_context *new_ctx, struct smb3_fs_context *ctx
- 	DUP_CTX_STR(nodename);
- 	DUP_CTX_STR(iocharset);
- 
--	return rc;
-+	return 0;
- }
- 
- static int
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 17270b8404f1..36af69fac591 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -2217,6 +2217,8 @@ static bool is_spillable_regtype(enum bpf_reg_type type)
+ 	case PTR_TO_RDWR_BUF:
+ 	case PTR_TO_RDWR_BUF_OR_NULL:
+ 	case PTR_TO_PERCPU_BTF_ID:
++	case PTR_TO_MEM:
++	case PTR_TO_MEM_OR_NULL:
+ 		return true;
+ 	default:
+ 		return false;
 -- 
-2.17.1
+2.27.0
 
