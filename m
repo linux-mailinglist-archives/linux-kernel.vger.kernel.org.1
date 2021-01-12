@@ -2,171 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE472F2B84
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:42:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1AE62F2B82
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731426AbhALJlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:41:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726405AbhALJls (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:41:48 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B06C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 01:41:08 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id p18so1060807pgm.11
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 01:41:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=N5gPe6VICAF23DO3VFw8snxPpNxb7Xk5ic4+s7znuoc=;
-        b=lvmNCoLr1rN0OCsKFG6UZCCbtUCiKHx12DRxXuWRO/i35blG1TsBWoPQeptEFgEpIN
-         8/D8nvAwNL0mw8ajCKfQTTO5Y3OlsNuJY4foZHrWpJH1M3Gb7MWr1BKBYkIW0S9PRwGn
-         ulhnslLxEz4mqjARlDMI3HOuqXT+lZoIiMx3uFOz6xhTPzpc64uLSp49x2rOo/a8Ujlr
-         +HsdDlcs1nTK8SgWS4MfWcg/UywAlrvTXFze8BAg1p0GaHacEFnZUDai/o/uQ2Hh5LVH
-         8jp+1pBAUAPraNXN6fJSgdCcZtO9R3vWGyZrCuaIvJCugE8+kfQ1cYfOrqAx768+RFIX
-         ie/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=N5gPe6VICAF23DO3VFw8snxPpNxb7Xk5ic4+s7znuoc=;
-        b=FXukC1fBP1oncdEUWd3Zq6rZlQcq2jUP4gqqQ2qiPlhkgzu6Dtmlxq1BFB9d9aGcgA
-         JHQDcDx6MJe3o7wh2FkBDNddSmTkpytL335bxmBwHqMTB9ZblPWv+pkDNgVoLRh2GxBi
-         esiKMrOn6W57d8SZJgGw4ceuymMPBCHHXB6gONpldYnRKhhmUSh4xbuSMjqHxF/ahkp6
-         cbhcdfKJwxN4WYzS35k6zyRTIPHnJ05+osiPf+bwdoN+pBcqF1612KoMOwv7McTQFnJP
-         HrwojLy3F15WFe9/7/D01az71vLPDlJPhJL0SpojpItgmSg55Z2qUY06FZjawrGqJBBE
-         nMjQ==
-X-Gm-Message-State: AOAM533o0otoC8/OC7nzJW9Dxt1x7C3puXxPOZHBsZ3rjYTXee7+XIFX
-        4xKpYRB31L2UcBeljlRD5ucWbQ==
-X-Google-Smtp-Source: ABdhPJyQeQsHFfo9WD/97PYe0+LVzJEsfG9mBwqV5UrXNRUxqX3VYywjolxEoJ7o/WuYX7uGTwpoFw==
-X-Received: by 2002:aa7:8517:0:b029:19d:d70f:86ec with SMTP id v23-20020aa785170000b029019dd70f86ecmr3823661pfn.19.1610444467625;
-        Tue, 12 Jan 2021 01:41:07 -0800 (PST)
-Received: from localhost ([122.172.85.111])
-        by smtp.gmail.com with ESMTPSA id 68sm2362475pfe.33.2021.01.12.01.41.06
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 12 Jan 2021 01:41:06 -0800 (PST)
-Date:   Tue, 12 Jan 2021 15:11:04 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        DTML <devicetree@vger.kernel.org>,
+        id S1732653AbhALJmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:42:05 -0500
+Received: from mail-eopbgr10040.outbound.protection.outlook.com ([40.107.1.40]:19749
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726405AbhALJmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 04:42:04 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Rem9V9T9o38F5J+VVreE2Jm8bzbMu1pEmtfwQjXk04Ax5Z/vQqSpGr/HXRPsxtBt6ISrrlDwH9iWUiSzva/A4NgSms+p+mRZxOnfCT+YEqTc1rYp42mEdHowsO1fb2ZPthUZzxbiAsJ/xyNIn9ea/mAljMb4jAJbhbN6tFst90TpuJBdWoJJZACQbS6YMavsCLQ1PJ+kJkTpRvkCbaUnce8fJ0H4168tMGLWpkWuT8ZAWt36XjSYC9vhq+JdiD9JhG7Fh3tQIHgPLOxzY1v8m1LiqQ7IhJeiYd7Z5EochDXG/HIklQC3b9O0ZR6ZGV1B9wshxL9fJlK+7vDyDkt/Lw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uq2P/kWxPP01djnS+8PV2MqI9BRry6s6JT+T3JplBSo=;
+ b=J9IW7fAL/bGxIiumzM21VzwsDvpBmZ6twB9TAcE5ZLJyxVmCzXK6mXFv0peVQ4nRbxieyxhY9Wl2selqCFtvz7L3LFf0BKDSMW0CZ7aifUJsb8UizP5bo/t9+e1Bg/ogXWYUO863G5sd4bTBZA9y9fl2jZeuQX0KKR9f9cfkG2DUYbKhyBG8o9m25D+o3YH7alCjQyqYbY0k/gTQh2sHwGiamI03E0IYbKboXmNw67RHa7/psxTr/qUMJeDLE/iCntrZY5OwCvtLCnFbzVQYeCFLTnRskpJCvNz0yvSRw15tIXr/jUowSZpzO9B5F9K31oj8OO5hLTSObNzvBQRtoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uq2P/kWxPP01djnS+8PV2MqI9BRry6s6JT+T3JplBSo=;
+ b=nHu1fESXHyQY5MATi2GgHFIZ3qSzKYL/k6qCOE5MKoaHePbuAMdXhDnYmxh32wWKHyRMz86hH2Zq1KBkTy5KgA/RjZcr/zlPQVWXdvxbvOI50ngliszyKhhAA/k7CBXhvFfONUUOZkQKOKRhRVqxK1YwIb8PtYgmPbexQAbRPeY=
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB7PR04MB4089.eurprd04.prod.outlook.com (2603:10a6:5:1b::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Tue, 12 Jan
+ 2021 09:41:12 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c964:9:850a:fc5]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c964:9:850a:fc5%10]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
+ 09:41:12 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, tero.kristo@gmail.com
-Subject: Re: [RFC 0/2] kbuild: Add support to build overlays (%.dtbo)
-Message-ID: <20210112094104.k3425nr5t4dbogns@vireshk-i7>
-References: <cover.1609844956.git.viresh.kumar@linaro.org>
- <CAL_JsqJMr3vfz2B29vzvFALCt_5-J__eJv2TZHJ0sR9nM=xXaw@mail.gmail.com>
- <CAK7LNAR9fdjZ7iWKSWvJ9etGZkd+n87cmXKN-Hah8DBDYbuAwA@mail.gmail.com>
- <20210111111711.r2xesydzhq5js2nf@vireshk-i7>
- <CAK7LNASViCOTGR7yDTfh0O+PAu+X-P2NwdY4oPMuXrr51awafA@mail.gmail.com>
- <CAL_Jsq+HiPv1x8B8ZdM2yjFLyiCwzcRR79SVsHCk80asySWp4w@mail.gmail.com>
- <CAK7LNAS4V0ohZM+V5xJypejb6Powx2bj_6_kvAGU9L5EnRF=Bw@mail.gmail.com>
+        "paul@crapouillou.net" <paul@crapouillou.net>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "agross@kernel.org" <agross@kernel.org>,
+        "patrice.chotard@st.com" <patrice.chotard@st.com>
+Subject: RE: [PATCH V5 7/8] remoteproc: imx_rproc: ignore mapping vdev regions
+Thread-Topic: [PATCH V5 7/8] remoteproc: imx_rproc: ignore mapping vdev
+ regions
+Thread-Index: AQHW3Y8IMsfD4HQjaUqOo7Zl/WNCSKojDGiAgADFokA=
+Date:   Tue, 12 Jan 2021 09:41:12 +0000
+Message-ID: <DB6PR0402MB2760F6F982C32B6557467C9188AA0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+References: <20201229033019.25899-1-peng.fan@nxp.com>
+ <20201229033019.25899-8-peng.fan@nxp.com> <20210111215023.GJ144935@xps15>
+In-Reply-To: <20210111215023.GJ144935@xps15>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [92.121.68.129]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 56bd6a60-f00c-4037-b3e1-08d8b6de32df
+x-ms-traffictypediagnostic: DB7PR04MB4089:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB7PR04MB4089649456DFBCE6E258609B88AA0@DB7PR04MB4089.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: lvxUugbbzULk9ToXB9OINGJWZmbSctqMof67PjBOC19NocBGNPPZLFeL3piO+mfSd8S0FUf6cfUjBdTdXSSMNItigY0EVWcpERNpyyf+R79QwP/J4oioPbG9gyTKNNnlGVlWVKlSfQ9nEq1mFYRk6jZUOso801CKdTqGSPNDtfU9DP+Es6aysorzPXaNW8NLypo+5FA7v2TyQ9MBXOqRtg11YglScgSHFaTs0jYRlBMbztlHipTThhaVP3EH2I5TbS3ElndxB0q82ss7XFS+tu1kZAb33rtVRrpdCFnJiycemAMv2faB1UIA4a02DSyOJAycsT/xTSRWqpq40IcEdoS2eymAXFm4Fn9uq1wOO1Qg77pK+e0/Hc2Josq0mavWk2iK5x406BQJBWCfYsxAzPyfI5dohuf+4cqNULGN3XyMzhEF0X+oAYXYaqkTylRSsLuJ43l+2gABXjzRgxquQA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(8676002)(2906002)(71200400001)(54906003)(83380400001)(52536014)(7696005)(76116006)(7416002)(55016002)(966005)(66556008)(64756008)(498600001)(6916009)(33656002)(66446008)(45080400002)(186003)(66946007)(66476007)(86362001)(8936002)(4326008)(9686003)(26005)(44832011)(5660300002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?yn7C1A5BkaMsJDiO8PyCp4V529A/xva1kdw1gUvCI01wIvdknuLu7FBFhrcF?=
+ =?us-ascii?Q?cWM6g19GRQbjow8r07zryZaRAVdatBhLjyKxNGvOKadbp6eciMCQvtl2fT+V?=
+ =?us-ascii?Q?M/dcovPqTC9XrZZL4Fxt5QKMc1/kC7ABNeeEBVWw51ZaaOBZFQHsB+X4EulM?=
+ =?us-ascii?Q?uS+Omua9bgCZeGhUrh18nQW1cIpqVm18F5zRuCpH2TA+XFpbgqkd5FaFP/GY?=
+ =?us-ascii?Q?Gujp3+4wNBfwCKvGfMfDt1pjNKwN2rseDTZx5HK+wpXtfJCMunSr6a7vVxcV?=
+ =?us-ascii?Q?1yjgVKyg/Y9z04HMCJaLzACr9PIcYyURkFlit6TO2E0fQF5UPLmzyQ6eAmti?=
+ =?us-ascii?Q?LpgfICN4IdKp4Yn9OHnRX8Da/nmw8UAxDkZG9z5VXw5JpYfn4DJZOqYl+CFi?=
+ =?us-ascii?Q?Fv+KvHBUZomNPwM7fLt6XYXaVJU9wxCT48KK7tbSXVhbTnqH5eKFX76APmAv?=
+ =?us-ascii?Q?ARxVtXfO24cjiCt37XXzSMjIpu/s1jbdMvqnRv/0mgmSyojwN25W/jLxheTs?=
+ =?us-ascii?Q?HAVlZB3WV1Xr0ERNZAhPf5Z07QNEANzUNO/N6wJpSLLNIQX5m7Sz6I18eN3g?=
+ =?us-ascii?Q?+s7/XwYp2T0U9tiXTqC+vl4Htv2mRXACc0VXUcaHbPJDsLsfBrvXX2qfzInm?=
+ =?us-ascii?Q?J/NX+UnGquhiaw9Dyz05puoTkOqrm3ShixCOYyVc4m/u1xZzuNpdLY4Rked/?=
+ =?us-ascii?Q?8vynikR/n/j5dBtXb7HBzagK72QAsD1wndr/kK6uIS+EGfClsoTD3zLq/PfC?=
+ =?us-ascii?Q?w5CveBTAlR98QYgUvmsDvqwg1ShjKaiViPPGZP3bDQdzKkKXB9nMqW/Q1V9O?=
+ =?us-ascii?Q?F1Ye6I5m7vY6qxEne7LhpJMbty8CnLbQ3q+qL60C/4ioZpyAqUIGlMmY/3vX?=
+ =?us-ascii?Q?kL2Ep6DTAlK9w4kKebaxunSqBdrEPq5RPg9+iily1OzDd1fc6DYtWz6tqMz5?=
+ =?us-ascii?Q?DwLVN+nxa9noMS3IJSUAr8dJGTqVMFZdwLMjbo7t13s=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAS4V0ohZM+V5xJypejb6Powx2bj_6_kvAGU9L5EnRF=Bw@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56bd6a60-f00c-4037-b3e1-08d8b6de32df
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2021 09:41:12.4132
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AZLqx1Dem83RWPw/Dl7AQg137D6XdgdI5GbzRR1gxxqgFKqAxgaZUGQXyqOJbvqdsgVndA9pOnjB6wdQZBU5gg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12-01-21, 02:02, Masahiro Yamada wrote:
-> On Tue, Jan 12, 2021 at 1:13 AM Rob Herring <robh+dt@kernel.org> wrote:
-> > On Mon, Jan 11, 2021 at 9:40 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> We do not need the dtbo-y syntax.
+> Subject: Re: [PATCH V5 7/8] remoteproc: imx_rproc: ignore mapping vdev
+> regions
+>=20
+> On Tue, Dec 29, 2020 at 11:30:18AM +0800, peng.fan@nxp.com wrote:
+> > From: Peng Fan <peng.fan@nxp.com>
+> >
+> > vdev regions are vdev0vring0, vdev0vring1, vdevbuffer and similar.
+> > They are handled by remoteproc common code, no need to map in imx
+> > rproc driver.
+> >
+> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > ---
+> >  drivers/remoteproc/imx_rproc.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/drivers/remoteproc/imx_rproc.c
+> > b/drivers/remoteproc/imx_rproc.c index f80428afb8a7..e62a53ee128e
+> > 100644
+> > --- a/drivers/remoteproc/imx_rproc.c
+> > +++ b/drivers/remoteproc/imx_rproc.c
+> > @@ -417,6 +417,9 @@ static int imx_rproc_addr_init(struct imx_rproc
+> *priv,
+> >  		struct resource res;
+> >
+> >  		node =3D of_parse_phandle(np, "memory-region", a);
+> > +		/* Not map vdev region */
+> > +		if (!strcmp(node->name, "vdev"))
+> > +			continue;
+>=20
+> I am very confused and because I don't see an example for the DT in the
+> bindings document I have to guess what is going on.
 
-+1
+V6 will include the DT yaml.
 
-And we are left with much simpler diff with what we agreed on. Does
-this look okay now ?
+>=20
+> So I am guessing that you have laid out the memory regions for the vrings=
+ and
+> the vdev0buffer in the DT "memory-region".
 
----
- .gitignore               | 3 +--
- Makefile                 | 4 ++--
- scripts/Makefile.dtbinst | 3 +++
- scripts/Makefile.lib     | 4 +++-
- 4 files changed, 9 insertions(+), 5 deletions(-)
+The dts part will be similar as following:
 
-diff --git a/.gitignore b/.gitignore
-index d01cda8e1177..0458c36f3cb2 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -17,8 +17,7 @@
- *.bz2
- *.c.[012]*.*
- *.dt.yaml
--*.dtb
--*.dtb.S
-+*.dtb*
- *.dwo
- *.elf
- *.gcno
-diff --git a/Makefile b/Makefile
-index 9e73f82e0d86..b84f5e0b46ab 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1334,7 +1334,7 @@ endif
- 
- ifneq ($(dtstree),)
- 
--%.dtb: include/config/kernel.release scripts_dtc
-+%.dtb %.dtbo: include/config/kernel.release scripts_dtc
- 	$(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
- 
- PHONY += dtbs dtbs_install dtbs_check
-@@ -1816,7 +1816,7 @@ clean: $(clean-dirs)
- 	@find $(if $(KBUILD_EXTMOD), $(KBUILD_EXTMOD), .) $(RCS_FIND_IGNORE) \
- 		\( -name '*.[aios]' -o -name '*.ko' -o -name '.*.cmd' \
- 		-o -name '*.ko.*' \
--		-o -name '*.dtb' -o -name '*.dtb.S' -o -name '*.dt.yaml' \
-+		-o -name '*.dtb' -o -name '*.dtbo' -o -name '*.dtb.S' -o -name '*.dt.yaml' \
- 		-o -name '*.dwo' -o -name '*.lst' \
- 		-o -name '*.su' -o -name '*.mod' \
- 		-o -name '.*.d' -o -name '.*.tmp' -o -name '*.mod.c' \
-diff --git a/scripts/Makefile.dtbinst b/scripts/Makefile.dtbinst
-index 50d580d77ae9..ba01f5ba2517 100644
---- a/scripts/Makefile.dtbinst
-+++ b/scripts/Makefile.dtbinst
-@@ -29,6 +29,9 @@ quiet_cmd_dtb_install = INSTALL $@
- $(dst)/%.dtb: $(obj)/%.dtb
- 	$(call cmd,dtb_install)
- 
-+$(dst)/%.dtbo: $(obj)/%.dtbo
-+	$(call cmd,dtb_install)
++    #include <dt-bindings/clock/imx8mm-clock.h>
++    rsc_table: rsc_table@550ff000 {
++      no-map;
++      reg =3D <0x550ff000 0x1000>;
++    };
 +
- PHONY += $(subdirs)
- $(subdirs):
- 	$(Q)$(MAKE) $(dtbinst)=$@ dst=$(patsubst $(obj)/%,$(dst)/%,$@)
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index 213677a5ed33..30bc0a8e0087 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -86,7 +86,9 @@ extra-$(CONFIG_OF_ALL_DTBS)	+= $(dtb-)
- 
- ifneq ($(CHECK_DTBS),)
- extra-y += $(patsubst %.dtb,%.dt.yaml, $(dtb-y))
-+extra-y += $(patsubst %.dtbo,%.dt.yaml, $(dtb-y))
- extra-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtb,%.dt.yaml, $(dtb-))
-+extra-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtbo,%.dt.yaml, $(dtb-))
- endif
- 
- # Add subdir path
-@@ -324,7 +326,7 @@ cmd_dtc = $(HOSTCC) -E $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ;
- 		-d $(depfile).dtc.tmp $(dtc-tmp) ; \
- 	cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile)
- 
--$(obj)/%.dtb: $(src)/%.dts $(DTC) FORCE
-+$(obj)/%.dtb $(obj)/%.dtbo: $(src)/%.dts $(DTC) FORCE
- 	$(call if_changed_dep,dtc)
- 
- DT_CHECKER ?= dt-validate
++    vdev0vring0: vdev0vring0@55000000 {
++      no-map;
++      reg =3D <0x55000000 0x8000>;
++    };
++
++    vdev0vring1: vdev0vring1@55008000 {
++      reg =3D <0x55008000 0x8000>;
++      no-map;
++    };
++
++    vdevbuffer: vdevbuffer@55400000 {
++      compatible =3D "shared-dma-pool";
++      reg =3D <0x55400000 0x100000>;
++      no-map;
++    };
++
++    imx8mm-cm4 {
++      compatible =3D "fsl,imx8mm-cm4";
++      clocks =3D <&clk IMX8MM_CLK_M4_DIV>;
++      mbox-names =3D "tx", "rx", "rxdb";
++      mboxes =3D <&mu 0 1
++                &mu 1 1
++                &mu 3 1>;
++      memory-region =3D <&vdevbuffer>, <&vdev0vring0>, <&vdev0vring1>, <&r=
+sc_table>;
++      syscon =3D <&src>;
++    };
+
+>=20
+> For the vrings I don't see the allocation of a carveout, which means that=
+ you
+> will take the memory out of the DMA pool and the reserve memory will be
+> wasted.
+
+imx_rproc_parse_memory_regions will alloc carveout.
+
+>=20
+> For the vdev0buffer, what you have will work *only* if that entry is the =
+first
+> one in the list of memory regions, as we agreed here [2].
+
+Yes. I agree and follow this rule from then.
+
+Thanks,
+Peng.
+
+>=20
+> [1].
+> https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Felixi=
+r.b
+> ootlin.com%2Flinux%2Fv5.11-rc3%2Fsource%2Fdrivers%2Fremoteproc%2Fre
+> moteproc_core.c%23L321&amp;data=3D04%7C01%7Cpeng.fan%40nxp.com%7
+> C581784529b1646b9d34b08d8b67ae8c7%7C686ea1d3bc2b4c6fa92cd99c5c
+> 301635%7C0%7C0%7C637459986311799770%7CUnknown%7CTWFpbGZsb3
+> d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0
+> %3D%7C1000&amp;sdata=3DQur6YiTWlak0ZRnrUZRzawfoO38EBrAItqZm66b4
+> m20%3D&amp;reserved=3D0
+> [2].
+> https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fpatch
+> work.kernel.org%2Fproject%2Flinux-remoteproc%2Fpatch%2F202007221315
+> 43.7024-1-peng.fan%40nxp.com%2F&amp;data=3D04%7C01%7Cpeng.fan%40n
+> xp.com%7C581784529b1646b9d34b08d8b67ae8c7%7C686ea1d3bc2b4c6fa9
+> 2cd99c5c301635%7C0%7C0%7C637459986311799770%7CUnknown%7CTW
+> FpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJX
+> VCI6Mn0%3D%7C1000&amp;sdata=3Db%2F8muWtb3yxKIsnXmKmRGYYV33%2
+> FHjwA6a8x58geY7eE%3D&amp;reserved=3D0
+>=20
+> >  		err =3D of_address_to_resource(node, 0, &res);
+> >  		if (err) {
+> >  			dev_err(dev, "unable to resolve memory region\n");
+> > --
+> > 2.28.0
+> >
