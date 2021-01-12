@@ -2,207 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56AFD2F2E8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:02:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1EE72F2ECA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731872AbhALMAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:00:25 -0500
-Received: from esa2.hc3370-68.iphmx.com ([216.71.145.153]:22013 "EHLO
-        esa2.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729900AbhALMAX (ORCPT
+        id S1732808AbhALMOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:14:45 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:57090 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732741AbhALMOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:00:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1610452822;
-  h=from:to:cc:subject:date:message-id:
-   content-transfer-encoding:mime-version;
-  bh=GVEOGe6HOBcUN3W05uXHIu3680KaoPV1ahJI63NieNI=;
-  b=F56pRxcMhXuz6Fj7kXuHkF0wR4kNe1GuoLy3CQE7u2p8cNlYnTjL3tV6
-   Og7ahhYzxKuOasshKCXGHRJsZM+TEqpiIm7cIDHzMXp4B2RDwIV/tb7XF
-   WhOgoVvMblYyS2f/BxbWxyKJ835UNx89+yG5Y5ssXg+xwAFrNn5eK8eWU
-   o=;
-Authentication-Results: esa2.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
-IronPort-SDR: oJ+WmsQtwSEea3wZ3PHvu1LgnixfhLWSBP/az/mcrIwRUeu8d4x6Bg48rmra/2bpEQbLwrBa7s
- 4IteRKJoStDgtjYjAsnTLaO7v7u1Z+zgoiI3sSBYIogIFHVJUEk+pwrwHGBJGr+XmonZ1PRb7M
- 4jDePZqsGzPfbY/JA8YNOUIogw8n6RPPa6Ps5UhG97qsksL+2Q4crzIf85oJ25zcGZ24rImJrT
- zcOYlmoNeokBEV8TqxCRZTOC4sM77pa5unETVJ888vMJpb/89x6HrCu+jVJWS8WMoRRyVmCEAc
- 0bI=
-X-SBRS: 5.2
-X-MesageID: 34948028
-X-Ironport-Server: esa2.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.156.83
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.79,341,1602561600"; 
-   d="scan'208";a="34948028"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Cha5r0oLiV1yOpam4G/YSwOqNyddN8H6bZgywWLIMb789GHRs1rhAgKkxM5PwenpTe/pp4D0YUDNQLv2SGstUzPOrKyX4V8Q7AC1uZFz5raZ7q3Dd45ER5vufWNwj39i+n3S/2DQwDxhNrd9v3ytSCxrkr4svcmVUWY/p2gw53w+YB11GZdrjpnOIVYPiHADgI4brNtQi9cAau7QqhAiIjbylftGArxniMvitEZd208ydBaLlT4VJbS9m7j6RtcP1LEbuDG0hjNOtjzPzLobHpGUElsbKSsIdo2eR76MeWkaguJ9nVmCciXZLE3/J9oxXRbzhrdTJoMUGA7BBMjQyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ExJaXQE/thjDWVx76HSE5KvzYwprp3LimsMovnDmkqA=;
- b=c0Goza1eqEpGebqcs7P3nVRdC083p7drmpOp5Tryt4EA+t2RW7VAuCovTDDsFxQCfXfpqwh3dZ7GTyB95KrV7TS4Yh2pFdCdlRDPp3KVuCewKAtuvnXE/5oQo4Xl/Xsov+zMe+jmkNOsWPVSH6SKPEFIPFmn4wiRMql6On5ZThPak8lJSLDxi4xYtMHkTN6WZ57pAN6SSvJhLVYVkflMoLm+UtGSD3kOLdRYCIzBVknJ9fs2ROGNEvKD9tD9nyyG2Xv6GbUkAxh3E4on9xRpfR0LmGahJbacAvy4vA6jacne0tBaOLkkIUYQEG0d8nZhMG2FEMKokgoWgYRxDFgXeQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
- dkim=pass header.d=citrix.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ExJaXQE/thjDWVx76HSE5KvzYwprp3LimsMovnDmkqA=;
- b=WkFcRfhr8fhvvbXIO9Z0GPCg/n8QOvlgCBDyot0UTkdib4TPfYjAIOEydHGxry+PvPSeLG+1wNlx5u/673eTdK8+Fm47pnXg6waqH/Mesinm2gzsov52yxond5MnQ8wKppXKfK6H7qVvS2dmFEyBtBbcrbcesqum79IX8QdJq+g=
-From:   Roger Pau Monne <roger.pau@citrix.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Roger Pau Monne <roger.pau@citrix.com>, <stable@vger.kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Paul Durrant <paul.durrant@citrix.com>, <amc96@cam.ac.uk>,
-        <andrew.cooper3@citrix.com>, <xen-devel@lists.xenproject.org>
-Subject: [PATCH v2] xen/privcmd: allow fetching resource sizes
-Date:   Tue, 12 Jan 2021 12:53:58 +0100
-Message-ID: <20210112115358.23346-1-roger.pau@citrix.com>
-X-Mailer: git-send-email 2.29.2
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: PR3PR09CA0017.eurprd09.prod.outlook.com
- (2603:10a6:102:b7::22) To DS7PR03MB5608.namprd03.prod.outlook.com
- (2603:10b6:5:2c9::18)
+        Tue, 12 Jan 2021 07:14:44 -0500
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210112121359epoutp023eea4f5ab85c3e58f7cb367e94451331~Zew14zjA92918529185epoutp02J
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:13:59 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210112121359epoutp023eea4f5ab85c3e58f7cb367e94451331~Zew14zjA92918529185epoutp02J
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1610453639;
+        bh=T6hBGVL8Nc7dnYMEcTZfUcdEeuqzjalUKBYfIb234L0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=rW8kR1nwpAEgqT56G4fhHrj6/ibJokd1N3TBpw+oAvXY3AHz4JhhxhqJUgtCMaC6m
+         89nea9W3wFCA1v6B/GVS7OrMdX1rdxDcFi8bAjKTyjpInGs/ohyaSVsu7AwhowNLNR
+         atibC+fNZXhSTkV0JRiEux/QcHcUStT1ZOXmSoo4=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210112121358epcas1p33e4c178b5e8ce163996d964e0e06ef03~Zew1BEYv31079310793epcas1p3V;
+        Tue, 12 Jan 2021 12:13:58 +0000 (GMT)
+Received: from epsmges1p5.samsung.com (unknown [182.195.40.160]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4DFTyF27bwz4x9Pr; Tue, 12 Jan
+        2021 12:13:57 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p5.samsung.com (Symantec Messaging Gateway) with SMTP id
+        A9.86.09577.5829DFF5; Tue, 12 Jan 2021 21:13:57 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210112121356epcas1p124baa93f10eb3400539ba4db27c18955~Zewyx_Q_11418914189epcas1p1D;
+        Tue, 12 Jan 2021 12:13:56 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210112121356epsmtrp1c45d7090c900448c51e2c13c843ecdb6~Zewyt1Uvq2474724747epsmtrp1E;
+        Tue, 12 Jan 2021 12:13:56 +0000 (GMT)
+X-AuditID: b6c32a39-c13ff70000002569-87-5ffd92852d35
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        83.61.13470.3829DFF5; Tue, 12 Jan 2021 21:13:56 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210112121355epsmtip192cfb07e97ab9d8e12afad9d24e23ed3~Zewyf_NiH2401824018epsmtip1N;
+        Tue, 12 Jan 2021 12:13:55 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     damien.lemoal@wdc.com
+Cc:     Johannes.Thumshirn@wdc.com, axboe@kernel.dk,
+        jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mj0123.lee@samsung.com, nanich.lee@samsung.com,
+        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        tj@kernel.org, yt0928.kim@samsung.com
+Subject: Re: Re: [PATCH] bio: limit bio max size. 
+Date:   Tue, 12 Jan 2021 20:58:46 +0900
+Message-Id: <20210112115846.31415-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <BL0PR04MB6514F7F944D70DE024494544E7AA0@BL0PR04MB6514.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d8cd1e1a-8dcd-422c-b965-08d8b6f179a4
-X-MS-TrafficTypeDiagnostic: DM6PR03MB4604:
-X-LD-Processed: 335836de-42ef-43a2-b145-348c2ee9ca5b,ExtAddr
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR03MB4604FD074DA5653BEF217E458FAA0@DM6PR03MB4604.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wkEI7WyUVPS8gn+DGPs4ZNtkzsiiYp4WF9zJA5LdFmTJ8i5CD5rbhRxhI1AMbA8nTyKZ/QxXH0C5LHmVWe1PCr/F9pOiX+usSGhIhBVE67HtQdmgLCnE4+jk/ijwBzyl2rm2yfwieUdwnDNBxMiTEY1yqnDNG5wjYxEPI9UVdWTz7Lb+ftGaRrUwe6EJXPx36VqyCMF9pF6vxOxGUyIq6Wx8vaBq6RBWQzftT41oFLaKtN4R6KdKAvhsFUcCCE1wED1G9/ZKxIdng40xgVxUPwZhCw+zwC0/TBBToQuvQbDuxRXkdw9N6dnOX8jpSrn6v7GK4aBbQ4qTErTfu2LDkYAaUxVaMIaHi9LApsdeqagPqWpkW3M3LAFo92iYjVp8B7xq/etgitHkBiPOwOMp7AGgr+0ijcOZ23Haq9B0gFXp7L7DRMpq4a1X+WN9SOP4
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR03MB5608.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(396003)(39860400002)(136003)(478600001)(26005)(2616005)(186003)(956004)(1076003)(5660300002)(54906003)(2906002)(6486002)(316002)(8676002)(16526019)(83380400001)(66946007)(6666004)(8936002)(86362001)(6916009)(36756003)(66476007)(4326008)(6496006)(66556008)(309714004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MGRrdlh0TmttaEZKSVdkWDdmaU0xZFBYOFdXc05GMnBvaEd2enVnRjFoNjVS?=
- =?utf-8?B?V1dJa3lyY05YWFg0endNZUxaL1c4NGFsVW5OZDVQQjVKZTlvOUhHYmxFUVB6?=
- =?utf-8?B?L0JyWEVmWlNiSlRncVd4WGQya2N2WDBHUWlFNTBwRHk2SDl3ZVVudkdXWFhH?=
- =?utf-8?B?NEpEQ3lUM1J4TEZaOWRkWVBqR3FQRVVSMi8xQmV3c3ZqRFJLcVBXK1NtZjJ1?=
- =?utf-8?B?bGhnWGV2cFgrTGQ3UGdlYy9FS2pEMFJHZ2tTbXFrdWlTajI2VzA0cHlITVlm?=
- =?utf-8?B?Q3RVWlFKWXF1UE5sb1lqYXJEOTNkOC9VM2dKbmx3OUROWnk1eWZoeFlDTE5y?=
- =?utf-8?B?dHNEeFY1L0MzUlRrcmhaOVFteWtBb2JCb0pTcUIxaHhNaUtzck8zWUpWOE14?=
- =?utf-8?B?aVV2NGh5Sm5xcUhmV0FPZTJNc3NPeWpad0ExZUErWU5iUldXcTBrUms5Wnlz?=
- =?utf-8?B?NHFlVjF2SHdNNUQzM2laN09JS0x1VW1nM3JnQkJKd2FCa0tyY1hUc0ZGL09x?=
- =?utf-8?B?NW9Pd2c4OTh3QTgyWXRkQ3V5OFR5T2lVV2JqTUpZemlqNDJybHdsWFZJYTcw?=
- =?utf-8?B?TjM1NWJoZ1hadTNRSFNsZjQ5eFJoQnl6NTAzdkxBNGVINXhaMzN0V0pHZkQr?=
- =?utf-8?B?TzJQb2RpcVJxOGduTHVJcmlvNHhZVXUwTnpQTllZcnRFQmg2TGtVamJja0h3?=
- =?utf-8?B?S2JPdktldVFGSXZ2VXFHSVBVNldxUFR1dUE2b1pZZk9wN0YxR0FjaDQ2RDVu?=
- =?utf-8?B?QlRGSUI5Rjk4enhpSFNnWjkya0MxcnhKVlhESXFLNlM0ZFI3a1NFZzBvdHJE?=
- =?utf-8?B?cy85M0pwbjdKb3h6NmhlMjIrWU9xcThnMTU1Q3BRLzJ5ZmllUUlvaTl0Vk51?=
- =?utf-8?B?dTFYWTYxTlVYNklJUmVMWTlPSjgzTkIzZTBjTE91R3J2MVNRY25rRk1OVlVE?=
- =?utf-8?B?d1QvWnpHQTBxb2JOU2VFNzc1OERZRWg1aDNQYkgzcHhvdlFRTXJTLzRjMVNs?=
- =?utf-8?B?ZUNlMEcwUUhrcDBLRFdmSFI1ZjYrWUJCRlNsSVkzckE2a3g5SHhvNXlSY3M3?=
- =?utf-8?B?YnJYd0l5UlR6RTZyNVFZT0RaVW9idk5xWGY2WU82OGdkNTFRM1BhSW5pYjZV?=
- =?utf-8?B?MTlsMDhOVTVYVVlxZVNJVmlDNFpvSXluSS94RXgrbUYvNmR1NTBNUVFpR2g3?=
- =?utf-8?B?R1F3Rk1NR3dnOXBWVWo3b1NvZ1pjRmppbXkxb0tmcDdrQndUU1RzZ0pSWHVz?=
- =?utf-8?B?MytidnpUQytNSFdBNlZkeG9HVXgyRWkrQmdDWmNwRVR2bUhWenlvbnFzWGtG?=
- =?utf-8?Q?fIY5pguhibR2JIH61KfZet4MNEfXU1G+uL?=
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR03MB5608.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 11:59:11.6370
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
-X-MS-Exchange-CrossTenant-Network-Message-Id: d8cd1e1a-8dcd-422c-b965-08d8b6f179a4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IoBsu6DA4x7D7n0GE/0rCilqq8ybEhClL4/W6FAJzyz/0OCm3pnJWyYlJt/iQwlOqtQx2OJiSVH3pmbloInc+g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB4604
-X-OriginatorOrg: citrix.com
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrJJsWRmVeSWpSXmKPExsWy7bCmrm7rpL/xBv8Wc1isvtvPZtHa/o3J
+        oudJE6vF3657TBZfHxZb7L2lbXF51xw2i+mb5zBbXLt/ht3i3MlPrBbzHjtY/Fp+lNFi/d6f
+        bA68HpfPlnpsWtXJ5tG3ZRWjx+dNch7tB7qZAlijcmwyUhNTUosUUvOS81My89JtlbyD453j
+        Tc0MDHUNLS3MlRTyEnNTbZVcfAJ03TJzgA5UUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gq
+        pRak5BQYGhToFSfmFpfmpesl5+daGRoYGJkCVSbkZGw/u4+54K9ExYufc9kbGL8LdzFyckgI
+        mEicurKQsYuRi0NIYAejxOEL3VDOJ0aJto5GZgjnG6PE31Oz2GBapk6+xg6R2Mso0Xi6jwXC
+        +cwosWbZNLAqNgEdib63t8BsEQFJiVMvv7CBFDELbGKSONe7BWgJB4ewgJHEl3klICaLgKrE
+        sYfiIOW8AtYSXz+eYoZYJi/xtHc5mM0pECuxbFEvM0SNoMTJmU9YQGxmoJrmrbPBLpUQmMgh
+        seH9L0aIZheJN3dALgWxhSVeHd8CZUtJvOxvY4do6GaUaG6bzwjhTGCUWPJ8GRNElbHEp8+f
+        wQ5lFtCUWL9LHyKsKLHz91xGiM18Eu++9rCClEgI8Ep0tAlBlKhInGm5zwyz6/nanVATPSTe
+        rr8EDd8NjBLnr25lm8CoMAvJQ7OQPDQLYfMCRuZVjGKpBcW56anFhgWmyHG8iRGcZrUsdzBO
+        f/tB7xAjEwfjIUYJDmYlEd6i7r/xQrwpiZVVqUX58UWlOanFhxhNgaE9kVlKNDkfmOjzSuIN
+        TY2MjY0tTMzMzUyNlcR5kwwexAsJpCeWpGanphakFsH0MXFwSjUw9Z7PzH9wZ0O+it72S4ba
+        /3fMKfnfc4Vzh36s02+zo7/bX83726p0OnRjlO2nZMP9K7IMtMUDbk6cbDPXt1rQZpHAvcpc
+        b0YT9r4pd/bxM7zgn1kcJZnwnLmo9PGMwIeuL+VeqW9hypuaY/PrmPF3e4eQeW+Pd9pb/7px
+        52y9X7lEeKr+knTNC2zPzmfLnJ25UemsUN8vQ9dL3EuP59+SXWfywOprwaXbCjMS3vWm1WhN
+        2R3Mu+VV2cbz2zMerPzLI/zu2c1vnQqZDRqcW3pZ9x9n/mPyXvdbv21EySftNztWnugWCk59
+        udxkSdvfZ1LRmrdnH8tn6Hl+VJKZbX97fFyyy9KELB022xhd/WkvlViKMxINtZiLihMBfxhZ
+        VzwEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrPLMWRmVeSWpSXmKPExsWy7bCSnG7LpL/xBrNmMlmsvtvPZtHa/o3J
+        oudJE6vF3657TBZfHxZb7L2lbXF51xw2i+mb5zBbXLt/ht3i3MlPrBbzHjtY/Fp+lNFi/d6f
+        bA68HpfPlnpsWtXJ5tG3ZRWjx+dNch7tB7qZAlijuGxSUnMyy1KL9O0SuDK2n93HXPBXouLF
+        z7nsDYzfhbsYOTkkBEwkpk6+xt7FyMUhJLCbUeJM5xZmiISUxPETb1m7GDmAbGGJw4eLIWo+
+        Mko0P5kHVsMmoCPR9/YWG4gtIiApcerlFzaQImaBA0wS0y59YAFpFhYwkvgyrwTEZBFQlTj2
+        UByknFfAWuLrx1NQq+QlnvYuB7M5BWIlli3qBbOFBGIkll2eyAZRLyhxcuYTFhCbGai+eets
+        5gmMArOQpGYhSS1gZFrFKJlaUJybnltsWGCYl1quV5yYW1yal66XnJ+7iREcB1qaOxi3r/qg
+        d4iRiYPxEKMEB7OSCG9R9994Id6UxMqq1KL8+KLSnNTiQ4zSHCxK4rwXuk7GCwmkJ5akZqem
+        FqQWwWSZODilGphOztoo9TJ6/4Wu2t0vPgqryk86skgss3ZmpWCV9MmLe3+s/vzbXu99+rx1
+        OqHbJN83Xc7lMHyT7rqfQ+pSxbzwWvY7dY+UEmZHxxzO7X/9INnyhP3ivYcSg1m4ZxU27cpY
+        5cWr3FZY5/Bxyezg2xL9NpxXOn4eLapcM+tq1SL/xV0yD4t8Hfrjyiz46tVT+c3X2v8L6Xqs
+        V6nwd1698lv9kNitqnXff25jvfxGKenQcfXtx8UWxstH+JjUrvF/npxp+a5pqpyIcIvXkcUq
+        rHfWCfqtMjDPzM5+cPvA28sLIhOu//TdI7d4kWaV2Tz/wrMti263tTctaT/QVFZbFtK8y8T4
+        xRPTt1nKXz8c6VZiKc5INNRiLipOBABcEUlw8gIAAA==
+X-CMS-MailID: 20210112121356epcas1p124baa93f10eb3400539ba4db27c18955
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210112121356epcas1p124baa93f10eb3400539ba4db27c18955
+References: <BL0PR04MB6514F7F944D70DE024494544E7AA0@BL0PR04MB6514.namprd04.prod.outlook.com>
+        <CGME20210112121356epcas1p124baa93f10eb3400539ba4db27c18955@epcas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow issuing an IOCTL_PRIVCMD_MMAP_RESOURCE ioctl with num = 0 and
-addr = 0 in order to fetch the size of a specific resource.
+>On 2021/01/12 17:52, Changheun Lee wrote:
+>> From: "Changheun Lee" <nanich.lee@samsung.com>
+>> 
+>> bio size can grow up to 4GB when muli-page bvec is enabled.
+>> but sometimes it would lead to inefficient behaviors.
+>> in case of large chunk direct I/O, - 64MB chunk read in user space -
+>> all pages for 64MB would be merged to a bio structure if memory address is
+>> continued phsycally. it makes some delay to submit until merge complete.
+>> bio max size should be limited as a proper size.
+>
+>But merging physically contiguous pages into the same bvec + later automatic bio
+>split on submit should give you better throughput for large IOs compared to
+>having to issue a bio chain of smaller BIOs that are arbitrarily sized and will
+>likely need splitting anyway (because of DMA boundaries etc).
+>
+>Do you have a specific case where you see higher performance with this patch
+>applied ? On Intel, BIO_MAX_SIZE would be 1MB... That is arbitrary and too small
+>considering that many hardware can execute larger IOs than that.
+>
 
-Add a shortcut to the default map resource path, since fetching the
-size requires no address to be passed in, and thus no VMA to setup.
+When I tested 32MB chunk read with O_DIRECT in android, all pages of 32MB
+is merged into a bio structure.
+And elapsed time to merge complete was about 2ms.
+It means first bio-submit is after 2ms.
+If bio size is limited with 1MB with this patch, first bio-submit is about
+100us by bio_full operation.
+It's not large delay and can't be observed with low speed device.
+But it's needed to reduce merge delay for high speed device.
+I improved 512MB sequential read performance from 1900MB/s to 2000MB/s
+with this patch on android platform.
+As you said, 1MB might be small for some device.
+But method is needed to re-size, or select the bio max size.
 
-This is missing from the initial implementation, and causes issues
-when mapping resources that don't have fixed or known sizes.
-
-Signed-off-by: Roger Pau Monné <roger.pau@citrix.com>
-Cc: stable@vger.kernel.org # >= 4.18
----
-NB: fetching the size of a resource shouldn't trigger an hypercall
-preemption, and hence I've dropped the preempt indications.
----
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: Stefano Stabellini <sstabellini@kernel.org>
-Cc: Paul Durrant <paul.durrant@citrix.com>
-Cc: amc96@cam.ac.uk
-Cc: andrew.cooper3@citrix.com
-Cc: xen-devel@lists.xenproject.org
----
-Changes since v1:
- - Remove Fixes tag, add backport.
- - Make sure both addr and num are set or unset.
----
- drivers/xen/privcmd.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/xen/privcmd.c b/drivers/xen/privcmd.c
-index b0c73c58f987..720a7b7abd46 100644
---- a/drivers/xen/privcmd.c
-+++ b/drivers/xen/privcmd.c
-@@ -717,14 +717,15 @@ static long privcmd_ioctl_restrict(struct file *file, void __user *udata)
- 	return 0;
- }
- 
--static long privcmd_ioctl_mmap_resource(struct file *file, void __user *udata)
-+static long privcmd_ioctl_mmap_resource(struct file *file,
-+				struct privcmd_mmap_resource __user *udata)
- {
- 	struct privcmd_data *data = file->private_data;
- 	struct mm_struct *mm = current->mm;
- 	struct vm_area_struct *vma;
- 	struct privcmd_mmap_resource kdata;
- 	xen_pfn_t *pfns = NULL;
--	struct xen_mem_acquire_resource xdata;
-+	struct xen_mem_acquire_resource xdata = { };
- 	int rc;
- 
- 	if (copy_from_user(&kdata, udata, sizeof(kdata)))
-@@ -734,6 +735,22 @@ static long privcmd_ioctl_mmap_resource(struct file *file, void __user *udata)
- 	if (data->domid != DOMID_INVALID && data->domid != kdata.dom)
- 		return -EPERM;
- 
-+	/* Both fields must be set or unset */
-+	if (!!kdata.addr != !!kdata.num)
-+		return -EINVAL;
-+
-+	xdata.domid = kdata.dom;
-+	xdata.type = kdata.type;
-+	xdata.id = kdata.id;
-+
-+	if (!kdata.addr && !kdata.num) {
-+		/* Query the size of the resource. */
-+		rc = HYPERVISOR_memory_op(XENMEM_acquire_resource, &xdata);
-+		if (rc)
-+			return rc;
-+		return __put_user(xdata.nr_frames, &udata->num);
-+	}
-+
- 	mmap_write_lock(mm);
- 
- 	vma = find_vma(mm, kdata.addr);
-@@ -768,10 +785,6 @@ static long privcmd_ioctl_mmap_resource(struct file *file, void __user *udata)
- 	} else
- 		vma->vm_private_data = PRIV_VMA_LOCKED;
- 
--	memset(&xdata, 0, sizeof(xdata));
--	xdata.domid = kdata.dom;
--	xdata.type = kdata.type;
--	xdata.id = kdata.id;
- 	xdata.frame = kdata.idx;
- 	xdata.nr_frames = kdata.num;
- 	set_xen_guest_handle(xdata.frame_list, pfns);
--- 
-2.29.2
-
+>
+>> 
+>> Signed-off-by: Changheun Lee <nanich.lee@samsung.com>
+>> ---
+>>  block/bio.c         | 2 +-
+>>  include/linux/bio.h | 3 ++-
+>>  2 files changed, 3 insertions(+), 2 deletions(-)
+>> 
+>> diff --git a/block/bio.c b/block/bio.c
+>> index 1f2cc1fbe283..dbe14d675f28 100644
+>> --- a/block/bio.c
+>> +++ b/block/bio.c
+>> @@ -877,7 +877,7 @@ bool __bio_try_merge_page(struct bio *bio, struct page *page,
+>>  		struct bio_vec *bv = &bio->bi_io_vec[bio->bi_vcnt - 1];
+>>  
+>>  		if (page_is_mergeable(bv, page, len, off, same_page)) {
+>> -			if (bio->bi_iter.bi_size > UINT_MAX - len) {
+>> +			if (bio->bi_iter.bi_size > BIO_MAX_SIZE - len) {
+>>  				*same_page = false;
+>>  				return false;
+>>  			}
+>> diff --git a/include/linux/bio.h b/include/linux/bio.h
+>> index 1edda614f7ce..0f49b354b1f6 100644
+>> --- a/include/linux/bio.h
+>> +++ b/include/linux/bio.h
+>> @@ -20,6 +20,7 @@
+>>  #endif
+>>  
+>>  #define BIO_MAX_PAGES		256
+>> +#define BIO_MAX_SIZE		(BIO_MAX_PAGES * PAGE_SIZE)
+>>  
+>>  #define bio_prio(bio)			(bio)->bi_ioprio
+>>  #define bio_set_prio(bio, prio)		((bio)->bi_ioprio = prio)
+>> @@ -113,7 +114,7 @@ static inline bool bio_full(struct bio *bio, unsigned len)
+>>  	if (bio->bi_vcnt >= bio->bi_max_vecs)
+>>  		return true;
+>>  
+>> -	if (bio->bi_iter.bi_size > UINT_MAX - len)
+>> +	if (bio->bi_iter.bi_size > BIO_MAX_SIZE - len)
+>>  		return true;
+>>  
+>>  	return false;
+>> 
+>
+>
+>-- 
+>Damien Le Moal
+>Western Digital Research
