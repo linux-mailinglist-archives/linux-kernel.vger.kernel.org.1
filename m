@@ -2,268 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63542F4062
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 047772F4065
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404001AbhALXhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 18:37:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42812 "EHLO
+        id S2389877AbhALXkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 18:40:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389010AbhALXhL (ORCPT
+        with ESMTP id S2388481AbhALXkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 18:37:11 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB879C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:36:30 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id m6so76005pfk.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:36:30 -0800 (PST)
+        Tue, 12 Jan 2021 18:40:11 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2721C061575;
+        Tue, 12 Jan 2021 15:39:31 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id m6so64979pfm.6;
+        Tue, 12 Jan 2021 15:39:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mEBkOPFW86VPUoCBn9m9fpzpE6sqvzaVXLvlkeB1JaA=;
-        b=UhsCzBkT0GLtG0z8nOtx7zVsEqDFaz2KKP/XtsMOT0Qnl10vOiacfrgKfGl4l8uWXA
-         JxmxX/JcdwS6TWBHbtFkaHEGscp2l1eviDyldmuESpZTgmSuzL3sIA9E+/s32UoAXX7X
-         +SeI5muVXqMZ8tbs/EJ5VWTrQ5eSWncDhujkb4QLozKP4HQ+pqPgACTOX7Xfm65SpSw/
-         LMzfrxyiBElteGS+5fQDLwsRw/T7KoU5mseo3h4ZsZ7SOL8fk8yJlcqc57iRo6waJykT
-         tjit2miQOh67KTApCMsD7GQrbD7vT+qiK00zZf/ZTLNg72AVrGkKhMK4KlZrFpteWmv3
-         D6Uw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Z1JTaErEPrP1NDii1O59Lox44MzvMpWGpFox9KE1gVY=;
+        b=UKePpehyURF8t+N2rQ5ZHAhDwXpyKRgmiyV5YUyxDySmCwajsK6hrTUsMtjo+YsyNw
+         N5kxarVDgFdxzmC2AQZM1P4GzsUArih2cguOAiQ0uZi57ZcEeEdGXk0PGC5+6R0rdJTN
+         uayI09AMBs7G3DsdYfNiCIG09zpVbRgXFE2ew7+NBckBvqHNkZmDbMixyI+j4Y/V4WsG
+         iCIt+EGp1TxyHM2FUsJ5ZsNd4OBN+ss4jXhcW7f8vd/chbDgmVolI+2PoxCgabTEtyoK
+         /Iy+otUvMiDfP5HrvoTupYn9OBARRP5yAgas5cHeO56WsXTDDuHtTSiyHCu8Ex3k7ERz
+         xA9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mEBkOPFW86VPUoCBn9m9fpzpE6sqvzaVXLvlkeB1JaA=;
-        b=AQvoYl2emWx2MjxBEz5SegrXxrAuVAqqbrsup0GFE//1dfnn+/I12fmglliSIB8ugR
-         2Qih2evT26aHfxkC3QTgWjKV+yASMrelo7lWvNh6sc4reRAgT1813yY+/KIMO3YIjjGz
-         LzvTexq+yKvVrIfhaoyO6NyM4vlnhIA4KBtiB5rrgAHa/V1CxwZXgGgrQArN1N+DMmQM
-         VGWTawE2H7RcsJIKnG0oRxYC8DxUCcoub7tSY0oIFjYtLbZfddhURYA26VO62YNs3fO4
-         NkWXrcc0uOKTD2ZPgGZ7h4Q/igYgE5MmY3b6fYENZISamb7j2fwJ9zDCJkvnL8pfPGLm
-         6nYQ==
-X-Gm-Message-State: AOAM5312FDhsp2rFDnEj/PXRomEx32mWX08fZjYq8vsAd/4KunNDu7qx
-        if6j1Ppv1hclmdEPxEGMUpge3ReMXgoFOHMwSV8OH6uld0dPgA==
-X-Google-Smtp-Source: ABdhPJyk5PEF5UHB0B/0evvZXyll9soXfX1sZqruCPvrTzK6detAZyOBlgZXFnC2GV/AFSRanyOMa+5wpsm5ETLC9r8=
-X-Received: by 2002:a63:e:: with SMTP id 14mr1421869pga.253.1610494590037;
- Tue, 12 Jan 2021 15:36:30 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Z1JTaErEPrP1NDii1O59Lox44MzvMpWGpFox9KE1gVY=;
+        b=CGAcqattOFRyaaoxpqEoMvnEHiwYl/Jp9aqAo2cOU5F7PZI6MYdfOY0Wp7D5xQHqiD
+         B3YfXfYUNO6SjUK9FkEoDEKOcOA9DiXhALx/OTiGFp1tAj6Lrf+xeREhbqFoRrikJ0rd
+         gWEQwPAF52ZgIkZubL/A0UDrR9S/WOwTUD0nUMd/grfzEfq5pgkWbQaEpZLjyieiw1Fa
+         c1JMtHOecLMfuhBJEr3H4Ay4AxT1pcyiwURJOmGKBYzEFzVc0ezMtsXp3Dj3VdqIX6Je
+         PbRc3lgSygsQ2GMs7qqDqm/lwkmguvP3/3CaswM4MSszvn4qPvovT5rN6Ou7Rgfs7X0n
+         IDjA==
+X-Gm-Message-State: AOAM530upY+tBr7QvJ48F78gSm24B8QEPIi10kFz/KvWsKmNEhBnJhvi
+        l2u3swLb4WQ75DBBRd1gN+L6KXlbhGI=
+X-Google-Smtp-Source: ABdhPJyArjqVLqeIkvjKKBsKMdQRC3Og1Bx7l3Wh1YJGTJpOBPi6m2rYNCjntb6GGu54j6vcfyrGWA==
+X-Received: by 2002:a63:585a:: with SMTP id i26mr1465672pgm.330.1610494771102;
+        Tue, 12 Jan 2021 15:39:31 -0800 (PST)
+Received: from [10.67.48.230] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id v125sm88579pgv.6.2021.01.12.15.39.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jan 2021 15:39:30 -0800 (PST)
+Subject: Re: [RFC PATCH v3 3/6] swiotlb: Use restricted DMA pool if available
+To:     Claire Chang <tientzu@chromium.org>, robh+dt@kernel.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        joro@8bytes.org, will@kernel.org, frowand.list@gmail.com,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com
+Cc:     grant.likely@arm.com, xypron.glpk@gmx.de, treding@nvidia.com,
+        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
+        gregkh@linuxfoundation.org, saravanak@google.com,
+        rafael.j.wysocki@intel.com, heikki.krogerus@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, rdunlap@infradead.org,
+        dan.j.williams@intel.com, bgolaszewski@baylibre.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, iommu@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org, tfiga@chromium.org,
+        drinkcat@chromium.org
+References: <20210106034124.30560-1-tientzu@chromium.org>
+ <20210106034124.30560-4-tientzu@chromium.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
+Message-ID: <7b9b598c-5ccd-f897-a962-14c0ed7af6de@gmail.com>
+Date:   Tue, 12 Jan 2021 15:39:23 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210112214105.1440932-1-shakeelb@google.com> <20210112233108.GD99586@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20210112233108.GD99586@carbon.dhcp.thefacebook.com>
-From:   Arjun Roy <arjunroy@google.com>
-Date:   Tue, 12 Jan 2021 15:36:18 -0800
-Message-ID: <CAOFY-A3=mCvfvMYBJvDL1LfjgYgc3kzebRNgeg0F+e=E1hMPXA@mail.gmail.com>
-Subject: Re: [PATCH] mm: net: memcg accounting for TCP rx zerocopy
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210106034124.30560-4-tientzu@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 3:31 PM Roman Gushchin <guro@fb.com> wrote:
->
-> On Tue, Jan 12, 2021 at 01:41:05PM -0800, Shakeel Butt wrote:
-> > From: Arjun Roy <arjunroy@google.com>
-> >
-> > TCP zerocopy receive is used by high performance network applications to
-> > further scale. For RX zerocopy, the memory containing the network data
-> > filled by network driver is directly mapped into the address space of
-> > high performance applications. To keep the TLB cost low, these
-> > applications unmaps the network memory in big batches. So, this memory
-> > can remain mapped for long time. This can cause memory isolation issue
-> > as this memory becomes unaccounted after getting mapped into the
-> > application address space. This patch adds the memcg accounting for such
-> > memory.
-> >
-> > Accounting the network memory comes with its own unique challenge. The
-> > high performance NIC drivers use page pooling to reuse the pages to
-> > eliminate/reduce the expensive setup steps like IOMMU. These drivers
-> > keep an extra reference on the pages and thus we can not depends on the
-> > page reference for the uncharging. The page in the pool may keep a memcg
-> > pinned for arbitrary long time or may get used by other memcg.
-> >
-> > This patch decouples the uncharging of the page from the refcnt and
-> > associate it with the map count i.e. the page gets uncharged when the
-> > last address space unmaps it. Now the question what if the driver drops
-> > its reference while the page is still mapped. That is fine as the
-> > address space also holds a reference to the page i.e. the reference
-> > count can not drop to zero before the map count.
-> >
-> > Signed-off-by: Arjun Roy <arjunroy@google.com>
-> > Co-developed-by: Shakeel Butt <shakeelb@google.com>
-> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> > ---
-> >  include/linux/memcontrol.h | 34 +++++++++++++++++++--
-> >  mm/memcontrol.c            | 60 ++++++++++++++++++++++++++++++++++++++
-> >  mm/rmap.c                  |  3 ++
-> >  net/ipv4/tcp.c             | 27 +++++++++++++----
-> >  4 files changed, 116 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 7a38a1517a05..0b0e3b4615cf 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -349,11 +349,13 @@ extern struct mem_cgroup *root_mem_cgroup;
-> >
-> >  enum page_memcg_data_flags {
-> >       /* page->memcg_data is a pointer to an objcgs vector */
-> > -     MEMCG_DATA_OBJCGS = (1UL << 0),
-> > +     MEMCG_DATA_OBJCGS       = (1UL << 0),
-> >       /* page has been accounted as a non-slab kernel page */
-> > -     MEMCG_DATA_KMEM = (1UL << 1),
-> > +     MEMCG_DATA_KMEM         = (1UL << 1),
-> > +     /* page has been accounted as network memory */
-> > +     MEMCG_DATA_SOCK         = (1UL << 2),
-> >       /* the next bit after the last actual flag */
-> > -     __NR_MEMCG_DATA_FLAGS  = (1UL << 2),
-> > +     __NR_MEMCG_DATA_FLAGS   = (1UL << 3),
-> >  };
-> >
-> >  #define MEMCG_DATA_FLAGS_MASK (__NR_MEMCG_DATA_FLAGS - 1)
-> > @@ -444,6 +446,11 @@ static inline bool PageMemcgKmem(struct page *page)
-> >       return page->memcg_data & MEMCG_DATA_KMEM;
-> >  }
-> >
-> > +static inline bool PageMemcgSock(struct page *page)
-> > +{
-> > +     return page->memcg_data & MEMCG_DATA_SOCK;
-> > +}
-> > +
-> >  #ifdef CONFIG_MEMCG_KMEM
-> >  /*
-> >   * page_objcgs - get the object cgroups vector associated with a page
-> > @@ -1095,6 +1102,11 @@ static inline bool PageMemcgKmem(struct page *page)
-> >       return false;
-> >  }
-> >
-> > +static inline bool PageMemcgSock(struct page *page)
-> > +{
-> > +     return false;
-> > +}
-> > +
-> >  static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
-> >  {
-> >       return true;
-> > @@ -1561,6 +1573,10 @@ extern struct static_key_false memcg_sockets_enabled_key;
-> >  #define mem_cgroup_sockets_enabled static_branch_unlikely(&memcg_sockets_enabled_key)
-> >  void mem_cgroup_sk_alloc(struct sock *sk);
-> >  void mem_cgroup_sk_free(struct sock *sk);
-> > +int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg, struct page **pages,
-> > +                              unsigned int nr_pages);
-> > +void mem_cgroup_uncharge_sock_pages(struct page **pages, unsigned int nr_pages);
-> > +
-> >  static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
-> >  {
-> >       if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg->tcpmem_pressure)
-> > @@ -1589,6 +1605,18 @@ static inline void memcg_set_shrinker_bit(struct mem_cgroup *memcg,
-> >                                         int nid, int shrinker_id)
-> >  {
-> >  }
-> > +
-> > +static inline int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg,
-> > +                                            struct page **pages,
-> > +                                            unsigned int nr_pages)
-> > +{
-> > +     return 0;
-> > +}
-> > +
-> > +static inline void mem_cgroup_uncharge_sock_pages(struct page **pages,
-> > +                                               unsigned int nr_pages)
-> > +{
-> > +}
-> >  #endif
-> >
-> >  #ifdef CONFIG_MEMCG_KMEM
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index db9836f4b64b..38e94538e081 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -7061,6 +7061,66 @@ void mem_cgroup_uncharge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages)
-> >       refill_stock(memcg, nr_pages);
-> >  }
-> >
-> > +/**
-> > + * mem_cgroup_charge_sock_pages - charge socket memory
-> > + * @memcg: memcg to charge
-> > + * @pages: array of pages to charge
-> > + * @nr_pages: number of pages
-> > + *
-> > + * Charges all @pages to current's memcg. The caller should have a reference on
-> > + * the given memcg.
-> > + *
-> > + * Returns 0 on success.
-> > + */
-> > +int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg, struct page **pages,
-> > +                              unsigned int nr_pages)
-> > +{
-> > +     int ret = 0;
-> > +
-> > +     if (mem_cgroup_disabled() || mem_cgroup_is_root(memcg))
-> > +             goto out;
-> > +
-> > +     ret = try_charge(memcg, GFP_KERNEL, nr_pages);
-> > +
-> > +     if (!ret) {
-> > +             int i;
-> > +
-> > +             for (i = 0; i < nr_pages; i++)
-> > +                     pages[i]->memcg_data = (unsigned long)memcg |
-> > +                             MEMCG_DATA_SOCK;
-> > +             css_get_many(&memcg->css, nr_pages);
-> > +     }
-> > +out:
-> > +     return ret;
-> > +}
-> > +
-> > +/**
-> > + * mem_cgroup_uncharge_sock_pages - uncharge socket pages
-> > + * @pages: array of pages to uncharge
-> > + * @nr_pages: number of pages
-> > + *
-> > + * This assumes all pages are charged to the same memcg.
-> > + */
-> > +void mem_cgroup_uncharge_sock_pages(struct page **pages, unsigned int nr_pages)
-> > +{
-> > +     int i;
-> > +     struct mem_cgroup *memcg;
-> > +
-> > +     if (mem_cgroup_disabled())
-> > +             return;
-> > +
-> > +     memcg = page_memcg(pages[0]);
-> > +
-> > +     if (unlikely(!memcg))
-> > +             return;
-> > +
-> > +     refill_stock(memcg, nr_pages);
-> > +
-> > +     for (i = 0; i < nr_pages; i++)
-> > +             pages[i]->memcg_data = 0;
-> > +     css_put_many(&memcg->css, nr_pages);
-> > +}
->
-> What about statistics? Should it be accounted towards "sock", "slab/kmem" or deserves
-> a separate counter? Do we plan to eventually have shrinkers for this type of memory?
->
+On 1/5/21 7:41 PM, Claire Chang wrote:
+> Regardless of swiotlb setting, the restricted DMA pool is preferred if
+> available.
+> 
+> The restricted DMA pools provide a basic level of protection against
+> the DMA overwriting buffer contents at unexpected times. However, to
+> protect against general data leakage and system memory corruption, the
+> system needs to provide a way to restrict the DMA to a predefined memory
+> region.
+> 
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
 
-While the pages in question are part of an sk_buff, they may be
-accounted towards sockmem. However, that charge is unaccounted when
-the skb is freed after the receive operation. When they are in use by
-the user application I do not think sockmem is the right place to have
-a break-out counter.
+You could probably split this patch into two:
 
-To double check, what do you mean by shrinker?
+- one that introduces the get_io_tlb_mem() getter, updates all callers
+of is_swiotlb_buffer() to gain a 'struct device' argument
+- another one that does add support for a non-default swiotlb pool and
+adds dev->dma_io_tlb_mem
 
-
-> Two functions above do not contain anything network-related,
-> except the MEMCG_DATA_SOCK flag. Can it be merged with the kmem charging path?
->
-> Code-wise the patch looks good to me.
->
-> Thanks!
+Other than that, LGTM!
+-- 
+Florian
