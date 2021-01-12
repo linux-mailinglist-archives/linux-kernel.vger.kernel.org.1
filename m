@@ -2,140 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C1A2F3FB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20CC22F3FB4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394651AbhALWbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:31:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394647AbhALWbc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:31:32 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BC1C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:30:52 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id j12so34454ota.7
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:30:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=dF0yJHbbjBb5erCUCeH3GN84OQvrBthurVO49Uciku8=;
-        b=guZqN+mctqBHsmD4I1QYDAt214jwEM9rS8OLOeLW+xtLapW6NBfmy6T6Qmer5EXYX5
-         bFU5yxZlS/4SQGnqmm+FYm/toyJAHTqC29K4CBVguL7xxAiV1g2zPhwKR3YDCK6N9fp2
-         rKqtJKywncWwhmwG5qEb8a3O5NnGn7iF4+5PXzfzosPAVNRB14v38jmsRBWPLLizQGWx
-         U/Xl4Xcwc9ySRHWeO3tSyHdy/jk7JpYEns3iU9kn3d8Nd/r7v4S7L3sDjSy9+58NasJq
-         75II5u4p71BsRc0gZKoNzz4AHnbwpvcSYbo9zyURaWmTK5329nKuzDkgA+b4Km5Rh+HA
-         2G2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=dF0yJHbbjBb5erCUCeH3GN84OQvrBthurVO49Uciku8=;
-        b=fblM1sXyY7Y5buLQGbNqWCvmkcR3c4OyTAmNJ1NK9etxWAAwFedLSx+xp9bOQHAE1s
-         5rOggLVFt0ZbTGMea1/w2/sPQZQi8HDhEY2eyrlQG3QkIcj0kYTUXZuijUzo5xJMzIIQ
-         jaqZYJLkczOUYb8JhXdpJc9/hYrbAX7az4EozKNu0q7PF9oLedh2YczumaogUe1GaOhJ
-         7qPAnFXpmE73fqwxngy0QorieCGQDquV1sPc9PfcVuacTBjGpIloRuq2Xc2cLgYKLW48
-         je+B8uXlIpjAQg/FqeRzOTv6c+ucP9u5cdf6IvlzAUFzIVoW2iqHEEy4shssRuH+l8TL
-         Rpgg==
-X-Gm-Message-State: AOAM5310DVmD0RbEOh0I8ypjL53oeCpl3c7n+16b5qItk+Rkj4+X0Sbc
-        Hg34RwIyQ2u5tCHw6q0VCV0ngnmaMVU9vvuuZB4=
-X-Google-Smtp-Source: ABdhPJxzlQ64G4f7mRpozXG0VzDdJ19+FRvpX5WO0g/YmLDMV9Q/xGD8xgDV5U8nKOQwoq2ri/50wVVgpdH0Y6gwfaA=
-X-Received: by 2002:a9d:75d4:: with SMTP id c20mr1044535otl.311.1610490651899;
- Tue, 12 Jan 2021 14:30:51 -0800 (PST)
+        id S2394659AbhALWct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:32:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59440 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729736AbhALWcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 17:32:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 370D823122;
+        Tue, 12 Jan 2021 22:32:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610490727;
+        bh=Edb7TSIfoEMpB72O6Vi1J0l6qdjuWpB/rW1mUCmfsUw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d50z2AvXNW3iNSLdPC5ZFMB6HpVxIax+yygsLqJb3E5qOIbAvI2qKKoYaUfIaFpPt
+         m+E5jHyJHIzbFc+kZ4ZojjJB4V09IFB0zG/aZMRs0dyei2tZ9z4LoxvQozTqBIWB40
+         GsEDw/5Xh3jFnPRd9CglEIvNw3m361G+zGzLkkDvCQ4kqrMSpUMY4oAixgHNqQ6gPD
+         BgBnrw9hx7EueL7h8j4Q6r61G7T1L5I/qjSqju03ia/2B5YjM7jx1zEty+6xl5+HSS
+         QphP+0rVk9XFWSOm28PQBB25YH7a80pU5SWqo0M88WeRCT0KcG1Mo/KEZvCB57s7nA
+         BtvcI7FU7ghTw==
+Date:   Tue, 12 Jan 2021 14:32:05 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: fix to keep isolation of atomic write
+Message-ID: <X/4jZY0bzkTCbDTY@google.com>
+References: <20201230075557.108818-1-yuchao0@huawei.com>
+ <X/Y5pJr4Aaf0bBqj@google.com>
+ <X/ZAS6oyFiudshe2@google.com>
+ <X/x9kTlL8E1Wj4Dd@google.com>
+ <d146348b-3bbd-c1a5-72eb-b054cbcf0b13@huawei.com>
 MIME-Version: 1.0
-References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-28-lee.jones@linaro.org>
-In-Reply-To: <20210111191926.3688443-28-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 12 Jan 2021 17:30:40 -0500
-Message-ID: <CADnq5_Pk++N2Ary324cEAdUFvFS0QF4VO7DumuiD9rYmF2Jyzg@mail.gmail.com>
-Subject: Re: [PATCH 27/40] drm/amd/display/dc/dce110/dce110_compressor: Strip
- out unused function 'controller_id_to_index'
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d146348b-3bbd-c1a5-72eb-b054cbcf0b13@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 2:20 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce110/dce110_compressor.c:429:=
-14: warning: no previous prototype for =E2=80=98controller_id_to_index=E2=
-=80=99 [-Wmissing-prototypes]
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On 01/12, Chao Yu wrote:
+> On 2021/1/12 0:32, Jaegeuk Kim wrote:
+> > On 01/06, Jaegeuk Kim wrote:
+> > > On 01/06, Jaegeuk Kim wrote:
+> > > > Hi Chao,
+> > > > 
+> > > > With a quick test, this patch causes down_write failure resulting in blocking
+> > > > process. I didn't dig in the bug so, please check the code again. :P
+> > > 
+> > > nvm. I can see it works now.
+> > 
+> > Hmm, this gives a huge perf regression when running sqlite. :(
+> > We may need to check the lock coverage. Thoughts?
+> 
+> I added i_mmap_sem lock only, so it can cause atomic_{start,commit,finish}
+> race with mmap and truncation operations in additionally.
+> 
+> I'd like to know what's your sqlite testcase?
 
-Applied. Thanks!
+Nothing special. Just generating multiple sqlite transactions to the same db.
 
-Alex
-
-
-> ---
->  .../amd/display/dc/dce110/dce110_compressor.c | 25 -------------------
->  1 file changed, 25 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_compressor.c b/=
-drivers/gpu/drm/amd/display/dc/dce110/dce110_compressor.c
-> index 18b0a69b0b1e8..44564a4742b52 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_compressor.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_compressor.c
-> @@ -425,31 +425,6 @@ void get_max_support_fbc_buffersize(unsigned int *ma=
-x_x, unsigned int *max_y)
->          */
->  }
->
-> -
-> -unsigned int controller_id_to_index(enum controller_id controller_id)
-> -{
-> -       unsigned int index =3D 0;
-> -
-> -       switch (controller_id) {
-> -       case CONTROLLER_ID_D0:
-> -               index =3D 0;
-> -               break;
-> -       case CONTROLLER_ID_D1:
-> -               index =3D 1;
-> -               break;
-> -       case CONTROLLER_ID_D2:
-> -               index =3D 2;
-> -               break;
-> -       case CONTROLLER_ID_D3:
-> -               index =3D 3;
-> -               break;
-> -       default:
-> -               break;
-> -       }
-> -       return index;
-> -}
-> -
-> -
->  static const struct compressor_funcs dce110_compressor_funcs =3D {
->         .power_up_fbc =3D dce110_compressor_power_up_fbc,
->         .enable_fbc =3D dce110_compressor_enable_fbc,
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
+> Thanks,
+> 
+> > 
+> > > 
+> > > > 
+> > > > On 12/30, Chao Yu wrote:
+> > > > > ThreadA					ThreadB
+> > > > > - f2fs_ioc_start_atomic_write
+> > > > > - write
+> > > > > - f2fs_ioc_commit_atomic_write
+> > > > >   - f2fs_commit_inmem_pages
+> > > > >   - f2fs_drop_inmem_pages
+> > > > >   - f2fs_drop_inmem_pages
+> > > > >    - __revoke_inmem_pages
+> > > > > 					- f2fs_vm_page_mkwrite
+> > > > > 					 - set_page_dirty
+> > > > > 					  - tag ATOMIC_WRITTEN_PAGE and add page
+> > > > > 					    to inmem_pages list
+> > > > >    - clear_inode_flag(FI_ATOMIC_FILE)
+> > > > > 					- f2fs_vm_page_mkwrite
+> > > > > 					  - set_page_dirty
+> > > > > 					   - f2fs_update_dirty_page
+> > > > > 					    - f2fs_trace_pid
+> > > > > 					     - tag inmem page private to pid
+> > > > > 					- truncate
+> > > > > 					 - f2fs_invalidate_page
+> > > > > 					 - set page->mapping to NULL
+> > > > > 					  then it will cause panic once we
+> > > > > 					  access page->mapping
+> > > > > 
+> > > > > The root cause is we missed to keep isolation of atomic write in the case
+> > > > > of commit_atomic_write vs mkwrite, let commit_atomic_write helds i_mmap_sem
+> > > > > lock to avoid this issue.
+> > > > > 
+> > > > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> > > > > ---
+> > > > > v2:
+> > > > > - use i_mmap_sem to avoid mkwrite racing with below flows:
+> > > > >   * f2fs_ioc_start_atomic_write
+> > > > >   * f2fs_drop_inmem_pages
+> > > > >   * f2fs_commit_inmem_pages
+> > > > > 
+> > > > >   fs/f2fs/file.c    | 3 +++
+> > > > >   fs/f2fs/segment.c | 7 +++++++
+> > > > >   2 files changed, 10 insertions(+)
+> > > > > 
+> > > > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> > > > > index 4e6d4b9120a8..a48ec650d691 100644
+> > > > > --- a/fs/f2fs/file.c
+> > > > > +++ b/fs/f2fs/file.c
+> > > > > @@ -2050,6 +2050,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+> > > > >   		goto out;
+> > > > >   	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+> > > > > +	down_write(&F2FS_I(inode)->i_mmap_sem);
+> > > > >   	/*
+> > > > >   	 * Should wait end_io to count F2FS_WB_CP_DATA correctly by
+> > > > > @@ -2060,6 +2061,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+> > > > >   			  inode->i_ino, get_dirty_pages(inode));
+> > > > >   	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
+> > > > >   	if (ret) {
+> > > > > +		up_write(&F2FS_I(inode)->i_mmap_sem);
+> > > > >   		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+> > > > >   		goto out;
+> > > > >   	}
+> > > > > @@ -2073,6 +2075,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
+> > > > >   	/* add inode in inmem_list first and set atomic_file */
+> > > > >   	set_inode_flag(inode, FI_ATOMIC_FILE);
+> > > > >   	clear_inode_flag(inode, FI_ATOMIC_REVOKE_REQUEST);
+> > > > > +	up_write(&F2FS_I(inode)->i_mmap_sem);
+> > > > >   	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
+> > > > >   	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
+> > > > > diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> > > > > index d8570b0359f5..dab870d9faf6 100644
+> > > > > --- a/fs/f2fs/segment.c
+> > > > > +++ b/fs/f2fs/segment.c
+> > > > > @@ -327,6 +327,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
+> > > > >   	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+> > > > >   	struct f2fs_inode_info *fi = F2FS_I(inode);
+> > > > > +	down_write(&F2FS_I(inode)->i_mmap_sem);
+> > > > > +
+> > > > >   	while (!list_empty(&fi->inmem_pages)) {
+> > > > >   		mutex_lock(&fi->inmem_lock);
+> > > > >   		__revoke_inmem_pages(inode, &fi->inmem_pages,
+> > > > > @@ -344,6 +346,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
+> > > > >   		sbi->atomic_files--;
+> > > > >   	}
+> > > > >   	spin_unlock(&sbi->inode_lock[ATOMIC_FILE]);
+> > > > > +
+> > > > > +	up_write(&F2FS_I(inode)->i_mmap_sem);
+> > > > >   }
+> > > > >   void f2fs_drop_inmem_page(struct inode *inode, struct page *page)
+> > > > > @@ -467,6 +471,7 @@ int f2fs_commit_inmem_pages(struct inode *inode)
+> > > > >   	f2fs_balance_fs(sbi, true);
+> > > > >   	down_write(&fi->i_gc_rwsem[WRITE]);
+> > > > > +	down_write(&F2FS_I(inode)->i_mmap_sem);
+> > > > >   	f2fs_lock_op(sbi);
+> > > > >   	set_inode_flag(inode, FI_ATOMIC_COMMIT);
+> > > > > @@ -478,6 +483,8 @@ int f2fs_commit_inmem_pages(struct inode *inode)
+> > > > >   	clear_inode_flag(inode, FI_ATOMIC_COMMIT);
+> > > > >   	f2fs_unlock_op(sbi);
+> > > > > +
+> > > > > +	up_write(&F2FS_I(inode)->i_mmap_sem);
+> > > > >   	up_write(&fi->i_gc_rwsem[WRITE]);
+> > > > >   	return err;
+> > > > > -- 
+> > > > > 2.29.2
+> > > > 
+> > > > 
+> > > > _______________________________________________
+> > > > Linux-f2fs-devel mailing list
+> > > > Linux-f2fs-devel@lists.sourceforge.net
+> > > > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> > > 
+> > > 
+> > > _______________________________________________
+> > > Linux-f2fs-devel mailing list
+> > > Linux-f2fs-devel@lists.sourceforge.net
+> > > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> > .
+> > 
