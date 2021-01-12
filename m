@@ -2,112 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEF012F2619
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:11:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B153E2F2621
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:13:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728041AbhALCLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 21:11:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbhALCLA (ORCPT
+        id S1728181AbhALCND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 21:13:03 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10708 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727940AbhALCNC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 21:11:00 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77860C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 18:10:14 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id n10so392336pgl.10
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 18:10:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=TAJh0CkOrXTXuHNR+ubOQwQXwNopqM57rV369+EEx9I=;
-        b=H0BN8Do4ZOVCh0kCJo4fmcVJyxFptlqv/+SoSFu0R0fIYGkg9268aT+PCfdeNGQkzT
-         mc6dKyPiyUW2lr+LqtaDcBb51Ei0nUnS1Y5YU3zKv5/TG9XUCnuwHxQ2lhlggEUr55iQ
-         245R4Hn6TY7JOIbl5Cx3gA1YSIxH8atOA31C0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=TAJh0CkOrXTXuHNR+ubOQwQXwNopqM57rV369+EEx9I=;
-        b=eIOJpBvQS7nmhrb8hPFSW31I8OjUion2Lx9s1gGZMUattcJRjcBROnuc07SbsGYEwW
-         quKVTFKF2J+kdgcxxfhx7Kg1yfaUYowSKMBBPgA5jjszIIKNBUf+kehtYmW4InL2Vq5F
-         Nfz0d6zV/pp7RgPCGJQVSfggEJXObXZ1kwoyDABQ4YSIEkY02fpOBGnzQleK8rdxnWwY
-         X2/3Pn0l3VSpdBjv8qbGBZGr/i98tq355r3z6qMCKcYB2bBy2ahzE0cCHNSfOPDxtb4x
-         cUxhi5Cx5ISH4R0ORTtgAu87w+9ihAzS9gMjKFPlZj7BO5j4lmSXeOEAmFDIMkP5Psao
-         SAMg==
-X-Gm-Message-State: AOAM532ABGkfbQ6FoReOw/8qS7LLRN5zKed82TWbmltMjFiCgq4Up+29
-        l5tpz6/dYnCv2WUHpNlkTNl+HA==
-X-Google-Smtp-Source: ABdhPJy6riOnrTb3lEU4Mio4h9HV53BnD1tKRzK4N1IjCjvt4GdjfeyJeipmC5FWCwkCLczZ1Nq8+A==
-X-Received: by 2002:a62:c1c4:0:b029:1a7:efe9:163c with SMTP id i187-20020a62c1c40000b02901a7efe9163cmr2216781pfg.47.1610417413913;
-        Mon, 11 Jan 2021 18:10:13 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id f29sm1110404pgm.76.2021.01.11.18.10.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 18:10:13 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Mon, 11 Jan 2021 21:13:02 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DFDZb0Nhwzl3KW;
+        Tue, 12 Jan 2021 10:11:03 +0800 (CST)
+Received: from huawei.com (10.174.176.179) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Tue, 12 Jan 2021
+ 10:12:13 +0800
+From:   wangbin <wangbin224@huawei.com>
+To:     <adobriyan@gmail.com>, <akpm@linux-foundation.org>, <guro@fb.com>,
+        <shakeelb@google.com>, <hannes@cmpxchg.org>, <will@kernel.org>,
+        <wangbin224@huawei.com>, <feng.tang@intel.com>, <neilb@suse.de>,
+        <kirill.shutemov@linux.intel.com>, <samitolvanen@google.com>,
+        <rppt@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <hushiyuan@huawei.com>
+Subject: [PATCH] mm: thp: introduce NR_PARTIAL_THPS
+Date:   Tue, 12 Jan 2021 10:12:08 +0800
+Message-ID: <20210112021208.1875-1-wangbin224@huawei.com>
+X-Mailer: git-send-email 2.29.2.windows.3
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210107154200.v4.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
-References: <20210107154200.v4.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
-Subject: Re: [PATCH v4 1/2] dt-bindings: input: cros-ec-keyb: Add a new property
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     dianders@chromium.org, Philip Chen <philipchen@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Simon Glass <sjg@chromium.org>, devicetree@vger.kernel.org,
-        linux-input@vger.kernel.org
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Philip Chen <philipchen@chromium.org>,
-        dmitry.torokhov@gmail.com
-Date:   Mon, 11 Jan 2021 18:10:11 -0800
-Message-ID: <161041741167.3661239.13546059654424804588@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.176.179]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Philip Chen (2021-01-07 15:42:08)
-> This patch adds a new property `function-row-physmap` to the
+From: Bin Wang <wangbin224@huawei.com>
 
-From Documentation/process/submitting-patches.rst
+Currently we don't split transhuge pages on partial unmap. After using the
+deferred_split_huge_page() to solve the memory overhead, we still have a
+problem with memory count. We have no idea about how much partial unmap
+memory there is because the partial unmap memory is covered in transhuge
+pages until the pages are split.
 
-Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
-instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
-to do frotz", as if you are giving orders to the codebase to change
-its behaviour.
+Why should we know this? Just image that there is a process, which does the
+following:
+1)Mmap() 1GB memory and all the memory is transferred to transhuge pages by
+kernel.
+What happened: System free memory decreases 1GB. AnonHugePages increases
+1GB.
+2)Call madvise() don't need 1MB per transhuge page.
+What happened: Rss of the process decreases 512MB. AnonHugePages decreases
+1GB. System free memory doesn't increase.
 
-> device tree for the custom keyboard top row design.
->=20
-> The property describes the rows/columns of the top row keys
-> from left to right.
->=20
-> Signed-off-by: Philip Chen <philipchen@chromium.org>
-> ---
-> diff --git a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.=
-yaml b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
-> index 8e50c14a9d778..7acdb33781d30 100644
-> --- a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
-> +++ b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
-> @@ -31,6 +31,16 @@ properties:
->        if the EC does not have its own logic or hardware for this.
->      type: boolean
-> =20
-> +  function-row-physmap:
+It's confusing that the system free memory is less than expected. And this
+is because that we just call split_huge_pmd() on partial unmap. I think we
+shouldn't roll back to split_huge_page(), but we can add NR_PARTIAL_THPS
+in node_stat_item to show the count of partial unmap pages.
 
-Is there any minimum/maximum number of elements possible?
+We can follow the deferred_split_huge_page() codepath to record the
+partial unmap pages. And reduce the count when transhuge pages are split
+eventually.
 
-> +    $ref: '/schemas/types.yaml#/definitions/uint32-array'
-> +    description: |
-> +      An ordered u32 array describing the rows/columns (in the scan matr=
-ix)
-> +      of top row keys from physical left (KEY_F1) to right. Each entry
-> +      encodes the row/column as:
-> +      (((row) & 0xFF) << 24) | (((column) & 0xFF) << 16)
-> +      where the lower 16 bits are reserved. This property is specified o=
-nly
-> +      when the keyboard has a custom design for the top row keys.
-> +
+Signed-off-by: Bin Wang <wangbin224@huawei.com>
+---
+ fs/proc/meminfo.c      | 2 ++
+ include/linux/mmzone.h | 1 +
+ mm/huge_memory.c       | 7 ++++++-
+ mm/rmap.c              | 9 +++++++--
+ mm/vmstat.c            | 1 +
+ 5 files changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+index d6fc74619625..f6f02469dd9e 100644
+--- a/fs/proc/meminfo.c
++++ b/fs/proc/meminfo.c
+@@ -138,6 +138,8 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+ 		    global_node_page_state(NR_FILE_THPS) * HPAGE_PMD_NR);
+ 	show_val_kb(m, "FilePmdMapped:  ",
+ 		    global_node_page_state(NR_FILE_PMDMAPPED) * HPAGE_PMD_NR);
++	show_val_kb(m, "PartFreePages:  ",
++		    global_node_page_state(NR_PARTIAL_THPS));
+ #endif
+ 
+ #ifdef CONFIG_CMA
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index b593316bff3d..cc417c9870ad 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -194,6 +194,7 @@ enum node_stat_item {
+ 	NR_FILE_THPS,
+ 	NR_FILE_PMDMAPPED,
+ 	NR_ANON_THPS,
++	NR_PARTIAL_THPS,	/* partial free pages of transhuge pages */
+ 	NR_VMSCAN_WRITE,
+ 	NR_VMSCAN_IMMEDIATE,	/* Prioritise for reclaim when writeback ends */
+ 	NR_DIRTIED,		/* page dirtyings since bootup */
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 9237976abe72..2f2856cf1ed0 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2788,6 +2788,8 @@ void free_transhuge_page(struct page *page)
+ 	if (!list_empty(page_deferred_list(page))) {
+ 		ds_queue->split_queue_len--;
+ 		list_del(page_deferred_list(page));
++		__mod_node_page_state(page_pgdat(page), NR_PARTIAL_THPS,
++				      -HPAGE_PMD_NR);
+ 	}
+ 	spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
+ 	free_compound_page(page);
+@@ -2880,8 +2882,11 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
+ 		if (!trylock_page(page))
+ 			goto next;
+ 		/* split_huge_page() removes page from list on success */
+-		if (!split_huge_page(page))
++		if (!split_huge_page(page)) {
+ 			split++;
++			__mod_node_page_state(page_pgdat(page),
++					      NR_PARTIAL_THPS, -HPAGE_PMD_NR);
++		}
+ 		unlock_page(page);
+ next:
+ 		put_page(page);
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 08c56aaf72eb..269edf41ccd7 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1309,8 +1309,11 @@ static void page_remove_anon_compound_rmap(struct page *page)
+ 		 * page of the compound page is unmapped, but at least one
+ 		 * small page is still mapped.
+ 		 */
+-		if (nr && nr < thp_nr_pages(page))
++		if (nr && nr < thp_nr_pages(page)) {
++			__mod_node_page_state(page_pgdat(page),
++					      NR_PARTIAL_THPS, nr);
+ 			deferred_split_huge_page(page);
++		}
+ 	} else {
+ 		nr = thp_nr_pages(page);
+ 	}
+@@ -1357,8 +1360,10 @@ void page_remove_rmap(struct page *page, bool compound)
+ 	if (unlikely(PageMlocked(page)))
+ 		clear_page_mlock(page);
+ 
+-	if (PageTransCompound(page))
++	if (PageTransCompound(page)) {
++		__inc_node_page_state(page, NR_PARTIAL_THPS);
+ 		deferred_split_huge_page(compound_head(page));
++	}
+ 
+ 	/*
+ 	 * It would be tidy to reset the PageAnon mapping here,
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index f8942160fc95..93459dde0dcd 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1203,6 +1203,7 @@ const char * const vmstat_text[] = {
+ 	"nr_file_hugepages",
+ 	"nr_file_pmdmapped",
+ 	"nr_anon_transparent_hugepages",
++	"nr_partial_free_pages",
+ 	"nr_vmscan_write",
+ 	"nr_vmscan_immediate_reclaim",
+ 	"nr_dirtied",
+-- 
+2.23.0
+
