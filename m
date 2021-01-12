@@ -2,179 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491AD2F364A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EA922F364C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391316AbhALQ5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:57:55 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:10954 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726113AbhALQ5y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:57:54 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ffdd4ea0004>; Tue, 12 Jan 2021 08:57:14 -0800
-Received: from [10.2.51.38] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 12 Jan
- 2021 16:57:13 +0000
-Subject: Re: [PATCH v2] i2c: tegra: Create i2c_writesl_vi() to use with VI I2C
- for filling TX FIFO
-To:     Dmitry Osipenko <digetx@gmail.com>, <thierry.reding@gmail.com>,
-        <jonathanh@nvidia.com>, <wsa@the-dreams.de>
-CC:     <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>
-References: <1610424379-23653-1-git-send-email-skomatineni@nvidia.com>
- <1610424379-23653-2-git-send-email-skomatineni@nvidia.com>
- <ae886d28-ef6c-63d3-2cc7-90752ddb8b21@gmail.com>
-From:   Sowjanya Komatineni <skomatineni@nvidia.com>
-Message-ID: <c250dd2d-85fd-75a6-cdae-71e4300007de@nvidia.com>
-Date:   Tue, 12 Jan 2021 08:57:16 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2391427AbhALQ6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:58:08 -0500
+Received: from foss.arm.com ([217.140.110.172]:49786 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726113AbhALQ6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 11:58:07 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 96892101E;
+        Tue, 12 Jan 2021 08:57:21 -0800 (PST)
+Received: from [192.168.122.166] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2DC5E3F719;
+        Tue, 12 Jan 2021 08:57:21 -0800 (PST)
+Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
+To:     Vidya Sagar <vidyas@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org
+Cc:     lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        catalin.marinas@arm.com, will@kernel.org, robh@kernel.org,
+        sudeep.holla@arm.com, mark.rutland@arm.com,
+        linux-kernel@vger.kernel.org
+References: <20210105045735.1709825-1-jeremy.linton@arm.com>
+ <9ecfbc2e-5f33-dd3c-0c3b-ee7c463b3e68@nvidia.com>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <ffc65624-197f-14cc-58da-2b1cfde285fc@arm.com>
+Date:   Tue, 12 Jan 2021 10:57:20 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <ae886d28-ef6c-63d3-2cc7-90752ddb8b21@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <9ecfbc2e-5f33-dd3c-0c3b-ee7c463b3e68@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610470634; bh=eTsq80xvHErNCHX7oY25e8Oek6tJ43yPX5zb7qFCFq0=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=esOA5kfG7JAnxbwMQhG7wOs4EfHquzIq8cfnMvwOB4fRMSwcioVHJexiz6J66RqXi
-         bjkQxi/j+keQwoD9HQI6ABfXBviURbvjqjTtSFEs/Sh8w7EOVVAdOarQ3mtZUCKMGd
-         IPAr4q4ycG+5OBBdfSo/t+MWAiOb/7YbpfaauLilYALJpR2HS3RLKBAJ5FHz6L799O
-         sKwDm0bpXltHK7JIh1Kat9iFYGmPHRwQWKyzLA8lSDMEx8CuFS68pqhfpbfWRS3Ozc
-         DjPqqzcxuLlVEuaxgmah0/pNP3LOec0I6vV0IqDosCsk36zZeqNJ2J1iIL5btAA6bZ
-         LUwhbceWmcLOw==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 1/11/21 9:56 PM, Dmitry Osipenko wrote:
-> 12.01.2021 07:06, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->> VI I2C don't have DMA support and uses PIO mode all the time.
+On 1/12/21 10:16 AM, Vidya Sagar wrote:
+> 
+> 
+> On 1/5/2021 10:27 AM, Jeremy Linton wrote:
+>> External email: Use caution opening links or attachments
 >>
->> Current driver uses writesl() to fill TX FIFO based on available
->> empty slots and with this seeing strange silent hang during any I2C
->> register access after filling TX FIFO with 8 words.
 >>
->> Using writel() followed by i2c_readl() in a loop to write all words
->> to TX FIFO instead of using writesl() helps for large transfers in
->> PIO mode.
+>> Given that most arm64 platform's PCI implementations needs quirks
+>> to deal with problematic config accesses, this is a good place to
+>> apply a firmware abstraction. The ARM PCI SMMCCC spec details a
+>> standard SMC conduit designed to provide a simple PCI config
+>> accessor. This specification enhances the existing ACPI/PCI
+>> abstraction and expects power, config, etc functionality is handled
+>> by the platform. It also is very explicit that the resulting config
+>> space registers must behave as is specified by the pci specification.
 >>
->> So, this patch creates i2c_writesl_vi() API to use with VI I2C for
->> filling TX FIFO.
+>> Lets hook the normal ACPI/PCI config path, and when we detect
+>> missing MADT data, attempt to probe the SMC conduit. If the conduit
+>> exists and responds for the requested segment number (provided by the
+>> ACPI namespace) attach a custom pci_ecam_ops which redirects
+>> all config read/write requests to the firmware.
 >>
->> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+>> This patch is based on the Arm PCI Config space access document @
+>> https://developer.arm.com/documentation/den0115/latest
+>>
+>> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
 >> ---
->>   drivers/i2c/busses/i2c-tegra.c | 20 +++++++++++++++++++-
->>   1 file changed, 19 insertions(+), 1 deletion(-)
+>>   arch/arm64/kernel/pci.c   | 87 +++++++++++++++++++++++++++++++++++++++
+>>   include/linux/arm-smccc.h | 26 ++++++++++++
+>>   2 files changed, 113 insertions(+)
 >>
->> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-teg=
-ra.c
->> index 6f08c0c..e2b7503 100644
->> --- a/drivers/i2c/busses/i2c-tegra.c
->> +++ b/drivers/i2c/busses/i2c-tegra.c
->> @@ -339,6 +339,21 @@ static void i2c_writesl(struct tegra_i2c_dev *i2c_d=
-ev, void *data,
->>   	writesl(i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg), data, len);
->>   }
->>  =20
->> +static void i2c_writesl_vi(struct tegra_i2c_dev *i2c_dev, u32 *data,
->> +			   unsigned int reg, unsigned int len)
+>> diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
+>> index 1006ed2d7c60..56d3773aaa25 100644
+>> --- a/arch/arm64/kernel/pci.c
+>> +++ b/arch/arm64/kernel/pci.c
+>> @@ -7,6 +7,7 @@
+>>    */
+>>
+>>   #include <linux/acpi.h>
+>> +#include <linux/arm-smccc.h>
+>>   #include <linux/init.h>
+>>   #include <linux/io.h>
+>>   #include <linux/kernel.h>
+>> @@ -107,6 +108,90 @@ static int pci_acpi_root_prepare_resources(struct 
+>> acpi_pci_root_info *ci)
+>>          return status;
+>>   }
+>>
+>> +static int smccc_pcie_check_conduit(u16 seg)
 >> +{
->> +	/*
->> +	 * Using writesl() to fill VI I2C TX FIFO for transfers more than
->> +	 * 6 words is causing a silent hang on any VI I2C register access
->> +	 * after TX FIFO writes.
->> +	 * So using writel() followed by i2c_readl().
->> +	 */
->> +	while (len--) {
->> +		writel(*data++, i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg));
->> +		i2c_readl(i2c_dev, I2C_INT_STATUS);
->> +	}
+>> +       struct arm_smccc_res res;
+>> +
+>> +       if (arm_smccc_1_1_get_conduit() == SMCCC_CONDUIT_NONE)
+>> +               return -EOPNOTSUPP;
+>> +
+>> +       arm_smccc_smc(SMCCC_PCI_VERSION, 0, 0, 0, 0, 0, 0, 0, &res);
+>> +       if ((int)res.a0 < 0)
+>> +               return -EOPNOTSUPP;
+>> +
+>> +       arm_smccc_smc(SMCCC_PCI_SEG_INFO, seg, 0, 0, 0, 0, 0, 0, &res);
+>> +       if ((int)res.a0 < 0)
+>> +               return -EOPNOTSUPP;
+>> +
+>> +       pr_info("PCI: SMC conduit attached to segment %d\n", seg);
+> Shouldn't this print be moved towards the end of 
+> pci_acpi_setup_smccc_mapping() API?
+
+Thanks for looking at this.
+
+It probably should be, the assumption was that it would attach at this 
+point, but its possible the message is inaccurate if something fails a 
+bit later. I left it there because the segment number is easily 
+available. I've been playing with this a bit for the V2 where I added 
+the additional function checks.
+
+
+
+> 
+>> +
+>> +       return 0;
 >> +}
 >> +
->>   static void i2c_readsl(struct tegra_i2c_dev *i2c_dev, void *data,
->>   		       unsigned int reg, unsigned int len)
->>   {
->> @@ -811,7 +826,10 @@ static int tegra_i2c_fill_tx_fifo(struct tegra_i2c_=
-dev *i2c_dev)
->>   		i2c_dev->msg_buf_remaining =3D buf_remaining;
->>   		i2c_dev->msg_buf =3D buf + words_to_transfer * BYTES_PER_FIFO_WORD;
->>  =20
->> -		i2c_writesl(i2c_dev, buf, I2C_TX_FIFO, words_to_transfer);
->> +		if (i2c_dev->is_vi)
->> +			i2c_writesl_vi(i2c_dev, (u32 *)buf, I2C_TX_FIFO, words_to_transfer);
->> +		else
->> +			i2c_writesl(i2c_dev, buf, I2C_TX_FIFO, words_to_transfer);
->>  =20
->>   		buf +=3D words_to_transfer * BYTES_PER_FIFO_WORD;
->>   	}
+>> +static int smccc_pcie_config_read(struct pci_bus *bus, unsigned int 
+>> devfn,
+>> +                                 int where, int size, u32 *val)
+>> +{
+>> +       struct arm_smccc_res res;
+>> +
+>> +       devfn |= bus->number << 8;
+>> +       devfn |= bus->domain_nr << 16;
+>> +
+>> +       arm_smccc_smc(SMCCC_PCI_READ, devfn, where, size, 0, 0, 0, 0, 
+>> &res);
+>> +       if (res.a0) {
+>> +               *val = ~0;
+>> +               return -PCIBIOS_BAD_REGISTER_NUMBER;
+>> +       }
+>> +
+>> +       *val = res.a1;
+>> +       return PCIBIOS_SUCCESSFUL;
+>> +}
+>> +
+>> +static int smccc_pcie_config_write(struct pci_bus *bus, unsigned int 
+>> devfn,
+>> +                                  int where, int size, u32 val)
+>> +{
+>> +       struct arm_smccc_res res;
+>> +
+>> +       devfn |= bus->number << 8;
+>> +       devfn |= bus->domain_nr << 16;
+>> +
+>> +       arm_smccc_smc(SMCCC_PCI_WRITE, devfn, where, size, val, 0, 0, 
+>> 0, &res);
+>> +       if (res.a0)
+>> +               return -PCIBIOS_BAD_REGISTER_NUMBER;
+>> +
+>> +       return PCIBIOS_SUCCESSFUL;
+>> +}
+>> +
+>> +static const struct pci_ecam_ops smccc_pcie_ecam_ops = {
+>> +       .bus_shift      = 8,
+>> +       .pci_ops        = {
+>> +               .read           = smccc_pcie_config_read,
+>> +               .write          = smccc_pcie_config_write,
+>> +       }
+>> +};
+>> +
+>> +static struct pci_config_window *
+>> +pci_acpi_setup_smccc_mapping(struct acpi_pci_root *root)
+>> +{
+>> +       struct device *dev = &root->device->dev;
+>> +       struct resource *bus_res = &root->secondary;
+>> +       struct pci_config_window *cfg;
+>> +
+>> +       cfg = kzalloc(sizeof(*cfg), GFP_KERNEL);
+>> +       if (!cfg)
+>> +               return ERR_PTR(-ENOMEM);
+>> +
+>> +       cfg->parent = dev;
+>> +       cfg->ops = &smccc_pcie_ecam_ops;
+>> +       cfg->busr.start = bus_res->start;
+>> +       cfg->busr.end = bus_res->end;
+>> +       cfg->busr.flags = IORESOURCE_BUS;
+>> +
+>> +       cfg->res.name = "PCI SMCCC";
+>> +       if (cfg->ops->init)
+> Since there is no init implemented, what is the purpose of having this?
+
+Its basically dead.
+
+
+> 
+>> +               cfg->ops->init(cfg);
+>> +       return cfg;
+>> +}
+>> +
+>>   /*
+>>    * Lookup the bus range for the domain in MCFG, and set up config space
+>>    * mapping.
+>> @@ -125,6 +210,8 @@ pci_acpi_setup_ecam_mapping(struct acpi_pci_root 
+>> *root)
 >>
-> Looks almost good, could we please use a relaxed writel and avoid the cas=
-ting in the code?
->
-> Like this:
->
-> diff --git a/drivers/i2c/busses/i2c-tegra.c b/drivers/i2c/busses/i2c-tegr=
-a.c
-> index 6f08c0c3238d..4f843b423d83 100644
-> --- a/drivers/i2c/busses/i2c-tegra.c
-> +++ b/drivers/i2c/busses/i2c-tegra.c
-> @@ -326,6 +326,8 @@ static void i2c_writel(struct tegra_i2c_dev *i2c_dev,=
- u32 val, unsigned int reg)
->   	/* read back register to make sure that register writes completed */
->   	if (reg !=3D I2C_TX_FIFO)
->   		readl_relaxed(i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg));
-> +	else
-> +		readl_relaxed(i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, I2C_INT_STAT=
-US));
->   }
->  =20
->   static u32 i2c_readl(struct tegra_i2c_dev *i2c_dev, unsigned int reg)
-> @@ -339,6 +341,21 @@ static void i2c_writesl(struct tegra_i2c_dev *i2c_de=
-v, void *data,
->   	writesl(i2c_dev->base + tegra_i2c_reg_addr(i2c_dev, reg), data, len);
->   }
->  =20
-> +static void i2c_writesl_vi(struct tegra_i2c_dev *i2c_dev, void *data,
-> +			   unsigned int reg, unsigned int len)
-> +{
-> +	u32 *data32 =3D data;
-> +
-> +	/*
-> +	 * Using writesl() to fill VI I2C TX FIFO for transfers more than
-> +	 * 6 words is causing a silent hang on any VI I2C register access
-> +	 * after TX FIFO writes. Each write to FIFO should follow by a read
-> +	 * of any I2C register in order to work around the problem.
-> +	 */
-> +	while (len--)
-> +		i2c_writel(i2c_dev, *data32++, reg);
-> +}
-> +
->   static void i2c_readsl(struct tegra_i2c_dev *i2c_dev, void *data,
->   		       unsigned int reg, unsigned int len)
->   {
-> @@ -811,7 +828,10 @@ static int tegra_i2c_fill_tx_fifo(struct tegra_i2c_d=
-ev *i2c_dev)
->   		i2c_dev->msg_buf_remaining =3D buf_remaining;
->   		i2c_dev->msg_buf =3D buf + words_to_transfer * BYTES_PER_FIFO_WORD;
->  =20
-> -		i2c_writesl(i2c_dev, buf, I2C_TX_FIFO, words_to_transfer);
-> +		if (i2c_dev->is_vi)
-> +			i2c_writesl_vi(i2c_dev, buf, I2C_TX_FIFO, words_to_transfer);
-> +		else
-> +			i2c_writesl(i2c_dev, buf, I2C_TX_FIFO, words_to_transfer);
->  =20
->   		buf +=3D words_to_transfer * BYTES_PER_FIFO_WORD;
->   	}
-
-
-Will have v3.
+>>          ret = pci_mcfg_lookup(root, &cfgres, &ecam_ops);
+>>          if (ret) {
+>> +               if (!smccc_pcie_check_conduit(seg))
+>> +                       return pci_acpi_setup_smccc_mapping(root);
+>>                  dev_err(dev, "%04x:%pR ECAM region not found\n", seg, 
+>> bus_res);
+>>                  return NULL;
+>>          }
+>> diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
+>> index f860645f6512..327f52533c71 100644
+>> --- a/include/linux/arm-smccc.h
+>> +++ b/include/linux/arm-smccc.h
+>> @@ -89,6 +89,32 @@
+>>
+>>   #define SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED   1
+>>
+>> +/* PCI ECAM conduit */
+>> +#define SMCCC_PCI_VERSION                                              \
+>> +       ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,                         \
+>> +                          ARM_SMCCC_SMC_32,                            \
+>> +                          ARM_SMCCC_OWNER_STANDARD, 0x0130)
+>> +
+>> +#define SMCCC_PCI_FEATURES                                             \
+>> +       ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,                         \
+>> +                          ARM_SMCCC_SMC_32,                            \
+>> +                          ARM_SMCCC_OWNER_STANDARD, 0x0131)
+>> +
+>> +#define SMCCC_PCI_READ                                                 \
+>> +       ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,                         \
+>> +                          ARM_SMCCC_SMC_32,                            \
+>> +                          ARM_SMCCC_OWNER_STANDARD, 0x0132)
+>> +
+>> +#define 
+>> SMCCC_PCI_WRITE                                                        \
+>> +       ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,                         \
+>> +                          ARM_SMCCC_SMC_32,                            \
+>> +                          ARM_SMCCC_OWNER_STANDARD, 0x0133)
+>> +
+>> +#define SMCCC_PCI_SEG_INFO                                             \
+>> +       ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,                         \
+>> +                          ARM_SMCCC_SMC_32,                            \
+>> +                          ARM_SMCCC_OWNER_STANDARD, 0x0134)
+>> +
+>>   /* Paravirtualised time calls (defined by ARM DEN0057A) */
+>>   #define ARM_SMCCC_HV_PV_TIME_FEATURES                          \
+>>          ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,                 \
+>> -- 
+>> 2.26.2
+>>
 
