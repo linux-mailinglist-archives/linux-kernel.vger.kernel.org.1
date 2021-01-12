@@ -2,92 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 994C52F2CC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED64F2F2CD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392983AbhALK1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:27:09 -0500
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:34068 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726533AbhALK1I (ORCPT
+        id S2405119AbhALK2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:28:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726533AbhALK2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:27:08 -0500
-Received: by mail-oi1-f173.google.com with SMTP id s75so1849107oih.1;
-        Tue, 12 Jan 2021 02:26:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pNy54YvyEG+MmyMNSknqMIs/iaqY7Dt1qSoRryJi0OY=;
-        b=dYwfr/bLujGXNXs3qghhT/QW7ozFPQttyuD5yQExNqMYaDdrDOwGRXdzHPiOUWRZp0
-         OM21c4+p8Icly9q9APT2IzJ3Icbj/rdk1zJyBzcdeXWxXrSK/e1HLUXSRsiIb9mw3bRT
-         RfRMrbN2i7gYHYSE0QZjAxaI2l4o8u1P158iIj0b8aZ5+TfPUJRJO/VgAJPgtdEfIpTp
-         A+MTU7nNYLhA7knGofaYiSk0IbKMK6H9zccYc7oygCJxW6HrkQzjCu2EndhCzMS/bZAL
-         kXqXtKRyCfY4vHRmoAOnmhkaD0UOFNoTw1euxFrZ3XhtPc5V8AAPjSMr3l0WVH8aPG5u
-         9iqA==
-X-Gm-Message-State: AOAM53315c82KgvhR4KgsOASsJ1g2TVP6j3POei9m014gREL7I1QleGC
-        mbpcGFi7TKx+Wl/sRLkMe2JHMOT6Z59TYl2lcadi2g8xQaU=
-X-Google-Smtp-Source: ABdhPJzYHBdsX45B4kEd9SOIflChVmFlSmzttpTadGUOdiAChH3XKY+LK034WPAeAJPmyVOHHviE4aAisjNOz8AJayA=
-X-Received: by 2002:aca:4b16:: with SMTP id y22mr1881850oia.148.1610447187714;
- Tue, 12 Jan 2021 02:26:27 -0800 (PST)
+        Tue, 12 Jan 2021 05:28:00 -0500
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4128C061786;
+        Tue, 12 Jan 2021 02:27:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:Reply-To:Cc:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ymsxLNEL8SmpBc0tYMCk4QgW+WBQ2EizgNwC30fBRJY=; b=DotkCVHcf/A6zEoUmGuuhdFBYZ
+        Wwfv+xvu5Y4DL/oQrqlcNARktuVwd6bsQJ43FywUFn/qwQNf3p1GnVvaslZBulW4WzYH0kSaiPzVV
+        OWPY3aea5ic6QBSbbj6q8Lg835ifWxtoavbWgQYVEjvT58NqiBVFvK74FeLzYBQ0HCJUcqRrCoG0/
+        KmgnE00d0go0XJUngeVborSFikijzW2J8qriC0+Qdz/GlUxPhcRQu2ZmJIw81O/PgiDQtuXCHq6Y6
+        wepRxd6PxOa94IkRV49+w8ACD9dCgyg3s712jdj8VNTCANm5SsXEIZfLR3B2Tm2JrxsvRDxwltiz2
+        WIFfzh3w==;
+Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=[192.168.1.10])
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <cyndis@kapsi.fi>)
+        id 1kzGtS-0000GL-8p; Tue, 12 Jan 2021 12:27:18 +0200
+Subject: Re: [PATCH v2] i2c: tegra-bpmp: ignore DMA safe buffer flag
+To:     Wolfram Sang <wsa@kernel.org>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        thierry.reding@gmail.com, jonathanh@nvidia.com, talho@nvidia.com,
+        linux-i2c@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Muhammed Fazal <mfazale@nvidia.com>,
+        stable@vger.kernel.org
+References: <20210111155816.3656820-1-mperttunen@nvidia.com>
+ <20210111214221.GF17475@kunai>
+ <92fb3f30-a08c-eb42-0741-affc3ceae0c0@kapsi.fi> <20210112102605.GB973@kunai>
+From:   Mikko Perttunen <cyndis@kapsi.fi>
+Message-ID: <5003e6eb-4048-edae-adb3-19711a96e9c7@kapsi.fi>
+Date:   Tue, 12 Jan 2021 12:27:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20210107181524.1947173-1-geert+renesas@glider.be>
- <20210107181524.1947173-3-geert+renesas@glider.be> <20210112101950.GK2771@vkoul-mobl>
-In-Reply-To: <20210112101950.GK2771@vkoul-mobl>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 12 Jan 2021 11:26:16 +0100
-Message-ID: <CAMuHMdXhKpO4RLXVBzVezSnui3ZvgB5oX-n25Mcj7se0PaX78A@mail.gmail.com>
-Subject: Re: [PATCH 2/4] dmaengine: rcar-dmac: Add for_each_rcar_dmac_chan() helper
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Phong Hoang <phong.hoang.wz@renesas.com>,
-        dmaengine <dmaengine@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210112102605.GB973@kunai>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 84.249.134.236
+X-SA-Exim-Mail-From: cyndis@kapsi.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+On 1/12/21 12:26 PM, Wolfram Sang wrote:
+> 
+>>> I wonder if bailing out on an unknown flag shouldn't be revisited in
+>>> general? I mean this will happen again when a new I2C_M_* flag is
+>>> introduced.
+>>>
+>>
+>> If it's guaranteed that any new flags are optional to handle by the driver,
+>> than that is certainly better. I'll post a v3 with that approach.
+> 
+> If there will be a new flag, it is highly likely that it will handle
+> some corner case which only gets applied when there is a I2C_FUNC_* flag
+> guarding it. If the new flag turns out to be mandatory, the (poor)
+> author needs to check with all existing drivers anyhow.
+> 
 
-On Tue, Jan 12, 2021 at 11:19 AM Vinod Koul <vkoul@kernel.org> wrote:
-> On 07-01-21, 19:15, Geert Uytterhoeven wrote:
-> > Add and helper macro for iterating over all DMAC channels, taking into
-> > account the channel mask.  Use it where appropriate, to simplify code.
-> >
-> > Restore "reverse Christmas tree" order of local variables while adding a
-> > new variable.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Yep, I suppose that is true :)
 
-> > --- a/drivers/dma/sh/rcar-dmac.c
-> > +++ b/drivers/dma/sh/rcar-dmac.c
-> > @@ -209,6 +209,11 @@ struct rcar_dmac {
-> >
-> >  #define to_rcar_dmac(d)              container_of(d, struct rcar_dmac, engine)
-> >
-> > +#define for_each_rcar_dmac_chan(i, chan, dmac)                                \
-> > +     for (i = 0, chan = &(dmac)->channels[0]; i < (dmac)->n_channels; \
-> > +          i++, chan++)                                                \
->
-> single line to make it more readable? we have limit of 100 now :)
+I just sent out the v3.
 
-Do we have to push the limits?
-
-BTW, the new punched cards are 96-column wide, not 100-column ;-)
-https://en.wikipedia.org/wiki/Punched_card#IBM_96-column_format
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+thanks!
+Mikko
