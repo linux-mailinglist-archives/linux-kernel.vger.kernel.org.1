@@ -2,124 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8EF62F3310
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:38:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4157C2F331A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:43:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730071AbhALOiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:38:18 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:38941 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726329AbhALOiR (ORCPT
+        id S1730418AbhALOmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:42:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48777 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725984AbhALOmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:38:17 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kzKne-000o6B-Ed; Tue, 12 Jan 2021 15:37:34 +0100
-Received: from p5b13a61e.dip0.t-ipconnect.de ([91.19.166.30] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kzKnd-001CLC-9K; Tue, 12 Jan 2021 15:37:33 +0100
-Subject: Re: Old platforms: bring out your dead
-To:     chase rayfield <cusbrar1@gmail.com>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Sparc kernel list <sparclinux@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
- <20210110214653.GA1693373@ravnborg.org>
- <df42946e-5b1f-c433-fc6b-a2950f3d8dab@physik.fu-berlin.de>
- <CACwypyNS+fVoPVspSr36v8YjFbkrnYb+amcYRqVmA2kD2uD1Wg@mail.gmail.com>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <4c42f2ce-7702-55cd-a2c0-558d3dd208f2@physik.fu-berlin.de>
-Date:   Tue, 12 Jan 2021 15:37:32 +0100
+        Tue, 12 Jan 2021 09:42:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610462470;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kJLhS6MrRmYcBy2q5fslcQ3ZrLD7BMqvtBIQ18v75Yw=;
+        b=dsOKy89M+eeICuN4Eze+O7DH5bF/FxYkat+9UzzpfWViyPgIwx4b9XAuaBd0aK0dFMTcrZ
+        LSjBrl2AnKK/km6U1RfMd29kF3tOcsi9aJX28RWcQt3G1rjSyFfuZmIC6R1GmMUL+Jl11V
+        CfSMlMj6YgQad36Zn4TK+aKy67o6NgY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-3-b5tYlFyEN-6aTyXFKNVihA-1; Tue, 12 Jan 2021 09:41:06 -0500
+X-MC-Unique: b5tYlFyEN-6aTyXFKNVihA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1584B802B46;
+        Tue, 12 Jan 2021 14:41:05 +0000 (UTC)
+Received: from [10.36.115.140] (ovpn-115-140.ams2.redhat.com [10.36.115.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 202AC5B4B6;
+        Tue, 12 Jan 2021 14:41:02 +0000 (UTC)
+Subject: Re: [PATCH v3 1/6] mm: migrate: do not migrate HugeTLB page whose
+ refcount is one
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>, mike.kravetz@oracle.com,
+        akpm@linux-foundation.org, n-horiguchi@ah.jp.nec.com,
+        ak@linux.intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Yang Shi <shy828301@gmail.com>
+References: <20210110124017.86750-1-songmuchun@bytedance.com>
+ <20210110124017.86750-2-songmuchun@bytedance.com>
+ <1b39d654-0b8c-de3a-55d1-6ab8c2b2e0ba@redhat.com>
+ <c6eddfc6-8e15-4a28-36ff-64bfa65cca8e@redhat.com>
+ <20210112112709.GO22493@dhcp22.suse.cz>
+ <d00da0ca-8a2b-f144-b455-2887fd269ed7@redhat.com>
+ <20210112121643.GP22493@dhcp22.suse.cz>
+ <20210112142337.GR22493@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <52ec4899-80df-4cbe-41f1-e0a29e838afa@redhat.com>
+Date:   Tue, 12 Jan 2021 15:41:02 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <CACwypyNS+fVoPVspSr36v8YjFbkrnYb+amcYRqVmA2kD2uD1Wg@mail.gmail.com>
+In-Reply-To: <20210112142337.GR22493@dhcp22.suse.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.166.30
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 1/11/21 3:55 PM, chase rayfield wrote:
-> My take is that there *would* be more interest in Sparc sun4m / Sun4d
-> from enthusiasts at the very least if it was possible to actually boot
-> the bloat hog that is Linux these days in a fully usable configuration
-> that probably means some modifications to SILO and Linux required.
-
-The Linux kernel is configurable. If you want a small kernel, then just
-configure one. No one expects you to boot a fully-fledged distribution
-kernel on these machines.
-
-> The problem is as I understand it, SILO only sets up a 16Mb mapping
-> (either due to having to assume 4MB minimum dram stick size or due to
-> mapping limitations not sure, most of these machines have at least
-> 16MB in slot one...these days though that wasn't the case for sun4c),
-> loads Linux into it and says good Luck. This isn't enough for a modern
-> kernel with any  hardware support built in. So you might for instance
-> get a kernel to fit but only if you dropped all of networking support
-> etc...
-
-That makes no sense. It worked in the past, why shouldn't it work nowadays?
-
-As I said, you disable everything you don't need. I'm booting my SH-7785LCR
-SuperH board with a kernel that is less than 4 MB in size and which includes
-everything I need.
-
-> I'm guessing the fix for this would be to modify silo to map a
-> larger amount in a way that Linux expects so it can remap it as it
-> likes, or just have SILO map the full memory as Linux would. Anyway
-> that is THE main demotivation for these architectures.... otherwise
-> they have plenty of ram and performance to do basic router/server
-> tasks sans SSL.
-
-Or just configure a smaller kernel.
-
-> This has been the status quo for since the last of the 2.6 series of
-> kernels which it was still possible to just barely squeeze a usable
-> kernel out of... If someone wanted to take a few hours and fix this
-> issue, and keep these architectures around I'd be happy to "buy them a
-> round of pizza", though I recognize that many people that work on this
-> already have nice jobs, and just don't have time.
-
-I haven't gotten around to setup my SPARCstation 5 yet, but I will certainly
-going to do that later this year to give it a try.
-
-> Also Sparc would probably be a good project for someone to extend/test
-> Andi Keen's Linux LTO patch set so we could reduce the kernel binary
-> size that way also even if sun4 architectures are dropped, it would
-> still be useful for embedded sparc. Also there is a port of Temlib to
-> the Mister hardware now, 3 cores roughly equivalent to a mid 90s
-> machine, at least 128MB ram is possible ( more if a way to map the ARM
-> system memory also 1GB is available there, it would have higher
-> latency though).
+On 12.01.21 15:23, Michal Hocko wrote:
+> On Tue 12-01-21 13:16:45, Michal Hocko wrote:
+> [...]
+>> Well, currently pool pages are not migrateable but you are right that
+>> this is likely something that we will need to look into in the future
+>> and this optimization would stand in the way.
 > 
-> It is perfectly viable to build Sparc v7 or v8 32bit binaries in a
-> chroot on a fast machine also, and I would recommend this if you wish
-> to retain sanity rather than attempting cross compiler voodoo, unless
-> that is your thing.
+> After some more thinking I believe I was wrong in my last statement.
+> This optimization shouldn't have any effect on pages on the pool as
+> those stay at reference count 0 and they cannot be isolated either
+> (clear_page_huge_active before it is enqueued).
+> 
+> That being said, the migration code would still have to learn about
+> about this pages but that is out of scope of this discussion.
+> 
+> Sorry about the confusion from my side.
+> 
 
-We build anything SPARC on a SPARC T5 that we have for Debian, no need
-for cross-compilation and that machine is actually quite fast.
+At this point I am fairly confused what's working at what's not :D
 
-Adrian
+I think this will require more thought, on how to teach
+alloc_contig_range() (and eventually in some cases offline_pages()?) to
+do the right thing.
 
 -- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Thanks,
+
+David / dhildenb
 
