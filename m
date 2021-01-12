@@ -2,83 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F9C2F32BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF64F2F32BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:15:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728068AbhALOPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:15:06 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:34820 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725613AbhALOPG (ORCPT
+        id S1727205AbhALOPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:15:00 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59906 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725613AbhALOPA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:15:06 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10CEEM61083911;
-        Tue, 12 Jan 2021 08:14:22 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1610460862;
-        bh=esTShs76yvdLhD/D3aKWd2PmXrVE3wDszC9rVv+VngA=;
-        h=From:To:CC:Subject:Date;
-        b=wY3yeKCLVpMFnix6k6e7c98qQ+uKeLEm+/io0WkUl871wCmeScOE7D4y2fTyrh+00
-         o4A3A36A4RzjLc2SrQawy4uCGJcvILfkt3/xB65V4eBweluF7PHg1JuRBCnHOU0EIa
-         OwKUjtu0sX2A9b9T/r0lVDVJDsZfbR8BuaPPvbHg=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10CEEMMO038587
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 12 Jan 2021 08:14:22 -0600
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 12
- Jan 2021 08:14:22 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 12 Jan 2021 08:14:22 -0600
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10CEEJml009102;
-        Tue, 12 Jan 2021 08:14:20 -0600
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>
-CC:     Dan Williams <dan.j.williams@intel.com>,
-        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH] dmaengine: ti: k3-udma: Set rflow count for BCDMA split channels
-Date:   Tue, 12 Jan 2021 19:44:03 +0530
-Message-ID: <20210112141403.30286-1-vigneshr@ti.com>
-X-Mailer: git-send-email 2.30.0
+        Tue, 12 Jan 2021 09:15:00 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10CEDVtI139121;
+        Tue, 12 Jan 2021 09:14:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=NhC+2A6g4JtvG1XOI5BVk8rvc/ED4H5GJ+BGYuxwPAs=;
+ b=N9ZDMNU2SkbesXixOEV4HHG6i+c4P2JcPHJrfHRKUrzU7BGFOEgdHPaxTGGwnaOaQXiL
+ zkmGv48jPHjqYapqHvyN6fh2oLRnjr1e03d0ASFULIVrWMHsk5mZ2Q/3lP588Ql8I0+/
+ daDMKE4J4Yazxy3AzqSryfzPukmb9hE4VvzM/6qG7FmTfBhkA4wiZBniUZnI8IQPd0iZ
+ /lzFJy0mwEFtwZs4kbC4nF47nkPSKW0dhwlbTl9u+5KqQp3ifYV1Pt0cz6eHV9YCCiLr
+ 3kZ/Ya6jiU36427echSyS00hcVN0vHTpy67q8+gUf25+Fh0m4e8UMHdjWcaSODPQ2iud Nw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 361dbdg0p7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 09:14:16 -0500
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10CEDhuC139439;
+        Tue, 12 Jan 2021 09:14:15 -0500
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 361dbdg0na-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 09:14:15 -0500
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10CEBJbJ031305;
+        Tue, 12 Jan 2021 14:14:13 GMT
+Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+        by ppma04wdc.us.ibm.com with ESMTP id 35y448xh80-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 14:14:13 +0000
+Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
+        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10CEEAbk17367296
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Jan 2021 14:14:10 GMT
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 87FC06E052;
+        Tue, 12 Jan 2021 14:14:10 +0000 (GMT)
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 936A96E053;
+        Tue, 12 Jan 2021 14:14:08 +0000 (GMT)
+Received: from oc4221205838.ibm.com (unknown [9.211.159.40])
+        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Tue, 12 Jan 2021 14:14:08 +0000 (GMT)
+Subject: Re: [PATCH v13 11/15] s390/vfio-ap: implement in-use callback for
+ vfio_ap driver
+To:     Halil Pasic <pasic@linux.ibm.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, fiuczy@linux.ibm.com, frankja@linux.ibm.com,
+        david@redhat.com, hca@linux.ibm.com, gor@linux.ibm.com
+References: <20201223011606.5265-1-akrowiak@linux.ibm.com>
+ <20201223011606.5265-12-akrowiak@linux.ibm.com>
+ <20210112022012.4bad464f.pasic@linux.ibm.com>
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+Message-ID: <d717a554-6d0c-6075-38fd-e725b9622437@linux.ibm.com>
+Date:   Tue, 12 Jan 2021 09:14:07 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20210112022012.4bad464f.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-12_07:2021-01-12,2021-01-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 clxscore=1011
+ spamscore=0 impostorscore=0 phishscore=0 adultscore=0 mlxscore=0
+ bulkscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101120080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BCDMA RX channels have one flow per channel, therefore set the rflow_cnt
-to rchan_cnt.
+On 1/11/21 8:20 PM, Halil Pasic wrote:
+> On Tue, 22 Dec 2020 20:16:02 -0500
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> 
+>> Let's implement the callback to indicate when an APQN
+>> is in use by the vfio_ap device driver. The callback is
+>> invoked whenever a change to the apmask or aqmask would
+>> result in one or more queue devices being removed from the driver. The
+>> vfio_ap device driver will indicate a resource is in use
+>> if the APQN of any of the queue devices to be removed are assigned to
+>> any of the matrix mdevs under the driver's control.
+>>
+>> There is potential for a deadlock condition between the matrix_dev->lock
+>> used to lock the matrix device during assignment of adapters and domains
+>> and the ap_perms_mutex locked by the AP bus when changes are made to the
+>> sysfs apmask/aqmask attributes.
+>>
+>> Consider following scenario (courtesy of Halil Pasic):
+>> 1) apmask_store() takes ap_perms_mutex
+>> 2) assign_adapter_store() takes matrix_dev->lock
+>> 3) apmask_store() calls vfio_ap_mdev_resource_in_use() which tries
+>>     to take matrix_dev->lock
+>> 4) assign_adapter_store() calls ap_apqn_in_matrix_owned_by_def_drv
+>>     which tries to take ap_perms_mutex
+>>
+>> BANG!
+>>
+>> To resolve this issue, instead of using the mutex_lock(&matrix_dev->lock)
+>> function to lock the matrix device during assignment of an adapter or
+>> domain to a matrix_mdev as well as during the in_use callback, the
+>> mutex_trylock(&matrix_dev->lock) function will be used. If the lock is not
+>> obtained, then the assignment and in_use functions will terminate with
+>> -EBUSY.
+>>
+>> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+>> ---
+>>   drivers/s390/crypto/vfio_ap_drv.c     |  1 +
+>>   drivers/s390/crypto/vfio_ap_ops.c     | 21 ++++++++++++++++++---
+>>   drivers/s390/crypto/vfio_ap_private.h |  2 ++
+>>   3 files changed, 21 insertions(+), 3 deletions(-)
+>>
+> [..]
+>>   }
+>> +
+>> +int vfio_ap_mdev_resource_in_use(unsigned long *apm, unsigned long *aqm)
+>> +{
+>> +	int ret;
+>> +
+>> +	if (!mutex_trylock(&matrix_dev->lock))
+>> +		return -EBUSY;
+>> +	ret = vfio_ap_mdev_verify_no_sharing(NULL, apm, aqm);
+> 
+> If we detect that resources are in use, then we spit warnings to the
+> message log, right?
+> 
+> @Matt: Is your userspace tooling going to guarantee that this will never
+> happen?
 
-Without this patch, request for BCDMA RX channel allocation fails as
-rflow_cnt is 0 thus fails to reserve a rflow for the channel.
+Yes, but only when using the tooling to modify apmask/aqmask.  You would 
+still be able to create such a scenario by bypassing the tooling and 
+invoking the sysfs interfaces directly.
 
-Fixes: 8844898028d4 ("dmaengine: ti: k3-udma: Add support for BCDMA channel TPL handling")
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
----
- drivers/dma/ti/k3-udma.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
-index 298460438bb4..a1af59d901be 100644
---- a/drivers/dma/ti/k3-udma.c
-+++ b/drivers/dma/ti/k3-udma.c
-@@ -4305,6 +4305,7 @@ static int udma_get_mmrs(struct platform_device *pdev, struct udma_dev *ud)
- 		ud->bchan_cnt = BCDMA_CAP2_BCHAN_CNT(cap2);
- 		ud->tchan_cnt = BCDMA_CAP2_TCHAN_CNT(cap2);
- 		ud->rchan_cnt = BCDMA_CAP2_RCHAN_CNT(cap2);
-+		ud->rflow_cnt = ud->rchan_cnt;
- 		break;
- 	case DMA_TYPE_PKTDMA:
- 		cap4 = udma_read(ud->mmrs[MMR_GCFG], 0x30);
--- 
-2.30.0
 
