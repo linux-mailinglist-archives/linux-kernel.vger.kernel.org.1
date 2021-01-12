@@ -2,110 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADC42F2836
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:08:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 985E52F2838
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731406AbhALGIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 01:08:14 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:10956 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726844AbhALGIO (ORCPT
+        id S1731593AbhALGLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 01:11:01 -0500
+Received: from mail-lf1-f51.google.com ([209.85.167.51]:43144 "EHLO
+        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731262AbhALGLA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 01:08:14 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DFKpV6zd4zj5JX;
-        Tue, 12 Jan 2021 14:06:42 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 12 Jan
- 2021 14:07:19 +0800
-Subject: Re: linux-next: build warning after merge of the f2fs tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-CC:     Jonathan Corbet <corbet@lwn.net>, Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Chao Yu" <chao@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210107141158.312835d8@canb.auug.org.au>
- <3f921b3d-e8f2-e010-0f6b-76596e29e997@huawei.com>
- <20210111073354.6ec0bbb5@canb.auug.org.au> <20210110163534.24481e1e@lwn.net>
- <5918c348-666a-ee41-3891-ddcf500c464b@huawei.com>
- <20210112160930.7074bdf2@canb.auug.org.au>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <67353a30-9907-7fec-8b88-1d340f6d88ee@huawei.com>
-Date:   Tue, 12 Jan 2021 14:07:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Tue, 12 Jan 2021 01:11:00 -0500
+Received: by mail-lf1-f51.google.com with SMTP id 23so1578544lfg.10;
+        Mon, 11 Jan 2021 22:10:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
+         :in-reply-to:references:mime-version:date:user-agent
+         :content-transfer-encoding;
+        bh=oRVO+BDWKpeCueQ+kzarXJUcBI/yOauyA0mzezFi66I=;
+        b=kM3TDsoOH/egdTuJtSvE1q2GmFDoxbRgA7Juklwl/5spNN0woOvNjRH4Gy91hP/2E4
+         5CIZCFfuMQfvYSnrS+9xGBeQPLvgdwRyu6xMikARBHftOlIwOdFhAOld3xUBLk6o9Eqo
+         obZhk0QKLH5P88P9VdqL7prxAHy+qA5xlHjiU7g4D4QeIXwgJf4J3f+C7t8TfYI5DgVt
+         sYgnSvSZDMHI892lefcsMmk4l6+eYc0ANmAppdLYcg1/aLKZYAAoOl1HXsOIDAnkWAok
+         b7dScXwg2qJRngTp71e+mAuddmR5Y3YUutkrFJsV46hveZxGigcoZX4OzihezbWxvGjK
+         LkqA==
+X-Gm-Message-State: AOAM530iQXgb34yLl8LG7E2QpJx17HIqWciPl0N9liTQLqIf1tNcLzwf
+        Ps80Gps33GsNppMv97baZ+I=
+X-Google-Smtp-Source: ABdhPJzDhEVzVXXU/b+VKdX3lqsnfNFQEOnx3T+2A4v45B3y+lJ4XjfZoQ2sXonGchrBl8jduy9LNw==
+X-Received: by 2002:a19:6c7:: with SMTP id 190mr1497073lfg.614.1610431818955;
+        Mon, 11 Jan 2021 22:10:18 -0800 (PST)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id f26sm224806ljg.137.2021.01.11.22.10.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 22:10:18 -0800 (PST)
+Message-ID: <c953405d630efba5377b89931ae4e0aa1abfa4dd.camel@fi.rohmeurope.com>
+Subject: Re: [PATCH 06/15] dt_bindings: regulator: Add ROHM BD71815 PMIC
+ regulators
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reply-To: matti.vaittinen@fi.rohmeurope.com
+To:     Rob Herring <robh@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org
+In-Reply-To: <20210111190953.GB2890911@robh.at.kernel.org>
+References: <cover.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
+         <3ca03c3b76d6898c46ee645ddb5fa25cbfc62367.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
+         <20210111190953.GB2890911@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-In-Reply-To: <20210112160930.7074bdf2@canb.auug.org.au>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
+Date:   Tue, 12 Jan 2021 08:10:14 +0200
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
 
-On 2021/1/12 13:09, Stephen Rothwell wrote:
-> Hi Chao,
+On Mon, 2021-01-11 at 13:09 -0600, Rob Herring wrote:
+> On Fri, Jan 08, 2021 at 03:36:38PM +0200, Matti Vaittinen wrote:
+> > Add binding documentation for regulators on ROHM BD71815 PMIC.
+> > 5 bucks, 7 LDOs and a boost for LED.
+> > 
+> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> > ---
+> >  .../regulator/rohm,bd71815-regulator.yaml     | 104
+> > ++++++++++++++++++
+> >  1 file changed, 104 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/regulator/rohm,bd71815-
+> > regulator.yaml
+> > 
+> > diff --git
+> > a/Documentation/devicetree/bindings/regulator/rohm,bd71815-
+> > regulator.yaml
+> > b/Documentation/devicetree/bindings/regulator/rohm,bd71815-
+> > regulator.yaml
+> > new file mode 100644
+> > index 000000000000..2aa21603698c
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/regulator/rohm,bd71815-
+> > regulator.yaml
+> > @@ -0,0 +1,104 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > +%YAML 1.2
+> > +---
+> > +$id: 
+> > http://devicetree.org/schemas/regulator/rohm,bd71815-regulator.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: ROHM BD71815 Power Management Integrated Circuit regulators
+> > +
+> > +maintainers:
+> > +  - Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> > +
+> > +description: |
+> > +  This module is part of the ROHM BD718215 MFD device. For more
+> > details
+> > +  see Documentation/devicetree/bindings/mfd/rohm,bd71815-
+> > pmic.yaml.
+> > +
+> > +  The regulator controller is represented as a sub-node of the
+> > PMIC node
+> > +  on the device tree.
+> > +
+> > +  The valid names for BD71815 regulator nodes are
+> > +  buck1, buck2, buck3, buck4, buck5,
+> > +  ldo1, ldo2, ldo3, ldo4, ldo5,
+> > +  ldodvref, ldolpsr, wled
 > 
-> On Mon, 11 Jan 2021 15:54:19 +0800 Chao Yu <yuchao0@huawei.com> wrote:
->>
->> On 2021/1/11 7:35, Jonathan Corbet wrote:
->>> On Mon, 11 Jan 2021 07:33:54 +1100
->>> Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>>    
->>>> On Thu, 7 Jan 2021 19:28:19 +0800 Chao Yu <yuchao0@huawei.com> wrote:
->>>>>
->>>>> On 2021/1/7 11:11, Stephen Rothwell wrote:
->>>>>>
->>>>>> After merging the f2fs tree, today's linux-next build (htmldocs) produced
->>>>>> this warning:
->>>>>>
->>>>>> Documentation/ABI/testing/sysfs-fs-f2fs:382: WARNING: Inline emphasis start-string without end-string.
->>>>>
->>>>> IIUC, should I remove "/*" and "*/" for newly added entry in sysfs-fs-f2fs?
->>>>
->>>> Sorry, I don't know.  Cc'ing Jon. >
->>> Removing the comment markers would make the warning go away, but won't
->>> lead to a satisfactory rendering in HTML.  If you want that too, make the
->>> table look like the others immediately above it in the same file.
->>
->> Copied, thanks for your reminder.
->>
->> I've fixed it and resent the patch:
->>
->> https://lore.kernel.org/linux-f2fs-devel/20210111075017.82370-1-yuchao0@huawei.com/T/#u
-> 
-> I am now getting the following::
-> 
-> Documentation/ABI/testing/sysfs-fs-f2fs:382: WARNING: Malformed table.
-> Text in column margin in table line 15.
+> No schema for the last 3?
 
-Oops,
+Thanks Rob. I'm unsure what I have been thinking of :( I'll fix this
+for next version.
 
 > 
-> =====  ===================== =================================
-
-        ^ I guess I missed to type one '=' here....
-
-Thanks,
-
-> value  sb status macro       description
-> 0x1    SBI_IS_DIRTY          dirty flag for checkpoint
-> 0x2    SBI_IS_CLOSE          specify unmounting
-> 0x4    SBI_NEED_FSCK         need fsck.f2fs to fix
-> 0x8    SBI_POR_DOING         recovery is doing or not
-> 0x10   SBI_NEED_SB_WRITE     need to recover superblock
-> 0x20   SBI_NEED_CP           need to checkpoint
-> 0x40   SBI_IS_SHUTDOWN       shutdown by ioctl
-> 0x80   SBI_IS_RECOVERED      recovered orphan/data
-> 0x100  SBI_CP_DISABLED       CP was disabled last mount
-> 0x200  SBI_CP_DISABLED_QUICK CP was disabled quickly
-> 0x400  SBI_QUOTA_NEED_FLUSH  need to flush quota info in CP
-> 0x800  SBI_QUOTA_SKIP_FLUSH  skip flushing quota in current CP
-> 0x1000 SBI_QUOTA_NEED_REPAIR quota file may be corrupted
-> 0x2000 SBI_IS_RESIZEFS       resizefs is in process
-> ====== ===================== =================================
+> > +
+> > +patternProperties:
+> > +  "^(ldo|buck)[1-5]$":
+> > +    type: object
+> > +    description:
+> > +      Properties for single LDO/BUCK regulator.
+> > +    $ref: regulator.yaml#
+> > +
+> > +    properties:
+> > +      regulator-name:
+> > +        pattern: "^(ldo|buck)[1-5]$"
+> > +        description:
+> > +          should be "ldo1", ..., "ldo5" and "buck1", ..., "buck5"
+> > +
+> > +      rohm,vsel-gpios:
+> > +        description:
+> > +          GPIO used to control ldo4 state (when ldo4 is controlled
+> > by GPIO).
+> > +
+> > +      rohm,dvs-run-voltage:
 > 
+> These should have a unit suffix.
+
+I know but these are existing properties. I'd like to re-use them as
+they have exported parser helpers - and I am unsure what kind of
+breakages changing them would cause. (The BD71837/BD71847 which
+introduced these properties are one of the PMICs which are pretty
+widely used.)
+
+Best Regards
+	Matti Vaittinen
+
+
