@@ -2,198 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C82A32F32C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0892F32CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:18:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730676AbhALOPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:15:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33876 "EHLO
+        id S1728386AbhALOSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:18:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726241AbhALOPq (ORCPT
+        with ESMTP id S1726220AbhALOSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:15:46 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6882EC061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:15:06 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id lj6so1671932pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:15:06 -0800 (PST)
+        Tue, 12 Jan 2021 09:18:02 -0500
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C6B7C06179F
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:17:22 -0800 (PST)
+Received: by mail-ua1-x930.google.com with SMTP id p2so866585uac.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:17:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7GtD3YonrmXIET8rBk/Trj9GYaC3dwJx6PaGPk04xNU=;
-        b=p8zPfzTtoi55Jiq3vrboqKOsVERPA/n2bF35M7daR4boTgYxhddvsIyjQxvcVmLooa
-         0xBRL05l6RWtKiE8TMeMxDtCFYueNjl4dOMSSxCKZ275OfsSAxctnDujd3HkEVCwRJIP
-         4fcdnMKyLh4GkpH/6avje2iRLTTPNW+QAuTk3TCeBgovAGh73eSgHYs+x3xt0jIRlRhy
-         bSgOrkRMr1eFe/4MVPY7viBZrlANizGeEm7HH1NZmM8T4RXXNbsRQ5YSQ6qaAn5bUgyN
-         1FNKilRh2T7Cw7XjO5eggmetopm4Bk/epZ/R9T2S0+wGtUhGmpXenG26M6asawwU7O7C
-         a5dg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rLiwQ7Aisx/Fct40RlEWj5FexYeUpewbEHaYhQmapwI=;
+        b=BUyDdDviQzrGZtoD8G/L9ZZzmGO6GemK7todlsnlbd0rVa7KTW3u8IrJKPqb/8RHKL
+         xt2iSJp/n2fSg29NSed4RkVMbmCY64pJk4yh7AVcQfnvne84NBA9w56RGBVMYKqI3fRE
+         Tq7hdSv4A9tFde3hyUPmWis4D9CECTR5ZOdPSK7wSCCE/6MsIM8KvytoZYs0X7OeeIYd
+         fmFiJFHJmrcC10fGMedE740yhIxTmzk+SKoFVsQfpm5CfXLl1A5hCR0uMvRGQOAhZ2GM
+         UH1T8K+YAivhtItsg+Q8OspPcDBKzVVBbLJNw/kjIV6J/m/IQ3Xey0Xy8SDGNdYBm/26
+         yoYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7GtD3YonrmXIET8rBk/Trj9GYaC3dwJx6PaGPk04xNU=;
-        b=UYI01V0dRMTyuvyHgaB3Bj4sHcOkWaEbo9FLOkTSbBenJLwlb2NUhhLmKv8+dOeNgM
-         hmmqFFDrKbcKkdl9uJm+SDIjpwUZTXMIBJqOnUFqduIBSd9Eg/m6giXhDNG710jVqJs3
-         fH2vYhHiV0oc3IkH/sVEXDl7vKWQ/TRBK06wA79ZNnpdZ2o+36n0pLZ3NjvvF/fn/yR5
-         vO8ZQJ2hA7roTzY3Emv617ztFvHsRR2fhfr2Oxy7o5VENthceOf3hhzx/g76dx8m1Vjo
-         ZWfO2IWV7q5OFMQFHlhAreHqPvCFrIsH56A/mRz42qHF4i4i3P6GAL0Y8xyNQyECXSKi
-         czZA==
-X-Gm-Message-State: AOAM530rcORanfi7RdHCKyUBme5do5wTYN8jDZ8l6dO96rZbtSXOixyY
-        bRfNve2PrvjJZGZaIIVbOHevCQ==
-X-Google-Smtp-Source: ABdhPJx3te7nt4Meaz1hm32robPfSSYqRQOAN/H6JsLTOVomFO7bTq5g/J3hhhn7CeMTHLe+h7uBOA==
-X-Received: by 2002:a17:902:82c8:b029:da:eead:94a0 with SMTP id u8-20020a17090282c8b02900daeead94a0mr4988832plz.42.1610460905559;
-        Tue, 12 Jan 2021 06:15:05 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([202.155.204.36])
-        by smtp.gmail.com with ESMTPSA id b11sm3355025pfr.38.2021.01.12.06.15.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 06:15:04 -0800 (PST)
-Date:   Tue, 12 Jan 2021 22:14:58 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Mike Leach <mike.leach@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <Daniel.Kiss@arm.com>,
-        Denis Nikitin <denik@chromium.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Al Grant <al.grant@arm.com>
-Subject: Re: [PATCH v1 1/7] coresight: etm-perf: Add support for PID tracing
- for kernel at EL2
-Message-ID: <20210112141458.GF18965@leoy-ThinkPad-X240s>
-References: <20210109074435.626855-1-leo.yan@linaro.org>
- <20210109074435.626855-2-leo.yan@linaro.org>
- <CAJ9a7VgTqsa4_W0bmfS1BPYnKyvToyVLD=fk85_t9-yehCY9Lw@mail.gmail.com>
- <20210112085826.GC18965@leoy-ThinkPad-X240s>
- <CAJ9a7VgYt-JemRaJn_KtO-X729jo-0y0OO5hCm=tHay31Q6msw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rLiwQ7Aisx/Fct40RlEWj5FexYeUpewbEHaYhQmapwI=;
+        b=FTNH7bguRTSAg5I8w43CbGecKVbD7Olg6Uup0ZuktK/rqGEq7nNwOJxzkQ0dQsOkLi
+         /0a32puH2U9gORKzXbNBiVeJtS8EIL3Iy10iHg3/yEYUEGJuJsuOmQGB2sNpjfDsqZI2
+         CHS8EYy4phUipzDSBIBDfnj2g4IjMhxnMOnyP4IfcwT2Ppqoln9za/ClqoYub64/9xBZ
+         W7PlvxqopgbVmyhjtDy2j42WK+PuTpzq8jV0ZaMQ7tA8wuCjjMUr1zkPgAY04gFfzmRE
+         lR9BvZzDupVEnH3RWL2QHbcOJTQZ+WXOrCTWbSOqWWg1hcGr5zaBuD9cCt5SDbiuuLnM
+         P5xA==
+X-Gm-Message-State: AOAM530s/fhI220C8arVDkgLPf9JDsEMDDMoJ9YMHAWsd9ZmQEsa3HBE
+        QwTzK8b0G8AYmujQ5RSHuTpQiNHqBfYK3TPWs2QIzNxWWEJp1lVK
+X-Google-Smtp-Source: ABdhPJwERNzz9D9S6H23pmXXFcX/wNzEGNdMuoeIpmrclPBW5Q0rU9hEo0YNznVcrhbk/kGGj8fHyudcoc/ZIKkrLR4=
+X-Received: by 2002:ab0:2e99:: with SMTP id f25mr3740445uaa.104.1610461041138;
+ Tue, 12 Jan 2021 06:17:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJ9a7VgYt-JemRaJn_KtO-X729jo-0y0OO5hCm=tHay31Q6msw@mail.gmail.com>
+References: <20201217180638.22748-1-digetx@gmail.com> <20201217180638.22748-36-digetx@gmail.com>
+In-Reply-To: <20201217180638.22748-36-digetx@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 12 Jan 2021 15:16:44 +0100
+Message-ID: <CAPDyKFpQUFTYJ8K2hPMeQCCbQTF_TCE_B+xkXpcL4Fi7h2ReHw@mail.gmail.com>
+Subject: Re: [PATCH v2 35/48] drm/tegra: dc: Support OPP and SoC core voltage scaling
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
+- trimmed cc-list
 
-On Tue, Jan 12, 2021 at 11:23:03AM +0000, Mike Leach wrote:
-> Hi Leo,
-> 
-> On Tue, 12 Jan 2021 at 08:58, Leo Yan <leo.yan@linaro.org> wrote:
-> >
-> > Hi Mike,
-> >
-> > On Mon, Jan 11, 2021 at 04:22:39PM +0000, Mike Leach wrote:
-> >
-> > [...]
-> >
-> > > > diff --git a/include/linux/coresight-pmu.h b/include/linux/coresight-pmu.h
-> > > > index b0e35eec6499..927c6285ce5d 100644
-> > > > --- a/include/linux/coresight-pmu.h
-> > > > +++ b/include/linux/coresight-pmu.h
-> > > > @@ -11,16 +11,19 @@
-> > > >  #define CORESIGHT_ETM_PMU_SEED  0x10
-> > > >
-> > > >  /* ETMv3.5/PTM's ETMCR config bit */
-> > > > -#define ETM_OPT_CYCACC  12
-> > > > -#define ETM_OPT_CTXTID 14
-> > > > -#define ETM_OPT_TS      28
-> > > > -#define ETM_OPT_RETSTK 29
-> > > > +#define ETM_OPT_CYCACC         12
-> > > > +#define ETM_OPT_CTXTID         14
-> > > > +#define ETM_OPT_CTXTID_IN_VMID 15
-> > >
-> > > Minor issue here - ETMv3.x / PTM cannot trace CXTID in VMID so this
-> > > may better be named ETM4_OPT_CTXTID_IN_VMID, rather than be grouped
-> > > with the ETM3.5 options?
-> >
-> > I looked into this suggestion but found it's complex than I assumed.
-> > This config bits are not only used for ETMv3.x / PTM, it's also used
-> > as an configuration interface between user space in Perf and kernel
-> > drivers.
-> >
-> > For example, in the userspace, perf tool sets bit ETM_OPT_TS to enable
-> > timestamp [1], this is same for ETMv3 and ETMv4.  In the kernel side,
-> > the configuration is directly used ETMv3 (in coresight-etm3x-core.c),
-> > but the configuration bits are converted for ETMv4 in the function
-> > etm4_parse_event_config() [2].
-> >
-> > So this is a historical issue, at the early period ETMv3 and ETMv4 can
-> > be compatible with each other for configurations, but after evoluation,
-> > some configs only belong to ETMv4 and cannot be applied on ETMv3
-> > anymore, but we still use ETMv3.5 config bits as the interface between
-> > kernel and userspace.
-> >
-> 
-> I was aware that etm3/ptm used these bits as both the options and the
-> bit values for direct writing to the ETMCR register for ETMv3, and
-> re-mapped to appropriate register values in ETMv4.
-> In the past we have re-used etmv3.5 bit definitions ETM_xxx  when
-> appropriate, but where unique to ETM4 we  have used a ETM4_xxx naming
-> convention.
+On Thu, 17 Dec 2020 at 19:08, Dmitry Osipenko <digetx@gmail.com> wrote:
+>
+> Add OPP and SoC core voltage scaling support to the display controller
+> driver. This is required for enabling system-wide DVFS on pre-Tegra186
+> SoCs.
+>
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+> Tested-by: Nicolas Chauvet <kwizart@gmail.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/gpu/drm/tegra/dc.c | 66 +++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 65 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/tegra/dc.c b/drivers/gpu/drm/tegra/dc.c
+> index b6676f1fe358..105ad786e432 100644
+> --- a/drivers/gpu/drm/tegra/dc.c
+> +++ b/drivers/gpu/drm/tegra/dc.c
+> @@ -11,9 +11,12 @@
+>  #include <linux/interconnect.h>
+>  #include <linux/module.h>
+>  #include <linux/of_device.h>
+> +#include <linux/pm_domain.h>
+> +#include <linux/pm_opp.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/reset.h>
+>
+> +#include <soc/tegra/common.h>
+>  #include <soc/tegra/pmc.h>
+>
+>  #include <drm/drm_atomic.h>
+> @@ -1699,6 +1702,48 @@ int tegra_dc_state_setup_clock(struct tegra_dc *dc,
+>         return 0;
+>  }
+>
+> +static void tegra_dc_update_voltage_state(struct tegra_dc *dc,
+> +                                         struct tegra_dc_state *state)
+> +{
+> +       unsigned long rate, pstate;
+> +       struct dev_pm_opp *opp;
+> +       int err;
+> +
+> +       /* calculate actual pixel clock rate which depends on internal divider */
+> +       rate = DIV_ROUND_UP(clk_get_rate(dc->clk) * 2, state->div + 2);
+> +
+> +       /* find suitable OPP for the rate */
+> +       opp = dev_pm_opp_find_freq_ceil(dc->dev, &rate);
+> +
+> +       if (opp == ERR_PTR(-ERANGE))
+> +               opp = dev_pm_opp_find_freq_floor(dc->dev, &rate);
+> +
+> +       /* -ENOENT means that this device-tree doesn't have OPP table */
+> +       if (opp == ERR_PTR(-ENOENT))
+> +               return;
+> +
+> +       if (IS_ERR(opp)) {
+> +               dev_err(dc->dev, "failed to find OPP for %luHz: %pe\n",
+> +                       rate, opp);
+> +               return;
+> +       }
+> +
+> +       pstate = dev_pm_opp_get_voltage(opp);
+> +       dev_pm_opp_put(opp);
+> +
+> +       /*
+> +        * The minimum core voltage depends on the pixel clock rate (which
+> +        * depends on internal clock divider of the CRTC) and not on the
+> +        * rate of the display controller clock. This is why we're not using
+> +        * dev_pm_opp_set_rate() API and instead controlling the power domain
+> +        * directly.
+> +        */
+> +       err = dev_pm_genpd_set_performance_state(dc->dev, pstate);
 
-I am concern this approach is not friendly for extension; for example,
-let's say IP ETM5 with defined bit 28 as CTXTID, if add a new option
-for it, we need to define macro as:
+As you state above, in general we should not need to call the
+dev_pm_genpd_set_performance_state() directly for the consumer driver.
 
-        #define ETM5_OPT_CTXTID         28
+Even if this looks like a special case to me, I would appreciate a
+confirmation from Viresh that this is the way he also would like to
+move forward from the opp library perspective.
 
-This will result in confliction with the existed option ETM_OPT_TS
-and it is hard for maintenance for options, since there have different
-prefixes (like ETM_OPT_xxx, ETM4_OPT_xxx, ETM5_OPT_xxx, etc).
+> +       if (err)
+> +               dev_err(dc->dev, "failed to set power domain state to %lu: %d\n",
+> +                       pstate, err);
+> +}
+> +
 
-I'd like to take option as knob to enable or disable hardware
-feature; the low level drivers should set the appropriate values for
-registers based on different options.
+[...]
 
-Furthermore, ETM driver should report error when detect any option is
-not supported, I.e. ETM3 driver should report failure if user wrongly
-set the option ETM_OPT_CTXTID_IN_VMID.
-
-> I am not suggesting re-factoring the options completely, just
-> re-naming this single option to make it clear it is unique to ETM4+.
-
-Here I perfer Suzuki's suggestion to simply refine comments, something
-like below:
-
-/*
- * Below are bit offsets for perf options, most of them are orignally
- * coming from ETMv3.5/PTM's ETMCR config bits (so far except
- * ETM_OPT_CTXTID_IN_VMID is only used for ETMv4).
- *
- * ETMv3.5/PTM doesn't define ETMCR config bits with prefix "ETM3_" and
- * directly use below macros as config bits.
- */
-#define ETM_OPT_CYCACC          12
-#define ETM_OPT_CTXTID          14
-#define ETM_OPT_CTXTID_IN_VMID  15
-#define ETM_OPT_TS              28
-#define ETM_OPT_RETSTK          29
-
-> Looking at the etmv3 driver, at present it does not actually appear to
-> support contextid tracing - and when it does, both bits 14 and 15 will
-> be required to be used - as ETMCR defines these bits as ContextID
-> size.
-> Should this ever get fixed.
-
-Good catch!  Seems to me, this is a good example that we should
-distinguish the definition between Perf options and config bits :)
-
-> then having an overlapping option bit -
-> that appears to be valid for ETMv3 will be confusing.
-
-I hope the the proposed change can avoid the confusion, if have
-concern, please let me know.
-
-Thanks a lot for suggestions,
-Leo
+Kind regards
+Uffe
