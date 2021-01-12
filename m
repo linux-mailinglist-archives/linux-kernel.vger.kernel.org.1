@@ -2,87 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB202F3352
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 978482F3358
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:56:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387577AbhALOyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:54:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54204 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733044AbhALOyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:54:13 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610463206; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6uCA0bR0UPyfjRf0IGWsHK+lZA/GA9OSf48psytri08=;
-        b=t7FHH0CVf//EC3qCB50EVuwV2I9siSGuX/p/JkGWdsSXgJb+YNDZOdN6cipYj0iORT1ztO
-        ZS8ykZHKyMukMUquaxLkdZQrEfYYlnHjU+TEB70wL6X53z+Vnly7bmF6kPR/PX6cnB4g+t
-        bChXigk/QOBrAIynhNLufOoKleu5ea4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 698A6AC24;
-        Tue, 12 Jan 2021 14:53:26 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 15:53:25 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>, mike.kravetz@oracle.com,
-        akpm@linux-foundation.org, n-horiguchi@ah.jp.nec.com,
-        ak@linux.intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Yang Shi <shy828301@gmail.com>
-Subject: Re: [PATCH v3 1/6] mm: migrate: do not migrate HugeTLB page whose
- refcount is one
-Message-ID: <20210112145325.GS22493@dhcp22.suse.cz>
-References: <20210110124017.86750-1-songmuchun@bytedance.com>
- <20210110124017.86750-2-songmuchun@bytedance.com>
- <1b39d654-0b8c-de3a-55d1-6ab8c2b2e0ba@redhat.com>
- <c6eddfc6-8e15-4a28-36ff-64bfa65cca8e@redhat.com>
- <20210112112709.GO22493@dhcp22.suse.cz>
- <d00da0ca-8a2b-f144-b455-2887fd269ed7@redhat.com>
- <20210112121643.GP22493@dhcp22.suse.cz>
- <20210112142337.GR22493@dhcp22.suse.cz>
- <52ec4899-80df-4cbe-41f1-e0a29e838afa@redhat.com>
+        id S2388800AbhALOzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:55:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726236AbhALOzI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 09:55:08 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3011EC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:54:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yv6h4x95BGX9qXVY6Rcns5ygh15DQfWsBdxGTGyt8YE=; b=ZS3hDJrYdrTDPVhbly7EKu/Qp+
+        1EtEpOKWYtEIYzWWOMznUNVXSccdaQc0SaDGv0cPE39fg8iXMqCzvTDgnD3teOspzrYmccN2Y/Qbv
+        uTQjSLrHy1WrbUsXw9MxqRDzb4XersMk6Aawva3e3QmzZbLt0KPB7PRJuOpLXfEAysgecUJpIrkNd
+        0b3a4GhSucn7StrPFrjoQcgJeejxXaGSDCdlv6gAeWyhV0S0rF09YrNc9SStdvK5nibsIKVvGsYNZ
+        YcSuWwtDjb1bBeeeuJ/9jG3h+ejeOzGRhnqCJyzJZqxczVSXVA/TCXTMLbyYa3ukwFIcJb0CPIx0i
+        WtnPE9Rg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1kzL35-004vBG-Dv; Tue, 12 Jan 2021 14:53:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1AEAF301324;
+        Tue, 12 Jan 2021 15:53:31 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F2ACE20C228D5; Tue, 12 Jan 2021 15:53:30 +0100 (CET)
+Date:   Tue, 12 Jan 2021 15:53:30 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
+Message-ID: <X/236obyM0nqL5+X@hirez.programming.kicks-ass.net>
+References: <20201226025117.2770-1-jiangshanlai@gmail.com>
+ <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net>
+ <87o8hv7pnd.fsf@nanos.tec.linutronix.de>
+ <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net>
+ <X/yH9+MGa1JCNZ8x@hirez.programming.kicks-ass.net>
+ <jhj7doj1dr1.mognet@arm.com>
+ <X/yzrJw4UbQsK3KB@hirez.programming.kicks-ass.net>
+ <CAJhGHyA0rfR92W7T7RnhPrmLMkmV4Mb7fUSeG2VEHhsH-pSxsw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <52ec4899-80df-4cbe-41f1-e0a29e838afa@redhat.com>
+In-Reply-To: <CAJhGHyA0rfR92W7T7RnhPrmLMkmV4Mb7fUSeG2VEHhsH-pSxsw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 12-01-21 15:41:02, David Hildenbrand wrote:
-> On 12.01.21 15:23, Michal Hocko wrote:
-> > On Tue 12-01-21 13:16:45, Michal Hocko wrote:
-> > [...]
-> >> Well, currently pool pages are not migrateable but you are right that
-> >> this is likely something that we will need to look into in the future
-> >> and this optimization would stand in the way.
-> > 
-> > After some more thinking I believe I was wrong in my last statement.
-> > This optimization shouldn't have any effect on pages on the pool as
-> > those stay at reference count 0 and they cannot be isolated either
-> > (clear_page_huge_active before it is enqueued).
-> > 
-> > That being said, the migration code would still have to learn about
-> > about this pages but that is out of scope of this discussion.
-> > 
-> > Sorry about the confusion from my side.
-> > 
+On Tue, Jan 12, 2021 at 12:33:03PM +0800, Lai Jiangshan wrote:
+> > Well yes, but afaict the workqueue stuff hasn't been settled yet, and
+> > the rcutorture patch Paul did was just plain racy and who knows what
+> > other daft kthread users are out there. That and we're at -rc3.
 > 
-> At this point I am fairly confused what's working at what's not :D
+> I just send the V4 patchset for the workqueue.  Please take a look.
 
-heh, tell me something about that. Hugetlb is a maze full of land mines.
+Yes, I've seen it. But I think this approach is smaller and simpler.
 
-> I think this will require more thought, on how to teach
-> alloc_contig_range() (and eventually in some cases offline_pages()?) to
-> do the right thing.
-
-Well, offlining sort of works because it retries both migrates and
-dissolves. It can fail with the later due to reservations but that can
-be expected. We can still try harder to rellocate/rebalance per numa
-pools to keep the reservation but I strongly suspect nobody has noticed
-this to be a problem so there we are.
-
--- 
-Michal Hocko
-SUSE Labs
+By distinguishing between geniuine per-cpu kthreads and kthreads that
+happen to have a single CPU affinity, things become much simpler and
+robust.
