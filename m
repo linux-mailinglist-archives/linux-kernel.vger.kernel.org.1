@@ -2,143 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 373CD2F29A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:07:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D63EC2F29AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:08:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404266AbhALIFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 03:05:45 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45038 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730224AbhALIFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 03:05:44 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ADD64AC8F;
-        Tue, 12 Jan 2021 08:05:02 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 09:04:58 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        mhocko@suse.com, song.bao.hua@hisilicon.com, david@redhat.com,
-        naoya.horiguchi@nec.com, duanxiongchun@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v12 04/13] mm/hugetlb: Free the vmemmap pages associated
- with each HugeTLB page
-Message-ID: <20210112080453.GA10895@linux>
-References: <20210106141931.73931-1-songmuchun@bytedance.com>
- <20210106141931.73931-5-songmuchun@bytedance.com>
+        id S2404484AbhALIHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 03:07:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25631 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729208AbhALIHj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 03:07:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610438772;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e98jFtAnO+UtW7Rwri+cMU4/wIA3Ib5qoGAOd0HCxb8=;
+        b=Txbu8y7BPf1HL0vfozcTxckFkAv2Xu2VFjHEgXZgJwDWdQiZL9d7TueZQlNZdndWiEcL9e
+        LHyzIKigGz05gVrzMXEGfE1RQpGZvMcHL8OzTN1iS+x/m8TEGcxIoPEbL6fsMyw7YEQsOD
+        ID7zGxHhBge/CrcWfUVrY7/o65icbnQ=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-536-XSrdlajlORmAYo1AuudSVQ-1; Tue, 12 Jan 2021 03:06:11 -0500
+X-MC-Unique: XSrdlajlORmAYo1AuudSVQ-1
+Received: by mail-ej1-f72.google.com with SMTP id k3so684389ejr.16
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:06:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=e98jFtAnO+UtW7Rwri+cMU4/wIA3Ib5qoGAOd0HCxb8=;
+        b=muggxo79Ofg90tSpM5Jw/2IV8uOhEdOekWPqsTnUCneIi75WSQ6cO8sAeoIOuwpX2h
+         +5NNUDpYfJkTN7cMk8UIQGTueVUe8ChI6ZnrR++WhZeuRmNuwnroXaihlnXLRgRq4re4
+         brl1p0CEYG2OQ8pAxmJjX36qpaj+dtkcupbJ/rF6jRv6RK7UUapH/2VQ2B95Jd623xmT
+         8DdSRjuIKL69o64fCjH+bMULGq3Jq4Q9fCucXGpYVgUHzad1ZpDKPC2oP555EaHV8sQu
+         XaUpZBEh+wDp7T2j7kuD/ZhspUFwB85fIOiB2Xv7B5PKiVz/Axz7eFFsyhwsWYc9W1W7
+         dpfg==
+X-Gm-Message-State: AOAM530LfZ23wOayoBuei/myt6Eyl8cr79u+iRAII4hB3RI2QF/yrX6h
+        8VrUoCvjp8gLPhIZk7NRnBhMaLaah+xQlQseJt9HWzCmCSlZs24IvZNvF6i2z3uGxSZn2VgYW3H
+        H+3uBaAM0ArzJdKzBlwHVzFwE
+X-Received: by 2002:a17:906:c10e:: with SMTP id do14mr2483308ejc.166.1610438769919;
+        Tue, 12 Jan 2021 00:06:09 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxC9sIchIaPbpCd6LbN/mEZzRXK+530541sS7ArG8ztI+ctpVEyq5i7XV2NYKlXWG8KFV1ouA==
+X-Received: by 2002:a17:906:c10e:: with SMTP id do14mr2483289ejc.166.1610438769757;
+        Tue, 12 Jan 2021 00:06:09 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id zn5sm844167ejb.111.2021.01.12.00.06.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jan 2021 00:06:09 -0800 (PST)
+Subject: Re: UBSAN: shift-out-of-bounds in kvm_vcpu_after_set_cpuid
+To:     Sean Christopherson <seanjc@google.com>,
+        Jim Mattson <jmattson@google.com>
+Cc:     syzbot <syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        the arch/x86 maintainers <x86@kernel.org>
+References: <000000000000d5173d05b7097755@google.com>
+ <CALMp9eSKrn0zcmSuOE6GFi400PMgK+yeypS7+prtwBckgdW0vQ@mail.gmail.com>
+ <X/zYsnfXpd6DT34D@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f1aa1f3c-1dac-2357-ee1c-ab505513382f@redhat.com>
+Date:   Tue, 12 Jan 2021 09:06:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106141931.73931-5-songmuchun@bytedance.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <X/zYsnfXpd6DT34D@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 10:19:22PM +0800, Muchun Song wrote:
-> Every HugeTLB has more than one struct page structure. We __know__ that
-> we only use the first 4(HUGETLB_CGROUP_MIN_ORDER) struct page structures
-> to store metadata associated with each HugeTLB.
-> 
-> There are a lot of struct page structures associated with each HugeTLB
-> page. For tail pages, the value of compound_head is the same. So we can
-> reuse first page of tail page structures. We map the virtual addresses
-> of the remaining pages of tail page structures to the first tail page
-> struct, and then free these page frames. Therefore, we need to reserve
-> two pages as vmemmap areas.
-> 
-> When we allocate a HugeTLB page from the buddy, we can free some vmemmap
-> pages associated with each HugeTLB page. It is more appropriate to do it
-> in the prep_new_huge_page().
-> 
-> The free_vmemmap_pages_per_hpage(), which indicates how many vmemmap
-> pages associated with a HugeTLB page can be freed, returns zero for
-> now, which means the feature is disabled. We will enable it once all
-> the infrastructure is there.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+On 12/01/21 00:01, Sean Christopherson wrote:
+>> Perhaps cpuid_query_maxphyaddr() should just look at the low 5 bits of
+>> CPUID.80000008H:EAX?
 
-My memory may betray me after vacation, so bear with me.
+The low 6 bits I guess---yes, that would make sense and it would have 
+also fixed the bug.
 
-> +/*
-> + * Any memory allocated via the memblock allocator and not via the
-> + * buddy will be marked reserved already in the memmap. For those
-> + * pages, we can call this function to free it to buddy allocator.
-> + */
-> +static inline void free_bootmem_page(struct page *page)
-> +{
-> +	unsigned long magic = (unsigned long)page->freelist;
-> +
-> +	/*
-> +	 * The reserve_bootmem_region sets the reserved flag on bootmem
-> +	 * pages.
-> +	 */
-> +	VM_WARN_ON_PAGE(page_ref_count(page) != 2, page);
+(Nevertheless it's a good idea to make rsvd_bits more robust as well, as 
+in the commit that Sean referenced.
 
-I have been thinking about this some more.
-And while I think that this macro might have its room somewhere, I do not
-think this is the case.
+Paolo
 
-Here, if we see that page's refcount differs from 2 it means that we had an
-earlier corruption.
-Now, as a person that has dealt with debugging memory corruptions, I think it
-is of no use to proceed further if such corruption happened, as this can lead
-to problems somewhere else that can manifest in funny ways, and you will find
-yourself scratching your head and trying to work out what happened.
-
-I am aware that this is not the root of the problem here, as someone might have
-had to decrease the refcount, but I would definitely change this to its
-VM_BUG_ON_* variant.
-
-> --- /dev/null
-> +++ b/mm/hugetlb_vmemmap.c
-
-[...]
-
-> diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-> new file mode 100644
-> index 000000000000..6923f03534d5
-> --- /dev/null
-> +++ b/mm/hugetlb_vmemmap.h
-
-[...]
-
-> +/**
-> + * vmemmap_remap_free - remap the vmemmap virtual address range [@start, @end)
-> + *			to the page which @reuse is mapped, then free vmemmap
-> + *			pages.
-> + * @start:	start address of the vmemmap virtual address range.
-> + * @end:	end address of the vmemmap virtual address range.
-> + * @reuse:	reuse address.
-> + */
-> +void vmemmap_remap_free(unsigned long start, unsigned long end,
-> +			unsigned long reuse)
-> +{
-> +	LIST_HEAD(vmemmap_pages);
-> +	struct vmemmap_remap_walk walk = {
-> +		.remap_pte	= vmemmap_remap_pte,
-> +		.reuse_addr	= reuse,
-> +		.vmemmap_pages	= &vmemmap_pages,
-> +	};
-> +
-> +	BUG_ON(start != reuse + PAGE_SIZE);
-
-It seems a bit odd to only pass "start" for the BUG_ON.
-Also, I kind of dislike the "addr += PAGE_SIZE" in vmemmap_pte_range.
-
-I wonder if adding a ".remap_start_addr" would make more sense.
-And adding it here with the vmemmap_remap_walk init.
- 
-
--- 
-Oscar Salvador
-SUSE L3
