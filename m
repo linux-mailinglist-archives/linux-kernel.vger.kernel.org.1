@@ -2,104 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27DB12F2DB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:17:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B10502F2DBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:19:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbhALLQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 06:16:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725863AbhALLQI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:16:08 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E6AC061575;
-        Tue, 12 Jan 2021 03:15:28 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id x20so2730469lfe.12;
-        Tue, 12 Jan 2021 03:15:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=APm8lNC6tsRthrKHh8x0lk8XwUZfEnqHf3TxruRpXZ4=;
-        b=ezcp3LJTzPcczKona/Bt7HXW9eKYs3l+I/MdzAJbhSXJxOt+oNB1IRAkWOPd18T5cq
-         URWcfZn/TRvkAEX/29SzrDurPEUMWH+IztWozHqYOJWn6bkzJ7/SnN2HmKsGzJxkW4cq
-         8IHUJO5xCNvOA3FNs957idAWK6yTJ+pcwZ+SuTt5jXRbVKctLTnNT567OmK+YF0WFPVm
-         bB6zhPmK+DXnCwrssHrTXNJJ5vbE15xcOCbG/2sOAgRI+3oTDjKHMO4Pb1gTsYDgbPW4
-         RGKE0lrPFw5fTv8jMg5xCjF0sy1ReLAyOu8gDUw8ZIPEOZee3LXQR16fNbu9crYeSYM9
-         Om7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=APm8lNC6tsRthrKHh8x0lk8XwUZfEnqHf3TxruRpXZ4=;
-        b=dQKiZxJJD4mAZg6mfkx+ilfEFru9Ndu8S6Na85L8HhYZ28DsCLQBmttKalsunQw+MD
-         o0hj9dmlbHQloDlECZMYJ3isSKNLBuE2pvKDxcQfOISPkXZjLpvKQL9QtC8x5BOsk9ps
-         CS+mCxARA1/Q9026rcsAnygmYjuMEDhzRN2yjZ0QSKy1Aoz++N2emkE3nATv+4/565Qs
-         B8t9IAzlwEl8Y10gpq+1jZf/1jFmGjE4H2eNo4tgX+nquiyYivuOnSGrIQjhhHZE96rs
-         MnSwK9Q9Tq0epzKmvbzKXEfsNp+24FCEjSjydudgntz7dQQWihF76zKerJ3gakKIOJPd
-         g34Q==
-X-Gm-Message-State: AOAM533qmJaRUMCdQgIOpik9/7xp3btRSdFg0e1PZhbCMi8V77kKug7w
-        xUQYLTAgNelCIwdpaTZtsOQUWSZ2+Wo8qw==
-X-Google-Smtp-Source: ABdhPJw+1qiv86mnDHCwjgdDtfJLcl859KZqznUcLc7rVm1ubTj8ZOyXt8uIT4VM8mKIsUdPX43yaA==
-X-Received: by 2002:a19:cc56:: with SMTP id c83mr1950431lfg.341.1610450126569;
-        Tue, 12 Jan 2021 03:15:26 -0800 (PST)
-Received: from [192.168.1.101] ([178.176.77.112])
-        by smtp.gmail.com with ESMTPSA id 10sm352059lfh.208.2021.01.12.03.15.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 03:15:26 -0800 (PST)
-Subject: Re: [PATCH] ata: remove redundant error print in
- rb532_pata_driver_probe
-To:     menglong8.dong@gmail.com, axboe@kernel.dk
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-References: <20210112023619.5713-1-dong.menglong@zte.com.cn>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <33bb1cd2-c202-0fd5-733d-b44e7e8fa92c@gmail.com>
-Date:   Tue, 12 Jan 2021 14:15:25 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726259AbhALLRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:17:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39480 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725885AbhALLRs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 06:17:48 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A69F5AD1E;
+        Tue, 12 Jan 2021 11:17:07 +0000 (UTC)
+Date:   Tue, 12 Jan 2021 12:17:05 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     akpm@linux-foundation.org, mhocko@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz,
+        pasha.tatashin@soleen.com
+Subject: Re: [PATCH 1/5] mm: Introduce ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
+Message-ID: <20210112111700.GA13374@linux>
+References: <20201217130758.11565-1-osalvador@suse.de>
+ <20201217130758.11565-2-osalvador@suse.de>
+ <21932014-3027-8ad9-2140-f63500c641d7@redhat.com>
+ <20210112072643.GA10774@linux>
+ <feef406c-105c-138a-b8af-345684876e25@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210112023619.5713-1-dong.menglong@zte.com.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <feef406c-105c-138a-b8af-345684876e25@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 1/12/21 5:36 AM, menglong8.dong@gmail.com wrote:
-
-> From: Menglong Dong <dong.menglong@zte.com.cn>
+On Tue, Jan 12, 2021 at 11:12:30AM +0100, David Hildenbrand wrote:
+> On 12.01.21 08:26, Oscar Salvador wrote:
+> > You mean introducing only mm/Kconfig change in this patch, and then
+> > arch/*/Kconfig changes in separate patches at the end of the series?
 > 
-> Coccinelle reports a redundant error print in rb532_pata_driver_probe.
-> As 'platform_get_irq' already prints the error message, error print
-> here is redundant and can be removed.
+> Yeah, or squashing the leftovers of this patch (3 LOC) into patch #2.
+
+Ok, makes sense.
+
+> > I can certainly do that, not sure how much will help with the review,
+> > but it might help when bisecting.
 > 
-> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
-> ---
->  drivers/ata/pata_rb532_cf.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/ata/pata_rb532_cf.c b/drivers/ata/pata_rb532_cf.c
-> index 479c4b29b856..dcde84f571c4 100644
-> --- a/drivers/ata/pata_rb532_cf.c
-> +++ b/drivers/ata/pata_rb532_cf.c
-> @@ -115,10 +115,8 @@ static int rb532_pata_driver_probe(struct platform_device *pdev)
->  	}
->  
->  	irq = platform_get_irq(pdev, 0);
-> -	if (irq <= 0) {
-> -		dev_err(&pdev->dev, "no IRQ resource found\n");
-> +	if (irq <= 0)
->  		return -ENOENT;
+> It's usually nicer to explicitly enable stuff per architecture, stating
+> why it works on that architecture (and in the best case, even was
+> tested!). :)
 
-   This still beaks the probe deferral. :-(
-   But that's another problem...
+Fine by me.
+I will prepare another re-spin with that in mind then.
 
-[...]
+It would be great to have some feedback on patch#2 before that (in case you find
+some time ;-).
 
-MBR, Sergei
+Thanks!
+
+-- 
+Oscar Salvador
+SUSE L3
