@@ -2,65 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1602F25E6
+	by mail.lfdr.de (Postfix) with ESMTP id 9C9632F25E7
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729196AbhALBzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 20:55:36 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:38988 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726734AbhALBzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 20:55:35 -0500
-Received: from ubuntu.localdomain (unknown [124.64.18.63])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxpbxgAf1f6+ECAA--.2474S2;
-        Tue, 12 Jan 2021 09:54:46 +0800 (CST)
-From:   Zhaoge Zhang <zhangzhaoge@loongson.cn>
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm: Fix macro name DRM_MODE_PROP_OBJECT in code comment
-Date:   Tue, 12 Jan 2021 09:54:39 +0800
-Message-Id: <1610416479-32736-1-git-send-email-zhangzhaoge@loongson.cn>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: AQAAf9AxpbxgAf1f6+ECAA--.2474S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xw43uFyxXFyUCFWktrW7twb_yoW3JFc_Ca
-        47Wa1kWwnrZrW29w17Za9rKrsak3s5GF4DWr95A3Z8Aw4DAr13Jay8Wr93tr13WrsFqryF
-        qa18Zry3AF1xKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbc8YjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6w4l42xK
-        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
-        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48J
-        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
-        IF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
-        6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2txhDUUUU
-X-CM-SenderInfo: x2kd0w52kd0w3h6o00pqjv00gofq/
+        id S1729235AbhALB4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 20:56:15 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10705 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726734AbhALB4O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 20:56:14 -0500
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DFDCB5MGPzl3vf;
+        Tue, 12 Jan 2021 09:54:14 +0800 (CST)
+Received: from szvp000203569.huawei.com (10.120.216.130) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 12 Jan 2021 09:55:23 +0800
+From:   Chao Yu <yuchao0@huawei.com>
+To:     <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH] f2fs: fix to set/clear I_LINKABLE under i_lock
+Date:   Tue, 12 Jan 2021 09:55:09 +0800
+Message-ID: <20210112015509.28083-1-yuchao0@huawei.com>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.120.216.130]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Zhaoge Zhang <zhangzhaoge@loongson.cn>
----
- include/drm/drm_property.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+fsstress + fault injection test case reports a warning message as
+below:
 
-diff --git a/include/drm/drm_property.h b/include/drm/drm_property.h
-index 4a0a80d..bbf5c1fd 100644
---- a/include/drm/drm_property.h
-+++ b/include/drm/drm_property.h
-@@ -114,7 +114,7 @@ struct drm_property {
- 	 *     by the property. Bitmask properties are created using
- 	 *     drm_property_create_bitmask().
- 	 *
--	 * DRM_MODE_PROB_OBJECT
-+	 * DRM_MODE_PROP_OBJECT
- 	 *     Object properties are used to link modeset objects. This is used
- 	 *     extensively in the atomic support to create the display pipeline,
- 	 *     by linking &drm_framebuffer to &drm_plane, &drm_plane to
+WARNING: CPU: 13 PID: 6226 at fs/inode.c:361 inc_nlink+0x32/0x40
+Call Trace:
+ f2fs_init_inode_metadata+0x25c/0x4a0 [f2fs]
+ f2fs_add_inline_entry+0x153/0x3b0 [f2fs]
+ f2fs_add_dentry+0x75/0x80 [f2fs]
+ f2fs_do_add_link+0x108/0x160 [f2fs]
+ f2fs_rename2+0x6ab/0x14f0 [f2fs]
+ vfs_rename+0x70c/0x940
+ do_renameat2+0x4d8/0x4f0
+ __x64_sys_renameat2+0x4b/0x60
+ do_syscall_64+0x33/0x80
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Following race case can cause this:
+Thread A				Kworker
+- f2fs_rename
+ - f2fs_create_whiteout
+  - __f2fs_tmpfile
+   - f2fs_i_links_write
+    - f2fs_mark_inode_dirty_sync
+     - mark_inode_dirty_sync
+					- writeback_single_inode
+					 - __writeback_single_inode
+					  - spin_lock(&inode->i_lock)
+   - inode->i_state |= I_LINKABLE
+					  - inode->i_state &= ~dirty
+					  - spin_unlock(&inode->i_lock)
+ - f2fs_add_link
+  - f2fs_do_add_link
+   - f2fs_add_dentry
+    - f2fs_add_inline_entry
+     - f2fs_init_inode_metadata
+      - f2fs_i_links_write
+       - inc_nlink
+        - WARN_ON(!(inode->i_state & I_LINKABLE))
+
+Fix to add i_lock to avoid i_state update race condition.
+
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ fs/f2fs/namei.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
+index 6edb1ab579a1..887804968576 100644
+--- a/fs/f2fs/namei.c
++++ b/fs/f2fs/namei.c
+@@ -855,7 +855,11 @@ static int __f2fs_tmpfile(struct inode *dir, struct dentry *dentry,
+ 
+ 	if (whiteout) {
+ 		f2fs_i_links_write(inode, false);
++
++		spin_lock(&inode->i_lock);
+ 		inode->i_state |= I_LINKABLE;
++		spin_unlock(&inode->i_lock);
++
+ 		*whiteout = inode;
+ 	} else {
+ 		d_tmpfile(dentry, inode);
+@@ -1041,7 +1045,11 @@ static int f2fs_rename(struct inode *old_dir, struct dentry *old_dentry,
+ 		err = f2fs_add_link(old_dentry, whiteout);
+ 		if (err)
+ 			goto put_out_dir;
++
++		spin_lock(&whiteout->i_lock);
+ 		whiteout->i_state &= ~I_LINKABLE;
++		spin_unlock(&whiteout->i_lock);
++
+ 		iput(whiteout);
+ 	}
+ 
 -- 
-2.7.4
+2.29.2
 
