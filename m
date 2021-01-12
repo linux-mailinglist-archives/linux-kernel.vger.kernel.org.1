@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 152D02F2BE8
+	by mail.lfdr.de (Postfix) with ESMTP id EFA372F2BEA
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392871AbhALJyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:54:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33960 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730628AbhALJye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:54:34 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 840D8AF58;
-        Tue, 12 Jan 2021 09:53:52 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 10:53:50 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <nao.horiguchi@gmail.com>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>, stable@vger.kernel.org,
-        vishal.l.verma@intel.com, linux-nvdimm@lists.01.org,
+        id S2392883AbhALJyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:54:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730628AbhALJys (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 04:54:48 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1ECC061786;
+        Tue, 12 Jan 2021 01:54:07 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id y23so1487306wmi.1;
+        Tue, 12 Jan 2021 01:54:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4C7koV7P9bGKc+8BN3L92y65XqnLENV7qQnrXi9vunM=;
+        b=IPMh9X5BrV1/JjonSuaCs7E9x+6WGO3aAUl8ReIGobx3T/2p8PMuEQyPwietoLfCcq
+         L7LKDtMh2FziyR+3kuPAOJlo58Lne9hMVRZa64gMAgD5IevPqRxBw9QsNZbHHeIByGcc
+         MD90h7SbWm+29I1ka3vigZpIz6a0OvFhK3C/byqpcjOk6pT8cxuO+aE4Ij4Ue3emWBWi
+         dnABj7jE+tJSp7tOKpOhLauRhfhAxolnyWAvD5GEy6+QIKRvthXvpqGw9m4xuqjaQUon
+         ts8uPeBCgr+zHVw3ROEiP1R1QNNnvLSo+Qa+pOneP3QGRmeAR69K2lPHs06CNRizr3L+
+         gfxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4C7koV7P9bGKc+8BN3L92y65XqnLENV7qQnrXi9vunM=;
+        b=DRW5CEEHNbCNCWl0wkpQG0BnfHr0um9LWiOCOGhOorE7Td6HXhI+XLyTTBA2nRaNd1
+         HtIonQf56GZxwVKnq0LcX4vKkGyTs1WmpY8IaQ8yT54LgFcEecl8w1V8+haru/HyY7D+
+         CknAs1JIzm9Q0cbms2nZOwsImYd2mvTP35nErCgLN54KPDadal1xo9gvG/R8XRXFBeEZ
+         Xxx7Kn5/OtJXt+WqpLg9vomPaJBrdPBluwHNzIOso2buTcxh8o8bGdrvmAlU4VM15FC0
+         yu2OtYavS90z+KzoGVY4AwyqwkqOvqURjHccZ3UhRZ/V75/R0s/k4jy7zFT1pZBYxv0V
+         953w==
+X-Gm-Message-State: AOAM530QdPTXeHHMmijI7ursggQNVYY3xeL8sfhcxUUbNqzuFaG+eZsv
+        QsOgBnh1pq8+Q85HpKBuLks16tXeMiZHkA==
+X-Google-Smtp-Source: ABdhPJwF18MLwhoD3WVUiTBmIGtZqMEi6VY8eAKww2tvohbjOuX3m6HHG3M+2ZsIqRLEd+GpZGgtwA==
+X-Received: by 2002:a1c:e342:: with SMTP id a63mr2804716wmh.64.1610445246608;
+        Tue, 12 Jan 2021 01:54:06 -0800 (PST)
+Received: from [192.168.1.122] (cpc159425-cmbg20-2-0-cust403.5-4.cable.virginm.net. [86.7.189.148])
+        by smtp.gmail.com with ESMTPSA id s13sm2876036wmj.28.2021.01.12.01.54.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jan 2021 01:54:05 -0800 (PST)
+Subject: Re: [PATCH net-next 0/5] skbuff: introduce skbuff_heads bulking and
+ reusing
+To:     Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yadu Kishore <kyk.segfault@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] mm: Fix page reference leak in soft_offline_page()
-Message-ID: <20210112095345.GA12534@linux>
-References: <161044407603.1482714.16630477578392768273.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161044409809.1482714.11965583624142790079.stgit@dwillia2-desk3.amr.corp.intel.com>
+References: <20210111182655.12159-1-alobakin@pm.me>
+From:   Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <d4f4b6ba-fb3b-d873-23b2-4b5ba9cf4db8@gmail.com>
+Date:   Tue, 12 Jan 2021 09:54:04 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161044409809.1482714.11965583624142790079.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210111182655.12159-1-alobakin@pm.me>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 01:34:58AM -0800, Dan Williams wrote:
-> The conversion to move pfn_to_online_page() internal to
-> soft_offline_page() missed that the get_user_pages() reference needs to
-> be dropped when pfn_to_online_page() fails.
+Without wishing to weigh in on whether this caching is a good idea...
+Wouldn't it be simpler, rather than having two separate "alloc" and "flush"
+ caches, to have a single larger cache, such that whenever it becomes full
+ we bulk flush the top half, and when it's empty we bulk alloc the bottom
+ half?  That should mean fewer branches, fewer instructions etc. than
+ having to decide which cache to act upon every time.
 
-I would be more specific here wrt. get_user_pages (madvise).
-soft_offline_page gets called from more places besides madvise_*.
-
-> When soft_offline_page() is handed a pfn_valid() &&
-> !pfn_to_online_page() pfn the kernel hangs at dax-device shutdown due to
-> a leaked reference.
-> 
-> Fixes: feec24a6139d ("mm, soft-offline: convert parameter to pfn")
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Naoya Horiguchi <nao.horiguchi@gmail.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-
-LGTM, thanks for catching this:
-
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
-
-A nit below.
-
-> ---
->  mm/memory-failure.c |   20 ++++++++++++++++----
->  1 file changed, 16 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 5a38e9eade94..78b173c7190c 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -1885,6 +1885,12 @@ static int soft_offline_free_page(struct page *page)
->  	return rc;
->  }
->  
-> +static void put_ref_page(struct page *page)
-> +{
-> +	if (page)
-> +		put_page(page);
-> +}
-
-I am not sure this warrants a function.
-I would probably go with "if (ref_page).." in the two corresponding places,
-but not feeling strong here.
-
-> +
->  /**
->   * soft_offline_page - Soft offline a page.
->   * @pfn: pfn to soft-offline
-> @@ -1910,20 +1916,26 @@ static int soft_offline_free_page(struct page *page)
->  int soft_offline_page(unsigned long pfn, int flags)
->  {
->  	int ret;
-> -	struct page *page;
->  	bool try_again = true;
-> +	struct page *page, *ref_page = NULL;
-> +
-> +	WARN_ON_ONCE(!pfn_valid(pfn) && (flags & MF_COUNT_INCREASED));
-
-Did you see any scenario where this could happen? I understand that you are
-adding this because we will leak a reference in case pfn is not valid anymore.
-
--- 
-Oscar Salvador
-SUSE L3
+-ed
