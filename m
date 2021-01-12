@@ -2,134 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7ED12F3FFC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3007A2F4010
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438427AbhALWnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:43:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59450 "EHLO
+        id S2438466AbhALWrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:47:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726543AbhALWnT (ORCPT
+        with ESMTP id S2436769AbhALWq6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:43:19 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0BDC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:42:39 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id x13so56221oto.8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:42:39 -0800 (PST)
+        Tue, 12 Jan 2021 17:46:58 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3455DC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:46:18 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id n11so365930lji.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:46:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=xTZum8U0xk9Dv1ypU93b7U3IcnwqshFIm7jl0nQp/ts=;
-        b=H06c+s7+WWGU+D06Ioperjhl/8SSc8YaU8M4PWbl+EryEum2lFEFon5iv7u3tRqJhw
-         Yc6wyTiDnTdw+ITsTG8vSQn9kOiVFOUqTf1OGwez9w3sFGsVZG4F4DzW3mD2GmqXXZvR
-         vnUCe1QDlSKSgXq05xpamhKzPtcimteaa3krWD7ZPW+d+crcdaerMnB5+V0ViYkFOJk7
-         QCRB0VntnSw4s9mLHxc5Gd3Uh5zfLSaWFQCzkg+wM6BN0JQ6oHL9WOJr6QihS2kweWmr
-         zi3ZzjF0r05oqEXuPl282FwROWBhcRyQQ3FXWRfBIY0+jZpiXNEuWrX9SchGTWuRQMLj
-         cE3w==
+        bh=g5sjkYmyNIlLJA59o61REHb8AKH1ySCBTcd6TLDoHDc=;
+        b=xk4F4JXWKJvoVpvkPcSF5eOSsKbrWU8dsBWmaz4aN0AbwvRerrH5HBxxf1LHNcBIGw
+         QhkRj0JMG3aU9rPaPuRZAbObV5TkPpyUjtw9Atlzn4WvUP/tOd7Qvu3iEP6FF0YSPnjz
+         yxorRvN3uiBmfI4ZHIvy5wSjUoAMzaKln49FJjB4+1y0WhrIgn+zw0LEFpuJAK1kOGjk
+         r3xeX+Zii+h4Tl0n3Tz8DkUcXZWP93xTFyEmftDLFhsDxQfgncMphsP7ACU0SaSXAQHl
+         J80ndUCEZfp2SvAiNRhNy8aBidHGFJ8u/EN1yXphTHrlSc+qcgh8Mv89Knes1Te+jiIv
+         WBmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=xTZum8U0xk9Dv1ypU93b7U3IcnwqshFIm7jl0nQp/ts=;
-        b=MD3hze6DXpO2rVV/JFDYcS9AykIkV11sDhVY9zR0KW3qzku3BJjsgCp2UffnwgeZlP
-         bTD4Zu9j7WWsQwirUpNSZI1lGZEZUl4QDMBrTRpcF1xpu3/w2XzFiRd+IvxlhkXx5VsD
-         k4oWcdbRylV+uC63Rcfl7Xc3oMI3bZQBP75tdzE41qYC/Q7rvTWurXSAoFwCg53cWBO1
-         FWXdppN5GnbijjqwvglZh2AU4e2MahezMk+b2DnwmyjnPn4jwPoCPw6GVMhrIxiLb3bK
-         twxhOIu7rtQVNpwdEClDFVBzYaXbgChNQX3nJuN9VZbay/F6Dd5RAKjQQ2r/EpsA5Gde
-         +s/A==
-X-Gm-Message-State: AOAM531oCmOUWNfE1YC3p8ZEN4V5EieSdTEO1yWb78TRDKW8T9qBsegl
-        GZw/HbIuy8/KpQ9zMvHcnPate5vNIJcMNpo93xw=
-X-Google-Smtp-Source: ABdhPJzaDe5yB/AAARqzGaTQA9vtvGwegQaGYAq/U+VyAbWoqTelxSadDrYrvrMhtNS7jYigiMWMeexj0XqYStq2KqM=
-X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr1156947ote.132.1610491359167;
- Tue, 12 Jan 2021 14:42:39 -0800 (PST)
+        bh=g5sjkYmyNIlLJA59o61REHb8AKH1ySCBTcd6TLDoHDc=;
+        b=GFlaeaVyllEe/JO3qqcTQXxl8OSSE0xGeZ7ltFVSmW76W2mFjEPUzj3lmrYq2Rxbw0
+         mOorb6/Jp4RTcL3FXYCda48ckK1FyEZrJa9sokKOLyoHkXmbqcMGTwZxwxaIaBNyb/eV
+         oSxGvpkVlpzGmwhfHClZVTGZGyncXOIQAzcNElMd1wubAS1Gvf8VyNTHsG4J+N9XxoL0
+         nYDXff+o6RL6ohbmJw6PM0V1hXyu1eBnCYHTWqHaCZzdB3UC3NPkYlM2iPldDSKjEuqA
+         SvB2lyJQ78nbkjFCWIMD5s6qS1K9eIfKKhWZnmpDazSfQ8K2/8Pjajp9bBzQ3WayTapk
+         Dfwg==
+X-Gm-Message-State: AOAM5329yxxPcc5DEcEllC9jkq35JiR4hCn1Jw7+stnX36IScDXSfQXo
+        STYb3w1I5jv9dDxv6lnXBcZnVmiHVO/oZQ4+088L8yx0Mhnq7Q==
+X-Google-Smtp-Source: ABdhPJwB3XyCjodEyq4bELvSnFhLnKRKxthkfxIxeufYbeb5jjdzhJQrfu4eGAlRygt4g3EP31A/7cLluJ99FomQpIc=
+X-Received: by 2002:a2e:586:: with SMTP id 128mr634078ljf.273.1610491576669;
+ Tue, 12 Jan 2021 14:46:16 -0800 (PST)
 MIME-Version: 1.0
-References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-41-lee.jones@linaro.org>
-In-Reply-To: <20210111191926.3688443-41-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 12 Jan 2021 17:42:27 -0500
-Message-ID: <CADnq5_NFY8cfqYcKCrd+Qxw6z7zmiXfbm9TeQGZ0uFc+8-eWHA@mail.gmail.com>
-Subject: Re: [PATCH 40/40] drm/amd/display/dc/core/dc_stream: Demote
- non-conformant kernel-doc headers
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+References: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
+ <f48bcf43-9dcc-e48b-d29d-f75f3814398b@gmx.net> <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
+In-Reply-To: <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 12 Jan 2021 23:46:04 +0100
+Message-ID: <CACRpkda4E2NwNw29J7x5gehtqn_m3M_Z2dHpc7xRgvb0b-p22A@mail.gmail.com>
+Subject: Re: Old platforms: bring out your dead
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Gerhard Pircher <gerhard_pircher@gmx.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 2:20 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_stream.c:253: warning: =
-Function parameter or member 'pStream' not described in 'dc_optimize_timing=
-_for_fsft'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_stream.c:253: warning: =
-Function parameter or member 'max_input_rate_in_khz' not described in 'dc_o=
-ptimize_timing_for_fsft'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_stream.c:270: warning: =
-Function parameter or member 'stream' not described in 'dc_stream_set_curso=
-r_attributes'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/core/dc_stream.c:270: warning: =
-Function parameter or member 'attributes' not described in 'dc_stream_set_c=
-ursor_attributes'
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Tue, Jan 12, 2021 at 3:45 PM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
 
-Applied.  Thanks!
+> Yeah, I have the same impression that's the strong commercial interest pu=
+shes
+> hobbyist use of the Linux kernel a bit down. A lot of these changes feel =
+like
+> they're motivated by corporate decisions.
+>
+> There has to be a healthy balance between hobbyist and commercial use. I =
+understand
+> that from a commercial point of view, it doesn't make much sense to run L=
+inux
+> on a 30-year-old computer. But it's a hobbyist project for many people an=
+d hacking
+> Linux stuff for these old machines has a very entertaining and educationa=
+l factor.
 
-Alex
+This is actually one of the most interesting things written in this discuss=
+ion.
 
-> ---
->  drivers/gpu/drm/amd/display/dc/core/dc_stream.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_stream.c b/drivers/gp=
-u/drm/amd/display/dc/core/dc_stream.c
-> index c103f858375d0..25fa712a78474 100644
-> --- a/drivers/gpu/drm/amd/display/dc/core/dc_stream.c
-> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_stream.c
-> @@ -244,7 +244,7 @@ struct dc_stream_status *dc_stream_get_status(
->  }
->
->  #ifndef TRIM_FSFT
-> -/**
-> +/*
->   * dc_optimize_timing_for_fsft() - dc to optimize timing
->   */
->  bool dc_optimize_timing_for_fsft(
-> @@ -260,8 +260,7 @@ bool dc_optimize_timing_for_fsft(
->  }
->  #endif
->
-> -
-> -/**
-> +/*
->   * dc_stream_set_cursor_attributes() - Update cursor attributes and set =
-cursor surface address
->   */
->  bool dc_stream_set_cursor_attributes(
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+I have both revamped and deleted subarchitectures in the ARM tree. We
+never deleted anyone's pet project *unless* they were clearly unwilling to
+work on it (such as simply testning new patches) and agreed that it will
+not go on.
+
+At multiple occasions I actually found it easier to fix stuff than
+delete it, both because it is a nicer thing to do and because it
+simply creates less social problems, often to the point that the time
+(man hours) spent trying to solve the resulting social problems from
+deleting a platform would be longer than the time spent actually acquiring
+the physical platform and fixing it.
+
+Corporate entities can be a bit deletionist (using Wikipedia terminology)
+and as in this thread there is always a strong inclusionist stance pushing
+back to that.
+
+The explanation is in my mind very simply that running Linux
+on a 35-yo or so Amiga, Atari or Apollo Workstation is pretty impressive an=
+d
+fun. And I think that fits Mr. Torvalds own sociological-or-something
+explanation in the autobiographical "Just for fun" as to why to write it
+in the first place. And we are very protective of that quality of the
+kernel. (At least I am.)
+
+That said there are a three things that people should really be doing if th=
+ey
+want to keep their pet archs/subarchs around as good community
+members, and they are in essence to:
+
+1. Test and review/ack patches that others make
+
+2. Migrate existing drivers to newly appeared and
+    appropriate subsystems (I think there are some hacky heartbeat LED
+    drivers down in arch/* for example) there is also the feature matrix
+    core maintainers like and which appears if you type
+    Documentation/features/list-arch.sh <archname>
+    would be nice if you work on them if you can support them!
+    Or at least take a look.
+
+3. Migrate old systems to use the
+   contemporary hardware descriptions (such as device tree or ACPI)
+   because it makes things so much easier to maintain. Some
+   upfront work, but a great win for everyone. Especially for
+   subsystem maintainers.
+
+And if your arch uses highmem then please get rid of highmem. I'm
+trying to do this a bit right now for ARM let's see how it goes.
+
+I understand that for some maintainers time is a factor and this list
+feels stressful. I'd say relax, but it'd be nice if you have a TODO that
+you cross items off of.
+
+Just my =E2=82=AC0.01
+Linus Walleij
