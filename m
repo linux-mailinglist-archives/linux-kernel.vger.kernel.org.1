@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3F62F2827
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:04:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0442F282E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:04:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390501AbhALGB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 01:01:29 -0500
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:59305 "EHLO
+        id S2391135AbhALGBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 01:01:52 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:59301 "EHLO
         new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727067AbhALGB1 (ORCPT
+        by vger.kernel.org with ESMTP id S2390803AbhALGBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 01:01:27 -0500
+        Tue, 12 Jan 2021 01:01:47 -0500
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 467A958056B;
+        by mailnew.nyi.internal (Postfix) with ESMTP id BD3C658056D;
         Tue, 12 Jan 2021 00:59:56 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
   by compute5.internal (MEProxy); Tue, 12 Jan 2021 00:59:56 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=lbRQgx2bOeb7Q
-        llEEICb8/yfF7c2T0KODx5Mf645lDM=; b=JvHU5FNVS3FTD7Quv0hgarnj5bMxZ
-        wrUb5ODscB8PvAK5X9YELLzHnWQjmbB35ekDCRaUKSJd4TRmnAL3Z8K+PACS+9Mj
-        0NnZ89AHmZc4/U6qSrXi/kCfhzA0SIe4egN2IcE3iqOA1ViNGN9GWqSezVa7X6NZ
-        kMDfTxeer3nzg92lsSwiF9NG8JZipLUyAdfN/OApJZ8XJ4SkxJKKJZ4hFzECb9Am
-        wp4ru0AHMo57p2qCYcycVmewlzgsygLud0ZgFVI1iatpQvnKDoisbC3PT07C+Pmo
-        DC8UpulZvRhc67RNFvF0jp7Q2DOQzvY0OS/n2meER3uV0Nt5eJejzR4+Q==
+        :mime-version:content-transfer-encoding; s=fm1; bh=mnmbcjyB8pD2d
+        0MXqgq3tgrNYPFuBBvPX326wBo9HV8=; b=S4gub/MbeVJx0SuypsAA1Ez8GopcJ
+        YC6h3MNwrGXD4HVkD62L1Va7DCamYt42FHYiyWT2n2/oDONqT7xjHD1cXTkrU2iT
+        V6gugfwqVeiEGE5PaCSfuWEy11+XFC4fzyCrWjOEK1UYjmReLJxO+2NI5fnv2BXI
+        mlDgvK1vXCEEGsTOfaYZHXzxpe+pZCM+FbuAb8+PiQSVsJdv5fLW6yOLeDUi79i3
+        9ntTZsWiGYCzm4NlkjThouukecJa0gScZhk/Ttur9lEgtrKrF+TSglB3DSrMxFv1
+        p0UAvalCk1QLLuSQuhLhY9zk5VFYlxSbPm1sWL8AF6Q2ffG/8NhoDumSA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=lbRQgx2bOeb7QllEEICb8/yfF7c2T0KODx5Mf645lDM=; b=epaQQj4r
-        MGmCerG6NyPSJXC5l2NFbXnG+nG/S3ds+OiJNvjgVv5TiWFKPweH8WIynNHNK8RL
-        3dNJfTTCCR0Zc5Ud26Z0FEpTzKt3fNmcbNorcmBnAj7xfb9O9yhsQD71jd5/4fPH
-        GV79S91kJXrG71g0/5hXZ4B9pmKvYtPoA1nuXbnG2AzYArDr8vW63CJpK1DqKqHV
-        /OzrejRbsXS+8Kksv5Y0JqLf51/BSHPdJOg9f+fzKqNAUu6t5vxV2oSHWgloc8KT
-        4BlL5mbA5+T9qfFYodIyUAyDKPi+gQCG8afzGjeO9wzVNw/x8517x45a15ZM0eJo
-        MZH5/eBiKxs6nQ==
-X-ME-Sender: <xms:3Dr9X8VOUFJbxokdpNo72Y9rkNEE9xSFWAJBc8kh_A6Ei4_LZKarog>
-    <xme:3Dr9XwmkiO5UuOTkb5hL_jLiUUkWjwtOq3P3EuMPaulSyS6e0aQfW4zCbOo7-CAN_
-    5ut9ed_Rz6mXenu0g>
+        fm1; bh=mnmbcjyB8pD2d0MXqgq3tgrNYPFuBBvPX326wBo9HV8=; b=AQ3ssDBe
+        UxJC/1z5NKKTxaeoIAXXymuH3u1evLujtl8+XPLiB8kw2THM7VUCkH+HjQ/EWoBj
+        GF4Va3xHfArUH6psizwmRfR4zPv0Y6t036ozLFroAhvJFfZeu/VU4zQlbGa5gWsV
+        DFbz9zrd5FYQ2/7oBtX5msgPFVZtBJ9YpzFNi4Qv5hckjryNOoagsHc0c7ORzW86
+        qscspCUf+tdjts/SJnw58T8MK91z5whTKdXU95Hs0a+HdEQpAAhmcWlJkY+TFbzC
+        rLVnOzT4b176l2DerRlpeddhjcxA11uAZ5zaAeJIYDOwU7IxT2twQh2ySQj8fQeF
+        YhgABOOt7ot+CQ==
+X-ME-Sender: <xms:3Dr9XzrsDkajJOgcppkbivMz4VPjyh0hMr9tvc41JlgdR68obU9h8w>
+    <xme:3Dr9X9rMBJYMSYp7mcikecPXQXj8tpNnbtdVIehNT6luerdvdKuMquz1A5jlNt-er
+    qBFZ9LjDtpXkX9NVw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdehvddgleduucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -49,13 +49,13 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdehvddgleduucetufdoteggod
     gfejheeuieenucfkphepjedtrddufeehrddugeekrdduhedunecuvehluhhsthgvrhfuih
     iivgepfeenucfrrghrrghmpehmrghilhhfrhhomhepshgrmhhuvghlsehshhholhhlrghn
     ugdrohhrgh
-X-ME-Proxy: <xmx:3Dr9XwZGOlFRt61xfCOatk2AgPz-FxeCGfL5EA17uD6VSVzeGmf5FA>
-    <xmx:3Dr9X7WgJPfyRNe6ipGj21cSbFMLGi53gWr0UKYWUZdEETDCOSz1Qw>
-    <xmx:3Dr9X2nPGny6k3lNRtdK5w6hqxr2MrsvDpeXlvEfQcpXghjBQX402A>
-    <xmx:3Dr9Xw68vkZoVG1n6Y4SPyMdE2QE35KLVd9YgPOjW0GCbyG_V2C9Gg>
+X-ME-Proxy: <xmx:3Dr9XwNtbwy4K8IFTFpSBemsBm7LOXIY7zSPYdMO7k824smokwSdSA>
+    <xmx:3Dr9X26ICcV7NDU0oMqCWTlW2Z0h3vVSXKfFivYFPAojPgahtAkioA>
+    <xmx:3Dr9Xy6vTdsNMiE71jk0DWf4jdAxDgNN6uEvg9PRE2Qzrd8HrNtoHg>
+    <xmx:3Dr9X0ucL8Tf1o6QE-NqGp_bQRoBzLcZnYnZWwrgBDuUsng6U6AQtA>
 Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 9ED4324005A;
-        Tue, 12 Jan 2021 00:59:55 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1B2FE24005B;
+        Tue, 12 Jan 2021 00:59:56 -0500 (EST)
 From:   Samuel Holland <samuel@sholland.org>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Marc Zyngier <maz@kernel.org>,
@@ -66,9 +66,9 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
 Cc:     Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v4 09/10] arm64: dts: allwinner: Use the new r_intc binding
-Date:   Mon, 11 Jan 2021 23:59:49 -0600
-Message-Id: <20210112055950.21209-10-samuel@sholland.org>
+Subject: [PATCH v4 10/10] arm64: dts: allwinner: Move wakeup-capable IRQs to r_intc
+Date:   Mon, 11 Jan 2021 23:59:50 -0600
+Message-Id: <20210112055950.21209-11-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210112055950.21209-1-samuel@sholland.org>
 References: <20210112055950.21209-1-samuel@sholland.org>
@@ -78,267 +78,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The binding of R_INTC was updated to allow specifying interrupts other
-than the external NMI, since routing those interrupts through the R_INTC
-driver allows using them for wakeup.
+All IRQs that can be used to wake up the system must be routed through
+r_intc, so they are visible to firmware while the system is suspended.
 
-Update the device trees to use the new binding.
+In addition to the external NMI input, which is already routed through
+r_intc, these include PIO and R_PIO (gpio-keys), the LRADC, and the RTC.
 
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-a64-amarula-relic.dts | 2 +-
- arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts  | 2 +-
- arch/arm64/boot/dts/allwinner/sun50i-a64-nanopi-a64.dts    | 2 +-
- arch/arm64/boot/dts/allwinner/sun50i-a64-olinuxino.dts     | 2 +-
- arch/arm64/boot/dts/allwinner/sun50i-a64-orangepi-win.dts  | 2 +-
- arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts        | 2 +-
- arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts      | 2 +-
- arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi    | 2 +-
- arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts       | 2 +-
- arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi       | 2 +-
- arch/arm64/boot/dts/allwinner/sun50i-a64-teres-i.dts       | 2 +-
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi              | 2 +-
- arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts    | 2 +-
- arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts     | 2 +-
- arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi      | 2 +-
- arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64.dts       | 4 ++--
- arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi               | 5 ++---
- 17 files changed, 19 insertions(+), 20 deletions(-)
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 4 ++++
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  | 3 +++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-amarula-relic.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-amarula-relic.dts
-index c7bd73f35ed8..f17cc89f472d 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-amarula-relic.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-amarula-relic.dts
-@@ -173,7 +173,7 @@ axp803: pmic@3a3 {
- 		compatible = "x-powers,axp803";
- 		reg = <0x3a3>;
- 		interrupt-parent = <&r_intc>;
--		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_LOW>;
- 		x-powers,drive-vbus-en; /* set N_VBUSEN as output pin */
- 	};
- };
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
-index e5e840b9fbb4..e45bef292aa3 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
-@@ -191,7 +191,7 @@ axp803: pmic@3a3 {
- 		compatible = "x-powers,axp803";
- 		reg = <0x3a3>;
- 		interrupt-parent = <&r_intc>;
--		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_LOW>;
- 		x-powers,drive-vbus-en; /* set N_VBUSEN as output pin */
- 	};
- };
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-nanopi-a64.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-nanopi-a64.dts
-index e58db8a6cab6..57b64c57781b 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-nanopi-a64.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-nanopi-a64.dts
-@@ -152,7 +152,7 @@ axp803: pmic@3a3 {
- 		compatible = "x-powers,axp803";
- 		reg = <0x3a3>;
- 		interrupt-parent = <&r_intc>;
--		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_LOW>;
- 	};
- };
- 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-olinuxino.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-olinuxino.dts
-index f3f8e177ab61..ec7e2c0e82c1 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-olinuxino.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-olinuxino.dts
-@@ -185,7 +185,7 @@ axp803: pmic@3a3 {
- 		compatible = "x-powers,axp803";
- 		reg = <0x3a3>;
- 		interrupt-parent = <&r_intc>;
--		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_LOW>;
- 		x-powers,drive-vbus-en;	/* set N_VBUSEN as output pin */
- 	};
- };
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-orangepi-win.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-orangepi-win.dts
-index 70e31743f0ba..097a5511523a 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-orangepi-win.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-orangepi-win.dts
-@@ -192,7 +192,7 @@ axp803: pmic@3a3 {
- 		compatible = "x-powers,axp803";
- 		reg = <0x3a3>;
- 		interrupt-parent = <&r_intc>;
--		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_LOW>;
- 		x-powers,drive-vbus-en; /* set N_VBUSEN as output pin */
- 	};
- };
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-index 329cf276561e..2accb5ddf783 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-@@ -139,7 +139,7 @@ axp803: pmic@3a3 {
- 		compatible = "x-powers,axp803";
- 		reg = <0x3a3>;
- 		interrupt-parent = <&r_intc>;
--		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_LOW>;
- 	};
- };
- 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
-index 896f34fd9fc3..d1f85018257c 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinebook.dts
-@@ -248,7 +248,7 @@ axp803: pmic@3a3 {
- 		compatible = "x-powers,axp803";
- 		reg = <0x3a3>;
- 		interrupt-parent = <&r_intc>;
--		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_LOW>;
- 	};
- };
- 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-index 2dfe9bae8c67..b7124ec2cea2 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-@@ -288,7 +288,7 @@ axp803: pmic@3a3 {
- 		compatible = "x-powers,axp803";
- 		reg = <0x3a3>;
- 		interrupt-parent = <&r_intc>;
--		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_LOW>;
- 	};
- };
- 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts
-index 422a8507f674..7ef96f9ff7ae 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinetab.dts
-@@ -266,7 +266,7 @@ axp803: pmic@3a3 {
- 		compatible = "x-powers,axp803";
- 		reg = <0x3a3>;
- 		interrupt-parent = <&r_intc>;
--		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_LOW>;
- 		x-powers,drive-vbus-en;
- 	};
- };
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi
-index c48692b06e1f..a820f30c3e8a 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-sopine.dtsi
-@@ -46,7 +46,7 @@ axp803: pmic@3a3 {
- 		compatible = "x-powers,axp803";
- 		reg = <0x3a3>;
- 		interrupt-parent = <&r_intc>;
--		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_LOW>;
- 	};
- };
- 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-teres-i.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-teres-i.dts
-index a1864a89fb89..03f733ee44d9 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64-teres-i.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-teres-i.dts
-@@ -205,7 +205,7 @@ axp803: pmic@3a3 {
- 		compatible = "x-powers,axp803";
- 		reg = <0x3a3>;
- 		interrupt-parent = <&r_intc>;
--		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_LOW>;
- 		wakeup-source;
- 	};
- };
 diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index 51cc30e84e26..fd4bf90163d5 100644
+index fd4bf90163d5..b8697e84342e 100644
 --- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
 +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -1215,7 +1215,7 @@ r_intc: interrupt-controller@1f00c00 {
- 			compatible = "allwinner,sun50i-a64-r-intc",
- 				     "allwinner,sun6i-a31-r-intc";
- 			interrupt-controller;
--			#interrupt-cells = <2>;
-+			#interrupt-cells = <3>;
- 			reg = <0x01f00c00 0x400>;
- 			interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+@@ -644,6 +644,7 @@ ccu: clock@1c20000 {
+ 		pio: pinctrl@1c20800 {
+ 			compatible = "allwinner,sun50i-a64-pinctrl";
+ 			reg = <0x01c20800 0x400>;
++			interrupt-parent = <&r_intc>;
+ 			interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+@@ -814,6 +815,7 @@ lradc: lradc@1c21800 {
+ 			compatible = "allwinner,sun50i-a64-lradc",
+ 				     "allwinner,sun8i-a83t-r-lradc";
+ 			reg = <0x01c21800 0x400>;
++			interrupt-parent = <&r_intc>;
+ 			interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
+ 			status = "disabled";
  		};
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-index 7c9dbde645b5..5c39f5f3f22c 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-@@ -157,7 +157,7 @@ axp805: pmic@36 {
- 		compatible = "x-powers,axp805", "x-powers,axp806";
- 		reg = <0x36>;
- 		interrupt-parent = <&r_intc>;
--		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		x-powers,self-working-mode;
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
-index 15c9dd8c4479..41aaad43b5d5 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi-3.dts
-@@ -182,7 +182,7 @@ axp805: pmic@36 {
- 		compatible = "x-powers,axp805", "x-powers,axp806";
- 		reg = <0x36>;
- 		interrupt-parent = <&r_intc>;
--		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		x-powers,self-working-mode;
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi
-index ebc120a9232f..1ee19f5fc6ab 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-orangepi.dtsi
-@@ -119,7 +119,7 @@ axp805: pmic@36 {
- 		compatible = "x-powers,axp805", "x-powers,axp806";
- 		reg = <0x36>;
- 		interrupt-parent = <&r_intc>;
--		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		x-powers,self-working-mode;
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64.dts
-index 961732c52aa0..0b9117e986b7 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64.dts
-@@ -167,7 +167,7 @@ axp805: pmic@36 {
- 		compatible = "x-powers,axp805", "x-powers,axp806";
- 		reg = <0x36>;
- 		interrupt-parent = <&r_intc>;
--		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_LOW>;
- 		interrupt-controller;
- 		#interrupt-cells = <1>;
- 		x-powers,self-working-mode;
-@@ -280,7 +280,7 @@ pcf8563: rtc@51 {
- 		compatible = "nxp,pcf8563";
- 		reg = <0x51>;
- 		interrupt-parent = <&r_intc>;
--		interrupts = <0 IRQ_TYPE_LEVEL_LOW>;
-+		interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_LOW>;
- 		#clock-cells = <0>;
- 	};
- };
+@@ -1204,6 +1206,7 @@ rtc: rtc@1f00000 {
+ 			compatible = "allwinner,sun50i-a64-rtc",
+ 				     "allwinner,sun8i-h3-rtc";
+ 			reg = <0x01f00000 0x400>;
++			interrupt-parent = <&r_intc>;
+ 			interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>;
+ 			clock-output-names = "osc32k", "osc32k-out", "iosc";
+@@ -1275,6 +1278,7 @@ r_pwm: pwm@1f03800 {
+ 		r_pio: pinctrl@1f02c00 {
+ 			compatible = "allwinner,sun50i-a64-r-pinctrl";
+ 			reg = <0x01f02c00 0x400>;
++			interrupt-parent = <&r_intc>;
+ 			interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&r_ccu CLK_APB0_PIO>, <&osc24M>, <&osc32k>;
+ 			clock-names = "apb", "hosc", "losc";
 diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-index 8a62a9fbe347..93b8456f3b49 100644
+index 93b8456f3b49..d467fe1bc566 100644
 --- a/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
 +++ b/arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi
-@@ -920,10 +920,9 @@ r_watchdog: watchdog@7020400 {
- 		};
- 
- 		r_intc: interrupt-controller@7021000 {
--			compatible = "allwinner,sun50i-h6-r-intc",
--				     "allwinner,sun6i-a31-r-intc";
-+			compatible = "allwinner,sun50i-h6-r-intc";
- 			interrupt-controller;
--			#interrupt-cells = <2>;
-+			#interrupt-cells = <3>;
- 			reg = <0x07021000 0x400>;
- 			interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>;
- 		};
+@@ -294,6 +294,7 @@ pwm: pwm@300a000 {
+ 		pio: pinctrl@300b000 {
+ 			compatible = "allwinner,sun50i-h6-pinctrl";
+ 			reg = <0x0300b000 0x400>;
++			interrupt-parent = <&r_intc>;
+ 			interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 53 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH>,
+@@ -895,6 +896,7 @@ tcon_tv_out_tcon_top: endpoint@1 {
+ 		rtc: rtc@7000000 {
+ 			compatible = "allwinner,sun50i-h6-rtc";
+ 			reg = <0x07000000 0x400>;
++			interrupt-parent = <&r_intc>;
+ 			interrupts = <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>;
+ 			clock-output-names = "osc32k", "osc32k-out", "iosc";
+@@ -930,6 +932,7 @@ r_intc: interrupt-controller@7021000 {
+ 		r_pio: pinctrl@7022000 {
+ 			compatible = "allwinner,sun50i-h6-r-pinctrl";
+ 			reg = <0x07022000 0x400>;
++			interrupt-parent = <&r_intc>;
+ 			interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>,
+ 				     <GIC_SPI 111 IRQ_TYPE_LEVEL_HIGH>;
+ 			clocks = <&r_ccu CLK_R_APB1>, <&osc24M>, <&rtc 0>;
 -- 
 2.26.2
 
