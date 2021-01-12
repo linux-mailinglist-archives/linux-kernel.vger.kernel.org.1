@@ -2,139 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACCAA2F3E20
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2649F2F3E22
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:45:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394231AbhALWFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:05:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51262 "EHLO
+        id S2394243AbhALWFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:05:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390084AbhALWFu (ORCPT
+        with ESMTP id S2390359AbhALWFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 12 Jan 2021 17:05:50 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C5A8C0617A5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:04:46 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id iq13so2496643pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:04:46 -0800 (PST)
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E31C0617A6
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:04:57 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id b5so2595862pjk.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:04:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=nbLyjtvFxvmKNYxhP/lJoJ/nf5a/TGw22r5rcB+fC2s=;
-        b=E83JIL5C/0yD67sQZUe0iGFv7Iec6mv83jCj5+dMw6Bt6fY3v3oVETyOnrp+QzzZ6D
-         DcvZ9zkA0Q1ErcVwG5bTMFgNz7SysicC7VwZwRtsitaS84lymSSMQAD4rZQlQ87aFcam
-         1Z9jiK59DXA8W09RMu0HwZxhxht89EkwzmJYMMEHv7y7/MI6zFfljfwIivRExzDe7et3
-         rRMB3AW9rUNXS5ijczsrIw1TqbTmUZMJu8GEO265Xe4eyL048WjLeEVGpXmqwwZuvq7R
-         kYHbyumnbKiaQvAUDCpcCglH8exVlnz/+cJQcwbCtGaioaFmF/iGZJ0JFrtYtvatE8/X
-         SjVA==
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=jp/uGViJd1rFyzqwINzBwHrML5ENBaR5RE09FM8y2rk=;
+        b=o+tEsxdhzGCGsoHV1sIPiVSiNVm3QfIVPZgQqlc+JiLmlwrr+cGXF6VcEO68es1sR5
+         4sjbYAIz+6YaEKlIsPnQk8QRrpepwBATzotV7rf4CMiOf++gQk+lqxVKH9egpXJwTCL6
+         gKP+7N8kY+E30jdEsOcYcTtCficEYaP6PMEmbFX7nzUSo2B0UbrYxQDdRX2pO/Yb9o4+
+         4N9s2VkD8ozP3B6Zmj0YpZpyxxa5e0UwbJWCZGP3We/ZOQpeUdbFwt/NL5zQ8b5Rf57o
+         cHK6gDSbbSM3KeSMMbf+xAdzFvilac1HfRLY1UPA6ALiHMB9QIw3AgN1kZ5Zn0TdakUo
+         /G5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=nbLyjtvFxvmKNYxhP/lJoJ/nf5a/TGw22r5rcB+fC2s=;
-        b=Jod5PHHygWEuTbgJeurMdDOFWY7ZFbCR+D9+QgvcJbm5KmBxlJEezS3Rer51dUxCkV
-         znjixkVITyPzYb0AG+lbDig/m7gJM0OUiRWIR8fFaa6JoJmwCaLiHX7roVuu0NaFB6Fi
-         JeKFjTyBo+Zd6t7mfe7XeThp90AWScCIzFUMNHTIFpejmKlgv0WbUBgU2/zYJSW0BCC+
-         KyOmcl6WnVDVLR72rR7BvoqJKdrPeMxRKRrIrjOBDIg6wr/FrKaqqN32sYTmWqLm/5u3
-         G8wDMQU0AOSGk5BKX1F/UGSxpM7fQ7qY3xog35zuLMQUYLZVhtiK00PmU0F84JuxtMFk
-         9Z+g==
-X-Gm-Message-State: AOAM530Q+7Zh6aP2ZlTpsR39rou/TimWyQnUpZZGri0nSZ1bUuxieaP/
-        WXwXhFiRez4yAlmj0vPhpHM2vA==
-X-Google-Smtp-Source: ABdhPJxz+zHsERxCU1S2VPIVGi2krTI1n4BT+XMSGjNvpSG2uuAkezG8mxx+oBIjoXfrSP2CTsRZZA==
-X-Received: by 2002:a17:902:d48c:b029:de:2fb:98a with SMTP id c12-20020a170902d48cb02900de02fb098amr1018607plg.59.1610489085769;
-        Tue, 12 Jan 2021 14:04:45 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id u126sm75536pfu.113.2021.01.12.14.04.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 14:04:45 -0800 (PST)
-Date:   Tue, 12 Jan 2021 14:04:38 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Nitesh Narayan Lal <nitesh@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        w90p710@gmail.com, pbonzini@redhat.com,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] Revert "KVM: x86: Unconditionally enable irqs in guest
- context"
-Message-ID: <X/4c9skP3rOqsWHW@google.com>
-References: <20210105192844.296277-1-nitesh@redhat.com>
- <874kjuidgp.fsf@vitty.brq.redhat.com>
- <X/XvWG18aBWocvvf@google.com>
- <87ble1gkgx.fsf@vitty.brq.redhat.com>
- <fb41e24f-a5e3-8319-d25b-e0fe6b902a2b@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fb41e24f-a5e3-8319-d25b-e0fe6b902a2b@redhat.com>
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=jp/uGViJd1rFyzqwINzBwHrML5ENBaR5RE09FM8y2rk=;
+        b=NV/5uylo3fa2ES2OAYrfGkjHTxkMRi4VIhCaO/2NIz/r64ZgX8Ye7k1x115YZ5qhlv
+         g5O7Qw2GvStsPurFMQo4Lft54nDtdyV4QwkoaO7GAEYop0QBaswrMsUSzSbR2M1ViAwE
+         bDFvs2h7cs5M3IZzws1B+tEtyKfsD5PpPgrCaNPQ71vZe1N0AuifKR2VClO444E9XRUh
+         TKGI/nL9VNVWLz5KWHkgeCoN2x5z6yIBL7z5VNOPTJSH1gOPwizFmLbbv8h9JNcfW4mI
+         YABuNMsb5z4kOvtgc2x3X9rZrhIhhV6fdxsQsEBF0yY8+FL4lPIT29QAvMX0n5hjQLnl
+         hCcg==
+X-Gm-Message-State: AOAM531p/tlWM/hM885GmCDxaAzrC3wSuJpjvEjJG8e45aq5OlE+TNL7
+        CdH2vX+x46Wl7R3BGuaxFEbh/UWa2v0Kow==
+X-Google-Smtp-Source: ABdhPJy4y2gxKCe1VUOnE5Taoj0S544T+thXTxi76Iku+7ZGDndJn6pDg/pwbWqNbphh8wYmDWx1Cg==
+X-Received: by 2002:a17:902:d385:b029:da:c6e4:5cab with SMTP id e5-20020a170902d385b02900dac6e45cabmr1450926pld.7.1610489097172;
+        Tue, 12 Jan 2021 14:04:57 -0800 (PST)
+Received: from ?IPv6:2601:646:c200:1ef2:58cc:4dec:a37:4486? ([2601:646:c200:1ef2:58cc:4dec:a37:4486])
+        by smtp.gmail.com with ESMTPSA id s1sm79453pfb.103.2021.01.12.14.04.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jan 2021 14:04:56 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2 1/3] x86/mce: Avoid infinite loop for copy from user recovery
+Date:   Tue, 12 Jan 2021 14:04:55 -0800
+Message-Id: <38AF04BE-7F39-450F-8C26-879C9934E3D6@amacapital.net>
+References: <20210112205207.GA18195@agluck-desk2.amr.corp.intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-edac <linux-edac@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+In-Reply-To: <20210112205207.GA18195@agluck-desk2.amr.corp.intel.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+X-Mailer: iPhone Mail (18C66)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021, Nitesh Narayan Lal wrote:
-> 
-> On 1/7/21 4:33 AM, Vitaly Kuznetsov wrote:
-> > Sean Christopherson <seanjc@google.com> writes:
-> >
-> >> On Wed, Jan 06, 2021, Vitaly Kuznetsov wrote:
-> >>> Looking back, I don't quite understand why we wanted to account ticks
-> >>> between vmexit and exiting guest context as 'guest' in the first place;
-> >>> to my understanging 'guest time' is time spent within VMX non-root
-> >>> operation, the rest is KVM overhead (system).
-> >> With tick-based accounting, if the tick IRQ is received after PF_VCPU is cleared
-> >> then that tick will be accounted to the host/system.  The motivation for opening
-> >> an IRQ window after VM-Exit is to handle the case where the guest is constantly
-> >> exiting for a different reason _just_ before the tick arrives, e.g. if the guest
-> >> has its tick configured such that the guest and host ticks get synchronized
-> >> in a bad way.
-> >>
-> >> This is a non-issue when using CONFIG_VIRT_CPU_ACCOUNTING_GEN=y, at least with a
-> >> stable TSC, as the accounting happens during guest_exit_irqoff() itself.
-> >> Accounting might be less-than-stellar if TSC is unstable, but I don't think it
-> >> would be as binary of a failure as tick-based accounting.
-> >>
-> > Oh, yea, I vaguely remember we had to deal with a very similar problem
-> > but for userspace/kernel accounting. It was possible to observe e.g. a
-> > userspace task going 100% kernel while in reality it was just perfectly
-> > synchronized with the tick and doing a syscall just before it arrives
-> > (or something like that, I may be misremembering the details).
-> >
-> > So depending on the frequency, it is probably possible to e.g observe
-> > '100% host' with tick based accounting, the guest just has to
-> > synchronize exiting to KVM in a way that the tick will always arrive
-> > past guest_exit_irqoff().
-> >
-> > It seems to me this is a fundamental problem in case the frequency of
-> > guest exits can match the frequency of the time accounting tick.
-> >
-> 
-> Just to make sure that I am understanding things correctly.
-> There are two issues:
-> 1. The first issue is with the tick IRQs that arrive after PF_VCPU is
->    cleared as they are then accounted into the system context atleast on
->    the setup where CONFIG_VIRT_CPU_ACCOUNTING_GEN is not enabled. With the
->    patch "KVM: x86: Unconditionally enable irqs in guest context", we are
->    atleast taking care of the scenario where the guest context is exiting
->    constantly just before the arrival of the tick.
 
-Yep.
+> On Jan 12, 2021, at 12:52 PM, Luck, Tony <tony.luck@intel.com> wrote:
+>=20
+> =EF=BB=BFOn Tue, Jan 12, 2021 at 10:57:07AM -0800, Andy Lutomirski wrote:
+>>> On Tue, Jan 12, 2021 at 10:24 AM Luck, Tony <tony.luck@intel.com> wrote:=
 
-> 2. The second issue that Sean mentioned was introduced because of moving
->    guest_exit_irqoff() closer to VM-exit. Due to this change, any ticks that
->    happen after IRQs are disabled are incorrectly accounted into the system
->    context. This is because we exit the guest context early without
->    ensuring if the required guest states to handle IRQs are restored.
+>>>=20
+>>> On Tue, Jan 12, 2021 at 09:21:21AM -0800, Andy Lutomirski wrote:
+>>>> Well, we need to do *something* when the first __get_user() trips the
+>>>> #MC.  It would be nice if we could actually fix up the page tables
+>>>> inside the #MC handler, but, if we're in a pagefault_disable() context
+>>>> we might have locks held.  Heck, we could have the pagetable lock
+>>>> held, be inside NMI, etc.  Skipping the task_work_add() might actually
+>>>> make sense if we get a second one.
+>>>>=20
+>>>> We won't actually infinite loop in pagefault_disable() context -- if
+>>>> we would, then we would also infinite loop just from a regular page
+>>>> fault, too.
+>>>=20
+>>> Fixing the page tables inside the #MC handler to unmap the poison
+>>> page would indeed be a good solution. But, as you point out, not possibl=
+e
+>>> because of locks.
+>>>=20
+>>> Could we take a more drastic approach? We know that this case the kernel=
 
-Yep.
+>>> is accessing a user address for the current process. Could the machine
+>>> check handler just re-write %cr3 to point to a kernel-only page table[1]=
+.
+>>> I.e. unmap the entire current user process.
+>>=20
+>> That seems scary, especially if we're in the middle of a context
+>> switch when this happens.  We *could* make it work, but I'm not at all
+>> convinced it's wise.
+>=20
+> Scary? It's terrifying!
+>=20
+> But we know that the fault happend in a get_user() or copy_from_user() cal=
+l
+> (i.e. an RIP with an extable recovery address).  Does context switch
+> access user memory?
 
-> So, the increase in the system time (reported by cpuacct.stats) that I was
-> observing is not entirely correct after all.
+No, but NMI can.
 
-It's correct, but iff CONFIG_VIRT_CPU_ACCOUNTING_GEN=y, as that doesn't rely on
-ticks and so closer to VM-Enter is better.  The problem is that it completely
-breaks CONFIG_VIRT_CPU_ACCOUNTING_GEN=n (#2 above) because KVM will never
-service an IRQ, ticks included, with PF_VCPU set.
+The case that would be very very hard to deal with is if we get an NMI just b=
+efore IRET/SYSRET and get #MC inside that NMI.
 
-> Am I missing anything here?
+What we should probably do is have a percpu list of pending memory failure c=
+leanups and just accept that we=E2=80=99re going to sometimes get a second M=
+CE (or third or fourth) before we can get to it.
+
+Can we do the cleanup from an interrupt?  IPI-to-self might be a credible ap=
+proach, if so.
