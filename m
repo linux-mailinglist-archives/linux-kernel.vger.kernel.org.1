@@ -2,215 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB11D2F37C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:59:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BDAF2F37BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391608AbhALR52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:57:28 -0500
-Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:15040 "EHLO
-        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727160AbhALR51 (ORCPT
+        id S2390350AbhALR4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:56:45 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62268 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731029AbhALR4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:57:27 -0500
-Received: from pps.filterd (m0170397.ppops.net [127.0.0.1])
-        by mx0b-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10CHpb5p018213;
-        Tue, 12 Jan 2021 12:54:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=smtpout1;
- bh=jiFDGPaCyxSF4MyVC3IMOuHBRRodoWvjQ0jiZ9n4D9Y=;
- b=D1VPr66OvQJPy3TDm9JL/O2O0Mh5/HljxR2n4kFZeKmKNO1CpHKNEosVbkbNDt/DLL6I
- 79e8adOhJziio9ZpzEKxbchoICgFFoZii0XXRKMHco5RykWzoqr0DaEBzw3Hsy3BC9Am
- 08/k1Ft+c0B9k00M/9o67k1P/TWCWoLR3l5RdeaxG6RlZ0vUjExZtuGtLfDeMo56ajiB
- tNUkWb1o3ZwAaJGrJCQ0i10w6IuVfmDq0CM/yVhX5q7Tf2wX/3WnF4I7pCCJueYADbXC
- rbLG7+EKv/qBTgDk1N4XYd533oTAZwEQ/bk9fVV4kBk9HJAFjL6SAxe+CAyzNUMKcuVz UA== 
-Received: from mx0b-00154901.pphosted.com (mx0b-00154901.pphosted.com [67.231.157.37])
-        by mx0b-00154904.pphosted.com with ESMTP id 361fyu8504-1
+        Tue, 12 Jan 2021 12:56:44 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10CHYrMh038909;
+        Tue, 12 Jan 2021 12:55:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=MHWdrGw14uYtb4TGJ5A7+n2JEJmQ4jGo6SgmNA4cpFk=;
+ b=SfzK4ajuPVM373mTedmtjd5b0ooqMqreOnkpGPfihUZie7VQh9tn57digjIYRr/oiu7S
+ fn4KSzU+VMn3lCfDDXk6W+MglybbwafN5hAA83g9MOJp14zU2vdLGc4k/f/jTYy+UVJ8
+ bTMztPnwCH35PZqf9mRaLwxmXLh56X9ol23VIH26zb4fgUykihcQROFw9Z7dY86Q7wB1
+ Z7SIN+WOFp27caRBgxbuEDThhbC74+fxvos0mq6gQYtR5NRjdqJy337kaD7KBJkUx2Pf
+ PYFtnDpzbgAFNe/2pXBlzfGKIaWejBcrxHOjBucfzhGUrGTtVfFQz6TV15F+GmJnOo+K dg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 361g9y0dte-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 12:54:55 -0500
-Received: from pps.filterd (m0144102.ppops.net [127.0.0.1])
-        by mx0b-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10CHrOxb008098;
-        Tue, 12 Jan 2021 12:54:55 -0500
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2059.outbound.protection.outlook.com [104.47.36.59])
-        by mx0b-00154901.pphosted.com with ESMTP id 361fr6gvhk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jan 2021 12:54:55 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h6sa1e6DEZY9w5QIFj79rTteVwVUqzSHrRyscwSPE+q7iwb79d5SDemO1JwKlIyTydvGgSrWqV4LnUly3ezRgq6zTGCj7g8DQdp1w17wPp9Oig9Lehyuau4nDP9VOjHMcga/QafXtRYPR0en7EJPj8MPXc3I6MVq87KTI829qlVfV2W+kh+35IaS6wqemtynNCblEMh+w0RwjKzKyvArE73L1C4jYxgIffGduCgk1zVifFrsiKz0MzUp2hGeEDdYkCdXUe0a4PUlORWZoZ9F2+QoIoJOR5Qq8OoXIgxlMTMG0s8iPQc6qiEwy0Z+d1HNK54d+SWSLkgKg0E63EmSQQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jiFDGPaCyxSF4MyVC3IMOuHBRRodoWvjQ0jiZ9n4D9Y=;
- b=RyIflZN+DWmHJXHwraignuhRjQTd6XDiW6wZRQYrzSZfBguTnzy+tqDjMF5TbdHh6d8oZX/9UE4DtnbZp9qijAo6jgbp8aEhNKPhnFIrwDqyybs0uy/TeheuoNbVJfZGQh4OyZKFdedi8Zp8e2g/+AXpN4VEFOADU3GUIiDxYgMrquSUAN/m0zpOK4ATvMmNhgB2oOrreDHT+e00Om91F6yCgHg1Egmd7tdAceDz4dP0yRUgqxQfmK8llto2r2FVAjqcBbvGxSPjubWTRgb3m8AQTQguweQftj1TJpeSb+iMDHNaNkwSlSWknfh6hCsWzcLGzAHHRFNaH5DFykNEBg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
- dkim=pass header.d=dell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Dell.onmicrosoft.com;
- s=selector1-Dell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jiFDGPaCyxSF4MyVC3IMOuHBRRodoWvjQ0jiZ9n4D9Y=;
- b=QcijevlIo8t22nP//8pqqfXhlevP7UWpC9d8dsZc4iuss6bW5ph8zJzuUu0n2tJzzx1ilkYzA+WAH2WgEBqR4m3LabKRQTtT4gZX8XQZKL18Bpb2BW7wNqIAdLkA1+Cz3eUTJHMN+BpkpipUQqroFaovTn6kV+eDnK20+VA/9bU=
-Received: from BY3PR19MB4913.namprd19.prod.outlook.com (2603:10b6:a03:367::23)
- by BY5PR19MB3940.namprd19.prod.outlook.com (2603:10b6:a03:227::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Tue, 12 Jan
- 2021 17:54:51 +0000
-Received: from BY3PR19MB4913.namprd19.prod.outlook.com
- ([fe80::7572:e4d1:248f:95e7]) by BY3PR19MB4913.namprd19.prod.outlook.com
- ([fe80::7572:e4d1:248f:95e7%3]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
- 17:54:51 +0000
-From:   "Limonciello, Mario" <Mario.Limonciello@dell.com>
-To:     "Yuan, Perry" <Perry.Yuan@dell.com>,
-        "oder_chiou@realtek.com" <oder_chiou@realtek.com>,
-        "perex@perex.cz" <perex@perex.cz>,
-        "tiwai@suse.com" <tiwai@suse.com>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>
-CC:     "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Subject: RE: [PATCH v3 2/3] x86/platform/dell-privacy-wmi: add document for
- dell privacy driver
-Thread-Topic: [PATCH v3 2/3] x86/platform/dell-privacy-wmi: add document for
- dell privacy driver
-Thread-Index: AQHW6Qbl0IaMav/vH0uA5O85vHm+m6okRNKQ
-Date:   Tue, 12 Jan 2021 17:54:51 +0000
-Message-ID: <BY3PR19MB49137D1D7508190AF87655FEFAAA0@BY3PR19MB4913.namprd19.prod.outlook.com>
-References: <20210112171755.14408-1-Perry_Yuan@Dell.com>
-In-Reply-To: <20210112171755.14408-1-Perry_Yuan@Dell.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2021-01-12T17:52:37.3114724Z;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=2be014bf-2f94-4f92-bbdf-a39f4aee6703;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
-authentication-results: Dell.com; dkim=none (message not signed)
- header.d=none;Dell.com; dmarc=none action=none header.from=Dell.com;
-x-originating-ip: [76.251.167.31]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4972aae1-811b-4ac2-d2bd-08d8b7232956
-x-ms-traffictypediagnostic: BY5PR19MB3940:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR19MB39406BDDD99B39C9DB497A87FAAA0@BY5PR19MB3940.namprd19.prod.outlook.com>
-x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: B09mzOgdCZxZNzJxUQ7g/4AYp+WUbVUSWS0zq/Cg+nSdZ05d//35FwwEJ6nkL9HdqWh4VvYnWF76xcDvCbXpz1A4i/r5Rl7cGOj2jRiulqE5s7VsscL1k0Y+Z2vAakNM6EOs2YqioWddsSEaj0W+x0HeJTAX7+cAiFUqIfy+4W6HUjt8ePV6QaDBTKejJfXIFLaqU0cnxpw96ov4ywJZJwwve9288HTtOXB5SkVgAHnh4EAh89FcMJcKjVnG+sXl8ZW4OYdHKbj/CoQoeN83Zn3N7KpXyqaUFqDGdH3b1wlVw8ePKjZTwWNvZH+9lHfybNoMGGLIvsLZJUrRyJwpoeMQ+zaAfy1JA3IvtqUSyiDBanxn4oQiAYITRp3/wEEGsrUIVqDhvtOGZeCS7rIpAw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR19MB4913.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(346002)(396003)(39860400002)(376002)(5660300002)(53546011)(7416002)(8676002)(26005)(6506007)(2906002)(110136005)(71200400001)(66946007)(66476007)(52536014)(64756008)(76116006)(8936002)(55016002)(478600001)(66556008)(83380400001)(54906003)(9686003)(33656002)(7696005)(4326008)(86362001)(316002)(66446008)(786003)(186003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?T0hLdjBBd2ZackFLOHk1T0NRaGNuUkJLM2JjbWo5dVBVWTEzLytoRU5kQXB0?=
- =?utf-8?B?SHhrdEVUWUxiQjFmT09xYldBTDZLbTU2bGxmV2xDckJZMldTdjExNmIwM2pv?=
- =?utf-8?B?V0FOMkZ4TGpyMkdBaElNeEQwbnZicEJlR2haODZZcDZVRjNFeFgvREJwbzJt?=
- =?utf-8?B?NTIvUmp5K1ZDZ2tTS3Ezbmx5YjVFY3hSakdFaVRJbjJLWnNVRUk4SUV1OUZY?=
- =?utf-8?B?TmpJMlBZUElheWo1Zmk3a09GYi9wVUhUU0Z1T0VRUXJmR3diTFRrbko4RVZW?=
- =?utf-8?B?Y3hTVFZ1elNMMHlPTnBKekhzeCtINWx6YS9QZ252OGRockxEQ3hMUlhXZHN3?=
- =?utf-8?B?RjFuQmpNVk04L05Dc1BHb3RKYU9PRWwzcVdHUW05dnI3RzdKZldnRTNjU1NS?=
- =?utf-8?B?ejJyZ0RBemRlOGJyQVBzTnJxRVYxb2VSV1hoYThxOStxRDJ3VnZyTkoxNFY0?=
- =?utf-8?B?L3pFN3JCTkVicFpWelNxa1BCdTIvN2ltRkswa3ErZy9vUEt2aVltaTY0cWdm?=
- =?utf-8?B?cmpJK2VJOEVDV0RmK01tUDVsQ0RIZHo3TXNHWFBKTHRIcVFzeU00VXFuYUtD?=
- =?utf-8?B?WFNmYjdqcUowTEQ5UkppaEtOc1NsYmRKUE16YWpWM08wSW5rbjhNNHdpOTBE?=
- =?utf-8?B?MXp1REhrMUQybjgzNUFSb0Ziams5T0M0eW5sRkxYVjN3TUtXVG01NEZramNN?=
- =?utf-8?B?cVcrcHNKLzhxUTR6Z2liNWREWDJyUm9LcjdUdzkyaktFWW1wclZ3bk8wZGEr?=
- =?utf-8?B?VHRCZGl5aU52Q0JGWmpLZDJtZWRBSFZwb0UvYzBOaUcvTllBSnZmazBBYVU2?=
- =?utf-8?B?UWQvZVRFL3ZZK2FVNlI0WUpmdVJ5N1JXNEhmM0VTakt3dWJnOFU3Sm5VT2hM?=
- =?utf-8?B?a1k5Y2llUTZSd1NDZUVtbEZ1amxEcEY4WjZ2VTZwbWZKVzJDRjVXZUdTM3Zs?=
- =?utf-8?B?dU54UG54R0k5V2xJVWlJUzZpVnA2L2grUVlPNURiRkFpS29SM3p3ZzVlb1RU?=
- =?utf-8?B?Zm9GbDlKWXRzRk5IeVBSM2YzYjNnbmlWWmcvQlNtMEFWU2piSWhhbWdiaGtB?=
- =?utf-8?B?MnBsNUpnZHRSbDZHRW9XZGVIK2o4YnhaNWNCVVErMlRNc1FpNDEwRXhaK3Rs?=
- =?utf-8?B?aVBzUkhVTUc4UnNGa2dXYXg1dXRPbUdFSm90eGF1dEg5cVZtcXNJYWprbGww?=
- =?utf-8?B?QWZuM21Yb3hQa2dDeTZWYllWVDVSUHcza2k1ejE1UjZncWFEZWFOZERCNG5u?=
- =?utf-8?B?N1E0REIwU3hPZDU2VEtDZ3ZyM2o4NWRNNWZLdUNKRWlCUjh2b2F1SUR0Y3FH?=
- =?utf-8?Q?shkVgGeiXv8SI=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tue, 12 Jan 2021 12:55:59 -0500
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10CHYw5M038995;
+        Tue, 12 Jan 2021 12:55:58 -0500
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 361g9y0dsu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 12:55:58 -0500
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10CHq942021951;
+        Tue, 12 Jan 2021 17:55:56 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 35ydrdbjrh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 17:55:56 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10CHtr4K42992000
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Jan 2021 17:55:53 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6BC334C040;
+        Tue, 12 Jan 2021 17:55:53 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ADBA44C04E;
+        Tue, 12 Jan 2021 17:55:52 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.60.135])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Tue, 12 Jan 2021 17:55:52 +0000 (GMT)
+Date:   Tue, 12 Jan 2021 18:55:50 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v13 09/15] s390/vfio-ap: allow hot plug/unplug of AP
+ resources using mdev device
+Message-ID: <20210112185550.1ac49768.pasic@linux.ibm.com>
+In-Reply-To: <20210112021251.0d989225.pasic@linux.ibm.com>
+References: <20201223011606.5265-1-akrowiak@linux.ibm.com>
+        <20201223011606.5265-10-akrowiak@linux.ibm.com>
+        <20210112021251.0d989225.pasic@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-OriginatorOrg: Dell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY3PR19MB4913.namprd19.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4972aae1-811b-4ac2-d2bd-08d8b7232956
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2021 17:54:51.6506
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: AUnHiiDgNimj6D+gU/Mj1L+yg0rX/98GAPAzZNgbIRZSoJwe398VV1FYNGzYtgd62+2+gvkT0YL60g05xIgjZ15eixvccU4fPhlFhO5RdFE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR19MB3940
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
  definitions=2021-01-12_12:2021-01-12,2021-01-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
- mlxscore=0 malwarescore=0 clxscore=1015 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 suspectscore=0 adultscore=0 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101120105
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- phishscore=0 adultscore=0 malwarescore=0 mlxscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101120105
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 impostorscore=0 clxscore=1015 lowpriorityscore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2101120099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBZdWFuLCBQZXJyeSA8UGVycnlf
-WXVhbkBEZWxsLmNvbT4NCj4gU2VudDogVHVlc2RheSwgSmFudWFyeSAxMiwgMjAyMSAxMToxOA0K
-PiBUbzogb2Rlcl9jaGlvdUByZWFsdGVrLmNvbTsgcGVyZXhAcGVyZXguY3o7IHRpd2FpQHN1c2Uu
-Y29tOw0KPiBoZGVnb2VkZUByZWRoYXQuY29tOyBtZ3Jvc3NAbGludXguaW50ZWwuY29tDQo+IENj
-OiBsZ2lyZHdvb2RAZ21haWwuY29tOyBicm9vbmllQGtlcm5lbC5vcmc7IGFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZzsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgcGxhdGZvcm0t
-ZHJpdmVyLXg4NkB2Z2VyLmtlcm5lbC5vcmc7IFl1YW4sDQo+IFBlcnJ5OyBMaW1vbmNpZWxsbywg
-TWFyaW8NCj4gU3ViamVjdDogW1BBVENIIHYzIDIvM10geDg2L3BsYXRmb3JtL2RlbGwtcHJpdmFj
-eS13bWk6IGFkZCBkb2N1bWVudCBmb3IgZGVsbA0KPiBwcml2YWN5IGRyaXZlcg0KPiANCj4gRnJv
-bTogUGVycnkgWXVhbiA8cGVycnlfeXVhbkBkZWxsLmNvbT4NCj4gDQo+IERlc2NyaWJlIHRoZSBE
-ZWxsIFByaXZhY3kgZmVhdHVyZSBjYXBhYmlsaXRpZXMgYW5kIGRldmljZXMNCj4gc3RhdGUgY2xh
-c3MgZXhwb3NlZCBieSBCSU9TDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBQZXJyeSBZdWFuIDxwZXJy
-eV95dWFuQGRlbGwuY29tPg0KPiAtLS0NCj4gIC4uLi90ZXN0aW5nL3N5c2ZzLXBsYXRmb3JtLWRl
-bGwtcHJpdmFjeS13bWkgICB8IDMxICsrKysrKysrKysrKysrKysrKysNCj4gIDEgZmlsZSBjaGFu
-Z2VkLCAzMSBpbnNlcnRpb25zKCspDQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlv
-bi9BQkkvdGVzdGluZy9zeXNmcy1wbGF0Zm9ybS1kZWxsLXByaXZhY3ktd21pDQoNCkkgZG9uJ3Qg
-c2VlIGEgcmVhc29uIHRoYXQgdGhlIGRvY3VtZW50YXRpb24gbmVlZHMgdG8gY29tZSBpbiBpdCdz
-IG93biBjb21taXQuDQpJbiB2NCwgSSB3b3VsZCB0aGluayB0aGlzIGNhbiBjb2xsYXBzZSBhcyBw
-YXJ0IG9mOg0KIkFkZCBzdXBwb3J0IGZvciBEZWxsIGhhcmR3YXJlIHByaXZhY3kiDQoNCj4gDQo+
-IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL0FCSS90ZXN0aW5nL3N5c2ZzLXBsYXRmb3JtLWRl
-bGwtcHJpdmFjeS13bWkNCj4gYi9Eb2N1bWVudGF0aW9uL0FCSS90ZXN0aW5nL3N5c2ZzLXBsYXRm
-b3JtLWRlbGwtcHJpdmFjeS13bWkNCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gaW5kZXggMDAw
-MDAwMDAwMDAwLi4zZGJjMmQyNWI2MGUNCj4gLS0tIC9kZXYvbnVsbA0KPiArKysgYi9Eb2N1bWVu
-dGF0aW9uL0FCSS90ZXN0aW5nL3N5c2ZzLXBsYXRmb3JtLWRlbGwtcHJpdmFjeS13bWkNCj4gQEAg
-LTAsMCArMSwzMSBAQA0KPiArV2hhdDoJCS9zeXMvYnVzL3dtaS9kZXZpY2VzLzY5MzI5NjVGLTE2
-NzEtNENFQi1COTg4LQ0KPiBEM0FCMEE5MDE5MTkvZGV2aWNlc19zdXBwb3J0ZWQNCj4gK0RhdGU6
-CQlKYW4gMjAyMQ0KPiArS2VybmVsVmVyc2lvbjoJNS4xMQ0KSSB0aGluayB0aGlzIGlzIDUuMTIg
-bWF0ZXJpYWwgbm93Lg0KTmVlZCB0byB1cGRhdGUgdGhpcyB0byBhcHByb3hpbWF0ZSA1LjEyIGRh
-dGUuDQoNCj4gK0NvbnRhY3Q6CSJwZXJyeV95dWFuQGRlbGwuY29tPiINCg0KSSB0aGluayBEZWxs
-IGFkZHJlc3NlcyBwdWJsaWNseSB1c2UgYSBwZXJpb2QgcmF0aGVyIHRoYW4gYW4gdW5kZXJzY29y
-ZSwgbm8/DQpTbyBzaG91bGRuJ3QgdGhpcyBiZSBwZXJyeS55dWFuQGRlbGwuY29tPyAoQWx0aG91
-Z2ggSSBhY2tub3dsZWRnZSBpdCdzIGFuDQphbGlhcywgSSBkb24ndCB0cnVzdCB0aGF0IEkvVCB3
-b3VsZG4ndCByZW1vdmUgdGhhdCBzb21lIGRheSkuDQoNCj4gK0Rlc2NyaXB0aW9uOg0KPiArCQlE
-aXNwbGF5IHdoaWNoIGRlbGwgaGFyZHdhcmUgbGV2ZWwgcHJpdmFjeSBkZXZpY2VzIGFyZSBzdXBw
-b3J0ZWQNCj4gKwkJ4oCcRGVsbCBQcml2YWN54oCdIGlzIGEgc2V0IG9mIEhXLCBGVywgYW5kIFNX
-IGZlYXR1cmVzIHRvIGVuaGFuY2UNCj4gKwkJRGVsbOKAmXMgY29tbWl0bWVudCB0byBwbGF0Zm9y
-bSBwcml2YWN5IGZvciBNSUMsIENhbWVyYSwgYW5kDQo+ICsJCWVQcml2YWN5IHNjcmVlbnMuDQo+
-ICsJCVRoZSBzdXBwb3J0ZWQgcHJpdmFjeSBoYXJlZHdhcmUgcHJpdmFjeSBkZXZpY2VzIGFyZToN
-Cg0KWW91IGhhdmUgYSB0eXBvIGhlcmUuDQoNCj4gKwkJICogMHgwIC0gTm9uZSwNCj4gKwkJICog
-MHgxIC0gTWljcm9waG9uZSwNCj4gKwkJICogMHgyIC0gQ2FtZXJhLA0KPiArCQkgKiAweDQgLSBl
-UHJpdmFjeSBTY3JlZW4NCg0KU28gdGhpcyBpcyBhbiBiaXRtYXAgZW5jb2RlZCBpbiB0aGUgaW50
-ZWdlcj8gIEkgdGhpbmsgdGhhdCBuZWVkcyB0byBiZSBtZW50aW9uZWQNCmluIHRoZSBkb2N1bWVu
-dGF0aW9uLg0KDQo+ICsNCj4gK1doYXQ6CQkvc3lzL2J1cy93bWkvZGV2aWNlcy82OTMyOTY1Ri0x
-NjcxLTRDRUItQjk4OC0NCj4gRDNBQjBBOTAxOTE5L2N1cnJlbnRfc3RhdGUNCj4gK0RhdGU6CQlK
-YW4gMjAyMQ0KPiArS2VybmVsVmVyc2lvbjoJNS4xMQ0KPiArQ29udGFjdDoJInBlcnJ5X3l1YW5A
-ZGVsbC5jb20+Ig0KPiArRGVzY3JpcHRpb246DQo+ICsJCUFsbG93IHVzZXIgc3BhY2UgdG8gY2hl
-Y2sgY3VycmVudCBkZWxsIHByaXZhY3kgZGV2aWNlIHN0YXRlLg0KPiArCQlEZXNjcmliZXMgdGhl
-IERldmljZSBTdGF0ZSBjbGFzcyBleHBvc2VkIGJ5IEJJT1Mgd2hpY2ggY2FuIGJlDQo+ICsJCWNv
-bnN1bWVkIGJ5IHZhcmlvdXMgYXBwbGljYXRpb25zIGludGVyZXN0ZWQgaW4ga25vd2luZyB0aGUg
-UHJpdmFjeQ0KPiArCQlmZWF0dXJlIGNhcGFiaWxpdGllcw0KPiArCQlUaGVyZSBhcmUgdGhyZWUg
-Qml0cyBmb3IgYXZhaWxhYmxlIHN0YXRlczoNCj4gKwkJICAgICogMCAtPiBPZmYNCj4gKwkJICAg
-ICogMSAtPiBPbg0KPiArCQkgICAgKiBCaXQwIC0+IE1pY3JvcGhvbmUNCj4gKwkJICAgICogQml0
-MSAtPiBDYW1lcmENCj4gKwkJICAgICogQml0MiAtPiBlUHJpdmFjeVNjcmVlbg0KPiArDQo+IC0t
-DQo+IDIuMjUuMQ0KDQo=
+On Tue, 12 Jan 2021 02:12:51 +0100
+Halil Pasic <pasic@linux.ibm.com> wrote:
+
+> > @@ -1347,8 +1437,11 @@ void vfio_ap_mdev_remove_queue(struct ap_device *apdev)
+> >  	apqi = AP_QID_QUEUE(q->apqn);
+> >  	vfio_ap_mdev_reset_queue(apid, apqi, 1);
+> >  
+> > -	if (q->matrix_mdev)
+> > +	if (q->matrix_mdev) {
+> > +		matrix_mdev = q->matrix_mdev;
+> >  		vfio_ap_mdev_unlink_queue(q);
+> > +		vfio_ap_mdev_refresh_apcb(matrix_mdev);
+> > +	}
+> >  
+> >  	kfree(q);
+> >  	mutex_unlock(&matrix_dev->lock);  
+
+Shouldn't we first remove the queue from the APCB and then
+reset? Sorry, I missed this one yesterday.
+
+Regards,
+Halil
