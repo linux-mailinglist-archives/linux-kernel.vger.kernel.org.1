@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFBE22F3F4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 430862F3F5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438307AbhALWRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:17:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53850 "EHLO
+        id S2438316AbhALWSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:18:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438278AbhALWRl (ORCPT
+        with ESMTP id S1730212AbhALWSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:17:41 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 041DEC061795
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:17:01 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id w3so3827347otp.13
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:17:00 -0800 (PST)
+        Tue, 12 Jan 2021 17:18:38 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B63CC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:17:58 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id x5so3537465otp.9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:17:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=QDoGkX1nq3npr6u0eGjmH71uKw9TeUJ/k+zHvyVK850=;
-        b=TUx0tDfq0mzy04iguDOG7xtDUoxTs40XthC2cESlJRc6WPDhZP5Uno3DZUAkmKTtuh
-         DFfMV0T3S3PShcoK+R+wkNNG5uArhiVlcDS5+U8RQai9ta2iDYNSExd148dBRVYYs8B3
-         WJXXMHLYBO3thXxTThrZWKhBJz5rAQ8vRsZbm4KkTH5etFZ+j1DJ4mCUY7MwiVzO/vCC
-         +HYSF6ucQ0f1aZUujeTj6JtBul++KpHRW/ZJzY0KNjEdsYnP01DOcw8n27eCSTnXLQ3p
-         yt0RegwOiC5c0z6tZcScz7KbBAI2W19PIJI7Ub7oM9Eqtp4rMC0FxReXwPAgFKD9p0sW
-         EgFQ==
+        bh=HvUmJxi/g8blsoQI26oqN2rM0SAy7RtATDDau+9vtBg=;
+        b=V1VvugWsKg02SnRwM/ZoIpIdve/zHjFD0Y4LFtgV4T7KnxkqTyVdld2O6v4RZ78iAg
+         fiXUwKUNVQEKyB7L812A0aIr98YO44lGQ+Mzw35rhaEjqZbi3/v9DwScmxJtZAg3QxvG
+         ImhtGjfecYHIpoiHlNxVMqbasuYx9GUdBIVT1eazYRu8rD1WJv1y5bH2uSJjKss/pzWn
+         +gjZfG3R7f319fSnqQ9NIIyR39nMm2YNC8LzZCMhi1Mg1WO/AuzqloJQUQoM1+4m7GgH
+         3CY7Tjp4xvW8ZHdZ23vTR5ufQxc6qih4AyWeLZ71m5VpbNXuiUszJwwT+eE2Ci8u/RIk
+         7BHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QDoGkX1nq3npr6u0eGjmH71uKw9TeUJ/k+zHvyVK850=;
-        b=srGbiVvK6eDqqGtWFfHLlyg9uizv8IP7pwUL7ShCp7ASs/r3irsUQLb/bhgvqttWGR
-         ky+oq2fKWrofMCfEt+OmDAPf+r4/216dCfi77y5zgjNGY4uHfqUPf8wdicMSmc3oyqWq
-         JotoXAWl8+5vAwIqt+G0VbYDCnfPuUgguQQz2TfEs5j0X0TZlpKHr2qO1mhUowiVCE0R
-         5AelT5HQqcmzG9x0m26d1/pzIEJ2KGYjXfQaf7+YNXf8PaRUrNbQ5qIJ4TwRVhZmZWTt
-         rAKAb71dAEDaVDovB0F7BXkwQ7sqRSb9ogVxMFzo4yCJZpviaJn3bWUyn6Ug25xg4w7x
-         ULPw==
-X-Gm-Message-State: AOAM530E5bZinMJRYwUEQxZW7gn89wRrNnk2oM3Fpu3whSjuxKHpDZcy
-        9DdemVOoRVTRqYP6M02QOAYyR2UATEB5Y2Nc5Lg=
-X-Google-Smtp-Source: ABdhPJzu3m1eXtRds2N8Wkj7O7RZca+TnGAJK6TV5yAvIieJjz+XHgHS6EnYFQwGKEV7kxcYWDczZ5hgEywOjRsF+kI=
-X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr1104937ote.132.1610489820430;
- Tue, 12 Jan 2021 14:17:00 -0800 (PST)
+        bh=HvUmJxi/g8blsoQI26oqN2rM0SAy7RtATDDau+9vtBg=;
+        b=sN8oBpbpbAbp8RQ5WAD7rxfEdfQ2ZvUYH9pOtiB64wQNcp05x0paLHta97i4YPAskd
+         +tXmSrK64EW633upYhvFucWGHxNniDhcjsqGpQeCTGXk5gr7Lb5z5hGKKCdFnHLhcRNT
+         w2Y+xd9XokP97MA73ftgmknBPvyp9RjbT6rFuevxvBIS5DpzGanwqu5iIBKYrrxaq8fb
+         D8uKB5Hs4o7myvYPxVot18xXadCnZSGaJS0cYykzYVcEH3xR5NZdmxwkluEdJRBoPNUm
+         vhMyWXRAH9yODHVqSGl/BUwo8ea04LOqlgGQ+RsdIjnL7ENWacYuj1YgSEhk1d80Us41
+         bcOg==
+X-Gm-Message-State: AOAM532qGfW1hke194tZe/6YbQAHPzaB03kA0EUcKD5saxyMBfLc3gas
+        grQJ1MMEPh0fYmJKdyots2CgRL6qPiIcJ9ssiDoB9dn0
+X-Google-Smtp-Source: ABdhPJxGM6vKfRyjIjVJ+tzwpnd5zKmX94O0o8s9X/BqallXC62zfkCYcOvfDzbX7lxCumFm5kKTObterRb+gA1ypmc=
+X-Received: by 2002:a9d:2ac2:: with SMTP id e60mr1034057otb.23.1610489877610;
+ Tue, 12 Jan 2021 14:17:57 -0800 (PST)
 MIME-Version: 1.0
-References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-19-lee.jones@linaro.org>
-In-Reply-To: <20210111191926.3688443-19-lee.jones@linaro.org>
+References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-20-lee.jones@linaro.org>
+In-Reply-To: <20210111191926.3688443-20-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 12 Jan 2021 17:16:47 -0500
-Message-ID: <CADnq5_PxK4Fxg2As8nZZqYW3U=Ja0jBm7sB4g+YbZNf-VK41ug@mail.gmail.com>
-Subject: Re: [PATCH 18/40] drm/amd/display/dc/dce112/Makefile: Ignore
- -Woverride-init warning
+Date:   Tue, 12 Jan 2021 17:17:43 -0500
+Message-ID: <CADnq5_NtPZs4cCypB0nphJqEVVQp7OojJVGLzNH0hP=+JWrr6g@mail.gmail.com>
+Subject: Re: [PATCH 19/40] drm/amd/display/dc/dce/dce_opp: Remove duplicate
+ entries causing 'field overwritten' issues
 To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
+Cc:     Leo Li <sunpeng.li@amd.com>, Mauro Rossi <issor.oruam@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
         David Airlie <airlied@linux.ie>,
         Maling list - DRI developers 
@@ -68,73 +69,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, Jan 11, 2021 at 2:20 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> This file uses a complex abstracted set of hierarchical macros to
-> setup its applicable register lists within constant structures.
-> However in the case of TMDS_CNTL we wish to mark it as not applicable
-> for this use-case.
->
-> One method would be to de-const all of the definitions and users, then
-> manually zero out TMDS_CNTL from the list.  Another would be to create
-> a new set of hierarchical macros to omit TMDS_CNTL entirely.  Both
-> would entail a great deal of unnecessary changes and maintenance
-> burden.
->
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:286:15=
-: warning: initialized field overwritten [-Woverride-init]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:290:2:=
- note: in expansion of macro =E2=80=98stream_enc_regs=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:286:15=
-: note: (near initialization for =E2=80=98stream_enc_regs[0].TMDS_CNTL=E2=
-=80=99)
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:290:2:=
- note: in expansion of macro =E2=80=98stream_enc_regs=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:286:15=
-: warning: initialized field overwritten [-Woverride-init]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:291:2:=
- note: in expansion of macro =E2=80=98stream_enc_regs=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:286:15=
-: note: (near initialization for =E2=80=98stream_enc_regs[1].TMDS_CNTL=E2=
-=80=99)
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:291:2:=
- note: in expansion of macro =E2=80=98stream_enc_regs=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:286:15=
-: warning: initialized field overwritten [-Woverride-init]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:292:2:=
- note: in expansion of macro =E2=80=98stream_enc_regs=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:286:15=
-: note: (near initialization for =E2=80=98stream_enc_regs[2].TMDS_CNTL=E2=
-=80=99)
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:292:2:=
- note: in expansion of macro =E2=80=98stream_enc_regs=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:286:15=
-: warning: initialized field overwritten [-Woverride-init]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:293:2:=
- note: in expansion of macro =E2=80=98stream_enc_regs=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:286:15=
-: note: (near initialization for =E2=80=98stream_enc_regs[3].TMDS_CNTL=E2=
-=80=99)
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:293:2:=
- note: in expansion of macro =E2=80=98stream_enc_regs=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:286:15=
-: warning: initialized field overwritten [-Woverride-init]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:294:2:=
- note: in expansion of macro =E2=80=98stream_enc_regs=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:286:15=
-: note: (near initialization for =E2=80=98stream_enc_regs[4].TMDS_CNTL=E2=
-=80=99)
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:294:2:=
- note: in expansion of macro =E2=80=98stream_enc_regs=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:286:15=
-: warning: initialized field overwritten [-Woverride-init]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:295:2:=
- note: in expansion of macro =E2=80=98stream_enc_regs=E2=80=99
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:286:15=
-: note: (near initialization for =E2=80=98stream_enc_regs[5].TMDS_CNTL=E2=
-=80=99)
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:295:2:=
- note: in expansion of macro =E2=80=98stream_enc_regs=E2=80=99
+>  In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dc=
+e112_resource.c:59:
+>  drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_11_2_sh_mask.h:10=
+480:62: warning: initialized field overwritten [-Woverride-init]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:96:16: note: in e=
+xpansion of macro =E2=80=98FMT_BIT_DEPTH_CONTROL__FMT_TEMPORAL_DITHER_EN__S=
+HIFT=E2=80=99
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:114:2: note: in e=
+xpansion of macro =E2=80=98OPP_SF=E2=80=99
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:148:2: note: in e=
+xpansion of macro =E2=80=98OPP_COMMON_MASK_SH_LIST_DCE_COMMON_BASE=E2=80=99
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:321:2:=
+ note: in expansion of macro =E2=80=98OPP_COMMON_MASK_SH_LIST_DCE_112=E2=80=
+=99
+>  drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_11_2_sh_mask.h:10=
+480:62: note: (near initialization for =E2=80=98opp_shift.FMT_TEMPORAL_DITH=
+ER_EN=E2=80=99)
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:96:16: note: in e=
+xpansion of macro =E2=80=98FMT_BIT_DEPTH_CONTROL__FMT_TEMPORAL_DITHER_EN__S=
+HIFT=E2=80=99
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:114:2: note: in e=
+xpansion of macro =E2=80=98OPP_SF=E2=80=99
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:148:2: note: in e=
+xpansion of macro =E2=80=98OPP_COMMON_MASK_SH_LIST_DCE_COMMON_BASE=E2=80=99
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:321:2:=
+ note: in expansion of macro =E2=80=98OPP_COMMON_MASK_SH_LIST_DCE_112=E2=80=
+=99
+>  drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_11_2_sh_mask.h:10=
+479:60: warning: initialized field overwritten [-Woverride-init]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:96:16: note: in e=
+xpansion of macro =E2=80=98FMT_BIT_DEPTH_CONTROL__FMT_TEMPORAL_DITHER_EN_MA=
+SK=E2=80=99
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:114:2: note: in e=
+xpansion of macro =E2=80=98OPP_SF=E2=80=99
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:148:2: note: in e=
+xpansion of macro =E2=80=98OPP_COMMON_MASK_SH_LIST_DCE_COMMON_BASE=E2=80=99
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce112/dce112_resource.c:325:2:=
+ note: in expansion of macro =E2=80=98OPP_COMMON_MASK_SH_LIST_DCE_112=E2=80=
+=99
+>  drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_11_2_sh_mask.h:10=
+479:60: note: (near initialization for =E2=80=98opp_mask.FMT_TEMPORAL_DITHE=
+R_EN=E2=80=99)
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:96:16: note: in e=
+xpansion of macro =E2=80=98FMT_BIT_DEPTH_CONTROL__FMT_TEMPORAL_DITHER_EN_MA=
+SK=E2=80=99
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:114:2: note: in e=
+xpansion of macro =E2=80=98OPP_SF=E2=80=99
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_opp.h:148:2: note: in e=
+xpansion of macro =E2=80=98OPP_COMMON_MASK_SH_LIST_DCE_COMMON_BASE=E2=80=99
 >
 > Cc: Harry Wentland <harry.wentland@amd.com>
 > Cc: Leo Li <sunpeng.li@amd.com>
@@ -142,6 +127,7 @@ On Mon, Jan 11, 2021 at 2:20 PM Lee Jones <lee.jones@linaro.org> wrote:
 > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
 > Cc: David Airlie <airlied@linux.ie>
 > Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Mauro Rossi <issor.oruam@gmail.com>
 > Cc: amd-gfx@lists.freedesktop.org
 > Cc: dri-devel@lists.freedesktop.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
@@ -151,24 +137,36 @@ Applied.  Thanks!
 Alex
 
 > ---
->  drivers/gpu/drm/amd/display/dc/dce112/Makefile | 2 ++
->  1 file changed, 2 insertions(+)
+>  drivers/gpu/drm/amd/display/dc/dce/dce_opp.h | 2 --
+>  1 file changed, 2 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/display/dc/dce112/Makefile b/drivers/gpu=
-/drm/amd/display/dc/dce112/Makefile
-> index 8e090446d5119..9de6501702d2c 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dce112/Makefile
-> +++ b/drivers/gpu/drm/amd/display/dc/dce112/Makefile
-> @@ -23,6 +23,8 @@
->  # Makefile for the 'controller' sub-component of DAL.
->  # It provides the control and status of HW CRTC block.
->
-> +CFLAGS_$(AMDDALPATH)/dc/dce112/dce112_resource.o =3D $(call cc-disable-w=
-arning, override-init)
-> +
->  DCE112 =3D dce112_compressor.o dce112_hw_sequencer.o \
->  dce112_resource.o
->
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_opp.h b/drivers/gpu/d=
+rm/amd/display/dc/dce/dce_opp.h
+> index 4d484ef60f357..bf1ffc3629c7f 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce/dce_opp.h
+> +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_opp.h
+> @@ -111,7 +111,6 @@ enum dce110_opp_reg_type {
+>         OPP_SF(FMT_DITHER_RAND_R_SEED, FMT_RAND_R_SEED, mask_sh),\
+>         OPP_SF(FMT_DITHER_RAND_G_SEED, FMT_RAND_G_SEED, mask_sh),\
+>         OPP_SF(FMT_DITHER_RAND_B_SEED, FMT_RAND_B_SEED, mask_sh),\
+> -       OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_EN, mask_sh),\
+>         OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_RESET, mask_sh)=
+,\
+>         OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_OFFSET, mask_sh=
+),\
+>         OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_DEPTH, mask_sh)=
+,\
+> @@ -219,7 +218,6 @@ enum dce110_opp_reg_type {
+>         OPP_SF(FMT_DITHER_RAND_R_SEED, FMT_RAND_R_SEED, mask_sh),\
+>         OPP_SF(FMT_DITHER_RAND_G_SEED, FMT_RAND_G_SEED, mask_sh),\
+>         OPP_SF(FMT_DITHER_RAND_B_SEED, FMT_RAND_B_SEED, mask_sh),\
+> -       OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_EN, mask_sh),\
+>         OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_RESET, mask_sh)=
+,\
+>         OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_OFFSET, mask_sh=
+),\
+>         OPP_SF(FMT_BIT_DEPTH_CONTROL, FMT_TEMPORAL_DITHER_DEPTH, mask_sh)=
+,\
 > --
 > 2.25.1
 >
