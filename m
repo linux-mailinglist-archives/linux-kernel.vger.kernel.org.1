@@ -2,109 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C99012F2F46
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59E2B2F2F49
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:45:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388277AbhALMkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:40:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727072AbhALMkj (ORCPT
+        id S1730766AbhALMoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:44:44 -0500
+Received: from mail-oo1-f49.google.com ([209.85.161.49]:42292 "EHLO
+        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725983AbhALMom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:40:39 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70FCC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 04:39:58 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id q20so1312298pfu.8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 04:39:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iBDp91phFwOqELMFCCbzVy/QFbR85TB6s1l42soxBSY=;
-        b=b1IQXfFfB0WqLgMwjzZGdFkvztWcaKORJDWjoEmti0F6f9d8++NhUYfbgiBmy+6VSy
-         BkOHL1mGceNBDNFJsFxx95rD6H4vx22vjHvQooT45K8HtMeSDlZTeIwkHBcuXOXXspc8
-         jo6o7kBu88nzB6Hp4up09uW/MS0JXY1iqQNuOErl3nSwKV9Qf32edh+CXAEd7Z4IGXxZ
-         XVrFoT6Fgz+pC3y8HZ7E1UgZb6JFHVM/+wPbf617FL50kmTUYHOIm3fa5/I4cMB8KO8Z
-         pf8Xq7BvC7WNGEiAUdUESkkF7ILUhasfus5R2iLvHB4wIUMSeg799YCwvt6KqNgnoVo+
-         +WbQ==
+        Tue, 12 Jan 2021 07:44:42 -0500
+Received: by mail-oo1-f49.google.com with SMTP id x203so550952ooa.9;
+        Tue, 12 Jan 2021 04:44:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iBDp91phFwOqELMFCCbzVy/QFbR85TB6s1l42soxBSY=;
-        b=X3VtqpOnB0KlPnrYcnGfNMSSHkxGOyGfRTkkh3SJSRGVVZgdhDL5DshKbyqUwvA6Fg
-         BtXNU6HhuqOyMpvBLXDZ2EZOh3S7ZGIJBz9vzEBacN57vbzYDnhMIpHh8KTcsQG34WO/
-         zlVi0XYOCnwqbGXIkCllVxLnciTSG/MgOH0gh5eiI/ssL10miWM5iktGqRbdS9uqQwFs
-         oSQ6ii3R6bGG/RBVKJi7lZDoT7JJWdWHNCXThVHXywZSCCgNQnuGbQIBfAIAnMDcINZ0
-         cl87PdRNEUpuoBu24sPiNKaAWCuEDhiqHQdFzQ5wqr4QcVbbKXkpb0dFlsBZXLgGyPdN
-         Wt8Q==
-X-Gm-Message-State: AOAM532IkEB7pHEUvUzZITu22M8XVTUqLSyHN/a57Xd1oKjE0o0CG6WX
-        rYd0SBcRDfRvteL+kUKcm7zOlzix5MA=
-X-Google-Smtp-Source: ABdhPJxIyn0FELzOGmkw/2AhUmHkIrHXcb5e7Bq3inEYDGpjU+/yDl/NZqv2duTD9S9oOdG9GrZ5Ow==
-X-Received: by 2002:a62:e818:0:b029:19e:31e6:e639 with SMTP id c24-20020a62e8180000b029019e31e6e639mr4381641pfi.81.1610455197933;
-        Tue, 12 Jan 2021 04:39:57 -0800 (PST)
-Received: from localhost (g238.115-65-210.ppp.wakwak.ne.jp. [115.65.210.238])
-        by smtp.gmail.com with ESMTPSA id o129sm3011166pfg.66.2021.01.12.04.39.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 04:39:57 -0800 (PST)
-From:   Stafford Horne <shorne@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Gabriel Somlo <gsomlo@gmail.com>,
-        Stafford Horne <shorne@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>
-Subject: [PATCH] soc: litex: Fix compile warning when device tree is not configured
-Date:   Tue, 12 Jan 2021 21:39:37 +0900
-Message-Id: <20210112123937.2612937-1-shorne@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gcNpoVbBgfr4ypMDPRcmEg2csM0mKUnsEuiXpHTdtcA=;
+        b=spA+vR0FfC83rdKVUNf8tf9mVxMp8jO8j8FUy3O41YuTN5xBkVoIY0i+g4v4i1VKq9
+         fGMKKF1z3pg4o6Mix0vAOAmteJAcOLZKHFEHbHEoshF04M1DqSOwHYWX7r/tpOeUEMNV
+         BvdAQrCwFfZ66jao/BOEayRED5mJRe3RbeZoMG0Ouz5w4mKyoQ6HDwq3tvWMRhIS0pYQ
+         Q2KtyOhn2DEG8PDnvlo6FNTTef/LLolG2ZV/KUVQoKen3aYmH8lnpDqfjXcidGArG2SZ
+         d8ALBWn8m8DzyUIkqDyTGKbYm6UNdneGndDn0cRJF8wHUH+VWH5W3kpe+P/Qj00M1dud
+         ShJg==
+X-Gm-Message-State: AOAM530s75Dmzx/7E94uXGAH4IIkfCRyKL5F0pBEti3p/S344feSKRPP
+        fxdw+oAoubKif+5G779No+qVGTkZ2QhEuQ+g7n+oHxjd
+X-Google-Smtp-Source: ABdhPJyz7L9MMPgYEOFqlge4kuSv19OJB4d7b8tf6q4pK3kvbubo7260+E7mDiZOEUr20lSnvm3hBg0fmR/V3qlcqbU=
+X-Received: by 2002:a4a:c191:: with SMTP id w17mr2689643oop.1.1610455440657;
+ Tue, 12 Jan 2021 04:44:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <alpine.LSU.2.11.2101102010200.25762@eggly.anvils>
+ <X/xV7ZV5jzI7RvAe@ulmo> <CAJZ5v0iriRkEN8dVJ9gE3+Wyn_96=SNhav1QaQ59i9O0genTNQ@mail.gmail.com>
+ <X/x49o3EtrUh6vuO@ulmo> <CAJZ5v0hyvdcKsPJ7U5WioXb1c8Pg_F1BLC_dbKesFBLTUSiVaw@mail.gmail.com>
+ <CAGETcx_odme9ufTps6tctOW+zfOox6iXgTx_9GAjoYn=+jy1BQ@mail.gmail.com>
+In-Reply-To: <CAGETcx_odme9ufTps6tctOW+zfOox6iXgTx_9GAjoYn=+jy1BQ@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 12 Jan 2021 13:43:48 +0100
+Message-ID: <CAJZ5v0ire0GOTqXAFu9kOk9HAk+7b+G_gC0xR3OB1h+zsuy5vA@mail.gmail.com>
+Subject: Re: 5.11-rc device reordering breaks ThinkPad rmi4 suspend
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Thierry Reding <treding@nvidia.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vincent Huang <vincent.huang@tw.synaptics.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andrew Duggan <aduggan@synaptics.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The test robot reported:
+On Mon, Jan 11, 2021 at 11:44 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Mon, Jan 11, 2021 at 8:57 AM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Mon, Jan 11, 2021 at 5:12 PM Thierry Reding <treding@nvidia.com> wrote:
+> > >
+> > > On Mon, Jan 11, 2021 at 03:57:37PM +0100, Rafael J. Wysocki wrote:
+> > > > On Mon, Jan 11, 2021 at 2:43 PM Thierry Reding <treding@nvidia.com> wrote:
+> > > > >
+> > > > > On Sun, Jan 10, 2021 at 08:44:13PM -0800, Hugh Dickins wrote:
+> > > > > > Hi Rafael,
+> > > > > >
+> > > > > > Synaptics RMI4 SMBus touchpad on ThinkPad X1 Carbon (5th generation)
+> > > > > > fails to suspend when running 5.11-rc kernels: bisected to
+> > > > > > 5b6164d3465f ("driver core: Reorder devices on successful probe"),
+> > > > > > and reverting that fixes it.  dmesg.xz attached, but go ahead and ask
+> > > > > > me to switch on a debug option to extract further info if that may help.
+> > > > >
+> > > > > Hi Hugh,
+> > > > >
+> > > > > Quoting what I think are the relevant parts of that log:
+> > > > >
+> > > > > [   34.373742] printk: Suspending console(s) (use no_console_suspend to debug)
+> > > > > [   34.429015] rmi4_physical rmi4-00: Failed to read irqs, code=-6
+> > > > > [   34.474973] rmi4_f01 rmi4-00.fn01: Failed to write sleep mode: -6.
+> > > > > [   34.474994] rmi4_f01 rmi4-00.fn01: Suspend failed with code -6.
+> > > > > [   34.475001] rmi4_physical rmi4-00: Failed to suspend functions: -6
+> > > > > [   34.475105] rmi4_smbus 6-002c: Failed to suspend device: -6
+> > > > > [   34.475113] PM: dpm_run_callback(): rmi_smb_suspend+0x0/0x3c returns -6
+> > > > > [   34.475130] PM: Device 6-002c failed to suspend: error -6
+> > > > > [   34.475187] PM: Some devices failed to suspend, or early wake event detected
+> > > > > [   34.480324] rmi4_f03 rmi4-00.fn03: rmi_f03_pt_write: Failed to write to F03 TX register (-6).
+> > > > > [   34.480748] rmi4_f03 rmi4-00.fn03: rmi_f03_pt_write: Failed to write to F03 TX register (-6).
+> > > > > [   34.481558] rmi4_physical rmi4-00: rmi_driver_clear_irq_bits: Failed to change enabled interrupts!
+> > > > > [   34.487935] acpi LNXPOWER:02: Turning OFF
+> > > > > [   34.488707] acpi LNXPOWER:01: Turning OFF
+> > > > > [   34.489554] rmi4_physical rmi4-00: rmi_driver_set_irq_bits: Failed to change enabled interrupts!
+> > > > > [   34.489669] psmouse: probe of serio2 failed with error -1
+> > > > > [   34.489882] OOM killer enabled.
+> > > > > [   34.489891] Restarting tasks ... done.
+> > > > > [   34.589183] PM: suspend exit
+> > > > > [   34.589839] PM: suspend entry (s2idle)
+> > > > > [   34.605884] Filesystems sync: 0.017 seconds
+> > > > > [   34.607594] Freezing user space processes ... (elapsed 0.006 seconds) done.
+> > > > > [   34.613645] OOM killer disabled.
+> > > > > [   34.613650] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+> > > > > [   34.615482] printk: Suspending console(s) (use no_console_suspend to debug)
+> > > > > [   34.653097] rmi4_f01 rmi4-00.fn01: Failed to write sleep mode: -6.
+> > > > > [   34.653108] rmi4_f01 rmi4-00.fn01: Suspend failed with code -6.
+> > > > > [   34.653115] rmi4_physical rmi4-00: Failed to suspend functions: -6
+> > > > > [   34.653123] rmi4_smbus 6-002c: Failed to suspend device: -6
+> > > > > [   34.653129] PM: dpm_run_callback(): rmi_smb_suspend+0x0/0x3c returns -6
+> > > > > [   34.653160] PM: Device 6-002c failed to suspend: error -6
+> > > > > [   34.653174] PM: Some devices failed to suspend, or early wake event detected
+> > > > > [   34.660515] OOM killer enabled.
+> > > > > [   34.660524] Restarting tasks ...
+> > > > > [   34.661456] rmi4_physical rmi4-00: rmi_driver_set_irq_bits: Failed to change enabled interrupts!
+> > > > > [   34.661591] psmouse: probe of serio2 failed with error -1
+> > > > > [   34.669469] done.
+> > > > > [   34.748386] PM: suspend exit
+> > > > >
+> > > > > I think what might be happening here is that the offending patch causes
+> > > > > some devices to be reordered in a way different to how they were ordered
+> > > > > originally and the rmi4 driver currently depends on that implicit order.
+> > > >
+> > > > Actually, the only possible case in which the commit in question can
+> > > > introduce suspend failures like this is when some dependency
+> > > > information is missing and so the reordering causes the ordering to
+> > > > change from the (working) implicit one.
+> > > >
+> > > > > Interestingly one of the bugs that the offending patch fixes is similar
+> > > > > in the failure mode but for the reverse reason: the implicit order
+> > > > > causes suspend/resume to fail.
+> > > >
+> > > > And that happens because some dependency information is missing.
+> > > >
+> > > > So we have failing cases when dependency information is missing, so
+> > > > instead of fixing those we have tried to make the core change the
+> > > > ordering after every successful probe in the hope that this will take
+> > > > care of the problem without introducing new breakage.
+> > > >
+> > > > However, it evidently has introduced new breakage and in order to fix
+> > > > it we need to figure out what dependency information is missing in the
+> > > > failing cases and put that information in, but we may as well do the
+> > > > same for the cases that are failing without the offending change.
+> > > >
+> > > > So why don't we revert the commit in question and do just that?
+> > >
+> > > Unfortunately it isn't that easy. In fact, all the dependency
+> > > information already exists in the case that I cited in 5b6164d3465f
+> > > ("driver core: Reorder devices on successful probe"), but it's the
+> > > driver core that suspends/resumes the devices in the wrong order.
+> > >
+> > > The reason is because the ACONNECT device depends on the BPMP device
+> > > (via a power-domains property), but it's also instantiated before the
+> > > BPMP device (because it is listed earlier in device tree, which is
+> > > sorted by unit-address first, then alphabetically). BPMP being a CPU
+> > > non-addressable device it doesn't have a unit-address and hence is
+> > > listed very late in device tree (by convention). Normally this is would
+> > > not be a problem because deferred probe would take care of it. But there
+> > > is one corner-case which happens when the BPMP is built into the kernel
+> > > (which it usually is, as it provides access to resources necessary for
+> > > booting, such as clocks and resets) and ACONNECT is built as a loadable
+> > > module. In that case, BPMP gets probed before ACONNECT and hence when
+> > > ACONNECT does eventually get loaded, the BPMP is already there, meaning
+> > > ACONNECT won't defer probe and hence the DPM suspend/resume order is not
+> > > fixed up by the deferred probe code.
+> >
+> > What about using a device link to enforce the right ordering, then?
+> >
+> > Deferred probing is not a way to ensure the suitable suspend/resume ordering.
+>
+> Thierry,
+>
+> Can you try booting with fw_devlink=on with this series? It's queued
+> up for 5.12-rc1
+> https://lore.kernel.org/lkml/20201218031703.3053753-1-saravanak@google.com/
+>
+> It might solve your issue, but I think your patch still addresses a real issue.
+>
+> > > And that's precisely what the offending commit addresses. However, the
+> > > downside is, and we did discuss this during review, that it operates
+> > > under the (somewhat optimistic) assumption that all the dependency
+> > > information exists. This is because reordering on successful probe can
+> > > potentially introduce regressions for dependencies that were previously
+> > > implicit. So if a system has component B that depends on component A but
+> > > doesn't model that dependency via some child/parent relationship or an
+> > > explicit relationship that would be flagged by deferred probe,
+> >
+> > Again, deferred probing may not help here.
+> >
+> > > then this implicit dependency can break by the new reordering on successful probe.
+> > >
+> > > I very much suspect that that's exactly what's going on here. This RMI4
+> > > device very likely implicitly depends on some other resource getting
+> > > enabled but doesn't properly model that dependency. If we find out what
+> > > that dependency is and return -EPROBE_DEFER when that dependency has not
+> > > probed yet, then deferred probe will automatically take care of ordering
+> > > everything correctly again (or, in fact, ordering by successful probe
+> > > will take care of it already because RMI4 would initially fail with
+> > > -EPROBE_DEFER).
+> > >
+> > > Adding Vincent, Jason, Andrew and Lucas (who have recently worked on
+> > > this driver), perhaps they have some better understanding of what
+> > > missing dependencies might be causing the above errors.
+> >
+> > IMV it is a mistake to believe that deferred probing can get
+> > everything right for you in every case, with or without the offending
+> > commit.  Sometimes you need to tell the core what the right ordering
+> > is and that's what device links are for.
+>
+> IMHO, Thierry's patch is the right way to imply dependencies when
+> device links aren't explicitly calling out dependencies. It's not
+> really depending on deferred probe to imply dependency order. Rather,
+> it's saying that the order in which devices probe is a better way to
+> imply dependency than relying on the order in which devices are added.
 
-   drivers/soc/litex/litex_soc_ctrl.c:143:34: warning: unused variable 'litex_soc_ctrl_of_match' [-Wunused-const-variable]
-   static const struct of_device_id litex_soc_ctrl_of_match[] = {
-                                    ^
-   1 warning generated.
+Well, it breaks existing setups.
 
-As per the random config device tree is not configured causing the
-litex_soc_ctrl_of_match match list to not be used.  This would usually
-mean that we cannot even use this driver as it depends on device tree,
-but as we also have COMPILE_TEST configured we allow it.
+Moreover, I'm not really convinced that it is a better way to "imply
+dependencies", it is just different.
 
-Fix the warning by surrounding the unused variable with an ifdef
-CONFIG_OF.
+> For Thierry's case, fw_devlink=on might solve his problem, but that's
+> solving the problem by explicitly calling out the dependency (by
+> getting it from DT where the dependency is explicitly called out). For
+> implicit cases, we still need his patch. I wonder how
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Stafford Horne <shorne@gmail.com>
----
- drivers/soc/litex/litex_soc_ctrl.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+The "implicit" cases are all broken potentially, because the dpm_list
+ordering only matters for the order in which PM sleep callbacks are
+invoked, and that doesn't help if they are async and it is meaningless
+for runtime PM.
 
-diff --git a/drivers/soc/litex/litex_soc_ctrl.c b/drivers/soc/litex/litex_soc_ctrl.c
-index 1217cafdfd4d..9b0766384570 100644
---- a/drivers/soc/litex/litex_soc_ctrl.c
-+++ b/drivers/soc/litex/litex_soc_ctrl.c
-@@ -140,12 +140,13 @@ struct litex_soc_ctrl_device {
- 	void __iomem *base;
- };
- 
-+#ifdef CONFIG_OF
- static const struct of_device_id litex_soc_ctrl_of_match[] = {
- 	{.compatible = "litex,soc-controller"},
- 	{},
- };
--
- MODULE_DEVICE_TABLE(of, litex_soc_ctrl_of_match);
-+#endif /* CONFIG_OF */
- 
- static int litex_soc_ctrl_probe(struct platform_device *pdev)
- {
--- 
-2.26.2
+> > As it stands today, that commit doesn't improve the situation and it
+> > adds overhead and complexity.
+>
+> I'm okay if we revert it for now, but that doesn't solve the
+> overarching ordering issues though.
 
+No, it doesn't and the commit doesn't solve it either which is my point.
+
+The situation before and after the commit is generally the same, even
+though the set of affected systems is different in each case, so
+because the general strategy of the kernel development is to avoid new
+breakage, it should be reverted.
