@@ -2,286 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB4F2F3305
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:36:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A272F3306
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:36:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387949AbhALOey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:34:54 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:42657 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725957AbhALOex (ORCPT
+        id S2388261AbhALOfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:35:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725957AbhALOfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:34:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1610462094; x=1641998094;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version;
-  bh=rSkhGVUnKJoWu7SCqLjQX8zmMPKtWbpeCAUSQs2cKms=;
-  b=ZQdUwXejYU+8WZialm+vX46tv9Jj1FGQDYwLfa+lOC72pAreoowzYxex
-   ksZlqUQnUwRWIj5DUk4PKOcfFohaU1WqUuNop3RQ6QIfkqA2bW5TeMRko
-   aiXq2cKiDxD3tTL29g4KxXHmedZFmxoqTbd5L/L6iMKDxYQ9U455NY1PY
-   hhuw12ZvAhrciJatBHV5qkM0cs37R80h4C1Kay6gSbJqbkEuTcIdBEuHc
-   TbJRcLSaSLYaT+MZVqtNu8Z1zk6DR/p4nooV74dxWMdUM5jBYw3mKPJX/
-   ZaTVS4pD3I0sJ6FOKZt70QLwFOdUPKI3BsOVy/i6il8y7qoQjijJ691ra
-   Q==;
-IronPort-SDR: SL1OJuaBSfb0knGFgRj5bZJ3GMzgvJ1wOTc+5R3GyegUn1VpP1Mg1Krnfdx096zcR8FE1MGErH
- r7nSOxvvmhlyVZiGrBuWNosddajj+ISbdFntBCLvDT5dBj6DJuuAwZhby+FwpIokdu9oD7izBu
- +RYmONYzVsvlfTXxNJbuI57wIp7T6RdRh+M52XHO8aJ08wQsqr01Gvm3ABf8TnNLKK3RmmZQvk
- qnQe2fafjEt7un+sQTop+1qZOxWlkYKh36faRXX9IKM71+X3+qTI45B2giAH+v3x37o0hlnMAL
- uP4=
-X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
-   d="bin'?scan'208";a="105137235"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Jan 2021 07:33:38 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 12 Jan 2021 07:33:36 -0700
-Received: from soft-dev2 (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 12 Jan 2021 07:33:35 -0700
-Message-ID: <a727ddabfed0dbd0cf75a045076df7a66d4d6a67.camel@microchip.com>
-Subject: Re: [PATCH v1 0/2] Add 100 base-x mode
-From:   Bjarni Jonasson <bjarni.jonasson@microchip.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-CC:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
-Date:   Tue, 12 Jan 2021 15:33:34 +0100
-In-Reply-To: <20210111141847.GU1551@shell.armlinux.org.uk>
-References: <20210111130657.10703-1-bjarni.jonasson@microchip.com>
-         <20210111141847.GU1551@shell.armlinux.org.uk>
-Content-Type: multipart/mixed; boundary="=-RhFF99NoOr/wzTqNsGXE"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Tue, 12 Jan 2021 09:35:03 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53728C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:34:23 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id r3so2744728wrt.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:34:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=U744HxyOHZ4bYG3Cc/mr37WoBXh+B0nSwCGfLK9zJn0=;
+        b=p7sCAvlUYMzziw08KT/qOtcyvICsjejqtIpqIExn+H4PwcgvGDwmg16FQlQ75sQuCD
+         xBH4gE5KQye10UuMDSF2RgbVZIulq5JDyWzHKGHj260uD4/BAcMKaZh+HqEsPEtYjt7E
+         U3coTjGgKjnE0BrpCvc5Py0MH9LJ2/RyQqA3OOWTIF/PyVmiFais/Its6G3UrNwYSnq+
+         JZU4hv4ikKdTh2+Mbj+cIsyhyUBRrEgL9tqvoyZvdoRJasaVXK3PacPRYYkpwCSYx4br
+         ZYl6WqaJNYaCqtLmaclLMjiVfVdusosjDeERWjS8id9n3pvPWCz5aQPaV65r3pztPHLz
+         1NRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=U744HxyOHZ4bYG3Cc/mr37WoBXh+B0nSwCGfLK9zJn0=;
+        b=pVyTnWYRWo6TmfiljzVdjrscYdf9wedrSA+Qy5ERA0KboAruh93lpxDurz/JJkUvGC
+         r5rZ7mLliVliVuyu9AoqwpNcLQhMFyjf4UjnUYXiG8YmquRda0C4POJhL2Pw4G2ztmry
+         8/Wmc8CbfbpdmbIF7pA9429ZJ7jj4dwcIUuDUOrj6bmmh+nYjs9TRgapqf+WIxtxgAPU
+         /j6jlJfu39zyXO4jci0ILWDrL5scHU6bwAgvOWkCyKUNqP/jgJltaYt4zDWT5AuEHZeh
+         HnBKE7IWxxbvdOi4Gyr3MUs8K8vgtmBtXM5o14OjB0bEWZFhuxmX74aeJNeVpgTF3a2Z
+         oMQQ==
+X-Gm-Message-State: AOAM533hhrIV+jE38DtpjK5Cn2IzRvtMDfCXrh1R/ABrN0O7iWqnpOHa
+        PCSlR/SPA6iQGP6xZRGgVflapQ==
+X-Google-Smtp-Source: ABdhPJzKuddLdUE2T+B3q5M1asSfQtHaNy4J4XGxxEqbDbNKrNxvoQKkAPi5eAkDeCrROmSsNM29dg==
+X-Received: by 2002:a5d:6204:: with SMTP id y4mr4678555wru.48.1610462061876;
+        Tue, 12 Jan 2021 06:34:21 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id u10sm4120446wmd.43.2021.01.12.06.34.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 06:34:20 -0800 (PST)
+Date:   Tue, 12 Jan 2021 15:34:15 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 11/11] kasan: add proper page allocator tests
+Message-ID: <X/2zZ1kuRDVvtq/T@elver.google.com>
+References: <cover.1609871239.git.andreyknvl@google.com>
+ <15ca1976b26aa9edcec4a9d0f3b73f5b6536e5d0.1609871239.git.andreyknvl@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <15ca1976b26aa9edcec4a9d0f3b73f5b6536e5d0.1609871239.git.andreyknvl@google.com>
+User-Agent: Mutt/2.0.2 (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-RhFF99NoOr/wzTqNsGXE
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-
-On Mon, 2021-01-11 at 14:18 +0000, Russell King - ARM Linux admin
-wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you
-> know the content is safe
+On Tue, Jan 05, 2021 at 07:27PM +0100, Andrey Konovalov wrote:
+> The currently existing page allocator tests rely on kmalloc fallback
+> with large sizes that is only present for SLUB. Add proper tests that
+> use alloc/free_pages().
 > 
-> On Mon, Jan 11, 2021 at 02:06:55PM +0100, Bjarni Jonasson wrote:
-> > Adding support for 100 base-x in phylink.
-> > The Sparx5 switch supports 100 base-x pcs (IEEE 802.3 Clause 24)
-> > 4b5b encoded.
-> > These patches adds phylink support for that mode.
-> > 
-> > Tested in Sparx5, using sfp modules:
-> > Axcen 100fx AXFE-1314-0521
-> > Cisco GLC-FE-100LX
-> > HP SFP 100FX J9054C
-> > Excom SFP-SX-M1002
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Link: https://linux-review.googlesource.com/id/Ia173d5a1b215fe6b2548d814ef0f4433cf983570
+
+Reviewed-by: Marco Elver <elver@google.com>
+
+> ---
+>  lib/test_kasan.c | 54 +++++++++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 49 insertions(+), 5 deletions(-)
 > 
-> For each of these modules, please send me:
+> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+> index 6261521e57ad..24798c034d05 100644
+> --- a/lib/test_kasan.c
+> +++ b/lib/test_kasan.c
+> @@ -128,6 +128,12 @@ static void kmalloc_node_oob_right(struct kunit *test)
+>  	kfree(ptr);
+>  }
+>  
+> +/*
+> + * These kmalloc_pagealloc_* tests try allocating a memory chunk that doesn't
+> + * fit into a slab cache and therefore is allocated via the page allocator
+> + * fallback. Since this kind of fallback is only implemented for SLUB, these
+> + * tests are limited to that allocator.
+> + */
+>  static void kmalloc_pagealloc_oob_right(struct kunit *test)
+>  {
+>  	char *ptr;
+> @@ -138,14 +144,11 @@ static void kmalloc_pagealloc_oob_right(struct kunit *test)
+>  		return;
+>  	}
+>  
+> -	/*
+> -	 * Allocate a chunk that does not fit into a SLUB cache to trigger
+> -	 * the page allocator fallback.
+> -	 */
+>  	ptr = kmalloc(size, GFP_KERNEL);
+>  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+>  
+>  	KUNIT_EXPECT_KASAN_FAIL(test, ptr[size + OOB_TAG_OFF] = 0);
+> +
+>  	kfree(ptr);
+>  }
+>  
+> @@ -161,8 +164,8 @@ static void kmalloc_pagealloc_uaf(struct kunit *test)
+>  
+>  	ptr = kmalloc(size, GFP_KERNEL);
+>  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+> -
+>  	kfree(ptr);
+> +
+>  	KUNIT_EXPECT_KASAN_FAIL(test, ptr[0] = 0);
+>  }
+>  
+> @@ -182,6 +185,45 @@ static void kmalloc_pagealloc_invalid_free(struct kunit *test)
+>  	KUNIT_EXPECT_KASAN_FAIL(test, kfree(ptr + 1));
+>  }
+>  
+> +static void pagealloc_oob_right(struct kunit *test)
+> +{
+> +	char *ptr;
+> +	struct page *pages;
+> +	size_t order = 4;
+> +	size_t size = (1UL << (PAGE_SHIFT + order));
+> +
+> +	/*
+> +	 * With generic KASAN page allocations have no redzones, thus
+> +	 * out-of-bounds detection is not guaranteed.
+> +	 * See https://bugzilla.kernel.org/show_bug.cgi?id=210503.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_KASAN_GENERIC)) {
+> +		kunit_info(test, "skipping, CONFIG_KASAN_GENERIC enabled");
+> +		return;
+> +	}
+> +
+> +	pages = alloc_pages(GFP_KERNEL, order);
+> +	ptr = page_address(pages);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+> +
+> +	KUNIT_EXPECT_KASAN_FAIL(test, ptr[size] = 0);
+> +	free_pages((unsigned long)ptr, order);
+> +}
+> +
+> +static void pagealloc_uaf(struct kunit *test)
+> +{
+> +	char *ptr;
+> +	struct page *pages;
+> +	size_t order = 4;
+> +
+> +	pages = alloc_pages(GFP_KERNEL, order);
+> +	ptr = page_address(pages);
+> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
+> +	free_pages((unsigned long)ptr, order);
+> +
+> +	KUNIT_EXPECT_KASAN_FAIL(test, ptr[0] = 0);
+> +}
+> +
+>  static void kmalloc_large_oob_right(struct kunit *test)
+>  {
+>  	char *ptr;
+> @@ -933,6 +975,8 @@ static struct kunit_case kasan_kunit_test_cases[] = {
+>  	KUNIT_CASE(kmalloc_pagealloc_oob_right),
+>  	KUNIT_CASE(kmalloc_pagealloc_uaf),
+>  	KUNIT_CASE(kmalloc_pagealloc_invalid_free),
+> +	KUNIT_CASE(pagealloc_oob_right),
+> +	KUNIT_CASE(pagealloc_uaf),
+>  	KUNIT_CASE(kmalloc_large_oob_right),
+>  	KUNIT_CASE(kmalloc_oob_krealloc_more),
+>  	KUNIT_CASE(kmalloc_oob_krealloc_less),
+> -- 
+> 2.29.2.729.g45daf8777d-goog
 > 
-> ethtool -m ethx raw on > module.bin
-> 
-> so I can validate future changes with these modules. Thanks.
-> 
-> --
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
-
-I've included the dump from ethtool for:
-Axcen 100fx AXFE-1314-0521
-Axcen 100lx AXFE-1314-0551
-Excom SFP-SX-M1002
-HP SFP 100FX J9054C
-The "ethtool raw" output seems a bit garbled so I added the hex output
-as well.
-
-Rgds
---
-Bjarni Jonasson
-Microchip 
-
-
---=-RhFF99NoOr/wzTqNsGXE
-Content-Type: application/octet-stream;
-	name="axcen_100fx_axfe_1314_0521.bin"
-Content-Disposition: attachment; filename="axcen_100fx_axfe_1314_0521.bin"
-Content-Transfer-Encoding: base64
-
-IyBldGh0b29sIC1tIGV0aDEzIHJhdyBvbg0KIMOIw4hBeGNlbiBQaG90b25pY3MgLUFYRkUtMTMx
-NC0wNTIxICBWMS4wQ0FYMTAxOTAwMDE5NDYgICAxMDA1MTIgIMKrRVhUUkVNRUxZIENPTVBBVElC
-TEUgICAgICAgICAgICBBMDkwOTAzMDA0MTkgICAgw7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/D
-v8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/
-w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/D
-v8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/
-w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w78jDQoNCiMgZXRodG9vbCAtbSBldGgxMyBoZXggb24N
-Ck9mZnNldCAgICAgICAgICBWYWx1ZXMNCi0tLS0tLSAgICAgICAgICAtLS0tLS0NCjB4MDAwMDog
-ICAgICAgICAwMyAwNCAwNyAwMCAwMCAwMSAyMCAwMCAwMCAwMCAwMCAwMiAwMSAwMCAwMCAwMA0K
-MHgwMDEwOiAgICAgICAgIGM4IGM4IDAwIDAwIDQxIDc4IDYzIDY1IDZlIDIwIDUwIDY4IDZmIDc0
-IDZmIDZlDQoweDAwMjA6ICAgICAgICAgNjkgNjMgNzMgMjAgMDAgMDAgMTcgMmQgNDEgNTggNDYg
-NDUgMmQgMzEgMzMgMzENCjB4MDAzMDogICAgICAgICAzNCAyZCAzMCAzNSAzMiAzMSAyMCAyMCA1
-NiAzMSAyZSAzMCAwNSAxZSAwMCA0Mw0KMHgwMDQwOiAgICAgICAgIDAwIDFhIDAwIDAwIDQxIDU4
-IDMxIDMwIDMxIDM5IDMwIDMwIDMwIDMxIDM5IDM0DQoweDAwNTA6ICAgICAgICAgMzYgMjAgMjAg
-MjAgMzEgMzAgMzAgMzUgMzEgMzIgMjAgMjAgMDAgMDAgMDAgYWINCjB4MDA2MDogICAgICAgICA0
-NSA1OCA1NCA1MiA0NSA0ZCA0NSA0YyA1OSAyMCA0MyA0ZiA0ZCA1MCA0MSA1NA0KMHgwMDcwOiAg
-ICAgICAgIDQ5IDQyIDRjIDQ1IDIwIDIwIDIwIDIwIDIwIDIwIDIwIDIwIDIwIDIwIDIwIDIwDQow
-eDAwODA6ICAgICAgICAgNDEgMzAgMzkgMzAgMzkgMzAgMzMgMzAgMzAgMzQgMzEgMzkgMjAgMjAg
-MjAgMjANCjB4MDA5MDogICAgICAgICBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBm
-ZiBmZiBmZiBmZiBmZg0KMHgwMGEwOiAgICAgICAgIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZm
-IGZmIGZmIGZmIGZmIGZmIGZmIGZmDQoweDAwYjA6ICAgICAgICAgZmYgZmYgZmYgZmYgZmYgZmYg
-ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYNCjB4MDBjMDogICAgICAgICBmZiBmZiBmZiBm
-ZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZg0KMHgwMGQwOiAgICAgICAgIGZm
-IGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmDQoweDAwZTA6ICAg
-ICAgICAgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYNCjB4
-MDBmMDogICAgICAgICBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBm
-ZiBmZg==
-
-
---=-RhFF99NoOr/wzTqNsGXE
-Content-Type: application/octet-stream;
-	name="axcen_100lx_axfe_1314_0551.bin"
-Content-Disposition: attachment; filename="axcen_100lx_axfe_1314_0551.bin"
-Content-Transfer-Encoding: base64
-
-IyBldGh0b29sIC1tIGV0aDEzIHJhdyBvbg0Kw79BeGNlbiBQaG90b25pY3MgLUFYRkUtMTMxNC0w
-NTUxICBWMS4ww5RBWDE0MDkxNzAyMjYwICAgMDkwNDIwICDCskVYVFJFTUVMWSBDT01QQVRJQkxF
-ICAgICAgICAgICAgQTA5MDMwMDAzMTAwMTU1N8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/D
-v8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/
-w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/D
-v8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/
-w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/Iw0KDQojIGV0aHRvb2wgLW0gZXRoMTMgaGV4IG9uDQpP
-ZmZzZXQgICAgICAgICAgVmFsdWVzDQotLS0tLS0gICAgICAgICAgLS0tLS0tDQoweDAwMDA6ICAg
-ICAgICAgMDMgMDQgMDcgMDAgMTAgMDIgMTAgMDAgMDAgMDAgMDAgMDIgMDEgMDAgMWUgZmYNCjB4
-MDAxMDogICAgICAgICAwMCAwMCAwMCAwMCA0MSA3OCA2MyA2NSA2ZSAyMCA1MCA2OCA2ZiA3NCA2
-ZiA2ZQ0KMHgwMDIwOiAgICAgICAgIDY5IDYzIDczIDIwIDAwIDAwIDE3IDJkIDQxIDU4IDQ2IDQ1
-IDJkIDMxIDMzIDMxDQoweDAwMzA6ICAgICAgICAgMzQgMmQgMzAgMzUgMzUgMzEgMjAgMjAgNTYg
-MzEgMmUgMzAgMDUgMWUgMDAgZDQNCjB4MDA0MDogICAgICAgICAwMCAxYSAwMCAwMCA0MSA1OCAz
-MSAzNCAzMCAzOSAzMSAzNyAzMCAzMiAzMiAzNg0KMHgwMDUwOiAgICAgICAgIDMwIDIwIDIwIDIw
-IDMwIDM5IDMwIDM0IDMyIDMwIDIwIDIwIDAwIDAwIDAwIGIyDQoweDAwNjA6ICAgICAgICAgNDUg
-NTggNTQgNTIgNDUgNGQgNDUgNGMgNTkgMjAgNDMgNGYgNGQgNTAgNDEgNTQNCjB4MDA3MDogICAg
-ICAgICA0OSA0MiA0YyA0NSAyMCAyMCAyMCAyMCAyMCAyMCAyMCAyMCAyMCAyMCAyMCAyMA0KMHgw
-MDgwOiAgICAgICAgIDQxIDMwIDM5IDMwIDMzIDMwIDMwIDMwIDMzIDMxIDMwIDMwIDMxIDM1IDM1
-IDM3DQoweDAwOTA6ICAgICAgICAgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYg
-ZmYgZmYgZmYgZmYNCjB4MDBhMDogICAgICAgICBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBm
-ZiBmZiBmZiBmZiBmZiBmZiBmZg0KMHgwMGIwOiAgICAgICAgIGZmIGZmIGZmIGZmIGZmIGZmIGZm
-IGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmDQoweDAwYzA6ICAgICAgICAgZmYgZmYgZmYgZmYg
-ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYNCjB4MDBkMDogICAgICAgICBmZiBm
-ZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZg0KMHgwMGUwOiAgICAg
-ICAgIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmDQoweDAw
-ZjA6ICAgICAgICAgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYg
-ZmY=
-
-
---=-RhFF99NoOr/wzTqNsGXE
-Content-Type: application/octet-stream; name="excom_sfp_sx_m1002.bin"
-Content-Disposition: attachment; filename="excom_sfp_sx_m1002.bin"
-Content-Transfer-Encoding: base64
-
-IyBldGh0b29sIC1tIGV0aDEzIHJhdyBvbg0KwrTDv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/
-w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/D
-v8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/
-w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/D
-v8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/
-WsOTVcOYcGltYMODUMKvw4gyDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgWsO7IMOQPMKm
-w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w78/w7/Dv8O/cyrDv8O/w7/Dv0DDv0DDv8O/
-w79DTlVJQURZQUFBMTAtMjA3Ny0wMVYwMSBGwr/CqsKqR0xDLUZFLTEwMEZYICAgICAgICAxNjco
-Li4xNCk2ZsO/w4DDv8O/w7/DgMO/w78jDQoNCiMgZXRodG9vbCAtbSBldGgxMyBoZXggb24NCk9m
-ZnNldCAgICAgICAgICBWYWx1ZXMNCi0tLS0tLSAgICAgICAgICAtLS0tLS0NCjB4MDAwMDogICAg
-ICAgICAwMyAwNCAwNyAwMCAwMCAwMSAxMCAwMCAwMCAwMCAwMCAwMiAwMSAwMCAwMCAwMA0KMHgw
-MDEwOiAgICAgICAgIGM4IGM4IDAwIDAwIDQ1IDc4IDYzIDZmIDZkIDIwIDIwIDIwIDIwIDIwIDIw
-IDIwDQoweDAwMjA6ICAgICAgICAgMjAgMjAgMjAgMjAgMDAgMDAgMDAgMDAgNTMgNDYgNTAgMmQg
-NTMgNTggMmQgNGQNCjB4MDAzMDogICAgICAgICAzMSAzMCAzMCAzMiAyMCAyMCAyMCAyMCA0MSAy
-MCAyMCAyMCAwNSAxZSAwMCA1MA0KMHgwMDQwOiAgICAgICAgIDAwIDEyIDAwIDAwIDQ1IDU4IDMx
-IDM2IDMwIDMzIDMxIDM0IDMwIDMzIDM2IDIwDQoweDAwNTA6ICAgICAgICAgMjAgMjAgMjAgMjAg
-MzEgMzYgMzAgMzMgMzEgMzQgMjAgMjAgNjggOTAgMDEgN2YNCjB4MDA2MDogICAgICAgICAyYiAw
-MCAxMSAzOCA5NyBjZSAwOSAxOSAxZSA2OSBjYSBlYiBlNSAxNyA2YSA1ZQ0KMHgwMDcwOiAgICAg
-ICAgIDg5IGFjIGNlIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDFhIDdkIDhkIGI0DQoweDAw
-ODA6ICAgICAgICAgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYg
-ZmYNCjB4MDA5MDogICAgICAgICBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBm
-ZiBmZiBmZiBmZg0KMHgwMGEwOiAgICAgICAgIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZm
-IGZmIGZmIGZmIGZmIGZmIGZmDQoweDAwYjA6ICAgICAgICAgZmYgZmYgZmYgZmYgZmYgZmYgZmYg
-ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYNCjB4MDBjMDogICAgICAgICBmZiBmZiBmZiBmZiBm
-ZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZg0KMHgwMGQwOiAgICAgICAgIGZmIGZm
-IGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmDQoweDAwZTA6ICAgICAg
-ICAgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYNCjB4MDBm
-MDogICAgICAgICBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBm
-Zg0KMHgwMTAwOiAgICAgICAgIDVhIDAwIGQzIDAwIDU1IDAwIGQ4IDAwIDk0IDcwIDY5IDc4IDkw
-IDg4IDZkIDYwDQoweDAxMTA6ICAgICAgICAgYzMgNTAgMDAgMDAgYWYgYzggMDAgMzIgMGMgNWEg
-MDAgZmIgMDkgZDAgMDEgM2MNCjB4MDEyMDogICAgICAgICAxOCBhNiAwMCAwMyAxMyA5NCAwMCAw
-NCBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZg0KMHgwMTMwOiAgICAgICAgIGZmIGZmIGZmIGZmIGZm
-IGZmIGZmIGZmIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwDQoweDAxNDA6ICAgICAgICAgMDAgMDAg
-MDAgMDAgM2YgODAgMDAgMDAgMDAgMDAgMDAgMDAgMDEgMDAgMDAgMDANCjB4MDE1MDogICAgICAg
-ICAwMSAwMCAwMCAwMCAwMSAwMCAwMCAwMCAwMSAwMCAwMCAwMCBmZiBmZiBmZiA3Mw0KMHgwMTYw
-OiAgICAgICAgIDFiIDA2IDgzIGMxIDJiIGQ0IDAzIGUyIDAwIDAwIGZmIGZmIGZmIGZmIDAyIDAw
-DQoweDAxNzA6ICAgICAgICAgMDAgNDAgMDAgZmYgMDAgNDAgZmYgZmYgMDAgMDAgZmYgMDAgMDAg
-MDAgMDAgMDANCjB4MDE4MDogICAgICAgICA0MyA0ZSA1NSA0OSA0MSA0NCA1OSA0MSA0MSA0MSAz
-MSAzMCAyZCAzMiAzMCAzNw0KMHgwMTkwOiAgICAgICAgIDM3IDJkIDMwIDMxIDU2IDMwIDMxIDIw
-IDAxIDAwIDQ2IDAwIDAwIDAwIDAwIGJmDQoweDAxYTA6ICAgICAgICAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDANCjB4MDFiMDogICAgICAgICAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCBhYSBhYQ0KMHgwMWMwOiAgICAgICAg
-IDQ3IDRjIDQzIDJkIDQ2IDQ1IDJkIDMxIDMwIDMwIDQ2IDU4IDIwIDIwIDIwIDIwDQoweDAxZDA6
-ICAgICAgICAgMjAgMjAgMjAgMjAgMzEgMzYgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMzcN
-CjB4MDFlMDogICAgICAgICAxZSAyOCAyZSAyZSAzMSAzNCAyOSAzNiAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMA0KMHgwMWYwOiAgICAgICAgIDAwIDAwIDAwIDAwIDAwIDY2IDAwIDAwIGZmIGMwIGZm
-IGZmIGZmIGMwIGZmIGZm
-
-
---=-RhFF99NoOr/wzTqNsGXE
-Content-Type: application/octet-stream; name="hp_100fx_j9054c.bin"
-Content-Disposition: attachment; filename="hp_100fx_j9054c.bin"
-Content-Transfer-Encoding: base64
-
-IyBldGh0b29sIC1tIGV0aDEzIHJhdyBvbg0KQMOIw4hPUE5FWFQgSU5DDQogICAgICAgICAgICAg
-ICAgICAgQFRSRjUzMjZBTkxCNDA0ICBBMkEgSUNOMTlEWTkwMEggICAgICAxMTA5MzAgIGjDsEo5
-MDU0QyAxOTkwLTQxMTJGw73DlkXDscOiPkhQIFByb0N1cnZlIFByb3ByaWV0YXJ5IFRlY2hub2xv
-Z3kgLSBVc2UgaW1wbGllcyBhY2NlcHRhbmNlIG9mIGxpY2Vuc2luZyB0ZXJtcy5IUDEwMC1GWCAg
-ICBVw7ZQw7sNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICDCoHXCuHl1
-MMO0YcKow6jDv8O/DQrDv8O/DQp2w7U/bcOQQEANCg0KIyBldGh0b29sIC1tIGV0aDEzIGhleCBv
-bg0KT2Zmc2V0ICAgICAgICAgIFZhbHVlcw0KLS0tLS0tICAgICAgICAgIC0tLS0tLQ0KMHgwMDAw
-OiAgICAgICAgIDAzIDA0IDA3IDAwIDAwIDAwIDQwIDAwIDAwIDAwIDAwIDAyIDAxIDAwIDAwIDAw
-DQoweDAwMTA6ICAgICAgICAgYzggYzggMDAgMDAgNGYgNTAgNGUgNDUgNTggNTQgMjAgNDkgNGUg
-NDMgMjAgMjANCjB4MDAyMDogICAgICAgICAyMCAyMCAyMCAyMCAwMCAwMCAwYiA0MCA1NCA1MiA0
-NiAzNSAzMyAzMiAzNiA0MQ0KMHgwMDMwOiAgICAgICAgIDRlIDRjIDQyIDM0IDMwIDM0IDIwIDIw
-IDQxIDMyIDQxIDIwIDAwIDAwIDAwIDQ5DQoweDAwNDA6ICAgICAgICAgMDAgMWEgMDAgMDAgNDMg
-NGUgMzEgMzkgNDQgNTkgMzkgMzAgMzAgNDggMjAgMjANCjB4MDA1MDogICAgICAgICAyMCAyMCAy
-MCAyMCAzMSAzMSAzMCAzOSAzMyAzMCAyMCAyMCA2OCBmMCAwMSAxYQ0KMHgwMDYwOiAgICAgICAg
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDRhIDM5IDMwIDM1IDM0IDQzIDIwIDMxDQoweDAwNzA6
-ICAgICAgICAgMzkgMzkgMzAgMmQgMzQgMzEgMzEgMzIgNDYgZmQgZDYgODAgNDUgZjEgODYgZTIN
-CjB4MDA4MDogICAgICAgICAzZSA0OCA1MCAyMCA1MCA3MiA2ZiA0MyA3NSA3MiA3NiA2NSAyMCA1
-MCA3MiA2Zg0KMHgwMDkwOiAgICAgICAgIDcwIDcyIDY5IDY1IDc0IDYxIDcyIDc5IDIwIDU0IDY1
-IDYzIDY4IDZlIDZmIDZjDQoweDAwYTA6ICAgICAgICAgNmYgNjcgNzkgMjAgMmQgMjAgNTUgNzMg
-NjUgMjAgNjkgNmQgNzAgNmMgNjkgNjUNCjB4MDBiMDogICAgICAgICA3MyAyMCA2MSA2MyA2MyA2
-NSA3MCA3NCA2MSA2ZSA2MyA2NSAyMCA2ZiA2NiAyMA0KMHgwMGMwOiAgICAgICAgIDZjIDY5IDYz
-IDY1IDZlIDczIDY5IDZlIDY3IDIwIDc0IDY1IDcyIDZkIDczIDJlDQoweDAwZDA6ICAgICAgICAg
-NDggNTAgMzEgMzAgMzAgMmQgNDYgNTggMjAgMjAgMjAgMjAgMDAgMDAgMDAgMDANCjB4MDBlMDog
-ICAgICAgICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMA0K
-MHgwMGYwOiAgICAgICAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwDQoweDAxMDA6ICAgICAgICAgNTUgMDAgZjYgMDAgNTAgMDAgZmIgMDAgOGMgYTAgNzUg
-MzAgODggYjggNzkgMTgNCjB4MDExMDogICAgICAgICA3NSAzMCAwMSBmNCA2MSBhOCAwMyBlOCBm
-ZiBmZiAwMCAwYSBmZiBmZiAwMCAwYQ0KMHgwMTIwOiAgICAgICAgIDAyIDc2IDAwIDA1IDAxIGY1
-IDAwIDA2IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwDQoweDAxMzA6ICAgICAgICAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDANCjB4MDE0MDogICAgICAgICAw
-MCAwMCAwMCAwMCAzZiA4MCAwMCAwMCAwMCAwMCAwMCAwMCAwMSAwMCAwMCAwMA0KMHgwMTUwOiAg
-ICAgICAgIDAxIDAwIDAwIDAwIDAxIDAwIDAwIDAwIDAxIDAwIDAwIDAwIDAwIDAwIDAwIDEyDQow
-eDAxNjA6ICAgICAgICAgMWUgMDAgODIgMDAgMWYgMzUgMDAgZDggMDAgMDAgMDAgMDAgMDAgMDAg
-MTIgMDANCjB4MDE3MDogICAgICAgICAwMCA0MCAwMCAwMCAwMCA0MCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMA0KMHgwMTgwOiAgICAgICAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwDQoweDAxOTA6ICAgICAgICAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDANCjB4MDFhMDogICAgICAgICAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMA0KMHgwMWIwOiAgICAgICAgIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwDQoweDAxYzA6ICAg
-ICAgICAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDANCjB4
-MDFkMDogICAgICAgICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMA0KMHgwMWUwOiAgICAgICAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwDQoweDAxZjA6ICAgICAgICAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDA=
-
-
---=-RhFF99NoOr/wzTqNsGXE--
