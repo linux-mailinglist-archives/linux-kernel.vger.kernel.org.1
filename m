@@ -2,136 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B30D72F2506
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:18:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B38C2F2507
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:18:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbhALAmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 19:42:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726325AbhALAmp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 19:42:45 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD5AC061575
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 16:42:04 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id cq1so367726pjb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 16:42:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fORzdtbKexeYqZL9m64WT6sjX1DlAcK6JwMJGQMmjlk=;
-        b=fo+rEysuJyf4ZITtyTozq3it3PcTTBbuodQUwamVrJYt3/7mSbVLFozB6DbThv6Pp0
-         LUZo9qaeQHO5sGBqkVgpA7VeHhNkBtw46MR5A6qC9vaIeHDxyb3bJFy53OQG3FlZJm2W
-         u0LGNZ8YiZVPY+/fnj6DBB2YBKWkfcc0jm0Ljdo2pAIJ1uSlSznOAXoTZROF20fv1oj6
-         vBwTTbI5OhnHBsSvpj6ztS8NBdvYeJYFxuphlRlJkDCH3w2hJc0zU+ske7bOVjmvUcIY
-         kQYFd4GbTEzA47Fhh7tSn0HI2cjioWUBIb1sKrkNpfDLXei+5kDvWsaaxMEwsrcnjSf6
-         VNeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fORzdtbKexeYqZL9m64WT6sjX1DlAcK6JwMJGQMmjlk=;
-        b=jAvFH9qQDjP6Bj2jHpOByw3uNLgrqO8pBcp9ozqdYlfFkb+8UeW5rzKMcuA4dNpVeB
-         Npav12Qj1Zi9FbX+F0ZFrqSpj9T4bthvr9dM8ZSigU0oxtO4tYrId9mw4ZE0u/KJWQP6
-         hUzqwoR4Ls1osAUMeer5iprp3fmrf9yZoKZNMsvTCaoVnH1rh4N+mhF91NVqJ4C3IpiF
-         72BNl1tcCkpi3R8kjv2nRebn7i1yejAEtpqYaHUdiYjtkqHR7tkXfCDgYbYOqkJRA+ge
-         sxdp1Aya4SpLCuWKy5sw+mX+Z7m8Og8En9qIMQBDBy/zYj/arc4y5MjQb9JugO/o8SWY
-         0kgQ==
-X-Gm-Message-State: AOAM533KJdNQAvT25m0NB519f7WeQPjDEZGJUZzo5b3XWpH8hIz4zvzH
-        H8zY/aZIOC1Eo3vdALZjexCkfTufhHrtFLN1O9wysg==
-X-Google-Smtp-Source: ABdhPJzdcpGfjUqbLAhmqkk0+hvwq15v9CubqNg159EKcPvIRQqlphklsWmDOgTWDnP94WCVRrVxyEaaL2MO5Anj9Yw=
-X-Received: by 2002:a17:90a:6c25:: with SMTP id x34mr1543495pjj.47.1610412124034;
- Mon, 11 Jan 2021 16:42:04 -0800 (PST)
+        id S1729251AbhALAnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 19:43:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728898AbhALAnU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 19:43:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DCA5224BD;
+        Tue, 12 Jan 2021 00:42:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610412160;
+        bh=ixruP2jH6jsjZSfS1b9tO6gucm00OKQq+Tt59fxAIQo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f2ar9cwlhCekx8U9xqAaUt5oxbm+Pz3pY88CGx06ZcMOayXZMW96cYZz7tqFJbjBK
+         XNxsNgF5xW7mMHZ3XqRI706mA+qaSk5/chLY0waCTgQdazPZNubdDnLhAbQlKm4+4y
+         NhDWH2scjUFZ4qsktVls5o9g+29OhMz74+7RdXhlXFoUSUX7S0U2k0dAHxUEgkJ3aI
+         AY8iR3O1YM5/pJ5WT2PH/aTkwXGpuFlO9nCrD/c75LmK9x4dhHj2jpF3hrqX1N/lxl
+         akQkOJWQFg34PSAQ0ceUCudkBaEX03Hfy2fI8abrIR0mkFNzC5A511Q3IUniUTpoNL
+         Q8b0MupcLQzmg==
+Date:   Tue, 12 Jan 2021 00:42:07 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        ALSA development <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH 1/2] cros_ec_commands: Add EC_CODEC_I2S_RX_RESET
+Message-ID: <20210112004207.GN4728@sirena.org.uk>
+References: <20210107085942.2891525-1-yuhsuan@chromium.org>
+ <20210107135459.GB4726@sirena.org.uk>
+ <CAGvk5PqMCEib8Yr=V4SxT0BBMoC1+yGXm0y+52+LwC5dPQUVnA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210106015810.5p6crnh7jqtmjtv4@treble> <20210111203807.3547278-1-ndesaulniers@google.com>
- <20210112003839.GL25645@zn.tnic>
-In-Reply-To: <20210112003839.GL25645@zn.tnic>
-From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
-Date:   Mon, 11 Jan 2021 16:41:52 -0800
-Message-ID: <CAFP8O3+uEE4Lity-asyFLN6_+8qRUD3hgcZVapXwk6EfmGM+DA@mail.gmail.com>
-Subject: Re: [PATCH v3] x86/entry: emit a symbol for register restoring thunk
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="GOzekVbrLdOLv44p"
+Content-Disposition: inline
+In-Reply-To: <CAGvk5PqMCEib8Yr=V4SxT0BBMoC1+yGXm0y+52+LwC5dPQUVnA@mail.gmail.com>
+X-Cookie: Too much is not enough.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 4:38 PM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Mon, Jan 11, 2021 at 12:38:06PM -0800, Nick Desaulniers wrote:
-> > Arnd found a randconfig that produces the warning:
-> >
-> > arch/x86/entry/thunk_64.o: warning: objtool: missing symbol for insn at
-> > offset 0x3e
-> >
-> > when building with LLVM_IAS=1 (use Clang's integrated assembler). Josh
-> > notes:
-> >
-> >   With the LLVM assembler stripping the .text section symbol, objtool
-> >   has no way to reference this code when it generates ORC unwinder
-> >   entries, because this code is outside of any ELF function.
-> >
-> > Fangrui notes that this optimization is helpful for reducing images size
-> > when compiling with -ffunction-sections and -fdata-sections. I have
-> > observerd on the order of tens of thousands of symbols for the kernel
-> > images built with those flags. A patch has been authored against GNU
-> > binutils to match this behavior, with a new flag
-> > --generate-unused-section-symbols=[yes|no].
-> >
-> > We can omit the .L prefix on a label to emit an entry into the symbol
-> > table for the label, with STB_LOCAL binding.  This enables objtool to
-> > generate proper unwind info here with LLVM_IAS=1.
-> >
-> > Cc: Fangrui Song <maskray@google.com>
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1209
-> > Link: https://reviews.llvm.org/D93783
-> > Link: https://sourceware.org/binutils/docs/as/Symbol-Names.html
-> > Link: https://sourceware.org/pipermail/binutils/2020-December/114671.html
-> > Reported-by: Arnd Bergmann <arnd@arndb.de>
-> > Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > ---
-> > Changes v2 -> v3:
-> > * rework to use STB_LOCAL rather than STB_GLOBAL by dropping .L prefix,
-> >   as per Josh.
->
-> Ok so I read a bit around those links above...
->
-> Are you trying to tell me here that we can't use .L-prefixed local
-> labels anymore because, well, clang's assembler is way too overzealous
-> when stripping symbols to save whopping KiBs of memory?!
 
-To be fair: we cannot use .L-prefixed local because of the objtool limitation.
-The LLVM integrated assembler behavior is a good one and binutils
-global maintainers have agreed so H.J. went ahead and implemented it
-for GNU as x86.
+--GOzekVbrLdOLv44p
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Btw Josh made sense to me when asking for a flag or so to keep .text.
->
-> And I see --generate-unused-section-symbols=[yes|no] for binutils.
->
-> So why isn't there a patch using that switch on clang too instead of the
-> kernel having to dance yet again for some tool?
+On Fri, Jan 08, 2021 at 12:57:51PM +0800, Yu-Hsuan Hsu wrote:
+> Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=887=E6=97=
+=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=889:55=E5=AF=AB=E9=81=93=EF=BC=9A
 
---generate-unused-section-symbols=[yes|no] as an assembler option has
-been rejected.
+> > I think the request was to sync over all the commands that are supported
+> > in the EC rather than just split this one addition into a separate
+> > patch.
 
+> Got it. However, after running make_linux_ec_commands_h.sh to create
+> the new cros_ec_commands.h, I found there are lots of difference (1092
+> insertions(+), 66 deletions(-)). In addition, there are also some
+> redefined variables(most are in ./include/linux/usb/pd.h) causing the
+> compile error.
 
-> :-\
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
+> It seems not easy to sync cros_ec_commands.h. I'm afraid of breaking
+> something. Does anyone have any suggestion? Thanks.
+
+TBH that seems like a big enough change to split out from this and done
+as a separate series, I'd be perfectly happy to apply your original
+change.  I guess part of doing that sync up should ideally be to
+refactor things so that it can be done mechanically in future.
+
+--GOzekVbrLdOLv44p
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/88F4ACgkQJNaLcl1U
+h9AUXgf+NGKX1X7yUNmCGqQyYEJS+HdyisSjro4ojSQQ+LK3e9fnBBUOFoOg1Y+S
+rCgD6DHL041jBL/BV1Eh9e9B2j+nbzI3EqDUHLOjfd1zmKHfV23qLbvGkwaNUoF6
+Qd3Yb1bG4DCZtDymdhI/90CsM3rRamfrYOI4TwmkMASsRbU1PkmnNxmuUNqZRhxL
+kdT3mTVgtA8p2SzXIwBJzpS7ves32OGVGcMSO0ZXW8TCiLLO/vAhTDv8Bt72BSei
+FSEzehrc1QDdX5z3gYDG1aKOLtTeklrUSgYWpvjH5Fq8kfcfOBCSkIYv4mhGHvee
+6/ebyNfgdP1O8aXF3gURGpw7m8oYGQ==
+=N0ny
+-----END PGP SIGNATURE-----
+
+--GOzekVbrLdOLv44p--
