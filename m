@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B15A52F353F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 300322F354F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393018AbhALQPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:15:02 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:34986 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392994AbhALQPB (ORCPT
+        id S2393031AbhALQPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:15:07 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:54874 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392524AbhALQPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:15:01 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CGDmBG162418;
-        Tue, 12 Jan 2021 16:13:48 GMT
+        Tue, 12 Jan 2021 11:15:06 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CG9WLP086456;
+        Tue, 12 Jan 2021 16:13:46 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=8/tbln6Ed4bVYZCPLbx16mF1fKyh4PV2tLwWPxcF+Y8=;
- b=U/WiS2A+MLquEzlR+x/8vUY8xylcoFl7drmCn/XniuretI9e6Fq2No3rUVjoO/5a0WNB
- IuSafeereiwL+xDiDHISJGJPFR583ECIG8S+Gronoij4l1FGg847x1Q7MquceeG7iuDb
- gAaSicKvhwUtQie56wlWnTCtslEOb/jaCMyreDJ+rfXUOpdUuSfnRLi3mxbjROCaHHFC
- ZjNaJKjU2tpqHW2wN/I5SlcLoh7NBByUAUEO3xdoF6ZJeRMukrRMq+EmDyQN48lGzd23
- 0kvwSTglCEwyMMpOophuNSS29RHopgSazJq3S8JRhM5urkgtr8wpqylZUd5I8/S5f6HX 0Q== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 360kcyq5eg-1
+ bh=XzacnTtll8Y3H74LoI3ku0bEMoV1Y0GeCbHIbg8Ris0=;
+ b=n+ZcdSre92uOklk2IhTDVQFroU4nlMi5M632oS5iKdBYE8/UkTYpr2nssG493PK5c+1c
+ XHvbMs13WbpS3QugBsxayLVA8m6SCkBSz44EbD3+o/GyDTTpB7wE8o9Obw0nIuJkU3ad
+ gAHGLGE5hbZj7OJwnEUBbXn90tvp95+WknE9NFUUwcGgUgY34cln9rnrxPBwPhIA3DD6
+ 8TuhXIInZePCcoWm0hy8ZC8T9AwpdR66w2iu0ghFQXbUctmqPR86gPvEAtvKMM5ZIVzs
+ IkHxUo1hb6wsHFK4Nd5lQODKuba/9joZkig3EzpT99soj2gQcGP+sKEhpR5dSQYTr3bC tA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 360kg1q4w8-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jan 2021 16:13:48 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CGAWNh161827;
-        Tue, 12 Jan 2021 16:13:44 GMT
+        Tue, 12 Jan 2021 16:13:45 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CGBaO3143216;
+        Tue, 12 Jan 2021 16:13:45 GMT
 Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 360kf5q4jf-1
+        by aserp3020.oracle.com with ESMTP id 360ke6rh14-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jan 2021 16:13:44 +0000
+        Tue, 12 Jan 2021 16:13:45 +0000
 Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10CGDhda004425;
-        Tue, 12 Jan 2021 16:13:43 GMT
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10CGDirn004504;
+        Tue, 12 Jan 2021 16:13:44 GMT
 Received: from revolver.jebus.ca (/23.233.25.87)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 12 Jan 2021 08:13:43 -0800
+        with ESMTP ; Tue, 12 Jan 2021 08:13:44 -0800
 From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
 To:     maple-tree@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
@@ -55,67 +55,70 @@ Cc:     Andrew Morton <akpm@google.com>, Song Liu <songliubraving@fb.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         Rik van Riel <riel@surriel.com>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v2 31/70] arch/powerpc: Remove mmap linked list from mm/book2s32/subpage_prot
-Date:   Tue, 12 Jan 2021 11:12:01 -0500
-Message-Id: <20210112161240.2024684-32-Liam.Howlett@Oracle.com>
+Subject: [PATCH v2 32/70] arch/powerpc: Optimize cell spu task sync.
+Date:   Tue, 12 Jan 2021 11:12:02 -0500
+Message-Id: <20210112161240.2024684-33-Liam.Howlett@Oracle.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20210112161240.2024684-1-Liam.Howlett@Oracle.com>
 References: <20210112161240.2024684-1-Liam.Howlett@Oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- mlxlogscore=999 phishscore=0 bulkscore=0 spamscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101120092
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101120092
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
- impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101120093
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ clxscore=1015 impostorscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101120092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Start using the maple tree
+Use the vma api to look up the spu reference instead of walking the linked list.
 
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 ---
- arch/powerpc/mm/book3s64/subpage_prot.c | 13 ++-----------
- 1 file changed, 2 insertions(+), 11 deletions(-)
+ arch/powerpc/oprofile/cell/spu_task_sync.c | 22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
 
-diff --git a/arch/powerpc/mm/book3s64/subpage_prot.c b/arch/powerpc/mm/book3s64/subpage_prot.c
-index 60c6ea16a972a..ada1531f81be9 100644
---- a/arch/powerpc/mm/book3s64/subpage_prot.c
-+++ b/arch/powerpc/mm/book3s64/subpage_prot.c
-@@ -149,24 +149,15 @@ static void subpage_mark_vma_nohuge(struct mm_struct *mm, unsigned long addr,
- 				    unsigned long len)
- {
- 	struct vm_area_struct *vma;
-+	MA_STATE(mas, &mm->mm_mt, addr, addr);
- 
- 	/*
- 	 * We don't try too hard, we just mark all the vma in that range
- 	 * VM_NOHUGEPAGE and split them.
- 	 */
--	vma = find_vma(mm, addr);
--	/*
--	 * If the range is in unmapped range, just return
--	 */
--	if (vma && ((addr + len) <= vma->vm_start))
--		return;
--
--	while (vma) {
--		if (vma->vm_start >= (addr + len))
--			break;
-+	mas_for_each(&mas, vma, addr + len) {
- 		vma->vm_flags |= VM_NOHUGEPAGE;
- 		walk_page_vma(vma, &subpage_walk_ops, NULL);
--		vma = vma->vm_next;
+diff --git a/arch/powerpc/oprofile/cell/spu_task_sync.c b/arch/powerpc/oprofile/cell/spu_task_sync.c
+index 489f993100d56..47b4d4e9b628d 100644
+--- a/arch/powerpc/oprofile/cell/spu_task_sync.c
++++ b/arch/powerpc/oprofile/cell/spu_task_sync.c
+@@ -333,19 +333,17 @@ get_exec_dcookie_and_offset(struct spu *spu, unsigned int *offsetp,
  	}
- }
- #else
+ 
+ 	mmap_read_lock(mm);
+-	for (vma = mm->mmap; vma; vma = vma->vm_next) {
+-		if (vma->vm_start > spu_ref || vma->vm_end <= spu_ref)
+-			continue;
+-		my_offset = spu_ref - vma->vm_start;
+-		if (!vma->vm_file)
+-			goto fail_no_image_cookie;
+-
+-		pr_debug("Found spu ELF at %X(object-id:%lx) for file %pD\n",
+-			 my_offset, spu_ref, vma->vm_file);
+-		*offsetp = my_offset;
+-		break;
+-	}
++	vma = find_vma_intersection(mm, spu_ref, spu_ref + 1);
++	if (!vma)
++		goto fail_no_image_cookie;
++
++	my_offset = spu_ref - vma->vm_start;
++	if (!vma->vm_file)
++		goto fail_no_image_cookie;
+ 
++	pr_debug("Found spu ELF at %X(object-id:%lx) for file %pD\n",
++		 my_offset, spu_ref, vma->vm_file);
++	*offsetp = my_offset;
+ 	*spu_bin_dcookie = fast_get_dcookie(&vma->vm_file->f_path);
+ 	pr_debug("got dcookie for %pD\n", vma->vm_file);
+ 
 -- 
 2.28.0
 
