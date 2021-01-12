@@ -2,94 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A527A2F284D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:26:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D6452F2852
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732388AbhALGZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 01:25:00 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10710 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730742AbhALGY7 (ORCPT
+        id S1732646AbhALG2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 01:28:15 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:48707 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730221AbhALG2O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 01:24:59 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DFL9J4Jz5zl43b;
-        Tue, 12 Jan 2021 14:23:00 +0800 (CST)
-Received: from [10.67.102.197] (10.67.102.197) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 12 Jan 2021 14:24:10 +0800
-Subject: Re: [PATCH v3] proc_sysctl: fix oops caused by incorrect command
- parameters.
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <mcgrof@kernel.org>,
-        <keescook@chromium.org>, <yzaikin@google.com>,
-        <adobriyan@gmail.com>, <linux-fsdevel@vger.kernel.org>,
-        <vbabka@suse.cz>, <mhocko@suse.com>, <andy.shevchenko@gmail.com>,
-        <wangle6@huawei.com>
-References: <20210112033155.91502-1-nixiaoming@huawei.com>
- <20210111203340.98dd3c8fa675b709bcf6d49e@linux-foundation.org>
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-Message-ID: <89d1369e-f0a8-66f2-c0ea-3aac3a55e2c1@huawei.com>
-Date:   Tue, 12 Jan 2021 14:24:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        Tue, 12 Jan 2021 01:28:14 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 10C6RNNP0027770, This message is accepted by code: ctloc85258
+Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 10C6RNNP0027770
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 12 Jan 2021 14:27:24 +0800
+Received: from RSEXMBS01.realsil.com.cn (172.29.17.195) by
+ RSEXMBS01.realsil.com.cn (172.29.17.195) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Tue, 12 Jan 2021 14:27:23 +0800
+Received: from RSEXMBS01.realsil.com.cn ([fe80::99a3:1f5e:db86:65df]) by
+ RSEXMBS01.realsil.com.cn ([fe80::99a3:1f5e:db86:65df%7]) with mapi id
+ 15.01.2044.004; Tue, 12 Jan 2021 14:27:23 +0800
+From:   =?utf-8?B?546L5p2w5riFW2phc29uX3dhbmdd?= 
+        <jason_wang@realsil.com.cn>
+To:     "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "jason.root.w@gamil.com" <jason.root.w@gamil.com>
+Subject: [PATCH] media:dvb-core: add .compat_ioctl define for dmx-dvr
+Thread-Topic: [PATCH] media:dvb-core: add .compat_ioctl define for dmx-dvr
+Thread-Index: Adboq2ai/clZ45L8Snip7ZLCACySVA==
+Date:   Tue, 12 Jan 2021 06:27:23 +0000
+Message-ID: <fbeef6e6cb3f4c23baef8fb7a07462af@realsil.com.cn>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.29.52.88]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20210111203340.98dd3c8fa675b709bcf6d49e@linux-foundation.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.197]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/12 12:33, Andrew Morton wrote:
-> On Tue, 12 Jan 2021 11:31:55 +0800 Xiaoming Ni <nixiaoming@huawei.com> wrote:
-> 
->> The process_sysctl_arg() does not check whether val is empty before
->>   invoking strlen(val). If the command line parameter () is incorrectly
->>   configured and val is empty, oops is triggered.
->>
->> --- a/fs/proc/proc_sysctl.c
->> +++ b/fs/proc/proc_sysctl.c
->> @@ -1770,6 +1770,9 @@ static int process_sysctl_arg(char *param, char *val,
->>   			return 0;
->>   	}
->>   
->> +	if (!val)
->> +		return -EINVAL;
->> +
-> 
-> I think v2 (return 0) was preferable.  Because all the other error-out
-> cases in process_sysctl_arg() also do a `return 0'.
-
-https://lore.kernel.org/lkml/bc098af4-c0cd-212e-d09d-46d617d0acab@huawei.com/
-
-patch4:
-     +++ b/fs/proc/proc_sysctl.c
-     @@ -1757,6 +1757,9 @@ static int process_sysctl_arg(char *param, 
-char *val,
-             loff_t pos = 0;
-             ssize_t wret;
-
-     +       if (!val)
-     +               return 0;
-     +
-             if (strncmp(param, "sysctl", sizeof("sysctl") - 1) == 0) {
-                     param += sizeof("sysctl") - 1;
-
-Is this the version you're talking about?
-
-> 
-> If we're going to do a separate "patch: make process_sysctl_arg()
-> return an errno instead of 0" then fine, we can discuss that.  But it's
-> conceptually a different work from fixing this situation.
-> .
-> 
-However, are the logs generated by process_sysctl_arg() clearer and more 
-accurate than parse_args()? Should the logs generated by 
-process_sysctl_arg() be deleted?
-
-Thanks
-Xiaoming Ni
-
+RnJvbTogSmFzb25fd2FuZyA8SmFzb25fd2FuZ0ByZWFsc2lsLmNvbS5jbj4NCg0KaWYgQ09ORklH
+X0NPTVBBVCBpcyBlbmFibGVkLiBkdnIgaW9jdGwgY2FuIG5vdCBiZQ0KaW52b2tlZCBieSB1c2Vy
+LiBuZWVkIC5jb21wYXRfaW9jdGwgdG8gaWRlbnRpZnkgdGhlDQppb2N0bCBmdW5jdGlvbi4NCg0K
+U2lnbmVkLW9mZi1ieTogamFzb25fd2FuZyA8bWFpbHRvOmphc29uX3dhbmdAcmVhbHNpbC5jb20u
+Y24+DQotLS0NCsKgZHJpdmVycy9tZWRpYS9kdmItY29yZS9kbXhkZXYuYyB8IDEgKw0KwqAxIGZp
+bGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWVkaWEv
+ZHZiLWNvcmUvZG14ZGV2LmMgYi9kcml2ZXJzL21lZGlhL2R2Yi1jb3JlL2RteGRldi5jDQppbmRl
+eCBmMTRhODcyZDEyNjguLjRhOWUwMjdkZTgyNyAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbWVkaWEv
+ZHZiLWNvcmUvZG14ZGV2LmMNCisrKyBiL2RyaXZlcnMvbWVkaWEvZHZiLWNvcmUvZG14ZGV2LmMN
+CkBAIC0xMzkzLDYgKzEzOTMsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGZpbGVfb3BlcmF0aW9u
+cyBkdmJfZHZyX2ZvcHMgPSB7DQrCoCAucmVhZCA9IGR2Yl9kdnJfcmVhZCwNCsKgIC53cml0ZSA9
+IGR2Yl9kdnJfd3JpdGUsDQrCoCAudW5sb2NrZWRfaW9jdGwgPSBkdmJfZHZyX2lvY3RsLA0KKyAu
+Y29tcGF0X2lvY3RsID0gZHZiX2R2cl9pb2N0bCwNCsKgIC5vcGVuID0gZHZiX2R2cl9vcGVuLA0K
+wqAgLnJlbGVhc2UgPSBkdmJfZHZyX3JlbGVhc2UsDQrCoCAucG9sbCA9IGR2Yl9kdnJfcG9sbCwN
+Ci0tIA0KMi4yNS4xDQoNCg==
