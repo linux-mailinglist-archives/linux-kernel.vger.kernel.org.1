@@ -2,120 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBFA2F3DA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2B92F3DBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393416AbhALVog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:44:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50950 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2393407AbhALVoc (ORCPT
+        id S1731812AbhALVpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 16:45:07 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:42051 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388340AbhALVo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 16:44:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610487786;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jHOTLuvOelFAWd5ADGi2rVRtP5HMnmatf+qZhnhdrxI=;
-        b=X+Lk15iJe7X2vLeey5ArsBQjees9wHHHcRMPVT5y9oJTJfXHEpZy9/Wbo6VJhO6V1PyWgb
-        XkVIpIlnqAFRLHUieOiMXSU+eIoYbOx7eetAnZlqZAYlRkIipn9r2rX96yqj3JPsUJcmT7
-        nTlcRoK2Lr7oboLzxzjx1X6M2P9F6fY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-401-bnbQ_frtMou42Tv-VP5RnA-1; Tue, 12 Jan 2021 16:43:04 -0500
-X-MC-Unique: bnbQ_frtMou42Tv-VP5RnA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B97ED1007463;
-        Tue, 12 Jan 2021 21:43:02 +0000 (UTC)
-Received: from [10.10.115.107] (ovpn-115-107.rdu2.redhat.com [10.10.115.107])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 083306F96B;
-        Tue, 12 Jan 2021 21:43:01 +0000 (UTC)
-Subject: Re: [PATCH] Revert "KVM: x86: Unconditionally enable irqs in guest
- context"
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        w90p710@gmail.com, pbonzini@redhat.com,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20210105192844.296277-1-nitesh@redhat.com>
- <874kjuidgp.fsf@vitty.brq.redhat.com> <X/XvWG18aBWocvvf@google.com>
- <87ble1gkgx.fsf@vitty.brq.redhat.com>
-From:   Nitesh Narayan Lal <nitesh@redhat.com>
-Organization: Red Hat Inc,
-Message-ID: <fb41e24f-a5e3-8319-d25b-e0fe6b902a2b@redhat.com>
-Date:   Tue, 12 Jan 2021 16:43:01 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 12 Jan 2021 16:44:59 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 10CLhUgC011740
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 16:43:31 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 8A66015C3453; Tue, 12 Jan 2021 16:43:30 -0500 (EST)
+Date:   Tue, 12 Jan 2021 16:43:30 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: Re: Malicious fs images was Re: ext4 regression in v5.9-rc2 from
+ e7bfb5c9bb3d on ro fs with overlapped bitmaps
+Message-ID: <X/4YArRJMgGjSyZY@mit.edu>
+References: <20201006031834.GA5797@mit.edu>
+ <20201006050306.GA8098@localhost>
+ <20201006133533.GC5797@mit.edu>
+ <20201007080304.GB1112@localhost>
+ <20201007143211.GA235506@mit.edu>
+ <20201007201424.GB15049@localhost>
+ <20201008021017.GD235506@mit.edu>
+ <20201008222259.GA45658@localhost>
+ <20201009143732.GJ235506@mit.edu>
+ <20210110184101.GA4625@amd>
 MIME-Version: 1.0
-In-Reply-To: <87ble1gkgx.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210110184101.GA4625@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jan 10, 2021 at 07:41:02PM +0100, Pavel Machek wrote:
+> > >From our perspective (and Darrick and I discussed this on this week's
+> > ext4 video conference, so it represents the ext4 and xfs maintainer's
+> > position) is that the file system format is different.  First, the
+> > on-disk format is not an ABI, and it is several orders more complex
+> > than a system call interface.  Second, we make no guarantees about
+> > what the file system created by malicious tools will do.  For example,
+> > XFS developers reject bug reports from file system fuzzers, because
+> > the v5 format has CRC checks, so randomly corrupted file systems won't
+> > crash the kernel.  Yes, this doesn't protect against maliciously
+> > created file systems where the attacker makes sure the checksums are
+> > valid, but only crazy people who think containers are just as secure
+> 
+> Well, it is not just containers. It is also USB sticks. And people who
+> believe secure boot is good idea and try to protect kernel against
+> root. And crazy people who encrypt pointers in dmesg. And...
+> 
+> People want to use USB sticks from time to time. And while I
+> understand XFS is so complex it is unsuitable for such use, I'd still
+> expect bugs to be fixed there.
+> 
+> I hope VFAT to be safe to mount, because that is very common on USB.
+> 
+> I also hope ext2/3/4 is safe in that regard.
 
-On 1/7/21 4:33 AM, Vitaly Kuznetsov wrote:
-> Sean Christopherson <seanjc@google.com> writes:
->
->> On Wed, Jan 06, 2021, Vitaly Kuznetsov wrote:
->>> Looking back, I don't quite understand why we wanted to account ticks
->>> between vmexit and exiting guest context as 'guest' in the first place;
->>> to my understanging 'guest time' is time spent within VMX non-root
->>> operation, the rest is KVM overhead (system).
->> With tick-based accounting, if the tick IRQ is received after PF_VCPU is cleared
->> then that tick will be accounted to the host/system.  The motivation for opening
->> an IRQ window after VM-Exit is to handle the case where the guest is constantly
->> exiting for a different reason _just_ before the tick arrives, e.g. if the guest
->> has its tick configured such that the guest and host ticks get synchronized
->> in a bad way.
->>
->> This is a non-issue when using CONFIG_VIRT_CPU_ACCOUNTING_GEN=y, at least with a
->> stable TSC, as the accounting happens during guest_exit_irqoff() itself.
->> Accounting might be less-than-stellar if TSC is unstable, but I don't think it
->> would be as binary of a failure as tick-based accounting.
->>
-> Oh, yea, I vaguely remember we had to deal with a very similar problem
-> but for userspace/kernel accounting. It was possible to observe e.g. a
-> userspace task going 100% kernel while in reality it was just perfectly
-> synchronized with the tick and doing a syscall just before it arrives
-> (or something like that, I may be misremembering the details).
->
-> So depending on the frequency, it is probably possible to e.g observe
-> '100% host' with tick based accounting, the guest just has to
-> synchronize exiting to KVM in a way that the tick will always arrive
-> past guest_exit_irqoff().
->
-> It seems to me this is a fundamental problem in case the frequency of
-> guest exits can match the frequency of the time accounting tick.
->
+Ext4 will fix file system fuzzing attack bugs on a best efforts basis.
+That is, when I have time, I've been known to stay up late to bugs
+reported by fuzzers.  I hope ext4 is safe, but I'm not going to make
+any guarantees that it is Bug-Free(tm).  If you want to trust it in
+that way, you do so at your risk.
 
-Just to make sure that I am understanding things correctly.
-There are two issues:
-1. The first issue is with the tick IRQs that arrive after PF_VCPU is
-   cleared as they are then accounted into the system context atleast on
-   the setup where CONFIG_VIRT_CPU_ACCOUNTING_GEN is not enabled. With the
-   patch "KVM: x86: Unconditionally enable irqs in guest context", we are
-   atleast taking care of the scenario where the guest context is exiting
-   constantly just before the arrival of the tick.
- 
-2. The second issue that Sean mentioned was introduced because of moving
-   guest_exit_irqoff() closer to VM-exit. Due to this change, any ticks that
-   happen after IRQs are disabled are incorrectly accounted into the system
-   context. This is because we exit the guest context early without
-   ensuring if the required guest states to handle IRQs are restored.
- 
-So, the increase in the system time (reported by cpuacct.stats) that I was
-observing is not entirely correct after all.
-Am I missing anything here?
+As far as VFS is concerned, I'm not aware of anyone who has been
+working on fuzz-proofing VFAT, and looking at the Vault 2016 for
+"American Fuzzy Lop"[1] while VFAT wasn't specifically tested, for the
+vast majority of file systems, the "time to first bug" typically
+ranged from seconds to minutes, with the exception of XFS and ext4
+(where it was roughly 2 hours).  The specific bugs which triggered in
+the 2016 AFL presentation have been fixed, at least for the file
+systems which get regular maintainer attention, but this is why I try
+to caution people not to count on file systems being proof against
+maliciously formatted images.
 
---
-Thanks
-Nitesh
+[1] https://events.static.linuxfound.org/sites/events/files/slides/AFL%20filesystem%20fuzzing,%20Vault%202016_0.pdf
 
+> Anyway it would be nice to have documentation explaining this. If I'm
+> wrong about VFAT being safe, it would be good to know, and I guess
+> many will be surprised that XFS is using different rules.
+
+Using USB sticks is fine, so long as you trust the provenance of the
+drive.  If you take a random USB stick that is handed to you by
+someone whom you don't trust implicitly, or worse, that you picked up
+abandoned on the sidewalk, there have been plenty of articles which
+describe why this is a REALLY BAD IDEA, and even if you ignore
+OS-level vuleranbilities, there are also firwmare and hardware based
+vulerabilities that would put your computer at risk.  See [2] and [3]
+for more details; there's a reason why I've visited at least one
+financial institution where they put epoxy in USB ports to prevent
+clueless workers from potentially compromising the bank's computers.
+
+[2] https://www.redteamsecure.com/blog/usb-drop-attacks-the-danger-of-lost-and-found-thumb-drives/
+[3] https://www.bleepingcomputer.com/news/security/heres-a-list-of-29-different-types-of-usb-attacks/
+
+As far as documentation is concerned, how far should we go?  Should
+there be a warning in the execve(2) system call man page that you
+shouldn't download random binaries from the network and execute them?  :-)
+
+Cheers,
+
+					- Ted
