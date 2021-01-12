@@ -2,148 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 593942F2893
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8892F2895
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391531AbhALGxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 01:53:01 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:10752 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388066AbhALGxA (ORCPT
+        id S2388500AbhALGzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 01:55:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728453AbhALGzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 01:53:00 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610434360; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=AMekzKIoXfjswvih+CfUuEZfypT+jF7HVNK0MT9+CpY=;
- b=qICvhmeEdxwObK5YPAvd8gEwFmI2CqzpdJwam95TBZps/0Lw7CcqC+UJIzR7NBcgIodza4Y3
- 2k37q+ZcCNMz0mQpf0vqUtfAw6rzy7mT/nQcnTQw5SCC2fUxsShahmf3sfjmgzYKpHO49gv2
- PRlhufpHBp2EN3y73uRdr6ptF4k=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
- 5ffd471ef1be2d22c46eb43a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Jan 2021 06:52:14
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 032EAC43463; Tue, 12 Jan 2021 06:52:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2FBACC433CA;
-        Tue, 12 Jan 2021 06:52:13 +0000 (UTC)
+        Tue, 12 Jan 2021 01:55:08 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A3A2C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 22:54:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=RiyM0c9j0TR/ZiSHWGyt7mOms657zOtCNK+WQflYxLY=; b=rJZb0wT0PD7Rd6Ba8JF8meP8qm
+        n/+x3fWHp9jMKA0uMwZ3XCxDtlWL3CqIYXZ4ozWBU+8wVPdzFX3E97CEcavQFfXb+1o+bxyydi4xr
+        fUl1PmiMNQkmBrzmV20oHnoVEP6O1271LuEjI/38eOPpl0p+rAsmfcayTEGGL9x8FUmjn94Hk2u5h
+        4ndeSvzt5YpKoKdR0PTcP7AM47/U/aFakuLMUA5eGHfjiNtp08eI88c2PlF6aThZLB4t+KEi08/2+
+        AV2opssIOj7oBLkPs6sUgEUWaDjeIVPt61RMkB0bbBfnxwB3yGX7HG4m+7QL2+Z/wlNKJlxgOL94R
+        rU0luqnw==;
+Received: from [2601:1c0:6280:3f0::79df]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kzDZR-00084H-KP; Tue, 12 Jan 2021 06:54:25 +0000
+Subject: Re: [PATCH V2] arch: x86: kernel: cpu: Takes a letter away and put a
+ semicolon too, to match below stuc member
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, fenghua.yu@intel.com,
+        reinette.chatre@intel.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        linux-kernel@vger.kernel.org, gustavo@embeddedor.com
+References: <20210112052730.24677-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ead1d179-d32d-46a7-5783-bc08298a830a@infradead.org>
+Date:   Mon, 11 Jan 2021 22:54:17 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20210112052730.24677-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 12 Jan 2021 14:52:13 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Stanley Chu <stanley.chu@mediatek.com>
-Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, ziqichen@codeaurora.org,
-        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] scsi: ufs: Fix a possible NULL pointer issue
-In-Reply-To: <1610433327.17820.5.camel@mtkswgap22>
-References: <1609595975-12219-1-git-send-email-cang@codeaurora.org>
- <1609595975-12219-2-git-send-email-cang@codeaurora.org>
- <1610433327.17820.5.camel@mtkswgap22>
-Message-ID: <6d03cdacda2f757ba0d0f39ce625eaec@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-12 14:35, Stanley Chu wrote:
-> Hi Can,
+On 1/11/21 9:27 PM, Bhaskar Chowdhury wrote:
+> s/kernlfs/kernfs/
 > 
-> On Sat, 2021-01-02 at 05:59 -0800, Can Guo wrote:
->> During system resume/suspend, hba could be NULL. In this case, do not 
->> touch
->> eh_sem.
->> 
->> Fixes: 88a92d6ae4fe ("scsi: ufs: Serialize eh_work with system PM 
->> events and async scan")
->> 
->> Signed-off-by: Can Guo <cang@codeaurora.org>
->> 
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index e221add..9829c8d 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -94,6 +94,8 @@
->>  		       16, 4, buf, __len, false);                        \
->>  } while (0)
->> 
->> +static bool early_suspend;
->> +
->>  int ufshcd_dump_regs(struct ufs_hba *hba, size_t offset, size_t len,
->>  		     const char *prefix)
->>  {
->> @@ -8896,8 +8898,14 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
->>  	int ret = 0;
->>  	ktime_t start = ktime_get();
->> 
->> +	if (!hba) {
->> +		early_suspend = true;
->> +		return 0;
->> +	}
->> +
->>  	down(&hba->eh_sem);
->> -	if (!hba || !hba->is_powered)
->> +
->> +	if (!hba->is_powered)
->>  		return 0;
->> 
->>  	if ((ufs_get_pm_lvl_to_dev_pwr_mode(hba->spm_lvl) ==
->> @@ -8945,9 +8953,12 @@ int ufshcd_system_resume(struct ufs_hba *hba)
->>  	int ret = 0;
->>  	ktime_t start = ktime_get();
->> 
->> -	if (!hba) {
->> -		up(&hba->eh_sem);
->> +	if (!hba)
->>  		return -EINVAL;
->> +
->> +	if (unlikely(early_suspend)) {
->> +		early_suspend = false;
->> +		down(&hba->eh_sem);
->>  	}
+>  A semicolon at the end of member name
 > 
-> I guess early_suspend here is to handle the case that hba is null 
-> during
-> ufshcd_system_suspend() but !null during ufshcd_system_resume(). If 
-> yes,
-> would it be possible? If no, may I know what is the purpose?
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  As pointed out by Gustavo and Randy in version one of this patch
 > 
+>  arch/x86/kernel/cpu/resctrl/internal.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+> index ee71c47844cb..ef9e2c0809b8 100644
+> --- a/arch/x86/kernel/cpu/resctrl/internal.h
+> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
+> @@ -142,7 +142,7 @@ enum rdtgrp_mode {
+> 
+>  /**
+>   * struct mongroup - store mon group's data in resctrl fs.
+> - * @mon_data_kn		kernlfs node for the mon_data directory
+> + * @mon_data_kn:		kernfs node for the mon_data directory
+>   * @parent:			parent rdtgrp
+>   * @crdtgrp_list:		child rdtgroup node list
+>   * @rmid:			rmid for this rdtgroup
+> --
 
-Yes, you are right. I think it is possible. platform_set_drvdata()
-is called in ufshcd_pltfrm_init(). Say suspend happens before
-platform_set_drvdata() is called, but resume comes back after
-platform_set_drvdata() is called. What do you think?
+The patch to internal.h is OK, but as Gustavo pointed out,
+the patch versioning isn't done as expected.
 
-Thanks,
-Can Guo.
+-- 
+~Randy
 
-> Thanks a lot.
-> Stanley Chu
-> 
->> 
->>  	if (!hba->is_powered || pm_runtime_suspended(hba->dev))
