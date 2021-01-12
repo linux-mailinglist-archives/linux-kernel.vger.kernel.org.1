@@ -2,62 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53A9A2F3785
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:47:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2002C2F3797
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:49:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391742AbhALRq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:46:57 -0500
-Received: from smtprelay0162.hostedemail.com ([216.40.44.162]:49248 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391624AbhALRqy (ORCPT
+        id S2391882AbhALRr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:47:28 -0500
+Received: from bmail1.ministro.hu ([5.249.150.236]:47494 "EHLO
+        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389660AbhALRr0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:46:54 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id D740C181D304D;
-        Tue, 12 Jan 2021 17:46:12 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3868:3873:4321:5007:7652:10004:10400:10848:11026:11232:11658:11914:12043:12048:12114:12297:12438:12740:12895:13069:13311:13357:13439:13894:14659:21080:21627:30030:30054:30064:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: body58_371324127517
-X-Filterd-Recvd-Size: 1714
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf10.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 12 Jan 2021 17:46:11 +0000 (UTC)
-Message-ID: <60398acb9f26e60e3c1d6ab9c2d8bab4a89f2a91.camel@perches.com>
-Subject: Re: [PATCH] scsi: mpt3sas: Simplify _base_display_OEMs_branding
-From:   Joe Perches <joe@perches.com>
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     "MPT-FusionLinux.pdl@broadcom.com" <MPT-FusionLinux.pdl@broadcom.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Tue, 12 Jan 2021 09:46:10 -0800
-In-Reply-To: <DM5PR0401MB3591D23001DAC0AFB4F11D589BAA0@DM5PR0401MB3591.namprd04.prod.outlook.com>
-References: <b4a0b8c97a95f56c64532eff83289831449e2b0d.camel@perches.com>
-         <DM5PR0401MB3591D23001DAC0AFB4F11D589BAA0@DM5PR0401MB3591.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Tue, 12 Jan 2021 12:47:26 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTP id E40B411FFB1;
+        Tue, 12 Jan 2021 18:46:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1610473602;
+        bh=//DIcFXDZIAYmFU2LDqtdLkGc3tYcmYhiwmP/GcTx3w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mv0LnyYFLowUG3bUX6y6qwcecYBu/ZTnMRD4vmpYc55ZESt3n4JMETbLiE7EYRGip
+         EFMIj7jzpTzb5bT0JxW1APTCEPjThwXqYKuv0L4MVsICsIjKX+Un4LQZawyHnYGB+n
+         ygPd3byxsTn/SeysROoq7+QTlkEJdqLeAgLBdd6tQApvWGXslf+0C/RWLcmZFilAb/
+         b8gR7c2EKZpGc07zwsjj9vI5WxDUq0wGTeQehQySa4pRVjKUS6k2JPC2Oln28T53Ez
+         xjVjH9I6eNhf4tW4/AHsTZiksZLwV39SvCEf1bgib55VU5lF3ZdxXGtgbqfMzAQCDK
+         ILBgRNZn5vwig==
+X-Virus-Scanned: Debian amavisd-new at ministro.hu
+Received: from bmail1.ministro.hu ([127.0.0.1])
+        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 2wTmrbJY3-u0; Tue, 12 Jan 2021 18:46:16 +0100 (CET)
+Received: from dev (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTPSA id 88B7C11FFAC;
+        Tue, 12 Jan 2021 18:46:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1610473576;
+        bh=//DIcFXDZIAYmFU2LDqtdLkGc3tYcmYhiwmP/GcTx3w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tig1Hp130I94YYjJ3L3vecbHhZfPopyLIwHPEs2A2BuGOjU3eBHsomv65WJUnhGZ1
+         GDXQAHBA5v3SJ0syJB++lRkcyTKe1PUoLxHc+aCrWViMgNYXhwhdTB+vJ7wNlAvSrs
+         h5EXQfBqmeLenBOsG2GtlzWYhr2ejUhdZI7lk9OJh40qPacYYC/wZTLlTENIFbzQYh
+         ZL235ajM+rkOyqBxdVbabcoK1ypkQeFsVkZoAdtHzd/KPvULQT7A7BF8m96pKQrnhf
+         8poKXE9lEvxVip/CkgdLe2ieuHOef4oc1VdwD7EEGkCY8yELL6r+RXMH3QQmhiWKU8
+         IINC7SEZqhbwg==
+Date:   Tue, 12 Jan 2021 17:46:13 +0000
+From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
+Cc:     'Rob Herring' <robh+dt@kernel.org>,
+        'Jiri Slaby' <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 1/2] Serial: silabs si4455 serial driver
+Message-ID: <20210112174613.GA8782@dev>
+References: <20210112101831.GA12483@dev>
+ <X/15uOstG/7bj2Lm@kroah.com>
+ <20210112154322.GA31198@dev>
+ <X/3KnP3S4siAxTfG@kroah.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <X/3KnP3S4siAxTfG@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-01-12 at 17:40 +0000, Johannes Thumshirn wrote:
-> On 12/01/2021 18:38, Joe Perches wrote:
-> >  static void
-> >  _base_display_OEMs_branding(struct MPT3SAS_ADAPTER *ioc)
-> >  {
-> > +	const char *b = NULL;	/* brand */
-> > +	const char *v = NULL;	/* vendor */
+On Tue, Jan 12, 2021 at 05:13:16PM +0100, 'Greg Kroah-Hartman' wrote:
+> On Tue, Jan 12, 2021 at 03:43:22PM +0000, József Horváth wrote:
+> > On Tue, Jan 12, 2021 at 11:28:08AM +0100, 'Greg Kroah-Hartman' wrote:
+> > > On Tue, Jan 12, 2021 at 10:18:33AM +0000, Jozsef Horvath wrote:
+> > > > --- a/include/uapi/linux/serial_core.h
+> > > > +++ b/include/uapi/linux/serial_core.h
+> > > > @@ -279,4 +279,7 @@
+> > > >  /* Freescale LINFlexD UART */
+> > > >  #define PORT_LINFLEXUART	122
+> > > >  
+> > > > +/* Silicon Labs SI4455 */
+> > > > +#define PORT_SI4455     123
+> > > 
+> > > What userspace tool is going to need this value?
+> > 
+> > The PORT_SI4455 is defined for using as port type value in struct uart_port.
+> > I checked other serial drivers under drivers/tty/serial and the port types
+> > used by serial drivers are defined in two places:
+> > 
+> > include/uapi/linux/serial_core.h
+> > include/uapi/linux/serial.h
+> > 
+> > The port type is required by serial_core, and its value goes back to
+> > user space with TIOCGSERIAL ioctl call.
 > 
-> Any reason you didn't spell out brand and vendor as the variable names?
+> What is it required for?  Who uses this?
+> 
+> > I can't set port type value to 0(PORT_UNKNOWN).
+> 
+> Why not?
 
-80 column lines.
+In drivers/tty/serial/serial_core.c
+1784:	uart_port_activate(...)
+1799:		->	uart_startup(...)
+260:			->	uart_port_startup(...)
 
+183:	static int uart_port_startup(struct tty_struct *tty, struct uart_state *state,
+184:			int init_hw)
+...
+191:		if (uport->type == PORT_UNKNOWN)
+192:			return 1;
+...
+221:		retval = uport->ops->startup(uport);	<--This is the reason. The drivers
+ startup function is not get called if type==PORT_UNKNOWN
+...
+
+> 
+> > I think my drivers source is not the best place to defining PORT_SI4455,
+> >  but I can't find better place then include/uapi/linux/serial_core.h
+> > 
+> > Could you please help me where is the correct location for this definition?
+> 
+> I ask as I am trying to figure out why we keep adding these ids, yet no
+> tool that i know of seems to actually use them.
+> 
+> If you don't have a tool that needs to use a new id, then I would
+> recommend not adding it, right?
+
+This definition is not my requirement, but I would avoid collision with other
+ drivers port type value.
+At this point as I understand your words, these definitions will be obsolete
+ or optional soon and I can choose any value for drivers port type.
+
+Right?
+
+I would ask you about dev name (ttySSi).
+Is it okay?
+
+I didnt find any similar.
+
+> 
+> thanks,
+> 
+> greg k-h
+
+Üdvözlettel / Best regards:
+József Horváth
 
