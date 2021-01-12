@@ -2,113 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD75D2F3D16
+	by mail.lfdr.de (Postfix) with ESMTP id 512E62F3D14
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437703AbhALVee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2437716AbhALVee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Jan 2021 16:34:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37334 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437001AbhALUlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:41:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0979D23132;
-        Tue, 12 Jan 2021 20:40:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610484035;
-        bh=SONHjUo9FngGURhRhDZ/F9U2Tf3HyJ/zuHETooyr/lU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iLgsljOnI/5lDJNAKtBJTZ1kR0cJOSaOJNgsngw3gKcYlLylHi8hZRq/TPajQQIYf
-         7Dt6ZTRrkBUaeIpSNdtPLT9F35S23Keb6NuVdM5c98TjG9eW5bbbUxlx6eUSOqwp/U
-         1oyYefh8ogUGOy7Z1MNmrrR7tmb5mg6/4/TI5XGabh8E7i8SNkb2r8BGSLE7pWo04u
-         zR0i1ZCW9cXjLJFPWblRVZ+uYXO8W3fxiJmgfgc4qR8WVHzPoItDQZVOj6jv+nNPt6
-         chZ3TiGRX8tm05WnT5CjWWvHQNTh5Y/zmbD+HCdTPPCisIur93wuaoMNu5BSFIvOEu
-         6S947NstpK0rA==
-Received: by mail-ot1-f46.google.com with SMTP id i6so3630391otr.2;
-        Tue, 12 Jan 2021 12:40:35 -0800 (PST)
-X-Gm-Message-State: AOAM531eN1q2korDs+GuFZIcrx/DguylYyP6WzWStV3hY8Tfc72bi6dg
-        sGD9IheCNmkCUoDwv6Ovl3vSRkHndAe+hMSW+/Q=
-X-Google-Smtp-Source: ABdhPJzz9s9YF4E0Qe6yvRnCZ2edeoO0zESUgmHyRFrTzwD1XCWloAfGGeXkv/k8suIIl/HQcDEwUw2Lo6OKNR89Cpg=
-X-Received: by 2002:a05:6830:1e14:: with SMTP id s20mr836509otr.210.1610484033785;
- Tue, 12 Jan 2021 12:40:33 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437009AbhALUl0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 15:41:26 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F250C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:40:46 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id 6so5409019ejz.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:40:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ct93Q3jRetKhaczI+6WcmnjHIFRP3Fo82VEGV+KynCk=;
+        b=T1cZ3JpkSXggl/Jkc5Ldu1myuVwPhCGRR6lqhbhAHv3xS6v+mjC6VwXUiCcBHC25JI
+         sb9pXAcR2De4/gHbvIQK58ATkuAIMTf8m0ZgZE26P2jThxM+b/ywIX6Gu2z+FyH0wWqI
+         8DFVg8H/XJthxJXuQvnTjakrBLaohUIK39TJ9dp1Wu2Tev0vDanE1M6tvq6gbTsrMYZi
+         fRb5OXVvMxBBACwBd5AVcfcv78E2i85gV9iyy6Vtoj0CfpbmHYeTroe17RJ5ajvbGH6H
+         k6CV8KJlnlEiKHnr/nVg+5HGrZtBNr0EowWx6PE5j9SDR6LkSOrpI1J1zsWPXsZ8PQed
+         7L0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ct93Q3jRetKhaczI+6WcmnjHIFRP3Fo82VEGV+KynCk=;
+        b=GxdiNZEuHcnbQ7WlP1bx0YfXLUxsfP/nd9d+9FmPN8xZhx+33+3y8Rk4kMxMxjMW/Q
+         rjI5DeU1tM5Oc3ZcxGe0TVyO8tnzHLsSzUAKy7fo9uLBNOgJqe9S+gpxUx9jLPczjUSB
+         TE+rntLbZ5/KSHMYkEDtQXlD4PT5udB+ioPqF0fdkXi3U9I7baPR8YTu7/zGV+E6JVsM
+         YU+zTnRjsFt9Tx06N9mu65uITGJT7PMQ8dOPpshx9Y+W+1iiCQlfqI0pH5DosXaCCuxC
+         JZaqb+kdur9NScYDUuLZ2P/Jj5cXDmkl/ib3D7KAxocXQd19PaVEFCn/8rChC6QfP5FZ
+         EF9Q==
+X-Gm-Message-State: AOAM532TGtjdMulaKeV+qROzU7vHUQUmSGeIBl1PTbTxo87AuaNjuKWC
+        Fuwdifaov6hiu6ac78nVLBbRVvmciZoIRjSebCKwqA==
+X-Google-Smtp-Source: ABdhPJzHdcTzIjQRpyGIEfN0AC0DGdj1ibAM+dEAeusNPr+hYVUdYuvlpZNheWMWFHBf12PCInMSBiFgFRDLAzCahKY=
+X-Received: by 2002:a17:907:d8e:: with SMTP id go14mr439401ejc.472.1610484044797;
+ Tue, 12 Jan 2021 12:40:44 -0800 (PST)
 MIME-Version: 1.0
-References: <20201016090833.1892-1-thunder.leizhen@huawei.com>
- <20201016090833.1892-2-thunder.leizhen@huawei.com> <20201128045328.2411772-1-f.fainelli@gmail.com>
- <CAK8P3a1_5RgcPz+bgo1bbUBk8NTJd=1-Y5-=CsQYkFgLfTE3_A@mail.gmail.com>
- <9c6c6b7e-8c39-8c49-5c87-9b560c027841@broadcom.com> <CAK8P3a2XYk8D80XARrpUSBHk1yye3KHXOdaQge4HNSZZOC=xKw@mail.gmail.com>
- <CACvutz9v+TBUbrCo3X-u5ebbs04nR0y0yQN3qWfSAyZVy9RM2g@mail.gmail.com>
- <c38cf11a-ed1d-d150-52fb-e3b4a0a30712@gmail.com> <CAK8P3a1TViQopQNFE4+Dtac0v2CneGiy22WYu5BuYv8HX2r8Lg@mail.gmail.com>
- <18112862-a42e-95b1-39a3-2e414667f39b@broadcom.com>
-In-Reply-To: <18112862-a42e-95b1-39a3-2e414667f39b@broadcom.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 12 Jan 2021 21:40:16 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2+EfOKAo3HLb+_qd-gnqWD55dyW0juSw1TM8jHKiZYoQ@mail.gmail.com>
-Message-ID: <CAK8P3a2+EfOKAo3HLb+_qd-gnqWD55dyW0juSw1TM8jHKiZYoQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] arm64: dts: broadcom: clear the warnings caused by
- empty dma-ranges
-To:     Ray Jui <ray.jui@broadcom.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Bharat Gooty <bharat.gooty@broadcom.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Scott Branden <sbranden@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <20210111225121.820014-1-ben.widawsky@intel.com>
+ <20210111225121.820014-6-ben.widawsky@intel.com> <20210112191342.00006aad@Huawei.com>
+ <20210112192115.vhxjz3cr5vwjshwf@intel.com>
+In-Reply-To: <20210112192115.vhxjz3cr5vwjshwf@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 12 Jan 2021 12:40:35 -0800
+Message-ID: <CAPcyv4iDoFdBn7UkvRpAunLY=TM7vWnH77P3nGKStBfJ9YdwKA@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 05/16] cxl/mem: Map memory device registers
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Jon Masters <jcm@jonmasters.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        daniel.lll@alibaba-inc.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 7:28 PM Ray Jui <ray.jui@broadcom.com> wrote:
-> On 2020-12-15 7:49 a.m., Arnd Bergmann wrote:
-> > On Tue, Dec 15, 2020 at 4:41 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
-> >>
-> >> On 12/15/2020 5:19 AM, Bharat Gooty wrote:
-> >>> Since the IOMMU is disabled and DMA engine is on 32-bit bus, We can not
-> >>> give the complete DDR for the USB DMA.
-> >>> So restricting the usable DAM size to 4GB.
-> >>
-> >> Thanks, can you make this a proper patch submission along with a Fixes:
-> >> tag that is:
-> >>
-> >> Fixes: 2013a4b684b6 ("arm64: dts: broadcom: clear the warnings caused by
-> >> empty dma-ranges")
+On Tue, Jan 12, 2021 at 11:21 AM Ben Widawsky <ben.widawsky@intel.com> wrote:
+>
+> On 21-01-12 19:13:42, Jonathan Cameron wrote:
+> > On Mon, 11 Jan 2021 14:51:09 -0800
+> > Ben Widawsky <ben.widawsky@intel.com> wrote:
 > >
-> > Yes, that would be helpful, though I would appreciate a better description
-> > that explains what is actually going on: is it the device or the bus that
-> > has the 32-bit limitation, and if it is indeed a bug in the device, why do
-> > you pretend that this is a 64-bit device on a 32-bit bus instead (this
-> > could also use a comment in the dts file)?
+> > > All the necessary bits are initialized in order to find and map the
+> > > register space for CXL Memory Devices. This is accomplished by using the
+> > > Register Locator DVSEC (CXL 2.0 - 8.1.9.1) to determine which PCI BAR to
+> > > use, and how much of an offset from that BAR should be added.
+> > >
+> > > If the memory device registers are found and mapped a new internal data
+> > > structure tracking device state is allocated.
+> > >
+> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
 > >
-> >         Arnd
+> > Some issues with managed allocations being manually freed in remove.
+> > It shouldn't be necessary to do that.
+> >
+> > > ---
+> > >  drivers/cxl/cxl.h |  17 ++++++++
+> > >  drivers/cxl/mem.c | 100 +++++++++++++++++++++++++++++++++++++++++++++-
+> > >  drivers/cxl/pci.h |  14 +++++++
+> > >  3 files changed, 130 insertions(+), 1 deletion(-)
+> > >  create mode 100644 drivers/cxl/cxl.h
+> > >
+> > > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> > > new file mode 100644
+> > > index 000000000000..d81d0ba4617c
+> > > --- /dev/null
+> > > +++ b/drivers/cxl/cxl.h
+> > > @@ -0,0 +1,17 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > > +/* Copyright(c) 2020 Intel Corporation. */
+> > > +
+> > > +#ifndef __CXL_H__
+> > > +#define __CXL_H__
+> > > +
+> > > +/**
+> > > + * struct cxl_mem - A CXL memory device
+> > > + * @pdev: The PCI device associated with this CXL device.
+> > > + * @regs: IO mappings to the device's MMIO
+> > > + */
+> > > +struct cxl_mem {
+> > > +   struct pci_dev *pdev;
+> > > +   void __iomem *regs;
+> > > +};
+> > > +
+> > > +#endif
+> > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> > > index 005404888942..8301db34d2ff 100644
+> > > --- a/drivers/cxl/mem.c
+> > > +++ b/drivers/cxl/mem.c
+> > > @@ -5,6 +5,58 @@
+> > >  #include <linux/io.h>
+> > >  #include "acpi.h"
+> > >  #include "pci.h"
+> > > +#include "cxl.h"
+> > > +
+> > > +/**
+> > > + * cxl_mem_create() - Create a new &struct cxl_mem.
+> > > + * @pdev: The pci device associated with the new &struct cxl_mem.
+> > > + * @reg_lo: Lower 32b of the register locator
+> > > + * @reg_hi: Upper 32b of the register locator.
+> > > + *
+> > > + * Return: The new &struct cxl_mem on success, NULL on failure.
+> > > + *
+> > > + * Map the BAR for a CXL memory device. This BAR has the memory device's
+> > > + * registers for the device as specified in CXL specification.
+> > > + */
+> > > +static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev, u32 reg_lo,
+> > > +                                 u32 reg_hi)
+> > > +{
+> > > +   struct device *dev = &pdev->dev;
+> > > +   struct cxl_mem *cxlm;
+> > > +   void __iomem *regs;
+> > > +   u64 offset;
+> > > +   u8 bar;
+> > > +   int rc;
+> > > +
+> > > +   offset = ((u64)reg_hi << 32) | (reg_lo & CXL_REGLOC_ADDR_MASK);
+> > > +   bar = (reg_lo >> CXL_REGLOC_BIR_SHIFT) & CXL_REGLOC_BIR_MASK;
+> > > +
+> > > +   /* Basic sanity check that BAR is big enough */
+> > > +   if (pci_resource_len(pdev, bar) < offset) {
+> > > +           dev_err(dev, "BAR%d: %pr: too small (offset: %#llx)\n", bar,
+> > > +                   &pdev->resource[bar], (unsigned long long)offset);
+> > > +           return NULL;
+> > > +   }
+> > > +
+> > > +   rc = pcim_iomap_regions(pdev, BIT(bar), pci_name(pdev));
+> > > +   if (rc != 0) {
+> > > +           dev_err(dev, "failed to map registers\n");
+> > > +           return NULL;
+> > > +   }
+> > > +
+> > > +   cxlm = devm_kzalloc(&pdev->dev, sizeof(*cxlm), GFP_KERNEL);
+> > > +   if (!cxlm) {
+> > > +           dev_err(dev, "No memory available\n");
+> > > +           return NULL;
+> > > +   }
+> > > +
+> > > +   regs = pcim_iomap_table(pdev)[bar];
+> > > +   cxlm->pdev = pdev;
+> > > +   cxlm->regs = regs + offset;
+> > > +
+> > > +   dev_dbg(dev, "Mapped CXL Memory Device resource\n");
+> > > +   return cxlm;
+> > > +}
+> > >
+> > >  static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+> > >  {
+> > > @@ -33,7 +85,8 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+> > >  static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> > >  {
+> > >     struct device *dev = &pdev->dev;
+> > > -   int rc, regloc;
+> > > +   struct cxl_mem *cxlm;
+> > > +   int rc, regloc, i;
+> > >
+> > >     rc = cxl_bus_acquire(pdev);
+> > >     if (rc != 0) {
+> > > @@ -41,15 +94,59 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> > >             return rc;
+> > >     }
+> > >
+> > > +   rc = pcim_enable_device(pdev);
+> > > +   if (rc)
+> > > +           return rc;
+> > > +
+> > >     regloc = cxl_mem_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC);
+> > >     if (!regloc) {
+> > >             dev_err(dev, "register location dvsec not found\n");
+> > >             return -ENXIO;
+> > >     }
+> > > +   regloc += 0xc; /* Skip DVSEC + reserved fields */
+> > > +
+> > > +   rc = -ENXIO;
+> > > +   for (i = regloc; i < regloc + 0x24; i += 8) {
+> > > +           u32 reg_lo, reg_hi;
+> > > +           u8 reg_type;
+> > > +
+> > > +           /* "register low and high" contain other bits */
+> > > +           pci_read_config_dword(pdev, i, &reg_lo);
+> > > +           pci_read_config_dword(pdev, i + 4, &reg_hi);
+> > > +
+> > > +           reg_type =
+> > > +                   (reg_lo >> CXL_REGLOC_RBI_SHIFT) & CXL_REGLOC_RBI_MASK;
+> > > +
+> > > +           if (reg_type == CXL_REGLOC_RBI_MEMDEV) {
+> > > +                   rc = 0;
+> > > +                   cxlm = cxl_mem_create(pdev, reg_lo, reg_hi);
+> > > +                   if (!cxlm)
+> > > +                           rc = -ENODEV;
+> > > +                   break;
+> > > +           }
+> > > +   }
+> > > +
+> > > +   if (rc)
+> > > +           return rc;
+> > >
+> > > +   pci_set_drvdata(pdev, cxlm);
+> > After below cleanup, not needed yet..
+> >
+> > >     return 0;
+> > >  }
+> > >
+> > > +static void cxl_mem_remove(struct pci_dev *pdev)
+> > > +{
+> > > +   struct cxl_mem *cxlm;
+> > > +
+> > > +   cxlm = pci_get_drvdata(pdev);
+> > > +   if (!cxlm)
+> > > +           return;
+> > > +
+> > > +   kfree(cxlm);
+> >
+> > There is bunch of unwinding here that I'd expect to see in error paths
+> > for probe but it's not there...  Which made me wonder.
+> > So pcim_iounmap_regions is a managed interface, why are call it by
+> > hand?  Same is true of the allocation of cxlm above.  So currently this
+> > remove isn't doing anything useful.
+> >
+> > > +
+> > > +   pcim_iounmap_regions(pdev, ~0);
+> > > +   pci_set_drvdata(pdev, NULL);
+> >
+> > This hasn't been needed for a long time. Example of removal of similar...
+> > http://patchwork.ozlabs.org/project/netdev/patch/005801ceaec1$6b8d3320$42a79960$%25han@samsung.com/
 > >
 >
-> Sorry for the delay in reply. Bharat finally got time to do some
-> investigation to confirm the following:
+> Thanks. I copy pasted it from a driver that obviously hasn't been updated yet
+> :-)
 >
-> These USB controllers indeed can address 64-bit. However, on the bus
-> internally, only 40-bits are connected to the interconnect of CCN. As a
-> result, the 'dma-ranges' should be modified to address 40-bit in size.
+> The kfree is still necessary though, right? Earlier in development, I just freed
+> it immediately after creation (this patch is obviously not super useful
+> functionally, but serves nicely for review).
+>
+> So we can remove the actual allocation from this patch and move it to later if
+> you think it makes a big difference. My preference is to just leave it doing the
+> kfree and call it good.
 
-a 40-bit range is effectively the same as a 64-bit range though, so I
-think you'll still need a driver quirk if the device cannot use the whole 40
-bit addressing but is limited to 32 bits because of a bug in its dma engine.
-
-> We also have a somewhat related question, is it true that since v5.10,
-> defining of 'dma-ranges' on the bus node where its child device node has
-> implication of IOMMU usage (through 'iommus' or 'iommu-map') is now
-> mandatory? My understanding is that the 'dma-ranges' in this scheme will
-> define the IOVA address to system address mapping required by all
-> devices on that bus. Please help to confirm if my understanding is correct
-
-I have not actually seen that change. In general, you should always
-have a dma-ranges property in the parent of a DMA master, I think
-we just never enforced that and fall back to a 32-bit mask by default.
-
-      Arnd
+devm obviates the need for a cxl_mem_remove() to undo cxl_mem_probe()
+actions. This was all devm clean in v2. The other allocation done in
+the probe path is cxl_memdev() allocation, but that is undone by a
+devm_add_action_or_reset() to unregister the device along with typical
+device reference count rules.
