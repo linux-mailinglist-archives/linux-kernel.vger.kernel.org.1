@@ -2,100 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E882F3F6E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD10B2F3F72
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438480AbhALWrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:47:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436769AbhALWrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:47:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3B4A230F9;
-        Tue, 12 Jan 2021 22:46:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610491583;
-        bh=Rqin12tOcaSlTV0JXx5zAMTAIc0/hFy8RZqaB/MNwdY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Cg8lDoFec4nxn4ii7SgesxmcAdK/ZNLOi6F8E53v1gyb6dhcaSQ3/EepChN1EE7ri
-         PdHcEkZ4wmBKZVHZXlAR0Axg/WiQVXdc9BAgfZlNjb4rGDaiu4kRyocGIMv/T7wBMR
-         MxflRnIiu+vwQRcw+whzQ6OjfrlMmmT5Oa4PGt+Mx/IwfxlQzhohMkWUbRi3u6hd1q
-         Wba5BkCe3gusMjnr7aThGGrqpYpkTjqDM+ezRikDJbRcfCFU/zxb4n4Tt7PawBBTnr
-         bIEh4ze/hUCI1EpS+8TP0sdQx+TIiTj/9ChoepX5Fy9MB5aenX7Gf61IBY9dTCarAp
-         eMmy7vyDn1kNA==
-Date:   Tue, 12 Jan 2021 22:46:17 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Yu Zhao <yuzhao@google.com>,
-        Laurent Dufour <ldufour@linux.vnet.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>, surenb@google.com
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <20210112224616.GA10512@willie-the-truck>
-References: <20210105153727.GK3040@hirez.programming.kicks-ass.net>
- <bfb1cbe6-a705-469d-c95a-776624817e33@codeaurora.org>
- <0201238b-e716-2a3c-e9ea-d5294ff77525@linux.vnet.ibm.com>
- <X/3VE64nr91WCtuM@hirez.programming.kicks-ass.net>
- <ec912505-ed4d-a45d-2ed4-7586919da4de@linux.vnet.ibm.com>
- <C7D5A74C-25BF-458A-AAD9-61E484B9F225@gmail.com>
- <X/3+6ZnRCNOwhjGT@google.com>
- <2C7AE23B-ACA3-4D55-A907-AF781C5608F0@gmail.com>
- <20210112214337.GA10434@willie-the-truck>
- <F33D2DD9-97D5-44A0-890B-35FE686E36DC@gmail.com>
+        id S2438491AbhALWrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:47:39 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:59013 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730174AbhALWri (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 17:47:38 -0500
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id A518D1BF203;
+        Tue, 12 Jan 2021 22:46:56 +0000 (UTC)
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     a.zummo@towertech.it, Guixiong Wei <guixiong@codeaurora.org>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org
+Subject: Re: [PATCH] rtc: pm8xxx: Read ALARM_EN and update to alarm enabled status
+Date:   Tue, 12 Jan 2021 23:46:56 +0100
+Message-Id: <161049160654.346368.10438206173651410063.b4-ty@bootlin.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <1608809337-18852-1-git-send-email-guixiong@codeaurora.org>
+References: <1608809337-18852-1-git-send-email-guixiong@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <F33D2DD9-97D5-44A0-890B-35FE686E36DC@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 02:29:51PM -0800, Nadav Amit wrote:
-> > On Jan 12, 2021, at 1:43 PM, Will Deacon <will@kernel.org> wrote:
-> > 
-> > On Tue, Jan 12, 2021 at 12:38:34PM -0800, Nadav Amit wrote:
-> >>> On Jan 12, 2021, at 11:56 AM, Yu Zhao <yuzhao@google.com> wrote:
-> >>> On Tue, Jan 12, 2021 at 11:15:43AM -0800, Nadav Amit wrote:
-> >>>> I will send an RFC soon for per-table deferred TLB flushes tracking.
-> >>>> The basic idea is to save a generation in the page-struct that tracks
-> >>>> when deferred PTE change took place, and track whenever a TLB flush
-> >>>> completed. In addition, other users - such as mprotect - would use
-> >>>> the tlb_gather interface.
-> >>>> 
-> >>>> Unfortunately, due to limited space in page-struct this would only
-> >>>> be possible for 64-bit (and my implementation is only for x86-64).
-> >>> 
-> >>> I don't want to discourage you but I don't think this would end up
-> >>> well. PPC doesn't necessarily follow one-page-struct-per-table rule,
-> >>> and I've run into problems with this before while trying to do
-> >>> something similar.
-> >> 
-> >> Discourage, discourage. Better now than later.
-> >> 
-> >> It will be relatively easy to extend the scheme to be per-VMA instead of
-> >> per-table for architectures that prefer it this way. It does require
-> >> TLB-generation tracking though, which Andy only implemented for x86, so I
-> >> will focus on x86-64 right now.
-> > 
-> > Can you remind me of what we're missing on arm64 in this area, please? I'm
-> > happy to help get this up and running once you have something I can build
-> > on.
-> 
-> Let me first finish making something that we can use as a basis for a
-> discussion. I do not waste your time before I have something ready.
+On Thu, 24 Dec 2020 19:28:57 +0800, Guixiong Wei wrote:
+> ALARM_EN status is retained in PMIC register after device shutdown
+> if poweron_alarm is enabled. Read it to make sure the driver has
+> consistent value with the register status.
 
-Sure thing! Give me a shout when you're ready.
+Applied, thanks!
 
-Will
+[1/1] rtc: pm8xxx: Read ALARM_EN and update to alarm enabled status
+      commit: 121f54efc3fb9854f581fede4f719a4aef7ed5b3
+
+Best regards,
+-- 
+Alexandre Belloni <alexandre.belloni@bootlin.com>
