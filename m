@@ -2,255 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EA922F364C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:58:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54BDF2F3650
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:01:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391427AbhALQ6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:58:08 -0500
-Received: from foss.arm.com ([217.140.110.172]:49786 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726113AbhALQ6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:58:07 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 96892101E;
-        Tue, 12 Jan 2021 08:57:21 -0800 (PST)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2DC5E3F719;
-        Tue, 12 Jan 2021 08:57:21 -0800 (PST)
-Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
-To:     Vidya Sagar <vidyas@nvidia.com>,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org
-Cc:     lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        catalin.marinas@arm.com, will@kernel.org, robh@kernel.org,
-        sudeep.holla@arm.com, mark.rutland@arm.com,
-        linux-kernel@vger.kernel.org
-References: <20210105045735.1709825-1-jeremy.linton@arm.com>
- <9ecfbc2e-5f33-dd3c-0c3b-ee7c463b3e68@nvidia.com>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <ffc65624-197f-14cc-58da-2b1cfde285fc@arm.com>
-Date:   Tue, 12 Jan 2021 10:57:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S2404604AbhALQ7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:59:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725843AbhALQ7i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 11:59:38 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D27C061786;
+        Tue, 12 Jan 2021 08:58:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=W8sMe2vPnGNuau7lYL1rG0wWEO1MGNksSV6JbP+KXRU=; b=fuc0kPd50jC9pP+pM5HMJPVrw1
+        bn1MsFzPePeT3dMvCXifMdM+cyBh3dyB2A7Ypz3wavELXFqksqp0G7SGCCjDAbs/OyQNjnQNbG5Y6
+        ydx/Pm0suPbw/iXlkemkBE9fk9Spigk2EG0bpF4Zv3A8Lonpi1gEtbjOHeMLG+7h+r2SWMXdIy/e+
+        6UPkQCamW+VA/JqChv9B3RJ7Wp7BeVzztpfBLVdp2NAnu7srinxNUE04HKPfDt7l8xoHNyc5zzRTi
+        x93hzpyt8aN4nWzTi8QobzWx9TIlf3bas8kki5zY8pl4nouDHTL/i9XZJsenqYpOW73qHYgrVPLv0
+        smU62aIg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1kzMzW-0054Be-2e; Tue, 12 Jan 2021 16:58:02 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3932B30015A;
+        Tue, 12 Jan 2021 17:57:55 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1FE8420BF4004; Tue, 12 Jan 2021 17:57:55 +0100 (CET)
+Date:   Tue, 12 Jan 2021 17:57:55 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Laurent Dufour <ldufour@linux.vnet.ibm.com>
+Cc:     Vinayak Menon <vinmenon@codeaurora.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>, Yu Zhao <yuzhao@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>, surenb@google.com
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X/3VE64nr91WCtuM@hirez.programming.kicks-ass.net>
+References: <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
+ <X+ESkna2z3WjjniN@google.com>
+ <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
+ <20201221223041.GL6640@xz-x1>
+ <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
+ <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
+ <CAHk-=wj=CcOHQpG0cUGfoMCt2=Uaifpqq-p-mMOmW8XmrBn4fQ@mail.gmail.com>
+ <20210105153727.GK3040@hirez.programming.kicks-ass.net>
+ <bfb1cbe6-a705-469d-c95a-776624817e33@codeaurora.org>
+ <0201238b-e716-2a3c-e9ea-d5294ff77525@linux.vnet.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <9ecfbc2e-5f33-dd3c-0c3b-ee7c463b3e68@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <0201238b-e716-2a3c-e9ea-d5294ff77525@linux.vnet.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Jan 12, 2021 at 04:47:17PM +0100, Laurent Dufour wrote:
+> Le 12/01/2021 � 12:43, Vinayak Menon a �crit�:
 
-On 1/12/21 10:16 AM, Vidya Sagar wrote:
-> 
-> 
-> On 1/5/2021 10:27 AM, Jeremy Linton wrote:
->> External email: Use caution opening links or attachments
->>
->>
->> Given that most arm64 platform's PCI implementations needs quirks
->> to deal with problematic config accesses, this is a good place to
->> apply a firmware abstraction. The ARM PCI SMMCCC spec details a
->> standard SMC conduit designed to provide a simple PCI config
->> accessor. This specification enhances the existing ACPI/PCI
->> abstraction and expects power, config, etc functionality is handled
->> by the platform. It also is very explicit that the resulting config
->> space registers must behave as is specified by the pci specification.
->>
->> Lets hook the normal ACPI/PCI config path, and when we detect
->> missing MADT data, attempt to probe the SMC conduit. If the conduit
->> exists and responds for the requested segment number (provided by the
->> ACPI namespace) attach a custom pci_ecam_ops which redirects
->> all config read/write requests to the firmware.
->>
->> This patch is based on the Arm PCI Config space access document @
->> https://developer.arm.com/documentation/den0115/latest
->>
->> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
->> ---
->>   arch/arm64/kernel/pci.c   | 87 +++++++++++++++++++++++++++++++++++++++
->>   include/linux/arm-smccc.h | 26 ++++++++++++
->>   2 files changed, 113 insertions(+)
->>
->> diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
->> index 1006ed2d7c60..56d3773aaa25 100644
->> --- a/arch/arm64/kernel/pci.c
->> +++ b/arch/arm64/kernel/pci.c
->> @@ -7,6 +7,7 @@
->>    */
->>
->>   #include <linux/acpi.h>
->> +#include <linux/arm-smccc.h>
->>   #include <linux/init.h>
->>   #include <linux/io.h>
->>   #include <linux/kernel.h>
->> @@ -107,6 +108,90 @@ static int pci_acpi_root_prepare_resources(struct 
->> acpi_pci_root_info *ci)
->>          return status;
->>   }
->>
->> +static int smccc_pcie_check_conduit(u16 seg)
->> +{
->> +       struct arm_smccc_res res;
->> +
->> +       if (arm_smccc_1_1_get_conduit() == SMCCC_CONDUIT_NONE)
->> +               return -EOPNOTSUPP;
->> +
->> +       arm_smccc_smc(SMCCC_PCI_VERSION, 0, 0, 0, 0, 0, 0, 0, &res);
->> +       if ((int)res.a0 < 0)
->> +               return -EOPNOTSUPP;
->> +
->> +       arm_smccc_smc(SMCCC_PCI_SEG_INFO, seg, 0, 0, 0, 0, 0, 0, &res);
->> +       if ((int)res.a0 < 0)
->> +               return -EOPNOTSUPP;
->> +
->> +       pr_info("PCI: SMC conduit attached to segment %d\n", seg);
-> Shouldn't this print be moved towards the end of 
-> pci_acpi_setup_smccc_mapping() API?
+> > Possibility of race against other PTE modifiers
+> > 
+> > 1) Fork - We have seen a case of SPF racing with fork marking PTEs RO and that
+> > is described and fixed here https://lore.kernel.org/patchwork/patch/1062672/
 
-Thanks for looking at this.
+Right, that's exactly the kind of thing I was worried about.
 
-It probably should be, the assumption was that it would attach at this 
-point, but its possible the message is inaccurate if something fails a 
-bit later. I left it there because the segment number is easily 
-available. I've been playing with this a bit for the V2 where I added 
-the additional function checks.
+> > 2) mprotect - change_protection in mprotect which does the deferred flush is
+> > marked under vm_write_begin/vm_write_end, thus SPF bails out on faults
+> > on those VMAs.
 
+Sure, mprotect also changes vm_flags, so it really needs that anyway.
 
+> > 3) userfaultfd - mwriteprotect_range is not protected unlike in (2) above.
+> > But SPF does not take UFFD faults.
+> > 4) hugetlb - hugetlb_change_protection - called from mprotect and covered by
+> > (2) above.
 
-> 
->> +
->> +       return 0;
->> +}
->> +
->> +static int smccc_pcie_config_read(struct pci_bus *bus, unsigned int 
->> devfn,
->> +                                 int where, int size, u32 *val)
->> +{
->> +       struct arm_smccc_res res;
->> +
->> +       devfn |= bus->number << 8;
->> +       devfn |= bus->domain_nr << 16;
->> +
->> +       arm_smccc_smc(SMCCC_PCI_READ, devfn, where, size, 0, 0, 0, 0, 
->> &res);
->> +       if (res.a0) {
->> +               *val = ~0;
->> +               return -PCIBIOS_BAD_REGISTER_NUMBER;
->> +       }
->> +
->> +       *val = res.a1;
->> +       return PCIBIOS_SUCCESSFUL;
->> +}
->> +
->> +static int smccc_pcie_config_write(struct pci_bus *bus, unsigned int 
->> devfn,
->> +                                  int where, int size, u32 val)
->> +{
->> +       struct arm_smccc_res res;
->> +
->> +       devfn |= bus->number << 8;
->> +       devfn |= bus->domain_nr << 16;
->> +
->> +       arm_smccc_smc(SMCCC_PCI_WRITE, devfn, where, size, val, 0, 0, 
->> 0, &res);
->> +       if (res.a0)
->> +               return -PCIBIOS_BAD_REGISTER_NUMBER;
->> +
->> +       return PCIBIOS_SUCCESSFUL;
->> +}
->> +
->> +static const struct pci_ecam_ops smccc_pcie_ecam_ops = {
->> +       .bus_shift      = 8,
->> +       .pci_ops        = {
->> +               .read           = smccc_pcie_config_read,
->> +               .write          = smccc_pcie_config_write,
->> +       }
->> +};
->> +
->> +static struct pci_config_window *
->> +pci_acpi_setup_smccc_mapping(struct acpi_pci_root *root)
->> +{
->> +       struct device *dev = &root->device->dev;
->> +       struct resource *bus_res = &root->secondary;
->> +       struct pci_config_window *cfg;
->> +
->> +       cfg = kzalloc(sizeof(*cfg), GFP_KERNEL);
->> +       if (!cfg)
->> +               return ERR_PTR(-ENOMEM);
->> +
->> +       cfg->parent = dev;
->> +       cfg->ops = &smccc_pcie_ecam_ops;
->> +       cfg->busr.start = bus_res->start;
->> +       cfg->busr.end = bus_res->end;
->> +       cfg->busr.flags = IORESOURCE_BUS;
->> +
->> +       cfg->res.name = "PCI SMCCC";
->> +       if (cfg->ops->init)
-> Since there is no init implemented, what is the purpose of having this?
+> > 5) Concurrent faults - SPF does not handle all faults. Only anon page faults.
 
-Its basically dead.
+What happened to shared/file-backed stuff? ISTR I had that working.
 
+> > Of which do_anonymous_page and do_swap_page are NONE/NON-PRESENT->PRESENT
+> > transitions without tlb flush. And I hope do_wp_page with RO->RW is fine as well.
 
-> 
->> +               cfg->ops->init(cfg);
->> +       return cfg;
->> +}
->> +
->>   /*
->>    * Lookup the bus range for the domain in MCFG, and set up config space
->>    * mapping.
->> @@ -125,6 +210,8 @@ pci_acpi_setup_ecam_mapping(struct acpi_pci_root 
->> *root)
->>
->>          ret = pci_mcfg_lookup(root, &cfgres, &ecam_ops);
->>          if (ret) {
->> +               if (!smccc_pcie_check_conduit(seg))
->> +                       return pci_acpi_setup_smccc_mapping(root);
->>                  dev_err(dev, "%04x:%pR ECAM region not found\n", seg, 
->> bus_res);
->>                  return NULL;
->>          }
->> diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
->> index f860645f6512..327f52533c71 100644
->> --- a/include/linux/arm-smccc.h
->> +++ b/include/linux/arm-smccc.h
->> @@ -89,6 +89,32 @@
->>
->>   #define SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED   1
->>
->> +/* PCI ECAM conduit */
->> +#define SMCCC_PCI_VERSION                                              \
->> +       ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,                         \
->> +                          ARM_SMCCC_SMC_32,                            \
->> +                          ARM_SMCCC_OWNER_STANDARD, 0x0130)
->> +
->> +#define SMCCC_PCI_FEATURES                                             \
->> +       ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,                         \
->> +                          ARM_SMCCC_SMC_32,                            \
->> +                          ARM_SMCCC_OWNER_STANDARD, 0x0131)
->> +
->> +#define SMCCC_PCI_READ                                                 \
->> +       ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,                         \
->> +                          ARM_SMCCC_SMC_32,                            \
->> +                          ARM_SMCCC_OWNER_STANDARD, 0x0132)
->> +
->> +#define 
->> SMCCC_PCI_WRITE                                                        \
->> +       ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,                         \
->> +                          ARM_SMCCC_SMC_32,                            \
->> +                          ARM_SMCCC_OWNER_STANDARD, 0x0133)
->> +
->> +#define SMCCC_PCI_SEG_INFO                                             \
->> +       ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,                         \
->> +                          ARM_SMCCC_SMC_32,                            \
->> +                          ARM_SMCCC_OWNER_STANDARD, 0x0134)
->> +
->>   /* Paravirtualised time calls (defined by ARM DEN0057A) */
->>   #define ARM_SMCCC_HV_PV_TIME_FEATURES                          \
->>          ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,                 \
->> -- 
->> 2.26.2
->>
+The tricky one is demotion, specifically write to non-write.
+
+> > I could not see a case where speculative path cannot see a PTE update done via
+> > a fault on another CPU.
+
+One you didn't mention is the NUMA balancing scanning crud; although I
+think that's fine, loosing a PTE update there is harmless. But I've not
+thought overly hard on it.
+
+> You explained it fine. Indeed SPF is handling deferred TLB invalidation by
+> marking the VMA through vm_write_begin/end(), as for the fork case you
+> mentioned. Once the PTL is held, and the VMA's seqcount is checked, the PTE
+> values read are valid.
+
+That should indeed work, but are we really sure we covered them all?
+Should we invest in better TLBI APIs to make sure we can't get this
+wrong?
+
 
