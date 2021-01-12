@@ -2,103 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576782F2B29
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:22:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E5482F2B2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390658AbhALJVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:21:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51564 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390337AbhALJVO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:21:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610443188;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=YQ3Mf9K3OSq1tFMsqSNt3O1g/fXryt3OcbUzn0sGHAQ=;
-        b=hcV1VOFmYNcwr9p+qAvvwfV1sekAApmbWyjF562yHFrXbVgrgo2/e/hcqUk1X1XJvjgqQc
-        d2M1c2SdsqT5Jw9igNTC4uCx5Hw3nur37NjKdhfknHMDytP4PNeWJbU5ikV3dVWnTGLV0t
-        ERSEvcRN4Mg7R1UOZnYD1P2RywpO+ek=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-19-4Wb95AP9OUmKJVujVKyyGQ-1; Tue, 12 Jan 2021 04:19:46 -0500
-X-MC-Unique: 4Wb95AP9OUmKJVujVKyyGQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B5811926DA4;
-        Tue, 12 Jan 2021 09:19:43 +0000 (UTC)
-Received: from krava (unknown [10.40.195.50])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 0EA7F74440;
-        Tue, 12 Jan 2021 09:19:38 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 10:19:37 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Alexei Budankov <abudankov@huawei.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCHv6 0/4] perf: Add mmap2 build id support
-Message-ID: <20210112091937.GA1252618@krava>
-References: <20210111213823.1249420-1-jolsa@kernel.org>
- <20210112024958.4utm7ijkpluu3g36@ast-mbp>
+        id S2390787AbhALJVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:21:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390543AbhALJVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 04:21:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEE3A22DFB;
+        Tue, 12 Jan 2021 09:20:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610443250;
+        bh=AvDm3A0NwcBh8DpeHDJMysSFcCODqWM8mWVyrY9bvlM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mokqjJx0zhVyqNLZaWiHL4Of+xS1j4KU5dL2TfshyVqjH980lIMXG19Yw6Ra021tV
+         rAxTSpLX9Lh47bXxzjFZV9dH9er33YCd//tKv7EXy1jnqg2IDWB+UEkMsMvx/oqLC/
+         zgao6yKTrsLJRg1b8LjgAUgRM3zODCbFqXSJsDA3lAe9Ww/Tl03MamZD/I+UZu/IDR
+         EyjcZBN6QKsNqlg8r8vD433hCwoIEmYjn7pWGywwQb96ou03t5O0RiwxtyA79pH9T9
+         15t5D3p49STYo3RAZUtNgiJXsTM8geOOutBKOGbqfHNmeMASp+dIxIAUEr+0RXVgJk
+         A4NuVM265MXug==
+Date:   Tue, 12 Jan 2021 10:20:45 +0100
+From:   Robert Richter <rric@kernel.org>
+To:     menglong8.dong@gmail.com
+Cc:     khuong@os.amperecomputing.com, bp@alien8.de, mchehab@kernel.org,
+        tony.luck@intel.com, james.morse@arm.com,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+Subject: Re: [PATCH] edac: remove redundant error print in xgene_edac_probe
+Message-ID: <X/1p7RgQQ+a+ndqZ@rric.localdomain>
+References: <20210112084605.7110-1-dong.menglong@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210112024958.4utm7ijkpluu3g36@ast-mbp>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20210112084605.7110-1-dong.menglong@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 06:49:58PM -0800, Alexei Starovoitov wrote:
-> On Mon, Jan 11, 2021 at 10:38:19PM +0100, Jiri Olsa wrote:
-> > hi,
-> > adding the support to have buildid stored in mmap2 event,
-> > so we can bypass the final perf record hunt on build ids.
-> > 
-> > This patchset allows perf to record build ID in mmap2 event,
-> > and adds perf tooling to store/download binaries to .debug
-> > cache based on these build IDs.
-> > 
-> > Note that the build id retrieval code is stolen from bpf
-> > code, where it's been used (together with file offsets)
-> > to replace IPs in user space stack traces. It's now added
-> > under lib directory.
-> > 
-> > v6 changes:
-> >   - last 4 patches rebased Arnaldo's perf/core
+On 12.01.21 00:46:05, menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <dong.menglong@zte.com.cn>
 > 
-> There were no issues with v5 as far as I can remember.
-> This is just a resubmit to get it landed ?
+> Coccinelle reports a redundant error print in xgene_edac_probe.
+> As 'platform_get_irq' already prints the error message, error
+> print here is redundant and can be removed.
+> 
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+> ---
+>  drivers/edac/xgene_edac.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/edac/xgene_edac.c b/drivers/edac/xgene_edac.c
+> index 1d2c27a00a4a..1d583f0ea4dc 100644
+> --- a/drivers/edac/xgene_edac.c
+> +++ b/drivers/edac/xgene_edac.c
+> @@ -1918,7 +1918,6 @@ static int xgene_edac_probe(struct platform_device *pdev)
+>  		for (i = 0; i < 3; i++) {
+>  			irq = platform_get_irq(pdev, i);
+>  			if (irq < 0) {
+> -				dev_err(&pdev->dev, "No IRQ resource\n");
 
-yes, exactly
+Better call platform_get_irq_optional() instead. That would keep the
+same error message patterns for all error paths of the probe function.
 
-> Last time we couldn't quite figure out which tree to go through.
-> I think the recommend path was to go via bpf-next.
-> Is it still the case?
+-Robert
 
-bpf-next would be best for kernel changes,
-  perf: Add build id data in mmap2 event
-  bpf: Add size arg to build_id_parse function
-  bpf: Move stack_map_get_build_id into lib
-
-the 'perf buildid-cache' change needs to go through Arnaldo's tree,
-because it depends on changes he already pulled in
-
-thanks,
-jirka
-
+>  				rc = -EINVAL;
+>  				goto out_err;
+>  			}
+> -- 
+> 2.17.1
+> 
