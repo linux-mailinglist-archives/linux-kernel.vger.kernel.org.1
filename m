@@ -2,105 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327AC2F2A4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA4E2F2A4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392414AbhALIrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 03:47:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55062 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727057AbhALIrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 03:47:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E2DD22D58;
-        Tue, 12 Jan 2021 08:46:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610441194;
-        bh=ciAXMWsi1OyGELvtpt/m0CxKb/Rp63H/1ov/9xDpsh0=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Dow033TIMEXBUvK39a+HbkQl5oExK3dD2H8Exj34bpAyN3K+YeGOG70iQbSyzOz59
-         K+v+e1FOSy3JA2W7gtCTMGyzZfdeaGk9hChJth9En0QvssfkedVOlk1/ZHP6V3hx1x
-         +5v7pZOhrffdm+fWLLEuOIhAl1NbhAw9IIDgv3eXALPd1EBSF0P2p8HibvAgeyqJT6
-         LXhfpGzcNFBrDAn9txs+Pg8yKuEXGWJctpWyPx9qJIbteSwoRRRwdpD6SRoGLE8gHT
-         dE5Z+puoi+dCmOhX7vvpMMXcycTaPz5VvGtkWCJhY3QUj6xEbyrTBMEqKZZye4xRzv
-         BeYP7sfjtOP4Q==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] Remove one more platform_device_add_properties()
- call
-In-Reply-To: <20210111141045.14027-1-heikki.krogerus@linux.intel.com>
-References: <20210111141045.14027-1-heikki.krogerus@linux.intel.com>
-Date:   Tue, 12 Jan 2021 10:46:17 +0200
-Message-ID: <87v9c24k6e.fsf@kernel.org>
+        id S2405596AbhALIrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 03:47:49 -0500
+Received: from mail-oi1-f173.google.com ([209.85.167.173]:46871 "EHLO
+        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732738AbhALIrs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 03:47:48 -0500
+Received: by mail-oi1-f173.google.com with SMTP id q205so1544799oig.13
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:47:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D79yAvxFkBso3i6vK6yIO4bEcxdNj8cx5BWEVmuRDLo=;
+        b=VUJPK4pU03Pedm0UiUda30x3YSY43Tk2PKjThMPxOZRk2+fbJ0uxL43te2hzbFZssK
+         JB/9JOpCvBcZ9E6tuJURUibIIgdVwFQ5u3I5vfL/28pnuCDo09eZYDGeL2oOlql+BIOo
+         CvKAJa2eoHGCHCQ5x36ieDXZGTj7v+izEztzUVLWhvAlTtJ9GP0mNRI3vfNaj4YH2Y7U
+         ACkcsTh3cbpnwME4ugTPSodOmjfVJEpEX0ZSNPzBi+XAJjM0wGM3dEjbC+HjuLss3QNP
+         xF6sZ05ihltzokotjYXsoiQp/huWrHbtzHvBjAD9S2jnaakkjsAUzMDms2P+JFFwGBXS
+         yLQA==
+X-Gm-Message-State: AOAM532RIQMQM5btr8PRRQobmFUd8W1qrB7P09cInVDVmx+9KJ6DnAnK
+        /zWAG6i2aH9tx3v/seCFSqADEf2aFgimKCl4I1o=
+X-Google-Smtp-Source: ABdhPJwpEXUQy50oYlHo5BtbF9034MvmIwzn2LxzbtoY0yQ++MTL5s0bBXWpwFRvz+Lqlo3gwrddRJosW6EMo6hPB/4=
+X-Received: by 2002:aca:4b16:: with SMTP id y22mr1719601oia.148.1610441227636;
+ Tue, 12 Jan 2021 00:47:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+References: <20210111125702.360745-1-geert+renesas@glider.be> <X/0nmQ/XBpj6PJAh@pendragon.ideasonboard.com>
+In-Reply-To: <X/0nmQ/XBpj6PJAh@pendragon.ideasonboard.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 12 Jan 2021 09:46:56 +0100
+Message-ID: <CAMuHMdVaJgHv0kRSLaFfPzD5hiJKQCg30D=7SAv0cPwR9j5DZw@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge: nwl-dsi: Avoid potential multiplication
+ overflow on 32-bit
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hi Laurent,
 
-Heikki Krogerus <heikki.krogerus@linux.intel.com> writes:
+On Tue, Jan 12, 2021 at 5:38 AM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+> On Mon, Jan 11, 2021 at 01:57:02PM +0100, Geert Uytterhoeven wrote:
+> > As nwl_dsi.lanes is u32, and NSEC_PER_SEC is 1000000000L, the second
+> > multiplication in
+> >
+> >     dsi->lanes * 8 * NSEC_PER_SEC
+> >
+> > will overflow on a 32-bit platform.  Fix this by making the constant
+> > unsigned long long, forcing 64-bit arithmetic.
+> >
+> > While iMX8 is arm64, this driver is currently used on 64-bit platforms
+> > only, where long is 64-bit, so this cannot happen.  But the issue may
+> > start to happen when the driver is reused for a 32-bit SoC, or when code
+> > is copied for a new driver.
+> >
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-> Hi Felipe, Rafael,
+> > --- a/drivers/gpu/drm/bridge/nwl-dsi.c
+> > +++ b/drivers/gpu/drm/bridge/nwl-dsi.c
+> > @@ -195,7 +195,7 @@ static u32 ps2bc(struct nwl_dsi *dsi, unsigned long long ps)
+> >       u32 bpp = mipi_dsi_pixel_format_to_bpp(dsi->format);
+> >
+> >       return DIV64_U64_ROUND_UP(ps * dsi->mode.clock * bpp,
+> > -                               dsi->lanes * 8 * NSEC_PER_SEC);
+> > +                               dsi->lanes * 8ULL * NSEC_PER_SEC);
 >
-> This is the second version of this series. There are no real changes,
-> but I added the Tiger Lake ID patch to this series in hope that it
-> will make your life a bit easier, assuming that Rafael will still pick
-> these.
->
->
-> The original over letter:
->
-> I originally introduced these as part of my series where I was
-> proposing PM ops for software nodes [1], but since that still needs
-> work, I'm sending these two separately.
->
-> So basically I'm only modifying dwc3-pci.c so it registers a software
-> node directly at this point. That will remove one more user of
-> platform_device_add_properties().
->
-> [1] https://lore.kernel.org/lkml/20201029105941.63410-1-heikki.krogerus@l=
-inux.intel.com/
->
-> thanks,
->
-> Heikki Krogerus (3):
->   software node: Introduce device_add_software_node()
->   usb: dwc3: pci: Register a software node for the dwc3 platform device
->   usb: dwc3: pci: ID for Tiger Lake CPU
+> I wonder if we could get rid of a whole class of bugs by turning
+> NSEC_PER_SEC into a ULL, but I suppose there are valid cases where a
+> 32-bit integer is enough.
 
-Looks good to me.
+Indeed, and 64-bit arithmetic is more expensive on 32-bit platforms.
+I considered that change, but doing so would require updates all over
+the place (e.g. printing a value derived from NSEC_PER_SEC, divisions
+ that need to be changed to do_div or div_u64(), ...)
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
+Note that the selftests already use such a definition.
 
-=2D-=20
-balbi
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks!
 
------BEGIN PGP SIGNATURE-----
+> How did you come across this by the way ?
 
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl/9YdkRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQZP8Q//SjHqtKRaghDM4izhNhkimSEdFbeFCGzK
-CmxKzi3ipE+TAXUceA2AEf1fjaVbn4L2yFQvaWx72exq3kco42rjNZMHURS+y0um
-zpFsaNsuzUojMJe9nJcOP2or0fU/5bZzl0Dt7FeEtT66wIwhBBW+YeuA5Acb4Cvz
-EV3JFq/YrCBoU5aaipyZmjH4E3WS8QWAfN40XkOc8Z5fGLNZ6XcdOyAxvLHX7W0S
-M0P1McOUPOA6weaRfbCfwHQ5g1hebPnpK/5kXBr4usxJ9TkjU4mGu3EFYtfhP1aq
-pds+DUXzTFnigBspfP/swr8t5lC7Qzqy07G4mKSNU0KnHH7lzrk1UKoKxlI5wy/o
-s+PhylYkLmpeoasRQzni6S3n48xxeHuZDWxSHA/NL8jV/J489SahB5qcz9p+omOP
-XCMM8Sf7xjSiXTohNw35RxqaAHo8kDJiof1yUSO13s9tpkjb8cSM+9wINGa34EPa
-wgZeHLmyMZ+dwMW7o6xoPktvi82ybcAvgpAdwOR4r+1uZGsvxds+EPtSZOI9cnc9
-1M8GnD/RnVJ5B2Aj+IZlsFcR3Elumk5NZJeJ/CnuXpBHshlZmStDDekoaZWGAOrd
-lK5VkgSUBxzl5hJrvna6MXS4nT3Ji4BWp6yAoykIMuDYjW6rsW0ssHAgk22BOVGC
-JQIyOTA7uKk=
-=FYgQ
------END PGP SIGNATURE-----
---=-=-=--
+https://lore.kernel.org/linux-renesas-soc/CAMuHMdXQvPY_mYicjPKjDSCwdO_rP-9PJOvqD0J6=S3Opr1ycg@mail.gmail.com/
+and of course I grepped for similar use patterns...
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
