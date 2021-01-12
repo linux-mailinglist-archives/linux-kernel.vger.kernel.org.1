@@ -2,92 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C6B02F278E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 06:13:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 327742F2793
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 06:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732177AbhALFMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 00:12:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58328 "EHLO
+        id S2388034AbhALFOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 00:14:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbhALFMx (ORCPT
+        with ESMTP id S1732239AbhALFOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 00:12:53 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0471C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 21:12:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=4SQiotDc0WyN3zkfnQk8JopWJhUdwzcHG6l2z2LoUko=; b=Ran4ZpWTGmneDCBX81RUxf2h+D
-        106DfrT1pW1sj7wzWNTWkiT7gIQgNRyfF+QKWPMrAlPOQp+NIFcX9t8X1kQFUV7R2jloKF9MxThhl
-        ZdFzNZzeSXk7WsHBU8OZ0bXtC+DQZ1sp93qKVfIoi7V+BfQHHEOcdUKlWH/fuzB0Yu1mUlLSjl8MS
-        uA3ybnbYJc2zWNpCucyGe49w0DjvuaomGu7cJrhXnD4XRIm5CsPMwcHdXt/fNsrfGLEsVsHdhF90m
-        yUY4JO3PCHdNONCUsvMrgEIjGdmrx9XLTEmGq6UL4uPCrvcYMvompThMrY0ffNuGpCG2bsFaLp5aS
-        tKPWHdHg==;
-Received: from [2601:1c0:6280:3f0::79df]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kzByT-0004Aq-PA; Tue, 12 Jan 2021 05:12:10 +0000
-Subject: Re: [PATCH] arch: x866: kernel: cpu: Take away a single latter to
- match the structure member below
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        fenghua.yu@intel.com, reinette.chatre@intel.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, linux-kernel@vger.kernel.org
-References: <20210112050111.5584-1-unixbhaskar@gmail.com>
- <e16c1779-37e3-4cb1-e68b-888b645cc7a2@embeddedor.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <f0f447a2-a357-51d8-330e-3eee0dd777f6@infradead.org>
-Date:   Mon, 11 Jan 2021 21:12:03 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 12 Jan 2021 00:14:34 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B84C061786;
+        Mon, 11 Jan 2021 21:13:54 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id w18so1567929iot.0;
+        Mon, 11 Jan 2021 21:13:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IbXhOJ56RwRmP5zF5gVpCwjA2Ob1+5GjKR6R6OZsZG8=;
+        b=XQvAIkCZHT3eOaQWqsa5MfFBNLGrNt52eer5VlWISH+7k4o+fUhFclDOMWq29WrM4O
+         BHcscU6I0wFGEYzgfP6W1+UMF+Bf778iBsNkUXCUgvPWnDiMXmWlp4l/vjhFmQ06a1Kh
+         qKaWe+UNDo29BvX1i45atZVCQsS8NzcztRmiAIKVjjfZpilPjqDlYIbnlVHOEAEINQqf
+         /0SlKbdsVqkwaVw7cbZ/omiXHtXUYHa3ixukOuE3rLFmPe3dv65m4ktg7xBACLpTobde
+         KApF7miS5XoZ67y+uBtN7Uoes3KCVXQ9ljxPPxKzJ2gMEX53k+QZocaLUzLehJlo2k5+
+         i0zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IbXhOJ56RwRmP5zF5gVpCwjA2Ob1+5GjKR6R6OZsZG8=;
+        b=hx/t7hRIZfTRX9HA2+k6YR9wvThaYlptyf+q/CAsE1xAyZMiNqK2ZipOvaadgk04aC
+         S0l32fqY8qL/duxa5G1Ohp0rdQ6+SDNrLtXs0E41+7ellAsT44nYKGn6ER5/ZI7NcjmX
+         hggFMXZUOVssEEyEkoPQkv4whZ+FQbaYdoxq4KhjqAepH3+u898t0E7KsD/3HSXzuw9w
+         J4XTqkzaNyPopEAeMSeCXDAoX0rJciEfqHSdqCD6ipDHtZkv1KXf9NFZ0PvpenU4pt12
+         qQbPmwjOQ9ht+F5t8Iv8HyXI4wF4GiS/fStkdKI0vJ26wjN9ooIO6eE7WmbWPKNURz+R
+         CIPA==
+X-Gm-Message-State: AOAM532xlU04R5WcBvX8LjxqrC7wRR+h20kd5Cojb+wm5sSgFQ8dm1Eg
+        FXx6yQw8NPit8NzOE3Zx2I4=
+X-Google-Smtp-Source: ABdhPJz1LCsKd5Owfk2BbzcKfOUv/VmBeFnHA2Q/qg7CgxJxyCZyItZaXBWs8agXTHj5dowPoFu4Mw==
+X-Received: by 2002:a05:6638:216e:: with SMTP id p14mr2742011jak.70.1610428433876;
+        Mon, 11 Jan 2021 21:13:53 -0800 (PST)
+Received: from localhost.localdomain ([156.146.36.246])
+        by smtp.gmail.com with ESMTPSA id m19sm1616223ila.81.2021.01.11.21.13.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 21:13:53 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     mw@semihalf.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gustavo@embeddedor.com
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH V2] drivers: net: marvell:  Fix two spellings, controling to controlling and oen to one
+Date:   Tue, 12 Jan 2021 10:43:42 +0530
+Message-Id: <20210112051342.26064-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <e16c1779-37e3-4cb1-e68b-888b645cc7a2@embeddedor.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/11/21 9:10 PM, Gustavo A. R. Silva wrote:
-> 
-> The subject line contains a typo:
-> 
-> s/latter/letter
-> 
-> --
-> Gustavo
-> 
-> On 1/11/21 23:01, Bhaskar Chowdhury wrote:
->> s/kernlfs/kernfs/p
->>
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
->> ---
->>  arch/x86/kernel/cpu/resctrl/internal.h | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
->> index ee71c47844cb..3bfca0bebf56 100644
->> --- a/arch/x86/kernel/cpu/resctrl/internal.h
->> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
->> @@ -142,7 +142,7 @@ enum rdtgrp_mode {
->>
->>  /**
->>   * struct mongroup - store mon group's data in resctrl fs.
->> - * @mon_data_kn		kernlfs node for the mon_data directory
->> + * @mon_data_kn		kernfs node for the mon_data directory
+s/controling/controlling/
 
-and that should have an ending colon, as:
+s/oen/one/
 
- * @mon_data_kn:		blah blah
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ As Gustavo mentioned in reply, so included that missed one before
 
->>   * @parent:			parent rdtgrp
->>   * @crdtgrp_list:		child rdtgroup node list
->>   * @rmid:			rmid for this rdtgroup
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.h
+index 8867f25afab4..663157dc8062 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.h
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_cls.h
+@@ -143,7 +143,7 @@ struct mvpp2_cls_c2_entry {
+ /* Number of per-port dedicated entries in the C2 TCAM */
+ #define MVPP22_CLS_C2_PORT_N_FLOWS	MVPP2_N_RFS_ENTRIES_PER_FLOW
 
--- 
-~Randy
+-/* Each port has oen range per flow type + one entry controling the global RSS
++/* Each port has one range per flow type + one entry controlling the global RSS
+  * setting and the default rx queue
+  */
+ #define MVPP22_CLS_C2_PORT_RANGE	(MVPP22_CLS_C2_PORT_N_FLOWS + 1)
+--
+2.26.2
 
