@@ -2,107 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8272F2F4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:47:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A41752F2F52
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388269AbhALMqV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Jan 2021 07:46:21 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:43784 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387974AbhALMqU (ORCPT
+        id S2388493AbhALMq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:46:58 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:40202 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388394AbhALMqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:46:20 -0500
-Received: by mail-ot1-f45.google.com with SMTP id q25so2082511otn.10;
-        Tue, 12 Jan 2021 04:46:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=EFOSSjP2fTd1K6RGm8lMh2K690UVe2NBQkQwH5LWtVE=;
-        b=p51g4VnsBc0vJcrt93uyuSmVjBE/sxcuboKWaGe77/BJgtIimlu6aiZkk8G972lnMH
-         D8zZFwzWuCbS71U3rdIk64TrPfHG8XFu3SfO6V/XQSHCXpE8C22rww2HuWGBIx86Pbj7
-         G2R7yMCXbo23vF93s+Y6a1QXDyv5Sbev5lClTNM/HhtDsKqXRmYpnPUfC5hv9IA5RlGF
-         jJ0fC8JKmwJH21plPHe3pRQOMQ6ClXwTCOVSOLY17awOGxFBu11+FCP00K35fr2puhdo
-         tF0VQaQ+EPb0KlAcSlcVc2RbWBt2G2oOKoW3Nq1nkFYleieVkn7yUvxHfOS2jdu55Nzg
-         urJA==
-X-Gm-Message-State: AOAM53263x6SEFHgyZSZ78dgEnIlxjx/bQfwLMVWQnd2PYk7V3nPc/yX
-        AnwGfYmE94jeZG6AKLpFP8W9SsbgBUCpf5yGk1mpJKJn
-X-Google-Smtp-Source: ABdhPJyawNLYHpp3fs0HwK16+5LDEjwKVxHsqC5aggXbKqlM6e3ARb7zgK9iSZn6Zl/iLEr4qIO18zAKTIzYogi+Fb0=
-X-Received: by 2002:a9d:208a:: with SMTP id x10mr2572558ota.260.1610455537788;
- Tue, 12 Jan 2021 04:45:37 -0800 (PST)
+        Tue, 12 Jan 2021 07:46:55 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610455594; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=d9KzsDSUDaQzJ4IsFtpJ8BDiKCJOeDvBmZqSm7dAx6c=; b=QS0hT4YFLf8dUAuAlYuTb0zAvCUUDTir+c4QLEx9QbYKANVq8oVXLF5aIklIhCVdnbIILS9z
+ WRlSmGt45rbKalkFExWcuKX2eFaDkh7mHa2DDf2JZAtXb1MTDXc0Qa3O1cOxuyHscVqs1BEm
+ ckEuCp0ewsJtu7TUKSn7TjcnpyI=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5ffd99f4c88af061075d8f20 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Jan 2021 12:45:40
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3C5C0C433CA; Tue, 12 Jan 2021 12:45:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7F157C433C6;
+        Tue, 12 Jan 2021 12:45:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7F157C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Michal Kubecek <mkubecek@suse.cz>, linux-wireless@vger.kernel.org,
+        Mordechay Goodstein <mordechay.goodstein@intel.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arjen de Korte <suse+build@de-korte.org>,
+        Luca Coelho <luciano.coelho@intel.com>
+Subject: Re: regression in iwlwifi: page fault in iwl_dbg_tlv_alloc_region() (commit ba8f6f4ae254)
+References: <20201228115814.GA5880@lion.mk-sys.cz>
+        <87v9c2qtj9.fsf@tynnyri.adurom.net> <s5ha6tes58m.wl-tiwai@suse.de>
+Date:   Tue, 12 Jan 2021 14:45:33 +0200
+In-Reply-To: <s5ha6tes58m.wl-tiwai@suse.de> (Takashi Iwai's message of "Tue,
+        12 Jan 2021 13:35:05 +0100")
+Message-ID: <87v9c2ias2.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-References: <20201201213019.1558738-1-furquan@google.com> <e77e0569-568a-f7fb-9f0d-e64943b467f0@gmail.com>
-In-Reply-To: <e77e0569-568a-f7fb-9f0d-e64943b467f0@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 12 Jan 2021 13:45:25 +0100
-Message-ID: <CAJZ5v0jhniqG43F6hCqXdxQiQZRc67GdkdP0BXcRut=P7k7BVQ@mail.gmail.com>
-Subject: Re: [PATCH] drivers: core: Detach device from power domain on shutdown
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Furquan Shaikh <furquan@google.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 10:55 AM Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 02.12.2020 00:30, Furquan Shaikh пишет:
-> > When the system is powered off or rebooted, devices are not detached
-> > from their PM domain. This results in ACPI PM not being invoked and
-> > hence PowerResouce _OFF method not being invoked for any of the
-> > devices. Because the ACPI power resources are not turned off in case
-> > of poweroff and reboot, it violates the power sequencing requirements
-> > which impacts the reliability of the devices over the lifetime of the
-> > platform. This is currently observed on all Chromebooks using ACPI.
-> >
-> > In order to solve the above problem, this change detaches a device
-> > from its PM domain whenever it is shutdown. This action is basically
-> > analogous to ->remove() from driver model perspective. Detaching the
-> > device from its PM domain ensures that the ACPI PM gets a chance to
-> > turn off the power resources for the device thus complying with its
-> > power sequencing requirements.
-> >
-> > Signed-off-by: Furquan Shaikh <furquan@google.com>
-> > ---
-> >  drivers/base/core.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > index d661ada1518f..5823f1d719e1 100644
-> > --- a/drivers/base/core.c
-> > +++ b/drivers/base/core.c
-> > @@ -23,6 +23,7 @@
-> >  #include <linux/of_device.h>
-> >  #include <linux/genhd.h>
-> >  #include <linux/mutex.h>
-> > +#include <linux/pm_domain.h>
-> >  #include <linux/pm_runtime.h>
-> >  #include <linux/netdevice.h>
-> >  #include <linux/sched/signal.h>
-> > @@ -4057,6 +4058,8 @@ void device_shutdown(void)
-> >                       dev->driver->shutdown(dev);
-> >               }
-> >
-> > +             dev_pm_domain_detach(dev, true);
-> > +
-> >               device_unlock(dev);
-> >               if (parent)
-> >                       device_unlock(parent);
-> >
->
-> This patch broke system shutdown on NVIDIA Tegra using today's
-> linux-next because power domain can't be turned off until device drivers
-> handed control over device resets to the power domain of Power
-> Management controller on Tegra. This patch introduced the wrong
-> behaviour, apparently it should be made specific to ACPI only.
->
-> Please fix, thanks in advance.
+Takashi Iwai <tiwai@suse.de> writes:
 
-OK, so Greg please drop it.
+> On Tue, 12 Jan 2021 12:33:14 +0100,
+> Kalle Valo wrote:
+>> 
+>> (adding luca)
+>> 
+>> Michal Kubecek <mkubecek@suse.cz> writes:
+>> 
+>> > FYI, there is a regression in iwlwifi driver caused by commit
+>> > ba8f6f4ae254 ("iwlwifi: dbg: add dumping special device memory")
+>> > reported at
+>> >
+>> >   https://bugzilla.kernel.org/show_bug.cgi?id=210733
+>> >   https://bugzilla.suse.com/show_bug.cgi?id=1180344
+>> >
+>> > The problem seems to be an attempt to write terminating null character
+>> > into a string which may be read only. There is also a proposed fix.
+>> 
+>> Can someone submit a proper patch, please? See instructions below how to
+>> submit.
+>> 
+>> And please add Fixes tag to the commit log:
+>> 
+>> Fixes: ba8f6f4ae254 ("iwlwifi: dbg: add dumping special device memory")
+>
+> OK, I'll do it for my own
+
+Thanks.
+
+> but really I hoped that someone would have reacted on the bugzilla
+> report before the official patch submission. So far no one from the
+> upstream devs showed interest in the bug at all, unfortunately.
+
+Bugzilla is problematic as I don't know if anyone tracks it actively, at
+least I don't have time for that. I recommend reporting all wireless
+issues to mailing lists to make sure everyone see it.
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
