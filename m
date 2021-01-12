@@ -2,134 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D6942F36A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64ED52F36B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:12:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392610AbhALRI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:08:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49580 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391783AbhALRI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:08:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D26E2311F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 17:07:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610471266;
-        bh=cvSSa71LyJluu9Pmxtib+8PkanVmQCGP38gGA91zZLo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aiX6W+2hh9vDBoB5yv2VVNmnSpj5y6boU05JLBlRKrkF6ssO1umskBbq9qpjMFke7
-         DfaIo30hZbYD26zXLgy0bUfbG7lGPEhk/WKRlS7KnJ/WY8cXIiOHa8UvajWoVj1lJ/
-         b/ZibR6VJzQ7PgQfiTRZs2C9vHeXYEKiSnEVGfoOdJHfjLVaXxeWScOZB78JkKE7YF
-         /TYMBS6N+gUlsmY5LW/jZq7grlkjntd0SeaTJd0vpJ3d9M3GuZa1NR3IFkhg6W5F/J
-         tyQpOIL1gfwdQIRnbA6Uq3+sqDvYc+3BIb34M/dOQ2JHItgbGGAE4zVNqUROb1Fi4j
-         xI1wJKljfY3VQ==
-Received: by mail-ed1-f44.google.com with SMTP id i24so3125138edj.8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:07:46 -0800 (PST)
-X-Gm-Message-State: AOAM532tXuKbdKZJzQAaasE4PYNuzBd9iMkT8wzK+CgWSqezBgKH7x+5
-        tRw6fTYRr7Dsg0uRgL5lwO+6gG0fNWTwUdVrs+6/Yw==
-X-Google-Smtp-Source: ABdhPJzR3berhPHmwdu4k3CI9o5QDPNM8DlEFu4t/iWEZD4mSxM9oS5q3rpkf6x6Hf+3Dgdkqu5GN94T109tKPuYAW0=
-X-Received: by 2002:aa7:c3cd:: with SMTP id l13mr91352edr.97.1610471265004;
- Tue, 12 Jan 2021 09:07:45 -0800 (PST)
+        id S2406050AbhALRLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:11:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54052 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406000AbhALRLh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 12:11:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610471410;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0PkzLvgcA4r37DaY0fgu41zgOmPFRngjc6RumeAnzi8=;
+        b=iv0IbO12/dZZwiXnnPUx0ih4J5GxOE6aAzEnV668T3V2S9jCp/TvbA/YhaqFFjP9totlMl
+        5iqJ/CmWsAsBE0jAn0z5Pg2IBXexLkdDMUiSJk5zHxsr+HnDbUB89mPzqb1pnd5xlbWsBh
+        +wXkKT2OmcqvZGio1rv0SquEAGhumLU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-413-eKLBVP_zMJadl95gHCJEmg-1; Tue, 12 Jan 2021 12:10:06 -0500
+X-MC-Unique: eKLBVP_zMJadl95gHCJEmg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 63A428015A6;
+        Tue, 12 Jan 2021 17:10:04 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0C74A5D9D2;
+        Tue, 12 Jan 2021 17:10:00 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <E090372C-06A3-4991-8FC3-F06A0DA60729@oracle.com>
+References: <E090372C-06A3-4991-8FC3-F06A0DA60729@oracle.com> <20200916004927.64276-1-eric.snowberg@oracle.com> <1360578.1607593748@warthog.procyon.org.uk>
+To:     Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     dhowells@redhat.com, dwmw2@infradead.org,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        jmorris@namei.org, serge@hallyn.com, nayna@linux.ibm.com,
+        Mimi Zohar <zohar@linux.ibm.com>, erichte@linux.ibm.com,
+        mpe@ellerman.id.au, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v4] certs: Add EFI_CERT_X509_GUID support for dbx entries
 MIME-Version: 1.0
-References: <20210110004435.26382-1-aarcange@redhat.com> <CAHk-=wghqNywtf=sRv_5FmG=+hPGqj=KWakw34tNeoZ1wPuaHg@mail.gmail.com>
- <CAHk-=wj5=1DKbQut1-21EwQbMSghNL3KOSd82rNrBhuG9+eekA@mail.gmail.com>
- <X/prosulFrEoNnoF@redhat.com> <CAHk-=wjZTMsv0_GOyQpLRk_5U1r5W8e21f8sV0jykK=z47hjGQ@mail.gmail.com>
- <CAHk-=wgi31FKc9AL6m87+pb2B79V2g_QjdhmtJNW8Pnq2ERQ-Q@mail.gmail.com>
- <45806a5a-65c2-67ce-fc92-dc8c2144d766@nvidia.com> <CAHk-=wipa-9wEuWHBjourmXAVHdeqDa59UxW6ZJ_Oqg6-Dwvdw@mail.gmail.com>
- <CAHk-=wje9r3fREBdZcOu=NihGczBtkqkhXRPDhY-ZkNVv=thiQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wje9r3fREBdZcOu=NihGczBtkqkhXRPDhY-ZkNVv=thiQ@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 12 Jan 2021 09:07:31 -0800
-X-Gmail-Original-Message-ID: <CALCETrWEAOj28Y6SaBVuxahuRmk9exp1fqcJO0ibGKbFw4HQ4A@mail.gmail.com>
-Message-ID: <CALCETrWEAOj28Y6SaBVuxahuRmk9exp1fqcJO0ibGKbFw4HQ4A@mail.gmail.com>
-Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2560431.1610471400.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 12 Jan 2021 17:10:00 +0000
+Message-ID: <2560432.1610471400@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 2:18 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Mon, Jan 11, 2021 at 11:19 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
+How about the attached?  I've changed the function names to something that=
+ I
+think reads better, but otherwise it's the same.
 
-> Actually, what I think might be a better model is to actually
-> strengthen the rules even more, and get rid of GUP_PIN_COUNTING_BIAS
-> entirely.
->
-> What we could do is just make a few clear rules explicit (most of
-> which we already basically hold to). Starting from that basic
->
->  (a) Anonymous pages are made writable (ie COW) only when they have a
-> page_count() of 1
+David
+---
+commit 8913866babb96fcfe452aac6042ca8862d4c0b53
+Author: Eric Snowberg <eric.snowberg@oracle.com>
+Date:   Tue Sep 15 20:49:27 2020 -0400
 
-Seems reasonable to me.
+    certs: Add EFI_CERT_X509_GUID support for dbx entries
+    =
 
->
-> That very simple rule then automatically results in the corollary
->
->  (b) a writable page in a COW mapping always starts out reachable
-> _only_ from the page tables
+    The Secure Boot Forbidden Signature Database, dbx, contains a list of =
+now
+    revoked signatures and keys previously approved to boot with UEFI Secu=
+re
+    Boot enabled.  The dbx is capable of containing any number of
+    EFI_CERT_X509_SHA256_GUID, EFI_CERT_SHA256_GUID, and EFI_CERT_X509_GUI=
+D
+    entries.
+    =
 
-Seems reasonable.  I guess that if the COW is triggered by GUP, then
-it starts out reachable only from the page tables but then because
-reachable through GUP very soon thereafter.
+    Currently when EFI_CERT_X509_GUID are contained in the dbx, the entrie=
+s are
+    skipped.
+    =
 
->
-> and now we could have a couple of really simple new rules:
->
->  (c) we never ever make a writable page in a COW mapping read-only
-> _unless_ it has a page_count() of 1
+    Add support for EFI_CERT_X509_GUID dbx entries. When a EFI_CERT_X509_G=
+UID
+    is found, it is added as an asymmetrical key to the .blacklist keyring=
+.
+    Anytime the .platform keyring is used, the keys in the .blacklist keyr=
+ing
+    are referenced, if a matching key is found, the key will be rejected.
+    =
 
-I don't love this.  Having mprotect() fail in a multithreaded process
-because another thread happens to be doing a short-lived IO seems like
-it may result in annoying intermittent bugs.
+    Signed-off-by: Eric Snowberg <eric.snowberg@oracle.com>
+    Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+    Signed-off-by: David Howells <dhowells@redhat.com>
 
-As I understand it, the issue is that the way we determine that we
-need to COW a COWable page is that we see that it's read-only.  It
-would be nice if we could separately track "the VMA allows writes" and
-"this PTE points to a page that is private to the owning VMA", but
-maybe there's no bit available for the latter other than looking at RO
-vs RW directly.
+diff --git a/certs/blacklist.c b/certs/blacklist.c
+index 6514f9ebc943..a7f021878a4b 100644
+--- a/certs/blacklist.c
++++ b/certs/blacklist.c
+@@ -100,6 +100,38 @@ int mark_hash_blacklisted(const char *hash)
+ 	return 0;
+ }
+ =
 
->
->  (d) we never create a swap cache page out of a writable COW mapping page
->
-> Now, if you combine these rules, the whole need for the
-> GUP_PIN_COUNTING_BIAS basically goes away.
->
-> Why? Because we know that the _only_ thing that can elevate the
-> refcount of a writable COW page is GUP - we'll just make sure nothing
-> else touches it.
++int add_key_to_revocation_list(const char *data, size_t size)
++{
++	key_ref_t key;
++
++	key =3D key_create_or_update(make_key_ref(blacklist_keyring, true),
++				   "asymmetric",
++				   NULL,
++				   data,
++				   size,
++				   ((KEY_POS_ALL & ~KEY_POS_SETATTR) | KEY_USR_VIEW),
++				   KEY_ALLOC_NOT_IN_QUOTA | KEY_ALLOC_BUILT_IN);
++
++	if (IS_ERR(key)) {
++		pr_err("Problem with revocation key (%ld)\n", PTR_ERR(key));
++		return PTR_ERR(key);
++	}
++
++	return 0;
++}
++
++int is_key_on_revocation_list(struct pkcs7_message *pkcs7)
++{
++	int ret;
++
++	ret =3D validate_trust(pkcs7, blacklist_keyring);
++
++	if (ret =3D=3D 0)
++		return -EKEYREJECTED;
++
++	return -ENOKEY;
++}
++
+ /**
+  * is_hash_blacklisted - Determine if a hash is blacklisted
+  * @hash: The hash to be checked as a binary blob
+diff --git a/certs/blacklist.h b/certs/blacklist.h
+index 1efd6fa0dc60..420bb7c86e07 100644
+--- a/certs/blacklist.h
++++ b/certs/blacklist.h
+@@ -1,3 +1,15 @@
+ #include <linux/kernel.h>
++#include <linux/errno.h>
++#include <crypto/pkcs7.h>
+ =
 
-How common is !FOLL_WRITE GUP?  We could potentially say that a
-short-term !FOLL_WRITE GUP is permitted on an RO COW page and that a
-subsequent COW on the page will wait for the GUP to go away.  This
-might be too big a can of worms for the benefit it would provide,
-though.
+ extern const char __initconst *const blacklist_hashes[];
++
++#ifdef CONFIG_INTEGRITY_PLATFORM_KEYRING
++#define validate_trust pkcs7_validate_trust
++#else
++static inline int validate_trust(struct pkcs7_message *pkcs7,
++				 struct key *trust_keyring)
++{
++	return -ENOKEY;
++}
++#endif
+diff --git a/certs/system_keyring.c b/certs/system_keyring.c
+index 798291177186..cc165b359ea3 100644
+--- a/certs/system_keyring.c
++++ b/certs/system_keyring.c
+@@ -241,6 +241,12 @@ int verify_pkcs7_message_sig(const void *data, size_t=
+ len,
+ 			pr_devel("PKCS#7 platform keyring is not available\n");
+ 			goto error;
+ 		}
++
++		ret =3D is_key_on_revocation_list(pkcs7);
++		if (ret !=3D -ENOKEY) {
++			pr_devel("PKCS#7 platform key is on revocation list\n");
++			goto error;
++		}
+ 	}
+ 	ret =3D pkcs7_validate_trust(pkcs7, trusted_keys);
+ 	if (ret < 0) {
+diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.h
+index fb8b07daa9d1..61f98739e8b1 100644
+--- a/include/keys/system_keyring.h
++++ b/include/keys/system_keyring.h
+@@ -31,11 +31,14 @@ extern int restrict_link_by_builtin_and_secondary_trus=
+ted(
+ #define restrict_link_by_builtin_and_secondary_trusted restrict_link_by_b=
+uiltin_trusted
+ #endif
+ =
 
---Andy
++extern struct pkcs7_message *pkcs7;
+ #ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
+ extern int mark_hash_blacklisted(const char *hash);
++extern int add_key_to_revocation_list(const char *data, size_t size);
+ extern int is_hash_blacklisted(const u8 *hash, size_t hash_len,
+ 			       const char *type);
+ extern int is_binary_blacklisted(const u8 *hash, size_t hash_len);
++extern int is_key_on_revocation_list(struct pkcs7_message *pkcs7);
+ #else
+ static inline int is_hash_blacklisted(const u8 *hash, size_t hash_len,
+ 				      const char *type)
+@@ -47,6 +50,14 @@ static inline int is_binary_blacklisted(const u8 *hash,=
+ size_t hash_len)
+ {
+ 	return 0;
+ }
++static inline int add_key_to_revocation_list(const char *data, size_t siz=
+e)
++{
++	return 0;
++}
++static inline int is_key_on_revocation_list(struct pkcs7_message *pkcs7)
++{
++	return -ENOKEY;
++}
+ #endif
+ =
+
+ #ifdef CONFIG_IMA_BLACKLIST_KEYRING
+diff --git a/security/integrity/platform_certs/keyring_handler.c b/securit=
+y/integrity/platform_certs/keyring_handler.c
+index c5ba695c10e3..5604bd57c990 100644
+--- a/security/integrity/platform_certs/keyring_handler.c
++++ b/security/integrity/platform_certs/keyring_handler.c
+@@ -55,6 +55,15 @@ static __init void uefi_blacklist_binary(const char *so=
+urce,
+ 	uefi_blacklist_hash(source, data, len, "bin:", 4);
+ }
+ =
+
++/*
++ * Add an X509 cert to the revocation list.
++ */
++static __init void uefi_revocation_list_x509(const char *source,
++					     const void *data, size_t len)
++{
++	add_key_to_revocation_list(data, len);
++}
++
+ /*
+  * Return the appropriate handler for particular signature list types fou=
+nd in
+  * the UEFI db and MokListRT tables.
+@@ -76,5 +85,7 @@ __init efi_element_handler_t get_handler_for_dbx(const e=
+fi_guid_t *sig_type)
+ 		return uefi_blacklist_x509_tbs;
+ 	if (efi_guidcmp(*sig_type, efi_cert_sha256_guid) =3D=3D 0)
+ 		return uefi_blacklist_binary;
++	if (efi_guidcmp(*sig_type, efi_cert_x509_guid) =3D=3D 0)
++		return uefi_revocation_list_x509;
+ 	return 0;
+ }
+
