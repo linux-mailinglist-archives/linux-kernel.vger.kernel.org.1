@@ -2,93 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFC32F343B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA0B2F3435
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:34:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391733AbhALPfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 10:35:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50958 "EHLO
+        id S2391712AbhALPev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 10:34:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391715AbhALPfE (ORCPT
+        with ESMTP id S1726113AbhALPev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:35:04 -0500
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8295CC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 07:34:13 -0800 (PST)
-Received: by mail-ua1-x92c.google.com with SMTP id j59so943584uad.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 07:34:13 -0800 (PST)
+        Tue, 12 Jan 2021 10:34:51 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA041C061786;
+        Tue, 12 Jan 2021 07:34:33 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id m6so1591917pfm.6;
+        Tue, 12 Jan 2021 07:34:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qxCZhN0HPYWVbJAFHzviClBBvfiktQzKxiUuI/WHb64=;
-        b=JwBBAAjWC19z8UsuWqxUc5kVg0wMb6EWFRHoz7kkGUngbEhRU+C6/MCHia57wDr8X9
-         Jd86Mt63DQEmW6eSaffdLzO7z7LiNnNGMHUe46zYzJcyQA6RGLKr4Kmg011Z0Emovi4/
-         at0IHPfJVaNEMbSJ/B0M5S6vGzvw1vRl459Eo=
+         :cc:content-transfer-encoding;
+        bh=RVuECvNPbIKct0vhZG5VyO5CR6uluO/0d3yC7WXia4s=;
+        b=HI6KrNCZhlvK/P2qwujoTxU0dyNl5pO+ERhl880VC3ZVmWHdnc12/FRplsiLALoLpQ
+         DhGkfCuPNcyLdO0o+BV8mBdHOR67to4FsoCHW6mGidBLSNyQzRnsFuYcUjddoWc8qp/X
+         mSm2U5ogYTCfHrAAVhJa95mYde/LzrjP3GVho/e/KE7qR4b6G3VEQTCpYJg320TBX4ZR
+         kIL04T8+LYWtMVWqjZXR39BkJH9/W8V0LT7uitSCHmMMCupW1KyRIe1zdfZ+m4Aoz7ja
+         FjIrb0pPeAR9vv546OQDXz3ZZKBl5Vo6MAE+wCn7LQdfyyTryBzJ5zHaj6pWD06JJDkj
+         9NUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qxCZhN0HPYWVbJAFHzviClBBvfiktQzKxiUuI/WHb64=;
-        b=shFvkIugjCiFoYJkMneVSTVpV0TtJArWkq0kuEUZbwv/F7T/7Xs6nIOugIWJYgteGx
-         AATApRV/7J3xoI3HCJ5Er+Sa1pY7usEhDh18li+t6/5Kc8rhAupR7G47wbAcRjWT1hpo
-         W4oBd7r7vC+Stex7fobareaNw6HHucWKgPZqa3O2n9uqlUvVoPUwqgZpapeoQKKoeseK
-         aGClwlR0kg38Zhpc4Wu7BepHtfaSyBQ6TVt5fjOue/+z26BCZHPRxTNkkENAXVRHQkvx
-         Ufhjr0QFqgNb0JPcWy8SIT5+7h+cY+oJCiUgoIdMh3QRr5NXwxr5h0cGaiChZ66xmozT
-         IT6Q==
-X-Gm-Message-State: AOAM533G9gBCYLZO1RghrNbS1mge+g65xGXPe4bBO2P5S4y+WL/MfdvF
-        7H5MHJ2UJ7z7wCldPW2rl0MBrmbyqU4bpA==
-X-Google-Smtp-Source: ABdhPJwwIqzmFYvRuKbNJpn4uky1eDZLvO3f8aNt7/sh2WClA/lFfpKwI6kTS9tX0yU5pKL4szupdw==
-X-Received: by 2002:a9f:2213:: with SMTP id 19mr4065405uad.15.1610465652553;
-        Tue, 12 Jan 2021 07:34:12 -0800 (PST)
-Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com. [209.85.221.174])
-        by smtp.gmail.com with ESMTPSA id z18sm480087vkd.13.2021.01.12.07.34.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 07:34:11 -0800 (PST)
-Received: by mail-vk1-f174.google.com with SMTP id a6so692427vkb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 07:34:11 -0800 (PST)
-X-Received: by 2002:ac5:cde4:: with SMTP id v4mr4651199vkn.21.1610465651285;
- Tue, 12 Jan 2021 07:34:11 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RVuECvNPbIKct0vhZG5VyO5CR6uluO/0d3yC7WXia4s=;
+        b=eOXSDRx+jA4ejXpqWmGtPEPFpzCGGHwI0/1LwIR7IRiXCqB/DlYLj1ah7XxSSSY/7W
+         2DRbzYRIYwonmjQV3cA5xSQyxaKYAgTS+Z+xGnEj4elEi2A6uqdv4pVUYsbzNarcrlsP
+         kFtAs7syo7eMo4bH5xnyq5nGtcD2azqfG6o7syN/GrBHZF9cDBcDrqttRe9R5VhjyA+K
+         Um+KvvZsYI9lKAn8ilxdXVEsdP6eOVNei34kVSu+ZBJkARWrySyQkQzvc7JqLw4r0zSx
+         iwL8wSodxI/gZik3HJOrHipsXaHp71Ap5qozVED358vIQ1/Rl438wWNjkdqb5Mcp38W5
+         Gz2w==
+X-Gm-Message-State: AOAM530IQ2GQD2GHFE+NqRHVuljEaId1OdXp940pQKBF9YrOwAHekJm6
+        HnOnlTW5nLqi9M5QEg4N9bgsQ2jbXW2DbLMvByg=
+X-Google-Smtp-Source: ABdhPJyfFCMrM1pHAKnzaAFF1beFe+dz5Z6vWGzaTwLXdBSrj4ozRSeA8/h3TjrVLExyI3jqCackj2GYCzNhAtd+6yo=
+X-Received: by 2002:a65:48cb:: with SMTP id o11mr5198353pgs.121.1610465673155;
+ Tue, 12 Jan 2021 07:34:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20210112001301.687628-1-swboyd@chromium.org>
-In-Reply-To: <20210112001301.687628-1-swboyd@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 12 Jan 2021 07:33:59 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=WRx2+jh7P5rM5S+C2shwbJiZSJxpf_fe57D+KpB4bijw@mail.gmail.com>
-Message-ID: <CAD=FV=WRx2+jh7P5rM5S+C2shwbJiZSJxpf_fe57D+KpB4bijw@mail.gmail.com>
-Subject: Re: [PATCH v2] spi: spi-qcom-qspi: Use irq trigger flags from firmware
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Mukesh Kumar Savaliya <msavaliy@codeaurora.org>,
-        Akash Asthana <akashast@codeaurora.org>
+References: <20210112152951.154024-1-fengli@smartx.com>
+In-Reply-To: <20210112152951.154024-1-fengli@smartx.com>
+From:   Feng Li <lifeng1519@gmail.com>
+Date:   Tue, 12 Jan 2021 23:34:06 +0800
+Message-ID: <CAEK8JBD68oTcuV+Cf-S1Vv-n6nyr5UM_zWA5iJFHP=UvQ14AZg@mail.gmail.com>
+Subject: Re: [PATCH] blk: avoid divide-by-zero with zero granularity
+To:     Li Feng <fengli@smartx.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+I'm sorry, ignore this one.
 
-On Mon, Jan 11, 2021 at 4:13 PM Stephen Boyd <swboyd@chromium.org> wrote:
+Li Feng <fengli@smartx.com> =E4=BA=8E2021=E5=B9=B41=E6=9C=8812=E6=97=A5=E5=
+=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=8811:30=E5=86=99=E9=81=93=EF=BC=9A
 >
-> We don't need to force this to be trigger high here, as the firmware
-> properly configures the irq flags already. Drop it to save a line.
+> If the physical_block_size and io_min is less than a sector, the
+> 'granularity >> SECTOR_SHIFT' will be zero.
 >
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Cc: Rajendra Nayak <rnayak@codeaurora.org>
-> Cc: Mukesh Kumar Savaliya <msavaliy@codeaurora.org>
-> Cc: Akash Asthana <akashast@codeaurora.org>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> Signed-off-by: Li Feng <fengli@smartx.com>
 > ---
+>  include/linux/blkdev.h | 4 ++++
+>  1 file changed, 4 insertions(+)
 >
-> Changes from v1:
->  * Rebased onto v5.11-rc1
+> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> index f94ee3089e01..4d029e95adb4 100644
+> --- a/include/linux/blkdev.h
+> +++ b/include/linux/blkdev.h
+> @@ -1485,6 +1485,10 @@ static inline int queue_alignment_offset(const str=
+uct request_queue *q)
+>  static inline int queue_limit_alignment_offset(struct queue_limits *lim,=
+ sector_t sector)
+>  {
+>         unsigned int granularity =3D max(lim->physical_block_size, lim->i=
+o_min);
+> +       granularity =3D granularity >> SECTOR_SHIFT;
+> +       if (!granularity)
+> +               return 0;
+> +
+>         unsigned int alignment =3D sector_div(sector, granularity >> SECT=
+OR_SHIFT)
+>                 << SECTOR_SHIFT;
 >
->  drivers/spi/spi-qcom-qspi.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> --
+> 2.29.2
+>
