@@ -2,159 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 029922F3F8F
+	by mail.lfdr.de (Postfix) with ESMTP id DAFEC2F3F93
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391679AbhALW1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:27:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731556AbhALW1k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:27:40 -0500
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED57BC061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:26:59 -0800 (PST)
-Received: by mail-ot1-x32e.google.com with SMTP id x13so19553oto.8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:26:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=trCTWdvjHMkvPDEDmT3pUIVTBrdeeOfcyXQgZDcVJx4=;
-        b=muS1YPhlz4qgL7ceLFn6pIbbjGWGMgOZza+OnaaW7VlWYR3J2M2OjcCZo3pIV+yafO
-         Vf6+DMKqkoS9l84JDL2Yq6/BjkJsySedrz2NXMqRl3eSpop5oU8CLmPzCvyjNvGK+NtE
-         Oiw1/e7+KvH9IIYv6as3G6b6zYkXRs0J+PmQ/gpQfXMQLW0Fmz9D0vy4RlebIjHOPnfE
-         4hVTAczfzJ7/FStB42OlahmmaPC9AK/b6BPpOVOLy25Yt2VBSwWQfJRFTOSA8OI8Dz1t
-         rt+EE1JtqwD1bvCSfcjHw0v1SAuokEG52nhSxuCIj/X0lwdhNcGUQgfhGTAAGwxqc+u/
-         6EOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=trCTWdvjHMkvPDEDmT3pUIVTBrdeeOfcyXQgZDcVJx4=;
-        b=AnIFaU9GlLJeZKrBKn5RT5USzdYgfi/VunbgOk14WyXKVeQGNLPTqdWWAWlHJVFreH
-         oHJSJQiCkqZnZ/RCHwbWKcdRQ2VWgGjLH0U9q8l4Kja1dnDswjbwS3WUpbnfjCqzIfhb
-         /8uKtBOMeqQbN4qOj1IAx3Z/PtJ10QVvhrT1mJcHvZOIA0oGTiWb+0EIPWqOJAcJQqbJ
-         d+4LAf5FM2zN5GI4zvPbdPJwHIMR+IFipWUNKq4jHF1hrW3d+h4RxkJvP4g/YynA5dj9
-         epIwWyNwTjwnS+V5hKOtFNDytP3XdteecBlWIBgFKjWQ37sKNfCQUBudGeyArDpnZYM6
-         4pMQ==
-X-Gm-Message-State: AOAM5330ZsSezB0hUpOhsUPy0Bf1ci8dXeLfcuRrurZlpFtmqygkRMID
-        2RRgQJwMHuA1AiIyE80UnJYhqQpaFCAlP3UP86U=
-X-Google-Smtp-Source: ABdhPJwLdnpdw0ja1Ltjtm14wSKYzVapg2AKCaNpZpS7lOKMqBsG7IHq4Nher6CTSy1VnNs1FVkIKuBYnjRMgAjviFI=
-X-Received: by 2002:a9d:2ac2:: with SMTP id e60mr1051458otb.23.1610490419441;
- Tue, 12 Jan 2021 14:26:59 -0800 (PST)
-MIME-Version: 1.0
-References: <20210111191926.3688443-1-lee.jones@linaro.org> <20210111191926.3688443-26-lee.jones@linaro.org>
-In-Reply-To: <20210111191926.3688443-26-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 12 Jan 2021 17:26:47 -0500
-Message-ID: <CADnq5_MDnYtb_zxUQfqgbDKvzHuPRdBPDj=BRBGPPme_6aa30A@mail.gmail.com>
-Subject: Re: [PATCH 25/40] drm/amd/display/dc/dce120/dce120_timing_generator:
- Remove unused function 'dce120_timing_generator_get_position'
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S2394562AbhALW2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:28:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731556AbhALW1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 17:27:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3C9923120;
+        Tue, 12 Jan 2021 22:27:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1610490432;
+        bh=xxQ8MfqyAklnD0AulIQNNMFIA3u/PTYanCkpNaTjiYA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pU67xGihUoOUdUglxIEJzItDAKZw0YIAbhe1AHc4leSkc/6MSGmkv58lLqZunhlXn
+         PS7FupmFacuRuwH30+MHwSnvmGG+n0ouuipCw+mPFe6kSc51PAzAL//1E2M/nG8TTy
+         1rNSX5qGFw+HkLTMJ40Nzl4Boknm7e5KZeg6F+cY=
+Date:   Tue, 12 Jan 2021 14:27:11 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Rokudo Yan <wu-yan@tcl.com>
+Cc:     <mgorman@techsingularity.net>, <aarcange@redhat.com>,
+        <haiwang.fu@tcl.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <rientjes@google.com>, <tang.ding@tcl.com>,
+        <vbabka@suse.cz>, <xiushui.ye@tcl.com>
+Subject: Re: [PATCH] mm, compaction: move high_pfn to the for loop scope.
+Message-Id: <20210112142711.b82cf36abaa7ff04773e212f@linux-foundation.org>
+In-Reply-To: <20210112094720.1238444-1-wu-yan@tcl.com>
+References: <20210112091041.GJ3592@techsingularity.net>
+        <20210112094720.1238444-1-wu-yan@tcl.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 2:20 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce120/dce120_timing_generator.=
-c:602:13: warning: =E2=80=98dce120_timing_generator_get_position=E2=80=99 d=
-efined but not used [-Wunused-function]
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Tue, 12 Jan 2021 17:47:20 +0800 Rokudo Yan <wu-yan@tcl.com> wrote:
 
-Applied.  Thanks!
+> In fast_isolate_freepages, high_pfn will be used if a prefered one(PFN >= low_fn) not found. But the high_pfn
+> is not reset before searching an free area, so when it was used as freepage, it may from another free area searched before.
+> And move_freelist_head(freelist, freepage) will have unexpected behavior(eg. corrupt the MOVABLE freelist)
+> 
+> Unable to handle kernel paging request at virtual address dead000000000200
+> Mem abort info:
+>   ESR = 0x96000044
+>   Exception class = DABT (current EL), IL = 32 bits
+>   SET = 0, FnV = 0
+>   EA = 0, S1PTW = 0
+> Data abort info:
+>   ISV = 0, ISS = 0x00000044
+>   CM = 0, WnR = 1
+> [dead000000000200] address between user and kernel address ranges
+> 
+> -000|list_cut_before(inline)
+> -000|move_freelist_head(inline)
+> -000|fast_isolate_freepages(inline)
+> -000|isolate_freepages(inline)
+> -000|compaction_alloc(?, ?)
+> -001|unmap_and_move(inline)
+> -001|migrate_pages([NSD:0xFFFFFF80088CBBD0] from = 0xFFFFFF80088CBD88, [NSD:0xFFFFFF80088CBBC8] get_new_p
+> -002|__read_once_size(inline)
+> -002|static_key_count(inline)
+> -002|static_key_false(inline)
+> -002|trace_mm_compaction_migratepages(inline)
+> -002|compact_zone(?, [NSD:0xFFFFFF80088CBCB0] capc = 0x0)
+> -003|kcompactd_do_work(inline)
+> -003|kcompactd([X19] p = 0xFFFFFF93227FBC40)
+> -004|kthread([X20] _create = 0xFFFFFFE1AFB26380)
+> -005|ret_from_fork(asm)
+> ---|end of frame
+> 
+> The issue was reported on an smart phone product with 6GB ram and 3GB zram as swap device.
+> 
+> This patch fixes the issue by reset high_pfn before searching each free area, which ensure
+> freepage and freelist match when call move_freelist_head in fast_isolate_freepages().
+> 
+> Link: http://lkml.kernel.org/r/20190118175136.31341-12-mgorman@techsingularity.net
+> Fixes: 5a811889de10f1eb ("mm, compaction: use free lists to quickly locate a migration target")
 
-Alex
-
-> ---
->  .../dc/dce120/dce120_timing_generator.c       | 43 -------------------
->  1 file changed, 43 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dce120/dce120_timing_generato=
-r.c b/drivers/gpu/drm/amd/display/dc/dce120/dce120_timing_generator.c
-> index d02ecb983c9cd..b57c466124e76 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dce120/dce120_timing_generator.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dce120/dce120_timing_generator.c
-> @@ -589,49 +589,6 @@ static void dce120_timing_generator_set_drr(
->         }
->  }
->
-> -/*
-> - ***********************************************************************=
-******
-> - *  Function: dce120_timing_generator_get_position
-> - *
-> - *  @brief
-> - *     Returns CRTC vertical/horizontal counters
-> - *
-> - *  @param [out] position
-> - ***********************************************************************=
-******
-> - */
-> -static void dce120_timing_generator_get_position(struct timing_generator=
- *tg,
-> -       struct crtc_position *position)
-> -{
-> -       uint32_t value;
-> -       struct dce110_timing_generator *tg110 =3D DCE110TG_FROM_TG(tg);
-> -
-> -       value =3D dm_read_reg_soc15(
-> -                       tg->ctx,
-> -                       mmCRTC0_CRTC_STATUS_POSITION,
-> -                       tg110->offsets.crtc);
-> -
-> -       position->horizontal_count =3D get_reg_field_value(
-> -                       value,
-> -                       CRTC0_CRTC_STATUS_POSITION,
-> -                       CRTC_HORZ_COUNT);
-> -
-> -       position->vertical_count =3D get_reg_field_value(
-> -                       value,
-> -                       CRTC0_CRTC_STATUS_POSITION,
-> -                       CRTC_VERT_COUNT);
-> -
-> -       value =3D dm_read_reg_soc15(
-> -                       tg->ctx,
-> -                       mmCRTC0_CRTC_NOM_VERT_POSITION,
-> -                       tg110->offsets.crtc);
-> -
-> -       position->nominal_vcount =3D get_reg_field_value(
-> -                       value,
-> -                       CRTC0_CRTC_NOM_VERT_POSITION,
-> -                       CRTC_VERT_COUNT_NOM);
-> -}
-> -
-> -
->  static void dce120_timing_generator_get_crtc_scanoutpos(
->         struct timing_generator *tg,
->         uint32_t *v_blank_start,
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Could you please send a Signed-off-by: for this patch, as per
+Documentation/process/submitting-patches.rst?
