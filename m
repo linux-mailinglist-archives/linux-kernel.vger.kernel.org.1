@@ -2,166 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF4F12F39A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:06:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 703062F39B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406305AbhALTGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 14:06:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405818AbhALTGp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:06:45 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55A9C061786;
-        Tue, 12 Jan 2021 11:06:04 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id f26so2915575qka.0;
-        Tue, 12 Jan 2021 11:06:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Aih/vebqj0ZVCB2wb4N/cgF53cU8VglOtHrUsklmxqU=;
-        b=JmpysSxXVkjlgM2RboM3NFHelC3OaY2pawo/Nu5vhHtBfGOllENBWcRn/b4PvAZWcR
-         cIoLgYDXzIw04dGK3U1BHViukec/H10LzQGiPCL3k7/NymIMFUGnvExf5iHokBBUuwiT
-         XyZSKCgGTnkhvtxZoE8zDmswBXmFVyBCxJw1SPyXlNfrcfvFyH0TLRejsAjvkXKZyiqh
-         QaJvPOUFwGHMNLmIZToYxc+HTB/Ys0zpSJx1CfXRTjfDrf2AEsAaCoCFkdkEKL3H9TCx
-         +crlKKnlRlBuXB8UD0F01TYZrv+Oog4BTEESlGUi26mh75u7baXweO51nPdnlEwpytJ4
-         j4rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Aih/vebqj0ZVCB2wb4N/cgF53cU8VglOtHrUsklmxqU=;
-        b=k7tvEyLqLndDbj5u/8AvhMP4QiXv8XHmnjqYb6FSyhC8AXbC4Gpt2upwpXGP73/G+X
-         jZgQeQT1Hmoro0xZtktHJ7g9SY1zfmUQCzmcIjuvNUvIJ3Nl5PcXuE02dvR93DPVCyRT
-         yG3n9SdqU1HIuwS8B0KdZDEWKQi91RYgb5C6LrfauTnVW7O5Pqo8GOOPjiM5IuOg9JCn
-         ZGF4QCnHRgAjDAklpa2OsW83MlwXgmi4z5ueNEQV0Q04Y+w8sODxUl2/kLEIFiXTw7fo
-         pSD08zoqDVmNGx+t7A1cODeZuCIreNvdCd4shv1tx6xGuyocA+NeukSVGSTLRYt5nre/
-         w2ug==
-X-Gm-Message-State: AOAM532SJcfgyOt1wWnqFVux+U+0TpeXhyIK9nzxDX9vYobMtUpT6AXW
-        d28BxJYTrgb3RxXjhRsd4fPl7IqdYYrY5Q==
-X-Google-Smtp-Source: ABdhPJyG3FnkmfdCQqFzJYB5/4Fc5vznI53Hr2fgwqgRUdr1jgg41JUioOTrxV2OMnwxA0RjJ5O8ug==
-X-Received: by 2002:a37:9a91:: with SMTP id c139mr799212qke.151.1610478363902;
-        Tue, 12 Jan 2021 11:06:03 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id y67sm1805860qka.68.2021.01.12.11.06.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 11:06:03 -0800 (PST)
-Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
- <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
- <23e16d20-36eb-87d9-4473-142504ad8a95@gmail.com>
- <CAL_JsqKqSVGCjcue=ka2=bB1Os9pczNTCqDeaoFPFfRxnvsteQ@mail.gmail.com>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <e549c7ce-d01e-08a3-9ed0-7325a34e9c29@gmail.com>
-Date:   Tue, 12 Jan 2021 13:06:02 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2406379AbhALTKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:10:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406210AbhALTJ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 14:09:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E0B323107;
+        Tue, 12 Jan 2021 19:09:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610478558;
+        bh=pEd5mOkGbeo1XNWPByxMQx6S3nSjCeApWjn6kvYzM9s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eFh7oRTS1IxZgKWu02RvrclusbWO7i1UH7zrsU3S3F6pcYOkzqhvDMdMCuAsEiwQA
+         3e79fSg6bz1uKM+AtruyaWXuhjv9I6vEwiH0zSl49WzfHnmmIqXjYIng6W3Hb3KoCi
+         62ARt7hSnCxhOfiy3n4OWPTT2Z8r+oV4G18yRvuTS893wXWzga6+3Cq0H1rUI+5vWO
+         fAKDhXa7WJSt+h9kkZG8ycCd4L88tNkVGUZqcFo8wtrEplbRPQAhr1rP+178sio0sk
+         /+KyQruMpiKMjo9Vw4yJdekRF59JkUGtPxvm2z1fEkjlJkCuu5lSQIZ30Dg5ww7YMF
+         jyRABJWOcwguw==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 1/4] habanalabs: Use 'dma_set_mask_and_coherent()'
+Date:   Tue, 12 Jan 2021 21:09:12 +0200
+Message-Id: <20210112190915.21164-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqKqSVGCjcue=ka2=bB1Os9pczNTCqDeaoFPFfRxnvsteQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/12/21 8:04 AM, Rob Herring wrote:
-> On Mon, Jan 11, 2021 at 4:06 PM Frank Rowand <frowand.list@gmail.com> wrote:
->>
->> On 1/8/21 2:41 AM, Viresh Kumar wrote:
->>> Now that fdtoverlay is part of the kernel build, start using it to test
->>> the unitest overlays we have by applying them statically.
->>>
->>> The file overlay_base.dtb have symbols of its own and we need to apply
->>> overlay.dtb to overlay_base.dtb alone first to make it work, which gives
->>> us intermediate-overlay.dtb file.
->>>
->>> The intermediate-overlay.dtb file along with all other overlays is them
->>> applied to testcases.dtb to generate the master.dtb file.
->>>
->>> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
->>
->> NACK to this specific patch, in its current form.
->>
->> There are restrictions on applying an overlay at runtime that do not apply
->> to applying an overlay to an FDT that will be loaded by the kernel during
->> early boot.  Thus the unittest overlays _must_ be applied using the kernel
->> overlay loading methods to test the kernel runtime overlay loading feature.
-> 
-> This patch doesn't take away from any of that and it completely orthogonal.
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Mea culpa.  I took the patch header comment at face value, and read more into
-the header comment than what was written there.  I then skimmed the patch
-instead of actually reading what it was doing.
+Axe 'hl_pci_set_dma_mask()' and replace it with an equivalent
+'dma_set_mask_and_coherent()' call.
 
-I incorrectly _assumed_ (bad!) that the intent was to replace applying the
-individual overlay dtb's with the master.dtb.  Reading more closely, I see
-that the assumed final step of actually _using_ master.dtb does not exist.
+This makes the code a bit less verbose.
 
-So, yes, I agree that the patch as written is orthogonal to my concern.
+It also removes an erroneous comment, because 'hl_pci_set_dma_mask()'
+does not try to use a fall-back value.
 
-My updated understanding is that this patch is attempting to use the existing
-unittest overlay dts files as source to test fdtoverlay.  And that the resulting
-dtb from fdtoverlay is not intended to be consumed by the kernel unittest.
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ drivers/misc/habanalabs/common/pci/pci.c | 43 ++++--------------------
+ 1 file changed, 7 insertions(+), 36 deletions(-)
 
-I do not agree that this is a good approach to testing fdtoverlay.  The
-unittest overlay dts files are constructed specifically to test various
-parts of the kernel overlay code and dynamic OF code.  Some of the content
-of the overlays is constructed to trigger error conditions in that code,
-and thus will not be able to be processed without error by fdtoverlay.
+diff --git a/drivers/misc/habanalabs/common/pci/pci.c b/drivers/misc/habanalabs/common/pci/pci.c
+index c56ec1574127..b799f9258fb0 100644
+--- a/drivers/misc/habanalabs/common/pci/pci.c
++++ b/drivers/misc/habanalabs/common/pci/pci.c
+@@ -307,40 +307,6 @@ int hl_pci_set_outbound_region(struct hl_device *hdev,
+ 	return rc;
+ }
+ 
+-/**
+- * hl_pci_set_dma_mask() - Set DMA masks for the device.
+- * @hdev: Pointer to hl_device structure.
+- *
+- * This function sets the DMA masks (regular and consistent) for a specified
+- * value. If it doesn't succeed, it tries to set it to a fall-back value
+- *
+- * Return: 0 on success, non-zero for failure.
+- */
+-static int hl_pci_set_dma_mask(struct hl_device *hdev)
+-{
+-	struct pci_dev *pdev = hdev->pdev;
+-	int rc;
+-
+-	/* set DMA mask */
+-	rc = pci_set_dma_mask(pdev, DMA_BIT_MASK(hdev->dma_mask));
+-	if (rc) {
+-		dev_err(hdev->dev,
+-			"Failed to set pci dma mask to %d bits, error %d\n",
+-			hdev->dma_mask, rc);
+-		return rc;
+-	}
+-
+-	rc = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(hdev->dma_mask));
+-	if (rc) {
+-		dev_err(hdev->dev,
+-			"Failed to set pci consistent dma mask to %d bits, error %d\n",
+-			hdev->dma_mask, rc);
+-		return rc;
+-	}
+-
+-	return 0;
+-}
+-
+ /**
+  * hl_pci_init() - PCI initialization code.
+  * @hdev: Pointer to hl_device structure.
+@@ -377,9 +343,14 @@ int hl_pci_init(struct hl_device *hdev)
+ 		goto unmap_pci_bars;
+ 	}
+ 
+-	rc = hl_pci_set_dma_mask(hdev);
+-	if (rc)
++	rc = dma_set_mask_and_coherent(&pdev->dev,
++					DMA_BIT_MASK(hdev->dma_mask));
++	if (rc) {
++		dev_err(hdev->dev,
++			"Failed to set dma mask to %d bits, error %d\n",
++			hdev->dma_mask, rc);
+ 		goto unmap_pci_bars;
++	}
+ 
+ 	return 0;
+ 
+-- 
+2.25.1
 
-Trying to use overlay dts files that are constructed to test runtime kernel
-code as fdtoverlay input data mixes two different test environments and
-objectives.  If fdtoverlay test cases are desired, then fdtoverlay specific
-dts files should be created.
-
-> 
->> I agree that testing fdtoverlay is a good idea.  I have not looked at the
->> parent project to see how much testing of fdtoverlay occurs there, but I
->> would prefer that fdtoverlay tests reside in the parent project if practical
->> and reasonable.  If there is some reason that some fdtoverlay tests are
->> more practical in the Linux kernel repository then I am open to adding
->> them to the Linux kernel tree.
-> 
-> If you (or more importantly someone else sending us patches) make
-> changes to the overlays, you can test that they apply at build time
-> rather than runtime. I'll take it! So please help on fixing the issue
-> because I want to apply this.
-
-If the tests can be added to the upstream project, I would much prefer
-they reside there.  If there is some reason a certain test is more
-suited to be in the Linux kernel source tree then I also would like
-it to be accepted here.
-
-> 
-> And yes, dtc has fdtoverlay tests. But this patch shows there's at
-> least 2 issues,
-
-
-> fdtoverlay can't apply overlays to the root 
-
-A test of that definitely belongs in the upstream project.
-
-> and using an overlay as the base tree in UML is odd IMO.
-
-Am I still not fully understanding the patch?  I'm missing how
-this patch changes what dtb is used as the base tree in UML.
-
-> 
-> Rob
-> 
-
--Frank
