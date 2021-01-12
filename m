@@ -2,126 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160E12F2E99
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:03:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBE182F2E9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:06:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732067AbhALMDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:03:32 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:39670 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727729AbhALMDb (ORCPT
+        id S1732097AbhALMFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:05:32 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10713 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727952AbhALMFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:03:31 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 12E091F45198
-Received: by earth.universe (Postfix, from userid 1000)
-        id C46B83C0C94; Tue, 12 Jan 2021 13:02:46 +0100 (CET)
-Date:   Tue, 12 Jan 2021 13:02:46 +0100
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Tomi Valkeinen <tomba@kernel.org>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCHv1] video: omapfb2: Make standard and custom DSI command
- mode panel driver mutually exclusive
-Message-ID: <20210112120246.ujhjyylrlgfrfvig@earth.universe>
-References: <20210108122540.657501b2@canb.auug.org.au>
- <20210108112441.14609-1-sebastian.reichel@collabora.com>
- <20210108195839.GA1429715@ravnborg.org>
+        Tue, 12 Jan 2021 07:05:31 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DFTkD0LGDzl46q;
+        Tue, 12 Jan 2021 20:03:32 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 12 Jan 2021 20:04:39 +0800
+Subject: Re: [PATCH 4/5] vfio/iommu_type1: Carefully use unmap_unpin_all
+ during dirty tracking
+To:     Alex Williamson <alex.williamson@redhat.com>
+References: <20210107092901.19712-1-zhukeqian1@huawei.com>
+ <20210107092901.19712-5-zhukeqian1@huawei.com>
+ <20210111144913.3092b1b1@omen.home.shazbot.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Will Deacon <will@kernel.org>, "Marc Zyngier" <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        "Robin Murphy" <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <198f0afd-343a-9fbc-9556-95670ca76a2c@huawei.com>
+Date:   Tue, 12 Jan 2021 20:04:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="iijg5xf7wxvodjnw"
-Content-Disposition: inline
-In-Reply-To: <20210108195839.GA1429715@ravnborg.org>
+In-Reply-To: <20210111144913.3092b1b1@omen.home.shazbot.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---iijg5xf7wxvodjnw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-[replace Tomi's TI mail address with something working]
+On 2021/1/12 5:49, Alex Williamson wrote:
+> On Thu, 7 Jan 2021 17:29:00 +0800
+> Keqian Zhu <zhukeqian1@huawei.com> wrote:
+> 
+>> If we detach group during dirty page tracking, we shouldn't remove
+>> vfio_dma, because dirty log will lose.
+>>
+>> But we don't prevent unmap_unpin_all in vfio_iommu_release, because
+>> under normal procedure, dirty tracking has been stopped.
+> 
+> This looks like it's creating a larger problem than it's fixing, it's
+> not our job to maintain the dirty bitmap regardless of what the user
+> does.  If the user detaches the last group in a container causing the
+> mappings within that container to be deconstructed before the user has
+> collected dirty pages, that sounds like a user error.  A container with
+> no groups is de-privileged and therefore loses all state.  Thanks,
+> 
+> Alex
 
-Hi,
+Hi Alex,
 
-On Fri, Jan 08, 2021 at 08:58:39PM +0100, Sam Ravnborg wrote:
-> Hi Sebastian,
->=20
-> On Fri, Jan 08, 2021 at 12:24:41PM +0100, Sebastian Reichel wrote:
-> > Standard DRM panel driver for DSI command mode panel used by omapfb2 is=
- also
-> > available now. Just like the other panels its module name clashes with =
-the
-> > module from drivers/video/fbdev/omap2/omapfb/displays, part of the depr=
-ecated
-> > omapfb2 fbdev driver. As omapfb2 can only be compiled when the omapdrm =
-driver
-> > is disabled, and the DRM panel drivers are useless in that case, make t=
-he
-> > omapfb2 panel depend on the standard DRM panels being disabled to fix
-> > the name clash.
-> >=20
-> > Fixes: cf64148abcfd ("drm/panel: Move OMAP's DSI command mode panel dri=
-ver")
-> > Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
->=20
-> For a backport this looks good:
-> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+This looks good to me ;-). That's a reasonable constraint for user behavior.
+
+What about replacing this patch with an addition to the uapi document of
+VFIO_GROUP_UNSET_CONTAINER? User should pay attention to this when call this
+ioctl during dirty tracking.
+
+And any comments on other patches? thanks.
 
 Thanks.
+Keqian
 
-> But why is it it we need omapfb at all when we have omapdrm?
-
-I think there are two reasons omapfb has not been killed yet. One
-reason was missing support for manually updated DSI panels, which
-have been working since 1 or 2 kernel releases now. The other reason
-is some people using it in combination with an out-of-tree PowerVR
-kernel driver. There is currently work going on to use a more recent
-PowerVR driver based on omapdrm driven by Maemo Leste people.
-
-> Can we sunset all or some parts of omap support in video/?
-> If not, what is missing to do so.
-
-IDK the exact status of the PowerVR work and have not been using
-omapfb myself for years. I don't think there is a reason to rush
-this, so my suggestion is removing it in 3 steps giving people
-the chance to complain:
-
-1. Add 'depends on EXPERT' to 'FB_OMAP2' and add deprecation notice
-   referencing omapdrm in help text in 5.12
-2. Add 'depends on BROKEN' in 5.13
-3. Drop drivers/video/fbdev/omap2 afterwards
-
--- Sebastian
-
---iijg5xf7wxvodjnw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl/9j9YACgkQ2O7X88g7
-+prP1A//Vgw/MQFN4Vxba+rQpa+HIzqlPLKGsiMXfU4Xhix/+Csd+gL8u+8rWNjG
-+Fx+MeNgwQPnyGXnHoi822auQ2s5XVJkRjXH5tKxmW5Emu0W+xKvZMlZ552WlJ0u
-w9Y6689o+enXxXizPHM4o1fyl6K5NPBZu/9z8xjn0IkWnZU8zYMo+/fEetRGMW06
-VbZvZkKynGV8kjWXhwATJx/Xk+ZU7ZvY5z+d6LP26alM5fxVhl1ODxPEo5ADPvX8
-Ue8fpNzXowu+GcfHZbWlFdZlG6Vr1IsiOG/gyzWKVTR3wIyzFTBSiYBJMGIcKfI1
-FtnrO6Pqrp9mxDSzW9MpaIF97+QZ84QvN98ot5BLl7FTP/NCBUk312Wv9xaWC7Du
-MKZ9RzIB1rhOni/5sGOsEQkNT+77GlKfU87HwbyDzYzYBTrWkfYMOPkdmRG6RXhg
-nyBgPSY4cbeA8n25j+YUV85P6k1OtTLcaosDAw22RNe8IGe7NvWvcPvzhNpXa1oa
-nHMMuqVT0ZblCP35vW8HfqQ5mkhzeVE5HM6qGooddTRPZx0zEo5CbbWn0qg983ln
-DV33qMVCzUpqUpwJw1TSjfZJM8ieHVcajQ7hvRWkpw/+Grr//ejCcnmht+nbSRIe
-HNqAi8JOmKLHfELAMaNRpJZniA+BWGSPW27h7sRdXelW8p2dzSA=
-=lu/2
------END PGP SIGNATURE-----
-
---iijg5xf7wxvodjnw--
+> 
+>> Fixes: d6a4c185660c ("vfio iommu: Implementation of ioctl for dirty pages tracking")
+>> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+>> ---
+>>  drivers/vfio/vfio_iommu_type1.c | 14 ++++++++++++--
+>>  1 file changed, 12 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+>> index 26b7eb2a5cfc..9776a059904d 100644
+>> --- a/drivers/vfio/vfio_iommu_type1.c
+>> +++ b/drivers/vfio/vfio_iommu_type1.c
+>> @@ -2373,7 +2373,12 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>>  			if (list_empty(&iommu->external_domain->group_list)) {
+>>  				vfio_sanity_check_pfn_list(iommu);
+>>  
+>> -				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu))
+>> +				/*
+>> +				 * During dirty page tracking, we can't remove
+>> +				 * vfio_dma because dirty log will lose.
+>> +				 */
+>> +				if (!IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu) &&
+>> +				    !iommu->dirty_page_tracking)
+>>  					vfio_iommu_unmap_unpin_all(iommu);
+>>  
+>>  				kfree(iommu->external_domain);
+>> @@ -2406,10 +2411,15 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
+>>  		 * iommu and external domain doesn't exist, then all the
+>>  		 * mappings go away too. If it's the last domain with iommu and
+>>  		 * external domain exist, update accounting
+>> +		 *
+>> +		 * Note: During dirty page tracking, we can't remove vfio_dma
+>> +		 * because dirty log will lose. Just update accounting is a good
+>> +		 * choice.
+>>  		 */
+>>  		if (list_empty(&domain->group_list)) {
+>>  			if (list_is_singular(&iommu->domain_list)) {
+>> -				if (!iommu->external_domain)
+>> +				if (!iommu->external_domain &&
+>> +				    !iommu->dirty_page_tracking)
+>>  					vfio_iommu_unmap_unpin_all(iommu);
+>>  				else
+>>  					vfio_iommu_unmap_unpin_reaccount(iommu);
+> 
+> .
+> 
