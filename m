@@ -2,137 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC112F2C29
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6652F2C2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:07:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390158AbhALKEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:04:42 -0500
-Received: from esa1.hc3370-68.iphmx.com ([216.71.145.142]:5005 "EHLO
-        esa1.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726781AbhALKEl (ORCPT
+        id S2390965AbhALKFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:05:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390352AbhALKFi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:04:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1610445881;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=Z6ypfUf35RhbFi1swGPSYCLgLO6hnkQFIhw9cDZ5eaA=;
-  b=doWLvTCqa+SQ937HnJZsR87jK2b/AoCGYKMgidFek0cx3pCcT8OPRnKz
-   93sr4AFty1ulGWyJDZGg/eDBPH9/bySHuY/Sg1mmiIQE77Rq6VA+w36vK
-   VFFuwkVabVxykeomVUHaICh/Vic+b+3ew8jvXAzcy4pIg4q0VH2NpueeR
-   k=;
-Authentication-Results: esa1.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
-IronPort-SDR: 6/zImbji96Tlg28r5IFrvYd+x8aqpv+tT+tIyASGf3VSLNLU8emddp2uNMUiKfEo7y8ceQ2n6R
- 1fu2t768SReLbxnEpVg02Q/K9xHOSRiV4yS50WMEqZfGlSZva5ZucmVbl5eBHO1k94/fZiaacG
- TbI87UKzuv4Ak9bdrtyW6xDDNFHQwaJaNuRtgQk7SiFf6f4W63wp8phY3o6wSTHX+A6LD9kB0+
- JIFbpdso2xLXlJJvDhd9vRvc3bgFVTnETfeJSzqxFKtU8MzYlUhGni+9immIRYxj227J4wZO9D
- gSg=
-X-SBRS: 5.2
-X-MesageID: 35268229
-X-Ironport-Server: esa1.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.156.83
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.79,341,1602561600"; 
-   d="scan'208";a="35268229"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IG8txY4Ucn51KwyOOyo85P2q59jXaZhKp5RQG/WYXftCS2BHkjrBQoUtPV9rjvVZPA+G6ZouUHHy9csElQBodgRHixkFv9LGxqXxO4jhfUrobKtMJ89z1sPgCRZxw5Yr2dHFh2tHiP+6Lc7MWNdYrjjs2Kk4TM3/gG1XYAdc+HI2E+PcY+Qfi/UB3vMoDUgBfKd8o5hAoBhfmbkvzx1gXCupAHSVhfdpBymIZNsaeVXx08BaO9e/8zuWHegibE1ajEoIptWLTQoK7g3c6adD9e/DZZFjJhdR9dEa1EtfL4064zroadyHpOWGaofR98dD+ZR4QvfqW5JRqDu9ZJslTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rBkuX8FT5jUzq1WN/uGEa7TYFFxYQ7VC9+egvnGrTXM=;
- b=UK4PmxIg82NaO9SYSvpTwCA4K4eAgKRfTv3Po2OWPboY3NQWYJKig4mP+u/3PrKYz9u6FTe2GMF9D7/19whzg52QUJtoUZ1B4rEuJjCUtwdyYIyWM5OMOm+b6oianL69OKArCJGjC6o689Wyf/rJXxE3wMsLxiWFm8thVT4kJl4r7Q6LsT5ez8ZfMUml7O2Fto9D/VhqTAcuujurdYCo+yHAZGFcI4XRvcPe87vFrS8NFGUkepYIvbYG5tkCBE3+R224/L3VbKoFmv21Gg5wxQlRmgoyUhu8gStIoeDSwkNxMga7kO19X4Arc9QSP83ZTmR1xNjdqbUk5oK6Qa1LNw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
- dkim=pass header.d=citrix.com; arc=none
+        Tue, 12 Jan 2021 05:05:38 -0500
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E752C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 02:04:58 -0800 (PST)
+Received: by mail-vk1-xa2f.google.com with SMTP id e27so475110vkn.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 02:04:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rBkuX8FT5jUzq1WN/uGEa7TYFFxYQ7VC9+egvnGrTXM=;
- b=EceCWQJbRhyM7jsLTr741a2ufCFpt1gfcOEgC7A8/1o5vuAqtVJ6g4U3PmLeD8UJ4o94yofWfTbi0xNFjrtcX3UFNatjporzD0fRl3NPyKI0LCAVhqWwRVnZJwBLK3vFrYMur7YoexFDddf4KX0UiPlaYxJnPESACeOtA6pjipg=
-Date:   Tue, 12 Jan 2021 11:03:24 +0100
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Paul Durrant <paul.durrant@citrix.com>,
-        <xen-devel@lists.xenproject.org>
-Subject: Re: [PATCH] xen/privcmd: allow fetching resource sizes
-Message-ID: <20210112100324.ii34oqldfrtmfd2f@Air-de-Roger>
-References: <20210111152958.7166-1-roger.pau@citrix.com>
- <5063e696-5a7f-4429-048e-2bf0d14881d7@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5063e696-5a7f-4429-048e-2bf0d14881d7@suse.com>
-X-ClientProxiedBy: FRYP281CA0004.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::14)
- To DS7PR03MB5608.namprd03.prod.outlook.com (2603:10b6:5:2c9::18)
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rS4sdXVHr4l3vGRPMuRvaL1eabkA37lCE2nh9ri+8DA=;
+        b=f6Llr2Ei6o9IxbS05Jb89UXoWPqSI2kibVhcgOSycNIT9BHPBbZWtGxXn+WN4i5WCB
+         AJOaz8a1xnVBZLXTssdcpIgtFblHkyYiljyiuxZ638ZbcdCEUWce4loVsjZ0tXWMhxu6
+         AmEclYLBi87TEBoqp95L0D4aYhWwzlVJWZkj8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rS4sdXVHr4l3vGRPMuRvaL1eabkA37lCE2nh9ri+8DA=;
+        b=ROYI7l6CCLreBvswrPaaMd5/puIZY+HnFEn1wziRWqvtR57io7JxsE5mxrKrcSDBv/
+         5Cpieh0mI2z1yqbhggj7t2fu+b1cPF+Vvmr8OxKTWuQEzPeFWnVgc4goalVeEQFK914z
+         t2sBYshHZi7n3au/KxpXF+PYj2Rh9DOl/sMdjsPa9vxBuKk1BXZMSczOyh5hmOX62Sqs
+         j2dNu5KqbXkfUf0ze4byaJ3Ig/30wpvLLNyfyM9xqkvO0uDBNewd+EO87OsNGI1vZkOl
+         1Wjk/pEVYWUAl4RX5JG8XdBamSTDNSthOXKi3jNggdGZK5F/CDSVKC97LusOzlkntuIm
+         nxdA==
+X-Gm-Message-State: AOAM531PciKQWe9VocgXz5/Fnor0uwG1CacC6hhCzKoNILTL8Sh+RDPS
+        BB8QfDG1D/FrFkE1KA82rPI+wPtdBXlICFyGumLnXw==
+X-Google-Smtp-Source: ABdhPJztDdZxYIknYtDyA4L4qWH3qQH8eT1tvdwztKucGwlw6fqzlmexa8qFWsTe/ripf7WrljQs6a1FAY+W8sF9/m0=
+X-Received: by 2002:ac5:c284:: with SMTP id h4mr3303695vkk.14.1610445897639;
+ Tue, 12 Jan 2021 02:04:57 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 258f526b-88be-47cd-264a-08d8b6e15165
-X-MS-TrafficTypeDiagnostic: DM5PR03MB3211:
-X-Microsoft-Antispam-PRVS: <DM5PR03MB32116760A46925B19DEF67728FAA0@DM5PR03MB3211.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Bm8JnEDaY6MavGHY/OD2UinDJ0GYaijQlr8+QpFWgekbO5TqSJHGwzAd2N8lISQCbgU5GObrESfiVJ81kfFhZkRXD8tGyD2WPv4I39Ea831AgnP3v0jbN3CSkrEA3Scg92jP8D/Y3Kt3koFSy2GN3MnsgX8cGS0cjIVbH6KxRHOWDyamSbOgaAGtCdwSph8wMjA/asEL/jWEfaUmqrkOxU4GYdHQ+SwM8gEChWnvH1E66+vbSsKnzbmUiA3/78Tcy5Rree4MVy6JJFLkZtfg5IKnFA+sbih8977/ebinpg4Ox0FPvFIouUqlEif60bNmFtOlb8r39aItyAPFbnlxd/Q/d9WJOovEe/JemV+bod+T0S69txZc7CMt2FG/EGK2ypo5b9eKPW/+fkVHglh5vw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR03MB5608.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(346002)(366004)(396003)(39860400002)(376002)(136003)(478600001)(66574015)(8676002)(8936002)(316002)(6496006)(956004)(16526019)(6666004)(9686003)(66946007)(4744005)(86362001)(5660300002)(83380400001)(66476007)(33716001)(6916009)(4326008)(53546011)(85182001)(6486002)(66556008)(186003)(1076003)(26005)(54906003)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RU5SY2tuWVNOakpvNEtWVkZEWXFtZVpiVjBWOWUyN2Y2cUNLMDU0S0NuclY5?=
- =?utf-8?B?TVFKVlR0WDJUVk5kRVVvR0g0VUtqdXRrVUQwcnIveU5LcEgzaXV1bVlEMUVM?=
- =?utf-8?B?cUNEUFpJOUJaS1JWM3BuUTdxVWk2bnFnTUZ6eW5JQ21ZZEo0NzU0ekVkV1pG?=
- =?utf-8?B?QTFXbWREK1BJR3BXcW1aek9EaG1NbTlKK0RIRmgyNitHbUx5U1JEaGI0Mm1T?=
- =?utf-8?B?MHlwcmlScWYwV1RSZ2I4TVZjdkRRSXRtcGFYMG1rZ1BwTHJLVS9kbktQQjRM?=
- =?utf-8?B?WGtab1BEd2UrUUt1TWdqNDVQZXFJam4wY2grc2FxQ2xiV0luYjQ1TmdidXRP?=
- =?utf-8?B?TklNbWtFTGZRUGVUUHpRZ2NFaW4xL1BnSVR5Y2U2Qk12R2I4TUxJNjlOUGpv?=
- =?utf-8?B?ankwQVFobFdRT0k2aVFkTHY4YlFCZTJENHYvYXBIZUs4bE0zb3kxYy9nK2lV?=
- =?utf-8?B?Zm9MWTM1WFZKLzljT3BrYkd2eWEvS09LbnVrM1NlakRkRC9iTEhRTmZEQXdC?=
- =?utf-8?B?UHEwUUdjZ0oxSnA0QVhiSEdkeTRCTlVPZjA0SXdLU2pZKzR1K04xd1ZhdWs0?=
- =?utf-8?B?aDlBK0s0NC9iSEUzV3g2dkt0RVZmc3NzZlhLYVd0M0pXdzVGUitHVHVLRk0r?=
- =?utf-8?B?THh3cWdEaW0wQncyMUgxMmFDaWRLbyt4UGRaaGJJdy8wTEdvbW5sdk1DcTBt?=
- =?utf-8?B?OGFvWWllYTBCTCtrbG9UcGRKb3lmOUxPSGZMaXRwWjFVeFd1amIrSm1jandC?=
- =?utf-8?B?eGJack1Oalo3YmszYWFheGJxV3ZTWDIxTGduVXhmNzliUW11Z3U4RVhxemxz?=
- =?utf-8?B?b0xqYm9FWG9tV2d0UFVBZmhPRi8wR3JUcEptMmNzQ01xamVlQjRrcWdhSUlF?=
- =?utf-8?B?ZXloV3NINFVwbkM2MjdMWG54dUpDa283Q0YxZTZ4dmhyRHF6cTUvdjhSaXh6?=
- =?utf-8?B?K1h2Nm43OXhnNzc5VnAxK3g1TmFWeUQvZmwyaVZCdHdaenNBeXFyaE43NjBM?=
- =?utf-8?B?ZDA2ZUVvanBhSllLS0JpS1ovYUUrMmF0RjBZWWx5cU1xWmRmUmZpNXpOY0gy?=
- =?utf-8?B?eFlqcTBrZjRTNHBNLzFYL2RZWDdHMEVlV3ZBQXdJN0szeEdTTWJiRUFoTllv?=
- =?utf-8?B?NXdZbHZ2WGF4RFVWdFd0V051Umordnhwa1BrQ09TZ0p5ZElWWmdldXFOUEw3?=
- =?utf-8?B?dGxNbEpGUFJ6b2Jrc3hNbFZkSWtrQXpveGVNRk9aY2NSZ3VycWwzVkErdDNs?=
- =?utf-8?B?ZStWZDhMOS8vVDkvREE5ZVVZYzVQemdrQi8xSnRSUmVNd1NtOVd5UkdCRHU4?=
- =?utf-8?Q?GXpsYoCPuymxvkkb0mbOryoz1+X12kjpDh?=
-X-MS-Exchange-Transport-Forked: True
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR03MB5608.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 10:03:32.1379
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
-X-MS-Exchange-CrossTenant-Network-Message-Id: 258f526b-88be-47cd-264a-08d8b6e15165
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LBS+GAX51Ek58stk/qIMW4HcGj+r4Ydq0Gw0y6+qfJVne+9diX4TVB8uafA/rAPC3IbQn6sy9M46fcKwRnoNeg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR03MB3211
-X-OriginatorOrg: citrix.com
+References: <20201207163255.564116-1-mszeredi@redhat.com> <20201207163255.564116-2-mszeredi@redhat.com>
+ <87czyoimqz.fsf@x220.int.ebiederm.org> <20210111134916.GC1236412@miu.piliscsaba.redhat.com>
+ <874kjnm2p2.fsf@x220.int.ebiederm.org> <CAJfpegtKMwTZwENX7hrVGUVRWgNTf4Tr_bRxYrPpPAH_D2fH-Q@mail.gmail.com>
+In-Reply-To: <CAJfpegtKMwTZwENX7hrVGUVRWgNTf4Tr_bRxYrPpPAH_D2fH-Q@mail.gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Tue, 12 Jan 2021 11:04:46 +0100
+Message-ID: <CAJfpegutxHPuEnUxapcwcwiEiND8Swdi7CSOMaU06qV9=uUdXA@mail.gmail.com>
+Subject: Re: [PATCH v2 01/10] vfs: move cap_convert_nscap() call into vfs_setxattr()
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        LSM <linux-security-module@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, "Serge E. Hallyn" <serge@hallyn.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 06:57:30AM +0100, Jürgen Groß wrote:
-> On 11.01.21 16:29, Roger Pau Monne wrote:
-> > Allow issuing an IOCTL_PRIVCMD_MMAP_RESOURCE ioctl with num = 0 and
-> > addr = 0 in order to fetch the size of a specific resource.
-> > 
-> > Add a shortcut to the default map resource path, since fetching the
-> > size requires no address to be passed in, and thus no VMA to setup.
-> > 
-> > Fixes: 3ad0876554caf ('xen/privcmd: add IOCTL_PRIVCMD_MMAP_RESOURCE')
-> 
-> I don't think this addition is a reason to add a "Fixes:" tag. This is
-> clearly new functionality.
+On Tue, Jan 12, 2021 at 10:43 AM Miklos Szeredi <miklos@szeredi.hu> wrote:
 
-It could be argued that not allowing to query the resource size was a
-shortcoming of the original implementation, but a backport request to
-stable would be more appropriate than a fixes tag I think. Will drop
-on next version and add a backport request if you agree.
+> The following semantics would make a ton more sense, since getting a
+> v2 would indicate that rootid is unknown:
+>
+> - if cap is v2 convert to v3 with zero rootid
+> - after this, check if rootid needs to be translated, if not return v3
+> - if yes, try to translate to current ns, if succeeds return translated v3
+> - if not mappable, return v2
+>
+> Hmm?
 
-Thanks, Roger.
+Actually, it would make even more sense to simply skip unconvertible
+caps and return -ENODATA.  In fact that's what I thought would happen
+until I looked at the -EOPNOTSUPP fallback code in vfs_getxattr().
+
+Serge, do you remember what was the reason for the unconverted fallback?
+
+Thanks,
+Miklos
