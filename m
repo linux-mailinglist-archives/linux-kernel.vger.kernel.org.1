@@ -2,114 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565D62F26C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 04:44:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8098E2F26C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 04:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727939AbhALDoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 22:44:19 -0500
-Received: from foss.arm.com ([217.140.110.172]:39592 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727762AbhALDoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 22:44:19 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CFC95101E;
-        Mon, 11 Jan 2021 19:43:32 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E5A053F66E;
-        Mon, 11 Jan 2021 19:43:28 -0800 (PST)
-Subject: Re: [PATCH V2 1/3] mm/hotplug: Prevalidate the address range being
- added with platform
-To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org, hca@linux.ibm.com,
-        catalin.marinas@arm.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <1608218912-28932-1-git-send-email-anshuman.khandual@arm.com>
- <1608218912-28932-2-git-send-email-anshuman.khandual@arm.com>
- <10e733fa-4568-d38f-9b95-2ccc5dc627b8@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <c23e9740-0779-d6b7-2ff7-f6f9f9085f0d@arm.com>
-Date:   Tue, 12 Jan 2021 09:13:49 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728133AbhALDos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 22:44:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727486AbhALDor (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 22:44:47 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE9FC061575;
+        Mon, 11 Jan 2021 19:44:01 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id n7so548601pgg.2;
+        Mon, 11 Jan 2021 19:44:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=g0LA2f85ruTd8j6JSyNyo+4Zil1414FJsUe+l3QuCJI=;
+        b=EGLHtybCsoN/SaP8Gct77imb9qIV75xWNfOLb1ev533SpWbFVBzG65wqZ7Lox3umji
+         cvPHMwK1J4xvGD3tYbrgDASiGqYyJLUuXFgzOpOfq6AVqDJr0Z+br0zB1bgcNG8IZJgS
+         g/ArtkJRCHRg7Eg0bfa/jcY47EtX7qFEXOuowws2AZtljzJXZLDFKOisN3cGMEgao2FL
+         /luk7iIkHO5EpHOe508+gFgTyEYakDrvJSeU96piyAvHhEEPjWW93PHU6A4ImMl6HuQO
+         mHO9GHHqiZkyG6qE7ogssceDXYxXSMcfIPOwvQNiyk47934YxCxKdfcs39cPBlmjEWqQ
+         EZfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=g0LA2f85ruTd8j6JSyNyo+4Zil1414FJsUe+l3QuCJI=;
+        b=U1jo7Xd5GA7rKzdKsQFtYazJ6XIjXwc62h5C/z2BJvEOqAWiPYqsKfqkTdPZ8njwtC
+         4UxSKmH9IvnQx6YKFgbzDS3hXkqHTdAjMAePiAlDpSexOc+MvTm+XcwMex53V47bX4l+
+         sLr6VOP+qeYt4upBm0hi9RbjFBajO+Z2pDKFvFkTeyP/8zKMYO3gifvvJ7L8HDpaWUPq
+         dHp72//lzl6s80AmnrGSs7nwgGCjJrNEYDANC53Qk+uyXRetITIlb/+yj5SxCXlFeReP
+         KGPKQvvhnH3Pe5r004M8NOMYK2PdVhDdppPSaSrgunFrL5Mhk9Rq4pTGQVLAB4GbD/1W
+         irOA==
+X-Gm-Message-State: AOAM530s/fyyrHKYRAJ99VZ9Yw856a3N9BiY3BQvTPqM2So5x6sAwbrL
+        Wz2GdNyxvkt7veEooG/+3+fq0J7XcIY=
+X-Google-Smtp-Source: ABdhPJx2jZeQ2/PvTxGeFg86CetPWJWt+uz+O+gIvMm3O9TYzQcZ8kEaNSKitZp+1pJROpc1f0IPHA==
+X-Received: by 2002:a63:464a:: with SMTP id v10mr2656462pgk.393.1610423041000;
+        Mon, 11 Jan 2021 19:44:01 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id 17sm1336770pgy.53.2021.01.11.19.43.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 19:44:00 -0800 (PST)
+Date:   Mon, 11 Jan 2021 19:43:57 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Lubomir Rintel <lkundrak@v3.sk>
+Cc:     Souptick Joarder <jrdr.linux@gmail.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] input: ariel-pwrbutton.c: Remove unused variable
+ ariel_pwrbutton_id_table[]
+Message-ID: <X/0a/SgL5kWX/7/T@google.com>
+References: <1608581041-4354-1-git-send-email-jrdr.linux@gmail.com>
+ <CAFqt6zb2O3SFx6xDtwdSgHYH-zeGXwuf1=Hr5yYXnCDqAza9KQ@mail.gmail.com>
+ <X/OQZcsD15Fl/XVw@google.com>
+ <20210112032028.GB1503339@demiurge.local>
 MIME-Version: 1.0
-In-Reply-To: <10e733fa-4568-d38f-9b95-2ccc5dc627b8@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112032028.GB1503339@demiurge.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/11/21 4:21 PM, David Hildenbrand wrote:
-> On 17.12.20 16:28, Anshuman Khandual wrote:
->> This introduces memhp_range_allowed() which can be called in various memory
->> hotplug paths to prevalidate the address range which is being added, with
->> the platform. Then memhp_range_allowed() calls memhp_get_pluggable_range()
->> which provides applicable address range depending on whether linear mapping
->> is required or not. For ranges that require linear mapping, it calls a new
->> arch callback arch_get_mappable_range() which the platform can override. So
->> the new callback, in turn provides the platform an opportunity to configure
->> acceptable memory hotplug address ranges in case there are constraints.
->>
->> This mechanism will help prevent platform specific errors deep down during
->> hotplug calls. This drops now redundant check_hotplug_memory_addressable()
->> check in __add_pages() but instead adds a VM_BUG_ON() check which would
->> ensure that the range has been validated with memhp_range_allowed() earlier
->> in the call chain. Besides memhp_get_pluggable_range() also can be used by
->> potential memory hotplug callers to avail the allowed physical range which
->> would go through on a given platform.
->>
->> This does not really add any new range check in generic memory hotplug but
->> instead compensates for lost checks in arch_add_memory() where applicable
->> and check_hotplug_memory_addressable(), with unified memhp_range_allowed().
->>
+On Tue, Jan 12, 2021 at 04:20:28AM +0100, Lubomir Rintel wrote:
+> On Mon, Jan 04, 2021 at 02:02:13PM -0800, Dmitry Torokhov wrote:
+> > On Tue, Dec 29, 2020 at 01:15:10PM +0530, Souptick Joarder wrote:
+> > > On Tue, Dec 22, 2020 at 1:34 AM Souptick Joarder <jrdr.linux@gmail.com> wrote:
+> > > >
+> > > > Kernel test robot throws below warning ->
+> > > >
+> > > > >> drivers/input/misc/ariel-pwrbutton.c:152:35: warning: unused variable
+> > > > >> 'ariel_pwrbutton_id_table' [-Wunused-const-variable]
+> > > >    static const struct spi_device_id ariel_pwrbutton_id_table[] = {
+> > > >                                      ^
+> > > >    1 warning generated.
+> > > >
+> > > > Remove unused variable ariel_pwrbutton_id_table[] if no plan to use
+> > > > it further.
+> > > >
+> > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> > > 
+> > > Any comment on this patch ?
+> > 
+> > Lubomir, would you prefer to remove the table or add it to the driver
+> > structure as ariel_pwrbutton_driver->id_table?
 > 
-> Subject s/mm\/hotplug/mm\/memory_hotplug/
-
-Sure, will do.
-
+> I believe it can be safely dropped, as the OF match seems to be
+> sufficient.
 > 
-> Everywhere in this patch: Use "true/false" for boolean values.
-
-Sure, will change.
-
+> Thank you for the patch Souptick.
 > 
->> Cc: David Hildenbrand <david@redhat.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: linux-mm@kvack.org
->> Cc: linux-kernel@vger.kernel.org
->> Suggested-by: David Hildenbrand <david@redhat.com>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>  include/linux/memory_hotplug.h | 10 +++++
->>  mm/memory_hotplug.c            | 79 +++++++++++++++++++++++++---------
->>  mm/memremap.c                  |  6 +++
->>  3 files changed, 75 insertions(+), 20 deletions(-)
->>
->> diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
->> index 551093b74596..8d72354758c8 100644
->> --- a/include/linux/memory_hotplug.h
->> +++ b/include/linux/memory_hotplug.h
->> @@ -70,6 +70,9 @@ typedef int __bitwise mhp_t;
->>   */
->>  #define MEMHP_MERGE_RESOURCE	((__force mhp_t)BIT(0))
->>  
->> +bool memhp_range_allowed(u64 start, u64 size, bool need_mapping);
->> +struct range memhp_get_pluggable_range(bool need_mapping);
-> 
-> AFAIKs, all memhp_get_pluggable_range() users pass "1".
+> Reviewed-by: Lubomir Rintel <lkundrak@v3.sk>
 
-Right.
+Applied, thank you.
 
-> 
-> What about the "add_pages()-only" path?
-
-I had dropped memhp_range_allowed() changes for add_pages() in pagemap_range()
-because you had mentioned not to add any new checks in the generic code. Will
-add it back if that is preferred.
+-- 
+Dmitry
