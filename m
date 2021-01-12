@@ -2,90 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E118F2F2F45
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:40:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C99012F2F46
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:41:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387948AbhALMkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:40:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41460 "EHLO
+        id S2388277AbhALMkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:40:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726108AbhALMj6 (ORCPT
+        with ESMTP id S1727072AbhALMkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:39:58 -0500
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4314CC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 04:39:18 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id z8so1107332wrh.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 04:39:18 -0800 (PST)
+        Tue, 12 Jan 2021 07:40:39 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70FCC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 04:39:58 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id q20so1312298pfu.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 04:39:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=cd88PZYioyCzHHKMFonziFg/jnmE70xrn0dgHm2km3k=;
-        b=TzAvlCGGlQ+J9NrqFbrScSC7TakMIWh2ybIIr5nC9dcgjeGuJU53u6b/Jmme6C5JYo
-         0oL/UDqvroaKC1rIFJRwdutaz8EWIaH0vTOpIJqMVxmPAQgV6I2VJ5+bs+7yrd5ysr/3
-         0/mxidw4zwMPHlEIwpEdnAnowFPAPJ+3fVmyMSr5ToXwx4ZgB7iDbPgRAPlnLwaduUfo
-         U2ncMuTnku2hCqYzVdyOfZXsRCaBZwItPDlIGe5f3GBvy6tj79WbJoR55h5zztQfUr+q
-         neLIDh08dAz13aT+vGCjC1W2WjLC1dIb1EdxbqufhGYiqWwUU1U6KTj9qpvz0/uz1GH7
-         bgUg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iBDp91phFwOqELMFCCbzVy/QFbR85TB6s1l42soxBSY=;
+        b=b1IQXfFfB0WqLgMwjzZGdFkvztWcaKORJDWjoEmti0F6f9d8++NhUYfbgiBmy+6VSy
+         BkOHL1mGceNBDNFJsFxx95rD6H4vx22vjHvQooT45K8HtMeSDlZTeIwkHBcuXOXXspc8
+         jo6o7kBu88nzB6Hp4up09uW/MS0JXY1iqQNuOErl3nSwKV9Qf32edh+CXAEd7Z4IGXxZ
+         XVrFoT6Fgz+pC3y8HZ7E1UgZb6JFHVM/+wPbf617FL50kmTUYHOIm3fa5/I4cMB8KO8Z
+         pf8Xq7BvC7WNGEiAUdUESkkF7ILUhasfus5R2iLvHB4wIUMSeg799YCwvt6KqNgnoVo+
+         +WbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=cd88PZYioyCzHHKMFonziFg/jnmE70xrn0dgHm2km3k=;
-        b=FIA1f/bb6+QteGPCSFtx+bkONRscHvAsvUDIWgse7cDC5rUUJnVZh+viD090Of7LAm
-         vy/uyroj/udLHixf3sCMu8LWwLn92XAtTOIToqDZefU6x1Fxla4zN31lSQmP4oMPbbcA
-         FK73yZC/GV/aNsZnXpDWyX+kKChvQw2KHEkXExTY1TVFYrpMTNWy2LTsN/Q9JYCflps2
-         a+l7IWPJ0+yKTKP72tNjBGqYWDmefGqK1l2zNPs+Kn1R5D4/xsnloJtEZxr1w65Lo0XB
-         hs8IndmKCb/Z80ABzsPqXMJYh/XD6r/wa/bn0rirEa7CxxCfI736MTtVdBRN0W7CLYFP
-         ObMw==
-X-Gm-Message-State: AOAM531zBpjw1m7aouwNPzGFwSNowwGFCDQ/VnTmUDUSj/rVFEaXMTXk
-        0X6Eg/IsJrWp4yb/2dvIcZfiO0QMJD5RpQ==
-X-Google-Smtp-Source: ABdhPJxhpPBjKLmukSE9qxCHkBXBmVQtB6aOwBOqS+g2Vy1EUDyFX5XFK0NPQZMSp7n2hvAquvKsZV3JeBGN5g==
-Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a1c:cc19:: with SMTP id
- h25mr3485213wmb.124.1610455156789; Tue, 12 Jan 2021 04:39:16 -0800 (PST)
-Date:   Tue, 12 Jan 2021 12:39:13 +0000
-Message-Id: <20210112123913.2016804-1-jackmanb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH bpf-next] bpf: Fix a verifier message for alloc size helper arg
-From:   Brendan Jackman <jackmanb@google.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iBDp91phFwOqELMFCCbzVy/QFbR85TB6s1l42soxBSY=;
+        b=X3VtqpOnB0KlPnrYcnGfNMSSHkxGOyGfRTkkh3SJSRGVVZgdhDL5DshKbyqUwvA6Fg
+         BtXNU6HhuqOyMpvBLXDZ2EZOh3S7ZGIJBz9vzEBacN57vbzYDnhMIpHh8KTcsQG34WO/
+         zlVi0XYOCnwqbGXIkCllVxLnciTSG/MgOH0gh5eiI/ssL10miWM5iktGqRbdS9uqQwFs
+         oSQ6ii3R6bGG/RBVKJi7lZDoT7JJWdWHNCXThVHXywZSCCgNQnuGbQIBfAIAnMDcINZ0
+         cl87PdRNEUpuoBu24sPiNKaAWCuEDhiqHQdFzQ5wqr4QcVbbKXkpb0dFlsBZXLgGyPdN
+         Wt8Q==
+X-Gm-Message-State: AOAM532IkEB7pHEUvUzZITu22M8XVTUqLSyHN/a57Xd1oKjE0o0CG6WX
+        rYd0SBcRDfRvteL+kUKcm7zOlzix5MA=
+X-Google-Smtp-Source: ABdhPJxIyn0FELzOGmkw/2AhUmHkIrHXcb5e7Bq3inEYDGpjU+/yDl/NZqv2duTD9S9oOdG9GrZ5Ow==
+X-Received: by 2002:a62:e818:0:b029:19e:31e6:e639 with SMTP id c24-20020a62e8180000b029019e31e6e639mr4381641pfi.81.1610455197933;
+        Tue, 12 Jan 2021 04:39:57 -0800 (PST)
+Received: from localhost (g238.115-65-210.ppp.wakwak.ne.jp. [115.65.210.238])
+        by smtp.gmail.com with ESMTPSA id o129sm3011166pfg.66.2021.01.12.04.39.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 04:39:57 -0800 (PST)
+From:   Stafford Horne <shorne@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Gabriel Somlo <gsomlo@gmail.com>,
+        Stafford Horne <shorne@gmail.com>,
+        kernel test robot <lkp@intel.com>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>
+Subject: [PATCH] soc: litex: Fix compile warning when device tree is not configured
+Date:   Tue, 12 Jan 2021 21:39:37 +0900
+Message-Id: <20210112123937.2612937-1-shorne@gmail.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The error message here is misleading, the argument will be rejected
-unless it is a known constant.
+The test robot reported:
 
-Signed-off-by: Brendan Jackman <jackmanb@google.com>
+   drivers/soc/litex/litex_soc_ctrl.c:143:34: warning: unused variable 'litex_soc_ctrl_of_match' [-Wunused-const-variable]
+   static const struct of_device_id litex_soc_ctrl_of_match[] = {
+                                    ^
+   1 warning generated.
+
+As per the random config device tree is not configured causing the
+litex_soc_ctrl_of_match match list to not be used.  This would usually
+mean that we cannot even use this driver as it depends on device tree,
+but as we also have COMPILE_TEST configured we allow it.
+
+Fix the warning by surrounding the unused variable with an ifdef
+CONFIG_OF.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Stafford Horne <shorne@gmail.com>
 ---
- kernel/bpf/verifier.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/soc/litex/litex_soc_ctrl.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 17270b8404f1..5534e667bdb1 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -4319,7 +4319,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 			err = mark_chain_precision(env, regno);
- 	} else if (arg_type_is_alloc_size(arg_type)) {
- 		if (!tnum_is_const(reg->var_off)) {
--			verbose(env, "R%d unbounded size, use 'var &= const' or 'if (var < const)'\n",
-+			verbose(env, "R%d is not a known constant'\n",
- 				regno);
- 			return -EACCES;
- 		}
-
-base-commit: e22d7f05e445165e58feddb4e40cc9c0f94453bc
+diff --git a/drivers/soc/litex/litex_soc_ctrl.c b/drivers/soc/litex/litex_soc_ctrl.c
+index 1217cafdfd4d..9b0766384570 100644
+--- a/drivers/soc/litex/litex_soc_ctrl.c
++++ b/drivers/soc/litex/litex_soc_ctrl.c
+@@ -140,12 +140,13 @@ struct litex_soc_ctrl_device {
+ 	void __iomem *base;
+ };
+ 
++#ifdef CONFIG_OF
+ static const struct of_device_id litex_soc_ctrl_of_match[] = {
+ 	{.compatible = "litex,soc-controller"},
+ 	{},
+ };
+-
+ MODULE_DEVICE_TABLE(of, litex_soc_ctrl_of_match);
++#endif /* CONFIG_OF */
+ 
+ static int litex_soc_ctrl_probe(struct platform_device *pdev)
+ {
 -- 
-2.30.0.284.gd98b1dd5eaa7-goog
+2.26.2
 
