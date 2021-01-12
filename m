@@ -2,94 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464272F357A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 931FA2F358B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406549AbhALQSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:18:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53618 "EHLO mail.kernel.org"
+        id S2406658AbhALQUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:20:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406511AbhALQSU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:18:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A9E0523121
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:17:39 +0000 (UTC)
+        id S2406153AbhALQUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 11:20:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB6062222B;
+        Tue, 12 Jan 2021 16:19:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610468260;
-        bh=CoI1g52qNIryGpFWepCTL4prXOBxmbo4WiGrzxRBQlA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=JJVzSHdgO1ws6H/D24wVXlrgHNqXtP+dlwOmTRrVvjDaJMavwKl00ORf0Sq7tdDtE
-         n8oulnveMEUZ7FWxrvEbctTohR2Z9hE85YJGMYRYUnkOSTVTPkNSGg7A1NYNAXIvcB
-         O2deKc9s5kBQF7ouaaTvie2lytEIXJ4OENfHkrtNxPHZoXU4NP3ncDwIy9s5ZfMhOy
-         TdsVLPYFJniq2pEuDIvMFUgZO2Hj13yEO4h73mr+gQCt2uN3mBbG1WRRGyLsT5VuWA
-         3R8AEoUCzrwzD7GA2NM9EgeR3t24E5TEGLeZyMkT3H49kBAA82wZt/CLk8NRwdIMOB
-         cUM4L64Fj1wvg==
-Received: by mail-lf1-f41.google.com with SMTP id s26so4195398lfc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 08:17:39 -0800 (PST)
-X-Gm-Message-State: AOAM532mo2kvQAM/fFG3LKPaPLA4EOrj34r4uWbJOwIaPz2UQQlBGLEG
-        uYRPcWn9WPF16cLF9zxKgTup/IbrSLpt0o5xLIJuOQ==
-X-Google-Smtp-Source: ABdhPJyphcIptdvuiusWElNIOsd2UVvUfETzlw5D23qNpR/REKCWs64wDJXdXhm1+cIiNbm+DcFAY8IGibS/or6YFBQ=
-X-Received: by 2002:a19:cbd8:: with SMTP id b207mr2542971lfg.550.1610468257650;
- Tue, 12 Jan 2021 08:17:37 -0800 (PST)
+        s=k20201202; t=1610468365;
+        bh=K15kqN6d8bltmp/D2dIKxt8SX/ubLa2fWzXTMRJ9Wjo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=HkzBcf6zciDNh2ZRd8Ddz5SlVjzwMvY1lDlQanLlobJyoAUlWcEZnvHWjn4X0pI2j
+         33vvpN2uxnIJVAFxzUdWUV2N2XNHTNniw7cdZje3+rVG9t2LhK5AHstB00M8KC58L0
+         6DtE9xv59fO4xFsPF5qMJCFOlKhlP35bf+Ho/45ZfdvNxZ1CEz3dNlmM0YJwCh/n3D
+         AvclJTvY1dICswABfbwMxlZrsCrwB8z/sUW87QhU+M/+eG2X3R3iSCSzQG7HiizrJO
+         EmCYZ47ey6RAvNrOyvTvj0eUfKVdTsZ+6268+eauqQLiri7rzZb1h2rdBBheu/R5WC
+         T6IsK09A1Pu+w==
+Date:   Tue, 12 Jan 2021 10:19:23 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     =?utf-8?B?5YiY5LmQ5LmQKOS5kOS6hik=?= <daniel.lll@alibaba-inc.com>
+Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-acpi@vger.kernel.org, Ira Weiny <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Xu, Di" <di.x@alibaba-inc.com>
+Subject: Re: [RFC PATCH v3 00/16] CXL 2.0 Support
+Message-ID: <20210112161923.GA1807814@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20210112091545.10535-1-gilad.reti@gmail.com> <CACYkzJ69serkHRymzDEAcQ-_KAdHA+RxP4qpAwzGmppWUxYeQQ@mail.gmail.com>
- <CANaYP3G_39cWx_L5Xs3tf1k4Vj9JSHcsr+qzNQN-dcY3qvT8Yg@mail.gmail.com> <60034a79-573f-125c-76b0-17e04941a155@iogearbox.net>
-In-Reply-To: <60034a79-573f-125c-76b0-17e04941a155@iogearbox.net>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 12 Jan 2021 17:17:26 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ7dK62zbn_z0S=-Xps1=DCEcd1FPYFon-BUeha=N5KnJQ@mail.gmail.com>
-Message-ID: <CACYkzJ7dK62zbn_z0S=-Xps1=DCEcd1FPYFon-BUeha=N5KnJQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] selftests/bpf: add verifier test for PTR_TO_MEM spill
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Gilad Reti <gilad.reti@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kselftest@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0f2a6d62-09d8-416f-e972-3e9869c3e1a6@alibaba-inc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 4:43 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 1/12/21 4:35 PM, Gilad Reti wrote:
-> > On Tue, Jan 12, 2021 at 4:56 PM KP Singh <kpsingh@kernel.org> wrote:
-> >> On Tue, Jan 12, 2021 at 10:16 AM Gilad Reti <gilad.reti@gmail.com> wrote:
-> >>>
-> >>> Add test to check that the verifier is able to recognize spilling of
-> >>> PTR_TO_MEM registers.
-> >>
-> >> It would be nice to have some explanation of what the test does to
-> >> recognize the spilling of the PTR_TO_MEM registers in the commit
-> >> log as well.
-> >>
-> >> Would it be possible to augment an existing test_progs
-> >> program like tools/testing/selftests/bpf/progs/test_ringbuf.c to test
-> >> this functionality?
->
-> How would you guarantee that LLVM generates the spill/fill, via inline asm?
+On Tue, Jan 12, 2021 at 10:55:50PM +0800, 刘乐乐(乐了) wrote:
+> Ben,
+> 
+> Thanks for your hard work. I have compiled this patch(aff2b059786d ,
+> cxl-2.0v3) together qemu emulator v3, this is the first time I see a CXL
+> device in linux.
+> 
+> Still I have problems, I can saw the CXL device with `lspci -vvv`  and a
+> device /dev/cxl/mem0 . But I can't see the memory in system and lsmem
+> command.
+> 
+> Qemu command line is :
+> 
+> sudo ./qemu-cxl/build/qemu-system-x86_64 -enable-kvm -smp 8 -drive
+> file=/mnt/lele/vm/cxl-centos8-uefi.qcow2,format=qcow2,cache=none -drive if=pflash,format=raw,unit=0,file=/mnt/lele/edk2/usr/share/edk2-ovmf/x64/OVMF_CODE.fd,readonly=on
+> -drive if=pflash,format=raw,readonly,unit=1,file=/mnt/lele/edk2/usr/share/edk2-ovmf/x64/OVMF_VARS.fd
+> -m 32G -vnc :12 -machine type=pc-q35-4.0,hmat=on,accel=kvm -net nic -net
+> tap,ifname=tap1,script=/mnt/lele/vm/qemu-ifup,downscript=no -object memory-backend-file,id=cxl-mem1,share,mem-path=/mnt/lele/cxl-mem.dat,size=512M
+> -device pxb-cxl,id=cxl.0,bus=pcie.0,bus_nr=52,uid=0,len-window-base=1,window-base[0]=0x4c0000000,memdev[0]=cxl-mem1
+> -device cxl-rp,id=rp0,bus=cxl.0,addr=0.0,chassis=0,slot=0 -device
+> cxl-type3,bus=rp0,memdev=cxl-mem1,id=cxl-pmem0,size=256M
+> 
+> So, what's the further step to show the memory in system memory?
 
-Yeah, I guess there is no sure-shot way to do it and, adding inline asm would
-just be doing the same thing as this verifier test. You can ignore me
-on this one :)
+Please use plain text email only.  Your response is valuable, but I
+think the linux-kernel and linux-pci mailing lists rejected it because
+it was a multi-part message with images and other non-text elements.
 
-It would, however, be nice to have a better description about what the test is
-actually doing./
+If you look at https://lore.kernel.org/linux-cxl/20210112151735.w45qbi37pc3zuucw@intel.com/T/#t,
+you can see Ben's v3 00/16 email and his response to your response,
+but your response is missing.
 
-
->
-> > It may be possible, but from what I understood from Daniel's comment here
-> >
-> > https://lore.kernel.org/bpf/17629073-4fab-a922-ecc3-25b019960f44@iogearbox.net/
-> >
-> > the test should be a part of the verifier tests (which is reasonable
-> > to me since it is
-> > a verifier bugfix)
->
-> Yeah, the test_verifier case as you have is definitely the most straight
-> forward way to add coverage in this case.
+See http://vger.kernel.org/majordomo-info.html for details.
