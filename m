@@ -2,105 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7CC2F331F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7722F3341
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:54:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732332AbhALOne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:43:34 -0500
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:34043 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbhALOnc (ORCPT
+        id S1732317AbhALOwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:52:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728519AbhALOwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:43:32 -0500
-Received: by mail-ot1-f41.google.com with SMTP id a109so2482344otc.1;
-        Tue, 12 Jan 2021 06:43:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jLuXNEmtLsh4q/WoTJHKIzGwbfv3S50Xpe/RyA9VIyM=;
-        b=A2iCrX+rVzFMlQuiC8ZLlPg4IOjM9d2FfMyWcp/Dt4cslwICMjoNaSmN0HMe1bm1iy
-         QQJVYmPjlqBIYQYBBO4C0JrDEENz/AxTraizpCa3ogWJjwTJa66rZ63xqcl0V8/dE7rf
-         q/q7ZNTS1BkuqajcaICD7qPrErmBxQG3oDGwA6+V3NxJMiU6csWOKEdmc3hH3UVd6e6V
-         7nCt5Js2XnSQKPkQQvfbYxwzG9I9u8girfeaOeDBgc4BaYsdSnpI+MKrWb9+vGXJFhWh
-         aNLEAA8r+2pT5M4rZHsALWrqr8sLKZAPc9UPZZTOq1Rm191Ph09wNFdkMglmLnUCPCDb
-         Rx6w==
-X-Gm-Message-State: AOAM531ntcqTSrfOj/3DQdxQTPMbFxS9JXbr53a+jnRfErzkTif1Ocab
-        I7ZBizIqvtCJzG7LgePAwDFH5HbEwQ==
-X-Google-Smtp-Source: ABdhPJzjdAg7vY7kX3mqmavPKtL3svboVN48BuxP85NLoc3mx90pHjm3o+5h8okafMrBIipAWaNpRQ==
-X-Received: by 2002:a9d:ec5:: with SMTP id 63mr2969536otj.181.1610462571490;
-        Tue, 12 Jan 2021 06:42:51 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id c18sm675458oib.31.2021.01.12.06.42.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 06:42:50 -0800 (PST)
-Received: (nullmailer pid 321418 invoked by uid 1000);
-        Tue, 12 Jan 2021 14:42:48 -0000
-Date:   Tue, 12 Jan 2021 08:42:48 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     zohar@linux.ibm.com, bauerman@linux.ibm.com,
-        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
-        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au,
-        james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@vger.kernel.org
-Subject: Re: [PATCH v14 0/6] Carry forward IMA measurement log on kexec on
- ARM64
-Message-ID: <20210112144248.GA256955@robh.at.kernel.org>
-References: <20210104192602.10131-1-nramas@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210104192602.10131-1-nramas@linux.microsoft.com>
+        Tue, 12 Jan 2021 09:52:36 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35219C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:51:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=qAI7LcOIC5xUJzcIeCZEp5waTvdXBfe+qtlYgS/mTdE=; b=Oe02yKpMixU8ukY6lmMvSUysnm
+        3StVUysKL2rdR5ZtN6v5qdMPiiOYpgEKHWE3TlKimkJpoayO6BYruwDkQijVOsKEga1KwL4BZn9aE
+        xF/1XRbdoN0mj80xvyxyVdo20OBY5NG0c6Q8DzB03fkYxMKVK8Mp4Zrur5ROKwzSy2rFjt5Pb/giT
+        NHKtPUfpsRp0sos4yRTLt4vsPIePiJtuxFSJK/ORM4pBKe3bEhi18gTy+g+45RGCPeJgxCvFGmOQV
+        SquMuUldNkzV5lNi9UxzXW8WQBsd17lhJviYdGE4TyBCsLjk12A9u5Fwj/JTc1/dxy9yrbwl6SafS
+        NMSPxOrw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kzL1I-0000cb-GS; Tue, 12 Jan 2021 14:51:40 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BDE533010C8;
+        Tue, 12 Jan 2021 15:51:38 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 9FB3420C228D5; Tue, 12 Jan 2021 15:51:38 +0100 (CET)
+Message-ID: <20210112144344.850850975@infradead.org>
+User-Agent: quilt/0.66
+Date:   Tue, 12 Jan 2021 15:43:44 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     mingo@kernel.org, tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, jiangshanlai@gmail.com,
+        valentin.schneider@arm.com, cai@redhat.com,
+        vincent.donnefort@arm.com, decui@microsoft.com, paulmck@kernel.org,
+        vincent.guittot@linaro.org, rostedt@goodmis.org, tj@kernel.org,
+        peterz@infradead.org
+Subject: [PATCH 0/4] sched: Fix hot-unplug regressions
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 11:25:56AM -0800, Lakshmi Ramasubramanian wrote:
-> On kexec file load Integrity Measurement Architecture (IMA) subsystem
-> may verify the IMA signature of the kernel and initramfs, and measure
-> it. The command line parameters passed to the kernel in the kexec call
-> may also be measured by IMA. A remote attestation service can verify
-> a TPM quote based on the TPM event log, the IMA measurement list, and
-> the TPM PCR data. This can be achieved only if the IMA measurement log
-> is carried over from the current kernel to the next kernel across
-> the kexec call.
-> 
-> powerpc already supports carrying forward the IMA measurement log on
-> kexec. This patch set adds support for carrying forward the IMA
-> measurement log on kexec on ARM64. 
-> 
-> This patch set moves the platform independent code defined for powerpc
-> such that it can be reused for other platforms as well. A chosen node
-> "linux,ima-kexec-buffer" is added to the DTB for ARM64 to hold
-> the address and the size of the memory reserved to carry
-> the IMA measurement log.
-> 
-> This patch set has been tested for ARM64 platform using QEMU.
-> I would like help from the community for testing this change on powerpc.
-> Thanks.
-> 
-> This patch set is based on
-> commit a29a64445089 ("powerpc: Use common of_kexec_setup_new_fdt()")
-> in https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git
-> "dt/kexec" branch.
+Hi,
 
-This all looks good to me. I'd suggest you send the above patches out as 
-part of this series because I don't plan to do so.
+These 4 patches are the simplest means (barring a revert) of fixing the CPU
+hot-unplug problems introduced by commit:
 
-I would like to also resolve the vmalloc vs. kmalloc difference for 
-allocating the FDT. Then we can further consolidate the DT kexec code. 
+  1cf12e08bc4d ("sched/hotplug: Consolidate task migration on CPU unplug")
 
-It all needs some acks from arm64 and powerpc maintainers. As far as 
-merging, I think via the integrity tree makes the most sense.
+Testing here, any by Paul, indicate they survive a pounding.
 
-Rob
+They restore the previous behaviour of forced affinity breaking for the class
+of kernel threads that happen to have single CPU affinity, but are not strictly
+a per-cpu kthread.
+
+
