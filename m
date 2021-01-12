@@ -2,212 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF472F2B51
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:33:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D3152F2B62
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:36:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392587AbhALJcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:32:12 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:57685 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392217AbhALJcK (ORCPT
+        id S2405939AbhALJeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:34:00 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:35828 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405926AbhALJd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:32:10 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610443905; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=DWSJoSoBHrzo0I5E/0FwlwBtCOm8HjJ2U/+dN2HVFFc=;
- b=f1JHBmhZlp4gcvr4FZfvPlUtLrpddH203n+ttg5P0ACyEpTtxPqx+npjEsfDvQdI1b2/afq6
- XcU96DgXPEHNBGfuUyg+CB55mpch8IMQ5j1u7Bg98GZSYDAz15JAJttSj6q+sWLQ59NUjFlm
- b+V8DqwH3BSQLvvdgOrs4i77ako=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5ffd6c7fd84bad35475ad422 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Jan 2021 09:31:43
- GMT
-Sender: mdalam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8E105C433C6; Tue, 12 Jan 2021 09:31:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: mdalam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 035E1C43461;
-        Tue, 12 Jan 2021 09:31:42 +0000 (UTC)
+        Tue, 12 Jan 2021 04:33:58 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-13-HBs_pSLqOtmm_-BghNSOCQ-1; Tue, 12 Jan 2021 09:32:19 +0000
+X-MC-Unique: HBs_pSLqOtmm_-BghNSOCQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 12 Jan 2021 09:32:19 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 12 Jan 2021 09:32:19 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Sowjanya Komatineni' <skomatineni@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+CC:     "jonathanh@nvidia.com" <jonathanh@nvidia.com>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>
+Subject: RE: [PATCH v1] i2c: tegra: Fix i2c_writesl() to use writel() instead
+ of writesl()
+Thread-Topic: [PATCH v1] i2c: tegra: Fix i2c_writesl() to use writel() instead
+ of writesl()
+Thread-Index: AQHW6EDeq/yKQNYjeUCTCd50xXUD26ojuaww
+Date:   Tue, 12 Jan 2021 09:32:19 +0000
+Message-ID: <790fa75aaec146f0bb27703157c0e77a@AcuMS.aculab.com>
+References: <1603166634-13639-1-git-send-email-skomatineni@nvidia.com>
+ <20201020074846.GA1877013@ulmo>
+ <538d8436-260d-40a8-b0a3-a822a0f9c909@nvidia.com>
+ <c37f8618-5100-4087-3bc3-fe421d40f3b8@gmail.com>
+ <2212a21b-7dff-4ba0-a193-badd5a1770c8@gmail.com>
+ <6373bc13-a53d-2bb2-98f5-f6f01b0b8b69@nvidia.com>
+In-Reply-To: <6373bc13-a53d-2bb2-98f5-f6f01b0b8b69@nvidia.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 12 Jan 2021 15:01:42 +0530
-From:   mdalam@codeaurora.org
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     corbet@lwn.net, agross@kernel.org, bjorn.andersson@linaro.org,
-        dan.j.williams@intel.com, dmaengine@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, sricharan@codeaurora.org,
-        mdalam=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH] dmaengine: qcom: bam_dma: Add LOCK and UNLOCK flag bit
- support
-In-Reply-To: <efcc74bbdf36b4ddbf764eb6b4ed99f2@codeaurora.org>
-References: <1608215842-15381-1-git-send-email-mdalam@codeaurora.org>
- <20201221092355.GA3323@vkoul-mobl>
- <efcc74bbdf36b4ddbf764eb6b4ed99f2@codeaurora.org>
-Message-ID: <f7de0117c8ff2e61c09f58acdea0e5b0@codeaurora.org>
-X-Sender: mdalam@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-21 23:03, mdalam@codeaurora.org wrote:
-> On 2020-12-21 14:53, Vinod Koul wrote:
->> Hello,
->> 
->> On 17-12-20, 20:07, Md Sadre Alam wrote:
->>> This change will add support for LOCK & UNLOCK flag bit support
->>> on CMD descriptor.
->>> 
->>> If DMA_PREP_LOCK flag passed in prep_slave_sg then requester of this
->>> transaction wanted to lock the DMA controller for this transaction so
->>> BAM driver should set LOCK bit for the HW descriptor.
->>> 
->>> If DMA_PREP_UNLOCK flag passed in prep_slave_sg then requester of 
->>> this
->>> transaction wanted to unlock the DMA controller.so BAM driver should 
->>> set
->>> UNLOCK bit for the HW descriptor.
->> 
->> Can you explain why would we need to first lock and then unlock..? How
->> would this be used in real world.
->> 
->> I have read a bit of documentation but is unclear to me. Also should
->> this be exposed as an API to users, sounds like internal to driver..?
->> 
-> 
-> IPQ5018 SoC having only one Crypto Hardware Engine. This Crypto 
-> Hardware Engine
-> will be shared between A53 core & ubi32 core. There is two separate
-> driver dedicated
-> to A53 core and ubi32 core. So to use Crypto Hardware Engine
-> parallelly for encryption/description
-> we need bam locking mechanism. if one driver will submit the request
-> for encryption/description
-> to Crypto then first it has to set LOCK flag bit on command descriptor
-> so that other pipes will
-> get locked.
-> 
-> The Pipe Locking/Unlocking will be only on command-descriptor. Upon
-> encountering a command descriptor
-> with LOCK bit set, The BAM will lock all other pipes not related to
-> the current pipe group, and keep
-> handling the current pipe only until it sees the UNLOCK set then it
-> will release all locked pipes.
-> locked pipe will not fetch new descriptors even if it got event/events
-> adding more descriptors for
-> this pipe (locked pipe).
-> 
-> No need to expose as an API to user because its internal to driver, so
-> while preparing command descriptor
-> just we have to update the LOCK/UNLOCK flag.
+RnJvbTogU293amFueWEgS29tYXRpbmVuaQ0KPiBTZW50OiAxMSBKYW51YXJ5IDIwMjEgMTc6MzgN
+Ci4uLg0KPiBVc2luZyB3cml0ZXNsKCkgZm9yIGZpbGxpbmcgVFhfRklGTyBjYXVzaW5nIHNpbGVu
+dCBoYW5nIGltbWVkaWF0ZSBvbiBhbnkNCj4gaTJjIHJlZ2lzdGVyIGFjY2VzcyBhZnRlciBmaWxs
+aW5nIEZJRk8gd2l0aCA4IHdvcmRzIGFuZCBzb21lIHRpbWVzIHdpdGgNCj4gNiB3b3JkcyBhcyB3
+ZWxsLg0KPiANCj4gU28gY291bGRuJ3QgSU5URVJSVVBUX1NUQVRVUyByZWdpc3RlcnMgdG8gY2hl
+Y2sgZm9yIFRYIEZJRk8gT3ZlcmZsb3dzDQo+IHdoZW4gdGhpcyBzaWxlbnQgaGFuZyBoYXBwZW5z
+Lg0KPiANCj4gVHJpZWQgdG8gcmVhZCB0aHJ1IGJhY2stZG9vciAoSlRBRyBwYXRoKSBidXQgY291
+bGQgbm90IGNvbm5lY3QgdG8gSlRBRw0KPiBlaXRoZXIuIExvb2tzIGxpa2UgVGVncmEgY2hpcCBp
+cyBpbiBzb21lIHdlaXJkIHN0YXRlLg0KPiANCj4gQnV0IHVzaW5nIHdyaXRlbCgpIGZvbGxvd2Vk
+IGJ5IGkyY19yZWFkbCBoZWxwcy4gTm90IHN1cmUgaWYgYW55IHRoaW5nDQo+IHJlbGF0ZWQgdG8g
+cmVnaXN0ZXIgYWNjZXNzIGRlbGF5IG9yIHNvbWUgb3RoZXIgaXNzdWUuDQoNCkhvdyBtdWNoIGRv
+ZXMgdGhlIGkyY19yZWFkKCkgc2xvdyBkb3duIHRoZSB0cmFuc2Zlcj8NCklmIHRoZSBkZXZpY2Ug
+aXMgUENJZSBpdCBpcyBwcm9iYWJseSBzaWduaWZpY2FudC4NCg0KSWYgdGhlIHVuZGVybHlpbmcg
+cHJvYmxlbSBpcyB0aGF0IHRoZSBUZWdyYSBjaGlwIGNhbid0IGhhbmRsZQ0KYmFjayB0byBiYWNr
+IHdyaXRlcyB0byB0aGUgdHggZmlmbyBtYXliZSB0aGVyZSBhcmUgb3RoZXIgc29sdXRpb25zIQ0K
+MSkgU2VuZCBpdCBiYWNrIGFuZCBhc2sgZm9yIGEgd29ya2luZyBjaGlwIDotKQ0KMikgTWF5YmUg
+YW4gaW50ZXJsZWF2ZWQgd3JpdGUgd2lsbCBzbG93IHRoaW5ncyBkb3duIGVub3VnaD8NCg0KSXQg
+bWF5IGJlIHdvcnRoIHRlc3RpbmcgYmFjayB0byBiYWNrIHdyaXRlcyB0byBvdGhlciByZWdpc3Rl
+cnMNCnRvIHNlZSBpZiBpdCBpcyBhIHByb2JsZW0gdGhhdCBpcyBzcGVjaWZpYyB0byB0aGUgdHgg
+Zmlmby4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxl
+eSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0
+aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-
-ping! Is there any update on this ? Do you need any further info ?
-> 
-> 
->> 
->>> 
->>> Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
->>> ---
->>>  Documentation/driver-api/dmaengine/provider.rst | 9 +++++++++
->>>  drivers/dma/qcom/bam_dma.c                      | 9 +++++++++
->>>  include/linux/dmaengine.h                       | 5 +++++
->>>  3 files changed, 23 insertions(+)
->>> 
->>> diff --git a/Documentation/driver-api/dmaengine/provider.rst 
->>> b/Documentation/driver-api/dmaengine/provider.rst
->>> index ddb0a81..d7516e2 100644
->>> --- a/Documentation/driver-api/dmaengine/provider.rst
->>> +++ b/Documentation/driver-api/dmaengine/provider.rst
->>> @@ -599,6 +599,15 @@ DMA_CTRL_REUSE
->>>    - This flag is only supported if the channel reports the 
->>> DMA_LOAD_EOT
->>>      capability.
->>> 
->>> +- DMA_PREP_LOCK
->>> +
->>> +  - If set , the client driver tells DMA controller I am locking you 
->>> for
->>> +    this transcation.
->>> +
->>> +- DMA_PREP_UNLOCK
->>> +
->>> +  - If set, the client driver will tells DMA controller I am 
->>> releasing the lock
->>> +
->>>  General Design Notes
->>>  ====================
->>> 
->>> diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
->>> index 4eeb8bb..cdbe395 100644
->>> --- a/drivers/dma/qcom/bam_dma.c
->>> +++ b/drivers/dma/qcom/bam_dma.c
->>> @@ -58,6 +58,8 @@ struct bam_desc_hw {
->>>  #define DESC_FLAG_EOB BIT(13)
->>>  #define DESC_FLAG_NWD BIT(12)
->>>  #define DESC_FLAG_CMD BIT(11)
->>> +#define DESC_FLAG_LOCK BIT(10)
->>> +#define DESC_FLAG_UNLOCK BIT(9)
->>> 
->>>  struct bam_async_desc {
->>>  	struct virt_dma_desc vd;
->>> @@ -644,6 +646,13 @@ static struct dma_async_tx_descriptor 
->>> *bam_prep_slave_sg(struct dma_chan *chan,
->>> 
->>>  	/* fill in temporary descriptors */
->>>  	desc = async_desc->desc;
->>> +	if (flags & DMA_PREP_CMD) {
->>> +		if (flags & DMA_PREP_LOCK)
->>> +			desc->flags |= cpu_to_le16(DESC_FLAG_LOCK);
->>> +		if (flags & DMA_PREP_UNLOCK)
->>> +			desc->flags |= cpu_to_le16(DESC_FLAG_UNLOCK);
->>> +	}
->>> +
->>>  	for_each_sg(sgl, sg, sg_len, i) {
->>>  		unsigned int remainder = sg_dma_len(sg);
->>>  		unsigned int curr_offset = 0;
->>> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
->>> index dd357a7..79ccadb4 100644
->>> --- a/include/linux/dmaengine.h
->>> +++ b/include/linux/dmaengine.h
->>> @@ -190,6 +190,9 @@ struct dma_interleaved_template {
->>>   *  transaction is marked with DMA_PREP_REPEAT will cause the new 
->>> transaction
->>>   *  to never be processed and stay in the issued queue forever. The 
->>> flag is
->>>   *  ignored if the previous transaction is not a repeated 
->>> transaction.
->>> + * @DMA_PREP_LOCK: tell the driver that DMA HW engine going to be 
->>> locked for this
->>> + *  transaction , until not seen DMA_PREP_UNLOCK flag set.
->>> + * @DMA_PREP_UNLOCK: tell the driver to unlock the DMA HW engine.
->>>   */
->>>  enum dma_ctrl_flags {
->>>  	DMA_PREP_INTERRUPT = (1 << 0),
->>> @@ -202,6 +205,8 @@ enum dma_ctrl_flags {
->>>  	DMA_PREP_CMD = (1 << 7),
->>>  	DMA_PREP_REPEAT = (1 << 8),
->>>  	DMA_PREP_LOAD_EOT = (1 << 9),
->>> +	DMA_PREP_LOCK = (1 << 10),
->>> +	DMA_PREP_UNLOCK = (1 << 11),
->>>  };
->>> 
->>>  /**
->>> --
->>> 2.7.4
