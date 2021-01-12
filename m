@@ -2,214 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992EE2F4075
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE91E2F4083
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:56:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393007AbhAMAmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 19:42:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44442 "EHLO
+        id S2392029AbhAMAm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 19:42:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390303AbhALXor (ORCPT
+        with ESMTP id S2392023AbhALXzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 18:44:47 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A6BFC06179F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:44:07 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id g10so1926811wmh.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:44:07 -0800 (PST)
+        Tue, 12 Jan 2021 18:55:08 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA92C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:54:28 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id md11so9149pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:54:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=13Pl4XAMUhez0jbUfywZeknBjZz6BXpikXW9lK4IWSQ=;
-        b=DxOMUV/AwzsU8Bxxho9X9o2mffHav5+nYYGjmOjHu0UF64RmP6BGE69vwTkoAbNCV3
-         UlTwohTzPOqfFZfVUm7p8I77E/zXdBmSgIjycKvDbzpYnTTLRfRpR2HUWRBuTRXkDsQg
-         2fxh+3OYqQZPtTfbCARmDBJUTrXkpl25QrrSST4rZpKWLForEuJJX7G6mc9N1MlnlW3Q
-         xyF1lfEZ+Jl+txKx8Qg+qSjVjsIF+hqpiSVsAnAFLNbROhjRbSPpwYib9yN0g/OHNhBF
-         JBKQM/4+2FXsKmEDqI9V17fZ4p0aJ/+E+YIFu5b6TPtEu56+SPo9+Fwd1frxl9MpKnuF
-         IvIw==
+        bh=TRqAJSpYMDEJu/B9agr6xpDyrfe3UAVnQcCi0dRewe4=;
+        b=OsWtLSsb4L+fW0+uOPO2F6EmPdCV8LbBB2Vx/5PPNw+ct7lUPcRZpFu9+1zF3VkPUG
+         QKkjYJg+d1CMLIKZ3iXNxdG8W/Dkwq2n0lycWiXwhIcEp9sU9hK25Z2WHJ3UlR+S1aB7
+         2geAX2+o2OVngfb4ppNS1b/ErxvGpZV9Ck6KiiL8B43c46l+MkYElIkqWqn8aE8yD7q8
+         ra5SrXJko/s5LVpxAWe4qVGI2WGS3aVyh9qyUy2DwiUCiW9X73t7Oiu88dp872V2wWio
+         jfQO04E3NL2gvn+8sXx3Vom9ct6OD6zbwyrj+HFSVtoUljtThy8Kcj/0w960VtyTRusU
+         hk+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=13Pl4XAMUhez0jbUfywZeknBjZz6BXpikXW9lK4IWSQ=;
-        b=m88+MhNu/W0cRTcYL8CRY/DE7BAsg0d4OCu0Em06+6+xeXBUJmdrvLFTbpRUNV698x
-         dDXSKCw+mAKYB9e0Yk/bl/xwbV1Kq1ET8ZUOs+ahFOaBLHTnBYVf+fweG8zSPVKwYrUi
-         JrE9LzPaB0FbnXPURBAeSHJw1c0JdteEfkxxMlNsbcfcLsGrTkP3rytGYeK8rYCCV6hp
-         z4945FRg3fWsTIsRCz/PJ8AlEWjaaCiUslJVpAsDi9MDgJOobbKXVNCVUv08XSS5b6+C
-         +tWZ5aidULv2KNcJC2vYRqdiIBkmiWenZ8RA4kqIGyQDfCXdJnemsIyBWHJcyySHPHfY
-         wP0w==
-X-Gm-Message-State: AOAM532AWc2o09J+03YqUFaMgL7dAFJ1DxMJMKlQ4Hmp/QSU2Yl+9Wbw
-        Qn0+UBkcLzPQvTeSZotnKlgy1SV58Atomsbl8fAEOQ==
-X-Google-Smtp-Source: ABdhPJx06ofU6hqy2BlI6NNCevuMzXNikWqi5FxP+z9XcarFcWeXXiYfhd7bVr6n+PKXss2BXMbSmbKtwTTaLjlhncE=
-X-Received: by 2002:a7b:c184:: with SMTP id y4mr92985wmi.92.1610495045888;
- Tue, 12 Jan 2021 15:44:05 -0800 (PST)
+        bh=TRqAJSpYMDEJu/B9agr6xpDyrfe3UAVnQcCi0dRewe4=;
+        b=umYOxz9UTSjGGVLFBg1pzXDzyqes5PDV2nPFOlLqGqnPjSwps7Zpr4dsVMOEu/DnQm
+         744E0S2k7TiZK+Wiie44pSLQdrxXKAm3tIlkoPtNPQgGp0HdZXGR1JWmJbUwVwbSeZFH
+         t+dLQbC0WejDFyoI7WAhzq/UR9yizXHmVYt8pFz1jXK4HMCUi1dZy94ROhrAC5GA3fq/
+         gvykUjUAU1HncJ9kSnaww25uW021VceAWbjhumC3O+e2wrY9sM2K4WOuo6Rms2UeA3Mz
+         VDS+N7trNIb/fXaVwNHSmKlc4iSEFziWunHPcfW75oQNDbR99gHFzxJ0+UKdZ+1FP3u+
+         BuxA==
+X-Gm-Message-State: AOAM5305oQy6GesKENdpk6K9sEEY1tuW0oaIfwiikkaLGsBzLNlxig40
+        z8lJrIFgh5seDrbG/wJqc1WdNcTxDJ4=
+X-Google-Smtp-Source: ABdhPJxrvTB6dgxny942td250c35toakUue2rOTnU9WHlGt+w3WziCn9WeKNLWy1vNwt/baEJT7CyA==
+X-Received: by 2002:a17:90b:4acc:: with SMTP id mh12mr187335pjb.10.1610495667112;
+        Tue, 12 Jan 2021 15:54:27 -0800 (PST)
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com. [209.85.216.46])
+        by smtp.gmail.com with ESMTPSA id gp14sm188194pjb.6.2021.01.12.15.54.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jan 2021 15:54:26 -0800 (PST)
+Received: by mail-pj1-f46.google.com with SMTP id iq13so1496pjb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:54:26 -0800 (PST)
+X-Received: by 2002:a67:f043:: with SMTP id q3mr2034470vsm.14.1610495269034;
+ Tue, 12 Jan 2021 15:47:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20210109074435.626855-1-leo.yan@linaro.org> <20210109074435.626855-2-leo.yan@linaro.org>
- <CAJ9a7VgTqsa4_W0bmfS1BPYnKyvToyVLD=fk85_t9-yehCY9Lw@mail.gmail.com>
- <20210112085826.GC18965@leoy-ThinkPad-X240s> <CAJ9a7VgYt-JemRaJn_KtO-X729jo-0y0OO5hCm=tHay31Q6msw@mail.gmail.com>
- <20210112141458.GF18965@leoy-ThinkPad-X240s>
-In-Reply-To: <20210112141458.GF18965@leoy-ThinkPad-X240s>
-From:   Mike Leach <mike.leach@linaro.org>
-Date:   Tue, 12 Jan 2021 23:43:55 +0000
-Message-ID: <CAJ9a7Vj5Yz_2pXzwSgwou2Uq3O9CZ77VWDaPbohdy0-aeJXOxA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/7] coresight: etm-perf: Add support for PID tracing
- for kernel at EL2
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <Daniel.Kiss@arm.com>,
-        Denis Nikitin <denik@chromium.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Al Grant <al.grant@arm.com>
+References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
+ <CAOEp5OejaX4ZETThrj4-n8_yZoeTZs56CBPHbQqNsR2oni8dWw@mail.gmail.com> <CAOEp5Oc5qif_krU8oC6qhq6X0xRW-9GpWrBzWgPw0WevyhT8Mg@mail.gmail.com>
+In-Reply-To: <CAOEp5Oc5qif_krU8oC6qhq6X0xRW-9GpWrBzWgPw0WevyhT8Mg@mail.gmail.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Tue, 12 Jan 2021 18:47:12 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSfhBZfEf8+LKNUJQpSxt8c5h1wMpARupekqFKuei6YBsA@mail.gmail.com>
+Message-ID: <CA+FuTSfhBZfEf8+LKNUJQpSxt8c5h1wMpARupekqFKuei6YBsA@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/7] Support for virtio-net hash reporting
+To:     Yuri Benditovich <yuri.benditovich@daynix.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, rdunlap@infradead.org,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>, decui@microsoft.com,
+        cai@lca.pw, Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        bpf <bpf@vger.kernel.org>, Yan Vugenfirer <yan@daynix.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
-
-On Tue, 12 Jan 2021 at 14:15, Leo Yan <leo.yan@linaro.org> wrote:
+On Tue, Jan 12, 2021 at 3:29 PM Yuri Benditovich
+<yuri.benditovich@daynix.com> wrote:
 >
-> Hi Mike,
->
-> On Tue, Jan 12, 2021 at 11:23:03AM +0000, Mike Leach wrote:
-> > Hi Leo,
+> On Tue, Jan 12, 2021 at 9:49 PM Yuri Benditovich
+> <yuri.benditovich@daynix.com> wrote:
 > >
-> > On Tue, 12 Jan 2021 at 08:58, Leo Yan <leo.yan@linaro.org> wrote:
+> > On Tue, Jan 12, 2021 at 9:41 PM Yuri Benditovich
+> > <yuri.benditovich@daynix.com> wrote:
 > > >
-> > > Hi Mike,
+> > > Existing TUN module is able to use provided "steering eBPF" to
+> > > calculate per-packet hash and derive the destination queue to
+> > > place the packet to. The eBPF uses mapped configuration data
+> > > containing a key for hash calculation and indirection table
+> > > with array of queues' indices.
 > > >
-> > > On Mon, Jan 11, 2021 at 04:22:39PM +0000, Mike Leach wrote:
+> > > This series of patches adds support for virtio-net hash reporting
+> > > feature as defined in virtio specification. It extends the TUN module
+> > > and the "steering eBPF" as follows:
 > > >
-> > > [...]
+> > > Extended steering eBPF calculates the hash value and hash type, keeps
+> > > hash value in the skb->hash and returns index of destination virtqueue
+> > > and the type of the hash. TUN module keeps returned hash type in
+> > > (currently unused) field of the skb.
+> > > skb->__unused renamed to 'hash_report_type'.
 > > >
-> > > > > diff --git a/include/linux/coresight-pmu.h b/include/linux/coresight-pmu.h
-> > > > > index b0e35eec6499..927c6285ce5d 100644
-> > > > > --- a/include/linux/coresight-pmu.h
-> > > > > +++ b/include/linux/coresight-pmu.h
-> > > > > @@ -11,16 +11,19 @@
-> > > > >  #define CORESIGHT_ETM_PMU_SEED  0x10
-> > > > >
-> > > > >  /* ETMv3.5/PTM's ETMCR config bit */
-> > > > > -#define ETM_OPT_CYCACC  12
-> > > > > -#define ETM_OPT_CTXTID 14
-> > > > > -#define ETM_OPT_TS      28
-> > > > > -#define ETM_OPT_RETSTK 29
-> > > > > +#define ETM_OPT_CYCACC         12
-> > > > > +#define ETM_OPT_CTXTID         14
-> > > > > +#define ETM_OPT_CTXTID_IN_VMID 15
-> > > >
-> > > > Minor issue here - ETMv3.x / PTM cannot trace CXTID in VMID so this
-> > > > may better be named ETM4_OPT_CTXTID_IN_VMID, rather than be grouped
-> > > > with the ETM3.5 options?
+> > > When TUN module is called later to allocate and fill the virtio-net
+> > > header and push it to destination virtqueue it populates the hash
+> > > and the hash type into virtio-net header.
 > > >
-> > > I looked into this suggestion but found it's complex than I assumed.
-> > > This config bits are not only used for ETMv3.x / PTM, it's also used
-> > > as an configuration interface between user space in Perf and kernel
-> > > drivers.
-> > >
-> > > For example, in the userspace, perf tool sets bit ETM_OPT_TS to enable
-> > > timestamp [1], this is same for ETMv3 and ETMv4.  In the kernel side,
-> > > the configuration is directly used ETMv3 (in coresight-etm3x-core.c),
-> > > but the configuration bits are converted for ETMv4 in the function
-> > > etm4_parse_event_config() [2].
-> > >
-> > > So this is a historical issue, at the early period ETMv3 and ETMv4 can
-> > > be compatible with each other for configurations, but after evoluation,
-> > > some configs only belong to ETMv4 and cannot be applied on ETMv3
-> > > anymore, but we still use ETMv3.5 config bits as the interface between
-> > > kernel and userspace.
-> > >
+> > > VHOST driver is made aware of respective virtio-net feature that
+> > > extends the virtio-net header to report the hash value and hash report
+> > > type.
 > >
-> > I was aware that etm3/ptm used these bits as both the options and the
-> > bit values for direct writing to the ETMCR register for ETMv3, and
-> > re-mapped to appropriate register values in ETMv4.
-> > In the past we have re-used etmv3.5 bit definitions ETM_xxx  when
-> > appropriate, but where unique to ETM4 we  have used a ETM4_xxx naming
-> > convention.
+> > Comment from Willem de Bruijn:
+> >
+> > Skbuff fields are in short supply. I don't think we need to add one
+> > just for this narrow path entirely internal to the tun device.
+> >
 >
-> I am concern this approach is not friendly for extension; for example,
-> let's say IP ETM5 with defined bit 28 as CTXTID, if add a new option
-> for it, we need to define macro as:
->
->         #define ETM5_OPT_CTXTID         28
->
-> This will result in confliction with the existed option ETM_OPT_TS
-> and it is hard for maintenance for options, since there have different
-> prefixes (like ETM_OPT_xxx, ETM4_OPT_xxx, ETM5_OPT_xxx, etc).
->
+> We understand that and try to minimize the impact by using an already
+> existing unused field of skb.
 
-No it will not - we don't need a new option for CTXTID in a
-hypothetical ETM5 - as we use the existing one for ETM3 and map it to
-the correct bit, just as ETM4 does.
+Not anymore. It was repurposed as a flags field very recently.
 
+This use case is also very narrow in scope. And a very short path from
+data producer to consumer. So I don't think it needs to claim scarce
+bits in the skb.
 
-> I'd like to take option as knob to enable or disable hardware
-> feature; the low level drivers should set the appropriate values for
-> registers based on different options.
->
-> Furthermore, ETM driver should report error when detect any option is
-> not supported, I.e. ETM3 driver should report failure if user wrongly
-> set the option ETM_OPT_CTXTID_IN_VMID.
->
-> > I am not suggesting re-factoring the options completely, just
-> > re-naming this single option to make it clear it is unique to ETM4+.
->
-> Here I perfer Suzuki's suggestion to simply refine comments, something
-> like below:
->
-> /*
->  * Below are bit offsets for perf options, most of them are orignally
->  * coming from ETMv3.5/PTM's ETMCR config bits (so far except
->  * ETM_OPT_CTXTID_IN_VMID is only used for ETMv4).
->  *
->  * ETMv3.5/PTM doesn't define ETMCR config bits with prefix "ETM3_" and
->  * directly use below macros as config bits.
->  */
-> #define ETM_OPT_CYCACC          12
-> #define ETM_OPT_CTXTID          14
-> #define ETM_OPT_CTXTID_IN_VMID  15
-> #define ETM_OPT_TS              28
-> #define ETM_OPT_RETSTK          29
->
-> > Looking at the etmv3 driver, at present it does not actually appear to
-> > support contextid tracing - and when it does, both bits 14 and 15 will
-> > be required to be used - as ETMCR defines these bits as ContextID
-> > size.
-> > Should this ever get fixed.
->
-> Good catch!  Seems to me, this is a good example that we should
-> distinguish the definition between Perf options and config bits :)
->
-> > then having an overlapping option bit -
-> > that appears to be valid for ETMv3 will be confusing.
->
-> I hope the the proposed change can avoid the confusion, if have
-> concern, please let me know.
->
-> Thanks a lot for suggestions,
-> Leo
+tun_ebpf_select_queue stores the field, tun_put_user reads it and
+converts it to the virtio_net_hdr in the descriptor.
 
-If you think that clarification via comment is better than a change of
-name then go ahead.
+tun_ebpf_select_queue is called from .ndo_select_queue.  Storing the
+field in skb->cb is fragile, as in theory some code could overwrite
+that between field between ndo_select_queue and
+ndo_start_xmit/tun_net_xmit, from which point it is fully under tun
+control again. But in practice, I don't believe anything does.
 
-Regards
+Alternatively an existing skb field that is used only on disjoint
+datapaths, such as ingress-only, could be viable.
 
-Mike
+> > Instead, you could just run the flow_dissector in tun_put_user if the
+> > feature is negotiated. Indeed, the flow dissector seems more apt to me
+> > than BPF here. Note that the flow dissector internally can be
+> > overridden by a BPF program if the admin so chooses.
+> >
+> When this set of patches is related to hash delivery in the virtio-net
+> packet in general,
+> it was prepared in context of RSS feature implementation as defined in
+> virtio spec [1]
+> In case of RSS it is not enough to run the flow_dissector in tun_put_user:
+> in tun_ebpf_select_queue the TUN calls eBPF to calculate the hash,
+> hash type and queue index
+> according to the (mapped) parameters (key, hash types, indirection
+> table) received from the guest.
 
--- 
-Mike Leach
-Principal Engineer, ARM Ltd.
-Manchester Design Centre. UK
+TUNSETSTEERINGEBPF was added to support more diverse queue selection
+than the default in case of multiqueue tun. Not sure what the exact
+use cases are.
+
+But RSS is exactly the purpose of the flow dissector. It is used for
+that purpose in the software variant RPS. The flow dissector
+implements a superset of the RSS spec, and certainly computes a
+four-tuple for TCP/IPv6. In the case of RPS, it is skipped if the NIC
+has already computed a 4-tuple hash.
+
+What it does not give is a type indication, such as
+VIRTIO_NET_HASH_TYPE_TCPv6. I don't understand how this would be used.
+In datapaths where the NIC has already computed the four-tuple hash
+and stored it in skb->hash --the common case for servers--, That type
+field is the only reason to have to compute again.
+
+> Our intention is to keep the hash and hash type in the skb to populate them
+> into a virtio-net header later in tun_put_user.
+> Note that in this case the type of calculated hash is selected not
+> only from flow dissections
+> but also from limitations provided by the guest.
+>
+> This is already implemented in qemu (for case of vhost=off), see [2]
+> (virtio_net_process_rss)
+> For case of vhost=on there are WIP for qemu to load eBPF and attach it to TUN.
+
+> Note that exact way of selecting rx virtqueue depends on the guest,
+> it could be automatic steering (typical for Linux VM), RSS (typical
+> for Windows VM) or
+> any other steering mechanism implemented in loadable TUN steering BPF with
+> or without hash calculation.
+>
+> [1] https://github.com/oasis-tcs/virtio-spec/blob/master/content.tex#L3740
+> [2] https://github.com/qemu/qemu/blob/master/hw/net/virtio-net.c#L1591
+>
+> > This also hits on a deeper point with the choice of hash values, that
+> > I also noticed in my RFC patchset to implement the inverse [1][2]. It
+> > is much more detailed than skb->hash + skb->l4_hash currently offers,
+> > and that can be gotten for free from most hardware.
+>
+> Unfortunately in the case of RSS we can't get this hash from the hardware as
+> this requires configuration of the NIC's hardware with key and hash types for
+> Toeplitz hash calculation.
+
+I don't understand. Toeplitz hash calculation is enabled by default
+for multiqueue devices, and many devices will pass the toeplitz hash
+along for free to avoid software flow dissection.
+
+> > In most practical
+> > cases, that information suffices. I added less specific fields
+> > VIRTIO_NET_HASH_REPORT_L4, VIRTIO_NET_HASH_REPORT_OTHER that work
+> > without explicit flow dissection. I understand that the existing
+> > fields are part of the standard. Just curious, what is their purpose
+> > beyond 4-tuple based flow hashing?
+>
+> The hash is used in combination with the indirection table to select
+> destination rx virtqueue.
+> The hash and hash type are to be reported in virtio-net header, if requested.
+> For Windows VM - in case the device does not report the hash (even if
+> it calculated it to
+> schedule the packet to a proper queue), the driver must do that for each packet
+> (this is a certification requirement).
+
+I understand the basics of RSS. My question is what the hash-type is
+intended to be used for by the guest. It is part of the virtio spec,
+so this point is somewhat moot: it has to be passed along with the
+hash value now.
+
+But it is not entirely moot. If most users are satisfied with knowing
+whether a hash is L4 or not, we could add two new types
+VIRTIO_NET_HASH_TYPE_L4 and VIRTIO_NET_HASH_TYPE_OTHER. And then pass
+the existing skb->hash as is, likely computed by the NIC.
+
+[1] https://patchwork.kernel.org/project/netdevbpf/patch/20201228162233.2032571-2-willemdebruijn.kernel@gmail.com/
+
+> >
+> > [1] https://patchwork.kernel.org/project/netdevbpf/list/?series=406859&state=*
+> > [2] https://github.com/wdebruij/linux/commit/0f77febf22cd6ffc242a575807fa8382a26e511e
+> > >
+> > > Yuri Benditovich (7):
+> > >   skbuff: define field for hash report type
+> > >   vhost: support for hash report virtio-net feature
+> > >   tun: allow use of BPF_PROG_TYPE_SCHED_CLS program type
+> > >   tun: free bpf_program by bpf_prog_put instead of bpf_prog_destroy
+> > >   tun: add ioctl code TUNSETHASHPOPULATION
+> > >   tun: populate hash in virtio-net header when needed
+> > >   tun: report new tun feature IFF_HASH
+> > >
+> > >  drivers/net/tun.c           | 43 +++++++++++++++++++++++++++++++------
+> > >  drivers/vhost/net.c         | 37 ++++++++++++++++++++++++-------
+> > >  include/linux/skbuff.h      |  7 +++++-
+> > >  include/uapi/linux/if_tun.h |  2 ++
+> > >  4 files changed, 74 insertions(+), 15 deletions(-)
+> > >
+> > > --
+> > > 2.17.1
+> > >
