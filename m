@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D63EC2F29AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:08:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A642F29CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 09:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404484AbhALIHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 03:07:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25631 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729208AbhALIHj (ORCPT
+        id S2392272AbhALINf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 03:13:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392259AbhALINe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 03:07:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610438772;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e98jFtAnO+UtW7Rwri+cMU4/wIA3Ib5qoGAOd0HCxb8=;
-        b=Txbu8y7BPf1HL0vfozcTxckFkAv2Xu2VFjHEgXZgJwDWdQiZL9d7TueZQlNZdndWiEcL9e
-        LHyzIKigGz05gVrzMXEGfE1RQpGZvMcHL8OzTN1iS+x/m8TEGcxIoPEbL6fsMyw7YEQsOD
-        ID7zGxHhBge/CrcWfUVrY7/o65icbnQ=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-536-XSrdlajlORmAYo1AuudSVQ-1; Tue, 12 Jan 2021 03:06:11 -0500
-X-MC-Unique: XSrdlajlORmAYo1AuudSVQ-1
-Received: by mail-ej1-f72.google.com with SMTP id k3so684389ejr.16
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:06:10 -0800 (PST)
+        Tue, 12 Jan 2021 03:13:34 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8110FC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:12:54 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id n25so955357pgb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 00:12:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=L2l6Rr1xN13fWChpqtRLf7qClNmYDaja3N/aO2Ct6fU=;
+        b=J3ZLmDpu8FL3lT7WITcZlFarpkLVi/PFlw3OmqkZwP5yGPBiVyDF0xak8+32mvvcnq
+         0/RWOC/JYi34v6SDdJLQhNbsdGO7X1u50r4UllA8tt9ztM5/Z1wYIbarLgIfRijuJCW9
+         cDtqhJMuwcNGGCKMNek3vnF/yq+uuAosvYZG1dcmbGR8Hu++GOOfLlRHr+nOX7mqyFhh
+         OS/62D1YvPcK+i80wG8Dt0HkeMzz2wimSexoKTr05O/+VipVqaDJFuNKDm1xSTj0B/PG
+         9PkpTXeTDf6kZgA81wbxzauOoi8J6f19mkHyyzZaOS9a/8aWsXVshpeB1YruwCIW2VSr
+         3Yfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=e98jFtAnO+UtW7Rwri+cMU4/wIA3Ib5qoGAOd0HCxb8=;
-        b=muggxo79Ofg90tSpM5Jw/2IV8uOhEdOekWPqsTnUCneIi75WSQ6cO8sAeoIOuwpX2h
-         +5NNUDpYfJkTN7cMk8UIQGTueVUe8ChI6ZnrR++WhZeuRmNuwnroXaihlnXLRgRq4re4
-         brl1p0CEYG2OQ8pAxmJjX36qpaj+dtkcupbJ/rF6jRv6RK7UUapH/2VQ2B95Jd623xmT
-         8DdSRjuIKL69o64fCjH+bMULGq3Jq4Q9fCucXGpYVgUHzad1ZpDKPC2oP555EaHV8sQu
-         XaUpZBEh+wDp7T2j7kuD/ZhspUFwB85fIOiB2Xv7B5PKiVz/Axz7eFFsyhwsWYc9W1W7
-         dpfg==
-X-Gm-Message-State: AOAM530LfZ23wOayoBuei/myt6Eyl8cr79u+iRAII4hB3RI2QF/yrX6h
-        8VrUoCvjp8gLPhIZk7NRnBhMaLaah+xQlQseJt9HWzCmCSlZs24IvZNvF6i2z3uGxSZn2VgYW3H
-        H+3uBaAM0ArzJdKzBlwHVzFwE
-X-Received: by 2002:a17:906:c10e:: with SMTP id do14mr2483308ejc.166.1610438769919;
-        Tue, 12 Jan 2021 00:06:09 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxC9sIchIaPbpCd6LbN/mEZzRXK+530541sS7ArG8ztI+ctpVEyq5i7XV2NYKlXWG8KFV1ouA==
-X-Received: by 2002:a17:906:c10e:: with SMTP id do14mr2483289ejc.166.1610438769757;
-        Tue, 12 Jan 2021 00:06:09 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id zn5sm844167ejb.111.2021.01.12.00.06.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 00:06:09 -0800 (PST)
-Subject: Re: UBSAN: shift-out-of-bounds in kvm_vcpu_after_set_cpuid
-To:     Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>
-Cc:     syzbot <syzbot+e87846c48bf72bc85311@syzkaller.appspotmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        the arch/x86 maintainers <x86@kernel.org>
-References: <000000000000d5173d05b7097755@google.com>
- <CALMp9eSKrn0zcmSuOE6GFi400PMgK+yeypS7+prtwBckgdW0vQ@mail.gmail.com>
- <X/zYsnfXpd6DT34D@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f1aa1f3c-1dac-2357-ee1c-ab505513382f@redhat.com>
-Date:   Tue, 12 Jan 2021 09:06:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=L2l6Rr1xN13fWChpqtRLf7qClNmYDaja3N/aO2Ct6fU=;
+        b=FmrR7b31qYnNrHEFBVErJk4XfzQhVZ5zZq1R9XD/HfHF++kTnLybIPyUjQvY7EliS5
+         NJIKNR8Ovc0K48xt4QuxKc6L3iGDjq8/S+RxctidNIKiwtTlJWq/uTwRW5IlAAo31aih
+         YKbtKkibjOapljnmwiMmy4up33/TiKSUqC+RicCFiaLwDapDqA6yttJNaKdrR3aOVq3t
+         T6NGqV0QPLHT/3/4Knh0g+XvTyU0Cwpr0o4B1gGl7cAmazfvQfvMrXEAkCcrrwgTGiGU
+         KphgaIpMcNys6zsBtA3yDT+tK8xOt4Y9UOX1mu4zpB7pVi0QPzRw2UCCAPpF5dhq3f8z
+         CfYQ==
+X-Gm-Message-State: AOAM533yrYmZuLcyP2IU9fw/8odEKpE0fQD1ExIFzXbWP1GzvZhlw59A
+        6JJ0bjRt1N4JKPrJZio55h0=
+X-Google-Smtp-Source: ABdhPJz9J9f+9rKMUoT2drjKhr14BDBiNqjedY6nxz2BjkFex49ogtVZaUc6QVrN90NaBkCiaGxTkQ==
+X-Received: by 2002:a63:3549:: with SMTP id c70mr3588502pga.361.1610439173993;
+        Tue, 12 Jan 2021 00:12:53 -0800 (PST)
+Received: from varodek.localdomain ([106.215.30.102])
+        by smtp.gmail.com with ESMTPSA id l2sm2152381pjz.27.2021.01.12.00.12.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 00:12:53 -0800 (PST)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <bjorn@helgaas.com>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        David Airlie <airlied@linux.ie>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH v2 0/3] char: use generic power management
+Date:   Tue, 12 Jan 2021 13:39:21 +0530
+Message-Id: <20210112080924.1038907-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20200717074937.296192-1-vaibhavgupta40@gmail.com>
+References: <20200717074937.296192-1-vaibhavgupta40@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <X/zYsnfXpd6DT34D@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/01/21 00:01, Sean Christopherson wrote:
->> Perhaps cpuid_query_maxphyaddr() should just look at the low 5 bits of
->> CPUID.80000008H:EAX?
+Linux Kernel Mentee: Remove Legacy Power Management.
 
-The low 6 bits I guess---yes, that would make sense and it would have 
-also fixed the bug.
+The purpose of this patch series is to upgrade power management in char
+drivers. This has been done by upgrading .suspend() and .resume() callbacks.
 
-(Nevertheless it's a good idea to make rsvd_bits more robust as well, as 
-in the commit that Sean referenced.
+The upgrade makes sure that the involvement of PCI Core does not change the
+order of operations executed in a driver. Thus, does not change its behavior.
 
-Paolo
+In general, drivers with legacy PM, .suspend() and .resume() make use of PCI
+helper functions like pci_enable/disable_device_mem(), pci_set_power_state(),
+pci_save/restore_state(), pci_enable/disable_device(), etc. to complete
+their job.
+
+The conversion requires the removal of those function calls, change the
+callbacks' definition accordingly and make use of dev_pm_ops structure.
+
+All patches are compile-tested only.
+
+Test tools:
+    - Compiler: gcc (GCC) 10.2.0
+    - allmodconfig build: make -j$(nproc) W=1 all
+
+v2: patch-set rebased.
+
+Vaibhav Gupta (3):
+  amd64-agp: use generic power management
+  sis-agp: use generic power management
+  via-agp: use generic power management
+
+ drivers/char/agp/amd64-agp.c | 24 ++++++------------------
+ drivers/char/agp/sis-agp.c   | 25 ++++++-------------------
+ drivers/char/agp/via-agp.c   | 25 +++++--------------------
+ 3 files changed, 17 insertions(+), 57 deletions(-)
+
+-- 
+2.30.0
 
