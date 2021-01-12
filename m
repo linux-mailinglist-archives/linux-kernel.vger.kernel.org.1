@@ -2,159 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 854202F3ACE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:42:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 359102F3AD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406590AbhALTmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 14:42:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436543AbhALTmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:42:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BE28A2310E;
-        Tue, 12 Jan 2021 19:41:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610480496;
-        bh=4Wxwoit4G6NqJNUR0MkSWA215CQPHEUvAJgqt10Do0U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OERL1NohnxXParTdzW8Snr8u/u2wRJDeXIz9C37QZhoGA+lFvxhJMf9JIYVyJ3pNF
-         zL9jDLRxkGEKxgItAwQfFMKh5EMVRdBrQZTWZU9YYH+rx9+J2dYOJ+Nr2c9ZW8yPxK
-         YKh4FYj528CxEEFXtCTrcWBEK3AmLKLUaKqCaKuT5X7L5nIcct227rVg/8ST5P2EbY
-         y0YlyvCIZejZY5cp30jOTZhRxM20Q9isPav/DAYrhYanr2UFcDkcMQMDaA4HAg4Hhe
-         KzMyLLER/xktazDbJdBAeLeKzqwodg/eMavgPLhrI+eRfQ5IX3rJhMyX/NWKDRyrzS
-         NiOjTM56rv0+g==
-Received: by mail-ej1-f50.google.com with SMTP id jx16so5144922ejb.10;
-        Tue, 12 Jan 2021 11:41:35 -0800 (PST)
-X-Gm-Message-State: AOAM533vJj+gquhoYlN3bkBiFubgX+BTKOi1rtJd87EG8ojF0QbErdwC
-        PildWedU8/sdZwBPygPc0kv/xg57PxMGjRcO+A==
-X-Google-Smtp-Source: ABdhPJwGDgQ/s7m0yd+ozKdQqc6SBtrRFa23ETnLWXyZwBshtrjJcgF8HqkKa4ftaXza7D0MHz+pQ++KJJco/u37goI=
-X-Received: by 2002:a17:906:4146:: with SMTP id l6mr269918ejk.341.1610480494322;
- Tue, 12 Jan 2021 11:41:34 -0800 (PST)
-MIME-Version: 1.0
-References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
- <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
- <23e16d20-36eb-87d9-4473-142504ad8a95@gmail.com> <CAL_JsqKqSVGCjcue=ka2=bB1Os9pczNTCqDeaoFPFfRxnvsteQ@mail.gmail.com>
- <e549c7ce-d01e-08a3-9ed0-7325a34e9c29@gmail.com>
-In-Reply-To: <e549c7ce-d01e-08a3-9ed0-7325a34e9c29@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 12 Jan 2021 13:41:22 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+W4X5H2myCzX1bGTEqJG9dpwLXdmqbpq6oGm5wpF7WMQ@mail.gmail.com>
-Message-ID: <CAL_Jsq+W4X5H2myCzX1bGTEqJG9dpwLXdmqbpq6oGm5wpF7WMQ@mail.gmail.com>
-Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S2406769AbhALTmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:42:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406619AbhALTmg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 14:42:36 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494D6C061795
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 11:41:56 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id g10so1495192wmh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 11:41:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=daynix-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=9oioH7fTimHXbwiOIluI6SOkD883+857JncYScStEP4=;
+        b=JmO6IQKgjQY+7ho4ih3Bdmj0eRPnup/UlujCGZhO4AJhanp3QH0J71/SQjiI8RlftE
+         LxVkn1U86G3tkyTL1V1ekzv7AG4aQUuBC1r0RvRBoERwudQRkTXIem4aavnr56WrANo8
+         gOtBpR9pRxwKu1xDJhfk/82GSYbgzv2ibgNt5w0f4THTbGm6h2zSgqNsqz15NEjpA55j
+         jhso19OBmu3jzIh6d8tb1TXJSzru4eS/fD3T3nWv1umUB8RNCOvvnnPdOKeCNLkCN3mh
+         BIGrXTEThybGX1OaJSNIbNpsSW/dNQUVwxByoyviBmYkIkBVcUXJ03lrcjitMvDn4T//
+         igkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=9oioH7fTimHXbwiOIluI6SOkD883+857JncYScStEP4=;
+        b=fO/GalhQIsaAz3SCKcB6yVISjYn2wdcQTfnVJjissdIBZRL8vAys0Rov0qjt556C2R
+         ykyE4FbhHY/RZHYpgEDkdWKbKwiRhmYnABFK40M2g2kFCMv1zwH7BLudyy6F/L3INV9i
+         Pj2KNIRr8rZw6d3da3k21SSTwJFAAV7wV/xlFo+Z0Dvx6b+yeP1x9rELuuVz4JjQ3cpd
+         HdS77xK1zFNjNwsvcFInHkuyH3LRWIdIpTe5Gy4m0W9pkcTfvIcJPLwIseLSeK/U6gN9
+         a5D/cQkcbHfSWEyY64rT7tVEW3qHxRrfQ5o/1OfzdSsrCOpWg03Ao3A3AJFwxu/IpfGe
+         XFrA==
+X-Gm-Message-State: AOAM532YUlAaZaN4KHHA598Ud8Qx2uLQ5A1TG8pGHbqZd+UKdxNalXbR
+        dksqR4djja6AVAHicKwQutmk6Q==
+X-Google-Smtp-Source: ABdhPJxLSdWWpfIxaQGNHeFfQoIuyfHcKNbVYBL99mebz4m6+1+6/6514Is75EyggDSS6XrPJMXKGw==
+X-Received: by 2002:a1c:b742:: with SMTP id h63mr780567wmf.122.1610480514861;
+        Tue, 12 Jan 2021 11:41:54 -0800 (PST)
+Received: from f2.redhat.com (bzq-79-183-72-147.red.bezeqint.net. [79.183.72.147])
+        by smtp.gmail.com with ESMTPSA id z63sm4885315wme.8.2021.01.12.11.41.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 12 Jan 2021 11:41:54 -0800 (PST)
+From:   Yuri Benditovich <yuri.benditovich@daynix.com>
+To:     davem@davemloft.net, kuba@kernel.org, mst@redhat.com,
+        jasowang@redhat.com, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        rdunlap@infradead.org, willemb@google.com, gustavoars@kernel.org,
+        herbert@gondor.apana.org.au, steffen.klassert@secunet.com,
+        nogikh@google.com, pablo@netfilter.org, decui@microsoft.com,
+        cai@lca.pw, jakub@cloudflare.com, elver@google.com,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, bpf@vger.kernel.org
+Cc:     yan@daynix.com
+Subject: [RFC PATCH 0/7] Support for virtio-net hash reporting
+Date:   Tue, 12 Jan 2021 21:41:36 +0200
+Message-Id: <20210112194143.1494-1-yuri.benditovich@daynix.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 1:06 PM Frank Rowand <frowand.list@gmail.com> wrote:
->
-> On 1/12/21 8:04 AM, Rob Herring wrote:
-> > On Mon, Jan 11, 2021 at 4:06 PM Frank Rowand <frowand.list@gmail.com> wrote:
-> >>
-> >> On 1/8/21 2:41 AM, Viresh Kumar wrote:
-> >>> Now that fdtoverlay is part of the kernel build, start using it to test
-> >>> the unitest overlays we have by applying them statically.
-> >>>
-> >>> The file overlay_base.dtb have symbols of its own and we need to apply
-> >>> overlay.dtb to overlay_base.dtb alone first to make it work, which gives
-> >>> us intermediate-overlay.dtb file.
-> >>>
-> >>> The intermediate-overlay.dtb file along with all other overlays is them
-> >>> applied to testcases.dtb to generate the master.dtb file.
-> >>>
-> >>> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> >>
-> >> NACK to this specific patch, in its current form.
-> >>
-> >> There are restrictions on applying an overlay at runtime that do not apply
-> >> to applying an overlay to an FDT that will be loaded by the kernel during
-> >> early boot.  Thus the unittest overlays _must_ be applied using the kernel
-> >> overlay loading methods to test the kernel runtime overlay loading feature.
-> >
-> > This patch doesn't take away from any of that and it completely orthogonal.
->
-> Mea culpa.  I took the patch header comment at face value, and read more into
-> the header comment than what was written there.  I then skimmed the patch
-> instead of actually reading what it was doing.
->
-> I incorrectly _assumed_ (bad!) that the intent was to replace applying the
-> individual overlay dtb's with the master.dtb.  Reading more closely, I see
-> that the assumed final step of actually _using_ master.dtb does not exist.
->
-> So, yes, I agree that the patch as written is orthogonal to my concern.
->
-> My updated understanding is that this patch is attempting to use the existing
-> unittest overlay dts files as source to test fdtoverlay.  And that the resulting
-> dtb from fdtoverlay is not intended to be consumed by the kernel unittest.
+Existing TUN module is able to use provided "steering eBPF" to
+calculate per-packet hash and derive the destination queue to
+place the packet to. The eBPF uses mapped configuration data
+containing a key for hash calculation and indirection table
+with array of queues' indices.
 
-The goal is not to test fdtoverlay. dtc unittests do that. The goal is
-testing overlays we expect to be able to apply can actually apply and
-doing this at build time. That's also the goal for all the 'real'
-overlays which get added.
+This series of patches adds support for virtio-net hash reporting
+feature as defined in virtio specification. It extends the TUN module
+and the "steering eBPF" as follows:
 
-> I do not agree that this is a good approach to testing fdtoverlay.  The
-> unittest overlay dts files are constructed specifically to test various
-> parts of the kernel overlay code and dynamic OF code.  Some of the content
-> of the overlays is constructed to trigger error conditions in that code,
-> and thus will not be able to be processed without error by fdtoverlay.
+Extended steering eBPF calculates the hash value and hash type, keeps
+hash value in the skb->hash and returns index of destination virtqueue
+and the type of the hash. TUN module keeps returned hash type in
+(currently unused) field of the skb. 
+skb->__unused renamed to 'hash_report_type'.
 
-Then those should be omitted.
+When TUN module is called later to allocate and fill the virtio-net
+header and push it to destination virtqueue it populates the hash
+and the hash type into virtio-net header.
 
-> Trying to use overlay dts files that are constructed to test runtime kernel
-> code as fdtoverlay input data mixes two different test environments and
-> objectives.  If fdtoverlay test cases are desired, then fdtoverlay specific
-> dts files should be created.
->
-> >
-> >> I agree that testing fdtoverlay is a good idea.  I have not looked at the
-> >> parent project to see how much testing of fdtoverlay occurs there, but I
-> >> would prefer that fdtoverlay tests reside in the parent project if practical
-> >> and reasonable.  If there is some reason that some fdtoverlay tests are
-> >> more practical in the Linux kernel repository then I am open to adding
-> >> them to the Linux kernel tree.
-> >
-> > If you (or more importantly someone else sending us patches) make
-> > changes to the overlays, you can test that they apply at build time
-> > rather than runtime. I'll take it! So please help on fixing the issue
-> > because I want to apply this.
->
-> If the tests can be added to the upstream project, I would much prefer
-> they reside there.  If there is some reason a certain test is more
-> suited to be in the Linux kernel source tree then I also would like
-> it to be accepted here.
+VHOST driver is made aware of respective virtio-net feature that
+extends the virtio-net header to report the hash value and hash report
+type.
 
-Again, this is just about doing sanity checks at build time rather
-than *only* rely on runtime.
+Yuri Benditovich (7):
+  skbuff: define field for hash report type
+  vhost: support for hash report virtio-net feature
+  tun: allow use of BPF_PROG_TYPE_SCHED_CLS program type
+  tun: free bpf_program by bpf_prog_put instead of bpf_prog_destroy
+  tun: add ioctl code TUNSETHASHPOPULATION
+  tun: populate hash in virtio-net header when needed
+  tun: report new tun feature IFF_HASH
 
-> >
-> > And yes, dtc has fdtoverlay tests. But this patch shows there's at
-> > least 2 issues,
->
->
-> > fdtoverlay can't apply overlays to the root
->
-> A test of that definitely belongs in the upstream project.
+ drivers/net/tun.c           | 43 +++++++++++++++++++++++++++++++------
+ drivers/vhost/net.c         | 37 ++++++++++++++++++++++++-------
+ include/linux/skbuff.h      |  7 +++++-
+ include/uapi/linux/if_tun.h |  2 ++
+ 4 files changed, 74 insertions(+), 15 deletions(-)
 
-Yes, agreed.
+-- 
+2.17.1
 
-> > and using an overlay as the base tree in UML is odd IMO.
->
-> Am I still not fully understanding the patch?  I'm missing how
-> this patch changes what dtb is used as the base tree in UML.
-
-This was more my theorising why Viresh is having problems in that
-perhaps fdtoverlay can't take an overlay as a base DT while the kernel
-can and does for UML. The fact that it works for UML seems wrong to
-me.
-
-Rob
