@@ -2,114 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E1B2F336A
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB922F3374
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:00:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389223AbhALO6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:58:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732558AbhALO6I (ORCPT
+        id S2387648AbhALO7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:59:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26450 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725843AbhALO7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:58:08 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D699C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:57:28 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id w18so4661544iot.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:57:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=a8cAC6W8EP8v2kz4Pqmyj0XUUN1a4NamLvxdd/3zGXE=;
-        b=uPsGugOd/r/XLDFP7bKybOAeOBHVUUlGZD4F7spjrWcMsRPAXgLYNxbyb9lhieGNfL
-         8uQP+9A47ZGXl3xenI8QSTm54+B/JbJgk1GeXoNNbafCwtgMG1MtpWZ9+z2JZTRbNMW5
-         0c3/2iiPYddKPWhiuOxX3+dK5BnW604IPRd8nsrn6PURj3nD3a7u3U5xcgeGAmBmUcHq
-         3oqA47kB5YPvvnADcFTGXFGlhPBAFaGd1FOFnSQP27zSO/+EV1FFaLex8L+ry7+SkzDj
-         PfB5bT2izfxNh68ovJTZNvGvzKCYKvxbBMR6ZOIJRY7szgDDnRV5bzAd0MdcDW0fqcU1
-         ZTRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=a8cAC6W8EP8v2kz4Pqmyj0XUUN1a4NamLvxdd/3zGXE=;
-        b=S27/PFl60COXfK1ZXJqoX78IYsKraivMy0V5KWzvcfgvbhJEtIUGEzgaYisWx1/lFx
-         phFP/LrlXbLDpFirHr33gLvaU2OgXaVcENnVPxjKIkK0jHzPWsmAZzcGCseVrO0uLIXx
-         47dZyiTcYdE9j4WlUwq6NaGAcjVOr44yPdAT/YF+sMibv4E1ihQHOFOMmCCQwXu8+AP6
-         njsFsjqec+g+4W4qvyXh1jY/76XyCfthM229vBqdXj2RRnydL+gRukEk2S0OB8Z+8V3w
-         G2u88p7JWyTyQkljuEzH6awIHmp8MUuckVJhCA1g/l3DnXwb9px+3+EUwNz1zef6scjX
-         Q+GA==
-X-Gm-Message-State: AOAM532AREaH5ablFaKpJ9JjeTDl0hwwWLa3NmCbCx6VUmOyRB5a4TRA
-        SIwt7tHVMCd/aa8nowr9hsfo2Q==
-X-Google-Smtp-Source: ABdhPJwzQTc7uNYxdzeUSw4X1PHAwo+zkoyC9wVKHyV1W5qXznUwTwkO6rGoRGIcwtt7OijLQK+QFA==
-X-Received: by 2002:a5e:a614:: with SMTP id q20mr3587305ioi.198.1610463447562;
-        Tue, 12 Jan 2021 06:57:27 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id n11sm2040414ioh.37.2021.01.12.06.57.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 06:57:27 -0800 (PST)
-Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org, Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paul McKenney <paulmck@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <20201226025117.2770-1-jiangshanlai@gmail.com>
- <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net>
- <87o8hv7pnd.fsf@nanos.tec.linutronix.de>
- <X/wv7+PP8ywNYmIS@hirez.programming.kicks-ass.net>
- <X/yH9+MGa1JCNZ8x@hirez.programming.kicks-ass.net>
- <jhj7doj1dr1.mognet@arm.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <f5b0f650-5dc1-c67d-f548-340e7ca54d41@kernel.dk>
-Date:   Tue, 12 Jan 2021 07:57:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 12 Jan 2021 09:59:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610463478;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XlUm2JYDUqrCFaqRZjf68KX2pnc8iKtDpFI9TKkiM18=;
+        b=CivmYjR8C9bdFnQin+wimDMaVBgo7eGgcZgSTakvN/g5DOR6S25Aj2TZoL7mc5eImFRus/
+        VXqxSDVN8eghU+MeG4RZSZUNXbFK4AB3vEbUBAhet+kcOavK/PkTRA89+jq9df2d95kE7r
+        O9+OBrS3gbXCg+RTiTqVBCRrCxsFO/0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-323-mlPyzESvNF2x4AJowppFGg-1; Tue, 12 Jan 2021 09:57:54 -0500
+X-MC-Unique: mlPyzESvNF2x4AJowppFGg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C3DD8803F4C;
+        Tue, 12 Jan 2021 14:57:49 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9EA5D6B540;
+        Tue, 12 Jan 2021 14:57:45 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <E090372C-06A3-4991-8FC3-F06A0DA60729@oracle.com>
+References: <E090372C-06A3-4991-8FC3-F06A0DA60729@oracle.com> <20200916004927.64276-1-eric.snowberg@oracle.com> <1360578.1607593748@warthog.procyon.org.uk>
+To:     Eric Snowberg <eric.snowberg@oracle.com>
+Cc:     dhowells@redhat.com, dwmw2@infradead.org,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        jmorris@namei.org, serge@hallyn.com, nayna@linux.ibm.com,
+        Mimi Zohar <zohar@linux.ibm.com>, erichte@linux.ibm.com,
+        mpe@ellerman.id.au, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v4] certs: Add EFI_CERT_X509_GUID support for dbx entries
 MIME-Version: 1.0
-In-Reply-To: <jhj7doj1dr1.mognet@arm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 12 Jan 2021 14:57:39 +0000
+Message-ID: <2442460.1610463459@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/11/21 12:21 PM, Valentin Schneider wrote:
-> On 11/01/21 18:16, Peter Zijlstra wrote:
->> Sadly it appears like io_uring() uses kthread_create_on_cpu() without
->> then having any hotplug crud on, so that needs additinoal frobbing.
->>
-> 
-> I noticed that as well sometime ago, and I believed then (still do) this
-> usage is broken. I don't think usage of kthread_create_on_cpu() outside
-> of smpboot makes sense, because without any hotplug step to park the
-> thread, its affinity can end up being reset after its dedicated CPU gets
-> offlined.
-> 
-> I'm clueless about io_uring, but if it *actually* has a good reason to
-> use some pcpu kthreads (it seems it doesn't have to be on all CPUs?),
-> then it needs to register some hotplug step to park them / do something
-> sensible on hotplug.
+Eric Snowberg <eric.snowberg@oracle.com> wrote:
 
-For io_uring, it's purely used by the SQPOLL mode, which sets aside a
-kernel thread for submissions so the application doesn't have to do
-anything but write new SQE entries to submit. The thread then notices
-these, and submits them. There's an option to affinitize that thread
-to a single CPU, which often makes sense for setups like that. Think
-of it like a strong hint.
+> > On Dec 10, 2020, at 2:49 AM, David Howells <dhowells@redhat.com> wrote:
+> >=20
+> > Eric Snowberg <eric.snowberg@oracle.com> wrote:
+> >=20
+> >> Add support for EFI_CERT_X509_GUID dbx entries. When a EFI_CERT_X509_G=
+UID
+> >> is found, it is added as an asymmetrical key to the .blacklist keyring.
+> >> Anytime the .platform keyring is used, the keys in the .blacklist keyr=
+ing
+> >> are referenced, if a matching key is found, the key will be rejected.
+> >=20
+> > Ummm...  Why this way and not as a blacklist key which takes up less sp=
+ace?
+> > I'm guessing that you're using the key chain matching logic.  We really=
+ only
+> > need to blacklist the key IDs.
+>=20
+> I implemented it this way so that certs in the dbx would only impact=20
+> the .platform keyring. I was under the impression we didn=E2=80=99t want =
+to have=20
+> Secure Boot UEFI db/dbx certs dictate keyring functionality within the ke=
+rnel
+> itself. Meaning if we have a matching dbx cert in any other keyring (buil=
+tin,
+> secondary, ima, etc.), it would be allowed. If that is not how you=E2=80=
+=99d like to=20
+> see it done, let me know and I=E2=80=99ll make the change.
 
-Things aren't going to break if this CPU goes away and we end up being
-affinitized to some other CPU, though it is suboptimal. So I guess we
-might need some notifiers to ensure that we reset the CPU back again
-if it's gone offline+online again? I can take a look at that.
+I wonder if that is that the right thing to do.  I guess this is a policy
+decision and may depend on the particular user.
 
--- 
-Jens Axboe
+> > Also, what should happen if a revocation cert rejected by the blacklist?
+>=20
+> I=E2=80=99m not sure I understand the question. How would it be rejected?
+
+The SHA256 of a revocation cert being loaded could match an
+already-blacklisted SHA256 sum, either compiled in or already loaded from
+UEFI.
+
+David
 
