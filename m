@@ -2,96 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96EE62F2C47
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:09:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F742F2C48
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:09:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392956AbhALKHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:07:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45774 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390366AbhALKHu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:07:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DD922310A;
-        Tue, 12 Jan 2021 10:07:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610446030;
-        bh=DxYt+mYx8c0tVX8A42/mQ1TijaD2I/tH+KiF9B0oDhU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l2tZgQRBulvlz77JQDqCufd/2c7muJOQyBYXhyu+Xi6oENnqG708IwFP7GRYhSsOc
-         RvvuhRdGd5h/f/dH0TOhwNTIPw1Ls9Hi8EB2dPMmUDbHybon4wz4SMhjxVAtUx9012
-         I64JhOpJieRbsE8B7SbKhDBsEW14h5w+XM9EOrKUx/u+zaQj6M1wO+g2GQFL7B6Q1J
-         YLMnhmS9M5JuBftwTYZIo+7gD1LS7YCcUpjgw4Hjur2I7374mZ8BpdnBx/lzH4sMED
-         Wl8EOj4BTxjcHYiB59i0K5Yxb/xxQhr7WqF3/9VLJprLFk1V454e4keJWERROvDaFz
-         4kamh0By/fgGQ==
-From:   matthias.bgg@kernel.org
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>,
-        Axel Lin <axel.lin@ingics.com>,
-        Chen Zhong <chen.zhong@mediatek.com>,
-        Gene Chen <gene_chen@richtek.com>,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matthias Brugger <mbrugger@suse.com>,
-        John Crispin <john@phrozen.org>
-Subject: [PATCH v3 2/2] regulator: mt6323: Add OF match table
-Date:   Tue, 12 Jan 2021 11:06:58 +0100
-Message-Id: <20210112100659.19350-2-matthias.bgg@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210112100659.19350-1-matthias.bgg@kernel.org>
-References: <20210112100659.19350-1-matthias.bgg@kernel.org>
+        id S2392969AbhALKIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:08:13 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:48204 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390366AbhALKIM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 05:08:12 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10C9tJ6j063075;
+        Tue, 12 Jan 2021 10:07:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=qke5d5/aNaSSKkThN5FT7wSxphV5md/SPNTgBKloGFo=;
+ b=LKqXS39KXK3pfLIXVuq47zf+WMd80DpW7E++m/8GDK0B/jkmjAQHFPn1MT8a6zwoP+LF
+ 5i4NRUTgCZKWIuCdx6XuS/7sY6D3SDs+uyMi/sgvQPNt/RzTaPiNcqC5Mi6EEwEoMqGO
+ F5WOIgDoR3n0bjYcpBUCdKqumTZ/s1l+lWLRnorlRhDGy0AVj6QQTihbgpmwvn8GsR72
+ f6M2b6czEpm4tPKHpScyN4Lkebo5SS7aAy7RgKdlBzjTwKyE/YMSJlrRJCLt88GfkEwD
+ AEAwHIKLdc/gSuuNG5OBelqsrENCfWboBrbUax8yDIu5hFJPBNGGrE7cvBIc44zf4aWf BQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 360kvjwfsr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 12 Jan 2021 10:07:24 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10C9pjg3181291;
+        Tue, 12 Jan 2021 10:07:24 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 360ke69p35-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Jan 2021 10:07:24 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10CA7JpG003574;
+        Tue, 12 Jan 2021 10:07:20 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 12 Jan 2021 02:07:18 -0800
+Date:   Tue, 12 Jan 2021 13:07:06 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Xiaojian Du <Xiaojian.Du@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] drm/amdgpu: Add missing BOOTUP_DEFAULT to
+ profile_name[]
+Message-ID: <20210112100706.GF5083@kadam>
+References: <20210111114638.16530-1-colin.king@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210111114638.16530-1-colin.king@canonical.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101120054
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9861 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ lowpriorityscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
+ clxscore=1011 impostorscore=0 spamscore=0 mlxscore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101120054
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthias Brugger <mbrugger@suse.com>
+On Mon, Jan 11, 2021 at 11:46:38AM +0000, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> A recent change added a new BOOTUP_DEFAULT power profile mode
+> to the PP_SMC_POWER_PROFILE enum but omitted updating the
+> corresponding profile_name array.  Fix this by adding in the
+> missing BOOTUP_DEFAULT to profile_name[].
+> 
 
-The binding documentation mentions that a compatible is required for the
-MT6323 device node. But the driver does not provide a OF match table.
-This way auto-loading is broken as the MFD driver that registers the
-device has a .of_compatible set which makes the platform .uevent
-callback report a OF modalias, but that's not in the module.
+Still not enough to prevent the array overflow.  It needs POWERSAVE as
+well.
 
-Fixes: 2fdf82923618 ("regulator: mt6323: Add support for MT6323 regulator")
-Signed-off-by: Matthias Brugger <mbrugger@suse.com>
-
----
-
-Changes in v3: None
-Changes in v2:
-- check for CONFIG_OF
-- add Fixes tag
-
- drivers/regulator/mt6323-regulator.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/drivers/regulator/mt6323-regulator.c b/drivers/regulator/mt6323-regulator.c
-index ff9016170db3..646742d4db74 100644
---- a/drivers/regulator/mt6323-regulator.c
-+++ b/drivers/regulator/mt6323-regulator.c
-@@ -406,9 +406,18 @@ static const struct platform_device_id mt6323_platform_ids[] = {
- };
- MODULE_DEVICE_TABLE(platform, mt6323_platform_ids);
- 
-+#ifdef CONFIG_OF
-+static const struct of_device_id mt6323_of_match[] = {
-+	{ .compatible = "mediatek,mt6323-regulator", },
-+	{ /* sentinel */ },
-+};
-+MODULE_DEVICE_TABLE(of, mt6323_of_match);
-+#endif
-+
- static struct platform_driver mt6323_regulator_driver = {
- 	.driver = {
- 		.name = "mt6323-regulator",
-+		.of_match_table = of_match_ptr(mt6323_of_match),
- 	},
- 	.probe = mt6323_regulator_probe,
- 	.id_table = mt6323_platform_ids,
--- 
-2.29.2
+regards,
+dan carpenter
 
