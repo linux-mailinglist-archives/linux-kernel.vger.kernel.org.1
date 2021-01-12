@@ -2,122 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4282F3FA9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CD852F3FB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732727AbhALWao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:30:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727908AbhALWaf (ORCPT
+        id S2394645AbhALWbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:31:13 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:33584 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393234AbhALWa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:30:35 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAF6C061786;
-        Tue, 12 Jan 2021 14:29:55 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id q4so2215333plr.7;
-        Tue, 12 Jan 2021 14:29:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=Y/mkD5de8m+mpayBIjRORwwldrvzEhn8Mi4jJftRcDI=;
-        b=oyY3aNW7Pxb69vz+utmtcU2GPYOyJ5SqNAKAGKIP+laTePuc60PlelsK58yw4wUUf0
-         vWjJOEysHeU7IHh/rBzXBPENyRO9f3bUhDjNmSpAYEVpCygIR53iaVWtBfeZlaPPjvqe
-         X4vYUEQ/fMIUh4e4y6FxOmwJXrmI75HrmpiNK+mlBem0QnasUc2Nt3i2O/vaO5K71Y++
-         ziIXBzxFcbNLl9OIcmaNhr9zsF3zckpj4QliylL8hPGfzwyXmUcq9jehHNIkoyS2aDGS
-         IqiUWiOhhNveeQCjbYSituV2lfZeFWnnYpFZXZA1Cn1+xlnlImCjEywAw9PGsvLi1/nj
-         Rt7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=Y/mkD5de8m+mpayBIjRORwwldrvzEhn8Mi4jJftRcDI=;
-        b=Igvqyio71+VuAUChmHvyX3DIQfNOpUSOp6yRuOn+Unawk07V7ybtEHEDUlRBxkfezn
-         BZCQEW3EDBuH/k1n/7qaYZxGfPZp5dVmArQiGRvjhIpagxQ5j2PtFwf1KB+vOnYXemqH
-         j4QiZHabpLDoHR3gxcvg/GRNKIVysgzVTsNdjZygQs4izM4SGXL9xq4LbKI5umR45MAK
-         5DdKRNKGtSQESGUG8HDV9NO8oLdNPd13yyInnoxhxjRVUZLcLOde+8WKU4eTphyCo8sT
-         SXCEx6xfHKQRD+2urZBr5JYMEEz6D7tp75pVeK/yS4iV+KLjRnWg6lO6CmsVIL2m9i9+
-         PNYg==
-X-Gm-Message-State: AOAM530NG/0VWPDDjWDfVdvY5zaS5nJ3usEGW+BVa/cgcBbtj5eqMZQs
-        4q2JlGsoHo0QOpLF05siXcM=
-X-Google-Smtp-Source: ABdhPJwpwMojoG1gozfbdfaGyrRQLqLKWPh3Cerp91arRFH/VdZndTffb9MzyH9D6diub2eZ4EAqBQ==
-X-Received: by 2002:a17:902:bcc6:b029:dc:44a5:c363 with SMTP id o6-20020a170902bcc6b02900dc44a5c363mr1515847pls.5.1610490594619;
-        Tue, 12 Jan 2021 14:29:54 -0800 (PST)
-Received: from [192.168.88.245] (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id v10sm32697pjr.47.2021.01.12.14.29.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 12 Jan 2021 14:29:53 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <20210112214337.GA10434@willie-the-truck>
-Date:   Tue, 12 Jan 2021 14:29:51 -0800
-Cc:     Yu Zhao <yuzhao@google.com>,
-        Laurent Dufour <ldufour@linux.vnet.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>, surenb@google.com
-Content-Transfer-Encoding: 7bit
-Message-Id: <F33D2DD9-97D5-44A0-890B-35FE686E36DC@gmail.com>
-References: <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
- <CAHk-=wj=CcOHQpG0cUGfoMCt2=Uaifpqq-p-mMOmW8XmrBn4fQ@mail.gmail.com>
- <20210105153727.GK3040@hirez.programming.kicks-ass.net>
- <bfb1cbe6-a705-469d-c95a-776624817e33@codeaurora.org>
- <0201238b-e716-2a3c-e9ea-d5294ff77525@linux.vnet.ibm.com>
- <X/3VE64nr91WCtuM@hirez.programming.kicks-ass.net>
- <ec912505-ed4d-a45d-2ed4-7586919da4de@linux.vnet.ibm.com>
- <C7D5A74C-25BF-458A-AAD9-61E484B9F225@gmail.com>
- <X/3+6ZnRCNOwhjGT@google.com>
- <2C7AE23B-ACA3-4D55-A907-AF781C5608F0@gmail.com>
- <20210112214337.GA10434@willie-the-truck>
-To:     Will Deacon <will@kernel.org>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Tue, 12 Jan 2021 17:30:58 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id C02F91C0B79; Tue, 12 Jan 2021 23:30:15 +0100 (CET)
+Date:   Tue, 12 Jan 2021 23:30:15 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Dan Murphy <dmurphy@ti.com>,
+        linux-ide@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: 5.11 new lockdep warning related to led-class code (also may
+ involve ata / piix controller)
+Message-ID: <20210112223015.GB28214@duo.ucw.cz>
+References: <b204637d-3b72-8320-8a62-f075467d8681@redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="JYK4vJDZwFMowpUq"
+Content-Disposition: inline
+In-Reply-To: <b204637d-3b72-8320-8a62-f075467d8681@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Jan 12, 2021, at 1:43 PM, Will Deacon <will@kernel.org> wrote:
-> 
-> On Tue, Jan 12, 2021 at 12:38:34PM -0800, Nadav Amit wrote:
->>> On Jan 12, 2021, at 11:56 AM, Yu Zhao <yuzhao@google.com> wrote:
->>> On Tue, Jan 12, 2021 at 11:15:43AM -0800, Nadav Amit wrote:
->>>> I will send an RFC soon for per-table deferred TLB flushes tracking.
->>>> The basic idea is to save a generation in the page-struct that tracks
->>>> when deferred PTE change took place, and track whenever a TLB flush
->>>> completed. In addition, other users - such as mprotect - would use
->>>> the tlb_gather interface.
->>>> 
->>>> Unfortunately, due to limited space in page-struct this would only
->>>> be possible for 64-bit (and my implementation is only for x86-64).
->>> 
->>> I don't want to discourage you but I don't think this would end up
->>> well. PPC doesn't necessarily follow one-page-struct-per-table rule,
->>> and I've run into problems with this before while trying to do
->>> something similar.
->> 
->> Discourage, discourage. Better now than later.
->> 
->> It will be relatively easy to extend the scheme to be per-VMA instead of
->> per-table for architectures that prefer it this way. It does require
->> TLB-generation tracking though, which Andy only implemented for x86, so I
->> will focus on x86-64 right now.
-> 
-> Can you remind me of what we're missing on arm64 in this area, please? I'm
-> happy to help get this up and running once you have something I can build
-> on.
 
-Let me first finish making something that we can use as a basis for a
-discussion. I do not waste your time before I have something ready.
+--JYK4vJDZwFMowpUq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> Booting a 5.11-rc2 kernel with lockdep enabled inside a virtualbox vm (wh=
+ich still
+> emulates good old piix ATA controllers) I get the below lockdep splat ear=
+ly on during boot:
+>=20
+> This seems to be led-class related but also seems to have a (P)ATA
+> part to it. To the best of my knowledge this is a new problem in
+> 5.11 .
+
+This is on my for-next branch:
+
+commit 9a5ad5c5b2d25508996f10ee6b428d5df91d9160 (HEAD -> for-next, origin/f=
+or-next)
+
+    leds: trigger: fix potential deadlock with libata
+   =20
+    We have the following potential deadlock condition:
+   =20
+     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+     WARNING: possible irq lock inversion dependency detected
+     5.10.0-rc2+ #25 Not tainted
+     --------------------------------------------------------
+     swapper/3/0 just changed the state of lock:
+     ffff8880063bd618 (&host->lock){-...}-{2:2}, at: ata_bmdma_interrupt+0x=
+27/0x200
+     but this lock took another, HARDIRQ-READ-unsafe lock in the past:
+      (&trig->leddev_list_lock){.+.?}-{2:2}
+
+If I'm not mistaken, that should fix your issue.
+
+Best regards,
+
+									Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--JYK4vJDZwFMowpUq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX/4i9wAKCRAw5/Bqldv6
+8jJLAKDBeFjI4ElXoU+bJaEZ869cE7QQNgCgm40OMHnRKot5PDQHviQcJIaObdo=
+=XLEt
+-----END PGP SIGNATURE-----
+
+--JYK4vJDZwFMowpUq--
