@@ -2,103 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68D192F325C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:00:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3FF22F3268
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:00:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387891AbhALN6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:58:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46650 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732978AbhALN62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:58:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 513892311B
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:57:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610459867;
-        bh=32mjZmvr99YZ2ZjlfD7HsnznEEvDSHHruXjw3VsZ0VQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=W2NtxHVPH8MzbUWyPsOnJp3puvcXOx/dsEqpHV97DsvlSIwoKNIHOYUZx1izqavul
-         UfUL8ofomV16jEG6JPaOUbgt6l/yyI8jZz/DTyJUcABQ0XFOpMubWffKaR5ULxv57Q
-         Kw1LTHsLq7x6kerp65fFYGN3cGcqc1ocXHUkQHI1fVUv6Hm1WPDrn/+mLYBf4JrC+G
-         LgU6rqWmBntOgwyK//CNFQgE1sr2HyqHG6YfLAKl5SIBOyfQUfb+qxYH0jqD/s7UK+
-         tYSOyqbOIufD165R4RjS0WTUmEOJfE5p9UIGDC1IBYY1A3vPCKEDo5NBVkUNh2uwY6
-         ep46rgfnvLGCA==
-Received: by mail-lf1-f43.google.com with SMTP id u25so3516409lfc.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:57:47 -0800 (PST)
-X-Gm-Message-State: AOAM531iJe2eOaxzGCCEWVd4MNB6MLnO4DGAaRfevMEH1VO9lzeCCArv
-        yKqlFFXTK/gYtYppm026qIlKBC0J+w2gJaHc8v1hmg==
-X-Google-Smtp-Source: ABdhPJxn242iE48rbeSlKPBc7+QElLLFF9RgADzJ2HR6gzm3TEa7ZLEbUM/7xxEqwAfgWRGWf/uGGERze61AzLnI7yo=
-X-Received: by 2002:a19:810:: with SMTP id 16mr2312202lfi.233.1610459865578;
- Tue, 12 Jan 2021 05:57:45 -0800 (PST)
+        id S2388250AbhALN7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:59:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387971AbhALN7a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 08:59:30 -0500
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BED94C0617A4
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:58:18 -0800 (PST)
+Received: by mail-vk1-xa2b.google.com with SMTP id d23so624976vkf.3
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 05:58:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NXadZdz8Ctiv1n9eDAHyiJm1Q2gQ3cn9xSsA8PIpIy8=;
+        b=X6eafdEk/mhZKGkplAkeZlHtw5MHYiPGzuLqaU/8QIJNUYdB77gAnLlDUNAiD4hMNh
+         xtLhe6wxwEiVq1lSHcSdByEjddJcVv0v0t0oPEFeAc9L27R7dcQSR2snp4mzm54uhMOV
+         QKMmK332VJC9oTr7isDNxdOmzA+cqgmtgUlK1ECND3GRn5P+0A4DXM4oMIsVo0M63aHu
+         tz/gPl2J8bw3GAsqZAj7v5VCFpg1TO+MjzWZoFbxAP5iVZXNmoKqZLzr4y4p5HBfjEPW
+         z4ZdM03MFp9BUDCj2gplHxCyRyXtyF1F2XMD9c4mZY1sgSAu7ecGDfwd89/tv+VfhSp4
+         YzPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NXadZdz8Ctiv1n9eDAHyiJm1Q2gQ3cn9xSsA8PIpIy8=;
+        b=WVKIpuV3JMm24pw5KMxEOAGJUELRc+S18ETXVPHQVB/ZsC5pc4m0pGubAjkcG8+1Gx
+         ZRPBN00rAQqdL+BKFWKSk9xs2YkHMIHddrRKyhLVyvkzet6MLVWa/7ANFhj622AwZLA1
+         YoexRSIohOieu49AeTRP1cqeUhCvDk11Ptu6dwLIo0oKoGioHEIsfMwpsC12QU+ok9iz
+         rv5zflLet66OautDnsJGoqWX+fIx9BwF7K0a0Jc6erOc7A0CRTy9mpIBAFguiPoMtnTG
+         YQaguOh+D6LcnqWmMXWpVIX3NGVzM5lKAK0RWgCys+IkmF3Xplorf+UDshsjBBRRQSNO
+         NmFQ==
+X-Gm-Message-State: AOAM532TYXRiVGd9u1I2o15IOAFu6zAcKXK5Qc0/cFkaYJp4/G0IFxFA
+        iK/rZGP8yIZwhCLtV3Bo6+LHRDP46t7QGnPspMAKrg==
+X-Google-Smtp-Source: ABdhPJy+B3y/eESbyu3OC6gky5khJjR8g/IPWLuj2VIXLHRwiMv4vqF7OT9LeQIvE4BHFVFqSxmsFb+5AO9DEtsQ0nY=
+X-Received: by 2002:a1f:8f08:: with SMTP id r8mr3665187vkd.15.1610459897870;
+ Tue, 12 Jan 2021 05:58:17 -0800 (PST)
 MIME-Version: 1.0
-References: <20210112091403.10458-1-gilad.reti@gmail.com>
-In-Reply-To: <20210112091403.10458-1-gilad.reti@gmail.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Tue, 12 Jan 2021 14:57:34 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ6DJ0NEm+qTBpMSJNFfgNHBFPZc=Ytj4w+4hY=Co4=0yg@mail.gmail.com>
-Message-ID: <CACYkzJ6DJ0NEm+qTBpMSJNFfgNHBFPZc=Ytj4w+4hY=Co4=0yg@mail.gmail.com>
-Subject: Re: [PATCH bpf 1/2] bpf: support PTR_TO_MEM{,_OR_NULL} register spilling
-To:     Gilad Reti <gilad.reti@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <20201217180638.22748-1-digetx@gmail.com> <20201217180638.22748-32-digetx@gmail.com>
+In-Reply-To: <20201217180638.22748-32-digetx@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 12 Jan 2021 14:57:41 +0100
+Message-ID: <CAPDyKFrRKbQS1+t_nGH9RRKf0WGcAf-Pjzo1rJt=Sz=SMWOa7Q@mail.gmail.com>
+Subject: Re: [PATCH v2 31/48] soc/tegra: regulators: Support Core domain state syncing
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 10:14 AM Gilad Reti <gilad.reti@gmail.com> wrote:
+On Thu, 17 Dec 2020 at 19:07, Dmitry Osipenko <digetx@gmail.com> wrote:
 >
-> Add support for pointer to mem register spilling, to allow the verifier
-> to track pointer to valid memory addresses. Such pointers are returned
-
-nit: pointers
-
-> for example by a successful call of the bpf_ringbuf_reserve helper.
+> The core voltage shall not drop until state of Core domain is synced,
+> i.e. all device drivers that use Core domain are loaded and ready.
 >
-> This patch was suggested as a solution by Yonghong Song.
-
-You can use the "Suggested-by:" tag for this.
-
+> Support Core domain state syncing. The Core domain driver invokes the
+> core-regulator voltage syncing once the state of domain is synced, at
+> this point the Core voltage is allowed to go lower.
 >
-> The patch was partially contibuted by CyberArk Software, Inc.
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
-nit: typo *contributed
+This looks reasonable to me, feel free to add:
 
-Also, I was wondering if "partially" here means someone collaborated with you
-on the patch? And, in that case:
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-"Co-developed-by:" would be a better tag here.
-
-Acked-by: KP Singh <kpsingh@kernel.org>
+Kind regards
+Uffe
 
 
->
-> Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier
-> support for it")
-> Signed-off-by: Gilad Reti <gilad.reti@gmail.com>
 > ---
->  kernel/bpf/verifier.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  drivers/soc/tegra/regulators-tegra20.c | 19 ++++++++++++++++++-
+>  drivers/soc/tegra/regulators-tegra30.c | 18 +++++++++++++++++-
+>  2 files changed, 35 insertions(+), 2 deletions(-)
 >
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 17270b8404f1..36af69fac591 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -2217,6 +2217,8 @@ static bool is_spillable_regtype(enum bpf_reg_type type)
->         case PTR_TO_RDWR_BUF:
->         case PTR_TO_RDWR_BUF_OR_NULL:
->         case PTR_TO_PERCPU_BTF_ID:
-> +       case PTR_TO_MEM:
-> +       case PTR_TO_MEM_OR_NULL:
->                 return true;
->         default:
->                 return false;
+> diff --git a/drivers/soc/tegra/regulators-tegra20.c b/drivers/soc/tegra/regulators-tegra20.c
+> index 367a71a3cd10..e2c11d442591 100644
+> --- a/drivers/soc/tegra/regulators-tegra20.c
+> +++ b/drivers/soc/tegra/regulators-tegra20.c
+> @@ -16,6 +16,8 @@
+>  #include <linux/regulator/driver.h>
+>  #include <linux/regulator/machine.h>
+>
+> +#include <soc/tegra/common.h>
+> +
+>  struct tegra_regulator_coupler {
+>         struct regulator_coupler coupler;
+>         struct regulator_dev *core_rdev;
+> @@ -38,6 +40,21 @@ static int tegra20_core_limit(struct tegra_regulator_coupler *tegra,
+>         int core_cur_uV;
+>         int err;
+>
+> +       /*
+> +        * Tegra20 SoC has critical DVFS-capable devices that are
+> +        * permanently-active or active at a boot time, like EMC
+> +        * (DRAM controller) or Display controller for example.
+> +        *
+> +        * The voltage of a CORE SoC power domain shall not be dropped below
+> +        * a minimum level, which is determined by device's clock rate.
+> +        * This means that we can't fully allow CORE voltage scaling until
+> +        * the state of all DVFS-critical CORE devices is synced.
+> +        */
+> +       if (tegra_soc_core_domain_state_synced()) {
+> +               pr_info_once("voltage state synced\n");
+> +               return 0;
+> +       }
+> +
+>         if (tegra->core_min_uV > 0)
+>                 return tegra->core_min_uV;
+>
+> @@ -58,7 +75,7 @@ static int tegra20_core_limit(struct tegra_regulator_coupler *tegra,
+>          */
+>         tegra->core_min_uV = core_max_uV;
+>
+> -       pr_info("core minimum voltage limited to %duV\n", tegra->core_min_uV);
+> +       pr_info("core voltage initialized to %duV\n", tegra->core_min_uV);
+>
+>         return tegra->core_min_uV;
+>  }
+> diff --git a/drivers/soc/tegra/regulators-tegra30.c b/drivers/soc/tegra/regulators-tegra30.c
+> index 0e776b20f625..42d675b79fa3 100644
+> --- a/drivers/soc/tegra/regulators-tegra30.c
+> +++ b/drivers/soc/tegra/regulators-tegra30.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/regulator/driver.h>
+>  #include <linux/regulator/machine.h>
+>
+> +#include <soc/tegra/common.h>
+>  #include <soc/tegra/fuse.h>
+>
+>  struct tegra_regulator_coupler {
+> @@ -39,6 +40,21 @@ static int tegra30_core_limit(struct tegra_regulator_coupler *tegra,
+>         int core_cur_uV;
+>         int err;
+>
+> +       /*
+> +        * Tegra30 SoC has critical DVFS-capable devices that are
+> +        * permanently-active or active at a boot time, like EMC
+> +        * (DRAM controller) or Display controller for example.
+> +        *
+> +        * The voltage of a CORE SoC power domain shall not be dropped below
+> +        * a minimum level, which is determined by device's clock rate.
+> +        * This means that we can't fully allow CORE voltage scaling until
+> +        * the state of all DVFS-critical CORE devices is synced.
+> +        */
+> +       if (tegra_soc_core_domain_state_synced()) {
+> +               pr_info_once("voltage state synced\n");
+> +               return 0;
+> +       }
+> +
+>         if (tegra->core_min_uV > 0)
+>                 return tegra->core_min_uV;
+>
+> @@ -59,7 +75,7 @@ static int tegra30_core_limit(struct tegra_regulator_coupler *tegra,
+>          */
+>         tegra->core_min_uV = core_max_uV;
+>
+> -       pr_info("core minimum voltage limited to %duV\n", tegra->core_min_uV);
+> +       pr_info("core voltage initialized to %duV\n", tegra->core_min_uV);
+>
+>         return tegra->core_min_uV;
+>  }
 > --
-> 2.27.0
+> 2.29.2
 >
