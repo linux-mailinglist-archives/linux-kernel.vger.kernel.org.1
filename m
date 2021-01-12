@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD272F2EF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38B772F2EFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:29:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387535AbhALMYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:24:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
+        id S1732745AbhALM2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:28:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387457AbhALMYJ (ORCPT
+        with ESMTP id S1729535AbhALM2o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:24:09 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F3EC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 04:23:28 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id p187so3525898iod.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 04:23:28 -0800 (PST)
+        Tue, 12 Jan 2021 07:28:44 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD806C061786;
+        Tue, 12 Jan 2021 04:28:03 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id a12so3084345lfl.6;
+        Tue, 12 Jan 2021 04:28:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nZIezxfzF5cQVfnp9/DvcL98QklFJMeqwz8OE0o7lBM=;
-        b=cdhH9HEUB47b4fq3e07Gy4hh0BO4wPghQRXBEikULAHwkROwydMITx/LuS06kY8XkT
-         hIngq3U3IZuDa/l2J6YMdt4dyvhL7iRs4NE9WlZGZ1K7iDpLya2TnUXsdJUlw00hIO4Y
-         HiDq5o+4Zuy0jAJPVhAJ403wQW6Prj1ccTVWu8OYxUoGYkqbL1LJS5OXrx0LQhuWHgcY
-         1yi2u/URnELdm3je9GrLljj9yxcMCLjH+XzoTjUzU/eyyBNpgcC2ms21MrRZFxRc8cwi
-         fmGovBHSfx3oMiI+yzacG7Gz+0hgLiWpwj1DJI7gfWCZ+nKU0PZuwTUSrP7UhqOP0bQG
-         ByaQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=13vFVfHprz64p3jGmqBB9uc45iwvcILQt4QpP3QO64c=;
+        b=dvcnF2fQxug645CS8WvU2+3tMjTkJs3pzKB+TLxr+5UkLScuQ8Di/DlGqZeCbRPxbs
+         VsRaYoG6zWLlMhXnTUVPXxFDnlBX+VeceSL0TAQX3sF7NhyYG8P/kCl3zHlbsaj/MpWa
+         3W8JAaQ8HgO7dMKtIH9kFdzXv//o3QWUTqhZbZxgu6QypCMMGWxIsu8mAXEPlYSNA+2G
+         R6hDtwDxaWJu62TZq4HyUruD7UFQqWjMB4sXRXkNROHUpIipQv6seD+Urwf7EyrbVsSt
+         0jBgF6WBrAnTsH88DqunQ5kv4OHAHSbAqrUqgi50E91xqP/An/PPdwg2PzUHJdvjziio
+         1YmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nZIezxfzF5cQVfnp9/DvcL98QklFJMeqwz8OE0o7lBM=;
-        b=sljgolyKbzRx95F98raiXPSeLmLJS1h4NwRNWd8rvIuT5JK27+QWXkXeNuUyJlQWCh
-         yqa8V571CbVJrjn6wu2YxY0TfF/mHLoEHYLbL2FPmgG37IH3MOWgsjx2xu0GmncdP8oz
-         k4Kj3jUIlrVbISd32sKbeCAluTumvdxdeAwJyRCfSmhaDe8HTND648P/ULvgHRYu6hVJ
-         ZJto7MZLur43lzkSCRZRZBSWLTJ+H/TLIbUTteUG0PZrMpOLcIh5RqiYmkg8ICdjOMGp
-         Of3Ll783PN8jyo5VRMUVI3+PxIBvCnIwXClUwC40foUNPPYtwEgXyGoLv0Zj2h7hB+88
-         /83g==
-X-Gm-Message-State: AOAM533UkUmSX2GsxwwenZePw2axrnspWRUJnZG8stAdiHs0V4FKBfA5
-        dP1RVVQugueezlcQtgbL54cgJSaqgNHrS3THfV84Mw==
-X-Google-Smtp-Source: ABdhPJzCX4Z3ZyGgv0cScTyr9oPuvm6uuLBWsAZpZf4YTAFVuDYAtQ49Yue7KnksqB9gfzM0eWDP4MDKUCJ2/OTtvgY=
-X-Received: by 2002:a02:c981:: with SMTP id b1mr4002348jap.6.1610454207998;
- Tue, 12 Jan 2021 04:23:27 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=13vFVfHprz64p3jGmqBB9uc45iwvcILQt4QpP3QO64c=;
+        b=dAUbXO39jtu0U3Yml7O4WLf40/uR5IwqwJ+uel2q2Z3B9iik+QQ4MVO3eRRriWEQvs
+         dO6wM01jl0GYg2xzbebiDpd8iwrn35/SUyeK83R/IQ8jYt6JT9ulEDNkQNV5e4CJusul
+         gch1d7GImnQi5Rrj+EUsoKGScTcrq+m1j9L1ME70SqEqkjdK606tVLTjh9g7pZRdwEk5
+         jdM05Ao60uA5uuUUZdGBuHB2HNlql9VNS24t7gPOYJfcCPEFAUgQk4SaR+X1vpdK9bOQ
+         i0k/vEOffeVM0qjKUR0ILjtpKd/5gtTN4WKwEDqGTSL9PXU6gtHkC+mYKnJU9Prcl2bD
+         xNtg==
+X-Gm-Message-State: AOAM5308JDy50JBwtXetjtHs1Fyq9VotFYma6fM5qsF7oBg3ckUOJcDd
+        1A0E+hKk1/vTgb0yeR1N7uE=
+X-Google-Smtp-Source: ABdhPJzdAm5GUbH1ypwRJUZUbxxcqPwQcfBcTwDXucoOQ4WbYRKC0NSuVVVD7//A30rvzJKIUkLT6A==
+X-Received: by 2002:a05:6512:4d9:: with SMTP id w25mr1973313lfq.199.1610454482341;
+        Tue, 12 Jan 2021 04:28:02 -0800 (PST)
+Received: from localhost.localdomain (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.gmail.com with ESMTPSA id c3sm330136ljk.88.2021.01.12.04.28.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 04:28:01 -0800 (PST)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/5] Couple improvements for Tegra clk driver
+Date:   Tue, 12 Jan 2021 15:27:19 +0300
+Message-Id: <20210112122724.1712-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210111182655.12159-1-alobakin@pm.me> <d4f4b6ba-fb3b-d873-23b2-4b5ba9cf4db8@gmail.com>
- <20210112110802.3914-1-alobakin@pm.me>
-In-Reply-To: <20210112110802.3914-1-alobakin@pm.me>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Tue, 12 Jan 2021 13:23:16 +0100
-Message-ID: <CANn89iKEc_8_ySqV+KrbheTDKRL4Ws6JUKYeKXfogJNhfd+pGQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 0/5] skbuff: introduce skbuff_heads bulking and reusing
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Edward Cree <ecree.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Edward Cree <ecree@solarflare.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 12:08 PM Alexander Lobakin <alobakin@pm.me> wrote:
->
-> From: Edward Cree <ecree.xilinx@gmail.com>
-> Date: Tue, 12 Jan 2021 09:54:04 +0000
->
-> > Without wishing to weigh in on whether this caching is a good idea...
->
-> Well, we already have a cache to bulk flush "consumed" skbs, although
-> kmem_cache_free() is generally lighter than kmem_cache_alloc(), and
-> a page frag cache to allocate skb->head that is also bulking the
-> operations, since it contains a (compound) page with the size of
-> min(SZ_32K, PAGE_SIZE).
-> If they wouldn't give any visible boosts, I think they wouldn't hit
-> mainline.
->
-> > Wouldn't it be simpler, rather than having two separate "alloc" and "flush"
-> >  caches, to have a single larger cache, such that whenever it becomes full
-> >  we bulk flush the top half, and when it's empty we bulk alloc the bottom
-> >  half?  That should mean fewer branches, fewer instructions etc. than
-> >  having to decide which cache to act upon every time.
->
-> I though about a unified cache, but couldn't decide whether to flush
-> or to allocate heads and how much to process. Your suggestion answers
-> these questions and generally seems great. I'll try that one, thanks!
->
+This series fixes couple minor problems of the Tegra clk driver.
+Please review and apply.
 
+Changelog:
 
-The thing is : kmalloc() is supposed to have batches already, and nice
-per-cpu caches.
+v2: - Added these new patches:
 
-This looks like an mm issue, are we sure we want to get over it ?
+      clk: tegra: Halve SCLK rate on Tegra20
+      MAINTAINERS: Hand Tegra clk driver to Jon and Thierry
 
-I would like a full analysis of why SLAB/SLUB does not work well for
-your test workload.
+v1: - Collected clk patches into a single series.
 
-More details, more numbers.... before we accept yet another
-'networking optimization' adding more code to the 'fast' path.
+Dmitry Osipenko (5):
+  clk: tegra30: Use 300MHz for video decoder by default
+  clk: tegra: Fix refcounting of gate clocks
+  clk: tegra: Ensure that PLLU configuration is applied properly
+  clk: tegra: Halve SCLK rate on Tegra20
+  MAINTAINERS: Hand Tegra clk driver to Jon and Thierry
 
-More code means more latencies when all code needs to be brought up in
-cpu caches.
+ CREDITS                             |  6 +++
+ MAINTAINERS                         |  4 +-
+ drivers/clk/tegra/clk-periph-gate.c | 72 +++++++++++++++++++----------
+ drivers/clk/tegra/clk-periph.c      | 11 +++++
+ drivers/clk/tegra/clk-pll.c         |  9 ++--
+ drivers/clk/tegra/clk-tegra20.c     |  6 +--
+ drivers/clk/tegra/clk-tegra30.c     |  2 +-
+ 7 files changed, 74 insertions(+), 36 deletions(-)
+
+-- 
+2.29.2
+
