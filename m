@@ -2,114 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCF9D2F3A55
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:29:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FCF2F3A63
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:29:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393043AbhALT1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 14:27:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392745AbhALT13 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:27:29 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D08C06179F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 11:26:49 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kzPJK-0006u3-Rt; Tue, 12 Jan 2021 20:26:34 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kzPJJ-0002zj-Df; Tue, 12 Jan 2021 20:26:33 +0100
-Date:   Tue, 12 Jan 2021 20:26:33 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Philipp Rosenberger <p.rosenberger@kunbus.com>
-Cc:     linux-rtc@vger.kernel.org, dan.carpenter@oracle.com,
-        biwen.li@nxp.com, lvb@xiphos.com, bruno.thomsen@gmail.com,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] rtc: pcf2127: Disable Power-On Reset Override
-Message-ID: <20210112192633.yl7nx474r6njfynd@pengutronix.de>
-References: <20210104161910.9144-1-p.rosenberger@kunbus.com>
- <20210104161910.9144-2-p.rosenberger@kunbus.com>
+        id S2406889AbhALT2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:28:20 -0500
+Received: from foss.arm.com ([217.140.110.172]:52412 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406826AbhALT2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 14:28:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F02241042;
+        Tue, 12 Jan 2021 11:27:32 -0800 (PST)
+Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ABD263F66E;
+        Tue, 12 Jan 2021 11:27:31 -0800 (PST)
+Date:   Tue, 12 Jan 2021 19:27:29 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Networking <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 2/2] selftests: bpf: Add a new test for bare
+ tracepoints
+Message-ID: <20210112192729.q47avnmnzl54nekg@e107158-lin>
+References: <20210111182027.1448538-1-qais.yousef@arm.com>
+ <20210111182027.1448538-3-qais.yousef@arm.com>
+ <CAEf4BzYwOAHGOiZBUx86yZ1ofwJ1WqCDR3dyRMrTeQa2ZU7ftA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="svmvd7gj24gqtrwm"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210104161910.9144-2-p.rosenberger@kunbus.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CAEf4BzYwOAHGOiZBUx86yZ1ofwJ1WqCDR3dyRMrTeQa2ZU7ftA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 01/11/21 23:26, Andrii Nakryiko wrote:
+> On Mon, Jan 11, 2021 at 10:20 AM Qais Yousef <qais.yousef@arm.com> wrote:
+> >
+> > Reuse module_attach infrastructure to add a new bare tracepoint to check
+> > we can attach to it as a raw tracepoint.
+> >
+> > Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+> > ---
+> >
+> > Andrii
+> >
+> > I was getting the error below when I was trying to run the test.
+> > I had to comment out all related fentry* code to be able to test the raw_tp
+> > stuff. Not sure something I've done wrong or it's broken for some reason.
+> > I was on v5.11-rc2.
+> 
+> Check that you have all the required Kconfig options from
+> tools/testing/selftests/bpf/config. And also you will need to build
 
---svmvd7gj24gqtrwm
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yep I have merged this config snippet using merge_config.sh script.
 
-Hello,
+> pahole from master, 1.19 doesn't have some fixes that add kernel
+> module support. I think pahole is the reasons why you have the failure
+> below.
 
-On Mon, Jan 04, 2021 at 05:19:09PM +0100, Philipp Rosenberger wrote:
-> If the PCF2127/2129 has lost all power and is then powered again it goes
-> into "Power-On Reset Override" mode. In this mode the RTC seems to work
-> fine. Also the watchdog can be configured. The watchdog timer counts as
-> expected and the WDTF (watchdog timer flag) gets set. But no interrupt
-> is generated on the INT pin. The same applies to the alarm function.
->=20
-> The POR_OVRD bit on the Control_1 register must be cleared first. In
-> some cases the bootloader or firmware might have done this already. But
-> we clear the bit nevertheless to guarantee correct behavior the
-> watchdog and alarm function.
+I am using pahole 1.19. I have built it from tip of master though.
 
-I don't understand this. The reference manual tells us about this bit:
+/trying using v1.19 tag
 
-| The POR duration is directly related to the crystal oscillator
-| start-up time. Due to the long start-up times experienced by these
-| types of circuits, a mechanism has been built in to disable the POR
-| and therefore speed up the on-board test of the device.
-| The setting of the PORO mode requires that POR_OVRD in register
-| Control_1 is set logic 1 and that the signals at the interface pins
-| SDA/CE and SCL are toggled as illustrated in Figure 18.
+Still fails the same.
 
-So this means that with the bit set (i.e. with this patch added) after a
-power-on the oscillator isn't properly reset. This means the chip might
-not work correctly, right? Does "speed up the on-board test" suggest,
-this is a feature that is to be used while testing the chip and not for
-production use? You missed to ensure that the requested toggling is
-done. Did you test how much time this actually saves? I doubt it is
-worth to trade correct operation for quicker startup time is the thing
-we want here.
+> 
+> >
+> >         $ sudo ./test_progs -v -t module_attach
+> 
+> use -vv when debugging stuff like that with test_progs, it will output
+> libbpf detailed logs, that often are very helpful
 
-If you still think this is a good idea I guess you need a much better
-commit log (and code comment).
+I tried that but it didn't help me. Full output is here
 
-Best regards
-Uwe
+	https://paste.debian.net/1180846
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+> 
+> >         bpf_testmod.ko is already unloaded.
+> >         Loading bpf_testmod.ko...
+> >         Successfully loaded bpf_testmod.ko.
+> >         test_module_attach:PASS:skel_open 0 nsec
+> >         test_module_attach:PASS:set_attach_target 0 nsec
+> >         test_module_attach:PASS:skel_load 0 nsec
+> >         libbpf: prog 'handle_fentry': failed to attach: ERROR: strerror_r(-524)=22
+> >         libbpf: failed to auto-attach program 'handle_fentry': -524
+> >         test_module_attach:FAIL:skel_attach skeleton attach failed: -524
+> >         #58 module_attach:FAIL
+> >         Successfully unloaded bpf_testmod.ko.
+> >         Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+> >
+> 
+> But even apart from test failure, there seems to be kernel build
+> failure. See [0] for what fails in kernel-patches CI.
+> 
+>    [0] https://travis-ci.com/github/kernel-patches/bpf/builds/212730017
 
---svmvd7gj24gqtrwm
-Content-Type: application/pgp-signature; name="signature.asc"
+Sorry about that. I did a last minute change because of checkpatch.pl error and
+it seems I either forgot to rebuild or missed that the rebuild failed :/
 
------BEGIN PGP SIGNATURE-----
+> 
+> 
+> >
+> >  .../selftests/bpf/bpf_testmod/bpf_testmod-events.h     |  6 ++++++
+> >  tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c  |  2 ++
+> >  tools/testing/selftests/bpf/prog_tests/module_attach.c |  1 +
+> >  tools/testing/selftests/bpf/progs/test_module_attach.c | 10 ++++++++++
+> >  4 files changed, 19 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
+> > index b83ea448bc79..e1ada753f10c 100644
+> > --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
+> > +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
+> > @@ -28,6 +28,12 @@ TRACE_EVENT(bpf_testmod_test_read,
+> >                   __entry->pid, __entry->comm, __entry->off, __entry->len)
+> >  );
+> >
+> > +/* A bare tracepoint with no event associated with it */
+> > +DECLARE_TRACE(bpf_testmod_test_read_bare,
+> > +       TP_PROTO(struct task_struct *task, struct bpf_testmod_test_read_ctx *ctx),
+> > +       TP_ARGS(task, ctx)
+> > +);
+> > +
+> >  #endif /* _BPF_TESTMOD_EVENTS_H */
+> >
+> >  #undef TRACE_INCLUDE_PATH
+> > diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > index 2df19d73ca49..d63cebdaca44 100644
+> > --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> > @@ -22,6 +22,8 @@ bpf_testmod_test_read(struct file *file, struct kobject *kobj,
+> >         };
+> >
+> >         trace_bpf_testmod_test_read(current, &ctx);
+> > +       ctx.len++;
+> > +       trace_bpf_testmod_test_read_bare(current, &ctx);
+> 
+> It's kind of boring to have two read tracepoints :) Do you mind adding
 
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl/99+YACgkQwfwUeK3K
-7AkGUgf8DEkEJIIoQUMH3qnEjBn/MzV6B6syv2Nsl4yfa+IjiO1q3f3oOXVnos2P
-iERLxJJhn9YUAmK8b8eexbHinCVXprHpyVYM8XsFNz0lPAZ3uxoAzVRxgSVb4dAW
-YAJTB4eDIBkQ0AKS0k1lWZ0x9fTAZWXAQZE9+7KTJNZWzQ1k+ftfQlEkVJc/CYQm
-Nnm1vA7MiAq3UEGqIrEO4lsbZlGLNwViZzdCEwvyM6JHYmyyVXWLYHj4LEfDCf72
-s26zMBa+6khOZISYWz9nJprR6KnRKT4f1WBT/lujtUYtmHvevYMtJ6jkCH9nrhn0
-v+iT3Y6h0HexrAL0Ij3IN+pqrdlFYA==
-=l0DM
------END PGP SIGNATURE-----
+Hehe boring is good :p
 
---svmvd7gj24gqtrwm--
+> a write tracepoint and use bare tracepoint there? You won't need this
+> ctx.len++ hack as well. Feel free to add identical
+> bpf_testmod_test_write_ctx (renaming it is more of a pain).
+
+It was easy to get this done. So I think it should be easy to make it a write
+too :)
+
+Thanks
+
+--
+Qais Yousef
+
+> 
+> >
+> >         return -EIO; /* always fail */
+> >  }
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/module_attach.c b/tools/testing/selftests/bpf/prog_tests/module_attach.c
+> > index 50796b651f72..7085a118f38c 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/module_attach.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/module_attach.c
+> > @@ -50,6 +50,7 @@ void test_module_attach(void)
+> >         ASSERT_OK(trigger_module_test_read(READ_SZ), "trigger_read");
+> >
+> >         ASSERT_EQ(bss->raw_tp_read_sz, READ_SZ, "raw_tp");
+> > +       ASSERT_EQ(bss->raw_tp_bare_read_sz, READ_SZ+1, "raw_tp_bare");
+> >         ASSERT_EQ(bss->tp_btf_read_sz, READ_SZ, "tp_btf");
+> >         ASSERT_EQ(bss->fentry_read_sz, READ_SZ, "fentry");
+> >         ASSERT_EQ(bss->fentry_manual_read_sz, READ_SZ, "fentry_manual");
+> > diff --git a/tools/testing/selftests/bpf/progs/test_module_attach.c b/tools/testing/selftests/bpf/progs/test_module_attach.c
+> > index efd1e287ac17..08aa157afa1d 100644
+> > --- a/tools/testing/selftests/bpf/progs/test_module_attach.c
+> > +++ b/tools/testing/selftests/bpf/progs/test_module_attach.c
+> > @@ -17,6 +17,16 @@ int BPF_PROG(handle_raw_tp,
+> >         return 0;
+> >  }
+> >
+> > +__u32 raw_tp_bare_read_sz = 0;
+> > +
+> > +SEC("raw_tp/bpf_testmod_test_read_bare")
+> > +int BPF_PROG(handle_raw_tp_bare,
+> > +            struct task_struct *task, struct bpf_testmod_test_read_ctx *read_ctx)
+> > +{
+> > +       raw_tp_bare_read_sz = BPF_CORE_READ(read_ctx, len);
+> > +       return 0;
+> > +}
+> > +
+> >  __u32 tp_btf_read_sz = 0;
+> >
+> >  SEC("tp_btf/bpf_testmod_test_read")
+> > --
+> > 2.25.1
+> >
