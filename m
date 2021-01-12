@@ -2,138 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B7382F2C7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:20:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6794D2F2C72
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:17:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405980AbhALKSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:18:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55744 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404565AbhALKSX (ORCPT
+        id S2405978AbhALKRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:17:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727053AbhALKRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:18:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610446616;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=U4eg0K2Y42rlDcaFlSc0InWSXj6Mh1nlrY28P8UwpZY=;
-        b=Mxz2pj1Re1yrKZTwOGvFqLDqAFiPwJb9ULYOTIYJjw736yaJkrsWP1r4Es3DAYyLgkt3Vy
-        IHp9hE0PAj64wrSgLqIUwKG369upUh4QsSdMf+rzr3Jo6QIXKUWk1WUycoYn2Q3cBmBQaw
-        x2dqU2RUZd6aywuJqahIUDMwTcNpmE8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-41-xh76z7DZNvmKh8o0hMopaQ-1; Tue, 12 Jan 2021 05:16:53 -0500
-X-MC-Unique: xh76z7DZNvmKh8o0hMopaQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1B37100F340;
-        Tue, 12 Jan 2021 10:16:50 +0000 (UTC)
-Received: from [10.36.115.140] (ovpn-115-140.ams2.redhat.com [10.36.115.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ABB495B4A1;
-        Tue, 12 Jan 2021 10:16:48 +0000 (UTC)
-Subject: Re: [PATCH v2 4/5] mm: Fix page reference leak in soft_offline_page()
-To:     Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <nao.horiguchi@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>, stable@vger.kernel.org,
-        vishal.l.verma@intel.com, linux-nvdimm@lists.01.org,
-        linux-kernel@vger.kernel.org
-References: <161044407603.1482714.16630477578392768273.stgit@dwillia2-desk3.amr.corp.intel.com>
- <161044409809.1482714.11965583624142790079.stgit@dwillia2-desk3.amr.corp.intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <95b8c874-7236-dc84-ed36-c29b060ada7a@redhat.com>
-Date:   Tue, 12 Jan 2021 11:16:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 12 Jan 2021 05:17:37 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702BCC061794
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 02:16:56 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id q1so2806628ion.8
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 02:16:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sASo/ffoaZ0kOHmpFnMHBOshztWoTzd/nxUspVlN1Ho=;
+        b=J5O9eXycVqOkW21iQP26x5bnM5b/Jx4lnlYvHmL/lvEsiaK9I2ylcccWGiTypfpj+m
+         Z1Y96REyrMZXKF3wkry7ZGdZ1vWtgxS2m5CAa7a1txq8HORqhWjpiUMp82eLiSARVbGo
+         zXIfNQLGXBnEO3QApRm5h2lOjuumLWibFQUnvckXd6FJYnkh45fA+qC0eVLpD/Z05C6f
+         wkGpaZgOcDqTpCeqaIJK39LHtjLlahEcJtdOrLMr8SLagTiHg3LXG2XbExHvjxQQ68fB
+         cHWZ1buEz+XHU/88qbiKdYV3EGkN63pTaFoENUIVCBE4Dy0RhGzOt3ZXWVU4MLK6qGs8
+         Uz9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sASo/ffoaZ0kOHmpFnMHBOshztWoTzd/nxUspVlN1Ho=;
+        b=gP7CLK2CclzBcWk/hMp+5BPygfdhZUvfHcI6B/KJCMHed+u6GIn3tHqzbQXgmhTOWU
+         JuwGQGgGYAXLhWqJI0qVoeMcs3l6wjvBiF3Gi2LaFhePj1FToLqJSBCAAv204rvPI+rE
+         PBjwK8OU7ASo3tQwHOKiZlP7ktLonK8d1Z8mLD+Q8h8TO9vbXxjjz/P2C7pQH1psTVb5
+         QMxxqM76oUBqoougU5bQMPTfIznpKjjDZFvXET8A6eaz2Erp+U8jFU2kjaxs/AVuZHtD
+         fbyCG+RqXCybILObg8Yr3wNsIyHk1k1GjC9fQXOmuzldBi+gW9ohF2uZwE8+qfJVF3Wi
+         2e5Q==
+X-Gm-Message-State: AOAM5316hp/JTDRLZW1JlLZK0nLTSPWZjDCPWCPhcXutFt4771XjNxdt
+        hBuIxWd8ug7TKiVdCKzlkJBm6w==
+X-Google-Smtp-Source: ABdhPJwTS6la1rbtRSYyPovgz6/lWfNIQaxSpoIF+TkxUbt7ykp51XG0rRAUGh6RiWMGSYrVEVsCVA==
+X-Received: by 2002:a92:6f07:: with SMTP id k7mr3280631ilc.18.1610446615781;
+        Tue, 12 Jan 2021 02:16:55 -0800 (PST)
+Received: from ?IPv6:2601:144:4100:fd1:12bf:48ff:fed7:9537? ([2601:144:4100:fd1:12bf:48ff:fed7:9537])
+        by smtp.gmail.com with ESMTPSA id l16sm1630961ioj.52.2021.01.12.02.16.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jan 2021 02:16:55 -0800 (PST)
+Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        anmar.oueja@linaro.org, Masahiro Yamada <masahiroy@kernel.org>
+References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
+ <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
+ <23e16d20-36eb-87d9-4473-142504ad8a95@gmail.com>
+ <31611390-eded-d290-36a7-0b1e8465f71e@linaro.org>
+ <20210112083703.yfpicoi4zrddeykd@vireshk-i7>
+From:   Bill Mills <bill.mills@linaro.org>
+Message-ID: <4a8bbbaa-9303-8a8c-1de4-38499b8151dd@linaro.org>
+Date:   Tue, 12 Jan 2021 05:16:54 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <161044409809.1482714.11965583624142790079.stgit@dwillia2-desk3.amr.corp.intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210112083703.yfpicoi4zrddeykd@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.01.21 10:34, Dan Williams wrote:
-> The conversion to move pfn_to_online_page() internal to
-> soft_offline_page() missed that the get_user_pages() reference needs to
-> be dropped when pfn_to_online_page() fails.
-> 
-> When soft_offline_page() is handed a pfn_valid() &&
-> !pfn_to_online_page() pfn the kernel hangs at dax-device shutdown due to
-> a leaked reference.
-> 
-> Fixes: feec24a6139d ("mm, soft-offline: convert parameter to pfn")
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Naoya Horiguchi <nao.horiguchi@gmail.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> ---
->  mm/memory-failure.c |   20 ++++++++++++++++----
->  1 file changed, 16 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 5a38e9eade94..78b173c7190c 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -1885,6 +1885,12 @@ static int soft_offline_free_page(struct page *page)
->  	return rc;
->  }
->  
-> +static void put_ref_page(struct page *page)
-> +{
-> +	if (page)
-> +		put_page(page);
-> +}
-> +
->  /**
->   * soft_offline_page - Soft offline a page.
->   * @pfn: pfn to soft-offline
-> @@ -1910,20 +1916,26 @@ static int soft_offline_free_page(struct page *page)
->  int soft_offline_page(unsigned long pfn, int flags)
->  {
->  	int ret;
-> -	struct page *page;
->  	bool try_again = true;
-> +	struct page *page, *ref_page = NULL;
-> +
-> +	WARN_ON_ONCE(!pfn_valid(pfn) && (flags & MF_COUNT_INCREASED));
->  
->  	if (!pfn_valid(pfn))
->  		return -ENXIO;
-> +	if (flags & MF_COUNT_INCREASED)
-> +		ref_page = pfn_to_page(pfn);
-> +
->  	/* Only online pages can be soft-offlined (esp., not ZONE_DEVICE). */
->  	page = pfn_to_online_page(pfn);
-> -	if (!page)
-> +	if (!page) {
-> +		put_ref_page(ref_page);
->  		return -EIO;
-> +	}
->  
->  	if (PageHWPoison(page)) {
->  		pr_info("%s: %#lx page already poisoned\n", __func__, pfn);
-> -		if (flags & MF_COUNT_INCREASED)
-> -			put_page(page);
-> +		put_ref_page(ref_page);
->  		return 0;
->  	}
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
 
+On 1/12/21 3:37 AM, Viresh Kumar wrote:
+> On 11-01-21, 20:22, Bill Mills wrote:
+>> On 1/11/21 5:06 PM, Frank Rowand wrote:
+>>> NACK to this specific patch, in its current form.
+>>>
+>>> There are restrictions on applying an overlay at runtime that do not apply
+>>> to applying an overlay to an FDT that will be loaded by the kernel during
+>>> early boot.  Thus the unittest overlays _must_ be applied using the kernel
+>>> overlay loading methods to test the kernel runtime overlay loading feature.
+>>>
+>>> I agree that testing fdtoverlay is a good idea.  I have not looked at the
+>>> parent project to see how much testing of fdtoverlay occurs there, but I
+>>> would prefer that fdtoverlay tests reside in the parent project if practical
+>>> and reasonable.  If there is some reason that some fdtoverlay tests are
+>>> more practical in the Linux kernel repository then I am open to adding
+>>> them to the Linux kernel tree.
+> 
+> I wasn't looking to add any testing for fdtoverlay in the kernel, but
+> then I stumbled upon unit-tests here and thought it would be a good
+> idea to get this built using static tools as well, as we aren't
+> required to add any new source files for this and the existing tests
+> already cover a lot of nodes.
+> 
+> And so I am fine if we don't want to do this stuff in kernel.
+> 
+>> I thought we were aligned that any new overlays into the kernel today would
+>> only be for boot loader applied case.  Applying overlays at kernel runtime
+>> was out of scope at your request.
+>>
+>> Rob had requested that the overlays be test applied at build time.  I don't
+>> think there is any way to test the kernel runtime method at build time
+>> correct?
+>>
+>> Please clarify your concern and your suggested way forward.
+> 
+> The kernel does some overlay testing currently (at kernel boot only,
+> not later), to see if the overlays get applied correctly or not, these
+> are the unit tests.
+> 
+> What Frank is probably saying is that the unit-tests dtbs shouldn't
+> get used for testing fdtoverlay stuff. He isn't asking to support
+> runtime application of overlays, but to not do fdtoverlay testing in
+> the kernel.
+> 
+
+Thanks Viresh, that makes sense.  Sorry for the confusion Frank.
 
 -- 
-Thanks,
-
-David / dhildenb
+Bill Mills
 
