@@ -2,359 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814B32F3303
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:36:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB4F2F3305
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:36:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387812AbhALOdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:33:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725984AbhALOd1 (ORCPT
+        id S2387949AbhALOey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:34:54 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:42657 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725957AbhALOex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:33:27 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF54C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:32:46 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id i9so2712604wrc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:32:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=BjAc/arzdiYUQi9Fxp3yyzGY535p3hAg/IhemadQIq8=;
-        b=grkqsyVpK2KQlRVussqWvM2+Vo89ssCy9kJZAuAXLfSJiQWI/zHJ8j3TlhsZcELBkV
-         qWyTCAb009Ah9arukg78+/2mv6xb9Q56qbmbIt+LKdSYnrzKEo+sN9yusJhPIOKKriJn
-         fWa6HCDMYJ9bOsrY7nniAZ1k9sNVg3yAPysvOrAiTQ9+vqEJ0C/xNCtu+sYHkaCSd1F1
-         AWnXkZVkO71nasxAsOZCHd93rOt5fjFgubddSK0UjXNYrDLDLPEOCAIm7h4W2OY3sJ8w
-         9cA15V9ilWlCMOMSKGUxPnCqmO+xBWaEp3fpRDF7miFCidbb4uia6LYjoM0sUm/KodrX
-         MtTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BjAc/arzdiYUQi9Fxp3yyzGY535p3hAg/IhemadQIq8=;
-        b=lLlqhxrPX698jKl6m4wumOLi60MqKXyHE4etXHVGgSvkIWTfcaOTctiL3Ej5EYZTnN
-         Uv/N3x2ftONz2vqTiH9z9uIKawXLwrfFAvD5P9wOhLoBzw/tvr9j63++SjFYPT3zfQAM
-         V6weosd9AKFxIhPkj+sRPN0A5i0FJ11nubXLQfIE8cFQ7RZPdpog3q1Ie6Gz/o+NkRIV
-         w1EL1f2I9ot/KgOTbUSkR5mv+kPWvQ92EiP+ENuhCdpq6IQKY14fg1JKeGHahwqsKz5D
-         JZrPSzoxhrRR8yEZc7i/knzB6lpV0LmuXrqrfBky81z4hU/qJYw1OkxC2erQYQjCtvRn
-         JwWQ==
-X-Gm-Message-State: AOAM532Af8PDQqilDtgU25cS+GtKqFONHYwHVO5dr/neGrR4wS3jU3b5
-        qcMSCs5moEqcndTOlBnb0C03JA==
-X-Google-Smtp-Source: ABdhPJxtSyrzh/iDinoRKJiMFnEIe6jwrFy+DuUWwcNnodLeUptNdj9mA6G4gtYX/afbyrc9UimQdg==
-X-Received: by 2002:adf:f58a:: with SMTP id f10mr4877009wro.338.1610461964966;
-        Tue, 12 Jan 2021 06:32:44 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id g1sm5380699wrq.30.2021.01.12.06.32.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 06:32:44 -0800 (PST)
-Date:   Tue, 12 Jan 2021 15:32:38 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/11] kasan: fix bug detection via ksize for HW_TAGS mode
-Message-ID: <X/2zBibnd/zCBFa/@elver.google.com>
-References: <cover.1609871239.git.andreyknvl@google.com>
- <a83aa371e2ef96e79cbdefceebaa960a34957a79.1609871239.git.andreyknvl@google.com>
+        Tue, 12 Jan 2021 09:34:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1610462094; x=1641998094;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:mime-version;
+  bh=rSkhGVUnKJoWu7SCqLjQX8zmMPKtWbpeCAUSQs2cKms=;
+  b=ZQdUwXejYU+8WZialm+vX46tv9Jj1FGQDYwLfa+lOC72pAreoowzYxex
+   ksZlqUQnUwRWIj5DUk4PKOcfFohaU1WqUuNop3RQ6QIfkqA2bW5TeMRko
+   aiXq2cKiDxD3tTL29g4KxXHmedZFmxoqTbd5L/L6iMKDxYQ9U455NY1PY
+   hhuw12ZvAhrciJatBHV5qkM0cs37R80h4C1Kay6gSbJqbkEuTcIdBEuHc
+   TbJRcLSaSLYaT+MZVqtNu8Z1zk6DR/p4nooV74dxWMdUM5jBYw3mKPJX/
+   ZaTVS4pD3I0sJ6FOKZt70QLwFOdUPKI3BsOVy/i6il8y7qoQjijJ691ra
+   Q==;
+IronPort-SDR: SL1OJuaBSfb0knGFgRj5bZJ3GMzgvJ1wOTc+5R3GyegUn1VpP1Mg1Krnfdx096zcR8FE1MGErH
+ r7nSOxvvmhlyVZiGrBuWNosddajj+ISbdFntBCLvDT5dBj6DJuuAwZhby+FwpIokdu9oD7izBu
+ +RYmONYzVsvlfTXxNJbuI57wIp7T6RdRh+M52XHO8aJ08wQsqr01Gvm3ABf8TnNLKK3RmmZQvk
+ qnQe2fafjEt7un+sQTop+1qZOxWlkYKh36faRXX9IKM71+X3+qTI45B2giAH+v3x37o0hlnMAL
+ uP4=
+X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
+   d="bin'?scan'208";a="105137235"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 12 Jan 2021 07:33:38 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 12 Jan 2021 07:33:36 -0700
+Received: from soft-dev2 (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Tue, 12 Jan 2021 07:33:35 -0700
+Message-ID: <a727ddabfed0dbd0cf75a045076df7a66d4d6a67.camel@microchip.com>
+Subject: Re: [PATCH v1 0/2] Add 100 base-x mode
+From:   Bjarni Jonasson <bjarni.jonasson@microchip.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+CC:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
+Date:   Tue, 12 Jan 2021 15:33:34 +0100
+In-Reply-To: <20210111141847.GU1551@shell.armlinux.org.uk>
+References: <20210111130657.10703-1-bjarni.jonasson@microchip.com>
+         <20210111141847.GU1551@shell.armlinux.org.uk>
+Content-Type: multipart/mixed; boundary="=-RhFF99NoOr/wzTqNsGXE"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a83aa371e2ef96e79cbdefceebaa960a34957a79.1609871239.git.andreyknvl@google.com>
-User-Agent: Mutt/2.0.2 (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 07:27PM +0100, Andrey Konovalov wrote:
-> The currently existing kasan_check_read/write() annotations are intended
-> to be used for kernel modules that have KASAN compiler instrumentation
-> disabled. Thus, they are only relevant for the software KASAN modes that
-> rely on compiler instrumentation.
+--=-RhFF99NoOr/wzTqNsGXE
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+
+On Mon, 2021-01-11 at 14:18 +0000, Russell King - ARM Linux admin
+wrote:
+> EXTERNAL EMAIL: Do not click links or open attachments unless you
+> know the content is safe
 > 
-> However there's another use case for these annotations: ksize() checks
-> that the object passed to it is indeed accessible before unpoisoning the
-> whole object. This is currently done via __kasan_check_read(), which is
-> compiled away for the hardware tag-based mode that doesn't rely on
-> compiler instrumentation. This leads to KASAN missing detecting some
-> memory corruptions.
+> On Mon, Jan 11, 2021 at 02:06:55PM +0100, Bjarni Jonasson wrote:
+> > Adding support for 100 base-x in phylink.
+> > The Sparx5 switch supports 100 base-x pcs (IEEE 802.3 Clause 24)
+> > 4b5b encoded.
+> > These patches adds phylink support for that mode.
+> > 
+> > Tested in Sparx5, using sfp modules:
+> > Axcen 100fx AXFE-1314-0521
+> > Cisco GLC-FE-100LX
+> > HP SFP 100FX J9054C
+> > Excom SFP-SX-M1002
 > 
-> Provide another annotation called kasan_check_byte() that is available
-> for all KASAN modes. As the implementation rename and reuse
-> kasan_check_invalid_free(). Use this new annotation in ksize().
+> For each of these modules, please send me:
 > 
-> Also add a new ksize_uaf() test that checks that a use-after-free is
-> detected via ksize() itself, and via plain accesses that happen later.
+> ethtool -m ethx raw on > module.bin
 > 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/Iaabf771881d0f9ce1b969f2a62938e99d3308ec5
-> ---
->  include/linux/kasan-checks.h |  6 ++++++
->  include/linux/kasan.h        | 13 +++++++++++++
->  lib/test_kasan.c             | 20 ++++++++++++++++++++
->  mm/kasan/common.c            | 11 ++++++++++-
->  mm/kasan/generic.c           |  4 ++--
->  mm/kasan/kasan.h             | 10 +++++-----
->  mm/kasan/sw_tags.c           |  6 +++---
->  mm/slab_common.c             | 15 +++++++++------
->  8 files changed, 68 insertions(+), 17 deletions(-)
+> so I can validate future changes with these modules. Thanks.
 > 
-> diff --git a/include/linux/kasan-checks.h b/include/linux/kasan-checks.h
-> index ca5e89fb10d3..3d6d22a25bdc 100644
-> --- a/include/linux/kasan-checks.h
-> +++ b/include/linux/kasan-checks.h
-> @@ -4,6 +4,12 @@
->  
->  #include <linux/types.h>
->  
-> +/*
-> + * The annotations present in this file are only relevant for the software
-> + * KASAN modes that rely on compiler instrumentation, and will be optimized
-> + * away for the hardware tag-based KASAN mode. Use kasan_check_byte() instead.
-> + */
-> +
->  /*
->   * __kasan_check_*: Always available when KASAN is enabled. This may be used
->   * even in compilation units that selectively disable KASAN, but must use KASAN
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index 5e0655fb2a6f..992ba5c653a3 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -243,6 +243,18 @@ static __always_inline void kasan_kfree_large(void *ptr, unsigned long ip)
->  		__kasan_kfree_large(ptr, ip);
->  }
->  
-> +/*
-> + * Unlike kasan_check_read/write(), kasan_check_byte() is performed even for
-> + * the hardware tag-based mode that doesn't rely on compiler instrumentation.
-> + */
+> --
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
 
-We have too many check-functions, and the name needs to be more precise.
-Intuitively, I would have thought this should have access-type, i.e.
-read or write, effectively mirroring a normal access.
+I've included the dump from ethtool for:
+Axcen 100fx AXFE-1314-0521
+Axcen 100lx AXFE-1314-0551
+Excom SFP-SX-M1002
+HP SFP 100FX J9054C
+The "ethtool raw" output seems a bit garbled so I added the hex output
+as well.
 
-Would kasan_check_byte_read() be better (and just not have a 'write'
-variant because we do not need it)? This would restore ksize() closest
-to what it was before (assuming reporting behaviour is fixed, too).
+Rgds
+--
+Bjarni Jonasson
+Microchip 
 
-> +bool __kasan_check_byte(const void *addr, unsigned long ip);
-> +static __always_inline bool kasan_check_byte(const void *addr, unsigned long ip)
-> +{
-> +	if (kasan_enabled())
-> +		return __kasan_check_byte(addr, ip);
-> +	return true;
-> +}
-> +
->  bool kasan_save_enable_multi_shot(void);
->  void kasan_restore_multi_shot(bool enabled);
->  
-> @@ -299,6 +311,7 @@ static inline void *kasan_krealloc(const void *object, size_t new_size,
->  	return (void *)object;
->  }
->  static inline void kasan_kfree_large(void *ptr, unsigned long ip) {}
-> +static inline bool kasan_check_byte(const void *address, unsigned long ip) {}
->  
->  #endif /* CONFIG_KASAN */
->  
-> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-> index 3ea52da52714..6261521e57ad 100644
-> --- a/lib/test_kasan.c
-> +++ b/lib/test_kasan.c
-> @@ -490,6 +490,7 @@ static void kasan_global_oob(struct kunit *test)
->  	KUNIT_EXPECT_KASAN_FAIL(test, *(volatile char *)p);
->  }
->  
-> +/* Check that ksize() makes the whole object accessible. */
->  static void ksize_unpoisons_memory(struct kunit *test)
->  {
->  	char *ptr;
-> @@ -508,6 +509,24 @@ static void ksize_unpoisons_memory(struct kunit *test)
->  	kfree(ptr);
->  }
->  
-> +/*
-> + * Check that a use-after-free is detected by ksize() and via normal accesses
-> + * after it.
-> + */
-> +static void ksize_uaf(struct kunit *test)
-> +{
-> +	char *ptr;
-> +	int size = 128 - KASAN_GRANULE_SIZE;
-> +
-> +	ptr = kmalloc(size, GFP_KERNEL);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
-> +	kfree(ptr);
-> +
-> +	KUNIT_EXPECT_KASAN_FAIL(test, ksize(ptr));
-> +	KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = *ptr);
-> +	KUNIT_EXPECT_KASAN_FAIL(test, kasan_int_result = *(ptr + size));
-> +}
-> +
->  static void kasan_stack_oob(struct kunit *test)
->  {
->  	char stack_array[10];
-> @@ -937,6 +956,7 @@ static struct kunit_case kasan_kunit_test_cases[] = {
->  	KUNIT_CASE(kasan_alloca_oob_left),
->  	KUNIT_CASE(kasan_alloca_oob_right),
->  	KUNIT_CASE(ksize_unpoisons_memory),
-> +	KUNIT_CASE(ksize_uaf),
->  	KUNIT_CASE(kmem_cache_double_free),
->  	KUNIT_CASE(kmem_cache_invalid_free),
->  	KUNIT_CASE(kasan_memchr),
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index eedc3e0fe365..45ab2c7073a8 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -345,7 +345,7 @@ static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
->  	if (unlikely(cache->flags & SLAB_TYPESAFE_BY_RCU))
->  		return false;
->  
-> -	if (kasan_check_invalid_free(tagged_object)) {
-> +	if (!kasan_check(tagged_object)) {
->  		kasan_report_invalid_free(tagged_object, ip);
->  		return true;
->  	}
-> @@ -490,3 +490,12 @@ void __kasan_kfree_large(void *ptr, unsigned long ip)
->  		kasan_report_invalid_free(ptr, ip);
->  	/* The object will be poisoned by kasan_free_pages(). */
->  }
-> +
-> +bool __kasan_check_byte(const void *address, unsigned long ip)
-> +{
-> +	if (!kasan_check(address)) {
-> +		kasan_report_invalid_free((void *)address, ip);
 
-This is strange: why does it report an invalid free? Should this be a
-use-after-free? I think this could just call kasan_report(....) for 1
-byte, and we'd get the right report.
+--=-RhFF99NoOr/wzTqNsGXE
+Content-Type: application/octet-stream;
+	name="axcen_100fx_axfe_1314_0521.bin"
+Content-Disposition: attachment; filename="axcen_100fx_axfe_1314_0521.bin"
+Content-Transfer-Encoding: base64
 
-> +		return false;
-> +	}
-> +	return true;
-> +}
-> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-> index acab8862dc67..b3631ad9a8ef 100644
-> --- a/mm/kasan/generic.c
-> +++ b/mm/kasan/generic.c
-> @@ -185,11 +185,11 @@ bool kasan_check_range(unsigned long addr, size_t size, bool write,
->  	return check_region_inline(addr, size, write, ret_ip);
->  }
->  
-> -bool kasan_check_invalid_free(void *addr)
-> +bool kasan_check(const void *addr)
->  {
->  	s8 shadow_byte = READ_ONCE(*(s8 *)kasan_mem_to_shadow(addr));
->  
-> -	return shadow_byte < 0 || shadow_byte >= KASAN_GRANULE_SIZE;
-> +	return shadow_byte >= 0 && shadow_byte < KASAN_GRANULE_SIZE;
->  }
->  
->  void kasan_cache_shrink(struct kmem_cache *cache)
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index 292dfbc37deb..f17591545279 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -329,20 +329,20 @@ static inline void kasan_unpoison(const void *address, size_t size)
->  			round_up(size, KASAN_GRANULE_SIZE), get_tag(address));
->  }
->  
-> -static inline bool kasan_check_invalid_free(void *addr)
-> +static inline bool kasan_check(const void *addr)
->  {
->  	u8 ptr_tag = get_tag(addr);
-> -	u8 mem_tag = hw_get_mem_tag(addr);
-> +	u8 mem_tag = hw_get_mem_tag((void *)addr);
->  
-> -	return (mem_tag == KASAN_TAG_INVALID) ||
-> -		(ptr_tag != KASAN_TAG_KERNEL && ptr_tag != mem_tag);
-> +	return (mem_tag != KASAN_TAG_INVALID) &&
-> +		(ptr_tag == KASAN_TAG_KERNEL || ptr_tag == mem_tag);
->  }
->  
->  #else /* CONFIG_KASAN_HW_TAGS */
->  
->  void kasan_poison(const void *address, size_t size, u8 value);
->  void kasan_unpoison(const void *address, size_t size);
-> -bool kasan_check_invalid_free(void *addr);
-> +bool kasan_check(const void *addr);
+IyBldGh0b29sIC1tIGV0aDEzIHJhdyBvbg0KIMOIw4hBeGNlbiBQaG90b25pY3MgLUFYRkUtMTMx
+NC0wNTIxICBWMS4wQ0FYMTAxOTAwMDE5NDYgICAxMDA1MTIgIMKrRVhUUkVNRUxZIENPTVBBVElC
+TEUgICAgICAgICAgICBBMDkwOTAzMDA0MTkgICAgw7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/D
+v8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/
+w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/D
+v8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/
+w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w78jDQoNCiMgZXRodG9vbCAtbSBldGgxMyBoZXggb24N
+Ck9mZnNldCAgICAgICAgICBWYWx1ZXMNCi0tLS0tLSAgICAgICAgICAtLS0tLS0NCjB4MDAwMDog
+ICAgICAgICAwMyAwNCAwNyAwMCAwMCAwMSAyMCAwMCAwMCAwMCAwMCAwMiAwMSAwMCAwMCAwMA0K
+MHgwMDEwOiAgICAgICAgIGM4IGM4IDAwIDAwIDQxIDc4IDYzIDY1IDZlIDIwIDUwIDY4IDZmIDc0
+IDZmIDZlDQoweDAwMjA6ICAgICAgICAgNjkgNjMgNzMgMjAgMDAgMDAgMTcgMmQgNDEgNTggNDYg
+NDUgMmQgMzEgMzMgMzENCjB4MDAzMDogICAgICAgICAzNCAyZCAzMCAzNSAzMiAzMSAyMCAyMCA1
+NiAzMSAyZSAzMCAwNSAxZSAwMCA0Mw0KMHgwMDQwOiAgICAgICAgIDAwIDFhIDAwIDAwIDQxIDU4
+IDMxIDMwIDMxIDM5IDMwIDMwIDMwIDMxIDM5IDM0DQoweDAwNTA6ICAgICAgICAgMzYgMjAgMjAg
+MjAgMzEgMzAgMzAgMzUgMzEgMzIgMjAgMjAgMDAgMDAgMDAgYWINCjB4MDA2MDogICAgICAgICA0
+NSA1OCA1NCA1MiA0NSA0ZCA0NSA0YyA1OSAyMCA0MyA0ZiA0ZCA1MCA0MSA1NA0KMHgwMDcwOiAg
+ICAgICAgIDQ5IDQyIDRjIDQ1IDIwIDIwIDIwIDIwIDIwIDIwIDIwIDIwIDIwIDIwIDIwIDIwDQow
+eDAwODA6ICAgICAgICAgNDEgMzAgMzkgMzAgMzkgMzAgMzMgMzAgMzAgMzQgMzEgMzkgMjAgMjAg
+MjAgMjANCjB4MDA5MDogICAgICAgICBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBm
+ZiBmZiBmZiBmZiBmZg0KMHgwMGEwOiAgICAgICAgIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZm
+IGZmIGZmIGZmIGZmIGZmIGZmIGZmDQoweDAwYjA6ICAgICAgICAgZmYgZmYgZmYgZmYgZmYgZmYg
+ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYNCjB4MDBjMDogICAgICAgICBmZiBmZiBmZiBm
+ZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZg0KMHgwMGQwOiAgICAgICAgIGZm
+IGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmDQoweDAwZTA6ICAg
+ICAgICAgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYNCjB4
+MDBmMDogICAgICAgICBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBm
+ZiBmZg==
 
-Definitely prefer shorted names, but we're in the unfortunate situation
-of having numerous kasan_check-functions, so we probably need to be more
-precise.
 
-kasan_check() makes me think this also does reporting, but it does not
-(it seems to only check the metadata for validity).
+--=-RhFF99NoOr/wzTqNsGXE
+Content-Type: application/octet-stream;
+	name="axcen_100lx_axfe_1314_0551.bin"
+Content-Disposition: attachment; filename="axcen_100lx_axfe_1314_0551.bin"
+Content-Transfer-Encoding: base64
 
-The internal function could therefore be kasan_check_allocated() (it's
-now the inverse of kasan_check_invalid_free()).
+IyBldGh0b29sIC1tIGV0aDEzIHJhdyBvbg0Kw79BeGNlbiBQaG90b25pY3MgLUFYRkUtMTMxNC0w
+NTUxICBWMS4ww5RBWDE0MDkxNzAyMjYwICAgMDkwNDIwICDCskVYVFJFTUVMWSBDT01QQVRJQkxF
+ICAgICAgICAgICAgQTA5MDMwMDAzMTAwMTU1N8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/D
+v8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/
+w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/D
+v8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/
+w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/Iw0KDQojIGV0aHRvb2wgLW0gZXRoMTMgaGV4IG9uDQpP
+ZmZzZXQgICAgICAgICAgVmFsdWVzDQotLS0tLS0gICAgICAgICAgLS0tLS0tDQoweDAwMDA6ICAg
+ICAgICAgMDMgMDQgMDcgMDAgMTAgMDIgMTAgMDAgMDAgMDAgMDAgMDIgMDEgMDAgMWUgZmYNCjB4
+MDAxMDogICAgICAgICAwMCAwMCAwMCAwMCA0MSA3OCA2MyA2NSA2ZSAyMCA1MCA2OCA2ZiA3NCA2
+ZiA2ZQ0KMHgwMDIwOiAgICAgICAgIDY5IDYzIDczIDIwIDAwIDAwIDE3IDJkIDQxIDU4IDQ2IDQ1
+IDJkIDMxIDMzIDMxDQoweDAwMzA6ICAgICAgICAgMzQgMmQgMzAgMzUgMzUgMzEgMjAgMjAgNTYg
+MzEgMmUgMzAgMDUgMWUgMDAgZDQNCjB4MDA0MDogICAgICAgICAwMCAxYSAwMCAwMCA0MSA1OCAz
+MSAzNCAzMCAzOSAzMSAzNyAzMCAzMiAzMiAzNg0KMHgwMDUwOiAgICAgICAgIDMwIDIwIDIwIDIw
+IDMwIDM5IDMwIDM0IDMyIDMwIDIwIDIwIDAwIDAwIDAwIGIyDQoweDAwNjA6ICAgICAgICAgNDUg
+NTggNTQgNTIgNDUgNGQgNDUgNGMgNTkgMjAgNDMgNGYgNGQgNTAgNDEgNTQNCjB4MDA3MDogICAg
+ICAgICA0OSA0MiA0YyA0NSAyMCAyMCAyMCAyMCAyMCAyMCAyMCAyMCAyMCAyMCAyMCAyMA0KMHgw
+MDgwOiAgICAgICAgIDQxIDMwIDM5IDMwIDMzIDMwIDMwIDMwIDMzIDMxIDMwIDMwIDMxIDM1IDM1
+IDM3DQoweDAwOTA6ICAgICAgICAgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYg
+ZmYgZmYgZmYgZmYNCjB4MDBhMDogICAgICAgICBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBm
+ZiBmZiBmZiBmZiBmZiBmZiBmZg0KMHgwMGIwOiAgICAgICAgIGZmIGZmIGZmIGZmIGZmIGZmIGZm
+IGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmDQoweDAwYzA6ICAgICAgICAgZmYgZmYgZmYgZmYg
+ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYNCjB4MDBkMDogICAgICAgICBmZiBm
+ZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZg0KMHgwMGUwOiAgICAg
+ICAgIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmDQoweDAw
+ZjA6ICAgICAgICAgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYg
+ZmY=
 
->  
->  #endif /* CONFIG_KASAN_HW_TAGS */
->  
-> diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
-> index cc271fceb5d5..e326caaaaca3 100644
-> --- a/mm/kasan/sw_tags.c
-> +++ b/mm/kasan/sw_tags.c
-> @@ -118,13 +118,13 @@ bool kasan_check_range(unsigned long addr, size_t size, bool write,
->  	return true;
->  }
->  
-> -bool kasan_check_invalid_free(void *addr)
-> +bool kasan_check(const void *addr)
->  {
->  	u8 tag = get_tag(addr);
->  	u8 shadow_byte = READ_ONCE(*(u8 *)kasan_mem_to_shadow(kasan_reset_tag(addr)));
->  
-> -	return (shadow_byte == KASAN_TAG_INVALID) ||
-> -		(tag != KASAN_TAG_KERNEL && tag != shadow_byte);
-> +	return (shadow_byte != KASAN_TAG_INVALID) &&
-> +		(tag == KASAN_TAG_KERNEL || tag == shadow_byte);
->  }
->  
->  #define DEFINE_HWASAN_LOAD_STORE(size)					\
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index e981c80d216c..a3bb44516623 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -1157,11 +1157,13 @@ size_t ksize(const void *objp)
->  	size_t size;
->  
->  	/*
-> -	 * We need to check that the pointed to object is valid, and only then
-> -	 * unpoison the shadow memory below. We use __kasan_check_read(), to
-> -	 * generate a more useful report at the time ksize() is called (rather
-> -	 * than later where behaviour is undefined due to potential
-> -	 * use-after-free or double-free).
-> +	 * We need to first check that the pointer to the object is valid, and
-> +	 * only then unpoison the memory. The report printed from ksize() is
-> +	 * more useful, then when it's printed later when the behaviour could
-> +	 * be undefined due to a potential use-after-free or double-free.
-> +	 *
-> +	 * We use kasan_check_byte(), which is supported for hardware tag-based
-> +	 * KASAN mode, unlike kasan_check_read/write().
->  	 *
->  	 * If the pointed to memory is invalid we return 0, to avoid users of
->  	 * ksize() writing to and potentially corrupting the memory region.
-> @@ -1169,7 +1171,8 @@ size_t ksize(const void *objp)
->  	 * We want to perform the check before __ksize(), to avoid potentially
->  	 * crashing in __ksize() due to accessing invalid metadata.
->  	 */
-> -	if (unlikely(ZERO_OR_NULL_PTR(objp)) || !__kasan_check_read(objp, 1))
-> +	if (unlikely(ZERO_OR_NULL_PTR(objp)) ||
-> +	    !kasan_check_byte(objp, _RET_IP_))
->  		return 0;
->  
->  	size = __ksize(objp);
-> -- 
-> 2.29.2.729.g45daf8777d-goog
-> 
+
+--=-RhFF99NoOr/wzTqNsGXE
+Content-Type: application/octet-stream; name="excom_sfp_sx_m1002.bin"
+Content-Disposition: attachment; filename="excom_sfp_sx_m1002.bin"
+Content-Transfer-Encoding: base64
+
+IyBldGh0b29sIC1tIGV0aDEzIHJhdyBvbg0KwrTDv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/
+w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/D
+v8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/
+w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/D
+v8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/
+WsOTVcOYcGltYMODUMKvw4gyDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgWsO7IMOQPMKm
+w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w7/Dv8O/w78/w7/Dv8O/cyrDv8O/w7/Dv0DDv0DDv8O/
+w79DTlVJQURZQUFBMTAtMjA3Ny0wMVYwMSBGwr/CqsKqR0xDLUZFLTEwMEZYICAgICAgICAxNjco
+Li4xNCk2ZsO/w4DDv8O/w7/DgMO/w78jDQoNCiMgZXRodG9vbCAtbSBldGgxMyBoZXggb24NCk9m
+ZnNldCAgICAgICAgICBWYWx1ZXMNCi0tLS0tLSAgICAgICAgICAtLS0tLS0NCjB4MDAwMDogICAg
+ICAgICAwMyAwNCAwNyAwMCAwMCAwMSAxMCAwMCAwMCAwMCAwMCAwMiAwMSAwMCAwMCAwMA0KMHgw
+MDEwOiAgICAgICAgIGM4IGM4IDAwIDAwIDQ1IDc4IDYzIDZmIDZkIDIwIDIwIDIwIDIwIDIwIDIw
+IDIwDQoweDAwMjA6ICAgICAgICAgMjAgMjAgMjAgMjAgMDAgMDAgMDAgMDAgNTMgNDYgNTAgMmQg
+NTMgNTggMmQgNGQNCjB4MDAzMDogICAgICAgICAzMSAzMCAzMCAzMiAyMCAyMCAyMCAyMCA0MSAy
+MCAyMCAyMCAwNSAxZSAwMCA1MA0KMHgwMDQwOiAgICAgICAgIDAwIDEyIDAwIDAwIDQ1IDU4IDMx
+IDM2IDMwIDMzIDMxIDM0IDMwIDMzIDM2IDIwDQoweDAwNTA6ICAgICAgICAgMjAgMjAgMjAgMjAg
+MzEgMzYgMzAgMzMgMzEgMzQgMjAgMjAgNjggOTAgMDEgN2YNCjB4MDA2MDogICAgICAgICAyYiAw
+MCAxMSAzOCA5NyBjZSAwOSAxOSAxZSA2OSBjYSBlYiBlNSAxNyA2YSA1ZQ0KMHgwMDcwOiAgICAg
+ICAgIDg5IGFjIGNlIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDFhIDdkIDhkIGI0DQoweDAw
+ODA6ICAgICAgICAgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYg
+ZmYNCjB4MDA5MDogICAgICAgICBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBm
+ZiBmZiBmZiBmZg0KMHgwMGEwOiAgICAgICAgIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZm
+IGZmIGZmIGZmIGZmIGZmIGZmDQoweDAwYjA6ICAgICAgICAgZmYgZmYgZmYgZmYgZmYgZmYgZmYg
+ZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYNCjB4MDBjMDogICAgICAgICBmZiBmZiBmZiBmZiBm
+ZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZg0KMHgwMGQwOiAgICAgICAgIGZmIGZm
+IGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmDQoweDAwZTA6ICAgICAg
+ICAgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYgZmYNCjB4MDBm
+MDogICAgICAgICBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZiBm
+Zg0KMHgwMTAwOiAgICAgICAgIDVhIDAwIGQzIDAwIDU1IDAwIGQ4IDAwIDk0IDcwIDY5IDc4IDkw
+IDg4IDZkIDYwDQoweDAxMTA6ICAgICAgICAgYzMgNTAgMDAgMDAgYWYgYzggMDAgMzIgMGMgNWEg
+MDAgZmIgMDkgZDAgMDEgM2MNCjB4MDEyMDogICAgICAgICAxOCBhNiAwMCAwMyAxMyA5NCAwMCAw
+NCBmZiBmZiBmZiBmZiBmZiBmZiBmZiBmZg0KMHgwMTMwOiAgICAgICAgIGZmIGZmIGZmIGZmIGZm
+IGZmIGZmIGZmIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwDQoweDAxNDA6ICAgICAgICAgMDAgMDAg
+MDAgMDAgM2YgODAgMDAgMDAgMDAgMDAgMDAgMDAgMDEgMDAgMDAgMDANCjB4MDE1MDogICAgICAg
+ICAwMSAwMCAwMCAwMCAwMSAwMCAwMCAwMCAwMSAwMCAwMCAwMCBmZiBmZiBmZiA3Mw0KMHgwMTYw
+OiAgICAgICAgIDFiIDA2IDgzIGMxIDJiIGQ0IDAzIGUyIDAwIDAwIGZmIGZmIGZmIGZmIDAyIDAw
+DQoweDAxNzA6ICAgICAgICAgMDAgNDAgMDAgZmYgMDAgNDAgZmYgZmYgMDAgMDAgZmYgMDAgMDAg
+MDAgMDAgMDANCjB4MDE4MDogICAgICAgICA0MyA0ZSA1NSA0OSA0MSA0NCA1OSA0MSA0MSA0MSAz
+MSAzMCAyZCAzMiAzMCAzNw0KMHgwMTkwOiAgICAgICAgIDM3IDJkIDMwIDMxIDU2IDMwIDMxIDIw
+IDAxIDAwIDQ2IDAwIDAwIDAwIDAwIGJmDQoweDAxYTA6ICAgICAgICAgMDAgMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDANCjB4MDFiMDogICAgICAgICAwMCAwMCAw
+MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCBhYSBhYQ0KMHgwMWMwOiAgICAgICAg
+IDQ3IDRjIDQzIDJkIDQ2IDQ1IDJkIDMxIDMwIDMwIDQ2IDU4IDIwIDIwIDIwIDIwDQoweDAxZDA6
+ICAgICAgICAgMjAgMjAgMjAgMjAgMzEgMzYgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMzcN
+CjB4MDFlMDogICAgICAgICAxZSAyOCAyZSAyZSAzMSAzNCAyOSAzNiAwMCAwMCAwMCAwMCAwMCAw
+MCAwMCAwMA0KMHgwMWYwOiAgICAgICAgIDAwIDAwIDAwIDAwIDAwIDY2IDAwIDAwIGZmIGMwIGZm
+IGZmIGZmIGMwIGZmIGZm
+
+
+--=-RhFF99NoOr/wzTqNsGXE
+Content-Type: application/octet-stream; name="hp_100fx_j9054c.bin"
+Content-Disposition: attachment; filename="hp_100fx_j9054c.bin"
+Content-Transfer-Encoding: base64
+
+IyBldGh0b29sIC1tIGV0aDEzIHJhdyBvbg0KQMOIw4hPUE5FWFQgSU5DDQogICAgICAgICAgICAg
+ICAgICAgQFRSRjUzMjZBTkxCNDA0ICBBMkEgSUNOMTlEWTkwMEggICAgICAxMTA5MzAgIGjDsEo5
+MDU0QyAxOTkwLTQxMTJGw73DlkXDscOiPkhQIFByb0N1cnZlIFByb3ByaWV0YXJ5IFRlY2hub2xv
+Z3kgLSBVc2UgaW1wbGllcyBhY2NlcHRhbmNlIG9mIGxpY2Vuc2luZyB0ZXJtcy5IUDEwMC1GWCAg
+ICBVw7ZQw7sNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICDCoHXCuHl1
+MMO0YcKow6jDv8O/DQrDv8O/DQp2w7U/bcOQQEANCg0KIyBldGh0b29sIC1tIGV0aDEzIGhleCBv
+bg0KT2Zmc2V0ICAgICAgICAgIFZhbHVlcw0KLS0tLS0tICAgICAgICAgIC0tLS0tLQ0KMHgwMDAw
+OiAgICAgICAgIDAzIDA0IDA3IDAwIDAwIDAwIDQwIDAwIDAwIDAwIDAwIDAyIDAxIDAwIDAwIDAw
+DQoweDAwMTA6ICAgICAgICAgYzggYzggMDAgMDAgNGYgNTAgNGUgNDUgNTggNTQgMjAgNDkgNGUg
+NDMgMjAgMjANCjB4MDAyMDogICAgICAgICAyMCAyMCAyMCAyMCAwMCAwMCAwYiA0MCA1NCA1MiA0
+NiAzNSAzMyAzMiAzNiA0MQ0KMHgwMDMwOiAgICAgICAgIDRlIDRjIDQyIDM0IDMwIDM0IDIwIDIw
+IDQxIDMyIDQxIDIwIDAwIDAwIDAwIDQ5DQoweDAwNDA6ICAgICAgICAgMDAgMWEgMDAgMDAgNDMg
+NGUgMzEgMzkgNDQgNTkgMzkgMzAgMzAgNDggMjAgMjANCjB4MDA1MDogICAgICAgICAyMCAyMCAy
+MCAyMCAzMSAzMSAzMCAzOSAzMyAzMCAyMCAyMCA2OCBmMCAwMSAxYQ0KMHgwMDYwOiAgICAgICAg
+IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDRhIDM5IDMwIDM1IDM0IDQzIDIwIDMxDQoweDAwNzA6
+ICAgICAgICAgMzkgMzkgMzAgMmQgMzQgMzEgMzEgMzIgNDYgZmQgZDYgODAgNDUgZjEgODYgZTIN
+CjB4MDA4MDogICAgICAgICAzZSA0OCA1MCAyMCA1MCA3MiA2ZiA0MyA3NSA3MiA3NiA2NSAyMCA1
+MCA3MiA2Zg0KMHgwMDkwOiAgICAgICAgIDcwIDcyIDY5IDY1IDc0IDYxIDcyIDc5IDIwIDU0IDY1
+IDYzIDY4IDZlIDZmIDZjDQoweDAwYTA6ICAgICAgICAgNmYgNjcgNzkgMjAgMmQgMjAgNTUgNzMg
+NjUgMjAgNjkgNmQgNzAgNmMgNjkgNjUNCjB4MDBiMDogICAgICAgICA3MyAyMCA2MSA2MyA2MyA2
+NSA3MCA3NCA2MSA2ZSA2MyA2NSAyMCA2ZiA2NiAyMA0KMHgwMGMwOiAgICAgICAgIDZjIDY5IDYz
+IDY1IDZlIDczIDY5IDZlIDY3IDIwIDc0IDY1IDcyIDZkIDczIDJlDQoweDAwZDA6ICAgICAgICAg
+NDggNTAgMzEgMzAgMzAgMmQgNDYgNTggMjAgMjAgMjAgMjAgMDAgMDAgMDAgMDANCjB4MDBlMDog
+ICAgICAgICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMA0K
+MHgwMGYwOiAgICAgICAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
+IDAwIDAwDQoweDAxMDA6ICAgICAgICAgNTUgMDAgZjYgMDAgNTAgMDAgZmIgMDAgOGMgYTAgNzUg
+MzAgODggYjggNzkgMTgNCjB4MDExMDogICAgICAgICA3NSAzMCAwMSBmNCA2MSBhOCAwMyBlOCBm
+ZiBmZiAwMCAwYSBmZiBmZiAwMCAwYQ0KMHgwMTIwOiAgICAgICAgIDAyIDc2IDAwIDA1IDAxIGY1
+IDAwIDA2IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwDQoweDAxMzA6ICAgICAgICAgMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDANCjB4MDE0MDogICAgICAgICAw
+MCAwMCAwMCAwMCAzZiA4MCAwMCAwMCAwMCAwMCAwMCAwMCAwMSAwMCAwMCAwMA0KMHgwMTUwOiAg
+ICAgICAgIDAxIDAwIDAwIDAwIDAxIDAwIDAwIDAwIDAxIDAwIDAwIDAwIDAwIDAwIDAwIDEyDQow
+eDAxNjA6ICAgICAgICAgMWUgMDAgODIgMDAgMWYgMzUgMDAgZDggMDAgMDAgMDAgMDAgMDAgMDAg
+MTIgMDANCjB4MDE3MDogICAgICAgICAwMCA0MCAwMCAwMCAwMCA0MCAwMCAwMCAwMCAwMCAwMCAw
+MCAwMCAwMCAwMCAwMA0KMHgwMTgwOiAgICAgICAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
+IDAwIDAwIDAwIDAwIDAwIDAwIDAwDQoweDAxOTA6ICAgICAgICAgMDAgMDAgMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDANCjB4MDFhMDogICAgICAgICAwMCAwMCAwMCAw
+MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMA0KMHgwMWIwOiAgICAgICAgIDAw
+IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwDQoweDAxYzA6ICAg
+ICAgICAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDANCjB4
+MDFkMDogICAgICAgICAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
+MCAwMA0KMHgwMWUwOiAgICAgICAgIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
+IDAwIDAwIDAwIDAwDQoweDAxZjA6ICAgICAgICAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
+MDAgMDAgMDAgMDAgMDAgMDAgMDA=
+
+
+--=-RhFF99NoOr/wzTqNsGXE--
