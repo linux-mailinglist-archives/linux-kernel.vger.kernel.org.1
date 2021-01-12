@@ -2,74 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E50E2F405B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0AA22F4060
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388043AbhALXe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 18:34:29 -0500
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:36775 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733047AbhALXe2 (ORCPT
+        id S2389574AbhALXgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 18:36:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728032AbhALXgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 18:34:28 -0500
-X-Originating-IP: 86.202.109.140
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id A8AE81BF20B;
-        Tue, 12 Jan 2021 23:33:41 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Matt Mackall <mpm@selenic.com>,
-        linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        Dan Williams <dan.j.williams@intel.com>,
-        Richard Weinberger <richard@nod.at>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        "David S. Miller" <davem@davemloft.net>,
-        Mark Brown <broonie@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-crypto@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        alsa-devel@alsa-project.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-ide@vger.kernel.org, linux-spi@vger.kernel.org
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: (subset) [PATCH 00/10] Remove support for TX49xx
-Date:   Wed, 13 Jan 2021 00:33:30 +0100
-Message-Id: <161049432258.352381.2804715824942772218.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210105140305.141401-1-tsbogend@alpha.franken.de>
-References: <20210105140305.141401-1-tsbogend@alpha.franken.de>
+        Tue, 12 Jan 2021 18:36:20 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FC2C061575;
+        Tue, 12 Jan 2021 15:35:40 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id g8so3382692wme.1;
+        Tue, 12 Jan 2021 15:35:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=96AFxN9qdBCX705IZeYQUwreVW1FNVIfvYgEDTfoapc=;
+        b=EAcYSikfHZcircFSK78lfI+As4BKckcFYYkxNpU2iWOyM0ORpkrMnjQP4o1uDXXu8d
+         ITcjJNRNM7ou0ysaQOAh9kO4W7DsOXCSyp1WdD9/36bGoApqH4E9DGeA600ja8EgFRYa
+         VESDD4M5SydFu30WecBJL62r9hFe6GR5DsD4WFIwoRa/K4nta9EOpt+Wt3p2R1iVF+uj
+         7T9xSWOM9Ap1DLDLtCzOpVT/o3lCK+syGlKmgQQKbXLF8wzLdE7CP23/6AKAHp4ZsKmx
+         y+QGzxUDE+g755I7++Z9mwkZKtOgqeEjEBynGthZ6wIoOA95cRRf3J5DVracJdVPhxBw
+         kyIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=96AFxN9qdBCX705IZeYQUwreVW1FNVIfvYgEDTfoapc=;
+        b=E4vOCmWBlXhOZBcFtEzTLI40JLf4++pUsFTFF+3dlLt4acCO3jUqV5Ij941cgONxum
+         jEWg/RBkv8SCIHA8j14Nw+gxLhdbyhbltpJ0jQOjsQYaU5HwADXSzZfX9ek4Bv/qqGRD
+         +05Y5sdbO/QnauWR6GzjPxJAMLxkUiQmD7NAOPoyzgF2SRc+bMidEjUWFLoXmKE35pj6
+         0BVjbrJGI5dIeoWVTxQJJLAth8gY7fEzm+9Cl5VsQUYbPTmZD1Z3hRwqd4EWK4NuEBtN
+         C5VP5XZ2YFA8fHHSWJPFqG67U1QajT+QMaeALctaFkLN54tZ5/S24Z1L8hbpJ2faBZr3
+         Nr7w==
+X-Gm-Message-State: AOAM530HGHL6yAsrUhzNEy3Dnrk4zpPuyreUR+GpLSwFgS+Yg0hByvDa
+        BqvDlVH4Vg3r+J5RJbaP35y8zAtzrPR2hg==
+X-Google-Smtp-Source: ABdhPJy6vn2CF1xoE9dKg3jChENtseZXZXzBV2rpYPSMu8O38VXZvrNpwnnRLOqBXOynaXloYJYMcw==
+X-Received: by 2002:a1c:608b:: with SMTP id u133mr65860wmb.140.1610494539312;
+        Tue, 12 Jan 2021 15:35:39 -0800 (PST)
+Received: from [192.168.1.211] ([2.29.208.120])
+        by smtp.gmail.com with ESMTPSA id b127sm135170wmc.45.2021.01.12.15.35.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jan 2021 15:35:38 -0800 (PST)
+Subject: Re: [PATCH v5 00/15] Add functionality to ipu3-cio2 driver allowing
+ software_node connections to sensors on platforms designed for Windows
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        yong.zhi@intel.com, Bingbu Cao <bingbu.cao@intel.com>,
+        tian.shu.qiu@intel.com, Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        hverkuil-cisco@xs4all.nl, m.felsch@pengutronix.de,
+        Niklas Soderlund <niklas.soderlund+renesas@ragnatech.se>,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+References: <20210107132838.396641-1-djrscally@gmail.com>
+ <CAJZ5v0gb9c-kWM4aAKm6UqbVKt7dyp6xJS5E=7yoPRnPP+msbw@mail.gmail.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <9c451747-410e-3c99-c1a5-87336b71aa7b@gmail.com>
+Date:   Tue, 12 Jan 2021 23:35:37 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0gb9c-kWM4aAKm6UqbVKt7dyp6xJS5E=7yoPRnPP+msbw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Jan 2021 15:02:45 +0100, Thomas Bogendoerfer wrote:
-> I couldn't find any buyable product other than reference boards using
-> TX49xx CPUs. And since nobody showed interest in keeping support for
-> it, it's time to remove it.
-> 
-> I've split up the removal into seperate parts for different maintainers.
-> So if the patch fits your needs, please take it via your tree or
-> give me an ack so I can apply them  the mips-next tree.
-> 
-> [...]
+Hi Rafael, Sakari
 
-Applied, thanks!
+On 12/01/2021 19:34, Rafael J. Wysocki wrote:
+> <snip>
+>> I'm hopeful that most or all of this series could get picked up for 5.12.
+>> We touch a few different areas (listed below), but I think the easiest
+>> approach would be to merge everything through media tree. Rafael, Greg,
+>> Mauro and Sergey; are you ok with that plan, or would you prefer a
+>> different approach? Mauro; if that plan is ok (and of course assuming that
+>> the rest of the patches are acked by their respective maintainers) could
+>> we get a dedicated feature branch just in case the following series ends
+>> up being ready in time too?
+>>
+>> <snip>
+> Please feel free to add
+>
+> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> to all of the device properties patches in this series if that helps.
+>
+> Thanks!
 
-[08/10] rtc: tx4939: Remove driver
-        commit: 446667df283002fdda0530523347ffd1cf053373
+Thanks very much (and Greg too).
 
-Best regards,
--- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+
+Sakari; unless I'm misunderstanding something, I think this series could
+be picked up now, right? Would it be ok to do that through your tree? I
+think the idea of a dedicated feature branch can be dropped, I won't
+have the second series ready in time for this round anyway.
+
+
+First time doing this, so if I've missed something please let me know!
+
