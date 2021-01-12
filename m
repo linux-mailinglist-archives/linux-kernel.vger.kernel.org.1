@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27382F3A4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 566F32F3A56
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436510AbhALT0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 14:26:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48010 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406739AbhALT0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:26:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 25AAE23117;
-        Tue, 12 Jan 2021 19:26:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610479568;
-        bh=1Ds1J19akVCIPtrgsA882I0BkKmtbnGeCyUvVetBzL0=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=qJ4Yd+0TbTyenNCeMwLztwi3j12MEUophMTbVivckXErLrqo0YBxiXt+j1gY+oDjO
-         c+UFyJLzSoAvyVA26EdDyFHpLPdq7qLq2mzXa6ZjSOcTgoz9iyNUosQXoJ+gNu+kc4
-         TXCWxU1LX+Xs19K/sd64KYBvkuz6YwPPJhbvAosoM/vqflxKYsiU1OZ8yxeRoAgbte
-         yDHGLIWv4gTSI4FN8AIDoWwip5hVjNkd3aC61Mi1tfjFCEOdmIzHge2BsU+f/M1Hib
-         YkjF4iri6WgCXOIGZf+1Iepj62Sbptvpt+bG9WTBhA3TY7ZkjQs+TdSI7nyiDxlynv
-         jp8cxOxWNFecw==
-Content-Type: text/plain; charset="utf-8"
+        id S2406784AbhALT1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:27:35 -0500
+Received: from relay05.th.seeweb.it ([5.144.164.166]:56713 "EHLO
+        relay05.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392213AbhALT13 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 14:27:29 -0500
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 215183E7BE;
+        Tue, 12 Jan 2021 20:26:47 +0100 (CET)
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, phone-devel@vger.kernel.org,
+        robdclark@gmail.com, sean@poorly.run,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: [PATCH v2 0/7] Qualcomm DRM DPU fixes
+Date:   Tue, 12 Jan 2021 20:26:25 +0100
+Message-Id: <20210112192632.502897-1-angelogioacchino.delregno@somainline.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210111014110.GW28365@dragon>
-References: <20201230155244.981757-1-arnd@kernel.org> <20210111014110.GW28365@dragon>
-Subject: Re: [PATCH] clk: imx: fix Kconfig warning for i.MX SCU clk
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>, Peng Fan <peng.fan@nxp.com>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-To:     Arnd Bergmann <arnd@kernel.org>, Shawn Guo <shawnguo@kernel.org>
-Date:   Tue, 12 Jan 2021 11:26:06 -0800
-Message-ID: <161047956699.3661239.3642448603240028603@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Shawn Guo (2021-01-10 17:41:11)
-> On Wed, Dec 30, 2020 at 04:52:25PM +0100, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >=20
-> > A previous patch introduced a harmless randconfig warning:
-> >=20
-> > WARNING: unmet direct dependencies detected for MXC_CLK_SCU
-> >   Depends on [n]: COMMON_CLK [=3Dy] && ARCH_MXC [=3Dn] && IMX_SCU [=3Dy=
-] && HAVE_ARM_SMCCC [=3Dy]
-> >   Selected by [m]:
-> >   - CLK_IMX8QXP [=3Dm] && COMMON_CLK [=3Dy] && (ARCH_MXC [=3Dn] && ARM6=
-4 [=3Dy] || COMPILE_TEST [=3Dy]) && IMX_SCU [=3Dy] && HAVE_ARM_SMCCC [=3Dy]
-> >=20
-> > Since the symbol is now hidden and only selected by other symbols,
-> > just remove the dependencies and require the other drivers to
-> > get it right.
-> >=20
-> > Fixes: 6247e31b7530 ("clk: imx: scu: fix MXC_CLK_SCU module build break=
-")
-> > Reported-by: Anders Roxell <anders.roxell@linaro.org>
-> > Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->=20
-> Looks good to me.
->=20
-> Stephen, I assume that you will pick it up as a material for 5.11-rc.
->=20
+This patch series brings some fixes to the Qualcomm DPU driver, aim is
+to get it prepared for "legacy" SoCs (like MSM8998, SDM630/660) and to
+finally get command-mode displays working on this driver.
 
-Sure. Applied to clk-fixes.
+The series was tested against MSM8998 (the commit that introduces it to
+the hw-catalog is not included in this series, as it needs to be cleaned
+up a little more) and specifically on:
+- Sony Xperia XZ Premium (MSM8998), 4K dual-dsi LCD display, command-mode
+- F(x)Tec Pro1 (MSM8998), single-dsi OLED display, video-mode
+
+... And it obviously worked just perfect!
+
+Changes in v2:
+- Dropped patches "drm/msm/dpu: Add a function to retrieve the current CTL status"
+  and "drm/msm/dpu: Fix timeout issues on command mode panels" as the
+  second patch was wrong.
+- Fixed patch apply issues on latest linux-next and 5.11-rcX
+
+AngeloGioacchino Del Regno (7):
+  drm/msm/dpu: Fix VBIF_XINL_QOS_LVL_REMAP_000 register offset
+  drm/msm/dpu: Move DPU_SSPP_QOS_8LVL bit to SDM845 and SC7180 masks
+  drm/msm/dpu: Add prog_fetch_lines_worst_case to INTF_BLK macro
+  drm/msm/dpu: Allow specifying features and sblk in DSPP_BLK macro
+  drm/msm/dpu: Disable autorefresh in command mode
+  drm/msm/dpu: Correctly configure vsync tearcheck for command mode
+  drm/msm/dpu: Remove unused call in wait_for_commit_done
+
+ .../drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c  | 90 +++++++++++++++----
+ .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    | 49 +++++-----
+ .../gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c   | 26 ++++++
+ .../gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h   | 14 +++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_vbif.c   |  9 +-
+ 5 files changed, 147 insertions(+), 41 deletions(-)
+
+-- 
+2.29.2
+
