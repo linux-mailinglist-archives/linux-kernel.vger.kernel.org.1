@@ -2,99 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1F72F2524
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:18:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 918D02F2529
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 02:18:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730350AbhALAvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 19:51:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58846 "EHLO
+        id S1727745AbhALA4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 19:56:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727995AbhALAvk (ORCPT
+        with ESMTP id S1725923AbhALA4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 19:51:40 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE7FEC061575;
-        Mon, 11 Jan 2021 16:50:59 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id d17so1026190ejy.9;
-        Mon, 11 Jan 2021 16:50:59 -0800 (PST)
+        Mon, 11 Jan 2021 19:56:30 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D7DCC061575;
+        Mon, 11 Jan 2021 16:55:50 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id z11so562068qkj.7;
+        Mon, 11 Jan 2021 16:55:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G5DIxSZetsXeR2X3GAYIsmKuc4e0LX+pB1h8al42nGA=;
-        b=j+w8cAPmi1ouSNkB0JqJUkdXD2VJoqYoycV8eQYOpVz5VF8TwAYOQnJu4l6qSpe1TP
-         l7cC9+RmbUcKXbqnWzgLDa+qn60MdYylKKNyOM2Y3aYHPOqg45Q7c2vcm5mofHVVOnWW
-         BhwCQrkXbjWXz4C7+VJWYTGrFCHl2Onjd1rasxY4Tze0mPYJnVEeqWVwXrnP3jFbtpAG
-         hhy+ITv2iGARdXt0IgayP4e7IkWKy/y1Qv/3GkoDzqJUyn1XKHXO+0D83Mz/Xr/TEUEd
-         ee7W91Ay8q4dNbSafyg4ABdEc88Nh6n9FXIKHIe77FLIeiDzpDJ2KT9ADfJFVO1SEbQo
-         KrsQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=khkcF5qXfxpoNwKCSWV+pCbO5c4AEuaZShBo2MyVJjE=;
+        b=iDvxKeycU5wJXIxKNaqJc2ThF2NEGfh3ArBgzmsYEZRF84igPXN7ksaxQpUV2Nwymg
+         FPx8fESpjPhrJMMB0J2dj+1Xema7GPKalF/LQTvCJzB+qp8C6EX7M1twX7fX/Y7VeZ6x
+         k/18hLZ2FXzZ5nWADBhk3c5qwskPnP8m/O/DMfYtE0smczXpMChNksCvG+71cnYRfEbJ
+         x6ia8eP9eGkc+gZd2PQ5lgr4CKiXIqbT9RFin21x79XyfmbbY9vyJtFIMfMTowt29ZzT
+         PDd/DeRPSgVtwpwQQfY55wY8F2NH94yhO6DimHlNL23LCXw9lWXVgrmHGJLXDv6Aafap
+         zwTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G5DIxSZetsXeR2X3GAYIsmKuc4e0LX+pB1h8al42nGA=;
-        b=cOUhRoc7NRNwlcEQZls6MRmBkwzFyvk5ArEZ4mPfezciLavdZ6fTzaBmsU5TaA5kBd
-         6mYaJmX4gfJ3CYEflQbP7tCma0wNP8hp4JcZ7YtcU9qm/A7e2vfo2AhV9eQhiQpSXoTS
-         S15+r7SiY1X1ZvgRSOcRMDWYAYKrk5UnvGgo5c4U3kzwi20B+NuUvujtb/P6rOe3bKOD
-         Hs2klR5nOTrzc4meT2te+pvx15hgvYUXHdBRMK0mbJ6Oqmf8LvKbY7Yfg5eeZFQmdDap
-         ZrSTC1Bv/ObLVUEFshCm7Y9dWYTBqYRC/BNh3YX4CFw6F+iuUjMaSzw0sadzqMujySlj
-         VZlQ==
-X-Gm-Message-State: AOAM533DctozyEpwyuf0BW8nb2itWlLwvtubQVT3Z6iDAFRW/fmh4XxE
-        JazHxXIfNOisDxZjddBsD8FOoixlsYBumIwESsISUvapTus=
-X-Google-Smtp-Source: ABdhPJzLOupF2EAqOuP41DKkzhcSVFM9yIFN4BjqQCM5peWAM46JF+3fPJTzZ1sn4B2uQLYl7RFtxyYMab7dSCaZUh4=
-X-Received: by 2002:a17:906:7c49:: with SMTP id g9mr1408341ejp.185.1610412658411;
- Mon, 11 Jan 2021 16:50:58 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=khkcF5qXfxpoNwKCSWV+pCbO5c4AEuaZShBo2MyVJjE=;
+        b=VBIMkI/QjK9sCkhuOwR21KW00ennWqfGQrtztRjVS7Z77HiIgY8nigI06IHw0LohhD
+         /2hBT/XCPhI9DdqKg20zpffdha8YdWRqWy1A9WjCz6uBuCh0JcW29hx9JIbKuoYXo1dr
+         9O8l8qBJ6XPiWvbOCOSa9VKporBxs0wm0KN05iHiSlDEQOu0qhhiK9joz32QK+xiXVJA
+         q8vCHvV3l6XZ66ZM3aE3t1QtCjmmoKJRucR0TwRqIqDg9XhGMAiPImnyl+FsEDILMpfP
+         Khzn64ueU06JQSXnjVT7Km/WOlLjo9+qnXhl1Qx08uWzZvtzutCBFizO36vCqbBwlOnT
+         3MAw==
+X-Gm-Message-State: AOAM530Cfie9OEf8LCmXwQ58c1D7j7WhX8hjEky0vFY5w7hUIsaS7YXp
+        HZuxbSSRG3lJq+C6Vovrj1E=
+X-Google-Smtp-Source: ABdhPJxW5EtmDEuHQqa8Fqy2/u2uKkH7Co3MpwSkAOFME7g2rR2X0lWhXA3TgyAUcBhNWtO7rsiGrw==
+X-Received: by 2002:ae9:e8c5:: with SMTP id a188mr1992510qkg.479.1610412949557;
+        Mon, 11 Jan 2021 16:55:49 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id n3sm569365qtp.72.2021.01.11.16.55.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 11 Jan 2021 16:55:49 -0800 (PST)
+Subject: Re: [PATCH V3 2/2] scripts: dtc: Build fdtoverlay and fdtdump tools
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+References: <CAK7LNAQT5nVHGAZDhj4dct0v8UMzQ+-mdfBXJsfedR-7mZTnyA@mail.gmail.com>
+ <72c3a4f63dde3c172c11153e9a5b19fb6cdb4498.1610000585.git.viresh.kumar@linaro.org>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <94990759-34ff-0f4a-c913-dbcc679219be@gmail.com>
+Date:   Mon, 11 Jan 2021 18:55:48 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
- <20210110214653.GA1693373@ravnborg.org> <df42946e-5b1f-c433-fc6b-a2950f3d8dab@physik.fu-berlin.de>
- <CACwypyNS+fVoPVspSr36v8YjFbkrnYb+amcYRqVmA2kD2uD1Wg@mail.gmail.com> <1f6e936c-4947-4952-fae2-c05d03e0cd2c@landley.net>
-In-Reply-To: <1f6e936c-4947-4952-fae2-c05d03e0cd2c@landley.net>
-From:   chase rayfield <cusbrar1@gmail.com>
-Date:   Mon, 11 Jan 2021 19:50:48 -0500
-Message-ID: <CACwypyNVibQby75dZek=P1oBkcHQYMx-kbria9Y6NnBpERh+qQ@mail.gmail.com>
-Subject: Re: Old platforms: bring out your dead
-To:     Rob Landley <rob@landley.net>
-Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Sam Ravnborg <sam@ravnborg.org>, Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Sparc kernel list <sparclinux@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <72c3a4f63dde3c172c11153e9a5b19fb6cdb4498.1610000585.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Sparc has a runtime relocation I've never understood but did manage to break
-> once, resulting in a long thread to fix:
->
-> http://lists.landley.net/pipermail/aboriginal-landley.net/2011-December/001964.html
->
-> Between that and the weird save half the stack register thing with function
-> calls on some sort of "wheel"... there's a _reason_ I haven't been able to talk
-> Rich into adding support for it to musl.
->
-Register windowing, with parts of each window overlapping for function
-arguments etc... you can kind of think of it as a ring buffer of
-overlapping register files that's an oversimplification but it was
-originally intended to accelerate and improve register file usage.
-MIPS and the rest of the industry abandoned this for improved compile
-time allocation. I think you might be more likely on MIPS to incur
-more interrupt latency though since you have to spill to memory (at
-least on MIPS contemporary to Sparc V8) instead of just switching
-register windows mileage varies greatly.... From what I remember
-overflowing the register file is implemented with hardware traps that
-spill to memory etc... since you don't know that information at
-compile time. on Sparc so yeah it's quite involved to understand and I
-certainly don't grasp it fully. So on MIPS you spill the register file
-to memory, on Sparc you spill register windows to memory... if you
-have exceeded the supported call depth (which is rather expensive
-since all the register windows go at once). Note spilling a single
-variable within a register window is a separate issue.
+Hi Viresh,
 
-Amazing, a link that actually works and is informative:
-https://blogs.oracle.com/d/flush-register-windows
+I may have an email hiccup, but I don't see a "[PATCH V3 1/2]" email, I
+only see this "V3 2/2" email.
 
+Please start each new version of a patch series as a stand alone email
+instead of a reply to an email in a previous version of the series.
+That way each patch series discussion stands out as a separate thread.
 
-Chase
+Also each version of the patch series needs to include all of the patches
+in the current version, even if they are unchanged from the previous
+version.
+
+Thanks,
+
+Frank
+
+On 1/7/21 12:25 AM, Viresh Kumar wrote:
+> We will start building overlays for platforms soon in the kernel and
+> would need these tools going forward. Lets start building them.
+> 
+> The fdtoverlay program applies (or merges) one ore more overlay dtb
+> blobs to a base dtb blob. The kernel build system would later use
+> fdtoverlay to generate the overlaid blobs based on platform specific
+> configurations.
+> 
+> The fdtdump program prints a readable version of a flat device-tree
+> file. This is a very useful tool to analyze the details of the overlay's
+> dtb and the final dtb produced by fdtoverlay after applying the
+> overlay's dtb to a base dtb.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+> V3:
+> - Updated log
+> - Remove libfdt_dir
+> 
+>  scripts/dtc/Makefile | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/scripts/dtc/Makefile b/scripts/dtc/Makefile
+> index 4852bf44e913..472ab8cd590c 100644
+> --- a/scripts/dtc/Makefile
+> +++ b/scripts/dtc/Makefile
+> @@ -1,12 +1,17 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  # scripts/dtc makefile
+>  
+> -hostprogs-always-$(CONFIG_DTC)		+= dtc
+> +hostprogs-always-$(CONFIG_DTC)		+= dtc fdtdump fdtoverlay
+>  hostprogs-always-$(CHECK_DT_BINDING)	+= dtc
+>  
+>  dtc-objs	:= dtc.o flattree.o fstree.o data.o livetree.o treesource.o \
+>  		   srcpos.o checks.o util.o
+>  dtc-objs	+= dtc-lexer.lex.o dtc-parser.tab.o
+> +fdtdump-objs	:= fdtdump.o util.o
+> +
+> +libfdt-objs	:= fdt.o fdt_ro.o fdt_wip.o fdt_sw.o fdt_rw.o fdt_strerror.o fdt_empty_tree.o fdt_addresses.o fdt_overlay.o
+> +libfdt		= $(addprefix libfdt/,$(libfdt-objs))
+> +fdtoverlay-objs	:= $(libfdt) fdtoverlay.o util.o
+>  
+>  # Source files need to get at the userspace version of libfdt_env.h to compile
+>  HOST_EXTRACFLAGS += -I $(srctree)/$(src)/libfdt
+> 
+
