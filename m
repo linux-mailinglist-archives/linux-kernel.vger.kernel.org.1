@@ -2,90 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D927F2F2655
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:37:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C9D2F2662
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 03:47:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729583AbhALChP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 21:37:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53198 "EHLO
+        id S1730660AbhALCqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 21:46:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726645AbhALChN (ORCPT
+        with ESMTP id S1726018AbhALCqa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 21:37:13 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944C9C061575;
-        Mon, 11 Jan 2021 18:36:33 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id c12so467547pfo.10;
-        Mon, 11 Jan 2021 18:36:33 -0800 (PST)
+        Mon, 11 Jan 2021 21:46:30 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4099C061575;
+        Mon, 11 Jan 2021 18:45:49 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id y8so586977plp.8;
+        Mon, 11 Jan 2021 18:45:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=h9fhRdWWspSQu4n1BaWZHaKW8EOn6n3KPYXE2frKUsY=;
-        b=B6MEma4QRnEyxIqcDcQ/fq9MWe4X7FMEEyEd57XgMUB1IGYZuqv6Njp61A2+TxiS8D
-         IpMQ4ZWoYh2JeSW3turtd1OActP9xnkcYfQ5HM6SObfy9V4cuXdKtQFVYw8i+CdKM3o3
-         2OJT+cczIBpxl1vU6pT2SAy6aIhGuDdk2JZ3EXje7zE1N58wm838MGG05cuZbSIbXvUO
-         RMdW8SVbukaM4ptZYZuQqoxIfC2LY22Ur80gH0q5ayhHs1wgBtkwb3HY3WcG4vYRPgum
-         ZPSY8U88TzTzunaQI+LsRr+KiRE9QnRMXjHu7qNTl2CmXhikx6Jl/vu5/FAr6LtuXfWN
-         r1Tg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6XqupT+NjHhwRWSp24cJ/RUACqfVNalLw0wWMcvtN/s=;
+        b=MKz8QTsuq5hx1jBTfdZfZFryCt6qjG/egPDg+PNtbkEb/+6cV5ou5q04koQqkHqJqJ
+         HygQxno9CmSETwbMdEG6ExkB6+7bD8mtSiGgrNbP3cY8kA5pzJZUO/y0ojgqJmhiPjoN
+         M7UWNoMNmcnmdjBbZSxWEYe8wvLg+vUCg765nHY1R/LQiN0T4Je5C+HnnrS5Ve2o9ELu
+         zu7zYbJIPBCtyo4D1Aet2QEMPFGnNn519UKtik1dQvvZ6Hdfb1GUBWcgM5tQ4Hclb4JS
+         pus+wFExBLfQIi3cE+9u9ATE2JR9LiXXwdUbUxbL0GR0sHYETUPIF4+M/kzFlHbslsad
+         OZpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=h9fhRdWWspSQu4n1BaWZHaKW8EOn6n3KPYXE2frKUsY=;
-        b=B/wWaAmjxM/+lTY4fyScjPjWwAVvvMiv29HmyutksofT7gfHzs0Lecs1u2y2eOKnVj
-         AqKWn4LSgoTOUE5/Oxdr6Bjp9s8HXsUjM/QzcYDLXfqxREvFj5UQaQITuxKoyO6Q6hR+
-         46ZMmHqV7rePaTpq+fK2+o9wsc58zIVOh4HDo+OAahSMjuItPzxdlEdQf9v4qrGfRHXm
-         GNAJX1xgEaXzaXPTYX/xQdTkWm1Z/3Yo6Ct2oQMFmURmsF98f5zvWbeFC2iOOzDhV4OT
-         Mpe+jfZLtBo3CJre2rX3kNjUgZqB1dx0AkuBeiz/Ohjgqjk1bglqmv2WwBQ7mr0IRBmf
-         rYjQ==
-X-Gm-Message-State: AOAM532g1HYRWucofZnt9sSiK/wPBU+gmEt6tfEntBIcqEBJ4EYtzzBP
-        FMfUMi91gERcTun4ggj2jlU=
-X-Google-Smtp-Source: ABdhPJywMqN5uAGoZJXkW+OrN3nOwHLqagIeMFp3RatFDMLPd+d7XvNzoIX/zE2wxPFyFSVGrmTyFw==
-X-Received: by 2002:a63:d551:: with SMTP id v17mr2465636pgi.18.1610418992436;
-        Mon, 11 Jan 2021 18:36:32 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id p22sm1268370pgk.21.2021.01.11.18.36.30
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6XqupT+NjHhwRWSp24cJ/RUACqfVNalLw0wWMcvtN/s=;
+        b=U70AJWa7qftuY6ymXcJ/LRP8/XLN598HzU8Im3ynX06/+VSejklHG4f5jJsuKbmf+X
+         sWP9VPz/6xtjf8P+wb5JXjlOcE21p4k1Sxe0miCsg9herxJjU7KTO3b4CRAW5hwh9ZRK
+         MBORA0HcDymAzC4xubBMdX+nS543rRziq5UoAHs0I5vxmCZzF891YV8XkIFUOm8uORkJ
+         37+26B5G8RYgkdG7fAKQ2DF2zN4OPEWuEnp6jUf3ZiSQAyNkZ8Buuk0sN04O7p1rFk9H
+         m3ngH288/eMVVvKMcM6SwvaNkbdYScf7i9lZ2nv0JxjGAHse8DrytXx3lhvPmYk4DH3s
+         YP8Q==
+X-Gm-Message-State: AOAM532oB75Atqn/yrcoXjZAi6aq2+q5XTcjBHg//fPNYEPn14HSiUre
+        pYOObSbVm2ylqJ1uy1K4RzI=
+X-Google-Smtp-Source: ABdhPJw+FjmZm11u+d4zLb2iW1uRdyLev2FhsB+YK2Pu9miPRIeCui9VhNhfIeuGKVLZhnZfiv/pQg==
+X-Received: by 2002:a17:90b:1a86:: with SMTP id ng6mr1959703pjb.113.1610419549028;
+        Mon, 11 Jan 2021 18:45:49 -0800 (PST)
+Received: from ast-mbp ([2620:10d:c090:400::5:3e79])
+        by smtp.gmail.com with ESMTPSA id x1sm977548pfn.48.2021.01.11.18.45.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 18:36:31 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     axboe@kernel.dk
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: [PATCH] ata: remove redundant error print in rb532_pata_driver_probe
-Date:   Mon, 11 Jan 2021 18:36:19 -0800
-Message-Id: <20210112023619.5713-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.17.1
+        Mon, 11 Jan 2021 18:45:47 -0800 (PST)
+Date:   Mon, 11 Jan 2021 18:45:45 -0800
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Alan Maguire <alan.maguire@oracle.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, rostedt@goodmis.org,
+        mingo@redhat.com, haoluo@google.com, jolsa@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org
+Subject: Re: [RFC PATCH bpf-next 0/2] bpf, libbpf: share BTF data show
+ functionality
+Message-ID: <20210112024545.spoxpownh5dybffa@ast-mbp>
+References: <1610386373-24162-1-git-send-email-alan.maguire@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1610386373-24162-1-git-send-email-alan.maguire@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+On Mon, Jan 11, 2021 at 05:32:51PM +0000, Alan Maguire wrote:
+> The BPF Type Format (BTF) can be used in conjunction with the helper
+> bpf_snprintf_btf() to display kernel data with type information.
+> 
+> This series generalizes that support and shares it with libbpf so
+> that libbpf can display typed data.  BTF display functionality is
+> factored out of kernel/bpf/btf.c into kernel/bpf/btf_show_common.c,
+> and that file is duplicated in tools/lib/bpf.  Similarly, common
+> definitions and inline functions needed for this support are
+> extracted into include/linux/btf_common.h and this header is again
+> duplicated in tools/lib/bpf.
 
-Coccinelle reports a redundant error print in rb532_pata_driver_probe.
-As 'platform_get_irq' already prints the error message, error print
-here is redundant and can be removed.
-
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
- drivers/ata/pata_rb532_cf.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/ata/pata_rb532_cf.c b/drivers/ata/pata_rb532_cf.c
-index 479c4b29b856..dcde84f571c4 100644
---- a/drivers/ata/pata_rb532_cf.c
-+++ b/drivers/ata/pata_rb532_cf.c
-@@ -115,10 +115,8 @@ static int rb532_pata_driver_probe(struct platform_device *pdev)
- 	}
- 
- 	irq = platform_get_irq(pdev, 0);
--	if (irq <= 0) {
--		dev_err(&pdev->dev, "no IRQ resource found\n");
-+	if (irq <= 0)
- 		return -ENOENT;
--	}
- 
- 	gpiod = devm_gpiod_get(&pdev->dev, NULL, GPIOD_IN);
- 	if (IS_ERR(gpiod)) {
--- 
-2.17.1
-
+I think duplication will inevitable cause code to diverge.
+Could you keep a single copy?
+Take a look at kernel/bpf/disasm.[ch]
+It compiled once for the kernel and once for bpftool.
+So should be possible to do something similar for this case as well?
