@@ -2,120 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15ED72F26B7
+	by mail.lfdr.de (Postfix) with ESMTP id 8251F2F26B8
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 04:33:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727109AbhALDch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 22:32:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726602AbhALDch (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 22:32:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 882BB22DFB
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 03:31:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610422316;
-        bh=LbikLWN0Wr/yfcAvca6bpWFUFuvrFZe518dAXl2GcfY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mJOTfjnFIOZQbQKPvrqZR8mKcj035uWjHHe4OCjVgCIEZwg9kTvUfwrDh417Nk3jg
-         CskG85XcsNu7QFPGMNR7Fi/hS27ZvLeV02vpEXdldS97RdtnghiFSDC2+92FyeZbT4
-         f1yq2Hwqaukeyk5wsKyrbg4acxw1QvsmUY4D2f0qFhZ0JwG82bfcCLwIRcHIj78j/M
-         jmcWhbYtLckPgmMdG7yNNwfdU+zS6lp1kFT5oDlGHxzW+XPVJPJ7h/ne6pUyqIAKjf
-         Eay/bohnlFrhrjjvlTs1TQRIKxMXRsuawHnyLbNamH0+V5G7w3A59S3EKzGpNT3leV
-         pX8NiRhn80rhA==
-Received: by mail-ed1-f51.google.com with SMTP id v26so696570eds.13
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 19:31:56 -0800 (PST)
-X-Gm-Message-State: AOAM532xHpAbLjtKeOYGYhzYJp5YIyi69xRQCheyeZ1BxQpXDgIrH/Xx
-        wT1QSTTGaBsTUXQYSf076iOwU8vo02zZATS6kLWFDA==
-X-Google-Smtp-Source: ABdhPJxiSpIjrZ53OjTj99e1q25kepOCc1vfEkEJQqQohjfhK66ZYJsARVpSpEvughILlwDZeClamnlLVplk5u0LjWA=
-X-Received: by 2002:aa7:c3cd:: with SMTP id l13mr1730459edr.97.1610422315014;
- Mon, 11 Jan 2021 19:31:55 -0800 (PST)
+        id S1727394AbhALDcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 22:32:52 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11093 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726992AbhALDcw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 11 Jan 2021 22:32:52 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DFGLh4HYdzMJ0q;
+        Tue, 12 Jan 2021 11:30:52 +0800 (CST)
+Received: from use12-sp2.huawei.com (10.67.189.174) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 12 Jan 2021 11:31:58 +0800
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <mcgrof@kernel.org>,
+        <keescook@chromium.org>, <yzaikin@google.com>,
+        <adobriyan@gmail.com>, <linux-fsdevel@vger.kernel.org>,
+        <vbabka@suse.cz>, <akpm@linux-foundation.org>, <mhocko@suse.com>,
+        <andy.shevchenko@gmail.com>
+CC:     <nixiaoming@huawei.com>, <wangle6@huawei.com>
+Subject: [PATCH v3] proc_sysctl: fix oops caused by incorrect command parameters.
+Date:   Tue, 12 Jan 2021 11:31:55 +0800
+Message-ID: <20210112033155.91502-1-nixiaoming@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210111200027.GH25645@zn.tnic> <E74AC970-CFCF-4CFD-A71F-F719F5BCE2DC@amacapital.net>
- <CALCETrV=BpFwR-RU5ORioBCZj3RwK7nmD2Yz3VNd4gfFjukRAw@mail.gmail.com> <0ad68c87-ac2e-478e-ed97-95256464a3ba@suse.de>
-In-Reply-To: <0ad68c87-ac2e-478e-ed97-95256464a3ba@suse.de>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 11 Jan 2021 19:31:43 -0800
-X-Gmail-Original-Message-ID: <CALCETrXkePULoyH85bmUGfCbvn4M9xxQOK9v_UL_+BkwUDrt1Q@mail.gmail.com>
-Message-ID: <CALCETrXkePULoyH85bmUGfCbvn4M9xxQOK9v_UL_+BkwUDrt1Q@mail.gmail.com>
-Subject: Re: gdbserver + fsgsbase kaputt
-To:     Tom de Vries <tdevries@suse.de>
-Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>, tdevries@suse.com,
-        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.189.174]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 3:52 PM Tom de Vries <tdevries@suse.de> wrote:
->
-> On 1/12/21 12:40 AM, Andy Lutomirski wrote:
-> > On Mon, Jan 11, 2021 at 1:06 PM Andy Lutomirski <luto@amacapital.net> wrote:
-> >>
-> >>
-> >>> On Jan 11, 2021, at 12:00 PM, Borislav Petkov <bp@alien8.de> wrote:
-> >>>
-> >>
-> >>
-> >>> Or do you mean I should add "unsafe_fsgsbase" to grub cmdline and bisect
-> >>> with fsgsbase enabled in all test kernels?
-> >>
-> >> Yes. But I can also look myself in a bit.
-> >>
-> >
-> > Tom, if I reproduce it in an interactive gdb and play a bit, I get:
-> >
-> > Program received signal SIGSEGV, Segmentation fault.
-> > 0xf7df2cb6 in init_cacheinfo () from target:/lib/libc.so.6
-> > (gdb) p $gs = $gs
-> > $1 = 99
-> > (gdb) si
-> >
-> > Program terminated with signal SIGSEGV, Segmentation fault.
-> > The program no longer exists.
-> >
-> > That's gdb itself crashing.  Any idea what's wrong?
-> >
->
-> The first "Program received signal SIGSEGV, Segmentation fault" means
-> that gdb intercepts the sigsegv, and allows you to inspect it f.i. by
-> printing $_siginfo.  The inferior is still live at this point.
->
-> Then when trying to continue using si,  the signal is passed on to the
-> inferior, which means it'll be terminated.
->
-> AFAIU, gdb has not crashed, and behaves as expected.  See below for a
-> similar scenario.
->
-> Thanks,
-> - Tom
->
-> ...
-> $ cat test2.c
-> int
-> main (void)
-> {
->   *((int *)0) = 0;
->   return 0;
-> }
-> $ gcc test2.c
-> $ ./a.out
-> Segmentation fault (core dumped)
-> $ gdb -q ./a.out
-> Reading symbols from ./a.out...
-> (gdb) r
-> Starting program: /home/vries/a.out
->
-> Program received signal SIGSEGV, Segmentation fault.
-> 0x00000000004004a0 in main ()
-> (gdb) si
->
-> Program terminated with signal SIGSEGV, Segmentation fault.
-> The program no longer exists.
-> (gdb)
-> ...
->
+The process_sysctl_arg() does not check whether val is empty before
+ invoking strlen(val). If the command line parameter () is incorrectly
+ configured and val is empty, oops is triggered.
 
-Hah, you're right.  Is there an easy way to tell gdb to suppress the
-first signal and try again?
+For example:
+  "hung_task_panic=1" is incorrectly written as "hung_task_panic", oops is
+  triggered. The call stack is as follows:
+    Kernel command line: .... hung_task_panic
+    ......
+    Call trace:
+    __pi_strlen+0x10/0x98
+    parse_args+0x278/0x344
+    do_sysctl_args+0x8c/0xfc
+    kernel_init+0x5c/0xf4
+    ret_from_fork+0x10/0x30
+
+To fix it, check whether "val" is empty when "phram" is a sysctl field.
+Error codes are returned in the failure branch, and error logs are
+generated by parse_args().
+
+Fixes: 3db978d480e2843 ("kernel/sysctl: support setting sysctl parameters
+ from kernel command line")
+Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+
+---------
+v3:
+  Return -EINVAL, When phram is the sysctl field and val is empty.
+
+v2: https://lore.kernel.org/lkml/20210108023339.55917-1-nixiaoming@huawei.com/
+  Added log output of the failure branch based on the review comments of Kees Cook.
+
+v1: https://lore.kernel.org/lkml/20201224074256.117413-1-nixiaoming@huawei.com/
+
+---------
+---
+ fs/proc/proc_sysctl.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+index 317899222d7f..d493a50058a5 100644
+--- a/fs/proc/proc_sysctl.c
++++ b/fs/proc/proc_sysctl.c
+@@ -1770,6 +1770,9 @@ static int process_sysctl_arg(char *param, char *val,
+ 			return 0;
+ 	}
+ 
++	if (!val)
++		return -EINVAL;
++
+ 	/*
+ 	 * To set sysctl options, we use a temporary mount of proc, look up the
+ 	 * respective sys/ file and write to it. To avoid mounting it when no
+-- 
+2.27.0
+
