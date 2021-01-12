@@ -2,262 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC862F3D10
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D12FC2F3D0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437665AbhALVed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2437678AbhALVed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Jan 2021 16:34:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60578 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436995AbhALUjT (ORCPT
+        with ESMTP id S2436997AbhALUj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:39:19 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CDBC061795;
-        Tue, 12 Jan 2021 12:38:38 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id y12so2364587pji.1;
-        Tue, 12 Jan 2021 12:38:38 -0800 (PST)
+        Tue, 12 Jan 2021 15:39:57 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15430C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:39:17 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id j17so3395970ybt.9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:39:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=Lzi27mDYmFcrs7p6VfaaQdinYQz+DZ+BY3frqF3MRnQ=;
-        b=qqCT8YTF8xP5wb4YAL7sm2TWdT8kLObSBGDnFYSR4cs3hyzUa2R1Iqp3Mca7fsupGe
-         3fmu7KnMs2XqPX5p/3+w6UGkwnwHEC2VE2MJhcX3Mw6HXySLH4QJUU6KA1Zvu4iKMSKf
-         dW6amBlWvrmiveAx7ro3E9Us5ZYYtcgsvgbtaX9gjbqbByupf4qOQ6dhDtGMPBDTZ2ll
-         3hc8exh2DytLWgYeGIwoPm0SXJ1nUO9bsXYR38/nxOT1ApBCKErSvlCe1hpIRtCq+Ovk
-         wPkw3cpgJ5DhXf37yE0WAOP4oabEOjFGexZxs4BkWrx6S4Q6XtfHAKMeJZLzQiABxY1y
-         6YWw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ysk/rqQWIHOWjbl6v0yKfWqhSSuHRhQojoV0+hQXA4c=;
+        b=SJQupXq58577qdvAJY69b/AUMLS9bXfAs4Vsz59rP2LNfnpLBYbmUA/7NtwqRLAA2g
+         1BZx2Hy7x1V+Wu9FETNIi6Ntpn71jjS269WeGCRsh9QZrp/eeEJkLROwqeUO88ijV71C
+         7gJ+gq5H+D29bjeHUDj58En7UmiDtiX2bJTLR4WQis0VjGEAWFYYDz01c+cJhlJf+Tyl
+         wY3pt+/EOe65jSY9IOQu+tuvg42nAX5SrxWSxHfYpY3yZlHdXP54bYqI6Nda7G01zboA
+         ZQ0kA5sEF8WWAZEKJu1i1RB9jp+l0qJXRsbLEwOJ+mS+XSYI3UlACGWOIwkr8fzyo6Y3
+         n1ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=Lzi27mDYmFcrs7p6VfaaQdinYQz+DZ+BY3frqF3MRnQ=;
-        b=VMLpXbJWxRjYX6BpD7r/9EBx71euvgIVUCit2RhIb2Ci+/QtcREReK931CD6e9ZBuj
-         k0CWlx+yTtyVZVOkv/HaG00DgHSxC7kUggm/s+hvq66qpNw3AwFtfHpKEjiwtt2i3lwf
-         FZr0WcU6SfOZ8Ck901aobBqryyVWei0aiwkg37k4qy9EETRXpaqOgvAX0SuzADmRAh1z
-         VJ3yuNyRtftwgd618f79t/Wc0oUewrYlmwWheYORQRYsB9HRkKJmfdaw+R+ObE4aD4l4
-         Yl/KgKRlriO7fnv2Z5zobwcJMq10bvOoJ+vBfhO97xJRoIYzvJkVFlgdsaH/61QrHD0T
-         RxiA==
-X-Gm-Message-State: AOAM530JmcU6SiNO1ljmxcwvbu9T1BJBjfvJ4trkDnOlSr4Lr+r+Jsm9
-        OuFdvroTWy/JePocDRgqJ+Q=
-X-Google-Smtp-Source: ABdhPJx7vZU1MtqqAvD4/kxPnCG0+n6cnGs77bm/ecc82WnkafuesHic/ggsTLl4cKvraCn2qUiQGA==
-X-Received: by 2002:a17:90a:5509:: with SMTP id b9mr956711pji.53.1610483917949;
-        Tue, 12 Jan 2021 12:38:37 -0800 (PST)
-Received: from [192.168.88.245] (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
-        by smtp.gmail.com with ESMTPSA id h11sm4314040pjg.46.2021.01.12.12.38.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 12 Jan 2021 12:38:36 -0800 (PST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-From:   Nadav Amit <nadav.amit@gmail.com>
-In-Reply-To: <X/3+6ZnRCNOwhjGT@google.com>
-Date:   Tue, 12 Jan 2021 12:38:34 -0800
-Cc:     Laurent Dufour <ldufour@linux.vnet.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>, surenb@google.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2C7AE23B-ACA3-4D55-A907-AF781C5608F0@gmail.com>
-References: <20201221223041.GL6640@xz-x1>
- <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
- <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
- <CAHk-=wj=CcOHQpG0cUGfoMCt2=Uaifpqq-p-mMOmW8XmrBn4fQ@mail.gmail.com>
- <20210105153727.GK3040@hirez.programming.kicks-ass.net>
- <bfb1cbe6-a705-469d-c95a-776624817e33@codeaurora.org>
- <0201238b-e716-2a3c-e9ea-d5294ff77525@linux.vnet.ibm.com>
- <X/3VE64nr91WCtuM@hirez.programming.kicks-ass.net>
- <ec912505-ed4d-a45d-2ed4-7586919da4de@linux.vnet.ibm.com>
- <C7D5A74C-25BF-458A-AAD9-61E484B9F225@gmail.com>
- <X/3+6ZnRCNOwhjGT@google.com>
-To:     Yu Zhao <yuzhao@google.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ysk/rqQWIHOWjbl6v0yKfWqhSSuHRhQojoV0+hQXA4c=;
+        b=Rl/K5R5I2JxP2PCqQe3uZpjwv08k8+DhNeiEriLmRZFpxxGScU63ZZAPtgBlObHbwV
+         QtNtiPZ4OJihZQwND3chNd3ZAIlX0wvQUDyYjgdcnEZG2ZtCRoYkrOrJJ61Pi1QWVtoN
+         4MV+BmwDyR2SRp/LpRhZTAZ7K8KUM2NtLTloDmgbFlxJXOrnsjbQhRuWAqGuTvr6dM7+
+         NiohU5Tjwp+kg269Z8Al8jPV/VPu0OEl5GczDbNmpU93kD3UxbdjoMSfbaZDw5ngoy3j
+         41KnqLMQCBqRxIRm733ppNsdnryznDMauFho4OMEBqUII6SC6DvzyAP28pUuExVKq9+j
+         Vonw==
+X-Gm-Message-State: AOAM532m36j4QIX+qQK3X6wXifaQpmlbGDRprlwZMoDTCWEueHYsAEXt
+        pPBLAS6fm1oX5I4CAPFj6qObqmkXQXTSdg94BsPMaQ==
+X-Google-Smtp-Source: ABdhPJziGaSFzNul3T3+jslrR7sVqwVops5TVnO4U1azhvc4r7YG6OGW34Oj9tT/SS5/Cu/xqdfu0RDPo5A0/9fT8m0=
+X-Received: by 2002:a25:6604:: with SMTP id a4mr1934516ybc.412.1610483955843;
+ Tue, 12 Jan 2021 12:39:15 -0800 (PST)
+MIME-Version: 1.0
+References: <alpine.LSU.2.11.2101102010200.25762@eggly.anvils>
+ <X/xV7ZV5jzI7RvAe@ulmo> <CAJZ5v0iriRkEN8dVJ9gE3+Wyn_96=SNhav1QaQ59i9O0genTNQ@mail.gmail.com>
+ <X/x49o3EtrUh6vuO@ulmo> <CAJZ5v0hyvdcKsPJ7U5WioXb1c8Pg_F1BLC_dbKesFBLTUSiVaw@mail.gmail.com>
+ <X/3jBzWEVrguB8H2@ulmo>
+In-Reply-To: <X/3jBzWEVrguB8H2@ulmo>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 12 Jan 2021 12:38:39 -0800
+Message-ID: <CAGETcx-6Ccn2N9vMXZc5NZu2DwsBOYunRsbCeHiMeHxEj7iMbQ@mail.gmail.com>
+Subject: Re: 5.11-rc device reordering breaks ThinkPad rmi4 suspend
+To:     Thierry Reding <treding@nvidia.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vincent Huang <vincent.huang@tw.synaptics.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andrew Duggan <aduggan@synaptics.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Jan 12, 2021, at 11:56 AM, Yu Zhao <yuzhao@google.com> wrote:
->=20
-> On Tue, Jan 12, 2021 at 11:15:43AM -0800, Nadav Amit wrote:
->>> On Jan 12, 2021, at 11:02 AM, Laurent Dufour =
-<ldufour@linux.vnet.ibm.com> wrote:
->>>=20
->>> Le 12/01/2021 =C3=A0 17:57, Peter Zijlstra a =C3=A9crit :
->>>> On Tue, Jan 12, 2021 at 04:47:17PM +0100, Laurent Dufour wrote:
->>>>> Le 12/01/2021 =C3=A0 12:43, Vinayak Menon a =C3=A9crit :
->>>>>> Possibility of race against other PTE modifiers
->>>>>>=20
->>>>>> 1) Fork - We have seen a case of SPF racing with fork marking =
-PTEs RO and that
->>>>>> is described and fixed here =
-https://lore.kernel.org/patchwork/patch/1062672/
->>>> Right, that's exactly the kind of thing I was worried about.
->>>>>> 2) mprotect - change_protection in mprotect which does the =
-deferred flush is
->>>>>> marked under vm_write_begin/vm_write_end, thus SPF bails out on =
-faults
->>>>>> on those VMAs.
->>>> Sure, mprotect also changes vm_flags, so it really needs that =
-anyway.
->>>>>> 3) userfaultfd - mwriteprotect_range is not protected unlike in =
-(2) above.
->>>>>> But SPF does not take UFFD faults.
->>>>>> 4) hugetlb - hugetlb_change_protection - called from mprotect and =
-covered by
->>>>>> (2) above.
->>>>>> 5) Concurrent faults - SPF does not handle all faults. Only anon =
-page faults.
->>>> What happened to shared/file-backed stuff? ISTR I had that working.
->>>=20
->>> File-backed mappings are not processed in a speculative way, there =
-were options to manage some of them depending on the underlying file =
-system but that's still not done.
->>>=20
->>> Shared anonymous mapping, are also not yet handled in a speculative =
-way (vm_ops is not null).
->>>=20
->>>>>> Of which do_anonymous_page and do_swap_page are =
-NONE/NON-PRESENT->PRESENT
->>>>>> transitions without tlb flush. And I hope do_wp_page with RO->RW =
-is fine as well.
->>>> The tricky one is demotion, specifically write to non-write.
->>>>>> I could not see a case where speculative path cannot see a PTE =
-update done via
->>>>>> a fault on another CPU.
->>>> One you didn't mention is the NUMA balancing scanning crud; =
-although I
->>>> think that's fine, loosing a PTE update there is harmless. But I've =
-not
->>>> thought overly hard on it.
->>>=20
->>> That's a good point, I need to double check on that side.
->>>=20
->>>>> You explained it fine. Indeed SPF is handling deferred TLB =
-invalidation by
->>>>> marking the VMA through vm_write_begin/end(), as for the fork case =
-you
->>>>> mentioned. Once the PTL is held, and the VMA's seqcount is =
-checked, the PTE
->>>>> values read are valid.
->>>> That should indeed work, but are we really sure we covered them =
-all?
->>>> Should we invest in better TLBI APIs to make sure we can't get this
->>>> wrong?
->>>=20
->>> That may be a good option to identify deferred TLB invalidation but =
-I've no clue on what this API would look like.
->>=20
->> I will send an RFC soon for per-table deferred TLB flushes tracking.
->> The basic idea is to save a generation in the page-struct that tracks
->> when deferred PTE change took place, and track whenever a TLB flush
->> completed. In addition, other users - such as mprotect - would use
->> the tlb_gather interface.
->>=20
->> Unfortunately, due to limited space in page-struct this would only
->> be possible for 64-bit (and my implementation is only for x86-64).
->=20
-> I don't want to discourage you but I don't think this would end up
-> well. PPC doesn't necessarily follow one-page-struct-per-table rule,
-> and I've run into problems with this before while trying to do
-> something similar.
+I'm just going to combine my response to the 2-3 emails in this one response.
 
-Discourage, discourage. Better now than later.
+On Tue, Jan 12, 2021 at 9:57 AM Thierry Reding <treding@nvidia.com> wrote:
+>
+> On Mon, Jan 11, 2021 at 05:57:17PM +0100, Rafael J. Wysocki wrote:
+> > On Mon, Jan 11, 2021 at 5:12 PM Thierry Reding <treding@nvidia.com> wrote:
+> > >
+> > > On Mon, Jan 11, 2021 at 03:57:37PM +0100, Rafael J. Wysocki wrote:
+> > > > On Mon, Jan 11, 2021 at 2:43 PM Thierry Reding <treding@nvidia.com> wrote:
+> > > > >
+> > > > > On Sun, Jan 10, 2021 at 08:44:13PM -0800, Hugh Dickins wrote:
+> > > > > > Hi Rafael,
+> > > > > >
+> > > > > > Synaptics RMI4 SMBus touchpad on ThinkPad X1 Carbon (5th generation)
+> > > > > > fails to suspend when running 5.11-rc kernels: bisected to
+> > > > > > 5b6164d3465f ("driver core: Reorder devices on successful probe"),
+> > > > > > and reverting that fixes it.  dmesg.xz attached, but go ahead and ask
+> > > > > > me to switch on a debug option to extract further info if that may help.
+> > > > >
+> > > > > Hi Hugh,
+> > > > >
+> > > > > Quoting what I think are the relevant parts of that log:
+> > > > >
+> > > > > [   34.373742] printk: Suspending console(s) (use no_console_suspend to debug)
+> > > > > [   34.429015] rmi4_physical rmi4-00: Failed to read irqs, code=-6
+> > > > > [   34.474973] rmi4_f01 rmi4-00.fn01: Failed to write sleep mode: -6.
+> > > > > [   34.474994] rmi4_f01 rmi4-00.fn01: Suspend failed with code -6.
+> > > > > [   34.475001] rmi4_physical rmi4-00: Failed to suspend functions: -6
+> > > > > [   34.475105] rmi4_smbus 6-002c: Failed to suspend device: -6
+> > > > > [   34.475113] PM: dpm_run_callback(): rmi_smb_suspend+0x0/0x3c returns -6
+> > > > > [   34.475130] PM: Device 6-002c failed to suspend: error -6
+> > > > > [   34.475187] PM: Some devices failed to suspend, or early wake event detected
+> > > > > [   34.480324] rmi4_f03 rmi4-00.fn03: rmi_f03_pt_write: Failed to write to F03 TX register (-6).
+> > > > > [   34.480748] rmi4_f03 rmi4-00.fn03: rmi_f03_pt_write: Failed to write to F03 TX register (-6).
+> > > > > [   34.481558] rmi4_physical rmi4-00: rmi_driver_clear_irq_bits: Failed to change enabled interrupts!
+> > > > > [   34.487935] acpi LNXPOWER:02: Turning OFF
+> > > > > [   34.488707] acpi LNXPOWER:01: Turning OFF
+> > > > > [   34.489554] rmi4_physical rmi4-00: rmi_driver_set_irq_bits: Failed to change enabled interrupts!
+> > > > > [   34.489669] psmouse: probe of serio2 failed with error -1
+> > > > > [   34.489882] OOM killer enabled.
+> > > > > [   34.489891] Restarting tasks ... done.
+> > > > > [   34.589183] PM: suspend exit
+> > > > > [   34.589839] PM: suspend entry (s2idle)
+> > > > > [   34.605884] Filesystems sync: 0.017 seconds
+> > > > > [   34.607594] Freezing user space processes ... (elapsed 0.006 seconds) done.
+> > > > > [   34.613645] OOM killer disabled.
+> > > > > [   34.613650] Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+> > > > > [   34.615482] printk: Suspending console(s) (use no_console_suspend to debug)
+> > > > > [   34.653097] rmi4_f01 rmi4-00.fn01: Failed to write sleep mode: -6.
+> > > > > [   34.653108] rmi4_f01 rmi4-00.fn01: Suspend failed with code -6.
+> > > > > [   34.653115] rmi4_physical rmi4-00: Failed to suspend functions: -6
+> > > > > [   34.653123] rmi4_smbus 6-002c: Failed to suspend device: -6
+> > > > > [   34.653129] PM: dpm_run_callback(): rmi_smb_suspend+0x0/0x3c returns -6
+> > > > > [   34.653160] PM: Device 6-002c failed to suspend: error -6
+> > > > > [   34.653174] PM: Some devices failed to suspend, or early wake event detected
+> > > > > [   34.660515] OOM killer enabled.
+> > > > > [   34.660524] Restarting tasks ...
+> > > > > [   34.661456] rmi4_physical rmi4-00: rmi_driver_set_irq_bits: Failed to change enabled interrupts!
+> > > > > [   34.661591] psmouse: probe of serio2 failed with error -1
+> > > > > [   34.669469] done.
+> > > > > [   34.748386] PM: suspend exit
+> > > > >
+> > > > > I think what might be happening here is that the offending patch causes
+> > > > > some devices to be reordered in a way different to how they were ordered
+> > > > > originally and the rmi4 driver currently depends on that implicit order.
+> > > >
+> > > > Actually, the only possible case in which the commit in question can
+> > > > introduce suspend failures like this is when some dependency
+> > > > information is missing and so the reordering causes the ordering to
+> > > > change from the (working) implicit one.
+> > > >
+> > > > > Interestingly one of the bugs that the offending patch fixes is similar
+> > > > > in the failure mode but for the reverse reason: the implicit order
+> > > > > causes suspend/resume to fail.
+> > > >
+> > > > And that happens because some dependency information is missing.
+> > > >
+> > > > So we have failing cases when dependency information is missing, so
+> > > > instead of fixing those we have tried to make the core change the
+> > > > ordering after every successful probe in the hope that this will take
+> > > > care of the problem without introducing new breakage.
+> > > >
+> > > > However, it evidently has introduced new breakage and in order to fix
+> > > > it we need to figure out what dependency information is missing in the
+> > > > failing cases and put that information in, but we may as well do the
+> > > > same for the cases that are failing without the offending change.
+> > > >
+> > > > So why don't we revert the commit in question and do just that?
+> > >
+> > > Unfortunately it isn't that easy. In fact, all the dependency
+> > > information already exists in the case that I cited in 5b6164d3465f
+> > > ("driver core: Reorder devices on successful probe"), but it's the
+> > > driver core that suspends/resumes the devices in the wrong order.
+> > >
+> > > The reason is because the ACONNECT device depends on the BPMP device
+> > > (via a power-domains property), but it's also instantiated before the
+> > > BPMP device (because it is listed earlier in device tree, which is
+> > > sorted by unit-address first, then alphabetically). BPMP being a CPU
+> > > non-addressable device it doesn't have a unit-address and hence is
+> > > listed very late in device tree (by convention). Normally this is would
+> > > not be a problem because deferred probe would take care of it. But there
+> > > is one corner-case which happens when the BPMP is built into the kernel
+> > > (which it usually is, as it provides access to resources necessary for
+> > > booting, such as clocks and resets) and ACONNECT is built as a loadable
+> > > module. In that case, BPMP gets probed before ACONNECT and hence when
+> > > ACONNECT does eventually get loaded, the BPMP is already there, meaning
+> > > ACONNECT won't defer probe and hence the DPM suspend/resume order is not
+> > > fixed up by the deferred probe code.
+> >
+> > What about using a device link to enforce the right ordering, then?
+>
+> I was going to implement that, but then I realized that the specific
+> problem I was facing with ACONNECT had been solved differently in the
+> meantime. I wasn't able to exactly pinpoint what fixed it, but I suspect
+> it might have been some of Saravana's fw_devlink code.
 
-It will be relatively easy to extend the scheme to be per-VMA instead of
-per-table for architectures that prefer it this way. It does require
-TLB-generation tracking though, which Andy only implemented for x86, so =
-I
-will focus on x86-64 right now.
+I'd be very surprised if fw_devlink code fixed anything for you when
+you don't see the issue with fw_devlink=off/permissive. In those two
+modes, fw_devlink is pretty much a NOP when it comes to probe/suspend
+ordering.
 
-[ For per-VMA it would require an additional cmpxchg, I presume to save =
-the
-last deferred generation though. ]
+> It's a bit
+> difficult to find out what exactly changed, because it happened after
+> the offending commit was already merged, so I would have to go through
+> all linux-next releases since early December and revert my patch to find
+> out when the change happened and then bisect which change exactly did
+> it.
+>
+> But yes, using a device link would've done the trick as well. However
+> the idea had been to potentially fix many more subtle cases like the one
+> we faced in ACONNECT at the same time. It's unfortunate that it breaks a
+> bunch of other cases that apparently are also missing dependency
+> information and just happen to work fine with the status quo.
+>
+> > Deferred probing is not a way to ensure the suitable suspend/resume ordering.
+>
+> Well, it is in the majority of cases because deferred probe causes the
+> reordering of the suspend/resume queue. And that all makes sense because
+> suppliers should always be suspended after all their consumers.
+>
+> But that's not what the offending patch was doing. The purpose was to
+> ensure that the default suspend/resume ordering matches the probe order,
+> which is both more logical (though I suppose that can be subjective)
 
-> I'd recommend per-vma and per-category (unmapping, clearing writable
-> and clearing dirty) tracking, which only rely on arch-independent data
-> structures, i.e., vm_area_struct and mm_struct.
+I agree with you too that the suspend order matching the probe order
+is more logical than device add order. However, I'm now completely
+changing my position on the patch (the one that reorder on probe). I
+think we should revert it because reordering on probe has a bunch of
+problems. Take this example:
 
-I think that tracking changes on =E2=80=9Cwhat was changed=E2=80=9D =
-granularity is harder
-and more fragile.
+1. Device-A probe() starts running.
+    a. Device-A probe adds two devices - Device-B and Device-C. But
+        incorrectly doesn't mark Device-A as their parents.
+    b. Say the driver for B has already been loaded, so then
+        Device-B's probe() runs.
+    c. Device-B is reordered to the end of list dpm_list (and so are
+        it's children).
+4. Device-A probe() completes.
+5. Device-A is reordered to the end of dpm_list but device-B and
+    device-C are incorrectly NOT reorder to come after device-A.
 
-Let me finish trying the clean up the mess first, since fullmm and
-need_flush_all semantics were mixed; there are 3 different flushing =
-schemes
-for mprotect(), munmap() and try_to_unmap(); there are missing memory
-barriers; mprotect() performs TLB flushes even when permissions are
-promoted; etc.
+And this gets worse when async probing is enabled or if a driver-B is
+registered by another thread during Device-A probe. The same problem
+also exists for supplier-consumer relationships. A consumer's probe
+can finish before the supplier's probe. This is because the supplier
+would have registered with the frameworks before the supplier's probe
+completes. And that's all that's needed for the consumer's probe to
+finish.
 
-There are also some optimizations that we discussed before, such on x86 =
--=20
-RW->RO does not require a TLB flush if a PTE is not dirty, etc.
+There's no way to fix this without the complete dependency info
+(parent-child _and_ supplier-consumer info) being shared with the
+driver core. So, even the reordering of dpm_list after a deferred
+probe is broken/wrong and it's pretty racy. It just happens to work
+for what's already working with the current boot timing in those
+devices. If the complete dependency info was provided, we could delete
+the reorder after the deferred probe. But that's obviously not going
+to happen for existing devices and we just have to live with the code
+being there.
 
-I am trying to finish something so you can say how terrible it is, so I =
-will
-not waste too much time. ;-)
+So for future issues related to ordering, we should just focus on
+fixing/adding parent-child relationships (Eg: Hugh's rmi4 driver
+issue) or adding more device links (Eg: Thierry's issue).
 
->> It would still require to do the copying while holding the PTL =
-though.
->=20
-> IMO, this is unacceptable. Most archs don't support per-table PTL, and
-> even x86_64 can be configured to use per-mm PTL. What if we want to
-> support a larger page size in the feature?
->=20
-> It seems to me the only way to solve the problem with self-explanatory
-> code and without performance impact is to check mm_tlb_flush_pending
-> and the writable bit (and two other cases I mentioned above) at the
-> same time. Of course, this requires a lot of effort to audit the
-> existing uses, clean them up and properly wrap them up with new
-> primitives, BUG_ON all invalid cases and document the exact workflow
-> to prevent misuses.
->=20
-> I've mentioned the following before -- it only demonstrates the rough
-> idea.
->=20
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 5e9ca612d7d7..af38c5ee327e 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -4403,8 +4403,11 @@ static vm_fault_t handle_pte_fault(struct =
-vm_fault *vmf)
-> 		goto unlock;
-> 	}
-> 	if (vmf->flags & FAULT_FLAG_WRITE) {
-> -		if (!pte_write(entry))
-> +		if (!pte_write(entry)) {
-> +			if (mm_tlb_flush_pending(vmf->vma->vm_mm))
-> +				flush_tlb_page(vmf->vma, vmf->address);
-> 			return do_wp_page(vmf);
-> +		}
-> 		entry =3D pte_mkdirty(entry);
-> 	}
-> 	entry =3D pte_mkyoung(entry);
+As for adding device links, hopefully fw_devlink=on as default will
+happen soon and at least take care of this for DT based systems.
+Hopefully someone can add fw_devlink support for ACPI (it's closer to
+the bottom of my long TODO list).
 
-I understand. This might be required, regardless of the deferred flushes
-detection scheme. If we assume that no write-unprotect requires a COW =
-(which
-should be true in this case, since we take a reference on the page), =
-your
-proposal should be sufficient.
 
-Still, I think that there are many unnecessary TLB flushes right now,
-and others that might be missed due to the overly complicated =
-invalidation
-schemes.=20
+> and
+> ensures that deferred probing can work properly for all cases.
+>
+> Anyway, this is ultimately just switching out one set of broken cases
+> for another, so might as well revert the offending patch and concentrate
+> on fixing the broken cases one by one as we find them.
 
-Regardless, as Andrea pointed, this requires first to figure out the
-semantics of mprotect() and friends when pages are pinned.
+Can you see if fw_devlink=on boots for you? If so, that's the fix. If
+it doesn't, let's fix it to make sure it works for you. In the
+linux-next tree, it should be limited to driver fixes (no changes
+needed to the fw_devlink code). Can you make it the default for your
+test platform (add it to your command line) so that it doesn't break
+in the future if it's already working?
 
+> Like I said, I'm slightly concerned about drivers like rmi4 breaking
+> unexpectedly down the road
+
+I think we should fix these too as we find them. At a minimum the rmi4
+driver isn't capturing parent/child relationship correctly.
+
+-Saravana
+
+> because some other patch caused the ordering
+> to change, so reverting now may just be putting off the inevitable. But
+> you're obviously right that we shouldn't randomly break working setups,
+> so I'm fine with the revert.
+>
+> Thierry
