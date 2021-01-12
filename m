@@ -2,95 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DCB22F2CFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:38:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C77382F2D04
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731496AbhALKga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:36:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726456AbhALKg3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:36:29 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33861C061575;
-        Tue, 12 Jan 2021 02:35:49 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id t6so1195208plq.1;
-        Tue, 12 Jan 2021 02:35:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=2vW7UjS91mUgSCmEG/Sz0t6o0pp75oxqfzBwWXt7f2M=;
-        b=SoH6pHGywNFf1A75/U8DCT2+4S3tWgBipSZUuoZ8HN2wMzlblTOqu6efEOVH90Sg+q
-         G8tUmBR+DB8Ld5P5uby0QFProZjpocZ1kOvbncU6ZhJwlJceW5gcwDg97VTrOOCd/H2r
-         0t31CBwifLGiNgePteRCJ/9O5nel1iW0S8D1/NQY8qCybV5wN85W8Rhid8gEumQWmx5x
-         35tdH74ZVL+LXLCGjUHgjdvNd1wfjtUqR0liyvv/vhV3hDJlgWDGwKCKxAaFLalXiubU
-         cVxTiBMr3QI2gwoIuZs7xhfzld60kPvsePUYYME4K3cVyfjCDK279ytsHFMZq3jloTkS
-         GgcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=2vW7UjS91mUgSCmEG/Sz0t6o0pp75oxqfzBwWXt7f2M=;
-        b=KAfrES6z9MsXWqr938FB5pqGfHojrj2+DbB538Ah2TDNDfWAiYEgBaCoy9WWak34iY
-         GCRDfilY0/y/Yeo3HwVSvG4f5C1wNeeqAAFmFBu/YgjRAsj/kWmDK0JBsCdvZSLdnijA
-         Up7h7DTjitCCt44KIe8/h45rmd4RkBDl1tftL3eK1gKwH1ck/sG4hXISaZmue9kmvw61
-         tv5EZxKzHEwFZjNDX1YaVtgA78BI8cXdWxvqrICGwvKnaMigspLdwwft+S8CdS2QwFA2
-         3MHBnW5Ejo3n+YDNza0Nqjj7kI3tIbe+9U9Xfv2hInkr9ySkx5Qc3NAwcs1Ye/a5kvuF
-         77iQ==
-X-Gm-Message-State: AOAM530aksEWXUu2K6K5hPS8CUlMPkrJOpqO7SJLlFZwMGP5vABBfyaG
-        nfFSHG5iuPAXUYI3NFmbaNa+m5cJ/E4=
-X-Google-Smtp-Source: ABdhPJzG8gTKskYQqV+qLikrI+rH8uIAciJ00vTZ9eOqaSRZRIEJD9MP5zlltbbjHvlAxC6vgb7DDA==
-X-Received: by 2002:a17:902:aa84:b029:da:f114:6022 with SMTP id d4-20020a170902aa84b02900daf1146022mr4081933plr.46.1610447748703;
-        Tue, 12 Jan 2021 02:35:48 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id y21sm2952435pfr.90.2021.01.12.02.35.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 02:35:48 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     rric@kernel.org
-Cc:     khuong@os.amperecomputing.com, bp@alien8.de, mchehab@kernel.org,
-        tony.luck@intel.com, james.morse@arm.com,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: [PATCH v2] edac: remove redundant error print in xgene_edac_probe
-Date:   Tue, 12 Jan 2021 02:35:40 -0800
-Message-Id: <20210112103540.7818-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.17.1
+        id S1727725AbhALKhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:37:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726387AbhALKhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 05:37:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FFB3222B3;
+        Tue, 12 Jan 2021 10:36:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610447814;
+        bh=me4VfGevELMQ1wDfalFTk9vfIzyJP8ihe4XFq/deiiM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hTeCcZWpMjgUUWmh27lAfMaApy1y5vIkzINXhL9py33nYqs2xFaO212lc1zPknXyi
+         LbiA04wX8XtKWw6/R1FQbweGMJlzTzUg6vSqrN9kDEAGk3mIZLd+E/z2or+LlrpVNh
+         RFM3jDCztHNUkYaM3qAIty5OHFLfzmeWV7b4F9AlW279xR77Np8n7pUTjZV7l8ItWA
+         fjnBjbfqCwa0KYqWNg7RrgOuz5TdFiGJs6S60DNJU6fM/RD+But/47aTc/BXGJAVI7
+         cJSL2cbmUiEPZzQrJxkNMheSkrsPXzVccm/Ifb80PANMqjjv9OFgO0e19FD9Vs51g3
+         hdEidid3tG9YQ==
+Date:   Tue, 12 Jan 2021 16:06:48 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Phong Hoang <phong.hoang.wz@renesas.com>,
+        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] dmaengine: rcar-dmac: Add support for R-Car V3U
+Message-ID: <20210112103648.GL2771@vkoul-mobl>
+References: <20210107181524.1947173-1-geert+renesas@glider.be>
+ <20210107181524.1947173-5-geert+renesas@glider.be>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210107181524.1947173-5-geert+renesas@glider.be>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+On 07-01-21, 19:15, Geert Uytterhoeven wrote:
+> The DMACs (both SYS-DMAC and RT-DMAC) on R-Car V3U differ slightly from
+> the DMACs on R-Car Gen2 and other R-Car Gen3 SoCs:
+>   1. The per-channel registers are located in a second register block.
+>      Add support for mapping the second block, using the appropriate
+>      offsets and stride.
+>   2. The common Channel Clear Register (DMACHCLR) was replaced by a
+>      per-channel register.
+>      Update rcar_dmac_chan_clear{,_all}() to handle this.
+>      As rcar_dmac_init() needs to clear the status before the individual
+>      channels are probed, channel index and base address initialization
+>      are moved forward.
+> 
+> Inspired by a patch in the BSP by Phong Hoang
+> <phong.hoang.wz@renesas.com>.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/dma/sh/rcar-dmac.c | 68 +++++++++++++++++++++++++++-----------
+>  1 file changed, 49 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/dma/sh/rcar-dmac.c b/drivers/dma/sh/rcar-dmac.c
+> index 990d78849a7de704..c11e6255eba1fc6b 100644
+> --- a/drivers/dma/sh/rcar-dmac.c
+> +++ b/drivers/dma/sh/rcar-dmac.c
+> @@ -189,7 +189,7 @@ struct rcar_dmac_chan {
+>   * struct rcar_dmac - R-Car Gen2 DMA Controller
+>   * @engine: base DMA engine object
+>   * @dev: the hardware device
+> - * @iomem: remapped I/O memory base
+> + * @iomem: remapped I/O memory bases (second is optional)
+>   * @n_channels: number of available channels
+>   * @channels: array of DMAC channels
+>   * @channels_mask: bitfield of which DMA channels are managed by this driver
+> @@ -198,7 +198,7 @@ struct rcar_dmac_chan {
+>  struct rcar_dmac {
+>  	struct dma_device engine;
+>  	struct device *dev;
+> -	void __iomem *iomem;
+> +	void __iomem *iomem[2];
 
-Coccinelle reports a redundant error print in xgene_edac_probe.
-As 'platform_get_irq' already prints the error message, error
-print here is redundant.
+do you forsee many more memory regions, if not then why not add second
+region, that way changes in this patch will be lesser..?
 
-Fix it by using 'platform_get_irq_optional' in place of
-'platform_get_irq', as Robert suggested.
+and it would be better to refer to a region by its name rather than
+iomem[1]..
 
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
-v2:
-- use 'platform_get_irq_optional' instead of 'platform_get_irq'
----
- drivers/edac/xgene_edac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/edac/xgene_edac.c b/drivers/edac/xgene_edac.c
-index 1d2c27a00a4a..2ccd1db5e98f 100644
---- a/drivers/edac/xgene_edac.c
-+++ b/drivers/edac/xgene_edac.c
-@@ -1916,7 +1916,7 @@ static int xgene_edac_probe(struct platform_device *pdev)
- 		int i;
- 
- 		for (i = 0; i < 3; i++) {
--			irq = platform_get_irq(pdev, i);
-+			irq = platform_get_irq_optional(pdev, i);
- 			if (irq < 0) {
- 				dev_err(&pdev->dev, "No IRQ resource\n");
- 				rc = -EINVAL;
 -- 
-2.17.1
-
+~Vinod
