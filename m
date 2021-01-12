@@ -2,109 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0912F2DC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:19:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 396EA2F2DC6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 12:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbhALLTH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Jan 2021 06:19:07 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:31307 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725773AbhALLTE (ORCPT
+        id S1727338AbhALLTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 06:19:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47649 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725774AbhALLTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 06:19:04 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-266-OkYGjMEBNu-i6AdjcLHlbQ-1; Tue, 12 Jan 2021 11:17:24 +0000
-X-MC-Unique: OkYGjMEBNu-i6AdjcLHlbQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 12 Jan 2021 11:17:18 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 12 Jan 2021 11:17:18 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Jiri Olsa' <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>
-CC:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        "Jin Yao" <yao.jin@linux.intel.com>
-Subject: RE: [PATCH] perf test: Fix shadow stat test for non-bash shells
-Thread-Topic: [PATCH] perf test: Fix shadow stat test for non-bash shells
-Thread-Index: AQHW6MXUMDKswH4pgUyxCMgfD/u1O6oj1CNw
-Date:   Tue, 12 Jan 2021 11:17:18 +0000
-Message-ID: <c0d1ac9ce2bf43029c1c97bfcc9029c4@AcuMS.aculab.com>
-References: <20210108074712.947223-1-namhyung@kernel.org>
- <20210112093016.GB1252618@krava>
-In-Reply-To: <20210112093016.GB1252618@krava>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 12 Jan 2021 06:19:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610450274;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m3tLMcR2b3Xdvwoy4KoIFE09PvEPwOzcb5p0zUizGX0=;
+        b=fYfR7ifoaKGQsBM85rd2kCm1EULsgdaqX2gLW0/meZMGG2YHWYReWhpBPdw2LtBrYe455X
+        SyFO4IkO5tFWw4YO89ogyqIDmKIQBuGXT5WhDG6K4FAUnQmWQDKH60csjGyIslmyaKXSs9
+        7ss5e5MswmxQtZpW4a0Y0anLj8igBjY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-142-iGlrs6eDMHOn2VR7s1UvFQ-1; Tue, 12 Jan 2021 06:17:49 -0500
+X-MC-Unique: iGlrs6eDMHOn2VR7s1UvFQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5E556107ACF7;
+        Tue, 12 Jan 2021 11:17:48 +0000 (UTC)
+Received: from [10.36.115.140] (ovpn-115-140.ams2.redhat.com [10.36.115.140])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D416460BE2;
+        Tue, 12 Jan 2021 11:17:46 +0000 (UTC)
+Subject: Re: [PATCH 1/5] mm: Introduce ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     akpm@linux-foundation.org, mhocko@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz,
+        pasha.tatashin@soleen.com
+References: <20201217130758.11565-1-osalvador@suse.de>
+ <20201217130758.11565-2-osalvador@suse.de>
+ <21932014-3027-8ad9-2140-f63500c641d7@redhat.com>
+ <20210112072643.GA10774@linux>
+ <feef406c-105c-138a-b8af-345684876e25@redhat.com>
+ <20210112111700.GA13374@linux>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <5ca78a13-98b7-0952-1c06-81284d4bc41c@redhat.com>
+Date:   Tue, 12 Jan 2021 12:17:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+In-Reply-To: <20210112111700.GA13374@linux>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Olsa
-> Sent: 12 January 2021 09:30
+On 12.01.21 12:17, Oscar Salvador wrote:
+> On Tue, Jan 12, 2021 at 11:12:30AM +0100, David Hildenbrand wrote:
+>> On 12.01.21 08:26, Oscar Salvador wrote:
+>>> You mean introducing only mm/Kconfig change in this patch, and then
+>>> arch/*/Kconfig changes in separate patches at the end of the series?
+>>
+>> Yeah, or squashing the leftovers of this patch (3 LOC) into patch #2.
 > 
-> On Fri, Jan 08, 2021 at 04:47:12PM +0900, Namhyung Kim wrote:
-> > It was using some bash-specific features and failed to parse when
-> > running with a different shell like below:
-...
+> Ok, makes sense.
+> 
+>>> I can certainly do that, not sure how much will help with the review,
+>>> but it might help when bisecting.
+>>
+>> It's usually nicer to explicitly enable stuff per architecture, stating
+>> why it works on that architecture (and in the best case, even was
+>> tested!). :)
+> 
+> Fine by me.
+> I will prepare another re-spin with that in mind then.
+> 
+> It would be great to have some feedback on patch#2 before that (in case you find
+> some time ;-).
 
-You don't need a temporary file, one option is:
+Yeah, will get to that soon. Mailbox is flooded right now :D
 
-> > index 249dfe48cf6a..e2c7ac4ed91d 100755
-> > --- a/tools/perf/tests/shell/stat+shadow_stat.sh
-> > +++ b/tools/perf/tests/shell/stat+shadow_stat.sh
-...
-> >  	perf stat -a -A --no-big-num -e cycles,instructions sleep 1  2>&1 | \
-> >  	grep ^CPU | \
-> >  	while read cpu num evt hash ipc rest
-> >  	do
-...
-> > +		if [ "$evt" = "cycles" ]; then
-> > +			echo $cpu $num >> $results
 
-			results="$results $cpu:$num"
+-- 
+Thanks,
 
-> >  			continue
-> >  		fi
-> >
-> >  		# skip if no cycles
-> > -		local cyc=${results[$cpu]}
-> > -		if [[ -z $cyc ]]; then
-> > +		local cyc=$(grep $cpu $results | cut -d' ' -f2)
-
-		cyc=${results##* $cpu:}
-		cyc=$(cyc%% *}
-
-> > +		if [ -z "$cyc" ]; then
-> >  			continue
-> >  		fi
-
-I can't remember when 'local' was invented.
-You may find shells that don't support it.
-In any case, since this is a small standalone file I'd
-remove them just in case.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+David / dhildenb
 
