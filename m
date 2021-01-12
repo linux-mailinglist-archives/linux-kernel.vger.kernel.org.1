@@ -2,91 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 346512F28CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 08:17:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90EB42F28D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 08:17:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391988AbhALHQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 02:16:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391849AbhALHP7 (ORCPT
+        id S2392004AbhALHQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 02:16:51 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:59914 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388456AbhALHQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 02:15:59 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F84C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 23:15:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=Mk0eAutEoJveyPAezF2JyS1WJDEYQjBMunxTqsLl6Qg=; b=I7K9rZ77CNRm4pjbqEvN2rH1MP
-        TvAfN50lc4Oz5X6hOUtxwI/g9qJOc4/SLIdYKtthW7OvmgE39D70h1TRersPjNv+FIHld4hgS+Io5
-        4KyPNj8ZsiEt5SII9hpIq2gPhIZUPCOXR84deiYoDr057XO1rlJSOgr0nAt1+4HcdBJ5R4b/9uYu8
-        rFggsi4b1Y684ihHErhJeePQmQmyRNeFWSgjAGLPp9MBuKxY175niOwLG9T69PoPkno+8ceMuLR+g
-        H0x+6JcKBuCjqkUm2wYlG8ICCs372gdMY3wyjADWxSWIIRpE33YcFwPoloxaF3JATz69JcED6zH8o
-        s3t4wOig==;
-Received: from [2601:1c0:6280:3f0::79df]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kzDta-000573-QW; Tue, 12 Jan 2021 07:15:15 +0000
-Subject: Re: [PATCH v2 29/34] Intel tsens i2c slave driver.
-To:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
-        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        leonard.crestez@nxp.com, palmerdabbelt@google.com,
-        paul.walmsley@sifive.com, peng.fan@nxp.com, robh+dt@kernel.org,
-        shawnguo@kernel.org, jassisinghbrar@gmail.com
-Cc:     linux-kernel@vger.kernel.org,
-        "C, Udhayakumar" <udhayakumar.c@intel.com>, C@linux.intel.com
-References: <20210108212600.36850-1-mgross@linux.intel.com>
- <20210108212600.36850-30-mgross@linux.intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <fe1aad31-a536-4f0b-e817-b795890f4b45@infradead.org>
-Date:   Mon, 11 Jan 2021 23:15:06 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 12 Jan 2021 02:16:50 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10C7Frvf070745;
+        Tue, 12 Jan 2021 01:15:53 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610435753;
+        bh=g7AbDhQGdVwNlve6TmM+Kxluc6Uu+tgfQyJ92TiNyP8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=OK6GuZJYMdDho883EdA795tNm7onaXuFb+9spOKggyEOO3UgpT8UMdMwfi+5o+lmM
+         yz1SHeHGFm7YP78sxCVGs4UGC7nSm+OKwz5Cipo8yM2ox2z5td98Id9AO6vdzV1Zx1
+         HwlhoosSez+3n+eTG8w4+qnueqrwn2jaKq8wxOVo=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10C7Frqu113397
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 12 Jan 2021 01:15:53 -0600
+Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 12
+ Jan 2021 01:15:53 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 12 Jan 2021 01:15:53 -0600
+Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10C7FmkX028581;
+        Tue, 12 Jan 2021 01:15:49 -0600
+Subject: Re: [PATCH v7 0/2] PCI: cadence: Retrain Link to work around Gen2
+To:     Nadeem Athani <nadeem@cadence.com>, <tjoseph@cadence.com>,
+        <lorenzo.pieralisi@arm.com>, <robh@kernel.org>,
+        <bhelgaas@google.com>, <linux-omap@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <mparab@cadence.com>, <sjakhade@cadence.com>,
+        <pthombar@cadence.com>
+References: <20201230120515.2348-1-nadeem@cadence.com>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <15abdca0-d1e1-64b7-4a9a-d7549f035e01@ti.com>
+Date:   Tue, 12 Jan 2021 12:45:47 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210108212600.36850-30-mgross@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201230120515.2348-1-nadeem@cadence.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/8/21 1:25 PM, mgross@linux.intel.com wrote:
-> diff --git a/drivers/misc/intel_tsens/Kconfig b/drivers/misc/intel_tsens/Kconfig
-> index 8b263fdd80c3..c2138339bd89 100644
-> --- a/drivers/misc/intel_tsens/Kconfig
-> +++ b/drivers/misc/intel_tsens/Kconfig
-> @@ -14,6 +14,20 @@ config INTEL_TSENS_LOCAL_HOST
->  	  Say Y if using a processor that includes the Intel VPU such as
->  	  Keem Bay.  If unsure, say N.
->  
-> +config INTEL_TSENS_I2C_SLAVE
-> +	bool "I2C slave driver for intel tsens"
-
-Why bool instead of tristate?
-
-> +	depends on INTEL_TSENS_LOCAL_HOST
-> +	select I2C
-> +	select I2C_SLAVE
-> +	help
-> +	  This option enables tsens i2c slave driver.
-
-	                            I2C
-
-> +
-> +	  This driver is used for reporting thermal data via I2C
-> +	  SMBUS to remote host.
-> +	  Enable this option if you want to have support for thermal
-> +	  management controller
-
-	             controller.
-
-> +	  Say Y if using a processor that includes the Intel VPU such as
-> +	  Keem Bay.  If unsure, say N.
 
 
--- 
-~Randy
+On 30/12/20 5:35 pm, Nadeem Athani wrote:
+> Cadence controller will not initiate autonomous speed change if strapped
+> as Gen2. The Retrain Link bit is set as quirk to enable this speed change.
+> Adding a quirk flag for defective IP. In future IP revisions this will not
+> be applicable.
+> 
+> Version history:
+> Changes in v7:
+> - Changing the commit title of patch 1 in this series.
+> - Added a return value for function cdns_pcie_retrain().
+> Changes in v6:
+> - Move the position of function cdns_pcie_host_wait_for_link to remove
+>   compilation error. No changes in code. Separate patch for this.
+> Changes in v5:
+> - Remove the compatible string based setting of quirk flag.
+> - Removed additional Link Up Check
+> - Removed quirk from pcie-cadence-plat.c and added in pci-j721e.c
+> Changes in v4:
+> - Added a quirk flag based on a new compatible string.
+> - Change of api for link up: cdns_pcie_host_wait_for_link().
+> Changes in v3:
+> - To set retrain link bit,checking device capability & link status.
+> - 32bit read in place of 8bit.
+> - Minor correction in patch comment.
+> - Change in variable & macro name.
+> Changes in v2:
+> - 16bit read in place of 8bit.
 
+Could get GEN2 card enumerated in GEN2 mode in J7ES EVM.
+
+Tested-by: Kishon Vijay Abraham I <kishon@ti.com>
+
+Thanks
+Kishon
+> 
+> Nadeem Athani (2):
+>   PCI: cadence: Shifting of a function to support new code.
+>   PCI: cadence: Retrain Link to work around Gen2 training defect.
+> 
+>  drivers/pci/controller/cadence/pci-j721e.c         |  3 +
+>  drivers/pci/controller/cadence/pcie-cadence-host.c | 70 ++++++++++++++++------
+>  drivers/pci/controller/cadence/pcie-cadence.h      | 11 +++-
+>  3 files changed, 65 insertions(+), 19 deletions(-)
+> 
