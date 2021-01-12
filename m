@@ -2,141 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBAF2F32D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:21:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 600452F32D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728787AbhALOTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:19:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34608 "EHLO
+        id S1730108AbhALOVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:21:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbhALOTG (ORCPT
+        with ESMTP id S1726119AbhALOVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:19:06 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA1AC061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:18:26 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id z21so1543190pgj.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:18:26 -0800 (PST)
+        Tue, 12 Jan 2021 09:21:21 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F124DC061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:20:40 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id r4so2263806wmh.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:20:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZP/OKsBTHa1Ku/1C8+jY1uZ9XXWnbjWQbbJ1iqiQI90=;
-        b=KXJDcyT04KY1E1/QvWwWjUF36RQI+5Bu+t3pUk2IHBywPVmHdqc+vzoj6oysXqV9RT
-         U357Xxhes9/2bjHM8hT2AKu97rn+qbyiAC/hTrSSHupPcpPEzGvuaHx9KHUY1bXWOSWI
-         FdXitRT2Wj6V+xJFgjqWpqzgGrumEPB12ESZ0NYtdDoaV9weEiBbEmuHNkblO/dquesr
-         3fA21BrKCYy262yV7usZurMZwsjpyKY1apcI9hJU2/DyA/k+Kl4kWvrUPNoViA6SC0nL
-         dfgI2d1OHb15tB2ry8KHen2cQEqXwIF5i6RViXC68QYIq0e7WE8m23+vXPKXUyJ4v0lE
-         Vjwg==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lRZ3d22RXi2ViyjCaIZIVlAwq5J2EBopCK/yoHar0tk=;
+        b=Tnor6WweTI6EMJ3JkUSAheTZoPtMvnhHIrNwk2GPdLYm+l8vUhui0OTuLf3VW2t7Zp
+         LmrhMjocBU+y7mPLZkHzqBtelT3BCd/Js5+749EuC9BVTQcRZF3m0dMQyyg4QMYbGqze
+         Wp+YMC/JMjblo0QMU4DCnvhZ+mVZmdkN7PQog=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZP/OKsBTHa1Ku/1C8+jY1uZ9XXWnbjWQbbJ1iqiQI90=;
-        b=TQjE5m0dYDxNK2IhgvEz1Pisbfas4kNJ/XfxSe3BxKGblBcaVlXY/wjAftb4pzUBUA
-         mDBwLcEbXRO4xPTSb/Bx6ghJiJzoiS/J8d/7Kc4bIRE188M5ctdIlvjH8JRvYo5j3O1H
-         H531e1birOwtrPc+jV8aR5FXShhskZJ4seEyzVMTgYIZomBqJSltwJcE7NENtwJ8hrU1
-         6Z7MlSbaJquySWgBc6CTdqND02NvW9pf2uqonc59vEnb4xVi2wWrc5LrepyCrjcFIJnz
-         KJmM6i4BtpMxeFjDKmjfSXtivjtD0XUMlkhojZzsXMNfd9ndzBjTLGdT6DslnTi1i7UO
-         DQlg==
-X-Gm-Message-State: AOAM5313r7Gj/Tf2bWOjvGYv9Vy0E4sJz6SHhaFgcEBRWhl+nrAxIcpm
-        av/LFcdubz4OTLs/dx34yIK2tCzPIKImbnSndz/cZw==
-X-Google-Smtp-Source: ABdhPJymg7ZZpekPq1atCLekTkcjQv4GQ0IAuUDaK2XbFHH8P04lOSQ9bOJNTYSLi5qlu4NStP7+Xv+mzMDUmx1MI+I=
-X-Received: by 2002:a63:50a:: with SMTP id 10mr4974342pgf.273.1610461106114;
- Tue, 12 Jan 2021 06:18:26 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=lRZ3d22RXi2ViyjCaIZIVlAwq5J2EBopCK/yoHar0tk=;
+        b=FOv8VfEJDcybLoCAH3ypa769CxwveHYESs/srj8vwJAcmn0m/XhKYRzIFJP8u4DHBw
+         jDWPCX+QkXm+EbYA6Agez4EelrWf6rd5NxN17LRrtxq9PYxyy+M704zqq8ijWufwt5Dn
+         I5Q0wEatP38/Dfl46gjAIPJbzkZAM0qdzboKXMWf7PPHSxLPe5GCKyqs56TKkCs1kq/3
+         kdMgQ7m+39kwUJAYEvquyjtVqnnRaYkOqGzJpFrDNPNCIVaJpVMXG57OdMnRaaGW4mJX
+         34sg5laD20453ieLAG7Ipp9l2Nk27iJHsM4BFUlU6AXiBUvSrrHhnU3F6VY8XZF7lcy2
+         QC/A==
+X-Gm-Message-State: AOAM530bbhYGF1axLW+17rwkLPKd0GzqVmDGD1Ej4EzmckIUVN5Oct2l
+        14+EvY0CmEkTYiQvlNKMNE6CQ9MIQMJdyivy
+X-Google-Smtp-Source: ABdhPJy83/7uShpCX8AKV6iHS42oLbgL1kEyg4Xhn+9gXQjSyaPhkB95sv3erSdwA2vZlZOynSSvUQ==
+X-Received: by 2002:a1c:a501:: with SMTP id o1mr3840543wme.44.1610461239793;
+        Tue, 12 Jan 2021 06:20:39 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id a17sm5486318wrs.20.2021.01.12.06.20.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 06:20:38 -0800 (PST)
+Date:   Tue, 12 Jan 2021 15:20:36 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     "ZhiJie.Zhang" <zhangzhijie@loongson.cn>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm: Improve the output_poll_changed  description
+Message-ID: <X/2wNLjupzAS7O5c@phenom.ffwll.local>
+Mail-Followup-To: "ZhiJie.Zhang" <zhangzhijie@loongson.cn>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210112104644.341345-1-zhangzhijie@loongson.cn>
 MIME-Version: 1.0
-References: <20210110124017.86750-1-songmuchun@bytedance.com>
- <20210110124017.86750-2-songmuchun@bytedance.com> <1b39d654-0b8c-de3a-55d1-6ab8c2b2e0ba@redhat.com>
- <c6eddfc6-8e15-4a28-36ff-64bfa65cca8e@redhat.com> <CAMZfGtWnATsqgdqVONgAFWAAJU=KGxVJQEt38b8JTV+UtRzkYw@mail.gmail.com>
- <423ee403-bba7-acf6-8934-9db36d3a719a@redhat.com>
-In-Reply-To: <423ee403-bba7-acf6-8934-9db36d3a719a@redhat.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 12 Jan 2021 22:17:42 +0800
-Message-ID: <CAMZfGtXfA6JA3eYLhT8YGLJJocopix_mp7uSDPfcmooFEE7xNA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v3 1/6] mm: migrate: do not migrate HugeTLB
- page whose refcount is one
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>, mhocko@suse.cz,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Yang Shi <shy828301@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112104644.341345-1-zhangzhijie@loongson.cn>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 9:51 PM David Hildenbrand <david@redhat.com> wrote:
->
-> On 12.01.21 14:40, Muchun Song wrote:
-> > On Tue, Jan 12, 2021 at 7:11 PM David Hildenbrand <david@redhat.com> wrote:
-> >>
-> >> On 12.01.21 12:00, David Hildenbrand wrote:
-> >>> On 10.01.21 13:40, Muchun Song wrote:
-> >>>> If the refcount is one when it is migrated, it means that the page
-> >>>> was freed from under us. So we are done and do not need to migrate.
-> >>>>
-> >>>> This optimization is consistent with the regular pages, just like
-> >>>> unmap_and_move() does.
-> >>>>
-> >>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> >>>> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-> >>>> Acked-by: Yang Shi <shy828301@gmail.com>
-> >>>> ---
-> >>>>  mm/migrate.c | 6 ++++++
-> >>>>  1 file changed, 6 insertions(+)
-> >>>>
-> >>>> diff --git a/mm/migrate.c b/mm/migrate.c
-> >>>> index 4385f2fb5d18..a6631c4eb6a6 100644
-> >>>> --- a/mm/migrate.c
-> >>>> +++ b/mm/migrate.c
-> >>>> @@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
-> >>>>              return -ENOSYS;
-> >>>>      }
-> >>>>
-> >>>> +    if (page_count(hpage) == 1) {
-> >>>> +            /* page was freed from under us. So we are done. */
-> >>>> +            putback_active_hugepage(hpage);
-> >>>> +            return MIGRATEPAGE_SUCCESS;
-> >>>> +    }
-> >>>> +
-> >>>>      new_hpage = get_new_page(hpage, private);
-> >>>>      if (!new_hpage)
-> >>>>              return -ENOMEM;
-> >>>>
-> >>>
-> >>> Question: What if called via alloc_contig_range() where we even want to
-> >>> "migrate" free pages, meaning, relocate it?
-> >>>
-> >>
-> >> To be more precise:
-> >>
-> >> a) We don't have dissolve_free_huge_pages() calls on the
-> >> alloc_contig_range() path. So we *need* migration IIUC.
-> >
-> > Without this patch, if you want to migrate a HUgeTLB page,
-> > the page is freed to the hugepage pool. With this patch,
-> > the page is also freed to the hugepage pool.
-> > I didn't see any different. I am missing something?
->
-> I am definitely not an expert on hugetlb pools, that's why I am asking.
->
-> Isn't it, that with your code, no new page is allocated - so
-> dissolve_free_huge_pages() might just refuse to dissolve due to
-> reservations, bailing out, no?
+On Tue, Jan 12, 2021 at 06:46:44PM +0800, ZhiJie.Zhang wrote:
+> From: zhangzhijie <zhangzhijie@loongson.cn>
+> 
+> codeview the implementation of few Drivers.
 
-Without this patch, the new page can be allocated from the
-hugepage pool. The dissolve_free_huge_pages() also
-can refuse to dissolve due to reservations. Right?
+I'm not really understanding what you're trying to say here.
 
->
-> (as discussed, looks like alloc_contig_range() needs to be fixed to
-> handle this correctly)
->
-> --
-> Thanks,
->
-> David / dhildenb
->
+> this callback was used by drm_kms_helper_hotplug_event()
+> 
+> Signed-off-by: zhangzhijie <zhangzhijie@loongson.cn>
+> ---
+>  include/drm/drm_mode_config.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/drm/drm_mode_config.h b/include/drm/drm_mode_config.h
+> index ab424ddd7665..e01c4d0f07d1 100644
+> --- a/include/drm/drm_mode_config.h
+> +++ b/include/drm/drm_mode_config.h
+> @@ -104,7 +104,7 @@ struct drm_mode_config_funcs {
+>  	 * changes.
+>  	 *
+>  	 * Drivers implementing fbdev emulation with the helpers can call
+> -	 * drm_fb_helper_hotplug_changed from this hook to inform the fbdev
+> +	 * drm_kms_helper_hotplug_event() from this hook to inform the fbdev
+>  	 * helper of output changes.
+
+I think since we touch this, maybe better to revamp it complete. The best
+way to handle all this is by registering a struct drm_client, since that
+provides the &drm_client_funcs.hotplug callback. Also for fbdev support
+drivers shouldn't even use that, but instead use the
+drm_fbdev_generic_setup() function, which takes care of everything.
+
+I think we can also remove the FIXME below, since with the drm_client
+infrastructure and the generic fbdev emulation we've resolved this all
+very neatly now.
+
+Can you please respin with my suggestions taking into account somehow?
+
+Thanks, Daniel
+
+>  	 *
+>  	 * FIXME:
+> -- 
+> 2.29.2
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
