@@ -2,141 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29DEE2F3D7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:44:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B17B62F3D78
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:44:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387565AbhALVlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:41:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407019AbhALVhr (ORCPT
+        id S2405625AbhALVkj convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Jan 2021 16:40:39 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:42300 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731887AbhALVkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 16:37:47 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19EDFC061794
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:37:07 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id p14so3315836qke.6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 13:37:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MC7BSr6d4yh4fJNH+ilIdGBl8uQ03KTfoLip01VhE/8=;
-        b=iaw0KylzQa9399e718RK9zFSYe6sG0OYhLP52bdzy6Z18PmqQAxOW5XHJGUD9PlpuN
-         V0SIyaCi0V/EciD5FDzh4t1sxCi+B24l08J/+yMjRMehevd+2yHd2TuLR4AlWKkAJ0Ja
-         tFhHp8NLk0PyMlOfBGsO9q/TBwG/NYd8RvOnyWCkea78ztg6pnTW5lPRB1NxuxkVt6yE
-         yZghQciwVpSXca4hnleyMcYh6C3BhL7q1k5PsuHUMcnO4MMkxObS6ZX0eep6xivmJaSZ
-         fzdjAGd7yTF0OPybZYJAF92RAMRCWbkLjKaGps9hfczOfLhhNMPLuyxkeAOB/y+L83O3
-         fDUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MC7BSr6d4yh4fJNH+ilIdGBl8uQ03KTfoLip01VhE/8=;
-        b=ejIuRpZTKblVJIkvEmBgIaMv6DUkH2NjRZAgKR07AwMVfFqWlZ+1y/iigskvpKE/Ez
-         wuc094JmbhxzeLhHeg+sbscTzIvdvXTQKnlLc9/0aE+FyTT3DH/ZKs66T4H8kZ5hEog1
-         qdYL1RA9+4rFHtUPAs730MQK1juUOqmdn0Pujj12rC0CMBZEuG3vKspoKo0Gw9BoELvD
-         b9pGgh5MB1wZjs+X6KmepNrArzNhpZIuQmic7n1pcIYkc2ePlS0D/u8vgjohoMxQ+mHg
-         0EKCrC+Y6LVH15kZhiwLD6Frh6kh589N9OtoxmtQ9C4YckqzI0obulo6r8j0hPJPKejU
-         nJLA==
-X-Gm-Message-State: AOAM530yZDSW9ce2vagaucHMPh2K65x1Hjz6RiFwPYWKmT0+XIu8UxB/
-        MUhIoT/FrA7KQw3080oDAB0=
-X-Google-Smtp-Source: ABdhPJxo/F+GaTZdNAQPdOP3DxstWyAl5Rb0p4ntaVxNmloGNaUmosyHV9+tjxfe7OkEaq13qPrSdw==
-X-Received: by 2002:a37:a2d1:: with SMTP id l200mr1562906qke.445.1610487426123;
-        Tue, 12 Jan 2021 13:37:06 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id b11sm1929244qtc.5.2021.01.12.13.37.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 13:37:05 -0800 (PST)
-Date:   Tue, 12 Jan 2021 14:37:03 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] ubsan: Implement __ubsan_handle_alignment_assumption
-Message-ID: <20210112213703.GA1376568@ubuntu-m3-large-x86>
-References: <20210112205542.1375847-1-natechancellor@gmail.com>
- <CAKwvOd=yrVKBn9TN2cP8SiB7A8=c2g41PyodKGJu+xEQwAmnDA@mail.gmail.com>
+        Tue, 12 Jan 2021 16:40:00 -0500
+Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <jay.vosburgh@canonical.com>)
+        id 1kzRNg-00021C-EU; Tue, 12 Jan 2021 21:39:12 +0000
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id BF9355FEE8; Tue, 12 Jan 2021 13:39:10 -0800 (PST)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id BA10E9FAB0;
+        Tue, 12 Jan 2021 13:39:10 -0800 (PST)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Jarod Wilson <jarod@redhat.com>
+cc:     linux-kernel@vger.kernel.org, Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [RFC PATCH net-next] bonding: add a vlan+srcmac tx hashing option
+In-reply-to: <20210112211216.GI476710@redhat.com>
+References: <20201218193033.6138-1-jarod@redhat.com> <21784.1608337139@famine> <20210108000340.GC29828@redhat.com> <20210112211216.GI476710@redhat.com>
+Comments: In-reply-to Jarod Wilson <jarod@redhat.com>
+   message dated "Tue, 12 Jan 2021 16:12:16 -0500."
+X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOd=yrVKBn9TN2cP8SiB7A8=c2g41PyodKGJu+xEQwAmnDA@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <30206.1610487550.1@famine>
+Content-Transfer-Encoding: 8BIT
+Date:   Tue, 12 Jan 2021 13:39:10 -0800
+Message-ID: <30207.1610487550@famine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 01:15:42PM -0800, Nick Desaulniers wrote:
-> On Tue, Jan 12, 2021 at 12:55 PM Nathan Chancellor
-> <natechancellor@gmail.com> wrote:
-> >
-> > When building ARCH=mips 32r2el_defconfig with CONFIG_UBSAN_ALIGNMENT:
-> >
-> > ld.lld: error: undefined symbol: __ubsan_handle_alignment_assumption
-> > >>> referenced by slab.h:557 (include/linux/slab.h:557)
-> > >>>               main.o:(do_initcalls) in archive init/built-in.a
-> > >>> referenced by slab.h:448 (include/linux/slab.h:448)
-> > >>>               do_mounts_rd.o:(rd_load_image) in archive init/built-in.a
-> > >>> referenced by slab.h:448 (include/linux/slab.h:448)
-> > >>>               do_mounts_rd.o:(identify_ramdisk_image) in archive init/built-in.a
-> > >>> referenced 1579 more times
-> >
-> > Implement this for the kernel based on LLVM's
-> > handleAlignmentAssumptionImpl because the kernel is not linked against
-> > the compiler runtime.
-> >
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1245
-> > Link: https://github.com/llvm/llvm-project/blob/llvmorg-11.0.1/compiler-rt/lib/ubsan/ubsan_handlers.cpp#L151-L190
-> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> > ---
-> >  lib/ubsan.c | 28 ++++++++++++++++++++++++++++
-> >  lib/ubsan.h |  6 ++++++
-> >  2 files changed, 34 insertions(+)
-> >
-> > diff --git a/lib/ubsan.c b/lib/ubsan.c
-> > index 3e3352f3d0da..a1e6cc9993f8 100644
-> > --- a/lib/ubsan.c
-> > +++ b/lib/ubsan.c
-> > @@ -427,3 +427,31 @@ void __ubsan_handle_load_invalid_value(void *_data, void *val)
-> >         ubsan_epilogue();
-> >  }
-> >  EXPORT_SYMBOL(__ubsan_handle_load_invalid_value);
-> > +
-> > +void __ubsan_handle_alignment_assumption(void *_data, unsigned long ptr,
-> > +                                        unsigned long align,
-> > +                                        unsigned long offset)
-> > +{
-> > +       struct alignment_assumption_data *data = _data;
-> > +       unsigned long real_ptr;
-> > +
-> > +       if (suppress_report(&data->location))
-> > +               return;
-> > +
-> > +       ubsan_prologue(&data->location, "alignment-assumption");
-> > +
-> > +       if (offset)
-> > +               pr_err("assumption of %lu byte alignment (with offset of %lu byte) for pointer of type %s failed",
-> > +                      align, offset, data->type->type_name);
-> > +       else
-> > +               pr_err("assumption of %lu byte alignment for pointer of type %s failed",
-> > +                      align, data->type->type_name);
-> > +
-> > +       real_ptr = ptr - offset;
-> > +       pr_err("%saddress is %lu aligned, misalignment offset is %lu bytes",
-> > +              offset ? "offset " : "", BIT(ffs(real_ptr)),
-> 
-> if real_ptr is an unsigned long, do we want to use `__ffs(real_ptr) +
-> 1` here rather than ffs which takes an int?  It seems the kernel is
-> missing a definition of ffsl. :(
+Jarod Wilson <jarod@redhat.com> wrote:
 
-Why the + 1? I think if we use __ffs (which it seems like we should), I
-think that needs to become
+>On Thu, Jan 07, 2021 at 07:03:40PM -0500, Jarod Wilson wrote:
+>> On Fri, Dec 18, 2020 at 04:18:59PM -0800, Jay Vosburgh wrote:
+>> > Jarod Wilson <jarod@redhat.com> wrote:
+>> > 
+>> > >This comes from an end-user request, where they're running multiple VMs on
+>> > >hosts with bonded interfaces connected to some interest switch topologies,
+>> > >where 802.3ad isn't an option. They're currently running a proprietary
+>> > >solution that effectively achieves load-balancing of VMs and bandwidth
+>> > >utilization improvements with a similar form of transmission algorithm.
+>> > >
+>> > >Basically, each VM has it's own vlan, so it always sends its traffic out
+>> > >the same interface, unless that interface fails. Traffic gets split
+>> > >between the interfaces, maintaining a consistent path, with failover still
+>> > >available if an interface goes down.
+>> > >
+>> > >This has been rudimetarily tested to provide similar results, suitable for
+>> > >them to use to move off their current proprietary solution.
+>> > >
+>> > >Still on the TODO list, if these even looks sane to begin with, is
+>> > >fleshing out Documentation/networking/bonding.rst.
+>> > 
+>> > 	I'm sure you're aware, but any final submission will also need
+>> > to include netlink and iproute2 support.
+>> 
+>> I believe everything for netlink support is already included, but I'll
+>> double-check that before submitting something for inclusion consideration.
+>
+>I'm not certain if what you actually meant was that I'd have to patch
+>iproute2 as well, which I've definitely stumbled onto today, but it's a
+>2-line patch, and everything seems to be working fine with it:
 
-BIT(real_ptr ? __ffs(real_ptr) : 0)
+	Yes, that's what I meant.
 
-I have made that change locally and will send it for v2 in a day or so
-to give Kees some time to check it out.
+>$ sudo ip link set bond0 type bond xmit_hash_policy 5
 
-Thanks for the review!
-Nathan
+	Does the above work with the text label (presumably "vlansrc")
+as well as the number, and does "ip link add test type bond help" print
+the correct text for XMIT_HASH_POLICY?
+
+	-J
+
+>$ ip -d link show bond0
+>11: bond0: <BROADCAST,MULTICAST,MASTER> mtu 1500 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+>    link/ether ce:85:5e:24:ce:90 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 68 maxmtu 65535
+>    bond mode balance-xor miimon 0 updelay 0 downdelay 0 peer_notify_delay 0 use_carrier 1 arp_interval 0 arp_validate none arp_all_targets any primary_reselect always fail_over_mac none xmit_hash_policy vlansrc resend_igmp 1 num_grat_arp 1 all_slaves_active 0 min_links 0 lp_interval 1 packets_per_slave 1 lacp_rate slow ad_select stable tlb_dynamic_lb 1 addrgenmode eui64 numtxqueues 16 numrxqueues 16 gso_max_size 65536 gso_max_segs 65535
+>$ grep Hash /proc/net/bonding/bond0
+>Transmit Hash Policy: vlansrc (5)
+>
+>Nothing bad seems to happen on an older kernel if one tries to set the new
+>hash, you just get told that it's an invalid argument.
+>
+>I *think* this is all ready for submission then, so I'll get both the kernel
+>and iproute2 patches out soon.
+>
+>-- 
+>Jarod Wilson
+>jarod@redhat.com
+
+---
+	-Jay Vosburgh, jay.vosburgh@canonical.com
