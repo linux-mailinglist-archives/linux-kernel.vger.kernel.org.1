@@ -2,181 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3BCB2F2B8E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:44:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6089D2F2B8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 10:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390537AbhALJn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 04:43:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60066 "EHLO
+        id S2387627AbhALJox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 04:44:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728444AbhALJn5 (ORCPT
+        with ESMTP id S1727363AbhALJow (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 04:43:57 -0500
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6950FC06179F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 01:43:17 -0800 (PST)
-Received: by mail-vs1-xe2b.google.com with SMTP id s85so1113703vsc.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 01:43:17 -0800 (PST)
+        Tue, 12 Jan 2021 04:44:52 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B52B6C061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 01:44:12 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id 15so1078076pgx.7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 01:44:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=U8KTXZZOdpOWwMytCWHlaAOpcUYTe69I04JML7H0hG4=;
-        b=GVvuYrEgA9sAgijOBvVQtrkUVxvX21VAJ/HOJKoOCjnLjgbBxuRRFyqyBj6mdoDtwx
-         MblZLo0aV0kA3Y5xRg2IHa5TPh/JmmRaIMIXdpimKBRs5i2dMef/d/GKuF+PUPICMiyH
-         Q7J7N2L+F36ehIRo0MHvikiW+UHHUtKD0KMzM=
+        bh=qhKAvdyLV9ozaBHs7ibd8aRJfyvsfFlYNbqMhqyg060=;
+        b=cbC/HNTUF0dIEuvA/YKvArU6Ak+cJb0cXhRxx830ejv1rNkYMLAQX5DZq+XLl/P2rF
+         I+X1mN8YSVuG8hWZ0N3G5ThmqDczJu5S4W4Hvdxrlb/XeJuYtrzFW7qWDiBoS2vZ1udl
+         xKXI8aNFa8rzyCEO/TYnu7uNHkPNxGQQ8GNVkVWW2gHgZsKWc4HT7V3oZS/c9Q3ik6uF
+         xBKdj4pxtQMEg/nfFDy4YPXZqVuNHpSAwzJwJbty7HUtsTnFui5ne2IQgvMZo7USbpbb
+         SGpu582Zqv30wOZdOcCzKGMWK1yQEKh1uY+Z+WB7APrFtD8kPshhKfCBEDeAk+OPQA5U
+         6nBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=U8KTXZZOdpOWwMytCWHlaAOpcUYTe69I04JML7H0hG4=;
-        b=mw5YmFcaByeDWTE0s45wNnojkbauPuo4NwdN1+thgW5r5KMJDDwyCw9WhCEaIOXpME
-         7jJAsDE/VHdAXnPrszcZlW7CCDoHj74wt1VyjWQR3TTloinidpeIy4kbSsN2ZipNQ5FJ
-         k9aLo9ciu5FMzGg0YWBkQKVqy1F1fzGk2y+D8yXfmwbTT30NnPO/RvbvyVqABFDC6T2q
-         CWR7hxN/hem+pUALcmENkH3ayDydETEL0KldaNKHDMz/QYYC7cRWOATDUXoCFojPAp44
-         uIE1Dz0Wr/bwRaf1XegARhE8/ZwmJDiSWqYshjyMpJgtuqvVuGmx5z+EXEjUQ+LvJSK9
-         7HlA==
-X-Gm-Message-State: AOAM531ZKa+CcMQmj4uOGDPg/+QEc4dHTPe2dLxhDUY5OxaatKLC2/w2
-        vHIeRKtzFZvf/NMfY+yzyfQR9CF6ZwgysHZil48D8g==
-X-Google-Smtp-Source: ABdhPJxpwQa1FNKaf4h67iHm+CypgL2VHALPf8lPbgkbnj8As0D5XiZeWka0RFF9jMbBWHAzsWd0sPyom6NvQtKHvsk=
-X-Received: by 2002:a67:fa50:: with SMTP id j16mr2837868vsq.9.1610444596217;
- Tue, 12 Jan 2021 01:43:16 -0800 (PST)
+        bh=qhKAvdyLV9ozaBHs7ibd8aRJfyvsfFlYNbqMhqyg060=;
+        b=mNxYPQX7jtZwbHxmdYwEYxwFhD743z//gsEHl5i/cJwR07mF5S0FqQt4IH0PbYCMIi
+         GJkk8y5rKjKyS42ciZ5geEKUDUD3P9JqB0nJcJ34bDWwFIGTg+J+FJGx/iq3BZ+5Vi0r
+         VYS/wZ4W3WGDqPibhbb8+hLXTxEbs5RDfDhjA1WW2dQv0LbIEB7zCcrG52xG5eepDhGI
+         Ntt5M/5+4C8Pl6VFJsp1+xZsUv1l7FzuHqqRZiUiOYjtbLW+4CNNLyTX0Ysj0pvN+Ytm
+         6vBJOReJhqNAcCUP5svo1nTxIkHpq3YzAJbXAqoGAmGZc43wbLgQJRzkAL/vSPuHSaaU
+         vHZg==
+X-Gm-Message-State: AOAM532mRZ4HN/odPpcGlm6JhaOvKO1u1kEXlF9fFMFU5dtAjs5EnLi3
+        6+ESWVmTH0Mt6eGJCC5etcBmvXAKXd41apJ1oDP8kA==
+X-Google-Smtp-Source: ABdhPJxvDFvvlZabl5kzZ+R1L5yEdMbs49iCNkUUDD0duSQUClowazshDTSh0023giqQ2cNQDuWnlyLk023Il7JCBMs=
+X-Received: by 2002:a63:480f:: with SMTP id v15mr3875523pga.341.1610444652212;
+ Tue, 12 Jan 2021 01:44:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20201207163255.564116-1-mszeredi@redhat.com> <20201207163255.564116-2-mszeredi@redhat.com>
- <87czyoimqz.fsf@x220.int.ebiederm.org> <20210111134916.GC1236412@miu.piliscsaba.redhat.com>
- <874kjnm2p2.fsf@x220.int.ebiederm.org>
-In-Reply-To: <874kjnm2p2.fsf@x220.int.ebiederm.org>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Tue, 12 Jan 2021 10:43:05 +0100
-Message-ID: <CAJfpegtKMwTZwENX7hrVGUVRWgNTf4Tr_bRxYrPpPAH_D2fH-Q@mail.gmail.com>
-Subject: Re: [PATCH v2 01/10] vfs: move cap_convert_nscap() call into vfs_setxattr()
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        LSM <linux-security-module@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, "Serge E. Hallyn" <serge@hallyn.com>
+References: <20210110124017.86750-1-songmuchun@bytedance.com>
+ <20210110124017.86750-2-songmuchun@bytedance.com> <20210112094222.GI22493@dhcp22.suse.cz>
+In-Reply-To: <20210112094222.GI22493@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 12 Jan 2021 17:43:30 +0800
+Message-ID: <CAMZfGtV_b8o3aQgbxrDO0aLi=g6SsEmYfoqjM19o9p_XQNAbUg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v3 1/6] mm: migrate: do not migrate HugeTLB
+ page whose refcount is one
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 1:15 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+On Tue, Jan 12, 2021 at 5:42 PM Michal Hocko <mhocko@suse.com> wrote:
 >
-> Miklos Szeredi <miklos@szeredi.hu> writes:
+> On Sun 10-01-21 20:40:12, Muchun Song wrote:
+> > If the refcount is one when it is migrated, it means that the page
+> > was freed from under us. So we are done and do not need to migrate.
 >
-> > On Fri, Jan 01, 2021 at 11:35:16AM -0600, Eric W. Biederman wrote:
+> I would consider the following easier to understand. Feel free to reuse.
+> "
+> All pages isolated for the migration have an elevated reference count
+> and therefore seeing a reference count equal to 1 means that the last
+> user of the page has dropped the reference and the page has became
+> unused and there doesn't make much sense to migrate it anymore. This has
+> been done for regular pages and this patch does the same for hugetlb
+> pages. Although the likelyhood of the race is rather small for hugetlb
+> pages it makes sense the two code paths in sync.
+> "
 
-> > For one: a v2 fscap is supposed to be equivalent to a v3 fscap with a rootid of
-> > zero, right?
+Thanks.
+
 >
-> Yes.  This assumes that everything is translated into the uids of the
-> target filesystem.
+> >
+> > This optimization is consistent with the regular pages, just like
+> > unmap_and_move() does.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+> > Acked-by: Yang Shi <shy828301@gmail.com>
 >
-> > If so, why does cap_inode_getsecurity() treat them differently (v2 fscap
-> > succeeding unconditionally while v3 one being either converted to v2, rejected
-> > or left as v3 depending on current_user_ns())?
+> Acked-by: Michal Hocko <mhocko@suse.com>
+
+Thanks.
+
 >
-> As I understand it v2 fscaps have always succeeded unconditionally.  The
-> only case I can see for a v2 fscap might not succeed when read is if the
-> filesystem is outside of the initial user namespace.
-
-Looking again, it's rather confusing.  cap_inode_getsecurity()
-currently handles the following cases:
-
-v1: -> fails with -EINVAL
-
-v2: -> returns unconverted xattr
-
-v3:
- a) rootid is mapped in the current namespace to non-zero:
-     -> convert rootid
-
- b) rootid owns the current or ancerstor namespace:
-     -> convert to v2
-
- c) rootid is not mapped and is not owner:
-     -> return -EOPNOTSUPP -> falls back to unconverted v3
-
-So lets take the example, where a tmpfs is created in a private user
-namespace and one file has a v2 cap and the other an equivalent v3 cap
-with a zero rootid.  This is the result when looking at it from
-
-1) the namespace of the fs:
----------------------------------------
-t = cap_dac_override+eip
-tt = cap_dac_override+eip
-
-2) the initial namespace:
----------------------------------------
-t = cap_dac_override+eip
-tt = cap_dac_override+eip [rootid=1000]
-
-3) an unrelated namespace:
----------------------------------------
-t = cap_dac_override+eip
-tt = cap_dac_override+eip
-
-Note: in this last case getxattr will actually return a v3 cap with
-zero rootid for "tt" which getcap does not display due to being zero.
-I could do a setup with a nested namespaces that better demonstrate
-the confusing nature of this, but I think this also proves the point.
-
-At this point userspace simply cannot determine whether the returned
-cap is in any way valid or not.
-
-The following semantics would make a ton more sense, since getting a
-v2 would indicate that rootid is unknown:
-
-- if cap is v2 convert to v3 with zero rootid
-- after this, check if rootid needs to be translated, if not return v3
-- if yes, try to translate to current ns, if succeeds return translated v3
-- if not mappable, return v2
-
-Hmm?
-
-> > Anyway, here's a patch that I think fixes getxattr() layering for
-> > security.capability.  Does basically what you suggested.  Slight change of
-> > semantics vs. v1 caps, not sure if that is still needed, getxattr()/setxattr()
-> > hasn't worked for these since the introduction of v3 in 4.14.
-> > Untested.
+> > ---
+> >  mm/migrate.c | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/mm/migrate.c b/mm/migrate.c
+> > index 4385f2fb5d18..a6631c4eb6a6 100644
+> > --- a/mm/migrate.c
+> > +++ b/mm/migrate.c
+> > @@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
+> >               return -ENOSYS;
+> >       }
+> >
+> > +     if (page_count(hpage) == 1) {
+> > +             /* page was freed from under us. So we are done. */
+> > +             putback_active_hugepage(hpage);
+> > +             return MIGRATEPAGE_SUCCESS;
+> > +     }
+> > +
+> >       new_hpage = get_new_page(hpage, private);
+> >       if (!new_hpage)
+> >               return -ENOMEM;
+> > --
+> > 2.11.0
 >
-> Taking a look.  The goal of change how these operate is to make it so
-> that layered filesystems can just pass through the data if they don't
-> want to change anything (even with the user namespaces of the
-> filesystems in question are different).
->
-> Feedback on the code below:
-> - cap_get should be in inode_operations like get_acl and set_acl.
-
-So it's not clear to me why xattr ops are per-sb and acl ops are per-inode.
-
-> - cap_get should return a cpu_vfs_cap_data.
->
->   Which means that only make_kuid is needed when reading the cap from
->   disk.
-
-It also means translating the cap bits back and forth between disk and
-cpu endian.  Not a big deal, but...
-
->   Which means that except for the rootid_owns_currentns check (which
->   needs to happen elsewhere) default_cap_get should be today's
->   get_vfs_cap_from_disk.
-
-That's true.   So what's the deal with v1 caps?  Support was silently
-dropped for getxattr/setxattr but remained in get_vfs_caps_from_disk()
-(I guess to not break legacy disk images), but maybe it's time to
-deprecate v1 caps completely?
-
-> - With the introduction of cap_get I believe commoncap should stop
->   implementing the security_inode_getsecurity hook, and rather have
->   getxattr observe is the file capability xatter and call the new
->   vfs_cap_get then translate to a v2 or v3 cap as appropriate when
->   returning the cap to userspace.
-
-Confused.  vfs_cap_get() is the one the layered filesystem will
-recurse with, so it must not translate the cap.   The one to do that
-would be __vfs_getxattr(), right?
-
-Thanks,
-Miklos
+> --
+> Michal Hocko
+> SUSE Labs
