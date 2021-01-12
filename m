@@ -2,142 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F182F3FA3
+	by mail.lfdr.de (Postfix) with ESMTP id F21CB2F3FA4
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:46:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404125AbhALW3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:29:44 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:33426 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394599AbhALW3Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:29:24 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id B5A061C0B8B; Tue, 12 Jan 2021 23:28:40 +0100 (CET)
-Date:   Tue, 12 Jan 2021 23:28:40 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>,
+        id S2394627AbhALW3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:29:49 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:51871 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394602AbhALW32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 17:29:28 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DFlbf0RK8z9t1Q;
+        Wed, 13 Jan 2021 09:28:46 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610490526;
+        bh=JWofPh/vLG6fRe0T7C0ijNvtTQCAwCldgdQ+lPDOdUQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=mv2HMHe0fmKWtTkBcsboE9PkISv6eErHHkc2yvW0+dkLqBCXUJuAKYv4/vJOR4s4o
+         TOa9mbsWwFP561/ZYVnM4tXXEscxbIPbN14Od/AGCs/2kb76FDLRIYxyE9sS/lrskT
+         1R7QRQWmXWT9J3WZ/x2IqB7r2Gg3GF3NjBYepuLfua5F8FlaJP/NNJu/PPnTyrMTdx
+         bmsrD3m5aXrbp6Ilz9Oy961r51hYD69rBWaulYRwd6fzlrV8LuPZKwYsxEtiujHvZy
+         dqWuTx45Hq3I0nRQsZl8oh7gB0WNcZRCaJKvus9cQvIW6dE0Q76MmApp9fB/t2rHpR
+         z3JBzUwWS4cXA==
+Date:   Wed, 13 Jan 2021 09:28:45 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Herring <robherring2@gmail.com>
+Cc:     Sameer Pujar <spujar@nvidia.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: Re: Malicious fs images was Re: ext4 regression in v5.9-rc2 from
- e7bfb5c9bb3d on ro fs with overlapped bitmaps
-Message-ID: <20210112222840.GA28214@duo.ucw.cz>
-References: <20201006050306.GA8098@localhost>
- <20201006133533.GC5797@mit.edu>
- <20201007080304.GB1112@localhost>
- <20201007143211.GA235506@mit.edu>
- <20201007201424.GB15049@localhost>
- <20201008021017.GD235506@mit.edu>
- <20201008222259.GA45658@localhost>
- <20201009143732.GJ235506@mit.edu>
- <20210110184101.GA4625@amd>
- <X/4YArRJMgGjSyZY@mit.edu>
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the devicetree tree
+Message-ID: <20210113092845.0ed42cf2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="T4sUOijqQbZv57TR"
-Content-Disposition: inline
-In-Reply-To: <X/4YArRJMgGjSyZY@mit.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/=wIPYtcR7sks/0I_btSFxNq";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---T4sUOijqQbZv57TR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/=wIPYtcR7sks/0I_btSFxNq
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Hi!
+Hi all,
 
-> > People want to use USB sticks from time to time. And while I
-> > understand XFS is so complex it is unsuitable for such use, I'd still
-> > expect bugs to be fixed there.
-> >=20
-> > I hope VFAT to be safe to mount, because that is very common on USB.
-> >=20
-> > I also hope ext2/3/4 is safe in that regard.
->=20
-> Ext4 will fix file system fuzzing attack bugs on a best efforts basis.
-> That is, when I have time, I've been known to stay up late to bugs
-> reported by fuzzers.  I hope ext4 is safe, but I'm not going to make
-> any guarantees that it is Bug-Free(tm).  If you want to trust it in
-> that way, you do so at your risk.
+Commit
 
-Good.
+  e9805cb2a361 ("dt-bindings: Remove plain text OF graph binding")
 
-> > Anyway it would be nice to have documentation explaining this. If I'm
-> > wrong about VFAT being safe, it would be good to know, and I guess
-> > many will be surprised that XFS is using different rules.
->=20
-> Using USB sticks is fine, so long as you trust the provenance of the
-> drive.  If you take a random USB stick that is handed to you by
-
-Well... That makes passing data between Windows and Linux machines
-using USB stick "interesting", right?
-
-> someone whom you don't trust implicitly, or worse, that you picked up
-> abandoned on the sidewalk, there have been plenty of articles which
-> describe why this is a REALLY BAD IDEA, and even if you ignore
-> OS-level vuleranbilities, there are also firwmare and hardware based
-> vulerabilities that would put your computer at risk.  See [2] and
-> [3]
-
-I know, but bear with me.
-
-> As far as documentation is concerned, how far should we go?  Should
-> there be a warning in the execve(2) system call man page that you
-> shouldn't download random binaries from the network and execute them?  :-)
-
-No need to pull straw men for me.
-
-This thread suggested that kernel is _not_ supposed to be robust
-against corrupt filesystems (because fsck is not integrated in
-kernel). Which was news to me (and I'm not the person that needs
-warning in execve documentation).
-
-I'd certainly like to hear that VFAT and EXT4 _is_ supposed to be
-robust in that way.
-
-And if we have filesystems where corrupt image is known to allow
-arbitrary code execution, we need to
-
-a) document that.
-
-b) disable them when secure boot is enabled.
-
-Because with secure boot, we are supposed to be secure against attacks
-=66rom root, and root can prepare malicious filesystems. ("The problem,
-simply put, is this: the objective of secure boot is to prevent the
-system from running any unsigned code in a privileged mode. So, if one
-boots a Linux system that, in turn, gives access to the machine to
-untrusted code, the entire purpose has been defeated. The consequences
-could hurt both locally (bad code could take control of the machine)
-and globally (the signing key used to boot Linux could be revoked), so
-it is an outcome that is worth avoiding. Doing so, however, requires
-placing limitations in the kernel so that not even root can circumvent
-the secure boot chain of trust." -- https://lwn.net/Articles/514985/
-).
-
-Best regards,
-								Pavel
+is missing a Signed-off-by from its author.
 
 --=20
-http://www.livejournal.com/~pavelmachek
+Cheers,
+Stephen Rothwell
 
---T4sUOijqQbZv57TR
-Content-Type: application/pgp-signature; name="signature.asc"
+--Sig_/=wIPYtcR7sks/0I_btSFxNq
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX/4imAAKCRAw5/Bqldv6
-8igbAKCnfyP6mP9AHNkzvIsq1Z/ZDtXU8QCdEyaoLjawtnyub5W2dVUMRLpB6d0=
-=CR7u
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/+Ip0ACgkQAVBC80lX
+0GwQLAf/VuZ/RF2gJ0llm+iXRKZHaWVRZ1uc9jVmeAmhGn65mCaEqSICfTuKvwee
+9dOd5gxNldS1dwvNG03VqjAIinuKB6uQkc++P4DbrvbY9uto7XNlX8wEXyazt4+r
+Z0eGP2LtoFKinNUn6+RHC2H9AN+ODmMFuU+bfo8ManQe206r3nPKRxYVPF8h6f5n
+MS2jUFMgqY4zqifRdqfbkmjvl5eI2a/4mccRR3zEfR4w8WZyXSRgc+YxunplAx2/
+We3UZWTAXf6bpzSo1SoBiDxFD3EZbw/8vGWkuV6sDjpdOPg7tbJSf9r5PC0D07s/
+KasxZqAoeDy9e79qt14NOwqNsroYWQ==
+=owuY
 -----END PGP SIGNATURE-----
 
---T4sUOijqQbZv57TR--
+--Sig_/=wIPYtcR7sks/0I_btSFxNq--
