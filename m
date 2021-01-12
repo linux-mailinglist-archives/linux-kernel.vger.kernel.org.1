@@ -2,122 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FEFA2F3E6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:45:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73A562F3E65
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:45:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394319AbhALWHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 17:07:52 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2331 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390994AbhALWHu (ORCPT
+        id S2394303AbhALWHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 17:07:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393915AbhALWHS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 17:07:50 -0500
-Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DFl3G271fz67Y2y;
-        Wed, 13 Jan 2021 06:04:10 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Tue, 12 Jan 2021 23:07:07 +0100
-Received: from localhost (10.47.64.210) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 12 Jan
- 2021 22:07:06 +0000
-Date:   Tue, 12 Jan 2021 22:06:28 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-CC:     Ben Widawsky <ben.widawsky@intel.com>, <linux-cxl@vger.kernel.org>,
-        "Vishal Verma" <vishal.l.verma@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org, Ira Weiny" <ira.weiny@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Jon Masters <jcm@jonmasters.org>,
-        "Chris Browy" <cbrowy@avery-design.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        <daniel.lll@alibaba-inc.com>,
-        "Moore, Robert" <robert.moore@intel.com>,
-        "Kaneda, Erik" <erik.kaneda@intel.com>
-Subject: Re: [RFC PATCH v3 02/16] cxl/acpi: Add an acpi_cxl module for the
- CXL interconnect
-Message-ID: <20210112220628.000037fb@Huawei.com>
-In-Reply-To: <CAPcyv4hcppMZ2L8W8arUKmbCo0r=_yZggrnsj3w-Jgszjn=ZoA@mail.gmail.com>
-References: <20210111225121.820014-1-ben.widawsky@intel.com>
-        <20210111225121.820014-3-ben.widawsky@intel.com>
-        <20210112184355.00007632@Huawei.com>
-        <CAPcyv4hcppMZ2L8W8arUKmbCo0r=_yZggrnsj3w-Jgszjn=ZoA@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Tue, 12 Jan 2021 17:07:18 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19C9C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:06:37 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id w18so9313iot.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 14:06:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PAaIIToNfkh2YDvfiyNmhQxep4I10YuTfP4xkCJeuVc=;
+        b=C6CHTBNXsozuvr5a6+hpZhybdguepzIRKjP2oHIzMIh7j6RCVItoLzalNl9Ty097J5
+         ieCEb5FvuayKlDhw+Qf5wqiXWcZmln7OhWN1O2vFfc+7dzruCxHTILIXZMwfARSkumdP
+         85wPwBLkbPGqUAd5R9X+28bc8mp/s9Hlq13ybr4zbZIqVWc1L/MQbH6LDF3vPTw8lxtU
+         dSphNL8YTuoc/MgNhTYXV968o6t7eYzTNF9fxKbAKR7rv1eDmm/HoeNLR0OtFf7wbFxG
+         D//qivkUGF425jrEDzEpyZKhtgbYJP/NP5ucYuJ8IcvP3bSBr7CGCi/a/vSxuKPhqUgn
+         J+wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PAaIIToNfkh2YDvfiyNmhQxep4I10YuTfP4xkCJeuVc=;
+        b=XDR05H56zJOHl6w/9JeDZeoiGSYnKUg73vXT/PskXX/pHgpCXRgTTuYDFSHUURzQ5s
+         QHwy9RMIM1h4DpJZ9jIfpsEUxSF4JpQuWcHS2W6fCF+hibGdYIqg+CXknF1pNJX9ZQX1
+         /4YbD0x40xaib5y2YdkuG1587FVITYbq+2MRfm/RPZMW71lYuxNaRXAYMmwpZ3C6DWUr
+         2UzOrYvlmfVSWuF9r91jSYbcCjijMM3LdOFsz9v3usa5DNSEY20crf+Ev6XfpAl26Jsg
+         IE5HCiQMRkihECQwu9R/6occEBux7tQIHkXPxFJ+TM0y6k2rDlQE0VKxpHuxaJDblWrl
+         f3vQ==
+X-Gm-Message-State: AOAM530MVUZPCXUltLP+wyjx3HmmCtbOPFd7Kg15PDy3qDogekbiGIrC
+        DgJxtrZjaZm++fseaL+g6OQ=
+X-Google-Smtp-Source: ABdhPJxMgl5VdpCzJgvU9jekAYsMg5nOz673+rw7aLX2MZ2WJjHJOkxKck2uxC7SED11e2QB7hYFTg==
+X-Received: by 2002:a6b:dd13:: with SMTP id f19mr1004530ioc.74.1610489197305;
+        Tue, 12 Jan 2021 14:06:37 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id a17sm33570ilc.77.2021.01.12.14.06.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 14:06:36 -0800 (PST)
+Date:   Tue, 12 Jan 2021 15:06:34 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] ubsan: Implement __ubsan_handle_alignment_assumption
+Message-ID: <20210112220634.GA1377517@ubuntu-m3-large-x86>
+References: <20210112205542.1375847-1-natechancellor@gmail.com>
+ <CAKwvOd=yrVKBn9TN2cP8SiB7A8=c2g41PyodKGJu+xEQwAmnDA@mail.gmail.com>
+ <20210112213703.GA1376568@ubuntu-m3-large-x86>
+ <CAKwvOdkA5kmXhKFDFTApLyT5LcUX2-Xr6vJJ0b8wePunMpLu0g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.64.210]
-X-ClientProxiedBy: lhreml711-chm.china.huawei.com (10.201.108.62) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdkA5kmXhKFDFTApLyT5LcUX2-Xr6vJJ0b8wePunMpLu0g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Jan 2021 11:43:31 -0800
-Dan Williams <dan.j.williams@intel.com> wrote:
+On Tue, Jan 12, 2021 at 01:53:30PM -0800, Nick Desaulniers wrote:
+> On Tue, Jan 12, 2021 at 1:37 PM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
+> >
+> > > if real_ptr is an unsigned long, do we want to use `__ffs(real_ptr) +
+> > > 1` here rather than ffs which takes an int?  It seems the kernel is
+> > > missing a definition of ffsl. :(
+> >
+> > Why the + 1? I think if we use __ffs (which it seems like we should), I
+> > think that needs to become
+> 
+> This came up recently in an internal code review; ffs and __ffs differ
+> in output by one.  See also the definition of ffs for alpha in
+> arch/alpha/include/asm/bitops.h.
 
-> On Tue, Jan 12, 2021 at 10:44 AM Jonathan Cameron
-> <Jonathan.Cameron@huawei.com> wrote:
-> >
-> > On Mon, 11 Jan 2021 14:51:06 -0800
-> > Ben Widawsky <ben.widawsky@intel.com> wrote:
-> >  
-> > > From: Vishal Verma <vishal.l.verma@intel.com>
-> > >
-> > > Add an acpi_cxl module to coordinate the ACPI portions of the CXL
-> > > (Compute eXpress Link) interconnect. This driver binds to ACPI0017
-> > > objects in the ACPI tree, and coordinates access to the resources
-> > > provided by the ACPI CEDT (CXL Early Discovery Table).
-> > >
-> > > It also coordinates operations of the root port _OSC object to notify
-> > > platform firmware that the OS has native support for the CXL
-> > > capabilities of endpoints.
-> > >
-> > > Note: the actbl1.h changes are speculative. The expectation is that they
-> > > will arrive through the ACPICA tree in due time.  
-> >
-> > I would pull the ACPICA changes out into a precursor patch.  
-> 
-> 
-> >  
-> > >
-> > > Cc: Ben Widawsky <ben.widawsky@intel.com>
-> > > Cc: Dan Williams <dan.j.williams@intel.com>
-> > > Signed-off-by: Vishal Verma <vishal.l.verma@intel.com>
-> > > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>  
-> >
-> > Hi,
-> >
-> > I think it would be good to also add CEDT to the list in drivers/acpi/tables.c
-> > so that we can dump it from /sys/firmware/acpi/tables/ and potentially
-> > override it from an initrd.  
-> 
-> ACPICA changes will eventually come through the ACPI tree not this patch set.
+Interesting, thanks for bringing it up! Looks like ffs returns 1-32 and
+__ffs returns 0-31. I think that we want __ffs here because we are
+shifting (1UL << 32 overflows on 32-bit architectures) and the code in
+LLVM appears to agree. LeastSignificantSetBitIndex evaluates to
+__builtin_ctzl, which is the asm-generic implementation of __ffs.
 
-That particular file isn't from ACPICA though I value in the entry will be.
-
-> 
-> 
-> >
-> > https://elixir.bootlin.com/linux/v5.11-rc3/source/drivers/acpi/tables.c#L482
-> > Can be very helpful whilst debugging.  Related to that, anyone know if anyone
-> > has acpica patches so we can have iasl -d work on the table?  Would probably
-> > be useful but I'd rather not duplicate work if it's already done.
-> >  
-> 
-> The supplemental tables described here:
-> 
-> https://www.uefi.org/acpi
-> 
-> ...do eventually make there way into ACPICA. Added Bob and Erik in
-> case they can comment on when CEDT and CDAT support will be picked up.
-...
+Cheers,
+NAthan
