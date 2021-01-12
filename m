@@ -2,165 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE97C2F4048
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5193E2F4045
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391630AbhALXaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 18:30:06 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:52912 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2390320AbhALXaE (ORCPT
+        id S2391123AbhALXaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 18:30:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731617AbhALXaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 18:30:04 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10CNKvoW078385;
-        Tue, 12 Jan 2021 18:28:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=OQx0rO6K2WJroZF2ljY3MmxVQhPq2LrvX6P/Du4U7oM=;
- b=ssB0vhAzO9kkbz4indt3prFm2bfj9uVK9Czs3ZCef3ldNFHOCU3YwiqXrBvpZ0CZrF7i
- c6+PQJRge7tiC3WL5jO+JaMpBJ3H8SodrshqjcNJvqPd64FmNqzWptGcdXIqr059KMRB
- GsQmgiWMkCnV93sLPMKcAWr+XUP/oNHmYsL++TMKdT9ojKtAhRK9Jc4Whx66xmiLv/qZ
- m9+I79YjMLIeVyXV74pkNaXP/+L8CP8LB4ZZi3IGcCLwIc00zQNbyRKM9UILV3CXeuyB
- ga0xVGT5PRLDqbbdrt9mYzf9bn9DWjZaoA9G8mp71Qt5pi1bonnGRPqJuR/0r0HlQin0 VQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 361nbv041f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 18:28:43 -0500
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10CNSgxE105620;
-        Tue, 12 Jan 2021 18:28:42 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 361nbv040r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 18:28:42 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10CNSLQv030115;
-        Tue, 12 Jan 2021 23:28:40 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03fra.de.ibm.com with ESMTP id 35y448a72n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 12 Jan 2021 23:28:40 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10CNSX2x20251078
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jan 2021 23:28:33 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2F3EA4C040;
-        Tue, 12 Jan 2021 23:28:38 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 820484C044;
-        Tue, 12 Jan 2021 23:28:31 +0000 (GMT)
-Received: from sig-9-65-221-171.ibm.com (unknown [9.65.221.171])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 12 Jan 2021 23:28:31 +0000 (GMT)
-Message-ID: <4fef02cb3b330128e6d5d9bc9aab4d7e603d2945.camel@linux.ibm.com>
-Subject: Re: [PATCH v14 6/6] arm64: Add IMA log information in kimage used
- for kexec
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        bauerman@linux.ibm.com, robh@kernel.org,
-        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
-        will@kernel.org, catalin.marinas@arm.com, mpe@ellerman.id.au
-Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@vger.kernel.org
-Date:   Tue, 12 Jan 2021 18:28:30 -0500
-In-Reply-To: <20210104192602.10131-7-nramas@linux.microsoft.com>
-References: <20210104192602.10131-1-nramas@linux.microsoft.com>
-         <20210104192602.10131-7-nramas@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-12_19:2021-01-12,2021-01-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 clxscore=1015 priorityscore=1501 phishscore=0 mlxscore=0
- spamscore=0 bulkscore=0 adultscore=0 impostorscore=0 mlxlogscore=999
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101120130
+        Tue, 12 Jan 2021 18:30:02 -0500
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A230C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:29:22 -0800 (PST)
+Received: by mail-yb1-xb2b.google.com with SMTP id r63so410237ybf.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:29:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x1seuFAYIbhLRjf8D0C4ZsKHbwGrH6A/TbShGVmd5uo=;
+        b=cwO1sEjV1h4NVsOFaISyMfdqqMJfHtXNPyvxr2Gfm6mPYBRO60Zb6pTcwmWCwdT+pb
+         OZNRny2bvukSOjPndOUrsEa68XCe/6fEMIfz2/RJmzym5RtuLTIM+weqi9KiEA3B6U63
+         aIU0VGwFrZ9XKZdofR8gP8ukAmIvjGvwrUszo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x1seuFAYIbhLRjf8D0C4ZsKHbwGrH6A/TbShGVmd5uo=;
+        b=noywChv3dPYB2RduaXOrxUxsBgi7uDZwgaqH9TlTvCnT+tY3Bz1xiNAJng6r7+4XjA
+         jDnIr8iMeCvYGwaCP2CuZZ1Kr6+qInAaMm690skIx6uv2+tmPYjTsBfv9V+he5bKe6gR
+         8UzNxhWO28hTUg61xloIBRY9G3hLu4mtt6BUrOhOLhM4dU6ZTAIHJxrZazIs4btg5hYk
+         guH40A1q8HFOMMVrhYcCwPAnZzZWSzAX1siDmSugdSy3asoOjmlG8TUUhQMrc+MeOcY5
+         Lc1XBIk3cwJ68C7BdFRDxcXVKMjjH52x8oleHwv72chPNKqJ6spafL7dNU8ap4t87fz2
+         s8uw==
+X-Gm-Message-State: AOAM531alCSj7LtFXN4bY8b4Ip+v+mXtk7B+tlOekjdLTbF+0e7E1e4n
+        ZRxbCGKKJaZmPnbhHRfxOMNrGoUxxupUfHOnSCgd0Q==
+X-Google-Smtp-Source: ABdhPJzg3f5FyC7kA1rl+eUDMIlmHup89eW+40+ekVov/RjOLdGoW12i6y4CT4/3T0jTZHB9F3uBtlSmyJMs6PkpKsc=
+X-Received: by 2002:a25:3a04:: with SMTP id h4mr2589314yba.285.1610494161587;
+ Tue, 12 Jan 2021 15:29:21 -0800 (PST)
+MIME-Version: 1.0
+References: <20210107154200.v4.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
+ <161041741167.3661239.13546059654424804588@swboyd.mtv.corp.google.com>
+In-Reply-To: <161041741167.3661239.13546059654424804588@swboyd.mtv.corp.google.com>
+From:   Philip Chen <philipchen@chromium.org>
+Date:   Tue, 12 Jan 2021 15:29:11 -0800
+Message-ID: <CA+cxXhkXJGYx0SQ-S7B=6iHAWFoCQpokw7huaGTNKbVmP1JDhA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] dt-bindings: input: cros-ec-keyb: Add a new property
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Simon Glass <sjg@chromium.org>, devicetree@vger.kernel.org,
+        linux-input@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lakshmi,
-
-On Mon, 2021-01-04 at 11:26 -0800, Lakshmi Ramasubramanian wrote:
-> Address and size of the buffer containing the IMA measurement log need
-> to be passed from the current kernel to the next kernel on kexec.
-> 
-> Any existing "linux,ima-kexec-buffer" property in the device tree
-> needs to be removed and its corresponding memory reservation in
-> the currently running kernel needs to be freed. The address and
-> size of the current kernel's IMA measurement log need to be added
-> to the device tree's IMA kexec buffer node and memory for the buffer
-> needs to be reserved for the log to be carried over to the next kernel
-> on the kexec call.
-> 
-> Add address and size fields to "struct kimage_arch" for ARM64 platform
-> to hold the address and size of the IMA measurement log buffer. Remove
-> any existing "linux,ima-kexec-buffer" property in the device tree and
-> free the corresponding memory reservation in the currently running
-> kernel. Add "linux,ima-kexec-buffer" property to the device tree and
-> reserve the memory for storing the IMA log that needs to be passed from
-> the current kernel to the next one.
-> 
-> Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC to indicate
-> that the IMA measurement log information is present in the device tree
-> for ARM64.
-
-Perhaps for some previous version of this patch set, this patch
-description was appropriate, but for the code below it's kind of
-overkill.
-
-Mimi
-> 
-> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> ---
->  arch/arm64/Kconfig             | 1 +
->  arch/arm64/include/asm/kexec.h | 5 +++++
->  2 files changed, 6 insertions(+)
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index a6b5b7ef40ae..312b4d5ad232 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -1095,6 +1095,7 @@ config KEXEC
->  config KEXEC_FILE
->  	bool "kexec file based system call"
->  	select KEXEC_CORE
-> +	select HAVE_IMA_KEXEC if IMA
->  	help
->  	  This is new version of kexec system call. This system call is
->  	  file based and takes file descriptors as system call argument
-> diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
-> index d24b527e8c00..2bd19ccb6c43 100644
-> --- a/arch/arm64/include/asm/kexec.h
-> +++ b/arch/arm64/include/asm/kexec.h
-> @@ -100,6 +100,11 @@ struct kimage_arch {
->  	void *elf_headers;
->  	unsigned long elf_headers_mem;
->  	unsigned long elf_headers_sz;
-> +
-> +#ifdef CONFIG_IMA_KEXEC
-> +	phys_addr_t ima_buffer_addr;
-> +	size_t ima_buffer_size;
-> +#endif
->  };
->  
->  extern const struct kexec_file_ops kexec_image_ops;
-
-
+On Mon, Jan 11, 2021 at 6:10 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Philip Chen (2021-01-07 15:42:08)
+> > This patch adds a new property `function-row-physmap` to the
+>
+> From Documentation/process/submitting-patches.rst
+>
+> Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
+> instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
+> to do frotz", as if you are giving orders to the codebase to change
+> its behaviour.
+I was aware of this guideline, but I thought it only applies to the
+summary line.
+I'll apply the guideline to the whole description.
+Thanks!
+>
+> > device tree for the custom keyboard top row design.
+> >
+> > The property describes the rows/columns of the top row keys
+> > from left to right.
+> >
+> > Signed-off-by: Philip Chen <philipchen@chromium.org>
+> > ---
+> > diff --git a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
+> > index 8e50c14a9d778..7acdb33781d30 100644
+> > --- a/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
+> > +++ b/Documentation/devicetree/bindings/input/google,cros-ec-keyb.yaml
+> > @@ -31,6 +31,16 @@ properties:
+> >        if the EC does not have its own logic or hardware for this.
+> >      type: boolean
+> >
+> > +  function-row-physmap:
+>
+> Is there any minimum/maximum number of elements possible?
+The maximum is 15.
+There is no definition for the minimum - we can probably say the minimum is 1.
+>
+> > +    $ref: '/schemas/types.yaml#/definitions/uint32-array'
+> > +    description: |
+> > +      An ordered u32 array describing the rows/columns (in the scan matrix)
+> > +      of top row keys from physical left (KEY_F1) to right. Each entry
+> > +      encodes the row/column as:
+> > +      (((row) & 0xFF) << 24) | (((column) & 0xFF) << 16)
+> > +      where the lower 16 bits are reserved. This property is specified only
+> > +      when the keyboard has a custom design for the top row keys.
+> > +
