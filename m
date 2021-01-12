@@ -2,104 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6302F3229
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7DB2F3228
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:49:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732459AbhALNr6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 12 Jan 2021 08:47:58 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:28121 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731385AbhALNr5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 08:47:57 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-244-i8hIuy4hNtCF7lb5ZonnQQ-1; Tue, 12 Jan 2021 13:46:18 +0000
-X-MC-Unique: i8hIuy4hNtCF7lb5ZonnQQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Tue, 12 Jan 2021 13:46:16 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Tue, 12 Jan 2021 13:46:16 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Florian Weimer' <fweimer@redhat.com>,
-        Lukas Wunner <lukas@wunner.de>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: RE: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
- ordering issues
-Thread-Topic: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
- ordering issues
-Thread-Index: AQHW6OeTm0FM5rtghkqQZIJPrgzUmKokAGNg
-Date:   Tue, 12 Jan 2021 13:46:16 +0000
-Message-ID: <a9426b9dd7a4489185f6a8828c90aa64@AcuMS.aculab.com>
-References: <20210106172033.GA2165@willie-the-truck>
-        <20210106223223.GM1551@shell.armlinux.org.uk>
-        <20210107111841.GN1551@shell.armlinux.org.uk>
-        <20210107124506.GO1551@shell.armlinux.org.uk>
-        <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
-        <20210107133747.GP1551@shell.armlinux.org.uk>
-        <CAK8P3a2J8fLjPhyV0XUeuRBdSo6rz1gU4wrQRyfzKQvwhf22ag@mail.gmail.com>
-        <X/gkMmObbkI4+ip/@hirez.programming.kicks-ass.net>
-        <20210108092655.GA4031@willie-the-truck>
-        <CAHk-=whnKkj5CSbj-uG_MVVUsPZ6ppd_MFhZf_kpXDkh2MAVRA@mail.gmail.com>
-        <20210112132049.GA26096@wunner.de>
- <877doii8n2.fsf@oldenburg2.str.redhat.com>
-In-Reply-To: <877doii8n2.fsf@oldenburg2.str.redhat.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        id S1731791AbhALNrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 08:47:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49852 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731162AbhALNrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 08:47:10 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 13B60ACAC;
+        Tue, 12 Jan 2021 13:46:29 +0000 (UTC)
+Date:   Tue, 12 Jan 2021 14:46:28 +0100
+Message-ID: <s5hy2gyqnd7.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Peter Geis <pgwipeout@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Mohan Kumar <mkumard@nvidia.com>, linux-clk@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH v2 0/2] fix tegra-hda on tegra30 devices
+In-Reply-To: <X/2ddbamUzXECZDT@ulmo>
+References: <20210108135913.2421585-1-pgwipeout@gmail.com>
+        <s5hv9c2sgxd.wl-tiwai@suse.de>
+        <X/2ddbamUzXECZDT@ulmo>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Weimer
-> Sent: 12 January 2021 13:32
+On Tue, 12 Jan 2021 14:00:37 +0100,
+Thierry Reding wrote:
 > 
-> * Lukas Wunner:
+> On Tue, Jan 12, 2021 at 09:22:38AM +0100, Takashi Iwai wrote:
+> > On Fri, 08 Jan 2021 14:59:11 +0100,
+> > Peter Geis wrote:
+> > > 
+> > > The following patches fix tegra-hda on legacy tegra devices.
+> > > Two issues were discovered preventing tegra-hda from functioning:
+> > > -The hda clocks on tegra30 were assigned to clk_m and running at too low
+> > > of a rate to function.
+> > > -The tegra-hda encounters an input/output error when opening a stream.
+> > > 
+> > > Since the only mainline device that used tegra-hda until recently was the
+> > > t124, it is unknown exactly when this was broken. Fortunately a recent
+> > > patch was submitted that fixed the issue only on t194 devices. We can
+> > > apply it to the tegra30-hda device to resolve the issue across the board.
+> > > Note that downstream devices used the spdif device instead of hda for hdmi
+> > > audio. The spdif device lacks a driver on mainline.
+> > > 
+> > > -Checkpatch seems to have issues finding [1], but git show has no issue.
+> > > [1] commit 60019d8c650d ("ALSA: hda/tegra: workaround playback failure on
+> > > Tegra194")
+> > > 
+> > > Changelog:
+> > > 
+> > > v2:
+> > > -Added ack and reviewed-by from Jon
+> > > -Updated fix to apply to tegra30-hda vice universally (Thanks Jon)
+> > > -Updated commit to include comments from hardware team (Thanks Sameer)
+> > > -Cleaned up commit messages
+> > > 
+> > > Peter Geis (2):
+> > >   clk: tegra30: Add hda clock default rates to clock driver
+> > >   ALSA: hda/tegra: fix tegra-hda on tegra30 soc
+> > 
+> > Shall I apply both patches via sound git tree?
+> > 
+> > Or, if you want to take through clk tree, let me know.  In that case,
+> > feel free to take my ack:
+> > Acked-by: Takashi Iwai <tiwai@suse.de>
 > 
-> > On Fri, Jan 08, 2021 at 12:02:53PM -0800, Linus Torvalds wrote:
-> >> I appreciate Arnd pointing out "--std=gnu11", though. What are the
-> >> actual relevant language improvements?
-> >>
-> >> Variable declarations in for-loops is the only one I can think of. I
-> >> think that would clean up some code (and some macros), but might not
-> >> be compelling on its own.
-> >
-> > Anonymous structs/unions.  I used to have a use case for that in
-> > struct efi_dev_path in include/linux/efi.h, but Ard Biesheuvel
-> > refactored it in a gnu89-compatible way for v5.7 with db8952e7094f.
-> 
-> Aren't those a GNU extension supported since GCC 3.0?
+> There doesn't seem to be a build-time (or even runtime) dependency
+> between the two patches and they fix two independent issues, so they
+> could also go in separately.
 
-They are certainly pretty old.
-The 15 year old gcc we use for release builds (so binaries work
-on old distributions) supports them.
+Yes.  OTOH, it's better to be applied in a shot when you look back at
+the changes later.
 
-	David
+> I'm fine either way. From a Tegra perspective, the Tegra30 clock driver
+> is very low activity, so I don't expect any conflicts with between this
+> and some other patches that might go in through the clock tree.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+OK, then I queued both patches now to for-linus branch in sound tree.
 
+
+Thanks!
+
+Takashi
