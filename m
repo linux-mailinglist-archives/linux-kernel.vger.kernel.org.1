@@ -2,194 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22B882F2892
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 593942F2893
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391398AbhALGwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 01:52:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388066AbhALGwc (ORCPT
+        id S2391531AbhALGxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 01:53:01 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:10752 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388066AbhALGxA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 01:52:32 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ABC1C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 22:51:52 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id ce23so1930658ejb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 22:51:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=z+c5bYfh/67BCaPtpPIY8Cp/tFxWK5rm6TOabXYygI0=;
-        b=SbkHmgYnaFO0Da1UpFnG8FstJZZuXcINBwxlKLxwNwlCPNt72aXP6yzJM62GIgsSZ1
-         FAFnsnn7qCXJGfdRXe/5F+letv0dBLCy+WWaGtFfS/ZzdKpCeqt/UNdACIkR6luQap4D
-         gPUz5lJH1Gr/efDVOAQsthPRGIjxp1egAXo2eBd41FKjliAAjx4kI5k2kY4t4vPfBkT/
-         +DmdCyXsDNkV0XutiG0x2DfrBM/M6ZMMf/a4DsNBn4YDNk4QEzvAx4q8g5DKdk2utIFm
-         NLtIhvtC0mgNSSUOeyFcxsAPohAoxrI1g/jFXEjUZGnrkyIDY7fjjNjf8m3gup128bO9
-         BWog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=z+c5bYfh/67BCaPtpPIY8Cp/tFxWK5rm6TOabXYygI0=;
-        b=N/thrpMEowAyPe/XVR6axmtsVm5Oi6iD7tOQ+OomK0wquRwevX0y+/6/8CkUIQLuOU
-         QSuvVbX3oorKoJ1NX+knEremIUJ1Yk/OV9pvNv8yiGtGJuUtFXZqPHY8vEOTPu4pWpOv
-         lB1LpDcCbJtiLZ8KGw1Qk5HiEZGEn9Q5T8/k3dzAYURRSSUlhMVT6v0owckl+xnYr+4m
-         ya+UHKg55WLdwnApj6oGQAMrpr47XGkAE/Mz7zBR19VTMVNiCP6+W/tOYmci/jegRL37
-         Mm8XQNu5ctBoEv5Br4/K5d3gOQ5BS6L5z/2NVqcuS7SwoUAompfmvL8wzcbERFWiXA3W
-         IVjQ==
-X-Gm-Message-State: AOAM530XCN9kjzrCJZrwGKrChBD5OtFn9AY5kYfiJmpRYom2LcEVJCMu
-        9G44MjV273ivu+0NVfR4Be1ldpRKkoACr76bxsTynQ==
-X-Google-Smtp-Source: ABdhPJyrT2OM1dghokFc/SpNR1HOfB57rndheYACgmEIIMJ7zu/RgxJANbau3/Qr7Idf16ieu0HKUYiK0DAs20usWSs=
-X-Received: by 2002:a17:906:2695:: with SMTP id t21mr2283824ejc.287.1610434310650;
- Mon, 11 Jan 2021 22:51:50 -0800 (PST)
+        Tue, 12 Jan 2021 01:53:00 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610434360; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=AMekzKIoXfjswvih+CfUuEZfypT+jF7HVNK0MT9+CpY=;
+ b=qICvhmeEdxwObK5YPAvd8gEwFmI2CqzpdJwam95TBZps/0Lw7CcqC+UJIzR7NBcgIodza4Y3
+ 2k37q+ZcCNMz0mQpf0vqUtfAw6rzy7mT/nQcnTQw5SCC2fUxsShahmf3sfjmgzYKpHO49gv2
+ PRlhufpHBp2EN3y73uRdr6ptF4k=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 5ffd471ef1be2d22c46eb43a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Jan 2021 06:52:14
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 032EAC43463; Tue, 12 Jan 2021 06:52:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2FBACC433CA;
+        Tue, 12 Jan 2021 06:52:13 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210111161510.602817176@linuxfoundation.org>
-In-Reply-To: <20210111161510.602817176@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 12 Jan 2021 12:21:39 +0530
-Message-ID: <CA+G9fYsYyW+eC3oBJeV+cT6WSuagxwo2qFjdzF7YbXinumJxEA@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/144] 5.10.7-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 12 Jan 2021 14:52:13 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Stanley Chu <stanley.chu@mediatek.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, ziqichen@codeaurora.org,
+        rnayak@codeaurora.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] scsi: ufs: Fix a possible NULL pointer issue
+In-Reply-To: <1610433327.17820.5.camel@mtkswgap22>
+References: <1609595975-12219-1-git-send-email-cang@codeaurora.org>
+ <1609595975-12219-2-git-send-email-cang@codeaurora.org>
+ <1610433327.17820.5.camel@mtkswgap22>
+Message-ID: <6d03cdacda2f757ba0d0f39ce625eaec@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Jan 2021 at 21:44, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.7 release.
-> There are 144 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 13 Jan 2021 16:14:43 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.7-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 2021-01-12 14:35, Stanley Chu wrote:
+> Hi Can,
+> 
+> On Sat, 2021-01-02 at 05:59 -0800, Can Guo wrote:
+>> During system resume/suspend, hba could be NULL. In this case, do not 
+>> touch
+>> eh_sem.
+>> 
+>> Fixes: 88a92d6ae4fe ("scsi: ufs: Serialize eh_work with system PM 
+>> events and async scan")
+>> 
+>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>> 
+>> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> index e221add..9829c8d 100644
+>> --- a/drivers/scsi/ufs/ufshcd.c
+>> +++ b/drivers/scsi/ufs/ufshcd.c
+>> @@ -94,6 +94,8 @@
+>>  		       16, 4, buf, __len, false);                        \
+>>  } while (0)
+>> 
+>> +static bool early_suspend;
+>> +
+>>  int ufshcd_dump_regs(struct ufs_hba *hba, size_t offset, size_t len,
+>>  		     const char *prefix)
+>>  {
+>> @@ -8896,8 +8898,14 @@ int ufshcd_system_suspend(struct ufs_hba *hba)
+>>  	int ret = 0;
+>>  	ktime_t start = ktime_get();
+>> 
+>> +	if (!hba) {
+>> +		early_suspend = true;
+>> +		return 0;
+>> +	}
+>> +
+>>  	down(&hba->eh_sem);
+>> -	if (!hba || !hba->is_powered)
+>> +
+>> +	if (!hba->is_powered)
+>>  		return 0;
+>> 
+>>  	if ((ufs_get_pm_lvl_to_dev_pwr_mode(hba->spm_lvl) ==
+>> @@ -8945,9 +8953,12 @@ int ufshcd_system_resume(struct ufs_hba *hba)
+>>  	int ret = 0;
+>>  	ktime_t start = ktime_get();
+>> 
+>> -	if (!hba) {
+>> -		up(&hba->eh_sem);
+>> +	if (!hba)
+>>  		return -EINVAL;
+>> +
+>> +	if (unlikely(early_suspend)) {
+>> +		early_suspend = false;
+>> +		down(&hba->eh_sem);
+>>  	}
+> 
+> I guess early_suspend here is to handle the case that hba is null 
+> during
+> ufshcd_system_suspend() but !null during ufshcd_system_resume(). If 
+> yes,
+> would it be possible? If no, may I know what is the purpose?
+> 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Yes, you are right. I think it is possible. platform_set_drvdata()
+is called in ufshcd_pltfrm_init(). Say suspend happens before
+platform_set_drvdata() is called, but resume comes back after
+platform_set_drvdata() is called. What do you think?
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Thanks,
+Can Guo.
 
-Summary
-------------------------------------------------------------------------
-
-kernel: 5.10.7-rc2
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.10.y
-git commit: 0ea94a3ff7f854eb84150ee1f9d6a111d978c0ec
-git describe: v5.10.6-145-g0ea94a3ff7f8
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10=
-.y/build/v5.10.6-145-g0ea94a3ff7f8
-
-No regressions (compared to build v5.10.6)
-
-No fixes (compared to build v5.10.6)
-
-Ran 60294 total tests in the following environments and test suites.
-
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-i386-clang
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* fwts
-* kselftest
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-ipc-tests
-* ltp-sched-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* ltp-controllers-tests
-* ltp-open-posix-tests
-* v4l2-compliance
-* kvm-unit-tests
-* kunit
-* rcutorture
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+> Thanks a lot.
+> Stanley Chu
+> 
+>> 
+>>  	if (!hba->is_powered || pm_runtime_suspended(hba->dev))
