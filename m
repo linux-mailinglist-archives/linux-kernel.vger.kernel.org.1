@@ -2,127 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6BF42F3103
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:16:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABE822F2FC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 14:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728953AbhALNOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 08:14:49 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10715 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403983AbhALM5m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:57:42 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DFVtQ6g54zl49w;
-        Tue, 12 Jan 2021 20:55:42 +0800 (CST)
-Received: from huawei.com (10.174.28.241) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Tue, 12 Jan 2021
- 20:56:51 +0800
-From:   Bixuan Cui <cuibixuan@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <john.wanghui@huawei.com>
-Subject: [PATCH 2/2] perf tools: Add documentation for 'perf irq' command
-Date:   Tue, 12 Jan 2021 20:55:58 +0800
-Message-ID: <20210112125558.72989-3-cuibixuan@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210112125558.72989-1-cuibixuan@huawei.com>
-References: <20210112125558.72989-1-cuibixuan@huawei.com>
+        id S2390438AbhALM6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:58:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404208AbhALM5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:57:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63EDF2333E;
+        Tue, 12 Jan 2021 12:56:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610456207;
+        bh=R9NlJVmZo+9hSZ/H0sPBu7mDZfDzLcIZaWJ2UYcSE68=;
+        h=From:To:Cc:Subject:Date:From;
+        b=h9KqIqrZPDbMridc/ua1/1uA4zx7BrXjEc3hjQQnJC1bo0n9Xisq32CY7BhGbwDY8
+         pH70unFete/XFKS2KAf0JpcnElHcl3zkEk9j6A2GzSG9aK/kUn+GSwGbwCiyVys1h2
+         Kre2tmiXcyzZbp6XdZPoNT+QiFz4fhCvEmAJXnI/ke9n4dqnoB6wbuYdSYnOMEW3HI
+         pmFxqPOTeAK/PVzEU66xdfmkHXSpJ8r/2Vl1nUy1CgR39CS9UFxDWxqlvneoQFTGRq
+         YJQqWrA6Ed/HhCqiTJCg1d5vCS1vYAC8u+T7x/re8EzLjd6qL2flcon1a5RAHZFjoB
+         8PW0JkGbIj7lg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-snps-arc@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 01/28] ARC: build: remove non-existing bootpImage from KBUILD_IMAGE
+Date:   Tue, 12 Jan 2021 07:56:17 -0500
+Message-Id: <20210112125645.70739-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.28.241]
-X-CFilter-Loop: Reflected
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation for 'perf irq' command.
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+[ Upstream commit 9836720911cfec25d3fbdead1c438bf87e0f2841 ]
+
+The deb-pkg builds for ARCH=arc fail.
+
+  $ export CROSS_COMPILE=<your-arc-compiler-prefix>
+  $ make -s ARCH=arc defconfig
+  $ make ARCH=arc bindeb-pkg
+  SORTTAB vmlinux
+  SYSMAP  System.map
+  MODPOST Module.symvers
+  make KERNELRELEASE=5.10.0-rc4 ARCH=arc KBUILD_BUILD_VERSION=2 -f ./Makefile intdeb-pkg
+  sh ./scripts/package/builddeb
+  cp: cannot stat 'arch/arc/boot/bootpImage': No such file or directory
+  make[4]: *** [scripts/Makefile.package:87: intdeb-pkg] Error 1
+  make[3]: *** [Makefile:1527: intdeb-pkg] Error 2
+  make[2]: *** [debian/rules:13: binary-arch] Error 2
+  dpkg-buildpackage: error: debian/rules binary subprocess returned exit status 2
+  make[1]: *** [scripts/Makefile.package:83: bindeb-pkg] Error 2
+  make: *** [Makefile:1527: bindeb-pkg] Error 2
+
+The reason is obvious; arch/arc/Makefile sets $(boot)/bootpImage as
+the default image, but there is no rule to build it.
+
+Remove the meaningless KBUILD_IMAGE assignment so it will fallback
+to the default vmlinux. With this change, you can build the deb package.
+
+I removed the 'bootpImage' target as well. At best, it provides
+'make bootpImage' as an alias of 'make vmlinux', but I do not see
+much sense in doing so.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/Documentation/perf-irq.txt | 58 +++++++++++++++++++++++++++
- tools/perf/command-list.txt           |  1 +
- 2 files changed, 59 insertions(+)
- create mode 100644 tools/perf/Documentation/perf-irq.txt
+ arch/arc/Makefile | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/tools/perf/Documentation/perf-irq.txt b/tools/perf/Documentation/perf-irq.txt
-new file mode 100644
-index 000000000000..8c0e388dad59
---- /dev/null
-+++ b/tools/perf/Documentation/perf-irq.txt
-@@ -0,0 +1,58 @@
-+perf-irq(1)
-+=============
-+
-+NAME
-+----
-+perf-irq - Tool to trace/measure hardware interrupts
-+
-+SYNOPSIS
-+--------
-+[verse]
-+'perf irq' {record|timeconsume|script}
-+
-+DESCRIPTION
-+-----------
-+There are several variants of 'perf irq':
-+
-+  'perf irq record <command>' to record the irq handler events
-+  of an arbitrary workload.
-+
-+  'perf irq script' to see a detailed trace of the workload that
-+   was recorded (aliased to 'perf script' for now).
-+
-+  'perf irq timeconsume' to calculate the time consumed by each
-+   hardware interrupt processing function.
-+
-+    Example usage:
-+        perf irq record -- sleep 1
-+        perf irq timeconsume
-+
-+   By default it shows the individual irq events, including the irq name,
-+   cpu(execute the hardware interrupt processing function), time consumed,
-+   entry time and exit time for the each hardware irq:
-+
-+   -------------------------------------------------------------------------------------------------------------------------------------------
-+     Irq name         |  CPU   | Time consume us | Handler entry time | Handler exit time
-+   -------------------------------------------------------------------------------------------------------------------------------------------
-+     enp2s0f2-tx-0    | [0006] |      0.000001 s |   6631263.313329 s |   6631263.313330 s
-+
-+   -------------------------------------------------------------------------------------------------------------------------------------------
-+     Irq name         |  CPU   | Time consume us | Handler entry time | Handler exit time
-+   -------------------------------------------------------------------------------------------------------------------------------------------
-+     megasas          | [0013] |      0.000003 s |   6631263.209564 s |   6631263.209567 s
-+
-+   -------------------------------------------------------------------------------------------------------------------------------------------
-+     Irq name         |  CPU   | Time consume us | Handler entry time | Handler exit time
-+   -------------------------------------------------------------------------------------------------------------------------------------------
-+     acpi             | [0016] |      0.000018 s |   6631263.085787 s |   6631263.085805 s
-+
-+
-+OPTIONS for 'perf irq'
-+----------------------------
-+
-+--cpus::
-+	Show just entries with activities for the given CPUs.
-+
-+SEE ALSO
-+--------
-+linkperf:perf-record[1]
-diff --git a/tools/perf/command-list.txt b/tools/perf/command-list.txt
-index bc6c585f74fc..c5224ea3ac71 100644
---- a/tools/perf/command-list.txt
-+++ b/tools/perf/command-list.txt
-@@ -26,6 +26,7 @@ perf-report			mainporcelain common
- perf-sched			mainporcelain common
- perf-script			mainporcelain common
- perf-stat			mainporcelain common
-+perf-irq			mainporcelain common
- perf-test			mainporcelain common
- perf-timechart			mainporcelain common
- perf-top			mainporcelain common
+diff --git a/arch/arc/Makefile b/arch/arc/Makefile
+index f1c44cccf8d6c..5e5699acefef4 100644
+--- a/arch/arc/Makefile
++++ b/arch/arc/Makefile
+@@ -90,12 +90,6 @@ libs-y		+= arch/arc/lib/ $(LIBGCC)
+ 
+ boot		:= arch/arc/boot
+ 
+-#default target for make without any arguments.
+-KBUILD_IMAGE	:= $(boot)/bootpImage
+-
+-all:	bootpImage
+-bootpImage: vmlinux
+-
+ boot_targets += uImage uImage.bin uImage.gz
+ 
+ $(boot_targets): vmlinux
 -- 
-2.17.1
+2.27.0
 
