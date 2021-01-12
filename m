@@ -2,121 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54BDF2F3650
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3B02F3653
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:01:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404604AbhALQ7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:59:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725843AbhALQ7i (ORCPT
+        id S2405367AbhALQ7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:59:43 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:62388 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725843AbhALQ7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:59:38 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D27C061786;
-        Tue, 12 Jan 2021 08:58:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=W8sMe2vPnGNuau7lYL1rG0wWEO1MGNksSV6JbP+KXRU=; b=fuc0kPd50jC9pP+pM5HMJPVrw1
-        bn1MsFzPePeT3dMvCXifMdM+cyBh3dyB2A7Ypz3wavELXFqksqp0G7SGCCjDAbs/OyQNjnQNbG5Y6
-        ydx/Pm0suPbw/iXlkemkBE9fk9Spigk2EG0bpF4Zv3A8Lonpi1gEtbjOHeMLG+7h+r2SWMXdIy/e+
-        6UPkQCamW+VA/JqChv9B3RJ7Wp7BeVzztpfBLVdp2NAnu7srinxNUE04HKPfDt7l8xoHNyc5zzRTi
-        x93hzpyt8aN4nWzTi8QobzWx9TIlf3bas8kki5zY8pl4nouDHTL/i9XZJsenqYpOW73qHYgrVPLv0
-        smU62aIg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1kzMzW-0054Be-2e; Tue, 12 Jan 2021 16:58:02 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3932B30015A;
-        Tue, 12 Jan 2021 17:57:55 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1FE8420BF4004; Tue, 12 Jan 2021 17:57:55 +0100 (CET)
-Date:   Tue, 12 Jan 2021 17:57:55 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Laurent Dufour <ldufour@linux.vnet.ibm.com>
-Cc:     Vinayak Menon <vinmenon@codeaurora.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>, Yu Zhao <yuzhao@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        stable <stable@vger.kernel.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>, surenb@google.com
-Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
-Message-ID: <X/3VE64nr91WCtuM@hirez.programming.kicks-ass.net>
-References: <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
- <X+ESkna2z3WjjniN@google.com>
- <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
- <20201221223041.GL6640@xz-x1>
- <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
- <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
- <CAHk-=wj=CcOHQpG0cUGfoMCt2=Uaifpqq-p-mMOmW8XmrBn4fQ@mail.gmail.com>
- <20210105153727.GK3040@hirez.programming.kicks-ass.net>
- <bfb1cbe6-a705-469d-c95a-776624817e33@codeaurora.org>
- <0201238b-e716-2a3c-e9ea-d5294ff77525@linux.vnet.ibm.com>
+        Tue, 12 Jan 2021 11:59:42 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10CGX5j5125279;
+        Tue, 12 Jan 2021 11:58:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=uh876IqNflvIMzX2XbLcnuP6OFHWTNTN+tuwbVXYpmA=;
+ b=MoPogGAIXodCFEPSTcdlXZ6iRV36tBtdrdZZzfXduRlYYbmn/aJNZH1ZV8xzKVgNblSn
+ D2a60IOPP2m++H+Wpk8Si4wnVXIA2K7zbq0T+TaFzzrmcyNsCkUGreHXWffahei7b8Ew
+ FHJi/1J8lZWRIKDJl4eqTqgTHj2JEmCOBcCoxpyuVAum5y3mPUOPxGQD16vxV3EMZdPc
+ TXDZZ8u+kG4kKoi3FHdcJX53vejhczCcs5gNpOANZoTS1glR6elBHPgmVQAamAhuUIa3
+ GcKDgybr/pURIxnkJoa44y0g17X3CogtS7gVaRGbtKBdSmuK5RkkMa1OG+s2WXGNFrj6 AA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 361fba8q73-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 11:58:59 -0500
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10CGX9Cb125442;
+        Tue, 12 Jan 2021 11:58:59 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 361fba8q68-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 11:58:58 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10CGwKq8027442;
+        Tue, 12 Jan 2021 16:58:56 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03fra.de.ibm.com with ESMTP id 35y448a0mc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 16:58:56 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10CGwr6W44237200
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Jan 2021 16:58:53 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 53F4F11C04A;
+        Tue, 12 Jan 2021 16:58:53 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 90E8611C058;
+        Tue, 12 Jan 2021 16:58:52 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.60.135])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Tue, 12 Jan 2021 16:58:52 +0000 (GMT)
+Date:   Tue, 12 Jan 2021 17:58:50 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v13 12/15] s390/zcrypt: Notify driver on config changed
+ and scan complete callbacks
+Message-ID: <20210112175850.589d9e4d.pasic@linux.ibm.com>
+In-Reply-To: <20201223011606.5265-13-akrowiak@linux.ibm.com>
+References: <20201223011606.5265-1-akrowiak@linux.ibm.com>
+        <20201223011606.5265-13-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <0201238b-e716-2a3c-e9ea-d5294ff77525@linux.vnet.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-12_12:2021-01-12,2021-01-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 phishscore=0 suspectscore=0 mlxlogscore=999 clxscore=1015
+ priorityscore=1501 malwarescore=0 adultscore=0 mlxscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101120095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 04:47:17PM +0100, Laurent Dufour wrote:
-> Le 12/01/2021 à 12:43, Vinayak Menon a écrit :
+On Tue, 22 Dec 2020 20:16:03 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-> > Possibility of race against other PTE modifiers
-> > 
-> > 1) Fork - We have seen a case of SPF racing with fork marking PTEs RO and that
-> > is described and fixed here https://lore.kernel.org/patchwork/patch/1062672/
+> This patch intruduces an extension to the ap bus to notify device drivers
+> when the host AP configuration changes - i.e., adapters, domains or
+> control domains are added or removed. To that end, two new callbacks are
+> introduced for AP device drivers:
+> 
+>   void (*on_config_changed)(struct ap_config_info *new_config_info,
+>                             struct ap_config_info *old_config_info);
+> 
+>      This callback is invoked at the start of the AP bus scan
+>      function when it determines that the host AP configuration information
+>      has changed since the previous scan. This is done by storing
+>      an old and current QCI info struct and comparing them. If there is any
+>      difference, the callback is invoked.
+> 
+>      Note that when the AP bus scan detects that AP adapters, domains or
+>      control domains have been removed from the host's AP configuration, it
+>      will remove the associated devices from the AP bus subsystem's device
+>      model. This callback gives the device driver a chance to respond to
+>      the removal of the AP devices from the host configuration prior to
+>      calling the device driver's remove callback. The primary purpose of
+>      this callback is to allow the vfio_ap driver to do a bulk unplug of
+>      all affected adapters, domains and control domains from affected
+>      guests rather than unplugging them one at a time when the remove
+>      callback is invoked.
+> 
+>   void (*on_scan_complete)(struct ap_config_info *new_config_info,
+>                            struct ap_config_info *old_config_info);
+> 
+>      The on_scan_complete callback is invoked after the ap bus scan is
+>      complete if the host AP configuration data has changed.
+> 
+>      Note that when the AP bus scan detects that adapters, domains or
+>      control domains have been added to the host's configuration, it will
+>      create new devices in the AP bus subsystem's device model. The primary
+>      purpose of this callback is to allow the vfio_ap driver to do a bulk
+>      plug of all affected adapters, domains and control domains into
+>      affected guests rather than plugging them one at a time when the
+>      probe callback is invoked.
+> 
+> Please note that changes to the apmask and aqmask do not trigger
+> these two callbacks since the bus scan function is not invoked by changes
+> to those masks.
+> 
+> Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
 
-Right, that's exactly the kind of thing I was worried about.
+Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
 
-> > 2) mprotect - change_protection in mprotect which does the deferred flush is
-> > marked under vm_write_begin/vm_write_end, thus SPF bails out on faults
-> > on those VMAs.
-
-Sure, mprotect also changes vm_flags, so it really needs that anyway.
-
-> > 3) userfaultfd - mwriteprotect_range is not protected unlike in (2) above.
-> > But SPF does not take UFFD faults.
-> > 4) hugetlb - hugetlb_change_protection - called from mprotect and covered by
-> > (2) above.
-
-> > 5) Concurrent faults - SPF does not handle all faults. Only anon page faults.
-
-What happened to shared/file-backed stuff? ISTR I had that working.
-
-> > Of which do_anonymous_page and do_swap_page are NONE/NON-PRESENT->PRESENT
-> > transitions without tlb flush. And I hope do_wp_page with RO->RW is fine as well.
-
-The tricky one is demotion, specifically write to non-write.
-
-> > I could not see a case where speculative path cannot see a PTE update done via
-> > a fault on another CPU.
-
-One you didn't mention is the NUMA balancing scanning crud; although I
-think that's fine, loosing a PTE update there is harmless. But I've not
-thought overly hard on it.
-
-> You explained it fine. Indeed SPF is handling deferred TLB invalidation by
-> marking the VMA through vm_write_begin/end(), as for the fork case you
-> mentioned. Once the PTL is held, and the VMA's seqcount is checked, the PTE
-> values read are valid.
-
-That should indeed work, but are we really sure we covered them all?
-Should we invest in better TLBI APIs to make sure we can't get this
-wrong?
-
-
+[..]
