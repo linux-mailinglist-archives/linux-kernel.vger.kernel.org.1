@@ -2,189 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A692F267D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 04:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 075952F2683
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 04:07:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733213AbhALC7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 21:59:49 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10709 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728044AbhALC7t (ORCPT
+        id S1733256AbhALDG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 22:06:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731674AbhALDG2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 21:59:49 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DFFcZ1vlpzkqyC;
-        Tue, 12 Jan 2021 10:57:50 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 12 Jan
- 2021 10:59:03 +0800
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: fix to keep isolation of atomic write
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20201230075557.108818-1-yuchao0@huawei.com>
- <X/Y5pJr4Aaf0bBqj@google.com> <X/ZAS6oyFiudshe2@google.com>
- <X/x9kTlL8E1Wj4Dd@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <d146348b-3bbd-c1a5-72eb-b054cbcf0b13@huawei.com>
-Date:   Tue, 12 Jan 2021 10:59:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Mon, 11 Jan 2021 22:06:28 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85022C061575
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 19:05:47 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id c1so765832qtc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 19:05:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Db6UueaN/+RSAW6s0FX898oyfgOTV6utqe+CUYCp0wg=;
+        b=j5fe8wXQ4sOgA0VRFLhBnrUkBl4/VGaDzDaxxX5MwXAHuSyr1/qYO+/hLkHDQSgBbB
+         rraG8Zw761QqmWdpSuJYruoMJRVyawk1zu5EiGEDcrJXxz4c7fiNV53hwzERSoWgtgwm
+         m5VDJX8J5Vv8sBbxOy0Rm5FhOkvBjNZ5tFGqjobpAXh7CLm4kOTazH2pp+b+XypxAafH
+         zEcIYAt++0PxFzh1CFfxF/0Ig0MsMkbUMU7RpSYh3ZuYIktlhMnln7N3dXfWJ4fhZEHb
+         SQALrHExGLlFFYiS60BYNazBnnL2ycaqR2NL5FE1UDK7eQ2JNnPV0nlMh38iUSt1LngV
+         1kJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Db6UueaN/+RSAW6s0FX898oyfgOTV6utqe+CUYCp0wg=;
+        b=AU0MNq3x8siA98lmyzY8v6KnzMfNA12tiVlPBEIIwiBEIIi6dWU1tEPDJVoNr43E6M
+         o26ss/OK7daO2/PUlv0/17BL4VEsF+mCaLKl8ANnpyRue9W0lcSUjjsJEEXfx7Y2VxBe
+         BAX2qs9wOYyy+Bn0LMX2dJGKONeA8rs4XjmoaOB+EXtsENBD4T1BJD6Yemp7Inu0zCp2
+         rKOVxv8k67INg+udMwt+kE4Mf+RYuWy+zFHGGnPI6PkXQf+pmaF5NwX8hqHrN7UlgLsk
+         qOHPg7Qg2w4Whv+dBAcWqZaTR1lcA/CECZ3xzpI8j+SMrHhkxoyXfHmQL2gQO0x/XI8s
+         sULA==
+X-Gm-Message-State: AOAM532e38cQ/Hrkn1Of8tUhwEsaMHGPo1+e24oDyLU5mKLF5gDYTok/
+        pB5+GS5XX8DS+4YXGBVY1ioIxg==
+X-Google-Smtp-Source: ABdhPJx8tqLX0CPDQwvbISN6RIxnHeB2AP3GmCr4sHNF/DtoeVOIbSoVvE5wRuwU0gC5v24920pgaw==
+X-Received: by 2002:ac8:6e83:: with SMTP id c3mr2703904qtv.318.1610420746584;
+        Mon, 11 Jan 2021 19:05:46 -0800 (PST)
+Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.googlemail.com with ESMTPSA id c7sm814235qkm.99.2021.01.11.19.05.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 19:05:46 -0800 (PST)
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+To:     herbert@gondor.apana.org.au, davem@davemloft.net,
+        bjorn.andersson@linaro.org
+Cc:     ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/6] Regression fixes/clean ups in the Qualcomm crypto engine driver
+Date:   Mon, 11 Jan 2021 22:05:39 -0500
+Message-Id: <20210112030545.669480-1-thara.gopinath@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <X/x9kTlL8E1Wj4Dd@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/12 0:32, Jaegeuk Kim wrote:
-> On 01/06, Jaegeuk Kim wrote:
->> On 01/06, Jaegeuk Kim wrote:
->>> Hi Chao,
->>>
->>> With a quick test, this patch causes down_write failure resulting in blocking
->>> process. I didn't dig in the bug so, please check the code again. :P
->>
->> nvm. I can see it works now.
-> 
-> Hmm, this gives a huge perf regression when running sqlite. :(
-> We may need to check the lock coverage. Thoughts?
+This patch series is a result of running kernel crypto fuzz tests (by
+enabling CONFIG_CRYPTO_MANAGER_EXTRA_TESTS) on the transformations
+currently supported via the Qualcomm crypto engine on sdm845.  The first
+four patches are fixes for various regressions found during testing. The
+last two patches are minor clean ups of unused variable and parameters.
 
-I added i_mmap_sem lock only, so it can cause atomic_{start,commit,finish}
-race with mmap and truncation operations in additionally.
+v1->v2:
+	- Introduced custom struct qce_sha_saved_state to store and restore
+	  partial sha transformation.
+	- Rebased to 5.11-rc3.
 
-I'd like to know what's your sqlite testcase?
+Thara Gopinath (6):
+  drivers: crypto: qce: sha: Restore/save ahash state with custom struct
+    in export/import
+  drivers: crypto: qce: sha: Hold back a block of data to be transferred
+    as part of final
+  drivers: crypto: qce: skcipher: Fix regressions found during fuzz
+    testing
+  drivers: crypto: qce: common: Set data unit size to message length for
+    AES XTS transformation
+  drivers: crypto: qce: Remover src_tbl from qce_cipher_reqctx
+  drivers: crypto: qce: Remove totallen and offset in qce_start
 
-Thanks,
+ drivers/crypto/qce/cipher.h   |   1 -
+ drivers/crypto/qce/common.c   |  25 +++---
+ drivers/crypto/qce/common.h   |   3 +-
+ drivers/crypto/qce/sha.c      | 143 +++++++++++++---------------------
+ drivers/crypto/qce/skcipher.c |  70 ++++++++++++++---
+ 5 files changed, 127 insertions(+), 115 deletions(-)
 
-> 
->>
->>>
->>> On 12/30, Chao Yu wrote:
->>>> ThreadA					ThreadB
->>>> - f2fs_ioc_start_atomic_write
->>>> - write
->>>> - f2fs_ioc_commit_atomic_write
->>>>   - f2fs_commit_inmem_pages
->>>>   - f2fs_drop_inmem_pages
->>>>   - f2fs_drop_inmem_pages
->>>>    - __revoke_inmem_pages
->>>> 					- f2fs_vm_page_mkwrite
->>>> 					 - set_page_dirty
->>>> 					  - tag ATOMIC_WRITTEN_PAGE and add page
->>>> 					    to inmem_pages list
->>>>    - clear_inode_flag(FI_ATOMIC_FILE)
->>>> 					- f2fs_vm_page_mkwrite
->>>> 					  - set_page_dirty
->>>> 					   - f2fs_update_dirty_page
->>>> 					    - f2fs_trace_pid
->>>> 					     - tag inmem page private to pid
->>>> 					- truncate
->>>> 					 - f2fs_invalidate_page
->>>> 					 - set page->mapping to NULL
->>>> 					  then it will cause panic once we
->>>> 					  access page->mapping
->>>>
->>>> The root cause is we missed to keep isolation of atomic write in the case
->>>> of commit_atomic_write vs mkwrite, let commit_atomic_write helds i_mmap_sem
->>>> lock to avoid this issue.
->>>>
->>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->>>> ---
->>>> v2:
->>>> - use i_mmap_sem to avoid mkwrite racing with below flows:
->>>>   * f2fs_ioc_start_atomic_write
->>>>   * f2fs_drop_inmem_pages
->>>>   * f2fs_commit_inmem_pages
->>>>
->>>>   fs/f2fs/file.c    | 3 +++
->>>>   fs/f2fs/segment.c | 7 +++++++
->>>>   2 files changed, 10 insertions(+)
->>>>
->>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
->>>> index 4e6d4b9120a8..a48ec650d691 100644
->>>> --- a/fs/f2fs/file.c
->>>> +++ b/fs/f2fs/file.c
->>>> @@ -2050,6 +2050,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
->>>>   		goto out;
->>>>   
->>>>   	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->>>> +	down_write(&F2FS_I(inode)->i_mmap_sem);
->>>>   
->>>>   	/*
->>>>   	 * Should wait end_io to count F2FS_WB_CP_DATA correctly by
->>>> @@ -2060,6 +2061,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
->>>>   			  inode->i_ino, get_dirty_pages(inode));
->>>>   	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
->>>>   	if (ret) {
->>>> +		up_write(&F2FS_I(inode)->i_mmap_sem);
->>>>   		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->>>>   		goto out;
->>>>   	}
->>>> @@ -2073,6 +2075,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
->>>>   	/* add inode in inmem_list first and set atomic_file */
->>>>   	set_inode_flag(inode, FI_ATOMIC_FILE);
->>>>   	clear_inode_flag(inode, FI_ATOMIC_REVOKE_REQUEST);
->>>> +	up_write(&F2FS_I(inode)->i_mmap_sem);
->>>>   	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->>>>   
->>>>   	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
->>>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->>>> index d8570b0359f5..dab870d9faf6 100644
->>>> --- a/fs/f2fs/segment.c
->>>> +++ b/fs/f2fs/segment.c
->>>> @@ -327,6 +327,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
->>>>   	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
->>>>   	struct f2fs_inode_info *fi = F2FS_I(inode);
->>>>   
->>>> +	down_write(&F2FS_I(inode)->i_mmap_sem);
->>>> +
->>>>   	while (!list_empty(&fi->inmem_pages)) {
->>>>   		mutex_lock(&fi->inmem_lock);
->>>>   		__revoke_inmem_pages(inode, &fi->inmem_pages,
->>>> @@ -344,6 +346,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
->>>>   		sbi->atomic_files--;
->>>>   	}
->>>>   	spin_unlock(&sbi->inode_lock[ATOMIC_FILE]);
->>>> +
->>>> +	up_write(&F2FS_I(inode)->i_mmap_sem);
->>>>   }
->>>>   
->>>>   void f2fs_drop_inmem_page(struct inode *inode, struct page *page)
->>>> @@ -467,6 +471,7 @@ int f2fs_commit_inmem_pages(struct inode *inode)
->>>>   	f2fs_balance_fs(sbi, true);
->>>>   
->>>>   	down_write(&fi->i_gc_rwsem[WRITE]);
->>>> +	down_write(&F2FS_I(inode)->i_mmap_sem);
->>>>   
->>>>   	f2fs_lock_op(sbi);
->>>>   	set_inode_flag(inode, FI_ATOMIC_COMMIT);
->>>> @@ -478,6 +483,8 @@ int f2fs_commit_inmem_pages(struct inode *inode)
->>>>   	clear_inode_flag(inode, FI_ATOMIC_COMMIT);
->>>>   
->>>>   	f2fs_unlock_op(sbi);
->>>> +
->>>> +	up_write(&F2FS_I(inode)->i_mmap_sem);
->>>>   	up_write(&fi->i_gc_rwsem[WRITE]);
->>>>   
->>>>   	return err;
->>>> -- 
->>>> 2.29.2
->>>
->>>
->>> _______________________________________________
->>> Linux-f2fs-devel mailing list
->>> Linux-f2fs-devel@lists.sourceforge.net
->>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
->>
->>
->> _______________________________________________
->> Linux-f2fs-devel mailing list
->> Linux-f2fs-devel@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> .
-> 
+-- 
+2.25.1
+
