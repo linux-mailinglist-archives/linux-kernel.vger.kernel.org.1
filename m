@@ -2,192 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A272F3306
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8EF62F3310
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388261AbhALOfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:35:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725957AbhALOfD (ORCPT
+        id S1730071AbhALOiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:38:18 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:38941 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726329AbhALOiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:35:03 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53728C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:34:23 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id r3so2744728wrt.2
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:34:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=U744HxyOHZ4bYG3Cc/mr37WoBXh+B0nSwCGfLK9zJn0=;
-        b=p7sCAvlUYMzziw08KT/qOtcyvICsjejqtIpqIExn+H4PwcgvGDwmg16FQlQ75sQuCD
-         xBH4gE5KQye10UuMDSF2RgbVZIulq5JDyWzHKGHj260uD4/BAcMKaZh+HqEsPEtYjt7E
-         U3coTjGgKjnE0BrpCvc5Py0MH9LJ2/RyQqA3OOWTIF/PyVmiFais/Its6G3UrNwYSnq+
-         JZU4hv4ikKdTh2+Mbj+cIsyhyUBRrEgL9tqvoyZvdoRJasaVXK3PacPRYYkpwCSYx4br
-         ZYl6WqaJNYaCqtLmaclLMjiVfVdusosjDeERWjS8id9n3pvPWCz5aQPaV65r3pztPHLz
-         1NRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=U744HxyOHZ4bYG3Cc/mr37WoBXh+B0nSwCGfLK9zJn0=;
-        b=pVyTnWYRWo6TmfiljzVdjrscYdf9wedrSA+Qy5ERA0KboAruh93lpxDurz/JJkUvGC
-         r5rZ7mLliVliVuyu9AoqwpNcLQhMFyjf4UjnUYXiG8YmquRda0C4POJhL2Pw4G2ztmry
-         8/Wmc8CbfbpdmbIF7pA9429ZJ7jj4dwcIUuDUOrj6bmmh+nYjs9TRgapqf+WIxtxgAPU
-         /j6jlJfu39zyXO4jci0ILWDrL5scHU6bwAgvOWkCyKUNqP/jgJltaYt4zDWT5AuEHZeh
-         HnBKE7IWxxbvdOi4Gyr3MUs8K8vgtmBtXM5o14OjB0bEWZFhuxmX74aeJNeVpgTF3a2Z
-         oMQQ==
-X-Gm-Message-State: AOAM533hhrIV+jE38DtpjK5Cn2IzRvtMDfCXrh1R/ABrN0O7iWqnpOHa
-        PCSlR/SPA6iQGP6xZRGgVflapQ==
-X-Google-Smtp-Source: ABdhPJzKuddLdUE2T+B3q5M1asSfQtHaNy4J4XGxxEqbDbNKrNxvoQKkAPi5eAkDeCrROmSsNM29dg==
-X-Received: by 2002:a5d:6204:: with SMTP id y4mr4678555wru.48.1610462061876;
-        Tue, 12 Jan 2021 06:34:21 -0800 (PST)
-Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
-        by smtp.gmail.com with ESMTPSA id u10sm4120446wmd.43.2021.01.12.06.34.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 06:34:20 -0800 (PST)
-Date:   Tue, 12 Jan 2021 15:34:15 +0100
-From:   Marco Elver <elver@google.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 11/11] kasan: add proper page allocator tests
-Message-ID: <X/2zZ1kuRDVvtq/T@elver.google.com>
-References: <cover.1609871239.git.andreyknvl@google.com>
- <15ca1976b26aa9edcec4a9d0f3b73f5b6536e5d0.1609871239.git.andreyknvl@google.com>
+        Tue, 12 Jan 2021 09:38:17 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1kzKne-000o6B-Ed; Tue, 12 Jan 2021 15:37:34 +0100
+Received: from p5b13a61e.dip0.t-ipconnect.de ([91.19.166.30] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1kzKnd-001CLC-9K; Tue, 12 Jan 2021 15:37:33 +0100
+Subject: Re: Old platforms: bring out your dead
+To:     chase rayfield <cusbrar1@gmail.com>
+Cc:     Sam Ravnborg <sam@ravnborg.org>, Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+ <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
+ <20210110214653.GA1693373@ravnborg.org>
+ <df42946e-5b1f-c433-fc6b-a2950f3d8dab@physik.fu-berlin.de>
+ <CACwypyNS+fVoPVspSr36v8YjFbkrnYb+amcYRqVmA2kD2uD1Wg@mail.gmail.com>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Message-ID: <4c42f2ce-7702-55cd-a2c0-558d3dd208f2@physik.fu-berlin.de>
+Date:   Tue, 12 Jan 2021 15:37:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <15ca1976b26aa9edcec4a9d0f3b73f5b6536e5d0.1609871239.git.andreyknvl@google.com>
-User-Agent: Mutt/2.0.2 (2020-11-20)
+In-Reply-To: <CACwypyNS+fVoPVspSr36v8YjFbkrnYb+amcYRqVmA2kD2uD1Wg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.166.30
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 07:27PM +0100, Andrey Konovalov wrote:
-> The currently existing page allocator tests rely on kmalloc fallback
-> with large sizes that is only present for SLUB. Add proper tests that
-> use alloc/free_pages().
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/Ia173d5a1b215fe6b2548d814ef0f4433cf983570
+Hello!
 
-Reviewed-by: Marco Elver <elver@google.com>
+On 1/11/21 3:55 PM, chase rayfield wrote:
+> My take is that there *would* be more interest in Sparc sun4m / Sun4d
+> from enthusiasts at the very least if it was possible to actually boot
+> the bloat hog that is Linux these days in a fully usable configuration
+> that probably means some modifications to SILO and Linux required.
 
-> ---
->  lib/test_kasan.c | 54 +++++++++++++++++++++++++++++++++++++++++++-----
->  1 file changed, 49 insertions(+), 5 deletions(-)
+The Linux kernel is configurable. If you want a small kernel, then just
+configure one. No one expects you to boot a fully-fledged distribution
+kernel on these machines.
+
+> The problem is as I understand it, SILO only sets up a 16Mb mapping
+> (either due to having to assume 4MB minimum dram stick size or due to
+> mapping limitations not sure, most of these machines have at least
+> 16MB in slot one...these days though that wasn't the case for sun4c),
+> loads Linux into it and says good Luck. This isn't enough for a modern
+> kernel with any  hardware support built in. So you might for instance
+> get a kernel to fit but only if you dropped all of networking support
+> etc...
+
+That makes no sense. It worked in the past, why shouldn't it work nowadays?
+
+As I said, you disable everything you don't need. I'm booting my SH-7785LCR
+SuperH board with a kernel that is less than 4 MB in size and which includes
+everything I need.
+
+> I'm guessing the fix for this would be to modify silo to map a
+> larger amount in a way that Linux expects so it can remap it as it
+> likes, or just have SILO map the full memory as Linux would. Anyway
+> that is THE main demotivation for these architectures.... otherwise
+> they have plenty of ram and performance to do basic router/server
+> tasks sans SSL.
+
+Or just configure a smaller kernel.
+
+> This has been the status quo for since the last of the 2.6 series of
+> kernels which it was still possible to just barely squeeze a usable
+> kernel out of... If someone wanted to take a few hours and fix this
+> issue, and keep these architectures around I'd be happy to "buy them a
+> round of pizza", though I recognize that many people that work on this
+> already have nice jobs, and just don't have time.
+
+I haven't gotten around to setup my SPARCstation 5 yet, but I will certainly
+going to do that later this year to give it a try.
+
+> Also Sparc would probably be a good project for someone to extend/test
+> Andi Keen's Linux LTO patch set so we could reduce the kernel binary
+> size that way also even if sun4 architectures are dropped, it would
+> still be useful for embedded sparc. Also there is a port of Temlib to
+> the Mister hardware now, 3 cores roughly equivalent to a mid 90s
+> machine, at least 128MB ram is possible ( more if a way to map the ARM
+> system memory also 1GB is available there, it would have higher
+> latency though).
 > 
-> diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-> index 6261521e57ad..24798c034d05 100644
-> --- a/lib/test_kasan.c
-> +++ b/lib/test_kasan.c
-> @@ -128,6 +128,12 @@ static void kmalloc_node_oob_right(struct kunit *test)
->  	kfree(ptr);
->  }
->  
-> +/*
-> + * These kmalloc_pagealloc_* tests try allocating a memory chunk that doesn't
-> + * fit into a slab cache and therefore is allocated via the page allocator
-> + * fallback. Since this kind of fallback is only implemented for SLUB, these
-> + * tests are limited to that allocator.
-> + */
->  static void kmalloc_pagealloc_oob_right(struct kunit *test)
->  {
->  	char *ptr;
-> @@ -138,14 +144,11 @@ static void kmalloc_pagealloc_oob_right(struct kunit *test)
->  		return;
->  	}
->  
-> -	/*
-> -	 * Allocate a chunk that does not fit into a SLUB cache to trigger
-> -	 * the page allocator fallback.
-> -	 */
->  	ptr = kmalloc(size, GFP_KERNEL);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
->  
->  	KUNIT_EXPECT_KASAN_FAIL(test, ptr[size + OOB_TAG_OFF] = 0);
-> +
->  	kfree(ptr);
->  }
->  
-> @@ -161,8 +164,8 @@ static void kmalloc_pagealloc_uaf(struct kunit *test)
->  
->  	ptr = kmalloc(size, GFP_KERNEL);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
-> -
->  	kfree(ptr);
-> +
->  	KUNIT_EXPECT_KASAN_FAIL(test, ptr[0] = 0);
->  }
->  
-> @@ -182,6 +185,45 @@ static void kmalloc_pagealloc_invalid_free(struct kunit *test)
->  	KUNIT_EXPECT_KASAN_FAIL(test, kfree(ptr + 1));
->  }
->  
-> +static void pagealloc_oob_right(struct kunit *test)
-> +{
-> +	char *ptr;
-> +	struct page *pages;
-> +	size_t order = 4;
-> +	size_t size = (1UL << (PAGE_SHIFT + order));
-> +
-> +	/*
-> +	 * With generic KASAN page allocations have no redzones, thus
-> +	 * out-of-bounds detection is not guaranteed.
-> +	 * See https://bugzilla.kernel.org/show_bug.cgi?id=210503.
-> +	 */
-> +	if (IS_ENABLED(CONFIG_KASAN_GENERIC)) {
-> +		kunit_info(test, "skipping, CONFIG_KASAN_GENERIC enabled");
-> +		return;
-> +	}
-> +
-> +	pages = alloc_pages(GFP_KERNEL, order);
-> +	ptr = page_address(pages);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
-> +
-> +	KUNIT_EXPECT_KASAN_FAIL(test, ptr[size] = 0);
-> +	free_pages((unsigned long)ptr, order);
-> +}
-> +
-> +static void pagealloc_uaf(struct kunit *test)
-> +{
-> +	char *ptr;
-> +	struct page *pages;
-> +	size_t order = 4;
-> +
-> +	pages = alloc_pages(GFP_KERNEL, order);
-> +	ptr = page_address(pages);
-> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
-> +	free_pages((unsigned long)ptr, order);
-> +
-> +	KUNIT_EXPECT_KASAN_FAIL(test, ptr[0] = 0);
-> +}
-> +
->  static void kmalloc_large_oob_right(struct kunit *test)
->  {
->  	char *ptr;
-> @@ -933,6 +975,8 @@ static struct kunit_case kasan_kunit_test_cases[] = {
->  	KUNIT_CASE(kmalloc_pagealloc_oob_right),
->  	KUNIT_CASE(kmalloc_pagealloc_uaf),
->  	KUNIT_CASE(kmalloc_pagealloc_invalid_free),
-> +	KUNIT_CASE(pagealloc_oob_right),
-> +	KUNIT_CASE(pagealloc_uaf),
->  	KUNIT_CASE(kmalloc_large_oob_right),
->  	KUNIT_CASE(kmalloc_oob_krealloc_more),
->  	KUNIT_CASE(kmalloc_oob_krealloc_less),
-> -- 
-> 2.29.2.729.g45daf8777d-goog
-> 
+> It is perfectly viable to build Sparc v7 or v8 32bit binaries in a
+> chroot on a fast machine also, and I would recommend this if you wish
+> to retain sanity rather than attempting cross compiler voodoo, unless
+> that is your thing.
+
+We build anything SPARC on a SPARC T5 that we have for Debian, no need
+for cross-compilation and that machine is actually quite fast.
+
+Adrian
+
+-- 
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+
