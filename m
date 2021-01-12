@@ -2,213 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CD42F2CF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:35:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD312F2CF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:35:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390752AbhALKfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:35:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43218 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729925AbhALKfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:35:04 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610447657; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SFZZDpfF7iQgyLB64Gjy2Ec9M50ve9zfNS2JavecGYQ=;
-        b=Bhvj3wcMfvAoe4ex0UbCsOIaj5S8seJzu2rAgpLKZlrwBtboWVJ4Vn7elSdYfakXoj3Zzp
-        cLOqwgpUu1DsEdo2LT8Jpk6RMexkdN2et408qMOSPVgpLAcdn5cjFtzh07O+kpicUVXP90
-        OwO23nPE7Lj+K7EX2r2Dp1qgsI40IAI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 17F14ACB0;
-        Tue, 12 Jan 2021 10:34:17 +0000 (UTC)
-Subject: Re: [PATCH] xen/privcmd: allow fetching resource sizes
-To:     =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Paul Durrant <paul.durrant@citrix.com>,
-        xen-devel@lists.xenproject.org
-References: <20210111152958.7166-1-roger.pau@citrix.com>
- <5063e696-5a7f-4429-048e-2bf0d14881d7@suse.com>
- <20210112100324.ii34oqldfrtmfd2f@Air-de-Roger>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <67725689-2eab-fd17-d330-626f3505c6c1@suse.com>
-Date:   Tue, 12 Jan 2021 11:34:16 +0100
+        id S2390891AbhALKfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:35:23 -0500
+Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:41051 "EHLO
+        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727244AbhALKfX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 05:35:23 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id zH0WkDlJTVfyLzH0ZkpA7c; Tue, 12 Jan 2021 11:34:40 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1610447680; bh=flI2m2OYvvYwq34nZBN1oPO/rcFlJyp9HTRjxCqn/rI=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=O6Bq3KJtu2PLIseydAYVf4v7fIkJhlIinr11yYW6fbRQvBm2bqT1BumT6YzbmCb0D
+         SPqaf3LzqC0zef8E08rUE4pZ7aHL083RVkb600OhBWuS9hY6UXugslbELAORK2TUvg
+         d83CT6RFpYdSMstFuiY6foKeeWWXwxUBUuSjFa3Lxi+VQQBzz1ihGNSoY9jSFUVm1Z
+         dB5CAkvdRyyPlTsOimR1elFB1EX/FWlC3J6R90lpwu/fv+WnylSmXgyDTxa2f8ZlQP
+         HFlUbf+dLTq+wr46tvZA5DTknqxAdXWFU9rWOvaIWhhFDOSrkBgIK/38in679ex5LU
+         JxSMOxrzC8Ziw==
+Subject: Re: [PATCH v3 2/3] docs: media: Document CLL and Mastering display
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>
+References: <20201208145931.6187-1-stanimir.varbanov@linaro.org>
+ <20201208145931.6187-3-stanimir.varbanov@linaro.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <d0f1df68-5a5a-7fa1-1ed1-406e98e1be89@xs4all.nl>
+Date:   Tue, 12 Jan 2021 11:34:36 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210112100324.ii34oqldfrtmfd2f@Air-de-Roger>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="UxwirFONVMB8JJkV5PFLwVBx0yZsMxDDs"
+In-Reply-To: <20201208145931.6187-3-stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfLn5yFlcPCKIbJCAywzXVjY8kBd0JyQRjCVw/DIsw6OxTvgV5bQ3bEthxeUUv4D66bRa2qmqnh0l8UpHaji7Rc+41Lnem7kqxVbAxbMBIGIsnrMP3zEH
+ GdiNvwbxexOi82xwPn6wpGoZ+R8fZLc/+p0GcUfRj9favlofwz0yV5asisR1LJWwWqmxwwVMf50BTMm1bWYqiC26lwTkrRTSUlz1iZwYD22KlEyfut/gDvs7
+ WT7oYFBZ5ThbAmdRFPQSHZ7M4dSbzL6xgfQBQLadYKpXoHmaRo1XARQXa+ZNTm3MHaX3FM/V0EG+pizss9dTv1/1NCYYlCCQlpTR3GUHz8bHP3MNTyYvW5bU
+ R1yFeo2ZHBhVtmKp7SZZyQkUSqIKtYi+S6+WXBcccKxMXpu38CxemPIC9bIKPOJX5vnsG8sy
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---UxwirFONVMB8JJkV5PFLwVBx0yZsMxDDs
-Content-Type: multipart/mixed; boundary="RLMrMBUN4PwnA8AozxpnEc9O4jRLfXPBz";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: =?UTF-8?Q?Roger_Pau_Monn=c3=a9?= <roger.pau@citrix.com>
-Cc: linux-kernel@vger.kernel.org, Boris Ostrovsky
- <boris.ostrovsky@oracle.com>, Stefano Stabellini <sstabellini@kernel.org>,
- Paul Durrant <paul.durrant@citrix.com>, xen-devel@lists.xenproject.org
-Message-ID: <67725689-2eab-fd17-d330-626f3505c6c1@suse.com>
-Subject: Re: [PATCH] xen/privcmd: allow fetching resource sizes
-References: <20210111152958.7166-1-roger.pau@citrix.com>
- <5063e696-5a7f-4429-048e-2bf0d14881d7@suse.com>
- <20210112100324.ii34oqldfrtmfd2f@Air-de-Roger>
-In-Reply-To: <20210112100324.ii34oqldfrtmfd2f@Air-de-Roger>
+On 08/12/2020 15:59, Stanimir Varbanov wrote:
+> Document Content light level and Mastering display colour volume.
+> 
+> Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
+> ---
+>  .../userspace-api/media/v4l/common.rst        |  1 +
+>  .../media/v4l/ext-ctrls-colorimetry.rst       | 88 +++++++++++++++++++
+>  2 files changed, 89 insertions(+)
+>  create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/common.rst b/Documentation/userspace-api/media/v4l/common.rst
+> index 8c263c5a85d8..ea0435182e44 100644
+> --- a/Documentation/userspace-api/media/v4l/common.rst
+> +++ b/Documentation/userspace-api/media/v4l/common.rst
+> @@ -51,6 +51,7 @@ applicable to all devices.
+>      ext-ctrls-fm-tx
+>      ext-ctrls-fm-rx
+>      ext-ctrls-detect
+> +    ext-ctrls-colorimetry
+>      fourcc
+>      format
+>      planar-apis
+> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
+> new file mode 100644
+> index 000000000000..16d9ddadbab6
+> --- /dev/null
+> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-colorimetry.rst
+> @@ -0,0 +1,88 @@
+> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+> +
+> +.. _colorimetry-controls:
+> +
+> +*****************************
+> +Colorimetry Control Reference
+> +*****************************
+> +
+> +Below are controls within the Colorimetry control class.
+> +
+> +Colorimetry Control IDs
+> +-----------------------
+> +
+> +.. _colorimetry-control-id:
+> +
+> +``V4L2_CID_COLORIMETRY_CLASS (class)``
+> +    The Colorimetry class descriptor.
+> +
+> +``V4L2_CID_COLORIMETRY_HDR10_CLL_INFO (struct)``
+> +    The Content Light Level defines upper bounds for the nominal target
+> +    brightness light level of the pictures.
+> +
+> +.. c:type:: v4l2_ctrl_hdr10_cll_info
+> +
+> +.. cssclass:: longtable
+> +
+> +.. flat-table:: struct v4l2_ctrl_hdr10_cll_info
+> +    :header-rows:  0
+> +    :stub-columns: 0
+> +    :widths:       1 1 2
+> +
+> +    * - __u16
+> +      - ``max_content_light_level``
+> +      - An upper bound on the maximum light level among all individual
 
---RLMrMBUN4PwnA8AozxpnEc9O4jRLfXPBz
-Content-Type: multipart/mixed;
- boundary="------------51AE5625E0FB982B0C9D67DA"
-Content-Language: en-US
+An -> The
+on -> for
 
-This is a multi-part message in MIME format.
---------------51AE5625E0FB982B0C9D67DA
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+> +        samples for the pictures of coded video sequence, cd/m2. When
 
-On 12.01.21 11:03, Roger Pau Monn=C3=A9 wrote:
-> On Tue, Jan 12, 2021 at 06:57:30AM +0100, J=C3=BCrgen Gro=C3=9F wrote:
->> On 11.01.21 16:29, Roger Pau Monne wrote:
->>> Allow issuing an IOCTL_PRIVCMD_MMAP_RESOURCE ioctl with num =3D 0 and=
+of -> of a
 
->>> addr =3D 0 in order to fetch the size of a specific resource.
->>>
->>> Add a shortcut to the default map resource path, since fetching the
->>> size requires no address to be passed in, and thus no VMA to setup.
->>>
->>> Fixes: 3ad0876554caf ('xen/privcmd: add IOCTL_PRIVCMD_MMAP_RESOURCE')=
+> +        equal to 0 no such uppper bound is present.
 
->>
->> I don't think this addition is a reason to add a "Fixes:" tag. This is=
+uppper -> upper
 
->> clearly new functionality.
->=20
-> It could be argued that not allowing to query the resource size was a
-> shortcoming of the original implementation, but a backport request to
-> stable would be more appropriate than a fixes tag I think. Will drop
-> on next version and add a backport request if you agree.
+> +    * - __u16
+> +      - ``max_pic_average_light_level``
+> +      - An upper bound on the maximum average light level among the
 
-Yes, please.
+An -> The
+on -> for
 
+> +        samples for any individual picture of coded video sequence, cd/m2.
 
-Juergen
+of -> of a
 
---------------51AE5625E0FB982B0C9D67DA
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+> +        When equal to 0 no such uppper bound is present.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+uppper -> upper
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+> +
+> +``V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY (struct)``
+> +    The mastering display defines the colour volume (the colour primaries,
+> +    white point and luminance range) of a display considered to be the
+> +    mastering display for current video content.
 
---------------51AE5625E0FB982B0C9D67DA--
+for -> for the
 
---RLMrMBUN4PwnA8AozxpnEc9O4jRLfXPBz--
+> +
+> +.. c:type:: v4l2_ctrl_hdr10_mastering_display
+> +
+> +.. cssclass:: longtable
+> +
+> +.. flat-table:: struct v4l2_ctrl_hdr10_mastering_display
+> +    :header-rows:  0
+> +    :stub-columns: 0
+> +    :widths:       1 1 2
+> +
+> +    * - __u16
+> +      - ``display_primaries_x[3]``
+> +      - Specifies the normalized x chromaticity coordinate of the colour
+> +        primary component c of the mastering display in increments of 0.00002.
+> +        For describing mastering display that use Red, Green and  Blue colour
 
---UxwirFONVMB8JJkV5PFLwVBx0yZsMxDDs
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+describing -> describing the
+use -> uses
 
------BEGIN PGP SIGNATURE-----
+> +        primaries, index value c equal to 0 correspond to Green primary, c
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAl/9eygFAwAAAAAACgkQsN6d1ii/Ey9W
-9wf/SlRDkyc7MfvskNQS68Enzp7CN4wYqum4ecVl4Z3K/agV/7NRcM63knd9fQZGroZRW5+zY6Df
-RGtoOdbzKD+3sg4XM1xilmPqFZqdJQcGnI6FW8C3qjFkxiQLMhkf803KYQfLxoFHROLOsrXrdCL5
-VxwfoJbEfggJY4jmU+ijnGDt8tc5lrOznsnho5lc+/aJjtGuJAPPW+RdSkcxFwwuIUA8iADm5X7k
-fKPpYzxbYG5yrFVXXQigPsxpsn+fazX1+UiUJtkZbQu1a3ISQQxD/vdm/9R3QdgdD0UzVZHZcpNc
-AkD8EEPyezYo7zcFuCB5mHlHXx2Er+nLlJzTdF8Ccw==
-=gOyn
------END PGP SIGNATURE-----
+to Green -> to the Green
+correspond -> corresponds
 
---UxwirFONVMB8JJkV5PFLwVBx0yZsMxDDs--
+> +        equal to 1 correspond to Blue primary and c equal to 2 correspond to
+
+ditto
+
+> +        Red colour primary.
+> +    * - __u16
+> +      - ``display_primaries_y[3]``
+> +      - Specifies the normalized y chromaticity coordinate of the colour
+> +        primary component c of the mastering display in increments of 0.00002.
+> +        For describing mastering display that use Red, Green and  Blue colour
+> +        primaries, index value c equal to 0 correspond to Green primary, c
+> +        equal to 1 correspond to Blue primary and c equal to 2 correspond to
+> +        Red colour primary.
+
+ditto
+
+> +    * - __u16
+> +      - ``white_point_x``
+> +      - Specifies the normalized x chromaticity coordinate of the white
+> +        point of the mastering display in increments of 0.00002.
+> +    * - __u16
+> +      - ``white_point_y``
+> +      - Specifies the normalized y chromaticity coordinate of the white
+> +        point of the mastering display in increments of 0.00002.
+> +    * - __u32
+> +      - ``max_luminance``
+> +      - Specifies the nominal maximum display luminance of the mastering
+> +        display in units of 0.0001 cd/m2.
+> +    * - __u32
+> +      - ``min_luminance``
+> +      - specifies the nominal minimum display luminance of the mastering
+> +        display in units of 0.0001 cd/m2.
+> 
+
+Regards,
+
+	Hans
