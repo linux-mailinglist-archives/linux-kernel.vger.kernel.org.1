@@ -2,107 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0952F2EB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:11:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 832732F2EBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:11:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732444AbhALMJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:09:50 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:45708 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732067AbhALMJu (ORCPT
+        id S1732613AbhALMKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:10:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732067AbhALMKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:09:50 -0500
-Date:   Tue, 12 Jan 2021 13:09:06 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610453348;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OKoDSC87wBJ/q7tk2afi6RH/hGLuq+/LxTP4N37BM5E=;
-        b=WoTM0EQMX+E98si1mt2VtvXkIt8F9pq7dB0X8V2csa96u0FNNMo6msAnBY2TmtVWRwXBpx
-        PB2DtNVD88zmechuvuID8f53rk7bumOvxj5lK4ZaUm2vf+aHzIzETTAm7uSX+XXQg12+P6
-        iJmfTc5MR15/ioXz7r2JlNpDGLgwOMSkm2ckTruklStLUlRMpPMQQaFz5CETPR7Ok5gSUg
-        UNI+I4GxlDo+VdP8fzVeN7toh1sEwtO8DuKrYce9va9ac0KOiIYN9EZARgV/+5UqRxvHYa
-        qTGy2Gu+g3bxIAHpBBsD33OnXJJvE6xfUaJT/tKpMZm+HI3qBdcE7ssycLYz6g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610453348;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OKoDSC87wBJ/q7tk2afi6RH/hGLuq+/LxTP4N37BM5E=;
-        b=vNjGBZNVrBVTt9jpPkkUqVGa22ypbKA0FdGR+HBFM7KuHLsGbGzf2TV23WMwa0gVfnXk8h
-        qeDfBgjMGbxy9qCw==
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     John Garry <john.garry@huawei.com>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Artur Paszkiewicz <artur.paszkiewicz@intel.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        linux-scsi@vger.kernel.org, intel-linux-scu@intel.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Sebastian A. Siewior" <bigeasy@linutronix.de>
-Subject: Re: [PATCH v2 02/19] scsi: libsas and users: Remove notifier
- indirection
-Message-ID: <X/2RYvDDmMs61Uen@lx-t490>
-References: <20210112110647.627783-1-a.darwish@linutronix.de>
- <20210112110647.627783-3-a.darwish@linutronix.de>
- <21eefa9b-7ff5-b418-6db4-7e0039c24473@huawei.com>
+        Tue, 12 Jan 2021 07:10:33 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD283C061575;
+        Tue, 12 Jan 2021 04:09:52 -0800 (PST)
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5EC053E;
+        Tue, 12 Jan 2021 13:09:51 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1610453391;
+        bh=/lkGqww9BD+hFczUHYX7tCR5AwXbb4+oHjXj9qfw3hc=;
+        h=Subject:To:Cc:References:From:Reply-To:Date:In-Reply-To:From;
+        b=bAQg0hsGP0FMt3xwJnSS9YcPMT5repc5QccnN15U4Eda0LM6wHitwiiIo5bazQXi7
+         lFcdRglT55cs21YJ6Ao3hsTbbp55kAPsPEQ45do0+zMO3PeXFMWnNbUfDpaAAVi6yO
+         iANfpDD6R1dJuMSEeNJEzkt2ygx/S5EC3UUCMvv4=
+Subject: Re: [PATCH 3/9] media: mtk-vcodec: Do not zero reserved fields
+To:     Ricardo Ribalda <ribalda@chromium.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>
+References: <20210111145445.28854-1-ribalda@chromium.org>
+ <20210111145445.28854-4-ribalda@chromium.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Organization: Ideas on Board
+Message-ID: <d9a74387-fc20-5364-1903-bdcd97331bc7@ideasonboard.com>
+Date:   Tue, 12 Jan 2021 12:09:48 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <21eefa9b-7ff5-b418-6db4-7e0039c24473@huawei.com>
+In-Reply-To: <20210111145445.28854-4-ribalda@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 11:36:21AM +0000, John Garry wrote:
-> On 12/01/2021 11:06, Ahmed S. Darwish wrote:
-> > From: John Garry<john.garry@huawei.com>
-> >
-> > The LLDDs report events to libsas with .notify_port_event and
-> > .notify_phy_event callbacks.
-> >
-> > These callbacks are fixed and so there is no reason why we cannot call the
-> > functions directly, so do that.
-> >
-> > This neatens the code slightly.
-> >
-> > [a.darwish@linutronix.de: Remove the now unused "sas_ha" local variables]
-> > Signed-off-by: John Garry<john.garry@huawei.com>
->
-> Don't forget your signed-off-by :)
->
+Hi Ricardo,
 
-Oh, yes.
+On 11/01/2021 14:54, Ricardo Ribalda wrote:
+> Core code already clears reserved fields of struct
+> v4l2_pix_format_mplane, check: 4e1e0eb0e074 ("media: v4l2-ioctl: Zero
+> v4l2_plane_pix_format reserved fields").
+> 
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 
-> >
-> > diff --git a/Documentation/scsi/libsas.rst b/Documentation/scsi/libsas.rst
-> > index f9b77c7879db..a183b1d84713 100644
-> > --- a/Documentation/scsi/libsas.rst
-> > +++ b/Documentation/scsi/libsas.rst
-> > @@ -189,8 +189,8 @@ num_phys
-> >   The event interface::
-> >   	/* LLDD calls these to notify the class of an event. */
-> > -	void (*notify_port_event)(struct sas_phy *, enum port_event);
-> > -	void (*notify_phy_event)(struct sas_phy *, enum phy_event);
-> > +	void sas_notify_port_event(struct sas_phy *, enum port_event);
-> > +	void sas_notify_phy_event(struct sas_phy *, enum phy_event);
-> >   When sas_register_ha() returns, those are set and can be
-> >   called by the LLDD to notify the SAS layer of such events
->
-> Maybe this was missed in the rebase, but I think that this comment can go/be
-> changed at some stage.
->
+There's also another memset.*reserved occurring in
+  platform/mtk-vcodec/mtk_vcodec_enc.c: vidioc_enum_fmt()
 
-Yeah, I pulled the patch yesterday from:
+While v4l2-core/v4l2-ioctl.c has:
+> static int v4l_enum_fmt(const struct v4l2_ioctl_ops *ops,
+>                                 struct file *file, void *fh, void *arg)
+> {
+>         struct video_device *vdev = video_devdata(file);
+>         struct v4l2_fmtdesc *p = arg;
+>         int ret = check_fmt(file, p->type);
+>         u32 mbus_code;
+>         u32 cap_mask;
+> 
+>         if (ret)
+>                 return ret;
+>         ret = -EINVAL;
+> 
+>         if (!(vdev->device_caps & V4L2_CAP_IO_MC))
+>                 p->mbus_code = 0;
+> 
+>         mbus_code = p->mbus_code;
+>         CLEAR_AFTER_FIELD(p, type);
 
-  https://github.com/hisilicon/kernel-dev/commit/87fcd7e113dc05b7933260e7fa4588dc3730cc2a
+So would that mean ^^^ should also be sufficient to remove the need for
+that memset?
 
-Lemme check if there are any other differences.
+With that fixed or resolved:
 
-Thanks,
---
-Ahmed S. Darwish
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+
+
+> ---
+>  drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c | 5 -----
+>  drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c | 8 --------
+>  2 files changed, 13 deletions(-)
+> 
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
+> index c768a587a944..d746c41ea805 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec.c
+> @@ -715,12 +715,7 @@ static int vidioc_try_fmt(struct v4l2_format *f,
+>  		}
+>  	}
+>  
+> -	for (i = 0; i < pix_fmt_mp->num_planes; i++)
+> -		memset(&(pix_fmt_mp->plane_fmt[i].reserved[0]), 0x0,
+> -			   sizeof(pix_fmt_mp->plane_fmt[0].reserved));
+> -
+>  	pix_fmt_mp->flags = 0;
+> -	memset(&pix_fmt_mp->reserved, 0x0, sizeof(pix_fmt_mp->reserved));
+>  	return 0;
+>  }
+>  
+> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
+> index 21de1431cfcb..db1f62cc38b3 100644
+> --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
+> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
+> @@ -320,13 +320,7 @@ static int vidioc_try_fmt(struct v4l2_format *f,
+>  		}
+>  	}
+>  
+> -	for (i = 0; i < pix_fmt_mp->num_planes; i++)
+> -		memset(&(pix_fmt_mp->plane_fmt[i].reserved[0]), 0x0,
+> -			   sizeof(pix_fmt_mp->plane_fmt[0].reserved));
+> -
+>  	pix_fmt_mp->flags = 0;
+> -	memset(&pix_fmt_mp->reserved, 0x0,
+> -		sizeof(pix_fmt_mp->reserved));
+>  
+>  	return 0;
+>  }
+> @@ -532,8 +526,6 @@ static int vidioc_venc_g_fmt(struct file *file, void *priv,
+>  	for (i = 0; i < pix->num_planes; i++) {
+>  		pix->plane_fmt[i].bytesperline = q_data->bytesperline[i];
+>  		pix->plane_fmt[i].sizeimage = q_data->sizeimage[i];
+> -		memset(&(pix->plane_fmt[i].reserved[0]), 0x0,
+> -		       sizeof(pix->plane_fmt[i].reserved));
+>  	}
+>  
+>  	pix->flags = 0;
+> 
+
