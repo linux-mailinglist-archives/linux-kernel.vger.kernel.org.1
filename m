@@ -2,78 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4BE2F360C
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:45:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E5F12F3613
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404668AbhALQoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:44:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38684 "EHLO mail.kernel.org"
+        id S2405418AbhALQpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:45:17 -0500
+Received: from www.zeus03.de ([194.117.254.33]:38198 "EHLO mail.zeus03.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728901AbhALQog (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:44:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D39223107;
-        Tue, 12 Jan 2021 16:43:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610469836;
-        bh=g4E+bclw7/LIvnoXNckYeAd/7C3OTd2i42XOkzm/MVY=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=iHs07gX/5trwO15bYCQc1FYHvfza0jIyYDTz+nivAmXoEEfsyJGm00YW9QID6Rn7/
-         ic1zxpx9Txg8qjN/1Rz+rEKO4pCyhrZStQR9/THYbi/6aBLYFBKycRrt6s1jfTq8yV
-         OP2eJS9yUYkaOtRv3qlTp5aFEAv4ReGkz5T0Tne3AiYykWon1bNP/jMUZFnEcKj8yK
-         DNa/yaJBcfdsJQUagvAnpqDC+KV08LYqdlXBYRn/ZB/0tp783Mkp7O6Ecot35/bSrf
-         Bkv4Am3JXCCnV6SWJMrtIGV5LbXSNBz+N1XttBki7YlDJxEZSD9+b4TMB8WUR0VJ8U
-         6vdBRl7jz5gQg==
-From:   Mark Brown <broonie@kernel.org>
-To:     Pavel Machek <pavel@denx.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     linux-spi@vger.kernel.org, Biju Das <biju.das.jz@bp.renesas.com>,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>
-In-Reply-To: <20210107145329.27966-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20210107145329.27966-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: Re: [PATCH] spi: rpc-if: Gaurd .pm assignment with CONFIG_PM_SLEEP #ifdef check
-Message-Id: <161046980299.975.8508169983614840511.b4-ty@kernel.org>
-Date:   Tue, 12 Jan 2021 16:43:22 +0000
+        id S1730772AbhALQpQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 11:45:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=k1; bh=wnKCSjcDuaBu5Dw3faPAZNWGPVwG
+        m9aVO5eOWICBkSc=; b=JLwMTQGghUyIuBEKpFDnFVE0JIuoyLc2+kZX4E91mLXM
+        31oyshuzxzU5EzUSOG7LXcIjcoARcZUOtiTePM+RJ/kzje/CEQYUiP6S9yjmTUT1
+        XcYJzoZVy3rLQr8ZypTYHVPrpIK+DN6H5ly5oJQa6PW8/6OYaElVURHGrV4HX8A=
+Received: (qmail 2813548 invoked from network); 12 Jan 2021 17:44:35 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 12 Jan 2021 17:44:35 +0100
+X-UD-Smtp-Session: l3s3148p1@HqLPvLa4vtEgAwDPXwxzAHrEwO71dOp2
+Date:   Tue, 12 Jan 2021 17:44:34 +0100
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-i2c@vger.kernel.org
+Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 2/3] media: i2c: adv7842: remove open coded version
+ of SMBus block read
+Message-ID: <20210112164434.GA47645@kunai>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        linux-i2c@vger.kernel.org, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210112164130.47895-1-wsa+renesas@sang-engineering.com>
+ <20210112164130.47895-3-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="LZvS9be/3tNcYl/X"
+Content-Disposition: inline
+In-Reply-To: <20210112164130.47895-3-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Jan 2021 14:53:29 +0000, Lad Prabhakar wrote:
-> With CONFIG_PM_SLEEP disabled the rpcif_spi_pm_ops variable is still
-> referenced and thus increasing the size of kernel.
-> 
-> Fix this issue by adding CONFIG_PM_SLEEP #ifdef check around the .pm
-> assignment (image size is critical on RZ/A SoC's where the SRAM sizes
-> range 4~5 MiB).
 
-Applied to
+--LZvS9be/3tNcYl/X
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+On Tue, Jan 12, 2021 at 05:41:28PM +0100, Wolfram Sang wrote:
+> The open coded version differs from the one in the core in one way: the
+> buffer will be always copied back, even when the transfer failed. It
+> looks like it is expected that the sanity check for a correct CRC and
+> header will bail out later.
+>=20
+> Use the block read from the I2C core and propagate a potential errno
+> further to the sanity check.
+>=20
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Thanks!
+$subject should say "adv7511", sorry!
 
-[1/1] spi: rpc-if: Gaurd .pm assignment with CONFIG_PM_SLEEP #ifdef check
-      commit: bfeccc6a18de52529ada66ea3afe934004b4b36e
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+--LZvS9be/3tNcYl/X
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-----BEGIN PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/90e4ACgkQFA3kzBSg
+KbbBMg/+JZzUyWKwElld60MIkYxKvRuq3e/me60lsKJVz/BBfuu7TVxXuF7SRLug
+B++WrDe2gRbePRy7u3Z6ww2xQ9KchGsJ4im39wFDVm+HhFAGqIkbsEndzbyr+12g
+pnvJ+eNaH0mW8I3iNF1xaIsC3QToVYzMkjS7g55ba4yR0rcUN0ufyZZoUNHYrYN+
+NUsFAeyQ/L4EItyCR86oa7Y7liKEMoQOQgVztbXUO8U9+6MBuhbwktTeHuR3KgQs
+FXNLWpDxKHCZPo92LLtYQ0q3b3SKqPFYUBTKoYe0gJUKPIdJQlKsUVDWxxa/JN+G
+wJ45f6VdvDtoIS5/aAj857MJYzgmF13HN0OoM1sxg25TCN3tJQ8QKWR31055lcZ6
+U/8Xu4af9FKOZl3U3VcUajRAK5fyr7N1HAwBRYBQMRGcVlG8vL+xEhMBzJuq1lnW
+6Yi1Tx79H8hR6Fdt3bu8AJoR6y26PpvYsVBbK7sxvkAI+7QCR9CXjOjizBQUReM9
+oq8uGKduuJJRoSjEUMv9Lh6j08bBLi4Pgs6VS0Mkd5EQdVHoIi1MMf5rkCBQzFAa
+PdzkWtSIIJb3v0ySe8Qlr6SBhazhfB2FSdYodgqSjfPa018OmTS6UZowVjeQNJPE
+8U1hm6hrWBdsjEpRWZscQxTnPwO89QgP/h5OfjFYXng/h25Srww=
+=00Lt
+-----END PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+--LZvS9be/3tNcYl/X--
