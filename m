@@ -2,339 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F8552F407B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:56:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47BBD2F4079
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393282AbhAMAmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 19:42:52 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46244 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391838AbhALXtR (ORCPT
+        id S2393210AbhAMAmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 19:42:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391721AbhALXtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 18:49:17 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10CNgtpk019891;
-        Tue, 12 Jan 2021 15:48:29 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=ogWyaYtFKuR0WRrAsB0kMicWt+hZhB+tqSswxvksTGg=;
- b=EJnRAapb1jHK/E3SE42OtvSSlGtOQLQOcqPQEn7FtyKuv3V+V+1P86SvW6yRV5B2lTFN
- HVcTY8cVPIVXobT4YMz7cufEChezxMlxTSXszKSddHCw1VzRDp66luusjblrM3GDsFjx
- +D3BScYgXoZmSfKIAJSm7eewmjLazC+VUDw= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 361fp2t916-16
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 12 Jan 2021 15:48:29 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 12 Jan 2021 15:48:27 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=naxQ5vJ9obtX8iss9wifMdruFUY91jfYUgRFWwXaXhXawrIEIGTlrl5oFhlcgePx1rC4oBSa6tBb+pAL8FRtc2Cm9PzNUWzSblPo1G1Al4SKplf2D16kzPSytMi7dn3EWe131/gLqPFj9guqVz5LJJoXCzJ6pzR3ZTPJGC3ENXzmAnID2upifeXL3A4f6UP+mOK6nWi7i8SIQyiuwMZASCvttsMfUjd4tTgMDD9iE58x8L1EYxbf35oPlUVLsskWCO/cRjVtNxwcn7C1yObBXFrLL5VlkJy0HvIcIR1OT7+wJiUTemr4VkItneEdKEqLma3hEueDL1kr0MUpza0krg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ogWyaYtFKuR0WRrAsB0kMicWt+hZhB+tqSswxvksTGg=;
- b=OClkickOutwItQO1eVX1r4bZXFBIdhWbPxd56Mox+zNACWwwhetuIGpcagfJqxKzuZM7sF89DmFc8cmv2eu2g+6MAJnA6scooWg1dVEVPnf/eaWMG++LdfiszCwzh4Uyv4iGoYhSjEfojuX6wEe2BPjOKP07J5gyAEnhBtbc5AblDOcjkDpm/hquZeQrvwVd3le1tmY2RnE9rOrMco2okFROlFLxt0subFpWbT8kdUHiyffDbiS+EaX6aW8nbMFraWSbZdvxq6sM7S2g7AAL3XIuLG7RvS9Xju3APQAx6Fv5C1SLGRhE/L853BvQQlCg2Cckde7gOyFyC00dn1eBEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ogWyaYtFKuR0WRrAsB0kMicWt+hZhB+tqSswxvksTGg=;
- b=QmJItymG7kNBYKrrosPb3r4n9xKyU5VNxJ8/WjPFlp+KMkLO/kon9L0X2KBHy9o1cZkYTIrP/ssq48XdhPbscr01DG7UIApAUjL/UpnWpmUiJZAR0hmQnPCnEqKiU2fd0oV59QDxR6nXJVpmqyJDm6iq7UAzuruuV8QclNWn520=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2757.namprd15.prod.outlook.com (2603:10b6:a03:156::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Tue, 12 Jan
- 2021 23:48:26 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::780c:8570:cb1d:dd8c]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::780c:8570:cb1d:dd8c%6]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
- 23:48:26 +0000
-Date:   Tue, 12 Jan 2021 15:48:22 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Arjun Roy <arjunroy@google.com>
-CC:     Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, <linux-mm@kvack.org>,
-        <cgroups@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: net: memcg accounting for TCP rx zerocopy
-Message-ID: <20210112234822.GA134064@carbon.dhcp.thefacebook.com>
-References: <20210112214105.1440932-1-shakeelb@google.com>
- <20210112233108.GD99586@carbon.dhcp.thefacebook.com>
- <CAOFY-A3=mCvfvMYBJvDL1LfjgYgc3kzebRNgeg0F+e=E1hMPXA@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOFY-A3=mCvfvMYBJvDL1LfjgYgc3kzebRNgeg0F+e=E1hMPXA@mail.gmail.com>
-X-Originating-IP: [2620:10d:c090:400::5:2826]
-X-ClientProxiedBy: CO1PR15CA0052.namprd15.prod.outlook.com
- (2603:10b6:101:1f::20) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Tue, 12 Jan 2021 18:49:15 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC1DC0617A3;
+        Tue, 12 Jan 2021 15:48:28 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id v19so233134pgj.12;
+        Tue, 12 Jan 2021 15:48:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZruxYcBQXCXWok/YmCXjga0Z3PUTOQ6pNhSzq4bpJR4=;
+        b=g0a+XeY1WpelCJ57IOHLZ5ClC3bxDfY0fE91b/U+a2JYIHKaMmcVwduCeAlYvDQQoL
+         xjVCiINgK4qb5c/LcNp+C22h/uUgi0vdQ2TGhNzY6s+CaSrHxAQGfwwzQ0rH8W+88b31
+         +XIJb8l5Nq1FsvPziTU9NZKAoS+c5TQjnwVX/6Eb1twaMPfwDQB6B2io0xNovCRZS7Ij
+         F7Je6GW1bm2Mx6XSiUeKYKWTmiprOX72+CStoB8qTs5qJrO8vTUdnJMoWGnoJdNzQpBe
+         moohYHc39LCcIAkyfVB+kDMXKifn7ejJk+tALEXkSKv8wCTdSj3tqESBUNBzgPdtMQj4
+         jzPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=ZruxYcBQXCXWok/YmCXjga0Z3PUTOQ6pNhSzq4bpJR4=;
+        b=pN1DEjLzqoCJXIudS/KGii4ZkjJ6TL7QGFGFjjC++CXDfL5NmbYkuHLOHCmLx55EW+
+         XOqZwc8nFnf7HZ3wqnOBSjc+o8dFZHLdrgFo1IRIalZKxl1/swPqt26mXr6L0YNf8mZ5
+         CM4pPHxC2SF129F6tQwlVWei9awAP9ftwOMgCvKGogmAkBY/Dw+tBRHG736FXAAMbgUQ
+         jtuh5ZbttJdLSJw96BPzySgmwtbm+06nZ8EZQeTEUgN7ejO4ZsElR4LtsjZwcxva9cZo
+         q2BVg0WHjj+bb73ZATGtRHhkgZA6ajd9L7rFe/wnakShCF7qBjUjsXF2fDi0FVEWxLmv
+         yVBg==
+X-Gm-Message-State: AOAM531CNO1hZLa1gIpC0naC4abaKb3ck22SsG46esZnydvBFwjYdqE4
+        IBReM21zSfJFoDltd4acMDE=
+X-Google-Smtp-Source: ABdhPJzcsesZOG8VoM+izCkYUl4yjaLgepIotHJQF1QgVivbf7byOhsDdoAO8dQh9VGDhIePy7ZM6A==
+X-Received: by 2002:a63:1865:: with SMTP id 37mr1523162pgy.206.1610495307478;
+        Tue, 12 Jan 2021 15:48:27 -0800 (PST)
+Received: from [10.67.48.230] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id k3sm57763pgm.94.2021.01.12.15.48.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jan 2021 15:48:26 -0800 (PST)
+Subject: Re: [RFC PATCH v3 6/6] of: Add plumbing for restricted DMA pool
+To:     Claire Chang <tientzu@chromium.org>, robh+dt@kernel.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        joro@8bytes.org, will@kernel.org, frowand.list@gmail.com,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com
+Cc:     grant.likely@arm.com, xypron.glpk@gmx.de, treding@nvidia.com,
+        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
+        gregkh@linuxfoundation.org, saravanak@google.com,
+        rafael.j.wysocki@intel.com, heikki.krogerus@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, rdunlap@infradead.org,
+        dan.j.williams@intel.com, bgolaszewski@baylibre.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, iommu@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org, tfiga@chromium.org,
+        drinkcat@chromium.org
+References: <20210106034124.30560-1-tientzu@chromium.org>
+ <20210106034124.30560-7-tientzu@chromium.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
+Message-ID: <95e6dd76-5e18-e445-c351-19fba18f36de@gmail.com>
+Date:   Tue, 12 Jan 2021 15:48:24 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:2826) by CO1PR15CA0052.namprd15.prod.outlook.com (2603:10b6:101:1f::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Tue, 12 Jan 2021 23:48:25 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5b5f1282-e78d-48e5-af31-08d8b7548e7d
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2757:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2757FB83E414A03D489DDDF6BEAA0@BYAPR15MB2757.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xABcpl9ZcR15Az2h7NHiEBYmKgGZg3bvd4EJARUn2jUFNV/75QVwf1BzwmV9IlGoltkA1GeonOp+toLg0tsWHkjr4e0XXclXcPuDcCZQ0BopXxikcJMl8Gd/vDCU+wZT06cv3koVrT0rOCS9soTXnHyY4LZfu4KbTFkCnhzHpQA56cFMEj0xZQ/4TTM0BVTBcoXiqmOQexYeUBWrdKQD4OCkjSr88Ppu2KNQrBbe+3VX4zRcfwaA9w1z0zDt8cRwmsKWeWbM5J5AxHaCfO05HRQ+96/1FSvApa8afNNlRWqKp6GqHJkFi6jsC8MUkGlvSwIf7cd2tx2EYzJZtFI0ZUp6WiHmmq6xxHZ8xiUsbzufNJZTcervyFoLeVgDsHrWM5BtRtVilcABk41xc6AFKQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(366004)(396003)(39860400002)(376002)(33656002)(52116002)(6666004)(9686003)(86362001)(6506007)(16526019)(66946007)(6916009)(83380400001)(5660300002)(66556008)(186003)(1076003)(15650500001)(7416002)(478600001)(55016002)(54906003)(7696005)(8936002)(8676002)(4326008)(66476007)(2906002)(53546011)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?baIu0OaYGX5gccGxVm5si3fGjjGhP3w93QvGqjyZ/iCLHnE0HUeKMIN/egGu?=
- =?us-ascii?Q?lr1TBDl03PpVm0nUglODKgLJNhpG7Q5Fyn2NMx/F44nmDa0Siru3nTAztiLP?=
- =?us-ascii?Q?aGA8AuFQSEFXCHrDx6nFuaKYDeZuGB7EYvwERb1z06J+O+ZcbLB+0SpuLpms?=
- =?us-ascii?Q?DfmnPHAgNFSWT44p9WZrUU1kXYMFtV5j7hbXI+ofBDfriSB3lrnIpa69pZkU?=
- =?us-ascii?Q?MEehVwyJNZH6boi/PlaILzZ5jjkJl5nCdN0N4IsgKvYcKJWwxFxOwaNXwlTu?=
- =?us-ascii?Q?O2fYM/Is8Ezh3tTSbTIo0oXNE5S9iyRB1XULkQbrXX+A+gnAYh7oavZgJo07?=
- =?us-ascii?Q?XnpzDd1F+/Q+Z4Rke+8JDkN1wU1qYSnbwTaBAbn7YY4Il0H0x+Dl/V0ukxu4?=
- =?us-ascii?Q?ZcY8bCPpg0E3V/25h+3v4z+I0LsnT/CQEOi+63oVM99yH02UU/CmUYIBpry+?=
- =?us-ascii?Q?MPck3RP38xHSKtA7qqBPgSM8N+Cy7GMl0CAbLncoIgx5lzfcumz/ngNyCMay?=
- =?us-ascii?Q?JjzpSBPylP8USr5jcPgP9OTbW9iDHVrXFAppB3+WI58ygjwR8jAYMizwpG0A?=
- =?us-ascii?Q?BA0WAaIK5hmJ2xRc5D5WK4b/NakMIiMVYJP3B8MSnXaiwUycK40sVODr/hhQ?=
- =?us-ascii?Q?XyQXc6+6B1DVZPPQjRANnLWCaidYASDRhJeQmXowYbSvWF0vxYoO1Bf/lHo5?=
- =?us-ascii?Q?QZ42RH04p4bs2b2LiJ16eI1NefsJrYZ135rf/Ndaalvci9Cpcu7lVr5po6Dv?=
- =?us-ascii?Q?UgOdKGzAjeHeZSQa1p2fHxY4HaCcW4qgQt0WCIKTksLOuaxdWDLt8/ZIJEiG?=
- =?us-ascii?Q?XcIAy/SIPwewJmmwt/HjB6O3cJx0/8i3u47JY9UAi5pCaHM9l/8tyr8eB3Rq?=
- =?us-ascii?Q?Ifu1NqdxDvrOlB2RdsBEVXa4P3TGOWt53t21UzZy8qwHNt22f96lzBRa9UVq?=
- =?us-ascii?Q?dtCUYt3AzWsxM76x/3qI8BYGJ+OcqB4Ty6zbVoRsil8RyfOTVyIpPOF9mfU2?=
- =?us-ascii?Q?i8yD6bbIm2hXw7v2mx1WjWpIoA=3D=3D?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 23:48:26.8092
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b5f1282-e78d-48e5-af31-08d8b7548e7d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FpdYNEHA18i/EE8mpi/D/7WDU9/+ZWkInfg8NOPV1CvlKfj3vv9KoU6W6KJq7tE3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2757
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-12_21:2021-01-12,2021-01-12 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0
- impostorscore=0 mlxlogscore=999 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 suspectscore=0 mlxscore=0 bulkscore=0 phishscore=0
- adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101120135
-X-FB-Internal: deliver
+In-Reply-To: <20210106034124.30560-7-tientzu@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 03:36:18PM -0800, Arjun Roy wrote:
-> On Tue, Jan 12, 2021 at 3:31 PM Roman Gushchin <guro@fb.com> wrote:
-> >
-> > On Tue, Jan 12, 2021 at 01:41:05PM -0800, Shakeel Butt wrote:
-> > > From: Arjun Roy <arjunroy@google.com>
-> > >
-> > > TCP zerocopy receive is used by high performance network applications to
-> > > further scale. For RX zerocopy, the memory containing the network data
-> > > filled by network driver is directly mapped into the address space of
-> > > high performance applications. To keep the TLB cost low, these
-> > > applications unmaps the network memory in big batches. So, this memory
-> > > can remain mapped for long time. This can cause memory isolation issue
-> > > as this memory becomes unaccounted after getting mapped into the
-> > > application address space. This patch adds the memcg accounting for such
-> > > memory.
-> > >
-> > > Accounting the network memory comes with its own unique challenge. The
-> > > high performance NIC drivers use page pooling to reuse the pages to
-> > > eliminate/reduce the expensive setup steps like IOMMU. These drivers
-> > > keep an extra reference on the pages and thus we can not depends on the
-> > > page reference for the uncharging. The page in the pool may keep a memcg
-> > > pinned for arbitrary long time or may get used by other memcg.
-> > >
-> > > This patch decouples the uncharging of the page from the refcnt and
-> > > associate it with the map count i.e. the page gets uncharged when the
-> > > last address space unmaps it. Now the question what if the driver drops
-> > > its reference while the page is still mapped. That is fine as the
-> > > address space also holds a reference to the page i.e. the reference
-> > > count can not drop to zero before the map count.
-> > >
-> > > Signed-off-by: Arjun Roy <arjunroy@google.com>
-> > > Co-developed-by: Shakeel Butt <shakeelb@google.com>
-> > > Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> > > ---
-> > >  include/linux/memcontrol.h | 34 +++++++++++++++++++--
-> > >  mm/memcontrol.c            | 60 ++++++++++++++++++++++++++++++++++++++
-> > >  mm/rmap.c                  |  3 ++
-> > >  net/ipv4/tcp.c             | 27 +++++++++++++----
-> > >  4 files changed, 116 insertions(+), 8 deletions(-)
-> > >
-> > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > > index 7a38a1517a05..0b0e3b4615cf 100644
-> > > --- a/include/linux/memcontrol.h
-> > > +++ b/include/linux/memcontrol.h
-> > > @@ -349,11 +349,13 @@ extern struct mem_cgroup *root_mem_cgroup;
-> > >
-> > >  enum page_memcg_data_flags {
-> > >       /* page->memcg_data is a pointer to an objcgs vector */
-> > > -     MEMCG_DATA_OBJCGS = (1UL << 0),
-> > > +     MEMCG_DATA_OBJCGS       = (1UL << 0),
-> > >       /* page has been accounted as a non-slab kernel page */
-> > > -     MEMCG_DATA_KMEM = (1UL << 1),
-> > > +     MEMCG_DATA_KMEM         = (1UL << 1),
-> > > +     /* page has been accounted as network memory */
-> > > +     MEMCG_DATA_SOCK         = (1UL << 2),
-> > >       /* the next bit after the last actual flag */
-> > > -     __NR_MEMCG_DATA_FLAGS  = (1UL << 2),
-> > > +     __NR_MEMCG_DATA_FLAGS   = (1UL << 3),
-> > >  };
-> > >
-> > >  #define MEMCG_DATA_FLAGS_MASK (__NR_MEMCG_DATA_FLAGS - 1)
-> > > @@ -444,6 +446,11 @@ static inline bool PageMemcgKmem(struct page *page)
-> > >       return page->memcg_data & MEMCG_DATA_KMEM;
-> > >  }
-> > >
-> > > +static inline bool PageMemcgSock(struct page *page)
-> > > +{
-> > > +     return page->memcg_data & MEMCG_DATA_SOCK;
-> > > +}
-> > > +
-> > >  #ifdef CONFIG_MEMCG_KMEM
-> > >  /*
-> > >   * page_objcgs - get the object cgroups vector associated with a page
-> > > @@ -1095,6 +1102,11 @@ static inline bool PageMemcgKmem(struct page *page)
-> > >       return false;
-> > >  }
-> > >
-> > > +static inline bool PageMemcgSock(struct page *page)
-> > > +{
-> > > +     return false;
-> > > +}
-> > > +
-> > >  static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
-> > >  {
-> > >       return true;
-> > > @@ -1561,6 +1573,10 @@ extern struct static_key_false memcg_sockets_enabled_key;
-> > >  #define mem_cgroup_sockets_enabled static_branch_unlikely(&memcg_sockets_enabled_key)
-> > >  void mem_cgroup_sk_alloc(struct sock *sk);
-> > >  void mem_cgroup_sk_free(struct sock *sk);
-> > > +int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg, struct page **pages,
-> > > +                              unsigned int nr_pages);
-> > > +void mem_cgroup_uncharge_sock_pages(struct page **pages, unsigned int nr_pages);
-> > > +
-> > >  static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
-> > >  {
-> > >       if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg->tcpmem_pressure)
-> > > @@ -1589,6 +1605,18 @@ static inline void memcg_set_shrinker_bit(struct mem_cgroup *memcg,
-> > >                                         int nid, int shrinker_id)
-> > >  {
-> > >  }
-> > > +
-> > > +static inline int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg,
-> > > +                                            struct page **pages,
-> > > +                                            unsigned int nr_pages)
-> > > +{
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static inline void mem_cgroup_uncharge_sock_pages(struct page **pages,
-> > > +                                               unsigned int nr_pages)
-> > > +{
-> > > +}
-> > >  #endif
-> > >
-> > >  #ifdef CONFIG_MEMCG_KMEM
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > index db9836f4b64b..38e94538e081 100644
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -7061,6 +7061,66 @@ void mem_cgroup_uncharge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages)
-> > >       refill_stock(memcg, nr_pages);
-> > >  }
-> > >
-> > > +/**
-> > > + * mem_cgroup_charge_sock_pages - charge socket memory
-> > > + * @memcg: memcg to charge
-> > > + * @pages: array of pages to charge
-> > > + * @nr_pages: number of pages
-> > > + *
-> > > + * Charges all @pages to current's memcg. The caller should have a reference on
-> > > + * the given memcg.
-> > > + *
-> > > + * Returns 0 on success.
-> > > + */
-> > > +int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg, struct page **pages,
-> > > +                              unsigned int nr_pages)
-> > > +{
-> > > +     int ret = 0;
-> > > +
-> > > +     if (mem_cgroup_disabled() || mem_cgroup_is_root(memcg))
-> > > +             goto out;
-> > > +
-> > > +     ret = try_charge(memcg, GFP_KERNEL, nr_pages);
-> > > +
-> > > +     if (!ret) {
-> > > +             int i;
-> > > +
-> > > +             for (i = 0; i < nr_pages; i++)
-> > > +                     pages[i]->memcg_data = (unsigned long)memcg |
-> > > +                             MEMCG_DATA_SOCK;
-> > > +             css_get_many(&memcg->css, nr_pages);
-> > > +     }
-> > > +out:
-> > > +     return ret;
-> > > +}
-> > > +
-> > > +/**
-> > > + * mem_cgroup_uncharge_sock_pages - uncharge socket pages
-> > > + * @pages: array of pages to uncharge
-> > > + * @nr_pages: number of pages
-> > > + *
-> > > + * This assumes all pages are charged to the same memcg.
-> > > + */
-> > > +void mem_cgroup_uncharge_sock_pages(struct page **pages, unsigned int nr_pages)
-> > > +{
-> > > +     int i;
-> > > +     struct mem_cgroup *memcg;
-> > > +
-> > > +     if (mem_cgroup_disabled())
-> > > +             return;
-> > > +
-> > > +     memcg = page_memcg(pages[0]);
-> > > +
-> > > +     if (unlikely(!memcg))
-> > > +             return;
-> > > +
-> > > +     refill_stock(memcg, nr_pages);
-> > > +
-> > > +     for (i = 0; i < nr_pages; i++)
-> > > +             pages[i]->memcg_data = 0;
-> > > +     css_put_many(&memcg->css, nr_pages);
-> > > +}
-> >
-> > What about statistics? Should it be accounted towards "sock", "slab/kmem" or deserves
-> > a separate counter? Do we plan to eventually have shrinkers for this type of memory?
-> >
+On 1/5/21 7:41 PM, Claire Chang wrote:
+> If a device is not behind an IOMMU, we look up the device node and set
+> up the restricted DMA when the restricted-dma-pool is presented.
 > 
-> While the pages in question are part of an sk_buff, they may be
-> accounted towards sockmem. However, that charge is unaccounted when
-> the skb is freed after the receive operation. When they are in use by
-> the user application I do not think sockmem is the right place to have
-> a break-out counter.
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
+> ---
 
-Does it mean that a page can be accounted twice (even temporarily)?
+[snip]
 
-Historically we have a corresponding vmstat counter to each charged page.
-It helps with finding accounting/stastistics issues: we can check that
-memory.current ~= anon + file + sock + slab + percpu + stack.
-It would be nice to preserve such ability.
+> +int of_dma_set_restricted_buffer(struct device *dev)
+> +{
+> +	struct device_node *node;
+> +	int count, i;
+> +
+> +	if (!dev->of_node)
+> +		return 0;
+> +
+> +	count = of_property_count_elems_of_size(dev->of_node, "memory-region",
+> +						sizeof(phandle));
 
+You could have an early check for count < 0, along with an error
+message, if that is deemed useful.
+
+> +	for (i = 0; i < count; i++) {
+> +		node = of_parse_phandle(dev->of_node, "memory-region", i);
+> +		if (of_device_is_compatible(node, "restricted-dma-pool"))
+
+And you may want to add here an of_device_is_available(node). A platform
+that provides the Device Tree firmware and try to support multiple
+different SoCs may try to determine if an IOMMU is present, and if it
+is, it could be marking the restriced-dma-pool region with a 'status =
+"disabled"' property, or any variant of that scheme.
+
+> +			return of_reserved_mem_device_init_by_idx(
+> +				dev, dev->of_node, i);
+
+This does not seem to be supporting more than one memory region, did not
+you want something like instead:
+
+		ret = of_reserved_mem_device_init_by_idx(...);
+		if (ret)
+			return ret;
+
+> +	}
+> +
+> +	return 0;
+> +}
+> diff --git a/drivers/of/device.c b/drivers/of/device.c
+> index aedfaaafd3e7..e2c7409956ab 100644
+> --- a/drivers/of/device.c
+> +++ b/drivers/of/device.c
+> @@ -182,6 +182,10 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
+>  	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
+>  
+>  	dev->dma_range_map = map;
+> +
+> +	if (!iommu)
+> +		return of_dma_set_restricted_buffer(dev);
+> +
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(of_dma_configure_id);
+> diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
+> index d9e6a324de0a..28a2dfa197ba 100644
+> --- a/drivers/of/of_private.h
+> +++ b/drivers/of/of_private.h
+> @@ -161,12 +161,17 @@ struct bus_dma_region;
+>  #if defined(CONFIG_OF_ADDRESS) && defined(CONFIG_HAS_DMA)
+>  int of_dma_get_range(struct device_node *np,
+>  		const struct bus_dma_region **map);
+> +int of_dma_set_restricted_buffer(struct device *dev);
+>  #else
+>  static inline int of_dma_get_range(struct device_node *np,
+>  		const struct bus_dma_region **map)
+>  {
+>  	return -ENODEV;
+>  }
+> +static inline int of_dma_get_restricted_buffer(struct device *dev)
+> +{
+> +	return -ENODEV;
+> +}
+>  #endif
+>  
+>  #endif /* _LINUX_OF_PRIVATE_H */
 > 
-> To double check, what do you mean by shrinker?
 
-I mean do we plan to implement a mechanism to reclaim memory from these drivers
-on-demand, if a cgroup is experiencing high memory pressure.
+
+-- 
+Florian
