@@ -2,281 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977952F2889
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:51:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B18942F288F
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388364AbhALGu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 01:50:27 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:34811 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2387809AbhALGuX (ORCPT
+        id S2390730AbhALGvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 01:51:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389829AbhALGvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 01:50:23 -0500
-X-UUID: 53ad132c3bbd4df2a672afda0b4b230e-20210112
-X-UUID: 53ad132c3bbd4df2a672afda0b4b230e-20210112
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <nick.fan@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1963451269; Tue, 12 Jan 2021 14:49:36 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 12 Jan 2021 14:49:35 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 12 Jan 2021 14:49:36 +0800
-From:   Nick Fan <Nick.Fan@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <srv_heupstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <nick.fan@mediatek.com>,
-        Nick Fan <Nick.Fan@mediatek.com>
-Subject: [PATCH v4 2/2] arm64: dts: mt8192: Add node for the Mali GPU
-Date:   Tue, 12 Jan 2021 14:49:33 +0800
-Message-ID: <20210112064933.12951-2-Nick.Fan@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210112064933.12951-1-Nick.Fan@mediatek.com>
-References: <20210112064933.12951-1-Nick.Fan@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        Tue, 12 Jan 2021 01:51:23 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC84C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 22:50:42 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id p18so794028pgm.11
+        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 22:50:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=0LpfnVqBhlTSQc8coWf/BWdwkFkHOaWAvkHfo4IkRxg=;
+        b=ZWfhGNoYLjyL44s6mcZku7VmXFzPU/vGYDrtL7nkAQdQZIYF4mc75ZJ0jVb5EZZX6w
+         JqwwzmQZTjJq6lGXhkzlucVN268z0iEP1kFfCLltlYy7ec165ZlbpjT+eUDZYrCNcb1k
+         65NpCwY1M+73pQ1ovUwnN0RFxCDpvjGy84BkvTYM2klBpQNV8Kk5eEAOxaRJZ9OUawo8
+         WxjgQ+24a8KO0Fo0zDHR8lTJHSoz+WBhbuB8x8lI04d0Ii2mmIRBWCg70W6KaeP+KaI2
+         iQQnoYF/Opvq+Z5qrM4xykgNxa5WG+AhuJxxyDq0QVdc4AAStJS7VmTJVJCnRUxa+sGP
+         1hPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=0LpfnVqBhlTSQc8coWf/BWdwkFkHOaWAvkHfo4IkRxg=;
+        b=qHnY+QVzhszgJybwdkScpZRWQERVGO/7cqzt41gx2suy6vYpDjLKZ3Zsu1EWpKrFrG
+         pyMIDyKxrTORn+hTB8GrHFl2s3M6m049jNT0bbkZTAQwtd8Ym6tRkctTx35EeezCHLR0
+         6Yn2VTq26M9MqkquMWbIxl87u42udYvadCAF5w02owdg0ibEGev7ZSQmCLJ+nSrh6xOo
+         wB1Jd4BBjyloMT4AhdgirY3nBb+dcAYfSwdWkDed3fCPhrcRs5v9jah01gfD8d6x4jiW
+         6AsJZcw0I2qqIY45TGWvQABE8Y+BpALURb+rPjW8K1FOSV2nbul1IB1g0B6aWb72v9U1
+         H9gw==
+X-Gm-Message-State: AOAM532Pc5C2lX1GmP+Rsg8lieIdHb+Gtm8BLg9Jdy6WOFzslYdUAv24
+        i5gQ4GaDf52pDZsxhpcTnIaYatJu6C+pH/+I
+X-Google-Smtp-Source: ABdhPJybNSD8Wu3FkdO87FGU8ikSSbFKabIlzum60C2GKv/47RjJDNCYTwCrDfa5KUsnTdtdfJkhbw==
+X-Received: by 2002:a62:aa08:0:b029:1a9:bd0e:260b with SMTP id e8-20020a62aa080000b02901a9bd0e260bmr3481475pff.74.1610434241133;
+        Mon, 11 Jan 2021 22:50:41 -0800 (PST)
+Received: from localhost.localdomain ([240e:362:4bf:e00:19ba:7333:19c1:ecbe])
+        by smtp.gmail.com with ESMTPSA id a5sm2109876pgl.41.2021.01.11.22.50.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 11 Jan 2021 22:50:40 -0800 (PST)
+From:   Zhangfei Gao <zhangfei.gao@linaro.org>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        jean-philippe <jean-philippe@linaro.org>,
+        kenneth-lee-2012@foxmail.com, wangzhou1@hisilicon.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhangfei Gao <zhangfei.gao@linaro.org>
+Subject: [PATCH] PCI: Add a quirk to enable SVA for HiSilicon chip
+Date:   Tue, 12 Jan 2021 14:49:52 +0800
+Message-Id: <1610434192-27995-1-git-send-email-zhangfei.gao@linaro.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <20201217203806.GA20785@bjorn-Precision-5520>
+References: <20201217203806.GA20785@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a basic GPU node for mt8192.
+HiSilicon KunPeng920 and KunPeng930 have devices appear as PCI but are
+actually on the AMBA bus. These fake PCI devices can not support tlp
+and have to enable SMMU stall mode to use the SVA feature.
 
-Signed-off-by: Nick Fan <Nick.Fan@mediatek.com>
+Add a quirk to set dma-can-stall property and enable tlp for these devices.
+
+Signed-off-by: Zhangfei Gao <zhangfei.gao@linaro.org>
+Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Signed-off-by: Zhou Wang <wangzhou1@hisilicon.com>
 ---
-This patch depends on Mediatek power and regulator support.
+Property dma-can-stall depends on patchset
+https://lore.kernel.org/linux-iommu/20210108145217.2254447-1-jean-philippe@linaro.org/
 
-Listed as following.
+drivers/pci/quirks.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
-[1]https://lore.kernel.org/patchwork/patch/1336293/
-[2]https://patchwork.kernel.org/project/linux-mediatek/list/?series=374013
-[3]https://lore.kernel.org/patchwork/patch/1356037/
-[4]https://patchwork.kernel.org/project/linux-mediatek/list/?series=405777
-[5]https://lore.kernel.org/patchwork/patch/1356175/
-[6]https://patchwork.kernel.org/project/linux-mediatek/patch/1605700894-32699-6-git-send-email-hsin-hsiung.wang@mediatek.com/
-[7]https://patchwork.kernel.org/project/linux-mediatek/patch/1608104827-7937-10-git-send-email-hsin-hsiung.wang@mediatek.com/
----
----
- arch/arm64/boot/dts/mediatek/mt8192-evb.dts |   7 +
- arch/arm64/boot/dts/mediatek/mt8192.dtsi    | 172 ++++++++++++++++++++
- 2 files changed, 179 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192-evb.dts b/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-index 6c1e2b3e8a60..48c0e240dd92 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-+++ b/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
-@@ -5,6 +5,7 @@
-  */
- /dts-v1/;
- #include "mt8192.dtsi"
-+#include "mt6359.dtsi"
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 653660e..a27f327 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -1825,6 +1825,31 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL,	PCI_DEVICE_ID_INTEL_E7525_MCH,	quir
  
- / {
- 	model = "MediaTek MT8192 evaluation board";
-@@ -70,6 +71,12 @@
- 	};
- };
+ DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_HUAWEI, 0x1610, PCI_CLASS_BRIDGE_PCI, 8, quirk_pcie_mch);
  
-+&gpu {
-+	supply-names = "mali","sram";
-+	mali-supply = <&mt6315_7_vbuck1>;
-+	sram-supply = <&mt6359_vsram_others_ldo_reg>;
-+};
++static void quirk_huawei_pcie_sva(struct pci_dev *pdev)
++{
++	struct property_entry properties[] = {
++		PROPERTY_ENTRY_BOOL("dma-can-stall"),
++		{},
++	};
 +
- &uart0 {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-index d6a4ad242a33..9abba13df68e 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-@@ -822,6 +822,178 @@
- 			#clock-cells = <1>;
- 		};
- 
-+		gpu: mali@13000000 {
-+			compatible = "mediatek,mt8192-mali", "arm,mali-valhall";
-+			reg = <0 0x13000000 0 0x4000>;
-+			interrupts =
-+				<GIC_SPI 363 IRQ_TYPE_LEVEL_HIGH 0>,
-+				<GIC_SPI 364 IRQ_TYPE_LEVEL_HIGH 0>,
-+				<GIC_SPI 365 IRQ_TYPE_LEVEL_HIGH 0>;
-+			interrupt-names =
-+				"gpu",
-+				"mmu",
-+				"job";
++	if ((pdev->revision != 0x21) && (pdev->revision != 0x30))
++		return;
 +
-+			clocks =
-+				<&apmixedsys CLK_APMIXED_MFGPLL>,
-+				<&topckgen CLK_TOP_MFG_PLL_SEL>,
-+				<&topckgen CLK_TOP_MFG_REF_SEL>,
-+				<&mfgcfg CLK_MFG_BG3D>;
-+			clock-names =
-+				"clk_main_parent",
-+				"clk_mux",
-+				"clk_sub_parent",
-+				"subsys_mfg_cg";
++	pdev->eetlp_prefix_path = 1;
 +
-+			power-domains =
-+				<&spm MT8192_POWER_DOMAIN_MFG2>,
-+				<&spm MT8192_POWER_DOMAIN_MFG3>,
-+				<&spm MT8192_POWER_DOMAIN_MFG4>,
-+				<&spm MT8192_POWER_DOMAIN_MFG5>,
-+				<&spm MT8192_POWER_DOMAIN_MFG6>;
-+			power-domain-names = "core0",
-+					     "core1",
-+					     "core2",
-+					     "core3",
-+					     "core4";
++	/* Device-tree can set the stall property */
++	if (!pdev->dev.of_node &&
++	    device_add_properties(&pdev->dev, properties))
++		pci_warn(pdev, "could not add stall property");
++}
 +
-+			operating-points-v2 = <&gpu_opp_table>;
-+			#cooling-cells = <2>;
-+		};
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa250, quirk_huawei_pcie_sva);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa251, quirk_huawei_pcie_sva);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa255, quirk_huawei_pcie_sva);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa256, quirk_huawei_pcie_sva);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa258, quirk_huawei_pcie_sva);
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa259, quirk_huawei_pcie_sva);
 +
-+		gpu_opp_table: opp_table0 {
-+			compatible = "operating-points-v2";
-+			opp-shared;
-+
-+			opp-358000000 {
-+				opp-hz = /bits/ 64 <358000000>;
-+				opp-hz-real = /bits/ 64 <358000000>,
-+					      /bits/ 64 <358000000>;
-+				opp-microvolt = <606250>,
-+						<750000>;
-+			};
-+
-+			opp-399000000 {
-+				opp-hz = /bits/ 64 <399000000>;
-+				opp-hz-real = /bits/ 64 <399000000>,
-+					      /bits/ 64 <399000000>;
-+				opp-microvolt = <618750>,
-+						<750000>;
-+			};
-+
-+			opp-440000000 {
-+				opp-hz = /bits/ 64 <440000000>;
-+				opp-hz-real = /bits/ 64 <440000000>,
-+					      /bits/ 64 <440000000>;
-+				opp-microvolt = <631250>,
-+						<750000>;
-+			};
-+
-+			opp-482000000 {
-+				opp-hz = /bits/ 64 <482000000>;
-+				opp-hz-real = /bits/ 64 <482000000>,
-+					      /bits/ 64 <482000000>;
-+				opp-microvolt = <643750>,
-+						<750000>;
-+			};
-+
-+			opp-523000000 {
-+				opp-hz = /bits/ 64 <523000000>;
-+				opp-hz-real = /bits/ 64 <523000000>,
-+					      /bits/ 64 <523000000>;
-+				opp-microvolt = <656250>,
-+						<750000>;
-+			};
-+
-+			opp-564000000 {
-+				opp-hz = /bits/ 64 <564000000>;
-+				opp-hz-real = /bits/ 64 <564000000>,
-+					      /bits/ 64 <564000000>;
-+				opp-microvolt = <668750>,
-+						<750000>;
-+			};
-+
-+			opp-605000000 {
-+				opp-hz = /bits/ 64 <605000000>;
-+				opp-hz-real = /bits/ 64 <605000000>,
-+					      /bits/ 64 <605000000>;
-+				opp-microvolt = <681250>,
-+						<750000>;
-+			};
-+
-+			opp-647000000 {
-+				opp-hz = /bits/ 64 <647000000>;
-+				opp-hz-real = /bits/ 64 <647000000>,
-+					      /bits/ 64 <647000000>;
-+				opp-microvolt = <693750>,
-+						<750000>;
-+			};
-+
-+			opp-688000000 {
-+				opp-hz = /bits/ 64 <688000000>;
-+				opp-hz-real = /bits/ 64 <688000000>,
-+					      /bits/ 64 <688000000>;
-+				opp-microvolt = <706250>,
-+						<750000>;
-+			};
-+
-+			opp-724000000 {
-+				opp-hz = /bits/ 64 <724000000>;
-+				opp-hz-real = /bits/ 64 <724000000>,
-+					      /bits/ 64 <724000000>;
-+				opp-microvolt = <725000>,
-+						<750000>;
-+			};
-+
-+			opp-760000000 {
-+				opp-hz = /bits/ 64 <760000000>;
-+				opp-hz-real = /bits/ 64 <760000000>,
-+					      /bits/ 64 <760000000>;
-+				opp-microvolt = <743750>,
-+						<750000>;
-+			};
-+
-+			opp-795000000 {
-+				opp-hz = /bits/ 64 <795000000>;
-+				opp-hz-real = /bits/ 64 <795000000>,
-+					      /bits/ 64 <795000000>;
-+				opp-microvolt = <762500>,
-+						<762500>;
-+			};
-+
-+			opp-831000000 {
-+				opp-hz = /bits/ 64 <831000000>;
-+				opp-hz-real = /bits/ 64 <831000000>,
-+					      /bits/ 64 <831000000>;
-+				opp-microvolt = <781250>,
-+						<781250>;
-+			};
-+
-+			opp-855000000 {
-+				opp-hz = /bits/ 64 <855000000>;
-+				opp-hz-real = /bits/ 64 <855000000>,
-+					      /bits/ 64 <855000000>;
-+				opp-microvolt = <793750>,
-+						<793750>;
-+			};
-+
-+			opp-902000000 {
-+				opp-hz = /bits/ 64 <902000000>;
-+				opp-hz-real = /bits/ 64 <902000000>,
-+					      /bits/ 64 <902000000>;
-+				opp-microvolt = <818750>,
-+						<818750>;
-+			};
-+
-+			opp-950000000 {
-+				opp-hz = /bits/ 64 <950000000>;
-+				opp-hz-real = /bits/ 64 <950000000>,
-+					      /bits/ 64 <950000000>;
-+				opp-microvolt = <843750>,
-+						<843750>;
-+			};
-+		};
-+
- 		mfgcfg: syscon@13fbf000 {
- 			compatible = "mediatek,mt8192-mfgcfg", "syscon";
- 			reg = <0 0x13fbf000 0 0x1000>;
+ /*
+  * It's possible for the MSI to get corrupted if SHPC and ACPI are used
+  * together on certain PXH-based systems.
 -- 
-2.18.0
+2.7.4
 
