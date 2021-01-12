@@ -2,126 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 435CF2F37C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:59:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A232F37CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:59:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391926AbhALR5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:57:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730203AbhALR5l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:57:41 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40075C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:57:01 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id y12so2086714pji.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:57:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=juupzti4DjJGDkZymRZ4Hc4aNwh9m6UznVRuz/k6aiY=;
-        b=D60dxrI8s7RNFc+y8vuVvZajug7r9YdHgFOUSCbNl3jQHnymRLHAQs8PA9hCQtCiJp
-         /a8zU0IqB1a5PFkVIO71nW8vOFQyfvmzrBa5e+y/bIkaSx8OAFqmV0Jvw7W/J3xfdTBG
-         mAvtHc1Quj9Bs6vf3J4NI+Fi2bdAh5GDrUnNoyhOl8f9v8bb5sOg425c1unqaXDj0kad
-         sJKHBudJqInEYt1KvW5/ptn6QaEcgxikAQVfItlwAxiZajIH/X3qK1WBCABeFeJF/sKC
-         viQOgBSkd77iH8Phoe4et2xOHWTmd2Y+721p9vVSTYAf80hsyFnHz5WZzw7YpqIcpWCT
-         hHXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=juupzti4DjJGDkZymRZ4Hc4aNwh9m6UznVRuz/k6aiY=;
-        b=JXpeBvBw+YaC2UH3SnPTfkLLthq8RD+IIquAiZYNgSxZcBgFOQyOy7+G5Pv3i69TPG
-         JZUadMM/2jPM5pGf20y7U0lj4PHwbirMGPhTO78jPo75mnahpPNz+cuMm4WPzR2wEww2
-         cvcQaWJpmWWnDlMIRFdXx4AD1kwocDyWj/W1+swVxGVQwOPkSL+Z42C1yqxX8SbTuLFK
-         UhBlbYT+sS7G0AAN4dJs8xMFqCCHVwJlIG45TiyPnLUZhZYfjNionoAbm/JVLuz7pOE7
-         StGrU2nSmDyWK+dx0FXAiuY7x9BgGUWTh4N+akt+d1VYKDz9VJHkgvCV7PYUxk0Bx5UC
-         /Ong==
-X-Gm-Message-State: AOAM530iF4kKglMZEeqARjl/PWCEtGqdL/OtK8GmMhTT/GEQYmZy3XwJ
-        V1cS5zkwAR9mObNzDZMio5/YLC6I373Z/w==
-X-Google-Smtp-Source: ABdhPJxHvo/hbTRzG6K/o9EJ08MZoMACr7cc3HKgSc8EzOuNUCLwlGY7c+sN4tTAPxiW2yu8tRFbNw==
-X-Received: by 2002:a17:90a:5513:: with SMTP id b19mr267855pji.99.1610474220588;
-        Tue, 12 Jan 2021 09:57:00 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id 17sm3821852pfj.91.2021.01.12.09.56.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 09:56:59 -0800 (PST)
-Date:   Tue, 12 Jan 2021 09:56:52 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Bandan Das <bsd@redhat.com>, Maxim Levitsky <mlevitsk@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com, joro@8bytes.org,
-        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        jmattson@google.com, wanpengli@tencent.com, dgilbert@redhat.com
-Subject: Re: [PATCH 1/2] KVM: x86: Add emulation support for #GP triggered by
- VM instructions
-Message-ID: <X/3i5Pjg1gEwupJD@google.com>
-References: <jpgturmgnu6.fsf@linux.bootlegged.copy>
- <8FAC639B-5EC6-42EE-B886-33AEF3CD5E26@amacapital.net>
+        id S2391997AbhALR6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:58:14 -0500
+Received: from foss.arm.com ([217.140.110.172]:50534 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727622AbhALR6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 12:58:13 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B0CBD1063;
+        Tue, 12 Jan 2021 09:57:27 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0B9623F66E;
+        Tue, 12 Jan 2021 09:57:25 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>, mingo@kernel.org,
+        tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, jiangshanlai@gmail.com,
+        cai@redhat.com, vincent.donnefort@arm.com, decui@microsoft.com,
+        paulmck@kernel.org, vincent.guittot@linaro.org,
+        rostedt@goodmis.org, tj@kernel.org, peterz@infradead.org
+Subject: Re: [PATCH 3/4] workqueue: Tag bound workers with KTHREAD_IS_PER_CPU
+In-Reply-To: <20210112144843.849135905@infradead.org>
+References: <20210112144344.850850975@infradead.org> <20210112144843.849135905@infradead.org>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Tue, 12 Jan 2021 17:57:23 +0000
+Message-ID: <jhjy2gyyr5o.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8FAC639B-5EC6-42EE-B886-33AEF3CD5E26@amacapital.net>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021, Andy Lutomirski wrote:
-> 
-> > On Jan 12, 2021, at 7:46 AM, Bandan Das <bsd@redhat.com> wrote:
-> > 
-> > ﻿Andy Lutomirski <luto@amacapital.net> writes:
-> > ...
-> >>>>>> #endif diff --git a/arch/x86/kvm/mmu/mmu.c
-> >>>>>> b/arch/x86/kvm/mmu/mmu.c index 6d16481aa29d..c5c4aaf01a1a 100644
-> >>>>>> --- a/arch/x86/kvm/mmu/mmu.c +++ b/arch/x86/kvm/mmu/mmu.c @@
-> >>>>>> -50,6 +50,7 @@ #include <asm/io.h> #include <asm/vmx.h> #include
-> >>>>>> <asm/kvm_page_track.h> +#include <asm/e820/api.h> #include
-> >>>>>> "trace.h"
-> >>>>>> 
-> >>>>>> extern bool itlb_multihit_kvm_mitigation; @@ -5675,6 +5676,12 @@
-> >>>>>> void kvm_mmu_slot_set_dirty(struct kvm *kvm, }
-> >>>>>> EXPORT_SYMBOL_GPL(kvm_mmu_slot_set_dirty);
-> >>>>>> 
-> >>>>>> +bool kvm_is_host_reserved_region(u64 gpa) +{ + return
-> >>>>>> e820__mbapped_raw_any(gpa-1, gpa+1, E820_TYPE_RESERVED); +}
-> >>>>> While _e820__mapped_any()'s doc says '..  checks if any part of
-> >>>>> the range <start,end> is mapped ..' it seems to me that the real
-> >>>>> check is [start, end) so we should use 'gpa' instead of 'gpa-1',
-> >>>>> no?
-> >>>> Why do you need to check GPA at all?
-> >>>> 
-> >>> To reduce the scope of the workaround.
-> >>> 
-> >>> The errata only happens when you use one of SVM instructions in the
-> >>> guest with EAX that happens to be inside one of the host reserved
-> >>> memory regions (for example SMM).
-> >> 
-> >> This code reduces the scope of the workaround at the cost of
-> >> increasing the complexity of the workaround and adding a nonsensical
-> >> coupling between KVM and host details and adding an export that really
-> >> doesn’t deserve to be exported.
-> >> 
-> >> Is there an actual concrete benefit to this check?
-> > 
-> > Besides reducing the scope, my intention for the check was that we should
-> > know if such exceptions occur for any other undiscovered reasons with other
-> > memory types rather than hiding them under this workaround.
-> 
-> Ask AMD?
-> 
-> I would also believe that someone somewhere has a firmware that simply omits
-> the problematic region instead of listing it as reserved.
+On 12/01/21 15:43, Peter Zijlstra wrote:
+> @@ -4919,8 +4922,10 @@ static void unbind_workers(int cpu)
+>
+>               raw_spin_unlock_irq(&pool->lock);
+>
+> -		for_each_pool_worker(worker, pool)
+> +		for_each_pool_worker(worker, pool) {
+> +			kthread_set_per_cpu(worker->task, false);
+>                       WARN_ON_ONCE(set_cpus_allowed_ptr(worker->task, cpu_possible_mask) < 0);
+> +		}
 
-I agree with Andy, odds are very good that attempting to be precise will lead to
-pain due to false negatives.
+Doesn't this supersede patch 1? With patch 4 on top, the BALANCE_PUSH
+stuff should start resetting the affinity of the kworkers for which we
+are removing the IS_PER_CPU flag.
 
-And, KVM's SVM instruction emulation needs to be be rock solid regardless of
-this behavior since KVM unconditionally intercepts the instruction, i.e. there's
-basically zero risk to KVM.
+It's the only nit I have, the rest looks good to me so:
+
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+
+I'll go frob that sched_cpu_dying() warning.
