@@ -2,208 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F462F2F66
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6CB2F2F69
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 13:54:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388635AbhALMwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 07:52:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56579 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727998AbhALMwb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 07:52:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610455864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3di3WiIDCT0haTp37A4dlkvRPB/If8ZucUraJvNLxLM=;
-        b=T5zBIKSq8jeWg2IfnOkl8PIuY7IhH25GSnw5nO6JkAWlOy5PenBohwvbz0/oJ/J0dpPa8x
-        5L3yEp4cjHm+P9ZkeHQ9GRrtZCJQa8rbiDdIaO2tYEXJNu026qL8mi3Rq60QKMRA1zflNN
-        6b+nc6cRb37g9B7e0iRUjbpbrKkvx/I=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-18-gX1JbrTHNbiy-eXXv6JE5Q-1; Tue, 12 Jan 2021 07:48:34 -0500
-X-MC-Unique: gX1JbrTHNbiy-eXXv6JE5Q-1
-Received: by mail-wr1-f70.google.com with SMTP id z8so1117331wrh.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 04:48:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=3di3WiIDCT0haTp37A4dlkvRPB/If8ZucUraJvNLxLM=;
-        b=CzZiLoODAJC8BOWVVBMX0fR99Rs67kDPtY+T2NSR790fZ4PewF0NOVb0gNAMUho8HA
-         iffdldLPuRvfSV8IKNawj2AbeMgnXkJ4kW2tqjLZ2K3/4+RUmVBqG4j8xK46u41WuxrM
-         PuW3GG/TnweUXZSbvJo1Qkn6lACHiM5bDTlbgwBhDBiPAP98BlA1QfOvTXMtk6ofDHFr
-         sxsAguPw75CJeH+UeYUnmsArSLOILLNCsVOd9OF60dckIEUWTcW9MPLPg3LxXMKxMpVU
-         P3uCsAwdy2KHrHNbrEhMdubAWkp1DvsWPWP4pu+2+YzFRBgwIvnQTRtAP6emIfhMBjvv
-         WslA==
-X-Gm-Message-State: AOAM532XGPzoPyG2vYITaW/0JHIsZUcAAD1zbTodXrZjFHwRvsRcsWBH
-        +6akkwRZAFcUoeyywkYD9YIFNheay0pzI3rXw+QkrLzNizWTW/TWPRMcm0FqivyW5KzWlVUFkSY
-        kD91/SdQa1dlDpx6QXJ1fRmqa
-X-Received: by 2002:a5d:6204:: with SMTP id y4mr4195221wru.48.1610455713439;
-        Tue, 12 Jan 2021 04:48:33 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzjLRoOBZSP/z6909MxSjSSPfO+4mnMDOjffdHUYYKda5rFiHxPiZst9Fk7g0GNmnbF8Daesw==
-X-Received: by 2002:a5d:6204:: with SMTP id y4mr4195206wru.48.1610455713246;
-        Tue, 12 Jan 2021 04:48:33 -0800 (PST)
-Received: from redhat.com (bzq-79-178-32-166.red.bezeqint.net. [79.178.32.166])
-        by smtp.gmail.com with ESMTPSA id b10sm4019102wmj.5.2021.01.12.04.48.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 04:48:32 -0800 (PST)
-Date:   Tue, 12 Jan 2021 07:48:27 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Adrian Catangiu <acatan@amazon.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        qemu-devel@nongnu.org, kvm@vger.kernel.org,
-        linux-s390@vger.kernel.org, gregkh@linuxfoundation.org,
-        graf@amazon.com, arnd@arndb.de, ebiederm@xmission.com,
-        rppt@kernel.org, 0x7f454c46@gmail.com, borntraeger@de.ibm.com,
-        Jason@zx2c4.com, jannh@google.com, w@1wt.eu, colmmacc@amazon.com,
-        luto@kernel.org, tytso@mit.edu, ebiggers@kernel.org,
-        dwmw@amazon.co.uk, bonzini@gnu.org, sblbir@amazon.com,
-        raduweis@amazon.com, corbet@lwn.net, mhocko@kernel.org,
-        rafael@kernel.org, pavel@ucw.cz, mpe@ellerman.id.au,
-        areber@redhat.com, ovzxemul@gmail.com, avagin@gmail.com,
-        ptikhomirov@virtuozzo.com, gil@azul.com, asmehra@redhat.com,
-        dgunigun@redhat.com, vijaysun@ca.ibm.com, oridgar@gmail.com,
-        ghammer@redhat.com
-Subject: Re: [PATCH v4 0/2] System Generation ID driver and VMGENID backend
-Message-ID: <20210112074658-mutt-send-email-mst@kernel.org>
-References: <1610453760-13812-1-git-send-email-acatan@amazon.com>
+        id S2388836AbhALMyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 07:54:20 -0500
+Received: from foss.arm.com ([217.140.110.172]:45474 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727907AbhALMyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 07:54:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E38E71042;
+        Tue, 12 Jan 2021 04:53:32 -0800 (PST)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C85B43F66E;
+        Tue, 12 Jan 2021 04:53:27 -0800 (PST)
+Subject: Re: [RFC PATCH v3 0/2] scheduler: expose the topology of clusters and
+ add cluster scheduler
+To:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "lenb@kernel.org" <lenb@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
+        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "xuwei (O)" <xuwei5@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>
+References: <20210106083026.40444-1-song.bao.hua@hisilicon.com>
+ <737932c9-846a-0a6b-08b8-e2d2d95b67ce@linux.intel.com>
+ <20210108151241.GA47324@e123083-lin>
+ <f15f8feb4e764c11a078ffd74f002a8d@hisilicon.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <a5dfcbf6-84f4-0c72-3a88-62926f1f351d@arm.com>
+Date:   Tue, 12 Jan 2021 13:53:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <f15f8feb4e764c11a078ffd74f002a8d@hisilicon.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1610453760-13812-1-git-send-email-acatan@amazon.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 02:15:58PM +0200, Adrian Catangiu wrote:
-> This feature is aimed at virtualized or containerized environments
-> where VM or container snapshotting duplicates memory state, which is a
-> challenge for applications that want to generate unique data such as
-> request IDs, UUIDs, and cryptographic nonces.
+On 08/01/2021 22:30, Song Bao Hua (Barry Song) wrote:
+>  
+>> -----Original Message-----
+>> From: Morten Rasmussen [mailto:morten.rasmussen@arm.com]
+>> Sent: Saturday, January 9, 2021 4:13 AM
+>> To: Tim Chen <tim.c.chen@linux.intel.com>
+>> Cc: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
+>> valentin.schneider@arm.com; catalin.marinas@arm.com; will@kernel.org;
+>> rjw@rjwysocki.net; vincent.guittot@linaro.org; lenb@kernel.org;
+>> gregkh@linuxfoundation.org; Jonathan Cameron <jonathan.cameron@huawei.com>;
+>> mingo@redhat.com; peterz@infradead.org; juri.lelli@redhat.com;
+>> dietmar.eggemann@arm.com; rostedt@goodmis.org; bsegall@google.com;
+>> mgorman@suse.de; mark.rutland@arm.com; sudeep.holla@arm.com;
+>> aubrey.li@linux.intel.com; linux-arm-kernel@lists.infradead.org;
+>> linux-kernel@vger.kernel.org; linux-acpi@vger.kernel.org;
+>> linuxarm@openeuler.org; xuwei (O) <xuwei5@huawei.com>; Zengtao (B)
+>> <prime.zeng@hisilicon.com>; tiantao (H) <tiantao6@hisilicon.com>
+>> Subject: Re: [RFC PATCH v3 0/2] scheduler: expose the topology of clusters and
+>> add cluster scheduler
+>>
+>> On Thu, Jan 07, 2021 at 03:16:47PM -0800, Tim Chen wrote:
+>>> On 1/6/21 12:30 AM, Barry Song wrote:
+>>>> ARM64 server chip Kunpeng 920 has 6 clusters in each NUMA node, and each
+>>>> cluster has 4 cpus. All clusters share L3 cache data while each cluster
+>>>> has local L3 tag. On the other hand, each cluster will share some
+>>>> internal system bus. This means cache is much more affine inside one cluster
+>>>> than across clusters.
+>>>
+>>> There is a similar need for clustering in x86.  Some x86 cores could share
+>> L2 caches that
+>>> is similar to the cluster in Kupeng 920 (e.g. on Jacobsville there are 6 clusters
+>>> of 4 Atom cores, each cluster sharing a separate L2, and 24 cores sharing
+>> L3).
+>>> Having a sched domain at the L2 cluster helps spread load among
+>>> L2 domains.  This will reduce L2 cache contention and help with
+>>> performance for low to moderate load scenarios.
+>>
+>> IIUC, you are arguing for the exact opposite behaviour, i.e. balancing
+>> between L2 caches while Barry is after consolidating tasks within the
+>> boundaries of a L3 tag cache. One helps cache utilization, the other
+>> communication latency between tasks. Am I missing something?
 > 
-> The patch set introduces a mechanism that provides a userspace
-> interface for applications and libraries to be made aware of uniqueness
-> breaking events such as VM or container snapshotting, and allow them to
-> react and adapt to such events.
+> Morten, this is not true.
 > 
-> Solving the uniqueness problem strongly enough for cryptographic
-> purposes requires a mechanism which can deterministically reseed
-> userspace PRNGs with new entropy at restore time. This mechanism must
-> also support the high-throughput and low-latency use-cases that led
-> programmers to pick a userspace PRNG in the first place; be usable by
-> both application code and libraries; allow transparent retrofitting
-> behind existing popular PRNG interfaces without changing application
-> code; it must be efficient, especially on snapshot restore; and be
-> simple enough for wide adoption.
-> 
-> The first patch in the set implements a device driver which exposes a
-> read-only device /dev/sysgenid to userspace, which contains a
-> monotonically increasing u32 generation counter. Libraries and
-> applications are expected to open() the device, and then call read()
-> which blocks until the SysGenId changes. Following an update, read()
-> calls no longer block until the application acknowledges the new
-> SysGenId by write()ing it back to the device. Non-blocking read() calls
-> return EAGAIN when there is no new SysGenId available. Alternatively,
-> libraries can mmap() the device to get a single shared page which
-> contains the latest SysGenId at offset 0.
+> we are both actually looking for the same behavior. My patch also
+> has done the exact same behavior of spreading with Tim's patch.
 
-Looking at some specifications, the gen ID might actually be located
-at an arbitrary address. How about instead of hard-coding the offset,
-we expose it e.g. in sysfs?
+That's the case for the load-balance path because of the extra Sched
+Domain (SD) (CLS/MC_L2) below MC.
 
+But in wakeup you add code which leads to a different packing strategy.
 
-> SysGenId also supports a notification mechanism exposed as two IOCTLs
-> on the device. SYSGENID_GET_OUTDATED_WATCHERS immediately returns the
-> number of file descriptors to the device that were open during the last
-> SysGenId change but have not yet acknowledged the new id.
-> SYSGENID_WAIT_WATCHERS blocks until there are no open file handles on
-> the device which haven’t acknowledged the new id. These two interfaces
-> are intended for serverless and container control planes, which want to
-> confirm that all application code has detected and reacted to the new
-> SysGenId before sending an invoke to the newly-restored sandbox.
-> 
-> The second patch in the set adds a VmGenId driver which makes use of
-> the ACPI vmgenid device to drive SysGenId and to reseed kernel entropy
-> on VM snapshots.
-> 
-> ---
-> 
-> v3 -> v4:
-> 
->   - split functionality in two separate kernel modules: 
->     1. drivers/misc/sysgenid.c which provides the generic userspace
->        interface and mechanisms
->     2. drivers/virt/vmgenid.c as VMGENID acpi device driver that seeds
->        kernel entropy and acts as a driving backend for the generic
->        sysgenid
->   - renamed /dev/vmgenid -> /dev/sysgenid
->   - renamed uapi header file vmgenid.h -> sysgenid.h
->   - renamed ioctls VMGENID_* -> SYSGENID_*
->   - added ‘min_gen’ parameter to SYSGENID_FORCE_GEN_UPDATE ioctl
->   - fixed races in documentation examples
->   - various style nits
->   - rebased on top of linus latest
-> 
-> v2 -> v3:
-> 
->   - separate the core driver logic and interface, from the ACPI device.
->     The ACPI vmgenid device is now one possible backend.
->   - fix issue when timeout=0 in VMGENID_WAIT_WATCHERS
->   - add locking to avoid races between fs ops handlers and hw irq
->     driven generation updates
->   - change VMGENID_WAIT_WATCHERS ioctl so if the current caller is
->     outdated or a generation change happens while waiting (thus making
->     current caller outdated), the ioctl returns -EINTR to signal the
->     user to handle event and retry. Fixes blocking on oneself.
->   - add VMGENID_FORCE_GEN_UPDATE ioctl conditioned by
->     CAP_CHECKPOINT_RESTORE capability, through which software can force
->     generation bump.
-> 
-> v1 -> v2:
-> 
->   - expose to userspace a monotonically increasing u32 Vm Gen Counter
->     instead of the hw VmGen UUID
->   - since the hw/hypervisor-provided 128-bit UUID is not public
->     anymore, add it to the kernel RNG as device randomness
->   - insert driver page containing Vm Gen Counter in the user vma in
->     the driver's mmap handler instead of using a fault handler
->   - turn driver into a misc device driver to auto-create /dev/vmgenid
->   - change ioctl arg to avoid leaking kernel structs to userspace
->   - update documentation
->   - various nits
->   - rebase on top of linus latest
-> 
-> Adrian Catangiu (2):
->   drivers/misc: sysgenid: add system generation id driver
->   drivers/virt: vmgenid: add vm generation id driver
-> 
->  Documentation/misc-devices/sysgenid.rst | 240 +++++++++++++++++++++++++
->  Documentation/virt/vmgenid.rst          |  34 ++++
->  drivers/misc/Kconfig                    |  16 ++
->  drivers/misc/Makefile                   |   1 +
->  drivers/misc/sysgenid.c                 | 298 ++++++++++++++++++++++++++++++++
->  drivers/virt/Kconfig                    |  14 ++
->  drivers/virt/Makefile                   |   1 +
->  drivers/virt/vmgenid.c                  | 153 ++++++++++++++++
->  include/uapi/linux/sysgenid.h           |  18 ++
->  9 files changed, 775 insertions(+)
->  create mode 100644 Documentation/misc-devices/sysgenid.rst
->  create mode 100644 Documentation/virt/vmgenid.rst
->  create mode 100644 drivers/misc/sysgenid.c
->  create mode 100644 drivers/virt/vmgenid.c
->  create mode 100644 include/uapi/linux/sysgenid.h
-> 
-> -- 
-> 2.7.4
-> 
-> 
-> 
-> 
-> Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
+It looks like that Tim's workload (SPECrate mcf) shows a performance
+boost solely because of the changes the additional MC_L2 SD introduces
+in load balance. The wakeup path is unchanged, i.e. llc-packing. IMHO we
+have to carefully distinguish between packing vs. spreading in wakeup
+and load-balance here.
 
+> Considering the below two cases:
+> Case 1. we have two tasks without any relationship running in a system with 2 clusters and 8 cpus.
+> 
+> Without the sched_domain of cluster, these two tasks might be put as below:
+> +-------------------+            +-----------------+
+> | +----+   +----+   |            |                 |
+> | |task|   |task|   |            |                 |
+> | |1   |   |2   |   |            |                 |
+> | +----+   +----+   |            |                 |
+> |                   |            |                 |
+> |       cluster1    |            |     cluster2    |
+> +-------------------+            +-----------------+
+> With the sched_domain of cluster, load balance will spread them as below:
+> +-------------------+            +-----------------+
+> | +----+            |            | +----+          |
+> | |task|            |            | |task|          |
+> | |1   |            |            | |2   |          |
+> | +----+            |            | +----+          |
+> |                   |            |                 |
+> |       cluster1    |            |     cluster2    |
+> +-------------------+            +-----------------+
+> 
+> Then task1 and tasks2 get more cache and decrease cache contention.
+> They will get better performance.
+> 
+> That is what my original patch also can make. And tim's patch
+> is also doing. Once we add a sched_domain, load balance will
+> get involved.
+> 
+> 
+> Case 2. we have 8 tasks, running in a system with 2 clusters and 8 cpus.
+> But they are working in 4 groups:
+> Task1 wakes up task4
+> Task2 wakes up task5
+> Task3 wakes up task6
+> Task4 wakes up task7
+> 
+> With my changing in select_idle_sibling, the WAKE_AFFINE mechanism will
+> try to put task1 and 4, task2 and 5, task3 and 6, task4 and 7 in same clusters rather
+> than putting all of them in the random one of the 8 cpus. However, the 8 tasks
+> are still spreading among the 8 cpus with my change in select_idle_sibling
+> as load balance is still working.
+> 
+> +---------------------------+    +----------------------+
+> | +----+        +-----+     |    | +----+      +-----+  |
+> | |task|        |task |     |    | |task|      |task |  |
+> | |1   |        | 4   |     |    | |2   |      |5    |  |
+> | +----+        +-----+     |    | +----+      +-----+  |
+> |                           |    |                      |
+> |       cluster1            |    |     cluster2         |
+> |                           |    |                      |
+> |                           |    |                      |
+> | +-----+       +------+    |    | +-----+     +------+ |
+> | |task |       | task |    |    | |task |     |task  | |
+> | |3    |       |  6   |    |    | |4    |     |8     | |
+> | +-----+       +------+    |    | +-----+     +------+ |
+> +---------------------------+    +----------------------+
+
+Your use-case (#tasks, runtime/period) seems to be perfectly crafted to
+show the benefit of your patch on your specific system (cluster-size =
+4). IMHO, this extra infrastructure especially in the wakeup path should
+show benefits over a range of different benchmarks.
+
+> Let's consider the 3rd case, that one would be more tricky:
+> 
+> task1 and task2 have close relationship and they are waker-wakee pair.
+> With my current patch, select_idle_sidling() wants to put them in one
+> cluster, load balance wants to put them in two clusters. Load balance will win. 
+> Then maybe we need some same mechanism like adjusting numa imbalance:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/kernel/sched/fair.c?id=b396f52326de20
+> if we permit a light imbalance between clusters, select_idle_sidling()
+> will win. And task1 and task2 get better cache affinity.
+
+This would look weird to allow this kind of imbalance on CLS (MC_L2) and
+NUMA domains but not on the MC domain for example.
