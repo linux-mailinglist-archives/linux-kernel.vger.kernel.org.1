@@ -2,55 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AABD52F3AA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:37:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 136732F3A99
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437139AbhALTbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 14:31:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49946 "EHLO mail.kernel.org"
+        id S2437107AbhALTay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:30:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436646AbhALTbf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:31:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3258E22DFA;
-        Tue, 12 Jan 2021 19:30:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610479855;
-        bh=WgolaYx4rbZPxU9P/Bog8n07DJNfBjkIOY5FfolVGxc=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=Zpnc6rQZzjvCYiEHol8suiAMvF0vOx+97yUuUWWFutEcu4qx/cvo7BXgRbcuwZcLu
-         RX3wphPp5+kxOTNcd3mmqtr8B2TGiM78jdUdQUDGFAHkiYeD994md2jefjQhZ/CwVP
-         aneOWtmr+dK+YM/3TPBzBYIRisFjQPPfoqSCk4xesj4/uVlLtFmKtZOt/tJZw1pl1J
-         OC6NxG5x4tnFfV7zi8KiXyUfjpqpAGZSl262mJVtaTHLpGYobc2G94GjQHJ6F4qPAt
-         FqrRZ+Y3MWc42kabd9OfQTuF8+pTvhGu9ByvKdYPGwsq3CZpzaxHCKNTtjCEo4sRJy
-         qL+IdinB3XNVw==
-Content-Type: text/plain; charset="utf-8"
+        id S2436544AbhALTaw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 14:30:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7628423120;
+        Tue, 12 Jan 2021 19:30:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610479811;
+        bh=9DK+YshWNgncqhJqQ0sxziDYsnj3yXAiDL3hs4TpkL8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uBhHq0X/C0UE5DrzGyWORFy3w4fojRy5VSUzHL4cdYTVaVhH5idI+d+rfh2lCJ6RM
+         UhqCm3sn5KtFudCAR8OeJD1cNvTKdAOCnhzRsk48HrFTrZlvt0z/PSPEO59fu3RSmZ
+         YfHGaM+3ddu5GNRsXuz8pUcvtiD/e17/o31B5Wyo=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.14.215
+Date:   Tue, 12 Jan 2021 20:31:18 +0100
+Message-Id: <16104798772211@kroah.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210107023304.24442-1-rdunlap@infradead.org>
-References: <20210107023304.24442-1-rdunlap@infradead.org>
-Subject: Re: [PATCH] linux/clk.h: use correct kernel-doc notation for 2 functions
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Mike Turquette <mturquette@linaro.org>,
-        Russell King <linux@armlinux.org.uk>, linux-clk@vger.kernel.org
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Date:   Tue, 12 Jan 2021 11:30:54 -0800
-Message-ID: <161047985402.3661239.16161443773537998218@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Randy Dunlap (2021-01-06 18:33:04)
-> Fix kernel-doc notation for 2 functions so that the generated
-> html is correct. Currently it skips all text between the
-> ':' and the '-', so "[un]register a clock rate" is missing.
->=20
-> Fixes: 86bcfa2e87c4 ("clk: add pr_debug & kerneldoc around clk notifiers")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Mike Turquette <mturquette@linaro.org>
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: linux-clk@vger.kernel.org
-> ---
+I'm announcing the release of the 4.14.215 kernel.
 
-Applied to clk-next
+All users of the 4.14 kernel series must upgrade.
+
+The updated 4.14.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.14.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+
+thanks,
+
+greg k-h
+
+------------
+
+ Makefile                                         |    4 
+ arch/x86/kernel/cpu/mtrr/generic.c               |    6 -
+ arch/x86/kvm/mmu.h                               |    2 
+ arch/x86/mm/pgtable.c                            |    2 
+ crypto/ecdh.c                                    |    3 
+ drivers/atm/idt77252.c                           |    2 
+ drivers/base/core.c                              |    2 
+ drivers/ide/ide-atapi.c                          |    1 
+ drivers/ide/ide-io.c                             |    5 
+ drivers/net/ethernet/broadcom/bcmsysport.c       |    1 
+ drivers/net/ethernet/ethoc.c                     |    3 
+ drivers/net/ethernet/freescale/ucc_geth.c        |    3 
+ drivers/net/ethernet/hisilicon/hns/hns_ethtool.c |    4 
+ drivers/net/ethernet/marvell/mvpp2.c             |    2 
+ drivers/net/ethernet/qlogic/qede/qede_fp.c       |    5 
+ drivers/net/ethernet/ti/cpts.c                   |    2 
+ drivers/net/usb/cdc_ncm.c                        |    3 
+ drivers/net/usb/qmi_wwan.c                       |    1 
+ drivers/net/virtio_net.c                         |   12 +-
+ drivers/net/wan/hdlc_ppp.c                       |    7 +
+ drivers/scsi/ufs/ufshcd-pci.c                    |   34 ++++++
+ drivers/target/target_core_xcopy.c               |  119 +++++++++++++----------
+ drivers/target/target_core_xcopy.h               |    1 
+ drivers/usb/chipidea/ci_hdrc_imx.c               |    6 -
+ drivers/usb/class/cdc-acm.c                      |    4 
+ drivers/usb/class/usblp.c                        |   21 +++-
+ drivers/usb/dwc3/core.h                          |    1 
+ drivers/usb/dwc3/ulpi.c                          |    2 
+ drivers/usb/gadget/Kconfig                       |    2 
+ drivers/usb/gadget/composite.c                   |   10 +
+ drivers/usb/gadget/configfs.c                    |   19 ++-
+ drivers/usb/gadget/function/f_printer.c          |    1 
+ drivers/usb/gadget/function/f_uac2.c             |   69 ++++++++++---
+ drivers/usb/gadget/legacy/acm_ms.c               |    4 
+ drivers/usb/host/xhci.c                          |   24 ++--
+ drivers/usb/misc/yurex.c                         |    3 
+ drivers/usb/serial/iuu_phoenix.c                 |   20 ++-
+ drivers/usb/serial/keyspan_pda.c                 |    2 
+ drivers/usb/serial/option.c                      |    3 
+ drivers/usb/storage/unusual_uas.h                |    7 +
+ drivers/usb/usbip/vhci_hcd.c                     |    2 
+ drivers/vhost/net.c                              |    6 -
+ drivers/video/fbdev/hyperv_fb.c                  |    6 -
+ include/net/red.h                                |    4 
+ kernel/workqueue.c                               |   13 +-
+ lib/genalloc.c                                   |   25 ++--
+ net/core/net-sysfs.c                             |   29 ++++-
+ net/ipv4/fib_frontend.c                          |    2 
+ net/ncsi/ncsi-rsp.c                              |    2 
+ net/netfilter/ipset/ip_set_hash_gen.h            |   20 ---
+ net/netfilter/xt_RATEEST.c                       |    3 
+ net/sched/sch_choke.c                            |    2 
+ net/sched/sch_gred.c                             |    2 
+ net/sched/sch_red.c                              |    2 
+ net/sched/sch_sfq.c                              |    2 
+ scripts/depmod.sh                                |    2 
+ sound/pci/hda/patch_conexant.c                   |    1 
+ sound/pci/hda/patch_realtek.c                    |    6 +
+ sound/usb/midi.c                                 |    4 
+ 59 files changed, 383 insertions(+), 172 deletions(-)
+
+Adrian Hunter (1):
+      scsi: ufs-pci: Ensure UFS device is in PowerDown mode for suspend-to-disk ->poweroff()
+
+Antoine Tenart (2):
+      net-sysfs: take the rtnl lock when storing xps_cpus
+      net-sysfs: take the rtnl lock when accessing xps_cpus_map and num_tc
+
+Ard Biesheuvel (1):
+      crypto: ecdh - avoid buffer overflow in ecdh_set_secret()
+
+Arnd Bergmann (1):
+      usb: gadget: select CONFIG_CRC32
+
+Bard Liao (1):
+      Revert "device property: Keep secondary firmware node secondary by type"
+
+Bart Van Assche (1):
+      scsi: ide: Do not set the RQF_PREEMPT flag for sense requests
+
+Bjørn Mork (2):
+      net: usb: qmi_wwan: add Quectel EM160R-GL
+      USB: serial: option: add Quectel EM160R-GL
+
+Chandana Kishori Chiluveru (1):
+      usb: gadget: configfs: Preserve function ordering after bind failure
+
+Dan Carpenter (1):
+      atm: idt77252: call pci_disable_device() on error path
+
+Dan Williams (1):
+      x86/mm: Fix leak of pmd ptlock
+
+Daniel Palmer (1):
+      USB: serial: option: add LongSung M5710 module support
+
+David Disseldorp (1):
+      scsi: target: Fix XCOPY NAA identifier lookup
+
+Dexuan Cui (1):
+      video: hyperv_fb: Fix the mmap() regression for v5.4.y and older
+
+Dinghao Liu (1):
+      net: ethernet: Fix memleak in ethoc_probe
+
+Dominique Martinet (1):
+      kbuild: don't hardcode depmod path
+
+Eddie Hung (1):
+      usb: gadget: configfs: Fix use-after-free issue with udc_name
+
+Florian Fainelli (1):
+      net: systemport: set dev->max_mtu to UMAC_MAX_MTU_SIZE
+
+Florian Westphal (1):
+      netfilter: xt_RATEEST: reject non-null terminated string from userspace
+
+Greg Kroah-Hartman (1):
+      Linux 4.14.215
+
+Grygorii Strashko (1):
+      net: ethernet: ti: cpts: fix ethtool output when no ptp_clock registered
+
+Guillaume Nault (1):
+      ipv4: Ignore ECN bits for fib lookups in fib_compute_spec_dst()
+
+Huang Shijie (1):
+      lib/genalloc: fix the overflow when size is too big
+
+Jeff Dike (1):
+      virtio_net: Fix recursive call to cpus_read_lock()
+
+Jerome Brunet (1):
+      usb: gadget: f_uac2: reset wMaxPacketSize
+
+Johan Hovold (4):
+      USB: serial: iuu_phoenix: fix DMA from stack
+      USB: yurex: fix control-URB timeout handling
+      USB: usblp: fix DMA to stack
+      USB: serial: keyspan_pda: remove unused variable
+
+John Wang (1):
+      net/ncsi: Use real net-device for response handler
+
+Kailang Yang (1):
+      ALSA: hda/realtek - Fix speaker volume control on Lenovo C940
+
+Linus Torvalds (1):
+      depmod: handle the case of /sbin/depmod without /sbin in PATH
+
+Manish Chopra (1):
+      qede: fix offload for IPIP tunnel packets
+
+Michael Grzeschik (1):
+      USB: xhci: fix U1/U2 handling for hardware with XHCI_INTEL_HOST quirk set
+
+Paolo Bonzini (1):
+      KVM: x86: fix shift out of bounds reported by UBSAN
+
+Randy Dunlap (2):
+      net: sched: prevent invalid Scell_log shift count
+      usb: usbip: vhci_hcd: protect shift size
+
+Rasmus Villemoes (2):
+      ethernet: ucc_geth: fix use-after-free in ucc_geth_remove()
+      ethernet: ucc_geth: set dev->max_mtu to 1518
+
+Roland Dreier (1):
+      CDC-NCM: remove "connected" log message
+
+Sean Young (1):
+      USB: cdc-acm: blacklist another IR Droid device
+
+Serge Semin (1):
+      usb: dwc3: ulpi: Use VStsDone to detect PHY regs access completion
+
+Sriharsha Allenki (1):
+      usb: gadget: Fix spinlock lockup on usb_function_deactivate
+
+Stefan Chulski (1):
+      net: mvpp2: Fix GoP port 3 Networking Complex Control configurations
+
+Takashi Iwai (1):
+      ALSA: usb-audio: Fix UBSAN warnings for MIDI jacks
+
+Thinh Nguyen (1):
+      usb: uas: Add PNY USB Portable SSD to unusual_uas
+
+Vasily Averin (1):
+      netfilter: ipset: fix shift-out-of-bounds in htable_bits()
+
+Xie He (1):
+      net: hdlc_ppp: Fix issues when mod_timer is called while timer is running
+
+Yang Yingliang (1):
+      USB: gadget: legacy: fix return error code in acm_ms_bind()
+
+Ying-Tsun Huang (1):
+      x86/mtrr: Correct the range check before performing MTRR type lookups
+
+Yu Kuai (1):
+      usb: chipidea: ci_hdrc_imx: add missing put_device() call in usbmisc_get_init_data()
+
+Yunfeng Ye (1):
+      workqueue: Kick a worker based on the actual activation of delayed works
+
+Yunjian Wang (2):
+      net: hns: fix return value check in __lb_other_process()
+      vhost_net: fix ubuf refcount incorrectly when sendmsg fails
+
+Zqiang (1):
+      usb: gadget: function: printer: Fix a memory leak for interface descriptor
+
+bo liu (1):
+      ALSA: hda/conexant: add a new hda codec CX11970
+
+taehyun.cho (1):
+      usb: gadget: enable super speed plus
+
