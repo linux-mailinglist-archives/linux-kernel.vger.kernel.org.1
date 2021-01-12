@@ -2,138 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A0C2F355B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA23B2F355E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:21:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406149AbhALQQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:16:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
+        id S2406177AbhALQQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 11:16:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406079AbhALQQN (ORCPT
+        with ESMTP id S2406165AbhALQQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 11:16:13 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3395C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 08:15:32 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id y17so3063930wrr.10
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 08:15:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fCwX2K3NvzAcpBSMx6nSsu4wGXEXUGQppC3ZRHgJJR8=;
-        b=T4Suq8sc8lQnpteBsLr6UZxTcH9j8G7kxKlkqFCYGip/iaonBY1bHQ1oEIYiR/mBrZ
-         izvOVjsD3VXx3ixRso71U2wVPQq8ImIzBvHd6GxvlaOsx1nuSaipg0fF+u6HGDyt6ckB
-         0dHAVNHgwIM41Dhho2dF7YYFhimMSZNmaTuVVek8lqc2dYzTe8OX4XJ81GRotQMkIAgq
-         BzSawYViZz+ddmdHmZnB1C33yqBldAHidvdq/xthmbWU+UpVGfsW7Zi2iBjIcuiGN0nY
-         WzWoLbAvtKuWaZaWMF0JzYi5jMyFcn8VJ0B8CvLDBuOr3fiEoYQOtmLyFCsKDoDVcllQ
-         /+1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fCwX2K3NvzAcpBSMx6nSsu4wGXEXUGQppC3ZRHgJJR8=;
-        b=EkbeHQmM1H/PadFf9kd22ObI4dsp3roSMA9vi3V27GMb7q8jbQ7bdlvy91IxDsCY4y
-         bfG67JySxPrfeDaTNqVg3nULM220pKLfkXUcwWfaTN1SqaFJG72SyE7DqVPC3DDlUgUa
-         z8xPAkeVuqRSxfoU4mMyl8pANd80N4UR38kJhmnVryzVosKu5ARwXk7jI4p4kQzQtAnc
-         Fjlj62gMH9AuciV/14jiaI8zK2C4SJj2sw4SwC0v+yStuL+BSBQIaqbfSPo5TC9A2L9h
-         oeiokX4wdjTRkJ00cJmiMxTkvnchO4PRORPIneIB3QwzCGRFErdAu6DMQTaZsB7dXU4f
-         vGGg==
-X-Gm-Message-State: AOAM531WrTOSDo0AkLoJKFfVqyVUoHP4UAMg8dFgTrNoEW+9+0lHJ6DH
-        DrJT7DsvA4EJflifFNBS3vGn2g==
-X-Google-Smtp-Source: ABdhPJzhdjkHwgzmaGqOq1dE6kZDAT+wivTTIYKEWvX5CDhRyyg51yQJu64CEWkYgKmGA3S/ZHwb0Q==
-X-Received: by 2002:adf:9525:: with SMTP id 34mr5210739wrs.389.1610468131478;
-        Tue, 12 Jan 2021 08:15:31 -0800 (PST)
-Received: from google.com (49.222.77.34.bc.googleusercontent.com. [34.77.222.49])
-        by smtp.gmail.com with ESMTPSA id r82sm4838130wma.18.2021.01.12.08.15.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 08:15:30 -0800 (PST)
-Date:   Tue, 12 Jan 2021 16:15:28 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, android-kvm@google.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Fuad Tabba <tabba@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>
-Subject: Re: [RFC PATCH v2 15/26] of/fdt: Introduce
- early_init_dt_add_memory_hyp()
-Message-ID: <X/3LIGgx83XJ+U0F@google.com>
-References: <20210108121524.656872-1-qperret@google.com>
- <20210108121524.656872-16-qperret@google.com>
- <CAL_JsqLmzFWmTc=6JSRMofSEVRx9GCrwGxEsYog9dC16EMGdvQ@mail.gmail.com>
- <X/1xN2UxiUxkzAiN@google.com>
- <CAL_Jsq+5d+Ox_-m_Rd83R9xoZb6e2cxCNfbL8YPzKdwj=y0M8Q@mail.gmail.com>
- <X/2xlxx9Ucp4UZvL@google.com>
- <CAL_Jsq+o+t4YYXEW_nYqMsT4ubYJWe6Kdhu614RtrCqsHBtfLw@mail.gmail.com>
+        Tue, 12 Jan 2021 11:16:26 -0500
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F16B4C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 08:15:45 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by xavier.telenet-ops.be with bizsmtp
+        id FsFi2400C4C55Sk01sFidR; Tue, 12 Jan 2021 17:15:43 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kzMKb-0037ih-TH; Tue, 12 Jan 2021 17:15:41 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kzMKb-004eW7-02; Tue, 12 Jan 2021 17:15:41 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Declan Murphy <declan.murphy@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     Mark Gross <mgross@linux.intel.com>, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] crypto: keembay - CRYPTO_DEV_KEEMBAY_OCS_HCU should depend on ARCH_KEEMBAY
+Date:   Tue, 12 Jan 2021 17:15:40 +0100
+Message-Id: <20210112161540.1109016-1-geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_Jsq+o+t4YYXEW_nYqMsT4ubYJWe6Kdhu614RtrCqsHBtfLw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 12 Jan 2021 at 09:53:36 (-0600), Rob Herring wrote:
-> On Tue, Jan 12, 2021 at 8:26 AM Quentin Perret <qperret@google.com> wrote:
-> >
-> > On Tuesday 12 Jan 2021 at 08:10:47 (-0600), Rob Herring wrote:
-> > > On Tue, Jan 12, 2021 at 3:51 AM Quentin Perret <qperret@google.com> wrote:
-> > > >
-> > > > On Monday 11 Jan 2021 at 08:45:10 (-0600), Rob Herring wrote:
-> > > > > On Fri, Jan 8, 2021 at 6:16 AM Quentin Perret <qperret@google.com> wrote:
-> > > > > >
-> > > > > > Introduce early_init_dt_add_memory_hyp() to allow KVM to conserve a copy
-> > > > > > of the memory regions parsed from DT. This will be needed in the context
-> > > > > > of the protected nVHE feature of KVM/arm64 where the code running at EL2
-> > > > > > will be cleanly separated from the host kernel during boot, and will
-> > > > > > need its own representation of memory.
-> > > > >
-> > > > > What happened to doing this with memblock?
-> > > >
-> > > > I gave it a go, but as mentioned in v1, I ran into issues for nomap
-> > > > regions. I want the hypervisor to know about these memory regions (it's
-> > > > possible some of those will be given to protected guests for instance)
-> > > > but these seem to be entirely removed from the memblocks when using DT:
-> > > >
-> > > > https://elixir.bootlin.com/linux/latest/source/drivers/of/fdt.c#L1153
-> > > >
-> > > > EFI appears to do things differently, though, as it 'just' uses
-> > > > memblock_mark_nomap() instead of actively removing the memblock. And that
-> > > > means I could actually use the memblock API for EFI, but I'd rather
-> > > > have a common solution. I tried to understand why things are done
-> > > > differently but couldn't find an answer and kept things simple and
-> > > > working for now.
-> > > >
-> > > > Is there a good reason for not using memblock_mark_nomap() with DT? If
-> > > > not, I'm happy to try that.
-> > >
-> > > There were 2 patches to do that, but it never got resolved. See here[1].
-> >
-> > Thanks. So the DT stuff predates the introduction of memblock_mark_nomap,
-> > that's why...
-> >
-> > By reading the discussions, [1] still looks a sensible patch on its own,
-> > independently from the issue Nicolas tried to solve. Any reason for not
-> > applying it?
-> 
-> As I mentioned in the thread, same patch with 2 different reasons. So
-> I just wanted a better commit message covering both.
+The Intel Keem Bay Offload and Crypto Subsystem (OCS) Hash Control Unit
+(HCU) is only present on Intel Keem Bay SoCs.  Hence add a dependency on
+ARCH_KEEMBAY, to prevent asking the user about this driver when
+configuring a kernel without Intel Keem Bay platform support.
 
-Sorry if I'm being thick, but I'm not seeing it. How are they the same?
-IIUC, as per Nicolas' last reply, using memblock_mark_nomap() does not
-solve his issue with a broken DT. These 2 patches address two completely
-separate issues no?
+Fixes: 472b04444cd39e16 ("crypto: keembay - Add Keem Bay OCS HCU driver")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ drivers/crypto/keembay/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Quentin
+diff --git a/drivers/crypto/keembay/Kconfig b/drivers/crypto/keembay/Kconfig
+index e45f1b039380feaa..ce0516e32ce4ff82 100644
+--- a/drivers/crypto/keembay/Kconfig
++++ b/drivers/crypto/keembay/Kconfig
+@@ -41,9 +41,9 @@ config CRYPTO_DEV_KEEMBAY_OCS_AES_SM4_CTS
+ 
+ config CRYPTO_DEV_KEEMBAY_OCS_HCU
+ 	tristate "Support for Intel Keem Bay OCS HCU HW acceleration"
++	depends on ARCH_KEEMBAY || COMPILE_TEST
+ 	select CRYPTO_HASH
+ 	select CRYPTO_ENGINE
+-	depends on OF || COMPILE_TEST
+ 	help
+ 	  Support for Intel Keem Bay Offload and Crypto Subsystem (OCS) Hash
+ 	  Control Unit (HCU) hardware acceleration for use with Crypto API.
+-- 
+2.25.1
+
