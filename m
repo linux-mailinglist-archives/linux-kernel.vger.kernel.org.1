@@ -2,87 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499C82F2776
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 06:02:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A362F277A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 06:05:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725804AbhALFCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 00:02:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56008 "EHLO
+        id S1726291AbhALFEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 00:04:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbhALFCC (ORCPT
+        with ESMTP id S1725958AbhALFEi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 00:02:02 -0500
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9528C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 21:01:21 -0800 (PST)
-Received: by mail-io1-xd2d.google.com with SMTP id w18so1521122iot.0
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 21:01:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RXHqQP41N3rV88+DLNWGFkao8mGamdbDcqmwVDhqSuQ=;
-        b=kQdxXH4aiPXiCK7igcopEM+n2fXCDrzTmd0e8eLAq6UrxGv2JuSO13vLd5UdEpUiQX
-         i14SeTdN4vWJA7dpVzwQqMt86t5bOnhRNWAsGSVcEQ2bi4h8KwUysb4Cars857sEkMID
-         C9nZOrdBgDQV19Hrv/8LgDL9WWF7iNsZC2LsH55yypWr+UIZe2sR08OC/ieDc3vbpQzb
-         b2c//pQa4sMa9xifyiDQ4kh/krg52u2B8UPTZQ+RwezQSpdGL5M0IsPoZLtT0ENYL0kq
-         yfgPg2Ua+kCeHJTfRnox9xkwD7K4zBF4Xv+TsSVMQY9DdCuITm/I5QCajp17zvnVsr35
-         TRZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=RXHqQP41N3rV88+DLNWGFkao8mGamdbDcqmwVDhqSuQ=;
-        b=HOPVeKbznAQNIEhvXn6IMLCNiN/2jY2bJfh1+qDubN1O7WK+CTdtouavnNb9QyoFWD
-         rPOwhnmG4tJFF0ODoU1jKkuM6123w0y9T6eQJUzg2RYE67QEQr8oMKW3olryqwxLbDR5
-         1lGZH7/OW5MngsUgLVuVlROSS5SeLl6yD8+gTEZew5JisLCNE6qLTBNKlcBzTN2kEEyx
-         F54wKH724n9JNlL+3ozhOtcfz59GJfAUD4JP8kddbj/NGmBFkCdWx3XYWfjxlv559NSk
-         OMt0NtNvteUTHvcjS79Gme51jErAwRlYBLTaU2jlywcVhcVFk+Q17NXNtmQnEHdKCyxa
-         SY1Q==
-X-Gm-Message-State: AOAM532jpUQu1XwAfggkqjkZOLz1WtFi1YJ8ktGNvA8rChFvK/xMToRF
-        peB297aHdMCo/RjnHHIA1Yw=
-X-Google-Smtp-Source: ABdhPJwy7RjNAxxGFjKOYYWOixhb5Vr9IcK2cwkzBrVa8rvuHc7ATHcSv/GWtTtpKFER2vx71JV6zg==
-X-Received: by 2002:a92:d1c9:: with SMTP id u9mr2450975ilg.282.1610427681265;
-        Mon, 11 Jan 2021 21:01:21 -0800 (PST)
-Received: from localhost.localdomain ([156.146.36.246])
-        by smtp.gmail.com with ESMTPSA id c9sm1531212ili.34.2021.01.11.21.01.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jan 2021 21:01:20 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     fenghua.yu@intel.com, reinette.chatre@intel.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, linux-kernel@vger.kernel.org
-Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] arch: x866: kernel: cpu:  Take away a single latter to match the structure member below
-Date:   Tue, 12 Jan 2021 10:31:11 +0530
-Message-Id: <20210112050111.5584-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Tue, 12 Jan 2021 00:04:38 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8604C061575;
+        Mon, 11 Jan 2021 21:03:57 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 3FD843E;
+        Tue, 12 Jan 2021 06:03:56 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1610427836;
+        bh=U3CevzdoTdtXaFu4sGTrYB1yTAhMQ5L12XCm1hJWmJc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rS62t8sruwohGJTnDBdaL4QJPskoO4XrYQzjhOa9Q1ceJqc+URe8pBstARaUr0/Yq
+         4gjbkBSJE2gtrULVPWvzpxDpchvr1IEPbbNQBAM3pa/N324kyF97PlTJVh4om3nZTd
+         etlOh7U11DtBPKlr2tMINzbdXJu9JXuESbNgzj/4=
+Date:   Tue, 12 Jan 2021 07:03:42 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jacopo Mondi <jacopo@jmondi.org>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        kieran.bingham+renesas@ideasonboard.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        sergei.shtylyov@gmail.com
+Subject: Re: [PATCH v6 5/5] media: i2c: max9286: Configure reverse channel
+ amplitude
+Message-ID: <X/0triYZZJiXaf07@pendragon.ideasonboard.com>
+References: <20201215170957.92761-1-jacopo+renesas@jmondi.org>
+ <20201215170957.92761-6-jacopo+renesas@jmondi.org>
+ <X9pCSfxE722rnPHE@pendragon.ideasonboard.com>
+ <20210111104311.e6nyxhzhvlyjjxxw@uno.localdomain>
+ <X/wvc26LXz2VsCkp@pendragon.ideasonboard.com>
+ <20210111112023.brrhxgfedo5fer53@uno.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210111112023.brrhxgfedo5fer53@uno.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/kernlfs/kernfs/p
+Hi Jacopo,
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- arch/x86/kernel/cpu/resctrl/internal.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, Jan 11, 2021 at 12:20:23PM +0100, Jacopo Mondi wrote:
+> On Mon, Jan 11, 2021 at 12:58:59PM +0200, Laurent Pinchart wrote:
+> > On Mon, Jan 11, 2021 at 11:43:11AM +0100, Jacopo Mondi wrote:
+> >> On Wed, Dec 16, 2020 at 07:22:17PM +0200, Laurent Pinchart wrote:
+> >>> On Tue, Dec 15, 2020 at 06:09:57PM +0100, Jacopo Mondi wrote:
+> >>>> Adjust the initial reverse channel amplitude parsing from
+> >>>> firmware interface the 'maxim,reverse-channel-microvolt'
+> >>>> property.
+> >>>>
+> >>>> This change is required for both rdacm20 and rdacm21 camera
+> >>>> modules to be correctly probed when used in combination with
+> >>>> the max9286 deserializer.
+> >>>>
+> >>>> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> >>>> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> >>>> ---
+> >>>>  drivers/media/i2c/max9286.c | 23 ++++++++++++++++++++++-
+> >>>>  1 file changed, 22 insertions(+), 1 deletion(-)
+> >>>>
+> >>>> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+> >>>> index 021309c6dd6f..9b40a4890c4d 100644
+> >>>> --- a/drivers/media/i2c/max9286.c
+> >>>> +++ b/drivers/media/i2c/max9286.c
+> >>>> @@ -163,6 +163,8 @@ struct max9286_priv {
+> >>>>  	unsigned int mux_channel;
+> >>>>  	bool mux_open;
+> >>>>
+> >>>> +	u32 reverse_channel_mv;
+> >>>> +
+> >>>>  	struct v4l2_ctrl_handler ctrls;
+> >>>>  	struct v4l2_ctrl *pixelrate;
+> >>>>
+> >>>> @@ -557,10 +559,14 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
+> >>>>  	 * All enabled sources have probed and enabled their reverse control
+> >>>>  	 * channels:
+> >>>>  	 *
+> >>>> +	 * - Increase the reverse channel amplitude to compensate for the
+> >>>> +	 *   remote ends high threshold, if not done already
+> >>>>  	 * - Verify all configuration links are properly detected
+> >>>>  	 * - Disable auto-ack as communication on the control channel are now
+> >>>>  	 *   stable.
+> >>>>  	 */
+> >>>> +	if (priv->reverse_channel_mv < 170)
+> >>>> +		max9286_reverse_channel_setup(priv, 170);
+> >>>
+> >>> I'm beginning to wonder if there will be a need in the future to not
+> >>> increase the reverse channel amplitude (keeping the threshold low on the
+> >>> remote side). An increased amplitude increases power consumption, and if
+> >>> the environment isn't noisy, a low amplitude would work. The device tree
+> >>> would then need to specify both the initial amplitude required by the
+> >>> remote side, and the desired amplitude after initialization. What do you
+> >>> think ? Is it overkill ? We don't have to implement this now, so
+> >>>
+> >>> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> >>>
+> >>> but if this feature could be required later, we may want to take into
+> >>> account in the naming of the new DT property to reflect the fact that it
+> >>> is the initial value.
+> >>
+> >> I had the same thought when I initially proposed
+> >> "maxim,initial-reverse-channel-mV"
+> >>
+> >> Having to use the standard unit suffix that would have become
+> >> "maxim,initial-reverse-channel-microvolt"
+> >> which is extremely long.
+> >>
+> >> I can't tell if there will be any need to adjust the amplitude later.
+> >> In any case, I would not rely on a DTS property to do so, as once we
+> >> have probed the remote we have a subdev where to call
+> >> 'get_mbus_config()' on, and from there we can report the high threshold
+> >> status of the serializer and adjust the deser amplitude accordingly.
+> >
+> > I don't think that's the point. The threshold of the serializer is
+> > something we can configure at runtime. What voltage level to use after
+> 
+> How so ? I mean, we can add an API for this, but currently it's
+> configured at probe time and that's it. Its configuration might as
+> well come from a DT property like we do on the deserializer here but I
+> fail to see why it's different. Both settings depends on the required
+> noise immunity of th system.
 
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index ee71c47844cb..3bfca0bebf56 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -142,7 +142,7 @@ enum rdtgrp_mode {
+The voltage level configuration need to match between the tserializer
+(transmitter) and the deserializer (receiver). The serializer is
+configured with a voltage level, and the deserializer needs to be
+configured with a corresponding threshold.
 
- /**
-  * struct mongroup - store mon group's data in resctrl fs.
-- * @mon_data_kn		kernlfs node for the mon_data directory
-+ * @mon_data_kn		kernfs node for the mon_data directory
-  * @parent:			parent rdtgrp
-  * @crdtgrp_list:		child rdtgroup node list
-  * @rmid:			rmid for this rdtgroup
---
-2.26.2
+The voltage level of the serializer is configurable on the camera side
+when the system is powered up. The RDACM20 has a microcontroller which
+can configure the serializer, and other cameras may have similar
+mechanisms. As the deserializer can't query the information from the
+serializer (communication is unreliable if the threshold has an
+incorrect value), we need a DT property to tell the deserializer what
+threshold is initially used by the camera when it gets powered up.
 
+This only covers initialization. A camera could boot up with a low
+voltage level, but we may want to increase the voltage level (and thus
+the threshold on the deserializer side) to increase noise immunity. Or,
+if the system environment isn't noisy, we may want to keep a low voltage
+level, or even decrease it if the camera boots up with a high voltage
+level. This runtime voltage level depends on the system design and its
+susceptibility to noise, and is thus a system property. Should we want
+to make it configurable, it should be specified in DT, and it's separate
+from the initial voltage level that is used to establish communication.
+
+> > initialization time is a system property as it depends on noise
+> > immunity, so we'll have to specify it in DT.
+> 
+> I don't see it differently than what happens on the serializer. We can
+> add an API if we want to, but it's configured at probe time (initial
+> value) and later can be adjusted in reponse to the serializer
+> configuration setting.
+> 
+> I feel like we're on different pages :/
+> 
+> >> The property documentation clearly says the there specified amplitude
+> >> is 'initial' many times, so I don't think it is strictly necessary to
+> >> report it in the name too.
+> >>
+> >> Would this work for you ?
+> >
+> > I don't mind either way.
+> >
+> >>>>  	max9286_check_config_link(priv, priv->source_mask);
+> >>>>
+> >>>>  	/*
+> >>>> @@ -967,7 +973,7 @@ static int max9286_setup(struct max9286_priv *priv)
+> >>>>  	 * only. This should be disabled after the mux is initialised.
+> >>>>  	 */
+> >>>>  	max9286_configure_i2c(priv, true);
+> >>>> -	max9286_reverse_channel_setup(priv, 170);
+> >>>> +	max9286_reverse_channel_setup(priv, priv->reverse_channel_mv);
+> >>>>
+> >>>>  	/*
+> >>>>  	 * Enable GMSL links, mask unused ones and autodetect link
+> >>>> @@ -1131,6 +1137,7 @@ static int max9286_parse_dt(struct max9286_priv *priv)
+> >>>>  	struct device_node *i2c_mux;
+> >>>>  	struct device_node *node = NULL;
+> >>>>  	unsigned int i2c_mux_mask = 0;
+> >>>> +	u32 reverse_channel_microvolt;
+> >>>>
+> >>>>  	/* Balance the of_node_put() performed by of_find_node_by_name(). */
+> >>>>  	of_node_get(dev->of_node);
+> >>>> @@ -1221,6 +1228,20 @@ static int max9286_parse_dt(struct max9286_priv *priv)
+> >>>>  	}
+> >>>>  	of_node_put(node);
+> >>>>
+> >>>> +	/*
+> >>>> +	 * Parse the initial value of the reverse channel amplitude from
+> >>>> +	 * the firmware interface and convert it to millivolts.
+> >>>> +	 *
+> >>>> +	 * Default it to 170mV for backward compatibility with DTBs that do not
+> >>>> +	 * provide the property.
+> >>>> +	 */
+> >>>> +	if (of_property_read_u32(dev->of_node,
+> >>>> +				 "maxim,reverse-channel-microvolt",
+> >>>> +				 &reverse_channel_microvolt))
+> >>>> +		priv->reverse_channel_mv = 170;
+> >>>> +	else
+> >>>> +		priv->reverse_channel_mv = reverse_channel_microvolt / 1000U;
+> >>>> +
+> >>>>  	priv->route_mask = priv->source_mask;
+> >>>>
+> >>>>  	return 0;
+
+-- 
+Regards,
+
+Laurent Pinchart
