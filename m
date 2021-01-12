@@ -2,136 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 939532F3D26
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C776E2F3D30
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437850AbhALVeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:34:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35940 "EHLO
+        id S2437862AbhALVei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 16:34:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437068AbhALU4A (ORCPT
+        with ESMTP id S2437071AbhALU4e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:56:00 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F671C061795
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:55:20 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id o11so3661246ote.4
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:55:20 -0800 (PST)
+        Tue, 12 Jan 2021 15:56:34 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F7BC0617A2;
+        Tue, 12 Jan 2021 12:55:42 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id d17so5428009ejy.9;
+        Tue, 12 Jan 2021 12:55:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=daynix-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uD2LwoNsLHO2bQTapcwBrSqoHTZzd1YmNCw2S92ag9Q=;
-        b=Y43uZ7bLVKMqH9GbZ4BYcx2lvxcJ2i103HsmZiv7+g4ZppufN2r5P61wpRmKjQtDm+
-         6Iw5P4Q3jCWLRJntB2VAsKmOyFWepWSPdDNfMwp7rBHOArihxsXGpviAmbLDbLReNp5T
-         1GsQFLXpkPd3O8YBg1d9ys2pl+Y2iRrBcQPXibs/a8PG64RIBsakJm4UbXN4O3AmUBMB
-         LcWcVtFHbgPEspus3oJa8xqqPKE6R8KJiuW56r+SCcE5YMmlzY88EwbtWXVIvz2bjoYL
-         9avkyk50tPvH0NmYp6atvBDNCPwlyY5Wzt+QY/5vlJHqedpwjVB5eQYvs1hgfE8jwBFg
-         z4Cw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mB4awCptdOD4XxS2R3y9RjPkKqrjcCd8XVKkJUf17lY=;
+        b=EXEloGtCq2Y1xv2n/lKx4y+IKjFMhuasWC47llqnFU3lg9F+ErefoQzMzs4QWaGb1I
+         sSJLXccTNlo514WRLeswXNX0/Pv5Tzd5cWnuQapOZgbbNlBVAV7yTxtcdSDz6AL+78tc
+         ndvNtdhcK7lQsyosQ/m2Jl+QTAdBbZ0xkRSJBBRxEEhxHkwocTWNcPKm/tgkwOeuK2y0
+         jPhEWe8YX8gEn9hMRYhZ71fsnGOni0VWoVZGVd+Q/DrJYwuoh0q/d59c+Hbt2oASCWfn
+         AABzI+gMYxMc/G8WJ5EB++xOmDY9qkWynY425QYj1nuKYOdBvfEQ4aBChJ/EJEtJZg+j
+         aY/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uD2LwoNsLHO2bQTapcwBrSqoHTZzd1YmNCw2S92ag9Q=;
-        b=B7aGvFeE67QdOzx1kyFCE69fyT61MVMx74yeQhAp/0ZxDtApPZ5RdNl9FTr1YWCTs8
-         ARIw3U+BR9F5PA/eWZMysG9jO38aXiZI63m2rRAqIIrQkzspcdDZ08/LRJ+84YeK04kr
-         jNtSHQmTgaqfkebTN6PtYpbCidph7PcBhci1RhaMsyD+8FeiPWuMFj6uPGJpU4zAG0q6
-         1zU9v1n0QEW3hgetx5nv1mAVUO+1wgnRZYOoOJ2XesRQoTDtOhoD8rJqoA2mq3WYN5CD
-         Oi4Hq6YTurrceAgoujz1LUza4EBYCUVievCDJulOMHtrSYA+s/XxQtISdGZ36N+GLQ2J
-         G1bw==
-X-Gm-Message-State: AOAM531cmxnaukJSf4lr6JWecc2wk4g0chlnL2ZI7hSWOywpci1lz52d
-        VQSqr7H8biVZa/1dHGfgls+wUgB8y5BjvFSSVttBFQ==
-X-Google-Smtp-Source: ABdhPJyg8eUeNmxDa4BkruWI0L3XjU5KjUa3gveljnrKGwGHBS2TJW6ZNkMgbXD0kYdCRDnkUgmQJ6NHb8T8kPmTb+c=
-X-Received: by 2002:a05:6830:572:: with SMTP id f18mr874911otc.109.1610484919603;
- Tue, 12 Jan 2021 12:55:19 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mB4awCptdOD4XxS2R3y9RjPkKqrjcCd8XVKkJUf17lY=;
+        b=TA+dVlMG8k8qA6Qlh97uRWAWrVIBPY66UaNFUZTFKG4UM+nrbjuNHiifWxxObki+w+
+         R9FpWfBT4boeYKLAogGfN2CeYMHN3p1rSwJSgYvrEWdu9SBKFjCr3W5ZMzJtWyHju3+W
+         KRMCG116Z0Qlhp4dUOrgMTPGb09FcsRNKh3Td53Itxi/RlCP47Ksg1nD4lP0N30USMjT
+         pZ0E3q5z1+O5dbD5BGJ0bqMYRKcpu317vjqRbb1JgPiGWpsV/4V0kTp19KqclMxK6n0n
+         3vrmajsB5Upc+SOJ0PvqMGrrbkbNlUQcSMJhvXGPmRmAjkZUQLv7JBxgBvWj2RkMkXQ3
+         S5dQ==
+X-Gm-Message-State: AOAM533soNebZdO5ZuCTqKLl8uIW/3zCTM3ox38UY/dhCtkzBQOravFx
+        uBG7JeRExQ3GvRE9uoETAt4=
+X-Google-Smtp-Source: ABdhPJzwm/B8mmx3+HAGXVJ6HOwVSe5dwtB1AqDsh46+Tlxnnni5L0R7Nfumpd9EybxYCubE4esVsw==
+X-Received: by 2002:a17:906:7804:: with SMTP id u4mr467339ejm.97.1610484940921;
+        Tue, 12 Jan 2021 12:55:40 -0800 (PST)
+Received: from localhost.localdomain ([188.24.159.61])
+        by smtp.gmail.com with ESMTPSA id p3sm1641423ejx.0.2021.01.12.12.55.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 12:55:40 -0800 (PST)
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/1] tty: serial: owl: Add support for kernel debugger
+Date:   Tue, 12 Jan 2021 22:55:38 +0200
+Message-Id: <026543195b9aeefb339d90abc5660a6ac7463c63.1610484108.git.cristian.ciocaltea@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210112194143.1494-1-yuri.benditovich@daynix.com>
- <20210112194143.1494-4-yuri.benditovich@daynix.com> <CAOEp5Ocz-xGq5=e=WY0aipEYHEhN-wxekNaAiqAS+HsOF8TcDQ@mail.gmail.com>
-In-Reply-To: <CAOEp5Ocz-xGq5=e=WY0aipEYHEhN-wxekNaAiqAS+HsOF8TcDQ@mail.gmail.com>
-From:   Yuri Benditovich <yuri.benditovich@daynix.com>
-Date:   Tue, 12 Jan 2021 22:55:07 +0200
-Message-ID: <CAOEp5OevYR5FWVMfQ_esmWTKtz9_ddTupbe7FtBFQ=sv2kEt2w@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/7] tun: allow use of BPF_PROG_TYPE_SCHED_CLS program type
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, rdunlap@infradead.org,
-        willemb@google.com, gustavoars@kernel.org,
-        herbert@gondor.apana.org.au, steffen.klassert@secunet.com,
-        pablo@netfilter.org, decui@microsoft.com, cai@lca.pw,
-        jakub@cloudflare.com, elver@google.com, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        bpf@vger.kernel.org
-Cc:     Yan Vugenfirer <yan@daynix.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 10:40 PM Yuri Benditovich
-<yuri.benditovich@daynix.com> wrote:
->
-> On Tue, Jan 12, 2021 at 9:42 PM Yuri Benditovich
-> <yuri.benditovich@daynix.com> wrote:
-> >
-> > This program type can set skb hash value. It will be useful
-> > when the tun will support hash reporting feature if virtio-net.
-> >
-> > Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
-> > ---
-> >  drivers/net/tun.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-> > index 7959b5c2d11f..455f7afc1f36 100644
-> > --- a/drivers/net/tun.c
-> > +++ b/drivers/net/tun.c
-> > @@ -2981,6 +2981,8 @@ static int tun_set_ebpf(struct tun_struct *tun, struct tun_prog __rcu **prog_p,
-> >                 prog = NULL;
-> >         } else {
-> >                 prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SOCKET_FILTER);
-> > +               if (IS_ERR(prog))
-> > +                       prog = bpf_prog_get_type(fd, BPF_PROG_TYPE_SCHED_CLS);
-> >                 if (IS_ERR(prog))
-> >                         return PTR_ERR(prog);
-> >         }
->
-> Comment from Alexei Starovoitov:
-> Patches 1 and 2 are missing for me, so I couldn't review properly,
-> but this diff looks odd.
-> It allows sched_cls prog type to attach to tun.
-> That means everything that sched_cls progs can do will be done from tun hook?
+Implement 'poll_put_char' and 'poll_get_char' callbacks in struct
+'owl_uart_ops' that enables OWL UART to be used for kernel debugging
+over serial line.
 
-We do not have an intention to modify the packet in this steering eBPF.
-There is just one function that unavailable for BPF_PROG_TYPE_SOCKET_FILTER
-that the eBPF needs to make possible to deliver the hash to the guest
-VM - it is 'bpf_set_hash'
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+---
+Changes in v3:
+ - Used 'readl_poll_timeout_atomic()' in 'owl_uart_poll_put_char()'
+   to get rid of 'cpu_relax()' and provide a max bound to the loop,
+   as indicated by Greg and Jiri
 
-Does it mean that we need to define a new eBPF type for socket filter
-operations + set_hash?
+Changes in v2:
+ - Reverted unnecessary changes per Andreas feedback
+ - Optimized implementation for 'owl_uart_poll_get_char()'
+   and 'owl_uart_poll_put_char()' callbacks
 
-Our problem is that the eBPF calculates 32-bit hash, 16-bit queue
-index and 8-bit of hash type.
-But it is able to return only 32-bit integer, so in this set of
-patches the eBPF returns
-queue index and hash type and saves the hash in skb->hash using bpf_set_hash().
+ drivers/tty/serial/owl-uart.c | 38 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-If this is unacceptable, can you please recommend a better solution?
+diff --git a/drivers/tty/serial/owl-uart.c b/drivers/tty/serial/owl-uart.c
+index c149f8c30007..abc6042f0378 100644
+--- a/drivers/tty/serial/owl-uart.c
++++ b/drivers/tty/serial/owl-uart.c
+@@ -12,6 +12,7 @@
+ #include <linux/console.h>
+ #include <linux/delay.h>
+ #include <linux/io.h>
++#include <linux/iopoll.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/platform_device.h>
+@@ -62,6 +63,9 @@
+ #define OWL_UART_STAT_TRFL_MASK		GENMASK(16, 11)
+ #define OWL_UART_STAT_UTBB		BIT(17)
+ 
++#define OWL_UART_POLL_USEC		5
++#define OWL_UART_TIMEOUT_USEC		10000
++
+ static struct uart_driver owl_uart_driver;
+ 
+ struct owl_uart_info {
+@@ -461,6 +465,36 @@ static void owl_uart_config_port(struct uart_port *port, int flags)
+ 	}
+ }
+ 
++#ifdef CONFIG_CONSOLE_POLL
++
++static int owl_uart_poll_get_char(struct uart_port *port)
++{
++	if (owl_uart_read(port, OWL_UART_STAT) & OWL_UART_STAT_RFEM)
++		return NO_POLL_CHAR;
++
++	return owl_uart_read(port, OWL_UART_RXDAT);
++}
++
++static void owl_uart_poll_put_char(struct uart_port *port, unsigned char ch)
++{
++	u32 reg;
++	int ret;
++
++	/* Wait while FIFO is full or timeout */
++	ret = readl_poll_timeout_atomic(port->membase + OWL_UART_STAT, reg,
++					!(reg & OWL_UART_STAT_TFFU),
++					OWL_UART_POLL_USEC,
++					OWL_UART_TIMEOUT_USEC);
++	if (ret == -ETIMEDOUT) {
++		dev_err(port->dev, "Timeout waiting while UART TX FULL\n");
++		return;
++	}
++
++	owl_uart_write(port, ch, OWL_UART_TXDAT);
++}
++
++#endif /* CONFIG_CONSOLE_POLL */
++
+ static const struct uart_ops owl_uart_ops = {
+ 	.set_mctrl = owl_uart_set_mctrl,
+ 	.get_mctrl = owl_uart_get_mctrl,
+@@ -476,6 +510,10 @@ static const struct uart_ops owl_uart_ops = {
+ 	.request_port = owl_uart_request_port,
+ 	.release_port = owl_uart_release_port,
+ 	.verify_port = owl_uart_verify_port,
++#ifdef CONFIG_CONSOLE_POLL
++	.poll_get_char = owl_uart_poll_get_char,
++	.poll_put_char = owl_uart_poll_put_char,
++#endif
+ };
+ 
+ #ifdef CONFIG_SERIAL_OWL_CONSOLE
+-- 
+2.30.0
 
-> sched_cls assumes l2 and can modify the packet.
-
-The steering eBPF in TUN module also assumes l2.
-
-> I think crashes are inevitable.
->
-> > --
-> > 2.17.1
-> >
