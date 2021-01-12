@@ -2,82 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CC12F395D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:02:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 096C22F395E
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392791AbhALTCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 14:02:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41092 "EHLO mail.kernel.org"
+        id S2406399AbhALTCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:02:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391614AbhALTCe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:02:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8126B23102
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 19:01:52 +0000 (UTC)
+        id S2392774AbhALTCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 14:02:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B437223122
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 19:01:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610478113;
-        bh=NuTiCEzB6VvihSN5FcVPWivT1c2UbWiAeK3ZOazD3UY=;
-        h=From:To:Subject:Date:From;
-        b=UiMfJs+trywbUGUwsSzCa+1ovPjX6qcb5nvYdjA1IKvGOQLNjUrntREiNA2YwnEDC
-         Y33xL7XffrSrb043ImCI2EIb7cVMzDmFThqKywVmlReMFnjrkXBXJFYDIUMkXaEaeu
-         m/AgWnuoNAKG1zL9hhCzwgHEJBck+OEV0z5JkDd2STEFm+D/C/HzgBsY57MtFl/wJq
-         kLXp4tUA3MDp9fPlplMWia0FGB4u7agJNS5gQntdkpVNBfIjvz9QTlSM2ph6IxSkkk
-         xGg7LYbWPfRnhM+9/D8b9E7yZfrazYt1oHd/l5E4yOPm8AMA9eJR8cH4Ary8JpgclA
-         +s1z31Mxa4kXA==
+        s=k20201202; t=1610478114;
+        bh=MBlbEwoledJKXCtGvBNreYjgEiv0uC19NQgckFNPLiY=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=jkBvlDnI3vPyjbffuxpWBDt4UEnu/FYijoUtxPMxwrI1CA2mM5BmqEFKCmhvUPC25
+         TJ9+MrpIhf6iy3C+vxhiyf4EZBrQymYk8sKeOFgOFsMNwz3jn3MqkHTskcg2qNt/Nw
+         jc+cUtVO3DF1TzTc+27veh+ikVMpn2JOoE3Nb6sBYJp1cZtqj7BVIecul8b0OEHHyh
+         2kYEBa7PGgrjP/OswXaJVAX7nVwivSmZkmOtU//+4jr3O7eYD3ME2flC++Yf0snQdB
+         GZBrn2hRWe4BvDYkHGmZaUSKHXV46R0pTKWvEx2UF43MDCQG+KqxsAHh2x8O8yHgrm
+         2n8fP7iLs6kLw==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] habanalabs: fix dma_addr passed to dma_mmap_coherent
-Date:   Tue, 12 Jan 2021 21:01:47 +0200
-Message-Id: <20210112190149.11661-1-ogabbay@kernel.org>
+Subject: [PATCH 2/3] habanalabs: fix reset process in case of failures
+Date:   Tue, 12 Jan 2021 21:01:48 +0200
+Message-Id: <20210112190149.11661-2-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210112190149.11661-1-ogabbay@kernel.org>
+References: <20210112190149.11661-1-ogabbay@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When doing dma_alloc_coherent in the driver, we add a certain hard-coded
-offset to the DMA address before returning to the callee function. This
-offset is needed when our device use this DMA address to perform
-outbound transactions to the host.
+There are some points in the reset process where if the code fails
+for some reason, and the system admin tries to initiate the reset
+process again we will get a kernel panic.
 
-However, if we want to map the DMA'able memory to the user via
-dma_mmap_coherent(), we need to pass the original dma address, without
-this offset. Otherwise, we will get erronouos mapping.
+This is because there aren't any protections in different fini
+functions that are called during the reset process.
+
+The protections that are added in this patch make sure that if the fini
+functions are called multiple times, without calling init functions
+between them, there won't be double release of already released
+resources.
 
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/misc/habanalabs/gaudi/gaudi.c | 3 ++-
- drivers/misc/habanalabs/goya/goya.c   | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ drivers/misc/habanalabs/common/device.c |  2 +-
+ drivers/misc/habanalabs/common/mmu_v1.c | 12 ++++++++++--
+ 2 files changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 8c09e4466af8..b328ddaa64ee 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -4002,7 +4002,8 @@ static int gaudi_cb_mmap(struct hl_device *hdev, struct vm_area_struct *vma,
- 	vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP |
- 			VM_DONTCOPY | VM_NORESERVE;
+diff --git a/drivers/misc/habanalabs/common/device.c b/drivers/misc/habanalabs/common/device.c
+index 1456eabf9601..1ea57d86caa3 100644
+--- a/drivers/misc/habanalabs/common/device.c
++++ b/drivers/misc/habanalabs/common/device.c
+@@ -1037,7 +1037,7 @@ int hl_device_reset(struct hl_device *hdev, bool hard_reset,
  
--	rc = dma_mmap_coherent(hdev->dev, vma, cpu_addr, dma_addr, size);
-+	rc = dma_mmap_coherent(hdev->dev, vma, cpu_addr,
-+				(dma_addr - HOST_PHYS_BASE), size);
- 	if (rc)
- 		dev_err(hdev->dev, "dma_mmap_coherent error %d", rc);
+ 	if (hard_reset) {
+ 		/* Release kernel context */
+-		if (hl_ctx_put(hdev->kernel_ctx) == 1)
++		if (hdev->kernel_ctx && hl_ctx_put(hdev->kernel_ctx) == 1)
+ 			hdev->kernel_ctx = NULL;
+ 		hl_vm_fini(hdev);
+ 		hl_mmu_fini(hdev);
+diff --git a/drivers/misc/habanalabs/common/mmu_v1.c b/drivers/misc/habanalabs/common/mmu_v1.c
+index 2ce6ea89d4fa..06d8a44dd5d4 100644
+--- a/drivers/misc/habanalabs/common/mmu_v1.c
++++ b/drivers/misc/habanalabs/common/mmu_v1.c
+@@ -467,8 +467,16 @@ static void hl_mmu_v1_fini(struct hl_device *hdev)
+ {
+ 	/* MMU H/W fini was already done in device hw_fini() */
  
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index b8b4aa636b7c..63679a747d2c 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -2719,7 +2719,8 @@ static int goya_cb_mmap(struct hl_device *hdev, struct vm_area_struct *vma,
- 	vma->vm_flags |= VM_IO | VM_PFNMAP | VM_DONTEXPAND | VM_DONTDUMP |
- 			VM_DONTCOPY | VM_NORESERVE;
+-	kvfree(hdev->mmu_priv.dr.mmu_shadow_hop0);
+-	gen_pool_destroy(hdev->mmu_priv.dr.mmu_pgt_pool);
++	if (!ZERO_OR_NULL_PTR(hdev->mmu_priv.hr.mmu_shadow_hop0)) {
++		kvfree(hdev->mmu_priv.dr.mmu_shadow_hop0);
++		gen_pool_destroy(hdev->mmu_priv.dr.mmu_pgt_pool);
++	}
++
++	/* Make sure that if we arrive here again without init was called we
++	 * won't cause kernel panic. This can happen for example if we fail
++	 * during hard reset code at certain points
++	 */
++	hdev->mmu_priv.dr.mmu_shadow_hop0 = NULL;
+ }
  
--	rc = dma_mmap_coherent(hdev->dev, vma, cpu_addr, dma_addr, size);
-+	rc = dma_mmap_coherent(hdev->dev, vma, cpu_addr,
-+				(dma_addr - HOST_PHYS_BASE), size);
- 	if (rc)
- 		dev_err(hdev->dev, "dma_mmap_coherent error %d", rc);
- 
+ /**
 -- 
 2.25.1
 
