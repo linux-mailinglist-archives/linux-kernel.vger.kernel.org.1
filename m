@@ -2,195 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21DA2F3419
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1F22F3420
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:26:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390490AbhALPXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 10:23:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389610AbhALPXY (ORCPT
+        id S2391194AbhALPZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 10:25:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44276 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2390796AbhALPZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:23:24 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16395C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 07:22:44 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id b3so1240562pft.3
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 07:22:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=0jK5A6F+T51L5qUblxvPVXaFTSynCeaRzZytQ+RLfJU=;
-        b=TwJ1YtR78f9dTpRK3wp7oaaMOWdfAS52Ul9Xhehr01de0AYulZoEXgDdluDg8r+IGi
-         3Idb/HDlK0OoOHB03rOG0qqXkDzNXChnT4q342hbybSTMXIa6lGp9SuU6yRRoqPYE9w8
-         Yx5hNQkmmyFh5KLExpNl9yJqk+RHQi4EBLHra06x1oy/Jkw/xraJdob8sSbOUXtdtBaw
-         JRUFBrnIGM8VY/Bn3tWN2VRpPlmBbenaPsGxCc7DY1ZGLS18PrcewsdUaj75lTgehX9s
-         lK71atJO8fKg/s8R8+pogewhqrjGT/u2/d6UpfANgzEYWF9pbZtqNcug7WnX+/TXOTxH
-         /MDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=0jK5A6F+T51L5qUblxvPVXaFTSynCeaRzZytQ+RLfJU=;
-        b=SHs0/b8mkJXsLLREQC78zbL3rF/iMD3SkpLWD2xiultnmi4PaFgnGuYq3zL4kd6bE6
-         +4KjzYhplRT5pWVMjpQAqsZfUexynCQzUXHdxzcmBkehUtlxpW97R1yr77YDg9NmEY/b
-         I1FXvBpGMbaXV70mfDLSNYk+cNb1vg5reBlQzoqkCy8L8gajyGd/rp1l02AHPXnrcf9/
-         IrqqGcQsUkMC/U04aEdLN6H2pN6KkCX8jGw2zrGza5wuzjemMgT+mUOiDcq0pWp01Edv
-         ewngdt81ufR0VO3iqn94qJ4XN9Oy7Dsic2unllvAL4ShstJPwhlsD0usMwXxzS1P5+3V
-         Pk3A==
-X-Gm-Message-State: AOAM531R/XBvCdAPPyy8EXNCdeNTYBIfcLyG6Dewo4ozbrhLIm6VbsGG
-        ODJAhOMba3FgnYFvhE5YA4FoK+kPkmBYMw==
-X-Google-Smtp-Source: ABdhPJxWnDdcd5MiDLXBF2olQYG8ZJKKYDudYhAjIDGRJeDO9B8HhEK/w3cjSB7xNM2hKr9Gz/r2Bw==
-X-Received: by 2002:a65:6409:: with SMTP id a9mr5224927pgv.171.1610464963623;
-        Tue, 12 Jan 2021 07:22:43 -0800 (PST)
-Received: from ?IPv6:2601:646:c200:1ef2:1d60:88a3:44d6:6b86? ([2601:646:c200:1ef2:1d60:88a3:44d6:6b86])
-        by smtp.gmail.com with ESMTPSA id c5sm3109142pjo.4.2021.01.12.07.22.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 07:22:42 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH 1/2] KVM: x86: Add emulation support for #GP triggered by VM instructions
-Date:   Tue, 12 Jan 2021 07:22:41 -0800
-Message-Id: <C121813D-BD61-4C78-9169-8F8FCC1356D7@amacapital.net>
-References: <9f3b8e3dca453c13867c5c6b61645b9b58d68f61.camel@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        seanjc@google.com, joro@8bytes.org, bp@alien8.de,
-        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
-        dgilbert@redhat.com
-In-Reply-To: <9f3b8e3dca453c13867c5c6b61645b9b58d68f61.camel@redhat.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-X-Mailer: iPhone Mail (18C66)
+        Tue, 12 Jan 2021 10:25:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610465035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wDH3uGhZpjYzlpdmZqM/oLSKif0MBL0h3J0QCBOw+Lg=;
+        b=AHNjwBFEtakuW7eLFNRro3e2kNM/PBGtPqWJ241bdeVCM5AVW1zh2EOSsrbL5t69Kx9RAx
+        6Tlf+LouJORs46KJYXoFOFY0VGwAdnH1Xnzxw3wwz4LwnB4Jta/r5HdP73gHSypHzRKnx8
+        7l7ZwH1keKtCW+C/oWjTLZkaGo04CHE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-102-sCqrVvGyNj-10isFofht1w-1; Tue, 12 Jan 2021 10:23:53 -0500
+X-MC-Unique: sCqrVvGyNj-10isFofht1w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D99F01835861;
+        Tue, 12 Jan 2021 15:23:52 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F3BA760C5D;
+        Tue, 12 Jan 2021 15:23:51 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH net] rxrpc: Fix handling of an unsupported token type in
+ rxrpc_read()
+From:   David Howells <dhowells@redhat.com>
+To:     netdev@vger.kernel.org
+Cc:     Tom Rix <trix@redhat.com>, Tom Rix <trix@redhat.com>,
+        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dhowells@redhat.com
+Date:   Tue, 12 Jan 2021 15:23:51 +0000
+Message-ID: <161046503122.2445787.16714129930607546635.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Clang static analysis reports the following:
 
+net/rxrpc/key.c:657:11: warning: Assigned value is garbage or undefined
+                toksize = toksizes[tok++];
+                        ^ ~~~~~~~~~~~~~~~
 
-> On Jan 12, 2021, at 7:17 AM, Maxim Levitsky <mlevitsk@redhat.com> wrote:
->=20
-> =EF=BB=BFOn Tue, 2021-01-12 at 07:11 -0800, Andy Lutomirski wrote:
->>>> On Jan 12, 2021, at 4:15 AM, Vitaly Kuznetsov <vkuznets@redhat.com> wro=
-te:
->>>=20
->>> =EF=BB=BFWei Huang <wei.huang2@amd.com> writes:
->>>=20
->>>> From: Bandan Das <bsd@redhat.com>
->>>>=20
->>>> While running VM related instructions (VMRUN/VMSAVE/VMLOAD), some AMD
->>>> CPUs check EAX against reserved memory regions (e.g. SMM memory on host=
-)
->>>> before checking VMCB's instruction intercept. If EAX falls into such
->>>> memory areas, #GP is triggered before VMEXIT. This causes problem under=
+rxrpc_read() contains two consecutive loops.  The first loop calculates the
+token sizes and stores the results in toksizes[] and the second one uses
+the array.  When there is an error in identifying the token in the first
+loop, the token is skipped, no change is made to the toksizes[] array.
+When the same error happens in the second loop, the token is not skipped.
+This will cause the toksizes[] array to be out of step and will overrun
+past the calculated sizes.
 
->>>> nested virtualization. To solve this problem, KVM needs to trap #GP and=
+Fix this by making both loops log a message and return an error in this
+case.  This should only happen if a new token type is incompletely
+implemented, so it should normally be impossible to trigger this.
 
->>>> check the instructions triggering #GP. For VM execution instructions,
->>>> KVM emulates these instructions; otherwise it re-injects #GP back to
->>>> guest VMs.
->>>>=20
->>>> Signed-off-by: Bandan Das <bsd@redhat.com>
->>>> Co-developed-by: Wei Huang <wei.huang2@amd.com>
->>>> Signed-off-by: Wei Huang <wei.huang2@amd.com>
->>>> ---
->>>> arch/x86/include/asm/kvm_host.h |   8 +-
->>>> arch/x86/kvm/mmu.h              |   1 +
->>>> arch/x86/kvm/mmu/mmu.c          |   7 ++
->>>> arch/x86/kvm/svm/svm.c          | 157 +++++++++++++++++++-------------
->>>> arch/x86/kvm/svm/svm.h          |   8 ++
->>>> arch/x86/kvm/vmx/vmx.c          |   2 +-
->>>> arch/x86/kvm/x86.c              |  37 +++++++-
->>>> 7 files changed, 146 insertions(+), 74 deletions(-)
->>>>=20
->>>> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm=
-_host.h
->>>> index 3d6616f6f6ef..0ddc309f5a14 100644
->>>> --- a/arch/x86/include/asm/kvm_host.h
->>>> +++ b/arch/x86/include/asm/kvm_host.h
->>>> @@ -1450,10 +1450,12 @@ extern u64 kvm_mce_cap_supported;
->>>> *                 due to an intercepted #UD (see EMULTYPE_TRAP_UD).
->>>> *                 Used to test the full emulator from userspace.
->>>> *
->>>> - * EMULTYPE_VMWARE_GP - Set when emulating an intercepted #GP for VMwa=
-re
->>>> + * EMULTYPE_PARAVIRT_GP - Set when emulating an intercepted #GP for VM=
-ware
->>>> *            backdoor emulation, which is opt in via module param.
->>>> *            VMware backoor emulation handles select instructions
->>>> - *            and reinjects the #GP for all other cases.
->>>> + *            and reinjects #GP for all other cases. This also
->>>> + *            handles other cases where #GP condition needs to be
->>>> + *            handled and emulated appropriately
->>>> *
->>>> * EMULTYPE_PF - Set when emulating MMIO by way of an intercepted #PF, i=
-n which
->>>> *         case the CR2/GPA value pass on the stack is valid.
->>>> @@ -1463,7 +1465,7 @@ extern u64 kvm_mce_cap_supported;
->>>> #define EMULTYPE_SKIP            (1 << 2)
->>>> #define EMULTYPE_ALLOW_RETRY_PF        (1 << 3)
->>>> #define EMULTYPE_TRAP_UD_FORCED        (1 << 4)
->>>> -#define EMULTYPE_VMWARE_GP        (1 << 5)
->>>> +#define EMULTYPE_PARAVIRT_GP        (1 << 5)
->>>> #define EMULTYPE_PF            (1 << 6)
->>>>=20
->>>> int kvm_emulate_instruction(struct kvm_vcpu *vcpu, int emulation_type);=
+Fixes: 9a059cd5ca7d ("rxrpc: Downgrade the BUG() for unsupported token type in rxrpc_read()")
+Reported-by: Tom Rix <trix@redhat.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Tom Rix <trix@redhat.com>
+---
 
->>>> diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
->>>> index 581925e476d6..1a2fff4e7140 100644
->>>> --- a/arch/x86/kvm/mmu.h
->>>> +++ b/arch/x86/kvm/mmu.h
->>>> @@ -219,5 +219,6 @@ int kvm_arch_write_log_dirty(struct kvm_vcpu *vcpu)=
-;
->>>>=20
->>>> int kvm_mmu_post_init_vm(struct kvm *kvm);
->>>> void kvm_mmu_pre_destroy_vm(struct kvm *kvm);
->>>> +bool kvm_is_host_reserved_region(u64 gpa);
->>>=20
->>> Just a suggestion: "kvm_gpa_in_host_reserved()" maybe?=20
->>>=20
->>>> #endif
->>>> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
->>>> index 6d16481aa29d..c5c4aaf01a1a 100644
->>>> --- a/arch/x86/kvm/mmu/mmu.c
->>>> +++ b/arch/x86/kvm/mmu/mmu.c
->>>> @@ -50,6 +50,7 @@
->>>> #include <asm/io.h>
->>>> #include <asm/vmx.h>
->>>> #include <asm/kvm_page_track.h>
->>>> +#include <asm/e820/api.h>
->>>> #include "trace.h"
->>>>=20
->>>> extern bool itlb_multihit_kvm_mitigation;
->>>> @@ -5675,6 +5676,12 @@ void kvm_mmu_slot_set_dirty(struct kvm *kvm,
->>>> }
->>>> EXPORT_SYMBOL_GPL(kvm_mmu_slot_set_dirty);
->>>>=20
->>>> +bool kvm_is_host_reserved_region(u64 gpa)
->>>> +{
->>>> +    return e820__mbapped_raw_any(gpa-1, gpa+1, E820_TYPE_RESERVED);
->>>> +}
->>>=20
->>> While _e820__mapped_any()'s doc says '..  checks if any part of the
->>> range <start,end> is mapped ..' it seems to me that the real check is
->>> [start, end) so we should use 'gpa' instead of 'gpa-1', no?
->>=20
->> Why do you need to check GPA at all?
->>=20
-> To reduce the scope of the workaround.
->=20
-> The errata only happens when you use one of SVM instructions
-> in the guest with EAX that happens to be inside one
-> of the host reserved memory regions (for example SMM).
+ net/rxrpc/key.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-This code reduces the scope of the workaround at the cost of increasing the c=
-omplexity of the workaround and adding a nonsensical coupling between KVM an=
-d host details and adding an export that really doesn=E2=80=99t deserve to b=
-e exported.
+diff --git a/net/rxrpc/key.c b/net/rxrpc/key.c
+index 9631aa8543b5..8d2073e0e3da 100644
+--- a/net/rxrpc/key.c
++++ b/net/rxrpc/key.c
+@@ -598,7 +598,7 @@ static long rxrpc_read(const struct key *key,
+ 		default: /* we have a ticket we can't encode */
+ 			pr_err("Unsupported key token type (%u)\n",
+ 			       token->security_index);
+-			continue;
++			return -ENOPKG;
+ 		}
+ 
+ 		_debug("token[%u]: toksize=%u", ntoks, toksize);
+@@ -674,7 +674,9 @@ static long rxrpc_read(const struct key *key,
+ 			break;
+ 
+ 		default:
+-			break;
++			pr_err("Unsupported key token type (%u)\n",
++			       token->security_index);
++			return -ENOPKG;
+ 		}
+ 
+ 		ASSERTCMP((unsigned long)xdr - (unsigned long)oldxdr, ==,
 
-Is there an actual concrete benefit to this check?
 
