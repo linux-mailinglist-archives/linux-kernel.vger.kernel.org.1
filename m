@@ -2,157 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86AA2F372D
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:32:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 646A22F372A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392936AbhALRbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:31:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48040 "EHLO
+        id S2392852AbhALRb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:31:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388033AbhALRbt (ORCPT
+        with ESMTP id S1728411AbhALRb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:31:49 -0500
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91342C06179F
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:31:08 -0800 (PST)
-Received: by mail-yb1-xb2d.google.com with SMTP id o144so2915851ybc.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:31:08 -0800 (PST)
+        Tue, 12 Jan 2021 12:31:29 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E060EC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:30:48 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id n7so1888826pgg.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:30:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wHYTNknkwpoy6JOyEuCZUTiQpYW6RiiwwNhsMpLX55E=;
-        b=pfLR8VAgFLpM47Rq2XgngC7O/byRzQBN7LWsU7dwftmjBfR1hSUwOemHF+NV3KVedJ
-         lLrLAxv48acZ3mWwdNn1i4cx4moq8c1SPh3mV44btJ7m+WwTZHRKjHnlasTaIZEO+gZu
-         PBOto0xadIXtWKogT16sOxjLSfD/jV4WceQM9ti/okToMAX/atSZWPj6dSrRkO1FDqrz
-         qeeGQqKN6hYl1q9pUjxRJN/PRQcX4oEfw1Wmda5cGXjnroPye1ePSA/RGEE1z7HxoRuv
-         cz51TP3gfd6YzwPvdAThNdN/wP8+/rf3Wch6Jn6vbYzVBooAn6EUCZ20poFxoN1lO9Bw
-         Xc2g==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XdTRu5tlj/A3yBDzJivXQhUbmV9kR2B6mc01lpwlJu8=;
+        b=RZ/5dMMonUTO9uwDF4pLhzmX9iV9siHtpHS8tn8hJcEmD4EfymPs2hg5s1T9cx0ATz
+         dLpYTPPbyoRxH3P5VSLCIVFmj9tnEVansZQL2IJJmKQR6dZNa9AmudWjqHSQTBn5Gqu3
+         nGJ0JffzpNvhC03FDQe8N1JqYgLXogyfShpwE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wHYTNknkwpoy6JOyEuCZUTiQpYW6RiiwwNhsMpLX55E=;
-        b=RS/JpOycnGwj+gNd5C4TDqdfQSAFnKkwkcxas3bj5kJZbljImMHyfyeROyrs5+1HwR
-         A5o8ykzizHLVjC20ZZSCq4zDEikgn5KSAyjXjKiP11pYljVqJHTeV/RHyNBlQBiTYnih
-         sFdWyPGscq7VAoBiUBjTsWo1+y7sL+rlSuYB2kJSCbl661GjiiE3EfrzbarEKisoih2y
-         bAUEOs39OjYEwLc8bdOwYUxoqRhAMKMC2UPDhIjL2OoCM2tEH+ymTmLlcl4F7W5Zn3mS
-         aa8Z8PX+63u02nbWvk1xnjxT7mtUJGiY3+ZyoTV0yUpyHz8X2/1iyByxM5H83vq9XqrN
-         MnsA==
-X-Gm-Message-State: AOAM532NLLq0IBld5Sd+tI4XzXvGGSzYb6vgfWBFhRs85UDv3iADGjND
-        gBYIYBcy3d0WchtyvJnn1iOOUMCDf04PcTQQu38hFA==
-X-Google-Smtp-Source: ABdhPJzvX3Y98ulgvyKO0IFzPTIajC5tpI1HRnZnbzV4hlHG99AxqbDl7sUpsC3YuFe0UJcG/cLXCmnMw+AW7TR7a1E=
-X-Received: by 2002:a25:6604:: with SMTP id a4mr739710ybc.412.1610472667507;
- Tue, 12 Jan 2021 09:31:07 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XdTRu5tlj/A3yBDzJivXQhUbmV9kR2B6mc01lpwlJu8=;
+        b=rnH8kbgarp7Q5903p6YkJH4RfYu0LZil5LhirtT/RCMI1a8o184gAd0/8W9fsSc00C
+         5ttp6Dirky2sn2keWTFxC5SnRZshtniOmLnOvjd9utU1nKoOxXJ4HGHvfWV71DOgz3mZ
+         b9yBpKGPm9zefG+dEpomcWd4tiWK5P1wmhldDOQtBX7lcjEAVNI/j5eHOgAryOKFxmPx
+         JbftSBsxH92wHJs9GZmc08zJQnZRugc/U8rh4f5mhsMJVwjN9vpNxUoKG+um2TDtpJ2b
+         AD3L2/9PK0qcnfezTGJUUo7YuRdlpf/V8Worfc0T1Zl+zB2sv9sdvYdWNqvH9iCwo0qx
+         kQ3Q==
+X-Gm-Message-State: AOAM532eT3UTZnmY6z0k2LBGsHbdaEs49zTtzps+0MjGLXYvAXe35ht8
+        QuuB8CpdPJpJrUuex5oWSKjUIAYj7bvAmA==
+X-Google-Smtp-Source: ABdhPJzMKQx3DoJR2OewHw8Nh5bUmiaIAGtOtMJzX2jEh38fP63P0Grlpv6Y89dXjIkc2LEhFcqxcQ==
+X-Received: by 2002:a63:6e8f:: with SMTP id j137mr126332pgc.416.1610472648419;
+        Tue, 12 Jan 2021 09:30:48 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g16sm3502796pfh.187.2021.01.12.09.30.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 09:30:47 -0800 (PST)
+Date:   Tue, 12 Jan 2021 09:30:46 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com, ying.huang@intel.com, feng.tang@intel.com,
+        zhengjun.xing@intel.com
+Subject: Re: [PCI]  dc83615370:  will-it-scale.per_process_ops -1.2%
+ regression
+Message-ID: <202101120927.B3345B30@keescook>
+References: <20210112141045.GD30747@xsang-OptiPlex-9020>
 MIME-Version: 1.0
-References: <20210112134054.342-1-calvin.johnson@oss.nxp.com> <20210112134054.342-10-calvin.johnson@oss.nxp.com>
-In-Reply-To: <20210112134054.342-10-calvin.johnson@oss.nxp.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 12 Jan 2021 09:30:31 -0800
-Message-ID: <CAGETcx-7JVz=QLCMWicHqoagWYjeBXdFJmSv1v6MQhtPt2RS=Q@mail.gmail.com>
-Subject: Re: [net-next PATCH v3 09/15] device property: Introduce fwnode_get_id()
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux.cj@gmail.com,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112141045.GD30747@xsang-OptiPlex-9020>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 5:42 AM Calvin Johnson
-<calvin.johnson@oss.nxp.com> wrote:
->
-> Using fwnode_get_id(), get the reg property value for DT node
-> or get the _ADR object value for ACPI node.
->
-> Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
-> ---
->
-> Changes in v3:
-> - Modified to retrieve reg property value for ACPI as well
-> - Resolved compilation issue with CONFIG_ACPI = n
-> - Added more info into documentation
->
-> Changes in v2: None
->
->  drivers/base/property.c  | 33 +++++++++++++++++++++++++++++++++
->  include/linux/property.h |  1 +
->  2 files changed, 34 insertions(+)
->
-> diff --git a/drivers/base/property.c b/drivers/base/property.c
-> index 35b95c6ac0c6..2d51108cb936 100644
-> --- a/drivers/base/property.c
-> +++ b/drivers/base/property.c
-> @@ -580,6 +580,39 @@ const char *fwnode_get_name_prefix(const struct fwnode_handle *fwnode)
->         return fwnode_call_ptr_op(fwnode, get_name_prefix);
->  }
->
-> +/**
-> + * fwnode_get_id - Get the id of a fwnode.
-> + * @fwnode: firmware node
-> + * @id: id of the fwnode
-> + *
-> + * This function provides the id of a fwnode which can be either
-> + * DT or ACPI node. For ACPI, "reg" property value, if present will
-> + * be provided or else _ADR value will be provided.
-> + * Returns 0 on success or a negative errno.
-> + */
-> +int fwnode_get_id(struct fwnode_handle *fwnode, u32 *id)
-> +{
-> +#ifdef CONFIG_ACPI
-> +       unsigned long long adr;
-> +       acpi_status status;
-> +#endif
-> +       int ret;
-> +
-> +       ret = fwnode_property_read_u32(fwnode, "reg", id);
-> +       if (!(ret && is_acpi_node(fwnode)))
-> +               return ret;
-> +
-> +#ifdef CONFIG_ACPI
-> +       status = acpi_evaluate_integer(ACPI_HANDLE_FWNODE(fwnode),
-> +                                      METHOD_NAME__ADR, NULL, &adr);
-> +       if (ACPI_FAILURE(status))
-> +               return -EINVAL;
-> +       *id = (u32)adr;
-> +#endif
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(fwnode_get_id);
+On Tue, Jan 12, 2021 at 10:10:45PM +0800, kernel test robot wrote:
+> FYI, we noticed a -1.2% regression of will-it-scale.per_process_ops due to commit:
+> 
+> commit: dc83615370e7ebcb181a21a8ad13a77c278ab81c ("PCI: Fix PREL32 relocations for LTO")
+> https://git.kernel.org/cgit/linux/kernel/git/kees/linux.git for-next/kspp
 
-Please don't do it this way. The whole point of fwnode_operations is
-to avoid conditional stuff at the fwnode level. Also ACPI and DT
-aren't mutually exclusive if I'm not mistaken.
+O_o Well that's surprising. This only creates stubs.
 
-Also, can you CC me on the entire series please? I want to reply to
-some of your other patches too. Most of the fwnode changes don't seem
-right. fwnode is lower level that the device-driver framework. Making
-it aware of busses like mdio, etc doesn't sound right. Also, there's
-already get_dev_from_fwnode() which is a much more efficient way to
-look up/get a device from a fwnode instead of looping through a bus.
+>                                 will-it-scale.workload                          
+>                                                                                 
+>   2.14e+07 +----------------------------------------------------------------+   
+>            |.+. .+ :        +  +.+.               +.+. .+   +.+. .+  :      |   
+>   2.13e+07 |-+ +    :    +.+       +             +    +         +    :      |   
+>            |        :   :           + .+.+..+. .+                     +.    |   
+>   2.12e+07 |-+       :  :            +        +                         +.+.|   
+>            |         +.+                                                    |   
+>   2.11e+07 |-+                                                              |   
+>            |                                                                |   
+>    2.1e+07 |-+                   O O     O  O O   O     O                   |   
+>            |                 O O     O O        O   O O   O O               |   
+>   2.09e+07 |-+         O                                                    |   
+>            |         O   O                                                  |   
+>   2.08e+07 |-O O O O       O                                                |   
+>            |                                                                |   
+>   2.07e+07 +----------------------------------------------------------------+   
+>                                                                                 
+>                                                                                 
+> [*] bisect-good sample
+> [O] bisect-bad  sample
 
--Saravana
+But it's pretty clear _something_ has happened. We'll investigate...
+
+-- 
+Kees Cook
