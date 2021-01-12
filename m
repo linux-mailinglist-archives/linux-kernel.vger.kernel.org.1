@@ -2,138 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CFE82F3754
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFD62F3750
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391055AbhALRhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:37:14 -0500
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:29645 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390299AbhALRhL (ORCPT
+        id S2389851AbhALRgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:36:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727513AbhALRgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:37:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1610473030; x=1642009030;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=8wBC9qQs0C0PaRwqJiw1JekockygqVCHXt8rOS2lCTs=;
-  b=rtqiETAgt0dBRSqxQSIMaxbZBUoFsiIc/oAD/inKxh/INX3r7fMn8+J4
-   QnrS6uO0zAdbA4aDCadZAD5lrAIVafGv+sY+yAQ4XV/kBr40KWR+AgenO
-   /CrVt+M60fcE+N6kc3jFxDTSavr1A3DL7jeNqP6bkaZBxx1CuqzmlGXs1
-   nX8uCbq6cEsxjdsFnV7cMADAMuWeZpo6/0PWj2JfTCcXfzO9nwyHT4stV
-   NwzYE80h4bhLaq19s1RLsrPgFBP3OcK9ahsBqEKIA4Lc9yl4tGs0gfNAD
-   vDUWSd9KkjGcdqPxOhHLjqsWNlmfZt+u5CR3dkkoyGAwuijdJMhjCBERr
-   w==;
-IronPort-SDR: hXAac4vZoWCn9ee02BHjMp+y9ffKZNQjEOFy4L+dHnCGvtVmJF9LBWFaKjM9h3Bjl1wqc3M5Op
- YI2XTWevWlYRI1aJPvI/lJovxiVtkaqScIWgJanlfNzSo/TUy8yyro98LbrxL8iHLuk4k+TAXH
- yLOk0AwtN+U3BcDSwQodUZ8sGrESAINpd1k9K60ieL7Kq4ETUjRBYD7eV2Hn1hqnvKCiyXZ6WX
- vZH8yFE9WZqT7OLycSLHkCuPGXXTQc+BMOynR4m1Az70tOa+yvR3FdT14FLatJPPTKQ47lsWcq
- 2RQ=
-X-IronPort-AV: E=Sophos;i="5.79,342,1602518400"; 
-   d="scan'208";a="158436375"
-Received: from mail-mw2nam10lp2100.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.100])
-  by ob1.hgst.iphmx.com with ESMTP; 13 Jan 2021 01:36:03 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gww9EfT8z6eRlOIOVEMvuCrwf+EUy4WJ5C9oRKs9R4O/df9e5DfTGVffvEbaHcC3/k9sPbvoyj9nu3jGnTIDpsvpr0y2uuTs7aDjgAAWBkDIBZVhsZUvPWWiRZHs+ZlQqHQIuDuISDgRD5Iis4g0qxuKm6BVa8mXilGUm/8JeWznDwcSMPiRn9DxGhELSnASCje/pwMF4n7TEorZJY3qbAPuhr0cUAV5EOfg7Cas0tbMaOzx/e4BZ3mOACyLMZWyaycuUUuneFMBFwx8x+sKuClIzFYQ94shvPh0XxHyFniy0KI0Fm8YsF45L6r+iFtD0IUmu69A8Gi3j/d0XPv9lQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8wBC9qQs0C0PaRwqJiw1JekockygqVCHXt8rOS2lCTs=;
- b=ifJpnrsDpBi5DOZddv+YmRah3jD5xdTE4h4MyjaDJMfnei9U/pzF+tZOgP8muMM+zRU6Qy47iBq5JLpGJeMxiJ17SuUYyo3FToMNApB745qlHQtDiD78MBaNMkgH2XIc6RUYgUkk2nAODNvRi+1BxW5TD4rmVEc31kjLrG9mZ1S5b7hQfnSZh6Wf+27cxOS0PDDt6bZLXHQbjLaXpevcbbR9vE2HjXH4094Xix7h3eBaJvtnFUCLjsYIhbnAkmZLFviD5+EfupyQZ5M4YQx1z/5c7gStNTtVqlJtkYGJp8VPQCgBNx/tdP3e20EBE1a4CZWgpot09RzdR1O9XbUz7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Tue, 12 Jan 2021 12:36:49 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B54C061794
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:36:09 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id v1so2039114pjr.2
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:36:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8wBC9qQs0C0PaRwqJiw1JekockygqVCHXt8rOS2lCTs=;
- b=pKhVseMWjP4ToGovnumM2cWXqG6BK7uw7ultJ0B7zf+OAbB9syIdtMKq9koa4K/pj9wTwFSfdmSU72B+ufkPuxVdeXWAOGMythQcX1QnATaO92vLFWzFPw/uMH4JTNQathi/sPuKwPhH5zUQJYk9PucrQ2mlbIOQmziamvft8cs=
-Received: from DM5PR0401MB3591.namprd04.prod.outlook.com (2603:10b6:4:7e::15)
- by DM6PR04MB4218.namprd04.prod.outlook.com (2603:10b6:5:9e::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9; Tue, 12 Jan
- 2021 17:36:02 +0000
-Received: from DM5PR0401MB3591.namprd04.prod.outlook.com
- ([fe80::61b3:1707:5b14:6b59]) by DM5PR0401MB3591.namprd04.prod.outlook.com
- ([fe80::61b3:1707:5b14:6b59%5]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
- 17:36:01 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Feng Li <lifeng1519@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     Li Feng <fengli@smartx.com>, Jens Axboe <axboe@kernel.dk>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] blk: avoid divide-by-zero with zero granularity
-Thread-Topic: [PATCH v2] blk: avoid divide-by-zero with zero granularity
-Thread-Index: AQHW6PwAHqu3TS9LQE6lI7KxZ+zOWw==
-Date:   Tue, 12 Jan 2021 17:36:01 +0000
-Message-ID: <DM5PR0401MB3591FDAC44CD5665D6CEBDC39BAA0@DM5PR0401MB3591.namprd04.prod.outlook.com>
-References: <20210112152951.154024-1-fengli@smartx.com>
- <20210112155502.426331-1-fengli@smartx.com>
- <yq1v9c25bm1.fsf@ca-mkp.ca.oracle.com>
- <CAEK8JBALYE0_OzfhrppF38=dD7HKSn-U0ggPJTGgx5849Gfiiw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [2001:a62:15c4:1c01:38c1:d5fb:3079:ba93]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 9f12fb02-51bd-4a46-cba2-08d8b72087db
-x-ms-traffictypediagnostic: DM6PR04MB4218:
-x-microsoft-antispam-prvs: <DM6PR04MB42188DF2CBE72283FFF38D459BAA0@DM6PR04MB4218.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:4502;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fzAWLcoRTGfR2PCCBDVJTZRRmsdmOmTnNjWKq2N/dhMpGLf0X6JTK3lrDLild3bU0KDgUqvEJijt5AQvuW7uaHJIxllrX9zRA3G09pcJ8HgwWX1XoPfUsPCwMua7K+J9IT+nDQx6Jx7RlXBqYq/d2shc7wrE1Hvr0D0SNhAWXnDUi/JCcZHVSmHsv2aAILiLgmgeLS7D1iz9JVBwEZyGksd/O1W+s+4+Ifjn2rRB9Vf0IQLRaULByy0DTnbtiG1bpy2ZMN+2ooMRdp1QDJJW340Zr/EAZGbQEU69F3s01Q7G63UteLT3+HMnsfYC/bpll6RTTGKNn6diH2BDciAeyS52i1NJoxt2jpRR9yaoHaDgu0siGj6M64CiSQ7BxqfwivEeNjjRhkEt6kZ/fXqaZg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0401MB3591.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(136003)(396003)(39850400004)(71200400001)(4326008)(7696005)(53546011)(8676002)(316002)(6506007)(558084003)(186003)(478600001)(9686003)(55016002)(2906002)(110136005)(54906003)(52536014)(83380400001)(66946007)(91956017)(66476007)(86362001)(76116006)(33656002)(66556008)(64756008)(5660300002)(66446008)(8936002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?M7LEOKoCwy7sSittkSTO04wHhvBmXn7s+pBfseMfnKsGcE8Zj5xxBkBbUMfX?=
- =?us-ascii?Q?3gNVFsqiPFZ/lW61T+x1deIjkAoxFEyYgoVRn8Pt/V1brZGabsxgBL/kwI8b?=
- =?us-ascii?Q?FCVeDGxiWos9f2RTN72jeGkbiQ7ED4k6MbI5u7bDuPQ4qOoLz5e/yj7pzIfC?=
- =?us-ascii?Q?S0sTl/ATSHXMr4KwNkrkmDwU8BDXYxrMX97xrsBA9kY1Bk0q1WyvNkr0+bND?=
- =?us-ascii?Q?eA4GWVQ6ZYELrH6gjWr0lusEDAJ2Rs+gWjkNe86c3rJ1GR0DehMtwMEPUWDP?=
- =?us-ascii?Q?sdQTZLoyVReFgil+/hOFxs/tIZDjmHWgiy5InfIGwHLTF9/G/5HhqSl/u1qK?=
- =?us-ascii?Q?s/HQxsAvN5bA0/RK4iL0qHEe5YyEH7z+XWuZewWBamVBLTkEnYq+dNocTEwS?=
- =?us-ascii?Q?2MRlX2Fm/QcQYSa+Lb5g5Vvtg2by4BIJNdQvfP8ail4lk4xrIpTCIdvmaQc0?=
- =?us-ascii?Q?vgZfIzSQFEQAbhA0Nx6o1UafewK7lbIEr915TXn8bsAVePpj5LCQ8cMRhEE4?=
- =?us-ascii?Q?TtvlUGalejcUIJUH865u0DNaQ5bEtf70yvlxMvJRv/L491NobuNbsOgLRE6n?=
- =?us-ascii?Q?itOoBqZ7txlRRbHMpbc6P/Ohx92y8W32Z3uiQsq24cFKwXI121L8fbkvmXnm?=
- =?us-ascii?Q?VR9v29HavCjJtEuGAcjmtuQjL2tKnCWse+/Tm6JvJwA0RiAk/RSEzGa+mB2j?=
- =?us-ascii?Q?1xL4HhnnFoZgxrfwBJSNP+rwxTz8HcnZMIB//UgNua934bcaCuiZ7ErQ6DlC?=
- =?us-ascii?Q?7vdf7Df9KwwnaZ1T1JR3Ki/ZHIeJpWPqiQDlKVc4IMAamVUseICpUfp1/bBw?=
- =?us-ascii?Q?q2JFk8iHOsrNCewIOadyBZv70u7JHPk0dw5VSGjLXDwQqjpL7jiWgh6Br94c?=
- =?us-ascii?Q?Lob2aKfIP2g0wcEnHkiqOIC/wtutciGwEyjZcGZyl4AAN8kmiwYFtxYVJB/G?=
- =?us-ascii?Q?CVgC0cP8gC67OMku8+gr0Arj3DXf107lBdbr9rDAWJ/8IpUY2GjFm5Q1cVUJ?=
- =?us-ascii?Q?4M/bgsyJyZ0RbzC7SSekxZ71Pdq8p8FEWo9IrcLFbzemRCZw++MzPIwFAqCA?=
- =?us-ascii?Q?xaGpRTzg?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kBoeCrqN2k6hVDBNDBFoP9slGG3T38BN8I1wekGgzs8=;
+        b=IJk767It+WkeZlRni4t1QJT6YRO2W0GVVlNuXV5L3VtoFJdJ1V7YbFOINLcHmAX1/5
+         qW/ibvQZpy1IyiOqbK89qYW2OT1KM8G7IRF5XTzyfjEKQhlfYOq9yRSpN/iD4M7hBpNS
+         LesTKJ0bftCKfPOKD6lojIyze730MgROX19414sH9yuOIPOK3dVuzX2SMc3eVDa+7Eff
+         7XYJ35X0Ggqxqp44fWXM9hp60v/rhvLMPkBpJ65qAEZLU/TBR9SGV///ysv0W9sSWDgs
+         e57Cu84YuOOI5mC0V5cJXdvCNIFVT0kZHOqpQnFahYAzULSSWKoZR8V2YdUEFRwYHIcV
+         VPDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kBoeCrqN2k6hVDBNDBFoP9slGG3T38BN8I1wekGgzs8=;
+        b=GXwdqF1WZmdIKXuFPxk81/CBOpF8ALsn6CnVO3BnRGXUWcFRwlJNt1rrT6uJULc+1I
+         S8jR4h/k9eXOfqy51gFpcAQdE9Z7mgHwG0T66jrbzPhGUoO8iKttTc89tTSMqEH2tSqo
+         YKHPx3XKo/An5D+E+zYsNbK2SwlzCr5WuPqSAOqYS/Wuhlx5EPbJ9VRFKsh2Wb/Fs3Gl
+         bHVZcQFC9IO2+hkoQfYR29u2ixZka/29dcrgU0oCjlSWtc+8d2nLbvHwEwxO9tgsXppn
+         Cjg0I8HO0vgjcF0pC1iNaJezurMOGgSAxPfQCc+sd9peKgR629pphtvb3J047dTdIxl6
+         bVnw==
+X-Gm-Message-State: AOAM5327ZK6j6diAbqnvyAiq87QDxTPvaHXvjdJE3lK+LrFSaksuvQ9i
+        ieggVhFOxVksG8tHAjM03QKmZA==
+X-Google-Smtp-Source: ABdhPJycyDGJ7mjxh6atJ3kxaqss3ug8XgjvQHIftL9wwPSdeemCp+9hFzYCBh03Etv8hBGv+BDTqA==
+X-Received: by 2002:a17:90a:5298:: with SMTP id w24mr199739pjh.182.1610472968667;
+        Tue, 12 Jan 2021 09:36:08 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id p9sm4032823pjb.3.2021.01.12.09.36.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 09:36:07 -0800 (PST)
+Date:   Tue, 12 Jan 2021 09:36:01 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Wei Huang <wei.huang2@amd.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, vkuznets@redhat.com, joro@8bytes.org,
+        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
+        dgilbert@redhat.com, mlevitsk@redhat.com
+Subject: Re: [PATCH 1/2] KVM: x86: Add emulation support for #GP triggered by
+ VM instructions
+Message-ID: <X/3eAX4ZyqwCmyFi@google.com>
+References: <20210112063703.539893-1-wei.huang2@amd.com>
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR0401MB3591.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f12fb02-51bd-4a46-cba2-08d8b72087db
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2021 17:36:01.7931
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: LXfwPGGSAEwrPy22ALNZ2A844/5P9AgPgWYa8Wqgo6Dzs1jgAsALmHrNZTOdo/QQv/FWbzQ9ioOQpXv6MZseyb0gaIWDuuT9SGeIMyup94w=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB4218
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112063703.539893-1-wei.huang2@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/01/2021 18:29, Feng Li wrote:=0A=
-> I use the nvme-tcp as the host, the target is spdk nvme-tcp target,=0A=
-> and set a wrong block size(i.g. bs=3D8), then the host prints this oops:=
-=0A=
-=0A=
-I think the better fix here is to reject devices which report a block size=
-=0A=
-small than a sector.=0A=
+On Tue, Jan 12, 2021, Wei Huang wrote:
+> From: Bandan Das <bsd@redhat.com>
+> 
+> While running VM related instructions (VMRUN/VMSAVE/VMLOAD), some AMD
+> CPUs check EAX against reserved memory regions (e.g. SMM memory on host)
+> before checking VMCB's instruction intercept.
+
+It would be very helpful to list exactly which CPUs are/aren't affected, even if
+that just means stating something like "all CPUs before XYZ".  Given patch 2/2,
+I assume it's all CPUs without the new CPUID flag?
