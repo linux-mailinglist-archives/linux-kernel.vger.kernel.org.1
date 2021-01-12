@@ -2,132 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17542F3488
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:48:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 839F92F3490
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:48:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404122AbhALPrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 10:47:15 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:48722 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390552AbhALPrO (ORCPT
+        id S2405523AbhALPsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 10:48:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57630 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405185AbhALPr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:47:14 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610466414; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=cPVeuoGsg/YYpiHkUCPYFmOYLufDCXBoM4oRJNPO+qU=; b=RPaZA5G/q7DsLZ3iwU4mRZCQva3o0wCFBGWU0Ig0i6H35PDzZkVNfL/jqrfX2SQ9E0Zu1mFi
- TFsXmGsypE8wKVFVlA21ISpzWqldzUx8wOMrQ3w/i1QMEYQghdEVzQiRqtqeKnPnjzFRMWNb
- U8hy0KytlHuC6zCuAp6TK4ICopg=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5ffdc454d84bad354791ebab (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Jan 2021 15:46:28
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 44339C433CA; Tue, 12 Jan 2021 15:46:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from x230.qca.qualcomm.com (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Tue, 12 Jan 2021 10:47:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610466392;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4jiwV7AuQsPxZcRY14JFnrQvYVeLgEnELmlaS2CrL8E=;
+        b=W9o26myX74dhL5OuzEWHs42xUbxdPKUJYN3Xjg1zPsqu8t/14D8eVomzr0vpGECi6qpUp0
+        rB7gpIluTguZwpydGM0cBK7d8UhBPFcGZ00iYCUhKgnpWxNN63x5sLljFy7dslTrrHgAvr
+        NmS/D4PhDHXRL5MWiki3K5Vu7HbKGvk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-584-vobvzLUAPUyzqf0r_KCbag-1; Tue, 12 Jan 2021 10:46:31 -0500
+X-MC-Unique: vobvzLUAPUyzqf0r_KCbag-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 91F8CC433C6;
-        Tue, 12 Jan 2021 15:46:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 91F8CC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Michal Kubecek <mkubecek@suse.cz>, linux-wireless@vger.kernel.org,
-        Mordechay Goodstein <mordechay.goodstein@intel.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arjen de Korte <suse+build@de-korte.org>,
-        Luca Coelho <luciano.coelho@intel.com>
-Subject: Re: regression in iwlwifi: page fault in iwl_dbg_tlv_alloc_region() (commit ba8f6f4ae254)
-References: <20201228115814.GA5880@lion.mk-sys.cz>
-        <87v9c2qtj9.fsf@tynnyri.adurom.net> <s5ha6tes58m.wl-tiwai@suse.de>
-        <87v9c2ias2.fsf@codeaurora.org> <s5h5z42s44x.wl-tiwai@suse.de>
-Date:   Tue, 12 Jan 2021 17:46:21 +0200
-In-Reply-To: <s5h5z42s44x.wl-tiwai@suse.de> (Takashi Iwai's message of "Tue,
-        12 Jan 2021 13:58:54 +0100")
-Message-ID: <8735z6taya.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95388100C66E;
+        Tue, 12 Jan 2021 15:46:27 +0000 (UTC)
+Received: from gigantic.usersys.redhat.com (helium.bos.redhat.com [10.18.17.132])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DBC8077BF5;
+        Tue, 12 Jan 2021 15:46:25 +0000 (UTC)
+From:   Bandan Das <bsd@redhat.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pbonzini@redhat.com,
+        seanjc@google.com, joro@8bytes.org, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        jmattson@google.com, wanpengli@tencent.com, dgilbert@redhat.com
+Subject: Re: [PATCH 1/2] KVM: x86: Add emulation support for #GP triggered by VM instructions
+References: <9f3b8e3dca453c13867c5c6b61645b9b58d68f61.camel@redhat.com>
+        <C121813D-BD61-4C78-9169-8F8FCC1356D7@amacapital.net>
+Date:   Tue, 12 Jan 2021 10:46:25 -0500
+In-Reply-To: <C121813D-BD61-4C78-9169-8F8FCC1356D7@amacapital.net> (Andy
+        Lutomirski's message of "Tue, 12 Jan 2021 07:22:41 -0800")
+Message-ID: <jpgturmgnu6.fsf@linux.bootlegged.copy>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Takashi Iwai <tiwai@suse.de> writes:
-
-> On Tue, 12 Jan 2021 13:45:33 +0100,
-> Kalle Valo wrote:
->> 
->> Takashi Iwai <tiwai@suse.de> writes:
->> 
->> > On Tue, 12 Jan 2021 12:33:14 +0100,
->> > Kalle Valo wrote:
->> >> 
->> >> (adding luca)
->> >> 
->> >> Michal Kubecek <mkubecek@suse.cz> writes:
->> >> 
->> >> > FYI, there is a regression in iwlwifi driver caused by commit
->> >> > ba8f6f4ae254 ("iwlwifi: dbg: add dumping special device memory")
->> >> > reported at
->> >> >
->> >> >   https://bugzilla.kernel.org/show_bug.cgi?id=210733
->> >> >   https://bugzilla.suse.com/show_bug.cgi?id=1180344
->> >> >
->> >> > The problem seems to be an attempt to write terminating null character
->> >> > into a string which may be read only. There is also a proposed fix.
->> >> 
->> >> Can someone submit a proper patch, please? See instructions below how to
->> >> submit.
->> >> 
->> >> And please add Fixes tag to the commit log:
->> >> 
->> >> Fixes: ba8f6f4ae254 ("iwlwifi: dbg: add dumping special device memory")
->> >
->> > OK, I'll do it for my own
->> 
->> Thanks.
->> 
->> > but really I hoped that someone would have reacted on the bugzilla
->> > report before the official patch submission. So far no one from the
->> > upstream devs showed interest in the bug at all, unfortunately.
->> 
->> Bugzilla is problematic as I don't know if anyone tracks it actively, at
->> least I don't have time for that. I recommend reporting all wireless
->> issues to mailing lists to make sure everyone see it.
+Andy Lutomirski <luto@amacapital.net> writes:
+...
+>>>>> #endif diff --git a/arch/x86/kvm/mmu/mmu.c
+>>>>> b/arch/x86/kvm/mmu/mmu.c index 6d16481aa29d..c5c4aaf01a1a 100644
+>>>>> --- a/arch/x86/kvm/mmu/mmu.c +++ b/arch/x86/kvm/mmu/mmu.c @@
+>>>>> -50,6 +50,7 @@ #include <asm/io.h> #include <asm/vmx.h> #include
+>>>>> <asm/kvm_page_track.h> +#include <asm/e820/api.h> #include
+>>>>> "trace.h"
+>>>>>=20
+>>>>> extern bool itlb_multihit_kvm_mitigation; @@ -5675,6 +5676,12 @@
+>>>>> void kvm_mmu_slot_set_dirty(struct kvm *kvm, }
+>>>>> EXPORT_SYMBOL_GPL(kvm_mmu_slot_set_dirty);
+>>>>>=20
+>>>>> +bool kvm_is_host_reserved_region(u64 gpa) +{ + return
+>>>>> e820__mbapped_raw_any(gpa-1, gpa+1, E820_TYPE_RESERVED); +}
+>>>>  While _e820__mapped_any()'s doc says '..  checks if any part of
+>>>> the range <start,end> is mapped ..' it seems to me that the real
+>>>> check is [start, end) so we should use 'gpa' instead of 'gpa-1',
+>>>> no?
+>>>  Why do you need to check GPA at all?
+>>>=20
+>> To reduce the scope of the workaround.
+>>=20
+>> The errata only happens when you use one of SVM instructions in the
+>> guest with EAX that happens to be inside one of the host reserved
+>> memory regions (for example SMM).
 >
-> I share your feeling as a subsystem maintainer, but at the same time,
-> I see it's a big problem if the whole bugzilla reports are just
-> silently ignored.  If it's a void, shouldn't we rather shut it down?
+> This code reduces the scope of the workaround at the cost of
+> increasing the complexity of the workaround and adding a nonsensical
+> coupling between KVM and host details and adding an export that really
+> doesn=E2=80=99t deserve to be exported.
+>
+> Is there an actual concrete benefit to this check?
 
-I'm all for shutting down bugzilla.kernel.org as silent bug reports are
-frustrating the users. But I don't know what others would think about
-that, maybe some subsystems use it actively?
+Besides reducing the scope, my intention for the check was that we should
+know if such exceptions occur for any other undiscovered reasons with other
+memory types rather than hiding them under this workaround.
 
-At least there should be a big warning for wireless bugs.
+Bandan
 
-> And, although a mailing list is fine to report via only some texts or
-> some patches, it's not suitable to attach large logs or such, which is
-> often essential for debugging.  Thanks to lore, the archivability is
-> no longer a problem with ML recently, but the lack of data assignment
-> is another problem, IMO.
 
-Sure, I fully agree on the benefits of a bug tracker. The issue here is
-the lack of people managing bug reports, not the tool.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
