@@ -2,92 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D35FB2F344E
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:39:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB712F3452
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:39:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404061AbhALPho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 10:37:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403925AbhALPhn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:37:43 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FEC2C061795;
-        Tue, 12 Jan 2021 07:37:03 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id y187so2512378wmd.3;
-        Tue, 12 Jan 2021 07:37:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c/OOATpUFIrYLWi85tOvfCt5z8mnzNbC6+9SJ3MASM8=;
-        b=mK/S5Kccax6uYRwbf86lem0ZF7HLN0PZADSp30Xs/QxEXIS7nyGoCKZA5BX9eVFhek
-         bl0ofRrUWMm22BwMzn8KBCydkBzfgOB/yF1+isCmvo230rpHQBhokGfmXM9Xo5zyBe6O
-         APqAOq9HTqlBOWGCy1Q9gaA5OV2P0llLFX1+bsaS1+Kk2i9DniAXYW9TAVZLu9nyylFo
-         cbxc6rFw31vSe0rcl9JDwU49k5zFZj6DwiOpLOv5kHy5yfENirO/c8YdgeQDo1VJu1EI
-         V/5sDM4bFvTUMjC43yEKVFGf/fPLJ8iSFrtF0YNnPVtcaqmUkbvFNeT2EmwujUqxp6yi
-         PQAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c/OOATpUFIrYLWi85tOvfCt5z8mnzNbC6+9SJ3MASM8=;
-        b=FWreFRaNsZhEBqI/WI3EcaIejrcDFvlB4uQC9aJUXHwRjd/6Gv5GUqDhz/r+VTwClk
-         qNqGDXQuP0MAph2IWSdjkIqfaKSg3/5e1m8i/7WX9wIK1nf9UVGbPle+edjjRf0qhZOv
-         EOqd06VUMwBiAMQGysX+VGBFjhQkfgsVqbyamAbYtEow3ZGjpWfdVu7ucKgfSXEQW0/m
-         nWzlvCLqB9qSxGCNeFeWmM3FmeP0+dsYw0bQubP9XIn5XtMkTPT7CsEGqTAoZvlzN8H8
-         hiaPHLO1X1vofqpVNYNOOMdE5q1PZZneDmSoocfjeoIIFXdMuS15j7bVYam68bzwNd+i
-         8RFw==
-X-Gm-Message-State: AOAM531fbfIOQmE2qPtrBOPLNdwklBfIe+de2oezWsVU7MDEaoboChFX
-        2RKFP9TF4fCbVDfcxkoXsuY=
-X-Google-Smtp-Source: ABdhPJy1I6nOSU2GImbcyyiF1FaJKanh8zP8srtrbtWwJDi8v6SQGSo7gukFX+o872kRB7Z3h5g0/g==
-X-Received: by 2002:a1c:24c4:: with SMTP id k187mr4273347wmk.14.1610465822148;
-        Tue, 12 Jan 2021 07:37:02 -0800 (PST)
-Received: from localhost ([168.61.80.221])
-        by smtp.gmail.com with ESMTPSA id 17sm4239080wmk.48.2021.01.12.07.37.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 12 Jan 2021 07:37:01 -0800 (PST)
-From:   =?UTF-8?q?Antti=20J=C3=A4rvinen?= <antti.jarvinen@gmail.com>
-To:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Antti=20J=C3=A4rvinen?= <antti.jarvinen@gmail.com>
-Subject: [PATCH] PCI: quirk for preventing bus reset on TI C667X
-Date:   Tue, 12 Jan 2021 15:36:43 +0000
-Message-Id: <20210112153643.17930-1-antti.jarvinen@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S2391816AbhALPjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 10:39:04 -0500
+Received: from mga14.intel.com ([192.55.52.115]:12585 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390851AbhALPjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 10:39:04 -0500
+IronPort-SDR: LodLkzXmCVV5Cs98JIqp6F626S9tWoq+05NKQFTEPYI3+yz8eh+BSJxmDkanFwXX9I4ad2v6uf
+ bmHpmgHsZBPQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="177280012"
+X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
+   d="scan'208";a="177280012"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 07:37:17 -0800
+IronPort-SDR: akgMo6XR+8tzhNtWbWQLzgknr1gHR52ficSsRH7EcFyLANSNYGjQxYq3ntLw+7oYa1+U2zqX22
+ kCTqZmukDoDw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,341,1602572400"; 
+   d="scan'208";a="348488753"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga003.jf.intel.com with ESMTP; 12 Jan 2021 07:37:13 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 42E0E11C; Tue, 12 Jan 2021 17:37:11 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        linux-iio <linux-iio@vger.kernel.org>
+Subject: [PATCH v1 1/1] time64.h: Consolidated PSEC_PER_SEC definition
+Date:   Tue, 12 Jan 2021 17:37:09 +0200
+Message-Id: <20210112153709.1074-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TI C667X does not support bus/hot reset.
-See https://e2e.ti.com/support/processors/f/791/t/954382
+We have currently three users of the PSEC_PER_SEC each of them defining it
+individually. Instead, move it to time64.h to be available for everyone.
 
-Signed-off-by: Antti Järvinen <antti.jarvinen@gmail.com>
+There is a new user coming with the same constant in use. It will also
+make its life easier.
+
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/pci/quirks.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/ethernet/mscc/ocelot_ptp.c           | 2 ++
+ drivers/phy/phy-core-mipi-dphy.c                 | 2 --
+ drivers/phy/rockchip/phy-rockchip-inno-dsidphy.c | 8 ++++----
+ include/soc/mscc/ocelot_ptp.h                    | 2 --
+ include/vdso/time64.h                            | 1 +
+ 5 files changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 653660e3ba9e..c8fcf24c5bd0 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3578,6 +3578,12 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x0034, quirk_no_bus_reset);
+diff --git a/drivers/net/ethernet/mscc/ocelot_ptp.c b/drivers/net/ethernet/mscc/ocelot_ptp.c
+index a33ab315cc6b..87ad2137ba06 100644
+--- a/drivers/net/ethernet/mscc/ocelot_ptp.c
++++ b/drivers/net/ethernet/mscc/ocelot_ptp.c
+@@ -4,6 +4,8 @@
+  * Copyright (c) 2017 Microsemi Corporation
+  * Copyright 2020 NXP
   */
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CAVIUM, 0xa100, quirk_no_bus_reset);
- 
-+/*
-+ * Some TI keystone C667X devices do no support bus/hot reset.
-+ * https://e2e.ti.com/support/processors/f/791/t/954382
-+ */
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_TI, 0xb005, quirk_no_bus_reset);
++#include <linux/time64.h>
 +
- static void quirk_no_pm_reset(struct pci_dev *dev)
- {
- 	/*
+ #include <soc/mscc/ocelot_ptp.h>
+ #include <soc/mscc/ocelot_sys.h>
+ #include <soc/mscc/ocelot.h>
+diff --git a/drivers/phy/phy-core-mipi-dphy.c b/drivers/phy/phy-core-mipi-dphy.c
+index 14e0551cd319..77fe65367ce5 100644
+--- a/drivers/phy/phy-core-mipi-dphy.c
++++ b/drivers/phy/phy-core-mipi-dphy.c
+@@ -12,8 +12,6 @@
+ #include <linux/phy/phy.h>
+ #include <linux/phy/phy-mipi-dphy.h>
+ 
+-#define PSEC_PER_SEC	1000000000000LL
+-
+ /*
+  * Minimum D-PHY timings based on MIPI D-PHY specification. Derived
+  * from the valid ranges specified in Section 6.9, Table 14, Page 41
+diff --git a/drivers/phy/rockchip/phy-rockchip-inno-dsidphy.c b/drivers/phy/rockchip/phy-rockchip-inno-dsidphy.c
+index 8af8c6c5cc02..347dc79a18c1 100644
+--- a/drivers/phy/rockchip/phy-rockchip-inno-dsidphy.c
++++ b/drivers/phy/rockchip/phy-rockchip-inno-dsidphy.c
+@@ -11,16 +11,16 @@
+ #include <linux/clk-provider.h>
+ #include <linux/delay.h>
+ #include <linux/init.h>
++#include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/reset.h>
++#include <linux/time64.h>
++
+ #include <linux/phy/phy.h>
+ #include <linux/phy/phy-mipi-dphy.h>
+-#include <linux/pm_runtime.h>
+-#include <linux/mfd/syscon.h>
+-
+-#define PSEC_PER_SEC	1000000000000LL
+ 
+ #define UPDATE(x, h, l)	(((x) << (l)) & GENMASK((h), (l)))
+ 
+diff --git a/include/soc/mscc/ocelot_ptp.h b/include/soc/mscc/ocelot_ptp.h
+index 6a7388fa7cc5..ded497d72bdb 100644
+--- a/include/soc/mscc/ocelot_ptp.h
++++ b/include/soc/mscc/ocelot_ptp.h
+@@ -37,8 +37,6 @@ enum {
+ 
+ #define PTP_CFG_MISC_PTP_EN		BIT(2)
+ 
+-#define PSEC_PER_SEC			1000000000000LL
+-
+ #define PTP_CFG_CLK_ADJ_CFG_ENA		BIT(0)
+ #define PTP_CFG_CLK_ADJ_CFG_DIR		BIT(1)
+ 
+diff --git a/include/vdso/time64.h b/include/vdso/time64.h
+index 9d43c3f5e89d..b40cfa2aa33c 100644
+--- a/include/vdso/time64.h
++++ b/include/vdso/time64.h
+@@ -9,6 +9,7 @@
+ #define NSEC_PER_MSEC	1000000L
+ #define USEC_PER_SEC	1000000L
+ #define NSEC_PER_SEC	1000000000L
++#define PSEC_PER_SEC	1000000000000LL
+ #define FSEC_PER_SEC	1000000000000000LL
+ 
+ #endif /* __VDSO_TIME64_H */
 -- 
-2.17.1
+2.29.2
 
