@@ -2,129 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D406A2F3CC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA792F3CD2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:43:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437266AbhALVeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:34:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53720 "EHLO
+        id S2437278AbhALVeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 16:34:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436656AbhALUHV (ORCPT
+        with ESMTP id S2436671AbhALUHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 15:07:21 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D56C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:06:40 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id w1so5234981ejf.11
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:06:40 -0800 (PST)
+        Tue, 12 Jan 2021 15:07:48 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2209C061795
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:07:07 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id p12so2290942pju.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 12:07:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8/Bid2Bzf98jE1/ALAKGTMu2+XIpeX//lGOiyhOAPLE=;
-        b=vhrrzDmitO32JAO3cpPHjbqdMSMUZDuwupYPaErRNdmyLCV9CGhPdYK6oTrgJG74+m
-         I9dA7oEIptk1EhB30sBwuzhsn5ped+8hrj1SEpOIehrqgvt9hLGZusi5QYNsLyb0Ojr7
-         B5CZvlBXkQak1yX5cCoTDYZjpURO/BDj90CBV2xV11nCqustJMw6QGBur7B+HWFMThJz
-         1UOpx1uPYSC7PIQzDXmNwWVBl2xqVAawLUUMn5pIwD3C/PuDUKVuv9cePx/NSJz7tGiC
-         JaIZx/W2kwjLwrF97+S1fQrkm406AotYB5qwe5dQ+9CSge06C4wEogikQR+XPc1DtPae
-         9wSw==
+        bh=pMt208i988Aj1RV+YWcUlsqzon7o0ifo6LZ2mK0qEq0=;
+        b=hp5afakNd2d/FQoQpixyj3+dET0KAs/17uAZVG2pt5rAFbU6WZBkW/T0x4f5Gwu0rF
+         zVN+Ck9CcaN4f7yG+3ctQS1OCckqVyxGKNe/NL+mMblv6IdAJ8EYWnioEfhdVoJrb+zg
+         jwPFQR87TwuAPE1J9s9t0JSpwYAvlQE2Z96giLtFUHgqvklZhu3buAnwiINDF6nAqy8r
+         maxUiS6HPd87hiGmj9YyUz23qOlrjdNH/0Ab6y/uGq26aFj4vzS8skOfh5jOLRldoHgs
+         LlDnU/6XEb0LNfs1eKaW9Uj+CGSFM951EH0Qm87MTYfrhqsoTYwXrz1HwydVZqVKVWEG
+         D8zQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8/Bid2Bzf98jE1/ALAKGTMu2+XIpeX//lGOiyhOAPLE=;
-        b=k1wxRCM0cslW9W3INaPenb3+S21kyt7XYGBzg5jbcALgTPJatf7IMPlDgXi6uEhfnr
-         Vo1/2Q4Fi6iPCZTBoTFeGkRnVMZAem2hPvi4ZCjO6Hlos1dgIIX6kNNwSIxGjvZLl9+N
-         gq8K/Bh0YdWvnIC/hbWT1gMnnqlMxFsHDL1auHazhjvkQkbZ+JrDHN2jELrbg4pjjNMW
-         8PWv/W+BeQmg8suTEc0gp3xHaLUh4pe6BfDvugW30pVXMMeZo64ot9NyQzTNvWbronzl
-         nixpXV00TF5Uobj9ZEuGqZdqCFP8jsce+JBtMx/DDGod7TdBFOlvJJdk39N4+bTNX0kv
-         PS4A==
-X-Gm-Message-State: AOAM532gn9QDj+KaI02qfiaXA5G7wRYE/RV6ciHHohu47Aw223iVnvyY
-        N5Hulwi8hVn4lCTHz/rZKX4WUC46da/YI9tzY4FEpw==
-X-Google-Smtp-Source: ABdhPJyfN4mVkZqUgmpVifgODbiKiUV7zPHfN/mvTykoOz6wGwySd2pfuLRTAFzoWqiTJ14Yjd/67QsQSjvEqEh7UX8=
-X-Received: by 2002:a17:906:2707:: with SMTP id z7mr357027ejc.418.1610481999273;
- Tue, 12 Jan 2021 12:06:39 -0800 (PST)
+        bh=pMt208i988Aj1RV+YWcUlsqzon7o0ifo6LZ2mK0qEq0=;
+        b=fhUG+CMaTaw/cBsQ992VKjW7qZLSgeG06MQR7n7MUkpBX/fFNG0wYTcHO9zQsJCs6f
+         f939oGeoTRkbrm7V5jxPY1tC5MI9AhbJcAVnt5mS19gPZ5VWzHPBkaLjFoO60JUD3Gza
+         DxCege2zrNmrv5R1ZKcjHUUB7NvsCkz+ZUs2zVUf0BFpnuZE9Ct2stKyMkL/rK3XTG/I
+         LOS091TQourXAfEgbhyISsNAW/on4Xs+u2r7pycqtahB2H7mYG/vzGFKJC4/yGGiCGKF
+         AB1/CV7KxL1X2zPKpn1CJaCSBOe8jTEmfZ9ICapGule35xTXRufOtahIS/eG8lvMKYOE
+         sr5g==
+X-Gm-Message-State: AOAM531uQPe6apVzHUNkdtc7D9t6iR594WjuKIUzj71Ag4YEffQB/RSa
+        Ka/m/GRkROqOVmQ+FMj95SzDY7ZItz4CXSSKR/pf+A==
+X-Google-Smtp-Source: ABdhPJxmSGRHqWdnI3a/eD2Zk4MKrqBKhIill+QCO1/HJbdNIc7ksRdpTMI9qx1p9hVBDBv9KOHd7j1iLC0/AYVSsNE=
+X-Received: by 2002:a17:90b:350b:: with SMTP id ls11mr844230pjb.166.1610482027266;
+ Tue, 12 Jan 2021 12:07:07 -0800 (PST)
 MIME-Version: 1.0
-References: <20210111225121.820014-1-ben.widawsky@intel.com>
- <20210111225121.820014-5-ben.widawsky@intel.com> <20210112190103.00004644@Huawei.com>
-In-Reply-To: <20210112190103.00004644@Huawei.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 12 Jan 2021 12:06:30 -0800
-Message-ID: <CAPcyv4iGVPgu_c0GOYTuAQyFJgfMuU5S45Ukd968+DV--Y6miw@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 04/16] cxl/mem: Introduce a driver for
- CXL-2.0-Type-3 endpoints
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org, Ira Weiny" <ira.weiny@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Jon Masters <jcm@jonmasters.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        daniel.lll@alibaba-inc.com
+References: <cover.1609871239.git.andreyknvl@google.com> <0c51a7266ea851797dc9816405fc40d860a48db1.1609871239.git.andreyknvl@google.com>
+ <CAG_fn=VXe2AZZ3q6+HoV+zB=9GLP+kgyW_r9hfqvX-NJHurTRg@mail.gmail.com>
+In-Reply-To: <CAG_fn=VXe2AZZ3q6+HoV+zB=9GLP+kgyW_r9hfqvX-NJHurTRg@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 12 Jan 2021 21:06:56 +0100
+Message-ID: <CAAeHK+xbYpuipd3+Jew7=fL8Mn2J1ZzOVyzK+X6bvtLCeiGFuw@mail.gmail.com>
+Subject: Re: [PATCH 09/11] kasan: fix memory corruption in kasan_bitops_tags test
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 11:03 AM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
+On Tue, Jan 12, 2021 at 9:30 AM Alexander Potapenko <glider@google.com> wrote:
 >
-> On Mon, 11 Jan 2021 14:51:08 -0800
-> Ben Widawsky <ben.widawsky@intel.com> wrote:
+> On Tue, Jan 5, 2021 at 7:28 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+> >
+> > Since the hardware tag-based KASAN mode might not have a redzone that
+> > comes after an allocated object (when kasan.mode=prod is enabled), the
+> > kasan_bitops_tags() test ends up corrupting the next object in memory.
+> >
+> > Change the test so it always accesses the redzone that lies within the
+> > allocated object's boundaries.
+> >
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > Link: https://linux-review.googlesource.com/id/I67f51d1ee48f0a8d0fe2658c2a39e4879fe0832a
+> > ---
+> >  lib/test_kasan.c | 12 ++++++------
+> >  1 file changed, 6 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/lib/test_kasan.c b/lib/test_kasan.c
+> > index b67da7f6e17f..3ea52da52714 100644
+> > --- a/lib/test_kasan.c
+> > +++ b/lib/test_kasan.c
+> > @@ -771,17 +771,17 @@ static void kasan_bitops_tags(struct kunit *test)
+> >
+> >         /* This test is specifically crafted for the tag-based mode. */
+> >         if (IS_ENABLED(CONFIG_KASAN_GENERIC)) {
+> > -               kunit_info(test, "skipping, CONFIG_KASAN_SW_TAGS required");
+> > +               kunit_info(test, "skipping, CONFIG_KASAN_SW/HW_TAGS required");
+> >                 return;
+> >         }
+> >
+> > -       /* Allocation size will be rounded to up granule size, which is 16. */
+> > -       bits = kzalloc(sizeof(*bits), GFP_KERNEL);
+> > +       /* kmalloc-64 cache will be used and the last 16 bytes will be the redzone. */
+> > +       bits = kzalloc(48, GFP_KERNEL);
 >
-> > From: Dan Williams <dan.j.williams@intel.com>
-> >
-> > The CXL.mem protocol allows a device to act as a provider of "System
-> > RAM" and/or "Persistent Memory" that is fully coherent as if the memory
-> > was attached to the typical CPU memory controller.
-> >
-> > With the CXL-2.0 specification a PCI endpoint can implement a "Type-3"
-> > device interface and give the operating system control over "Host
-> > Managed Device Memory". See section 2.3 Type 3 CXL Device.
-> >
-> > The memory range exported by the device may optionally be described by
-> > the platform firmware memory map, or by infrastructure like LIBNVDIMM to
-> > provision persistent memory capacity from one, or more, CXL.mem devices.
-> >
-> > A pre-requisite for Linux-managed memory-capacity provisioning is this
-> > cxl_mem driver that can speak the mailbox protocol defined in section
-> > 8.2.8.4 Mailbox Registers.
-> >
-> > For now just land the driver boiler-plate and fill it in with
-> > functionality in subsequent commits.
-> >
-> > Link: https://www.computeexpresslink.org/download-the-specification
-> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
->
-> Just one passing comment inline.
->
-> > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > new file mode 100644
-> > index 000000000000..005404888942
-> > --- /dev/null
-> > +++ b/drivers/cxl/mem.c
-> > @@ -0,0 +1,69 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/* Copyright(c) 2020 Intel Corporation. All rights reserved. */
-> > +#include <linux/module.h>
-> > +#include <linux/pci.h>
-> > +#include <linux/io.h>
-> > +#include "acpi.h"
-> > +#include "pci.h"
-> > +
-> > +static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
->
-> Is it worth pulling this out to a utility library now as we are going
-> to keep needing this for CXL devices?
-> Arguably, with a vendor_id parameter it might make sense to have
-> it as a utility function for pci rather than CXL alone.
+> I think it might make sense to call ksize() here to ensure we have
+> these spare bytes.
 
-Sure, cxl_mem_dvsec() can move to a central location, but I'd wait for
-the first incremental user to split it out.
+Calling ksize() will unpoison the whole object.
+
+I think it's OK to make assumptions about KASAN internals in tests. I
+would actually say that we need more tests that check such internal
+properties.
+
+Thanks!
