@@ -2,199 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E622F39F0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA952F3A01
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:24:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406776AbhALTUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 14:20:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45642 "EHLO mail.kernel.org"
+        id S2436572AbhALTV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:21:59 -0500
+Received: from mga14.intel.com ([192.55.52.115]:32787 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405323AbhALTUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:20:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B71223107;
-        Tue, 12 Jan 2021 19:20:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610479207;
-        bh=Ben1l38EzhXCiSfvC2KCDD2LCAiJbcSrrhiXVblu3Rk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=MHAmOCMK2FsvJs0iGf7zcx+Z7DKeitNrEcDInZuzln0sesAy6YzeUmQ+klhuhvGHo
-         k/NsbCytlj7zVg4wrqkQBEfD3sDEywqFZNFWBFY9mx91b3kz9nALGsHbVG79Q2+E3I
-         zm65aov9DkWt5BB7uAx8wiD1FXHoqPuA+a3Z4Wh4=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Linux 4.4.251
-Date:   Tue, 12 Jan 2021 20:21:15 +0100
-Message-Id: <161047927516778@kroah.com>
-X-Mailer: git-send-email 2.30.0
+        id S2436499AbhALTV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 14:21:58 -0500
+IronPort-SDR: i+FGLl+aKkVD7Ve+EsvBELXTUzzTqsvWCBZXPDx2R6N6UTr04/wE3vppT5L+624MZDHrNBAKSA
+ w2ngYESttwwA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="177320087"
+X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
+   d="scan'208";a="177320087"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 11:21:17 -0800
+IronPort-SDR: 1KYxMwvB+u61eXMmOhyFEfsdMWR01wyobnrjgl1mL7RSrInV7Ngndilmxdplan3ucA5kOLjyrb
+ fAkdwNoUyJIA==
+X-IronPort-AV: E=Sophos;i="5.79,342,1602572400"; 
+   d="scan'208";a="397466824"
+Received: from reyesjon-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.129.71])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 11:21:16 -0800
+Date:   Tue, 12 Jan 2021 11:21:15 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
+        Ira Weiny <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Jon Masters <jcm@jonmasters.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        daniel.lll@alibaba-inc.com
+Subject: Re: [RFC PATCH v3 05/16] cxl/mem: Map memory device registers
+Message-ID: <20210112192115.vhxjz3cr5vwjshwf@intel.com>
+References: <20210111225121.820014-1-ben.widawsky@intel.com>
+ <20210111225121.820014-6-ben.widawsky@intel.com>
+ <20210112191342.00006aad@Huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112191342.00006aad@Huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm announcing the release of the 4.4.251 kernel.
+On 21-01-12 19:13:42, Jonathan Cameron wrote:
+> On Mon, 11 Jan 2021 14:51:09 -0800
+> Ben Widawsky <ben.widawsky@intel.com> wrote:
+> 
+> > All the necessary bits are initialized in order to find and map the
+> > register space for CXL Memory Devices. This is accomplished by using the
+> > Register Locator DVSEC (CXL 2.0 - 8.1.9.1) to determine which PCI BAR to
+> > use, and how much of an offset from that BAR should be added.
+> > 
+> > If the memory device registers are found and mapped a new internal data
+> > structure tracking device state is allocated.
+> > 
+> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> 
+> Some issues with managed allocations being manually freed in remove.
+> It shouldn't be necessary to do that.
+> 
+> > ---
+> >  drivers/cxl/cxl.h |  17 ++++++++
+> >  drivers/cxl/mem.c | 100 +++++++++++++++++++++++++++++++++++++++++++++-
+> >  drivers/cxl/pci.h |  14 +++++++
+> >  3 files changed, 130 insertions(+), 1 deletion(-)
+> >  create mode 100644 drivers/cxl/cxl.h
+> > 
+> > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> > new file mode 100644
+> > index 000000000000..d81d0ba4617c
+> > --- /dev/null
+> > +++ b/drivers/cxl/cxl.h
+> > @@ -0,0 +1,17 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +/* Copyright(c) 2020 Intel Corporation. */
+> > +
+> > +#ifndef __CXL_H__
+> > +#define __CXL_H__
+> > +
+> > +/**
+> > + * struct cxl_mem - A CXL memory device
+> > + * @pdev: The PCI device associated with this CXL device.
+> > + * @regs: IO mappings to the device's MMIO
+> > + */
+> > +struct cxl_mem {
+> > +	struct pci_dev *pdev;
+> > +	void __iomem *regs;
+> > +};
+> > +
+> > +#endif
+> > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> > index 005404888942..8301db34d2ff 100644
+> > --- a/drivers/cxl/mem.c
+> > +++ b/drivers/cxl/mem.c
+> > @@ -5,6 +5,58 @@
+> >  #include <linux/io.h>
+> >  #include "acpi.h"
+> >  #include "pci.h"
+> > +#include "cxl.h"
+> > +
+> > +/**
+> > + * cxl_mem_create() - Create a new &struct cxl_mem.
+> > + * @pdev: The pci device associated with the new &struct cxl_mem.
+> > + * @reg_lo: Lower 32b of the register locator
+> > + * @reg_hi: Upper 32b of the register locator.
+> > + *
+> > + * Return: The new &struct cxl_mem on success, NULL on failure.
+> > + *
+> > + * Map the BAR for a CXL memory device. This BAR has the memory device's
+> > + * registers for the device as specified in CXL specification.
+> > + */
+> > +static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev, u32 reg_lo,
+> > +				      u32 reg_hi)
+> > +{
+> > +	struct device *dev = &pdev->dev;
+> > +	struct cxl_mem *cxlm;
+> > +	void __iomem *regs;
+> > +	u64 offset;
+> > +	u8 bar;
+> > +	int rc;
+> > +
+> > +	offset = ((u64)reg_hi << 32) | (reg_lo & CXL_REGLOC_ADDR_MASK);
+> > +	bar = (reg_lo >> CXL_REGLOC_BIR_SHIFT) & CXL_REGLOC_BIR_MASK;
+> > +
+> > +	/* Basic sanity check that BAR is big enough */
+> > +	if (pci_resource_len(pdev, bar) < offset) {
+> > +		dev_err(dev, "BAR%d: %pr: too small (offset: %#llx)\n", bar,
+> > +			&pdev->resource[bar], (unsigned long long)offset);
+> > +		return NULL;
+> > +	}
+> > +
+> > +	rc = pcim_iomap_regions(pdev, BIT(bar), pci_name(pdev));
+> > +	if (rc != 0) {
+> > +		dev_err(dev, "failed to map registers\n");
+> > +		return NULL;
+> > +	}
+> > +
+> > +	cxlm = devm_kzalloc(&pdev->dev, sizeof(*cxlm), GFP_KERNEL);
+> > +	if (!cxlm) {
+> > +		dev_err(dev, "No memory available\n");
+> > +		return NULL;
+> > +	}
+> > +
+> > +	regs = pcim_iomap_table(pdev)[bar];
+> > +	cxlm->pdev = pdev;
+> > +	cxlm->regs = regs + offset;
+> > +
+> > +	dev_dbg(dev, "Mapped CXL Memory Device resource\n");
+> > +	return cxlm;
+> > +}
+> >  
+> >  static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+> >  {
+> > @@ -33,7 +85,8 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+> >  static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> >  {
+> >  	struct device *dev = &pdev->dev;
+> > -	int rc, regloc;
+> > +	struct cxl_mem *cxlm;
+> > +	int rc, regloc, i;
+> >  
+> >  	rc = cxl_bus_acquire(pdev);
+> >  	if (rc != 0) {
+> > @@ -41,15 +94,59 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> >  		return rc;
+> >  	}
+> >  
+> > +	rc = pcim_enable_device(pdev);
+> > +	if (rc)
+> > +		return rc;
+> > +
+> >  	regloc = cxl_mem_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC);
+> >  	if (!regloc) {
+> >  		dev_err(dev, "register location dvsec not found\n");
+> >  		return -ENXIO;
+> >  	}
+> > +	regloc += 0xc; /* Skip DVSEC + reserved fields */
+> > +
+> > +	rc = -ENXIO;
+> > +	for (i = regloc; i < regloc + 0x24; i += 8) {
+> > +		u32 reg_lo, reg_hi;
+> > +		u8 reg_type;
+> > +
+> > +		/* "register low and high" contain other bits */
+> > +		pci_read_config_dword(pdev, i, &reg_lo);
+> > +		pci_read_config_dword(pdev, i + 4, &reg_hi);
+> > +
+> > +		reg_type =
+> > +			(reg_lo >> CXL_REGLOC_RBI_SHIFT) & CXL_REGLOC_RBI_MASK;
+> > +
+> > +		if (reg_type == CXL_REGLOC_RBI_MEMDEV) {
+> > +			rc = 0;
+> > +			cxlm = cxl_mem_create(pdev, reg_lo, reg_hi);
+> > +			if (!cxlm)
+> > +				rc = -ENODEV;
+> > +			break;
+> > +		}
+> > +	}
+> > +
+> > +	if (rc)
+> > +		return rc;
+> >  
+> > +	pci_set_drvdata(pdev, cxlm);
+> After below cleanup, not needed yet..
+> 
+> >  	return 0;
+> >  }
+> >  
+> > +static void cxl_mem_remove(struct pci_dev *pdev)
+> > +{
+> > +	struct cxl_mem *cxlm;
+> > +
+> > +	cxlm = pci_get_drvdata(pdev);
+> > +	if (!cxlm)
+> > +		return;
+> > +
+> > +	kfree(cxlm);
+> 
+> There is bunch of unwinding here that I'd expect to see in error paths
+> for probe but it's not there...  Which made me wonder.
+> So pcim_iounmap_regions is a managed interface, why are call it by
+> hand?  Same is true of the allocation of cxlm above.  So currently this
+> remove isn't doing anything useful.
+> 
+> > +
+> > +	pcim_iounmap_regions(pdev, ~0);
+> > +	pci_set_drvdata(pdev, NULL);
+> 
+> This hasn't been needed for a long time. Example of removal of similar...
+> http://patchwork.ozlabs.org/project/netdev/patch/005801ceaec1$6b8d3320$42a79960$%25han@samsung.com/
+>  
 
-All users of the 4.4 kernel series must upgrade.
+Thanks. I copy pasted it from a driver that obviously hasn't been updated yet
+:-)
 
-The updated 4.4.y git tree can be found at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.4.y
-and can be browsed at the normal kernel.org git web browser:
-	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+The kfree is still necessary though, right? Earlier in development, I just freed
+it immediately after creation (this patch is obviously not super useful
+functionally, but serves nicely for review).
 
-thanks,
+So we can remove the actual allocation from this patch and move it to later if
+you think it makes a big difference. My preference is to just leave it doing the
+kfree and call it good.
 
-greg k-h
-
-------------
-
- Makefile                                         |    4 -
- arch/x86/kernel/cpu/mtrr/generic.c               |    6 +-
- arch/x86/mm/pgtable.c                            |    2 
- drivers/atm/idt77252.c                           |    2 
- drivers/base/core.c                              |    2 
- drivers/net/ethernet/freescale/ucc_geth.c        |    2 
- drivers/net/ethernet/hisilicon/hns/hns_ethtool.c |    4 +
- drivers/net/usb/cdc_ncm.c                        |    3 -
- drivers/net/virtio_net.c                         |   12 ++--
- drivers/net/wan/hdlc_ppp.c                       |    7 ++
- drivers/usb/chipidea/ci_hdrc_imx.c               |    6 +-
- drivers/usb/class/cdc-acm.c                      |    4 +
- drivers/usb/class/usblp.c                        |   21 ++++++-
- drivers/usb/gadget/Kconfig                       |    2 
- drivers/usb/gadget/composite.c                   |   10 ++-
- drivers/usb/gadget/configfs.c                    |    8 +-
- drivers/usb/gadget/function/f_printer.c          |    1 
- drivers/usb/gadget/function/f_uac2.c             |   69 ++++++++++++++++++-----
- drivers/usb/gadget/legacy/acm_ms.c               |    4 +
- drivers/usb/host/xhci.c                          |   24 ++++----
- drivers/usb/misc/yurex.c                         |    3 +
- drivers/usb/serial/iuu_phoenix.c                 |   20 +++++-
- drivers/usb/serial/keyspan_pda.c                 |    2 
- drivers/usb/serial/option.c                      |    1 
- drivers/usb/storage/unusual_uas.h                |    7 ++
- drivers/vhost/net.c                              |    6 +-
- drivers/video/fbdev/hyperv_fb.c                  |    6 --
- include/net/red.h                                |    4 +
- kernel/workqueue.c                               |   13 +++-
- lib/genalloc.c                                   |   25 ++++----
- net/ipv4/fib_frontend.c                          |    2 
- net/netfilter/ipset/ip_set_hash_gen.h            |   20 +-----
- net/netfilter/xt_RATEEST.c                       |    3 +
- net/sched/sch_choke.c                            |    2 
- net/sched/sch_gred.c                             |    2 
- net/sched/sch_red.c                              |    2 
- net/sched/sch_sfq.c                              |    2 
- scripts/depmod.sh                                |    2 
- sound/pci/hda/patch_conexant.c                   |    1 
- sound/usb/midi.c                                 |    4 +
- 40 files changed, 218 insertions(+), 102 deletions(-)
-
-Arnd Bergmann (1):
-      usb: gadget: select CONFIG_CRC32
-
-Bard Liao (1):
-      Revert "device property: Keep secondary firmware node secondary by type"
-
-Chandana Kishori Chiluveru (1):
-      usb: gadget: configfs: Preserve function ordering after bind failure
-
-Dan Carpenter (1):
-      atm: idt77252: call pci_disable_device() on error path
-
-Dan Williams (1):
-      x86/mm: Fix leak of pmd ptlock
-
-Daniel Palmer (1):
-      USB: serial: option: add LongSung M5710 module support
-
-Dexuan Cui (1):
-      video: hyperv_fb: Fix the mmap() regression for v5.4.y and older
-
-Dominique Martinet (1):
-      kbuild: don't hardcode depmod path
-
-Florian Westphal (1):
-      netfilter: xt_RATEEST: reject non-null terminated string from userspace
-
-Greg Kroah-Hartman (1):
-      Linux 4.4.251
-
-Guillaume Nault (1):
-      ipv4: Ignore ECN bits for fib lookups in fib_compute_spec_dst()
-
-Huang Shijie (1):
-      lib/genalloc: fix the overflow when size is too big
-
-Jeff Dike (1):
-      virtio_net: Fix recursive call to cpus_read_lock()
-
-Jerome Brunet (1):
-      usb: gadget: f_uac2: reset wMaxPacketSize
-
-Johan Hovold (4):
-      USB: serial: iuu_phoenix: fix DMA from stack
-      USB: yurex: fix control-URB timeout handling
-      USB: usblp: fix DMA to stack
-      USB: serial: keyspan_pda: remove unused variable
-
-Linus Torvalds (1):
-      depmod: handle the case of /sbin/depmod without /sbin in PATH
-
-Michael Grzeschik (1):
-      USB: xhci: fix U1/U2 handling for hardware with XHCI_INTEL_HOST quirk set
-
-Randy Dunlap (1):
-      net: sched: prevent invalid Scell_log shift count
-
-Rasmus Villemoes (1):
-      ethernet: ucc_geth: fix use-after-free in ucc_geth_remove()
-
-Roland Dreier (1):
-      CDC-NCM: remove "connected" log message
-
-Sean Young (1):
-      USB: cdc-acm: blacklist another IR Droid device
-
-Sriharsha Allenki (1):
-      usb: gadget: Fix spinlock lockup on usb_function_deactivate
-
-Takashi Iwai (1):
-      ALSA: usb-audio: Fix UBSAN warnings for MIDI jacks
-
-Thinh Nguyen (1):
-      usb: uas: Add PNY USB Portable SSD to unusual_uas
-
-Vasily Averin (1):
-      netfilter: ipset: fix shift-out-of-bounds in htable_bits()
-
-Xie He (1):
-      net: hdlc_ppp: Fix issues when mod_timer is called while timer is running
-
-Yang Yingliang (1):
-      USB: gadget: legacy: fix return error code in acm_ms_bind()
-
-Ying-Tsun Huang (1):
-      x86/mtrr: Correct the range check before performing MTRR type lookups
-
-Yu Kuai (1):
-      usb: chipidea: ci_hdrc_imx: add missing put_device() call in usbmisc_get_init_data()
-
-Yunfeng Ye (1):
-      workqueue: Kick a worker based on the actual activation of delayed works
-
-Yunjian Wang (2):
-      net: hns: fix return value check in __lb_other_process()
-      vhost_net: fix ubuf refcount incorrectly when sendmsg fails
-
-Zqiang (1):
-      usb: gadget: function: printer: Fix a memory leak for interface descriptor
-
-bo liu (1):
-      ALSA: hda/conexant: add a new hda codec CX11970
-
-taehyun.cho (1):
-      usb: gadget: enable super speed plus
-
+> > +}
+> > +
+> >  static const struct pci_device_id cxl_mem_pci_tbl[] = {
+> >  	/* PCI class code for CXL.mem Type-3 Devices */
+> >  	{ PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID, PCI_ANY_ID,
+> > @@ -62,6 +159,7 @@ static struct pci_driver cxl_mem_driver = {
+> >  	.name			= KBUILD_MODNAME,
+> >  	.id_table		= cxl_mem_pci_tbl,
+> >  	.probe			= cxl_mem_probe,
+> > +	.remove			= cxl_mem_remove,
+> >  };
+> >  
+> >  MODULE_LICENSE("GPL v2");
+> > diff --git a/drivers/cxl/pci.h b/drivers/cxl/pci.h
+> > index a8a9935fa90b..df222edb6ac3 100644
+> > --- a/drivers/cxl/pci.h
+> > +++ b/drivers/cxl/pci.h
+> > @@ -17,4 +17,18 @@
+> >  
+> >  #define PCI_DVSEC_ID_CXL_REGLOC		0x8
+> >  
+> > +/* BAR Indicator Register (BIR) */
+> > +#define CXL_REGLOC_BIR_SHIFT 0
+> > +#define CXL_REGLOC_BIR_MASK 0x7
+> > +
+> > +/* Register Block Identifier (RBI) */
+> > +#define CXL_REGLOC_RBI_SHIFT 8
+> > +#define CXL_REGLOC_RBI_MASK 0xff
+> > +#define CXL_REGLOC_RBI_EMPTY 0
+> > +#define CXL_REGLOC_RBI_COMPONENT 1
+> > +#define CXL_REGLOC_RBI_VIRT 2
+> > +#define CXL_REGLOC_RBI_MEMDEV 3
+> > +
+> > +#define CXL_REGLOC_ADDR_MASK 0xffff0000
+> > +
+> >  #endif /* __CXL_PCI_H__ */
+> 
