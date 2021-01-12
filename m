@@ -2,127 +2,523 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 447E32F3D7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:44:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FFC62F3DF9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:44:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437958AbhALVhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 16:37:00 -0500
-Received: from mail-co1nam11on2122.outbound.protection.outlook.com ([40.107.220.122]:10465
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2437163AbhALVcM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 16:32:12 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hS6mX+hs4kmO7jD+xxg8ZcAmpkjOY2ko2FtNAYN8nh/zvsC1bCERld83E1QWOW0zk29U2UMjmX6C+c/V/GPbwFjjYqj2EtkJweVK68bd0tOLZlFZdIuB9cesRtcnz9mQoWGUTPgrwyxSzkVE8uyxL5VfB2286rSMpd+GQDMnPWEHKKPLIjIH4u0Ss3zl+ox60G1UCQ1p3+AMQr96Bxi1r15R9l5z38UufPLCj41iWmVTc43GbatLZEeiFyUw1ggebpOQY4WzeX1KUWLrbsEJS+mNoMTQEI20sn8OJfawvSenFXVk34JM/15X3BWeGBywXgmmVoSSE76b0mcRhG87uw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pgiLmQNubKy3UGAMcpiKWYR3bFNX6vLv6gh16piSk5M=;
- b=iKMHTrchhVaY3+kKZlqC71+yRG8UTm25JTnvrVOWZ8vdHLJLyV6MoZIZfizLpev9Q7cyzRWpnI2HdYJfc4dFYX7TEJhYkYDWaMDpsFEojYHep3dvw3IkG4bK3HEOy0ewTDWETPobyJ1/mEFc+Xw5qXfOrT/P9qM3C9qYJeiw+JBXi5tL+zhuwNZ7uaN61aoCh0lGakHTCr3Zny/Ybl9DWRP0Il+Z4TDIMhNUHEQW+LRJBMWtZJROEz65LJtu/WrmHpzjuFNFYDlwJvWz0vR1ptictQHqao0ZOAEpbUT+UQAQebHa50REutta3ZXby/Tqp8KnAq1ARZhDUqof8/tkPw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pgiLmQNubKy3UGAMcpiKWYR3bFNX6vLv6gh16piSk5M=;
- b=bn41mXrqsbBN3asz+p+utk1pZ9EHH3qnHVw8QFtGxjbykDDCkSKhjXRsJ6G5Z51qi2BKVpEEBuK4sF0Cd6ihsKWkDyBMGEzW+z3n3kSUv/4sMwu2F6tpvPx8sWMTSs+FE5EKslDfi6o4K3XSR/zZSrI1Dvs/KyJ8FOvqG8JfigY=
-Received: from (2603:10b6:208:fe::31) by
- BL0PR2101MB1794.namprd21.prod.outlook.com (2603:10b6:207:1a::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.4; Tue, 12 Jan
- 2021 21:31:24 +0000
-Received: from MN2PR21MB1166.namprd21.prod.outlook.com
- ([fe80::64ae:b13b:a0a3:5bd1]) by MN2PR21MB1166.namprd21.prod.outlook.com
- ([fe80::64ae:b13b:a0a3:5bd1%3]) with mapi id 15.20.3784.004; Tue, 12 Jan 2021
- 21:31:24 +0000
-From:   Long Li <longli@microsoft.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Long Li <longli@linuxonhyperv.com>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 0/3] hv_netvsc: Prevent packet loss during VF
- add/remove
-Thread-Topic: [PATCH v2 0/3] hv_netvsc: Prevent packet loss during VF
- add/remove
-Thread-Index: AQHW5iHnNrYxEgDKNki14pVRntGh26ojQwmAgAFElHA=
-Date:   Tue, 12 Jan 2021 21:31:23 +0000
-Message-ID: <MN2PR21MB11666A2B3D026DA710E470ADCEAA9@MN2PR21MB1166.namprd21.prod.outlook.com>
-References: <1610153623-17500-1-git-send-email-longli@linuxonhyperv.com>
- <20210111180717.19126810@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210111180717.19126810@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=02531aca-3510-445d-bf07-b389d7e1a10d;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-01-12T21:28:59Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [67.168.111.68]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 51462a90-1b3b-4c49-e863-08d8b7416970
-x-ms-traffictypediagnostic: BL0PR2101MB1794:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BL0PR2101MB1794F539C3044F869C53CB2CCEAA9@BL0PR2101MB1794.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: GTWj3K9wgrvrw9DaoGGcT9mWVhFDq7MLB44ghWakC92Gy3Din154+u5VbXGSN9hVE39FfDnce3Y8OawdnIFZmb3ZcFvW115y2awQzVu+eDb/uPnkQoLmHyU2nMUx3QM2Csmz37yqjOCxzZWlzTnDeSJaDZPAXl6EtWmnEKxZxPKCjmkvysCeFo21SA16MJvEmr17Rbhtg+td5gTfA7Rn76puj5g0k7Zateb+Fpjh45xpd0MNW6sIqsdsRK+YWc5Gz0CXP7mDyPDhRpYO8i8fKqic35NoEwfiB92XFjX8mL14N62iwoAzUuBPBVxsatqaQ294f5MCwRDXYobJOmZKFI6Gm6+cKxfMeO7hJT3KEnkQpoCmvewiqNtJYXumGmxaDGCN1mNHsFFiNQQ55MfnWxHWmJ8qfpLJZrkbdpNaH98t1R0esG5yAAVQtFMflYGYyx72YcOZLFFNPVUMaW2e201qmWvedwY5W5TbyLxPsSypnTA9In+QFoywz1W8fM6ZajVjF8PJpHnD4uFRxceCYg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR21MB1166.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(136003)(39860400002)(346002)(4744005)(5660300002)(54906003)(6506007)(2906002)(8676002)(9686003)(8936002)(86362001)(4326008)(316002)(33656002)(26005)(110136005)(64756008)(66556008)(66946007)(7696005)(66446008)(66476007)(76116006)(55016002)(478600001)(52536014)(186003)(10290500003)(71200400001)(82960400001)(8990500004)(82950400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?gIoJ1Q7+Ihrf8NeWvE4KxBSv6WUU1vS+yqpjYQVMterdfj4eoEkl6BieIC+M?=
- =?us-ascii?Q?CDe9sp7XKAE4jsa4e6ANKpBriSjCKlnHwvGxQifLcF1ABWyQ7q1hxuEIkWhd?=
- =?us-ascii?Q?P2JabY9ZggH/dihylLwUeUPPqxd4z9mbnb1P9bP/gyA9R/AlZysx1nwwxkjb?=
- =?us-ascii?Q?kltFywqwEntaoDBPMugZ4wChO+5DIkjEdGkiVrVsnnY2WObdBXZQLmIC31MH?=
- =?us-ascii?Q?fn26+YAArndmlgAq2OKkLWJ0iNqg+0jQkBViv1llvR2TYiR8mgEx+dDOTbb+?=
- =?us-ascii?Q?5YJ7ZtFr5OmI2tvEtB3i/N4aYvu7C/XWaQzLjW+e8FKiK1Y/LXG9wgytJ5+P?=
- =?us-ascii?Q?T0UzeR1Zdkz74z57Hw/HSF54G0rUMRxPJf6i+B+oxiR7goHnsk8CX9dDq0g3?=
- =?us-ascii?Q?Y3PpL4w3ECtLbPe6x3zs0evQdp1RkTRNt9ur0LUHQdKXDzWpoOvPrQGDEiRu?=
- =?us-ascii?Q?yGI8Dzx+Zcx/dtsXMjP/KgjUQjpT3zrqq5M56XNdeqISNqgi0lKXP7rWV7SO?=
- =?us-ascii?Q?nvQAq5m6jpTIFfakPwM7Q9G1lJmx8fXrnmrNMBauOHojPrXTs0DpwAWOCx2z?=
- =?us-ascii?Q?QE6qoyAwFBqTznbg4yGofhbf7vT0umG9UG4tFBqZmluLklB8VXwKbLf2JI0U?=
- =?us-ascii?Q?K9jLcqGLKkItNx3seeMH4VGnxIEDaGuD4GmIJAq6mx/SUsdJAuN7pUV7m7e+?=
- =?us-ascii?Q?Vt44LtrwBlYs6BDoYBD6fwbk6KRFEF4EfBNgEm8We+hPPhpANMMnJWHH8Z8r?=
- =?us-ascii?Q?E0t/8VvDRsnW7QGWnrg+CgiPmgiQxc++JMYTRoQMo+5JTtrHO/lFP6ynaKZ3?=
- =?us-ascii?Q?D7HKUQ9vjMNB+XPv5QqC4unkBbWH4//6FewzrTa9zcOUd0XygOC70i5tawB8?=
- =?us-ascii?Q?u75TmMhlxIvbeHe//obqXTmF6guNz1tRpjMouew8r2BIJw9axuDJHrewktXz?=
- =?us-ascii?Q?0n56byokrAfEwe5snlJ7+5F0s9Np4h0B3OMZvR5Mr00=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S2388345AbhALVuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 16:50:21 -0500
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:43708 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727081AbhALVfI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 16:35:08 -0500
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210112213421euoutp01057a77752dce4b2d5fe96f18cbd407ff~ZmaGr9xzr2373223732euoutp01O
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:34:21 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210112213421euoutp01057a77752dce4b2d5fe96f18cbd407ff~ZmaGr9xzr2373223732euoutp01O
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1610487261;
+        bh=oXdva/fWwYF5r4uA7T00QBbpGyoI3CqqsZp7pxJj1qU=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=QnzLYq01bIgHQfxtwqcbkNDq89W4UL1jdZBOo7lW8HPnJJrMNDpPDERDunsvMHAyS
+         6+k65wRNy5tFjda1ss98FRwXEmU74+Idm5hLdyjOsUJI5EsnLZfz0CS0ds5l8E53ME
+         RVxUGiXC8Gz+jZ8knvMYtq2+hKSu2MaXzyT7913c=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210112213420eucas1p152fea143540c1b2afe9163a0a16431b1~ZmaFnFEWl0691606916eucas1p1J;
+        Tue, 12 Jan 2021 21:34:20 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id F3.18.44805.CD51EFF5; Tue, 12
+        Jan 2021 21:34:20 +0000 (GMT)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210112213419eucas1p24231e4d0ac11c31184f2f8f3f20cbd9d~ZmaFHC0g22119621196eucas1p2l;
+        Tue, 12 Jan 2021 21:34:19 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210112213419eusmtrp27281e73a9d82281603a5afc665caa771~ZmaFGYIje2034120341eusmtrp2V;
+        Tue, 12 Jan 2021 21:34:19 +0000 (GMT)
+X-AuditID: cbfec7f4-b37ff7000000af05-a5-5ffe15dc0fe4
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 2B.8A.21957.BD51EFF5; Tue, 12
+        Jan 2021 21:34:19 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210112213419eusmtip2b29f4c20712384402d3d2e00f3c198a8~ZmaEkbqCm2880828808eusmtip2B;
+        Tue, 12 Jan 2021 21:34:19 +0000 (GMT)
+Subject: Re: [PATCH] regulator: core: avoid regulator_resolve_supply() race
+ condition
+To:     David Collins <collinsd@codeaurora.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        'Linux Samsung SOC' <linux-samsung-soc@vger.kernel.org>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <e512ee85-7fa6-e5fe-eb30-f088bb83cf23@samsung.com>
+Date:   Tue, 12 Jan 2021 22:34:19 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.6.0
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR21MB1166.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 51462a90-1b3b-4c49-e863-08d8b7416970
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Jan 2021 21:31:24.1410
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: n6QuFLLqNv7MXxLLoIL3PJRAXc+LlZUF4ZQ5ulyAKow2sFKsX9R6RVwyqJYL9e/vpFrwewjFUdeeS+YgNjhq7Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR2101MB1794
+In-Reply-To: <1610068562-4410-1-git-send-email-collinsd@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCKsWRmVeSWpSXmKPExsWy7djPc7p3RP/FG3Qd4rTYOGM9q8XUh0/Y
+        LLrahCzOn9/AbvHtSgeTxcT9Z9ktLu+aw2Yx4/w+JgcOj8t9vUweO2fdZffYtKqTzaNvyypG
+        j8+b5AJYo7hsUlJzMstSi/TtErgy9n/5ylLQ0MhY8frhKeYGxn95XYycHBICJhKbpjYzdjFy
+        cQgJrGCUmLP+PhOE84VRonvDIRYI5zOjxJqGD6wwLfOWzIBKLGeUWN98ix3C+cgosWD1ZXaQ
+        KmGBcIm1/36ygNgiAlcYJR6fiACxmQWqJDp6ZjCC2GwChhJdb7vYQGxeATuJdbNngdksAqoS
+        c6ZOBOsVFUiSOL6vmxmiRlDi5MwnYHFOAXeJdVu7WCBmyks0b53NDGGLS9x6Mh/sBwmBBxwS
+        HxquMUGc7SIxc/lNdghbWOLV8S1QtozE/50wDc2MEg/PrWWHcHoYJS43QZwqIWAtcefcL6Dz
+        OIBWaEqs36UPEXaUmLriKTNIWEKAT+LGW0GII/gkJm2bDhXmlehoE4KoVpOYdXwd3NqDFy4x
+        T2BUmoXktVlI3pmF5J1ZCHsXMLKsYhRPLS3OTU8tNspLLdcrTswtLs1L10vOz93ECExIp/8d
+        /7KDcfmrj3qHGJk4GA8xSnAwK4nwFnX/jRfiTUmsrEotyo8vKs1JLT7EKM3BoiTOm7RlTbyQ
+        QHpiSWp2ampBahFMlomDU6qBSbKJ/Vdn8ZRdnnceZnep/jR3Oj49uunn2epW2znpd/1WF/7+
+        8UFERlnN07nE4MKWE74LbENC3+SpByrEzOt/O+mGta2/gOzmBsctX3++OqnZ2rT9l9HR6TEh
+        m1btLGVV8l3093Pr5I55RxdvkxULqZTs3e7zND7jbEb/hgubnutc5Hvw8+G/zROu3Jv2U+xd
+        wkvLfRyM0WsPOCwpvHfnGHNVd+9f0Z3XHvx4Jmlw7Ff0lhb57CPHd69wO/Xxb+u328JMAYU7
+        md7wnZmtPfnRB9FvJ89JepwpWyap9EPm47dfJdPOddRKG5spbOYvDWhYevaS7Sbb+JvVV2dN
+        SpsYdTSq5YNxpGrA2UVMHBK9rH+VWIozEg21mIuKEwEhaIIntwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKIsWRmVeSWpSXmKPExsVy+t/xe7q3Rf/FG/y6pmqxccZ6VoupD5+w
+        WXS1CVmcP7+B3eLblQ4mi4n7z7JbXN41h81ixvl9TA4cHpf7epk8ds66y+6xaVUnm0ffllWM
+        Hp83yQWwRunZFOWXlqQqZOQXl9gqRRtaGOkZWlroGZlY6hkam8daGZkq6dvZpKTmZJalFunb
+        Jehl7P/ylaWgoZGx4vXDU8wNjP/yuhg5OSQETCTmLZnB0sXIxSEksJRR4lVLFytEQkbi5LQG
+        KFtY4s+1LjaIoveMEpN7IBLCAuESa//9BOsWEbjEKHGqo5cJJMEsUCXR9rSfEcQWEnCT+PS1
+        gxnEZhMwlOh6CzKJk4NXwE5i3exZYDaLgKrEnKkTgQZxcIgKJEksfusEUSIocXLmExYQm1PA
+        XWLd1i4WiPFmEvM2P2SGsOUlmrfOhrLFJW49mc80gVFoFpL2WUhaZiFpmYWkZQEjyypGkdTS
+        4tz03GJDveLE3OLSvHS95PzcTYzA+Nt27OfmHYzzXn3UO8TIxMF4iFGCg1lJhLeo+2+8EG9K
+        YmVValF+fFFpTmrxIUZToHcmMkuJJucDE0BeSbyhmYGpoYmZpYGppZmxkjjv1rlr4oUE0hNL
+        UrNTUwtSi2D6mDg4pRqY6rM2XbpY+fBCXB6XkiHT3hdbd8fMsfwofoqjuTLxxsa0YgbTX/zZ
+        nWqhC2/wvE+v/6x3UKpq/r3mb4HyJduki9T2LF/szVJo9L5H8Ne78BnrHsbe3PvC13LJI0aV
+        1QtCpT4xtwnJXrxlHcq/T+e+VvrXF9PKrp/XjJpRpOTs/eJKsELEe5dXS5fukWI9e86cV2PP
+        wvYlco9n91V47fzV21ZpzR/XuJI5602MjJTauZM3DzKfjFt8XkPj8A5hz39JMcaJNRNfewfF
+        LlpiUx9aGqNozG3zh3+i5Cw7i00eAk+KJVe/kuWxFetP3vi+bp/aXk6v/2ybfaas5xdfxPVx
+        RWea+5utMWtdpO4udzZWYinOSDTUYi4qTgQAH2DXFkgDAAA=
+X-CMS-MailID: 20210112213419eucas1p24231e4d0ac11c31184f2f8f3f20cbd9d
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210112213419eucas1p24231e4d0ac11c31184f2f8f3f20cbd9d
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210112213419eucas1p24231e4d0ac11c31184f2f8f3f20cbd9d
+References: <1610068562-4410-1-git-send-email-collinsd@codeaurora.org>
+        <CGME20210112213419eucas1p24231e4d0ac11c31184f2f8f3f20cbd9d@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Subject: Re: [PATCH v2 0/3] hv_netvsc: Prevent packet loss during VF
-> add/remove
->=20
-> On Fri,  8 Jan 2021 16:53:40 -0800 Long Li wrote:
-> > From: Long Li <longli@microsoft.com>
-> >
-> > This patch set fixes issues with packet loss on VF add/remove.
->=20
-> These patches are for net-next? They just optimize the amount of packet
-> loss on switch, not fix bugs, right?
+Hi,
 
-Yes, those patches are for net-next.
+On 08.01.2021 02:16, David Collins wrote:
+> The final step in regulator_register() is to call
+> regulator_resolve_supply() for each registered regulator
+> (including the one in the process of being registered).  The
+> regulator_resolve_supply() function first checks if rdev->supply
+> is NULL, then it performs various steps to try to find the supply.
+> If successful, rdev->supply is set inside of set_supply().
+>
+> This procedure can encounter a race condition if two concurrent
+> tasks call regulator_register() near to each other on separate CPUs
+> and one of the regulators has rdev->supply_name specified.  There
+> is currently nothing guaranteeing atomicity between the rdev->supply
+> check and set steps.  Thus, both tasks can observe rdev->supply==NULL
+> in their regulator_resolve_supply() calls.  This then results in
+> both creating a struct regulator for the supply.  One ends up
+> actually stored in rdev->supply and the other is lost (though still
+> present in the supply's consumer_list).
+>
+> Here is a kernel log snippet showing the issue:
+>
+> [   12.421768] gpu_cc_gx_gdsc: supplied by pm8350_s5_level
+> [   12.425854] gpu_cc_gx_gdsc: supplied by pm8350_s5_level
+> [   12.429064] debugfs: Directory 'regulator.4-SUPPLY' with parent
+>                 '17a00000.rsc:rpmh-regulator-gfxlvl-pm8350_s5_level'
+>                 already present!
+>
+> Avoid this race condition by holding the rdev->mutex lock inside
+> of regulator_resolve_supply() while checking and setting
+> rdev->supply.
+>
+> Signed-off-by: David Collins <collinsd@codeaurora.org>
 
-They eliminate the packet loss introduced from Linux side during VF changes=
-. They can be seen as optimizations.
+This patch landed in linux next-20210112 as commit eaa7995c529b 
+("regulator: core: avoid regulator_resolve_supply() race condition"). I 
+found that it triggers a following lockdep warning during the DWC3 
+driver registration on some Exynos based boards (this log is from 
+Samsung Exynos5420-based Peach-Pit board):
+
+======================================================
+WARNING: possible circular locking dependency detected
+5.11.0-rc1-00008-geaa7995c529b #10095 Not tainted
+------------------------------------------------------
+swapper/0/1 is trying to acquire lock:
+c12e1b80 (regulator_list_mutex){+.+.}-{3:3}, at: 
+regulator_lock_dependent+0x4c/0x2b0
+
+but task is already holding lock:
+df7190c0 (regulator_ww_class_mutex){+.+.}-{3:3}, at: 
+regulator_resolve_supply+0x44/0x318
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (regulator_ww_class_mutex){+.+.}-{3:3}:
+        ww_mutex_lock+0x48/0x88
+        regulator_lock_recursive+0x84/0x1f4
+        regulator_lock_dependent+0x184/0x2b0
+        regulator_enable+0x30/0xe4
+        dwc3_exynos_probe+0x17c/0x2c0
+        platform_probe+0x80/0xc0
+        really_probe+0x1c4/0x4e4
+        driver_probe_device+0x78/0x1d8
+        device_driver_attach+0x58/0x60
+        __driver_attach+0xfc/0x160
+        bus_for_each_dev+0x6c/0xb8
+        bus_add_driver+0x170/0x20c
+        driver_register+0x78/0x10c
+        do_one_initcall+0x88/0x438
+        kernel_init_freeable+0x18c/0x1dc
+        kernel_init+0x8/0x118
+        ret_from_fork+0x14/0x38
+        0x0
+
+-> #1 (regulator_ww_class_acquire){+.+.}-{0:0}:
+        regulator_enable+0x30/0xe4
+        dwc3_exynos_probe+0x17c/0x2c0
+        platform_probe+0x80/0xc0
+        really_probe+0x1c4/0x4e4
+        driver_probe_device+0x78/0x1d8
+        device_driver_attach+0x58/0x60
+        __driver_attach+0xfc/0x160
+        bus_for_each_dev+0x6c/0xb8
+        bus_add_driver+0x170/0x20c
+        driver_register+0x78/0x10c
+        do_one_initcall+0x88/0x438
+        kernel_init_freeable+0x18c/0x1dc
+        kernel_init+0x8/0x118
+        ret_from_fork+0x14/0x38
+        0x0
+
+-> #0 (regulator_list_mutex){+.+.}-{3:3}:
+        lock_acquire+0x2e4/0x5dc
+        __mutex_lock+0xa4/0xb60
+        mutex_lock_nested+0x1c/0x24
+        regulator_lock_dependent+0x4c/0x2b0
+        regulator_enable+0x30/0xe4
+        regulator_resolve_supply+0x1cc/0x318
+        regulator_register_resolve_supply+0x14/0x78
+        class_for_each_device+0x68/0xe8
+        regulator_register+0xa2c/0xc9c
+        devm_regulator_register+0x40/0x70
+        tps65090_regulator_probe+0x150/0x648
+        platform_probe+0x80/0xc0
+        really_probe+0x1c4/0x4e4
+        driver_probe_device+0x78/0x1d8
+        bus_for_each_drv+0x78/0xbc
+        __device_attach+0xe8/0x180
+        bus_probe_device+0x88/0x90
+        device_add+0x4c4/0x7e8
+        platform_device_add+0x120/0x25c
+        mfd_add_devices+0x580/0x60c
+        tps65090_i2c_probe+0xb8/0x184
+        i2c_device_probe+0x234/0x2a4
+        really_probe+0x1c4/0x4e4
+        driver_probe_device+0x78/0x1d8
+        bus_for_each_drv+0x78/0xbc
+        __device_attach+0xe8/0x180
+        bus_probe_device+0x88/0x90
+        device_add+0x4c4/0x7e8
+        i2c_new_client_device+0x15c/0x27c
+        of_i2c_register_devices+0x114/0x184
+        i2c_register_adapter+0x1d8/0x6dc
+        ec_i2c_probe+0xc8/0x124
+        platform_probe+0x80/0xc0
+        really_probe+0x1c4/0x4e4
+        driver_probe_device+0x78/0x1d8
+        bus_for_each_drv+0x78/0xbc
+        __device_attach+0xe8/0x180
+        bus_probe_device+0x88/0x90
+        device_add+0x4c4/0x7e8
+        of_platform_device_create_pdata+0x90/0xc8
+        of_platform_bus_create+0x1a0/0x4ec
+        of_platform_populate+0x88/0x120
+        devm_of_platform_populate+0x40/0x80
+        cros_ec_register+0x174/0x308
+        cros_ec_spi_probe+0x16c/0x1ec
+        spi_probe+0x88/0xac
+        really_probe+0x1c4/0x4e4
+        driver_probe_device+0x78/0x1d8
+        device_driver_attach+0x58/0x60
+        __driver_attach+0xfc/0x160
+        bus_for_each_dev+0x6c/0xb8
+        bus_add_driver+0x170/0x20c
+        driver_register+0x78/0x10c
+        do_one_initcall+0x88/0x438
+        kernel_init_freeable+0x18c/0x1dc
+        kernel_init+0x8/0x118
+        ret_from_fork+0x14/0x38
+        0x0
+
+other info that might help us debug this:
+
+Chain exists of:
+   regulator_list_mutex --> regulator_ww_class_acquire --> 
+regulator_ww_class_mutex
+
+  Possible unsafe locking scenario:
+
+        CPU0                    CPU1
+        ----                    ----
+   lock(regulator_ww_class_mutex);
+                                lock(regulator_ww_class_acquire);
+                                lock(regulator_ww_class_mutex);
+   lock(regulator_list_mutex);
+
+  *** DEADLOCK ***
+
+5 locks held by swapper/0/1:
+  #0: dfb6e4c8 (&dev->mutex){....}-{3:3}, at: device_driver_attach+0x18/0x60
+  #1: c1fedcd8 (&dev->mutex){....}-{3:3}, at: __device_attach+0x34/0x180
+  #2: df53a4e8 (&dev->mutex){....}-{3:3}, at: __device_attach+0x34/0x180
+  #3: df5224d8 (&dev->mutex){....}-{3:3}, at: __device_attach+0x34/0x180
+  #4: df7190c0 (regulator_ww_class_mutex){+.+.}-{3:3}, at: 
+regulator_resolve_supply+0x44/0x318
+
+stack backtrace:
+CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.11.0-rc1-00008-geaa7995c529b 
+#10095
+Hardware name: Samsung Exynos (Flattened Device Tree)
+[<c01116e8>] (unwind_backtrace) from [<c010cf58>] (show_stack+0x10/0x14)
+[<c010cf58>] (show_stack) from [<c0b38ffc>] (dump_stack+0xa4/0xc4)
+[<c0b38ffc>] (dump_stack) from [<c0193458>] (check_noncircular+0x14c/0x164)
+[<c0193458>] (check_noncircular) from [<c0196b90>] 
+(__lock_acquire+0x1830/0x31cc)
+[<c0196b90>] (__lock_acquire) from [<c01991e4>] (lock_acquire+0x2e4/0x5dc)
+[<c01991e4>] (lock_acquire) from [<c0b4043c>] (__mutex_lock+0xa4/0xb60)
+[<c0b4043c>] (__mutex_lock) from [<c0b40f14>] (mutex_lock_nested+0x1c/0x24)
+[<c0b40f14>] (mutex_lock_nested) from [<c05ccd94>] 
+(regulator_lock_dependent+0x4c/0x2b0)
+[<c05ccd94>] (regulator_lock_dependent) from [<c05d220c>] 
+(regulator_enable+0x30/0xe4)
+[<c05d220c>] (regulator_enable) from [<c05d248c>] 
+(regulator_resolve_supply+0x1cc/0x318)
+[<c05d248c>] (regulator_resolve_supply) from [<c05d2974>] 
+(regulator_register_resolve_supply+0x14/0x78)
+[<c05d2974>] (regulator_register_resolve_supply) from [<c06a3000>] 
+(class_for_each_device+0x68/0xe8)
+[<c06a3000>] (class_for_each_device) from [<c05d3e20>] 
+(regulator_register+0xa2c/0xc9c)
+[<c05d3e20>] (regulator_register) from [<c05d5c70>] 
+(devm_regulator_register+0x40/0x70)
+[<c05d5c70>] (devm_regulator_register) from [<c05dea58>] 
+(tps65090_regulator_probe+0x150/0x648)
+[<c05dea58>] (tps65090_regulator_probe) from [<c06a3fe8>] 
+(platform_probe+0x80/0xc0)
+[<c06a3fe8>] (platform_probe) from [<c06a1114>] (really_probe+0x1c4/0x4e4)
+[<c06a1114>] (really_probe) from [<c06a14ac>] 
+(driver_probe_device+0x78/0x1d8)
+[<c06a14ac>] (driver_probe_device) from [<c069f1a4>] 
+(bus_for_each_drv+0x78/0xbc)
+[<c069f1a4>] (bus_for_each_drv) from [<c06a0eb0>] 
+(__device_attach+0xe8/0x180)
+[<c06a0eb0>] (__device_attach) from [<c069ff50>] 
+(bus_probe_device+0x88/0x90)
+[<c069ff50>] (bus_probe_device) from [<c069dbac>] (device_add+0x4c4/0x7e8)
+[<c069dbac>] (device_add) from [<c06a3bac>] 
+(platform_device_add+0x120/0x25c)
+[<c06a3bac>] (platform_device_add) from [<c06d5c7c>] 
+(mfd_add_devices+0x580/0x60c)
+[<c06d5c7c>] (mfd_add_devices) from [<c06d80e8>] 
+(tps65090_i2c_probe+0xb8/0x184)
+[<c06d80e8>] (tps65090_i2c_probe) from [<c0822520>] 
+(i2c_device_probe+0x234/0x2a4)
+[<c0822520>] (i2c_device_probe) from [<c06a1114>] (really_probe+0x1c4/0x4e4)
+[<c06a1114>] (really_probe) from [<c06a14ac>] 
+(driver_probe_device+0x78/0x1d8)
+[<c06a14ac>] (driver_probe_device) from [<c069f1a4>] 
+(bus_for_each_drv+0x78/0xbc)
+[<c069f1a4>] (bus_for_each_drv) from [<c06a0eb0>] 
+(__device_attach+0xe8/0x180)
+[<c06a0eb0>] (__device_attach) from [<c069ff50>] 
+(bus_probe_device+0x88/0x90)
+[<c069ff50>] (bus_probe_device) from [<c069dbac>] (device_add+0x4c4/0x7e8)
+[<c069dbac>] (device_add) from [<c0824aec>] 
+(i2c_new_client_device+0x15c/0x27c)
+[<c0824aec>] (i2c_new_client_device) from [<c08285e0>] 
+(of_i2c_register_devices+0x114/0x184)
+[<c08285e0>] (of_i2c_register_devices) from [<c08254b8>] 
+(i2c_register_adapter+0x1d8/0x6dc)
+[<c08254b8>] (i2c_register_adapter) from [<c082dd1c>] 
+(ec_i2c_probe+0xc8/0x124)
+[<c082dd1c>] (ec_i2c_probe) from [<c06a3fe8>] (platform_probe+0x80/0xc0)
+[<c06a3fe8>] (platform_probe) from [<c06a1114>] (really_probe+0x1c4/0x4e4)
+[<c06a1114>] (really_probe) from [<c06a14ac>] 
+(driver_probe_device+0x78/0x1d8)
+[<c06a14ac>] (driver_probe_device) from [<c069f1a4>] 
+(bus_for_each_drv+0x78/0xbc)
+[<c069f1a4>] (bus_for_each_drv) from [<c06a0eb0>] 
+(__device_attach+0xe8/0x180)
+[<c06a0eb0>] (__device_attach) from [<c069ff50>] 
+(bus_probe_device+0x88/0x90)
+[<c069ff50>] (bus_probe_device) from [<c069dbac>] (device_add+0x4c4/0x7e8)
+[<c069dbac>] (device_add) from [<c08b140c>] 
+(of_platform_device_create_pdata+0x90/0xc8)
+[<c08b140c>] (of_platform_device_create_pdata) from [<c08b15f0>] 
+(of_platform_bus_create+0x1a0/0x4ec)
+[<c08b15f0>] (of_platform_bus_create) from [<c08b1af0>] 
+(of_platform_populate+0x88/0x120)
+[<c08b1af0>] (of_platform_populate) from [<c08b1bdc>] 
+(devm_of_platform_populate+0x40/0x80)
+[<c08b1bdc>] (devm_of_platform_populate) from [<c08b72fc>] 
+(cros_ec_register+0x174/0x308)
+[<c08b72fc>] (cros_ec_register) from [<c08b868c>] 
+(cros_ec_spi_probe+0x16c/0x1ec)
+[<c08b868c>] (cros_ec_spi_probe) from [<c071b2f4>] (spi_probe+0x88/0xac)
+[<c071b2f4>] (spi_probe) from [<c06a1114>] (really_probe+0x1c4/0x4e4)
+[<c06a1114>] (really_probe) from [<c06a14ac>] 
+(driver_probe_device+0x78/0x1d8)
+[<c06a14ac>] (driver_probe_device) from [<c06a19c4>] 
+(device_driver_attach+0x58/0x60)
+[<c06a19c4>] (device_driver_attach) from [<c06a1ac8>] 
+(__driver_attach+0xfc/0x160)
+[<c06a1ac8>] (__driver_attach) from [<c069f0cc>] 
+(bus_for_each_dev+0x6c/0xb8)
+[<c069f0cc>] (bus_for_each_dev) from [<c06a0204>] 
+(bus_add_driver+0x170/0x20c)
+[<c06a0204>] (bus_add_driver) from [<c06a2968>] (driver_register+0x78/0x10c)
+[<c06a2968>] (driver_register) from [<c0102428>] 
+(do_one_initcall+0x88/0x438)
+[<c0102428>] (do_one_initcall) from [<c1101104>] 
+(kernel_init_freeable+0x18c/0x1dc)
+[<c1101104>] (kernel_init_freeable) from [<c0b3c65c>] 
+(kernel_init+0x8/0x118)
+[<c0b3c65c>] (kernel_init) from [<c010011c>] (ret_from_fork+0x14/0x38)
+Exception stack(0xc1ce3fb0 to 0xc1ce3ff8)
+3fa0:                                     00000000 00000000 00000000 
+00000000
+3fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 
+00000000
+3fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+
+I didn't analyze it yet if this warning is really an issue or just a 
+false positive. If you have any hints or comments let me know.
+
+> ---
+>   drivers/regulator/core.c | 39 ++++++++++++++++++++++++++++-----------
+>   1 file changed, 28 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
+> index fee9241..3ae5ccd 100644
+> --- a/drivers/regulator/core.c
+> +++ b/drivers/regulator/core.c
+> @@ -1813,23 +1813,34 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
+>   {
+>   	struct regulator_dev *r;
+>   	struct device *dev = rdev->dev.parent;
+> -	int ret;
+> +	int ret = 0;
+>   
+>   	/* No supply to resolve? */
+>   	if (!rdev->supply_name)
+>   		return 0;
+>   
+> -	/* Supply already resolved? */
+> +	/* Supply already resolved? (fast-path without locking contention) */
+>   	if (rdev->supply)
+>   		return 0;
+>   
+> +	/*
+> +	 * Recheck rdev->supply with rdev->mutex lock held to avoid a race
+> +	 * between rdev->supply null check and setting rdev->supply in
+> +	 * set_supply() from concurrent tasks.
+> +	 */
+> +	regulator_lock(rdev);
+> +
+> +	/* Supply just resolved by a concurrent task? */
+> +	if (rdev->supply)
+> +		goto out;
+> +
+>   	r = regulator_dev_lookup(dev, rdev->supply_name);
+>   	if (IS_ERR(r)) {
+>   		ret = PTR_ERR(r);
+>   
+>   		/* Did the lookup explicitly defer for us? */
+>   		if (ret == -EPROBE_DEFER)
+> -			return ret;
+> +			goto out;
+>   
+>   		if (have_full_constraints()) {
+>   			r = dummy_regulator_rdev;
+> @@ -1837,15 +1848,18 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
+>   		} else {
+>   			dev_err(dev, "Failed to resolve %s-supply for %s\n",
+>   				rdev->supply_name, rdev->desc->name);
+> -			return -EPROBE_DEFER;
+> +			ret = -EPROBE_DEFER;
+> +			goto out;
+>   		}
+>   	}
+>   
+>   	if (r == rdev) {
+>   		dev_err(dev, "Supply for %s (%s) resolved to itself\n",
+>   			rdev->desc->name, rdev->supply_name);
+> -		if (!have_full_constraints())
+> -			return -EINVAL;
+> +		if (!have_full_constraints()) {
+> +			ret = -EINVAL;
+> +			goto out;
+> +		}
+>   		r = dummy_regulator_rdev;
+>   		get_device(&r->dev);
+>   	}
+> @@ -1859,7 +1873,8 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
+>   	if (r->dev.parent && r->dev.parent != rdev->dev.parent) {
+>   		if (!device_is_bound(r->dev.parent)) {
+>   			put_device(&r->dev);
+> -			return -EPROBE_DEFER;
+> +			ret = -EPROBE_DEFER;
+> +			goto out;
+>   		}
+>   	}
+>   
+> @@ -1867,13 +1882,13 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
+>   	ret = regulator_resolve_supply(r);
+>   	if (ret < 0) {
+>   		put_device(&r->dev);
+> -		return ret;
+> +		goto out;
+>   	}
+>   
+>   	ret = set_supply(rdev, r);
+>   	if (ret < 0) {
+>   		put_device(&r->dev);
+> -		return ret;
+> +		goto out;
+>   	}
+>   
+>   	/*
+> @@ -1886,11 +1901,13 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
+>   		if (ret < 0) {
+>   			_regulator_put(rdev->supply);
+>   			rdev->supply = NULL;
+> -			return ret;
+> +			goto out;
+>   		}
+>   	}
+>   
+> -	return 0;
+> +out:
+> +	regulator_unlock(rdev);
+> +	return ret;
+>   }
+>   
+>   /* Internal regulator request function */
+
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
