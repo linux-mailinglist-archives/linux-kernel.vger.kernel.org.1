@@ -2,100 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DE22F2757
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 05:49:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD0A2F275A
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 05:51:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733172AbhALEtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 11 Jan 2021 23:49:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53306 "EHLO
+        id S1733178AbhALEvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 11 Jan 2021 23:51:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727713AbhALEta (ORCPT
+        with ESMTP id S1727713AbhALEvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 11 Jan 2021 23:49:30 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A66C061575
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 20:48:50 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id q20so645177pfu.8
-        for <linux-kernel@vger.kernel.org>; Mon, 11 Jan 2021 20:48:50 -0800 (PST)
+        Mon, 11 Jan 2021 23:51:06 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 805BBC061575;
+        Mon, 11 Jan 2021 20:50:26 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id p187so1449014iod.4;
+        Mon, 11 Jan 2021 20:50:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=6XEbGkPVwRDanX/I2P6uhWlodWlqXcGCFNj2dY44RU0=;
-        b=e+ZX8khPSgjivRpNFVdUaQFDkJbcVIohhxpJnLap07MwZXlSquRgCeTkiPp2YTxEte
-         maItIY05EXnSPWvSAO8KXFMKq5xouooO3HE/0SM8Z5ZNNnDSb9POp5C0RsIBRkBiPnd8
-         qBlvE6/H7aATiHRxnniZlQu+smiiMr1PMCiAHDsgzS+2Bntt4EpALyDlMHf1BRcyhwkm
-         Xk6FrTQotrnboRGhHO29VBnE7TYd0/skUZtl8wm0nfALqD9hcjGGFmSVmgxXYKEybgsY
-         w+uUdjb0J6xPLwi+0wFK8LY9plf2rDzXR+Q9aZd8h4OJDafTnol0+blIJWqPVnyFaTqN
-         GFdg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fQwJ/zQI4XXD5wXIIQJHRYMn67QDCXvxmnE6LCbaUCE=;
+        b=qTEAK4tRyH4x/S/RzWc+M30mi2lTlMlw3UzKWioAlIDViZWSmDL0AjBLutltWjD5v5
+         eqmtu6MeLN1VH4iwVptk5nSvHaaWRW5UdDDDWnNwFu+Po1khJu044RWX4VrK1hCvLuod
+         1LhA585YyLy3ngI43N3yf2vVqMt+jT0B9ocEcgw7cVYg8JsTJE6I6lfoMgyA6kuK88YE
+         gTasTRbvxiU+rgKxg2oF34VkCIrqwDKtYDsiLQyHgHLRbViiE/sBI9gjlZnIrVJ4nrgV
+         MmdH9DRtYt0d4f/47cYFngt4Rj1r6ViU9zENXTcxD1Uo4xIk1rZlKJ6PLnqgVnu4kTco
+         AOow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6XEbGkPVwRDanX/I2P6uhWlodWlqXcGCFNj2dY44RU0=;
-        b=GnuPhmv1eEfbh8FzTNPWqXm4zl30zAuPgO1vRxnL4bALh2BThoOguNP9GL48KQI3oP
-         vzeGYJTRRBcLQDLL/HPUL9gqI0gSNhMSHc13Uo9BPSvAO21PDp4euTWIQwaA3pFBEwes
-         cITKgjsom5xnsmnDXIdL40WuK3HWlcvtLKyoXeHEWhJTzIYQ2wGAd7dIi7AcUoaCV7Gl
-         qTcUFW8obZ0DS80t/Hj42uLxMwA4bk6WfhVaJL1t4ncNxAkFihBAMI5nVGu38YARZZGY
-         pgiRODEs8l24/t1o5Z2VC73Xm1zz7Yu75a5lmigBdzQHYr8xT5bDnjNM6216kS1goc/y
-         3Row==
-X-Gm-Message-State: AOAM533b0xxq+OU4d4BHFRUqwIsE9xYnbysTAu5tr23Lm2Nd8EaGrchb
-        c2raStvRs0epBkK0GgpBt1TOSw==
-X-Google-Smtp-Source: ABdhPJzQPpAHrtaGK4/DtxiUE2mB5Qyjs5gxlhcr/XuwWqjBx8Li6i+JvRM3AMei68AePo/MRKvs3Q==
-X-Received: by 2002:a65:494f:: with SMTP id q15mr2854002pgs.367.1610426930315;
-        Mon, 11 Jan 2021 20:48:50 -0800 (PST)
-Received: from localhost ([122.172.85.111])
-        by smtp.gmail.com with ESMTPSA id p8sm1172317pjf.11.2021.01.11.20.48.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 11 Jan 2021 20:48:49 -0800 (PST)
-Date:   Tue, 12 Jan 2021 10:18:47 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH V3 2/2] scripts: dtc: Build fdtoverlay and fdtdump tools
-Message-ID: <20210112044847.e6aiaskvllgcll6z@vireshk-i7>
-References: <CAK7LNAQT5nVHGAZDhj4dct0v8UMzQ+-mdfBXJsfedR-7mZTnyA@mail.gmail.com>
- <72c3a4f63dde3c172c11153e9a5b19fb6cdb4498.1610000585.git.viresh.kumar@linaro.org>
- <94990759-34ff-0f4a-c913-dbcc679219be@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fQwJ/zQI4XXD5wXIIQJHRYMn67QDCXvxmnE6LCbaUCE=;
+        b=MlZzgMj1gcy1xtXAkULNbwq/SXyKWDtGYcHRtC2xIMJg1BD7QYwWVd437+SGRSh3zI
+         zMV5V3YT/Ro02GTA/URFOBVtI56bKpl4i6mgA9heexE4foDEKMMzYXyL5f88dKcos/1H
+         z0uxu75NKNZNkJIU0cGTIO4nwe2bKGEB29MgYF5onGQTQoAXdQlGt3ktI+sGVVF+tcqu
+         dxPH/qq7g7/4/htbU5T7hMF0tpbu61Y7YM3KxKXjwBImPYvq60EXZ9CKOPROyrVJJzVk
+         z/yW7QQsRQYGoYnhRR64CAKnvj78nvQkKe4nZKRpWdgZf1jpidJOVxepAhN41RG3qBNr
+         IQiA==
+X-Gm-Message-State: AOAM533gv06Ah8u3jAv4EfxjT9F+fsgeF2rejLJX4Ub6CjlA7l3n4bQ+
+        JDoNzIebDpm6wLeQTjPvigo=
+X-Google-Smtp-Source: ABdhPJzBS/UnLHLWQiJGrLtphGPTbikgOrMy5d7J9tAAgZjrzP9a7iV628YN9cc/b1KAw7N0/vgBuA==
+X-Received: by 2002:a02:2ace:: with SMTP id w197mr2641353jaw.132.1610427025994;
+        Mon, 11 Jan 2021 20:50:25 -0800 (PST)
+Received: from localhost.localdomain ([156.146.36.246])
+        by smtp.gmail.com with ESMTPSA id e5sm475174ilu.27.2021.01.11.20.50.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Jan 2021 20:50:25 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     rostedt@goodmis.org, mingo@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] kernel: trace: uprobe:  Fix word to the correct spelling
+Date:   Tue, 12 Jan 2021 10:20:08 +0530
+Message-Id: <20210112045008.29834-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <94990759-34ff-0f4a-c913-dbcc679219be@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11-01-21, 18:55, Frank Rowand wrote:
-> Hi Viresh,
-> 
-> I may have an email hiccup,
+s/controling/controlling/p
 
-No you don't, I just sent the 2nd patch alone.
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ kernel/trace/trace_uprobe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> but I don't see a "[PATCH V3 1/2]" email, I
-> only see this "V3 2/2" email.
-> 
-> Please start each new version of a patch series as a stand alone email
-> instead of a reply to an email in a previous version of the series.
-> That way each patch series discussion stands out as a separate thread.
-> 
-> Also each version of the patch series needs to include all of the patches
-> in the current version, even if they are unchanged from the previous
-> version.
+diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+index 3cf7128e1ad3..55c6afd8cb27 100644
+--- a/kernel/trace/trace_uprobe.c
++++ b/kernel/trace/trace_uprobe.c
+@@ -1635,7 +1635,7 @@ void destroy_local_trace_uprobe(struct trace_event_call *event_call)
+ }
+ #endif /* CONFIG_PERF_EVENTS */
 
-Sure, just that some people like to just bump individual patches until
-the time there is an agreement and then send the whole stuff together.
+-/* Make a trace interface for controling probe points */
++/* Make a trace interface for controlling probe points */
+ static __init int init_uprobe_trace(void)
+ {
+ 	int ret;
+--
+2.26.2
 
-I will send the whole stuff going forward whenever the versions
-change.
-
-Thanks Frank.
-
--- 
-viresh
