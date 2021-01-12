@@ -2,134 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047482F408C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:56:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3D52F4089
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393502AbhAMAm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2393526AbhAMAm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Jan 2021 19:42:57 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:47212 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392043AbhALXzf (ORCPT
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392044AbhALX4U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 18:55:35 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 61D1F20B6C40;
-        Tue, 12 Jan 2021 15:54:53 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 61D1F20B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1610495694;
-        bh=PPvEFYlKw1YG/P3Rr6NSYflDbfN80tOd8sdd+MreVdE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=eamBIPdPY7NZ8L9C0P2dgoxOnkL/4nPiW47IusIGhqnc21MlvZ5cHj4A9tVcbC72I
-         O9Mcs4SFllqRz8v8FAM/VrSjMxL7728nI3eLZnDJXubZ1h1c0jyrKA+l2+YdXsYuoG
-         Foc5iFdU61xwKCJGamTAwRxxdHOARqnjByyGrQ3U=
-Subject: Re: [PATCH v14 6/6] arm64: Add IMA log information in kimage used for
- kexec
-To:     Mimi Zohar <zohar@linux.ibm.com>, bauerman@linux.ibm.com,
-        robh@kernel.org, takahiro.akashi@linaro.org,
-        gregkh@linuxfoundation.org, will@kernel.org,
-        catalin.marinas@arm.com, mpe@ellerman.id.au
-Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        paulus@samba.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
-        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@vger.kernel.org
-References: <20210104192602.10131-1-nramas@linux.microsoft.com>
- <20210104192602.10131-7-nramas@linux.microsoft.com>
- <4fef02cb3b330128e6d5d9bc9aab4d7e603d2945.camel@linux.ibm.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <45b60441-eb0d-4c02-6f6c-ea2f02bf1ee3@linux.microsoft.com>
-Date:   Tue, 12 Jan 2021 15:54:52 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 12 Jan 2021 18:56:20 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04430C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:55:39 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id z1so462471ybr.4
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 15:55:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JVS5gta/W5fKENcKMVtSED2Xmo0P+djwZKSnAxC5LLw=;
+        b=TTztE3sDUeLh5WEJC9RSYJ3JJP2AZ4SmKSVyaKKsG1l6YRRhOwenfSBR5gK2ccQf39
+         1J1hdW7e85EaRv1MAKm8frV9ic+n9TdJOxHqfrkTjzmmbJCajOw31jc/8rWGJgwA5M/P
+         oCUwgEaL/Gdllspkc76F3GGIVOzBPXIs9XXRg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JVS5gta/W5fKENcKMVtSED2Xmo0P+djwZKSnAxC5LLw=;
+        b=ue1kXaZ1LWsgQPViOVceggYRBmtNxN//i/7BWL6lqxgCRPb/7o8/AnQIzXrU6UAUwT
+         mOKi5uBEyqk+8Ff4nXKQEG79AoeodZ380MmjN79vmcnR//8zHSfRFOQoogy1ko6P0Z/E
+         ryX5WNoinZhiwCRJGmJpclmWj4qlaLbxsp3r8AWwcGsKbql/TLYFtp/b/B8QcocwTuIi
+         68WOyDMEvySbZsOg4lo3pAOtmgEiAAu+/P+vCd53fIuf98y1hTtTRjAkY4BETUzpsxKC
+         URMUHCs8Ndi5yiUB0A36OPDCskwe/SdOYUK2dcNTdMIdhqtMefqUhb7W0IiduzKGxOgD
+         sBAA==
+X-Gm-Message-State: AOAM53315S/Kyx9S045NfXWI8s0q6VnHg4Q9rRj7Kh7WaWibOBpHU1tF
+        6H3cXmxP9f6TLHyhputcXkCPTgpKFiTsuE87sbyI0g==
+X-Google-Smtp-Source: ABdhPJwnnOZbBZWkjzImc2GwItpOeZbkk5ZIgsHeBXyOCLzlNkqRdx60gxPzKjI0RO1KM8JkgoKG+MPmzzPaE8G3BYs=
+X-Received: by 2002:a25:1104:: with SMTP id 4mr2721504ybr.476.1610495739211;
+ Tue, 12 Jan 2021 15:55:39 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4fef02cb3b330128e6d5d9bc9aab4d7e603d2945.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210107154200.v4.1.I025fb861cd5fa0ef5286b7dce514728e9df7ae74@changeid>
+ <20210107154200.v4.2.Ibe7d7d53c5b4fe72c60de90111ff763b53f38dbb@changeid> <161041827643.3661239.17919996906733477213@swboyd.mtv.corp.google.com>
+In-Reply-To: <161041827643.3661239.17919996906733477213@swboyd.mtv.corp.google.com>
+From:   Philip Chen <philipchen@chromium.org>
+Date:   Tue, 12 Jan 2021 15:55:28 -0800
+Message-ID: <CA+cxXhm45emyg-9j99U=UWY8QuhzWifh+VvsFBaTOTWs81tvUQ@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] Input: cros-ec-keyb - Expose function row physical
+ map to userspace
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>, linux-input@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/12/21 3:28 PM, Mimi Zohar wrote:
-> Hi Lakshmi,
-> 
-> On Mon, 2021-01-04 at 11:26 -0800, Lakshmi Ramasubramanian wrote:
->> Address and size of the buffer containing the IMA measurement log need
->> to be passed from the current kernel to the next kernel on kexec.
->>
->> Any existing "linux,ima-kexec-buffer" property in the device tree
->> needs to be removed and its corresponding memory reservation in
->> the currently running kernel needs to be freed. The address and
->> size of the current kernel's IMA measurement log need to be added
->> to the device tree's IMA kexec buffer node and memory for the buffer
->> needs to be reserved for the log to be carried over to the next kernel
->> on the kexec call.
->>
->> Add address and size fields to "struct kimage_arch" for ARM64 platform
->> to hold the address and size of the IMA measurement log buffer. Remove
->> any existing "linux,ima-kexec-buffer" property in the device tree and
->> free the corresponding memory reservation in the currently running
->> kernel. Add "linux,ima-kexec-buffer" property to the device tree and
->> reserve the memory for storing the IMA log that needs to be passed from
->> the current kernel to the next one.
->>
->> Update CONFIG_KEXEC_FILE to select CONFIG_HAVE_IMA_KEXEC to indicate
->> that the IMA measurement log information is present in the device tree
->> for ARM64.
-> 
-> Perhaps for some previous version of this patch set, this patch
-> description was appropriate, but for the code below it's kind of
-> overkill.
-> 
-
-I agree Mimi. Will edit the patch description.
-
-thanks,
-  -lakshmi
-
->>
->> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
->> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
->> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->> ---
->>   arch/arm64/Kconfig             | 1 +
->>   arch/arm64/include/asm/kexec.h | 5 +++++
->>   2 files changed, 6 insertions(+)
->>
->> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
->> index a6b5b7ef40ae..312b4d5ad232 100644
->> --- a/arch/arm64/Kconfig
->> +++ b/arch/arm64/Kconfig
->> @@ -1095,6 +1095,7 @@ config KEXEC
->>   config KEXEC_FILE
->>   	bool "kexec file based system call"
->>   	select KEXEC_CORE
->> +	select HAVE_IMA_KEXEC if IMA
->>   	help
->>   	  This is new version of kexec system call. This system call is
->>   	  file based and takes file descriptors as system call argument
->> diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
->> index d24b527e8c00..2bd19ccb6c43 100644
->> --- a/arch/arm64/include/asm/kexec.h
->> +++ b/arch/arm64/include/asm/kexec.h
->> @@ -100,6 +100,11 @@ struct kimage_arch {
->>   	void *elf_headers;
->>   	unsigned long elf_headers_mem;
->>   	unsigned long elf_headers_sz;
->> +
->> +#ifdef CONFIG_IMA_KEXEC
->> +	phys_addr_t ima_buffer_addr;
->> +	size_t ima_buffer_size;
->> +#endif
->>   };
->>   
->>   extern const struct kexec_file_ops kexec_image_ops;
-> 
-
+On Mon, Jan 11, 2021 at 6:24 PM Stephen Boyd <swboyd@chromium.org> wrote:
+>
+> Quoting Philip Chen (2021-01-07 15:42:09)
+> > The top-row keys in a keyboard usually have dual functionalities.
+> > E.g. A function key "F1" is also an action key "Browser back".
+> >
+> > Therefore, when an application receives an action key code from
+> > a top-row key press, the application needs to know how to correlate
+> > the action key code with the function key code and do the conversion
+> > whenever necessary.
+> >
+> > Since the userpace already knows the key scanlines (row/column)
+> > associated with a received key code. Essentially, the userspace only
+> > needs a mapping between the key row/column and the matching physical
+> > location in the top row.
+> >
+> > This patch enhances the cros-ec-keyb driver to create such a mapping
+> > and expose it to userspace in the form of a function-row-physmap
+> > attribute. The attribute would be a space separated ordered list of
+> > row/column codes, for the keys in the function row, in a left-to-right
+> > order.
+> >
+> > The attribute will only be present when the device has a custom design
+> > for the top-row keys.
+>
+> Is it documented in Documentation/ABI/?
+Not yet.
+Is it proper to add the documentation to `testing/sysfs-driver-input-keyboard`?
+>
+> >
+> > Signed-off-by: Philip Chen <philipchen@chromium.org>
+> > ---
+> >
+> > Changes in v4:
+> > - replace sysfs_create_group() with devm_device_add_group()
+> > - remove an unused member in struct cros_ec_keyb
+> >
+> > Changes in v3:
+> > - parse `function-row-physmap` from DT earlier, when we probe
+> >   cros_ec_keyb, and then store the extracted info in struct cros_ec_keyb.
+> >
+> > Changes in v2:
+> > - create function-row-physmap file in sysfs by parsing
+> >   `function-row-physmap` property from DT
+> > - assume the device already has a correct keymap to reflect the custom
+> >   top-row keys (if they exist)
+> >
+> >  drivers/input/keyboard/cros_ec_keyb.c | 78 +++++++++++++++++++++++++++
+> >  1 file changed, 78 insertions(+)
+> >
+> > diff --git a/drivers/input/keyboard/cros_ec_keyb.c b/drivers/input/keyboard/cros_ec_keyb.c
+> > index b379ed7628781..75d1cb29734ce 100644
+> > --- a/drivers/input/keyboard/cros_ec_keyb.c
+> > +++ b/drivers/input/keyboard/cros_ec_keyb.c
+> > @@ -27,6 +27,8 @@
+> >
+> >  #include <asm/unaligned.h>
+> >
+> > +#define MAX_NUM_TOP_ROW_KEYS   15
+> > +
+>
+> Ah, the binding could say max is 15 then.
+Yes, I'll add the documentation to PATCH 1/2.
+>
+> >  /**
+> >   * struct cros_ec_keyb - Structure representing EC keyboard device
+> >   *
+> > @@ -42,6 +44,9 @@
+> >   * @idev: The input device for the matrix keys.
+> >   * @bs_idev: The input device for non-matrix buttons and switches (or NULL).
+> >   * @notifier: interrupt event notifier for transport devices
+> > + * @function_row_physmap: An array of the encoded rows/columns for the top
+> > + *                        row function keys, in an order from left to right
+> > + * @num_function_row_keys: The number of top row keys in a custom keyboard
+> >   */
+> >  struct cros_ec_keyb {
+> >         unsigned int rows;
+> > @@ -58,6 +63,9 @@ struct cros_ec_keyb {
+> >         struct input_dev *idev;
+> >         struct input_dev *bs_idev;
+> >         struct notifier_block notifier;
+> > +
+> > +       u16 function_row_physmap[MAX_NUM_TOP_ROW_KEYS];
+> > +       u8 num_function_row_keys;
+>
+> Why not size_t?
+I usually try to use the minimal required bytes for variables, even
+for local ones.
+In this case, we only need one byte for num_function_row_keys.
+Are there any reasons why size_t is better?
+>
+> >  };
+> >
+> >  /**
+> > @@ -527,6 +535,8 @@ static int cros_ec_keyb_register_matrix(struct cros_ec_keyb *ckdev)
+> >         struct input_dev *idev;
+> >         const char *phys;
+> >         int err;
+> > +       u32 top_row_key_pos[MAX_NUM_TOP_ROW_KEYS] = {0};
+> > +       u8 i;
+> >
+> >         err = matrix_keypad_parse_properties(dev, &ckdev->rows, &ckdev->cols);
+> >         if (err)
+> > @@ -578,6 +588,22 @@ static int cros_ec_keyb_register_matrix(struct cros_ec_keyb *ckdev)
+> >         ckdev->idev = idev;
+> >         cros_ec_keyb_compute_valid_keys(ckdev);
+> >
+> > +       if (of_property_read_variable_u32_array(dev->of_node,
+> > +                                               "function-row-physmap",
+> > +                                               top_row_key_pos,
+> > +                                               0,
+> > +                                               MAX_NUM_TOP_ROW_KEYS) > 0) {
+> > +               for (i = 0; i < MAX_NUM_TOP_ROW_KEYS; i++) {
+>
+> Can we deindent this once with of_property_for_each_u32()?
+Sure, will do.
+>
+> > +                       if (!top_row_key_pos[i])
+> > +                               break;
+> > +                       ckdev->function_row_physmap[i] = MATRIX_SCAN_CODE(
+> > +                                               KEY_ROW(top_row_key_pos[i]),
+> > +                                               KEY_COL(top_row_key_pos[i]),
+>
+> And then have a local variable for top_row_key_pos[i] so this is
+> shorter.
+Sure, will do.
+>
+> > +                                               ckdev->row_shift);
+> > +               }
+> > +               ckdev->num_function_row_keys = i;
+> > +       }
+> > +
+> >         err = input_register_device(ckdev->idev);
+> >         if (err) {
+> >                 dev_err(dev, "cannot register input device\n");
+> > @@ -587,6 +613,52 @@ static int cros_ec_keyb_register_matrix(struct cros_ec_keyb *ckdev)
+> >         return 0;
+> >  }
+> >
+> > +static ssize_t function_row_physmap_show(struct device *dev,
+> > +                                        struct device_attribute *attr,
+> > +                                        char *buf)
+> > +{
+> > +       ssize_t size = 0;
+> > +       u8 i;
+>
+> int i? Why u8? Surely the size of a local variable isn't important.
+The same reason as "u8 num_function_row_keys".
+Is int better in this case?
+>
+> > +       struct cros_ec_keyb *ckdev = dev_get_drvdata(dev);
+> > +
+> > +       if (!ckdev->num_function_row_keys)
+> > +               return 0;
+> > +
+> > +       for (i = 0; i < ckdev->num_function_row_keys; i++)
+> > +               size += scnprintf(buf + size, PAGE_SIZE - size, "%02X ",
+> > +                                 ckdev->function_row_physmap[i]);
+> > +       size += scnprintf(buf + size, PAGE_SIZE - size, "\n");
+> > +
+> > +       return size;
+>
+> I'd rather see
+>
+>         ssize_t size = 0;
+>         int i;
+>         struct cros_ec_keyb *ckdev = dev_get_drvdata(dev);
+>         u16 *physmap = ckdev->function_row_physmap;
+>
+>         for (i = 0; i < ckdev->num_function_row_keys; i++)
+>                 size += scnprintf(buf + size, PAGE_SIZE - size,
+>                                   "%s%02X", size ? " " : "", physmap[i]);
+>
+>         if (size)
+>                 size += scnprintf(buf + size, PAGE_SIZE - size, "\n");
+>
+>         return size;
+>
+> And I wonder if hex_dump_to_buffer() works for this?
+It seems to work? I'll give it a try.
+If hex_dump_to_buffer() doesn't work, I'll fall back to the
+implementation you suggested above.
+Thanks!
