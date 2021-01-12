@@ -2,147 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80062F328B
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:04:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9A82F3289
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:04:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389562AbhALODe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:03:34 -0500
-Received: from mail-eopbgr140050.outbound.protection.outlook.com ([40.107.14.50]:47843
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387695AbhALODc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:03:32 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FmhR/LCBvscoLYGiAPEIRHSbglWw5FNqObxAkhyPsbHQgk574w6N1PlB5w15jEnbF0yXXqrWFqhgxvkbb/Ens9BqFRwU5Ll6qvF/6io7TfqbD4jkVwvlHpancMPMdsyC13ifYPQcnb86Z04HkZwklB4f4pqTMaJaxToYo3nfKdRmIR5ZSkYniMb/7toR5ycPx7Pl7kL2eBlOvm9EfcB2xEwQK0U2HoW+XipsZprhKgK1Nd68UEzph2VSWlKYASbYenq8Rj8tPwWWBN7AM/lCDpbeOB+GNrRUYl6DlL6jgFuEN4vDPhXwfDNbZC3f/IOmY+ZmGD/XhL4+wM26IapeDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ehBycB5eXTd3bmYogDncW5KLnftnx2BuFFovkO4PtKs=;
- b=oajjP3GbLr8Jx0aVfgy02Xm7vSV5W8/+IfisF3fxfJO2njPSNAmSWv/dK8lFCj2PqIBC2BUfs06XkS4vYt7Lpe1qA1jN5bPApAQUASJz/ArKsSHIw2fwny9N8WmRvWvB7fUgyktIJuMJ8gepgkkxkOARa1V1PBnBycXA6RQAVz5gihmYKz0fntLC9DSXsvO0GAiaxD5g4UI17drfgxF3pDSzU/3piS5ZoUsvfpzejg1ATQGWC3tvYmCfM1zlCP7VfQmdo+LuUBegbQyjPNjLaTm29bB1UGHw+H1XeQzJFBHLp29AX5gth/IbNup4TUmy1IsmYLiC+JT7uFFNWPsHjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ehBycB5eXTd3bmYogDncW5KLnftnx2BuFFovkO4PtKs=;
- b=WW6PyNSgmJ9Dk2C/wr+oIRq7HGyGgf1IhbG6ueaPTB4EY6HGNkubVH5Yf7QT2a5JYEAjC8D5X614nT0AEIo3tR0Gsr/2MD7eAyDqv/RcEW7hwq3WjQ4b3FQbA5GuQlNmCssBAwJoEiR6lzcxoc03Jnisyjc+JXfuOHdrXy6Wh6g=
-Authentication-Results: st.com; dkim=none (message not signed)
- header.d=none;st.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from VI1PR0401MB2671.eurprd04.prod.outlook.com
- (2603:10a6:800:55::10) by VI1PR04MB4318.eurprd04.prod.outlook.com
- (2603:10a6:803:47::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9; Tue, 12 Jan
- 2021 14:02:43 +0000
-Received: from VI1PR0401MB2671.eurprd04.prod.outlook.com
- ([fe80::dd31:2096:170b:c947]) by VI1PR0401MB2671.eurprd04.prod.outlook.com
- ([fe80::dd31:2096:170b:c947%5]) with mapi id 15.20.3742.012; Tue, 12 Jan 2021
- 14:02:43 +0000
-From:   Sebastien Laveze <sebastien.laveze@oss.nxp.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     linux-rt-users@vger.kernel.org
-Subject: [PATCH net] net: stmmac: use __napi_schedule() for PREEMPT_RT
-Date:   Tue, 12 Jan 2021 15:01:22 +0100
-Message-Id: <20210112140121.1487619-1-sebastien.laveze@oss.nxp.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [84.102.252.120]
-X-ClientProxiedBy: AM3PR04CA0131.eurprd04.prod.outlook.com (2603:10a6:207::15)
- To VI1PR0401MB2671.eurprd04.prod.outlook.com (2603:10a6:800:55::10)
+        id S2388261AbhALODO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:03:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45169 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387752AbhALODM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 09:03:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610460106;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g5hRSkHHWOdbmUsMs75Gf2Bt4kYflDDkT2OYvb6EzB8=;
+        b=T6v3xVNHXd6PLearnOH2shNfWJNeqf52cCHbHhb5VeAIevCv5lFv0Gw1fBGSmA/1rXMpwe
+        9lvc0nHJTOplN1KMFMlcTA0sVJWeYtxQoW3acPTUBqlxId4d9KCle0wae0iqzOfoKFK4W5
+        RHAfqe/3Ay4JA3/uGDin+m+rt/2stRA=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-566-2Xekcf8MN_OUc3YC9ZDwjA-1; Tue, 12 Jan 2021 09:01:43 -0500
+X-MC-Unique: 2Xekcf8MN_OUc3YC9ZDwjA-1
+Received: by mail-ej1-f72.google.com with SMTP id lw15so1037236ejb.7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 06:01:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=g5hRSkHHWOdbmUsMs75Gf2Bt4kYflDDkT2OYvb6EzB8=;
+        b=VT6oim26dG8/y6b3XtzbAYkZ6OJfITzGiM88nDcqmq7rBqQl3xheCkBxiZE4XrqLpZ
+         vmqJyAxhat889ctZzUWQVL1APxiAPyde25skgUPKtcnmQe0IVuy9ENgJpXkl3yf/uMFB
+         sNzENO/XCEFABHQhCNB9VLcsNUaCzNvJEaMOXnOqusSChPXbZpmNmWuUCETOJOgjbUk0
+         FDzkFRm1pM9KcRzOAtutdqCIbvV9jGf+EyhVp5op6anazMWy/3x3+W60omdQxHD+2Sn0
+         0na0La/idc4WKR2Yt2cbnhVcFkgQ4x5k3uzXGTi4kW8XiHxLtNvlYnGXoBWXs4Y+DG/T
+         HmNA==
+X-Gm-Message-State: AOAM530FPpYKTkq6wbtw5E4Mi456X+uO4uvPilCdvaaP+baArWufCcos
+        ChpQwy3uyPfIbaM0Np9jAXv64sWmqwEH97L4JpvYCLL4HQenxULEF8+DUD2LDWSEIPhl2oAM+8x
+        d2/3Uscz7TmvUzAPa5GNDa/IS
+X-Received: by 2002:a50:fe0e:: with SMTP id f14mr3606953edt.159.1610460102384;
+        Tue, 12 Jan 2021 06:01:42 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxap/eHgcmvgWYqAcOrKRYNkiV+MI52ktIVcm0XqSPw9F27Ri+yoLTHdHtjOHHLYJvKzknNVA==
+X-Received: by 2002:a50:fe0e:: with SMTP id f14mr3606930edt.159.1610460102224;
+        Tue, 12 Jan 2021 06:01:42 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id dd12sm1497632edb.6.2021.01.12.06.01.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jan 2021 06:01:41 -0800 (PST)
+To:     Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, vkuznets@redhat.com,
+        seanjc@google.com, joro@8bytes.org, bp@alien8.de,
+        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
+        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
+        dgilbert@redhat.com, mlevitsk@redhat.com
+References: <20210112063703.539893-1-wei.huang2@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 1/2] KVM: x86: Add emulation support for #GP triggered by
+ VM instructions
+Message-ID: <090232a9-7a87-beb9-1402-726bb7cab7e6@redhat.com>
+Date:   Tue, 12 Jan 2021 15:01:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (84.102.252.120) by AM3PR04CA0131.eurprd04.prod.outlook.com (2603:10a6:207::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Tue, 12 Jan 2021 14:02:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 94f2fb19-e0ce-4790-1358-08d8b702bb22
-X-MS-TrafficTypeDiagnostic: VI1PR04MB4318:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB4318179CA2A00AE0EC5FF089CDAA0@VI1PR04MB4318.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: drSEMZEBU3OGZJ5Xmf/E9xm644l1/ZuE4mc27zbGR/gpNv8bn/sWro4CCxba3+kxSeAUiy2lLlW8rQcDmzPGVvNYzSh3u64sbs5eZEE2QAH7rpbOOBQe+v6ioB4n+KAtx6rXZ48JAjLBBJ/fxFB8daoIMiSZ58fguX7nhJgV7ix2893rFQW4JHz0uKDpAl27UdlqxkC2nqD5esZshc9pXyx8T+jDB9x8ipmlyj+h3jOxjYbLp5DFcrbQWmo/RMERBkL28/tvuZLZIFTjgzTuQdpyzUmL/HIukeXFab6SpcuTb5EQUTYZqs3Ga9lDIGW1r6T59h7ZE+U6Gx68oEhfp+zYywR3HBxOthXLO1N3FjxZwNwgVA9VWgdtMypcdTP+j1CjpZOpJPJ0HeaFwjJdWOjfqHqYLhZZGE9JzcN73ftdHZfXuYI0c0eXL6lY0da9GcdJXWemrvCfXbE7I9Aecg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2671.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(136003)(39850400004)(396003)(26005)(7416002)(16526019)(6486002)(186003)(2616005)(5660300002)(956004)(8676002)(83380400001)(6512007)(2906002)(921005)(4326008)(1076003)(52116002)(110136005)(8936002)(6506007)(66476007)(44832011)(66946007)(66556008)(86362001)(478600001)(6666004)(69590400011)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?8Z/0PkI/Glfe2z/CCMLrMoYms8rqXRumPm9avjfuCkkg5ebqL4QVuLThSwBP?=
- =?us-ascii?Q?zWeDYs6c4tHmKJWUIfUeg9pXSDaJyQlDYO70r1MvGVD8lh7PhGE0vlAF5oVI?=
- =?us-ascii?Q?Ae7aHtAYZGPUYMU2vUD6IcbZCWjl+LqhSKffVYgUfbTOdlLQAWZEk7W7OaCJ?=
- =?us-ascii?Q?zQaJTg4FZhb4PCRmdxsegTFpxRtGyZi7pnMVEHAEw+D0FPayOOp6So0vrvp0?=
- =?us-ascii?Q?S6zUS/y8otd7RO7r3giVoyssZGkaMI5GOS6fR/jyAvXhiUttmN/lvu6MX13M?=
- =?us-ascii?Q?9uRLUf/JUbB4LrY7rHTcPkHRFBR0bQkXEazfd16lIXiSZXgh5oaxEAIEgcFZ?=
- =?us-ascii?Q?9q2FVJEF6rrxmkQxhiF0hZcNY2dGmgJA4vwD0689N4xPC4k/6kM2SKMhXcZd?=
- =?us-ascii?Q?is1jCAJIWfprlgGt6FzQy+bwWT43zRJDeeQ+q4QXQetDwxczckcgTvHo0Sjp?=
- =?us-ascii?Q?D30ABDdDdPumsZjSL8/BxhjH9Zqt1l2BxhliGY7rgSZnVK0v9ku+DlCUMCMy?=
- =?us-ascii?Q?O6ShXfLjGbcfHzIcJKhVIdHWdf3BzIHj4QHZ5AfGXtk29FpAtOqUW6/b/9Jw?=
- =?us-ascii?Q?hKJLDg1RTQxl10lbunlve6mveKpT48mukOHfJjluLoampWBAlYUueKMepMog?=
- =?us-ascii?Q?LDfNyfUhs9s64FI2MFbCFG9LDeiu3jZgkKzVLpTlIFHjifAZweXMYSUTdGhI?=
- =?us-ascii?Q?q5nnms5tpNdrde3i8z4S6sNbIKmQursHG5VvOzOGOnKj70fs/Of6NMCCEUGr?=
- =?us-ascii?Q?dI5fP6TjslW1TvUagpqVGJ8W0TH7TO3a1XLWl7buZIX2m2G5gBAy7IOBHNDl?=
- =?us-ascii?Q?v/s8JibEK6qCtMXlGva2DJ7zcchpASC0GUJB5IkfsDTzvk8l5JMWVOX0d5Aq?=
- =?us-ascii?Q?2THf1Vpf0ZcSo8JW+/kaGt1jwte82ot8WuOGamPyvwDjBXAqGXNI4m03ByFX?=
- =?us-ascii?Q?3f/Wu7OnHguCOIyqmK50Rm+w0UPq3z8Y+AeIFxW3RnWlIfM2i8MyoAL4R9YZ?=
- =?us-ascii?Q?s9Yh?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2671.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jan 2021 14:02:42.8866
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94f2fb19-e0ce-4790-1358-08d8b702bb22
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DBXZVWb1ihzz3hOlAcHFwKWLETcUNxu4FA5j0zRTckibPah5DbGHivFumNNwA9BD3Yt1k927X5lbzmIT5azjZOFR9wZtllHRhUQOCTRsMUE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4318
+In-Reply-To: <20210112063703.539893-1-wei.huang2@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Seb Laveze <sebastien.laveze@nxp.com>
+On 12/01/21 07:37, Wei Huang wrote:
+>   static int gp_interception(struct vcpu_svm *svm)
+>   {
+>   	struct kvm_vcpu *vcpu = &svm->vcpu;
+>   	u32 error_code = svm->vmcb->control.exit_info_1;
+> -
+> -	WARN_ON_ONCE(!enable_vmware_backdoor);
+> +	int rc;
+>   
+>   	/*
+> -	 * VMware backdoor emulation on #GP interception only handles IN{S},
+> -	 * OUT{S}, and RDPMC, none of which generate a non-zero error code.
+> +	 * Only VMware backdoor and SVM VME errata are handled. Neither of
+> +	 * them has non-zero error codes.
+>   	 */
+>   	if (error_code) {
+>   		kvm_queue_exception_e(vcpu, GP_VECTOR, error_code);
+>   		return 1;
+>   	}
+> -	return kvm_emulate_instruction(vcpu, EMULTYPE_VMWARE_GP);
+> +
+> +	rc = kvm_emulate_instruction(vcpu, EMULTYPE_PARAVIRT_GP);
+> +	if (rc > 1)
+> +		rc = svm_emulate_vm_instr(vcpu, rc);
+> +	return rc;
+>   }
+>   
 
-Use of __napi_schedule_irqoff() is not safe with PREEMPT_RT in which
-hard interrupts are not disabled while running the threaded interrupt.
+Passing back the third byte is quick hacky.  Instead of this change to 
+kvm_emulate_instruction, I'd rather check the instruction bytes in 
+gp_interception before calling kvm_emulate_instruction.  That would be 
+something like:
 
-Using __napi_schedule() works for both PREEMPT_RT and mainline Linux,
-just at the cost of an additional check if interrupts are disabled for
-mainline (since they are already disabled).
+- move "kvm_clear_exception_queue(vcpu);" inside the "if 
+(!(emulation_type & EMULTYPE_NO_DECODE))".  It doesn't apply when you 
+are coming back from userspace.
 
-Similar to the fix done for enetc:
-215602a8d212 ("enetc: use napi_schedule to be compatible with PREEMPT_RT")
+- extract the "if (!(emulation_type & EMULTYPE_NO_DECODE))" body to a 
+new function x86_emulate_decoded_instruction.  Call it from 
+gp_interception, we know this is not a pagefault and therefore 
+vcpu->arch.write_fault_to_shadow_pgtable must be false.
 
-Signed-off-by: Seb Laveze <sebastien.laveze@nxp.com>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+- check ctxt->insn_bytes for an SVM instruction
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 5b1c12ff98c0..2d90d6856ec5 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -2184,7 +2184,7 @@ static int stmmac_napi_check(struct stmmac_priv *priv, u32 chan)
- 			spin_lock_irqsave(&ch->lock, flags);
- 			stmmac_disable_dma_irq(priv, priv->ioaddr, chan, 1, 0);
- 			spin_unlock_irqrestore(&ch->lock, flags);
--			__napi_schedule_irqoff(&ch->rx_napi);
-+			__napi_schedule(&ch->rx_napi);
- 		}
- 	}
- 
-@@ -2193,7 +2193,7 @@ static int stmmac_napi_check(struct stmmac_priv *priv, u32 chan)
- 			spin_lock_irqsave(&ch->lock, flags);
- 			stmmac_disable_dma_irq(priv, priv->ioaddr, chan, 0, 1);
- 			spin_unlock_irqrestore(&ch->lock, flags);
--			__napi_schedule_irqoff(&ch->tx_napi);
-+			__napi_schedule(&ch->tx_napi);
- 		}
- 	}
- 
--- 
-2.25.1
+- if not an SVM instruction, call kvm_emulate_instruction(vcpu, 
+EMULTYPE_VMWARE_GP|EMULTYPE_NO_DECODE).
+
+Thanks,
+
+Paolo
 
