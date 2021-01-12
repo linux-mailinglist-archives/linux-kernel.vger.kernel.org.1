@@ -2,49 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F312F3459
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:42:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C0E2F345B
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 16:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391894AbhALPkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 10:40:01 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:35948 "EHLO vps0.lunn.ch"
+        id S2391917AbhALPkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 10:40:32 -0500
+Received: from foss.arm.com ([217.140.110.172]:48580 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391743AbhALPkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 10:40:00 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kzLlH-000BIW-Ox; Tue, 12 Jan 2021 16:39:11 +0100
-Date:   Tue, 12 Jan 2021 16:39:11 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Bjarni Jonasson <bjarni.jonasson@microchip.com>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        UNGLinuxDriver <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH v1 2/2] sfp: add support for 100 base-x SFPs
-Message-ID: <X/3Cn5kxsaFhQvG0@lunn.ch>
-References: <20210111130657.10703-1-bjarni.jonasson@microchip.com>
- <20210111130657.10703-3-bjarni.jonasson@microchip.com>
- <20210111142245.GW1551@shell.armlinux.org.uk>
- <d7f934f9b4f45661e41fe7a35a044ea5e8ec1cad.camel@microchip.com>
+        id S2391706AbhALPkc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 10:40:32 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7FACC1FB;
+        Tue, 12 Jan 2021 07:39:46 -0800 (PST)
+Received: from [192.168.0.110] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 92BFB3F719;
+        Tue, 12 Jan 2021 07:39:44 -0800 (PST)
+Subject: Re: [PATCH 6/9] docs: kvm: devices/arm-vgic-v3: enhance
+ KVM_DEV_ARM_VGIC_CTRL_INIT doc
+To:     Eric Auger <eric.auger@redhat.com>, eric.auger.pro@gmail.com,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, maz@kernel.org, drjones@redhat.com
+Cc:     james.morse@arm.com, julien.thierry.kdev@gmail.com,
+        suzuki.poulose@arm.com, shuah@kernel.org, pbonzini@redhat.com
+References: <20201212185010.26579-1-eric.auger@redhat.com>
+ <20201212185010.26579-7-eric.auger@redhat.com>
+From:   Alexandru Elisei <alexandru.elisei@arm.com>
+Message-ID: <4c0b3988-904c-a922-d0be-87a354c3203c@arm.com>
+Date:   Tue, 12 Jan 2021 15:39:46 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d7f934f9b4f45661e41fe7a35a044ea5e8ec1cad.camel@microchip.com>
+In-Reply-To: <20201212185010.26579-7-eric.auger@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Not sure what you mean, the patch is above the comment (line 265 vs
-> 345).  The patch is on top of 5.10, is that the issue?
+Hi Eric,
 
-All networking patches for the next merge window should be against
-net-next. Please see:
+On 12/12/20 6:50 PM, Eric Auger wrote:
+> kvm_arch_vcpu_precreate() returns -EBUSY if the vgic is
+> already initialized. So let's document that KVM_DEV_ARM_VGIC_CTRL_INIT
+> must be called after all vcpu creations.
 
-https://www.kernel.org/doc/html/latest/networking/netdev-FAQ.html
+Checked and this is indeed the case,
+kvm_vm_ioctl_create_vcpu()->kvm_arch_vcpu_precreate() returns -EBUSY is
+vgic_initialized() is true.
 
-which talks about the different trees.
+>
+> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+> ---
+>  Documentation/virt/kvm/devices/arm-vgic-v3.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/virt/kvm/devices/arm-vgic-v3.rst b/Documentation/virt/kvm/devices/arm-vgic-v3.rst
+> index 5dd3bff51978..322de6aebdec 100644
+> --- a/Documentation/virt/kvm/devices/arm-vgic-v3.rst
+> +++ b/Documentation/virt/kvm/devices/arm-vgic-v3.rst
+> @@ -228,7 +228,7 @@ Groups:
+>  
+>      KVM_DEV_ARM_VGIC_CTRL_INIT
+>        request the initialization of the VGIC, no additional parameter in
+> -      kvm_device_attr.addr.
+> +      kvm_device_attr.addr. Must be called after all vcpu creations.
 
-      Andrew
+Nitpick here: the document writes VCPU with all caps. This also sounds a bit
+weird, I think something like "Must be called after all VCPUs have been created"
+is clearer.
+
+Thanks,
+Alex
+>      KVM_DEV_ARM_VGIC_SAVE_PENDING_TABLES
+>        save all LPI pending bits into guest RAM pending tables.
+>  
