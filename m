@@ -2,217 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037812F39A4
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4F12F39A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 20:06:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406704AbhALTFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 14:05:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40232 "EHLO
+        id S2406305AbhALTGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 14:06:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406667AbhALTFf (ORCPT
+        with ESMTP id S2405818AbhALTGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 14:05:35 -0500
-Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [IPv6:2001:4b7a:2000:18::165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13150C061575;
-        Tue, 12 Jan 2021 11:04:55 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 6BE821F8BE;
-        Tue, 12 Jan 2021 20:04:53 +0100 (CET)
-Subject: Re: [PATCH] arm64: dts: qcom: sdm660: Fix CPU capacities
-To:     Alexey Minnekhanov <alexey.min@gmail.com>,
-        Danny Lin <danny@kdrag0n.dev>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alexey Minekhanov <alexeymin@postmarketos.org>
-References: <20210112013127.414277-1-danny@kdrag0n.dev>
- <CANi4RBQCpWiyVLyBcevGcmRr=toPxVF2TrxFmM3vHHnYgaQVHg@mail.gmail.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <c6ecc6c0-3a95-0a4e-6a4d-d753dfaa2748@somainline.org>
-Date:   Tue, 12 Jan 2021 20:04:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 12 Jan 2021 14:06:45 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55A9C061786;
+        Tue, 12 Jan 2021 11:06:04 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id f26so2915575qka.0;
+        Tue, 12 Jan 2021 11:06:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Aih/vebqj0ZVCB2wb4N/cgF53cU8VglOtHrUsklmxqU=;
+        b=JmpysSxXVkjlgM2RboM3NFHelC3OaY2pawo/Nu5vhHtBfGOllENBWcRn/b4PvAZWcR
+         cIoLgYDXzIw04dGK3U1BHViukec/H10LzQGiPCL3k7/NymIMFUGnvExf5iHokBBUuwiT
+         XyZSKCgGTnkhvtxZoE8zDmswBXmFVyBCxJw1SPyXlNfrcfvFyH0TLRejsAjvkXKZyiqh
+         QaJvPOUFwGHMNLmIZToYxc+HTB/Ys0zpSJx1CfXRTjfDrf2AEsAaCoCFkdkEKL3H9TCx
+         +crlKKnlRlBuXB8UD0F01TYZrv+Oog4BTEESlGUi26mh75u7baXweO51nPdnlEwpytJ4
+         j4rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Aih/vebqj0ZVCB2wb4N/cgF53cU8VglOtHrUsklmxqU=;
+        b=k7tvEyLqLndDbj5u/8AvhMP4QiXv8XHmnjqYb6FSyhC8AXbC4Gpt2upwpXGP73/G+X
+         jZgQeQT1Hmoro0xZtktHJ7g9SY1zfmUQCzmcIjuvNUvIJ3Nl5PcXuE02dvR93DPVCyRT
+         yG3n9SdqU1HIuwS8B0KdZDEWKQi91RYgb5C6LrfauTnVW7O5Pqo8GOOPjiM5IuOg9JCn
+         ZGF4QCnHRgAjDAklpa2OsW83MlwXgmi4z5ueNEQV0Q04Y+w8sODxUl2/kLEIFiXTw7fo
+         pSD08zoqDVmNGx+t7A1cODeZuCIreNvdCd4shv1tx6xGuyocA+NeukSVGSTLRYt5nre/
+         w2ug==
+X-Gm-Message-State: AOAM532SJcfgyOt1wWnqFVux+U+0TpeXhyIK9nzxDX9vYobMtUpT6AXW
+        d28BxJYTrgb3RxXjhRsd4fPl7IqdYYrY5Q==
+X-Google-Smtp-Source: ABdhPJyG3FnkmfdCQqFzJYB5/4Fc5vznI53Hr2fgwqgRUdr1jgg41JUioOTrxV2OMnwxA0RjJ5O8ug==
+X-Received: by 2002:a37:9a91:: with SMTP id c139mr799212qke.151.1610478363902;
+        Tue, 12 Jan 2021 11:06:03 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id y67sm1805860qka.68.2021.01.12.11.06.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jan 2021 11:06:03 -0800 (PST)
+Subject: Re: [PATCH] of: unittest: Statically apply overlays using fdtoverlay
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
+ <1e42183ccafa1afba33b3e79a4e3efd3329fd133.1610095159.git.viresh.kumar@linaro.org>
+ <23e16d20-36eb-87d9-4473-142504ad8a95@gmail.com>
+ <CAL_JsqKqSVGCjcue=ka2=bB1Os9pczNTCqDeaoFPFfRxnvsteQ@mail.gmail.com>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <e549c7ce-d01e-08a3-9ed0-7325a34e9c29@gmail.com>
+Date:   Tue, 12 Jan 2021 13:06:02 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CANi4RBQCpWiyVLyBcevGcmRr=toPxVF2TrxFmM3vHHnYgaQVHg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAL_JsqKqSVGCjcue=ka2=bB1Os9pczNTCqDeaoFPFfRxnvsteQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 12/01/21 15:59, Alexey Minnekhanov ha scritto:
-> Hi!
-> I always had a feeling something is not right in those cpu
-> definitions, so cpus with reg 100-103 are little cores, and 0-3 big
-> ones?
-> But downstream sdm660.dtsi has a property "efficiency" [1] with values
-> which are larger for cores 100-103 than for 0-3 cores (1638 > 1024),
-> I'm confused...
-All the SDM630, SDM636 and SDM660 smartphones I ever saw are booting off 
-of the BIG cluster (and that's why cpu@100 is CPU0), and at 0x100 you 
-find the first BIG CPU.
+On 1/12/21 8:04 AM, Rob Herring wrote:
+> On Mon, Jan 11, 2021 at 4:06 PM Frank Rowand <frowand.list@gmail.com> wrote:
+>>
+>> On 1/8/21 2:41 AM, Viresh Kumar wrote:
+>>> Now that fdtoverlay is part of the kernel build, start using it to test
+>>> the unitest overlays we have by applying them statically.
+>>>
+>>> The file overlay_base.dtb have symbols of its own and we need to apply
+>>> overlay.dtb to overlay_base.dtb alone first to make it work, which gives
+>>> us intermediate-overlay.dtb file.
+>>>
+>>> The intermediate-overlay.dtb file along with all other overlays is them
+>>> applied to testcases.dtb to generate the master.dtb file.
+>>>
+>>> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+>>
+>> NACK to this specific patch, in its current form.
+>>
+>> There are restrictions on applying an overlay at runtime that do not apply
+>> to applying an overlay to an FDT that will be loaded by the kernel during
+>> early boot.  Thus the unittest overlays _must_ be applied using the kernel
+>> overlay loading methods to test the kernel runtime overlay loading feature.
+> 
+> This patch doesn't take away from any of that and it completely orthogonal.
+
+Mea culpa.  I took the patch header comment at face value, and read more into
+the header comment than what was written there.  I then skimmed the patch
+instead of actually reading what it was doing.
+
+I incorrectly _assumed_ (bad!) that the intent was to replace applying the
+individual overlay dtb's with the master.dtb.  Reading more closely, I see
+that the assumed final step of actually _using_ master.dtb does not exist.
+
+So, yes, I agree that the patch as written is orthogonal to my concern.
+
+My updated understanding is that this patch is attempting to use the existing
+unittest overlay dts files as source to test fdtoverlay.  And that the resulting
+dtb from fdtoverlay is not intended to be consumed by the kernel unittest.
+
+I do not agree that this is a good approach to testing fdtoverlay.  The
+unittest overlay dts files are constructed specifically to test various
+parts of the kernel overlay code and dynamic OF code.  Some of the content
+of the overlays is constructed to trigger error conditions in that code,
+and thus will not be able to be processed without error by fdtoverlay.
+
+Trying to use overlay dts files that are constructed to test runtime kernel
+code as fdtoverlay input data mixes two different test environments and
+objectives.  If fdtoverlay test cases are desired, then fdtoverlay specific
+dts files should be created.
 
 > 
-> Property "efficiency" is described in the same tree in [2].
+>> I agree that testing fdtoverlay is a good idea.  I have not looked at the
+>> parent project to see how much testing of fdtoverlay occurs there, but I
+>> would prefer that fdtoverlay tests reside in the parent project if practical
+>> and reasonable.  If there is some reason that some fdtoverlay tests are
+>> more practical in the Linux kernel repository then I am open to adding
+>> them to the Linux kernel tree.
 > 
-> [1] https://source.codeaurora.org/quic/la/kernel/msm-4.4/tree/arch/arm/boot/dts/qcom/sdm660.dtsi?h=LA.UM.7.2.c25#n155
-> [2] https://source.codeaurora.org/quic/la/kernel/msm-4.4/tree/Documentation/devicetree/bindings/arm/cpus.txt?h=LA.UM.7.2.c25#n216
-> 
-> вт, 12 янв. 2021 г. в 13:51, Danny Lin <danny@kdrag0n.dev>:
->>
->> sdm660 has a big.LITTLE 4+4 CPU setup with CPUs 0-3 being little cores
->> and CPUs 4-7 being big cores. The big cores have higher IPC, so they
->> should have the higher capacity-dmips-mhz, not the other way around as
->> the device tree currently describes it. Fix the incorrect CPU map to
->> improve EAS scheduling behavior.
->>
->> While we're at it, let's replace the old DMIPS/MHz values with new
->> measurements that reflect the exact IPC of the CPUs as reported by
->> CoreMark.
->>
->> Performance measurements were made using my freqbench [1]
->> benchmark coordinator, which isolates, offlines, and disables the timer
->> tick on test CPUs to maximize accuracy. It uses EEMBC CoreMark [2] as
->> the workload and measures power usage using the PM660 PMIC's fuel
->> gauge.
->>
->> Normalized DMIPS/MHz capacity scale values for each CPU were calculated
->> from CoreMarks/MHz (CoreMark iterations per second per MHz), which
->> serves the same purpose. For each CPU, the final capacity-dmips-mhz
->> value is the C/MHz value of its maximum frequency normalized to
->> SCHED_CAPACITY_SCALE (1024) for the fastest CPU in the system.
->>
->> A Xiaomi Redmi Note 7 device running a downstream Qualcomm 4.4 kernel
->> was used for benchmarking to ensure proper frequency scaling and other
->> low-level controls.
->>
-This is wrong, the downstream kernel may be doing "magic" to switch 
-clusters the other way around, and this is likely... Please, run your 
-benchmark on a upstream kernel: there may be differences.
+> If you (or more importantly someone else sending us patches) make
+> changes to the overlays, you can test that they apply at build time
+> rather than runtime. I'll take it! So please help on fixing the issue
+> because I want to apply this.
 
->> Raw benchmark results can be found in the freqbench repository [3].
->> Below is a human-readable summary:
->>
->> Frequency domains: cpu1 cpu4
->> Offline CPUs: cpu1 cpu2 cpu3 cpu4 cpu5 cpu6 cpu7
->> Baseline power usage: 1130 mW
->>
->> ===== CPU 1 =====
->> Frequencies: 633 902 1113 1401 1536 1747 1843
->>
->>   633:  2058     3.2 C/MHz     48 mW    5.9 J   42.6 I/mJ   121.5 s
->>   902:  2930     3.2 C/MHz     72 mW    6.2 J   40.6 I/mJ    85.3 s
->> 1113:  3616     3.2 C/MHz     79 mW    5.4 J   46.0 I/mJ    69.1 s
->> 1401:  4551     3.2 C/MHz    125 mW    6.9 J   36.3 I/mJ    54.9 s
->> 1536:  4988     3.2 C/MHz    134 mW    6.7 J   37.1 I/mJ    50.1 s
->> 1747:  5674     3.2 C/MHz    179 mW    7.9 J   31.7 I/mJ    44.1 s
->> 1843:  5986     3.2 C/MHz    228 mW    9.5 J   26.3 I/mJ    41.8 s
->>
->> ===== CPU 4 =====
->> Frequencies: 1113 1401 1747 1958 2150 2208
->>
->> 1113:  5825     5.2 C/MHz    220 mW    9.4 J   26.5 I/mJ    42.9 s
->> 1401:  7324     5.2 C/MHz    317 mW   10.8 J   23.1 I/mJ    34.1 s
->> 1747:  9135     5.2 C/MHz    474 mW   13.0 J   19.2 I/mJ    27.4 s
->> 1958: 10247     5.2 C/MHz    578 mW   14.1 J   17.7 I/mJ    24.4 s
->> 2150: 11246     5.2 C/MHz    694 mW   15.4 J   16.2 I/mJ    22.2 s
->> 2208: 11551     5.2 C/MHz    736 mW   15.9 J   15.7 I/mJ    21.7 s
->>
->> [1] https://github.com/kdrag0n/freqbench
->> [2] https://www.eembc.org/coremark/
->> [3] https://github.com/kdrag0n/freqbench/tree/master/results/sdm660/main
->>
->> Signed-off-by: Danny Lin <danny@kdrag0n.dev>
->> ---
->>   arch/arm64/boot/dts/qcom/sdm660.dtsi | 16 ++++++++--------
->>   1 file changed, 8 insertions(+), 8 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sdm660.dtsi b/arch/arm64/boot/dts/qcom/sdm660.dtsi
->> index 4abbdd03d1e7..ca985c5429db 100644
->> --- a/arch/arm64/boot/dts/qcom/sdm660.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sdm660.dtsi
->> @@ -40,7 +40,7 @@ CPU0: cpu@100 {
->>                          compatible = "qcom,kryo260";
->>                          reg = <0x0 0x100>;
->>                          enable-method = "psci";
->> -                       capacity-dmips-mhz = <1024>;
->> +                       capacity-dmips-mhz = <636>;
->>                          next-level-cache = <&L2_1>;
->>                          L2_1: l2-cache {
->>                                  compatible = "cache";
->> @@ -59,7 +59,7 @@ CPU1: cpu@101 {
->>                          compatible = "qcom,kryo260";
->>                          reg = <0x0 0x101>;
->>                          enable-method = "psci";
->> -                       capacity-dmips-mhz = <1024>;
->> +                       capacity-dmips-mhz = <636>;
->>                          next-level-cache = <&L2_1>;
->>                          L1_I_101: l1-icache {
->>                                  compatible = "cache";
->> @@ -74,7 +74,7 @@ CPU2: cpu@102 {
->>                          compatible = "qcom,kryo260";
->>                          reg = <0x0 0x102>;
->>                          enable-method = "psci";
->> -                       capacity-dmips-mhz = <1024>;
->> +                       capacity-dmips-mhz = <636>;
->>                          next-level-cache = <&L2_1>;
->>                          L1_I_102: l1-icache {
->>                                  compatible = "cache";
->> @@ -89,7 +89,7 @@ CPU3: cpu@103 {
->>                          compatible = "qcom,kryo260";
->>                          reg = <0x0 0x103>;
->>                          enable-method = "psci";
->> -                       capacity-dmips-mhz = <1024>;
->> +                       capacity-dmips-mhz = <636>;
->>                          next-level-cache = <&L2_1>;
->>                          L1_I_103: l1-icache {
->>                                  compatible = "cache";
->> @@ -104,7 +104,7 @@ CPU4: cpu@0 {
->>                          compatible = "qcom,kryo260";
->>                          reg = <0x0 0x0>;
->>                          enable-method = "psci";
->> -                       capacity-dmips-mhz = <640>;
->> +                       capacity-dmips-mhz = <1024>;
->>                          next-level-cache = <&L2_0>;
->>                          L2_0: l2-cache {
->>                                  compatible = "cache";
->> @@ -123,7 +123,7 @@ CPU5: cpu@1 {
->>                          compatible = "qcom,kryo260";
->>                          reg = <0x0 0x1>;
->>                          enable-method = "psci";
->> -                       capacity-dmips-mhz = <640>;
->> +                       capacity-dmips-mhz = <1024>;
->>                          next-level-cache = <&L2_0>;
->>                          L1_I_1: l1-icache {
->>                                  compatible = "cache";
->> @@ -138,7 +138,7 @@ CPU6: cpu@2 {
->>                          compatible = "qcom,kryo260";
->>                          reg = <0x0 0x2>;
->>                          enable-method = "psci";
->> -                       capacity-dmips-mhz = <640>;
->> +                       capacity-dmips-mhz = <1024>;
->>                          next-level-cache = <&L2_0>;
->>                          L1_I_2: l1-icache {
->>                                  compatible = "cache";
->> @@ -153,7 +153,7 @@ CPU7: cpu@3 {
->>                          compatible = "qcom,kryo260";
->>                          reg = <0x0 0x3>;
->>                          enable-method = "psci";
->> -                       capacity-dmips-mhz = <640>;
->> +                       capacity-dmips-mhz = <1024>;
->>                          next-level-cache = <&L2_0>;
->>                          L1_I_3: l1-icache {
->>                                  compatible = "cache";
->> --
->> 2.29.2
->>
+If the tests can be added to the upstream project, I would much prefer
+they reside there.  If there is some reason a certain test is more
+suited to be in the Linux kernel source tree then I also would like
+it to be accepted here.
+
 > 
+> And yes, dtc has fdtoverlay tests. But this patch shows there's at
+> least 2 issues,
+
+
+> fdtoverlay can't apply overlays to the root 
+
+A test of that definitely belongs in the upstream project.
+
+> and using an overlay as the base tree in UML is odd IMO.
+
+Am I still not fully understanding the patch?  I'm missing how
+this patch changes what dtb is used as the base tree in UML.
+
+> 
+> Rob
 > 
 
+-Frank
