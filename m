@@ -2,108 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7CA82F376F
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:44:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FCE2F3770
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 18:44:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391316AbhALRmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 12:42:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390845AbhALRmy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 12:42:54 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF6CC061795
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:42:14 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id h10so1801856pfo.9
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 09:42:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=s31IkhAz2nWDObQ5y1qk010QUglbb2JaCz6paHFbgKE=;
-        b=ua53268TZsH8TsHxFaEpE3Lg38Obz2bJP4oWXSdDQ3eDw2YOCRWhARGn0Rb1Rf0Auw
-         TtLaGqIvDQcsU6PinS85yVOCI23qw0qdoAeiNyFCeUupmIvS/D0EwslofU1OfJp+5Nr9
-         RdOfGVyn1o9B3rsJcU1JwJgn895dz+lxPubshGzX0GziRzBrnxat/6eNuHXzhumCQxfQ
-         MNEgc4DQT0+5MeEzMPrYC7Dd4HPwoDJi9tgkfW5RAE0qNXK106rmLg9fsOT+om26SptI
-         9wA1Gor3x2F4n27lSQ51xEL0motMhUf0C2EZi/42mJqUdH5myNu29lByLdWu6nZzqhKk
-         b7XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=s31IkhAz2nWDObQ5y1qk010QUglbb2JaCz6paHFbgKE=;
-        b=Sb/4h1IOjM1rA4h4nZq+aPNY8V32wuzoLVmlkLGYZIKMyNStda19QUGIEqB8MdVzNg
-         gwRFVclFrQhJWrsTYewNGedgJw92/dg9NhJnT/E9PStir705DcEhGIIwVvv1q/mGDhHp
-         Rvmns/FFuSD8vVtBiAuFNqRLaYkjpEn4TRGau0oT5R4OGJw9MXtIuyfKh8wbRYJzpi6U
-         yrdsCSHpoeBeWVJFbQ6U6t0xN2+AWMbG8s1SuVqIP4+UsN63I0ps62DkaNq3zg2xbOs9
-         3euXKJ+zQ3Kj5Zr5VGpIgZZMStWwM5cuTdYd2QbGQ56d8lAYvgBAOQgPeuUWGU0SpoJU
-         UTWg==
-X-Gm-Message-State: AOAM533o42zno4Rgns0lUg5swa/wPnnvr3XHJwYuu6cHbryPNQzYCjOG
-        /gxjG+kJhu1kbJePbwKHiJXL5A==
-X-Google-Smtp-Source: ABdhPJzVO5KIL0Bbdp4cP/dveCjEiVGXuDYxY1LjLiCENCJSSZtyZGJ5CtUindfKmib6RkB3GMEZ8g==
-X-Received: by 2002:a62:1896:0:b029:197:491c:be38 with SMTP id 144-20020a6218960000b0290197491cbe38mr246893pfy.15.1610473333520;
-        Tue, 12 Jan 2021 09:42:13 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id a23sm4163925pju.31.2021.01.12.09.42.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 09:42:12 -0800 (PST)
-Date:   Tue, 12 Jan 2021 09:42:05 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Wei Huang <wei.huang2@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, vkuznets@redhat.com, joro@8bytes.org,
-        bp@alien8.de, tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        jmattson@google.com, wanpengli@tencent.com, bsd@redhat.com,
-        dgilbert@redhat.com, mlevitsk@redhat.com
-Subject: Re: [PATCH 1/2] KVM: x86: Add emulation support for #GP triggered by
- VM instructions
-Message-ID: <X/3fbaO1ZarMdjft@google.com>
-References: <20210112063703.539893-1-wei.huang2@amd.com>
- <090232a9-7a87-beb9-1402-726bb7cab7e6@redhat.com>
+        id S2390350AbhALRnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 12:43:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726113AbhALRnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 12:43:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF3F522CBE;
+        Tue, 12 Jan 2021 17:42:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610473379;
+        bh=uRhf+TyHSUoTrYHgBqCcfnTsojVy5pcXeF1jpS9l8Bw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hyj3L8NCapEXo78clX79jgQrOT7NcEmuR2dIJo76NmnLL/T9ULPBis0FzLyml51Bb
+         IMne3UeANbCG20cmSTWB3QO1fmd6PRPLAXdZZnSSWkPzJt79YJGkDRZXt+8zPc2HHI
+         oy0sVEE0w3MIRUQfIzdWBW5mUSaWZiVuItiAqSrYmr0BF3f8OnajFHLeaXsf7blr47
+         kK0laLCcWELLE0ss1WVQenuhx1kf5gu7IWqKeXCk0GXxVZXbIlYsdzfu2pJVf9X9Q7
+         vznTVH3x071DCtR6JwJV+s1CrcFm0va4QWV3J4P7ePos+MK31zeBz0k6qkWT7Hm4ac
+         CtbOfUXpN9d5Q==
+Date:   Tue, 12 Jan 2021 17:42:26 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     tiwai@suse.com, pierre-louis.bossart@linux.intel.com,
+        lgirdwood@gmail.com, ranjani.sridharan@linux.intel.com,
+        kai.vehmanen@linux.intel.com, daniel.baluta@nxp.com,
+        Jaroslav Kysela <perex@perex.cz>,
+        Keyon Jie <yang.jie@linux.intel.com>,
+        Marcin Rajwa <marcin.rajwa@linux.intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Payal Kshirsagar <payalskshirsagar1234@gmail.com>,
+        "moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS" 
+        <sound-open-firmware@alsa-project.org>,
+        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
+        <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/4] ASoC: SOF: Intel: hda: Avoid checking jack on
+ system suspend
+Message-ID: <20210112174226.GE4646@sirena.org.uk>
+References: <20210112130704.1201406-1-kai.heng.feng@canonical.com>
+ <20210112130704.1201406-4-kai.heng.feng@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2hMgfIw2X+zgXrFs"
 Content-Disposition: inline
-In-Reply-To: <090232a9-7a87-beb9-1402-726bb7cab7e6@redhat.com>
+In-Reply-To: <20210112130704.1201406-4-kai.heng.feng@canonical.com>
+X-Cookie: Stay away from hurricanes for a while.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021, Paolo Bonzini wrote:
-> On 12/01/21 07:37, Wei Huang wrote:
-> >   static int gp_interception(struct vcpu_svm *svm)
-> >   {
-> >   	struct kvm_vcpu *vcpu = &svm->vcpu;
-> >   	u32 error_code = svm->vmcb->control.exit_info_1;
-> > -
-> > -	WARN_ON_ONCE(!enable_vmware_backdoor);
-> > +	int rc;
-> >   	/*
-> > -	 * VMware backdoor emulation on #GP interception only handles IN{S},
-> > -	 * OUT{S}, and RDPMC, none of which generate a non-zero error code.
-> > +	 * Only VMware backdoor and SVM VME errata are handled. Neither of
-> > +	 * them has non-zero error codes.
-> >   	 */
-> >   	if (error_code) {
-> >   		kvm_queue_exception_e(vcpu, GP_VECTOR, error_code);
-> >   		return 1;
-> >   	}
-> > -	return kvm_emulate_instruction(vcpu, EMULTYPE_VMWARE_GP);
-> > +
-> > +	rc = kvm_emulate_instruction(vcpu, EMULTYPE_PARAVIRT_GP);
-> > +	if (rc > 1)
-> > +		rc = svm_emulate_vm_instr(vcpu, rc);
-> > +	return rc;
-> >   }
-> 
-> Passing back the third byte is quick hacky.  Instead of this change to
-> kvm_emulate_instruction, I'd rather check the instruction bytes in
-> gp_interception before calling kvm_emulate_instruction.
 
-Agreed.  And I'd also prefer that any pure refactoring is done in separate
-patch(es) so that the actual functional change is better isolated.
+--2hMgfIw2X+zgXrFs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On a related topic, it feels like nested should be disabled by default on SVM
-until it's truly ready for primetime, with the patch tagged for stable.  That
-way we don't have to worry about crafting non-trivial fixes (like this one) to
-make them backport-friendly.
+On Tue, Jan 12, 2021 at 09:07:02PM +0800, Kai-Heng Feng wrote:
+> Fixes: 215a22ed31a1 ("ALSA: hda: Refactor codec PM to use direct-complete optimization")
+> ---
+> v3:
+
+You've not provided a Signed-off-by for this so I can't do anything with
+it, please see Documentation/process/submitting-patches.rst for details
+on what this is and why it's important.
+
+--2hMgfIw2X+zgXrFs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/934EACgkQJNaLcl1U
+h9DIiQf+PEUEqixskXVBjQpJev0kl6hdig9NTAKEFz/lDG4aMfUV/OsX7La50jX9
+vxA05lQ0oWIDIT454uC5suBZVRSkF0JNl7ME9wXDx56sXOS1EGCcGOCBsmB3WHGV
+43vW6kPn6IRBSdbrAwW7bhWJ3f4SMXd7gK9xpW/xfaVsGB5m1VymZsBX+86/o+P+
+EKdDKm5EyH7pVbUjEeP0p9tePpiJ/qP1Zrjc9R7v4PwOLN+D5rCiUm+ABoHWwGBj
+ZAB4o0c4FG/wbP2mQb0tS7D1Q3jUGAXwoB++Vp/4mjatkf0VkWPEMLyLH66dU8rq
+ryR5H/wp6fBH7cwZrS1ZtaQfhEFGqQ==
+=bkh0
+-----END PGP SIGNATURE-----
+
+--2hMgfIw2X+zgXrFs--
