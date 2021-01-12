@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E892F353C
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA552F353B
 	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 17:16:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392992AbhALQO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 11:14:57 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:42236 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392971AbhALQOy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2389112AbhALQOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Jan 2021 11:14:54 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CG98XI181162;
-        Tue, 12 Jan 2021 16:13:29 GMT
+Received: from aserp2120.oracle.com ([141.146.126.78]:34676 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392838AbhALQOo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 11:14:44 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CG9niI141992;
+        Tue, 12 Jan 2021 16:13:30 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=431qw+udZbWiim1w41TD8ZNL/UpOh0d882GN2WnIwlw=;
- b=ybhVrGQnQx1MGPdC7IP9wKoDCSxZJdhdhVFazsQV1psbly2vKj9iWiJvkreiDWngMo54
- 86nyBRmPGUc3SM3GQr1mmT0rNqvg4d4WkP1JBZMnwOWkCH4gjmLW6zX7PYQPoc5JEvQU
- snhXnv0cNeDVe2fTvIJJF3ZSZOeUYSsPFygJkdqzN9l5KO+fmvQXatDynM7iDpYV4EET
- EDPiwx69fV7WO9JQuKLizlgLDsQ0zRW0Jys5PQ0Ji+tCENsISDg5p6TP0yK8hULNo4pS
- +HDn5Oh3L+GD6L9q+xI+1cmARa556WgOh2QkTtv/hasSQdDUDaD/q1yVppyjLY7zjTsG QQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 360kvjy1ka-1
+ bh=iFOzG5Oxr0i+8tu3RtksVCf0N3amTu8rhbRjZfMu0/o=;
+ b=DOXarqb1FaEfpBfYRGWZFksDKOFx9SNuc2zbF6OJlWSDBM4jPy10a2FOa4OKz+2uY4E3
+ jXiCGqJcp+Tywp8lQ/uSIG9TaOUs9VYEejgSzLYpJYRrph0jQ+84S372G9ihBPv9mQYO
+ RbX3EsmSC0C1JLjwWUtRtsGh34r0W89oZSUQOOGNFaxxXyoRVUiKKPkhSrusygQ2lhQu
+ CSey/b7g735CJfaEN0dKK8HggT8IrQEEbhVyd0yY0m917K0opPIMFBzNXLevp7J575wH
+ BwdOm2q5adHHvSPpIfuMbp7kR4HokFv9QxhiKqJwj9wSO8bwN5ISQzSZpCuT9PlfNSdr 9A== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 360kcyq5dg-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Tue, 12 Jan 2021 16:13:29 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CGAabK100386;
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10CGA1Cx094366;
         Tue, 12 Jan 2021 16:13:29 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 360keh7j9x-1
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 360key1281-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Jan 2021 16:13:28 +0000
+        Tue, 12 Jan 2021 16:13:29 +0000
 Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 10CGDRqQ017697;
-        Tue, 12 Jan 2021 16:13:27 GMT
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10CGDSbS019489;
+        Tue, 12 Jan 2021 16:13:28 GMT
 Received: from revolver.jebus.ca (/23.233.25.87)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 12 Jan 2021 08:13:27 -0800
+        with ESMTP ; Tue, 12 Jan 2021 08:13:28 -0800
 From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
 To:     maple-tree@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
@@ -55,238 +55,544 @@ Cc:     Andrew Morton <akpm@google.com>, Song Liu <songliubraving@fb.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         Rik van Riel <riel@surriel.com>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH v2 20/70] mm/mmap: Change __do_munmap() to avoid unnecessary lookups.
-Date:   Tue, 12 Jan 2021 11:11:50 -0500
-Message-Id: <20210112161240.2024684-21-Liam.Howlett@Oracle.com>
+Subject: [PATCH v2 21/70] mm/mmap: Move mmap_region() below do_munmap()
+Date:   Tue, 12 Jan 2021 11:11:51 -0500
+Message-Id: <20210112161240.2024684-22-Liam.Howlett@Oracle.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20210112161240.2024684-1-Liam.Howlett@Oracle.com>
 References: <20210112161240.2024684-1-Liam.Howlett@Oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 spamscore=0
- malwarescore=0 suspectscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
+ suspectscore=0 adultscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2101120092
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9862 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
- clxscore=1015 impostorscore=0 spamscore=0 mlxscore=0 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2101120092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As there is no longer a vmacache, find_vma() is more expensive and so
-avoid doing them
+Relocation of code for the next commit.  There should be no changes here.
 
 Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
 ---
- mm/mmap.c | 115 ++++++++++++++++++++++++++++--------------------------
- 1 file changed, 59 insertions(+), 56 deletions(-)
+ mm/mmap.c | 490 ++++++++++++++++++++++++++----------------------------
+ 1 file changed, 240 insertions(+), 250 deletions(-)
 
 diff --git a/mm/mmap.c b/mm/mmap.c
-index cc9d0c524d575..af426972c9dd2 100644
+index af426972c9dd2..07aec9e215de4 100644
 --- a/mm/mmap.c
 +++ b/mm/mmap.c
-@@ -2585,44 +2585,6 @@ static void unmap_region(struct mm_struct *mm,
- 	tlb_finish_mmu(&tlb, start, end);
+@@ -1715,256 +1715,6 @@ static inline int accountable_mapping(struct file *file, vm_flags_t vm_flags)
+ 	return (vm_flags & (VM_NORESERVE | VM_SHARED | VM_WRITE)) == VM_WRITE;
  }
  
--/*
-- * Create a list of vma's touched by the unmap, removing them from the mm's
-- * vma list as we go..
-- */
--static bool
--detach_vmas_to_be_unmapped(struct mm_struct *mm, struct vm_area_struct *vma,
--	struct vm_area_struct *prev, unsigned long end)
+-unsigned long mmap_region(struct file *file, unsigned long addr,
+-		unsigned long len, vm_flags_t vm_flags, unsigned long pgoff,
+-		struct list_head *uf)
 -{
--	struct vm_area_struct **insertion_point;
--	struct vm_area_struct *tail_vma = NULL;
+-	struct mm_struct *mm = current->mm;
+-	struct vm_area_struct *vma = NULL;
+-	struct vm_area_struct *prev, *next;
+-	pgoff_t pglen = len >> PAGE_SHIFT;
+-	unsigned long charged = 0;
+-	unsigned long end = addr + len;
+-	unsigned long merge_start = addr, merge_end = end;
+-	pgoff_t vm_pgoff;
+-	int error;
+-	MA_STATE(mas, &mm->mm_mt, addr, end - 1);
 -
--	insertion_point = (prev ? &prev->vm_next : &mm->mmap);
--	vma->vm_prev = NULL;
--	vma_mt_szero(mm, vma->vm_start, end);
--	do {
--		mm->map_count--;
--		tail_vma = vma;
--		vma = vma->vm_next;
--	} while (vma && vma->vm_start < end);
--	*insertion_point = vma;
--	if (vma)
--		vma->vm_prev = prev;
--	else
--		mm->highest_vm_end = prev ? vm_end_gap(prev) : 0;
--	tail_vma->vm_next = NULL;
+-	/* Check against address space limit. */
+-	if (!may_expand_vm(mm, vm_flags, len >> PAGE_SHIFT)) {
+-		unsigned long nr_pages;
+-
+-		/*
+-		 * MAP_FIXED may remove pages of mappings that intersects with
+-		 * requested mapping. Account for the pages it would unmap.
+-		 */
+-		nr_pages = count_vma_pages_range(mm, addr, end);
+-
+-		if (!may_expand_vm(mm, vm_flags,
+-					(len >> PAGE_SHIFT) - nr_pages))
+-			return -ENOMEM;
+-	}
+-
+-	/* Unmap any existing mapping in the area */
+-	if (do_munmap(mm, addr, len, uf))
+-		return -ENOMEM;
 -
 -	/*
--	 * Do not downgrade mmap_lock if we are next to VM_GROWSDOWN or
--	 * VM_GROWSUP VMA. Such VMAs can change their size under
--	 * down_read(mmap_lock) and collide with the VMA we are about to unmap.
+-	 * Private writable mapping: check memory availability
 -	 */
--	if (vma && (vma->vm_flags & VM_GROWSDOWN))
--		return false;
--	if (prev && (prev->vm_flags & VM_GROWSUP))
--		return false;
--	return true;
+-	if (accountable_mapping(file, vm_flags)) {
+-		charged = len >> PAGE_SHIFT;
+-		if (security_vm_enough_memory_mm(mm, charged))
+-			return -ENOMEM;
+-		vm_flags |= VM_ACCOUNT;
+-	}
+-
+-
+-	if (vm_flags & VM_SPECIAL) {
+-		prev = mas_prev(&mas, 0);
+-		goto cannot_expand;
+-	}
+-
+-	/* Attempt to expand an old mapping */
+-
+-	/* Check next */
+-	next = mas_next(&mas, ULONG_MAX);
+-	if (next && next->vm_start == end && vma_policy(next) &&
+-	    can_vma_merge_before(next, vm_flags, NULL, file, pgoff+pglen,
+-				 NULL_VM_UFFD_CTX)) {
+-		merge_end = next->vm_end;
+-		vma = next;
+-		vm_pgoff = next->vm_pgoff - pglen;
+-	}
+-
+-	/* Check prev */
+-	prev = mas_prev(&mas, 0);
+-	if (prev && prev->vm_end == addr && !vma_policy(prev) &&
+-	    can_vma_merge_after(prev, vm_flags, NULL, file, pgoff,
+-				NULL_VM_UFFD_CTX)) {
+-		merge_start = prev->vm_start;
+-		vma = prev;
+-		vm_pgoff = prev->vm_pgoff;
+-	}
+-
+-
+-	/* Actually expand, if possible */
+-	if (vma &&
+-	    !vma_expand(&mas, vma, merge_start, merge_end, vm_pgoff, next)) {
+-		khugepaged_enter_vma_merge(prev, vm_flags);
+-		goto expanded;
+-	}
+-
+-	mas_reset(&mas);
+-	mas_set(&mas, addr);
+-	mas.last = end - 1;
+-cannot_expand:
+-	/*
+-	 * Determine the object being mapped and call the appropriate
+-	 * specific mapper. the address has already been validated, but
+-	 * not unmapped, but the maps are removed from the list.
+-	 */
+-	vma = vm_area_alloc(mm);
+-	if (!vma) {
+-		error = -ENOMEM;
+-		goto unacct_error;
+-	}
+-
+-	vma->vm_start = addr;
+-	vma->vm_end = end;
+-	vma->vm_flags = vm_flags;
+-	vma->vm_page_prot = vm_get_page_prot(vm_flags);
+-	vma->vm_pgoff = pgoff;
+-
+-	if (file) {
+-		if (vm_flags & VM_DENYWRITE) {
+-			error = deny_write_access(file);
+-			if (error)
+-				goto free_vma;
+-		}
+-		if (vm_flags & VM_SHARED) {
+-			error = mapping_map_writable(file->f_mapping);
+-			if (error)
+-				goto allow_write_and_free_vma;
+-		}
+-
+-		/* ->mmap() can change vma->vm_file, but must guarantee that
+-		 * vma_link() below can deny write-access if VM_DENYWRITE is set
+-		 * and map writably if VM_SHARED is set. This usually means the
+-		 * new file must not have been exposed to user-space, yet.
+-		 */
+-		vma->vm_file = get_file(file);
+-		error = call_mmap(file, vma);
+-		if (error)
+-			goto unmap_and_free_vma;
+-
+-		/* Can addr have changed??
+-		 *
+-		 * Answer: Yes, several device drivers can do it in their
+-		 *         f_op->mmap method. -DaveM
+-		 * Bug: If addr is changed, prev, rb_link, rb_parent should
+-		 *      be updated for vma_link()
+-		 */
+-		WARN_ON_ONCE(addr != vma->vm_start);
+-
+-		addr = vma->vm_start;
+-
+-		/* If vm_flags changed after call_mmap(), we should try merge vma again
+-		 * as we may succeed this time.
+-		 */
+-		if (unlikely(vm_flags != vma->vm_flags && prev &&
+-			     prev->vm_end == addr && !vma_policy(prev) &&
+-			     can_vma_merge_after(prev, vm_flags, NULL, file,
+-						 pgoff, NULL_VM_UFFD_CTX))) {
+-			merge_start = prev->vm_start;
+-			vm_pgoff = prev->vm_pgoff;
+-			if (!vma_expand(&mas, prev, merge_start, merge_end,
+-					vm_pgoff, next)) {
+-				/* ->mmap() can change vma->vm_file and fput the original file. So
+-				 * fput the vma->vm_file here or we would add an extra fput for file
+-				 * and cause general protection fault ultimately.
+-				 */
+-				fput(vma->vm_file);
+-				vm_area_free(vma);
+-				vma = prev;
+-				/* Update vm_flags and possible addr to pick up the change. We don't
+-				 * warn here if addr changed as the vma is not linked by vma_link().
+-				 */
+-				addr = vma->vm_start;
+-				vm_flags = vma->vm_flags;
+-				goto unmap_writable;
+-			}
+-		}
+-
+-		/* Can addr have changed??
+-		 *
+-		 * Answer: Yes, several device drivers can do it in their
+-		 *         f_op->mmap method. -DaveM
+-		 * Bug: If addr is changed, prev and the maple tree data should
+-		 * be updated for vma_link()
+-		 */
+-		WARN_ON_ONCE(addr != vma->vm_start);
+-
+-		addr = vma->vm_start;
+-		vm_flags = vma->vm_flags;
+-	} else if (vm_flags & VM_SHARED) {
+-		error = shmem_zero_setup(vma);
+-		if (error)
+-			goto free_vma;
+-	} else {
+-		vma_set_anonymous(vma);
+-	}
+-
+-	/* Allow architectures to sanity-check the vm_flags */
+-	if (!arch_validate_flags(vma->vm_flags)) {
+-		error = -EINVAL;
+-		if (file)
+-			goto unmap_and_free_vma;
+-		else
+-			goto free_vma;
+-	}
+-
+-	mas.index = mas.last = addr;
+-	mas_walk(&mas);
+-	vma_mas_link(mm, vma, &mas, prev);
+-	/* Once vma denies write, undo our temporary denial count */
+-	if (file) {
+-unmap_writable:
+-		if (vm_flags & VM_SHARED)
+-			mapping_unmap_writable(file->f_mapping);
+-		if (vm_flags & VM_DENYWRITE)
+-			allow_write_access(file);
+-	}
+-	file = vma->vm_file;
+-expanded:
+-	perf_event_mmap(vma);
+-
+-	vm_stat_account(mm, vm_flags, len >> PAGE_SHIFT);
+-	if (vm_flags & VM_LOCKED) {
+-		if ((vm_flags & VM_SPECIAL) || vma_is_dax(vma) ||
+-		    is_vm_hugetlb_page(vma) ||
+-		    vma == get_gate_vma(current->mm))
+-			vma->vm_flags &= VM_LOCKED_CLEAR_MASK;
+-		else
+-			mm->locked_vm += (len >> PAGE_SHIFT);
+-	}
+-
+-	if (file)
+-		uprobe_mmap(vma);
+-
+-	/*
+-	 * New (or expanded) vma always get soft dirty status.
+-	 * Otherwise user-space soft-dirty page tracker won't
+-	 * be able to distinguish situation when vma area unmapped,
+-	 * then new mapped in-place (which must be aimed as
+-	 * a completely new data area).
+-	 */
+-	vma->vm_flags |= VM_SOFTDIRTY;
+-
+-	vma_set_page_prot(vma);
+-
+-	return addr;
+-
+-unmap_and_free_vma:
+-	vma->vm_file = NULL;
+-	fput(file);
+-
+-	/* Undo any partial mapping done by a device driver. */
+-	unmap_region(mm, vma, prev, vma->vm_start, vma->vm_end);
+-	charged = 0;
+-	if (vm_flags & VM_SHARED)
+-		mapping_unmap_writable(file->f_mapping);
+-allow_write_and_free_vma:
+-	if (vm_flags & VM_DENYWRITE)
+-		allow_write_access(file);
+-free_vma:
+-	vm_area_free(vma);
+-unacct_error:
+-	if (charged)
+-		vm_unacct_memory(charged);
+-	return error;
 -}
 -
- /*
-  * __split_vma() bypasses sysctl_max_map_count checking.  We use this where it
-  * has already been checked or doesn't make sense to fail.
-@@ -2702,12 +2664,16 @@ int split_vma(struct mm_struct *mm, struct vm_area_struct *vma,
- 	return __split_vma(mm, vma, addr, new_below);
+ /* unmapped_area() Find an area between the low_limit and the high_limit with
+  * the correct alignment and offset, all from @info. Note: current->mm is used
+  * for the search.
+@@ -2823,6 +2573,246 @@ int do_munmap(struct mm_struct *mm, unsigned long start, size_t len,
+ 	return __do_munmap(mm, start, len, uf, false);
  }
  
--static inline void unlock_range(struct vm_area_struct *start, unsigned long limit)
-+static inline int unlock_range(struct vm_area_struct *start,
-+			       struct vm_area_struct **tail, unsigned long limit)
- {
- 	struct mm_struct *mm = start->vm_mm;
- 	struct vm_area_struct *tmp = start;
-+	int count = 0;
- 
- 	while (tmp && tmp->vm_start < limit) {
-+		*tail = tmp;
-+		count++;
- 		if (tmp->vm_flags & VM_LOCKED) {
- 			mm->locked_vm -= vma_pages(tmp);
- 			munlock_vma_pages_all(tmp);
-@@ -2715,6 +2681,8 @@ static inline void unlock_range(struct vm_area_struct *start, unsigned long limi
- 
- 		tmp = tmp->vm_next;
- 	}
++unsigned long mmap_region(struct file *file, unsigned long addr,
++		unsigned long len, vm_flags_t vm_flags, unsigned long pgoff,
++		struct list_head *uf)
++{
++	struct mm_struct *mm = current->mm;
++	struct vm_area_struct *vma = NULL;
++	struct vm_area_struct *prev, *next;
++	pgoff_t pglen = len >> PAGE_SHIFT;
++	unsigned long charged = 0;
++	unsigned long end = addr + len;
++	unsigned long merge_start = addr, merge_end = end;
++	pgoff_t vm_pgoff;
++	int error;
++	MA_STATE(mas, &mm->mm_mt, addr, end - 1);
 +
-+	return count;
- }
- /* Munmap is split into 2 main parts -- this part which finds
-  * what needs doing, and the areas themselves, which do the
-@@ -2726,24 +2694,24 @@ int __do_munmap(struct mm_struct *mm, unsigned long start, size_t len,
- {
- 	unsigned long end;
- 	struct vm_area_struct *vma, *prev, *last;
-+	MA_STATE(mas, &mm->mm_mt, start, start);
- 
- 	if ((offset_in_page(start)) || start > TASK_SIZE || len > TASK_SIZE-start)
- 		return -EINVAL;
- 
--	len = PAGE_ALIGN(len);
--	end = start + len;
--	if (len == 0)
-+	end = start + PAGE_ALIGN(len);
-+	if (end == start)
- 		return -EINVAL;
- 
- 	 /* arch_unmap() might do unmaps itself.  */
- 	arch_unmap(mm, start, end);
- 
- 	/* Find the first overlapping VMA */
--	vma = find_vma_intersection(mm, start, end);
-+	vma = mas_find(&mas, end - 1);
- 	if (!vma)
- 		return 0;
- 
--	prev = vma->vm_prev;
-+	mas.last = end - 1;
- 	/* we have start < vma->vm_end  */
- 
- 	/*
-@@ -2767,16 +2735,27 @@ int __do_munmap(struct mm_struct *mm, unsigned long start, size_t len,
- 		if (error)
- 			return error;
- 		prev = vma;
-+		vma = vma_next(mm, prev);
-+		mas.index = start;
-+		mas_reset(&mas);
-+	} else {
-+		prev = vma->vm_prev;
- 	}
- 
-+	if (vma->vm_end >= end)
-+		last = vma;
-+	else
-+		last = find_vma_intersection(mm, end - 1, end);
++	/* Check against address space limit. */
++	if (!may_expand_vm(mm, vm_flags, len >> PAGE_SHIFT)) {
++		unsigned long nr_pages;
 +
- 	/* Does it split the last one? */
--	last = find_vma(mm, end);
--	if (last && end > last->vm_start) {
-+	if (last && end < last->vm_end) {
- 		int error = __split_vma(mm, last, end, 1);
- 		if (error)
- 			return error;
-+		vma = vma_next(mm, prev);
-+		mas_reset(&mas);
- 	}
--	vma = vma_next(mm, prev);
++		/*
++		 * MAP_FIXED may remove pages of mappings that intersects with
++		 * requested mapping. Account for the pages it would unmap.
++		 */
++		nr_pages = count_vma_pages_range(mm, addr, end);
 +
- 
- 	if (unlikely(uf)) {
- 		/*
-@@ -2789,22 +2768,46 @@ int __do_munmap(struct mm_struct *mm, unsigned long start, size_t len,
- 		 * failure that it's not worth optimizing it for.
- 		 */
- 		int error = userfaultfd_unmap_prep(vma, start, end, uf);
-+
- 		if (error)
- 			return error;
- 	}
- 
- 	/*
--	 * unlock any mlock()ed ranges before detaching vmas
-+	 * unlock any mlock()ed ranges before detaching vmas, count the number
-+	 * of VMAs to be dropped, and return the tail entry of the affected
-+	 * area.
- 	 */
--	if (mm->locked_vm)
--		unlock_range(vma, end);
-+	mm->map_count -= unlock_range(vma, &last, end);
-+	/* Drop removed area from the tree */
-+	mas_store_gfp(&mas, NULL, GFP_KERNEL);
-+
-+	/* Detach vmas from the MM linked list */
-+	vma->vm_prev = NULL;
-+	if (prev)
-+		prev->vm_next = last->vm_next;
-+	else
-+		mm->mmap = last->vm_next;
- 
--	/* Detach vmas from the MM linked list and remove from the mm tree*/
--	if (!detach_vmas_to_be_unmapped(mm, vma, prev, end))
--		downgrade = false;
-+	if (last->vm_next) {
-+		last->vm_next->vm_prev = prev;
-+		last->vm_next = NULL;
-+	} else
-+		mm->highest_vm_end = prev ? vm_end_gap(prev) : 0;
- 
--	if (downgrade)
--		mmap_write_downgrade(mm);
-+	/*
-+	 * Do not downgrade mmap_lock if we are next to VM_GROWSDOWN or
-+	 * VM_GROWSUP VMA. Such VMAs can change their size under
-+	 * down_read(mmap_lock) and collide with the VMA we are about to unmap.
-+	 */
-+	if (downgrade) {
-+		if (last && (last->vm_flags & VM_GROWSDOWN))
-+			downgrade = false;
-+		else if (prev && (prev->vm_flags & VM_GROWSUP))
-+			downgrade = false;
-+		else
-+			mmap_write_downgrade(mm);
++		if (!may_expand_vm(mm, vm_flags,
++					(len >> PAGE_SHIFT) - nr_pages))
++			return -ENOMEM;
 +	}
- 
- 	unmap_region(mm, vma, prev, start, end);
- 
-@@ -3227,7 +3230,7 @@ void exit_mmap(struct mm_struct *mm)
- 	}
- 
- 	if (mm->locked_vm)
--		unlock_range(mm->mmap, ULONG_MAX);
-+		unlock_range(mm->mmap, &vma, ULONG_MAX);
- 
- 	arch_exit_mmap(mm);
- 
++
++	/* Unmap any existing mapping in the area */
++	if (do_mas_munmap(&mas, mm, addr, len, uf, false))
++		return -ENOMEM;
++
++	/*
++	 * Private writable mapping: check memory availability
++	 */
++	if (accountable_mapping(file, vm_flags)) {
++		charged = len >> PAGE_SHIFT;
++		if (security_vm_enough_memory_mm(mm, charged))
++			return -ENOMEM;
++		vm_flags |= VM_ACCOUNT;
++	}
++
++
++	if (vm_flags & VM_SPECIAL) {
++		prev = mas_prev(&mas, 0);
++		goto cannot_expand;
++	}
++
++	/* Attempt to expand an old mapping */
++
++	/* Check next */
++	next = mas_next(&mas, ULONG_MAX);
++	if (next && next->vm_start == end && vma_policy(next) &&
++	    can_vma_merge_before(next, vm_flags, NULL, file, pgoff + pglen,
++				 NULL_VM_UFFD_CTX)) {
++		merge_end = next->vm_end;
++		vma = next;
++		vm_pgoff = next->vm_pgoff - pglen;
++	}
++
++	/* Check prev */
++	prev = mas_prev(&mas, 0);
++	if (prev && prev->vm_end == addr && !vma_policy(prev) &&
++	    can_vma_merge_after(prev, vm_flags, NULL, file, pgoff,
++				NULL_VM_UFFD_CTX)) {
++		merge_start = prev->vm_start;
++		vma = prev;
++		vm_pgoff = prev->vm_pgoff;
++	}
++
++	/* Actually expand, if possible */
++	if (vma &&
++	    !vma_expand(&mas, vma, merge_start, merge_end, vm_pgoff, next)) {
++		khugepaged_enter_vma_merge(prev, vm_flags);
++		goto expanded;
++	}
++
++cannot_expand:
++	/*
++	 * Determine the object being mapped and call the appropriate
++	 * specific mapper. the address has already been validated, but
++	 * not unmapped, but the maps are removed from the list.
++	 */
++	vma = vm_area_alloc(mm);
++	if (!vma) {
++		error = -ENOMEM;
++		goto unacct_error;
++	}
++
++	vma->vm_start = addr;
++	vma->vm_end = end;
++	vma->vm_flags = vm_flags;
++	vma->vm_page_prot = vm_get_page_prot(vm_flags);
++	vma->vm_pgoff = pgoff;
++
++	if (file) {
++		if (vm_flags & VM_DENYWRITE) {
++			error = deny_write_access(file);
++			if (error)
++				goto free_vma;
++		}
++		if (vm_flags & VM_SHARED) {
++			error = mapping_map_writable(file->f_mapping);
++			if (error)
++				goto allow_write_and_free_vma;
++		}
++
++		/* ->mmap() can change vma->vm_file, but must guarantee that
++		 * vma_link() below can deny write-access if VM_DENYWRITE is set
++		 * and map writably if VM_SHARED is set. This usually means the
++		 * new file must not have been exposed to user-space, yet.
++		 */
++		vma->vm_file = get_file(file);
++		error = call_mmap(file, vma);
++		if (error)
++			goto unmap_and_free_vma;
++
++		/* If vm_flags changed after call_mmap(), we should try merge vma again
++		 * as we may succeed this time.
++		 */
++		if (unlikely(vm_flags != vma->vm_flags && prev &&
++			     prev->vm_end == addr && !vma_policy(prev) &&
++			     can_vma_merge_after(prev, vm_flags, NULL, file,
++						 pgoff, NULL_VM_UFFD_CTX))) {
++			merge_start = prev->vm_start;
++			vm_pgoff = prev->vm_pgoff;
++			if (!vma_expand(&mas, prev, merge_start, merge_end,
++					vm_pgoff, next)) {
++				/* ->mmap() can change vma->vm_file and fput the original file. So
++				 * fput the vma->vm_file here or we would add an extra fput for file
++				 * and cause general protection fault ultimately.
++				 */
++				fput(vma->vm_file);
++				vm_area_free(vma);
++				vma = prev;
++				/* Update vm_flags and possible addr to pick up the change. We don't
++				 * warn here if addr changed as the vma is not linked by vma_link().
++				 */
++				addr = vma->vm_start;
++				vm_flags = vma->vm_flags;
++				goto unmap_writable;
++			}
++		}
++
++		/* Can addr have changed??
++		 *
++		 * Answer: Yes, several device drivers can do it in their
++		 *         f_op->mmap method. -DaveM
++		 * Bug: If addr is changed, prev and the maple tree data should
++		 * be updated for vma_link()
++		 */
++		WARN_ON_ONCE(addr != vma->vm_start);
++
++		addr = vma->vm_start;
++		vm_flags = vma->vm_flags;
++	} else if (vm_flags & VM_SHARED) {
++		error = shmem_zero_setup(vma);
++		if (error)
++			goto free_vma;
++	} else {
++		vma_set_anonymous(vma);
++	}
++
++	/* Allow architectures to sanity-check the vm_flags */
++	if (!arch_validate_flags(vma->vm_flags)) {
++		error = -EINVAL;
++		if (file)
++			goto unmap_and_free_vma;
++		else
++			goto free_vma;
++	}
++
++	/*
++	 * mas was called for the prev vma, and that may not be the correct
++	 * location for the vma being inserted, but is is before that location
++	 * and so the call to vma_mas_link()->vma_mas_store()->mas_store_gfp()
++	 * will detect the write as a spanning store and reset mas if necessary.
++	 */
++	mas.index = mas.last = addr;
++	mas_walk(&mas);
++	vma_mas_link(mm, vma, &mas, prev);
++	/* Once vma denies write, undo our temporary denial count */
++	if (file) {
++unmap_writable:
++		if (vm_flags & VM_SHARED)
++			mapping_unmap_writable(file->f_mapping);
++		if (vm_flags & VM_DENYWRITE)
++			allow_write_access(file);
++	}
++	file = vma->vm_file;
++expanded:
++	perf_event_mmap(vma);
++
++	vm_stat_account(mm, vm_flags, len >> PAGE_SHIFT);
++	if (vm_flags & VM_LOCKED) {
++		if ((vm_flags & VM_SPECIAL) || vma_is_dax(vma) ||
++		    is_vm_hugetlb_page(vma) ||
++		    vma == get_gate_vma(current->mm))
++			vma->vm_flags &= VM_LOCKED_CLEAR_MASK;
++		else
++			mm->locked_vm += (len >> PAGE_SHIFT);
++	}
++
++	if (file)
++		uprobe_mmap(vma);
++
++	/*
++	 * New (or expanded) vma always get soft dirty status.
++	 * Otherwise user-space soft-dirty page tracker won't
++	 * be able to distinguish situation when vma area unmapped,
++	 * then new mapped in-place (which must be aimed as
++	 * a completely new data area).
++	 */
++	vma->vm_flags |= VM_SOFTDIRTY;
++
++	vma_set_page_prot(vma);
++
++	return addr;
++
++unmap_and_free_vma:
++	vma->vm_file = NULL;
++	fput(file);
++
++	/* Undo any partial mapping done by a device driver. */
++	unmap_region(mm, vma, prev, vma->vm_start, vma->vm_end);
++	charged = 0;
++	if (vm_flags & VM_SHARED)
++		mapping_unmap_writable(file->f_mapping);
++allow_write_and_free_vma:
++	if (vm_flags & VM_DENYWRITE)
++		allow_write_access(file);
++free_vma:
++	vm_area_free(vma);
++unacct_error:
++	if (charged)
++		vm_unacct_memory(charged);
++	return error;
++}
+ static int __vm_munmap(unsigned long start, size_t len, bool downgrade)
+ {
+ 	int ret;
 -- 
 2.28.0
 
