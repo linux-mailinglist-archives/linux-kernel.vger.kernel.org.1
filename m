@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78BC52F2856
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:32:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2274A2F285C
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 07:37:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733137AbhALG32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 01:29:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733070AbhALG31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 01:29:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54790229CA;
-        Tue, 12 Jan 2021 06:28:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1610432926;
-        bh=66Qx1gj4EzTEeVhhLDcGKAc/ygvdzEvNrer5sghrXJ4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WFj9SeW+PsLybv3ux9riWrJaLAdMXDXKXz7KO+2WGT560uhpeR/6TKnzEuChPHvLc
-         iT6R7pT6h6duplxwdDpwAo0C3uDu9tzJU3HGG0pcHydpL9QMzv9qVv1S6J2HjTUDmr
-         JJMBPFJeJUT078kuTfy6+m+HsDPGx2Jdon+YmDkE=
-Date:   Mon, 11 Jan 2021 22:28:45 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     <linux-kernel@vger.kernel.org>, <mcgrof@kernel.org>,
-        <keescook@chromium.org>, <yzaikin@google.com>,
-        <adobriyan@gmail.com>, <linux-fsdevel@vger.kernel.org>,
-        <vbabka@suse.cz>, <mhocko@suse.com>, <andy.shevchenko@gmail.com>,
-        <wangle6@huawei.com>
-Subject: Re: [PATCH v3] proc_sysctl: fix oops caused by incorrect command
- parameters.
-Message-Id: <20210111222845.67ceb4e3c7f64f267756e4e8@linux-foundation.org>
-In-Reply-To: <89d1369e-f0a8-66f2-c0ea-3aac3a55e2c1@huawei.com>
-References: <20210112033155.91502-1-nixiaoming@huawei.com>
-        <20210111203340.98dd3c8fa675b709bcf6d49e@linux-foundation.org>
-        <89d1369e-f0a8-66f2-c0ea-3aac3a55e2c1@huawei.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1732765AbhALGgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 01:36:17 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:53155 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730221AbhALGgQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 01:36:16 -0500
+X-UUID: b1784a5e40854f6aaf6bca73675cb29a-20210112
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Yx9EFuHFi0fiBfDNCMYj/85UN42yeWmQPfOqfJfYs+c=;
+        b=SSP1gFfFSKk+Mp+sLB99pPPo/t48G4KCWwZ1/ppJviHInldBBKHxRZEgL2b1NxQ3F/elo1fRdj2AuZK/RIdTpPzZeuKCyYye/F61hGuZSrJljQ7b5jRfBq8j43xXaO8H48rLomvnvExWDJ5OLrxNTC44ky4YFilx3uk4y5MeJY0=;
+X-UUID: b1784a5e40854f6aaf6bca73675cb29a-20210112
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <stanley.chu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1207321009; Tue, 12 Jan 2021 14:35:29 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 12 Jan 2021 14:35:27 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 12 Jan 2021 14:35:27 +0800
+Message-ID: <1610433327.17820.5.camel@mtkswgap22>
+Subject: Re: [PATCH 1/2] scsi: ufs: Fix a possible NULL pointer issue
+From:   Stanley Chu <stanley.chu@mediatek.com>
+To:     Can Guo <cang@codeaurora.org>
+CC:     <asutoshd@codeaurora.org>, <nguyenb@codeaurora.org>,
+        <hongwus@codeaurora.org>, <ziqichen@codeaurora.org>,
+        <rnayak@codeaurora.org>, <linux-scsi@vger.kernel.org>,
+        <kernel-team@android.com>, <saravanak@google.com>,
+        <salyzyn@google.com>, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+Date:   Tue, 12 Jan 2021 14:35:27 +0800
+In-Reply-To: <1609595975-12219-2-git-send-email-cang@codeaurora.org>
+References: <1609595975-12219-1-git-send-email-cang@codeaurora.org>
+         <1609595975-12219-2-git-send-email-cang@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Jan 2021 14:24:05 +0800 Xiaoming Ni <nixiaoming@huawei.com> wrote:
+SGkgQ2FuLA0KDQpPbiBTYXQsIDIwMjEtMDEtMDIgYXQgMDU6NTkgLTA4MDAsIENhbiBHdW8gd3Jv
+dGU6DQo+IER1cmluZyBzeXN0ZW0gcmVzdW1lL3N1c3BlbmQsIGhiYSBjb3VsZCBiZSBOVUxMLiBJ
+biB0aGlzIGNhc2UsIGRvIG5vdCB0b3VjaA0KPiBlaF9zZW0uDQo+IA0KPiBGaXhlczogODhhOTJk
+NmFlNGZlICgic2NzaTogdWZzOiBTZXJpYWxpemUgZWhfd29yayB3aXRoIHN5c3RlbSBQTSBldmVu
+dHMgYW5kIGFzeW5jIHNjYW4iKQ0KPiANCj4gU2lnbmVkLW9mZi1ieTogQ2FuIEd1byA8Y2FuZ0Bj
+b2RlYXVyb3JhLm9yZz4NCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hj
+ZC5jIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0KPiBpbmRleCBlMjIxYWRkLi45ODI5Yzhk
+IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hjZC5jDQo+ICsrKyBiL2RyaXZl
+cnMvc2NzaS91ZnMvdWZzaGNkLmMNCj4gQEAgLTk0LDYgKzk0LDggQEANCj4gIAkJICAgICAgIDE2
+LCA0LCBidWYsIF9fbGVuLCBmYWxzZSk7ICAgICAgICAgICAgICAgICAgICAgICAgXA0KPiAgfSB3
+aGlsZSAoMCkNCj4gIA0KPiArc3RhdGljIGJvb2wgZWFybHlfc3VzcGVuZDsNCj4gKw0KPiAgaW50
+IHVmc2hjZF9kdW1wX3JlZ3Moc3RydWN0IHVmc19oYmEgKmhiYSwgc2l6ZV90IG9mZnNldCwgc2l6
+ZV90IGxlbiwNCj4gIAkJICAgICBjb25zdCBjaGFyICpwcmVmaXgpDQo+ICB7DQo+IEBAIC04ODk2
+LDggKzg4OTgsMTQgQEAgaW50IHVmc2hjZF9zeXN0ZW1fc3VzcGVuZChzdHJ1Y3QgdWZzX2hiYSAq
+aGJhKQ0KPiAgCWludCByZXQgPSAwOw0KPiAgCWt0aW1lX3Qgc3RhcnQgPSBrdGltZV9nZXQoKTsN
+Cj4gIA0KPiArCWlmICghaGJhKSB7DQo+ICsJCWVhcmx5X3N1c3BlbmQgPSB0cnVlOw0KPiArCQly
+ZXR1cm4gMDsNCj4gKwl9DQo+ICsNCj4gIAlkb3duKCZoYmEtPmVoX3NlbSk7DQo+IC0JaWYgKCFo
+YmEgfHwgIWhiYS0+aXNfcG93ZXJlZCkNCj4gKw0KPiArCWlmICghaGJhLT5pc19wb3dlcmVkKQ0K
+PiAgCQlyZXR1cm4gMDsNCj4gIA0KPiAgCWlmICgodWZzX2dldF9wbV9sdmxfdG9fZGV2X3B3cl9t
+b2RlKGhiYS0+c3BtX2x2bCkgPT0NCj4gQEAgLTg5NDUsOSArODk1MywxMiBAQCBpbnQgdWZzaGNk
+X3N5c3RlbV9yZXN1bWUoc3RydWN0IHVmc19oYmEgKmhiYSkNCj4gIAlpbnQgcmV0ID0gMDsNCj4g
+IAlrdGltZV90IHN0YXJ0ID0ga3RpbWVfZ2V0KCk7DQo+ICANCj4gLQlpZiAoIWhiYSkgew0KPiAt
+CQl1cCgmaGJhLT5laF9zZW0pOw0KPiArCWlmICghaGJhKQ0KPiAgCQlyZXR1cm4gLUVJTlZBTDsN
+Cj4gKw0KPiArCWlmICh1bmxpa2VseShlYXJseV9zdXNwZW5kKSkgew0KPiArCQllYXJseV9zdXNw
+ZW5kID0gZmFsc2U7DQo+ICsJCWRvd24oJmhiYS0+ZWhfc2VtKTsNCj4gIAl9DQoNCkkgZ3Vlc3Mg
+ZWFybHlfc3VzcGVuZCBoZXJlIGlzIHRvIGhhbmRsZSB0aGUgY2FzZSB0aGF0IGhiYSBpcyBudWxs
+IGR1cmluZw0KdWZzaGNkX3N5c3RlbV9zdXNwZW5kKCkgYnV0ICFudWxsIGR1cmluZyB1ZnNoY2Rf
+c3lzdGVtX3Jlc3VtZSgpLiBJZiB5ZXMsDQp3b3VsZCBpdCBiZSBwb3NzaWJsZT8gSWYgbm8sIG1h
+eSBJIGtub3cgd2hhdCBpcyB0aGUgcHVycG9zZT8NCg0KVGhhbmtzIGEgbG90Lg0KU3RhbmxleSBD
+aHUNCg0KPiAgDQo+ICAJaWYgKCFoYmEtPmlzX3Bvd2VyZWQgfHwgcG1fcnVudGltZV9zdXNwZW5k
+ZWQoaGJhLT5kZXYpKQ0KDQo=
 
-> On 2021/1/12 12:33, Andrew Morton wrote:
-> > On Tue, 12 Jan 2021 11:31:55 +0800 Xiaoming Ni <nixiaoming@huawei.com> wrote:
-> > 
-> >> The process_sysctl_arg() does not check whether val is empty before
-> >>   invoking strlen(val). If the command line parameter () is incorrectly
-> >>   configured and val is empty, oops is triggered.
-> >>
-> >> --- a/fs/proc/proc_sysctl.c
-> >> +++ b/fs/proc/proc_sysctl.c
-> >> @@ -1770,6 +1770,9 @@ static int process_sysctl_arg(char *param, char *val,
-> >>   			return 0;
-> >>   	}
-> >>   
-> >> +	if (!val)
-> >> +		return -EINVAL;
-> >> +
-> > 
-> > I think v2 (return 0) was preferable.  Because all the other error-out
-> > cases in process_sysctl_arg() also do a `return 0'.
-> 
-> https://lore.kernel.org/lkml/bc098af4-c0cd-212e-d09d-46d617d0acab@huawei.com/
-> 
-> patch4:
->      +++ b/fs/proc/proc_sysctl.c
->      @@ -1757,6 +1757,9 @@ static int process_sysctl_arg(char *param, 
-> char *val,
->              loff_t pos = 0;
->              ssize_t wret;
-> 
->      +       if (!val)
->      +               return 0;
->      +
->              if (strncmp(param, "sysctl", sizeof("sysctl") - 1) == 0) {
->                      param += sizeof("sysctl") - 1;
-> 
-> Is this the version you're talking about?
-
-yes, but as a separate patch.  The bugfix comes first.
-
-> > 
-> > If we're going to do a separate "patch: make process_sysctl_arg()
-> > return an errno instead of 0" then fine, we can discuss that.  But it's
-> > conceptually a different work from fixing this situation.
-> > .
-> > 
-> However, are the logs generated by process_sysctl_arg() clearer and more 
-> accurate than parse_args()? Should the logs generated by 
-> process_sysctl_arg() be deleted?
-
-I think the individual logs are very useful and should be retained.
