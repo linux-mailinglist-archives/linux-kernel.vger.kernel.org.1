@@ -2,96 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30352F32B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F9C2F32BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 15:15:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726439AbhALOLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 09:11:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725957AbhALOLk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 09:11:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5CD02311D;
-        Tue, 12 Jan 2021 14:10:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610460660;
-        bh=ENjvy0Q+qTvAHdvM+Qmza6RORATL3UTnpgk5t6Fv8PI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=mphXnHHH/En5/hD5AimJ8saRejozTzE62sfESXc7Y2zl3e1De2wZO1IfoMwXpCkFY
-         De5L2nsnW3OXvxQdhWQiCnf39axqCTxl2sAyVR1XemnW6F2q4XY+FMm0HON9Mrlc+p
-         MMognZH2hB6+nF76s6yHRfk3sGjc+wdF3VlsXGF4G7535aJpjSDzwLAdQnXmEoITg3
-         +G9VPlEZBR9TbFJqySq6K24M8jj8wDCg058Ke8iUgtXaeZQzbFguFImH3kChDwPsEE
-         GwpZ3+juOsZbsVJV/PKK49oESCsOP8aBsjKL3peEvgSbTcz1+Nv1KANaZ0Yuo4Qsod
-         am+Nkrsc5HimA==
-Received: by mail-ej1-f50.google.com with SMTP id w1so3666966ejf.11;
-        Tue, 12 Jan 2021 06:10:59 -0800 (PST)
-X-Gm-Message-State: AOAM532kBUT4YRsq8YvydJixmCI7EgnmayaDoq0LN0P760GnFahhnKyH
-        NuZwearITMCFk7CW/3AGM+2YkNnUYLjO+Yz8Gg==
-X-Google-Smtp-Source: ABdhPJx6WBuO0b55qgrKmXulVdShGTlUCuYQZf9Q+loZi3a9rgL14J1g8duqmSuDSOBd2TTPv+EqXRc4W6wxFsUnUP4=
-X-Received: by 2002:a17:906:d784:: with SMTP id pj4mr3277745ejb.360.1610460658215;
- Tue, 12 Jan 2021 06:10:58 -0800 (PST)
+        id S1728068AbhALOPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 09:15:06 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:34820 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725613AbhALOPG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 09:15:06 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10CEEM61083911;
+        Tue, 12 Jan 2021 08:14:22 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610460862;
+        bh=esTShs76yvdLhD/D3aKWd2PmXrVE3wDszC9rVv+VngA=;
+        h=From:To:CC:Subject:Date;
+        b=wY3yeKCLVpMFnix6k6e7c98qQ+uKeLEm+/io0WkUl871wCmeScOE7D4y2fTyrh+00
+         o4A3A36A4RzjLc2SrQawy4uCGJcvILfkt3/xB65V4eBweluF7PHg1JuRBCnHOU0EIa
+         OwKUjtu0sX2A9b9T/r0lVDVJDsZfbR8BuaPPvbHg=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10CEEMMO038587
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 12 Jan 2021 08:14:22 -0600
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 12
+ Jan 2021 08:14:22 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 12 Jan 2021 08:14:22 -0600
+Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10CEEJml009102;
+        Tue, 12 Jan 2021 08:14:20 -0600
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+To:     Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     Dan Williams <dan.j.williams@intel.com>,
+        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH] dmaengine: ti: k3-udma: Set rflow count for BCDMA split channels
+Date:   Tue, 12 Jan 2021 19:44:03 +0530
+Message-ID: <20210112141403.30286-1-vigneshr@ti.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210108121524.656872-1-qperret@google.com> <20210108121524.656872-16-qperret@google.com>
- <CAL_JsqLmzFWmTc=6JSRMofSEVRx9GCrwGxEsYog9dC16EMGdvQ@mail.gmail.com> <X/1xN2UxiUxkzAiN@google.com>
-In-Reply-To: <X/1xN2UxiUxkzAiN@google.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 12 Jan 2021 08:10:47 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+5d+Ox_-m_Rd83R9xoZb6e2cxCNfbL8YPzKdwj=y0M8Q@mail.gmail.com>
-Message-ID: <CAL_Jsq+5d+Ox_-m_Rd83R9xoZb6e2cxCNfbL8YPzKdwj=y0M8Q@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 15/26] of/fdt: Introduce early_init_dt_add_memory_hyp()
-To:     Quentin Perret <qperret@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, android-kvm@google.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Fuad Tabba <tabba@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 3:51 AM Quentin Perret <qperret@google.com> wrote:
->
-> On Monday 11 Jan 2021 at 08:45:10 (-0600), Rob Herring wrote:
-> > On Fri, Jan 8, 2021 at 6:16 AM Quentin Perret <qperret@google.com> wrote:
-> > >
-> > > Introduce early_init_dt_add_memory_hyp() to allow KVM to conserve a copy
-> > > of the memory regions parsed from DT. This will be needed in the context
-> > > of the protected nVHE feature of KVM/arm64 where the code running at EL2
-> > > will be cleanly separated from the host kernel during boot, and will
-> > > need its own representation of memory.
-> >
-> > What happened to doing this with memblock?
->
-> I gave it a go, but as mentioned in v1, I ran into issues for nomap
-> regions. I want the hypervisor to know about these memory regions (it's
-> possible some of those will be given to protected guests for instance)
-> but these seem to be entirely removed from the memblocks when using DT:
->
-> https://elixir.bootlin.com/linux/latest/source/drivers/of/fdt.c#L1153
->
-> EFI appears to do things differently, though, as it 'just' uses
-> memblock_mark_nomap() instead of actively removing the memblock. And that
-> means I could actually use the memblock API for EFI, but I'd rather
-> have a common solution. I tried to understand why things are done
-> differently but couldn't find an answer and kept things simple and
-> working for now.
->
-> Is there a good reason for not using memblock_mark_nomap() with DT? If
-> not, I'm happy to try that.
+BCDMA RX channels have one flow per channel, therefore set the rflow_cnt
+to rchan_cnt.
 
-There were 2 patches to do that, but it never got resolved. See here[1].
+Without this patch, request for BCDMA RX channel allocation fails as
+rflow_cnt is 0 thus fails to reserve a rflow for the channel.
 
-Rob
+Fixes: 8844898028d4 ("dmaengine: ti: k3-udma: Add support for BCDMA channel TPL handling")
+Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+---
+ drivers/dma/ti/k3-udma.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-[1] https://lore.kernel.org/linux-devicetree/?q=s%3Ano-map
+diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
+index 298460438bb4..a1af59d901be 100644
+--- a/drivers/dma/ti/k3-udma.c
++++ b/drivers/dma/ti/k3-udma.c
+@@ -4305,6 +4305,7 @@ static int udma_get_mmrs(struct platform_device *pdev, struct udma_dev *ud)
+ 		ud->bchan_cnt = BCDMA_CAP2_BCHAN_CNT(cap2);
+ 		ud->tchan_cnt = BCDMA_CAP2_TCHAN_CNT(cap2);
+ 		ud->rchan_cnt = BCDMA_CAP2_RCHAN_CNT(cap2);
++		ud->rflow_cnt = ud->rchan_cnt;
+ 		break;
+ 	case DMA_TYPE_PKTDMA:
+ 		cap4 = udma_read(ud->mmrs[MMR_GCFG], 0x30);
+-- 
+2.30.0
+
