@@ -2,71 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 719052F2C20
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:03:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0A72F2C26
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 11:05:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390130AbhALKDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 05:03:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39930 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725877AbhALKDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 05:03:01 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610445734; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0e07reIw7pfBWC0dCUh19wGPbV2A6U8xOjmqLsJlu84=;
-        b=Qs3+4OQLR00NPBx3Vdha7HwXchsh0j72zCaXmAxMya+cD50z9gAXHh73TnKr16LH1RWHpJ
-        +YmZYLtkWintwq6bs5OTWzVVp2SKLbTWsaNADNJjhArZ3OboQCNP4dS8/mgnYYVWdb/bMv
-        nqcp2gTxIz7D9IosvTiDDda9cvHZoCA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0D8FBAF19;
-        Tue, 12 Jan 2021 10:02:14 +0000 (UTC)
-Date:   Tue, 12 Jan 2021 11:02:13 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
-        n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v3 3/6] mm: hugetlb: fix a race between freeing and
- dissolving the page
-Message-ID: <20210112100213.GK22493@dhcp22.suse.cz>
-References: <20210110124017.86750-1-songmuchun@bytedance.com>
- <20210110124017.86750-4-songmuchun@bytedance.com>
+        id S2392915AbhALKDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 05:03:41 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:60656 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725877AbhALKDk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 05:03:40 -0500
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10C9wVex011901;
+        Tue, 12 Jan 2021 11:02:47 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=E546pFVq1ta2uBxokyZK/xre7E5ZXuq5jUCSw1MfC58=;
+ b=Y6hRWkg+NBgd9p/YBnc5aYcGBj8SOazNom2XLz6UjT5dZsCRpML6xGkCKcR7uxyikqCt
+ 0gEczWtKdLTpnUTV7Rc/gY+YnCQ1IY0bCGoedHt+CeoQlr6kh4x5Uj057yPjhO+lOcyz
+ txdAEejI3mMUo6fdP4eLMxYMimOcksWU+O5PIHQv2TxzXtlLCHqjQ6+9UqCa9eE9K5ko
+ V7cxz7MkPp4dUcOVgYrLZgtfudRn69OVx7bElHz4VCuUm56zYjXSHg2Q7mNW7FmEiOHK
+ N38FqA5hTo4NK45u7FSz2a/mU6S8eoJjmk7+oywUeeTSl5+qCwXxmb+Pu8LjwTpQx7W4 Ow== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 35y5kyfpxq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 12 Jan 2021 11:02:47 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 607BF100034;
+        Tue, 12 Jan 2021 11:02:45 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 4E0F323770C;
+        Tue, 12 Jan 2021 11:02:45 +0100 (CET)
+Received: from lmecxl0566.lme.st.com (10.75.127.44) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 12 Jan
+ 2021 11:02:44 +0100
+Subject: Re: [PATCH v2 2/8] serial: stm32: fix code cleaning warnings and
+ checks
+To:     Jiri Slaby <jirislaby@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     <linux-serial@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Valentin Caron <valentin.caron@foss.st.com>
+References: <20210106162203.28854-1-erwan.leray@foss.st.com>
+ <20210106162203.28854-3-erwan.leray@foss.st.com>
+ <72c81157-4bd1-6a3e-2415-92a2fb29ab6d@kernel.org>
+From:   Erwan LE RAY <erwan.leray@foss.st.com>
+Message-ID: <667eb6bd-b612-fd78-0b09-d61eff72d139@foss.st.com>
+Date:   Tue, 12 Jan 2021 11:02:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210110124017.86750-4-songmuchun@bytedance.com>
+In-Reply-To: <72c81157-4bd1-6a3e-2415-92a2fb29ab6d@kernel.org>
+Content-Type: text/plain; charset="iso-8859-2"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG3NODE3.st.com (10.75.127.9) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-12_06:2021-01-11,2021-01-12 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 10-01-21 20:40:14, Muchun Song wrote:
-[...]
-> @@ -1770,6 +1788,14 @@ int dissolve_free_huge_page(struct page *page)
->  		int nid = page_to_nid(head);
->  		if (h->free_huge_pages - h->resv_huge_pages == 0)
->  			goto out;
-> +
-> +		/*
-> +		 * We should make sure that the page is already on the free list
-> +		 * when it is dissolved.
-> +		 */
-> +		if (unlikely(!PageHugeFreed(head)))
-> +			goto out;
-> +
+Hello Greg,
 
-Do you really want to report EBUSY in this case? This doesn't make much
-sense to me TBH. I believe you want to return 0 same as when you race
-and the page is no longer PageHuge.
+As the V2 is already in your tty-next branch, how do want me to proceed 
+to deliver the fix for Jiri remark ?
+Do you expect a V3 or a new fix ?
 
->  		/*
->  		 * Move PageHWPoison flag from head page to the raw error page,
->  		 * which makes any subpages rather than the error page reusable.
-> -- 
-> 2.11.0
+Best Regards, Erwan.
 
--- 
-Michal Hocko
-SUSE Labs
+
+On 1/11/21 10:58 AM, Jiri Slaby wrote:
+> On 06. 01. 21, 17:21, Erwan Le Ray wrote:
+>> --- a/drivers/tty/serial/stm32-usart.c
+>> +++ b/drivers/tty/serial/stm32-usart.c
+> ...
+>> @@ -973,18 +971,17 @@ static int stm32_init_port(struct stm32_port 
+>> *stm32port,
+>>       struct resource *res;
+>>       int ret;
+>> +    ret = platform_get_irq(pdev, 0);
+>> +    if (ret <= 0)
+>> +        return ret ? : -ENODEV;
+>> +
+>>       port->iotype    = UPIO_MEM;
+>>       port->flags    = UPF_BOOT_AUTOCONF;
+>>       port->ops    = &stm32_uart_ops;
+>>       port->dev    = &pdev->dev;
+>>       port->fifosize    = stm32port->info->cfg.fifosize;
+>>       port->has_sysrq = IS_ENABLED(CONFIG_SERIAL_STM32_CONSOLE);
+>> -
+>> -    ret = platform_get_irq(pdev, 0);
+>> -    if (ret <= 0)
+>> -        return ret ? : -ENODEV;
+>>       port->irq = ret;
+> 
+> I would move this set from ret above too. Or introduce a new variable, 
+> e.g. "irq".
+> 
+> thanks,
