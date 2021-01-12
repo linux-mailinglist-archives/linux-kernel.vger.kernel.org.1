@@ -2,135 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 157B02F38EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E162F38F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 12 Jan 2021 19:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406123AbhALScV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 13:32:21 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:62363 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391612AbhALScU (ORCPT
+        id S2391891AbhALSfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 13:35:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726110AbhALSfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 13:32:20 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610476314; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=TUzx4xA1ScWYvWi9Xn7goti+UFU5enmnZ4wQmA91pBw=; b=D+fPG3HqmOxTcDBebUEm2igr4q4HsGToknW8KonVaXeU4x11RZHCrLZ4EHW6Uhv7RcdPUchb
- Fu1Ll/OlMiB1V1DOqvEGu1GosSLjoob5pYpMaa2yXwGB++umE5mzycDdE5MnxZpo8ncF+fI+
- y5ZRQWgjhcX21tc1QzpWOFf9eO0=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5ffdeb008fb3cda82f9f79b7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 12 Jan 2021 18:31:28
- GMT
-Sender: sidgup=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B21B8C433CA; Tue, 12 Jan 2021 18:31:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.10] (cpe-75-83-25-192.socal.res.rr.com [75.83.25.192])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sidgup)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E80B9C433ED;
-        Tue, 12 Jan 2021 18:31:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E80B9C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
-Subject: Re: PROBLEM: Firmware loader fallback mechanism no longer works with
- sendfile
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     mcgrof@kernel.org, rafael@kernel.org, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "psodagud@codeaurora.org" <psodagud@codeaurora.org>
-References: <7e6f44b1-a0d2-d1d1-9c11-dcea163f8f03@codeaurora.org>
- <X/QJCgoLPhfECEmP@kroah.com>
- <180bdfaf-8c84-6946-b46f-3729d4eb17cc@codeaurora.org>
- <X/WSA7nmsUSrpsfr@kroah.com>
- <62583aaa-d557-8c9a-5959-52c9efad1fe3@codeaurora.org>
- <X/hv634I9JOoHZRk@kroah.com>
-From:   Siddharth Gupta <sidgup@codeaurora.org>
-Message-ID: <1adf9aa4-ed7e-8f05-a354-57419d61ec18@codeaurora.org>
-Date:   Tue, 12 Jan 2021 10:31:26 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 12 Jan 2021 13:35:14 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E39C061794;
+        Tue, 12 Jan 2021 10:34:34 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id g24so2225469qtq.12;
+        Tue, 12 Jan 2021 10:34:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/J2zRKmxDhbKwQ+cfEQ7FFvcXxU4+VcYyyS0jtn1t5w=;
+        b=hTmtqD49IHqYo6y9+uVUT5pF8sFes0PsFMkiwXMXGte4it0LnQe0hoHtnzVSs4P+to
+         0CMAU7e/u7QIIZe7u5FhiBVd/+akyn0m5RU0BDPBDb4EhJ3Dhu8lNZghw8s3q4YK+NVd
+         vEHU283U89Q1xMYp+VhOd76hy+pq96JfPqdQG5/dbX8qeDJrjv+fV2/h5Rs1iCGPwreV
+         MdU+G9gyzr6GJ/Rjm8jfhoydLlCgzjdsoVaoqcDKdQSYEhirQn6GFQ5Mwwl1VyIem0O7
+         3lWcgE9MLcki4KUoPGjD2V4FBpFAdmvPSGVv1Bug5uN81oLTAt4iODvTxz5L1H3tukMw
+         F2Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/J2zRKmxDhbKwQ+cfEQ7FFvcXxU4+VcYyyS0jtn1t5w=;
+        b=jOh2duqpP8sIbfcWFzvr+e824qgbxXQyrFLPefbZ3SNaPeZ6dVwQhl9zk2QRs/0pwX
+         RqsuB5FPeurezZPnC+JV5euSDPGuarOX9ZthyYsQAj1tum+7JXLS1ZKeNT4kZv2GWFVA
+         9Nhd/6bPVdr1ypzUvxrvpjrBdY9QYuvzuiCr/TRT6yCUDZolVOgDXwSI2UcpsSSdeJc2
+         KqZ4qth3cWBOitV+jAfZSH8NLTs8gFccw7j1RVzfP4pDJZODo0xoOSNEId2Yg7m0UFbE
+         OvmCdYDSz5g5arACiZzZoQ07vHEkmGB15+DDnJ/uUbAz3ey4GOnlGyQkcI9OL0pTe3yy
+         spuA==
+X-Gm-Message-State: AOAM531mSKKfFGQJzsBJ43IKcExVPVShxeVpUnTonV5WdaDBbzmKF8Hq
+        s4jiDRPEmMCOs4K7G6LNnIk=
+X-Google-Smtp-Source: ABdhPJz/vD5kjzn92FMPZ/llPyVvX8A0FIz2K1glfJREBebfwvWosIVccSoYynEfKa+j9US1MJefGQ==
+X-Received: by 2002:ac8:4cda:: with SMTP id l26mr298115qtv.213.1610476472849;
+        Tue, 12 Jan 2021 10:34:32 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id 70sm1779957qkk.10.2021.01.12.10.34.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jan 2021 10:34:32 -0800 (PST)
+Subject: Re: [PATCH V3 2/2] scripts: dtc: Build fdtoverlay and fdtdump tools
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+References: <CAK7LNAQT5nVHGAZDhj4dct0v8UMzQ+-mdfBXJsfedR-7mZTnyA@mail.gmail.com>
+ <72c3a4f63dde3c172c11153e9a5b19fb6cdb4498.1610000585.git.viresh.kumar@linaro.org>
+ <1d9369aa-b7aa-6d06-0d44-6ef21bc639e3@gmail.com>
+ <20210112050818.s6ctvd6ihd2dt2d2@vireshk-i7>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <3f0c733a-641f-290f-41b8-62ca22e355b7@gmail.com>
+Date:   Tue, 12 Jan 2021 12:34:31 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <X/hv634I9JOoHZRk@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210112050818.s6ctvd6ihd2dt2d2@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 1/11/21 11:08 PM, Viresh Kumar wrote:
+> On 11-01-21, 18:44, Frank Rowand wrote:
+>> On 1/7/21 12:25 AM, Viresh Kumar wrote:
+>>> We will start building overlays for platforms soon in the kernel and
+>>> would need these tools going forward. Lets start building them.
+>>>
+>>> The fdtoverlay program applies (or merges) one ore more overlay dtb
+>>> blobs to a base dtb blob. The kernel build system would later use
+>>> fdtoverlay to generate the overlaid blobs based on platform specific
+>>> configurations.
+>>>
+>>> The fdtdump program prints a readable version of a flat device-tree
+>>> file. This is a very useful tool to analyze the details of the overlay's
+>>> dtb and the final dtb produced by fdtoverlay after applying the
+>>> overlay's dtb to a base dtb.
+>>
+>> You can calso dump an FDT with:
+>>
+>>    dtc -O dts XXX.dtb
+>>
+>> Is this sufficient for the desired functionality, or is there something
+>> additional in fdtdump that is needed?
+> 
 
-On 1/8/2021 6:44 AM, Greg KH wrote:
-> On Thu, Jan 07, 2021 at 02:03:47PM -0800, Siddharth Gupta wrote:
->> On 1/6/2021 2:33 AM, Greg KH wrote:
->>>>>> Since the binary attributes don't support splice_{read,write} functions the
->>>>>> calls to splice_{read,write} used the default kernel_{read,write} functions.
->>>>>> With the above change this results in an -EINVAL return from
->>>>>> do_splice_from[4].
->>>>>>
->>>>>> This essentially means that sendfile will not work for any binary attribute
->>>>>> in the sysfs.
->>>>> Have you tried fixing this with a patch much like what we did for the
->>>>> proc files that needed this?  If not, can you?
->>>> I am not aware of this fix, could you provide me a link for reference? I
->>>> will try it out.
->>> Look at the series of commits starting at fe33850ff798 ("proc: wire up
->>> generic_file_splice_read for iter ops") for how this was fixed in procfs
->>> as an example of what also needs to be done for binary sysfs files.
->> I tried to follow these fixes, but I am unfamiliar with fs code. I don't see
->> the generic_file_splice_write function anymore on newer kernels, also AFAICT
->> kernfs_ops does not define {read,write}_iter operations. If the solution is
->> simple and someone could provide the patches I would be happy to test them
->> out. If not, some more information about how to proceed would be nice.
-> Can you try this tiny patch out below?
-Sorry for the delay, I tried out the patch, but I am still seeing the 
-error. Please take a look at these logs with
-android running in the userspace[1]:
+comment 1:
 
-[   62.295056][  T249] remoteproc remoteproc1: powering up 
-xxxxxxxx.remoteproc-cdsp
-[   62.304138][  T249] remoteproc remoteproc1: Direct firmware load for 
-cdsp.mdt failed with error -2
-[   62.312976][  T249] remoteproc remoteproc1: Falling back to sysfs 
-fallback for: cdsp.mdt
-[   62.469748][  T394] ueventd: firmware: loading 'cdsp.mdt' for 
-'/devices/platform/soc/xxxxxxxx.remoteproc-cdsp/remoteproc/remoteproc1/cdsp.mdt'
-[   62.498700][  T394] ueventd: firmware: sendfile failed { 
-'/sys/devices/platform/soc/xxxxxxxx.remoteproc-cdsp/remoteproc/remoteproc1/cdsp.mdt', 
-'cdsp.mdt' }: Invalid argument
+> Not for my usecase at least.
 
-Thanks,
-Sid
+> 
+>> If nothing additional needed, and there is no other justification for adding
+>> another program, I would prefer to leave fdtdump out.
+> 
 
-[1]: 
-https://android.googlesource.com/platform/system/core/+/refs/heads/master/init/firmware_handler.cpp#57
->
-> thanks,
->
-> greg k-h
->
-> diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
-> index f277d023ebcd..113bc816d430 100644
-> --- a/fs/kernfs/file.c
-> +++ b/fs/kernfs/file.c
-> @@ -968,6 +968,8 @@ const struct file_operations kernfs_file_fops = {
->   	.release	= kernfs_fop_release,
->   	.poll		= kernfs_fop_poll,
->   	.fsync		= noop_fsync,
-> +	.splice_read	= generic_file_splice_read,
-> +	.splice_write	= iter_file_splice_write,
->   };
->   
->   /**
+comment 2:
+
+> Okay, then I will also remove the stale version of fdtdump which is
+> already there in kernel since a long time.
+> 
+
+I'm confused.  I read comment 1 as saying that fdtdump does provide a feature
+that you need to analyze the dtb created by fdtoverlay.  But I read comment 2
+as implying that you are accepting that fdtdump will not be added to the
+Linux kernel source.
+
+-Frank
