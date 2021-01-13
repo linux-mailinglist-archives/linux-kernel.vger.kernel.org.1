@@ -2,105 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E44072F47A1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:32:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 546D42F47AA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:37:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727111AbhAMJcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 04:32:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51220 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725781AbhAMJcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 04:32:23 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610530296; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0TE8MKnmDo3Q30xN4tt6yxvQ6N8u1DSzcLaJ0wteucg=;
-        b=C/YeCjaaeIBE95MvMP4f4ySuRAHJt8gowjXdlmD3OggLBLDDC/Dj8qjKtuvAzYQgNHynjX
-        ptGwSuKrTH0NIZX7mODXgrPoX+rR3GBCptU9G+cNUkq1DcPWfDEJUnjXvNyygh/Iba/yTn
-        5HMQQPhcEo+mj1OKKUQ5Qi32vso+2Ns=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 390CAAA6F;
-        Wed, 13 Jan 2021 09:31:36 +0000 (UTC)
-Date:   Wed, 13 Jan 2021 10:31:34 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
-        n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v4 3/6] mm: hugetlb: fix a race between freeing and
- dissolving the page
-Message-ID: <20210113093134.GU22493@dhcp22.suse.cz>
-References: <20210113052209.75531-1-songmuchun@bytedance.com>
- <20210113052209.75531-4-songmuchun@bytedance.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113052209.75531-4-songmuchun@bytedance.com>
+        id S1727145AbhAMJdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 04:33:47 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:55302 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726948AbhAMJdq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 04:33:46 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0ULbomAn_1610530367;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0ULbomAn_1610530367)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 13 Jan 2021 17:33:01 +0800
+From:   Yang Li <abaci-bugfix@linux.alibaba.com>
+To:     airlied@linux.ie
+Cc:     daniel@ffwll.ch, harry.wentland@amd.com, sunpeng.li@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Yang Li <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] drm/amd/display: Simplify bool comparison
+Date:   Wed, 13 Jan 2021 17:32:45 +0800
+Message-Id: <1610530365-46152-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 13-01-21 13:22:06, Muchun Song wrote:
-> There is a race condition between __free_huge_page()
-> and dissolve_free_huge_page().
-> 
-> CPU0:                         CPU1:
-> 
-> // page_count(page) == 1
-> put_page(page)
->   __free_huge_page(page)
->                               dissolve_free_huge_page(page)
->                                 spin_lock(&hugetlb_lock)
->                                 // PageHuge(page) && !page_count(page)
->                                 update_and_free_page(page)
->                                 // page is freed to the buddy
->                                 spin_unlock(&hugetlb_lock)
->     spin_lock(&hugetlb_lock)
->     clear_page_huge_active(page)
->     enqueue_huge_page(page)
->     // It is wrong, the page is already freed
->     spin_unlock(&hugetlb_lock)
-> 
-> The race windows is between put_page() and dissolve_free_huge_page().
-> 
-> We should make sure that the page is already on the free list
-> when it is dissolved.
+Fix the following coccicheck warning:
+./drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_cm.c:580:23-31:
+WARNING: Comparison to bool
 
-Please describe the effect of the bug.
-"
-As a result __free_huge_page would corrupt page(s) already in the buddy
-allocator.
-"
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <abaci-bugfix@linux.alibaba.com>
+---
+ drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_cm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> Fixes: c8721bbbdd36 ("mm: memory-hotplug: enable memory hotplug to handle hugepage")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-> Cc: stable@vger.kernel.org
-[...]
-> @@ -1770,6 +1788,14 @@ int dissolve_free_huge_page(struct page *page)
->  		int nid = page_to_nid(head);
->  		if (h->free_huge_pages - h->resv_huge_pages == 0)
->  			goto out;
-> +
-> +		/*
-> +		 * We should make sure that the page is already on the free list
-> +		 * when it is dissolved.
-> +		 */
-> +		if (unlikely(!PageHugeFreed(head)))
-> +			goto out;
-
-I believe we have agreed to retry for this temporary state.
-
-> +
->  		/*
->  		 * Move PageHWPoison flag from head page to the raw error page,
->  		 * which makes any subpages rather than the error page reusable.
-> -- 
-> 2.11.0
-
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_cm.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_cm.c
+index 4d3f7d5..904c2d2 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_cm.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_dpp_cm.c
+@@ -577,7 +577,7 @@ void dpp1_power_on_degamma_lut(
+ 	struct dcn10_dpp *dpp = TO_DCN10_DPP(dpp_base);
+ 
+ 	REG_SET(CM_MEM_PWR_CTRL, 0,
+-			SHARED_MEM_PWR_DIS, power_on == true ? 0:1);
++			SHARED_MEM_PWR_DIS, power_on ? 0:1);
+ 
+ }
+ 
 -- 
-Michal Hocko
-SUSE Labs
+1.8.3.1
+
