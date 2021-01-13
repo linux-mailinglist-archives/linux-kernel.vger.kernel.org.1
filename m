@@ -2,171 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A34DB2F4399
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:23:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82FAA2F43CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:26:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725924AbhAMFVc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Jan 2021 00:21:32 -0500
-Received: from mail-wr1-f43.google.com ([209.85.221.43]:36055 "EHLO
-        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbhAMFVc (ORCPT
+        id S1725998AbhAMF0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 00:26:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbhAMF0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 00:21:32 -0500
-Received: by mail-wr1-f43.google.com with SMTP id t16so728797wra.3;
-        Tue, 12 Jan 2021 21:21:15 -0800 (PST)
+        Wed, 13 Jan 2021 00:26:11 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD5CC061786
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:25:31 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id y12so416530pji.1
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:25:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=29017Imny4RA8XIngcwyWbDxuQg3R7iFq2JrClv6FPA=;
+        b=yX8sYo9koIVE87mJ3FG0kE3DJ5zS6yvPRy/U8SvXbVFMnmZxagOx5v5sSXwpIapsV+
+         6zx9C5A/ZKFkJxuMn6aSw5VOUITqR3DCpmqll5TfsxcuHOiV7Kar292ldyukcagoS5o+
+         AdGQE5u5JklYexs5UeSjPu9XwAxnDWanKk69PTudk1WMvTgFEToZXWbdUNNsEZ8pQFug
+         2Can8kKF1meFVkCoFuHMWeXZy9DLfEOpHiukDHGZa9gqBdDxKInBGIphzxjilIJiPIes
+         zTuFpOkwkR8f51LJbodlD3LkHzmLYOXzTXEcQa4k98RzEGuRe4JKMfNWL93EkmAumszr
+         roJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ygvCn8fmZH80T0v+3u3CbzAAgsVPV7I6kSbF85AxYE8=;
-        b=jbE+s8Sx78HxPDXrtsukzSp6pvUQiSvWdAkKLiZgxNG7dyWhw8/qH8AY/Y2X+vljgW
-         aijdruuSY3sd69afkJyWDjFJJGncvkO3fgkUlQ9nYkdaousDoUCK6KHK4hgHmW5YvpKk
-         tUt0KzxPAmZz+ve5TbCuSMSY2/FqAh+zbs24j4aA2bxA2yVFb9pGAOO4O5oN4QotZ+k+
-         ByjthzY7GE5GFWViCoOE6lSNtxQryR1ThSxZctm6/5Sod+yyY4mm1Zwf+xP/sKUep6Im
-         pb8d7OBOpc1jqbJVt7nXyb5282l7YdQVjm3YSY0IO7eS4H7/lxNusDLnE0Dbxu2CD9rN
-         poqw==
-X-Gm-Message-State: AOAM532xBP+0t0Y3aN/mBTfAztnqhPICJzunQKIvll7Rz4iebTWyOjna
-        Gkcqz9mwZMnnjeUAftRm77w/qflDs14=
-X-Google-Smtp-Source: ABdhPJxhcefF2g4ghMWfcYGFz4p/mMcOTBXdkjHmHKC1b8cf1wmHKSyoSIrwjlD7D4mvHQU6xRhrZg==
-X-Received: by 2002:adf:fbc5:: with SMTP id d5mr587444wrs.82.1610515249819;
-        Tue, 12 Jan 2021 21:20:49 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id c11sm240840wmd.36.2021.01.12.21.20.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 21:20:48 -0800 (PST)
-Date:   Wed, 13 Jan 2021 06:20:47 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Danny Lin <danny@kdrag0n.dev>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: exynos: Add energy model for Exynos 5250
-Message-ID: <20210113052047.GC6486@kozik-lap>
-References: <20210111235717.321153-1-danny@kdrag0n.dev>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=29017Imny4RA8XIngcwyWbDxuQg3R7iFq2JrClv6FPA=;
+        b=ndupr8gUVNryll9aicc/iVu8BWf1jw8HFgtu2LVhgSJqh8Gp32xKSGnmtsKJ/09pC4
+         qJaNQfTO240rsT74De5roXoTfURQp5zBwc2hlpxt3KVCr+ID5tbgWBCRJdkLG2vHgz34
+         toUurODggsG41q9UAX/s1PSkOqSq2yCFNYCQa7eo+/bIwgTgtBJotf9wZNIj7qIPBTn7
+         Y8X7EGS9kLTsPwiuYcjQZify0Qy33zwYZ7j/lQLcxToGF51P3n0jsAgYaPq/XFnRAFN8
+         OPv9+DhPQpYYUu6ocJiPhZiMKrTJTnL7rElzMBgjjOcADIAGTsKHYKSTFGEN+bxD8/IS
+         H+UQ==
+X-Gm-Message-State: AOAM533LlNOavbXjAuu036SrjuqKJd4xqHzXfLekN0PUdOan3vMG3yEQ
+        hWVKCFG+O/Pwf6Fx+Fqo5X9D4K5DHGv3R8MWvXA=
+X-Google-Smtp-Source: ABdhPJwJaESneQy7ApflfsmLCgfFSITQRI5+f/UZqAUKxWrcmkwEqYzTxt6uigIszmNJdfa8B+WWeA==
+X-Received: by 2002:a17:902:7592:b029:dc:3c87:1c63 with SMTP id j18-20020a1709027592b02900dc3c871c63mr389854pll.47.1610515531113;
+        Tue, 12 Jan 2021 21:25:31 -0800 (PST)
+Received: from localhost.localdomain ([139.177.225.247])
+        by smtp.gmail.com with ESMTPSA id x15sm893081pfa.80.2021.01.12.21.25.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 12 Jan 2021 21:25:30 -0800 (PST)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
+Cc:     n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v4 0/6] Fix some bugs about HugeTLB code
+Date:   Wed, 13 Jan 2021 13:22:03 +0800
+Message-Id: <20210113052209.75531-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20210111235717.321153-1-danny@kdrag0n.dev>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 03:57:16PM -0800, Danny Lin wrote:
-> This energy model enables the use of energy- and capacity-aware CPU
-> frequency scaling.
-> 
-> Power and performance measurements were made using my freqbench [1]
-> benchmark coordinator, which uses EEMBC CoreMark [2] as the workload
-> and measures power usage using the integrated PMIC's fuel gauge (DS2784
-> in this case).
+This patch series aims to fix some bugs and add some improvements.
 
-Thanks for the patch.
+Changelog since v3 -> v4:
+  - Update commit log of patch #1.
+  - Drop "mm: hugetlb: add return -EAGAIN for dissolve_free_huge_page"
+  - Add "mm: hugetlb: retry dissolve page when hitting race"
 
-The tested setup is not representative here. The Nexus 10 is not
-supported by mainline and it might use specific revision of Exynos5250,
-different than present on other mainlined boards. One could assume that
-ratio of dynamic power coefficient of the cores should be similar... but
-there is no ratio here, as this is not a big.LITTLE platform.
+Changelog since v2 -> v3:
+  - Update commit log.
+  - Using head[3].private to indicate the page is freed in patch #3.
 
-Another problem is the v3.4 vendor kernel with a lot of out-of-tree
-code. This means it might use some different scheduler, different
-drivers, different voltages and a lot more of unknown differences.
-Vendor kernel should not matter that much in measurement of DPC but it
-makes the results not possible to reproduce.
+Changelog since v1 -> v2:
+  - Export set_page_huge_active() in patch #2 to fix.
+  - Using head[3].mapping to indicate the page is freed in patch #3.
+  - Flush @free_hpage_work in patch #4.
 
-You were also measuring the power delivered to entire system, no to CPUs,
-so you included static power in the data. Static power of CPUs and of
-the entire system.
+Muchun Song (6):
+  mm: migrate: do not migrate HugeTLB page whose refcount is one
+  mm: hugetlbfs: fix cannot migrate the fallocated HugeTLB page
+  mm: hugetlb: fix a race between freeing and dissolving the page
+  mm: hugetlb: retry dissolve page when hitting race
+  mm: hugetlb: fix a race between isolating and freeing page
+  mm: hugetlb: remove VM_BUG_ON_PAGE from page_huge_active
 
-> The energy model dynamic-power-coefficient values were calculated with
->     DPC = µW / MHz / V^2
-> for each OPP, and averaged across all OPPs within each cluster for the
-> final coefficient.
-> 
-> A Google Nexus 10 device running a downstream 3.4 kernel was used for
-> benchmarking to ensure proper frequency scaling and other low-level
-> controls.
-> 
-> Raw benchmark results can be found in the freqbench repository [3].
-> Below is a human-readable summary:
-> 
-> ===== CPU 1 =====
-> Frequencies: 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700
->  200:   909     4.5 C/MHz    132 mW   36.2 J    6.9 I/mJ   275.0 s
+ fs/hugetlbfs/inode.c    |  3 ++-
+ include/linux/hugetlb.h |  2 ++
+ mm/hugetlb.c            | 51 ++++++++++++++++++++++++++++++++++++++++++++-----
+ mm/migrate.c            |  6 ++++++
+ 4 files changed, 56 insertions(+), 6 deletions(-)
 
-What are the columns here? I would expect that fuel gauge gives you the
-current, but it's not here.
+-- 
+2.11.0
 
->  300:  1366     4.6 C/MHz    212 mW   38.7 J    6.5 I/mJ   183.0 s
->  400:  1821     4.6 C/MHz    286 mW   39.3 J    6.4 I/mJ   137.3 s
->  500:  2253     4.5 C/MHz    375 mW   41.7 J    6.0 I/mJ   111.0 s
->  600:  2740     4.6 C/MHz    446 mW   40.7 J    6.1 I/mJ    91.2 s
->  700:  3199     4.6 C/MHz    513 mW   40.1 J    6.2 I/mJ    78.2 s
->  800:  3673     4.6 C/MHz    678 mW   46.1 J    5.4 I/mJ    68.1 s
->  900:  4090     4.5 C/MHz    764 mW   46.7 J    5.4 I/mJ    61.1 s
-> 1000:  4586     4.6 C/MHz    878 mW   47.9 J    5.2 I/mJ    54.5 s
-> 1100:  5060     4.6 C/MHz   1084 mW   53.6 J    4.7 I/mJ    49.4 s
-> 1200:  5515     4.6 C/MHz   1225 mW   55.5 J    4.5 I/mJ    45.3 s
-> 1300:  5933     4.6 C/MHz   1396 mW   58.9 J    4.2 I/mJ    42.1 s
-> 1400:  6395     4.6 C/MHz   1662 mW   65.0 J    3.8 I/mJ    39.1 s
-> 1500:  6897     4.6 C/MHz   1895 mW   68.7 J    3.6 I/mJ    36.3 s
-> 1600:  7332     4.6 C/MHz   2198 mW   75.0 J    3.3 I/mJ    34.1 s
-> 1700:  7826     4.6 C/MHz   2497 mW   79.8 J    3.1 I/mJ    31.9 s
-> 
-> [1] https://github.com/kdrag0n/freqbench
-> [2] https://www.eembc.org/coremark/
-> [3] https://github.com/kdrag0n/freqbench/tree/master/results/exynos5250/main
-> 
-> Signed-off-by: Danny Lin <danny@kdrag0n.dev>
-> ---
->  arch/arm/boot/dts/exynos5250.dtsi | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/exynos5250.dtsi b/arch/arm/boot/dts/exynos5250.dtsi
-> index 2ea2caaca4e2..cc2fe0afcfc7 100644
-> --- a/arch/arm/boot/dts/exynos5250.dtsi
-> +++ b/arch/arm/boot/dts/exynos5250.dtsi
-> @@ -58,6 +58,8 @@ cpu0: cpu@0 {
->  			clock-names = "cpu";
->  			operating-points-v2 = <&cpu0_opp_table>;
->  			#cooling-cells = <2>; /* min followed by max */
-> +			capacity-dmips-mhz = <1024>;
-
-The origin of this 1024 value should be explained.
-
-> +			dynamic-power-coefficient = <800>;
->  		};
->  		cpu1: cpu@1 {
->  			device_type = "cpu";
-> @@ -67,6 +69,20 @@ cpu1: cpu@1 {
->  			clock-names = "cpu";
->  			operating-points-v2 = <&cpu0_opp_table>;
->  			#cooling-cells = <2>; /* min followed by max */
-> +			capacity-dmips-mhz = <1024>;
-> +			dynamic-power-coefficient = <800>;
-> +		};
-> +
-> +		cpu-map {
-
-That's a second patch.
-
-Best regards,
-Krzysztof
-
-> +			cluster0 {
-> +				core0 {
-> +					cpu = <&cpu0>;
-> +				};
-> +
-> +				core1 {
-> +					cpu = <&cpu1>;
-> +				};
-> +			};
->  		};
->  	};
->  
-> -- 
-> 2.29.2
-> 
