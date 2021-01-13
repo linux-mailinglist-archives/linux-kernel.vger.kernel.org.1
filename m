@@ -2,164 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E745B2F5295
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC6B2F5293
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:43:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728508AbhAMSnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 13:43:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39309 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728235AbhAMSnH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 13:43:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610563301;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oGOlxrt2SGj3kZBA6dpjhC1nt0Q2Q5rAB8wC0eJiO3s=;
-        b=LwbRgEv3K4rWorKg+EZi2hHdnC06WHGs6ghWd6W9kBfaky5m6gpSyjeMq1rYk5TXaCrZBV
-        DkJ9GUjTGr2BzQJXrC0Q3hg9J/rKImcQxXNKeMcboFK7Carqcy7z+fenBxmLBelrjBYAAQ
-        DQENwyVggw96rLj86Z9kmNvBq5Uf0mY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-FAYfOfixPTKDy0RNREwwQA-1; Wed, 13 Jan 2021 13:41:39 -0500
-X-MC-Unique: FAYfOfixPTKDy0RNREwwQA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B6E618C89D9;
-        Wed, 13 Jan 2021 18:41:38 +0000 (UTC)
-Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 399F010013C1;
-        Wed, 13 Jan 2021 18:41:32 +0000 (UTC)
-Date:   Wed, 13 Jan 2021 12:41:31 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     vanessa.hack@fau.de
-Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: objtool/ORC generation for noreturn functions
-Message-ID: <20210113184131.yh4zh4olfkdpydv7@treble>
-References: <daf04159-a458-4f0d-9f29-d8ef5a63fae6@email.android.com>
+        id S1728727AbhAMSmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 13:42:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728371AbhAMSmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 13:42:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A949D20739;
+        Wed, 13 Jan 2021 18:41:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610563296;
+        bh=Ajzo2UBqkOaFrPPXDMrjn/7W1vN7CH5O7vtnoKth8Vg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=g6+QzsrOVfLU0b9SBZcswCgc/mrafX6+DTvUhFlHAj+mVSGv7rqUVxyqXUQexVgJu
+         H5QdlWNMu7XljVhdPL3FzxqCNNaycvLgKRF+vaZuf2cKVYAMuF2e8KxTd/iCUXbwTg
+         Jyd/fZ4DsKSzf+Ft/z1c6nz8x0tsh7RZzxSdeHXFFmz9j4WiZUQsdANvmcAxAkGqBN
+         AqUKni/XpJt2puNsKisa7rx2jnZbFZeoEIHxgxjudmGDKi9Wo9AlfCNJOkMqf7kowg
+         mbWZs9FfQh6Id1IXyREYPKLNv3DGumoT9co6dFJo7v+0+k3YcJUOkFt6vHKCWXyezb
+         u62aURau6GSiA==
+Date:   Wed, 13 Jan 2021 10:41:34 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     netdev@vger.kernel.org,
+        Baptiste Lepers <baptiste.lepers@gmail.com>,
+        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] rxrpc: Call state should be read with READ_ONCE()
+ under some circumstances
+Message-ID: <20210113104134.40e9ebae@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <2630109.1610526234@warthog.procyon.org.uk>
+References: <20210112182533.13b1c787@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <161046715522.2450566.488819910256264150.stgit@warthog.procyon.org.uk>
+        <2630109.1610526234@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <daf04159-a458-4f0d-9f29-d8ef5a63fae6@email.android.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 11:44:22AM +0100, vanessa.hack@fau.de wrote:
->    Hi,
->    I am currently writing my final thesis at university on the topic of stack
->    unwinding. My goal is to implement and evaluate stack unwinders for
->    research operating system ports to x86 32 and 64 bit architectures and
->    SPARC V8. 
->    For the x86 ports I chose ORC as unwinding format due to its simplicity
->    and reliability. So far, it works quite well (although I've ran into some
->    minor issues with objtool as the research OS is written in C++). 
->    But now I have some problems with functions that are explicitly marked as
->    noreturn with the [[noreturn]] attribute, all following unwinding steps
->    are unreliable. I have read in the objtool documentation that such
->    functions have to be added to the objtool global_noreturn array.
->    Unfortunately, I do not understand the purpose of that array and the
->    intended ORC behaviour for noreturn functions. Are the unwinding steps
->    that follow a noreturn intended to be unreliable? 
+On Wed, 13 Jan 2021 08:23:54 +0000 David Howells wrote:
+> Jakub Kicinski <kuba@kernel.org> wrote:
+> 
+> > On Tue, 12 Jan 2021 15:59:15 +0000 David Howells wrote:  
+> > > From: Baptiste Lepers <baptiste.lepers@gmail.com>
+> > > 
+> > > The call state may be changed at any time by the data-ready routine in
+> > > response to received packets, so if the call state is to be read and acted
+> > > upon several times in a function, READ_ONCE() must be used unless the call
+> > > state lock is held.
+> > > 
+> > > As it happens, we used READ_ONCE() to read the state a few lines above the
+> > > unmarked read in rxrpc_input_data(), so use that value rather than
+> > > re-reading it.
+> > > 
+> > > Signed-off-by: Baptiste Lepers <baptiste.lepers@gmail.com>
+> > > Signed-off-by: David Howells <dhowells@redhat.com>  
+> > 
+> > Fixes: a158bdd3247b ("rxrpc: Fix call timeouts")
+> > 
+> > maybe?  
+> 
+> Ah, yes.  I missed there wasn't a Fixes line.  Can you add that one in, or do
+> I need to resubmit the patch?
 
-Hi Vanessa,
+Sure, added, just checking if you didn't leave it out on purpose.
 
-Nice thesis!  I'm impressed (and a little surprised) that objtool/ORC is
-working in a non-Linux environment.  They were designed to be general
-purpose, but we've added some Linux-isms to them over the years.
-Congrats on getting that working.
-
-What compiler is the OS built with?
-
-As you've found, noreturn functions can be problematic.  But they can be
-unwinded through correctly, if handled carefully.
-
-
-1) Objtool impact
-
-Consider the following code pattern, generated by a C compiler:
-
-func_A:
-	...
-	...
-	call some_noreturn_func
-
-func_B:
-
-If some_noreturn_func() were to return, func_A() would fall through to
-func_B(), resulting in possibly disastrous undefined behavior.  But
-since some_noreturn_func() doesn't return, that can't happen.  The
-compiler knows it can't happen because of the noreturn attribute.
-
-But if objtool doesn't know about the noreturn attribute, it assumes the
-call can return, and execution can continue after it, resulting in the
-fallthrough:
-
-  warning: objtool: func_A() falls through to next function func_B()
-
-So that's the reason for the global_noreturn array.  It lets objtool
-know that execution doesn't continue after the call, so objtool can
-follow the code flow intended by the compiler.
-
-Note that in addition, objtool tries to detect calls to noreturn
-functions in the same .o file, even if they don't have the noreturn
-attribute.  This matches GCC behavior, which automatically marks them as
-noreturn even if they're missing the annotation.
-
-
-2) ORC impact
-
-Usually, an address on the stack is placed there by a call instruction,
-which pushes the return address on the stack before jumping to the
-called function.  The return address is the instruction *after* the call
-instruction.  If you use that address to lookup the ORC entry, it will
-be right most of the time, because the call instruction doesn't change
-the stack layout, so the next instruction usually has the same stack
-layout as the call instruction.
-
-However, if the call is to a noreturn function, then the next
-instruction might not have the same stack layout.  For example, in the
-above scenario with the call to some_noreturn_func().  After the call,
-the address placed on the stack will be that of func_B(), because that
-happens to be the instruction after the call.  But func_B() probably has
-a different layout, so passing the address of func_B() to the ORC lookup
-will corrupt the unwind.
-
-What you really want to use for the lookup is the address of the call
-instruction itself.  In the case of ORC you can just subtract one from
-the address on the stack.
-
-This is described in orc_unwind.c:
-
-	 * For a call frame (as opposed to a signal frame), state->ip points to
-	 * the instruction after the call.  That instruction's stack layout
-	 * could be different from the call instruction's layout, for example
-	 * if the call was to a noreturn function.  So get the ORC data for the
-	 * call instruction itself.
-	 */
-	orc = orc_find(state->signal ? state->ip : state->ip - 1);
-
-Notice there's one edge case where you *don't* subtract one from the
-address.  That's when the address is placed on the stack for a reason
-*other* than a call.
-
-That can happen in a "signal" frame, where an interrupt/signal handler
-places the preempted task's registers on the stack.  In that case the
-ORC type is UNWIND_HINT_TYPE_REGS and the address is retrieved from
-regs->sp, which is used as-is (without subtracting one), because there
-was no call.
-
-
-I hope that makes sense.  Let me know if you have any more questions.
-
-Also, please let me know when the paper is available to read :-)
-
--- 
-Josh
-
+Applied, thanks!
