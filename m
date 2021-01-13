@@ -2,163 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632372F5449
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:49:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8332F5454
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728941AbhAMUsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 15:48:06 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:48101 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726784AbhAMUsF (ORCPT
+        id S1728956AbhAMUvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 15:51:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728856AbhAMUvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 15:48:05 -0500
-Received: by mail-io1-f69.google.com with SMTP id q21so4990941ios.14
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:47:49 -0800 (PST)
+        Wed, 13 Jan 2021 15:51:15 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E21AC061795
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:50:35 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id x19so2566246qvv.16
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:50:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=aIUBOyJyX6WGyseukIAcch3nn35rSww3/Zr/HwJ5908=;
+        b=X46oEX+TtT0/gQq1+bgCMAGs5q+1p1nbBc5zmdukXctlvH4UtROQqOzXceid7TJNTu
+         kyXXTX6tncyk3hxvujy/iyyVN4QcvZVqz9Ff/t7884507h2CcrZG99Qh7L5U9hFWnBEM
+         p2T0UjyYtTsOq/O3JVLPMzJ46Be7mqYvRWwEKbOwDA9kgOnKQ2u0sAiQT/RkXj+LMmvi
+         6dL4/+ctx1S3OZlfE5mxMgg9uAvMp82HbV08QrtHenL0NuGmPF05sLE3jYH1OY6q6yL9
+         GvdecP8BRSOMRK0al+gWw/03Ja6TgBa3ksLeHvCVcztk6qd4SHkeguOWKFs1SzklcDim
+         RSfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Bpw2qFZAo7VI9U1TOGN9QUmbH4YufW23rvZI+QUopQA=;
-        b=YWWBSbXBVCZrhQlZaFXolnLKbSuTa+GuSDwxMzNxbSNPMfWfye/SGhjZaRki0F3LdS
-         Kpou5jE2BK3/Iv2C11vxh2s8pj94eDAQHrFqkfNqZH9mrK+DxPrGcUe0QViWajfBf9SY
-         Zpw3Dyj4eQ1VdXQ6Wc9HlYqlqOPx8yy360b218GWy0f4b3ftPe6um+V1g+niLe23P9p3
-         YpV2ESwhpcy0dRL8MDKmvHWfxSz+VgGVUfMf0CNK+BnUs65Ldw3AVaQb4JrP26oKau92
-         U98w1QoPoXC8b6vr95Fc9qeRD2kDnKGA7CA51rus3JBm/00z68jOdXSRNBMmhtGYUAEL
-         p3+w==
-X-Gm-Message-State: AOAM5339w0oON4ywfhX2jEtuPR4/YeeHg0Us0jHVDeM0otms1RV29/Hs
-        cSJboOPRhL4OJqT+neO+Zm8mC86w1Mp80H8Mc4C2CumdjDI2
-X-Google-Smtp-Source: ABdhPJwJxq1hnlzW0bsfWpFZNSa+eV6rbNK8ojmlRKcHakNST27l8F9GHEFIfJr1zTiwVnw/e43Mvenr0IaaXF64mbtOk+vnWbh0
-MIME-Version: 1.0
-X-Received: by 2002:a6b:cd02:: with SMTP id d2mr3138648iog.4.1610570844187;
- Wed, 13 Jan 2021 12:47:24 -0800 (PST)
-Date:   Wed, 13 Jan 2021 12:47:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000db99b05b8ce3fb7@google.com>
-Subject: KMSAN: uninit-value in ip_route_output_key_hash_rcu (4)
-From:   syzbot <syzbot+549e451574ba8bfd0fd6@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, glider@google.com, kuba@kernel.org,
-        kuznet@ms2.inr.ac.ru, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        yoshfuji@linux-ipv6.org
+        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
+         :subject:from:to:cc;
+        bh=aIUBOyJyX6WGyseukIAcch3nn35rSww3/Zr/HwJ5908=;
+        b=kHMoloydzZ09c72drP7BFypMBYagj0ekBJW/Ss7OPTCZlYE7MvPRzStUA42O2LSF7u
+         j2o2bp9AI4FYJy1TtOxDhI8gig4vZFiOFqKsmbMqwpy7gsQ/OJ2rO639KD09LN8cClUr
+         12dbsNdU25fBrdj9IqNGMSLDvJ/rK2xWrWEQjP+zsP5FIGVCRFGPqHMyiPylKsu2Q28N
+         svQTkxYy4AhwmLs1KGsCpV5B/w1Hn8lBYzuxZUfL6XWvZ/r3FQV92U91vaxMzajHVWFA
+         +OCSdxaR2Acf2D5JFR8090DBU7iUByM7e4hhdCz7ViLom/wzjR5/Ml3m/g09NmG4B8t3
+         0m8g==
+X-Gm-Message-State: AOAM532xJYjwBjqTeU9Gt+fZp2Ki7xW7QRcVt7yxcVkOnzqq/Ka9NEQz
+        j1hqP/DAc2CtswiZpNbfpKV8VXW9Ya4=
+X-Google-Smtp-Source: ABdhPJwlo3gK+jvvCcXXwYoVkAhwO/EjVIRBiIUBMoTWB4pnwbc/n6HoZoeY/is8j0V6z8lDlU3WyBETvSY=
+Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+ (user=seanjc job=sendgmr) by 2002:a25:d60a:: with SMTP id n10mr6327286ybg.457.1610571034135;
+ Wed, 13 Jan 2021 12:50:34 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Wed, 13 Jan 2021 12:50:30 -0800
+Message-Id: <20210113205030.3481307-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH] KVM: x86: Zap the oldest MMU pages, not the newest
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zdenek Kaspar <zkaspar82@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Walk the list of MMU pages in reverse in kvm_mmu_zap_oldest_mmu_pages().
+The list is FIFO, meaning new pages are inserted at the head and thus
+the oldest pages are at the tail.  Using a "forward" iterator causes KVM
+to zap MMU pages that were just added, which obliterates guest
+performance once the max number of shadow MMU pages is reached.
 
-syzbot found the following issue on:
-
-HEAD commit:    73d62e81 kmsan: random: prevent boot-time reports in _mix_..
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=10998e93500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2cdf4151c9653e32
-dashboard link: https://syzkaller.appspot.com/bug?extid=549e451574ba8bfd0fd6
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+549e451574ba8bfd0fd6@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in ip_route_output_key_hash_rcu+0xe77/0x1f20 net/ipv4/route.c:2588
-CPU: 1 PID: 8547 Comm: syz-executor.0 Not tainted 5.10.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
- __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
- ip_route_output_key_hash_rcu+0xe77/0x1f20 net/ipv4/route.c:2588
- ip_route_output_key_hash+0x21b/0x2d0 net/ipv4/route.c:2507
- __ip_route_output_key include/net/route.h:126 [inline]
- xfrmi_xmit+0x4cb/0x1fd0 net/xfrm/xfrm_interface.c:376
- __netdev_start_xmit include/linux/netdevice.h:4718 [inline]
- netdev_start_xmit include/linux/netdevice.h:4732 [inline]
- xmit_one+0x2b9/0x770 net/core/dev.c:3564
- dev_hard_start_xmit net/core/dev.c:3580 [inline]
- __dev_queue_xmit+0x33f2/0x4520 net/core/dev.c:4140
- dev_queue_xmit+0x4b/0x60 net/core/dev.c:4173
- packet_snd net/packet/af_packet.c:2992 [inline]
- packet_sendmsg+0x86f9/0x99d0 net/packet/af_packet.c:3017
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg net/socket.c:671 [inline]
- ____sys_sendmsg+0xc7a/0x1240 net/socket.c:2353
- ___sys_sendmsg net/socket.c:2407 [inline]
- __sys_sendmmsg+0xa56/0x1060 net/socket.c:2497
- __do_sys_sendmmsg net/socket.c:2526 [inline]
- __se_sys_sendmmsg+0xbd/0xe0 net/socket.c:2523
- __x64_sys_sendmmsg+0x56/0x70 net/socket.c:2523
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e219
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f2026f42c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 000000000045e219
-RDX: 0000000000000001 RSI: 00000000200066c0 RDI: 0000000000000003
-RBP: 000000000119c070 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119c034
-R13: 00000000016afb5f R14: 00007f2026f439c0 R15: 000000000119c034
-
-Uninit was stored to memory at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
- kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
- __msan_chain_origin+0x57/0xa0 mm/kmsan/kmsan_instr.c:147
- decode_session4 net/xfrm/xfrm_policy.c:3285 [inline]
- __xfrm_decode_session+0x15d5/0x3890 net/xfrm/xfrm_policy.c:3481
- xfrm_decode_session include/net/xfrm.h:1137 [inline]
- xfrmi_xmit+0x243/0x1fd0 net/xfrm/xfrm_interface.c:369
- __netdev_start_xmit include/linux/netdevice.h:4718 [inline]
- netdev_start_xmit include/linux/netdevice.h:4732 [inline]
- xmit_one+0x2b9/0x770 net/core/dev.c:3564
- dev_hard_start_xmit net/core/dev.c:3580 [inline]
- __dev_queue_xmit+0x33f2/0x4520 net/core/dev.c:4140
- dev_queue_xmit+0x4b/0x60 net/core/dev.c:4173
- packet_snd net/packet/af_packet.c:2992 [inline]
- packet_sendmsg+0x86f9/0x99d0 net/packet/af_packet.c:3017
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg net/socket.c:671 [inline]
- ____sys_sendmsg+0xc7a/0x1240 net/socket.c:2353
- ___sys_sendmsg net/socket.c:2407 [inline]
- __sys_sendmmsg+0xa56/0x1060 net/socket.c:2497
- __do_sys_sendmmsg net/socket.c:2526 [inline]
- __se_sys_sendmmsg+0xbd/0xe0 net/socket.c:2523
- __x64_sys_sendmmsg+0x56/0x70 net/socket.c:2523
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Uninit was created at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
- kmsan_internal_poison_shadow+0x5c/0xf0 mm/kmsan/kmsan.c:104
- kmsan_slab_alloc+0x8d/0xe0 mm/kmsan/kmsan_hooks.c:76
- slab_alloc_node mm/slub.c:2906 [inline]
- __kmalloc_node_track_caller+0xc61/0x15f0 mm/slub.c:4512
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0x309/0xae0 net/core/skbuff.c:210
- alloc_skb include/linux/skbuff.h:1094 [inline]
- alloc_skb_with_frags+0x1f3/0xc20 net/core/skbuff.c:5832
- sock_alloc_send_pskb+0xc73/0xe40 net/core/sock.c:2329
- packet_alloc_skb net/packet/af_packet.c:2840 [inline]
- packet_snd net/packet/af_packet.c:2935 [inline]
- packet_sendmsg+0x6aa3/0x99d0 net/packet/af_packet.c:3017
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg net/socket.c:671 [inline]
- ____sys_sendmsg+0xc7a/0x1240 net/socket.c:2353
- ___sys_sendmsg net/socket.c:2407 [inline]
- __sys_sendmmsg+0xa56/0x1060 net/socket.c:2497
- __do_sys_sendmmsg net/socket.c:2526 [inline]
- __se_sys_sendmmsg+0xbd/0xe0 net/socket.c:2523
- __x64_sys_sendmmsg+0x56/0x70 net/socket.c:2523
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-=====================================================
-
-
+Fixes: 6b82ef2c9cf1 ("KVM: x86/mmu: Batch zap MMU pages when recycling oldest pages")
+Reported-by: Zdenek Kaspar <zkaspar82@gmail.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/x86/kvm/mmu/mmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 6d16481aa29d..ed861245ecf0 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -2417,7 +2417,7 @@ static unsigned long kvm_mmu_zap_oldest_mmu_pages(struct kvm *kvm,
+ 		return 0;
+ 
+ restart:
+-	list_for_each_entry_safe(sp, tmp, &kvm->arch.active_mmu_pages, link) {
++	list_for_each_entry_safe_reverse(sp, tmp, &kvm->arch.active_mmu_pages, link) {
+ 		/*
+ 		 * Don't zap active root pages, the page itself can't be freed
+ 		 * and zapping it will just force vCPUs to realloc and reload.
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
+
