@@ -2,338 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA1C2F4750
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 180E32F4760
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:18:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727676AbhAMJOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 04:14:31 -0500
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:33117 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727398AbhAMJOa (ORCPT
+        id S1727725AbhAMJRr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Jan 2021 04:17:47 -0500
+Received: from mail-lf1-f51.google.com ([209.85.167.51]:39920 "EHLO
+        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727527AbhAMJRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 04:14:30 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 381185C0194;
-        Wed, 13 Jan 2021 04:13:23 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 13 Jan 2021 04:13:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=Tn9fTmFYI/uQtrgkhZOhaGqWOAS
-        vTLv8TiF5nATR2Ss=; b=CZrPKwH3QSiZepq1UFfaxHTCzECBKR83BxdgoftWeWc
-        +Im6Aw26YlAHS3ZitHwoTtUvwp4DRxrfeho1ALkzj7IvjEuZxPqnky6afNQuwLId
-        ZYiIlgRX6eZBL6HECRgrkGINUFni2AsfyeZsMxTSII0iXPtjk/u81rHqJtTch9bf
-        Txt8YRSuZEiO+qeMMJdgpo1XNHJzHO8cI8/y4If4ynrSvM12R0qFpu0vHNk4p339
-        MVx+ce1ztx5DEDCUPqXuPNsSxtBfrhm84EYszK18rB0mR86ONBJ335XNnGIIPgK3
-        04l1JFwQ/fS9jrEne3Raor8yuGLz6rBhDVoENkDFOXQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Tn9fTm
-        FYI/uQtrgkhZOhaGqWOASvTLv8TiF5nATR2Ss=; b=D3wCxVaZilRDnnL0DUx7SF
-        +gcNeHwEZKywNfjdkFbDugXJ6JoiF36P88cRHvyy+Ukbm/aIrSS9VkaxrWWrWBcP
-        HA1NK+OFbU4lrGzf5q5H+pAe0phm+Te/xreoKr0TpJJ1ldO2JiY9TzWwx0R9JDVo
-        900UR/WBGrScTbIG1BU9bdPxXuTQwGFP56lrzu9tULX01RqeYj7Vsvg6h6mZO+WP
-        f6v1S7oToFwUNGn4DRSeQ0Qt+zqv8PNCcfuV5aOW7GRZKVQvto+88gimuo9jjg00
-        f91ZV7dIxiWiOg9ta0b6gO2mBlZ9n8Ihwb4Kso61Of8avCqy2sZ3E35k1iRroJjg
-        ==
-X-ME-Sender: <xms:srn-X-cSuLYV6T-2jdlMK279HM-ZGdpcBT7p8ymH210aioT37gKQgA>
-    <xme:srn-X4OyRTSdUu1yz6NGo99DpQaXHUGvkCPAk51_5fAbunwuSuQkEKG0U4fOsqAB7
-    EBrll6GxIWgxokUPFE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtdefgddtudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:srn-X_gLMwLg3dwBZDCWA00Bwl4pSCfy90CohARGAxS8CAdlZHqlXQ>
-    <xmx:srn-X79UACq1QDsmzPmFlwiugvym96rMg5lWKYHZ84GskRjS6E1SAw>
-    <xmx:srn-X6tznywr7dtF-paLBWwSVgZ6js9YtMAf-E_aAtFaRKsTWgxhXA>
-    <xmx:s7n-X3_j3Mb9eDws0t9b6hJgOCxa4GynymAkvvf8_YqeH5kRpI5lQA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id C04A71080059;
-        Wed, 13 Jan 2021 04:13:21 -0500 (EST)
-Date:   Wed, 13 Jan 2021 10:13:19 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     wens@csie.org, airlied@linux.ie, daniel@ffwll.ch,
-        paul.kocialkowski@bootlin.com, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        Roman Stratiienko <roman.stratiienko@globallogic.com>
-Subject: Re: [PATCH v3] drm/sun4i: de2: Reimplement plane z position setting
- logic
-Message-ID: <20210113091319.vcemlo5ldn27472h@gilmour>
-References: <20210106204630.1800284-1-jernej.skrabec@siol.net>
+        Wed, 13 Jan 2021 04:17:42 -0500
+Received: by mail-lf1-f51.google.com with SMTP id a12so1703483lfl.6;
+        Wed, 13 Jan 2021 01:17:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PL83MRTZmSl5in+hjwvHUEdnS7fuD7aTllMQF6TPQJw=;
+        b=To2PeUjCYja5GfpSI5cn2aPh0tn3r5X2Uro2mtMGtDuKZiVqooEivUKHtgyplplANi
+         jOwNTAGj2Dl3Dei4iH0t4EsGO37+Mn7KkF50U3RJTcLDi7FpUtALqhi6kSTjEOSNMYB4
+         NnsvmvPT64QlZgJtZGMsedr5aQ0U/NRVBo4T9f5VexJ50qTpqkXkCWv0uPHU41QIUsXx
+         W3PvDn5Uq09nosUFjbmjkMy1HSCgDbKLAGn1uv0fnyxa2id2cBPVhNusVn5HITtDmm0D
+         CuVt+Bj19rZQ/HDuy2AWISBoxxsShniK2F4+n9h8NaCNCd701KwDx9oT8kxVr24YBYFI
+         vLCA==
+X-Gm-Message-State: AOAM5301FXWPum0hqHklIp8a1Ue4AUBZuEmRV5ZLkk8jWqZdNSHWCzOk
+        ujf+udmF8PtONvDhIfj7eGr5FiaDbSejUg==
+X-Google-Smtp-Source: ABdhPJxMs8TGw/WO/U6CBuzxxYeCb6wQJSZv+knK+N/KsCy1J9DWa22BPpVXxArcWcE95V5xJKQUOA==
+X-Received: by 2002:ac2:498f:: with SMTP id f15mr489815lfl.60.1610529419373;
+        Wed, 13 Jan 2021 01:16:59 -0800 (PST)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id f7sm122179ljk.4.2021.01.13.01.16.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Jan 2021 01:16:58 -0800 (PST)
+Received: by mail-lf1-f54.google.com with SMTP id m25so1667861lfc.11;
+        Wed, 13 Jan 2021 01:16:58 -0800 (PST)
+X-Received: by 2002:ac2:5979:: with SMTP id h25mr453376lfp.57.1610529418335;
+ Wed, 13 Jan 2021 01:16:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="7lkz52fdez73ediq"
-Content-Disposition: inline
-In-Reply-To: <20210106204630.1800284-1-jernej.skrabec@siol.net>
+References: <20210103100007.32867-1-samuel@sholland.org> <20210103100007.32867-5-samuel@sholland.org>
+ <a6c2eac4-7e98-ecb4-ee8a-d67a7f1b6871@arm.com> <20210106110643.agq3mjyhgvg3w4i6@gilmour>
+ <CAGb2v64mcLogZax8vVJJxG9feBzmGc8VyazTvp7XkBAoLXw9JA@mail.gmail.com> <bc95a8d2-ebec-489c-10af-fd5a80ea1276@sholland.org>
+In-Reply-To: <bc95a8d2-ebec-489c-10af-fd5a80ea1276@sholland.org>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Wed, 13 Jan 2021 17:16:46 +0800
+X-Gmail-Original-Message-ID: <CAGb2v679L8fDbaE6dpEdo2q=fJdF=e6AfzOXvHLBuwZ_5YbDeQ@mail.gmail.com>
+Message-ID: <CAGb2v679L8fDbaE6dpEdo2q=fJdF=e6AfzOXvHLBuwZ_5YbDeQ@mail.gmail.com>
+Subject: Re: [linux-sunxi] Re: [PATCH v2 4/4] arm64: dts: allwinner: h6: Use
+ RSB for AXP805 PMIC connection
+To:     Samuel Holland <samuel@sholland.org>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        =?UTF-8?Q?Andr=C3=A9_Przywara?= <andre.przywara@arm.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 7, 2021 at 6:27 PM Samuel Holland <samuel@sholland.org> wrote:
+>
+> On 1/6/21 5:38 AM, Chen-Yu Tsai wrote:
+> > On Wed, Jan 6, 2021 at 7:06 PM Maxime Ripard <maxime@cerno.tech> wrote:
+> >>
+> >> On Mon, Jan 04, 2021 at 10:54:19AM +0000, André Przywara wrote:
+> >>> On 03/01/2021 10:00, Samuel Holland wrote:
+> >>>> On boards where the only peripheral connected to PL0/PL1 is an X-Powers
+> >>>> PMIC, configure the connection to use the RSB bus rather than the I2C
+> >>>> bus. Compared to the I2C controller that shares the pins, the RSB
+> >>>> controller allows a higher bus frequency, and it is more CPU-efficient.
+> >>>
+> >>> But is it really necessary to change the DTs for those boards in this
+> >>> way? It means those newer DTs now become incompatible with older
+> >>> kernels, and I don't know if those reasons above really justify this.
+> >>>
+> >>> I understand that we officially don't care about "newer DTs on older
+> >>> kernels", but do we really need to break this deliberately, for no
+> >>> pressing reasons?
+> >>>
+> >>> P.S. I am fine with supporting RSB on H6, and even using it on new DTs,
+> >>> just want to avoid breaking existing ones.
+> >>
+> >> Doing so would also introduce some inconsistencies, one more thing to
+> >> consider during reviews, and would require more testing effort.
+> >>
+> >> I'm not sure that stretching our - already fairly sparse - resources
+> >> thin would be very wise here, especially for something that we don't
+> >> have to do and for a setup that isn't really used that much.
+> >
+> > As soon as some software component starts running RSB, (which I assume
+> > is what Samuel is planning to do in Crust?), there's a chance that it
+> > doesn't switch the chip back to I2C. And then Linux won't be able to
+> > access it.
+>
+> Crust can handle either way via a config option, which currently
+> defaults to I2C for H6. It must use the same selection as Linux, not
+> only because of the PMIC mode, but also because of the pinctrl.
 
---7lkz52fdez73ediq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Could Crust be made to also handle pinctrl?
 
-Hi,
+> TF-A is already converted to use RSB[1], and it does switch the PMIC
+> back to I2C before handing off to U-Boot[2]. So new TF-A + old Linux is
+> fine. However, Linux currently does not switch the PMIC back. So the
+> most likely problem from this patch is that, with new Linux + old TF-A,
+> TF-A will be unable to power down the board or access regulators after
+> an SoC reset.
+>
+> I expect there will be a TF-A release between now and when 5.12 hits
+> stable, but people tend not upgrade their U-Boot/TF-A very often.
+>
+> We could solve this by having the Linux RSB driver switch all child
+> devices back to I2C in .shutdown, or by dropping this patch and only
+> using RSB for new boards (which would also address Andre's concern).
 
-On Wed, Jan 06, 2021 at 09:46:30PM +0100, Jernej Skrabec wrote:
-> From: Roman Stratiienko <roman.stratiienko@globallogic.com>
->=20
-> To set blending channel order register software needs to know state and
-> position of each channel, which impossible at plane commit stage.
->=20
-> Move this procedure to atomic_flush stage, where all necessary information
-> is available.
+This will work for most cases, except in a kernel panic or IIRC direct
+reboot using sysrq. So it's not robust as we'd like it to be.
 
-Expanding a bit on what the blending order register is supposed to be
-doing, why it's impossible at the plane commit, and why atomic_flush is
-a better option would be nice
+ChenYu
 
-> Fixes: f88c5ee77496 ("drm/sun4i: Implement zpos for DE2")
-> Fixes: d8b3f454dab4 ("drm/sun4i: sun8i: Avoid clearing blending order at =
-each atomic commit")
-> Signed-off-by: Roman Stratiienko <roman.stratiienko@globallogic.com>
-> [rebased, addressed comments]
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> ---
->  drivers/gpu/drm/sun4i/sun8i_mixer.c    | 57 +++++++++++++++++++++-----
->  drivers/gpu/drm/sun4i/sun8i_mixer.h    |  5 +++
->  drivers/gpu/drm/sun4i/sun8i_ui_layer.c | 42 +++----------------
->  drivers/gpu/drm/sun4i/sun8i_vi_layer.c | 42 +++----------------
->  4 files changed, 64 insertions(+), 82 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/sun4i/sun8i_mixer.c b/drivers/gpu/drm/sun4i/=
-sun8i_mixer.c
-> index 5b42cf25cc86..d2153b10b08d 100644
-> --- a/drivers/gpu/drm/sun4i/sun8i_mixer.c
-> +++ b/drivers/gpu/drm/sun4i/sun8i_mixer.c
-> @@ -250,6 +250,50 @@ int sun8i_mixer_drm_format_to_hw(u32 format, u32 *hw=
-_format)
-> =20
->  static void sun8i_mixer_commit(struct sunxi_engine *engine)
->  {
-> +	struct sun8i_mixer *mixer =3D engine_to_sun8i_mixer(engine);
-> +	int channel_by_zpos[SUN8I_MIXER_MAX_CHANNELS];
-> +	u32 base =3D sun8i_blender_base(mixer);
-> +	u32 route =3D 0, pipe_ctl =3D 0;
-> +	unsigned int channel_count;
-> +	int i, j;
-> +
-> +	channel_count =3D mixer->cfg->vi_num + mixer->cfg->ui_num;
-> +
-> +	DRM_DEBUG_DRIVER("Update blender routing\n");
-> +
-> +	for (i =3D 0; i < SUN8I_MIXER_MAX_CHANNELS; i++)
-> +		channel_by_zpos[i] =3D -1;
-> +
-> +	for (i =3D 0; i < channel_count; i++)	{
-> +		int zpos =3D mixer->channel_zpos[i];
-
-Why do we need the channel_zpos in the mixer structure, this looks
-related to the state itself, so we should store it into a custom state
-structure
-
-> +		if (zpos >=3D 0 && zpos < channel_count)
-> +			channel_by_zpos[zpos] =3D i;
-> +	}
-> +
-> +	j =3D 0;
-> +	for (i =3D 0; i < channel_count; i++) {
-> +		int ch =3D channel_by_zpos[i];
-> +
-> +		if (ch >=3D 0) {
-> +			pipe_ctl |=3D SUN8I_MIXER_BLEND_PIPE_CTL_EN(j);
-> +			route |=3D ch << SUN8I_MIXER_BLEND_ROUTE_PIPE_SHIFT(j);
-> +			j++;
-> +		}
-> +	}
-
-Similarly, having a comment somewhere to explain that algorithm would be
-nice.
-
-> +	/*
-> +	 * Set fill color of bottom plane to black. Generally not needed
-> +	 * except when VI plane is at bottom (zpos =3D 0) and enabled.
-> +	 */
-> +	pipe_ctl |=3D SUN8I_MIXER_BLEND_PIPE_CTL_FC_EN(0);
-> +
-> +	regmap_write(mixer->engine.regs,
-> +		     SUN8I_MIXER_BLEND_PIPE_CTL(base), pipe_ctl);
-> +
-> +	regmap_write(mixer->engine.regs,
-> +		     SUN8I_MIXER_BLEND_ROUTE(base), route);
-> +
->  	DRM_DEBUG_DRIVER("Committing changes\n");
-> =20
->  	regmap_write(engine->regs, SUN8I_MIXER_GLOBAL_DBUFF,
-> @@ -479,23 +523,16 @@ static int sun8i_mixer_bind(struct device *dev, str=
-uct device *master,
->  	regmap_write(mixer->engine.regs, SUN8I_MIXER_BLEND_BKCOLOR(base),
->  		     SUN8I_MIXER_BLEND_COLOR_BLACK);
-> =20
-> -	/*
-> -	 * Set fill color of bottom plane to black. Generally not needed
-> -	 * except when VI plane is at bottom (zpos =3D 0) and enabled.
-> -	 */
-> -	regmap_write(mixer->engine.regs, SUN8I_MIXER_BLEND_PIPE_CTL(base),
-> -		     SUN8I_MIXER_BLEND_PIPE_CTL_FC_EN(0));
->  	regmap_write(mixer->engine.regs, SUN8I_MIXER_BLEND_ATTR_FCOLOR(base, 0),
->  		     SUN8I_MIXER_BLEND_COLOR_BLACK);
-> =20
->  	plane_cnt =3D mixer->cfg->vi_num + mixer->cfg->ui_num;
-> -	for (i =3D 0; i < plane_cnt; i++)
-> +	for (i =3D 0; i < plane_cnt; i++) {
-> +		mixer->channel_zpos[i] =3D -1;
->  		regmap_write(mixer->engine.regs,
->  			     SUN8I_MIXER_BLEND_MODE(base, i),
->  			     SUN8I_MIXER_BLEND_MODE_DEF);
-> -
-> -	regmap_update_bits(mixer->engine.regs, SUN8I_MIXER_BLEND_PIPE_CTL(base),
-> -			   SUN8I_MIXER_BLEND_PIPE_CTL_EN_MSK, 0);
-> +	}
-> =20
->  	return 0;
-> =20
-> diff --git a/drivers/gpu/drm/sun4i/sun8i_mixer.h b/drivers/gpu/drm/sun4i/=
-sun8i_mixer.h
-> index 7576b523fdbb..7b378d6e4dd9 100644
-> --- a/drivers/gpu/drm/sun4i/sun8i_mixer.h
-> +++ b/drivers/gpu/drm/sun4i/sun8i_mixer.h
-> @@ -12,6 +12,8 @@
-> =20
->  #include "sunxi_engine.h"
-> =20
-> +#define SUN8I_MIXER_MAX_CHANNELS		5
-> +
->  #define SUN8I_MIXER_SIZE(w, h)			(((h) - 1) << 16 | ((w) - 1))
->  #define SUN8I_MIXER_COORD(x, y)			((y) << 16 | (x))
-> =20
-> @@ -179,6 +181,9 @@ struct sun8i_mixer {
-> =20
->  	struct clk			*bus_clk;
->  	struct clk			*mod_clk;
-> +
-> +	/* -1 means that layer is disabled */
-> +	int channel_zpos[SUN8I_MIXER_MAX_CHANNELS];
->  };
-> =20
->  static inline struct sun8i_mixer *
-> diff --git a/drivers/gpu/drm/sun4i/sun8i_ui_layer.c b/drivers/gpu/drm/sun=
-4i/sun8i_ui_layer.c
-> index 816ad4ce8996..9f82e7c33e90 100644
-> --- a/drivers/gpu/drm/sun4i/sun8i_ui_layer.c
-> +++ b/drivers/gpu/drm/sun4i/sun8i_ui_layer.c
-> @@ -24,12 +24,10 @@
->  #include "sun8i_ui_scaler.h"
-> =20
->  static void sun8i_ui_layer_enable(struct sun8i_mixer *mixer, int channel,
-> -				  int overlay, bool enable, unsigned int zpos,
-> -				  unsigned int old_zpos)
-> +				  int overlay, bool enable, unsigned int zpos)
->  {
-> -	u32 val, bld_base, ch_base;
-> +	u32 val, ch_base;
-> =20
-> -	bld_base =3D sun8i_blender_base(mixer);
->  	ch_base =3D sun8i_channel_base(mixer, channel);
-> =20
->  	DRM_DEBUG_DRIVER("%sabling channel %d overlay %d\n",
-> @@ -44,32 +42,7 @@ static void sun8i_ui_layer_enable(struct sun8i_mixer *=
-mixer, int channel,
->  			   SUN8I_MIXER_CHAN_UI_LAYER_ATTR(ch_base, overlay),
->  			   SUN8I_MIXER_CHAN_UI_LAYER_ATTR_EN, val);
-> =20
-> -	if (!enable || zpos !=3D old_zpos) {
-> -		regmap_update_bits(mixer->engine.regs,
-> -				   SUN8I_MIXER_BLEND_PIPE_CTL(bld_base),
-> -				   SUN8I_MIXER_BLEND_PIPE_CTL_EN(old_zpos),
-> -				   0);
-> -
-> -		regmap_update_bits(mixer->engine.regs,
-> -				   SUN8I_MIXER_BLEND_ROUTE(bld_base),
-> -				   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(old_zpos),
-> -				   0);
-> -	}
-> -
-> -	if (enable) {
-> -		val =3D SUN8I_MIXER_BLEND_PIPE_CTL_EN(zpos);
-> -
-> -		regmap_update_bits(mixer->engine.regs,
-> -				   SUN8I_MIXER_BLEND_PIPE_CTL(bld_base),
-> -				   val, val);
-> -
-> -		val =3D channel << SUN8I_MIXER_BLEND_ROUTE_PIPE_SHIFT(zpos);
-> -
-> -		regmap_update_bits(mixer->engine.regs,
-> -				   SUN8I_MIXER_BLEND_ROUTE(bld_base),
-> -				   SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(zpos),
-> -				   val);
-> -	}
-> +	mixer->channel_zpos[channel] =3D enable ? zpos : -1;
->  }
-> =20
->  static int sun8i_ui_layer_update_coord(struct sun8i_mixer *mixer, int ch=
-annel,
-> @@ -267,11 +240,9 @@ static void sun8i_ui_layer_atomic_disable(struct drm=
-_plane *plane,
->  					  struct drm_plane_state *old_state)
->  {
->  	struct sun8i_ui_layer *layer =3D plane_to_sun8i_ui_layer(plane);
-> -	unsigned int old_zpos =3D old_state->normalized_zpos;
->  	struct sun8i_mixer *mixer =3D layer->mixer;
-> =20
-> -	sun8i_ui_layer_enable(mixer, layer->channel, layer->overlay, false, 0,
-> -			      old_zpos);
-> +	sun8i_ui_layer_enable(mixer, layer->channel, layer->overlay, false, 0);
->  }
-> =20
->  static void sun8i_ui_layer_atomic_update(struct drm_plane *plane,
-> @@ -279,12 +250,11 @@ static void sun8i_ui_layer_atomic_update(struct drm=
-_plane *plane,
->  {
->  	struct sun8i_ui_layer *layer =3D plane_to_sun8i_ui_layer(plane);
->  	unsigned int zpos =3D plane->state->normalized_zpos;
-> -	unsigned int old_zpos =3D old_state->normalized_zpos;
->  	struct sun8i_mixer *mixer =3D layer->mixer;
-> =20
->  	if (!plane->state->visible) {
->  		sun8i_ui_layer_enable(mixer, layer->channel,
-> -				      layer->overlay, false, 0, old_zpos);
-> +				      layer->overlay, false, 0);
->  		return;
->  	}
-> =20
-> @@ -295,7 +265,7 @@ static void sun8i_ui_layer_atomic_update(struct drm_p=
-lane *plane,
->  	sun8i_ui_layer_update_buffer(mixer, layer->channel,
->  				     layer->overlay, plane);
->  	sun8i_ui_layer_enable(mixer, layer->channel, layer->overlay,
-> -			      true, zpos, old_zpos);
-> +			      true, zpos);
->  }
-
-The prototype change could be in a separate patch, it would make things
-easier to review.
-
-Maxime
-
---7lkz52fdez73ediq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX/65rwAKCRDj7w1vZxhR
-xdV4APsFPA4cMgAoq4Sb2HMWf7gmKjULe5gHGRG121MpvmEH5wEA2ceHxq3EltdV
-mDfAi7tQAjzWj/4nN0MjCfR2kBt1rAY=
-=0eaD
------END PGP SIGNATURE-----
-
---7lkz52fdez73ediq--
+> Cheers,
+> Samuel
+>
+> [1]: https://review.trustedfirmware.org/c/TF-A/trusted-firmware-a/+/7576
+> [2]: https://review.trustedfirmware.org/c/TF-A/trusted-firmware-a/+/7575
+>
+> > So I'm for keeping things consistent and converting all users to RSB.
+> >
+> >
+> > ChenYu
+> >
+>
+> --
+> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe@googlegroups.com.
+> To view this discussion on the web, visit https://groups.google.com/d/msgid/linux-sunxi/bc95a8d2-ebec-489c-10af-fd5a80ea1276%40sholland.org.
