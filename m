@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F25FC2F4440
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 07:06:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0612F4442
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 07:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725998AbhAMGE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 01:04:56 -0500
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:45272 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725770AbhAMGE4 (ORCPT
+        id S1726110AbhAMGFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 01:05:25 -0500
+Received: from mail-wm1-f49.google.com ([209.85.128.49]:37087 "EHLO
+        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725943AbhAMGFY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 01:04:56 -0500
-Received: by mail-wr1-f51.google.com with SMTP id d26so765934wrb.12;
-        Tue, 12 Jan 2021 22:04:39 -0800 (PST)
+        Wed, 13 Jan 2021 01:05:24 -0500
+Received: by mail-wm1-f49.google.com with SMTP id g10so484621wmh.2;
+        Tue, 12 Jan 2021 22:05:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=y1NkgwubQJo6+DrdcxV+O/7783b4D3luaMS6tWEPlf4=;
-        b=Re8B6XtiCxmGYTda6+ZkgEDf1G1w1jXorI3n1Otvca6nfLwwf98mphVXgZgZZqZaV1
-         tjTh002F+xuz8ov5FaxoT9UmLYWFaFw7iWB1JrSEIFvVlcyEiGDzEJe8UX7x/FvTJbei
-         +0SijzJYHUQQhSrjrtsdh2GAlevVBIggjkhj//eyX0FhSgmrx8uu8NduFcgZeEakrYYs
-         M7GbXa6cUoK9453TeV9c52vY6vxz39ugQnOULKx7rhplcyPZbpHBr8sOZB/dgigZMKTq
-         ADQ2sEdVWHv/fExDMAkKxO1VnQFDwgK9QHcKhufTA5txwjAiQBXWai3opT0BWvOK8Chv
-         4Lgg==
-X-Gm-Message-State: AOAM530Tib8Hov0AGis77S0IwOBvQ6CwWn2TsGNWxoQJOtjNJwgk1Cg3
-        Qi/RgA+ekL02xxWfTVmUGjM=
-X-Google-Smtp-Source: ABdhPJwfn69yV/CGlTIViEl6H+moC4YZBMTH+gYLzJj9vE5rpMUAfaNHk9wmEcLTmaRItbDa7Grpug==
-X-Received: by 2002:a05:6000:1d1:: with SMTP id t17mr745151wrx.164.1610517853795;
-        Tue, 12 Jan 2021 22:04:13 -0800 (PST)
+        bh=M6RP7/pPMMjBYm8VlmfmSTLWwW3y/ULVDt749IgZo84=;
+        b=pCbVjxiAxzdX1czu8Vbu8OBYa9Mv3A1mBs2CtZHiuL4QhNLw/7YJUbhflOzSCb0jjJ
+         /6ti/YLLMC8OYf6aONLGknvlqDgJ/pP6lYBRAlyLLKuDadTTStQGeAd5gez4Hod/DrMt
+         HVwxgdYhFjzb4/BqlvZMFXGdFontF/NqN2R0NkCZqqy8RZtvNRqEOF5m7gymrRE4cC+L
+         zV/RyiWlEC2CtT0JMgG9qusk058mZidaSquXr+m2RiZv5npIw2XnOQolyYX2VgVYxo0e
+         ZCibtPAvCcFWOLW1Wcf4PIpsRStr1qoi9BlmSnuJssQZD/WkQ5G0cEArvuiXqCUATSjr
+         S1+g==
+X-Gm-Message-State: AOAM53078h3G2xlpr7dfy0jWW3dVztNGDNLkSl7AfAua4iiHulT/JIZo
+        4Ot+P0W8Yp+G7r+oegj18kU=
+X-Google-Smtp-Source: ABdhPJxMDZDmiAGJUgo2x7GtI57MCobXYrci+N5hoWi7tgULDOR3UijGwA6sQn1pbKXvqmavpcdMMg==
+X-Received: by 2002:a1c:1f54:: with SMTP id f81mr530796wmf.44.1610517883110;
+        Tue, 12 Jan 2021 22:04:43 -0800 (PST)
 Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id c18sm10261967wmk.0.2021.01.12.22.04.12
+        by smtp.googlemail.com with ESMTPSA id u17sm1173602wmj.35.2021.01.12.22.04.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 22:04:12 -0800 (PST)
-Date:   Wed, 13 Jan 2021 07:04:11 +0100
+        Tue, 12 Jan 2021 22:04:42 -0800 (PST)
+Date:   Wed, 13 Jan 2021 07:04:40 +0100
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Adam Ford <aford173@gmail.com>
 Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
@@ -45,28 +45,24 @@ Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
         Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: imx8mn-beacon-som: Configure RTC aliases
-Message-ID: <20210113060411.GA12275@kozik-lap>
-References: <20210110115354.1259994-1-aford173@gmail.com>
+Subject: Re: [PATCH] arm64: dts: imx8mm-beacon: add more pinctrl states for
+ usdhc1
+Message-ID: <20210113060440.GB12275@kozik-lap>
+References: <20210110113826.1257293-1-aford173@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210110115354.1259994-1-aford173@gmail.com>
+In-Reply-To: <20210110113826.1257293-1-aford173@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 05:53:53AM -0600, Adam Ford wrote:
-> On the i.MX8MN Beacon SOM, there is an RTC chip which is fed power
-> from the baseboard during power off.  The SNVS RTC integrated into
-> the SoC is not fed power.  Depending on the order the modules are
-> loaded, this can be a problem if the external RTC isn't rtc0.
-> 
-> Make the alias for rtc0 point to the external RTC all the time and
-> rtc1 point to the SVNS in order to correctly hold date/time over
-> a power-cycle.
+On Sun, Jan 10, 2021 at 05:38:26AM -0600, Adam Ford wrote:
+> The WiFi chip is capable of communication at SDR104 speeds.
+> Enable 100Mhz and 200MHz pinmux to support this.
 > 
 > Signed-off-by: Adam Ford <aford173@gmail.com>
+> 
 
 Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
