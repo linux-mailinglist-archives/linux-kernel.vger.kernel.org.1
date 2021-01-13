@@ -2,91 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8E142F5117
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:27:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1E52F511E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:29:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727995AbhAMR0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:26:32 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37920 "EHLO mx2.suse.de"
+        id S1727713AbhAMR2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:28:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727738AbhAMR0c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:26:32 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610558745; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rhzc4mOF8yFAxKPYUubGlwQEI+I8sBfXXcHJyflCuY4=;
-        b=i1Dl/qH52hba18Oihb2EQd6sStetFqE2ABR5A0e6RSSdhSAU3FGzXEH6+IBeW2xX4/9CHq
-        heVNCD+VKKUM6GNtJFK3P/aXXL+biDADwEXGQ9vwg4m9GURjQlax5LzKnPvB37qLSKiUec
-        GDt67B3i/bUeSG2VEtTK7ZY5g078cCk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 17418ACF5;
-        Wed, 13 Jan 2021 17:25:45 +0000 (UTC)
-Date:   Wed, 13 Jan 2021 18:25:38 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: prevent starvation when writing
- memory.high
-Message-ID: <20210113172522.GA14726@blackbody.suse.cz>
-References: <20210112163011.127833-1-hannes@cmpxchg.org>
+        id S1726996AbhAMR2c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 12:28:32 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A927520739;
+        Wed, 13 Jan 2021 17:27:51 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kzjvx-007JbX-Ip; Wed, 13 Jan 2021 17:27:49 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="aVD9QWMuhilNxW9f"
-Content-Disposition: inline
-In-Reply-To: <20210112163011.127833-1-hannes@cmpxchg.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 13 Jan 2021 17:27:49 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, android-kvm@google.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        Fuad Tabba <tabba@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>
+Subject: Re: [RFC PATCH v2 13/26] KVM: arm64: Enable access to sanitized CPU
+ features at EL2
+In-Reply-To: <X/8FFKOLOVD9Ee2F@google.com>
+References: <20210108121524.656872-1-qperret@google.com>
+ <20210108121524.656872-14-qperret@google.com>
+ <d55643ea391f73a2297f499f3219ba8a@kernel.org> <X/8CR5eXGGccFjaL@google.com>
+ <X/8FFKOLOVD9Ee2F@google.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <e09900ba30646cf23e1683a2ed16078f@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: qperret@google.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, robh+dt@kernel.org, frowand.list@gmail.com, devicetree@vger.kernel.org, android-kvm@google.com, linux-kernel@vger.kernel.org, kernel-team@android.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, tabba@google.com, mark.rutland@arm.com, dbrazdil@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-01-13 14:35, Quentin Perret wrote:
+> On Wednesday 13 Jan 2021 at 14:23:03 (+0000), Quentin Perret wrote:
+>> Good point, that would be nice indeed. Can I use that from outside an
+>> __init function?
+> 
+> Just gave it a go, and the answer to this appears to be yes,
+> surprisingly -- I was expecting a compile-time warning similar to what
+> we get when non-__init code calls into __init, but that doesn't seem to
+> trigger here. Anyways, I'll add the annotation in v3.
 
---aVD9QWMuhilNxW9f
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That's surprising. I'd definitely expect something to explode...
+Do you have CONFIG_DEBUG_SECTION_MISMATCH=y?
 
-On Tue, Jan 12, 2021 at 11:30:11AM -0500, Johannes Weiner <hannes@cmpxchg.o=
-rg> wrote:
-> -		reclaimed =3D try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
-> -							 GFP_KERNEL, true);
-> +		try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
-> +					     GFP_KERNEL, true);
-Although I was also initially confused by throwing 'reclaimed' info
-away, the patch makes sense to me given the reasoning.
-
-It is
-Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
-
-As for the discussed unsuccessful retries, I'd keep it a separate change.
-
-Regards,
-Michal
-
---aVD9QWMuhilNxW9f
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl//LRIACgkQia1+riC5
-qSjZoxAAhk4KwOei0MYgZnUEnzxE1nLMsgz8ikWGTOpHBWVId+W0rQ6FyKlFpvxv
-16m+S9Fx+2YxpnE7X1mLbEGDUUO1ORbBUCy2mUeWVo3EuubEBEuNDyfYKbwTarp5
-rzkT5r6/pbEcoX3NNr+bX0fD1f5dFSq3uWYoMOHkzISWshzxRATC67vKS0fBfSr5
-cSq/5hh6HgYh2bo9vtO83JWkSGJTYdu5GhqTZzWIJbgjRbFpX58mG/GyZzpog0Hu
-g2u5GNsrdgsM6gOuHk9wLwBluXjmrFUpaZF/pRMcw/mfzAjMRo+qZNib77IhrH5s
-As+MJ1ikA8p7vWIyT57tussfMunQ7EjJGHezkKBhcJ69+ICoaPveaUy3xyVZ8dYm
-9BRP7uPO3AnHxDoW+WohU7QoaJu4Mxu2qZiA+Js4upfadqg0vvYHdw/P1rbVyG99
-KpmGOQ3/LnQ5LYT0VcYUUMPHDniuOyoM9VY+JSXgNBZVV4uKUeXMrLbpF9MN1tAU
-MvBzbm9f5/AQVHX/ayXHiVoRBu/FuadzElB+yE4OW/VHwXr0i9KnmbCyIZcK9mr7
-iU5P2X328NKTQk/UwfCbZeHs/npuDHP6aA85HhYULfjKqWtZICcJfrnxpY/ealgO
-o4a15hQpOwCqOiUQvWFyZ0k2xibU+axzLEWO08jTCgD3ywfoTTw=
-=n33h
------END PGP SIGNATURE-----
-
---aVD9QWMuhilNxW9f--
+         M.
+-- 
+Jazz is not dead. It just smells funny...
