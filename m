@@ -2,55 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7872F4ACD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 953E62F4ADA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727145AbhAML6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:58:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725773AbhAML6C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:58:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9926A22CE3;
-        Wed, 13 Jan 2021 11:57:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610539041;
-        bh=HXlq4vPxrQ7OwlDTgqLZcX4XBL6fIDTx1J5HRUHdMm0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bQ3LPFEJzFOU3BfNJwB9EK9K5a8oCpsavtfos6cQFdBekPHC4ZlEXUGurCHoJg1Og
-         NtzgciGoNcDP3HaDqIzqPN8GA6y18Z+giqgVzYWS9esCYgiuxUmVMI7860eBPVHDLB
-         NMI5+uBrte3/4paV9buokXMqnrNwIPqaCYEFtLxnHAubu9RlsqN/ntEuMz5hMjbbtO
-         1WKvuwFlQ4Ka1dKi1hA5JmRxvIsnr4DYMu6St2h3r+wLGYdQEFHcYR0hrcjclW8i4u
-         l5jxkeMvjBKrDm54TZoI3s/zNaVf9Z+m4W5rG0Sc7OBZ4n2RHw/eDu/bnEj1gWPCrs
-         6M0ACHSa2B7lg==
-Date:   Wed, 13 Jan 2021 17:27:16 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Al Cooper <alcooperx@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH 1/2] phy: phy-brcm-usb: improve getting OF matching data
-Message-ID: <20210113115716.GF2771@vkoul-mobl>
-References: <20201216143305.12179-1-zajec5@gmail.com>
+        id S1727645AbhAMMA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 07:00:58 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39694 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727255AbhAMMA5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 07:00:57 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10DBxJhg045928;
+        Wed, 13 Jan 2021 05:59:19 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610539159;
+        bh=eUEK69G1k6sHVdIpkBoaIy/oX8qUmyR0wXBF3xfwgGU=;
+        h=From:To:CC:Subject:Date;
+        b=ah9LYVOIPVahH1kmbYZpSMqKO9pgBmwHK9lrxkb3If98jPdZ0xBSoBUg9qldDGQuq
+         Tx0lCakKs4/4d3AwRSTfqOvd9O5GTzI0UJ5b8X6oxeE5jBwmbmXm3N0xD73nytZIYi
+         40J0NXvI8X3Q5NS3SKvU86uSHzM976pjodf53FXs=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10DBxJMT030241
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 13 Jan 2021 05:59:19 -0600
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 13
+ Jan 2021 05:59:19 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 13 Jan 2021 05:59:18 -0600
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10DBxDdj041723;
+        Wed, 13 Jan 2021 05:59:14 -0600
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Sekhar Nori <nsekhar@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        <linux-mmc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 0/2] mmc: AM64: Add new compatible string and driver support
+Date:   Wed, 13 Jan 2021 17:29:06 +0530
+Message-ID: <20210113115908.3882-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201216143305.12179-1-zajec5@gmail.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-12-20, 15:33, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
-> 
-> 1. Use of_device_get_match_data() helper to simplify the code
-> 2. Check for NULL as a good practice
+The following series of patches,
+- Adds new compatible string for AM64 SoC
+- Adds support for AM64 SoC in sdhci_am654 driver
 
-Applied both, thanks
+This patch series is a combination of the patches [1] and [2].
+
+[1] - https://lore.kernel.org/patchwork/patch/1361560/
+[2] - https://lore.kernel.org/patchwork/patch/1364589/
+
+Aswath Govindraju (1):
+  dt-bindings: mmc: sdhci-am654: Add compatible string for AM64 SoC
+
+Faiz Abbas (1):
+  mmc: sdhci_am654: Add Support for TI's AM64 SoC
+
+ .../devicetree/bindings/mmc/sdhci-am654.yaml  |  2 ++
+ drivers/mmc/host/sdhci_am654.c                | 28 +++++++++++++++++++
+ 2 files changed, 30 insertions(+)
 
 -- 
-~Vinod
+2.17.1
+
