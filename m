@@ -2,223 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19BF2F52EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:02:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7FD2F5321
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728543AbhAMTBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 14:01:42 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:29414 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728367AbhAMTBl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 14:01:41 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610564482; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=2qvIDKz7dSKSYNdFgaxyYw/xVvDnRfMTjpt+R3u9K2U=; b=HHu7A8dkHvTodTZyPlcLsrIOEbIL0jAH9IWW95VqbwMHEQ9RtoZzqdVAhJ2v2LpsZLiFDMHx
- 1Usy/NjFbj2JTDufZrY9aFjlCq2MyEz8Ffz/OW0WNPsQCyRYmmaNQPjTmUOfv8VF3Z9cR11y
- kKpcQrS225JNzpV1hEdgs3GRUq0=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5fff435de53eb5da8c8dab14 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 19:00:45
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F05CCC43461; Wed, 13 Jan 2021 19:00:44 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1728613AbhAMTMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 14:12:13 -0500
+Received: from ni.piap.pl ([195.187.100.5]:53018 "EHLO ni.piap.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728355AbhAMTMM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 14:12:12 -0500
+X-Greylist: delayed 628 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 Jan 2021 14:12:12 EST
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6FD27C433C6;
-        Wed, 13 Jan 2021 19:00:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6FD27C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org
-Cc:     Kuogee Hsieh <khsieh@codeaurora.org>, tanmay@codeaurora.org,
-        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] drm/msm/dp: unplug interrupt missed after irq_hpd handler
-Date:   Wed, 13 Jan 2021 11:00:00 -0800
-Message-Id: <1610564400-29788-3-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1610564400-29788-1-git-send-email-khsieh@codeaurora.org>
-References: <1610564400-29788-1-git-send-email-khsieh@codeaurora.org>
+        by ni.piap.pl (Postfix) with ESMTPSA id D6C8A442CEE;
+        Wed, 13 Jan 2021 20:00:56 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl D6C8A442CEE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1610564461; bh=uGPch0plRzGJXv12KMAcbJh5l5cGfXy0GW7mtMC5Sz4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Fu8qvEOHpxUoZifR0SCbszgYNZAY2i00ylcCetiUQhp/lNTqkMGpuDmu/s8VFqpWF
+         3Nn0KQE2rgpFyDXbPrXIG943PntorcvJlPB3A5jC88mhhg/o85siJ+txfBAeQTw1EX
+         YWasm9dzUKfBMCpDm2vdpVJrwqpP5Z/N5Bil3SuE=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Mark Salter <msalter@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Subject: Re: [v2] Old platforms: bring out your dead
+In-Reply-To: <CAK8P3a2DZ8xQp7R=H=wewHnT2=a_=M53QsZOueMVEf7tOZLKNg@mail.gmail.com>
+        (Arnd Bergmann's message of "Wed, 13 Jan 2021 17:14:23 +0100")
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+        <CAK8P3a2DZ8xQp7R=H=wewHnT2=a_=M53QsZOueMVEf7tOZLKNg@mail.gmail.com>
+Sender: khalasa@piap.pl
+Date:   Wed, 13 Jan 2021 20:00:56 +0100
+Message-ID: <m335z4ll07.fsf@t19.piap.pl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 4
+X-KLMS-Message-Action: skipped
+X-KLMS-AntiSpam-Status: not scanned, whitelist
+X-KLMS-AntiPhishing: not scanned, whitelist
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is HPD unplug interrupts missed at scenario of an irq_hpd
-followed by unplug interrupts with around 10 ms in between.
-Since both AUX_SW_RESET and DP_SW_RESET clear pending HPD interrupts,
-irq_hpd handler should not issues either aux or sw reset to avoid
-following unplug interrupt be cleared accidentally. This patch
-also postpone handling of irq_hpd until connected state if it
-happened at connection pending state.
+Arnd,
 
-Changes in V2:
--- add postpone handling of irq_hpd until connected state
--- check DP_TRAINING_1 instead of DP_TRAINING_NONE
+Arnd Bergmann <arnd@kernel.org> writes:
 
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_aux.c     |  7 -------
- drivers/gpu/drm/msm/dp/dp_catalog.c | 24 ++++++++++++++++++++++++
- drivers/gpu/drm/msm/dp/dp_ctrl.c    | 15 ++++++++++-----
- drivers/gpu/drm/msm/dp/dp_display.c |  7 +++++++
- 4 files changed, 41 insertions(+), 12 deletions(-)
+> For these I received no reply yet. Again, these will stay for the moment
+> unless I get a reply, but if anyone has more information, please reply
+> here to document the status (adding a few more people to Cc):
+>
+> * cns3xxx -- added in 2010, last fixed in 2019, probably no users left
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c b/drivers/gpu/drm/msm/dp/dp_aux.c
-index 19b35ae..1c6e1d2 100644
---- a/drivers/gpu/drm/msm/dp/dp_aux.c
-+++ b/drivers/gpu/drm/msm/dp/dp_aux.c
-@@ -336,7 +336,6 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp_aux,
- 	ssize_t ret;
- 	int const aux_cmd_native_max = 16;
- 	int const aux_cmd_i2c_max = 128;
--	int const retry_count = 5;
- 	struct dp_aux_private *aux = container_of(dp_aux,
- 		struct dp_aux_private, dp_aux);
- 
-@@ -378,12 +377,6 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp_aux,
- 	ret = dp_aux_cmd_fifo_tx(aux, msg);
- 
- 	if (ret < 0) {
--		if (aux->native) {
--			aux->retry_cnt++;
--			if (!(aux->retry_cnt % retry_count))
--				dp_catalog_aux_update_cfg(aux->catalog);
--			dp_catalog_aux_reset(aux->catalog);
--		}
- 		usleep_range(400, 500); /* at least 400us to next try */
- 		goto unlock_exit;
- 	}
-diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
-index 44f0c57..b1a9b1b 100644
---- a/drivers/gpu/drm/msm/dp/dp_catalog.c
-+++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
-@@ -190,6 +190,18 @@ int dp_catalog_aux_clear_hw_interrupts(struct dp_catalog *dp_catalog)
- 	return 0;
- }
- 
-+/**
-+ * dp_catalog_aux_reset() - reset AUX controller
-+ *
-+ * @aux: DP catalog structure
-+ *
-+ * return: void
-+ *
-+ * This function reset AUX controller
-+ *
-+ * NOTE: reset AUX controller will also clear any pending HPD related interrupts
-+ * 
-+ */
- void dp_catalog_aux_reset(struct dp_catalog *dp_catalog)
- {
- 	u32 aux_ctrl;
-@@ -483,6 +495,18 @@ int dp_catalog_ctrl_set_pattern(struct dp_catalog *dp_catalog,
- 	return 0;
- }
- 
-+/**
-+ * dp_catalog_ctrl_reset() - reset DP controller
-+ *
-+ * @dp_catalog: DP catalog structure
-+ *
-+ * return: void
-+ *
-+ * This function reset the DP controller
-+ *
-+ * NOTE: reset DP controller will also clear any pending HPD related interrupts
-+ * 
-+ */
- void dp_catalog_ctrl_reset(struct dp_catalog *dp_catalog)
- {
- 	u32 sw_reset;
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-index e3462f5..5ac155d 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-@@ -1296,7 +1296,8 @@ static int dp_ctrl_setup_main_link(struct dp_ctrl_private *ctrl,
- 	 * transitioned to PUSH_IDLE. In order to start transmitting
- 	 * a link training pattern, we have to first do soft reset.
- 	 */
--	dp_catalog_ctrl_reset(ctrl->catalog);
-+	if (*training_step == DP_TRAINING_1)
-+		dp_catalog_ctrl_reset(ctrl->catalog);
- 
- 	ret = dp_ctrl_link_train(ctrl, cr, training_step);
- 
-@@ -1491,15 +1492,18 @@ static int dp_ctrl_deinitialize_mainlink(struct dp_ctrl_private *ctrl)
- 	return 0;
- }
- 
-+static void dp_ctrl_link_idle_reset(struct dp_ctrl_private *ctrl)
-+{
-+	dp_ctrl_push_idle(&ctrl->dp_ctrl);
-+	dp_catalog_ctrl_reset(ctrl->catalog);
-+}
-+
- static int dp_ctrl_link_maintenance(struct dp_ctrl_private *ctrl)
- {
- 	int ret = 0;
- 	struct dp_cr_status cr;
- 	int training_step = DP_TRAINING_NONE;
- 
--	dp_ctrl_push_idle(&ctrl->dp_ctrl);
--	dp_catalog_ctrl_reset(ctrl->catalog);
--
- 	ctrl->dp_ctrl.pixel_rate = ctrl->panel->dp_mode.drm_mode.clock;
- 
- 	ret = dp_ctrl_setup_main_link(ctrl, &cr, &training_step);
-@@ -1626,6 +1630,7 @@ void dp_ctrl_handle_sink_request(struct dp_ctrl *dp_ctrl)
- 
- 	if (sink_request & DP_TEST_LINK_TRAINING) {
- 		dp_link_send_test_response(ctrl->link);
-+		dp_ctrl_link_idle_reset(ctrl);
- 		if (dp_ctrl_link_maintenance(ctrl)) {
- 			DRM_ERROR("LM failed: TEST_LINK_TRAINING\n");
- 			return;
-@@ -1679,7 +1684,7 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
- 			break;
- 		}
- 
--		training_step = DP_TRAINING_NONE;
-+		training_step = DP_TRAINING_1;
- 		rc = dp_ctrl_setup_main_link(ctrl, &cr, &training_step);
- 		if (rc == 0) {
- 			/* training completed successfully */
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index 6e971d5..3bc7ed2 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -693,6 +693,13 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
- 		return 0;
- 	}
- 
-+	if (state == ST_CONNECT_PENDING) {
-+		/* wait until ST_CONNECTED */
-+		dp_add_event(dp, EV_IRQ_HPD_INT, 0, 1); /* delay = 1 */
-+		mutex_unlock(&dp->event_mutex);
-+		return 0;
-+	}
-+
- 	ret = dp_display_usbpd_attention_cb(&dp->pdev->dev);
- 	if (ret == -ECONNRESET) { /* cable unplugged */
- 		dp->core_initialized = false;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+The following is what I sent to you a week ago. I don't say whether
+CNS3xxx support should stay or not, of course.
 
+Subject: Re: cns3xxx PCIe domain support
+
+Arnd Bergmann <arnd@kernel.org> writes:
+
+> For the cns3xxx case, I wonder if anyone actually cares. If
+> there are still users, the treewide change would make it trivial
+> to set it up right, while backporting would be harder. I noticed
+> that openwrt removed cns3xxx support in August with the
+> explanation that the platform is not used much anymore,
+> and I suspect that any users outside of openwrt stopped updating
+> their kernels long ago.
+
+I'm still using CNS3xxx-based Gateworks' boards (Laguna), with some
+custom patch set, but the last kernels are over 2 years old. I have some
+plan to update, but the probability it will happen very soon is rather
+low. I guess I will test and, if needed, fix it when the time comes.
+
+I'm not using them with OpenWrt, though.
+They are basically a platform for (the old, parallel, not express)
+mini-PCI cards and similar stuff. Nothing connected to the Internet etc.
+
+--=20
+Krzysztof Halasa
+
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
