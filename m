@@ -2,108 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 098D62F53D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C86DB2F53DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728858AbhAMUHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 15:07:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
+        id S1728734AbhAMUIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 15:08:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728804AbhAMUHK (ORCPT
+        with ESMTP id S1726808AbhAMUIp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 15:07:10 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA7CC061795;
-        Wed, 13 Jan 2021 12:06:30 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id s75so3494664oih.1;
-        Wed, 13 Jan 2021 12:06:30 -0800 (PST)
+        Wed, 13 Jan 2021 15:08:45 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7D5C061575;
+        Wed, 13 Jan 2021 12:08:04 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id 15so2191760pgx.7;
+        Wed, 13 Jan 2021 12:08:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lv1Kbmm4YHPjDW6jxGU7xhxNaDP025bj9EsoV9E8pOE=;
-        b=cRPm9pZPSknFMMW6crH2FgRrxmhcQ+9YGAlUaON/y/ybThM0pf/7uptAjn2AMJT8fg
-         WwPzkkD+u39tegiwh6mZ/7DlW7JRJ17EG6DMTTcBLCxIpsx4yd0DuEJBa+BI8GVR0iYE
-         ATNGoQzT0/d5/Fe+SneQV2JnBG3GLHa0lBIQHNsOUXYR8alYsQmrU/TKpwelf8XAl0P5
-         eZ6LiFxDatmCPUK+1yQx9wmra+nhMDLmNImNCASOeuxppbXiCpdFqVrJEnzlC1bg3kw8
-         Prb9U0fyqhZVzuuek2g8XAKWO4j50FAbQnhTDpRa04z3m4o42BAy6msoM9nRUhKUSBGX
-         iPzQ==
+        h=from:to:cc:subject:thread-topic:thread-index:date:message-id
+         :references:in-reply-to:accept-language:content-language
+         :content-transfer-encoding:mime-version;
+        bh=GvAOHyyN5kCSb4kRh6kQZkCrsdblAjjT4mfEiQcMWjs=;
+        b=SRJDpTRoOnc/55yeZuX62rE09EfROrumcVxGsSu+cxj0OXOTsnzWramLoXqRGB8eCM
+         Cr0sG6Nwerih/HfQSGX7qRIkN9AdkSQWoWDfusKgi7Di2QhGR7JY59FP0rea+YUAFShu
+         POVeQWkvW+Lc/HJkTEBmPTZruw849rQIXeHQUfBQ1OIUjrh3p8GWeysJR2gNQG5kqZMG
+         VhGoJ3lr3UkhxHOpCmuNHhirbAyYsIt4NWbQnGhdS0xOjGPIk/klKBT0FWjjVWtI9lRi
+         LKP8AO1Y9BfQmTNDqOADZ5jCHoM5k0ICtR5UzKABdqDq+sFz3mu0zkLx0gD1dyHBFVHS
+         M/bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lv1Kbmm4YHPjDW6jxGU7xhxNaDP025bj9EsoV9E8pOE=;
-        b=A6+pJNP4GiUZ4zXQY/ilQOlKXMTuOCRFOAA2OBDCAr2RH+JgXJcwVivftRVcz0iEy0
-         QPcwhaNKqmV1HANKt8WxmVpsf6Ye8LyS7SJW5nnsMj8TIcGOrS59tXA+6rcY2gFIl4m9
-         OIrMsMyaq1sjrYWwbNjZBCCRMlScg3ZRjwM/es6i2OQoVF5mugJikYWVc59QJLapBf4G
-         hawTLz4EFtiiRJj/9HvZF93cXIb04gObtznJkRHjeRn6P4PoUQj7reqR7T9WLzAShOaC
-         91B5o93wyGHcGNmlV0813nAlaUFIdVAcrx11mVcku4YeoHoSRpLHbzpVNzHp+nUBEEBG
-         HxDg==
-X-Gm-Message-State: AOAM5321dFbN/8AQPXA+bFojq5B2xdpGJ0buKRFXPFZ+59YPikUehAVl
-        7ZrcetnaYskK1JQKqAaR+6tIQvj6ANI=
-X-Google-Smtp-Source: ABdhPJzoFRcRa704M1sWroE2BwDPq8dQvtRz8H0YTrXDy4cVEGBeiMhCV157HqoLFcuVHtupz/u24w==
-X-Received: by 2002:aca:b06:: with SMTP id 6mr610373oil.74.1610568389622;
-        Wed, 13 Jan 2021 12:06:29 -0800 (PST)
-Received: from localhost.localdomain (99-6-134-177.lightspeed.snmtca.sbcglobal.net. [99.6.134.177])
-        by smtp.gmail.com with ESMTPSA id m7sm621454oou.11.2021.01.13.12.06.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 12:06:29 -0800 (PST)
-Date:   Wed, 13 Jan 2021 12:06:27 -0800
-From:   Enke Chen <enkechen2020@gmail.com>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Yuchung Cheng <ycheng@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Neal Cardwell <ncardwell@google.com>
-Subject: Re: [PATCH] tcp: keepalive fixes
-Message-ID: <20210113200626.GB2274@localhost.localdomain>
-References: <20210112192544.GA12209@localhost.localdomain>
- <CAK6E8=fq6Jec94FDmDHGWhsmjtZQmt3AwQB0-tLcpJpvJ=oLgg@mail.gmail.com>
- <CANn89i+w-_caN+D=W9Jv1VK4u8ZOLi-WzKJXi1pdEkr_5c+abQ@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:thread-topic:thread-index
+         :date:message-id:references:in-reply-to:accept-language
+         :content-language:content-transfer-encoding:mime-version;
+        bh=GvAOHyyN5kCSb4kRh6kQZkCrsdblAjjT4mfEiQcMWjs=;
+        b=tvyt++0l3ygo710SlZm8hK/cQR8/+z9HSa0+rUmLZx8mVhIQokH9gVQMtgtCAhuwkP
+         L8tsmDkgOksMUBrOwwd4fgIWE3pyDnKSUCGJ2uUPjTaU2SUJt53lI8VTyfTqgzOIOe/M
+         WDnqZQEZZ9gJt5txttBgxfcDabmQbb59hdQFaxdFrNzxAxxOHZTasl2MRuqxADbZ9DUk
+         PmHs6zF9HBCj7WvyFOeTF3jYMKyO+iJbm/EATPtpyCGVVo7rznclsolnvZ8IabwnHwIl
+         U8HjVwCGIxgkebHplkGSCmVns0z75OejQv9eRBuKlT0fUb+62hG5rjvTJNJqjmiGTPDX
+         KQGw==
+X-Gm-Message-State: AOAM532g9oqJ4DCOUqkYen2JeUvxOd75YA1ptpYgeh+uIDFxBAgcP/D7
+        8cF21xlj2SrsfWB8ToJIfAY=
+X-Google-Smtp-Source: ABdhPJz4GNVsIV8HRuAtlYRKV33MLDu80l1S3JbtW2/aUF32mW/+4BeeISwnc8RFWx7VccbvU31UXg==
+X-Received: by 2002:a62:2946:0:b029:19e:6b80:669a with SMTP id p67-20020a6229460000b029019e6b80669amr4023104pfp.42.1610568484351;
+        Wed, 13 Jan 2021 12:08:04 -0800 (PST)
+Received: from SLXP216MB0477.KORP216.PROD.OUTLOOK.COM ([2603:1046:100:9::5])
+        by smtp.gmail.com with ESMTPSA id x12sm3417591pfj.25.2021.01.13.12.08.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 13 Jan 2021 12:08:03 -0800 (PST)
+From:   Jingoo Han <jingoohan1@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ben Dooks <ben@simtec.co.uk>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Han Jingoo <jingoohan1@gmail.com>
+Subject: Re: [PATCH 24/31] video: fbdev: s3c-fb: Fix some kernel-doc
+ misdemeanours
+Thread-Topic: [PATCH 24/31] video: fbdev: s3c-fb: Fix some kernel-doc
+ misdemeanours
+Thread-Index: AQHW6buCNbupbwFtTUu1nVILhje9oaol/Bqf
+X-MS-Exchange-MessageSentRepresentingType: 1
+Date:   Wed, 13 Jan 2021 20:07:58 +0000
+Message-ID: <SLXP216MB0477F22596BA2B6AB34CDF45AAA90@SLXP216MB0477.KORP216.PROD.OUTLOOK.COM>
+References: <20210113145009.1272040-1-lee.jones@linaro.org>
+ <20210113145009.1272040-25-lee.jones@linaro.org>
+In-Reply-To: <20210113145009.1272040-25-lee.jones@linaro.org>
+Accept-Language: ko-KR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-Exchange-Organization-SCL: -1
+X-MS-TNEF-Correlator: 
+X-MS-Exchange-Organization-RecordReviewCfmType: 0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANn89i+w-_caN+D=W9Jv1VK4u8ZOLi-WzKJXi1pdEkr_5c+abQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Eric:
+On 1/13/21, 9:50 AM, Lee Jones wrote:
+>=20
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/video/fbdev/s3c-fb.c:104: warning: Function parameter or member =
+'osd_stride' not described in 's3c_fb_variant'
+>  drivers/video/fbdev/s3c-fb.c:174: warning: Function parameter or member =
+'variant' not described in 's3c_fb_win'
+>  drivers/video/fbdev/s3c-fb.c:345: warning: Function parameter or member =
+'pixclk' not described in 's3c_fb_calc_pixclk'
+>  drivers/video/fbdev/s3c-fb.c:345: warning: Excess function parameter 'pi=
+xclock' description in 's3c_fb_calc_pixclk'
+>  drivers/video/fbdev/s3c-fb.c:742: warning: Function parameter or member =
+'transp' not described in 's3c_fb_setcolreg'
+>  drivers/video/fbdev/s3c-fb.c:742: warning: Excess function parameter 'tr=
+ans' description in 's3c_fb_setcolreg'
+>  drivers/video/fbdev/s3c-fb.c:1142: warning: Function parameter or member=
+ 'sfb' not described in 's3c_fb_release_win'
+>  drivers/video/fbdev/s3c-fb.c:1172: warning: Function parameter or member=
+ 'win_no' not described in 's3c_fb_probe_win'
+>
+> Cc: Jingoo Han <jingoohan1@gmail.com>
 
-Just to clarify: the issues for tcp keepalive and TCP_USER_TIMEOUT are
-separate isues, and the fixes would not conflict afaik.
+Acked-by: Jingoo Han <jingoohan1@gmail.com>
 
-Thanks.  -- Enke
+Thank you.
 
-On Tue, Jan 12, 2021 at 11:52:43PM +0100, Eric Dumazet wrote:
-> On Tue, Jan 12, 2021 at 11:48 PM Yuchung Cheng <ycheng@google.com> wrote:
-> >
-> > On Tue, Jan 12, 2021 at 2:31 PM Enke Chen <enkechen2020@gmail.com> wrote:
-> > >
-> > > From: Enke Chen <enchen@paloaltonetworks.com>
-> > >
-> > > In this patch two issues with TCP keepalives are fixed:
-> > >
-> > > 1) TCP keepalive does not timeout when there are data waiting to be
-> > >    delivered and then the connection got broken. The TCP keepalive
-> > >    timeout is not evaluated in that condition.
-> > hi enke
-> > Do you have an example to demonstrate this issue -- in theory when
-> > there is data inflight, an RTO timer should be pending (which
-> > considers user-timeout setting). based on the user-timeout description
-> > (man tcp), the user timeout should abort the socket per the specified
-> > time after data commences. some data would help to understand the
-> > issue.
-> >
-> 
-> +1
-> 
-> A packetdrill test would be ideal.
-> 
-> Also, given that there is this ongoing issue with TCP_USER_TIMEOUT,
-> lets not mix things
-> or risk added work for backports to stable versions.
+> Cc: Ben Dooks <ben@simtec.co.uk>
+> Cc: linux-fbdev@vger.kernel.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/video/fbdev/s3c-fb.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+
+[...]
+
+
