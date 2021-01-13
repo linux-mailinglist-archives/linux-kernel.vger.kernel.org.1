@@ -2,233 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6199A2F4B3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:29:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D422F4B38
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:25:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726490AbhAMM0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 07:26:08 -0500
-Received: from mga09.intel.com ([134.134.136.24]:63581 "EHLO mga09.intel.com"
+        id S1726386AbhAMMZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 07:25:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726406AbhAMM0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 07:26:07 -0500
-IronPort-SDR: axDOEIoqfkW3tneU7SVzRrfW0Uv+XpQVOiIaw0u0N11io+h3TZv6gAvwX3hII456Pqz2l90lLH
- DRQWXgrS8WOA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="178341217"
-X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; 
-   d="scan'208";a="178341217"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 04:25:25 -0800
-IronPort-SDR: rISMRmg+ev1LjHKhloRX3c7W58lmgmb03fBF/sfXYfPUI2zPps1/uPMjXu9Wx7N+TKgWu826yp
- 6i84Am5dJNLA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; 
-   d="scan'208";a="400524502"
-Received: from lkp-server01.sh.intel.com (HELO d5d1a9a2c6bb) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 13 Jan 2021 04:25:24 -0800
-Received: from kbuild by d5d1a9a2c6bb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kzfDI-0000DZ-04; Wed, 13 Jan 2021 12:25:24 +0000
-Date:   Wed, 13 Jan 2021 20:24:24 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS WITH WARNING
- f81f6edb74f27c5c8917d20a2bc128aca39aae11
-Message-ID: <5ffee678.hGIGL5g5dXHl2qP9%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1725613AbhAMMZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 07:25:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FB7F2313C;
+        Wed, 13 Jan 2021 12:25:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610540704;
+        bh=NJhusBOJQfLJVcAsWbNlHy8AAl5d7ZzV9WwA4RE4ZvQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bLGbaaFOZvSLAuyEmoradN4wPB+5W5oHw1J6uUrAX0fDxfIN1ETRwNLdFMSi+NppK
+         rTYVOnPbzWWLXIwaU2lDhkoZxzAMEbFe8ucYiJLtCmH5WDREcMo3EEOGPs3PcVDiOd
+         nfg1TX8kVz7AYfREiehweAR4rQMsaR3P67GO5pO0=
+Date:   Wed, 13 Jan 2021 13:26:11 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pintu Agarwal <pintu.ping@gmail.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>, landy.gross@linaro.org,
+        David Brown <david.brown@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        indranilghsh428@gmail.com, stephen@networkplumber.org
+Subject: Re: [BUG]: Kernel 4.9: Kernel crash at fs/sysfs/file.c :
+ sysfs_kf_seq_show
+Message-ID: <X/7m4787HEIcxZzm@kroah.com>
+References: <CAOuPNLiUBhJdsgw9bjQxxhkeBHQFoE_vN_Na6kw3ksr89r+HOg@mail.gmail.com>
+ <X/2Rr5LDNbxGz456@kroah.com>
+ <CAOuPNLiVP2d29td0b20Tx7=UBy5fGk5S9Yt=usUH+VtSYORe+w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAOuPNLiVP2d29td0b20Tx7=UBy5fGk5S9Yt=usUH+VtSYORe+w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
-branch HEAD: f81f6edb74f27c5c8917d20a2bc128aca39aae11  rcu: Remove spurious instrumentation_end() in rcu_nmi_enter()
+On Wed, Jan 13, 2021 at 05:35:18PM +0530, Pintu Agarwal wrote:
+> On Tue, 12 Jan 2021 at 17:39, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Tue, Jan 12, 2021 at 05:31:54PM +0530, Pintu Agarwal wrote:
+> > > Hi,
+> > >
+> > > I am using Kernel: 4.9.217 for one of the ARM32 boards for Qualcomm SOC.
+> > > https://github.com/android-linux-stable/msm-4.9
+> > >
+> > > But I think this is a general bug applicable to :Kernel 4.9 under
+> > > fs/sysfs/file.c
+> > > So, I wanted to quickly check here if others are familiar with this
+> > > issue and if it is fixed already.
+> > > Note, this issue does not occur in 4.14 Kernel.
+> > >
+> > > When I execute below command, the Kernel is crashing.
+> > > I tried to add few debug prints to find more details. I see that the
+> > > ops->show pointer is not valid (seems corrupted).
+> > > So I wanted to understand how this can happen only for this particular node.
+> > > Other sysfs entries are working fine.
+> > >
+> 
+> I see that this issue was reported earlier as well by others.
+> https://syzkaller.appspot.com/bug?id=2ec2a9da5c711df3d3d12071bac487b96e75e103
+> https://gitlab.freedesktop.org/drm/amd/-/issues/413
+> https://bugzilla.redhat.com/show_bug.cgi?id=1615070
+> 
+> So it seems to be common issue and thus I wanted to check here if its similar.
 
-Warning ids grouped by kconfigs:
+It's "common" in that this is core kernel code that any number of
+drivers could be causing to work incorrectly.  Try fixing up the driver
+code, and odds are, that will fix this issue.
 
-gcc_recent_errors
-|-- h8300-randconfig-c003-20210112
-|   `-- kernel-rcu-rcutorture.c:WARNING-kmalloc-is-used-to-allocate-this-memory-at-line
-|-- i386-randconfig-c001-20210112
-|   `-- kernel-rcu-rcutorture.c:WARNING-kmalloc-is-used-to-allocate-this-memory-at-line
-`-- powerpc-randconfig-c004-20210112
-    `-- kernel-rcu-rcutorture.c:WARNING-kmalloc-is-used-to-allocate-this-memory-at-line
+good luck, and again, go ask for support from your vendor, you are
+paying for that!
 
-elapsed time: 722m
-
-configs tested: 164
-configs skipped: 2
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         shannon_defconfig
-powerpc                       maple_defconfig
-arm                              zx_defconfig
-mips                            e55_defconfig
-arm                       spear13xx_defconfig
-arm                  colibri_pxa300_defconfig
-sh                           se7206_defconfig
-arc                 nsimosci_hs_smp_defconfig
-powerpc                   lite5200b_defconfig
-sh                  sh7785lcr_32bit_defconfig
-mips                       lemote2f_defconfig
-sh                      rts7751r2d1_defconfig
-m68k                        m5272c3_defconfig
-sh                            migor_defconfig
-powerpc                        icon_defconfig
-sh                               alldefconfig
-mips                     cu1000-neo_defconfig
-arm                       cns3420vb_defconfig
-mips                 decstation_r4k_defconfig
-arm                           corgi_defconfig
-arm                     eseries_pxa_defconfig
-ia64                          tiger_defconfig
-powerpc                      pasemi_defconfig
-mips                         bigsur_defconfig
-mips                       rbtx49xx_defconfig
-c6x                              alldefconfig
-mips                     decstation_defconfig
-sh                   sh7770_generic_defconfig
-arm                            hisi_defconfig
-c6x                        evmc6472_defconfig
-microblaze                          defconfig
-xtensa                  cadence_csp_defconfig
-powerpc                    mvme5100_defconfig
-m68k                         amcore_defconfig
-mips                        bcm47xx_defconfig
-mips                        workpad_defconfig
-h8300                     edosk2674_defconfig
-powerpc                 mpc8313_rdb_defconfig
-mips                           xway_defconfig
-arc                           tb10x_defconfig
-sh                           se7721_defconfig
-arm                         axm55xx_defconfig
-m68k                            q40_defconfig
-arm                        mini2440_defconfig
-powerpc                     tqm8560_defconfig
-sh                         ecovec24_defconfig
-c6x                        evmc6457_defconfig
-arm                        mvebu_v7_defconfig
-mips                      pistachio_defconfig
-m68k                          multi_defconfig
-s390                       zfcpdump_defconfig
-xtensa                    smp_lx200_defconfig
-h8300                    h8300h-sim_defconfig
-arm                       multi_v4t_defconfig
-arm                     davinci_all_defconfig
-sh                          r7780mp_defconfig
-arm                        keystone_defconfig
-ia64                            zx1_defconfig
-mips                      maltaaprp_defconfig
-sh                           se7724_defconfig
-sh                          urquell_defconfig
-sparc                            alldefconfig
-arm                        multi_v5_defconfig
-powerpc                      pmac32_defconfig
-powerpc                     ksi8560_defconfig
-powerpc                    amigaone_defconfig
-arc                     haps_hs_smp_defconfig
-csky                                defconfig
-um                            kunit_defconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                      mgcoge_defconfig
-ia64                        generic_defconfig
-powerpc                      bamboo_defconfig
-arm                      pxa255-idp_defconfig
-sh                           se7705_defconfig
-parisc                              defconfig
-m68k                        m5407c3_defconfig
-m68k                          atari_defconfig
-powerpc                 mpc832x_mds_defconfig
-powerpc                        fsp2_defconfig
-m68k                       m5275evb_defconfig
-powerpc                      ppc44x_defconfig
-arm                            qcom_defconfig
-sh                ecovec24-romimage_defconfig
-arm                          tango4_defconfig
-mips                          ath25_defconfig
-sh                           sh2007_defconfig
-arm                         socfpga_defconfig
-m68k                       m5249evb_defconfig
-mips                  decstation_64_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210113
-x86_64               randconfig-a004-20210113
-x86_64               randconfig-a001-20210113
-x86_64               randconfig-a005-20210113
-x86_64               randconfig-a003-20210113
-x86_64               randconfig-a002-20210113
-i386                 randconfig-a002-20210113
-i386                 randconfig-a005-20210113
-i386                 randconfig-a006-20210113
-i386                 randconfig-a003-20210113
-i386                 randconfig-a001-20210113
-i386                 randconfig-a004-20210113
-i386                 randconfig-a012-20210113
-i386                 randconfig-a011-20210113
-i386                 randconfig-a016-20210113
-i386                 randconfig-a013-20210113
-i386                 randconfig-a015-20210113
-i386                 randconfig-a014-20210113
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a015-20210113
-x86_64               randconfig-a012-20210113
-x86_64               randconfig-a013-20210113
-x86_64               randconfig-a016-20210113
-x86_64               randconfig-a014-20210113
-x86_64               randconfig-a011-20210113
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+greg k-h
