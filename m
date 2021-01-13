@@ -2,145 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1592F46AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:42:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 336132F46AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:42:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726631AbhAMIlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:41:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50350 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725843AbhAMIlD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 03:41:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610527176;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Wz/Vy/Cnya8aaX6TmCcBs5toJJRTuy9G5Pgif1Zbaps=;
-        b=h98sz9t6B5XlKDXYzMezig8mfJLuMuyHyw9EzYVLsOSfweWkJ0VPwX2lXNRFyXFFTbgxdK
-        e/wrHk5WNr3wur0LP0DjbMdyVQAgvAY057s/t4jBrj/refCFCLRKGkWVaJvSQE3zrrtfwj
-        vvkIeVPXF/W0Mm23X+ftAqqY4SihtmU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-520-5ykmI9XhN-2xGAaPK57QBw-1; Wed, 13 Jan 2021 03:39:32 -0500
-X-MC-Unique: 5ykmI9XhN-2xGAaPK57QBw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2490115720;
-        Wed, 13 Jan 2021 08:39:30 +0000 (UTC)
-Received: from [10.36.114.135] (ovpn-114-135.ams2.redhat.com [10.36.114.135])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id F389560BF1;
-        Wed, 13 Jan 2021 08:39:26 +0000 (UTC)
-Subject: Re: [PATCH v3 2/4] mm: failfast mode with __GFP_NORETRY in
- alloc_contig_range
-To:     Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        hyesoo.yu@samsung.com, mhocko@suse.com, surenb@google.com,
-        pullip.cho@samsung.com, joaodias@google.com, hridya@google.com,
-        john.stultz@linaro.org, sumit.semwal@linaro.org,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        hch@infradead.org, robh+dt@kernel.org,
-        linaro-mm-sig@lists.linaro.org
-References: <20210113012143.1201105-1-minchan@kernel.org>
- <20210113012143.1201105-3-minchan@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <723e935f-3aa4-2c55-8d69-fcaf71f4eb4c@redhat.com>
-Date:   Wed, 13 Jan 2021 09:39:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1726238AbhAMIky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 03:40:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725843AbhAMIkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 03:40:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D762320719;
+        Wed, 13 Jan 2021 08:40:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610527210;
+        bh=XcCuiJ1t9jecR1iasm+dpOPuMUTkNlkATUZZmTYh84g=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ekx8KlMCJEAWd+0dWZ0WIKrXa+c64OSvb5Tv2VlMAuLsRt5Jumc6weGYU1aKFk3Vn
+         prdt4vtbYHdLsmw7GS86SQHK6ad5EDzz56KnDeB0O2ri5XxyGoAjg5YmkEA1Hsz9OD
+         On/PeioiHN/6m7c2/HG4uUqdepC0o+9P4k67DdonziiQdPS7CRlg34wuEV7vX03DuT
+         5+CdNSpwLAwZouKCwpXo5EYe/3NdzL3LrVl+tfl9A5tr2V9rI+cyxz2wezjxxshm3N
+         Rlji+Kg6+XhkZl4pQj2bKcLC7Unkj4HKbdaRC6MktwaYsjJpymRH/+Yh6DKWq7hMZ2
+         uVof5MKJFMr3A==
+From:   Felipe Balbi <balbi@kernel.org>
+To:     Sandeep Maheswaram <sanm@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>
+Subject: Re: [PATCH] usb: dwc3: qcom: Add shutdown callback for dwc3
+In-Reply-To: <1605162619-10064-1-git-send-email-sanm@codeaurora.org>
+References: <1605162619-10064-1-git-send-email-sanm@codeaurora.org>
+Date:   Wed, 13 Jan 2021 10:40:01 +0200
+Message-ID: <87sg7544da.fsf@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210113012143.1201105-3-minchan@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.01.21 02:21, Minchan Kim wrote:
-> Contiguous memory allocation can be stalled due to waiting
-> on page writeback and/or page lock which causes unpredictable
-> delay. It's a unavoidable cost for the requestor to get *big*
-> contiguous memory but it's expensive for *small* contiguous
-> memory(e.g., order-4) because caller could retry the request
-> in diffrent range where would have easy migratable pages
-> without stalling.
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-s/diffrent/different/
 
-> 
-> This patch introduce __GFP_NORETRY as compaction gfp_mask in
-> alloc_contig_range so it will fail fast without blocking
-> when it encounters pages needed waitting.
+Hi,
 
-s/waitting/waiting/
+Sandeep Maheswaram <sanm@codeaurora.org> writes:
+> This patch adds a shutdown callback to USB DWC QCOM driver to ensure that
+> it is properly shutdown in reboot/shutdown path. This is required
+> where SMMU address translation is enabled like on SC7180
+> SoC and few others. If the hardware is still accessing memory after
+> SMMU translation is disabled as part of SMMU shutdown callback in
+> system reboot or shutdown path, then IOVAs(I/O virtual address)
+> which it was using will go on the bus as the physical addresses which
+> might result in unknown crashes (NoC/interconnect errors).
+>
+> Signed-off-by: Sandeep Maheswaram <sanm@codeaurora.org>
 
-> 
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
-> ---
->  mm/page_alloc.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 5b3923db9158..ff41ceb4db51 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8489,12 +8489,16 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
->  	unsigned int nr_reclaimed;
->  	unsigned long pfn = start;
->  	unsigned int tries = 0;
-> +	unsigned int max_tries = 5;
->  	int ret = 0;
->  	struct migration_target_control mtc = {
->  		.nid = zone_to_nid(cc->zone),
->  		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
->  	};
->  
-> +	if (cc->alloc_contig && cc->mode == MIGRATE_ASYNC)
-> +		max_tries = 1;
-> +
->  	migrate_prep();
->  
->  	while (pfn < end || !list_empty(&cc->migratepages)) {
-> @@ -8511,7 +8515,7 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
->  				break;
->  			}
->  			tries = 0;
-> -		} else if (++tries == 5) {
-> +		} else if (++tries == max_tries) {
->  			ret = ret < 0 ? ret : -EBUSY;
->  			break;
->  		}
-> @@ -8562,7 +8566,7 @@ int alloc_contig_range(unsigned long start, unsigned long end,
->  		.nr_migratepages = 0,
->  		.order = -1,
->  		.zone = page_zone(pfn_to_page(start)),
-> -		.mode = MIGRATE_SYNC,
-> +		.mode = gfp_mask & __GFP_NORETRY ? MIGRATE_ASYNC : MIGRATE_SYNC,
->  		.ignore_skip_hint = true,
->  		.no_set_skip_hint = true,
->  		.gfp_mask = current_gfp_context(gfp_mask),
-> 
+sounds like this is fixing a bug. Do you have a Fixes tag for it? Should
+this go to stable?
 
-I'm fine with using gfp flags (e.g., __GFP_NORETRY) as long as they
-don't enable other implicit behavior (e.g., move draining X to the
-caller) that's hard to get from the flag name.
+> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+> index c703d55..a930e06 100644
+> --- a/drivers/usb/dwc3/dwc3-qcom.c
+> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+> @@ -790,13 +790,11 @@ static int dwc3_qcom_probe(struct platform_device *=
+pdev)
+>  	return ret;
+>  }
+>=20=20
+> -static int dwc3_qcom_remove(struct platform_device *pdev)
+> +static void __dwc3_qcom_teardown(struct dwc3_qcom *qcom)
+>  {
+> -	struct dwc3_qcom *qcom =3D platform_get_drvdata(pdev);
+> -	struct device *dev =3D &pdev->dev;
+>  	int i;
+>=20=20
+> -	of_platform_depopulate(dev);
+> +	of_platform_depopulate(qcom->dev);
+>=20=20
+>  	for (i =3D qcom->num_clocks - 1; i >=3D 0; i--) {
+>  		clk_disable_unprepare(qcom->clks[i]);
+> @@ -807,12 +805,27 @@ static int dwc3_qcom_remove(struct platform_device =
+*pdev)
+>  	dwc3_qcom_interconnect_exit(qcom);
+>  	reset_control_assert(qcom->resets);
+>=20=20
+> -	pm_runtime_allow(dev);
+> -	pm_runtime_disable(dev);
+> +	pm_runtime_allow(qcom->dev);
+> +	pm_runtime_disable(qcom->dev);
+> +}
 
-IMHO, if we ever want to move draining to the caller, or change the
-behavior of alloc_contig_range() in different ways (e.g., disable PCP),
-we won't get around introducing a separate set of flags for
-alloc_contig_range().
+you can make the changes smaller by adding:
 
-Let's see what Michal thinks. Thanks!
+	struct device *dev =3D qcom->dev;
 
--- 
-Thanks,
+The nothing else needs to change in this function ;-)
 
-David / dhildenb
+=2D-=20
+balbi
 
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl/+seERHGJhbGJpQGtl
+cm5lbC5vcmcACgkQzL64meEamQaHDw//VzCLAhbS2V8Dlea71pWG0Y3mHVJ7c8Iw
+D0UNsS4VetXQGi45dmY3O1aIjCpCvL9JANBpDk891MCzlrL0MHkrEmvLPJ3F4X/K
+VDWPVSISoX1m3SnAiI36PBQCMKMgxkyn7czKCur0moWKflzjgStfdYKccIZE0U+g
+6mSxUmmm1sl3cCMa9hcQ1SrwcuORP9bbZ5AlGk+M6xgbJoyKsrGUrPf4HV/PapKr
+FMcuDcpMv0UKghEeHg5qRy0u8+ox0rAViT9dV2vpkgNarePaLh9DM0W8oDDlQnWs
+Y0sNePKnFFab1zugfXAemrA+kotIq83WCejY4m0VTiilmuY6j0FBK0JGqGVNJ32j
+3+Hyr0XiSwEEFj0EOLqZdr5tWLvUve44rsHDhTFGYPLam01AuGqa9Q/fzm5cJgAj
+9LieeFX/ESST61egkrqGnP58NbhJM7rp4Pri6z2+mcZ+GX2TgskpYnLg2YCqfoLf
+dYxPfSzWAZGJz3xqNM2kL0tM23FWdqGyaUGsUvga/Wi2hwp8LtVrheF9RLOaeLwP
+fXdgFh73lsRbdaXWSF87nQHuYEqN+3nYsqo8TyAudOyzq6+hOy2I0lb86/iz/JpK
+az5Ao0QAFuywtWcnyjc4fuFuNEeFxekVHfE9tur19yP5uEpdoPpoo3FJXr1lMpse
+Klo+fcPmwB8=
+=7Ebv
+-----END PGP SIGNATURE-----
+--=-=-=--
