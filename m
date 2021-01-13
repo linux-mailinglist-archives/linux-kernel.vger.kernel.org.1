@@ -2,101 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF6D2F498C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D38332F498E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:10:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727561AbhAMLEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:04:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49352 "EHLO
+        id S1727676AbhAMLFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:05:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726964AbhAMLEk (ORCPT
+        with ESMTP id S1727646AbhAMLFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:04:40 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976EDC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:04:00 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id m6so1001570pfm.6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:04:00 -0800 (PST)
+        Wed, 13 Jan 2021 06:05:04 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13962C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:04:24 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id x18so866726pln.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:04:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vq0sIowdqwCy9ipBvQmxiVHT6coiYZ3i+NvaIZ45Kq8=;
-        b=nNNuIxA8Zxb5hbY0dGnCfyTJ3sc3lW+PoG3W/0Kn8axCab7hhhojw4MbztYBa7UcdX
-         vIFyyqhzjBr7ZUwfkfkz4UkNmiydfJ6qLbxpAjmpMRlCWQeEk5LKTk50D+pBxFBF2uw7
-         /4TFsvAf76lqDypT4xR5Ih1h5usJYuZ30f9b42Apiktc7u6kMuqAQ9qk13Vafe9y6t3o
-         55zky9/snLZByYPZ1ObmtYpdNb1jCET5se6kdCOZB9+6tmbh4/URWMQ9r75kAt0cYJAO
-         muJWJS1rZR6AbkYUYWSGJ3mpfL4FZGi+SJG93HgyRJ6tHS2EYtaGtRceh9FwxMl0Gff9
-         Y1+g==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qi6TAbH6xq2gb5QhoJgs+Zx34VA+1B8w65ilqHtaQhg=;
+        b=niAlQ6mrmMUTgxTuk/wIFV0dA5FTNL/q7yIeA3KMpPiYrOoeMif/GrsGlBNo4nO5hX
+         jS0IBXikG2Rz7tuBf7Cg5OWlFEnPLysXBKbE8NfGrDC26Fn1rRXbr3IGMutv7qZjs1ix
+         LuL6120cwyB2sznVfa8VmXkijtJmiiqz/Wodw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vq0sIowdqwCy9ipBvQmxiVHT6coiYZ3i+NvaIZ45Kq8=;
-        b=DvNucXe6pSyzA7IdSEd3RHqy9Al8TvI62PMDBYXcZ8FXtNiYZ/oeT+xQwpEu32cAPU
-         9nzGhehZ0qkFlD6w+rd9QJG1CWPXU/JPuo4CUdQJphc7jjWOl9Cwvosts+mU7TVw9ht7
-         uac+ukOj0hBMf8hTQbOucF+SI08petdpNRxXhdl+hMTgpumCSu+FswQLIuMvlZjUuzHJ
-         6fb/jzUNq/i3cEji/8csvXRdD2uRT0I1IGLTcLnyrwCxdcgNinrSRZ3oO3k5YGFiYd4i
-         K2CmLLRtBZOXSKAhAyqAuaGNAJuKwiLIVW/YXYTozN5vNvp4a8XqvhsT/wffTGw/F1oL
-         EFlw==
-X-Gm-Message-State: AOAM532zGwqe+SXuOXRzcCyZXPBQj5dtUjyBqdym/Unj2bYqR3ienhJc
-        XKXGzkBmufwk33vLsxVlpryLoIvzOKgBrXty2ZEANw==
-X-Google-Smtp-Source: ABdhPJyn+jUaco2N/T1+7oLFKfPMaFPzzCfwa/Phoij/8DTFE73bZ00WKAtENC2GHM3mKzUcgeQr23uxu9JK2Qhrb6o=
-X-Received: by 2002:a63:1f21:: with SMTP id f33mr1589804pgf.31.1610535840163;
- Wed, 13 Jan 2021 03:04:00 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qi6TAbH6xq2gb5QhoJgs+Zx34VA+1B8w65ilqHtaQhg=;
+        b=L8P9bGJLzzmTHAqQ0DMWXMmKuWTyBa74GXRrSN19UNqrmFWiAlz99qyLoS4454CIrl
+         MDdP0IaZgKzDwxdp2Jl8mFPOe3Wt55ncxGX/5sZ0DZ6nKQqDgIWfTmB+RwQMjqMNGwxm
+         or4d2zn8jyR9U+R3kSPDsxhT3mV2z8Ps3CRVXclZwnaQgL2aLdYRCcZ4IYvgtLHKphsX
+         XsuoKnnLFGO+//NUrIb2HTaRKHeKluRm3d5/JYVkByiXQddGhea7BtOyHF4We9dXNjan
+         +yMA6f9l99rKT+5JkibfBmFdZUIBeSTl2UZCC4md+u8KM8I0IL6so8NpgwS8JccmFuZY
+         9r7g==
+X-Gm-Message-State: AOAM533+wAKip2RiyMSuESeUNQbhMjyejlrPiY7Co6F9NMIE7LrfngCf
+        OYUX1TnEChE8p3e/omVRtGAN0A==
+X-Google-Smtp-Source: ABdhPJwqXk7qSn7z63czfXwWGRHHdTzvY1QViHROIw4GMPDd5xlJEcOqPF8W7QFFkzxLCyFUXJv/fg==
+X-Received: by 2002:a17:902:c005:b029:db:1d7:658f with SMTP id v5-20020a170902c005b02900db01d7658fmr1625118plx.35.1610535863499;
+        Wed, 13 Jan 2021 03:04:23 -0800 (PST)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:1a60:24ff:fe89:3e93])
+        by smtp.gmail.com with ESMTPSA id o129sm2114749pfg.66.2021.01.13.03.04.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 03:04:22 -0800 (PST)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/3] arm64: dts: mt8183: config dsi node
+Date:   Wed, 13 Jan 2021 19:03:59 +0800
+Message-Id: <20210113110400.616319-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 MIME-Version: 1.0
-References: <20210113052209.75531-1-songmuchun@bytedance.com>
- <20210113052209.75531-2-songmuchun@bytedance.com> <20210113105657.GA26599@linux>
-In-Reply-To: <20210113105657.GA26599@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 13 Jan 2021 19:03:21 +0800
-Message-ID: <CAMZfGtW52Du6XXVSGcziFG8HSK5G=Xu12p7-F+TOjWM0hizUkQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v4 1/6] mm: migrate: do not migrate HugeTLB
- page whose refcount is one
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>, mhocko@suse.cz,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 6:57 PM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Wed, Jan 13, 2021 at 01:22:04PM +0800, Muchun Song wrote:
-> > diff --git a/mm/migrate.c b/mm/migrate.c
-> > index 4385f2fb5d18..a6631c4eb6a6 100644
-> > --- a/mm/migrate.c
-> > +++ b/mm/migrate.c
-> > @@ -1279,6 +1279,12 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
-> >               return -ENOSYS;
-> >       }
-> >
-> > +     if (page_count(hpage) == 1) {
-> > +             /* page was freed from under us. So we are done. */
-> > +             putback_active_hugepage(hpage);
-> > +             return MIGRATEPAGE_SUCCESS;
-> > +     }
-> > +
->
-> I was a bit puzzled as why we did not go to the "goto" block that already does
-> this, but then I saw the put_new_page/new_hpage handlind further down.
-> It could be re-arranged but out of scope, so:
+Config dsi node for mt8183 kukui. Set panel and ports.
 
-Agree. I also thought about this. :)
+Several kukui boards share the same panel property and only compatible
+is different. So compatible will be set in board dts for comparison
+convenience.
 
->
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
->
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
+---
+change:
+v4: add backlight and enable mipi_tx0
+---
+ .../mediatek/mt8183-kukui-krane-sku176.dts    |  5 +++
+ .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 42 +++++++++++++++++++
+ 2 files changed, 47 insertions(+)
 
-Thanks.
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
+index 47113e275cb52..721d16f9c3b4f 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
+@@ -16,3 +16,8 @@ / {
+ 	model = "MediaTek krane sku176 board";
+ 	compatible = "google,krane-sku176", "google,krane", "mediatek,mt8183";
+ };
++
++&panel {
++        status = "okay";
++        compatible = "boe,tv101wum-nl6";
++};
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+index bf2ad1294dd30..da1e947587074 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+@@ -249,6 +249,36 @@ &cpu7 {
+ 	proc-supply = <&mt6358_vproc11_reg>;
+ };
+ 
++&dsi0 {
++	status = "okay";
++	#address-cells = <1>;
++	#size-cells = <0>;
++	panel: panel@0 {
++		/* compatible will be set in board dts */
++		reg = <0>;
++		enable-gpios = <&pio 45 0>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&panel_pins_default>;
++		avdd-supply = <&ppvarn_lcd>;
++		avee-supply = <&ppvarp_lcd>;
++		pp1800-supply = <&pp1800_lcd>;
++		backlight = <&backlight_lcd0>;
++		port {
++			panel_in: endpoint {
++				remote-endpoint = <&dsi_out>;
++			};
++		};
++	};
++
++	ports {
++		port {
++			dsi_out: endpoint {
++				remote-endpoint = <&panel_in>;
++			};
++		};
++	};
++};
++
+ &i2c0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&i2c0_pins>;
+@@ -290,6 +320,10 @@ &i2c6 {
+ 	clock-frequency = <100000>;
+ };
+ 
++&mipi_tx0 {
++	status = "okay";
++};
++
+ &mmc0 {
+ 	status = "okay";
+ 	pinctrl-names = "default", "state_uhs";
+@@ -547,6 +581,14 @@ pins_clk {
+ 		};
+ 	};
+ 
++	panel_pins_default: panel_pins_default {
++		panel_reset {
++			pinmux = <PINMUX_GPIO45__FUNC_GPIO45>;
++			output-low;
++			bias-pull-up;
++		};
++	};
++
+ 	pwm0_pin_default: pwm0_pin_default {
+ 		pins1 {
+ 			pinmux = <PINMUX_GPIO176__FUNC_GPIO176>;
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
 
->
-> --
-> Oscar Salvador
-> SUSE L3
