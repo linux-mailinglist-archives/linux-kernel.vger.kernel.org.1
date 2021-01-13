@@ -2,131 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86CC72F53D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 098D62F53D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728798AbhAMUHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 15:07:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53792 "EHLO
+        id S1728858AbhAMUHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 15:07:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728734AbhAMUG7 (ORCPT
+        with ESMTP id S1728804AbhAMUHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 15:06:59 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C241C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:06:18 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id hs11so2541953ejc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:06:18 -0800 (PST)
+        Wed, 13 Jan 2021 15:07:10 -0500
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA7CC061795;
+        Wed, 13 Jan 2021 12:06:30 -0800 (PST)
+Received: by mail-oi1-x22b.google.com with SMTP id s75so3494664oih.1;
+        Wed, 13 Jan 2021 12:06:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Atsr5jv8T9ZoJtbPK6SL546tOdJtaCS1oan7zJwQQ90=;
-        b=oGlnGhdttfZH9cF4FbW4sCgfSGQ6U3mer6sHR5EOFTWOBqoeG6j+KtZq2twcU7HQ9J
-         Nt1hwbL0wlFnzlGS0w028VPAJIMiUNwg+wEqndnRf+hnPIe9yvXiwV+wuTMSKENjUfh4
-         MhknEf3Zwn49LELA6GqYdRZOKNdzfAvfjihOR9IUwvoIfyCABq0fSz3LvD/nvTz7LB42
-         LpojBCPMJUBK9Cpl2HW4MYyAygvOdjb/FTq9NarqiB1GNz1kYUE0SZHFwduExzCZUmt/
-         EJWa2bwDWYTWm4Lsf/nSXzs8l25MC4Dvet1uuwLH0ZGaqgNIJLXkrTuaucVVY4tUMwxD
-         9jRg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lv1Kbmm4YHPjDW6jxGU7xhxNaDP025bj9EsoV9E8pOE=;
+        b=cRPm9pZPSknFMMW6crH2FgRrxmhcQ+9YGAlUaON/y/ybThM0pf/7uptAjn2AMJT8fg
+         WwPzkkD+u39tegiwh6mZ/7DlW7JRJ17EG6DMTTcBLCxIpsx4yd0DuEJBa+BI8GVR0iYE
+         ATNGoQzT0/d5/Fe+SneQV2JnBG3GLHa0lBIQHNsOUXYR8alYsQmrU/TKpwelf8XAl0P5
+         eZ6LiFxDatmCPUK+1yQx9wmra+nhMDLmNImNCASOeuxppbXiCpdFqVrJEnzlC1bg3kw8
+         Prb9U0fyqhZVzuuek2g8XAKWO4j50FAbQnhTDpRa04z3m4o42BAy6msoM9nRUhKUSBGX
+         iPzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Atsr5jv8T9ZoJtbPK6SL546tOdJtaCS1oan7zJwQQ90=;
-        b=rBU6muUwbkC7ITheyLz2MpcQN2dQeqgbjK6GLMNhsvESLVceefOoVueyhPtR7DCSva
-         BQ2WL8HwwSzIWkezJgV7gC5xhQWdvQMD/Dwuf/nVCBuA5Lg3aKF7xWtCc6c9zsK+ZjAE
-         zmNrXwun2jr0XHuXPXk2Ev5u6NBP+WWc5xV5QqF/Wele7RE9DRTe/0QjbsfFwBvMBW1t
-         fQlwKhpb+lFefo4Jqpxu4PU3xCfP8OKfl5bi+x36+oXzSPRxYfsYthZIKcI1b5glewRn
-         KDpqh3A6MI+TYOydun8FlmvawZlXzS3vipQxMcqtWIilG/fsRVNTV2zH5OxYhsa+u0VX
-         60wg==
-X-Gm-Message-State: AOAM531/T8c8H9cjBIllnoBHu2uetNx4QTZVSV43B4CEjbjOVEglsI9n
-        /rFCebL2RVQkKj3lnoCd5fSd9jVWloGCtMlxp1eeFA==
-X-Google-Smtp-Source: ABdhPJzUDzmZWA4lqsW8yXocmHnZp0KlbLU4jdTw5S1s0d7cWUsk+k6/wu+RPxqCYR56z3F8bKI2HBHwXfb+qrUg82Y=
-X-Received: by 2002:a17:907:1b27:: with SMTP id mp39mr2546538ejc.519.1610568377144;
- Wed, 13 Jan 2021 12:06:17 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lv1Kbmm4YHPjDW6jxGU7xhxNaDP025bj9EsoV9E8pOE=;
+        b=A6+pJNP4GiUZ4zXQY/ilQOlKXMTuOCRFOAA2OBDCAr2RH+JgXJcwVivftRVcz0iEy0
+         QPcwhaNKqmV1HANKt8WxmVpsf6Ye8LyS7SJW5nnsMj8TIcGOrS59tXA+6rcY2gFIl4m9
+         OIrMsMyaq1sjrYWwbNjZBCCRMlScg3ZRjwM/es6i2OQoVF5mugJikYWVc59QJLapBf4G
+         hawTLz4EFtiiRJj/9HvZF93cXIb04gObtznJkRHjeRn6P4PoUQj7reqR7T9WLzAShOaC
+         91B5o93wyGHcGNmlV0813nAlaUFIdVAcrx11mVcku4YeoHoSRpLHbzpVNzHp+nUBEEBG
+         HxDg==
+X-Gm-Message-State: AOAM5321dFbN/8AQPXA+bFojq5B2xdpGJ0buKRFXPFZ+59YPikUehAVl
+        7ZrcetnaYskK1JQKqAaR+6tIQvj6ANI=
+X-Google-Smtp-Source: ABdhPJzoFRcRa704M1sWroE2BwDPq8dQvtRz8H0YTrXDy4cVEGBeiMhCV157HqoLFcuVHtupz/u24w==
+X-Received: by 2002:aca:b06:: with SMTP id 6mr610373oil.74.1610568389622;
+        Wed, 13 Jan 2021 12:06:29 -0800 (PST)
+Received: from localhost.localdomain (99-6-134-177.lightspeed.snmtca.sbcglobal.net. [99.6.134.177])
+        by smtp.gmail.com with ESMTPSA id m7sm621454oou.11.2021.01.13.12.06.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 12:06:29 -0800 (PST)
+Date:   Wed, 13 Jan 2021 12:06:27 -0800
+From:   Enke Chen <enkechen2020@gmail.com>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Yuchung Cheng <ycheng@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Neal Cardwell <ncardwell@google.com>
+Subject: Re: [PATCH] tcp: keepalive fixes
+Message-ID: <20210113200626.GB2274@localhost.localdomain>
+References: <20210112192544.GA12209@localhost.localdomain>
+ <CAK6E8=fq6Jec94FDmDHGWhsmjtZQmt3AwQB0-tLcpJpvJ=oLgg@mail.gmail.com>
+ <CANn89i+w-_caN+D=W9Jv1VK4u8ZOLi-WzKJXi1pdEkr_5c+abQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
- <20201217185243.3288048-9-pasha.tatashin@soleen.com> <20201217205048.GL5487@ziepe.ca>
- <CA+CK2bA4F+SipkReJzFjCSC-8kZdK4yrwCQZM+TvCTrqV2CGHg@mail.gmail.com>
- <20201218141927.GM5487@ziepe.ca> <CA+CK2bDULopw649ndBybA-ST5EoRMHULwcfQcSQVKT9r8zAtwQ@mail.gmail.com>
- <20210113195528.GD4605@ziepe.ca>
-In-Reply-To: <20210113195528.GD4605@ziepe.ca>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Wed, 13 Jan 2021 15:05:41 -0500
-Message-ID: <CA+CK2bDDUMOeCH8rQBL7fBdHCAUZBOykyXNL2N=hmxq7xi0giQ@mail.gmail.com>
-Subject: Re: [PATCH v4 08/10] mm/gup: limit number of gup migration failures,
- honor failures
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANn89i+w-_caN+D=W9Jv1VK4u8ZOLi-WzKJXi1pdEkr_5c+abQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > > Oh, that existing logic is wrong too :( Another bug.
+Hi, Eric:
+
+Just to clarify: the issues for tcp keepalive and TCP_USER_TIMEOUT are
+separate isues, and the fixes would not conflict afaik.
+
+Thanks.  -- Enke
+
+On Tue, Jan 12, 2021 at 11:52:43PM +0100, Eric Dumazet wrote:
+> On Tue, Jan 12, 2021 at 11:48 PM Yuchung Cheng <ycheng@google.com> wrote:
 > >
-> > I do not think there is a bug.
+> > On Tue, Jan 12, 2021 at 2:31 PM Enke Chen <enkechen2020@gmail.com> wrote:
+> > >
+> > > From: Enke Chen <enchen@paloaltonetworks.com>
+> > >
+> > > In this patch two issues with TCP keepalives are fixed:
+> > >
+> > > 1) TCP keepalive does not timeout when there are data waiting to be
+> > >    delivered and then the connection got broken. The TCP keepalive
+> > >    timeout is not evaluated in that condition.
+> > hi enke
+> > Do you have an example to demonstrate this issue -- in theory when
+> > there is data inflight, an RTO timer should be pending (which
+> > considers user-timeout setting). based on the user-timeout description
+> > (man tcp), the user timeout should abort the socket per the specified
+> > time after data commences. some data would help to understand the
+> > issue.
 > >
-> > > You can't skip pages in the pages[] array under the assumption they
-> > > are contiguous. ie the i+=step is wrong.
-> >
-> > If pages[i] is part of a compound page, the other parts of this page
-> > must be sequential in this array for this compound page
->
-> That is true only if the PMD points to the page. If the PTE points to
-> a tail page then there is no requirement that other PTEs are
-> contiguous with the compount page.
->
-> At this point we have no idea if the GUP logic got this compound page
-> as a head page in a PMD or as a tail page from a PTE, so we can't
-> assume a contiguous run of addresses.
-
-I see, I will fix this bug in an upstream as a separate patch in my
-series, and keep the fix when my fixes are applied.
-
->
-> Look at split_huge_pmd() - it doesn't break up the compound page it
-> just converts the PMD to a PTE array and scatters the tail pages to
-> the PTE.
-
-Got it, unfortunately the fix will deoptimize the code by having to
-check every page if it is part of a previous compound page or not.
-
->
-> I understand Matt is pushing on this idea more by having compound
-> pages in the page cache, but still mapping tail pages when required.
->
-> > This is actually standard migration procedure, elsewhere in the kernel
-> > we migrate pages in exactly the same fashion: isolate and later
-> > migrate. The isolation works for LRU only pages.
->
-> But do other places cause a userspace visible random failure when LRU
-> isolation fails?
-
-Makes sense, I will remove maximum retries for isolation, and retry
-indefinitely, the same as it is done during memory hot-remove. So, we
-will fail only when migration fails.
-
->
-> I don't like it at all, what is the user supposed to do?
->
-> Jason
+> 
+> +1
+> 
+> A packetdrill test would be ideal.
+> 
+> Also, given that there is this ongoing issue with TCP_USER_TIMEOUT,
+> lets not mix things
+> or risk added work for backports to stable versions.
