@@ -2,105 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F0932F52EE
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:02:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A652F52F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:02:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728634AbhAMTA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 14:00:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45824 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728490AbhAMTA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 14:00:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B7CBB207B5;
-        Wed, 13 Jan 2021 18:59:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610564385;
-        bh=5TubtKUQ3xlnetDjZKybRFIIA/P5ZC49JfmXgAVmaNc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=nGvy/0Aj07u40gjwVGda2LTfh8M9+WGZhBR7tKFlKm4xXJQS7McA5VT13RA4KsBbt
-         qlcrc7e4OR72nW+4ebAOwzlh42lcaXf4TEBVPkuC5qvufWzlALVCP4aLgUTGsNhryT
-         gRVoJloB7+WpEABuHcXpZ8A2Df13D8p2Tvdg51dZj+wSYFEBY9k/u66+d3RpT+2myP
-         TzenKlLDDpfAtO219Rd/hqbRAxQrbzSrIbp2R83EYNbKzDlcuxYX6AFzEh5RPeGIQ2
-         TlqSKUK/3n36GptwgsVwQjMAglRJ0NOPdJfgD2yT3kCQtoHLuseDkao+dEfUiNNp+V
-         kszcFKS0RduIw==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 66D623522AC3; Wed, 13 Jan 2021 10:59:45 -0800 (PST)
-Date:   Wed, 13 Jan 2021 10:59:45 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH 3/4] workqueue: Tag bound workers with KTHREAD_IS_PER_CPU
-Message-ID: <20210113185945.GZ2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210112144344.850850975@infradead.org>
- <20210112144843.849135905@infradead.org>
- <CAJhGHyD_xuSpYOp5A9PumWGsBA=DNqM0ge3_NgRkfro7fafGqA@mail.gmail.com>
- <jhjturkzzv9.mognet@arm.com>
- <20210113175249.GA27312@paulmck-ThinkPad-P72>
- <jhjpn28zngy.mognet@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <jhjpn28zngy.mognet@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728680AbhAMTBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 14:01:50 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:48353 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728108AbhAMTBt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 14:01:49 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610564491; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=v+t5ZjZHmOvSSICCDPJB44KGvtnlC42GelECNsheDPI=; b=PiYrQMbHcCFpOVUrUz/nj6ffOPu7K46IdNsBPD7HgVlCZhIeIccIc6i3wzimwCE3MW3KkQqE
+ l6ajF9pDwIqWUv54+UEozNS8Wi52BxkcwlWvYODjDqlI7S3UIGZkYLbnVoiJcIIGob9TswIZ
+ CS9+6MEWL338qDF+HYe83pqgwPA=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5fff434c46a6c7cde7dbb9d0 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 19:00:28
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3AB56C433ED; Wed, 13 Jan 2021 19:00:27 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E9D9FC433CA;
+        Wed, 13 Jan 2021 19:00:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E9D9FC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org
+Cc:     Kuogee Hsieh <khsieh@codeaurora.org>, tanmay@codeaurora.org,
+        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2]  fix missing unplug interrupt problem
+Date:   Wed, 13 Jan 2021 10:59:58 -0800
+Message-Id: <1610564400-29788-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 06:43:57PM +0000, Valentin Schneider wrote:
-> On 13/01/21 09:52, Paul E. McKenney wrote:
-> > On Wed, Jan 13, 2021 at 02:16:10PM +0000, Valentin Schneider wrote:
-> >> You might be right; at this point we would still have BALANCE_PUSH set,
-> >> so something like the below could happen
-> >>
-> >>   rebind_workers()
-> >>     set_cpus_allowed_ptr()
-> >>       affine_move_task()
-> >>         task_running() => stop_one_cpu()
-> >>
-> >>   ... // Stopper migrates the kworker here in the meantime
-> >>
-> >>   switch_to(<pcpu kworker>) // Both cpuhp thread and kworker should be enqueued
-> >>                             // here, so one or the other could be picked
-> >>   balance_switch()
-> >>     balance_push()
-> >>     ^-- no KTHREAD_IS_PER_CPU !
-> >>
-> >> This should however trigger the WARN_ON_ONCE() in kthread_set_per_cpu()
-> >> *before* the one in process_one_work(), which I haven't seen in Paul's
-> >> mails.
-> >
-> > The 56 instances of one-hour SRCU-P scenarios hit the WARN_ON_ONCE()
-> > in process_one_work() once, but there is no sign of a WARN_ON_ONCE()
-> > from kthread_set_per_cpu().
-> 
-> This does make me doubt the above :/ At the same time, the
-> process_one_work() warning hinges on POOL_DISASSOCIATED being unset,
-> which implies having gone through rebind_workers(), which implies
-> kthread_set_per_cpu(), which implies me being quite confused...
-> 
-> > But to your point, this does appear to be
-> > a rather low-probability race condition, once per some tens of hours
-> > of SRCU-P.
-> >
-> > Is there a more focused check for the race condition above?
-> 
-> Not that I'm aware of. I'm thinking that if the pcpu kworker were an RT
-> task, then this would guarantee it would get picked in favor of the cpuhp
-> thread upon switching out of the stopper, but that still requires the
-> kworker running on some CPU (for some reason) during rebind_workers().
+Both AUX_SW_RESET and DP_SW_RESET clear pending HPD interrupts.
+Therefore irq_hpd handler should not issues either aux or sw reset
+to avoid following unplug interrupt be cleared accidentally.
 
-Well, I did use the rcutree.softirq=0 boot parameter, which creates
-per-CPU rcuc kthreads to do what RCU_SOFTIRQ normally does.  But these
-rcuc kthreads use the normal park/unpark discipline, so should be safe,
-for some value of "should".
+Kuogee Hsieh (2):
+  drm/msm/dp: return fail when both link lane and rate are 0 at dpcd
+    read
+  drm/msm/dp: unplug interrupt missed after irq_hpd handler
 
-							Thanx, Paul
+ drivers/gpu/drm/msm/dp/dp_aux.c     |  7 -------
+ drivers/gpu/drm/msm/dp/dp_catalog.c | 24 ++++++++++++++++++++++++
+ drivers/gpu/drm/msm/dp/dp_ctrl.c    | 15 ++++++++++-----
+ drivers/gpu/drm/msm/dp/dp_display.c |  7 +++++++
+ drivers/gpu/drm/msm/dp/dp_panel.c   | 12 +++++++++---
+ 5 files changed, 50 insertions(+), 15 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
