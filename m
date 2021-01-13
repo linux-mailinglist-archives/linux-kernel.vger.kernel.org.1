@@ -2,79 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291A42F5198
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:01:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 825F02F51A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:04:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728178AbhAMSBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 13:01:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
+        id S1728278AbhAMSCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 13:02:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728066AbhAMSBT (ORCPT
+        with ESMTP id S1727946AbhAMSCh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 13:01:19 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B720C061794;
-        Wed, 13 Jan 2021 10:00:39 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0b5c0053dfdcdd1c139e2a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:5c00:53df:dcdd:1c13:9e2a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9CF011EC0423;
-        Wed, 13 Jan 2021 19:00:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1610560837;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=7Dl/NntSxZBgafKSC5tYlc12cqcH/Ru336h2E30gX+0=;
-        b=VFmaO4SIugKI65nLpw5NA1V/knDkr51kV3BjJfjTE/PKk32vLaiOvUj2wM2QrhG0KBA9Zm
-        EBk/I0xXXOZEMSrYlFtHz/sH6XF97B2UrU9vdf+I+vr2rMctiPBme3iBgKDukMjm29laGx
-        KqSyJQBi/diYHa6U5YtW73eJUCOsm/c=
-Date:   Wed, 13 Jan 2021 19:00:33 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>
-Subject: Re: [PATCH v3] x86/sgx: Synchronize encl->srcu in sgx_encl_release().
-Message-ID: <20210113180033.GG16960@zn.tnic>
-References: <20201216134920.21161-1-jarkko@kernel.org>
- <20210105145749.GF28649@zn.tnic>
- <X/zoarV7gd/LNo4A@kernel.org>
- <20210112183550.GK13086@zn.tnic>
- <X/8rX1yFxiN79QCn@kernel.org>
- <20210113174602.GV2743@paulmck-ThinkPad-P72>
+        Wed, 13 Jan 2021 13:02:37 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2FEEC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 10:01:57 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id c22so1951424pgg.13
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 10:01:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2yOASqLXCFmH8rHiDFY5aK5IF9dZ2OI5aQ21Vbh1eP8=;
+        b=gHtUHzUPG5nr4qeM6RqXwHoa31eiMAo2G3XbBdMPhPetpWhM+8FxJcVQrQckAjJOts
+         a+PuAK+iIngRm+Yp1MRDCVK0BKRkRO9ogHvQh8O/VHesI2z8n5+VeisZVKsjgEqjLV5k
+         U3cHR0de4KgfDQBMl4Uj4g9/NyiGrIcwhViN8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2yOASqLXCFmH8rHiDFY5aK5IF9dZ2OI5aQ21Vbh1eP8=;
+        b=lEn/MnGR4EJOYjoIJoB7qgc8t2i53aEIigaZcL+gJLB3yzQ2LyhyPETki73qyjowdy
+         n1mzFHrxRWNOEukSqoX9BN/D2sNUIMNAXV2A6QCrR1bw8XzYEP/7AEMVjFYSjVJRzBIV
+         g6DiaThJZVCKBvShe0XLGo/Nxo2x7J20yqbPd2J+8RUWBdVh4s6qP7j2U66HBXVMztbQ
+         zjG0UIUfJKPtP8p27mMPxC7vEsntQTrSE2Ha5lwuiBaWVmQQ0zwU06W67SBDGmMEnt/s
+         ix0v/Aa0HCylg+yH8i13VH73rem/L9be4W1Zg91b544iD7lEu28b3XEnYAoUsglPw0OP
+         sstw==
+X-Gm-Message-State: AOAM531k2HY88eMK5JSmWNnwGAolKD+Nnyd5zR+UJL9O56DFemgm6s4X
+        iuJ8gJ+TpyQjfDPUQzV3PUTmr+/XPaxXQg==
+X-Google-Smtp-Source: ABdhPJy/l5JCoFPdFR12hWOnKrP/lLjwYszhjP/WNJBh99XAQ0ifkW1xWHqHas6EDvPBSGX8HpJRMQ==
+X-Received: by 2002:a63:8f19:: with SMTP id n25mr3154262pgd.17.1610560917380;
+        Wed, 13 Jan 2021 10:01:57 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c5sm3574184pjo.4.2021.01.13.10.01.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 10:01:56 -0800 (PST)
+Date:   Wed, 13 Jan 2021 10:01:55 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Alexey Gladkov <gladkov.alexey@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [RFC PATCH v2 1/8] Use atomic type for ucounts reference counting
+Message-ID: <202101131001.BF1108F90@keescook>
+References: <cover.1610299857.git.gladkov.alexey@gmail.com>
+ <447547b12bba1894d3f1f79d6408dfc60b219b0c.1610299857.git.gladkov.alexey@gmail.com>
+ <878s8wdcib.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210113174602.GV2743@paulmck-ThinkPad-P72>
+In-Reply-To: <878s8wdcib.fsf@x220.int.ebiederm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 09:46:02AM -0800, Paul E. McKenney wrote:
+On Wed, Jan 13, 2021 at 10:31:40AM -0600, Eric W. Biederman wrote:
+> Alexey Gladkov <gladkov.alexey@gmail.com> writes:
+> 
+> We might want to use refcount_t instead of atomic_t.  Not a big deal
+> either way.
 
-< Lemme trim that mail fat >
+Yes, please use refcount_t, and don't use _read() since that introduces
+races.
 
-> It seems to me that loading and unloading SGX enclaves qualifies as a
-> configuration operation, so use of synchronize_srcu_expedited() should be
-> just fine in that case.  This of course implies that SGX enclaves should
-> not be loaded or unloaded while an aggressive real-time application
-> is running.  Which might well be the case for other reasons.
+-Kees
 
-I believe RT and SGX should be orthogonal to each-other unless someone rolls out
-of the woodwork, wanting to run realtime enclaves... Ewww.
-
-> So I believe synchronize_srcu_expedited() should be fine in this case.
-
-Thx.
+> 
+> > Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
+> > ---
+> >  include/linux/user_namespace.h |  2 +-
+> >  kernel/ucount.c                | 10 +++++-----
+> >  2 files changed, 6 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
+> > index 64cf8ebdc4ec..84fefa9247c4 100644
+> > --- a/include/linux/user_namespace.h
+> > +++ b/include/linux/user_namespace.h
+> > @@ -92,7 +92,7 @@ struct ucounts {
+> >  	struct hlist_node node;
+> >  	struct user_namespace *ns;
+> >  	kuid_t uid;
+> > -	int count;
+> > +	atomic_t count;
+> >  	atomic_t ucount[UCOUNT_COUNTS];
+> >  };
+> >  
+> > diff --git a/kernel/ucount.c b/kernel/ucount.c
+> > index 11b1596e2542..0f2c7c11df19 100644
+> > --- a/kernel/ucount.c
+> > +++ b/kernel/ucount.c
+> > @@ -141,7 +141,8 @@ static struct ucounts *get_ucounts(struct user_namespace *ns, kuid_t uid)
+> >  
+> >  		new->ns = ns;
+> >  		new->uid = uid;
+> > -		new->count = 0;
+> > +
+> > +		atomic_set(&new->count, 0);
+> >  
+> >  		spin_lock_irq(&ucounts_lock);
+> >  		ucounts = find_ucounts(ns, uid, hashent);
+> > @@ -152,10 +153,10 @@ static struct ucounts *get_ucounts(struct user_namespace *ns, kuid_t uid)
+> >  			ucounts = new;
+> >  		}
+> >  	}
+> > -	if (ucounts->count == INT_MAX)
+> > +	if (atomic_read(&ucounts->count) == INT_MAX)
+> >  		ucounts = NULL;
+> >  	else
+> > -		ucounts->count += 1;
+> > +		atomic_inc(&ucounts->count);
+> >  	spin_unlock_irq(&ucounts_lock);
+> >  	return ucounts;
+> >  }
+> > @@ -165,8 +166,7 @@ static void put_ucounts(struct ucounts *ucounts)
+> >  	unsigned long flags;
+> >  
+> >  	spin_lock_irqsave(&ucounts_lock, flags);
+> > -	ucounts->count -= 1;
+> > -	if (!ucounts->count)
+> > +	if (atomic_dec_and_test(&ucounts->count))
+> >  		hlist_del_init(&ucounts->node);
+> >  	else
+> >  		ucounts = NULL;
+> 
+> 
+> This can become:
+> static void put_ucounts(struct ucounts *ucounts)
+> {
+> 	unsigned long flags;
+> 
+>         if (atomic_dec_and_lock_irqsave(&ucounts->count, &ucounts_lock, flags)) {
+>         	hlist_del_init(&ucounts->node);
+>                 spin_unlock_irqrestore(&ucounts_lock);
+>                 kfree(ucounts);
+>         }
+> }
+> 
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Kees Cook
