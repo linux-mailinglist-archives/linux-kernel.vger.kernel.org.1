@@ -2,90 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F3CA2F4A7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:44:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A8512F4A89
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:49:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726919AbhAMLns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:43:48 -0500
-Received: from mga05.intel.com ([192.55.52.43]:54283 "EHLO mga05.intel.com"
+        id S1727047AbhAMLop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:44:45 -0500
+Received: from mga06.intel.com ([134.134.136.31]:46382 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726011AbhAMLns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:43:48 -0500
-IronPort-SDR: 4sYI6T95gmciGQQHKPTn+iu4lXpgLVz/L3bHXFx3WXauukZin+YW65wAgStu4m+T7OooBhO6g+
- RWNxB1jUchsQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="262976766"
+        id S1725809AbhAMLop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 06:44:45 -0500
+IronPort-SDR: zC01mtUVWzx73an9c/JECTfkjAKfH8ThYl9ijoadwQ+FDbomASpLtAVtBRMRXdDqmpIpxsQ4iq
+ dXCkfHXB28gg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="239730876"
 X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; 
-   d="scan'208";a="262976766"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 03:42:02 -0800
-IronPort-SDR: QyHb0+wwyfDdew1SXTqz91m2ex8U1IjNi1xHHRntQ4ZrQYP3a1/pSI8B2mMTt0/p9utxTewVQx
- YgCq3UHfxRvw==
-X-ExtLoop1: 1
+   d="scan'208";a="239730876"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 03:42:58 -0800
+IronPort-SDR: 3j4F2y6/OhnLLUOBPzJpyD0dxEd60lDhOHaARqoH8x51OwEvrtKe6yicEftyL/Mx02PchFGn6g
+ Bj1OUHfslcFA==
 X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; 
-   d="scan'208";a="464881382"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 13 Jan 2021 03:41:59 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 13 Jan 2021 13:41:59 +0200
-Date:   Wed, 13 Jan 2021 13:41:59 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Kyle Tso <kyletso@google.com>, hdegoede@redhat.com,
-        badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 0/3] AMS, Collision Avoidance, and Protocol Error
-Message-ID: <20210113114159.GA2623935@kuha.fi.intel.com>
-References: <20210105163927.1376770-1-kyletso@google.com>
- <X/2N1LAgNRCSkWrw@kroah.com>
- <20210112115913.GB2020859@kuha.fi.intel.com>
- <0fb8c97e-e071-0fd2-c235-8b9609604a9e@roeck-us.net>
+   d="scan'208";a="404798865"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 03:42:52 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 4AD23207BF; Wed, 13 Jan 2021 13:42:50 +0200 (EET)
+Date:   Wed, 13 Jan 2021 13:42:50 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        yong.zhi@intel.com, Bingbu Cao <bingbu.cao@intel.com>,
+        tian.shu.qiu@intel.com, Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        hverkuil-cisco@xs4all.nl, m.felsch@pengutronix.de,
+        Niklas Soderlund <niklas.soderlund+renesas@ragnatech.se>,
+        prabhakar.mahadev-lad.rj@bp.renesas.com,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Subject: Re: [PATCH v5 00/15] Add functionality to ipu3-cio2 driver allowing
+ software_node connections to sensors on platforms designed for Windows
+Message-ID: <20210113114250.GH11878@paasikivi.fi.intel.com>
+References: <20210107132838.396641-1-djrscally@gmail.com>
+ <CAJZ5v0gb9c-kWM4aAKm6UqbVKt7dyp6xJS5E=7yoPRnPP+msbw@mail.gmail.com>
+ <9c451747-410e-3c99-c1a5-87336b71aa7b@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0fb8c97e-e071-0fd2-c235-8b9609604a9e@roeck-us.net>
+In-Reply-To: <9c451747-410e-3c99-c1a5-87336b71aa7b@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 06:09:28AM -0800, Guenter Roeck wrote:
-> On 1/12/21 3:59 AM, Heikki Krogerus wrote:
-> > On Tue, Jan 12, 2021 at 12:53:56PM +0100, Greg KH wrote:
-> >> On Wed, Jan 06, 2021 at 12:39:24AM +0800, Kyle Tso wrote:
-> >>> This series include previous patch "[v4] AMS and Collision Avoidance"
-> >>> https://lore.kernel.org/r/20201217030632.903718-1-kyletso@google.com
-> >>> and two more patches "Protocol Error handling" and "Respond Wait if...".
-> >>>
-> >>> The patch "AMS and Collision Avoidance" in [v5] is the same as the one
-> >>> in [v4] (only rebased to ToT).
-> >>>
-> >>> The patch "Protocol Error handling" is based on PD3 6.8.1 to fix the
-> >>> wrong handling.
-> >>>
-> >>> The patch "Respond Wait if..." is to fix a conflict when 
-> >>> DR/PR/VCONN_SWAP occurs just after the state machine enters Ready State.
-> >>>
-> >>> Kyle Tso (3):
-> >>>   usb: typec: tcpm: AMS and Collision Avoidance
-> >>>   usb: typec: tcpm: Protocol Error handling
-> >>>   usb: typec: tcpm: Respond Wait if VDM state machine is running
-> >>>
-> >>>  drivers/usb/typec/tcpm/tcpm.c | 925 +++++++++++++++++++++++++++++-----
-> >>>  include/linux/usb/pd.h        |   2 +
-> >>>  include/linux/usb/tcpm.h      |   4 +
-> >>>  3 files changed, 792 insertions(+), 139 deletions(-)
-> >>
-> >> Heikki, any thoughts about this series?
-> > 
-> > Sorry, I did yet go over these yet. I'll review them now.
-> > 
-> > Guenter, have you had time to take a look at these?
-> > 
+Hi Daniel,
+
+On Tue, Jan 12, 2021 at 11:35:37PM +0000, Daniel Scally wrote:
+> Hi Rafael, Sakari
 > 
-> Not yet. I have been been buried lately :-(
+> On 12/01/2021 19:34, Rafael J. Wysocki wrote:
+> > <snip>
+> >> I'm hopeful that most or all of this series could get picked up for 5.12.
+> >> We touch a few different areas (listed below), but I think the easiest
+> >> approach would be to merge everything through media tree. Rafael, Greg,
+> >> Mauro and Sergey; are you ok with that plan, or would you prefer a
+> >> different approach? Mauro; if that plan is ok (and of course assuming that
+> >> the rest of the patches are acked by their respective maintainers) could
+> >> we get a dedicated feature branch just in case the following series ends
+> >> up being ready in time too?
+> >>
+> >> <snip>
+> > Please feel free to add
+> >
+> > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> >
+> > to all of the device properties patches in this series if that helps.
+> >
+> > Thanks!
+> 
+> Thanks very much (and Greg too).
+> 
+> 
+> Sakari; unless I'm misunderstanding something, I think this series could
+> be picked up now, right? Would it be ok to do that through your tree? I
+> think the idea of a dedicated feature branch can be dropped, I won't
+> have the second series ready in time for this round anyway.
+> 
+> 
+> First time doing this, so if I've missed something please let me know!
 
-No worries. It looks like there are now plenty of guys reviewing this.
-
-Br,
+I think it's ready, indeed. I'll let you know if there are any issues.
 
 -- 
-heikki
+Kind regards,
+
+Sakari Ailus
