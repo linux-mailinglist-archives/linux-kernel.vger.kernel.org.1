@@ -2,145 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B82F2F44C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32DD52F44A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 07:46:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbhAMG7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 01:59:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726023AbhAMG7d (ORCPT
+        id S1726377AbhAMGqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 01:46:08 -0500
+Received: from mailout3.samsung.com ([203.254.224.33]:20190 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726136AbhAMGqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 01:59:33 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B08C061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 22:58:53 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id g25so3043683wmh.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 22:58:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HwL4VtEmHEKSYqG0Wvuo3dQa7ufy0vjsTEWXXFOnu14=;
-        b=CnqsXl9UR6w85yvNdQL0vLBU7n+ka9WgCSzhuPnh63gS7svyKH9TbaWEdN008kdcgm
-         nEhgm615vMhPE76ZyPVOrwE1graAlb0iSk8+QF2z9FoyUOnNSZvm4A5M7eqEtPSFu0nO
-         tYbs95sfEvBTrTQ9QrnG4FegciWkcfnaCaa1U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HwL4VtEmHEKSYqG0Wvuo3dQa7ufy0vjsTEWXXFOnu14=;
-        b=F7KmvhBFQwqgUI5q4czz5yLq1sfHchrHSImTIL97UMnGrw8RVvpO+W0Z5XFqWPdT/7
-         suigc1FZX6+piQYv7iQLs0tdL8EhZF+bW3X6bIrODR9fyBLyYmp6ZtuVc66EQNs1rg0/
-         D9xYtiqRVfIic5dbeStTIi85rh/uCzPsTzHSUx27QwUOTe7IWyk5qrK4qOo5vul8oS/C
-         KerxFxNvDqc/dfv92PAbeBhp19Bsj+EVFBF/uXVSLiHtw9JMIvMbMzpjEP7HDEklwza8
-         28BAdB7pfvW485PP3ZAyCkmo+RIjv5QD47vAzRpy6h9NB63wWKvuqtPkKGfYMr6W0kBf
-         uGBw==
-X-Gm-Message-State: AOAM533PYGOb9ln9sPc5BKQk3nuqLYkw+h3DoJYNJLoKZesOcG8Ngaft
-        Y+0lDeYvajTTCVOqYA1C77/7GutPTmGDVt1j1G0e4w==
-X-Google-Smtp-Source: ABdhPJxJ2zKxWypWcN01Y4eovqmIhyQQ3G4CzLNK/AUV76xJBTd5zeoVZVdAEIhClMuvvC9i5OrUSe+LmtrXR8YHkck=
-X-Received: by 2002:a1c:a145:: with SMTP id k66mr694572wme.18.1610521131935;
- Tue, 12 Jan 2021 22:58:51 -0800 (PST)
+        Wed, 13 Jan 2021 01:46:08 -0500
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210113064523epoutp0353fe27c97ada55eae03e4cfd543333a4~Zt7Om70Lb2268322683epoutp03a
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:45:23 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210113064523epoutp0353fe27c97ada55eae03e4cfd543333a4~Zt7Om70Lb2268322683epoutp03a
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1610520324;
+        bh=6XEWyvphJ0/G11FxbmVEVsJYFzzAg58obUspSqXP5Bg=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=ry2X59uJo1ZD/cELDG1NP5mvmhZjuPLODBuxRjv/Qg+1MvqwrNfhQ567PLzDNg2dn
+         QabuNFwDEkc+KU+anJBMqG5Qoakadz7RrstqjbY/yYEipXiFYnZfdh3D+wdfuq4CpE
+         c6ugPu/fIiNoRdprNdlxSSxMHbbDjGuGQ1890pi4=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210113064523epcas1p128a17e9cb709017d2ad51da97f368710~Zt7N0vpsn0191501915epcas1p1C;
+        Wed, 13 Jan 2021 06:45:23 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.161]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4DFycf18kCz4x9Px; Wed, 13 Jan
+        2021 06:45:22 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        9D.3C.02418.2079EFF5; Wed, 13 Jan 2021 15:45:22 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210113064521epcas1p32f0e65bc54d559b55db65bc5556103e8~Zt7MURoqQ2137721377epcas1p3K;
+        Wed, 13 Jan 2021 06:45:21 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210113064521epsmtrp2eb58868ee0cc7d73ace16856b9e3fca8~Zt7MTa2Y42462324623epsmtrp20;
+        Wed, 13 Jan 2021 06:45:21 +0000 (GMT)
+X-AuditID: b6c32a35-1b331a8000010972-f7-5ffe97021cb0
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E7.E0.08745.1079EFF5; Wed, 13 Jan 2021 15:45:21 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.98.109]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210113064521epsmtip2621bb8a5f14fefd648634cc154d72c5e~Zt7MCrS9C1463414634epsmtip2H;
+        Wed, 13 Jan 2021 06:45:21 +0000 (GMT)
+From:   Manjong Lee <mj0123.lee@samsung.com>
+To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        nanich.lee@samsung.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com, junho89.kim@samsung.com,
+        jisoo2146.oh@samsung.com, Manjong Lee <mj0123.lee@samsung.com>
+Subject: [PATCH 1/1] scsi: sd: use max_xfer_blocks for set rw_max if
+ max_xfer_blocks is available
+Date:   Thu, 14 Jan 2021 00:50:08 +0900
+Message-Id: <20210113155009.9592-1-mj0123.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-References: <20210107085942.2891525-1-yuhsuan@chromium.org>
- <20210107085942.2891525-2-yuhsuan@chromium.org> <e6c33a5f-1765-7cb6-8479-ff049992f2b7@collabora.com>
-In-Reply-To: <e6c33a5f-1765-7cb6-8479-ff049992f2b7@collabora.com>
-From:   Yu-Hsuan Hsu <yuhsuan@chromium.org>
-Date:   Wed, 13 Jan 2021 14:58:41 +0800
-Message-ID: <CAGvk5Ppm_+twECMf2x6P4U24vkcwn7WPOCZtnjwNHG=CtmOenA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: cros_ec_codec: Reset I2S RX when probing
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ALSA development <alsa-devel@alsa-project.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Prashant Malani <pmalani@chromium.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEJsWRmVeSWpSXmKPExsWy7bCmni7T9H/xBhPXsFosurGNyaLnSROr
+        xdeHxRaXd81hs+i+voPNYvnxf0wW0zfPYba4dv8Mu8W5k59YLeY9drA4tWMys8X6vT/ZHHg8
+        Jiw6wOjx8ektFo++LasYPT5vkgtgicqxyUhNTEktUkjNS85PycxLt1XyDo53jjc1MzDUNbS0
+        MFdSyEvMTbVVcvEJ0HXLzAE6TEmhLDGnFCgUkFhcrKRvZ1OUX1qSqpCRX1xiq5RakJJTYGhQ
+        oFecmFtcmpeul5yfa2VoYGBkClSZkJMx8edsxoIe6YpFf9kbGPvEuhg5OSQETCRW/ZrL3sXI
+        xSEksINR4sy0OcwQzidGicN/v7JCOJ8ZJVonzmGEabk27RQTRGIXo8SJ3T/Y4Kp+3b/FDFLF
+        JqAlsfzZBXYQW0QgT2LhvudgNrPAQ0aJ57d8QGxhgWSJO7sfgtWzCKhKfNgwHayGV8BK4sLT
+        xUwQ2+Ql/tzvYYaIC0qcnPmEBWKOvETz1tlgt0oIvGSXODL1ENR5LhJvXqxih7CFJV4d3wJl
+        S0l8freXDaKhmVGi99M5VohEC6PEjotlELaxxKfPn4EGcQBt0JRYv0sfIqwosfP3XEaIxXwS
+        7772sIKUSAjwSnS0CUGUqEjsbv4Gt+rNqwNQ53hIPH6wAqxcSCBW4vsLsQmM8rOQfDMLyTez
+        EPYuYGRexSiWWlCcm55abFhgiBypmxjBiVPLdAfjxLcf9A4xMnEwHmKU4GBWEuEt6v4bL8Sb
+        klhZlVqUH19UmpNafIjRFBi+E5mlRJPzgak7ryTe0NTI2NjYwsTM3MzUWEmcN8ngQbyQQHpi
+        SWp2ampBahFMHxMHp1QDk06he3vdw5SGC03fW1L4Gljmiv5h2BUlsLZiMneue0pPUkBj6BQF
+        6wPWVzdI2h+bzPp20oQj5xbVzMrN78ne2rZ0nrSMxQYdH+6IO9G1N25JxX7XCZn4fqPWQZn9
+        T8pfcsmwVNyYePyFv8997jWfPlobHavg72s4d1JzTt0TLTW76LX7oqV1thWcqlfSKl72fGW4
+        lFRcA1PZrE9x4ouklsQ5lsw5KyHmqf5K8v3qFy9YAx9ZdvwUX6Tfd/U1X9T2rnMmT8IyTp+p
+        Vvx66RqHSy5fRr1y/sHTc557cB9r6yk8vzG7Q0/qguA8mWMHstVEd/nkvvgiYhb8bOORhIBt
+        61M9yqrv8GZpzZdhf/JIiaU4I9FQi7moOBEA1V3a1SUEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPLMWRmVeSWpSXmKPExsWy7bCSvC7j9H/xBlMPi1ksurGNyaLnSROr
+        xdeHxRaXd81hs+i+voPNYvnxf0wW0zfPYba4dv8Mu8W5k59YLeY9drA4tWMys8X6vT/ZHHg8
+        Jiw6wOjx8ektFo++LasYPT5vkgtgieKySUnNySxLLdK3S+DKmPhzNmNBj3TFor/sDYx9Yl2M
+        nBwSAiYS16adYupi5OIQEtjBKPHr2Fk2iISUxLy1DUA2B5AtLHH4cDFEzUdGiSUnTrOA1LAJ
+        aEksf3aBHcQWESiS2HB2E1gvs8BLRomunXIgtrBAosTUtdfA6lkEVCU+bJgOVs8rYCVx4eli
+        Johd8hJ/7vcwQ8QFJU7OfMICMUdeonnrbOYJjHyzkKRmIUktYGRaxSiZWlCcm55bbFhglJda
+        rlecmFtcmpeul5yfu4kRHMZaWjsY96z6oHeIkYmD8RCjBAezkghvUfffeCHelMTKqtSi/Pii
+        0pzU4kOM0hwsSuK8F7pOxgsJpCeWpGanphakFsFkmTg4pRqYJnMfcUiJbi1s8w+2+xkbo3Lw
+        hLDlt7oCt0/nvY399hauzspf1PTEqfrPw+hPfJxM/2T4ww5WPzmyxuuH8kPVgu96znmmR+sj
+        zl9gZCvnvdst9lGq6kCveN+vk/fM5lY4H99411xJv+XVHa1HM7yrxV9/Mdvz/P2ffdELfB5w
+        9f/cbXH3NO/ivJxDW1c0/41+/tf4weuW5ysd69b2TVhyySXS/sbHyvjbXA46aWsEBcOfK3YW
+        lWgePnSjwVvw/1bFBKXAgsLSOZP2c2jNy/vNza2jEvfPoLYxiLfm+yW1LU7rz+6/suxTdnvt
+        pYjd0xyiFZZZzxeRefktkWehUeuq2y+2GK0+dvkizyaXbxKtSizFGYmGWsxFxYkAjGDxRtIC
+        AAA=
+X-CMS-MailID: 20210113064521epcas1p32f0e65bc54d559b55db65bc5556103e8
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210113064521epcas1p32f0e65bc54d559b55db65bc5556103e8
+References: <CGME20210113064521epcas1p32f0e65bc54d559b55db65bc5556103e8@epcas1p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enric Balletbo i Serra <enric.balletbo@collabora.com> =E6=96=BC 2021=E5=B9=
-=B41=E6=9C=8813=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=8812:34=E5=AF=
-=AB=E9=81=93=EF=BC=9A
->
-> Hi Yu-Hsuan,
->
-> Thank you for the patch.
->
-> On 7/1/21 9:59, Yu-Hsuan Hsu wrote:
-> > It is not guaranteed that I2S RX is disabled when the kernel booting.
-> > For example, if the kernel crashes while it is enabled, it will keep
-> > enabled until the next time EC reboots. Reset I2S RX when probing to
-> > fix this issue.
-> >
-> > Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
->
-> If I am not mistaken this is the four version of this patchset (see [1]).=
- Please
-> prefix your patches with the proper version and maintain a changelog for =
-them,
-> otherwise makes difficult to follow all the discussions already done.
->
-> [1]
-> v1: https://lkml.org/lkml/2020/7/8/173
-> v2: https://mailman.alsa-project.org/pipermail/alsa-devel/2020-July/17093=
-3.html
-> v3:
-> https://patchwork.kernel.org/project/alsa-devel/patch/20210106050559.1459=
-027-1-yuhsuan@chromium.org/
-> v4: https://patchwork.kernel.org/project/alsa-devel/list/?series=3D410441
-Sorry that I forgot to add version. Will add v5 in the next patch. Thanks!
->
-> > ---
-> >  sound/soc/codecs/cros_ec_codec.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_e=
-c_codec.c
-> > index f33a2a9654e7..28b3e2c48c86 100644
-> > --- a/sound/soc/codecs/cros_ec_codec.c
-> > +++ b/sound/soc/codecs/cros_ec_codec.c
-> > @@ -1011,6 +1011,13 @@ static int cros_ec_codec_platform_probe(struct p=
-latform_device *pdev)
-> >       }
-> >       priv->ec_capabilities =3D r.capabilities;
-> >
-> > +     /* Reset EC codec i2s rx. */
-> > +     p.cmd =3D EC_CODEC_I2S_RX_RESET;
-> > +     ret =3D send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S=
-_RX,
-> > +                                (uint8_t *)&p, sizeof(p), NULL, 0);
-> > +     if (ret)
-> > +             dev_warn(dev, "failed to EC_CODEC_I2S_RESET: %d\n", ret);
-> > +
->
-> My comment in the first version is still valid, I guess. This command was
-> introduced later and with an old firmware I suspect this message will app=
-ear on
-> every boot, right? So, to solve the issue and get rid of this warn you're=
- forced
-> to upgrade the firmware. Would make sense to handle returned error value =
-to warn
-> when the firmware needs to be updated and error and break when is really =
-an error?
->
-> We have mapped ec error codes to linux error codes. So, it should be poss=
-ible now.
-Oh, I didn't notice it. Thanks for the remind. I will work on it.
->
-> Thanks,
->  Enric
->
-> >       platform_set_drvdata(pdev, priv);
-> >
-> >       ret =3D devm_snd_soc_register_component(dev, &i2s_rx_component_dr=
-iver,
-> >
+SCSI device has max_xfer_size and opt_xfer_size,
+but current kernel uses only opt_xfer_size.
+
+It causes the limitation on setting IO chunk size,
+although it can support larger one.
+
+So, I propose this patch to use max_xfer_size in case it has valid value.
+It can support to use the larger chunk IO on SCSI device.
+
+For example,
+This patch is effective in case of some SCSI device like UFS
+with opt_xfer_size 512KB, queue depth 32 and max_xfer_size over 512KB.
+
+I expect both the performance improvement
+and the efficiency use of smaller command queue depth.
+
+Signed-off-by: Manjong Lee <mj0123.lee@samsung.com>
+---
+ drivers/scsi/sd.c | 56 +++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 52 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index 679c2c025047..de59f01c1304 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -3108,6 +3108,53 @@ static void sd_read_security(struct scsi_disk *sdkp, unsigned char *buffer)
+ 		sdkp->security = 1;
+ }
+ 
++static bool sd_validate_max_xfer_size(struct scsi_disk *sdkp,
++				      unsigned int dev_max)
++{
++	struct scsi_device *sdp = sdkp->device;
++	unsigned int max_xfer_bytes =
++		logical_to_bytes(sdp, sdkp->max_xfer_blocks);
++
++	if (sdkp->max_xfer_blocks == 0)
++		return false;
++
++	if (sdkp->max_xfer_blocks > SD_MAX_XFER_BLOCKS) {
++		sd_first_printk(KERN_WARNING, sdkp,
++				"Maximal transfer size %u logical blocks " \
++				"> sd driver limit (%u logical blocks)\n",
++				sdkp->max_xfer_blocks, SD_DEF_XFER_BLOCKS);
++		return false;
++	}
++
++	if (sdkp->max_xfer_blocks > dev_max) {
++		sd_first_printk(KERN_WARNING, sdkp,
++				"Maximal transfer size %u logical blocks "
++				"> dev_max (%u logical blocks)\n",
++				sdkp->max_xfer_blocks, dev_max);
++		return false;
++	}
++
++	if (max_xfer_bytes < PAGE_SIZE) {
++		sd_first_printk(KERN_WARNING, sdkp,
++				"Maximal transfer size %u bytes < " \
++				"PAGE_SIZE (%u bytes)\n",
++				max_xfer_bytes, (unsigned int)PAGE_SIZE);
++		return false;
++	}
++
++	if (max_xfer_bytes & (sdkp->physical_block_size - 1)) {
++		sd_first_printk(KERN_WARNING, sdkp,
++				"Maximal transfer size %u bytes not a " \
++				"multiple of physical block size (%u bytes)\n",
++				max_xfer_bytes, sdkp->physical_block_size);
++		return false;
++	}
++
++	sd_first_printk(KERN_INFO, sdkp, "Maximal transfer size %u bytes\n",
++			max_xfer_bytes);
++	return true;
++}
++
+ /*
+  * Determine the device's preferred I/O size for reads and writes
+  * unless the reported value is unreasonably small, large, not a
+@@ -3233,12 +3280,13 @@ static int sd_revalidate_disk(struct gendisk *disk)
+ 
+ 	/* Initial block count limit based on CDB TRANSFER LENGTH field size. */
+ 	dev_max = sdp->use_16_for_rw ? SD_MAX_XFER_BLOCKS : SD_DEF_XFER_BLOCKS;
+-
+-	/* Some devices report a maximum block count for READ/WRITE requests. */
+-	dev_max = min_not_zero(dev_max, sdkp->max_xfer_blocks);
+ 	q->limits.max_dev_sectors = logical_to_sectors(sdp, dev_max);
+ 
+-	if (sd_validate_opt_xfer_size(sdkp, dev_max)) {
++	if (sd_validate_max_xfer_size(sdkp, dev_max)) {
++		q->limits.io_opt = 0;
++		rw_max = logical_to_sectors(sdp, sdkp->max_xfer_blocks);
++		q->limits.max_dev_sectors = rw_max;
++	} else if (sd_validate_opt_xfer_size(sdkp, dev_max)) {
+ 		q->limits.io_opt = logical_to_bytes(sdp, sdkp->opt_xfer_blocks);
+ 		rw_max = logical_to_sectors(sdp, sdkp->opt_xfer_blocks);
+ 	} else {
+-- 
+2.29.0
+
