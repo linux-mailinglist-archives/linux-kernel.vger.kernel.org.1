@@ -2,96 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D952F548D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 22:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7402F5493
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 22:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729077AbhAMVUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 16:20:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729021AbhAMVJS (ORCPT
+        id S1729100AbhAMVXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 16:23:16 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38548 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729070AbhAMVTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 16:09:18 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34C6FC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 13:09:51 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id 23so4832523lfg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 13:09:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=19mOysAs+fTjcD5aUR14g3fjxBQ+jCPuSKPUbQp6pcQ=;
-        b=fvAa76vVm4UeUn3/+YKF40BxY0qutgZf+kqrPbuzDLN5YGlXBWuOhJn0J7+Bid5n04
-         QalokEw9hIQMVObZsxbp1evtprnNpHgM6G7zxFv96d+3hp+kQfcFKuf92akziTJ61XkD
-         DRVAMR574SkGiwj81JKLYNwQD4xs6fVU0FEKE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=19mOysAs+fTjcD5aUR14g3fjxBQ+jCPuSKPUbQp6pcQ=;
-        b=iFilGCDM8I2wAXTP0GdO2nR0qzEH6ftw8NZdVgKJWsw9tMx06HOq4ESBs8NXYY+FbD
-         RdkA+CbcS17atRfCGrhiRMVX2P/WBcfmRg0RNsp/ouiO4IF4+wN7FSHhnso5QZcaE8sp
-         M1IZwSV54I9IQzlhA1Ulh2ORSayvQG6CFBm4JjdT8NV/8iDTjehdlu/8ZboDXoUke+lw
-         GGlqKp2rprcXzGm6M3RO8tMFp9Z76Qc4nDgwoNs3X6JjWOA2vd7aIBovoTShr1BK0CKT
-         6JoOvp+klO2smGj0KLA7xrm3XSOBJMbQibq+4P+XT6K9tIDsx5MvFcmbNK1iI9I93xFp
-         AeDw==
-X-Gm-Message-State: AOAM531wQLUYGbuerG6wa9dyeZkVbwMmCfKy4CgX+5vYz5FCe4eKKAPz
-        CP9shJrU91t+rm3lPYryMFUJATVYkuusaA==
-X-Google-Smtp-Source: ABdhPJy1ZSx1z11QiJFBsmahvI3/zfob0QOdklmL1xSKwW1xRGELBR4Rt5LNkjW+liFsMLyQykN7XA==
-X-Received: by 2002:ac2:58dc:: with SMTP id u28mr1595913lfo.332.1610572189172;
-        Wed, 13 Jan 2021 13:09:49 -0800 (PST)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id e9sm320396lfc.253.2021.01.13.13.09.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jan 2021 13:09:48 -0800 (PST)
-Received: by mail-lf1-f48.google.com with SMTP id m12so4846811lfo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 13:09:47 -0800 (PST)
-X-Received: by 2002:ac2:420a:: with SMTP id y10mr86645lfh.377.1610572187357;
- Wed, 13 Jan 2021 13:09:47 -0800 (PST)
+        Wed, 13 Jan 2021 16:19:18 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 410901F44F75
+Received: by earth.universe (Postfix, from userid 1000)
+        id E1E673C0C94; Wed, 13 Jan 2021 22:19:50 +0100 (CET)
+Date:   Wed, 13 Jan 2021 22:19:50 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Mike Looijmans <mike.looijmans@topic.nl>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] power: supply: Constify static struct attribute_group
+Message-ID: <20210113211950.vjqo5vywpsysxo3t@earth.universe>
+References: <20210113203243.20146-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
-References: <20210113024241.179113-1-ying.huang@intel.com> <CAHk-=whn5kVxEitkC0AyzvWRyxbF91rMrO9ZG6JHBNYLckpDDw@mail.gmail.com>
- <CAC=cRTNpoqHpbtZM1uDvVQYQZVyRbfPh+Dirb=-Xgoh22u_W1A@mail.gmail.com>
- <20210113031142.GM35215@casper.infradead.org> <CAC=cRTNMN5Pmz2PC8p3N2-uJkqLUCW95wr=VWTZmodoECmj6nQ@mail.gmail.com>
-In-Reply-To: <CAC=cRTNMN5Pmz2PC8p3N2-uJkqLUCW95wr=VWTZmodoECmj6nQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 13 Jan 2021 13:09:31 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wh3nL28QfkKV6gpVGjh5iPjoEZtEQYPDvwPgscm-yMAfA@mail.gmail.com>
-Message-ID: <CAHk-=wh3nL28QfkKV6gpVGjh5iPjoEZtEQYPDvwPgscm-yMAfA@mail.gmail.com>
-Subject: Re: [PATCH] mm: Free unused swap cache page in write protection fault handler
-To:     huang ying <huang.ying.caritas@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kukvvetchmjri4zq"
+Content-Disposition: inline
+In-Reply-To: <20210113203243.20146-1-rikard.falkeborn@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 9:24 PM huang ying <huang.ying.caritas@gmail.com> wrote:
-> >
-> > Couldn't we just move it to the tail of the LRU list so it's reclaimed
-> > first?  Or is locking going to be a problem here?
->
-> Yes.  That's a way to reduce the disturbance to the page reclaiming.
-> For LRU lock contention, is it sufficient to use another pagevec?
 
-I wonder if this is really worth it. I'd like to see numbers.
+--kukvvetchmjri4zq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Because in probably 99%+ of all cases, that LRU dance is only going to
-hurt and add extra locking overhead and dirty caches.
+Hi,
 
-So I'd like to see some numbers that it actually helps measurably in
-whatever paging-heavy case...
+On Wed, Jan 13, 2021 at 09:32:41PM +0100, Rikard Falkeborn wrote:
+> Constify two static struct attribute_group. The only place they are
+> used is to put their address in an array of pointers to const struct
+> attribute_group. With these patches applied, all static attribute_group
+> structs in drivers/power are const.
 
-            Linus
+Thanks, I queued both to power-supply's for-next branch.
+
+-- Sebastian
+
+--kukvvetchmjri4zq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl//Y/MACgkQ2O7X88g7
++pq7UQ/6A6k4wZbdEVwjlFsNLTPuQQ6LHAHisbRopf4kAurq/N0e4uLvl5Q0K0HM
+c2pqHqGj41X+o8/CvsULdgYnkexGGVFOO/mUSSawq1grvsaheL9bbOpMlWKYSuKM
+wQHIPqBGN6S8CvF7Tl9JxcKYwVAe1JuR5tj7o+C6S2gE/vmBRtCXMlETvSyYF9vN
+a0JUidWZAMW3M4xQ9IVSqFRd6VhxiISpNRcvKoUvmw8Tvfv4Gd3KFLuW4cjPvVTX
+pL+JfYv0cknikUXDG1t+GkBFsRR9mxASHC3u4sRZgBXnrqznjakHUdQpp4zjlwVe
+zKV6Una/1GK4G26xjsX3ANKGgLyMzBJOKtHWRPJzr6/o5kA2nNb2GdBolQFljIhe
+QbLcl7sJ6pnWe/FCYvMIXrNx2bexGW2UqyD1N33/f2nMHZS1VbXL1cNUOWEMa/ht
+s9F5R0UUC50oxwKlmV5aSaIhQu+L79ccE/9bwwtTh7pRj65uDMQGqbVpFLp+iCNh
+Pyj7eTiGWI1QLtOa/TIQWIDAjl4IeONIMVDRLaR1azJ1E21adWe7V1aiJ0FSpvyH
+hbZ79toyHT/2m7IDDIv0LLZhOC7Aj0FlNPBq7SI05X5ZZ0/o744bhnEi+8srP+27
+8CpomsiWrgRIwu/f2h6PWhiHurO1kM5TXqqgHt8TyQSa56zWRxo=
+=u/mS
+-----END PGP SIGNATURE-----
+
+--kukvvetchmjri4zq--
