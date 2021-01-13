@@ -2,55 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47612F40DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D6BB2F40DC
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:57:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393737AbhAMAnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 19:43:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54888 "EHLO
+        id S2393750AbhAMAnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 19:43:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392393AbhAMAd2 (ORCPT
+        with ESMTP id S2392402AbhAMAd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 19:33:28 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C195AC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:32:47 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id m203so619547ybf.1
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:32:47 -0800 (PST)
+        Tue, 12 Jan 2021 19:33:29 -0500
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B413C061795
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:32:49 -0800 (PST)
+Received: by mail-pg1-x54a.google.com with SMTP id 18so334298pgf.19
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:32:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=5rko6s7/MxxtN4vVcBpBg113Pb8TIp2GhMMzMhRrSK4=;
-        b=p4mDtQ/JWBQVcqiSngiVHj1RDJXheN9j4tRJZdYqOef3abOmLeMAEwfLvwCSZaq72V
-         G+vUc4J+fzLAMEur0uasAO4tZTA5D+eRIvWKG6bK0GwnwBgnyCe/P3TDCE/ZVxj/33iW
-         nI7HNKVv87dAHunABvsFKROzqxByZa2P1XtgX+yh6cVQuPHUtAiwQ78s1ui09zTayJbN
-         HS2wFLIEu9gMfxL7BaqP8CrMPeoTys7pn1IOwKxGpH91mGB46UBdoqFiKjkGWXF6exUH
-         pbPMt7PkH59Kw0zzF1wq9mDSqSdLTBVqOfplGUeTXNf3oKX3HMCJmxz7+IAUaLi6fvpE
-         N41Q==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=dP6j6wcQj1tq0vOLcWGfFHo7iRnRUUl3C2I4O7J7Ozg=;
+        b=HZ1OdG3AUYYjnfuIgSl2h48zf8Lc8TWv0B1ET6Q23GEo4BkJjbddMItpDsuFBvKrjp
+         V9Lybk1v5NoyoXQzjgPuD0Ee1SNw1OxfZtUOc8wKcVYm4W1/MwBB6QvZHbqNoY/5YpPI
+         Rs52mOOCneWpnNsEPyrAYvG5JiqK8UYr0BMxT4NCHNiMeH1Q/JCt2u64AbB/Hgo/+8gO
+         0zySVBzWlPqREI+U/ri2WS5YZBEC6gtegTnMcwfo1ee7cyJe3m5EMt1llZJ6L1XQMULn
+         VXuv6CbDtvOq/NBp8KrxjW2cxl8BIqo5o+XRXSPs48u4akZ1PtV6XAaWUyupqa7rX0wb
+         3cMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=5rko6s7/MxxtN4vVcBpBg113Pb8TIp2GhMMzMhRrSK4=;
-        b=ecqvYsQTOJsn1tgynPqWQZ39wQkre/SfgRBCvY6InbJZnyGOHtIIgJ/oBeaS+AWKNe
-         aZSOA+6S2Q/NNkrBTjJMwuf3YLDBC0nWlmNCaOlaQaJO+lTNWxe0n1YnRN4NobTgzGXJ
-         /U2GZOa7pq7Lt5QbeOyWewAOmluWDNPF3Bg0d0XBqnolF5BQOwMIaWbxuhXgGG+O+ZXv
-         88diUrpDJYARgFKUttBpWshuzugQD0Igmr+CiGK6dykTEHcSWaTppOWlxMq8sj4Ka39M
-         9wscjVKSSb4ARhjA6tCVPsm1Kr3+XfLLO2o+S7g3ynZNGCAcrCcKAfPRXkUY4ZKLs66p
-         nQFA==
-X-Gm-Message-State: AOAM532vHzt2CHR7rIvxJAzgCSzoXn73u47k9PvqTr3xMctyuMbP6PSg
-        bkyzWDpKz8iIvUZ39FWxB/85uyAc8F/XxiYGtMs=
-X-Google-Smtp-Source: ABdhPJyz29k5mHwumIN/WLsewxzzQWULrBkzUA+/LMCzZdq219IKRBifSlFkuKDLgTPRlO+O4yjAZg9VmDmhK0cKzJM=
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=dP6j6wcQj1tq0vOLcWGfFHo7iRnRUUl3C2I4O7J7Ozg=;
+        b=X1M/qNnfnlRqwbfgwuxFbsjosLw0dZekb2m5+IjhyEZbh+Yf8jP5R7EerKTudM/svs
+         DS8HyuTXkSxMI7HnyjkGCUuj5I9pCJkoSQgYU9BgTbpigX9T249Rvep0k9DOFmXfVx6n
+         geWYio3lmB5W7qDn/RK47l+ekt0jJ7Vrghm2cx1C+SsKHvIgegmbwcwKM8LEA/ATHRd+
+         4+GD/2lGfdRB5ROWjSJ+qlRXRg+5JvikoaAVVgw+WY/iSI1asak9isl+lHAYBdEtgY01
+         rApO9v6YUCZJza6KA9CqiZZm+Lpvae/0MH4cw+QYb9I3CQuyEpVYHG7K8eJ/mMlMGtXi
+         laOg==
+X-Gm-Message-State: AOAM530Y6SLlml1mTN1jvST/hojL7IX7x/NbS+h3Hg1Z3G2qw55n5i49
+        KFEmsh4tbD08iiTHYEHVjKj1XbvvA4Bqkg3LUAo=
+X-Google-Smtp-Source: ABdhPJwq5fbkvZctrZiF7pXQ41VncnRxpB/+3veDd4p8cC9GtOVC+KE7VsOZMV/3VwRTIIjPqQle1f8xxEWkHZ/9bMw=
 Sender: "ndesaulniers via sendgmr" 
         <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
 X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:a25:9387:: with SMTP id
- a7mr3131575ybm.73.1610497966973; Tue, 12 Jan 2021 16:32:46 -0800 (PST)
-Date:   Tue, 12 Jan 2021 16:32:32 -0800
-Message-Id: <20210113003235.716547-1-ndesaulniers@google.com>
+ (user=ndesaulniers job=sendgmr) by 2002:a17:90a:ce0c:: with SMTP id
+ f12mr301315pju.89.1610497969060; Tue, 12 Jan 2021 16:32:49 -0800 (PST)
+Date:   Tue, 12 Jan 2021 16:32:33 -0800
+In-Reply-To: <20210113003235.716547-1-ndesaulniers@google.com>
+Message-Id: <20210113003235.716547-2-ndesaulniers@google.com>
 Mime-Version: 1.0
+References: <20210113003235.716547-1-ndesaulniers@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v4 0/3] Kbuild: DWARF v5 support
+Subject: [PATCH v4 1/3] Remove $(cc-option,-gdwarf-4) dependency from CONFIG_DEBUG_INFO_DWARF4
 From:   Nick Desaulniers <ndesaulniers@google.com>
 To:     Masahiro Yamada <masahiroy@kernel.org>
 Cc:     Nathan Chancellor <natechancellor@gmail.com>,
@@ -68,61 +71,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DWARF v5 is the latest standard of the DWARF debug info format.
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-DWARF5 wins significantly in terms of size when mixed with compression
-(CONFIG_DEBUG_INFO_COMPRESSED).
+The -gdwarf-4 flag is supported by GCC 4.5+, and also by Clang.
 
-Link: http://www.dwarfstd.org/doc/DWARF5.pdf
+You can see it at https://godbolt.org/z/6ed1oW
 
-Patch 1 is a cleanup from Masahiro and isn't DWARF v5 specific.
-Patch 2 is a cleanup that lays the ground work and isn't DWARF
-v5 specific.
-Patch 3 implements Kconfig and Kbuild support for DWARFv5.
+  For gcc 4.5.3 pane,    line 37:    .value 0x4
+  For clang 10.0.1 pane, line 117:   .short 4
 
-Changes from v3:
+Given Documentation/process/changes.rst stating GCC 4.9 is the minimal
+version, this cc-option is unneeded.
 
-Changes as per Arvind:
-* only add -Wa,-gdwarf-5 for (LLVM=1|CC=clang)+LLVM_IAS=0 builds.
-* add -gdwarf-5 to Kconfig shell script.
-* only run Kconfig shell script for Clang.
+Note
+----
 
-Apologies to Sedat and Nathan; I appreciate previous testing/review, but
-I did no carry forward your Tested-by and Reviewed-by tags, as the
-patches have changed too much IMO.
+CONFIG_DEBUG_INFO_DWARF4 controls the DWARF version only for C files.
 
-Changes from v2:
-* Drop two of the earlier patches that have been accepted already.
-* Add measurements with GCC 10.2 to commit message.
-* Update help text as per Arvind with help from Caroline.
-* Improve case/wording between DWARF Versions as per Masahiro.
+As you can see in the top Makefile, -gdwarf-4 is only passed to CFLAGS.
 
-Changes from the RFC:
-* split patch in 3 patch series, include Fangrui's patch, too.
-* prefer `DWARF vX` format, as per Fangrui.
-* use spaces between assignment in Makefile as per Masahiro.
-* simplify setting dwarf-version-y as per Masahiro.
-* indent `prompt` in Kconfig change as per Masahiro.
-* remove explicit default in Kconfig as per Masahiro.
-* add comments to test_dwarf5_support.sh.
-* change echo in test_dwarf5_support.sh as per Masahiro.
-* remove -u from test_dwarf5_support.sh as per Masahiro.
-* add a -gdwarf-5 cc-option check to Kconfig as per Jakub.
+  ifdef CONFIG_DEBUG_INFO_DWARF4
+  DEBUG_CFLAGS    += -gdwarf-4
+  endif
 
-Masahiro Yamada (1):
-  Remove $(cc-option,-gdwarf-4) dependency from CONFIG_DEBUG_INFO_DWARF4
+This flag is used when compiling *.c files.
 
-Nick Desaulniers (2):
-  Kbuild: make DWARF version a choice
-  Kbuild: implement support for DWARF v5
+On the other hand, the assembler is always given -gdwarf-2.
 
- Makefile                          | 15 +++++++----
- include/asm-generic/vmlinux.lds.h |  6 ++++-
- lib/Kconfig.debug                 | 41 +++++++++++++++++++++++++------
- scripts/test_dwarf5_support.sh    |  9 +++++++
- 4 files changed, 58 insertions(+), 13 deletions(-)
- create mode 100755 scripts/test_dwarf5_support.sh
+  KBUILD_AFLAGS   += -Wa,-gdwarf-2
 
+Hence, the debug info that comes from *.S files is always DWARF v2.
+This is simply because GAS supported only -gdwarf-2 for a long time.
+
+Recently, GAS gained the support for --dwarf-[3|4|5] options. [1]
+And, also we have Clang integrated assembler. So, the debug info
+for *.S files might be improved if we want.
+
+In my understanding, the current code is intentional, not a bug.
+
+[1] https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=31bf18645d98b4d3d7357353be840e320649a67d
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ lib/Kconfig.debug | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 78361f0abe3a..dd7d8d35b2a5 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -258,7 +258,6 @@ config DEBUG_INFO_SPLIT
+ 
+ config DEBUG_INFO_DWARF4
+ 	bool "Generate dwarf4 debuginfo"
+-	depends on $(cc-option,-gdwarf-4)
+ 	help
+ 	  Generate dwarf4 debug info. This requires recent versions
+ 	  of gcc and gdb. It makes the debug information larger.
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
