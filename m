@@ -2,120 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3276D2F434F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:48:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 846162F4352
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 05:48:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726082AbhAMEq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 23:46:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53030 "EHLO
+        id S1726176AbhAMErN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 23:47:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725824AbhAMEq6 (ORCPT
+        with ESMTP id S1725815AbhAMErN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 23:46:58 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B31FC061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 20:46:18 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id w18so1706913iot.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 20:46:18 -0800 (PST)
+        Tue, 12 Jan 2021 23:47:13 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D171FC061794;
+        Tue, 12 Jan 2021 20:46:32 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id l23so391048pjg.1;
+        Tue, 12 Jan 2021 20:46:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tOWy8KhOizbd2Dn5a2Cj2vcBNaHIiB2CBvkXn3Ip+EE=;
-        b=d2NYmxC2uL6xEKj/wkCG8Sa3jmX1U1Uj7nFnDywZfdP0ZvKieml5KnAgVwy3X1iNHw
-         v21pdcqXK691gbaofSUUiZQIt367J/hM+bXGAuID6SJmwNZe2KQKflt6imTBloG86oP/
-         SDGMF8bVPwVW9aFpnNBL0iLeUX6bEo5hQT5ZXJop22oSGZgXIS1qGrYlSpmwjXZ7G+Ng
-         7528zhJjZn4LNTMp1gMUxmxx5T2bVUpQeWmTC699GvesPVxT794KXGjhy57J+c/25hNA
-         amfiO0H4WuutwudKyx1KU2gYhasQUZEgaWP8iBC80yYn+J+yIOIaeTe3V/EtHGOY4V2d
-         3N3Q==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wsH511uVTx8En12N2xkRYY/EWxwzRWT77TKtD0W9zkg=;
+        b=RIIJpECEt8DcW04/KRZRW3SbTyAg9O+VF7pyA6xxA0Y5ay2d1sujo/ylbdoUx+dwmN
+         oPlGWiy8pPqJXgwBrRwZUcDZesRmyc1Vul52/IhC3XbQFcCwJZbkmrDWB6h2OVcnXawB
+         Kaq0RkkcKgrt4NnjF40q1lENY9PgzVHlrD5mAg6Z2t5JRyHOpBej33u5uWIQhmHqL1pF
+         OQc67g47GZ96B15ivJMGhTa8tA6Z0uGz3z+ydLNNYvyua5zSCgVCMdh9dLgmY5jBxx6I
+         fdljdSb6I3U+pgAE4xsVLwe9Kh12TxI8c2o50gE2UhRpPMc2hXNKt3Kv9FTFFY0EaJd6
+         +cGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tOWy8KhOizbd2Dn5a2Cj2vcBNaHIiB2CBvkXn3Ip+EE=;
-        b=O7TYsyAIwrS71yf6ffnJdcQ9jgidZGlEUDzJV3dxzEhioolWRjqVtf/OCbJH2xtlSR
-         r9UbHZ6OXCHuigAaEmIlmgO8im7RBBr0Wxw10vr3bwT6G+Wfj5uqe3qPOPm3JHjm71bW
-         MK4IB912SuxDxBfJCtUyZ/3/VhXpTSFvB5Oq3MhsasxqsAvJcPQkkJ38EwhMfAODZR2Q
-         Rmrz7Qkj6wOes3zgxILQ+lkGePH10EF01MwqrEcJP6CV/RNtQbzGAD+H9lfCjOxjrp/F
-         kr1ZAhLUfVnue9dgvCX1pijRaRmvEvjoC4Ka/yxt9OErAz/UpcQc0SyZX8iddYVCZAtG
-         sVqw==
-X-Gm-Message-State: AOAM5318T3Nud6qVRGJFZBFfGJjlu+KakXXdiQCCcBo0hWYD/FoB4rOX
-        mk+ucF2vWYz5nJCgC6zC1lHwi0wr6BsKXqN7Gt+h/g==
-X-Google-Smtp-Source: ABdhPJwnBeA2ec/2H8aOEf+fFHqLpYaEfN6ZYygIV52IDKJSjBiTX+tgp41wMMOPpYRMXHYpQjb+5rAxM50iiA1LgAg=
-X-Received: by 2002:a05:6e02:42:: with SMTP id i2mr582043ilr.68.1610513177471;
- Tue, 12 Jan 2021 20:46:17 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wsH511uVTx8En12N2xkRYY/EWxwzRWT77TKtD0W9zkg=;
+        b=R6JHdDZw/eVaU9UXihNj26TrF14xpt5oNuU2BbLLRPIuCOogAFA7zS2P19/nc20pLn
+         j87QW7Vpc9+Mo5VBXJR6F57+AO4poM+jaRJJTutAsWWMBuRdy4qtSEplZGck5VwNOdGk
+         qXMfizySTlorA4eKxYKLqWwqMFPZsJBFkTXI/A/Z29pPvIBa0QmVw1AMno9E3UTxzjDZ
+         lHgZiUvYvcAyWJ54ZvZEAUeypf4grePBzoBRCOLXUuOzqVFr9SF46ndhhioJf8SdmD/x
+         QtyAiQtpJCYXOSkJd2aZgK9XWPJwXf1TCsFUF661UgUWaRRXsfzLLGVnEZAjeC5oxgXt
+         GcjQ==
+X-Gm-Message-State: AOAM531jC1ySBvwkjuuZquHSqJ9T01B7hRA9TsCEMSAx0/nrRWvdRpe8
+        VASAr2PhYBo90EaDhZiX57U=
+X-Google-Smtp-Source: ABdhPJyI66w3akbSvDIGrnXliV0dgKl1F16PHaZriZhZPtI7msewPjn1vOreijeTOlGX/364MbTrvQ==
+X-Received: by 2002:a17:902:426:b029:db:65c4:dbf7 with SMTP id 35-20020a1709020426b02900db65c4dbf7mr483076ple.3.1610513192383;
+        Tue, 12 Jan 2021 20:46:32 -0800 (PST)
+Received: from [10.230.29.29] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id w90sm737242pjw.10.2021.01.12.20.46.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jan 2021 20:46:31 -0800 (PST)
+Subject: Re: [PATCH V2 0/2] Broadcom's PMB (Power Management Bus) support
+To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        devicetree@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+References: <20201214180743.14584-1-zajec5@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <b3836eff-ea33-1779-5e33-a569ae2d38e8@gmail.com>
+Date:   Tue, 12 Jan 2021 20:46:28 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210111182655.12159-1-alobakin@pm.me> <d4f4b6ba-fb3b-d873-23b2-4b5ba9cf4db8@gmail.com>
- <20210112110802.3914-1-alobakin@pm.me> <CANn89iKEc_8_ySqV+KrbheTDKRL4Ws6JUKYeKXfogJNhfd+pGQ@mail.gmail.com>
- <20210112170242.414b8664@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210112170242.414b8664@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Wed, 13 Jan 2021 05:46:05 +0100
-Message-ID: <CANn89i+ppTAPYwQ2mH5cZtcMqanFU8hXzD4szdygrjOBewPb+Q@mail.gmail.com>
-Subject: Re: [PATCH net-next 0/5] skbuff: introduce skbuff_heads bulking and reusing
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Edward Cree <ecree@solarflare.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201214180743.14584-1-zajec5@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 2:02 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Tue, 12 Jan 2021 13:23:16 +0100 Eric Dumazet wrote:
-> > On Tue, Jan 12, 2021 at 12:08 PM Alexander Lobakin <alobakin@pm.me> wrote:
-> > >
-> > > From: Edward Cree <ecree.xilinx@gmail.com>
-> > > Date: Tue, 12 Jan 2021 09:54:04 +0000
-> > >
-> > > > Without wishing to weigh in on whether this caching is a good idea...
-> > >
-> > > Well, we already have a cache to bulk flush "consumed" skbs, although
-> > > kmem_cache_free() is generally lighter than kmem_cache_alloc(), and
-> > > a page frag cache to allocate skb->head that is also bulking the
-> > > operations, since it contains a (compound) page with the size of
-> > > min(SZ_32K, PAGE_SIZE).
-> > > If they wouldn't give any visible boosts, I think they wouldn't hit
-> > > mainline.
-> > >
-> > > > Wouldn't it be simpler, rather than having two separate "alloc" and "flush"
-> > > >  caches, to have a single larger cache, such that whenever it becomes full
-> > > >  we bulk flush the top half, and when it's empty we bulk alloc the bottom
-> > > >  half?  That should mean fewer branches, fewer instructions etc. than
-> > > >  having to decide which cache to act upon every time.
-> > >
-> > > I though about a unified cache, but couldn't decide whether to flush
-> > > or to allocate heads and how much to process. Your suggestion answers
-> > > these questions and generally seems great. I'll try that one, thanks!
-> >
-> > The thing is : kmalloc() is supposed to have batches already, and nice
-> > per-cpu caches.
-> >
-> > This looks like an mm issue, are we sure we want to get over it ?
-> >
-> > I would like a full analysis of why SLAB/SLUB does not work well for
-> > your test workload.
->
-> +1, it does feel like we're getting into mm territory
 
-I read the existing code, and with Edward Cree idea of reusing the
-existing cache (storage of pointers),
-ths now all makes sense, since there will be not much added code (and
-new storage of 64 pointers)
 
-The remaining issue is to make sure KASAN will still work, we need
-this to detect old and new bugs.
+On 12/14/2020 10:07 AM, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> PMB is a hardware block used for powering SoC devices like PCIe, USB,
+> SATA. Initially I planned to treat it as a reset controller and Philipp
+> pointed out in review that PMB driver should use a power subsystem.
+> 
+> This is my refactored support.
+> 
+> ***
+> 
+> Please note one difference when compared to the initial reset attempt.
+> 
+> As I store info about SoC devices in the driver now, I had to put
+> support for multiple buses there. That's required to avoid things like:
+> 
+> compatible = "brcm,bcm4908-pmb-no-1";
+> compatible = "brcm,bcm4908-pmb-no-2";
+> 
+> So now a single "reg" covers bigger buses (e.g. 0x40) in size, see:
+> 
+> reg = <0x802800e0 0x40>;
+> 
+> Other SoCs my use something like:
+> 
+> reg = <0x802800e0 0x20>;
+> reg = <0x802800e0 0x60>;
+> 
+> ***
+> 
+> AFAIU this should go through Florian's tree. I based in on top of the
+> soc-arm64/next.
+> 
+> V2: Use drivers/soc/bcm/bcm63xx/ and add Kconfig help message
 
-Thanks !
+Series applied to drivers/next, thanks!
+-- 
+Florian
