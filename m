@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEF92F496B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:10:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B35912F497E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:10:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727788AbhAMLBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:01:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39174 "EHLO mail.kernel.org"
+        id S1727285AbhAMLCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:02:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727773AbhAMLBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:01:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96CDA238E7;
-        Wed, 13 Jan 2021 10:59:30 +0000 (UTC)
+        id S1727481AbhAMLAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 06:00:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE80D233F8;
+        Wed, 13 Jan 2021 10:59:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1610535570;
-        bh=DQDknHPOnBWjCkPDysFt7tqeQlGBl/GidYLvIZ+e9d0=;
+        bh=0KUSOcYdlFDQOmEbTyJ1Jg7PLXqu+3897CFhO7LpT3g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VQIhycGI01SKo48NJyvI5US3PuKM/rO7pTDs4hE1KGGCZ7Uui9LEM+oTzPjsolSov
-         hqaR3kfCQBWQEmTaMLfeyonbag7+qJxn3tJnJPvF2Wq/R1P1h7saMl53vYU1XWbeiQ
-         AeMM4Pn93FAjkVuZEHZ2RzZ+RL+a5/lCB+i+ntBgB+m/qzGoB4fd7Pa44iPxkTjA1X
-         BenpHLZU1CN/VPPEiaPR2YO0MCh2d1vqth6dPhJWDGy98Ll/ElhuypEvaMGi/wM14m
-         CPr9OPjP7MLkKWsQGASf7ytsMYyXrQrN1dkqus8atDq0KONN+e0VH6+h0h+PP9YRMA
-         9Ayj/Epxmi2Uw==
+        b=tRnAZnuxpXzHOLJkYUtl6MOGaQ8LHbpMYCuC91SnWFn6xIyGRnUx+u6L4WYzw0BRJ
+         NR0PXtozoxbs4ynR2qNB9QlXmVwkbcqUF28sy74KnIxzStojzdJsvsN6BnY0Mj+LhD
+         3E9ANQ9J/8Ou5s8AICWNU5rStDTytv7G7uxlGc4VA2vueI42V4z+TVgAQffpb0t6Ky
+         igJY4S3vsJWy00YV6s+8D9JCw0eIWZmS1FvtJqknStfUySab0Jy7CEprg1TDdxRgRq
+         gPyXiP4wuObU/5CqK9H1CvyhAVgZSRF9ZAm6f3+prifRa64QpNxdo7haMiaXYpBN2d
+         ABqjzBLTWF1tg==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kzds7-00DpG7-BJ; Wed, 13 Jan 2021 11:59:27 +0100
+        id 1kzds7-00DpGA-CE; Wed, 13 Jan 2021 11:59:27 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH 08/24] MAINTAINERS: update voltage-divider.yaml reference
-Date:   Wed, 13 Jan 2021 11:59:09 +0100
-Message-Id: <8f0eb68c83148410a7efdf406b88c8e143c841ac.1610535349.git.mchehab+huawei@kernel.org>
+Subject: [PATCH 09/24] MAINTAINERS: update mtk-sd.yaml reference
+Date:   Wed, 13 Jan 2021 11:59:10 +0100
+Message-Id: <4f691aef6e2f20d4189413c62b17e780e07cc5f7.1610535349.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1610535349.git.mchehab+huawei@kernel.org>
 References: <cover.1610535349.git.mchehab+huawei@kernel.org>
@@ -43,9 +43,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changeset 6f633bc91ac1 ("dt-bindings:iio:afe:voltage-divider: txt to yaml conversion")
-renamed: Documentation/devicetree/bindings/iio/afe/voltage-divider.txt
-to: Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml.
+Changeset c626695ecd8b ("dt-bindings: mmc: Convert mtk-sd to json-schema")
+renamed: Documentation/devicetree/bindings/mmc/mtk-sd.txt
+to: Documentation/devicetree/bindings/mmc/mtk-sd.yaml.
 
 Update its cross-reference accordingly.
 
@@ -55,18 +55,18 @@ Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index a699a221a48b..6083de743261 100644
+index 6083de743261..a35f1bb9ae44 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -8722,7 +8722,7 @@ L:	linux-iio@vger.kernel.org
+@@ -11272,7 +11272,7 @@ F:	drivers/media/platform/mtk-vpu/
+ MEDIATEK MMC/SD/SDIO DRIVER
+ M:	Chaotian Jing <chaotian.jing@mediatek.com>
  S:	Maintained
- F:	Documentation/devicetree/bindings/iio/afe/current-sense-amplifier.yaml
- F:	Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
--F:	Documentation/devicetree/bindings/iio/afe/voltage-divider.txt
-+F:	Documentation/devicetree/bindings/iio/afe/voltage-divider.yaml
- F:	drivers/iio/afe/iio-rescale.c
+-F:	Documentation/devicetree/bindings/mmc/mtk-sd.txt
++F:	Documentation/devicetree/bindings/mmc/mtk-sd.yaml
+ F:	drivers/mmc/host/mtk-sd.c
  
- IKANOS/ADI EAGLE ADSL USB DRIVER
+ MEDIATEK MT76 WIRELESS LAN DRIVER
 -- 
 2.29.2
 
