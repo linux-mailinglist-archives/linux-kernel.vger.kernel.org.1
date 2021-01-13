@@ -2,92 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1C42F4BEB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 576512F4BE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbhAMM6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 07:58:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26059 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726289AbhAMM6v (ORCPT
+        id S1726834AbhAMM6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 07:58:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726262AbhAMM6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 07:58:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610542645;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0lgVRo6CQ9NzWlGI1TykX+pxELJPZRPvZtRz/475DZc=;
-        b=OSmSg5lgR+tinFh5kFR7XJo3TGfreRBMGMftAlplKsfA4u9vQXjDL47gPj/pZA+SaqW0u5
-        06YZjkoA5ty75SZztuPdDli1ls1izkLSPpMzq/WmMdahaZsTEoS/k65RNPvZT5OYcOPwe5
-        eJWGjk25/JFS7uEKrg2Y3oAcW08iBf4=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-4-wONHlRJyPKW2zeAsRnEuxw-1; Wed, 13 Jan 2021 07:54:56 -0500
-X-MC-Unique: wONHlRJyPKW2zeAsRnEuxw-1
-Received: by mail-ej1-f69.google.com with SMTP id j14so688485eja.15
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 04:54:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0lgVRo6CQ9NzWlGI1TykX+pxELJPZRPvZtRz/475DZc=;
-        b=oPPyjOyWrN8edD9mdiZfezUqpCHv6R0796vB/AXnsBv4XowZfnMQdaZxejk9lvNDIp
-         NAWZ2qgBtq+ExbPRAkcRYQQh/DTMBGduPblSdwsbDb4W4U36ZxlWYMGSdXv95hGfg7tq
-         Kg1G6IGLaEKqwbZHpwlb7MnV1NiNv+XJwetkx67NKvJD8qfl+knQ0hvidjB32zqnJlPY
-         ytiYHut9Mu4T0avjjmTsaMQVzYrCRRZZlPoJk67DwP6YasstXdY7CCHF0Td1UQTSP7sv
-         kufuGAtrjYX7kYM0myfDlghJOi+w9x/qvzHfNy5h+YyDml94z/zU+Xq4ahsJUG3TdS9g
-         y10Q==
-X-Gm-Message-State: AOAM531VsPxL8Ag+GqGQbNlIZAdT05VFchO084RfH7/xDDqDCBOwnifW
-        QjOzfAkgOU4bgMLP7mc4Mln8L3zIQUvBRocCqof5oFU4HPPMlJVI80NxdmVx/xA17gldM0fqYWT
-        VItE5py+f7YfC04X5WZh0ONn+
-X-Received: by 2002:a17:906:8051:: with SMTP id x17mr1399612ejw.430.1610542495000;
-        Wed, 13 Jan 2021 04:54:55 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzBAbgplulFKo9eP75wGHcb584+trku5uwL0gCASCjo/ZigzcaALTL85slMCjEGciyLubpwAA==
-X-Received: by 2002:a17:906:8051:: with SMTP id x17mr1399592ejw.430.1610542494870;
-        Wed, 13 Jan 2021 04:54:54 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id k16sm677031ejd.78.2021.01.13.04.54.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jan 2021 04:54:53 -0800 (PST)
-Subject: Re: [PATCH 1/2] Enumerate AVX Vector Neural Network instructions
-To:     Yang Zhong <yang.zhong@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, tony.luck@intel.com, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, kyung.min.park@intel.com, x86@kernel.org
-References: <20210105004909.42000-1-yang.zhong@intel.com>
- <20210105004909.42000-2-yang.zhong@intel.com>
- <8fa46290-28d8-5f61-1ce4-8e83bf911106@redhat.com>
- <20210105121456.GE28649@zn.tnic> <20210112021321.GA9922@yangzhon-Virtual>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <be47fd98-9d76-a35f-3ee2-7de2144dbdd6@redhat.com>
-Date:   Wed, 13 Jan 2021 13:54:52 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Wed, 13 Jan 2021 07:58:01 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398E5C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 04:57:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8W+YeZCRHcgbsYU4MRilZbbZCOazPjouIMGS7e+DlSg=; b=CXxXBMBwjMrPcvbKXw9qj+Y013
+        3o/bKQmMdi6oApNqXGFrPPTLJuq1trU+edOVn2owS4/yYaBB797T7rEibLGPb5wybmpPZZ1bq76Zu
+        RaAokAIO1V+kbxfx1oEEs1ivOFpxeVQNGDOFBIZIyk5NR0oHMRyHWKVfxat1BMCnQ4JgCG9hhEO6g
+        8FY4iszlgKKnTfp+9wcy5Zo2Ql3r1EUCccwkgfSASvD+WhbeLO/V7q4/h/QJNvYYPyEEqAXEGoOWG
+        tBKkvJDFA0R1aWzxsViOBzz795I4OSeR8YhTn7XVQbKTn1/YpTaB57n1FjqrZgTf+6HVRaIUsLmiG
+        +siVW3XA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1kzfgS-006GlI-R6; Wed, 13 Jan 2021 12:56:04 +0000
+Date:   Wed, 13 Jan 2021 12:55:32 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
+Message-ID: <20210113125532.GN35215@casper.infradead.org>
+References: <CAHk-=wj5=1DKbQut1-21EwQbMSghNL3KOSd82rNrBhuG9+eekA@mail.gmail.com>
+ <X/prosulFrEoNnoF@redhat.com>
+ <CAHk-=wjZTMsv0_GOyQpLRk_5U1r5W8e21f8sV0jykK=z47hjGQ@mail.gmail.com>
+ <CAHk-=wgi31FKc9AL6m87+pb2B79V2g_QjdhmtJNW8Pnq2ERQ-Q@mail.gmail.com>
+ <45806a5a-65c2-67ce-fc92-dc8c2144d766@nvidia.com>
+ <CAHk-=wipa-9wEuWHBjourmXAVHdeqDa59UxW6ZJ_Oqg6-Dwvdw@mail.gmail.com>
+ <CAHk-=wje9r3fREBdZcOu=NihGczBtkqkhXRPDhY-ZkNVv=thiQ@mail.gmail.com>
+ <20210113021619.GL35215@casper.infradead.org>
+ <CAHk-=wjWMieNV3nAJgoG5prEHBEcOZiREmLUr499tA9NMttEqQ@mail.gmail.com>
+ <20210113123232.62vv6xsrpitne7hc@box>
 MIME-Version: 1.0
-In-Reply-To: <20210112021321.GA9922@yangzhon-Virtual>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113123232.62vv6xsrpitne7hc@box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>> Boris, is it possible to have a topic branch for this patch?
->>
->> Just take it through your tree pls.
->>
->> Acked-by: Borislav Petkov <bp@suse.de>
->>
->    
->    Paolo, Boris has acked this kernel patch, and if i need send new patchset to add this
->    acked-by info ? or kvm tree will directly pull this patchset? thanks.
+On Wed, Jan 13, 2021 at 03:32:32PM +0300, Kirill A. Shutemov wrote:
+> On Tue, Jan 12, 2021 at 07:31:07PM -0800, Linus Torvalds wrote:
+> > On Tue, Jan 12, 2021 at 6:16 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > >
+> > > The thing about the speculative page cache references is that they can
+> > > temporarily bump a refcount on a page which _used_ to be in the page
+> > > cache and has now been reallocated as some other kind of page.
+> > 
+> > Oh, and thinking about this made me think we might actually have a
+> > serious bug here, and it has nothing what-so-ever to do with COW, GUP,
+> > or even the page count itself.
+> > 
+> > It's unlikely enough that I think it's mostly theoretical, but tell me
+> > I'm wrong.
+> > 
+> > PLEASE tell me I'm wrong:
+> > 
+> > CPU1 does page_cache_get_speculative under RCU lock
+> > 
+> > CPU2 frees and re-uses the page
+> > 
+> >     CPU1                CPU2
+> >     ----                ----
+> > 
+> >     page = xas_load(&xas);
+> >     if (!page_cache_get_speculative(page))
+> >             goto repeat;
+> >     .. succeeds ..
+> > 
+> >                         remove page from XA
+> >                         release page
+> >                         reuse for something else
+> 
+> How can it be reused if CPU1 hold reference to it?
 
-I'll take care of it shortly.
+Yes, Linus mis-stated it:
 
-Paolo
+    page = xas_load(&xas);
+                        remove page from XA
+                        release page
+                        reuse for something else
+    if (!page_cache_get_speculative(page))
+            goto repeat;
+    if (unlikely(page != xas_reload(&xas))) {
+            put_page(page);
 
+... but as David pointed out, I fixed this in e320d3012d25
