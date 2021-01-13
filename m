@@ -2,99 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC3D2F54DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:20:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C72AB2F54E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:28:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729307AbhAMWTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 17:19:21 -0500
-Received: from mail-wr1-f43.google.com ([209.85.221.43]:40609 "EHLO
-        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727297AbhAMWOb (ORCPT
+        id S1726404AbhAMWYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 17:24:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725773AbhAMWVB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 17:14:31 -0500
-Received: by mail-wr1-f43.google.com with SMTP id 91so3752282wrj.7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:13:29 -0800 (PST)
+        Wed, 13 Jan 2021 17:21:01 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFFDFC061575;
+        Wed, 13 Jan 2021 14:20:20 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id d13so3738742wrc.13;
+        Wed, 13 Jan 2021 14:20:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=htUNH449lQEaPPKQp05wHHqDqIW6Q/fjdyTJ72cTNUw=;
+        b=ZEVJd2QwjOYf0/m+TM3MblNozCNY9EGJhDUEpWok48YHh8zhzbRLpVI6q/66EXKkOz
+         TTcPSqXwVQ2Yx0wM61+pOdLhbNJ3kz/DwOR5WJgvt6Sa7N4NW/y1Z1Xg82mekj7S84ia
+         l2oXbUAlUB2lnN2ZV7Bn6ptyNXEWB0vWbfLoRpO48muZ51CEGRbynlwGTeWovS9G6I6r
+         kuZ3WdrVv6kb1p76wKddg95jAjn6OUMep7XT77wqlipyofaZKGwnGhkGPUYUaqv/Aihw
+         lcfr9k4NBM55xZmpCWslZhGbmG2ztlDq8y3U8ibUBtVUmO/2PV4NNXh9agdTj8Mg6Lis
+         Ksqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=VK/iM6R27LRQ/Qm/8qm5HUt4QdKjqmK+S3xgybZNYKk=;
-        b=oZ21GT+y+r5Jo07k5WPdgC8S859Rbn91fDMmQhKkWmt9azJ3a8eatvKf1nolTSP68H
-         +d0RH35VuD5uRbQpx93C42b7P5T9tGF9B3Dg0jHDmg+uTheZKZ+BvqEhwzRhw5Ou8Qsi
-         75ngOqkd51qxrrNhgEmdPI0qjktpMu22rNMOVMko+0m5nnMZbHelecacapiqQO63tAw+
-         PkONROlil2sds4lEmops0FisuTVFGpjl/Im6/GC3pa/oa46xtj28VceNhayXKoPUFsQB
-         MOPqmk6sfsa3E7X9DrSXACs3WcYfbEAMkOjbAG20UMAHe9k/cE67O+Fed8PJRNU9nmyv
-         +cPg==
-X-Gm-Message-State: AOAM531OTNxtam238TMw+KHTQHiSWB+Jy9Mm0CEMpAA/UJ9kebWbKYJ3
-        xBs0A1vyH2d7jYS1/MDJTKE=
-X-Google-Smtp-Source: ABdhPJwEyYL3weXHM+uwbX5BM3Ogp/SoLHVZ6sVZ0fmQP+g4Ys36zOKb4ergNxlvtvMYnE10wvC8Gg==
-X-Received: by 2002:adf:ba47:: with SMTP id t7mr4617979wrg.285.1610575983501;
-        Wed, 13 Jan 2021 14:13:03 -0800 (PST)
-Received: from ?IPv6:2601:647:4802:9070:e70c:620a:4d8a:b988? ([2601:647:4802:9070:e70c:620a:4d8a:b988])
-        by smtp.gmail.com with ESMTPSA id s25sm5764685wrs.49.2021.01.13.14.13.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jan 2021 14:13:03 -0800 (PST)
-Subject: Re: [PATCH] nvme: reject the ns when the block size is smaller than a
- sector
-To:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Li Feng <fengli@smartx.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     "lifeng1519@gmail.com" <lifeng1519@gmail.com>
-References: <20210113160621.98615-1-fengli@smartx.com>
- <SN4PR0401MB35985C08E5FFCDF0F5817A9D9BA90@SN4PR0401MB3598.namprd04.prod.outlook.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <87698545-de26-c0ca-01e9-4dc2ddcacc80@grimberg.me>
-Date:   Wed, 13 Jan 2021 14:12:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=htUNH449lQEaPPKQp05wHHqDqIW6Q/fjdyTJ72cTNUw=;
+        b=GiQeHdGD3hxrpFdgD+NCwRpjh0H0mljnoM+/+rJHsLaktokAEtGkbJExx5tIK3POLB
+         Nqr2rDALVzrNSwTcrzekNKKxLB4prO/Sv7Pff2cS1UYvZOV6RZPc2nHAaUrzJye42HtS
+         ECmvOss8/D+m1BJymx3bxwF84S5OUf0vRkv/iYP8YyUuLeoH8BU27OZtIsEvtQIvBUw5
+         tH2yYqpPpmqlPFRPVKktW9/6aSyF//uzH2vszvOFSqs7g+xb/A/mqCbmD2jpM3UIZ0yP
+         +gpMP8I9Kfmj1b0XfJcs6ohe/siPQVh930nEASBxoiuFaTInLIDhkrOUwL1xYceplyke
+         H6eg==
+X-Gm-Message-State: AOAM531hzK/k9RTtYJP4W4+k2Ko5Cbd4lwOTTdzLPLLO3I2UqRc6fhCt
+        /JTGgMvElF8NhnNM+95mSeb2tgbymMg=
+X-Google-Smtp-Source: ABdhPJwIEeN0y9iSEVC1cPKJkSNKUAswPh/8btjeeSeOqmyZoHGdXxslQQGAVelAfOANpYTUYZtLxg==
+X-Received: by 2002:adf:814f:: with SMTP id 73mr674491wrm.368.1610576419436;
+        Wed, 13 Jan 2021 14:20:19 -0800 (PST)
+Received: from localhost.localdomain (2a01cb0008bd27000d88c7723353ad1a.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:d88:c772:3353:ad1a])
+        by smtp.gmail.com with ESMTPSA id t1sm5594929wro.27.2021.01.13.14.20.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 14:20:18 -0800 (PST)
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     broonie@kernel.org, jagan@amarulasolutions.com,
+        lgirdwood@gmail.com, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Adrien Grassein <adrien.grassein@gmail.com>
+Subject: [PATCH v4 0/6] Fix issues on pf8x00 driver
+Date:   Wed, 13 Jan 2021 23:20:10 +0100
+Message-Id: <20210113222016.1915993-1-adrien.grassein@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <SN4PR0401MB35985C08E5FFCDF0F5817A9D9BA90@SN4PR0401MB3598.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
->> The nvme spec(1.4a, figure 248) says:
->> "A value smaller than 9 (i.e., 512 bytes) is not supported."
->>
->> Signed-off-by: Li Feng <fengli@smartx.com>
->> ---
->>   drivers/nvme/host/core.c | 6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
->> index f320273fc672..1f02e6e49a05 100644
->> --- a/drivers/nvme/host/core.c
->> +++ b/drivers/nvme/host/core.c
->> @@ -2161,6 +2161,12 @@ static int nvme_update_ns_info(struct nvme_ns *ns, struct nvme_id_ns *id)
->>   
->>   	blk_mq_freeze_queue(ns->disk->queue);
->>   	ns->lba_shift = id->lbaf[lbaf].ds;
->> +	if (ns->lba_shift < 9) {
->> +		pr_warn("%s: bad lba_shift(%d)\n", ns->disk->disk_name, ns->lba_shift);
->> +		ret = -1;
+this patch set aims is to fix some issues contains in the pf8x00 driver.
+Some issues are documentation ones, some others are in code.
 
-Meaningful errno would be useful. Also better to use dev_warn
+These issues where found while developing another version of the same
+driver. I prefer to share with you the patch for it.
 
->> +		goto out_unfreeze;
->> +	}
->> +
->>   	nvme_set_queue_limits(ns->ctrl, ns->queue);
->>   
->>   	if (ns->head->ids.csi == NVME_CSI_ZNS) {
->>
-> 
-> 
-> But this only catches a physical block size < 512 for NVMe, not any other block device.
-> 
-> Please fix it for the general case in blk_queue_physical_block_size().
+I do these patches on the master branch of the linux-next repository.
 
-We actually call that later and would probably be better to check here..
+1: there is a missing documentation when we build the driver as a
+module.
+
+2: nxp,phase-shift documentation was not optimal.
+
+3: nxp,ilim-ma is useless since another property does (nearly) the same.
+
+4: Same than 4, in driver code.
+
+5: It's better to use a linear_range to describe the voltage of bucks.
+
+6: Fix several mistakes in the handle of nxp,phase-shift property.
+
+Changes introduced in v2:
+Some patches were mixed (and did not compile separately);
+Add path 7 for the handle of nxp,phase-shift property.
+
+Changes introduced in v3:
+Remove useless patch 0;
+Do requested fixes in patches.
+
+Changes introduced in v4:
+Mark nxp,ilim-ma as deprecated since it was already present in a kernel
+version.
+
+Thanks,
+
+Adrien Grassein (6):
+  regulator: pf8x00: add a doc for the module
+  regulator: dt-bindings: pf8x00: fix nxp,phase-shift doc
+  regulator: dt-bindings: pf8x00: mark nxp,ilim-ma property as
+    deprecated
+  regulator: pf8x00: mark nxp,ilim-ma property as deprecated
+  regulator: pf8x00: use linear range for buck 1-6
+  regulator: pf8x00: fix nxp,phase-shift
+
+ .../regulator/nxp,pf8x00-regulator.yaml       |  16 +-
+ drivers/regulator/Kconfig                     |   4 +
+ drivers/regulator/pf8x00-regulator.c          | 203 +++++++++++-------
+ 3 files changed, 135 insertions(+), 88 deletions(-)
+
+-- 
+2.25.1
+
