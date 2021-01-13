@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CAC2F504C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3961A2F5050
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:47:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727746AbhAMQpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 11:45:45 -0500
-Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:53537 "EHLO
-        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727533AbhAMQpo (ORCPT
+        id S1727910AbhAMQqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 11:46:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726010AbhAMQqp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 11:45:44 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id zjGVkKKlBAiIczjGYkeIiH; Wed, 13 Jan 2021 17:45:02 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1610556302; bh=OGsVjFozKqnOMVXft0rDgO45msjbJ73GWAviZyXZlbA=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=KJbxeHXUAbY0kec1Ai+ooACscx2Izhyti4/Xk0WUExd5Opjj3UgfYFLffZ4IJtQR5
-         5VnUz9pJHHDCtKhnZxE2FzkqhNX10Bxcc1uvMpKVpAPsbwOTmJH4cXCyrudePXHuhX
-         pPe//GpSONFHcPeiUIB7ugUXlFmYDtzRhdA7e/DExVJpfynX/Gk9OCVoN8xGsG6Jly
-         XbVvjFGBSGqc4AYprodsPaZVpvaHwXbAbYBvxX+dan6TTcvbdfzU5C/cPUZdEpRUvF
-         phn+y2gGD8yi1iiYahSivGncRx3JX3jz1yvAyFngMf41U62my8g4qcY+vdZenK4GZ0
-         YvwfQSo1V4YXw==
-Subject: Re: [PATCH v4 0/2] Add base layer priority id control
-To:     Dikshita Agarwal <dikshita@codeaurora.org>,
-        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org
-References: <1609738914-22769-1-git-send-email-dikshita@codeaurora.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <ef05e9fe-355d-43d5-7b14-9ea89cfef907@xs4all.nl>
-Date:   Wed, 13 Jan 2021 17:44:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 13 Jan 2021 11:46:45 -0500
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF7AFC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:46:04 -0800 (PST)
+Received: by mail-qv1-xf30.google.com with SMTP id et9so1028978qvb.10
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:46:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CMjUDnqe142kyL4JCtMxq/r9cprLrjt9yzIWhPD32rs=;
+        b=ZCXXS7+IQX+b5nnhGPIxaiG4vxWmLBUnCaGXoia/IrlW+pr8JOybw/OiHhirlzQmi9
+         1cGmQBedk65vzPaQc7HsJA8sZXvsBMTTjfcZ7HYwobg4U2iZeQQNdNrK9lwSuIqzP+/v
+         7o4kRmmI5rBkjwk2xj6ggane7SBrtqSPqtUVUvFylKzHB20aK6Vt5T1fSHRKboJdd5av
+         y86XJdr3bNMTCh4AdrCBGxPHJ/icQoJDUSks2+sk0/PW4jmS/AYgzj2sTB6SN0p/c08t
+         01k9FoxPcW3uL74WjstRU0BHl1uvtlIDdFJHtalHU1FIS620Ie+sZ7kN8TGK6CyU8Mpx
+         l2Lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CMjUDnqe142kyL4JCtMxq/r9cprLrjt9yzIWhPD32rs=;
+        b=rNJFN5S2DPJNF3tk0aYN2iwIK90oCNIviw/Gb+qV7A/6n4R3s0Tobwf02yZm7AOKiM
+         UUfqo0EE1jVHfW00T0IF/XhPDLu7y9bZZu2Y4busfC/tvnoiVj1EhnYGyjrz0OuGy2r3
+         qCoP+mdXz6mKOViYoM+FB/sh8nk+6Wps+fsHnkL0hCZJBboWsSMi+7+IjMqzmsCqLmt7
+         ZD97r5lzlC+TKTMEONda5dH7u2p/PiEWYJfck2n/7PLZpFB/ls/3sWgikgDAwtuEGMuY
+         9wI0vXEYuXSueSUF6su7Yw7sLZ8Gt/n3tvKskAJKwX13Y/xlMWnMIrLDd9L9zfPuSgcZ
+         jl8w==
+X-Gm-Message-State: AOAM532HhlkN7P5xiV6y4t2j3jTgcUp9iROqgXoi5NnE+WIePNpQ7k7d
+        lhMfzL7tigOmr7QRz1zZ2DCuJk0Y0HgAyntEoUuf8A==
+X-Google-Smtp-Source: ABdhPJxzxw8dQlb/DvTgDHgtWbnIpOb5DgpvDx26bl6WZOMm+powQlw+Di/sx50x4LksnyBFB4e9ftV1RG4WgzeRw/4=
+X-Received: by 2002:a0c:e90a:: with SMTP id a10mr3297670qvo.38.1610556363951;
+ Wed, 13 Jan 2021 08:46:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1609738914-22769-1-git-send-email-dikshita@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfGTHDsmIdoz91f7BiWTfdovwEmXJNMyRw6fE2w6PfzFdkyFbYSsUT2bc0W8vQigim8mZQbOS3ZD+85fvNbIGK4uVGFaxrYYaG8FU6b+/xnbbtOn+0e+I
- 3woEV5DguH/+Ka16szyqqiBoLEGVHflPr+2YtrDS4/b/XpaQ9KewEENQ+fB3O8nmuIE/vYPcOy+E8f9HCrJ69N8LHWSYgs+MQ7nWYv8I6ZEHBTfYdjpfuWr+
- 9oqYtK4QRFirh/2Ff08Ru9vF3ah2tbdp/SrkGIfmC7WupkoNPK/Ttxt/vCvglF9I8jERETwFpufwvaCkrNddxsoYMDNdlAWmDfO5DaJ++6U2FvdGV0tZQ/KM
- Z0KRGBA7l+7HIjO7N/XyhDOYS7pWD+ZgZ3SIrkGkz+opCEI5Ct0=
+References: <cover.1610554432.git.andreyknvl@google.com> <0afed913e43017575794de0777b15ef6b2bdd486.1610554432.git.andreyknvl@google.com>
+ <CANpmjNMZHiwKDTyBdHzHB6CexJTfN9TUjk=q6zmj_nebtq9=mg@mail.gmail.com>
+In-Reply-To: <CANpmjNMZHiwKDTyBdHzHB6CexJTfN9TUjk=q6zmj_nebtq9=mg@mail.gmail.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Wed, 13 Jan 2021 17:45:52 +0100
+Message-ID: <CAG_fn=Ur17=N-Unsi4CdSnx-Qnfjuh1d__zKOHPUAC-3RLHV3w@mail.gmail.com>
+Subject: Re: [PATCH v2 04/14] kasan: add macros to simplify checking test constraints
+To:     Marco Elver <elver@google.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dikshita,
-
-On 04/01/2021 06:41, Dikshita Agarwal wrote:
-> This series adds base layer priority id control for encoder
-> and support for the same in venus driver.
-
-Posted a pull request for this series and the "Add new controls for QP and
-layer bitrate" series.
-
-Note that because the "Add encoder ctrls for long term reference" is not
-merged, the control ID for V4L2_CID_MPEG_VIDEO_BASELAYER_PRIORITY_ID changed
-and that you need to rebase the "Add encoder ctrls for long term reference"
-series accordingly.
-
-Regards,
-
-	Hans
-
-> 
-> Changes since v3:
-> - Rebased the changes on latest media tree.
-> - Addressed the comments.
-> - Added driver side implementation for new control.
-> 
-> Dikshita Agarwal (2):
->   media: v4l2-ctrl: Add base layer priority id control.
->   venus: venc : Add support for priority ID control.
-> 
->  Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst | 9 +++++++++
->  drivers/media/platform/qcom/venus/core.h                  | 2 ++
->  drivers/media/platform/qcom/venus/venc_ctrls.c            | 9 ++++++++-
->  drivers/media/v4l2-core/v4l2-ctrls.c                      | 1 +
->  include/uapi/linux/v4l2-controls.h                        | 1 +
->  5 files changed, 21 insertions(+), 1 deletion(-)
-> 
-
+On Wed, Jan 13, 2021 at 5:25 PM Marco Elver <elver@google.com> wrote:
+>
+> On Wed, 13 Jan 2021 at 17:21, Andrey Konovalov <andreyknvl@google.com> wrote:
+> >
+> > Some KASAN tests require specific kernel configs to be enabled.
+> > Instead of copy-pasting the checks for these configs add a few helper
+> > macros and use them.
+> >
+> > Link: https://linux-review.googlesource.com/id/I237484a7fddfedf4a4aae9cc61ecbcdbe85a0a63
+> > Suggested-by: Alexander Potapenko <glider@google.com>
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+>
+> Nice!
+>
+> Reviewed-by: Marco Elver <elver@google.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
