@@ -2,239 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 264C72F5151
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:45:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 847DD2F5155
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:45:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728143AbhAMRoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:44:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51222 "EHLO
+        id S1728033AbhAMRpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:45:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727794AbhAMRoD (ORCPT
+        with ESMTP id S1727903AbhAMRpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:44:03 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913C5C061575;
-        Wed, 13 Jan 2021 09:43:23 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id x18so1477597pln.6;
-        Wed, 13 Jan 2021 09:43:23 -0800 (PST)
+        Wed, 13 Jan 2021 12:45:15 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 129CDC061575;
+        Wed, 13 Jan 2021 09:44:35 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id q1so5797958ion.8;
+        Wed, 13 Jan 2021 09:44:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=quNM/VmZbP2iXS+nv6ppxsoB3J4xP4hjMZn6Cby2XQU=;
-        b=Lhncwyw+nOsiy+FmveynidV/PsrH9kGB4XpE67L/tppudFvZHU+sprlRKoptX3NWQ+
-         bH5CYKOaxCpkR8ggt0dF5pZ77jjbQfXbrIGBGbyoHxK05T22ebO38SlJzS3kEfrwd5dc
-         pscL6q8ZcV5UIxeEyBiJSxeNTAWXEGrwAzQZJtOTgncRIhPj1tk19rdpDSYrBUi8kTlK
-         Y/tMFzlSJpgABVs5klGh6qRBvOZNGCQoo7hPVzpqmo1qZxk5yGZiuo3GINIUSvaV+gTl
-         hulPY89vtMvk/E9lIgb04Pp2cIdFRQqAilkxYayiQydJOXmyhSLkdY8aLFwpZfS1nrRd
-         A44Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GxOtgS+Xh2c4gM900gflGCTwmZ9LNPxRPIIevu1BMTQ=;
+        b=s/uS08K1TOWmct0CItrFzvdfPNoOQ4CeK69QPLn+8OCg+m0ndwcicHhFN25oBzg4hI
+         fbixGl9R2OPq2JxeQKbGRtqDwA8fih6HYxYGLiuzeFCiVnQrnSPy3jojfqI+mWuEtZcF
+         y1arMNUfqiQUH98P20+/QvdfLE16WYzP9S29udSIjkj6vYhvtoUbx+5mcq4ILXs45esJ
+         O6wAwnoDcv5q1VY9RGXHjre5jS/hF51em0bD6UJqUE5w7stwBoskl9mDNBhJSu7Wpl32
+         GqgVnXSd+81XXnpAURO0bGH+ldEjNbYEDP4iRjNKaP5vCn65qeMaMKdGb9Ao4emNPyTd
+         2ucg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=quNM/VmZbP2iXS+nv6ppxsoB3J4xP4hjMZn6Cby2XQU=;
-        b=npHPj+ARAjFp3wHH/dHTlndzeiOcABL7VSdG6yIXUAKSwncFfZfSVsZWqG+3sP1uFY
-         +uHL3wZvY54KxBu/jfNZybDmocQ7BiHsKIezYVMg0D/yJpmZ8Ms/DIk7kukxYfMwSXTR
-         xrXTNl4F0zSgjQjN/8aWjhY7HIB+6LUjldnI6PC9FfGBjdPYHu86/5xZMv4+Rcxa9l4y
-         fVkdbpt1DX3aOmyQqmj4fO39VC82WVECmaiVWBjiO0RL3fJOXcpsm+K2qr8LttBW9x4L
-         dfyIMpzRtg47cCyFF1B3+CXYvHlVasGEiZIxmi6FqC8qEzA+tYjM/bTEYo59doQrJagz
-         j5Wg==
-X-Gm-Message-State: AOAM531DBd0fh59WeHerVKXVZtj5ON42zjpa5XnC4pDj6vNYrmBJnFIZ
-        IpFtsgHhCe1i56AeVkRGMIA=
-X-Google-Smtp-Source: ABdhPJxfZl3mBdXcdZDcpmAtx4e18G4GLX9j3qy4TZUMm04WE3TH/taFDbd5pA8CdCrGU/ViadD62Q==
-X-Received: by 2002:a17:90a:df13:: with SMTP id gp19mr354901pjb.235.1610559802911;
-        Wed, 13 Jan 2021 09:43:22 -0800 (PST)
-Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id s29sm3340829pgn.65.2021.01.13.09.43.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jan 2021 09:43:21 -0800 (PST)
-Subject: Re: [RFC PATCH v3 2/6] swiotlb: Add restricted DMA pool
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Claire Chang <tientzu@chromium.org>, robh+dt@kernel.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        joro@8bytes.org, will@kernel.org, frowand.list@gmail.com,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, hch@lst.de,
-        m.szyprowski@samsung.com
-Cc:     drinkcat@chromium.org, devicetree@vger.kernel.org,
-        heikki.krogerus@linux.intel.com, saravanak@google.com,
-        peterz@infradead.org, xypron.glpk@gmx.de,
-        rafael.j.wysocki@intel.com, linux-kernel@vger.kernel.org,
-        andriy.shevchenko@linux.intel.com, bgolaszewski@baylibre.com,
-        iommu@lists.linux-foundation.org, grant.likely@arm.com,
-        rdunlap@infradead.org, gregkh@linuxfoundation.org,
-        xen-devel@lists.xenproject.org, dan.j.williams@intel.com,
-        treding@nvidia.com, linuxppc-dev@lists.ozlabs.org, mingo@kernel.org
-References: <20210106034124.30560-1-tientzu@chromium.org>
- <20210106034124.30560-3-tientzu@chromium.org>
- <95ae9c1e-c1f1-5736-fe86-12ced1f648f9@gmail.com>
- <7ed51025f051f65f3dfe10a88caeb648821994b1.camel@suse.de>
- <4c4989b5-f825-7e04-ca66-038cf6b9d5e9@arm.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
- 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
- M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <9b4fe35f-a880-fcea-0591-b65406abbfa8@gmail.com>
-Date:   Wed, 13 Jan 2021 09:43:17 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GxOtgS+Xh2c4gM900gflGCTwmZ9LNPxRPIIevu1BMTQ=;
+        b=RQcdSv0wVE2+xPEtft550qx81B2oTnRi92+nsgSEeM2eQ0SItImfBw0yB7P9AYfdUE
+         Q+FoXeH91jWf43IH0mPV8Ov9cZ+TGi0y7TKEm4efV/fwLB6i1eb1fbMKk+3+yQ+5uGX+
+         DhylW6iIyhh3GdAT7qZ2Ua3t6CtlA59nBmoRY7QxjIqbOn7Fc+R/NHWmdNWdbq9TCFX1
+         5c+5+LdeLNMlWH7g0XIXT5r3w592nFzOZSnPruawc+ho+7EWv+qZX8YkrsZ1rtcZPFr+
+         LTpX6C6N8N2qzkYOn/iECsSdiwEx5qWVF0abTLfJNI3IuGL5hGqK7944y5pr9WzHXn4C
+         3TUw==
+X-Gm-Message-State: AOAM533n+8gHi0fsEtqArbOFaqwCG3Yyob1j0frCMIhEAvmTnLFjmjGx
+        92mOXeOjv92MrcHmTzvRc+0nwyi8MNoMGSD0FZo=
+X-Google-Smtp-Source: ABdhPJwcDQQVvfaGVTJJyPO9agnc0YgtInIwM7HMx4jMe26R8aVur5CsSkUR1G9z2v+HBghKr3jQXWY3zxe85jyhom8=
+X-Received: by 2002:a92:410b:: with SMTP id o11mr3483527ila.306.1610559874466;
+ Wed, 13 Jan 2021 09:44:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4c4989b5-f825-7e04-ca66-038cf6b9d5e9@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAOuPNLiUBhJdsgw9bjQxxhkeBHQFoE_vN_Na6kw3ksr89r+HOg@mail.gmail.com>
+ <X/2Rr5LDNbxGz456@kroah.com> <CAOuPNLiVP2d29td0b20Tx7=UBy5fGk5S9Yt=usUH+VtSYORe+w@mail.gmail.com>
+ <X/7m4787HEIcxZzm@kroah.com> <X/7nZjjJ3doGT3XO@kroah.com>
+In-Reply-To: <X/7nZjjJ3doGT3XO@kroah.com>
+From:   Pintu Agarwal <pintu.ping@gmail.com>
+Date:   Wed, 13 Jan 2021 23:14:21 +0530
+Message-ID: <CAOuPNLg8QncBr0vzfbFhi0AgpMwRFpdnB-ZZ=Fn-m18Y+saayw@mail.gmail.com>
+Subject: Re: [BUG]: Kernel 4.9: Kernel crash at fs/sysfs/file.c : sysfs_kf_seq_show
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>, landy.gross@linaro.org,
+        David Brown <david.brown@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
+        indranilghsh428@gmail.com, stephen@networkplumber.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/13/21 7:27 AM, Robin Murphy wrote:
-> On 2021-01-13 13:59, Nicolas Saenz Julienne wrote:
->> Hi All,
->>
->> On Tue, 2021-01-12 at 16:03 -0800, Florian Fainelli wrote:
->>> On 1/5/21 7:41 PM, Claire Chang wrote:
->>>> Add the initialization function to create restricted DMA pools from
->>>> matching reserved-memory nodes in the device tree.
->>>>
->>>> Signed-off-by: Claire Chang <tientzu@chromium.org>
->>>> ---
->>>>   include/linux/device.h  |   4 ++
->>>>   include/linux/swiotlb.h |   7 +-
->>>>   kernel/dma/Kconfig      |   1 +
->>>>   kernel/dma/swiotlb.c    | 144
->>>> ++++++++++++++++++++++++++++++++++------
->>>>   4 files changed, 131 insertions(+), 25 deletions(-)
->>>>
->>>> diff --git a/include/linux/device.h b/include/linux/device.h
->>>> index 89bb8b84173e..ca6f71ec8871 100644
->>>> --- a/include/linux/device.h
->>>> +++ b/include/linux/device.h
->>>> @@ -413,6 +413,7 @@ struct dev_links_info {
->>>>    * @dma_pools:    Dma pools (if dma'ble device).
->>>>    * @dma_mem:    Internal for coherent mem override.
->>>>    * @cma_area:    Contiguous memory area for dma allocations
->>>> + * @dma_io_tlb_mem: Internal for swiotlb io_tlb_mem override.
->>>>    * @archdata:    For arch-specific additions.
->>>>    * @of_node:    Associated device tree node.
->>>>    * @fwnode:    Associated device node supplied by platform firmware.
->>>> @@ -515,6 +516,9 @@ struct device {
->>>>   #ifdef CONFIG_DMA_CMA
->>>>       struct cma *cma_area;        /* contiguous memory area for dma
->>>>                          allocations */
->>>> +#endif
->>>> +#ifdef CONFIG_SWIOTLB
->>>> +    struct io_tlb_mem    *dma_io_tlb_mem;
->>>>   #endif
->>>>       /* arch specific additions */
->>>>       struct dev_archdata    archdata;
->>>> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
->>>> index dd8eb57cbb8f..a1bbd7788885 100644
->>>> --- a/include/linux/swiotlb.h
->>>> +++ b/include/linux/swiotlb.h
->>>> @@ -76,12 +76,13 @@ extern enum swiotlb_force swiotlb_force;
->>>>    *
->>>>    * @start:    The start address of the swiotlb memory pool. Used
->>>> to do a quick
->>>>    *        range check to see if the memory was in fact allocated
->>>> by this
->>>> - *        API.
->>>> + *        API. For restricted DMA pool, this is device tree
->>>> adjustable.
->>>
->>> Maybe write it as this is "firmware adjustable" such that when/if ACPI
->>> needs something like this, the description does not need updating.
-> 
-> TBH I really don't think this needs calling out at all. Even in the
-> regular case, the details of exactly how and where the pool is allocated
-> are beyond the scope of this code - architectures already have several
-> ways to control that and make their own decisions.
-> 
->>>
->>> [snip]
->>>
->>>> +static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
->>>> +                    struct device *dev)
->>>> +{
->>>> +    struct io_tlb_mem *mem = rmem->priv;
->>>> +    int ret;
->>>> +
->>>> +    if (dev->dma_io_tlb_mem)
->>>> +        return -EBUSY;
->>>> +
->>>> +    if (!mem) {
->>>> +        mem = kzalloc(sizeof(*mem), GFP_KERNEL);
->>>> +        if (!mem)
->>>> +            return -ENOMEM;
->>>> +
->>>> +        if (!memremap(rmem->base, rmem->size, MEMREMAP_WB)) {
->>>
->>> MEMREMAP_WB sounds appropriate as a default.
->>
->> As per the binding 'no-map' has to be disabled here. So AFAIU, this
->> memory will
->> be part of the linear mapping. Is this really needed then?
-> 
-> More than that, I'd assume that we *have* to use the linear/direct map
-> address rather than anything that has any possibility of being a vmalloc
-> remap, otherwise we can no longer safely rely on
-> phys_to_dma/dma_to_phys, no?
+On Wed, 13 Jan 2021 at 17:57, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 
-I believe you are right, which means that if we want to make use of the
-restricted DMA pool on a 32-bit architecture (and we do, at least, I do)
-we should probably add some error checking/warning to ensure the
-restricted DMA pool falls within the linear map.
--- 
-Florian
+>
+> And, if you look close at the above links, you will see where the error
+> is, and what the out-of-tree code needs to to do be fixed up properly.
+> An exercise for that is left for the vendor :)
+
+Seems like I have fixed the issue myself. There is problem in the
+probe method itself.
+Further debugging in progress.
+
+Thanks for your inputs.
+
+Regards,
+Pintu
