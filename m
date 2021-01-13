@@ -2,234 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55622F41CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A552F41D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:33:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728110AbhAMCbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 21:31:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727663AbhAMCa7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 21:30:59 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DDE5C061794
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 18:30:19 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id h205so516188lfd.5
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 18:30:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Pt5UETlRzxEfmCNnvTax6McqJSupC0kHJNd5M5Tk3YM=;
-        b=TsRjhDJkIvx/eu/8Dfs4u/eA7XHGiCILe+X3MR73vyisdMsXXh5PtmdLED/GVKRM+1
-         LWflHDw8pdNICFvV071XU8B6r5bQq/1VBUv+Ec3de3hTbcADu8hsQUglrP6RJcjXqNAA
-         ojQ8dIj4rncwInw25v4xZFWxyiQ12aaKWhq88=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Pt5UETlRzxEfmCNnvTax6McqJSupC0kHJNd5M5Tk3YM=;
-        b=pc7rynU5WXlwt84qvUy5ITW4C0OfDiu/M6E1HpApXDRa3NGc/GZhgAXRKnXtQ0JQEk
-         phAt4suV85VQVfR29TaofRYmPFIaMDpZcX2X5LGOEOHG3PQh3z7AI5JuWVcvfYg1eM7v
-         FNQtThm5AgpJ5dnojiNYOyNMGPTMoK0otnLNKzSiQKZ8UN53wTcRL2ZoecZKNKqtCdqE
-         1F9hpMO2LFtwcHHhoEUvOH2X/3P/rTJtITD3x7Yq9uvEMKVHO9Wy9nnEHO/rzlGf+EOg
-         X4bzKGw6Z6XL9JWyLpoHtNGprTIad7nkabHSNTzfFvq8vfTjPjWLrtkNkJbwqdRKY6Jh
-         o/hA==
-X-Gm-Message-State: AOAM531jo3+hTwzWGTpjyhVU3L2EQoS0j8jNAwT7Cd0qqtjUZ86R51aj
-        uSyEcDC9bPwMjnqG90Imf2/OZQzccfS7UQ==
-X-Google-Smtp-Source: ABdhPJygHQCBg5OiLmWeWRW6JQ32ur7QF6idHo+OLzbyI8CXuj06VAioibSfZqv5WCKeet7moLYU/Q==
-X-Received: by 2002:a19:651a:: with SMTP id z26mr787246lfb.306.1610505017224;
-        Tue, 12 Jan 2021 18:30:17 -0800 (PST)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id e15sm52178lfc.106.2021.01.12.18.30.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Jan 2021 18:30:16 -0800 (PST)
-Received: by mail-lf1-f47.google.com with SMTP id o10so470530lfl.13
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 18:30:16 -0800 (PST)
-X-Received: by 2002:adf:9b91:: with SMTP id d17mr94123wrc.32.1610505010644;
- Tue, 12 Jan 2021 18:30:10 -0800 (PST)
+        id S1728171AbhAMCb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 21:31:57 -0500
+Received: from mail-co1nam11on2044.outbound.protection.outlook.com ([40.107.220.44]:3169
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727784AbhAMCb4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 21:31:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Hq8WEVfDS6YvkabmE9KoKZQ8z09rHGX9RxUyLRTfjxdDvN2ee8cHd26UPX9P3m1i8aoKw1ns2A3+njCEDHwexQ4N9UkfrxpJsDjiE2qQmqyqIcwcbs/iHT03eTXkPPwAwFh5UWwijwR8sQtjg7GHyG+j2bk1LRmwcCIwF3UBUvwCKy5tWcEWvlvhNS9+BII5f7ousPSSVZWUzslY9BgsfIiKv2SkSxgolPRNqTq3V2KG9/y++Xjt6B+6GAgTs/NCPJf52yoe1cyK5TVg1LYleUEO3gdW3hhfDTRdmjYG6YegP1jieMFwUXwa94QRoHLaytZqa4uR/wzCot8hpjlzAQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4VQENVkI+3UxW7+LVOeACLD630FhG98WZ7Y5uYGF1wM=;
+ b=lvuRonDZhBnoePV8AtPvSnnegKarY10V3Tc4HjgAqOkAYu4Q+Gj13bT03Fi4B6+Lo867jo0Wnk8AldcRYvk9wKuI3+t6yHC9EBHa5jC552EPjiKRWQLpbtrF/lkuR5QHkUhm0xkGt39KNN7/UlGqJ2uCNSHqTGn4fb6cO/xKei40mupKDe35srCZW0/L98M/5NHRPPruYUcVLcbgN34amxJnEqbGma57P9yUWY66lcrDxqAqwGNfpDD932mhjX5pRavfNYdiHdOTfCSL0VzIJrgCWI41pbp57hX1OOmouW12LDMLG60q2McCXqwLtavkxMVADpRKPXTYlL+nj/e06w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4VQENVkI+3UxW7+LVOeACLD630FhG98WZ7Y5uYGF1wM=;
+ b=MOb9UYC2/pJilGPs14DinSgoxc87egwxQQ0igsqrWOJKu/ZOynNcnLx4BnkSY5zD1GCxw9y4Z/teEUX876HXHBBjhyjM6JEpm4y6Q/ljKzYlB0E4hEGCMTAkz/720KgRXHW+xZmt9hbZvGGhRoCRLjZEd4dNXecUEIMw9yzRvd8=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
+Received: from MWHPR12MB1248.namprd12.prod.outlook.com (2603:10b6:300:12::21)
+ by MWHPR12MB1520.namprd12.prod.outlook.com (2603:10b6:301:f::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Wed, 13 Jan
+ 2021 02:31:00 +0000
+Received: from MWHPR12MB1248.namprd12.prod.outlook.com
+ ([fe80::8c0d:7831:bfa8:d98]) by MWHPR12MB1248.namprd12.prod.outlook.com
+ ([fe80::8c0d:7831:bfa8:d98%6]) with mapi id 15.20.3742.012; Wed, 13 Jan 2021
+ 02:31:00 +0000
+Date:   Wed, 13 Jan 2021 10:30:48 +0800
+From:   Huang Rui <ray.huang@amd.com>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Souptick Joarder <jrdr.linux@gmail.com>,
+        "Su, Jinzhou (Joe)" <Jinzhou.Su@amd.com>,
+        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "Lazar, Lijo" <Lijo.Lazar@amd.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "Hou, Xiaomeng (Matthew)" <Xiaomeng.Hou@amd.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Quan, Evan" <Evan.Quan@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>
+Subject: Re: [PATCH] drm: amdgpu: pm: Mark vangogh_clk_dpm_is_enabled() as
+ static
+Message-ID: <20210113023048.GC135893@hr-amd>
+References: <1610481442-6606-1-git-send-email-jrdr.linux@gmail.com>
+ <20210113011901.GA135176@hr-amd>
+ <CADnq5_NUaqHWW7A32M1BeQ+rHPS8WZ-0OnVXtD3m7pB3ZpHyYA@mail.gmail.com>
+ <20210113022115.GB135893@hr-amd>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113022115.GB135893@hr-amd>
+X-Originating-IP: [180.167.199.189]
+X-ClientProxiedBy: HK0PR01CA0059.apcprd01.prod.exchangelabs.com
+ (2603:1096:203:a6::23) To MWHPR12MB1248.namprd12.prod.outlook.com
+ (2603:10b6:300:12::21)
 MIME-Version: 1.0
-References: <20210106034124.30560-1-tientzu@chromium.org> <d7043239-12cf-3636-4726-2e3b90917dc6@gmail.com>
- <CALiNf28sU1VtGB7LeTXExkMwQiCeg8N5arqyEjw0CPZP72R4dg@mail.gmail.com>
- <78871151-947d-b085-db03-0d0bd0b55632@gmail.com> <CALiNf29_PmLJTVLksSHp3NFAaL52idqehSMOtatJ=jaM2Muq1g@mail.gmail.com>
- <23a09b9a-70fc-a7a8-f3ea-b0bfa60507f0@gmail.com>
-In-Reply-To: <23a09b9a-70fc-a7a8-f3ea-b0bfa60507f0@gmail.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Wed, 13 Jan 2021 11:29:58 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5DX=AdaYSYQbxgnrYYojkM5q7EE_Qs-BYPOiNjcQWbN1A@mail.gmail.com>
-Message-ID: <CAAFQd5DX=AdaYSYQbxgnrYYojkM5q7EE_Qs-BYPOiNjcQWbN1A@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 0/6] Restricted DMA
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Claire Chang <tientzu@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
-        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
-        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from hr-amd (180.167.199.189) by HK0PR01CA0059.apcprd01.prod.exchangelabs.com (2603:1096:203:a6::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Wed, 13 Jan 2021 02:30:56 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 07e181fd-bddb-4bf4-a4cf-08d8b76b442e
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1520:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR12MB15208A0CA92CCBA863299D96ECA90@MWHPR12MB1520.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ppMww4jyRuZhX3plFKrVXyntiwzTDNeOT7BR/0sMSw0ZpxaciDHdKBZfm/irpr7IU0W7khcpqbBygFeDrMgzfilBzDUcpIO8vhIbNNC0ZsdYzFcbiIRLUeZnmEy/RGQh0vIAS0xN3rVbb7o6he3ZcGzw01UeKlzQAvBEXiapuduv/6WIytiawKZPT2aJ3Rr/OECS/5uwerRGVqo0s0EZNmd7+cp1BLF3JNp7QVfVMwRV4yzzyIAukdEdKeZj2XPuzBzmbfT9xaIhQztWZPIkgS/6F8g0v5sCHCTtsjm+q77Er+5Jqav2IsdcDnw41Ocd5KtrxjABaqjv1uTPL8L3KBytKOwruhg6U+l4ZvwqvZj44XK84/G7Vlw1t2DyGPb0cLVIDi8f/Ngy4QiWREPVSk7fbCGmj/Biy4FXEwt28FY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1248.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(136003)(346002)(366004)(396003)(186003)(8936002)(83380400001)(45080400002)(966005)(16526019)(2906002)(66946007)(9686003)(8676002)(478600001)(956004)(86362001)(6496006)(4326008)(66476007)(66556008)(33716001)(54906003)(55016002)(6916009)(1076003)(33656002)(53546011)(52116002)(5660300002)(316002)(6666004)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?BRTDH7ovP2xSkTh/bJgT+WwLMFUeobldxMsLpgn3ZB5WGN+xWhYSuMAbnBN+?=
+ =?us-ascii?Q?4MfI05lZr5o066S6xZQAQc4TDGFAlNSEWP/4N6Nsj6LUpH3tiU8/LQKcqV64?=
+ =?us-ascii?Q?kJ0JRWc7+f7pa5W/14eiTqsqRd6nBwsFdxkHR0Y6xuSye9IBAc9fwkl13CvB?=
+ =?us-ascii?Q?WEungUQ1a9hI9wV7B9jl3Ufm2kFdn99meT/wa+pT91bu3F2Jf/8mcoKZUj0h?=
+ =?us-ascii?Q?rMwYs+fVDsd+vGuMxDOv5cJIw+UGJL7b4iVBaD0rXpUjviVCVJV822IgaT1p?=
+ =?us-ascii?Q?8Hz+92a2ak0xiPM+c6OtPR2IgY8k0WmXjeH1fxtTVX5gCZDWf3cmxJGakxvt?=
+ =?us-ascii?Q?XHK+hLe+51XDS+MSLUNfVWdVuXkEeqMuapdJRWA0HuvgaGQ3gI1AJZi2u+Ve?=
+ =?us-ascii?Q?SYAdEOlrHc7KeVQeEUlG1j6Hw2UP+YVrRX9Y+WkuVrMc6cw2LE7OnHPGpYyB?=
+ =?us-ascii?Q?CzJ5h8UH66deVnXfvKzYaoJPegN8StjhzBuIQul2GeA2SYFiIoEPPgREzqsw?=
+ =?us-ascii?Q?VKc/jIMTJmOyze5irwSx9v6pQr+l2632IX5yNl5ByQyku/MUJlH28dp2ZoIO?=
+ =?us-ascii?Q?PsRTfjy5EiD/NHv00HfpSlH2+MndLzB3fqNKY3WLFrPDq44we6BseijQ45WO?=
+ =?us-ascii?Q?T0fDcD7geMdP84h85ZCfz8lB4CsoJl6YssJ6Un3ixnEr0ovylYKxKqnTdYeJ?=
+ =?us-ascii?Q?sdsX3w6El/SGZDj2HYMZFr1nQyzOsYWg8hCxdqIZJqw9Gup9ezDMaDO/DtD9?=
+ =?us-ascii?Q?7YtilLFHyNld3HfKKYdRpW9EOh0Ig8WaXKWMStwlIbw043Sv65MBIFMumjil?=
+ =?us-ascii?Q?2m5Dkw8qXS8hkBPS6Eo0ZEqFudk7Gmozz2fOGGilL8cbWQOmPQR3jmcb0Loq?=
+ =?us-ascii?Q?6kG9Hv8RiEfrdYmmNtwSQfk37ZQ0H2z+Ibs8g66zfhZycpo8HBPCbCcTBl3f?=
+ =?us-ascii?Q?qkCtVXUQlYg4ouXcav8IuQC0PkVBdjEJKHrNZ+DE1zgbUtTxcnCnnLvDVHzL?=
+ =?us-ascii?Q?klG1?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR12MB1248.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2021 02:31:00.5266
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07e181fd-bddb-4bf4-a4cf-08d8b76b442e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: w7xBlLwSDAQxTpKBuK4+ozA2ffcm6u+Aqm/xq2QfEq8SwYQ8ZYV29lQyMNDKViK4aAKMZyITFOr1c5f7twotNw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1520
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
+On Wed, Jan 13, 2021 at 10:21:26AM +0800, Huang Rui wrote:
+> On Wed, Jan 13, 2021 at 10:13:02AM +0800, Alex Deucher wrote:
+> > On Tue, Jan 12, 2021 at 8:19 PM Huang Rui <ray.huang@amd.com> wrote:
+> > >
+> > > On Wed, Jan 13, 2021 at 03:57:22AM +0800, Souptick Joarder wrote:
+> > > > kernel test robot throws below warnings ->
+> > > >
+> > > > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:594:6:
+> > > > warning: no previous prototype for 'vangogh_clk_dpm_is_enabled'
+> > > > [-Wmissing-prototypes]
+> > > > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:594:6:
+> > > > warning: no previous prototype for function 'vangogh_clk_dpm_is_enabled'
+> > > > [-Wmissing-prototypes]
+> > > >
+> > > > Mark vangogh_clk_dpm_is_enabled() as static.
+> > > >
+> > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> > > > ---
+> > > >  drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+> > > > index 75ddcad..3ffe56e 100644
+> > > > --- a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+> > > > +++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
+> > > > @@ -610,7 +610,7 @@ static int vangogh_get_profiling_clk_mask(struct smu_context *smu,
+> > > >       return 0;
+> > > >  }
+> > > >
+> > > > -bool vangogh_clk_dpm_is_enabled(struct smu_context *smu,
+> > > > +static bool vangogh_clk_dpm_is_enabled(struct smu_context *smu,
+> > > >                               enum smu_clk_type clk_type)
+> > >
+> > > Ah, I have another patch which will use this function in another file.
+> > >
+> > 
+> > I can drop it if you plan to land those patches soon.
+> 
+> Thanks Alex. Yes, I will upload them after verify them on the new firmware
+> today.
 
-On Wed, Jan 13, 2021 at 3:01 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
->
-> On 1/11/21 11:48 PM, Claire Chang wrote:
-> > On Fri, Jan 8, 2021 at 1:59 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
-> >>
-> >> On 1/7/21 9:42 AM, Claire Chang wrote:
-> >>
-> >>>> Can you explain how ATF gets involved and to what extent it does help,
-> >>>> besides enforcing a secure region from the ARM CPU's perpsective? Does
-> >>>> the PCIe root complex not have an IOMMU but can somehow be denied access
-> >>>> to a region that is marked NS=0 in the ARM CPU's MMU? If so, that is
-> >>>> still some sort of basic protection that the HW enforces, right?
-> >>>
-> >>> We need the ATF support for memory MPU (memory protection unit).
-> >>> Restricted DMA (with reserved-memory in dts) makes sure the predefined memory
-> >>> region is for PCIe DMA only, but we still need MPU to locks down PCIe access to
-> >>> that specific regions.
-> >>
-> >> OK so you do have a protection unit of some sort to enforce which region
-> >> in DRAM the PCIE bridge is allowed to access, that makes sense,
-> >> otherwise the restricted DMA region would only be a hint but nothing you
-> >> can really enforce. This is almost entirely analogous to our systems then.
-> >
-> > Here is the example of setting the MPU:
-> > https://github.com/ARM-software/arm-trusted-firmware/blob/master/plat/mediatek/mt8183/drivers/emi_mpu/emi_mpu.c#L132
-> >
-> >>
-> >> There may be some value in standardizing on an ARM SMCCC call then since
-> >> you already support two different SoC vendors.
-> >>
-> >>>
-> >>>>
-> >>>> On Broadcom STB SoCs we have had something similar for a while however
-> >>>> and while we don't have an IOMMU for the PCIe bridge, we do have a a
-> >>>> basic protection mechanism whereby we can configure a region in DRAM to
-> >>>> be PCIe read/write and CPU read/write which then gets used as the PCIe
-> >>>> inbound region for the PCIe EP. By default the PCIe bridge is not
-> >>>> allowed access to DRAM so we must call into a security agent to allow
-> >>>> the PCIe bridge to access the designated DRAM region.
-> >>>>
-> >>>> We have done this using a private CMA area region assigned via Device
-> >>>> Tree, assigned with a and requiring the PCIe EP driver to use
-> >>>> dma_alloc_from_contiguous() in order to allocate from this device
-> >>>> private CMA area. The only drawback with that approach is that it
-> >>>> requires knowing how much memory you need up front for buffers and DMA
-> >>>> descriptors that the PCIe EP will need to process. The problem is that
-> >>>> it requires driver modifications and that does not scale over the number
-> >>>> of PCIe EP drivers, some we absolutely do not control, but there is no
-> >>>> need to bounce buffer. Your approach scales better across PCIe EP
-> >>>> drivers however it does require bounce buffering which could be a
-> >>>> performance hit.
-> >>>
-> >>> Only the streaming DMA (map/unmap) needs bounce buffering.
-> >>
-> >> True, and typically only on transmit since you don't really control
-> >> where the sk_buff are allocated from, right? On RX since you need to
-> >> hand buffer addresses to the WLAN chip prior to DMA, you can allocate
-> >> them from a pool that already falls within the restricted DMA region, right?
-> >>
-> >
-> > Right, but applying bounce buffering to RX will make it more secure.
-> > The device won't be able to modify the content after unmap. Just like what
-> > iommu_unmap does.
->
-> Sure, however the goals of using bounce buffering equally applies to RX
-> and TX in that this is the only layer sitting between a stack (block,
-> networking, USB, etc.) and the underlying device driver that scales well
-> in order to massage a dma_addr_t to be within a particular physical range.
->
-> There is however room for improvement if the drivers are willing to
-> change their buffer allocation strategy. When you receive Wi-Fi frames
-> you need to allocate buffers for the Wi-Fi device to DMA into, and that
-> happens ahead of the DMA transfers by the Wi-Fi device. At buffer
-> allocation time you could very well allocate these frames from the
-> restricted DMA region without having to bounce buffer them since the
-> host CPU is in control over where and when to DMA into.
->
+Sorry Alex, I miss read the function name as "cclk_dpm".
+This patch is good, please go forward to apply it.
 
-That is, however, still a trade-off between saving that one copy and
-protection from the DMA tampering with the packet contents when the
-kernel is reading them. Notice how the copy effectively makes a
-snapshot of the contents, guaranteeing that the kernel has a
-consistent view of the packet, which is not true if the DMA could
-modify the buffer contents in the middle of CPU accesses.
+Reviewed-by: Huang Rui <ray.huang@amd.com>
 
-Best regards,
-Tomasz
+Thanks,
+Ray
 
-> The issue is that each network driver may implement its own buffer
-> allocation strategy, some may simply call netdev_alloc_skb() which gives
-> zero control over where the buffer comes from unless you play tricks
-> with NUMA node allocations and somehow declare that your restricted DMA
-> region is a different NUMA node. If the driver allocates pages and then
-> attaches a SKB to that page using build_skb(), then you have much more
-> control over where that page comes from, and this is where using a
-> device private CMA are helps, because you can just do
-> dma_alloc_from_contiguous() and that will ensure that the pages are
-> coming from your specific CMA area.
->
-> Few questions on the implementation:
->
-> - is there any warning or error being printed if the restricted DMA
-> region is outside of a device's DMA addressable range?
->
-> - are there are any helpful statistics that could be shown to indicate
-> that the restricted DMA region was sized too small, e.g.: that
-> allocation of a DMA buffer failed because we ran out of space in the
-> swiotlb pool?
->
-> >
-> >>> I also added alloc/free support in this series
-> >>> (https://lore.kernel.org/patchwork/patch/1360995/), so dma_direct_alloc() will
-> >>> try to allocate memory from the predefined memory region.
-> >>>
-> >>> As for the performance hit, it should be similar to the default swiotlb.
-> >>> Here are my experiment results. Both SoCs lack IOMMU for PCIe.
-> >>>
-> >>> PCIe wifi vht80 throughput -
-> >>>
-> >>>   MTK SoC                  tcp_tx     tcp_rx    udp_tx   udp_rx
-> >>>   w/o Restricted DMA  244.1     134.66   312.56   350.79
-> >>>   w/ Restricted DMA    246.95   136.59   363.21   351.99
-> >>>
-> >>>   Rockchip SoC           tcp_tx     tcp_rx    udp_tx   udp_rx
-> >>>   w/o Restricted DMA  237.87   133.86   288.28   361.88
-> >>>   w/ Restricted DMA    256.01   130.95   292.28   353.19
-> >>
-> >> How come you get better throughput with restricted DMA? Is it because
-> >> doing DMA to/from a contiguous region allows for better grouping of
-> >> transactions from the DRAM controller's perspective somehow?
-> >
-> > I'm not sure, but actually, enabling the default swiotlb for wifi also helps the
-> > throughput a little bit for me.
->
-> OK, it would be interesting if you could get to the bottom of why
-> performance does increase with swiotlb.
-> --
-> Florian
+> 
+> Thanks,
+> Ray
+> 
+> > 
+> > Alex
+> > 
+> > 
+> > > Thanks,
+> > > Ray
+> > >
+> > > >  {
+> > > >       enum smu_feature_mask feature_id = 0;
+> > > > --
+> > > > 1.9.1
+> > > >
+> > > _______________________________________________
+> > > amd-gfx mailing list
+> > > amd-gfx@lists.freedesktop.org
+> > > https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flists.freedesktop.org%2Fmailman%2Flistinfo%2Famd-gfx&amp;data=04%7C01%7Cray.huang%40amd.com%7C19fce6891f2d4f6df7de08d8b768c8a9%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637461007972405505%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=v2JGTkklMHOE2hN1s4dYZ1hT7ctLeUHpwkpn1M3nyi8%3D&amp;reserved=0
