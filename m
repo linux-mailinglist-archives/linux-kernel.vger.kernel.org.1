@@ -2,184 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B4B2F4E18
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:04:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A49032F4E14
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727313AbhAMPDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 10:03:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726828AbhAMPDX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 10:03:23 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A265C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 07:02:43 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id q20so1368684pfu.8
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 07:02:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rPRSuHtzx2N5glmiiegQCcxitzlx/8sULN8vX19VzJM=;
-        b=piKPw7mULMlt99PLa5jQVh6jTydYvFgHT/lzqNvuW//U710cJT6VdSVcDiXLJbJiR7
-         zP+MvvJPdD5zeCY3k+bgN8M4jpWJQHdgIq7SdYobZsSVL5rqSH0Ql9okD8B5T+KGCq6j
-         jeGGrledgtgsNgqIDUrbbBM//0QQkW36Q+rEiiPdviDZf1IZOqImVewYWA9qhmPDvQpP
-         Qsti8e5BP1IyK3VtmpJyGi8E3j5A1riYg9863wHjFUVe3dOByopcI+TJTMIS+ELH2XA2
-         hvSlrBMB1PtkbufP5QUWJqShukXyp96akb+DAqMPO35FnsVLUBlTyDw/JBQwcmEpW7Vp
-         cz/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rPRSuHtzx2N5glmiiegQCcxitzlx/8sULN8vX19VzJM=;
-        b=hyKtosxGvJa5FrhdNRLsvTBAp8CdshBW/c9EqOAm9iT8V2duWLXX7q0YWkGMczzQKg
-         NsZ+7hw2k3h5tP6S0SPYkyA8udYJ4cycjpX7+dh8aTLcSLimxselQr4lCo490/ciYOGN
-         dmTZDMfua6VjZkyQitJKq2clzw1kRm9B+Vnu+uHL8MAUyyDdudG2CpKrYjHCculEE6CG
-         MC6gb0Z8ButeXhVJGqfO0bJbFvuZjNUTxhi9TBI/QZtmWiGps8U7H3fviOHtvQUjgIqK
-         bjEENP5LipVUkGnIv1E+Y896kCLImfUx/bn+gH59KnLpy/o7UEawNI4VeyILSYmymR9m
-         jdpw==
-X-Gm-Message-State: AOAM531WOwEew5/CXC1QtTUhik0RUwQTQ7sf+7PESl7J6oeD+5Ryw62I
-        E8o0Apl4A+QssPLBK7/gENXvyIIlEg6kZXyV1EX08Q==
-X-Google-Smtp-Source: ABdhPJx73/ardZl0Utkhso9MLKEdBSvkEDbWEPITy7Dv8jQ7BtrCFi9cZAclHQrOS728/A3ALst1xa5Y1Zcwppi9jXU=
-X-Received: by 2002:a65:654e:: with SMTP id a14mr2415756pgw.265.1610550162411;
- Wed, 13 Jan 2021 07:02:42 -0800 (PST)
+        id S1727285AbhAMPDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 10:03:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55238 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726584AbhAMPDS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 10:03:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65E2623600;
+        Wed, 13 Jan 2021 15:02:35 +0000 (UTC)
+Date:   Wed, 13 Jan 2021 15:02:32 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Florian Weimer <fweimer@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [PATCH] compiler.h: Raise minimum version of GCC to 5.1 for arm64
+Message-ID: <20210113150232.GA27045@gaia>
+References: <20210112224832.10980-1-will@kernel.org>
+ <CAHk-=wi5oACdjFwnaonTWPVpBpwohxeJJJDvLvMS85RzrX5SYQ@mail.gmail.com>
+ <CAHk-=wh-+TMHPTFo1qs-MYyK7tZh-OQovA=pP3=e06aCVp6_kA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210108120429.895046-1-robert.foss@linaro.org>
- <20210108120429.895046-5-robert.foss@linaro.org> <X/itZVFeM0XeV9Sx@builder.lan>
-In-Reply-To: <X/itZVFeM0XeV9Sx@builder.lan>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Wed, 13 Jan 2021 16:02:31 +0100
-Message-ID: <CAG3jFyvVBFLX_1vobyBHtEnVkN0QFSRX3MdwtUnBCXbVwDQ4DQ@mail.gmail.com>
-Subject: Re: [PATCH v1 04/17] media: camss: Make ISPIF subdevice optional
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Todor Tomov <todor.too@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, catalin.marinas@arm.com,
-        will@kernel.org, shawnguo@kernel.org, leoyang.li@nxp.com,
-        geert+renesas@glider.be, arnd@arndb.de, Anson.Huang@nxp.com,
-        michael@walle.cc, agx@sigxcpu.org, max.oss.09@gmail.com,
-        linux-arm-msm@vger.kernel.org,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wh-+TMHPTFo1qs-MYyK7tZh-OQovA=pP3=e06aCVp6_kA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Bj=C3=B6rn!
-
-On Fri, 8 Jan 2021 at 20:07, Bjorn Andersson <bjorn.andersson@linaro.org> w=
-rote:
->
-> On Fri 08 Jan 06:04 CST 2021, Robert Foss wrote:
->
-> > This driver supports multiple architecture versions of the Qualcomm ISP=
-.
-> > The CAMSS architecure which this driver is name after, and with the
-> > introduction of this series, the Titan architecture.
+On Tue, Jan 12, 2021 at 06:35:50PM -0800, Linus Torvalds wrote:
+> On Tue, Jan 12, 2021 at 6:14 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
 > >
-> > The ISPIF is IP-block that is only present in the CAMSS architecture.
->
-> "is an IP-block"
+> > Ack. I'll assume I get this the usual ways from the arm64 tree..
+> 
+> Oh.. Actually, while you can use my ack if you decide to go this way,
+> I do wonder if it might not be better to introduce a notion of an
+> error at Kconfig time, and then we could make this whole GCC_VERSION
+> check be something that gets covered much earlier - when configuring
+> the kernel, rather than randomly (ok, very early) when building it.
+> 
+> We already have the CONFIG_GCC_VERSION config variable, after all.
+> 
+> And Kconfig already has an error functionality, which it uses for
+> things like compilers not found etc.
+> 
+> So something like
+> 
+>      $(error-if,CC_IS_GCC && GCC_VERSION < 90100,"Gcc version too old")
+> 
+> in the arm64 Kconfig file should do it.
 
-Ack
+$(error-if) seems to expect a y/n as a condition. We do have $(failure)
+and $(success) but they translate a (shell) command's return code to
+y/n. Even with something like:
 
-I cleaned up the message a little bit further in order to be more
-clear about camss & titan being the names of architecture generations.
+config GCC_IS_OLD
+	def_bool CC_IS_GCC && GCC_VERSION < ...
 
->
-> > In order to support the Titan architecture, make the ISPIF an optional
-> > subdevice.
-> >
-> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> > ---
-> >  .../media/platform/qcom/camss/camss-ispif.c   | 144 ++++++++++--------
-> >  .../media/platform/qcom/camss/camss-ispif.h   |   3 +-
-> >  drivers/media/platform/qcom/camss/camss.c     | 113 +++++++++-----
-> >  drivers/media/platform/qcom/camss/camss.h     |   2 +-
-> >  4 files changed, 160 insertions(+), 102 deletions(-)
-> >
-> > diff --git a/drivers/media/platform/qcom/camss/camss-ispif.c b/drivers/=
-media/platform/qcom/camss/camss-ispif.c
-> [..]
-> > -int msm_ispif_subdev_init(struct ispif_device *ispif,
-> > +int msm_ispif_subdev_init(struct camss *camss,
-> >                         const struct resources_ispif *res)
-> >  {
-> > -     struct device *dev =3D to_device(ispif);
-> > -     struct platform_device *pdev =3D to_platform_device(dev);
-> > +     struct ispif_device *ispif =3D camss->ispif;
-> > +     struct platform_device *pdev =3D to_platform_device(camss->dev);
->
-> It seems like several of the changes in this function is replacing
-> dev with camss->dev. If you retained a struct device *dev =3D camss->dev;
-> you would avoid this.
+I can't get $(error-if,GCC_IS_OLD) to expand the config value, no matter
+what other. GCC_VERSION is also a config option in your example.
 
-Ack.
+I'll queue Will's patch in the meantime.
 
->
-> >       struct resource *r;
-> >       int i;
-> >       int ret;
-> >
-> > +     if (res =3D=3D NULL && ispif =3D=3D NULL)
->
-> Afaict this function is called conditional on camss->ispif !=3D NULL, and
-> I don't see anything that would cause res to becomes NULL if is hasn't
-> been before this change.
->
-> So I think this check is unnecessary?
-
-Nice catch, thank you!
-
->
-> > +             return 0;
-> > +
-> > +     ispif->camss =3D camss;
-> > +
-> >       /* Number of ISPIF lines - same as number of CSID hardware module=
-s */
-> > -     if (to_camss(ispif)->version =3D=3D CAMSS_8x16)
-> > +     if (camss->version =3D=3D CAMSS_8x16)
-> >               ispif->line_num =3D 2;
-> > -     else if (to_camss(ispif)->version =3D=3D CAMSS_8x96 ||
-> > -              to_camss(ispif)->version =3D=3D CAMSS_660)
-> > +     else if (camss->version =3D=3D CAMSS_8x96 ||
-> > +              camss->version =3D=3D CAMSS_660)
-> >               ispif->line_num =3D 4;
-> >       else
-> >               return -EINVAL;
-> >
-> > -     ispif->line =3D devm_kcalloc(dev, ispif->line_num, sizeof(*ispif-=
->line),
-> > -                                GFP_KERNEL);
-> > +     ispif->line =3D devm_kcalloc(camss->dev, ispif->line_num,
-> > +                     sizeof(*ispif->line), GFP_KERNEL);
-> >       if (!ispif->line)
-> >               return -ENOMEM;
-> >
-> [..]
-> > @@ -1393,6 +1410,9 @@ void msm_ispif_unregister_entities(struct ispif_d=
-evice *ispif)
-> >  {
-> >       int i;
-> >
-> > +     if (!ispif)
-> > +             return;
->
-> I like this, but later in the patch you make the calls to this function
-> conditional on ispif !=3D NULL. You should only need one of the checks.
-
-Ack, removing the external checks and keeping the internal one then.
+-- 
+Catalin
