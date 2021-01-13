@@ -2,103 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6EB2F5115
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:27:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E142F5117
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:27:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727974AbhAMRZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:25:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37528 "EHLO mx2.suse.de"
+        id S1727995AbhAMR0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:26:32 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37920 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727896AbhAMRZk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:25:40 -0500
+        id S1727738AbhAMR0c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 12:26:32 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610558745; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rhzc4mOF8yFAxKPYUubGlwQEI+I8sBfXXcHJyflCuY4=;
+        b=i1Dl/qH52hba18Oihb2EQd6sStetFqE2ABR5A0e6RSSdhSAU3FGzXEH6+IBeW2xX4/9CHq
+        heVNCD+VKKUM6GNtJFK3P/aXXL+biDADwEXGQ9vwg4m9GURjQlax5LzKnPvB37qLSKiUec
+        GDt67B3i/bUeSG2VEtTK7ZY5g078cCk=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 023E0ACF5;
-        Wed, 13 Jan 2021 17:24:59 +0000 (UTC)
-Subject: Re: [PATCH 1/2] kasan, mm: fix conflicts with init_on_alloc/free
-To:     Andrey Konovalov <andreyknvl@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>
+        by mx2.suse.de (Postfix) with ESMTP id 17418ACF5;
+        Wed, 13 Jan 2021 17:25:45 +0000 (UTC)
+Date:   Wed, 13 Jan 2021 18:25:38 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <cover.1610553773.git.andreyknvl@google.com>
- <7fbac00e4d155cf529517a165a48351dcf3c3156.1610553774.git.andreyknvl@google.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <25aa25d6-080c-ccfa-9367-fc60f46ff10f@suse.cz>
-Date:   Wed, 13 Jan 2021 18:24:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: memcontrol: prevent starvation when writing
+ memory.high
+Message-ID: <20210113172522.GA14726@blackbody.suse.cz>
+References: <20210112163011.127833-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
-In-Reply-To: <7fbac00e4d155cf529517a165a48351dcf3c3156.1610553774.git.andreyknvl@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="aVD9QWMuhilNxW9f"
+Content-Disposition: inline
+In-Reply-To: <20210112163011.127833-1-hannes@cmpxchg.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/13/21 5:03 PM, Andrey Konovalov wrote:
-> A few places where SLUB accesses object's data or metadata were missed in
-> a previous patch. This leads to false positives with hardware tag-based
-> KASAN when bulk allocations are used with init_on_alloc/free.
-> 
-> Fix the false-positives by resetting pointer tags during these accesses.
-> 
-> Link: https://linux-review.googlesource.com/id/I50dd32838a666e173fe06c3c5c766f2c36aae901
-> Fixes: aa1ef4d7b3f67 ("kasan, mm: reset tags when accessing metadata")
-> Reported-by: Dmitry Vyukov <dvyukov@google.com>
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+--aVD9QWMuhilNxW9f
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->  mm/slub.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index dc5b42e700b8..75fb097d990d 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2791,7 +2791,8 @@ static __always_inline void maybe_wipe_obj_freeptr(struct kmem_cache *s,
->  						   void *obj)
->  {
->  	if (unlikely(slab_want_init_on_free(s)) && obj)
-> -		memset((void *)((char *)obj + s->offset), 0, sizeof(void *));
-> +		memset((void *)((char *)kasan_reset_tag(obj) + s->offset),
-> +			0, sizeof(void *));
->  }
->  
->  /*
-> @@ -2883,7 +2884,7 @@ static __always_inline void *slab_alloc_node(struct kmem_cache *s,
->  		stat(s, ALLOC_FASTPATH);
->  	}
->  
-> -	maybe_wipe_obj_freeptr(s, kasan_reset_tag(object));
-> +	maybe_wipe_obj_freeptr(s, object);
+On Tue, Jan 12, 2021 at 11:30:11AM -0500, Johannes Weiner <hannes@cmpxchg.o=
+rg> wrote:
+> -		reclaimed =3D try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
+> -							 GFP_KERNEL, true);
+> +		try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
+> +					     GFP_KERNEL, true);
+Although I was also initially confused by throwing 'reclaimed' info
+away, the patch makes sense to me given the reasoning.
 
-And in that case the reset was unnecessary, right. (commit log only mentions
-adding missing resets).
+It is
+Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
 
->  	if (unlikely(slab_want_init_on_alloc(gfpflags, s)) && object)
->  		memset(kasan_reset_tag(object), 0, s->object_size);
-> @@ -3329,7 +3330,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
->  		int j;
->  
->  		for (j = 0; j < i; j++)
-> -			memset(p[j], 0, s->object_size);
-> +			memset(kasan_reset_tag(p[j]), 0, s->object_size);
->  	}
->  
->  	/* memcg and kmem_cache debug support */
-> 
+As for the discussed unsuccessful retries, I'd keep it a separate change.
 
+Regards,
+Michal
+
+--aVD9QWMuhilNxW9f
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl//LRIACgkQia1+riC5
+qSjZoxAAhk4KwOei0MYgZnUEnzxE1nLMsgz8ikWGTOpHBWVId+W0rQ6FyKlFpvxv
+16m+S9Fx+2YxpnE7X1mLbEGDUUO1ORbBUCy2mUeWVo3EuubEBEuNDyfYKbwTarp5
+rzkT5r6/pbEcoX3NNr+bX0fD1f5dFSq3uWYoMOHkzISWshzxRATC67vKS0fBfSr5
+cSq/5hh6HgYh2bo9vtO83JWkSGJTYdu5GhqTZzWIJbgjRbFpX58mG/GyZzpog0Hu
+g2u5GNsrdgsM6gOuHk9wLwBluXjmrFUpaZF/pRMcw/mfzAjMRo+qZNib77IhrH5s
+As+MJ1ikA8p7vWIyT57tussfMunQ7EjJGHezkKBhcJ69+ICoaPveaUy3xyVZ8dYm
+9BRP7uPO3AnHxDoW+WohU7QoaJu4Mxu2qZiA+Js4upfadqg0vvYHdw/P1rbVyG99
+KpmGOQ3/LnQ5LYT0VcYUUMPHDniuOyoM9VY+JSXgNBZVV4uKUeXMrLbpF9MN1tAU
+MvBzbm9f5/AQVHX/ayXHiVoRBu/FuadzElB+yE4OW/VHwXr0i9KnmbCyIZcK9mr7
+iU5P2X328NKTQk/UwfCbZeHs/npuDHP6aA85HhYULfjKqWtZICcJfrnxpY/ealgO
+o4a15hQpOwCqOiUQvWFyZ0k2xibU+axzLEWO08jTCgD3ywfoTTw=
+=n33h
+-----END PGP SIGNATURE-----
+
+--aVD9QWMuhilNxW9f--
