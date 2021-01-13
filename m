@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AACDD2F43C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:26:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 926B02F43CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:26:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725868AbhAMFZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 00:25:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725787AbhAMFY7 (ORCPT
+        id S1725943AbhAMFZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 00:25:30 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:56675 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725831AbhAMFZa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 00:24:59 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F65DC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:24:19 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id w18so1833348iot.0
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:24:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=F/OA+LEep844St+cLlN9bVuByZKQc9ECoZJDuSzWDXM=;
-        b=pM2UxjNfimjxWa+YA7Vc6k4xjRxRbAliS/VyfsvmN2KD+U4L9sFrImXRd5NSwWrYIF
-         qixPKyw8S4nzL7HHDqBg0+zxsBrq7hBytISqZs6qOK/N3TwAWWoBcm1zzhDiyvFcsRbl
-         T6guDKnfqBUORiWuBzAlAz7uXih5uvczPcqewlEFtu/66bwj3HF4ELC4o6eKplzA+nB2
-         R8n9/lDh+nt29C6ZgZxu1WYSs/N5LiJIHzpcAwYDytH/n31RMAX0ePUo/S60y+HTnEDO
-         UJRjD/38h4Mkss3d/uMCuwVxtl6pCGgrYuVS7iTPBJqOxq4i6HdxYlGU6F8PgqM5MG8o
-         oXow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=F/OA+LEep844St+cLlN9bVuByZKQc9ECoZJDuSzWDXM=;
-        b=lp3AMwyL4OS6In4ezAGXUAAFSUJjJILXNus+AQs/zz84hv2J+aaJCEkNR7fGbiQcap
-         LvJ1E34xPDKhQORUnTnWD60AS6MSHmwgNAFB5ifN6T37+euNqWqtoQBEueCQDr5OLPIE
-         3TjraFbxL/BczEVAzigS2XS0sgUO0XaMXxhS6dpE9MyURzpW2XYTXFee/t5ECWWYUyFp
-         rSgqk9/WA5mpHDIZmcAXPUMqqw3ZxAOYURMzzlgTVqX8GMDlI1yr1Hal+rXWTK7wDPoB
-         rBtdsqbKICW6sWmQV9qotQw0TrOnUyIaacZfbyvv/E0PQXCwYlxTdlpluRVsNzRWP3Nu
-         hBCA==
-X-Gm-Message-State: AOAM5300ZVyShkhtVvNY6HfwVtOJjssA8wPzGYYZ1xATT3fqWiyxPPBP
-        t+RQqVxMs2xACFbOpVFJvyW2TNb/x9r14wXw/dU=
-X-Google-Smtp-Source: ABdhPJyL0YYvYyzO8fms7Tt132zPWXgDIVrVPUF/0TpbLxbDoeyxjZ55FsZVk1YbvzSwgi0ALEDFidNoPecLUwiI8vE=
-X-Received: by 2002:a02:c7cb:: with SMTP id s11mr885489jao.94.1610515458507;
- Tue, 12 Jan 2021 21:24:18 -0800 (PST)
+        Wed, 13 Jan 2021 00:25:30 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 00B3A1AF6;
+        Wed, 13 Jan 2021 00:24:23 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Wed, 13 Jan 2021 00:24:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=NYblmrex2MNrshV7uB3UmzbuWY
+        hNNNzfaDNwSbSid28=; b=IwmUZJXQej1jWnu/SuMs7ljUuuWqzbOveyhx0LLfy3
+        Zj0GP1lly61wtlAG9cV7LxCpbThpaJCYjhN2N85lz416NbdmBxvls11CcpYv8367
+        5ol6rykiC78hCNISxuXGlJn7flH9lxmtU9jxEsqBgBkmN3UejLWyNQxNXrctlA/c
+        kgcRkAnK+eDtHizfryWYvSarh+Vmm0a4w9gMBSLs4mHItz3V2yFnGvo9X9/Vo2D/
+        ottnsgDO7wDHKwRK4yNr0VhxgBT9S6wAvjym00ed581bOje97n50TKj61F1kBmIY
+        usyp1QsxYFjQfoGC+F6feHSLWP/1OusBiVCdmTI4RNwQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=NYblmrex2MNrshV7u
+        B3UmzbuWYhNNNzfaDNwSbSid28=; b=fMDe20TiXcgXcnGK7MKK+q2mXXPXgJQ5T
+        kE1VAwSlaJSwefw2bnHVCt3uSRr7FyYD635NF4EW14lWOb2TFIkXwCbb1nZDW9PT
+        hQBOWiJRSGANqdLQxg+u7hx6jOzYit+eH0eZ+UbzfNyNotnwgyRa0gaCxdNmkN3f
+        CfXZzNsIC3T2jbHWOtFkUMIp07O713jkwjELqoqc8uJ3h1iyJqDuZ0xy4k2fRKCc
+        hT/CUSqFvP2qXuHDHaehzhdHNHKDG0eynIpWQ0Jfd7739b2X2q0Ne5Z2mvbscojB
+        QDOpwHxOjDMbaIxmfmVFDl56kPjTgZcSDcSCXIWcFa53tNiMQ/2dQ==
+X-ME-Sender: <xms:BoT-XzWfraRlxe-okimYn-RFu19Q_wPlnUhs8ElPGCp-Sm4lU3GnuQ>
+    <xme:BoT-X7mDyB1VcLClRDOeFwkOpK7YqXeJTa8Kb3v_qyZihsGMBvHuyvIg4vf0P2wem
+    P53oSguaSEwONoaAw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedukedrtddugdekgecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
+    ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrfgrth
+    htvghrnhepieetkefhheduudfgledtudefjeejfeegveehkeeufffhhfejkeehiefftdev
+    tdevnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdho
+    rhhg
+X-ME-Proxy: <xmx:BoT-X_ajpKiqzERbAj0rsWfyfuGkcLcZEqWDiJQ4PejCvu2VcuKDMw>
+    <xmx:BoT-X-U_FHnG6FgH5ksDKhmnXDolP2Y78sktfXRl3rU5o76ayc47SQ>
+    <xmx:BoT-X9m2Znh2g13nCLs9qnJ-tCeBvZKhq7KNrfzpCPOa4clsHuxUOw>
+    <xmx:B4T-Xwu8eaxisBgkItFgHkfxW69AS1kZDITm2jEqfdlE5lqV9li1dg>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 640CD240057;
+        Wed, 13 Jan 2021 00:24:22 -0500 (EST)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Samuel Holland <samuel@sholland.org>
+Subject: [PATCH] mmc: sunxi-mmc: Ensure host is suspended during system sleep
+Date:   Tue, 12 Jan 2021 23:24:21 -0600
+Message-Id: <20210113052421.36553-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210113024241.179113-1-ying.huang@intel.com> <CAHk-=whn5kVxEitkC0AyzvWRyxbF91rMrO9ZG6JHBNYLckpDDw@mail.gmail.com>
- <CAC=cRTNpoqHpbtZM1uDvVQYQZVyRbfPh+Dirb=-Xgoh22u_W1A@mail.gmail.com> <20210113031142.GM35215@casper.infradead.org>
-In-Reply-To: <20210113031142.GM35215@casper.infradead.org>
-From:   huang ying <huang.ying.caritas@gmail.com>
-Date:   Wed, 13 Jan 2021 13:24:07 +0800
-Message-ID: <CAC=cRTNMN5Pmz2PC8p3N2-uJkqLUCW95wr=VWTZmodoECmj6nQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: Free unused swap cache page in write protection fault handler
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 11:12 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Wed, Jan 13, 2021 at 11:08:56AM +0800, huang ying wrote:
-> > On Wed, Jan 13, 2021 at 10:47 AM Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > On Tue, Jan 12, 2021 at 6:43 PM Huang Ying <ying.huang@intel.com> wrote:
-> > > >
-> > > > So in this patch, at the end of wp_page_copy(), the old unused swap
-> > > > cache page will be tried to be freed.
-> > >
-> > > I'd much rather free it later when needed, rather than when you're in
-> > > a COW section.
-> >
-> > Unused swap cache isn't unused file cache.  Nobody can reuse them
-> > directly before freeing them firstly.  It will make COW a little
-> > faster via keeping them.  But I think the overhead to free them isn't
-> > high.  While keeping them in system will confuse users (users will
-> > expect file cache to use free memory, but not expect unused swap cache
-> > to use much free memory), make the swap space more fragmented, and add
-> > system overall overhead (scanning LRU list, etc.).
->
-> Couldn't we just move it to the tail of the LRU list so it's reclaimed
-> first?  Or is locking going to be a problem here?
+If the device suspend process begins before the mmc host's autosuspend
+timeout, the host will continue running during system sleep. Avoid
+this by forcing runtime suspend during a global suspend transition.
 
-Yes.  That's a way to reduce the disturbance to the page reclaiming.
-For LRU lock contention, is it sufficient to use another pagevec?
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+---
+ drivers/mmc/host/sunxi-mmc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Best Regards,
-Huang, Ying
+diff --git a/drivers/mmc/host/sunxi-mmc.c b/drivers/mmc/host/sunxi-mmc.c
+index 6310693f2ac0..cfee8db7b76d 100644
+--- a/drivers/mmc/host/sunxi-mmc.c
++++ b/drivers/mmc/host/sunxi-mmc.c
+@@ -1507,6 +1507,8 @@ static int sunxi_mmc_runtime_suspend(struct device *dev)
+ #endif
+ 
+ static const struct dev_pm_ops sunxi_mmc_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				pm_runtime_force_resume)
+ 	SET_RUNTIME_PM_OPS(sunxi_mmc_runtime_suspend,
+ 			   sunxi_mmc_runtime_resume,
+ 			   NULL)
+-- 
+2.26.2
+
