@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBD322F50DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 544152F50E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:17:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728191AbhAMRRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:17:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45382 "EHLO
+        id S1728206AbhAMRRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:17:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728142AbhAMRQ6 (ORCPT
+        with ESMTP id S1728143AbhAMRRI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:16:58 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05F3C0617AB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:15:42 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id z5so5570390iob.11
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:15:42 -0800 (PST)
+        Wed, 13 Jan 2021 12:17:08 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348E5C0617B1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:15:44 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id r9so5614395ioo.7
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:15:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4ne5Zo1fGRu2iVcYjOo63CG/Ih5OIPi4+1L9+3+54RU=;
-        b=sbTiZViyBdcIcY4TVKLFp8dMDvOB4aVI4mbfI/SnTr0qjNrxX70pM1g+vz1sNk3GQG
-         5ua75OuvAWyvNffK2SnKjyBQXPEGehG9YcSDUTb25W9uXNlJeR9g0K+1w/Mw2hoB0ul9
-         qK88hj4K0F35DtHh+Jpkuo9fZmHGbiFCH1amd5EuGFa6HY1PuQi0fVy9m6vVOjpFLn+6
-         gw4JytVhDzdpgtnmLZzm0ujlTRNebECGbuGasjItPUm3gR0Mwxd4iGAzNTUT5FlIUOfB
-         304dS++1ksF9IFYEXKGfWJ23OtEArnIjaE+4WrwsHPQEHbpqKEBMIF1D0ut470lXDoj+
-         JCLA==
+        bh=cya1YllzUew1Cz7aOjwGwTo+phSDuV7y8gvGZ//U/9Q=;
+        b=mU/mNVI1DbIGzLDbFVMDvJokTzluyxYOZ835J5gSBXl9SNgJli/wh4cNdHzIkBHYdH
+         b3dr+Gphw383vAAc1jzu4Ry+RMtAVkVT96qLS9S9dJ9sDXyCQIRf9w4lh4QHDBNaWHSr
+         fcy1W8pHyz+lOKDFGkUma55jl5L9zqZVgHcK1plyCaOhBxUbqRlvGx0Cl0mA6llTaHLI
+         ZNFS6agCjJpko710CEz1QhKyonVyzVprbrcxDwicKFQ+UktUiiRNW1DvpOE3MoaNIYeD
+         qlp9v7mDHhdjEvbUmoiYh37CDW0s7hBG3tK5Ja1f4b3fe7LKBigxGSt7L2XGMnJKZsWC
+         fgag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4ne5Zo1fGRu2iVcYjOo63CG/Ih5OIPi4+1L9+3+54RU=;
-        b=WzGhukr+WcaUz0sq6CANhSZoAHiSNCFe9bRBeQKopI9dXu2gpnpcdlHseCyDFslDG+
-         GCaqY9OBi0jkv3lRMhF1BbRElSwysn1a9OoPH3vZJBrQf05luVxy2uLFYFZuAz/yKyd7
-         b9oc1OzhunxWq9rRAStGrePRQuroTHmljqAhwcUF9earbakoJgIxzB0Ds0X5uVbjLI0i
-         qqIejr/c+TX6WwYhHZj46mdiK04UmUVoQEXlnHCjqmLVmup4PPgx01hnBPfsp71i4Qyo
-         Bl3OXiDqfPTHwnkHfCGXM++e/YhiLg82MbuZ3pIuQ04Eq10BkG0pgpk7OlYu9qrLIIgA
-         5BUQ==
-X-Gm-Message-State: AOAM531DTFFo9ZcTcpCWiVq0PphXK1qX7U0hRn2QTWmGM/FwtHL3it5H
-        b3m101uInQTNmjCathkDKQi3Fb+OZKtHag==
-X-Google-Smtp-Source: ABdhPJwqgwzDrfl1xbczv4gWCZ6+t/rZG8bYbPRZzSuQ+fnazWGSZlOMnh6fqSXE9w0TNxSGNjOJig==
-X-Received: by 2002:a5e:dc0d:: with SMTP id b13mr2581885iok.31.1610558142318;
-        Wed, 13 Jan 2021 09:15:42 -0800 (PST)
+        bh=cya1YllzUew1Cz7aOjwGwTo+phSDuV7y8gvGZ//U/9Q=;
+        b=YnD7UmgHAuJwUynVXvt48Ag1OXoM63hn09L6aTShpH8KEISmfOQLKBNNjsNmaMZ1aq
+         uq/TDFqiUf0y/9/iH+rpwSNLMrL9H5KqHVjWEZTK8FUg9Cm75QNK9NqRIgxYMhSXwy5x
+         tcZ1dGOEL3yegDr229Oll3ImMmqFKXtgR2Cy1t1P53Aohh5mY1jq/M4ci78ydjRNuniN
+         BvOH7t2M2E6//PhVCTWVUl+/ttNFFhKq1f6bXSPEri0EiuOq4VqGJ+5/WcEsDeDfmgZJ
+         IdhD8l3f8U2XPAG3gyAfUD6TkixfecGb3uy3SrSeeYvKw8ShsDWnjSYjZjza5EN44OSk
+         BzJg==
+X-Gm-Message-State: AOAM531g5o5UaM6ejC362XVkDQMJo6Yja4K5681uU+NxUsVmfjD61j0A
+        eB37QhdRTvcif5m034iHNmshsg==
+X-Google-Smtp-Source: ABdhPJwMS0K6oCxdHlBm9fgUOW23pCifG3ouH/c8/rfeYPNFtkVcq24RoUabju6o4jccQq/x07ZxvQ==
+X-Received: by 2002:a02:cf9a:: with SMTP id w26mr3268797jar.25.1610558143520;
+        Wed, 13 Jan 2021 09:15:43 -0800 (PST)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id h9sm1120579ili.43.2021.01.13.09.15.41
+        by smtp.gmail.com with ESMTPSA id h9sm1120579ili.43.2021.01.13.09.15.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 09:15:41 -0800 (PST)
+        Wed, 13 Jan 2021 09:15:42 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     evgreen@chromium.org, bjorn.andersson@linaro.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 5/6] net: ipa: change stop channel retry delay
-Date:   Wed, 13 Jan 2021 11:15:31 -0600
-Message-Id: <20210113171532.19248-6-elder@linaro.org>
+Subject: [PATCH net-next 6/6] net: ipa: retry TX channel stop commands
+Date:   Wed, 13 Jan 2021 11:15:32 -0600
+Message-Id: <20210113171532.19248-7-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210113171532.19248-1-elder@linaro.org>
 References: <20210113171532.19248-1-elder@linaro.org>
@@ -65,30 +65,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a GSI stop channel command leaves the channel in STOP_IN_PROC
-state, we retry the stop command after a 1-2 millisecond delay.
+For RX channels we issue a stop command more than once if necessary
+to allow it to stop.  It turns out that TX channels could also
+require retries.
 
-I have been told that a 3-5 millisecond delay is a better choice.
+Retry channel stop commands if necessary regardless of the channel
+direction.  Rename the symbol defining the retry count so it's not
+RX-specific.
 
 Fixes: 650d1603825d8 ("soc: qcom: ipa: the generic software interface")
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/gsi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ipa/gsi.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index 4de769166978b..5c163f9c0ea7b 100644
+index 5c163f9c0ea7b..5b29f7d9d6ac1 100644
 --- a/drivers/net/ipa/gsi.c
 +++ b/drivers/net/ipa/gsi.c
-@@ -903,7 +903,7 @@ int gsi_channel_stop(struct gsi *gsi, u32 channel_id)
- 		ret = gsi_channel_stop_command(channel);
- 		if (ret != -EAGAIN)
- 			break;
--		usleep_range(USEC_PER_MSEC, 2 * USEC_PER_MSEC);
-+		usleep_range(3 * USEC_PER_MSEC, 5 * USEC_PER_MSEC);
- 	} while (retries--);
+@@ -91,7 +91,7 @@
  
- 	mutex_unlock(&gsi->mutex);
+ #define GSI_CMD_TIMEOUT			50	/* milliseconds */
+ 
+-#define GSI_CHANNEL_STOP_RX_RETRIES	10
++#define GSI_CHANNEL_STOP_RETRIES	10
+ #define GSI_CHANNEL_MODEM_HALT_RETRIES	10
+ 
+ #define GSI_MHI_EVENT_ID_START		10	/* 1st reserved event id */
+@@ -889,14 +889,11 @@ int gsi_channel_start(struct gsi *gsi, u32 channel_id)
+ int gsi_channel_stop(struct gsi *gsi, u32 channel_id)
+ {
+ 	struct gsi_channel *channel = &gsi->channel[channel_id];
+-	u32 retries;
++	u32 retries = GSI_CHANNEL_STOP_RETRIES;
+ 	int ret;
+ 
+ 	gsi_channel_freeze(channel);
+ 
+-	/* RX channels might require a little time to enter STOPPED state */
+-	retries = channel->toward_ipa ? 0 : GSI_CHANNEL_STOP_RX_RETRIES;
+-
+ 	mutex_lock(&gsi->mutex);
+ 
+ 	do {
 -- 
 2.20.1
 
