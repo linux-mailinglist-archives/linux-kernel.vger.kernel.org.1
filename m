@@ -2,90 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C7E2F4C5B
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:41:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 735BD2F4C69
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726900AbhAMNlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 08:41:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725902AbhAMNlb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 08:41:31 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726F0C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 05:40:50 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id n16so3658249wmc.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 05:40:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=AReF/Pb/hU+fqwaRLVxdlFX6l/fsbGy8vg+o0T0tRKo=;
-        b=klqjwJEgVbZYwDtZ6ngZzhrQcr8l5xzwaNa/jRMYreFd07PheGQNQ7ZA8SqjikfyRI
-         sWqBmOVzF3NiyE5aFiYxlF4hPzAVKC6sjr9W26Z6q8fn7rGAQr6jsh4ldZ3+8N5iUs9/
-         GGFKxtfao8oxLbeXjVV09YFcnuOehljiJxbF4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=AReF/Pb/hU+fqwaRLVxdlFX6l/fsbGy8vg+o0T0tRKo=;
-        b=dSnADDbC+CxXAmUELHTIlVP5o/BKjQl38TKl6CplTR17zMIHelNKYQenIHndfneOUH
-         4I57u+XV6qzSaBReNgb+WVFY6i7sfj1MVyEhu5/WpSG10QK1ZuXknihgOqZL7+DHODad
-         kMvp0U+mcpflScqpmiaoJ3goLmkGrRuRrSz0xkmAmchYiwDrl0qBZAfo46YUI4HbMsgt
-         5YkMW7fsev/yTe2K6KS8GfSScdZr1BaHPe8eR+OIsok0G+VUAeb3o718CZOFj00aq1SD
-         W3O1/XP8zk5Q3DQkFTNeFjVWdSeWv+iNvua4N7jjZhxZVy6wZ2KTX2wuGsAm7JLH0+cN
-         R/bw==
-X-Gm-Message-State: AOAM530hF9PZmu5t7Mf2DRUnkThvB4eVC6avsbgOHQRZIMsWrJnh7cvD
-        NS5MhAToxTTyrUZvve2MX3bX5u2Tulhtzp7+
-X-Google-Smtp-Source: ABdhPJxKhyEG2xgFW59hdUdQb6YwumM+sVsWxxlQL5P5k2uIl8u2Bi8Oo09LvqU9dWUR7v+9Ii2rpQ==
-X-Received: by 2002:a1c:6a13:: with SMTP id f19mr2242755wmc.10.1610545248987;
-        Wed, 13 Jan 2021 05:40:48 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id g5sm3741054wro.60.2021.01.13.05.40.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 05:40:48 -0800 (PST)
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Subject: [PATCH 2/2] bdi: Use might_alloc()
-Date:   Wed, 13 Jan 2021 14:40:33 +0100
-Message-Id: <20210113134033.3569683-2-daniel.vetter@ffwll.ch>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210113134033.3569683-1-daniel.vetter@ffwll.ch>
-References: <20210113134033.3569683-1-daniel.vetter@ffwll.ch>
+        id S1726602AbhAMNpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 08:45:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39526 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726143AbhAMNo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 08:44:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D31823339;
+        Wed, 13 Jan 2021 13:44:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610545458;
+        bh=yxQwj7GErWFKst6hClfszM91CiSR/sjTPkADcoTkPH0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YcB7crq3hn52aPbNe0/Ti6ExxAYovh1rGMfLJgiY80ZiCBwTAdK01k7DjSMHeTTTh
+         063QZiOJyfrrssG3CeaAqvSqH8DBGF4OJ0i5aTHZcgcenfO44Auq8lu4oKYwaHI3IB
+         9eB7hMuzH/hkWi8YU/n90wQrXeB+Wk7baC1Hx6Lw3xk/NEB/5hgWs7pIBCx2OVjIYl
+         Owxa4Vacll3dWTFxSazNhWMnqdujGsipk+JBvQFnyjNcdnGv1LxIgTN9FXfMyz0znr
+         oqp651nCUQBI6ebnKxP1+Pc+9ATW113fjboBTwjMTGJonczcNcyUzJWo6BE3l5PqG/
+         49B2XXQtW6LGg==
+Date:   Wed, 13 Jan 2021 13:44:12 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] arm64: make atomic helpers __always_inline
+Message-ID: <20210113134412.GA11757@willie-the-truck>
+References: <20210108092024.4034860-1-arnd@kernel.org>
+ <20210108093258.GB4031@willie-the-truck>
+ <X/jDGbwDNcVrZdDJ@hirez.programming.kicks-ass.net>
+ <20210112102312.GC34326@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112102312.GC34326@C02TD0UTHF1T.local>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that my little helper has landed, use it more. On top of the
-existing check this also uses lockdep through the fs_reclaim
-annotations.
+On Tue, Jan 12, 2021 at 10:23:12AM +0000, Mark Rutland wrote:
+> On Fri, Jan 08, 2021 at 09:39:53PM +0100, Peter Zijlstra wrote:
+> > On Fri, Jan 08, 2021 at 09:32:58AM +0000, Will Deacon wrote:
+> > > Hi Arnd,
+> > > 
+> > > On Fri, Jan 08, 2021 at 10:19:56AM +0100, Arnd Bergmann wrote:
+> > > > From: Arnd Bergmann <arnd@arndb.de>
+> > > > 
+> > > > With UBSAN enabled and building with clang, there are occasionally
+> > > > warnings like
+> > > > 
+> > > > WARNING: modpost: vmlinux.o(.text+0xc533ec): Section mismatch in reference from the function arch_atomic64_or() to the variable .init.data:numa_nodes_parsed
+> > > > The function arch_atomic64_or() references
+> > > > the variable __initdata numa_nodes_parsed.
+> > > > This is often because arch_atomic64_or lacks a __initdata
+> > > > annotation or the annotation of numa_nodes_parsed is wrong.
+> > > > 
+> > > > for functions that end up not being inlined as intended but operating
+> > > > on __initdata variables. Mark these as __always_inline, along with
+> > > > the corresponding asm-generic wrappers.
+> > > 
+> > > Hmm, I don't fully grok this. Why does it matter if a non '__init' function
+> > > is called with a pointer to some '__initdata'? Or is the reference coming
+> > > from somewhere else? (where?).
+> > 
+> > FWIW the x86 atomics are __always_inline in part due to the noinstr
+> > crud, which I imagine resulted in much the same 'fun'.
+> 
+> FWIW, I was planning on doing the same here as part of making arm64
+> noinstr safe, so I reckon we should probably do this regardless of
+> whether it's a complete fix for the section mismatch issue.
 
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
----
- mm/backing-dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Fair enough:
 
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index e33797579338..3bb7807c2f0c 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -580,7 +580,7 @@ struct bdi_writeback *wb_get_create(struct backing_dev_info *bdi,
- {
- 	struct bdi_writeback *wb;
- 
--	might_sleep_if(gfpflags_allow_blocking(gfp));
-+	might_alloc(mem_flags);
- 
- 	if (!memcg_css->parent)
- 		return &bdi->wb;
--- 
-2.29.2
+Acked-by: Will Deacon <will@kernel.org>
 
+Will
