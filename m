@@ -2,151 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188962F4CB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:07:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E41D72F4CB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbhAMOFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:05:14 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:46525 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726398AbhAMOFN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:05:13 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610546694; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=kk8JFI24A13gOE/9zp1nevr+Dpd0ltUMl4RWOmeOO1g=; b=Oz5PiLaKmD0rEQnpwTECmmqH2ILEnYpDG9v54RlId2tWLzB2YJRKNCpo6VZyqxK2pUHhrFJf
- v244SBxdRrNRtbi0wYYTXMyI+/gF5wMxLgNXcsBx4BASiU96r+nKhvktkCKGMwgBtCsxV4LB
- e6epHvzhre+QHmBd8At2dnwXVJA=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5ffefdb5c88af0610783af6b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 14:03:33
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B9735C43462; Wed, 13 Jan 2021 14:03:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from charante-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F0EB3C433C6;
-        Wed, 13 Jan 2021 14:03:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F0EB3C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-From:   Charan Teja Reddy <charante@codeaurora.org>
-To:     akpm@linux-foundation.org, mhocko@suse.com, vbabka@suse.cz,
-        khalid.aziz@oracle.com, ngupta@nitingupta.dev,
-        vinmenon@codeaurora.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Charan Teja Reddy <charante@codeaurora.org>
-Subject: [PATCH] mm/compaction: return proper state in should_proactive_compact_node
-Date:   Wed, 13 Jan 2021 19:33:06 +0530
-Message-Id: <1610546586-18998-1-git-send-email-charante@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S1726289AbhAMOE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:04:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42714 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725858AbhAMOE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 09:04:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85EEE23382;
+        Wed, 13 Jan 2021 14:04:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610546656;
+        bh=+1kxR8vH18rqeWixw2gVBw9HQWeNytBO0/nYFFbzJ/c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FfitW0nLrDbZU4DRMhAsrcPUK84kHTo99ipxUT+qTjxn8ukPBJ7l+0+rqT21iuo1G
+         40ukcqtzPgTVMVHaZNDqAWFEEU2bAZaHzJejOYPhwZ8EQIkQzjBYQo20DSFRjVKne9
+         35oaelCEtSmvuTGT9rXPC/Qg412RKbvSpOpDwLIOuuykpe9G3OKuVY7ZnTPMypDaw8
+         OB9JJP2UjVVQlLpUeE8jcVq+rnqwcZMnruhsFG2YA+T9INRTsBJKIe2nKCo6iXvFWd
+         /FaAVD8RjOU0QIda46vHsN/fxHGtEePEDIiCrnoIsrmQQPU19U8cnKfc5lhXiuhGtV
+         AP/pMNoXO+5TA==
+Date:   Wed, 13 Jan 2021 19:34:12 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 5/7] phy: ti: j721e-wiz: Configure full rate divider for
+ AM64
+Message-ID: <20210113140412.GP2771@vkoul-mobl>
+References: <20201224114250.1083-1-kishon@ti.com>
+ <20201224114250.1083-6-kishon@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201224114250.1083-6-kishon@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-should_proactive_compact_node() returns true when sum of the
-fragmentation score of all the zones in the node is greater than the
-wmark_high of compaction which then triggers the proactive compaction
-that operates on the individual zones of the node. But proactive
-compaction runs on the zone only when the fragmentation score of the
-zone is greater than wmark_low(=wmark_high - 10).
+On 24-12-20, 17:12, Kishon Vijay Abraham I wrote:
+> The frequency of the txmclk between PCIe and SERDES has
+> changed to 250MHz from 500MHz. Configure full rate divider
+> for AM64 accordingly.
+> 
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  drivers/phy/ti/phy-j721e-wiz.c | 43 +++++++++++++++++++++++++++++++---
+>  1 file changed, 40 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/phy/ti/phy-j721e-wiz.c b/drivers/phy/ti/phy-j721e-wiz.c
+> index 2a03191eac64..08acfab1ebe6 100644
+> --- a/drivers/phy/ti/phy-j721e-wiz.c
+> +++ b/drivers/phy/ti/phy-j721e-wiz.c
+> @@ -101,6 +101,13 @@ static const struct reg_field p_standard_mode[WIZ_MAX_LANES] = {
+>  	REG_FIELD(WIZ_LANECTL(3), 24, 25),
+>  };
+>  
+> +static const struct reg_field p0_fullrt_div[WIZ_MAX_LANES] = {
+> +	REG_FIELD(WIZ_LANECTL(0), 22, 23),
+> +	REG_FIELD(WIZ_LANECTL(1), 22, 23),
+> +	REG_FIELD(WIZ_LANECTL(2), 22, 23),
+> +	REG_FIELD(WIZ_LANECTL(3), 22, 23),
+> +};
+> +
+>  static const struct reg_field typec_ln10_swap =
+>  					REG_FIELD(WIZ_SERDES_TYPEC, 30, 30);
+>  
+> @@ -193,6 +200,7 @@ static struct wiz_clk_div_sel clk_div_sel[] = {
+>  enum wiz_type {
+>  	J721E_WIZ_16G,
+>  	J721E_WIZ_10G,
+> +	AM64_WIZ_10G,
+>  };
+>  
+>  #define WIZ_TYPEC_DIR_DEBOUNCE_MIN	100	/* ms */
+> @@ -210,6 +218,7 @@ struct wiz {
+>  	struct regmap_field	*p_align[WIZ_MAX_LANES];
+>  	struct regmap_field	*p_raw_auto_start[WIZ_MAX_LANES];
+>  	struct regmap_field	*p_standard_mode[WIZ_MAX_LANES];
+> +	struct regmap_field	*p0_fullrt_div[WIZ_MAX_LANES];
+>  	struct regmap_field	*pma_cmn_refclk_int_mode;
+>  	struct regmap_field	*pma_cmn_refclk_mode;
+>  	struct regmap_field	*pma_cmn_refclk_dig_div;
+> @@ -380,7 +389,7 @@ static int wiz_regfield_init(struct wiz *wiz)
+>  	}
+>  
+>  	clk_mux_sel = &wiz->clk_mux_sel[REFCLK_DIG];
+> -	if (wiz->type == J721E_WIZ_10G)
+> +	if (wiz->type == J721E_WIZ_10G || wiz->type == AM64_WIZ_10G)
+>  		clk_mux_sel->field =
+>  			devm_regmap_field_alloc(dev, regmap,
+>  						refclk_dig_sel_10g);
+> @@ -424,6 +433,14 @@ static int wiz_regfield_init(struct wiz *wiz)
+>  				i);
+>  			return PTR_ERR(wiz->p_standard_mode[i]);
+>  		}
+> +
+> +		wiz->p0_fullrt_div[i] =
+> +			devm_regmap_field_alloc(dev, regmap, p0_fullrt_div[i]);
+> +		if (IS_ERR(wiz->p0_fullrt_div[i])) {
+> +			dev_err(dev, "P%d_FULLRT_DIV reg field init failed\n",
+> +				i);
 
-This means that the sum of the fragmentation scores of all the zones can
-exceed the wmark_high but individual zone scores can still be less than
-the wmark_low which makes the unnecessary trigger of the proactive
-compaction only to return doing nothing.
+single line?
 
-Another issue with the return of proactive compaction with out even
-trying is its deferral. It is simply deferred for 1 <<
-COMPACT_MAX_DEFER_SHIFT if the scores across the proactive compaction is
-same, thinking that compaction didn't make any progress but in reality
-it didn't even try. With the delay between successive retries for
-proactive compaction is 500msec, it can result into the deferral for
-~30sec with out even trying the proactive compaction.
+> +			return PTR_ERR(wiz->p0_fullrt_div[i]);
+> +		}
+>  	}
+>  
+>  	wiz->typec_ln10_swap = devm_regmap_field_alloc(dev, regmap,
+> @@ -719,6 +736,19 @@ static int wiz_phy_reset_assert(struct reset_controller_dev *rcdev,
+>  	return ret;
+>  }
+>  
+> +static int wiz_phy_fullrt_div(struct wiz *wiz, int lane)
+> +{
+> +	int ret = 0;
 
-Test scenario is that: compaction_proactiveness=50 thus the wmark_low =
-50 and wmark_high = 60. System have 2 zones(Normal and Movable) with
-sizes 5GB and 6GB respectively. After opening some apps on the android,
-the fragmentation scores of these zones are 47 and 49 respectively.
-Since the sum of these fragmentation scores are above the wmark_high
-which triggers the proactive compaction and there since the individual
-zone scores are below wmark_low, it returns without trying the
-compaction. As a result the fragmentation scores of the zones are still
-47 and 49 which makes the existing logic to defer the compaction
-thinking that noprogress is made across the compaction.
+drop the variable..
 
-So, run the proactive compaction on the node zones only when atleast one
-of the zones fragmentation score is greater than wmark_low. This avoids
-the unnecessary deferral and retries of the compaction.
+> +
+> +	if (wiz->type != AM64_WIZ_10G)
+> +		return 0;
+> +
+> +	if (wiz->lane_phy_type[lane] == PHY_TYPE_PCIE)
+> +		ret = regmap_field_write(wiz->p0_fullrt_div[lane], 0x1);
 
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
----
- mm/compaction.c | 27 +++++++++++++++++++++++++--
- 1 file changed, 25 insertions(+), 2 deletions(-)
+return regmap_
+> +
+> +	return ret;
 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index e5acb97..f7a772a 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -1964,6 +1964,26 @@ static unsigned int fragmentation_score_node(pg_data_t *pgdat)
- 	return score;
- }
- 
-+/*
-+ * Returns the maximum of fragmentation scores of zones in a node. This is
-+ * used in taking the decission of whether to trigger the proactive compaction
-+ * on the zones of this node.
-+ */
-+static unsigned int fragmentation_score_node_zones_max(pg_data_t *pgdat)
-+{
-+	int zoneid;
-+	unsigned int max = 0;
-+
-+	for (zoneid = 0; zoneid < MAX_NR_ZONES; zoneid++) {
-+		struct zone *zone;
-+
-+		zone = &pgdat->node_zones[zoneid];
-+		max = max_t(unsigned int, fragmentation_score_zone(zone), max);
-+	}
-+
-+	return max;
-+}
-+
- static unsigned int fragmentation_score_wmark(pg_data_t *pgdat, bool low)
- {
- 	unsigned int wmark_low;
-@@ -1979,13 +1999,16 @@ static unsigned int fragmentation_score_wmark(pg_data_t *pgdat, bool low)
- 
- static bool should_proactive_compact_node(pg_data_t *pgdat)
- {
--	int wmark_high;
-+	int wmark_low, wmark_high;
- 
- 	if (!sysctl_compaction_proactiveness || kswapd_is_running(pgdat))
- 		return false;
- 
- 	wmark_high = fragmentation_score_wmark(pgdat, false);
--	return fragmentation_score_node(pgdat) > wmark_high;
-+	wmark_low = fragmentation_score_wmark(pgdat, true);
-+
-+	return fragmentation_score_node(pgdat) > wmark_high &&
-+		fragmentation_score_node_zones_max(pgdat) > wmark_low;
- }
- 
- static enum compact_result __compact_finished(struct compact_control *cc)
+return 0
+
+> +}
+> +
+>  static int wiz_phy_reset_deassert(struct reset_controller_dev *rcdev,
+>  				  unsigned long id)
+>  {
+> @@ -742,6 +772,10 @@ static int wiz_phy_reset_deassert(struct reset_controller_dev *rcdev,
+>  		return ret;
+>  	}
+>  
+> +	ret = wiz_phy_fullrt_div(wiz, id - 1);
+> +	if (ret)
+> +		return ret;
+> +
+>  	if (wiz->lane_phy_type[id - 1] == PHY_TYPE_DP)
+>  		ret = regmap_field_write(wiz->p_enable[id - 1], P_ENABLE);
+>  	else
+> @@ -769,6 +803,9 @@ static const struct of_device_id wiz_id_table[] = {
+>  	{
+>  		.compatible = "ti,j721e-wiz-10g", .data = (void *)J721E_WIZ_10G
+>  	},
+> +	{
+> +		.compatible = "ti,am64-wiz-10g", .data = (void *)AM64_WIZ_10G
+> +	},
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(of, wiz_id_table);
+> @@ -904,14 +941,14 @@ static int wiz_probe(struct platform_device *pdev)
+>  	wiz->dev = dev;
+>  	wiz->regmap = regmap;
+>  	wiz->num_lanes = num_lanes;
+> -	if (wiz->type == J721E_WIZ_10G)
+> +	if (wiz->type == J721E_WIZ_10G || wiz->type == AM64_WIZ_10G)
+>  		wiz->clk_mux_sel = clk_mux_sel_10g;
+>  	else
+>  		wiz->clk_mux_sel = clk_mux_sel_16g;
+>  
+>  	wiz->clk_div_sel = clk_div_sel;
+>  
+> -	if (wiz->type == J721E_WIZ_10G)
+> +	if (wiz->type == J721E_WIZ_10G || wiz->type == AM64_WIZ_10G)
+>  		wiz->clk_div_sel_num = WIZ_DIV_NUM_CLOCKS_10G;
+>  	else
+>  		wiz->clk_div_sel_num = WIZ_DIV_NUM_CLOCKS_16G;
+> -- 
+> 2.17.1
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
-
+~Vinod
