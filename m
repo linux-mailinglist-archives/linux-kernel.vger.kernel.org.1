@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66CD2F45EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D3B2F45EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:14:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbhAMIJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:09:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39874 "EHLO
+        id S1726929AbhAMIJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 03:09:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726878AbhAMIJW (ORCPT
+        with ESMTP id S1726881AbhAMIJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 13 Jan 2021 03:09:22 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47017C0617AB
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:08:11 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id 3so710982wmg.4
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:08:11 -0800 (PST)
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7564FC0617B0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:08:12 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id g10so714156wmh.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:08:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=upsPNw/tEbA/WXl0QtiBmIh69kJTZiyD6g31r7koW20=;
-        b=chUfkrycKg5MIRF9H9qdA6JCg9Bpnh3Nf3wLevITHavXTmsdYBUZOPs9bfiTizkdSk
-         0OLxGVTT9FC7RBTXPBcpyYdqbU2HNc/VPT1v/JlNog0IH55G/nTtfwfUTsF5zar+QFZm
-         npR0p2Nednhpi6YDfOU66d9OcWpL4dJ+bHT3UVW2U8gIKUsHTP/Qp7BzfbqTcVRiOewI
-         b3gcVybTv6EjUSSvq7vzIg2249S0avETtwtS9oVo326vf5EgzXaqrTc0H0s8uT+JDzia
-         MQK50s1UwwYe4CBFNuu7jHfjwtiihoKelCWVvTBy3NRrghJmvgZYgrPpbx5oPBJ+5lT0
-         a0mQ==
+        bh=ByKcZ/QO4rFJCc5FU+7eSJHbQTpm5hWIxSF+UVUytQ8=;
+        b=NAq8a9+7iN3iO3+wGaICi9lECx6GuUsRdw34OqLPJd3ZnN4FlYdrKOqwub8Fk6eMfh
+         5Bilb12AFMTIT63HXIBA5+LWSgS7rO3RyBoAY3n95Hlk3xVW0JgnsHHsVlj2mMd6PZFj
+         LWY9sx4YPT9Qp+J9Yw6KW5C4y7Y/amKNrO0DbOBA8TI4JPuT8DOnjpeYTsqac0Kl1uln
+         ATiwk9dlj8bfyv6wJayo/nqxgUtP6p5On60pWJQN4v5ZO/xC8g6ekPxEM5cSCyzE1IOe
+         fUpAFplHTp2bmIC4n/oV9/ggXw96rpMlD57erX667d2A2c5jRo5GwBM1r1F9xccT2vUn
+         BrYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=upsPNw/tEbA/WXl0QtiBmIh69kJTZiyD6g31r7koW20=;
-        b=SVM4puH/80aKXAucs3yMtIvrivJ16LjkUI5kktmIdiUIEIQd39bAQcRWIibgWGOdlT
-         yE50FTm9chYQuuz7WRkqD7JMz8p7jbCLSVnF8HH4bffnsuoSsQe97L+BQMNxZRGow0Di
-         EZ2gXwuqeup3RJ6Ahi5VwHm2958n/NzJ9YU2nqKt9RN3qWUrEvC/PZySyZUbs9iYIxSr
-         lZ3MRfLAQGzX8bt/XbJBTbvl8RD6jkOGgS1NlzBXDhBUjJO6oiL4zIDqMbygAJEq8Ron
-         BugitloLcH/dmNItDXQ5gysxiOiXhibgLnXLEJLZG8CAp+FIVvf8ARafqZ3/Jy56CSXd
-         +Ulw==
-X-Gm-Message-State: AOAM53247urIJGRApoM5YZI0SYLVzZgrraKS94NhQCrJ5/IQR4Lw3TRN
-        sF5LXafk10O7LA9bL0uLLob5GQ==
-X-Google-Smtp-Source: ABdhPJzlIQ1bUxW4me+IU3JTzaO6MgEgBB9EKMUF6e/kVElBQj0xqPCpDrNdvq8TVktKdTqPghHJuw==
-X-Received: by 2002:a7b:c19a:: with SMTP id y26mr932035wmi.20.1610525290060;
-        Wed, 13 Jan 2021 00:08:10 -0800 (PST)
+        bh=ByKcZ/QO4rFJCc5FU+7eSJHbQTpm5hWIxSF+UVUytQ8=;
+        b=QIS3UvUCYu8VexNyAZb7eaF2ywHBmS5x2crT20o+N2o3gfT01DthJSQvDBB4ejK73g
+         mG2dNorQ4mPvgWAb/OP/ewsjvFEOYpJAUxINiuPkvfAm4eWu+mUoinkImaJttzax2Ic9
+         TqdHyHX40L5tM02Sm8+MQkJgx6az8rCgmeB5SW3kG1aLBrd9Irqz6jRO5Y3sxVYDCyXZ
+         Bc61YV8JCAhsAhLJVptbLFdFyP2WECgqXNebrJPN0l1XPkpAfx8OgcP/J3xzFodGt76R
+         AC/VS7LcpEtzUT8YVfdhnbtAPveW6kyV60dMJZf25RyvTfaykXP1rSdfobU2B8G8/rcp
+         DHNQ==
+X-Gm-Message-State: AOAM533NC2V1lEUVhOxA4Vjyrcvnucd4E0TkjKq40QUpIENBpZSWEFgr
+        CrDucdsqTFNCiIhHYZQK1KsTmw==
+X-Google-Smtp-Source: ABdhPJyixOcRMntyyEbwvGMK96ScnWqBXZFNvIivHM7pJ6Fo8CExy2eDANXqae2dONdp61qCKvDjmQ==
+X-Received: by 2002:a7b:c389:: with SMTP id s9mr909483wmj.159.1610525291245;
+        Wed, 13 Jan 2021 00:08:11 -0800 (PST)
 Received: from dell.default ([91.110.221.229])
-        by smtp.gmail.com with ESMTPSA id r20sm1642486wmh.15.2021.01.13.00.08.08
+        by smtp.gmail.com with ESMTPSA id r20sm1642486wmh.15.2021.01.13.00.08.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 00:08:09 -0800 (PST)
+        Wed, 13 Jan 2021 00:08:10 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -56,11 +56,12 @@ Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 11/30] drm/amd/display/dc/dce100/Makefile: Ignore -Woverride-init warning
-Date:   Wed, 13 Jan 2021 08:07:33 +0000
-Message-Id: <20210113080752.1003793-12-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>,
+        Anthony Koo <Anthony.Koo@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH 12/30] drm/amd/display/dc/dce100/dce100_resource: Include our own header containing prototypes
+Date:   Wed, 13 Jan 2021 08:07:34 +0000
+Message-Id: <20210113080752.1003793-13-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210113080752.1003793-1-lee.jones@linaro.org>
 References: <20210113080752.1003793-1-lee.jones@linaro.org>
@@ -74,26 +75,18 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Fixes the following W=1 kernel build warning(s):
 
  In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/dce100/dce100_resource.c:54:
- drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_10_0_sh_mask.h:5084:45: warning: initialized field overwritten [-Woverride-init]
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_mem_input.h:155:28: note: in expansion of macro ‘GRPH_CONTROL__GRPH_NUM_BANKS__SHIFT’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_mem_input.h:170:2: note: in expansion of macro ‘SFB’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_mem_input.h:291:2: note: in expansion of macro ‘MI_GFX8_TILE_MASK_SH_LIST’
  drivers/gpu/drm/amd/amdgpu/../display/dc/dce100/dce100_resource.c:537:3: note: in expansion of macro ‘MI_DCE8_MASK_SH_LIST’
- drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_10_0_sh_mask.h:5084:45: note: (near initialization for ‘mi_shifts.GRPH_NUM_BANKS’)
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_mem_input.h:155:28: note: in expansion of macro ‘GRPH_CONTROL__GRPH_NUM_BANKS__SHIFT’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_mem_input.h:170:2: note: in expansion of macro ‘SFB’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_mem_input.h:291:2: note: in expansion of macro ‘MI_GFX8_TILE_MASK_SH_LIST’
  drivers/gpu/drm/amd/amdgpu/../display/dc/dce100/dce100_resource.c:537:3: note: in expansion of macro ‘MI_DCE8_MASK_SH_LIST’
- drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_10_0_sh_mask.h:5083:43: warning: initialized field overwritten [-Woverride-init]
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_mem_input.h:155:28: note: in expansion of macro ‘GRPH_CONTROL__GRPH_NUM_BANKS_MASK’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_mem_input.h:170:2: note: in expansion of macro ‘SFB’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_mem_input.h:291:2: note: in expansion of macro ‘MI_GFX8_TILE_MASK_SH_LIST’
  drivers/gpu/drm/amd/amdgpu/../display/dc/dce100/dce100_resource.c:542:3: note: in expansion of macro ‘MI_DCE8_MASK_SH_LIST’
- drivers/gpu/drm/amd/amdgpu/../include/asic_reg/dce/dce_10_0_sh_mask.h:5083:43: note: (near initialization for ‘mi_masks.GRPH_NUM_BANKS’)
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_mem_input.h:155:28: note: in expansion of macro ‘GRPH_CONTROL__GRPH_NUM_BANKS_MASK’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_mem_input.h:170:2: note: in expansion of macro ‘SFB’
- drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_mem_input.h:291:2: note: in expansion of macro ‘MI_GFX8_TILE_MASK_SH_LIST’
  drivers/gpu/drm/amd/amdgpu/../display/dc/dce100/dce100_resource.c:542:3: note: in expansion of macro ‘MI_DCE8_MASK_SH_LIST’
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce100/dce100_resource.c:547:2: note: in expansion of macro ‘DCE10_AUX_MASK_SH_LIST’
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce100/dce100_resource.c:547:2: note: in expansion of macro ‘DCE10_AUX_MASK_SH_LIST’
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce100/dce100_resource.c:551:2: note: in expansion of macro ‘DCE10_AUX_MASK_SH_LIST’
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce100/dce100_resource.c:551:2: note: in expansion of macro ‘DCE10_AUX_MASK_SH_LIST’
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce100/dce100_resource.c:889:16: warning: no previous prototype for ‘dce100_add_stream_to_ctx’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce100/dce100_resource.c:916:16: warning: no previous prototype for ‘dce100_validate_plane’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce100/dce100_resource.c:925:24: warning: no previous prototype for ‘dce100_find_first_free_match_stream_enc_for_link’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce100/dce100_resource.c:1156:23: warning: no previous prototype for ‘dce100_create_resource_pool’ [-Wmissing-prototypes]
 
 Cc: Harry Wentland <harry.wentland@amd.com>
 Cc: Leo Li <sunpeng.li@amd.com>
@@ -101,26 +94,27 @@ Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Anthony Koo <Anthony.Koo@amd.com>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/display/dc/dce100/Makefile | 2 ++
+ drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dce100/Makefile b/drivers/gpu/drm/amd/display/dc/dce100/Makefile
-index a822d4e2a1693..ff20c47f559e3 100644
---- a/drivers/gpu/drm/amd/display/dc/dce100/Makefile
-+++ b/drivers/gpu/drm/amd/display/dc/dce100/Makefile
-@@ -23,6 +23,8 @@
- # Makefile for the 'controller' sub-component of DAL.
- # It provides the control and status of HW CRTC block.
+diff --git a/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c b/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
+index 648169086bcf8..635ef0e7c7826 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
+@@ -58,6 +58,8 @@
+ #include "dce/dce_abm.h"
+ #include "dce/dce_i2c.h"
  
-+CFLAGS_$(AMDDALPATH)/dc/dce100/dce100_resource.o = $(call cc-disable-warning, override-init)
++#include "dce100_resource.h"
 +
- DCE100 = dce100_resource.o dce100_hw_sequencer.o
- 
- AMD_DAL_DCE100 = $(addprefix $(AMDDALPATH)/dc/dce100/,$(DCE100))
+ #ifndef mmMC_HUB_RDREQ_DMIF_LIMIT
+ #include "gmc/gmc_8_2_d.h"
+ #include "gmc/gmc_8_2_sh_mask.h"
 -- 
 2.25.1
 
