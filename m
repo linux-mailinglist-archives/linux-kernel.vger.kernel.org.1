@@ -2,116 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B57E2F5196
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:01:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 291A42F5198
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:01:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728063AbhAMSAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 13:00:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54804 "EHLO
+        id S1728178AbhAMSBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 13:01:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727852AbhAMSAl (ORCPT
+        with ESMTP id S1728066AbhAMSBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 13:00:41 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE1BC061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 10:00:01 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id md11so1612662pjb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 10:00:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=M49+su6FFncBgS/CCqedl4zaR41swmris5y2FQmmX8Q=;
-        b=Qp2ZpgMDB8wPfXkD1qxAPN+S6HJHqkyeiYeRindACAarfWpMuamYhPkgCHfb764Zc+
-         GwSLBKbmWEekmGCbKIrA8LrNmy2kzc4XglmheYCjmrA7dQ/cA21T5o7zs80a1wSTFiyu
-         hIQ0TX9RDpD8TSMaCgDUoF/P830n12KZOOmQQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=M49+su6FFncBgS/CCqedl4zaR41swmris5y2FQmmX8Q=;
-        b=K8ep39D4capNuMa1XSIGdm6OlAeOqyNzFZLD+apsH3VSwwEtK4G0vr87Mn5K368M3H
-         tqxM7QFPt3CUhNyFPI9fg9hkMrRmhE+S2jYU7fupd7YXGbj1DS5bf5n6w4LHh8tpdMB8
-         x7MoK7ewQbkm7741ZwZbgWJiMgJt6w0QnUCE8caSE//qJRXMxrdr0yYMXIMNUmrDRRoh
-         nuTQEMK9CCjxaJeve+MANpwo/aaJzAZhEtA/Kme1fLN7o3N7lA3mVJ83m23DS6X7iEbN
-         /Rr8sKnZJ/uGC+M9ltfkszUVY0iQ6PLsywMfBGjJcFcG/fp8kO2FEEL3eD6zlbpciPH9
-         bO4g==
-X-Gm-Message-State: AOAM531pEHreD8IflnKaJAv1wq/4plX4XN5RqtRcXAgxe48mLyKVA7ae
-        p3d8+6kgGhCASHN37xG2/piwva1joZ5Rug==
-X-Google-Smtp-Source: ABdhPJzDPnT7NEWPzGgmFD5HvClTVipXiJQcVnJAsKqYUmyLS4WAIKC6jAGAix2B7xquczdF+zO9Vw==
-X-Received: by 2002:a17:902:b7c3:b029:da:74c3:427 with SMTP id v3-20020a170902b7c3b02900da74c30427mr3449507plz.38.1610560801075;
-        Wed, 13 Jan 2021 10:00:01 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x23sm3944638pge.47.2021.01.13.10.00.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 10:00:00 -0800 (PST)
-Date:   Wed, 13 Jan 2021 09:59:59 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Valdis =?utf-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] gcc-plugins: fix gcc 11 indigestion with plugins...
-Message-ID: <202101130959.596D763@keescook>
-References: <38485.1610500756@turing-police>
- <20210113170836.xvlq5xlmkjpi4zx7@treble>
+        Wed, 13 Jan 2021 13:01:19 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B720C061794;
+        Wed, 13 Jan 2021 10:00:39 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0b5c0053dfdcdd1c139e2a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:5c00:53df:dcdd:1c13:9e2a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9CF011EC0423;
+        Wed, 13 Jan 2021 19:00:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1610560837;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=7Dl/NntSxZBgafKSC5tYlc12cqcH/Ru336h2E30gX+0=;
+        b=VFmaO4SIugKI65nLpw5NA1V/knDkr51kV3BjJfjTE/PKk32vLaiOvUj2wM2QrhG0KBA9Zm
+        EBk/I0xXXOZEMSrYlFtHz/sH6XF97B2UrU9vdf+I+vr2rMctiPBme3iBgKDukMjm29laGx
+        KqSyJQBi/diYHa6U5YtW73eJUCOsm/c=
+Date:   Wed, 13 Jan 2021 19:00:33 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>
+Subject: Re: [PATCH v3] x86/sgx: Synchronize encl->srcu in sgx_encl_release().
+Message-ID: <20210113180033.GG16960@zn.tnic>
+References: <20201216134920.21161-1-jarkko@kernel.org>
+ <20210105145749.GF28649@zn.tnic>
+ <X/zoarV7gd/LNo4A@kernel.org>
+ <20210112183550.GK13086@zn.tnic>
+ <X/8rX1yFxiN79QCn@kernel.org>
+ <20210113174602.GV2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210113170836.xvlq5xlmkjpi4zx7@treble>
+In-Reply-To: <20210113174602.GV2743@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 11:08:36AM -0600, Josh Poimboeuf wrote:
-> On Tue, Jan 12, 2021 at 08:19:16PM -0500, Valdis Klētnieks wrote:
-> > Fedora Rawhide has started including gcc 11,and the g++ compiler
-> > throws a wobbly when it hits scripts/gcc-plugins:
-> > 
-> >   HOSTCXX scripts/gcc-plugins/latent_entropy_plugin.so
-> > In file included from /usr/include/c++/11/type_traits:35,
-> >                  from /usr/lib/gcc/x86_64-redhat-linux/11/plugin/include/system.h:244,
-> >                  from /usr/lib/gcc/x86_64-redhat-linux/11/plugin/include/gcc-plugin.h:28,
-> >                  from scripts/gcc-plugins/gcc-common.h:7,
-> >                  from scripts/gcc-plugins/latent_entropy_plugin.c:78:
-> > /usr/include/c++/11/bits/c++0x_warning.h:32:2: error: #error This file requires compiler and library support for the ISO
-> >  C++ 2011 standard. This support must be enabled with the -std=c++11 or -std=gnu++11 compiler options.
-> >    32 | #error This file requires compiler and library support \
-> > 
-> > Patch is more complicated than would otherwise be needed, because
-> > older gcc (4.9, 5.4) have gnu++11 but throw an error due to a gcc bug
-> > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=69959
-> > 
-> > Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
-> > ---
-> > diff --git a/scripts/gcc-plugins/Makefile b/scripts/gcc-plugins/Makefile
-> > index d66949bfeba4..cc779973724a 100644
-> > --- a/scripts/gcc-plugins/Makefile
-> > +++ b/scripts/gcc-plugins/Makefile
-> > @@ -21,10 +21,13 @@ always-y += $(GCC_PLUGIN)
-> >  
-> >  GCC_PLUGINS_DIR = $(shell $(CC) -print-file-name=plugin)
-> >  
-> > +# need gnu++11 for gcc 11, but 4.9 and 5.4 need gnu++98
-> > +GCC_FLAVOR = $(call cc-ifversion, -ge, 1100, 11, 98)
-> > +
-> >  plugin_cxxflags	= -Wp,-MMD,$(depfile) $(KBUILD_HOSTCXXFLAGS) -fPIC \
-> > -		   -I $(GCC_PLUGINS_DIR)/include -I $(obj) -std=gnu++98 \
-> > +		   -I $(GCC_PLUGINS_DIR)/include -I $(obj) -std=gnu++$(GCC_FLAVOR) \
-> >  		   -fno-rtti -fno-exceptions -fasynchronous-unwind-tables \
-> > -		   -ggdb -Wno-narrowing -Wno-unused-variable -Wno-c++11-compat \
-> > +		   -ggdb -Wno-narrowing -Wno-unused-variable \
-> >  		   -Wno-format-diag
-> >  
-> >  plugin_ldflags	= -shared
-> 
-> The first patch has already been merged into Linus' tree, so this
-> probably should be an incremental fix on top, with a Fixes: tag.
+On Wed, Jan 13, 2021 at 09:46:02AM -0800, Paul E. McKenney wrote:
 
-Yes, please. :)
+< Lemme trim that mail fat >
+
+> It seems to me that loading and unloading SGX enclaves qualifies as a
+> configuration operation, so use of synchronize_srcu_expedited() should be
+> just fine in that case.  This of course implies that SGX enclaves should
+> not be loaded or unloaded while an aggressive real-time application
+> is running.  Which might well be the case for other reasons.
+
+I believe RT and SGX should be orthogonal to each-other unless someone rolls out
+of the woodwork, wanting to run realtime enclaves... Ewww.
+
+> So I believe synchronize_srcu_expedited() should be fine in this case.
+
+Thx.
 
 -- 
-Kees Cook
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
