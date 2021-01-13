@@ -2,175 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 449122F585F
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:02:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3AB2F583D
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:01:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728852AbhANCSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:18:17 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34836 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728380AbhAMVNg (ORCPT
+        id S1727787AbhANCQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 21:16:27 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:38516 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729053AbhAMVQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 16:13:36 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10DL30Eg133717;
-        Wed, 13 Jan 2021 16:11:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=QhuL9Gz2bxSFv4rXqkxZpAJq3ZeRITP9eZdUj9QObPw=;
- b=k1RFcphbsG2oKqUQ+/BhkBZbB/T0zxfrXdrw0CgWrZr2hQ72eCyM4VlQQ9g9hFJ1/KEu
- EfhQWFNmeTZ+Ad5hi6oxxHDXyx66glvQw4WGTSCRs2cjxildWB+9SeI9SnIVbyJpO6Jw
- cYF1iOQLl/bbxyT1jeKq7cqREfu1f8R0DcJGpQVj4AyPcH7tvZIYXLwFA6PtbvV9SMcs
- siArdxDixICILS4WxRdsBNpEaPduGq4ILpajyce6q8z9ug22DE3bgEbcNtCyvXBXmPA+
- TfJq2UiE686tV/Du/nh84Xi1jlyBPv+K0GGdlGbe+XQrjh+mOyAi8+hH8UzSqOQIHIqC Ug== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36284jgmvc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Jan 2021 16:11:18 -0500
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10DL3e7i140759;
-        Wed, 13 Jan 2021 16:11:18 -0500
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36284jgmun-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Jan 2021 16:11:18 -0500
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10DL3H72023444;
-        Wed, 13 Jan 2021 21:11:16 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma05fra.de.ibm.com with ESMTP id 35y448auv3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Jan 2021 21:11:16 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10DLBEen40632698
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Jan 2021 21:11:14 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E3AF642041;
-        Wed, 13 Jan 2021 21:11:13 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 74C4A42049;
-        Wed, 13 Jan 2021 21:11:10 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.57.196])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 13 Jan 2021 21:11:10 +0000 (GMT)
-Message-ID: <71cddb6c8676ccd63c89364d805cfca76d32cb6e.camel@linux.ibm.com>
-Subject: Re: [PATCH v10 8/8] selinux: include a consumer of the new IMA
- critical data hook
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, tyhicks@linux.microsoft.com,
-        sashal@kernel.org, James Morris <jmorris@namei.org>,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Date:   Wed, 13 Jan 2021 16:11:09 -0500
-In-Reply-To: <CAHC9VhTzaQ_q8gJ0oeok_yJ54XLETNvOuhhKnyRwgqsqvpBLCw@mail.gmail.com>
-References: <20210108040708.8389-1-tusharsu@linux.microsoft.com>
-         <20210108040708.8389-9-tusharsu@linux.microsoft.com>
-         <CAHC9VhSJk0wG=WzO3bwsueiy19mMi9m6MamTrQfH8C=gXUtvGw@mail.gmail.com>
-         <97328fc71687a0e1c327f6821548be9ba35bb193.camel@linux.ibm.com>
-         <CAHC9VhTzaQ_q8gJ0oeok_yJ54XLETNvOuhhKnyRwgqsqvpBLCw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
+        Wed, 13 Jan 2021 16:16:38 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 0176C1F44F75
+Subject: Re: [PATCH 2/3] soc: mediatek: pm-domains: Add domain regulator
+ supply
+To:     Nicolas Boichat <drinkcat@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Weiyi Lu <weiyi.lu@mediatek.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+References: <20210107104915.2888408-1-hsinyi@chromium.org>
+ <20210107104915.2888408-3-hsinyi@chromium.org>
+ <CANMq1KAWCbtpJWMG2nE6k1hOzA=hCWYJxzC7RXb_voEri0v2=g@mail.gmail.com>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <a6cea5be-f7ee-a09c-8300-69792cfa02bb@collabora.com>
+Date:   Wed, 13 Jan 2021 22:16:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <CANMq1KAWCbtpJWMG2nE6k1hOzA=hCWYJxzC7RXb_voEri0v2=g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-13_11:2021-01-13,2021-01-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 bulkscore=0 phishscore=0 mlxlogscore=999 spamscore=0
- clxscore=1015 mlxscore=0 impostorscore=0 lowpriorityscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101130124
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-01-13 at 14:19 -0500, Paul Moore wrote:
-> On Wed, Jan 13, 2021 at 2:13 PM Mimi Zohar <zohar@linux.ibm.com> wrote:
-> > On Tue, 2021-01-12 at 11:27 -0500, Paul Moore wrote:
-> > > On Thu, Jan 7, 2021 at 11:07 PM Tushar Sugandhi
-> > > <tusharsu@linux.microsoft.com> wrote:
-> > > > From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> > > >
-> > > > SELinux stores the active policy in memory, so the changes to this data
-> > > > at runtime would have an impact on the security guarantees provided
-> > > > by SELinux.  Measuring in-memory SELinux policy through IMA subsystem
-> > > > provides a secure way for the attestation service to remotely validate
-> > > > the policy contents at runtime.
-> > > >
-> > > > Measure the hash of the loaded policy by calling the IMA hook
-> > > > ima_measure_critical_data().  Since the size of the loaded policy
-> > > > can be large (several MB), measure the hash of the policy instead of
-> > > > the entire policy to avoid bloating the IMA log entry.
-> > > >
-> > > > To enable SELinux data measurement, the following steps are required:
-> > > >
-> > > > 1, Add "ima_policy=critical_data" to the kernel command line arguments
-> > > >    to enable measuring SELinux data at boot time.
-> > > > For example,
-> > > >   BOOT_IMAGE=/boot/vmlinuz-5.10.0-rc1+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset security=selinux ima_policy=critical_data
-> > > >
-> > > > 2, Add the following rule to /etc/ima/ima-policy
-> > > >    measure func=CRITICAL_DATA label=selinux
-> > > >
-> > > > Sample measurement of the hash of SELinux policy:
-> > > >
-> > > > To verify the measured data with the current SELinux policy run
-> > > > the following commands and verify the output hash values match.
-> > > >
-> > > >   sha256sum /sys/fs/selinux/policy | cut -d' ' -f 1
-> > > >
-> > > >   grep "selinux-policy-hash" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | tail -1 | cut -d' ' -f 6
-> > > >
-> > > > Note that the actual verification of SELinux policy would require loading
-> > > > the expected policy into an identical kernel on a pristine/known-safe
-> > > > system and run the sha256sum /sys/kernel/selinux/policy there to get
-> > > > the expected hash.
-> > > >
-> > > > Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> > > > Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-> > > > Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> > > > ---
-> > > >  Documentation/ABI/testing/ima_policy |  3 +-
-> > > >  security/selinux/Makefile            |  2 +
-> > > >  security/selinux/ima.c               | 64 ++++++++++++++++++++++++++++
-> > > >  security/selinux/include/ima.h       | 24 +++++++++++
-> > > >  security/selinux/include/security.h  |  3 +-
-> > > >  security/selinux/ss/services.c       | 64 ++++++++++++++++++++++++----
-> > > >  6 files changed, 149 insertions(+), 11 deletions(-)
-> > > >  create mode 100644 security/selinux/ima.c
-> > > >  create mode 100644 security/selinux/include/ima.h
-> > >
-> > > I remain concerned about the possibility of bypassing a measurement by
-> > > tampering with the time, but I appear to be the only one who is
-> > > worried about this so I'm not going to block this patch on those
-> > > grounds.
-> > >
-> > > Acked-by: Paul Moore <paul@paul-moore.com>
-> >
-> > Thanks, Paul.
-> >
-> > Including any unique string would cause the buffer hash to change,
-> > forcing a new measurement.  Perhaps they were concerned with
-> > overflowing a counter.
+Hi Hsin-Yi,
+
+Thank you for the patch.
+
+On 10/1/21 2:49, Nicolas Boichat wrote:
+> On Thu, Jan 7, 2021 at 6:49 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>>
+>> Some power domains (eg. mfg) needs to turn on power supply before power
+>> on.
+>>
+>> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 > 
-> My understanding is that Lakshmi wanted to force a new measurement
-> each time and felt using a timestamp would be the best way to do that.
-> A counter, even if it wraps, would have a different value each time
-> whereas a timestamp is vulnerable to time adjustments.  While a
-> properly controlled and audited system could be configured and
-> monitored to detect such an event (I *think*), why rely on that if it
-> isn't necessary?
+> Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
+> 
 
-Why are you saying that even if the counter wraps a new measurement is
-guaranteed.   I agree with the rest of what you said.
-
-Mimi
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
 
+>> ---
+>>  drivers/soc/mediatek/mt8183-pm-domains.h |  1 +
+>>  drivers/soc/mediatek/mtk-pm-domains.c    | 36 +++++++++++++++++++++++-
+>>  drivers/soc/mediatek/mtk-pm-domains.h    |  1 +
+>>  3 files changed, 37 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/soc/mediatek/mt8183-pm-domains.h b/drivers/soc/mediatek/mt8183-pm-domains.h
+>> index 8d996c5d2682d..aa5230e6c12f8 100644
+>> --- a/drivers/soc/mediatek/mt8183-pm-domains.h
+>> +++ b/drivers/soc/mediatek/mt8183-pm-domains.h
+>> @@ -38,6 +38,7 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>>                 .ctl_offs = 0x0338,
+>>                 .sram_pdn_bits = GENMASK(8, 8),
+>>                 .sram_pdn_ack_bits = GENMASK(12, 12),
+>> +               .caps = MTK_SCPD_DOMAIN_SUPPLY,
+>>         },
+>>         [MT8183_POWER_DOMAIN_MFG_CORE0] = {
+>>                 .sta_mask = BIT(7),
+>> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
+>> index fb70cb3b07b36..ae255aa7b1a97 100644
+>> --- a/drivers/soc/mediatek/mtk-pm-domains.c
+>> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
+> [snip]
+>> @@ -275,6 +295,7 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+>>  {
+>>         const struct scpsys_domain_data *domain_data;
+>>         struct scpsys_domain *pd;
+>> +       struct device_node *np = scpsys->dev->of_node;
+>>         struct property *prop;
+>>         const char *clk_name;
+>>         int i, ret, num_clks;
+>> @@ -307,6 +328,19 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+>>         pd->data = domain_data;
+>>         pd->scpsys = scpsys;
+>>
+>> +       if (MTK_SCPD_CAPS(pd, MTK_SCPD_DOMAIN_SUPPLY)) {
+>> +               /* Find regulator in current power domain node */
+>> +               scpsys->dev->of_node = node;
+>> +               pd->supply = devm_regulator_get(scpsys->dev, "domain");
+>> +               scpsys->dev->of_node = np;
+> 
+> This pattern is a bit strange to me. But Hsin-Yi pointed out that
+> there are precedents:
+> https://elixir.bootlin.com/linux/v5.11-rc2/source/drivers/iio/adc/rcar-gyroadc.c#L397
+> .
+
+nit: Strange to me too. Maybe it needs a better comment/explanation and/or use
+child/parent as a temporal of_node names to make a bit more readable. Looks like
+[devm_]regulator_get only accepts a device as argument and will look into child
+nodes.
+
+
+> 
+>> +               if (IS_ERR(pd->supply)) {
+>> +                       dev_err_probe(scpsys->dev, PTR_ERR(pd->supply),
+>> +                                     "%pOF: failed to get power supply.\n",
+>> +                                     node);
+>> +                       return ERR_CAST(pd->supply);
+>> +               }
+>> +       }
+>> +
+>>         pd->infracfg = syscon_regmap_lookup_by_phandle_optional(node, "mediatek,infracfg");
+>>         if (IS_ERR(pd->infracfg))
+>>                 return ERR_CAST(pd->infracfg);
+>> diff --git a/drivers/soc/mediatek/mtk-pm-domains.h b/drivers/soc/mediatek/mtk-pm-domains.h
+>> index a2f4d8f97e058..b2770b5266dba 100644
+>> --- a/drivers/soc/mediatek/mtk-pm-domains.h
+>> +++ b/drivers/soc/mediatek/mtk-pm-domains.h
+>> @@ -7,6 +7,7 @@
+>>  #define MTK_SCPD_FWAIT_SRAM            BIT(1)
+>>  #define MTK_SCPD_SRAM_ISO              BIT(2)
+>>  #define MTK_SCPD_KEEP_DEFAULT_OFF      BIT(3)
+>> +#define MTK_SCPD_DOMAIN_SUPPLY         BIT(4)
+>>  #define MTK_SCPD_CAPS(_scpd, _x)       ((_scpd)->data->caps & (_x))
+>>
+>>  #define SPM_VDE_PWR_CON                        0x0210
+>> --
+>> 2.29.2.729.g45daf8777d-goog
+>>
+>>
+>> _______________________________________________
+>> Linux-mediatek mailing list
+>> Linux-mediatek@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-mediatek
