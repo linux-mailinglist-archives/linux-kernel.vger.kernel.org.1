@@ -2,121 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A5E2F4D7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:47:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC17B2F4D83
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:49:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727144AbhAMOrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:47:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727048AbhAMOrF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:47:05 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3F6FC061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:46:24 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id z20so1221739qtq.3
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:46:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yfGUinF7cIPTVWbvopOeCfPw7+d2tiRR9kb2ydRYjts=;
-        b=J4/q39rXLtLSsirgM/gp1ycmF+EZoU05U8LXkrMPwtg4txTNhNhQnlC2qYlKMce0oe
-         +ZdYlec0FYkjTXfKKU6QDihEXaFhAZqO49Zs7BW2uz2Dji4aTKNSgwmmcM6klgcdazVH
-         77e45GEIUaThtehfmed1GqE5qIu5QIWqCf3cMtp/9Scg+5Qff6/rmi2FIe6yr2K7QyPv
-         osxiCBsEs2VWHrPO8zB7NauGwnEJQquo5ZxK5UEg+8TSwyiO9/ygO3WjtIkgFK2jdi0i
-         Ecu/jlSSCeRJOpAZ9O88Ki4nY7cQW3aDWL9t1FfU3w/B8Al+Euiv+9jcJ/SEWCjsETQw
-         04lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yfGUinF7cIPTVWbvopOeCfPw7+d2tiRR9kb2ydRYjts=;
-        b=YS2saLPssJXi5gJqP+MsEBauP29KWEsvuAUR4LZZQkYu4/SFt67NBawAm8FcQRtIKD
-         2LQ5vZqloN9ycPSJj2/UOgAkBpfRF2Hiv8FE0Ra8byO1HvH4nSfixm9IctLla5c1/juP
-         qDBddJ74KqPSOJyetF9DDNcvUC4MPtqAj6XhFnq1kunv02WE4VbO85PG+G6Wwq62vPG5
-         Z11jBTUQHAY6XJu3nGnxTLRuvBHQFnTfHoQI0x+eDW/CCEkFCESriShijEGUML5Okh+Y
-         WqaCURK1h2vYpSqkeH1QYdDI1xnoGm2j/4zpowWRk5GdIsLt9vNTDMwgG4vfiV6DtNdh
-         bwEQ==
-X-Gm-Message-State: AOAM530d4+UzzCjTZwmfNXOUancXo5qsVGq81L5n+beHmzZtmL5SjWEb
-        VWUO5Tb3JoBeiu3LLnPtDMRx7hmU/zSqW9Mx9ZN5DA==
-X-Google-Smtp-Source: ABdhPJxCZUYFPKRkRp+8ZnKVitwhmKl8Ad+YqI2IDh2gNMAeAXwAQCGaocnlgrViF6jLN+wp7Dc8WXRz9Zl4mReX83U=
-X-Received: by 2002:ac8:877:: with SMTP id x52mr2584682qth.334.1610549183656;
- Wed, 13 Jan 2021 06:46:23 -0800 (PST)
+        id S1727197AbhAMOrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:47:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58200 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727102AbhAMOrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 09:47:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610549215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nt0P3UB52tUXihhKnY0EGJSOwPIXl2w0VfMCeDXigfg=;
+        b=MaYTpfeBCSb+4GfytJrC3yMQ85mJn3wsQrdPMm3X8mJpdVwihUs+pt5UikXfQ4Js75AVXa
+        p+88RPnduouIF3z9abzeMfvM3SCYKBhdqRIhhKakryDlNAwM89t/a65OMRWqoBMjPH7Fg8
+        YApkvhaPiozFN1PYsTU6iJ2/ww75CGU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 62A00AB92;
+        Wed, 13 Jan 2021 14:46:55 +0000 (UTC)
+Date:   Wed, 13 Jan 2021 15:46:54 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] mm: memcontrol: prevent starvation when writing
+ memory.high
+Message-ID: <20210113144654.GD22493@dhcp22.suse.cz>
+References: <20210112163011.127833-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
-References: <20210105163927.1376770-1-kyletso@google.com> <20210105163927.1376770-2-kyletso@google.com>
- <20210112132925.GC2020859@kuha.fi.intel.com> <CAPTae5LLtjQAt4db+ZVttEGxnueydmEZ4eu+gQSEOaZE4B=u0A@mail.gmail.com>
-In-Reply-To: <CAPTae5LLtjQAt4db+ZVttEGxnueydmEZ4eu+gQSEOaZE4B=u0A@mail.gmail.com>
-From:   Kyle Tso <kyletso@google.com>
-Date:   Wed, 13 Jan 2021 22:46:07 +0800
-Message-ID: <CAGZ6i=2cQywq82QrJg=t-KVMqSdjME-dkd-8aH3au_RTju2zTA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/3] usb: typec: tcpm: AMS and Collision Avoidance
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Will McVicker <willmcvicker@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112163011.127833-1-hannes@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 2:11 PM Badhri Jagan Sridharan
-<badhri@google.com> wrote:
->
-> Hi Kyle,
->
-> Do you want to handle the FAST_ROLE_SWAP case as well ?
->
-I forgot this part....
-Thanks for catching this.
-I will fix it.
+On Tue 12-01-21 11:30:11, Johannes Weiner wrote:
+> When a value is written to a cgroup's memory.high control file, the
+> write() context first tries to reclaim the cgroup to size before
+> putting the limit in place for the workload. Concurrent charges from
+> the workload can keep such a write() looping in reclaim indefinitely.
+> 
+> In the past, a write to memory.high would first put the limit in place
+> for the workload, then do targeted reclaim until the new limit has
+> been met - similar to how we do it for memory.max. This wasn't prone
+> to the described starvation issue. However, this sequence could cause
+> excessive latencies in the workload, when allocating threads could be
+> put into long penalty sleeps on the sudden memory.high overage created
+> by the write(), before that had a chance to work it off.
+> 
+> Now that memory_high_write() performs reclaim before enforcing the new
+> limit, reflect that the cgroup may well fail to converge due to
+> concurrent workload activity. Bail out of the loop after a few tries.
 
+I can see that you have provided some more details in follow up replies
+but I do not see any explicit argument why an excessive time for writer
+is an actual problem. Could you be more specific?
 
-> You would have to fix up in two places:
->
-> #1
-> -                       if (port->state == SNK_READY)
-> -                               tcpm_set_state(port, FR_SWAP_SEND, 0);
-> -                       else
-> +                       if (port->state == SNK_READY) {
-> +                               int ret;
-> +
-> +                               port->upcoming_state = FR_SWAP_SEND;
-> +                               ret = tcpm_ams_start(port, FAST_ROLE_SWAP);
-> +                               if (ret == -EAGAIN)
-> +                                       port->upcoming_state = INVALID_STATE;
-> +                       } else {
->                                 tcpm_log(port, "Discarding FRS_SIGNAL!
-> Not in sink ready");
-> +                       }
->
-> #2
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -4449,9 +4449,14 @@ static void tcpm_enable_frs_work(struct
-> kthread_work *work)
->         if (port->state != SNK_READY || port->vdm_state !=
-> VDM_STATE_DONE || port->send_discover)
->                 goto resched;
->
-> -       tcpm_set_state(port, GET_SINK_CAP, 0);
-> -       port->sink_cap_done = true;
-> -
-> +       port->upcoming_state = GET_SINK_CAP;
-> +       ret = tcpm_ams_start(port, GET_SINK_CAPABILITIES);
-> +       if (ret == -EAGAIN) {
-> +               port->upcoming_state = INVALID_STATE;
-> +       } else {
-> +               port->sink_cap_done = true;
-> +               goto unlock;
-> +       }
->
-> Thanks,
-> Badhri
->
->
+If the writer is time sensitive then there is a trivial way to
+workaround that and kill it by a signal (timeout 30s echo ....).
+
+Btw. this behavior has been considered http://lkml.kernel.org/r/20200710122917.GB3022@dhcp22.suse.cz/
+"
+With this change
+the reclaim here might be just playing never ending catch up. On the
+plus side a break out from the reclaim loop would just enforce the limit
+so if the operation takes too long then the reclaim burden will move
+over to consumers eventually. So I do not see any real danger.
+"
+
+> Fixes: 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering memory.high")
+> Cc: <stable@vger.kernel.org> # 5.8+
+
+Why is this worth backporting to stable? The behavior is different but I
+do not think any of them is harmful.
+
+> Reported-by: Tejun Heo <tj@kernel.org>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+
+I am not against the patch. The existing interface doesn't provide any
+meaningful feedback to the userspace anyway. User would have to re check
+to see the result of the operation. So how hard we try is really an
+implementation detail.
+
+> ---
+>  mm/memcontrol.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 605f671203ef..63a8d47c1cd3 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6275,7 +6275,6 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
+>  
+>  	for (;;) {
+>  		unsigned long nr_pages = page_counter_read(&memcg->memory);
+> -		unsigned long reclaimed;
+>  
+>  		if (nr_pages <= high)
+>  			break;
+> @@ -6289,10 +6288,10 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
+>  			continue;
+>  		}
+>  
+> -		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
+> -							 GFP_KERNEL, true);
+> +		try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
+> +					     GFP_KERNEL, true);
+>  
+> -		if (!reclaimed && !nr_retries--)
+> +		if (!nr_retries--)
+>  			break;
+>  	}
+>  
+> -- 
+> 2.30.0
+> 
+
+-- 
+Michal Hocko
+SUSE Labs
