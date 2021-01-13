@@ -2,130 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B71A22F48FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:52:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A59882F491E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:00:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726523AbhAMKrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 05:47:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45904 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726444AbhAMKrw (ORCPT
+        id S1726852AbhAMK5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 05:57:43 -0500
+Received: from smtpcmd02102.aruba.it ([62.149.158.102]:57721 "EHLO
+        smtpcmd02102.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725858AbhAMK5n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:47:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610534786;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ec0y/BdJxRfTy0k6b2igIfk1/DDD0lJc0nWam9VBkXg=;
-        b=ioNcbNlZHjI44f9y0aWreo5feCpdiMFu7NOf7QlYhEdt5Qvy9X8i5pu8/IOI/+QNK0Ucy7
-        by/B9VCJ4J+lQyOLAyCMSJll2ILCkP8YDxnnoDdNDMKYhJovMDeUaVCT3evuesC/R529ut
-        UXiX2K62sWzxu36bA67rrkkAVRb1dYw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-583-TJW31ew2Ps2czLwl7amhYg-1; Wed, 13 Jan 2021 05:46:22 -0500
-X-MC-Unique: TJW31ew2Ps2czLwl7amhYg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 100E68144E0;
-        Wed, 13 Jan 2021 10:46:21 +0000 (UTC)
-Received: from krava (unknown [10.40.195.134])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 4C9F95D9DC;
-        Wed, 13 Jan 2021 10:46:18 +0000 (UTC)
-Date:   Wed, 13 Jan 2021 11:46:18 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     acme@kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: Re: [PATCH] perf tools: Resolve symbols against debug file first
-Message-ID: <20210113104618.GB1331835@krava>
-References: <20210113080128.10286-1-jslaby@suse.cz>
+        Wed, 13 Jan 2021 05:57:43 -0500
+X-Greylist: delayed 540 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 Jan 2021 05:57:41 EST
+Received: from ubuntu.localdomain ([146.241.213.249])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id zdgYkpGEuM8oXzdgYkw9Bi; Wed, 13 Jan 2021 11:47:34 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1610534854; bh=9qQyXA1FoXtBqukZr+f9ZXHvisI/kRQH2J5vy5XyEIo=;
+        h=From:To:Subject:Date:MIME-Version:Content-Type;
+        b=S6jzU0A7GrZFhi2GtlbrSsbkvCLBbMUPJBGLy9eOvomu6IVOFRuEIi7+GstCjiSgu
+         dQKuh9WB6uahVhyCAKCtSbqD0OLpm+LAkIvoEFObsgd5HyjgUMSB1OhqG87CCBk2gE
+         ZVNAvLSua84xAAmkJ3GpDdXU+hW1s1XbqNaiXpJR6nL9mmoAjY7E+DArWp+hS5v0Op
+         097PnvKn5guAk0+6ZiX1BqFqYcZHQQ+Me89BWLYM7W6+GVPdRU1QkJG0rKoo0+neV1
+         myVB3vGzF6m3tm8i2EOkzzHO1VTP0OHIuqstk7MPFgJltv1fGW5byZ/nWJwJoSVBza
+         tkeNGlcYiTtXw==
+From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Marjan Pascolo <marjan.pascolo@trexom.it>, wens@csie.org,
+        daniel@ffwll.ch, airlied@linux.ie, treding@nvidia.com,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Giulio Benetti <giulio.benetti@micronovasrl.com>
+Subject: [PATCH v4] drm/sun4i: tcon: fix inverted DCLK polarity
+Date:   Wed, 13 Jan 2021 11:47:25 +0100
+Message-Id: <20210113104725.770459-1-giulio.benetti@benettiengineering.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210113094214.5ijq3inmffticym6@gilmour>
+References: <20210113094214.5ijq3inmffticym6@gilmour>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210113080128.10286-1-jslaby@suse.cz>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfKOmPT1i9gArIC10WEB2Cw3vWYQTurVk9+ZL0ZbFumP8RZ/5bgpdB6saoV83KQ0rIsKqA5WDklykap4YzgK76/u1D/biEoFBIitr6YQxxZl7/xY+WaHb
+ 5B6YDCYzVe51IP2JS0ezr+65FUu7Fnn7Czg6VAfddH8XRvcNIQjE9UMtnxyM0/MhLVbavdMxAhu6P4q9ieetTJk4XDNumZMKFvCYCkMqjwv/Xj58jrXRFMS9
+ DqhitwiojBnu1j6sE/gZ9LvvJjiAzAq/icQwEa7T9LWiFoz3hjpQJvN/KYlEF0h2lEOtzVmArNd2Nkm2Q/j2xwWwccaJF05jccxvRPNLUVLkPZ805eXAm2Xn
+ q5gWpTpBzc7CXEGUTqj4WVK5o9b7fsCASRiO4S0sJxIJzfOCfxzhQqv4VQKCsm75JJfuBgS/bibdSv6hjUsAHkYPuPB1gnprEDUUQwd9w3Y3IVvFJh8yy33D
+ 9UMWsD8uxlPMuFWhmhtw8zi8RPQ2aNig5/bdYVnXjmv90C/0lhhP7bynZdOiTtDzA3ugeOIbWhVkFjR7S9SvkWSf+iT+oylKKRuE8g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 09:01:28AM +0100, Jiri Slaby wrote:
-> With LTO, there are symbols like these:
-> /usr/lib/debug/usr/lib64/libantlr4-runtime.so.4.8-4.8-1.4.x86_64.debug
->  10305: 0000000000955fa4     0 NOTYPE  LOCAL  DEFAULT   29 Predicate.cpp.2bc410e7
-> 
-> This comes from a runtime/debug split done by the standard way:
-> objcopy --only-keep-debug $runtime $debug
-> objcopy --add-gnu-debuglink=$debugfn -R .comment -R .GCC.command.line --strip-all $runtime
-> 
-> perf currently cannot resolve such symbols (relicts of LTO), as section
-> 29 exists only in the debug file (29 is .debug_info). And perf resolves
-> symbols only against runtime file. This results in all symbols from such
-> a library being unresolved:
->      0.38%  main2    libantlr4-runtime.so.4.8  [.] 0x00000000000671e0
-> 
-> So try resolving against the debug file first. And only if it fails (the
-> section has NOBITS set), try runtime file. We can do this, as "objcopy
-> --only-keep-debug" per documentation preserves all sections, but clears
-> data of some of them (the runtime ones) and marks them as NOBITS.
-> 
-> The correct result is now:
->      0.38%  main2    libantlr4-runtime.so.4.8  [.] antlr4::IntStream::~IntStream
-> 
-> Note that these LTO symbols are properly skipped anyway as they belong
-> neither to *text* nor to *data* (is_label && !elf_sec__filter(&shdr,
-> secstrs) is true).
-> 
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/util/symbol-elf.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
-> index f3577f7d72fe..a31b716fa61c 100644
-> --- a/tools/perf/util/symbol-elf.c
-> +++ b/tools/perf/util/symbol-elf.c
-> @@ -1226,12 +1226,20 @@ int dso__load_sym(struct dso *dso, struct map *map, struct symsrc *syms_ss,
->  		if (sym.st_shndx == SHN_ABS)
->  			continue;
->  
-> -		sec = elf_getscn(runtime_ss->elf, sym.st_shndx);
-> +		sec = elf_getscn(syms_ss->elf, sym.st_shndx);
->  		if (!sec)
->  			goto out_elf_end;
+From: Giulio Benetti <giulio.benetti@micronovasrl.com>
 
-we iterate symbols from syms_ss, so the fix seems to be correct
-to call elf_getscn on syms_ss, not on runtime_ss as we do now
+During commit 88bc4178568b ("drm: Use new
+DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags") DRM_BUS_FLAG_*
+macros have been changed to avoid ambiguity but just because of this
+ambiguity previous DRM_BUS_FLAG_PIXDATA_(POS/NEG)EDGE were used meaning
+_SAMPLE_ not _DRIVE_. This leads to DLCK inversion and need to fix but
+instead of swapping phase values, let's adopt an easier approach Maxime
+suggested:
+It turned out that bit 26 of SUN4I_TCON0_IO_POL_REG is dedicated to
+invert DCLK polarity and this makes things really easier than before. So
+let's handle DCLK polarity by adding SUN4I_TCON0_IO_POL_DCLK_POSITIVE as
+bit 26 and activating according to bus_flags the same way it is done for
+all the other signals polarity.
 
-I'd think this worked only when runtime_ss == syms_ss
+Fixes: 88bc4178568b ("drm: Use new DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags")
+Suggested-by: Maxime Ripard <maxime@cerno.tech>
+Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
+---
+V2->V3:
+- squash 2 patches into 1
+V3->V4:
+- add SUN4I_TCON0_IO_POL_DCLK_POSITIVE to regmap_update_bits()
+---
+ drivers/gpu/drm/sun4i/sun4i_tcon.c | 21 ++-------------------
+ drivers/gpu/drm/sun4i/sun4i_tcon.h |  1 +
+ 2 files changed, 3 insertions(+), 19 deletions(-)
 
->  
->  		gelf_getshdr(sec, &shdr);
->  
-> +		if (shdr.sh_type == SHT_NOBITS) {
-> +			sec = elf_getscn(runtime_ss->elf, sym.st_shndx);
-> +			if (!sec)
-> +				goto out_elf_end;
-> +
-> +			gelf_getshdr(sec, &shdr);
-> +		}
-
-is that fallback necessary? the symbol is from syms_ss
-
-Namhyung, any idea?
-
-thanks,
-jirka
+diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+index eaaf5d70e352..6e454d316852 100644
+--- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
++++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
+@@ -569,30 +569,13 @@ static void sun4i_tcon0_mode_set_rgb(struct sun4i_tcon *tcon,
+ 	if (info->bus_flags & DRM_BUS_FLAG_DE_LOW)
+ 		val |= SUN4I_TCON0_IO_POL_DE_NEGATIVE;
+ 
+-	/*
+-	 * On A20 and similar SoCs, the only way to achieve Positive Edge
+-	 * (Rising Edge), is setting dclk clock phase to 2/3(240°).
+-	 * By default TCON works in Negative Edge(Falling Edge),
+-	 * this is why phase is set to 0 in that case.
+-	 * Unfortunately there's no way to logically invert dclk through
+-	 * IO_POL register.
+-	 * The only acceptable way to work, triple checked with scope,
+-	 * is using clock phase set to 0° for Negative Edge and set to 240°
+-	 * for Positive Edge.
+-	 * On A33 and similar SoCs there would be a 90° phase option,
+-	 * but it divides also dclk by 2.
+-	 * Following code is a way to avoid quirks all around TCON
+-	 * and DOTCLOCK drivers.
+-	 */
+ 	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE)
+-		clk_set_phase(tcon->dclk, 240);
+-
+-	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
+-		clk_set_phase(tcon->dclk, 0);
++		val |= SUN4I_TCON0_IO_POL_DCLK_POSITIVE;
+ 
+ 	regmap_update_bits(tcon->regs, SUN4I_TCON0_IO_POL_REG,
+ 			   SUN4I_TCON0_IO_POL_HSYNC_POSITIVE |
+ 			   SUN4I_TCON0_IO_POL_VSYNC_POSITIVE |
++			   SUN4I_TCON0_IO_POL_DCLK_POSITIVE |
+ 			   SUN4I_TCON0_IO_POL_DE_NEGATIVE,
+ 			   val);
+ 
+diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.h b/drivers/gpu/drm/sun4i/sun4i_tcon.h
+index cfbf4e6c1679..0ce71d10a31b 100644
+--- a/drivers/gpu/drm/sun4i/sun4i_tcon.h
++++ b/drivers/gpu/drm/sun4i/sun4i_tcon.h
+@@ -113,6 +113,7 @@
+ #define SUN4I_TCON0_IO_POL_REG			0x88
+ #define SUN4I_TCON0_IO_POL_DCLK_PHASE(phase)		((phase & 3) << 28)
+ #define SUN4I_TCON0_IO_POL_DE_NEGATIVE			BIT(27)
++#define SUN4I_TCON0_IO_POL_DCLK_POSITIVE		BIT(26)
+ #define SUN4I_TCON0_IO_POL_HSYNC_POSITIVE		BIT(25)
+ #define SUN4I_TCON0_IO_POL_VSYNC_POSITIVE		BIT(24)
+ 
+-- 
+2.25.1
 
