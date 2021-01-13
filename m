@@ -2,90 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C02C2F4BA6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F16462F4BAF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 13:56:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbhAMMt4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Jan 2021 07:49:56 -0500
-Received: from mx1.emlix.com ([136.243.223.33]:34712 "EHLO mx1.emlix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725809AbhAMMtz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 07:49:55 -0500
-Received: from mailer.emlix.com (p5098be52.dip0.t-ipconnect.de [80.152.190.82])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.emlix.com (Postfix) with ESMTPS id 5386F5FA09;
-        Wed, 13 Jan 2021 13:49:13 +0100 (CET)
-From:   Rolf Eike Beer <eb@emlix.com>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: [PATCH v5] scripts: use pkg-config to locate libcrypto
-Date:   Wed, 13 Jan 2021 13:49:12 +0100
-Message-ID: <3394639.6NgGvCfkNl@devpool47>
-Organization: emlix GmbH
-In-Reply-To: <2278760.8Yd83Mgoko@devpool35>
-References: <20538915.Wj2CyUsUYa@devpool35> <2278760.8Yd83Mgoko@devpool35>
+        id S1726701AbhAMMwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 07:52:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725902AbhAMMwb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 07:52:31 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE694C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 04:51:51 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id o6so3730495iob.10
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 04:51:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ieee.org; s=google;
+        h=mime-version:date:from:to:cc:subject:in-reply-to:references
+         :user-agent:message-id:content-transfer-encoding;
+        bh=qhkEqXsTfNFQu3YiKYv8ypbqP4b1UyaJYi0d3q+UtuE=;
+        b=HQoaVygrHNpMPVy7m82be4EHt4wuqT4sodTPkyC0QpcnxHenhODLCbTXKxnmf9rxDA
+         OWXCqZxIHOjBfZojF7bDkqu1l2QaA+5ti2inxc5Y87bYWTmkIh/6Jl9RlOpz17r34kq7
+         O6rjrbEQCEwvrZNxpi8JLmP+BNpPRcPgUo20o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:from:to:cc:subject:in-reply-to
+         :references:user-agent:message-id:content-transfer-encoding;
+        bh=qhkEqXsTfNFQu3YiKYv8ypbqP4b1UyaJYi0d3q+UtuE=;
+        b=oXxjxK7EVh2rR9jM38nJiYc4oLLbodGOIuNgT9q9jRg1l+8FLHaGbJG7M+LnQ2cM+s
+         O7oPtauak+/LR6nTt0EWVg+9VS2vuatVpMr26Jl4xiwIm09ynxMCqNIblMLygJK1I31I
+         xXQ7QAbePZJzfbZXv2KI5xIJs1EoLZg6Zrav/N6wCFVeOJ7yjFDyf7k1mRp3V/Xd1ZfC
+         XcjiyqRXLA1odFPiiU4d5dA2GnAYwHjc6N1pp5Y35qHUP5u+krHlJgyx+egcxF2Q49vC
+         qygEoKqK8WwNjaQoZzCqBlzlMDPcEBDQ4Er0HeE7EM6m19va3zzxTa88NucTOYL4ZXaR
+         bZlw==
+X-Gm-Message-State: AOAM530gUwcafHXDX8CuCoojFurgnHJiCZSQ3P23fILfMy2t5o8za3+0
+        OOWizP+gNhOSxwP4LJQubj8dag==
+X-Google-Smtp-Source: ABdhPJw/6nGXs2lPxyQs0fPF4UVNW8OcJ7FJvcxwo+dJfm3TzpRBLu2WuHAkmo4dvP6otiLpqnpMjw==
+X-Received: by 2002:a05:6e02:1787:: with SMTP id y7mr2102033ilu.233.1610542311012;
+        Wed, 13 Jan 2021 04:51:51 -0800 (PST)
+Received: from sunraycer.home ([2601:246:4400:318::100])
+        by smtp.gmail.com with ESMTPSA id s12sm1483834ilp.66.2021.01.13.04.51.50
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Wed, 13 Jan 2021 04:51:50 -0800 (PST)
+Received: from 10.10.2.100 (sunraycer [10.10.2.100])
+        by sunraycer.home (Postfix) with ESMTPSA id 9BCFF3749EC;
+        Wed, 13 Jan 2021 06:51:49 -0600 (CST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
+Date:   Wed, 13 Jan 2021 06:51:49 -0600
+From:   Steve Magnani <magnani@ieee.org>
+To:     lianzhi chang <changlianzhi@uniontech.com>
+Cc:     jack@suse.com, linux-kernel@vger.kernel.org, 282827961@qq.com
+Subject: Re: [PATCH] udf: fix the problem that the disc content is not
+ displayed
+In-Reply-To: <20210112055304.31842-1-changlianzhi@uniontech.com>
+References: <20210112055304.31842-1-changlianzhi@uniontech.com>
+User-Agent: Roundcube Webmail/1.4.3
+Message-ID: <9495f2dcd2882a43678532eb8df356bc@ieee.org>
+X-Sender: magnani@ieee.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Otherwise build fails if the headers are not in the default location. While at
-it also ask pkg-config for the libs, with fallback to the existing value.
-
-Signed-off-by: Rolf Eike Beer <eb@emlix.com>
-Cc: stable@vger.kernel.org # 5.6.x
----
- scripts/Makefile | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-This has been sent multiple times since more than 2 year, please pick it up 
-through whatever tree. I need to patch every new stable kernel version to 
-make them build in our chrooted environment.
-
-
-diff --git a/scripts/Makefile b/scripts/Makefile
-index b5418ec587fb..7553692d241f 100644
---- a/scripts/Makefile
-+++ b/scripts/Makefile
-@@ -3,6 +3,11 @@
- # scripts contains sources for various helper programs used throughout
- # the kernel for the build process.
- 
-+PKG_CONFIG ?= pkg-config
-+
-+CRYPTO_LIBS = $(shell $(PKG_CONFIG) --libs libcrypto 2> /dev/null || echo -lcrypto)
-+CRYPTO_CFLAGS = $(shell $(PKG_CONFIG) --cflags libcrypto 2> /dev/null)
-+
- hostprogs-always-$(CONFIG_BUILD_BIN2C)			+= bin2c
- hostprogs-always-$(CONFIG_KALLSYMS)			+= kallsyms
- hostprogs-always-$(BUILD_C_RECORDMCOUNT)		+= recordmcount
-@@ -14,8 +19,9 @@ hostprogs-always-$(CONFIG_SYSTEM_EXTRA_CERTIFICATE)	+= insert-sys-cert
- 
- HOSTCFLAGS_sorttable.o = -I$(srctree)/tools/include
- HOSTCFLAGS_asn1_compiler.o = -I$(srctree)/include
--HOSTLDLIBS_sign-file = -lcrypto
--HOSTLDLIBS_extract-cert = -lcrypto
-+HOSTLDLIBS_sign-file = $(CRYPTO_LIBS)
-+HOSTCFLAGS_extract-cert.o = $(CRYPTO_CFLAGS)
-+HOSTLDLIBS_extract-cert = $(CRYPTO_LIBS)
- 
- ifdef CONFIG_UNWINDER_ORC
- ifeq ($(ARCH),x86_64)
--- 
-2.29.2
--- 
-Rolf Eike Beer, emlix GmbH, http://www.emlix.com
-Fon +49 551 30664-0, Fax +49 551 30664-11
-Gothaer Platz 3, 37083 Göttingen, Germany
-Sitz der Gesellschaft: Göttingen, Amtsgericht Göttingen HR B 3160
-Geschäftsführung: Heike Jordan, Dr. Uwe Kracke – Ust-IdNr.: DE 205 198 055
-
-emlix - smart embedded open source
+On 2021-01-11 23:53, lianzhi chang wrote:
+> When the capacity of the disc is too large (assuming the 4.7G
+> specification), the disc (UDF file system) will be burned
+> multiple times in the windows (Multisession Usage). When the
+> remaining capacity of the CD is less than 300M (estimated
+> value, for reference only), open the CD in the Linux system,
+> the content of the CD is displayed as blank (the kernel will
+> say "No VRS found"). Windows can display the contents of the
+> CD normally.
+> Through analysis, in the "fs/udf/super.c": udf_check_vsd
+> function, the actual value of VSD_MAX_SECTOR_OFFSET may
+> be much larger than 0x800000. According to the current code
+> logic, it is found that the type of sbi->s_session is "__s32",
+>  when the remaining capacity of the disc is less than 300M
+> (take a set of test values: sector=3154903040,
+> sbi->s_session=1540464, sb->s_blocksize_bits=11 ), the
+> calculation result of "sbi->s_session << sb->s_blocksize_bits"
+>  will overflow. Therefore, it is necessary to convert the
+> type of s_session to "loff_t" (when udf_check_vsd starts,
+> assign a value to _sector, which is also converted in this
+> way), so that the result will not overflow, and then the
+> content of the disc can be displayed normally.
+> 
+> Signed-off-by: lianzhi chang <changlianzhi@uniontech.com>
+> ---
+>  fs/udf/super.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/udf/super.c b/fs/udf/super.c
+> index 5bef3a68395d..6c3069cd1321 100644
+> --- a/fs/udf/super.c
+> +++ b/fs/udf/super.c
+> @@ -757,7 +757,7 @@ static int udf_check_vsd(struct super_block *sb)
+> 
+>  	if (nsr > 0)
+>  		return 1;
+> -	else if (!bh && sector - (sbi->s_session << sb->s_blocksize_bits) ==
+> +	else if (!bh && sector - ((loff_t)sbi->s_session << 
+> sb->s_blocksize_bits) ==
+>  			VSD_FIRST_SECTOR_OFFSET)
+>  		return -1;
+>  	else
 
 
+Looks good. Perhaps consider factoring out the conversion (which also 
+occurs
+earlier in the function) so that the complexity of this "else if" can be 
+reduced?
 
+Reviewed-by: Steven J. Magnani <magnani@ieee.org>
+------------------------------------------------------------------------
+  Steven J. Magnani               "I claim this network for MARS!
+                                   Earthling, return my space modulator!"
+
+  #include <standard.disclaimer>
