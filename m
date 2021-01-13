@@ -2,631 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D9E2F4A8F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:49:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D432F4AA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:50:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727050AbhAMLrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:47:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726751AbhAMLrT (ORCPT
+        id S1727130AbhAMLti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:49:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59016 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727099AbhAMLth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:47:19 -0500
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDCAC061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:46:39 -0800 (PST)
-Received: by mail-vs1-xe2f.google.com with SMTP id x4so934113vsp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:46:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2VMcO3s19pbB9zGNwXDQ6tmLZHsWwaZ7RoxUKxNG0iw=;
-        b=pdwdPVxyi7SqgfmEB2V2TGjcdaD2LgF6N8QDjms4TGsp7IHb1ZcRGrm5bdu3j4WNG1
-         kj8WMkiVI2ZqCMGquX64h+n5l+baVMtnrFURCEvGIOjIOyP7wZ/P65ijVKPKJnR12OzX
-         /+D9l4V7sSiqLJy6Ozfc0fjAfRhuGz0gEq7L6rKuX1Xir+2vanombEfpjhnbbPNpzAri
-         e5sJ51kdiUi3K8hr6K1wr7ZKZog0QQ2LRZaZtr59OlKvdg55FxWYZXpQPrUC4CF+Z8Uh
-         ITqQJCQCLUxB1Hz4Qn5VSEZQXI0z7BbQCxXSny+5Nca32A7jta/9/hLdMcMy3oQ+rdhZ
-         6/+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2VMcO3s19pbB9zGNwXDQ6tmLZHsWwaZ7RoxUKxNG0iw=;
-        b=g0kyTOhTE1Ea6r7qMqGb15crFxkDNz0kr/iQQaLLe2mcOWFNlKNYpSuEnVTCToqA+x
-         q0QvP9yzT5whjlcGBPjHiW4tkGcm/9ThX7vPNDUr+L7RK1kNTUiZyFyvFG1QGPXSal7Z
-         9yqnONkonRBRLKy57wQGq/YVJmvvfP65P4QIS1fYsw/59qIrRwNCe+vJvZS609cwG+lW
-         AisG1nSP73bGZsRwuLPtAvcgPtB4Ax2YNsXFukOx5V+zh32eFTk59YBx1Q6gOmdbpnLv
-         ZuCycRH+RBH/W8YUcZFmwKBwElOKbqbtcX3aoG6FOSpVU4QZ0LKApRlC3Ce6a6LFXInT
-         f3bA==
-X-Gm-Message-State: AOAM530MOvTxQdsBNK+PoRW+ClK/jR5l23p8EaiGmS+a2ALgEw7vWFOy
-        X5dgbMPq/Ah06X0UOtwsMEMZ0tXLB4ubPRYQCNFybEesZEzNYOA6
-X-Google-Smtp-Source: ABdhPJzpjgQCMruSofkfl4Lh3kXyEhL5X0hSEEeOHHnPd3qXfT/6p7acOl79EB9n6xfkGetS5+AvjtSl9SIDmYO9vxM=
-X-Received: by 2002:a67:7f41:: with SMTP id a62mr1435453vsd.55.1610538398097;
- Wed, 13 Jan 2021 03:46:38 -0800 (PST)
+        Wed, 13 Jan 2021 06:49:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610538491;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IClFT8HZFNG03FqV8ORG/u8ZO82v0K22MlBeqxe2bMY=;
+        b=Boi7hjxOVwlrJhZ8KP5Izxzd1SQc0DfeGzV19O2wXzon/6yBY3Hjks7bYqMSEjLiVuH4RY
+        Yodq2Ew6Mkfvb3dVmC98FUMAbljVWEFsaatgiCH/AWXChxW3KQR/1bWSh/kSA+gkRGcSML
+        GAUgR0rbeW+rcUqw1BxiwfLbCG7V8Ks=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-479-gIujwRqWMsKmguwkOV2RMg-1; Wed, 13 Jan 2021 06:48:07 -0500
+X-MC-Unique: gIujwRqWMsKmguwkOV2RMg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 29BA61005D44;
+        Wed, 13 Jan 2021 11:48:05 +0000 (UTC)
+Received: from T590 (ovpn-12-124.pek2.redhat.com [10.72.12.124])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3FF9360871;
+        Wed, 13 Jan 2021 11:47:27 +0000 (UTC)
+Date:   Wed, 13 Jan 2021 19:47:22 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     Ming Lei <tom.leiming@gmail.com>,
+        Changheun Lee <nanich.lee@samsung.com>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "jisoo2146.oh@samsung.com" <jisoo2146.oh@samsung.com>,
+        "junho89.kim@samsung.com" <junho89.kim@samsung.com>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "mj0123.lee@samsung.com" <mj0123.lee@samsung.com>,
+        "seunghwan.hyun@samsung.com" <seunghwan.hyun@samsung.com>,
+        "sookwan7.kim@samsung.com" <sookwan7.kim@samsung.com>,
+        Tejun Heo <tj@kernel.org>,
+        "yt0928.kim@samsung.com" <yt0928.kim@samsung.com>,
+        "woosung2.lee@samsung.com" <woosung2.lee@samsung.com>
+Subject: Re: [PATCH] bio: limit bio max size.
+Message-ID: <20210113114722.GA233746@T590>
+References: <CGME20210113040146epcas1p230596c7c3760471dca442d1f7ce4dc55@epcas1p2.samsung.com>
+ <CH2PR04MB65225EDDA7069CCD47A459A5E7A90@CH2PR04MB6522.namprd04.prod.outlook.com>
+ <20210113034637.1382-1-nanich.lee@samsung.com>
+ <CACVXFVMb0eE5-yo2k3KvnJjKN+aDLzOuT9rKQ7LY5-4WTgM3jw@mail.gmail.com>
+ <CH2PR04MB65228D54F66068DA125CCE47E7A90@CH2PR04MB6522.namprd04.prod.outlook.com>
+ <20210113102450.GA220440@T590>
+ <CH2PR04MB6522CF231DAA4615DABA8457E7A90@CH2PR04MB6522.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-References: <20201223144033.32571-1-bbudiredla@marvell.com> <20201223144033.32571-2-bbudiredla@marvell.com>
-In-Reply-To: <20201223144033.32571-2-bbudiredla@marvell.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 13 Jan 2021 12:46:02 +0100
-Message-ID: <CAPDyKFq41CQ8JbyAS0+k26=Cyf=KcOpdeD+VmY1AZxbh4D6f9w@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] mmc: Support kmsg dumper based on pstore/blk
-To:     Bhaskara Budiredla <bbudiredla@marvell.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CH2PR04MB6522CF231DAA4615DABA8457E7A90@CH2PR04MB6522.namprd04.prod.outlook.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Dec 2020 at 15:41, Bhaskara Budiredla <bbudiredla@marvell.com> wrote:
->
-> This patch introduces to mmcpstore. The functioning of mmcpstore
-> is similar to mtdpstore. mmcpstore works on FTL based flash devices
-> whereas mtdpstore works on raw flash devices. When the system crashes,
-> mmcpstore stores the kmsg panic and oops logs to a user specified
-> MMC device.
->
-> It collects the details about the host MMC device through pstore/blk
-> "blkdev" parameter. The user can specify the MMC device in many ways
-> by checking in Documentation/admin-guide/pstore-blk.rst.
->
-> The individual mmc host drivers have to define suitable polling and
-> cleanup subroutines to write kmsg panic/oops logs through mmcpstore.
-> These new host operations are needed as pstore panic write runs with
-> interrupts disabled.
->
-> Signed-off-by: Bhaskara Budiredla <bbudiredla@marvell.com>
+On Wed, Jan 13, 2021 at 11:16:11AM +0000, Damien Le Moal wrote:
+> On 2021/01/13 19:25, Ming Lei wrote:
+> > On Wed, Jan 13, 2021 at 09:28:02AM +0000, Damien Le Moal wrote:
+> >> On 2021/01/13 18:19, Ming Lei wrote:
+> >>> On Wed, Jan 13, 2021 at 12:09 PM Changheun Lee <nanich.lee@samsung.com> wrote:
+> >>>>
+> >>>>> On 2021/01/12 21:14, Changheun Lee wrote:
+> >>>>>>> On 2021/01/12 17:52, Changheun Lee wrote:
+> >>>>>>>> From: "Changheun Lee" <nanich.lee@samsung.com>
+> >>>>>>>>
+> >>>>>>>> bio size can grow up to 4GB when muli-page bvec is enabled.
+> >>>>>>>> but sometimes it would lead to inefficient behaviors.
+> >>>>>>>> in case of large chunk direct I/O, - 64MB chunk read in user space -
+> >>>>>>>> all pages for 64MB would be merged to a bio structure if memory address is
+> >>>>>>>> continued phsycally. it makes some delay to submit until merge complete.
+> >>>>>>>> bio max size should be limited as a proper size.
+> >>>>>>>
+> >>>>>>> But merging physically contiguous pages into the same bvec + later automatic bio
+> >>>>>>> split on submit should give you better throughput for large IOs compared to
+> >>>>>>> having to issue a bio chain of smaller BIOs that are arbitrarily sized and will
+> >>>>>>> likely need splitting anyway (because of DMA boundaries etc).
+> >>>>>>>
+> >>>>>>> Do you have a specific case where you see higher performance with this patch
+> >>>>>>> applied ? On Intel, BIO_MAX_SIZE would be 1MB... That is arbitrary and too small
+> >>>>>>> considering that many hardware can execute larger IOs than that.
+> >>>>>>>
+> >>>>>>
+> >>>>>> When I tested 32MB chunk read with O_DIRECT in android, all pages of 32MB
+> >>>>>> is merged into a bio structure.
+> >>>>>> And elapsed time to merge complete was about 2ms.
+> >>>>>> It means first bio-submit is after 2ms.
+> >>>>>> If bio size is limited with 1MB with this patch, first bio-submit is about
+> >>>>>> 100us by bio_full operation.
+> >>>>>
+> >>>>> bio_submit() will split the large BIO case into multiple requests while the
+> >>>>> small BIO case will likely result one or two requests only. That likely explain
+> >>>>> the time difference here. However, for the large case, the 2ms will issue ALL
+> >>>>> requests needed for processing the entire 32MB user IO while the 1MB bio case
+> >>>>> will need 32 different bio_submit() calls. So what is the actual total latency
+> >>>>> difference for the entire 32MB user IO ? That is I think what needs to be
+> >>>>> compared here.
+> >>>>>
+> >>>>> Also, what is your device max_sectors_kb and max queue depth ?
+> >>>>>
+> >>>>
+> >>>> 32MB total latency is about 19ms including merge time without this patch.
+> >>>> But with this patch, total latency is about 17ms including merge time too.
+> >>>
+> >>> 19ms looks too big just for preparing one 32MB sized bio, which isn't
+> >>> supposed to
+> >>> take so long.  Can you investigate where the 19ms is taken just for
+> >>> preparing one
+> >>> 32MB sized bio?
+> >>
+> >> Changheun mentioned that the device side IO latency is 16.7ms out of the 19ms
+> >> total. So the BIO handling, submission+completion takes about 2.3ms, and
+> >> Changheun points above to 2ms for the submission part.
+> > 
+> > OK, looks I misunderstood the data.
+> > 
+> >>
+> >>>
+> >>> It might be iov_iter_get_pages() for handling page fault. If yes, one suggestion
+> >>> is to enable THP(Transparent HugePage Support) in your application.
+> >>
+> >> But if that was due to page faults, the same large-ish time would be taken for
+> >> the preparing the size-limited BIOs too, no ? No matter how the BIOs are diced,
+> >> all 32MB of pages of the user IO are referenced...
+> > 
+> > If bio size is reduced to 1MB, just 256 pages need to be faulted before submitting this
+> > bio, instead of 256*32 pages, that is why the following words are mentioned:
+> > 
+> > 	It means first bio-submit is after 2ms.
+> > 	If bio size is limited with 1MB with this patch, first bio-submit is about
+> > 	100us by bio_full operation.
+> 
+> Yes, but eventually, all pages for the 32MB IO will be faulted in, just not in
+> one go. Overall number of page faults is likely the same as with the large BIO
+> preparation. So I think we are back to my previous point, that is, reducing the
+> device idle time by starting a BIO more quickly, even a small one, leads to
+> overlap between CPU time needed for the next BIO preparation and previous BIO
+> execution, reducing overall the latency for the entire 32MB user IO.
 
-Just to make it clear, to avoid confusions.
+When bio size is reduced from 32M to 1M:
 
-I will not consider to pick this up, as long as the *non-panic*
-read/write support is implemented through pstore specific callbacks.
-Instead those requests should go through the regular block I/O path,
-as like any other file system.
+1MB/(P(1M) + D(1M)) may become bigger than 32MB/(P(1M) + D(1M)), so
+throughput is improved.
 
-Kind regards
-Ulf Hansson
+P(x) means time for preparing 'x' sized IO
+D(x) means time for device to handle 'x' sized IO 
 
-> ---
->  drivers/mmc/core/Kconfig     |  14 +-
->  drivers/mmc/core/Makefile    |   1 +
->  drivers/mmc/core/block.c     |  19 +++
->  drivers/mmc/core/block.h     |   9 +
->  drivers/mmc/core/core.c      |  44 +++++
->  drivers/mmc/core/mmcpstore.c | 310 +++++++++++++++++++++++++++++++++++
->  include/linux/mmc/core.h     |   5 +
->  include/linux/mmc/host.h     |  12 ++
->  8 files changed, 413 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/mmc/core/mmcpstore.c
->
-> diff --git a/drivers/mmc/core/Kconfig b/drivers/mmc/core/Kconfig
-> index c12fe13e4b14..4c651da4f2d2 100644
-> --- a/drivers/mmc/core/Kconfig
-> +++ b/drivers/mmc/core/Kconfig
-> @@ -34,9 +34,22 @@ config PWRSEQ_SIMPLE
->           This driver can also be built as a module. If so, the module
->           will be called pwrseq_simple.
->
-> +config MMC_PSTORE_BACKEND
-> +       bool "Log panic/oops to a MMC buffer"
-> +       depends on MMC_BLOCK
-> +       help
-> +         This option will let you create platform backend to store kmsg
-> +         crash dumps to a user specified MMC device. This is primarily
-> +         based on pstore/blk.
-> +
-> +config MMC_PSTORE
-> +       tristate
-> +       select PSTORE_BLK
-> +
->  config MMC_BLOCK
->         tristate "MMC block device driver"
->         depends on BLOCK
-> +       select MMC_PSTORE if MMC_PSTORE_BACKEND=y
->         default y
->         help
->           Say Y here to enable the MMC block device driver support.
-> @@ -80,4 +93,3 @@ config MMC_TEST
->
->           This driver is only of interest to those developing or
->           testing a host driver. Most people should say N here.
-> -
-> diff --git a/drivers/mmc/core/Makefile b/drivers/mmc/core/Makefile
-> index 95ffe008ebdf..7cb9a3af4827 100644
-> --- a/drivers/mmc/core/Makefile
-> +++ b/drivers/mmc/core/Makefile
-> @@ -16,5 +16,6 @@ obj-$(CONFIG_PWRSEQ_EMMC)     += pwrseq_emmc.o
->  mmc_core-$(CONFIG_DEBUG_FS)    += debugfs.o
->  obj-$(CONFIG_MMC_BLOCK)                += mmc_block.o
->  mmc_block-objs                 := block.o queue.o
-> +mmc_block-$(CONFIG_MMC_PSTORE) += mmcpstore.o
->  obj-$(CONFIG_MMC_TEST)         += mmc_test.o
->  obj-$(CONFIG_SDIO_UART)                += sdio_uart.o
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 8d3df0be0355..ed012a91e3a3 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -2870,6 +2870,21 @@ static void mmc_blk_remove_debugfs(struct mmc_card *card,
->
->  #endif /* CONFIG_DEBUG_FS */
->
-> +#if IS_ENABLED(CONFIG_MMC_PSTORE)
-> +sector_t mmc_blk_get_part(struct mmc_card *card, int part_num, sector_t *size)
-> +{
-> +       struct mmc_blk_data *md = dev_get_drvdata(&card->dev);
-> +       struct gendisk *disk = md->disk;
-> +       struct disk_part_tbl *part_tbl = disk->part_tbl;
-> +
-> +       if (part_num < 0 || part_num >= part_tbl->len)
-> +               return 0;
-> +
-> +       *size = part_tbl->part[part_num]->nr_sects << SECTOR_SHIFT;
-> +       return part_tbl->part[part_num]->start_sect;
-> +}
-> +#endif
-> +
->  static int mmc_blk_probe(struct mmc_card *card)
->  {
->         struct mmc_blk_data *md, *part_md;
-> @@ -2913,6 +2928,9 @@ static int mmc_blk_probe(struct mmc_card *card)
->                         goto out;
->         }
->
-> +       if (mmc_card_mmc(card) || mmc_card_sd(card))
-> +               mmcpstore_card_set(card, md->disk->disk_name);
-> +
->         /* Add two debugfs entries */
->         mmc_blk_add_debugfs(card, md);
->
-> @@ -3060,6 +3078,7 @@ static void __exit mmc_blk_exit(void)
->         unregister_blkdev(MMC_BLOCK_MAJOR, "mmc");
->         unregister_chrdev_region(mmc_rpmb_devt, MAX_DEVICES);
->         bus_unregister(&mmc_rpmb_bus_type);
-> +       unregister_mmcpstore();
->  }
->
->  module_init(mmc_blk_init);
-> diff --git a/drivers/mmc/core/block.h b/drivers/mmc/core/block.h
-> index 31153f656f41..2a4ee5568194 100644
-> --- a/drivers/mmc/core/block.h
-> +++ b/drivers/mmc/core/block.h
-> @@ -16,5 +16,14 @@ void mmc_blk_mq_recovery(struct mmc_queue *mq);
->  struct work_struct;
->
->  void mmc_blk_mq_complete_work(struct work_struct *work);
-> +#if IS_ENABLED(CONFIG_MMC_PSTORE)
-> +sector_t mmc_blk_get_part(struct mmc_card *card, int part_num, sector_t *size);
-> +void mmcpstore_card_set(struct mmc_card *card, const char *disk_name);
-> +void unregister_mmcpstore(void);
-> +#else
-> +static inline void mmcpstore_card_set(struct mmc_card *card,
-> +                                       const char *disk_name) {}
-> +static inline void unregister_mmcpstore(void) {}
-> +#endif
->
->  #endif
-> diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-> index d42037f0f10d..32df03f4c848 100644
-> --- a/drivers/mmc/core/core.c
-> +++ b/drivers/mmc/core/core.c
-> @@ -569,6 +569,30 @@ int mmc_cqe_recovery(struct mmc_host *host)
->  }
->  EXPORT_SYMBOL(mmc_cqe_recovery);
->
-> +#if IS_ENABLED(CONFIG_MMC_PSTORE)
-> +/**
-> + *     mmc_wait_for_pstore_req - initiate a blocking mmc request
-> + *     @host: MMC host to start command
-> + *     @mrq: MMC request to start
-> + *
-> + *     Start a blocking MMC request for a host and wait for the request
-> + *     to complete that is based on polling and timeout.
-> + */
-> +void mmc_wait_for_pstore_req(struct mmc_host *host, struct mmc_request *mrq)
-> +{
-> +       unsigned int timeout;
-> +
-> +       host->ops->req_cleanup_pending(host);
-> +       mmc_start_request(host, mrq);
-> +
-> +       if (mrq->data) {
-> +               timeout = mrq->data->timeout_ns / NSEC_PER_MSEC;
-> +               host->ops->req_completion_poll(host, timeout);
-> +       }
-> +}
-> +EXPORT_SYMBOL(mmc_wait_for_pstore_req);
-> +#endif
-> +
->  /**
->   *     mmc_is_req_done - Determine if a 'cap_cmd_during_tfr' request is done
->   *     @host: MMC host
-> @@ -817,6 +841,26 @@ int __mmc_claim_host(struct mmc_host *host, struct mmc_ctx *ctx,
->  }
->  EXPORT_SYMBOL(__mmc_claim_host);
->
-> +#if IS_ENABLED(CONFIG_MMC_PSTORE)
-> +/**
-> + *     mmc_claim_host_async - claim host in atomic context
-> + *     @host: mmc host to claim
-> + *
-> + *     This routine may be called in panic/oops scenarios.
-> + *     Return zero with host claim success, else busy status.
-> + */
-> +int mmc_claim_host_async(struct mmc_host *host)
-> +{
-> +       if (!host->claimed && pm_runtime_active(mmc_dev(host))) {
-> +               host->claimed = 1;
-> +               return 0;
-> +       }
-> +
-> +       return -EBUSY;
-> +}
-> +EXPORT_SYMBOL(mmc_claim_host_async);
-> +#endif
-> +
->  /**
->   *     mmc_release_host - release a host
->   *     @host: mmc host to release
-> diff --git a/drivers/mmc/core/mmcpstore.c b/drivers/mmc/core/mmcpstore.c
-> new file mode 100644
-> index 000000000000..d7abe82612cb
-> --- /dev/null
-> +++ b/drivers/mmc/core/mmcpstore.c
-> @@ -0,0 +1,310 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * MMC pstore support based on pstore/blk
-> + *
-> + * Copyright (c) 2020 Marvell.
-> + * Author: Bhaskara Budiredla <bbudiredla@marvell.com>
-> + */
-> +
-> +#define pr_fmt(fmt) "mmcpstore: " fmt
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/pstore_blk.h>
-> +#include <linux/blkdev.h>
-> +#include <linux/mount.h>
-> +#include <linux/slab.h>
-> +#include <linux/mmc/mmc.h>
-> +#include <linux/mmc/host.h>
-> +#include <linux/mmc/card.h>
-> +#include <linux/scatterlist.h>
-> +#include "block.h"
-> +#include "card.h"
-> +#include "core.h"
-> +
-> +static struct mmcpstore_context {
-> +       char dev_name[BDEVNAME_SIZE];
-> +       int partno;
-> +       sector_t start_sect;
-> +       sector_t size;
-> +       struct pstore_device_info dev;
-> +       struct pstore_blk_config conf;
-> +       struct pstore_blk_info info;
-> +
-> +       char *sub;
-> +       struct mmc_card *card;
-> +       struct mmc_request *mrq;
-> +} oops_cxt;
-> +
-> +static void mmc_prep_req(struct mmc_request *mrq,
-> +               unsigned int sect_offset, unsigned int nsects,
-> +               struct scatterlist *sg, u32 opcode, unsigned int flags)
-> +{
-> +       mrq->cmd->opcode = opcode;
-> +       mrq->cmd->arg = sect_offset;
-> +       mrq->cmd->flags = MMC_RSP_R1 | MMC_CMD_ADTC;
-> +
-> +       if (nsects == 1) {
-> +               mrq->stop = NULL;
-> +       } else {
-> +               mrq->stop->opcode = MMC_STOP_TRANSMISSION;
-> +               mrq->stop->arg = 0;
-> +               mrq->stop->flags = MMC_RSP_R1B | MMC_CMD_AC;
-> +       }
-> +
-> +       mrq->data->blksz = SECTOR_SIZE;
-> +       mrq->data->blocks = nsects;
-> +       mrq->data->flags = flags;
-> +       mrq->data->sg = sg;
-> +       mrq->data->sg_len = 1;
-> +}
-> +
-> +static int mmcpstore_rdwr_req(const char *buf, unsigned int nsects,
-> +                       unsigned int sect_offset, unsigned int flags)
-> +{
-> +       struct mmcpstore_context *cxt = &oops_cxt;
-> +       struct mmc_request *mrq = cxt->mrq;
-> +       struct mmc_card *card = cxt->card;
-> +       struct mmc_host *host = card->host;
-> +       struct scatterlist sg;
-> +       u32 opcode;
-> +
-> +       if (flags == MMC_DATA_READ)
-> +               opcode  = (nsects > 1) ?
-> +                       MMC_READ_MULTIPLE_BLOCK : MMC_READ_SINGLE_BLOCK;
-> +       else
-> +               opcode = (nsects > 1) ?
-> +                       MMC_WRITE_MULTIPLE_BLOCK : MMC_WRITE_BLOCK;
-> +
-> +       mmc_prep_req(mrq, sect_offset, nsects, &sg, opcode, flags);
-> +       sg_init_one(&sg, buf, (nsects << SECTOR_SHIFT));
-> +       mmc_set_data_timeout(mrq->data, cxt->card);
-> +
-> +       mmc_claim_host(host);
-> +       mmc_wait_for_req(host, mrq);
-> +       mdelay(mrq->data->timeout_ns / NSEC_PER_MSEC);
-> +       mmc_release_host(host);
-> +
-> +       if (mrq->cmd->error) {
-> +               pr_err("Cmd error: %d\n", mrq->cmd->error);
-> +               return mrq->cmd->error;
-> +       }
-> +       if (mrq->data->error) {
-> +               pr_err("Data error: %d\n", mrq->data->error);
-> +               return mrq->data->error;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static ssize_t mmcpstore_write(const char *buf, size_t size, loff_t off)
-> +{
-> +       struct mmcpstore_context *cxt = &oops_cxt;
-> +       int ret;
-> +
-> +       ret = mmcpstore_rdwr_req(buf, (size >> SECTOR_SHIFT),
-> +               cxt->start_sect + (off >> SECTOR_SHIFT), MMC_DATA_WRITE);
-> +       if (ret)
-> +               return ret;
-> +
-> +       return size;
-> +}
-> +
-> +static ssize_t mmcpstore_read(char *buf, size_t size, loff_t off)
-> +{
-> +       struct mmcpstore_context *cxt = &oops_cxt;
-> +       unsigned int sect_off = cxt->start_sect  + (off >> SECTOR_SHIFT);
-> +       unsigned long sects = (cxt->conf.kmsg_size >> SECTOR_SHIFT);
-> +       int ret;
-> +
-> +       if (unlikely(!buf || !size))
-> +               return -EINVAL;
-> +
-> +       ret = mmcpstore_rdwr_req(cxt->sub, sects, sect_off, MMC_DATA_READ);
-> +       if (ret)
-> +               return ret;
-> +       memcpy(buf, cxt->sub, size);
-> +
-> +       return size;
-> +}
-> +
-> +static int mmcpstore_panic_write_req(const char *buf,
-> +               unsigned int nsects, unsigned int sect_offset)
-> +{
-> +       struct mmcpstore_context *cxt = &oops_cxt;
-> +       struct mmc_request *mrq = cxt->mrq;
-> +       struct mmc_card *card = cxt->card;
-> +       struct mmc_host *host = card->host;
-> +       struct scatterlist sg;
-> +       u32 opcode;
-> +       int ret;
-> +
-> +       opcode = (nsects > 1) ? MMC_WRITE_MULTIPLE_BLOCK : MMC_WRITE_BLOCK;
-> +       mmc_prep_req(mrq, sect_offset, nsects, &sg, opcode, MMC_DATA_WRITE);
-> +       sg_init_one(&sg, buf, (nsects << SECTOR_SHIFT));
-> +       mmc_set_data_timeout(mrq->data, cxt->card);
-> +
-> +       ret = mmc_claim_host_async(host);
-> +       if (ret)
-> +               return ret;
-> +
-> +       mmc_wait_for_pstore_req(host, mrq);
-> +       return 0;
-> +}
-> +
-> +static ssize_t mmcpstore_panic_write(const char *buf, size_t size, loff_t off)
-> +{
-> +       struct mmcpstore_context *cxt = &oops_cxt;
-> +       int ret;
-> +
-> +       ret = mmcpstore_panic_write_req(buf, (size >> SECTOR_SHIFT),
-> +                       cxt->start_sect + (off >> SECTOR_SHIFT));
-> +       if (ret)
-> +               return ret;
-> +
-> +       return size;
-> +}
-> +
-> +static struct block_device *mmcpstore_open_backend(const char *device)
-> +{
-> +       struct block_device *bdev;
-> +       dev_t devt;
-> +
-> +       bdev = blkdev_get_by_path(device, FMODE_READ, NULL);
-> +       if (IS_ERR(bdev)) {
-> +               devt = name_to_dev_t(device);
-> +               if (devt == 0)
-> +                       return ERR_PTR(-ENODEV);
-> +
-> +               bdev = blkdev_get_by_dev(devt, FMODE_READ, NULL);
-> +               if (IS_ERR(bdev))
-> +                       return bdev;
-> +       }
-> +
-> +       return bdev;
-> +}
-> +
-> +static void mmcpstore_close_backend(struct block_device *bdev)
-> +{
-> +       if (!bdev)
-> +               return;
-> +       blkdev_put(bdev, FMODE_READ);
-> +}
-> +
-> +void mmcpstore_card_set(struct mmc_card *card, const char *disk_name)
-> +{
-> +       struct mmcpstore_context *cxt = &oops_cxt;
-> +       struct pstore_blk_config *conf = &cxt->conf;
-> +       struct pstore_device_info *dev = &cxt->dev;
-> +       struct block_device *bdev;
-> +       struct mmc_command *stop;
-> +       struct mmc_command *cmd;
-> +       struct mmc_request *mrq;
-> +       struct mmc_data *data;
-> +       int ret;
-> +
-> +       ret = pstore_blk_get_config(conf);
-> +       if (!conf->device[0]) {
-> +               pr_debug("psblk backend is empty\n");
-> +               return;
-> +       }
-> +
-> +       /* Multiple backend devices not allowed */
-> +       if (cxt->dev_name[0])
-> +               return;
-> +
-> +       bdev =  mmcpstore_open_backend(conf->device);
-> +       if (IS_ERR(bdev)) {
-> +               pr_err("%s failed to open with %ld\n",
-> +                               conf->device, PTR_ERR(bdev));
-> +               return;
-> +       }
-> +
-> +       bdevname(bdev, cxt->dev_name);
-> +       cxt->partno = bdev->bd_part->partno;
-> +       mmcpstore_close_backend(bdev);
-> +
-> +       if (strncmp(cxt->dev_name, disk_name, strlen(disk_name)))
-> +               return;
-> +
-> +       cxt->start_sect = mmc_blk_get_part(card, cxt->partno, &cxt->size);
-> +       if (!cxt->start_sect) {
-> +               pr_err("Non-existent partition %d selected\n", cxt->partno);
-> +               return;
-> +       }
-> +
-> +       /* Check for host mmc panic write polling function definitions */
-> +       if (!card->host->ops->req_cleanup_pending ||
-> +                       !card->host->ops->req_completion_poll)
-> +               return;
-> +
-> +       cxt->card = card;
-> +
-> +       cxt->sub = kmalloc(conf->kmsg_size, GFP_KERNEL);
-> +       if (!cxt->sub)
-> +               goto out;
-> +
-> +       mrq = kzalloc(sizeof(struct mmc_request), GFP_KERNEL);
-> +       if (!mrq)
-> +               goto free_sub;
-> +
-> +       cmd = kzalloc(sizeof(struct mmc_command), GFP_KERNEL);
-> +       if (!cmd)
-> +               goto free_mrq;
-> +
-> +       stop = kzalloc(sizeof(struct mmc_command), GFP_KERNEL);
-> +       if (!stop)
-> +               goto free_cmd;
-> +
-> +       data = kzalloc(sizeof(struct mmc_data), GFP_KERNEL);
-> +       if (!data)
-> +               goto free_stop;
-> +
-> +       mrq->cmd = cmd;
-> +       mrq->data = data;
-> +       mrq->stop = stop;
-> +       cxt->mrq = mrq;
-> +
-> +       dev->total_size = cxt->size;
-> +       dev->flags = PSTORE_FLAGS_DMESG;
-> +       dev->read = mmcpstore_read;
-> +       dev->write = mmcpstore_write;
-> +       dev->erase = NULL;
-> +       dev->panic_write = mmcpstore_panic_write;
-> +
-> +       ret = register_pstore_device(&cxt->dev);
-> +       if (ret) {
-> +               pr_err("%s registering with psblk failed (%d)\n",
-> +                               cxt->dev_name, ret);
-> +               goto free_data;
-> +       }
-> +
-> +       pr_info("%s registered as psblk backend\n", cxt->dev_name);
-> +       return;
-> +
-> +free_data:
-> +       kfree(data);
-> +free_stop:
-> +       kfree(stop);
-> +free_cmd:
-> +       kfree(cmd);
-> +free_mrq:
-> +       kfree(mrq);
-> +free_sub:
-> +       kfree(cxt->sub);
-> +out:
-> +       return;
-> +}
-> +
-> +void unregister_mmcpstore(void)
-> +{
-> +       struct mmcpstore_context *cxt = &oops_cxt;
-> +
-> +       unregister_pstore_device(&cxt->dev);
-> +       kfree(cxt->mrq->data);
-> +       kfree(cxt->mrq->stop);
-> +       kfree(cxt->mrq->cmd);
-> +       kfree(cxt->mrq);
-> +       kfree(cxt->sub);
-> +       cxt->card = NULL;
-> +}
-> diff --git a/include/linux/mmc/core.h b/include/linux/mmc/core.h
-> index 29aa50711626..53840a361b5a 100644
-> --- a/include/linux/mmc/core.h
-> +++ b/include/linux/mmc/core.h
-> @@ -166,6 +166,11 @@ struct mmc_request {
->
->  struct mmc_card;
->
-> +#if IS_ENABLED(CONFIG_MMC_PSTORE)
-> +void mmc_wait_for_pstore_req(struct mmc_host *host, struct mmc_request *mrq);
-> +int mmc_claim_host_async(struct mmc_host *host);
-> +#endif
-> +
->  void mmc_wait_for_req(struct mmc_host *host, struct mmc_request *mrq);
->  int mmc_wait_for_cmd(struct mmc_host *host, struct mmc_command *cmd,
->                 int retries);
-> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
-> index c079b932330f..7d6751005ac6 100644
-> --- a/include/linux/mmc/host.h
-> +++ b/include/linux/mmc/host.h
-> @@ -173,6 +173,18 @@ struct mmc_host_ops {
->          */
->         int     (*multi_io_quirk)(struct mmc_card *card,
->                                   unsigned int direction, int blk_size);
-> +
-> +#if IS_ENABLED(CONFIG_MMC_PSTORE)
-> +       /*
-> +        * The following two APIs are introduced to support mmcpstore
-> +        * functionality. Cleanup API to terminate the ongoing and
-> +        * pending requests before a panic write post, and polling API
-> +        * to ensure that write succeeds before the Kernel dies.
-> +        */
-> +       void    (*req_cleanup_pending)(struct mmc_host *host);
-> +       int     (*req_completion_poll)(struct mmc_host *host,
-> +                                       unsigned long timeout);
-> +#endif
->  };
->
->  struct mmc_cqe_ops {
-> --
-> 2.17.1
->
+I depend on both CPU and the UFS drive.
+
+> I don't think that the reason is page faulting in itself.
+
+What I meant is that page faulting might contribute most part of the
+100us(preparing 1MB data) and 2ms(preparing 32MB data). It can be others,
+but should be easy to figure out.
+
+-- 
+Ming
+
