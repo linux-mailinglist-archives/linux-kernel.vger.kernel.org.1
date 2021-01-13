@@ -2,93 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38DF22F4D10
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:25:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A1D2F4D17
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:28:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726989AbhAMOYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:24:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35876 "EHLO
+        id S1726562AbhAMO2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:28:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726787AbhAMOYh (ORCPT
+        with ESMTP id S1725772AbhAMO23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:24:37 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93D8C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:23:56 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id 190so1770991wmz.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:23:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Td/hCZTImHCFfn7I9NMHTC6SnVd0rI2LHAoKiSHSGRI=;
-        b=fbUDkDP/slYttuIBNGNx8xoUSvoR+GMLiLuH2zv7hH5Lz6XJ5uxT9Rdgo+baCX7UB7
-         /ZtFGVuBLNBh+WGpl2RheTIAbcAeAo1eRavxM4TiOD791jlkjeJ0EAMY1pFO0jJWp4Tx
-         Q5V9Jvz2nw60MpFa21p8RLn1ixt4K3x5pz6P56FpuKjgugBYYvTqZNK3fdJvesfmkGa8
-         iCsiGzaKotvl7w0/y9w0ELTSz7xUDVd+VjmtflpPc0SL0TTXfG9yPXWtZAx1G7jAkrsl
-         GG0f2ZqICZkBltMPuQFWSUZYhdt7lhHay7x0Nxnc4Ouff+joHuZVDlBhufN1JyZmWtLT
-         ssZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Td/hCZTImHCFfn7I9NMHTC6SnVd0rI2LHAoKiSHSGRI=;
-        b=iz0fk0srtPxZihlypm5hFYgduuVhC3TrEodAAl4kLPIyRMQHb/XTpEVyv4DvOKviud
-         JY3CvgWFvPtrFP/8f0Hy2/RLY/1vvhOy1NhlSwKiXzTmgsKPLNjO3dY/mvw6SychEfZ9
-         JtUc8Hzv7CtB/aFEM1BCGLEtF4PpQVtkJXiDke7TK7jQmIaUjD/MDVk5ywBHbJ7Q/PcY
-         +SWuFIBCYVF7hrClzFhqj/6dMJAPmPhzgjm0KlMEKZIMwIpq1L0/b98z19DcNb9DGzvZ
-         9EDvwD4kma0PW1WMtKXpX9M4JLdFtXabQtY/9bRdT4eJARwM9vwoainn4P3w3WZMNfV/
-         tGlA==
-X-Gm-Message-State: AOAM531RHM7QAORQHDkMRtdlCaNDjw5eHmX3Z8Y1yr7q43yGMo0d3xL0
-        NQxoGL0K931ZsywHtM5xeVbOk+0BMtQCQDOC
-X-Google-Smtp-Source: ABdhPJzf6LUGgt0M3eLLOrgKTAxF2rSt7rUSZxEbwj/IsnQ0A/emTAD1L+zAf9mwLdeCF3eSZczSaA==
-X-Received: by 2002:a1c:bc41:: with SMTP id m62mr2487304wmf.46.1610547835745;
-        Wed, 13 Jan 2021 06:23:55 -0800 (PST)
-Received: from dell.default ([91.110.221.229])
-        by smtp.gmail.com with ESMTPSA id b9sm3636523wmd.32.2021.01.13.06.23.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 06:23:55 -0800 (PST)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: [PATCH 1/1] docs: submitting-patches: Emphasise the requirement to Cc: stable when using Fixes: tag
-Date:   Wed, 13 Jan 2021 14:23:47 +0000
-Message-Id: <20210113142347.1263024-1-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 13 Jan 2021 09:28:29 -0500
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFFD8C061575;
+        Wed, 13 Jan 2021 06:27:49 -0800 (PST)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 0AB5DC6378; Wed, 13 Jan 2021 14:27:46 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mess.org; s=2020;
+        t=1610548066; bh=UktXgG9wkBHTGV//3PGFQd/yEA8ExzR/nxPRJulSGQA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Facmcd+CkeoNSgGoSfHw7RKuh9lt4n46w1p2uqfH6iFCzcgOyNzY2eLZMxF2Yyx0N
+         Dh8UHI+BjVsuYsRzm/WY+8Hb01/cPeVzgHJfcSXr0ElscF0aJbNpWZqo3jeNsMvp61
+         xJ8Y3MRBhDbqJajQsnz6xKnBxDRYZ6TodbL1BvA+7APXBgW7Vow3QXo4u8EOxbQdlL
+         iOGfnzDnvxs9Ar5AQoKjh0MDZvO8pqvZurneYfiSHdoRekyEGr0seyar0FJYHxWM0x
+         rIiTeVvbwSu0cZNB09aRzDjarNB3v3w9QKBjGDVwe8ZVfNIEgOr6FlUvXUj5TCepwD
+         WnQzxV3uJfoCg==
+Date:   Wed, 13 Jan 2021 14:27:45 +0000
+From:   Sean Young <sean@mess.org>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Fix shift-out-of-bound in mceusb_process_ir_data
+Message-ID: <20210113142745.GA8138@gofer.mess.org>
+References: <20210113111122.1739478-1-mudongliangabcd@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113111122.1739478-1-mudongliangabcd@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clear-up any confusion surrounding the Fixes: tag with regards to the
-need to Cc: the stable mailing list when submitting stable patch
-candidates.
+On Wed, Jan 13, 2021 at 07:11:22PM +0800, Dongliang Mu wrote:
+> The missing check of ir->buf_in[i+1] can lead to an shift-out-of-bound
+> in mceusb_handle_command or mceusb_dev_printdata. This patch adds a
+> check to limit its value lower than 16. The concrete report of UBSAN is
+> as follows.
+> 
+> UBSAN: shift-out-of-bounds in drivers/media/rc/mceusb.c:704:13
+> shift exponent 230 is too large for 32-bit type 'unsigned int'
+> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.10.0-syzkaller #0
+> Call Trace:
+>  <IRQ>
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:120
+>  ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+>  __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
+>  mceusb_dev_printdata.cold+0x19/0x1e drivers/media/rc/mceusb.c:704
+>  mceusb_process_ir_data drivers/media/rc/mceusb.c:1275 [inline]
+>  mceusb_dev_recv+0x3cb/0x1990 drivers/media/rc/mceusb.c:1376
+>  __usb_hcd_giveback_urb+0x2b0/0x5c0 drivers/usb/core/hcd.c:1657
+>  usb_hcd_giveback_urb+0x38c/0x430 drivers/usb/core/hcd.c:1728
+>  dummy_timer+0x11f4/0x32a0 drivers/usb/gadget/udc/dummy_hcd.c:1971
+> 
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> ---
+>  drivers/media/rc/mceusb.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/media/rc/mceusb.c b/drivers/media/rc/mceusb.c
+> index f9616158bcf4..755808c6e747 100644
+> --- a/drivers/media/rc/mceusb.c
+> +++ b/drivers/media/rc/mceusb.c
+> @@ -1272,6 +1272,8 @@ static void mceusb_process_ir_data(struct mceusb_dev *ir, int buf_len)
+>  		switch (ir->parser_state) {
+>  		case SUBCMD:
+>  			ir->rem = mceusb_cmd_datasize(ir->cmd, ir->buf_in[i]);
+> +			if (ir->buf_in[i+1] >= 16)
+> +				continue;
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- Documentation/process/submitting-patches.rst | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I'm not sure this is correct. This checks the second byte for *any* response,
+not just MCE_RSP_EQIRCFS response which is causing the "shift out of bounds"
+issue.
 
-diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
-index 7c97ad580e7d0..636ef067c1565 100644
---- a/Documentation/process/submitting-patches.rst
-+++ b/Documentation/process/submitting-patches.rst
-@@ -554,7 +554,8 @@ is used to make it easy to determine where a bug originated, which can help
- review a bug fix. This tag also assists the stable kernel team in determining
- which stable kernel versions should receive your fix. This is the preferred
- method for indicating a bug fixed by the patch. See :ref:`describe_changes`
--for more details.
-+for more details. Attaching a Fixes: tag does not replace the requirement to
-+Cc: stable@vger.kernel.org on all stable patch candidates.
- 
- .. _the_canonical_patch_format:
- 
--- 
-2.25.1
+I think the check belongs within the MCE_RSP_EQIRCFS case.
 
+Lastly it should have been break, not continue.
+
+Thanks
+
+Sean
+
+
+
+>  			mceusb_dev_printdata(ir, ir->buf_in, buf_len, i - 1,
+>  					     ir->rem + 2, false);
+>  			if (i + ir->rem < buf_len)
+> -- 
+> 2.25.1
