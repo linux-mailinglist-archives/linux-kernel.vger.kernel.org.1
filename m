@@ -2,138 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60ECA2F4F84
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:09:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8C02F4F7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727356AbhAMQGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 11:06:42 -0500
-Received: from smtpweb147.aruba.it ([62.149.158.147]:43151 "EHLO
-        smtpweb147.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbhAMQGl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 11:06:41 -0500
-Received: from ubuntu.localdomain ([146.241.213.249])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id zieJkU4CD5BgLzieJkLwdj; Wed, 13 Jan 2021 17:05:34 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1610553934; bh=vVVA4Opin9OtrAi4JKFF69zz8U3z+kSm0iZZv2AXo0E=;
-        h=From:To:Subject:Date:MIME-Version:Content-Type;
-        b=C8vaE1KcaPwamF1yndjEovf1ptF5PZIFv4880+ztpTxyOUqEL6AyODRy3kOxy2RZQ
-         6UDgyeQZbNKu55pzl9EbkhywVz14j/ieB8osZYCXdCFgWBE6njH+1L5NCo/NrYhZA1
-         HIa8HwoSvclNRLI229zA6euTFtPrmfUCmUVNg3VO/Gy1Cf2ViIohgZcE/NEkmnPde6
-         DbSl6NlmCunbP7k9Z9xa2XKKiJkO7eRTFy+i1BfkSf9+YD+9dZzIAoofb+8cX/TpGj
-         uPDmAQjpPalMIHuOi1k/6QR5GOxKFlDEw1HwoUBQi2iZZhALZ4xuU1RFcCS27xdoOO
-         8xHuL0wCzTshQ==
-From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Marjan Pascolo <marjan.pascolo@trexom.it>, wens@csie.org,
-        daniel@ffwll.ch, airlied@linux.ie, treding@nvidia.com,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Giulio Benetti <giulio.benetti@micronovasrl.com>
-Subject: [PATCH v5] drm/sun4i: tcon: fix inverted DCLK polarity
-Date:   Wed, 13 Jan 2021 17:05:26 +0100
-Message-Id: <20210113160526.928766-1-giulio.benetti@benettiengineering.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210113104725.770459-1-giulio.benetti@benettiengineering.com>
-References: <20210113104725.770459-1-giulio.benetti@benettiengineering.com>
+        id S1727292AbhAMQGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 11:06:32 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36022 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725801AbhAMQGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 11:06:31 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 51EC8AB9F;
+        Wed, 13 Jan 2021 16:05:49 +0000 (UTC)
+To:     Faiyaz Mohammed <faiyazm@codeaurora.org>, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     vinmenon@codeaurora.org
+References: <1610443287-23933-1-git-send-email-faiyazm@codeaurora.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm: slub: Convert sys slab alloc_calls, free_calls to bin
+ attribute
+Message-ID: <d35e37e8-9b70-6b04-b5b8-19030921a1b5@suse.cz>
+Date:   Wed, 13 Jan 2021 17:05:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1610443287-23933-1-git-send-email-faiyazm@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfPHjKTt1umdvQBS37mgZ8A8jNdkItS6XleUm2Vrj7oIZQNMEu7RIrkrck8ANEZ/VyNbwxA7UzXqsfIpXinJ0DkgiSQNMcbskc30Ozi0vz1C4EuhPNf+x
- KYwN/yfo/M4iavqbBWlxbgNTvVRq+tUIYvwriIVNE5t+TN10cNw834AkAJyOuD8Gv6ATCu01CMJl7exSUQ3nAYgVSuIahlDchlKLzVoNsKli6Do5frNL4NNz
- EvYK9UcxbeZQXNuNGSVG2OF590S22rW09FnmvR9ydXr1xR1s3fWVUbY0u02a2ncSHC//CxFkKBmUfvXlBTkNvjofH0udhtW+tUJSVN6/0AZ8XBeg+X76hrPd
- vnn94DBkoVVMuJonw4NuSdnMH4fJwapE3LuyPqj6t9BoqJB7qVkp2ZLitTU1gOvHihhPzq6EL2IdPQ0fI+3AJSKAI11ZJL3FHJyIoJ/v3sxsIE+H5weUiWNn
- Zavh592HQNSGNedWDS01T14+9zOjcXDfbrsHg4SIqUciKkx+t30Jl6ntRfNRpewKhK2CVbSf0yWLdKmi4JVm3g9LfBHL8wAS0hsfkQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giulio Benetti <giulio.benetti@micronovasrl.com>
+On 1/12/21 10:21 AM, Faiyaz Mohammed wrote:
+> Reading the sys slab alloc_calls, free_calls returns the available object
+> owners, but the size of this file is limited to PAGE_SIZE
+> because of the limitation of sysfs attributes, it is returning the
+> partial owner info, which is not sufficient to debug/account the slab
+> memory and alloc_calls output is not matching with /proc/slabinfo.
+> 
+> To remove the PAGE_SIZE limitation converted the sys slab
+> alloc_calls, free_calls to bin attribute.
+> 
+> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+> ---
+>  mm/slub.c | 61 +++++++++++++++++++++++++++++++++++++++++++++++--------------
+>  1 file changed, 47 insertions(+), 14 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index b52384e..8744e5ec 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -4710,13 +4710,14 @@ static void process_slab(struct loc_track *t, struct kmem_cache *s,
+>  }
+>  
+>  static int list_locations(struct kmem_cache *s, char *buf,
+> -					enum track_item alloc)
+> +			loff_t offset, enum track_item alloc)
+>  {
+>  	int len = 0;
+>  	unsigned long i;
+>  	struct loc_track t = { 0, 0, NULL };
+>  	int node;
+>  	struct kmem_cache_node *n;
+> +	static unsigned int previous_read_count;
 
-During commit 88bc4178568b ("drm: Use new
-DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags") DRM_BUS_FLAG_*
-macros have been changed to avoid ambiguity but just because of this
-ambiguity previous DRM_BUS_FLAG_PIXDATA_(POS/NEG)EDGE were used meaning
-_SAMPLE_ not _DRIVE_. This leads to DLCK inversion and need to fix but
-instead of swapping phase values, let's adopt an easier approach Maxime
-suggested:
-It turned out that bit 26 of SUN4I_TCON0_IO_POL_REG is dedicated to
-invert DCLK polarity and this makes things really easier than before. So
-let's handle DCLK polarity by adding SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE
-as bit 26 and activating according to bus_flags the same way it is done
-for all the other signals polarity.
+Hmm static? What about parallel reads from different files? I guess you'll have
+to somehow employ the offset parameter here and it won't be pretty, because you
+are still printing free text and not some fixed-size binary chunks where seeking
+is simple.
+Also it's wasteful to to repeat the data gathering for each pritned page, you'd
+need a mechanism that allows holding private data between printing out the
+pages. If bin_attribute doesn't have that, you'd need e.g. seq_file which we use
+for /proc/pid/(s)maps etc.
 
-Fixes: 88bc4178568b ("drm: Use new DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags")
-Suggested-by: Maxime Ripard <maxime@cerno.tech>
-Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
----
-V2->V3:
-- squash 2 patches into 1
-V3->V4:
-- add SUN4I_TCON0_IO_POL_DCLK_POSITIVE to regmap_update_bits()
-V4->V5:
-polarity is still wrong so:
-- let's use SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE macro
-  instead of _DCLK_POSITIVE(that would make sense only in realtion with DCLK)
-- invert condition using _NEGEDGE instead of _POSEDGE and then matching with
-  register bit SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE
-- correct commit log according to V4->V5 changes
----
- drivers/gpu/drm/sun4i/sun4i_tcon.c | 21 ++-------------------
- drivers/gpu/drm/sun4i/sun4i_tcon.h |  1 +
- 2 files changed, 3 insertions(+), 19 deletions(-)
+>  	unsigned long *map = bitmap_alloc(oo_objects(s->max), GFP_KERNEL);
 
-diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/sun4i_tcon.c
-index eaaf5d70e352..c172ccfff7e5 100644
---- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
-+++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
-@@ -569,30 +569,13 @@ static void sun4i_tcon0_mode_set_rgb(struct sun4i_tcon *tcon,
- 	if (info->bus_flags & DRM_BUS_FLAG_DE_LOW)
- 		val |= SUN4I_TCON0_IO_POL_DE_NEGATIVE;
- 
--	/*
--	 * On A20 and similar SoCs, the only way to achieve Positive Edge
--	 * (Rising Edge), is setting dclk clock phase to 2/3(240°).
--	 * By default TCON works in Negative Edge(Falling Edge),
--	 * this is why phase is set to 0 in that case.
--	 * Unfortunately there's no way to logically invert dclk through
--	 * IO_POL register.
--	 * The only acceptable way to work, triple checked with scope,
--	 * is using clock phase set to 0° for Negative Edge and set to 240°
--	 * for Positive Edge.
--	 * On A33 and similar SoCs there would be a 90° phase option,
--	 * but it divides also dclk by 2.
--	 * Following code is a way to avoid quirks all around TCON
--	 * and DOTCLOCK drivers.
--	 */
--	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE)
--		clk_set_phase(tcon->dclk, 240);
--
- 	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
--		clk_set_phase(tcon->dclk, 0);
-+		val |= SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE;
- 
- 	regmap_update_bits(tcon->regs, SUN4I_TCON0_IO_POL_REG,
- 			   SUN4I_TCON0_IO_POL_HSYNC_POSITIVE |
- 			   SUN4I_TCON0_IO_POL_VSYNC_POSITIVE |
-+			   SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGDGE |
- 			   SUN4I_TCON0_IO_POL_DE_NEGATIVE,
- 			   val);
- 
-diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.h b/drivers/gpu/drm/sun4i/sun4i_tcon.h
-index cfbf4e6c1679..c5ac1b02482c 100644
---- a/drivers/gpu/drm/sun4i/sun4i_tcon.h
-+++ b/drivers/gpu/drm/sun4i/sun4i_tcon.h
-@@ -113,6 +113,7 @@
- #define SUN4I_TCON0_IO_POL_REG			0x88
- #define SUN4I_TCON0_IO_POL_DCLK_PHASE(phase)		((phase & 3) << 28)
- #define SUN4I_TCON0_IO_POL_DE_NEGATIVE			BIT(27)
-+#define SUN4I_TCON0_IO_POL_DCLK_DRIVE_NEGEDGE		BIT(26)
- #define SUN4I_TCON0_IO_POL_HSYNC_POSITIVE		BIT(25)
- #define SUN4I_TCON0_IO_POL_VSYNC_POSITIVE		BIT(24)
- 
--- 
-2.25.1
+This line doesn't exist since 90e9f6a66c78f in v5.6-rc1, is the patch based on
+an old kernel?
+
+>  	if (!map || !alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
+> @@ -4742,11 +4743,9 @@ static int list_locations(struct kmem_cache *s, char *buf,
+>  		spin_unlock_irqrestore(&n->list_lock, flags);
+>  	}
+>  
+> -	for (i = 0; i < t.count; i++) {
+> +	for (i = previous_read_count; i < t.count; i++) {
+>  		struct location *l = &t.loc[i];
+>  
+> -		if (len > PAGE_SIZE - KSYM_SYMBOL_LEN - 100)
+> -			break;
+>  		len += sprintf(buf + len, "%7ld ", l->count);
+>  
+>  		if (l->addr)
+> @@ -4784,12 +4783,20 @@ static int list_locations(struct kmem_cache *s, char *buf,
+>  					 nodemask_pr_args(&l->nodes));
+>  
+>  		len += sprintf(buf + len, "\n");
+> +
+> +		if (len > PAGE_SIZE - KSYM_SYMBOL_LEN - 100) {
+> +			previous_read_count = i + 1;
+> +			break;
+> +		}
+>  	}
+>  
+> +	if ((offset != 0) && ((i >= t.count) || (previous_read_count > t.count))) {
+> +		previous_read_count = 0;
+> +		len = 0;
+> +	} else if (!t.count)
+> +		len += sprintf(buf, "No data\n");
+>  	free_loc_track(&t);
+>  	bitmap_free(map);
+> -	if (!t.count)
+> -		len += sprintf(buf, "No data\n");
+>  	return len;
+>  }
+>  
+> @@ -5180,6 +5187,7 @@ static int any_slab_objects(struct kmem_cache *s)
+>  
+>  struct slab_attribute {
+>  	struct attribute attr;
+> +	struct bin_attribute bin_attr;
+>  	ssize_t (*show)(struct kmem_cache *s, char *buf);
+>  	ssize_t (*store)(struct kmem_cache *s, const char *x, size_t count);
+>  };
+> @@ -5192,6 +5200,12 @@ struct slab_attribute {
+>  	static struct slab_attribute _name##_attr =  \
+>  	__ATTR(_name, 0600, _name##_show, _name##_store)
+>  
+> +#define SLAB_BIN_ATTR_RO(_name) \
+> +	static struct slab_attribute _name##_attr = { \
+> +	.bin_attr = \
+> +	__BIN_ATTR_RO(_name, 0) \
+> +	} \
+> +
+>  static ssize_t slab_size_show(struct kmem_cache *s, char *buf)
+>  {
+>  	return sprintf(buf, "%u\n", s->size);
+> @@ -5535,21 +5549,33 @@ static ssize_t validate_store(struct kmem_cache *s,
+>  }
+>  SLAB_ATTR(validate);
+>  
+> -static ssize_t alloc_calls_show(struct kmem_cache *s, char *buf)
+> +static ssize_t alloc_calls_read(struct file *filp, struct kobject *kobj,
+> +				struct bin_attribute *bin_attr, char *buf,
+> +					loff_t offset, size_t count)
+>  {
+> +	struct kmem_cache *s;
+> +
+> +	s = to_slab(kobj);
+>  	if (!(s->flags & SLAB_STORE_USER))
+>  		return -ENOSYS;
+> -	return list_locations(s, buf, TRACK_ALLOC);
+> +
+> +	return list_locations(s, buf, offset, TRACK_ALLOC);
+>  }
+> -SLAB_ATTR_RO(alloc_calls);
+> +SLAB_BIN_ATTR_RO(alloc_calls);
+>  
+> -static ssize_t free_calls_show(struct kmem_cache *s, char *buf)
+> +static ssize_t free_calls_read(struct file *filp, struct kobject *kobj,
+> +				struct bin_attribute *bin_attr, char *buf,
+> +					loff_t offset, size_t count)
+>  {
+> +	struct kmem_cache *s;
+> +
+> +	s = to_slab(kobj);
+>  	if (!(s->flags & SLAB_STORE_USER))
+>  		return -ENOSYS;
+> -	return list_locations(s, buf, TRACK_FREE);
+> +
+> +	return list_locations(s, buf, offset, TRACK_FREE);
+>  }
+> -SLAB_ATTR_RO(free_calls);
+> +SLAB_BIN_ATTR_RO(free_calls);
+>  #endif /* CONFIG_SLUB_DEBUG */
+>  
+>  #ifdef CONFIG_FAILSLAB
+> @@ -5694,6 +5720,14 @@ STAT_ATTR(CPU_PARTIAL_NODE, cpu_partial_node);
+>  STAT_ATTR(CPU_PARTIAL_DRAIN, cpu_partial_drain);
+>  #endif	/* CONFIG_SLUB_STATS */
+>  
+> +
+> +static struct bin_attribute *slab_bin_attrs[] = {
+> +#ifdef CONFIG_SLUB_DEBUG
+> +	&alloc_calls_attr.bin_attr,
+> +	&free_calls_attr.bin_attr,
+> +#endif
+> +};
+> +
+>  static struct attribute *slab_attrs[] = {
+>  	&slab_size_attr.attr,
+>  	&object_size_attr.attr,
+> @@ -5722,8 +5756,6 @@ static struct attribute *slab_attrs[] = {
+>  	&poison_attr.attr,
+>  	&store_user_attr.attr,
+>  	&validate_attr.attr,
+> -	&alloc_calls_attr.attr,
+> -	&free_calls_attr.attr,
+>  #endif
+>  #ifdef CONFIG_ZONE_DMA
+>  	&cache_dma_attr.attr,
+> @@ -5769,6 +5801,7 @@ static struct attribute *slab_attrs[] = {
+>  
+>  static const struct attribute_group slab_attr_group = {
+>  	.attrs = slab_attrs,
+> +	.bin_attrs = slab_bin_attrs,
+>  };
+>  
+>  static ssize_t slab_attr_show(struct kobject *kobj,
+> 
 
