@@ -2,119 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C70B12F518C
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:59:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FF02F518D
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:59:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728171AbhAMR45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:56:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728087AbhAMR44 (ORCPT
+        id S1728193AbhAMR6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:58:52 -0500
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:28808 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728064AbhAMR6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:56:56 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74AFBC061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:56:16 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id i5so1983826pgo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:56:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HdbzlOMYwsTubQgSe6mBoJ6+hia91ZFPU20BGsDFUoQ=;
-        b=d9NukwZOoMou7/rHsj7gPGN5tnrgFBWGbUcqD8IZyT4x9BrM6veojZwMNDiCOaZlz2
-         Q8qeLlbNuLTeIxN7t5TLoyUqRYpWoj0FQIWdAnoEyZ2/UzYhZ4l1LfjHUeLlHM6Sei0E
-         fItQTja5+rFXADf+CYgW3mBXY6sKqJvPYVouZGtGwMH1jhXDvYgyTq7Iv+O9QyGk0VJ/
-         9mDpqGev6Z8W+5q0XKk9YY+/waeUBtRVUKJBbt4OzV70+d4gZCxWgRfZnuUvMeAgCwJy
-         I11mFYSd/05W8sHCKx5XkTr0MF/c0u2lGWEyw0V0bMClNM+LEc0tPLtWOAVZvzghFdu+
-         MQVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HdbzlOMYwsTubQgSe6mBoJ6+hia91ZFPU20BGsDFUoQ=;
-        b=fgaCY3pogmDtCO9M5d9VUnFFsaGGh+plIR4QIBMQhf0M/QeGMQSi/50zgz+J740JJ+
-         6IjHdoexAMOEFcUdJmF32g449OPgQTR24OGY1bWr2P7LdHTjoH1y0+0nFv9SH2o450lX
-         ADeG8Qvj44sX/+W270XLK7nzzVik/NqiDvwgk6szXM7ZkLKNvNHdnsf0YjrIWGVgaiLA
-         OdUhfRwudHJ5HhP/HW6nvSPOKTT4SfKul1cunlr9wYYR60HyxdbvF493Q4nJmrmDal7O
-         UMWU4E5LXffU5yrxjvDplbgsNsMpwN+cNBR3u3E2xF0qhLbHvt1QSft/n2wMlztvgDXN
-         RsxQ==
-X-Gm-Message-State: AOAM533yjDCbgYuKNCCs3+KbKMdCLl5wmE1IU4FAPawDiK71f0PCo+2Y
-        zruRo6OvPAH/5a2PB9BZswboKf4EZClWAQda1s8eyA==
-X-Google-Smtp-Source: ABdhPJzM8mVIbU435tuWrbGKPlYhIHXJXKAi5M60RxYtuucg5oIRm1nTZEYGcP4R88CYWYdJC9UkLAXy6IIto5IzEp4=
-X-Received: by 2002:a63:1f47:: with SMTP id q7mr3198173pgm.10.1610560575782;
- Wed, 13 Jan 2021 09:56:15 -0800 (PST)
+        Wed, 13 Jan 2021 12:58:51 -0500
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 10DHvsCO008110
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Jan 2021 02:57:55 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 10DHvsCO008110
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1610560675;
+        bh=5QLVKZuMn5+SASfPyUyRYZJzylR2IbKY13Wi4rwHquM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=P5ZlsuTITcTtH4fgdsfnIRQA/RNX/XwYw6hh3aXjz8I5GBF0JhiJ0OZtOiv2XE9lw
+         IyjCEjvPIOggSlld3JN8PjBDTBFtFT4Gx3ZU5V+2LDN87FkLl8dcGM37oDF7051xXF
+         rVoX6bNtkUEhfe/1YDj1FrN73PpW6iSXXSlTKzepLaYmcxPJiQP9Mjf+gQjlOnDIzl
+         3rtesFZvnvxYANp1TIDBaYnwDtKiQSYpMYakEv+Y74mJ/Iv5iaHo4e0PRndqjygORf
+         ybUEV3l7S3ylfL1u4w8WXp/kbPvvEoRh2yvzkLLZCDMF2qwdc7FNEYjF3hs2LJDrqN
+         TfDmVg07oTQhw==
+X-Nifty-SrcIP: [209.85.210.176]
+Received: by mail-pf1-f176.google.com with SMTP id h186so1711599pfe.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:57:55 -0800 (PST)
+X-Gm-Message-State: AOAM532QCENqHoNk4MDciRUXZSPdW2Ui2/Ca3SBhJ6zTjD8CU0Z/hNuz
+        tTTZRYPhH3zvXfef9kx5ZjHLheACJYEI7V96amY=
+X-Google-Smtp-Source: ABdhPJwe0YwDDNuydX2BebdE5MltJXjy4MJNoOanXcv5kpNBbU3IkW5nMY5kgtTSjSp+VhWkx7IipknxRKQB2gK7of8=
+X-Received: by 2002:aa7:9501:0:b029:155:3b11:d5c4 with SMTP id
+ b1-20020aa795010000b02901553b11d5c4mr3156162pfp.76.1610560674180; Wed, 13 Jan
+ 2021 09:57:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20210112115421.GB13086@zn.tnic> <20210112194625.4181814-1-ndesaulniers@google.com>
- <20210112210154.GI4646@sirena.org.uk> <20210113165923.acvycpcu5tzksbbi@treble>
-In-Reply-To: <20210113165923.acvycpcu5tzksbbi@treble>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 13 Jan 2021 09:56:04 -0800
-Message-ID: <CAKwvOdnAMsYF-v1LAqttBV3e3rHhSFZmPcRRV0+v=+9AyMFgNA@mail.gmail.com>
-Subject: Re: [PATCH v4] x86/entry: emit a symbol for register restoring thunk
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Fangrui Song <maskray@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Joe Perches <joe@perches.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20210112224832.10980-1-will@kernel.org> <161055398865.21762.12236232732054213928.b4-ty@arm.com>
+In-Reply-To: <161055398865.21762.12236232732054213928.b4-ty@arm.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 14 Jan 2021 02:57:17 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASs6dvU6D3jL2GG3jW58fXfaj6VNOe55NJnTB8UPuk2pA@mail.gmail.com>
+Message-ID: <CAK7LNASs6dvU6D3jL2GG3jW58fXfaj6VNOe55NJnTB8UPuk2pA@mail.gmail.com>
+Subject: Re: [PATCH] compiler.h: Raise minimum version of GCC to 5.1 for arm64
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Florian Weimer <fweimer@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 8:59 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+On Thu, Jan 14, 2021 at 1:08 AM Catalin Marinas <catalin.marinas@arm.com> wrote:
 >
-> On Tue, Jan 12, 2021 at 09:01:54PM +0000, Mark Brown wrote:
-> > On Tue, Jan 12, 2021 at 11:46:24AM -0800, Nick Desaulniers wrote:
+> On Tue, 12 Jan 2021 22:48:32 +0000, Will Deacon wrote:
+> > GCC versions >= 4.9 and < 5.1 have been shown to emit memory references
+> > beyond the stack pointer, resulting in memory corruption if an interrupt
+> > is taken after the stack pointer has been adjusted but before the
+> > reference has been executed. This leads to subtle, infrequent data
+> > corruption such as the EXT4 problems reported by Russell King at the
+> > link below.
 > >
-> > This:
-> >
-> > > when building with LLVM_IAS=1 (Clang's integrated assembler). Josh
-> > > notes:
-> >
-> > >   So basically, you can use an .L symbol *inside* a function or a code
-> > >   segment, you just can't use the .L symbol to contain the code using a
-> > >   SYM_*_START/END annotation pair.
-> >
-> > is a stronger statement than this:
-> >
-> > > +  Developers should avoid using local symbol names that are prefixed with
-> > > +  ``.L``, as this has special meaning for the assembler; a symbol entry will
-> > > +  not be emitted into the symbol table. This can prevent ``objtool`` from
-> > > +  generating correct unwind info. Symbols with STB_LOCAL binding may still be
-> > > +  used, and ``.L`` prefixed local symbol names are still generally useable
-> > > +  within a function, but ``.L`` prefixed local symbol names should not be used
-> > > +  to denote the beginning or end of code regions via
-> > > +  ``SYM_CODE_START_LOCAL``/``SYM_CODE_END``.
-> >
-> > and seems more what I'd expect - SYM_FUNC* is also affected for example.
-> > Even though other usages are probably not very likely it seems better to
-> > keep the stronger statement in case someone comes up with one, and to
-> > stop anyone spending time wondering why only SYM_CODE_START_LOCAL is
-> > affected.
+> > [...]
 >
-> Agreed, I think the comment is misleading/wrong/unclear in multiple
-> ways.  In most cases the use of .L symbols is still fine.  What's no
-> longer fine is when they're used to contain code in any kind of
-> START/END pair.
+> Applied to arm64 (for-next/fixes), thanks!
+>
+> [1/1] compiler.h: Raise minimum version of GCC to 5.1 for arm64
+>       https://git.kernel.org/arm64/c/1f1244a5ddb7
+>
+> --
+> Catalin
+>
 
-Apologies, that was not my intention.  I've sent a follow up in
-https://lore.kernel.org/lkml/20210113174620.958429-1-ndesaulniers@google.com/T/#u
-since BP picked up v3 in tip x86/entry:
-https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/commit/?h=x86/entry&id=bde718b7e154afc99e1956b18a848401ce8e1f8e
+
+Maybe, we can raise the minimal version to gcc 5.1
+for all architectures.
+
 
 -- 
-Thanks,
-~Nick Desaulniers
+Best Regards
+Masahiro Yamada
