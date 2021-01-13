@@ -2,89 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 066632F49EE
+	by mail.lfdr.de (Postfix) with ESMTP id E486B2F49F0
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:29:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728188AbhAMLVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:21:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53010 "EHLO
+        id S1728272AbhAMLVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:21:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727850AbhAMLVh (ORCPT
+        with ESMTP id S1727753AbhAMLVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:21:37 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68FAC061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:20:56 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id x18so889904pln.6
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 03:20:56 -0800 (PST)
+        Wed, 13 Jan 2021 06:21:45 -0500
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB18C061794;
+        Wed, 13 Jan 2021 03:21:05 -0800 (PST)
+Received: by mail-yb1-xb32.google.com with SMTP id a9so672185ybn.9;
+        Wed, 13 Jan 2021 03:21:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4itm2nFdFTo23gw4YVK9Laikkc7ZPrs4G1cHd0Rl8Ls=;
-        b=a9Oq9XAprkYfHTeno/RpjsivMC4RbCA+3vBkjxxyfqFTC71dxJ2G5qR3WgFOT3jBo/
-         8pgkarOizjJnjl4QQPw0DmOUrDUoNa7g7H7/dHFrgMJtLhoiy2NAz5B1G/Uf2Z0ymdH1
-         dhqIHSIKpt4reg8jmn6//yNnaJIaAavy7ZSQo1m3+TO8NBHbbklUJHg5twUl8OtM687m
-         CbXDwukYkh02uPKsGy/vUQZMF8DmcI1aJ/fDfdy2hs8N3w0nFtrBIIAoz/vqAWBcFjuO
-         slgy8wfoIY3+c4YszaTJPy4A6Ew6cUMPnmxc6cgnQiy7IECZla5FL/LDzL7B9uKsw3pA
-         LUng==
+         :cc:content-transfer-encoding;
+        bh=8EVbvCtl9PmUOlq0jo+O/+7pKifzumAbXxH2B8FMID4=;
+        b=GHq+I+a3wfYULS/IOzQvGr8EB0tnXNPfPX/OZlLyHX9yoW+0C9zA8D3eiK8Ydd/acn
+         8Pho7MVTGLzwVUcfSapKsjDDjR+RXjy2iZC0TTOXyQrXeuW0R9+gKxPOL+b3Qyl3i6Md
+         ZwJ6tpra43P31FjuhE35VYWM4OiUhDUVowmI0Gw7oRgxGsP1lduMWSF+fTrNeffEkXRC
+         ruiZAT3AirZ3oG+SeCw/SiFe/jbAdI6YKCb6bh+mr4jhFkqMjM208iHETTkV0EduZ/hA
+         QCm0o7AJC9w0JjynZAo0vBA/belopyFsPpos0/4V7PXyAkzoznCIkHkM/KfTOaKSoEEP
+         ZqZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4itm2nFdFTo23gw4YVK9Laikkc7ZPrs4G1cHd0Rl8Ls=;
-        b=mtNPXh3oYEyCU0m/WGEhD/MPBbz2oaezigxTh/Gs0KMLOLSErbzmu9A0Efvfdb4/Qh
-         bMG/hM1qbHLWrUxujdmPkDBmtUZRsohZ3NzHmzYo6Pc7RxvZnqGk5IwUnAMgdtX/4YZw
-         VeUv9ptvYhtNgZd3Mw/LzEcenDKSC4qiEQPwpXy8noJOuHT5SxCsXwOgDvCX5VeQxm5d
-         eap2TTRLPVbI48WE9Z08EopykO7px/1ukfmgVWgPZNsnebEr03IapgZR9O0iVVZgeUYj
-         fOgz0MMnB/ecYaZGwjH5Gd6OIJjSI9IiFq4Yiu5UAK6JYQEPYfwWJ8ug1vWX5/6h1zby
-         qlMg==
-X-Gm-Message-State: AOAM533IKKgT9B/HdzwEpS1VUQ2nIl7rjhyZ2JgDR4Kc7damOd17+coy
-        Ny86ci5ViuLD0Ize6tqHe2ETA9HwXjLZluz0TA1/2g==
-X-Google-Smtp-Source: ABdhPJyv8BplOZEuDtAFQyPEJVczxKgdzpmehJ9wH/oHDDrs0Yhu/BkS4+qjxB526x/b//CCgcLydpIqQ/wNwUdvZKA=
-X-Received: by 2002:a17:902:8503:b029:dc:44f:62d8 with SMTP id
- bj3-20020a1709028503b02900dc044f62d8mr1743880plb.34.1610536856321; Wed, 13
- Jan 2021 03:20:56 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=8EVbvCtl9PmUOlq0jo+O/+7pKifzumAbXxH2B8FMID4=;
+        b=qHnXJH1Qvh3jOcSu/KWD2ml1cnMkqhkmWc0xwHYGfeHYkEwvPUetcgRVh0lKjEqLnK
+         cuAmc3Zh4P0CPNMFZJ7J0sPyDzhEgj9IrMHcMlNQfBYbh2ApUiOq9Pj9XTxvda0Ye76E
+         5xJe3Lssnvp1cNAjuHsOTEsx//zhVERiBi4qXQgQ8+A5p7/aLPTyhVDJN1/Yc1IvGde9
+         Xc2EJ3KthK7LCob3vDchHddXWWBLiSMZLyqwOSb2tAYrSUWc07vVt5mHvokdqR+iAkUU
+         ADn0fRywxyeiU8b0hGkL7ePEq0hbHXkbfdWJC3luKuKkD8OESi2sJejzoaxtjor/a0Qe
+         kyFg==
+X-Gm-Message-State: AOAM533RWPi2GNB2/vKHfBePp+2S7Cy+0272QDW4sXRgBBIdlL1Ri3XX
+        vFZSwEnB3FOJftqv95cURAG7MgqsOiu6JR11HNg=
+X-Google-Smtp-Source: ABdhPJzhmPgs2jD8F7hyuKZAycQ7RslAcwKkTIHQNTjC+BEb/NdGTOwHCSxwItTohqo7zvRbyYMqHyEN+0KXqnGg7LU=
+X-Received: by 2002:a25:df05:: with SMTP id w5mr2596834ybg.477.1610536864366;
+ Wed, 13 Jan 2021 03:21:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20210113052209.75531-1-songmuchun@bytedance.com>
- <20210113052209.75531-5-songmuchun@bytedance.com> <20210113093331.GV22493@dhcp22.suse.cz>
- <CAMZfGtUObSSyRZfv8CHucp6WmUZZBupKD9hbNHVpAv_PuWtMhw@mail.gmail.com>
- <20210113103836.GW22493@dhcp22.suse.cz> <CAMZfGtUTZZyL6Pdop-SHt2vs2hLuYfB9dumhRHBm7QLzyRNzZA@mail.gmail.com>
- <20210113111449.GA26873@linux>
-In-Reply-To: <20210113111449.GA26873@linux>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 13 Jan 2021 19:20:17 +0800
-Message-ID: <CAMZfGtWn95u2s11MUk33z4MDVec5j4+usRasTqHxRp9Ud73mSA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v4 4/6] mm: hugetlb: retry dissolve page
- when hitting race
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <CAD-N9QW-zm37f9PW-iF-NaAH5LLePWFba3aG5LkXD2a07YBZpg@mail.gmail.com>
+ <X/6mhQfPRt0QoorO@kroah.com>
+In-Reply-To: <X/6mhQfPRt0QoorO@kroah.com>
+From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Date:   Wed, 13 Jan 2021 19:20:38 +0800
+Message-ID: <CAD-N9QUuvxa3CCqru08O2x9p-AJp54qo-e-9O49YGQwQEWKLdA@mail.gmail.com>
+Subject: Re: "UBSAN: shift-out-of-bounds in mceusb_dev_recv" should share the
+ same root cause with "UBSAN: shift-out-of-bounds in mceusb_dev_printdata"
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-media@vger.kernel.org, mchehab@kernel.org, sean@mess.org,
+        anant.thazhemadam@gmail.com,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Dmitry Vyukov <dvyukov@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 7:15 PM Oscar Salvador <osalvador@suse.de> wrote:
+On Wed, Jan 13, 2021 at 3:51 PM Greg KH <gregkh@linuxfoundation.org> wrote:
 >
-> On Wed, Jan 13, 2021 at 07:11:06PM +0800, Muchun Song wrote:
-> > If there is no task to be scheduled. Here is just a while loop.
-> > The cpu_relax is a good thing to insert into busy-wait loops,
-> > right?
+> On Wed, Jan 13, 2021 at 01:04:44PM +0800, =E6=85=95=E5=86=AC=E4=BA=AE wro=
+te:
+> > Hi developers,
+> >
+> > I found that "UBSAN: shift-out-of-bounds in mceusb_dev_recv" and
+> > "UBSAN: shift-out-of-bounds in mceusb_dev_printdata" should share the
+> > same root cause.
+> > The reason is that the PoCs after minimization has a high similarity
+> > with the other. And their stack trace only diverges at the last
+> > function call. The following is some analysis for this bug.
+> >
+> > The following code in the mceusb_process_ir_data is the vulnerable
+> > -----------------------------------------------------------------------=
+---------------------------------------------------
+> > for (; i < buf_len; i++) {
+> >      switch (ir->parser_state) {
+> >      case SUBCMD:
+> >              ir->rem =3D mceusb_cmd_datasize(ir->cmd, ir->buf_in[i]);
+> >              mceusb_dev_printdata(ir, ir->buf_in, buf_len, i - 1,
+> >                                                    ir->rem + 2, false);
+> >              if (i + ir->rem < buf_len)
+> >              mceusb_handle_command(ir, &ir->buf_in[i - 1]);
+> > -----------------------------------------------------------------------=
+---------------------------------------------------
+> >
+> > The first report crashes at a shift operation(1<<*hi) in mceusb_handle_=
+command.
+> > -----------------------------------------------------------------------=
+---------------------------------------------------
+> > static void mceusb_handle_command(struct mceusb_dev *ir, u8 *buf_in)
+> > {
+> > u8 *hi =3D &buf_in[2]; /* read only when required */
+> > if (cmd =3D=3D MCE_CMD_PORT_SYS) {
+> >       switch (subcmd) {
+> >       case MCE_RSP_GETPORTSTATUS:
+> >               if (buf_in[5] =3D=3D 0)
+> >                      ir->txports_cabled |=3D 1 << *hi;
+> > -----------------------------------------------------------------------=
+---------------------------------------------------
+> >
+> > The second report crashes at another shift operation (1U << data[0])
+> > in mceusb_dev_printdata.
+> > -----------------------------------------------------------------------=
+---------------------------------------------------
+> > static void mceusb_dev_printdata(struct mceusb_dev *ir, u8 *buf, int bu=
+f_len,
+> > int offset, int len, bool out)
+> > {
+> > data   =3D &buf[offset] + 2;
+> >
+> >           period =3D DIV_ROUND_CLOSEST((1U << data[0] * 2) *
+> >                         (data[1] + 1), 10);
+> > -----------------------------------------------------------------------=
+---------------------------------------------------
+> >
+> > >From the analysis, we can know the data[0] and *hi access the same
+> > memory cell - ``ir->buf_in[i+1]``. So the root cause should be that it
+> > misses the check of ir->buf_in[i+1].
+> >
+> > For the patch of this bug, there is one from anant.thazhemadam@gmail.co=
+m:
+> > -----------------------------------------------------------------------=
+---------------------------------------------------
+> > diff --git a/drivers/media/rc/mceusb.c b/drivers/media/rc/mceusb.c
+> > index f1dbd059ed08..79de721b1c4a 100644
+> > --- a/drivers/media/rc/mceusb.c
+> > +++ b/drivers/media/rc/mceusb.c
+> > @@ -1169,7 +1169,7 @@ static void mceusb_handle_command(struct
+> > mceusb_dev *ir, u8 *buf_in)
+> >   switch (subcmd) {
+> >   /* the one and only 5-byte return value command */
+> >   case MCE_RSP_GETPORTSTATUS:
+> > - if (buf_in[5] =3D=3D 0)
+> > + if ((buf_in[5] =3D=3D 0) && (*hi <=3D 32))
+> >   ir->txports_cabled |=3D 1 << *hi;
+> >   break;
+> > -----------------------------------------------------------------------=
+---------------------------------------------------
+> > I tried this patch in the second crash report and found it does not
+> > work. I think we should add another filter for the value in
+> > ``ir->buf_in[i+1]``.
+> >
+> > With this grouping, I think developers can take into consideration the
+> > issue in mceusb_dev_printdata and generate a complete patch for this
+> > bug.
 >
-> But if the race window is that small, does it make sense?
+> Why not create a patch yourself and submit it?  That way you get the
+> correct credit for solving the problem.
+>
 
-Actually, there is one exception. The race window could
-become larger. If the page is freed via a workqueue (see
-free_huge_page()). In this case, the cpu_relax() can
-make sense. Right?
+I have sent a simple but working patch to the corresponding
+developers. We can take it as a base to discuss.
 
+And this email is to provide some information about bug duplication
+for developers as I am doing some research on crash deduplication. I
+want to get some credits if our grouping information is useful for
+some kernel developers.
+
+> thanks,
 >
-> --
-> Oscar Salvador
-> SUSE L3
+> greg k-h
