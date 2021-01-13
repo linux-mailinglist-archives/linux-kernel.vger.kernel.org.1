@@ -2,59 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6DD82F4AB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:57:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6312F4AB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:57:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727230AbhAMLwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:52:10 -0500
-Received: from verein.lst.de ([213.95.11.211]:59778 "EHLO verein.lst.de"
+        id S1726956AbhAMLww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:52:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725846AbhAMLwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:52:09 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id EFCD968AFE; Wed, 13 Jan 2021 12:51:26 +0100 (CET)
-Date:   Wed, 13 Jan 2021 12:51:26 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Claire Chang <tientzu@chromium.org>, robh+dt@kernel.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        joro@8bytes.org, will@kernel.org, frowand.list@gmail.com,
-        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        grant.likely@arm.com, xypron.glpk@gmx.de, treding@nvidia.com,
-        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
-        saravanak@google.com, rafael.j.wysocki@intel.com,
-        heikki.krogerus@linux.intel.com, andriy.shevchenko@linux.intel.com,
-        rdunlap@infradead.org, dan.j.williams@intel.com,
-        bgolaszewski@baylibre.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        iommu@lists.linux-foundation.org, xen-devel@lists.xenproject.org,
-        tfiga@chromium.org, drinkcat@chromium.org
-Subject: Re: [RFC PATCH v3 2/6] swiotlb: Add restricted DMA pool
-Message-ID: <20210113115126.GB29376@lst.de>
-References: <20210106034124.30560-1-tientzu@chromium.org> <20210106034124.30560-3-tientzu@chromium.org> <X/VrqxcaAMi65CF0@kroah.com>
+        id S1726606AbhAMLwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 06:52:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE633233FA;
+        Wed, 13 Jan 2021 11:52:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610538726;
+        bh=ronTwB+LJABXCk1cB+9XpKj/yin7qoHqqnV7QUMI9DE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IIhQsroYOYPKncNEPN6YyjyMWqLM8oZPU37QAiDxO/45evxhEcvPj3g1B6V/HonVR
+         Zlgqrl3X7jIIEPf3pyQW7N00vkArxo8XFnI0AgpuUpi0JreJqGs/rNbzfuEpzI3lPR
+         beG8B3sOKYMgnRzeoly/GoLS135u/MKHLwotKDgHgA6o9QmMgqtf5lMaa4hpjUW4/F
+         An4E/O4Dhu339d4yESEVyRDHT5lxxgGeSU9dgOUL9Ep6WuDik40f6Dn2Popv0DRPND
+         /xUNcT1DMjlSN5PgOSEoGIllf/w6UmBk3fIYBRXS7genfOhsCX4MJqBzHoxjAjmxW8
+         XTkEaJmDxoD0g==
+Received: by mail-oi1-f177.google.com with SMTP id l207so1791672oib.4;
+        Wed, 13 Jan 2021 03:52:06 -0800 (PST)
+X-Gm-Message-State: AOAM531xe0RjahGji5XjOFxjffxJfICARKOEPuMjHAkjMzPlP+ZIfYOD
+        gQabDi7Ve5Bf5FQrf+gqfyH2p7KBnsF1CU08WRc=
+X-Google-Smtp-Source: ABdhPJxU3PbRXBqqSYoc5gfshHv8AGoTp+L7cm4PqAzYQ//+7JjiKblQjlwanTAvAYwLPZ5K8E7mlAbWK8lEjDdlXHA=
+X-Received: by 2002:aca:dd03:: with SMTP id u3mr920758oig.47.1610538725951;
+ Wed, 13 Jan 2021 03:52:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/VrqxcaAMi65CF0@kroah.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20210112192818.69921-1-ebiggers@kernel.org>
+In-Reply-To: <20210112192818.69921-1-ebiggers@kernel.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Wed, 13 Jan 2021 12:51:55 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXGC+TXPCPhVj6KisCPfCZHfRFF45zBiU1KjaBXOsL0xkg@mail.gmail.com>
+Message-ID: <CAMj1kXGC+TXPCPhVj6KisCPfCZHfRFF45zBiU1KjaBXOsL0xkg@mail.gmail.com>
+Subject: Re: [PATCH RESEND] random: fix the RNDRESEEDCRNG ioctl
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Jann Horn <jannh@google.com>, "Theodore Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 08:50:03AM +0100, Greg KH wrote:
-> > --- a/include/linux/device.h
-> > +++ b/include/linux/device.h
-> > @@ -413,6 +413,7 @@ struct dev_links_info {
-> >   * @dma_pools:	Dma pools (if dma'ble device).
-> >   * @dma_mem:	Internal for coherent mem override.
-> >   * @cma_area:	Contiguous memory area for dma allocations
-> > + * @dma_io_tlb_mem: Internal for swiotlb io_tlb_mem override.
-> 
-> Why does this have to be added here?  Shouldn't the platform-specific
-> code handle it instead?
+On Tue, 12 Jan 2021 at 20:30, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> From: Eric Biggers <ebiggers@google.com>
+>
+> The RNDRESEEDCRNG ioctl reseeds the primary_crng from itself, which
+> doesn't make sense.  Reseed it from the input_pool instead.
+>
+> Fixes: d848e5f8e1eb ("random: add new ioctl RNDRESEEDCRNG")
+> Cc: stable@vger.kernel.org
+> Cc: linux-crypto@vger.kernel.org
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Jann Horn <jannh@google.com>
+> Cc: Theodore Ts'o <tytso@mit.edu>
+> Reviewed-by: Jann Horn <jannh@google.com>
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
 
-The whole code added here is pretty generic.  What we need to eventually
-do, though is to add a separate dma_device instead of adding more and more
-bloat to struct device.
+Acked-by: Ard Biesheuvel <ardb@kernel.org>
+
+> ---
+>
+> Andrew, please consider taking this patch since the maintainer has been
+> ignoring it for 4 months
+> (https://lkml.kernel.org/lkml/20200916041908.66649-1-ebiggers@kernel.org/T/#u).
+>
+>
+>  drivers/char/random.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/char/random.c b/drivers/char/random.c
+> index 5f3b8ac9d97b0..a894c0559a8cf 100644
+> --- a/drivers/char/random.c
+> +++ b/drivers/char/random.c
+> @@ -1972,7 +1972,7 @@ static long random_ioctl(struct file *f, unsigned int cmd, unsigned long arg)
+>                         return -EPERM;
+>                 if (crng_init < 2)
+>                         return -ENODATA;
+> -               crng_reseed(&primary_crng, NULL);
+> +               crng_reseed(&primary_crng, &input_pool);
+>                 crng_global_init_time = jiffies - 1;
+>                 return 0;
+>         default:
+> --
+> 2.30.0
+>
