@@ -2,59 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704B32F4845
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E0FF2F483C
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727237AbhAMKFv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 13 Jan 2021 05:05:51 -0500
-Received: from 45.173.252.243.turbolinenet.com.br ([45.173.252.243]:57425 "EHLO
-        srv01.turbolinenet.com.br" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726964AbhAMKFt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:05:49 -0500
-X-Greylist: delayed 85905 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 Jan 2021 05:05:47 EST
-Received: from 399795.vps-10.com ([91.109.5.26])
-        by srv01.turbolinenet.com.br with esmtpa (Exim 4.92.2)
-        (envelope-from <eventos@turbolinenet.com.br>)
-        id 1kzc41-0001Hv-8k; Wed, 13 Jan 2021 07:03:37 -0200
-Content-Type: text/plain; charset="iso-8859-1"
+        id S1727047AbhAMKE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 05:04:59 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:37676 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726948AbhAMKE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 05:04:57 -0500
+Received: from zn.tnic (p200300ec2f0b5c00b2d62b1c55c494d5.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:5c00:b2d6:2b1c:55c4:94d5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 052ED1EC0373;
+        Wed, 13 Jan 2021 11:04:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1610532256;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=6Q836lvEI8WL7BDS9FwTyp3jQYCAq9tax7h39eSviyg=;
+        b=QGhyTjv+8jrsJmW04auJ2WzRUI8x3z3h3Nxe1Iofsa5h9SNwPhWVcm/kTr2VofD+ot0uEi
+        bR8WMYNsVxyzR9uzfEztPrm+Wzta+YIiesKnMhkrnCnIz5NiIFbiNmce9zipmTdW9b6nvc
+        PUt9/J0L3nIz3b7JgjwDsvnXLiuuciE=
+Date:   Wed, 13 Jan 2021 11:04:16 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Subject: Re: [PATCH v17 04/26] x86/cpufeatures: Introduce X86_FEATURE_CET and
+ setup functions
+Message-ID: <20210113100416.GB16960@zn.tnic>
+References: <20201229213053.16395-5-yu-cheng.yu@intel.com>
+ <20210111230900.5916-1-yu-cheng.yu@intel.com>
+ <20210112123854.GE13086@zn.tnic>
+ <0b144668-a989-6bc7-0b0d-2195d2d73397@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Telegraphic Telex! 
-To:     Recipients <eventos@turbolinenet.com.br>
-From:   "Mr. Jerome Powell" <eventos@turbolinenet.com.br>
-Date:   Wed, 13 Jan 2021 10:03:44 +0000
-Reply-To: fed.r3v@yandex.com
-Message-Id: <E1kzc41-0001Hv-8k@srv01.turbolinenet.com.br>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0b144668-a989-6bc7-0b0d-2195d2d73397@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Customers; Happy New Year!
+On Tue, Jan 12, 2021 at 03:02:06PM -0800, Yu, Yu-cheng wrote:
+> Should I send an updated patch?  Thanks!
 
-We the Federal Reserve Bank officials were heading a meeting at the White House yesterday towards the situation of this funds delivery of a thing,when Mr. Williams from the Federal Reserve Bank of New York came out with his topic and opinions which later ended with a report on the cancellation of some of the beneficiaries whose according to him,did not make any attempt or show any interest in the funds assigned to them.
+No, this is not how review works.
 
-He added that , it isn't the fault of the beneficiaries and also not the fault of the deliverers which he considered poor working class and organizing mentality as the cause of it.
+Usually, you send your patchset, wait a week or two to gather feedback,
+incorporate that feedback or discuss/dispute it and you send your next
+version. You should know the process by now...
 
-As an angry bird, he asked for the cancellation of any fund beneficiary who decided not to be replying his emails about this funds issue, he had it that, there seems to be no reason of keeping your emails on his phone since no other business that tied you both together except the funds from the UN and to be delivered by his bank.
+-- 
+Regards/Gruss,
+    Boris.
 
-A list he presented which shows the number of beneficiaries he is going to attend,how much they are to receive, how to get it delivered, how many people who had received theirs, the ones who is yet to receive theirs, number of unbelievers, and the ones who is yet to be informed about the funds.
-
-Your information,phone number and email address was seen as #86 out of the #160 persons who suddenly stopped replying his emails.
-His reports are too numerous to be written down here.
-*************************************************
-I looked at the report and decided to sleep over it before passing out my judgement.
-
-The FBI got involved in the issues and according to what they said,most people lost confidence in the Federal Reserve Bank institution because:
-
-1.They receives more emails about the funds more than expected.
-
-2.They were made to believe that the yet to receive fund comes also from the other financial institution and not only the Federal Reserve Bank.( But this is a very big lie!).
-*************************************************
-To end the long messages, Mr. John C Williams wrote a letter to the authority , seeking for the cancellation of your fund which he stated that he reason is that you are no longer responding to his emails, and for him to avoid been charged for an unexpected fine,he has no right to leave a rejected funds in his bank.
-
-So you have to get back to me as soon as you received this email.
-*************************************************
-Mr Jerome Powell
-Director Federal Reserve Bank
+https://people.kernel.org/tglx/notes-about-netiquette
