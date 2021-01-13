@@ -2,156 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958132F5164
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:50:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78FE32F5168
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:50:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728086AbhAMRtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:49:15 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:56308 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727990AbhAMRtP (ORCPT
+        id S1728136AbhAMRtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:49:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727984AbhAMRtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:49:15 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610560137; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=NP9L1of0mfv0VlmLgAx+c+h3tPTXbzkvkcqDPng1QsI=;
- b=N2C8SUf2PwvyhCg2xVVbeGe+jxV6KCbY+QaGyNgHxqqfYnnjODH0pwMoROSz2cwIqM7hHsTh
- eDW1WrydM+RPAWei+vazEcsKzLGNmh4gzh3Tm+zaiaVQ9DXihlnI5RxXRk9sMrPZGW3ItTek
- 4cmXXFQpaZVdJnVaW+0z/LFUkQI=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5fff326bc88af06107558d89 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 17:48:27
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 088D7C433ED; Wed, 13 Jan 2021 17:48:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A003C433C6;
-        Wed, 13 Jan 2021 17:48:25 +0000 (UTC)
+        Wed, 13 Jan 2021 12:49:24 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C2BC061575;
+        Wed, 13 Jan 2021 09:48:44 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id bd6so1132362qvb.9;
+        Wed, 13 Jan 2021 09:48:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9b8V5ldrJPxRBHqA53wu0d+Zi8BaxVZ6cd708HjPwiQ=;
+        b=od8zfmMRP96FRdSxJkv8qPbEH28oasOOMIcp/S8CghoHLT9j9dTarMQaJY2wnukZ1q
+         tbvEYsjanXVAo/ov3R0UzRgACnSszGVrkoUE1K6FMn1onySdJvC51PJcwXXQlRRH8qu5
+         ShH0lpfWXMiYFYCsyFPfB1M+PVT0yKXkMhDNjncxfChbQu2/BazbtCIB3XxOLC4HkjBl
+         5z8U1EcNCeMPJKlLVqEh5qQ0A9r6PkXQCY9C22gSRmdT3caXo4fGrutJIg1nbPXWWOPS
+         mC3ET4D8he+0nk9bl/XlAO5GEu/3vPMHYlYa41kfWTQ/ZBjY1AkBPGjSvfMo9eOeF5J+
+         Z+ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9b8V5ldrJPxRBHqA53wu0d+Zi8BaxVZ6cd708HjPwiQ=;
+        b=QepsfhmkQUyGqAJF28eHTk/pJpd94zI6d/ruwWhkr7sAT7pxRJlKkZsRQE0FlbC4HE
+         ID4tNk5AveupWqiqx/jnxdaxtFkvZAERaf1fm+JbJsQxOZ/YmiSNU/XAMm+S6TY7ya4f
+         pn7t6roaIzfUuTNafZ8thRs3PdPh6yiZIh8bV1swWxapb2wg5RfnkMpnN8bI+kbVJ+P7
+         WJtwsFxkeEmWbnXjPRQ3NLwE2xjs4AkI2RB1/HBFef632RJRpaMpLfQXb6f0OInxZCUG
+         wmSRF2vtGP6mPXpmrA5JOukYCIgBAVZcTN2Xj3asstQri0bimrgmKiWXm+6asBquz/EG
+         9syA==
+X-Gm-Message-State: AOAM530aRZmPeI08jmNCi2Ad4l1TYA5qytLBf4O/JwuJ+H0a8CnB1N2F
+        C+vyt3YrJ61lK7XigiXwtPs=
+X-Google-Smtp-Source: ABdhPJxx5TejvJ1UMbb6Ox5G2kWXTyvjq873WXc0CXR+MyuirCugiGPfDe7uTD981oW+3ZnIYM16fQ==
+X-Received: by 2002:ad4:5187:: with SMTP id b7mr3300492qvp.2.1610560123462;
+        Wed, 13 Jan 2021 09:48:43 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id f22sm1464173qkl.65.2021.01.13.09.48.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 09:48:42 -0800 (PST)
+Date:   Wed, 13 Jan 2021 10:48:41 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>
+Subject: Re: [PATCH v4 1/3] Remove $(cc-option,-gdwarf-4) dependency from
+ CONFIG_DEBUG_INFO_DWARF4
+Message-ID: <20210113174841.GA4158893@ubuntu-m3-large-x86>
+References: <20210113003235.716547-1-ndesaulniers@google.com>
+ <20210113003235.716547-2-ndesaulniers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 13 Jan 2021 09:48:25 -0800
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run, tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] drm/msm/dp: unplug interrupt missed after irq_hpd
- handler
-In-Reply-To: <161039484176.3661239.14240346276437866761@swboyd.mtv.corp.google.com>
-References: <y> <1610051425-20632-1-git-send-email-khsieh@codeaurora.org>
- <1610051425-20632-3-git-send-email-khsieh@codeaurora.org>
- <161039484176.3661239.14240346276437866761@swboyd.mtv.corp.google.com>
-Message-ID: <e7e1e5f8808fc35a3bed9e6291c76460@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113003235.716547-2-ndesaulniers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-11 11:54, Stephen Boyd wrote:
-> Quoting Kuogee Hsieh (2021-01-07 12:30:25)
->> There is HPD unplug interrupts missed at scenario of an irq_hpd
->> followed by unplug interrupts with around 10 ms in between.
->> Since both AUX_SW_RESET and DP_SW_RESET clear pending HPD interrupts,
->> irq_hpd handler should not issues either aux or sw reset to avoid
->> following unplug interrupt be cleared accidentally.
+On Tue, Jan 12, 2021 at 04:32:33PM -0800, Nick Desaulniers wrote:
+> From: Masahiro Yamada <masahiroy@kernel.org>
 > 
-> So the problem is that we're resetting the DP aux phy in the middle of
-> the HPD state machine transitioning states?
+> The -gdwarf-4 flag is supported by GCC 4.5+, and also by Clang.
 > 
-yes, after reset aux, hw clear pending hpd interrupts
->> 
->> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
->> ---
->> diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c 
->> b/drivers/gpu/drm/msm/dp/dp_catalog.c
->> index 44f0c57..9c0ce98 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_catalog.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
->> @@ -190,6 +190,18 @@ int dp_catalog_aux_clear_hw_interrupts(struct 
->> dp_catalog *dp_catalog)
->>         return 0;
->>  }
->> 
->> +/**
->> + * dp_catalog_aux_reset() - reset AUX controller
->> + *
->> + * @aux: DP catalog structure
->> + *
->> + * return: void
->> + *
->> + * This function reset AUX controller
->> + *
->> + * NOTE: reset AUX controller will also clear any pending HPD related 
->> interrupts
->> + *
->> + */
->>  void dp_catalog_aux_reset(struct dp_catalog *dp_catalog)
->>  {
->>         u32 aux_ctrl;
->> @@ -483,6 +495,18 @@ int dp_catalog_ctrl_set_pattern(struct dp_catalog 
->> *dp_catalog,
->>         return 0;
->>  }
->> 
->> +/**
->> + * dp_catalog_ctrl_reset() - reset DP controller
->> + *
->> + * @aux: DP catalog structure
+> You can see it at https://godbolt.org/z/6ed1oW
 > 
-> It's called dp_catalog though.
-registers access are through dp_catalog_xxxx
+>   For gcc 4.5.3 pane,    line 37:    .value 0x4
+>   For clang 10.0.1 pane, line 117:   .short 4
 > 
->> + *
->> + * return: void
->> + *
->> + * This function reset DP controller
+> Given Documentation/process/changes.rst stating GCC 4.9 is the minimal
+> version, this cc-option is unneeded.
 > 
-> resets the
+> Note
+> ----
 > 
->> + *
->> + * NOTE: reset DP controller will also clear any pending HPD related 
->> interrupts
->> + *
->> + */
->>  void dp_catalog_ctrl_reset(struct dp_catalog *dp_catalog)
->>  {
->>         u32 sw_reset;
->> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c 
->> b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> index e3462f5..f96c415 100644
->> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
->> @@ -1296,7 +1296,8 @@ static int dp_ctrl_setup_main_link(struct 
->> dp_ctrl_private *ctrl,
->>          * transitioned to PUSH_IDLE. In order to start transmitting
->>          * a link training pattern, we have to first do soft reset.
->>          */
->> -       dp_catalog_ctrl_reset(ctrl->catalog);
->> +       if (*training_step != DP_TRAINING_NONE)
+> CONFIG_DEBUG_INFO_DWARF4 controls the DWARF version only for C files.
 > 
-> Can we check for the positive value instead? i.e.
-> DP_TRAINING_1/DP_TRAINING_2
+> As you can see in the top Makefile, -gdwarf-4 is only passed to CFLAGS.
 > 
->> +               dp_catalog_ctrl_reset(ctrl->catalog);
->> 
->>         ret = dp_ctrl_link_train(ctrl, cr, training_step);
->> 
+>   ifdef CONFIG_DEBUG_INFO_DWARF4
+>   DEBUG_CFLAGS    += -gdwarf-4
+>   endif
+> 
+> This flag is used when compiling *.c files.
+> 
+> On the other hand, the assembler is always given -gdwarf-2.
+> 
+>   KBUILD_AFLAGS   += -Wa,-gdwarf-2
+> 
+> Hence, the debug info that comes from *.S files is always DWARF v2.
+> This is simply because GAS supported only -gdwarf-2 for a long time.
+> 
+> Recently, GAS gained the support for --dwarf-[3|4|5] options. [1]
+> And, also we have Clang integrated assembler. So, the debug info
+> for *.S files might be improved if we want.
+> 
+> In my understanding, the current code is intentional, not a bug.
+> 
+> [1] https://sourceware.org/git/?p=binutils-gdb.git;a=commit;h=31bf18645d98b4d3d7357353be840e320649a67d
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+
+> ---
+>  lib/Kconfig.debug | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 78361f0abe3a..dd7d8d35b2a5 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -258,7 +258,6 @@ config DEBUG_INFO_SPLIT
+>  
+>  config DEBUG_INFO_DWARF4
+>  	bool "Generate dwarf4 debuginfo"
+> -	depends on $(cc-option,-gdwarf-4)
+>  	help
+>  	  Generate dwarf4 debug info. This requires recent versions
+>  	  of gcc and gdb. It makes the debug information larger.
+> -- 
+> 2.30.0.284.gd98b1dd5eaa7-goog
+> 
