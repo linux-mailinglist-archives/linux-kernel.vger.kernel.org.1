@@ -2,132 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EB6B2F4D5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:42:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9961F2F4D63
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:42:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727294AbhAMOkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:40:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727115AbhAMOkL (ORCPT
+        id S1727312AbhAMOkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:40:19 -0500
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:54778 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725858AbhAMOkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:40:11 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A6CAC061794
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:39:25 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id w1so3354956ejf.11
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:39:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=MYW+JMIK7fbk+eC8H+33Jw+zQ8og6pivFWEN9pAGGvI=;
-        b=JgTn1qguYkoyOmMS7BgdF9CRqU5nyFFiTfB79OeJKVhn7Aox9Xi6q9gGXG/CUtjHOj
-         ZVkHUkW+oc1QUP6eHO1Qe4uNikQTslBnBlckfTialBEYv4NRzxBr+IijNbaG+VrV/CwP
-         fwpBfInle+o20TPRXDCrvt7uQiMgwDqMHU7EnRd5u0Ut/ppm3YrtM/yxRb8RwtxT90wS
-         AqodCIV5BHFVm1HjS44e0pidpZRsQTNeqttRw0FMwwgIWXq2Dd8fLcj93+Ea1kfOSAiP
-         nDp7rf3CZlES17XO+h5DPHKddn1jM5j0OKVthznHCSH45ih41rHhPirFsPPrReOJOzqU
-         tBxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=MYW+JMIK7fbk+eC8H+33Jw+zQ8og6pivFWEN9pAGGvI=;
-        b=ThABIhigXiMwtvEOC2q5SlH1YYCBV/AfhubaEfEkPrnlnzqDvwOWBoQ7X9Ub0KebjV
-         JSAjNsJmsxRYN/OFf08CoGL5GTwEgyhlFIzNz6Ifc1LwJv5K6CklKMfzhsNTkW46toMQ
-         +hNC2LvU7ySi831kB7zqaFQP62MRKe4pmBQzihUx5c+w0tgOyy1fSl7P5sBViIHKEi00
-         mdp90G9JZGmVXimfEXFXRJJGvLWJpZowRBnHs2Nn7BRRYWaDu6wECXqKh3SU9xYqfMFY
-         Lt+2tYPnQs5E43ZRmomLOhlnm5efcNilw86lShFOxh5dEHV+JYssWNSI+V8gAUaRRnp0
-         S/PQ==
-X-Gm-Message-State: AOAM530Ib7ugbrexUEuutP0WaxQdQHiqbxi8vTTT73zDSxyZm1NGAZni
-        cPuDNqfyQXlpSXAG1d2RO6VlcQ==
-X-Google-Smtp-Source: ABdhPJyd7xGYYqpY3tuNEwx5BCsP64NxMEafUFL8S5uIhIPMfrg5AAKTtWE6o3+wINjogXVmOHDrsA==
-X-Received: by 2002:a17:906:d146:: with SMTP id br6mr1749655ejb.331.1610548764267;
-        Wed, 13 Jan 2021 06:39:24 -0800 (PST)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id z1sm957095edm.89.2021.01.13.06.39.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 06:39:23 -0800 (PST)
-Date:   Wed, 13 Jan 2021 15:39:05 +0100
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Zhangfei Gao <zhangfei.gao@linaro.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, kenneth-lee-2012@foxmail.com,
-        wangzhou1@hisilicon.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wanghuiqiang <wanghuiqiang@huawei.com>
-Subject: Re: [PATCH] PCI: Add a quirk to enable SVA for HiSilicon chip
-Message-ID: <X/8GCc9e/2GmYOyz@myrica>
-References: <20210112170230.GA1838341@bjorn-Precision-5520>
- <b9fd8097-85f9-408d-f58c-b26dd21f3aa0@linaro.org>
+        Wed, 13 Jan 2021 09:40:18 -0500
+Received: from [185.56.157.72] (port=39782 helo=[192.168.101.73])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1kzhJA-00E61H-5h; Wed, 13 Jan 2021 15:39:36 +0100
+Subject: Re: [RFC 1/2] dt-bindings: clk: versaclock5: Add load capacitance
+ properties
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-clk <linux-clk@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210106173900.388758-1-aford173@gmail.com>
+ <833e228f-6fb5-ae98-a367-9566cf5fcf69@lucaceresoli.net>
+ <CAHCN7x+57x4WLbq0+7OCPhJs-1=7SJidVHD2jYjdbqn_F+d3dA@mail.gmail.com>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <7bad753d-a551-8810-7b12-5ec5ea9263d4@lucaceresoli.net>
+Date:   Wed, 13 Jan 2021 15:39:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <CAHCN7x+57x4WLbq0+7OCPhJs-1=7SJidVHD2jYjdbqn_F+d3dA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b9fd8097-85f9-408d-f58c-b26dd21f3aa0@linaro.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 08:05:11PM +0800, Zhangfei Gao wrote:
-> > > +	/* Device-tree can set the stall property */
-> > > +	if (!pdev->dev.of_node &&
-> > > +	    device_add_properties(&pdev->dev, properties))
-> > Does this mean "dma-can-stall" *can* be set via DT, and if it is, this
-> > quirk is not needed?  So is this quirk basically a workaround for an
-> > old or broken DT?
-> The quirk is still needed for uefi case, since uefi can not describe the
-> endpoints (peripheral devices).
+Hi Adam,
 
-Yes, this comment isn't very clear. How about
-	/*
-	 * Set the dma-can-stall property on ACPI platforms. Device tree
-	 * can set it directly.
-	 */ 
-
-> > 
-> > > +		pci_warn(pdev, "could not add stall property");
-> > > +}
-> > > +
-> > Remove this blank line to follow the style of the rest of the file.
-> > 
-> > > +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa250, quirk_huawei_pcie_sva);
-> > > +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa251, quirk_huawei_pcie_sva);
-> > > +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa255, quirk_huawei_pcie_sva);
-> > > +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa256, quirk_huawei_pcie_sva);
-> > > +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa258, quirk_huawei_pcie_sva);
-> > > +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_HUAWEI, 0xa259, quirk_huawei_pcie_sva);
-> > > +
-> > >   /*
-> > >    * It's possible for the MSI to get corrupted if SHPC and ACPI are used
-> > >    * together on certain PXH-based systems.
+On 09/01/21 03:48, Adam Ford wrote:
+> On Fri, Jan 8, 2021 at 4:49 PM Luca Ceresoli <luca@lucaceresoli.net> wrote:
+>>
+>> Hi Adam,
+>>
+>> On 06/01/21 18:38, Adam Ford wrote:
+>>> There are two registers which can set the load capacitance for
+>>> XTAL1 and XTAL2. These are optional registers when using an
+>>> external crystal.  Update the bindings to support them.
+>>>
+>>> Signed-off-by: Adam Ford <aford173@gmail.com>
+>>> ---
+>>>  .../devicetree/bindings/clock/idt,versaclock5.yaml   | 12 ++++++++++++
+>>>  1 file changed, 12 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+>>> index 2ac1131fd922..e5e55ffb266e 100644
+>>> --- a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+>>> +++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+>>> @@ -59,6 +59,18 @@ properties:
+>>>      minItems: 1
+>>>      maxItems: 2
+>>>
+>>> +  idt,xtal1-load-femtofarads:
+>>
+>> I wonder whether we should have a common, vendor independent property.
 > 
-> How about changes like this
+> That would be nice.
 > 
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> index 68f53f7..886ea26 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> @@ -2466,6 +2466,9 @@ static int arm_smmu_enable_pasid(struct
-> arm_smmu_master *master)
->      if (num_pasids <= 0)
->          return num_pasids;
+>> In mainline we have xtal-load-pf (ti,cdce925.txt bindings) which has no
+>> vendor prefix. However I don't know how much common it is to need
 > 
-> +    if (master->stall_enabled)
-> +        pdev->pasid_no_tlp = 1;
-> +
+> rtc-pcf85063.c uses  quartz-load-femtofarads, so there is already some
+> discrepancy.
+> 
+> Since the unit of measure here is femtofarads, using pF in the name seems wrong.
+> We need to read the data as a u32, so femtofarads works better than
+> pF, which would require a decimal point.
+> 
+>> different loads for x1 and x2. Any hardware engineer around?
+> 
+> I talked to a hardware engineer where I work, and he said it makes
+> sense to keep them the same.  I only separated them because there are
+> two registers, and I assumed there might be a reason to have X1 and X2
+> be different, but I'm ok with reading one value and writing it to two
+> different registers.
 
-From the SMMU perspective there is no relation between stall and pasid, so
-I don't think this makes a lot of sense. Could we instead set pasid_no_tlp
-for the list of device IDs above?
+If both your HW engineer and the Renesas docs say setting different
+values is not useful in real life, and other drivers don't set different
+values as well, it looks like that is the reasonable way. I think it
+also increases likelihood of establishing a unique property name to be
+used for all future chips.
 
-I agree with splitting the patches. PASID support for SMMUv3 is upstream,
-but the introduction of dma-can-stall, which this depends on, is still
-pending on the list.
-
-Thanks,
-Jean
+-- 
+Luca
