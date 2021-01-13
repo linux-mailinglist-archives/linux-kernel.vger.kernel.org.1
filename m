@@ -2,228 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E41F2F4E3E
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:16:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 960A12F4E45
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbhAMPOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 10:14:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33474 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726989AbhAMPOo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 10:14:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610550796;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=453S8sBVjLr0faZuW43TaOSjhYKei55KCDbFiBmR9dY=;
-        b=hvP/nOKHkhKWguugvrTJGpW7481O44EVQgqYXTsggSe61c+GLL2AgNpc/HCS2g8e+CGEJW
-        PXHjtmSIzFPd7eneYY2qMU179pgBxJhtmwBu7rhdtR7JGEH687RChEYWF7YnS1S70qk4Ds
-        90/p5klcq/mtb/KRXB/Uii/6bWWqRLw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-540-4yzDmH8lPpeaaE_NclWwuw-1; Wed, 13 Jan 2021 10:13:12 -0500
-X-MC-Unique: 4yzDmH8lPpeaaE_NclWwuw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BA475100559A;
-        Wed, 13 Jan 2021 15:13:08 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A6E8C5D9DD;
-        Wed, 13 Jan 2021 15:13:05 +0000 (UTC)
-Date:   Wed, 13 Jan 2021 08:13:05 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Kirti Wankhede <kwankhede@nvidia.com>
-Cc:     Keqian Zhu <zhukeqian1@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, Cornelia Huck <cohuck@redhat.com>,
-        "Will Deacon" <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-Subject: Re: [PATCH 1/5] vfio/iommu_type1: Fixes vfio_dma_populate_bitmap to
- avoid dirty lose
-Message-ID: <20210113081305.1df7de8d@omen.home.shazbot.org>
-In-Reply-To: <3f4f9a82-0934-b114-8bd8-452e9e56712f@nvidia.com>
-References: <20210107092901.19712-1-zhukeqian1@huawei.com>
-        <20210107092901.19712-2-zhukeqian1@huawei.com>
-        <20210112142059.074c1b0f@omen.home.shazbot.org>
-        <3f4f9a82-0934-b114-8bd8-452e9e56712f@nvidia.com>
+        id S1727155AbhAMPPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 10:15:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727102AbhAMPO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 10:14:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4436A23383;
+        Wed, 13 Jan 2021 15:14:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610550858;
+        bh=8+7wxZwlwcJmxJwVJfukNNCKSXBxePREEMJn7+PtYcY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=B2Hgey3+GYEqPZeyg2Kthw5o0rd5orEhCPH8YxwLQrBOlekR+6kPpP4XkPf038i9u
+         XKIdl2vuiv2VoCqVOCL6Nf/s/rg3D2wG1QLrnGDLJhEUWe43qad2SH4UBx8D6/F0SD
+         b93h7Rnmf74uNqLgPCC7fv+wSmk2x6rC2xAz6tMGzzDoVXLcR4k5/iuVpB7E9VhdyX
+         yyLdSCttlsp/59Cc3lul+5AWM2kAoiEOQw1NL36sF2/W3NSp5I5d3EaXvhucfFG5th
+         /X52a6wW9be5KkMGbN6kxX4//mfXOt+YvwZcFxmli3FfDs13f5BS1zuzmzbqJIdoaz
+         Q2fxbgbk7xTFg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D8C9135225BD; Wed, 13 Jan 2021 07:14:17 -0800 (PST)
+Date:   Wed, 13 Jan 2021 07:14:17 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [rcu:rcu/next] BUILD SUCCESS WITH WARNING
+ f81f6edb74f27c5c8917d20a2bc128aca39aae11
+Message-ID: <20210113151417.GT2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <5ffee678.hGIGL5g5dXHl2qP9%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5ffee678.hGIGL5g5dXHl2qP9%lkp@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021 18:05:43 +0530
-Kirti Wankhede <kwankhede@nvidia.com> wrote:
-
-> On 1/13/2021 2:50 AM, Alex Williamson wrote:
-> > On Thu, 7 Jan 2021 17:28:57 +0800
-> > Keqian Zhu <zhukeqian1@huawei.com> wrote:
-> >   
-> >> Defer checking whether vfio_dma is of fully-dirty in update_user_bitmap
-> >> is easy to lose dirty log. For example, after promoting pinned_scope of
-> >> vfio_iommu, vfio_dma is not considered as fully-dirty, then we may lose
-> >> dirty log that occurs before vfio_iommu is promoted.
-> >>
-> >> The key point is that pinned-dirty is not a real dirty tracking way, it
-> >> can't continuously track dirty pages, but just restrict dirty scope. It
-> >> is essentially the same as fully-dirty. Fully-dirty is of full-scope and
-> >> pinned-dirty is of pinned-scope.
-> >>
-> >> So we must mark pinned-dirty or fully-dirty after we start dirty tracking
-> >> or clear dirty bitmap, to ensure that dirty log is marked right away.  
-> > 
-> > I was initially convinced by these first three patches, but upon
-> > further review, I think the premise is wrong.  AIUI, the concern across
-> > these patches is that our dirty bitmap is only populated with pages
-> > dirtied by pinning and we only take into account the pinned page dirty
-> > scope at the time the bitmap is retrieved by the user.  You suppose
-> > this presents a gap where if a vendor driver has not yet identified
-> > with a page pinning scope that the entire bitmap should be considered
-> > dirty regardless of whether that driver later pins pages prior to the
-> > user retrieving the dirty bitmap.
-> > 
-> > I don't think this is how we intended the cooperation between the iommu
-> > driver and vendor driver to work.  By pinning pages a vendor driver is
-> > not declaring that only their future dirty page scope is limited to
-> > pinned pages, instead they're declaring themselves as a participant in
-> > dirty page tracking and take responsibility for pinning any necessary
-> > pages.  For example we might extend VFIO_IOMMU_DIRTY_PAGES_FLAG_START
-> > to trigger a blocking notification to groups to not only begin dirty
-> > tracking, but also to synchronously register their current device DMA
-> > footprint.  This patch would require a vendor driver to possibly perform
-> > a gratuitous page pinning in order to set the scope prior to dirty
-> > logging being enabled, or else the initial bitmap will be fully dirty.
-> > 
-> > Therefore, I don't see that this series is necessary or correct.  Kirti,
-> > does this match your thinking?
-> >   
+On Wed, Jan 13, 2021 at 08:24:24PM +0800, kernel test robot wrote:
+> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
+> branch HEAD: f81f6edb74f27c5c8917d20a2bc128aca39aae11  rcu: Remove spurious instrumentation_end() in rcu_nmi_enter()
 > 
-> That's correct Alex and I agree with you.
+> Warning ids grouped by kconfigs:
 > 
-> > Thinking about these semantics, it seems there might still be an issue
-> > if a group with non-pinned-page dirty scope is detached with dirty
-> > logging enabled.    
+> gcc_recent_errors
+> |-- h8300-randconfig-c003-20210112
+> |   `-- kernel-rcu-rcutorture.c:WARNING-kmalloc-is-used-to-allocate-this-memory-at-line
+> |-- i386-randconfig-c001-20210112
+> |   `-- kernel-rcu-rcutorture.c:WARNING-kmalloc-is-used-to-allocate-this-memory-at-line
+> `-- powerpc-randconfig-c004-20210112
+>     `-- kernel-rcu-rcutorture.c:WARNING-kmalloc-is-used-to-allocate-this-memory-at-line
+
+OK, I will bite...  At which line?
+
+							Thanx, Paul
+
+> elapsed time: 722m
 > 
-> Hot-unplug a device while migration process has started - is this 
-> scenario supported?
-
-It's not prevented, it would rely on a userspace policy, right?  The
-kernel should do the right thing regardless.  Thanks,
-
-Alex
-
-> > It seems this should in fact fully populate the dirty
-> > bitmaps at the time it's removed since we don't know the extent of its
-> > previous DMA, nor will the group be present to trigger the full bitmap
-> > when the user retrieves the dirty bitmap.  Creating fully populated
-> > bitmaps at the time tracking is enabled negates our ability to take
-> > advantage of later enlightenment though.  Thanks,
-> > 
-> > Alex
-> >   
-> >> Fixes: d6a4c185660c ("vfio iommu: Implementation of ioctl for dirty pages tracking")
-> >> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-> >> ---
-> >>   drivers/vfio/vfio_iommu_type1.c | 33 ++++++++++++++++++++++-----------
-> >>   1 file changed, 22 insertions(+), 11 deletions(-)
-> >>
-> >> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> >> index bceda5e8baaa..b0a26e8e0adf 100644
-> >> --- a/drivers/vfio/vfio_iommu_type1.c
-> >> +++ b/drivers/vfio/vfio_iommu_type1.c
-> >> @@ -224,7 +224,7 @@ static void vfio_dma_bitmap_free(struct vfio_dma *dma)
-> >>   	dma->bitmap = NULL;
-> >>   }
-> >>   
-> >> -static void vfio_dma_populate_bitmap(struct vfio_dma *dma, size_t pgsize)
-> >> +static void vfio_dma_populate_bitmap_pinned(struct vfio_dma *dma, size_t pgsize)
-> >>   {
-> >>   	struct rb_node *p;
-> >>   	unsigned long pgshift = __ffs(pgsize);
-> >> @@ -236,6 +236,25 @@ static void vfio_dma_populate_bitmap(struct vfio_dma *dma, size_t pgsize)
-> >>   	}
-> >>   }
-> >>   
-> >> +static void vfio_dma_populate_bitmap_full(struct vfio_dma *dma, size_t pgsize)
-> >> +{
-> >> +	unsigned long pgshift = __ffs(pgsize);
-> >> +	unsigned long nbits = dma->size >> pgshift;
-> >> +
-> >> +	bitmap_set(dma->bitmap, 0, nbits);
-> >> +}
-> >> +
-> >> +static void vfio_dma_populate_bitmap(struct vfio_iommu *iommu,
-> >> +				     struct vfio_dma *dma)
-> >> +{
-> >> +	size_t pgsize = (size_t)1 << __ffs(iommu->pgsize_bitmap);
-> >> +
-> >> +	if (iommu->pinned_page_dirty_scope)
-> >> +		vfio_dma_populate_bitmap_pinned(dma, pgsize);
-> >> +	else if (dma->iommu_mapped)
-> >> +		vfio_dma_populate_bitmap_full(dma, pgsize);
-> >> +}
-> >> +
-> >>   static int vfio_dma_bitmap_alloc_all(struct vfio_iommu *iommu)
-> >>   {
-> >>   	struct rb_node *n;
-> >> @@ -257,7 +276,7 @@ static int vfio_dma_bitmap_alloc_all(struct vfio_iommu *iommu)
-> >>   			}
-> >>   			return ret;
-> >>   		}
-> >> -		vfio_dma_populate_bitmap(dma, pgsize);
-> >> +		vfio_dma_populate_bitmap(iommu, dma);
-> >>   	}
-> >>   	return 0;
-> >>   }
-> >> @@ -987,13 +1006,6 @@ static int update_user_bitmap(u64 __user *bitmap, struct vfio_iommu *iommu,
-> >>   	unsigned long shift = bit_offset % BITS_PER_LONG;
-> >>   	unsigned long leftover;
-> >>   
-> >> -	/*
-> >> -	 * mark all pages dirty if any IOMMU capable device is not able
-> >> -	 * to report dirty pages and all pages are pinned and mapped.
-> >> -	 */
-> >> -	if (!iommu->pinned_page_dirty_scope && dma->iommu_mapped)
-> >> -		bitmap_set(dma->bitmap, 0, nbits);
-> >> -
-> >>   	if (shift) {
-> >>   		bitmap_shift_left(dma->bitmap, dma->bitmap, shift,
-> >>   				  nbits + shift);
-> >> @@ -1019,7 +1031,6 @@ static int vfio_iova_dirty_bitmap(u64 __user *bitmap, struct vfio_iommu *iommu,
-> >>   	struct vfio_dma *dma;
-> >>   	struct rb_node *n;
-> >>   	unsigned long pgshift = __ffs(iommu->pgsize_bitmap);
-> >> -	size_t pgsize = (size_t)1 << pgshift;
-> >>   	int ret;
-> >>   
-> >>   	/*
-> >> @@ -1055,7 +1066,7 @@ static int vfio_iova_dirty_bitmap(u64 __user *bitmap, struct vfio_iommu *iommu,
-> >>   		 * pages which are marked dirty by vfio_dma_rw()
-> >>   		 */
-> >>   		bitmap_clear(dma->bitmap, 0, dma->size >> pgshift);
-> >> -		vfio_dma_populate_bitmap(dma, pgsize);
-> >> +		vfio_dma_populate_bitmap(iommu, dma);
-> >>   	}
-> >>   	return 0;
-> >>   }  
-> >   
+> configs tested: 164
+> configs skipped: 2
 > 
-
+> gcc tested configs:
+> arm                                 defconfig
+> arm64                            allyesconfig
+> arm64                               defconfig
+> arm                              allyesconfig
+> arm                              allmodconfig
+> arm                         shannon_defconfig
+> powerpc                       maple_defconfig
+> arm                              zx_defconfig
+> mips                            e55_defconfig
+> arm                       spear13xx_defconfig
+> arm                  colibri_pxa300_defconfig
+> sh                           se7206_defconfig
+> arc                 nsimosci_hs_smp_defconfig
+> powerpc                   lite5200b_defconfig
+> sh                  sh7785lcr_32bit_defconfig
+> mips                       lemote2f_defconfig
+> sh                      rts7751r2d1_defconfig
+> m68k                        m5272c3_defconfig
+> sh                            migor_defconfig
+> powerpc                        icon_defconfig
+> sh                               alldefconfig
+> mips                     cu1000-neo_defconfig
+> arm                       cns3420vb_defconfig
+> mips                 decstation_r4k_defconfig
+> arm                           corgi_defconfig
+> arm                     eseries_pxa_defconfig
+> ia64                          tiger_defconfig
+> powerpc                      pasemi_defconfig
+> mips                         bigsur_defconfig
+> mips                       rbtx49xx_defconfig
+> c6x                              alldefconfig
+> mips                     decstation_defconfig
+> sh                   sh7770_generic_defconfig
+> arm                            hisi_defconfig
+> c6x                        evmc6472_defconfig
+> microblaze                          defconfig
+> xtensa                  cadence_csp_defconfig
+> powerpc                    mvme5100_defconfig
+> m68k                         amcore_defconfig
+> mips                        bcm47xx_defconfig
+> mips                        workpad_defconfig
+> h8300                     edosk2674_defconfig
+> powerpc                 mpc8313_rdb_defconfig
+> mips                           xway_defconfig
+> arc                           tb10x_defconfig
+> sh                           se7721_defconfig
+> arm                         axm55xx_defconfig
+> m68k                            q40_defconfig
+> arm                        mini2440_defconfig
+> powerpc                     tqm8560_defconfig
+> sh                         ecovec24_defconfig
+> c6x                        evmc6457_defconfig
+> arm                        mvebu_v7_defconfig
+> mips                      pistachio_defconfig
+> m68k                          multi_defconfig
+> s390                       zfcpdump_defconfig
+> xtensa                    smp_lx200_defconfig
+> h8300                    h8300h-sim_defconfig
+> arm                       multi_v4t_defconfig
+> arm                     davinci_all_defconfig
+> sh                          r7780mp_defconfig
+> arm                        keystone_defconfig
+> ia64                            zx1_defconfig
+> mips                      maltaaprp_defconfig
+> sh                           se7724_defconfig
+> sh                          urquell_defconfig
+> sparc                            alldefconfig
+> arm                        multi_v5_defconfig
+> powerpc                      pmac32_defconfig
+> powerpc                     ksi8560_defconfig
+> powerpc                    amigaone_defconfig
+> arc                     haps_hs_smp_defconfig
+> csky                                defconfig
+> um                            kunit_defconfig
+> powerpc                 mpc832x_rdb_defconfig
+> powerpc                      mgcoge_defconfig
+> ia64                        generic_defconfig
+> powerpc                      bamboo_defconfig
+> arm                      pxa255-idp_defconfig
+> sh                           se7705_defconfig
+> parisc                              defconfig
+> m68k                        m5407c3_defconfig
+> m68k                          atari_defconfig
+> powerpc                 mpc832x_mds_defconfig
+> powerpc                        fsp2_defconfig
+> m68k                       m5275evb_defconfig
+> powerpc                      ppc44x_defconfig
+> arm                            qcom_defconfig
+> sh                ecovec24-romimage_defconfig
+> arm                          tango4_defconfig
+> mips                          ath25_defconfig
+> sh                           sh2007_defconfig
+> arm                         socfpga_defconfig
+> m68k                       m5249evb_defconfig
+> mips                  decstation_64_defconfig
+> ia64                             allmodconfig
+> ia64                                defconfig
+> ia64                             allyesconfig
+> m68k                             allmodconfig
+> m68k                                defconfig
+> m68k                             allyesconfig
+> nios2                               defconfig
+> arc                              allyesconfig
+> nds32                             allnoconfig
+> c6x                              allyesconfig
+> nds32                               defconfig
+> nios2                            allyesconfig
+> alpha                               defconfig
+> alpha                            allyesconfig
+> xtensa                           allyesconfig
+> h8300                            allyesconfig
+> arc                                 defconfig
+> sh                               allmodconfig
+> s390                             allyesconfig
+> parisc                           allyesconfig
+> s390                                defconfig
+> i386                             allyesconfig
+> sparc                            allyesconfig
+> sparc                               defconfig
+> i386                               tinyconfig
+> i386                                defconfig
+> mips                             allyesconfig
+> mips                             allmodconfig
+> powerpc                          allyesconfig
+> powerpc                          allmodconfig
+> powerpc                           allnoconfig
+> x86_64               randconfig-a006-20210113
+> x86_64               randconfig-a004-20210113
+> x86_64               randconfig-a001-20210113
+> x86_64               randconfig-a005-20210113
+> x86_64               randconfig-a003-20210113
+> x86_64               randconfig-a002-20210113
+> i386                 randconfig-a002-20210113
+> i386                 randconfig-a005-20210113
+> i386                 randconfig-a006-20210113
+> i386                 randconfig-a003-20210113
+> i386                 randconfig-a001-20210113
+> i386                 randconfig-a004-20210113
+> i386                 randconfig-a012-20210113
+> i386                 randconfig-a011-20210113
+> i386                 randconfig-a016-20210113
+> i386                 randconfig-a013-20210113
+> i386                 randconfig-a015-20210113
+> i386                 randconfig-a014-20210113
+> riscv                    nommu_k210_defconfig
+> riscv                            allyesconfig
+> riscv                    nommu_virt_defconfig
+> riscv                             allnoconfig
+> riscv                               defconfig
+> riscv                          rv32_defconfig
+> riscv                            allmodconfig
+> x86_64                                   rhel
+> x86_64                           allyesconfig
+> x86_64                    rhel-7.6-kselftests
+> x86_64                              defconfig
+> x86_64                               rhel-8.3
+> x86_64                      rhel-8.3-kbuiltin
+> x86_64                                  kexec
+> 
+> clang tested configs:
+> x86_64               randconfig-a015-20210113
+> x86_64               randconfig-a012-20210113
+> x86_64               randconfig-a013-20210113
+> x86_64               randconfig-a016-20210113
+> x86_64               randconfig-a014-20210113
+> x86_64               randconfig-a011-20210113
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
