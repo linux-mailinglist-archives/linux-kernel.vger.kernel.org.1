@@ -2,105 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8422F53B4
+	by mail.lfdr.de (Postfix) with ESMTP id 88FCC2F53B5
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728731AbhAMTyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 14:54:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58839 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728519AbhAMTyk (ORCPT
+        id S1728769AbhAMTzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 14:55:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726599AbhAMTzp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 14:54:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610567593;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r9SifleMQOfzHiaSXVluBcJxxBWa1F3orhMkaXNevsg=;
-        b=TLvIfejwjNEohSPMT9lSbR/FQEJJ7dafaF0N99NIvI9Myv7LKG0Hb+OLYcGs4W6FgJz+Hg
-        MganwzcXz9XoFg+fnrKBNVNhItgeTqfhj9fSIkz00wlFeYDYpJ7N87zoM473zi+UaZKpDS
-        f3jGp6X8zf36/CsxttLGyo99xcTU9Jg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-198-S9hFWNQHNT-CBxPFRSIyUQ-1; Wed, 13 Jan 2021 14:53:10 -0500
-X-MC-Unique: S9hFWNQHNT-CBxPFRSIyUQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B2E931015C8B;
-        Wed, 13 Jan 2021 19:53:07 +0000 (UTC)
-Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 29908100AE41;
-        Wed, 13 Jan 2021 19:53:03 +0000 (UTC)
-Date:   Wed, 13 Jan 2021 13:53:01 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Anand K Mistry <amistry@google.com>
-Cc:     x86@kernel.org, asteinhauser@google.com, tglx@linutronix.de,
-        bp@alien8.de, joelaf@google.com,
-        Anand K Mistry <amistry@chromium.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Julien Thierry <jthierry@redhat.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tony Luck <tony.luck@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] x86/speculation: Add finer control for when to issue
- IBPB
-Message-ID: <20210113195301.tyeeyrf5y7ajd5yw@treble>
-References: <20210113194619.RFC.1.I8f559ecdb01ffa98d5a1ee551cb802f288a81a38@changeid>
+        Wed, 13 Jan 2021 14:55:45 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F73C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 11:55:05 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id o19so4600435lfo.1
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 11:55:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5VVRnidq3Ezoxd8/TnzX5XA0I3NxFLA67+ejsz55qsA=;
+        b=F9b11/Nz6rTHOculKOHTTHckBbUGSVIFhzWAuPpK6tgr/yr5VNKoSQOq4ATcv2NEYB
+         fTH0oj2iOzfW7LrGOaGxAiB7AIQjx+IInRw1kFUYJTKZzZjVp3LlvdODW9YjJztz+Z7I
+         BbBh607WMcIgEMFet9Z99iKvCvhUVIZMf9Qv8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5VVRnidq3Ezoxd8/TnzX5XA0I3NxFLA67+ejsz55qsA=;
+        b=XCHJDwV7pg1nv4pXVX7XUqx00wVMSk9vsmjT1FAG3290UadAz3Xrt3H9XcJgN7uYnb
+         f3mVLL/iNIo7rIRMOhtc4Nz/kxsMuQIJBtfXwilRJ1li57UzqW4IOembCBn6z27Z+lVY
+         GbrPocOXepKCKJGdsb/DM2H/ZCMM7JB22zRhk5c2J6X14qKBSAzK4JZxM26gTddQnaUH
+         w+YYEEoxLrm8A3161UZjedb4hy+g2wujram8Z9juYU3dIekeFNEB5045Syb5Pe9PVIXP
+         Vk6VZh2QTUbCT6IJdgaoS7hteXHCN56TF8mhQFr0c9caGPkI6jMaByMxPg2/Mq70YC9Y
+         zMlQ==
+X-Gm-Message-State: AOAM532yDoq+lm9BmaUAFcXMvlB4OAxVuVYe+DqLu5n7REi782CZbzmD
+        2IgSeW3poPZ1I8U5Pp7RUKX5qSfNspMLVg==
+X-Google-Smtp-Source: ABdhPJzzmT822NYJiGXxVhtL2p0L8NQMPUh0obcuJ8rTQ3Ft9u42GY/he2Qq8b57qs/fy0cB0JpZuw==
+X-Received: by 2002:ac2:5c5d:: with SMTP id s29mr1499972lfp.88.1610567703521;
+        Wed, 13 Jan 2021 11:55:03 -0800 (PST)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id c1sm276407ljd.117.2021.01.13.11.55.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Jan 2021 11:55:01 -0800 (PST)
+Received: by mail-lf1-f43.google.com with SMTP id v67so4600141lfa.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 11:55:00 -0800 (PST)
+X-Received: by 2002:a19:f014:: with SMTP id p20mr1485833lfc.421.1610567700198;
+ Wed, 13 Jan 2021 11:55:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210113194619.RFC.1.I8f559ecdb01ffa98d5a1ee551cb802f288a81a38@changeid>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <CAHk-=wj5=1DKbQut1-21EwQbMSghNL3KOSd82rNrBhuG9+eekA@mail.gmail.com>
+ <X/prosulFrEoNnoF@redhat.com> <CAHk-=wjZTMsv0_GOyQpLRk_5U1r5W8e21f8sV0jykK=z47hjGQ@mail.gmail.com>
+ <CAHk-=wgi31FKc9AL6m87+pb2B79V2g_QjdhmtJNW8Pnq2ERQ-Q@mail.gmail.com>
+ <45806a5a-65c2-67ce-fc92-dc8c2144d766@nvidia.com> <CAHk-=wipa-9wEuWHBjourmXAVHdeqDa59UxW6ZJ_Oqg6-Dwvdw@mail.gmail.com>
+ <CAHk-=wje9r3fREBdZcOu=NihGczBtkqkhXRPDhY-ZkNVv=thiQ@mail.gmail.com>
+ <20210113021619.GL35215@casper.infradead.org> <CAHk-=wjWMieNV3nAJgoG5prEHBEcOZiREmLUr499tA9NMttEqQ@mail.gmail.com>
+ <20210113123232.62vv6xsrpitne7hc@box> <20210113125532.GN35215@casper.infradead.org>
+In-Reply-To: <20210113125532.GN35215@casper.infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 13 Jan 2021 11:54:44 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wh=-_F1_ozuF6Wzg1-u07iLuUG_77SQeuX7gwgC5DQKzQ@mail.gmail.com>
+Message-ID: <CAHk-=wh=-_F1_ozuF6Wzg1-u07iLuUG_77SQeuX7gwgC5DQKzQ@mail.gmail.com>
+Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 07:47:19PM +1100, Anand K Mistry wrote:
-> When IB speculation is conditionally disabled for a process (via prctl()
-> or seccomp), IBPB is issued whenever that process is switched to/from.
-> However, this results more IBPBs than necessary. The goal is to protect
-> a victim process from an attacker poisoning the BTB by issuing IBPB in
-> the attacker->victim switch. However, the current logic will also issue
-> IBPB in the victim->attacker switch, because there's no notion of
-> whether the attacker or victim has IB speculation disabled.
-> 
-> Instead of always issuing IBPB when either the previous or next process
-> has IB speculation disabled, add a boot flag to explicitly choose
-> to issue IBPB when the IB spec disabled process is entered or left.
-> 
-> Signed-off-by: Anand K Mistry <amistry@google.com>
-> Signed-off-by: Anand K Mistry <amistry@chromium.org>
-> ---
-> Background:
-> IBPB is slow on some CPUs.
-> 
-> More detailed background:
-> On some CPUs, issuing an IBPB can cause the address space switch to be
-> 10x more expensive (yes, 10x, not 10%). On a system that makes heavy use
-> of processes, this can cause a very significant performance hit.
-> Although we can choose which processes will pay the IBPB
-> cost by using prctl(), the performance hit is often still too high
-> because IBPB is being issued more often than necessary.
-> 
-> This proposal attempts to reduce that cost by letting the system
-> developer choose whether to issue the IBPB on entry or exit of an IB
-> speculation disabled process (default is both, which is current
-> behaviour). Documentation/admin-guide/hw-vuln/spectre.rst documents two
-> mitigation strategies that use conditional IBPB;
-> "Protect sensitive programs", and "Sandbox untrusted programs".
+On Wed, Jan 13, 2021 at 4:56 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> Yes, Linus mis-stated it:
 
-Why make the setting system-wide?  Shouldn't this decision be made on a
-per-task basis, depending on whether the task is sensitive or untrusted?
+Yeah, I got the order wrong.
 
--- 
-Josh
+> ... but as David pointed out, I fixed this in e320d3012d25
 
+.. and I must have seen it, but not really internalized it.
+
+And now that I look at it more closely, I'm actually surprised that
+other than the magic "speculative first page" case we don't seem to
+use page reference counting for non-order-0 pages (which would break
+that hack horribly).
+
+             Linus
