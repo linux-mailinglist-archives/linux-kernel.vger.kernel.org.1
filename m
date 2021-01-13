@@ -2,87 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAC972F51BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC3DB2F51C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728106AbhAMSMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 13:12:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727198AbhAMSMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 13:12:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BCA88233ED;
-        Wed, 13 Jan 2021 18:12:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610561532;
-        bh=9elX7cNWCe9G39/ZIw1v4prZnJFSz0GD4UUQdqJ6cqE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RgeWmANpXc1zGm081hvR7XF+GkBpB0TC98RrJNkav937ZHj09ykKwwD8xh3/uU97T
-         Vt2UhvNZFdwfsOPFEYKH1H9a/ttv4wSLURnfnZrTrfzkNXPjFKl6+tijxAoEbgVAOk
-         S2Ptnrzty7BXw0YCJWEoYe9NmIQ2RF1gB0VzBtNeoM2uzsRmUCr8CKix9oNXUx3CdS
-         sXLpFNTXSzqFzeXvBczfr3C5qEqCxJKkwfHb856KV8nxGRSTukfB+UFslnUfrYukz6
-         g6iAurhru6LdWCrTZ8xJGbfbLh/PhXu5gdqI2ndxW1p+4CXMLNc06OfaSCI+nJ3ggp
-         tSge7vUBE9q4g==
-Date:   Wed, 13 Jan 2021 10:12:10 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Edward Cree <ecree@solarflare.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 0/5] skbuff: introduce skbuff_heads bulking and
- reusing
-Message-ID: <20210113101210.6d0ad308@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CANn89iJeJR+i-WLi=VwNSmWQ2aFepmFO8w6Yh9DQX6hvV4BceA@mail.gmail.com>
-References: <20210111182655.12159-1-alobakin@pm.me>
-        <d4f4b6ba-fb3b-d873-23b2-4b5ba9cf4db8@gmail.com>
-        <20210112110802.3914-1-alobakin@pm.me>
-        <CANn89iKEc_8_ySqV+KrbheTDKRL4Ws6JUKYeKXfogJNhfd+pGQ@mail.gmail.com>
-        <20210112170242.414b8664@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CANn89i+ppTAPYwQ2mH5cZtcMqanFU8hXzD4szdygrjOBewPb+Q@mail.gmail.com>
-        <20210113090341.74832be9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <CANn89iJeJR+i-WLi=VwNSmWQ2aFepmFO8w6Yh9DQX6hvV4BceA@mail.gmail.com>
+        id S1728243AbhAMSOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 13:14:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727794AbhAMSOT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 13:14:19 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C89C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 10:13:39 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id u4so1689445pjn.4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 10:13:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AyK9sqwZsD063m1ncxreMiuXDXntkqM6cLxiVapbjGw=;
+        b=URwQNLcjZ8zEk6hNNLVOV/TTzfMHNRr6tJM3UR8Mj0UoFUTvBpZjhcgwvwfAyW31u5
+         TgyAKhncBlMRoPOY8AlchGHqbYqqBd6l8Pd0WI9O7niG/or8xYtmSPHIPSfvM/nni+r/
+         qahefVJ5OTLN7hcEj6yNvU14V8eI7iZgqLlpQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AyK9sqwZsD063m1ncxreMiuXDXntkqM6cLxiVapbjGw=;
+        b=BwuWTUr+/dghQmX81E0fFWujOYRCK/vP7u8lwt1Zx053KbnYYgOPW/sLdW9lCOli0y
+         v920YDh4ObkjwaqRQsVpXf4vQ2I69CHFbY2IP+Uts3GDcXPclzDYi2zH4MVz1XM8hLa4
+         e0IN0EqvYVP/ONt7eYJmMwpKyGO5m05xz3RPIW5IsScvHr6IwS0HDpMeOdMxmA9RNdUU
+         J4yFIx41R1yxErktsNwoA06WF/pP5APBC8nS3epECe4uvKZM2Wada5kX4+fikIhTmWaK
+         JF4cCDL17oZSDbsKghHj/4CrhFq2KsRFUX5WCnx0KqyP/XEgUjLWp8rpM36aRvSamXNd
+         DR4A==
+X-Gm-Message-State: AOAM533/M5T61opSTxJYCcPg/XNV2SzKYdb5f8tbdzXqVyPX8Mvw2hx2
+        Uu6x2QqfsVfJg+qxAK/T1YMTgA==
+X-Google-Smtp-Source: ABdhPJwmBaSE9yTIl9eomAMqefN3gOQUSke85JCpZQpXqCOMxeg2SSP5ZjzthbIMkKX1qcI6d9H9fg==
+X-Received: by 2002:a17:90a:4817:: with SMTP id a23mr567471pjh.16.1610561619202;
+        Wed, 13 Jan 2021 10:13:39 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d6sm3070040pfo.199.2021.01.13.10.13.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 10:13:38 -0800 (PST)
+Date:   Wed, 13 Jan 2021 10:13:37 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 17/24] arch/Kconfig: update unaligned-memory-access.rst
+ reference
+Message-ID: <202101131013.39881611F3@keescook>
+References: <cover.1610535349.git.mchehab+huawei@kernel.org>
+ <24c3aa427cf7e99e01f49a221a15c2eb5768b63e.1610535350.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <24c3aa427cf7e99e01f49a221a15c2eb5768b63e.1610535350.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021 18:15:20 +0100 Eric Dumazet wrote:
-> > IDK much about MM, but we already have a kmem_cache for skbs and now
-> > we're building a cache on top of a cache.  Shouldn't MM take care of
-> > providing a per-CPU BH-only lockless cache?  
+On Wed, Jan 13, 2021 at 11:59:18AM +0100, Mauro Carvalho Chehab wrote:
+> Changeset 997c798e1444 ("docs: sysctl/kernel: document unaligned controls")
+> renamed: Documentation/unaligned-memory-access.txt
+> to: Documentation/process/unaligned-memory-access.rst.
 > 
-> I think part of the improvement comes from bulk operations, which are
-> provided by mm layer.
+> Update its cross-reference accordingly.
 > 
-> I also note Alexander made no provision for NUMA awareness.
-> Probably reusing skb located on a remote node will not be ideal.
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-I was wondering about that yesterday, but couldn't really think 
-of a legitimate reason not to have XPS set up right. Do you have
-particular config in mind, or are we taking "default config"?
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Also can't the skb _itself_ be pfmemalloc?
-
-My main point is that I'm wondering if this sort of cache would be
-useful when allocating skbs for sockets? Assuming that the network
-stack is not isolated to its own cores, won't fronting alloc_skb() 
-with 
-
-	bh_disable() 
-	try the cache
-	bh_enable()
-
-potentially help? In that sense fronting kmem_cache would feel cleaner
-than our own little ring buffer.
+-- 
+Kees Cook
