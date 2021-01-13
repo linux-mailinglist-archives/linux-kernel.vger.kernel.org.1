@@ -2,310 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE8122F4684
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 640252F4692
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbhAMIaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:30:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44296 "EHLO
+        id S1726822AbhAMIbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 03:31:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726701AbhAMIaG (ORCPT
+        with ESMTP id S1726288AbhAMIbH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 03:30:06 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13CEC06179F
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:29:25 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id p18so1013744pgm.11
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:29:25 -0800 (PST)
+        Wed, 13 Jan 2021 03:31:07 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0177FC061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:30:27 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id u25so1536395lfc.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:30:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=l1GKa3x7ZNgVpRkmStUdrHjbkYZ9SQFyhIcPJwTf7mQ=;
-        b=mkqpTDKsvFlyxfobrl3O59d7IIHahU3PS8A71e5YzOZlHDWbI3MZUbGb7SzszcCOyu
-         ra2rQP1FSmDItU3qJfiNzVtBotM4pk1nDOdIWiocpHRFBWI+S0aBNwxNh1RwdCZZ+Rwp
-         vJpkXqohwYvayJKj2IWCmXCkacrtPqGcL2BHppSgchlP96jHviCQysvI7Xz+pku+moTs
-         atreTPYdyRmAfTwx9WIMJwNvu78nuz7zE27UOtTVp2scjPLS4OWyMWhXb7c69SVWsYrO
-         U2xkipy3HDuKbaGqqSaXPSGjU5KWEkqeeEva2ELwpPdqkTgVnAk9wEOkVC+9SXeY8dWj
-         nQsQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XJaTPxEArYKVlZrCQN/uN6ZULj4gM1PQ/CUE3L6eJxU=;
+        b=QQB2oLxgNrUIHQyxcEsn6C89VLuuhBFzbjSH/zkyrZdBnPMU0hM3jQB/cVU0dIx/xZ
+         okSsYHeWA4AGHWLyWeGkhaOGHjYEo2Gw6w4Ou2C4FrFLAiuzHlh85DAb3FYZ6VTfem89
+         z41/1VcNhfS+p9q9GUAzngqfhUpgatiwI2qYcE9hANBvRw8srX1weIMKayj9EW8U7CHY
+         VVfAXhV6wzNAuX9ZSq6fiuHbCqRi6Mo2fkGIYug+IDktFYHuOtq+3wB0nv8v0c3bbiQU
+         2RxGSAOyueVkKdPFWTKIZ1niEpZYwkEq5iqL4O9I5ap5rBF8TWKrpvSoG2NRnyeEbFlV
+         I4DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=l1GKa3x7ZNgVpRkmStUdrHjbkYZ9SQFyhIcPJwTf7mQ=;
-        b=h1WfujvhkCl1p+25i7HjGTMtQNAUQ4ZJPUvQjR7/BODUbZyq6NF7bnN2JlwLBHoy1T
-         4cPmkIRSGcfFCG0sEl4noq26guleydqdT7MLEYq3/KhssDY7cRJ12YK8DIb2qMPkDga3
-         dxucbisfBmOdKYSdV08Whr8Eg9YZh2CV4+pjdbR64Q0D85JgdkyhSoTVFcC9w2nP5oFD
-         L+TLUrgIUxlwdpBmctp7whMWoRnrBaLyO/9bH7zWO7I1LjTmXLJJgPJfq+AMvyrnsGuK
-         dwvktSysUc4lCFdC/b5A4tua+xZvHv3mlCoBhIP70YUeIIt7tmXYaP3jyWKAkPXmu5Ba
-         jErQ==
-X-Gm-Message-State: AOAM533Y5Lr5FSJsPoQRA8xf9sefUpYEhL2VoM8H51Jd5nkL7/uB0aBX
-        IY/D8NxThgiBfkuaTAbesk80
-X-Google-Smtp-Source: ABdhPJzhbChFX7E4odlTkqAVRn4oQYVX+m5ZecCHfZJcCca/kNL2kle2MNutGtYW7mRpy6pztpTV/w==
-X-Received: by 2002:a63:ef14:: with SMTP id u20mr1076416pgh.93.1610526565041;
-        Wed, 13 Jan 2021 00:29:25 -0800 (PST)
-Received: from thinkpad ([2409:4072:6199:4cc7:6c7e:de01:2568:5545])
-        by smtp.gmail.com with ESMTPSA id p15sm1705977pgl.19.2021.01.13.00.29.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 00:29:24 -0800 (PST)
-Date:   Wed, 13 Jan 2021 13:59:15 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     jassisinghbrar@gmail.com, mturquette@baylibre.com,
-        robh+dt@kernel.org, viresh.kumar@linaro.org,
-        ulf.hansson@linaro.org, bjorn.andersson@linaro.org,
-        agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 5/5] clk: qcom: Add SDX55 APCS clock controller support
-Message-ID: <20210113082915.GB3763@thinkpad>
-References: <20210108113233.75418-1-manivannan.sadhasivam@linaro.org>
- <20210108113233.75418-6-manivannan.sadhasivam@linaro.org>
- <161052342416.3661239.16154742996506371048@swboyd.mtv.corp.google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XJaTPxEArYKVlZrCQN/uN6ZULj4gM1PQ/CUE3L6eJxU=;
+        b=F+IfbmqMdBY/juKlh8hxz+yX7URGTLMAjGDGda4f73Ja+vjGvGSrauN+2ucycnaS07
+         MJEj5VBF7q/k5vUSAaCPFz2FgvHQQhHooYMtz57MqmY42xJGEUML7dd1pwU2mmwEZhJZ
+         BzSCWlmfF5BY0ceHBH0NI+5ycjNR3wFA7E88q32V6TcdvxEWRvPTc3g95FybjT7ss473
+         3Uwd7qk2msihiSWj5h5roLgFpzoFK0A+cT5w+6uHsS91+72LUG0v9mPnAEs1RABlASMC
+         0zxZjm8FizeljxZv6y6f9qOY/iaTMDp8D8L6fQv1thDbq6tJ+ODkKzwkKqiSPwokUYzk
+         sYEQ==
+X-Gm-Message-State: AOAM530G7+0uPPjYGhT2XwdcqZWXw3fOMhk/AgYavBXiBb9X6P10k8tt
+        LoLuZ10Iq22m3MVRjhKsbSC7wP/yyyH7WEP2hzF+2A==
+X-Google-Smtp-Source: ABdhPJyqSaKfwC8QBGkdoh9R8It2LLfON4poxPLPBKa/Og/s3YE+sT0+t1ZifgXnekIt89GsJmKy44QmBoevUDD5p50=
+X-Received: by 2002:a19:2d0a:: with SMTP id k10mr423526lfj.286.1610526625442;
+ Wed, 13 Jan 2021 00:30:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161052342416.3661239.16154742996506371048@swboyd.mtv.corp.google.com>
+References: <1608710968-31475-1-git-send-email-ultrachin@163.com>
+ <CAKfTPtA9zdU76Q6AyjB8_gqvAm8SP_N0rJuydQdNFbDAKSb2jw@mail.gmail.com>
+ <1fefea2e.70bf.176f08d9fae.Coremail.ultrachin@163.com> <CAKfTPtDWARbx=xqwr47iFkEMVo7=+5_o_gMX+h=gAcXZP341oA@mail.gmail.com>
+ <61e22917.538b.176f56231f6.Coremail.ultrachin@163.com> <CAKfTPtCSra_kfncR7J_7ona+8MoO0ZX8uTEXvZ7PU7C0pYiM5w@mail.gmail.com>
+ <38c1aeee.2d5f.176f9bb0cfb.Coremail.ultrachin@163.com>
+In-Reply-To: <38c1aeee.2d5f.176f9bb0cfb.Coremail.ultrachin@163.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 13 Jan 2021 09:30:14 +0100
+Message-ID: <CAKfTPtAYoBm1se=HAcsyxwZTQ=XW+HcQJsP3maZy6CNgLSfLZA@mail.gmail.com>
+Subject: Re: [PATCH] sched: pull tasks when CPU is about to run SCHED_IDLE tasks
+To:     chin <ultrachin@163.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        heddchen@tencent.com,
+        =?UTF-8?B?eGlhb2dnY2hlbijpmYjlsI/lhYkp?= <xiaoggchen@tencent.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 11:37:04PM -0800, Stephen Boyd wrote:
-> Quoting Manivannan Sadhasivam (2021-01-08 03:32:33)
-> > Add a driver for the SDX55 APCS clock controller. It is part of the APCS
-> > hardware block, which among other things implements also a combined mux
-> > and half integer divider functionality. The APCS clock controller has 3
-> > parent clocks:
-> > 
-> > 1. Board XO
-> > 2. Fixed rate GPLL0
-> > 3. A7 PLL
-> > 
-> > The source and the divider can be set both at the same time.
-> 
-> I don't understand what that means. Presumably it's a mux/divider
-> combined?
-> 
+On Wed, 13 Jan 2021 at 04:14, chin <ultrachin@163.com> wrote:
+>
+>
+>
+>
+> At 2021-01-12 16:18:51, "Vincent Guittot" <vincent.guittot@linaro.org> wrote:
+> >On Tue, 12 Jan 2021 at 07:59, chin <ultrachin@163.com> wrote:
+> >>
+> >>
+> >>
+> >>
+> >> At 2021-01-11 19:04:19, "Vincent Guittot" <vincent.guittot@linaro.org> wrote:
+> >> >On Mon, 11 Jan 2021 at 09:27, chin <ultrachin@163.com> wrote:
+> >> >>
+> >> >>
+> >> >> At 2020-12-23 19:30:26, "Vincent Guittot" <vincent.guittot@linaro.org> wrote:
+> >> >> >On Wed, 23 Dec 2020 at 09:32, <ultrachin@163.com> wrote:
+> >> >> >>
+> >> >> >> From: Chen Xiaoguang <xiaoggchen@tencent.com>
+> >> >> >>
+> >> >> >> Before a CPU switches from running SCHED_NORMAL task to
+> >> >> >> SCHED_IDLE task, trying to pull SCHED_NORMAL tasks from other
+> >> >> >
+> >> >> >Could you explain more in detail why you only care about this use case
+> >> >>
+> >> >> >in particular and not the general case?
+> >> >>
+> >> >>
+> >> >> We want to run online tasks using SCHED_NORMAL policy and offline tasks
+> >> >> using SCHED_IDLE policy. The online tasks and the offline tasks run in
+> >> >> the same computer in order to use the computer efficiently.
+> >> >> The online tasks are in sleep in most times but should responce soon once
+> >> >> wake up. The offline tasks are in low priority and will run only when no online
+> >> >> tasks.
+> >> >>
+> >> >> The online tasks are more important than the offline tasks and are latency
+> >> >> sensitive we should make sure the online tasks preempt the offline tasks
+> >> >> as soon as possilbe while there are online tasks waiting to run.
+> >> >> So in our situation we hope the SCHED_NORMAL to run if has any.
+> >> >>
+> >> >> Let's assume we have 2 CPUs,
+> >> >> In CPU1 we got 2 SCHED_NORMAL tasks.
+> >> >> in CPU2 we got 1 SCHED_NORMAL task and 2 SCHED_IDLE tasks.
+> >> >>
+> >> >>              CPU1                      CPU2
+> >> >>         curr       rq1            curr          rq2
+> >> >>       +------+ | +------+       +------+ | +----+ +----+
+> >> >> t0    |NORMAL| | |NORMAL|       |NORMAL| | |IDLE| |IDLE|
+> >> >>       +------+ | +------+       +------+ | +----+ +----+
+> >> >>
+> >> >>                                  NORMAL exits or blocked
+> >> >>       +------+ | +------+                | +----+ +----+
+> >> >> t1    |NORMAL| | |NORMAL|                | |IDLE| |IDLE|
+> >> >>       +------+ | +------+                | +----+ +----+
+> >> >>
+> >> >>                                  pick_next_task_fair
+> >> >>       +------+ | +------+         +----+ | +----+
+> >> >> t2    |NORMAL| | |NORMAL|         |IDLE| | |IDLE|
+> >> >>       +------+ | +------+         +----+ | +----+
+> >> >>
+> >> >>                                  SCHED_IDLE running
+> >> >> t3    +------+ | +------+        +----+  | +----+
+> >> >>       |NORMAL| | |NORMAL|        |IDLE|  | |IDLE|
+> >> >>       +------+ | +------+        +----+  | +----+
+> >> >>
+> >> >>                                  run_rebalance_domains
+> >> >>       +------+ |                +------+ | +----+ +----+
+> >> >> t4    |NORMAL| |                |NORMAL| | |IDLE| |IDLE|
+> >> >>       +------+ |                +------+ | +----+ +----+
+> >> >>
+> >> >> As we can see
+> >> >> t1: NORMAL task in CPU2 exits or blocked
+> >> >> t2: CPU2 pick_next_task_fair would pick a SCHED_IDLE to run while
+> >> >> another SCHED_NORMAL in rq1 is waiting.
+> >> >> t3: SCHED_IDLE run in CPU2 while a SCHED_NORMAL wait in CPU1.
+> >> >> t4: after a short time, periodic load_balance triggerd and pull
+> >> >> SCHED_NORMAL in rq1 to rq2, and SCHED_NORMAL likely preempts SCHED_IDLE.
+> >> >>
+> >> >> In this scenario, SCHED_IDLE is running while SCHED_NORMAL is waiting to run.
+> >> >> The latency of this SCHED_NORMAL will be high which is not acceptble.
+> >> >>
+> >> >> Do a load_balance before running the SCHED_IDLE may fix this problem.
+> >> >>
+> >> >> This patch works as below:
+> >> >>
+> >> >>              CPU1                      CPU2
+> >> >>         curr       rq1            curr          rq2
+> >> >>       +------+ | +------+       +------+ | +----+ +----+
+> >> >> t0    |NORMAL| | |NORMAL|       |NORMAL| | |IDLE| |IDLE|
+> >> >>       +------+ | +------+       +------+ | +----+ +----+
+> >> >>
+> >> >>                                  NORMAL exits or blocked
+> >> >>       +------+ | +------+                | +----+ +----+
+> >> >> t1    |NORMAL| | |NORMAL|                | |IDLE| |IDLE|
+> >> >>       +------+ | +------+                | +----+ +----+
+> >> >>
+> >> >> t2                            pick_next_task_fair (all se are SCHED_IDLE)
+> >> >>
+> >> >>                                  newidle_balance
+> >> >>       +------+ |                 +------+ | +----+ +----+
+> >> >> t3    |NORMAL| |                 |NORMAL| | |IDLE| |IDLE|
+> >> >>       +------+ |                 +------+ | +----+ +----+
+> >> >>
+> >> >>
+> >> >> t1: NORMAL task in CPU2 exits or blocked
+> >> >> t2: pick_next_task_fair check all se in rbtree are SCHED_IDLE and calls
+> >> >> newidle_balance who tries to pull a SCHED_NORMAL(if has).
+> >> >> t3: pick_next_task_fair would pick a SCHED_NORMAL to run instead of
+> >> >> SCHED_IDLE(likely).
+> >> >>
+> >> >> >
+> >> >> >> CPU by doing load_balance first.
+> >> >> >>
+> >> >> >> Signed-off-by: Chen Xiaoguang <xiaoggchen@tencent.com>
+> >> >> >> Signed-off-by: Chen He <heddchen@tencent.com>
+> >> >> >> ---
+> >> >> >>  kernel/sched/fair.c | 5 +++++
+> >> >> >>  1 file changed, 5 insertions(+)
+> >> >> >>
+> >> >> >> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> >> >> >> index ae7ceba..0a26132 100644
+> >> >> >> --- a/kernel/sched/fair.c
+> >> >> >> +++ b/kernel/sched/fair.c
+> >> >> >> @@ -7004,6 +7004,11 @@ struct task_struct *
+> >> >> >>         struct task_struct *p;
+> >> >> >>         int new_tasks;
+> >> >> >>
+> >> >> >> +       if (prev &&
+> >> >> >> +           fair_policy(prev->policy) &&
+> >> >> >
+> >> >> >Why do you need a prev and fair task  ? You seem to target the special
+> >> >> >case of pick_next_task  but in this case why not only testing rf!=null
+> >> >> > to make sure to not return immediately after jumping to the idle
+> >> >>
+> >> >> >label?
+> >> >> We just want to do load_balance only when CPU switches from SCHED_NORMAL
+> >> >> to SCHED_IDLE.
+> >> >> If not check prev, when the running tasks are all SCHED_IDLE, we would
+> >> >> do newidle_balance everytime in pick_next_task_fair, it makes no sense
+> >> >> and kind of wasting.
+> >> >
+> >> >I agree that calling newidle_balance every time pick_next_task_fair is
+> >> >called when there are only sched_idle tasks is useless.
+> >> >But you also have to take into account cases where there was another
+> >> >class of task running on the cpu like RT one. In your example above,
+> >> >if you replace the normal task on CPU2 by a RT task, you still want to
+> >>
+> >> >pick the normal task on CPU1 once RT task goes to sleep.
+> >> Sure, this case should be taken into account,  we should also try to
+> >> pick normal task in this case.
+> >>
+> >> >
+> >> >Another point that you will have to consider the impact on
+> >> >rq->idle_stamp because newidle_balance is assumed to be called before
+> >>
+> >> >going idle which is not the case anymore with your use case
+> >> Yes. rq->idle_stamp should not be changed in this case.
+> >>
+> >>
+> >>
+> >> Actually we want to pull a SCHED_NORMAL task (if possible) to run when a cpu is
+> >> about to run SCHED_IDLE task. But currently newidle_balance is not
+> >> designed for SCHED_IDLE  so SCHED_IDLE can also be pulled which
+> >> is useless in our situation.
+> >
+> >newidle_balance will pull a sched_idle task only if there is an
+> >imbalance which is the right thing to do IMO to ensure fairness
+> >between sched_idle tasks.  Being a sched_idle task doesn't mean that
+> >we should break the fairness
+> >
+> >>
+> >> So we plan to add a new function sched_idle_balance which only try to
+> >> pull SCHED_NORMAL tasks from the busiest cpu. And we will call
+> >> sched_idle_balance when the previous task is normal or RT and
+> >> hoping we can pull a SCHED_NORMAL task to run.
+> >>
+> >> Do you think it is ok to add a new sched_idle_balance?
+> >
+> >I don't see any reason why the scheduler should not pull a sched_idle
+> >task if there is an imbalance. That will happen anyway during the next
+>
+> >periodic load balance
+> OK. We should not pull the SCHED_IDLE tasks only in load_balance.
+>
+>
+> Do you think it make sense to do an extra load_balance when cpu is
+> about to run SCHED_IDLE task (switched from normal/RT)?
 
-Yeah, will make it clear.
+I'm not sure to get your point here.
+Do you mean if a sched_idle task is picked to become the running task
+whereas there are runnable normal tasks ? This can happen if normal
+tasks are long running tasks. We should not in this case. The only
+case is when the running task, which is not a sched_idle task but a
+normal/rt/deadline one, goes to sleep and there are only sched_idle
+tasks enqueued. In this case and only in this case, we should trigger
+a load_balance to get a chance to pull a waiting normal task from
+another CPU.
 
-> > 
-> > This is required for enabling CPU frequency scaling on SDX55-based
-> > platforms.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/clk/qcom/Kconfig      |   9 ++
-> >  drivers/clk/qcom/Makefile     |   1 +
-> >  drivers/clk/qcom/apcs-sdx55.c | 149 ++++++++++++++++++++++++++++++++++
-> >  3 files changed, 159 insertions(+)
-> >  create mode 100644 drivers/clk/qcom/apcs-sdx55.c
-> > 
-> > diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-> > index d6f4aee4427a..2c67fdfae913 100644
-> > --- a/drivers/clk/qcom/Kconfig
-> > +++ b/drivers/clk/qcom/Kconfig
-> > @@ -45,6 +45,15 @@ config QCOM_CLK_APCS_MSM8916
-> >           Say Y if you want to support CPU frequency scaling on devices
-> >           such as msm8916.
-> >  
-> > +config QCOM_CLK_APCS_SDX55
-> 
-> APCC comes before APCS
-> 
+This means checking this state in pick_next_task_fair() and in balance_fair()
 
-Okay
-
-> > +       tristate "SDX55 APCS Clock Controller"
-> > +       depends on QCOM_APCS_IPC || COMPILE_TEST
-> > +       help
-> > +         Support for the APCS Clock Controller on SDX55 platform. The
-> > +         APCS is managing the mux and divider which feeds the CPUs.
-> > +         Say Y if you want to support CPU frequency scaling on devices
-> > +         such as SDX55.
-> > +
-> >  config QCOM_CLK_APCC_MSM8996
-> >         tristate "MSM8996 CPU Clock Controller"
-> >         select QCOM_KRYO_L2_ACCESSORS
-> > diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
-> > index e7e0ac382176..a9271f40916c 100644
-> > --- a/drivers/clk/qcom/Makefile
-> > +++ b/drivers/clk/qcom/Makefile
-> > @@ -46,6 +46,7 @@ obj-$(CONFIG_MSM_MMCC_8998) += mmcc-msm8998.o
-> >  obj-$(CONFIG_QCOM_A53PLL) += a53-pll.o
-> >  obj-$(CONFIG_QCOM_A7PLL) += a7-pll.o
-> >  obj-$(CONFIG_QCOM_CLK_APCS_MSM8916) += apcs-msm8916.o
-> > +obj-$(CONFIG_QCOM_CLK_APCS_SDX55) += apcs-sdx55.o
-> >  obj-$(CONFIG_QCOM_CLK_APCC_MSM8996) += clk-cpu-8996.o
-> >  obj-$(CONFIG_QCOM_CLK_RPM) += clk-rpm.o
-> >  obj-$(CONFIG_QCOM_CLK_RPMH) += clk-rpmh.o
-> > diff --git a/drivers/clk/qcom/apcs-sdx55.c b/drivers/clk/qcom/apcs-sdx55.c
-> > new file mode 100644
-> > index 000000000000..14413c957d83
-> > --- /dev/null
-> > +++ b/drivers/clk/qcom/apcs-sdx55.c
-> > @@ -0,0 +1,149 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Qualcomm SDX55 APCS clock controller driver
-> > + *
-> > + * Copyright (c) 2020, Linaro Limited
-> > + * Author: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > + */
-> > +
-> > +#include <linux/clk.h>
-> > +#include <linux/clk-provider.h>
-> > +#include <linux/cpu.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/pm_domain.h>
-> > +#include <linux/regmap.h>
-> > +#include <linux/slab.h>
-> > +
-> > +#include "clk-regmap.h"
-> > +#include "clk-regmap-mux-div.h"
-> > +#include "common.h"
-> 
-> Curious what common is needed for?
-> 
-
-Not needed, will remove.
-
-> > +
-> > +static const u32 apcs_mux_clk_parent_map[] = { 0, 1, 5 };
-> > +
-> > +static const struct clk_parent_data pdata[] = {
-> > +       { .fw_name = "ref", .name = "bi_tcxo", },
-> > +       { .fw_name = "aux", .name = "gpll0", },
-> > +       { .fw_name = "pll", .name = "a7pll", },
-> 
-> Please remove name from here. It shouldn't be necessary if the DT
-> describes things properly. Or there isn't DT for this device?
-> 
-
-Will remove.
-
-> > +};
-> > +
-> > +/*
-> > + * We use the notifier function for switching to a temporary safe configuration
-> > + * (mux and divider), while the A7 PLL is reconfigured.
-> > + */
-> > +static int a7cc_notifier_cb(struct notifier_block *nb, unsigned long event,
-> > +                           void *data)
-> > +{
-> > +       int ret = 0;
-> > +       struct clk_regmap_mux_div *md = container_of(nb,
-> > +                                                    struct clk_regmap_mux_div,
-> > +                                                    clk_nb);
-> > +       if (event == PRE_RATE_CHANGE)
-> > +               /* set the mux and divider to safe frequency (400mhz) */
-> > +               ret = mux_div_set_src_div(md, 1, 2);
-> > +
-> > +       return notifier_from_errno(ret);
-> > +}
-> > +
-> > +static int qcom_apcs_sdx55_clk_probe(struct platform_device *pdev)
-> > +{
-> > +       struct device *dev = &pdev->dev;
-> > +       struct device *parent = dev->parent;
-> > +       struct device *cpu_dev;
-> > +       struct clk_regmap_mux_div *a7cc;
-> > +       struct regmap *regmap;
-> > +       struct clk_init_data init = { };
-> > +       int ret = -ENODEV;
-> 
-> Drop assignement..
-> 
-> > +
-> > +       regmap = dev_get_regmap(parent, NULL);
-> > +       if (!regmap) {
-> > +               dev_err(dev, "Failed to get parent regmap: %d\n", ret);
-> > +               return ret;
-> 
-> .. and Just return -ENODEV?
-> 
-> > +       }
-> > +
-> > +       a7cc = devm_kzalloc(dev, sizeof(*a7cc), GFP_KERNEL);
-> > +       if (!a7cc)
-> > +               return -ENOMEM;
-> > +
-> > +       init.name = "a7mux";
-> > +       init.parent_data = pdata;
-> > +       init.num_parents = ARRAY_SIZE(pdata);
-> > +       init.ops = &clk_regmap_mux_div_ops;
-> > +
-> > +       a7cc->clkr.hw.init = &init;
-> > +       a7cc->clkr.regmap = regmap;
-> > +       a7cc->reg_offset = 0x8;
-> > +       a7cc->hid_width = 5;
-> > +       a7cc->hid_shift = 0;
-> > +       a7cc->src_width = 3;
-> > +       a7cc->src_shift = 8;
-> > +       a7cc->parent_map = apcs_mux_clk_parent_map;
-> > +
-> > +       a7cc->pclk = devm_clk_get(parent, "pll");
-> > +       if (IS_ERR(a7cc->pclk)) {
-> > +               ret = PTR_ERR(a7cc->pclk);
-> > +               if (ret != -EPROBE_DEFER)
-> > +                       dev_err(dev, "Failed to get PLL clk: %d\n", ret);
-> 
-> Use dev_err_probe() please.
-> 
-> > +               return ret;
-> > +       }
-> > +
-> > +       a7cc->clk_nb.notifier_call = a7cc_notifier_cb;
-> > +       ret = clk_notifier_register(a7cc->pclk, &a7cc->clk_nb);
-> > +       if (ret) {
-> > +               dev_err(dev, "Failed to register clock notifier: %d\n", ret);
-> > +               return ret;
-> > +       }
-> > +
-> > +       ret = devm_clk_register_regmap(dev, &a7cc->clkr);
-> > +       if (ret) {
-> > +               dev_err(dev, "Failed to register regmap clock: %d\n", ret);
-> > +               goto err;
-> > +       }
-> > +
-> > +       ret = devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get,
-> > +                                         &a7cc->clkr.hw);
-> > +       if (ret) {
-> > +               dev_err(dev, "Failed to add clock provider: %d\n", ret);
-> > +               goto err;
-> > +       }
-> > +
-> > +       platform_set_drvdata(pdev, a7cc);
-> > +
-> > +       /*
-> > +        * Attach the power domain to cpudev. There seems to be no better place
-> > +        * to do this, so do it here.
-> > +        */
-> > +       cpu_dev = get_cpu_device(0);
-> > +       dev_pm_domain_attach(cpu_dev, true);
-> 
-> I guess this works given that we don't have CPU drivers. The comment
-> says what the code is doing but doesn't say why it's doing it. Adding
-> why may help understand in the future and would be a better comment.
-> Why can't cpufreq-dt attach a power domain from DT for a cpu device? Is
-> that a bad idea?
-> 
-
-Yeah, I talked with Viresh about using cpufreq-dt for attaching the power
-domain but he said it isn't the appropriate place. Hence, I decided to use
-this driver.
-
-Will make the comment more elaborate.
-
-Thanks,
-Mani
-
-> > +
-> > +       return 0;
-> > +
-> > +err:
-> > +       clk_notifier_unregister(a7cc->pclk, &a7cc->clk_nb);
-> > +       return ret;
-> > +}
+> By doing this SCHED_NORMAL tasks waiting on other cpus would get
+> a chance to be pulled to this cpu and run, it is helpful to reduce the latency
+> of SCHED_NORMAL tasks.
+>
+>
+> >>>
+> >> >
+> >> >>
+> >> >> >
+> >> >>
+> >> >> >Also why not doing that for default case too ? i.e. balance_fair() ?
+> >> >> You are right, if you think this scenario makes sense, we will send a
+> >> >> refined patch soon :-)
+> >> >>
+> >> >> >
+> >> >> >> +           sched_idle_cpu(rq->cpu))
+> >> >> >> +               goto idle;
+> >> >> >> +
+> >> >> >>  again:
+> >> >> >>         if (!sched_fair_runnable(rq))
+> >> >> >>                 goto idle;
+> >> >> >> --
+> >> >> >> 1.8.3.1
+> >> >> >>
+> >> >> >>
