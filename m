@@ -2,174 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DEDE2F41B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:23:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BA32F41B6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728025AbhAMCWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 21:22:16 -0500
-Received: from mail-eopbgr760089.outbound.protection.outlook.com ([40.107.76.89]:14661
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727623AbhAMCWP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 21:22:15 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KsU5meUrCcqyhhRaghbHC5B2bGgbJGg4jQZTof6a4d2xY2UjaYLkQmhoYRvnc9Y7JSWmZ7k9wXPWsycRV/yfAhAh9RDMLU7/EJeTDtN7ZKkkjTa13WNvV+UYYm5pZgm4Cs2cFskC/vqXc1zStSh4U7FL1gRCMXSo+nP7TqgCrxc7MwHPX9dYGpMj/5BXnq+4yiZ9815cBZWTZUDHO4UH72AZH3MEYNDaVgVxyk09DwprY8XE46MPm6dKwQzfkBwuqNNO1TZ6HsCKZszaRmS1WNDwwmo55jiAuSHZyuOaJ/4PudDT+LQ3yDEcTPwpDEFI/3UPXyTXKm6abPVGAXJ0zA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R8ZDm3CEedrnijPTyrpHEeej6fwRh9ZV0KFMJHg6zys=;
- b=Hv36Lb14iVmbOs/XPwVojqp9/anW+6Lj5YNRVv0w07qTyNR530CpnwK8R/m6P3l+nkwE5LwzENB84uhBRzEqi3WkgtCpph4D6kZozGjxm+jA4qhjtHIzVGUy5Mo//U1qkbxhgb2I7dNrszNkwLJeZDXs8/YgKlxVL4EJk49SFCu51ctT83w25VMwRtNoiHfHXukx0rCeMX99XMlY1bXKgmMffKagW/cSIdHjSDZVEdJPwwToePCz8zlnvXFF4Mt0AZ/kSI05Rnb/CVEYLYGAX1+xXLF793xYHfYWAgsUCV7zuM/P+jlNdMxtGUEqSfT431ZwubZK0+OUaz311QlsjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=R8ZDm3CEedrnijPTyrpHEeej6fwRh9ZV0KFMJHg6zys=;
- b=RpyRd3Wyryt5Tky9IB5tDzRgrXbB8WJ20wgThaGKjtG09zA3xb8EYoXS+10laUI5nDfoMOEZTVF/NP+RL9J0iRQpi5BT70OEh9vh83tOip35w8HkciVZGNoD4uwzWkorCsnN/9CT8JK0zzf81MS72Gu5NVjPSc9DmhxlWKEgB7o=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=amd.com;
-Received: from MWHPR12MB1248.namprd12.prod.outlook.com (2603:10b6:300:12::21)
- by MWHPR12MB1949.namprd12.prod.outlook.com (2603:10b6:300:107::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.10; Wed, 13 Jan
- 2021 02:21:25 +0000
-Received: from MWHPR12MB1248.namprd12.prod.outlook.com
- ([fe80::8c0d:7831:bfa8:d98]) by MWHPR12MB1248.namprd12.prod.outlook.com
- ([fe80::8c0d:7831:bfa8:d98%6]) with mapi id 15.20.3742.012; Wed, 13 Jan 2021
- 02:21:25 +0000
-Date:   Wed, 13 Jan 2021 10:21:15 +0800
-From:   Huang Rui <ray.huang@amd.com>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Souptick Joarder <jrdr.linux@gmail.com>,
-        "Su, Jinzhou (Joe)" <Jinzhou.Su@amd.com>,
-        "Du, Xiaojian" <Xiaojian.Du@amd.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "Lazar, Lijo" <Lijo.Lazar@amd.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "Hou, Xiaomeng (Matthew)" <Xiaomeng.Hou@amd.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Quan, Evan" <Evan.Quan@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>
-Subject: Re: [PATCH] drm: amdgpu: pm: Mark vangogh_clk_dpm_is_enabled() as
- static
-Message-ID: <20210113022115.GB135893@hr-amd>
-References: <1610481442-6606-1-git-send-email-jrdr.linux@gmail.com>
- <20210113011901.GA135176@hr-amd>
- <CADnq5_NUaqHWW7A32M1BeQ+rHPS8WZ-0OnVXtD3m7pB3ZpHyYA@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADnq5_NUaqHWW7A32M1BeQ+rHPS8WZ-0OnVXtD3m7pB3ZpHyYA@mail.gmail.com>
-X-Originating-IP: [180.167.199.189]
-X-ClientProxiedBy: HK2PR04CA0067.apcprd04.prod.outlook.com
- (2603:1096:202:15::11) To MWHPR12MB1248.namprd12.prod.outlook.com
- (2603:10b6:300:12::21)
+        id S1728084AbhAMCW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 21:22:56 -0500
+Received: from mga14.intel.com ([192.55.52.115]:62616 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727590AbhAMCW4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 21:22:56 -0500
+IronPort-SDR: g2WLyvE5Lcu0HB0IePB3oXI3q1ETcOk605dl4GialoigbUFazCrs69y2wcHkX/22QVLhxZPkF4
+ CxC7C/Oimcjg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="177362417"
+X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; 
+   d="scan'208";a="177362417"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 18:22:14 -0800
+IronPort-SDR: 4Cd+Sh0DZFXHBucaU87SwdkFRDm9+SlocLtZgruF/x8OWhUzVeMLgWJIEh7qmDf1d4TokpFfN6
+ UHjSHyWy25DA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; 
+   d="scan'208";a="352069837"
+Received: from lkp-server01.sh.intel.com (HELO d5d1a9a2c6bb) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 12 Jan 2021 18:22:13 -0800
+Received: from kbuild by d5d1a9a2c6bb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kzVnY-00000V-O8; Wed, 13 Jan 2021 02:22:12 +0000
+Date:   Wed, 13 Jan 2021 10:21:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cleanups] BUILD SUCCESS
+ 11aa1415d8bd2920ce884356479eabbd64b1df2a
+Message-ID: <5ffe5929.un5v1VP1/5IaKyS0%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from hr-amd (180.167.199.189) by HK2PR04CA0067.apcprd04.prod.outlook.com (2603:1096:202:15::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Wed, 13 Jan 2021 02:21:22 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 96bf2110-f858-4e77-97c2-08d8b769ed8b
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1949:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR12MB1949EA1551BB68AE401A5A81ECA90@MWHPR12MB1949.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y05hVlqKrYaKs21jwCBv32ok3clP3Kcm+rLe9kdG+BIymjPlVybQSTDP32w3+YEku5GbOHoEiBSwz1zUVEOVTKsCKTvqMfTlRj39O6/ytG7em3E/3+R/V103BExrHfHUWtDtZefyQEcZLEqv8O9jVoHo4wgr/9GgckWV2pzC8q5QYp1ZzHCTyteQQpVNySk77vD51XBht5cHL8Ek81kQMUSY41j1dRETrvIGYvYo86OLhwj6N3zr2aSKjneUziQreLrO4oly17OBSOEsjCEwrirYUlsxD+Ln3vX8UiA1GHvBbmOa0fUpbMfmQztScUdiWT07S3tuTuKLoiZFsyS0Hf7Uj4OLzK74HLsybUFiKlkyL2tj/nHY0mULXPgH7WPelBrzZ/n5ZVZpxHyQKsH4xL0fbCfDwOnUBeTmKtAFnfU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR12MB1248.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(39860400002)(366004)(396003)(52116002)(6496006)(54906003)(6666004)(8936002)(316002)(66946007)(956004)(16526019)(186003)(83380400001)(66556008)(66476007)(26005)(86362001)(5660300002)(478600001)(45080400002)(1076003)(2906002)(9686003)(6916009)(33716001)(4326008)(53546011)(55016002)(8676002)(33656002)(966005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?W9kWXyVtDDtZX+HrUSQ04rkmExMtOWNTTKZ73u5NDWkmYwZezvj/MAXRbvti?=
- =?us-ascii?Q?oGwM6fbjM8F7qt4KIN3B3cKROnELXzhjw2YDe5bRVtrxfrh4j9SmD68PFWkh?=
- =?us-ascii?Q?oqAiozO/DC4jvfECN69HSQFkojO/VXjJwv6M8kHhhS1lJNm6nob5+64ZUMxd?=
- =?us-ascii?Q?RiMEAGpVhHVnBuqL8vpQZvqfC+bX0fw/s5MxG8UdKvKwO/pv0zfScJ0qm7dX?=
- =?us-ascii?Q?8VmKr2aPnALLsKBAyAvppLZRSlWUbY2XNbRA0p2LShVL/p4nXW9WlOFIWQUa?=
- =?us-ascii?Q?Cbuesz+I8BfktBjXoESmEhIVErgsYGPZMSUEFqCWKep7x2+dYrq9jkCZVOXY?=
- =?us-ascii?Q?scZb1wdsebxQcVNU9IDcP05qthILWPPA7D/XHax8/4iOBslXCxn3bekOluq7?=
- =?us-ascii?Q?oQ729KBkfqToapIBLgcYBC8Ggm9wWmSS4/HOREuQvfqRcxGTHYdE2EDAUGy2?=
- =?us-ascii?Q?lF5Y9CcJ3ut21HDTUahpgv8jTHDLO355lCPQhVvqJSIFT5zxaDepHDZ13QCK?=
- =?us-ascii?Q?BlRbkfswGOhW4gSchcWiZedlCXy39D/YWXDOUIkaId75eKF+NYB/umHjL1bY?=
- =?us-ascii?Q?5n4ZCXXpXl/YJOPYmf0psvbGPnODNTYsndS91wzNrTgQHtmhVk8yKUfyM2Bt?=
- =?us-ascii?Q?O8mjAPmAXRy40yaslBGRU7cFRro8GXT14zFPwR3KpBwdM9sJXiPWhlSz5DU2?=
- =?us-ascii?Q?glnFa2IW0Y5SH4QJ1g3PPaD2HW8NISann9dgJV1NId4jv+3q9PknGDdjrqvj?=
- =?us-ascii?Q?REYDJ5rfj0E9wTHYwJ3Yk/L/YQli+Hcs4m6yR9wwUt4B69l0725p8CZPgUgA?=
- =?us-ascii?Q?xFtr5Xp+ME6IsFeXhEYJsOmo7EHX2wTXsb4ZJUaJBJ7/PnPbBFmvdcseiQzR?=
- =?us-ascii?Q?B5fn82/BXlCPDyT7Kq65DeNym+KDzSAmvp/0OFECMBRepS2ugqi80cZvFCkR?=
- =?us-ascii?Q?QHAsXyYAD1CpJLLLaCc3YjZ1WavDW/MP7DIhYy8NdhxgPPe4t/XmlBDJPWth?=
- =?us-ascii?Q?+b6B?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR12MB1248.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2021 02:21:25.5643
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96bf2110-f858-4e77-97c2-08d8b769ed8b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hI4ALuh5rhkFxnUHSKbdqQ3ISVFY5ihxLx7XRwWDnY2vRxilwEYlZNUqrFBN9/+L2r+hNwBkZwjz+2uVKgJ6Uw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1949
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 10:13:02AM +0800, Alex Deucher wrote:
-> On Tue, Jan 12, 2021 at 8:19 PM Huang Rui <ray.huang@amd.com> wrote:
-> >
-> > On Wed, Jan 13, 2021 at 03:57:22AM +0800, Souptick Joarder wrote:
-> > > kernel test robot throws below warnings ->
-> > >
-> > > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:594:6:
-> > > warning: no previous prototype for 'vangogh_clk_dpm_is_enabled'
-> > > [-Wmissing-prototypes]
-> > > drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu11/vangogh_ppt.c:594:6:
-> > > warning: no previous prototype for function 'vangogh_clk_dpm_is_enabled'
-> > > [-Wmissing-prototypes]
-> > >
-> > > Mark vangogh_clk_dpm_is_enabled() as static.
-> > >
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> > > ---
-> > >  drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-> > > index 75ddcad..3ffe56e 100644
-> > > --- a/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-> > > +++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/vangogh_ppt.c
-> > > @@ -610,7 +610,7 @@ static int vangogh_get_profiling_clk_mask(struct smu_context *smu,
-> > >       return 0;
-> > >  }
-> > >
-> > > -bool vangogh_clk_dpm_is_enabled(struct smu_context *smu,
-> > > +static bool vangogh_clk_dpm_is_enabled(struct smu_context *smu,
-> > >                               enum smu_clk_type clk_type)
-> >
-> > Ah, I have another patch which will use this function in another file.
-> >
-> 
-> I can drop it if you plan to land those patches soon.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cleanups
+branch HEAD: 11aa1415d8bd2920ce884356479eabbd64b1df2a  x86/entry: Remove now unused do_IRQ() declaration
 
-Thanks Alex. Yes, I will upload them after verify them on the new firmware
-today.
+elapsed time: 721m
 
-Thanks,
-Ray
+configs tested: 106
+configs skipped: 83
 
-> 
-> Alex
-> 
-> 
-> > Thanks,
-> > Ray
-> >
-> > >  {
-> > >       enum smu_feature_mask feature_id = 0;
-> > > --
-> > > 1.9.1
-> > >
-> > _______________________________________________
-> > amd-gfx mailing list
-> > amd-gfx@lists.freedesktop.org
-> > https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flists.freedesktop.org%2Fmailman%2Flistinfo%2Famd-gfx&amp;data=04%7C01%7Cray.huang%40amd.com%7C19fce6891f2d4f6df7de08d8b768c8a9%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637461007972405505%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=v2JGTkklMHOE2hN1s4dYZ1hT7ctLeUHpwkpn1M3nyi8%3D&amp;reserved=0
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                     akebono_defconfig
+mips                  cavium_octeon_defconfig
+powerpc                  mpc866_ads_defconfig
+powerpc                      arches_defconfig
+nios2                         10m50_defconfig
+mips                     loongson1c_defconfig
+mips                          rb532_defconfig
+mips                       bmips_be_defconfig
+ia64                         bigsur_defconfig
+powerpc64                        alldefconfig
+arm                          moxart_defconfig
+arm                             rpc_defconfig
+arc                        nsimosci_defconfig
+m68k                          multi_defconfig
+riscv                            alldefconfig
+arc                            hsdk_defconfig
+arm                            xcep_defconfig
+powerpc                     ksi8560_defconfig
+arm                           corgi_defconfig
+sh                          r7785rp_defconfig
+powerpc                       eiger_defconfig
+m68k                            mac_defconfig
+powerpc                     tqm8548_defconfig
+arm                       spear13xx_defconfig
+powerpc                       maple_defconfig
+mips                           gcw0_defconfig
+arm                        magician_defconfig
+sh                           se7343_defconfig
+sh                           sh2007_defconfig
+powerpc                        icon_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20210112
+i386                 randconfig-a005-20210112
+i386                 randconfig-a006-20210112
+i386                 randconfig-a003-20210112
+i386                 randconfig-a001-20210112
+i386                 randconfig-a004-20210112
+x86_64               randconfig-a015-20210112
+x86_64               randconfig-a012-20210112
+x86_64               randconfig-a013-20210112
+x86_64               randconfig-a016-20210112
+x86_64               randconfig-a014-20210112
+x86_64               randconfig-a011-20210112
+i386                 randconfig-a012-20210112
+i386                 randconfig-a011-20210112
+i386                 randconfig-a016-20210112
+i386                 randconfig-a013-20210112
+i386                 randconfig-a015-20210112
+i386                 randconfig-a014-20210112
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a006-20210112
+x86_64               randconfig-a004-20210112
+x86_64               randconfig-a001-20210112
+x86_64               randconfig-a005-20210112
+x86_64               randconfig-a003-20210112
+x86_64               randconfig-a002-20210112
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
