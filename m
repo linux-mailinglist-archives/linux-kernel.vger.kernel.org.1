@@ -2,186 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5882F45E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:14:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2328D2F45E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:14:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726668AbhAMIIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:08:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
+        id S1726709AbhAMIIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 03:08:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725796AbhAMIIh (ORCPT
+        with ESMTP id S1725796AbhAMIIi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 03:08:37 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED919C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:07:56 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id 190so696180wmz.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:07:56 -0800 (PST)
+        Wed, 13 Jan 2021 03:08:38 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF9AC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:07:58 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id r4so707608wmh.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:07:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ASaF2Lz+3U8HXzJJ1UEEZRzsmlvRFeoI0GvMyEKNjiw=;
-        b=SE9oIA4EYZVyH214vJW9lUNt8xt0mg4yfvs0k7+q6cUe2zaF1RzK8+/cJKD9SegsjA
-         MfIeGsE5eWtpV+Ft1yOBx1ncLvytspASwKDa054+4ESezgHtKKlY33fjszxOtDV164E9
-         DD7vFBFer4UihawaIdx7gzqrKq0EJrYqVwNOvF9Ja1PKFOs0LTx4u4ndPxctBddVcTfq
-         G/2+50UdNJtxgNWRt006OncsxJDBLr/u6Gw6vMeFTSB0lpJdhKDuaaOqT8L7kjMB7lQv
-         q31KNYLF3rK6pvTpdvSAJDBEaZR4AjvWkNN668qA9uzuEDOwtjzEpkFES7qKt0jP1l7X
-         Fh6Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=3c09B7R1bDDRXGkxc3zYuL5FdMguU7F3ASarhgkkjYk=;
+        b=Ke29S0ckRABZRt5qaiIctSaJXdhgxyEOAbb+lrGjHH1heF05KLBmidxzRCinjxGbsl
+         yn+acgZowbs+SW5i8xy0YiLb6/vzQHz1FI/FFNsPWlSA8mciP787U5U+rWyGhaPAPTE6
+         W3Juay2xlCPWy4fQJdzS9QlgYba9pB5pLOJlc8Gc1cCokpty0a4RMuYjbAxzd97hpPbb
+         w5UjdWee4uUdmxsy3ICv8xQFCrN9/9mVfpW8pqq38Lp6VYnmvx/eTyL6kdNRPiOad4mO
+         NvbBx80+MSILnDc84d7iW0X1Shhj1GDMhSA5R11IISAKv2baeSscTtfgGU+6123gR2OX
+         m56g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ASaF2Lz+3U8HXzJJ1UEEZRzsmlvRFeoI0GvMyEKNjiw=;
-        b=InmPdrjzRcYKxwP4ZYaFPkDQdox8AumcGRbSznj6DTNu8VWPPAOrtB1bl1huRDTMpV
-         bQgUbUPMN8zIXluQ4qv1eKvr4s1N/04F3l38/OTPoCwtQ5jwdj/u6Q8BHBk5WdTtRTRV
-         ZlyI5t2aEnLt/Ge0k+5bRznc4zxs6RkMVIq9+my8U8tGEg3IGqOgwQEezmLIeoVSy4rg
-         JBr87LoM+q9SE8cgpXntO/mdDVuozmuRYYQgMZe51Vs1+SViJNS1rnpF1m/wlaEk0DlV
-         1p3vzkbYM/1QPkryRDWqcSVme8nXbEmLLNf3BN1tBWP74iWrBNv20T8NN31YWs+b/Pfj
-         5dQA==
-X-Gm-Message-State: AOAM5332qgRBn50AgUAVyGVG/AyuayKTrtC7cgG9EAnDzyr+n/5K9J+c
-        Bal7CqTO18XGom1GEXjQ8hwyzQ==
-X-Google-Smtp-Source: ABdhPJzpqWtD7JRoUTlxKG1Kexi900ZqPelwmJzR4MtEuvPIuECn9kkk6/wDHIjeVMBl+hAkknSDFQ==
-X-Received: by 2002:a1c:1bcd:: with SMTP id b196mr957693wmb.70.1610525275740;
-        Wed, 13 Jan 2021 00:07:55 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3c09B7R1bDDRXGkxc3zYuL5FdMguU7F3ASarhgkkjYk=;
+        b=ehddoRvXJpwPSzHByyBlwRf61Op0MwSbYjOHMY29bwYGDGMkrNCydAJF0pAPsmlRR/
+         VO6m6PN0S4KWk/KD0Ak9xq4H9/ni+P6l3rmebYCHZbWzvqZw/NHf4o3Sc5yoiWXz6inp
+         lm90AnRLrM0k0ZzTSIWwQy9ulCeBifd9s/V+usxrM562MK0guIyo4UFezGB4Zg8xx0uB
+         sJF2bfilAH3j+gQzT0RPbw0jxJZ8xBwrqsFJt6SafeUq6KQM460O+HOhwuKU1lNS7Ccm
+         fspyPTzAZMxh1kMLGha4eCRaPISEMITGY2HarupjoLpIfOUgq6kSAAV3rChGpAcfnCE2
+         wN1g==
+X-Gm-Message-State: AOAM532giYupiylJVJixovzNcUWHATq+a6vYJ+j8ogfbOjPFDBI1H9ON
+        w2erBX3lUuqlp9In8VlMFpEqNw==
+X-Google-Smtp-Source: ABdhPJzFZznC3mc+syBSkyi9EiTbDy+X0VVbtJPk+qXMX1WPaf2niMuM9Omp5aPWXqpVk0/5XmSQMA==
+X-Received: by 2002:a05:600c:224b:: with SMTP id a11mr931054wmm.97.1610525276970;
+        Wed, 13 Jan 2021 00:07:56 -0800 (PST)
 Received: from dell.default ([91.110.221.229])
-        by smtp.gmail.com with ESMTPSA id r20sm1642486wmh.15.2021.01.13.00.07.54
+        by smtp.gmail.com with ESMTPSA id r20sm1642486wmh.15.2021.01.13.00.07.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 00:07:54 -0800 (PST)
+        Wed, 13 Jan 2021 00:07:56 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx@lists.freedesktop.org, Anthony Koo <Anthony.Koo@amd.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        dri-devel@lists.freedesktop.org,
         Harry Wentland <harry.wentland@amd.com>,
-        Jeremy Kolb <jkolb@brandeis.edu>, Leo Li <sunpeng.li@amd.com>,
-        linaro-mm-sig@lists.linaro.org, linux-media@vger.kernel.org,
-        Lyude Paul <lyude@redhat.com>,
-        Mauro Rossi <issor.oruam@gmail.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
         Noah Abradjian <noah.abradjian@amd.com>,
-        nouveau@lists.freedesktop.org,
         Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Subject: [PATCH 00/30] [Set 13] Finally rid W=1 warnings from GPU
-Date:   Wed, 13 Jan 2021 08:07:22 +0000
-Message-Id: <20210113080752.1003793-1-lee.jones@linaro.org>
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH 01/30] drm/amd/display/dc/dc_helper: Include our own header, containing prototypes
+Date:   Wed, 13 Jan 2021 08:07:23 +0000
+Message-Id: <20210113080752.1003793-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210113080752.1003793-1-lee.jones@linaro.org>
+References: <20210113080752.1003793-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This set is part of a larger effort attempting to clean-up W=1
-kernel builds, which are currently overwhelmingly riddled with
-niggly little warnings.
+Fixes the following W=1 kernel build warning(s):
 
-0 out of 5000 left!
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dc_helper.c:299:10: warning: no previous prototype for ‘generic_reg_get’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dc_helper.c:307:10: warning: no previous prototype for ‘generic_reg_get2’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dc_helper.c:317:10: warning: no previous prototype for ‘generic_reg_get3’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dc_helper.c:329:10: warning: no previous prototype for ‘generic_reg_get4’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dc_helper.c:343:10: warning: no previous prototype for ‘generic_reg_get5’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dc_helper.c:359:10: warning: no previous prototype for ‘generic_reg_get6’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dc_helper.c:377:10: warning: no previous prototype for ‘generic_reg_get7’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dc_helper.c:397:10: warning: no previous prototype for ‘generic_reg_get8’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dc_helper.c:503:6: warning: no previous prototype for ‘generic_write_indirect_reg’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dc_helper.c:511:10: warning: no previous prototype for ‘generic_read_indirect_reg’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dc_helper.c:529:10: warning: no previous prototype for ‘generic_indirect_reg_get’ [-Wmissing-prototypes]
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dc_helper.c:560:10: warning: no previous prototype for ‘generic_indirect_reg_update_ex’ [-Wmissing-prototypes]
 
-LAST SET!  You're all clean.  Can you believe it!?
-
-Lee Jones (30):
-  drm/amd/display/dc/dc_helper: Include our own header, containing
-    prototypes
-  drm/amd/include/renoir_ip_offset: Mark top-level IP_BASE as
-    __maybe_unused
-  drm/amd/display/dmub/src/dmub_dcn30: Include our own header containing
-    prototypes
-  drm/amd/display/modules/power/power_helpers: Staticify local functions
-  drm/amd/display/modules/info_packet/info_packet: Correct kernel-doc
-    formatting
-  drm/amd/display/dc/core/dc_resource: Staticify local functions
-  drm/amd/display/dc/core/dc_link: Remove unused variable 'status'
-  drm/amd/display/dc/core/dc_link_dp: Staticify local function
-    'linkRateInKHzToLinkRateMultiplier'
-  drm/amd/display/dc/dce112/dce112_resource: Include our own header file
-    containing prototypes
-  drm/amd/display/dc/core/dc: Staticise local function
-    'apply_ctx_interdependent_lock'
-  drm/amd/display/dc/dce100/Makefile: Ignore -Woverride-init warning
-  drm/amd/display/dc/dce100/dce100_resource: Include our own header
-    containing prototypes
-  drm/amd/display/dc/dce60/Makefile: Ignore -Woverride-init warning
-  drm/amd/display/dc/dce80/Makefile: Ignore -Woverride-init warning
-  drm/amd/display/dc/dce80/dce80_resource: Include our own header
-    containing prototypes
-  fixup! drm/amd/display/dc/dce60/Makefile: Ignore -Woverride-init
-    warning
-  drm/amd/display/dc/dce60/dce60_resource: Include our own header
-    containing prototypes
-  drm/amd/display/dc/core/dc_link: Move some local data from the stack
-    to the heap
-  drm/amd/display/dc/core/dc_link_dp: Mark 'result_write_min_hblank' as
-    __maybe_unused
-  drm/amd/display/dc/core/dc: Fix a bunch of documentation misdemeanours
-  drm/amd/display/dc/core/dc_resource: Demote some kernel-doc abuses
-  drm/amd/display/dc/core/dc_link: Fix a couple of function
-    documentation issues
-  drm/nouveau/nvkm/engine/gr/gf100: Demote non-conformant kernel-doc
-    header
-  drm/nouveau/nouveau_bo: Remove unused variables 'dev'
-  drm/nouveau/nouveau_display: Remove set but unused variable 'width'
-  drm/nouveau/dispnv04/crtc: Demote non-conforming kernel-doc headers
-  drm/nouveau/dispnv50/disp: Remove unused variable 'ret' from function
-    returning void
-  drm/nouveau/dispnv50/headc57d: Make local function 'headc57d_olut'
-    static
-  drm/nouveau/nv50_display: Remove superfluous prototype for local
-    static functions
-  drm/nouveau/dispnv50/disp: Include header containing our prototypes
-
- drivers/gpu/drm/amd/display/dc/core/dc.c      | 36 +++++++++----------
- drivers/gpu/drm/amd/display/dc/core/dc_link.c | 31 ++++++++--------
- .../gpu/drm/amd/display/dc/core/dc_link_dp.c  |  4 +--
- .../gpu/drm/amd/display/dc/core/dc_resource.c | 14 ++++----
- drivers/gpu/drm/amd/display/dc/dc_helper.c    |  1 +
- .../gpu/drm/amd/display/dc/dce100/Makefile    |  2 ++
- .../amd/display/dc/dce100/dce100_resource.c   |  2 ++
- .../amd/display/dc/dce112/dce112_resource.c   |  4 ++-
- drivers/gpu/drm/amd/display/dc/dce60/Makefile |  2 ++
- .../drm/amd/display/dc/dce60/dce60_resource.c |  2 ++
- drivers/gpu/drm/amd/display/dc/dce80/Makefile |  2 ++
- .../drm/amd/display/dc/dce80/dce80_resource.c |  2 ++
- .../gpu/drm/amd/display/dmub/src/dmub_dcn30.c |  1 +
- .../display/modules/info_packet/info_packet.c | 13 +++----
- .../amd/display/modules/power/power_helpers.c |  6 ++--
- .../gpu/drm/amd/include/renoir_ip_offset.h    |  2 +-
- drivers/gpu/drm/nouveau/dispnv04/crtc.c       |  4 +--
- drivers/gpu/drm/nouveau/dispnv50/disp.c       |  7 ++--
- drivers/gpu/drm/nouveau/dispnv50/headc57d.c   |  2 +-
- drivers/gpu/drm/nouveau/nouveau_bo.c          |  4 ---
- drivers/gpu/drm/nouveau/nouveau_display.c     |  8 ++---
- drivers/gpu/drm/nouveau/nv50_display.h        |  3 --
- .../gpu/drm/nouveau/nvkm/engine/gr/gf100.c    |  2 +-
- 23 files changed, 80 insertions(+), 74 deletions(-)
-
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: amd-gfx@lists.freedesktop.org
-Cc: Anthony Koo <Anthony.Koo@amd.com>
-Cc: Ben Skeggs <bskeggs@redhat.com>
-Cc: Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: David Airlie <airlied@linux.ie>
-Cc: dri-devel@lists.freedesktop.org
 Cc: Harry Wentland <harry.wentland@amd.com>
-Cc: Jeremy Kolb <jkolb@brandeis.edu>
 Cc: Leo Li <sunpeng.li@amd.com>
-Cc: linaro-mm-sig@lists.linaro.org
-Cc: linux-media@vger.kernel.org
-Cc: Lyude Paul <lyude@redhat.com>
-Cc: Mauro Rossi <issor.oruam@gmail.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Daniel Vetter <daniel@ffwll.ch>
 Cc: Noah Abradjian <noah.abradjian@amd.com>
-Cc: nouveau@lists.freedesktop.org
 Cc: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: amd-gfx@lists.freedesktop.org
+Cc: dri-devel@lists.freedesktop.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/gpu/drm/amd/display/dc/dc_helper.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/gpu/drm/amd/display/dc/dc_helper.c b/drivers/gpu/drm/amd/display/dc/dc_helper.c
+index 57edb25fc3812..a612ba6dc3898 100644
+--- a/drivers/gpu/drm/amd/display/dc/dc_helper.c
++++ b/drivers/gpu/drm/amd/display/dc/dc_helper.c
+@@ -34,6 +34,7 @@
+ 
+ #include "dc.h"
+ #include "dc_dmub_srv.h"
++#include "reg_helper.h"
+ 
+ static inline void submit_dmub_read_modify_write(
+ 	struct dc_reg_helper_state *offload,
 -- 
 2.25.1
 
