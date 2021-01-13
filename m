@@ -2,65 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815182F5432
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:36:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49FBD2F5423
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:31:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729023AbhAMUfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 15:35:33 -0500
-Received: from m1513.mail.126.com ([220.181.15.13]:30655 "EHLO
-        m1513.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728793AbhAMUfd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 15:35:33 -0500
-X-Greylist: delayed 23675 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 Jan 2021 15:35:32 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=moYk/
-        BZrmThEJn0UfWgepwN1RI/HpxA34cJ5lNg5DZg=; b=EMBIk2Z752YIK2alABQMy
-        p8Gpzclb05fLHrsXgYwBY/1AEePkZ76u//jlInskE2Cw/vdPCh5S/DO7RYV9x6sI
-        NflUyPP1wzH/9L9S5NYpBVW1q5rF916Ovo7JtBk/2ZSZNGfIvfDWTJPkQ/gUnpe/
-        bSrhz83wxqR8HqpyTFjaac=
-Received: from wangyingjie55$126.com ( [119.39.248.74] ) by
- ajax-webmail-wmsvr13 (Coremail) ; Wed, 13 Jan 2021 21:27:35 +0800 (CST)
-X-Originating-IP: [119.39.248.74]
-Date:   Wed, 13 Jan 2021 21:27:35 +0800 (CST)
-From:   "Yingjie Wang" <wangyingjie55@126.com>
-To:     "Jakub Kicinski" <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re:Re: [PATCH v2] af/rvu_cgx: Fix missing check bugs in rvu_cgx.c
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20201118(ab4b390f)
- Copyright (c) 2002-2021 www.mailtech.cn 126com
-In-Reply-To: <20210112181328.091f7cfb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <1610417389-9051-1-git-send-email-wangyingjie55@126.com>
- <20210112181328.091f7cfb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=US-ASCII
-MIME-Version: 1.0
-Message-ID: <355954d9.5264.176fbee1ed6.Coremail.wangyingjie55@126.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: DcqowAAHHy9I9f5fWxgfAQ--.56009W
-X-CM-SenderInfo: 5zdqw5xlqjyxrhvvqiyswou0bp/1tbiHQ8Zp1pECbZSXQABsD
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+        id S1728998AbhAMU3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 15:29:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728386AbhAMU3j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 15:29:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8716E22795;
+        Wed, 13 Jan 2021 20:28:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610569738;
+        bh=9QCztcLnLLWMRX4cxjXejBAMFmhqjbOpAc6w3zPseII=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=npSPWvuSEA/x64LxYnE3TbywHxW27oJdw+6qEFD27cjIEd83hETn+aX7fh527i9I4
+         o4sKXMTBfjdzPQsjGIoOodiCbbiegFldjiMw/T9STkp1G43c791Ffm0VLAuIXfMPR+
+         v65+6HpGDfcv5+rNtSeUWKfJ3o1luXz1qYkJknV1P/AdM/JtCmJxq7BgpQGEDkEtau
+         s6AHFDFfRekZgFMPTVB3QE+DQy9kpok6dZvA4lhnDqz+DVPXr7n6V2YjDWR1jycmYT
+         09+qwMA/bbX7sJaN5nhccA8fmfOLQ2Gl5uGXFNo7VWii00c57WLmR8yxdPGzWZa26k
+         9icCuozb0uEGQ==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 7242E604E9;
+        Wed, 13 Jan 2021 20:28:58 +0000 (UTC)
+Subject: Re: [GIT PULL] sound fixes for 5.11-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <s5h1reoopbh.wl-tiwai@suse.de>
+References: <s5h1reoopbh.wl-tiwai@suse.de>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <s5h1reoopbh.wl-tiwai@suse.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.11-rc4
+X-PR-Tracked-Commit-Id: 20c7842ed8374e1c3ee750b2fe7ca8cdd071bda6
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 65f0d2414b7079556fbbcc070b3d1c9f9587606d
+Message-Id: <161056973839.29351.551452150479023263.pr-tracker-bot@kernel.org>
+Date:   Wed, 13 Jan 2021 20:28:58 +0000
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmtzIGZvciB5b3VyIHJlcGx5LiAgSSBjb21taXQgdGhpcyBjaGFuZ2Ugb24gbGludXgtbmV4
-dC9zdGFibGUgYnJhbmNoLCBhbmQgSSB1c2UgImdpdCBsb2cgLS1wcmV0dHk9Zml4ZXMiIGNvbW1h
-bmQgdG8gZ2V0IHRoZSBGaXhlcyB0YWcuIEkgd2FudCB0byBrbm93IGlmIEkgbmVlZCB0byBtYWtl
-IGEgY2hhbmdlIG9uIGFueSBvdGhlciBicmFuY2ggYW5kIGNvbW1pdCBpdD8KQXQgMjAyMS0wMS0x
-MyAxMDoxMzoyOCwgIkpha3ViIEtpY2luc2tpIiA8a3ViYUBrZXJuZWwub3JnPiB3cm90ZToKPk9u
-IE1vbiwgMTEgSmFuIDIwMjEgMTg6MDk6NDkgLTA4MDAgd2FuZ3lpbmdqaWU1NUAxMjYuY29tIHdy
-b3RlOg0KPj4gRnJvbTogWWluZ2ppZSBXYW5nIDx3YW5neWluZ2ppZTU1QDEyNi5jb20+DQo+PiAN
-Cj4+IEluIHJ2dV9tYm94X2hhbmRsZXJfY2d4X21hY19hZGRyX2dldCgpDQo+PiBhbmQgcnZ1X21i
-b3hfaGFuZGxlcl9jZ3hfbWFjX2FkZHJfc2V0KCksDQo+PiB0aGUgbXNnIGlzIGV4cGVjdGVkIG9u
-bHkgZnJvbSBQRnMgdGhhdCBhcmUgbWFwcGVkIHRvIENHWCBMTUFDcy4NCj4+IEl0IHNob3VsZCBi
-ZSBjaGVja2VkIGJlZm9yZSBtYXBwaW5nLA0KPj4gc28gd2UgYWRkIHRoZSBpc19jZ3hfY29uZmln
-X3Blcm1pdHRlZCgpIGluIHRoZSBmdW5jdGlvbnMuDQo+PiANCj4+IEZpeGVzOiAyODllMjBiYzFh
-YjUgKCJhZi9ydnVfY2d4OiBGaXggbWlzc2luZyBjaGVjayBidWdzIGluIHJ2dV9jZ3guYyIpDQo+
-PiBTaWduZWQtb2ZmLWJ5OiBZaW5namllIFdhbmcgPHdhbmd5aW5namllNTVAMTI2LmNvbT4NCj4N
-Cj4NCj5GaXhlcyB0YWc6IEZpeGVzOiAyODllMjBiYzFhYjUgKCJhZi9ydnVfY2d4OiBGaXggbWlz
-c2luZyBjaGVjayBidWdzIGluIHJ2dV9jZ3guYyIpDQo+SGFzIHRoZXNlIHByb2JsZW0ocyk6DQo+
-CS0gVGFyZ2V0IFNIQTEgZG9lcyBub3QgZXhpc3QNCj4NCj5XaGVyZSBpcyB0aGF0IGNvbW1pdCBm
-cm9tPyBZb3UncmUgbm90IHJlZmVycmluZyB0byB0aGlzIGNvbW1pdCBpdHNlbGYNCj5pbiB5b3Vy
-IHRyZWU/IFRoZSBzdWJqZWN0IGlzIHN1c3BpY2lvdXNseSBzaW1pbGFyIDpTDQo=
+The pull request you sent on Wed, 13 Jan 2021 15:59:30 +0100:
+
+> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.11-rc4
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/65f0d2414b7079556fbbcc070b3d1c9f9587606d
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
