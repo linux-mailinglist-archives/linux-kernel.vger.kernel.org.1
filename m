@@ -2,91 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 356882F4E38
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:13:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E41F2F4E3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:16:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725772AbhAMPNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 10:13:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbhAMPNI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 10:13:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD79F2333E;
-        Wed, 13 Jan 2021 15:12:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610550746;
-        bh=sY6LSpADNTXFnYKZ4zGIS9mQHZ3VCv/mrboz1GvoHBI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=tfA9ExzxTVn1GDm/tUWmbU8PVo26QiJRTFUNWxcFPOqRMETUDPUDdC8I9qbobIGnA
-         xjT7wMBtgMpwZOOhxbsjn6o7ehLpThtOyo4N0hpLilfNY4DB6wkxY9mU41B/g8uW/J
-         hc5E4HaH3SUFMjNg41U3YswMb/iToI97YpCIyLyXwfHix9M7SAU0B6fX7MLbZJbCin
-         xZ9SnbjPc3FH6/aGsRFZmfKJaMbmvKMOUWxnrVAJnleFHQjRkY4xCAO7rjXjMyKTXG
-         XyfO1iqJ2Mb45aeHjUoVx9ep2ZVqD/XtlNBpOLHQi2nRLWxoL4Okzf/BMMlrw7yh+5
-         KgVYgycKHaQ2w==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 8C4A435225BD; Wed, 13 Jan 2021 07:12:26 -0800 (PST)
-Date:   Wed, 13 Jan 2021 07:12:26 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Akira Yokosawa <akiyks@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Lustig <dlustig@nvidia.com>,
-        David Howells <dhowells@redhat.com>,
-        Jade Alglave <j.alglave@ucl.ac.uk>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Luc Maranget <luc.maranget@inria.fr>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 19/24] doc: update rcu_dereference.rst reference
-Message-ID: <20210113151226.GS2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <cover.1610535349.git.mchehab+huawei@kernel.org>
- <e2293b68eefdd00ea0f4795bc0672ef70f8627e2.1610535350.git.mchehab+huawei@kernel.org>
+        id S1727074AbhAMPOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 10:14:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33474 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726989AbhAMPOo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 10:14:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610550796;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=453S8sBVjLr0faZuW43TaOSjhYKei55KCDbFiBmR9dY=;
+        b=hvP/nOKHkhKWguugvrTJGpW7481O44EVQgqYXTsggSe61c+GLL2AgNpc/HCS2g8e+CGEJW
+        PXHjtmSIzFPd7eneYY2qMU179pgBxJhtmwBu7rhdtR7JGEH687RChEYWF7YnS1S70qk4Ds
+        90/p5klcq/mtb/KRXB/Uii/6bWWqRLw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-540-4yzDmH8lPpeaaE_NclWwuw-1; Wed, 13 Jan 2021 10:13:12 -0500
+X-MC-Unique: 4yzDmH8lPpeaaE_NclWwuw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BA475100559A;
+        Wed, 13 Jan 2021 15:13:08 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A6E8C5D9DD;
+        Wed, 13 Jan 2021 15:13:05 +0000 (UTC)
+Date:   Wed, 13 Jan 2021 08:13:05 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Kirti Wankhede <kwankhede@nvidia.com>
+Cc:     Keqian Zhu <zhukeqian1@huawei.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
+        <kvmarm@lists.cs.columbia.edu>, Cornelia Huck <cohuck@redhat.com>,
+        "Will Deacon" <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexios Zavras <alexios.zavras@intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
+Subject: Re: [PATCH 1/5] vfio/iommu_type1: Fixes vfio_dma_populate_bitmap to
+ avoid dirty lose
+Message-ID: <20210113081305.1df7de8d@omen.home.shazbot.org>
+In-Reply-To: <3f4f9a82-0934-b114-8bd8-452e9e56712f@nvidia.com>
+References: <20210107092901.19712-1-zhukeqian1@huawei.com>
+        <20210107092901.19712-2-zhukeqian1@huawei.com>
+        <20210112142059.074c1b0f@omen.home.shazbot.org>
+        <3f4f9a82-0934-b114-8bd8-452e9e56712f@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e2293b68eefdd00ea0f4795bc0672ef70f8627e2.1610535350.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 11:59:20AM +0100, Mauro Carvalho Chehab wrote:
-> Changeset b00aedf978aa ("doc: Convert to rcu_dereference.txt to rcu_dereference.rst")
-> renamed: Documentation/RCU/rcu_dereference.txt
-> to: Documentation/RCU/rcu_dereference.rst.
-> 
-> Update its cross-reference accordingly.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+On Wed, 13 Jan 2021 18:05:43 +0530
+Kirti Wankhede <kwankhede@nvidia.com> wrote:
 
-Queued, thank you!
-
-							Thanx, Paul
-
-> ---
->  tools/memory-model/Documentation/glossary.txt | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On 1/13/2021 2:50 AM, Alex Williamson wrote:
+> > On Thu, 7 Jan 2021 17:28:57 +0800
+> > Keqian Zhu <zhukeqian1@huawei.com> wrote:
+> >   
+> >> Defer checking whether vfio_dma is of fully-dirty in update_user_bitmap
+> >> is easy to lose dirty log. For example, after promoting pinned_scope of
+> >> vfio_iommu, vfio_dma is not considered as fully-dirty, then we may lose
+> >> dirty log that occurs before vfio_iommu is promoted.
+> >>
+> >> The key point is that pinned-dirty is not a real dirty tracking way, it
+> >> can't continuously track dirty pages, but just restrict dirty scope. It
+> >> is essentially the same as fully-dirty. Fully-dirty is of full-scope and
+> >> pinned-dirty is of pinned-scope.
+> >>
+> >> So we must mark pinned-dirty or fully-dirty after we start dirty tracking
+> >> or clear dirty bitmap, to ensure that dirty log is marked right away.  
+> > 
+> > I was initially convinced by these first three patches, but upon
+> > further review, I think the premise is wrong.  AIUI, the concern across
+> > these patches is that our dirty bitmap is only populated with pages
+> > dirtied by pinning and we only take into account the pinned page dirty
+> > scope at the time the bitmap is retrieved by the user.  You suppose
+> > this presents a gap where if a vendor driver has not yet identified
+> > with a page pinning scope that the entire bitmap should be considered
+> > dirty regardless of whether that driver later pins pages prior to the
+> > user retrieving the dirty bitmap.
+> > 
+> > I don't think this is how we intended the cooperation between the iommu
+> > driver and vendor driver to work.  By pinning pages a vendor driver is
+> > not declaring that only their future dirty page scope is limited to
+> > pinned pages, instead they're declaring themselves as a participant in
+> > dirty page tracking and take responsibility for pinning any necessary
+> > pages.  For example we might extend VFIO_IOMMU_DIRTY_PAGES_FLAG_START
+> > to trigger a blocking notification to groups to not only begin dirty
+> > tracking, but also to synchronously register their current device DMA
+> > footprint.  This patch would require a vendor driver to possibly perform
+> > a gratuitous page pinning in order to set the scope prior to dirty
+> > logging being enabled, or else the initial bitmap will be fully dirty.
+> > 
+> > Therefore, I don't see that this series is necessary or correct.  Kirti,
+> > does this match your thinking?
+> >   
 > 
-> diff --git a/tools/memory-model/Documentation/glossary.txt b/tools/memory-model/Documentation/glossary.txt
-> index b2da6365be63..6f3d16dbf467 100644
-> --- a/tools/memory-model/Documentation/glossary.txt
-> +++ b/tools/memory-model/Documentation/glossary.txt
-> @@ -19,7 +19,7 @@ Address Dependency:  When the address of a later memory access is computed
->  	 from the value returned by the rcu_dereference() on line 2, the
->  	 address dependency extends from that rcu_dereference() to that
->  	 "p->a".  In rare cases, optimizing compilers can destroy address
-> -	 dependencies.	Please see Documentation/RCU/rcu_dereference.txt
-> +	 dependencies.	Please see Documentation/RCU/rcu_dereference.rst
->  	 for more information.
->  
->  	 See also "Control Dependency" and "Data Dependency".
-> -- 
-> 2.29.2
+> That's correct Alex and I agree with you.
 > 
+> > Thinking about these semantics, it seems there might still be an issue
+> > if a group with non-pinned-page dirty scope is detached with dirty
+> > logging enabled.    
+> 
+> Hot-unplug a device while migration process has started - is this 
+> scenario supported?
+
+It's not prevented, it would rely on a userspace policy, right?  The
+kernel should do the right thing regardless.  Thanks,
+
+Alex
+
+> > It seems this should in fact fully populate the dirty
+> > bitmaps at the time it's removed since we don't know the extent of its
+> > previous DMA, nor will the group be present to trigger the full bitmap
+> > when the user retrieves the dirty bitmap.  Creating fully populated
+> > bitmaps at the time tracking is enabled negates our ability to take
+> > advantage of later enlightenment though.  Thanks,
+> > 
+> > Alex
+> >   
+> >> Fixes: d6a4c185660c ("vfio iommu: Implementation of ioctl for dirty pages tracking")
+> >> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+> >> ---
+> >>   drivers/vfio/vfio_iommu_type1.c | 33 ++++++++++++++++++++++-----------
+> >>   1 file changed, 22 insertions(+), 11 deletions(-)
+> >>
+> >> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> >> index bceda5e8baaa..b0a26e8e0adf 100644
+> >> --- a/drivers/vfio/vfio_iommu_type1.c
+> >> +++ b/drivers/vfio/vfio_iommu_type1.c
+> >> @@ -224,7 +224,7 @@ static void vfio_dma_bitmap_free(struct vfio_dma *dma)
+> >>   	dma->bitmap = NULL;
+> >>   }
+> >>   
+> >> -static void vfio_dma_populate_bitmap(struct vfio_dma *dma, size_t pgsize)
+> >> +static void vfio_dma_populate_bitmap_pinned(struct vfio_dma *dma, size_t pgsize)
+> >>   {
+> >>   	struct rb_node *p;
+> >>   	unsigned long pgshift = __ffs(pgsize);
+> >> @@ -236,6 +236,25 @@ static void vfio_dma_populate_bitmap(struct vfio_dma *dma, size_t pgsize)
+> >>   	}
+> >>   }
+> >>   
+> >> +static void vfio_dma_populate_bitmap_full(struct vfio_dma *dma, size_t pgsize)
+> >> +{
+> >> +	unsigned long pgshift = __ffs(pgsize);
+> >> +	unsigned long nbits = dma->size >> pgshift;
+> >> +
+> >> +	bitmap_set(dma->bitmap, 0, nbits);
+> >> +}
+> >> +
+> >> +static void vfio_dma_populate_bitmap(struct vfio_iommu *iommu,
+> >> +				     struct vfio_dma *dma)
+> >> +{
+> >> +	size_t pgsize = (size_t)1 << __ffs(iommu->pgsize_bitmap);
+> >> +
+> >> +	if (iommu->pinned_page_dirty_scope)
+> >> +		vfio_dma_populate_bitmap_pinned(dma, pgsize);
+> >> +	else if (dma->iommu_mapped)
+> >> +		vfio_dma_populate_bitmap_full(dma, pgsize);
+> >> +}
+> >> +
+> >>   static int vfio_dma_bitmap_alloc_all(struct vfio_iommu *iommu)
+> >>   {
+> >>   	struct rb_node *n;
+> >> @@ -257,7 +276,7 @@ static int vfio_dma_bitmap_alloc_all(struct vfio_iommu *iommu)
+> >>   			}
+> >>   			return ret;
+> >>   		}
+> >> -		vfio_dma_populate_bitmap(dma, pgsize);
+> >> +		vfio_dma_populate_bitmap(iommu, dma);
+> >>   	}
+> >>   	return 0;
+> >>   }
+> >> @@ -987,13 +1006,6 @@ static int update_user_bitmap(u64 __user *bitmap, struct vfio_iommu *iommu,
+> >>   	unsigned long shift = bit_offset % BITS_PER_LONG;
+> >>   	unsigned long leftover;
+> >>   
+> >> -	/*
+> >> -	 * mark all pages dirty if any IOMMU capable device is not able
+> >> -	 * to report dirty pages and all pages are pinned and mapped.
+> >> -	 */
+> >> -	if (!iommu->pinned_page_dirty_scope && dma->iommu_mapped)
+> >> -		bitmap_set(dma->bitmap, 0, nbits);
+> >> -
+> >>   	if (shift) {
+> >>   		bitmap_shift_left(dma->bitmap, dma->bitmap, shift,
+> >>   				  nbits + shift);
+> >> @@ -1019,7 +1031,6 @@ static int vfio_iova_dirty_bitmap(u64 __user *bitmap, struct vfio_iommu *iommu,
+> >>   	struct vfio_dma *dma;
+> >>   	struct rb_node *n;
+> >>   	unsigned long pgshift = __ffs(iommu->pgsize_bitmap);
+> >> -	size_t pgsize = (size_t)1 << pgshift;
+> >>   	int ret;
+> >>   
+> >>   	/*
+> >> @@ -1055,7 +1066,7 @@ static int vfio_iova_dirty_bitmap(u64 __user *bitmap, struct vfio_iommu *iommu,
+> >>   		 * pages which are marked dirty by vfio_dma_rw()
+> >>   		 */
+> >>   		bitmap_clear(dma->bitmap, 0, dma->size >> pgshift);
+> >> -		vfio_dma_populate_bitmap(dma, pgsize);
+> >> +		vfio_dma_populate_bitmap(iommu, dma);
+> >>   	}
+> >>   	return 0;
+> >>   }  
+> >   
+> 
+
