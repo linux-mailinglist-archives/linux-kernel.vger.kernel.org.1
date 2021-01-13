@@ -2,95 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E852F4238
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 04:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DA12F423F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 04:10:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728820AbhAMDEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 22:04:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728722AbhAMDET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 22:04:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E022923132;
-        Wed, 13 Jan 2021 03:03:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610507019;
-        bh=Lb24rQrKobyTU7A/TU/jdr6OZKSzLpDca0GkNO8kDnI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jPTmRs+lvTvzIyhdI94vZd+ttqxTP5Jz129r0rQnL/9e6DyGCnqjJgOitPc+9ImbU
-         6h82quHxRePvuryNqcC4SXZjhdjDD6q8OI/aPtvGDOPOGb4lf8RuJ1SBcwwaLOon4a
-         pwSAq8m6YfyuprW6Qf8K8xdMNupn3xX8FpEmzegnxmKo69FE0JK1lRrHayX2DW/OyR
-         c/EWEDRGxtAeOH5cI4zy4hUmsDjdi6NovCgQ/q3B0lwmz+Vyc+HxZ5u77f0RgIW6N9
-         WWflhDvfUkTnfRteSgw63pdXjDnbrD1xpGmke2M699RVJv7a899G2Wx8VDlCzJujsW
-         fu9gpKF5dkLjw==
-Date:   Wed, 13 Jan 2021 08:33:33 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        linux-spi <linux-spi@vger.kernel.org>, linux-i2c@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/7] Add and enable GPI DMA users
-Message-ID: <20210113030333.GV2771@vkoul-mobl>
-References: <20210111151651.1616813-1-vkoul@kernel.org>
- <CAD=FV=XvgP5j3ikCnr2zDptFbWPRQhGGQotqyFGmN7NWNP8knA@mail.gmail.com>
+        id S1728763AbhAMDJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 22:09:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726499AbhAMDJs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 22:09:48 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4390DC061575
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 19:09:08 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id e22so1304232iom.5
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 19:09:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4XTi7qJz193CCatw1VL2i3e99Yr9iMSuW3P/w0vdhec=;
+        b=PxOgB6nmU8940+rhdi7M4XIClsmAPp7uzUth/w8zjkT8ydmCU8lCAZ4WxaP8adIJu3
+         aLP39ElSUSKGa2i6fFRmUVodCm9dSFwB7h8L9vXP8X4jnOmxNIxC9i/4kEpcu3x7SRYY
+         MjWHw29oqza5CmwpqY4I4NTEgLnf+JsfWvIx7tWVccTmm3XGzAF5mVR1aUVEfvqd6sOo
+         edEYkE++Za2DhKeAtzOJT6hd4z9VvwdQGsbBFt7iU1NDZ+f6u+M23CKdqHsZrsJiwoaH
+         ZWcbym3YoQu/E2y0pyzFkeR8fa6rdrLdzP9cItsLyM5g78a8Y+lsrxzPwzeLY85giuXA
+         d5cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4XTi7qJz193CCatw1VL2i3e99Yr9iMSuW3P/w0vdhec=;
+        b=WtMpzlJHsoyqQCrd2hzvtDf6uwbEIZj+e1gpEGFiq+IrzpqftV+xI7jOsScSTawyzP
+         9dk0iXFszqlD+fGF/ck47vt+lUUXy3AkXlb9Qf/lEhYSPq1PZi4ZrTT78HJrO9/j4Oag
+         y937uBQr0OvQ/zmk0MTcP0wgWcuqdbo60DGXkrXzlgUmvi45lW7i3Lav6X09vIcsPETq
+         OrLVRnB7JpPo4nw5wcksStToRwEAGPVAgh0sKQKoAerx7ygQnqG323CTZKaIqiGr6qh0
+         NBWIpJdAQoB7PiNmkpFYQstogR0rzXpbAepbnMBfNcCvXw7FoZ1o6sQxydnvEavmXPHU
+         cz9w==
+X-Gm-Message-State: AOAM5323RpSZ/lFuoYuNbJTLmQAzsqcF8j3MS4XXhwPF774NYaU+N7dH
+        lREGzN8GZ45cc5hBCQFE1VjjSrwa/00IrPNUrh8=
+X-Google-Smtp-Source: ABdhPJzLik9CoIlicN7Wwc7b+qPIIs9aqFWsy1UISq0XsAKz1vRr1M9lw1Dkg2nhP+KAwrEGerQCC7Ajk4EGmQQ/vcA=
+X-Received: by 2002:a6b:8d91:: with SMTP id p139mr1231iod.96.1610507347561;
+ Tue, 12 Jan 2021 19:09:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=XvgP5j3ikCnr2zDptFbWPRQhGGQotqyFGmN7NWNP8knA@mail.gmail.com>
+References: <20210113024241.179113-1-ying.huang@intel.com> <CAHk-=whn5kVxEitkC0AyzvWRyxbF91rMrO9ZG6JHBNYLckpDDw@mail.gmail.com>
+In-Reply-To: <CAHk-=whn5kVxEitkC0AyzvWRyxbF91rMrO9ZG6JHBNYLckpDDw@mail.gmail.com>
+From:   huang ying <huang.ying.caritas@gmail.com>
+Date:   Wed, 13 Jan 2021 11:08:56 +0800
+Message-ID: <CAC=cRTNpoqHpbtZM1uDvVQYQZVyRbfPh+Dirb=-Xgoh22u_W1A@mail.gmail.com>
+Subject: Re: [PATCH] mm: Free unused swap cache page in write protection fault handler
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tim Chen <tim.c.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Doug,
+On Wed, Jan 13, 2021 at 10:47 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Tue, Jan 12, 2021 at 6:43 PM Huang Ying <ying.huang@intel.com> wrote:
+> >
+> > So in this patch, at the end of wp_page_copy(), the old unused swap
+> > cache page will be tried to be freed.
+>
+> I'd much rather free it later when needed, rather than when you're in
+> a COW section.
 
-On 12-01-21, 16:01, Doug Anderson wrote:
-> Hi,
-> 
-> On Mon, Jan 11, 2021 at 7:17 AM Vinod Koul <vkoul@kernel.org> wrote:
-> >
-> > Hello,
-> >
-> > This series add the GPI DMA in qcom geni spi and i2c drivers. For this we
-> > first need to move GENI_IF_DISABLE_RO and struct geni_wrapper to common
-> > headers and then add support for gpi dma in geni driver.
-> >
-> > Then we add spi and i2c geni driver changes to support this DMA.
-> >
-> > Lastly, add the GPI dma nodes and enable dma for spi found in Rb3 board.
-> >
-> > To merge this, we could merge all thru qcom tree with ack on spi/i2c.
-> 
-> It'd be super great if somewhere (ideally in the commit message and
-> maybe somewhere in the code) you could talk more about the different
-> modes.  Maybe something like this (if it's correct):
-> 
-> GPI Mode (confusingly, also known as "GSI" mode in some places): In
-> this mode something else running on the SoC is sharing access to the
-> geni instance.  This mode allows sharing the device between the Linux
-> kernel and other users including handling the fact that other users
-> might be running the geni port at a different clock rate.  GPI mode
-> limits what you can do with a port.  For instance, direct control of
-> chip select is not allowed.  NOTE: if firmware has configured a geni
-> instance for GPI then FIFO and SE_DMA usage is not allowed.
-> Conversely, if firmware has not configured a geni instance for GPI
-> then only FIFO and SE_DMA usage is allowed.
-> 
-> SE DMA Mode: Data transfers happen over DMA.
-> 
-> SE FIFO Mode: Data is manually transferred into the FIFO by the CPU.
+Unused swap cache isn't unused file cache.  Nobody can reuse them
+directly before freeing them firstly.  It will make COW a little
+faster via keeping them.  But I think the overhead to free them isn't
+high.  While keeping them in system will confuse users (users will
+expect file cache to use free memory, but not expect unused swap cache
+to use much free memory), make the swap space more fragmented, and add
+system overall overhead (scanning LRU list, etc.).
 
-I think it is a good feedback, there is indeed bunch of confusion wrt
-QUP DMA and i think we should add above to qcom geni driver and not just
-in cover letter. FWIW for all practical purposes GSI and GPI can be used
-interchangeably. There are some nuisances involved like firmware and a
-microcontroller but for the sake of simplicity we can skip that :)
-
-Thanks
--- 
-~Vinod
+Best Regards,
+Huang, Ying
