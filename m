@@ -2,209 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DD52F44A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 07:46:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BAF72F44C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 08:05:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726377AbhAMGqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 01:46:08 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:20190 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726136AbhAMGqI (ORCPT
+        id S1726389AbhAMHBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 02:01:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725775AbhAMHBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 01:46:08 -0500
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210113064523epoutp0353fe27c97ada55eae03e4cfd543333a4~Zt7Om70Lb2268322683epoutp03a
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:45:23 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210113064523epoutp0353fe27c97ada55eae03e4cfd543333a4~Zt7Om70Lb2268322683epoutp03a
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1610520324;
-        bh=6XEWyvphJ0/G11FxbmVEVsJYFzzAg58obUspSqXP5Bg=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=ry2X59uJo1ZD/cELDG1NP5mvmhZjuPLODBuxRjv/Qg+1MvqwrNfhQ567PLzDNg2dn
-         QabuNFwDEkc+KU+anJBMqG5Qoakadz7RrstqjbY/yYEipXiFYnZfdh3D+wdfuq4CpE
-         c6ugPu/fIiNoRdprNdlxSSxMHbbDjGuGQ1890pi4=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210113064523epcas1p128a17e9cb709017d2ad51da97f368710~Zt7N0vpsn0191501915epcas1p1C;
-        Wed, 13 Jan 2021 06:45:23 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.161]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4DFycf18kCz4x9Px; Wed, 13 Jan
-        2021 06:45:22 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        9D.3C.02418.2079EFF5; Wed, 13 Jan 2021 15:45:22 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210113064521epcas1p32f0e65bc54d559b55db65bc5556103e8~Zt7MURoqQ2137721377epcas1p3K;
-        Wed, 13 Jan 2021 06:45:21 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210113064521epsmtrp2eb58868ee0cc7d73ace16856b9e3fca8~Zt7MTa2Y42462324623epsmtrp20;
-        Wed, 13 Jan 2021 06:45:21 +0000 (GMT)
-X-AuditID: b6c32a35-1b331a8000010972-f7-5ffe97021cb0
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        E7.E0.08745.1079EFF5; Wed, 13 Jan 2021 15:45:21 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.98.109]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210113064521epsmtip2621bb8a5f14fefd648634cc154d72c5e~Zt7MCrS9C1463414634epsmtip2H;
-        Wed, 13 Jan 2021 06:45:21 +0000 (GMT)
-From:   Manjong Lee <mj0123.lee@samsung.com>
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
-        nanich.lee@samsung.com, woosung2.lee@samsung.com,
-        yt0928.kim@samsung.com, junho89.kim@samsung.com,
-        jisoo2146.oh@samsung.com, Manjong Lee <mj0123.lee@samsung.com>
-Subject: [PATCH 1/1] scsi: sd: use max_xfer_blocks for set rw_max if
- max_xfer_blocks is available
-Date:   Thu, 14 Jan 2021 00:50:08 +0900
-Message-Id: <20210113155009.9592-1-mj0123.lee@samsung.com>
-X-Mailer: git-send-email 2.29.0
+        Wed, 13 Jan 2021 02:01:18 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3B5C061575;
+        Tue, 12 Jan 2021 23:00:37 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id n16so3048878wmc.0;
+        Tue, 12 Jan 2021 23:00:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cnbwALSILRtg0eF1OI+3vhojF1BxoTr6PT0p0tQxqiA=;
+        b=P45pb8uNoHZpyPmaYHpqZ6hAWBx+88nzcuz95v+M1E/N89iUQ9tOujzhoLafVdNbyk
+         7VJkBdTOJ+eVyA6o72XGZRWJ3N+Hk/0p8VHSe373+C+s7I5gcK4SNeC8wmkFLgZkQ367
+         d/sb+xPRKwp7pRDx1eOt/zqpLB77lY3j8fyFtoH+Bhs67AH2H3w0wBrmkIWga7iezMG9
+         u/MRdo0HwIFIyZLADOqyE9fSCBeFHUgMVNT5N9YtV8sOBViIKMMw1m9ZZj9xD6FOqYT4
+         qtGG9wbN0bD49ZEi1tK2qn6cDJ90aaJas9hgnbtw8RC1nZVpXjbLPw0e3IYKqO0StMAZ
+         Ursw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cnbwALSILRtg0eF1OI+3vhojF1BxoTr6PT0p0tQxqiA=;
+        b=ePDYPLGzB1SERNNUdblaq5EvtGG9WXPfyg3/qas/P1t3GgF9H0MspPUoBr5nbFHhu/
+         E0Ozrz+E86sYsJD+XH538b08jmSxN+TNH/1jhi2BeBFaWlCWs/xHhPBVKO3zcIDWEpjY
+         3VjSNGh7yl3wNWvFNAptu4sE1xvq3pACT1LVzS46LFkO+Q4+fW8AFaJtElwUnusOjhoB
+         dE67h4s3fsLorrDh201QyGKiljPlDndgh9nydD0HRomUMQSWfo1aMFISRG5hlStzYV2K
+         J4K8MOlRtftmkUK64WYhpfL/J+QNsVcesdNOWKfkGo5/DSnpObPWM6j4nf614PPdQsQ+
+         pqyQ==
+X-Gm-Message-State: AOAM5317PD5HbLWE5VZvM7/eu+RDMx1v/DbSKCG5s7rC7ITKPVKVTs1D
+        Ck2Coro9bYdGlKMAgTYSc/sly2tUxzEdDw==
+X-Google-Smtp-Source: ABdhPJxAMBLccw8apCe53op225/20bd1u8Q4ruDZQiOqP6LgX8TDM8D8RqKXkcqe362eQ/Y7XhXHHQ==
+X-Received: by 2002:a1c:5644:: with SMTP id k65mr695379wmb.62.1610521236450;
+        Tue, 12 Jan 2021 23:00:36 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2dc9:b100:30ef:8b8a:711:895d])
+        by smtp.gmail.com with ESMTPSA id v4sm1598126wrw.42.2021.01.12.23.00.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 23:00:35 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Harry Wei <harryxiyou@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        linux-doc@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH for doc-next] doc/zh_CN: adjust table markup in mips/ingenic-tcu.rst
+Date:   Wed, 13 Jan 2021 08:00:23 +0100
+Message-Id: <20210113070023.25064-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEJsWRmVeSWpSXmKPExsWy7bCmni7T9H/xBhPXsFosurGNyaLnSROr
-        xdeHxRaXd81hs+i+voPNYvnxf0wW0zfPYba4dv8Mu8W5k59YLeY9drA4tWMys8X6vT/ZHHg8
-        Jiw6wOjx8ektFo++LasYPT5vkgtgicqxyUhNTEktUkjNS85PycxLt1XyDo53jjc1MzDUNbS0
-        MFdSyEvMTbVVcvEJ0HXLzAE6TEmhLDGnFCgUkFhcrKRvZ1OUX1qSqpCRX1xiq5RakJJTYGhQ
-        oFecmFtcmpeul5yfa2VoYGBkClSZkJMx8edsxoIe6YpFf9kbGPvEuhg5OSQETCRW/ZrL3sXI
-        xSEksINR4sy0OcwQzidGicN/v7JCOJ8ZJVonzmGEabk27RQTRGIXo8SJ3T/Y4Kp+3b/FDFLF
-        JqAlsfzZBXYQW0QgT2LhvudgNrPAQ0aJ57d8QGxhgWSJO7sfgtWzCKhKfNgwHayGV8BK4sLT
-        xUwQ2+Ql/tzvYYaIC0qcnPmEBWKOvETz1tlgt0oIvGSXODL1ENR5LhJvXqxih7CFJV4d3wJl
-        S0l8freXDaKhmVGi99M5VohEC6PEjotlELaxxKfPn4EGcQBt0JRYv0sfIqwosfP3XEaIxXwS
-        7772sIKUSAjwSnS0CUGUqEjsbv4Gt+rNqwNQ53hIPH6wAqxcSCBW4vsLsQmM8rOQfDMLyTez
-        EPYuYGRexSiWWlCcm55abFhgiBypmxjBiVPLdAfjxLcf9A4xMnEwHmKU4GBWEuEt6v4bL8Sb
-        klhZlVqUH19UmpNafIjRFBi+E5mlRJPzgak7ryTe0NTI2NjYwsTM3MzUWEmcN8ngQbyQQHpi
-        SWp2ampBahFMHxMHp1QDk06he3vdw5SGC03fW1L4Gljmiv5h2BUlsLZiMneue0pPUkBj6BQF
-        6wPWVzdI2h+bzPp20oQj5xbVzMrN78ne2rZ0nrSMxQYdH+6IO9G1N25JxX7XCZn4fqPWQZn9
-        T8pfcsmwVNyYePyFv8997jWfPlobHavg72s4d1JzTt0TLTW76LX7oqV1thWcqlfSKl72fGW4
-        lFRcA1PZrE9x4ouklsQ5lsw5KyHmqf5K8v3qFy9YAx9ZdvwUX6Tfd/U1X9T2rnMmT8IyTp+p
-        Vvx66RqHSy5fRr1y/sHTc557cB9r6yk8vzG7Q0/qguA8mWMHstVEd/nkvvgiYhb8bOORhIBt
-        61M9yqrv8GZpzZdhf/JIiaU4I9FQi7moOBEA1V3a1SUEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPLMWRmVeSWpSXmKPExsWy7bCSvC7j9H/xBlMPi1ksurGNyaLnSROr
-        xdeHxRaXd81hs+i+voPNYvnxf0wW0zfPYba4dv8Mu8W5k59YLeY9drA4tWMys8X6vT/ZHHg8
-        Jiw6wOjx8ektFo++LasYPT5vkgtgieKySUnNySxLLdK3S+DKmPhzNmNBj3TFor/sDYx9Yl2M
-        nBwSAiYS16adYupi5OIQEtjBKPHr2Fk2iISUxLy1DUA2B5AtLHH4cDFEzUdGiSUnTrOA1LAJ
-        aEksf3aBHcQWESiS2HB2E1gvs8BLRomunXIgtrBAosTUtdfA6lkEVCU+bJgOVs8rYCVx4eli
-        Johd8hJ/7vcwQ8QFJU7OfMICMUdeonnrbOYJjHyzkKRmIUktYGRaxSiZWlCcm55bbFhglJda
-        rlecmFtcmpeul5yfu4kRHMZaWjsY96z6oHeIkYmD8RCjBAezkghvUfffeCHelMTKqtSi/Pii
-        0pzU4kOM0hwsSuK8F7pOxgsJpCeWpGanphakFsFkmTg4pRqYJnMfcUiJbi1s8w+2+xkbo3Lw
-        hLDlt7oCt0/nvY399hauzspf1PTEqfrPw+hPfJxM/2T4ww5WPzmyxuuH8kPVgu96znmmR+sj
-        zl9gZCvnvdst9lGq6kCveN+vk/fM5lY4H99411xJv+XVHa1HM7yrxV9/Mdvz/P2ffdELfB5w
-        9f/cbXH3NO/ivJxDW1c0/41+/tf4weuW5ysd69b2TVhyySXS/sbHyvjbXA46aWsEBcOfK3YW
-        lWgePnSjwVvw/1bFBKXAgsLSOZP2c2jNy/vNza2jEvfPoLYxiLfm+yW1LU7rz+6/suxTdnvt
-        pYjd0xyiFZZZzxeRefktkWehUeuq2y+2GK0+dvkizyaXbxKtSizFGYmGWsxFxYkAjGDxRtIC
-        AAA=
-X-CMS-MailID: 20210113064521epcas1p32f0e65bc54d559b55db65bc5556103e8
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210113064521epcas1p32f0e65bc54d559b55db65bc5556103e8
-References: <CGME20210113064521epcas1p32f0e65bc54d559b55db65bc5556103e8@epcas1p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SCSI device has max_xfer_size and opt_xfer_size,
-but current kernel uses only opt_xfer_size.
+Commit 419b1d4ed1cb ("doc/zh_CN: add mips ingenic-tcu.rst translation")
+introduces a warning with make htmldocs:
 
-It causes the limitation on setting IO chunk size,
-although it can support larger one.
+  ./Documentation/translations/zh_CN/mips/ingenic-tcu.rst:
+    61: WARNING: Malformed table. Text in column margin in table line 6.
 
-So, I propose this patch to use max_xfer_size in case it has valid value.
-It can support to use the larger chunk IO on SCSI device.
+Adjust the table markup to address this warning.
 
-For example,
-This patch is effective in case of some SCSI device like UFS
-with opt_xfer_size 512KB, queue depth 32 and max_xfer_size over 512KB.
-
-I expect both the performance improvement
-and the efficiency use of smaller command queue depth.
-
-Signed-off-by: Manjong Lee <mj0123.lee@samsung.com>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- drivers/scsi/sd.c | 56 +++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 52 insertions(+), 4 deletions(-)
+applies cleanly on next-20210113
 
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index 679c2c025047..de59f01c1304 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -3108,6 +3108,53 @@ static void sd_read_security(struct scsi_disk *sdkp, unsigned char *buffer)
- 		sdkp->security = 1;
- }
+Yanteng, please ack.
+
+Jonathan, please pick this doc warning fixup on your -next tree. 
+
+ Documentation/translations/zh_CN/mips/ingenic-tcu.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/translations/zh_CN/mips/ingenic-tcu.rst b/Documentation/translations/zh_CN/mips/ingenic-tcu.rst
+index 72b5d409ed89..9324a0a26430 100644
+--- a/Documentation/translations/zh_CN/mips/ingenic-tcu.rst
++++ b/Documentation/translations/zh_CN/mips/ingenic-tcu.rst
+@@ -53,14 +53,14 @@
  
-+static bool sd_validate_max_xfer_size(struct scsi_disk *sdkp,
-+				      unsigned int dev_max)
-+{
-+	struct scsi_device *sdp = sdkp->device;
-+	unsigned int max_xfer_bytes =
-+		logical_to_bytes(sdp, sdkp->max_xfer_blocks);
-+
-+	if (sdkp->max_xfer_blocks == 0)
-+		return false;
-+
-+	if (sdkp->max_xfer_blocks > SD_MAX_XFER_BLOCKS) {
-+		sd_first_printk(KERN_WARNING, sdkp,
-+				"Maximal transfer size %u logical blocks " \
-+				"> sd driver limit (%u logical blocks)\n",
-+				sdkp->max_xfer_blocks, SD_DEF_XFER_BLOCKS);
-+		return false;
-+	}
-+
-+	if (sdkp->max_xfer_blocks > dev_max) {
-+		sd_first_printk(KERN_WARNING, sdkp,
-+				"Maximal transfer size %u logical blocks "
-+				"> dev_max (%u logical blocks)\n",
-+				sdkp->max_xfer_blocks, dev_max);
-+		return false;
-+	}
-+
-+	if (max_xfer_bytes < PAGE_SIZE) {
-+		sd_first_printk(KERN_WARNING, sdkp,
-+				"Maximal transfer size %u bytes < " \
-+				"PAGE_SIZE (%u bytes)\n",
-+				max_xfer_bytes, (unsigned int)PAGE_SIZE);
-+		return false;
-+	}
-+
-+	if (max_xfer_bytes & (sdkp->physical_block_size - 1)) {
-+		sd_first_printk(KERN_WARNING, sdkp,
-+				"Maximal transfer size %u bytes not a " \
-+				"multiple of physical block size (%u bytes)\n",
-+				max_xfer_bytes, sdkp->physical_block_size);
-+		return false;
-+	}
-+
-+	sd_first_printk(KERN_INFO, sdkp, "Maximal transfer size %u bytes\n",
-+			max_xfer_bytes);
-+	return true;
-+}
-+
- /*
-  * Determine the device's preferred I/O size for reads and writes
-  * unless the reported value is unreasonably small, large, not a
-@@ -3233,12 +3280,13 @@ static int sd_revalidate_disk(struct gendisk *disk)
+ TCU硬件的功能分布在多个驱动程序：
  
- 	/* Initial block count limit based on CDB TRANSFER LENGTH field size. */
- 	dev_max = sdp->use_16_for_rw ? SD_MAX_XFER_BLOCKS : SD_DEF_XFER_BLOCKS;
--
--	/* Some devices report a maximum block count for READ/WRITE requests. */
--	dev_max = min_not_zero(dev_max, sdkp->max_xfer_blocks);
- 	q->limits.max_dev_sectors = logical_to_sectors(sdp, dev_max);
+-===========         =====
++==============      ===================================
+ 时钟                drivers/clk/ingenic/tcu.c
+ 中断                drivers/irqchip/irq-ingenic-tcu.c
+ 定时器              drivers/clocksource/ingenic-timer.c
+ OST                 drivers/clocksource/ingenic-ost.c
+ 脉冲宽度调制器      drivers/pwm/pwm-jz4740.c
+ 看门狗              drivers/watchdog/jz4740_wdt.c
+-===========         =====
++==============      ===================================
  
--	if (sd_validate_opt_xfer_size(sdkp, dev_max)) {
-+	if (sd_validate_max_xfer_size(sdkp, dev_max)) {
-+		q->limits.io_opt = 0;
-+		rw_max = logical_to_sectors(sdp, sdkp->max_xfer_blocks);
-+		q->limits.max_dev_sectors = rw_max;
-+	} else if (sd_validate_opt_xfer_size(sdkp, dev_max)) {
- 		q->limits.io_opt = logical_to_bytes(sdp, sdkp->opt_xfer_blocks);
- 		rw_max = logical_to_sectors(sdp, sdkp->opt_xfer_blocks);
- 	} else {
+ 因为可以从相同的寄存器控制属于不同驱动程序和框架的TCU的各种功能，所以
+ 所有这些驱动程序都通过相同的控制总线通用接口访问它们的寄存器。
 -- 
-2.29.0
+2.17.1
 
