@@ -2,55 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6D62F4CF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:19:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 918B42F4CFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:20:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726812AbhAMORt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:17:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44334 "EHLO mail.kernel.org"
+        id S1726289AbhAMOUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:20:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53050 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726113AbhAMORs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:17:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 004C6233FB;
-        Wed, 13 Jan 2021 14:17:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610547428;
-        bh=tOH8kHK8wpkxTpaX7CJMRISBw5TdZpXf3lahBNTxc+0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HhJhDkIEmgqdedPmBY3qh/I92a06ubSXYAB2qrJYju40o/Liqc0xjbPsJ1dI1sIWQ
-         mryjkz6VcCzhsQSv64FOg6xClzu2lJCnFff4HklLt9MfzNggzakFdGiIiEzNe0eu1g
-         OSCxKkUc0o7jpYcI5e9lfQ02IBc5lWr0mfTLgWml5g+fMfXaDXGDLnYhcGEm8x13Xu
-         yFL5XJu+128TbQTNLifhE+yPQZ4/WQRdBuv9K3DZ9yTXrl7yHdL8V5Ubz2i4DlwUBT
-         ktvoxFcdrIjgmKTOhGGJPcbFlL3KiUIEzJdhmKyhq+KW0T4kABRTW96rtrzj8P4hec
-         KHwme0oZmco6Q==
-Date:   Wed, 13 Jan 2021 19:47:03 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 24/24] dt-bindings: phy: update phy-cadence-sierra.yaml
- reference
-Message-ID: <20210113141703.GT2771@vkoul-mobl>
-References: <cover.1610535349.git.mchehab+huawei@kernel.org>
- <3550b08d4e8312e7d4a247a3515a93a5f0fd04c5.1610535350.git.mchehab+huawei@kernel.org>
+        id S1725772AbhAMOUU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 09:20:20 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610547573; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tzRzrPRO0sG/PZufpslx/p2FJilLPOCaqNLlQqECfqs=;
+        b=UvQrTaLu7nYoCtIzCLWCIYq3tb6NEJPytiVqqoCEKB62YzAOmeqtN2hegBQiDVO8kuaCpj
+        ED+QEXUULnOJw0Q82GfNp8xuiu14SB0JY4+5rscFK53iM4TdmfsvVpT1nk+psAFQR49KZp
+        YY+qRxJrDbcLR1q+7TtV0AO72OyOZyQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 750D1AD19;
+        Wed, 13 Jan 2021 14:19:33 +0000 (UTC)
+Date:   Wed, 13 Jan 2021 15:19:32 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Edgar Arriaga =?iso-8859-1?Q?Garc=EDa?= 
+        <edgararriaga@google.com>, Tim Murray <timmurray@google.com>,
+        linux-mm <linux-mm@kvack.org>, selinux@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH v2 1/1] mm/madvise: replace ptrace attach requirement for
+ process_madvise
+Message-ID: <20210113141932.GB22493@dhcp22.suse.cz>
+References: <20210111170622.2613577-1-surenb@google.com>
+ <20210112074629.GG22493@dhcp22.suse.cz>
+ <CAJuCfpHazLXJ1rpJQ+w9=8-O==rzz3yEVuVtSn-sYMS+a3FoXQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3550b08d4e8312e7d4a247a3515a93a5f0fd04c5.1610535350.git.mchehab+huawei@kernel.org>
+In-Reply-To: <CAJuCfpHazLXJ1rpJQ+w9=8-O==rzz3yEVuVtSn-sYMS+a3FoXQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13-01-21, 11:59, Mauro Carvalho Chehab wrote:
-> Changeset ba2bf1f090eb ("dt-bindings: phy: Add Cadence Sierra PHY bindings in YAML format")
-> renamed: Documentation/devicetree/bindings/phy/phy-cadence-sierra.txt
-> to: Documentation/devicetree/bindings/phy/phy-cadence-sierra.yaml.
+On Tue 12-01-21 10:12:03, Suren Baghdasaryan wrote:
+> On Mon, Jan 11, 2021 at 11:46 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Mon 11-01-21 09:06:22, Suren Baghdasaryan wrote:
+> > > process_madvise currently requires ptrace attach capability.
+> > > PTRACE_MODE_ATTACH gives one process complete control over another
+> > > process. It effectively removes the security boundary between the
+> > > two processes (in one direction). Granting ptrace attach capability
+> > > even to a system process is considered dangerous since it creates an
+> > > attack surface. This severely limits the usage of this API.
+> > > The operations process_madvise can perform do not affect the correctness
+> > > of the operation of the target process; they only affect where the data
+> > > is physically located (and therefore, how fast it can be accessed).
+> >
+> > Yes it doesn't influence the correctness but it is still a very
+> > sensitive operation because it can allow a targeted side channel timing
+> > attacks so we should be really careful.
 > 
-> Update its cross-reference accordingly.
+> Sorry, I missed this comment in my answer. Possibility of affecting
+> the target's performance including side channel attack is why we
+> require CAP_SYS_NICE.
 
-Applied, thanks
-
+OK. It would be really good to document that in the man page. From the
+current wording it seems we already rely on this cap for migration on a
+remote process which is not the same thing but it roughly falls into the
+similar category.
 -- 
-~Vinod
+Michal Hocko
+SUSE Labs
