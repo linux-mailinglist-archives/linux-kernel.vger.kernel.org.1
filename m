@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CCA2F43D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:29:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE932F43D7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:29:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726377AbhAMF0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 00:26:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
+        id S1726442AbhAMF1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 00:27:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726308AbhAMF0w (ORCPT
+        with ESMTP id S1725858AbhAMF1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 00:26:52 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53AAFC061575
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:25:53 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id 30so766560pgr.6
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:25:53 -0800 (PST)
+        Wed, 13 Jan 2021 00:27:00 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC92CC0617A7
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:25:57 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id b5so446078pjl.0
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 21:25:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7IILliy6HAELOAf2o6Y4OfnqFvSJBzlwsRQjJedxot0=;
-        b=dJSU9wJz/3rQWPdMgFSeLg9iISXgA+mrG+M6gt+bsIjssGtFTfPEsERPEUS/5t83/a
-         LUUhWWNg/MtzqsN1Kcpq3X30J5yof6IfmScrbd2duBHq6YKTHipysgbq0GgU5xk6pS2e
-         zjsxPKhbFQ3aQpWwXgTAKahmN+gYTipJrmzzMWPn1qre9ExAnmti5MKJc035HZOxbRYj
-         iHy8ulllb0ZqY2Um8SLjP+3fu+8cZOBSSgRpFiASO+QylIjnslUNIoap6l6hYXze4wgD
-         w4WSsWwgioG3c1Cy6a1OJW3JNITIUff9+LHkCpsmdjVxblAQrvZnTkHGQvdlc1TgFK6d
-         1KbA==
+        bh=t1Dj1BnCFYHHEbXxpzLfGjPuUeLA5YyfxkXrd8ZYcB0=;
+        b=CkA9nt2K6f+62+T51zdVrYDbufK9iilFrW0pvsAhNTKoNhtmriES3uoKM1sUakUZZ5
+         F/v6UK2sK8O39JyDaqatm8tzyyn0AJoI7H+IDejD4uJmwSTg6K9E1yy89mdOJnCEYjcW
+         k69OZYyJnR0MBsFEE1C9ZZVCWBqjSkk7uH/vBI3RCr0KaxPha+Iow4xZr7VKSwS52VRL
+         s8JtrAKwI/5cHrpqLI4hhvXK/oKOErZGwvmjzdqAbBNT+xCp3nPOswceWh3laeh0nZ89
+         bkTQXsBeOJe6rDwxwZjLMtfYp2T+RluwSz5yFLGdXoqWtHGonU/iHNrM5mdXNrjzpb0c
+         DcaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7IILliy6HAELOAf2o6Y4OfnqFvSJBzlwsRQjJedxot0=;
-        b=uVfNmQUmID/1q1K8X+ZcQsR/+eZ/pr/cb+aR9Xk1KHom8swI1TVnkmkhFmtGgYqPSH
-         kJpfko4Cij3FdvkMPsPrt+/52EsLNK7jy50he+h8roX2XdrgaigUiuR+BDNMQrVnE4cI
-         ppy1CsYGwLq/fyeNfUyrQKyvbJhDi7v09VxO6Epd7wIeZXMUiBPeh4vM+J5RAjiLT1xv
-         RElSYA1aOBoUoYfydMjqjKosb4N6vwi7CC3g2VcGoB+Ecv5SMPM3C4gnB+uPTCRJR+ZG
-         UUyTOTesUT7hNVZa0pUrwUTw/UNOi/Rr+ot4Zhz5FwWkSEZVnwUuPKnpKCbaKh4ExNNr
-         JB+A==
-X-Gm-Message-State: AOAM5311Cw/MRs/j1ClCrnRviymFMWmNWKe2bK7Pemsmb578Tj1lRuna
-        TQIdTirgvFQzR/WPMWw+OQVOgg==
-X-Google-Smtp-Source: ABdhPJyzBXCuQ9SD6Bb7oZ1eb4Ev3kY+H2KEd84rW3RSKql2lLp9DD8eqP0VXQA4l2FJ/CVALwQ2ZQ==
-X-Received: by 2002:a63:1110:: with SMTP id g16mr459913pgl.357.1610515552956;
-        Tue, 12 Jan 2021 21:25:52 -0800 (PST)
+        bh=t1Dj1BnCFYHHEbXxpzLfGjPuUeLA5YyfxkXrd8ZYcB0=;
+        b=Il4ezMSTdF4ApBetOTlQOfEUYqanlHjoRlqNbLrU2UfCxhb5B94Qc4BsBjoFSBEAsn
+         uYUHXQs1414hzOWSLLp0xbhVuflzjIWxKGU+OKQ3IjcfYHDwS3VHCIgbSZ18U3Vwq8n5
+         /Kg2lF6qsKfm9voNFck9WlXkL1qvxawAqUUqqS1OeG18TkdzCunfzxuFLqFQVn2XRUuN
+         WVKFviDvpuoFf0XrajIJS/ERAJ0dNbmoYQ6QQMbyKRcRvxKH7r64ewVt+N//VvF6jekh
+         QvY0Y8W3PN5HO+OE2X0yHyjAsISjUapW0Sx9l2FjVhKhkQsmRutBT+A62B6Xct/khEmM
+         tEdA==
+X-Gm-Message-State: AOAM530TH/a51F3wgS7XuazL3lFI1GJTLeshg4AZVb/QXVD1HB9La8fv
+        ZKRIrMM7bSFv15S4VqVjuQYqUzHdYyVCELgOXvM=
+X-Google-Smtp-Source: ABdhPJy6z9arm0rLeW481RViIUW3vRvWLSVKc/kfyfaVXhVXVXDdIrIVxIDcum+7oWvZIYQX1oAJ8Q==
+X-Received: by 2002:a17:90b:3011:: with SMTP id hg17mr424575pjb.22.1610515557266;
+        Tue, 12 Jan 2021 21:25:57 -0800 (PST)
 Received: from localhost.localdomain ([139.177.225.247])
-        by smtp.gmail.com with ESMTPSA id x15sm893081pfa.80.2021.01.12.21.25.48
+        by smtp.gmail.com with ESMTPSA id x15sm893081pfa.80.2021.01.12.21.25.53
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 12 Jan 2021 21:25:52 -0800 (PST)
+        Tue, 12 Jan 2021 21:25:56 -0800 (PST)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
 Cc:     n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Muchun Song <songmuchun@bytedance.com>,
         Michal Hocko <mhocko@suse.com>, stable@vger.kernel.org
-Subject: [PATCH v4 5/6] mm: hugetlb: fix a race between isolating and freeing page
-Date:   Wed, 13 Jan 2021 13:22:08 +0800
-Message-Id: <20210113052209.75531-6-songmuchun@bytedance.com>
+Subject: [PATCH v4 6/6] mm: hugetlb: remove VM_BUG_ON_PAGE from page_huge_active
+Date:   Wed, 13 Jan 2021 13:22:09 +0800
+Message-Id: <20210113052209.75531-7-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20210113052209.75531-1-songmuchun@bytedance.com>
 References: <20210113052209.75531-1-songmuchun@bytedance.com>
@@ -66,56 +66,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a race between isolate_huge_page() and __free_huge_page().
+The page_huge_active() can be called from scan_movable_pages() which
+do not hold a reference count to the HugeTLB page. So when we call
+page_huge_active() from scan_movable_pages(), the HugeTLB page can
+be freed parallel. Then we will trigger a BUG_ON which is in the
+page_huge_active() when CONFIG_DEBUG_VM is enabled. Just remove the
+VM_BUG_ON_PAGE.
 
-CPU0:                                       CPU1:
-
-if (PageHuge(page))
-                                            put_page(page)
-                                              __free_huge_page(page)
-                                                  spin_lock(&hugetlb_lock)
-                                                  update_and_free_page(page)
-                                                    set_compound_page_dtor(page,
-                                                      NULL_COMPOUND_DTOR)
-                                                  spin_unlock(&hugetlb_lock)
-  isolate_huge_page(page)
-    // trigger BUG_ON
-    VM_BUG_ON_PAGE(!PageHead(page), page)
-    spin_lock(&hugetlb_lock)
-    page_huge_active(page)
-      // trigger BUG_ON
-      VM_BUG_ON_PAGE(!PageHuge(page), page)
-    spin_unlock(&hugetlb_lock)
-
-When we isolate a HugeTLB page on CPU0. Meanwhile, we free it to the
-buddy allocator on CPU1. Then, we can trigger a BUG_ON on CPU0. Because
-it is already freed to the buddy allocator.
-
-Fixes: c8721bbbdd36 ("mm: memory-hotplug: enable memory hotplug to handle hugepage")
+Fixes: 7e1f049efb86 ("mm: hugetlb: cleanup using paeg_huge_active()")
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 Acked-by: Michal Hocko <mhocko@suse.com>
 Cc: stable@vger.kernel.org
 ---
- mm/hugetlb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ mm/hugetlb.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 898e4ea43e13..a7ed22811672 100644
+index a7ed22811672..8c6005a538a2 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -5575,9 +5575,9 @@ bool isolate_huge_page(struct page *page, struct list_head *list)
+@@ -1360,8 +1360,7 @@ struct hstate *size_to_hstate(unsigned long size)
+  */
+ bool page_huge_active(struct page *page)
  {
- 	bool ret = true;
+-	VM_BUG_ON_PAGE(!PageHuge(page), page);
+-	return PageHead(page) && PagePrivate(&page[1]);
++	return PageHeadHuge(page) && PagePrivate(&page[1]);
+ }
  
--	VM_BUG_ON_PAGE(!PageHead(page), page);
- 	spin_lock(&hugetlb_lock);
--	if (!page_huge_active(page) || !get_page_unless_zero(page)) {
-+	if (!PageHeadHuge(page) || !page_huge_active(page) ||
-+	    !get_page_unless_zero(page)) {
- 		ret = false;
- 		goto unlock;
- 	}
+ /* never called for tail page */
 -- 
 2.11.0
 
