@@ -2,121 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA592F4713
+	by mail.lfdr.de (Postfix) with ESMTP id CBD0C2F4714
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727499AbhAMJEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 04:04:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727160AbhAMJED (ORCPT
+        id S1727521AbhAMJEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 04:04:34 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:32965 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727324AbhAMJEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 04:04:03 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0001C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 01:03:22 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 6EE6E1F44790
-Subject: Re: [PATCH v5] ASoC: cros_ec_codec: Reset I2S RX when probing
-To:     Yu-Hsuan Hsu <yuhsuan@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        alsa-devel@alsa-project.org
-References: <20210113081745.2543882-1-yuhsuan@chromium.org>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <d5a36f72-82a1-450c-3763-a27df31b8da4@collabora.com>
-Date:   Wed, 13 Jan 2021 10:03:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 13 Jan 2021 04:04:33 -0500
+X-UUID: ab70a5be833e41edb6ddeadd820fe4b1-20210113
+X-UUID: ab70a5be833e41edb6ddeadd820fe4b1-20210113
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <lecopzer.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 91106704; Wed, 13 Jan 2021 17:03:48 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 13 Jan 2021 17:03:47 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 13 Jan 2021 17:03:47 +0800
+From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <kasan-dev@googlegroups.com>
+CC:     Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        <dan.j.williams@intel.com>, <aryabinin@virtuozzo.com>,
+        <glider@google.com>, <dvyukov@google.com>,
+        <akpm@linux-foundation.org>, <linux-mediatek@lists.infradead.org>,
+        <yj.chiang@mediatek.com>, Lecopzer Chen <lecopzer@gmail.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: [RESEND PATCH] kasan: fix incorrect arguments passing in kasan_add_zero_shadow
+Date:   Wed, 13 Jan 2021 17:03:40 +0800
+Message-ID: <20210113090340.23129-1-lecopzer.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <20210113081745.2543882-1-yuhsuan@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yu-Hsun,
+kasan_remove_zero_shadow() shall use original virtual address, start
+and size, instead of shadow address.
 
-Thank you for your patch. Some comments below.
+Fixes: 0207df4fa1a86 ("kernel/memremap, kasan: make ZONE_DEVICE with work with KASAN")
+Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+ mm/kasan/init.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-
-On 13/1/21 9:17, Yu-Hsuan Hsu wrote:
-> It is not guaranteed that I2S RX is disabled when the kernel booting.
-> For example, if the kernel crashes while it is enabled, it will keep
-> enabled until the next time EC reboots. Reset I2S RX when probing to
-> fix this issue.
-> 
-> Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
-> ---
-> This patch checks the return value. If it is -ENOPROTOOPT
-> (EC_RES_INVALID_VERSION), it will ask clients to update EC firmware.
-> 
-> Previous patches
-> 
-> v1: https://patchwork.kernel.org/project/alsa-devel/patch/20200708071117.3070707-1-yuhsuan@chromium.org/
-> 
-> v2: https://patchwork.kernel.org/project/alsa-devel/patch/20200716170914.3623060-1-yuhsuan@chromium.org/
-> 
-> v3: https://patchwork.kernel.org/project/alsa-devel/patch/20210106050559.1459027-1-yuhsuan@chromium.org/
-> 
-> v4: https://patchwork.kernel.org/project/alsa-devel/patch/20210107085942.2891525-2-yuhsuan@chromium.org/
-> 
->  include/linux/platform_data/cros_ec_commands.h |  1 +
-
-Sorry if I confused you with my last comments, but this should be a separate patch.
-
->  sound/soc/codecs/cros_ec_codec.c               | 11 +++++++++++
->  2 files changed, 12 insertions(+)
-> 
-> diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
-> index 86376779ab31..95889ada83a3 100644
-> --- a/include/linux/platform_data/cros_ec_commands.h
-> +++ b/include/linux/platform_data/cros_ec_commands.h
-> @@ -4600,6 +4600,7 @@ enum ec_codec_i2s_rx_subcmd {
->  	EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH = 0x2,
->  	EC_CODEC_I2S_RX_SET_DAIFMT = 0x3,
->  	EC_CODEC_I2S_RX_SET_BCLK = 0x4,
-> +	EC_CODEC_I2S_RX_RESET = 0x5,
->  	EC_CODEC_I2S_RX_SUBCMD_COUNT,
->  };
->  
-> diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-> index f33a2a9654e7..d35c57724b45 100644
-> --- a/sound/soc/codecs/cros_ec_codec.c
-> +++ b/sound/soc/codecs/cros_ec_codec.c
-> @@ -1011,6 +1011,17 @@ static int cros_ec_codec_platform_probe(struct platform_device *pdev)
->  	}
->  	priv->ec_capabilities = r.capabilities;
->  
-> +	/* Reset EC codec i2s rx. */
-> +	p.cmd = EC_CODEC_I2S_RX_RESET;
-> +	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
-> +				   (uint8_t *)&p, sizeof(p), NULL, 0);
-> +	if (ret == -ENOPROTOOPT) {
-> +		dev_info(dev,
-> +			 "Command not found. Please update the EC firmware.\n");
-> +	} else if (ret) {
-> +		dev_err(dev, "failed to EC_CODEC_I2S_RESET: %d\n", ret);
-
-On an error you should return the error and don't continue.
-
-Thanks,
-  Enric
-
-> +	}
-> +
->  	platform_set_drvdata(pdev, priv);
->  
->  	ret = devm_snd_soc_register_component(dev, &i2s_rx_component_driver,
-> 
+diff --git a/mm/kasan/init.c b/mm/kasan/init.c
+index bc0ad208b3a7..67051cfae41c 100644
+--- a/mm/kasan/init.c
++++ b/mm/kasan/init.c
+@@ -481,7 +481,6 @@ int kasan_add_zero_shadow(void *start, unsigned long size)
+ 
+ 	ret = kasan_populate_early_shadow(shadow_start, shadow_end);
+ 	if (ret)
+-		kasan_remove_zero_shadow(shadow_start,
+-					size >> KASAN_SHADOW_SCALE_SHIFT);
++		kasan_remove_zero_shadow(start, size);
+ 	return ret;
+ }
+-- 
+2.25.1
