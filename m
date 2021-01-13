@@ -2,98 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1BA2F56F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:59:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5612F56F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 02:59:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728383AbhANB4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 20:56:22 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:44252 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729589AbhAMXpY (ORCPT
+        id S1728600AbhANB4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 20:56:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729605AbhAMXr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 18:45:24 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610581502; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=8vGGmTsigGzkFUAuddb3DTMDXkW08K6re37CVJR/miI=;
- b=wTXancm2RcMhPdlTV2FC2FQOPTncQWk5YIAid3bQhrhHuF6GWnG9pHzcY8mGvtsQNXe3zigC
- 0G/M+sIBk3YFbR9G8gCthLxOCrZ+ElwWU+CINyfik4dkh/pOoYVbn7k1t/MFC8tLcWBcNWIs
- aeJuKBYGx/6BPpc0nB5jn+wnefQ=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5fff85e18fb3cda82f07e805 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 23:44:33
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E8845C433CA; Wed, 13 Jan 2021 23:44:32 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A44AC433C6;
-        Wed, 13 Jan 2021 23:44:32 +0000 (UTC)
+        Wed, 13 Jan 2021 18:47:27 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4666C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 15:46:18 -0800 (PST)
+Received: from jlbec by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kzpq8-00A5k3-1M; Wed, 13 Jan 2021 23:46:12 +0000
+Date:   Wed, 13 Jan 2021 15:46:08 -0800
+From:   Joel Becker <jlbec@evilplan.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH 3/4] configfs: implement committable items
+Message-ID: <X/+GQIhGmyHlIe0+@google.com>
+Mail-Followup-To: Bartosz Golaszewski <brgl@bgdev.pl>,
+        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20201125152247.30809-1-brgl@bgdev.pl>
+ <20201125152247.30809-4-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 13 Jan 2021 15:44:32 -0800
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run, tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] drm/msm/dp: postpone irq_hpd event during connection
- pending state
-In-Reply-To: <161056933099.3661239.9450322359293035316@swboyd.mtv.corp.google.com>
-References: <y> <1610051425-20632-1-git-send-email-khsieh@codeaurora.org>
- <1610051425-20632-2-git-send-email-khsieh@codeaurora.org>
- <161039491877.3661239.1387205899512360969@swboyd.mtv.corp.google.com>
- <17a116011ae60194834210a4a0c877b3@codeaurora.org>
- <161056933099.3661239.9450322359293035316@swboyd.mtv.corp.google.com>
-Message-ID: <b4a6e7695d12c3191bff75668f386da9@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201125152247.30809-4-brgl@bgdev.pl>
+X-Burt-Line: Trees are cool.
+X-Red-Smith: Ninety feet between bases is perhaps as close as man has ever
+ come to perfection.
+Sender: Joel Becker <jlbec@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-13 12:22, Stephen Boyd wrote:
-> Quoting khsieh@codeaurora.org (2021-01-13 09:44:24)
->> On 2021-01-11 11:55, Stephen Boyd wrote:
->> > Quoting Kuogee Hsieh (2021-01-07 12:30:24)
->> >> irq_hpd event can only be executed at connected state. Therefore
->> >> irq_hpd event should be postponed if it happened at connection
->> >> pending state. This patch also make sure both link rate and lane
->> >
->> > Why does it happen at connection pending state?
->> plug in need two state to complete it.
->> advance to connection pending state once link training completed and
->> sent uevent notification to frame work.
->> transition to connected state after frame work provided resolution
->> timing and start transmit video panel.
->> Therefore irq_hpd should not be handled if it occurred before 
->> connected
->> state.
+On Wed, Nov 25, 2020 at 04:22:46PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> Sure that's what's going on in the patch but you didn't answer my
-> question. Why does irq_hpd happen before connected state?
+> This implements configfs committable items. We mostly follow the
+> documentation except that we extend config_group_ops with uncommit_item()
+> callback for reverting the changes made by commit_item().
 
-I have no idea why it happen this way.
-during debug 
-https://partnerissuetracker.corp.google.com/issues/170598152
-I saw two different scenario
-1) irq_hpd followed by unplug with less than 20 ms in between. this one 
-fixed by this patch set.
-2) plug followed by irq_hpd around 300ms in between. it does not cause 
-problem. but it should be handled in order (after connected state).
+Woohoo!  A long time coming, but thank you for working on the
+implementation!
+
+> Each committable group has two sub-directories: pending and live. New
+> items can only be created in pending/. Attributes can only be modified
+> while the item is in pending/. Once it's ready to be committed, it must
+> be moved over to live/ using the rename() system call. This is when the
+> commit_item() function will be called.
+
+The original API intended for live items to still be modifyable.  The
+live/ path forbids mkdir()/rmdir(), but it allows store().  Otherwise,
+items can't be adjusted at all while in use, which is severely limiting.
+Obviously the store() handler must not allow transitions from
+valid-value->invalid-value, but the handler would reject invalid values
+anyway, wouldn't it?
+
+> diff --git a/fs/configfs/file.c b/fs/configfs/file.c
+> index 1f0270229d7b..a20e55fd05e8 100644
+> --- a/fs/configfs/file.c
+> +++ b/fs/configfs/file.c
+> @@ -243,9 +243,17 @@ fill_write_buffer(struct configfs_buffer * buffer, const char __user * buf, size
+>  static int
+>  flush_write_buffer(struct file *file, struct configfs_buffer *buffer, size_t count)
+>  {
+> +	struct config_item *parent_item = buffer->item->ci_parent;
+>  	struct configfs_fragment *frag = to_frag(file);
+> +	struct configfs_dirent *sd;
+>  	int res = -ENOENT;
+>  
+> +	if (parent_item && parent_item->ci_dentry) {
+> +		sd = parent_item->ci_dentry->d_fsdata;
+> +		if (sd->s_type & CONFIGFS_GROUP_LIVE)
+> +			return -EPERM;
+> +	}
+> +
+>  	down_read(&frag->frag_sem);
+>  	if (!frag->frag_dead)
+>  		res = buffer->attr->store(buffer->item, buffer->page, count);
+
+Basically, I would just leave this hunk out.
+
+Thanks,
+Joel
+
+-- 
+
+"Now Someone's on the telephone, desperate in his pain.
+ Someone's on the bathroom floor doing her cocaine.
+ Someone's got his finger on the button in some room.
+ No one can convince me we aren't gluttons for our doom."
+
+			http://www.jlbec.org/
+			jlbec@evilplan.org
