@@ -2,92 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7937D2F52E6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:00:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0932F52EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728616AbhAMS7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 13:59:31 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36836 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726803AbhAMS7a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 13:59:30 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10DIgljf047426;
-        Wed, 13 Jan 2021 13:58:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=FNPJxGcEkUrwdtZEZgtzXyzGghgxOucKG1P8Dukz0RQ=;
- b=Jfu8hG3mRC6/kPLjdB3S11MpwkdSkNXEHgamQpN/jKKWnaKQRdKUj2c0eyYbn6xnGpHi
- jbkpo1exA2J26gD7Z8D4paOY2eOnnRb6OPEX2ODtstF7yg10CgFSLHawm5pbefbqoLoW
- uoDuXRCxYu0Z9BDUH19MffSWTQl7z7TpZpYZ8nLTElTCoUFzgXlJo9HvTqJBIqugR8Nx
- vK1YjK2cHc0Iz8ShNjSSCZANk25Msee65ziVhU5epBSebza0tqpvwsQ2sL9zbQ84Xv/T
- 304IchTlqVk3Uijz8M+Yy/RWdA2qUWrUEpGDp6P2VBhB3c1aGHj4OMgvdrTnoDgPOSe+ Lw== 
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3626cq8af9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Jan 2021 13:58:43 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10DIw39p003889;
-        Wed, 13 Jan 2021 18:58:41 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma01dal.us.ibm.com with ESMTP id 35y449fjxs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 13 Jan 2021 18:58:41 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10DIweiJ29557062
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 13 Jan 2021 18:58:41 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DC370B2064;
-        Wed, 13 Jan 2021 18:58:40 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1923FB205F;
-        Wed, 13 Jan 2021 18:58:40 +0000 (GMT)
-Received: from oc6034535106.ibm.com (unknown [9.211.128.152])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 13 Jan 2021 18:58:39 +0000 (GMT)
-Subject: Re: [PATCH v4 00/21] ibmvfc: initial MQ development
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com
-References: <20210111231225.105347-1-tyreld@linux.ibm.com>
-From:   Brian King <brking@linux.vnet.ibm.com>
-Message-ID: <cec44513-c3c6-6c72-0965-14229c7962b4@linux.vnet.ibm.com>
-Date:   Wed, 13 Jan 2021 12:58:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1728634AbhAMTA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 14:00:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728490AbhAMTA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 14:00:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7CBB207B5;
+        Wed, 13 Jan 2021 18:59:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610564385;
+        bh=5TubtKUQ3xlnetDjZKybRFIIA/P5ZC49JfmXgAVmaNc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=nGvy/0Aj07u40gjwVGda2LTfh8M9+WGZhBR7tKFlKm4xXJQS7McA5VT13RA4KsBbt
+         qlcrc7e4OR72nW+4ebAOwzlh42lcaXf4TEBVPkuC5qvufWzlALVCP4aLgUTGsNhryT
+         gRVoJloB7+WpEABuHcXpZ8A2Df13D8p2Tvdg51dZj+wSYFEBY9k/u66+d3RpT+2myP
+         TzenKlLDDpfAtO219Rd/hqbRAxQrbzSrIbp2R83EYNbKzDlcuxYX6AFzEh5RPeGIQ2
+         TlqSKUK/3n36GptwgsVwQjMAglRJ0NOPdJfgD2yT3kCQtoHLuseDkao+dEfUiNNp+V
+         kszcFKS0RduIw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 66D623522AC3; Wed, 13 Jan 2021 10:59:45 -0800 (PST)
+Date:   Wed, 13 Jan 2021 10:59:45 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 3/4] workqueue: Tag bound workers with KTHREAD_IS_PER_CPU
+Message-ID: <20210113185945.GZ2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210112144344.850850975@infradead.org>
+ <20210112144843.849135905@infradead.org>
+ <CAJhGHyD_xuSpYOp5A9PumWGsBA=DNqM0ge3_NgRkfro7fafGqA@mail.gmail.com>
+ <jhjturkzzv9.mognet@arm.com>
+ <20210113175249.GA27312@paulmck-ThinkPad-P72>
+ <jhjpn28zngy.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210111231225.105347-1-tyreld@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-13_09:2021-01-13,2021-01-13 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- suspectscore=0 clxscore=1015 spamscore=0 adultscore=0 malwarescore=0
- mlxlogscore=999 priorityscore=1501 impostorscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101130109
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <jhjpn28zngy.mognet@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the exception of the few comments I've shared, the rest of this looks
-good to me and you can add my:
+On Wed, Jan 13, 2021 at 06:43:57PM +0000, Valentin Schneider wrote:
+> On 13/01/21 09:52, Paul E. McKenney wrote:
+> > On Wed, Jan 13, 2021 at 02:16:10PM +0000, Valentin Schneider wrote:
+> >> You might be right; at this point we would still have BALANCE_PUSH set,
+> >> so something like the below could happen
+> >>
+> >>   rebind_workers()
+> >>     set_cpus_allowed_ptr()
+> >>       affine_move_task()
+> >>         task_running() => stop_one_cpu()
+> >>
+> >>   ... // Stopper migrates the kworker here in the meantime
+> >>
+> >>   switch_to(<pcpu kworker>) // Both cpuhp thread and kworker should be enqueued
+> >>                             // here, so one or the other could be picked
+> >>   balance_switch()
+> >>     balance_push()
+> >>     ^-- no KTHREAD_IS_PER_CPU !
+> >>
+> >> This should however trigger the WARN_ON_ONCE() in kthread_set_per_cpu()
+> >> *before* the one in process_one_work(), which I haven't seen in Paul's
+> >> mails.
+> >
+> > The 56 instances of one-hour SRCU-P scenarios hit the WARN_ON_ONCE()
+> > in process_one_work() once, but there is no sign of a WARN_ON_ONCE()
+> > from kthread_set_per_cpu().
+> 
+> This does make me doubt the above :/ At the same time, the
+> process_one_work() warning hinges on POOL_DISASSOCIATED being unset,
+> which implies having gone through rebind_workers(), which implies
+> kthread_set_per_cpu(), which implies me being quite confused...
+> 
+> > But to your point, this does appear to be
+> > a rather low-probability race condition, once per some tens of hours
+> > of SRCU-P.
+> >
+> > Is there a more focused check for the race condition above?
+> 
+> Not that I'm aware of. I'm thinking that if the pcpu kworker were an RT
+> task, then this would guarantee it would get picked in favor of the cpuhp
+> thread upon switching out of the stopper, but that still requires the
+> kworker running on some CPU (for some reason) during rebind_workers().
 
-Reviewed-by: Brian King <brking@linux.vnet.ibm.com>
+Well, I did use the rcutree.softirq=0 boot parameter, which creates
+per-CPU rcuc kthreads to do what RCU_SOFTIRQ normally does.  But these
+rcuc kthreads use the normal park/unpark discipline, so should be safe,
+for some value of "should".
 
-Thanks,
-
-Brian
-
--- 
-Brian King
-Power Linux I/O
-IBM Linux Technology Center
-
+							Thanx, Paul
