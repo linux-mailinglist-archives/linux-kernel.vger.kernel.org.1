@@ -2,121 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C312F41EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:43:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 052DD2F41F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:43:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728381AbhAMCmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 21:42:40 -0500
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:43683 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728351AbhAMCmk (ORCPT
+        id S1728420AbhAMCnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 21:43:32 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:22898 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728202AbhAMCnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 21:42:40 -0500
-Received: by mail-oi1-f172.google.com with SMTP id q25so570641oij.10;
-        Tue, 12 Jan 2021 18:42:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TnILk4VpEu/oT+IpVAchf2EyrzoqdWoNiHXReeRtRvc=;
-        b=hKE5bEYea+0W8blz3vcb5n+twDamVVL0sVg0aT2XoiFrzyORLTZIkpTqrCvCrDR5NT
-         1irMOnUdmL476Y0WA8VPF7AZg/XPD5LYO0uvkQ+hELGFn7lwfpncAQez4yP8BoOrBoST
-         z9tRTd5apnJqzObtbS2ytltn7Tv2xezF6fT0qj7NsNl5Qu5M5RlpLQz5jVb5d+eS4c8F
-         iRuPSE1rqtbWAeZdMycLL13Iz1VVk5Z7YySsM5HGSzN0lI4HDELzcJ4Pajjlp2wEYQZd
-         yPmDEfdIKmjFjLWCK+4XbbKOC/GSugbuQs/XFzRbDwKYaVCEpqt1Te6sgvrOfOEMCFeC
-         PIAA==
-X-Gm-Message-State: AOAM531ZwM9lqlXbRnDqmq6X9mtpyE1DrQfzHiZukGyO8+NulH/9/It/
-        KZKiNOfa+/DU9GK5CdMeqw==
-X-Google-Smtp-Source: ABdhPJyKqKNiiMd2rkfNqcoZKbYp0KoUwskIJsniu87UfydYYo6KiDbZye7UjaGc55Mxhjh2WSAO8g==
-X-Received: by 2002:aca:f594:: with SMTP id t142mr50034oih.162.1610505713172;
-        Tue, 12 Jan 2021 18:41:53 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id b19sm158465oib.6.2021.01.12.18.41.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 18:41:52 -0800 (PST)
-Received: (nullmailer pid 1409182 invoked by uid 1000);
-        Wed, 13 Jan 2021 02:41:51 -0000
-Date:   Tue, 12 Jan 2021 20:41:51 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, evgreen@chromium.org,
-        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, rdunlap@infradead.org,
-        devicetree@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 2/4] dt-bindings: net: remove modem-remoteproc
- property
-Message-ID: <20210113024151.GA1408606@robh.at.kernel.org>
-References: <20210112192831.686-1-elder@linaro.org>
- <20210112192831.686-3-elder@linaro.org>
+        Tue, 12 Jan 2021 21:43:32 -0500
+X-UUID: bb5340f5adb94e808184596d8acd9d62-20210113
+X-UUID: bb5340f5adb94e808184596d8acd9d62-20210113
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1346367834; Wed, 13 Jan 2021 10:42:47 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 13 Jan 2021 10:42:44 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 13 Jan 2021 10:42:43 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Felipe Balbi <balbi@kernel.org>
+CC:     Florian Fainelli <f.fainelli@gmail.com>,
+        Al Cooper <alcooperx@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-usb@vger.kernel.org>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+Subject: [PATCH RESEND v4 01/11] usb: gadget: bdc: fix improper SPDX comment style for header file
+Date:   Wed, 13 Jan 2021 10:42:18 +0800
+Message-ID: <1610505748-30616-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210112192831.686-3-elder@linaro.org>
+Content-Type: text/plain
+X-TM-SNTS-SMTP: ADFF6952A17E7103725E755695E12EB8F4188A6D562C2AF61405836DFF16AB8B2000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 01:28:29PM -0600, Alex Elder wrote:
-> The IPA driver uses the remoteproc SSR notifier now, rather than the
-> temporary IPA notification system used initially.  As a result it no
-> longer needs a property identifying the modem subsystem DT node.
-> 
-> Use GIC_SPI rather than 0 in the example interrupt definition.
-> 
-> Signed-off-by: Alex Elder <elder@linaro.org>
-> ---
->  Documentation/devicetree/bindings/net/qcom,ipa.yaml | 13 ++-----------
->  1 file changed, 2 insertions(+), 11 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> index 8a2d12644675b..a8cff214ee11f 100644
-> --- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> +++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
-> @@ -113,13 +113,6 @@ properties:
->        performing early IPA initialization, including loading and
->        validating firwmare used by the GSI.
->  
-> -  modem-remoteproc:
-> -    $ref: /schemas/types.yaml#/definitions/phandle
-> -    description:
-> -      This defines the phandle to the remoteproc node representing
-> -      the modem subsystem.  This is requied so the IPA driver can
-> -      receive and act on notifications of modem up/down events.
-> -
->    memory-region:
->      maxItems: 1
->      description:
-> @@ -135,7 +128,6 @@ required:
->    - interrupts
->    - interconnects
->    - qcom,smem-states
-> -  - modem-remoteproc
->  
->  oneOf:
->    - required:
-> @@ -168,7 +160,6 @@ examples:
->                  compatible = "qcom,sdm845-ipa";
->  
->                  modem-init;
-> -                modem-remoteproc = <&mss_pil>;
->  
->                  iommus = <&apps_smmu 0x720 0x3>;
->                  reg = <0x1e40000 0x7000>,
-> @@ -178,8 +169,8 @@ examples:
->                              "ipa-shared",
->                              "gsi";
->  
-> -                interrupts-extended = <&intc 0 311 IRQ_TYPE_EDGE_RISING>,
-> -                                      <&intc 0 432 IRQ_TYPE_LEVEL_HIGH>,
-> +                interrupts-extended = <&intc GIC_SPI 311 IRQ_TYPE_EDGE_RISING>,
-> +                                      <&intc GIC_SPI 432 IRQ_TYPE_LEVEL_HIGH>,
+For C header files Documentation/process/license-rules.rst
+mandates C-like comments (opposed to C source files where
+C++ style should be used).
 
-You need the include file.
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+v4 resend: base on kernel 5.11-rc1
+v4: no changes, but rebase on kernel 5.10-rc1
+v3: add acked-by Florian
+v2: add Cc Florian
+---
+ drivers/usb/gadget/udc/bdc/bdc.h     | 2 +-
+ drivers/usb/gadget/udc/bdc/bdc_cmd.h | 2 +-
+ drivers/usb/gadget/udc/bdc/bdc_dbg.h | 2 +-
+ drivers/usb/gadget/udc/bdc/bdc_ep.h  | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
->                                        <&ipa_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
->                                        <&ipa_smp2p_in 1 IRQ_TYPE_EDGE_RISING>;
->                  interrupt-names = "ipa",
-> -- 
-> 2.20.1
-> 
+diff --git a/drivers/usb/gadget/udc/bdc/bdc.h b/drivers/usb/gadget/udc/bdc/bdc.h
+index ac75e25c3b6a..fcba77e42fd1 100644
+--- a/drivers/usb/gadget/udc/bdc/bdc.h
++++ b/drivers/usb/gadget/udc/bdc/bdc.h
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0+
++/* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+  * bdc.h - header for the BRCM BDC USB3.0 device controller
+  *
+diff --git a/drivers/usb/gadget/udc/bdc/bdc_cmd.h b/drivers/usb/gadget/udc/bdc/bdc_cmd.h
+index 29cc988a671a..373e674809e9 100644
+--- a/drivers/usb/gadget/udc/bdc/bdc_cmd.h
++++ b/drivers/usb/gadget/udc/bdc/bdc_cmd.h
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0+
++/* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+  * bdc_cmd.h - header for the BDC debug functions
+  *
+diff --git a/drivers/usb/gadget/udc/bdc/bdc_dbg.h b/drivers/usb/gadget/udc/bdc/bdc_dbg.h
+index 373d5abffbb8..859d588e209d 100644
+--- a/drivers/usb/gadget/udc/bdc/bdc_dbg.h
++++ b/drivers/usb/gadget/udc/bdc/bdc_dbg.h
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0+
++/* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+  * bdc_dbg.h - header for the BDC debug functions
+  *
+diff --git a/drivers/usb/gadget/udc/bdc/bdc_ep.h b/drivers/usb/gadget/udc/bdc/bdc_ep.h
+index a37ff8033b4f..5bbd73f99c6f 100644
+--- a/drivers/usb/gadget/udc/bdc/bdc_ep.h
++++ b/drivers/usb/gadget/udc/bdc/bdc_ep.h
+@@ -1,4 +1,4 @@
+-// SPDX-License-Identifier: GPL-2.0+
++/* SPDX-License-Identifier: GPL-2.0+ */
+ /*
+  * bdc_ep.h - header for the BDC debug functions
+  *
+-- 
+2.18.0
+
