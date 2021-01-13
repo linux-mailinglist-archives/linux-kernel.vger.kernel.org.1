@@ -2,148 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3AB2F583D
-	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 388222F5838
+	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:01:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbhANCQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:16:27 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:38516 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729053AbhAMVQi (ORCPT
+        id S1728379AbhANCP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 21:15:58 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:64508 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729066AbhAMVQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 16:16:38 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 0176C1F44F75
-Subject: Re: [PATCH 2/3] soc: mediatek: pm-domains: Add domain regulator
- supply
-To:     Nicolas Boichat <drinkcat@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Weiyi Lu <weiyi.lu@mediatek.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-References: <20210107104915.2888408-1-hsinyi@chromium.org>
- <20210107104915.2888408-3-hsinyi@chromium.org>
- <CANMq1KAWCbtpJWMG2nE6k1hOzA=hCWYJxzC7RXb_voEri0v2=g@mail.gmail.com>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <a6cea5be-f7ee-a09c-8300-69792cfa02bb@collabora.com>
-Date:   Wed, 13 Jan 2021 22:16:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <CANMq1KAWCbtpJWMG2nE6k1hOzA=hCWYJxzC7RXb_voEri0v2=g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 13 Jan 2021 16:16:58 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610572682; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=Ch2XVgOCR5t+oWiqNZvTCBTunPhnsKohqMu9LnBESb0=; b=i05Rw1KyuFO3d5nsmpoe7KsiUfKZTw3BsiaxVypKRuMOwhyJoRyEUBE3UW7EGRhHBbELxLjR
+ gDTUCXutCSXjT6a0blEGK2dFribX44mB6fVyA8XR9JWY8T/WBU8BcCaqm4eXKlscVcY2aPTR
+ VyH9RY4ocDuSCJadrs76E5mMeSI=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5fff63708fb3cda82fb0335d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 13 Jan 2021 21:17:36
+ GMT
+Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CB0F4C43463; Wed, 13 Jan 2021 21:17:35 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from cgoldswo-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: cgoldswo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D71CAC433CA;
+        Wed, 13 Jan 2021 21:17:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D71CAC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=cgoldswo@codeaurora.org
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>
+Subject: [PATCH v3] Resolve LRU page-pinning issue for file-backed pages 
+Date:   Wed, 13 Jan 2021 13:17:29 -0800
+Message-Id: <cover.1610572007.git.cgoldswo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hsin-Yi,
+It is possible for file-backed pages to end up in a contiguous memory area
+(CMA), such that the relevant page must be migrated using the .migratepage()
+callback when its backing physical memory is selected for use in an CMA
+allocation (through cma_alloc()).  However, if a set of address space
+operations (AOPs) for a file-backed page lacks a migratepage() page call-back,
+fallback_migrate_page() will be used instead, which through
+try_to_release_page() calls try_to_free_buffers() (which is called directly or
+through a try_to_free_buffers() callback.  try_to_free_buffers() in turn calls
+drop_buffers()
 
-Thank you for the patch.
+drop_buffers() itself can fail due to the buffer_head associated with a page
+being busy. However, it is possible that the buffer_head is on an LRU list for
+a CPU, such that we can try removing the buffer_head from that list, in order
+to successfully release the page.  Do this.
 
-On 10/1/21 2:49, Nicolas Boichat wrote:
-> On Thu, Jan 7, 2021 at 6:49 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
->>
->> Some power domains (eg. mfg) needs to turn on power supply before power
->> on.
->>
->> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> 
-> Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
-> 
+v1: https://lore.kernel.org/lkml/cover.1606194703.git.cgoldswo@codeaurora.org/T/#m3a44b5745054206665455625ccaf27379df8a190
+Original version of the patch (with updates to make to account for changes in
+on_each_cpu_cond()).
 
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+v2: https://lore.kernel.org/lkml/cover.1609829465.git.cgoldswo@codeaurora.org/
+Follow Matthew Wilcox's suggestion of reducing the number of calls to
+on_each_cpu_cond(), by iterating over a page's busy buffer_heads inside of
+on_each_cpu_cond(). To copy from his e-mail, we go from:
 
+for_each_buffer
+	for_each_cpu
+		for_each_lru_entry
 
->> ---
->>  drivers/soc/mediatek/mt8183-pm-domains.h |  1 +
->>  drivers/soc/mediatek/mtk-pm-domains.c    | 36 +++++++++++++++++++++++-
->>  drivers/soc/mediatek/mtk-pm-domains.h    |  1 +
->>  3 files changed, 37 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/soc/mediatek/mt8183-pm-domains.h b/drivers/soc/mediatek/mt8183-pm-domains.h
->> index 8d996c5d2682d..aa5230e6c12f8 100644
->> --- a/drivers/soc/mediatek/mt8183-pm-domains.h
->> +++ b/drivers/soc/mediatek/mt8183-pm-domains.h
->> @@ -38,6 +38,7 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
->>                 .ctl_offs = 0x0338,
->>                 .sram_pdn_bits = GENMASK(8, 8),
->>                 .sram_pdn_ack_bits = GENMASK(12, 12),
->> +               .caps = MTK_SCPD_DOMAIN_SUPPLY,
->>         },
->>         [MT8183_POWER_DOMAIN_MFG_CORE0] = {
->>                 .sta_mask = BIT(7),
->> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
->> index fb70cb3b07b36..ae255aa7b1a97 100644
->> --- a/drivers/soc/mediatek/mtk-pm-domains.c
->> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
-> [snip]
->> @@ -275,6 +295,7 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
->>  {
->>         const struct scpsys_domain_data *domain_data;
->>         struct scpsys_domain *pd;
->> +       struct device_node *np = scpsys->dev->of_node;
->>         struct property *prop;
->>         const char *clk_name;
->>         int i, ret, num_clks;
->> @@ -307,6 +328,19 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
->>         pd->data = domain_data;
->>         pd->scpsys = scpsys;
->>
->> +       if (MTK_SCPD_CAPS(pd, MTK_SCPD_DOMAIN_SUPPLY)) {
->> +               /* Find regulator in current power domain node */
->> +               scpsys->dev->of_node = node;
->> +               pd->supply = devm_regulator_get(scpsys->dev, "domain");
->> +               scpsys->dev->of_node = np;
-> 
-> This pattern is a bit strange to me. But Hsin-Yi pointed out that
-> there are precedents:
-> https://elixir.bootlin.com/linux/v5.11-rc2/source/drivers/iio/adc/rcar-gyroadc.c#L397
-> .
+to:
 
-nit: Strange to me too. Maybe it needs a better comment/explanation and/or use
-child/parent as a temporal of_node names to make a bit more readable. Looks like
-[devm_]regulator_get only accepts a device as argument and will look into child
-nodes.
+for_each_cpu
+	for_each_buffer
+		for_each_lru_entry
 
+This is done using xarrays, which I found to be the cleanest data structure to
+use, though a pre-allocated array of page_size(page) / bh->b_size elements might
+be more performant.
 
-> 
->> +               if (IS_ERR(pd->supply)) {
->> +                       dev_err_probe(scpsys->dev, PTR_ERR(pd->supply),
->> +                                     "%pOF: failed to get power supply.\n",
->> +                                     node);
->> +                       return ERR_CAST(pd->supply);
->> +               }
->> +       }
->> +
->>         pd->infracfg = syscon_regmap_lookup_by_phandle_optional(node, "mediatek,infracfg");
->>         if (IS_ERR(pd->infracfg))
->>                 return ERR_CAST(pd->infracfg);
->> diff --git a/drivers/soc/mediatek/mtk-pm-domains.h b/drivers/soc/mediatek/mtk-pm-domains.h
->> index a2f4d8f97e058..b2770b5266dba 100644
->> --- a/drivers/soc/mediatek/mtk-pm-domains.h
->> +++ b/drivers/soc/mediatek/mtk-pm-domains.h
->> @@ -7,6 +7,7 @@
->>  #define MTK_SCPD_FWAIT_SRAM            BIT(1)
->>  #define MTK_SCPD_SRAM_ISO              BIT(2)
->>  #define MTK_SCPD_KEEP_DEFAULT_OFF      BIT(3)
->> +#define MTK_SCPD_DOMAIN_SUPPLY         BIT(4)
->>  #define MTK_SCPD_CAPS(_scpd, _x)       ((_scpd)->data->caps & (_x))
->>
->>  #define SPM_VDE_PWR_CON                        0x0210
->> --
->> 2.29.2.729.g45daf8777d-goog
->>
->>
->> _______________________________________________
->> Linux-mediatek mailing list
->> Linux-mediatek@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+v3: Replace xas_for_each() with xa_for_each() to account for proper locking.
+
+Laura Abbott (1):
+  fs/buffer.c: Revoke LRU when trying to drop buffers
+
+ fs/buffer.c | 81 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 76 insertions(+), 5 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
