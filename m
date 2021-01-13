@@ -2,86 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917422F50B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 148CC2F50B7
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:13:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727953AbhAMRMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:12:00 -0500
-Received: from mga04.intel.com ([192.55.52.120]:40759 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727271AbhAMRL7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:11:59 -0500
-IronPort-SDR: ZiuAZ/n9IDHFOMMXbh28a57zzhBb53zN2+yQwxUt+nIMVL7UukbTvyKjO3Cllt0pzZczOULBoy
- wc896LQtbBrQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9863"; a="175658880"
-X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; 
-   d="scan'208";a="175658880"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 09:11:19 -0800
-IronPort-SDR: vzJgBHS4YBl/l/AzqUuJCLJW3mMm868A1Q5oevO/rmHrb37TNg+5W5dMNQboMufp+7nrFBu3Ll
- GUZAuHy95zqQ==
-X-IronPort-AV: E=Sophos;i="5.79,344,1602572400"; 
-   d="scan'208";a="363944293"
-Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.214.199]) ([10.212.214.199])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2021 09:11:18 -0800
-Subject: Re: [PATCH V4] arch: kernel: cpu: x86/resctrl: Takes a letter away
- and append a colon to match below struct member
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, fenghua.yu@intel.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, linux-kernel@vger.kernel.org, gustavo@embeddedor.com
-Cc:     rdunlap@infradead.org
-References: <20210113020333.29803-1-unixbhaskar@gmail.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <7e3a5c13-db5c-7399-2b80-f1284786ea77@intel.com>
-Date:   Wed, 13 Jan 2021 09:11:17 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1728002AbhAMRMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:12:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727271AbhAMRMR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 12:12:17 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0A7FC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:11:36 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id n7so1902037pgg.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:11:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=4uJELGmrgTV6oDhSBCZU6Lk6noMLvlnDJHsGzjWwBeg=;
+        b=Jo3JSUvsZRJVAEhmBGnk+e8/L/q4NABUUGd4hKij9+6rkY9MSRRP5Sb5zeeDjh/P0K
+         WgxdPdctlmPl/lWk3c7cmIL71R4rx7tG2LGNjLFFtySqxMz0Of7e4KKYxdMbk9qgCd59
+         x4jj71do/qBl8fO/abGSj1tAa6X6IPjqn+U6Bcdj7iHs+PxnA7j5wGIAVO41VULDfr+v
+         uICwldeZiWUI+B84R0ddSU3gkyBUsBPjflMG4vr43ygDIUSvL6ZG6Ws4/wOUOYIlHnxo
+         0UQIIFLYjIgY8r1igv2Xtgp+3zYf1FEftFY6Oj6A5MCf/i6/2eAHGbUfCAQEqaThZNYU
+         2zDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=4uJELGmrgTV6oDhSBCZU6Lk6noMLvlnDJHsGzjWwBeg=;
+        b=J1sUg5dlxSCvOD+MHGOUYIUNb9Fc+4iaMPY95ul5qIBbInmat52hA9nWsVyimqImBs
+         8ZV5umts7ixe35ildWoJEfwCump7y3GyveXOzmk3dBuK9MyoiU/BPPXB3jcGjK2sLT/w
+         SHZfMOn/7DPvckEtZxcfKWsiG1EXFhWKEO9ovvVMyVemby5COC23Q8jbFhU52nmgk+gr
+         xKRg7+wxUIBGX7aeEsGNWSylvx3J6JLcAM7DQpHUFPV26Nm+KTZxDGGJuLQbfSVy7h6G
+         oFceJ3SmvnEQq19WcHV+os8Mtcpo8aLnnTJcijYcudmc6v+mS7T5Av4iK0ylsNTwSAfS
+         pHew==
+X-Gm-Message-State: AOAM533rVD6mbyIAyWRPgIf0mWyJFUV8nhRBxXcJ6EjnJjO4Rq/xNPOH
+        KoECLeUhoFxozIr3v3L+tS8d4A==
+X-Google-Smtp-Source: ABdhPJzG91J+1ta+ecDGKySDQDEH5DwHx7XtDzjnWpflYz+j2oLZvfcgItXkUlAezpQcgPxInhy0sw==
+X-Received: by 2002:a63:1b22:: with SMTP id b34mr3003930pgb.132.1610557896044;
+        Wed, 13 Jan 2021 09:11:36 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id p3sm3333425pjg.53.2021.01.13.09.11.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 09:11:35 -0800 (PST)
+Date:   Wed, 13 Jan 2021 09:11:28 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jason Baron <jbaron@akamai.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        peterz@infradead.org, aarcange@redhat.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] KVM: x86: introduce definitions to support static
+ calls for kvm_x86_ops
+Message-ID: <X/8pwE24sQmNuznq@google.com>
+References: <cover.1610379877.git.jbaron@akamai.com>
+ <ce483ce4a1920a3c1c4e5deea11648d75f2a7b80.1610379877.git.jbaron@akamai.com>
+ <ee071807-5ce5-60c1-c5df-b0b3e068b2ba@redhat.com>
+ <6026c2a4-57bf-e045-b62d-30b2490ee331@akamai.com>
 MIME-Version: 1.0
-In-Reply-To: <20210113020333.29803-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6026c2a4-57bf-e045-b62d-30b2490ee331@akamai.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhaskar,
-
-The prefix in the subject line should be "x86/resctrl:" only. The 
-subject line could be (also taking liberty to shorten it here):
-x86/resctrl: Fix typo and append a colon to match struct member
-
-I would like to repeat my suggestion made in response to your previous 
-version, especially if you are planning cleanup in many areas of the 
-kernel: Use "git log" to take a look at the custom of patches in the 
-area you are contributing to. While the kernel may appear to be a single 
-code base there can be different customs in the various subsystems.
-
-On 1/12/2021 6:03 PM, Bhaskar Chowdhury wrote:
-> s/kernlfs/kernfs/
-> s/@mon_data_kn/@mon_data_kn:/
+On Wed, Jan 13, 2021, Jason Baron wrote:
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
-> Changes from V3: Fix the subject line typo stuc to struct and mention cpu architecture
->   arch/x86/kernel/cpu/resctrl/internal.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> On 1/13/21 7:53 AM, Paolo Bonzini wrote:
+> > #define KVM_X86_OP(func) \
+> >   static_call_update(kvm_x86_##func, kvm_x86_ops.func)
+> > #define KVM_X86_OP_NULL(func) \
+> >   static_call_update(kvm_x86_##func, kvm_x86_ops.func)
+> > #include <asm/kvm-x86-ops.h>
+> > 
+> > In that case vmx.c and svm.c could define KVM_X86_OP_NULL to an empty
+> > string and list the optional callbacks manually.
+> > 
 > 
-> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> index ee71c47844cb..ef9e2c0809b8 100644
-> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -142,7 +142,7 @@ enum rdtgrp_mode {
-> 
->   /**
->    * struct mongroup - store mon group's data in resctrl fs.
-> - * @mon_data_kn		kernlfs node for the mon_data directory
-> + * @mon_data_kn:		kernfs node for the mon_data directory
->    * @parent:			parent rdtgrp
->    * @crdtgrp_list:		child rdtgroup node list
->    * @rmid:			rmid for this rdtgroup
-> --
-> 2.20.1
-> 
+> Ok, yes, this all makes sense. So I looked at vmx/svm definitions
+> and I see that there are 5 definitions that are common that
+> don't use the vmx or svm prefix:
 
-Reinette
+We'll rename the helpers when doing the conversion, i.e. you can safely assume
+that all VMX/SVM functions will use the pattern {vmx,svm}_##func.  I did all the
+renaming a few months back, but it got tossed away when svm.c was broken up.
+
+> .update_exception_bitmap = update_exception_bitmap,
+> .enable_nmi_window = enable_nmi_window,
+> .enable_irq_window = enable_irq_window,
+> .update_cr8_intercept = update_cr8_intercept,
+> .enable_smi_window = enable_smi_window,
