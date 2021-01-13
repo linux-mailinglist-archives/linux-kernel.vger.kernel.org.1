@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2742F46DF
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E8E2F46E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 09:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727146AbhAMIt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 03:49:57 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:14097 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726569AbhAMIt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 03:49:57 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DG1MZ02Qjz9ty2b;
-        Wed, 13 Jan 2021 09:49:14 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id w2qC_Hl_dFfO; Wed, 13 Jan 2021 09:49:13 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DG1MY67tTz9ty2Z;
-        Wed, 13 Jan 2021 09:49:13 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id CE5818B7FC;
-        Wed, 13 Jan 2021 09:49:14 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 9x9Yr362zsLB; Wed, 13 Jan 2021 09:49:14 +0100 (CET)
-Received: from [172.25.230.103] (po15451.idsi0.si.c-s.fr [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A284A8B7FB;
-        Wed, 13 Jan 2021 09:49:14 +0100 (CET)
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: SPI not working on 5.10 and 5.11, bisected to 766c6b63aa04 ("spi: fix
- client driver breakages when using GPIO descriptors")
-To:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-spi <linux-spi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>
-Message-ID: <dc5d8d35-31aa-b36d-72b0-17c8a7c13061@csgroup.eu>
-Date:   Wed, 13 Jan 2021 09:49:12 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1727171AbhAMIui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 03:50:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726900AbhAMIuh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 03:50:37 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3837C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:49:57 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id z21so1067091pgj.4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 00:49:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=GmUxp2i9/ls4jbfKHAxa1rq9T2F6H/PzjNNAVFN28no=;
+        b=Qx2TyElpWLNjYbk8m/+90E+AZnuXQ8WXuUpuX0eAPizIX/Mha1z7a6K6YofaVUWg2h
+         T84cFo3H+Uv8POrtug45HUfPwwklSnYZ/LiHWEZiqg9ldhfOmuLzTlucKSEbeIxnJUtr
+         em2v8fCzERnyXk1MMX0DirsvwWS1XOx4DdsQBZZIn2ERNBmMZx/qJ/GAlRHn/9Gv90hb
+         NODDr/qA/2D/GlN6OzzmEbNrGqN9TsGu3EIHwXTF2ZyL95xdwHPqilukdQfz+VsFvrBb
+         FeyBhtFHm5/UXuqzzS7kXPScpPwWYYJSfyl6qmT0YyQbX8+yWMlvW+9LS4HEp+AE2BtY
+         UpjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=GmUxp2i9/ls4jbfKHAxa1rq9T2F6H/PzjNNAVFN28no=;
+        b=HCgpQEq/oKjo+0xi/mEselX0BNkrcLBhzRSBkr/rkjV9tCwCLJA+u+JacbLN+5fKwS
+         tM7yopSaQ+NdJ9EWcpOlkDJn36HkSiJJMZIK995+0vL+aBRerH7Vn/Qk0pNRXNm3mogP
+         5W9wIN8tFRMJ4Tx3Y7REZIDOM75JSNz7ShH1Z7UUfhocXV5weo8K6Y8q48dgeBY3tjpR
+         JU7nnD2v3W/7YVTkXg2MSyWNMwOpWxoWc5fefWIzqPVTFe3UrMfHKkXLuppCe6GJnRGo
+         kf5LdmOWqqe/0T17eM4+dvqvd/+4QpHPHe2cVS36xHke8PBAUa8gwNfzjo0nItoz7wMV
+         jIPQ==
+X-Gm-Message-State: AOAM532OjwkOAnrOik4v4IJnRDVeqKEZ/5s3GCQOcZSizpvp/cQATv4t
+        gAoNUMaMyvTHUjldgGaqZOR59UX0VKSfKNFKnA==
+X-Google-Smtp-Source: ABdhPJxp3EzdAAWpaHecQI2slXdclU8NBh50djNkVWJcuOamcVSQtVVNZIIysP17CnP+MP/jbURwpw==
+X-Received: by 2002:a63:4d59:: with SMTP id n25mr1126715pgl.122.1610527796885;
+        Wed, 13 Jan 2021 00:49:56 -0800 (PST)
+Received: from [10.85.112.53] ([139.177.225.228])
+        by smtp.gmail.com with ESMTPSA id q23sm1736420pgm.89.2021.01.13.00.49.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Jan 2021 00:49:56 -0800 (PST)
+To:     tj@kernel.org
+Cc:     Steve Wahl <steve.wahl@hpe.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+From:   Zefan Li <lizefan.x@bytedance.com>
+Subject: [PATCH 1/2] MAINTAINERS: Remove stale URLs for cpuset
+Message-ID: <75494a75-a74b-3dba-9846-7f51d805023a@bytedance.com>
+Date:   Wed, 13 Jan 2021 16:49:51 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Those URLs are no longer accessable.
 
-My board has powerpc 885 microcontroler. Temperature sensor is an LM74.
+Reported-by: Steve Wahl <steve.wahl@hpe.com>
+Signed-off-by: Zefan Li <lizefan.x@bytedance.com>
+---
+ MAINTAINERS | 2 --
+ 1 file changed, 2 deletions(-)
 
-Kernel has CONFIG_SPI_FSL_SPI and CONFIG_SPI_FSL_CPM and CONFIG_SENSORS_LM70.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 546aa66428c9..89140540aa8d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4494,8 +4494,6 @@ CONTROL GROUP - CPUSET
+ M:	Li Zefan <lizefan@huawei.com>
+ L:	cgroups@vger.kernel.org
+ S:	Maintained
+-W:	http://www.bullopensource.org/cpuset/
+-W:	http://oss.sgi.com/projects/cpusets/
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git
+ F:	Documentation/admin-guide/cgroup-v1/cpusets.rst
+ F:	include/linux/cpuset.h
+-- 
+2.25.1
 
-Since kernel 5.10, 'sensors' reports temperature 0°C on my board:
-
-	root@vgoip:~# sensors
-
-	lm74-spi-0-5
-	Adapter: SPI adapter
-	temp1:         +0.0 C
-
-	lm74-spi-0-1
-	Adapter: SPI adapter
-	temp1:         +0.0 C
-
-With commit 766c6b63aa04 ("spi: fix client driver breakages when using GPIO descriptors") reverted, 
-it is back to work:
-
-	root@vgoip:~# sensors
-
-	lm74-spi-0-5
-	Adapter: SPI adapter
-	temp1:        +38.9 C
-
-	lm74-spi-0-1
-	Adapter: SPI adapter
-	temp1:        +37.2 C
-
-
-What shall I do ?
-
-Thanks
-Christophe
