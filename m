@@ -2,210 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 499C82F515E
+	by mail.lfdr.de (Postfix) with ESMTP id B6CDF2F515F
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:47:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728161AbhAMRqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:46:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727930AbhAMRqo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:46:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 291E92337F;
-        Wed, 13 Jan 2021 17:46:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610559963;
-        bh=P1q1obOCVIPW4fDUE6Iu/JviaKvmorHYg/9TVGkiS8c=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=K8rWQne1EXt+P8L/P3vncKBK9n/yQ8rg8j69ZBtRMBZGy8R5hdqO0lHg8n6X1BU8E
-         OC2kmm7PbTlT4IGKfXZ+wtn1kxAkL9kzlLoXzUalIIsdHKCjpgTkN5bTCP5cW917PW
-         QT1qgxOplr9+tDTnZJPhOe95a+bF+XvoA89NrhqH0In4LWfpCmhFxVkppypFbT3pAp
-         V4rx/9dJT5659NW47KqKz2u/wVr+3UOpJWSOLkWpSD4A/qJ0WgxPiEAYfLENjBmULw
-         GpxcL1ewrYh1tXHh81nu4rhKhigLHJuVk2tX1IihHnVouQKj+KxcmeHqcHoxBGjKJY
-         N90OIWwlxW+UA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id D91BF3522AC3; Wed, 13 Jan 2021 09:46:02 -0800 (PST)
-Date:   Wed, 13 Jan 2021 09:46:02 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        Sean Christopherson <seanjc@google.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
+        id S1728213AbhAMRrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:47:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727930AbhAMRrF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 12:47:05 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3BA4C061575
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:46:24 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id cc1so2082879qvb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:46:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=yq6e8x21iFfAp9S42XT6RWdIoTYB1pOUmyd5Btj/OhU=;
+        b=pXW9uEoybzqoIj0ClsaeHWBWA70T3dk9LfKY4KehGv2sIBRW6pt8trALyhItVbGu4H
+         9tLwKT/COHsIiaqB4pJVIVniXq5cKs9Jayt48MPlN/dlQa52Z3x7BbzjrXeOJhSJNVSy
+         C8Dfr5edOHoTchOEWA7hSR0dC6LwSeVpW98o/pg+Ud8BUftfN2sj8pGs4UurxqTHzsqh
+         QgfEyyP0jf0ZM6pNzVfSigllz8uB32MYTPSv6MYf9RIbRw0Wzms9Eywmz1PNMLRGPQ7E
+         W2c77ChlpCl5i2IgRm0DkoGSl+j2hywom8fhmqkyoptnglr1aBwcSCE6UpO1h5K5tQQf
+         GyEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=yq6e8x21iFfAp9S42XT6RWdIoTYB1pOUmyd5Btj/OhU=;
+        b=tnFfVfYuxNIauzAHotTTXZLFhRpsr/1+jCFWJphPZzUtMndD+t5uBJnwUUvVGn5LqB
+         uix6nsyjIGmmeCByR4eq1JOXELjbI5TbPhcufpVYsZpcWVS1zqpGw7WafyX3GwXiqp94
+         +LMiq73GXi2ep4mWwQMDD77o8mzCfI6hZy3LIBry0m6GIlTD5QD9tLn0fNMD6xho+khw
+         9oLsGLfBzND2kZA7xlBEnTrgatxvKVcDEP+KimAwvhSUF85OIXu508JHDJ0pdrk06E/Y
+         o5bhSAC+9eJ5N4LrJqta7vdVKn72Y8mwq518TcDBOIJJlg1aZM3yEJWcSdrnXrqFVA4D
+         H49Q==
+X-Gm-Message-State: AOAM530jvziNaTRC2HtC39Yf9gn7ooqLhYQtBx92CEtgDceUxT8vEYyI
+        LQ+3meA62Ppy/wnwoozojScMuV7XLwKUPTnfjcc=
+X-Google-Smtp-Source: ABdhPJzS7C3fXkCFtTS1k+n5KJxSa8FK7Odsr7nIM4YbAujjTqK+Vcd3DdI5pG4jpzHCj32dv7hQovKq7ag/NYZGHrQ=
+Sender: "ndesaulniers via sendgmr" 
+        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:584:: with SMTP id
+ 126mr4753855ybf.112.1610559983954; Wed, 13 Jan 2021 09:46:23 -0800 (PST)
+Date:   Wed, 13 Jan 2021 09:46:20 -0800
+In-Reply-To: <20210113165923.acvycpcu5tzksbbi@treble>
+Message-Id: <20210113174620.958429-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <20210113165923.acvycpcu5tzksbbi@treble>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH] Documentation: asm-annotation: clarify .L local symbol names
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>
-Subject: Re: [PATCH v3] x86/sgx: Synchronize encl->srcu in sgx_encl_release().
-Message-ID: <20210113174602.GV2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201216134920.21161-1-jarkko@kernel.org>
- <20210105145749.GF28649@zn.tnic>
- <X/zoarV7gd/LNo4A@kernel.org>
- <20210112183550.GK13086@zn.tnic>
- <X/8rX1yFxiN79QCn@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/8rX1yFxiN79QCn@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Mark Brown <broonie@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 07:18:23PM +0200, Jarkko Sakkinen wrote:
-> On Tue, Jan 12, 2021 at 07:35:50PM +0100, Borislav Petkov wrote:
-> > + paulmck.
-> > 
-> > On Tue, Jan 12, 2021 at 02:08:10AM +0200, Jarkko Sakkinen wrote:
-> > > On Tue, Jan 05, 2021 at 03:57:49PM +0100, Borislav Petkov wrote:
-> > > > On Wed, Dec 16, 2020 at 03:49:20PM +0200, Jarkko Sakkinen wrote:
-> > > > > Add synchronize_srcu_expedited() to sgx_encl_release() to catch a grace
-> > > > > period initiated by sgx_mmu_notifier_release().
-> > > > > 
-> > > > > A trivial example of a failing sequence with tasks A and B:
-> > > > > 
-> > > > > 1. A: -> sgx_release()
-> > > > > 2. B: -> sgx_mmu_notifier_release()
-> > > > > 3. B: -> list_del_rcu()
-> > > > > 3. A: -> sgx_encl_release()
-> > > > > 4. A: -> cleanup_srcu_struct()
-> > > > > 
-> > > > > The loop in sgx_release() observes an empty list because B has removed its
-> > > > > entry in the middle, and calls cleanup_srcu_struct() before B has a chance
-> > > > > to calls synchronize_srcu().
-> > > > 
-> > > > Leading to what? NULL ptr?
-> > > > 
-> > > > https://lkml.kernel.org/r/X9e2jOWz1hfXVpQ5@google.com
-> > > > 
-> > > > already suggested that you should explain the bug better and add the
-> > > > splat but I'm still missing that explanation.
-> > > 
-> > > OK, I'll try to explain it how I understand the issue.
-> > > 
-> > > Consider this loop in the VFS release hook (sgx_release):
-> > > 
-> > > 	/*
-> > > 	 * Drain the remaining mm_list entries. At this point the list contains
-> > > 	 * entries for processes, which have closed the enclave file but have
-> > > 	 * not exited yet. The processes, which have exited, are gone from the
-> > > 	 * list by sgx_mmu_notifier_release().
-> > > 	 */
-> > > 	for ( ; ; )  {
-> > > 		spin_lock(&encl->mm_lock);
-> > > 
-> > > 		if (list_empty(&encl->mm_list)) {
-> > > 			encl_mm = NULL;
-> > > 		} else {
-> > > 			encl_mm = list_first_entry(&encl->mm_list,
-> > > 						   struct sgx_encl_mm, list);
-> > > 			list_del_rcu(&encl_mm->list);
-> > > 		}
-> > > 
-> > > 		spin_unlock(&encl->mm_lock);
-> > > 
-> > > 		/* The enclave is no longer mapped by any mm. */
-> > > 		if (!encl_mm)
-> > > 			break;
-> > > 
-> > > 		synchronize_srcu(&encl->srcu);
-> > > 		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
-> > > 		kfree(encl_mm);
-> > > 	}
-> > > 
-> > > 
-> > > At this point all processes have closed the enclave file, but that doesn't
-> > > mean that they all have exited yet.
-> > > 
-> > > Now, let's imagine that there is exactly one entry in the encl->mm_list.
-> > > and sgx_release() execution gets scheduled right after returning from
-> > > synchronize_srcu().
-> > > 
-> > > With some bad luck, some process comes and removes that last entry befoe
-> > > sgx_release() acquires mm_lock. The loop in sgx_release() just leaves
-> > > 
-> > > 		/* The enclave is no longer mapped by any mm. */
-> > > 		if (!encl_mm)
-> > > 			break;
-> > > 
-> > > No synchronize_srcu().
-> > > 
-> > > After writing this, I think that the placement for synchronize_srcu()
-> > > in this patch is not best possible. It should be rather that the
-> > > above loop would also call synchronize_srcu() when leaving.
-> > > 
-> > > I.e. the code change would result:
-> > > 
-> > > 	for ( ; ; )  {
-> > > 		spin_lock(&encl->mm_lock);
-> > > 
-> > > 		if (list_empty(&encl->mm_list)) {
-> > > 			encl_mm = NULL;
-> > > 		} else {
-> > > 			encl_mm = list_first_entry(&encl->mm_list,
-> > > 						   struct sgx_encl_mm, list);
-> > > 			list_del_rcu(&encl_mm->list);
-> > > 		}
-> > > 
-> > > 		spin_unlock(&encl->mm_lock);
-> > > 
-> > >                 /* 
-> > >                  * synchronize_srcu() is mandatory *even* when the list was
-> > >                  * empty, in order make sure that grace periods stays in
-> > >                  * sync even when another task took away the last entry
-> > >                  * (i.e. exiting process when it deletes its mm_list).
-> > >                  */
-> > > 		synchronize_srcu(&encl->srcu);
-> > > 
-> > > 		/* The enclave is no longer mapped by any mm. */
-> > > 		if (!encl_mm)
-> > > 			break;
-> > > 
-> > > 		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
-> > > 		kfree(encl_mm);
-> > > 	}
-> > > 
-> > > What do you think? Does this start to make more sense now?
-> > > I don't have logs for this but the bug can be also reasoned.
-> > 
-> > It does. Now you need to write it up in a detailed form so that it is
-> > clear to readers months/years from now what exactly can happen. You can
-> > use a two-column format like
-> > 
-> > 	CPU A				CPU B
-> > 
-> > Bla
-> > 					Blu
-> > 
-> > This happens now here
-> > 					But this needs to happen there
-> > 
-> > and so on.
-> > 
-> > Also, from reading up a bit on this, Documentation/RCU/checklist.rst says
-> > 
-> > "Use of the expedited primitives should be restricted to rare
-> > configuration-change operations that would not normally be undertaken
-> > while a real-time workload is running."
-> > 
-> > so why are you using synchronize_srcu_expedited()? Grepping the tree
-> > reveals only a couple of call sites only... but I've almost no clue of
-> > RCU so lemme CC Paul.
-> 
-> It spun out of this discussion:
-> 
-> https://lore.kernel.org/linux-sgx/20201215213517.GA34761@kernel.org/raw
-> 
-> My reasoning was that this is not a common case. The main loop
-> that uses synchronize_srcu().
+Use more precise language and move the text to a region in the docs to
+show that this constraint is not just for SYM_CODE_START*.
 
-It seems to me that loading and unloading SGX enclaves qualifies as a
-configuration operation, so use of synchronize_srcu_expedited() should be
-just fine in that case.  This of course implies that SGX enclaves should
-not be loaded or unloaded while an aggressive real-time application
-is running.  Which might well be the case for other reasons.
+Suggested-by: Mark Brown <broonie@kernel.org>
+Suggested-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
+ Documentation/asm-annotations.rst | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-So I believe synchronize_srcu_expedited() should be fine in this case.
+diff --git a/Documentation/asm-annotations.rst b/Documentation/asm-annotations.rst
+index e711ff98102a..76424e0431f4 100644
+--- a/Documentation/asm-annotations.rst
++++ b/Documentation/asm-annotations.rst
+@@ -100,6 +100,11 @@ Instruction Macros
+ ~~~~~~~~~~~~~~~~~~
+ This section covers ``SYM_FUNC_*`` and ``SYM_CODE_*`` enumerated above.
+ 
++``objtool`` requires that all code must be contained in an ELF symbol. Symbol
++names that have a ``.L`` prefix do not emit symbol table entries. ``.L``
++prefixed symbols can be used within a code region, but should be avoided for
++denoting a range of code via ``SYM_*_START/END`` annotations.
++
+ * ``SYM_FUNC_START`` and ``SYM_FUNC_START_LOCAL`` are supposed to be **the
+   most frequent markings**. They are used for functions with standard calling
+   conventions -- global and local. Like in C, they both align the functions to
+@@ -153,15 +158,6 @@ This section covers ``SYM_FUNC_*`` and ``SYM_CODE_*`` enumerated above.
+   To some extent, this category corresponds to deprecated ``ENTRY`` and
+   ``END``. Except ``END`` had several other meanings too.
+ 
+-  Developers should avoid using local symbol names that are prefixed with
+-  ``.L``, as this has special meaning for the assembler; a symbol entry will
+-  not be emitted into the symbol table. This can prevent ``objtool`` from
+-  generating correct unwind info. Symbols with STB_LOCAL binding may still be
+-  used, and ``.L`` prefixed local symbol names are still generally useable
+-  within a function, but ``.L`` prefixed local symbol names should not be used
+-  to denote the beginning or end of code regions via
+-  ``SYM_CODE_START_LOCAL``/``SYM_CODE_END``.
+-
+ * ``SYM_INNER_LABEL*`` is used to denote a label inside some
+   ``SYM_{CODE,FUNC}_START`` and ``SYM_{CODE,FUNC}_END``.  They are very similar
+   to C labels, except they can be made global. An example of use::
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
 
-							Thanx, Paul
