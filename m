@@ -2,139 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D5D12F48AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C0F2F48AF
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:32:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727408AbhAMK17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 05:27:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727085AbhAMK17 (ORCPT
+        id S1727481AbhAMK2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 05:28:10 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:37536 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727417AbhAMK2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:27:59 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D848AC061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:27:18 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id b5so904564pjl.0
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:27:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bb7P/RgeCN4wHZ9ctamzI3f0LI9M5JaYaDEfMiG22CU=;
-        b=a9aOhXhNvEVqKkI++xVcy32Wdczi0r0NkfcwCwBlN4Waaa7VpcswSseXSITCmAs+ed
-         IivTC6Bw71oV0zQmaYjdfcf86C1XSWKxIqKrcnIrDNPO6eqJSiviXfI2N87pIWsaQY9e
-         GrVAhnVAcAb07Axkdkp5f4QoCwrpIa3q+E/JpsPrDH3qerjlupCoVtNg8SLT1C+u+5Xq
-         M1de+cYbne6Ii0rYMNfTedTSfCr3Q1osR53/6w7EuI8QCr63i9cw6+mKl83HFNTuzCIo
-         MtAmnxnW4io3pVGR7Z5HTG81H4n6r/qp5A14tUfoO50rslDfK+kBUdGE8oE5JR/jGxWW
-         6ahw==
+        Wed, 13 Jan 2021 05:28:09 -0500
+Received: by mail-io1-f71.google.com with SMTP id l22so2113751iom.4
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:27:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bb7P/RgeCN4wHZ9ctamzI3f0LI9M5JaYaDEfMiG22CU=;
-        b=P0NQ8JyJX3D46L3QgE5l+xb6Pr5BAxw8tMH4/AF4UKxRyBP2TR7QB2Xn7IwIlTc/bI
-         KVlYuOgXpa3jx39ivjdSRIhQeDgStwxsbEXiCsAwg14VRgvVPPmpkioOvNOHHgpGH/Hy
-         XLNjyPDesmqYkreIR4KIqF/O+QasAO5M0c05pAjpXMepbPt62vFEryqLHGXUe1EOkk63
-         stQ3Xx48vMzomiVBAsg+vYd9cdhhhzgrPSOY5T1eIQsMWPAyD3khYoxYjWHqtRfWcwYs
-         vjfaWwxixMONNyjd7rjAraXuJqWzm9st6KnfVVNELCiFEf1E7+TStcbMzszs82CFqr+D
-         Dk6w==
-X-Gm-Message-State: AOAM531mx/TOKnKKm5yZ2zlhBAfvJc4w5Qw7K1jifvFk5ez5Zedvcdgd
-        Z/nkoTr/aRd/Ca+9xsV5Dax7T7pJs74zTPu45u0=
-X-Google-Smtp-Source: ABdhPJyvKQfadxeq0CM+vz0GStXqGNp7tzAY6AggqbXs47YeqApZfTRgFt85Fm0hz5k0uAMqdIuCHNnaJ0lRDHObyCY=
-X-Received: by 2002:a17:90a:1050:: with SMTP id y16mr1633937pjd.181.1610533638357;
- Wed, 13 Jan 2021 02:27:18 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Jp5VjL+jpjBW595+oPVu2b30QzQh/C/HNqg9KiGkCc4=;
+        b=Y4gzs/PnGsn0TTBXosi1Gp0Bjb5LvnZzrbbkhDbecBDHCmAXqCNInUsWc+5v/g8cvd
+         7gm5VnjZTuhRPtRpySep7OzmEvN/JdhDUzl+f8YMxbyJSdUnod9vWSs3ZUg50RFp4pej
+         05MssuqS3GvoZCI5xm/6Ko8MRup0LG0+hCvW8w7wp40KNnpHq7LVGyjJiNAXQd7uVjeW
+         kua/ReBpSBG7iizIpMH6WrcRRLYCyt4wXN1Uv3VUVZHUOFmwJfH+EqT+Z0930xX+lwC8
+         pU8D2a2XDX7SB90POwQmbl1ghj7n/fkYrEX0L6wFALVswYLJKiANyFBeck9hA9GKOlhq
+         4aAg==
+X-Gm-Message-State: AOAM532c2qV9s0k2ejeNHmZooiBgET0Iyue5FgmKAKC8jWXQR5Nz5ww0
+        wgqPzVY0Y4ux+5DAvsVSXpZsw0NayGvecAa9ICRx6F2AwxUX
+X-Google-Smtp-Source: ABdhPJy7G1VvD9b/lF62lCN9U89knU5g8Cw2lnZokW1Z44DCZM4u/XY579mw0ushu1ahm53ZcxbWDjG0Goj5mAtd9tE0KNfeeOWm
 MIME-Version: 1.0
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <20210109055645.GA2009@1wt.eu> <CAK8P3a1C+EUvyLm3fo8TGOV39hhaxhtDM3cX_QLc-=WCzRksMw@mail.gmail.com>
- <6fb7e3f5035d44fab9801001f1811b59@AcuMS.aculab.com>
-In-Reply-To: <6fb7e3f5035d44fab9801001f1811b59@AcuMS.aculab.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 13 Jan 2021 12:27:01 +0200
-Message-ID: <CAHp75Vf43_zqDX9K4GmkRd7fujY2zC8=LneSMFpC2qnJL_uG1A@mail.gmail.com>
-Subject: Re: Old platforms: bring out your dead
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Willy Tarreau <w@1wt.eu>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.osdn.me>,
-        Mark Salter <msalter@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+X-Received: by 2002:a02:d45:: with SMTP id 66mr1848412jax.120.1610533647748;
+ Wed, 13 Jan 2021 02:27:27 -0800 (PST)
+Date:   Wed, 13 Jan 2021 02:27:27 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f9191905b8c59562@google.com>
+Subject: kernel BUG at net/core/dev.c:NUM!
+From:   syzbot <syzbot+2393580080a2da190f04@syzkaller.appspotmail.com>
+To:     andrii@kernel.org, andriin@fb.com, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        edumazet@google.com, f.fainelli@gmail.com, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, roopa@cumulusnetworks.com,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 11:55 AM David Laight <David.Laight@aculab.com> wrote:
-> From: Arnd Bergmann
-> > Sent: 09 January 2021 21:53
-> >
-> > On Sat, Jan 9, 2021 at 6:56 AM Willy Tarreau <w@1wt.eu> wrote:
-> > >
-> > > On Fri, Jan 08, 2021 at 11:55:06PM +0100, Arnd Bergmann wrote:
-> > > > * 80486SX/DX: 80386 CPUs were dropped in 2012, and there are
-> > > >   indications that 486 have no users either on recent kernels.
-> > > >   There is still the Vortex86 family of SoCs, and the oldest of those were
-> > > >   486SX-class, but all the modern ones are 586-class.
-> > >
-> > > These also are the last generation of fanless x86 boards with 100% compatible
-> > > controllers, that some people have probably kept around because these don't
-> > > age much and have plenty of connectivity. I've used an old one a few times
-> > > to plug in an old floppy drive, ISA SCSI controllers to access an old tape
-> > > drive and a few such things. That doesn't mean that it's a good justification
-> > > not to remove them, what I rather mean is that *if* there is no benefit
-> > > in dropping them maybe we can keep them. On the other hand, good luck for
-> > > running a modern OS on these, when 16MB-32MB RAM was about the maximum that
-> > > was commonly found by then (though if people kept them around that's probably
-> > > because they were well equipped, like that 64MB 386DX I'm having :-)).
-> >
-> > I think there were 486s with up to 256MB, which would still qualify as barely
-> > usable for a minimal desktop, or as comfortable for a deeply embedded
-> > system. The main limit was apparently the cacheable RAM, which is limited
-> > by the amount of L2 cache -- you needed a rare 1MB of external L2-cache to
-> > have 256MB of cached RAM, while more common 256KB of cache would
-> > be good for 64MB. Vortex86SX has no FPU or L2 cache at all, but supports
-> > 256MB of DDR2.
->
-> There are also some newer (well less than 30 year old) cpus that are
+Hello,
 
-(less than 10 years actually)
+syzbot found the following issue on:
 
-> basically 486 but have a few extra instructions - probably just cpuid
-> and (IIRC) rdtsc.
-> Designed for low power embedded use they won't ever have been suitable
-> for a desktop - but are probably fast enough for some uses.
-> I'm not sure how much keeping 486 support actually costs, 386 was a
-> PITA - but the 486 fixed most of those issues.
+HEAD commit:    c49243e8 Merge branch 'net-fix-issues-around-register_netd..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=11da7ba8d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bacfc914704718d3
+dashboard link: https://syzkaller.appspot.com/bug?extid=2393580080a2da190f04
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13704c3f500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=160cc357500000
 
-Right, we have "last of mohicans" (to date) Intel Quark family of CPUs
-(486 core + few i586 features).
-This is for the embedded world and probably not for powerful use.
+The issue was bisected to:
 
--- 
-With Best Regards,
-Andy Shevchenko
+commit c269a24ce057abfc31130960e96ab197ef6ab196
+Author: Jakub Kicinski <kuba@kernel.org>
+Date:   Wed Jan 6 18:40:06 2021 +0000
+
+    net: make free_netdev() more lenient with unregistering devices
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13901b50d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10501b50d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=17901b50d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2393580080a2da190f04@syzkaller.appspotmail.com
+Fixes: c269a24ce057 ("net: make free_netdev() more lenient with unregistering devices")
+
+------------[ cut here ]------------
+kernel BUG at net/core/dev.c:10661!
+invalid opcode: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 8459 Comm: syz-executor375 Not tainted 5.11.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:free_netdev+0x4b3/0x5e0 net/core/dev.c:10661
+Code: c0 01 38 d0 7c 08 84 d2 0f 85 1a 01 00 00 0f b7 83 32 02 00 00 48 29 c3 48 89 df e8 d7 77 ac fa e9 47 ff ff ff e8 3d 1e 80 fa <0f> 0b e8 36 1e 80 fa 0f b6 2d 39 e1 e8 05 31 ff 89 ee e8 a6 24 80
+RSP: 0018:ffffc9000163f1a0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88802814a000 RCX: 0000000000000000
+RDX: ffff888021678000 RSI: ffffffff86f25763 RDI: 0000000000000003
+RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff86f25683 R11: 0000000000000003 R12: ffff888028149ef8
+R13: ffff88802814a058 R14: dffffc0000000000 R15: ffff888028149ef8
+FS:  00000000010bf880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055ade220a6d8 CR3: 0000000012719000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __rtnl_newlink+0x1484/0x16e0 net/core/rtnetlink.c:3447
+ rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3491
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5553
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4404b9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fff3e934f98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004404b9
+RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000003
+RBP: 00000000006ca018 R08: 0000000000000014 R09: 00000000004002c8
+R10: 0000000000000001 R11: 0000000000000246 R12: 0000000000401cc0
+R13: 0000000000401d50 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace ec4d68ff94a95202 ]---
+RIP: 0010:free_netdev+0x4b3/0x5e0 net/core/dev.c:10661
+Code: c0 01 38 d0 7c 08 84 d2 0f 85 1a 01 00 00 0f b7 83 32 02 00 00 48 29 c3 48 89 df e8 d7 77 ac fa e9 47 ff ff ff e8 3d 1e 80 fa <0f> 0b e8 36 1e 80 fa 0f b6 2d 39 e1 e8 05 31 ff 89 ee e8 a6 24 80
+RSP: 0018:ffffc9000163f1a0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88802814a000 RCX: 0000000000000000
+RDX: ffff888021678000 RSI: ffffffff86f25763 RDI: 0000000000000003
+RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000001
+R10: ffffffff86f25683 R11: 0000000000000003 R12: ffff888028149ef8
+R13: ffff88802814a058 R14: dffffc0000000000 R15: ffff888028149ef8
+FS:  00000000010bf880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd33803e118 CR3: 0000000012719000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
