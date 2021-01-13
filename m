@@ -2,334 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0386D2F4D98
+	by mail.lfdr.de (Postfix) with ESMTP id 945562F4D99
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 15:50:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726626AbhAMOt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 09:49:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49678 "EHLO mail.kernel.org"
+        id S1726837AbhAMOto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 09:49:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726113AbhAMOt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 09:49:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F7BF2313C;
-        Wed, 13 Jan 2021 14:48:45 +0000 (UTC)
+        id S1726641AbhAMOtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 09:49:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F94323441
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:49:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610549326;
-        bh=2otNbm5t7xt3YbxV8p6/1iGGkAtXuJ7ieg1zr6BOh3s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M4ZfwrgfTYFxxAc4KddnHZhHUxzQxMlE03U8ORnVEy1u5dg/eaRzFQGfoAC4hS6XK
-         nD0gno38GZj1jmvo3xy9G5WanHtUbbXe2gaEjqF75nvlARdOt7QU452r9CYxQV2lmW
-         oD/AimEFcMbzOQFRN0jmsaja64DbYnIZeKguqXpCaEobJ3LhLRT7ByYJotWKbNLfY2
-         XmWqgc4aOMfaFO3i+5CFcuIrHpu2yGs+6bGs5maNVP9Wk9uBfH2CEXX8zona7Rt8UM
-         HCiIEnq3BcFVRfYM7gGaAyZH6QsDE9Jaxhw6SV6pYQ+Ko1CSWUIIVN18dzHcDReIxL
-         sUPatbD5x7kFQ==
-Date:   Wed, 13 Jan 2021 15:48:42 +0100
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Frank van der Linden <fllinden@amazon.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] module: harden ELF info handling
-Message-ID: <20210113144841.GB17705@linux-8ccs>
-References: <20210107193001.12039-1-fllinden@amazon.com>
+        s=k20201202; t=1610549342;
+        bh=rmV8owGCpFXhOYGxvXH4BciLrbTOCUh6TbLgnrlRO9g=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fvg6oFhX2hJv5CDD5bcSfWJN7vUElTIg0iS60jQ83HfDM/uT9b9u2vSzszcDACO5z
+         IUvtCRvc7/DZRhul9bzxhgRdCGHUy5ym2BNJiNNJHMr+KsmNH+S1fIuB08Z9EkXCTc
+         QihPMFbU4JzjmOqfEh7He/FXFlgQS2AEjOL9OSjz+xRYiilKkoOcnHjBVe8v5+H8pS
+         uhWjlX0mahXxkpwOAm7doPkwIN6UcG6Diw12TMwtfu/T3Z9f+jOEuxC7S+mQBo3ee6
+         ICOAy2wyQLoQLMmzClNNK3YgFZe+EqApFgyBFqWDMqQ1FaxRLM3kkVI3TiqycLVNID
+         CRCwIC+qb1Opw==
+Received: by mail-oo1-f45.google.com with SMTP id o5so562537oop.12
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 06:49:02 -0800 (PST)
+X-Gm-Message-State: AOAM530491lxTlVzcAnVC+81/WEGOygyeDG3F4eKhILjF4QTe5rGRI2J
+        2R5kyY8eZLO9ElmIOuUjophWC60JFUm35v+gY1U=
+X-Google-Smtp-Source: ABdhPJy7hAXwvhKYnoz7qGktT1NwoOyJwoy2bWA1HMbx4xYCgFxTCSZ9y+vn8/UcKJjmfHnQFjv5Smo59BLlMtAmWNg=
+X-Received: by 2002:a4a:2cc9:: with SMTP id o192mr1518016ooo.66.1610549341686;
+ Wed, 13 Jan 2021 06:49:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210107193001.12039-1-fllinden@amazon.com>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.28-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <5ffbe3de.1c69fb81.ea87c.a145@mx.google.com> <85cdd7c0-d01a-ec8a-cb83-54953cb78789@collabora.com>
+ <CAKfTPtA9Z+dCskqSh3atgOxMRdJi-nzQD_MrUpL8yuRw_UrCCw@mail.gmail.com>
+In-Reply-To: <CAKfTPtA9Z+dCskqSh3atgOxMRdJi-nzQD_MrUpL8yuRw_UrCCw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 13 Jan 2021 15:48:44 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1PFe9OcGV0==5JL3jdt1y3ZhEtGmO+CYfqWgz=htvCrg@mail.gmail.com>
+Message-ID: <CAK8P3a1PFe9OcGV0==5JL3jdt1y3ZhEtGmO+CYfqWgz=htvCrg@mail.gmail.com>
+Subject: Re: pmwg/integ bisection: baseline.login on rk3328-rock64
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Guillaume Tucker <guillaume.tucker@collabora.com>,
+        "kernelci-results@groups.io" <kernelci-results@groups.io>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Will Deacon <will@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Max Krummenacher <max.oss.09@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Walle <michael@walle.cc>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Frank van der Linden [07/01/21 19:30 +0000]:
->5fdc7db644 ("module: setup load info before module_sig_check()")
->moved the ELF setup, so that it was done before the signature
->check. This made the module name available to signature error
->messages.
+On Tue, Jan 12, 2021 at 2:46 PM Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+> On Tue, 12 Jan 2021 at 12:25, Guillaume Tucker <guillaume.tucker@collabora.com> wrote:
+> >
+> > Some details can be found here:
+> >
+> >   https://kernelci.org/test/case/id/5ffb978de38e717501c94cd8/
+> >
+> > The bisection was run with CONFIG_RANDOMIZE_BASE=y enabled, but
+> > the same issue occurs with a plain defconfig from that branch.
+> > Results with other configs and platforms can be compared here:
+> >
+> >   https://kernelci.org/test/job/pmwg/branch/integ/kernel/v5.11-rc3-13-gcea05edf93998/plan/baseline/
+> >
+> > Please let us know if you need some help to test a fix or debug
+> > the issue.
 >
->However, the checks for ELF correctness in setup_load_info
->are not sufficient to prevent bad memory references due to
->corrupted offset fields, indices, etc.
->
->So, there's a regression in behavior here: a corrupt and unsigned
->(or badly signed) module, which might previously have been rejected
->immediately, can now cause an oops/crash.
->
->Harden ELF handling for module loading by doing the following:
->
->- Move the signature check back up so that it comes before ELF
->  initialization. It's best to do the signature check to see
->  if we can trust the module, before using the ELF structures
->  inside it. This also makes checks against info->len
->  more accurate again, as this field will be reduced by the
->  length of the signature in mod_check_sig().
->
->  The module name is now once again not available for error
->  messages during the signature check, but that seems like
->  a fair tradeoff.
->
->- Check if sections have offset / size fields that at least don't
->  exceed the length of the module.
->
->- Check if sections have section name offsets that don't fall
->  outside the section name table.
->
->- Add a few other sanity checks against invalid section indices,
->  etc.
->
->This is not an exhaustive consistency check, but the idea is to
->at least get through the signature and blacklist checks without
->crashing because of corrupted ELF info, and to error out gracefully
->for most issues that would have caused problems later on.
->
->Fixes: 5fdc7db644 ("module: setup load info before module_sig_check()")
->Signed-off-by: Frank van der Linden <fllinden@amazon.com>
->---
-> kernel/module.c           | 143 ++++++++++++++++++++++++++++++++++++++++------
-> kernel/module_signature.c |   2 +-
-> kernel/module_signing.c   |   2 +-
-> 3 files changed, 126 insertions(+), 21 deletions(-)
->
->diff --git a/kernel/module.c b/kernel/module.c
->index 4bf30e4b3eaa..34fc6c85eb65 100644
->--- a/kernel/module.c
->+++ b/kernel/module.c
->@@ -2964,7 +2964,7 @@ static int module_sig_check(struct load_info *info, int flags)
-> 	}
->
-> 	if (is_module_sig_enforced()) {
->-		pr_notice("%s: loading of %s is rejected\n", info->name, reason);
->+		pr_notice("Loading of %s is rejected\n", reason);
-> 		return -EKEYREJECTED;
-> 	}
->
->@@ -2977,9 +2977,33 @@ static int module_sig_check(struct load_info *info, int flags)
-> }
-> #endif /* !CONFIG_MODULE_SIG */
->
->-/* Sanity checks against invalid binaries, wrong arch, weird elf version. */
->-static int elf_header_check(struct load_info *info)
->+static int validate_section_offset(struct load_info *info, Elf_Shdr *shdr)
-> {
->+	unsigned long secend;
->+
->+	/*
->+	 * Check for both overflow and offset/size being
->+	 * too large.
->+	 */
->+	secend = shdr->sh_offset + shdr->sh_size;
->+	if (secend < shdr->sh_offset || secend > info->len)
->+		return -ENOEXEC;
->+
->+	return 0;
->+}
->+
->+/*
->+ * Sanity checks against invalid binaries, wrong arch, weird elf version.
->+ *
->+ * Also do basic validity checks against section offsets and sizes, the
->+ * section name string table, and the indices used for it (sh_name).
->+ */
->+static int elf_validity_check(struct load_info *info)
->+{
->+	unsigned int i;
->+	Elf_Shdr *shdr, *strhdr;
->+	int err;
->+
-> 	if (info->len < sizeof(*(info->hdr)))
-> 		return -ENOEXEC;
->
->@@ -2989,11 +3013,78 @@ static int elf_header_check(struct load_info *info)
-> 	    || info->hdr->e_shentsize != sizeof(Elf_Shdr))
-> 		return -ENOEXEC;
->
->+	/*
->+	 * e_shnum is 16 bits, and sizeof(Elf_Shdr) is
->+	 * known and small. So e_shnum * sizeof(Elf_Shdr)
->+	 * will not overflow unsigned long on any platform.
->+	 */
-> 	if (info->hdr->e_shoff >= info->len
-> 	    || (info->hdr->e_shnum * sizeof(Elf_Shdr) >
-> 		info->len - info->hdr->e_shoff))
-> 		return -ENOEXEC;
->
->+	info->sechdrs = (void *)info->hdr + info->hdr->e_shoff;
->+
->+	/*
->+	 * Verify if the section name table index is valid.
->+	 */
->+	if (info->hdr->e_shstrndx == SHN_UNDEF
->+	    || info->hdr->e_shstrndx >= info->hdr->e_shnum)
->+		return -ENOEXEC;
->+
->+	strhdr = &info->sechdrs[info->hdr->e_shstrndx];
->+	err = validate_section_offset(info, strhdr);
->+	if (err < 0)
->+		return err;
->+
->+	/*
->+	 * The section name table must be NUL-terminated, as required
->+	 * by the spec. This makes strcmp and pr_* calls that access
->+	 * strings in the section safe.
->+	 */
->+	info->secstrings = (void *)info->hdr + strhdr->sh_offset;
->+	if (info->secstrings[strhdr->sh_size - 1] != '\0')
->+		return -ENOEXEC;
->+
->+	/*
->+	 * The code assumes that section 0 has a length of zero and
->+	 * an addr of zero, so check for it.
->+	 */
->+	if (info->sechdrs[0].sh_type != SHT_NULL
->+	    || info->sechdrs[0].sh_size != 0
->+	    || info->sechdrs[0].sh_addr != 0)
->+		return -ENOEXEC;
->+
->+	for (i = 1; i < info->hdr->e_shnum; i++) {
->+		shdr = &info->sechdrs[i];
->+		switch (shdr->sh_type) {
->+		case SHT_NULL:
->+		case SHT_NOBITS:
->+			continue;
->+		case SHT_SYMTAB:
->+			if (shdr->sh_link == SHN_UNDEF
->+			    || shdr->sh_link >= info->hdr->e_shnum)
->+				return -ENOEXEC;
->+			fallthrough;
->+		default:
->+			err = validate_section_offset(info, shdr);
->+			if (err < 0) {
->+				pr_err("Invalid ELF section in module (section %u type %u)\n",
->+					i, shdr->sh_type);
->+				return err;
->+			}
->+
->+			if (shdr->sh_flags & SHF_ALLOC) {
->+				if (shdr->sh_name >= strhdr->sh_size) {
->+					pr_err("Invalid ELF section name in module (section num %u type %u)\n",
+> I don't have any rockchip board on which I can run tests but I can
+> push an updated version of the patch without trace events if this can
+> then be then tested on kernelci rockchip board.
 
-Small nit: Maybe remove "num", to be consistent with the other pr_err() above.
+It's odd that there is no output from the kernel at all, which
+rules out most of the options that change, as they should only
+have an effect later during boot.
 
->+					       i, shdr->sh_type);
->+					return -ENOEXEC;
->+				}
->+			}
->+			break;
->+		}
->+	}
->+
-> 	return 0;
-> }
->
->@@ -3095,11 +3186,6 @@ static int rewrite_section_headers(struct load_info *info, int flags)
->
-> 	for (i = 1; i < info->hdr->e_shnum; i++) {
-> 		Elf_Shdr *shdr = &info->sechdrs[i];
->-		if (shdr->sh_type != SHT_NOBITS
->-		    && info->len < shdr->sh_offset + shdr->sh_size) {
->-			pr_err("Module len %lu truncated\n", info->len);
->-			return -ENOEXEC;
->-		}
->
-> 		/*
-> 		 * Mark all sections sh_addr with their address in the
->@@ -3133,11 +3219,6 @@ static int setup_load_info(struct load_info *info, int flags)
-> {
-> 	unsigned int i;
->
->-	/* Set up the convenience variables */
->-	info->sechdrs = (void *)info->hdr + info->hdr->e_shoff;
->-	info->secstrings = (void *)info->hdr
->-		+ info->sechdrs[info->hdr->e_shstrndx].sh_offset;
->-
-> 	/* Try to find a name early so we can log errors with a module name */
-> 	info->index.info = find_sec(info, ".modinfo");
-> 	if (info->index.info)
->@@ -3894,26 +3975,50 @@ static int load_module(struct load_info *info, const char __user *uargs,
-> 	long err = 0;
-> 	char *after_dashes;
->
->-	err = elf_header_check(info);
->+	/*
->+	 * Do the signature check (if any) first. All that
->+	 * the signature check needs is info->len, it does
->+	 * not need any of the section info. That can be
->+	 * set up later. This will minimize the chances
->+	 * of a corrupt module causing problems before
->+	 * we even get to the signature check.
->+	 *
->+	 * The check will also adjust info->len by stripping
->+	 * off the sig length at the end of the module, making
->+	 * checks against info->len more correct.
->+	 */
->+	err = module_sig_check(info, flags);
->+	if (err)
->+		goto free_copy;
->+
->+	/*
->+	 * Do basic sanity checks against the ELF header and
->+	 * sections.
->+	 */
->+	err = elf_validity_check(info);
-> 	if (err) {
->-		pr_err("Module has invalid ELF header\n");
->+		pr_err("Module has invalid ELF structures\n");
-> 		goto free_copy;
-> 	}
->
->+	/*
->+	 * Everything checks out, so set up the section info
->+	 * in the info structure.
->+	 */
-> 	err = setup_load_info(info, flags);
-> 	if (err)
-> 		goto free_copy;
->
->+	/*
->+	 * Now that we know we have the correct module name, check
->+	 * if it's blacklisted.
->+	 */
-> 	if (blacklisted(info->name)) {
-> 		err = -EPERM;
-> 		pr_err("Module %s is blacklisted\n", info->name);
-> 		goto free_copy;
-> 	}
->
->-	err = module_sig_check(info, flags);
->-	if (err)
->-		goto free_copy;
->-
-> 	err = rewrite_section_headers(info, flags);
-> 	if (err)
-> 		goto free_copy;
->diff --git a/kernel/module_signature.c b/kernel/module_signature.c
->index 4224a1086b7d..00132d12487c 100644
->--- a/kernel/module_signature.c
->+++ b/kernel/module_signature.c
->@@ -25,7 +25,7 @@ int mod_check_sig(const struct module_signature *ms, size_t file_len,
-> 		return -EBADMSG;
->
-> 	if (ms->id_type != PKEY_ID_PKCS7) {
->-		pr_err("%s: Module is not signed with expected PKCS#7 message\n",
->+		pr_err("%s: not signed with expected PKCS#7 message\n",
-> 		       name);
-> 		return -ENOPKG;
-> 	}
->diff --git a/kernel/module_signing.c b/kernel/module_signing.c
->index 9d9fc678c91d..9a057c5d1d4d 100644
->--- a/kernel/module_signing.c
->+++ b/kernel/module_signing.c
->@@ -30,7 +30,7 @@ int mod_verify_sig(const void *mod, struct load_info *info)
->
-> 	memcpy(&ms, mod + (modlen - sizeof(ms)), sizeof(ms));
->
->-	ret = mod_check_sig(&ms, modlen, info->name);
->+	ret = mod_check_sig(&ms, modlen, info->name ?: "module");
+One thing I noticed is that the last successful boot has a kernel
+image size just under 32MB for the vmlinux, while the failing
+configurations have more than 34MB.
 
-Since info->name is not expected to be valid anymore, as we're back to
-calling mod_sig_check() first thing, perhaps just stick with
-"module"? Or was there another reason for checking info->name here?
+I looked at the loadaddress as well:
 
-Thanks,
+11:43:57.119234  Filename '536723/tftp-deploy-j462agcw/kernel/Image'.
+11:43:57.122622  Load address: 0x2000000
+11:43:59.708404  Bytes transferred = 34361856 (20c5200 hex)
+...
+11:43:59.814346  Filename
+'536723/tftp-deploy-j462agcw/ramdisk/ramdisk.cpio.gz.uboot'.
+11:43:59.814638  Load address: 0x4000000
+11:44:00.447924  Bytes transferred = 8517374 (81f6fe hex)
 
-Jessica
+So the ramdisk and the kernel overlap when the kernel is larger than 32MB!
 
+     Arnd
