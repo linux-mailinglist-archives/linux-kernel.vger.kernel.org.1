@@ -2,116 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D6F52F53B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:56:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A5A72F53BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 20:56:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728837AbhAMT4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 14:56:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51442 "EHLO
+        id S1728855AbhAMT4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 14:56:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726599AbhAMT4E (ORCPT
+        with ESMTP id S1728734AbhAMT4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 14:56:04 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C24FC061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 11:55:24 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id n11so3939874lji.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 11:55:23 -0800 (PST)
+        Wed, 13 Jan 2021 14:56:11 -0500
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E2BEC0617A2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 11:55:31 -0800 (PST)
+Received: by mail-qt1-x82c.google.com with SMTP id c14so2014557qtn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 11:55:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V0bs1fi/eE8isvmmJjMQkUZIf1rb+BYIcBHJLO1oqcE=;
-        b=fU8xQWv0qAos49JfkFhq/SvSl9DKk4R3hCOQ4ZYyfA3JjIvM9fSyygUqQVtmaCvUzT
-         O02v3DcrsaONKGxXgfUbBgPNgmFjvw9UrWHP+BT4AjzOrGrt/vGx+rxIEnYp/JjOFSsf
-         8cCMDfNLPbBE4L6R+FHyQBO4n/+akvzeZSp1rYbjjaAfNWmetJ+OPJz40voyNp+rxEKM
-         YNd5erKC9LZ3UfjpbuWOFRFIy1I4p9ki2KTunusZzgU6DEAyjCNvmyMOi3ZKUyHVswc0
-         rSPFYJd779xIcQOtVoL5Cp0NZZZK9bK59dRQ9lBsm0masjFs4u3FVlh2SUw7SCXNb3Ox
-         0jcA==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=j2KHy6ytFaCxtFCpnxnAAp4By3drKdosRae2NFEDzUM=;
+        b=IRMzoOo7LuVrwmBlGKEz71GRBRg7cY+S5B3mH3i0TSq/0N9aJCbG0tIGyFPQpMb4ya
+         M+spbtAg+5dXCn6zcd/Jrl060Cr7TMU76ssCVbKUfhbUL7Uyp9RnmbLNUNF1wZJglmWr
+         tmnaq5qtA4/PR1Tmp0nFTwXL5ztM45VMTnftRKHl3kzUzCi1IrHn5T+m+a2RNzBXBBsw
+         D/5mgCiv8McU+V8oEABeIz2Z9s70ro7kOe7JduuNX4D2YU0WJdzD8qTu8uOijnbQd2d0
+         hjyofIHk6YiUWrlvW5subuz/fltvSS4PijEe/pw8s2Xw/pDs2bMHD5jbMJrRrhg7zHph
+         15xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V0bs1fi/eE8isvmmJjMQkUZIf1rb+BYIcBHJLO1oqcE=;
-        b=rhIH6h7MFJheAKz/HoWye1qqJIBPn4ToZV7zHNfl/SztvApt/GIutWQh7+2ZMR8fSd
-         4lq1aaJnJ/NE/OoJMPv/Vue9wPTYgayr+QgtMH4Q3RBjEFqudpLJe2jIx6n0tbwUUKmn
-         a3IaRPcl0Zlll+ZBVkRqjokn/1eot5p8aMDckZ5J73UjwKKY0IVWJEkvMP5HG+RETE9E
-         bYIxxQE34Eqb3e/1ylngt9lO8R75ol9//2x1E+F51hXNUBIfQcj7KChLyDPwD03I8BOV
-         qA+Yv33xrrZA6vrR+4a3ZbsfliSFdVYXIUumIK11rpef6L9XcvwInBTfki++mxBKOXQM
-         VLBg==
-X-Gm-Message-State: AOAM5323Iyskf8h2zA7xq3/Fxvr9F9PPEQ/IuvDcehpODFOfnHKOeGQC
-        XZGy5dlvR9qh+F7X7m+ooOlKIWh94+36C7D4KOfy2A==
-X-Google-Smtp-Source: ABdhPJzpKHbnFV0lFf5tfz8ktI8u8IjUm7QAokZ+THXeZEzaW2cWimQTsgN22rWUbtrNTtMpaJrNsDZ2I7PV4RQ3cA0=
-X-Received: by 2002:a2e:9a84:: with SMTP id p4mr1506293lji.160.1610567722324;
- Wed, 13 Jan 2021 11:55:22 -0800 (PST)
-MIME-Version: 1.0
-References: <20210112214105.1440932-1-shakeelb@google.com> <20210112233108.GD99586@carbon.dhcp.thefacebook.com>
- <CAOFY-A3=mCvfvMYBJvDL1LfjgYgc3kzebRNgeg0F+e=E1hMPXA@mail.gmail.com>
- <20210112234822.GA134064@carbon.dhcp.thefacebook.com> <CAOFY-A2YbE3_GGq-QpVOHTmd=35Lt-rxi8gpXBcNVKvUzrzSNg@mail.gmail.com>
- <CALvZod4am_dNcj2+YZmraCj0+BYHB9PnQqKcrhiOnV8gzd+S3w@mail.gmail.com>
- <20210113184302.GA355124@carbon.dhcp.thefacebook.com> <CALvZod4V3M=P8_Z14asBG8bKa=mYic4_OPLeoz5M7J5tsx=Gug@mail.gmail.com>
- <CAHbLzkrqX9mJb0E_Y4Q76x=bZpg3RNxKa3k8cG_NiU+++1LWsQ@mail.gmail.com>
-In-Reply-To: <CAHbLzkrqX9mJb0E_Y4Q76x=bZpg3RNxKa3k8cG_NiU+++1LWsQ@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 13 Jan 2021 11:55:11 -0800
-Message-ID: <CALvZod4Ncf4H8VWgetWoRnOWPT4h+QDK_CY+oK11Q4akcs4Eqw@mail.gmail.com>
-Subject: Re: [PATCH] mm: net: memcg accounting for TCP rx zerocopy
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Roman Gushchin <guro@fb.com>, Arjun Roy <arjunroy@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j2KHy6ytFaCxtFCpnxnAAp4By3drKdosRae2NFEDzUM=;
+        b=Rrigtx598Et1vC2PZgg0mtcqfEcv9Hjaad+vFq1g608W8Rqf+yoR6dQm4UGFB74fD5
+         V2PrYYaidJvNW9RnEETg4y9Ps7xVFNYlxx45wS5cVSj5FLI1T9q5BYVwFPnF6o9vu58t
+         0WG75HdMBtg4/riOqtDZgugy4Hkzdyy09l+GYzztPRrmmd8bKobsKoAxX6w0oAAOAU1i
+         r//2tBKbXukbagQNj7QVucECJN0TfmdqGkHGhZWWI7wxWn0xXMkHkBoliC5CyaQP+tLd
+         TXRBbq9THbRkPVlsveDPkZ5A7sHLs2BvrENURzo7jU0YrvLcdF2qBAQ3eF1OFOKTDJqU
+         GKGQ==
+X-Gm-Message-State: AOAM530qhShN99WOlk0Y/QcX9j8Hn72EarFrCtrVMK5KEEQSe62N71KS
+        Ji1XJLCHfMl9tcV2RB2nLuCaGw==
+X-Google-Smtp-Source: ABdhPJzMjn9xG2uNycc141Ms/0p2ycjTiyqWztEAjOhW86pox433bwVX8jUG36NBwT5vor4/WVqkjA==
+X-Received: by 2002:aed:39a6:: with SMTP id m35mr3951749qte.29.1610567730489;
+        Wed, 13 Jan 2021 11:55:30 -0800 (PST)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id q6sm1716839qkd.41.2021.01.13.11.55.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Jan 2021 11:55:29 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kzmEq-000f2u-QV; Wed, 13 Jan 2021 15:55:28 -0400
+Date:   Wed, 13 Jan 2021 15:55:28 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, mike.kravetz@oracle.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 08/10] mm/gup: limit number of gup migration failures,
+ honor failures
+Message-ID: <20210113195528.GD4605@ziepe.ca>
+References: <20201217185243.3288048-1-pasha.tatashin@soleen.com>
+ <20201217185243.3288048-9-pasha.tatashin@soleen.com>
+ <20201217205048.GL5487@ziepe.ca>
+ <CA+CK2bA4F+SipkReJzFjCSC-8kZdK4yrwCQZM+TvCTrqV2CGHg@mail.gmail.com>
+ <20201218141927.GM5487@ziepe.ca>
+ <CA+CK2bDULopw649ndBybA-ST5EoRMHULwcfQcSQVKT9r8zAtwQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+CK2bDULopw649ndBybA-ST5EoRMHULwcfQcSQVKT9r8zAtwQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 11:49 AM Yang Shi <shy828301@gmail.com> wrote:
->
-> On Wed, Jan 13, 2021 at 11:13 AM Shakeel Butt <shakeelb@google.com> wrote:
+On Wed, Jan 13, 2021 at 02:43:50PM -0500, Pavel Tatashin wrote:
+> On Fri, Dec 18, 2020 at 9:19 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 > >
-> > On Wed, Jan 13, 2021 at 10:43 AM Roman Gushchin <guro@fb.com> wrote:
+> > On Thu, Dec 17, 2020 at 05:02:03PM -0500, Pavel Tatashin wrote:
+> > > Hi Jason,
 > > >
-> > > On Tue, Jan 12, 2021 at 04:18:44PM -0800, Shakeel Butt wrote:
-> > > > On Tue, Jan 12, 2021 at 4:12 PM Arjun Roy <arjunroy@google.com> wrote:
-> > > > >
-> > > > > On Tue, Jan 12, 2021 at 3:48 PM Roman Gushchin <guro@fb.com> wrote:
-> > > > > >
-> > > > [snip]
-> > > > > > Historically we have a corresponding vmstat counter to each charged page.
-> > > > > > It helps with finding accounting/stastistics issues: we can check that
-> > > > > > memory.current ~= anon + file + sock + slab + percpu + stack.
-> > > > > > It would be nice to preserve such ability.
-> > > > > >
-> > > > >
-> > > > > Perhaps one option would be to have it count as a file page, or have a
-> > > > > new category.
-> > > > >
+> > > Thank you for your comments. My replies below.
+> > >
+> > > On Thu, Dec 17, 2020 at 3:50 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 > > > >
-> > > > Oh these are actually already accounted for in NR_FILE_MAPPED.
+> > > > On Thu, Dec 17, 2020 at 01:52:41PM -0500, Pavel Tatashin wrote:
+> > > > > +/*
+> > > > > + * Verify that there are no unpinnable (movable) pages, if so return true.
+> > > > > + * Otherwise an unpinnable pages is found return false, and unpin all pages.
+> > > > > + */
+> > > > > +static bool check_and_unpin_pages(unsigned long nr_pages, struct page **pages,
+> > > > > +                               unsigned int gup_flags)
+> > > > > +{
+> > > > > +     unsigned long i, step;
+> > > > > +
+> > > > > +     for (i = 0; i < nr_pages; i += step) {
+> > > > > +             struct page *head = compound_head(pages[i]);
+> > > > > +
+> > > > > +             step = compound_nr(head) - (pages[i] - head);
+> > > >
+> > > > You can't assume that all of a compound head is in the pages array,
+> > > > this assumption would only work inside the page walkers if the page
+> > > > was found in a PMD or something.
 > > >
-> > > Well, it's confusing. Can't we fix this by looking at the new page memcg flag?
+> > > I am not sure I understand your comment. The compound head is not
+> > > taken from the pages array, and not assumed to be in it. It is exactly
+> > > the same logic as that we currently have:
+> > > https://soleen.com/source/xref/linux/mm/gup.c?r=a00cda3f#1565
 > >
-> > Yes we can. I am inclined more towards just using NR_FILE_PAGES (as
-> > Arjun suggested) instead of adding a new metric.
->
-> IMHO I tend to agree with Roman, it sounds confusing. I'm not sure how
-> people relies on the counter to have ballpark estimation about the
-> amount of reclaimable memory for specific memcg, but they are
-> unreclaimable. And, I don't think they are accounted to
-> NR_ACTIVE_FILE/NR_INACTIVE_FILE, right? So, the disparity between
-> NR_FILE_PAGES and NR_{IN}ACTIVE_FILE may be confusing either.
->
+> > Oh, that existing logic is wrong too :( Another bug.
+> 
+> I do not think there is a bug.
+> 
+> > You can't skip pages in the pages[] array under the assumption they
+> > are contiguous. ie the i+=step is wrong.
+> 
+> If pages[i] is part of a compound page, the other parts of this page
+> must be sequential in this array for this compound page
 
-Please note that due to shmem/tmpfs there is already disparity between
-NR_FILE_PAGES and NR_{IN}ACTIVE_FILE.
+That is true only if the PMD points to the page. If the PTE points to
+a tail page then there is no requirement that other PTEs are
+contiguous with the compount page.
 
-BTW I don't have a strong opinion against adding a new metric. If
-there is consensus we can add one.
+At this point we have no idea if the GUP logic got this compound page
+as a head page in a PMD or as a tail page from a PTE, so we can't
+assume a contiguous run of addresses.
+
+Look at split_huge_pmd() - it doesn't break up the compound page it
+just converts the PMD to a PTE array and scatters the tail pages to
+the PTE.
+
+I understand Matt is pushing on this idea more by having compound
+pages in the page cache, but still mapping tail pages when required.
+
+> This is actually standard migration procedure, elsewhere in the kernel
+> we migrate pages in exactly the same fashion: isolate and later
+> migrate. The isolation works for LRU only pages.
+
+But do other places cause a userspace visible random failure when LRU
+isolation fails?
+
+I don't like it at all, what is the user supposed to do?
+
+Jason
