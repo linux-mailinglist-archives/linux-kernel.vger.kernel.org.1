@@ -2,173 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7F632F40E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 02:03:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED33E2F40ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 02:04:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729952AbhAMBCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 20:02:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728154AbhAMBCQ (ORCPT
+        id S1726484AbhAMBDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 20:03:24 -0500
+Received: from mail-pj1-f54.google.com ([209.85.216.54]:35105 "EHLO
+        mail-pj1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725833AbhAMBDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 20:02:16 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920B9C061795
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 17:01:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=wnYzjTfj+0CVGKioX4F3f2Rr2TE6YgQbb5/kGOsgyiM=; b=Kyvh2i86LAY7d/OHvkygqKltvh
-        fwr9ODYbvcQs/yMz9MRhIjoAwIkm8BsuVIkOBBqAUe6r3GYbLNqNPCYrr7YLGPGU2MjK+wQAChyrg
-        6XaBESrBO7bZBzHeSaV2tHOvlSUWHWTOmUQo2ibDaPj803hM9wDzG8uUIKqrZF9wkGFZA4rSBZwGn
-        KgKVQ31ETPPrWf/ZFjJiJg1oMDD4isq+tevQC9H0R4Aa5NlSD9bylTq/RJSKJhfH8L77y2yQ0O9q6
-        xmtLIDErl/FyRAfrUNrZGXb3CdmqD+kfWXtm1IbjDZEYXxHWUoov/vDrINkBe1QYG5v1rW6IXYPOH
-        UZixV/BA==;
-Received: from [2601:1c0:6280:3f0::9abc]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kzUXT-0005UF-5E; Wed, 13 Jan 2021 01:01:32 +0000
-Subject: Re: [PATCH v2] software_node: Add kernel-doc comments to exported
- symbols
-To:     Daniel Scally <djrscally@gmail.com>, gregkh@linuxfoundation.org,
-        rafael@kernel.org, linux-kernel@vger.kernel.org
-Cc:     heikki.krogerus@linux.intel.com, sakari.ailus@linux.intel.com,
-        andriy.shevchenko@linux.intel.com
-References: <20210113000209.322218-1-djrscally@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0c5710f0-88c3-ace5-64c7-e668705b5bf8@infradead.org>
-Date:   Tue, 12 Jan 2021 17:01:25 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Tue, 12 Jan 2021 20:03:23 -0500
+Received: by mail-pj1-f54.google.com with SMTP id b5so108762pjl.0;
+        Tue, 12 Jan 2021 17:03:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SJdefQdHHGDkN/04X9AKq5NhCarHFzJzo68CUbGtMYA=;
+        b=l+fUJriZzGrKrE2zCFzvPsgPqd8chRR1mCi+aWCDkevgp1OwxmNYYDEDZCTa6/26p7
+         G27HNrfNyHItRTD1uTa4KublVCzxQ0DdaRMouLV4YUK9+Un94OGmMecKH0c1WBFeS6tj
+         Bfv41wilOEHBMPTPqScJwcGsA9r0c0uL1mpvQaRaceZ3SpEVciDbm7z6pD6/XaLBeYzp
+         k9uztKXsjiPB1kgS6DCrF3EkCqCVx89QqXH4VwLF8jjJo1A56ZQYj89ipA28qms4R2cD
+         gkt7TvLgMbdvPUYrNWnkc+49jMmdMr18FTyDNoh5T2cAVuWXicdFMpIwr3czLzi31upp
+         xdgg==
+X-Gm-Message-State: AOAM53040SBCvjqcqDft+Nj/0VPiuLxYrR7klyimhLrT2M5l/H6Ec+qB
+        QfdzAsP9yXnbTQYgr1LeSqdi4mo7NXo=
+X-Google-Smtp-Source: ABdhPJzaRPkAp4lLuPhUF/ClYlNSg0mFGS1pfnTM6VvlX09LHRjyOdyPf94Fu8FBqxYa3QuDYImvDw==
+X-Received: by 2002:a17:902:b693:b029:da:e92c:fc23 with SMTP id c19-20020a170902b693b02900dae92cfc23mr2073298pls.55.1610499762516;
+        Tue, 12 Jan 2021 17:02:42 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
+        by smtp.gmail.com with ESMTPSA id mw15sm260367pjb.34.2021.01.12.17.02.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 17:02:40 -0800 (PST)
+Date:   Tue, 12 Jan 2021 17:02:38 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     Tom Rix <trix@redhat.com>, Moritz Fischer <mdf@kernel.org>,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, lgoncalv@redhat.com, hao.wu@intel.com
+Subject: Re: [PATCH v5 1/2] fpga: dfl: add the userspace I/O device support
+ for DFL devices
+Message-ID: <X/5Grslix9mRGfW9@archbook>
+References: <1609557182-20787-1-git-send-email-yilun.xu@intel.com>
+ <1609557182-20787-2-git-send-email-yilun.xu@intel.com>
+ <X/tfZQz8tCGkabMZ@archbook>
+ <20210111061602.GA13963@yilunxu-OptiPlex-7050>
+ <dae0308c-c991-e079-73c5-68d602005c33@redhat.com>
+ <20210112001615.GA2775@yilunxu-OptiPlex-7050>
 MIME-Version: 1.0
-In-Reply-To: <20210113000209.322218-1-djrscally@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112001615.GA2775@yilunxu-OptiPlex-7050>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/12/21 4:02 PM, Daniel Scally wrote:
-> A number of functions which are exported via EXPORT_SYMBOL_GPL() lack any
-> kernel-doc comments; add those in so all exported symbols are documented.
+Hi Xu,
+
+On Tue, Jan 12, 2021 at 08:16:15AM +0800, Xu Yilun wrote:
+> On Mon, Jan 11, 2021 at 06:59:10AM -0800, Tom Rix wrote:
+> > 
+> > On 1/10/21 10:16 PM, Xu Yilun wrote:
+> > > On Sun, Jan 10, 2021 at 12:11:17PM -0800, Moritz Fischer wrote:
+> > >> On Sat, Jan 02, 2021 at 11:13:01AM +0800, Xu Yilun wrote:
+> > >>> This patch supports the DFL drivers be written in userspace. This is
+> > >>> realized by exposing the userspace I/O device interfaces.
+> > >>>
+> > >>> The driver leverages the uio_pdrv_genirq, it adds the uio_pdrv_genirq
+> > >>> platform device with the DFL device's resources, and let the generic UIO
+> > >>> platform device driver provide support to userspace access to kernel
+> > >>> interrupts and memory locations.
+> > >>>
+> > >>> The driver now supports the ether group feature. To support a new DFL
+> > >>> feature been directly accessed via UIO, its feature id should be added to
+> > >>> the driver's id_table.
+> > >>>
+> > >>> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > >>> Reviewed-by: Tom Rix <trix@redhat.com>
+> > >>> ---
+> > >>> v2: switch to the new matching algorithem. It matches DFL devices which
+> > >>>      could not be handled by other DFL drivers.
+> > >>>     refacor the code about device resources filling.
+> > >>>     fix some comments.
+> > >>> v3: split the dfl.c changes out of this patch.
+> > >>>     some minor fixes
+> > >>> v4: drop the idea of a generic matching algorithem, instead we specify
+> > >>>      each matching device in id_table.
+> > >>>     to make clear that only one irq is supported, the irq handling code
+> > >>>      is refactored.
+> > >>> v5: refactor the irq resource code.
+> > >>> ---
+> > >>>  drivers/fpga/Kconfig        | 10 +++++
+> > >>>  drivers/fpga/Makefile       |  1 +
+> > >>>  drivers/fpga/dfl-uio-pdev.c | 91 +++++++++++++++++++++++++++++++++++++++++++++
+> > >>>  3 files changed, 102 insertions(+)
+> > >>>  create mode 100644 drivers/fpga/dfl-uio-pdev.c
+> > >>>
+> > >>> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+> > >>> index 5ff9438..61445be 100644
+> > >>> --- a/drivers/fpga/Kconfig
+> > >>> +++ b/drivers/fpga/Kconfig
+> > >>> @@ -203,6 +203,16 @@ config FPGA_DFL_NIOS_INTEL_PAC_N3000
+> > >>>  	  the card. It also instantiates the SPI master (spi-altera) for
+> > >>>  	  the card's BMC (Board Management Controller).
+> > >>>  
+> > >>> +config FPGA_DFL_UIO_PDEV
+> > >>> +	tristate "FPGA DFL Driver for Userspace I/O platform devices"
+> > >>> +	depends on FPGA_DFL && UIO_PDRV_GENIRQ
+> > >>> +	help
+> > >>> +	  Enable this to allow some DFL drivers be written in userspace. It
+> > >>> +	  adds the uio_pdrv_genirq platform device with the DFL feature's
+> > >>> +	  resources, and lets the generic UIO platform device driver provide
+> > >>> +	  support for userspace access to kernel interrupts and memory
+> > >>> +	  locations.
+> > >>> +
+> > >>>  config FPGA_DFL_PCI
+> > >>>  	tristate "FPGA DFL PCIe Device Driver"
+> > >>>  	depends on PCI && FPGA_DFL
+> > >>> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
+> > >>> index 18dc9885..8847fe0 100644
+> > >>> --- a/drivers/fpga/Makefile
+> > >>> +++ b/drivers/fpga/Makefile
+> > >>> @@ -45,6 +45,7 @@ dfl-afu-objs := dfl-afu-main.o dfl-afu-region.o dfl-afu-dma-region.o
+> > >>>  dfl-afu-objs += dfl-afu-error.o
+> > >>>  
+> > >>>  obj-$(CONFIG_FPGA_DFL_NIOS_INTEL_PAC_N3000)	+= dfl-n3000-nios.o
+> > >>> +obj-$(CONFIG_FPGA_DFL_UIO_PDEV)		+= dfl-uio-pdev.o
+> > >>>  
+> > >>>  # Drivers for FPGAs which implement DFL
+> > >>>  obj-$(CONFIG_FPGA_DFL_PCI)		+= dfl-pci.o
+> > >>> diff --git a/drivers/fpga/dfl-uio-pdev.c b/drivers/fpga/dfl-uio-pdev.c
+> > >>> new file mode 100644
+> > >>> index 0000000..a4cd581
+> > >>> --- /dev/null
+> > >>> +++ b/drivers/fpga/dfl-uio-pdev.c
+> > >>> @@ -0,0 +1,91 @@
+> > >>> +// SPDX-License-Identifier: GPL-2.0
+> > >>> +/*
+> > >>> + * DFL driver for Userspace I/O platform devices
+> > >>> + *
+> > >>> + * Copyright (C) 2020 Intel Corporation, Inc.
+> > >>> + */
+> > >>> +#include <linux/dfl.h>
+> > >>> +#include <linux/errno.h>
+> > >>> +#include <linux/kernel.h>
+> > >>> +#include <linux/module.h>
+> > >>> +#include <linux/platform_device.h>
+> > >>> +#include <linux/slab.h>
+> > >>> +#include <linux/uio_driver.h>
+> > >>> +
+> > >>> +#define DRIVER_NAME "dfl-uio-pdev"
+> > >>> +
+> > >>> +static int dfl_uio_pdev_probe(struct dfl_device *ddev)
+> > >>> +{
+> > >>> +	struct platform_device_info pdevinfo = { 0 };
+> > >>> +	struct uio_info uio_pdata = { 0 };
+> > >>> +	struct platform_device *uio_pdev;
+> > >>> +	struct device *dev = &ddev->dev;
+> > >>> +	unsigned int num_res = 1;
+> > >>> +	struct resource res[2];
+> > >>> +
+> > >>> +	res[0].parent = &ddev->mmio_res;
+> > >>> +	res[0].flags = IORESOURCE_MEM;
+> > >>> +	res[0].start = ddev->mmio_res.start;
+> > >>> +	res[0].end = ddev->mmio_res.end;
+> > >>> +
+> > >>> +	if (ddev->num_irqs) {
+> > >>> +		if (ddev->num_irqs > 1)
+> > >>> +			dev_warn(&ddev->dev,
+> > >>> +				 "%d irqs for %s, but UIO only supports the first one\n",
+> > >>> +				 ddev->num_irqs, dev_name(&ddev->dev));
+> > >>> +
+> > >>> +		res[1].flags = IORESOURCE_IRQ;
+> > >>> +		res[1].start = ddev->irqs[0];
+> > >>> +		res[1].end = ddev->irqs[0];
+> > >>> +		num_res++;
+> > >>> +	}
+> > >>> +
+> > >>> +	uio_pdata.name = DRIVER_NAME;
+> > >>> +	uio_pdata.version = "0";
+> > >>> +
+> > >>> +	pdevinfo.name = "uio_pdrv_genirq";
+> > >>> +	pdevinfo.res = res;
+> > >>> +	pdevinfo.num_res = num_res;
+> > >>> +	pdevinfo.parent = &ddev->dev;
+> > >>> +	pdevinfo.id = PLATFORM_DEVID_AUTO;
+> > >>> +	pdevinfo.data = &uio_pdata;
+> > >>> +	pdevinfo.size_data = sizeof(uio_pdata);
+> > >>> +
+> > >>> +	uio_pdev = platform_device_register_full(&pdevinfo);
+> > >>> +	if (!IS_ERR(uio_pdev))
+> > >>> +		dev_set_drvdata(dev, uio_pdev);
+> > >> I'm not sure if this is more readable than:
+> > >>
+> > >>    	uio_pdev = platform_device_register_full(&pdevinfo);
+> > >>    	if (IS_ERR(uio_pdev))
+> > >>    		return PTR_ERR(uio_pdev);
+> > >>
+> > >> 	dev_set_drvdata(dev, uio_pdev);
+> > >> 	return 0;
+> > >>
+> > >> No strong preference, though ... :)
+> > > I think your version is more readable, I'll change it.
+> > >
+> > >>> +
+> > >>> +	return PTR_ERR_OR_ZERO(uio_pdev);
+> > >>> +}
+> > >>> +
+> > >>> +static void dfl_uio_pdev_remove(struct dfl_device *ddev)
+> > >>> +{
+> > >>> +	struct platform_device *uio_pdev = dev_get_drvdata(&ddev->dev);
+> > >>> +
+> > >>> +	platform_device_unregister(uio_pdev);
+> > >>> +}
+> > >>> +
+> > >>> +#define FME_FEATURE_ID_ETH_GROUP	0x10
+> > >>> +
+> > >>> +static const struct dfl_device_id dfl_uio_pdev_ids[] = {
+> > >>> +	{ FME_ID, FME_FEATURE_ID_ETH_GROUP },
+> > >> Will you want to always bind FME_FEATURE_ID_ETH_GROUP? If not I'd suggest not
+> > >> to add it here.
+> > > Actually this is not the most preferable to me. I'm always looking for a
+> > > generic way to bind the uio driver to user assigned dfl devices. But there
+> > > is concern that userspace should not be responsible for the device driver
+> > > matching in previous mail thread:
+> > >
+> > > https://lore.kernel.org/linux-fpga/1602828151-24784-2-git-send-email-yilun.xu@intel.com/
+> > >
+> > > But TBH I still didn't figure out why driver_override is not OK in this
+> > > case.
+> > >
+> > >> If you want to provide an option to somewhat non-ABI fixed bind things
+> > >> you could look at what vfio-pci does (provide a module parameter),
+> > >> otherwise use sysfs 'new_id' or 'bind'.
+> > > I would like to have a "new_id" for dfl bus driver. It is not generic to
+> > > all drivers, I need to add the attr for dfl drivers like pci do.
+> > >
+> > > My concern is how the module param or "new_id" is different from
+> > > "driver_override", seems userspace is also taking part in the device
+> > > matching.
+> > >
+> > > But since we've restarted the discussion, I'm very much willing to have
+> > > a try on the "new_id".
+> > 
+> > I don't believe there is any problem with the basic platform uio driver.
+> > 
+> > Can we split it out and work the new_id change in parallel ?
 > 
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> ---
-> Changes in version 2:
-> 	- Replaced "fwnode_handle" with either @fwnode or natural language
-> 	reference to a firmware node handle as appropriate.
+> Yes. The Ether Group is always bind to the uio driver for Intel PAC
+> N3000. So this patch works properly now. We could have a separate patch
+> for the new_id.
 > 
->  drivers/base/swnode.c | 53 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 53 insertions(+)
-> 
-> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-> index 4a4b2008fbc2..e98018aa8b2f 100644
-> --- a/drivers/base/swnode.c
-> +++ b/drivers/base/swnode.c
-> @@ -33,6 +33,13 @@ static struct kset *swnode_kset;
->  
->  static const struct fwnode_operations software_node_ops;
->  
-> +/**
-> + * is_software_node() - check if given fwnode was created from a software_node
-> + * @fwnode: The &struct fwnode_handle to check
-> + *
-> + * This function is used to check whether a given firmware node handle was
-> + * created by registering a &struct software_node or not.
-> + */
->  bool is_software_node(const struct fwnode_handle *fwnode)
->  {
->  	return !IS_ERR_OR_NULL(fwnode) && fwnode->ops == &software_node_ops;
-> @@ -71,6 +78,14 @@ software_node_to_swnode(const struct software_node *node)
->  	return swnode;
->  }
->  
-> +/**
-> + * to_software_node() - Fetch software node associated with a firmware node handle
-> + * @fwnode: The pointer to a &struct fwnode_handle to parse
-> + *
-> + * This function attempts to fetch a pointer to the &struct software_node which
-> + * was used to create the given @fwnode. Note that this will only work if the
-> + * software node has **not** been released.
-> + */
->  const struct software_node *to_software_node(const struct fwnode_handle *fwnode)
->  {
->  	const struct swnode *swnode = to_swnode(fwnode);
-> @@ -79,6 +94,14 @@ const struct software_node *to_software_node(const struct fwnode_handle *fwnode)
->  }
->  EXPORT_SYMBOL_GPL(to_software_node);
->  
-> +/**
-> + * software_node_fwnode() - Fetch firmware node associated with a given software node
-> + * @node: The pointer to a &struct software_node to parse
-> + *
-> + * This function attempts to fetch a pointer to the &struct fwnode_handle which
-> + * was created from the given @node. Note that this will only work after the
-> + * software node has been registered.
-> + */
->  struct fwnode_handle *software_node_fwnode(const struct software_node *node)
->  {
->  	struct swnode *swnode = software_node_to_swnode(node);
-> @@ -800,6 +823,27 @@ void software_node_unregister(const struct software_node *node)
->  }
->  EXPORT_SYMBOL_GPL(software_node_unregister);
->  
-> +/**
-> + * fwnode_create_software_node() - Create and register a new software_node
-> + * @properties: NULL terminated array of properties to assign to the new node
-> + * @parent: Pointer to a &struct fwnode_handle to assign as parent to the new
-> + *	    node
-> + *
-> + * NOTE: The pointer passed to @parent **must** be to a firmware node handle
+> Thanks,
+> Yilun
 
-maybe:                  passed as @parent
-?
+Sounds good, can you resend your series with the other changes
+discussed?
 
-Otherwise, LGTM.  Thanks for doing this.
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-
-> + * that was created by registering a software node, meaning is_software_node()
-> + * must return true when passed that pointer.
-> + *
-> + * This function creates a new instance of &struct software_node, assigns it a
-> + * copy of the given array of properties and registers it as a new fwnode_handle.
-> + * Freeing of the allocated memory when the fwnode_handle is no longer needed is
-> + * handled via software_node_release() and does not need to be done separately.
-> + *
-> + * Returns:
-> + * * fwnode_handle *	- On success
-> + * * -EINVAL		- When @parent is not associated with a software_node
-> + * * -ENOMEM		- When memory allocation fails
-> + * * -Other		- Propagated errors from sub-functions
-> + */
->  struct fwnode_handle *
->  fwnode_create_software_node(const struct property_entry *properties,
->  			    const struct fwnode_handle *parent)
-> @@ -832,6 +876,15 @@ fwnode_create_software_node(const struct property_entry *properties,
->  }
->  EXPORT_SYMBOL_GPL(fwnode_create_software_node);
->  
-> +/**
-> + * fwnode_remove_software_node() - Put a reference to a registered software_node
-> + * @fwnode: The pointer to the &struct fwnode_handle you want to release
-> + *
-> + * Release a reference to a registered &struct software_node. This function
-> + * differs from software_node_put() in that it takes no action if the
-> + * firmware node handle passed to @fwnode turns out not to have been created by
-> + * registering a software_node.
-> + */
->  void fwnode_remove_software_node(struct fwnode_handle *fwnode)
->  {
->  	struct swnode *swnode = to_swnode(fwnode);
-> 
-
-
--- 
-~Randy
-You can't do anything without having to do something else first.
--- Belefant's Law
+Thanks
+- Moritz
