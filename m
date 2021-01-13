@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83B8A2F5405
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:22:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D1D2F5409
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 21:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728944AbhAMUWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 15:22:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57046 "EHLO
+        id S1728966AbhAMUWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 15:22:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728931AbhAMUWA (ORCPT
+        with ESMTP id S1728757AbhAMUWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 15:22:00 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 811C7C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:21:20 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id g3so1724891plp.2
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:21:20 -0800 (PST)
+        Wed, 13 Jan 2021 15:22:53 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801DCC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:22:13 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id x12so1706480plr.10
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 12:22:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:content-transfer-encoding:in-reply-to:references
          :subject:from:cc:to:date:message-id:user-agent;
-        bh=u6R4AQJwna1Zvnrc86J9azzfneuprQEtwwFsQuVc3og=;
-        b=iGXcSZ3vf/7+lrMXeBvMLEppSiK1QOGxXONM1Ag/hWB8KQDBSrKEAAFvMTVAdX8mo2
-         904o7LBICMF1rvrHUaBQjuc6HXgMDjU58eUM9Bo7IEbtvn1CjU0CPmJprq1EE7mt5lrJ
-         kMGx+WtjLTWHCgokFZwc9UoaNZ94W7yzydDh4=
+        bh=uYdhB/IsYvawJycPiJl/5+j+upKU06AcD0VCLNhUlaw=;
+        b=Rnw8wZNgL/NU7d2j/IIT/v+xRriznTX2qmL+omKVWccZWTvuTw7vDiomDS6UqXCVtu
+         RDi9A8BkpwgPlvTPdfZPVe2go7pOrs5TIR1bdHo9kHujsG0rM7sKTOUJ+lm0Y8jnkZBb
+         VFVtI49gAXxI3why8VhPZj/v+9SFTgJJD2Q6U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:content-transfer-encoding
          :in-reply-to:references:subject:from:cc:to:date:message-id
          :user-agent;
-        bh=u6R4AQJwna1Zvnrc86J9azzfneuprQEtwwFsQuVc3og=;
-        b=siLlUBD5+d1u34Mjvt+S1YLZvNeZE3IXegN5SBPATd1YizPAhn+4cwBXoldcD1m7VL
-         +Lykkpwyx2Pr43NpIVO4E5lXCHDY+okFB4OArQMFWsBsGuJzIqDrZ+P59CTPLhXv1eP/
-         Bgl23zwDBdq0E3ZBVdzGADYSFIwQmgM03GMMKMbe/LWP+6UBccSwnLMOo+4Xv6aaCWyU
-         Eh9o/Um1Rc12llif0gS1LrbGUAdoAQWD4OTUommmopWXjboj5Q3KxVEKvJBygf1nLSKD
-         4XgPk856AocO156Uv+exXmeRetnn80sf2qH2fKXoEL8r9D8xHiDGA3/GlaO2iA2JoZJt
-         /l1g==
-X-Gm-Message-State: AOAM532yhPAGkLqMAKwxkDajWMAsRFRNQhILDlRaidaw+E9eGUW7yyeC
-        GyGGy6Z0O2X9Wk0MPrH5VuJpXw==
-X-Google-Smtp-Source: ABdhPJxcze093Ox1ieIVbzxnheFHDjdf8Jr9Y7KtYj1RjSs7J3v7DkFm1CU87BqHfMy/L0UhxaPWgA==
-X-Received: by 2002:a17:90a:3e4f:: with SMTP id t15mr1038628pjm.57.1610569279973;
-        Wed, 13 Jan 2021 12:21:19 -0800 (PST)
+        bh=uYdhB/IsYvawJycPiJl/5+j+upKU06AcD0VCLNhUlaw=;
+        b=IutSo9qsxtZQAe0Z8m47ZVVz4t2meTmm4dVvwDimkpruvSExJvyhxF2kJBnPCr84DD
+         oCQPGkpW6wwQG7PQVVL5jUquWyy2Qdi94DBnx2kbP5txYvq2kEIec97GVyDHjk/QFHCF
+         ZCRUxewHAPVDIIbzT9Z12+XUcUrjA13MWq2dPjteNABjMQOEyHFzaOsDRW4YbRN7RGkh
+         cP6Y4JBKquS8kpm5lMq1ccIlS1swm3KQ1LazxnAiPmShGqnQgqOHGPldw/9oCR2ffxUI
+         rIk+yPNlFSyPE8r2pkufBGnQrVf0P2Wl+RH4aLo7QJUtSGltQHQG8UNy19nkE5KNMwqW
+         Wo/g==
+X-Gm-Message-State: AOAM533GRnzXLEavGGrzMOL7Z+HSQyYRVWnDd25uf74mM/ZZtcLPdgCr
+        3EHp8tLHg0vW9AkVK0Hp+Ulyug==
+X-Google-Smtp-Source: ABdhPJyBYSOo7yqM0F3+0FagAGnq8EmkmQDZ6U/aCeqO+pjCFDUxsNUGyXyAWMpF2WReDekTNDdTcQ==
+X-Received: by 2002:a17:90a:8985:: with SMTP id v5mr1011035pjn.27.1610569332989;
+        Wed, 13 Jan 2021 12:22:12 -0800 (PST)
 Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id g26sm3323866pfo.35.2021.01.13.12.21.19
+        by smtp.gmail.com with ESMTPSA id l197sm3488968pfd.97.2021.01.13.12.22.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 12:21:19 -0800 (PST)
+        Wed, 13 Jan 2021 12:22:12 -0800 (PST)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -59,8 +59,8 @@ Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
         linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
 To:     khsieh@codeaurora.org
-Date:   Wed, 13 Jan 2021 12:21:17 -0800
-Message-ID: <161056927774.3661239.6186577459996584479@swboyd.mtv.corp.google.com>
+Date:   Wed, 13 Jan 2021 12:22:10 -0800
+Message-ID: <161056933099.3661239.9450322359293035316@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -81,17 +81,6 @@ Quoting khsieh@codeaurora.org (2021-01-13 09:44:24)
 > timing and start transmit video panel.
 > Therefore irq_hpd should not be handled if it occurred before connected=20
 > state.
-> >=20
-> >> are valid before start link training.
-> >=20
-> > Can this part about link rate and lane being valid be split off into
-> > another patch?
-> >=20
-> ok, i will spilt this patch into two.
-> I will merge irq_hpd event part into 2nd patch (drm/msm/dp: unplug=20
-> interrupt missed after irq_hpd handler).
 
-It looks like Rob already picked this patch up
-
-https://gitlab.freedesktop.org/drm/msm/-/commit/2b5f09cadfc576817c0450e01d4=
-54f750909b103
+Sure that's what's going on in the patch but you didn't answer my
+question. Why does irq_hpd happen before connected state?
