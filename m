@@ -2,164 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3040E2F4A9A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 695602F4A9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:50:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726010AbhAMLse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 06:48:34 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51526 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbhAMLsd (ORCPT
+        id S1726862AbhAMLsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 06:48:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726733AbhAMLsu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 06:48:33 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 93AD41C0B8B; Wed, 13 Jan 2021 12:47:50 +0100 (CET)
-Date:   Wed, 13 Jan 2021 12:47:45 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Alan Stern <stern@rowland.harvard.edu>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        Woody Suwalski <terraluna977@gmail.com>,
-        Can Guo <cang@codeaurora.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Stan Johnson <userm57@yahoo.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Hannes Reinecke <hare@suse.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 4.19 06/77] scsi: scsi_transport_spi: Set RQF_PM for
- domain validation commands
-Message-ID: <20210113114745.GA2843@duo.ucw.cz>
-References: <20210111130036.414620026@linuxfoundation.org>
- <20210111130036.711898511@linuxfoundation.org>
+        Wed, 13 Jan 2021 06:48:50 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEF9C061786;
+        Wed, 13 Jan 2021 03:48:10 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id h10so1056712pfo.9;
+        Wed, 13 Jan 2021 03:48:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ghOdi+UAykLWD4vvRom8GW+W7X9kkjSm+M80at4v8cs=;
+        b=E5C1M14oZgTKM2epjMHwhjKy+MHxWijtl5C986W/OvklnLgQladKjF2HzoEanl1JcJ
+         tj79m3FRoXJJKIER62qytSoQMmT4Rv90kesljEram0gRlS3bUwAoMzghZawp7Y2jyVN+
+         Q/6YhoF+b76l50McygrRdLCXb3ei5VVlBhaWgwHQY9JJtqzGyJEVJfiXNkB4NokstuwL
+         KlNAl4RGSU5+zYgacKW3ACLhLDuzIONmsTQOMg1o/7Hc7HUmAuLB3/7s2PnOs8DQVjdl
+         XH1sW2x/lrBQ16QcgynRxXa/YTFcLeWwNAIQ6mJZGjR6c779t5f2E6XN01op6Idn2nvv
+         IFGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ghOdi+UAykLWD4vvRom8GW+W7X9kkjSm+M80at4v8cs=;
+        b=LvQdObpDWVMVMa9SerYLHPg1Z1FyBuJV0zoIeKULb+d5Zfy1+xBvFoZbtviR8I4b/I
+         TjO075ypSfAQNhbkUAccj1I3iM+ZMvG2Knn/Ydi/GrLiI6nYwzDIT0sr4RZWFToBkTBc
+         bYkVoeSYibGh/HLnOOtOHDaNDtQMx1usrjj/JefxCbO4pkKC738lXuZl0tH2z0axeEkq
+         3srdqT4HssWdMC99kulOoPwVuxOlEPMtJqvk3esaUOaLzl3kL53E6xbECpLFgqUWEC4I
+         q9k/sX6i4i0fLkcjsTq1PPSkMoWrt1rXzZWWfCAmdImneWHd0aq11ahdI6hAZbhtPcU7
+         DIYg==
+X-Gm-Message-State: AOAM5326SQ8c6LQynlyB8LVSFBphlHIDLEhh69ZDk1zQkU3+tLPomGaj
+        a5oIs14YrDfA/NfnEEOcsPxeIbNnKDuw3Ab77zQ=
+X-Google-Smtp-Source: ABdhPJxxqm2y6TITyZX2Mnvkyi437G/FIp77NR+L/x6XWFbshuVsNnhIbDyhhIDjngyombexLukFSkP6fKTWlYoztx8=
+X-Received: by 2002:a62:19cc:0:b029:19e:321b:a22e with SMTP id
+ 195-20020a6219cc0000b029019e321ba22emr1781064pfz.73.1610538489892; Wed, 13
+ Jan 2021 03:48:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
-Content-Disposition: inline
-In-Reply-To: <20210111130036.711898511@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
+ <f48bcf43-9dcc-e48b-d29d-f75f3814398b@gmx.net> <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
+In-Reply-To: <cb5a2e11-d423-96ec-3d43-3568a109e37f@physik.fu-berlin.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 13 Jan 2021 13:47:53 +0200
+Message-ID: <CAHp75VdVmCWUeAp1FWCedGGzjzBi7b9GMeeO0Vw8HXT21Bj0eQ@mail.gmail.com>
+Subject: Re: Old platforms: bring out your dead
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     Gerhard Pircher <gerhard_pircher@gmx.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 12, 2021 at 4:47 PM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+> On 1/11/21 4:04 PM, Gerhard Pircher wrote:
 
---x+6KMIRAuhnl3hBn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> There has to be a healthy balance between hobbyist and commercial use. I understand
+> that from a commercial point of view, it doesn't make much sense to run Linux
+> on a 30-year-old computer.
 
-Hi!
+I have another impression (depending on what you put under "commercial use").
+Industrial requirements are to support for 15+ (in some cases 30+)
+years for hardware. I'm quite sure they don't want to have completely
+outdated software there either.
 
-> From: Bart Van Assche <bvanassche@acm.org>
->=20
-> [ Upstream commit cfefd9f8240a7b9fdd96fcd54cb029870b6d8d88 ]
->=20
-> Disable runtime power management during domain validation. Since a later
-> patch removes RQF_PREEMPT, set RQF_PM for domain validation commands such
-> that these are executed in the quiesced SCSI device state.
-
-This and "05/77] scsi: ide: Do not set the RQF_PREEMPT flag for" do
-not fix anything AFAICT. They are in series with other patches in
-5.10, so they may make sense there, but I don't think we need them in
-4.19.
-
-Best regards,
-								Pavel
-
-
-> index 69213842e63e0..efb9c3d902133 100644
-> --- a/drivers/scsi/scsi_transport_spi.c
-> +++ b/drivers/scsi/scsi_transport_spi.c
-> @@ -130,12 +130,16 @@ static int spi_execute(struct scsi_device *sdev, co=
-nst void *cmd,
->  		sshdr =3D &sshdr_tmp;
-> =20
->  	for(i =3D 0; i < DV_RETRIES; i++) {
-> +		/*
-> +		 * The purpose of the RQF_PM flag below is to bypass the
-> +		 * SDEV_QUIESCE state.
-> +		 */
->  		result =3D scsi_execute(sdev, cmd, dir, buffer, bufflen, sense,
->  				      sshdr, DV_TIMEOUT, /* retries */ 1,
->  				      REQ_FAILFAST_DEV |
->  				      REQ_FAILFAST_TRANSPORT |
->  				      REQ_FAILFAST_DRIVER,
-> -				      0, NULL);
-> +				      RQF_PM, NULL);
->  		if (driver_byte(result) !=3D DRIVER_SENSE ||
->  		    sshdr->sense_key !=3D UNIT_ATTENTION)
->  			break;
-> @@ -1018,23 +1022,26 @@ spi_dv_device(struct scsi_device *sdev)
->  	 */
->  	lock_system_sleep();
-> =20
-> +	if (scsi_autopm_get_device(sdev))
-> +		goto unlock_system_sleep;
-> +
->  	if (unlikely(spi_dv_in_progress(starget)))
-> -		goto unlock;
-> +		goto put_autopm;
-> =20
->  	if (unlikely(scsi_device_get(sdev)))
-> -		goto unlock;
-> +		goto put_autopm;
-> =20
->  	spi_dv_in_progress(starget) =3D 1;
-> =20
->  	buffer =3D kzalloc(len, GFP_KERNEL);
-> =20
->  	if (unlikely(!buffer))
-> -		goto out_put;
-> +		goto put_sdev;
-> =20
->  	/* We need to verify that the actual device will quiesce; the
->  	 * later target quiesce is just a nice to have */
->  	if (unlikely(scsi_device_quiesce(sdev)))
-> -		goto out_free;
-> +		goto free_buffer;
-> =20
->  	scsi_target_quiesce(starget);
-> =20
-> @@ -1054,12 +1061,16 @@ spi_dv_device(struct scsi_device *sdev)
-> =20
->  	spi_initial_dv(starget) =3D 1;
-> =20
-> - out_free:
-> +free_buffer:
->  	kfree(buffer);
-> - out_put:
-> +
-> +put_sdev:
->  	spi_dv_in_progress(starget) =3D 0;
->  	scsi_device_put(sdev);
-> -unlock:
-> +put_autopm:
-> +	scsi_autopm_put_device(sdev);
-> +
-> +unlock_system_sleep:
->  	unlock_system_sleep();
->  }
->  EXPORT_SYMBOL(spi_dv_device);
-> --=20
-> 2.27.0
->=20
->=20
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---x+6KMIRAuhnl3hBn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX/7d4QAKCRAw5/Bqldv6
-8sbLAKCT+9OMfcjuCmT+WjeO700Mh3PvygCeILWHPaLMt1vLKMnI9wi0fzIc3mk=
-=c57Q
------END PGP SIGNATURE-----
-
---x+6KMIRAuhnl3hBn--
+-- 
+With Best Regards,
+Andy Shevchenko
