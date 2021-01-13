@@ -2,80 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B96E42F4928
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:00:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD0A2F4921
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 12:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727097AbhAMK6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 05:58:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37575 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726463AbhAMK6W (ORCPT
+        id S1726988AbhAMK6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 05:58:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726939AbhAMK6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:58:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610535416;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5mnxdraFFc27NKPKaDd5/PxGNaQDZhdz3BpuYoF4+jY=;
-        b=EYzIWxYgCTBnk2L/61+d6p59OId9BJHbcLa2Pc/zg+UZmWVB7n1UAGGRgvsGd+5N8buq1n
-        9TUA6UxHEOOBoq8DbVQAbvItJavdZLgd0qGxRJ53MV/0yG25rdW+FR2Fn8F0+n0uOc6kng
-        9a4BMC+OntI/EPju47v6etD/n5CLJoQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-270-52fHE9t9Mq2VGNsItg2Cnw-1; Wed, 13 Jan 2021 05:56:52 -0500
-X-MC-Unique: 52fHE9t9Mq2VGNsItg2Cnw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D44E918C8C02;
-        Wed, 13 Jan 2021 10:56:48 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 05A086A914;
-        Wed, 13 Jan 2021 10:56:44 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <e6bd9820-8b77-57fc-f318-9b928e4d951b@schaufler-ca.com>
-References: <e6bd9820-8b77-57fc-f318-9b928e4d951b@schaufler-ca.com> <1610099389-28329-1-git-send-email-pnagar@codeaurora.org> <0f467390-e018-6051-0014-ab475ed76863@schaufler-ca.com> <dab6357acbd63edd53099d106d111bf4@codeaurora.org>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     dhowells@redhat.com, pnagar@codeaurora.org, arnd@arndb.de,
-        jmorris@namei.org, serge@hallyn.com, paul@paul-moore.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-arch@vger.kernel.org, psodagud@codeaurora.org,
-        nmardana@codeaurora.org, dsule@codeaurora.org,
-        Joe Perches <joe@perches.com>, Miguel Ojeda <ojeda@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2] selinux: security: Move selinux_state to a separate page
+        Wed, 13 Jan 2021 05:58:05 -0500
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAECCC061794
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:57:24 -0800 (PST)
+Received: by mail-vs1-xe36.google.com with SMTP id z16so872166vsp.5
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:57:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nlE4fPTZ1yMnshdBRsyZKLSjOByns15jZAxSZW9F0Lg=;
+        b=QfpVd28GcG0HkH3/PKKA/la56voRFGeZu5Ce6Q1TJ7Bzz0y5ewiZ5f9YmTAk1WSixe
+         YNH5TRPXob2qrjPW0K7VoLghSv6wJHFHlgQfE+3E/ALD3uoM3iA9/VnhwoChJbdPrWmj
+         rSmOt33UFT1Asfr5znQsk150w9qFZoY+7lWAVYuVV2FDKHVy2boDpyDG8vz1+f/sQHHr
+         Sc8TqLqUEPadbq90jAv0MVclPwVGTTGUC0kPDkDxGm3AIHbzRQ9g2UAgkPvVCYhPwmvl
+         1eXYIP+NWIiVUAaO/CM8zA8A4mNK8ryq1QrDkrLe6+kFgkBHwSEogvtlSIf7iCFDDjDC
+         Fs6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nlE4fPTZ1yMnshdBRsyZKLSjOByns15jZAxSZW9F0Lg=;
+        b=czfAmOwskNmPjDOGkSKd1j5nXWMogL0geqnUHEoI6+drubI8oA0qsIL8r/5GrO/2o9
+         XUlSU8PF6dl2bfhnr4f1L1DW9B/Vi3LAzCWUQsZUq0hURA3AJ6Unh3z6YQaC7hKFQEL5
+         t91ioxd/S4UU7c4lYukPeguJJ76kBGISgFPs7Pg7+aQWjbXrfAefUBC4iEdpQFcQY4Oz
+         bqvtnaXWv7iugRWF6JX66L6WrqyBTiGUIxRSatruRfuaeLEFwV/F+PGlhC07vqG0fj/3
+         QKmRogsRgmJHNCEwoKmqZ9OfW0TKTwtwblWkUdD3LmslTzftT7Nzp4i0UCvIwX4DfzXN
+         ThEA==
+X-Gm-Message-State: AOAM531VdYGyeSgGDt6xg6Mj/Yxm6ycRtkZIHuiiwFfYc0mzpgal4fsx
+        sZ8z95vaY76m6395JQtMEGAmH67CMbr8QJPoZ2fKkg==
+X-Google-Smtp-Source: ABdhPJylCBk8ftDalZKJOD9fy3JQxTSSB7pmwmrknCJze8Lhe4wnZeHNWqQJp+zJi/SiAZF2g/ocboESwmRaDSO2Zcw=
+X-Received: by 2002:a67:fe85:: with SMTP id b5mr1118480vsr.19.1610535444038;
+ Wed, 13 Jan 2021 02:57:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2646560.1610535404.1@warthog.procyon.org.uk>
-Date:   Wed, 13 Jan 2021 10:56:44 +0000
-Message-ID: <2646561.1610535404@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20210107055457.14948-1-a-govindraju@ti.com>
+In-Reply-To: <20210107055457.14948-1-a-govindraju@ti.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 13 Jan 2021 11:56:48 +0100
+Message-ID: <CAPDyKFp89zPwr-SS9wgR6C5RM+KhSLWbkXivxAttRqTxtiVGDQ@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: mmc: sdhci-am654: Add compatible string for
+ AM64 SoC
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Casey Schaufler <casey@schaufler-ca.com> wrote:
+On Thu, 7 Jan 2021 at 06:55, Aswath Govindraju <a-govindraju@ti.com> wrote:
+>
+> Add compatible string for AM64 SoC in device tree binding of AM654 SDHCI
+> module as the same IP is used.
+>
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
 
-> >> How would this interact with or complement __read_mostly?
-> >>
-> > Currently, the mechanism we are working on developing is
-> > independent of __read_mostly. This is something we can look more into
-> > while working further on the mechanism.
-> 
-> Please either integrate the two or explain how they differ.
-> It appears that you haven't considered how you might exploit
-> or expand the existing mechanism.
+Do you have a corresponding patch for the driver as well? I would like
+to apply them together.
 
-I think __read_mostly is about grouping stuff together that's rarely going to
-be read to make the CPU's data cache more efficient.  It doesn't stop people
-writing to such a variable.
+Kind regards
+Uffe
 
-David
-
+> ---
+>  Documentation/devicetree/bindings/mmc/sdhci-am654.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/mmc/sdhci-am654.yaml b/Documentation/devicetree/bindings/mmc/sdhci-am654.yaml
+> index 1ae945434c53..34e53db29428 100644
+> --- a/Documentation/devicetree/bindings/mmc/sdhci-am654.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/sdhci-am654.yaml
+> @@ -21,6 +21,8 @@ properties:
+>        - ti,j721e-sdhci-4bit
+>        - ti,j7200-sdhci-8bit
+>        - ti,j721e-sdhci-4bit
+> +      - ti,am64-sdhci-8bit
+> +      - ti,am64-sdhci-4bit
+>
+>    reg:
+>      maxItems: 2
+> --
+> 2.17.1
+>
