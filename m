@@ -2,84 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3992F4ECA
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:32:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3032F4EE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 16:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727630AbhAMPbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 10:31:17 -0500
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:38577 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726502AbhAMPbQ (ORCPT
+        id S1726787AbhAMPfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 10:35:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56951 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726238AbhAMPfk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 10:31:16 -0500
-Received: by mail-oi1-f177.google.com with SMTP id x13so2513442oic.5;
-        Wed, 13 Jan 2021 07:31:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HXeUcE0h/dzvnnqZWYVCwAZVkRO+AYa6kG7k/p+CyFA=;
-        b=qGDm2YKQa7DiaysFwnq8ue6MWXFY0RdQdBykHFEYkTWrbu6v4YyXeaO1QaETEfI+6M
-         ohjeCoysju8w91+F4LFdq5l95jOzywAh2VoJzqf+CpRchQZn1LlmRpX5Rp5DlgIQ1NBd
-         l6ffboJfDq962CCff9kDAb/Ksv50co7AXKDGLe2NC262d/iWIED7+0HN9Gr6+xhn8KmU
-         6BJTJsoIcFF+vMNfewM6RoRqO8CL/EXDxFhSmkSvMnD+Ym5Qbz1R48vC9MyO5PidhhRd
-         wsfLl6HXaSduYBiG7XUsCUSS5HDZCvQFxYlAi1b6R5U1naZcMl3dRhYzN7VQ/NswXOrZ
-         UKXA==
-X-Gm-Message-State: AOAM530psfcZx1Wt2CTa9184gKKVNiaPZkSuB/d1a95Hg9Jjv0TtrzmI
-        OdvMtQMsLpYpI6QloOOs3w==
-X-Google-Smtp-Source: ABdhPJwOgYfbGGuoFYtYPCMXJp2tGty9cCXvLQNHq7PwOOjKQOaX3FtPI7I2ccsJsZttW49KVkumaA==
-X-Received: by 2002:a54:4787:: with SMTP id o7mr1571234oic.113.1610551835778;
-        Wed, 13 Jan 2021 07:30:35 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a15sm438043oii.50.2021.01.13.07.30.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 07:30:34 -0800 (PST)
-Received: (nullmailer pid 2483540 invoked by uid 1000);
-        Wed, 13 Jan 2021 15:30:33 -0000
-Date:   Wed, 13 Jan 2021 09:30:33 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Philip Chen <philipchen@chromium.org>
-Cc:     swboyd@chromium.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        dianders@chromium.org, dmitry.torokhov@gmail.com,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 1/2] dt-bindings: input: Create macros for cros-ec
- keymap
-Message-ID: <20210113153033.GA2483483@robh.at.kernel.org>
-References: <20210108172316.v4.1.Iaa8a60cf2ed4b7ad5e2fbb4ad76a1c600ee36113@changeid>
+        Wed, 13 Jan 2021 10:35:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610552054;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=99Kv47P8Md/c/Sq3Lue6GRbaUcZvLDNFfpTUMeiuEkE=;
+        b=VttnT5xXpCMVNUU72G26519610ztF4uzZJchBNf8LO/JJwpej5NXUnjCVH9XsUCklzSYTw
+        tWBW8RQ80cCqnR3UPrse7N6+pExzItrQrS9v8oZp4B+Ofr7S4f355hE8yG87N6wwl2CINO
+        z4E77nU+CotZ8yplRCmuIg5YVd1lBUY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-197-WlnM_tJ8Ov2tlae2VO9mrw-1; Wed, 13 Jan 2021 10:34:12 -0500
+X-MC-Unique: WlnM_tJ8Ov2tlae2VO9mrw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D9CA0873085;
+        Wed, 13 Jan 2021 15:34:10 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.122])
+        by smtp.corp.redhat.com (Postfix) with SMTP id CDE7260D08;
+        Wed, 13 Jan 2021 15:34:09 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Wed, 13 Jan 2021 16:34:10 +0100 (CET)
+Date:   Wed, 13 Jan 2021 16:34:08 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Marcus Huewe <suse-tux@gmx.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ptrace: Remove redundant code in ptrace_attach
+Message-ID: <20210113153408.GA26690@redhat.com>
+References: <53924ce0d6f0c15575b5d7dbef2a8038bc27b4ed.1610544906.git.suse-tux@gmx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210108172316.v4.1.Iaa8a60cf2ed4b7ad5e2fbb4ad76a1c600ee36113@changeid>
+In-Reply-To: <53924ce0d6f0c15575b5d7dbef2a8038bc27b4ed.1610544906.git.suse-tux@gmx.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 08 Jan 2021 17:23:31 -0800, Philip Chen wrote:
-> In Chrome OS, the keyboard matrix can be split to two groups:
+Acked-by: Oleg Nesterov <oleg@redhat.com>
+
+
+On 01/13, Marcus Huewe wrote:
+>
+> In case of a PTRACE_SEIZE request, the PT_SEIZED flag is always set
+> at the beginning of ptrace_attach. Hence, there is no need to set
+> it again (neither "flags" nor "seize" are modified in between/after
+> the initial assignment).
 > 
-> The keymap for the top row keys can be customized based on OEM
-> preference, while the keymap for the other keys is generic/fixed
-> across boards.
-> 
-> This patch creates marcos for the keymaps of these two groups, making
-> it easier to reuse the generic portion of keymap when we override the
-> keymap in the board-specific dts for custom top row design.
-> 
-> Signed-off-by: Philip Chen <philipchen@chromium.org>
+> Signed-off-by: Marcus Huewe <suse-tux@gmx.de>
 > ---
+>  kernel/ptrace.c | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> (no changes since v2)
+> diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+> index 61db50f7ca86..059fce2ad53c 100644
+> --- a/kernel/ptrace.c
+> +++ b/kernel/ptrace.c
+> @@ -402,8 +402,6 @@ static int ptrace_attach(struct task_struct *task, long request,
+>  	if (task->ptrace)
+>  		goto unlock_tasklist;
 > 
-> Changes in v2:
-> - Rename CROS_STD_NON_TOP_ROW_KEYMAP to CROS_STD_MAIN_KEYMAP
+> -	if (seize)
+> -		flags |= PT_SEIZED;
+>  	task->ptrace = flags;
 > 
->  include/dt-bindings/input/cros-ec-keyboard.h | 103 +++++++++++++++++++
->  1 file changed, 103 insertions(+)
->  create mode 100644 include/dt-bindings/input/cros-ec-keyboard.h
+>  	ptrace_link(task, current);
+> --
+> 2.29.2
 > 
 
-Acked-by: Rob Herring <robh@kernel.org>
