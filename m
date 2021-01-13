@@ -2,223 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1A32F57AD
+	by mail.lfdr.de (Postfix) with ESMTP id EA6742F57AE
 	for <lists+linux-kernel@lfdr.de>; Thu, 14 Jan 2021 04:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729411AbhANCEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 21:04:20 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30179 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729391AbhAMWhg (ORCPT
+        id S1729799AbhANCEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 21:04:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729386AbhAMWg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 17:37:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610577366;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ycBEbjbLq+tLyeVu0NWOFp9ta3mReqQWCGmpcvx63eY=;
-        b=dwcwCfT2GswaVEhVNspQrIaRqklaXVzcBRHGnOaE17MtADG5qVvARx5o5seaCpR+7QbsiG
-        6ZKH55wzStjsiFMf22jezdJrSqyNiiqqPz0e191j9UuPfBpTkLfTCFMLtw7ZFC84MqTZ3h
-        A4qFpjdUhEcL5l7WLWrlI66qldg76qs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-531-Mp-x-NVuNYa1ow3d2d1scA-1; Wed, 13 Jan 2021 17:36:02 -0500
-X-MC-Unique: Mp-x-NVuNYa1ow3d2d1scA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 26DEC8144E1;
-        Wed, 13 Jan 2021 22:36:01 +0000 (UTC)
-Received: from f33vm.wilsonet.com.wilsonet.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5A0D36A252;
-        Wed, 13 Jan 2021 22:35:55 +0000 (UTC)
-From:   Jarod Wilson <jarod@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jarod Wilson <jarod@redhat.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: [PATCH net-next v2] bonding: add a vlan+mac tx hashing option
-Date:   Wed, 13 Jan 2021 17:35:48 -0500
-Message-Id: <20210113223548.1171655-1-jarod@redhat.com>
-In-Reply-To: <20201218193033.6138-1-jarod@redhat.com>
-References: <20201218193033.6138-1-jarod@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Wed, 13 Jan 2021 17:36:59 -0500
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C471C061795
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:36:19 -0800 (PST)
+Received: by mail-qv1-xf4a.google.com with SMTP id m8so2822425qvt.14
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 14:36:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=2NIQ1TwrG95rTm/28dxUdJZ491lS6fXAiyg3+rtP0i0=;
+        b=KylcDwdWWUEUTJhqVOxgSNBrPPoATDupoPunfBGtoclQ6YJ4OUgN6vSg4nbTgkHjZB
+         MnIKPul4jtH9KszyatKBON5g3l6fx82uawDDUKE1k+0Vu4KhSkFw8ai4wgidpEgOGc7H
+         KM+0G4gGx+b4RhVBz68OHNF9VU5PYYC0Zc0is8X5Wy/MQWODETLb/SjVGCRq92M+Qjw7
+         q7U1IRaYxzFLCApilQZLvGNLh/zlkd56fEXHGTIP8ZceEEGholW/PLgPpj73oYEccQfo
+         5y0t7IKwzrsUrRwQmdDLXCK9MYhJRYDrmQMAP4Kd6Iqrf+ufgblHGMqlPlvu3KU7DD1h
+         omvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=2NIQ1TwrG95rTm/28dxUdJZ491lS6fXAiyg3+rtP0i0=;
+        b=FrAGyjK6Bq5RvCWbPo2LU2gw9JFwT4018f0kMNhlWtODbRpWHetY+lcKhLTGbowigl
+         dRupPcx+c2ZVarUYrEgUrIRy4qDQByErsngrvhhWp2ifUHYnj/6yBwGxtrl+eCLV+TBT
+         UBEzWq8jSax/tLHGwqfVO8UFp+slKRuN3YBgNaYAy5ucTDu2HXTd9BMFqrnjiQE3fedz
+         M1vQHmORaWrjwEmpgwY5vMP9IDfq3jmQmdf6rSVlnabWBqgNwIIL588PTz1lfLyyngSi
+         3H1VJr39FZVA1S/NdblC0BkG7L4kmrDUK7cXjLqPTB945RcmTOHWnkuwcLhjQImmAVjl
+         /iWQ==
+X-Gm-Message-State: AOAM533vRD2oQWrdcidcVEoASq/MzKXaCUxMSwzgu/PK+YnD7HnKrGdL
+        tBkjIx3dRz84lZDPkji2et87cXcuiCTw
+X-Google-Smtp-Source: ABdhPJwOcLUE1fHN/M+BRjVp35jvvW0TUzFD5zgB0l5RnMBsEvMytvO9oktDPKxLZv7UBzywhS2+TVqVX5Aq
+Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
+ (user=irogers job=sendgmr) by 2002:a05:6214:80d:: with SMTP id
+ df13mr4757822qvb.10.1610577378483; Wed, 13 Jan 2021 14:36:18 -0800 (PST)
+Date:   Wed, 13 Jan 2021 14:36:09 -0800
+In-Reply-To: <20210113223609.3358812-1-irogers@google.com>
+Message-Id: <20210113223609.3358812-2-irogers@google.com>
+Mime-Version: 1.0
+References: <20210113223609.3358812-1-irogers@google.com>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH 2/2] tools/bpftool: Add -Wall when building BPF programs
+From:   Ian Rogers <irogers@google.com>
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Quentin Monnet <quentin@isovalent.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        Ilya Leoshkevich <iii@linux.ibm.com>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This comes from an end-user request, where they're running multiple VMs on
-hosts with bonded interfaces connected to some interest switch topologies,
-where 802.3ad isn't an option. They're currently running a proprietary
-solution that effectively achieves load-balancing of VMs and bandwidth
-utilization improvements with a similar form of transmission algorithm.
+No additional warnings are generated by enabling this, but having it
+enabled will help avoid regressions.
 
-Basically, each VM has it's own vlan, so it always sends its traffic out
-the same interface, unless that interface fails. Traffic gets split
-between the interfaces, maintaining a consistent path, with failover still
-available if an interface goes down.
-
-This has been rudimetarily tested to provide similar results, suitable for
-them to use to move off their current proprietary solution. A patch for
-iproute2 is forthcoming as well, to properly support the new mode there as
-well.
-
-Cc: Jay Vosburgh <j.vosburgh@gmail.com>
-Cc: Veaceslav Falico <vfalico@gmail.com>
-Cc: Andy Gospodarek <andy@greyhouse.net>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Thomas Davis <tadavis@lbl.gov>
-Cc: netdev@vger.kernel.org
-Signed-off-by: Jarod Wilson <jarod@redhat.com>
+Signed-off-by: Ian Rogers <irogers@google.com>
 ---
-v2: verified netlink interfaces working, added Documentation, changed
-tx hash mode name to vlan+mac for consistency and clarity.
+ tools/bpf/bpftool/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- Documentation/networking/bonding.rst | 13 +++++++++++++
- drivers/net/bonding/bond_main.c      | 27 +++++++++++++++++++++++++--
- drivers/net/bonding/bond_options.c   |  1 +
- include/linux/netdevice.h            |  1 +
- include/uapi/linux/if_bonding.h      |  1 +
- 5 files changed, 41 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/networking/bonding.rst b/Documentation/networking/bonding.rst
-index adc314639085..c78ceb7630a0 100644
---- a/Documentation/networking/bonding.rst
-+++ b/Documentation/networking/bonding.rst
-@@ -951,6 +951,19 @@ xmit_hash_policy
- 		packets will be distributed according to the encapsulated
- 		flows.
+diff --git a/tools/bpf/bpftool/Makefile b/tools/bpf/bpftool/Makefile
+index f897cb5fb12d..45ac2f9e0aa9 100644
+--- a/tools/bpf/bpftool/Makefile
++++ b/tools/bpf/bpftool/Makefile
+@@ -166,7 +166,7 @@ $(OUTPUT)%.bpf.o: skeleton/%.bpf.c $(OUTPUT)vmlinux.h $(LIBBPF)
+ 		-I$(srctree)/tools/include/uapi/ \
+ 		-I$(LIBBPF_PATH) \
+ 		-I$(srctree)/tools/lib \
+-		-g -O2 -target bpf -c $< -o $@ && $(LLVM_STRIP) -g $@
++		-g -O2 -Wall -target bpf -c $< -o $@ && $(LLVM_STRIP) -g $@
  
-+	vlan+mac
-+
-+		This policy uses a very rudimentary vland ID and source mac
-+		ID hash to load-balance traffic per-vlan, with failover
-+		should one leg fail. The intended use case is for a bond
-+		shared by multiple virtual machines, all configured to
-+		use their own vlan, to give lacp-like functionality
-+		without requiring lacp-capable switching hardware.
-+
-+		The formula for the hash is simply
-+
-+		hash = (vlan ID) XOR (source MAC)
-+
- 	The default value is layer2.  This option was added in bonding
- 	version 2.6.3.  In earlier versions of bonding, this parameter
- 	does not exist, and the layer2 policy is the only policy.  The
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 5fe5232cc3f3..766c09a553c1 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -164,7 +164,7 @@ module_param(xmit_hash_policy, charp, 0);
- MODULE_PARM_DESC(xmit_hash_policy, "balance-alb, balance-tlb, balance-xor, 802.3ad hashing method; "
- 				   "0 for layer 2 (default), 1 for layer 3+4, "
- 				   "2 for layer 2+3, 3 for encap layer 2+3, "
--				   "4 for encap layer 3+4");
-+				   "4 for encap layer 3+4, 5 for vlan+mac");
- module_param(arp_interval, int, 0);
- MODULE_PARM_DESC(arp_interval, "arp interval in milliseconds");
- module_param_array(arp_ip_target, charp, NULL, 0);
-@@ -1434,6 +1434,8 @@ static enum netdev_lag_hash bond_lag_hash_type(struct bonding *bond,
- 		return NETDEV_LAG_HASH_E23;
- 	case BOND_XMIT_POLICY_ENCAP34:
- 		return NETDEV_LAG_HASH_E34;
-+	case BOND_XMIT_POLICY_VLAN_SRCMAC:
-+		return NETDEV_LAG_HASH_VLAN_SRCMAC;
- 	default:
- 		return NETDEV_LAG_HASH_UNKNOWN;
- 	}
-@@ -3494,6 +3496,20 @@ static bool bond_flow_ip(struct sk_buff *skb, struct flow_keys *fk,
- 	return true;
- }
- 
-+static inline u32 bond_vlan_srcmac_hash(struct sk_buff *skb)
-+{
-+	struct ethhdr *mac_hdr = (struct ethhdr *)skb_mac_header(skb);
-+	u32 srcmac = mac_hdr->h_source[5];
-+	u16 vlan;
-+
-+	if (!skb_vlan_tag_present(skb))
-+		return srcmac;
-+
-+	vlan = skb_vlan_tag_get(skb);
-+
-+	return srcmac ^ vlan;
-+}
-+
- /* Extract the appropriate headers based on bond's xmit policy */
- static bool bond_flow_dissect(struct bonding *bond, struct sk_buff *skb,
- 			      struct flow_keys *fk)
-@@ -3501,10 +3517,14 @@ static bool bond_flow_dissect(struct bonding *bond, struct sk_buff *skb,
- 	bool l34 = bond->params.xmit_policy == BOND_XMIT_POLICY_LAYER34;
- 	int noff, proto = -1;
- 
--	if (bond->params.xmit_policy > BOND_XMIT_POLICY_LAYER23) {
-+	switch (bond->params.xmit_policy) {
-+	case BOND_XMIT_POLICY_ENCAP23:
-+	case BOND_XMIT_POLICY_ENCAP34:
- 		memset(fk, 0, sizeof(*fk));
- 		return __skb_flow_dissect(NULL, skb, &flow_keys_bonding,
- 					  fk, NULL, 0, 0, 0, 0);
-+	default:
-+		break;
- 	}
- 
- 	fk->ports.ports = 0;
-@@ -3556,6 +3576,9 @@ u32 bond_xmit_hash(struct bonding *bond, struct sk_buff *skb)
- 	    skb->l4_hash)
- 		return skb->hash;
- 
-+	if (bond->params.xmit_policy == BOND_XMIT_POLICY_VLAN_SRCMAC)
-+		return bond_vlan_srcmac_hash(skb);
-+
- 	if (bond->params.xmit_policy == BOND_XMIT_POLICY_LAYER2 ||
- 	    !bond_flow_dissect(bond, skb, &flow))
- 		return bond_eth_hash(skb);
-diff --git a/drivers/net/bonding/bond_options.c b/drivers/net/bonding/bond_options.c
-index a4e4e15f574d..deafe3587c80 100644
---- a/drivers/net/bonding/bond_options.c
-+++ b/drivers/net/bonding/bond_options.c
-@@ -101,6 +101,7 @@ static const struct bond_opt_value bond_xmit_hashtype_tbl[] = {
- 	{ "layer2+3", BOND_XMIT_POLICY_LAYER23, 0},
- 	{ "encap2+3", BOND_XMIT_POLICY_ENCAP23, 0},
- 	{ "encap3+4", BOND_XMIT_POLICY_ENCAP34, 0},
-+	{ "vlan+mac", BOND_XMIT_POLICY_VLAN_SRCMAC,  0},
- 	{ NULL,       -1,                       0},
- };
- 
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 5b949076ed23..a94ce80a2fe1 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -2615,6 +2615,7 @@ enum netdev_lag_hash {
- 	NETDEV_LAG_HASH_L23,
- 	NETDEV_LAG_HASH_E23,
- 	NETDEV_LAG_HASH_E34,
-+	NETDEV_LAG_HASH_VLAN_SRCMAC,
- 	NETDEV_LAG_HASH_UNKNOWN,
- };
- 
-diff --git a/include/uapi/linux/if_bonding.h b/include/uapi/linux/if_bonding.h
-index 45f3750aa861..e8eb4ad03cf1 100644
---- a/include/uapi/linux/if_bonding.h
-+++ b/include/uapi/linux/if_bonding.h
-@@ -94,6 +94,7 @@
- #define BOND_XMIT_POLICY_LAYER23	2 /* layer 2+3 (IP ^ MAC) */
- #define BOND_XMIT_POLICY_ENCAP23	3 /* encapsulated layer 2+3 */
- #define BOND_XMIT_POLICY_ENCAP34	4 /* encapsulated layer 3+4 */
-+#define BOND_XMIT_POLICY_VLAN_SRCMAC	5 /* vlan + source MAC */
- 
- /* 802.3ad port state definitions (43.4.2.2 in the 802.3ad standard) */
- #define LACP_STATE_LACP_ACTIVITY   0x1
+ $(OUTPUT)%.skel.h: $(OUTPUT)%.bpf.o $(BPFTOOL_BOOTSTRAP)
+ 	$(QUIET_GEN)$(BPFTOOL_BOOTSTRAP) gen skeleton $< > $@
 -- 
-2.29.2
+2.30.0.284.gd98b1dd5eaa7-goog
 
