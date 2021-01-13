@@ -2,86 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82472F40C9
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A522F40C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 01:57:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393670AbhAMAnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S2393690AbhAMAnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 12 Jan 2021 19:43:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392320AbhAMATi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 19:19:38 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E91E1C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:18:57 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id u11so524853ljo.13
-        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 16:18:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xDSBLu/dQ/DU7FQZj8b6YPh8lI8akCH+mH01uvaPees=;
-        b=oKYBO4SPdgSBJUsDMIW5CP9v8Ehx9/bCarB8oGP/mHA4+sLd3xf01hYN8meRfn3Z/C
-         VRExJAQITYqEfrJHkfEK/+BUy2bi9V125dcXdPXwnGIrz1gChJ8Eagc6sfu5NxDOsM7Q
-         s4JHrGiTwBj0egpN48LNdJhwOkgrQljcrnDdfzV8s4tuYkxOP5J3ifDaVQItl+uBWKRi
-         hjaQ04uwbDzWLPPYGOzdK8OrUuidnmRBgEslg8HxcWMOGc+R2HncERyeNHOejDUAcGLp
-         U6ugLoGlBW/HnCUEp1wdREM2Q0knqc9CwXOGdVRuSBw5YniV+N1wwskoAEZ2xBEOuVvD
-         3xUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xDSBLu/dQ/DU7FQZj8b6YPh8lI8akCH+mH01uvaPees=;
-        b=nFZ+3wOJTsKzNd8921sMv5BKig8a9vJ0hwOt6wIFlDcm7K0RlIAO4WuoOIlSEQHwY7
-         4tNaxj/Lec7LyUQ3ce03F//s86Rs+XZrVIq5H5WAvLJn22GB1IG4S4HkDEUfkbBJqn0g
-         uUTn8uYv+JKtcOGKVhoBuhOV8RMBW5HJtJZhRQZvjoz5zdUg3xH8StwJUdz24HtVMqY0
-         q0tbDI2leIZEbq5P4UwHW+7i2Y8pbEUaO2jnQDTm3A0ZgYSHqZE3+wVQaMcNbjuAMpPN
-         oBMWJFVaHLUo6P7Hva8JeiDqw6HkoScFkk/Com+/oGl/iTaR1ynQsJLt3J1dzJmihRXZ
-         R6vQ==
-X-Gm-Message-State: AOAM530AF6Bf2KFHGsDcjRDfKOiVwWSh+FDpP413tayXk2Gib6FxmOtk
-        SH03+IOyB/IKERIZpcMNwAmkI4wp8OsPcdUDYKiD3Q==
-X-Google-Smtp-Source: ABdhPJzLMkGXD6keBgkD1QE7S34ntTTrgx2rICPfCSovNaFVK6UFbwtZ7AQr2ENR3QwGr5QWxwVbsZua9hjphAbv6aQ=
-X-Received: by 2002:a2e:9a84:: with SMTP id p4mr715148lji.160.1610497136091;
- Tue, 12 Jan 2021 16:18:56 -0800 (PST)
+Received: from mail.kernel.org ([198.145.29.99]:48290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392342AbhAMAUk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 19:20:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0767623120;
+        Wed, 13 Jan 2021 00:20:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610497200;
+        bh=Wn1iOrNk2oDkf48K6nW1qlxJTGCky6NIywERUoMPzkw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=ORD9hj6SCGHt4ZRxxVygaXS7f/wbj1909zbzdQCCMbOankJGS2/3ahx6StfPjxXVl
+         ZWipJ6zund2T/7V5IFbrrphCZNvDXbFz3/h0jU56E8SMg2IFbcw10gC5JM4BKfGrSz
+         SDCUS8tnozWYup6K5+V3leUcA8WBcNmbIWPwH2O6nQRZAXyvx79cITKXz6QVUqT7BT
+         X/tY3fOi9O+0PyGoyc/AsK9pgD9+aKwzMN5bL0AtJzhnVbSxrVHcHYu8fDs85b4XAL
+         k86hZqrvCoZLGqzboN8ORBpsABADz71GM4M7505358MCayYQl/QXyrm75vMINF8AIK
+         qqVz2c+Gq/wJg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id CF3B43522AC3; Tue, 12 Jan 2021 16:19:59 -0800 (PST)
+Date:   Tue, 12 Jan 2021 16:19:59 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commits in the rcu tree
+Message-ID: <20210113001959.GO2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210113090356.3ef1b139@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210112214105.1440932-1-shakeelb@google.com> <20210112233108.GD99586@carbon.dhcp.thefacebook.com>
- <CAOFY-A3=mCvfvMYBJvDL1LfjgYgc3kzebRNgeg0F+e=E1hMPXA@mail.gmail.com>
- <20210112234822.GA134064@carbon.dhcp.thefacebook.com> <CAOFY-A2YbE3_GGq-QpVOHTmd=35Lt-rxi8gpXBcNVKvUzrzSNg@mail.gmail.com>
-In-Reply-To: <CAOFY-A2YbE3_GGq-QpVOHTmd=35Lt-rxi8gpXBcNVKvUzrzSNg@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 12 Jan 2021 16:18:44 -0800
-Message-ID: <CALvZod4am_dNcj2+YZmraCj0+BYHB9PnQqKcrhiOnV8gzd+S3w@mail.gmail.com>
-Subject: Re: [PATCH] mm: net: memcg accounting for TCP rx zerocopy
-To:     Arjun Roy <arjunroy@google.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210113090356.3ef1b139@canb.auug.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 4:12 PM Arjun Roy <arjunroy@google.com> wrote:
->
-> On Tue, Jan 12, 2021 at 3:48 PM Roman Gushchin <guro@fb.com> wrote:
-> >
-[snip]
-> > Historically we have a corresponding vmstat counter to each charged page.
-> > It helps with finding accounting/stastistics issues: we can check that
-> > memory.current ~= anon + file + sock + slab + percpu + stack.
-> > It would be nice to preserve such ability.
-> >
->
-> Perhaps one option would be to have it count as a file page, or have a
-> new category.
->
+On Wed, Jan 13, 2021 at 09:03:56AM +1100, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Commits
+> 
+>   32678deac9cd ("timer: Report ignored local enqueue in nohz mode")
+>   8beeef08bd76 ("entry: Report local wake up on resched blind zone while resuming to user")
+>   7b3f45a1ad1f ("sched: Report local wake up on resched blind zone within idle loop")
+>   4d19f38bb06c ("entry: Explicitly flush pending rcuog wakeup before last rescheduling points")
+>   a5b60c670b22 ("rcu/nocb: Trigger self-IPI on late deferred wake up before user resume")
+>   679a2750284c ("rcu/nocb: Perform deferred wake up before last idle's need_resched() check")
+>   785ff6abc514 ("rcu: Pull deferred rcuog wake up to rcu_eqs_enter() callers")
+>   d32f638a57e4 ("rcu: Remove superfluous rdp fetch")
+>   97e90370b8f3 ("rcu/nocb: Detect unsafe checks for offloaded rdp")
+> 
+> are missing a Signed-off-by from their committer.
 
-Oh these are actually already accounted for in NR_FILE_MAPPED.
+Thank you, fixed, and apologies for the hassle.
+
+(This is what happens when "git am" doesn't like a patch series,
+so I enlist git's help by pulling it from the author's tree to its
+natural location, rebasing it, but then forgetting to manually add my
+Signed-off-by...)
+
+							Thanx, Paul
