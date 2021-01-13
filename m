@@ -2,82 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B74F2F4203
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5B62F41FA
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:45:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728580AbhAMCsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 21:48:55 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:25558 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726724AbhAMCsx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 21:48:53 -0500
-X-UUID: cab90534e341438d89bdbed410e9d0b4-20210113
-X-UUID: cab90534e341438d89bdbed410e9d0b4-20210113
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1374249250; Wed, 13 Jan 2021 10:42:57 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 13 Jan 2021 10:42:55 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 13 Jan 2021 10:42:54 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Felipe Balbi <balbi@kernel.org>
-CC:     Florian Fainelli <f.fainelli@gmail.com>,
-        Al Cooper <alcooperx@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>,
-        <bcm-kernel-feedback-list@broadcom.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: [PATCH RESEND v4 11/11] usb: gadget: bdc: fix checkpatch.pl repeated word warning
-Date:   Wed, 13 Jan 2021 10:42:28 +0800
-Message-ID: <1610505748-30616-11-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1610505748-30616-1-git-send-email-chunfeng.yun@mediatek.com>
-References: <1610505748-30616-1-git-send-email-chunfeng.yun@mediatek.com>
+        id S1728537AbhAMCoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 21:44:04 -0500
+Received: from mga05.intel.com ([192.55.52.43]:42693 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728202AbhAMCoD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 21:44:03 -0500
+IronPort-SDR: EksiOWVD6ovy030obxHZJDA2PYhOAnC1oOP5pRwpRQN4GM5uUhaYkMC0lAiasTJaiX1Y+lmA6d
+ OaaLBAlFIZZg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9862"; a="262925616"
+X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; 
+   d="scan'208";a="262925616"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 18:43:22 -0800
+IronPort-SDR: OO9jggQQWgQP8BJSk/eLKhiVD7g+459JSM+lAK+8wyY/+oqr72Fpra09AJQ2PdnGhHlqauw11M
+ OWywnTOObgng==
+X-IronPort-AV: E=Sophos;i="5.79,343,1602572400"; 
+   d="scan'208";a="353281360"
+Received: from xizhang-mobl1.ccr.corp.intel.com (HELO yhuang6-mobl1.ccr.corp.intel.com) ([10.254.214.178])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2021 18:43:17 -0800
+From:   Huang Ying <ying.huang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: [PATCH] mm: Free unused swap cache page in write protection fault handler
+Date:   Wed, 13 Jan 2021 10:42:41 +0800
+Message-Id: <20210113024241.179113-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: FDAA44C23B2B42B306B13E2F2822B6FE1DF8A009A5423C91669EA343F83EFDA82000:8
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix the warning:
-WARNING:REPEATED_WORD: Possible repeated word: 'and'
+Commit 09854ba94c6a ("mm: do_wp_page() simplification") introduces an
+issue as follows.
 
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
----
-v4 resend: base on kernel5.11-rc1
-v4: no changes, but rebase on kernel 5.10-rc1
-v3: add acked-by Florian
-v2: add Cc Florian
----
- drivers/usb/gadget/udc/bdc/bdc_ep.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On a system with free memory as follow before test,
 
-diff --git a/drivers/usb/gadget/udc/bdc/bdc_ep.c b/drivers/usb/gadget/udc/bdc/bdc_ep.c
-index d227d2682dd8..8e2f20b12519 100644
---- a/drivers/usb/gadget/udc/bdc/bdc_ep.c
-+++ b/drivers/usb/gadget/udc/bdc/bdc_ep.c
-@@ -1405,7 +1405,7 @@ static int ep0_set_sel(struct bdc *bdc,
- }
- 
- /*
-- * Queue a 0 byte bd only if wLength is more than the length and and length is
-+ * Queue a 0 byte bd only if wLength is more than the length and length is
-  * a multiple of MaxPacket then queue 0 byte BD
-  */
- static int ep0_queue_zlp(struct bdc *bdc)
+              total        used        free      shared  buff/cache   available
+Mem:        1697300      160156     1459220        8648       77924     1419724
+Swap:       1048572           0           0
+
+The AnonPages filed of /proc/meminfo is 11712 kB.  After running a
+memory eater which will trigger many swapins and write protection
+faults, the free memory becomes,
+
+              total        used        free      shared  buff/cache   available
+Mem:        1697300      352620     1309004         624       35676     1252380
+Swap:       1048572      216924      831648
+
+While the /proc/meminfo shows,
+
+SwapCached:       198908 kB
+AnonPages:          1956 kB
+
+Then, with `swapoff -a`, the free memory becomes,
+
+              total        used        free      shared  buff/cache   available
+Mem:        1697300      161972     1488184        8648       47144     1433172
+Swap:             0           0           0
+
+That is, after swapins and write protection faults, many unused swap
+cache pages will be left unfreed in system.  Although the following
+page reclaiming or swapoff will free these pages, it's still better to
+free these pages at the first place.
+
+So in this patch, at the end of wp_page_copy(), the old unused swap
+cache page will be tried to be freed.  With that, after running the
+memory eater which will trigger many swapins and write protection
+faults, the free memory is,
+
+              total        used        free      shared  buff/cache   available
+Mem:        1697300      154020     1509400        1212       33880     1451524
+Swap:       1048572       18432     1030140
+
+While the /proc/meminfo shows,
+
+SwapCached:         1240 kB
+AnonPages:          1904 kB
+
+BTW: I think this should be in stable after v5.9.
+
+Fixes: 09854ba94c6a ("mm: do_wp_page() simplification")
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: Tim Chen <tim.c.chen@intel.com>
+---
+ mm/memory.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/mm/memory.c b/mm/memory.c
+index feff48e1465a..2abaff1befcb 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -2963,6 +2963,11 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
+ 				munlock_vma_page(old_page);
+ 			unlock_page(old_page);
+ 		}
++		if (page_copied && PageSwapCache(old_page) &&
++		    !page_mapped(old_page) && trylock_page(old_page)) {
++			try_to_free_swap(old_page);
++			unlock_page(old_page);
++		}
+ 		put_page(old_page);
+ 	}
+ 	return page_copied ? VM_FAULT_WRITE : 0;
 -- 
-2.18.0
+2.29.2
 
