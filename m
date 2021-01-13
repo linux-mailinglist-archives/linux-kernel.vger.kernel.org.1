@@ -2,104 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732422F51A3
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:04:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E882F51A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 19:04:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728184AbhAMSDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 13:03:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726429AbhAMSDH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 13:03:07 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A68C9C061794
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 10:02:27 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id z11so3023383qkj.7
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 10:02:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:in-reply-to:references:mime-version
-         :content-transfer-encoding:date:message-id;
-        bh=fUXJJK3InTCGIV7ZAe99E1ezMLxV/olFXGPan1G5q1I=;
-        b=ZFY+WChPGcAOl0Euup4fNuUfz/JJNcsmzvhh+XVgXR+yBJfvm7mBCBFvNS30ufNw8P
-         fgaRpRhL5WCyKF6GmwG/44MBTxYbeIVmRHxdQScVOd36qchETQYKH8r5YREkj5Uq824I
-         zDxrVp52itBMO9NG0AKWqXsvzMJi13sjJEztXE5Lulr8732GT+XYIEqruue7mpPHNVeK
-         s7Mtn6k/oXOyTR2q0Y+iCiRjdKbA1WoZFbpJjoSKEV2Qb9KgjiuBxKjDmPpi1sCOmsn1
-         /cHJT/HhZwS0+z/xpREP5O5ur7D50n+Ymv6h+GpHonAgP+9QEax6Kuw3DmE4hI5vMmRS
-         0Obg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :mime-version:content-transfer-encoding:date:message-id;
-        bh=fUXJJK3InTCGIV7ZAe99E1ezMLxV/olFXGPan1G5q1I=;
-        b=jdSFAlHHvU6h6+psFQxhJ3dgFO+nsM26eIZQHZjfvl5Yr150FF+NSo08gVWjJBTod5
-         XarKyifNNMLDuMC3Q4CGlWi7q1UbK4w+nox4Gs9Lo885mYjn88gbGaV0kxF7fd8ekxRv
-         +RLxW3xTBtCFDhqWYy/jtw/7z4N6hHe5S+MHBcScypfa0bSB1s9dDimpvAtzhSvqob42
-         0TGOQ/a6Pj6aoYsd0JhjLyBKCc+3aWjUiuBSEH8xUmN+v3KNcgedVEdqvUQYLffcnPPQ
-         sz3+8c4sAGB1D1wJENonsOxAHpzcwJXHrcsPIii0zKp7PmKgjEagVv+4lrdVRG/R1J+r
-         ldNg==
-X-Gm-Message-State: AOAM532LlEAdnJVlRPNu7UlUqAGVYS6vdTXnB3vkcm/FYNZ9C4+Nfk1R
-        Ajzh5HYVR/YyIp4X0YvA5Sv38g==
-X-Google-Smtp-Source: ABdhPJyZAkYUy5dOU4MhO6mvhRYN0Eb1LTOmCbi8TXiHMtCB1HnaaF3jcHFOjMdZylLkQpdAYEyKLg==
-X-Received: by 2002:a37:5b85:: with SMTP id p127mr3337519qkb.180.1610560946855;
-        Wed, 13 Jan 2021 10:02:26 -0800 (PST)
-Received: from turing-police ([2601:5c0:c380:d61::359])
-        by smtp.gmail.com with ESMTPSA id j30sm1397975qtl.43.2021.01.13.10.02.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 10:02:25 -0800 (PST)
-Sender: Valdis Kletnieks <valdis@vt.edu>
-From:   "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis Kl=?utf-8?Q?=c4=93?=tnieks" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] gcc-plugins: fix gcc 11 indigestion with plugins...
-In-Reply-To: <20210113170836.xvlq5xlmkjpi4zx7@treble>
-References: <38485.1610500756@turing-police>
- <20210113170836.xvlq5xlmkjpi4zx7@treble>
-Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1610560944_6220P";
-         micalg=pgp-sha1; protocol="application/pgp-signature"
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 13 Jan 2021 13:02:24 -0500
-Message-ID: <93580.1610560944@turing-police>
+        id S1728180AbhAMSEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 13:04:14 -0500
+Received: from foss.arm.com ([217.140.110.172]:40062 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727893AbhAMSEN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 13:04:13 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A1C051FB;
+        Wed, 13 Jan 2021 10:03:27 -0800 (PST)
+Received: from [10.57.56.43] (unknown [10.57.56.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D66F23F66E;
+        Wed, 13 Jan 2021 10:03:18 -0800 (PST)
+Subject: Re: [RFC PATCH v3 2/6] swiotlb: Add restricted DMA pool
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Claire Chang <tientzu@chromium.org>, robh+dt@kernel.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        joro@8bytes.org, will@kernel.org, frowand.list@gmail.com,
+        konrad.wilk@oracle.com, boris.ostrovsky@oracle.com,
+        jgross@suse.com, sstabellini@kernel.org, hch@lst.de,
+        m.szyprowski@samsung.com
+Cc:     drinkcat@chromium.org, devicetree@vger.kernel.org,
+        heikki.krogerus@linux.intel.com, saravanak@google.com,
+        peterz@infradead.org, xypron.glpk@gmx.de,
+        rafael.j.wysocki@intel.com, linux-kernel@vger.kernel.org,
+        andriy.shevchenko@linux.intel.com, bgolaszewski@baylibre.com,
+        iommu@lists.linux-foundation.org, grant.likely@arm.com,
+        rdunlap@infradead.org, gregkh@linuxfoundation.org,
+        xen-devel@lists.xenproject.org, dan.j.williams@intel.com,
+        treding@nvidia.com, linuxppc-dev@lists.ozlabs.org, mingo@kernel.org
+References: <20210106034124.30560-1-tientzu@chromium.org>
+ <20210106034124.30560-3-tientzu@chromium.org>
+ <95ae9c1e-c1f1-5736-fe86-12ced1f648f9@gmail.com>
+ <7ed51025f051f65f3dfe10a88caeb648821994b1.camel@suse.de>
+ <4c4989b5-f825-7e04-ca66-038cf6b9d5e9@arm.com>
+ <9b4fe35f-a880-fcea-0591-b65406abbfa8@gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <7cb70e95-f352-5fde-cc0a-b2a65b07ef29@arm.com>
+Date:   Wed, 13 Jan 2021 18:03:16 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <9b4fe35f-a880-fcea-0591-b65406abbfa8@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---==_Exmh_1610560944_6220P
-Content-Type: text/plain; charset=us-ascii
+On 2021-01-13 17:43, Florian Fainelli wrote:
+> On 1/13/21 7:27 AM, Robin Murphy wrote:
+>> On 2021-01-13 13:59, Nicolas Saenz Julienne wrote:
+>>> Hi All,
+>>>
+>>> On Tue, 2021-01-12 at 16:03 -0800, Florian Fainelli wrote:
+>>>> On 1/5/21 7:41 PM, Claire Chang wrote:
+>>>>> Add the initialization function to create restricted DMA pools from
+>>>>> matching reserved-memory nodes in the device tree.
+>>>>>
+>>>>> Signed-off-by: Claire Chang <tientzu@chromium.org>
+>>>>> ---
+>>>>>    include/linux/device.h  |   4 ++
+>>>>>    include/linux/swiotlb.h |   7 +-
+>>>>>    kernel/dma/Kconfig      |   1 +
+>>>>>    kernel/dma/swiotlb.c    | 144
+>>>>> ++++++++++++++++++++++++++++++++++------
+>>>>>    4 files changed, 131 insertions(+), 25 deletions(-)
+>>>>>
+>>>>> diff --git a/include/linux/device.h b/include/linux/device.h
+>>>>> index 89bb8b84173e..ca6f71ec8871 100644
+>>>>> --- a/include/linux/device.h
+>>>>> +++ b/include/linux/device.h
+>>>>> @@ -413,6 +413,7 @@ struct dev_links_info {
+>>>>>     * @dma_pools:    Dma pools (if dma'ble device).
+>>>>>     * @dma_mem:    Internal for coherent mem override.
+>>>>>     * @cma_area:    Contiguous memory area for dma allocations
+>>>>> + * @dma_io_tlb_mem: Internal for swiotlb io_tlb_mem override.
+>>>>>     * @archdata:    For arch-specific additions.
+>>>>>     * @of_node:    Associated device tree node.
+>>>>>     * @fwnode:    Associated device node supplied by platform firmware.
+>>>>> @@ -515,6 +516,9 @@ struct device {
+>>>>>    #ifdef CONFIG_DMA_CMA
+>>>>>        struct cma *cma_area;        /* contiguous memory area for dma
+>>>>>                           allocations */
+>>>>> +#endif
+>>>>> +#ifdef CONFIG_SWIOTLB
+>>>>> +    struct io_tlb_mem    *dma_io_tlb_mem;
+>>>>>    #endif
+>>>>>        /* arch specific additions */
+>>>>>        struct dev_archdata    archdata;
+>>>>> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+>>>>> index dd8eb57cbb8f..a1bbd7788885 100644
+>>>>> --- a/include/linux/swiotlb.h
+>>>>> +++ b/include/linux/swiotlb.h
+>>>>> @@ -76,12 +76,13 @@ extern enum swiotlb_force swiotlb_force;
+>>>>>     *
+>>>>>     * @start:    The start address of the swiotlb memory pool. Used
+>>>>> to do a quick
+>>>>>     *        range check to see if the memory was in fact allocated
+>>>>> by this
+>>>>> - *        API.
+>>>>> + *        API. For restricted DMA pool, this is device tree
+>>>>> adjustable.
+>>>>
+>>>> Maybe write it as this is "firmware adjustable" such that when/if ACPI
+>>>> needs something like this, the description does not need updating.
+>>
+>> TBH I really don't think this needs calling out at all. Even in the
+>> regular case, the details of exactly how and where the pool is allocated
+>> are beyond the scope of this code - architectures already have several
+>> ways to control that and make their own decisions.
+>>
+>>>>
+>>>> [snip]
+>>>>
+>>>>> +static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
+>>>>> +                    struct device *dev)
+>>>>> +{
+>>>>> +    struct io_tlb_mem *mem = rmem->priv;
+>>>>> +    int ret;
+>>>>> +
+>>>>> +    if (dev->dma_io_tlb_mem)
+>>>>> +        return -EBUSY;
+>>>>> +
+>>>>> +    if (!mem) {
+>>>>> +        mem = kzalloc(sizeof(*mem), GFP_KERNEL);
+>>>>> +        if (!mem)
+>>>>> +            return -ENOMEM;
+>>>>> +
+>>>>> +        if (!memremap(rmem->base, rmem->size, MEMREMAP_WB)) {
+>>>>
+>>>> MEMREMAP_WB sounds appropriate as a default.
+>>>
+>>> As per the binding 'no-map' has to be disabled here. So AFAIU, this
+>>> memory will
+>>> be part of the linear mapping. Is this really needed then?
+>>
+>> More than that, I'd assume that we *have* to use the linear/direct map
+>> address rather than anything that has any possibility of being a vmalloc
+>> remap, otherwise we can no longer safely rely on
+>> phys_to_dma/dma_to_phys, no?
+> 
+> I believe you are right, which means that if we want to make use of the
+> restricted DMA pool on a 32-bit architecture (and we do, at least, I do)
+> we should probably add some error checking/warning to ensure the
+> restricted DMA pool falls within the linear map.
 
-On Wed, 13 Jan 2021 11:08:36 -0600, Josh Poimboeuf said:
+Oh, good point - I'm so used to 64-bit that I instinctively just blanked 
+out the !PageHighMem() condition in try_ram_remap(). So maybe the 
+original intent here *was* to effectively just implement that check, but 
+if so it could still do with being a lot more explicit.
 
-> The first patch has already been merged into Linus' tree, so this
-> probably should be an incremental fix on top, with a Fixes: tag.
-
-Gaah.  v3 in a moment. :)
-
---==_Exmh_1610560944_6220P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.9.0 11/07/2018
-
-iQIVAwUBX/81sAdmEQWDXROgAQLZeBAAossB2dxplTQEbLOpEzZeIguttkET9IE5
-6qKP2TDHdIW+pEtBaRra2MWgpzKn599XFqixusZZHlGn5MW/tX1VOPlydUsvr6Fa
-r8e4JvPvAMxW2bmm7ohJNpYYLvs67KZOE4OhECLCbsxekfaagCiWUzPxoqRRpLYT
-onFOsI1Ei0fLDyU9vVmae+IRcLdfFDVmwoeDyObI3TNGpP6nJH+ymSb4z8G9Zu8g
-KEtizsufiAiYEu5Qu5YyZLCYuxQvhjU6sl2Dw7nxm58I594SQpJhrLxCnTEakkyW
-v9XVwgYRV2hB5Cmj5+tYEznSjHG2lM5cd78BSU9r1a8iE4/rVXVCuwQ+4hszNbJg
-fiJw3CBv72dch/CYo0TmISs/WWfVwv4MagxNLHR7e/W9i4MmVptcZC6MH/edjb2l
-WJ4LJrPaw3xlB5zS2Oo0ZHprVd5eEpd+gQ1nrXD+DCrh1IivwzdmJMFqMgZjYHgL
-YvFYtPamE14BHTIomMBINCjs6Cl/qGtP2ediWgzxtCU5dJCa1P/hft1LTB5g9c2z
-vn0iSKsuZLu6ct44gHYQzCC6mPcQ4KIZPLReb3EpGlWVcXb/Jxi7pkPNIKoR8rEt
-dXm+Pi3suj2Ki8zgy927Tysx08O+xKtCM2nA22UXl0WjIOAmoGjTvfknMg76RF8Q
-6m4eawG9wbs=
-=k5pC
------END PGP SIGNATURE-----
-
---==_Exmh_1610560944_6220P--
+Cheers,
+Robin.
