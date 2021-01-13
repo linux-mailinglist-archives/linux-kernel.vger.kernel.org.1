@@ -2,81 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355082F4770
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:23:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 067FF2F478A
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 10:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726569AbhAMJWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 04:22:42 -0500
-Received: from foss.arm.com ([217.140.110.172]:32936 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725781AbhAMJWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 04:22:41 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CCA5101E;
-        Wed, 13 Jan 2021 01:21:56 -0800 (PST)
-Received: from [10.57.56.97] (unknown [10.57.56.97])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AB37F3F66E;
-        Wed, 13 Jan 2021 01:21:54 -0800 (PST)
-Subject: Re: [PATCH V2 07/11] arm64: Add TRBE definitions
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        Linu Cherian <lcherian@marvell.com>,
+        id S1726995AbhAMJ0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 04:26:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39776 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726460AbhAMJ0R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 04:26:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610529890;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A9ksjDeyfuxGoy9asdFqUc8798GrLEWqzUIv9UWdtSg=;
+        b=cGm+VwQfCJKo3exQiEE3KQj1NOg3XTg+oJPWN1Owr+BCBYGg8wq7kxBit4Sv7qY2UXkVFm
+        vhszfbu/i5Ww1KRKToxNK9cwl038wddn1r2nTs0J+XzgccmEwr8UHsjzHQjI8ER8/8HXkN
+        yA+krfIbisG4bXOEuhCBX/vmKm/ZSek=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-33-gM_5cbKjNhywURzkOzOmiA-1; Wed, 13 Jan 2021 04:24:48 -0500
+X-MC-Unique: gM_5cbKjNhywURzkOzOmiA-1
+Received: by mail-ed1-f72.google.com with SMTP id h5so601152edq.3
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 01:24:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=A9ksjDeyfuxGoy9asdFqUc8798GrLEWqzUIv9UWdtSg=;
+        b=Ll7+SOSU2TLxPcleh7+KoZIEacYOyjnAYAVNzvMiC/BKtU5CiXpQBO5NnSnBcbSFqm
+         mh0nI/jAMQHOZgTzkBbrsWVFaNOYjFB1eMXu8exxndIbUYKzaYvzVEfjfxUpnwoNIzOd
+         ORA7mNXzXXaXNzQ/HLX/fHei9lfpnFIBg+H9U7PEWgIOEieqFH9LJ9DKCgppLuYsxaqy
+         LzsBCDypbat2gyycJBEDMyJ0CQCaoJgdETmCWbWakCU1T7dM3UENKTIYkcjCXH1xxTfZ
+         PbVTChLQXfgVC0ekaU2QJa0GZZWqdVkl+IrNcN0HpaD3ODvsGZzBNC/YnoiPEZbtwkYA
+         e5nw==
+X-Gm-Message-State: AOAM532TgErl2b9PsIX1wljprJb6Fsm9AjLsmU+tFgq2iSH5f11X6OOF
+        C8J42M4S9eJy5oT/yLeL8dEVFDtw+Tm5xLQr5snm40EzH30dA7U8xcBKfwI1vmqvP+Q2Clx5HLR
+        Otw79A0KOkRFeEFfSPYqL4hN/cHen7oj6Xakqr/YV+1VxXQqvDydZblXSgqAR68AOMiIWJ48Syn
+        xt
+X-Received: by 2002:a17:906:4756:: with SMTP id j22mr913259ejs.353.1610529887264;
+        Wed, 13 Jan 2021 01:24:47 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzr/Q3eR5rbgGFzsCsWj6QifS8PJJQr4SQXFTihkxnSILUE2KyVi+mMvDiJlpsTOlpvOWjqlg==
+X-Received: by 2002:a17:906:4756:: with SMTP id j22mr913244ejs.353.1610529887047;
+        Wed, 13 Jan 2021 01:24:47 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id u19sm465252ejg.16.2021.01.13.01.24.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Jan 2021 01:24:46 -0800 (PST)
+Subject: Re: [PATCH fixes v4] platform/x86: ideapad-laptop: Disable
+ touchpad_switch for ELAN0634
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        platform-driver-x86@vger.kernel.org
+Cc:     stable@vger.kernel.org, Ike Panhc <ike.pan@canonical.com>,
+        Mark Gross <mgross@linux.intel.com>,
         linux-kernel@vger.kernel.org
-References: <1610511498-4058-1-git-send-email-anshuman.khandual@arm.com>
- <1610511498-4058-8-git-send-email-anshuman.khandual@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <d6af6dae-f3ba-cd35-2ffb-cfbc9d222469@arm.com>
-Date:   Wed, 13 Jan 2021 09:21:45 +0000
+References: <20210107144438.12605-1-jiaxun.yang@flygoat.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <dba9db5f-fa66-6003-382d-b35d5643d0d2@redhat.com>
+Date:   Wed, 13 Jan 2021 10:24:45 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <1610511498-4058-8-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <20210107144438.12605-1-jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/13/21 4:18 AM, Anshuman Khandual wrote:
-> This adds TRBE related registers and corresponding feature macros.
+Hi,
+
+On 1/7/21 3:44 PM, Jiaxun Yang wrote:
+> Newer ideapads (e.g.: Yoga 14s, 720S 14) come with ELAN0634 touchpad do not
+> use EC to switch touchpad.
 > 
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> Reading VPCCMD_R_TOUCHPAD will return zero thus touchpad may be blocked
+> unexpectedly.
+> Writing VPCCMD_W_TOUCHPAD may cause a spurious key press.
+> 
+> Add has_touchpad_switch to workaround these machines.
+> 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Cc: stable@vger.kernel.org # 5.4+
+
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
+
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
+
+I will also cherry-pick this into the fixes branch and include
+it in a future fixes pull-req for 5.11 .
+
+Regards,
+
+Hans
+
+
+
+
+> --
+> v2: Specify touchpad to ELAN0634
+> v3: Stupid missing ! in v2
+> v4: Correct acpi_dev_present usage (Hans)
 > ---
->   arch/arm64/include/asm/sysreg.h | 49 +++++++++++++++++++++++++++++++++++++++++
->   1 file changed, 49 insertions(+)
+>  drivers/platform/x86/ideapad-laptop.c | 15 ++++++++++++++-
+>  1 file changed, 14 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-> index 4acff97..d60750e7 100644
-> --- a/arch/arm64/include/asm/sysreg.h
-> +++ b/arch/arm64/include/asm/sysreg.h
-> @@ -329,6 +329,55 @@
->   
->   /*** End of Statistical Profiling Extension ***/
->   
-> +/*
-> + * TRBE Registers
-> + */
-> +#define SYS_TRBLIMITR_EL1		sys_reg(3, 0, 9, 11, 0)
-> +#define SYS_TRBPTR_EL1			sys_reg(3, 0, 9, 11, 1)
-> +#define SYS_TRBBASER_EL1		sys_reg(3, 0, 9, 11, 2)
-> +#define SYS_TRBSR_EL1			sys_reg(3, 0, 9, 11, 3)
-> +#define SYS_TRBMAR_EL1			sys_reg(3, 0, 9, 11, 4)
-> +#define SYS_TRBTRG_EL1			sys_reg(3, 0, 9, 11, 6)
-> +#define SYS_TRBIDR_EL1			sys_reg(3, 0, 9, 11, 7)
+> diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
+> index 7598cd46cf60..5b81bafa5c16 100644
+> --- a/drivers/platform/x86/ideapad-laptop.c
+> +++ b/drivers/platform/x86/ideapad-laptop.c
+> @@ -92,6 +92,7 @@ struct ideapad_private {
+>  	struct dentry *debug;
+>  	unsigned long cfg;
+>  	bool has_hw_rfkill_switch;
+> +	bool has_touchpad_switch;
+>  	const char *fnesc_guid;
+>  };
+>  
+> @@ -535,7 +536,9 @@ static umode_t ideapad_is_visible(struct kobject *kobj,
+>  	} else if (attr == &dev_attr_fn_lock.attr) {
+>  		supported = acpi_has_method(priv->adev->handle, "HALS") &&
+>  			acpi_has_method(priv->adev->handle, "SALS");
+> -	} else
+> +	} else if (attr == &dev_attr_touchpad.attr)
+> +		supported = priv->has_touchpad_switch;
+> +	else
+>  		supported = true;
+>  
+>  	return supported ? attr->mode : 0;
+> @@ -867,6 +870,9 @@ static void ideapad_sync_touchpad_state(struct ideapad_private *priv)
+>  {
+>  	unsigned long value;
+>  
+> +	if (!priv->has_touchpad_switch)
+> +		return;
 > +
-> +#define TRBLIMITR_LIMIT_MASK		GENMASK_ULL(51, 0)
-> +#define TRBLIMITR_LIMIT_SHIFT		12
-> +#define TRBLIMITR_NVM			BIT(5)
-> +#define TRBLIMITR_TRIG_MODE_MASK	GENMASK(1, 0)
-> +#define TRBLIMITR_TRIG_MODE_SHIFT	2
+>  	/* Without reading from EC touchpad LED doesn't switch state */
+>  	if (!read_ec_data(priv->adev->handle, VPCCMD_R_TOUCHPAD, &value)) {
+>  		/* Some IdeaPads don't really turn off touchpad - they only
+> @@ -989,6 +995,9 @@ static int ideapad_acpi_add(struct platform_device *pdev)
+>  	priv->platform_device = pdev;
+>  	priv->has_hw_rfkill_switch = dmi_check_system(hw_rfkill_list);
+>  
+> +	/* Most ideapads with ELAN0634 touchpad don't use EC touchpad switch */
+> +	priv->has_touchpad_switch = !acpi_dev_present("ELAN0634", NULL, -1);
+> +
+>  	ret = ideapad_sysfs_init(priv);
+>  	if (ret)
+>  		return ret;
+> @@ -1006,6 +1015,10 @@ static int ideapad_acpi_add(struct platform_device *pdev)
+>  	if (!priv->has_hw_rfkill_switch)
+>  		write_ec_cmd(priv->adev->handle, VPCCMD_W_RF, 1);
+>  
+> +	/* The same for Touchpad */
+> +	if (!priv->has_touchpad_switch)
+> +		write_ec_cmd(priv->adev->handle, VPCCMD_W_TOUCHPAD, 1);
+> +
+>  	for (i = 0; i < IDEAPAD_RFKILL_DEV_NUM; i++)
+>  		if (test_bit(ideapad_rfk_data[i].cfgbit, &priv->cfg))
+>  			ideapad_register_rfkill(priv, i);
+> 
 
-This must be 3.
-
-Rest looks fine to me
-
-Suzuki
