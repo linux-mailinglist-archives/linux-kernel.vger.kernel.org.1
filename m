@@ -2,154 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5449F2F549A
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 22:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C25B2F54A0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 22:38:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729137AbhAMVaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 16:30:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42270 "EHLO
+        id S1729174AbhAMVgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 16:36:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729113AbhAMVZA (ORCPT
+        with ESMTP id S1727512AbhAMVaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 16:25:00 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBDD0C061575;
-        Wed, 13 Jan 2021 13:24:11 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id u17so7143621iow.1;
-        Wed, 13 Jan 2021 13:24:11 -0800 (PST)
+        Wed, 13 Jan 2021 16:30:35 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C67C061794
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 13:29:53 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id n142so4224019qkn.2
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 13:29:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=UpKWiYtPM8GQXk0Is548IYPtxVA4MVO0jtllMXNFedg=;
-        b=jFEd2NzQHJicdAZJpSO86WQL6Pyz2KLdPuF8gwRjoQQgJKSKRe6pCzzGGUKWKcJYTE
-         ifUpvBaRYrR6JiJCG55Hn9fCX3MmshplyXTqOEWaKP/8v1XMEaLmaOC7Lpd9DC2fG9c3
-         EpM1Ct01OjUjbiQKE1fvog7ROEKzTXclee0JK56J4/D+3qy32gAQZ/MAorp7wfgw1HU5
-         rPBnTryqXb7odcD54fVwqaoTocn80+gH5FIN537N4C/6f1VGo7mALSRqso3T7Xyeyqkr
-         yV2sN3uwcOnqMZSaaRYstiIqEr705vf/gjaKF6kGk69a1dqoaaK4denn/0OitJ1lKtzc
-         fhWg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VExiYHmqwPXooPsM00PEuTMdc848Er2iS47/e4Rre3U=;
+        b=rLrEeqZEMYBFkB57NfvTrRBtpce1M96aDR8g8DXBcOnFyUdpuKgZXYOOC/IYPOMC29
+         bxT+rU7I4Zop56nmAXg0Mjgv0f99gu7ExCKbazp0zDj0nuSkiTTFx8+NPw4a3Ok/Hzbn
+         yJhVBZIriApPRBkODPNnwAKqACAKbLpunk0smw3qy9pLAfE1i76Ambu7EGM+lkJZg1zI
+         esM5GCf7aTeYeAvSUKyzb/xI11X5UXZjAdYfN9sKefFpkDNIxnNla8+8eKw9OZc0kJFe
+         2GWWv6ECoDhkiIoeTCNcEMj3jKfwMq/Fw+gHYlIJoZdBijxtjbKC025/M19yzyWZUoN8
+         jIZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=UpKWiYtPM8GQXk0Is548IYPtxVA4MVO0jtllMXNFedg=;
-        b=RlGBckSXjzSQ8uXMW4jOKDak3FAEHVo0ECNCFEu2+F0lMbmcvtAk2hEyoZxZL4UCvL
-         3H0UmMnKMqaNBiRYTdJxK4JSzWyRN56e4GU/kSxmDKU6Qxsufj75BcTYs0GzZpPb7XLQ
-         rmAPffnoaCuSKvuLg5ctCMAIoWTfzCwFShOPbQVDX/sT8bIGs8++lTSQffOzZROb4k/u
-         7IUrL7hv3h5iJuFOJ0Ob3sdaXn5h9TzIKsCDUtr8LAVZrA06tMFZteNz5LUHIMBztGtG
-         PAunoqmlxdd1W1kO+9UfYxfaLAORNu66Co5auvuRWIMYIcjHH+BOo7/dUznuEakTTb0U
-         Tqxw==
-X-Gm-Message-State: AOAM530x/OCAbeDQcz0o811xTFbNvWcVzARM6HTdgMuel886R7yGOTRG
-        2h0bp4WgZ3+T+KbeCBh90SWdRJd+57gWT9licoib2i3jwvSQlQ==
-X-Google-Smtp-Source: ABdhPJxpzXvUeRTDVlh68s3DvLQRddSvhHnzpvRehHrff3t/TZydCewnwIbSh5Lgu35UYmUNvALR+oyfjq3o7c0wSjY=
-X-Received: by 2002:a05:6e02:eb0:: with SMTP id u16mr3977808ilj.209.1610573051220;
- Wed, 13 Jan 2021 13:24:11 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VExiYHmqwPXooPsM00PEuTMdc848Er2iS47/e4Rre3U=;
+        b=tqmV83FoCx2XHyyZFPNFCeWnVIjQyCvpCnjAGlDSXbq8O6idGZIwb6a4lUM/H5sEf6
+         54RF1RDVuGGSOeWJ6eijjIaT3pYIUyZo0KZueloFq/ulA7dwqAw4HFMMXj58Y5AHsJ6o
+         4dQ1p5XcgVwJ5nVn7jgzwvTTtqFAyYCCy0m85yfRKIPxurp/tXHyL6Ihp2+EOKAdXpUd
+         OcIeSdMKRq0qBCITcs+7oMsgsePduvFjtBMbdQljIdOGs/A/hdRnuydLN6P0N7bhrWsS
+         MoVqA2OpBNhNsqYWeFcuHvvCn1KW70QsQEokQRLk/5YEI64B5TdbgWEgiFd+N08Vs+sL
+         t/zQ==
+X-Gm-Message-State: AOAM532jFI3xZaUzdwEedpTGrHkx8/8vRBRGVYVt3p/H7sU3cnDlg9ES
+        N0DXLoe4JNlXPVPVFzgu8VbBRk8o5v7bJ6mvz5ii5Q==
+X-Google-Smtp-Source: ABdhPJxuYYjsMGPxY/P1Gyj3lPeICRhxkp0YFDfzhEzob3rW6ao/fMgu2IlLIeHccNoFEzd9z7gPTfcTSUSL2lIADVE=
+X-Received: by 2002:a25:d7d7:: with SMTP id o206mr6177287ybg.228.1610573392718;
+ Wed, 13 Jan 2021 13:29:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20210113003235.716547-1-ndesaulniers@google.com> <20210113003235.716547-3-ndesaulniers@google.com>
-In-Reply-To: <20210113003235.716547-3-ndesaulniers@google.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Wed, 13 Jan 2021 22:24:00 +0100
-Message-ID: <CA+icZUV6pNP1AN_JEhqon6Hgk3Yfq0_VNghvRX0N9mw6pGtpVw@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] Kbuild: make DWARF version a choice
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>
+References: <20201218031703.3053753-1-saravanak@google.com>
+ <X/dpkgTnUk+inKHK@kroah.com> <e28e1f38d87c12a3c714a6573beba6e1@kernel.org> <ba2fcbfb-d714-2f73-3bd0-962f49363b62@nvidia.com>
+In-Reply-To: <ba2fcbfb-d714-2f73-3bd0-962f49363b62@nvidia.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 13 Jan 2021 13:29:16 -0800
+Message-ID: <CAGETcx8pdPnH1ndOCoi7Qyz8DDshCfMTzDLQM=oEaCjyds9reA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/5] Enable fw_devlink=on by default
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-tegra <linux-tegra@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 1:32 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
+On Wed, Jan 13, 2021 at 7:27 AM Jon Hunter <jonathanh@nvidia.com> wrote:
 >
-> Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice. Adds an
-> explicit CONFIG_DEBUG_INFO_DWARF2, which is the default. Does so in a
-> way that's forward compatible with existing configs, and makes adding
-> future versions more straightforward.
 >
-> Suggested-by: Fangrui Song <maskray@google.com>
-> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> ---
->  Makefile          | 14 +++++++++-----
->  lib/Kconfig.debug | 21 ++++++++++++++++-----
->  2 files changed, 25 insertions(+), 10 deletions(-)
+> On 13/01/2021 11:11, Marc Zyngier wrote:
+> > On 2021-01-07 20:05, Greg Kroah-Hartman wrote:
+> >> On Thu, Dec 17, 2020 at 07:16:58PM -0800, Saravana Kannan wrote:
+> >>> As discussed in LPC 2020, cyclic dependencies in firmware that couldn't
+> >>> be broken using logic was one of the last remaining reasons
+> >>> fw_devlink=on couldn't be set by default.
+> >>>
+> >>> This series changes fw_devlink so that when a cyclic dependency is found
+> >>> in firmware, the links between those devices fallback to permissive mode
+> >>> behavior. This way, the rest of the system still benefits from
+> >>> fw_devlink, but the ambiguous cases fallback to permissive mode.
+> >>>
+> >>> Setting fw_devlink=on by default brings a bunch of benefits (currently,
+> >>> only for systems with device tree firmware):
+> >>> * Significantly cuts down deferred probes.
+> >>> * Device probe is effectively attempted in graph order.
+> >>> * Makes it much easier to load drivers as modules without having to
+> >>>   worry about functional dependencies between modules (depmod is still
+> >>>   needed for symbol dependencies).
+> >>>
+> >>> Greg/Rafael,
+> >>>
+> >>> Can we get this pulled into 5.11-rc1 or -rc2 soon please? I expect to
+> >>> see some issues due to device drivers that aren't following best
+> >>> practices (they don't expose the device to driver core). Want to
+> >>> identify those early on and try to have them fixed before 5.11 release.
+> >>> See [1] for an example of such a case.
+> >>
+> >> Now queued up in my tree, will show up in linux-next in a few days,
+> >> let's see what breaks!  :)
+> >>
+> >> And it is scheduled for 5.12-rc1, not 5.11, sorry.
+> >
+> > For the record, this breaks my rk3399 board, (NanoPC-T4) as no mass
+> > storage can be discovered (it lives on PCIe):
+> >
+> > (initramfs) find /sys -name 'waiting_for_supplier'| xargs grep .| egrep
+> > -v ':0$'
+> > /sys/devices/platform/ff3d0000.i2c/i2c-4/4-0022/waiting_for_supplier:1
+> > /sys/devices/platform/f8000000.pcie/waiting_for_supplier:1
+> > /sys/devices/platform/fe320000.mmc/waiting_for_supplier:1
+> > /sys/devices/platform/sdio-pwrseq/waiting_for_supplier:1
+> > /sys/devices/platform/ff3c0000.i2c/i2c-0/0-001b/waiting_for_supplier:1
+> >
+> > Enabling the debug prints in device_links_check_suppliers(), I end up with
+> > the dump below (apologies for the size).
 >
-> diff --git a/Makefile b/Makefile
-> index d49c3f39ceb4..656fff17b331 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -826,12 +826,16 @@ else
->  DEBUG_CFLAGS   += -g
->  endif
 >
-> -ifneq ($(LLVM_IAS),1)
-> -KBUILD_AFLAGS  += -Wa,-gdwarf-2
-> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
-> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
-> +DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
-> +ifneq ($(dwarf-version-y)$(LLVM_IAS),21)
-> +# Binutils 2.35+ required for -gdwarf-4+ support.
-> +dwarf-aflag    := $(call as-option,-Wa$(comma)-gdwarf-$(dwarf-version-y))
-> +ifdef CONFIG_CC_IS_CLANG
-> +DEBUG_CFLAGS   += $(dwarf-aflag)
->  endif
+> I am seeing the same problem on Tegra30 Cardhu A04 where several regulators
+> are continuously deferred and prevents the board from booting ...
+>
+> [    2.518334] platform panel: probe deferral - supplier regulator@11 not ready
+>
+> [    2.525503] platform regulator@1: probe deferral - supplier 4-002d not ready
+>
+> [    2.533141] platform regulator@3: probe deferral - supplier regulator@101 not ready
+>
+> [    2.540856] platform regulator@5: probe deferral - supplier regulator@101 not ready
+>
+> [    2.548589] platform regulator@6: probe deferral - supplier regulator@101 not ready
+>
+> [    2.556316] platform regulator@7: probe deferral - supplier regulator@101 not ready
+>
+> [    2.564041] platform regulator@8: probe deferral - supplier regulator@101 not ready
+>
+> [    2.571743] platform regulator@9: probe deferral - supplier regulator@101 not ready
+>
+> [    2.579463] platform regulator@10: probe deferral - supplier regulator@101 not ready
+>
+> [    2.587273] platform regulator@11: probe deferral - supplier regulator@101 not ready
+>
+> [    2.595088] platform regulator@12: probe deferral - supplier regulator@104 not ready
+>
+> [    2.603837] platform regulator@102: probe deferral - supplier regulator@104 not ready
+>
+> [    2.611726] platform regulator@103: probe deferral - supplier regulator@104 not ready
+>
+> [    2.620137] platform 3000.pcie: probe deferral - supplier regulator@5 not ready
 
-Why is that "ifdef CONFIG_CC_IS_CLANG"?
-When I use GCC v10.2.1 DEBUG_CFLAGS are not set.
+Looks like this is not the whole log? Do you see any "wait for
+supplier" logs? That's what all these boot issues should boil down to.
+And as usual, pointer to DT for this board please.
 
-- Sedat -
-
-> -
-> -ifdef CONFIG_DEBUG_INFO_DWARF4
-> -DEBUG_CFLAGS   += -gdwarf-4
-> +KBUILD_AFLAGS  += $(dwarf-aflag)
->  endif
->
->  ifdef CONFIG_DEBUG_INFO_REDUCED
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index dd7d8d35b2a5..e80770fac4f0 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -256,13 +256,24 @@ config DEBUG_INFO_SPLIT
->           to know about the .dwo files and include them.
->           Incompatible with older versions of ccache.
->
-> +choice
-> +       prompt "DWARF version"
-> +       help
-> +         Which version of DWARF debug info to emit.
-> +
-> +config DEBUG_INFO_DWARF2
-> +       bool "Generate DWARF Version 2 debuginfo"
-> +       help
-> +         Generate DWARF v2 debug info.
-> +
->  config DEBUG_INFO_DWARF4
-> -       bool "Generate dwarf4 debuginfo"
-> +       bool "Generate DWARF Version 4 debuginfo"
->         help
-> -         Generate dwarf4 debug info. This requires recent versions
-> -         of gcc and gdb. It makes the debug information larger.
-> -         But it significantly improves the success of resolving
-> -         variables in gdb on optimized code.
-> +         Generate DWARF v4 debug info. This requires gcc 4.5+ and gdb 7.0+.
-> +         It makes the debug information larger, but it significantly
-> +         improves the success of resolving variables in gdb on optimized code.
-> +
-> +endchoice # "DWARF version"
->
->  config DEBUG_INFO_BTF
->         bool "Generate BTF typeinfo"
-> --
-> 2.30.0.284.gd98b1dd5eaa7-goog
->
+-Saravana
