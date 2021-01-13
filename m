@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72AB2F54E6
+	by mail.lfdr.de (Postfix) with ESMTP id CE86A2F54E7
 	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:28:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726404AbhAMWYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 17:24:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
+        id S1729341AbhAMW1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 17:27:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725773AbhAMWVB (ORCPT
+        with ESMTP id S1726013AbhAMWVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 17:21:01 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFFDFC061575;
-        Wed, 13 Jan 2021 14:20:20 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id d13so3738742wrc.13;
-        Wed, 13 Jan 2021 14:20:20 -0800 (PST)
+        Wed, 13 Jan 2021 17:21:04 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA03FC06179F;
+        Wed, 13 Jan 2021 14:20:23 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id y187so3031113wmd.3;
+        Wed, 13 Jan 2021 14:20:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=htUNH449lQEaPPKQp05wHHqDqIW6Q/fjdyTJ72cTNUw=;
-        b=ZEVJd2QwjOYf0/m+TM3MblNozCNY9EGJhDUEpWok48YHh8zhzbRLpVI6q/66EXKkOz
-         TTcPSqXwVQ2Yx0wM61+pOdLhbNJ3kz/DwOR5WJgvt6Sa7N4NW/y1Z1Xg82mekj7S84ia
-         l2oXbUAlUB2lnN2ZV7Bn6ptyNXEWB0vWbfLoRpO48muZ51CEGRbynlwGTeWovS9G6I6r
-         kuZ3WdrVv6kb1p76wKddg95jAjn6OUMep7XT77wqlipyofaZKGwnGhkGPUYUaqv/Aihw
-         lcfr9k4NBM55xZmpCWslZhGbmG2ztlDq8y3U8ibUBtVUmO/2PV4NNXh9agdTj8Mg6Lis
-         Ksqg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ga6RWsMGRnOBRU223li1MY5FtCYIzdzZznWAiBLHlds=;
+        b=Zpi12CjpqLZABzoMsmC6r+DkHWv0xviygQSlCiD/ji3x1lBfhlzvJCMSvjBqdNPp8M
+         Ctx4JMZExpKXPkva4YsUHZN2/whYRoTK1VmS1Q1q4X/GdprHN8w1r+cUfKzSEs9HiZPt
+         yc+0u2oVmPb4hr+3BP8h+QQr4loJRXuQ2zQXFi3iiAW6otp1TJpynBDf/xG3SVWCbI4H
+         pNMIQFwwdWukgGDBlcZlUjUOAJGC+lm4rZMXlbDAEj6cvzjAlUYzYdwit+xZoSgawSK7
+         P6fGe7Q9K63TMvZIxZUiV69BSqVZ6tifI4/TttMXECpJOQJBkR9y+WIHtiB/LJQyszW+
+         fW5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=htUNH449lQEaPPKQp05wHHqDqIW6Q/fjdyTJ72cTNUw=;
-        b=GiQeHdGD3hxrpFdgD+NCwRpjh0H0mljnoM+/+rJHsLaktokAEtGkbJExx5tIK3POLB
-         Nqr2rDALVzrNSwTcrzekNKKxLB4prO/Sv7Pff2cS1UYvZOV6RZPc2nHAaUrzJye42HtS
-         ECmvOss8/D+m1BJymx3bxwF84S5OUf0vRkv/iYP8YyUuLeoH8BU27OZtIsEvtQIvBUw5
-         tH2yYqpPpmqlPFRPVKktW9/6aSyF//uzH2vszvOFSqs7g+xb/A/mqCbmD2jpM3UIZ0yP
-         +gpMP8I9Kfmj1b0XfJcs6ohe/siPQVh930nEASBxoiuFaTInLIDhkrOUwL1xYceplyke
-         H6eg==
-X-Gm-Message-State: AOAM531hzK/k9RTtYJP4W4+k2Ko5Cbd4lwOTTdzLPLLO3I2UqRc6fhCt
-        /JTGgMvElF8NhnNM+95mSeb2tgbymMg=
-X-Google-Smtp-Source: ABdhPJwIEeN0y9iSEVC1cPKJkSNKUAswPh/8btjeeSeOqmyZoHGdXxslQQGAVelAfOANpYTUYZtLxg==
-X-Received: by 2002:adf:814f:: with SMTP id 73mr674491wrm.368.1610576419436;
-        Wed, 13 Jan 2021 14:20:19 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ga6RWsMGRnOBRU223li1MY5FtCYIzdzZznWAiBLHlds=;
+        b=QDFR/DYn6MmQF8rWzTa4785ncxzI5U6fRnKUhlYwh96tLgQ52R+Bn/lffGzpHm+Z/m
+         VqIY2gU1OiRX3QW0Sel16hVjgU4U1S+r0O3OYY2hm7ljJ5tnETnrzO4y7zOKaiCt0d+9
+         slm+RxCGJHV0C0+Z+uX/MfFzBO2YdTFYJFrSp1hJFZ8agopxtuigRNJo/OTNKjI6+6+I
+         D8DzOAAw3g8veWqhxUqR0XdBCy7P7HLmum6VN6TqyewSGWUFzfKxzLES7gS9hkE6PhmU
+         GcbU58WmKU2cVW12Q/Dha8En8dDqytmSoUB4y0tvlM8LjBlcIopj3Ourx/9jc2JIdVQN
+         qZJA==
+X-Gm-Message-State: AOAM530SNeQvtdUde2dy6vbCrkEFKu8ZOb/KTJWDPBrcsPOAtesEJH0w
+        xk7S4iEQkP/lUGI5pNYaKCoKIc65j+I=
+X-Google-Smtp-Source: ABdhPJzsYRZPxVIafNK7x1L9j61Dj9sqOobrkbxo3nsO5xzaEs0vM4CqzPVy08X64pJPSeEzvDwyfA==
+X-Received: by 2002:a1c:2d8a:: with SMTP id t132mr1081182wmt.119.1610576422600;
+        Wed, 13 Jan 2021 14:20:22 -0800 (PST)
 Received: from localhost.localdomain (2a01cb0008bd27000d88c7723353ad1a.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:d88:c772:3353:ad1a])
-        by smtp.gmail.com with ESMTPSA id t1sm5594929wro.27.2021.01.13.14.20.18
+        by smtp.gmail.com with ESMTPSA id t1sm5594929wro.27.2021.01.13.14.20.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 14:20:18 -0800 (PST)
+        Wed, 13 Jan 2021 14:20:22 -0800 (PST)
 From:   Adrien Grassein <adrien.grassein@gmail.com>
 Cc:     broonie@kernel.org, jagan@amarulasolutions.com,
         lgirdwood@gmail.com, robh+dt@kernel.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         Adrien Grassein <adrien.grassein@gmail.com>
-Subject: [PATCH v4 0/6] Fix issues on pf8x00 driver
-Date:   Wed, 13 Jan 2021 23:20:10 +0100
-Message-Id: <20210113222016.1915993-1-adrien.grassein@gmail.com>
+Subject: [PATCH v4 4/6] regulator: pf8x00: mark nxp,ilim-ma property as deprecated
+Date:   Wed, 13 Jan 2021 23:20:14 +0100
+Message-Id: <20210113222016.1915993-5-adrien.grassein@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210113222016.1915993-1-adrien.grassein@gmail.com>
+References: <20210113222016.1915993-1-adrien.grassein@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To:     unlisted-recipients:; (no To-header on input)
@@ -64,57 +66,135 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This property seems useless because we can use the
+regulator-max-microamp generic property to do the same
+and using generic code.
 
-this patch set aims is to fix some issues contains in the pf8x00 driver.
-Some issues are documentation ones, some others are in code.
+As this property was already released in a kernel version,
+we can't remove it, just mark it as deprecated.
 
-These issues where found while developing another version of the same
-driver. I prefer to share with you the patch for it.
+Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
+---
+ drivers/regulator/pf8x00-regulator.c | 55 +++++++++++++++++++++-------
+ 1 file changed, 41 insertions(+), 14 deletions(-)
 
-I do these patches on the master branch of the linux-next repository.
-
-1: there is a missing documentation when we build the driver as a
-module.
-
-2: nxp,phase-shift documentation was not optimal.
-
-3: nxp,ilim-ma is useless since another property does (nearly) the same.
-
-4: Same than 4, in driver code.
-
-5: It's better to use a linear_range to describe the voltage of bucks.
-
-6: Fix several mistakes in the handle of nxp,phase-shift property.
-
-Changes introduced in v2:
-Some patches were mixed (and did not compile separately);
-Add path 7 for the handle of nxp,phase-shift property.
-
-Changes introduced in v3:
-Remove useless patch 0;
-Do requested fixes in patches.
-
-Changes introduced in v4:
-Mark nxp,ilim-ma as deprecated since it was already present in a kernel
-version.
-
-Thanks,
-
-Adrien Grassein (6):
-  regulator: pf8x00: add a doc for the module
-  regulator: dt-bindings: pf8x00: fix nxp,phase-shift doc
-  regulator: dt-bindings: pf8x00: mark nxp,ilim-ma property as
-    deprecated
-  regulator: pf8x00: mark nxp,ilim-ma property as deprecated
-  regulator: pf8x00: use linear range for buck 1-6
-  regulator: pf8x00: fix nxp,phase-shift
-
- .../regulator/nxp,pf8x00-regulator.yaml       |  16 +-
- drivers/regulator/Kconfig                     |   4 +
- drivers/regulator/pf8x00-regulator.c          | 203 +++++++++++-------
- 3 files changed, 135 insertions(+), 88 deletions(-)
-
+diff --git a/drivers/regulator/pf8x00-regulator.c b/drivers/regulator/pf8x00-regulator.c
+index af9918cd27aa..0c0f643b9c60 100644
+--- a/drivers/regulator/pf8x00-regulator.c
++++ b/drivers/regulator/pf8x00-regulator.c
+@@ -128,7 +128,6 @@ enum pf8x00_devid {
+ 
+ struct pf8x00_regulator {
+ 	struct regulator_desc desc;
+-	u8 ilim;
+ 	u8 phase_shift;
+ };
+ 
+@@ -150,6 +149,11 @@ static const int pf8x00_ldo_voltages[] = {
+ 	3100000, 3150000, 3200000, 3300000, 3350000, 1650000, 1700000, 5000000,
+ };
+ 
++/* Output: 2.1A to 4.5A */
++static const unsigned int pf8x00_sw_current_table[] = {
++	2100000, 2600000, 3000000, 4500000,
++};
++
+ #define SWV(i)		(6250 * i + 400000)
+ #define SWV_LINE(i)	SWV(i*8+0), SWV(i*8+1), SWV(i*8+2), SWV(i*8+3), \
+ 			SWV(i*8+4), SWV(i*8+5), SWV(i*8+6), SWV(i*8+7)
+@@ -199,10 +203,10 @@ static struct pf8x00_regulator *desc_to_regulator(const struct regulator_desc *d
+ 	return container_of(desc, struct pf8x00_regulator, desc);
+ }
+ 
+-static void swxilim_select(const struct regulator_desc *desc, int ilim)
++static void swxilim_select(struct pf8x00_chip *chip, int id, int ilim)
+ {
+-	struct pf8x00_regulator *data = desc_to_regulator(desc);
+ 	u8 ilim_sel;
++	u8 reg = PF8X00_SW_BASE(id) + SW_CONFIG2;
+ 
+ 	switch (ilim) {
+ 	case 2100:
+@@ -222,7 +226,32 @@ static void swxilim_select(const struct regulator_desc *desc, int ilim)
+ 		break;
+ 	}
+ 
+-	data->ilim = ilim_sel;
++	regmap_update_bits(chip->regmap, reg,
++					PF8X00_SWXILIM_MASK,
++					ilim_sel << PF8X00_SWXILIM_SHIFT);
++}
++
++static void handle_ilim_property(struct device_node *np,
++			      const struct regulator_desc *desc,
++			      struct regulator_config *config)
++{
++	struct pf8x00_chip *chip = config->driver_data;
++	int ret;
++	int val;
++
++	if ((desc->id >= PF8X00_BUCK1) && (desc->id <= PF8X00_BUCK7)) {
++		ret = of_property_read_u32(np, "nxp,ilim-ma", &val);
++		if (ret) {
++			dev_dbg(chip->dev, "unspecified ilim for BUCK%d, use value stored in OTP\n",
++				desc->id - PF8X00_LDO4);
++			return;
++		}
++
++		dev_warn(chip->dev, "nxp,ilim-ma is deprecated, please use regulator-max-microamp\n");
++		swxilim_select(chip, desc->id, val);
++
++	} else
++		dev_warn(chip->dev, "nxp,ilim-ma used with incorrect regulator (%d)\n", desc->id);
+ }
+ 
+ static int pf8x00_of_parse_cb(struct device_node *np,
+@@ -235,12 +264,7 @@ static int pf8x00_of_parse_cb(struct device_node *np,
+ 	int val;
+ 	int ret;
+ 
+-	ret = of_property_read_u32(np, "nxp,ilim-ma", &val);
+-	if (ret)
+-		dev_dbg(chip->dev, "unspecified ilim for BUCK%d, use 2100 mA\n",
+-			desc->id - PF8X00_LDO4);
+-
+-	swxilim_select(desc, val);
++	handle_ilim_property(np, desc, config);
+ 
+ 	ret = of_property_read_u32(np, "nxp,phase-shift", &val);
+ 	if (ret) {
+@@ -279,6 +303,8 @@ static const struct regulator_ops pf8x00_buck_ops = {
+ 	.list_voltage = regulator_list_voltage_table,
+ 	.set_voltage_sel = regulator_set_voltage_sel_regmap,
+ 	.get_voltage_sel = regulator_get_voltage_sel_regmap,
++	.get_current_limit = regulator_get_current_limit_regmap,
++	.set_current_limit = regulator_set_current_limit_regmap,
+ };
+ 
+ static const struct regulator_ops pf8x00_vsnvs_ops = {
+@@ -327,6 +353,11 @@ static const struct regulator_ops pf8x00_vsnvs_ops = {
+ 			.volt_table = voltages,			\
+ 			.vsel_reg = (base) + SW_RUN_VOLT,	\
+ 			.vsel_mask = 0xff,			\
++			.curr_table = pf8x00_sw_current_table, \
++			.n_current_limits = \
++				ARRAY_SIZE(pf8x00_sw_current_table), \
++			.csel_reg = (base) + SW_CONFIG2,	\
++			.csel_mask = PF8X00_SWXILIM_MASK,	\
+ 			.enable_reg = (base) + SW_MODE1,	\
+ 			.enable_val = 0x3,			\
+ 			.disable_val = 0x0,			\
+@@ -458,10 +489,6 @@ static int pf8x00_i2c_probe(struct i2c_client *client)
+ 			regmap_update_bits(chip->regmap, reg,
+ 					   PF8X00_SWXPHASE_MASK,
+ 					   data->phase_shift);
+-
+-			regmap_update_bits(chip->regmap, reg,
+-					   PF8X00_SWXILIM_MASK,
+-					   data->ilim << PF8X00_SWXILIM_SHIFT);
+ 		}
+ 	}
+ 
 -- 
 2.25.1
 
