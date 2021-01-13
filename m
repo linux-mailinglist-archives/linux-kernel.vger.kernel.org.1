@@ -2,199 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE86A2F54E7
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C742F54F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 23:36:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729341AbhAMW1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 17:27:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726013AbhAMWVE (ORCPT
+        id S1729377AbhAMWfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 17:35:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38222 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729331AbhAMW12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 17:21:04 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA03FC06179F;
-        Wed, 13 Jan 2021 14:20:23 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id y187so3031113wmd.3;
-        Wed, 13 Jan 2021 14:20:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ga6RWsMGRnOBRU223li1MY5FtCYIzdzZznWAiBLHlds=;
-        b=Zpi12CjpqLZABzoMsmC6r+DkHWv0xviygQSlCiD/ji3x1lBfhlzvJCMSvjBqdNPp8M
-         Ctx4JMZExpKXPkva4YsUHZN2/whYRoTK1VmS1Q1q4X/GdprHN8w1r+cUfKzSEs9HiZPt
-         yc+0u2oVmPb4hr+3BP8h+QQr4loJRXuQ2zQXFi3iiAW6otp1TJpynBDf/xG3SVWCbI4H
-         pNMIQFwwdWukgGDBlcZlUjUOAJGC+lm4rZMXlbDAEj6cvzjAlUYzYdwit+xZoSgawSK7
-         P6fGe7Q9K63TMvZIxZUiV69BSqVZ6tifI4/TttMXECpJOQJBkR9y+WIHtiB/LJQyszW+
-         fW5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ga6RWsMGRnOBRU223li1MY5FtCYIzdzZznWAiBLHlds=;
-        b=QDFR/DYn6MmQF8rWzTa4785ncxzI5U6fRnKUhlYwh96tLgQ52R+Bn/lffGzpHm+Z/m
-         VqIY2gU1OiRX3QW0Sel16hVjgU4U1S+r0O3OYY2hm7ljJ5tnETnrzO4y7zOKaiCt0d+9
-         slm+RxCGJHV0C0+Z+uX/MfFzBO2YdTFYJFrSp1hJFZ8agopxtuigRNJo/OTNKjI6+6+I
-         D8DzOAAw3g8veWqhxUqR0XdBCy7P7HLmum6VN6TqyewSGWUFzfKxzLES7gS9hkE6PhmU
-         GcbU58WmKU2cVW12Q/Dha8En8dDqytmSoUB4y0tvlM8LjBlcIopj3Ourx/9jc2JIdVQN
-         qZJA==
-X-Gm-Message-State: AOAM530SNeQvtdUde2dy6vbCrkEFKu8ZOb/KTJWDPBrcsPOAtesEJH0w
-        xk7S4iEQkP/lUGI5pNYaKCoKIc65j+I=
-X-Google-Smtp-Source: ABdhPJzsYRZPxVIafNK7x1L9j61Dj9sqOobrkbxo3nsO5xzaEs0vM4CqzPVy08X64pJPSeEzvDwyfA==
-X-Received: by 2002:a1c:2d8a:: with SMTP id t132mr1081182wmt.119.1610576422600;
-        Wed, 13 Jan 2021 14:20:22 -0800 (PST)
-Received: from localhost.localdomain (2a01cb0008bd27000d88c7723353ad1a.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:d88:c772:3353:ad1a])
-        by smtp.gmail.com with ESMTPSA id t1sm5594929wro.27.2021.01.13.14.20.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 14:20:22 -0800 (PST)
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     broonie@kernel.org, jagan@amarulasolutions.com,
-        lgirdwood@gmail.com, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Adrien Grassein <adrien.grassein@gmail.com>
-Subject: [PATCH v4 4/6] regulator: pf8x00: mark nxp,ilim-ma property as deprecated
-Date:   Wed, 13 Jan 2021 23:20:14 +0100
-Message-Id: <20210113222016.1915993-5-adrien.grassein@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210113222016.1915993-1-adrien.grassein@gmail.com>
-References: <20210113222016.1915993-1-adrien.grassein@gmail.com>
+        Wed, 13 Jan 2021 17:27:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610576761;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=keqTD1feRGxMu1i6ZV8LKC0UZKTn6b0VdBTOntJphMk=;
+        b=U8ogMtfe7qw8vZkDmFeGWnC38Z9R64K/iv/+6IQkHKX51hSUvyTZzE4ahF1NJfypjPaQ46
+        ChgN1Rn/aJLSnfjewyhvEPWIor/4qAiToWVTzgRP/DpoYHR72Bq/Eu377Mln1UOuQr/xys
+        qgmBF3dLNgckD/fAWo8lEHYYf8lRnUk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-320-j1KIj2juPlK1m70KZ2kQIQ-1; Wed, 13 Jan 2021 17:25:55 -0500
+X-MC-Unique: j1KIj2juPlK1m70KZ2kQIQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9754C1060B08;
+        Wed, 13 Jan 2021 22:25:47 +0000 (UTC)
+Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 36A425D71D;
+        Wed, 13 Jan 2021 22:25:45 +0000 (UTC)
+Date:   Wed, 13 Jan 2021 16:25:41 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, linux-doc@vger.kernel.org,
+        live-patching@vger.kernel.org
+Subject: Re: [PATCH] Documentation: livepatch: document reliable stacktrace
+Message-ID: <20210113222541.ysvtievx4o5r42ym@treble>
+References: <20210113165743.3385-1-broonie@kernel.org>
+ <20210113192735.rg2fxwlfrzueinci@treble>
+ <20210113202315.GI4641@sirena.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210113202315.GI4641@sirena.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This property seems useless because we can use the
-regulator-max-microamp generic property to do the same
-and using generic code.
+On Wed, Jan 13, 2021 at 08:23:15PM +0000, Mark Brown wrote:
+> On Wed, Jan 13, 2021 at 01:33:13PM -0600, Josh Poimboeuf wrote:
+> 
+> > I think it's worth mentioning a little more about objtool.  There are a
+> > few passing mentions of objtool's generation of metadata (i.e. ORC), but
+> > objtool has another relevant purpose: stack validation.  That's
+> > particularly important when it comes to frame pointers.
+> 
+> > For some architectures like x86_64 and arm64 (but not powerpc/s390),
+> > it's far too easy for a human to write asm and/or inline asm which
+> > violates frame pointer protocol, silently causing the violater's callee
+> > to get skipped in the unwind.  Such architectures need objtool
+> > implemented for CONFIG_STACK_VALIDATION.
+> 
+> This basically boils down to just adding a statement saying "you may
+> need to depend on objtool" I think?
 
-As this property was already released in a kernel version,
-we can't remove it, just mark it as deprecated.
+Right, but maybe it would be a short paragraph or two.
 
-Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
----
- drivers/regulator/pf8x00-regulator.c | 55 +++++++++++++++++++++-------
- 1 file changed, 41 insertions(+), 14 deletions(-)
+> > > +There are several ways an architecture may identify kernel code which is deemed
+> > > +unreliable to unwind from, e.g.
+> 
+> > > +* Using metadata created by objtool, with such code annotated with
+> > > +  SYM_CODE_{START,END} or STACKFRAME_NON_STANDARD().
+> 
+> > I'm not sure why SYM_CODE_{START,END} is mentioned here, but it doesn't
+> > necessarily mean the code is unreliable, and objtool doesn't treat it as
+> > such.  Its mention can probably be removed unless there was some other
+> > point I'm missing.
+> 
+> I was reading that as being a thing that the architecture could possibly
+> do, especially as a first step - it does seem like a reasonable thing to
+> consider using anyway.  I guess you could also use it the other way
+> around and do additional checks for things that are supposed to be
+> regular functions that you relax for SYM_CODE() sections.
 
-diff --git a/drivers/regulator/pf8x00-regulator.c b/drivers/regulator/pf8x00-regulator.c
-index af9918cd27aa..0c0f643b9c60 100644
---- a/drivers/regulator/pf8x00-regulator.c
-+++ b/drivers/regulator/pf8x00-regulator.c
-@@ -128,7 +128,6 @@ enum pf8x00_devid {
- 
- struct pf8x00_regulator {
- 	struct regulator_desc desc;
--	u8 ilim;
- 	u8 phase_shift;
- };
- 
-@@ -150,6 +149,11 @@ static const int pf8x00_ldo_voltages[] = {
- 	3100000, 3150000, 3200000, 3300000, 3350000, 1650000, 1700000, 5000000,
- };
- 
-+/* Output: 2.1A to 4.5A */
-+static const unsigned int pf8x00_sw_current_table[] = {
-+	2100000, 2600000, 3000000, 4500000,
-+};
-+
- #define SWV(i)		(6250 * i + 400000)
- #define SWV_LINE(i)	SWV(i*8+0), SWV(i*8+1), SWV(i*8+2), SWV(i*8+3), \
- 			SWV(i*8+4), SWV(i*8+5), SWV(i*8+6), SWV(i*8+7)
-@@ -199,10 +203,10 @@ static struct pf8x00_regulator *desc_to_regulator(const struct regulator_desc *d
- 	return container_of(desc, struct pf8x00_regulator, desc);
- }
- 
--static void swxilim_select(const struct regulator_desc *desc, int ilim)
-+static void swxilim_select(struct pf8x00_chip *chip, int id, int ilim)
- {
--	struct pf8x00_regulator *data = desc_to_regulator(desc);
- 	u8 ilim_sel;
-+	u8 reg = PF8X00_SW_BASE(id) + SW_CONFIG2;
- 
- 	switch (ilim) {
- 	case 2100:
-@@ -222,7 +226,32 @@ static void swxilim_select(const struct regulator_desc *desc, int ilim)
- 		break;
- 	}
- 
--	data->ilim = ilim_sel;
-+	regmap_update_bits(chip->regmap, reg,
-+					PF8X00_SWXILIM_MASK,
-+					ilim_sel << PF8X00_SWXILIM_SHIFT);
-+}
-+
-+static void handle_ilim_property(struct device_node *np,
-+			      const struct regulator_desc *desc,
-+			      struct regulator_config *config)
-+{
-+	struct pf8x00_chip *chip = config->driver_data;
-+	int ret;
-+	int val;
-+
-+	if ((desc->id >= PF8X00_BUCK1) && (desc->id <= PF8X00_BUCK7)) {
-+		ret = of_property_read_u32(np, "nxp,ilim-ma", &val);
-+		if (ret) {
-+			dev_dbg(chip->dev, "unspecified ilim for BUCK%d, use value stored in OTP\n",
-+				desc->id - PF8X00_LDO4);
-+			return;
-+		}
-+
-+		dev_warn(chip->dev, "nxp,ilim-ma is deprecated, please use regulator-max-microamp\n");
-+		swxilim_select(chip, desc->id, val);
-+
-+	} else
-+		dev_warn(chip->dev, "nxp,ilim-ma used with incorrect regulator (%d)\n", desc->id);
- }
- 
- static int pf8x00_of_parse_cb(struct device_node *np,
-@@ -235,12 +264,7 @@ static int pf8x00_of_parse_cb(struct device_node *np,
- 	int val;
- 	int ret;
- 
--	ret = of_property_read_u32(np, "nxp,ilim-ma", &val);
--	if (ret)
--		dev_dbg(chip->dev, "unspecified ilim for BUCK%d, use 2100 mA\n",
--			desc->id - PF8X00_LDO4);
--
--	swxilim_select(desc, val);
-+	handle_ilim_property(np, desc, config);
- 
- 	ret = of_property_read_u32(np, "nxp,phase-shift", &val);
- 	if (ret) {
-@@ -279,6 +303,8 @@ static const struct regulator_ops pf8x00_buck_ops = {
- 	.list_voltage = regulator_list_voltage_table,
- 	.set_voltage_sel = regulator_set_voltage_sel_regmap,
- 	.get_voltage_sel = regulator_get_voltage_sel_regmap,
-+	.get_current_limit = regulator_get_current_limit_regmap,
-+	.set_current_limit = regulator_set_current_limit_regmap,
- };
- 
- static const struct regulator_ops pf8x00_vsnvs_ops = {
-@@ -327,6 +353,11 @@ static const struct regulator_ops pf8x00_vsnvs_ops = {
- 			.volt_table = voltages,			\
- 			.vsel_reg = (base) + SW_RUN_VOLT,	\
- 			.vsel_mask = 0xff,			\
-+			.curr_table = pf8x00_sw_current_table, \
-+			.n_current_limits = \
-+				ARRAY_SIZE(pf8x00_sw_current_table), \
-+			.csel_reg = (base) + SW_CONFIG2,	\
-+			.csel_mask = PF8X00_SWXILIM_MASK,	\
- 			.enable_reg = (base) + SW_MODE1,	\
- 			.enable_val = 0x3,			\
- 			.disable_val = 0x0,			\
-@@ -458,10 +489,6 @@ static int pf8x00_i2c_probe(struct i2c_client *client)
- 			regmap_update_bits(chip->regmap, reg,
- 					   PF8X00_SWXPHASE_MASK,
- 					   data->phase_shift);
--
--			regmap_update_bits(chip->regmap, reg,
--					   PF8X00_SWXILIM_MASK,
--					   data->ilim << PF8X00_SWXILIM_SHIFT);
- 		}
- 	}
- 
+Makes sense, but we have to be careful not to imply that objtool already
+does something like that :-)
+
 -- 
-2.25.1
+Josh
 
