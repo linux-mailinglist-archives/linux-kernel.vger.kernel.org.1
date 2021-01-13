@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC63B2F4234
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 04:03:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E852F4238
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 04:05:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728796AbhAMDD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 22:03:26 -0500
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:58515 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726499AbhAMDDZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 22:03:25 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0ULZk49v_1610506958;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0ULZk49v_1610506958)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 13 Jan 2021 11:02:39 +0800
-Subject: Re: [PATCH] X.509: Fix crash caused by NULL pointer
-To:     David Howells <dhowells@redhat.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Tobias Markus <tobias@markus-regensburg.de>,
-        Tee Hao Wei <angelsl@in04.sg>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20210107092855.76093-1-tianjia.zhang@linux.alibaba.com>
- <772253.1610017082@warthog.procyon.org.uk>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <8ff730e0-bf03-0fbf-41f6-8e06f8956929@linux.alibaba.com>
-Date:   Wed, 13 Jan 2021 11:02:38 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.0
+        id S1728820AbhAMDEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 22:04:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43928 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728722AbhAMDET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 22:04:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E022923132;
+        Wed, 13 Jan 2021 03:03:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610507019;
+        bh=Lb24rQrKobyTU7A/TU/jdr6OZKSzLpDca0GkNO8kDnI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jPTmRs+lvTvzIyhdI94vZd+ttqxTP5Jz129r0rQnL/9e6DyGCnqjJgOitPc+9ImbU
+         6h82quHxRePvuryNqcC4SXZjhdjDD6q8OI/aPtvGDOPOGb4lf8RuJ1SBcwwaLOon4a
+         pwSAq8m6YfyuprW6Qf8K8xdMNupn3xX8FpEmzegnxmKo69FE0JK1lRrHayX2DW/OyR
+         c/EWEDRGxtAeOH5cI4zy4hUmsDjdi6NovCgQ/q3B0lwmz+Vyc+HxZ5u77f0RgIW6N9
+         WWflhDvfUkTnfRteSgw63pdXjDnbrD1xpGmke2M699RVJv7a899G2Wx8VDlCzJujsW
+         fu9gpKF5dkLjw==
+Date:   Wed, 13 Jan 2021 08:33:33 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mark Brown <broonie@kernel.org>, Wolfram Sang <wsa@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Amit Pundir <amit.pundir@linaro.org>,
+        linux-spi <linux-spi@vger.kernel.org>, linux-i2c@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/7] Add and enable GPI DMA users
+Message-ID: <20210113030333.GV2771@vkoul-mobl>
+References: <20210111151651.1616813-1-vkoul@kernel.org>
+ <CAD=FV=XvgP5j3ikCnr2zDptFbWPRQhGGQotqyFGmN7NWNP8knA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <772253.1610017082@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=XvgP5j3ikCnr2zDptFbWPRQhGGQotqyFGmN7NWNP8knA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Doug,
 
+On 12-01-21, 16:01, Doug Anderson wrote:
+> Hi,
+> 
+> On Mon, Jan 11, 2021 at 7:17 AM Vinod Koul <vkoul@kernel.org> wrote:
+> >
+> > Hello,
+> >
+> > This series add the GPI DMA in qcom geni spi and i2c drivers. For this we
+> > first need to move GENI_IF_DISABLE_RO and struct geni_wrapper to common
+> > headers and then add support for gpi dma in geni driver.
+> >
+> > Then we add spi and i2c geni driver changes to support this DMA.
+> >
+> > Lastly, add the GPI dma nodes and enable dma for spi found in Rb3 board.
+> >
+> > To merge this, we could merge all thru qcom tree with ack on spi/i2c.
+> 
+> It'd be super great if somewhere (ideally in the commit message and
+> maybe somewhere in the code) you could talk more about the different
+> modes.  Maybe something like this (if it's correct):
+> 
+> GPI Mode (confusingly, also known as "GSI" mode in some places): In
+> this mode something else running on the SoC is sharing access to the
+> geni instance.  This mode allows sharing the device between the Linux
+> kernel and other users including handling the fact that other users
+> might be running the geni port at a different clock rate.  GPI mode
+> limits what you can do with a port.  For instance, direct control of
+> chip select is not allowed.  NOTE: if firmware has configured a geni
+> instance for GPI then FIFO and SE_DMA usage is not allowed.
+> Conversely, if firmware has not configured a geni instance for GPI
+> then only FIFO and SE_DMA usage is allowed.
+> 
+> SE DMA Mode: Data transfers happen over DMA.
+> 
+> SE FIFO Mode: Data is manually transferred into the FIFO by the CPU.
 
-On 1/7/21 6:58 PM, David Howells wrote:
-> Tianjia Zhang <tianjia.zhang@linux.alibaba.com> wrote:
-> 
->> On the following call path, `sig->pkey_algo` is not assigned
->> in asymmetric_key_verify_signature(), which causes runtime
->> crash in public_key_verify_signature().
->>
->>    keyctl_pkey_verify
->>      asymmetric_key_verify_signature
->>        verify_signature
->>          public_key_verify_signature
->>
->> This patch simply check this situation and fixes the crash
->> caused by NULL pointer.
->>
->> Fixes: 215525639631 ("X.509: support OSCCA SM2-with-SM3 certificate verification")
->> Cc: stable@vger.kernel.org # v5.10+
->> Reported-by: Tobias Markus <tobias@markus-regensburg.de>
->> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> 
-> Looks reasonable:
-> 
-> Acked-by: David Howells <dhowells@redhat.com>
-> 
-> I wonder, though, if cert_sig_digest_update() should be obtained by some sort
-> of function pointer.  It doesn't really seem to belong in this file.  But this
-> is a separate issue.
-> 
-> David
-> 
+I think it is a good feedback, there is indeed bunch of confusion wrt
+QUP DMA and i think we should add above to qcom geni driver and not just
+in cover letter. FWIW for all practical purposes GSI and GPI can be used
+interchangeably. There are some nuisances involved like firmware and a
+microcontroller but for the sake of simplicity we can skip that :)
 
-Yes, this is indeed the logic of the SM2 module. I have tried to 
-dynamically load and obtain the pointer of this function through 
-`request_module` before, but this method still does not seem very 
-suitable. Here are some unfinished codes I tried before:
-
-https://github.com/uudiin/linux/commit/55bca48c6282415d94c53a7692622d544da99342
-
-It would be great if you have some good experience to share with me, I 
-will continue to try to optimize this code.
-
-Best regards,
-Tianjia
+Thanks
+-- 
+~Vinod
