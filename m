@@ -2,242 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE0F2F4FB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7A22F4FC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 17:22:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727513AbhAMQSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 11:18:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbhAMQSL (ORCPT
+        id S1726612AbhAMQTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 11:19:36 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:49692 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbhAMQTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 11:18:11 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13047C061575
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:17:31 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id t6so1341780plq.1
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 08:17:31 -0800 (PST)
+        Wed, 13 Jan 2021 11:19:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1610554774; x=1642090774;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=k+3gkpEmkYWXEMlcK9LgKlLQmCnkEFvDv3TlVX2QVmY=;
+  b=c1NdLcv+1KFwl6IDeLQJbRQ+Qc7lDFvAwG3fBtuSiRgez3KpOzY5OYy/
+   hdx4RQb3jKncXrLyoM/2fY0m1uNdObVKFzO8VfcmJDOpJItx0Xd46I/sm
+   GFLinpoA26F8ricofDlat8FxF6m7PYoqgZexxH866ZVzTngmQiUUXXoOE
+   slJ6M4icymQyjqMD+IxpSTi7Ktm7H1ZZo168FWsvkV+zSg5iX4+9xGggM
+   NYt3uO29f3mpTjctMNqZE10T04Qk/oW/ThMNSHzFtUwTItIxwcjdMlhu/
+   Ysu7+/OG82N4wvIu/K2uTU9V0OKNCzXGSTx3AjzXo6oGnEP7MgpbXu5xM
+   w==;
+IronPort-SDR: /cpoqSpCx5YQU+hlCYuGwrkq+EiqdycGSOkYiIGyL9OSeHmIgriPQVPrZyzhNxqNp0snAE5wDY
+ LkQ8slqVB8yH3h/S6oMKENi4yUNq/L25Pz2U0HjmaJDxt46nWn2gC+Hoa/CbOa6liXvmOQT02r
+ D4m6UP84koB9DfGQs4PFfbwewsuDh4+5QFd7R51ltak7urCaEny9ihPK8q40i9Yrhzsw8C/3IO
+ OZCi7dNhrpsTaZrYButorsvQOk0ZMn8Zc6plhPRWA0fDqnb++CnzOE5+NE9PQ9ifP61yfwW/RC
+ Fkk=
+X-IronPort-AV: E=Sophos;i="5.79,344,1602518400"; 
+   d="scan'208";a="161785390"
+Received: from mail-bn8nam12lp2177.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.177])
+  by ob1.hgst.iphmx.com with ESMTP; 14 Jan 2021 00:18:28 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f22wFLqbjmo/O2SwAZkBp8C9KYKPyAEhv3Dmw4rfDTnH1AJmfmid7N7XQOSjT0U3S0lD+2RjtqiWV+dWiTkkn+0IiSyPpzGAQ3ecYQ8hejnJNCn17y0iLKZddUskJxJeZGmDj8kMstdhbFZLvhmZRNXPTXSSToKe561Ka7GU462XdrnFKVCK+9ygMsgowAV/E/Cgs9rRGP3+jC8g6KtW4tk+dSTFus2mkXD36ZR/r6dVTq6kKFMjTwrXkPDuZNVQOcct84SZ+sPcBrofd1vbpoXc9g3cUkxpdAf2qBt42kHPyzpa8sfm8uL4ehp1cvZfOjk2PXJuyKU5Kxn+kbNQcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j3Esrvh2jZ7Pcl2YZL5+wmdUluzkTPA+R8JCSGHMRNI=;
+ b=bQy1j8QfIg9lEFo96m0fHdA4N3u9hIRZR/k1T2j0n7H+IkpoNX1QmRC9gsyq+VXvbAZ4k8hhzYsRLfeeV8NIcqbQkOqfonrrRX7GAVsaBKTQwvU8Ugx7kfj9XjRBGDX2FcihKdo84CnXffoUWIVW5icfK1Pg2yqN/Y5agwkSBkP7ulwDO1D5bJkPiiachkPoELHfhEUdf0XXGa05jUCKW8q+207hC73G5c1hBghJKNh3OTGMF2yHGnNEd+LA2c3YnDGCoITmbLKpbkLqMznevyFc/od/mZrWgjwy91BX1nv/d59gU2iEoFnlp4CKEMHcCZBJbWKXxPNViKpcCTn7xA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oi22ZFSSHiz5BqCswewx2XNKWFz3N9RTqmGy+V7qxvs=;
-        b=qhUvTMxWi79wiaLoZoeLyF25x/qHWvpLpZBFdA9Wx8Y4U9NBsOb30JgF2oRPCSJYzv
-         /jMXabkdBER72nto5pfV7a9SaePTaixmNM0HlQtjTFrnQvz7Pk8AE3FykdCYNOTBj3qo
-         8WIOv39pJfj4IroTPId8aHqWiUEABDulNcDzeVwOiWzZ4FOoJkLQb5T3S+Rrv64UMmlr
-         HGLRTKQKinzUA1feHlG6MGt5NmkJS5MvqK+Px+AvBYMHfAdISt+U8LbBseEVGjv1WUM7
-         lZClxD/SW0mIOeeQrxvu5z+h0vFzyVdDnNHPq/W52zCpWaMqNyiKIRaCq9kDI+Kap/n5
-         FDSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oi22ZFSSHiz5BqCswewx2XNKWFz3N9RTqmGy+V7qxvs=;
-        b=GJNNzY09jE0nEtp2der48Ucr5cNtTbP7QElyb+rjL7YnNpejKpgMCJfaKFJnjHfhDB
-         fu3byJzLbqCrUtoQrHb3p1ZJPQmO2k7FSWcnHUltxLOkQO1W8O6NM3HkcsYAaKwzK4Ws
-         GeP8+97byROOMT1/U1LWsDguVrsur0IQDESo/6fTmJAyK9PW0hySZjzMPAGpPIy8cxrB
-         daexsaT/CgGsjj4NyL3yRDnuVFYpl0S+dShVj6yWF6kmTlKL6sw86ySlJYL9CqEWgLlZ
-         iUoT/K3s3h1n4ohkZgDVnmBOitSsyQGcqmDdvW5adhnmoe7ShlDbrod7ACL90qArdY8M
-         B2NA==
-X-Gm-Message-State: AOAM532gKpGbr2c8Loq2i88SX7JlpSlRSFw27YVZ0bG23WjechHkHoEJ
-        bQ4xd6cVv6DjfDb3S4ixm2WdQA==
-X-Google-Smtp-Source: ABdhPJwLCFIwkGQ+KrZaxUUyOsyH9QO21TegySOw8tG2RsJk1Nt3Und32EPY8mLaq8W6sXtpQMJL3w==
-X-Received: by 2002:a17:902:9341:b029:dc:102f:c36c with SMTP id g1-20020a1709029341b02900dc102fc36cmr3175169plp.61.1610554650533;
-        Wed, 13 Jan 2021 08:17:30 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id p9sm3343800pjb.3.2021.01.13.08.17.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Jan 2021 08:17:29 -0800 (PST)
-Date:   Wed, 13 Jan 2021 09:17:27 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Peng Fan <peng.fan@nxp.com>
-Cc:     "ohad@wizery.com" <ohad@wizery.com>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "o.rempel@pengutronix.de" <o.rempel@pengutronix.de>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paul@crapouillou.net" <paul@crapouillou.net>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "patrice.chotard@st.com" <patrice.chotard@st.com>
-Subject: Re: [PATCH V5 7/8] remoteproc: imx_rproc: ignore mapping vdev regions
-Message-ID: <20210113161727.GA213180@xps15>
-References: <20201229033019.25899-1-peng.fan@nxp.com>
- <20201229033019.25899-8-peng.fan@nxp.com>
- <20210111215023.GJ144935@xps15>
- <DB6PR0402MB2760F6F982C32B6557467C9188AA0@DB6PR0402MB2760.eurprd04.prod.outlook.com>
- <20210112184629.GA186830@xps15>
- <DB6PR0402MB27602E812FD657F7EC81854F88A90@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j3Esrvh2jZ7Pcl2YZL5+wmdUluzkTPA+R8JCSGHMRNI=;
+ b=bIAk5YDYIEoitjN3+AHfHrBbQdQAGm4uyk3GYfvhFzMNLrRUM5EkKD/7Zy728pFjCeAIvxgdLkmhDkU7go8y84OJ4O6GHHNNfT2QosEuHXGkvc5mT8PMzbrPcUJ4gfDTTKTCqW9sgmK6uBhrBZWM/QGX0W8xS0wjYmBS8IF6Xvg=
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ (2603:10b6:803:47::21) by SN6PR04MB4160.namprd04.prod.outlook.com
+ (2603:10b6:805:35::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.12; Wed, 13 Jan
+ 2021 16:18:26 +0000
+Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::146f:bed3:ce59:c87e]) by SN4PR0401MB3598.namprd04.prod.outlook.com
+ ([fe80::146f:bed3:ce59:c87e%3]) with mapi id 15.20.3742.012; Wed, 13 Jan 2021
+ 16:18:26 +0000
+From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To:     Li Feng <fengli@smartx.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+CC:     "lifeng1519@gmail.com" <lifeng1519@gmail.com>
+Subject: Re: [PATCH] nvme: reject the ns when the block size is smaller than a
+ sector
+Thread-Topic: [PATCH] nvme: reject the ns when the block size is smaller than
+ a sector
+Thread-Index: AQHW6cYiQ8r0UOC3okaYJHPdW7DXCw==
+Date:   Wed, 13 Jan 2021 16:18:26 +0000
+Message-ID: <SN4PR0401MB35985C08E5FFCDF0F5817A9D9BA90@SN4PR0401MB3598.namprd04.prod.outlook.com>
+References: <20210113160621.98615-1-fengli@smartx.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: smartx.com; dkim=none (message not signed)
+ header.d=none;smartx.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [2001:a62:15c4:1c01:c8b:c088:e383:ecf6]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 5b11ee09-8063-4ebe-8c8b-08d8b7dedb54
+x-ms-traffictypediagnostic: SN6PR04MB4160:
+x-microsoft-antispam-prvs: <SN6PR04MB41603B6AA8E289EAC0CBC1F19BA90@SN6PR04MB4160.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /Hg0CMWZs6gC/p9+OHQM+UztcHvlJK1JIHTrO138RZ7kormg281Hh01Nl2LtS11Lw7AvrxkmqZgVzj2MSGQiHAxd4sHEeJ89QY87OouQ/OoF8QQjPHiXCU51mkSOJMpk4hxYdri6/HED5jam7iA/HQVaRhzRdAIMJP9fyDOtw2IsbtiQyrtNGZh/AQ+0grTWYTqRiNT4uR2DbnTgaVfIlt5BJihqsNlHKo9JAnxbCntSuUd2NDrXJ8cMNTd2zlbTGCFTay2JVEGmSH8MsZH6SPk0E61EEzLKfFBTaZo8KkzjwXorLWp2XqsrprM4noLpG/U5fjkO8iNA+0qh3dz7CKVsvTb7DTtHGb5D6qt6SFfLabbHtn5UlmrQQ7z3CaI/NbMIyqti0vicWpTcj2T7lg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(376002)(346002)(396003)(39860400002)(4326008)(186003)(86362001)(71200400001)(8936002)(8676002)(9686003)(7696005)(110136005)(55016002)(2906002)(91956017)(53546011)(478600001)(5660300002)(64756008)(66476007)(76116006)(66446008)(66556008)(66946007)(83380400001)(33656002)(316002)(6506007)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?R5zpLXegbSgegiFgTn8xSIcSJosTeURblg7KMihQGXU5Lw1Wry13Z6M3vRe3?=
+ =?us-ascii?Q?i0xh/O5qPX1EnQEKN1GL24af3NFYfIe3tW0Inc+cZAtnYLRvQQ3iWv2Z5bdy?=
+ =?us-ascii?Q?apqUaBLwemh0wfJGIQkrAYWAY1Q9KcQEm8hl0pf4qMCrlWntB2qgtwIFFs4X?=
+ =?us-ascii?Q?6+Hn8eD0wcLKOygv3ZkYLp04iyRQarG7FX0oNrKJ2G9KqqySoHUOuL1sUlAt?=
+ =?us-ascii?Q?b1nhcH2vfywp1TecgMafxmKLYtBTwni89BGY246IM6vk+s+MyeIaPjl0mBFb?=
+ =?us-ascii?Q?5gQtuCUoPhkVcqj8zss51LUF7l0LoBxz7PmO2Vrd4Gqmo/fkJfwebYyVRDW9?=
+ =?us-ascii?Q?2er3V77MqROzv97w+CFS8r1ADgk7FsncalXCm01MPtQ6fjgxUDo96XHclym4?=
+ =?us-ascii?Q?+zaZGWJ8hEvoa46B6UH1ludbbCU5y9b/DzIz7Ju4HUp0aZDWTgHmoTpDfBDs?=
+ =?us-ascii?Q?PO1TTBS/wJSiiYhDmcCCPHgX3wOZWhz8e9iz0re6QbQfMOjiedJ4vSgrmHR/?=
+ =?us-ascii?Q?R24IAzFAJITLnbat6BZ0xtkuX3iM7qaC1lT1KdN7TGgNzHsR7tJs8aX43Fod?=
+ =?us-ascii?Q?n2/m68aarz2tLvFg/5xI2aSL3bIli7KV7yyQ2yyUc512yeUor8SwjHWdD+h9?=
+ =?us-ascii?Q?o7Fu2Kehr/RtAqqvNl/CioMcxutN4SqwVWE13Awx5ju8XP1JID0mfHgPYRq0?=
+ =?us-ascii?Q?tL05lqDZV9Ns8ou1rrPpteXilVb7kQKjEMArNoBttdcxHxx3Dn9iMs/bg5ix?=
+ =?us-ascii?Q?82FI6CXH1UBn6sHnja+FMtjBL2PKcaW4wXbTET5NcZWJOoemF8Oo42MS5vhr?=
+ =?us-ascii?Q?PRApqoYmbaMu/Q3K0LX+cE8NEoYRGUnuDdfW9DYmQjk8w4BFRGslMF236dD8?=
+ =?us-ascii?Q?GYn9R6hJWAGTu3dJGErp8jq5HiwTcj57+UmISBF9X2o2BWA4tKv/i/chNlfp?=
+ =?us-ascii?Q?rqZEzwamweQYPBKn13xuLhLskV6tDoocC5a3vwTdVCEm4Gd/ztVrsHaJZOZt?=
+ =?us-ascii?Q?z6O0fIX9voEQelKRBuR3pzmkeOi7Of4b18rF8InKk1+739bJjhxdTqM/VAE5?=
+ =?us-ascii?Q?BT13uHeu?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DB6PR0402MB27602E812FD657F7EC81854F88A90@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b11ee09-8063-4ebe-8c8b-08d8b7dedb54
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jan 2021 16:18:26.2579
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: teadxG2QjroiHl9WQq6Mo3r8R6jk9O6Jo/GX192p1+kbfK7xzKOI9TLiHygmU62ju7wYj3mXPwCfeLInZbDucDR+0LR7NBOQe7zyhzDA1DY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4160
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 02:19:32AM +0000, Peng Fan wrote:
-> > Subject: Re: [PATCH V5 7/8] remoteproc: imx_rproc: ignore mapping vdev
-> > regions
-> > 
-> > On Tue, Jan 12, 2021 at 09:41:12AM +0000, Peng Fan wrote:
-> > > > Subject: Re: [PATCH V5 7/8] remoteproc: imx_rproc: ignore mapping
-> > > > vdev regions
-> > > >
-> > > > On Tue, Dec 29, 2020 at 11:30:18AM +0800, peng.fan@nxp.com wrote:
-> > > > > From: Peng Fan <peng.fan@nxp.com>
-> > > > >
-> > > > > vdev regions are vdev0vring0, vdev0vring1, vdevbuffer and similar.
-> > > > > They are handled by remoteproc common code, no need to map in imx
-> > > > > rproc driver.
-> > > > >
-> > > > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> > > > > ---
-> > > > >  drivers/remoteproc/imx_rproc.c | 3 +++
-> > > > >  1 file changed, 3 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/remoteproc/imx_rproc.c
-> > > > > b/drivers/remoteproc/imx_rproc.c index f80428afb8a7..e62a53ee128e
-> > > > > 100644
-> > > > > --- a/drivers/remoteproc/imx_rproc.c
-> > > > > +++ b/drivers/remoteproc/imx_rproc.c
-> > > > > @@ -417,6 +417,9 @@ static int imx_rproc_addr_init(struct
-> > > > > imx_rproc
-> > > > *priv,
-> > > > >  		struct resource res;
-> > > > >
-> > > > >  		node = of_parse_phandle(np, "memory-region", a);
-> > > > > +		/* Not map vdev region */
-> > > > > +		if (!strcmp(node->name, "vdev"))
-> > > > > +			continue;
-> > > >
-> > > > I am very confused and because I don't see an example for the DT in
-> > > > the bindings document I have to guess what is going on.
-> > >
-> > > V6 will include the DT yaml.
-> > >
-> > > >
-> > > > So I am guessing that you have laid out the memory regions for the
-> > > > vrings and the vdev0buffer in the DT "memory-region".
-> > >
-> > > The dts part will be similar as following:
-> > >
-> > > +    #include <dt-bindings/clock/imx8mm-clock.h>
-> > > +    rsc_table: rsc_table@550ff000 {
-> > > +      no-map;
-> > > +      reg = <0x550ff000 0x1000>;
-> > > +    };
-> > > +
-> > > +    vdev0vring0: vdev0vring0@55000000 {
-> > > +      no-map;
-> > > +      reg = <0x55000000 0x8000>;
-> > > +    };
-> > > +
-> > > +    vdev0vring1: vdev0vring1@55008000 {
-> > > +      reg = <0x55008000 0x8000>;
-> > > +      no-map;
-> > > +    };
-> > > +
-> > > +    vdevbuffer: vdevbuffer@55400000 {
-> > > +      compatible = "shared-dma-pool";
-> > > +      reg = <0x55400000 0x100000>;
-> > > +      no-map;
-> > > +    };
-> > > +
-> > > +    imx8mm-cm4 {
-> > > +      compatible = "fsl,imx8mm-cm4";
-> > > +      clocks = <&clk IMX8MM_CLK_M4_DIV>;
-> > > +      mbox-names = "tx", "rx", "rxdb";
-> > > +      mboxes = <&mu 0 1
-> > > +                &mu 1 1
-> > > +                &mu 3 1>;
-> > > +      memory-region = <&vdevbuffer>, <&vdev0vring0>, <&vdev0vring1>,
-> > <&rsc_table>;
-> > > +      syscon = <&src>;
-> > > +    };
-> > >
-> > > >
-> > > > For the vrings I don't see the allocation of a carveout, which means
-> > > > that you will take the memory out of the DMA pool and the reserve
-> > > > memory will be wasted.
-> > >
-> > > imx_rproc_parse_memory_regions will alloc carveout.
-> > 
-> > They _will_ but for now they don't and as such there a discrepancy between
-> > the bindings and the code that was published in V6.  At this point you can
-> > either drop the vrings in the DT or send another revision with the carveouts
-> > allocated.  I would definitely prefer the latter because it wouldn't involve yet
-> > another modification of the bindings.
-> 
-> You mean I drop patch v5 7/8 and send v7, right?
-> 
-
-If you do that than the implementation won't reflect the bindings.
-
-> Or are there other changes that I need to do?
-
-If you want to keep the bindings the same way you have them in V6, carveouts are
-required in the implementation.
-
-> 
-> Thanks,
-> Peng.
-> 
-> > 
-> > >
-> > > >
-> > > > For the vdev0buffer, what you have will work *only* if that entry is
-> > > > the first one in the list of memory regions, as we agreed here [2].
-> > >
-> > > Yes. I agree and follow this rule from then.
-> > >
-> > > Thanks,
-> > > Peng.
-> > >
-> > > >
-> > > > [1].
-> > > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fel
-> > > > ixir.b
-> > > >
-> > ootlin.com%2Flinux%2Fv5.11-rc3%2Fsource%2Fdrivers%2Fremoteproc%2Fre
-> > > >
-> > moteproc_core.c%23L321&amp;data=04%7C01%7Cpeng.fan%40nxp.com%7
-> > > >
-> > C581784529b1646b9d34b08d8b67ae8c7%7C686ea1d3bc2b4c6fa92cd99c5c
-> > > >
-> > 301635%7C0%7C0%7C637459986311799770%7CUnknown%7CTWFpbGZsb3
-> > > >
-> > d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0
-> > > > %3D%7C1000&amp;sdata=Qur6YiTWlak0ZRnrUZRzawfoO38EBrAItqZm66
-> > b4
-> > > > m20%3D&amp;reserved=0
-> > > > [2].
-> > > > https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fpa
-> > > > tch
-> > > >
-> > work.kernel.org%2Fproject%2Flinux-remoteproc%2Fpatch%2F202007221315
-> > > >
-> > 43.7024-1-peng.fan%40nxp.com%2F&amp;data=04%7C01%7Cpeng.fan%40n
-> > > >
-> > xp.com%7C581784529b1646b9d34b08d8b67ae8c7%7C686ea1d3bc2b4c6fa9
-> > > >
-> > 2cd99c5c301635%7C0%7C0%7C637459986311799770%7CUnknown%7CTW
-> > > >
-> > FpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJX
-> > > >
-> > VCI6Mn0%3D%7C1000&amp;sdata=b%2F8muWtb3yxKIsnXmKmRGYYV33%2
-> > > > FHjwA6a8x58geY7eE%3D&amp;reserved=0
-> > > >
-> > > > >  		err = of_address_to_resource(node, 0, &res);
-> > > > >  		if (err) {
-> > > > >  			dev_err(dev, "unable to resolve memory region\n");
-> > > > > --
-> > > > > 2.28.0
-> > > > >
+On 13/01/2021 17:07, Li Feng wrote:=0A=
+> The nvme spec(1.4a, figure 248) says:=0A=
+> "A value smaller than 9 (i.e., 512 bytes) is not supported."=0A=
+> =0A=
+> Signed-off-by: Li Feng <fengli@smartx.com>=0A=
+> ---=0A=
+>  drivers/nvme/host/core.c | 6 ++++++=0A=
+>  1 file changed, 6 insertions(+)=0A=
+> =0A=
+> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c=0A=
+> index f320273fc672..1f02e6e49a05 100644=0A=
+> --- a/drivers/nvme/host/core.c=0A=
+> +++ b/drivers/nvme/host/core.c=0A=
+> @@ -2161,6 +2161,12 @@ static int nvme_update_ns_info(struct nvme_ns *ns,=
+ struct nvme_id_ns *id)=0A=
+>  =0A=
+>  	blk_mq_freeze_queue(ns->disk->queue);=0A=
+>  	ns->lba_shift =3D id->lbaf[lbaf].ds;=0A=
+> +	if (ns->lba_shift < 9) {=0A=
+> +		pr_warn("%s: bad lba_shift(%d)\n", ns->disk->disk_name, ns->lba_shift)=
+;=0A=
+> +		ret =3D -1;=0A=
+> +		goto out_unfreeze;=0A=
+> +	}=0A=
+> +=0A=
+>  	nvme_set_queue_limits(ns->ctrl, ns->queue);=0A=
+>  =0A=
+>  	if (ns->head->ids.csi =3D=3D NVME_CSI_ZNS) {=0A=
+> =0A=
+=0A=
+=0A=
+But this only catches a physical block size < 512 for NVMe, not any other b=
+lock device.=0A=
+=0A=
+Please fix it for the general case in blk_queue_physical_block_size().=0A=
+=0A=
+Thanks,=0A=
+	Johannes=0A=
