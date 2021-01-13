@@ -2,119 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368472F4C72
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1A02F4C74
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 14:48:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbhAMNsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 08:48:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40862 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725772AbhAMNsU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 08:48:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E566223339;
-        Wed, 13 Jan 2021 13:47:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610545660;
-        bh=c9ZEmZC+OGzOHSTlleqwkNhpgxSo3+qwJ9ptpSoPBMY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=FYu658AOWNtizhfGOXbNeL8NnWsMtHC+dTrt2yedfVOtoG8JKtBG1y0MjODTu7GW+
-         740oAJD+fJqb5Ts7VVV3U0RQNlu6RbHic5mtnopKPl5jioiqWOOkaKbt2dcLn/u+s7
-         rtGUDgKHYO2vy3z9WftyjNDrcEPDtYydLA3YzkWaUcPIt82pnUA9FwbgpXRQXjsmcB
-         W0vRdNUQjbeEwzz3seUsYoyKP0i2R+Fd0JWpH/RrqeAmXPff4JzKQiknxZ1BCcrRAj
-         IIhLhSyZ2S1JQDGgRP4Zv3xbeB/GUxEAOljYrPV9vib4zsFj0Ixwzj+Ay81CUJHG6E
-         IqT8rXjjuXBfA==
-Received: by mail-ed1-f46.google.com with SMTP id r5so1940047eda.12;
-        Wed, 13 Jan 2021 05:47:39 -0800 (PST)
-X-Gm-Message-State: AOAM533YTLpB1UJ406gnZoay+zQciRRzTIJdgzQQfWQeObYCVxLb3q5r
-        Q7UlMGN2tqns+A0vpvSgjq/Tlo3W1f6UKvMb7g==
-X-Google-Smtp-Source: ABdhPJwFnnxsacTgDF7sATccpJCIWFohXy1lChGnPrWia0Dd45sGfr2h+/uzWLycVLhW0t1rfVN+jlHpRT5er6uxUkA=
-X-Received: by 2002:a50:e78b:: with SMTP id b11mr1817862edn.165.1610545658364;
- Wed, 13 Jan 2021 05:47:38 -0800 (PST)
+        id S1726471AbhAMNsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 08:48:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725747AbhAMNst (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 08:48:49 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1E4C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 05:48:09 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id c7so1965684edv.6
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 05:48:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qw6VQNbr/MnGxv6QaGRimh6NhRF2uRUV4EBku2j8OE8=;
+        b=DqL6xvtf1VN44MbClbs2zHC+F7AfTtHbWZKCDloGxMTyzpjTZ0i2r/gppVW+lvsMfI
+         R57GivDirDyGicvdn46ASdf4y8Zt2PmH6PkycgdposUrCQS86Yn9mbjs6Xmzcz/B/tCu
+         XLahc4a9CfnqpS0JPxIP+/gE2qHVTDTd3WAgOs2kUphHR7LMigOuWAM3mqxh1BrVVTgN
+         yZpUF/XMDEh5KCfpLjNwHDgnJHqv5FoY9kAGC9juo+8RclfHd8qtReP+qXrwMGSeyh+l
+         mwOqI3MYRNDgWyEgisV/78gxV8g2KqKqmyiKOgcJNTrnBSLwwQufSnxlgULQoJ1FhAAf
+         z23w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qw6VQNbr/MnGxv6QaGRimh6NhRF2uRUV4EBku2j8OE8=;
+        b=UFHxn+Tg4AiZyywMlCL6Ul0UzTMQCgKr9YOZRxsyV37b7AF8277OoopcEbifM33ytO
+         TLGsSG0mkDt0TfHVULusfxnzIs5yB4N4OcNSS8cSf6lFs5Uvtw9KoBfngwyS9wb1anGb
+         BppVp0xMBHBOWg/WnJ1ovarS3MMD0qC3nPzbi2vnAlLCNf+LyyB2BZbQ9VJ+CZzpw5BT
+         vziiRsXAAfPXjUQFtioT+DQs1l7QFfBQvHo6gUlxzyEcKM+qVqGen7tki83MV5OAZ5tK
+         CA8DckUkAQ3LFmYX4j6X9JWq8l26pOQqvSZZXud1NuvCUKxOdwoSqVLkHSWkNW5aZOhD
+         JZLA==
+X-Gm-Message-State: AOAM530poLE4fHKg0tZofV1+/gbpXUFnh/PoQ3PiCDG4dwSr0VLeQFIL
+        NMOHfkC0s/urlUrYtDrOC249VK/BS3Y5JtrUx4TU
+X-Google-Smtp-Source: ABdhPJwB4tmGNdMbAc1D65UZyTgVVNUEtW4KR+KikSXTmEkqME3Uj+9zKG0LG7DEXXVH92c+5/i2cXRJl3qFCKZrFV4=
+X-Received: by 2002:a05:6402:1bcd:: with SMTP id ch13mr629052edb.31.1610545687667;
+ Wed, 13 Jan 2021 05:48:07 -0800 (PST)
 MIME-Version: 1.0
-References: <20201223111633.1711477-1-zhang.lyra@gmail.com>
- <20210108022545.GA1744725@robh.at.kernel.org> <CAAfSe-svn4ACvhk3McO7APLLSKdC=9ei7bvmD9ZhnSosnLQ1AA@mail.gmail.com>
-In-Reply-To: <CAAfSe-svn4ACvhk3McO7APLLSKdC=9ei7bvmD9ZhnSosnLQ1AA@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 13 Jan 2021 07:47:26 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKqi_tngaR0nHpjbQz2Q8QnwJ+Ea=DghT6xqR9U8o-5CQ@mail.gmail.com>
-Message-ID: <CAL_JsqKqi_tngaR0nHpjbQz2Q8QnwJ+Ea=DghT6xqR9U8o-5CQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] dt-bindings: iommu: add bindings for sprd iommu
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Sheng Xu <sheng.xu@unisoc.com>,
-        Kevin Tang <kevin.tang@unisoc.com>
+References: <202101132038409309743@zte.com.cn>
+In-Reply-To: <202101132038409309743@zte.com.cn>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 13 Jan 2021 08:47:56 -0500
+Message-ID: <CAHC9VhSB0UvbQZbCa4hTHgnx23+9FR-P+ytXw547c7YjSH0rMw@mail.gmail.com>
+Subject: Re: [RFC,v1,1/1] audit: speed up syscall rule match while exiting syscall
+To:     yang.yang29@zte.com.cn
+Cc:     Eric Paris <eparis@redhat.com>, linux-audit@redhat.com,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 5:34 AM Chunyan Zhang <zhang.lyra@gmail.com> wrote:
+On Wed, Jan 13, 2021 at 7:39 AM <yang.yang29@zte.com.cn> wrote:
+> From 82ebcf43481be21ee3e32ec1749b42f651737880 Mon Sep 17 00:00:00 2001
+> From: Yang Yang <yang.yang29@zte.com.cn>
+> Date: Wed, 13 Jan 2021 20:18:04 +0800
+> Subject: [PATCH] [RFC,v1,1/1] speed up syscall rule match while exiting syscall
+>  If user add any syscall rule, in all syscalls, audit_filter_syscall()
+>  traverses struct list_head audit_filter_list to find out whether current
+>  syscall match one rule. This takes o(n), which is not necessary, specially
+>  for user who add a very few syscall rules. On the other hand, user may not
+>  much care about rule add/delete speed. So do o(n) calculate at rule changing,
+>  and ease the burden of audit_filter_syscall().
 >
-> On Fri, 8 Jan 2021 at 10:25, Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Wed, Dec 23, 2020 at 07:16:32PM +0800, Chunyan Zhang wrote:
-> > > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > >
-> > > This patch only adds bindings to support display iommu, support for others
-> > > would be added once finished tests with those devices, such as Image
-> > > codec(jpeg) processor, a few signal processors, including VSP(video),
-> > > GSP(graphic), ISP(image), and camera CPP, etc.
-> > >
-> > > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > > ---
-> > >  .../devicetree/bindings/iommu/sprd,iommu.yaml | 44 +++++++++++++++++++
-> > >  1 file changed, 44 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml b/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
-> > > new file mode 100644
-> > > index 000000000000..4d9a578a7cc9
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
-> > > @@ -0,0 +1,44 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +# Copyright 2020 Unisoc Inc.
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/iommu/sprd,iommu.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Unisoc IOMMU and Multi-media MMU
-> > > +
-> > > +maintainers:
-> > > +  - Chunyan Zhang <zhang.lyra@gmail.com>
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    enum:
-> > > +      - sprd,iommu-disp
-> >
-> > Needs to be Soc specific.
+>  Define audit_syscall[NR_syscalls], every element stands for one syscall.
+>  audit_filter_syscall() checks audit_syscall[NR_syscalls].
+>  audit_syscall[n] == 0 indicates no rule audit syscall n, do a quick exit.
+>  audit_syscall[n] > 0 indicates at least one rule audit syscall n.
+>  audit_syscall[n] update when syscall rule changes.
 >
-> All SoCs so far use the same iommu IP, there's a little different
-> among different iommu users.
+> Signed-off-by: Yang Yang <yang.yang29@zte.com.cn>
+> ---
+>  include/linux/audit.h |  2 ++
+>  kernel/audit.c        |  2 ++
+>  kernel/auditfilter.c  | 16 ++++++++++++++++
+>  kernel/auditsc.c      |  9 ++++++++-
+>  4 files changed, 28 insertions(+), 1 deletion(-)
 
-That's what everyone says. Be warned that you cannot add properties
-for any differences that come up whether features or errata.
+Before we go too far into a review of this patch, please provide some
+performance measurements using a variety of rule counts, both common
+and extreme, so that we can better judge the benefits of this patch.
+The measurements should include both the rule add/delete time deltas
+as well as the impact on the syscall invocations.  If non-obvious,
+please also include how you performed the measurements and captured
+the data.
 
-> > Is this block specific to display subsys or
-> > that just happens to be where the instance is?
->
-> This iommu driver can serve many subsystem devices, such as Video,
-> Camera, Image, etc., but they have their own iommu module which looks
-> like a subdevice embedded in the master devices.
-> I will add more compatible strings for those devices when needed.
-> For now, only this one was listed here because I just tested this
-> iommu driver with DPU only.
+These are good things to include in the commit description when
+submitting patches focused on improving performance.
 
-The iommu binding takes care of what each one is connected to. Is each
-instance different in terms of features or programming model? If not,
-then you shouldn't have different compatible strings for each
-instance.
-
-Rob
+-- 
+paul moore
+www.paul-moore.com
