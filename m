@@ -2,127 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C532F437F
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B34BC2F4386
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 06:11:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726288AbhAMFG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 00:06:56 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:40952 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbhAMFGz (ORCPT
+        id S1726175AbhAMFKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 00:10:21 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:46196 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725858AbhAMFKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 00:06:55 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10D55B7K036083;
-        Tue, 12 Jan 2021 23:05:11 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1610514311;
-        bh=vidDrT5qcgQkYVkM9hh520ntfgeWPUpIND+ozdkyT4c=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=hBJ/rPJfgQtY49OZfxVVd66EXKRPLb0/RkN12B/yGERhMmykTEloR6H0TPuz/D2WG
-         KTawhu6ItgKcep4CAqfMV0pQNgrt9j6KXQuXHO6yKtv6LxUsHviJXRqntdaKUPBmV0
-         Iu9utG+FCrI0Exga2Kc6GEneTaFxaRlmhBqiY/oA=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10D55BE6045974
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 12 Jan 2021 23:05:11 -0600
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 12
- Jan 2021 23:05:11 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 12 Jan 2021 23:05:11 -0600
-Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10D556nr014148;
-        Tue, 12 Jan 2021 23:05:07 -0600
-Subject: Re: [PATCH v4] PCI: endpoint: Fix NULL pointer dereference for
- ->get_features()
-To:     Shradha Todi <shradha.t@samsung.com>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>
-CC:     <bhelgaas@google.com>, <lorenzo.pieralisi@arm.com>,
-        <pankaj.dubey@samsung.com>, <sriram.dash@samsung.com>,
-        <niyas.ahmed@samsung.com>, <p.rajanbabu@samsung.com>,
-        <l.mehra@samsung.com>, <hari.tv@samsung.com>
-References: <CGME20210112140234epcas5p4f97e9cf12e68df9fb55d1270bd14280c@epcas5p4.samsung.com>
- <1610460145-14645-1-git-send-email-shradha.t@samsung.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <b5b06656-913c-220d-3af7-bb9395252a7b@ti.com>
-Date:   Wed, 13 Jan 2021 10:35:06 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 13 Jan 2021 00:10:21 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 10D59GRj008260
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 13 Jan 2021 00:09:17 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 6FBB915C3453; Wed, 13 Jan 2021 00:09:16 -0500 (EST)
+Date:   Wed, 13 Jan 2021 00:09:16 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Subject: Re: Malicious fs images was Re: ext4 regression in v5.9-rc2 from
+ e7bfb5c9bb3d on ro fs with overlapped bitmaps
+Message-ID: <X/6AfBJuX/ye+yt/@mit.edu>
+References: <20201006133533.GC5797@mit.edu>
+ <20201007080304.GB1112@localhost>
+ <20201007143211.GA235506@mit.edu>
+ <20201007201424.GB15049@localhost>
+ <20201008021017.GD235506@mit.edu>
+ <20201008222259.GA45658@localhost>
+ <20201009143732.GJ235506@mit.edu>
+ <20210110184101.GA4625@amd>
+ <X/4YArRJMgGjSyZY@mit.edu>
+ <20210112222840.GA28214@duo.ucw.cz>
 MIME-Version: 1.0
-In-Reply-To: <1610460145-14645-1-git-send-email-shradha.t@samsung.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112222840.GA28214@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 12, 2021 at 11:28:40PM +0100, Pavel Machek wrote:
+> 
+> This thread suggested that kernel is _not_ supposed to be robust
+> against corrupt filesystems (because fsck is not integrated in
+> kernel). Which was news to me (and I'm not the person that needs
+> warning in execve documentation).
 
+Define "supposed to be".  In the ideal world, the kernel should be
+robust against corrupt file systems.  In the ideal world, hard drives
+would never die, and memory bits would never get flipped due to cosmic
+rays, and so Intel would be correct that consumers don't need ECC
+memory.  In the ideal world, drivers would never make mistakes, and so
+seat belts would be completely unnecessasry.
 
-On 12/01/21 7:32 pm, Shradha Todi wrote:
-> get_features ops of pci_epc_ops may return NULL, causing NULL pointer
-> dereference in pci_epf_test_bind function. Let us add a check for
-> pci_epc_feature pointer in pci_epf_test_bind before we access it to avoid
-> any such NULL pointer dereference and return -ENOTSUPP in case
-> pci_epc_feature is not found.
-> 
-> When the patch is not applied and EPC features is not implemented in the
-> platform driver, we see the following dump due to kernel NULL pointer
-> dereference.
-> 
-> [  105.135936] Call trace:
-> [  105.138363]  pci_epf_test_bind+0xf4/0x388
-> [  105.142354]  pci_epf_bind+0x3c/0x80
-> [  105.145817]  pci_epc_epf_link+0xa8/0xcc
-> [  105.149632]  configfs_symlink+0x1a4/0x48c
-> [  105.153616]  vfs_symlink+0x104/0x184
-> [  105.157169]  do_symlinkat+0x80/0xd4
-> [  105.160636]  __arm64_sys_symlinkat+0x1c/0x24
-> [  105.164885]  el0_svc_common.constprop.3+0xb8/0x170
-> [  105.169649]  el0_svc_handler+0x70/0x88
-> [  105.173377]  el0_svc+0x8/0x640
-> [  105.176411] Code: d2800581 b9403ab9 f9404ebb 8b394f60 (f9400400)
-> [  105.182478] ---[ end trace a438e3c5a24f9df0 ]---
-> 
-> Fixes: 2c04c5b8eef79 ("PCI: pci-epf-test: Use pci_epc_get_features() to get EPC features")
-> Reviewed-by: Pankaj Dubey <pankaj.dubey@samsung.com>
-> Signed-off-by: Sriram Dash <sriram.dash@samsung.com>
-> Signed-off-by: Shradha Todi <shradha.t@samsung.com>
+Unfortunately, we live in the real world.
 
-Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  drivers/pci/endpoint/functions/pci-epf-test.c | 13 ++++++++-----
->  1 file changed, 8 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-> index e4e51d8..1b30774 100644
-> --- a/drivers/pci/endpoint/functions/pci-epf-test.c
-> +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-> @@ -830,13 +830,16 @@ static int pci_epf_test_bind(struct pci_epf *epf)
->  		return -EINVAL;
->  
->  	epc_features = pci_epc_get_features(epc, epf->func_no);
-> -	if (epc_features) {
-> -		linkup_notifier = epc_features->linkup_notifier;
-> -		core_init_notifier = epc_features->core_init_notifier;
-> -		test_reg_bar = pci_epc_get_first_free_bar(epc_features);
-> -		pci_epf_configure_bar(epf, epc_features);
-> +	if (!epc_features) {
-> +		dev_err(&epf->dev, "epc_features not implemented\n");
-> +		return -EOPNOTSUPP;
->  	}
->  
-> +	linkup_notifier = epc_features->linkup_notifier;
-> +	core_init_notifier = epc_features->core_init_notifier;
-> +	test_reg_bar = pci_epc_get_first_free_bar(epc_features);
-> +	pci_epf_configure_bar(epf, epc_features);
-> +
->  	epf_test->test_reg_bar = test_reg_bar;
->  	epf_test->epc_features = epc_features;
->  
-> 
+And so there is risk associated with using various technologies, and
+that risk is not a binary 0% vs 100%.  In my mind, assuming that file
+systems are robust against maliciously created images is much like
+driving around without a seat belt.  There are plenty of people who
+drive without seat belts for years, and they haven't been killed yet.
+But it's not something *I* would do.  But hey, I also spent extra
+money to buy a personal desktop computer with ECC memory, and I don't
+go bicycling without a helment, either.
+
+You're free to decide what *you* want to do.  But I wouldn't take a
+random file system image from the Net and mount it without running
+fsck on the darned thing first.
+
+As far as secure boot is concerned, do you know how many zero days are
+out there with Windows machines?  I'm pretty sure there are vast
+numbers.  There are even more systems where the system adminsitrators
+haven't bothered to install latest updates, as well.
+
+> And if we have filesystems where corrupt image is known to allow
+> arbitrary code execution, we need to
+
+Define *known*.  If you look at the syzbot dashboard, there are
+hundreds of reproducers where root is able to crash a Linux server.
+Some number of them will almost certainly be exploitable.  The problem
+is it takes a huge amount of time to analyze them, and Syzbot's file
+system fuzzers are positively developer-hostile to root cause.  So
+usually I find and fix ext4 file system fuzzing reports via reports
+from other fuzzers, and then eventually syzbot realizes that the
+reproducer no longer works, and it gets closed out.
+
+I'd certainly be willing to bet a beer or two that there are
+vulnerabilities in VFAT, but do I *know* that to be the case?  No,
+because I don't have the time to take a syzbot report relating to a
+file system and root cause it.  The time to extract out the image, and
+then figure out how to get a simple reproducer (as opposed to the mess
+that a syzbot reproducer that might be randomly toggling a network
+bridge interface on one thread while messing with a file system image
+on another) is easily 10-20 times the effort to actually *fix* the bug
+once we're able to come up with a trivial reproducer with a file
+system image which is a separate file so we can analyze it using file
+system debugging tools.
+
+I'm also *quite* confident that the NSA, KGB, and other state
+intelligence agencies have dozens of zero days for Windows, Linux,
+etc.  We just don't know in what subsystem they are in, so we can't
+just "disable them when secure boot is enabled".
+
+						- Ted
