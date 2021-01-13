@@ -2,179 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF9C2F4220
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:57:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA4A52F4227
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 03:59:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728752AbhAMC5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 12 Jan 2021 21:57:10 -0500
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:37692 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726840AbhAMC5K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 12 Jan 2021 21:57:10 -0500
-Received: by mail-ot1-f43.google.com with SMTP id o11so593822ote.4;
-        Tue, 12 Jan 2021 18:56:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wxopvxGze0KrwrLh4CQC5oDamBjQANLUapKIcQO/MXE=;
-        b=k6zmwDG6uO4PvbyJeGNB4MAlXlTB72tL5tUnbUwI/WS+aZ+Fkjt1Yjd5DTUfl3IyKL
-         7GzEHkOrfnrmSAoPnAo7jTb2Ke3uyou6T9wl6AKK1l0kyI/8lqpMyEIWW27VDs1u7ndw
-         l9Y4nTD5flNzGMWUFzsnmB75Ah02L+dQjL8RJG7ORE1o+5SrXwqgXpOAsQTQK06h7M0k
-         b6Qrg+Hu5DCTwTYcaMP1KzTLRRdu1J9WeBNHxQ2JysqFQwN1zbLbwkOksPEinYvY8jEJ
-         dRHgCPYiwzTOxcAvZJRxoeccAPhm2vVclnQIPhn5Bs7E9vG4PcJbElEa9lv0mNC1pu3z
-         XVuw==
-X-Gm-Message-State: AOAM530uO+6ANV/EOEgx+v0jWvNSIr/U7dPg05cqFwtrBehqGbdk/1kY
-        5Vzmi7Ys4fjvp0hoQ7h2XA==
-X-Google-Smtp-Source: ABdhPJy3qIbJsSo8ZClFtqTOMi0u7CL9lXJnDxywdybq3O1RzBXWkRgzCxuBOC2FJyqihdK8Cbb3kA==
-X-Received: by 2002:a05:6830:784:: with SMTP id w4mr1602255ots.53.1610506589186;
-        Tue, 12 Jan 2021 18:56:29 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id h11sm146837ooj.36.2021.01.12.18.56.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Jan 2021 18:56:28 -0800 (PST)
-Received: (nullmailer pid 1430607 invoked by uid 1000);
-        Wed, 13 Jan 2021 02:56:27 -0000
-Date:   Tue, 12 Jan 2021 20:56:27 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: pinctrl: qcom: Add SM8350 pinctrl
- bindings
-Message-ID: <20210113025627.GA1414436@robh.at.kernel.org>
-References: <20210106054950.303244-1-vkoul@kernel.org>
- <20210106054950.303244-2-vkoul@kernel.org>
- <X/dCIuUR/El8Gxaa@builder.lan>
+        id S1728582AbhAMC6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 12 Jan 2021 21:58:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726499AbhAMC6Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 12 Jan 2021 21:58:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF5B123120
+        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 02:57:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610506656;
+        bh=A2X9yAJjMelGsnUZoFeBcSZDu8oKUroi/CJv9/mXNCk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fkC/OTEwMOc1ls89758/bPG65vPCysFvTAGXFqzRzS7YoGiCuSlwPFZ/xouX3dvDs
+         R1duE0mjZrHOZmpS6SB3pGEmyGxtk69DuUV19Dnz9phAaYAyGQUhGovoRzkoGfWvg/
+         eUqlSevoePa/Si6iEq+dnfrQo7mLrk7TwqqXcXQ6IlLpOVBcMsmdmRr6+RpbcyytPl
+         KIJUzE5DePPJgUKkQrT8xVzdDxOwaQdcG8/Mr0KFkFIFyZWtGhMArrs1Yth9Rs7iun
+         VnoX7DWj1WbCVrJw+wAYQLpiQy8kclwqkYzhI9AS/SWIpgsZhDxW0QLUAW+Lo0fV3L
+         QmuXWtmz3tpHA==
+Received: by mail-lf1-f54.google.com with SMTP id b26so562563lff.9
+        for <linux-kernel@vger.kernel.org>; Tue, 12 Jan 2021 18:57:35 -0800 (PST)
+X-Gm-Message-State: AOAM530eCWxZfKwg+xxcWO039+Xt+4YIM/QXbmCqyrSxyq9PU9FBfe++
+        TfPLtSymsPF+5y0x5HbMFCEtW5eOFXC/N8PSYg4=
+X-Google-Smtp-Source: ABdhPJwlhGXDaVk1dHC2iXVm1w5QTAinOx5BgK1PGcETU2AuiXP4xhOlgjZ7sCe4ka/j4bOSE6viYJm2r3RIZu5N+Fk=
+X-Received: by 2002:a19:38e:: with SMTP id 136mr852405lfd.346.1610506654053;
+ Tue, 12 Jan 2021 18:57:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/dCIuUR/El8Gxaa@builder.lan>
+References: <20210112023534.117354-1-guoren@kernel.org> <CAOnJCUK89rwjfnpMtavbaf-pwBndnS-=kVwsdP2yJnJAwJi-kg@mail.gmail.com>
+In-Reply-To: <CAOnJCUK89rwjfnpMtavbaf-pwBndnS-=kVwsdP2yJnJAwJi-kg@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 13 Jan 2021 10:57:22 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQYT-pkUrdoCiZsLX+SwYk89FKO=tgscwwQrdtHEobPpQ@mail.gmail.com>
+Message-ID: <CAJF2gTQYT-pkUrdoCiZsLX+SwYk89FKO=tgscwwQrdtHEobPpQ@mail.gmail.com>
+Subject: Re: [PATCH] riscv: Remove duplicate definition in pagtable.h
+To:     Atish Patra <atishp@atishpatra.org>
+Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 11:17:22AM -0600, Bjorn Andersson wrote:
-> On Tue 05 Jan 23:49 CST 2021, Vinod Koul wrote:
-> 
-> > Add device tree binding Documentation details for Qualcomm SM8350
-> > pinctrl driver.
-> > 
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+On Tue, Jan 12, 2021 at 4:18 PM Atish Patra <atishp@atishpatra.org> wrote:
+>
+> On Mon, Jan 11, 2021 at 6:38 PM <guoren@kernel.org> wrote:
+> >
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > PAGE_KERNEL_EXEC has been defined above.
+> >
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> > Cc: Pekka Enberg <penberg@kernel.org>
 > > ---
-> >  .../bindings/pinctrl/qcom,sm8350-tlmm.yaml    | 149 ++++++++++++++++++
-> >  1 file changed, 149 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm8350-tlmm.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-tlmm.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-tlmm.yaml
-> > new file mode 100644
-> > index 000000000000..abdafd25bfc2
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-tlmm.yaml
-> > @@ -0,0 +1,149 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/pinctrl/qcom,sm8350-tlmm.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Qualcomm Technologies, Inc. SM8350 TLMM block
-> > +
-> > +maintainers:
-> > +  - Vinod Koul <vkoul@kernel.org>
-> > +
-> > +description: |
-> > +  This binding describes the Top Level Mode Multiplexer block found in the
-> > +  SM8350 platform.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: qcom,sm8350-tlmm
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  interrupt-controller: true
-> > +
-> > +  '#interrupt-cells':
-> > +    description: Specifies the PIN numbers and Flags, as defined in
-> > +      include/dt-bindings/interrupt-controller/irq.h
-> > +    const: 2
-> > +
-> > +  gpio-controller: true
-> > +
-> > +  '#gpio-cells':
-> > +    description: Specifying the pin number and flags, as defined in
-> > +      include/dt-bindings/gpio/gpio.h
-> > +    const: 2
-> > +
-> > +  gpio-ranges:
-> > +    maxItems: 1
-> > +
-> > +  gpio-reserved-ranges:
-> > +    maxItems: 1
-> > +
-> > +#PIN CONFIGURATION NODES
-> > +patternProperties:
-> > +  '-pinmux$':
-> 
-> I believe that what Rob was asking for was the matter of describing the
-> mux and config subnodes under this one. But I don't know really how to
-> express this, because the following are all valid:
-> 
-> default_state: default-state {
-> 	pins = "gpio1";
-> 	bias-disable;
-> };
-> 
-> default_state: default-state {
-> 	rx {
-> 		pins = "gpio1";
-> 		function = "gpio";
-> 		bias-disable;
-> 	};
-> };
-> 
-> default_state: default-state {
-> 	pinmux {
-> 		pins = "gpio1";
-> 		function = "gpio";
-> 	};
-> 
-> 	pinconf {
-> 		pins = "gpio1";
-> 		bias-disable;
-> 	};
-> };
-> 
-> I.e. the properties described here applies either to this node directly,
-> or any subnodes (1 level) down.
-
-Why!?
-
-You can create a definition and reuse it. Something like this:
-
-$defs:
-  pin-node:
-    type: object
-    properties:
-      ...
-
-patternProperties:
-  '-state$':
-    oneOf:
-      - $ref: #/$defs/pin-node
-
-      - patternProperties:
-          '.*':
-            $ref: #/$defs/pin-node
+> >  arch/riscv/include/asm/pgtable.h | 1 -
+> >  1 file changed, 1 deletion(-)
+> >
+> > diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> > index 41a72861987c..dff51a84e52e 100644
+> > --- a/arch/riscv/include/asm/pgtable.h
+> > +++ b/arch/riscv/include/asm/pgtable.h
+> > @@ -101,7 +101,6 @@
+> >  #define PAGE_KERNEL            __pgprot(_PAGE_KERNEL)
+> >  #define PAGE_KERNEL_EXEC       __pgprot(_PAGE_KERNEL | _PAGE_EXEC)
+> >  #define PAGE_KERNEL_READ       __pgprot(_PAGE_KERNEL & ~_PAGE_WRITE)
+> > -#define PAGE_KERNEL_EXEC       __pgprot(_PAGE_KERNEL | _PAGE_EXEC)
+> >  #define PAGE_KERNEL_READ_EXEC  __pgprot((_PAGE_KERNEL & ~_PAGE_WRITE) \
+> >                                          | _PAGE_EXEC)
+> >
+> > --
+> > 2.17.1
+> >
+> >
+> > _______________________________________________
+> > linux-riscv mailing list
+> > linux-riscv@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+>
+> It's already on the fixes.
+>
+> http://lists.infradead.org/pipermail/linux-riscv/2021-January/004134.html
+Great, ignore mine :)
 
 
-Rob
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
