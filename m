@@ -2,220 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C3B2F515D
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 499C82F515E
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 18:47:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728116AbhAMRqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 12:46:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727930AbhAMRqm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 12:46:42 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25B7C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:46:01 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id p12so1580569pju.5
-        for <linux-kernel@vger.kernel.org>; Wed, 13 Jan 2021 09:46:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to;
-        bh=lllhfhP8gIhrhjFhnD/iiiJ4MSK6i6qrMF3C27XRjrs=;
-        b=hXVgg83XxEWsCmx8que855B3Bqb5GB07KQ/DvHlrFz53PAaiGaU71mBoJ+7TW0er0G
-         XIgQ/xxpaYYpGk7e1XS72zI/gzomBzRBop90hsUjKnmRdloY53t7+OG6Ly76zvMpXduY
-         3/iC2xgpw8/7/Mx6OJYT0UGlDGvFQMRD7IE/Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=lllhfhP8gIhrhjFhnD/iiiJ4MSK6i6qrMF3C27XRjrs=;
-        b=NEohVn/T9Hf1NZiuvQArK++toPZFs8tk5CR+r7DbcxKG6RCjXIAUhxnhtD55bDgpaH
-         jPXzshbMsqFsHQ9cWfmn2pwDyaw5B7w1bTbTuqVxXBpTUSA5+QxAClI/9Z4hMlMJUeRt
-         wjLVxswU089A0YoF3L2gcBAWkQe1SP9VQpBC7GRcyhsGQP8f4C+uxdwoy3UCaP4v4RRl
-         FaRAZTraTbHDoxGQmzT6VSnCRm10MmFDZjWtdeEDq0kM7cf5AY6Ivnmw+HcjLRZyEA2L
-         S/ev4iACVJOWtN26DjO1rDPBHMrBIi/KZBQqWB8Ek2ZMw1uLudqpsGJ/M9ZRKVu6EY2w
-         58zQ==
-X-Gm-Message-State: AOAM532OC7zqSQGIxJ04K/dsbdCWGMsgaLh/O4DdmzaUP5fH1geFW1qy
-        oClKeGDgTSx8+zxHD5qZWb/mnA==
-X-Google-Smtp-Source: ABdhPJyxtMzss9o4mxfwzPpLN7F8wZLkHdtZibVAAQ8QwIJ8ts0Ixe9QY6VktubICz8kX/4NuzQWjQ==
-X-Received: by 2002:a17:90b:23d6:: with SMTP id md22mr402598pjb.206.1610559961047;
-        Wed, 13 Jan 2021 09:46:01 -0800 (PST)
-Received: from [10.136.8.219] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id 68sm3210931pfe.33.2021.01.13.09.45.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jan 2021 09:45:57 -0800 (PST)
-Subject: Re: [PATCH v2 1/2] arm64: dts: broadcom: clear the warnings caused by
- empty dma-ranges
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Bharat Gooty <bharat.gooty@broadcom.com>
-Cc:     devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Scott Branden <sbranden@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20201016090833.1892-1-thunder.leizhen@huawei.com>
- <20201016090833.1892-2-thunder.leizhen@huawei.com>
- <20201128045328.2411772-1-f.fainelli@gmail.com>
- <CAK8P3a1_5RgcPz+bgo1bbUBk8NTJd=1-Y5-=CsQYkFgLfTE3_A@mail.gmail.com>
- <9c6c6b7e-8c39-8c49-5c87-9b560c027841@broadcom.com>
- <CAK8P3a2XYk8D80XARrpUSBHk1yye3KHXOdaQge4HNSZZOC=xKw@mail.gmail.com>
- <CACvutz9v+TBUbrCo3X-u5ebbs04nR0y0yQN3qWfSAyZVy9RM2g@mail.gmail.com>
- <c38cf11a-ed1d-d150-52fb-e3b4a0a30712@gmail.com>
- <CAK8P3a1TViQopQNFE4+Dtac0v2CneGiy22WYu5BuYv8HX2r8Lg@mail.gmail.com>
- <18112862-a42e-95b1-39a3-2e414667f39b@broadcom.com>
- <CAK8P3a2+EfOKAo3HLb+_qd-gnqWD55dyW0juSw1TM8jHKiZYoQ@mail.gmail.com>
- <8aaa7bb9-a81e-cd0e-8e67-360515313748@broadcom.com>
- <3fc2b0174965ec6b911ab4bd73da1525@mail.gmail.com>
- <CAK8P3a3SdvOk=chp39-ypvHsqCJkuqFG1qn+tyJ3h71OrzgDWw@mail.gmail.com>
- <d97a0c4c-15b5-272a-adc5-152c41a6a212@gmail.com>
-From:   Ray Jui <ray.jui@broadcom.com>
-Message-ID: <6ed78167-44fe-7b6e-e442-adb70b0c0bb5@broadcom.com>
-Date:   Wed, 13 Jan 2021 09:45:54 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1728161AbhAMRqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 12:46:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727930AbhAMRqo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 12:46:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 291E92337F;
+        Wed, 13 Jan 2021 17:46:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610559963;
+        bh=P1q1obOCVIPW4fDUE6Iu/JviaKvmorHYg/9TVGkiS8c=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=K8rWQne1EXt+P8L/P3vncKBK9n/yQ8rg8j69ZBtRMBZGy8R5hdqO0lHg8n6X1BU8E
+         OC2kmm7PbTlT4IGKfXZ+wtn1kxAkL9kzlLoXzUalIIsdHKCjpgTkN5bTCP5cW917PW
+         QT1qgxOplr9+tDTnZJPhOe95a+bF+XvoA89NrhqH0In4LWfpCmhFxVkppypFbT3pAp
+         V4rx/9dJT5659NW47KqKz2u/wVr+3UOpJWSOLkWpSD4A/qJ0WgxPiEAYfLENjBmULw
+         GpxcL1ewrYh1tXHh81nu4rhKhigLHJuVk2tX1IihHnVouQKj+KxcmeHqcHoxBGjKJY
+         N90OIWwlxW+UA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D91BF3522AC3; Wed, 13 Jan 2021 09:46:02 -0800 (PST)
+Date:   Wed, 13 Jan 2021 09:46:02 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Jethro Beekman <jethro@fortanix.com>
+Subject: Re: [PATCH v3] x86/sgx: Synchronize encl->srcu in sgx_encl_release().
+Message-ID: <20210113174602.GV2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20201216134920.21161-1-jarkko@kernel.org>
+ <20210105145749.GF28649@zn.tnic>
+ <X/zoarV7gd/LNo4A@kernel.org>
+ <20210112183550.GK13086@zn.tnic>
+ <X/8rX1yFxiN79QCn@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <d97a0c4c-15b5-272a-adc5-152c41a6a212@gmail.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000645e2505b8cbb6f0"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/8rX1yFxiN79QCn@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000645e2505b8cbb6f0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-
-Hi Bharat,
-
-On 1/13/2021 8:55 AM, Florian Fainelli wrote:
-> On 1/13/21 12:05 AM, Arnd Bergmann wrote:
->> On Wed, Jan 13, 2021 at 4:42 AM Bharat Gooty <bharat.gooty@broadcom.com> wrote:
->>>
->>> Hello Ray,
->>>
->>> I had cross checked with Design and integration team.
->>> Yes we can set the "dma-rages" to 40 bit DMA ranges. Tested, it is working.
->>>
->>> -----Original Message-----
->>> From: Ray Jui <ray.jui@broadcom.com>
->>>
->>> Bharat can correct me if I'm wrong, but I don't think we have a bug in
->>> the USB DMA engine that causes it can only address 32-bit. I believe we
->>> can set dma-ranges size to 40-bit here.
->>>
->>> The dma-range property is though required to be specified, instead of
->>> leaving it as empty, with the use of IOMMU. That seems to be a v5.10
->>> specific behavior as I described below.
->>
->> Ok, thanks for double-checking. I had misremembered the version
->> that actually went into the as the one that used 64-bit dma-ranges
->> and thought that was what broke, rather than the version without
->> dma-ranges.
->>
->> If any of you want to send me that bugfix directly, or have Florian
->> pick it up through his fixes branch, I'll make sure we get it into v5.11.
+On Wed, Jan 13, 2021 at 07:18:23PM +0200, Jarkko Sakkinen wrote:
+> On Tue, Jan 12, 2021 at 07:35:50PM +0100, Borislav Petkov wrote:
+> > + paulmck.
+> > 
+> > On Tue, Jan 12, 2021 at 02:08:10AM +0200, Jarkko Sakkinen wrote:
+> > > On Tue, Jan 05, 2021 at 03:57:49PM +0100, Borislav Petkov wrote:
+> > > > On Wed, Dec 16, 2020 at 03:49:20PM +0200, Jarkko Sakkinen wrote:
+> > > > > Add synchronize_srcu_expedited() to sgx_encl_release() to catch a grace
+> > > > > period initiated by sgx_mmu_notifier_release().
+> > > > > 
+> > > > > A trivial example of a failing sequence with tasks A and B:
+> > > > > 
+> > > > > 1. A: -> sgx_release()
+> > > > > 2. B: -> sgx_mmu_notifier_release()
+> > > > > 3. B: -> list_del_rcu()
+> > > > > 3. A: -> sgx_encl_release()
+> > > > > 4. A: -> cleanup_srcu_struct()
+> > > > > 
+> > > > > The loop in sgx_release() observes an empty list because B has removed its
+> > > > > entry in the middle, and calls cleanup_srcu_struct() before B has a chance
+> > > > > to calls synchronize_srcu().
+> > > > 
+> > > > Leading to what? NULL ptr?
+> > > > 
+> > > > https://lkml.kernel.org/r/X9e2jOWz1hfXVpQ5@google.com
+> > > > 
+> > > > already suggested that you should explain the bug better and add the
+> > > > splat but I'm still missing that explanation.
+> > > 
+> > > OK, I'll try to explain it how I understand the issue.
+> > > 
+> > > Consider this loop in the VFS release hook (sgx_release):
+> > > 
+> > > 	/*
+> > > 	 * Drain the remaining mm_list entries. At this point the list contains
+> > > 	 * entries for processes, which have closed the enclave file but have
+> > > 	 * not exited yet. The processes, which have exited, are gone from the
+> > > 	 * list by sgx_mmu_notifier_release().
+> > > 	 */
+> > > 	for ( ; ; )  {
+> > > 		spin_lock(&encl->mm_lock);
+> > > 
+> > > 		if (list_empty(&encl->mm_list)) {
+> > > 			encl_mm = NULL;
+> > > 		} else {
+> > > 			encl_mm = list_first_entry(&encl->mm_list,
+> > > 						   struct sgx_encl_mm, list);
+> > > 			list_del_rcu(&encl_mm->list);
+> > > 		}
+> > > 
+> > > 		spin_unlock(&encl->mm_lock);
+> > > 
+> > > 		/* The enclave is no longer mapped by any mm. */
+> > > 		if (!encl_mm)
+> > > 			break;
+> > > 
+> > > 		synchronize_srcu(&encl->srcu);
+> > > 		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
+> > > 		kfree(encl_mm);
+> > > 	}
+> > > 
+> > > 
+> > > At this point all processes have closed the enclave file, but that doesn't
+> > > mean that they all have exited yet.
+> > > 
+> > > Now, let's imagine that there is exactly one entry in the encl->mm_list.
+> > > and sgx_release() execution gets scheduled right after returning from
+> > > synchronize_srcu().
+> > > 
+> > > With some bad luck, some process comes and removes that last entry befoe
+> > > sgx_release() acquires mm_lock. The loop in sgx_release() just leaves
+> > > 
+> > > 		/* The enclave is no longer mapped by any mm. */
+> > > 		if (!encl_mm)
+> > > 			break;
+> > > 
+> > > No synchronize_srcu().
+> > > 
+> > > After writing this, I think that the placement for synchronize_srcu()
+> > > in this patch is not best possible. It should be rather that the
+> > > above loop would also call synchronize_srcu() when leaving.
+> > > 
+> > > I.e. the code change would result:
+> > > 
+> > > 	for ( ; ; )  {
+> > > 		spin_lock(&encl->mm_lock);
+> > > 
+> > > 		if (list_empty(&encl->mm_list)) {
+> > > 			encl_mm = NULL;
+> > > 		} else {
+> > > 			encl_mm = list_first_entry(&encl->mm_list,
+> > > 						   struct sgx_encl_mm, list);
+> > > 			list_del_rcu(&encl_mm->list);
+> > > 		}
+> > > 
+> > > 		spin_unlock(&encl->mm_lock);
+> > > 
+> > >                 /* 
+> > >                  * synchronize_srcu() is mandatory *even* when the list was
+> > >                  * empty, in order make sure that grace periods stays in
+> > >                  * sync even when another task took away the last entry
+> > >                  * (i.e. exiting process when it deletes its mm_list).
+> > >                  */
+> > > 		synchronize_srcu(&encl->srcu);
+> > > 
+> > > 		/* The enclave is no longer mapped by any mm. */
+> > > 		if (!encl_mm)
+> > > 			break;
+> > > 
+> > > 		mmu_notifier_unregister(&encl_mm->mmu_notifier, encl_mm->mm);
+> > > 		kfree(encl_mm);
+> > > 	}
+> > > 
+> > > What do you think? Does this start to make more sense now?
+> > > I don't have logs for this but the bug can be also reasoned.
+> > 
+> > It does. Now you need to write it up in a detailed form so that it is
+> > clear to readers months/years from now what exactly can happen. You can
+> > use a two-column format like
+> > 
+> > 	CPU A				CPU B
+> > 
+> > Bla
+> > 					Blu
+> > 
+> > This happens now here
+> > 					But this needs to happen there
+> > 
+> > and so on.
+> > 
+> > Also, from reading up a bit on this, Documentation/RCU/checklist.rst says
+> > 
+> > "Use of the expedited primitives should be restricted to rare
+> > configuration-change operations that would not normally be undertaken
+> > while a real-time workload is running."
+> > 
+> > so why are you using synchronize_srcu_expedited()? Grepping the tree
+> > reveals only a couple of call sites only... but I've almost no clue of
+> > RCU so lemme CC Paul.
 > 
-> I have another change for v5.11 that I would like to send, so please do
-> send a bugfix when you get a chance and we can lump those two changes
-> together, say, by the end of the week?
+> It spun out of this discussion:
 > 
+> https://lore.kernel.org/linux-sgx/20201215213517.GA34761@kernel.org/raw
+> 
+> My reasoning was that this is not a common case. The main loop
+> that uses synchronize_srcu().
 
-Would you be able to help to send this out by the end of this week as
-Florian advised? Your previous patch with the extension to 40-bit in
-size plus a fixes-by tag should do!
+It seems to me that loading and unloading SGX enclaves qualifies as a
+configuration operation, so use of synchronize_srcu_expedited() should be
+just fine in that case.  This of course implies that SGX enclaves should
+not be loaded or unloaded while an aggressive real-time application
+is running.  Which might well be the case for other reasons.
 
-Thanks!
+So I believe synchronize_srcu_expedited() should be fine in this case.
 
-Ray
-
-
---000000000000645e2505b8cbb6f0
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIIQMwYJKoZIhvcNAQcCoIIQJDCCECACAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
-gg2IMIIE6DCCA9CgAwIBAgIOSBtqCRO9gCTKXSLwFPMwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UE
-CxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMT
-Ckdsb2JhbFNpZ24wHhcNMTYwNjE1MDAwMDAwWhcNMjQwNjE1MDAwMDAwWjBdMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25h
-bFNpZ24gMiBDQSAtIFNIQTI1NiAtIEczMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
-tpZok2X9LAHsYqMNVL+Ly6RDkaKar7GD8rVtb9nw6tzPFnvXGeOEA4X5xh9wjx9sScVpGR5wkTg1
-fgJIXTlrGESmaqXIdPRd9YQ+Yx9xRIIIPu3Jp/bpbiZBKYDJSbr/2Xago7sb9nnfSyjTSnucUcIP
-ZVChn6hKneVGBI2DT9yyyD3PmCEJmEzA8Y96qT83JmVH2GaPSSbCw0C+Zj1s/zqtKUbwE5zh8uuZ
-p4vC019QbaIOb8cGlzgvTqGORwK0gwDYpOO6QQdg5d03WvIHwTunnJdoLrfvqUg2vOlpqJmqR+nH
-9lHS+bEstsVJtZieU1Pa+3LzfA/4cT7XA/pnwwIDAQABo4IBtTCCAbEwDgYDVR0PAQH/BAQDAgEG
-MGoGA1UdJQRjMGEGCCsGAQUFBwMCBggrBgEFBQcDBAYIKwYBBQUHAwkGCisGAQQBgjcUAgIGCisG
-AQQBgjcKAwQGCSsGAQQBgjcVBgYKKwYBBAGCNwoDDAYIKwYBBQUHAwcGCCsGAQUFBwMRMBIGA1Ud
-EwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFGlygmIxZ5VEhXeRgMQENkmdewthMB8GA1UdIwQYMBaA
-FI/wS3+oLkUkrk1Q+mOai97i3Ru8MD4GCCsGAQUFBwEBBDIwMDAuBggrBgEFBQcwAYYiaHR0cDov
-L29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3RyMzA2BgNVHR8ELzAtMCugKaAnhiVodHRwOi8vY3Js
-Lmdsb2JhbHNpZ24uY29tL3Jvb3QtcjMuY3JsMGcGA1UdIARgMF4wCwYJKwYBBAGgMgEoMAwGCisG
-AQQBoDIBKAowQQYJKwYBBAGgMgFfMDQwMgYIKwYBBQUHAgEWJmh0dHBzOi8vd3d3Lmdsb2JhbHNp
-Z24uY29tL3JlcG9zaXRvcnkvMA0GCSqGSIb3DQEBCwUAA4IBAQConc0yzHxn4gtQ16VccKNm4iXv
-6rS2UzBuhxI3XDPiwihW45O9RZXzWNgVcUzz5IKJFL7+pcxHvesGVII+5r++9eqI9XnEKCILjHr2
-DgvjKq5Jmg6bwifybLYbVUoBthnhaFB0WLwSRRhPrt5eGxMw51UmNICi/hSKBKsHhGFSEaJQALZy
-4HL0EWduE6ILYAjX6BSXRDtHFeUPddb46f5Hf5rzITGLsn9BIpoOVrgS878O4JnfUWQi29yBfn75
-HajifFvPC+uqn+rcVnvrpLgsLOYG/64kWX/FRH8+mhVe+mcSX3xsUpcxK9q9vLTVtroU/yJUmEC4
-OcH5dQsbHBqjMIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4G
-A1UECxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNV
-BAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQL
-ExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMK
-R2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aE
-yiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5
-uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bL
-yCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg
-6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkW
-qQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8w
-HQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+
-yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5
-RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBov
-Hd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX42
-68NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o
-2HLO02JQZR7rkpeDMdmztcpHWD9fMIIFNTCCBB2gAwIBAgIMJQxqAs0uKXLnVqjWMA0GCSqGSIb3
-DQEBCwUAMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQD
-EypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMwHhcNMjAwOTIxMTQz
-MTQ3WhcNMjIwOTIyMTQzMTQ3WjCBhDELMAkGA1UEBhMCSU4xEjAQBgNVBAgTCUthcm5hdGFrYTES
-MBAGA1UEBxMJQmFuZ2Fsb3JlMRYwFAYDVQQKEw1Ccm9hZGNvbSBJbmMuMRAwDgYDVQQDEwdSYXkg
-SnVpMSMwIQYJKoZIhvcNAQkBFhRyYXkuanVpQGJyb2FkY29tLmNvbTCCASIwDQYJKoZIhvcNAQEB
-BQADggEPADCCAQoCggEBAKn4hxAQIaUc/63CGGAfKpCpBLQZU/mobqbKwTdwXmkNVlWkldmfbV1C
-wdSx9vgMN7hDrNLmOcurXjYSYT0seO6NLnsRvQ6lc2v92pqK7i8HwzTOL/b9z4XC5VnoYcHRuz75
-IcF8U8x+x6Rq4UutUQgoQDREvwBcsCj6ZDNmxDaEyyIflO3+HYvjI2hpJFOd+Wt5H/l9Nq1r7OLj
-jtK7Nlq1VqsruL98ME7ID5QhbF4tLGQgZEw250Sctjx8R8+zZPNxIIDREhAsGiupe5j3rEXDFv39
-Gp3tsmw0Vz7IMJs6DQIm7T8CfIzeId1IIHcH02MbpO7m1Btzyz625FoBWF8CAwEAAaOCAcswggHH
-MA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUHMAKGQWh0dHA6Ly9z
-ZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNoYTJnM29jc3AuY3J0
-MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24y
-c2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3
-dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWG
-M2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczLmNybDAfBgNV
-HREEGDAWgRRyYXkuanVpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSME
-GDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUvUTLkCwFvnpejW/KGvdaDA31b+sw
-DQYJKoZIhvcNAQELBQADggEBACMny/9Y1OPK7qwiBKBMt478eBgXnTlJ0J0HNebYcxN/l7fKIKMb
-/eX/AQKIDsHeshmV2ekPU4yY/04veXx3QTgmE1bb4ksKEFEbU0LXlVPrnlgNn8M75cPymegn/2yU
-r1+htd2eve3obmKc5Lrl0GP+4m72XxAOL687Aw5vRa4Lf294s+x4d+VRwUjoFTj9zyLhexWQuJv/
-yX1HjSkrlIsRwi6DN0/ieL04O9aD1UNPlCC6akGnv4tgwlESh51M564qhonlfSW6La+L/aTIuQc0
-88lq8s/VMBBGdc7176/v5TbNwEC/c5QYbp2n76rAmKKjhjwWmBk64yLT7CoIxk0xggJvMIICawIB
-ATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypH
-bG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDCUMagLNLily51ao1jAN
-BglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgMrEO4WyC40d25f3svGhtLOO5X85pGOCw
-+D0FpavhEuUwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEwMTEz
-MTc0NjAxWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZI
-AWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIB
-MA0GCSqGSIb3DQEBAQUABIIBAIa7OgxZxY9pz8oFcHnHA1bXaxygGhUCdNwXd0VLOZgpeyuAhYFq
-1DZLdNNzwvnfRrcDfeTU2iKps3N9EmpzqffTALKLil8BA8CoGDE322c13ErQS6C7BHx7TSE78QfZ
-AdnEb2DMuRhH/d3uDjjQLMdr0FclwgOWxj5QSnFFZzePNMNI1DWc8oA+yjLGh5ll2Fs06ZYC7i/H
-eGIVavsj6GYZYMgKwfXp2agk/0uxBQSEfWe/XrDrxd/Zlfg32Ba1ltQS6FDGWjfiqRj+zujqS+D+
-30oHkqB5FXqvL+LIV7ePF+fXt8x5bUVzfWA8SgE5nTVz2r6vv5n9H4uiqfrpxes=
---000000000000645e2505b8cbb6f0--
+							Thanx, Paul
