@@ -2,65 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30F12F4873
-	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 169712F4878
+	for <lists+linux-kernel@lfdr.de>; Wed, 13 Jan 2021 11:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726919AbhAMKQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 13 Jan 2021 05:16:57 -0500
-Received: from foss.arm.com ([217.140.110.172]:33676 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725681AbhAMKQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 13 Jan 2021 05:16:56 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6BE7D1042;
-        Wed, 13 Jan 2021 02:16:10 -0800 (PST)
-Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 36A343F66E;
-        Wed, 13 Jan 2021 02:16:09 -0800 (PST)
-Date:   Wed, 13 Jan 2021 10:16:06 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Yonghong Song <yhs@fb.com>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 1/2] trace: bpf: Allow bpf to attach to bare
- tracepoints
-Message-ID: <20210113101606.lpsn4scnsecdfxwr@e107158-lin>
-References: <20210111182027.1448538-1-qais.yousef@arm.com>
- <20210111182027.1448538-2-qais.yousef@arm.com>
- <8ef6c8e8-c462-a780-b1ab-b7f2e4fa9836@fb.com>
+        id S1726988AbhAMKR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 13 Jan 2021 05:17:26 -0500
+Received: from mail2.protonmail.ch ([185.70.40.22]:56107 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725681AbhAMKRZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 13 Jan 2021 05:17:25 -0500
+Date:   Wed, 13 Jan 2021 10:16:41 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1610533002; bh=sagEb4FSciHpuF7KnzebH5pdU2XwaUc8mW9H7JIBct0=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=EOEo6r1PznGwaYYnKKtdkqlbesj8l4RIr0S/RiZTV3I+mraabFQHiotI0xL2vhVBt
+         hmDpg1ZNLu3aErLdgfYXS1Ri3LyuGVpsb5oLErdzLq4oyxdUfvVRgDUW0N03vgkjz6
+         d6SqCvQRjnihmhDN6HAFAZDm4y4fZfk8cL/JrrQKBOCP0m4A+bBAdcR0bX7pfET5Mq
+         pUbx1sG07z62IXPnaJGodXCAICEqF124qQ2YwGxtcClefOFs36HEhRyJhSsakpYngb
+         iu8Kff07VfNLlWqq2AuGtkqyTcty82QHq6DFoWEhk5jL1plylCCPiSaw1Gd/ChCm4t
+         yvjemgqdVDldw==
+To:     Nick Desaulniers <ndesaulniers@google.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Fangrui Song <maskray@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [BUG mips llvm] MIPS: malformed R_MIPS_{HI16,LO16} with LLVM
+Message-ID: <20210113101623.3020-1-alobakin@pm.me>
+In-Reply-To: <CAKwvOdnvd1NaBQEJ0fPsYiGff4=tUdrcuAR0no9FUMqnOZSu6Q@mail.gmail.com>
+References: <20210109171058.497636-1-alobakin@pm.me> <CAKwvOdmV2tj4Uyz1iDkqCj+snWPpnnAmxJyN+puL33EpMRPzUw@mail.gmail.com> <20210109191457.786517-1-alobakin@pm.me> <CAKwvOdnOXXaz+S1agu5kCQLm+qEkXE2Hpd2_V8yPsbUTQH7JZw@mail.gmail.com> <20210111204936.17905-1-alobakin@pm.me> <CAKwvOdnvd1NaBQEJ0fPsYiGff4=tUdrcuAR0no9FUMqnOZSu6Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8ef6c8e8-c462-a780-b1ab-b7f2e4fa9836@fb.com>
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=0.8 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,LOTS_OF_MONEY,MONEY_NOHTML
+        shortcircuit=no autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/12/21 12:19, Yonghong Song wrote:
-> I applied the patch to my local bpf-next repo, and got the following
-> compilation error:
+From: Nick Desaulniers <ndesaulniers@google.com>
+Date: Tue, 12 Jan 2021 14:14:58 -0800
 
-[...]
+> On Mon, Jan 11, 2021 at 12:50 PM Alexander Lobakin <alobakin@pm.me> wrote=
+:
+>>
+>>> The disassembly for me produces:
+>>>     399c: 3c 03 00 00   lui     $3, 0 <phy_device_free>
+>>>                         0000399c:  R_MIPS_HI16  .text
+>>> ...
+>>>     39a8: 24 63 3a 5c   addiu   $3, $3, 14940 <phy_probe>
+>>>                         000039a8:  R_MIPS_LO16  .text
+>>
+>> So, in your case the values of the instructions that relocs refer are:
+>>
+>> 0x3c030000 R_MIPS_HI16
+>> 0x24633a5c R_MIPS_LO16
+>>
+>> Mine were:
+>>
+>> 0x3c010000
+>> 0x24339444
+>>
+>> Your second one doesn't have bit 15 set, so I think this pair won't
+>> break the code.
+>> Try to hunt for R_MIPS_LO16 that have this bit set, i.e. they have
+>> '8', '9', 'a', 'b', 'c', 'd' or 'e' as their [15:12].
+>
+> I don't think any of my R_MIPS_LO16 in that file have that bit set.
+> See attached.
 
-> 
-> I dumped preprecessor result but after macro expansion, the code
-> becomes really complex and I have not figured out why it failed.
-> Do you know what is the possible reason?
+Well, seems like you got lucky here.
+You can try to check for other modules if any of them have
+R_MIPS_LO16 with bit 15 set.
 
-Yeah I did a last minute fix to address a checkpatch.pl error and my
-verification of the change wasn't good enough obviously.
+Also, you can try to enable:
+CONFIG_LD_DEAD_CODE_DATA_ELIMINATION=3Dy
+CONFIG_TRIM_UNUSED_KSYMS=3Dy
 
-If you're keen to try out I can send you a patch with the fix. I should send v2
-by the weekend too.
+to alter the build process. These options didn't change anything
+in terms of relocs for me though.
 
-Thanks for having a look.
+> --
+> Thanks,
+> ~Nick Desaulniers
 
-Cheers
+Thanks,
+Al
 
---
-Qais Yousef
